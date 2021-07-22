@@ -2,123 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CD63D2699
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00F73D269E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 17:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhGVOmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 10:42:32 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:47378 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232547AbhGVOmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 10:42:31 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51]:40134)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m6aXQ-001rFh-4t; Thu, 22 Jul 2021 09:23:04 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:54554 helo=email.xmission.com)
-        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m6aXP-00CAcO-09; Thu, 22 Jul 2021 09:23:03 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Pratik Sampat <psampat@linux.ibm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        containers@lists.linux.dev, containers@lists.linux-foundation.org,
-        legion@kernel.org, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, hannes@cmpxchg.org,
-        mhocko@kernel.org, Alexey Makhalov <amakhalov@vmware.com>,
-        llong@redhat.com, pratik.r.sampat@gmail.com
-References: <ac76aada-f94d-d596-9b3c-1dca5a9914d0@linux.ibm.com>
-Date:   Thu, 22 Jul 2021 10:22:55 -0500
-In-Reply-To: <ac76aada-f94d-d596-9b3c-1dca5a9914d0@linux.ibm.com> (Pratik
-        Sampat's message of "Thu, 22 Jul 2021 13:23:33 +0530")
-Message-ID: <874kcmmkz4.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m6aXP-00CAcO-09;;;mid=<874kcmmkz4.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18bFDtghQbEVGy3Tkuyg3y6ZaCJ49dxbag=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4997]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Pratik Sampat <psampat@linux.ibm.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 387 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 11 (2.9%), b_tie_ro: 10 (2.6%), parse: 0.84
-        (0.2%), extract_message_metadata: 3.1 (0.8%), get_uri_detail_list:
-        1.23 (0.3%), tests_pri_-1000: 3.8 (1.0%), tests_pri_-950: 1.36 (0.4%),
-        tests_pri_-900: 1.02 (0.3%), tests_pri_-90: 80 (20.7%), check_bayes:
-        78 (20.2%), b_tokenize: 6 (1.6%), b_tok_get_all: 7 (1.8%),
-        b_comp_prob: 2.8 (0.7%), b_tok_touch_all: 59 (15.2%), b_finish: 0.90
-        (0.2%), tests_pri_0: 268 (69.4%), check_dkim_signature: 0.49 (0.1%),
-        check_dkim_adsp: 3.3 (0.8%), poll_dns_idle: 1.44 (0.4%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 6 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFD] Provide virtualized CPU system information for containers
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+        id S232627AbhGVOoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 10:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232465AbhGVOoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 10:44:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B10861029;
+        Thu, 22 Jul 2021 15:24:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626967476;
+        bh=D3DCd79KMbS6Af7mk2Jiy5QA+wt84B2YDIvpNYBuVqo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=p6OZugovV5VEUJEDP6fSHCOwSxm4LNgKXZ79Iyd2oRgRvVEmtGNL63JxLcaD9T5tQ
+         wU0998+H3c8n6jjep/bVikweNEs7NE5elVQOgy4t3VKxNwrZOsJyiO96A8MgmwfohX
+         m9uiMxpi6Yigi1871t5p6mfyOPWsZWeQJhgmmMxm7PmiPAFuSm7h6CNsoMeXELHQdb
+         gOezVmu6colPi4HZ4H5R8awdj+GnhZIWgLCDUFqAI6fFfTkVmyXY4OSmsY6Qs7a7fY
+         2wZTpZS1z1RIKBETxZmo8YVoYmvck6U9D/h+LkYMShiZLDbUVU/a3rs7e3Ii5ds8ZI
+         QODVjwg/WgjWQ==
+Date:   Fri, 23 Jul 2021 00:24:33 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH v2 1/2] tracing: Have histogram types be constant when
+ possible
+Message-Id: <20210723002433.8abeddba573035f0b7b21739@kernel.org>
+In-Reply-To: <20210722142837.280718447@goodmis.org>
+References: <20210722142705.992001628@goodmis.org>
+        <20210722142837.280718447@goodmis.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 22 Jul 2021 10:27:06 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-As stated I think this idea is a non-starter.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> Instead of kstrdup("const", GFP_KERNEL), have the hist_field type simply
+> assign the constant hist_field->type = "const"; And when the value passed
+> to it is a variable, use "kstrdup_const(var, GFP_KERNEL);" which will just
+> copy the value if the variable is already a constant. This saves on having
+> to allocate when not needed.
+> 
+> All frees of the hist_field->type will need to use kfree_const().
+> 
 
-There is a real problem that there are applications that have a
-legitimate need to know what cpu resources are available for them to use
-and we don't have a good interfaces for them to request that
-information.
+Thanks! This looks good to me.
 
-I think MESOS solved this by passing a MAX_CPUS environment variable,
-and at least the JVM was modified to use that variable.
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-That said as situations can be a bit more dynamic and fluid having
-something where an application can look and see what resources are
-available from it's view of the world seems reasonable.
 
-AKA we need something so applications can stop conflating physical
-cpu resources that are available with cpu resources that are allowed
-to be used in an application.
+> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_events_hist.c | 32 ++++++++++++++------------------
+>  1 file changed, 14 insertions(+), 18 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index 34325f41ebc0..5c9082201bc2 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -1589,7 +1589,9 @@ static void __destroy_hist_field(struct hist_field *hist_field)
+>  
+>  	kfree(hist_field->var.name);
+>  	kfree(hist_field->name);
+> -	kfree(hist_field->type);
+> +
+> +	/* Can likely be a const */
+> +	kfree_const(hist_field->type);
+>  
+>  	kfree(hist_field->system);
+>  	kfree(hist_field->event_name);
+> @@ -1646,9 +1648,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  	if (flags & HIST_FIELD_FL_HITCOUNT) {
+>  		hist_field->fn = hist_field_counter;
+>  		hist_field->size = sizeof(u64);
+> -		hist_field->type = kstrdup("u64", GFP_KERNEL);
+> -		if (!hist_field->type)
+> -			goto free;
+> +		hist_field->type = "u64";
+>  		goto out;
+>  	}
+>  
+> @@ -1662,7 +1662,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  		hist_field->fn = hist_field_log2;
+>  		hist_field->operands[0] = create_hist_field(hist_data, field, fl, NULL);
+>  		hist_field->size = hist_field->operands[0]->size;
+> -		hist_field->type = kstrdup(hist_field->operands[0]->type, GFP_KERNEL);
+> +		hist_field->type = kstrdup_const(hist_field->operands[0]->type, GFP_KERNEL);
+>  		if (!hist_field->type)
+>  			goto free;
+>  		goto out;
+> @@ -1671,18 +1671,14 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  	if (flags & HIST_FIELD_FL_TIMESTAMP) {
+>  		hist_field->fn = hist_field_timestamp;
+>  		hist_field->size = sizeof(u64);
+> -		hist_field->type = kstrdup("u64", GFP_KERNEL);
+> -		if (!hist_field->type)
+> -			goto free;
+> +		hist_field->type = "u64";
+>  		goto out;
+>  	}
+>  
+>  	if (flags & HIST_FIELD_FL_CPU) {
+>  		hist_field->fn = hist_field_cpu;
+>  		hist_field->size = sizeof(int);
+> -		hist_field->type = kstrdup("unsigned int", GFP_KERNEL);
+> -		if (!hist_field->type)
+> -			goto free;
+> +		hist_field->type = "unsigned int";
+>  		goto out;
+>  	}
+>  
+> @@ -1695,7 +1691,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  		flags |= HIST_FIELD_FL_STRING;
+>  
+>  		hist_field->size = MAX_FILTER_STR_VAL;
+> -		hist_field->type = kstrdup(field->type, GFP_KERNEL);
+> +		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
+>  		if (!hist_field->type)
+>  			goto free;
+>  
+> @@ -1708,7 +1704,7 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  	} else {
+>  		hist_field->size = field->size;
+>  		hist_field->is_signed = field->is_signed;
+> -		hist_field->type = kstrdup(field->type, GFP_KERNEL);
+> +		hist_field->type = kstrdup_const(field->type, GFP_KERNEL);
+>  		if (!hist_field->type)
+>  			goto free;
+>  
+> @@ -1794,7 +1790,7 @@ static int init_var_ref(struct hist_field *ref_field,
+>  		}
+>  	}
+>  
+> -	ref_field->type = kstrdup(var_field->type, GFP_KERNEL);
+> +	ref_field->type = kstrdup_const(var_field->type, GFP_KERNEL);
+>  	if (!ref_field->type) {
+>  		err = -ENOMEM;
+>  		goto free;
+> @@ -2163,7 +2159,7 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
+>  	expr->operands[0] = operand1;
+>  	expr->operator = FIELD_OP_UNARY_MINUS;
+>  	expr->name = expr_str(expr, 0);
+> -	expr->type = kstrdup(operand1->type, GFP_KERNEL);
+> +	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+>  	if (!expr->type) {
+>  		ret = -ENOMEM;
+>  		goto free;
+> @@ -2289,7 +2285,7 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+>  	expr->operands[1] = operand2;
+>  	expr->operator = field_op;
+>  	expr->name = expr_str(expr, 0);
+> -	expr->type = kstrdup(operand1->type, GFP_KERNEL);
+> +	expr->type = kstrdup_const(operand1->type, GFP_KERNEL);
+>  	if (!expr->type) {
+>  		ret = -ENOMEM;
+>  		goto free;
+> @@ -2677,10 +2673,10 @@ static struct hist_field *create_var(struct hist_trigger_data *hist_data,
+>  	var->var.hist_data = var->hist_data = hist_data;
+>  	var->size = size;
+>  	var->var.name = kstrdup(name, GFP_KERNEL);
+> -	var->type = kstrdup(type, GFP_KERNEL);
+> +	var->type = kstrdup_const(type, GFP_KERNEL);
+>  	if (!var->var.name || !var->type) {
+> +		kfree_const(var->type);
+>  		kfree(var->var.name);
+> -		kfree(var->type);
+>  		kfree(var);
+>  		var = ERR_PTR(-ENOMEM);
+>  	}
+> -- 
+> 2.30.2
 
-This might be as simple as implementing a /proc/self/cpus_available
-file.
 
-Without the will to go through find existing open source applications
-that care and update them so that they will use the new interface I
-don't think anything will really happen.
-
-The problem I see with changing existing interfaces that describe the
-hardware is that the definition becomes unclear and so different
-applications can legitimately expect different things, and it would
-become impossible to implement what is needed correctly.
-
-The problem I see with using cgroup interfaces is that they are not
-targeted at end user applications and but rather are targeted at the
-problem of controlling access to a resource.  Using them report what is
-available again gets you into the multiple master problem.  Especially
-as cgroups may not be the only thing in the system controlling access to
-your resource.
-
-So I really think the only good solution that people won't mind is to go
-through the applications figure out what information is legitimately
-needed from an application perspective, and build an interface tailored
-for applications to get that information.
-
-Then applications can be updated to use the new interface, and as the
-implementation of the system changes the implementation in the kernel
-can be updated to keep the applications working.
-
-Eric
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
