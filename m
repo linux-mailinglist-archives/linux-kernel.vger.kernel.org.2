@@ -2,165 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232C93D228C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BBF3D228E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhGVK0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 06:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        id S231607AbhGVKaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 06:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231721AbhGVK0v (ORCPT
+        with ESMTP id S231450AbhGVKaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 06:26:51 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33C5C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:07:22 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id v1so6274366edt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:07:22 -0700 (PDT)
+        Thu, 22 Jul 2021 06:30:05 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396FEC061575;
+        Thu, 22 Jul 2021 04:10:39 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id ee25so6283320edb.5;
+        Thu, 22 Jul 2021 04:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7dAEvhUeD66nUbNb/n9v7UyoUFPyD324CJ5HdOHQZfg=;
-        b=S4+nVujj4N6ZlzuMd4MpKyZ4gYEcwDkwwhMomn5ACtWX2G5UGq8ZsCjLX7M0vJzRt8
-         NMPz/XqoXhmplRLpXpsc9j2KE0D3rJa9BQA/j7Xz9i1bf7+iGOFQQHmW9S1oZ84ZRuZa
-         OfSOkQETUveh96SRmOsdQLnUj9qynBvrW7ds1cNKLadYIME4NwciK0PMkfe7XklymyZ3
-         Ov11shcrVJmGiW6f+G7iX3PDQQjdFBnqzwHzF5Mz4YgfkfcIknrVvqD9kidX5863AFas
-         WJVWqebr/MnmO+veAoYMUnUNc64Oa2XooAKwr/o9QCTL/PrTaTddQUEb49OdGIhE4GL0
-         gbaA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bB4VtmJFxxMk/xBdcOQ1aAgpkQfyBX7MX2ec1/1+iic=;
+        b=kS8N55z/Mvvyqlvp1E5NKwCjT4j99fk1wbSreQcjnCFZZsU7Bh5VqyE1wmM9X18znC
+         TMJnNpDiSyrcNnMiYG6Kggc97uaIFNHZlxaQIqMp2bHz4UUgGi7YGg9G18IEDxlH+ACC
+         wMhw7fE6DLlLZob+k8ZvVGvbTCyVUv5vErhRggVkfD9adlzkHza1sZUkUOFCuD0omtlr
+         hJT/jtngpCE+rIMfgocltP39U68xb+xt0KpHmHMbH8JLUQH/yNYRUqWStTVXeAhx/lvZ
+         ZmYS8iGhs9Df5x4d+InHU6Hxqgmqc9WgkjnFkCNXmtpznjNP2/eYi5l0mEIm+YgSUzrt
+         YkZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7dAEvhUeD66nUbNb/n9v7UyoUFPyD324CJ5HdOHQZfg=;
-        b=mldQbtLysMS1A9gwbLApvH01+5m3BcO3QCeckSB6hb46q3pfaNm/WOh/4qdYT3lT0O
-         QorDa33MwcBA/52cn7SkoS6htGKYOWezrLrMIu+iT3sKShSqD+P3oNn9I5qk45peh6vH
-         q+ExwiRzXI3Tp/uW+JPQevvtkUBEHMlIWw2f1Bx2Cq2NkZP+dgcgfjYDIkijYrFv0Wjt
-         e2fa8HZl8sVBJ6dV6dKLWOQF16iCR95zm1gT2K6qJMlBn0MNTeG3x6g15+C6wJy6YDpe
-         UgPk7+4hHPDxhiyW0sTSn8A7FtLrPOersixBHCvC56JYf6sNHtwUYP7cslg8Y+QoCVNc
-         Z8NA==
-X-Gm-Message-State: AOAM532qopb+Wd97FqlHjz6eCA51VGUXdqVe4WqTWyWW76QVeynAHi/v
-        6aJg4z/ZU2t5YquKVBUgLmA=
-X-Google-Smtp-Source: ABdhPJyLVoUg56zspewc06FlTOGX0INnj3disqADClQ5c5vRU/jcR3dt8Qp0OBAec0mIQQ33I9Epbg==
-X-Received: by 2002:a05:6402:1b06:: with SMTP id by6mr52743669edb.95.1626952041301;
-        Thu, 22 Jul 2021 04:07:21 -0700 (PDT)
-Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
-        by smtp.gmail.com with ESMTPSA id m3sm7671270edb.7.2021.07.22.04.07.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 04:07:20 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v3] x86/resctrl: Fix kernel-doc in rdtgroup.c
-Date:   Thu, 22 Jul 2021 13:07:15 +0200
-Message-Id: <20210722110715.8572-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bB4VtmJFxxMk/xBdcOQ1aAgpkQfyBX7MX2ec1/1+iic=;
+        b=mpnV11yxLolOigXJZeYdPUd+6rgsSJ14fBGd2XtDW5kh3zX0/QWcNybvfnXMgc8a4m
+         Kf9twkGaU+cVXf8CGrIVaKBBdfTWYoVvMVAYkaUU0TNM7Qgm85F0Vb/OtXGL5lO0dENc
+         Hh4u3AMrMso+sQgdC9UsseEApHZsiImfcXeTVOEVh7eJvJ9ypdLZYpWPdbc/lCngYY3r
+         qccJhNizoU5u0QnH0S6HPELViT7JoNUo4CpaY+NBo1GqjRhMVTRzRLplZphC4Xq3VIdx
+         dRiAcIgWmY8etNOWVdNFbD4J0Vx0kONreft8AloKduyWu+4nDicYNHovKd1tvRtl6qnq
+         NZqA==
+X-Gm-Message-State: AOAM530hnjhQ8cVtl8ihhzQ2GdOsBIVAsTzsmdxbvO2E7iIGytTARCBb
+        NgZ4xV/HB70/Ln6lIGbuiD4rIOKAOMV5sAHz68k=
+X-Google-Smtp-Source: ABdhPJxfnXX/pOEUxaSfYeYzP/ePzj4psI/hct4tmT+zwV5PstjA001Zgw8aamUPhp7zuqIJ4TTRbyX/Qbj5vJ+xi6Y=
+X-Received: by 2002:a05:6402:19a:: with SMTP id r26mr52960170edv.230.1626952237710;
+ Thu, 22 Jul 2021 04:10:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
+ <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
+ <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
+ <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
+ <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
+ <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at>
+In-Reply-To: <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Thu, 22 Jul 2021 16:40:26 +0530
+Message-ID: <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
+To:     Richard Weinberger <richard@nod.at>
+Cc:     Greg KH <greg@kroah.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description of undocumented parameters. Issues detected by
-scripts/kernel-doc.
+On Thu, 22 Jul 2021 at 02:24, Richard Weinberger <richard@nod.at> wrote:
+>
+> ----- Urspr=C3=BCngliche Mail -----
+> >> But let me advertise ubiblock a second time.
+> > Sorry, I could not understand about the ubiblock request. Is it
+> > possible to elaborate little more ?
+> > We are already using squashfs on top of our UBI volumes (including
+> > rootfs mounting).
+> > This is the kernel command line we pass:
+> > rootfstype=3Dsquashfs root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
+> > And CONFIG_MTD_UBI_BLOCK=3Dy is already enabled in our kernel.
+> > Do we need to do something different for ubiblock ?
+>
+> From that command line I understand that you are *not* using squashfs on =
+top of UBI.
+> You use mtdblock. ubiblock is a mechanism to turn an UBI volume into a re=
+ad-only
+> block device.
+> See: http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
+>
+Okay, you mean to say, we should use this ?
+ubi.mtd=3D5 ubi.block=3D0,0 root=3D/dev/ubiblock0_0
+Instead of this:
+root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
----
+Okay I will discuss this internally and check..
 
-v2 --> v3:
-Change the commit message by adding a "Reviewed-by" and remove a
-"Suggested-by" tag because its use is incorrect in this specific case.
+> >> If you place your squashfs on a UBI static volume, UBI knows the exact=
+ length
+> >> and you can checksum it
+> >> more easily.
+> > Yes, we use squashfs on UBI volumes, but our volume type is still dynam=
+ic.
+> > Also, you said, UBI knows the exact length, you mean the whole image le=
+ngth ?
+> > How can we get this length at runtime ?
+>
+> You need a static volume for that. If you update a static volume the leng=
+th is
+> known by UBI.
+>
+Thank you so much for your reply!
 
-v1 --> v2:
-Change some parameter descriptions according to the suggestions of
-Reinette Chatre.
+Sorry, I could not get this part. How static volume can give image len ?
+You mean there is some interface available in kernel to get actual image le=
+n ?
 
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+> > Also, how can we get the checksum of the entire UBI volume content
+> > (ignoring the erased/empty/bad block content) ?
+>
+> Just read from the volume. /dev/ubiX_Y.
+>
+I think this also will give the entire volume size, but we still don't know=
+ how
+many pages have real data ?
+For example:
+Suppose, my raw partition/volume is of size 10MB
+But my actual data inside it is of size ~3MB (may be split across?)
+Then, how can we get the actual size of the data content ?
+You mean to say: /dev/ubiX_Y should contain only data blocks ?
 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 01fd30e7829d..b51513661469 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -877,6 +877,9 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
- 
- /**
-  * rdt_bit_usage_show - Display current usage of resources
-+ * @of: pointer to opened "bit_usage" info file
-+ * @seq: seq_file used to format output to "bit_usage"
-+ * @v: unused pointer to void
-  *
-  * A domain is a shared resource that can now be allocated differently. Here
-  * we display the current regions of the domain as an annotated bitmask.
-@@ -888,6 +891,8 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
-  *   S - currently used and shareable by software only
-  *   E - currently used exclusively by one resource group
-  *   P - currently pseudo-locked by one resource group
-+ *
-+ * Return: 0
-  */
- static int rdt_bit_usage_show(struct kernfs_open_file *of,
- 			      struct seq_file *seq, void *v)
-@@ -1243,6 +1248,7 @@ bool rdtgroup_cbm_overlaps(struct rdt_resource *r, struct rdt_domain *d,
- 
- /**
-  * rdtgroup_mode_test_exclusive - Test if this resource group can be exclusive
-+ * @rdtgrp: resource group
-  *
-  * An exclusive resource group implies that there should be no sharing of
-  * its allocated resources. At the time this group is considered to be
-@@ -1283,7 +1289,12 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
- 
- /**
-  * rdtgroup_mode_write - Modify the resource group's mode
-+ * @of: pointer to opened "mode" file of a resource group
-+ * @buf: data from user-space
-+ * @nbytes: length of input data buffer
-+ * @off: unsupported offset to input
-  *
-+ * Return: @nbytes on success, <0 on failure
-  */
- static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
- 				   char *buf, size_t nbytes, loff_t off)
-@@ -1367,6 +1378,8 @@ static ssize_t rdtgroup_mode_write(struct kernfs_open_file *of,
-  *
-  * @cbm is unsigned long, even if only 32 bits are used to make the
-  * bitmap functions work correctly.
-+ *
-+ * Return: how many bytes of the cache are represented by @cbm.
-  */
- unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
- 				  struct rdt_domain *d, unsigned long cbm)
-@@ -1389,10 +1402,14 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resource *r,
- 
- /**
-  * rdtgroup_size_show - Display size in bytes of allocated regions
-+ * @of: pointer to opened "size" file of a resource group
-+ * @s: seq_file used to format output to "size"
-+ * @v: unused pointer to void
-  *
-  * The "size" file mirrors the layout of the "schemata" file, printing the
-  * size in bytes of each region instead of the capacity bitmask.
-  *
-+ * Return: 0 on success, <0 on failure
-  */
- static int rdtgroup_size_show(struct kernfs_open_file *of,
- 			      struct seq_file *s, void *v)
-@@ -2618,6 +2635,8 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
-  * resource group is initialized. The user can follow this with a
-  * modification to the CBM if the default does not satisfy the
-  * requirements.
-+ *
-+ * Return: A valid CBM, 0 if @_val is only 0 filled
-  */
- static u32 cbm_ensure_valid(u32 _val, struct rdt_resource *r)
- {
--- 
-2.32.0
-
+> > Or, you mean to say, the whole checksum logic is in-built inside the
+> > UBI layer and users don't need to worry about the integrity at all ?
+>
