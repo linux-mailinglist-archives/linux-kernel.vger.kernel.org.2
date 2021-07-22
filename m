@@ -2,135 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BBF3D228E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5183D228F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 13:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhGVKaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 06:30:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56418 "EHLO
+        id S231694AbhGVKaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 06:30:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231450AbhGVKaF (ORCPT
+        with ESMTP id S231628AbhGVKaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 06:30:05 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396FEC061575;
-        Thu, 22 Jul 2021 04:10:39 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id ee25so6283320edb.5;
-        Thu, 22 Jul 2021 04:10:39 -0700 (PDT)
+        Thu, 22 Jul 2021 06:30:13 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A8FC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:10:47 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id d2so5547424wrn.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 04:10:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bB4VtmJFxxMk/xBdcOQ1aAgpkQfyBX7MX2ec1/1+iic=;
-        b=kS8N55z/Mvvyqlvp1E5NKwCjT4j99fk1wbSreQcjnCFZZsU7Bh5VqyE1wmM9X18znC
-         TMJnNpDiSyrcNnMiYG6Kggc97uaIFNHZlxaQIqMp2bHz4UUgGi7YGg9G18IEDxlH+ACC
-         wMhw7fE6DLlLZob+k8ZvVGvbTCyVUv5vErhRggVkfD9adlzkHza1sZUkUOFCuD0omtlr
-         hJT/jtngpCE+rIMfgocltP39U68xb+xt0KpHmHMbH8JLUQH/yNYRUqWStTVXeAhx/lvZ
-         ZmYS8iGhs9Df5x4d+InHU6Hxqgmqc9WgkjnFkCNXmtpznjNP2/eYi5l0mEIm+YgSUzrt
-         YkZw==
+         :cc;
+        bh=+BbEYjJZrDMvVMU8Gk6ZZXnsglhpn/IFncHvu0fGydQ=;
+        b=dwSE7daosIqAIYrAg6zfool4qyV1Av+1/M71w7zKk1Q7KC7+ks3lA1z6zT65mf7I6C
+         wvkepV4WJgSNdJB5ApE8wMASfJm7BYkWCslG2YdS+g+/qfFdl3YlVGfGl4zIh636hjya
+         B9tHEjL7imZ/MEZ5MWpEg3Pnu76OprUuLZrrqG9KoR+iAtStpz+54ci+5g510O9ZcZTj
+         OCtL3tXvyrLATrlQ9z8pEIWlxXTdSAZC1LOMJV0ki8G3kGHI6JcLtmiiuO8MlI4AqG7l
+         ta6R5LkO9d2rTpcGpfTs+8a1Fq6/YkiR9HDJLlNIYCWexCHUFhkFc5hz09kauipJH574
+         gctA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bB4VtmJFxxMk/xBdcOQ1aAgpkQfyBX7MX2ec1/1+iic=;
-        b=mpnV11yxLolOigXJZeYdPUd+6rgsSJ14fBGd2XtDW5kh3zX0/QWcNybvfnXMgc8a4m
-         Kf9twkGaU+cVXf8CGrIVaKBBdfTWYoVvMVAYkaUU0TNM7Qgm85F0Vb/OtXGL5lO0dENc
-         Hh4u3AMrMso+sQgdC9UsseEApHZsiImfcXeTVOEVh7eJvJ9ypdLZYpWPdbc/lCngYY3r
-         qccJhNizoU5u0QnH0S6HPELViT7JoNUo4CpaY+NBo1GqjRhMVTRzRLplZphC4Xq3VIdx
-         dRiAcIgWmY8etNOWVdNFbD4J0Vx0kONreft8AloKduyWu+4nDicYNHovKd1tvRtl6qnq
-         NZqA==
-X-Gm-Message-State: AOAM530hnjhQ8cVtl8ihhzQ2GdOsBIVAsTzsmdxbvO2E7iIGytTARCBb
-        NgZ4xV/HB70/Ln6lIGbuiD4rIOKAOMV5sAHz68k=
-X-Google-Smtp-Source: ABdhPJxfnXX/pOEUxaSfYeYzP/ePzj4psI/hct4tmT+zwV5PstjA001Zgw8aamUPhp7zuqIJ4TTRbyX/Qbj5vJ+xi6Y=
-X-Received: by 2002:a05:6402:19a:: with SMTP id r26mr52960170edv.230.1626952237710;
- Thu, 22 Jul 2021 04:10:37 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=+BbEYjJZrDMvVMU8Gk6ZZXnsglhpn/IFncHvu0fGydQ=;
+        b=TMmZTbMYQ+6tdgLYlp+03mTYiJGhKJqVN/7Ip9CLJbtkjuQIi76SV7Hywx67FfkRG/
+         qt28qClDaHxm2RuZ0pr+2z1N9nTnTGKXefX8OKDnDoiUKB0Q+VhIzu8GM6wzAaTEMfEz
+         dmxmoTN2zt3T6B81wDsQXkHNq711WOI8ShU/IK70KFINRIz4mgr2KuKRHwjdM476Zwnm
+         3rJv3VAfGkw07Wh1soo99VNo8vuyeTBEAzTrFUtosAHN6DGWteioNcBCg8z1uaU5rrpl
+         2APK0qUXoMeSmMh8moS6oX9G9cPutf8tECVq/kKqZgq9UXXMolf1lBmFbLN24vgxPBCX
+         7d8A==
+X-Gm-Message-State: AOAM533NxQV9cMYo8aaHyIQvwuJKWNZF+FaOmU84PtAmEhof1Oac6ile
+        hMeQx1760di4ufTGj2XXQoUP1tXWMpfmvbcWA2kAPQ==
+X-Google-Smtp-Source: ABdhPJwWnzl/vvtrpZNDGt12uO9nxNx15w3I8z53H5T1+Rtm/pEgI7ux1/XG3alF95NgDGAbjNhXo5AR0bbcINTVsP4=
+X-Received: by 2002:adf:f949:: with SMTP id q9mr46150136wrr.178.1626952246441;
+ Thu, 22 Jul 2021 04:10:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
- <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
- <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
- <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
- <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
- <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at>
-In-Reply-To: <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Thu, 22 Jul 2021 16:40:26 +0530
-Message-ID: <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
-Subject: Re: MTD: How to get actual image size from MTD partition
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Greg KH <greg@kroah.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>
+References: <20210721090706.21523-1-james.clark@arm.com> <20210721090706.21523-3-james.clark@arm.com>
+In-Reply-To: <20210721090706.21523-3-james.clark@arm.com>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Thu, 22 Jul 2021 12:10:35 +0100
+Message-ID: <CAJ9a7Viap53OgrM2e_DU4+oymFB41jspbKbvEVFQWROt7ifuXw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] perf cs-etm: Initialise architecture based on TRCIDR1
+To:     James Clark <james.clark@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Al Grant <al.grant@arm.com>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 at 02:24, Richard Weinberger <richard@nod.at> wrote:
->
-> ----- Urspr=C3=BCngliche Mail -----
-> >> But let me advertise ubiblock a second time.
-> > Sorry, I could not understand about the ubiblock request. Is it
-> > possible to elaborate little more ?
-> > We are already using squashfs on top of our UBI volumes (including
-> > rootfs mounting).
-> > This is the kernel command line we pass:
-> > rootfstype=3Dsquashfs root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
-> > And CONFIG_MTD_UBI_BLOCK=3Dy is already enabled in our kernel.
-> > Do we need to do something different for ubiblock ?
->
-> From that command line I understand that you are *not* using squashfs on =
-top of UBI.
-> You use mtdblock. ubiblock is a mechanism to turn an UBI volume into a re=
-ad-only
-> block device.
-> See: http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
->
-Okay, you mean to say, we should use this ?
-ubi.mtd=3D5 ubi.block=3D0,0 root=3D/dev/ubiblock0_0
-Instead of this:
-root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
+HI James
 
-Okay I will discuss this internally and check..
+On Wed, 21 Jul 2021 at 10:07, James Clark <james.clark@arm.com> wrote:
+>
+> Currently the architecture is hard coded as ARCH_V8, but with the
+> introduction of ETE we want to pick ARCH_AA64. And this change is also
+> applicable to ETM v4.4 onwards as well.
+>
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> index 30889a9d0165..5972a8afcc6b 100644
+> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> @@ -126,6 +126,18 @@ static int cs_etm_decoder__gen_etmv3_config(struct cs_etm_trace_params *params,
+>         return 0;
+>  }
+>
+> +#define TRCIDR1_TRCARCHMIN_SHIFT 4
+> +#define TRCIDR1_TRCARCHMIN_MASK  GENMASK(7, 4)
+> +#define TRCIDR1_TRCARCHMIN(x)    (((x) & TRCIDR1_TRCARCHMIN_MASK) >> TRCIDR1_TRCARCHMIN_SHIFT)
+> +static enum _ocsd_arch_version cs_etm_decoder__get_arch_ver(u32 reg_idr1)
+> +{
+> +       /*
+> +        * If the ETM trace minor version is 4 or more then we can assume
+> +        * the architecture is ARCH_AA64 rather than just V8
+> +        */
+> +       return TRCIDR1_TRCARCHMIN(reg_idr1) >= 4 ? ARCH_AA64 : ARCH_V8;
+> +}
 
-> >> If you place your squashfs on a UBI static volume, UBI knows the exact=
- length
-> >> and you can checksum it
-> >> more easily.
-> > Yes, we use squashfs on UBI volumes, but our volume type is still dynam=
-ic.
-> > Also, you said, UBI knows the exact length, you mean the whole image le=
-ngth ?
-> > How can we get this length at runtime ?
->
-> You need a static volume for that. If you update a static volume the leng=
-th is
-> known by UBI.
->
-Thank you so much for your reply!
+This is true for ETM4.x & ETE 1.x (arch 5.x) but not ETM 3.x
+Probably need to beef up this comment or the function name to emphasise this.
 
-Sorry, I could not get this part. How static volume can give image len ?
-You mean there is some interface available in kernel to get actual image le=
-n ?
+Also only true because we don't currently support AArch32 builds of
+the ETM4.x driver.
 
-> > Also, how can we get the checksum of the entire UBI volume content
-> > (ignoring the erased/empty/bad block content) ?
->
-> Just read from the volume. /dev/ubiX_Y.
->
-I think this also will give the entire volume size, but we still don't know=
- how
-many pages have real data ?
-For example:
-Suppose, my raw partition/volume is of size 10MB
-But my actual data inside it is of size ~3MB (may be split across?)
-Then, how can we get the actual size of the data content ?
-You mean to say: /dev/ubiX_Y should contain only data blocks ?
+Regards
 
-> > Or, you mean to say, the whole checksum logic is in-built inside the
-> > UBI layer and users don't need to worry about the integrity at all ?
+Mike
+
+> +
+>  static void cs_etm_decoder__gen_etmv4_config(struct cs_etm_trace_params *params,
+>                                              ocsd_etmv4_cfg *config)
+>  {
+> @@ -140,7 +152,7 @@ static void cs_etm_decoder__gen_etmv4_config(struct cs_etm_trace_params *params,
+>         config->reg_idr11 = 0;
+>         config->reg_idr12 = 0;
+>         config->reg_idr13 = 0;
+> -       config->arch_ver = ARCH_V8;
+> +       config->arch_ver = cs_etm_decoder__get_arch_ver(params->etmv4.reg_idr1);
+>         config->core_prof = profile_CortexA;
+>  }
 >
+> --
+> 2.28.0
+>
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
