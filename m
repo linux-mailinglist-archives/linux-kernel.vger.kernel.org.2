@@ -2,106 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7D53D2CDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA4D3D2CE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhGVS5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:57:39 -0400
-Received: from mail-qt1-f171.google.com ([209.85.160.171]:34317 "EHLO
-        mail-qt1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhGVS5i (ORCPT
+        id S230153AbhGVS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229585AbhGVS6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:57:38 -0400
-Received: by mail-qt1-f171.google.com with SMTP id a19so169253qtx.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:38:12 -0700 (PDT)
+        Thu, 22 Jul 2021 14:58:43 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A58DC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:39:17 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id f4so3951601vsh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:39:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7DaVr1b+362zLHRUtuZLZIEuCblGBWwhIVXIOpe6r18=;
+        b=E9UJpR1xCvFg+26nePCbhu6whpQ1S2faC1XeQjKjs2M4cQuCD/CfuhVabZeCMig8Ic
+         7lJ1+i3oiebnYl73I6pOPo9dFsbHvegCw+YLJJI3eRgR7bT8cT7sc63ZGbb6t/f7yGGY
+         PZhmGUFVL4aVgVku8JaRxteb2It6hQfqIqMgcFiPZ4vpsXFWtTrU91ZDtffUoOtQuQnu
+         1pofr1Oehud3HfnGwGWiaKguFZFXEvheKlMIph87Qy4yaLa/OcxsZLIS7/VS2EVEGrEa
+         AccCpgh/iRiVzlwfWdbNAf5Kcu8q/APnC1CHiLo1FiNqgAUKWK7T3uhYoTQtdVkvWNTk
+         Tukg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rrCcO1rl/jimbgMioNh66hv+GfxnblGwSC/dwoJZl/s=;
-        b=OR/C64J/BNamjqzxHfBvIO2o3AHRiFnk2SHRnkrrc7nT+wLWnOdgvojugXh7DVLUv2
-         A+bJ9g7NXYIt3Rgw13/ato+fl0tSj+F0vqDhs5A0UeEN8VlUBIb/CGmgibXuEZuhCS9M
-         /KqQCsC5lV+ImU7YIe07/AAWxdVpO+rPem7Xj1T7QqRcKNsfG5J3vMvPif8m/xf2OuKI
-         Fr56XY3bYLA8b39bTMdtEhmrfhvRGU8bZd3VTZRJ8X23LYu5+3XoImDXlg3SF7LmQJsV
-         YOUiD7dXAoF4mztopz6Kdy2k8TaCgWuBD25+0GOAFsBv58Ykn79oRxPtE5i+d7mnTVvT
-         nl6A==
-X-Gm-Message-State: AOAM530sUleCP1QFskhcH3bj/zxkxIOV1lCaqj/Rrk9xlGUlmpYyCU5p
-        bcpQTp3aPSOcS5i4Zu86TgvENciC3L8=
-X-Google-Smtp-Source: ABdhPJx5qj+DaNvMQT8WrJ8PmQFXGK4/ppx84uxOpgh8MYadnF2KiYSIDvjN/Vzb+kWp+el37R+aFg==
-X-Received: by 2002:ac8:45cf:: with SMTP id e15mr1110647qto.347.1626982692166;
-        Thu, 22 Jul 2021 12:38:12 -0700 (PDT)
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com. [209.85.160.177])
-        by smtp.gmail.com with ESMTPSA id t14sm5741061qkm.7.2021.07.22.12.38.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 12:38:11 -0700 (PDT)
-Received: by mail-qt1-f177.google.com with SMTP id w10so154734qtj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:38:10 -0700 (PDT)
-X-Received: by 2002:ac8:7c44:: with SMTP id o4mr1090841qtv.191.1626982690807;
- Thu, 22 Jul 2021 12:38:10 -0700 (PDT)
+        bh=7DaVr1b+362zLHRUtuZLZIEuCblGBWwhIVXIOpe6r18=;
+        b=YCl3nuh4EEC1u3ywekyRgVklQ3vTNvBeiBi2Cz0AE/Y0j5U/VCL76Zazrr+4qZk4jX
+         /EaYrsMRjjKGwzLvLKRV6x7sAXPt5QqZ68WeVzxIFKy5AFUEBR45vOLEiEyWwDvc8qHd
+         lAE/VJvWFp0qjBXeaTYZ0gi/91IP6VYxQNtVvfS6Lt775aUWnBhOSmH7ckQ6fEdBnoo+
+         RAJLyjOZ9gtDJt1eDcdprmPjKQnVcgtMT9JlaDIsRA2bRelN0N4u19JlEP3lQKi7FQu6
+         A/VFB9fuDXCo4Cjc/DmkeZSK6eW9GeJY3O658xkmPsmw+T60HlzoplwvujfCM5L3FwyP
+         CD/w==
+X-Gm-Message-State: AOAM531OzftqNuNgs/VBwlKT8PzggLys27rLGkS64JhkCPtxalJuYXqe
+        +972ECp3LBmvs47ni25m/9iuRYZ6tZ4krkbrKa4=
+X-Google-Smtp-Source: ABdhPJw/yqiQRbpZShbSgJJ85ur28nDK8fzSieBMoS3NJdzzjfJU48Ac+fZV56n+164BXuIYpx6m3n8dXqqdcQMGm+g=
+X-Received: by 2002:a67:fdc2:: with SMTP id l2mr1969758vsq.7.1626982756301;
+ Thu, 22 Jul 2021 12:39:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210705111250.1513634-1-fido_max@inbox.ru> <CADRPPNRYDBFHEppfpYLwsy7MMEdtsOLS764MJboL9ERW0-KK3Q@mail.gmail.com>
- <ec981260-fbe3-5cc4-1da3-dfb2f70f8f85@inbox.ru>
-In-Reply-To: <ec981260-fbe3-5cc4-1da3-dfb2f70f8f85@inbox.ru>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Thu, 22 Jul 2021 14:37:59 -0500
-X-Gmail-Original-Message-ID: <CADRPPNST8XRhO5yR7p8pSbbJCO7xwhF2W3WZ7R=63mTET+fAdA@mail.gmail.com>
-Message-ID: <CADRPPNST8XRhO5yR7p8pSbbJCO7xwhF2W3WZ7R=63mTET+fAdA@mail.gmail.com>
-Subject: Re: [PATCH] soc: fsl: qe: convert QE interrupt controller to platform_device
-To:     Maxim Kochetkov <fido_max@inbox.ru>
-Cc:     saravanak@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Zhao Qiang <qiang.zhao@nxp.com>
+References: <20210714175138.319514-1-jim.cromie@gmail.com> <20210714175138.319514-4-jim.cromie@gmail.com>
+ <YPbPvm/xcBlTK1wq@phenom.ffwll.local>
+In-Reply-To: <YPbPvm/xcBlTK1wq@phenom.ffwll.local>
+From:   jim.cromie@gmail.com
+Date:   Thu, 22 Jul 2021 15:38:50 -0400
+Message-ID: <CAJfuBxxFL7bsuyFy6M4LK1QgvR0+0yt_DJQNjY=xMi36FU8jMA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] drm/print: RFC add choice to use dynamic debug in drm-debug
+To:     Jim Cromie <jim.cromie@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, Jason Baron <jbaron@akamai.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 1:57 AM Maxim Kochetkov <fido_max@inbox.ru> wrote:
->
-> 15.07.2021 01:29, Li Yang wrote:
-> >  From the original code, this should be type = "qeic".  It is not
-> > defined in current binding but probably needed for backward
-> > compatibility.
->
-> I took these strings from this part:
->
->         np = of_find_compatible_node(NULL, NULL, "fsl,qe-ic");
->
->         if (!np) {
->
->                 np = of_find_node_by_type(NULL, "qeic");
->
->                 if (!np)
->
->                         return -ENODEV;
->
->         }
->
-> However I can't find usage of "qeic" in any dts, so I will drop this in V2
+Thanks for the feedback!
 
-It is really a bit hard to find as it is pretty old.  But it was
-really used up until this commit below in 2008.  So probably it will
-be better to keep it just for backward compatibility?
 
-commit a2dd70a11d4c9cb8a4e4bb41f53a9b430e08559b
-Author: Anton Vorontsov <avorontsov@ru.mvista.com>
-Date:   Thu Jan 24 18:39:59 2008 +0300
+On Tue, Jul 20, 2021 at 9:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, Jul 14, 2021 at 11:51:36AM -0600, Jim Cromie wrote:
+> > drm's debug system uses distinct categories of debug messages, encoded
+> > in an enum (DRM_UT_<CATEGORY>), which are mapped to bits in drm.debug.
+> > drm_debug_enabled() does a lot of unlikely bit-mask checks on
+> > drm.debug; we can use dynamic debug instead, and get all that
+> > static_key/jump_label goodness.
+> >
+> > Dynamic debug has no concept of category, but we can map the DRM_UT_*
+> > to a set of distinct prefixes; "drm:core:", "drm:kms:" etc, and
+> > prepend them to the given formats.
+> >
+> > Then we can use:
+> >   `echo module drm format ^drm:core: +p > control`
+> >
+> > to enable every such "prefixed" pr_debug with one query.  This new
+> > prefix changes pr_debug's output, so is user visible, but it seems
+> > unlikely to cause trouble for log watchers; they're not relying on the
+> > absence of class prefix strings.
+> >
+> > This conversion yields ~2100 new callsites on my i7/i915 laptop:
+> >
+> >   dyndbg: 195 debug prints in module drm_kms_helper
+> >   dyndbg: 298 debug prints in module drm
+> >   dyndbg: 1630 debug prints in module i915
+> >
+> > CONFIG_DRM_USE_DYNAMIC_DEBUG enables this, and is available if
+> > CONFIG_DYNAMIC_DEBUG or CONFIG_DYNAMIC_DEBUG_CORE is chosen, and if
+> > CONFIG_JUMP_LABEL is enabled; this because its required to get the
+> > promised optimizations.
+> >
+> > The indirection/switchover is layered into the macro scheme:
+> >
+> > 0. A new callback on drm.debug which calls dynamic_debug_exec_queries
+> >    to map those bits to specific query/commands
+> >    dynamic_debug_exec_queries("format ^drm:kms: +p", "drm*");
+> >    here for POC, this should be in dynamic_debug.c
+> >    with a MODULE_PARAM_DEBUG_BITMAP(__drm_debug, { "prefix-1", "desc-1" }+)
+>
+> This is really awesome. For merging I think we need to discuss with dyn
+> debug folks whether they're all ok with this, but it's exported already
+> should should be fine.
+>
 
-    [POWERPC] QE: get rid of most device_types and model
+Yay.  FWIW, Im to blame for that export, with this use case in mind.
+That said, I dont know if that macro can be written as I described,
+but if not, then { BIT(0), "prefix-0", "description-0" }, { BIT(1)
+.... } should work.
+If its been done elsewhere, Id copy it, or imitate it.
 
-    Now we're searching for "fsl,qe", "fsl,qe-muram", "fsl,qe-muram-data"
-    and "fsl,qe-ic".
 
-    Unfortunately it's still impossible to remove device_type = "qe"
-    from the existing device trees because older u-boots are looking for it.
 
-    Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
-    Signed-off-by: Kumar Gala <galak@kernel.crashing.org>
 
-Regards,
-Leo
+
+> >
+> > 1. A "converted" or "classy" DRM_UT_* map
+> >
+> >    based on:   DRM_UT_* ( symbol => bit-mask )
+> >    named it:  cDRM_UT_* ( symbol => format-class-prefix-string )
+> >
+> >    So cDRM_UT_* is either:
+> >    legacy: cDRM_UT_* <-- DRM_UT_*   ( !CONFIG_DRM_USE_DYNAMIC_DEBUG )
+> >    enabled:
+> >     #define cDRM_UT_KMS    "drm:kms: "
+> >     #define cDRM_UT_PRIME  "drm:prime: "
+> >     #define cDRM_UT_ATOMIC "drm:atomic: "
+>
+> the cDRM looks a bit funny, plus I don't eve have an idea what _UT_ means
+> (and git history isn't helpful either). What about just using
+> DRM_DBG_CLASS_ as the prefix here for these indirection macros, i.e.
+> DRM_DBG_CLASS_KMS.
+>
+
+yes.
+
+
+> Also would be really nice if we could make these a table or something, but
+> I guess with the macro magic that's not possible.
+>
+
+not obvious to me, I'll watch for an opportunity.
+
+> >
+> >    DRM_UT_* are unchanged, since theyre used in drm_debug_enabled()
+> >    and elsewhere.
+>
+> I think for the production version of these we need to retire/deprecate
+> them, at least for drm core. Otherwise you have an annoying mismatch
+> between drm.debug module option and dyn debug.
+>
+
+I will look at renaming it :  __drm_debug_enabled
+and making a macro for the old name.
+so enabled, it would end up like
+if (unlikely(1) && ... )
+
+drivers/gpu/drm/drm_atomic_uapi.c
+1457: if (drm_debug_enabled(DRM_UT_STATE))
+
+drivers/gpu/drm/drm_dp_mst_topology.c
+1358: if (unlikely(ret == -EIO) && drm_debug_enabled(DRM_UT_DP)) {
+2875: if (unlikely(ret) && drm_debug_enabled(DRM_UT_DP)) {
+2919: if (drm_debug_enabled(DRM_UT_DP)) {
+
+
+> >
+> > 2. drm_dev_dbg & drm_debug are renamed (prefixed with '_')
+> >
+> >    old names are now macros, calling either:
+> >      legacy:  -> to renamed fn
+> >      enabled: -> dev_dbg & pr_debug, with cDRM-prefix # format.
+> >
+> >    these names are used in a fat layer of macros (3) which supply the
+> >    category; those macros are used throughout drm code, yielding the
+> >    ~2100 new prdbgs reported above.
+> >
+> > 3. names in (2) are invoked by DRM_DEBUG_<Category>, drm_dbg_<Category>.
+> >
+> >    all these macros get "converted" to use cDRM_UT_*
+> >    to get right token type for both !/!! DRM_USE_DYNAMIC_DEBUG
+> >
+> > 4. simplification of __DRM_DEFINE_DBG_RATELIMITED macro
+> >
+> >    remove DRM_UT_ ## KMS as extra indirection
+> >    pass both DRM_UT & cDRM_UT, for drm_debug_enabled & drm_dev_dbg
+>
+> For merging, can we pull out the renames and reorgs from this patch, and
+> then maybe also the reorder the next patch in your series here to be
+> before the dyn debug stuff?
+>
+
+I will drop the 4. RATELIMITED tweaks.
+FWIW, I have semi-working code to implement rate limiting
+in dynamic debug, controlled by `+r > control`
+which would touch this anyway.
+
+wrt reordering 4/5, can you clarify ?
+the i915 changes are 1/2 POC, so I'll assume you mean after getting 0.
+into dyndbg
+
+> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> > ---
+> >  drivers/gpu/drm/Kconfig     |  13 +++++
+> >  drivers/gpu/drm/drm_print.c |  75 ++++++++++++++++++++++++--
+> >  include/drm/drm_print.h     | 102 ++++++++++++++++++++++++++----------
+> >  3 files changed, 158 insertions(+), 32 deletions(-)
+>
+> I really like this, I think you can drop the RFC. A few more things that I
+> think we need:
+>
+> - An overview kerneldoc section which explains the interfaces and how it
+>   all works together. Essentially your commit message with some light
+>   markup to make it look good.
+
+into include/drm/drm_print.h ?
+
+>
+> - I think it would be really good to review the driver docs for all this
+>   and make sure it's complete. Some of the interface functions aren't
+>   documented yet (or maybe the ones that drivers shouldn't used need more
+>   __ prefixes to denote them as internal, dunno).
+>
+
+I will look, but I dont have the experience here to make these
+qualitative judgements
+
+Also, I renamed drm_dev_dbg to _drm_dev_dbg, with a single underscore.
+I'm now thinking this is reserved, and __ prefix is better (legal)
+This isnt quite the same is lower-level implementation detail,
+since it adds a CONFIG dependent alternative impl.
+But I'll do this unless you have a better name
+
+> - I guess deprecation notice for drm_debug_enabled() and all that, so that
+>   we have a consistent interface. Doing the conversion will probably
+>   highlight the need for a bit more infrastructure and tooling, e.g. the
+>   bigger dump functions (like edid hex dump, or also the various decode
+>   helpers we have for dp, hdmi infoframes and all that) ideally have a
+>   single dyn_debug label to enable all of them instead of line-by-line.
+>   Tbh no idea how this should work, might need dyndbg work too.
+>
+
+macrofying drm_debug_enabled()  might work for this set.
+possibly with different prefixes,  forex: "drmx:*"  or "drm:misc:"
+
+> - For the driver side of this we probably want a
+>   Documentation/gpu/TODO.rst entry if it's not all easy to convert
+>   directly.
+
+so there are 32 uses of drm_debug_enabled(DRM_UT_*)
+and just 1 used in drm_dev_dbg    (with category as arg)
+I'll try to macrofy it, see if it will handle the 32 cases.
+
+>
+> >
+> > diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> > index 7ff89690a976..e4524ccba040 100644
+> > --- a/drivers/gpu/drm/Kconfig
+> > +++ b/drivers/gpu/drm/Kconfig
+> > @@ -57,6 +57,19 @@ config DRM_DEBUG_MM
+> >
+> >         If in doubt, say "N".
+> >
+> > +config DRM_USE_DYNAMIC_DEBUG
+> > +     bool "use dynamic debug to implement drm.debug"
+> > +     default n
+> > +     depends on DRM
+> > +     depends on DYNAMIC_DEBUG || DYNAMIC_DEBUG_CORE
+> > +     depends on JUMP_LABEL
+> > +     help
+> > +       The drm debug category facility does a lot of unlikely bit-field
+> > +       tests at runtime; while cheap individually, the cost accumulates.
+> > +       This option uses dynamic debug facility (if configured and
+> > +       using jump_label) to avoid those runtime checks, patching
+> > +       the kernel when those debugs are desired.
+>
+> Can't we just make this an internal option that's enabled automatically
+> when dyndbg is around? Plus a comment somewhere that we really recommend
+> enabling dyndbg for drm. Or would this mean that in certain dyndbg
+> configurations we'd loose all the debug lines, which would suck?
+>
+
+We could indeed, I took the cautious approach.
+keeping the CONFIG simplifies comparing DRM_USE_DD=y/n builds,
+and changing default later is easy, and probably should have some numbers
+about instructions saved and obj size increase.
+
+
+> Anyway there's a pile of details, but the big picture I really like.
+> Especially that we can make dyndbg seamlessly support drm.debug is really
+> nice.
+>
+> Cheers, Daniel
+>
+
+thanks, Jim
