@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48993D2522
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E8B3D2524
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhGVNYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:24:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37780 "EHLO mail.kernel.org"
+        id S232284AbhGVNZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:25:09 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:40392 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232198AbhGVNYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:24:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE4366128A;
-        Thu, 22 Jul 2021 14:05:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626962705;
-        bh=HQV3ltpdioq332rYU8MEJmqXRNGg6NdmH1xEjz8aR4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z7JSVXsi1oU841lt24JeiDTQzvl9R/UX0GUoun33l7BcsCE6FDp3IqesLm5iMAfMX
-         Ahu+uU8fAbUpCSmpLlshrTyp0eN6rwFjrf6NAiqJwOqH2KP7jiJuC+he6eVvqtztXO
-         1OeTb0yRjxr51xP50yrlhmApOo3y29Kq/d8bKPmU=
-Date:   Thu, 22 Jul 2021 16:05:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, stable <stable@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Igor Raits <igor@gooddata.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH stable 5.10.y 0/2] mm/thp: Fix uffd-wp with fork(); crash
- on pmd migration entry on fork
-Message-ID: <YPl7DgqTFzMNNcZA@kroah.com>
-References: <796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com>
- <20210720155657.499127-1-peterx@redhat.com>
- <CANsGZ6a6DxnviD3ZPoHCXEEktXguOjNxPuUjjh=v8h0xD3bhvQ@mail.gmail.com>
+        id S232198AbhGVNZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:25:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=9I5Yn7jbTPFxeXXmcV2hyvn+AXm6wM45iGZ04yQBfXQ=; b=bMKIeQtSLgDOkvicAxFY0sKlS4
+        kF+iLqp2nfKqlyFO6hmC2k/RqoQ+vBpSIKd++M/TYjDiN7E49QOmRyGFcbSsFCt4Guu9TJFKD1DUB
+        XkPjjIh1GtXMizQwobvTW6tsqSIkVX6pMC5b5AT3YDYckq1fzHtTFdcnNJAyuNUcG+sw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m6ZKQ-00EL32-0X; Thu, 22 Jul 2021 16:05:34 +0200
+Date:   Thu, 22 Jul 2021 16:05:33 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-omap@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 net-next 1/1] net: ethernet: ti: cpsw: allow MTU >
+ 1500 when overridden by module parameter
+Message-ID: <YPl7LdLMMTmhSu1z@lunn.ch>
+References: <20210721210538.22394-1-colin.foster@in-advantage.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANsGZ6a6DxnviD3ZPoHCXEEktXguOjNxPuUjjh=v8h0xD3bhvQ@mail.gmail.com>
+In-Reply-To: <20210721210538.22394-1-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 01:38:53PM -0700, Hugh Dickins wrote:
-> On Tue, Jul 20, 2021 at 8:57 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > In summary, this series should be needed for 5.10/5.12/5.13. This is the 5.10.y
-> > backport of the series.  Patch 1 is a dependency of patch 2, while patch 2
-> > should be the real fix.
-> >
-> > There's a minor conflict on patch 2 when cherry pick due to not having the new
-> > helper called page_needs_cow_for_dma().  It's also mentioned at the entry of
-> > patch 2.
-> >
-> > This series should be able to fix a rare race that mentioned in thread:
-> >
-> > https://lore.kernel.org/linux-mm/796cbb7-5a1c-1ba0-dde5-479aba8224f2@google.com/
-> >
-> > This fact wasn't discovered when the fix got proposed and merged, because the
-> > fix was originally about uffd-wp and its fork event.  However it turns out that
-> > the problematic commit b569a1760782f3d is also causing crashing on fork() of
-> > pmd migration entries which is even more severe than the original uffd-wp
-> > problem.
-> >
-> > Stable kernels at least on 5.12.y has the crash reproduced, and it's possible
-> > 5.13.y and 5.10.y could hit it due to having the problematic commit
-> > b569a1760782f3d but lacking of the uffd-wp fix patch (8f34f1eac382, which is
-> > also patch 2 of this series).
-> >
-> > The pmd entry crash problem was reported by Igor Raits <igor@gooddata.com> and
-> > debugged by Hugh Dickins <hughd@google.com>.
-> >
-> > Please review, thanks.
+On Wed, Jul 21, 2021 at 02:05:38PM -0700, Colin Foster wrote:
+> The module parameter rx_packet_max can be overridden at module load or
+> boot args. But it doesn't adjust the max_mtu for the device accordingly.
 > 
-> And these two for 5.10.y look good to me also: I'm glad you decided in
-> the end to keep 5.10's support for uffd-wp-fork.
-> The first is just a straight cherry-pick of
-> 5fc7a5f6fd04bc18f309d9f979b32ef7d1d0a997, but as you noted above,
-> 8f34f1eac3820fc2722e5159acceb22545b30b0d needed one line of fixup for
-> that tree.
+> If a CPSW device is to be used in a DSA architecture, increasing the
+> MTU by small amounts to account for switch overhead becomes necessary.
+> This way, a boot arg of cpsw.rx_packet_max=1600 should allow the MTU
+> to be increased to values of 1520, which is necessary for DSA tagging
+> protocols like "ocelot" and "seville".
 
-All now queued up, thanks.
+Hi Colin
 
-greg k-h
+As far as your patch goes, it makes sense.
+
+However, module parameters are unlikely by netdev maintainers. Having
+to set one in order to make DSA work is not nice. What is involved in
+actually removing the module parameter and making the MTU change work
+without it?
+
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> ---
+>  drivers/net/ethernet/ti/cpsw.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
+> index c0cd7de88316..d400163c4ef2 100644
+> --- a/drivers/net/ethernet/ti/cpsw.c
+> +++ b/drivers/net/ethernet/ti/cpsw.c
+> @@ -1625,6 +1625,14 @@ static int cpsw_probe(struct platform_device *pdev)
+>  		goto clean_cpts;
+>  	}
+>  
+> +	/* adjust max_mtu to match module parameter rx_packet_max */
+> +	if (cpsw->rx_packet_max > CPSW_MAX_PACKET_SIZE) {
+> +		ndev->max_mtu = ETH_DATA_LEN + (cpsw->rx_packet_max -
+> +				CPSW_MAX_PACKET_SIZE);
+> +		dev_info(dev, "overriding default MTU to %d\n\n",
+> +			 ndev->max_mtu);
+
+There is no need for dev_info(). You could consider dev_dbg(), or just
+remove it.
+
+       Andrew
