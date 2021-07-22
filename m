@@ -2,180 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982743D2205
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107E83D220D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhGVJjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:39:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59666 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231355AbhGVJjK (ORCPT
+        id S231646AbhGVJoy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Jul 2021 05:44:54 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7414 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231534AbhGVJoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 05:39:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626949185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UfSu3uIp392jCxR+c88j2xDyWu7I7n++pa2vgNqBSgY=;
-        b=GYiGXNW0v142rXAiX11WAukEaw6HxLNFFbjD3L2c4xInKDNeJgnI6bwB7VmOp0zZc6Kwvr
-        4a9atm3SKcbws0+49TFtK/L7yD2uD6Mu0XEsvu+AWlZPIc9sCyq2ZBWvxRDaOrTAPgbsQi
-        Vr0DeNKb9wamySfeXMMPZAnFCyPOZb0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-RjFNz9TvPqiY7rQYUOEdrA-1; Thu, 22 Jul 2021 06:19:43 -0400
-X-MC-Unique: RjFNz9TvPqiY7rQYUOEdrA-1
-Received: by mail-ej1-f70.google.com with SMTP id q8-20020a170906a088b02904be5f536463so1678807ejy.0
-        for <Linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 03:19:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UfSu3uIp392jCxR+c88j2xDyWu7I7n++pa2vgNqBSgY=;
-        b=Yi9/Zzuk/B+gDzgzAbx3HHoLF1wv+zXAPqSjtMkbwmp9ObXjuh3rG8iiEFqHBX5pvN
-         r4TyD8CK7sMIiLumw/7yLx5fBHR5h5qbMn4j0+lDJKDKAKRT/QwBxZJbY73D3w8g0Lyw
-         XhUzEvcNRmDznc8m7JSuYmvED8AcuiGkfwvdih95k+i/vgBujVIdisVT1eA7TXH316ZW
-         zSjfUYKZBkWsbtzVuaAxtiIpPH0gTZNFT9cIL82L6/zXZp3S3Lf3P004SXAgvPgf4Itu
-         UXeuIoioHy9x8/+DRdeING9WsnfeXXpwyZTi673ToMTqfTUvhKpn3iVnQdm9SL9ZVaqS
-         UhEg==
-X-Gm-Message-State: AOAM533tgXh3lcJyGjU+LjL+24hpg++QC3zkWasPl4FxA3t2yTTS+zMg
-        ZG2yuEgdXHKoTdYlbwF2hUJ1+Prxpmsep0GArJP06/V5HPIezG1X6iQOXQkmzBYWJwf94+W6DOz
-        e0Q6XZDmOeYUkBGRTblCeLFSV
-X-Received: by 2002:a17:907:986e:: with SMTP id ko14mr42776111ejc.219.1626949182597;
-        Thu, 22 Jul 2021 03:19:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPp+x8hEE6Y5etLjFw+yq6DAZzVK3EA2fuKBDOpB8/tzmRotpDiFiCFeifLfHofQpy5c0TJg==
-X-Received: by 2002:a17:907:986e:: with SMTP id ko14mr42776096ejc.219.1626949182395;
-        Thu, 22 Jul 2021 03:19:42 -0700 (PDT)
-Received: from krava ([83.240.60.59])
-        by smtp.gmail.com with ESMTPSA id o23sm9301105ejc.124.2021.07.22.03.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 03:19:42 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 12:19:40 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v3 3/3] perf tools: Enable on a list of CPUs for hybrid
-Message-ID: <YPlGPC3OkPihS91A@krava>
-References: <20210712071235.28533-1-yao.jin@linux.intel.com>
- <20210712071235.28533-4-yao.jin@linux.intel.com>
- <YPXUMTFbj2Tl3eBz@krava>
- <ecf0e815-616f-0a08-cefd-baac93c0e47d@linux.intel.com>
- <YPaUc3iodIASdYRY@krava>
- <598463ae-0bb0-7609-407b-4822112b2093@linux.intel.com>
+        Thu, 22 Jul 2021 05:44:32 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GVpQ329mdz7y0K;
+        Thu, 22 Jul 2021 18:21:15 +0800 (CST)
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 18:24:55 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 18:24:55 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2176.012;
+ Thu, 22 Jul 2021 18:24:55 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        "liuqi (BA)" <liuqi115@huawei.com>
+CC:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "anil.s.keshavamurthy@intel.com" <anil.s.keshavamurthy@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+Thread-Topic: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+Thread-Index: AQHXfJkyPamnf4yoyEqhBrLk7zE456tMmTOAgAIsGRA=
+Date:   Thu, 22 Jul 2021 10:24:54 +0000
+Message-ID: <332df5b7d7bb4bd096b6521ffefaabe6@hisilicon.com>
+References: <20210719122417.10355-1-liuqi115@huawei.com>
+ <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
+In-Reply-To: <20210721174153.34c1898dc9eea135eb0b8be8@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.200.151]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <598463ae-0bb0-7609-407b-4822112b2093@linux.intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 12:30:11PM +0800, Jin, Yao wrote:
-> Hi Jiri,
-> 
-> On 7/20/2021 5:16 PM, Jiri Olsa wrote:
-> > On Tue, Jul 20, 2021 at 03:07:02PM +0800, Jin, Yao wrote:
-> > 
-> > SNIP
-> > 
-> > > 
-> > > OK, evlist__fix_cpus() is better, use this name in v4.
-> > > 
-> > > > > +{
-> > > > > +	struct perf_cpu_map *cpus;
-> > > > > +	struct evsel *evsel, *tmp;
-> > > > > +	struct perf_pmu *pmu;
-> > > > > +	int ret, unmatched_count = 0, events_nr = 0;
-> > > > > +
-> > > > > +	if (!perf_pmu__has_hybrid() || !cpu_list)
-> > > > > +		return 0;
-> > > > > +
-> > > > > +	cpus = perf_cpu_map__new(cpu_list);
-> > > > > +	if (!cpus)
-> > > > > +		return -1;
-> > > > > +
-> > > > > +	evlist__for_each_entry_safe(evlist, tmp, evsel) {
-> > > > > +		struct perf_cpu_map *matched_cpus, *unmatched_cpus;
-> > > > > +		char buf1[128], buf2[128];
-> > > > > +
-> > > > > +		pmu = perf_pmu__find_hybrid_pmu(evsel->pmu_name);
-> > > > > +		if (!pmu)
-> > > > > +			continue;
-> > > > > +
-> > > > > +		ret = perf_pmu__cpus_match(pmu, cpus, &matched_cpus,
-> > > > > +					   &unmatched_cpus);
-> > > > > +		if (ret)
-> > > > > +			goto out;
-> > > > > +
-> > > > > +		events_nr++;
-> > > > > +
-> > > > > +		if (matched_cpus->nr > 0 && (unmatched_cpus->nr > 0 ||
-> > > > > +		    matched_cpus->nr < cpus->nr ||
-> > > > > +		    matched_cpus->nr < pmu->cpus->nr)) {
-> > > > > +			perf_cpu_map__put(evsel->core.cpus);
-> > > > > +			perf_cpu_map__put(evsel->core.own_cpus);
-> > > > > +			evsel->core.cpus = perf_cpu_map__get(matched_cpus);
-> > > > > +			evsel->core.own_cpus = perf_cpu_map__get(matched_cpus);
-> > > > 
-> > > > I'm bit confused in here.. AFAIUI there's 2 evsel objects create
-> > > > for hybrid 'cycles' ... should they have already proper cpus set?
-> > > > 
-> > > 
-> > > For 'cycles', yes two evsels are created automatically. One is for atom CPU
-> > > (e.g. 8-11), the other is for core CPU (e.g. 0-7). In this example, these 2
-> > > evsels have already the cpus set.
-> > 
-> > hum, so those evsels are created with pmu's cpus, right?
-> > 
-> 
-> Yes, that's right. But we also check and adjust the evsel->cpus by using
-> user's cpu list on hybrid (what the evlist__use_cpu_list() does).
-> 
-> > > 
-> > > While the 'cpus' here is just the user specified cpu list.
-> > > cpus = perf_cpu_map__new(cpu_list);
-> > 
-> > then I think they will be changed by evlist__create_maps
-> > with whatever user wants?
-> > 
-> 
-> No, it will not be changed by evlist__create_maps.
-> 
-> In evlist__create_maps(),
-> evlist->core.has_user_cpus = !!target->cpu_list && !target->hybrid;
-> 
-> It disables has_user_cpus for hybrid.
-> 
-> So in __perf_evlist__propagate_maps, they will not be changed by evlist->cpus.
-> 
-> if (!evsel->own_cpus || evlist->has_user_cpus) {
-> 	perf_cpu_map__put(evsel->cpus);
-> 	evsel->cpus = perf_cpu_map__get(evlist->cpus);
-> 	
-> > could we just change __perf_evlist__propagate_maps to follow
-> > pmu's cpus?
-> > 
-> 
-> In __perf_evlist__propagate_maps, it has already followed pmu's cpus because
-> the evlist->has_user_cpus is false for hybrid.
 
-sorry for delay
 
-ok, so we first fix the cpus on hybrid events and then
-propagate maps.. I guess it's ok, because it's in libperf
-and that has no notion of hybrid so far
+> -----Original Message-----
+> From: Masami Hiramatsu [mailto:mhiramat@kernel.org]
+> Sent: Wednesday, July 21, 2021 8:42 PM
+> To: liuqi (BA) <liuqi115@huawei.com>
+> Cc: catalin.marinas@arm.com; will@kernel.org; naveen.n.rao@linux.ibm.com;
+> anil.s.keshavamurthy@intel.com; davem@davemloft.net;
+> linux-arm-kernel@lists.infradead.org; Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com>; Zengtao (B) <prime.zeng@hisilicon.com>;
+> robin.murphy@arm.com; Linuxarm <linuxarm@huawei.com>;
+> linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH] arm64: kprobe: Enable OPTPROBE for arm64
+> 
+> Hi Qi,
+> 
+> Thanks for your effort!
+> 
+> On Mon, 19 Jul 2021 20:24:17 +0800
+> Qi Liu <liuqi115@huawei.com> wrote:
+> 
+> > This patch introduce optprobe for ARM64. In optprobe, probed
+> > instruction is replaced by a branch instruction to detour
+> > buffer. Detour buffer contains trampoline code and a call to
+> > optimized_callback(). optimized_callback() calls opt_pre_handler()
+> > to execute kprobe handler.
+> 
+> OK so this will replace only one instruction.
+> 
+> >
+> > Limitations:
+> > - We only support !CONFIG_RANDOMIZE_MODULE_REGION_FULL case to
+> > guarantee the offset between probe point and kprobe pre_handler
+> > is not larger than 128MiB.
+> 
+> Hmm, shouldn't we depends on !CONFIG_ARM64_MODULE_PLTS? Or,
+> allocate an intermediate trampoline area similar to arm optprobe
+> does.
 
-could you please rename that function so it's also obvious
-it's for hybrid only
+Depending on !CONFIG_ARM64_MODULE_PLTS will totally disable
+RANDOMIZE_BASE according to arch/arm64/Kconfig:
+config RANDOMIZE_BASE
+	bool "Randomize the address of the kernel image"
+	select ARM64_MODULE_PLTS if MODULES
+	select RELOCATABLE
 
-  evlist__fix_hybrid_cpus ? not sure ;-)
+Depending on !RANDOMIZE_MODULE_REGION_FULL seems to be still
+allowing RANDOMIZE_BASE via avoiding long jump according to:
+arch/arm64/Kconfig:
 
-and add some comment with example to explain what the
-function is doing
+config RANDOMIZE_MODULE_REGION_FULL
+	bool "Randomize the module region over a 4 GB range"
+	depends on RANDOMIZE_BASE
+	default y
+	help
+	  Randomizes the location of the module region inside a 4 GB window
+	  covering the core kernel. This way, it is less likely for modules
+	  to leak information about the location of core kernel data structures
+	  but it does imply that function calls between modules and the core
+	  kernel will need to be resolved via veneers in the module PLT.
 
-thanks,
-jirka
+	  When this option is not set, the module region will be randomized over
+	  a limited range that contains the [_stext, _etext] interval of the
+	  core kernel, so branch relocations are always in range.
+
+and
+
+arch/arm64/kernel/kaslr.c:
+	if (IS_ENABLED(CONFIG_RANDOMIZE_MODULE_REGION_FULL)) {
+		/*
+		 * Randomize the module region over a 2 GB window covering the
+		 * kernel. This reduces the risk of modules leaking information
+		 * about the address of the kernel itself, but results in
+		 * branches between modules and the core kernel that are
+		 * resolved via PLTs. (Branches between modules will be
+		 * resolved normally.)
+		 */
+		module_range = SZ_2G - (u64)(_end - _stext);
+		module_alloc_base = max((u64)_end + offset - SZ_2G,
+					(u64)MODULES_VADDR);
+	} else {
+		/*
+		 * Randomize the module region by setting module_alloc_base to
+		 * a PAGE_SIZE multiple in the range [_etext - MODULES_VSIZE,
+		 * _stext) . This guarantees that the resulting region still
+		 * covers [_stext, _etext], and that all relative branches can
+		 * be resolved without veneers.
+		 */
+		module_range = MODULES_VSIZE - (u64)(_etext - _stext);
+		module_alloc_base = (u64)_etext + offset - MODULES_VSIZE;
+	}
+
+So depending on ! ARM64_MODULE_PLTS seems to narrow the scenarios
+while depending on ! RANDOMIZE_MODULE_REGION_FULL  permit more
+machines to use optprobe.
+
+I am not quite sure I am 100% right but tests seem to back this.
+hopefully Catalin and Will can correct me.
+
+> 
+> >
+> > Performance of optprobe on Hip08 platform is test using kprobe
+> > example module[1] to analyze the latency of a kernel function,
+> > and here is the result:
+> >
+> > [1]
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sa
+> mples/kprobes/kretprobe_example.c
+> >
+> > kprobe before optimized:
+> > [280709.846380] do_empty returned 0 and took 1530 ns to execute
+> > [280709.852057] do_empty returned 0 and took 550 ns to execute
+> > [280709.857631] do_empty returned 0 and took 440 ns to execute
+> > [280709.863215] do_empty returned 0 and took 380 ns to execute
+> > [280709.868787] do_empty returned 0 and took 360 ns to execute
+> > [280709.874362] do_empty returned 0 and took 340 ns to execute
+> > [280709.879936] do_empty returned 0 and took 320 ns to execute
+> > [280709.885505] do_empty returned 0 and took 300 ns to execute
+> > [280709.891075] do_empty returned 0 and took 280 ns to execute
+> > [280709.896646] do_empty returned 0 and took 290 ns to execute
+> > [280709.902220] do_empty returned 0 and took 290 ns to execute
+> > [280709.907807] do_empty returned 0 and took 290 ns to execute
+> >
+> > optprobe:
+> > [ 2965.964572] do_empty returned 0 and took 90 ns to execute
+> > [ 2965.969952] do_empty returned 0 and took 80 ns to execute
+> > [ 2965.975332] do_empty returned 0 and took 70 ns to execute
+> > [ 2965.980714] do_empty returned 0 and took 60 ns to execute
+> > [ 2965.986128] do_empty returned 0 and took 80 ns to execute
+> > [ 2965.991507] do_empty returned 0 and took 70 ns to execute
+> > [ 2965.996884] do_empty returned 0 and took 70 ns to execute
+> > [ 2966.002262] do_empty returned 0 and took 80 ns to execute
+> > [ 2966.007642] do_empty returned 0 and took 70 ns to execute
+> > [ 2966.013020] do_empty returned 0 and took 70 ns to execute
+> > [ 2966.018400] do_empty returned 0 and took 70 ns to execute
+> > [ 2966.023779] do_empty returned 0 and took 70 ns to execute
+> > [ 2966.029158] do_empty returned 0 and took 70 ns to execute
+> 
+> Great result!
+> I have other comments on the code below.
+> 
+> [...]
+> > diff --git a/arch/arm64/kernel/probes/kprobes.c
+> b/arch/arm64/kernel/probes/kprobes.c
+> > index 6dbcc89f6662..83755ad62abe 100644
+> > --- a/arch/arm64/kernel/probes/kprobes.c
+> > +++ b/arch/arm64/kernel/probes/kprobes.c
+> > @@ -11,6 +11,7 @@
+> >  #include <linux/kasan.h>
+> >  #include <linux/kernel.h>
+> >  #include <linux/kprobes.h>
+> > +#include <linux/moduleloader.h>
+> >  #include <linux/sched/debug.h>
+> >  #include <linux/set_memory.h>
+> >  #include <linux/slab.h>
+> > @@ -113,9 +114,21 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+> >
+> >  void *alloc_insn_page(void)
+> >  {
+> > -	return __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+> > -			GFP_KERNEL, PAGE_KERNEL_ROX, VM_FLUSH_RESET_PERMS,
+> > -			NUMA_NO_NODE, __builtin_return_address(0));
+> > +	void *page;
+> > +
+> > +	page = module_alloc(PAGE_SIZE);
+> > +	if (!page)
+> > +		return NULL;
+> > +
+> > +	set_vm_flush_reset_perms(page);
+> > +	/*
+> > +	 * First make the page read-only, and only then make it executable to
+> > +	 * prevent it from being W+X in between.
+> > +	 */
+> > +	set_memory_ro((unsigned long)page, 1);
+> > +	set_memory_x((unsigned long)page, 1);
+> > +
+> > +	return page;
+> 
+> Isn't this a separated change? Or any reason why you have to
+> change this function?
+
+As far as I can tell, this is still related with the 128MB
+short jump limitation.
+VMALLOC_START, VMALLOC_END is an fixed virtual address area
+which isn't necessarily modules will be put.
+So this patch is moving to module_alloc() which will get
+memory between module_alloc_base and module_alloc_end.
+
+Together with depending on !RANDOMIZE_MODULE_REGION_FULL,
+this makes all kernel, module and trampoline in short
+jmp area.
+
+As long as we can figure out a way to support long jmp
+for optprobe, the change in alloc_insn_page() can be
+dropped.
+
+Masami, any reference code from any platform to support long
+jump for optprobe? For long jmp, we need to put jmp address
+to a memory and then somehow load the target address
+to PC. Right now, we are able to replace an instruction
+only. That is the problem.
+
+Thanks
+Barry
 
