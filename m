@@ -2,106 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8205F3D21B1
+	by mail.lfdr.de (Postfix) with ESMTP id 9834A3D21B2
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 12:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhGVJYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 05:24:34 -0400
-Received: from m32-153.88.com ([43.250.32.153]:49321 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231442AbhGVJYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231975AbhGVJYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 05:24:36 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3447 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhGVJYd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Jul 2021 05:24:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=To:From:Date; bh=8GzoFqIn2zvp7Hciws/xl3fniGp7hLEvlKQRf
-        9Ooq3I=; b=I/ps7mB5ScVzob4c29jcdKdUPTep5l3C9oVSCyMsRvUw3ktuYklNW
-        2pOaiRKIOza6y5Erb/Ogd+61JpUgcAEXVMyFNiabTNNmx25Fl9CbJM9KWyTelq0C
-        XQH8eJ6zBbgxz39VopygKZvIZKJ6QoFYGJviEwNtB8n9Ust/ooAsRE=
-Received: from [0.0.0.0] (unknown [180.120.41.43])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCXFqe+Qvlg3cAAAA--.2761S3;
-        Thu, 22 Jul 2021 18:04:53 +0800 (CST)
-Subject: Re: [PATCH] checkpatch: add grammatical judgement for total output
-To:     Joe Perches <joe@perches.com>, apw@canonical.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20210721151416.30530-1-src.res@email.cn>
- <68b4f05607e9e44559e174d9b50e435fb58ef5aa.camel@perches.com>
-From:   Hu Haowen <src.res@email.cn>
-Message-ID: <1e0a9acb-e973-7371-8425-05e066db0827@email.cn>
-Date:   Thu, 22 Jul 2021 18:04:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GVnp53xVDz6H71B;
+        Thu, 22 Jul 2021 17:53:33 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 12:05:06 +0200
+Received: from [10.47.26.161] (10.47.26.161) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 22 Jul
+ 2021 11:05:06 +0100
+Subject: Re: [bug report] iommu_dma_unmap_sg() is very slow then running IO
+ from remote numa node
+To:     Ming Lei <ming.lei@redhat.com>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        <iommu@lists.linux-foundation.org>, Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <YOgK8fdv7dOQtkET@T590>
+ <23e7956b-f3b5-b585-3c18-724165994051@arm.com> <YOhcOv1oOwm6fco+@T590>
+ <ad5bc549-d83f-bee0-9a9f-03a5afd7f3d9@huawei.com> <YPd7IGFZrsTRfUxE@T590>
+ <74537f9c-af5f-cd84-60ab-49ca6220310e@huawei.com> <YPfwAN1onpSKoeBj@T590>
+ <a2650064-41cf-cb62-7ab4-d14ef1856966@huawei.com> <YPklDMng1hL3bQ+v@T590>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <9c929985-4fcb-e65d-0265-34c820b770ea@huawei.com>
+Date:   Thu, 22 Jul 2021 11:05:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <68b4f05607e9e44559e174d9b50e435fb58ef5aa.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YPklDMng1hL3bQ+v@T590>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-CM-TRANSID: GiKnCgCXFqe+Qvlg3cAAAA--.2761S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF45ZFW3GrWDtrWxZr1kZrb_yoW8AF18pF
-        yrK3WkJF90k3y8Aa1Syr9aqFyrGw1vyayDGr15GFyayFW5Za4IgryYgr1q9r9rKrZ3Aw13
-        XFWj9ay7uryvva7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUymb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
-        z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0x
-        vYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_
-        Cr1UJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbI
-        xvr21lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1U
-        Jr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-        14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jHpBfUUUUU=
-X-Originating-IP: [180.120.41.43]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.26.161]
+X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22/07/2021 08:58, Ming Lei wrote:
+> On Wed, Jul 21, 2021 at 12:07:22PM +0100, John Garry wrote:
+>> On 21/07/2021 10:59, Ming Lei wrote:
+>>>> I have now removed that from the tree, so please re-pull.
+>>> Now the kernel can be built successfully, but not see obvious improvement
+>>> on the reported issue:
+>>>
+>>> [root@ampere-mtjade-04 ~]# uname -a
+>>> Linux ampere-mtjade-04.khw4.lab.eng.bos.redhat.com 5.14.0-rc2_smmu_fix+ #2 SMP Wed Jul 21 05:49:03 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
+>>>
+>>> [root@ampere-mtjade-04 ~]# taskset -c 0 ~/git/tools/test/nvme/io_uring 10 1 /dev/nvme1n1 4k
+>>> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=10 --numjobs=1 --rw=randread --name=test --group_reporting
+>>> test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+>>> fio-3.27
+>>> Starting 1 process
+>>> Jobs: 1 (f=1): [r(1)][100.0%][r=1503MiB/s][r=385k IOPS][eta 00m:00s]
+>>> test: (groupid=0, jobs=1): err= 0: pid=3143: Wed Jul 21 05:58:14 2021
+>>>     read: IOPS=384k, BW=1501MiB/s (1573MB/s)(14.7GiB/10001msec)
+>> I am not sure what baseline you used previously, but you were getting 327K
+>> then, so at least this would be an improvement.
+> Looks the improvement isn't from your patches, please see the test result on
+> v5.14-rc2:
+> 
+> [root@ampere-mtjade-04 ~]# uname -a
+> Linux ampere-mtjade-04.khw4.lab.eng.bos.redhat.com 5.14.0-rc2_linus #3 SMP Thu Jul 22 03:41:24 EDT 2021 aarch64 aarch64 aarch64 GNU/Linux
+> [root@ampere-mtjade-04 ~]# taskset -c 0 ~/git/tools/test/nvme/io_uring 20 1 /dev/nvme1n1 4k
+> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 --iodepth_batch_complete_min=16 --filename=/dev/nvme1n1 --direct=1 --runtime=20 --numjobs=1 --rw=randread --name=test --group_reporting
+> test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T) 4096B-4096B, ioengine=io_uring, iodepth=64
+> fio-3.27
+> Starting 1 process
+> Jobs: 1 (f=1): [r(1)][100.0%][r=1489MiB/s][r=381k IOPS][eta 00m:00s]
+> test: (groupid=0, jobs=1): err= 0: pid=3099: Thu Jul 22 03:53:04 2021
+>    read: IOPS=381k, BW=1487MiB/s (1559MB/s)(29.0GiB/20001msec)
 
-On 2021/7/22 上午12:03, Joe Perches wrote:
-> On Wed, 2021-07-21 at 23:14 +0800, Hu Haowen wrote:
->> There lacked a English grammatical identification within the final
->> output of checkpatch.pl such as the following:
->>
->>     total: 1 errors, 11 warnings, 4094 lines checked
->>                   ^
->>
->> Which violated the rule about the usage of the singular form and the
->> plural form. Hence fix the issue up and make it output the proper
->> sentence.
-> NAK
->
-> I appreciate the desire for precision but I don't want to require
-> any automated downstream user of checkpatch to be changed.
->
-> I think users understand the output even though it may not be
-> grammatically correct in some cases.
+I'm a bit surprised at that.
+
+Anyway, I don't see such an issue as you are seeing on my system. In 
+general, running from different nodes doesn't make a huge difference. 
+But note that the NVMe device is on NUMA node #2 on my 4-node system. I 
+assume that the IOMMU is also located in that node.
+
+sudo taskset -c 0 fio/fio --bs=4k --ioengine=io_uring --fixedbufs 
+--registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 
+--iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1 
+--runtime=20 --numjobs=1 --rw=randread --name=test --group_reporting
+
+  read: IOPS=479k
+
+---
+sudo taskset -c 4 fio/fio --bs=4k --ioengine=io_uring --fixedbufs 
+--registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 
+--iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1 
+--runtime=20 --numjobs=1 --rw=randread --name=test --group_reporting
+
+  read: IOPS=307k
+
+---
+sudo taskset -c 32 fio/fio --bs=4k --ioengine=io_uring --fixedbufs 
+--registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 
+--iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1 
+--runtime=20 --numjobs=1 --rw=randread --name=test --group_reporting
+
+read: IOPS=566k
+
+--
+sudo taskset -c 64 fio/fio --bs=4k --ioengine=io_uring --fixedbufs 
+--registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 
+--iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1 
+--runtime=20 --numjobs=1 --rw=randread --name=test --group_reporting
+
+read: IOPS=488k
+
+---
+sudo taskset -c 96 fio/fio --bs=4k --ioengine=io_uring --fixedbufs 
+--registerfiles --hipri --iodepth=64 --iodepth_batch_submit=16 
+--iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1 
+--runtime=20 --numjobs=1 --rw=randread --name=test --group_reporting
+
+  read: IOPS=508k
 
 
-How about another modification, which turns "errors" into "error(s)"?
-In this case not only did the meaning convey but automated users won't
-be confused toward their automatic programs.
+If you check below, you can see that cpu4 services an NVMe irq. From 
+checking htop, during the test that cpu is at 100% load, which I put the 
+performance drop (vs cpu0) down to.
+
+Here's some system info:
+
+HW queue irq affinities:
+PCI name is 81:00.0: nvme0n1
+-eirq 298, cpu list 67, effective list 67
+-eirq 299, cpu list 32-38, effective list 35
+-eirq 300, cpu list 39-45, effective list 39
+-eirq 301, cpu list 46-51, effective list 46
+-eirq 302, cpu list 52-57, effective list 52
+-eirq 303, cpu list 58-63, effective list 60
+-eirq 304, cpu list 64-69, effective list 68
+-eirq 305, cpu list 70-75, effective list 70
+-eirq 306, cpu list 76-80, effective list 76
+-eirq 307, cpu list 81-85, effective list 84
+-eirq 308, cpu list 86-90, effective list 86
+-eirq 309, cpu list 91-95, effective list 92
+-eirq 310, cpu list 96-101, effective list 100
+-eirq 311, cpu list 102-107, effective list 102
+-eirq 312, cpu list 108-112, effective list 108
+-eirq 313, cpu list 113-117, effective list 116
+-eirq 314, cpu list 118-122, effective list 118
+-eirq 315, cpu list 123-127, effective list 124
+-eirq 316, cpu list 0-5, effective list 4
+-eirq 317, cpu list 6-11, effective list 6
+-eirq 318, cpu list 12-16, effective list 12
+-eirq 319, cpu list 17-21, effective list 20
+-eirq 320, cpu list 22-26, effective list 22
+-eirq 321, cpu list 27-31, effective list 28
 
 
->> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
->> @@ -7439,9 +7439,14 @@ sub process {
->>  	print report_dump();
->>  	if ($summary && !($clean == 1 && $quiet == 1)) {
->>  		print "$filename " if ($summary_file);
->> -		print "total: $cnt_error errors, $cnt_warn warnings, " .
->> -			(($check)? "$cnt_chk checks, " : "") .
->> -			"$cnt_lines lines checked\n";
->> +		my $errors_str = ($cnt_error == 1) ? "error" : "errors";
->> +		my $warnings_str = ($cnt_warn == 1) ? "warning" : "warnings";
->> +		my $checks_str = ($cnt_chk == 1) ? "check" : "checks";
->> +		my $lines_str = ($cnt_lines == 1) ? "line" : "lines";
->> +		print "total: $cnt_error $errors_str, " .
->> +			"$cnt_warn $warnings_str, " .
->> +			(($check)? "$cnt_chk $checks_str, " : "") .
->> +			"$cnt_lines $lines_str checked\n";
->>  	}
->>  
->>
->>  	if ($quiet == 0) {
+john@ubuntu:~$ lscpu | grep NUMA
+NUMA node(s):  4
+NUMA node0 CPU(s):   0-31
+NUMA node1 CPU(s):   32-63
+NUMA node2 CPU(s):   64-95
+NUMA node3 CPU(s):   96-127
 
+john@ubuntu:~$ lspci | grep -i non
+81:00.0 Non-Volatile memory controller: Huawei Technologies Co., Ltd. 
+Device 0123 (rev 45)
+
+cat /sys/block/nvme0n1/device/device/numa_node
+2
+
+[   52.968495] nvme 0000:81:00.0: Adding to iommu group 5
+[   52.980484] nvme nvme0: pci function 0000:81:00.0
+[   52.999881] nvme nvme0: 23/0/0 default/read/poll queues
+[   53.019821]  nvme0n1: p1
+
+john@ubuntu:~$ uname -a
+Linux ubuntu 5.14.0-rc2-dirty #297 SMP PREEMPT Thu Jul 22 09:23:33 BST 
+2021 aarch64 aarch64 aarch64 GNU/Linux
+
+Thanks,
+John
