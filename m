@@ -2,115 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D803D1E8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FC23D1E9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhGVGOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 02:14:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53934 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229547AbhGVGOa (ORCPT
+        id S230152AbhGVGXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 02:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhGVGXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 02:14:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626936905;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EQVCng+li2VqCvgwwVsr3N15LvPWZJi5vTPPAqH9HhU=;
-        b=dPSXu9bcIvhLHQhvhhPn8Y+PJowxe5qF+b7YADdEcp6V9ntlFHe9145SlEfsIxJ3nmXok3
-        dbm3nsi00cN4Ms5P4IoZv9gl52IUfph5z6WBVFkTIkj4bn3kVaGOs4eHY1HmUvJYCISwmV
-        PK4N7cs1aJxXwu/tLOtOpnxY8QagTzI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-rthJiOKuO3OmSpSyAJQ-6A-1; Thu, 22 Jul 2021 02:55:01 -0400
-X-MC-Unique: rthJiOKuO3OmSpSyAJQ-6A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2765100D3A9;
-        Thu, 22 Jul 2021 06:54:14 +0000 (UTC)
-Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1E92A19D7C;
-        Thu, 22 Jul 2021 06:54:11 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v3 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719130613.334901-1-gshan@redhat.com>
- <20210719130613.334901-13-gshan@redhat.com>
- <57cb2f04-b3f2-2df4-3d9b-0b430b9c9f3e@arm.com>
- <8157142c-58e0-44c4-5cdb-76fff4a07210@redhat.com>
- <5db75fd6-aeb9-c06f-30ab-839c09a0bc68@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <5d9f2080-7020-d3f0-73cc-ae2af0943303@redhat.com>
-Date:   Thu, 22 Jul 2021 16:54:29 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 22 Jul 2021 02:23:12 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3A8C061575;
+        Thu, 22 Jul 2021 00:03:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tronnes.org
+        ; s=ds202012; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=geimImWkk+j3UI43YmrbXT0NGSrWz41IEgo4SUWY5x0=; b=vyIh5gzNB1430AHxLZ/3RRB97P
+        h3ohXM9uO7sST+trD0bY/4oh3g+BNyJ/TnvbagXk7G/C+nwuOedAiLFn51tRUUZddYyFX8pFOxQVc
+        UwNMkiqjQQpP6m3mH+oor2vJlvZSpg6JeF2rGIqTFI7zPKrWQ+V4BldVhLfMH3hPGRDFS8hYlp6Jp
+        NJkhwIMxdvn3IHGiZphKYAo/omRaLhHZf26fft+gt58oSlKM2zs4TgB7YT6kBp69u1FMYt1kFjPJJ
+        IO9+UYaq3W8C9Uwa05V2WK+3Vdgwd7hQLZ2lc11Wf17rjrQFU1RyX1xBmvkzvNROCLxx3O2It8LhA
+        RMBX4yMA==;
+Received: from 211.81-166-168.customer.lyse.net ([81.166.168.211]:57951 helo=[192.168.10.61])
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <noralf@tronnes.org>)
+        id 1m6SkC-0006us-Cm; Thu, 22 Jul 2021 09:03:44 +0200
+Subject: Re: [PATCH v2 3/3] drm/panel: Add ilitek ili9341 panel driver
+To:     Dillon Min <dillon.minfei@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1626853288-31223-1-git-send-email-dillon.minfei@gmail.com>
+ <1626853288-31223-4-git-send-email-dillon.minfei@gmail.com>
+ <8e091b9c-764d-d410-559e-3c5e25de2a3c@tronnes.org>
+ <CAL9mu0K2yLsG0MXOd4ke8N8zn7311CJ54hL-JcbocJOK+H7W9A@mail.gmail.com>
+From:   =?UTF-8?Q?Noralf_Tr=c3=b8nnes?= <noralf@tronnes.org>
+Message-ID: <1e4743b0-250f-975a-f83d-5d000c6496e3@tronnes.org>
+Date:   Thu, 22 Jul 2021 09:03:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <5db75fd6-aeb9-c06f-30ab-839c09a0bc68@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAL9mu0K2yLsG0MXOd4ke8N8zn7311CJ54hL-JcbocJOK+H7W9A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
 
-On 7/22/21 1:51 PM, Anshuman Khandual wrote:
-> Small nit:
+
+Den 22.07.2021 04.07, skrev Dillon Min:
+> Hi Noralf
 > 
-> s/Fix corrupted page flag/Fix page flag corruption on arm64/
+> Thanks for your time to review my patch.
 > 
-
-Sure, The replacement will be applied in v4, thanks!
-
-> On 7/21/21 5:33 PM, Gavin Shan wrote:
->> Hi Anshuman,
+> On Thu, 22 Jul 2021 at 01:42, Noralf Trønnes <noralf@tronnes.org> wrote:
 >>
->> On 7/21/21 8:18 PM, Anshuman Khandual wrote:
->>> On 7/19/21 6:36 PM, Gavin Shan wrote:
->>>> In page table entry modifying tests, set_xxx_at() are used to populate
->>>> the page table entries. On ARM64, PG_arch_1 is set to the target page
->>>> flag if execution permission is given. The page flag is kept when the
->>>> page is free'd to buddy's free area list. However, it will trigger page
->>>> checking failure when it's pulled from the buddy's free area list, as
->>>> the following warning messages indicate.
->>>>
->>>>      BUG: Bad page state in process memhog  pfn:08000
->>>>      page:0000000015c0a628 refcount:0 mapcount:0 \
->>>>           mapping:0000000000000000 index:0x1 pfn:0x8000
->>>>      flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
->>>>      raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
->>>>      raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->>>>      page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
->>>>
->>>> This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
->>>> after set_xxx_at() is called.
->>>
->>> Could you please add comments before each flush_dcache_page() instance
->>> explaining why this is needed for arm64 platforms with relevant PG_arch_1
->>> context and how this does not have any adverse effect on other platforms ?
->>> It should be easy for some one looking at this code after a while to figure
->>> out from where flush_dcache_page() came from.
->>>
 >>
->> Good point. I will improve chage log to include the commit ID in v4 where the
->> page flag (PG_arch_1) is used and explain how. In that case, it's much clearer
->> to understand the reason why we need flush_dcache_page() after set_xxx_at() on
->> ARM64.
+>>
+>> Den 21.07.2021 09.41, skrev dillon.minfei@gmail.com:
+>>> From: Dillon Min <dillon.minfei@gmail.com>
+>>>
+>>> This driver combine tiny/ili9341.c mipi_dbi_interface driver
+>>> with mipi_dpi_interface driver, can support ili9341 with serial
+>>> mode or parallel rgb interface mode by register configuration.
+>>>
+>>> Cc: Linus Walleij <linus.walleij@linaro.org>
+>>> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+>>> ---
+>>
+>>> +static const struct of_device_id ili9341_of_match[] = {
+>>> +     {
+>>> +             .compatible = "st,sf-tc240t-9370-t",
+>>> +             .data = &ili9341_stm32f429_disco_data,
+>>> +     },
+>>> +     {
+>>> +             /* porting from tiny/ili9341.c
+>>> +              * for original mipi dbi compitable
+>>> +              */
+>>> +             .compatible = "adafruit,yx240qv29",
+>>
+>> I don't understand this, now there will be 2 drivers that support the
+>> same display?
 > 
-> But also some in code comments where flush_dcache_page() is being called.
+> There is no reason to create two drivers to support the same display.
+> 
+> To support only-dbi and dbi+dpi panel at drm/panel or drm/tiny both
+> fine with me.
+> 
+>>
+>> AFAICT drm/tiny/ili9341.c is just copied into this driver, is the plan
+>> to remove the tiny/ driver? If so I couldn't see this mentioned anywhere.
+> 
+> Yes, I'd like to merge the code from drm/tiny/ili9341.c to this driver
+> (to make a single driver to support different bus).
+> 
+> I have two purpose to extend the feature drm/tiny/ili9341.c
+> 
+> - keep compatible = "adafruit,yx240qv29", add bus mode dts bindings (panel_bus)
+>   to define the interface which host wants to use. such as
+> panel_bus="dbi" or "rgb"
+>   or "i80" for this case, i will add dpi code to drm/tiny/ili9341.c.
+> 
+> - merge tiny/ili9341.c to this driver,remove drm/tiny/ili9341.c, add
+> new dts compatible
+>   string to support other interfaces. just like what i'm doing now.
+> 
+> I have no idea about your plan on drm/tiny drivers, actually some of
+> these panels under
+> the diny folder can support both dbi and dbi+dpi (much faster, need
+> more pins). no
+> doubt the requirement to support dpi is always there.
+> 
+> What is your preference?
 > 
 
-Yes, I will add some comments where flush_dcache_page() is called in v4.
+I have no plans for tiny/, it's just a place to put tiny DRM drivers of
+all sorts.
 
-Thanks,
-Gavin
+Whether or not to have "full" DRM drivers in panel/ is up to Sam and
+Laurent I guess, currently there's only drm_panel drivers in there. I
+have no objections to doing that though.
 
+I just wanted to make sure we don't have 2 drivers for the same display.
+
+Noralf.
+
+> Thanks & Regards
+> Dillon
+> 
+>>
+>> Noralf.
+>>
+>>> +             .data = NULL,
+>>> +     },
+>>> +};
+>>> +MODULE_DEVICE_TABLE(of, ili9341_of_match);
