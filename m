@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3103D28A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5CE3D297A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhGVP5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:57:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60632 "EHLO mail.kernel.org"
+        id S234086AbhGVQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232828AbhGVP40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:56:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 185CD60FDA;
-        Thu, 22 Jul 2021 16:36:59 +0000 (UTC)
+        id S233855AbhGVQDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:03:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E97D0619C5;
+        Thu, 22 Jul 2021 16:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971820;
-        bh=NM/4S0tclPAg8L5MJJl3DeEGPSah6WTS4jnTBw9zfzc=;
+        s=korg; t=1626972196;
+        bh=apA8RHD5W12YBM3+pnTmfSSVsoJSGQfk3hmpEoKrSEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UEgPekImVt8oRxf5Rd87h20o/IIOmm9ph6bPqzkofGZ79gz0cDl0fzIhsTYwSsnl7
-         9oMtNmXRO5Yg3TSrlzIZBxt0yOjcD5XozrHIgdnMY290AuIpvBaspo6D4ARxq/XHe2
-         BruQJNTRUtZNpZpEl5G3npVYsq7Q8L/CYzjUMU+c=
+        b=DFUgK3tZp4I6IvGttKV4TMJkbdKWRNOu3uSUdgnSkIGTBDyWzGRoS0K70A2hEi/m7
+         FZNxhJt3zw9KT2Dx/eP4SAUnPOCSFfsb8HpoZMwN8H45x8wGERBVox/Jpjh3tXyiVa
+         /G10kwcvxFmLNJxa5fYoI6TQwR7+icr6bg33T1kg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 005/125] arm64: dts: rockchip: fix pinctrl sleep nodename for rk3399.dtsi
+Subject: [PATCH 5.13 021/156] ARM: dts: Hurricane 2: Fix NAND nodes names
 Date:   Thu, 22 Jul 2021 18:29:56 +0200
-Message-Id: <20210722155624.865112081@linuxfoundation.org>
+Message-Id: <20210722155629.096507380@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Jonker <jbx6244@gmail.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit a7ecfad495f8af63a5cb332c91f60ab2018897f5 ]
+[ Upstream commit a4528d9029e2eda16e4fc9b9da1de1fbec10ab26 ]
 
-A test with the command below aimed at powerpc generates
-notifications in the Rockchip arm64 tree.
+This matches nand-controller.yaml requirements.
 
-Fix pinctrl "sleep" nodename by renaming it to "suspend"
-for rk3399.dtsi
-
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/20210126110221.10815-2-jbx6244@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 2 +-
+ arch/arm/boot/dts/bcm-hr2.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 7e69603fb41c..ee6287b872db 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -2342,7 +2342,7 @@
- 			};
+diff --git a/arch/arm/boot/dts/bcm-hr2.dtsi b/arch/arm/boot/dts/bcm-hr2.dtsi
+index e8df458aad39..84cda16f68a2 100644
+--- a/arch/arm/boot/dts/bcm-hr2.dtsi
++++ b/arch/arm/boot/dts/bcm-hr2.dtsi
+@@ -179,7 +179,7 @@
+ 			status = "disabled";
  		};
  
--		sleep {
-+		suspend {
- 			ap_pwroff: ap-pwroff {
- 				rockchip,pins = <1 RK_PA5 1 &pcfg_pull_none>;
- 			};
+-		nand: nand@26000 {
++		nand_controller: nand-controller@26000 {
+ 			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
+ 			reg = <0x26000 0x600>,
+ 			      <0x11b408 0x600>,
 -- 
 2.30.2
 
