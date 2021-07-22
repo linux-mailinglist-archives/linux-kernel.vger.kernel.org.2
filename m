@@ -2,74 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C9C3D2C90
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830C53D2C94
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhGVSfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:35:00 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:35132
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229545AbhGVSe6 (ORCPT
+        id S230286AbhGVSfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230216AbhGVSfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:34:58 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 71D863F22F;
-        Thu, 22 Jul 2021 19:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1626981332;
-        bh=bxMMbXX93B1Hfa8C300wVht3IrDjfwUTd6RgHVXgqNU=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=iTWIB/CbkA9YteyjaTLS+/Z3eSTjcqX6eOGjprgFnR5uBhTp8xG08zn2nuZQXNB1C
-         NCdibv2Gk5mUhNlfyz64vXrFl/9z1AdbqI8J85zmygKN1YksONyKX4D4qoALBZjLUp
-         xHQt49xhflDa71Atu/b7LZ+7WLY9ZMdLqbsfDhLaUSzOEgDUXAYTVsZ0TYDkV11Qyx
-         v9WI0BZSU0GWKJD02W/1+lq6XQ9IVpfPmzFYm6VUL0dZWUZHvomLLK7QZN8NRGD0rw
-         BzPwW3NeirCIahl0obJyBI/7/IfeulnWwXhAGr+/T6LY7OibT0QfWzh3k0eiG3+48H
-         81M46oObXIrWA==
-From:   Colin King <colin.king@canonical.com>
-To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] net: dsa: sja1105: remove redundant re-assignment of pointer table
-Date:   Thu, 22 Jul 2021 20:15:29 +0100
-Message-Id: <20210722191529.11013-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 22 Jul 2021 14:35:16 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89C6C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:15:50 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id s2-20020a0568301e02b02904ce2c1a843eso6276688otr.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:15:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=EusEYbQ13bFWsLQf0HYpb/wdiNyPX9L+F2ViR+RO33Y=;
+        b=D+iysSmfAuVRkVd1YCYohemSgnbS7Iy5ZzkvKR3YyklHA+zasDTCgz+zlrYctzR1wL
+         XdFzJdjD60jMBjjnHX03lBmHM5x+f8uWfK8s2/CYBx5lCppC463LwBRMfxza0K3f/wWy
+         UfdzO0P+5ciJiKjBzO/O61wwUDVvT2F8Pd+xc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=EusEYbQ13bFWsLQf0HYpb/wdiNyPX9L+F2ViR+RO33Y=;
+        b=QZvEwqUNGcVY7nr4Ed+e6esaeSetOrqNX0AeZoINELziqSoGYTsg02OHulxL8VJTMV
+         5DPne/yl77WBqjSDMMYHPm7hByEr9cq5tx/AsSUL8E1BL45/Qk2VpF9fq1n9tQ18Mgfp
+         8Rwo2JoDpZLGuPYrsnHIJTOb5fofV3wNnJqNDmWnQfKkkCZTjzIV/ILUSuY365SSrPn8
+         315uWdRhEA3lhigWmzNAp0S51/oRHVwRB1Q6BQLI5SwxnZi6DyH+kbg9kmI/HtCUt4C0
+         DqbP3Cq0ukUuS24MC+A4iEkj2bmBLNNOutzI2m1hfKCTsjPv9cRcwdY9iBjIANjENcjq
+         xnIg==
+X-Gm-Message-State: AOAM531hV1e5JsGVjMZ4pz+O178zYUjQrdP4G4Yz8Xf+fMLjERRxZaey
+        wPm+0H8FtLgW/Adz6bqHRloxEAFLEHgTOpuJGJMmNQ==
+X-Google-Smtp-Source: ABdhPJxZi6ghcXO9BFFOzhyS7XDAHh9cxgA1qHQYoljh9jZDXj31sg2BDKAeSnxi1yD6Oc1FE7A9cj0f1/F2ivB0p2U=
+X-Received: by 2002:a9d:650e:: with SMTP id i14mr859418otl.233.1626981350381;
+ Thu, 22 Jul 2021 12:15:50 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 22 Jul 2021 19:15:50 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1626191647-13901-7-git-send-email-khsieh@codeaurora.org>
+References: <1626191647-13901-1-git-send-email-khsieh@codeaurora.org> <1626191647-13901-7-git-send-email-khsieh@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 22 Jul 2021 19:15:49 +0000
+Message-ID: <CAE-0n53e0cM2dFxwOGwUTW+u-X8yTPka1HyzAPPcuwq43zBh4w@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] drm/msm/dp: do not end dp link training until
+ video is ready
+To:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Quoting Kuogee Hsieh (2021-07-13 08:54:06)
+> Initialize both pre-emphasis and voltage swing level to 0 before
+> start link training and do not end link training until video is
+> ready to reduce the period between end of link training and video
+> start to meet Link Layer CTS requirement.  This fixes Link Layer
+> CTS cases 4.3.2.1, 4.3.2.2, 4.3.2.3 and 4.3.2.4.
+>
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
 
-The pointer table is being re-assigned with a value that is never
-read. The assignment is redundant and can be removed.
+Any fixes tag?
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/dsa/sja1105/sja1105_main.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index 6618abba23b3..c65dba3111d7 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -2157,8 +2157,6 @@ static int sja1105_build_vlan_table(struct sja1105_private *priv)
- 	if (!new_vlan)
- 		return -ENOMEM;
- 
--	table = &priv->static_config.tables[BLK_IDX_VLAN_LOOKUP];
--
- 	for (i = 0; i < VLAN_N_VID; i++)
- 		new_vlan[i].vlanid = VLAN_N_VID;
- 
--- 
-2.31.1
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
