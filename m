@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CAE3D253D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5393C3D2540
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhGVNaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:30:25 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53066 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232105AbhGVNaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:30:24 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id DE25922674;
-        Thu, 22 Jul 2021 14:10:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1626963058; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=znqZXEBvAg7dEbM5a2gQPS3YjNE0Yq928OYkD/5qLAI=;
-        b=AZV3erzgxGYb6H+cbwB2i3k4ARqpI4fnEI/VqXsoGEdXqlEn3d7a3CXeJ7rd9yjpMP4j8S
-        cgatLfrtzOrSESMbl05PfuIciKEyDPg1Z7EIFjTnwCGdEcybeT3Ol/OBHce0iDUEnNymg2
-        bbuZ9x1ORBRKhWbdB2VxMcvuRNzWA+M=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8FAF13DCE;
-        Thu, 22 Jul 2021 14:10:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UawqJ3J8+WC9VAAAMHmgww
-        (envelope-from <ailiop@suse.com>); Thu, 22 Jul 2021 14:10:58 +0000
-Date:   Thu, 22 Jul 2021 16:10:55 +0200
-From:   Anthony Iliopoulos <ailiop@suse.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dma-debug: fix debugfs initialization order
-Message-ID: <YPl8b7KuoNBg52LE@technoir>
-References: <20210722091818.13434-1-ailiop@suse.com>
- <1ea36b32-9bbc-a611-402d-9fa196eda166@arm.com>
+        id S232305AbhGVNbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:31:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232105AbhGVNbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:31:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9687C6128D;
+        Thu, 22 Jul 2021 14:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1626963104;
+        bh=V+sLG4qAXAhb4gZ8Cas6iEjPeFVyhWhtpTlGXEov5Lg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jN3HspfSGQrcBDlVWnOQq3eXWx4ndzEz0xp2E9yZsR8SpacrmA5QoUbdA6hhl89mD
+         zmJ74NCQojb5GKkcdVTrQEuFt3TqlT9st9AHgcrvqOWQ9OEY8EP4go0U/i0f+B1RgL
+         V6uqIem/q9mWdBniNzOgU2c2VkABNKNIi9y8KQac=
+Date:   Thu, 22 Jul 2021 16:11:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Joe Korty <joe.korty@concurrent-rt.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] 4.4.262: infinite loop in futex_unlock_pi (EAGAIN loop)
+Message-ID: <YPl8nfZBjgmSnE7N@kroah.com>
+References: <20210719162418.GA28003@zipoli.concurrent-rt.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1ea36b32-9bbc-a611-402d-9fa196eda166@arm.com>
+In-Reply-To: <20210719162418.GA28003@zipoli.concurrent-rt.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 11:10:24AM +0100, Robin Murphy wrote:
-> On 2021-07-22 10:18, Anthony Iliopoulos wrote:
-> > Due to link order, dma_debug_init is called before debugfs has a chance
-> > to initialize (via debugfs_init which also happens in the core initcall
-> > stage), so the directories for dma-debug are never created.
-> > 
-> > Move the dma_debug_init initcall from core to postcore stage so that
-> > debugfs will already be initialized by the time this is called, making
-> > it oblivious to link-ordering.
+On Mon, Jul 19, 2021 at 12:24:18PM -0400, Joe Korty wrote:
+> [BUG] 4.4.262: infinite loop in futex_unlock_pi (EAGAIN loop)
 > 
-> Playing initcall chicken here doesn't work so well - the later you
-> initialise dma-debug itself, the more chance it has to miss early mappings
-> and raise false positives later. As discussed previously[1] the better
-> solution would be to decouple the debugfs setup so that just that part can
-> be deferred until core_initcall_sync or later.
+>    [ replicator, attached ]
+>    [ workaround patch that crudely clears the loop, attached ]
+>    [ 4.4.256 does _not_ have this problem, 4.4.262 is known to have it ]
+> 
+> When a certain, secure-site application is run on 4.4.262, it locks up and
+> is unkillable.  Crash(8) and sysrq backtraces show that the application
+> is looping in the kernel in futex_unlock_pi.
+> 
+> Between 4.4.256 and .257, 4.4 got this 4.12 patch backported into it:
+> 
+>    73d786b ("[PATCH] futex: Rework inconsistent rt_mutex/futex_q state")
+> 
+> This patch has the following comment:
+> 
+>    The only problem is that this breaks RT timeliness guarantees. That
+>    is, consider the following scenario:
+> 
+>       T1 and T2 are both pinned to CPU0. prio(T2) > prio(T1)
+> 
+>         CPU0
+> 
+>         T1
+>           lock_pi()
+>           queue_me()  <- Waiter is visible
+>    
+>         preemption
+> 
+>         T2
+>           unlock_pi()
+>             loops with -EAGAIN forever
+> 
+>     Which is undesirable for PI primitives. Future patches will rectify
+>     this.
+> 
+> This describes the situation exactly.  To prove, we developed a little
+> kernel patch that, on loop detection, puts a message into the kernel log for
+> just the first occurrence, keeps a count of the number of occurrences seen
+> since boot, and tries to break out of the loop via usleep_range(1000,1000).
+> Note that the patch is not really needed for replication.  It merely shows,
+> by 'fixing' the problem, that it really is the EAGAIN loop that triggers
+> the lockup.
+> 
+> Along with this patch, we submit a replicator.  Running this replicator
+> with this patch, it can be seen that 4.4.256 does not have the problem.
+> 4.4.267 and the latest 4.4, 4.4.275, do.  In addition, 4.9.274 (tested
+> w/o the patch) does not have the problem.
+> 
+> >From this pattern there may be some futex fixup patch that was ported
+> back into 4.9 but failed to make it to 4.4.
 
-Thanks for pointing it out, makes sense. What about the following:
+Odd, I can't seem to find anything that we missed.  Can you dig to see
+if there is something that we need to do here so we can resolve this?
 
-From: Anthony Iliopoulos <ailiop@suse.com>
+thanks,
 
-Due to link order, dma_debug_init is called before debugfs has a chance
-to initialize (via debugfs_init which also happens in the core initcall
-stage), so the directories for dma-debug are never created.
-
-Decouple dma_debug_fs_init from dma_debug_init and defer its init until
-core_initcall_sync (after debugfs has been initialized) while letting
-dma-debug initialization occur as soon as possible to catch any early
-mappings, as suggested in [1].
-
-[1] https://lore.kernel.org/linux-iommu/YIgGa6yF%2Fadg8OSN@kroah.com/
-
-Fixes: 15b28bbcd567 ("dma-debug: move initialization to common code")
-Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
----
- kernel/dma/debug.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-index 14de1271463f..445754529917 100644
---- a/kernel/dma/debug.c
-+++ b/kernel/dma/debug.c
-@@ -794,7 +794,7 @@ static int dump_show(struct seq_file *seq, void *v)
- }
- DEFINE_SHOW_ATTRIBUTE(dump);
-
--static void dma_debug_fs_init(void)
-+static int __init dma_debug_fs_init(void)
- {
- 	struct dentry *dentry = debugfs_create_dir("dma-api", NULL);
-
-@@ -807,7 +807,10 @@ static void dma_debug_fs_init(void)
- 	debugfs_create_u32("nr_total_entries", 0444, dentry, &nr_total_entries);
- 	debugfs_create_file("driver_filter", 0644, dentry, NULL, &filter_fops);
- 	debugfs_create_file("dump", 0444, dentry, NULL, &dump_fops);
-+
-+	return 0;
- }
-+core_initcall_sync(dma_debug_fs_init);
-
- static int device_dma_allocations(struct device *dev, struct dma_debug_entry **out_entry)
- {
-@@ -892,8 +895,6 @@ static int dma_debug_init(void)
- 		spin_lock_init(&dma_entry_hash[i].lock);
- 	}
-
--	dma_debug_fs_init();
--
- 	nr_pages = DIV_ROUND_UP(nr_prealloc_entries, DMA_DEBUG_DYNAMIC_ENTRIES);
- 	for (i = 0; i < nr_pages; ++i)
- 		dma_debug_create_entries(GFP_KERNEL);
+greg k-h
