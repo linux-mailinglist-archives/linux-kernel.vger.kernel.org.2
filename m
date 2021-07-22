@@ -2,246 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9983D25AA
+	by mail.lfdr.de (Postfix) with ESMTP id 7129F3D25AB
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhGVNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:44:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55641 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232312AbhGVNoI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232362AbhGVNoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232341AbhGVNoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Jul 2021 09:44:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626963881;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=xxRxJnSuUSBg6S3Mu6d9msoL1c9ep8RmoIwicFHckLo=;
-        b=HixSCSHIQJwsTBxJ1eJEFvsG4oyfhVVgVgUA+n8J88jb30Ep9dWjyGRmGQr/ocQFqi9Nx5
-        rEe2l/LAInU1FAv9kvDqf4YKo8uUmlwIsDsui8e4m1sgff0c1yYdYg3tGPJxaTP92g10QQ
-        754q50nywBTyJ2ZRPi1iJcS7ydYteqw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-Ct5bAETdOJK754ythEqN7g-1; Thu, 22 Jul 2021 10:24:33 -0400
-X-MC-Unique: Ct5bAETdOJK754ythEqN7g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 881D61026200;
-        Thu, 22 Jul 2021 14:24:32 +0000 (UTC)
-Received: from ws.net.home (ovpn-113-182.ams2.redhat.com [10.36.113.182])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8EBCC60C05;
-        Thu, 22 Jul 2021 14:24:31 +0000 (UTC)
-Date:   Thu, 22 Jul 2021 16:24:28 +0200
-From:   Karel Zak <kzak@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        util-linux@vger.kernel.org
-Subject: [ANNOUNCE] util-linux v2.37.1
-Message-ID: <20210722142428.5dbmkxhu7jjqbzfy@ws.net.home>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABBFB6101E;
+        Thu, 22 Jul 2021 14:24:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1626963883;
+        bh=G+uDRcZc1IFxfY5aHQcDf1HzL0J5aeer1ibB+Mfjm3E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XxG+BdajmfZuKtnwgUxRjcPVNg0Ni1/75pqk/kKznx3JaW1/eLcL1H3CCole29CbC
+         cPRjBYRK8bpnqfmH9H9+c907n8/Y8xHb3LDGlJxDmvoJ2qAIkqmLDSJ7n26zikkmG6
+         aB+UMQwq+A6PLdIQRvyRQXgm0YGtXeoytH3vzz2kK7jHWMSjCKX9a/SrVjtJ8Y+ssW
+         4FamyFZcwqQUsg+00vhtL+jk0HaFUKvBOWWo9Rd6LKeVM4UREEX0A6eq7croRxB5rB
+         t4c5zeYQn4oa+xHEYzecspk2P2pYx9wbmgJ22iZr/A0lE8+iUTDM1kF0ikFL+b1IoO
+         uhfFJJbpzr4XA==
+Date:   Thu, 22 Jul 2021 19:54:39 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        tiwai@suse.de, broonie@kernel.org, gregkh@linuxfoundation.org,
+        srinivas.kandagatla@linaro.org,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH 1/6] soundwire: move intel sdw register definitions to
+ sdw_intel.h
+Message-ID: <YPl/p7ynoRoi2auf@matsya>
+References: <20210714024614.9357-1-yung-chuan.liao@linux.intel.com>
+ <20210714024614.9357-2-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210714024614.9357-2-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14-07-21, 10:46, Bard Liao wrote:
+> So it is visible to other drivers.
 
-The util-linux stable release v2.37.1 is available at
- 
-  http://www.kernel.org/pub/linux/utils/util-linux/v2.37/
- 
-Feedback and bug reports, as always, are welcomed.
- 
-  Karel
+More detailed log please, who are others...
 
+Otherwise the changes look fine to me, how do you wnat this to be
+picked? I guess asoc parts are dependent on this
 
-
-util-linux 2.37.1 Release Notes
-===============================
-
-agetty:
-   - do not use atol()  [Karel Zak]
-blockdev:
-   - improve arguments parsing (remove atoi)  [Karel Zak]
-build-sys:
-   - Update configure.ac  [Alex Xu]
-   - add generated man-pages to distribution tarball  [Karel Zak]
-   - display cryptsetup status after ./configure  [Luca Boccassi]
-   - fix {release-version} man pages  [Karel Zak]
-   - install hardlink bash-completion  [Karel Zak]
-   - make re-use of generated man-pages more robust  [Karel Zak]
-   - use $LIBS rather than LDFLAGS  [Karel Zak]
-cfdisk:
-   - do not use atoi()  [Karel Zak]
-   - optimize mountpoint detection for PARTUUID  [Karel Zak]
-dmesg:
-   - fix indentation in man page  [Platon Pronko]
-   - fix possible memory leak [coverity scan]  [Karel Zak]
-   - remove  condition [lgtm scan]  [Karel Zak]
-docs:
-   - add uclampset to AUTHORS file  [Karel Zak]
-   - fix typo in v2.37-ReleaseNotes  [Karel Zak]
-   - update AUTHORS file  [Karel Zak]
-eject:
-   - add __format__ attribute  [Karel Zak]
-   - do not use atoi()  [Karel Zak]
-fdisk:
-   - do not print error message when partition reordering is not needed  [Pali Rohár]
-   - move reorder diag messages to fdisk_reorder_partitions()  [Pali Rohár]
-findmnt:
-   - (verify) fix cache related memory leaks on --nocanonicalize [coverity scan]  [Karel Zak]
-   - (verify) fix memory leak [asan]  [Karel Zak]
-   - add __format__ attribute  [Karel Zak]
-fsck:
-   - check errno after strto..()  [Karel Zak]
-   - do not use atoi()  [Karel Zak]
-fsck.cramfs:
-   - use open+fstat rather than stat+open  [Karel Zak]
-fstrim:
-   - clean return code on --quiet-unsupported  [Karel Zak]
-hardlink:
-   - remove pcre2posix.h support  [Karel Zak]
-hexdump:
-   - correctly display signed single byte integers  [Samir Benmendil]
-   - do not use atoi()  [Karel Zak]
-hwclock:
-   - check errno after strto..()  [Karel Zak]
-   - close adjtime on write error [coverity scan]  [Karel Zak]
-   - fix ul_path_scanf() use  [Karel Zak]
-include/c:
-   - add __format__ attribute  [Karel Zak]
-   - add drop_permissions(), consolidate UID/GID reset  [Karel Zak]
-include/path:
-   - add __format__attribute  [Karel Zak]
-include/strutils:
-   - cleanup strto..() functions  [Karel Zak]
-   - consolidate string to number conversion  [Karel Zak]
-   - fix __format__attribute  [Karel Zak]
-   - fix heap-buffer-overflow in normalize_whitespace()  [Karel Zak]
-include/strv:
-   - fix format attributes  [Karel Zak]
-ipcs:
-   - check errno after strto..()  [Karel Zak]
-   - do not use atoi()  [Karel Zak]
-kill:
-   - check errno after strto..()  [Karel Zak]
-ldattach:
-   - add __format__ attribute  [Karel Zak]
-lib/loopdev:
-   - perform retry on EAGAIN  [Karel Zak]
-lib/path:
-   - (test) fix ul_new_path() use  [Karel Zak]
-   - fix possible leak when use ul_path_read_string() [coverity scan]  [Karel Zak]
-   - improve ul_path_readlink() to be more robust  [Karel Zak]
-libblkid:
-   - Add hyphens to UUID string representation in Stratis superblock parsing  [John Baublitz]
-   - check errno after strto..()  [Karel Zak]
-   - vfat  Fix reading FAT16 boot label and serial id  [Pali Rohár]
-   - vfat  Fix reading FAT32 boot label  [Pali Rohár]
-libfdisk:
-   - add and fix __format__ attributes  [Karel Zak]
-libmount:
-   - add __format__ attribute  [Karel Zak]
-   - check errno after strto..()  [Karel Zak]
-libsmartcols:
-   - fix bare array on JSON output  [Karel Zak]
-libuuid:
-   - check errno after strto..()  [Karel Zak]
-logger:
-   - add __format__ attribute  [Karel Zak]
-login:
-   - add callback for close_range()  [Karel Zak]
-   - fix close_range() use  [Karel Zak]
-   - remove obsolete and confusing comment  [Karel Zak]
-lsblk:
-   - fix formatting in -e option  [ratijas]
-   - normalize space in SERIAL and MODEL  [Karel Zak]
-   - use ID_MODEL_ENC is possible  [Karel Zak]
-lscpu:
-   - check errno after strto..()  [Karel Zak]
-   - do not use atoi()  [Karel Zak]
-   - don't use DMI if executed with --sysroot  [Karel Zak]
-   - fix build on powerpc  [Georgy Yakovlev]
-lslocks:
-   - check errno after strto..()  [Karel Zak]
-lslogins:
-   - ask for supplementary groups only once [asan]  [Karel Zak]
-   - check errno after strto..()  [Karel Zak]
-   - consolidate and optimize utmp files use  [Karel Zak]
-   - fix memory leak [asan]  [Karel Zak]
-   - use sd_journal_get_data() in proper way  [Karel Zak]
-lsmem:
-   - check errno after strto..()  [Karel Zak]
-meson:
-   - fix crypt_activate_by_signed_key detection  [Luca Boccassi]
-   - fix dlopen support for cryptsetup  [Luca Boccassi]
-misc:
-   - improve string to number conversions  [Karel Zak]
-mkfs.cramfs:
-   - add comment to explain readlink() use  [Karel Zak]
-mkswap:
-   - fix holes detection (infinite loop and/or stack-buffer-underflow)  [Karel Zak]
-more:
-   - add __format__ attribute  [Karel Zak]
-   - fix null-pointer dereference  [Karel Zak]
-   - fix setuid/setgid order  [Karel Zak]
-mount:
-   - fix roothash signature extension in manpage  [Luca Boccassi]
-   - man-page; add all overlayfs options  [Tj]
-   - mount.8 fix overlayfs nfs_export= indention  [Karel Zak]
-mount.8.adoc:
-   - Remove context options exclusion  [Thiébaud Weksteen]
-   - document SELinux use of nosuid mount flag  [Topi Miettinen]
-namei:
-   - simplify code  [Karel Zak]
-newgrp:
-   - fix memory leak [coverity scan]  [Karel Zak]
-pg:
-   - do not use atoi()  [Karel Zak]
-po:
-   - merge changes  [Karel Zak]
-   - update es.po (from translationproject.org)  [Antonio Ceballos Roa]
-   - update pt_BR.po (from translationproject.org)  [Rafael Fontenelle]
-   - update sr.po (from translationproject.org)  [Мирослав Николић]
-readprofile:
-   - check errno after strto..()  [Karel Zak]
-rename:
-   - use readlink() in more robust way  [Karel Zak]
-rfkill:
-   - Set scols table name to make the json output valid  [Nicolai Dagestad]
-script:
-   - add __format__ attribute  [Karel Zak]
-sulogin:
-   - add missing ifdefs  [Karel Zak]
-   - use explicit_bzero() for buffer with password  [Karel Zak]
-swapon:
-   - do not use atoi()  [Karel Zak]
-test/eject:
-   - guard asan LD_PRELOAD with use-system-commands check  [Ross Burton]
-tests:
-   - check correct log file for errors in blkdiscard test  [Ross Burton]
-   - don't hardcode /bin/kill in the kill tests  [Ross Burton]
-   - fix lsns test on kernels without USER namespaces  [Anatoly Pugachev]
-   - mark ul/ul as a known failure  [Ross Burton]
-   - skip if scsi_debug model file is not accessible  [Karel Zak]
-   - update sfdisk reorder test  [Karel Zak]
-tools:
-   - report and use LDFLAGS in tools/config-gen  [Karel Zak]
-uclampset:
-   - Fix left over optind++  [Qais Yousef]
-utmpdump:
-   - do not use atoi()  [Karel Zak]
-verity:
-   - fix verity.roothashsig only working as last parameter  [Luca Boccassi]
-wall:
-   - add __format__ attribute  [Karel Zak]
-wipefs:
-   - check errno after strto..()  [Karel Zak]
+> 
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+> ---
+>  drivers/soundwire/intel.c           | 74 ---------------------------
+>  drivers/soundwire/intel_init.c      |  6 ---
+>  include/linux/soundwire/sdw_intel.h | 79 +++++++++++++++++++++++++++++
+>  3 files changed, 79 insertions(+), 80 deletions(-)
+> 
+> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
+> index c11e3d8cd308..15668d6fecd6 100644
+> --- a/drivers/soundwire/intel.c
+> +++ b/drivers/soundwire/intel.c
+> @@ -40,80 +40,6 @@ static int md_flags;
+>  module_param_named(sdw_md_flags, md_flags, int, 0444);
+>  MODULE_PARM_DESC(sdw_md_flags, "SoundWire Intel Master device flags (0x0 all off)");
+>  
+> -/* Intel SHIM Registers Definition */
+> -#define SDW_SHIM_LCAP			0x0
+> -#define SDW_SHIM_LCTL			0x4
+> -#define SDW_SHIM_IPPTR			0x8
+> -#define SDW_SHIM_SYNC			0xC
+> -
+> -#define SDW_SHIM_CTLSCAP(x)		(0x010 + 0x60 * (x))
+> -#define SDW_SHIM_CTLS0CM(x)		(0x012 + 0x60 * (x))
+> -#define SDW_SHIM_CTLS1CM(x)		(0x014 + 0x60 * (x))
+> -#define SDW_SHIM_CTLS2CM(x)		(0x016 + 0x60 * (x))
+> -#define SDW_SHIM_CTLS3CM(x)		(0x018 + 0x60 * (x))
+> -#define SDW_SHIM_PCMSCAP(x)		(0x020 + 0x60 * (x))
+> -
+> -#define SDW_SHIM_PCMSYCHM(x, y)		(0x022 + (0x60 * (x)) + (0x2 * (y)))
+> -#define SDW_SHIM_PCMSYCHC(x, y)		(0x042 + (0x60 * (x)) + (0x2 * (y)))
+> -#define SDW_SHIM_PDMSCAP(x)		(0x062 + 0x60 * (x))
+> -#define SDW_SHIM_IOCTL(x)		(0x06C + 0x60 * (x))
+> -#define SDW_SHIM_CTMCTL(x)		(0x06E + 0x60 * (x))
+> -
+> -#define SDW_SHIM_WAKEEN			0x190
+> -#define SDW_SHIM_WAKESTS		0x192
+> -
+> -#define SDW_SHIM_LCTL_SPA		BIT(0)
+> -#define SDW_SHIM_LCTL_SPA_MASK		GENMASK(3, 0)
+> -#define SDW_SHIM_LCTL_CPA		BIT(8)
+> -#define SDW_SHIM_LCTL_CPA_MASK		GENMASK(11, 8)
+> -
+> -#define SDW_SHIM_SYNC_SYNCPRD_VAL_24	(24000 / SDW_CADENCE_GSYNC_KHZ - 1)
+> -#define SDW_SHIM_SYNC_SYNCPRD_VAL_38_4	(38400 / SDW_CADENCE_GSYNC_KHZ - 1)
+> -#define SDW_SHIM_SYNC_SYNCPRD		GENMASK(14, 0)
+> -#define SDW_SHIM_SYNC_SYNCCPU		BIT(15)
+> -#define SDW_SHIM_SYNC_CMDSYNC_MASK	GENMASK(19, 16)
+> -#define SDW_SHIM_SYNC_CMDSYNC		BIT(16)
+> -#define SDW_SHIM_SYNC_SYNCGO		BIT(24)
+> -
+> -#define SDW_SHIM_PCMSCAP_ISS		GENMASK(3, 0)
+> -#define SDW_SHIM_PCMSCAP_OSS		GENMASK(7, 4)
+> -#define SDW_SHIM_PCMSCAP_BSS		GENMASK(12, 8)
+> -
+> -#define SDW_SHIM_PCMSYCM_LCHN		GENMASK(3, 0)
+> -#define SDW_SHIM_PCMSYCM_HCHN		GENMASK(7, 4)
+> -#define SDW_SHIM_PCMSYCM_STREAM		GENMASK(13, 8)
+> -#define SDW_SHIM_PCMSYCM_DIR		BIT(15)
+> -
+> -#define SDW_SHIM_PDMSCAP_ISS		GENMASK(3, 0)
+> -#define SDW_SHIM_PDMSCAP_OSS		GENMASK(7, 4)
+> -#define SDW_SHIM_PDMSCAP_BSS		GENMASK(12, 8)
+> -#define SDW_SHIM_PDMSCAP_CPSS		GENMASK(15, 13)
+> -
+> -#define SDW_SHIM_IOCTL_MIF		BIT(0)
+> -#define SDW_SHIM_IOCTL_CO		BIT(1)
+> -#define SDW_SHIM_IOCTL_COE		BIT(2)
+> -#define SDW_SHIM_IOCTL_DO		BIT(3)
+> -#define SDW_SHIM_IOCTL_DOE		BIT(4)
+> -#define SDW_SHIM_IOCTL_BKE		BIT(5)
+> -#define SDW_SHIM_IOCTL_WPDD		BIT(6)
+> -#define SDW_SHIM_IOCTL_CIBD		BIT(8)
+> -#define SDW_SHIM_IOCTL_DIBD		BIT(9)
+> -
+> -#define SDW_SHIM_CTMCTL_DACTQE		BIT(0)
+> -#define SDW_SHIM_CTMCTL_DODS		BIT(1)
+> -#define SDW_SHIM_CTMCTL_DOAIS		GENMASK(4, 3)
+> -
+> -#define SDW_SHIM_WAKEEN_ENABLE		BIT(0)
+> -#define SDW_SHIM_WAKESTS_STATUS		BIT(0)
+> -
+> -/* Intel ALH Register definitions */
+> -#define SDW_ALH_STRMZCFG(x)		(0x000 + (0x4 * (x)))
+> -#define SDW_ALH_NUM_STREAMS		64
+> -
+> -#define SDW_ALH_STRMZCFG_DMAT_VAL	0x3
+> -#define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
+> -#define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
+> -
+>  enum intel_pdi_type {
+>  	INTEL_PDI_IN = 0,
+>  	INTEL_PDI_OUT = 1,
+> diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
+> index 9e283bef53d2..03ff69ab1797 100644
+> --- a/drivers/soundwire/intel_init.c
+> +++ b/drivers/soundwire/intel_init.c
+> @@ -18,12 +18,6 @@
+>  #include "cadence_master.h"
+>  #include "intel.h"
+>  
+> -#define SDW_SHIM_LCAP		0x0
+> -#define SDW_SHIM_BASE		0x2C000
+> -#define SDW_ALH_BASE		0x2C800
+> -#define SDW_LINK_BASE		0x30000
+> -#define SDW_LINK_SIZE		0x10000
+> -
+>  static void intel_link_dev_release(struct device *dev)
+>  {
+>  	struct auxiliary_device *auxdev = to_auxiliary_dev(dev);
+> diff --git a/include/linux/soundwire/sdw_intel.h b/include/linux/soundwire/sdw_intel.h
+> index 1ebea7764011..7fce6aee0c36 100644
+> --- a/include/linux/soundwire/sdw_intel.h
+> +++ b/include/linux/soundwire/sdw_intel.h
+> @@ -7,6 +7,85 @@
+>  #include <linux/irqreturn.h>
+>  #include <linux/soundwire/sdw.h>
+>  
+> +#define SDW_SHIM_BASE			0x2C000
+> +#define SDW_ALH_BASE			0x2C800
+> +#define SDW_LINK_BASE			0x30000
+> +#define SDW_LINK_SIZE			0x10000
+> +
+> +/* Intel SHIM Registers Definition */
+> +#define SDW_SHIM_LCAP			0x0
+> +#define SDW_SHIM_LCTL			0x4
+> +#define SDW_SHIM_IPPTR			0x8
+> +#define SDW_SHIM_SYNC			0xC
+> +
+> +#define SDW_SHIM_CTLSCAP(x)		(0x010 + 0x60 * (x))
+> +#define SDW_SHIM_CTLS0CM(x)		(0x012 + 0x60 * (x))
+> +#define SDW_SHIM_CTLS1CM(x)		(0x014 + 0x60 * (x))
+> +#define SDW_SHIM_CTLS2CM(x)		(0x016 + 0x60 * (x))
+> +#define SDW_SHIM_CTLS3CM(x)		(0x018 + 0x60 * (x))
+> +#define SDW_SHIM_PCMSCAP(x)		(0x020 + 0x60 * (x))
+> +
+> +#define SDW_SHIM_PCMSYCHM(x, y)		(0x022 + (0x60 * (x)) + (0x2 * (y)))
+> +#define SDW_SHIM_PCMSYCHC(x, y)		(0x042 + (0x60 * (x)) + (0x2 * (y)))
+> +#define SDW_SHIM_PDMSCAP(x)		(0x062 + 0x60 * (x))
+> +#define SDW_SHIM_IOCTL(x)		(0x06C + 0x60 * (x))
+> +#define SDW_SHIM_CTMCTL(x)		(0x06E + 0x60 * (x))
+> +
+> +#define SDW_SHIM_WAKEEN			0x190
+> +#define SDW_SHIM_WAKESTS		0x192
+> +
+> +#define SDW_SHIM_LCTL_SPA		BIT(0)
+> +#define SDW_SHIM_LCTL_SPA_MASK		GENMASK(3, 0)
+> +#define SDW_SHIM_LCTL_CPA		BIT(8)
+> +#define SDW_SHIM_LCTL_CPA_MASK		GENMASK(11, 8)
+> +
+> +#define SDW_SHIM_SYNC_SYNCPRD_VAL_24	(24000 / SDW_CADENCE_GSYNC_KHZ - 1)
+> +#define SDW_SHIM_SYNC_SYNCPRD_VAL_38_4	(38400 / SDW_CADENCE_GSYNC_KHZ - 1)
+> +#define SDW_SHIM_SYNC_SYNCPRD		GENMASK(14, 0)
+> +#define SDW_SHIM_SYNC_SYNCCPU		BIT(15)
+> +#define SDW_SHIM_SYNC_CMDSYNC_MASK	GENMASK(19, 16)
+> +#define SDW_SHIM_SYNC_CMDSYNC		BIT(16)
+> +#define SDW_SHIM_SYNC_SYNCGO		BIT(24)
+> +
+> +#define SDW_SHIM_PCMSCAP_ISS		GENMASK(3, 0)
+> +#define SDW_SHIM_PCMSCAP_OSS		GENMASK(7, 4)
+> +#define SDW_SHIM_PCMSCAP_BSS		GENMASK(12, 8)
+> +
+> +#define SDW_SHIM_PCMSYCM_LCHN		GENMASK(3, 0)
+> +#define SDW_SHIM_PCMSYCM_HCHN		GENMASK(7, 4)
+> +#define SDW_SHIM_PCMSYCM_STREAM		GENMASK(13, 8)
+> +#define SDW_SHIM_PCMSYCM_DIR		BIT(15)
+> +
+> +#define SDW_SHIM_PDMSCAP_ISS		GENMASK(3, 0)
+> +#define SDW_SHIM_PDMSCAP_OSS		GENMASK(7, 4)
+> +#define SDW_SHIM_PDMSCAP_BSS		GENMASK(12, 8)
+> +#define SDW_SHIM_PDMSCAP_CPSS		GENMASK(15, 13)
+> +
+> +#define SDW_SHIM_IOCTL_MIF		BIT(0)
+> +#define SDW_SHIM_IOCTL_CO		BIT(1)
+> +#define SDW_SHIM_IOCTL_COE		BIT(2)
+> +#define SDW_SHIM_IOCTL_DO		BIT(3)
+> +#define SDW_SHIM_IOCTL_DOE		BIT(4)
+> +#define SDW_SHIM_IOCTL_BKE		BIT(5)
+> +#define SDW_SHIM_IOCTL_WPDD		BIT(6)
+> +#define SDW_SHIM_IOCTL_CIBD		BIT(8)
+> +#define SDW_SHIM_IOCTL_DIBD		BIT(9)
+> +
+> +#define SDW_SHIM_CTMCTL_DACTQE		BIT(0)
+> +#define SDW_SHIM_CTMCTL_DODS		BIT(1)
+> +#define SDW_SHIM_CTMCTL_DOAIS		GENMASK(4, 3)
+> +
+> +#define SDW_SHIM_WAKEEN_ENABLE		BIT(0)
+> +#define SDW_SHIM_WAKESTS_STATUS		BIT(0)
+> +
+> +/* Intel ALH Register definitions */
+> +#define SDW_ALH_STRMZCFG(x)		(0x000 + (0x4 * (x)))
+> +#define SDW_ALH_NUM_STREAMS		64
+> +
+> +#define SDW_ALH_STRMZCFG_DMAT_VAL	0x3
+> +#define SDW_ALH_STRMZCFG_DMAT		GENMASK(7, 0)
+> +#define SDW_ALH_STRMZCFG_CHN		GENMASK(19, 16)
+> +
+>  /**
+>   * struct sdw_intel_stream_params_data: configuration passed during
+>   * the @params_stream callback, e.g. for interaction with DSP
+> -- 
+> 2.17.1
 
 -- 
- Karel Zak  <kzak@redhat.com>
- http://karelzak.blogspot.com
-
+~Vinod
