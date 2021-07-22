@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98A43D2110
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EE73D2104
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 11:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhGVI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 04:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231463AbhGVI6U (ORCPT
+        id S231390AbhGVI5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 04:57:53 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:41953 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231280AbhGVI5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 04:58:20 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08A6C061757;
-        Thu, 22 Jul 2021 02:38:55 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n11so3811614plc.2;
-        Thu, 22 Jul 2021 02:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MuMbiBM7YxAW87DH+qAJXu3APZbrJ75lW5QQXZfYU58=;
-        b=ajsfwRT77Z9EbNaVAyA9I8jZs3BGroEX6WOi0qane/rs14eli9dewk2pAfpz8+X5HS
-         MtTAhJ3j3UMZtcKTjtMbrdMlDq4vi4gEFeAr5GGCf9oj0s0nsIySOKsw5sJ3uLrmZe2X
-         fWnADyjgnxDkNTOKTTe6JJwAQ4tWVdd45f7bdxhe0j6LEklVk+8g+6nC4mUvoV8VH42A
-         Jm5q1MDUiggF8dXIMqceZCBG1atwLlxTwjXsXQO+OIGu2HE/LYCygEdiC9ujPfhBfNMk
-         xMAvjfxjs1ABEdRKz1lCug4NiQhmW7udUIUERo8jaeNy+VN4p5Fukn+ygkd9UkRwLJV5
-         DvAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MuMbiBM7YxAW87DH+qAJXu3APZbrJ75lW5QQXZfYU58=;
-        b=sIN920SrEtUo770T4MAwEGtM5AeGUdp6kgmbFef/IMoS67FIRGfNoO0WsPJy2gGlSw
-         VZLQlIkTJsVzFjxUT/b5Wyx/9qd8ycDlVkgKMmj15YC8fkUze4MwH22cYgitxJy2XUSH
-         Iwx9jsPtvmRVqo8eZlUANIiDfHT+SZp9UAql17nSZ8+XD7Pw52xe5aJMzibZwKHWx8JJ
-         HHfYPI6FIfIuyN+3EQ4tDilrZcW6AnFch29RaSHgXOkusS5vqtCGiyOZsQ7lKomGX2r7
-         kSaYRrc6Z67b1OQ4KxMof4Vc0jb7ITsxWyOvPW0EMsBPH87K6FtfoZl+BReW7MjXJ8a5
-         4w4Q==
-X-Gm-Message-State: AOAM532Da/d2mP/hbv3nr+nysCHNBgKNZLT7NHMVvKQ93jPvto1Kr3vg
-        yZEghl19RzkTVRdplvBKtQvtjJLXi8DzJeu+Reo=
-X-Google-Smtp-Source: ABdhPJyzhzXA/hG7Rr1mBzyRkHYgREWpgxUI1OzzB5MR3T7ZAB+Szt3xEBP3jbpwYoMfsgxa8AtdYgJHpcudOKg+mKE=
-X-Received: by 2002:a63:5a5b:: with SMTP id k27mr40486739pgm.74.1626946735354;
- Thu, 22 Jul 2021 02:38:55 -0700 (PDT)
+        Thu, 22 Jul 2021 04:57:51 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BB3525816EA;
+        Thu, 22 Jul 2021 05:38:26 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 22 Jul 2021 05:38:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=fPOCX/2GJ3M7cJqK5A8WsdKaQFZ
+        TFDE51BgTgEgH6K4=; b=RjJE3ndxavrfIPS4AxsI8NhCYTRZCu9J+6gMqiZHzv+
+        Diw3Mwt0D6aQIDwV/oH4Z2GL7uAtLZvnFQNQ+XxRMBDx59IzLpcMZkYO/DN3C3Ps
+        VwlzPu72jd5mT1yaNBt6TEMPSjFCTjnrzVkrQFGjnDy/EXdVspmmcJhh4SXDNiUN
+        fpghmptooEg2VEs+QhUbwGqquri2e4YhfgLnTdI36uvaX+i9pCS/8viqbinfrdlp
+        YYfjrQcQzJIicA1e8U+TJmrrBqC9d1K5+oBzonsncG5Uuybi7Q0msARZEB01UlTy
+        ceZIoj2HEdXcJd2N7Osc5lwE/5app9iHRw15IGvkB2Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fPOCX/
+        2GJ3M7cJqK5A8WsdKaQFZTFDE51BgTgEgH6K4=; b=bjQlXvnZC+CuosspSwIT1h
+        dCMcanQY5a9Ly/wS/cDZTJmuu/lB5iOXOQVxL9pyi2eMf7J0v0Ad7HX8QfE/BgzJ
+        Qpg22/XPgq1/DT3TbuQNXIS4ABXieAUizbdJZy9FX+vV/y64lSGwfGMt7GMwnmq7
+        vWU8YU7LREKX+akJBgPAUCjbpuWXNnzrib6enSEfwblc3Lc2/XW0WBh7xrElaM0K
+        wNp8Fiogchedc3PfffxWCMey/1GBu6GA6q9KlTmwUeqxjEziDCBnU7FMCG9rzitA
+        WlK6smoPgGPxnELKkTH0p3n3iZeNYokjuW8ElJawdp1j7U4lf+Yx3WkjhwD63f8g
+        ==
+X-ME-Sender: <xms:jzz5YNwVN47A4XUaEcxuxmHqcd_Kar6OZccuB2_tqK6-aM3zYu0xig>
+    <xme:jzz5YNQS3kF0gACnGJ77zqdadSlbaq4yHtyJfV6Ycg2T1D4_UdVv2v4-yJfhLujtv
+    5_LDIPm-i5HLUZpWHY>
+X-ME-Received: <xmr:jzz5YHXUSLsRG14fRcDLmglwuDgw0UDUdKIP_FizKgYnJGpsz5cJLKjl9qzW_tyJs5h8kyARAQ73dZQND6ld4lj_VnhostecoRr3>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeeigdduiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
+    igihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:jzz5YPj_osM1RfLAHNpzhC12FfMgiaj5qIzVH-b8TmlJ_aXtkz6t9A>
+    <xmx:jzz5YPCQQwN7xkpp4As84VtBIy5jkcLWfcw_GwnIB8Z_8UpTu91aRA>
+    <xmx:jzz5YILyIlbbGO0H_rtOxHo6A61CIURr-lcdWn1JhcE1spzE_GEwrA>
+    <xmx:kjz5YD4XiTIS43qslMzSGJBQJKg2k-Wj4YxMoqeWba1lW0pRT0wlIA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 22 Jul 2021 05:38:22 -0400 (EDT)
+Date:   Thu, 22 Jul 2021 11:38:21 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 08/10] drm/panel: raspberrypi-touchscreen: Prevent
+ double-free
+Message-ID: <20210722093821.nnmcldjts2boxctu@gilmour>
+References: <20210720134525.563936-1-maxime@cerno.tech>
+ <20210720134525.563936-9-maxime@cerno.tech>
+ <YPcFrKLq1dhTcOUL@ravnborg.org>
 MIME-Version: 1.0
-References: <20210716133448.24890-1-andriy.shevchenko@linux.intel.com>
- <20210716133448.24890-2-andriy.shevchenko@linux.intel.com> <9117e5212a3b743ca541918ec2b701c159ac752c.camel@nxp.com>
-In-Reply-To: <9117e5212a3b743ca541918ec2b701c159ac752c.camel@nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 22 Jul 2021 12:38:15 +0300
-Message-ID: <CAHp75Vdm8nO-zT0vyKcB1hOXkR7_2RY-2P_fnkjV5BCc+uoqXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] clk: fractional-divider: Introduce NO_PRESCALER flag
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fgqdyjawfptivtlq"
+Content-Disposition: inline
+In-Reply-To: <YPcFrKLq1dhTcOUL@ravnborg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 12:33 PM Liu Ying <victor.liu@nxp.com> wrote:
-> On Fri, 2021-07-16 at 16:34 +0300, Andy Shevchenko wrote:
-> > The newly introduced flag, when set, makes the flow to skip
-> > the assumption that the caller will use an additional 2^scale
-> > prescaler to get the desired clock rate.
+
+--fgqdyjawfptivtlq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jul 20, 2021 at 07:19:40PM +0200, Sam Ravnborg wrote:
+> Hi Maxime,
+> On Tue, Jul 20, 2021 at 03:45:23PM +0200, Maxime Ripard wrote:
+> > The mipi_dsi_device allocated by mipi_dsi_device_register_full() is
+> > already free'd on release.
+> >=20
+> > Fixes: 2f733d6194bd ("drm/panel: Add support for the Raspberry Pi 7" To=
+uchscreen.")
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 >
-> As I mentioned in v1 comment, it seems to be good to decouple the
-> prescaler knowledge from this common fractional divider clk driver.
-> This way, we'll make it simpler and easier to maintain. Also, then, the
-> NO_PRESCALER flag is not needed at all.  However, it seems that two
-> Intel drivers which use the frational divider drivers will be affected
-> and rate negotiation logics need to be implemented for them.  Please
-> consider if it's doable or not.
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-The current driver works for the certain hardware without this change.
-If you think it's better, submit a proposal we will discuss.
+Thanks, I applied it to drm-misc-fixes
 
-> If we ultimately keep the prescaler knowledge here, please consider to
-> add the NO_PRESCALER flag for i.MX7ulp as it hasn't the prescaler IIUC.
+> I did a quick audit (as using grep mostly) to see if other panels had
+> the same bug, but did not find others.
 
-You mean there is a code which is currently using this driver w/o
-taking into account this prescaller flavour? Can you, please, point
-out, I'll definitely update it. Thanks for the catch!
+Yeah, the RaspberryPi panel seems to be the only odd DSI panel not
+controlled through DCS, and the other panels don't have to allocate the
+mipi-dsi device anyway.
 
--- 
-With Best Regards,
-Andy Shevchenko
+No bridge seems to have the issue though.
+
+Maxime
+
+--fgqdyjawfptivtlq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYPk8jQAKCRDj7w1vZxhR
+xYC+AQDajNGQcqMy8pCM0W9q6Ji0vEty86tBT6j+Tct9Hpp/6gD+MlZfK8T/f5sy
+i4i4KkiJB0fJmHJnkohwOa424wZFjAM=
+=NkL/
+-----END PGP SIGNATURE-----
+
+--fgqdyjawfptivtlq--
