@@ -2,248 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6E23D24C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A63B3D24D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 15:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhGVNCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:02:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232145AbhGVNBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:01:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3092B6135B;
-        Thu, 22 Jul 2021 13:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626961276;
-        bh=qlvBJjMXUIlOmf6gGUnZF5/zHM7wmZtptb55cUuKzK8=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=USgBTU/6SfzAnUHlEQbye5k4IWwSN+9eZYhVDqU5eJMmceI8ppi9GMARyaHlyOqy9
-         UbIWnW3pjlsXZsPibsXkWcPj6Pmyi7Cb0i1Ah0ZWib7n9i455q5tSAd8r282p1piTa
-         QM4mQTrUAqsNWM3zUgOwX/9XdV/yR4P2b2hOfSNP7gFsM59VIs3L42ZXyGYraOs4Pm
-         Vkrq0VXJ60GU4bGj0u5p97qOTUpL+RtkE6IywZ4m5/UTvL+05YV0ZBV0Xjbo9hRKfu
-         vUwuR/amAzwBHT/Fj/ajqz1NRtCb8b/B5NSwjtwR2JsLlPN9buCX0WgS38sfyivj+z
-         X6I5Go7m8qbnw==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: use rwlock instead of rwsem for journal
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20210722014149.525166-1-jaegeuk@kernel.org>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <732f3478-b69f-8d95-b472-e66b1fc4fef3@kernel.org>
-Date:   Thu, 22 Jul 2021 21:41:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232214AbhGVNGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:06:55 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:4506 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231925AbhGVNGy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:06:54 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16MDkX6e026150;
+        Thu, 22 Jul 2021 06:47:25 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=+eqMGYBVdJOxU4+iETZGUjH9mWNPoLXvNsQYswa0TKo=;
+ b=QRoTSXU0B//wh9jp+vX/Hxef59YvvZYzNQ+78hhnB6/pSMFhrnl0ISrjsrMJKin2ab9J
+ g8h4/cTKNvFz3usEAi0dKbC5rsG/9604IjEHPzcyfD8cJhAHYyb+9CrhOlWkc4tSvwyW
+ YFlhy++7Ow6TROTkLiMJkXHS2nPry0AWjua1skaPKUjTRMkLOVq8BByCPtRORNtGmAtj
+ MDG1CJRCEVJumxKaKGGnY0yexMTxH6xxajy9h+38j8g0/Er3OE4hx4v5qBNaE5ViO3aP
+ W48i5gilPY83iYRfwzCDW0tvIpAfu0zzX2d6B7eNL63w6l3NKQSsjZJxnasXeku8onAf hA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 39y25bhq8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 22 Jul 2021 06:47:25 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 22 Jul
+ 2021 06:47:24 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Thu, 22 Jul 2021 06:47:23 -0700
+Received: from jerin-lab.marvell.com (jerin-lab.marvell.com [10.28.34.14])
+        by maili.marvell.com (Postfix) with ESMTP id ECA213F7082;
+        Thu, 22 Jul 2021 06:47:20 -0700 (PDT)
+From:   <jerinj@marvell.com>
+To:     <netdev@vger.kernel.org>, <davem@davemloft.net>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     <jerinjacobk@gmail.com>
+Subject: [PATCH net-next v1] octeontx2-af: Enhance mailbox trace entry
+Date:   Thu, 22 Jul 2021 19:15:40 +0530
+Message-ID: <20210722134540.644370-1-jerinj@marvell.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210722014149.525166-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: W2IJMvYWXjV6z1K1UyJjrIexTBmtqBZD
+X-Proofpoint-GUID: W2IJMvYWXjV6z1K1UyJjrIexTBmtqBZD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-22_07:2021-07-22,2021-07-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/22 9:41, Jaegeuk Kim wrote:
-> This tries to fix priority inversion in the below condition resulting in
-> long checkpoint delay.
-> 
-> f2fs_get_node_info()
->   - nat_tree_lock
->    -> sleep in journal_rwsem
->                                       checkpoint
->                                       - waiting for nat_tree_lock
-> 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->   fs/f2fs/node.c    | 16 ++++++++--------
->   fs/f2fs/segment.c | 22 +++++++++++-----------
->   fs/f2fs/segment.h |  2 +-
->   3 files changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-> index 0be9e2d7120e..821a40e02fb4 100644
-> --- a/fs/f2fs/node.c
-> +++ b/fs/f2fs/node.c
-> @@ -567,13 +567,13 @@ int f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
->   	memset(&ne, 0, sizeof(struct f2fs_nat_entry));
->   
->   	/* Check current segment summary */
-> -	down_read(&curseg->journal_rwsem);
-> +	read_lock(&curseg->journal_rwlock);
+From: Jerin Jacob <jerinj@marvell.com>
 
-It seem journal_rwsem covers too many operations, e.g.
+Added mailbox id to name translation on trace entry for
+better tracing output.
 
-- scan_curseg_cache
-  - add_free_nid
-   - f2fs_kmem_cache_alloc
-    - kmem_cache_alloc(__GFP_NOFAIL)
+Before the change:
+otx2_msg_process: [0002:01:00.0] msg:(0x03) error:0
 
-Thanks,
+After the change:
+otx2_msg_process: [0002:01:00.0] msg:(DETACH_RESOURCES) error:0
 
->   	i = f2fs_lookup_journal_in_cursum(journal, NAT_JOURNAL, nid, 0);
->   	if (i >= 0) {
->   		ne = nat_in_journal(journal, i);
->   		node_info_from_raw_nat(ni, &ne);
->   	}
-> -	up_read(&curseg->journal_rwsem);
-> +	read_unlock(&curseg->journal_rwlock);
->   	if (i >= 0) {
->   		up_read(&nm_i->nat_tree_lock);
->   		goto cache;
-> @@ -2338,7 +2338,7 @@ static void scan_curseg_cache(struct f2fs_sb_info *sbi)
->   	struct f2fs_journal *journal = curseg->journal;
->   	int i;
->   
-> -	down_read(&curseg->journal_rwsem);
-> +	read_lock(&curseg->journal_rwlock);
->   	for (i = 0; i < nats_in_cursum(journal); i++) {
->   		block_t addr;
->   		nid_t nid;
-> @@ -2350,7 +2350,7 @@ static void scan_curseg_cache(struct f2fs_sb_info *sbi)
->   		else
->   			remove_free_nid(sbi, nid);
->   	}
-> -	up_read(&curseg->journal_rwsem);
-> +	read_unlock(&curseg->journal_rwlock);
->   }
->   
->   static void scan_free_nid_bits(struct f2fs_sb_info *sbi)
-> @@ -2799,7 +2799,7 @@ static void remove_nats_in_journal(struct f2fs_sb_info *sbi)
->   	struct f2fs_journal *journal = curseg->journal;
->   	int i;
->   
-> -	down_write(&curseg->journal_rwsem);
-> +	write_lock(&curseg->journal_rwlock);
->   	for (i = 0; i < nats_in_cursum(journal); i++) {
->   		struct nat_entry *ne;
->   		struct f2fs_nat_entry raw_ne;
-> @@ -2831,7 +2831,7 @@ static void remove_nats_in_journal(struct f2fs_sb_info *sbi)
->   		__set_nat_cache_dirty(nm_i, ne);
->   	}
->   	update_nats_in_cursum(journal, -i);
-> -	up_write(&curseg->journal_rwsem);
-> +	write_unlock(&curseg->journal_rwlock);
->   }
->   
->   static void __adjust_nat_entry_set(struct nat_entry_set *nes,
-> @@ -2906,7 +2906,7 @@ static int __flush_nat_entry_set(struct f2fs_sb_info *sbi,
->   		to_journal = false;
->   
->   	if (to_journal) {
-> -		down_write(&curseg->journal_rwsem);
-> +		write_lock(&curseg->journal_rwlock);
->   	} else {
->   		page = get_next_nat_page(sbi, start_nid);
->   		if (IS_ERR(page))
-> @@ -2946,7 +2946,7 @@ static int __flush_nat_entry_set(struct f2fs_sb_info *sbi,
->   	}
->   
->   	if (to_journal) {
-> -		up_write(&curseg->journal_rwsem);
-> +		write_unlock(&curseg->journal_rwlock);
->   	} else {
->   		__update_nat_bits(sbi, start_nid, page);
->   		f2fs_put_page(page, 1);
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index f9b7fb785e1d..c397c1c271ec 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -2442,9 +2442,9 @@ static void write_current_sum_page(struct f2fs_sb_info *sbi,
->   
->   	mutex_lock(&curseg->curseg_mutex);
->   
-> -	down_read(&curseg->journal_rwsem);
-> +	read_lock(&curseg->journal_rwlock);
->   	memcpy(&dst->journal, curseg->journal, SUM_JOURNAL_SIZE);
-> -	up_read(&curseg->journal_rwsem);
-> +	read_unlock(&curseg->journal_rwlock);
->   
->   	memcpy(dst->entries, src->entries, SUM_ENTRY_SIZE);
->   	memcpy(&dst->footer, &src->footer, SUM_FOOTER_SIZE);
-> @@ -3876,9 +3876,9 @@ static int read_normal_summaries(struct f2fs_sb_info *sbi, int type)
->   	mutex_lock(&curseg->curseg_mutex);
->   
->   	/* update journal info */
-> -	down_write(&curseg->journal_rwsem);
-> +	write_lock(&curseg->journal_rwlock);
->   	memcpy(curseg->journal, &sum->journal, SUM_JOURNAL_SIZE);
-> -	up_write(&curseg->journal_rwsem);
-> +	write_unlock(&curseg->journal_rwlock);
->   
->   	memcpy(curseg->sum_blk->entries, sum->entries, SUM_ENTRY_SIZE);
->   	memcpy(&curseg->sum_blk->footer, &sum->footer, SUM_FOOTER_SIZE);
-> @@ -4136,7 +4136,7 @@ static void remove_sits_in_journal(struct f2fs_sb_info *sbi)
->   	struct f2fs_journal *journal = curseg->journal;
->   	int i;
->   
-> -	down_write(&curseg->journal_rwsem);
-> +	write_lock(&curseg->journal_rwlock);
->   	for (i = 0; i < sits_in_cursum(journal); i++) {
->   		unsigned int segno;
->   		bool dirtied;
-> @@ -4148,7 +4148,7 @@ static void remove_sits_in_journal(struct f2fs_sb_info *sbi)
->   			add_sit_entry(segno, &SM_I(sbi)->sit_entry_set);
->   	}
->   	update_sits_in_cursum(journal, -i);
-> -	up_write(&curseg->journal_rwsem);
-> +	write_unlock(&curseg->journal_rwlock);
->   }
->   
->   /*
-> @@ -4204,7 +4204,7 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
->   			to_journal = false;
->   
->   		if (to_journal) {
-> -			down_write(&curseg->journal_rwsem);
-> +			write_lock(&curseg->journal_rwlock);
->   		} else {
->   			page = get_next_sit_page(sbi, start_segno);
->   			raw_sit = page_address(page);
-> @@ -4251,7 +4251,7 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
->   		}
->   
->   		if (to_journal)
-> -			up_write(&curseg->journal_rwsem);
-> +			write_unlock(&curseg->journal_rwlock);
->   		else
->   			f2fs_put_page(page, 1);
->   
-> @@ -4432,7 +4432,7 @@ static int build_curseg(struct f2fs_sb_info *sbi)
->   		array[i].sum_blk = f2fs_kzalloc(sbi, PAGE_SIZE, GFP_KERNEL);
->   		if (!array[i].sum_blk)
->   			return -ENOMEM;
-> -		init_rwsem(&array[i].journal_rwsem);
-> +		rwlock_init(&array[i].journal_rwlock);
->   		array[i].journal = f2fs_kzalloc(sbi,
->   				sizeof(struct f2fs_journal), GFP_KERNEL);
->   		if (!array[i].journal)
-> @@ -4509,7 +4509,7 @@ static int build_sit_entries(struct f2fs_sb_info *sbi)
->   		start_blk += readed;
->   	} while (start_blk < sit_blk_cnt);
->   
-> -	down_read(&curseg->journal_rwsem);
-> +	read_lock(&curseg->journal_rwlock);
->   	for (i = 0; i < sits_in_cursum(journal); i++) {
->   		unsigned int old_valid_blocks;
->   
-> @@ -4551,7 +4551,7 @@ static int build_sit_entries(struct f2fs_sb_info *sbi)
->   							old_valid_blocks;
->   		}
->   	}
-> -	up_read(&curseg->journal_rwsem);
-> +	read_unlock(&curseg->journal_rwlock);
->   
->   	if (!err && total_node_blocks != valid_node_count(sbi)) {
->   		f2fs_err(sbi, "SIT is corrupted node# %u vs %u",
-> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-> index 050230c70a53..afb9041dc2e6 100644
-> --- a/fs/f2fs/segment.h
-> +++ b/fs/f2fs/segment.h
-> @@ -306,7 +306,7 @@ struct victim_selection {
->   struct curseg_info {
->   	struct mutex curseg_mutex;		/* lock for consistency */
->   	struct f2fs_summary_block *sum_blk;	/* cached summary block */
-> -	struct rw_semaphore journal_rwsem;	/* protect journal area */
-> +	rwlock_t journal_rwlock;		/* protect journal area */
->   	struct f2fs_journal *journal;		/* cached journal info */
->   	unsigned char alloc_type;		/* current allocation type */
->   	unsigned short seg_type;		/* segment type like CURSEG_XXX_TYPE */
-> 
+Signed-off-by: Jerin Jacob <jerinj@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h
+index 64aa7d350df1..6af97ce69443 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_trace.h
+@@ -14,6 +14,8 @@
+ #include <linux/tracepoint.h>
+ #include <linux/pci.h>
+ 
++#include "mbox.h"
++
+ TRACE_EVENT(otx2_msg_alloc,
+ 	    TP_PROTO(const struct pci_dev *pdev, u16 id, u64 size),
+ 	    TP_ARGS(pdev, id, size),
+@@ -25,8 +27,8 @@ TRACE_EVENT(otx2_msg_alloc,
+ 			   __entry->id = id;
+ 			   __entry->size = size;
+ 	    ),
+-	    TP_printk("[%s] msg:(0x%x) size:%lld\n", __get_str(dev),
+-		      __entry->id, __entry->size)
++	    TP_printk("[%s] msg:(%s) size:%lld\n", __get_str(dev),
++		      otx2_mbox_id2name(__entry->id), __entry->size)
+ );
+ 
+ TRACE_EVENT(otx2_msg_send,
+@@ -88,8 +90,8 @@ TRACE_EVENT(otx2_msg_process,
+ 			   __entry->id = id;
+ 			   __entry->err = err;
+ 	    ),
+-	    TP_printk("[%s] msg:(0x%x) error:%d\n", __get_str(dev),
+-		      __entry->id, __entry->err)
++	    TP_printk("[%s] msg:(%s) error:%d\n", __get_str(dev),
++		      otx2_mbox_id2name(__entry->id), __entry->err)
+ );
+ 
+ #endif /* __RVU_TRACE_H */
+-- 
+2.32.0
+
