@@ -2,165 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0396C3D1C8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C9B3D1C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhGVDQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 23:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhGVDQ3 (ORCPT
+        id S231160AbhGVDTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 23:19:12 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:13138 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230438AbhGVDTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 23:16:29 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740C9C061575;
-        Wed, 21 Jul 2021 20:57:05 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so2392070pjb.0;
-        Wed, 21 Jul 2021 20:57:05 -0700 (PDT)
+        Wed, 21 Jul 2021 23:19:10 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16M3pLIu004763;
+        Thu, 22 Jul 2021 03:59:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=0SLU7ucV7dhNxjJdhvrw7XDr45DyJQQKVqpcWkStXGM=;
+ b=0qdpyHP2XexAy0ofbq3lTxKYJTT8ThT+4QESLm/jFnr41GWa4Q/KB4Km933pugnU03ES
+ tgA2xW/L+LutN2qK5qucdk1umERJsn/XeEiGWWBiL224JKYwdlO8N2Sn0N9LHOY73k//
+ xS1YVDCo7MyxdWCwdhRxj9nqaC9vBbDpkyLFMvjGtIZVbRkoS88F4MB4xc+fZl7So3xk
+ 9gqzq3lDdFRmelvhs9El3ttTez0WT9Imv0wIfWwVGX7trqqr30EiT36SNBhC90YaHbZG
+ hjGyucuuPTClUrbfgMJN2O76Vu9E1yCMY7P/0iJu+Y0N8uSh6cAZGMEg4bitwxKz1VXc 2g== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=0SLU7ucV7dhNxjJdhvrw7XDr45DyJQQKVqpcWkStXGM=;
+ b=K6HHe/kPFJYCx2YWhNk8eRXMg51yj6L3UUuJ6Iq5/I4K3WWT4HYOkYAVp7q1ukIUUsET
+ l76MwZCJR0gaYtN/Rg51aYgekxJ/a1BABCwERlDS9EaE5JBqDNzkruGha61cNL1/ZuVF
+ FD/jFGlCh//ltI7gX8Vci9FRBmAow0yJPD2/NDqP/isnZtd9oVpPlr3xviO0Q23KsXDJ
+ E/Jbpn3P+O37hEdu0veeC1JFXjWEFQvx50OBx3bPByaHwJYWwagHFsnci9O+te2fbqTD
+ c1ZbciczxBmU9vv/E9u+PckBjJJnONN56wbHY34fdONJLb4FJ9LyrwhLuPvQNCEWzyQP EQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39xc6btj23-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Jul 2021 03:59:09 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16M3tNat182261;
+        Thu, 22 Jul 2021 03:59:09 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by aserp3030.oracle.com with ESMTP id 39wunn753m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Jul 2021 03:59:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aiLhaN99jdPYG+Svfjnv5IcuOVWqlZ5/Xwa/SwzJ+96LzANtqnTKmi3sbFKoNkSppztmll7A/jn9MvmLHGEgZyFqQ2DKtDlubwsFC2akYSVibpMjycOKSGl4wouERqw2JMe9nt3VfSjqgEdUxAGS0a8fKQTeScPy2Acpadbo5LG+MCKn0JcpLt5u0cGsMB2D22aQRSLe7+C6xb7B5dg9pGjUKT9cNSqfFrl5KR0X3Aswf7VKV+MM01Ae2kE29hnLT6/67fii5MMiaJxquLkoVYiQIgJ8xHjbM0ZdtoldijkKZviulgK+PWeIrahHcfCoRDNR396EV4WG6t6Pjp2vZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0SLU7ucV7dhNxjJdhvrw7XDr45DyJQQKVqpcWkStXGM=;
+ b=CdFUl30SxkmHyWf3bMWgtg1enGhV5nJXQjseiPJB2BByv9/+uZovA4CbXvzQawwCjpJeerbQ/FOu/r0RPzWa3Mkfbh4I9ppbKnwagIUcam0dPLuPCnwbHXXTUv+vkdE02cSLwD0VfpAMmXmHVUcdNA5u3AKW3uVRaZeHCrb7ekbWbwhZSLSN/2cYgz4g6k5orJiUrQYYEdcHxltfAJAyG3UQESF6ZbFLFVtMEby4iVz4kTdoHtmq6h10eg1nu7ZmXq1D4wuTnwxC/g48botdBeUm5asFy+ADN7Ei2Ct1Pb44hnXlwZnX4Y2liKmyJVLNZFRjhquT/WqQi6winB8QJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eFaQS4/KTkRNWySIsqDTE+2ou4eK63jeGeUW05LyArI=;
-        b=WRrHxI57vFLy9CLbw9XY3i3RwyAa+dasAPV46FWPT0Uzy0dVUroR8dLaJw2FgzW9Fl
-         eI9d4HMfWtixNbkqAp/fNjpfxXSJM/4BmYeuT9Tc3Ha/9sY/nNTDcUFygJtTLnxE7Xid
-         Wit0oyGxrkoKn1DUjdtgtTiNyNVYkT/n5WfaFkQYjK9TiTWdV6RsUtj9cQ++QHFJdApa
-         mqLVuGWVCjqySMyNh1X0WrwO+F6Etc7xU5AZ6LCeyI3XZZxjOcNNim/Y/80w6mdERdH4
-         IQmxnnTpdtiXw3XXPl4QqUTW1xwt7M7GK4h20lByfRgPHYlOGguOCSMq92fJa6cV72J2
-         zIVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eFaQS4/KTkRNWySIsqDTE+2ou4eK63jeGeUW05LyArI=;
-        b=IPkwxoL7FL3WG8KF4j3+xL2xyFHbATmOT9NYcYy8pc4C1jcBYNZpc2enqarh6U25H3
-         0pdx+pHHOhQF2wonIiPR2mr3yMy03+iTnGD5QFrBWzb7VOkhOwev4qADGN0lExj8JvLM
-         03bJqOiuUe8GkJx4Xibtyr64sQw9gxmEDPHv5Muzf6cXCmCxNYUEWv9L/EYCiQ91oJyl
-         +s77eBzexZ9T3w6MhUbzq+ipdiS5rjPAOGFMrUUNV4LtlkWZONssMu9o95s+iEENrBTE
-         ygi8+DUg7KUhos8v4hTHn0e7siTa8C+GheDXTl7eUycad0ed+3hSZ/WvRrukjYfYwt6u
-         Pr9A==
-X-Gm-Message-State: AOAM530JZ60cUNC2bo25M94mJnmwiw6cBhXozlWTnuLEHG1duIO+tgJJ
-        M5tVU2agUVWjoPCH24eKKjf6fQpiAJA=
-X-Google-Smtp-Source: ABdhPJz5Xo38lE2dm/V/uqEGpsaVAeNM+tyhZ8R0tGLZYIrGltFKG/w+3qGJePF+G/QlHK45m80cxg==
-X-Received: by 2002:a17:90a:e54a:: with SMTP id ei10mr6981023pjb.1.1626926224708;
-        Wed, 21 Jul 2021 20:57:04 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x10sm20484384pfh.56.2021.07.21.20.56.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Jul 2021 20:57:03 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] net: dsa: ensure linearized SKBs in case of tail
- taggers
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
-        andrew@lunn.ch, vivien.didelot@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210721215642.19866-1-LinoSanfilippo@gmx.de>
- <20210721215642.19866-2-LinoSanfilippo@gmx.de>
- <20210721233549.mhqlrt3l2bbyaawr@skbuf>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8460fa10-6db7-273c-a2c2-9b54cc660d9a@gmail.com>
-Date:   Wed, 21 Jul 2021 20:56:56 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0SLU7ucV7dhNxjJdhvrw7XDr45DyJQQKVqpcWkStXGM=;
+ b=XZqWbFu8Lvi9ZVu3WIL9DuMcKSvF/HAZNqvCt5Y6OSiX2wT2O68nU1ZRYCPo0hgqIsoP2zFEt5jNoofK9buyuuu1tIeV5+7Vdy8FVH0oFIHDyTe4ClMC8gO84EwpDSbcAnkBMF9NGgRppFZELiD6jFlyDTMgkZK7KYhb9UD38lc=
+Authentication-Results: puri.sm; dkim=none (message not signed)
+ header.d=none;puri.sm; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4454.namprd10.prod.outlook.com (2603:10b6:510:3a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24; Thu, 22 Jul
+ 2021 03:59:06 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::153e:22d1:d177:d4f1%8]) with mapi id 15.20.4331.034; Thu, 22 Jul 2021
+ 03:59:06 +0000
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     bvanassche@acm.org, hch@infradead.org, jejb@linux.ibm.com,
+        kernel@puri.sm, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, stern@rowland.harvard.edu
+Subject: Re: [PATCH v6 0/3] fix runtime PM for SD card readers
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1czrbxapj.fsf@ca-mkp.ca.oracle.com>
+References: <20210704075403.147114-1-martin.kepplinger@puri.sm>
+Date:   Wed, 21 Jul 2021 23:59:02 -0400
+In-Reply-To: <20210704075403.147114-1-martin.kepplinger@puri.sm> (Martin
+        Kepplinger's message of "Sun, 4 Jul 2021 09:54:00 +0200")
+Content-Type: text/plain
+X-ClientProxiedBy: SN4PR0501CA0081.namprd05.prod.outlook.com
+ (2603:10b6:803:22::19) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <20210721233549.mhqlrt3l2bbyaawr@skbuf>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN4PR0501CA0081.namprd05.prod.outlook.com (2603:10b6:803:22::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.7 via Frontend Transport; Thu, 22 Jul 2021 03:59:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ccb2cbb2-4f5f-4ab0-572c-08d94cc50d32
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4454:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB445413B5B2F2BFF1283E82DB8EE49@PH0PR10MB4454.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JWQ9S322CXI/jhNjtUqlDgj1QrxKLV8yLSU7zr54xYKJyXNcCk1FeH1DLgQGT+CsroO7RmpJLIia4/iZFZUlBjWPjeRVFS+YhYXPLo3Y5zoG3a7Kh2ijF+8xtsKGNzcJaX/IcRCj3u2tnYkmmeNQgOxlByzXZd4eW4a5nQARCB+qC33Ituilm3V4agmUwx3o1NNgEqDnz3U/vNC0+XShMbxDkVJEF0AZuE6VowHWV1EmxezK841o3SQBhY3Ctr5T6JssfXlYy6nZYgOLDvcy16uyOPDE7F9IXL9HKZq2GfYHwGkMmo2Px8nB/HLH0jKWYv2dvCvrZ0AAr521pLzyNkx9FBy0TNYMeC7ArE9ppvv/yfrU2lkFqt/3vmsE1361IwLRs+1kXd49gBj4tnkjX3pO9/2Abeho4LvK3BsPP2vhPIe1AKi/zthkDd7Z0d3CXRYKWNYbA+IEh7ZH5jUQpi5iztbohpLBWiO4YqUzfUaDh6vp6AffhDzEIlYrWHg5kym8ZYogNAq+2PDYC/Wn4EKVAeFfUmrvP447GQUZ6cPImp+P3wGyt5MPVDolUJKqMTrYRdbu+eZzUMWnebHwnVvGH+No/9jWzjAwiYMRhEnUNA6Ltn1jnVOl6DxXz9rVk2aW0GE/ypb6c41MBKSRSNaHnEYxHqlbV1O9y1bX5430fogYR6XS2HeyxWg4nn4DzaFFkEw1UbrW7mu6Ygjztg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(316002)(7696005)(8676002)(5660300002)(66476007)(8936002)(36916002)(52116002)(186003)(508600001)(4326008)(66556008)(6666004)(66946007)(956004)(26005)(2906002)(38100700002)(86362001)(6916009)(55016002)(4744005)(38350700002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1HXm0/T5snTMLBozEfvv5d9OTRZgcoRrJqSXWg3Ks1j1uSsSlbHxnnRs9ol+?=
+ =?us-ascii?Q?YkUdJU6czkp2dpbr/ABLQsA3qZ0RcWukXFO9e5Tv+/Dt0yys4VZHNwNWOjWT?=
+ =?us-ascii?Q?35LpoX/xSZf5QyRyf6UrvXAU6T22dtMrpvJ9TZaNH/+artYmQI0Zm46jeWXJ?=
+ =?us-ascii?Q?nq69q8HgbPgrXbPNGvdCHvvJIgdbhFml0t1hYpmwVfxOPa29WGmjNjqAtGdd?=
+ =?us-ascii?Q?BdjpXnUCCdHZ9hl8pSQpSYlgN2A2m17hyricAcGpbvziIMxka6aLda0lQEeO?=
+ =?us-ascii?Q?x0P7LoeNvlwiRK7ljXAmF9WxQIv6acFJ68+I1JgrrJ4+ob5ZDNDTGaal5HaA?=
+ =?us-ascii?Q?o9n6rzu20tMO1fyH2MCtxEzhqNSNu7L2fLOw09ZNTSQN1OR0MC6TbZGOQBAY?=
+ =?us-ascii?Q?+3l3RC05UtHBJYyPg+yBJLok0cQ2fHu53dhnbK4nLK7rzOmCfinrR51atK1j?=
+ =?us-ascii?Q?onh+2Q9ntUGLiBjx2bnqB7dWrcXjMMsTu8h5ddNguRTJ7WLdiBTSx6xFFsUS?=
+ =?us-ascii?Q?YgcZ90Q1X430L274HFeW1zQxlgoGyAI+X3LqQmztakE3UtGqxuEIc0dtSEnP?=
+ =?us-ascii?Q?zPqwkt9l4p0CrpbxzXeDwc0HLOL6Qj8atJZsIi7Es2gOPvMR6j7RI5OoPZpX?=
+ =?us-ascii?Q?de3ose/JBz3RPZqFYDnT2NVfKBciY+n8L65+T7FGQXSYzWQADnYDPDOWXVGM?=
+ =?us-ascii?Q?SowbHCBKCpZ3uX/5RVD7rUmZ+3WhufiwIyPff8/fAL9fVO8XeRWLGEj1xsJp?=
+ =?us-ascii?Q?YlgR5gylrzJ0yjwCGVmDRrKHSfRGN8lFa+e/jBsylBZTZkN/tozqbf9bR+Ls?=
+ =?us-ascii?Q?Vxjv1sfrBMHkyif21tBZoExOHAGfEJRHCAm0/9IMGese4tBug4ilCHrhA+0l?=
+ =?us-ascii?Q?FuX/e8wNExyDVWPbHA9l7gxcyy7owtOo5X396MBYRbFbi6FQrtfL+X5Pxjz1?=
+ =?us-ascii?Q?hrJTEQ3DezxRhF9SRwHzDhRW5ZusXD/aYFJiK5FbnP6AQTjU+Zt0o+FsMiya?=
+ =?us-ascii?Q?7hU/3FOFt5abp9Zf/VmbwCTlVKjLHOmFLsAyRtgUvxxGQOOxCioZU1WUulTP?=
+ =?us-ascii?Q?Hp7gMXHEULEODTx1dIxz6Fc1bklunuUlMaHM5PQxFhmeh4bcpfxdme2KDwJd?=
+ =?us-ascii?Q?CHLvVlqm7UGxcpZOa3nL1rJm035+gYSuIc/CoNa4h4ek3vUglwPGluWOljhX?=
+ =?us-ascii?Q?ZFXjKPLTEIVv606b7imhXuezbrTEj42mWrEERf+H3cbWtm1RrGzLOVmZ5P5T?=
+ =?us-ascii?Q?Ig+f/AtVWWiWUNhrUD9YBXwm0VgH8sH4Mrqo4Y3R3bl9xDqA0hODbmIAKZgk?=
+ =?us-ascii?Q?ryQH+UTw/DGh+hSNJxpHjx4v?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ccb2cbb2-4f5f-4ab0-572c-08d94cc50d32
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jul 2021 03:59:06.5049
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BI80WNtM6uJrawYxPrSLTDbZw5lbNui+nVx4sR9R6cGlnQrgGxfoMhN5/Rupt10XrAQBDU6VU5n23T4YSbaQ5ckQ/ytg+jGohnbNA/SnOwI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4454
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10052 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=999 adultscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107220020
+X-Proofpoint-GUID: pf64l-3G5lHXcJo2HMPkrze_SCRzBB9a
+X-Proofpoint-ORIG-GUID: pf64l-3G5lHXcJo2HMPkrze_SCRzBB9a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Martin,
 
-On 7/21/2021 4:35 PM, Vladimir Oltean wrote:
-> On Wed, Jul 21, 2021 at 11:56:41PM +0200, Lino Sanfilippo wrote:
->> The function skb_put() that is used by tail taggers to make room for the
->> DSA tag must only be called for linearized SKBS. However in case that the
->> slave device inherited features like NETIF_F_HW_SG or NETIF_F_FRAGLIST the
->> SKB passed to the slaves transmit function may not be linearized.
->> Avoid those SKBs by clearing the NETIF_F_HW_SG and NETIF_F_FRAGLIST flags
->> for tail taggers.
->> Furthermore since the tagging protocol can be changed at runtime move the
->> code for setting up the slaves features into dsa_slave_setup_tagger().
->>
->> Suggested-by: Vladimir Oltean <olteanv@gmail.com>
->> Signed-off-by: Lino Sanfilippo <LinoSanfilippo@gmx.de>
->> ---
->>   net/dsa/slave.c | 14 +++++++++-----
->>   1 file changed, 9 insertions(+), 5 deletions(-)
->>
->> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
->> index 22ce11cd770e..ae2a648ed9be 100644
->> --- a/net/dsa/slave.c
->> +++ b/net/dsa/slave.c
->> @@ -1808,6 +1808,7 @@ void dsa_slave_setup_tagger(struct net_device *slave)
->>   	struct dsa_slave_priv *p = netdev_priv(slave);
->>   	const struct dsa_port *cpu_dp = dp->cpu_dp;
->>   	struct net_device *master = cpu_dp->master;
->> +	const struct dsa_switch *ds = dp->ds;
->>   
->>   	slave->needed_headroom = cpu_dp->tag_ops->needed_headroom;
->>   	slave->needed_tailroom = cpu_dp->tag_ops->needed_tailroom;
->> @@ -1819,6 +1820,14 @@ void dsa_slave_setup_tagger(struct net_device *slave)
->>   	slave->needed_tailroom += master->needed_tailroom;
->>   
->>   	p->xmit = cpu_dp->tag_ops->xmit;
->> +
->> +	slave->features = master->vlan_features | NETIF_F_HW_TC;
->> +	if (ds->ops->port_vlan_add && ds->ops->port_vlan_del)
->> +		slave->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
->> +	slave->hw_features |= NETIF_F_HW_TC;
->> +	slave->features |= NETIF_F_LLTX;
->> +	if (slave->needed_tailroom)
->> +		slave->features &= ~(NETIF_F_SG | NETIF_F_FRAGLIST);
->>   }
->>   
->>   static struct lock_class_key dsa_slave_netdev_xmit_lock_key;
->> @@ -1881,11 +1890,6 @@ int dsa_slave_create(struct dsa_port *port)
->>   	if (slave_dev == NULL)
->>   		return -ENOMEM;
->>   
->> -	slave_dev->features = master->vlan_features | NETIF_F_HW_TC;
->> -	if (ds->ops->port_vlan_add && ds->ops->port_vlan_del)
->> -		slave_dev->features |= NETIF_F_HW_VLAN_CTAG_FILTER;
->> -	slave_dev->hw_features |= NETIF_F_HW_TC;
->> -	slave_dev->features |= NETIF_F_LLTX;
->>   	slave_dev->ethtool_ops = &dsa_slave_ethtool_ops;
->>   	if (!is_zero_ether_addr(port->mac))
->>   		ether_addr_copy(slave_dev->dev_addr, port->mac);
->> -- 
->> 2.32.0
->>
-> 
-> I would have probably changed the code in dsa_slave_create just like
-> this:
-> 
-> -	slave->features = master->vlan_features | NETIF_F_HW_TC;
-> +	slave->features = NETIF_F_HW_TC;
-> ...
-> -	slave_dev->vlan_features = master->vlan_features;
-> 
-> and in dsa_slave_setup_tagger:
-> 
-> +	vlan_features = master->vlan_features;
-> +	slave->features &= ~vlan_features;
-> +	if (slave->needed_tailroom)
-> +		vlan_features &= ~(NETIF_F_SG | NETIF_F_FRAGLIST);
-> +	slave->features |= vlan_features;
-> +	slave->vlan_features = vlan_features;
-> 
-> no need to move around NETIF_F_HW_TC and NETIF_F_LLTX. Makes sense?
-> 
-> And I would probably add:
-> 
-> Fixes: 91da11f870f0 ("net: Distributed Switch Architecture protocol support")
+> (According to Alan Stern, "as far as I know, all") SD card readers
+> send MEDIA_CHANGED unit attention notification on (runtime) resume. We
+> cannot use runtime PM with these devices as I/O always fails in that
+> case.
 
-Agreed, with those fixed:
+Made a few changes (added "ignore" to clarify what the flag does and
+twiddled how the workaround is triggered in sd.c). Applied to
+5.15/scsi-staging, thanks!
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Florian
+Martin K. Petersen	Oracle Linux Engineering
