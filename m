@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A25A3D1C3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FB53D1C46
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbhGVC21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 22:28:27 -0400
-Received: from mail-io1-f46.google.com ([209.85.166.46]:41922 "EHLO
-        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbhGVC2Z (ORCPT
+        id S230520AbhGVC3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 22:29:47 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:35737 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230281AbhGVC3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:28:25 -0400
-Received: by mail-io1-f46.google.com with SMTP id z9so4726957iob.8;
-        Wed, 21 Jul 2021 20:08:59 -0700 (PDT)
+        Wed, 21 Jul 2021 22:29:45 -0400
+Received: by mail-io1-f50.google.com with SMTP id d9so4742498ioo.2;
+        Wed, 21 Jul 2021 20:10:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=+2gi8jgpBf2HT6xFKosHY+cehvCKKppSdy1MSQAO4EI=;
-        b=L4yykOExVfUfppAdrBYUcKCSgxZ8MOA92UwmMqrwWDT5KKXPASgMMFpl3fAhxPxmjk
-         geZrOWqyIQPROqPk0yy7vIl//7/VZGaLTpqNRgVDbirAnkpNyZK+vUtD5x4f7aOzP8z7
-         YTBe8MFfGDIdGZkYiXPA0weSYqo7IsL8dzb/CESWj9+XtbZcgrtuBT07VCs5MO2ktXy9
-         RgHDN/ztB29U3HZ9BAx/kwENotN0/Grvs9GPwZlxUdjK8LKfycGWtSDykNTtGnwqE4N4
-         eoueoAaQEoDuHeGrntvv8eAoP1KO9Y6+w+nyraXfgTsYj3GSQKbY+i2WVxfTrPI3LfsF
-         OLcg==
-X-Gm-Message-State: AOAM531/uqYmwClCtZFDuQX0UzAVS/VUPx/pygg/6+n6ajEajMLNV8ZA
-        kmPCujeruHJVjnyGw+PvZw==
-X-Google-Smtp-Source: ABdhPJyIndYW6uP5QZ3fQmNa+7zC+hvqSegKmYKpKp+O8vBpc5Yjh1VWed4Cxb7SD7RkAjPuPE61SA==
-X-Received: by 2002:a05:6638:2416:: with SMTP id z22mr26835174jat.57.1626923339686;
-        Wed, 21 Jul 2021 20:08:59 -0700 (PDT)
+        bh=/Bv4rf7YQ1serjiyqS/1FiWsb2l7aSamYEyxdIo2VN0=;
+        b=XNTEE9rwV3iNjXsEtWmgqVtLaz5JxCOrpHFIFrXlzvRSlc1zovq3BR0TTsZLKi4q4t
+         eT6ZIEWQMQ2VWE4ga8Mqg69VsDFcfR/72La1RWr+0fR+R2UgvWoIoPkyA5kEya8GWqte
+         ujTrWYv3ogsUXZsUlDs/DS35TODB3+sPzRdQzxSnTpTXoNqjOUM69wqjmyvN7ArEcJBA
+         +fh54Cz+ufoFZYfBAbEHJWoV9QkuRTV3IWFxs6rkMT32AoZk0h0kT2VEEYVK6bwROjeF
+         mZzWuZWAHyB/ooC+GQoCf5A7Za10nC9WCWlfnIe+wBXWMb1DalngiuTYxnyJQHOxU3C2
+         bSoQ==
+X-Gm-Message-State: AOAM533RFTHhBMxg7WBTGUWfwF0p85S4ty9GlJVqq2hZ83t0GYhzj4cS
+        v6dPoq5tX+deu65bxLj7Xw==
+X-Google-Smtp-Source: ABdhPJzS0tj6zwZdfwCKsNKfxecVmPvK7aFqbnUATzc8tgJajkisHIneWNe1jj3UawV14SFSjg6GHA==
+X-Received: by 2002:a5d:8747:: with SMTP id k7mr29857539iol.83.1626923420369;
+        Wed, 21 Jul 2021 20:10:20 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id m12sm13717465iln.43.2021.07.21.20.08.58
+        by smtp.gmail.com with ESMTPSA id k19sm14259960ilh.60.2021.07.21.20.10.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 20:08:59 -0700 (PDT)
-Received: (nullmailer pid 3227699 invoked by uid 1000);
-        Thu, 22 Jul 2021 03:08:57 -0000
-Date:   Wed, 21 Jul 2021 21:08:57 -0600
+        Wed, 21 Jul 2021 20:10:19 -0700 (PDT)
+Received: (nullmailer pid 3229546 invoked by uid 1000);
+        Thu, 22 Jul 2021 03:10:16 -0000
+Date:   Wed, 21 Jul 2021 21:10:16 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Daniel Palmer <daniel@0x0f.com>
-Cc:     linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        romain.perier@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] dt-bindings: gpio: msc313: Add offsets for ssd20xd
-Message-ID: <20210722030857.GA3227650@robh.at.kernel.org>
-References: <20210717045627.1739959-1-daniel@0x0f.com>
- <20210717045627.1739959-3-daniel@0x0f.com>
+To:     Kewei Xu <kewei.xu@mediatek.com>
+Cc:     wsa@the-dreams.de, matthias.bgg@gmail.com,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        leilk.liu@mediatek.com, qii.wang@mediatek.com,
+        yuhan.wei@mediatek.com, ot_daolong.zhu@mediatek.com,
+        liguo.zhang@mediatek.com
+Subject: Re: [PATCH v4 5/8] dt-bindings: i2c: add attribute
+ default-timing-adjust
+Message-ID: <20210722031016.GA3228241@robh.at.kernel.org>
+References: <1626517079-9057-1-git-send-email-kewei.xu@mediatek.com>
+ <1626517079-9057-6-git-send-email-kewei.xu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210717045627.1739959-3-daniel@0x0f.com>
+In-Reply-To: <1626517079-9057-6-git-send-email-kewei.xu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Jul 2021 13:56:19 +0900, Daniel Palmer wrote:
-> Add the gpio offsets for the SSD201 and SSD202D chips.
+On Sat, Jul 17, 2021 at 06:17:56PM +0800, Kewei Xu wrote:
+> Add attribute default-timing-adjust for DT-binding document.
 > 
-> Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+> Fixes: be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust support")
+> Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
 > ---
->  include/dt-bindings/gpio/msc313-gpio.h | 71 ++++++++++++++++++++++++++
->  1 file changed, 71 insertions(+)
+>  Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+> index 7c4915bc4439..7b80a11d4d4c 100644
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+> @@ -33,6 +33,8 @@ Optional properties:
+>    - mediatek,have-pmic: platform can control i2c form special pmic side.
+>      Only mt6589 and mt8135 support this feature.
+>    - mediatek,use-push-pull: IO config use push-pull mode.
+> +  - mediatek,default-timing-adjust: use default timing calculation, no timing
+> +    adjustment.
 
-Acked-by: Rob Herring <robh@kernel.org>
+'mediatek,use-default-timing' perhaps as it means don't adjust anything.
+
+>  
+>  Example:
+>  
+> -- 
+> 2.18.0
+> 
+> 
