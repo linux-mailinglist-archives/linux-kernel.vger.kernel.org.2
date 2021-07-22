@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41FC93D2FFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 00:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A753D3003
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 01:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbhGVWPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 18:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhGVWPb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 18:15:31 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F37AC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 15:56:04 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id f190so4214451wmf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 15:56:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IA1VbfCE0XhvLNla6VhKBZi1IOWHetcg7Adztz386vQ=;
-        b=tDQZihy5zIWb38ficSC58M4Lv2GJc/Chu8kZMuPp+SIGEeS7WY4a3H9lDctfzdbv0I
-         DvnLxNxUhbBKQwJSQ+InAfvZtF5mWCQM1VuzOWAFevhdYqEEruucp/Jugpx23+HSfkdW
-         pN/AuljpBwVjsdDrI1+ufPl5bzLN82cVyTjbkK27gkxtVlpFP7Eh35o3C1DcMotWoEVV
-         /rZMVCsZxx3XbSkYOEdHlJqYjMl/iNKNHEBqgOWSqsPqdJ29B3eHuiAyk0fylyRAFOaa
-         J6x1hfnAtllmgKeR+9JKvZh3yLYN2E6JhBlsqqGEuQhWDXaBzykqjfDJ6DTn5w318m5u
-         MKeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IA1VbfCE0XhvLNla6VhKBZi1IOWHetcg7Adztz386vQ=;
-        b=eTGRQgQuE/07Y4vJznexrTWh8krtwhXkVzMEFGABPTWWq9YZyScitwKZ6te8JWriGS
-         mTvwAUV0QXDvsok58aWRt47D6D+Z/us9EY18vFktMToQG5qKqzFUjSgsOFyIMO0VOjNr
-         ixO/SwanGooGYZ/jld/+wNBPjTf3Ntpq2k3qhphf5X6E1Bl/HDa0fUjt7H4D6JhP1B6t
-         nrgTU+5W4cE6aEuETdIWdELg/ZvRmbAbddYlD9FZdAI8U18Z7dYSg2Wa9XTxYmcoR0zA
-         dwlIZ/em/ImQy3minNNKlANuyVHFHawZBueI4K8755WtLgTTTwEovBTlxLTmtJABWo2a
-         ClJw==
-X-Gm-Message-State: AOAM533VNuobZUbDkPWnWE83Ron7TI2sZW37q7KnsFOUSvOefymqM3eV
-        FDX8eMooJA7RKyRDB+pi3MAy
-X-Google-Smtp-Source: ABdhPJy/btBS+ckSaWVgeDzTRKZZIrQZaP0axVhrjkHwwUrxODcWWr77Z9TCISNFbdreFF20YV+YzA==
-X-Received: by 2002:a1c:7f54:: with SMTP id a81mr6144382wmd.107.1626994562893;
-        Thu, 22 Jul 2021 15:56:02 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:209:7bb:435c:1528:220e])
-        by smtp.gmail.com with ESMTPSA id n18sm29939899wrt.89.2021.07.22.15.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 15:56:02 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 23:55:58 +0100
-From:   Wedson Almeida Filho <wedsonaf@google.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Finn Behrens <finn@kloenk.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/17] Rust support
-Message-ID: <YPn3fgDX8uNkF8Vp@google.com>
-References: <20210704202756.29107-1-ojeda@kernel.org>
- <YOVNJuA0ojmeLvKa@infradead.org>
- <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
- <YOWjLmg/Z7kr2+tx@kroah.com>
- <YOW1Nj8+a2Yth2++@google.com>
- <YOXB7FRqldZik2Xn@kroah.com>
- <BFD5298D-00CD-4FEF-AE77-61E69AF78604@kloenk.dev>
- <YOZNuEtNbsLxRM0R@casper.infradead.org>
+        id S232452AbhGVWVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 18:21:05 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34655 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232024AbhGVWVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 18:21:04 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GW7HP30r1z9sS8;
+        Fri, 23 Jul 2021 09:01:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626994897;
+        bh=3fm04KsHELrlYCHVj44lMB2kqBfysC7gl0tV53c3epI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CyFu6CIDE6JV9i1QT03cDPDUUyZQv2FfHEubCRohL4UJAxwHc+2W3cwjRhJJrDW2Q
+         PBiZJGCwXYcWKg73TAIrt6mIJlze8lUTnLcOdRG0e58OvuirVBCqqyxp3T4wjcq1ZX
+         7401WZ4PkSPVO0w5GdICXMjA0ltquPkjaCYB0gofpcPtCYi+znLxk9m+7Zf8LQUeXB
+         PSPBdvQm8mhyZTSlu07bQPMFvdtG+TAz9RIsCxGsAE1zfSMY56234YrzQ+dEMLXz69
+         TqxAf+O59knTnrWgIX2T6yV6jZB+wwl9q01heZbx1DC1sXETTWkyu2MH3Ty6tf/wD6
+         IkQknUI0e7XfQ==
+Date:   Fri, 23 Jul 2021 09:01:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the printk tree
+Message-ID: <20210723090136.04ca2091@canb.auug.org.au>
+In-Reply-To: <20210720174300.018cc765@canb.auug.org.au>
+References: <20210720174300.018cc765@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YOZNuEtNbsLxRM0R@casper.infradead.org>
+Content-Type: multipart/signed; boundary="Sig_/85YQOh=ECckP4nDd/Q17x0G";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Matthew,
+--Sig_/85YQOh=ECckP4nDd/Q17x0G
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 08, 2021 at 01:58:32AM +0100, Matthew Wilcox wrote:
-> Why are you so resistant to writing a real driver that deals with actual
-> hardware?  
+Hi all,
 
-I don't think it was so much resistance but rather a prioritisation thing. Have
-you by any chance seen the gpio driver I posted a couple of days ago?
+On Tue, 20 Jul 2021 17:43:00 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
+>=20
+> After merging the printk tree, today's linux-next build (mips allnoconfig)
+> failed like this:
+>=20
+> arch/mips/kernel/genex.o: In function `handle_mcheck_int':
+> (.text+0x190c): undefined reference to `printk'
+> arch/mips/kernel/genex.o: In function `handle_reserved_int':
+> (.text+0x1c8c): undefined reference to `printk'
+>=20
+> Caused by commit
+>=20
+>   337015573718 ("printk: Userspace format indexing support")
 
-> A simple NVMe driver is less than a thousand lines of C.
-> I know the one in the kernel now is ridiculously complicated and has
-> been thoroughly messed up with abstractions to support NVMeoF instead
-> of having a separate driver, but it's really a simple interface at heart.
+I am still getting these failures.
+--=20
+Cheers,
+Stephen Rothwell
 
-The latest NVMe spec is 452 pages long, which seems to contradict your claim
-that it's simple. In any case, translating less than 1K lines of C shouldn't be
-too hard (after I've built the abstractions, of course). Would you mind sharing
-the simple driver you mention above?
+--Sig_/85YQOh=ECckP4nDd/Q17x0G
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Thanks,
--Wedson
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD5+NAACgkQAVBC80lX
+0GwK2Af8DbveZ3TsSN1vxhZGbl/fGYk2d84+Q7bSCmu4jPa+R/VvsJoX11kNd37j
+HoqPQ/czlt54inbjKm2Odnxr5dq8Mcz9Z4kDI+JbRf83RQ/p5mCcKe7DTAoPmDvQ
+X3ImYhEIUulgQSSLD5wtXQG1UInBj+ngHmjKlDZk6mfeDUlREcJ5czMlO5OuGsAN
+12JCTfCMxaRsLHyJ4L2WHi4EWfXvOZvISLHDWNAyFXJJc5uxEsDwJgD5M03iom5K
+SPbQ7cvxxKXYJUdwSoRPWGUw1zmxsfwZNlyoPhR9Kd4UPvKdQAIl3ys16juosqUj
+UmRhc6PYHDDGfiMXLR87VqCo4LhdrA==
+=N6d1
+-----END PGP SIGNATURE-----
+
+--Sig_/85YQOh=ECckP4nDd/Q17x0G--
