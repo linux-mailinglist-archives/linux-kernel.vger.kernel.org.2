@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720C43D2535
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE613D2539
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 16:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhGVN0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 09:26:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232201AbhGVN0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 09:26:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9637D61244;
-        Thu, 22 Jul 2021 14:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626962813;
-        bh=3hM40cKz7KB3yjzfPuUDFQB9gCDFYNtm77W61sxGU2w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oBZa5vdfi6nywog+T27MttP3U016IrT6QfRm8mjad4wF1rr1nMVIwlsVKkgFkJoGl
-         hwmZxbeyz9T5/kHDgbPjJ8pasvYFK0K/fT+96vxi87MqlGJD35SrmCKHt5DqpsNUMz
-         0UQ1wSCoSZfZ3GaEgXMUjQinrtivqRzNaXQYQoqnZqcO92e9zpMS7hCnfoczPJFzMn
-         JXU7qSLnjgxNiNdQq1MMSUD1/UKcK1kxujuizyXwWU32cYwKzMNfYVlvwBhRZ1o44o
-         pIOq4HEiLqclI4qhMnCu9Le993o9LWnBa/XmluhN2Nsp677ZzL+pveLBre/7WQU9zE
-         DLne98dzrtQQA==
-Date:   Thu, 22 Jul 2021 15:06:46 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andreas Schwab <schwab@suse.de>
-Cc:     Marco Felsch <m.felsch@pengutronix.de>, linux-spi@vger.kernel.org,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: update modalias_show after
- of_device_uevent_modalias support
-Message-ID: <20210722140646.GD5258@sirena.org.uk>
-References: <20210525091003.18228-1-m.felsch@pengutronix.de>
- <mvmwnpi4fya.fsf@suse.de>
+        id S232261AbhGVN3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 09:29:19 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:41482 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232105AbhGVN3R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 09:29:17 -0400
+Received: by mail-wr1-f51.google.com with SMTP id k4so6106331wrc.8;
+        Thu, 22 Jul 2021 07:09:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=iK1KJpHvpUOPSAnxMC0sFeO0mFYkseDin9zJ6vd6y/o=;
+        b=tzLs+OuIGAjr829/m+3N+T3ZlMt0MNxMk1DODgKOtBf1xgvESmgmWoGt5bMYg44uWK
+         QLlJlad1hDHYvZvgOlS4ANw6pW2c/IkQwLwkveLLxVas0EUpZg8ItN1YQlefq7ygf0kc
+         Oje9yuEPPRvfCx1lHWOMIuuk58vGYRGtMmsxOm13GxSUTV1An4JwKRdR9KritO1TflP0
+         qtT+9n49X4Y6c+wyQ9qc3TcBCZEa/5cQ9cJnxNFqjSiXlLdrT0KvgVFr+7fLveYdIHSV
+         8wuhac+uygrYLg3N4KxXZap3AKDNbgWWsMQTBWYUbmgwyDRUWijvbpUayL6grdJohKUy
+         JAvA==
+X-Gm-Message-State: AOAM530PoVZbYwuOmZ+XdhQapR2Lwq6ci5SPkO/IvP3H/0RNUXeb/ZsZ
+        wcKGbnXVW3r5cL5++MkgqNdkT8MbFPY=
+X-Google-Smtp-Source: ABdhPJwsFg9rnIh0o+ptn8qnUio595xkVhBJMZ3UUY3/1ZhZuc5GpdLvsIi+LAVRXcGqQCsh2KMfyg==
+X-Received: by 2002:a5d:6644:: with SMTP id f4mr91617wrw.177.1626962990920;
+        Thu, 22 Jul 2021 07:09:50 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id f26sm24765858wmc.29.2021.07.22.07.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 07:09:50 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 14:09:49 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        kys@microsoft.com, sthemmin@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com, Michael Kelley <mikelley@microsoft.com>
+Subject: [GIT PULL] Hyper-V fixes for 5.14-rc3
+Message-ID: <20210722140949.3knhduxozzaido2r@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Q0rSlbzrZN6k9QnT"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <mvmwnpi4fya.fsf@suse.de>
-X-Cookie: Who's scruffy-looking?
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---Q0rSlbzrZN6k9QnT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-On Thu, Jul 22, 2021 at 03:48:45PM +0200, Andreas Schwab wrote:
-> Commit 3ce6c9e2617e ("spi: add of_device_uevent_modalias support") is
-> incomplete, as it didn't update the modalias_show function to generate the
-> of: modalias string if available.
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-Please don't send new patches in reply to old patches or serieses, this
-makes it harder for both people and tools to understand what is going
-on - it can bury things in mailboxes and make it difficult to keep track
-of what current patches are, both for the new patches and the old ones.
+are available in the Git repository at:
 
---Q0rSlbzrZN6k9QnT
-Content-Type: application/pgp-signature; name="signature.asc"
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210722
 
------BEGIN PGP SIGNATURE-----
+for you to fetch changes up to f5a11c69b69923a4367d24365ad4dff6d4f3fc42:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD5e3UACgkQJNaLcl1U
-h9A/fAf+Pj/MH+ZJBW4jEMf4xl/kU08ThILyzqQ4DX4BYJXMP3ejvmgZx04ys8Qr
-ToW5MvnITVJAanx5JgcBTNnNd9D/Et9CF7/upYRTzvGvDZrdMaOFWyk7HbkeSLbx
-2NCX+IypviPlJDFVMD5D+Zm+o4GnbKyH2B91CVkdM1N/C+DFtjqNRR+55KOVLTBV
-u6huHMp14ViUGJcsxjGFjmDMhHE7QGFYaBW6tIDwth5cJtCs99uc+BA41KGnseNN
-VF9ypN6byQ4AGWUOr2gzTXFVBIWehGuCWx6XPkHoSOjkHjhfGTVcCvGLYa8q17x3
-AtMlJrC8PkMnWXZl1e7i18mE0N/EHg==
-=mLLO
------END PGP SIGNATURE-----
+  Revert "x86/hyperv: fix logical processor creation" (2021-07-21 15:55:43 +0000)
 
---Q0rSlbzrZN6k9QnT--
+----------------------------------------------------------------
+hyperv-fixes for 5.14-rc3
+  - A bug fix from Haiyang for vmbus CPU assignment
+  - Reversion of a bogus patch that went into 5.14-rc1
+----------------------------------------------------------------
+Haiyang Zhang (1):
+      Drivers: hv: vmbus: Fix duplicate CPU assignments within a device
+
+Wei Liu (1):
+      Revert "x86/hyperv: fix logical processor creation"
+
+ arch/x86/kernel/cpu/mshyperv.c |  2 +-
+ drivers/hv/channel_mgmt.c      | 96 ++++++++++++++++++++++++++++--------------
+ 2 files changed, 65 insertions(+), 33 deletions(-)
