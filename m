@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5DA3D28D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693043D2A68
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhGVP7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:59:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34108 "EHLO mail.kernel.org"
+        id S235168AbhGVQLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:11:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232988AbhGVP5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:57:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B42AA61362;
-        Thu, 22 Jul 2021 16:38:03 +0000 (UTC)
+        id S233804AbhGVQGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:06:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 961FE61DAF;
+        Thu, 22 Jul 2021 16:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971884;
-        bh=Hfm3pnE+r7php39eKohzPYd7dfQ8s4ESqxt/l9Dj39M=;
+        s=korg; t=1626972438;
+        bh=wKy5LLd2+rICSp9cO2L0BCG548XkV9zCo29TjeONGgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R6Vlj6p3rcHncUbkJoz9mae7myUzLfrRVfISKA3KKdESFamtDdkzQr1GtyNfJgN4G
-         yFZwG+Y9dII5Dy206fdqoW3XrHJ/jNoE/qElvaMHMzYpjybIgMyShAmaRwKWvJNsD/
-         eBCC/2NCazgTfdAzx79/3RvPQb/y8cqJnJ3dJets=
+        b=F+2+0EuBUNWpVonO9WjQ4UpBgNo1OPmLVnjs3St/b6UwcoH4o8HhL+HeF3nxFPZAC
+         ub4jQGDVXvUpgGHgC7hNJPL1sbMB/KBJoCsZ2K18aajnNiM3aBir1QjbVP0ab+6iD9
+         cG9a5sNITXgLGYD3t96kPjj7GV5arV1W7eoUVmYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>,
         Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 063/125] arm64: dts: imx8mq: assign PCIe clocks
-Date:   Thu, 22 Jul 2021 18:30:54 +0200
-Message-Id: <20210722155626.791290067@linuxfoundation.org>
+Subject: [PATCH 5.13 080/156] arm64: dts: imx8mq: assign PCIe clocks
+Date:   Thu, 22 Jul 2021 18:30:55 +0200
+Message-Id: <20210722155630.979799687@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -66,10 +66,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 16 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 5e0e7d0f1bc4..c86cf786f406 100644
+index 17c449e12c2e..91df9c5350ae 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1258,6 +1258,14 @@
+@@ -1383,6 +1383,14 @@
  			         <&src IMX8MQ_RESET_PCIE_CTRL_APPS_EN>,
  			         <&src IMX8MQ_RESET_PCIE_CTRL_APPS_TURNOFF>;
  			reset-names = "pciephy", "apps", "turnoff";
@@ -84,7 +84,7 @@ index 5e0e7d0f1bc4..c86cf786f406 100644
  			status = "disabled";
  		};
  
-@@ -1287,6 +1295,14 @@
+@@ -1413,6 +1421,14 @@
  			         <&src IMX8MQ_RESET_PCIE2_CTRL_APPS_EN>,
  			         <&src IMX8MQ_RESET_PCIE2_CTRL_APPS_TURNOFF>;
  			reset-names = "pciephy", "apps", "turnoff";
