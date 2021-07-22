@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BFA3D28B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC473D29A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbhGVP6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:58:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59330 "EHLO mail.kernel.org"
+        id S234021AbhGVQFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:05:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230371AbhGVPzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:55:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F24F60FDA;
-        Thu, 22 Jul 2021 16:36:07 +0000 (UTC)
+        id S233799AbhGVQEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DE546144E;
+        Thu, 22 Jul 2021 16:44:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971768;
-        bh=apA8RHD5W12YBM3+pnTmfSSVsoJSGQfk3hmpEoKrSEs=;
+        s=korg; t=1626972275;
+        bh=R9ScnCrG87AF3A2JLubrsMZUQzn4JC7aLUJTqmsfxWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JnXJEzp420RAKmjIWOQFXRLEu3E1cfEJzXB3aYjrrlyDGbqSFv7r+XGQBgmAVDHAD
-         vkzD04d0XPRDAzZBq4Pg+x3YhB+bFXdzvj8HHGTPWOLHIcgTlQH0j6en/y59dLt4E+
-         5o5ZQOfYVZ85pdZs9f24k8IF3WnH56Kd3gr7+uAQ=
+        b=QYgX7jrDOZuSK6BB2XfHPV8zYwrME4maKMVjIqBxFwE5jS5c8lKUWZ5XW8AGvEneh
+         GhUUAUiYpgZ0lrCeljkqFX1Mhyv8i7WxnsAL8CIkfFMu4q6laCyu8J/tkLbR9BYlhz
+         fxZyWTbJwlCcgyAa/gL8gsgamI0b7Zmo4A6oxExE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 019/125] ARM: dts: Hurricane 2: Fix NAND nodes names
+Subject: [PATCH 5.13 035/156] arm64: dts: renesas: beacon: Fix USB extal reference
 Date:   Thu, 22 Jul 2021 18:30:10 +0200
-Message-Id: <20210722155625.331485272@linuxfoundation.org>
+Message-Id: <20210722155629.554149090@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Adam Ford <aford173@gmail.com>
 
-[ Upstream commit a4528d9029e2eda16e4fc9b9da1de1fbec10ab26 ]
+[ Upstream commit 56bc54496f5d6bc638127bfc9df3742cbf0039e7 ]
 
-This matches nand-controller.yaml requirements.
+The USB extal clock reference isn't associated to a crystal, it's
+associated to a programmable clock, so remove the extal reference,
+add the usb2_clksel.  Since usb_extal is referenced by the versaclock,
+reference it here so the usb2_clksel can get the proper clock speed
+of 50MHz.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Link: https://lore.kernel.org/r/20210513114617.30191-1-aford173@gmail.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm-hr2.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm-hr2.dtsi b/arch/arm/boot/dts/bcm-hr2.dtsi
-index e8df458aad39..84cda16f68a2 100644
---- a/arch/arm/boot/dts/bcm-hr2.dtsi
-+++ b/arch/arm/boot/dts/bcm-hr2.dtsi
-@@ -179,7 +179,7 @@
- 			status = "disabled";
- 		};
+diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+index 8d3a4d6ee885..bd3d26b2a2bb 100644
+--- a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
++++ b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+@@ -319,8 +319,10 @@
+ 	status = "okay";
+ };
  
--		nand: nand@26000 {
-+		nand_controller: nand-controller@26000 {
- 			compatible = "brcm,nand-iproc", "brcm,brcmnand-v6.1";
- 			reg = <0x26000 0x600>,
- 			      <0x11b408 0x600>,
+-&usb_extal_clk {
+-	clock-frequency = <50000000>;
++&usb2_clksel {
++	clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>,
++		  <&versaclock5 3>, <&usb3s0_clk>;
++	status = "okay";
+ };
+ 
+ &usb3s0_clk {
 -- 
 2.30.2
 
