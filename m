@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D963D29C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15EC3D28FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234336AbhGVQGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:06:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39712 "EHLO mail.kernel.org"
+        id S233444AbhGVQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234221AbhGVQE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:04:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0DFF61CD8;
-        Thu, 22 Jul 2021 16:44:53 +0000 (UTC)
+        id S233187AbhGVP6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 11:58:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01B11613AE;
+        Thu, 22 Jul 2021 16:38:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972294;
-        bh=PqWs7fVbREsPcJyM0yVYpc7JRLXrbGHa4Ro020FmzzI=;
+        s=korg; t=1626971924;
+        bh=VFXPsTx4DiLu4b+hcwosQ7Y9rKmWwYqdMqt10AUNjU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B/iJsiyebduWDvyKGEIoBxqnOBGG3CPjpRaddY5VLcYxcpSUpuHu+AjdVqgqPc5YM
-         8CHBNmh5n8up0NLZRFngpcIPAWI3QAH4ySCo6iS3GvBUetED/O9TatkbfA7J/EGA92
-         cwZ2ToaC7B8NWQhJY4rb+c/CiD0axthiVcENh1BA=
+        b=eiCvQXHw6JkdENiWMwfKp5mnpxrD/2q0p4LMlHgLdBVxOEOqnFZCqU8DdWfTafYcM
+         0krQ7ch8BaV+Rwqim2SAhkIYLGG5pUbBdf/ickMoEMTo9918TO8apgSGT7Fdcuxtjg
+         44CWFq/sbnaZG8aMwr6G19TTr6uQjiNtZP5fWUN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eddie James <eajames@linux.ibm.com>,
-        Santosh Puranik <santosh.puranik@in.ibm.com>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 059/156] ARM: dts: aspeed: Everest: Fix cable card PCA chips
+        stable@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 043/125] ARM: dts: stm32: fix gpio-keys node on STM32 MCU boards
 Date:   Thu, 22 Jul 2021 18:30:34 +0200
-Message-Id: <20210722155630.315475405@linuxfoundation.org>
+Message-Id: <20210722155626.135596479@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,220 +40,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Santosh Puranik <santosh.puranik@in.ibm.com>
+From: Alexandre Torgue <alexandre.torgue@foss.st.com>
 
-[ Upstream commit 010da3daf9278ed03d38b7dcb0422f1a7df1bdd3 ]
+[ Upstream commit bf24b91f4baf7e421c770a1d9c7d381b10206ac9 ]
 
-Correct two PCA chips which were placed on the wrong I2C bus and
-address.
+Fix following warning observed with "make dtbs_check W=1" command.
+It concerns f429 eval and disco boards, f769 disco board.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
-Signed-off-by: Santosh Puranik <santosh.puranik@in.ibm.com>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Warning (unit_address_vs_reg): /gpio_keys/button@0: node has a unit name,
+but no reg or ranges property
+
+Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts | 168 +++++++++----------
- 1 file changed, 83 insertions(+), 85 deletions(-)
+ arch/arm/boot/dts/stm32429i-eval.dts  | 8 +++-----
+ arch/arm/boot/dts/stm32746g-eval.dts  | 6 ++----
+ arch/arm/boot/dts/stm32f429-disco.dts | 6 ++----
+ arch/arm/boot/dts/stm32f469-disco.dts | 6 ++----
+ arch/arm/boot/dts/stm32f769-disco.dts | 6 ++----
+ 5 files changed, 11 insertions(+), 21 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
-index 3295c8c7c05c..27af28c8847d 100644
---- a/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-ibm-everest.dts
-@@ -353,10 +353,47 @@
- 
- &i2c1 {
- 	status = "okay";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+};
- 
--	pca2: pca9552@61 {
-+&i2c3 {
-+	status = "okay";
-+
-+	eeprom@54 {
-+		compatible = "atmel,24c128";
-+		reg = <0x54>;
-+	};
-+
-+	power-supply@68 {
-+		compatible = "ibm,cffps";
-+		reg = <0x68>;
-+	};
-+
-+	power-supply@69 {
-+		compatible = "ibm,cffps";
-+		reg = <0x69>;
-+	};
-+
-+	power-supply@6a {
-+		compatible = "ibm,cffps";
-+		reg = <0x6a>;
-+	};
-+
-+	power-supply@6b {
-+		compatible = "ibm,cffps";
-+		reg = <0x6b>;
-+	};
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+
-+	pca2: pca9552@65 {
- 		compatible = "nxp,pca9552";
--		reg = <0x61>;
-+		reg = <0x65>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
-@@ -424,12 +461,54 @@
- 			reg = <9>;
- 			type = <PCA955X_TYPE_GPIO>;
+diff --git a/arch/arm/boot/dts/stm32429i-eval.dts b/arch/arm/boot/dts/stm32429i-eval.dts
+index 67e7648de41e..8b0ead46ef9b 100644
+--- a/arch/arm/boot/dts/stm32429i-eval.dts
++++ b/arch/arm/boot/dts/stm32429i-eval.dts
+@@ -119,17 +119,15 @@
  		};
-+	};
- 
-+	i2c-switch@70 {
-+		compatible = "nxp,pca9546";
-+		reg = <0x70>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		status = "okay";
-+		i2c-mux-idle-disconnect;
-+
-+		i2c4mux0chn0: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+			eeprom@52 {
-+				compatible = "atmel,24c64";
-+				reg = <0x52>;
-+			};
-+		};
-+
-+		i2c4mux0chn1: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+			eeprom@50 {
-+				compatible = "atmel,24c64";
-+				reg = <0x50>;
-+			};
-+		};
-+
-+		i2c4mux0chn2: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+			eeprom@51 {
-+				compatible = "atmel,24c64";
-+				reg = <0x51>;
-+			};
-+		};
- 	};
-+};
- 
--	pca3: pca9552@62 {
-+&i2c5 {
-+	status = "okay";
-+
-+	pca3: pca9552@66 {
- 		compatible = "nxp,pca9552";
--		reg = <0x62>;
-+		reg = <0x66>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
-@@ -512,87 +591,6 @@
- 
  	};
  
--};
--
--&i2c2 {
--	status = "okay";
--};
--
--&i2c3 {
--	status = "okay";
--
--	eeprom@54 {
--		compatible = "atmel,24c128";
--		reg = <0x54>;
--	};
--
--	power-supply@68 {
--		compatible = "ibm,cffps";
--		reg = <0x68>;
--	};
--
--	power-supply@69 {
--		compatible = "ibm,cffps";
--		reg = <0x69>;
--	};
--
--	power-supply@6a {
--		compatible = "ibm,cffps";
--		reg = <0x6a>;
--	};
--
--	power-supply@6b {
--		compatible = "ibm,cffps";
--		reg = <0x6b>;
--	};
--};
--
--&i2c4 {
--	status = "okay";
--
--	i2c-switch@70 {
--		compatible = "nxp,pca9546";
--		reg = <0x70>;
+-	gpio_keys {
++	gpio-keys {
+ 		compatible = "gpio-keys";
 -		#address-cells = <1>;
 -		#size-cells = <0>;
--		status = "okay";
--		i2c-mux-idle-disconnect;
--
--		i2c4mux0chn0: i2c@0 {
--			#address-cells = <1>;
--			#size-cells = <0>;
--			reg = <0>;
--			eeprom@52 {
--				compatible = "atmel,24c64";
--				reg = <0x52>;
--			};
--		};
--
--		i2c4mux0chn1: i2c@1 {
--			#address-cells = <1>;
--			#size-cells = <0>;
--			reg = <1>;
--			eeprom@50 {
--				compatible = "atmel,24c64";
--				reg = <0x50>;
--			};
--		};
--
--		i2c4mux0chn2: i2c@2 {
--			#address-cells = <1>;
--			#size-cells = <0>;
--			reg = <2>;
--			eeprom@51 {
--				compatible = "atmel,24c64";
--				reg = <0x51>;
--			};
--		};
--	};
--};
--
--&i2c5 {
--	status = "okay";
--
- 	i2c-switch@70 {
- 		compatible = "nxp,pca9546";
- 		reg = <0x70>;
+ 		autorepeat;
+-		button@0 {
++		button-0 {
+ 			label = "Wake up";
+ 			linux,code = <KEY_WAKEUP>;
+ 			gpios = <&gpioa 0 0>;
+ 		};
+-		button@1 {
++		button-1 {
+ 			label = "Tamper";
+ 			linux,code = <KEY_RESTART>;
+ 			gpios = <&gpioc 13 0>;
+diff --git a/arch/arm/boot/dts/stm32746g-eval.dts b/arch/arm/boot/dts/stm32746g-eval.dts
+index ca8c192449ee..327613fd9666 100644
+--- a/arch/arm/boot/dts/stm32746g-eval.dts
++++ b/arch/arm/boot/dts/stm32746g-eval.dts
+@@ -81,12 +81,10 @@
+ 		};
+ 	};
+ 
+-	gpio_keys {
++	gpio-keys {
+ 		compatible = "gpio-keys";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		autorepeat;
+-		button@0 {
++		button-0 {
+ 			label = "Wake up";
+ 			linux,code = <KEY_WAKEUP>;
+ 			gpios = <&gpioc 13 0>;
+diff --git a/arch/arm/boot/dts/stm32f429-disco.dts b/arch/arm/boot/dts/stm32f429-disco.dts
+index 3dc068b91ca1..075ac57d0bf4 100644
+--- a/arch/arm/boot/dts/stm32f429-disco.dts
++++ b/arch/arm/boot/dts/stm32f429-disco.dts
+@@ -81,12 +81,10 @@
+ 		};
+ 	};
+ 
+-	gpio_keys {
++	gpio-keys {
+ 		compatible = "gpio-keys";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		autorepeat;
+-		button@0 {
++		button-0 {
+ 			label = "User";
+ 			linux,code = <KEY_HOME>;
+ 			gpios = <&gpioa 0 0>;
+diff --git a/arch/arm/boot/dts/stm32f469-disco.dts b/arch/arm/boot/dts/stm32f469-disco.dts
+index 2e1b3bbbe4b5..8c982ae79f43 100644
+--- a/arch/arm/boot/dts/stm32f469-disco.dts
++++ b/arch/arm/boot/dts/stm32f469-disco.dts
+@@ -104,12 +104,10 @@
+ 		};
+ 	};
+ 
+-	gpio_keys {
++	gpio-keys {
+ 		compatible = "gpio-keys";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		autorepeat;
+-		button@0 {
++		button-0 {
+ 			label = "User";
+ 			linux,code = <KEY_WAKEUP>;
+ 			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
+diff --git a/arch/arm/boot/dts/stm32f769-disco.dts b/arch/arm/boot/dts/stm32f769-disco.dts
+index 0ce7fbc20fa4..be943b701980 100644
+--- a/arch/arm/boot/dts/stm32f769-disco.dts
++++ b/arch/arm/boot/dts/stm32f769-disco.dts
+@@ -75,12 +75,10 @@
+ 		};
+ 	};
+ 
+-	gpio_keys {
++	gpio-keys {
+ 		compatible = "gpio-keys";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+ 		autorepeat;
+-		button@0 {
++		button-0 {
+ 			label = "User";
+ 			linux,code = <KEY_HOME>;
+ 			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
 -- 
 2.30.2
 
