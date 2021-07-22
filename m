@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989DB3D2918
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65353D2A61
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbhGVQBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:01:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35868 "EHLO mail.kernel.org"
+        id S234906AbhGVQLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:11:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233322AbhGVP6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:58:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 026DD6139A;
-        Thu, 22 Jul 2021 16:39:10 +0000 (UTC)
+        id S234671AbhGVQG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:06:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE4C361D10;
+        Thu, 22 Jul 2021 16:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971951;
-        bh=2pIckv4BVwMQtCRGfVe+YEZKYRt9j3RFqtHV8dMvDME=;
+        s=korg; t=1626972423;
+        bh=HiLa/+eltHkBEwR7KeEGN4binOH28d/xixyrZnaDKyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UssVYlZNOZQZLBVZBb/wsYk0DcATCCRTRQ5MikdBg2nsayxa4HKSfoqP6RVZs9ssa
-         +heqWJsF4PcTEpWV6zkzaA7nDttUKDBlVeByrzu+4/tY6Cs2Z7yEQj76fRNLBCrgr5
-         YNQqy7CT/gCe6/pGKcE6nHr7j04bukyiBcm2/Txg=
+        b=WIYnTNFjvf6EuY/lgQ9yILQO/mR7hTZgP0VyXupHzWauqTfBKVnrLAXBzO22xvXJr
+         DlmfppaWgLIqrQl9kGK/+9wVemv+bHtHBH268gZ7L+OMl33X7EflrYgUSt2meNGXcQ
+         FFVfSfoWj/4ZkaEjHLwFIzJd2UejeO5B4cU+7vKs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 090/125] net: dsa: mv88e6xxx: enable .port_set_policy() on Topaz
-Date:   Thu, 22 Jul 2021 18:31:21 +0200
-Message-Id: <20210722155627.681216765@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Rosenberg <drosen@google.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 5.13 107/156] f2fs: Show casefolding support only when supported
+Date:   Thu, 22 Jul 2021 18:31:22 +0200
+Message-Id: <20210722155631.829413948@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Daniel Rosenberg <drosen@google.com>
 
-commit 7da467d82d1ed4fb317aff836f99709169e73f10 upstream.
+commit 39307f8ee3539478c28e71b4909b5b028cce14b1 upstream.
 
-Commit f3a2cd326e44 ("net: dsa: mv88e6xxx: introduce .port_set_policy")
-introduced .port_set_policy() method with implementation for several
-models, but forgot to add Topaz, which can use the 6352 implementation.
+The casefolding feature is only supported when CONFIG_UNICODE is set.
+This modifies the feature list f2fs presents under sysfs accordingly.
 
-Use the 6352 implementation of .port_set_policy() on Topaz.
-
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Fixes: f3a2cd326e44 ("net: dsa: mv88e6xxx: introduce .port_set_policy")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 5aba54302a46 ("f2fs: include charset encoding information in the superblock")
+Cc: stable@vger.kernel.org # v5.4+
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/dsa/mv88e6xxx/chip.c |    2 ++
- 1 file changed, 2 insertions(+)
 
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3613,6 +3613,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.port_set_rgmii_delay = mv88e6352_port_set_rgmii_delay,
- 	.port_set_speed_duplex = mv88e6185_port_set_speed_duplex,
- 	.port_tag_remap = mv88e6095_port_tag_remap,
-+	.port_set_policy = mv88e6352_port_set_policy,
- 	.port_set_frame_mode = mv88e6351_port_set_frame_mode,
- 	.port_set_egress_floods = mv88e6352_port_set_egress_floods,
- 	.port_set_ether_type = mv88e6351_port_set_ether_type,
-@@ -4253,6 +4254,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.port_set_rgmii_delay = mv88e6352_port_set_rgmii_delay,
- 	.port_set_speed_duplex = mv88e6185_port_set_speed_duplex,
- 	.port_tag_remap = mv88e6095_port_tag_remap,
-+	.port_set_policy = mv88e6352_port_set_policy,
- 	.port_set_frame_mode = mv88e6351_port_set_frame_mode,
- 	.port_set_egress_floods = mv88e6352_port_set_egress_floods,
- 	.port_set_ether_type = mv88e6351_port_set_ether_type,
+---
+ fs/f2fs/sysfs.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -708,7 +708,9 @@ F2FS_FEATURE_RO_ATTR(lost_found, FEAT_LO
+ F2FS_FEATURE_RO_ATTR(verity, FEAT_VERITY);
+ #endif
+ F2FS_FEATURE_RO_ATTR(sb_checksum, FEAT_SB_CHECKSUM);
++#ifdef CONFIG_UNICODE
+ F2FS_FEATURE_RO_ATTR(casefold, FEAT_CASEFOLD);
++#endif
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ F2FS_FEATURE_RO_ATTR(compression, FEAT_COMPRESSION);
+ F2FS_RW_ATTR(F2FS_SBI, f2fs_sb_info, compr_written_block, compr_written_block);
+@@ -810,7 +812,9 @@ static struct attribute *f2fs_feat_attrs
+ 	ATTR_LIST(verity),
+ #endif
+ 	ATTR_LIST(sb_checksum),
++#ifdef CONFIG_UNICODE
+ 	ATTR_LIST(casefold),
++#endif
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 	ATTR_LIST(compression),
+ #endif
 
 
