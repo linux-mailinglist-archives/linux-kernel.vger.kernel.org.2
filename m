@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706513D28A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E553D2997
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhGVP5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:57:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60218 "EHLO mail.kernel.org"
+        id S234987AbhGVQFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:05:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232234AbhGVP4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:56:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D66D6135A;
-        Thu, 22 Jul 2021 16:36:40 +0000 (UTC)
+        id S233228AbhGVQD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:03:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC4D61C9E;
+        Thu, 22 Jul 2021 16:44:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971800;
-        bh=PmuHXE9H4zNBy25vnRaIZ9Atb03pBeeR/qmffxxS/XA=;
+        s=korg; t=1626972260;
+        bh=2BJYWQC9ZJHJmSmudgur7zLKNJYhUoA8y6rCeo+c+OA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XsrQW5pJ0cUgYQaq0oZrcaer6xTWGKQIOffeW5DkynmZLJHpd2WawDM+MMYKWJYfX
-         BqCqKxwXSMR0I236ejlxZKAmUbgBxrd4SY9vFavzPXQJYE9NatBVt/nPpBRtwvdwCV
-         hcnJBtyhirQFBG38a5V1ydya/0SBAbGq3gHYw328=
+        b=lJwkf1uNuxLXL1eJk7HfiBSc96a2+oEUalF+G3VW2kZ5kN2GvMANTq1Rd9uZ/HY22
+         kP1WImViDN8xrxpSRQ+VVMBe+RiXhFLt/tJ/8Q5vsfYjQ4S/7Yjt6O8jI2kC0g+MgF
+         0aO89onwI2Kf3b+gZyQ3bh/4mJcv+yTE9QJCN+xU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 030/125] kbuild: sink stdout from cmd for silent build
-Date:   Thu, 22 Jul 2021 18:30:21 +0200
-Message-Id: <20210722155625.690955017@linuxfoundation.org>
+Subject: [PATCH 5.13 047/156] arm64: dts: qcom: msm8996: Make CPUCC actually probe (and work)
+Date:   Thu, 22 Jul 2021 18:30:22 +0200
+Message-Id: <20210722155629.927514337@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,97 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-[ Upstream commit 174a1dcc96429efce4ef7eb2f5c4506480da2182 ]
+[ Upstream commit 0a275a35ceab07cb622ff212c54d6866e246ac53 ]
 
-When building with 'make -s', no output to stdout should be printed.
+Fix the compatible to make the driver probe and tell the
+driver where to look for the "xo" clock to make sure everything
+works.
 
-As Arnd Bergmann reported [1], mkimage shows the detailed information
-of the generated images.
+Then we get a happy (eh, happier) 8996:
 
-I think this should be suppressed by the 'cmd' macro instead of by
-individual scripts.
+somainline-sdcard:/home/konrad# cat /sys/kernel/debug/clk/pwrcl_pll/clk_rate
+1152000000
 
-Insert 'exec >/dev/null;' in order to redirect stdout to /dev/null for
-silent builds.
+Don't backport without "arm64: dts: qcom: msm8996: Add CPU opps", as
+the system fails to boot without consumers for these clocks.
 
-[Note about this implementation]
-
-'exec >/dev/null;' may look somewhat tricky, but this has a reason.
-
-Appending '>/dev/null' at the end of command line is a common way for
-redirection, so I first tried this:
-
-  cmd = @set -e; $(echo-cmd) $(cmd_$(1)) >/dev/null
-
-... but it would not work if $(cmd_$(1)) itself contains a redirection.
-
-For example, cmd_wrap in scripts/Makefile.asm-generic redirects the
-output from the 'echo' command into the target file.
-
-It would be expanded into:
-
-  echo "#include <asm-generic/$*.h>" > $@ >/dev/null
-
-Then, the target file gets empty because the string will go to /dev/null
-instead of $@.
-
-Next, I tried this:
-
-  cmd = @set -e; $(echo-cmd) { $(cmd_$(1)); } >/dev/null
-
-The form above would be expanded into:
-
-  { echo "#include <asm-generic/$*.h>" > $@; } >/dev/null
-
-This works as expected. However, it would be a syntax error if
-$(cmd_$(1)) is empty.
-
-When CONFIG_TRIM_UNUSED_KSYMS is disabled, $(call cmd,gen_ksymdeps) in
-scripts/Makefile.build would be expanded into:
-
-  set -e;  { ; } >/dev/null
-
-..., which causes an syntax error.
-
-I also tried this:
-
-  cmd = @set -e; $(echo-cmd) ( $(cmd_$(1)) ) >/dev/null
-
-... but this causes a syntax error for the same reason.
-
-So, finally I adopted:
-
-  cmd = @set -e; $(echo-cmd) exec >/dev/null; $(cmd_$(1))
-
-[1]: https://lore.kernel.org/lkml/20210514135752.2910387-1-arnd@kernel.org/
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+Link: https://lore.kernel.org/r/20210527192958.775434-1-konrad.dybcio@somainline.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/Kbuild.include | 7 ++++++-
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 7 ++++++-
  1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/Kbuild.include b/scripts/Kbuild.include
-index 08e011175b4c..0d6e11820791 100644
---- a/scripts/Kbuild.include
-+++ b/scripts/Kbuild.include
-@@ -174,8 +174,13 @@ clean := -f $(srctree)/scripts/Makefile.clean obj
- echo-cmd = $(if $($(quiet)cmd_$(1)),\
- 	echo '  $(call escsq,$($(quiet)cmd_$(1)))$(echo-why)';)
- 
-+# sink stdout for 'make -s'
-+       redirect :=
-+ quiet_redirect :=
-+silent_redirect := exec >/dev/null;
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index ce430ba9c118..dd89d3cb772b 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -1745,9 +1745,14 @@
+ 				};
+ 			};
+ 		};
 +
- # printing commands
--cmd = @set -e; $(echo-cmd) $(cmd_$(1))
-+cmd = @set -e; $(echo-cmd) $($(quiet)redirect) $(cmd_$(1))
+ 		kryocc: clock-controller@6400000 {
+-			compatible = "qcom,apcc-msm8996";
++			compatible = "qcom,msm8996-apcc";
+ 			reg = <0x06400000 0x90000>;
++
++			clock-names = "xo";
++			clocks = <&xo_board>;
++
+ 			#clock-cells = <1>;
+ 		};
  
- ###
- # if_changed      - execute command if any prerequisite is newer than
 -- 
 2.30.2
 
