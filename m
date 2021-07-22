@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A519B3D29FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F813D29CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhGVQHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:07:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
+        id S234548AbhGVQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:06:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234212AbhGVQE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:04:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C1E61976;
-        Thu, 22 Jul 2021 16:44:45 +0000 (UTC)
+        id S234215AbhGVQE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:04:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7360261C24;
+        Thu, 22 Jul 2021 16:44:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972286;
-        bh=Iwss8JYoBbpqgUvs4YSAKBztaA5tyR/Exo15fPg9GUs=;
+        s=korg; t=1626972289;
+        bh=noKFCILb6PIUVj+e8wfqFFGfMkQKsjF205S4l1s3whE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FHliflfkpqXD5A6gWg0S/HY2oWqZB4AmE2opBwhdcbun/9pwTjFI1lVfiXfSR8uXz
-         sfYKfm9yikqmDmDDrMoNTdWk1evn3OtUAb9qDYEV+9uXr1Gj0CBoc6142ohqNP+fCD
-         4H7YAYW185coae+ynGyQU/6ds0gNBl2aWcooUDa4=
+        b=wGd6bN2KTad58+G41lWfYqmq5+eNEVoliDHg0+f47bZDO88IaT5kKhRudv6A7Pv2J
+         E7f26vKfuDzojUCdyNKzdofva6uzOLDsC+usTHU+RjEMOuZ8wHbZZ3jsjo34N0DmBX
+         OXPUbgXtQ8u5vo7obKqoZgcir9IFH3nyiqW25y48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 056/156] memory: tegra: Fix compilation warnings on 64bit platforms
-Date:   Thu, 22 Jul 2021 18:30:31 +0200
-Message-Id: <20210722155630.227064269@linuxfoundation.org>
+Subject: [PATCH 5.13 057/156] firmware: arm_scmi: Add SMCCC discovery dependency in Kconfig
+Date:   Thu, 22 Jul 2021 18:30:32 +0200
+Message-Id: <20210722155630.256419362@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
 References: <20210722155628.371356843@linuxfoundation.org>
@@ -43,54 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Etienne Carriere <etienne.carriere@linaro.org>
 
-[ Upstream commit e0740fb869730110b36a4afcf05ad1b9d6f5fb6d ]
+[ Upstream commit c05b07963e965ae34e75ee8c33af1095350cd87e ]
 
-Fix compilation warning on 64bit platforms caused by implicit promotion
-of 32bit signed integer to a 64bit unsigned value which happens after
-enabling compile-testing of the EMC drivers.
+ARM_SCMI_PROTOCOL depends on either MAILBOX or HAVE_ARM_SMCCC_DISCOVERY,
+not MAILBOX alone. Fix the depedency in Kconfig file and driver to
+reflect the same.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/r/20210521134055.24271-1-etienne.carriere@linaro.org
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+Signed-off-by: Etienne Carriere <etienne.carriere@linaro.org>
+[sudeep.holla: Minor tweaks to subject and change log]
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/tegra/tegra124-emc.c | 4 ++--
- drivers/memory/tegra/tegra30-emc.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/firmware/Kconfig           | 2 +-
+ drivers/firmware/arm_scmi/common.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
-index 5699d909abc2..a21ca8e0841a 100644
---- a/drivers/memory/tegra/tegra124-emc.c
-+++ b/drivers/memory/tegra/tegra124-emc.c
-@@ -272,8 +272,8 @@
- #define EMC_PUTERM_ADJ				0x574
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index db0ea2d2d75a..a9c613c32282 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -9,7 +9,7 @@ menu "Firmware Drivers"
+ config ARM_SCMI_PROTOCOL
+ 	tristate "ARM System Control and Management Interface (SCMI) Message Protocol"
+ 	depends on ARM || ARM64 || COMPILE_TEST
+-	depends on MAILBOX
++	depends on MAILBOX || HAVE_ARM_SMCCC_DISCOVERY
+ 	help
+ 	  ARM System Control and Management Interface (SCMI) protocol is a
+ 	  set of operating system-independent software interfaces that are
+diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+index 228bf4a71d23..8685619d38f9 100644
+--- a/drivers/firmware/arm_scmi/common.h
++++ b/drivers/firmware/arm_scmi/common.h
+@@ -331,7 +331,7 @@ struct scmi_desc {
+ };
  
- #define DRAM_DEV_SEL_ALL			0
--#define DRAM_DEV_SEL_0				(2 << 30)
--#define DRAM_DEV_SEL_1				(1 << 30)
-+#define DRAM_DEV_SEL_0				BIT(31)
-+#define DRAM_DEV_SEL_1				BIT(30)
- 
- #define EMC_CFG_POWER_FEATURES_MASK		\
- 	(EMC_CFG_DYN_SREF | EMC_CFG_DRAM_ACPD | EMC_CFG_DRAM_CLKSTOP_SR | \
-diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
-index 829f6d673c96..a2f2738ccb94 100644
---- a/drivers/memory/tegra/tegra30-emc.c
-+++ b/drivers/memory/tegra/tegra30-emc.c
-@@ -150,8 +150,8 @@
- #define EMC_SELF_REF_CMD_ENABLED		BIT(0)
- 
- #define DRAM_DEV_SEL_ALL			(0 << 30)
--#define DRAM_DEV_SEL_0				(2 << 30)
--#define DRAM_DEV_SEL_1				(1 << 30)
-+#define DRAM_DEV_SEL_0				BIT(31)
-+#define DRAM_DEV_SEL_1				BIT(30)
- #define DRAM_BROADCAST(num) \
- 	((num) > 1 ? DRAM_DEV_SEL_ALL : DRAM_DEV_SEL_0)
+ extern const struct scmi_desc scmi_mailbox_desc;
+-#ifdef CONFIG_HAVE_ARM_SMCCC
++#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+ extern const struct scmi_desc scmi_smc_desc;
+ #endif
  
 -- 
 2.30.2
