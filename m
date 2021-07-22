@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A973D1C30
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581F53D1C33
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhGVCXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 22:23:49 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15044 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230093AbhGVCXs (ORCPT
+        id S230506AbhGVCY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 22:24:27 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:46939 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhGVCY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:23:48 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GVcf240xNzZktY;
-        Thu, 22 Jul 2021 11:00:58 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 11:04:10 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 22 Jul 2021 11:04:10 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/1] workqueue: Fix possible memory leaks in wq_numa_init()
-Date:   Thu, 22 Jul 2021 11:03:52 +0800
-Message-ID: <20210722030352.3966-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210722030352.3966-1-thunder.leizhen@huawei.com>
-References: <20210722030352.3966-1-thunder.leizhen@huawei.com>
+        Wed, 21 Jul 2021 22:24:26 -0400
+Received: by mail-il1-f182.google.com with SMTP id y6so4084065ilj.13;
+        Wed, 21 Jul 2021 20:05:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qRC4i9IC5fmogXiHA+XMn95xo6OUhdJon7l31DRv27U=;
+        b=eB6gJ8xiEfkufi6jSD1xUIonYvYmITFc917NovJpvcA1xvQBXEvHPThef8HyymM+XE
+         RVqJ/odn7Xy3lN8rSYBZ8/Te9BSR7Xsn4BPT3iUnQkLyQ+miBhZ4u74wbXAytMc0Hbfd
+         Yxvk1PP95EgISGay4TJT1TBd3UrwpXoE5N5/uMfeM6MYmplFFZ9UF4TMVpfFWAPqKhKI
+         M9XFVoJSMwLu0OWRIcx0gYNFVfWr4b7JkxBml+8cwgbFbDPji82DHYKT1ajyJiQnyni3
+         Gvoai/Bl7Cys6XXK6Kh0IcmGvY8xFLTu67xGT55ascg4Srkg5Lf4vweyci1hDUBfJPab
+         Ng7A==
+X-Gm-Message-State: AOAM533KguOSGhYLkxQvhATdS6r4Jkx1qHlZywnNhD23NyoTGDG6+Nwo
+        m4AnhSELI94tuANAVVU0tQ==
+X-Google-Smtp-Source: ABdhPJwIIBszKvNLzbrWQ9Pc+iqwT5r+K+S0a6LFvfZ8CBjdst/QTKBOi4qyDVad4aeO2nxsamvo2g==
+X-Received: by 2002:a05:6e02:d93:: with SMTP id i19mr13978285ilj.72.1626923101275;
+        Wed, 21 Jul 2021 20:05:01 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p8sm8863092iol.49.2021.07.21.20.04.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 20:05:00 -0700 (PDT)
+Received: (nullmailer pid 3221816 invoked by uid 1000);
+        Thu, 22 Jul 2021 03:04:58 -0000
+Date:   Wed, 21 Jul 2021 21:04:58 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     dongsheng.qiu@ingenic.com, jun.jiang@ingenic.com,
+        daniel.lezcano@linaro.org, sihui.liu@ingenic.com,
+        linux-kernel@vger.kernel.org, aric.pzqi@ingenic.com,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
+Subject: Re: [PATCH] dt-bindings: timer: Add ABIs for new Ingenic SoCs.
+Message-ID: <20210722030458.GA3221766@robh.at.kernel.org>
+References: <1626370605-120775-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1626370605-120775-1-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In error handling branch "if (WARN_ON(node == NUMA_NO_NODE))", the
-previously allocated memories are not released. Doing this before
-allocating memory eliminates memory leaks.
+On Fri, 16 Jul 2021 01:36:45 +0800, 周琰杰 (Zhou Yanjie) wrote:
+> 1.Add OST_CLK_EVENT_TIMER for new XBurst®1 SoCs.
+> 2.Add OST_CLK_EVENT_TIMER0 to OST_CLK_EVENT_TIMER15 for new XBurst®2 SoCs.
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>  include/dt-bindings/clock/ingenic,sysost.h | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- kernel/workqueue.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 50142fc08902..79cc470bd9ce 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5896,6 +5896,13 @@ static void __init wq_numa_init(void)
- 		return;
- 	}
- 
-+	for_each_possible_cpu(cpu) {
-+		if (WARN_ON(cpu_to_node(cpu) == NUMA_NO_NODE)) {
-+			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
-+			return;
-+		}
-+	}
-+
- 	wq_update_unbound_numa_attrs_buf = alloc_workqueue_attrs();
- 	BUG_ON(!wq_update_unbound_numa_attrs_buf);
- 
-@@ -5913,11 +5920,6 @@ static void __init wq_numa_init(void)
- 
- 	for_each_possible_cpu(cpu) {
- 		node = cpu_to_node(cpu);
--		if (WARN_ON(node == NUMA_NO_NODE)) {
--			pr_warn("workqueue: NUMA node mapping not available for cpu%d, disabling NUMA support\n", cpu);
--			/* happens iff arch is bonkers, let's just proceed */
--			return;
--		}
- 		cpumask_set_cpu(cpu, tbl[node]);
- 	}
- 
--- 
-2.25.1
-
+Acked-by: Rob Herring <robh@kernel.org>
