@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B5B3D1E05
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4D73D1E08
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 08:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhGVFbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 01:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhGVFbA (ORCPT
+        id S229642AbhGVFbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 01:31:43 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:36573 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhGVFbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 01:31:00 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33BCC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 23:11:35 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so4057229pjo.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 23:11:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5cK/GjjXslo6GmhOaYGYgEeJORqH/6loH5RcftK4HU0=;
-        b=sNFeP8gsrg5VCxm8rqifewFeatxucPeFT8QEFd5cHlvPnxDGYlqnnKYLg+/mZOBh3V
-         CekjXrhczXfkr2iNaSB6W8rWUmHAet4VscoEFL0AxiE9nbEs9oJIBany+LvtbYG7FrUc
-         Jw565w2BlZDy5hT+ZL/hzLtLDs7UhDamlxcQbn9ItGvEKbqihRsPUMqc5D4lK31eE//F
-         lS0ODkg7FIALkXk18t7MF1EHSOEK3hYf68fnBKu1wVHjDBdpcWUyZkgHgaDfg2A3IbOM
-         v9sUmK94nsKDYack8MCse8YMfsQ0WP92vv5RlI9kGXshr0CnNHD8SOp8MmT9xvmbYGp5
-         RAOA==
+        Thu, 22 Jul 2021 01:31:42 -0400
+Received: by mail-io1-f70.google.com with SMTP id d12-20020a5d9bcc0000b029053817be16cdso3315350ion.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Jul 2021 23:12:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5cK/GjjXslo6GmhOaYGYgEeJORqH/6loH5RcftK4HU0=;
-        b=jbZtexKsixQ5DBFkdrJK/Aagv9k61JiVs6Hfj3+W3V7GDlR+DcUhL4LYEshohI5ZEE
-         Esbk92If2FYMfeTdSVTigUum5BoGiqoequqy9tE+eOjYvCj6F/l4VDkPFTFxOhNKn/0J
-         MXWqYlX6kBD1ybSoJk+b5rTn7z4tBSHNvI7Ld3czFcgabUgfoZ7dcpJW4geZcbemyCOw
-         TnOAChEKtAMnZlLBf5RdyG8iluTPtbAau8B8B1gd8ENrI33ntcTuhVRGkXj1owFmzmic
-         4CmyNG8kcHIZzPGA9YNdoXsdTanGCEG3d6yP8oUZrBkm925oJcA6ab387QiQkOaXDelq
-         0+zA==
-X-Gm-Message-State: AOAM530trFLvdjd5fTLK5kb/b11FioNcEIttil7zZRV/1wkmtLonKeB7
-        VMfeu50D7zdMQcIARtIarCQSpw==
-X-Google-Smtp-Source: ABdhPJzsWABQoKOw3MzOV+BFwPL/nvqeS+gihVIl55DIiQN+F2diI2HTBaXl4hz/H55Mrjp2n4llLA==
-X-Received: by 2002:a05:6a00:1895:b029:32c:b091:ebc with SMTP id x21-20020a056a001895b029032cb0910ebcmr41234478pfh.4.1626934295257;
-        Wed, 21 Jul 2021 23:11:35 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id 202sm29390372pfx.75.2021.07.21.23.11.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jul 2021 23:11:32 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 11:41:30 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Jie Deng <jie.deng@intel.com>, wsa@kernel.org,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa+renesas@sang-engineering.com,
-        mst@redhat.com, arnd@arndb.de, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, yu1.wang@intel.com,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, stefanha@redhat.com
-Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210722061130.yb7z7povshgtbi7z@vireshk-i7>
-References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
- <20210722051433.3f2ix75wbi5pphp2@vireshk-i7>
- <YPkK7RlufYj1b+2f@kroah.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zd5EMJMxH832+tT0bxAQpl6QF9px5miSg1moPe7RgLE=;
+        b=bfupMCOEzeJVT0sm//+ngCyNaNkPAgTMgpBUfvs1HB4G3ph683+fsnfTn42/RTgqWc
+         Ue3lJtI1K/PzHUYq3+q85ExQ1Obo/IM3bR4J2a+BXJvF5NRzAsrvvnY2/qIc2LMYiUou
+         VH0YdNxesNnoCLHNnt57ypgJ5HfkoLcfwRq82pMRTN0bDifhWjdhaOZzbIZuGbHD3OTM
+         ABGIW2IX2z3/kUiIuOybfGsD7YrE/6AtPghrLkmdLjcgU/tUpR8jjymnM0rZH137ZfDO
+         w9ytiobjSebQXw+97cbWRNyluJNQpHX3V2JDAsUkUOewiLNCxKMCg+IkTaASMqSErkeB
+         f2pw==
+X-Gm-Message-State: AOAM533YrxKS5DU5SPrY3kc2jbTgWHjAihz2NnM+pJ6ZVnJCQ2hT5ACX
+        4qwNi0GfDQONaKCoRB+B8YtJaZM+YjC0uU/ArKrLPgLWLTsn
+X-Google-Smtp-Source: ABdhPJyGq6K9u578UAGsM/2tYh+oYIElzFL2Rxc/VlZ+OAEzwe6DyBiTQuGigt+er0qLWf3U9vIzzQrSgfu1B4WNNDFqS7plRJ+X
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPkK7RlufYj1b+2f@kroah.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Received: by 2002:a92:1942:: with SMTP id e2mr27746119ilm.4.1626934337416;
+ Wed, 21 Jul 2021 23:12:17 -0700 (PDT)
+Date:   Wed, 21 Jul 2021 23:12:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000041351c05c7b02b15@google.com>
+Subject: [syzbot] memory leak in reg_copy_regd
+From:   syzbot <syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-07-21, 08:06, Greg KH wrote:
-> No new features are allowed for 5.14, you know this.  It's but fixes
-> only now.
+Hello,
 
-I was trying to be (overly) optimistic here since this was a fairly
-independent driver which won't break anything else, and had been
-pending on the list since many months now.
+syzbot found the following issue on:
 
-But yeah, I know the rule and understand its purpose :)
+HEAD commit:    d980cc0620ae Merge tag 'devicetree-fixes-for-5.14-1' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=142c634a300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7280943fd0476e5a
+dashboard link: https://syzkaller.appspot.com/bug?extid=1638e7c770eef6b6c0d0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=131de45a300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=118cea5c300000
 
-5.15 it is then.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com
 
--- 
-viresh
+BUG: memory leak
+unreferenced object 0xffff888111969200 (size 512):
+  comm "syz-executor817", pid 8828, jiffies 4294955311 (age 19.340s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    05 00 00 00 39 39 00 00 00 00 00 00 d0 a6 24 00  ....99........$.
+  backtrace:
+    [<ffffffff83e971f0>] kmalloc include/linux/slab.h:596 [inline]
+    [<ffffffff83e971f0>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff83e971f0>] reg_copy_regd+0x30/0x120 net/wireless/reg.c:444
+    [<ffffffff83e98e21>] wiphy_apply_custom_regulatory+0x101/0x1a0 net/wireless/reg.c:2582
+    [<ffffffff82b31e27>] mac80211_hwsim_new_radio+0x897/0x1300 drivers/net/wireless/mac80211_hwsim.c:3344
+    [<ffffffff82b32cb5>] hwsim_new_radio_nl+0x425/0x5f0 drivers/net/wireless/mac80211_hwsim.c:3924
+    [<ffffffff83867aa3>] genl_family_rcv_msg_doit+0x113/0x180 net/netlink/genetlink.c:739
+    [<ffffffff83868184>] genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+    [<ffffffff83868184>] genl_rcv_msg+0x174/0x2c0 net/netlink/genetlink.c:800
+    [<ffffffff83866857>] netlink_rcv_skb+0x87/0x1d0 net/netlink/af_netlink.c:2504
+    [<ffffffff83867164>] genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+    [<ffffffff83865a42>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+    [<ffffffff83865a42>] netlink_unicast+0x392/0x4c0 net/netlink/af_netlink.c:1340
+    [<ffffffff83865edb>] netlink_sendmsg+0x36b/0x6b0 net/netlink/af_netlink.c:1929
+    [<ffffffff836cf446>] sock_sendmsg_nosec net/socket.c:703 [inline]
+    [<ffffffff836cf446>] sock_sendmsg+0x56/0x80 net/socket.c:723
+    [<ffffffff836cf9ac>] ____sys_sendmsg+0x36c/0x390 net/socket.c:2392
+    [<ffffffff836d39fb>] ___sys_sendmsg+0x8b/0xd0 net/socket.c:2446
+    [<ffffffff836d3af8>] __sys_sendmsg+0x88/0x100 net/socket.c:2475
+    [<ffffffff843af915>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff843af915>] do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
