@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C723D2CDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC7D53D2CDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 21:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhGVSzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 14:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhGVSzx (ORCPT
+        id S230169AbhGVS5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 14:57:39 -0400
+Received: from mail-qt1-f171.google.com ([209.85.160.171]:34317 "EHLO
+        mail-qt1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229737AbhGVS5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 14:55:53 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F94C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:36:27 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id b26so10237687lfo.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ojab.ru; s=ojab;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9jaMEi86/yRIF0nStxKvMT6tnJtS/t00o8y+9paLHic=;
-        b=X5vNGwcPHmK39Sz/ZOY9rK5FOMkon7mIL6VGiwyEEzzWSybiBBIMLzUUHMif2LTtqU
-         yEqELZv9aNUlhu0MBKg9PcotCpo1hpOCJwk9AJuKwxkpyRKzvYwuqZpuwGhpablx+8Ax
-         zF/6t8I+ipzbTfQAc3Ur8Nbbr/b97Y4to0AOlgudq16Ze8JlRRv99HbBHqtj6QnUqMOn
-         5RuZLfssgke8dR+fNMucQSDg0jRSwabJQIZZQHxfC3Kyk4AouHT3dAwhakGo86lD80fQ
-         2cb1iRBSENupsQ7N4kcrsy/x8ROL5/zFwLS8EuUlZHvBiYegqTr4ag8J8p43uYOG3Ndt
-         uEtg==
+        Thu, 22 Jul 2021 14:57:38 -0400
+Received: by mail-qt1-f171.google.com with SMTP id a19so169253qtx.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:38:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9jaMEi86/yRIF0nStxKvMT6tnJtS/t00o8y+9paLHic=;
-        b=IIJLEt6bzsA5/6dwrLPDd6qEdgGEHmqUQPF2bR3m0SKo5gbGUNK+4eu7kzfAB8SPLr
-         EhDnuL2pfKdfgAz28C1vi0UETWXNTcFjilHlD9JlN5Y+fKvDhuQvmHhQhdv1EVQSBmhx
-         4ssI/bi3kst7/jis4vJm4gEUX4YJjSDoHBr6FFeKGPJHtDuMUV6RXht5qEHE+hrQJ/a8
-         sjowZvmlo7wzsmR3I2ncVBivozrHQgOv2x/F0/qEka8ylbebpbXVn9XhuebH/FVChVHr
-         jXc36Xev/Fu30+c17RnnV7UF1m3hYrKRZYtHtsyOqSgn/0rs+E+yaYPlZL0UcsDNJCiu
-         QZ3w==
-X-Gm-Message-State: AOAM531IAr90hEAwcMrsjaeRBQ/pnkE1mC0qYFJTcVB0D76FNAAcSrs+
-        u3CvTTS6U18OSFKJSSCZtT4/Fw==
-X-Google-Smtp-Source: ABdhPJyOCiVVxo9BvQ0t3cC1n/byEnaEHoXTNRxQm7kyHIjkLcm85M3Pt0R0CeGSJO/NFBRLNOox9g==
-X-Received: by 2002:ac2:5684:: with SMTP id 4mr641352lfr.386.1626982585593;
-        Thu, 22 Jul 2021 12:36:25 -0700 (PDT)
-Received: from ojab.ru ([2a03:e2c0:1ce::2])
-        by smtp.gmail.com with ESMTPSA id n8sm1813576lfk.198.2021.07.22.12.36.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 12:36:24 -0700 (PDT)
-From:   ojab <ojab@ojab.ru>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     ojab <ojab@ojab.ru>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] ath10k: don't fail if IRAM write fails
-Date:   Thu, 22 Jul 2021 19:35:00 +0000
-Message-Id: <20210722193459.7474-1-ojab@ojab.ru>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rrCcO1rl/jimbgMioNh66hv+GfxnblGwSC/dwoJZl/s=;
+        b=OR/C64J/BNamjqzxHfBvIO2o3AHRiFnk2SHRnkrrc7nT+wLWnOdgvojugXh7DVLUv2
+         A+bJ9g7NXYIt3Rgw13/ato+fl0tSj+F0vqDhs5A0UeEN8VlUBIb/CGmgibXuEZuhCS9M
+         /KqQCsC5lV+ImU7YIe07/AAWxdVpO+rPem7Xj1T7QqRcKNsfG5J3vMvPif8m/xf2OuKI
+         Fr56XY3bYLA8b39bTMdtEhmrfhvRGU8bZd3VTZRJ8X23LYu5+3XoImDXlg3SF7LmQJsV
+         YOUiD7dXAoF4mztopz6Kdy2k8TaCgWuBD25+0GOAFsBv58Ykn79oRxPtE5i+d7mnTVvT
+         nl6A==
+X-Gm-Message-State: AOAM530sUleCP1QFskhcH3bj/zxkxIOV1lCaqj/Rrk9xlGUlmpYyCU5p
+        bcpQTp3aPSOcS5i4Zu86TgvENciC3L8=
+X-Google-Smtp-Source: ABdhPJx5qj+DaNvMQT8WrJ8PmQFXGK4/ppx84uxOpgh8MYadnF2KiYSIDvjN/Vzb+kWp+el37R+aFg==
+X-Received: by 2002:ac8:45cf:: with SMTP id e15mr1110647qto.347.1626982692166;
+        Thu, 22 Jul 2021 12:38:12 -0700 (PDT)
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com. [209.85.160.177])
+        by smtp.gmail.com with ESMTPSA id t14sm5741061qkm.7.2021.07.22.12.38.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 12:38:11 -0700 (PDT)
+Received: by mail-qt1-f177.google.com with SMTP id w10so154734qtj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 12:38:10 -0700 (PDT)
+X-Received: by 2002:ac8:7c44:: with SMTP id o4mr1090841qtv.191.1626982690807;
+ Thu, 22 Jul 2021 12:38:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210705111250.1513634-1-fido_max@inbox.ru> <CADRPPNRYDBFHEppfpYLwsy7MMEdtsOLS764MJboL9ERW0-KK3Q@mail.gmail.com>
+ <ec981260-fbe3-5cc4-1da3-dfb2f70f8f85@inbox.ru>
+In-Reply-To: <ec981260-fbe3-5cc4-1da3-dfb2f70f8f85@inbox.ru>
+From:   Li Yang <leoyang.li@nxp.com>
+Date:   Thu, 22 Jul 2021 14:37:59 -0500
+X-Gmail-Original-Message-ID: <CADRPPNST8XRhO5yR7p8pSbbJCO7xwhF2W3WZ7R=63mTET+fAdA@mail.gmail.com>
+Message-ID: <CADRPPNST8XRhO5yR7p8pSbbJCO7xwhF2W3WZ7R=63mTET+fAdA@mail.gmail.com>
+Subject: Re: [PATCH] soc: fsl: qe: convert QE interrupt controller to platform_device
+To:     Maxim Kochetkov <fido_max@inbox.ru>
+Cc:     saravanak@google.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Zhao Qiang <qiang.zhao@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After reboot with kernel & firmware updates I found `failed to copy
-target iram contents:` in dmesg and missing wlan interfaces for both
-of my QCA9984 compex cards. Rolling back kernel/firmware didn't fixed
-it, so while I have no idea what's actually happening, I don't see why
-we should fail in this case, looks like some optional firmware ability
-that could be skipped.
+On Mon, Jul 19, 2021 at 1:57 AM Maxim Kochetkov <fido_max@inbox.ru> wrote:
+>
+> 15.07.2021 01:29, Li Yang wrote:
+> >  From the original code, this should be type = "qeic".  It is not
+> > defined in current binding but probably needed for backward
+> > compatibility.
+>
+> I took these strings from this part:
+>
+>         np = of_find_compatible_node(NULL, NULL, "fsl,qe-ic");
+>
+>         if (!np) {
+>
+>                 np = of_find_node_by_type(NULL, "qeic");
+>
+>                 if (!np)
+>
+>                         return -ENODEV;
+>
+>         }
+>
+> However I can't find usage of "qeic" in any dts, so I will drop this in V2
 
-Also with additional logging there is
-```
-[    6.839858] ath10k_pci 0000:04:00.0: No hardware memory
-[    6.841205] ath10k_pci 0000:04:00.0: failed to copy target iram contents: -12
-[    6.873578] ath10k_pci 0000:07:00.0: No hardware memory
-[    6.875052] ath10k_pci 0000:07:00.0: failed to copy target iram contents: -12
-```
-so exact branch could be seen.
+It is really a bit hard to find as it is pretty old.  But it was
+really used up until this commit below in 2008.  So probably it will
+be better to keep it just for backward compatibility?
 
-Signed-off-by: Slava Kardakov <ojab@ojab.ru>
----
- Of course I forgot to sing off, since I don't use it by default because I
- hate my real name and kernel requires it
+commit a2dd70a11d4c9cb8a4e4bb41f53a9b430e08559b
+Author: Anton Vorontsov <avorontsov@ru.mvista.com>
+Date:   Thu Jan 24 18:39:59 2008 +0300
 
- drivers/net/wireless/ath/ath10k/core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+    [POWERPC] QE: get rid of most device_types and model
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2f9be182fbfb..d9fd5294e142 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -2691,8 +2691,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
- 	u32 len, remaining_len;
+    Now we're searching for "fsl,qe", "fsl,qe-muram", "fsl,qe-muram-data"
+    and "fsl,qe-ic".
 
- 	hw_mem = ath10k_coredump_get_mem_layout(ar);
--	if (!hw_mem)
-+	if (!hw_mem) {
-+		ath10k_warn(ar, "No hardware memory");
- 		return -ENOMEM;
-+	}
+    Unfortunately it's still impossible to remove device_type = "qe"
+    from the existing device trees because older u-boots are looking for it.
 
- 	for (i = 0; i < hw_mem->region_table.size; i++) {
- 		tmp = &hw_mem->region_table.regions[i];
-@@ -2702,8 +2704,10 @@ static int ath10k_core_copy_target_iram(struct ath10k *ar)
- 		}
- 	}
+    Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
+    Signed-off-by: Kumar Gala <galak@kernel.crashing.org>
 
--	if (!mem_region)
-+	if (!mem_region) {
-+		ath10k_warn(ar, "No memory region");
- 		return -ENOMEM;
-+	}
-
- 	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
- 		if (ar->wmi.mem_chunks[i].req_id ==
-@@ -2917,7 +2921,6 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode,
- 		if (status) {
- 			ath10k_warn(ar, "failed to copy target iram contents: %d",
- 				    status);
--			goto err_hif_stop;
- 		}
- 	}
-
---
-2.32.0
+Regards,
+Leo
