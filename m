@@ -2,196 +2,469 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072443D1EA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B52A3D1EA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhGVG3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 02:29:06 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15045 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhGVG3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 02:29:05 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GVk523JJWzZrcj;
-        Thu, 22 Jul 2021 15:06:14 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 22 Jul 2021 15:09:36 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <socketcan@hartkopp.net>
-CC:     <mkl@pengutronix.de>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v2] can: raw: fix raw_rcv panic for sock UAF
-Date:   Thu, 22 Jul 2021 15:08:19 +0800
-Message-ID: <20210722070819.1048263-1-william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S230499AbhGVG10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 02:27:26 -0400
+Received: from foss.arm.com ([217.140.110.172]:45650 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhGVG1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 02:27:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 422D0D6E;
+        Thu, 22 Jul 2021 00:07:59 -0700 (PDT)
+Received: from [10.163.65.134] (unknown [10.163.65.134])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF3123F66F;
+        Thu, 22 Jul 2021 00:07:56 -0700 (PDT)
+Subject: Re: [PATCH v3 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-2-gshan@redhat.com>
+ <ab0f9daa-0c49-e74c-e073-6e03a3cabb07@arm.com>
+ <280a5740-b5dc-4b78-3a38-67e5adbb0afd@redhat.com>
+ <04a4618f-9899-1518-cee1-0a48cb4df4c6@arm.com>
+ <65078a0c-c35c-8e3f-d4d3-3090b0c3daaf@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <4a534102-11ff-c849-781e-ed173e46da56@arm.com>
+Date:   Thu, 22 Jul 2021 12:38:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
-X-CFilter-Loop: Reflected
+In-Reply-To: <65078a0c-c35c-8e3f-d4d3-3090b0c3daaf@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We get a bug during ltp can_filter test as following.
 
-===========================================
-[60919.264984] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
-[60919.265223] PGD 8000003dda726067 P4D 8000003dda726067 PUD 3dda727067 PMD 0
-[60919.265443] Oops: 0000 [#1] SMP PTI
-[60919.265550] CPU: 30 PID: 3638365 Comm: can_filter Kdump: loaded Tainted: G        W         4.19.90+ #1
-[60919.266068] RIP: 0010:selinux_socket_sock_rcv_skb+0x3e/0x200
-[60919.293289] RSP: 0018:ffff8d53bfc03cf8 EFLAGS: 00010246
-[60919.307140] RAX: 0000000000000000 RBX: 000000000000001d RCX: 0000000000000007
-[60919.320756] RDX: 0000000000000001 RSI: ffff8d5104a8ed00 RDI: ffff8d53bfc03d30
-[60919.334319] RBP: ffff8d9338056800 R08: ffff8d53bfc29d80 R09: 0000000000000001
-[60919.347969] R10: ffff8d53bfc03ec0 R11: ffffb8526ef47c98 R12: ffff8d53bfc03d30
-[60919.350320] perf: interrupt took too long (3063 > 2500), lowering kernel.perf_event_max_sample_rate to 65000
-[60919.361148] R13: 0000000000000001 R14: ffff8d53bcf90000 R15: 0000000000000000
-[60919.361151] FS:  00007fb78b6b3600(0000) GS:ffff8d53bfc00000(0000) knlGS:0000000000000000
-[60919.400812] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[60919.413730] CR2: 0000000000000010 CR3: 0000003e3f784006 CR4: 00000000007606e0
-[60919.426479] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[60919.439339] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[60919.451608] PKRU: 55555554
-[60919.463622] Call Trace:
-[60919.475617]  <IRQ>
-[60919.487122]  ? update_load_avg+0x89/0x5d0
-[60919.498478]  ? update_load_avg+0x89/0x5d0
-[60919.509822]  ? account_entity_enqueue+0xc5/0xf0
-[60919.520709]  security_sock_rcv_skb+0x2a/0x40
-[60919.531413]  sk_filter_trim_cap+0x47/0x1b0
-[60919.542178]  ? kmem_cache_alloc+0x38/0x1b0
-[60919.552444]  sock_queue_rcv_skb+0x17/0x30
-[60919.562477]  raw_rcv+0x110/0x190 [can_raw]
-[60919.572539]  can_rcv_filter+0xbc/0x1b0 [can]
-[60919.582173]  can_receive+0x6b/0xb0 [can]
-[60919.591595]  can_rcv+0x31/0x70 [can]
-[60919.600783]  __netif_receive_skb_one_core+0x5a/0x80
-[60919.609864]  process_backlog+0x9b/0x150
-[60919.618691]  net_rx_action+0x156/0x400
-[60919.627310]  ? sched_clock_cpu+0xc/0xa0
-[60919.635714]  __do_softirq+0xe8/0x2e9
-[60919.644161]  do_softirq_own_stack+0x2a/0x40
-[60919.652154]  </IRQ>
-[60919.659899]  do_softirq.part.17+0x4f/0x60
-[60919.667475]  __local_bh_enable_ip+0x60/0x70
-[60919.675089]  __dev_queue_xmit+0x539/0x920
-[60919.682267]  ? finish_wait+0x80/0x80
-[60919.689218]  ? finish_wait+0x80/0x80
-[60919.695886]  ? sock_alloc_send_pskb+0x211/0x230
-[60919.702395]  ? can_send+0xe5/0x1f0 [can]
-[60919.708882]  can_send+0xe5/0x1f0 [can]
-[60919.715037]  raw_sendmsg+0x16d/0x268 [can_raw]
 
-It's because raw_setsockopt() concurrently with
-unregister_netdevice_many(). Concurrent scenario as following.
+On 7/22/21 11:53 AM, Gavin Shan wrote:
+> Hi Anshuman,
+> 
+> On 7/22/21 2:41 PM, Anshuman Khandual wrote:
+>> On 7/21/21 3:50 PM, Gavin Shan wrote:
+>>> On 7/21/21 3:44 PM, Anshuman Khandual wrote:
+>>>> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>>>>> In debug_vm_pgtable(), there are many local variables introduced to
+>>>>> track the needed information and they are passed to the functions for
+>>>>> various test cases. It'd better to introduce a struct as place holder
+>>>>> for these information. With it, what the functions for various test
+>>>>> cases need is the struct, to simplify the code. It also makes code
+>>>>> easier to be maintained.
+>>>>>
+>>>>> Besides, set_xxx_at() could access the data on the corresponding pages
+>>>>> in the page table modifying tests. So the accessed pages in the tests
+>>>>> should have been allocated from buddy. Otherwise, we're accessing pages
+>>>>> that aren't owned by us. This causes issues like page flag corruption.
+>>>>>
+>>>>> This introduces "struct pgtable_debug_args". The struct is initialized
+>>>>> and destroyed, but the information in the struct isn't used yet. They
+>>>>> will be used in subsequent patches.
+>>>>>
+>>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>>> ---
+>>>>>    mm/debug_vm_pgtable.c | 197 +++++++++++++++++++++++++++++++++++++++++-
+>>>>>    1 file changed, 196 insertions(+), 1 deletion(-)
+>>>>>
+>>>
+>>> I saw you've finished the review on PATCH[v3 01/12] and PATCH[v3 02/12].
+>>> I will wait to integrate your comments to v4 until you finish the review
+>>> on all patches in v3 series.
+>>>
+>>>>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>>>>> index 1c922691aa61..ea153ff40d23 100644
+>>>>> --- a/mm/debug_vm_pgtable.c
+>>>>> +++ b/mm/debug_vm_pgtable.c
+>>>>> @@ -58,6 +58,36 @@
+>>>>>    #define RANDOM_ORVALUE (GENMASK(BITS_PER_LONG - 1, 0) & ~ARCH_SKIP_MASK)
+>>>>>    #define RANDOM_NZVALUE    GENMASK(7, 0)
+>>>>>    +struct pgtable_debug_args {
+>>>>> +    struct mm_struct    *mm;
+>>>>> +    struct vm_area_struct    *vma;
+>>>>> +
+>>>>> +    pgd_t            *pgdp;
+>>>>> +    p4d_t            *p4dp;
+>>>>> +    pud_t            *pudp;
+>>>>> +    pmd_t            *pmdp;
+>>>>> +    pte_t            *ptep;
+>>>>> +
+>>>>> +    p4d_t            *start_p4dp;
+>>>>> +    pud_t            *start_pudp;
+>>>>> +    pmd_t            *start_pmdp;
+>>>>> +    pgtable_t        start_ptep;
+>>>>> +
+>>>>> +    unsigned long        vaddr;
+>>>>> +    pgprot_t        page_prot;
+>>>>> +    pgprot_t        page_prot_none;
+>>>>> +
+>>>>> +    unsigned long        pud_pfn;
+>>>>> +    unsigned long        pmd_pfn;
+>>>>> +    unsigned long        pte_pfn;
+>>>>> +
+>>>>> +    unsigned long        fixed_pgd_pfn;
+>>>>> +    unsigned long        fixed_p4d_pfn;
+>>>>> +    unsigned long        fixed_pud_pfn;
+>>>>> +    unsigned long        fixed_pmd_pfn;
+>>>>> +    unsigned long        fixed_pte_pfn;
+>>>>> +};
+>>>>> +
+>>>>>    static void __init pte_basic_tests(unsigned long pfn, int idx)
+>>>>>    {
+>>>>>        pgprot_t prot = protection_map[idx];
+>>>>> @@ -955,8 +985,167 @@ static unsigned long __init get_random_vaddr(void)
+>>>>>        return random_vaddr;
+>>>>>    }
+>>>>>    +static void __init destroy_args(struct pgtable_debug_args *args)
+>>>>> +{
+>>>>> +    struct page *page = NULL;
+>>>>> +
+>>>>> +    /* Free (huge) page */
+>>>>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>>> +        IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>>>> +        has_transparent_hugepage() &&
+>>>>> +        args->pud_pfn != ULONG_MAX) {
+>>>>> +        page = pfn_to_page(args->pud_pfn);
+>>>>> +        __free_pages(page, HPAGE_PUD_SHIFT - PAGE_SHIFT);
+>>>>> +    } else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>>> +           has_transparent_hugepage() &&
+>>>>> +           args->pmd_pfn != ULONG_MAX) {
+>>>>> +        page = pfn_to_page(args->pmd_pfn);
+>>>>> +        __free_pages(page, HPAGE_PMD_ORDER);
+>>>>> +    } else if (args->pte_pfn != ULONG_MAX) {
+>>>>> +        page = pfn_to_page(args->pte_pfn);
+>>>>> +        __free_pages(page, 0);
+>>>>> +    }
+>>>>> +
+>>>>> +    /* Free page table */
+>>>>> +    if (args->start_ptep) {
+>>>>> +        pte_free(args->mm, args->start_ptep);
+>>>>> +        mm_dec_nr_ptes(args->mm);
+>>>>> +    }
+>>>>> +
+>>>>> +    if (args->start_pmdp) {
+>>>>> +        pmd_free(args->mm, args->start_pmdp);
+>>>>> +        mm_dec_nr_pmds(args->mm);
+>>>>> +    }
+>>>>> +
+>>>>> +    if (args->start_pudp) {
+>>>>> +        pud_free(args->mm, args->start_pudp);
+>>>>> +        mm_dec_nr_puds(args->mm);
+>>>>> +    }
+>>>>> +
+>>>>> +    if (args->start_p4dp)
+>>>>> +        p4d_free(args->mm, args->p4dp);
+>>>>> +
+>>>>> +    /* Free vma and mm struct */
+>>>>> +    if (args->vma)
+>>>>> +        vm_area_free(args->vma);
+>>>>> +    if (args->mm)
+>>>>> +        mmdrop(args->mm);
+>>>>> +}
+>>>>> +
+>>>>> +static int __init init_args(struct pgtable_debug_args *args)
+>>>>> +{
+>>>>> +    struct page *page = NULL;
+>>>>> +    phys_addr_t phys;
+>>>>> +    int ret = 0;
+>>>>> +
+>>>>> +    /* Initialize the debugging data */
+>>>>> +    memset(args, 0, sizeof(*args));
+>>>>> +    args->page_prot      = vm_get_page_prot(VMFLAGS);
+>>>>> +    args->page_prot_none = __P000;
+>>>>
+>>>> Please preserve the existing comments before this assignment.
+>>>>
+>>>>           /*
+>>>>            * __P000 (or even __S000) will help create page table entries with
+>>>>            * PROT_NONE permission as required for pxx_protnone_tests().
+>>>>            */
+>>>>
+>>>
+>>> Sure. I will combine the comments in v4 as below:
+>>>
+>>>      /*
+>>>       * Initialize the debugging arguments.
+>>>       *
+>>>       * __P000 (or even __S000) will help create page table entries with
+>>>           * PROT_NONE permission as required for pxx_protnone_tests().
+>>>           */
+>>>
+>>>
+>>>>> +    args->pud_pfn        = ULONG_MAX;
+>>>>> +    args->pmd_pfn        = ULONG_MAX;
+>>>>> +    args->pte_pfn        = ULONG_MAX;
+>>>>> +    args->fixed_pgd_pfn  = ULONG_MAX;
+>>>>> +    args->fixed_p4d_pfn  = ULONG_MAX;
+>>>>> +    args->fixed_pud_pfn  = ULONG_MAX;
+>>>>> +    args->fixed_pmd_pfn  = ULONG_MAX;
+>>>>> +    args->fixed_pte_pfn  = ULONG_MAX;
+>>>>> +
+>>>>> +    /* Allocate mm and vma */
+>>>>> +    args->mm = mm_alloc();
+>>>>> +    if (!args->mm) {
+>>>>> +        pr_err("Failed to allocate mm struct\n");
+>>>>> +        ret = -ENOMEM;
+>>>>> +        goto error;
+>>>>> +    }
+>>>>> +
+>>>>> +    args->vma = vm_area_alloc(args->mm);
+>>>>> +    if (!args->vma) {
+>>>>> +        pr_err("Failed to allocate vma\n");
+>>>>> +        ret = -ENOMEM;
+>>>>> +        goto error;
+>>>>> +    }
+>>>>> +
+>>>>> +    /* Figure out the virtual address and allocate page table entries */
+>>>>> +    args->vaddr = get_random_vaddr();
+>>>>
+>>>> Please group args->vaddr's init with page_prot and page_prot_none above.
+>>>>
+>>>
+>>> Yes, It will make the code tidy. I'll move this line accordingly in v4,
+>>> but the related comments will be dropped as the code is self-explanatory.
+>>>
+>>>          /* Allocate page table entries */
+>>>
+>>>>> +    args->pgdp = pgd_offset(args->mm, args->vaddr);
+>>>>> +    args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
+>>>>> +    args->pudp = args->p4dp ?
+>>>>> +             pud_alloc(args->mm, args->p4dp, args->vaddr) : NULL;
+>>>>> +    args->pmdp = args->pudp ?
+>>>>> +             pmd_alloc(args->mm, args->pudp, args->vaddr) : NULL;
+>>>>> +    args->ptep = args->pmdp ?
+>>>>> +             pte_alloc_map(args->mm, args->pmdp, args->vaddr) : NULL;
+>>>>> +    if (!args->ptep) {
+>>>>> +        pr_err("Failed to allocate page table\n");
+>>>>> +        ret = -ENOMEM;
+>>>>> +        goto error;
+>>>>> +    }
+>>>>
+>>>> Why not just assert that all page table level pointers are allocated
+>>>> successfully, otherwise bail out the test completely. Something like
+>>>> this at each level.
+>>>>
+>>>>      if (!args->p4dp) {
+>>>>          pr_err("Failed to allocate page table\n");
+>>>>          ret = -ENOMEM;
+>>>>          goto error;
+>>>>      }
+>>>>
+>>>> Is there any value in proceeding with the test when some page table
+>>>> pointers have not been allocated. Also individual tests do not cross
+>>>> check these pointers. Also asserting successful allocations will
+>>>> make the freeing path simpler, as I had mentioned earlier.
+>>>>
+>>>
+>>> There is no tests will be carried out if we fail to allocate any level
+>>> of page table entries. For other questions, please refer below response.
+>>> In summary, this snippet needs to be combined with next snippet, as below.
+>>>
+>>>>> +
+>>>>> +    /*
+>>>>> +     * The above page table entries will be modified. Lets save the
+>>>>> +     * page table entries so that they can be released when the tests
+>>>>> +     * are completed.
+>>>>> +     */
+>>>>> +    args->start_p4dp = p4d_offset(args->pgdp, 0UL);
+>>>>> +    args->start_pudp = pud_offset(args->p4dp, 0UL);
+>>>>> +    args->start_pmdp = pmd_offset(args->pudp, 0UL);
+>>>>> +    args->start_ptep = pmd_pgtable(READ_ONCE(*(args->pmdp)));
+>>>>
+>>>> If the above page table pointers have been validated to be allocated
+>>>> successfully, we could add these here.
+>>>>
+>>>>      WARN_ON(!args->start_p4dp)
+>>>>      WARN_ON(!args->start_pudp)
+>>>>      WARN_ON(!args->start_pmdp)
+>>>>      WARN_ON(!args->start_ptep)
+>>>>
+>>>> Afterwards all those if (args->start_pxdp) checks in the freeing path
+>>>> will not be required anymore.
+>>>>
+>>>
+>>> The check on @args->start_pxdp is still needed in destroy_args() for
+>>> couple of cases: (1) destroy_args() is called on failing to allocate
+>>> @args->mm or @args->vma. That time, no page table entries are allocated.
+>>> (2) It's possible to fail allocating current level of page table entries
+>>> even the previous levels of page table entries are allocated successfully.
+>>
+>> This makes sense as destroy_args() is getting called if any of these
+>> allocations fails during init_args(). Did not realize that earlier.
+>>
+>>>
+>>> So Lets change these (above) two snippets as below in v4:
+>>>
+>>>      /*
+>>>       * Allocate page table entries. The allocated page table entries
+>>>       * will be modified in the tests. Lets save the page table entries
+>>>       * so that they can be released when the tests are completed.
+>>>       */
+>>>      args->pgdp = pgd_offset(args->mm, args->vaddr);
+>>>      args->p4dp = p4d_alloc(args->mm, args->pgdp, args->vaddr);
+>>>      if (!args->p4dp) {
+>>>          pr_err("Failed to allocate p4d entries\n");
+>>>          ret = -ENOMEM;
+>>>          goto error;
+>>>      }
+>>>
+>>>      args->start_p4dp = p4d_offset(args->pgdp, 0UL);
+>>
+>> Dont bring the arg->start_pxdp assignments here. If all page table level
+>> pointer allocations succeed, they all get assigned together like we have
+>> right now. Although a sanity check afterwards like the following, might
+>> still be better.
+>>
+>> WARN_ON(!args->start_p4dp)
+>> WARN_ON(!args->start_pudp)
+>> WARN_ON(!args->start_pmdp)
+>> WARN_ON(!args->start_ptep)
+>>
+> 
+> We have to assign arg->start_pxdp here because destroy_args() relies
+> it to release the corresponding page tables in failing path. For example,
+> the args->start_p4dp is going to be release if we fail to populate
+> args->start_pudp.
 
-	cpu0						cpu1
-raw_bind
-raw_setsockopt					unregister_netdevice_many
-						unlist_netdevice
-dev_get_by_index				raw_notifier
-raw_enable_filters				......
-can_rx_register
-can_rcv_list_find(..., net->can.rx_alldev_list)
+Okay.
 
-......
+> 
+> Ok. I will add WARN_ON() for each level of page table entries right after
+> they are assigned in v4.
+> 
+>>>      args->pudp = pud_alloc(args->mm, args->p4dp, args->vaddr);
+>>>      if (!args->pudp) {
+>>>          pr_err("Failed to allocate pud entries\n");
+>>>          ret = -ENOMEM;
+>>>          goto error;
+>>>      }
+>>>
+>>>      args->pmdp = pmd_alloc(args->mm, args->pudp, args->vaddr);
+>>>      if (!args->pmdp) {
+>>>          pr_err("Failed to allocate PMD entries\n");
+>>>          ret = -ENOMEM;
+>>>          goto error;
+>>>      }
+>>>
+>>>      args->start_pmdp = pmd_offset(args->pudp, 0UL);
+>>>      args->ptep = pte_alloc_map(args->mm, args->pmdp, args->vaddr);
+>>>      if (!args->ptep) {
+>>>          pr_err("Failed to allocate page table\n");
+>>>          ret = -ENOMEM;
+>>>          goto error;
+>>>      }
+>>>
+>>>      args->start_ptep = pmd_pgtable(READ_ONCE(*(args->pmdp)));
+>>>
+>>>>> +
+>>>>> +    /*
+>>>>> +     * Figure out the fixed addresses, which are all around the kernel
+>>>>> +     * symbol (@start_kernel). The corresponding PFNs might be invalid,
+>>>>> +     * but it's fine as the following tests won't access the pages.
+>>>>> +     */
+>>>>> +    phys = __pa_symbol(&start_kernel);
+>>>>> +    args->fixed_pgd_pfn = __phys_to_pfn(phys & PGDIR_MASK);
+>>>>> +    args->fixed_p4d_pfn = __phys_to_pfn(phys & P4D_MASK);
+>>>>> +    args->fixed_pud_pfn = __phys_to_pfn(phys & PUD_MASK);
+>>>>> +    args->fixed_pmd_pfn = __phys_to_pfn(phys & PMD_MASK);
+>>>>> +    args->fixed_pte_pfn = __phys_to_pfn(phys & PAGE_MASK);
+>>>>> +
+>>>>> +    /*
+>>>>> +     * Allocate (huge) pages because some of the tests need to access
+>>>>> +     * the data in the pages. The corresponding tests will be skipped
+>>>>> +     * if we fail to allocate (huge) pages.
+>>>>> +     */
+>>>>> +    if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>>> +        IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>>>> +        has_transparent_hugepage()) {
+>>>>> +        page = alloc_pages(GFP_KERNEL | __GFP_NOWARN,
+>>>>> +                   HPAGE_PUD_SHIFT - PAGE_SHIFT);
+>>>>
+>>>> Please drop __GFP_NOWARN and instead use something like alloc_contig_pages()
+>>>> when required allocation order exceed (MAX_ORDER - 1). Else the test might
+>>>> not be able to execute on platform configurations, where PUD THP is enabled.
+>>>>
+>>>
+>>> Yes, It's correct that alloc_contig_pages() should be used here, depending
+>>> on CONFIG_CONTIG_ALLOC. Otherwise, alloc_pages(...__GFP_NOWARN...) is still
+>>> used as we're doing. This snippet will be changed like below in v4:
+>>
+>> First 'order > (MAX_ORDER - 1)' needs to be established before calling into
+>> alloc_contig_pages() without __GFP_NOWARN and set a new flag indicating that
+>> there is contig page allocated. But if 'order <= (MAX_ORDER - 1)', then call
+>> alloc_pages(..) without  __GFP_NOWARN. There is no need to add  __GFP_NOWARN
+>> in any case. In case CONFIG_CONTIG_ALLOC is not available, directly return a
+>> NULL as that would have been the case with alloc_pages(...__GFP_NOWARN...) as
+>> well.
+>>
+>> Symbol alloc_contig_pages() is not available outside CONFIG_CONTIG_ALLOC. So
+>> IS_ENABLED() construct will not work, unless there is an empty stub added in
+>> the header. Otherwise #ifdef CONFIG_CONTIG_ALLOC needs to be used instead.
+>>
+>> Regardless please do test this on a x86 platform with PUD based THP in order
+>> to make sure every thing works as expected.
+>>
+> 
+> Thanks, I will change the code accordingly in v4 and test it on x86
+> before posting it.
+> 
+>>>
+>>>      /*
+>>>       * Allocate (huge) pages because some of the tests need to access
+>>>       * the data in the pages. The corresponding tests will be skipped
+>>>       * if we fail to allocate (huge) pages.
+>>>       */
+>>>      if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>          IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>>          IS_ENABLED(CONFIG_CONTIG_ALLOC)) &&
+>>>          has_transparent_hugepage()) {
+>>>          page = alloc_contig_pages((1 << (HPAGE_PUD_SHIFT - PAGE_SHIFT)),
+>>>                        GFP_KERNEL | __GFP_NOWARN,
+>>>                        first_online_node, NULL);
+>>>          if (page) {
+>>>              args->is_contiguous_pud_page = true;
+>>>              args->pud_pfn = page_to_pfn(page);
+>>>              args->pmd_pfn = args->pud_pfn;
+>>>              args->pte_pfn = args->pud_pfn;
+>>>              return 0;
+>>>          }
+>>>      }
+>>>
+>>>      if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>>>          IS_ENABLED(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+>>>          has_transparent_hugepage()) {
+>>>          page = alloc_pages(GFP_KERNEL | __GFP_NOWARN,
+>>>                     HPAGE_PUD_SHIFT - PAGE_SHIFT);
+>>>          if (page) {
+>>>              args->is_contiguous_pud_page = false;
+>>>              args->pud_pfn = page_to_pfn(page);
+>>>              args->pmd_pfn = args->pud_pfn;
+>>>              args->pte_pfn = args->pud_pfn;
+>>>              return 0;
+>>>          }
+>>>      }
+>>>
+>>>      [... The logic to allocate PMD huge page or page is kept as of being]
+>>
+>> IIRC it is also not guaranteed that PMD_SHIFT <= (MAX_ORDER - 1). Hence
+>> this same scheme should be followed for PMD level allocation as well.
+>>
+> 
+> In theory, it's possible to have PMD_SHIFT <= (MAX_ORDER - 1) with misconfigured
+> kernel. I will apply the similar logic to PMD huge page in v4.
+> 
+>>>      [... The code to release the PUD huge page needs changes based on @args->is_contiguous_pud_page]
+>>
+>> Right, a flag would be needed to call the appropriate free function.
+>>
+> 
+> Yes. We need two falgs for PUD and PMD huge pages separately.
 
-sock_close
-raw_release(sock_a)
-
-......
-
-can_receive
-can_rcv_filter(net->can.rx_alldev_list, ...)
-raw_rcv(skb, sock_a)
-BUG
-
-After unlist_netdevice(), dev_get_by_index() return NULL in
-raw_setsockopt(). Function raw_enable_filters() will add sock
-and can_filter to net->can.rx_alldev_list. Then the sock is closed.
-Followed by, we sock_sendmsg() to a new vcan device use the same
-can_filter. Protocol stack match the old receiver whose sock has
-been released on net->can.rx_alldev_list in can_rcv_filter().
-Function raw_rcv() uses the freed sock. UAF BUG is triggered.
-
-We can find that the key issue is that net_device has not been
-protected in raw_setsockopt(). Use rtnl_lock to protect net_device
-in raw_setsockopt().
-
-Fixes: c18ce101f2e4 ("[CAN]: Add raw protocol")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
----
-v2:
-- add exception handling for dev_get_by_index return NULL
- net/can/raw.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
-
-diff --git a/net/can/raw.c b/net/can/raw.c
-index ed4fcb7ab0c3..cd5a49380116 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -546,10 +546,18 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 				return -EFAULT;
- 		}
- 
-+		rtnl_lock();
- 		lock_sock(sk);
- 
--		if (ro->bound && ro->ifindex)
-+		if (ro->bound && ro->ifindex) {
- 			dev = dev_get_by_index(sock_net(sk), ro->ifindex);
-+			if (!dev) {
-+				if (count > 1)
-+					kfree(filter);
-+				err = -ENODEV;
-+				goto out_fil;
-+			}
-+		}
- 
- 		if (ro->bound) {
- 			/* (try to) register the new filters */
-@@ -588,6 +596,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 			dev_put(dev);
- 
- 		release_sock(sk);
-+		rtnl_unlock();
- 
- 		break;
- 
-@@ -600,10 +609,16 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 
- 		err_mask &= CAN_ERR_MASK;
- 
-+		rtnl_lock();
- 		lock_sock(sk);
- 
--		if (ro->bound && ro->ifindex)
-+		if (ro->bound && ro->ifindex) {
- 			dev = dev_get_by_index(sock_net(sk), ro->ifindex);
-+			if (!dev) {
-+				err = -ENODEV;
-+				goto out_err;
-+			}
-+		}
- 
- 		/* remove current error mask */
- 		if (ro->bound) {
-@@ -627,6 +642,7 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 			dev_put(dev);
- 
- 		release_sock(sk);
-+		rtnl_unlock();
- 
- 		break;
- 
--- 
-2.25.1
-
+A single flag should be enough, the order would be dependent on
+whether args->pud_pfn or args->pmd_pfn is valid.
