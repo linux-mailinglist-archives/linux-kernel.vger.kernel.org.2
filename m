@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8428F3D2A77
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FED83D295C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhGVQMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 12:12:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47612 "EHLO mail.kernel.org"
+        id S233810AbhGVQDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:03:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234177AbhGVQHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 12:07:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2333B6120C;
-        Thu, 22 Jul 2021 16:47:57 +0000 (UTC)
+        id S233490AbhGVQCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:02:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A0861949;
+        Thu, 22 Jul 2021 16:42:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626972478;
-        bh=xRfrSwOkKdlgNeMPUobboihd/W6Af5BoXt2BvE87T+Q=;
+        s=korg; t=1626972160;
+        bh=XuBuvsbKt3ZHT7dCNLzqm+nESIX8YJil9iu7Ncu4/KM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pdn8/kR9bfvvwWOcVRuYc7RZXW7lIze6cwDJTvtPPpuBy4pA6WvjTH+lMbLoQ8z5i
-         uqXKL7QMFQmm1LXXJIfweRgumyj6OStlAmo/nzJRYmXNznLsQfEWudt12tbQM4xtZ/
-         yGFff6OjcMRG1/1uD8XKtdONZlH6JscTpms5AXgg=
+        b=Ip8CW0XcQcxl2X2HGCP6OhZPcveyE+XVxrOAwqdSOW3AXe1EZDYWRMv3XktKe92+z
+         2ERNot7VkhiM5ZEsJgt/IY4YOLgzyFoJzzkBbxKmv+kxbThlQUOAj3Y0LYdvkJJL/7
+         bLOngJSiHaaHMRp+X9Ox/Md4ZWOe/S2anICXGlWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Ovechkin <ovov@yandex-team.ru>,
-        Dmitry Yakunin <zeil@yandex-team.ru>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 129/156] net: send SYNACK packet with accepted fwmark
+        stable@vger.kernel.org, Joel Stanley <joel@jms.id.au>
+Subject: [PATCH 5.10 113/125] ARM: dts: aspeed: Fix AST2600 machines line names
 Date:   Thu, 22 Jul 2021 18:31:44 +0200
-Message-Id: <20210722155632.530526183@linuxfoundation.org>
+Message-Id: <20210722155628.468517108@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-References: <20210722155628.371356843@linuxfoundation.org>
+In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
+References: <20210722155624.672583740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +38,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Ovechkin <ovov@yandex-team.ru>
+From: Joel Stanley <joel@jms.id.au>
 
-commit 43b90bfad34bcb81b8a5bc7dc650800f4be1787e upstream.
+commit ca46ad2214473df1a6a9496be17156d65ba89b9f upstream.
 
-commit e05a90ec9e16 ("net: reflect mark on tcp syn ack packets")
-fixed IPv4 only.
+Tacoma and Rainier both have a line-names array that is too long:
 
-This part is for the IPv6 side.
+ gpio gpiochip0: gpio-line-names is length 232 but should be at most length 208
 
-Fixes: e05a90ec9e16 ("net: reflect mark on tcp syn ack packets")
-Signed-off-by: Alexander Ovechkin <ovov@yandex-team.ru>
-Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This was probably copied from an AST2500 device tree that did have more
+GPIOs on the controller.
+
+Fixes: e9b24b55ca4f ("ARM: dts: aspeed: rainier: Add gpio line names")
+Fixes: 2f68e4e7df67 ("ARM: dts: aspeed: tacoma: Add gpio line names")
+Link: https://lore.kernel.org/r/20210624090742.56640-1-joel@jms.id.au
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/tcp_ipv6.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts |    5 +----
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts  |    5 +----
+ 2 files changed, 2 insertions(+), 8 deletions(-)
 
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -540,7 +540,7 @@ static int tcp_v6_send_synack(const stru
- 		opt = ireq->ipv6_opt;
- 		if (!opt)
- 			opt = rcu_dereference(np->opt);
--		err = ip6_xmit(sk, skb, fl6, sk->sk_mark, opt,
-+		err = ip6_xmit(sk, skb, fl6, skb->mark ? : sk->sk_mark, opt,
- 			       tclass, sk->sk_priority);
- 		rcu_read_unlock();
- 		err = net_xmit_eval(err);
+--- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+@@ -156,10 +156,7 @@
+ 	/*W0-W7*/	"","","","","","","","",
+ 	/*X0-X7*/	"","","","","","","","",
+ 	/*Y0-Y7*/	"","","","","","","","",
+-	/*Z0-Z7*/	"","","","","","","","",
+-	/*AA0-AA7*/	"","","","","","","","",
+-	/*AB0-AB7*/	"","","","","","","","",
+-	/*AC0-AC7*/	"","","","","","","","";
++	/*Z0-Z7*/	"","","","","","","","";
+ 
+ 	pin_mclr_vpp {
+ 		gpio-hog;
+--- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
+@@ -127,10 +127,7 @@
+ 	/*W0-W7*/	"","","","","","","","",
+ 	/*X0-X7*/	"","","","","","","","",
+ 	/*Y0-Y7*/	"","","","","","","","",
+-	/*Z0-Z7*/	"","","","","","","","",
+-	/*AA0-AA7*/	"","","","","","","","",
+-	/*AB0-AB7*/	"","","","","","","","",
+-	/*AC0-AC7*/	"","","","","","","","";
++	/*Z0-Z7*/	"","","","","","","","";
+ };
+ 
+ &fmc {
 
 
