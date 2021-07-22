@@ -2,130 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD9A3D1EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8F03D1EA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 09:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhGVGYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 02:24:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhGVGYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 02:24:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 692C261241;
-        Thu, 22 Jul 2021 07:05:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626937522;
-        bh=llpwcSwIoRkFywjB2bAOzYOX4SzJ7LKdKo1OJ6ezcx8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ek5e4/aBdnHqvQgymXDltbwMQX6FzSHQqI18vzIzfjRu80xuVCOcq6ROfIqRCSqO8
-         0zF73H5w2undmeY5Kgf2QkmU7dNt0ob/YiGcRx6fPhyqjHvkLs697Tvhw3XuE6gui3
-         /gSYaeQsBgmi9YFHrv2NVI0g4awvLnKfSm85sbwSxVlBtBWrsrcwPfadQNExlBU0qg
-         qqbfmglGN8WtLeEMOzplhXanAf+pMo2d1Bv3spEfXK/iBxaEfqFfEPpBl5WassAgF6
-         d1NTIRxOTPdYjMHcRBb/HTf+5Sl7CtnXXld5pUJlpvR0FQqQQClzMvP0x2oKiOKXw/
-         kD3wAvk9ndJbg==
-Date:   Thu, 22 Jul 2021 10:05:18 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     Gal Pressman <galpress@amazon.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next 8/9] RDMA: Globally allocate and release QP
- memory
-Message-ID: <YPkYrluozzr4dJUb@unreal>
-References: <cover.1626609283.git.leonro@nvidia.com>
- <5b3bff16da4b6f925c872594262cd8ed72b301cd.1626609283.git.leonro@nvidia.com>
- <abfc0d32-eab8-97d4-5734-508b6c46fe98@amazon.com>
- <YPaKu4ppS0Bz6fW1@unreal>
- <5539c203-0d3b-6296-7554-143e7afb6e34@cornelisnetworks.com>
+        id S230453AbhGVG0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 02:26:36 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12236 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhGVG0d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 02:26:33 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GVjzL3QrGz1CMCH;
+        Thu, 22 Jul 2021 15:01:18 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 22 Jul 2021 15:06:40 +0800
+Subject: Re: [PATCH net] can: raw: fix raw_rcv panic for sock UAF
+To:     Oliver Hartkopp <socketcan@hartkopp.net>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <mkl@pengutronix.de>,
+        <netdev@vger.kernel.org>, <linux-can@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210721010937.670275-1-william.xuanziyang@huawei.com>
+ <YPeoQG19PSh3B3Dc@kroah.com>
+ <44c3e0e2-03c5-80e5-001c-03e7e9758bca@hartkopp.net>
+ <11822417-5931-b2d8-ae77-ec4a84b8b895@hartkopp.net>
+ <d5eb8e8d-bce9-cccd-a102-b60692c242f0@huawei.com>
+ <fc68ffdf-50f0-9cc7-6943-4b16b1447a9b@hartkopp.net>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <ea64e0db-0507-16bf-b040-900f17c65dd8@huawei.com>
+Date:   Thu, 22 Jul 2021 15:06:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5539c203-0d3b-6296-7554-143e7afb6e34@cornelisnetworks.com>
+In-Reply-To: <fc68ffdf-50f0-9cc7-6943-4b16b1447a9b@hartkopp.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 02:05:34PM -0400, Dennis Dalessandro wrote:
-> On 7/20/21 4:35 AM, Leon Romanovsky wrote:
-> > On Mon, Jul 19, 2021 at 04:42:11PM +0300, Gal Pressman wrote:
-> >> On 18/07/2021 15:00, Leon Romanovsky wrote:
-> >>> From: Leon Romanovsky <leonro@nvidia.com>
-> >>>
-> >>> Convert QP object to follow IB/core general allocation scheme.
-> >>> That change allows us to make sure that restrack properly kref
-> >>> the memory.
-> >>>
-> >>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> >>
-> >> EFA and core parts look good to me.
-> >> Reviewed-by: Gal Pressman <galpress@amazon.com>
-> >> Tested-by: Gal Pressman <galpress@amazon.com>
-> 
-> Leon, I pulled your tree and tested, things look good so far.
-> 
-> For rdmavt and core:
-> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> Tested-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
-Thanks
 
+On 7/21/2021 11:13 PM, Oliver Hartkopp wrote:
 > 
 > 
-> > Thanks a lot.
-> > 
-> >>
-> >>> +static inline void *rdma_zalloc_obj(struct ib_device *dev, size_t size,
-> >>> +				    gfp_t gfp, bool is_numa_aware)
-> >>> +{
-> >>> +	if (is_numa_aware && dev->ops.get_numa_node)
-> >>
-> >> Honestly I think it's better to return an error if a numa aware allocation is
-> >> requested and get_numa_node is not provided.
-> > 
-> > We don't want any driver to use and implement ".get_numa_node()" callback.
-> > 
-> > Initially, I thought about adding WARN_ON(driver_id != HFI && .get_numa_node)
-> > to the device.c, but decided to stay with comment in ib_verbs.h only.
+> On 21.07.21 13:37, Ziyang Xuan (William) wrote:
+>> On 7/21/2021 5:24 PM, Oliver Hartkopp wrote:
 > 
-> Maybe you could update that comment and add that it's for performance? This way
-> its clear we are different for a reason. I'd be fine adding a WARN_ON_ONCE like
-> you mention here. I don't think we need to fail the call but drawing attention
-> to it would not necessarily be a bad thing. Either way, RB/TB for me stands.
-
-The thing is that performance gain is achieved in very specific artificial
-use case, while we can think about other scenario where such allocation will
-give different results.
-
-For the performance test, Mike forced to have QP and device to be in different
-NUMA nodes, while in reality such situation is possible only if memory on the
-local node is depleted and it is better to have working system instead of current
-situation where node request will fail.
-
-I don't want to give wrong impression that numa node allocations are
-better for performance.
-
-Thanks
-
+>>>
+>>> Can you please resend the below patch as suggested by Greg KH and add my
+>>>
+>>> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+>>>
+>>> as it also adds the dev_get_by_index() return check.
+>>>
+>>> diff --git a/net/can/raw.c b/net/can/raw.c
+>>> index ed4fcb7ab0c3..d3cbc32036c7 100644
+>>> --- a/net/can/raw.c
+>>> +++ b/net/can/raw.c
+>>> @@ -544,14 +544,18 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>>           } else if (count == 1) {
+>>>               if (copy_from_sockptr(&sfilter, optval, sizeof(sfilter)))
+>>>                   return -EFAULT;
+>>>           }
+>>>
+>>> +        rtnl_lock();
+>>>           lock_sock(sk);
+>>>
+>>> -        if (ro->bound && ro->ifindex)
+>>> +        if (ro->bound && ro->ifindex) {
+>>>               dev = dev_get_by_index(sock_net(sk), ro->ifindex);
+>>> +            if (!dev)
+>>> +                goto out_fil;
+>>> +        }
+>> At first, I also use this modification. After discussion with my partner, we found that
+>> it is impossible scenario if we use rtnl_lock to protect net_device object.
+>> We can see two sequences:
+>> 1. raw_setsockopt first get rtnl_lock, unregister_netdevice_many later.
+>> It can be simplified to add the filter in raw_setsockopt, then remove the filter in raw_notify.
+>>
+>> 2. unregister_netdevice_many first get rtnl_lock, raw_setsockopt later.
+>> raw_notify will set ro->ifindex, ro->bound and ro->count to zero firstly. The filter will not
+>> be added to any filter_list in raw_notify.
+>>
+>> So I selected the current modification. Do you think so?
+>>
+>> My first modification as following:
+>>
+>> diff --git a/net/can/raw.c b/net/can/raw.c
+>> index ed4fcb7ab0c3..a0ce4908317f 100644
+>> --- a/net/can/raw.c
+>> +++ b/net/can/raw.c
+>> @@ -546,10 +546,16 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>                                  return -EFAULT;
+>>                  }
+>>
+>> +               rtnl_lock();
+>>                  lock_sock(sk);
+>>
+>> -               if (ro->bound && ro->ifindex)
+>> +               if (ro->bound && ro->ifindex) {
+>>                          dev = dev_get_by_index(sock_net(sk), ro->ifindex);
+>> +                       if (!dev) {
+>> +                               err = -ENODEV;
+>> +                               goto out_fil;
+>> +                       }
+>> +               }
+>>
+>>                  if (ro->bound) {
+>>                          /* (try to) register the new filters */
+>> @@ -559,11 +565,8 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>                          else
+>>                                  err = raw_enable_filters(sock_net(sk), dev, sk,
+>>                                                           filter, count);
+>> -                       if (err) {
+>> -                               if (count > 1)
+>> -                                       kfree(filter);
+>> +                       if (err)
+>>                                  goto out_fil;
+>> -                       }
+>>
+>>                          /* remove old filter registrations */
+>>                          raw_disable_filters(sock_net(sk), dev, sk, ro->filter,
+>> @@ -584,10 +587,14 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>>                  ro->count  = count;
+>>
+>>    out_fil:
+>> +               if (err && count > 1)
+>> +                       kfree(filter);
+>> +
 > 
-> -Denny
+> Setting the err variable to -ENODEV is a good idea but I do not like the movement of kfree(filter).
 > 
+> The kfree() has a tight relation inside the if-statement for ro->bound which makes it easier to understand.
 > 
+> Regards,
+> Oliver
+
+I will submit the v2 patch for the problem according to your suggestions. Than you.
