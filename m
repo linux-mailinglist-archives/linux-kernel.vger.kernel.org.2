@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5683D28AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B54A3D297F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 19:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhGVP6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 11:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
+        id S234225AbhGVQE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 12:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229871AbhGVP4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 11:56:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 563FD6135A;
-        Thu, 22 Jul 2021 16:37:05 +0000 (UTC)
+        id S233868AbhGVQDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 12:03:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35478619FE;
+        Thu, 22 Jul 2021 16:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626971825;
-        bh=sbMz3kMP+vB8lEc+nL5kf4fnl7cc6bewMpbJEVOAa0w=;
+        s=korg; t=1626972203;
+        bh=oYfTxqLGVBT5yg+xMwCwpdKCTFpfJ5wd+O/hqJoewfc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FWvyXSr41UZN76g1Kac9zXBVQsjBScIajdbu8C+qyiQHU9FlakmrpFhxJqXYbaSOJ
-         Nh6nKtLlVHx/LGyHErITY8OmYe4VSPw3kfd+dPfo16GtJ49iq4Cjv7XQebsv1H7vVl
-         erkOnBnpTzaLOYac+qp2M4MsX1knekoPNoz0OF9Q=
+        b=P1OB+q4k0VJvTMzDxENHoBfuSCAxon/g6efiVAU2NW+ZS155QVvh6uc7iacbnGPkI
+         g2vHSLinpPv1h49xX42nD0wYZYeDpaQTzgTYTdFunH8XAbZP7XCUpeHCCs7L1BHWzY
+         aDTYivy0sZf8p0dVRmDB5SHyf9w6aggNjyyP0dBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 007/125] ARM: dts: rockchip: Fix IOMMU nodes properties on rk322x
-Date:   Thu, 22 Jul 2021 18:29:58 +0200
-Message-Id: <20210722155624.933751117@linuxfoundation.org>
+Subject: [PATCH 5.13 024/156] soc: mediatek: add missing MODULE_DEVICE_TABLE
+Date:   Thu, 22 Jul 2021 18:29:59 +0200
+Message-Id: <20210722155629.192862739@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210722155624.672583740@linuxfoundation.org>
-References: <20210722155624.672583740@linuxfoundation.org>
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+From: Zou Wei <zou_wei@huawei.com>
 
-[ Upstream commit 6b023929666f0be5df75f5e0278d1b70effadf42 ]
+[ Upstream commit ba96de3ae5a7e2121cac80053b277eb2ab51a0ae ]
 
-Add '#" to iommu-cells properties.
-Remove useless interrupt-names properties
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Link: https://lore.kernel.org/r/20210507090232.233049-4-benjamin.gaignard@collabora.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+Link: https://lore.kernel.org/r/1620705350-104687-1-git-send-email-zou_wei@huawei.com
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/rk322x.dtsi | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/soc/mediatek/mtk-devapc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
-index 5fdea760ffd4..7de8b006ca13 100644
---- a/arch/arm/boot/dts/rk322x.dtsi
-+++ b/arch/arm/boot/dts/rk322x.dtsi
-@@ -565,10 +565,9 @@
- 		compatible = "rockchip,iommu";
- 		reg = <0x20020800 0x100>;
- 		interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
--		interrupt-names = "vpu_mmu";
- 		clocks = <&cru ACLK_VPU>, <&cru HCLK_VPU>;
- 		clock-names = "aclk", "iface";
--		iommu-cells = <0>;
-+		#iommu-cells = <0>;
- 		status = "disabled";
- 	};
+diff --git a/drivers/soc/mediatek/mtk-devapc.c b/drivers/soc/mediatek/mtk-devapc.c
+index f1cea041dc5a..7c65ad3d1f8a 100644
+--- a/drivers/soc/mediatek/mtk-devapc.c
++++ b/drivers/soc/mediatek/mtk-devapc.c
+@@ -234,6 +234,7 @@ static const struct of_device_id mtk_devapc_dt_match[] = {
+ 	}, {
+ 	},
+ };
++MODULE_DEVICE_TABLE(of, mtk_devapc_dt_match);
  
-@@ -576,10 +575,9 @@
- 		compatible = "rockchip,iommu";
- 		reg = <0x20030480 0x40>, <0x200304c0 0x40>;
- 		interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
--		interrupt-names = "vdec_mmu";
- 		clocks = <&cru ACLK_RKVDEC>, <&cru HCLK_RKVDEC>;
- 		clock-names = "aclk", "iface";
--		iommu-cells = <0>;
-+		#iommu-cells = <0>;
- 		status = "disabled";
- 	};
- 
-@@ -609,7 +607,6 @@
- 		compatible = "rockchip,iommu";
- 		reg = <0x20053f00 0x100>;
- 		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
--		interrupt-names = "vop_mmu";
- 		clocks = <&cru ACLK_VOP>, <&cru HCLK_VOP>;
- 		clock-names = "aclk", "iface";
- 		#iommu-cells = <0>;
-@@ -630,10 +627,9 @@
- 		compatible = "rockchip,iommu";
- 		reg = <0x20070800 0x100>;
- 		interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
--		interrupt-names = "iep_mmu";
- 		clocks = <&cru ACLK_IEP>, <&cru HCLK_IEP>;
- 		clock-names = "aclk", "iface";
--		iommu-cells = <0>;
-+		#iommu-cells = <0>;
- 		status = "disabled";
- 	};
- 
+ static int mtk_devapc_probe(struct platform_device *pdev)
+ {
 -- 
 2.30.2
 
