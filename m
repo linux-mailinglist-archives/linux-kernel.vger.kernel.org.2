@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5193D1C52
+	by mail.lfdr.de (Postfix) with ESMTP id 989753D1C53
 	for <lists+linux-kernel@lfdr.de>; Thu, 22 Jul 2021 05:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhGVCic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Jul 2021 22:38:32 -0400
+        id S231211AbhGVCig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Jul 2021 22:38:36 -0400
 Received: from mga12.intel.com ([192.55.52.136]:47174 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230483AbhGVCiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Jul 2021 22:38:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191139203"
+        id S230527AbhGVCiZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Jul 2021 22:38:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10052"; a="191139209"
 X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="191139203"
+   d="scan'208";a="191139209"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:18:57 -0700
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:19:01 -0700
 X-IronPort-AV: E=Sophos;i="5.84,259,1620716400"; 
-   d="scan'208";a="501576936"
+   d="scan'208";a="501576978"
 Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:18:54 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jul 2021 20:18:57 -0700
 From:   Huang Ying <ying.huang@intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@suse.com>,
         Rik van Riel <riel@surriel.com>,
         Mel Gorman <mgorman@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
         Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
         Wei Xu <weixugc@google.com>, osalvador <osalvador@suse.de>,
         Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org
-Subject: [PATCH -V7 2/6] memory tiering: add page promotion counter
-Date:   Thu, 22 Jul 2021 11:18:15 +0800
-Message-Id: <20210722031819.3446711-3-ying.huang@intel.com>
+Subject: [PATCH -V7 3/6] memory tiering: skip to scan fast memory
+Date:   Thu, 22 Jul 2021 11:18:16 +0800
+Message-Id: <20210722031819.3446711-4-ying.huang@intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210722031819.3446711-1-ying.huang@intel.com>
 References: <20210722031819.3446711-1-ying.huang@intel.com>
@@ -44,18 +44,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To distinguish the number of the memory tiering promoted pages from
-that of the originally inter-socket NUMA balancing migrated pages.
-The counter is per-node (count in the target node).  So this can be
-used to identify promotion imbalance among the NUMA nodes.
+If the NUMA balancing isn't used to optimize the page placement among
+sockets but only among memory types, the hot pages in the fast memory
+node couldn't be migrated (promoted) to anywhere.  So it's unnecessary
+to scan the pages in the fast memory node via changing their PTE/PMD
+mapping to be PROT_NONE.  So that the page faults could be avoided
+too.
+
+In the test, if only the memory tiering NUMA balancing mode is enabled, the
+number of the NUMA balancing hint faults for the DRAM node is reduced to
+almost 0 with the patch.  While the benchmark score doesn't change
+visibly.
 
 Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Michal Hocko <mhocko@suse.com>
 Cc: Rik van Riel <riel@surriel.com>
 Cc: Mel Gorman <mgorman@suse.de>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Yang Shi <shy828301@gmail.com>
 Cc: Zi Yan <ziy@nvidia.com>
 Cc: Wei Xu <weixugc@google.com>
@@ -64,91 +71,98 @@ Cc: Shakeel Butt <shakeelb@google.com>
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org
 ---
- include/linux/mmzone.h |  3 +++
- include/linux/node.h   |  5 +++++
- mm/migrate.c           | 11 +++++++++--
- mm/vmstat.c            |  3 +++
- 4 files changed, 20 insertions(+), 2 deletions(-)
+ mm/huge_memory.c | 30 +++++++++++++++++++++---------
+ mm/mprotect.c    | 13 ++++++++++++-
+ 2 files changed, 33 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 5c0318509f9e..6c1ffc7bf5a4 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -209,6 +209,9 @@ enum node_stat_item {
- 	NR_PAGETABLE,		/* used for pagetables */
- #ifdef CONFIG_SWAP
- 	NR_SWAPCACHE,
-+#endif
-+#ifdef CONFIG_NUMA_BALANCING
-+	PGPROMOTE_SUCCESS,	/* promote successfully */
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index afff3ac87067..16280f695638 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -34,6 +34,7 @@
+ #include <linux/oom.h>
+ #include <linux/numa.h>
+ #include <linux/page_owner.h>
++#include <linux/sched/sysctl.h>
+ 
+ #include <asm/tlb.h>
+ #include <asm/pgalloc.h>
+@@ -1792,17 +1793,28 @@ int change_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
+ 	}
  #endif
- 	NR_VM_NODE_STAT_ITEMS
- };
-diff --git a/include/linux/node.h b/include/linux/node.h
-index 8e5a29897936..26e96fcc66af 100644
---- a/include/linux/node.h
-+++ b/include/linux/node.h
-@@ -181,4 +181,9 @@ static inline void register_hugetlbfs_with_node(node_registration_func_t reg,
  
- #define to_node(device) container_of(device, struct node, dev)
+-	/*
+-	 * Avoid trapping faults against the zero page. The read-only
+-	 * data is likely to be read-cached on the local CPU and
+-	 * local/remote hits to the zero page are not interesting.
+-	 */
+-	if (prot_numa && is_huge_zero_pmd(*pmd))
+-		goto unlock;
++	if (prot_numa) {
++		struct page *page;
++		/*
++		 * Avoid trapping faults against the zero page. The read-only
++		 * data is likely to be read-cached on the local CPU and
++		 * local/remote hits to the zero page are not interesting.
++		 */
++		if (is_huge_zero_pmd(*pmd))
++			goto unlock;
  
-+static inline bool node_is_toptier(int node)
-+{
-+	return node_state(node, N_CPU);
-+}
-+
- #endif /* _LINUX_NODE_H_ */
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 05631327ff48..b99d0db73cb3 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2159,6 +2159,7 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
- 	pg_data_t *pgdat = NODE_DATA(node);
- 	int isolated;
- 	int nr_remaining;
-+	int nr_succeeded;
- 	LIST_HEAD(migratepages);
- 	new_page_t *new;
- 	bool compound;
-@@ -2197,7 +2198,8 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+-	if (prot_numa && pmd_protnone(*pmd))
+-		goto unlock;
++		if (pmd_protnone(*pmd))
++			goto unlock;
  
- 	list_add(&page->lru, &migratepages);
- 	nr_remaining = migrate_pages(&migratepages, *new, NULL, node,
--				     MIGRATE_ASYNC, MR_NUMA_MISPLACED, NULL);
-+				     MIGRATE_ASYNC, MR_NUMA_MISPLACED,
-+				     &nr_succeeded);
- 	if (nr_remaining) {
- 		if (!list_empty(&migratepages)) {
- 			list_del(&page->lru);
-@@ -2206,8 +2208,13 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
- 			putback_lru_page(page);
- 		}
- 		isolated = 0;
--	} else
-+	} else {
- 		count_vm_numa_events(NUMA_PAGE_MIGRATE, nr_pages);
-+		if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
-+		    !node_is_toptier(page_to_nid(page)) && node_is_toptier(node))
-+			mod_node_page_state(NODE_DATA(node), PGPROMOTE_SUCCESS,
-+					    nr_succeeded);
++		page = pmd_page(*pmd);
++		/*
++		 * Skip scanning top tier node if normal numa
++		 * balancing is disabled
++		 */
++		if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL) &&
++		    node_is_toptier(page_to_nid(page)))
++			goto unlock;
 +	}
- 	BUG_ON(!list_empty(&migratepages));
- 	return isolated;
+ 	/*
+ 	 * In case prot_numa, we are under mmap_read_lock(mm). It's critical
+ 	 * to not clear pmd intermittently to avoid race with MADV_DONTNEED
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 883e2cc85cad..0dd3f82ec6eb 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -29,6 +29,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/mm_inline.h>
+ #include <linux/pgtable.h>
++#include <linux/sched/sysctl.h>
+ #include <asm/cacheflush.h>
+ #include <asm/mmu_context.h>
+ #include <asm/tlbflush.h>
+@@ -83,6 +84,7 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+ 			 */
+ 			if (prot_numa) {
+ 				struct page *page;
++				int nid;
  
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 13ff25d0d96a..f43eb3813fe7 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1188,6 +1188,9 @@ const char * const vmstat_text[] = {
- #ifdef CONFIG_SWAP
- 	"nr_swapcached",
- #endif
-+#ifdef CONFIG_NUMA_BALANCING
-+	"pgpromote_success",
-+#endif
+ 				/* Avoid TLB flush if possible */
+ 				if (pte_protnone(oldpte))
+@@ -109,7 +111,16 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+ 				 * Don't mess with PTEs if page is already on the node
+ 				 * a single-threaded process is running on.
+ 				 */
+-				if (target_node == page_to_nid(page))
++				nid = page_to_nid(page);
++				if (target_node == nid)
++					continue;
++
++				/*
++				 * Skip scanning top tier node if normal numa
++				 * balancing is disabled
++				 */
++				if (!(sysctl_numa_balancing_mode & NUMA_BALANCING_NORMAL) &&
++				    node_is_toptier(nid))
+ 					continue;
+ 			}
  
- 	/* enum writeback_stat_item counters */
- 	"nr_dirty_threshold",
 -- 
 2.30.2
 
