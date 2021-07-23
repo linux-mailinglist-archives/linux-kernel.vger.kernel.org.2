@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00C33D4140
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005C53D4141
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhGWTXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:23:24 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38426 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWTXX (ORCPT
+        id S230429AbhGWTYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:24:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhGWTYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:23:23 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 4073F1C0B88; Fri, 23 Jul 2021 22:03:55 +0200 (CEST)
-Date:   Fri, 23 Jul 2021 22:03:54 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 031/125] ARM: dts: am57xx-cl-som-am57x: fix
- ti,no-reset-on-init flag for gpios
-Message-ID: <20210723200354.GA22684@duo.ucw.cz>
-References: <20210722155624.672583740@linuxfoundation.org>
- <20210722155625.727125079@linuxfoundation.org>
+        Fri, 23 Jul 2021 15:24:48 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B640C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:05:20 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id jg2so490997ejc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:05:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dKfZJzmgYM4v7FSlpjixVJeClMSClzb6wXHe0cNnptQ=;
+        b=r66i3EYsscVfxz7XCSgGC05YmHMXJdD0NncOapBEAkmZMM4aD3M/5R3TZ2jedfim1v
+         gTmBn9WAEw88TdyEISAdY4sioV/UESRKF2f/sgIWqK/w2r/+Nz3mhigXLj2VDI0R8rA5
+         5LNQbi2zg0MWsrJN3tTFHsF9evI17yWYkeVYYeIkAGqypUP5/O8MBYIUGQ9iCxUbJfVw
+         rb2PXUl9j/AzcnAi15VWHQG4IOSgt513j1F9cT4ovhcxU+I5kIOkVb4SjW+tKa12FvbA
+         rTYX8Y8T6JvRkPGdIlFps6Ht3L23ywkfVACjPLMpYmtkHRDPqsJh0+Wx978fQFO0cgM8
+         vKYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dKfZJzmgYM4v7FSlpjixVJeClMSClzb6wXHe0cNnptQ=;
+        b=UcjpSq3ymZORKQMyl6yHhJ8APv91DcyyL0eGDoAdtInaVteRR9Os8DB2kxOxf9RCip
+         k4Mt7rkvihts6Aw4L7NIMV4Hu/e1pDiH7eQTfij9Q4Tj0rw+up2B24Xx2BkjBRAaZKOS
+         S5RA0lcRyqtqENvygy20lwZbQyEQWpNyVEvETOrdfbEWAiA5D681olYib3nirrINkKEy
+         1YB5Xcwk2VW8MLh+oDouzU2Ty+yZJ2af+Hi6qfk9LVBspcnMR8hC8+5of+rr0hhklaki
+         1EhtsN9O6UAjpTwhdw34G8+MMkpu3B7ioIAa7ysLh3TSBepi4dNmZu9VnSJkGUp6c0JC
+         96Tg==
+X-Gm-Message-State: AOAM533j0gPbs5aQwPTjH2vLJqa1DgmsRpMtIM9dLpvyhklDbeLZcbaL
+        ckEZWzR5f9WTLr8EGPdElIQ=
+X-Google-Smtp-Source: ABdhPJxjl+tW9A98iU/72hdTmj5eoft8okJd6zdND+L4+tVIjKc+eFMWJhBBvsBIMxsUhLmJGyHbdQ==
+X-Received: by 2002:a17:907:33cc:: with SMTP id zk12mr6230838ejb.168.1627070718886;
+        Fri, 23 Jul 2021 13:05:18 -0700 (PDT)
+Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
+        by smtp.gmail.com with ESMTPSA id p3sm11563422ejy.20.2021.07.23.13.05.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 13:05:18 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: android: Remove set but unused variable in ashmem.c
+Date:   Fri, 23 Jul 2021 22:05:14 +0200
+Message-Id: <20210723200514.10139-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-Content-Disposition: inline
-In-Reply-To: <20210722155625.727125079@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Remove variable 'inode' tnat is set but unused. Issue detected
+by building with warning option -Wunused-but-set-variable.
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+---
+ drivers/staging/android/ashmem.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Hi!
+diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+index ddbde3f8430e..606e988d3f63 100644
+--- a/drivers/staging/android/ashmem.c
++++ b/drivers/staging/android/ashmem.c
+@@ -406,7 +406,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (!asma->file) {
+ 		char *name = ASHMEM_NAME_DEF;
+ 		struct file *vmfile;
+-		struct inode *inode;
+ 
+ 		if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0')
+ 			name = asma->name;
+@@ -418,7 +417,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+ 			goto out;
+ 		}
+ 		vmfile->f_mode |= FMODE_LSEEK;
+-		inode = file_inode(vmfile);
+ 		lockdep_set_class(&inode->i_rwsem, &backing_shmem_inode_class);
+ 		asma->file = vmfile;
+ 		/*
+-- 
+2.32.0
 
-> [ Upstream commit b644c5e01c870056e13a096e14b9a92075c8f682 ]
->=20
-> The ti,no-reset-on-init flag need to be at the interconnect target module
-> level for the modules that have it defined.
-> The ti-sysc driver handles this case, but produces warning, not a critical
-> issue.
-
-Ok... But there's status =3D "okay" removed in the patch below (and it
-is removed for gpio3 but not for gpio2)... and there's no mention in
-changelog. Is it okay or oversight?
-
-Best regards,
-								Pavel
-
-> index 0d5fe2bfb683..39eba2bc36dd 100644
-> --- a/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
-> +++ b/arch/arm/boot/dts/am57xx-cl-som-am57x.dts
-> @@ -610,12 +610,11 @@
->  	>;
->  };
-> =20
-> -&gpio3 {
-> -	status =3D "okay";
-> +&gpio3_target {
->  	ti,no-reset-on-init;
->  };
-> =20
-> -&gpio2 {
-> +&gpio2_target {
->  	status =3D "okay";
->  	ti,no-reset-on-init;
->  };
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYPsgqgAKCRAw5/Bqldv6
-8irXAKC0qXRGAtlrtnWs7I/UjDA+mvrxFgCgjAhppLo+HeTn6wyT+tSTwJZMCYI=
-=jtfx
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
