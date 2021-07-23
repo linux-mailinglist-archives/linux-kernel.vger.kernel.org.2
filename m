@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6773D41BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595B33D41C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhGWUJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:09:44 -0400
-Received: from finn.gateworks.com ([108.161.129.64]:57772 "EHLO
+        id S231764AbhGWUJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:09:50 -0400
+Received: from finn.gateworks.com ([108.161.129.64]:57786 "EHLO
         finn.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231609AbhGWUJj (ORCPT
+        with ESMTP id S229575AbhGWUJj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Jul 2021 16:09:39 -0400
 Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
         by finn.localdomain with esmtp (Exim 4.93)
         (envelope-from <tharvey@gateworks.com>)
-        id 1m727S-0057Vc-QT; Fri, 23 Jul 2021 20:50:06 +0000
+        id 1m727T-0057Vc-V6; Fri, 23 Jul 2021 20:50:08 +0000
 From:   Tim Harvey <tharvey@gateworks.com>
 To:     Richard Zhu <hongxing.zhu@nxp.com>,
         Lucas Stach <l.stach@pengutronix.de>,
@@ -31,9 +31,9 @@ To:     Richard Zhu <hongxing.zhu@nxp.com>,
         =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Cc:     Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH 5/6] arm64: dts: imx8mm: add PCIe support
-Date:   Fri, 23 Jul 2021 13:49:57 -0700
-Message-Id: <20210723204958.7186-6-tharvey@gateworks.com>
+Subject: [PATCH 6/6] arm64: dts: imx8mm: add gpc iomux compatible
+Date:   Fri, 23 Jul 2021 13:49:58 -0700
+Message-Id: <20210723204958.7186-7-tharvey@gateworks.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210723204958.7186-1-tharvey@gateworks.com>
 References: <20210723204958.7186-1-tharvey@gateworks.com>
@@ -41,66 +41,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PCIe node for PCIe support.
+Add gpc iomux compatible needed for IMX8MM PCIe.
 
 Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 36 +++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index 3bec6b8d52a0..45017f50a11b 100644
+index 45017f50a11b..a2de42dc5f61 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -1134,6 +1134,10 @@
- 				reg = <0x32e50200 0x200>;
+@@ -519,7 +519,7 @@
  			};
  
-+			pcie_phy: pcie-phy@32f00000 {
-+				  compatible = "fsl,imx7d-pcie-phy";
-+				  reg = <0x32f00000 0x10000>;
-+			};
- 		};
+ 			gpr: iomuxc-gpr@30340000 {
+-				compatible = "fsl,imx8mm-iomuxc-gpr", "syscon";
++				compatible = "fsl,imx8mm-iomuxc-gpr", "fsl,imx6q-iomuxc-gpr", "syscon";
+ 				reg = <0x30340000 0x10000>;
+ 			};
  
- 		dma_apbh: dma-controller@33000000 {
-@@ -1233,5 +1237,37 @@
- 			reg = <0x3d800000 0x400000>;
- 			interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-+
-+		pcie0: pcie@33800000 {
-+			compatible = "fsl,imx8mm-pcie";
-+			reg = <0x33800000 0x400000>,
-+			      <0x1ff00000 0x80000>;
-+			reg-names = "dbi", "config";
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			device_type = "pci";
-+			bus-range = <0x00 0xff>;
-+			ranges = <0x81000000 0 0x00000000 0x1ff80000 0 0x00010000 /* downstream I/O 64KB */
-+				 0x82000000 0 0x18000000 0x18000000 0 0x07f00000>; /* non-prefetchable memory */
-+			num-lanes = <1>;
-+			num-viewport = <4>;
-+			interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "msi";
-+			#interrupt-cells = <1>;
-+			interrupt-map-mask = <0 0 0 0x7>;
-+			interrupt-map = <0 0 0 1 &gic GIC_SPI 125 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 2 &gic GIC_SPI 124 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 3 &gic GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>,
-+					<0 0 0 4 &gic GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
-+			fsl,max-link-speed = <2>;
-+			power-domains = <&pgc_pcie>;
-+			resets = <&src IMX8MQ_RESET_PCIEPHY>,
-+				 <&src IMX8MQ_RESET_PCIE_CTRL_APPS_EN>,
-+				 <&src IMX8MQ_RESET_PCIE_CTRL_APPS_CLK_REQ>,
-+				 <&src IMX8MQ_RESET_PCIE_CTRL_APPS_TURNOFF>;
-+			reset-names = "pciephy", "apps", "clkreq", "turnoff";
-+			fsl,imx7d-pcie-phy = <&pcie_phy>;
-+			status = "disabled";
-+		};
- 	};
- };
 -- 
 2.17.1
 
