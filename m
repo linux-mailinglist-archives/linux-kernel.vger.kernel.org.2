@@ -2,111 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE4E3D4276
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 094353D4291
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhGWVOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 17:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbhGWVOH (ORCPT
+        id S232475AbhGWVWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 17:22:41 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46638 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbhGWVWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 17:14:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641D9C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:54:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kdgrmM/4B1zIITGzh1S8nGZIo69an1gVWYkQmjkwQuI=; b=GXDzwmUkiDX8PVhs4if4UKHl5V
-        uKk2esXvWHiA3xZEXXRYOIpChTAvlSlDocPcMc1pQXYlD6xAxGnFLrH0BaIEbXYAV9n4ta+dGo4Wz
-        bA2/UY6Gge6TL6rAaocs4FrJXTLDEraDWgLciHmCSnJxpimqd96N+ZbSfEgS3Xov5gY7fcRanKBmr
-        PiUGPFwL5Bksbiq1zstJDS7wC1boPEJcJ9tX4Ddgk3IFm3uL/Q1h7hC7onVunWIAyRfY1X94NADZ5
-        KtbERfyR3Hig5Uew6oNQ/RKGJZEAuuGDbjHVSQGRtYCnw+eX0pEc9q2sGbWfJqFp0rot6KwYM+/0N
-        VQFH+0dA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m737B-00BmSR-6k; Fri, 23 Jul 2021 21:53:55 +0000
-Date:   Fri, 23 Jul 2021 22:53:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
-Message-ID: <YPs6cQo7iG1JcOn8@casper.infradead.org>
-References: <20210723080000.93953-1-ying.huang@intel.com>
- <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
+        Fri, 23 Jul 2021 17:22:40 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16NM3AI8056748;
+        Fri, 23 Jul 2021 17:03:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1627077790;
+        bh=FF7s9FeiE7UAehlY5MJJ2DICyJ0WdcLF7kuc1bEetJ4=;
+        h=From:To:CC:Subject:Date;
+        b=U/iVnaYIupEZXqALOBvGHTA04H+1+tr9ZUDwZ36pi5d9IbjmdiE/EBXGePHk6dfkh
+         pqSkAYucHyOPbz+ZGVHo7RIdo95vjanDRm2/0sdunca3Hg1/KzbXzDWrlcoKsmnCTk
+         O5qnqgrEGt5twIqIpDEg9OVouy/NguhbNIXQnoKk=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16NM3AOk106128
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 23 Jul 2021 17:03:10 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 23
+ Jul 2021 17:02:50 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 23 Jul 2021 17:02:49 -0500
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16NM2nhY001427;
+        Fri, 23 Jul 2021 17:02:49 -0500
+Received: from localhost ([10.250.38.176])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 16NM2n6G126725;
+        Fri, 23 Jul 2021 17:02:49 -0500
+From:   Suman Anna <s-anna@ti.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH v2 0/5] K3 R5F & DSP IPC-only mode support
+Date:   Fri, 23 Jul 2021 17:02:43 -0500
+Message-ID: <20210723220248.6554-1-s-anna@ti.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 01:23:07PM -0700, Hugh Dickins wrote:
-> I was wary because, if the (never observed) race to be fixed is in
-> swap_cluster_readahead(), why was shmem_swapin_page() being patched?
-> Not explained in its commit message, probably a misunderstanding of
-> how mm/shmem.c already manages races (and prefers not to be involved
-> in swap_info_struct stuff).
-> 
-> But why do I now say it's bad?  Because even if you correct the EINVAL
-> to -EINVAL, that's an unexpected error: -EEXIST is common, -ENOMEM is
-> not surprising, -ENOSPC can need consideration, but -EIO and anything
-> else just end up as SIGBUS when faulting (or as error from syscall).
-> So, 2efa33fc7f6e converts a race with swapoff to SIGBUS: not good,
-> and I think much more likely than the race to be fixed (since
-> swapoff's percpu_ref_kill() rightly comes before synchronize_rcu()).
+Hi All,
 
-Yes, I think a lot more thought was needed here.  And I would have
-preferred to start with a reproducer instead of "hey, this could
-happen".  Maybe something like booting a 1GB VM, adding two 2GB swap
-partitions, swapon(partition A); run a 2GB memhog and then
+The following is a revised version of the series that adds the IPC-only
+mode support for the TI K3 R5F and DSP (C66x and C71x) remoteprocs
+covering AM65x, J721E, J7200 and AM64x SoCs. Patches are on top of
+5.14-rc1 (the other dependent patches from v1 made it into 5.14-rc1).
 
-loop:
-	swapon(part B);
-	swapoff(part A);
-	swapon(part A);
-	swapoff(part B);
+Please see the v1 cover-letter [1] for the design details of the
+'IPC-only' mode functionality.
 
-to make this happen.
+The following are the main changes from v1, please see the individual
+patches for the exact deltas:
+ - The first patch in v1 "remoteproc: Introduce rproc_detach_device()
+   wrapper" is dropped
+ - Removed the addition of the rproc state flag 'detach_on_shutdown'
+   and the 'ipc-only' state flag in each of the remoteproc drivers
+ - IPC-only mode and remoteproc mode are supported by registering only
+   the appropriate rproc ops.
 
-but if it does happen, why would returning EINVAL be the right thing
-to do?  We've swapped it out.  It must be on swap somewhere, or we've
-really messed up.  So I could see there being a race where we get
-preempted between looking up the swap entry and calling get_swap_device().
-But if that does happen, then the page gets brought in, and potentially
-reswapped to the other swap device.
+The following is a summary of patches in v2:
+ - Patch 1 enhances the remoteproc core to restrict stop on early-booted
+   remoteprocs. 
+ - Patches 2 and 4 refactor the mailbox request code out of start
+   in the K3 R5F and DSP remoteproc drivers for reuse in the new attach
+   callbacks.
+ - Patch 3 adds the IPC-only mode support for R5F.
+ - Patch 5 adds the IPC-only mode support for both K3 C66x and C71x
+   DSPs.
 
-So returning -EEXIST here would actually work.  That forces a re-lookup
-in the page cache, so we'll get the new swap entry that tells us which
-swap device the page is now on.
+I have re-verified the different combinations on J721E, J7200 and AM65x
+SoCs. AM64x currently lacks early-boot support, but the logic is ready
+for Single-CPU and Split modes that are specific to AM64x SoCs. 
 
-But I REALLY REALLY REALLY want a reproducer.  Right now, I have a hard
-time believing this, or any of the other races can really happen.
+regards
+Suman
 
-> 2efa33fc7f6e was intending to fix a race introduced by two-year-old
-> 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested
-> or not"), which added a call to inode_read_congested().  Certainly
-> relying on si->swap_file->f_mapping->host there was new territory:
-> whether actually racy I'm not sure offhand - I've forgotten whether
-> synchronize_rcu() waits for preempted tasks or not.
-> 
-> But if it is racy, then I wonder if the right fix might be to revert
-> 8fd2e0b505d1 too. Convincing numbers were offered for it, but I'm
-> puzzled: because Matthew has in the past noted that the block layer
-> broke and further broke bdi congestion tracking (I don't know the
-> relevant release numbers), so I don't understand how checking
-> inode_read_congested() is actually useful there nowadays.
+[1] https://patchwork.kernel.org/project/linux-remoteproc/cover/20210522000309.26134-1-s-anna@ti.com/
 
-It might be useful for NFS?  I don't think congestion is broken there
-(except how does the NFS client have any idea whether the server is
-congested or not?)
+Suman Anna (5):
+  remoteproc: Add support for detach-only during shutdown
+  remoteproc: k3-r5: Refactor mbox request code in start
+  remoteproc: k3-r5: Add support for IPC-only mode for all R5Fs
+  remoteproc: k3-dsp: Refactor mbox request code in start
+  remoteproc: k3-dsp: Add support for IPC-only mode for all K3 DSPs
+
+ drivers/remoteproc/remoteproc_cdev.c      |   7 +
+ drivers/remoteproc/remoteproc_core.c      |   5 +-
+ drivers/remoteproc/remoteproc_sysfs.c     |   6 +
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c | 197 ++++++++++++----
+ drivers/remoteproc/ti_k3_r5_remoteproc.c  | 265 +++++++++++++++++++---
+ 5 files changed, 407 insertions(+), 73 deletions(-)
+
+-- 
+2.32.0
+
