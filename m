@@ -2,253 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4053D3582
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C87A3D3586
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234200AbhGWG7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:59:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233298AbhGWG7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:59:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EEBE60EE6;
-        Fri, 23 Jul 2021 07:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627026012;
-        bh=z12ohAzjRBP3E8089FPH94RrqDgdT25W23fpakluff8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qtmegvyKGQ6idupFOq9cG/C5UqOWEZ8zpn/ozBPACGruNogRWvg7zrefBfwzSSg31
-         gsH9O6IhGqtsvx7jNxA8zPCyruoTd/j1lGLDtmsPuM27g5zhgXF+JnDXj3gJ0Eg0o/
-         +5DLlOMmw240YVIR2GY+NOVc+sBuPpo+ogHCbw8G54DvgYZQtlKRh7LaEb16XrSMHm
-         XS+CdYIlOuERsydZgU5uBbQrN+xjlZOc8Wxf+/Oll1x21q9Dqr3kyR4BLU8zJ/qmme
-         QJYd7E4FNF/28FZbhqmxcZag3vjiJbRc92hsu3V+FYB0VyZGB9mX8PRRSZe3YOrLc4
-         YJdjINYII/qgg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m6pn0-00A6vW-MA; Fri, 23 Jul 2021 09:40:10 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v15 3/3] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Fri, 23 Jul 2021 09:40:08 +0200
-Message-Id: <da0401daebfc1bb33dac0d3f8358118b8ea59d06.1627025657.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627025657.git.mchehab+huawei@kernel.org>
-References: <cover.1627025657.git.mchehab+huawei@kernel.org>
+        id S233704AbhGWHCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:02:47 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55362 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229799AbhGWHCo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 03:02:44 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D253C225F9;
+        Fri, 23 Jul 2021 07:43:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627026197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=GrONBBxOFl8xDimt+FsB8lhbYxtf9ATz8q2XpqkvTM8=;
+        b=Kwed4iF8DmjhfHHMgDseKkOnloLoUvvLjs8aH6VoSKkcAlmx3xal116zX7htX/HqDb4NVw
+        jt8kHgmoLn+tn05kiuHM1uU8ZikTe7VyXbEPPOv8m8KPDY9mtXt1nzRXbJ1Qz3WDsppQhH
+        c1g67QsKv18rrjAM2/SX70Wg3tkGJBk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627026197;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=GrONBBxOFl8xDimt+FsB8lhbYxtf9ATz8q2XpqkvTM8=;
+        b=WYSZu2/qmP1Iqi8eCcWEw/U5aN+s0mf8dkM14sqW/4gDfI38FfPd6/4+78kiaZXhHyYooe
+        ad0zNBHhPglXQCCA==
+Received: from localhost.localdomain (unknown [10.100.201.122])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B644EA3B90;
+        Fri, 23 Jul 2021 07:43:17 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 0/8] Get rid of old tty_driver functions
+Date:   Fri, 23 Jul 2021 09:43:09 +0200
+Message-Id: <20210723074317.32690-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+This series converts the rest of the drivers to use:
+* tty_alloc_driver instead of alloc_tty_driver, and
+* tty_driver_kref_put instead of put_tty_driver.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 107 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 +++++++++
- 2 files changed, 163 insertions(+)
+They were more of less interchangeable, alloc_tty_driver() and
+put_tty_driver() are older interfaces which weren't eliminated until
+now.
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 7c32f5fd5cc5..16f81f86e3fa 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -53,6 +53,30 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
- 
- /*
-@@ -430,3 +454,86 @@ &uart6 {
- 	label = "LS-UART1";
- 	status = "okay";
- };
-+
-+&usb_phy {
-+	phy-supply = <&ldo17>;
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "okay";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 20698cfd0637..1f228612192c 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -785,5 +786,60 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: usb@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
+There are few fix and cleanup patches around tty_driver too.
+
+Jiri Slaby (8):
+  xtensa: ISS: don't panic in rs_init
+  hvsi: don't panic on tty_register_driver failure
+  tty: don't store semi-state into tty drivers
+  tty: stop using alloc_tty_driver
+  tty: drop alloc_tty_driver
+  tty: make tty_set_operations an inline
+  tty: drop put_tty_driver
+  tty: pdc_cons, free tty_driver upon failure
+
+ arch/alpha/kernel/srmcons.c            |  8 ++--
+ arch/m68k/emu/nfcon.c                  | 30 +++++++-------
+ arch/parisc/kernel/pdc_cons.c          | 34 ++++++++--------
+ arch/um/drivers/line.c                 | 13 +++---
+ arch/xtensa/platforms/iss/console.c    | 45 +++++++++++++--------
+ drivers/char/pcmcia/synclink_cs.c      |  4 +-
+ drivers/char/ttyprintk.c               |  4 +-
+ drivers/ipack/devices/ipoctal.c        | 13 +++---
+ drivers/isdn/capi/capi.c               | 14 +++----
+ drivers/misc/bcm-vk/bcm_vk_tty.c       |  8 ++--
+ drivers/mmc/core/sdio_uart.c           | 12 +++---
+ drivers/net/usb/hso.c                  | 12 +++---
+ drivers/s390/char/con3215.c            | 11 +++---
+ drivers/s390/char/sclp_tty.c           | 15 ++++---
+ drivers/s390/char/sclp_vt220.c         |  9 ++---
+ drivers/s390/char/tty3270.c            |  4 +-
+ drivers/staging/fwserial/fwserial.c    |  8 ++--
+ drivers/staging/gdm724x/gdm_tty.c      | 13 +++---
+ drivers/staging/greybus/uart.c         |  4 +-
+ drivers/tty/amiserial.c                | 42 ++++++++++----------
+ drivers/tty/ehv_bytechan.c             | 34 +++++++++-------
+ drivers/tty/goldfish.c                 | 18 ++++-----
+ drivers/tty/hvc/hvc_console.c          | 10 ++---
+ drivers/tty/hvc/hvcs.c                 | 12 +++---
+ drivers/tty/hvc/hvsi.c                 | 55 ++++++++++++++++----------
+ drivers/tty/ipwireless/tty.c           | 12 +++---
+ drivers/tty/mips_ejtag_fdc.c           |  2 +-
+ drivers/tty/moxa.c                     |  4 +-
+ drivers/tty/mxser.c                    | 12 +++---
+ drivers/tty/n_gsm.c                    | 13 +++---
+ drivers/tty/nozomi.c                   | 12 +++---
+ drivers/tty/serial/kgdb_nmi.c          | 11 +++---
+ drivers/tty/serial/serial_core.c       | 12 +++---
+ drivers/tty/synclink_gt.c              | 12 +++---
+ drivers/tty/tty_io.c                   | 13 ------
+ drivers/tty/ttynull.c                  |  4 +-
+ drivers/tty/vcc.c                      |  4 +-
+ drivers/tty/vt/vt.c                    |  6 +--
+ drivers/usb/class/cdc-acm.c            | 14 +++----
+ drivers/usb/gadget/function/u_serial.c | 36 +++++++++--------
+ drivers/usb/host/xhci-dbgtty.c         |  4 +-
+ drivers/usb/serial/usb-serial.c        | 13 +++---
+ include/linux/tty_driver.h             | 21 +++-------
+ net/bluetooth/rfcomm/tty.c             | 12 +++---
+ 44 files changed, 330 insertions(+), 319 deletions(-)
+
 -- 
-2.31.1
+2.32.0
 
