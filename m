@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14FD33D3AD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6B33D3AD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235074AbhGWMWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:22:05 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:55557 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234853AbhGWMWE (ORCPT
+        id S235139AbhGWMXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:23:11 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:64241 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234853AbhGWMXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:22:04 -0400
+        Fri, 23 Jul 2021 08:23:09 -0400
 Received: (Authenticated sender: alex@ghiti.fr)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id D7D33100005;
-        Fri, 23 Jul 2021 13:02:34 +0000 (UTC)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 5D2F840003;
+        Fri, 23 Jul 2021 13:03:38 +0000 (UTC)
 From:   Alexandre Ghiti <alex@ghiti.fr>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH 1/5] riscv: Introduce va_kernel_pa_offset for 32-bit kernel
-Date:   Fri, 23 Jul 2021 15:01:24 +0200
-Message-Id: <20210723130128.47664-2-alex@ghiti.fr>
+Subject: [PATCH 2/5] riscv: Get rid of map_size parameter to create_kernel_page_table
+Date:   Fri, 23 Jul 2021 15:01:25 +0200
+Message-Id: <20210723130128.47664-3-alex@ghiti.fr>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210723130128.47664-1-alex@ghiti.fr>
 References: <20210723130128.47664-1-alex@ghiti.fr>
@@ -33,82 +33,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-va_kernel_pa_offset was only used for 64-bit as the kernel mapping lies
-in the linear mapping for 32-bit kernel and then only the offset between
-the PAGE_OFFSET and the kernel load address is needed.
-
-But this distinction complexifies the code with #ifdefs and especially
-with a separate definition of the address conversions macros.
-
-Simplify the code by defining this variable for both 32-bit and 64-bit.
+The kernel must always be mapped using PMD_SIZE, and this is already the
+case, this just simplifies create_kernel_page_table.
 
 Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
 ---
- arch/riscv/include/asm/page.h | 15 ++-------------
- arch/riscv/mm/init.c          |  3 ---
- 2 files changed, 2 insertions(+), 16 deletions(-)
+ arch/riscv/mm/init.c | 30 +++++++++++-------------------
+ 1 file changed, 11 insertions(+), 19 deletions(-)
 
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 10dc063868f6..adf5b4671684 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -91,10 +91,8 @@ struct kernel_mapping {
- 	uintptr_t size;
- 	/* Offset between linear mapping virtual address and kernel load address */
- 	unsigned long va_pa_offset;
--#ifdef CONFIG_64BIT
- 	/* Offset between kernel mapping virtual address and kernel load address */
- 	unsigned long va_kernel_pa_offset;
--#endif
- 	unsigned long va_kernel_xip_pa_offset;
- #ifdef CONFIG_XIP_KERNEL
- 	uintptr_t xiprom;
-@@ -105,11 +103,11 @@ struct kernel_mapping {
- extern struct kernel_mapping kernel_map;
- extern phys_addr_t phys_ram_base;
- 
--#ifdef CONFIG_64BIT
- #define is_kernel_mapping(x)	\
- 	((x) >= kernel_map.virt_addr && (x) < (kernel_map.virt_addr + kernel_map.size))
-+
- #define is_linear_mapping(x)	\
--	((x) >= PAGE_OFFSET && (x) < kernel_map.virt_addr)
-+	((x) >= PAGE_OFFSET && (!IS_ENABLED(CONFIG_64BIT) || (x) < kernel_map.virt_addr))
- 
- #define linear_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + kernel_map.va_pa_offset))
- #define kernel_mapping_pa_to_va(y)	({						\
-@@ -133,15 +131,6 @@ extern phys_addr_t phys_ram_base;
- 	is_linear_mapping(_x) ?							\
- 		linear_mapping_va_to_pa(_x) : kernel_mapping_va_to_pa(_x);	\
- 	})
--#else
--#define is_kernel_mapping(x)	\
--	((x) >= kernel_map.virt_addr && (x) < (kernel_map.virt_addr + kernel_map.size))
--#define is_linear_mapping(x)	\
--	((x) >= PAGE_OFFSET)
--
--#define __pa_to_va_nodebug(x)  ((void *)((unsigned long) (x) + kernel_map.va_pa_offset))
--#define __va_to_pa_nodebug(x)  ((unsigned long)(x) - kernel_map.va_pa_offset)
--#endif /* CONFIG_64BIT */
- 
- #ifdef CONFIG_DEBUG_VIRTUAL
- extern phys_addr_t __virt_to_phys(unsigned long x);
 diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 4ebe7e19c2b8..9668867e2702 100644
+index 9668867e2702..e35df3e1c9a3 100644
 --- a/arch/riscv/mm/init.c
 +++ b/arch/riscv/mm/init.c
-@@ -559,11 +559,8 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	kernel_map.phys_addr = (uintptr_t)(&_start);
- 	kernel_map.size = (uintptr_t)(&_end) - kernel_map.phys_addr;
+@@ -501,36 +501,35 @@ static __init pgprot_t pgprot_from_va(uintptr_t va)
  #endif
--
- 	kernel_map.va_pa_offset = PAGE_OFFSET - kernel_map.phys_addr;
--#ifdef CONFIG_64BIT
- 	kernel_map.va_kernel_pa_offset = kernel_map.virt_addr - kernel_map.phys_addr;
--#endif
+ 
+ #ifdef CONFIG_XIP_KERNEL
+-static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
++static void __init create_kernel_page_table(pgd_t *pgdir,
+ 					    __always_unused bool early)
+ {
+ 	uintptr_t va, end_va;
+ 
+ 	/* Map the flash resident part */
+ 	end_va = kernel_map.virt_addr + kernel_map.xiprom_sz;
+-	for (va = kernel_map.virt_addr; va < end_va; va += map_size)
++	for (va = kernel_map.virt_addr; va < end_va; va += PMD_SIZE)
+ 		create_pgd_mapping(pgdir, va,
+ 				   kernel_map.xiprom + (va - kernel_map.virt_addr),
+-				   map_size, PAGE_KERNEL_EXEC);
++				   PMD_SIZE, PAGE_KERNEL_EXEC);
+ 
+ 	/* Map the data in RAM */
+ 	end_va = kernel_map.virt_addr + XIP_OFFSET + kernel_map.size;
+-	for (va = kernel_map.virt_addr + XIP_OFFSET; va < end_va; va += map_size)
++	for (va = kernel_map.virt_addr + XIP_OFFSET; va < end_va; va += PMD_SIZE)
+ 		create_pgd_mapping(pgdir, va,
+ 				   kernel_map.phys_addr + (va - (kernel_map.virt_addr + XIP_OFFSET)),
+-				   map_size, PAGE_KERNEL);
++				   PMD_SIZE, PAGE_KERNEL);
+ }
+ #else
+-static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
+-					    bool early)
++static void __init create_kernel_page_table(pgd_t *pgdir, bool early)
+ {
+ 	uintptr_t va, end_va;
+ 
+ 	end_va = kernel_map.virt_addr + kernel_map.size;
+-	for (va = kernel_map.virt_addr; va < end_va; va += map_size)
++	for (va = kernel_map.virt_addr; va < end_va; va += PMD_SIZE)
+ 		create_pgd_mapping(pgdir, va,
+ 				   kernel_map.phys_addr + (va - kernel_map.virt_addr),
+-				   map_size,
++				   PMD_SIZE,
+ 				   early ?
+ 					PAGE_KERNEL_EXEC : pgprot_from_va(va));
+ }
+@@ -539,7 +538,6 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
+ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ {
+ 	uintptr_t __maybe_unused pa;
+-	uintptr_t map_size;
+ #ifndef __PAGETABLE_PMD_FOLDED
+ 	pmd_t fix_bmap_spmd, fix_bmap_epmd;
+ #endif
+@@ -564,15 +562,9 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
  
  	pfn_base = PFN_DOWN(kernel_map.phys_addr);
  
+-	/*
+-	 * Enforce boot alignment requirements of RV32 and
+-	 * RV64 by only allowing PMD or PGD mappings.
+-	 */
+-	map_size = PMD_SIZE;
+-
+ 	/* Sanity check alignment and size */
+ 	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
+-	BUG_ON((kernel_map.phys_addr % map_size) != 0);
++	BUG_ON((kernel_map.phys_addr % PMD_SIZE) != 0);
+ 
+ 	pt_ops.alloc_pte = alloc_pte_early;
+ 	pt_ops.get_pte_virt = get_pte_virt_early;
+@@ -609,7 +601,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ 	 * us to reach paging_init(). We map all memory banks later
+ 	 * in setup_vm_final() below.
+ 	 */
+-	create_kernel_page_table(early_pg_dir, map_size, true);
++	create_kernel_page_table(early_pg_dir, true);
+ 
+ #ifndef __PAGETABLE_PMD_FOLDED
+ 	/* Setup early PMD for DTB */
+@@ -725,7 +717,7 @@ static void __init setup_vm_final(void)
+ 
+ #ifdef CONFIG_64BIT
+ 	/* Map the kernel */
+-	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
++	create_kernel_page_table(swapper_pg_dir, false);
+ #endif
+ 
+ 	/* Clear fixmap PTE and PMD mappings */
 -- 
 2.30.2
 
