@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF883D3A40
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D4E3D3A79
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhGWLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:49:28 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:45983 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234774AbhGWLtQ (ORCPT
+        id S235059AbhGWMHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:07:35 -0400
+Received: from gateway23.websitewelcome.com ([192.185.48.104]:33760 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234853AbhGWMHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:49:16 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id ED17A3200934;
-        Fri, 23 Jul 2021 08:29:47 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 23 Jul 2021 08:29:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=+eOXjkFr/vzl4LWj2qFm/QH3AyJ
-        2LUE6Kqq+Nzq4Hmw=; b=aFoYCfq/zea4KY88rBSjeQ6mfQMaJ7Q2UitG3WdFFfl
-        1AaISfon+I8XJeogcaEMi6X9NCDmCbBGpzQ5dsMSBFD2W07948Fg+GuIcMZW3mRO
-        r4JkKTcek5+wrClYPSEPqAZMfLUgezQUS2nXEK3Blz13qOHX87Cjt7kTfAaGItj1
-        IUcPZkTHkO68V6vL1T1Wa7J+rLXbmstpSZQG9zEsolqnLPzQdoKzcaR6DcBOAYJZ
-        T+m3w8myE+YXSiIlSExkxcBkuJotDMUFir1SBRoZBz9uXEU0pObtZ0WYUcHaVte0
-        8Tew8g0Ui3mQ+JvQFnqxf9CpNzmkIDxIqUI+dmsSaKw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+eOXjk
-        Fr/vzl4LWj2qFm/QH3AyJ2LUE6Kqq+Nzq4Hmw=; b=SFug+O5ZtgCZZnm5H/40Uv
-        c3E1M0T8TBP8WT/e1TQ0r1zUr9YxR75Egc+bZBd4zL2obzMhXnjXXmbc8BhN7Mx7
-        iWQEWOMz1QFJeeE8LtcaAeXmlZI2hqVLgUAnCfIVv32JYYOfLLPL0xv/qQ7iaV6L
-        NBHZg6ekb1qie6bfxoQeKOt3kCG9/BktDR1TglsUMJFPLm3tbuRBICUHFqMTQNUK
-        oDjbhthAS0sLJnWG2ZjeKJE1MHNbivKcKMFYHFlJ9O8Vp524Z63Kst79hMWmKvYm
-        HEW2sJBGhoqZB+/+wt47nNJFK9B94ESL7kiV0S5rfOB1r01bUPHXZBy2I9HW0vGQ
-        ==
-X-ME-Sender: <xms:Orb6YJQUzgdVTxOqNRoXgrHPiBVp9EEFwOflLRaHQf_UyYwj6Pfaug>
-    <xme:Orb6YCzXoRGl5K2LHxBHvekuFQ8C1W-Dd9W3BTBRkrWj8YbHFQ4uRDtBkNgf11S1n
-    elqFZfUPg5Hqg>
-X-ME-Received: <xmr:Orb6YO19KmXKr36Dye5c7H4N7obx4bb7_9t_V3JclsCzKO0CpXLJuN3cbLqq1Yzs95XHXiVhaLOCdK555sBbwA_xbmADf3EZ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeekgdehfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
-    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
-    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
-    gtohhm
-X-ME-Proxy: <xmx:Orb6YBD4mSFvaDvaXRbs40vILO2a06tSsiP6GY5Bh9-D44RZrX5Svg>
-    <xmx:Orb6YCjDcG5xTE7uS0U8AdSGxH1r12IKHCLx2ROCGWMcDGvui9_dwg>
-    <xmx:Orb6YFqkH29W5sPTOKSxjWk2_b_RVzXlrdVVA-FH0lCG1m2x-Dz5iQ>
-    <xmx:O7b6YLW72Ctj5gWPcyiOA-PoRe9h0Yn54iRh1uFMcL6ozFQTGSyoCw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 23 Jul 2021 08:29:46 -0400 (EDT)
-Date:   Fri, 23 Jul 2021 14:29:43 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linyu Yuan <linyyuan@codeaurora.org>,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: Re: linux-next: manual merge of the usb tree with the usb.current
- tree
-Message-ID: <YPq2Nxq7oa4p0b0Q@kroah.com>
-References: <20210722141228.57a92e94@canb.auug.org.au>
+        Fri, 23 Jul 2021 08:07:34 -0400
+X-Greylist: delayed 1499 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Jul 2021 08:07:34 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 2DFD637DF
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:58:43 -0500 (CDT)
+Received: from gator4132.hostgator.com ([192.185.4.144])
+        by cmsmtp with SMTP
+        id 6tpDmF3y9rJtZ6tpDm0hY6; Fri, 23 Jul 2021 06:58:43 -0500
+X-Authority-Reason: nr=8
+Received: from host-79-37-206-118.retail.telecomitalia.it ([79.37.206.118]:60642 helo=x1.bristot.me)
+        by gator4132.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <bristot@kernel.org>)
+        id 1m6tpA-0016jT-Vi; Fri, 23 Jul 2021 06:58:41 -0500
+To:     linux-rt-users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dhaval Giani <dhaval.giani@gmail.com>,
+        Clark Williams <williams@redhat.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Kate Carcia <kcarcia@redhat.com>, Phil Auld <pauld@redhat.com>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>,
+        =?UTF-8?Q?Luis_Claudio_R=2e_Gon=c3=a7alves?= <lclaudio@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Daniel Wagner <wagi@monom.org>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+Subject: [ANNOUNCE] CFP: Real-Time Microconference - Linux Plumbers Conference
+ 2021
+Message-ID: <4c666746-a4bd-5111-1512-58d030987f8b@kernel.org>
+Date:   Fri, 23 Jul 2021 13:58:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722141228.57a92e94@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4132.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - kernel.org
+X-BWhitelist: no
+X-Source-IP: 79.37.206.118
+X-Source-L: No
+X-Exim-ID: 1m6tpA-0016jT-Vi
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: host-79-37-206-118.retail.telecomitalia.it (x1.bristot.me) [79.37.206.118]:60642
+X-Source-Auth: kernel@bristot.me
+X-Email-Count: 2
+X-Source-Cap: YnJpc3RvdG1lO2JyaXN0b3RtZTtnYXRvcjQxMzIuaG9zdGdhdG9yLmNvbQ==
+X-Local-Domain: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 02:12:28PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the usb tree got a conflict in:
-> 
->   drivers/usb/dwc3/gadget.c
-> 
-> between commit:
-> 
->   40edb52298df ("usb: dwc3: avoid NULL access of usb_gadget_driver")
-> 
-> from the usb.current tree and commit:
-> 
->   9f607a309fbe ("usb: dwc3: Resize TX FIFOs to meet EP bursting requirements")
-> 
-> from the usb tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+The Real-time microconference focuses on finishing the last lap of getting the
+PREEMPT_RT[1] patch set into mainline. Many of these missing pieces, however, 
+are not at the core of real-time features (like locking, and scheduling), but 
+instead, on other subsystems that compose the kernel, like file systems and 
+memory management. Making this Linux subsystems compatible with PREEMPT_RT 
+requires finding a solution that is acceptable by subsystem maintainer, without 
+having these subsystems suffer from performance or complexity issues.
 
-Thanks, I'll fix this up when Linus takes my usb-linus branch soon.
+Suggested Topics:
+ - New tools for PREEMPT_RT analysis [2].
+ - How do we teach the rest of the kernel developers how not to break
+   PREEMPT_RT?
+ - Stable maintainers tools discussion & improvements: [3]
+ - The usage of PREEMPT_RT on safety-critical systems: what do we need to do?
+ - Make NAPI and the kernel-rt working better together [5]
+ - Migrate disable and the problems that they cause on rt tasks [6]
+ - It is time to discuss the "BKL"-like style of our preempt/bh/irq_disable()
+   synchronization functions.
+ - How do we close the documentation gap
+ - The status of the merge, and how can we resolve the last issues that block
+   the merge
+ - Invite the developers of the areas where patches are still under discussion 
+   to help to find an agreement
+ - How can we improve the testing of the -rt, to follow the problems raised as    
+   Linus tree advances?
+ - What’s next?
 
-greg k-h
+If you are interested in participating in this microconference and have topics 
+to propose, please use the LPC CfP process, and select "Real-time MC" for the 
+"Track". More topics will be added based on CfP for LPC microconference.
+
+MC leads:
+ - Daniel Bristot de Oliveira <bristot@redhat.com>
+ - Steven Rostedt <rostedt@goodmis.org>
+ - Clark Williams <williams@redhat.com>
+ - Dhaval Giani <dhaval.giani@oracle.com>
+ - Kate Stewart <stewart@linux.com>
+
+ 
+Links:
+[1] https://wiki.linuxfoundation.org/realtime/start
+[2] https://github.com/bristot/rtsl/
+[3] https://github.com/igaw/stable-rt-tools
+[4] https://www.linux.com/news/in-the-trenches-with-thomas-gleixner-real-time-linux-kernel-patch-set/
+[5] Discussions:
+        https://lore.kernel.org/netdev/20210514222402.295157-1-kuba@kernel.org/
+        https://lore.kernel.org/lkml/YJofplWBz8dT7xiw@localhost.localdomain/
+[6] https://lore.kernel.org/linux-arm-kernel/20200924082717.GA1362448@hirez.programming.kicks-ass.net/T/
+
