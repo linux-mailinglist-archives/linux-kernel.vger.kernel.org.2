@@ -2,142 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF2E3D3466
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15073D3492
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhGWFXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:23:07 -0400
-Received: from relay.sw.ru ([185.231.240.75]:37122 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhGWFXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:23:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=fr+RAdrXYeZQV5eYbCDUwvlXBsDn7zY14pZ+tuJZJZM=; b=UNDm2xCO8IwLBIpmP
-        2Dkz0Mp+4weJh5Jga6K975SI7vfeV7iSDz23/5wYv4pXHTgmSLt+/Yg94F8zDQbLW0pw5ZYoydkiV
-        Ir4ejpwavHd15LR9TYdsGARMx6zLF4Ie0LK42QRPA6W1ymNsc9t3WU57bheoQXPd0ZTJM/3NjAHpw
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m6oHW-004yU3-Gd; Fri, 23 Jul 2021 09:03:34 +0300
-Subject: Re: [PATCH AUTOSEL 5.13 07/19] ipv6: allocate enough headroom in
- ip6_finish_output2()
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-References: <20210723035721.531372-1-sashal@kernel.org>
- <20210723035721.531372-7-sashal@kernel.org>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <2b57c728-3ef2-aeba-2ff3-ff2555fb6ee3@virtuozzo.com>
-Date:   Fri, 23 Jul 2021 09:03:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234090AbhGWFjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:39:52 -0400
+Received: from isilmar-4.linta.de ([136.243.71.142]:48200 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234057AbhGWFjm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:39:42 -0400
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id 1989A201259;
+        Fri, 23 Jul 2021 06:20:14 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+        id C0CC0208DD; Fri, 23 Jul 2021 08:03:39 +0200 (CEST)
+Date:   Fri, 23 Jul 2021 08:03:39 +0200
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Zheyu Ma <zheyuma97@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pcmcia: i82092: fix a null pointer dereference bug
+Message-ID: <YPpbu8YFx9bKa343@light.dominikbrodowski.net>
+References: <1624345891-4215-1-git-send-email-zheyuma97@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210723035721.531372-7-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624345891-4215-1-git-send-email-zheyuma97@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this patch is incomplete, and requires following fixup
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2d85a1b31dde84038ea07ad825c3d8d3e71f4344
+Applied to pcmcia-next, thanks. Are you aware of the last version where this
+driver worked correctly? It seems that this bug has been present there for
+ages.
 
-Please backport it too.
+Thanks,
+	Dominik
 
-Thank you,
-	Vasily Averin
 
-On 7/23/21 6:57 AM, Sasha Levin wrote:
-> From: Vasily Averin <vvs@virtuozzo.com>
+Am Tue, Jun 22, 2021 at 07:11:31AM +0000 schrieb Zheyu Ma:
+> During the driver loading process, the 'dev' field was not assigned, but
+> the 'dev' field was referenced in the subsequent 'i82092aa_set_mem_map'
+> function.
 > 
-> [ Upstream commit 5796015fa968a3349027a27dcd04c71d95c53ba5 ]
+> This log reveals it:
 > 
-> When TEE target mirrors traffic to another interface, sk_buff may
-> not have enough headroom to be processed correctly.
-> ip_finish_output2() detect this situation for ipv4 and allocates
-> new skb with enogh headroom. However ipv6 lacks this logic in
-> ip_finish_output2 and it leads to skb_under_panic:
+> [    3.928168] BUG: kernel NULL pointer dereference, address: 0000000000000010
+> [    3.928678] #PF: supervisor read access in kernel mode
+> [    3.929054] #PF: error_code(0x0000) - not-present page
+> [    3.929428] PGD 0 P4D 0
+> [    3.929617] Oops: 0000 [#1] PREEMPT SMP PTI
+> [    3.929923] CPU: 3 PID: 4409 Comm: pccardd Not tainted 5.13.0-rc7-next-20210621 #1
+> [    3.930468] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [    3.931277] RIP: 0010:i82092aa_set_mem_map+0x45/0x2c0
+> [    3.931649] Code: 28 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 e8 f0 44 8f fd 49 8b 84 24 28 09 00 00 48 8b 53 18 48 8d 75 c0 45 8b 6c 24 f0 <48> 8b 78 10 e8 92 05 2f fe 44 0f b6 33 41 80 fe 04 0f 87 16 02 00
+> [    3.932973] RSP: 0000:ffffc9000a6bfdb8 EFLAGS: 00010293
+> [    3.933351] RAX: 0000000000000000 RBX: ffffc9000a6bfe30 RCX: 0000000000000000
+> [    3.933859] RDX: ffffc9000a6bfe50 RSI: ffffc9000a6bfdc8 RDI: ffffffff88457bb0
+> [    3.934370] RBP: ffffc9000a6bfe08 R08: 0000000000000001 R09: 0000000000000001
+> [    3.934876] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff88457bb0
+> [    3.935385] R13: 0000000000000000 R14: ffffffff839f7b80 R15: ffffffff88457bb0
+> [    3.935891] FS:  0000000000000000(0000) GS:ffff88817aa00000(0000) knlGS:0000000000000000
+> [    3.936467] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    3.936877] CR2: 0000000000000010 CR3: 0000000006c32000 CR4: 00000000000006e0
+> [    3.937391] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [    3.937896] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [    3.938082] Call Trace:
+> [    3.938082]  ? pcmcia_parse_uevents+0xa0/0xa0
+> [    3.938082]  i82092aa_init+0xb8/0xf0
+> [    3.938082]  pccardd+0x64/0x590
+> [    3.938082]  ? __kthread_parkme+0xba/0xe0
+> [    3.938082]  ? pcmcia_parse_uevents+0xa0/0xa0
+> [    3.938082]  kthread+0x19a/0x1e0
+> [    3.938082]  ? set_kthread_struct+0x60/0x60
+> [    3.938082]  ret_from_fork+0x1f/0x30
+> [    3.938082] Modules linked in:
+> [    3.938082] Dumping ftrace buffer:
+> [    3.938082]    (ftrace buffer empty)
+> [    3.938082] CR2: 0000000000000010
+> [    3.938082] ---[ end trace f4f9ca1497f3c8b2 ]---
+> [    3.938082] RIP: 0010:i82092aa_set_mem_map+0x45/0x2c0
+> [    3.938082] Code: 28 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 e8 f0 44 8f fd 49 8b 84 24 28 09 00 00 48 8b 53 18 48 8d 75 c0 45 8b 6c 24 f0 <48> 8b 78 10 e8 92 05 2f fe 44 0f b6 33 41 80 fe 04 0f 87 16 02 00
+> [    3.938082] RSP: 0000:ffffc9000a6bfdb8 EFLAGS: 00010293
+> [    3.938082] RAX: 0000000000000000 RBX: ffffc9000a6bfe30 RCX: 0000000000000000
+> [    3.938082] RDX: ffffc9000a6bfe50 RSI: ffffc9000a6bfdc8 RDI: ffffffff88457bb0
+> [    3.938082] RBP: ffffc9000a6bfe08 R08: 0000000000000001 R09: 0000000000000001
+> [    3.938082] R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff88457bb0
+> [    3.938082] R13: 0000000000000000 R14: ffffffff839f7b80 R15: ffffffff88457bb0
+> [    3.938082] FS:  0000000000000000(0000) GS:ffff88817aa00000(0000) knlGS:0000000000000000
+>     3.938082] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    3.938082] CR2: 0000000000000010 CR3: 0000000006c32000 CR4: 00000000000006e0
+> [    3.938082] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [    3.938082] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [    3.938082] Kernel panic - not syncing: Fatal exception
+> [    3.938082] Dumping ftrace buffer:
+> [    3.938082]    (ftrace buffer empty)
+> [    3.938082] Kernel Offset: disabled
+> [    3.938082] Rebooting in 1 seconds..
 > 
->  skbuff: skb_under_panic: text:ffffffffc0866ad4 len:96 put:24
->  head:ffff97be85e31800 data:ffff97be85e317f8 tail:0x58 end:0xc0 dev:gre0
->  ------------[ cut here ]------------
->  kernel BUG at net/core/skbuff.c:110!
->  invalid opcode: 0000 [#1] SMP PTI
->  CPU: 2 PID: 393 Comm: kworker/2:2 Tainted: G           OE     5.13.0 #13
->  Hardware name: Virtuozzo KVM, BIOS 1.11.0-2.vz7.4 04/01/2014
->  Workqueue: ipv6_addrconf addrconf_dad_work
->  RIP: 0010:skb_panic+0x48/0x4a
->  Call Trace:
->   skb_push.cold.111+0x10/0x10
->   ipgre_header+0x24/0xf0 [ip_gre]
->   neigh_connected_output+0xae/0xf0
->   ip6_finish_output2+0x1a8/0x5a0
->   ip6_output+0x5c/0x110
->   nf_dup_ipv6+0x158/0x1000 [nf_dup_ipv6]
->   tee_tg6+0x2e/0x40 [xt_TEE]
->   ip6t_do_table+0x294/0x470 [ip6_tables]
->   nf_hook_slow+0x44/0xc0
->   nf_hook.constprop.34+0x72/0xe0
->   ndisc_send_skb+0x20d/0x2e0
->   ndisc_send_ns+0xd1/0x210
->   addrconf_dad_work+0x3c8/0x540
->   process_one_work+0x1d1/0x370
->   worker_thread+0x30/0x390
->   kthread+0x116/0x130
->   ret_from_fork+0x22/0x30
-> 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
 > ---
->  net/ipv6/ip6_output.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
+>  drivers/pcmcia/i82092.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index ff4f9ebcf7f6..0efcb9b04151 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -60,10 +60,38 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
->  {
->  	struct dst_entry *dst = skb_dst(skb);
->  	struct net_device *dev = dst->dev;
-> +	unsigned int hh_len = LL_RESERVED_SPACE(dev);
-> +	int delta = hh_len - skb_headroom(skb);
->  	const struct in6_addr *nexthop;
->  	struct neighbour *neigh;
->  	int ret;
->  
-> +	/* Be paranoid, rather than too clever. */
-> +	if (unlikely(delta > 0) && dev->header_ops) {
-> +		/* pskb_expand_head() might crash, if skb is shared */
-> +		if (skb_shared(skb)) {
-> +			struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
-> +
-> +			if (likely(nskb)) {
-> +				if (skb->sk)
-> +					skb_set_owner_w(skb, skb->sk);
-> +				consume_skb(skb);
-> +			} else {
-> +				kfree_skb(skb);
-> +			}
-> +			skb = nskb;
-> +		}
-> +		if (skb &&
-> +		    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-> +			kfree_skb(skb);
-> +			skb = NULL;
-> +		}
-> +		if (!skb) {
-> +			IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTDISCARDS);
-> +			return -ENOMEM;
-> +		}
-> +	}
-> +
->  	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
->  		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
->  
+> diff --git a/drivers/pcmcia/i82092.c b/drivers/pcmcia/i82092.c
+> index 85887d885b5f..192c9049d654 100644
+> --- a/drivers/pcmcia/i82092.c
+> +++ b/drivers/pcmcia/i82092.c
+> @@ -112,6 +112,7 @@ static int i82092aa_pci_probe(struct pci_dev *dev,
+>  	for (i = 0; i < socket_count; i++) {
+>  		sockets[i].card_state = 1; /* 1 = present but empty */
+>  		sockets[i].io_base = pci_resource_start(dev, 0);
+> +		sockets[i].dev = dev;
+>  		sockets[i].socket.features |= SS_CAP_PCCARD;
+>  		sockets[i].socket.map_size = 0x1000;
+>  		sockets[i].socket.irq_mask = 0;
+> -- 
+> 2.17.6
 > 
-
