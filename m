@@ -2,119 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E813D3EE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A543D3EEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhGWQz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:55:29 -0400
-Received: from mail-pj1-f46.google.com ([209.85.216.46]:37784 "EHLO
-        mail-pj1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGWQz2 (ORCPT
+        id S231481AbhGWRAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 13:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhGWRAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:55:28 -0400
-Received: by mail-pj1-f46.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso1500589pjq.2;
-        Fri, 23 Jul 2021 10:36:01 -0700 (PDT)
+        Fri, 23 Jul 2021 13:00:06 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F86EC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:40:38 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id j2so1819830edp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:40:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=PAX1zJX4eU8wCCP9NG6c0YI3K4Bs99PZZpIIM4LoJbk=;
+        b=ZoBfqaHXNwqE9npkUPy5emJF3uyke4MTQw6REPfA5TW6Tav4nWW/SrqIkGPfbNAaFn
+         jjdKnJpjzvc33dfzppUokmIoGDYUQlG7oK5sHLNL1VMVbgMaqezGvaL9CIyXbLRP5UId
+         I3AgE0i8vfeTEMRcFvIAQpv3tJcQcp0ndC85ZgprB1alJnaM1DeVBpOrsM4oz+2mgXWm
+         uTLgTsWHzpdkSXgdRccVDnOTg0ms1jFGV47mBh5W59YvzTcOBZok2+M52cpFY9om3EHx
+         W0xzZnXGxqcaxHlTm1p5j2E1qwjWrnh9uJwfDADOups2f65MLGL/q69eCjACKvJKg7J6
+         V9zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iWj+UiJlctAcr7NRJfbxKaLRnJxPvdLf6JLcPvykEvo=;
-        b=Ref6rsWenw2i3oxFdxNQk9dLJ/5LGKGh+S4lrJXeRhoaCGBo42+rCAMszGYwB3Y5c6
-         hnVIvOO8UR7BnwrynQGF948Lb40dHAWtnLc8CCIHVzw+sVNVi0G+fajDrxIJ+zmesRPZ
-         VIOIFdSahgfuzQBv2noqK753uv5MTX6DEwbNOTW1LGzZ0y7NCTBPFOAzSioHau12fJs4
-         xswWNgiikTVQYsikMD3bjZIzFmKWBKwhzmT0y9mV62EssvQ+TeBJsaaELmgKlv0YTel4
-         LfX6yHISaeUEQgqE1YaUtue/2wdllyXWQJmsjj6Q5376KZZWE80Isr12zW/gzLoJxWow
-         lfAA==
-X-Gm-Message-State: AOAM533+LmTZJiahnsogZjBihfptYgqruGODhz8aCNe6QQ8oEk6NRJaa
-        2+dVosbfaTNs49Oj5PCeSD8=
-X-Google-Smtp-Source: ABdhPJxYoJmhzT8pKpe2fdHABoA6MrXAk7kHnpYcCjltHOiWPuLGY7lMMQ720SqX7mQxRKtcnwH21g==
-X-Received: by 2002:a17:902:c941:b029:12b:27b:a7b0 with SMTP id i1-20020a170902c941b029012b027ba7b0mr4528705pla.10.1627061761364;
-        Fri, 23 Jul 2021 10:36:01 -0700 (PDT)
-Received: from garbanzo ([191.96.121.239])
-        by smtp.gmail.com with ESMTPSA id a13sm36007774pfl.92.2021.07.23.10.35.58
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PAX1zJX4eU8wCCP9NG6c0YI3K4Bs99PZZpIIM4LoJbk=;
+        b=pbDpNuk/VJemmMFhKMIpH9clOrA46u6UZfarDrNP5pd25XKnqdHhVm2a5EAfWb2dJw
+         myHXoBtP+Mi3Na1+JMihLU8EcVYNXGB1gBJoVgG66lDtjL5MFnvyEkbvV8+IVjuewm9s
+         wua+CFQJFKOqvfIWGYKM6ej05alY+f/HeO4aT4oLSQUFja4BGG6/uFICOTVi6zzN+Bgc
+         qKJpq4VD6e01LfXc1c0ut5AUfnSs8qoVzmkzToWVLqbGzXhCLUEamRVZ/TtCxp2OURf9
+         EhF3iv7lqGWOBYxyJA0V7ApMu23Od7xVFCDa6RPjM6w4lG/GjRKev56S93cLDOFvYmoq
+         Tqww==
+X-Gm-Message-State: AOAM533QEcBaF06ohsWaTFhrHTOHONPDZnoJ9rU88wdx7CSZMVhWRlpy
+        d2+EWDdDT+3NYQecbuBnYDc=
+X-Google-Smtp-Source: ABdhPJy28r7nArmOuSjCbwH9H+trCRBvbsWWsubAyvGXZRTo5LxFtuE92P3ucGutr64n5tqVyaT15w==
+X-Received: by 2002:a05:6402:d7:: with SMTP id i23mr6839478edu.291.1627062037076;
+        Fri, 23 Jul 2021 10:40:37 -0700 (PDT)
+Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
+        by smtp.gmail.com with ESMTPSA id g8sm14805659eds.25.2021.07.23.10.40.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 10:36:00 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 10:35:56 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, rafael@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, andriin@fb.com,
-        daniel@iogearbox.net, atenart@kernel.org, alobakin@pm.me,
-        weiwan@google.com, ap420073@gmail.com, jeyu@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        minchan@kernel.org, axboe@kernel.dk, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] sysfs: fix kobject refcount to address races with
- kobject removal
-Message-ID: <20210723173556.2t3pgt27xb5lpk35@garbanzo>
-References: <20210623215007.862787-1-mcgrof@kernel.org>
- <YNRnzxTabyoToKKJ@kroah.com>
- <20210625215558.xn4a24ts26bdyfzo@garbanzo>
- <20210701224816.pkzeyo4uqu3kbqdo@garbanzo>
- <YPgFVRAMQ9hN3dnB@kroah.com>
- <20210722213137.jegpykf2ddwmmck5@garbanzo>
- <YPqkgqxXQI1qYaxv@kroah.com>
+        Fri, 23 Jul 2021 10:40:36 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH v3 1/2] staging: rtl8188eu: Replace a custom function with crc32_le()
+Date:   Fri, 23 Jul 2021 19:40:35 +0200
+Message-ID: <3650881.QlJdx9khu8@localhost.localdomain>
+In-Reply-To: <f396ffee4a414ee092625ee486b871fe@AcuMS.aculab.com>
+References: <20210721110052.26376-1-fmdefrancesco@gmail.com> <20210721110052.26376-2-fmdefrancesco@gmail.com> <f396ffee4a414ee092625ee486b871fe@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPqkgqxXQI1qYaxv@kroah.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 01:14:10PM +0200, Greg KH wrote:
-> On Thu, Jul 22, 2021 at 02:31:37PM -0700, Luis Chamberlain wrote:
-> > On Wed, Jul 21, 2021 at 01:30:29PM +0200, Greg KH wrote:
-> > > On Thu, Jul 01, 2021 at 03:48:16PM -0700, Luis Chamberlain wrote:
-> > > > On Fri, Jun 25, 2021 at 02:56:03PM -0700, Luis Chamberlain wrote:
-> > > > > On Thu, Jun 24, 2021 at 01:09:03PM +0200, Greg KH wrote:
-> > > > > > thanks for making this change and sticking with it!
-> > > > > > 
-> > > > > > Oh, and with this change, does your modprobe/rmmod crazy test now work?
-> > > > > 
-> > > > > It does but I wrote a test_syfs driver and I believe I see an issue with
-> > > > > this. I'll debug a bit more and see what it was, and I'll then also use
-> > > > > the driver to demo the issue more clearly, and then verification can be
-> > > > > an easy selftest test.
-> > > > 
-> > > > OK my conclusion based on a new selftest driver I wrote is we can drop
-> > > > this patch safely. The selftest will cover this corner case well now.
-> > > > 
-> > > > In short: the kernfs active reference will ensure the store operation
-> > > > still exists. The kernfs mutex is not enough, but if the driver removes
-> > > > the operation prior to getting the active reference, the write will just
-> > > > fail. The deferencing inside of the sysfs operation is abstract to
-> > > > kernfs, and while kernfs can't do anything to prevent a driver from
-> > > > doing something stupid, it at least can ensure an open file ensure the
-> > > > op is not removed until the operation completes.
-> > > 
-> > > Ok, so all is good?
-> > 
-> > It would seem to be the case.
-> > 
-> > > Then why is your zram test code blowing up so badly?
-> > 
-> > I checked the logs for the backtrace where the crash did happen
-> > and we did see clear evidence of the race we feared here. The *first*
-> > bug that happened was the CPU hotplug race:
-> > 
-> > [132004.787099] Error: Removing state 61 which has instances left.
-> > [132004.787124] WARNING: CPU: 17 PID: 9307 at ../kernel/cpu.c:1879 __cpuhp_remove_state_cpuslocked+0x1c4/0x1d0
+Hi David,
+
+This driver is going to be replaced by a "better" version, so I'm not sure 
+whether or not this patch is still needed.
+
+However, I see that we have similar problems in rtl8723bs and perhaps also in 
+other drivers. Therefore, I'd like to solve this problem, whatever will happen 
+to the "worse" rti8188eu, and change the code where else it needs to be 
+changed.
+
+Now I have a few questions... 
+
+On Thursday, July 22, 2021 5:30:08 PM CEST David Laight wrote:
+> From: Fabio M. De Francesco
 > 
-> I do not understand what this issue is, is it fixed?
+> > Sent: 21 July 2021 12:01
+> > 
+> > Use crc32_le() in place of the custom getcrc32().
+> 
+> ...
+> 
+> > @@ -609,14 +595,15 @@ u32	rtw_tkip_encrypt(struct adapter *padapter, 
+struct xmit_frame
+> > *pxmitframe)
+> > 
+> >  				if ((curfragnum + 1) == pattrib-
+>nr_frags) {	/* 4 the last fragment */
+> >  				
+> >  					length = pattrib-
+>last_txcmdsz - pattrib->hdrlen - pattrib->iv_len -
+> > 
+> > pattrib->icv_len;
+> > -					*((__le32 *)crc) = 
+getcrc32(payload, length);/* modified by Amy*/
+> > +					*((__le32 *)crc) = 
+cpu_to_le32(~crc32_le(~0, payload, length));
+> > 
+> >  					
+arcfour_init(&mycontext, rc4key, 16);
+> >  					
+arcfour_encrypt(&mycontext, payload, payload, length);
+> >  					
+arcfour_encrypt(&mycontext, payload + length, crc, 4);
+> >  				
+> >  				} else {
+> >  				
+> >  					length = pxmitpriv-
+>frag_len - pattrib->hdrlen - pattrib->iv_len -
+> > 
+> > pattrib->icv_len;
+> > -					*((__le32 *)crc) = 
+getcrc32(payload, length);/* modified by Amy*/
+> > +					*((__le32 *)crc) = 
+cpu_to_le32(~crc32_le(~0, payload, length));
+> > +
+> > 
+> >  					
+arcfour_init(&mycontext, rc4key, 16);
+> >  					
+arcfour_encrypt(&mycontext, payload, payload, length);
+> >  					
+arcfour_encrypt(&mycontext, payload + length, crc, 4);
+> 
+> Change crc to be __le32, kill the casts and pass &crc in the last call.
+> 
 
-My first patch for zram fixes the CPU multistate mis-use. And after that
-patch is applied triggering the other race does not happen.  It is why I
-decided to write a selftest driver, so that we can have a way to do all
-sorts of crazy races in a self contained driver example.
+I could do it, but the last call (that to arcfour_encrypt() takes a pointer to 
+u8 type as the third parameter. How can I use a __le32 for that?
 
-> Why is a cpu being hot unplugged at the same time a zram?
+I think that one possible solution is to change crc to be an union and use two 
+fields in the following lines:
 
-That's not what is happening. The description of the issue with zram's
-misuse of CPU multistate is described clearly in my commit log for the
-fix for that driver. You can refer to that commit log description.
+union {
+	__le32 f0; /* More descriptive name? */
+	u8 f1[4]; /* More descriptive name? */
+} crc;
 
-  Luis
+[...]
+
+crc.f0 = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+
+[...]
+
+arcfour_encrypt(&mycontext, payload + length, crc.f1, 4);
+
+Please, tell me... What about the solution above?
+
+> > @@ -682,7 +669,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, struct 
+recv_frame
+> > *precvframe)> 
+> >  			arcfour_init(&mycontext, rc4key, 16);
+> >  			arcfour_encrypt(&mycontext, payload, 
+payload, length);
+> > 
+> > -			*((__le32 *)crc) = getcrc32(payload, length 
+- 4);
+> > +			*((__le32 *)crc) = cpu_to_le32(~crc32_le(~0, 
+payload, length - 4));
+> > 
+> >  			if (crc[3] != payload[length - 1] ||
+> >  			
+> >  			    crc[2] != payload[length - 2] ||
+> 
+> You could to the same here, or make crc u32, remove the cpu_to_le32()
+> and use get_unaligned_u32(payload + length - 4) (or whatever it is called).
+> 
+
+Sorry, I can't understand this line. Can you please elaborate it a bit more?
+
+> But it is much better to do:
+> 	crc = crc32_le(~0, payload, length);
+> 	if (crc != VALID_CRC32)
+> 		res = _FAIL;
+>
+
+Why "crc = crc32_le(~0, payload, length);"? Shouldn't it be "crc = 
+cpu_to_le32(~crc32_le(~0, patload, length);"? 
+
+Why did you drop both the cpu_to_le32() call and the '~' operator?
+
+Thanks in advance,
+
+Fabio
+
+> You can lookup VALID_CRC32, but it is crc32_le(0, "\xff\xff\xff\xff", 4);
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 
+1PT, UK
+> Registration No: 1397386 (Wales)
+
+
+
+
