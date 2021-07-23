@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E2A3D3932
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313B43D3933
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbhGWKaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:30:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhGWK3x (ORCPT
+        id S232634AbhGWKac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:30:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231848AbhGWKab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:29:53 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2038C061575;
-        Fri, 23 Jul 2021 04:10:26 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so1617827oto.12;
-        Fri, 23 Jul 2021 04:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ItsRsZ0+rGylQYA+RELfRwpVcM273u0/L6xue3YIFTA=;
-        b=mgZxllDJunjoK3CtlARUlfLQNAlHIMceNdssna93H1gvGsVkjbKCjeXwfaKALFHizP
-         +Y1XZcKvjH1iQnJ0/Ky5KHtTGpXSvz9a4yB31+JlI9uF3CHnUEVO1K2oEON+GxU4rCkI
-         L0wstpPWTGcGN3ukpI4x1nmdMQaYvvW8wHQbsFxP47E/bxFXJ4AF5QvtFeKtSnuJBKfg
-         MjUE2uePwDC+tZXum5IbjSHP8qOVpr5oXCFRJaxZXEyyxD8GK7q7EeAoC/fzug6goK73
-         mGfo5Lz8KQNUMm3jwzRPh5K0HgVo8KfnWG58LKxGV0f2KFcDCBE0PMNzrJHv6r/LAKNh
-         fCqQ==
+        Fri, 23 Jul 2021 06:30:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627038664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G1IbpdoBanVv+55BsmPU96RSVm4RAh235zsiGQqev7Q=;
+        b=RLGZ3QmoVIej9FpIFh568xYuWFgy7IF7rs1LZtPXBvLLQTPhC81NWeNELmloJyl0h4a2Lx
+        6moaMOP3TE/qBILeftyfMcSKebf2NSi7LJyS1jYBLCNXIAowDAzhnnYktEcGrTnIhykD/c
+        ug6dI2dfJX15f7KsV0AuD303SAyweJU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-328-m39M_csqPhCW4YUAS4CY2Q-1; Fri, 23 Jul 2021 07:11:01 -0400
+X-MC-Unique: m39M_csqPhCW4YUAS4CY2Q-1
+Received: by mail-wm1-f72.google.com with SMTP id k4-20020a05600c1c84b0290210c73f067aso95724wms.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 04:11:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ItsRsZ0+rGylQYA+RELfRwpVcM273u0/L6xue3YIFTA=;
-        b=aXeozuwZVcjmPTlwopTas3S75qk0Di6Qcx6DDlFiaO/O5BZm7+zz1e0CO2PvChg2G1
-         bhnCUfX9KXuKhxCO22KcdZbxZyibWXCIuuHpp2ZX98TnequCzDSSfl5taM5qDi+im1bf
-         GxYtXcM7828OrglNPchlpGn1JZJdEMvTWAs6HFWf6/gZTQiCepkr+6ieJDhYa2pqQshI
-         s76lyEDMc0HnNkLgU8HvGuKcMEQ2YCJ63jkIS6ANy+c24Ba/YBOrbzuk8YqwNFof6UhE
-         NxR7gLwfqFW35mkluM1VGXqxmqRGrfLYmE70gGJbMltDGna2BdW0JiHo+pcVR1vgcMn6
-         JzwQ==
-X-Gm-Message-State: AOAM533zyJwCIamlDVviZDsXp3FJ8yNvSQA6JaQXeeUJ4V/S49vE4HCk
-        wGdKFzmzN9/msS/Uz5stokESTOocKtnTaVaz+TI=
-X-Google-Smtp-Source: ABdhPJyTbyPS7OPxgzkKeQ0xejJgwTXa3EwT7cNdLuCl25tp5G3mArCVKEQZIg8TwboZwxHRabaGbXKTcoVEzwUnzvo=
-X-Received: by 2002:a9d:491:: with SMTP id 17mr2724546otm.184.1627038626371;
- Fri, 23 Jul 2021 04:10:26 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=G1IbpdoBanVv+55BsmPU96RSVm4RAh235zsiGQqev7Q=;
+        b=oJ5ThDBmE3qr+HQ8MP3NgWVUEFa8ZKwdA77D2ik3U/o8SaAvcYV1DyLtzIMTRpxyih
+         gkBFbanRvoCSxtjqHBAO9SPafruMYphNvQuvjUiTehds+6oZNAPSzCwCqPoopQD11p6t
+         SYbIF02gjR6K8bYuurbGSEEpMHZ/VmniTS9iDiRR94k4EIzVBJeJX3ki4aWP3/BwwyTY
+         1HJZSg1dmOZqlTSEoYpF5yjEwqqFlFtbi/hQpaJfNh7NLpw4R0ZKARDY8nbukMUx50+s
+         VKgOLrAEv217eB2y3AUDJaEaNAWG3yTemhZ6QqSOQX1m1ImgOCPLLTP0tc1YHmlpWyGV
+         kG0g==
+X-Gm-Message-State: AOAM531RmNx9P6+cBowbVbRNcPcubfXodA5yehMG7rjOWv+OxORfzpbN
+        BdnjAcyg9IkrHa+09hEIyNe9t++dI18Rp886FxcB/rV80BkLMDw71LPh/PLdX3G66kwf4akuA2O
+        Cx92zPbz106xuSExFPMrGpGyO
+X-Received: by 2002:a1c:a709:: with SMTP id q9mr13456353wme.23.1627038659884;
+        Fri, 23 Jul 2021 04:10:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUcdi6qHZiPRl09NrK7l/BF1ixG4/TVNsxh9PxInN/mhKZtGyFGZDWScCkKjkehy42GwCdgA==
+X-Received: by 2002:a1c:a709:: with SMTP id q9mr13456325wme.23.1627038659656;
+        Fri, 23 Jul 2021 04:10:59 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c676e.dip0.t-ipconnect.de. [91.12.103.110])
+        by smtp.gmail.com with ESMTPSA id t5sm33068215wrw.38.2021.07.23.04.10.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 04:10:59 -0700 (PDT)
+Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
+To:     Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Minchan Kim <minchan@kernel.org>
+References: <20210723080000.93953-1-ying.huang@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <fa03db08-cd57-51ca-967b-d1b5c9efc055@redhat.com>
+Date:   Fri, 23 Jul 2021 13:10:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210722094551.15255-1-nancy.lin@mediatek.com> <20210722094551.15255-5-nancy.lin@mediatek.com>
-In-Reply-To: <20210722094551.15255-5-nancy.lin@mediatek.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Fri, 23 Jul 2021 13:10:14 +0200
-Message-ID: <CAFqH_50qC985oTcPWDLRJt6yVvwtHsizPOTnTMBh84m6Hy6hFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 04/14] dt-bindings: reset: mt8195: Move reset
- controller constants into common location
-To:     "Nancy.Lin" <nancy.lin@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
-        singo.chang@mediatek.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210723080000.93953-1-ying.huang@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nancy,
+On 23.07.21 10:00, Huang Ying wrote:
+> "-" is missing before "EINVAL".
+> 
 
-Thank you for your patch
+Ehm, that's not a typo, that's a real BUG.
 
-Missatge de Nancy.Lin <nancy.lin@mediatek.com> del dia dj., 22 de jul.
-2021 a les 11:46:
->
-> The DT binding includes for reset controllers are located in
-> include/dt-bindings/reset/. Move the Mediatek reset constants in there.
->
+What are the symptoms?
 
-I think that the patch that introduces mt8195-resets.h into the
-reset-controller directory didn't land yet, please sync with the
-author of that patch and just put it in the correct place the first
-time.
 
+-- 
 Thanks,
-  Enric
 
-> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
-> ---
->  include/dt-bindings/{reset-controller => reset}/mt8195-resets.h | 0
->  1 file changed, 0 insertions(+), 0 deletions(-)
->  rename include/dt-bindings/{reset-controller => reset}/mt8195-resets.h (100%)
->
-> diff --git a/include/dt-bindings/reset-controller/mt8195-resets.h b/include/dt-bindings/reset/mt8195-resets.h
-> similarity index 100%
-> rename from include/dt-bindings/reset-controller/mt8195-resets.h
-> rename to include/dt-bindings/reset/mt8195-resets.h
-> --
-> 2.18.0
->
+David / dhildenb
+
