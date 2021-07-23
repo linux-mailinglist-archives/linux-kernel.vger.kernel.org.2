@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595B33D41C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182BD3D41C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhGWUJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:09:50 -0400
-Received: from finn.gateworks.com ([108.161.129.64]:57786 "EHLO
-        finn.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229575AbhGWUJj (ORCPT
+        id S231480AbhGWUMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:12:25 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:39485 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhGWUMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 16:09:39 -0400
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by finn.localdomain with esmtp (Exim 4.93)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1m727T-0057Vc-V6; Fri, 23 Jul 2021 20:50:08 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH 6/6] arm64: dts: imx8mm: add gpc iomux compatible
-Date:   Fri, 23 Jul 2021 13:49:58 -0700
-Message-Id: <20210723204958.7186-7-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210723204958.7186-1-tharvey@gateworks.com>
-References: <20210723204958.7186-1-tharvey@gateworks.com>
+        Fri, 23 Jul 2021 16:12:23 -0400
+Received: by mail-il1-f169.google.com with SMTP id r1so2727328iln.6;
+        Fri, 23 Jul 2021 13:52:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/AvCVAOPmzcCvwso3MEXLVk+T/5PwdgBQwVXHtVRXLQ=;
+        b=oWIJBerd44fkYcRajHOtmSiA4F+zX58JY8MBU/mFlb9Ec0NVLHjYD8AgzdnqehSfmy
+         tEYu7NSHSqHHEtF7/OM/UtNBkMrTzGsfNNvqAzv9Z432gFiVVq1RtRJshsIxXVgk8pIL
+         JcIPFgdLAmAiZjge65ehaz1c2hCteIvE9k+9PqAVWj1VFKOeYGfmW3Nms+cDADLkLn84
+         oTIVThvC0lKN/ouWCjqddvzivFHy9nXOZMtmUmwdxfB/RjJeAalDyj1O/3x0KGvZ2n8P
+         JzXICfYde7quGLNxbkmN9Oozu5PHgziv8OVcCsp0acWHKGcv2M5fDT/+vGHISb6r7s83
+         gm0Q==
+X-Gm-Message-State: AOAM53273Z27WEZOvAy1GTChH6ampyUM6k45so0MJ5Blhj6C08QwufKT
+        65aqsRgYT7V/EcqBwzeMwQ==
+X-Google-Smtp-Source: ABdhPJxvyJlQGFCcyKOtEJ0bf1BBxsJ28bUJFu7YWDYae3GdTeNkSKQFyAoEaqUht/s6+GRgsvUV4A==
+X-Received: by 2002:a92:d5cf:: with SMTP id d15mr4618870ilq.194.1627073575770;
+        Fri, 23 Jul 2021 13:52:55 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id m26sm18982919ioo.23.2021.07.23.13.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 13:52:55 -0700 (PDT)
+Received: (nullmailer pid 2560560 invoked by uid 1000);
+        Fri, 23 Jul 2021 20:52:52 -0000
+Date:   Fri, 23 Jul 2021 14:52:52 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/3] dt-bindings: net: qcom,ipa: make imem
+ interconnect optional
+Message-ID: <20210723205252.GA2550230@robh.at.kernel.org>
+References: <20210719212456.3176086-1-elder@linaro.org>
+ <20210719212456.3176086-2-elder@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719212456.3176086-2-elder@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add gpc iomux compatible needed for IMX8MM PCIe.
+On Mon, Jul 19, 2021 at 04:24:54PM -0500, Alex Elder wrote:
+> On some newer SoCs, the interconnect between IPA and SoC internal
+> memory (imem) is not used.  Reflect this in the binding by moving
+> the definition of the "imem" interconnect to the end and defining
+> minItems to be 2 for both the interconnects and interconnect-names
+> properties.
+> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
+> ---
+>  .../devicetree/bindings/net/qcom,ipa.yaml      | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> index ed88ba4b94df5..4853ab7017bd9 100644
+> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+> @@ -87,16 +87,18 @@ properties:
+>        - const: ipa-setup-ready
+>  
+>    interconnects:
+> +    minItems: 2
+>      items:
+> -      - description: Interconnect path between IPA and main memory
+> -      - description: Interconnect path between IPA and internal memory
+> -      - description: Interconnect path between IPA and the AP subsystem
+> +      - description: Path leading to system memory
+> +      - description: Path between the AP and IPA config space
+> +      - description: Path leading to internal memory
+>  
+>    interconnect-names:
+> +    minItems: 2
+>      items:
+>        - const: memory
+> -      - const: imem
+>        - const: config
+> +      - const: imem
 
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+What about existing users? This will generate warnings. Doing this for 
+the 2nd item would avoid the need for .dts updates:
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index 45017f50a11b..a2de42dc5f61 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -519,7 +519,7 @@
- 			};
- 
- 			gpr: iomuxc-gpr@30340000 {
--				compatible = "fsl,imx8mm-iomuxc-gpr", "syscon";
-+				compatible = "fsl,imx8mm-iomuxc-gpr", "fsl,imx6q-iomuxc-gpr", "syscon";
- 				reg = <0x30340000 0x10000>;
- 			};
- 
--- 
-2.17.1
+- enum: [ imem, config ]
 
+Rob
