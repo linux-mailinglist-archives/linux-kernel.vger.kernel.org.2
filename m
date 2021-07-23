@@ -2,152 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1DE3D374B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60A23D3757
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhGWIVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhGWIVa (ORCPT
+        id S234213AbhGWIXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:23:22 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:35605 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhGWIXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:21:30 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4E8C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:02:04 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id b7so870620edu.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=H20rashoP0PI/4mcAWWqkgsc6ouNdbHg+NJZNqP1JDM=;
-        b=lVm33/5j21ACNJPF/VGWVWV868PDs09n4VxTQvOBtV2a914nW69TcdhZ5QAkSUAYpU
-         bgqR6uSdVVWgsSW/mR+NM835LaGlbzXkhz6KuLuevVTdwKB1Zy7LJlCfaNIrjIhywHZF
-         IGZ2DRjnhEcZKePaCZRBaDMn2c0KwZuSEDY98=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=H20rashoP0PI/4mcAWWqkgsc6ouNdbHg+NJZNqP1JDM=;
-        b=qghWOrbuBqgNqJvSNnlEui2Q9jFX45HSMaG+aADl8BXgzaG3OwN/J/K4rkfO3aiObi
-         Cjlb7QwEQDNJlcABexxYETO4hJTQUrQJa2bdoufdVQcob09bV7atodcocaLqsnEQsNNb
-         9VM0ROTQC43M3VZpxiV8Mv0oRb6Zowlpunk+OifF/KDE0u2zyTe3MBrrUwINh9mJK+Jh
-         LNZw6Y8ftnZP1yJY6pPLmuplyLHXFaHIAzRfILmMEkkukrN/vJtHSd3K1a+35lRG27vB
-         /uZznqWTs30tU0ckvPlJ7frAGDxXIgJq5GeODDo1B7Kfujl6dAUD711hW8AZX993rPhF
-         gHUA==
-X-Gm-Message-State: AOAM530WXZAB88sDs2638iQXi1MUrzo04HADYgPHGY73/2XfAEAQa79z
-        iYFxNtpVDonCoQ4TGMj62tcynA==
-X-Google-Smtp-Source: ABdhPJyyEFO9yMTykjx6W9MKiufO2hGuxigcLPb1ZDBRgh4QiUsdniUA57nRfgeuJaGqgIAPLTP0Bg==
-X-Received: by 2002:aa7:c907:: with SMTP id b7mr4334018edt.148.1627030922700;
-        Fri, 23 Jul 2021 02:02:02 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b25sm13846456edv.9.2021.07.23.02.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 02:02:02 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 11:02:00 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
-Cc:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH] dma-buf/poll: Get a file reference for outstanding fence
- callbacks
-Message-ID: <YPqFiPftjTUV4361@phenom.ffwll.local>
-Mail-Followup-To: Michel =?iso-8859-1?Q?D=E4nzer?= <michel@daenzer.net>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-References: <20210723075857.4065-1-michel@daenzer.net>
- <f5f37693-bfe2-e52f-172b-00f4aa94dbd9@amd.com>
- <4cf94f59-f953-f5d7-9901-cfe5fd63bfbc@daenzer.net>
+        Fri, 23 Jul 2021 04:23:21 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
+ mrelayeu.kundenserver.de (mreue106 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MLQl3-1lp3EH0EfT-00IRVL; Fri, 23 Jul 2021 11:03:54 +0200
+Received: by mail-wr1-f48.google.com with SMTP id z7so1492059wrn.11;
+        Fri, 23 Jul 2021 02:03:53 -0700 (PDT)
+X-Gm-Message-State: AOAM532H1ppmufJs80cq9R517KKVB6crrQl8TBH4DDUvnZkBbVbdee8p
+        sPJGyWG9nPzJ57ZLVkhBMY870k3NFUa97Sln96I=
+X-Google-Smtp-Source: ABdhPJy3ItUq0sRuqlziECSTpnqgqAEwiUMYe9CtHrcLjroCnJUUgu4nyS6Li21tNISMIRuRGBH3im1Ow2SeuHqPtvs=
+X-Received: by 2002:adf:e107:: with SMTP id t7mr4168842wrz.165.1627031033699;
+ Fri, 23 Jul 2021 02:03:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4cf94f59-f953-f5d7-9901-cfe5fd63bfbc@daenzer.net>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+References: <bcf2fb9bbe965862213f27e05f87ffc91283c0c5.1627018061.git.jie.deng@intel.com>
+In-Reply-To: <bcf2fb9bbe965862213f27e05f87ffc91283c0c5.1627018061.git.jie.deng@intel.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 23 Jul 2021 11:03:37 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1=TpKLGMzvoLafjxtmoBbDL+sBMb8ZiEmTjW91Yr-cYw@mail.gmail.com>
+Message-ID: <CAK8P3a1=TpKLGMzvoLafjxtmoBbDL+sBMb8ZiEmTjW91Yr-cYw@mail.gmail.com>
+Subject: Re: [PATCH v15] i2c: virtio: add a virtio i2c frontend driver
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     Linux I2C <linux-i2c@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        yu1.wang@intel.com, conghui.chen@intel.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        jiedeng@alumni.sjtu.edu.cn
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:kEplOMaUqVzJBv/AHt0lDnTUCf+kykaXARzxFMZ6hdYx/uda5gQ
+ 8XQudr/poHSIOdicNbn/kjPV3f13Sr920VbWraVIl2I0UbwQMvBZtmddYpjWDYKSG/IBVbi
+ IjsuuKE79yjcNswucQoyXjrPxxG3/t9WcCL9L/bNfDJoLNtBtxukFSAjqGzViJc1s4rB3NO
+ ICWrdPaYdzXmdqj0a5a2w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:54dWuqyBZ3A=:lQ9lVQz1vrrr4ZCkg5Qzb0
+ YS3BYopTtGGCW1xAKHITf5XcPXj80Hi8UdvQyNa+n2jTC8DNCj5MTyQDcUsbFLF0PA49tKgK8
+ xNHkOH1nI+0ZneTTzUjVBgLRy81zg77VKFKEmWWW4a3tccIEGyl8N8eqoMlIfC6jCGfNGHLLm
+ vdTbeyApVrivwWvjFuRZrNmppFbpKXYibpZYaHuJ3MaDcJ5UOrykURITtK/t203JDKHlO90x7
+ 7Z8apU8IN+Xl/6gjymz0LXViYWXPbN5i6eAr1tJ3R4kGbhK3ckL5e3+h2EwTpBhncq5IKAA6+
+ MbTr0xQK5R4lyvVYtYRYj+SRDPatiUDTFfPyrUZIvgJG6/FxE5n03OYNOT0sJR+CD8pHOBvxf
+ OB21f2TxvS21PkU37F/yHZ1egcbFaGKOYLPSwKL2cQ/fVFF1jswNT40FZB49QqPtGeJoGXC3O
+ CBga5qJk+C0qnD+xUTuvJUWqgGqKN0hlrPdusXv8ClnCPsUpkBGdAB7ypauZ95Wjn5D279LkS
+ 97Gq/Waa+qCCPhtBqbg/EZ1StCBrNGLTaQhMUMf3EQu3iR06MLDFCAXcypzW7TnLx6lXoUbkL
+ UTeydh3Sc5XUZKCQKQpzR4dIG4puD+/sB6Sdcc1+J/LjfR8zZxv3xH+jUgcZD4z64i+S/zFZ9
+ xGrBU9xPACpRufNyf/MomhIC4zq/9lz8qhGbFfzDJ4bWbw7rMM6XLRQHfmq4sprKT4nx0IOpJ
+ zboggphIyeMkG+XJE42dOJWqA907EV7UCHtCbCuFZHkes36Kr+e3164pIShV7mYw57kFVdRIE
+ oyY8CGb+Un2nLSqs2ZOqqjCkqogS1ywqVPm3wN1+Xm2V4JdZi4K7YwBpi72KzNO51q3ccsP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 10:19:49AM +0200, Michel Dänzer wrote:
-> On 2021-07-23 10:04 a.m., Christian König wrote:
-> > Am 23.07.21 um 09:58 schrieb Michel Dänzer:
-> >> From: Michel Dänzer <mdaenzer@redhat.com>
-> >>
-> >> This makes sure we don't hit the
-> >>
-> >>     BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
-> >>
-> >> in dma_buf_release, which could be triggered by user space closing the
-> >> dma-buf file description while there are outstanding fence callbacks
-> >> from dma_buf_poll.
-> > 
-> > I was also wondering the same thing while working on this, but then thought that the poll interface would take care of this.
-> 
-> I was able to hit the BUG_ON with https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1880 .
+On Fri, Jul 23, 2021 at 7:44 AM Jie Deng <jie.deng@intel.com> wrote:
 
-igt test would be really lovely. Maybe base something off the
-import/export igts from Jason?
--Daniel
+> +
+> +       ret = virtio_i2c_setup_vqs(vi);
+> +       if (ret)
+> +               return ret;
+> +
+> +       vi->adap.owner = THIS_MODULE;
+> +       snprintf(vi->adap.name, sizeof(vi->adap.name),
+> +                "i2c_virtio at virtio bus %d", vdev->index);
+> +       vi->adap.algo = &virtio_algorithm;
+> +       vi->adap.quirks = &virtio_i2c_quirks;
+> +       vi->adap.dev.parent = &vdev->dev;
+> +       i2c_set_adapdata(&vi->adap, vi);
+> +
+> +       /*
+> +        * Setup ACPI node for controlled devices which will be probed through
+> +        * ACPI.
+> +        */
+> +       ACPI_COMPANION_SET(&vi->adap.dev, ACPI_COMPANION(pdev));
 
-> 
-> 
-> >> Cc: stable@vger.kernel.org
-> >> Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
-> >> ---
-> >>   drivers/dma-buf/dma-buf.c | 18 ++++++++++++------
-> >>   1 file changed, 12 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> >> index 6c520c9bd93c..ec25498a971f 100644
-> >> --- a/drivers/dma-buf/dma-buf.c
-> >> +++ b/drivers/dma-buf/dma-buf.c
-> >> @@ -65,12 +65,9 @@ static void dma_buf_release(struct dentry *dentry)
-> >>       BUG_ON(dmabuf->vmapping_counter);
-> >>         /*
-> >> -     * Any fences that a dma-buf poll can wait on should be signaled
-> >> -     * before releasing dma-buf. This is the responsibility of each
-> >> -     * driver that uses the reservation objects.
-> >> -     *
-> >> -     * If you hit this BUG() it means someone dropped their ref to the
-> >> -     * dma-buf while still having pending operation to the buffer.
-> >> +     * If you hit this BUG() it could mean:
-> >> +     * * There's a file reference imbalance in dma_buf_poll / dma_buf_poll_cb or somewhere else
-> >> +     * * dmabuf->cb_in/out.active are non-0 despite no pending fence callback
-> >>        */
-> >>       BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
-> >>   @@ -196,6 +193,7 @@ static loff_t dma_buf_llseek(struct file *file, loff_t offset, int whence)
-> >>   static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
-> >>   {
-> >>       struct dma_buf_poll_cb_t *dcb = (struct dma_buf_poll_cb_t *)cb;
-> >> +    struct dma_buf *dmabuf = container_of(dcb->poll, struct dma_buf, poll);
-> >>       unsigned long flags;
-> >>         spin_lock_irqsave(&dcb->poll->lock, flags);
-> >> @@ -203,6 +201,8 @@ static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
-> >>       dcb->active = 0;
-> >>       spin_unlock_irqrestore(&dcb->poll->lock, flags);
-> >>       dma_fence_put(fence);
-> >> +    /* Paired with get_file in dma_buf_poll */
-> >> +    fput(dmabuf->file);
-> > 
-> > Is calling fput() in interrupt context ok? IIRC that could potentially sleep.
-> 
-> Looks fine AFAICT: It has
-> 
-> 		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
-> 
-> and as a fallback for that, it adds the file to a lock-less delayed_fput_list which is processed by a workqueue.
-> 
-> 
-> -- 
-> Earthling Michel Dänzer               |               https://redhat.com
-> Libre software enthusiast             |             Mesa and X developer
+Since there is now a generic way for virtio drivers to link up with OF
+device nodes, maybe this should be handled the same way in the
+virtio core rather than the driver?
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> index 70a8057a..99aa27b 100644
+> --- a/include/uapi/linux/virtio_ids.h
+> +++ b/include/uapi/linux/virtio_ids.h
+> @@ -55,6 +55,7 @@
+>  #define VIRTIO_ID_FS                   26 /* virtio filesystem */
+>  #define VIRTIO_ID_PMEM                 27 /* virtio pmem */
+>  #define VIRTIO_ID_MAC80211_HWSIM       29 /* virtio mac80211-hwsim */
+> +#define VIRTIO_ID_I2C_ADAPTER          34 /* virtio i2c adapter */
+>  #define VIRTIO_ID_BT                   40 /* virtio bluetooth */
+
+This will now conflict with Viresh's patch that adds all the other IDs.
+Not sure if there is anything to be done about that.
+
+       Arnd
