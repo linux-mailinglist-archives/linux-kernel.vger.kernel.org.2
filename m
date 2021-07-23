@@ -2,84 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAA23D3D7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276E03D3D7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhGWPlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhGWPlI (ORCPT
+        id S230510AbhGWPlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:41:09 -0400
+Received: from outbound-smtp29.blacknight.com ([81.17.249.32]:42401 "EHLO
+        outbound-smtp29.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229713AbhGWPlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:41:08 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D34C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 09:21:41 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id u3so2939851lff.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 09:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SliTX8Iw8l9nFjbx/gRlB+2uInDqKw48vi+rU2al8Nc=;
-        b=z2CkY6HOoSWT8+R5fkxgZ069VX+3PJN1Nvq/DmH1sahvH73bCUdm7/j6kXiDunpTps
-         cUSxVODN7M+P8LW7IBoaBbne7Xspvb0LzLvB0Kq7/uHI8Q6QXuW0IoT6RaGfGaaRUPpf
-         tBEKmvdDfRRvyq7poBebhbAx8eGV0FJGBGNgyJJS7SBlgjtwL3PRWg/k35p5fsvYgj9B
-         oQJ7GOjmdDMlYnXHWjdX1BvfssKceNTv/onAJz6FBzOoXqLAWFB2akrZ7JiNtZn905Sb
-         IJ6tLfZ2F+z2AmtsSST04NUyrHQxHmIqwAxTrOmTa2BJRsSVSFtZX3o2QRBinJ+0Bts5
-         YIaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SliTX8Iw8l9nFjbx/gRlB+2uInDqKw48vi+rU2al8Nc=;
-        b=JH+tjDuBqD169wEswtU7aTu+po2TZUad06MHVkSWOsB6x628EOGSO3WtY2mfbNsof/
-         RoUw0xmtykp5bBPsp0yJO8PzfJglAbEmVdyS6ozq1y1dBryz9tkgo8PR4PsN2KBymagO
-         Cna6CG3My9owwojtP0664O+Rx/ieQpVuFjLaOpEuhEXKQSAu1cTfhvxOCbAh5ecKvSZD
-         YKtxnetqcHMTChfYQpV7hgVpau9BZ5jYU1jCOAe3rWBzTKYNi7KVzVRuaqCNI+NbuQVx
-         61IUa8njQF7WuovC8dpRT0dT6h8DL1um57LIqAzOC53p065JTBm8IDzFGhI5XxUOMThF
-         3DXQ==
-X-Gm-Message-State: AOAM531twMyeavcxiaW8gXdJTJ4DxeCxPXNu7ONI1mShJT2ZG/fhQY4I
-        +6I7DS3R82N+FpybEDOER+ymNZjS8PvGJJVKgIqUOg==
-X-Google-Smtp-Source: ABdhPJwyeo7rGBpxoxiquAEUXMh8R1GJJMHfyFuO8ePzx4uDJagKcKEm/Zrtnh+n4Oi7Tcg2iBTeqT0sI+9NsaX9hM0=
-X-Received: by 2002:a05:6512:169e:: with SMTP id bu30mr3470614lfb.291.1627057299505;
- Fri, 23 Jul 2021 09:21:39 -0700 (PDT)
+        Fri, 23 Jul 2021 11:41:06 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id 1E7C1BEFA9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:21:39 +0100 (IST)
+Received: (qmail 20456 invoked from network); 23 Jul 2021 16:21:38 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Jul 2021 16:21:38 -0000
+Date:   Fri, 23 Jul 2021 17:21:37 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     peterz@infradead.org, bristot@redhat.com, bsegall@google.com,
+        dietmar.eggemann@arm.com, joshdon@google.com,
+        juri.lelli@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        rostedt@goodmis.org, valentin.schneider@arm.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
+Message-ID: <20210723162137.GY3809@techsingularity.net>
+References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
+ <20210707123402.13999-1-borntraeger@de.ibm.com>
+ <20210707123402.13999-2-borntraeger@de.ibm.com>
+ <20210723093523.GX3809@techsingularity.net>
+ <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
 MIME-Version: 1.0
-References: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
-In-Reply-To: <20210629123407.82561-1-bhupesh.sharma@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 23 Jul 2021 18:21:28 +0200
-Message-ID: <CACRpkdacTi-9YzhOqpfFkNhzSATmbWHs=wMoJcsXwG8pBeW7Mg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] pinctrl: qcom/pinctrl-spmi-gpio: Add support for
- pmic-gpio on SA8155p-adp
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, bhupesh.linux@gmail.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 29, 2021 at 2:34 PM Bhupesh Sharma
-<bhupesh.sharma@linaro.org> wrote:
+On Fri, Jul 23, 2021 at 02:36:21PM +0200, Christian Borntraeger wrote:
+> > sched: Do not select highest priority task to run if it should be skipped
+> > 
+> > <SNIP>
+> >
+> > index 44c452072a1b..ddc0212d520f 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -4522,7 +4522,8 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+> >   			se = second;
+> >   	}
+> > -	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
+> > +	if (cfs_rq->next &&
+> > +	    (cfs_rq->skip == left || wakeup_preempt_entity(cfs_rq->next, left) < 1)) {
+> >   		/*
+> >   		 * Someone really wants this to run. If it's not unfair, run it.
+> >   		 */
+> > 
+> 
+> I do see a reduction in ignored yields, but from a performance aspect for my
+> testcases this patch does not provide a benefit, while the the simple
+> 	curr->vruntime += sysctl_sched_min_granularity;
+> does.
 
-> Changes since v3:
-> -----------------
-> - v3 series can be found here: https://lore.kernel.org/linux-arm-msm/20210617053432.350486-1-bhupesh.sharma@linaro.org/T/#m2b1bf2d32dfdde3196dc5342722e356ee1f87456
-> - Rebased patchset on pinctrl/devel branch.
-> - Added Reviewed-by from Bjorn for patches 1 to 4 and Ack from Rob for
->   patches 1 and 2.
+I'm still not a fan because vruntime gets distorted. From the docs
 
-This v4 patch set applied!
+   Small detail: on "ideal" hardware, at any time all tasks would have the same
+   p->se.vruntime value --- i.e., tasks would execute simultaneously and no task
+   would ever get "out of balance" from the "ideal" share of CPU time
 
-Sorry for taking so long, I had a bit too much to do.
+If yield_to impacts this "ideal share" then it could have other
+consequences.
 
-Excellent work on the patches Bhupesh!
+I think your patch may be performing better in your test case because every
+"wrong" task selected that is not the yield_to target gets penalised and
+so the yield_to target gets pushed up the list.
 
-Yours,
-Linus Walleij
+> I still think that your approach is probably the cleaner one, any chance to improve this
+> somehow?
+> 
+
+Potentially. The patch was a bit off because while it noticed that skip
+was not being obeyed, the fix was clumsy and isolated. The current flow is
+
+1. pick se == left as the candidate
+2. try pick a different se if the "ideal" candidate is a skip candidate
+3. Ignore the se update if next or last are set
+
+Step 3 looks off because it ignores skip if next or last buddies are set
+and I don't think that was intended. Can you try this?
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 44c452072a1b..d56f7772a607 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4522,12 +4522,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+ 			se = second;
+ 	}
+ 
+-	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
++	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, se) < 1) {
+ 		/*
+ 		 * Someone really wants this to run. If it's not unfair, run it.
+ 		 */
+ 		se = cfs_rq->next;
+-	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
++	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, se) < 1) {
+ 		/*
+ 		 * Prefer last buddy, try to return the CPU to a preempted task.
+ 		 */
