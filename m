@@ -2,135 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3933D37C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7E23D37C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhGWIyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:54:54 -0400
-Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:43885 "EHLO
-        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230438AbhGWIyx (ORCPT
+        id S231284AbhGWIzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhGWIze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:54:53 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id E31E31C4926
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:35:24 +0100 (IST)
-Received: (qmail 13966 invoked from network); 23 Jul 2021 09:35:24 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Jul 2021 09:35:24 -0000
-Date:   Fri, 23 Jul 2021 10:35:23 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     peterz@infradead.org, bristot@redhat.com, bsegall@google.com,
-        dietmar.eggemann@arm.com, joshdon@google.com,
-        juri.lelli@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org
-Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
-Message-ID: <20210723093523.GX3809@techsingularity.net>
-References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
- <20210707123402.13999-1-borntraeger@de.ibm.com>
- <20210707123402.13999-2-borntraeger@de.ibm.com>
+        Fri, 23 Jul 2021 04:55:34 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8289C061575;
+        Fri, 23 Jul 2021 02:36:07 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id hg12-20020a17090b300cb02901736d9d2218so3004080pjb.1;
+        Fri, 23 Jul 2021 02:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=ZTe2QhZNvjeunOdwndEKdmKEetZXSNLWlRKdUTF8nEA=;
+        b=noix7vBVUY0miC7zY6X47bnNSgos9y1DtT1DWKJwZfTTL96A3vHc2zzH9oNyR+Ymlo
+         4EwOUM1d91Tz4WtVSCASMVAkOfG2GXxWrpq72WKIsR+nE2PZlDsQbJ+Au/W/ICuZroZx
+         SLjVlomLADXPZmHCSoa2grT/cZArhJ8aa+6utp8LGeFnSUi8uIvscpmk1qrREtyNDnRI
+         BA9mG3NMJ16FrQ7Hdj97cCjb5Apx98W1Vq0omPxd0U8pI3fgeoF9V7vJ+w8SSJI3J4pB
+         LhvV/rVHaAIC9A8bSz6cqgwHrvCB0K4vvEX1928Eu4TCWUsgUzQ9OCMbuHxUgadmoTeN
+         1SWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=ZTe2QhZNvjeunOdwndEKdmKEetZXSNLWlRKdUTF8nEA=;
+        b=YebfRpgcV2FOWFjwInvtDvOdej+bki3kFkJdkYwXJd7DvxKebI8l3WGOOie8ZUkOuD
+         gZMXzv4hf2ZPQXfof4oawNo1jxXrAQyYWd59V/ZpdvuP9Q5A2FB+jgXuRUyRfq0im4zQ
+         Q58ffSkwAG3m8UPe1X/ecSqBWScYDIKjr89EPe77b9R2kA9KTUn//L/vmvnY91/ElhWX
+         fePsqmPzTPTvYbFgW3qr8nAgb2thLmJGoqnW/RmeqTT8Dcnm6yABeDocQnVixnLfntnv
+         Zjb5i2ZgOHzr4pE3ipWXEghHiFFYvjR0lar5Ofi0A5uiXq2SHcboexUhGJyf/a8CvjVS
+         4I/A==
+X-Gm-Message-State: AOAM533L8RNqPO5RJZ6fft0wrZC1mc51aS/MdxZ7/a9ibBQQ7dLysE92
+        XXGDC+quDZc3GGO4hxAJ8rxlgZlYjCvLyeBNXZU=
+X-Google-Smtp-Source: ABdhPJx+9QoaAOcl/XoijfUaFdofNEePpqRuK0qvS5sdRzbvrBU3oIu8OFMTpje/RJ0CaWK4OC/zLQ==
+X-Received: by 2002:a62:8c52:0:b029:335:a9bc:47e1 with SMTP id m79-20020a628c520000b0290335a9bc47e1mr3630701pfd.11.1627032966912;
+        Fri, 23 Jul 2021 02:36:06 -0700 (PDT)
+Received: from [10.12.169.24] (5e.8a.38a9.ip4.static.sl-reverse.com. [169.56.138.94])
+        by smtp.gmail.com with ESMTPSA id s36sm22703766pgl.8.2021.07.23.02.36.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 02:36:06 -0700 (PDT)
+Subject: Re: [PATCH] cfg80211: free the object allocated in
+ wiphy_apply_custom_regulatory
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-wireless@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
+ <6fa2aecc-ab64-894d-77c2-0a19b524cc03@gmail.com>
+ <CAD-N9QXO4bX6SzMNir0fin0wVAZYhsS8-triiWPjY+Rz2WCy1w@mail.gmail.com>
+From:   xiaoqiang zhao <zhaoxiaoqiang007@gmail.com>
+Message-ID: <2e9e6fa7-a405-088d-3b4c-da62b85f3fc6@gmail.com>
+Date:   Fri, 23 Jul 2021 17:36:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210707123402.13999-2-borntraeger@de.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAD-N9QXO4bX6SzMNir0fin0wVAZYhsS8-triiWPjY+Rz2WCy1w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 07, 2021 at 02:34:02PM +0200, Christian Borntraeger wrote:
-> After some debugging in situations where a smaller sched_latency_ns and
-> smaller sched_migration_cost settings helped for KVM host, I was able to
-> come up with a reduced testcase.
-> This testcase has 2 vcpus working on a shared memory location and
-> waiting for mem % 2 == cpu number to then do an add on the shared
-> memory.
-> To start simple I pinned all vcpus to one host CPU. Without the
-> yield_to in KVM the testcase was horribly slow. This is expected as each
-> vcpu will spin a whole time slice. With the yield_to from KVM things are
-> much better, but I was still seeing yields being ignored.
-> In the end pick_next_entity decided to keep the current process running
-> due to fairness reasons.  On this path we really know that there is no
-> point in continuing current. So let us make things a bit unfairer to
-> current.
-> This makes the reduced testcase noticeable faster. It improved a more
-> realistic test case (many guests on some host CPUs with overcomitment)
-> even more.
-> In the end this is similar to the old compat_sched_yield approach with
-> an important difference:
-> Instead of doing it for all yields we now only do it for yield_to
-> a place where we really know that current it waiting for the target.
+
+
+在 2021/7/23 17:25, Dongliang Mu 写道:
+> Can you point out the concrete code releasing regd? Maybe the link to elixir.
 > 
-> What are alternative implementations for this patch
-> - do the same as the old compat_sched_yield:
->   current->vruntime = rightmost->vruntime+1
-> - provide a new tunable sched_ns_yield_penalty: how much vruntime to add
->   (could be per architecture)
-> - also fiddle with the vruntime of the target
->   e.g. subtract from the target what we add to the source
-> 
-> Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+>>>       ieee80211_unregister_hw(data->hw);
+>>>       device_release_driver(data->dev);
+>>>       device_unregister(data->dev);
+>>>
 
-I think this one accidentally fell off everyones radar including mine.
-At the time this patch was mailed I remembered thinking that playing games with
-vruntime might have other consequences. For example, what I believe is
-the most relevant problem for KVM is that a task spinning to acquire a
-lock may be waiting on a vcpu holding the lock that has been
-descheduled. Without vcpu pinning, it's possible that the holder is on
-the same runqueue as the lock acquirer so the acquirer is wasting CPU.
+call graph seems like this:
 
-In such a case, changing the acquirers vcpu may mean that it unfairly
-loses CPU time simply because it's a lock acquirer. Vincent, what do you
-think? Christian, would you mind testing this as an alternative with your
-demonstration test case and more importantly the "realistic test case"?
+ieee80211_unregister_hw
+(https://elixir.bootlin.com/linux/v5.14-rc2/source/net/mac80211/main.c#L1368)
+	wiphy_unregister
+(https://elixir.bootlin.com/linux/v5.14-rc2/source/net/wireless/core.c#L1011)
+		wiphy_regulatory_deregister
+(https://elixir.bootlin.com/linux/v5.14-rc2/source/net/wireless/reg.c#L4057)
+			rcu_free_regdom
 
---8<--
-sched: Do not select highest priority task to run if it should be skipped
-
-pick_next_entity will consider the "next buddy" over the highest priority
-task if it's not unfair to do so (as determined by wakekup_preempt_entity).
-The potential problem is that an in-kernel user of yield_to() such as
-KVM may explicitly want to yield the current task because it is trying
-to acquire a spinlock from a task that is currently descheduled and
-potentially running on the same runqueue. However, if it's more fair from
-the scheduler perspective to continue running the current task, it'll continue
-to spin uselessly waiting on a descheduled task to run.
-
-This patch will select the targeted task to run even if it's unfair if the
-highest priority task is explicitly marked as "skip".
-
-This was evaluated using a debugging patch to expose yield_to as a system
-call. A demonstration program creates N number of threads and arranges
-them in a ring that are updating a shared value in memory. Each thread
-spins until the value matches the thread ID. It then updates the value
-and wakes the next thread in the ring. It measures how many times it spins
-before it gets its turn. Without the patch, the number of spins is highly
-variable and unstable but with the patch it's more consistent.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 44c452072a1b..ddc0212d520f 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4522,7 +4522,8 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
- 			se = second;
- 	}
- 
--	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-+	if (cfs_rq->next &&
-+	    (cfs_rq->skip == left || wakeup_preempt_entity(cfs_rq->next, left) < 1)) {
- 		/*
- 		 * Someone really wants this to run. If it's not unfair, run it.
- 		 */
-
--- 
-Mel Gorman
-SUSE Labs
