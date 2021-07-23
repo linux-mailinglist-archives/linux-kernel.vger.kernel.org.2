@@ -2,159 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5547F3D3122
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C7A3D3124
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhGWAcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:32:48 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4112 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232917AbhGWAcr (ORCPT
+        id S233008AbhGWAdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhGWAdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:32:47 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N14DRN130535;
-        Thu, 22 Jul 2021 21:13:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=0UDzfZxoUw+wVSJ5ie/85dFi0GdTXZ9QQbsSHQJNrSY=;
- b=gljmLXFpmqerbaBRcEqHgUqVFxtxombBxdPFtkhgg61Osmx8yelGw5vwDaMAOf2FyQxi
- SaJZvEWqW5aOb/gfMbU4bglFhCerBJidWPfswDtQYtGe8lnu6kJBnJP36jqu/1D0o79k
- MOpFY9ioXmwSm7HML3BwK8ipa/QXX9jA7iNSeantHl3esrFQiw0JW9yvlZnFGXGku84M
- 1SJfUk3xsCreXDJJAhMWEvd2RYelB+DLxAnDaxoQxJ2qLmIz3mMQ64NyPo87M2LSh8pY
- ZoIhMG5FGuVGVPeWFZkpT+NcGNlpl+KWy6jF9ftjS+KRdBnWGUyjvK2anQUbqxgP1ewK qw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39yjfk1xcs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Jul 2021 21:13:00 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N1CxZm003767;
-        Fri, 23 Jul 2021 01:12:59 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 39vng72ccp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 01:12:59 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N1CtsQ29229418
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 01:12:55 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6FC365204E;
-        Fri, 23 Jul 2021 01:12:55 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.93.118])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 89CCD5204F;
-        Fri, 23 Jul 2021 01:12:54 +0000 (GMT)
-Date:   Fri, 23 Jul 2021 03:12:52 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Claire Chang <tientzu@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
-Message-ID: <20210723031252.655d6a83.pasic@linux.ibm.com>
-In-Reply-To: <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
-References: <20210720133826.9075-1-will@kernel.org>
-        <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Ae3eLa12W-x0ipkL-mPwp06xYhUcnGIf
-X-Proofpoint-GUID: Ae3eLa12W-x0ipkL-mPwp06xYhUcnGIf
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 22 Jul 2021 20:33:23 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B65AC061575;
+        Thu, 22 Jul 2021 18:13:57 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id t21so1190889plr.13;
+        Thu, 22 Jul 2021 18:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S5I2BM629PMZrsKD1CUT5xpSIdP7D7TJP/n0T9K3qsA=;
+        b=g1EpCCDun5JbZzMp1uhvAMVZx9HhoDIEFUbKjxo6uwWdrwQ6T6awNsmBG/BQMpkmhM
+         qUYL/Nr1kkQT4wsM1bVXqN9aFLmyQjtNdTSMcIkrXHNudhV7CNx7IgMXfYSMJ8TT3L62
+         OMZV7HLI765tOqR0FoshL61rQADvCXCaoOnUBO+1cRNg0kfZ9om3hMvdlcw9pBUv2HrO
+         TNBrn8v3jXUFCDVrCeWCOrZFllztOMYrkRKzGUGI0ZBqPktfiFoKUfxep349BNVHhVhk
+         d9lEKyglWO6yOlvIptwPiGg5Wj1Z4EZobkid5On6e0QzA+nTgF/WQ4gKy9tA69h3i7Zx
+         k4tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S5I2BM629PMZrsKD1CUT5xpSIdP7D7TJP/n0T9K3qsA=;
+        b=XTGKGZqnrXdqV64NpkfbMomi0lPLwVjEMCy59D6bhAYJVhkWi5R0eVulYtKgo371vh
+         hWuqtzGHPlwhzP+X6luF8SF1O9ECaL2Rhg9fdsQ0oK7SPv5MinxIQFW4Ic4mhyaBUR3e
+         6WJXt3gJCrVYrE6iUB+NCjxWG7ic+zPM212QdjvoXlbQMU4vzSY3MQU87owPsptOqT/y
+         676B9gMbA96gppv/gH3P4LmpCbrjfCl8rniIptdX0NcwtwTsE5swq5J+2XJGwIhu9L+f
+         IpPzzLWRiJ+y8c4RnLxqmL0O9Y+15oMIGgFRqPMtgi1LzkluYVwAEhooE0/jDIbQKroI
+         1NdQ==
+X-Gm-Message-State: AOAM533p8lcjNTYHzsjl139CDYe8sDuOJGPUiEnCaYU7g8qMVJtDs+gi
+        qw43+Zke8KyWUQfUCZNQLik=
+X-Google-Smtp-Source: ABdhPJxrDMkTfsE+n8kPSX8CTOGBsko0o+ZFdxeP8RfEW0GLghp7Rl1h9HIZYuuKDW9677L/c90KGQ==
+X-Received: by 2002:a63:d80a:: with SMTP id b10mr2569662pgh.47.1627002836706;
+        Thu, 22 Jul 2021 18:13:56 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id t30sm4899762pgl.47.2021.07.22.18.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 18:13:56 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: yang.yang29@zte.com.cn
+To:     sterlingteng@gmail.com
+Cc:     alexs@kernel.org, corbet@lwn.net, yang.yang29@zte.com.cn,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCHv2] docs/zh_CN: Add zh_CN/accounting/psi.rst
+Date:   Thu, 22 Jul 2021 18:14:30 -0700
+Message-Id: <20210723011430.404813-1-yang.yang29@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-22_16:2021-07-22,2021-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1011 priorityscore=1501 mlxscore=0 phishscore=0 bulkscore=0
- suspectscore=0 impostorscore=0 spamscore=0 mlxlogscore=999 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230005
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 21:22:58 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+From: Yang Yang <yang.yang29@zte.com.cn>
 
-> On 20.07.21 15:38, Will Deacon wrote:
-> > Hi again, folks,
-> > 
-> > This is version two of the patch series I posted yesterday:
-> > 
-> >    https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
-> > 
-> > The only changes since v1 are:
-> > 
-> >    * Squash patches 2 and 3, amending the commit message accordingly
-> >    * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
-> > 
-> > I'd usually leave it a bit longer between postings, but since this fixes
-> > issues with patches in -next I thought I'd spin a new version immediately.
-> > 
-> > Cheers,  
-> 
-> FWIW, I just bisected virtio-errors with secure execution mode
-> qemu-system-s390x: virtio-serial-bus: Unexpected port id 4205794771 for device virtio-serial0.0
-> 
-> to
-> commit 903cd0f315fe426c6a64c54ed389de0becb663dc
-> Author: Claire Chang <tientzu@chromium.org>
-> Date:   Thu Jun 24 23:55:20 2021 +0800
-> 
->       swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
-> 
-> Unfortunately this patch series does NOT fix this issue, so it seems that even more
-> things are broken.
-> 
-> Any idea what else might be broken?
+Add translation zh_CN/accounting/psi.rst and zh_CN/accounting/index.rst.
 
-I've done some debugging, and I think I know what is going on. Since
-that commit we need to set force_swiotlb before the swiotlb itself is
-initialized. So the patch below should fix the problem.
-
---------------------8<-------------------------------------
-
-From: Halil Pasic <pasic@linux.ibm.com>
-Date: Fri, 23 Jul 2021 02:57:06 +0200
-Subject: [PATCH 1/1] s390/pv: fix the forcing of the swiotlb
-
-Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
-swiotlb data bouncing") if code sets swiotlb_force it needs to do so
-before the swiotlb is initialised. Otherwise
-io_tlb_default_mem->force_bounce will not get set to true, and devices
-that use (the default) swiotlb will not bounce  despite switolb_force
-having the value of SWIOTLB_FORCE.
-
-Let us restore swiotlb functionality for PV by fulfilling this new
-requirement.
-
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
 ---
- arch/s390/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../translations/zh_CN/accounting/index.rst   |  23 +++
+ .../translations/zh_CN/accounting/psi.rst     | 154 ++++++++++++++++++
+ 2 files changed, 177 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/accounting/index.rst
+ create mode 100644 Documentation/translations/zh_CN/accounting/psi.rst
 
-diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-index 8ac710de1ab1..07bbee9b7320 100644
---- a/arch/s390/mm/init.c
-+++ b/arch/s390/mm/init.c
-@@ -186,9 +186,9 @@ static void pv_init(void)
- 		return;
- 
- 	/* make sure bounce buffers are shared */
-+	swiotlb_force = SWIOTLB_FORCE;
- 	swiotlb_init(1);
- 	swiotlb_update_mem_attributes();
--	swiotlb_force = SWIOTLB_FORCE;
- }
- 
- void __init mem_init(void)
+diff --git a/Documentation/translations/zh_CN/accounting/index.rst b/Documentation/translations/zh_CN/accounting/index.rst
+new file mode 100644
+index 000000000000..f50e81bc5e61
+--- /dev/null
++++ b/Documentation/translations/zh_CN/accounting/index.rst
+@@ -0,0 +1,23 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :doc:`../../../accounting/index`
++:Translator: Yang Yang <yang.yang29@zte.com.cn>
++
++.. _cn_accounting_index.rst:
++
++
++====
++计数
++====
++
++.. toctree::
++   :maxdepth: 1
++
++   psi
++
++Todolist:
++
++   cgroupstats
++   delay-accounting
++   taskstats
++   taskstats-struct
+diff --git a/Documentation/translations/zh_CN/accounting/psi.rst b/Documentation/translations/zh_CN/accounting/psi.rst
+new file mode 100644
+index 000000000000..6c999e80e5d4
+--- /dev/null
++++ b/Documentation/translations/zh_CN/accounting/psi.rst
+@@ -0,0 +1,154 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: Documentation/accounting/psi.rst
++:Translator: Yang Yang <yang.yang29@zte.com.cn>
++
++.. _cn_accounting_psi.rst:
++
++=================
++PSI——压力阻塞信息
++=================
++
++:日期: April, 2018
++:作者: Johannes Weiner <hannes@cmpxchg.org>
++
++当CPU、memory或IO设备处于竞争状态，业务负载会遭受时延毛刺、吞吐量降低，
++及面临OOM的风险。
++
++如果没有一种准确的方法度量系统竞争程度，则有两种后果：一种是用户过于节制，
++未充分利用系统资源；另一种是过度使用，经常性面临业务中断的风险。
++
++psi特性能够识别和量化资源竞争导致的业务中断，及其对复杂负载乃至整个系统在
++时间上的影响。
++
++准确度量因资源不足造成的生产力损失，有助于用户基于硬件调整业务负载，或基
++于业务负载配置硬件。
++
++psi能够实时的提供相关信息，因此系统可基于psi实现动态的负载管理。如实施
++卸载、迁移、策略性的停止或杀死低优先级或可重启的批处理任务。
++
++psi帮助用户实现硬件资源利用率的最大化。同时无需牺牲业务负载健康度，也无需
++面临OOM等造成业务中断的风险。
++
++压力接口
++========
++
++压力信息可通过/proc/pressure/ --cpu、memory、io文件分别获取。
++
++CPU相关信息格式如下：
++
++        some avg10=0.00 avg60=0.00 avg300=0.00 total=0
++
++内存和IO相关信息如下：
++
++        some avg10=0.00 avg60=0.00 avg300=0.00 total=0
++        full avg10=0.00 avg60=0.00 avg300=0.00 total=0
++
++some行代表至少有一个任务阻塞于特定资源的时间占比。
++
++full行代表所有非idle任务同时阻塞于特定资源的时间占比。在这种状态下CPU资源
++完全被浪费，相对于正常运行，业务负载由于耗费更多时间等待而受到严重影响。
++
++由于此情况严重影响系统性能，因此清楚的识别本情况并与some行所代表的情况区分开，
++将有助于分析及提升系统性能。这就是full独立于some行的原因。
++
++avg代表阻塞时间占比（百分比），为最近10秒、60秒、300秒内的均值。这样我们
++既可观察到短期事件的影响，也可看到中等及长时间内的趋势。total代表总阻塞
++时间（单位微秒），可用于观察时延毛刺，这种毛刺可能在均值中无法体现。
++
++监控压力门限
++============
++
++用户可注册触发器，通过poll()监控资源压力是否超过门限。
++
++触发器定义：指定时间窗口期内累积阻塞时间的最大值。比如可定义500ms内积累
++100ms阻塞，即触发一次唤醒事件。
++
++触发器注册方法：用户打开代表特定资源的psi接口文件，写入门限、时间窗口的值。
++所打开的文件描述符用于等待事件，可使用select()、poll()、epoll()。
++写入信息的格式如下：
++
++        <some|full> <stall amount in us> <time window in us>
++
++示例：向/proc/pressure/memory写入"some 150000 1000000"将新增触发器，将在
++1秒内至少一个任务阻塞于内存的总时间超过150ms时触发。向/proc/pressure/io写入
++"full 50000 1000000"将新增触发器，将在1秒内所有任务都阻塞于io的总时间超过50ms时触发。
++
++触发器可针对多个psi度量值设置，同一个psi度量值可设置多个触发器。每个触发器需要
++单独的文件描述符用于轮询，以区分于其他触发器。所以即使对于同一个psi接口文件，
++每个触发器也需要单独的调用open()。
++
++监控器在被监控资源进入阻塞状态时启动，在系统退出阻塞状态后停用。系统进入阻塞
++状态后，监控psi增长的频率为每监控窗口刷新10次。
++
++内核接受的窗口为500ms~10s，所以监控间隔为50ms~1s。设置窗口下限目的是为了
++防止过于频繁的轮询。设置窗口上限的目的是因为窗口过长则无意义，此时查看
++psi接口提供的均值即可。
++
++监控器在激活后，至少在跟踪窗口期间将保持活动状态。以避免随着系统进入和退出
++阻塞状态，监控器过于频繁的进入和退出活动状态。
++
++用户态通知在监控窗口内会受到速率限制。当对应的文件描述符关闭，触发器会自动注销。
++
++用户态监控器使用示例
++====================
++
++::
++
++  #include <errno.h>
++  #include <fcntl.h>
++  #include <stdio.h>
++  #include <poll.h>
++  #include <string.h>
++  #include <unistd.h>
++
++  /* 监控内存部分阻塞，监控时间窗口为1秒、阻塞门限为150毫秒。*/
++  int main() {
++        const char trig[] = "some 150000 1000000";
++        struct pollfd fds;
++        int n;
++
++        fds.fd = open("/proc/pressure/memory", O_RDWR | O_NONBLOCK);
++        if (fds.fd < 0) {
++                printf("/proc/pressure/memory open error: %s\n",
++                        strerror(errno));
++                return 1;
++        }
++        fds.events = POLLPRI;
++
++        if (write(fds.fd, trig, strlen(trig) + 1) < 0) {
++                printf("/proc/pressure/memory write error: %s\n",
++                        strerror(errno));
++                return 1;
++        }
++
++        printf("waiting for events...\n");
++        while (1) {
++                n = poll(&fds, 1, -1);
++                if (n < 0) {
++                        printf("poll error: %s\n", strerror(errno));
++                        return 1;
++                }
++                if (fds.revents & POLLERR) {
++                        printf("got POLLERR, event source is gone\n");
++                        return 0;
++                }
++                if (fds.revents & POLLPRI) {
++                        printf("event triggered!\n");
++                } else {
++                        printf("unknown event received: 0x%x\n", fds.revents);
++                        return 1;
++                }
++        }
++
++        return 0;
++  }
++
++Cgroup2接口
++===========
++
++对于CONFIG_CGROUP=y及挂载了cgroup2文件系统的系统，能够获取cgroups内任务的psi。
++此场景下cgroupfs挂载点的子目录包含cpu.pressure、memory.pressure、io.pressure文件，
++内容格式与/proc/pressure/下的文件相同。
++
++可设置基于cgroup的psi监控器，方法与系统级psi监控器相同。
 -- 
-2.29.2
+2.25.1
+
