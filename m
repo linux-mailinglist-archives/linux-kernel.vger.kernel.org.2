@@ -2,66 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB2F3D3685
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:19:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216623D3687
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhGWHhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:37:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234030AbhGWHhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:37:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 928DB60E8E;
-        Fri, 23 Jul 2021 08:18:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627028298;
-        bh=4CRiX38YF4u1jCf0x64vQjLHd/VXeQ1lk6/OfofjY+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wAXTZFP+GiFb2vs71y03nVi9jRaIjPimc/BQSrqWc63m9Uc/cJFftmGw9nH/bRrci
-         D+TIJMxumtcsSXlSBtZI5LckuWFgCpdbd0oB1VGiOjsx7bBERHHu8kOEb1b0zUvpC/
-         7mP5MheA8crYymeACfB+KSVMbgoHL4RMTWXwS+Y4=
-Date:   Fri, 23 Jul 2021 10:18:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <YPp7Q4IofUYQlrqd@kroah.com>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
- <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
- <20210714124807.o22mottsrg3tv6nt@mobilestation>
- <YPfPDqJhfzbvDLvB@kroah.com>
- <20210721100220.ddfxwugivsndsedv@mobilestation>
- <YPf29+ewbrYgHxRP@kroah.com>
- <YPh/AS5svBk+gddY@yoga>
+        id S234409AbhGWHig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234329AbhGWHie (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 03:38:34 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57798C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 01:19:08 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id x192so1201956ybe.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 01:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fq4Fh4QeM8XI+vyUIqPOIRXCTIfB49cqBPc4/QtIH+U=;
+        b=dloDLGg4fXJdm4/Wrm6ZB7K2+ON08uA2iW/97Bm40pzw8M0/y7TC+Ng9UT76mHJTHv
+         C0ppKytkc/8u6eXp5NPtf8qz9fLJ4PnCfsAlWmJSEwVuOXPPfc5JrsZSiewGVn1O+j3E
+         +9CIZ9AStO6ZN1E5axBcLR360dWP15ECEtw0YcmpOOL57pJfwMUbMbM5sfgYMo73zZKa
+         87v3CqCZm5KRP1BTwwU3aiDizqsM5qdcfblypkxCZaLvV8Lj+mnOWHFF7CKGSREHryH1
+         Oz5fmSrrkfNlopqiP/MEcHyTC28TQklU/D095rjZB28dYTRbOLA7Um0ywW2b0/uR6bl9
+         Y5tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fq4Fh4QeM8XI+vyUIqPOIRXCTIfB49cqBPc4/QtIH+U=;
+        b=rVA84RFIRg8OBMekh4Q98XIxjCGhGdO/oz14D4XWIKn3vKpUc4TrtgNQ37JYDRZtvb
+         DrgO1+5t/CsMDKx+Bo26JAJSxegJTdaRmY/++AYmIGHSjgAGtXypK2Ex/nqePchR489k
+         jggVEnhPHtrzBf8lc9/6dUpiOX2u/ODWK1LCClUK+N/isPQV2aXPGpdOWYkv569vRsZY
+         BsBPbU1uhffDBwE3bwTtDPRfbMPKNx123fe7Ezhsbpbto9CdW3MPxbjqo0Aacb1yCZ59
+         sn69pS7UFNakKx1Bi/3ZmL+FRD/t28CkbJn9dCHvoiWxLhFpZoLzfrr3ki6lClcu1FzO
+         5KUA==
+X-Gm-Message-State: AOAM532Nb1LRqr4/1U7nQQw6NkGL+oZ1E62ZnAQ5XjcupB0Un6Beb2Yk
+        BKXOBfgst61fnfl0pTzUjrzEDxbj72icdaJ6RYEwXw==
+X-Google-Smtp-Source: ABdhPJwgDfc0aM41zUz0in82Zs/wTUFLmp89jRt6vYbZp2U5yjFxAH0SP/iwlkBSF3REEbD+9yUtJDVjnWKmWsf9TDk=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr5079566ybc.136.1627028347391;
+ Fri, 23 Jul 2021 01:19:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPh/AS5svBk+gddY@yoga>
+References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+ <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
+ <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
+ <23ed1d8d-fe55-fdbc-ca33-01a3ce392dff@redhat.com>
+In-Reply-To: <23ed1d8d-fe55-fdbc-ca33-01a3ce392dff@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 23 Jul 2021 01:18:56 -0700
+Message-ID: <CAJuCfpFSi2eLQL1YkHOubX+53Aa1ngZ1hS2+QervFnt5dLEQSw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 03:09:37PM -0500, Bjorn Andersson wrote:
-> Which tree did you revert this in? 5.13.stable?)
+On Fri, Jul 23, 2021 at 1:15 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 23.07.21 10:11, Suren Baghdasaryan wrote:
+> >
+> >
+> > On Thu, Jul 22, 2021, 11:20 PM Michal Hocko <mhocko@suse.com
+> > <mailto:mhocko@suse.com>> wrote:
+> >
+> >     On Thu 22-07-21 21:47:56, Suren Baghdasaryan wrote:
+> >      > On Thu, Jul 22, 2021, 7:04 PM Shakeel Butt <shakeelb@google.com
+> >     <mailto:shakeelb@google.com>> wrote:
+> >      >
+> >      > > On Thu, Jul 22, 2021 at 6:14 PM Suren Baghdasaryan
+> >     <surenb@google.com <mailto:surenb@google.com>>
+> >      > > wrote:
+> >      > > >
+> >      > > [...]
+> >      > > > +
+> >      > > > +       mmap_read_lock(mm);
+> >      > >
+> >      > > How about mmap_read_trylock(mm) and return -EAGAIN on failure?
+> >      > >
+> >      >
+> >      > That sounds like a good idea. Thanks! I'll add that in the next
+> >     respin.
+> >
+> >     Why is that a good idea? Can you do anything meaningful about the
+> >     failure other than immediately retry the syscall and hope for the best?
+> >
+> >
+> > I was thinking if this syscall implements "best effort without blocking"
+> > approach then for a more strict usage user can simply retry. However
+> > retrying means issuing another syscall, so additional overhead...
+> > I guess such "best effort" approach would be unusual for a syscall, so
+> > maybe we can keep it as it is now and if such "do not block" mode is
+> > needed we can use flags to implement it later?
+>
+> The process is dying, so I am not sure what we are trying to optimize
+> here in respect to locking ...
 
-My usb-linus branch which will go to Linus later today.  Then we can
-backport the revert to older kernels as needed.
+Trying not to block the caller, which is likely a system health
+monitoring process. However, if not blocking is important, it can
+issue this syscall from a separate thread... Let's scratch that "do
+not block" mode and keep it simple as it is now.
 
-thanks,
-
-greg k-h
+>
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
