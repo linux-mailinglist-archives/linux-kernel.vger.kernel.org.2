@@ -2,269 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C7A3D3124
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED6B3D3126
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233008AbhGWAdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
+        id S233032AbhGWAeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbhGWAdX (ORCPT
+        with ESMTP id S232892AbhGWAeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:33:23 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B65AC061575;
-        Thu, 22 Jul 2021 18:13:57 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t21so1190889plr.13;
-        Thu, 22 Jul 2021 18:13:57 -0700 (PDT)
+        Thu, 22 Jul 2021 20:34:07 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D68C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:14:40 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id x84-20020a2531570000b029055d47682463so9735375ybx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:14:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S5I2BM629PMZrsKD1CUT5xpSIdP7D7TJP/n0T9K3qsA=;
-        b=g1EpCCDun5JbZzMp1uhvAMVZx9HhoDIEFUbKjxo6uwWdrwQ6T6awNsmBG/BQMpkmhM
-         qUYL/Nr1kkQT4wsM1bVXqN9aFLmyQjtNdTSMcIkrXHNudhV7CNx7IgMXfYSMJ8TT3L62
-         OMZV7HLI765tOqR0FoshL61rQADvCXCaoOnUBO+1cRNg0kfZ9om3hMvdlcw9pBUv2HrO
-         TNBrn8v3jXUFCDVrCeWCOrZFllztOMYrkRKzGUGI0ZBqPktfiFoKUfxep349BNVHhVhk
-         d9lEKyglWO6yOlvIptwPiGg5Wj1Z4EZobkid5On6e0QzA+nTgF/WQ4gKy9tA69h3i7Zx
-         k4tw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=w//jlFLX9+ZSHdVn9vUWOdr1tmIhHkNEpty1jGjHcPU=;
+        b=AbCwBH20jw8sBTAhoQfNhqS0EsIpCOiubspGKg1TWwuX0H89dxlBwzFv6r/HFhDdIp
+         giDC4FXWje/YEdEPkumtvMsZiP5AkYnXgBsVOhLQhq3ubkYfNut0l+/CzUE+0KTICXbN
+         fiTZK1HC0eeOi7mLLbBksjOAND5sOrEnSqfjDfqK202Zp4HvgsDVTf/JIehBdmTT0C+m
+         t/XlfSy1qbVP/ZEAUoVsWMG7MPuKvdHe+zn88RdWzoGUeOdUT3jEdANBFffdlRQh6i6F
+         s/nxk0TRg8a2sMpyxuNFASfvHxoAuJaRnTXeoZuhgjGdqrgI9uaTrTUUhJYcOrfZ7fIu
+         kJHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S5I2BM629PMZrsKD1CUT5xpSIdP7D7TJP/n0T9K3qsA=;
-        b=XTGKGZqnrXdqV64NpkfbMomi0lPLwVjEMCy59D6bhAYJVhkWi5R0eVulYtKgo371vh
-         hWuqtzGHPlwhzP+X6luF8SF1O9ECaL2Rhg9fdsQ0oK7SPv5MinxIQFW4Ic4mhyaBUR3e
-         6WJXt3gJCrVYrE6iUB+NCjxWG7ic+zPM212QdjvoXlbQMU4vzSY3MQU87owPsptOqT/y
-         676B9gMbA96gppv/gH3P4LmpCbrjfCl8rniIptdX0NcwtwTsE5swq5J+2XJGwIhu9L+f
-         IpPzzLWRiJ+y8c4RnLxqmL0O9Y+15oMIGgFRqPMtgi1LzkluYVwAEhooE0/jDIbQKroI
-         1NdQ==
-X-Gm-Message-State: AOAM533p8lcjNTYHzsjl139CDYe8sDuOJGPUiEnCaYU7g8qMVJtDs+gi
-        qw43+Zke8KyWUQfUCZNQLik=
-X-Google-Smtp-Source: ABdhPJxrDMkTfsE+n8kPSX8CTOGBsko0o+ZFdxeP8RfEW0GLghp7Rl1h9HIZYuuKDW9677L/c90KGQ==
-X-Received: by 2002:a63:d80a:: with SMTP id b10mr2569662pgh.47.1627002836706;
-        Thu, 22 Jul 2021 18:13:56 -0700 (PDT)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id t30sm4899762pgl.47.2021.07.22.18.13.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 18:13:56 -0700 (PDT)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: yang.yang29@zte.com.cn
-To:     sterlingteng@gmail.com
-Cc:     alexs@kernel.org, corbet@lwn.net, yang.yang29@zte.com.cn,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCHv2] docs/zh_CN: Add zh_CN/accounting/psi.rst
-Date:   Thu, 22 Jul 2021 18:14:30 -0700
-Message-Id: <20210723011430.404813-1-yang.yang29@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=w//jlFLX9+ZSHdVn9vUWOdr1tmIhHkNEpty1jGjHcPU=;
+        b=PcW5IjU1Xgq9p2DZ23vYicVVsmcOeBBq+pNQs1Os+ShcNVi6yPIswV8S2O7HxS9ipU
+         Xlr7dS+98PlmuAsGy7v8GJaza14KQaUfIjjZQBOflzLb+u43GNYQBPcoLrABHgcRl/tu
+         pQNpfcLc3K9QkrHdnU4ORq4lDGqET8LqPcimy+zgGaaP68Day3eijErb+mBT9Eg9BBRm
+         FOPcGgSoiO9u5YhUjxr+jb3kpFs+o61HszwZJgrEvjSsIwhuReXoXkvrbAxPC+4x7R9r
+         X2+SaqUt5l0EI5mJ58XI0ihBXWdZO/kynyhdwwelqRTjhe5SB6KTeuBCw/1WOGAlyLz/
+         Zjeg==
+X-Gm-Message-State: AOAM533FmPNrxJ8d/vnPbQHk8WHQKxLoUW53yMFMoFMKTjUaMus41Q/u
+        iQMgwhHV5atQlwuogCuDyV9ky2v1jj0=
+X-Google-Smtp-Source: ABdhPJy3vTo4OqL+wNFslFerv8aSMyArHFXBtxkLN8ueXa396MQ+DdZ/X6m3w95usWbDX14N98UzxULLgHo=
+X-Received: from surenb1.mtv.corp.google.com ([2620:15c:211:200:9b49:cc32:b051:fd83])
+ (user=surenb job=sendgmr) by 2002:a25:afcd:: with SMTP id d13mr3206313ybj.504.1627002879922;
+ Thu, 22 Jul 2021 18:14:39 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 18:14:35 -0700
+Message-Id: <20210723011436.60960-1-surenb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH v3 1/2] mm: introduce process_mrelease system call
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, mhocko@suse.com, rientjes@google.com,
+        willy@infradead.org, hannes@cmpxchg.org, guro@fb.com,
+        riel@surriel.com, minchan@kernel.org, christian@brauner.io,
+        hch@infradead.org, oleg@redhat.com, david@redhat.com,
+        jannh@google.com, shakeelb@google.com, luto@kernel.org,
+        christian.brauner@ubuntu.com, fweimer@redhat.com, jengelh@inai.de,
+        timmurray@google.com, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, surenb@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yang <yang.yang29@zte.com.cn>
+In modern systems it's not unusual to have a system component monitoring
+memory conditions of the system and tasked with keeping system memory
+pressure under control. One way to accomplish that is to kill
+non-essential processes to free up memory for more important ones.
+Examples of this are Facebook's OOM killer daemon called oomd and
+Android's low memory killer daemon called lmkd.
+For such system component it's important to be able to free memory
+quickly and efficiently. Unfortunately the time process takes to free
+up its memory after receiving a SIGKILL might vary based on the state
+of the process (uninterruptible sleep), size and OPP level of the core
+the process is running. A mechanism to free resources of the target
+process in a more predictable way would improve system's ability to
+control its memory pressure.
+Introduce process_mrelease system call that releases memory of a dying
+process from the context of the caller. This way the memory is freed in
+a more controllable way with CPU affinity and priority of the caller.
+The workload of freeing the memory will also be charged to the caller.
+The operation is allowed only on a dying process.
 
-Add translation zh_CN/accounting/psi.rst and zh_CN/accounting/index.rst.
+Previously I proposed a number of alternatives to accomplish this:
+- https://lore.kernel.org/patchwork/patch/1060407 extending
+pidfd_send_signal to allow memory reaping using oom_reaper thread;
+- https://lore.kernel.org/patchwork/patch/1338196 extending
+pidfd_send_signal to reap memory of the target process synchronously from
+the context of the caller;
+- https://lore.kernel.org/patchwork/patch/1344419/ to add MADV_DONTNEED
+support for process_madvise implementing synchronous memory reaping.
 
-Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+The end of the last discussion culminated with suggestion to introduce a
+dedicated system call (https://lore.kernel.org/patchwork/patch/1344418/#1553875)
+The reasoning was that the new variant of process_madvise
+  a) does not work on an address range
+  b) is destructive
+  c) doesn't share much code at all with the rest of process_madvise
+From the userspace point of view it was awkward and inconvenient to provide
+memory range for this operation that operates on the entire address space.
+Using special flags or address values to specify the entire address space
+was too hacky.
+
+The API is as follows,
+
+          int process_mrelease(int pidfd, unsigned int flags);
+
+        DESCRIPTION
+          The process_mrelease() system call is used to free the memory of
+          a process which was sent a SIGKILL signal.
+
+          The pidfd selects the process referred to by the PID file
+          descriptor.
+          (See pidofd_open(2) for further information)
+
+          The flags argument is reserved for future use; currently, this
+          argument must be specified as 0.
+
+        RETURN VALUE
+          On success, process_mrelease() returns 0. On error, -1 is
+          returned and errno is set to indicate the error.
+
+        ERRORS
+          EBADF  pidfd is not a valid PID file descriptor.
+
+          EAGAIN Failed to release part of the address space.
+
+          EINVAL flags is not 0.
+
+          EINVAL The task does not have a pending SIGKILL or its memory is
+                 shared with another process with no pending SIGKILL.
+
+          ENOSYS This system call is not supported by kernels built with no
+                 MMU support (CONFIG_MMU=n).
+
+          ESRCH  The target process does not exist (i.e., it has terminated
+                 and been waited on).
+
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 ---
- .../translations/zh_CN/accounting/index.rst   |  23 +++
- .../translations/zh_CN/accounting/psi.rst     | 154 ++++++++++++++++++
- 2 files changed, 177 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/accounting/index.rst
- create mode 100644 Documentation/translations/zh_CN/accounting/psi.rst
+changes in v3:
+- Added #ifdef CONFIG_MMU inside process_mrelease to keep task_will_free_mem in
+the same place, per David Hildenbrand
+- Reordered variable definitions in process_mrelease, per David Hildenbrand
 
-diff --git a/Documentation/translations/zh_CN/accounting/index.rst b/Documentation/translations/zh_CN/accounting/index.rst
-new file mode 100644
-index 000000000000..f50e81bc5e61
---- /dev/null
-+++ b/Documentation/translations/zh_CN/accounting/index.rst
-@@ -0,0 +1,23 @@
-+.. include:: ../disclaimer-zh_CN.rst
+ mm/oom_kill.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index c729a4c4a1ac..8bf7a1020ac5 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -28,6 +28,7 @@
+ #include <linux/sched/task.h>
+ #include <linux/sched/debug.h>
+ #include <linux/swap.h>
++#include <linux/syscalls.h>
+ #include <linux/timex.h>
+ #include <linux/jiffies.h>
+ #include <linux/cpuset.h>
+@@ -1141,3 +1142,56 @@ void pagefault_out_of_memory(void)
+ 	out_of_memory(&oc);
+ 	mutex_unlock(&oom_lock);
+ }
 +
-+:Original: :doc:`../../../accounting/index`
-+:Translator: Yang Yang <yang.yang29@zte.com.cn>
++SYSCALL_DEFINE2(process_mrelease, int, pidfd, unsigned int, flags)
++{
++#ifdef CONFIG_MMU
++	struct mm_struct *mm = NULL;
++	struct task_struct *task;
++	unsigned int f_flags;
++	struct pid *pid;
++	long ret = 0;
 +
-+.. _cn_accounting_index.rst:
++	if (flags != 0)
++		return -EINVAL;
 +
++	pid = pidfd_get_pid(pidfd, &f_flags);
++	if (IS_ERR(pid))
++		return PTR_ERR(pid);
 +
-+====
-+计数
-+====
++	task = get_pid_task(pid, PIDTYPE_PID);
++	if (!task) {
++		ret = -ESRCH;
++		goto put_pid;
++	}
 +
-+.. toctree::
-+   :maxdepth: 1
++	/*
++	 * If the task is dying and in the process of releasing its memory
++	 * then get its mm.
++	 */
++	task_lock(task);
++	if (task_will_free_mem(task) && (task->flags & PF_KTHREAD) == 0) {
++		mm = task->mm;
++		mmget(mm);
++	}
++	task_unlock(task);
++	if (!mm) {
++		ret = -EINVAL;
++		goto put_task;
++	}
 +
-+   psi
++	mmap_read_lock(mm);
++	if (!__oom_reap_task_mm(mm))
++		ret = -EAGAIN;
++	mmap_read_unlock(mm);
 +
-+Todolist:
-+
-+   cgroupstats
-+   delay-accounting
-+   taskstats
-+   taskstats-struct
-diff --git a/Documentation/translations/zh_CN/accounting/psi.rst b/Documentation/translations/zh_CN/accounting/psi.rst
-new file mode 100644
-index 000000000000..6c999e80e5d4
---- /dev/null
-+++ b/Documentation/translations/zh_CN/accounting/psi.rst
-@@ -0,0 +1,154 @@
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: Documentation/accounting/psi.rst
-+:Translator: Yang Yang <yang.yang29@zte.com.cn>
-+
-+.. _cn_accounting_psi.rst:
-+
-+=================
-+PSI——压力阻塞信息
-+=================
-+
-+:日期: April, 2018
-+:作者: Johannes Weiner <hannes@cmpxchg.org>
-+
-+当CPU、memory或IO设备处于竞争状态，业务负载会遭受时延毛刺、吞吐量降低，
-+及面临OOM的风险。
-+
-+如果没有一种准确的方法度量系统竞争程度，则有两种后果：一种是用户过于节制，
-+未充分利用系统资源；另一种是过度使用，经常性面临业务中断的风险。
-+
-+psi特性能够识别和量化资源竞争导致的业务中断，及其对复杂负载乃至整个系统在
-+时间上的影响。
-+
-+准确度量因资源不足造成的生产力损失，有助于用户基于硬件调整业务负载，或基
-+于业务负载配置硬件。
-+
-+psi能够实时的提供相关信息，因此系统可基于psi实现动态的负载管理。如实施
-+卸载、迁移、策略性的停止或杀死低优先级或可重启的批处理任务。
-+
-+psi帮助用户实现硬件资源利用率的最大化。同时无需牺牲业务负载健康度，也无需
-+面临OOM等造成业务中断的风险。
-+
-+压力接口
-+========
-+
-+压力信息可通过/proc/pressure/ --cpu、memory、io文件分别获取。
-+
-+CPU相关信息格式如下：
-+
-+        some avg10=0.00 avg60=0.00 avg300=0.00 total=0
-+
-+内存和IO相关信息如下：
-+
-+        some avg10=0.00 avg60=0.00 avg300=0.00 total=0
-+        full avg10=0.00 avg60=0.00 avg300=0.00 total=0
-+
-+some行代表至少有一个任务阻塞于特定资源的时间占比。
-+
-+full行代表所有非idle任务同时阻塞于特定资源的时间占比。在这种状态下CPU资源
-+完全被浪费，相对于正常运行，业务负载由于耗费更多时间等待而受到严重影响。
-+
-+由于此情况严重影响系统性能，因此清楚的识别本情况并与some行所代表的情况区分开，
-+将有助于分析及提升系统性能。这就是full独立于some行的原因。
-+
-+avg代表阻塞时间占比（百分比），为最近10秒、60秒、300秒内的均值。这样我们
-+既可观察到短期事件的影响，也可看到中等及长时间内的趋势。total代表总阻塞
-+时间（单位微秒），可用于观察时延毛刺，这种毛刺可能在均值中无法体现。
-+
-+监控压力门限
-+============
-+
-+用户可注册触发器，通过poll()监控资源压力是否超过门限。
-+
-+触发器定义：指定时间窗口期内累积阻塞时间的最大值。比如可定义500ms内积累
-+100ms阻塞，即触发一次唤醒事件。
-+
-+触发器注册方法：用户打开代表特定资源的psi接口文件，写入门限、时间窗口的值。
-+所打开的文件描述符用于等待事件，可使用select()、poll()、epoll()。
-+写入信息的格式如下：
-+
-+        <some|full> <stall amount in us> <time window in us>
-+
-+示例：向/proc/pressure/memory写入"some 150000 1000000"将新增触发器，将在
-+1秒内至少一个任务阻塞于内存的总时间超过150ms时触发。向/proc/pressure/io写入
-+"full 50000 1000000"将新增触发器，将在1秒内所有任务都阻塞于io的总时间超过50ms时触发。
-+
-+触发器可针对多个psi度量值设置，同一个psi度量值可设置多个触发器。每个触发器需要
-+单独的文件描述符用于轮询，以区分于其他触发器。所以即使对于同一个psi接口文件，
-+每个触发器也需要单独的调用open()。
-+
-+监控器在被监控资源进入阻塞状态时启动，在系统退出阻塞状态后停用。系统进入阻塞
-+状态后，监控psi增长的频率为每监控窗口刷新10次。
-+
-+内核接受的窗口为500ms~10s，所以监控间隔为50ms~1s。设置窗口下限目的是为了
-+防止过于频繁的轮询。设置窗口上限的目的是因为窗口过长则无意义，此时查看
-+psi接口提供的均值即可。
-+
-+监控器在激活后，至少在跟踪窗口期间将保持活动状态。以避免随着系统进入和退出
-+阻塞状态，监控器过于频繁的进入和退出活动状态。
-+
-+用户态通知在监控窗口内会受到速率限制。当对应的文件描述符关闭，触发器会自动注销。
-+
-+用户态监控器使用示例
-+====================
-+
-+::
-+
-+  #include <errno.h>
-+  #include <fcntl.h>
-+  #include <stdio.h>
-+  #include <poll.h>
-+  #include <string.h>
-+  #include <unistd.h>
-+
-+  /* 监控内存部分阻塞，监控时间窗口为1秒、阻塞门限为150毫秒。*/
-+  int main() {
-+        const char trig[] = "some 150000 1000000";
-+        struct pollfd fds;
-+        int n;
-+
-+        fds.fd = open("/proc/pressure/memory", O_RDWR | O_NONBLOCK);
-+        if (fds.fd < 0) {
-+                printf("/proc/pressure/memory open error: %s\n",
-+                        strerror(errno));
-+                return 1;
-+        }
-+        fds.events = POLLPRI;
-+
-+        if (write(fds.fd, trig, strlen(trig) + 1) < 0) {
-+                printf("/proc/pressure/memory write error: %s\n",
-+                        strerror(errno));
-+                return 1;
-+        }
-+
-+        printf("waiting for events...\n");
-+        while (1) {
-+                n = poll(&fds, 1, -1);
-+                if (n < 0) {
-+                        printf("poll error: %s\n", strerror(errno));
-+                        return 1;
-+                }
-+                if (fds.revents & POLLERR) {
-+                        printf("got POLLERR, event source is gone\n");
-+                        return 0;
-+                }
-+                if (fds.revents & POLLPRI) {
-+                        printf("event triggered!\n");
-+                } else {
-+                        printf("unknown event received: 0x%x\n", fds.revents);
-+                        return 1;
-+                }
-+        }
-+
-+        return 0;
-+  }
-+
-+Cgroup2接口
-+===========
-+
-+对于CONFIG_CGROUP=y及挂载了cgroup2文件系统的系统，能够获取cgroups内任务的psi。
-+此场景下cgroupfs挂载点的子目录包含cpu.pressure、memory.pressure、io.pressure文件，
-+内容格式与/proc/pressure/下的文件相同。
-+
-+可设置基于cgroup的psi监控器，方法与系统级psi监控器相同。
++	mmput(mm);
++put_task:
++	put_task_struct(task);
++put_pid:
++	put_pid(pid);
++	return ret;
++#else
++	return -ENOSYS;
++#endif /* CONFIG_MMU */
++}
 -- 
-2.25.1
+2.32.0.432.gabb21c7263-goog
 
