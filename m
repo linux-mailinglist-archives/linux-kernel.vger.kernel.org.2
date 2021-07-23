@@ -2,63 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55303D3C5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66AD3D3C62
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbhGWOnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 10:43:10 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:45883 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235526AbhGWOnJ (ORCPT
+        id S235571AbhGWOoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 10:44:05 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:42569 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235569AbhGWOnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 10:43:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgjU8ce_1627053818;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgjU8ce_1627053818)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 23 Jul 2021 23:23:40 +0800
-Date:   Fri, 23 Jul 2021 23:23:38 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v6] iomap: support tail packing inline read
-Message-ID: <YPre+j906ywgRHEZ@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
- <20210722053947.GA28594@lst.de>
- <YPrauRjG7+vCw7f9@casper.infradead.org>
+        Fri, 23 Jul 2021 10:43:25 -0400
+Received: by mail-oi1-f179.google.com with SMTP id x15so2157589oic.9;
+        Fri, 23 Jul 2021 08:23:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=yNf3Pq9g0kNIcS3a0kRlWMtxUE0rdOiKEggsk+jWY2U=;
+        b=ucPh6yGWTR8sHMdEna7PLok72jObgXVq9+aRa/Va6MsHz6exI0sIEIy5Y7ZWqkCv3O
+         kk/b66PhxAM5QAXg1ZKptp00rzuSFfFZtgcu7H6Tnw1Jacc3N3Em5i+Lr2FHk9tt5tqF
+         lpJ1sUBO/RFkI9TRmz/U+1BDzdazQfKuMQoD4FpnB57uZC+UmadmFb67uji7s5phqWZZ
+         Ltm9e+n84DyUj5Jf9BI+trEJUaJ1skKqQN0mHxwUbIzhhlIedraakuOy/xYv7Bq2uFUh
+         NtfOXQU9aWhxTLDe3LapPwj4ngXGK1L94wcNbjSF9Tu1OS+03pV5ME52Tsx6VicPFa0f
+         SzUQ==
+X-Gm-Message-State: AOAM531igZ2CSX59fn82bSpJlNoatDx0piQ8GPogAsG3mWcGExOVQa2h
+        qBj2u96zXGSA3K6CI10BcYZ3M3XCU1wWF461nKMDARhhAyI=
+X-Google-Smtp-Source: ABdhPJxkAxGHzhKzoEh7R2M1MZcqelQUYvlK5DPkdJRYb8DP75q7CWBVP8/QHf2YiLgXJcRYO1R2MyqgQQ7OmB11ows=
+X-Received: by 2002:aca:4f57:: with SMTP id d84mr3463060oib.71.1627053838476;
+ Fri, 23 Jul 2021 08:23:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YPrauRjG7+vCw7f9@casper.infradead.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 23 Jul 2021 17:23:47 +0200
+Message-ID: <CAJZ5v0gEn3X2FCc0kC-BJ_7D8VXH4XRmhpj3Qn2dEC9K_BUCRQ@mail.gmail.com>
+Subject: [GIT PULL] ACPI fixes for v5.14-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+Hi Linus,
 
-On Fri, Jul 23, 2021 at 04:05:29PM +0100, Matthew Wilcox wrote:
-> On Thu, Jul 22, 2021 at 07:39:47AM +0200, Christoph Hellwig wrote:
-> > @@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
-> >  
-> >  	flush_dcache_page(page);
-> >  	addr = kmap_atomic(page);
-> > -	memcpy(iomap->inline_data + pos, addr + pos, copied);
-> > +	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
-> 
-> This is wrong; pos can be > PAGE_SIZE, so this needs to be
-> addr + offset_in_page(pos).
+Please pull from the tag
 
-Yeah, thanks for pointing out. It seems so, since EROFS cannot test
-such write path, previously it was disabled explicitly. I could
-update it in the next version as above.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.14-rc3
 
-Thanks,
-Gao Xiang
+with top-most commit 0b8a53a8444c267114f6b5a85d21153ddea190eb
 
+ Merge branch 'acpi-utils'
+
+on top of commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+
+ Linux 5.14-rc2
+
+to receive ACPI fixes for 5.14-rc3.
+
+These fix a recently broken Kconfig dependency and ACPI device
+reference counting in an iterator macro.
+
+Specifics:
+
+ - Fix recently broken Kconfig dependency for the ACPI table
+   override via built-in initrd (Robert Richter).
+
+ - Fix ACPI device reference counting in the for_each_acpi_dev_match()
+   helper macro to avoid use-after-free (Andy Shevchenko).
+
+Thanks!
+
+
+---------------
+
+Andy Shevchenko (1):
+      ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
+
+Robert Richter (1):
+      ACPI: Kconfig: Fix table override from built-in initrd
+
+---------------
+
+ drivers/acpi/Kconfig                       | 2 +-
+ drivers/acpi/utils.c                       | 7 +++----
+ drivers/firmware/efi/dev-path-parser.c     | 1 -
+ drivers/media/pci/intel/ipu3/cio2-bridge.c | 6 ++----
+ include/acpi/acpi_bus.h                    | 5 -----
+ 5 files changed, 6 insertions(+), 15 deletions(-)
