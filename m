@@ -2,130 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829DF3D3E34
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB2A3D3E37
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhGWQ2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:28:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231286AbhGWQ2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:28:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2795660E8F;
-        Fri, 23 Jul 2021 17:08:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627060113;
-        bh=pEMVaGk2rq1eXD7agrjxbGJNreoK3Lvrk9bUiB73VuA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IOp8SdiAl1zcfFAu3uaWBAGR7RN+6r6Z+E56fuqwmITyphj2ayKuVKAtK5dGKDws1
-         H9A0xgb0k16VTIJ2qynZVpybkrIaP7KaCXvXS1AUZ6hqUp4IHjb8xdFOxArUphMJ6j
-         BOuq4UbUmJNlg49vc4jVXmNL3okziy3IjJWBIYD8r0BpJZsFQ4Y7Mmyy30PNoBlJkR
-         DU9lO11RFu4mIq3cDK8Ru83iyGtVs2J63mbLoe8BFTwTb7DYKsFsy8gIRbqRXmm4IE
-         XrzCA/3/YugeA+TMtcJ+6BQ5k6NGbFKbsJytmjTwK47haU/V0wgMaabbKLMl8+kkZM
-         Q1pApGEEelS5Q==
-Date:   Fri, 23 Jul 2021 10:08:31 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyaprateek2357@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v4 4/9] block: keyslot-manager: introduce
- blk_ksm_restrict_dus_to_queue_limits()
-Message-ID: <YPr3j4fMTWhZfmAS@gmail.com>
-References: <20210707052943.3960-1-satyaprateek2357@gmail.com>
- <20210707052943.3960-5-satyaprateek2357@gmail.com>
+        id S231600AbhGWQ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhGWQ2Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:28:25 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94DFC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:08:58 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m6yfL-0003cr-AI; Fri, 23 Jul 2021 19:08:51 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m6yfJ-0008Gy-0t; Fri, 23 Jul 2021 19:08:49 +0200
+Date:   Fri, 23 Jul 2021 19:08:49 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v1 1/1] net: phy: dp83td510: Add basic support
+ for the DP83TD510 Ethernet PHY
+Message-ID: <20210723170848.lh3l62l7spcyphly@pengutronix.de>
+References: <20210723104218.25361-1-o.rempel@pengutronix.de>
+ <YPrCiIz7baU26kLU@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210707052943.3960-5-satyaprateek2357@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YPrCiIz7baU26kLU@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 16:45:05 up 233 days,  4:51, 30 users,  load average: 0.21, 0.12,
+ 0.10
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 10:29:38PM -0700, Satya Tangirala wrote:
-> +/*
-> + * Restrict the supported data unit sizes of the ksm based on the request queue
-> + * limits
-> + */
-> +static unsigned long
-> +blk_ksm_largest_dus_for_queue_limits(struct blk_keyslot_manager *ksm,
-> +				     struct request_queue *q)
-> +{
+Hi Andrew,
 
-The ksm argument to this function isn't actually used.
+On Fri, Jul 23, 2021 at 03:22:16PM +0200, Andrew Lunn wrote:
+> On Fri, Jul 23, 2021 at 12:42:18PM +0200, Oleksij Rempel wrote:
+> > The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
+> > that supports 10M single pair cable.
+> > 
+> > This driver provides basic support for this chip:
+> > - link status
+> > - autoneg can be turned off
+> > - master/slave can be configured to be able to work without autoneg
+> > 
+> > This driver and PHY was tested with ASIX AX88772B USB Ethernet controller.
+> 
+> Hi Oleksij
+> 
+> There were patches flying around recently for another T1L PHY which
+> added new link modes. Please could you work together with that patch
+> to set the phydev features correctly to indicate this PHY is also a
+> T1L, and if it support 2.4v etc.
 
-Also the comment should be fixed to be something like "Return the largest data
-unit size that is compatible with the given request queue.".
+ACK, thx. I was not able to spend enough time to investigate all needed
+caps, so I decided to go mainline with limited functionality first.
 
-> +/**
-> + * blk_ksm_register() - Sets the queue's keyslot manager to the provided ksm, if
-> + *			compatible
-> + * @ksm: The ksm to register
-> + * @q: The request_queue to register the ksm to
-> + *
-> + * Checks if the keyslot manager provided is compatible with the request queue
-> + * (i.e. the queue shouldn't also support integrity). After that, the crypto
-> + * capabilities of the given keyslot manager are restricted to what the queue
-> + * can support based on it's limits. Note that if @ksm won't support any
-> + * crypto capabilities if its capabilities are restricted, the queue's ksm is
-> + * set to NULL, instead of being set to a pointer to an "empty" @ksm, and @ksm
-> + * is *not* modified.
-> + *
-> + * Return: true if @q's ksm is set to the provided @ksm, false otherwise
-> + *	   (in which case @ksm will not have been modified)
-> + */
+> > +static int dp83td510_config_aneg(struct phy_device *phydev)
+> > +{
+> > +	u16 ctrl = 0, pmd_ctrl = 0;
+> > +	int ret;
+> > +
+> > +	switch (phydev->master_slave_set) {
+> > +	case MASTER_SLAVE_CFG_MASTER_FORCE:
+> > +		if (phydev->autoneg) {
+> > +			phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
+> > +			phydev_warn(phydev, "Can't force master mode if autoneg is enabled\n");
+> > +			goto do_aneg;
+> > +		}
+> > +		pmd_ctrl |= DP83TD510_PMD_CTRL_MASTER_MODE;
+> > +		break;
+> > +	case MASTER_SLAVE_CFG_SLAVE_FORCE:
+> > +		if (phydev->autoneg) {
+> > +			phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
+> > +			phydev_warn(phydev, "Can't force slave mode if autoneg is enabled\n");
+> > +			goto do_aneg;
+> > +		}
+> > +		break;
+> > +	case MASTER_SLAVE_CFG_MASTER_PREFERRED:
+> > +	case MASTER_SLAVE_CFG_SLAVE_PREFERRED:
+> > +		phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
+> > +		phydev_warn(phydev, "Preferred master/slave modes are not supported\n");
+> > +		goto do_aneg;
+> > +	case MASTER_SLAVE_CFG_UNKNOWN:
+> > +	case MASTER_SLAVE_CFG_UNSUPPORTED:
+> > +		goto do_aneg;
+> > +	default:
+> > +		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +
+> > +	ret = dp83td510_modify(phydev, DP83TD510_PMA_PMD_CTRL,
+> > +			       DP83TD510_PMD_CTRL_MASTER_MODE, pmd_ctrl);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +do_aneg:
+> > +	if (phydev->autoneg)
+> > +		ctrl |= DP83TD510_AN_ENABLE;
+> > +
+> > +	ret = dp83td510_modify_changed(phydev, DP83TD510_AN_CONTROL,
+> > +				       DP83TD510_AN_ENABLE, ctrl);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	/* Reset link if settings are changed */
+> > +	if (ret)
+> > +		ret = dp83td510_write(phydev, MII_BMCR, BMCR_RESET);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int dp83td510_strap(struct phy_device *phydev)
+> > +{
+> 
+> > +	phydev_info(phydev,
+> > +		    "bootstrap cfg: Pin 18: %s, Pin 30: %s, TX Vpp: %s, RX trap: %s, xMII mode: %s, PHY addr: 0x%x\n",
+> > +		    pin18 ? "RX_DV" : "CRS_DV",
+> > +		    pin30 ? "LED_1" : "CLKOUT",
+> > +		    tx_vpp ? "1.0V p2p" : "2.4V & 1.0V p2p",
+> > +		    rx_trap ? "< 40Ω" : "50Ω",
+> > +		    dp83td510_get_xmii_mode_str(xmii_mode),
+> > +		    addr);
+> 
+> What i learned reviewing the other T1L driver is that 2.4v operation
+> seems to be something you negotiate. Yet i don't see anything about it
+> in dp83td510_config_aneg() ?
 
-Can this comment be made more concise and less confusing?  Something like:
+voltage depends on the end application: cable length, safety requirements. I do
+not see how this can be chosen only on auto negotiation. We would need proper
+user space interface to let user/integrator set the limits.
 
-	Checks whether any of @ksm's crypto capabilities are compatible with the
-	request_queue, and if so, clears any incompatible capabilities from @ksm
-	and assigns @ksm to the request_queue.
+May be IEEE 802.3cg (802.3-2019?) provides more information on how this should be
+done. Do any one has access to it? I'll be happy to have it.
 
-	Return: %true if @ksm was assigned to @q, or %false if it was not (due
-	        to none of @ksm's crypto capabilities being compatible with @q)
-
->  bool blk_ksm_register(struct blk_keyslot_manager *ksm, struct request_queue *q)
->  {
-> +	unsigned long largest_dus_allowed;
-> +	unsigned int dus_allowed_mask;
-> +	bool dus_was_restricted = false;
-> +	int i;
-> +
->  	if (blk_integrity_queue_supports_integrity(q)) {
->  		pr_warn("Integrity and hardware inline encryption are not supported together. Disabling hardware inline encryption.\n");
->  		return false;
->  	}
-> +
-> +	largest_dus_allowed = blk_ksm_largest_dus_for_queue_limits(ksm, q);
-> +	dus_allowed_mask = (largest_dus_allowed << 1) - 1;
-> +
-> +	/*
-> +	 * Check if ksm will become empty if we clear disallowed data unit
-> +	 * sizes (in which case, don't modify the ksm)
-> +	 */
-> +	if (blk_ksm_is_empty_mask(ksm, dus_allowed_mask))
-> +		return false;
-> +
-> +	/* Clear all unsupported data unit sizes. */
-> +	for (i = 0; i < ARRAY_SIZE(ksm->crypto_modes_supported); i++) {
-> +		if (ksm->crypto_modes_supported[i] & (~dus_allowed_mask))
-
-There's no need for the parenthesis around ~dus_allowed_mask.
-
-> +			dus_was_restricted = true;
-> +		ksm->crypto_modes_supported[i] &= dus_allowed_mask;
-> +	}
-> +
-> +	if (dus_was_restricted) {
-> +		pr_warn("Device: %s - Disallowed use of encryption data unit sizes above %lu bytes with inline encryption hardware because of device request queue limits.\n",
-> +			q->backing_dev_info->dev_name, largest_dus_allowed);
-> +	}
-
-Is there a better way to get the queue/disk name?  Also, device names normally
-go at the very beginning of the messages, like "%s: <message>".
-
-This message is also very long; something more concise would be good.  Maybe:
-
-"%s: only allowing crypto data unit sizes up to %lu bytes due to device limitations\n"
-
-- Eric
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
