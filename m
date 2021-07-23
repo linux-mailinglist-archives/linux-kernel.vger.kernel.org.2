@@ -2,237 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144773D3144
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0553D3148
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhGWAqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:46:34 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58816 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232892AbhGWAqd (ORCPT
+        id S233105AbhGWAsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhGWAsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:46:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ugeeht8_1627003623;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ugeeht8_1627003623)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 23 Jul 2021 09:27:04 +0800
-Date:   Fri, 23 Jul 2021 09:26:59 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v6] iomap: support tail packing inline read
-Message-ID: <YPoa4x6d3giqq5z6@B-P7TQMD6M-0146.local>
-Mail-Followup-To: "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
- <20210722053947.GA28594@lst.de>
- <20210722165109.GD8639@magnolia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210722165109.GD8639@magnolia>
+        Thu, 22 Jul 2021 20:48:05 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4B4C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:28:40 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so734355qvt.20
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Fn5O5gWOb6Ru+LgHgcwaMCAMb3hgNOKe/ej//OWLhcM=;
+        b=SACaWikoFPHWSTRsJ/h66/PZO6BUBliibjg3zOEZAYY7VRQaAW82XlbRTYz5A/JOha
+         k/M7KnmITZ7HdVTF4UvNOEj68TJ1JSD+U20oqmhiJIe/dTBf5WZgc6nejCksKWED2ewO
+         kHXYhB82pYLxnYV5NAT1CgUSZARRTvgAV3vF5Up+Hcxvj/vJLxn2oiyZglThnZAWfjrd
+         3PtDNgquIXrP9JmH6u4aq9fB7F9o9qdsnj1XLN1xJv7jY8ToLlDfQKnfQBhrgWDf4HPQ
+         VjCWqyruBWEYdFzeU5vm41QLutmGIPsm8mzmlwZkAdZpAHx277xx1ek32QLJqVbhNOD8
+         MEjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Fn5O5gWOb6Ru+LgHgcwaMCAMb3hgNOKe/ej//OWLhcM=;
+        b=ko7lpWVwe7ZbOAg52qQ91GF0kq9WgcbGyFMRavQELTJqiUw4dm77crz+P8SliyVjv5
+         VrpqR3cOLxlcyT7mVx9rMOkoQLddagJA6MeSj+QzK8aaB9tbyPfku3zx3ozdZgdhq9It
+         945MVfH23fcz9AnznWxkeGT79Hd0W6Qy0jlS/gyzqoPmHrmdOhkJvZEIKebtGGiQyEbC
+         0LR4kSXQKlOujDR3XdGM9cYO3PF95OSQBGfrjwIc8dFjenSDGpLqtvQD5HJgB5FWceWO
+         soWMHxauolnM7zSe1rZVy0qmAGuxpSYIniU63b7et/+EjQh9TaHhdvebchaLQ8XZdGh0
+         aooQ==
+X-Gm-Message-State: AOAM532EuPHr1Rb/v0wNwmUAUubHQPVDzauTRq+Ctmh6k7HDSOJn/hpO
+        rVE0LxcCtT9LXrBJR/akutWbOBzXyG9N
+X-Google-Smtp-Source: ABdhPJz0qvqTMvCA4BIQ8mqve6awrI3mV5qSACM5ttL2tUHu17DzK2adJxKKurAI2NkQAHEhY96IsESVkZ9l
+X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:fdff:bbf6:d7ec:d92e])
+ (user=rajatja job=sendgmr) by 2002:a05:6214:767:: with SMTP id
+ f7mr2583972qvz.16.1627003719133; Thu, 22 Jul 2021 18:28:39 -0700 (PDT)
+Date:   Thu, 22 Jul 2021 18:28:34 -0700
+Message-Id: <20210723012835.1935471-1-rajatja@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH] thunderbolt: For dev authorization changes, include the
+ actual event in udev change notification
+From:   Rajat Jain <rajatja@google.com>
+To:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rajat Jain <rajatja@google.com>, rajatxjain@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Darrick,
+For security, we would like to monitor and track when the
+thunderbolt devices are authorized and deauthorized. Currently
+the userspace gets a udev change notification when there is a
+change, but the state may have changed (again) by the time we
+look at the authorized attribute in sysfs. So an authorization
+event may go unnoticed. Thus make it easier by informing the
+actual change (authorized/deauthorized) in the udev change
+notification.
 
-On Thu, Jul 22, 2021 at 09:51:09AM -0700, Darrick J. Wong wrote:
-> On Thu, Jul 22, 2021 at 07:39:47AM +0200, Christoph Hellwig wrote:
-> > I think some of the language here is confusing - mostly about tail
-> > packing when we otherwise use inline data.  Can you take a look at
-> > the version below?  This mostly cleans up the terminology, adds a
-> > new helper to check the size, and removes the error on trying to
-> > write with a non-zero pos, as it can be trivially supported now.
-> > 
-> > ---
-> > From 0f9c6ac6c2e372739b29195d25bebb8dd87e583a Mon Sep 17 00:00:00 2001
-> > From: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > Date: Thu, 22 Jul 2021 11:17:29 +0800
-> > Subject: iomap: make inline data support more flexible
-> > 
-> > Add support for offsets into the inline data page at iomap->inline_data
-> > to cater for the EROFS tailpackng case where a small data is stored
-> > right after the inode.
-> 
-> The commit message is a little misleading -- this adds support for
-> inline data pages at nonzero (but page-aligned) file offsets, not file
-> offsets into the page itself.  I suggest:
-> 
-> "Add support for reading inline data content into the page cache from
-> nonzero page-aligned file offsets.  This enables the EROFS tailpacking
-> mode where the last few bytes of the file are stored right after the
-> inode."
-> 
-> The code changes look good to me.
+Signed-off-by: Rajat Jain <rajatja@google.com>
+---
+ drivers/thunderbolt/switch.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Thanks for your suggestion. I've tested EROFS with no problem so far. 
+diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+index 83b1ef3d5d03..5d3e9dcba44a 100644
+--- a/drivers/thunderbolt/switch.c
++++ b/drivers/thunderbolt/switch.c
+@@ -1499,6 +1499,7 @@ static ssize_t authorized_show(struct device *dev,
+ static int disapprove_switch(struct device *dev, void *not_used)
+ {
+ 	struct tb_switch *sw;
++	char *envp[] = { "AUTHORIZED=0", NULL };
+ 
+ 	sw = tb_to_switch(dev);
+ 	if (sw && sw->authorized) {
+@@ -1514,7 +1515,7 @@ static int disapprove_switch(struct device *dev, void *not_used)
+ 			return ret;
+ 
+ 		sw->authorized = 0;
+-		kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
++		kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
+ 	}
+ 
+ 	return 0;
+@@ -1523,6 +1524,8 @@ static int disapprove_switch(struct device *dev, void *not_used)
+ static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
+ {
+ 	int ret = -EINVAL;
++	char envp_string[13];
++	char *envp[] = { envp_string, NULL };
+ 
+ 	if (!mutex_trylock(&sw->tb->lock))
+ 		return restart_syscall();
+@@ -1560,7 +1563,8 @@ static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
+ 	if (!ret) {
+ 		sw->authorized = val;
+ 		/* Notify status change to the userspace */
+-		kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
++		sprintf(envp_string, "AUTHORIZED=%u", val);
++		kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
+ 	}
+ 
+ unlock:
+-- 
+2.32.0.432.gabb21c7263-goog
 
-I could update the commit message like this, what should I do next?
-
-Many thanks,
-Gao Xiang
-
-> 
-> --D
-> 
-> > 
-> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > ---
-> >  fs/iomap/buffered-io.c | 35 ++++++++++++++++++-----------------
-> >  fs/iomap/direct-io.c   | 10 ++++++----
-> >  include/linux/iomap.h  | 14 ++++++++++++++
-> >  3 files changed, 38 insertions(+), 21 deletions(-)
-> > 
-> > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> > index 87ccb3438becd9..0597f5c186a33f 100644
-> > --- a/fs/iomap/buffered-io.c
-> > +++ b/fs/iomap/buffered-io.c
-> > @@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
-> >  	struct readahead_control *rac;
-> >  };
-> >  
-> > -static void
-> > -iomap_read_inline_data(struct inode *inode, struct page *page,
-> > -		struct iomap *iomap)
-> > +static int iomap_read_inline_data(struct inode *inode, struct page *page,
-> > +		struct iomap *iomap, loff_t pos)
-> >  {
-> > -	size_t size = i_size_read(inode);
-> > +	size_t size = iomap->length + iomap->offset - pos;
-> >  	void *addr;
-> >  
-> >  	if (PageUptodate(page))
-> > -		return;
-> > +		return PAGE_SIZE;
-> >  
-> > -	BUG_ON(page_has_private(page));
-> > -	BUG_ON(page->index);
-> > -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > +	/* inline data must start page aligned in the file */
-> > +	if (WARN_ON_ONCE(offset_in_page(pos)))
-> > +		return -EIO;
-> > +	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-> > +		return -EIO;
-> > +	if (WARN_ON_ONCE(page_has_private(page)))
-> > +		return -EIO;
-> >  
-> >  	addr = kmap_atomic(page);
-> > -	memcpy(addr, iomap->inline_data, size);
-> > +	memcpy(addr, iomap_inline_buf(iomap, pos), size);
-> >  	memset(addr + size, 0, PAGE_SIZE - size);
-> >  	kunmap_atomic(addr);
-> >  	SetPageUptodate(page);
-> > +	return PAGE_SIZE;
-> >  }
-> >  
-> >  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> > @@ -246,11 +250,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
-> >  	unsigned poff, plen;
-> >  	sector_t sector;
-> >  
-> > -	if (iomap->type == IOMAP_INLINE) {
-> > -		WARN_ON_ONCE(pos);
-> > -		iomap_read_inline_data(inode, page, iomap);
-> > -		return PAGE_SIZE;
-> > -	}
-> > +	if (iomap->type == IOMAP_INLINE)
-> > +		return iomap_read_inline_data(inode, page, iomap, pos);
-> >  
-> >  	/* zero post-eof blocks as the page may be mapped */
-> >  	iop = iomap_page_create(inode, page);
-> > @@ -618,14 +619,14 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
-> >  	}
-> >  
-> >  	if (srcmap->type == IOMAP_INLINE)
-> > -		iomap_read_inline_data(inode, page, srcmap);
-> > +		status = iomap_read_inline_data(inode, page, srcmap, pos);
-> >  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
-> >  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
-> >  	else
-> >  		status = __iomap_write_begin(inode, pos, len, flags, page,
-> >  				srcmap);
-> >  
-> > -	if (unlikely(status))
-> > +	if (unlikely(status < 0))
-> >  		goto out_unlock;
-> >  
-> >  	*pagep = page;
-> > @@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
-> >  
-> >  	flush_dcache_page(page);
-> >  	addr = kmap_atomic(page);
-> > -	memcpy(iomap->inline_data + pos, addr + pos, copied);
-> > +	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
-> >  	kunmap_atomic(addr);
-> >  
-> >  	mark_inode_dirty(inode);
-> > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > index 9398b8c31323b3..a6aaea2764a55f 100644
-> > --- a/fs/iomap/direct-io.c
-> > +++ b/fs/iomap/direct-io.c
-> > @@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
-> >  		struct iomap_dio *dio, struct iomap *iomap)
-> >  {
-> >  	struct iov_iter *iter = dio->submit.iter;
-> > +	void *dst = iomap_inline_buf(iomap, pos);
-> >  	size_t copied;
-> >  
-> > -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > +	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-> > +		return -EIO;
-> >  
-> >  	if (dio->flags & IOMAP_DIO_WRITE) {
-> >  		loff_t size = inode->i_size;
-> >  
-> >  		if (pos > size)
-> > -			memset(iomap->inline_data + size, 0, pos - size);
-> > -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> > +			memset(iomap_inline_buf(iomap, size), 0, pos - size);
-> > +		copied = copy_from_iter(dst, length, iter);
-> >  		if (copied) {
-> >  			if (pos + copied > size)
-> >  				i_size_write(inode, pos + copied);
-> >  			mark_inode_dirty(inode);
-> >  		}
-> >  	} else {
-> > -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> > +		copied = copy_to_iter(dst, length, iter);
-> >  	}
-> >  	dio->size += copied;
-> >  	return copied;
-> > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> > index 479c1da3e2211e..5efae7153912ed 100644
-> > --- a/include/linux/iomap.h
-> > +++ b/include/linux/iomap.h
-> > @@ -97,6 +97,20 @@ iomap_sector(struct iomap *iomap, loff_t pos)
-> >  	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
-> >  }
-> >  
-> > +static inline void *iomap_inline_buf(const struct iomap *iomap, loff_t pos)
-> > +{
-> > +	return iomap->inline_data - iomap->offset + pos;
-> > +}
-> > +
-> > +/*
-> > + * iomap->inline_data is a potentially kmapped page, ensure it never crosseѕ a
-> > + * page boundary.
-> > + */
-> > +static inline bool iomap_inline_data_size_valid(const struct iomap *iomap)
-> > +{
-> > +	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-> > +}
-> > +
-> >  /*
-> >   * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-> >   * and page_done will be called for each page written to.  This only applies to
-> > -- 
-> > 2.30.2
-> > 
