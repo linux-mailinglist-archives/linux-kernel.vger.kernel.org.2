@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AADC3D3B97
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B943D3B99
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhGWNXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:23:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235127AbhGWNXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:23:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C37B260EE6;
-        Fri, 23 Jul 2021 14:03:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627049014;
-        bh=mDaV0aRlSDpaHYmvF8eJe6sIGjdm2h+Js4Gj2SK/RqQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dxX6K7fOmR817Ob8ThUFX4JcX62Bx7B6ItE27AfrtvrPnLQvvFgXq+nO3oBz+v/DI
-         UPfINvUVg4OgB0U9AVTeHIj+CrWdLwPITsKgHoh1blKUMhsv8NhqX6SoqNJqLjqnQb
-         Grd7RKcH/bKkDJrWr0gtiT4pBS7VvTpNdKKgkV+GIdz/XPR89nuchVHfT9Cso0jY4b
-         C6TGkUWVngDfPs0oUgPS0mvwFRwzwVX2bK7VojOfy4LE8TC5nLeGRkQb30h6J7cbNa
-         b+e05n+zL91gHuOF5WEgpo5wzSYyQ3bwp6rFFa6BQnickmoRSW+/qJJtwYmArww88D
-         GKSoIx1FjnVHA==
-Date:   Fri, 23 Jul 2021 22:03:28 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: imx: fix imx_mmdc_probe build failure
-Message-ID: <20210723140328.GA5901@dragon>
-References: <20210723091450.1694746-1-arnd@kernel.org>
+        id S235332AbhGWNYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:24:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233663AbhGWNYS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:24:18 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7009EC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 07:04:51 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c09c:f31e:25f6:b717])
+        by laurent.telenet-ops.be with bizsmtp
+        id Ye4n25004167rCQ01e4nQb; Fri, 23 Jul 2021 16:04:47 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m6vnC-001ojW-Qp; Fri, 23 Jul 2021 16:04:46 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m6vnC-00BrLx-7n; Fri, 23 Jul 2021 16:04:46 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [GIT PULL] m68k updates for 5.14 (take two)
+Date:   Fri, 23 Jul 2021 16:04:43 +0200
+Message-Id: <20210723140443.2826648-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723091450.1694746-1-arnd@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 11:14:42AM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are two definitions of imx_mmdc_probe(), the function just
-> gained a third argument, but the empty macro did not get changed
-> the same way:
-> 
-> arch/arm/mach-imx/mmdc.c: In function 'imx_mmdc_probe':
-> arch/arm/mach-imx/mmdc.c:575:63: error: macro "imx_mmdc_perf_init" passed 3 arguments, but takes just 2
->   575 |         err = imx_mmdc_perf_init(pdev, mmdc_base, mmdc_ipg_clk);
->       |                                                               ^
-> arch/arm/mach-imx/mmdc.c:537: note: macro "imx_mmdc_perf_init" defined here
->   537 | #define imx_mmdc_perf_init(pdev, mmdc_base) 0
->       |
-> arch/arm/mach-imx/mmdc.c:575:15: error: 'imx_mmdc_perf_init' undeclared (first use in this function)
->   575 |         err = imx_mmdc_perf_init(pdev, mmdc_base, mmdc_ipg_clk);
->       |               ^~~~~~~~~~~~~~~~~~
-> 
-> Fixes: f07ec8536580 ("ARM: imx: add missing clk_disable_unprepare()")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+	Hi Linus,
 
-Thanks for the patch, Arnd.  I already queued up the fix from
-Colin Ian King [1] for this issue.
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-Shawn
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/commit/?h=imx/fixes&id=20fb73911fec01f06592de1cdbca00b66602ebd7
+are available in the Git repository at:
 
-> ---
->  arch/arm/mach-imx/mmdc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
-> index 4a6f1359e1e9..5ee43acf3635 100644
-> --- a/arch/arm/mach-imx/mmdc.c
-> +++ b/arch/arm/mach-imx/mmdc.c
-> @@ -534,7 +534,7 @@ static int imx_mmdc_perf_init(struct platform_device *pdev, void __iomem *mmdc_b
->  
->  #else
->  #define imx_mmdc_remove NULL
-> -#define imx_mmdc_perf_init(pdev, mmdc_base) 0
-> +#define imx_mmdc_perf_init(pdev, mmdc_base, ipg_clk) 0
->  #endif
->  
->  static int imx_mmdc_probe(struct platform_device *pdev)
-> -- 
-> 2.29.2
-> 
+  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.14-tag2
+
+for you to fetch changes up to 21ed49265986931b8921a2404394426870245bd2:
+
+  m68k: MAC should select HAVE_PATA_PLATFORM (2021-07-19 12:18:42 +0200)
+
+----------------------------------------------------------------
+m68k updates for v5.14 (take two)
+
+  - Fix a Mac defconfig regression due to the IDE -> ATA switch.
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      m68k: MAC should select HAVE_PATA_PLATFORM
+
+ arch/m68k/Kconfig.machine | 1 +
+ 1 file changed, 1 insertion(+)
+
+Thanks for pulling!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
