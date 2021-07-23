@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865393D3504
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223E63D3506
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhGWGYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:24:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234089AbhGWGYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:24:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D09260EAF;
-        Fri, 23 Jul 2021 07:05:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627023914;
-        bh=bdg4IKmEOmIJGi9bkVNvHhOylDYZgIWiL34s3A6QfpU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KU+G+f3V+IKPMrH7fYe6wtoHAY292z9gPpkLy1mRmfD+9fI6nY2gSqQX1dBQPeoRK
-         oXNUBVPiVjRS4pokelk4eS6v9UEuJ/j7F2ZibDKupbXHZsAQmBFXL3QncaDzvC0IoP
-         se6vu0db4vug1+ZCIzEXP/EgSDZs0WJS6f6i4P/8=
-Date:   Fri, 23 Jul 2021 09:05:11 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rajatxjain@gmail.com
-Subject: Re: [PATCH] thunderbolt: For dev authorization changes, include the
- actual event in udev change notification
-Message-ID: <YPpqJ6k5M3skTYdA@kroah.com>
-References: <20210723012835.1935471-1-rajatja@google.com>
+        id S234237AbhGWGZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:25:08 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:33318
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234254AbhGWGY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:24:58 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id D4B493F345
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 07:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627023926;
+        bh=nfkPx7NC5zaeXceVlyVGlTHRL5ArI5NO9jvFKmnisTY=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=uvrH6AvZOq1wRvT1Bd8/SfOxzDlUfB1BHR1wawlqi/NdJeikPUd7XLty6QwnQUU/Q
+         KmPDnkxPkGWG8o7m7YVSZ9yov8oVMmMbaMxqMDdPRtUxWxHler3Dg0QtiyFPZs9t2I
+         KYDfwoC/KWiYJBeTQEqPndVz1lU3p8GiHIOFquUtupJn6wznZccBqT3HenWSRlEtb+
+         uG2Mq+Sm4zb+GHhs+XCC+p9gqWZywaj9V2jL3uhGvvTtNCA/XnMQRlw7XifC4NwTb0
+         bcVXU4j//wcTgoOMtvRwINl1NGUaKvUxSWvfdaGDmyI7pPaa/5jMgcklFVGrmjTIcQ
+         HQZzr8iCv7dWw==
+Received: by mail-ed1-f72.google.com with SMTP id eg50-20020a05640228b2b02903a2e0d2acb7so232858edb.16
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:05:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nfkPx7NC5zaeXceVlyVGlTHRL5ArI5NO9jvFKmnisTY=;
+        b=V+RPkMJHw+Pt+7lBHchxkOhQLcfBLtz1uNu0dT3/wXW8rBGyS5GmWUnMrlJEMHsHG7
+         SX4AE8kZ8It5P21rIthFRobDv3l/7Q2tJwM0jAfpqlV4E5UAxBmWCWgM+QfCCkiXYhbm
+         9NrsQ4Ca/38DyXYU2Z/S+CkIwub3PTpTwEMopopBfTfyaOFrcIbKVK40Y5KuGhuQoNjj
+         C5VoJbuGyw3jXlYsq9JJDoo6PiCf2mySEbJdY+QY/lZy9G+z7wL/Otr51lEQAxxBmReb
+         n1U79V8sFXCizUYvjjtOaX+xwDXPxeY2zaK4i0JhZA5CJAA5HEavuGeZgKS1Gs2vLPeD
+         Z15g==
+X-Gm-Message-State: AOAM530Zup1t0exwRwIMGrgaJOnejnOVExt00Gjj9BByVmmR1YnJRPZQ
+        1Ce3a0K8S7G6oRH+BHaGtc0EcSeJXFirroBHRgf9KJberhP+2DLOFu2Z5ofoFFx/Hm4QFmGikjM
+        GwYba4mfnUo09Tu+VOByozffFkfRoohcArdIpG2Xy8vJfHLXm2ND6n/e/XQ==
+X-Received: by 2002:a17:906:f0d8:: with SMTP id dk24mr3430030ejb.432.1627023926312;
+        Fri, 23 Jul 2021 00:05:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnwrE3fibwAyd5puLQhhkBI3cJ/iZwBYnuPqRykg2M2+jR/0WQUB0/5z1/f5dPMa0hH/lPTm/THgVMa/6SzKQ=
+X-Received: by 2002:a17:906:f0d8:: with SMTP id dk24mr3430007ejb.432.1627023926038;
+ Fri, 23 Jul 2021 00:05:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723012835.1935471-1-rajatja@google.com>
+References: <CAAd53p6VN0ejKHcTRgj8mZ_iApR=KogpVZ-HkvdoZbJ=Yue98g@mail.gmail.com>
+ <20210722222351.GA354095@bjorn-Precision-5520> <YPpShrTa448OpGjA@infradead.org>
+In-Reply-To: <YPpShrTa448OpGjA@infradead.org>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 23 Jul 2021 15:05:12 +0800
+Message-ID: <CAAd53p75d=ibfFRCLmYOMvfrn7XbDajby1shKdWQWW=DOrX3uw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PCI/AER: Disable AER interrupt during suspend
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        "open list:PCI ENHANCED ERROR HANDLING (EEH) FOR POWERPC" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 06:28:34PM -0700, Rajat Jain wrote:
-> For security, we would like to monitor and track when the
-> thunderbolt devices are authorized and deauthorized. Currently
-> the userspace gets a udev change notification when there is a
-> change, but the state may have changed (again) by the time we
-> look at the authorized attribute in sysfs. So an authorization
-> event may go unnoticed. Thus make it easier by informing the
-> actual change (authorized/deauthorized) in the udev change
-> notification.
+On Fri, Jul 23, 2021 at 1:24 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Thu, Jul 22, 2021 at 05:23:51PM -0500, Bjorn Helgaas wrote:
+> > Marking both of these as "not applicable" for now because I don't
+> > think we really understand what's going on.
+> >
+> > Apparently a DMA occurs during suspend or resume and triggers an ACS
+> > violation.  I don't think think such a DMA should occur in the first
+> > place.
+> >
+> > Or maybe, since you say the problem happens right after ACS is enabled
+> > during resume, we're doing the ACS enable incorrectly?  Although I
+> > would think we should not be doing DMA at the same time we're enabling
+> > ACS, either.
+> >
+> > If this really is a system firmware issue, both HP and Dell should
+> > have the knowledge and equipment to figure out what's going on.
+>
+> DMA on resume sounds really odd.  OTOH the below mentioned case of
+> a DMA during suspend seems very like in some setup.  NVMe has the
+> concept of a host memory buffer (HMB) that allows the PCIe device
+> to use arbitrary host memory for internal purposes.  Combine this
+> with the "Storage D3" misfeature in modern x86 platforms that force
+> a slot into d3cold without consulting the driver first and you'd see
+> symptoms like this.  Another case would be the NVMe equivalent of the
+> AER which could lead to a completion without host activity.
 
-We do have 72 columns to work with... :)
+The issue can also be observed on non-HMB NVMe.
 
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> ---
->  drivers/thunderbolt/switch.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-> index 83b1ef3d5d03..5d3e9dcba44a 100644
-> --- a/drivers/thunderbolt/switch.c
-> +++ b/drivers/thunderbolt/switch.c
-> @@ -1499,6 +1499,7 @@ static ssize_t authorized_show(struct device *dev,
->  static int disapprove_switch(struct device *dev, void *not_used)
->  {
->  	struct tb_switch *sw;
-> +	char *envp[] = { "AUTHORIZED=0", NULL };
->  
->  	sw = tb_to_switch(dev);
->  	if (sw && sw->authorized) {
-> @@ -1514,7 +1515,7 @@ static int disapprove_switch(struct device *dev, void *not_used)
->  			return ret;
->  
->  		sw->authorized = 0;
-> -		kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
-> +		kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
->  	}
->  
->  	return 0;
-> @@ -1523,6 +1524,8 @@ static int disapprove_switch(struct device *dev, void *not_used)
->  static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
->  {
->  	int ret = -EINVAL;
-> +	char envp_string[13];
-> +	char *envp[] = { envp_string, NULL };
->  
->  	if (!mutex_trylock(&sw->tb->lock))
->  		return restart_syscall();
-> @@ -1560,7 +1563,8 @@ static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
->  	if (!ret) {
->  		sw->authorized = val;
->  		/* Notify status change to the userspace */
-> -		kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
-> +		sprintf(envp_string, "AUTHORIZED=%u", val);
-> +		kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
+>
+> We now have quirks in the ACPI layer and NVMe to fully shut down the
+> NVMe controllers on these messed up systems with the "Storage D3"
+> misfeature which should avoid such "spurious" DMAs at the cost of
+> wearning out the device much faster.
 
-So now "val" is a userspace visable value?  Is that documented anywhere
-what it is and what are you going to do to ensure it never changes in
-the future?
+Since the issue is on S3, I think the NVMe always fully shuts down.
 
-Also this new value "field" should be documented somewhere as well,
-otherwise how will any tool know it is there?
-
-And what userspace tool will be looking for this?
-
-thanks,
-
-greg k-h
+Kai-Heng
