@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 412763D37C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C053D37BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhGWIwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:52:03 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:51186 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231229AbhGWIwB (ORCPT
+        id S234130AbhGWIu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:50:59 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:37809 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229949AbhGWIu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:52:01 -0400
-X-UUID: b4a8fc8ffa974f1ab1b5f33eb9515f24-20210723
-X-UUID: b4a8fc8ffa974f1ab1b5f33eb9515f24-20210723
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <christine.zhu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2041828209; Fri, 23 Jul 2021 17:32:31 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Jul 2021 17:32:30 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Jul 2021 17:32:29 +0800
-From:   Christine Zhu <Christine.Zhu@mediatek.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
-        <Rex-BC.Chen@mediatek.com>,
-        Christine Zhu <Christine.Zhu@mediatek.com>
-Subject: [v6,2/3] dt-bindings: reset: mt8195: add toprgu reset-controller header file
-Date:   Fri, 23 Jul 2021 17:31:27 +0800
-Message-ID: <20210723093127.24568-3-Christine.Zhu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210723093127.24568-1-Christine.Zhu@mediatek.com>
-References: <20210723093127.24568-1-Christine.Zhu@mediatek.com>
+        Fri, 23 Jul 2021 04:50:58 -0400
+Received: (Authenticated sender: hadess@hadess.net)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id ED1781BF20B;
+        Fri, 23 Jul 2021 09:31:29 +0000 (UTC)
+Message-ID: <e040d6e29632157dd40e6be90ae839265556af58.camel@hadess.net>
+Subject: Re: [PATCH] HID: logitech-hidpp: battery: provide CAPACITY property
+ for newer devices
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Hamza Mahfooz <someguy@effective-light.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org,
+        Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>
+Date:   Fri, 23 Jul 2021 11:31:29 +0200
+In-Reply-To: <20210723062346.86259-1-someguy@effective-light.com>
+References: <20210723062346.86259-1-someguy@effective-light.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add toprgu reset-controller header file for MT8195 platform
+Hey Hamza,
 
-Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
----
- .../reset-controller/mt8195-resets.h          | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 include/dt-bindings/reset-controller/mt8195-resets.h
+On Fri, 2021-07-23 at 02:23 -0400, Hamza Mahfooz wrote:
+> For devices that only support the BATTERY_VOLTAGE (0x1001) feature,
+> UPower
+> requires the additional information provided by this patch, to set
+> them up.
+> 
+> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+> ---
+>  drivers/hid/hid-logitech-hidpp.c | 31
+> ++++++++++++++++++++++++++++++-
+>  1 file changed, 30 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-
+> logitech-hidpp.c
+> index 61635e629469..662c335e9c17 100644
+> --- a/drivers/hid/hid-logitech-hidpp.c
+> +++ b/drivers/hid/hid-logitech-hidpp.c
+> @@ -1331,6 +1331,32 @@ static int
+> hidpp20_battery_get_battery_voltage(struct hidpp_device *hidpp,
+>         return 0;
+>  }
+>  
+> +static int hidpp20_map_battery_capacity(int voltage)
+> +{
+> +       static const int voltages[] = {
+> +               4186, 4156, 4143, 4133, 4122, 4113, 4103, 4094, 4086,
+> 4075,
+> +               4067, 4059, 4051, 4043, 4035, 4027, 4019, 4011, 4003,
+> 3997,
+> +               3989, 3983, 3976, 3969, 3961, 3955, 3949, 3942, 3935,
+> 3929,
+> +               3922, 3916, 3909, 3902, 3896, 3890, 3883, 3877, 3870,
+> 3865,
+> +               3859, 3853, 3848, 3842, 3837, 3833, 3828, 3824, 3819,
+> 3815,
+> +               3811, 3808, 3804, 3800, 3797, 3793, 3790, 3787, 3784,
+> 3781,
+> +               3778, 3775, 3772, 3770, 3767, 3764, 3762, 3759, 3757,
+> 3754,
+> +               3751, 3748, 3744, 3741, 3737, 3734, 3730, 3726, 3724,
+> 3720,
+> +               3717, 3714, 3710, 3706, 3702, 3697, 3693, 3688, 3683,
+> 3677,
+> +               3671, 3666, 3662, 3658, 3654, 3646, 3633, 3612, 3579,
+> 3537,
+> +               3500
+> +       };
+> +
+> +       int i;
+> +
+> +       for (i = 0; i < (sizeof(voltages) / sizeof(int)); i++) {
 
-diff --git a/include/dt-bindings/reset-controller/mt8195-resets.h b/include/dt-bindings/reset-controller/mt8195-resets.h
-new file mode 100644
-index 000000000000..8176a3e5063f
---- /dev/null
-+++ b/include/dt-bindings/reset-controller/mt8195-resets.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either licens
-+ *
-+ * Copyright (c) 2021 MediaTek Inc.
-+ * Author: Christine Zhu <christine.zhu@mediatek.com>
-+ */
-+
-+#ifndef _DT_BINDINGS_RESET_CONTROLLER_MT8195
-+#define _DT_BINDINGS_RESET_CONTROLLER_MT8195
-+
-+#define MT8195_TOPRGU_CONN_MCU_SW_RST          0
-+#define MT8195_TOPRGU_INFRA_GRST_SW_RST        1
-+#define MT8195_TOPRGU_APU_SW_RST               2
-+#define MT8195_TOPRGU_INFRA_AO_GRST_SW_RST     6
-+#define MT8195_TOPRGU_MMSYS_SW_RST             7
-+#define MT8195_TOPRGU_MFG_SW_RST               8
-+#define MT8195_TOPRGU_VENC_SW_RST              9
-+#define MT8195_TOPRGU_VDEC_SW_RST              10
-+#define MT8195_TOPRGU_IMG_SW_RST               11
-+#define MT8195_TOPRGU_APMIXEDSYS_SW_RST        13
-+#define MT8195_TOPRGU_AUDIO_SW_RST             14
-+#define MT8195_TOPRGU_CAMSYS_SW_RST            15
-+#define MT8195_TOPRGU_EDPTX_SW_RST             16
-+#define MT8195_TOPRGU_ADSPSYS_SW_RST           21
-+#define MT8195_TOPRGU_DPTX_SW_RST              22
-+#define MT8195_TOPRGU_SPMI_MST_SW_RST          23
-+
-+#define MT8195_TOPRGU_SW_RST_NUM               16
-+
-+#endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
--- 
-2.18.0
+Use ARRAY_SIZE()
+
+> +               if (voltage >= voltages[i])
+> +                       return 100 - i;
+
+I don't really like this part, which seems to rely on things which
+aren't asserted. Is there a way to make sure that voltages[] is 100
+items and they're all initialised?
+
+If you tested this, could you also mention which devices you tested
+this on in the commit message?
+
+Thanks for picking this up!
+
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int hidpp20_query_battery_voltage_info(struct hidpp_device
+> *hidpp)
+>  {
+>         u8 feature_type;
+> @@ -1354,6 +1380,7 @@ static int
+> hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
+>  
+>         hidpp->battery.status = status;
+>         hidpp->battery.voltage = voltage;
+> +       hidpp->battery.capacity =
+> hidpp20_map_battery_capacity(voltage);
+>         hidpp->battery.level = level;
+>         hidpp->battery.charge_type = charge_type;
+>         hidpp->battery.online = status !=
+> POWER_SUPPLY_STATUS_NOT_CHARGING;
+> @@ -1378,6 +1405,7 @@ static int hidpp20_battery_voltage_event(struct
+> hidpp_device *hidpp,
+>  
+>         if (voltage != hidpp->battery.voltage || status != hidpp-
+> >battery.status) {
+>                 hidpp->battery.voltage = voltage;
+> +               hidpp->battery.capacity =
+> hidpp20_map_battery_capacity(voltage);
+>                 hidpp->battery.status = status;
+>                 hidpp->battery.level = level;
+>                 hidpp->battery.charge_type = charge_type;
+> @@ -3717,7 +3745,8 @@ static int hidpp_initialize_battery(struct
+> hidpp_device *hidpp)
+>         num_battery_props = ARRAY_SIZE(hidpp_battery_props) - 3;
+>  
+>         if (hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_MILEAGE ||
+> -           hidpp->capabilities &
+> HIDPP_CAPABILITY_BATTERY_PERCENTAGE)
+> +           hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE
+> ||
+> +           hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_VOLTAGE)
+>                 battery_props[num_battery_props++] =
+>                                 POWER_SUPPLY_PROP_CAPACITY;
+>  
+
 
