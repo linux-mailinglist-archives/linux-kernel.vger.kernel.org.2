@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1505C3D3A34
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43063D3A38
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234867AbhGWLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:47:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55636 "EHLO mail.kernel.org"
+        id S234873AbhGWLs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 07:48:28 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43477 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234832AbhGWLra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:47:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 445F860E8C;
-        Fri, 23 Jul 2021 12:27:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627043284;
-        bh=/hiAX5CAjW6tGqppGXooRjBKQ0fykryiFtk5xbyBL5w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ClM4itRigdwhpcbeJosSM1hJJCQiYijXqEk3LxM+YdmuKWCUCH8IdiJ3lGbpzfxqk
-         pKfgrap4urO1oNLjGhtL6LzgSoPdbAMSyC7MX78P4GauiCg7BAkp7g0FsrW3zmzHSu
-         Qa81UgbMGcjw2Aec6h/anR3ek2259WbMVLoEl8Fj6PdPPQVQxZTSer39iDunDlczIh
-         z5RcHqPDHG36E/W7yjtjNj0p7RDo+MM05X/GMNwaktWmWfb30fmsBlvHmjfMNK5Q2D
-         zUWAc056lCBP08V5ucxzraP/HxeO6vzZLJ/dtbGWRefNf41WnzMMqHe4xEw7wWtS2H
-         lRmfmeuW9OZ7A==
-Date:   Fri, 23 Jul 2021 17:57:53 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org,
-        bjorn.andersson@sonymobile.com, courtney.cavin@sonymobile.com,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
-Subject: Re: [PATCH] net: qrtr: fix memory leak in qrtr_local_enqueue
-Message-ID: <20210723122753.GA3739@thinkpad>
-References: <20210722161625.6956-1-paskripkin@gmail.com>
+        id S234750AbhGWLsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 07:48:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="199131289"
+X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
+   d="scan'208";a="199131289"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 05:28:48 -0700
+X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
+   d="scan'208";a="663257150"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 05:28:46 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1m6uIC-00HMKm-SH; Fri, 23 Jul 2021 15:28:40 +0300
+Date:   Fri, 23 Jul 2021 15:28:40 +0300
+From:   "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>
+To:     Dennis Giaya <dgiaya@whoi.edu>
+Cc:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>
+Subject: Re: [PATCH v1 1/1] serial: max310x: Use clock-names property
+ matching to recognize XTAL
+Message-ID: <YPq1+NzJeqLZVctW@smile.fi.intel.com>
+References: <20210722150233.30897-1-andriy.shevchenko@linux.intel.com>
+ <YPmSpNZr/yQiPqsO@smile.fi.intel.com>
+ <0acef8aa86d69cac0ea1a3dbdafc41625580e0eb.camel@whoi.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210722161625.6956-1-paskripkin@gmail.com>
+In-Reply-To: <0acef8aa86d69cac0ea1a3dbdafc41625580e0eb.camel@whoi.edu>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 07:16:25PM +0300, Pavel Skripkin wrote:
-> Syzbot reported memory leak in qrtr. The problem was in unputted
-> struct sock. qrtr_local_enqueue() function calls qrtr_port_lookup()
-> which takes sock reference if port was found. Then there is the following
-> check:
+On Thu, Jul 22, 2021 at 09:05:13PM +0000, Dennis Giaya wrote:
+> Andy,
 > 
-> if (!ipc || &ipc->sk == skb->sk) {
-> 	...
-> 	return -ENODEV;
-> }
+> I've tested this out on my hardware that uses an external oscillator
+> 'osc' (as opposed to external crystal 'xtal').
 > 
-> Since we should drop the reference before returning from this function and
-> ipc can be non-NULL inside this if, we should add qrtr_port_put() inside
-> this if.
+> With the relevant asl
+> 	Package () {"compatible", "maxim,max14830"},
+> 	Package ()
+> {"clock-frequency", 19200000},
+> 	Package () {"clock-names", "osc"},
 > 
-> Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
-> Reported-and-tested-by: syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> Previously, the driver logic would default to 'xtal' and then compare
+> against the narrower frequency range and throw an error because 19.2MHz
+> was not allowed. With your patch, it proceeds as 'osc' and appears to
+> work as intended.
 
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Thanks for testing!
+I assume I may convert above to the Tested-by: or equivalent tag.
 
-It'd be good if this patch can be extended to fix one more corner case here:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/qrtr/qrtr.c#n522
+JFYI, in OSS mailing lists we do not top post.
 
-Thanks,
-Mani
 
-> ---
->  net/qrtr/qrtr.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
-> index e6f4a6202f82..d5ce428d0b25 100644
-> --- a/net/qrtr/qrtr.c
-> +++ b/net/qrtr/qrtr.c
-> @@ -839,6 +839,8 @@ static int qrtr_local_enqueue(struct qrtr_node *node, struct sk_buff *skb,
->  
->  	ipc = qrtr_port_lookup(to->sq_port);
->  	if (!ipc || &ipc->sk == skb->sk) { /* do not send to self */
-> +		if (ipc)
-> +			qrtr_port_put(ipc);
->  		kfree_skb(skb);
->  		return -ENODEV;
->  	}
-> -- 
-> 2.32.0
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
