@@ -2,186 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C5B3D3D00
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3393D3D04
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235700AbhGWPQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:16:26 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3471 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235582AbhGWPQZ (ORCPT
+        id S235753AbhGWPQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235734AbhGWPQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:16:25 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GWYYW0jbQz6H7lk;
-        Fri, 23 Jul 2021 23:45:19 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 17:56:56 +0200
-Received: from localhost (10.210.170.238) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 23 Jul
- 2021 16:56:55 +0100
-Date:   Fri, 23 Jul 2021 16:56:29 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [v2 8/8] iio: adc: aspeed: Support battery sensing.
-Message-ID: <20210723165629.00005610@Huawei.com>
-In-Reply-To: <20210723081621.29477-9-billy_tsai@aspeedtech.com>
-References: <20210723081621.29477-1-billy_tsai@aspeedtech.com>
-        <20210723081621.29477-9-billy_tsai@aspeedtech.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 23 Jul 2021 11:16:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004CFC061757;
+        Fri, 23 Jul 2021 08:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ovsyxI38eNvliEW3ps0I8aR1LXX7PaOVRwl/PkPRFDM=; b=Wxnyx+dw5dcaJEYk7A89PoveYG
+        dA8Nw8DvgO2pjZqcy/y8tpZrV64svCyzBmRc/Gy4epobh41YlOfrukZvPFMZKaDuDgRSixj+x74+8
+        00UAFBs1Z0nkdxFm5I1rUKVQOJnBb1GiIOIfe3rk7YOPWjLbhOLitR++IQOvGval1ceVQ8xMAOmD1
+        vxEh5cCcxzU+c54cdxTVTtzz4Fz7zl1OwsM6MalIKvBJLh5nwtMzF3gueE10t+emldzVdMmHfpw6B
+        QLyWdJV9mA0XiEtVWlpW3Y/3s1Z2rbjwDR1ZybmhJIHGnQ5ECIM/neeB7i0/iUlddaXiE1S+SHxbE
+        rtiZ4Uyg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6xXP-00BVcv-W7; Fri, 23 Jul 2021 15:56:43 +0000
+Date:   Fri, 23 Jul 2021 16:56:35 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v6] iomap: support tail packing inline read
+Message-ID: <YPrms0fWPwEZGNAL@casper.infradead.org>
+References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
+ <20210722053947.GA28594@lst.de>
+ <YPrauRjG7+vCw7f9@casper.infradead.org>
+ <YPre+j906ywgRHEZ@B-P7TQMD6M-0146.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.170.238]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPre+j906ywgRHEZ@B-P7TQMD6M-0146.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 16:16:21 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
-
-> In ast2600, ADC integrate dividing circuit at last input channel for
-> battery sensing. This patch use the dts property "battery-sensing" to
-> enable this feature makes the last channel of each adc can tolerance
-
-this feature allows the last channel of each ADC to tolerate a higher
-voltage than the reference voltage.
-
-> higher voltage than reference voltage.
+On Fri, Jul 23, 2021 at 11:23:38PM +0800, Gao Xiang wrote:
+> Hi Matthew,
 > 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-This looks fine otherwise, but one more general question inline.
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/adc/aspeed_adc.c | 60 +++++++++++++++++++++++++++++++++---
->  1 file changed, 55 insertions(+), 5 deletions(-)
+> On Fri, Jul 23, 2021 at 04:05:29PM +0100, Matthew Wilcox wrote:
+> > On Thu, Jul 22, 2021 at 07:39:47AM +0200, Christoph Hellwig wrote:
+> > > @@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+> > >  
+> > >  	flush_dcache_page(page);
+> > >  	addr = kmap_atomic(page);
+> > > -	memcpy(iomap->inline_data + pos, addr + pos, copied);
+> > > +	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
+> > 
+> > This is wrong; pos can be > PAGE_SIZE, so this needs to be
+> > addr + offset_in_page(pos).
 > 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index 7e674b607e36..6c7e2bb7b1ac 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -45,6 +45,9 @@
->  #define ASPEED_ADC_REF_VOLTAGE_1200mV		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 1)
->  #define ASPEED_ADC_REF_VOLTAGE_EXT_HIGH		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 2)
->  #define ASPEED_ADC_REF_VOLTAGE_EXT_LOW		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 3)
-> +#define ASPEED_ADC_BATTERY_SENSING_DIV		BIT(6)
-> +#define ASPEED_ADC_BATTERY_SENSING_DIV_2_3	FIELD_PREP(ASPEED_ADC_BATTERY_SENSING_DIV, 0)
-> +#define ASPEED_ADC_BATTERY_SENSING_DIV_1_3	FIELD_PREP(ASPEED_ADC_BATTERY_SENSING_DIV, 1)
->  #define ASPEED_ADC_CTRL_INIT_RDY		BIT(8)
->  #define ASPEED_ADC_CH7_MODE			BIT(12)
->  #define ASPEED_ADC_CH7_NORMAL			FIELD_PREP(ASPEED_ADC_CH7_MODE, 0)
-> @@ -76,6 +79,11 @@ struct aspeed_adc_model_data {
->  	unsigned int num_channels;
->  };
->  
-> +struct adc_gain {
-> +	u8 mult;
-> +	u8 div;
-> +};
-> +
->  struct aspeed_adc_data {
->  	struct device		*dev;
->  	void __iomem		*base;
-> @@ -87,6 +95,8 @@ struct aspeed_adc_data {
->  	int			vref;
->  	u32			sample_period_ns;
->  	int			cv;
-> +	bool			battery_sensing;
-> +	struct adc_gain		battery_mode_gain;
->  };
->  
->  #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
-> @@ -185,14 +195,38 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
->  			       int *val, int *val2, long mask)
->  {
->  	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> +	u32 adc_engine_control_reg_val;
->  
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
-> -		*val = readw(data->base + chan->address) + data->cv;
-> -		if (*val < 0)
-> -			*val = 0;
-> -		else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
-> -			*val = ASPEED_ADC_MAX_RAW_DATA;
+> Yeah, thanks for pointing out. It seems so, since EROFS cannot test
+> such write path, previously it was disabled explicitly. I could
+> update it in the next version as above.
 
-Not related to this patch, but can the device support a per channel
-reference selection? I.e. some channels use different internal references or
-external references from others?
+We're also missing a call to __set_page_dirty_nobuffers().  This
+matters to nobody right now -- erofs is read-only and gfs2 only
+supports inline data in the inode.  I presume what is happening
+for gfs2 is that at inode writeback time, it copies the ~60 bytes
+from the page cache into the inode and then schedules the inode
+for writeback.
 
-If so we should consider if it is necessary to expose that functionality
-in the dt-binding.
-
-> +		if (data->battery_sensing && chan->channel == 7) {
-> +			adc_engine_control_reg_val =
-> +				readl(data->base + ASPEED_REG_ENGINE_CONTROL);
-> +			writel(adc_engine_control_reg_val |
-> +				       ASPEED_ADC_CH7_BATTERY |
-> +				       ASPEED_ADC_BATTERY_SENSING_ENABLE,
-> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
-> +			/*
-> +			 * After enable battery sensing mode need to wait some time for adc stable
-> +			 * Experiment result is 1ms.
-> +			 */
-> +			mdelay(1);
-> +			*val = readw(data->base + chan->address) + data->cv;
-> +			if (*val < 0)
-> +				*val = 0;
-> +			else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
-> +				*val = ASPEED_ADC_MAX_RAW_DATA;
-> +			*val = (*val * data->battery_mode_gain.mult) /
-> +			       data->battery_mode_gain.div;
-> +			writel(adc_engine_control_reg_val,
-> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
-> +		} else {
-> +			*val = readw(data->base + chan->address) + data->cv;
-> +			if (*val < 0)
-> +				*val = 0;
-> +			else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
-> +				*val = ASPEED_ADC_MAX_RAW_DATA;
-> +		}
->  		return IIO_VAL_INT;
->  
->  	case IIO_CHAN_INFO_SCALE:
-> @@ -392,6 +426,22 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto vref_config_error;
->  
-> +	if (of_find_property(data->dev->of_node, "battery-sensing", NULL)) {
-> +		if (model_data->version >= aspeed_adc_ast2600) {
-> +			data->battery_sensing = 1;
-> +			if (readl(data->base + ASPEED_REG_ENGINE_CONTROL) &
-> +			    ASPEED_ADC_BATTERY_SENSING_DIV_1_3) {
-> +				data->battery_mode_gain.mult = 3;
-> +				data->battery_mode_gain.div = 1;
-> +			} else {
-> +				data->battery_mode_gain.mult = 3;
-> +				data->battery_mode_gain.div = 2;
-> +			}
-> +		} else
-> +			dev_warn(&pdev->dev,
-> +				 "Failed to enable battey-sensing mode\n");
-> +	}
-> +
->  	if (model_data->wait_init_sequence) {
->  		adc_engine_control_reg_val =
->  			readl(data->base + ASPEED_REG_ENGINE_CONTROL);
-
+But logically, we should mark the page as dirty.  It'll be marked
+as dirty by ->mkwrite, should the page be mmaped, so gfs2 must
+already cope with a dirty page for inline data.
