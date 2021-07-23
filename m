@@ -2,131 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B803D3E50
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB583D3E5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231359AbhGWQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        id S231231AbhGWQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhGWQeo (ORCPT
+        with ESMTP id S229616AbhGWQhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:34:44 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23884C061575;
-        Fri, 23 Jul 2021 10:15:17 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id mt6so3207955pjb.1;
-        Fri, 23 Jul 2021 10:15:17 -0700 (PDT)
+        Fri, 23 Jul 2021 12:37:48 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9BAC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:18:21 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id jm13so1679028qvb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:18:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=1JRQTcX3mMh1waCjD0i+OlhIQ+cqEnYe3rn2a3l5PHM=;
-        b=fuyiDiQjakWS2nH4pRbhmN0vOH7iHesdh4D0ObiX/uzKRN2NGR36bRa2dK3XV5MoCB
-         MF2oe1U9kR27iEcDG04IxZgok7Fl/zd/c/dd5N+NWdc+/FP8qErhBWQgFVxV/kacXjtR
-         MW97Lzdlillv+7K1LoQJ0cF1Fsa/SpLtv4nLdMvwGWjtKMGwD5LG5wH/mn/3Xi0n32kC
-         c0vWuSpHvKoI/lxg7aonDUu5M4Of5KBg/EIlg2IdY8DeaRsIoKlWMEyCsi+JsNs4aiuE
-         3RKapUFqYN+qrfiH5r+peINoRzEVVMSuk5Z4MzafvYrrZjXGxeLRGzxA0RPx8VHr1CYo
-         OsIg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eCv0QU6je2rmYu7A4iiFs2epRehoLyh4UDlFtuOF100=;
+        b=T38PXGyhDq3GOvv+TSyGaL98LpXC704ivvid7yFGErfCo8cZeMnXO2/DuN2QeCU21x
+         QbYbFj5q5lVkkgszSpL9hwaFK9IvDx60myR43gqYhJND+GKiAMUqC/EHZeIhC4mZsDXV
+         vqsdDWOVm6tzHAWQcXHiG7z18VEGZAg3sIOB3KkJ1ABYhjRSSL4WmgR8UoXkjKquWD91
+         vhRC7+6gUPxDzERD4zjjszGMozXGhfKvWS3JPWnImlunvIuRgOV7ohYapZMOcLMG+AUQ
+         6lL/WKs0MNB5Djc8tMcWkdvArbfRftyfAUBmUBX4JwODIHZX+KMjkptQvYNatBfZI/jW
+         KgtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1JRQTcX3mMh1waCjD0i+OlhIQ+cqEnYe3rn2a3l5PHM=;
-        b=YZD+bZRA3YIq7W+czPCw6ojBlrs7Qs/1kpW4WNWvgjE6DY0z3lLqOJRaxXY5ZbuVk7
-         KRlGTCrVZ2iYOCSMLqD3Ziz9tila1tWVmP6AOLKwd72kjQ67Rq7fKupZKiWwdRoxi9mA
-         TBAhwuVj2tUfgXNnvIZWyOfjhWIA9fjykJfr8yUvaiyhmvEA3OAFZaE0mo+802lwmkIv
-         o9lhMdvV8Bjtrabm6w9xUDfhIppzYbheSsHshAeHPocQO356pIZlRg+Bnq7hkydUkW87
-         5QYRRVrSPAMlGzBT7thEzbnXT9gYQjiXQMfc+x0zMz0zulRE0Ubgjsen3CX/YhnEpwyk
-         66pw==
-X-Gm-Message-State: AOAM530X+tWuVLo2556gh66AMCy1SOfVv8NwPDooQVHIEOUY5P5+oXDE
-        Z6mUe3RPfuop+8KzicHyZII=
-X-Google-Smtp-Source: ABdhPJwN1doRO2qvePYhlCrAXf76ZIjgkkW/wHSr9Esk/6YIZFVgz0Xh5Y/B/+lplVHFrsi8hABTrw==
-X-Received: by 2002:a62:30c5:0:b029:31e:fa6d:1738 with SMTP id w188-20020a6230c50000b029031efa6d1738mr5326632pfw.55.1627060516543;
-        Fri, 23 Jul 2021 10:15:16 -0700 (PDT)
-Received: from [10.69.44.239] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k198sm36382052pfd.148.2021.07.23.10.15.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 10:15:16 -0700 (PDT)
-Subject: Re: [PATCH v5 11/14] scsi: lpfc: Use irq_set_affinity
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
-        tglx@linutronix.de, jesse.brandeburg@intel.com,
-        robin.murphy@arm.com, mtosatti@redhat.com, mingo@kernel.org,
-        jbrandeb@kernel.org, frederic@kernel.org, juri.lelli@redhat.com,
-        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
-        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
-        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
-        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
-        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
-        somnath.kotur@broadcom.com, nilal@redhat.com,
-        tatyana.e.nikolova@intel.com, mustafa.ismail@intel.com,
-        ahs3@redhat.com, leonro@nvidia.com,
-        chandrakanth.patil@broadcom.com, bjorn.andersson@linaro.org,
-        chunkuang.hu@kernel.org, yongqiang.niu@mediatek.com,
-        baolin.wang7@gmail.com, poros@redhat.com, minlei@redhat.com,
-        emilne@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        _govind@gmx.com, kabel@kernel.org, viresh.kumar@linaro.org,
-        Tushar.Khandelwal@arm.com, kuba@kernel.org
-References: <20210720232624.1493424-1-nitesh@redhat.com>
- <20210720232624.1493424-12-nitesh@redhat.com>
-From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <f1512e42-f2fa-b4e7-4133-4a6066b7ea0d@gmail.com>
-Date:   Fri, 23 Jul 2021 10:15:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eCv0QU6je2rmYu7A4iiFs2epRehoLyh4UDlFtuOF100=;
+        b=q7jUOHaEm4hQlNf8CNtD7sfE2lxyd43XGr5OsrfD8iLG8/iN0DvHbjJTUqWm/cvGr9
+         di5JxPVDQdckZQmUZnW9efhSSbARrAx53tJc6pZl0AfgcFdMdo/nydZOaRq8pZ6KpB1+
+         4B2xTwaAwikuHQQwFkamUBRBqkmfoqCIXpvuoNK8wgDTwxNJdaPfpqkw4NonrwgGueF2
+         LWbclKeiYirjv/HyIQl3UlkrW7bjyQbD0BdtxflCebfwPP1DjzrCzpJSdS6FitCulL5F
+         CUDJsT3KenaENcCYop276mspjoUQQhLncrZkF6eLTq1xMnUIpON5n0iTeqTjdnOWxcbZ
+         hVNw==
+X-Gm-Message-State: AOAM531aNClTh3JP6rC3Kqg0So9Og/m8q5xdwnBYSNfHDgKv6pb5a4sV
+        EOa2FE+idwxeOhQkXfSjdOtyA1+vUius8WzNd7IvFQ==
+X-Google-Smtp-Source: ABdhPJwnqwfHO2wjh7DgPt0pwDZnajREVOWdRwd3yK4zHaOZy6liw3a08k3kg/Z9WgRWDJpGdggxHF6DWGnBekrI7wI=
+X-Received: by 2002:a05:6214:e83:: with SMTP id hf3mr5823233qvb.19.1627060697501;
+ Fri, 23 Jul 2021 10:18:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210720232624.1493424-12-nitesh@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210716093916.1516845-1-kyletso@google.com>
+In-Reply-To: <20210716093916.1516845-1-kyletso@google.com>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Sat, 24 Jul 2021 01:18:01 +0800
+Message-ID: <CAGZ6i=3PJ+aRzM7=c6f9oCaCjvdQ7GqtCn+dv7H0yC8WMoe+KA@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: tcpm: Support non-PD mode
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/2021 4:26 PM, Nitesh Narayan Lal wrote:
-> The driver uses irq_set_affinity_hint to set the affinity for the lpfc
-> interrupts to a mask corresponding to the local NUMA node to avoid
-> performance overhead on AMD architectures.
-> 
-> However, irq_set_affinity_hint() setting the affinity is an undocumented
-> side effect that this function also sets the affinity under the hood.
-> To remove this side effect irq_set_affinity_hint() has been marked as
-> deprecated and new interfaces have been introduced.
-> 
-> Also, as per the commit dcaa21367938 ("scsi: lpfc: Change default IRQ model
-> on AMD architectures"):
-> "On AMD architecture, revert the irq allocation to the normal style
-> (non-managed) and then use irq_set_affinity_hint() to set the cpu affinity
-> and disable user-space rebalancing."
-> we don't really need to set the affinity_hint as user-space rebalancing for
-> the lpfc interrupts is not desired.
-> 
-> Hence, replace the irq_set_affinity_hint() with irq_set_affinity() which
-> only applies the affinity for the interrupts.
-> 
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+On Fri, Jul 16, 2021 at 5:39 PM Kyle Tso <kyletso@google.com> wrote:
+>
+> tcpm.c could work well without PD capabilities. Do not block the probe
+> if capabilities are not defined in fwnode and skip the PD power
+> negotiation in the state machine.
+>
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 > ---
->   drivers/scsi/lpfc/lpfc_init.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
 
-Looks good. Thanks
+Hi, any comments about this patch?
 
-Reviewed-by: James Smart <jsmart2021@gmail.com>
+thanks,
+Kyle
 
--- james
-
+>  drivers/usb/typec/tcpm/tcpm.c | 50 ++++++++++++++++++++---------------
+>  1 file changed, 29 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 5b22a1c931a9..a42de5e17d24 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -3914,6 +3914,8 @@ static void run_state_machine(struct tcpm_port *port)
+>                 if (port->ams == POWER_ROLE_SWAP ||
+>                     port->ams == FAST_ROLE_SWAP)
+>                         tcpm_ams_finish(port);
+> +               if (!port->nr_src_pdo)
+> +                       tcpm_set_state(port, SRC_READY, 0);
+>                 port->upcoming_state = SRC_SEND_CAPABILITIES;
+>                 tcpm_ams_start(port, POWER_NEGOTIATION);
+>                 break;
+> @@ -4161,7 +4163,10 @@ static void run_state_machine(struct tcpm_port *port)
+>                                 current_lim = PD_P_SNK_STDBY_MW / 5;
+>                         tcpm_set_current_limit(port, current_lim, 5000);
+>                         tcpm_set_charge(port, true);
+> -                       tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
+> +                       if (!port->nr_snk_pdo)
+> +                               tcpm_set_state(port, SNK_READY, 0);
+> +                       else
+> +                               tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
+>                         break;
+>                 }
+>                 /*
+> @@ -5939,15 +5944,17 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+>
+>         /* Get source pdos */
+>         ret = fwnode_property_count_u32(fwnode, "source-pdos");
+> -       if (ret <= 0)
+> -               return -EINVAL;
+> +       if (ret < 0)
+> +               ret = 0;
+>
+>         port->nr_src_pdo = min(ret, PDO_MAX_OBJECTS);
+> -       ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
+> -                                            port->src_pdo, port->nr_src_pdo);
+> -       if ((ret < 0) || tcpm_validate_caps(port, port->src_pdo,
+> -                                           port->nr_src_pdo))
+> -               return -EINVAL;
+> +       if (port->nr_src_pdo) {
+> +               ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
+> +                                                    port->src_pdo, port->nr_src_pdo);
+> +               if ((ret < 0) || tcpm_validate_caps(port, port->src_pdo,
+> +                                                   port->nr_src_pdo))
+> +                       return -EINVAL;
+> +       }
+>
+>         if (port->port_type == TYPEC_PORT_SRC)
+>                 return 0;
+> @@ -5963,19 +5970,21 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+>  sink:
+>         /* Get sink pdos */
+>         ret = fwnode_property_count_u32(fwnode, "sink-pdos");
+> -       if (ret <= 0)
+> -               return -EINVAL;
+> +       if (ret < 0)
+> +               ret = 0;
+>
+>         port->nr_snk_pdo = min(ret, PDO_MAX_OBJECTS);
+> -       ret = fwnode_property_read_u32_array(fwnode, "sink-pdos",
+> -                                            port->snk_pdo, port->nr_snk_pdo);
+> -       if ((ret < 0) || tcpm_validate_caps(port, port->snk_pdo,
+> -                                           port->nr_snk_pdo))
+> -               return -EINVAL;
+> +       if (port->nr_snk_pdo) {
+> +               ret = fwnode_property_read_u32_array(fwnode, "sink-pdos",
+> +                                                    port->snk_pdo, port->nr_snk_pdo);
+> +               if ((ret < 0) || tcpm_validate_caps(port, port->snk_pdo,
+> +                                                   port->nr_snk_pdo))
+> +                       return -EINVAL;
+>
+> -       if (fwnode_property_read_u32(fwnode, "op-sink-microwatt", &mw) < 0)
+> -               return -EINVAL;
+> -       port->operating_snk_mw = mw / 1000;
+> +               if (fwnode_property_read_u32(fwnode, "op-sink-microwatt", &mw) < 0)
+> +                       return -EINVAL;
+> +               port->operating_snk_mw = mw / 1000;
+> +       }
+>
+>         port->self_powered = fwnode_property_read_bool(fwnode, "self-powered");
+>
+> @@ -6283,9 +6292,8 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+>         int err;
+>
+>         if (!dev || !tcpc ||
+> -           !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc ||
+> -           !tcpc->set_polarity || !tcpc->set_vconn || !tcpc->set_vbus ||
+> -           !tcpc->set_pd_rx || !tcpc->set_roles || !tcpc->pd_transmit)
+> +           !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc || !tcpc->set_polarity ||
+> +           !tcpc->set_vconn || !tcpc->set_vbus || !tcpc->set_roles)
+>                 return ERR_PTR(-EINVAL);
+>
+>         port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
+> --
+> 2.32.0.402.g57bb445576-goog
+>
