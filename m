@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239473D41B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46BB3D41BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbhGWUJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:09:36 -0400
-Received: from finn.gateworks.com ([108.161.129.64]:57708 "EHLO
+        id S231811AbhGWUJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:09:42 -0400
+Received: from finn.gateworks.com ([108.161.129.64]:57724 "EHLO
         finn.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229461AbhGWUJf (ORCPT
+        with ESMTP id S229657AbhGWUJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 16:09:35 -0400
+        Fri, 23 Jul 2021 16:09:36 -0400
 Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
         by finn.localdomain with esmtp (Exim 4.93)
         (envelope-from <tharvey@gateworks.com>)
-        id 1m727O-0057Vc-9G; Fri, 23 Jul 2021 20:50:02 +0000
+        id 1m727P-0057Vc-DS; Fri, 23 Jul 2021 20:50:03 +0000
 From:   Tim Harvey <tharvey@gateworks.com>
 To:     Richard Zhu <hongxing.zhu@nxp.com>,
         Lucas Stach <l.stach@pengutronix.de>,
@@ -31,9 +31,9 @@ To:     Richard Zhu <hongxing.zhu@nxp.com>,
         =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Cc:     Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH 1/6] dt-bindings: imx6q-pcie: add compatible for IMX8MM support
-Date:   Fri, 23 Jul 2021 13:49:53 -0700
-Message-Id: <20210723204958.7186-2-tharvey@gateworks.com>
+Subject: [PATCH 2/6] dt-bindings: reset: imx8mq: add pcie reset
+Date:   Fri, 23 Jul 2021 13:49:54 -0700
+Message-Id: <20210723204958.7186-3-tharvey@gateworks.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210723204958.7186-1-tharvey@gateworks.com>
 References: <20210723204958.7186-1-tharvey@gateworks.com>
@@ -41,46 +41,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the DT binding for IMX8MM support to the existing imx6q-pcie
-driver which shares most functionality with the IMX8MM.
-
-Additionally a 'fsl,ext-osc' property is defined to note use of an
-external oscillator as ref clock vs the internal PLL.
+Add the reset used by the pcie driver
 
 Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 ---
- Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/dt-bindings/reset/imx8mq-reset.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-index d8971ab99274..9886e1344fd3 100644
---- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-+++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-@@ -10,6 +10,7 @@ Required properties:
- 	- "fsl,imx6qp-pcie"
- 	- "fsl,imx7d-pcie"
- 	- "fsl,imx8mq-pcie"
-+	- "fsl,imx8mm-pcie"
- - reg: base address and length of the PCIe controller
- - interrupts: A list of interrupt outputs of the controller. Must contain an
-   entry for each entry in the interrupt-names property.
-@@ -19,6 +20,7 @@ Required properties:
- 	- "pcie_phy"
+diff --git a/include/dt-bindings/reset/imx8mq-reset.h b/include/dt-bindings/reset/imx8mq-reset.h
+index 705870693ec2..20a25ee4a271 100644
+--- a/include/dt-bindings/reset/imx8mq-reset.h
++++ b/include/dt-bindings/reset/imx8mq-reset.h
+@@ -61,7 +61,8 @@
+ #define IMX8MQ_RESET_SW_M4C_RST			50
+ #define IMX8MQ_RESET_SW_M4P_RST			51
+ #define IMX8MQ_RESET_M4_ENABLE			52
++#define IMX8MQ_RESET_PCIE_CTRL_APPS_CLK_REQ	53
  
- Optional properties:
-+- fsl,ext-osc: use the external oscillator as ref clock (vs internal PLL)
- - fsl,tx-deemph-gen1: Gen1 De-emphasis value. Default: 0
- - fsl,tx-deemph-gen2-3p5db: Gen2 (3.5db) De-emphasis value. Default: 0
- - fsl,tx-deemph-gen2-6db: Gen2 (6db) De-emphasis value. Default: 20
-@@ -49,7 +51,7 @@ Additional required properties for imx6sx-pcie:
-   PCIE_PHY power domains
- - power-domain-names: Must be "pcie", "pcie_phy"
+-#define IMX8MQ_RESET_NUM			53
++#define IMX8MQ_RESET_NUM			54
  
--Additional required properties for imx7d-pcie and imx8mq-pcie:
-+Additional required properties for imx7d-pcie, imx8mq-pcie, imx8mm-pcie:
- - power-domains: Must be set to a phandle pointing to PCIE_PHY power domain
- - resets: Must contain phandles to PCIe-related reset lines exposed by SRC
-   IP block
+ #endif
 -- 
 2.17.1
 
