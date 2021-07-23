@@ -2,125 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6823D314C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6123D3151
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233072AbhGWAtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:49:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbhGWAtb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:49:31 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78E1C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:30:05 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id b6so5051pji.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=f06gqWc2bEaZJ6nbd8VrGNk6zDGVJAhrmVyUATfeuhY=;
-        b=uH3LTYq9lKkVh6FySVISF2uXoH17+HO/ef+NS7sXs7p8VhOdVPTkf+xDywOJI7ZGeq
-         J5vyXN5sIk5K28aSYCheQLYmLarcrwifRRqWOMDtKPWn4zvvxSsqTA/LMekE9uKmElQt
-         WO5XrD/lpIAFXo8o3ZlXZ2RLIn59Lahw6A0UOEnlf43IpUPKvrAWKBWbPmx+otKNLFFa
-         cTbOkddzUhdmQKUP9KIBFD+aEtLvw3nJaXWw8iW5F28MT+IBeoNC6LThOpDqosoE+XhQ
-         /2s1NQSFVXpy9aIoXoI7voS5KTgATBCgzW+ijmB6nTwYCppDaFbliHaMHs227vBPnrLv
-         UQEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=f06gqWc2bEaZJ6nbd8VrGNk6zDGVJAhrmVyUATfeuhY=;
-        b=qdL1OvQSgCJ0XDMrMQPOjUIMqfm0PW5g9mbW5U32b16X4zRNFoOYcsbP/Tclf2oteb
-         wlMfxkSt2WKzH4gsU6U7tmI+UGUJM+6eOdHPc4ue48nz9M6HaoMxR1X6SqH+G5ecWir4
-         BQRkUMubBtc7TGhPc2CB0zKmVgrHYMz12yPVAlwOYHDrspf5uThzIeP1a5SMR1i7e88m
-         7L49p6npITCg6EjncoF/5XlCgjxG1wv/Jbs3kjVI145KzGra60m6Aqb4Vq16JKEETlNJ
-         P4fvhfOfE5sczTxofpQRJGD0Sa46Q+9Qi9pGHih5oiw/jrOmHrM/o/cHIdNFJpHsX/sp
-         OpSA==
-X-Gm-Message-State: AOAM531ntFj/yzHl4OlqzsZosUAmArIvv+XPPDl31UUqoLJMMEGXzHRV
-        ANkSdzpWmFn42xHqn409LFTogQ==
-X-Google-Smtp-Source: ABdhPJydmHBLdYGZ806rSsmrNTgmWWvO9B0B1rmVcJM9THK88hoR6AIbtcF5apFDFRDUXuwolLnX+g==
-X-Received: by 2002:a17:90a:4586:: with SMTP id v6mr2402677pjg.36.1627003805157;
-        Thu, 22 Jul 2021 18:30:05 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id z15sm35760876pgc.13.2021.07.22.18.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 18:30:04 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 07:00:00 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH V2 5/5] virtio: Bind virtio device to device-tree node
-Message-ID: <20210723013000.h43nfnrrichg6nap@vireshk-i7>
-References: <cover.1626947324.git.viresh.kumar@linaro.org>
- <026ad5f274d64d46590623f9f3a04b8abfbe62d7.1626947324.git.viresh.kumar@linaro.org>
- <CAK8P3a0iQ5dt_38Y9j6XCoj=n7YA+cPz7i6mjP24k9WY7QL+oA@mail.gmail.com>
+        id S233099AbhGWAuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:50:55 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:34170 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232992AbhGWAuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 20:50:55 -0400
+Received: from BC-Mail-Ex27.internal.baidu.com (unknown [172.31.51.21])
+        by Forcepoint Email with ESMTPS id CAD2866F9C9FEE926CA;
+        Fri, 23 Jul 2021 09:30:57 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex27.internal.baidu.com (172.31.51.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 23 Jul 2021 09:30:57 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
+ BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
+ 15.01.2308.014; Fri, 23 Jul 2021 09:30:57 +0800
+From:   "Cai,Huoqing" <caihuoqing@baidu.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "jonathan.derrick@intel.com" <jonathan.derrick@intel.com>,
+        "kw@linux.com" <kw@linux.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 0/2] PCI: Make use of PCI_DEVICE_XXX() helper function
+Thread-Topic: [PATCH 0/2] PCI: Make use of PCI_DEVICE_XXX() helper function
+Thread-Index: AQHXfutlH33bL9BhfEO2Qe6OtAUea6tOr/GAgAEQVdA=
+Date:   Fri, 23 Jul 2021 01:30:57 +0000
+Message-ID: <e31495411e8b41f785dd619f51c0f5cc@baidu.com>
+References: <20210722111903.432-1-caihuoqing@baidu.com>
+ <20210722165225.GA316118@bjorn-Precision-5520>
+In-Reply-To: <20210722165225.GA316118@bjorn-Precision-5520>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.18.18.94]
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a0iQ5dt_38Y9j6XCoj=n7YA+cPz7i6mjP24k9WY7QL+oA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-07-21, 16:52, Arnd Bergmann wrote:
-> On Thu, Jul 22, 2021 at 11:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > +/* Virtio device compatibles and IDs */
-> > +static const struct of_device_id of_virtio_devices[] = {
-> > +       { .compatible = "virtio,22", .data = (void *)VIRTIO_ID_I2C_ADAPTER },
-> > +       { .compatible = "virtio,29", .data = (void *)VIRTIO_ID_GPIO },
-> > +       { }
-> > +};
-> > +
-> > +static int virtio_device_of_init(struct virtio_device *dev)
-> > +{
-> > +       struct device_node *np, *pnode = dev->dev.parent->of_node;
-> > +       const struct of_device_id *match;
-> > +       int ret, count;
-> > +
-> > +       if (!pnode)
-> > +               return 0;
-> > +
-> > +       count = of_get_available_child_count(pnode);
-> > +       if (!count)
-> > +               return 0;
-> > +
-> > +       /* There can be only 1 child node */
-> > +       if (WARN_ON(count > 1))
-> > +               return -EINVAL;
-> > +
-> > +       np = of_get_next_available_child(pnode, NULL);
-> > +       if (WARN_ON(!np))
-> > +               return -ENODEV;
-> > +
-> > +       match = of_match_node(of_virtio_devices, np);
-> > +       if (!match) {
-> > +               ret = -ENODEV;
-> > +               goto out;
-> > +       }
-> 
-> I think it would be better not to have to enumerate the of_virtio_devices[]
-> strings, but instead use of_device_is_compatible() to match against
-> "virtio,%d". Otherwise we end up modifying this function for every
-> virtio driver that needs a binding.
-
-Yeah, will do that.
-
--- 
-viresh
+SGVsbG8NCglJIGdldCBpdCBhbmQgd2lsbCBzZW5kIHBhdGNoIFBBVENIIGFnYWluLg0KDQpUSFgN
+Cg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEJqb3JuIEhlbGdhYXMgPGhlbGdh
+YXNAa2VybmVsLm9yZz4gDQpTZW50OiAyMDIxxOo31MIyM8jVIDA6NTINClRvOiBDYWksSHVvcWlu
+ZyA8Y2FpaHVvcWluZ0BiYWlkdS5jb20+DQpDYzogYmhlbGdhYXNAZ29vZ2xlLmNvbTsgam9uYXRo
+YW4uZGVycmlja0BpbnRlbC5jb207IGt3QGxpbnV4LmNvbTsgb25hdGhhbi5kZXJyaWNrQGludGVs
+LmNvbTsgbG9yZW56by5waWVyYWxpc2lAYXJtLmNvbTsgcm9iaEBrZXJuZWwub3JnOyBsaW51eC1w
+Y2lAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0
+OiBSZTogW1BBVENIIDAvMl0gUENJOiBNYWtlIHVzZSBvZiBQQ0lfREVWSUNFX1hYWCgpIGhlbHBl
+ciBmdW5jdGlvbg0KDQpPbiBUaHUsIEp1bCAyMiwgMjAyMSBhdCAwNzoxOTowMVBNICswODAwLCBD
+YWkgSHVvcWluZyB3cm90ZToNCj4gQ291bGQgbWFrZSB1c2Ugb2YgUENJX0RFVklDRV9YWFgoKSBo
+ZWxwZXIgZnVuY3Rpb24NCj4gDQo+IENhaSBIdW9xaW5nICgyKToNCj4gICBQQ0k6IE1ha2UgdXNl
+IG9mIFBDSV9ERVZJQ0VfU1VCL19DTEFTUygpIGhlbHBlciBmdW5jdGlvbg0KPiAgIFBDSTogdm1k
+OiBNYWtlIHVzZSBvZiBQQ0lfREVWSUNFX0RBVEEoKSBoZWxwZXIgZnVuY3Rpb24NCj4gDQo+ICBk
+cml2ZXJzL3BjaS9jb250cm9sbGVyL3ZtZC5jICAgICAgfCAzOCArKysrKysrKysrKysrKystLS0t
+LS0tLS0tLS0tLS0tDQo+ICBkcml2ZXJzL3BjaS9ob3RwbHVnL2NwcXBocF9jb3JlLmMgfCAxMyAr
+Ky0tLS0tLS0tLQ0KPiAgZHJpdmVycy9wY2kvc2VhcmNoLmMgICAgICAgICAgICAgIHwgMTQgKyst
+LS0tLS0tLS0tDQo+ICBpbmNsdWRlL2xpbnV4L3BjaV9pZHMuaCAgICAgICAgICAgfCAgMiArKw0K
+PiAgNCBmaWxlcyBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspLCA0MiBkZWxldGlvbnMoLSkNCg0K
+V2hlbiB5b3UgZml4IHRoZSBwcm9ibGVtIGJlbG93LCBhbHNvOg0KDQpzL01ha2UgdXNlIG9mL1Vz
+ZS8NCg0KVXBkYXRlIGNvbW1pdCBsb2cgdG8gc2F5IHdoYXQgdGhlIHBhdGNoIGRvZXMuICBTZWUg
+aHR0cHM6Ly9jaHJpcy5iZWFtcy5pby9wb3N0cy9naXQtY29tbWl0LyBmb3IgaGludHMuDQpBZGQg
+cGVyaW9kIGF0IGVuZCBvZiBzZW50ZW5jZXMuDQoNCkkgZG9uJ3Qgc2VlIGV4YWN0bHkgd2hhdCdz
+IHdyb25nLCBidXQgdGhpcyBzZXJpZXMgZG9lc24ndCBhcHBseSBjbGVhbmx5LiAgSSdtIHVzaW5n
+IGI0IHRvIGZldGNoIHRoZSBzZXJpZXMuICBiNCBpcyBmcm9tIGh0dHBzOi8vZ2l0Lmtlcm5lbC5v
+cmcvcHViL3NjbS91dGlscy9iNC9iNC5naXQNCg0KICAxMTo0NzowNCB+L2xpbnV4IChtYWluKSQg
+Z2l0IGNoZWNrb3V0IC1iIHdpcC9jYWkgdjUuMTQtcmMxDQogIFN3aXRjaGVkIHRvIGEgbmV3IGJy
+YW5jaCAnd2lwL2NhaScNCiAgMTE6NDc6MTcgfi9saW51eCAod2lwL2NhaSkkIGI0IGFtIC1vbS8g
+MjAyMTA3MjIxMTE5MDMuNDMyLTEtY2FpaHVvcWluZ0BiYWlkdS5jb20NCiAgTG9va2luZyB1cCBo
+dHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwNzIyMTExOTAzLjQzMi0xLWNhaWh1b3Fpbmcl
+NDBiYWlkdS5jb20NCiAgR3JhYmJpbmcgdGhyZWFkIGZyb20gbG9yZS5rZXJuZWwub3JnL2xpbnV4
+LXBjaQ0KICBBbmFseXppbmcgMyBtZXNzYWdlcyBpbiB0aGUgdGhyZWFkDQogIC0tLQ0KICBXcml0
+aW5nIG0vMjAyMTA3MjJfY2FpaHVvcWluZ19wY2lfbWFrZV91c2Vfb2ZfcGNpX2RldmljZV94eHhf
+aGVscGVyX2Z1bmN0aW9uLm1ieA0KICAgIFtQQVRDSCAxLzJdIFBDSTogTWFrZSB1c2Ugb2YgUENJ
+X0RFVklDRV9TVUIvX0NMQVNTKCkgaGVscGVyIGZ1bmN0aW9uDQogICAgW1BBVENIIDIvMl0gUENJ
+OiB2bWQ6IE1ha2UgdXNlIG9mIFBDSV9ERVZJQ0VfREFUQSgpIGhlbHBlciBmdW5jdGlvbg0KICAt
+LS0NCiAgVG90YWwgcGF0Y2hlczogMg0KICAtLS0NCiAgQ292ZXI6IG0vMjAyMTA3MjJfY2FpaHVv
+cWluZ19wY2lfbWFrZV91c2Vfb2ZfcGNpX2RldmljZV94eHhfaGVscGVyX2Z1bmN0aW9uLmNvdmVy
+DQogICBMaW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjEwNzIyMTExOTAzLjQzMi0x
+LWNhaWh1b3FpbmdAYmFpZHUuY29tDQogICBCYXNlOiBub3QgZm91bmQgKGFwcGxpZXMgY2xlYW4g
+dG8gY3VycmVudCB0cmVlKQ0KCSBnaXQgYW0gbS8yMDIxMDcyMl9jYWlodW9xaW5nX3BjaV9tYWtl
+X3VzZV9vZl9wY2lfZGV2aWNlX3h4eF9oZWxwZXJfZnVuY3Rpb24ubWJ4DQogIDExOjQ3OjQ1IH4v
+bGludXggKHdpcC9jYWkpJCBnaXQgYW0gbS8yMDIxMDcyMl9jYWlodW9xaW5nX3BjaV9tYWtlX3Vz
+ZV9vZl9wY2lfZGV2aWNlX3h4eF9oZWxwZXJfZnVuY3Rpb24ubWJ4DQogIEFwcGx5aW5nOiBQQ0k6
+IE1ha2UgdXNlIG9mIFBDSV9ERVZJQ0VfU1VCL19DTEFTUygpIGhlbHBlciBmdW5jdGlvbg0KICBl
+cnJvcjogcGF0Y2ggZmFpbGVkOiBkcml2ZXJzL3BjaS9ob3RwbHVnL2NwcXBocF9jb3JlLmM6MTM1
+Nw0KICBlcnJvcjogZHJpdmVycy9wY2kvaG90cGx1Zy9jcHFwaHBfY29yZS5jOiBwYXRjaCBkb2Vz
+IG5vdCBhcHBseQ0KICBlcnJvcjogcGF0Y2ggZmFpbGVkOiBkcml2ZXJzL3BjaS9zZWFyY2guYzoz
+MDMNCiAgZXJyb3I6IGRyaXZlcnMvcGNpL3NlYXJjaC5jOiBwYXRjaCBkb2VzIG5vdCBhcHBseQ0K
+ICBQYXRjaCBmYWlsZWQgYXQgMDAwMSBQQ0k6IE1ha2UgdXNlIG9mIFBDSV9ERVZJQ0VfU1VCL19D
+TEFTUygpIGhlbHBlciBmdW5jdGlvbg0KICBoaW50OiBVc2UgJ2dpdCBhbSAtLXNob3ctY3VycmVu
+dC1wYXRjaCcgdG8gc2VlIHRoZSBmYWlsZWQgcGF0Y2gNCiAgV2hlbiB5b3UgaGF2ZSByZXNvbHZl
+ZCB0aGlzIHByb2JsZW0sIHJ1biAiZ2l0IGFtIC0tY29udGludWUiLg0KICBJZiB5b3UgcHJlZmVy
+IHRvIHNraXAgdGhpcyBwYXRjaCwgcnVuICJnaXQgYW0gLS1za2lwIiBpbnN0ZWFkLg0KICBUbyBy
+ZXN0b3JlIHRoZSBvcmlnaW5hbCBicmFuY2ggYW5kIHN0b3AgcGF0Y2hpbmcsIHJ1biAiZ2l0IGFt
+IC0tYWJvcnQiLg0KDQo=
