@@ -2,92 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0903D3AAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6823D3A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhGWMPZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 08:15:25 -0400
-Received: from mslow1.mail.gandi.net ([217.70.178.240]:34173 "EHLO
-        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234909AbhGWMPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:15:24 -0400
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id 779EBC989F
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:46:19 +0000 (UTC)
-Received: (Authenticated sender: gregory.clement@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E5647C0006;
-        Fri, 23 Jul 2021 12:45:56 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 mvebu 0/4] firmware: turris-mox-rwtm: fixups
-In-Reply-To: <20210707181452.zwnltjqssotzc67v@pali>
-References: <20210308153703.23097-1-kabel@kernel.org>
- <20210520113520.32240-1-pali@kernel.org> <87sg1g1vys.fsf@BL-laptop>
- <20210707181452.zwnltjqssotzc67v@pali>
-Date:   Fri, 23 Jul 2021 14:45:56 +0200
-Message-ID: <87sg0519mj.fsf@BL-laptop>
+        id S234890AbhGWMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:05:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:45424 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234782AbhGWMFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 08:05:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A89DD6E;
+        Fri, 23 Jul 2021 05:46:20 -0700 (PDT)
+Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EE4D03F694;
+        Fri, 23 Jul 2021 05:46:18 -0700 (PDT)
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     coresight@lists.linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tamas.zsoldos@arm.com, al.grant@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
+        jinlmao@qti.qualcomm.com
+Subject: [PATCH v2 00/10] coresight: TRBE and Self-Hosted trace fixes
+Date:   Fri, 23 Jul 2021 13:46:01 +0100
+Message-Id: <20210723124611.3828908-1-suzuki.poulose@arm.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pali,
+This series fixes the following issues with the TRBE and Self-Hosted
+trace for CoreSight.
 
-> Hello Gregory!
->
-> I see that you put this patch into mvebu/fixes branch and tagged it for
-> 5.13 kernel:
-> https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/tag/?h=mvebu-fixes-5.13-1
->
-> But it looks like it was not merged into 5.13. Are you going to re-send
-> all pending patches to 5.14?
+The Self-hosted trace filter control registers are now save-restored
+across CPU PM event. And more importantly the Trace Filtering is now
+used to control per ETM session (rather than allowing the trace
+throughout the life time of the system). i.e, ETM configuration of
+the given run is used to enforce trace filtering (TRFCR) along with the
+Trace Exclusion controls in TRCVICTLR.
 
-They have been merged in 5.14 during merged windows and they are now
-also in 5.13.4. So I think everything is OK now.
+For the TRBE, we were using the TRUNCATED flag in the AUX buffer on
+every IRQ to indicate that we may have lost a few bytes of trace. But
+this causes the event to be disabled until the userspace re-enables
+it back, even when there is space left in the ring buffer. To make
+things worse, we were restarting the AUX handle, which would soon
+be disabled, potentially creating 0 sized records (without truncation),
+which the perf tool tends to ignore. This might cause the event to be
+disabled permanently. Also, sometimes we leave the buffer TRUNCATED,
+but delay the closing of the handle to event schedule out, which could
+cause significant black out in the trace capture. This was reported
+by Tamas Zsoldos.
 
-Gregory
+This series removes the use of TRUNCATED flag for every IRQ. Instead,
+it is only used if we really run out of space in the buffer. And also
+we make sure the "handle" is closed immediately on TRUNCATED case,
+which triggers the userspace to take action. The core perf layer has
+been hardened to handle this case where a "handle" is closed out.
+Finally, we make sure that the CPU trace is prohibited, when the TRBE
+is left disabled. The ETE/ETM driver will program the Trace Filtering
+appropriately since we do this dynamically now with the first half
+of the series.
 
->
-> On Thursday 17 June 2021 15:06:51 Gregory CLEMENT wrote:
->> Hello,
->> 
->> Series applied on mvebu/fixes
->> 
->> Thanks,
->> 
->> Gregory
->> 
->> > These 4 patches are just fixups. Per Andrew's request I have split them
->> > from V3 series, so they can be applied to stable.
->> >
->> > Marek Behún (2):
->> >   firmware: turris-mox-rwtm: fix reply status decoding function
->> >   firmware: turris-mox-rwtm: report failures better
->> >
->> > Pali Rohár (2):
->> >   firmware: turris-mox-rwtm: fail probing when firmware does not support
->> >     hwrng
->> >   firmware: turris-mox-rwtm: show message about HWRNG registration
->> >
->> >  drivers/firmware/turris-mox-rwtm.c | 55 +++++++++++++++++++++++++-----
->> >  1 file changed, 47 insertions(+), 8 deletions(-)
->> >
->> > -- 
->> > 2.20.1
->> >
->> 
->> -- 
->> Gregory Clement, Bootlin
->> Embedded Linux and Kernel engineering
->> http://bootlin.com
+
+Changes since v1 [0]:
+  - Moved TRFCR related accessors to a new header file
+  - Following a discussion, dropped the TRUNCATED flag from
+    the TRBE IRQ handler on WRAP. Instead mark COLLISION.
+  - Added new patches to harden the ETM perf layer to handle
+    an error in the sink driver.
+  - Fix TRBE spurious IRQ handling
+  - Cleanup TRBE driver to make the "TRUNCATE" cases managed
+    at a central place.
+
+
+[0] https://lkml.kernel.org/r/20210712113830.2803257-1-suzuki.poulose@arm.com
+
+Suzuki K Poulose (10):
+  coresight: etm4x: Save restore TRFCR_EL1
+  coresight: etm4x: Use Trace Filtering controls dynamically
+  coresight: etm-pmu: Ensure the AUX handle is valid
+  coresight: trbe: Ensure the format flag is set on truncation
+  coresight: trbe: Drop duplicate TRUNCATE flags
+  coresight: trbe: Fix handling of spurious interrupts
+  coresight: trbe: Do not truncate buffer on IRQ
+  coresight: trbe: Unify the enabling sequence
+  coresight: trbe: End the AUX handle on truncation
+  coresight: trbe: Prohibit trace before disabling TRBE
+
+ .../hwtracing/coresight/coresight-etm-perf.c  |  27 ++++-
+ .../coresight/coresight-etm4x-core.c          |  98 ++++++++++++----
+ drivers/hwtracing/coresight/coresight-etm4x.h |   7 +-
+ .../coresight/coresight-self-hosted-trace.h   |  34 ++++++
+ drivers/hwtracing/coresight/coresight-trbe.c  | 109 ++++++++++--------
+ 5 files changed, 197 insertions(+), 78 deletions(-)
+ create mode 100644 drivers/hwtracing/coresight/coresight-self-hosted-trace.h
 
 -- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.24.1
+
