@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC333D4071
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C05F33D4076
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhGWSQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 14:16:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhGWSQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:16:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C4F160F23;
-        Fri, 23 Jul 2021 18:56:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627066599;
-        bh=X1Y5jRGM8rZJoda6qzzReNjRoRKFhTGjPw+WwpzIAi8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kvmjh3ylBuQCqhqELcKoE+IywK4tjXA9Ab2B3uhq4oxyn6DYckveWcXy7kkiow6cP
-         2Q7ViRjDXqKJ1dJFkw3JvNiNCLrZXLCUgdN7jqqK5USfGaVDnZjfHf6ArRhb3VJHmF
-         J3EgEVuDY09mYTuqq3klLXvXwDUNpmg4frwokwPAC4/Bm9Fs0LLDfNZxcPTcYoCi/f
-         HsRTbk61T3qfWdQHdjMj4PG1+w9sIIMU0WVyN9aJkHJN5Buk86VVNrGft2ay194QEw
-         wtKznB9InW6LTYZFwgEAd/NrsbiaZSfhEghckflF1vOCNJ2MTi2NGS6BUHvDkYnSuo
-         h/5OU3/Q9xVIw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9C57F403F2; Fri, 23 Jul 2021 15:56:36 -0300 (-03)
-Date:   Fri, 23 Jul 2021 15:56:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Subject: Re: [PATCH 4/7] perf doc: Add info pages to all target.
-Message-ID: <YPsQ5En9N7xG1Cya@kernel.org>
-References: <20210715013343.2286699-1-irogers@google.com>
- <20210715013343.2286699-5-irogers@google.com>
- <YPsKLa0Qe5/as4Jh@kernel.org>
- <YPsQGZOXqoy7Tfe6@kernel.org>
+        id S229964AbhGWSRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 14:17:37 -0400
+Received: from mta-06-3.privateemail.com ([198.54.127.59]:11710 "EHLO
+        MTA-06-3.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhGWSRf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 14:17:35 -0400
+X-Greylist: delayed 27242 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Jul 2021 14:17:35 EDT
+Received: from mta-06.privateemail.com (localhost [127.0.0.1])
+        by mta-06.privateemail.com (Postfix) with ESMTP id 636EA18000B4;
+        Fri, 23 Jul 2021 14:58:08 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.219])
+        by mta-06.privateemail.com (Postfix) with ESMTPA id 80E83180009F;
+        Fri, 23 Jul 2021 14:58:07 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+        Hamza Mahfooz <someguy@effective-light.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
+Subject: [PATCH v3] HID: logitech-hidpp: battery: provide CAPACITY property for newer devices
+Date:   Fri, 23 Jul 2021 14:57:20 -0400
+Message-Id: <20210723185720.29314-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YPsQGZOXqoy7Tfe6@kernel.org>
-X-Url:  http://acmel.wordpress.com
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jul 23, 2021 at 03:53:14PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Jul 23, 2021 at 03:27:57PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Wed, Jul 14, 2021 at 06:33:40PM -0700, Ian Rogers escreveu:
-> > > Enabled to ensure that info pages build.
-> > 
-> > How did you test this? I tried installing texinfo, that is where
-> > makeinfo belongs:
-> > 
-> > ⬢[acme@toolbox perf]$ rpm -qf /usr/bin/makeinfo
-> > texinfo-6.7-10.fc34.x86_64
-> > ⬢[acme@toolbox perf]$ rpm -q texinfo
-> > texinfo-6.7-10.fc34.x86_64
-> > ⬢[acme@toolbox perf]$
-> > 
-> > And then:
-> > 
-> > ⬢[acme@toolbox perf]$ make -C tools/perf O=/tmp/build/perf install-doc
-> > make: Entering directory '/var/home/acme/git/perf/tools/perf'
-> >   BUILD:   Doing 'make -j24' parallel build
-> >   INSTALL Documentation-man
-> > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-> > ⬢[acme@toolbox perf]$
-> 
-> Also:
+For devices that only support the BATTERY_VOLTAGE (0x1001) feature, UPower
+requires the additional information provided by this patch, to set them up.
 
-We get closer if we do:
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+---
 
-⬢[acme@toolbox perf]$ make -C tools/perf/Documentation/ install-info
-make: Entering directory '/var/home/acme/git/perf/tools/perf/Documentation'
-  ASCIIDOC perf.xml
-  DB2TEXI  perf.texi
-/bin/sh: line 2: docbook2x-texi: command not found
-make: *** [Makefile:289: perf.texi] Error 127
-make: Leaving directory '/var/home/acme/git/perf/tools/perf/Documentation'
-⬢[acme@toolbox perf]$
+v2: use ARRAY_SIZE() and set voltages[]'s size to 100
 
-- Arnaldo
+v3: add a check to ensure that exactly 100 elements are in voltages[]
+---
+ drivers/hid/hid-logitech-hidpp.c | 32 +++++++++++++++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 61635e629469..4921823144de 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -1331,6 +1331,33 @@ static int hidpp20_battery_get_battery_voltage(struct hidpp_device *hidpp,
+ 	return 0;
+ }
+ 
++static int hidpp20_map_battery_capacity(int voltage)
++{
++	static const int voltages[] = {
++		4186, 4156, 4143, 4133, 4122, 4113, 4103, 4094, 4086, 4075,
++		4067, 4059, 4051, 4043, 4035, 4027, 4019, 4011, 4003, 3997,
++		3989, 3983, 3976, 3969, 3961, 3955, 3949, 3942, 3935, 3929,
++		3922, 3916, 3909, 3902, 3896, 3890, 3883, 3877, 3870, 3865,
++		3859, 3853, 3848, 3842, 3837, 3833, 3828, 3824, 3819, 3815,
++		3811, 3808, 3804, 3800, 3797, 3793, 3790, 3787, 3784, 3781,
++		3778, 3775, 3772, 3770, 3767, 3764, 3762, 3759, 3757, 3754,
++		3751, 3748, 3744, 3741, 3737, 3734, 3730, 3726, 3724, 3720,
++		3717, 3714, 3710, 3706, 3702, 3697, 3693, 3688, 3683, 3677,
++		3671, 3666, 3662, 3658, 3654, 3646, 3633, 3612, 3579, 3537
++	};
++
++	int i;
++
++	BUILD_BUG_ON(ARRAY_SIZE(voltages) != 100);
++
++	for (i = 0; i < ARRAY_SIZE(voltages); i++) {
++		if (voltage >= voltages[i])
++			return ARRAY_SIZE(voltages) - i;
++	}
++
++	return 0;
++}
++
+ static int hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
+ {
+ 	u8 feature_type;
+@@ -1354,6 +1381,7 @@ static int hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
+ 
+ 	hidpp->battery.status = status;
+ 	hidpp->battery.voltage = voltage;
++	hidpp->battery.capacity = hidpp20_map_battery_capacity(voltage);
+ 	hidpp->battery.level = level;
+ 	hidpp->battery.charge_type = charge_type;
+ 	hidpp->battery.online = status != POWER_SUPPLY_STATUS_NOT_CHARGING;
+@@ -1378,6 +1406,7 @@ static int hidpp20_battery_voltage_event(struct hidpp_device *hidpp,
+ 
+ 	if (voltage != hidpp->battery.voltage || status != hidpp->battery.status) {
+ 		hidpp->battery.voltage = voltage;
++		hidpp->battery.capacity = hidpp20_map_battery_capacity(voltage);
+ 		hidpp->battery.status = status;
+ 		hidpp->battery.level = level;
+ 		hidpp->battery.charge_type = charge_type;
+@@ -3717,7 +3746,8 @@ static int hidpp_initialize_battery(struct hidpp_device *hidpp)
+ 	num_battery_props = ARRAY_SIZE(hidpp_battery_props) - 3;
+ 
+ 	if (hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_MILEAGE ||
+-	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE)
++	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE ||
++	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_VOLTAGE)
+ 		battery_props[num_battery_props++] =
+ 				POWER_SUPPLY_PROP_CAPACITY;
+ 
+-- 
+2.32.0
+
