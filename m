@@ -2,75 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135FB3D42FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6B53D4303
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbhGWVyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 17:54:44 -0400
-Received: from mail-il1-f173.google.com ([209.85.166.173]:38405 "EHLO
-        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhGWVyj (ORCPT
+        id S232909AbhGWV7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 17:59:21 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46200 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231954AbhGWV7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 17:54:39 -0400
-Received: by mail-il1-f173.google.com with SMTP id h18so2932086ilc.5;
-        Fri, 23 Jul 2021 15:35:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qQxdLWyho3xwmuPp6KfF8mLtCmH5RhCLEXgrlUIh/L4=;
-        b=H4ypIUhj7MlTM59SbeUerL+Z+usfCzsHARrxvGI6jc15ERz8WafQbdXPkBx0kGdXLZ
-         UvuopZ18GQB0jjbYr/BxoHEk8T6H5JPqhiHYDabBQq18Dn1Mw6sF6j6z65Yky/jwcuR2
-         uyhQTn1hMfs2TWGKUmadoOzOPtGXMF3HdM9WCbg2DFXJ03RLxuf2ou9FKH+kz+JgDSkZ
-         y4YVjFzJYmEV5BvNy1tXwyxQr4nVGe++4C2Bifx4kSakvP3B1ZMNm3k91v6bv9jlrs3p
-         REAd4IjdVnXrsVGK6ZMw0LIPVpncxBRsVeMfY0sVJH2GPe7kt8vnw0egPyGyO0XLiRtY
-         Uliw==
-X-Gm-Message-State: AOAM533zEwRQcLmfFLU7puEyfbrXuoM2UJ2bPOXDD3O6OkrdEIgN4fhc
-        9jFUzT+KQkRS9a6pUMLdHcwJz4dRMA==
-X-Google-Smtp-Source: ABdhPJwnp4BikKGksewDt2ZQql8uFbKwYjGumMljGC6abLtrr1kYbw/PexQnnWka1sOkOVsA94jrDg==
-X-Received: by 2002:a92:505:: with SMTP id q5mr4606791ile.139.1627079711667;
-        Fri, 23 Jul 2021 15:35:11 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id k4sm5340302ilu.67.2021.07.23.15.35.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 15:35:11 -0700 (PDT)
-Received: (nullmailer pid 2726106 invoked by uid 1000);
-        Fri, 23 Jul 2021 22:35:08 -0000
-Date:   Fri, 23 Jul 2021 16:35:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Viktor Prutyanov <viktor.prutyanov@phystech.edu>
-Cc:     linux-media@vger.kernel.org, khilman@baylibre.com,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        martin.blumenstingl@googlemail.com, linux-kernel@vger.kernel.org,
-        rockosov@gmail.com, narmstrong@baylibre.com,
-        devicetree@vger.kernel.org, jbrunet@baylibre.com,
-        linux-amlogic@lists.infradead.org, sean@mess.org,
-        mchehab@kernel.org
-Subject: Re: [PATCH v7 1/2] media: rc: meson-ir-tx: document device tree
- bindings
-Message-ID: <20210723223508.GA2726071@robh.at.kernel.org>
-References: <20210719170506.13539-1-viktor.prutyanov@phystech.edu>
- <20210719170506.13539-2-viktor.prutyanov@phystech.edu>
+        Fri, 23 Jul 2021 17:59:20 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 956E220003;
+        Fri, 23 Jul 2021 22:39:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627079992; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QbWYyES6yS++/mUvpq0fraCgAR+v/Vi0waf2hTVIYvE=;
+        b=gm4Qunmbzdnr9wPkLmyedqU1KtOn4+1yS2bGlDPXRzPVS/lUQjPPfKT3lptFQxEkC1aD1P
+        +UiqP46Ki9fsxQjOUCBcKc/Ig1/2kuyiF16c8q73hU0xgEVkCZBKaGYxjHaDLYgM140OXH
+        Owo6QPc7gV5vCzhJrEAE3jJhSkrilCk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627079992;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QbWYyES6yS++/mUvpq0fraCgAR+v/Vi0waf2hTVIYvE=;
+        b=kntTgiACfht19gsWcNjjszTL3IcuWcYSUi2FWfZYENqmKBqHAA1FNc1lH9DtLWYh7GZWn6
+        xdexpDdbl3s9s9CA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 6A69713697;
+        Fri, 23 Jul 2021 22:39:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id MjSEGDhF+2CHBQAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Fri, 23 Jul 2021 22:39:52 +0000
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+To:     Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+ <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+ <878s2fnv79.ffs@nanos.tec.linutronix.de>
+ <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+ <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+ <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
+ <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
+ <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
+ <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
+ <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <5be1a703-9a0a-4115-1d69-634e5e8ecefd@suse.cz>
+Date:   Sat, 24 Jul 2021 00:39:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210719170506.13539-2-viktor.prutyanov@phystech.edu>
+In-Reply-To: <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Jul 2021 20:05:05 +0300, Viktor Prutyanov wrote:
-> This patch adds binding documentation for the IR transmitter
-> available in Amlogic Meson SoCs.
+On 7/21/21 11:33 AM, Mike Galbraith wrote:
+> On Wed, 2021-07-21 at 10:44 +0200, Vlastimil Babka wrote:
+>>
+>> So this doesn't look like our put_cpu_partial() preempted a
+>> __slab_alloc() on the same cpu, right?
 > 
-> Signed-off-by: Viktor Prutyanov <viktor.prutyanov@phystech.edu>
+> No, likely it was the one preempted by someone long gone, but we'll
+> never know without setting a trap.
+> 
+>> BTW did my ugly patch work?
+> 
+> Nope.  I guess you missed my reporting it to have been a -ENOBOOT, and
+
+Indeed, I misunderstood it as you talking about your patch.
+
+> that cutting it in half, ie snagging only __slab_free() does boot, and
+> seems to cure all of the RT fireworks.
+
+OK, so depending on drain=1 makes this apply only to put_cpu_partial()
+called from __slab_free and not get_partial_node(). One notable
+difference is that in __slab_free we don't have n->list_lock locked and
+in get_partial_node() we do. I guess in case your list_lock is made raw
+again by another patch, that explains a local_lock can't nest under it.
+If not, then I would expect this to work (I don't think they ever nest
+in the opposite order, also lockdep should tell us instead of
+-ENOBOOT?), but might be missing something...
+
+I'd rather not nest those locks in any case. I just need to convince
+myself that the scenario the half-fix fixes is indeed the only one
+that's needed and we're not leaving there other races that are just
+harder to trigger...
+
+> (chainsaw noises...)
+> 
 > ---
->  changes in v7:
->   - fifo-threshold property removed
+>  mm/slub.c |   12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
 > 
->  .../bindings/media/amlogic,meson-ir-tx.yaml   | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/amlogic,meson-ir-tx.yaml
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2551,6 +2551,8 @@ static void put_cpu_partial(struct kmem_
+>  	int pobjects;
+> 
+>  	slub_get_cpu_ptr(s->cpu_slab);
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
+> +		local_lock(&s->cpu_slab->lock);
+>  	do {
+>  		pages = 0;
+>  		pobjects = 0;
+> @@ -2564,7 +2566,13 @@ static void put_cpu_partial(struct kmem_
+>  				 * partial array is full. Move the existing
+>  				 * set to the per node partial list.
+>  				 */
+> -				unfreeze_partials(s);
+> +				this_cpu_write(s->cpu_slab->partial, NULL);
+> +				if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
+> +					local_unlock(&s->cpu_slab->lock);
+> +				__unfreeze_partials(s, oldpage);
+> +				if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
+> +					local_lock(&s->cpu_slab->lock);
+> +
+>  				oldpage = NULL;
+>  				pobjects = 0;
+>  				pages = 0;
+> @@ -2581,6 +2589,8 @@ static void put_cpu_partial(struct kmem_
+> 
+>  	} while (this_cpu_cmpxchg(s->cpu_slab->partial, oldpage, page)
+>  								!= oldpage);
+> +	if (IS_ENABLED(CONFIG_PREEMPT_RT) && drain)
+> +		local_unlock(&s->cpu_slab->lock);
+>  	slub_put_cpu_ptr(s->cpu_slab);
+>  #endif	/* CONFIG_SLUB_CPU_PARTIAL */
+>  }
+> 
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
