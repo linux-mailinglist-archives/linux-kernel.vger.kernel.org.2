@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005C53D4141
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EBB3D4144
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhGWTYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
+        id S230312AbhGWTZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWTYs (ORCPT
+        with ESMTP id S229461AbhGWTZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:24:48 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B640C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:05:20 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id jg2so490997ejc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:05:20 -0700 (PDT)
+        Fri, 23 Jul 2021 15:25:13 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99D3C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:05:46 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id l19so3876845pjz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:05:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dKfZJzmgYM4v7FSlpjixVJeClMSClzb6wXHe0cNnptQ=;
-        b=r66i3EYsscVfxz7XCSgGC05YmHMXJdD0NncOapBEAkmZMM4aD3M/5R3TZ2jedfim1v
-         gTmBn9WAEw88TdyEISAdY4sioV/UESRKF2f/sgIWqK/w2r/+Nz3mhigXLj2VDI0R8rA5
-         5LNQbi2zg0MWsrJN3tTFHsF9evI17yWYkeVYYeIkAGqypUP5/O8MBYIUGQ9iCxUbJfVw
-         rb2PXUl9j/AzcnAi15VWHQG4IOSgt513j1F9cT4ovhcxU+I5kIOkVb4SjW+tKa12FvbA
-         rTYX8Y8T6JvRkPGdIlFps6Ht3L23ywkfVACjPLMpYmtkHRDPqsJh0+Wx978fQFO0cgM8
-         vKYQ==
+        bh=MokFZ3XwIYDGK3TvGYmwLd67Cho0JHFpBfKcy8kgS/E=;
+        b=TALKbKTXJQE0MAbYnhH22NMWCcV22z/A4T6qDbn8kltVxqXbitgJo0VvXyQYc/16Uk
+         WK0V/XKMQO9SUALpbkX3SKDGMCLkOMH5ZpWSoTTkNz2bcDSWueM1DL+R6D4MvyITIPzU
+         tPzecDlxqdLqRTR4XtKWrdUZZOeWEIkZJYhww=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dKfZJzmgYM4v7FSlpjixVJeClMSClzb6wXHe0cNnptQ=;
-        b=UcjpSq3ymZORKQMyl6yHhJ8APv91DcyyL0eGDoAdtInaVteRR9Os8DB2kxOxf9RCip
-         k4Mt7rkvihts6Aw4L7NIMV4Hu/e1pDiH7eQTfij9Q4Tj0rw+up2B24Xx2BkjBRAaZKOS
-         S5RA0lcRyqtqENvygy20lwZbQyEQWpNyVEvETOrdfbEWAiA5D681olYib3nirrINkKEy
-         1YB5Xcwk2VW8MLh+oDouzU2Ty+yZJ2af+Hi6qfk9LVBspcnMR8hC8+5of+rr0hhklaki
-         1EhtsN9O6UAjpTwhdw34G8+MMkpu3B7ioIAa7ysLh3TSBepi4dNmZu9VnSJkGUp6c0JC
-         96Tg==
-X-Gm-Message-State: AOAM533j0gPbs5aQwPTjH2vLJqa1DgmsRpMtIM9dLpvyhklDbeLZcbaL
-        ckEZWzR5f9WTLr8EGPdElIQ=
-X-Google-Smtp-Source: ABdhPJxjl+tW9A98iU/72hdTmj5eoft8okJd6zdND+L4+tVIjKc+eFMWJhBBvsBIMxsUhLmJGyHbdQ==
-X-Received: by 2002:a17:907:33cc:: with SMTP id zk12mr6230838ejb.168.1627070718886;
-        Fri, 23 Jul 2021 13:05:18 -0700 (PDT)
-Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
-        by smtp.gmail.com with ESMTPSA id p3sm11563422ejy.20.2021.07.23.13.05.17
+        bh=MokFZ3XwIYDGK3TvGYmwLd67Cho0JHFpBfKcy8kgS/E=;
+        b=ZAHRAoMNqptPa3xADUBhgTJQk2q043/a3XMbN/6QyMbw2XoJrJrjc0ry3bUo28X9aG
+         +vcEJoTuD1JGwo5w4WyvKdclJSh/y8zP6UNL5sSFhP/6kF+qRyKoheYGD69gvkBYgUyf
+         5fAwr2qzcI/6KWggLu8kd2q3wqWM3FTNKs2qf7eI+oQv+kJbl5WbPqdtpTFYdimxOusy
+         Tm+lCIAPB+pMwrtIINrIqlFs4l+/yr8WNtLSekUWobLIQIU03DhKkVgDuz2AM4fXp0s9
+         i42IJHs+S9UvIECpe7JpZHGAxKXueqxJtfm2PnwnRVWAHGbiiDnB66K9Oejuo7S7pQ1i
+         dbeQ==
+X-Gm-Message-State: AOAM530fx1+OTV5BUCs9/6DUQ3PlbAmAZsx8m6NmbnL5rNMOtL/biF+S
+        xDNN2iVcwGUgFxjsxZCvL0II6A==
+X-Google-Smtp-Source: ABdhPJwBPM5Ao2tmULZCEuJI7hT8hHtxHKagOdVZef1ACH97RkCuCRyo3h+6iAoMjEdIrpQWjRmgRQ==
+X-Received: by 2002:a17:90b:d8f:: with SMTP id bg15mr14882797pjb.152.1627070746241;
+        Fri, 23 Jul 2021 13:05:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ft7sm6905670pjb.32.2021.07.23.13.05.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 13:05:18 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH] staging: android: Remove set but unused variable in ashmem.c
-Date:   Fri, 23 Jul 2021 22:05:14 +0200
-Message-Id: <20210723200514.10139-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 23 Jul 2021 13:05:45 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] deprecated.rst: Include details on "no_hash_pointers"
+Date:   Fri, 23 Jul 2021 13:05:26 -0700
+Message-Id: <20210723200526.3424128-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1160; h=from:subject; bh=XsksPCw1yA95O9ZzuyNBJnhijqK4KBD6Xvu0NRJs8Rk=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBg+yEF8aLpeO+OrMt/e+urZLaswp4MJP/oyEPMNu6H KBseMGmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYPshBQAKCRCJcvTf3G3AJv3yD/ 0W0YGQwo/0I524Hb+oMrryi0N03lRdhbtLVmcxBCkLUobk/GcXkaoZTStFnvDt/dv4DGd802jWe7s6 yOMiLkJq9wBXgS9FctDKOfHq3oEjxAvkLYeHzWGf2gLOxwWwCat4kskiUIL9+yzk+vBu5Axk/WgunA p5hbyuY8CJ5EuJttn+LfoTBGCIOamoWVu3d3lDvjIcvnOh6WUCLkfgVMpPs/OmvYc11+G12hRgNpyR Mv3Ee149yZhz7T2fN5Ta0GMpaRcP2VnKioOkW4Mgzfz9ANZUM5vwVuqcPqXkUrrJGDIIN5kkDcoHn9 sceZ3tPlXgrNv1cHoXIgg1Y1UVQBV0HFAJI/Rc++e9NsOi3oGbbElUQssLWdK4Z3yWTV1pqW+v4j0Y c6hqqPGvjD7tqFdm4Vm5ECyWJyWRqHUUydIpAZmQGoQP6JGs2qdvWRZdLQfryAsRQuj5yYSTEhCNtt evlRjzb3o+9QVbJMhMHUbX839OYJRcxpcioDcgc3oFYCcXJKW240X1cB+DhAkZ9TrgC6WgtgWs8ZuP zyAMb7qCCWQgNkqrbdQlg3aYRXb9KvOZwvn7v7VHmD0XAKyEdFvLacSk+5Mp0Jt+pGboXx3JcthrIo Fa3k9jfQse8gXI0XcFHao61ukDD/ZsblgfaBbsKqw6gte2qmeWe1DxJVsdbw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove variable 'inode' tnat is set but unused. Issue detected
-by building with warning option -Wunused-but-set-variable.
+Linus decided a debug toggle for %p was tolerable, so update the
+%p deprecation documentation.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/staging/android/ashmem.c | 2 --
- 1 file changed, 2 deletions(-)
+ Documentation/process/deprecated.rst | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
-index ddbde3f8430e..606e988d3f63 100644
---- a/drivers/staging/android/ashmem.c
-+++ b/drivers/staging/android/ashmem.c
-@@ -406,7 +406,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
- 	if (!asma->file) {
- 		char *name = ASHMEM_NAME_DEF;
- 		struct file *vmfile;
--		struct inode *inode;
+diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+index 9d83b8db8874..8ced754a5a0f 100644
+--- a/Documentation/process/deprecated.rst
++++ b/Documentation/process/deprecated.rst
+@@ -164,7 +164,9 @@ Paraphrasing Linus's current `guidance <https://lore.kernel.org/lkml/CA+55aFwQEd
+   up to Linus's scrutiny, maybe you can use "%px", along with making sure
+   you have sensible permissions.
  
- 		if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0')
- 			name = asma->name;
-@@ -418,7 +417,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
- 			goto out;
- 		}
- 		vmfile->f_mode |= FMODE_LSEEK;
--		inode = file_inode(vmfile);
- 		lockdep_set_class(&inode->i_rwsem, &backing_shmem_inode_class);
- 		asma->file = vmfile;
- 		/*
+-And finally, know that a toggle for "%p" hashing will `not be accepted <https://lore.kernel.org/lkml/CA+55aFwieC1-nAs+NFq9RTwaR8ef9hWa4MjNBWL41F-8wM49eA@mail.gmail.com/>`_.
++If you are debugging something where "%p" hashing is causing problems,
++you can temporarily boot with the debug flag "`no_hash_pointers
++<https://git.kernel.org/linus/5ead723a20e0447bc7db33dc3070b420e5f80aa6>`_".
+ 
+ Variable Length Arrays (VLAs)
+ -----------------------------
 -- 
-2.32.0
+2.30.2
 
