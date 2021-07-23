@@ -2,100 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A9E3D3CDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8663D3CDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235672AbhGWPM5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 11:12:57 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:55297 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235578AbhGWPMr (ORCPT
+        id S235702AbhGWPNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235705AbhGWPNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:12:47 -0400
-Received: (Authenticated sender: clement.leger@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 779FE1BF20A;
-        Fri, 23 Jul 2021 15:53:16 +0000 (UTC)
-Date:   Fri, 23 Jul 2021 17:53:15 +0200
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 1/3] regmap: add regmap using ARM SMCCC
-Message-ID: <20210723175315.3eb149c7@fixe.home>
-In-Reply-To: <20210723144317.GF5221@sirena.org.uk>
-References: <20210723135239.388325-1-clement.leger@bootlin.com>
-        <20210723135239.388325-2-clement.leger@bootlin.com>
-        <20210723144317.GF5221@sirena.org.uk>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 23 Jul 2021 11:13:05 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762EDC0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:53:32 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id i39-20020a9d17270000b02904cf73f54f4bso624353ota.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UyEKGuYCer2kJvhDATDCaNpTpTbQhMLlxx38Fc3fJKk=;
+        b=A7cifK40N4fPKoi4IZZufNm+/gT0MPn1ljws+q6fmNsfUGqcdip/Wr0VrLSGEITrTv
+         2sjiGHVjShCTwT8oJtAQJw1pL34NxZmj4mJThibEhxHeSg0p553YcV0eriY9NbzWS9jC
+         OkJoUco2VX0o6f/LgkfwDcNttM/lLOLPq5WLA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UyEKGuYCer2kJvhDATDCaNpTpTbQhMLlxx38Fc3fJKk=;
+        b=UWgQ/Z/u4g3l7QGlNUhMZRddXm0rllAtZAKlUThxsLXX7kfeTOxugfpCO+bSiHOQTM
+         AeZT014eRcP3AKFKSe5P+i1tZZE20NJi6j4CaY/UdmqsNYX5SBxJ66fDjaHFOILo5IlG
+         vM2DgiFmCMpXdtdRB7MX0gjBFgJbnNiv1gXHz90UO6qkbafETDlnn5QvsVpNSMfdwkAF
+         8y+o5lndzpK+4mePUrAnNmjNKjw/TpUcROpsY5u688av5Eng0tlKnb5eJi6tJaKp4NPY
+         0jGfYQNTfYkyW8kNXvRPhySjv8ohHPtEtHGnvwSbUwzaJO/yQjf9+e9fcOqiyH7fmn1Q
+         mB3g==
+X-Gm-Message-State: AOAM533DimtSYZeoybeKri8WxoW7taAZhJAobj90AZRADiSYATgHQCci
+        qgz9TdNU/9+fb15dzJz9OJ9bOUHA5AyMwA==
+X-Google-Smtp-Source: ABdhPJxAvuBUGL3DgVcLDiosnItqrDNbcWvbny+7bfMbTcTCWkKRyvC5MEWC1qGIkn3jZTZVv7Gqlg==
+X-Received: by 2002:a9d:2782:: with SMTP id c2mr3495150otb.323.1627055611698;
+        Fri, 23 Jul 2021 08:53:31 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id m19sm5776817otp.55.2021.07.23.08.53.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 08:53:31 -0700 (PDT)
+Subject: Re: [PATCH 5.13 000/156] 5.13.5-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210722155628.371356843@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <bb8dc5a2-6f1c-fbe4-260f-3fac246a2c94@linuxfoundation.org>
+Date:   Fri, 23 Jul 2021 09:53:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-Le Fri, 23 Jul 2021 15:43:18 +0100,
-Mark Brown <broonie@kernel.org> a écrit :
-
-> On Fri, Jul 23, 2021 at 03:52:37PM +0200, Clément Léger wrote:
+On 7/22/21 10:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.13.5 release.
+> There are 156 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > When running under secure monitor control, some controllers can be
-> > placed in secure world and their access is thus not possible from
-> > normal world. However, these controllers frequently contain
-> > registers than are needed by the normal world for a few specific
-> > operations.  
+> Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
+> Anything received after that time might be too late.
 > 
-> > This patch adds a regmap where registers are accessed using SMCs.
-> > The secure monitor is then responsible to allow or deny access to
-> > the requested registers.  
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
 > 
-> I can't see any SMC specification for this interface?  Frankly I have
-> some very substantial concerns about the use case for this over
-> exposing the functionality of whatever device the SMC is gating
-> access to through SMC interfaces specific to that functionality.
-
-This would require to modify drivers to check if the access should be
-done using SMCs, parse the device tree to find appropriate SMC ids for
-each functionality, add dependencies in KConfig on
-HAVE_ARM_SMCCC_DISCOVERY, and do SMC calls instead of regmap access.
-I'm not saying this is not the way to go but this is clearly more
-intrusive than keeping the existing syscon support.
-
-> Exposing raw access to a (presumed?) subset of whatever device
-> functionality feels like the wrong abstraction level to be working at
-> and like an invitation to system integrators to do things that are
-> going to get them into trouble down the line.
-
-Indeed, access is reduced to a subset of registers offset which are
-checked by the TEE.
-
+> thanks,
 > 
-> If the end user really is just twiddling a few bits here and there I'd
-> expect those functionality specific services to be pretty simple to
-> do, slightly more effort on the secure monitor side but a lot safer.
+> greg k-h
+> 
 
-The SMC id is supposed to be unique for a given device. The TEE check is
-merely a register offset check and a value check. But I agree that the
-attack surface is larger than with a SMC targeted for a single
-functionality though.
+Compiled and booted on my test system. No dmesg regressions.
 
-> If there is a use case for passing through an entire device for some
-> reason (ran out of controllers or something?) then I think we
-> probably want an abstraction at the bus level so we don't need to add
-> custom support to every device that we want to pass through and it's
-> clear what's going on.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-In our use case, only a few registers located in a secure controller
-is needed to be done. We don't have a use case for an entire device
-access.
-
-Clément
-
+thanks,
+-- Shuah
