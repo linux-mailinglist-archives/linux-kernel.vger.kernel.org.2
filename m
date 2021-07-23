@@ -2,104 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0193D30FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EACB3D3101
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233025AbhGWADC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbhGWACJ (ORCPT
+        id S233000AbhGWAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:04:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232832AbhGWACh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:02:09 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E43C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:42:40 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id l11-20020a7bc34b0000b029021f84fcaf75so2556322wmj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VM6rjy1k2Y/qSvUlDobugVK975Hy7Un538yc0+q4TZ8=;
-        b=e6Si8DsxxOMG689N1nQV3P6MflMkRiQvOe0CE3DNbha/Y9t0MIRelIjvEu/SnYMhY3
-         kOKmbhJfw0EnTzUaDPDMvvkXyVmp+QABu1Z6iEpdgvVqv6soUJgMTSLnWkPVZgd+mutx
-         /1QQBgd1AyhbLRCTVruI5cLalJgCZMgabLKzPp2AvFTbMq/8Fu7TbAKyoTtueqy56TXR
-         lKaabuAugO+FDuxM0dKJlZn+/m2DM/q7oH0Lp46YyDt1IU7PPkEPpXa14MdMNugQ5H1t
-         J0CH5JJoTAB90LOHjzP2Z9xzNcxB9XxYx0dxoUE+2uFbEJ2LyMaaJvEM9sBMWj+ab3NW
-         mA6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VM6rjy1k2Y/qSvUlDobugVK975Hy7Un538yc0+q4TZ8=;
-        b=X3h1B7qgidZQcpqH19DkJDzG64y8ZbteH4EfA7C6lDrH07ZPvmWJg4fcG7Po8uoKdz
-         GVDEjasvg09RFNu/Qw7aKns9yQV7kgqqg7TmOo4Y69Ufm6W7Q+Gair0QhNMre8KrOHX+
-         bDYHAQlAH66Qc+b2zd2D8mTOdQquik99jglgyltdyUNLqkfmHTrlrhY6VBD3MBZIFU6J
-         Y+Z1beHGOyV6QnnzQf/OJx0gf2XEzsHGgjVqhetY9nU/4vjud95kgGeS5PWQIX2lZORl
-         rqjHALDycbsM7wzRUoHqY+uAPd+Cv1hvoY8Mah6z2ipi/ODndcTChniUETHuw2erD9D7
-         f5dw==
-X-Gm-Message-State: AOAM530SpSL54/W3S0f8msow2kAKAGbrUN4nqSH9UhA4KXH/Q2R4af+u
-        TTYPioYU4kVe2Yj9JwsTNEy2Aw==
-X-Google-Smtp-Source: ABdhPJynJFkLCnmKK5+Bf7i2B1Q5zbVTr41zDw8uLgHlyrybKXQgeTAfj+5kL5vzacoDQSqGSHnx/A==
-X-Received: by 2002:a7b:c208:: with SMTP id x8mr11672168wmi.187.1627000959063;
-        Thu, 22 Jul 2021 17:42:39 -0700 (PDT)
-Received: from localhost.localdomain (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id m4sm31630498wrs.14.2021.07.22.17.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 17:42:38 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, dan.carpenter@oracle.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        fabioaiuto83@gmail.com
-Subject: [PATCH 7/7] staging: rtl8188eu: attach newly imported driver to build system
-Date:   Fri, 23 Jul 2021 01:42:14 +0100
-Message-Id: <20210723004214.912295-8-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210723004214.912295-1-phil@philpotter.co.uk>
-References: <20210723004214.912295-1-phil@philpotter.co.uk>
+        Thu, 22 Jul 2021 20:02:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627000990;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IzAgVUDW4F6INuiFdyg/5BoR655vppoe7oB6S9hgdEk=;
+        b=fTiA1RxrVU9vTRclYax/z/bT18HTYxbZ9fLzko7KHvTTytsETdPGcsxHfU+utlQ3Y0tzu0
+        hl2bhL2fmmIvvZKyZcdDOkSzx8yXWnkgriHjttnCzBA9Kk1+qV6WPpyXijrxXif++RYoUV
+        TlsUnMw6rgE8u8eaXenx5d9orCew1RY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-MXfsOGNcOt2WfyCpXaBMhA-1; Thu, 22 Jul 2021 20:43:09 -0400
+X-MC-Unique: MXfsOGNcOt2WfyCpXaBMhA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A64FA806688;
+        Fri, 23 Jul 2021 00:43:07 +0000 (UTC)
+Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B1EB017A99;
+        Fri, 23 Jul 2021 00:43:04 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH v3 01/12] mm/debug_vm_pgtable: Introduce struct
+ pgtable_debug_args
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
+        shan.gavin@gmail.com
+References: <20210719130613.334901-1-gshan@redhat.com>
+ <20210719130613.334901-2-gshan@redhat.com>
+ <ab0f9daa-0c49-e74c-e073-6e03a3cabb07@arm.com>
+ <280a5740-b5dc-4b78-3a38-67e5adbb0afd@redhat.com>
+ <04a4618f-9899-1518-cee1-0a48cb4df4c6@arm.com>
+ <65078a0c-c35c-8e3f-d4d3-3090b0c3daaf@redhat.com>
+ <4a534102-11ff-c849-781e-ed173e46da56@arm.com>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <118678e4-b67a-2141-8caa-3bbb9e9cdc19@redhat.com>
+Date:   Fri, 23 Jul 2021 10:43:20 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
+In-Reply-To: <4a534102-11ff-c849-781e-ed173e46da56@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify Kconfig and Makefile to import new rtl8188eu driver into build
-system.
+Hi Anshuman,
 
-Suggested-by: Larry Finger <Larry.Finger@lwfinger.net>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/staging/Kconfig  | 2 ++
- drivers/staging/Makefile | 1 +
- 2 files changed, 3 insertions(+)
+On 7/22/21 5:08 PM, Anshuman Khandual wrote:
+> On 7/22/21 11:53 AM, Gavin Shan wrote:
+>> On 7/22/21 2:41 PM, Anshuman Khandual wrote:
+>>> On 7/21/21 3:50 PM, Gavin Shan wrote:
+>>>> On 7/21/21 3:44 PM, Anshuman Khandual wrote:
+>>>>> On 7/19/21 6:36 PM, Gavin Shan wrote:
+>>>>>> In debug_vm_pgtable(), there are many local variables introduced to
+>>>>>> track the needed information and they are passed to the functions for
+>>>>>> various test cases. It'd better to introduce a struct as place holder
+>>>>>> for these information. With it, what the functions for various test
+>>>>>> cases need is the struct, to simplify the code. It also makes code
+>>>>>> easier to be maintained.
+>>>>>>
+>>>>>> Besides, set_xxx_at() could access the data on the corresponding pages
+>>>>>> in the page table modifying tests. So the accessed pages in the tests
+>>>>>> should have been allocated from buddy. Otherwise, we're accessing pages
+>>>>>> that aren't owned by us. This causes issues like page flag corruption.
+>>>>>>
+>>>>>> This introduces "struct pgtable_debug_args". The struct is initialized
+>>>>>> and destroyed, but the information in the struct isn't used yet. They
+>>>>>> will be used in subsequent patches.
+>>>>>>
+>>>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>>>> ---
+>>>>>>     mm/debug_vm_pgtable.c | 197 +++++++++++++++++++++++++++++++++++++++++-
+>>>>>>     1 file changed, 196 insertions(+), 1 deletion(-)
+>>>>>>
 
-diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
-index 7ece46a6423d..5d04f479fe79 100644
---- a/drivers/staging/Kconfig
-+++ b/drivers/staging/Kconfig
-@@ -28,6 +28,8 @@ source "drivers/staging/wlan-ng/Kconfig"
- 
- source "drivers/staging/olpc_dcon/Kconfig"
- 
-+source "drivers/staging/rtl8188eu/Kconfig"
-+
- source "drivers/staging/rtl8192u/Kconfig"
- 
- source "drivers/staging/rtl8192e/Kconfig"
-diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index 581c25c47d1a..065dbd7958ff 100644
---- a/drivers/staging/Makefile
-+++ b/drivers/staging/Makefile
-@@ -4,6 +4,7 @@
- obj-y				+= media/
- obj-$(CONFIG_PRISM2_USB)	+= wlan-ng/
- obj-$(CONFIG_FB_OLPC_DCON)	+= olpc_dcon/
-+obj-$(CONFIG_R8188EU)		+= rtl8188eu/
- obj-$(CONFIG_RTL8192U)		+= rtl8192u/
- obj-$(CONFIG_RTL8192E)		+= rtl8192e/
- obj-$(CONFIG_RTL8723BS)		+= rtl8723bs/
--- 
-2.31.1
+[...]
+
+>>>
+>>> IIRC it is also not guaranteed that PMD_SHIFT <= (MAX_ORDER - 1). Hence
+>>> this same scheme should be followed for PMD level allocation as well.
+>>>
+>>
+>> In theory, it's possible to have PMD_SHIFT <= (MAX_ORDER - 1) with misconfigured
+>> kernel. I will apply the similar logic to PMD huge page in v4.
+>>
+>>>>       [... The code to release the PUD huge page needs changes based on @args->is_contiguous_pud_page]
+>>>
+>>> Right, a flag would be needed to call the appropriate free function.
+>>>
+>>
+>> Yes. We need two falgs for PUD and PMD huge pages separately.
+> 
+> A single flag should be enough, the order would be dependent on
+> whether args->pud_pfn or args->pmd_pfn is valid.
+> 
+
+Yes, it's correct that one flag is enough as we're sharing the PUD
+or PMD huge page.
+
+Thanks,
+Gavin
 
