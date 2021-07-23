@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F823D317B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6D53D3181
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhGWBTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:19:44 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]:39610 "EHLO
-        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbhGWBTm (ORCPT
+        id S233149AbhGWBXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhGWBXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:19:42 -0400
-Received: by mail-wm1-f50.google.com with SMTP id o3-20020a05600c5103b029024c0f9e1a5fso2349095wms.4;
-        Thu, 22 Jul 2021 19:00:15 -0700 (PDT)
+        Thu, 22 Jul 2021 21:23:34 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE18C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 19:04:09 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id v6so11487407lfp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 19:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uWU9VPUi87pNrXCcR4PCrzd/Kzrus891hORmT5PC+zM=;
+        b=eGNdTCrx6valxUE5ycbThNR4R02XvSCraZrOHIJQ3+uqYxLGjXSsd22UWXr8N8UOPD
+         pTfRBCs/s/EKxTP63S4eW3pg+ooV0Y0g5l6l2r6t0UIosBihxBzwuMctSG+1emfQCfSE
+         px9lck/vGt9WgFrHHUB99tl86i/uxoPbCAIgVSVpr/+N6v6cSOq37fum8aRsrqO7ACZJ
+         nTK2PdPZtydq9eYLRimByBEr+6baMS+91ckZZ/T+wduT5gQD9zre78+/Eu79TJsACHbw
+         ct2HMQmLl83gfQCVoDTYqZOIgZfE8fsaRlcVKLmHNhSi+3LRiz9+fY4hm+TfpU8IS/Kw
+         5qpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wqNvNl7Y9I+Lc0bDPRY2qK0RJphn3sKkuEuDxwoy3ro=;
-        b=CrAIV5S8Id5z9sfYuOBpvLXiagAlg41kohLPRcNjWGA7MLVgrBrzQh6/9RrTYHUobb
-         gjrcZs1JJCGXO0hPukMDFmjd10v4iEvdNFVzuzPSbywUQx3hn6H8EqHj6kFc28lKIkBh
-         p844a5kLg+aOFVbxRvvBABtVZq09U46adHUnRcqn2Hbng5YmsPaHoWCamiB98ABoAQxq
-         u7S8cRyF/iXtSc131xTJvE7kvEzHo27wW/O04TVCAWk7/jQ4IdyaKtj1sFAcvA3I6TqZ
-         0OomFqdIeJD2tGxYOeiF78adcUYulrz/luOuIBrmZmKKR3OM5MlNPuv8Y81DJwFCMJgp
-         VPgQ==
-X-Gm-Message-State: AOAM531IFPYhoMZMjEyABndkaBff9g4lC10Wa73NSZOpcEGuKV6OVQ4R
-        mRFRifoXrOQnxFeliSAmuR0L2jgsrPxEz97c
-X-Google-Smtp-Source: ABdhPJxHcH9H+rY/nRSOPjZVi/EOVXfDrri03O4YuxnL/vddt147+tHPnc93ILllYE3BRn/tcJ/XCA==
-X-Received: by 2002:a05:600c:1ca3:: with SMTP id k35mr11536840wms.174.1627005615058;
-        Thu, 22 Jul 2021 19:00:15 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id l22sm3804431wmp.41.2021.07.22.19.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 19:00:14 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 04:00:13 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     "Cai,Huoqing" <caihuoqing@baidu.com>
-Cc:     "Derrick, Jonathan" <jonathan.derrick@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] PCI: vmd: Make use of PCI_DEVICE_DATA() helper
- function
-Message-ID: <20210723020013.GA2170028@rocinante>
-References: <20210722112954.477-1-caihuoqing@baidu.com>
- <20210722112954.477-3-caihuoqing@baidu.com>
- <f2aeb584-6293-78ce-e5aa-4bde34045a86@intel.com>
- <e44664317c2949e794497dc5f903f2a8@baidu.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uWU9VPUi87pNrXCcR4PCrzd/Kzrus891hORmT5PC+zM=;
+        b=tFEIGM6xOvbuwVyC5P7Ww2sa4Zp/Ao1QhH7feMEGHVJpb9YrENHtbmEmiugacoacV2
+         H9kS0wxOxn/tEHrnApnZXhllaQHEGd1f2KQ3+ie0prsz31epD6fpEzM6jweX77JXCa57
+         jmGLx4d4r4XxRCLwiFYqaDLrCbLcF9z8L3KhA8HZpqYfuQ0jTAGHrT25WCKWux3YMihP
+         xGNLp/QsqXMT6frBZnQd3gFfnG6pENlRPuQWWjKi0KT3sCJbilEtZUcUOJtfF/KFP5Wc
+         g+gSqkEb7zAMNSzA1ryddNm++9YIO7aAHGUa6XmcBS+Bd3pi/SdabNVj44ZdZG8SeyUH
+         OsXA==
+X-Gm-Message-State: AOAM531INfEif2vybXQJgFQRIZBDVfHXuPRQ9T7ixwRAUbCc4m7ECMXT
+        23sQARkvhUOKah6tjG0PLKINN7FXeb8UTU3IG22FuA==
+X-Google-Smtp-Source: ABdhPJyBmT6ZL/CfKLSg3rGD/pmyxU4+PR/Rv/FDU5r/DAMR4iBuE7Qg4ScYmuWcXBXaW8hLAfCfxGHev47wUrR2oFI=
+X-Received: by 2002:a19:e053:: with SMTP id g19mr1426820lfj.83.1627005847018;
+ Thu, 22 Jul 2021 19:04:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e44664317c2949e794497dc5f903f2a8@baidu.com>
+References: <20210723011436.60960-1-surenb@google.com>
+In-Reply-To: <20210723011436.60960-1-surenb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 22 Jul 2021 19:03:56 -0700
+Message-ID: <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>, jengelh@inai.de,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jul 22, 2021 at 6:14 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+[...]
+> +
+> +       mmap_read_lock(mm);
 
-Thank you for sending the patch over!
+How about mmap_read_trylock(mm) and return -EAGAIN on failure?
 
-> 	PATCH[2/2] has some extra indentation, please don't apply it , 
 
-You might know this already, but just in case make sure to run the
-"checkpatch.pl" script over the patch before submission.
-
-> I'll send PATCH V2.
-
-You mean v3?  Make sure to include a changelog, if possible.
-
-A small nitpick: the PCI_DEVICE_DATA() is technically a macro rather
-than a function, so you could update both the subject line and the
-commit message accordingly, if you want.
-
-Also, since you are about to send another version, add period at the end
-of the sentence in the commit message.
-
-Aside of the above, it's a nice refactor, thank you!
-
-	Krzysztof
+> +       if (!__oom_reap_task_mm(mm))
+> +               ret = -EAGAIN;
+> +       mmap_read_unlock(mm);
+> +
