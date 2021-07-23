@@ -2,67 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4173D3E68
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAC53D3E6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhGWQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:40:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhGWQka (ORCPT
+        id S231468AbhGWQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:40:57 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51134
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231166AbhGWQkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:40:30 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7702C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:21:03 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1m6yr1-00050d-N2; Fri, 23 Jul 2021 19:20:55 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1m6yr0-0000IS-5s; Fri, 23 Jul 2021 19:20:54 +0200
-Date:   Fri, 23 Jul 2021 19:20:54 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     alexandru.tachici@analog.com
-Cc:     andrew@lunn.ch, alexandru.ardelean@analog.com, davem@davemloft.net,
-        devicetree@vger.kernel.org, hkallweit1@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: ADIN1100
-Message-ID: <20210723172054.nfq3shvfhidfnjyn@pengutronix.de>
-References: <YO3GNqqUbyxId+Mn@lunn.ch>
- <20210716212427.55302-1-alexandru.tachici@analog.com>
+        Fri, 23 Jul 2021 12:40:53 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id AC9073F325;
+        Fri, 23 Jul 2021 17:21:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627060884;
+        bh=7FQD/B711wUP78UGWXd/xXfRyIQyD6tfXLIddfxdlcc=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=MIpg2zVyane9SunkaQ6m9KeX6+ptvvm8nBjPPToZ+jE+O8Udpx2/Hbt3KIM9AsnKT
+         15av06BGurLcNcGDj6vbShhx7AEj2S5U1YUJVBo9G4n5qkVO+o03wYR+ClVinO47rd
+         YMzTHOBW3XCPNf1b6cwBNLfQTObnplThPTRn+cf7LMBC9zC8dIWVJNMT5cCleyilum
+         +jYVy0XJ0ILlsAQMEspBu4tpIAeQsH2wBw3i+HsmtuGkTjr3kJUlkfl4wsxcDgIDcY
+         /D1H9HfoBkcbFQEKQWuVU5VAosMEY1/JylzJ5x8vS2kVVbFDoK7MVAjg+GNLXzAPKS
+         yPzFytvYsyq/g==
+From:   Colin King <colin.king@canonical.com>
+To:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] security: keys: trusted: Fix memory leaks on allocated blob
+Date:   Fri, 23 Jul 2021 18:21:21 +0100
+Message-Id: <20210723172121.156687-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210716212427.55302-1-alexandru.tachici@analog.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 19:19:14 up 233 days,  7:25, 27 users,  load average: 0.16, 0.13,
- 0.09
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 12:24:27AM +0300, alexandru.tachici@analog.com wrote:
-> No, ADIN1100 supports only full duplex mode. Added this one just to
-> report through ethtool if lp supports it or not.
+From: Colin Ian King <colin.king@canonical.com>
 
-Same about TI T1L phy, there is not half duplex support. I'm courios if
-this is actually required by the 802.3cg standard. 
+There are several error return paths that don't kfree the allocated
+blob, leading to memory leaks. Ensure blob is initialized to null as
+some of the error return paths in function tpm2_key_decode do not
+change blob. Add an error return path to kfree blob and use this on
+the current leaky returns.
 
+Addresses-Coverity: ("Resource leak")
+Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ security/keys/trusted-keys/trusted_tpm2.c | 30 ++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+index 0165da386289..930c67f98611 100644
+--- a/security/keys/trusted-keys/trusted_tpm2.c
++++ b/security/keys/trusted-keys/trusted_tpm2.c
+@@ -366,7 +366,7 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
+ 	unsigned int private_len;
+ 	unsigned int public_len;
+ 	unsigned int blob_len;
+-	u8 *blob, *pub;
++	u8 *blob = NULL, *pub;
+ 	int rc;
+ 	u32 attrs;
+ 
+@@ -378,22 +378,30 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
+ 	}
+ 
+ 	/* new format carries keyhandle but old format doesn't */
+-	if (!options->keyhandle)
+-		return -EINVAL;
++	if (!options->keyhandle) {
++		rc = -EINVAL;
++		goto err;
++	}
+ 
+ 	/* must be big enough for at least the two be16 size counts */
+-	if (payload->blob_len < 4)
+-		return -EINVAL;
++	if (payload->blob_len < 4) {
++		rc = -EINVAL;
++		goto err;
++	}
+ 
+ 	private_len = get_unaligned_be16(blob);
+ 
+ 	/* must be big enough for following public_len */
+-	if (private_len + 2 + 2 > (payload->blob_len))
+-		return -E2BIG;
++	if (private_len + 2 + 2 > (payload->blob_len)) {
++		rc = -E2BIG;
++		goto err;
++	}
+ 
+ 	public_len = get_unaligned_be16(blob + 2 + private_len);
+-	if (private_len + 2 + public_len + 2 > payload->blob_len)
+-		return -E2BIG;
++	if (private_len + 2 + public_len + 2 > payload->blob_len) {
++		rc = -E2BIG;
++		goto err;
++	}
+ 
+ 	pub = blob + 2 + private_len + 2;
+ 	/* key attributes are always at offset 4 */
+@@ -441,6 +449,10 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
+ 		rc = -EPERM;
+ 
+ 	return rc;
++
++err:
++	kfree(blob);
++	return rc;
+ }
+ 
+ /**
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.31.1
+
