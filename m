@@ -2,123 +2,1311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9CE3D3A2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478603D3A31
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234854AbhGWLo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
+        id S234819AbhGWLrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 07:47:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234832AbhGWLoz (ORCPT
+        with ESMTP id S234601AbhGWLrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:44:55 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B221FC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:25:27 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so1799293ota.11
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:25:27 -0700 (PDT)
+        Fri, 23 Jul 2021 07:47:21 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB578C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:27:53 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id q2so1485532ljq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:27:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aRUskXGznymjiPhSPPZyhJYIsZLMytqVDg3CZ0gajkI=;
-        b=dQT4tlqWkatDtLUgzzl1zSN7dtH3n39/QVn66bgkMWjc4p4kY16tD9Z7zhPTivaasa
-         7y01sspGAtEP4d6tZIeP+GIe5MUv9rZabiNNQAVz0Cu0n9uT5ujG9tjFJ/nc395mfYr9
-         A7FqOZ9iRlG+x8bEzf2bS/V8cpKblV4LD8owGUBU2xbHck5etFryu5ohz9hc+83Yuxfr
-         I4uGojvb471OrMlDLn+pofsiy1wXFRdvYIk0OReuw5lCiNFCmspq0OOBeiJ0fWGLv/hT
-         V+24BgzruN5ybwF4UWCV3oHEKgKwCSTGT8YAwM+HbLs85kZQsyUNjP662kQyyjbcunI0
-         Bfsg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=8Jqnzlzkq3lWaeMD/UpiQD1J4FvoYfIZ2HIOcLayRLM=;
+        b=CPuZavrOIGmtaqLW0Bp26ptlVzuIGzB17hEgt6QzhstQQTb/jdWJi16joMbwnwq/dw
+         ptrjY4WEbqcvTFvEQ3hNt0m2YjyQBwawPfn56WPc6futN83voblY78BkA4kyNsfo8vfp
+         tm6iEy+2LFZHPJi+0bhRVp67wZ20fJB/JXBiG35GEL5TkEjEbjPB8TeC8zkHkpWOjmUa
+         P+V+nc8VoiJvgy4hDEBtnMCXC1v28dhp03n9N8azN31rZh1DdmIG+GtE2HzWUD8Shl+3
+         IAMZd4SSnv7lFLvv91g4vVr8v11WyRntX/4oLUYDKQM+/VxhkynGPFuSt+/scXedxfUQ
+         a+Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aRUskXGznymjiPhSPPZyhJYIsZLMytqVDg3CZ0gajkI=;
-        b=Vy4VYeXK/SUcgL1vEF+W3cXLxSR5Q6cZCMmHAucB89wn6i7DN93ZH3KF3VI6vOmter
-         veTFwHKwfM6fEsZibYDfzXbHI+AO/SCyK0sTIX2nt6PzhYp/d1fqIXI/AhoUDdtcQTJB
-         NXyakD/wYApK/38vfJ63moi5jDmthlXjwq+lMXMbH9eprGFuq66OYCRPfEUUHeRGoFNQ
-         4mjjICF1vAlvfr88QqWZUoG7v3gIcCMZzlvU3FHotKVahlTLmi29dMmPC078lN9puNxQ
-         VtxiOFLCofpQmjfPb3juY5qgAEaeMQGdw08ZqYBLNZEnNOoEHGsFgcwk9Eu3opbrVthE
-         le2g==
-X-Gm-Message-State: AOAM531ZI9/ZGXu3LNFo935OMWDZHU2CwCMM9H40mEtOtm7OkZW2yRtl
-        xwIkuZ/6KzR8nT6e5RbrTiJTuF2A6ihP2GN5B5ZKMQ==
-X-Google-Smtp-Source: ABdhPJwXTpo12ME8GoDOuTPYTK33J28upzzgQJgLGzW+l1l5KobGs/3ySmoblDwwcR5fo1Pd7kAxk7/KUCLFlb24NBQ=
-X-Received: by 2002:a9d:27a4:: with SMTP id c33mr2911795otb.281.1627043126908;
- Fri, 23 Jul 2021 05:25:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=8Jqnzlzkq3lWaeMD/UpiQD1J4FvoYfIZ2HIOcLayRLM=;
+        b=WjjLrKH/kKJ2L+4yaIfa9Myh8Ba1mmzMRKrh+ENqDk7Ufj301LuBLvOiXiZuiDa3T8
+         LvYrQbW8MOX1ZmgDTIukgrYo5JMbx8PFL1oCEU98vNlrf/7N6R/d3La+xPyf6HJUHTTE
+         O3qE8XAmsEuROHpkE8tytfPa+llgzxjCTO54kWkRZ4nZImgbQDj+B5+Ept/6MClN0bi2
+         CHyPU0SkAWDgW/GHC7EfXQB3V/1WcOMXHrirXJm11t9vrYlyagrrv5+SX0Z8ysWw2hTZ
+         TTEw6CvWcdHa3mT/1l96njo6zFl1wG0cIdwII4irhblaWVBdRk6r9boKT2cV+fehNu54
+         J9/Q==
+X-Gm-Message-State: AOAM532hXgv6TL4cgeWMpxLmw6fSy9tjsm0/z4byE4Gh8g6E5oPkfoYZ
+        aIFu2FLSuYWzkA3VSNN4ItBiji0p5qk=
+X-Google-Smtp-Source: ABdhPJzUGFU+PYyCLLEhPzrKZlHgQSfn07U3R7rSIvhES03nBccLzrImkTpluXJwmzrAvt8ZOQwfVQ==
+X-Received: by 2002:a2e:9a09:: with SMTP id o9mr3127214lji.473.1627043272016;
+        Fri, 23 Jul 2021 05:27:52 -0700 (PDT)
+Received: from ideapad ([188.170.79.182])
+        by smtp.gmail.com with ESMTPSA id j3sm1504544lfe.133.2021.07.23.05.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 05:27:51 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 15:27:49 +0300
+From:   Artem Baxtiarov <baxtiarovartem@gmail.com>
+To:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] Drivers: comedi: drivers: ni_routing: ni_device_routes:
+ pci-6070e.c Lindented
+Message-ID: <20210723122749.GA41336@ideapad>
 MIME-Version: 1.0
-References: <20210722155628.371356843@linuxfoundation.org> <CA+G9fYt_9nfDcQzKm8SZtmQXzzrybutS9vD4GgUw_0o8UD1HOQ@mail.gmail.com>
- <YPqwF7wtM6n3wHlr@kroah.com>
-In-Reply-To: <YPqwF7wtM6n3wHlr@kroah.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 23 Jul 2021 17:55:15 +0530
-Message-ID: <CA+G9fYvjgkaQxdW52sMzQm73f2xJreQzrPiCV48qD+5EN-b0Kw@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/156] 5.13.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, LTP List <ltp@lists.linux.it>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 at 17:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Jul 23, 2021 at 05:26:22PM +0530, Naresh Kamboju wrote:
-> > On Thu, 22 Jul 2021 at 22:17, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 5.13.5 release.
-> > > There are 156 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.5-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> >
-> > The following error is due to SATA drive format failing with arm64 64k-page
-> > size ( CONFIG_ARM64_64K_PAGES=y ) kernel.
-> > while running LTP syscalls test suite on running 5.13.3 and 5.13.5-rc1 kernel.
-> >
-> > First it was noticed on the stable-rc 5.13.3-rc2 kernel.
-> >
-> > Whereas 64bit kernel and 32bit kernel pass with 4K page size.
-> >
-> > Initially, I thought it could be a Hard drive fault but it is reproducible on
-> > other devices but not always. Which is a blocker to bisect the problem.
-> >
-> > The steps to reproduce:
-> >  - Boot arm64 juno device with 64k page stable-rc 5.13 kernel Image [1]
-> >    - CONFIG_ARM64_64K_PAGES=y
-> >  - format connected SATA drives and mount /scratch
-> >  - Use the mounted /scratch for LTP runs to create and delete files from this
-> >  - cd /opt/ltp
-> >  - ./runltp -d /scratch -f syscalls
->
-> And does that also fail for 5.13.2?
+I found "Lindent" item in drivers/comedi/TODO.
+I used scripts/Lindent to indent
+drivers/comedi/drivers/ni_routing/ni_device_routes/pci-6070e.c
 
-Yes. It failed on 5.13.2 also.
+Signed-off-by: Artem Baxtiarov <baxtiarovartem@gmail.com>
+---
+ .../ni_routing/ni_device_routes/pci-6070e.c   | 1227 +++++++++--------
+ 1 file changed, 621 insertions(+), 606 deletions(-)
 
-Ref failed log:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13.2/testrun/5147287/suite/ltp-syscalls-tests/test/copy_file_range01/log
+diff --git a/drivers/comedi/drivers/ni_routing/ni_device_routes/pci-6070e.c b/drivers/comedi/drivers/ni_routing/ni_device_routes/pci-6070e.c
+index 7d3064c92643..4d3d9534a550 100644
+--- a/drivers/comedi/drivers/ni_routing/ni_device_routes/pci-6070e.c
++++ b/drivers/comedi/drivers/ni_routing/ni_device_routes/pci-6070e.c
+@@ -29,610 +29,625 @@
+ 
+ struct ni_device_routes ni_pci_6070e_device_routes = {
+ 	.device = "pci-6070e",
+-	.routes = (struct ni_route_set[]){
+-		{
+-			.dest = NI_PFI(0),
+-			.src = (int[]){
+-				NI_AI_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(1),
+-			.src = (int[]){
+-				NI_AI_ReferenceTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(2),
+-			.src = (int[]){
+-				NI_AI_ConvertClock,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(3),
+-			.src = (int[]){
+-				NI_CtrSource(1),
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(4),
+-			.src = (int[]){
+-				NI_CtrGate(1),
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(5),
+-			.src = (int[]){
+-				NI_AO_SampleClock,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(6),
+-			.src = (int[]){
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(7),
+-			.src = (int[]){
+-				NI_AI_SampleClock,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(8),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_PFI(9),
+-			.src = (int[]){
+-				NI_CtrGate(0),
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(0),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				NI_CtrGate(0),
+-				NI_CtrInternalOutput(0),
+-				NI_CtrOut(0),
+-				NI_AI_SampleClock,
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AI_ConvertClock,
+-				NI_AO_SampleClock,
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(1),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				NI_CtrGate(0),
+-				NI_CtrInternalOutput(0),
+-				NI_CtrOut(0),
+-				NI_AI_SampleClock,
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AI_ConvertClock,
+-				NI_AO_SampleClock,
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(2),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				NI_CtrGate(0),
+-				NI_CtrInternalOutput(0),
+-				NI_CtrOut(0),
+-				NI_AI_SampleClock,
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AI_ConvertClock,
+-				NI_AO_SampleClock,
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(3),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				NI_CtrGate(0),
+-				NI_CtrInternalOutput(0),
+-				NI_CtrOut(0),
+-				NI_AI_SampleClock,
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AI_ConvertClock,
+-				NI_AO_SampleClock,
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(4),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				NI_CtrGate(0),
+-				NI_CtrInternalOutput(0),
+-				NI_CtrOut(0),
+-				NI_AI_SampleClock,
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AI_ConvertClock,
+-				NI_AO_SampleClock,
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(5),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				NI_CtrGate(0),
+-				NI_CtrInternalOutput(0),
+-				NI_CtrOut(0),
+-				NI_AI_SampleClock,
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AI_ConvertClock,
+-				NI_AO_SampleClock,
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(6),
+-			.src = (int[]){
+-				NI_CtrSource(0),
+-				NI_CtrGate(0),
+-				NI_CtrInternalOutput(0),
+-				NI_CtrOut(0),
+-				NI_AI_SampleClock,
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AI_ConvertClock,
+-				NI_AO_SampleClock,
+-				NI_AO_StartTrigger,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = TRIGGER_LINE(7),
+-			.src = (int[]){
+-				NI_20MHzTimebase,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_CtrSource(0),
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				TRIGGER_LINE(7),
+-				NI_MasterTimebase,
+-				NI_20MHzTimebase,
+-				NI_100kHzTimebase,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_CtrSource(1),
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				TRIGGER_LINE(7),
+-				NI_MasterTimebase,
+-				NI_20MHzTimebase,
+-				NI_100kHzTimebase,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_CtrGate(0),
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_CtrInternalOutput(1),
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_CtrGate(1),
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_CtrInternalOutput(0),
+-				NI_AI_StartTrigger,
+-				NI_AI_ReferenceTrigger,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_CtrOut(0),
+-			.src = (int[]){
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_CtrInternalOutput(0),
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_CtrOut(1),
+-			.src = (int[]){
+-				NI_CtrInternalOutput(1),
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_SampleClock,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_CtrInternalOutput(0),
+-				NI_AI_SampleClockTimebase,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_SampleClockTimebase,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				TRIGGER_LINE(7),
+-				NI_MasterTimebase,
+-				NI_20MHzTimebase,
+-				NI_100kHzTimebase,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_StartTrigger,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_CtrInternalOutput(0),
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_ReferenceTrigger,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_ConvertClock,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_CtrInternalOutput(0),
+-				NI_AI_ConvertClockTimebase,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_ConvertClockTimebase,
+-			.src = (int[]){
+-				TRIGGER_LINE(7),
+-				NI_AI_SampleClockTimebase,
+-				NI_MasterTimebase,
+-				NI_20MHzTimebase,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_PauseTrigger,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AI_HoldComplete,
+-			.src = (int[]){
+-				NI_AI_HoldCompleteEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AO_SampleClock,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_CtrInternalOutput(1),
+-				NI_AO_SampleClockTimebase,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AO_SampleClockTimebase,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				TRIGGER_LINE(7),
+-				NI_MasterTimebase,
+-				NI_20MHzTimebase,
+-				NI_100kHzTimebase,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AO_StartTrigger,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_AI_StartTrigger,
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_AO_PauseTrigger,
+-			.src = (int[]){
+-				NI_PFI(0),
+-				NI_PFI(1),
+-				NI_PFI(2),
+-				NI_PFI(3),
+-				NI_PFI(4),
+-				NI_PFI(5),
+-				NI_PFI(6),
+-				NI_PFI(7),
+-				NI_PFI(8),
+-				NI_PFI(9),
+-				TRIGGER_LINE(0),
+-				TRIGGER_LINE(1),
+-				TRIGGER_LINE(2),
+-				TRIGGER_LINE(3),
+-				TRIGGER_LINE(4),
+-				TRIGGER_LINE(5),
+-				TRIGGER_LINE(6),
+-				NI_AnalogComparisonEvent,
+-				0, /* Termination */
+-			}
+-		},
+-		{
+-			.dest = NI_MasterTimebase,
+-			.src = (int[]){
+-				TRIGGER_LINE(7),
+-				NI_20MHzTimebase,
+-				0, /* Termination */
+-			}
+-		},
+-		{ /* Termination of list */
+-			.dest = 0,
+-		},
+-	},
++	.routes = (struct ni_route_set[]) {
++					{
++					    .dest = NI_PFI(0),
++					    .src = (int[]) {
++							    NI_AI_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(1),
++					    .src = (int[]) {
++							    NI_AI_ReferenceTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(2),
++					    .src = (int[]) {
++							    NI_AI_ConvertClock,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(3),
++					    .src = (int[]) {
++							    NI_CtrSource(1),
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(4),
++					    .src = (int[]) {
++							    NI_CtrGate(1),
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(5),
++					    .src = (int[]) {
++							    NI_AO_SampleClock,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(6),
++					    .src = (int[]) {
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(7),
++					    .src = (int[]) {
++							    NI_AI_SampleClock,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(8),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_PFI(9),
++					    .src = (int[]) {
++							    NI_CtrGate(0),
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(0),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    NI_CtrGate(0),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_CtrOut(0),
++							    NI_AI_SampleClock,
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AI_ConvertClock,
++							    NI_AO_SampleClock,
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(1),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    NI_CtrGate(0),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_CtrOut(0),
++							    NI_AI_SampleClock,
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AI_ConvertClock,
++							    NI_AO_SampleClock,
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(2),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    NI_CtrGate(0),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_CtrOut(0),
++							    NI_AI_SampleClock,
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AI_ConvertClock,
++							    NI_AO_SampleClock,
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(3),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    NI_CtrGate(0),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_CtrOut(0),
++							    NI_AI_SampleClock,
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AI_ConvertClock,
++							    NI_AO_SampleClock,
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(4),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    NI_CtrGate(0),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_CtrOut(0),
++							    NI_AI_SampleClock,
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AI_ConvertClock,
++							    NI_AO_SampleClock,
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(5),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    NI_CtrGate(0),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_CtrOut(0),
++							    NI_AI_SampleClock,
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AI_ConvertClock,
++							    NI_AO_SampleClock,
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(6),
++					    .src = (int[]) {
++							    NI_CtrSource(0),
++							    NI_CtrGate(0),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_CtrOut(0),
++							    NI_AI_SampleClock,
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AI_ConvertClock,
++							    NI_AO_SampleClock,
++							    NI_AO_StartTrigger,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = TRIGGER_LINE(7),
++					    .src = (int[]) {
++							    NI_20MHzTimebase,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_CtrSource(0),
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    TRIGGER_LINE(7),
++							    NI_MasterTimebase,
++							    NI_20MHzTimebase,
++							    NI_100kHzTimebase,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_CtrSource(1),
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    TRIGGER_LINE(7),
++							    NI_MasterTimebase,
++							    NI_20MHzTimebase,
++							    NI_100kHzTimebase,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_CtrGate(0),
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_CtrInternalOutput
++							    (1),
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_CtrGate(1),
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_AI_StartTrigger,
++							    NI_AI_ReferenceTrigger,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_CtrOut(0),
++					    .src = (int[]) {
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_CtrInternalOutput
++							    (0),
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_CtrOut(1),
++					    .src = (int[]) {
++							    NI_CtrInternalOutput
++							    (1),
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_SampleClock,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_AI_SampleClockTimebase,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_SampleClockTimebase,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    TRIGGER_LINE(7),
++							    NI_MasterTimebase,
++							    NI_20MHzTimebase,
++							    NI_100kHzTimebase,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_StartTrigger,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_ReferenceTrigger,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_ConvertClock,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_CtrInternalOutput
++							    (0),
++							    NI_AI_ConvertClockTimebase,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_ConvertClockTimebase,
++					    .src = (int[]) {
++							    TRIGGER_LINE(7),
++							    NI_AI_SampleClockTimebase,
++							    NI_MasterTimebase,
++							    NI_20MHzTimebase,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_PauseTrigger,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AI_HoldComplete,
++					    .src = (int[]) {
++							    NI_AI_HoldCompleteEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AO_SampleClock,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_CtrInternalOutput
++							    (1),
++							    NI_AO_SampleClockTimebase,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AO_SampleClockTimebase,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    TRIGGER_LINE(7),
++							    NI_MasterTimebase,
++							    NI_20MHzTimebase,
++							    NI_100kHzTimebase,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AO_StartTrigger,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_AI_StartTrigger,
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_AO_PauseTrigger,
++					    .src = (int[]) {
++							    NI_PFI(0),
++							    NI_PFI(1),
++							    NI_PFI(2),
++							    NI_PFI(3),
++							    NI_PFI(4),
++							    NI_PFI(5),
++							    NI_PFI(6),
++							    NI_PFI(7),
++							    NI_PFI(8),
++							    NI_PFI(9),
++							    TRIGGER_LINE(0),
++							    TRIGGER_LINE(1),
++							    TRIGGER_LINE(2),
++							    TRIGGER_LINE(3),
++							    TRIGGER_LINE(4),
++							    TRIGGER_LINE(5),
++							    TRIGGER_LINE(6),
++							    NI_AnalogComparisonEvent,
++							    0,	/* Termination */
++							}
++					    },
++					{
++					    .dest = NI_MasterTimebase,
++					    .src = (int[]) {
++							    TRIGGER_LINE(7),
++							    NI_20MHzTimebase,
++							    0,	/* Termination */
++							}
++					    },
++					{	/* Termination of list */
++					    .dest = 0,
++					    },
++					    },
+ };
+-- 
+2.25.1
 
-- Naresh
