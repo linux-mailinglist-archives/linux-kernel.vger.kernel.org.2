@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E273D4122
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0866F3D4123
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229964AbhGWTLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
+        id S230429AbhGWTMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWTLr (ORCPT
+        with ESMTP id S229461AbhGWTMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:11:47 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B4CC061575;
-        Fri, 23 Jul 2021 12:52:19 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so5191092pjh.3;
-        Fri, 23 Jul 2021 12:52:19 -0700 (PDT)
+        Fri, 23 Jul 2021 15:12:35 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31C1C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:53:08 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id h18so2601474ilc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zIQ2SX+9EqkYQOm6EVOCWmNjDkXrj36cJuW0CVNzCxY=;
-        b=KYZ/puNAR+EEaXAHKRni4SYMXBbBFva0ausmDq38IHOnHafyIi5DY3gFukJByTUNh+
-         72w8sx5Bc+uYwJX4+1zKmV1x41Okpv0/cnJyTZLDXz93yYJSYlmHHv4hN/6S940b/0o3
-         gSUFjFUEKt+Ycsny0UkcPnjeYdg61BS8zCZ4u9zHWCndlMBcs4j03BRsn2EQn94rGF+V
-         9PtKt2pVEzeQee6O4E+6eaLvfXGG75+t6NOt//SXnFWmVp0EednzqWxJ5RiF38wr2KmA
-         8mOVPcsuDh1GTH5wy6wt4mnrNUw5xTzCuKa5wlPX6xQwn2gvGHi9KkDPQ6VzcEGjWDuL
-         g33g==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WyoEwHnKGH7mDIf/X1k+fNngkECDQL+TuqJrMYUO1bE=;
+        b=J+DClaB2GhxOmF3mOWGmx0CyyTx0NYaFU/djLERSc6MD6pNa/oda8sxnLTTW40bWzI
+         XP/LywH9I+3PhChS6JW1ypXgX6PolOk4H+glyI1PajwSzcAE3pslRmTOK5Fi2uvbHpnB
+         ehKy+V/kCBaV9AcRHgUuzX0sgnSBMP+ogAdc4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zIQ2SX+9EqkYQOm6EVOCWmNjDkXrj36cJuW0CVNzCxY=;
-        b=MCZMQ9n3PLem/jr7+qIaf6/gyya5VciH477Z8CtG6/KJUkANmNwcmqvc/BqiqWlLJi
-         f6doRmZk9E0769cGXlHZYTba4L2DaVzxTdj7DaB44LhHKqnVUnpqMXOLVBcxDCoLKyh+
-         hC2Bq8tAah98Xfei3e6vXWImdWgTqnmr/JF9biIhjuDpLTdxyR0ygeS+4IPFlP+ODiFv
-         6jughks1YuPvHRrYjbZezwp365xz1UxQ88wIDku2XzhPGZ09kNdWV22HsVnVoya8L2Ei
-         55RAq1Bw23BMLmipdneomyaGMcNDV5l1MqwQEh8YqZBCqe0vwD/FZ3B2GbmTBCKqOKL8
-         EvAg==
-X-Gm-Message-State: AOAM533FZlxp9lTLHZoVT6Epz2STK6KtnKL8CwOSs1n65UowiKydk+ND
-        HPVz/g3Md42nuWebioDXLVI=
-X-Google-Smtp-Source: ABdhPJxW9ZwgXlJRwgYjdROuim2ryUn2naOCKsGwc21azVvXJEnzT9GAwLkBtiW/IAXf5iz+SQkgTg==
-X-Received: by 2002:aa7:8154:0:b029:310:70d:a516 with SMTP id d20-20020aa781540000b0290310070da516mr6197004pfn.63.1627069939373;
-        Fri, 23 Jul 2021 12:52:19 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:55b1:90d5:6a79:755f])
-        by smtp.gmail.com with ESMTPSA id k20sm6760953pji.3.2021.07.23.12.52.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 12:52:18 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 12:52:15 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-input@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>,
-        satya priya <skakit@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: pm8941-pwrkey - fix comma vs semicolon issue
-Message-ID: <YPsd74LoRtB9tTKK@google.com>
-References: <YPsa1qCBn/SAmE5x@google.com>
- <CAE-0n51y=o+8SZTL_==GPXrDa2OP8fhh98Amv+L4M63rLQVGZg@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WyoEwHnKGH7mDIf/X1k+fNngkECDQL+TuqJrMYUO1bE=;
+        b=b59T6I0roBC3pDHdgNZKXB7DzuKxb1LCMlNlKIIIy4+6pF7AGNia2RoDIl+wzTSJi3
+         oOgTgAoaPCaIgFCPwPHR/1iVTnKqls13qt7iN4Lv4jXkCa3N75xaQKEM4Tm8+prX5uR5
+         CNlJW6YmXFhM38CANGlghb8PdycMQ0m5hbkkvkaZpDJbva5jCXdCEXQD9ZakAJJTiQjL
+         t2GG9O3H6mhkbA5CsIXlvG2C1lQ0NLAuoDMhQNBT4FQ1ym5Yetbp4hIl3pIgFZCDxf+7
+         kjJsd73Y4MtLM6+ODcVPAnzuF95m0Y0T1ULMszbQ3dS5I4iGm6n0v8/v74D2Tsvjcosw
+         fqQg==
+X-Gm-Message-State: AOAM533j3vJrstJgFinQ/lmhzas5+sQdLay+sFBqXmhy45stZLB5CPpb
+        bwOoB41RtJH5/w8yIUxu50eJgw==
+X-Google-Smtp-Source: ABdhPJwwQNksgKngs+yqWz7rFffKFNrfmaYy4udoxC9PAS7TNy2cALYC75+HK6O9GxAK0Ea7IgjGsg==
+X-Received: by 2002:a05:6e02:1c0b:: with SMTP id l11mr4555920ilh.126.1627069988053;
+        Fri, 23 Jul 2021 12:53:08 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t1sm16925109ilf.34.2021.07.23.12.53.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 12:53:07 -0700 (PDT)
+Subject: Re: [PATCH v2] selftests/sgx: Fix Q1 and Q2 calculation in
+ sigstruct.c
+To:     Jarkko Sakkinen <jarkko@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210705050922.63710-1-jarkko@kernel.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <be6227d1-728a-c658-f962-380c28afc926@linuxfoundation.org>
+Date:   Fri, 23 Jul 2021 13:53:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n51y=o+8SZTL_==GPXrDa2OP8fhh98Amv+L4M63rLQVGZg@mail.gmail.com>
+In-Reply-To: <20210705050922.63710-1-jarkko@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 07:43:52PM +0000, Stephen Boyd wrote:
-> Quoting Dmitry Torokhov (2021-07-23 12:39:02)
-> > There is absolutely no reason to use comma operator in this code, 2
-> > separate statements make much more sense.
-> >
-> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > ---
+On 7/4/21 11:09 PM, Jarkko Sakkinen wrote:
+> From: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > 
-> Fixes: 2fcbda9a822d ("Input: pm8941-pwrkey - add support for PMK8350
-> PON_HLOS PMIC peripheral")
+> Q1 and Q2 are numbers with *maximum* length of 384 bytes. If the calculated
+> length of Q1 and Q2 is less than 384 bytes, things will go wrong.
+> 
+> E.g. if Q2 is 383 bytes, then
+> 
+> 1. The bytes of q2 are copied to sigstruct->q2 in calc_q1q2().
+> 2. The entire sigstruct->q2 is reversed, which results it being
+>     256 * Q2, given that the last byte of sigstruct->q2 is added
+>     to before the bytes given by calc_q1q2().
+> 
+> Either change in key or measurement can trigger the bug. E.g. an unmeasured
+> heap could cause a devastating change in Q1 or Q2.
+> 
+> Reverse exactly the bytes of Q1 and Q2 in calc_q1q2() before returning to
+> the caller.
+> 
+> Fixes: dedde2634570 ("selftests/sgx: Trigger the reclaimer in the selftests")
+> Link: https://lore.kernel.org/linux-sgx/20210301051836.30738-1-tianjia.zhang@linux.alibaba.com/
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> The original patch did a bad job explaining the code change but it
+> turned out making sense. I wrote a new description.
+> 
+> v2:
+> - Added a fixes tag.
+>   tools/testing/selftests/sgx/sigstruct.c | 41 +++++++++++++------------
+>   1 file changed, 21 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/selftests/sgx/sigstruct.c
+> index dee7a3d6c5a5..92bbc5a15c39 100644
+> --- a/tools/testing/selftests/sgx/sigstruct.c
+> +++ b/tools/testing/selftests/sgx/sigstruct.c
+> @@ -55,10 +55,27 @@ static bool alloc_q1q2_ctx(const uint8_t *s, const uint8_t *m,
+>   	return true;
+>   }
+>   
+> +static void reverse_bytes(void *data, int length)
+> +{
+> +	int i = 0;
+> +	int j = length - 1;
+> +	uint8_t temp;
+> +	uint8_t *ptr = data;
+> +
+> +	while (i < j) {
+> +		temp = ptr[i];
+> +		ptr[i] = ptr[j];
+> +		ptr[j] = temp;
+> +		i++;
+> +		j--;
+> +	}
+> +}
 
-It actually predates this patch and also not really a fix as the
-original code ends up working properly, but looks weird.
+I was just about apply this one and noticed this reverse_bytes().
+Aren't there byteswap functions you could call instead of writing
+your own?
 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-
-Thanks!
-
--- 
-Dmitry
+thanks,
+-- Shuah
