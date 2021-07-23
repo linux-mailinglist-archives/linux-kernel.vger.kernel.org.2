@@ -2,229 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4693D3FF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059C23D401D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhGWRN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 13:13:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5318 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229847AbhGWRN4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 13:13:56 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NHXjsE010920;
-        Fri, 23 Jul 2021 13:54:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=tAPkpQeFLm7/MzUH5kG/tXZNZdNBdy5KfbESo14Kjvc=;
- b=c6quvI6RJqixGnLflv7xp8GK69x7HbFFN8UrLiLiqJHQ5SHMXp1ksiqgOHqMHuGw1n6u
- 5L1LOSPwckA0bcLpa9iUNs1cG3tI3GxwWYjXji+iRLRMvijyTsMCwViab+frGF5qTuzf
- i15JIsg8uCma1WRABxR9/v8DxdmLcjqAeGoTn7NOnNDMej0ZoQUpAD0eFsFSSMXEY2j3
- Frw0gitAS2hTl0Dgjg3Ibi/8Syvn8GZEVceIXoDnrAL7oq6t291xXuQM2O3IGcQBO0vA
- JOw2RY92samWmhE03Ecm7fCbGZy0CIw5d/URJjAt4tjd3pFK+SXd5FvvNIrKShxh0Qtu UQ== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a0216rvwy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 13:54:05 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16NHljdE009736;
-        Fri, 23 Jul 2021 17:54:03 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 39upu89xuf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 17:54:03 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16NHpSY931523202
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 17:51:28 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7B294203F;
-        Fri, 23 Jul 2021 17:53:59 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3246942042;
-        Fri, 23 Jul 2021 17:53:59 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 17:53:59 +0000 (GMT)
-Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>, Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Claire Chang <tientzu@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-References: <20210720133826.9075-1-will@kernel.org>
- <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
- <20210723031252.655d6a83.pasic@linux.ibm.com>
- <b8985c53-a83d-f11f-9fa8-af06d1d4bfd0@de.ibm.com>
- <20210723104701.3f8ac227.pasic@linux.ibm.com>
- <ab29cae0-2c1d-354a-5213-9fe4159570e0@de.ibm.com>
- <YPrLualvV9/lE41j@char.us.oracle.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <b5eec658-7c15-5eb4-bb17-4d598997b521@de.ibm.com>
-Date:   Fri, 23 Jul 2021 19:53:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <YPrLualvV9/lE41j@char.us.oracle.com>
+        id S229588AbhGWRVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 13:21:05 -0400
+Received: from mga18.intel.com ([134.134.136.126]:6242 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhGWRVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 13:21:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10054"; a="199188806"
+X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
+   d="scan'208";a="199188806"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 11:01:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
+   d="scan'208";a="463233089"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga008.jf.intel.com with ESMTP; 23 Jul 2021 11:01:34 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Fri, 23 Jul 2021 11:01:33 -0700
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Fri, 23 Jul 2021 11:01:33 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Fri, 23 Jul 2021 11:01:33 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Fri, 23 Jul 2021 11:01:32 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OEtgA4L5e/5NM438GS6jf83tsYv1wJUSo+Zq1V47Hi+vGz/wv3+4orS/o2QWaYFIzfK+s2J+W75Ue/i8i+tF117FPlToxvF2ldas274Eyyxw2tdGYrmL0SMFThntpTJdMEXK6n/6SGqI9CvvR/x5uAysFNObZIWym/Gh+BMKPyTWWNo/8EmPqy286xbnvsNCqbhi7gctNmJDhG6NbulJQYoPcYmmNWU0bCnAFpIuw/+3WkYNXK/0mMZvcVFAWMqi3elYq2dyDOKIlHeCp/JYiP9d8YcFE2XFzvXLMzjgO2gXCiXf/ln9KQkcMRQUPyaNgqF6OmnvTgI3NxeDvOpxSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7EnAbY9Ijl2PZz+XxR/48pKddXw+iSg+WcNkr6MkSR8=;
+ b=kKWEr+Q2BbPQvEjfxxAZtZD2v38MDx7tkmMMmEhTCdcYk5jeaYo8YLEASBhWsf7VT3zwDZfshyStj/8W9VL29m55UtFvLvgZFeCsRaBqGznBE6lNMzfVrGJjDAD7o2n75FKQcLvstuTFsOyHTm87FpmYwiT+2HCFzbokQ3UQ5pmNHeyfFkaJWCbH1fas8954bxD1OPl9xV1Cj9R4U3ArTe9WhJw1Rsm/kBHDcqfGkVreyjDMejzOvvLZZ5k1/ZjYsrBZrZfDwy2+hBukruiwLQekvdiAlXqmBUFG4Ycx5N7dUKM4guDGOeq+KoRhrdDJVpfXlRvDP6zuFy4DTdHV+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7EnAbY9Ijl2PZz+XxR/48pKddXw+iSg+WcNkr6MkSR8=;
+ b=qofPYDLjmKs3mBuUwXkzCNtWkDNGKBZ/iadlJsdOsMGuQJdrhG0Ma0zpnHTlAkQSLOknhjW6WMiwIqlyRcVywMokuViqmcnqajPxlRt/gndeYx8bkzgvyf2wFWsj9IBjB+FTQ+KIyxBhhDyvXkIYG8X9iH7dyHcHUJJiIQK/IxM=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+Received: from DM8PR11MB5736.namprd11.prod.outlook.com (2603:10b6:8:11::11) by
+ DM6PR11MB3995.namprd11.prod.outlook.com (2603:10b6:5:6::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4352.26; Fri, 23 Jul 2021 18:01:30 +0000
+Received: from DM8PR11MB5736.namprd11.prod.outlook.com
+ ([fe80::b5d2:99f4:cd51:f197]) by DM8PR11MB5736.namprd11.prod.outlook.com
+ ([fe80::b5d2:99f4:cd51:f197%4]) with mapi id 15.20.4352.029; Fri, 23 Jul 2021
+ 18:01:30 +0000
+Subject: Re: [PATCH v28 26/32] x86/cet/shstk: Introduce shadow stack token
+ setup/verify routines
+To:     Dave Hansen <dave.hansen@intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Eugene Syromiatnikov" <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "Weijiang Yang" <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        "Haitao Huang" <haitao.huang@intel.com>,
+        Rick P Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210722205219.7934-1-yu-cheng.yu@intel.com>
+ <20210722205219.7934-27-yu-cheng.yu@intel.com>
+ <6cff5396-dff3-8db2-0883-62125252741c@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <4f8d98ac-69a9-273f-bf23-bb5e06dd0ec9@intel.com>
+Date:   Fri, 23 Jul 2021 11:01:24 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
+In-Reply-To: <6cff5396-dff3-8db2-0883-62125252741c@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6vBaF-yRpOy8_h-_mo-P5w6Euu-lMiay
-X-Proofpoint-GUID: 6vBaF-yRpOy8_h-_mo-P5w6Euu-lMiay
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+X-ClientProxiedBy: MWHPR1701CA0015.namprd17.prod.outlook.com
+ (2603:10b6:301:14::25) To DM8PR11MB5736.namprd11.prod.outlook.com
+ (2603:10b6:8:11::11)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_09:2021-07-23,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 phishscore=0
- clxscore=1015 spamscore=0 mlxscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230106
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.18] (98.33.34.38) by MWHPR1701CA0015.namprd17.prod.outlook.com (2603:10b6:301:14::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend Transport; Fri, 23 Jul 2021 18:01:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e813ef1f-090c-4a57-dd99-08d94e03e5d8
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3995:
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR11MB3995E8188A01D3037B4E26A2ABE59@DM6PR11MB3995.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jNO4nPBQy52J158vuw5vIw884FISk3g82Klua0+qkdR5qpLzUZqfWDiDnglzUmtEmvtE9gta0Kv3BouhAS0nU93dKuatvs9Woh83PLa7CBD3bSrkPB8Za2xAaIdwT4+mLFv8aBZI/FO5lnrDS5tjoMnvmeOyX9Qr/2UkrcgBnEQU58WHwMdLFesDK9pv/6yCQrffn2LfHYt3sPUwjW1rqzBqX11VtRd6htIaayWi7OmZyQ4opTA5//TQCc1ieE11LrhONxIeAFSMymw3OZEm6MfncegAsR6BlSJXLJTh11MjbWAkMqb4ni5Eqn0Gd63ViaBj2fk1qzooj8U7FGg3Anwe1mlR0zFSUoq23yKmkPeAU0SRMJRKW7jFg4fvDSrbqf7U8x9QLuehh2ci6yCGei6NDm3z+lhQSsR4oVmE6Shxkg9YPiX4KQcQrj63uR3cCvmzdvPoMzhN+3aN/NmJU3YbhdUKx8eLwVi3K51/HkQXEND+FN1nJE3eBmMzlguYcuPA0HJbFOLa+7BgmXkD/zrlO3MfXDLU4h/FypRdaaHYPfC6yoFI2vVIfgE/iySi5jpNEHPGaxvLlJEdIAsfShg4J4wioqTqhGOjF+rWRNqvwLcv0c1kI6lC5ke9wJficOT0LEX3y3L0SyhWXVmUOuqB0BZeQbL2rB2mFRsKGg1c1IjCbO1TLFm3O8Vgh21lB62eLrczRdNPxya0FBeTfCfcmTdzJ1Yr3tBbNN1Vv+fPVVfEYzsWdYyUJH7w6yJQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5736.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(376002)(366004)(346002)(7416002)(4744005)(31686004)(2906002)(15650500001)(8676002)(2616005)(956004)(66946007)(66556008)(6486002)(478600001)(66476007)(5660300002)(6636002)(316002)(16576012)(110136005)(36756003)(8936002)(186003)(38100700002)(86362001)(53546011)(31696002)(921005)(83380400001)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NElEQVhPVmZhQ2xGeVFVdXFXRzd1cXRweGZKRk9RbXRQMi91M3Q0dUZPRWNF?=
+ =?utf-8?B?YmppMHRjdlAybzN4MGFTdTY3ZkRZUXVoa1JjMFJEdnlsMkZQcG40dmZWRHF3?=
+ =?utf-8?B?RnI0ZnZXSW1xWElHT0lFOW03UGxIQ0Fva0c0QTIxcHhIMEI4M0lvdU9mU3d6?=
+ =?utf-8?B?WVc5NTJGSnpCRk5BSElRR3phR2pYVXhHeXVjL2J6UjA3Q0I5VEpQaWlZN1VZ?=
+ =?utf-8?B?SlVEeXJQWGJRRDZqdzUwSTlDd2FhVlhWK2Y0WFArOGxEenFDSG0wT2lIeHlL?=
+ =?utf-8?B?Y0ROMTgwN1Z2akkwQ3JLYTRubzlKM1FTOCs5ZHRldlpZOStVdjlWVTZvZHdi?=
+ =?utf-8?B?M0d5Zm8rMG8zTzZsbXpDMDZlUTRuOC9MbTFtS3hlUFBHTzA1ZFZSK0JOeE9y?=
+ =?utf-8?B?VVBSR2NuTGFvdndUS2VRMU9aSno2MzNubjlPUzErYVZMWnN2SThoKzJya0pQ?=
+ =?utf-8?B?d25WbEhpTjVxSllrb2FXUXVDS1V3OG1QSElKb3lKaDdJek9kWm5VMnptNWJW?=
+ =?utf-8?B?RzJXQXZsQW9pdDFqRnlpbVFaWjFkVlN6MjVub2Q2bHFaZVQ1VncyTkQ4N2tX?=
+ =?utf-8?B?MWxoNTZVOXhuajR0dzA2bURJRm4zRW45RjFPdDN6ZG1Xd25YNFJNakNvdGk3?=
+ =?utf-8?B?TldEWnRsQ0dkcjlxQXJwTG1Scnd1MWVlS2NyM1NwbjBXbVlmU2w1d3hLVkVz?=
+ =?utf-8?B?WlRzNnVlZU96YjdQSnRrK29BUkZ4ekVtTHorNHZyMWkxMStoa3d4bW4rbm1k?=
+ =?utf-8?B?RnlLQnBtRk1Pb3o1bktkM3l1ckNmRW1GSHgzK2ZrRWUvelpMYUhhRUFvSHJE?=
+ =?utf-8?B?K0N3Zytoa1FCczdJa1NPQ3N0OGpnRVQ1MnhmMVJoSW1TN2lYdFRXT3VpWWhy?=
+ =?utf-8?B?dmJtV2lrSWZaSllxNkpaM3NPSkpMNlpMeVFWVUwvdjRtRFN4R0NQVldoS1ZW?=
+ =?utf-8?B?SkQ4c0ZLd3dOS0VGd3BnOXlXK2gxUTl6RmtJVjgwUEhON1I0RUNBeFM0NERT?=
+ =?utf-8?B?VGJSMTNmQ0wyNGRLRWNVVGVoVHQrVmQyZjNYWWJUR3B2SXZ1MUY5NkhYN0sx?=
+ =?utf-8?B?dktyNkRrYjRYbHNvUGxidEZIdGUvL29oZ3ZraFpIQkR6Z3lycVVzSDNlWCtP?=
+ =?utf-8?B?bFZzanlndUlrZ2phcE8wcEF0TjBCNWk4aG92VFIzZzdFa0xPLzdmNk9aditn?=
+ =?utf-8?B?akJBd052QXdLK3R4SEgwMDBkL01rRmhVeXYxeWI5VkM4a0RUaWlkUEZKYjcx?=
+ =?utf-8?B?dFVYUC8yWUF2MG5lRnJOallPNnhJd3d0VFpkVFQ0TUpqTHlESGZkUmU2cWtM?=
+ =?utf-8?B?bFlZcXFlNDE4RUVaSlQ3R1VBRDJsTHpoNnRPMk1KZUcrdVRySEE0a1l3bzBH?=
+ =?utf-8?B?YTVNNkwzWFRkbW9YMWVNZXRra003YzBsc3hEUksxaGtrMHVjdXZ5VGdSa3RS?=
+ =?utf-8?B?OUJmdHNRckRVamlNVWhoYko1U1pPSi84ZXlqdTVJTUxxd1JRR3dTNkJWdGJQ?=
+ =?utf-8?B?cG5FQ3lpSzhXOGRWVnQ2dGprODR1Snl5R1VsbWtGa0xZZk5GZnFmTVpEMGd0?=
+ =?utf-8?B?SDBCRjR4bXpnZ2JsZWo2MlJncWtqQ0NaN3BGYTVMRzhYWjgwR1IvZXlKUUZE?=
+ =?utf-8?B?U04rNlhzZXJPVU1NWmRodFFZNnE2UlZmR0k1aXU0UHVzcVNVMWpndVcvT2RD?=
+ =?utf-8?B?bXAzeEdKdWpIcXhQTFdRaTZHSUxBUER5dkI2V2REREJLbzN0STN4UEdQUENw?=
+ =?utf-8?Q?PVUdnE9PUTEJKQe2n4CBdSmx25WsD6gpW9Drnf2?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e813ef1f-090c-4a57-dd99-08d94e03e5d8
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5736.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2021 18:01:30.0128
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v8AJiA4+AfSQOFLQvqh/9YgYrs5yzMJoWeZj3qR3LQyi/FQYmtIL06WQeDP+U10g67PMpQwdNVlwMIMpiEob4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3995
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 23.07.21 16:01, Konrad Rzeszutek Wilk wrote:
-> On Fri, Jul 23, 2021 at 10:50:57AM +0200, Christian Borntraeger wrote:
->>
->>
->> On 23.07.21 10:47, Halil Pasic wrote:
->>> On Fri, 23 Jul 2021 08:14:19 +0200
->>> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->>>
->>>> Resending with the correct email of Heiko....
->>>>
->>>> On 23.07.21 03:12, Halil Pasic wrote:
->>>>> On Thu, 22 Jul 2021 21:22:58 +0200
->>>>> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
->>>>>> On 20.07.21 15:38, Will Deacon wrote:
->>>>>>> Hi again, folks,
->>>>>>>
->>>>>>> This is version two of the patch series I posted yesterday:
->>>>>>>
->>>>>>>       https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
->>>>>>>
->>>>>>> The only changes since v1 are:
->>>>>>>
->>>>>>>       * Squash patches 2 and 3, amending the commit message accordingly
->>>>>>>       * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
->>>>>>>
->>>>>>> I'd usually leave it a bit longer between postings, but since this fixes
->>>>>>> issues with patches in -next I thought I'd spin a new version immediately.
->>>>>>>
->>>>>>> Cheers,
->>>>>>
->>>>>> FWIW, I just bisected virtio-errors with secure execution mode
->>>>>> qemu-system-s390x: virtio-serial-bus: Unexpected port id 4205794771 for device virtio-serial0.0
->>>>>>
->>>>>> to
->>>>>> commit 903cd0f315fe426c6a64c54ed389de0becb663dc
->>>>>> Author: Claire Chang <tientzu@chromium.org>
->>>>>> Date:   Thu Jun 24 23:55:20 2021 +0800
->>>>>>
->>>>>>          swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
->>>>>>
->>>>>> Unfortunately this patch series does NOT fix this issue, so it seems that even more
->>>>>> things are broken.
->>>>>>
->>>>>> Any idea what else might be broken?
->>>>>
->>>>> I've done some debugging, and I think I know what is going on. Since
->>>>> that commit we need to set force_swiotlb before the swiotlb itself is
->>>>> initialized. So the patch below should fix the problem.
->>>>>
->>>>> --------------------8<-------------------------------------
->>>>>
->>>>> From: Halil Pasic <pasic@linux.ibm.com>
->>>>> Date: Fri, 23 Jul 2021 02:57:06 +0200
->>>>> Subject: [PATCH 1/1] s390/pv: fix the forcing of the swiotlb
->>>>>
->>>>> Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
->>>>> swiotlb data bouncing") if code sets swiotlb_force it needs to do so
->>>>> before the swiotlb is initialised. Otherwise
->>>>> io_tlb_default_mem->force_bounce will not get set to true, and devices
->>>>> that use (the default) swiotlb will not bounce  despite switolb_force
->>>>> having the value of SWIOTLB_FORCE.
->>>>>
->>>>> Let us restore swiotlb functionality for PV by fulfilling this new
->>>>> requirement.
->>>> I would add:
->>>> Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
->>>> as this patch breaks things
->>>> and
->>>> Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
->>>>
->>>> to make the s390 init code more robust in case people start backporting things.
->>>
->>> I agree. Do we want this backported to the stable releases that have
->>> 64e1f0c531d1  (i.e. do we need a cc stable) or should the fixes tag just
->>> serve as metadata? My guess is, it's the former. In that sense should I
->>> add the tags along with an explanation for the second fixes respin with
->>> cc stable?
->>>
->>> (BTW I don't think this formally qualifies for the stable backports, but
->>> I hope we can make an exception...)
->>
->> I think it makes sense for stable as it is cleaner to set the flags before
->> calling the init function. cc stable would be better and the right way
->> according to process, but the Fixes tag is mostly enough.
+On 7/22/2021 2:15 PM, Dave Hansen wrote:
+> On 7/22/21 1:52 PM, Yu-cheng Yu wrote:
+>> +	if (fpregs_state_valid(fpu, smp_processor_id())) {
+>> +		rdmsrl(MSR_IA32_PL3_SSP, ssp);
+>> +	} else {
+>> +		struct cet_user_state *p;
+>> +
+>> +		/*
+>> +		 * When !fpregs_state_valid() and get_xsave_addr() returns
+>> +		 * null, XFEAUTRE_CET_USER is in init state.  Shadow stack
+>> +		 * pointer is null in this case, so return zero.
+>> +		 */
+>> +		p = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+>> +		if (p)
+>> +			ssp = p->user_ssp;
+>> +	}
+>> +
+>> +	fpregs_unlock();
 > 
-> But the reaso for fixing this is for code that is not yet in Linus's
-> tree?
+> Why are we even calling into this code if shadow stacks might be
+> disabled?  Seems like we should have just errored out long before
+> getting here.
 > 
-> I can just pick this patch up and add it in the pile I have for the next
-> merge window?
 
-That would also work for me. I think Halil wanted to send out and v2.
-In any case
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+That is true.  When this function is called, shadow stack is enabled. 
+If get_xsave_addr() returns null, it is possible xstates is messed up. 
+Maybe I can update the comments to explain it?
 
-so that you can take this via the swiotlb tree.
-
->>
->>>
->>>>
->>>>> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
->>>>
->>>> I can confirm that this fixes the problem. This also makes sense codewise.
->>>>
->>>> Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
->>>> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
->>>
->>> Thanks!
->>>
->>> Regards,
->>> Halil
->>>>
->>>> Konrad, Heiko, Vasily, any preference which tree this goes? I think s390
->>>> would be easiest, but that requires that the patches in the swiotlb tree have
->>>> fixed commit IDs.
->>>>
->>>>> ---
->>>>>     arch/s390/mm/init.c | 2 +-
->>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
->>>>> index 8ac710de1ab1..07bbee9b7320 100644
->>>>> --- a/arch/s390/mm/init.c
->>>>> +++ b/arch/s390/mm/init.c
->>>>> @@ -186,9 +186,9 @@ static void pv_init(void)
->>>>>     		return;
->>>>>     	/* make sure bounce buffers are shared */
->>>>> +	swiotlb_force = SWIOTLB_FORCE;
->>>>>     	swiotlb_init(1);
->>>>>     	swiotlb_update_mem_attributes();
->>>>> -	swiotlb_force = SWIOTLB_FORCE;
->>>>>     }
->>>>>     void __init mem_init(void)
->>>
+Thanks,
+Yu-cheng
