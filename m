@@ -2,137 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863A43D40B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEAE3D40B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhGWSq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 14:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        id S230495AbhGWSrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 14:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWSq0 (ORCPT
+        with ESMTP id S229461AbhGWSrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:46:26 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDD3C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:26:58 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id gt31so5062290ejc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:26:58 -0700 (PDT)
+        Fri, 23 Jul 2021 14:47:41 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6E4C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:28:14 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 19-20020a9d08930000b02904b98d90c82cso3106440otf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:28:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=PHwCGAY5+wniXoPebuo13yAahRUagGiLTP3xMaCSN1c=;
-        b=cQXkPTAMOkgwrSv1SNH3Yu9UD25U6rystuCc6rxGXWSkEVpLDpOSzOKqrrQOHJgeae
-         ZyXd1WSGkaDvKL9BfwatsyVGRiXYi/qhOC8+ougOFVWhSsDa3y4NZz1XzpXQw10bM1ej
-         Nh+kjTqNBrtp0p7RrKu+N7RTIdt947ZdwhnAhW+rrJUfY7gyEAgOD+JRP6Tx/WxpUsCV
-         uehE4xh22msTEufQLNDGNkuy41ucRvkwaPi83br3lpN+OHmrfZH7hUfIT9mfgQUNR+yt
-         aDN+sYpXqx6dk+kEXUSp3kGvk2BYtiZnVEhDVBwEwGLcl63ak1yHAItF2+vSnlJ93ruh
-         2vfg==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=Bs+9Wf2Rg7YUqulOFkE7bAQ3itXKARyReOSzJvhssws=;
+        b=EZ92o+lU4+P+XV7xO6773WcUyvEJ/+NHJbWZkHjHBnYF8dDDdjb+oH7HgG/fmo4XEQ
+         8ZnGklqLIagB3CjPx52/0BFFaDy3J1PTTuLAi/AUmOx77rJR7GlZ2OxfBmx9+QKqLayf
+         44+/7xRfVvPMZMYJRm31me7qFPlWYWG/Np0ao=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=PHwCGAY5+wniXoPebuo13yAahRUagGiLTP3xMaCSN1c=;
-        b=ZgYTPbM2RajIR40LKSqoRZKkQdRMcPM/wbSoaiiOFCNxMeFXVYEjx1xURU3FSvNDwT
-         p0Fq9VjklmK4pcj0gqJmEh1A4CdJJDc+gAnzw2S4HGHHBOB4q9mXjGPeMFl02TOmlySD
-         JC1/o7mb3kbbd8b8SXz3cmx0Ml89uSqRlEf5kER7xcgmAjffVsdyH3vbG0harAMBBrC5
-         sqQ5VIEoWegMGUQ/OQOfUxbu4WFX4USdM/cBxQ+QDCdZNoM/AClanabdNXpBxMVA+NQl
-         Du/IOCfwK44vHYCq9ua8kGW2Ra4/kKS6ndD9XvucoCJW8uUiAK3bXKyTTrWD/dEz/912
-         1zVg==
-X-Gm-Message-State: AOAM533qMMgEqvHhQPLCQ59dQuupXqvkFh94ipSDradWDb+1cvfi+eqF
-        fIzwlMt2O38f2CfdPnygSnI=
-X-Google-Smtp-Source: ABdhPJyuMr5/o4o3LlmaD2bzkBA49FpPfrIptZBv7U/mH7KOFyNyrCJeEHunOMZU0hvhIQrbUrxL5w==
-X-Received: by 2002:a17:906:3555:: with SMTP id s21mr5883352eja.394.1627068417034;
-        Fri, 23 Jul 2021 12:26:57 -0700 (PDT)
-Received: from localhost.localdomain (host-79-27-97-200.retail.telecomitalia.it. [79.27.97.200])
-        by smtp.gmail.com with ESMTPSA id v24sm14621129eds.44.2021.07.23.12.26.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 12:26:56 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        David Laight <David.Laight@ACULAB.COM>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v4 2/2] staging: rtl8188eu: Remove no more used functions and variables
-Date:   Fri, 23 Jul 2021 21:26:20 +0200
-Message-Id: <20210723192620.10669-3-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210723192620.10669-1-fmdefrancesco@gmail.com>
-References: <20210723192620.10669-1-fmdefrancesco@gmail.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=Bs+9Wf2Rg7YUqulOFkE7bAQ3itXKARyReOSzJvhssws=;
+        b=LdNoKPgOwaV9txy/Uju/PtQLQxtO/qFaeWRbKkcvQjohInb31406baVvUZarrwBLAy
+         36TqNOvYUdDYxFJvbifz5xuj4L7fbcvyUe8xY3ihjpXoZpHVwU+nRLurYFpuqN0AIsfY
+         1gcuCE6LC2TNGkb5o8RAnDMb7EpWU3TwABblzViN3GkEtK85cgfnO8Esg8pCdj2xoX45
+         92Kn1Ce68mbEiWjXus6GnYMs1yE42MbpiemQqUSgz8sL7b2QKXumHIRf7LFsa3m/LkgY
+         EWMdny6cf97dclordkEsZ/e0lDKzqGL+EHPho1Lso+2e3pJh79dV3R/EzNblxpFqqtpt
+         HtjQ==
+X-Gm-Message-State: AOAM531NCCNfcDLN9+gElP10oCsIj3soR2yKmo/5M4eDaEzrSIqdNwRH
+        fRyAsmwz1zNFb8IjPxP0hBPER2KNwD+yrtuG4l4JMA==
+X-Google-Smtp-Source: ABdhPJz6hKhnuc07sMCNisJAktb5x8bleD4y8wHakw0tll6AwU3RSHxxohogKWMuvWqjWon3uBzCV+xu7sZ4SrYCDkM=
+X-Received: by 2002:a9d:8c7:: with SMTP id 65mr4160483otf.25.1627068493821;
+ Fri, 23 Jul 2021 12:28:13 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 23 Jul 2021 19:28:13 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <eaa90fa6-e7a4-169d-4ac0-42f8c9545a5b@codeaurora.org>
+References: <1623237532-20829-1-git-send-email-sibis@codeaurora.org>
+ <1623237532-20829-2-git-send-email-sibis@codeaurora.org> <CAE-0n506v5cmyUb+Ge-H7t1HsqNatgxDmq28rqdyGZDbsM4pXg@mail.gmail.com>
+ <eaa90fa6-e7a4-169d-4ac0-42f8c9545a5b@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 23 Jul 2021 19:28:13 +0000
+Message-ID: <CAE-0n50Nkd2etcS_ciiT6Pmz5NXPJm4xS_YaABPNgBUF2mFrzg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] soc: qcom: aoss: Expose send for generic usecase
+To:     Deepak Kumar Singh <deesin@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        Chris Lew <clew@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the functions and variables from rtw_security.c that are no more
-necessary since the patch that replaces getcrc32() with crc32_le().
+Quoting Deepak Kumar Singh (2021-07-23 02:51:50)
+>
+> On 7/21/2021 12:07 PM, Stephen Boyd wrote:
+> > Quoting Sibi Sankar (2021-06-09 04:18:51)
+> >> From: Deepak Kumar Singh <deesin@codeaurora.org>
+> >>
+> >> Not all upcoming usecases will have an interface to allow the aoss
+> >> driver to hook onto. Expose the send api and create a get function to
+> >> enable drivers to send their own messages to aoss.
+> >>
+> >> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> >> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> >> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> >> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> >> ---
+> >>
+> >> v4:
+> >>   * Fix compilation error due to missing qmp_put
+> >>   * Minor typos [s/tarcks/tracks]
+> >>
+> >>   drivers/soc/qcom/qcom_aoss.c       | 70 ++++++++++++++++++++++++++++++++++++--
+> >>   include/linux/soc/qcom/qcom_aoss.h | 36 ++++++++++++++++++++
+> >>   2 files changed, 104 insertions(+), 2 deletions(-)
+> >>   create mode 100644 include/linux/soc/qcom/qcom_aoss.h
+> >>
+> >> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+> >> index 934fcc4d2b05..e8f48760bac8 100644
+> >> --- a/drivers/soc/qcom/qcom_aoss.c
+> >> +++ b/drivers/soc/qcom/qcom_aoss.c
+> >> @@ -522,13 +582,14 @@ static int qmp_probe(struct platform_device *pdev)
+> >>          int irq;
+> >>          int ret;
+> >>
+> >> -       qmp = devm_kzalloc(&pdev->dev, sizeof(*qmp), GFP_KERNEL);
+> >> +       qmp = kzalloc(sizeof(*qmp), GFP_KERNEL);
+> >>          if (!qmp)
+> >>                  return -ENOMEM;
+> >>
+> >>          qmp->dev = &pdev->dev;
+> >>          init_waitqueue_head(&qmp->event);
+> >>          mutex_init(&qmp->tx_lock);
+> >> +       kref_init(&qmp->refcount);
+> >>
+> >>          res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> >>          qmp->msgram = devm_ioremap_resource(&pdev->dev, res);
+> >> @@ -569,6 +630,8 @@ static int qmp_probe(struct platform_device *pdev)
+> >>
+> >>          platform_set_drvdata(pdev, qmp);
+> >>
+> >> +       atomic_set(&qmp->orphan, 0);
+> >> +
+> >>          return 0;
+> >>
+> >>   err_remove_qdss_clk:
+> >> @@ -577,6 +640,7 @@ static int qmp_probe(struct platform_device *pdev)
+> >>          qmp_close(qmp);
+> >>   err_free_mbox:
+> >>          mbox_free_channel(qmp->mbox_chan);
+> >> +       kfree(qmp);
+> >>
+> >>          return ret;
+> >>   }
+> >> @@ -590,7 +654,9 @@ static int qmp_remove(struct platform_device *pdev)
+> >>          qmp_cooling_devices_remove(qmp);
+> >>
+> >>          qmp_close(qmp);
+> >> +       atomic_set(&qmp->orphan, 1);
+> > This looks odd. Why are we letting the device be removed while it is in
+> > use by other drivers? Can't we pin the device with get_device() so it
+> > can't be removed and then prevent the driver from being removed until
+> > all the consumer drivers drop the reference, i.e. suppress sysfs unbind?
+> >
+> > Otherwise it looks like a generic problem that all provider devices,
+> > clks, regulators, gpios, etc. have to deal with and thus this
+> > hand-rolled mechanism can't be right.
+>
+> As per my earlier discussion with Bjorn, device could be unbound using
+> sysfs, in which case
+>
+> remove() is called irrespective of whether any client driver is holding
+> struct device reference
+>
+> or not. That's why i have added separate refcount for qmp handle and
+> marking it invalid if
+>
+> qmp_remove() is called.
+>
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
-
-v3 --> v4:
-No changes.
-
-v2 --> v3:
-Join two related patches in a series because they must be applied in
-order (first 1/2, then 2/2). Rebase to the current Greg K-H's tree and resend.
-
-v1 -> v2:
-Update the commit message with the URL of v2 of the above-mentioned
-patch.
-
- drivers/staging/rtl8188eu/core/rtw_security.c | 36 -------------------
- 1 file changed, 36 deletions(-)
-
-diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
-index 7001f24f118d..7185c1ae2ab8 100644
---- a/drivers/staging/rtl8188eu/core/rtw_security.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_security.c
-@@ -76,42 +76,6 @@ static void arcfour_encrypt(struct arc4context *parc4ctx, u8 *dest, u8 *src, u32
- 		dest[i] = src[i] ^ (unsigned char)arcfour_byte(parc4ctx);
- }
- 
--static int bcrc32initialized;
--static u32 crc32_table[256];
--
--static u8 crc32_reverseBit(u8 data)
--{
--	return (u8)((data << 7) & 0x80) | ((data << 5) & 0x40) | ((data << 3) & 0x20) |
--		   ((data << 1) & 0x10) | ((data >> 1) & 0x08) | ((data >> 3) & 0x04) |
--		   ((data >> 5) & 0x02) | ((data >> 7) & 0x01);
--}
--
--static void crc32_init(void)
--{
--	int i, j;
--	u32 c;
--	u8 *p = (u8 *)&c, *p1;
--	u8 k;
--
--	if (bcrc32initialized == 1)
--		return;
--
--	c = 0x12340000;
--
--	for (i = 0; i < 256; ++i) {
--		k = crc32_reverseBit((u8)i);
--		for (c = ((u32)k) << 24, j = 8; j > 0; --j)
--			c = c & 0x80000000 ? (c << 1) ^ CRC32_POLY : (c << 1);
--		p1 = (u8 *)&crc32_table[i];
--
--		p1[0] = crc32_reverseBit(p[3]);
--		p1[1] = crc32_reverseBit(p[2]);
--		p1[2] = crc32_reverseBit(p[1]);
--		p1[3] = crc32_reverseBit(p[0]);
--	}
--	bcrc32initialized = 1;
--}
--
- /* Need to consider the fragment  situation */
- void rtw_wep_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
- {
--- 
-2.32.0
-
+We have struct device_driver::suppress_bind_attrs for that. Can you set
+it?
