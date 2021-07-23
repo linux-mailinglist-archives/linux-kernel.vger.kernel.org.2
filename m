@@ -2,200 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AFA3D3CAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A983D3CB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235640AbhGWPEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:04:11 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3470 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235470AbhGWPEJ (ORCPT
+        id S235632AbhGWPEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235470AbhGWPEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:04:09 -0400
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GWYLQ2xgwz6G8Gv;
-        Fri, 23 Jul 2021 23:35:42 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 17:44:40 +0200
-Received: from localhost (10.210.170.238) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 23 Jul
- 2021 16:44:39 +0100
-Date:   Fri, 23 Jul 2021 16:44:13 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [v2 6/8] iio: adc: aspeed: Add compensation phase.
-Message-ID: <20210723164413.00003de8@Huawei.com>
-In-Reply-To: <20210723081621.29477-7-billy_tsai@aspeedtech.com>
-References: <20210723081621.29477-1-billy_tsai@aspeedtech.com>
-        <20210723081621.29477-7-billy_tsai@aspeedtech.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 23 Jul 2021 11:04:20 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018EEC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:44:54 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id d17so2882313lfv.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:44:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HOiaAVrGjDtQAMZ/pqI5jg+/dJsFOJs35LXrLz/v398=;
+        b=Ui6Cgxcvq5elBFIoCX0IM80f9Ve53umtK6rup811IiH5eOn3Bv3B4dHBW0RlPbLM7h
+         jpwq9bg/b31wexVUXj3CVQPwpEcBg/W3z6hO2wyTDcKHC2Pf3BxTw9TLjZmP/P+Ox1uK
+         twcMLDKO6nP2BGVevCJvRosjn6YnyjTpz6i/Tk/qBBVRpOOr7gAR1Fhc7G1NC/+1Y0rk
+         B457gxgaTaph9+6wU46u+Yd2zygAF8LScdoIO6kPnFMbAbiBDNja900K9k4bcs+E6xrU
+         51MnnTgSIfNupwfpA9oPGK20nkxSopZVft268z7Xjcd27SRsBPPX8vFVo5h4Lo0JEdWs
+         i/Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HOiaAVrGjDtQAMZ/pqI5jg+/dJsFOJs35LXrLz/v398=;
+        b=ShIk0wOBE0CubwOawK+LtTTJLE1T63XW9gmF7whpxrEyuwjYADyW7QMtTuow54Xxhy
+         v/nvQF59UHJHoV8pg/0gW9k89s2haQbdmBfSiXSJyi5xWcoDfqviaQaEWqB51zkgRCVW
+         liwZZea5q8bvtR1MOlYiT15ANhJVMgdqKyqWS6oxuKebF/ZAuXdryQ9MZJuAGSjrcfRo
+         dAtIRzo3390m5ece+0p8mKQiq/Ky+mMck/QM0lU4U2dm6ITefU9eKr3LEs3VfflBGmQy
+         hf1Hir6wWhGwZBKYPOLf6xaEP4wlXy8Q7aNC2qupvXY7wtLuuiq04BZ0TFwz44kgd+4d
+         /M2Q==
+X-Gm-Message-State: AOAM530KHfAiHnjyj664e2gOt3gocnEYTD6CdjbO+M635g+Iab9JJy9o
+        csShOxm2K/kba6Wv+zak2ngbhWUnjNj5rS/EWntbrw==
+X-Google-Smtp-Source: ABdhPJzyCAH/RW1JEpMxjPu1dGHg4MHXLQ9m9GcbcQ9vAesOrb2vqGsqAdrxCITJFq8clS6wDHNCmrY2ONc4FgBzkCU=
+X-Received: by 2002:a05:6512:2603:: with SMTP id bt3mr3522104lfb.529.1627055092344;
+ Fri, 23 Jul 2021 08:44:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.170.238]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210624191743.617073-1-konrad.dybcio@somainline.org>
+In-Reply-To: <20210624191743.617073-1-konrad.dybcio@somainline.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 23 Jul 2021 17:44:41 +0200
+Message-ID: <CACRpkdaEZMo+_VU8QBxv6PFxn5G0wDvtJ4r2YhdhjHwKmrEDpA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add bindings for MDM9607
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
+        Shevchenko <andy.shevchenko@gmail.com>," 
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        Martin Botka <martin.botka@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 16:16:19 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+On Thu, Jun 24, 2021 at 9:17 PM Konrad Dybcio
+<konrad.dybcio@somainline.org> wrote:
 
-> This patch adds a compensation phase to improve the accurate of adc
+> Document the newly added MDM9607 pinctrl driver.
+>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 
-ADC
+Patch applied!
 
-> measurement. This is the builtin function though input half of the
-
-built-in 
-
-> reference voltage to get the adc offset.
-
-ADC
-
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  drivers/iio/adc/aspeed_adc.c | 52 ++++++++++++++++++++++++++++++++++--
->  1 file changed, 50 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index bb6100228cae..0153b28b83b7 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -61,6 +61,7 @@
->   * rate for most user case.
->   */
->  #define ASPEED_ADC_DEF_SAMPLING_RATE	65000
-> +#define ASPEED_ADC_MAX_RAW_DATA		GENMASK(9, 0)
->  
->  enum aspeed_adc_version {
->  	aspeed_adc_ast2400,
-> @@ -84,6 +85,7 @@ struct aspeed_adc_data {
->  	struct reset_control	*rst;
->  	int			vref;
->  	u32			sample_period_ns;
-> +	int			cv;
->  };
->  
->  #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
-> @@ -115,6 +117,48 @@ static const struct iio_chan_spec aspeed_adc_iio_channels[] = {
->  	ASPEED_CHAN(15, 0x2E),
->  };
->  
-> +static int aspeed_adc_compensation(struct platform_device *pdev)
-> +{
-> +	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
-
-Same comment as previous patches.  pdev doesn't seem to be the best thing
-to pass into these functions.
-
-> +	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> +	u32 index, adc_raw = 0;
-> +	u32 adc_engine_control_reg_val =
-> +		readl(data->base + ASPEED_REG_ENGINE_CONTROL);
-
-blank line here. In this case I would suggest
-
-	u32 adc_engine_control_reg_val;
-
-	adc_engine_control_reg_val = readl(...)
-	
-	adc_engine_control_reg_val |= ...
-
-Whilst we are hear, I'd normally also expect to see a mask to ensure that
-we have no stray bits set.  In this particular case MODE_NORMAL is the mask
-but the reviewer shoudn't need to check that!
-
-> +	adc_engine_control_reg_val |=
-> +		(ASPEED_ADC_OPERATION_MODE_NORMAL | ASPEED_ADC_ENGINE_ENABLE);
-> +
-> +	/*
-> +	 * Enable compensating sensing:
-> +	 * After that, the input voltage of adc will force to half of the reference
-
-"ADC" in all places it appears in comments.
-
-> +	 * voltage. So the expected reading raw data will become half of the max
-> +	 * value. We can get compensating value = 0x200 - adc read raw value.
-> +	 * It is recommended to average at least 10 samples to get a final CV.
-> +	 */
-> +	writel(adc_engine_control_reg_val | ASPEED_ADC_CTRL_COMPENSATION |
-> +		       ASPEED_ADC_CTRL_CHANNEL_ENABLE(0),
-> +	       data->base + ASPEED_REG_ENGINE_CONTROL);
-> +	/*
-> +	 * After enable compensating sensing mode need to wait some time for adc stable
-> +	 * Experiment result is 1ms.
-> +	 */
-> +	mdelay(1);
-> +
-> +	for (index = 0; index < 16; index++) {
-> +		/*
-> +		 * Waiting for the sampling period ensures that the value acquired
-> +		 * is fresh each time.
-> +		 */
-> +		ndelay(data->sample_period_ns);
-> +		adc_raw += readw(data->base + aspeed_adc_iio_channels[0].address);
-> +	}
-> +	adc_raw >>= 4;
-> +	data->cv = BIT(ASPEED_RESOLUTION_BITS - 1) - adc_raw;
-> +	writel(adc_engine_control_reg_val,
-> +	       data->base + ASPEED_REG_ENGINE_CONTROL);
-> +	dev_dbg(data->dev, "compensating value = %d\n", data->cv);
-
-Blank line here.
-
-> +	return 0;
-> +}
-> +
->  static int aspeed_adc_set_sampling_rate(struct iio_dev *indio_dev, u32 rate)
->  {
->  	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> @@ -143,7 +187,11 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
->  
->  	switch (mask) {
->  	case IIO_CHAN_INFO_RAW:
-> -		*val = readw(data->base + chan->address);
-> +		*val = readw(data->base + chan->address) + data->cv;
-
-We would normally express this as IIO_CHAN_INFO_OFFSET, thus allowing
-userspace to see and apply the compensation offset.  It could also modify
-it if necessary (perhaps some long term drift effect or temperature effect
-might mean userspace has more info than the kernel).
-
-> +		if (*val < 0)
-> +			*val = 0;
-> +		else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
-> +			*val = ASPEED_ADC_MAX_RAW_DATA;
-
-Why clamp the value like this? I'm not sure I follow the logic. Is it
-because some userspace might rely on the existing range?
-
->  		return IIO_VAL_INT;
->  
->  	case IIO_CHAN_INFO_SCALE:
-> @@ -347,7 +395,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  		if (ret)
->  			goto poll_timeout_error;
->  	}
-> -
-Keep the blank line.
-
-> +	aspeed_adc_compensation(pdev);
->  	adc_engine_control_reg_val =
->  		readl(data->base + ASPEED_REG_ENGINE_CONTROL);
->  	/* Start all channels in normal mode. */
-
+Yours,
+Linus Walleij
