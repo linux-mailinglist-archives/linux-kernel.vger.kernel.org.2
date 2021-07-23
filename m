@@ -2,176 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619453D3CD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A9E3D3CDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235685AbhGWPMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:12:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:48208 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235470AbhGWPMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:12:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7067F11B3;
-        Fri, 23 Jul 2021 08:52:51 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BA76C3F73D;
-        Fri, 23 Jul 2021 08:52:49 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 16:52:47 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>, robh@kernel.org
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: marvell: armada-37xx: Extend PCIe MEM
- space
-Message-ID: <20210723155247.GB4103@lpieralisi>
-References: <20210624215546.4015-1-pali@kernel.org>
- <20210624215546.4015-3-pali@kernel.org>
- <87pmv919bq.fsf@BL-laptop>
- <20210723141204.waiipazikhzzloj7@pali>
+        id S235672AbhGWPM5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 11:12:57 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:55297 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235578AbhGWPMr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 11:12:47 -0400
+Received: (Authenticated sender: clement.leger@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 779FE1BF20A;
+        Fri, 23 Jul 2021 15:53:16 +0000 (UTC)
+Date:   Fri, 23 Jul 2021 17:53:15 +0200
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH 1/3] regmap: add regmap using ARM SMCCC
+Message-ID: <20210723175315.3eb149c7@fixe.home>
+In-Reply-To: <20210723144317.GF5221@sirena.org.uk>
+References: <20210723135239.388325-1-clement.leger@bootlin.com>
+        <20210723135239.388325-2-clement.leger@bootlin.com>
+        <20210723144317.GF5221@sirena.org.uk>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210723141204.waiipazikhzzloj7@pali>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 04:12:04PM +0200, Pali Roh·r wrote:
-> On Friday 23 July 2021 14:52:25 Gregory CLEMENT wrote:
-> > Hello Pali,
-> > 
-> > > Current PCIe MEM space of size 16 MB is not enough for some combination
-> > > of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
-> > > Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
-> > > so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
-> > > allocate more PCIe BARs for more PCIe cards.
-> > >
-> > > Without this change some combination of PCIe cards cannot be used and
-> > > kernel show error messages in dmesg during initialization:
-> > >
-> > >     pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
-> > >     pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> > >     pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
-> > >     pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
-> > >     pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> > >     pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
-> > >     pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
-> > >     pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
-> > >     pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
-> > >     pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
-> > >     pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
-> > >
-> > > Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
-> > > kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
-> > > crashes during loading of kernel DTB file. This bug is present only in
-> > > U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
-> > > affected by this bug. Bug is fixed in U-Boot version 2021.07.
-> > >
-> > > To not break booting new kernels on existing versions of U-Boot on Turris
-> > > Mox, use first 16 MB range for IO and second range with rest of PCIe window
-> > > for MEM.
-> > 
-> > Is there any depencey with the firs patch of this series ?
-> > 
-> > What happend if this patch is applied without the other ?
+Hi Mark,
+
+Le Fri, 23 Jul 2021 15:43:18 +0100,
+Mark Brown <broonie@kernel.org> a √©crit :
+
+> On Fri, Jul 23, 2021 at 03:52:37PM +0200, Cl√©ment L√©ger wrote:
 > 
-> First patch is fixing reading and setting ranges configuration from DTS.
-> Without first patch memory windows stays as they were in bootloader or
-> in its default configuration. Which is that all 128 MB are transparently
-> mapped to PCIe MEM space.
+> > When running under secure monitor control, some controllers can be
+> > placed in secure world and their access is thus not possible from
+> > normal world. However, these controllers frequently contain
+> > registers than are needed by the normal world for a few specific
+> > operations.  
 > 
-> Therefore this second DTS patch does not fixes issue with IO space
-> (kernel still crashes when accessing it). But allows to use all PCIe MEM
-> space (due to bootloader / default configuration) and therefore allows
-> to use more PCIe cards (which needs more PCIe MEM space).
+> > This patch adds a regmap where registers are accessed using SMCs.
+> > The secure monitor is then responsible to allow or deny access to
+> > the requested registers.  
+> 
+> I can't see any SMC specification for this interface?  Frankly I have
+> some very substantial concerns about the use case for this over
+> exposing the functionality of whatever device the SMC is gating
+> access to through SMC interfaces specific to that functionality.
 
-So, the two patches are decoupled then ? We are not taking dts changes
-through the PCI tree.
+This would require to modify drivers to check if the access should be
+done using SMCs, parse the device tree to find appropriate SMC ids for
+each functionality, add dependencies in KConfig on
+HAVE_ARM_SMCCC_DISCOVERY, and do SMC calls instead of regmap access.
+I'm not saying this is not the way to go but this is clearly more
+intrusive than keeping the existing syscon support.
 
-Besides: these dts patches are a nightmare for backward compatibility,
-hopefully Rob can shed some light on whether what you are doing here
-is advisable and how to sync the changes with kernel changes.
+> Exposing raw access to a (presumed?) subset of whatever device
+> functionality feels like the wrong abstraction level to be working at
+> and like an invitation to system integrators to do things that are
+> going to get them into trouble down the line.
 
-Lorenzo
+Indeed, access is reduced to a subset of registers offset which are
+checked by the TEE.
 
-> > Could you test it to see if any regression occure ?
-> > 
-> > Thanks,
-> > 
-> > GrÈgory
-> > 
-> > >
-> > > Signed-off-by: Pali Roh·r <pali@kernel.org>
-> > > Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
-> > > ---
-> > >  .../boot/dts/marvell/armada-3720-turris-mox.dts | 17 +++++++++++++++++
-> > >  arch/arm64/boot/dts/marvell/armada-37xx.dtsi    | 11 +++++++++--
-> > >  2 files changed, 26 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > index 53e817c5f6f3..86b3025f174b 100644
-> > > --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > > @@ -134,6 +134,23 @@
-> > >  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
-> > >  	status = "okay";
-> > >  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
-> > > +	/*
-> > > +	 * U-Boot port for Turris Mox has a bug which always expects that "ranges" DT property
-> > > +	 * contains exactly 2 ranges with 3 (child) address cells, 2 (parent) address cells and
-> > > +	 * 2 size cells and also expects that the second range starts at 16 MB offset. If these
-> > > +	 * conditions are not met then U-Boot crashes during loading kernel DTB file. PCIe address
-> > > +	 * space is 128 MB long, so the best split between MEM and IO is to use fixed 16 MB window
-> > > +	 * for IO and the rest 112 MB (64+32+16) for MEM, despite that maximal IO size is just 64 kB.
-> > > +	 * This bug is not present in U-Boot ports for other Armada 3700 devices and is fixed in
-> > > +	 * U-Boot version 2021.07. See relevant U-Boot commits (the last one contains fix):
-> > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/cb2ddb291ee6fcbddd6d8f4ff49089dfe580f5d7
-> > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/c64ac3b3185aeb3846297ad7391fc6df8ecd73bf
-> > > +	 * https://source.denx.de/u-boot/u-boot/-/commit/4a82fca8e330157081fc132a591ebd99ba02ee33
-> > > +	 */
-> > > +	#address-cells = <3>;
-> > > +	#size-cells = <2>;
-> > > +	ranges = <0x81000000 0 0xe8000000   0 0xe8000000   0 0x01000000   /* Port 0 IO */
-> > > +		  0x82000000 0 0xe9000000   0 0xe9000000   0 0x07000000>; /* Port 0 MEM */
-> > >  
-> > >  	/* enabled by U-Boot if PCIe module is present */
-> > >  	status = "disabled";
-> > > diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > index 7a2df148c6a3..dac3007f2ac1 100644
-> > > --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > > @@ -488,8 +488,15 @@
-> > >  			#interrupt-cells = <1>;
-> > >  			msi-parent = <&pcie0>;
-> > >  			msi-controller;
-> > > -			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
-> > > -				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
-> > > +			/*
-> > > +			 * The 128 MiB address range [0xe8000000-0xf0000000] is
-> > > +			 * dedicated for PCIe and can be assigned to 8 windows
-> > > +			 * with size a power of two. Use one 64 KiB window for
-> > > +			 * IO at the end and the remaining seven windows
-> > > +			 * (totaling 127 MiB) for MEM.
-> > > +			 */
-> > > +			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
-> > > +				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
-> > >  			interrupt-map-mask = <0 0 0 7>;
-> > >  			interrupt-map = <0 0 0 1 &pcie_intc 0>,
-> > >  					<0 0 0 2 &pcie_intc 1>,
-> > > -- 
-> > > 2.20.1
-> > >
-> > 
-> > -- 
-> > Gregory Clement, Bootlin
-> > Embedded Linux and Kernel engineering
-> > http://bootlin.com
+> 
+> If the end user really is just twiddling a few bits here and there I'd
+> expect those functionality specific services to be pretty simple to
+> do, slightly more effort on the secure monitor side but a lot safer.
+
+The SMC id is supposed to be unique for a given device. The TEE check is
+merely a register offset check and a value check. But I agree that the
+attack surface is larger than with a SMC targeted for a single
+functionality though.
+
+> If there is a use case for passing through an entire device for some
+> reason (ran out of controllers or something?) then I think we
+> probably want an abstraction at the bus level so we don't need to add
+> custom support to every device that we want to pass through and it's
+> clear what's going on.
+
+In our use case, only a few registers located in a secure controller
+is needed to be done. We don't have a use case for an entire device
+access.
+
+Cl√©ment
+
