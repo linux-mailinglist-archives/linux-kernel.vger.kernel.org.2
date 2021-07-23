@@ -2,54 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E832F3D3DD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E883D3DDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhGWQJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:09:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35742 "EHLO mail.kernel.org"
+        id S231331AbhGWQJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:09:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229847AbhGWQJU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:09:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACEA160E73;
-        Fri, 23 Jul 2021 16:49:53 +0000 (UTC)
+        id S230393AbhGWQJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:09:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3C1DD60EB5;
+        Fri, 23 Jul 2021 16:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627058993;
-        bh=hKmvrifTJ5hhxNB0OlIO2o7MGmqI0xoWAGvLb6SWyd8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pAJXmewXuMBnpHRwYsxoWlieOqoi0ilWkttro/u/Lwt3l6z023p75En98+3yrxf+j
-         NuQgQk5oc+IYL/tmHWZ6vnzDjroZVpzuSwRt9lIX4S4xFBwm+3i+0+3uXVyKJd9+qm
-         HYtISptKYviTWX3efKfIqhWUips26lsOpsUndBMPNCwsPxUEWD5KP9JnUy44HfpEo4
-         DACRbL63IeP0mHAMue0/HQDUoISur+W/zF3Zuu6f9X/uw4s/nFGFivldwpYRrssADH
-         fvV66iLs0q90zzKtpnDGllRVZ2wv/XiRqwneEOF1LN6oDm/QOEYmKGmXgof1LkJs37
-         v50ch+ivgI7EA==
-Date:   Fri, 23 Jul 2021 09:49:52 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyaprateek2357@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v4 0/9] ensure bios aren't split in middle of crypto data
- unit
-Message-ID: <YPrzMI6P7MzO3V3K@gmail.com>
-References: <20210707052943.3960-1-satyaprateek2357@gmail.com>
+        s=k20201202; t=1627059006;
+        bh=Maw2pDz5zbCE6MAg2tKnfkmkDkJ8MV+TvmEFBDQY8uc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bgq+DxgPKEY8QPCehSCYWq5Xb464GSYnESyd/qlmY854z80tfQguHiZxALcshMdqR
+         +RGBhSzeyT+sUuvXJvzbhp7oHKqCwy2g1R4jKjvVomWxwq/hUU4FySqI1Gh/wOlVcK
+         X4iiTN3XqxwH7vYfYXNDrbH+NkP6SPDeJW514MdNRycG5TZVw8cMunjhQ3gfm08zeV
+         bTll/Vf1it5YSpQGGCoG7p4kSQnBiWYG9LAeEKwKqqk0fMoKhiCDq2mzYlRkEwVqe9
+         45S2+F5tkFhrYGSTlg99BC4qA62aLQZxi5sJPGmwY6iubWnGUVjNV7lt906Ukxqh6I
+         KejEz/4WCKjOA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2F2B860721;
+        Fri, 23 Jul 2021 16:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707052943.3960-1-satyaprateek2357@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] net: qrtr: fix memory leaks
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162705900618.21133.10256385935124978429.git-patchwork-notify@kernel.org>
+Date:   Fri, 23 Jul 2021 16:50:06 +0000
+References: <20210723153132.6159-1-paskripkin@gmail.com>
+In-Reply-To: <20210723153132.6159-1-paskripkin@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     mani@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        loic.poulain@linaro.org, bjorn.andersson@linaro.org,
+        xiyou.wangcong@gmail.com, edumazet@google.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 10:29:34PM -0700, Satya Tangirala wrote:
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Fri, 23 Jul 2021 18:31:32 +0300 you wrote:
+> Syzbot reported memory leak in qrtr. The problem was in unputted
+> struct sock. qrtr_local_enqueue() function calls qrtr_port_lookup()
+> which takes sock reference if port was found. Then there is the following
+> check:
 > 
-> Changes v3 => v4
->  - Patch 4 in v3 has been removed (Eric points out it isn't required
->    without some of the changes in the device mapper patchset at
->    https://lore.kernel.org/linux-block/20210604210908.2105870-1-satyat@google.com/
->   so I'll add this patch to that series instead.
+> if (!ipc || &ipc->sk == skb->sk) {
+> 	...
+> 	return -ENODEV;
+> }
+> 
+> [...]
 
-Wouldn't it make more sense to have the blk-crypto-fallback change in this
-series?  My concern was just that it didn't make sense to have it split between
-the two patch series -- it seemed like one logical change.
+Here is the summary with links:
+  - [v2] net: qrtr: fix memory leaks
+    https://git.kernel.org/netdev/net/c/52f3456a96c0
 
-- Eric
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
