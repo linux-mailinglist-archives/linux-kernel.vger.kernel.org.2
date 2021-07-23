@@ -2,148 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E8A3D4085
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB04D3D4087
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhGWSZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 14:25:39 -0400
-Received: from esa.hc503-62.ca.iphmx.com ([216.71.135.51]:37027 "EHLO
-        esa.hc503-62.ca.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWSZj (ORCPT
+        id S230037AbhGWS1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 14:27:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229808AbhGWS1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:25:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=uwaterloo.ca; i=@uwaterloo.ca; q=dns/txt; s=default;
-  t=1627067172; x=1658603172;
-  h=subject:to:cc:references:in-reply-to:from:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=zZZQonlNSBB99BtqX/NXnblHqjrWwtAj9PnBhLitA7Q=;
-  b=8Mf1FR/1LviLjBgz1C0eBgau77x6+rryNx+iyb/lD/vQm85mxx1enHht
-   /49QFyjWdwbsdzsH5t1jF9FAromT9Ow3Pt1nRqC4UesleEKHDc8z9jE8C
-   QNHfaBODhaejIagJfpKAzRxKISQXr0QoQotjr3QD5Th4ugj1N7NKNSfjB
-   0=;
-Received: from connect.uwaterloo.ca (HELO connhm04.connect.uwaterloo.ca) ([129.97.208.43])
-  by ob1.hc503-62.ca.iphmx.com with ESMTP/TLS/AES256-GCM-SHA384; 23 Jul 2021 15:06:10 -0400
-Received: from [10.42.0.123] (10.32.139.159) by connhm04.connect.uwaterloo.ca
- (172.16.137.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 23
- Jul 2021 15:06:10 -0400
-Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
-To:     Peter Oskolkov <posk@google.com>
-CC:     Peter Oskolkov <posk@posk.io>, Andrei Vagin <avagin@google.com>,
-        Ben Segall <bsegall@google.com>, Jann Horn <jannh@google.com>,
-        Jim Newsome <jnewsome@torproject.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        <linux-api@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul Turner <pjt@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Buhr <pabuhr@uwaterloo.ca>
-References: <20210716184719.269033-5-posk@google.com>
- <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
- <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
- <c8ea4892-51e5-0dc2-86c6-b705e8a23cde@uwaterloo.ca>
- <CAFTs51XW0H1UJKv0t2tq+5VLfgPMtZmDcxQVUQ5HkgDe38jHpw@mail.gmail.com>
- <5790661b-869c-68bd-86fa-62f580e84be1@uwaterloo.ca>
- <CAPNVh5ecidSmKFW2ck0ASw44GUnP20m7baSP1+KXnGfkM8FLLg@mail.gmail.com>
-In-Reply-To: <CAPNVh5ecidSmKFW2ck0ASw44GUnP20m7baSP1+KXnGfkM8FLLg@mail.gmail.com>
-From:   Thierry Delisle <tdelisle@uwaterloo.ca>
-Message-ID: <e1403574-1151-8399-0ce9-bb80852ec56b@uwaterloo.ca>
-Date:   Fri, 23 Jul 2021 15:06:09 -0400
+        Fri, 23 Jul 2021 14:27:02 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C28C061575;
+        Fri, 23 Jul 2021 12:07:36 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso2187800ota.13;
+        Fri, 23 Jul 2021 12:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/HO6+phJGX3lelq6t157Nbhv6ZLIzzcuXXmzn8gV64k=;
+        b=sFgt2eHfugv0KyuFTRnIZcY2+r7kPfQ02E6Fq/99y6A7LVKeLh/1y07mP8k522o5lL
+         tEA8EI/6RAONS36hjr71uNh2vWfE5nQCuQHvGQkBLbDayJQbgvGq2uJQLXjnwrLJo5Dk
+         8dz5svmE7eqkSBX3zRaKX2swck0uIeBp+yswdhjpWJTQfszUzWqc2w5YpuSZ2BgNb18f
+         vgKbiDevJAamAEqnBXRh6+INbGSOtNACN6n7sOvUHvRZUKAk2XPge4lOEafz3qtfia5K
+         Pwj+1DttV7Ghq8RSPdlScqz+/cAwQvfcRhajpaemezIuv1KmWSYJ2+FS2OMjGUvRzFNp
+         dHJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/HO6+phJGX3lelq6t157Nbhv6ZLIzzcuXXmzn8gV64k=;
+        b=DjWy4Qz+Sqr3o+7lp87nX3J3C7/YLW9Ec9QelLtWN+4eUkXCGZMh8iO6OxzJUG3cDv
+         YI3tMJkl2/lwv28Hw0WWniyJ8NNotF2B88RLtjd///AM778KsjWvGsd+SOP49VW27IGY
+         2YnHfS6xvhkG1OkdCayEs8qdGl1SE7Fr/UbfRt9BsSfbIbzpHS4D8W9DP6Ew5gmlc1fW
+         zc03BtgM/GwGfIIiacBFxiUECP0S4PnHvVM+TaXSHqCUByGslR3QcB/2qXliDpe70+tN
+         VM71yfX9auEyHkfVVt2550dEiGIzSPzgJUS8+nQVaJBj66uklxXtJrdGwEpiARKAFQXu
+         uhCg==
+X-Gm-Message-State: AOAM530mWb1IKPp8DsTotKLmmOYPzuFwz7p33JuM+erC7+AEZW5ys48D
+        ftF5FuNHvpoa504fnpS1y3c4PJWQuAE=
+X-Google-Smtp-Source: ABdhPJzeI4Mi77IefqObLdXaAkxJsEBtPf9A+KB/fCok66OreMmJ0OZxyGNaW+xOdiYvsXof8/z6CQ==
+X-Received: by 2002:a9d:c67:: with SMTP id 94mr4013908otr.344.1627067255181;
+        Fri, 23 Jul 2021 12:07:35 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s24sm4487667ooq.37.2021.07.23.12.07.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 12:07:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210716093916.1516845-1-kyletso@google.com>
+ <CAGZ6i=3PJ+aRzM7=c6f9oCaCjvdQ7GqtCn+dv7H0yC8WMoe+KA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] usb: typec: tcpm: Support non-PD mode
+Message-ID: <66b76646-3c40-fb12-6678-6542c10caaa9@roeck-us.net>
+Date:   Fri, 23 Jul 2021 12:07:32 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGZ6i=3PJ+aRzM7=c6f9oCaCjvdQ7GqtCn+dv7H0yC8WMoe+KA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [10.32.139.159]
-X-ClientProxiedBy: connhm02.connect.uwaterloo.ca (172.16.137.66) To
- connhm04.connect.uwaterloo.ca (172.16.137.68)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- > In my tests reclaimed nodes have their next pointers immediately set
- > to point to the list head. If the kernel gets a node with its @next
- > pointing to something else, then yes, things break down (the kernel
- > kills the process); this has happened occasionally when I had a bug in
- > the userspace code.
+On 7/23/21 10:18 AM, Kyle Tso wrote:
+> On Fri, Jul 16, 2021 at 5:39 PM Kyle Tso <kyletso@google.com> wrote:
+>>
+>> tcpm.c could work well without PD capabilities. Do not block the probe
 
-I believe that approach is fine for production, but for testing it may
-not detect some bugs. For example, it may not detect the race I detail
-below.
+"could" is a bit vague. What is the use case ?
 
+>> if capabilities are not defined in fwnode and skip the PD power
+>> negotiation in the state machine.
+>>
+>> Signed-off-by: Kyle Tso <kyletso@google.com>
+>> ---
+> 
+> Hi, any comments about this patch?
+> 
 
- > Could you, please, provide a bit more details on when/how the race can
- > happen? Servers add themselves to the list, so there can be no races
- > there (servers going idle: add-to-the-list; wait; gc (under a lock);
- > restore @next; do stuff).
+First question would be if this is documented/standardized. More comments below.
 
-I believe the race can happen if the kernel attempts to wake an idle
-server concurrently with a call to gc.
+> thanks,
+> Kyle
+> 
+>>   drivers/usb/typec/tcpm/tcpm.c | 50 ++++++++++++++++++++---------------
+>>   1 file changed, 29 insertions(+), 21 deletions(-)
+>>
+>> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+>> index 5b22a1c931a9..a42de5e17d24 100644
+>> --- a/drivers/usb/typec/tcpm/tcpm.c
+>> +++ b/drivers/usb/typec/tcpm/tcpm.c
+>> @@ -3914,6 +3914,8 @@ static void run_state_machine(struct tcpm_port *port)
+>>                  if (port->ams == POWER_ROLE_SWAP ||
+>>                      port->ams == FAST_ROLE_SWAP)
+>>                          tcpm_ams_finish(port);
+>> +               if (!port->nr_src_pdo)
+>> +                       tcpm_set_state(port, SRC_READY, 0);
+>>                  port->upcoming_state = SRC_SEND_CAPABILITIES;
+>>                  tcpm_ams_start(port, POWER_NEGOTIATION);
+>>                  break;
+>> @@ -4161,7 +4163,10 @@ static void run_state_machine(struct tcpm_port *port)
+>>                                  current_lim = PD_P_SNK_STDBY_MW / 5;
+>>                          tcpm_set_current_limit(port, current_lim, 5000);
+>>                          tcpm_set_charge(port, true);
+>> -                       tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
+>> +                       if (!port->nr_snk_pdo)
+>> +                               tcpm_set_state(port, SNK_READY, 0);
+>> +                       else
+>> +                               tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
+>>                          break;
+>>                  }
+>>                  /*
+>> @@ -5939,15 +5944,17 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+>>
+>>          /* Get source pdos */
+>>          ret = fwnode_property_count_u32(fwnode, "source-pdos");
+>> -       if (ret <= 0)
+>> -               return -EINVAL;
+>> +       if (ret < 0)
+>> +               ret = 0;
+>>
 
-Here's an example list where the head points to a list of 3 items denoted
-A, B, C, and the second character denotes whether the element is marked
-for deletion: 'x' means marked, 'o' means unmarked. 'H' denotes the head.
+This makes the capability properties optional. I think that would have
+to be documented.
 
-         H -> Ax -> Bo -> Co
+>>          port->nr_src_pdo = min(ret, PDO_MAX_OBJECTS);
+>> -       ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
+>> -                                            port->src_pdo, port->nr_src_pdo);
+>> -       if ((ret < 0) || tcpm_validate_caps(port, port->src_pdo,
+>> -                                           port->nr_src_pdo))
+>> -               return -EINVAL;
+>> +       if (port->nr_src_pdo) {
+>> +               ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
+>> +                                                    port->src_pdo, port->nr_src_pdo);
+>> +               if ((ret < 0) || tcpm_validate_caps(port, port->src_pdo,
+>> +                                                   port->nr_src_pdo))
+>> +                       return -EINVAL;
+>> +       }
+>>
+>>          if (port->port_type == TYPEC_PORT_SRC)
+>>                  return 0;
+>> @@ -5963,19 +5970,21 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+>>   sink:
+>>          /* Get sink pdos */
+>>          ret = fwnode_property_count_u32(fwnode, "sink-pdos");
+>> -       if (ret <= 0)
+>> -               return -EINVAL;
+>> +       if (ret < 0)
+>> +               ret = 0;
+>>
+>>          port->nr_snk_pdo = min(ret, PDO_MAX_OBJECTS);
+>> -       ret = fwnode_property_read_u32_array(fwnode, "sink-pdos",
+>> -                                            port->snk_pdo, port->nr_snk_pdo);
+>> -       if ((ret < 0) || tcpm_validate_caps(port, port->snk_pdo,
+>> -                                           port->nr_snk_pdo))
+>> -               return -EINVAL;
+>> +       if (port->nr_snk_pdo) {
+>> +               ret = fwnode_property_read_u32_array(fwnode, "sink-pdos",
+>> +                                                    port->snk_pdo, port->nr_snk_pdo);
+>> +               if ((ret < 0) || tcpm_validate_caps(port, port->snk_pdo,
+>> +                                                   port->nr_snk_pdo))
+>> +                       return -EINVAL;
+>>
+>> -       if (fwnode_property_read_u32(fwnode, "op-sink-microwatt", &mw) < 0)
+>> -               return -EINVAL;
+>> -       port->operating_snk_mw = mw / 1000;
+>> +               if (fwnode_property_read_u32(fwnode, "op-sink-microwatt", &mw) < 0)
+>> +                       return -EINVAL;
+>> +               port->operating_snk_mw = mw / 1000;
+>> +       }
+>>
+>>          port->self_powered = fwnode_property_read_bool(fwnode, "self-powered");
+>>
+>> @@ -6283,9 +6292,8 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+>>          int err;
+>>
+>>          if (!dev || !tcpc ||
+>> -           !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc ||
+>> -           !tcpc->set_polarity || !tcpc->set_vconn || !tcpc->set_vbus ||
+>> -           !tcpc->set_pd_rx || !tcpc->set_roles || !tcpc->pd_transmit)
+>> +           !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc || !tcpc->set_polarity ||
+>> +           !tcpc->set_vconn || !tcpc->set_vbus || !tcpc->set_roles)
 
-Now, atomic_stack_gc is expected to unlink node 'A' so it can be reclaimed,
-leading to "H -> Bo -> Co". Once 'A' is unlinked it can be either deleted
-or pushed back on the list at a later time.
+With this change, if a driver does not define the necessary pd callbacks
+(set_pd_rx, pd_transmit), but its devicetree data does provide pdo properties,
+we'll get a nice crash.
 
-In the following snippet of the atomic_stack_pop function (trimmed for
-space):
+On top of that, I am quite sure that the set_pd_rx() callback is still called
+from various places even if neither sink-pdos nor source-pdos properties
+are defined.
 
-      static inline uint64_t* atomic_stack_pop(uint64_t *head)
-      {
-          uint64_t *curr = (uint64_t *)atomic_load_explicit(head);
+I think this really tries to handle two conditions: A low level driver that
+doesn't support PD, and a system where the low level driver does support PD
+but the system itself doesn't. And then there is the odd case where the system
+only supports either source or sink PD while claiming to support the other.
+Maybe it would make sense to separate both conditions, for example by introducing
+a new flag such as pd_supported to indicate that the system doesn't support the
+PD protocol.
 
-          do {
-              if (!curr) return NULL;
+Guenter
 
-              // <--- Pause
-              uint64_t next = atomic_load_explicit(curr);
-
-At the location marked "<--- Pause", assume the code has the address of
-node 'A' and is about to dereference it to get the address of node 'B'. If
-the thread running this code pauses for any reason, a different CPU can
-run atomic_stack_gc and delete node 'A'. At that point, the pop function
-resumes and dereferences a node that no longer exists.
-
-The thread pause can have many causes; in user-space, preemption is the
-most obvious, but hardware interrupts or even last-level cache misses can
-cause enough of a slowdown for this to happen.
-
-The fundamental problem is that there is nothing to prevent multiple
-threads from manipulating the list AND concurrently attempting to reclaim
-nodes. As far as I know, this requires locking or a lock-free memory
-reclamation scheme where nodes are unlinked and then consensus is
-established that no thread can reach the unlinked data before reclaiming
-the unlinked node. While both approaches are do-able, it requires extra
-communication between the kernel and user-space.
-
-In general, the kernel needs to be robust to misbehaving users and their
-concurrent operations. Hence, I would be wary of any looping in kernel
-involving an atomic operation, which requires cooperation among threads
-to avoid starvation.
-
-
- > Workers are trickier, as they can be woken by signals and then block
- > again, but stray signals are so bad here that I'm thinking of actually
- > not letting sleeping workers wake on signals. Other than signals
- > waking queued/unqueued idle workers, are there any other potential
- > races here?
-
-Timeouts on blocked threads is virtually the same as a signal I think. I
-can see that both could lead to attempts at waking workers that are not
-blocked.
-
-I haven't looked too much at the state transitions yet. I think the
-guarantees offered by the two lists will result in potential races in the
-rest of the code.
-
-Thierry
+>>                  return ERR_PTR(-EINVAL);
+>>
+>>          port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
+>> --
+>> 2.32.0.402.g57bb445576-goog
+>>
 
