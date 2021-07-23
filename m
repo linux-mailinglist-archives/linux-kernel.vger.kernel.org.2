@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C953D3788
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEFB3D378B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232383AbhGWIhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48120 "EHLO
+        id S233919AbhGWIh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGWIhL (ORCPT
+        with ESMTP id S232394AbhGWIh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:37:11 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41346C061575;
-        Fri, 23 Jul 2021 02:17:45 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id o3-20020a05600c5103b029024c0f9e1a5fso2833040wms.4;
-        Fri, 23 Jul 2021 02:17:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=g6gQqT1e2qPhC9Tz0/AdPOlfRpuJENOmn4sgVOzMOlM=;
-        b=suUJ8VdYjo/v1PwRjnJHeOkuvKsNxb5CZwlU0AXKlfNglb9V6dtd07/zaTGpM30cLd
-         dQqgMYD3lsZ2EauYzh6zXAuRvLM5Mng8MDIqs5WxRi6j1ScNIaXH4wohtBkhsSaIkss6
-         pNLRERKmo0WFqaTviZgWlJBOJ7Qda84Q8x5KHFJJOsATC1muUHjmOA+SFPJNBL/cQl8+
-         jFDPq9ktL9FEtkEj1iuWVjsSJ7gSXkqPCekFnCZJQPZI1miOblmZ9uWHih9x8Gg7SK6z
-         lrAccRo1/1HlBMwj6WvKaorWTkbCutw2vk2p5tC3G1MT4FGg1g1VH5XIjBjZOV870vuK
-         jT2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=g6gQqT1e2qPhC9Tz0/AdPOlfRpuJENOmn4sgVOzMOlM=;
-        b=CJxnF4z+zPGvfabnvcoFPi9NXa3K21dbnHkhhYCW3sklo6KWk2Y2OksUbUSgwdo+RQ
-         NJEpdu2xIP9UBEURoQLMKqwqoVgzyUv6DodknDDe7OqOoWiIlDG8S21OJYn8wZC23v2T
-         f2tzZ5V8CKLGdsreO8Xtm0lrhpiiYu86TyWdBK+tMb+tDRbUaGcDQEmMy0dvoGGZxoYA
-         /vqsWUbj0ZVTM+2clqRvpsEU71lxKCGn/vvT9TkYxSr5d7ZrUhDgadzAmpza45Gz3C0q
-         ioi6GpmAtAY1D2FDXmInucAjJOd/e2unGTsW2swiIFZZbpVOvgvrDa+e2hI/NEwAZkbS
-         7/7Q==
-X-Gm-Message-State: AOAM532CNws9tqWZyj/UxT8slJf0so1nAIaiz/0Jv7Z07zy5Fsqp0l/c
-        H+YN5pxpSlipZw4rR55/L/8=
-X-Google-Smtp-Source: ABdhPJw6HkvXSB+qepurCFtxwPh4YNT1N9S1rb7+K+J5W8TMnmaTzb++3nZ8z3qnE1KhVu89SQCuYw==
-X-Received: by 2002:a1c:790a:: with SMTP id l10mr3579872wme.8.1627031863806;
-        Fri, 23 Jul 2021 02:17:43 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.106])
-        by smtp.gmail.com with ESMTPSA id k7sm4479674wms.48.2021.07.23.02.17.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 02:17:43 -0700 (PDT)
-Subject: Re: [PATCH 02/13] media: i2c: Fix incorrect value in comment
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-References: <20210722203407.3588046-1-djrscally@gmail.com>
- <20210722203407.3588046-3-djrscally@gmail.com> <YPpzb5pqpSycAlxN@aptenodytes>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <4d9b0ebf-560a-d4fe-c9ef-d9e92f6c5f44@gmail.com>
-Date:   Fri, 23 Jul 2021 10:17:41 +0100
+        Fri, 23 Jul 2021 04:37:27 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D56C061575;
+        Fri, 23 Jul 2021 02:18:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=JtK3F4ur0xXfBHq8xF2md1hvbLFHPIXsScOT7FC0TmA=; b=14617pCIhQkbwxkrZKJUiAaqsS
+        G73+8csRqRRchneM8D5h9nEY7r68bTusQyVhYoXRFixZhkZfQBBps9y+otlHNFp5vyFGEaKXvpqM7
+        sOd5YDjjvOxGp5SIecm16We7x42yZtpxeql7roGROnm6QP3vJxHIs0L7Qx29LDG+zJDeE1onQu3uh
+        NQznJUuvDO5ZfqDcIidnTtz5/MoWQ+kr4NXSzXpym/Sx0CEc++t8Sy4FoTgop9V3xN+TmprbPcMKW
+        xnJ9512y5lS1uaRiywjTK/5SfqdlrlNFSwW/Xi8Il3szZMNmiBoGvA/RqhIxhXgwKJ7DIevM6EifA
+        heWuK52w==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1m6rJc-0006dv-Rh; Fri, 23 Jul 2021 12:17:56 +0300
+Subject: Re: [PATCH] gpu: host1x: select CONFIG_SYNC_FILE
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210723091424.1682193-1-arnd@kernel.org>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <0f4d1f0a-c313-a60e-6a72-fd4b0c757bc3@kapsi.fi>
+Date:   Fri, 23 Jul 2021 12:17:56 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YPpzb5pqpSycAlxN@aptenodytes>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210723091424.1682193-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arnd,
 
-On 23/07/2021 08:44, Paul Kocialkowski wrote:
-> Hi,
->
-> On Thu 22 Jul 21, 21:33, Daniel Scally wrote:
->> The PLL configuration defined here sets 72MHz (which is correct), not
->> 80MHz. Correct the comment.
-> This is:
->
-> Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
->
-> Thanks,
+I think the best fix for this is to just remove that function -- it is 
+currently not used anywhere. I posted a patch to do that, but Thierry is 
+currently on vacation so it hasn't been picked up yet.
 
+thanks,
+Mikko
 
-Thank you :)
-
->
-> Paul
->  
->> Signed-off-by: Daniel Scally <djrscally@gmail.com>
->> ---
->>  drivers/media/i2c/ov8865.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
->> index fe60cda3dea7..2ef146e7e7ef 100644
->> --- a/drivers/media/i2c/ov8865.c
->> +++ b/drivers/media/i2c/ov8865.c
->> @@ -713,7 +713,7 @@ static const struct ov8865_pll2_config ov8865_pll2_config_native = {
->>  /*
->>   * EXTCLK = 24 MHz
->>   * DAC_CLK = 360 MHz
->> - * SCLK = 80 MHz
->> + * SCLK = 72 MHz
->>   */
->>  
->>  static const struct ov8865_pll2_config ov8865_pll2_config_binning = {
->> -- 
->> 2.25.1
->>
+On 7/23/21 12:14 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> With the addition of the DMA fence, the host1x driver now fails to
+> build without the sync_file helper:
+> 
+> arm-linux-gnueabi-ld: drivers/gpu/host1x/fence.o: in function `host1x_fence_create_fd':
+> fence.c:(.text+0x624): undefined reference to `sync_file_create'
+> 
+> Fixes: ad0529424def ("gpu: host1x: Add DMA fence implementation")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/gpu/host1x/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/host1x/Kconfig b/drivers/gpu/host1x/Kconfig
+> index 6dab94adf25e..6f7ea1720a39 100644
+> --- a/drivers/gpu/host1x/Kconfig
+> +++ b/drivers/gpu/host1x/Kconfig
+> @@ -3,6 +3,7 @@ config TEGRA_HOST1X
+>   	tristate "NVIDIA Tegra host1x driver"
+>   	depends on ARCH_TEGRA || (ARM && COMPILE_TEST)
+>   	select IOMMU_IOVA
+> +	select SYNC_FILE
+>   	help
+>   	  Driver for the NVIDIA Tegra host1x hardware.
+>   
+> 
