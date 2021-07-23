@@ -2,116 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0AB3D3D2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1745D3D3D3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhGWP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGWP23 (ORCPT
+        id S229900AbhGWPaR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 11:30:17 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3473 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGWPaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:28:29 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FD0C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 09:09:03 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id l145so3087581ybf.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 09:09:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9VI9kjwn56WWv5KeEalz1sUOG8bqHQgJMneVLRITpE8=;
-        b=HnSX6z/1YI5rXl+MYn2P5T5hZOevSHHeW+jNbG8MGohEZ1Wuzi7t/jwv7XCJH6AZ1I
-         FD7INh7OuYKWpoYPUR/p11IO2kSJrFj2OYH76szUajxedJqjkOqACB3OK0tmGwbMHKJz
-         fc8yyxJCdPtwHy+ViMLE/PlORPVrJlXYvpXUC3rSvO/NW4TBGljDlWullE05QB+tILjC
-         ZgrUB62VLO4dUlmpKWCFz5aIQkr/5tBgZk57sMzG/vtDDafyDTkd0h9cQRMRjo+bdKha
-         oabft7VQE1z/eUZMwE3MAcvEQDBLVoIqdYF+/WJJgqDLHCAOXeYAohYVKZLIZWMvc6th
-         VsTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9VI9kjwn56WWv5KeEalz1sUOG8bqHQgJMneVLRITpE8=;
-        b=OWWWUwIa7A0p50JyAf+KaeKDX98QWTecRXJkc9KT6Tv6i45AOOr/a7QlClxIVWVuvN
-         FTsU/kOLkEGN+RC2qT9UpAGo/LQ0CoEK+E4780G4T3P+/Zng8O7J6HY1Y/5+z1ZfcSai
-         pdegvkdCvs2ufv+HKyjGxdP3igC7ixF9KJtkPSve2ppi0m5xIU3V8ufjc7SE65HcQnzq
-         q3zN3Aebc86qXy6bN6PhPrJj5/+cHRtp8wfnsQ4UqbU7Fppvcc2UgLQwP/VzgZ8lyYd/
-         KTihpBaLmdBRgSMcIXhcDIaZ6rLtHWOSuMqtO99TMYKe8uF5G7XMxy80TtPOyWCAYC6e
-         IAXg==
-X-Gm-Message-State: AOAM532LU76tV0HOO5th6OBPFyBQe27+xp1of67Wfz+OHlb4n6FKk0GQ
-        60VlGuu5Duw7NlO3MF8H+tRQLolltmNuvapZ720nhw==
-X-Google-Smtp-Source: ABdhPJxn9uo3Wjfj7r9vGXqp6Gdk3SsItVIldrE0qi/gRxSuu+MaBGMIKTB9xh6E3rjPRojpVOS308evtSnl0wGLsS4=
-X-Received: by 2002:a25:5f11:: with SMTP id t17mr1954300ybb.84.1627056541923;
- Fri, 23 Jul 2021 09:09:01 -0700 (PDT)
+        Fri, 23 Jul 2021 11:30:13 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GWYwR4490z6H6lC;
+        Sat, 24 Jul 2021 00:01:43 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 23 Jul 2021 18:10:41 +0200
+Received: from localhost (10.210.170.238) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 23 Jul
+ 2021 17:10:40 +0100
+Date:   Fri, 23 Jul 2021 17:10:15 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+CC:     citral23 <cbranchereau@gmail.com>, <jic23@kernel.org>,
+        <lars@metafoo.de>, <linux-mips@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux@roeck-us.net>, <contact@artur-rojek.eu>
+Subject: Re: [PATCH 6/6] dt-bindings: iio/adc: ingenic: add the JZ4760(B)
+ socs to the sadc Documentation
+Message-ID: <20210723171015.00001b44@Huawei.com>
+In-Reply-To: <L90MWQ.K24XQ4Q0L9XN@crapouillou.net>
+References: <20210721105317.36742-1-cbranchereau@gmail.com>
+        <20210721105317.36742-7-cbranchereau@gmail.com>
+        <L90MWQ.K24XQ4Q0L9XN@crapouillou.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
- <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
- <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
- <YPqDnqULylkkzQG5@dhcp22.suse.cz> <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
-In-Reply-To: <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 23 Jul 2021 09:08:50 -0700
-Message-ID: <CAJuCfpGmpwTv92joNuVPaEJg1PigtGQn2daywHaqF4TXjuiCWQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.210.170.238]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 6:46 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Fri, Jul 23, 2021 at 1:53 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> [...]
-> > > However
-> > > retrying means issuing another syscall, so additional overhead...
-> > > I guess such "best effort" approach would be unusual for a syscall, so
-> > > maybe we can keep it as it is now and if such "do not block" mode is needed
-> > > we can use flags to implement it later?
-> >
-> > Yeah, an explicit opt-in via flags would be an option if that turns out
-> > to be really necessary.
-> >
->
-> I am fine with keeping it as it is but we do need the non-blocking
-> option (via flags) to enable userspace to act more aggressively.
+On Wed, 21 Jul 2021 20:17:45 +0100
+Paul Cercueil <paul@crapouillou.net> wrote:
 
-I think you want to check memory conditions shortly after issuing
-kill/reap requests irrespective of mmap_sem contention. The reason is
-that even when memory release is not blocked, allocations from other
-processes might consume memory faster than we release it. For example,
-in Android we issue kill and start waiting on pidfd for its death
-notification. As soon as the process is dead we reassess the situation
-and possibly kill again. If the process is not dead within a
-configurable timeout we check conditions again and might issue more
-kill requests (IOW our wait for the process to die has a timeout). If
-process_mrelease() is blocked on mmap_sem, we might timeout like this.
-I imagine that a non-blocking option for process_mrelease() would not
-really change this logic.
-Adding such an option is trivial but I would like to make sure it's
-indeed useful. Maybe after the syscall is in place you can experiment
-with it and see if such an option would really change the way you use
-it?
+> Hi Christophe,
+> 
+> Please always add a short description in your patches, even if all you 
+> do is repeat the patch title.
+> 
+> 
+> Le mer., juil. 21 2021 at 12:53:17 +0200, citral23 
+> <cbranchereau@gmail.com> a écrit :
+> > Signed-off-by: citral23 <cbranchereau@gmail.com>
+> > ---
+> >  .../devicetree/bindings/iio/adc/ingenic,adc.yaml         | 9 
+> > +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git 
+> > a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml 
+> > b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> > index 433a3fb55a2e..1b423adba61d 100644
+> > --- a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> > @@ -23,6 +23,8 @@ properties:
+> >      enum:
+> >        - ingenic,jz4725b-adc
+> >        - ingenic,jz4740-adc
+> > +      - ingenic,jz4760-adc
+> > +      - ingenic,jz4760b-adc
+> >        - ingenic,jz4770-adc
+> > 
+> >    '#io-channel-cells':
+> > @@ -43,6 +45,12 @@ properties:
+> >    interrupts:
+> >      maxItems: 1
+> > 
+> > +  ingenic,use-internal-divider:
+> > +    description:
+> > +      This property can be used to set VBAT_SEL in the JZ4760B CFG 
+> > register
+> > +      to sample the battery voltage from the internal divider. If 
+> > absent, it
+> > +      will sample the external divider.  
+> 
+> Please remove trailing spaces. And you don't need to describe internal 
+> behaviour; you only need to explain the functionality in a user-facing 
+> perspective. Something like:
+> 
+> "If present, battery voltage is read from the VBAT_IR pin, which has an 
+> internal /4 divider. If absent, it is read through the VBAT_ER pin, 
+> which does not have such divider."
+> 
+> You also don't specify the type of the property, please add "type: 
+> boolean" before the description.
+> 
+> There should also be a way to make sure that this property can only be 
+> used with the JZ4760B SoC. So a dependency for this vendor property on 
+> the "ingenic,jz4760b-adc" compatible string. But I'm honestly not sure 
+> how to express that... Maybe Rob can help.
+
+Lots of examples in tree.
+e.g.
+https://elixir.bootlin.com/linux/v5.14-rc2/source/Documentation/devicetree/bindings/iio/st,st-sensors.yaml#L153
+
+Basically you have an if block matching the compatible and for non matches
+set it to false.  That combined with additionaProperties: false enforces
+the property can't exist for those other devices.
+
+> 
+> > +
+> >  required:
+> >    - compatible
+> >    - '#io-channel-cells'
+> > @@ -53,6 +61,7 @@ required:
+> > 
+> >  additionalProperties: false
+> > 
+> > +  
+> 
+> Remove the extra newline.
+> 
+> Cheers,
+> -Paul
+> 
+> >  examples:
+> >    - |
+> >      #include <dt-bindings/clock/jz4740-cgu.h>
+> > --
+> > 2.30.2
+> >   
+> 
+> 
+
