@@ -2,287 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3900C3D371D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202643D3720
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234624AbhGWING (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:13:06 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3462 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234355AbhGWIM7 (ORCPT
+        id S234645AbhGWINT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:13:19 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43696 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234626AbhGWINS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:12:59 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GWN5D53L8z6D8m0;
-        Fri, 23 Jul 2021 16:38:40 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 10:53:31 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <paul@paul-moore.com>
-CC:     <stephen.smalley.work@gmail.com>, <prsriva02@gmail.com>,
-        <tusharsu@linux.microsoft.com>, <nramas@linux.microsoft.com>,
-        <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v4 3/3] ima: Add digest and digest_len params to the functions to measure a buffer
-Date:   Fri, 23 Jul 2021 10:53:04 +0200
-Message-ID: <20210723085304.1760138-4-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210723085304.1760138-1-roberto.sassu@huawei.com>
-References: <20210723085304.1760138-1-roberto.sassu@huawei.com>
+        Fri, 23 Jul 2021 04:13:18 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 03E181FF64;
+        Fri, 23 Jul 2021 08:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627030431; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JLSkPVb0qmdjS8aLyMRIbeEymJYhZrsklJC7sIwz+zk=;
+        b=FTrHQ2b85dXEcFaDdqgXGkWUWLZf5DCjTR8B6ODPFpAy+R/2uREN3c18+Broig0Y9yWZrQ
+        XqzkNywyBSZHM3ncLxRR+QrqjZEO1HFwSuPO9xWU5TYS5DIvDGBSFpgMlxpqClwAHOBTwg
+        3lqto1PMPWXEBgWczPQ8yh6paQdcfjI=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id CEF52A3B9A;
+        Fri, 23 Jul 2021 08:53:50 +0000 (UTC)
+Date:   Fri, 23 Jul 2021 10:53:50 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+Message-ID: <YPqDnqULylkkzQG5@dhcp22.suse.cz>
+References: <20210723011436.60960-1-surenb@google.com>
+ <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+ <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
+ <YPpfo2z8feq0vTlE@dhcp22.suse.cz>
+ <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch performs the final modification necessary to pass the buffer
-measurement to callers, so that they provide a functionality similar to
-ima_file_hash(). It adds the 'digest' and 'digest_len' parameters to
-ima_measure_critical_data() and process_buffer_measurement().
+On Fri 23-07-21 01:11:51, Suren Baghdasaryan wrote:
+> On Thu, Jul 22, 2021, 11:20 PM Michal Hocko <mhocko@suse.com> wrote:
+> 
+> > On Thu 22-07-21 21:47:56, Suren Baghdasaryan wrote:
+> > > On Thu, Jul 22, 2021, 7:04 PM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > > On Thu, Jul 22, 2021 at 6:14 PM Suren Baghdasaryan <surenb@google.com>
+> > > > wrote:
+> > > > >
+> > > > [...]
+> > > > > +
+> > > > > +       mmap_read_lock(mm);
+> > > >
+> > > > How about mmap_read_trylock(mm) and return -EAGAIN on failure?
+> > > >
+> > >
+> > > That sounds like a good idea. Thanks! I'll add that in the next respin.
+> >
+> > Why is that a good idea? Can you do anything meaningful about the
+> > failure other than immediately retry the syscall and hope for the best?
+> >
+> 
+> I was thinking if this syscall implements "best effort without blocking"
+> approach then for a more strict usage user can simply retry.
 
-These functions calculate the digest even if there is no suitable rule in
-the IMA policy and, in this case, they simply return 1 before generating a
-new measurement entry.
+I do not think we really want to promise non blocking behavior at this
+stage unless that is absolutely necessary. The current implementation
+goes an extra mile to not block but I wouldn't carve it into stone via
+userspace expectations.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- include/linux/ima.h                          |  5 +--
- security/integrity/ima/ima.h                 |  2 +-
- security/integrity/ima/ima_appraise.c        |  2 +-
- security/integrity/ima/ima_asymmetric_keys.c |  2 +-
- security/integrity/ima/ima_init.c            |  3 +-
- security/integrity/ima/ima_main.c            | 36 ++++++++++++++------
- security/integrity/ima/ima_queue_keys.c      |  2 +-
- security/selinux/ima.c                       |  6 ++--
- 8 files changed, 39 insertions(+), 19 deletions(-)
+> However
+> retrying means issuing another syscall, so additional overhead...
+> I guess such "best effort" approach would be unusual for a syscall, so
+> maybe we can keep it as it is now and if such "do not block" mode is needed
+> we can use flags to implement it later?
 
-diff --git a/include/linux/ima.h b/include/linux/ima.h
-index 60492263aa64..b6ab66a546ae 100644
---- a/include/linux/ima.h
-+++ b/include/linux/ima.h
-@@ -38,7 +38,7 @@ extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
- extern int ima_measure_critical_data(const char *event_label,
- 				     const char *event_name,
- 				     const void *buf, size_t buf_len,
--				     bool hash);
-+				     bool hash, u8 *digest, size_t digest_len);
- 
- #ifdef CONFIG_IMA_APPRAISE_BOOTPARAM
- extern void ima_appraise_parse_cmdline(void);
-@@ -147,7 +147,8 @@ static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {
- static inline int ima_measure_critical_data(const char *event_label,
- 					     const char *event_name,
- 					     const void *buf, size_t buf_len,
--					     bool hash)
-+					     bool hash, u8 *digest,
-+					     size_t digest_len)
- {
- 	return -ENOENT;
- }
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index 03db221324c3..2f4c20b16ad7 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -268,7 +268,7 @@ int process_buffer_measurement(struct user_namespace *mnt_userns,
- 			       struct inode *inode, const void *buf, int size,
- 			       const char *eventname, enum ima_hooks func,
- 			       int pcr, const char *func_data,
--			       bool buf_hash);
-+			       bool buf_hash, u8 *digest, size_t digest_len);
- void ima_audit_measurement(struct integrity_iint_cache *iint,
- 			   const unsigned char *filename);
- int ima_alloc_init_template(struct ima_event_data *event_data,
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index ef9dcfce45d4..63bec42c353f 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -357,7 +357,7 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
- 		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
- 			process_buffer_measurement(&init_user_ns, NULL, digest, digestsize,
- 						   "blacklisted-hash", NONE,
--						   pcr, NULL, false);
-+						   pcr, NULL, false, NULL, 0);
- 	}
- 
- 	return rc;
-diff --git a/security/integrity/ima/ima_asymmetric_keys.c b/security/integrity/ima/ima_asymmetric_keys.c
-index c985418698a4..f6aa0b47a772 100644
---- a/security/integrity/ima/ima_asymmetric_keys.c
-+++ b/security/integrity/ima/ima_asymmetric_keys.c
-@@ -62,5 +62,5 @@ void ima_post_key_create_or_update(struct key *keyring, struct key *key,
- 	 */
- 	process_buffer_measurement(&init_user_ns, NULL, payload, payload_len,
- 				   keyring->description, KEY_CHECK, 0,
--				   keyring->description, false);
-+				   keyring->description, false, NULL, 0);
- }
-diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
-index 5076a7d9d23e..b26fa67476b4 100644
---- a/security/integrity/ima/ima_init.c
-+++ b/security/integrity/ima/ima_init.c
-@@ -154,7 +154,8 @@ int __init ima_init(void)
- 	ima_init_key_queue();
- 
- 	ima_measure_critical_data("kernel_info", "kernel_version",
--				  UTS_RELEASE, strlen(UTS_RELEASE), false);
-+				  UTS_RELEASE, strlen(UTS_RELEASE), false,
-+				  NULL, 0);
- 
- 	return rc;
- }
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index b512c06d8ee1..360266da5a10 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -838,17 +838,20 @@ int ima_post_load_data(char *buf, loff_t size,
-  * @pcr: pcr to extend the measurement
-  * @func_data: func specific data, may be NULL
-  * @buf_hash: measure buffer data hash
-+ * @digest: buffer digest will be written to
-+ * @digest_len: buffer length
-  *
-  * Based on policy, either the buffer data or buffer data hash is measured
-  *
-- * Return: 0 if the buffer has been successfully measured, a negative value
-- * otherwise.
-+ * Return: 0 if the buffer has been successfully measured, 1 if the digest
-+ * has been written to the passed location but not added to a measurement entry,
-+ * a negative value otherwise.
-  */
- int process_buffer_measurement(struct user_namespace *mnt_userns,
- 			       struct inode *inode, const void *buf, int size,
- 			       const char *eventname, enum ima_hooks func,
- 			       int pcr, const char *func_data,
--			       bool buf_hash)
-+			       bool buf_hash, u8 *digest, size_t digest_len)
- {
- 	int ret = 0;
- 	const char *audit_cause = "ENOMEM";
-@@ -869,7 +872,10 @@ int process_buffer_measurement(struct user_namespace *mnt_userns,
- 	int action = 0;
- 	u32 secid;
- 
--	if (!ima_policy_flag)
-+	if (digest && digest_len < digest_hash_len)
-+		return -EINVAL;
-+
-+	if (!ima_policy_flag && !digest)
- 		return -ENOENT;
- 
- 	template = ima_template_desc_buf();
-@@ -891,7 +897,7 @@ int process_buffer_measurement(struct user_namespace *mnt_userns,
- 		action = ima_get_action(mnt_userns, inode, current_cred(),
- 					secid, 0, func, &pcr, &template,
- 					func_data);
--		if (!(action & IMA_MEASURE))
-+		if (!(action & IMA_MEASURE) && !digest)
- 			return -ENOENT;
- 	}
- 
-@@ -922,6 +928,12 @@ int process_buffer_measurement(struct user_namespace *mnt_userns,
- 		event_data.buf_len = digest_hash_len;
- 	}
- 
-+	if (digest)
-+		memcpy(digest, iint.ima_hash->digest, digest_hash_len);
-+
-+	if (!ima_policy_flag || (func && !(action & IMA_MEASURE)))
-+		return 1;
-+
- 	ret = ima_alloc_init_template(&event_data, &entry, template);
- 	if (ret < 0) {
- 		audit_cause = "alloc_entry";
-@@ -964,7 +976,7 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
- 
- 	process_buffer_measurement(file_mnt_user_ns(f.file), file_inode(f.file),
- 				   buf, size, "kexec-cmdline", KEXEC_CMDLINE, 0,
--				   NULL, false);
-+				   NULL, false, NULL, 0);
- 	fdput(f);
- }
- 
-@@ -975,26 +987,30 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
-  * @buf: pointer to buffer data
-  * @buf_len: length of buffer data (in bytes)
-  * @hash: measure buffer data hash
-+ * @digest: buffer digest will be written to
-+ * @digest_len: buffer length
-  *
-  * Measure data critical to the integrity of the kernel into the IMA log
-  * and extend the pcr.  Examples of critical data could be various data
-  * structures, policies, and states stored in kernel memory that can
-  * impact the integrity of the system.
-  *
-- * Return: 0 if the buffer has been successfully measured, a negative value
-- * otherwise.
-+ * Return: 0 if the buffer has been successfully measured, 1 if the digest
-+ * has been written to the passed location but not added to a measurement entry,
-+ * a negative value otherwise.
-  */
- int ima_measure_critical_data(const char *event_label,
- 			      const char *event_name,
- 			      const void *buf, size_t buf_len,
--			      bool hash)
-+			      bool hash, u8 *digest, size_t digest_len)
- {
- 	if (!event_name || !event_label || !buf || !buf_len)
- 		return -ENOPARAM;
- 
- 	return process_buffer_measurement(&init_user_ns, NULL, buf, buf_len,
- 					  event_name, CRITICAL_DATA, 0,
--					  event_label, hash);
-+					  event_label, hash, digest,
-+					  digest_len);
- }
- 
- static int __init init_ima(void)
-diff --git a/security/integrity/ima/ima_queue_keys.c b/security/integrity/ima/ima_queue_keys.c
-index 979ef6c71f3d..93056c03bf5a 100644
---- a/security/integrity/ima/ima_queue_keys.c
-+++ b/security/integrity/ima/ima_queue_keys.c
-@@ -165,7 +165,7 @@ void ima_process_queued_keys(void)
- 						   entry->keyring_name,
- 						   KEY_CHECK, 0,
- 						   entry->keyring_name,
--						   false);
-+						   false, NULL, 0);
- 		list_del(&entry->list);
- 		ima_free_key_entry(entry);
- 	}
-diff --git a/security/selinux/ima.c b/security/selinux/ima.c
-index 34d421861bfc..727c4e43219d 100644
---- a/security/selinux/ima.c
-+++ b/security/selinux/ima.c
-@@ -86,7 +86,8 @@ void selinux_ima_measure_state_locked(struct selinux_state *state)
- 	}
- 
- 	ima_measure_critical_data("selinux", "selinux-state",
--				  state_str, strlen(state_str), false);
-+				  state_str, strlen(state_str), false,
-+				  NULL, 0);
- 
- 	kfree(state_str);
- 
-@@ -103,7 +104,8 @@ void selinux_ima_measure_state_locked(struct selinux_state *state)
- 	}
- 
- 	ima_measure_critical_data("selinux", "selinux-policy-hash",
--				  policy, policy_len, true);
-+				  policy, policy_len, true,
-+				  NULL, 0);
- 
- 	vfree(policy);
- }
+Yeah, an explicit opt-in via flags would be an option if that turns out
+to be really necessary.
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
