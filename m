@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCDD3D3530
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4753D3531
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232832AbhGWGm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhGWGm5 (ORCPT
+        id S233183AbhGWGnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:43:43 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56616 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhGWGnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:42:57 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6140EC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:23:30 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id m1so986196pjv.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dccwzm0JUzZfAJpe+VU8zCtj99qVQ/WnWSS+WqLNfXc=;
-        b=cJCXGMp8MI+6mMbvnEnN7tpaXHLuE5vChILj5btQ3jW/cK0Zpgduooa5G13HjLtbmC
-         ehUUr7sBMeXBIV2NdtIGfXLn8G2munVGIT+CKukcHagjnB8pAE8Jo0lYqjThD9jwaziN
-         moSL5g86ag5nAublBJb8iVC7YvfFB+Ig9U5uxRB/OWCe4sN4Ux01X0RLyXS9iKsOyw4z
-         /uvEJ2q///1dY6Q8L+fbDAy+6aveoLMLZIM697/bJ1RaN75OjLfYtGYXJg5xFiLXWdMH
-         E4lkJffCLsyxS2ecp8UsskwUTnl9tgqGEwdQb5Thr3JoJYuIzs4tzPmo9+1YRsHMpib0
-         34Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dccwzm0JUzZfAJpe+VU8zCtj99qVQ/WnWSS+WqLNfXc=;
-        b=e6+JZwUqFH31FIwV6qQbyQ7mwWZHI9VATKQMQSt5U+qfDXC68YqCYC2YBsJ/l5y0FW
-         yZ8frBge06EZxnCdA5yWIMFIk4Y8rRabguyM1r8+ho8AmVYo4Tx9pOHCgLI9OBj+vVy0
-         5cen5duh/0zT2Y3up0eWb7IYObqu+3RWWJwTYiCNaSdCZ21Q6/rlAQ3Y3HUuhrDaxf63
-         OC0QVE5/AcUTCCQDq+jsuW2E9Iqfto/gghMFNXlMn0Ngm5OAaHrBKxrBR+N5yxYurvob
-         NsiUWZLyg9FO1R1o7Mn2tNzazg9HGPc2PqTkFusX71PYvei/kWZcKyAv47t0MaUW/Mth
-         fMFg==
-X-Gm-Message-State: AOAM5322eLOBgEBahxl65ltiw7QSu8g8c+DXGggo8nATbuUjRwnBLuPt
-        Kfi9jKAd0ix0Zbv7K2iU3A9usw==
-X-Google-Smtp-Source: ABdhPJzNtFnnoe4/UhTqBiAsl2EgKRySlzbbMT3VPGBJcvrUM/u8D8/ITGSWh9WufLdYvuhu0nrlHw==
-X-Received: by 2002:a63:78d:: with SMTP id 135mr3678920pgh.116.1627025009837;
-        Fri, 23 Jul 2021 00:23:29 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id x26sm33678743pfj.71.2021.07.23.00.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 00:23:29 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 15:23:22 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 11/11] perf auxtrace: Add
- compat_auxtrace_mmap__{read_head|write_tail}
-Message-ID: <20210723072322.GG179035@leoy-ThinkPad-X240s>
-References: <20210711104105.505728-1-leo.yan@linaro.org>
- <20210711104105.505728-12-leo.yan@linaro.org>
- <20210712144410.GE22278@shell.armlinux.org.uk>
- <20210713154602.GD748506@leoy-ThinkPad-X240s>
- <20210713161441.GK22278@shell.armlinux.org.uk>
- <20210713181301.GE13181@arm.com>
- <20210714084015.GM22278@shell.armlinux.org.uk>
+        Fri, 23 Jul 2021 02:43:41 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 80F681FF56;
+        Fri, 23 Jul 2021 07:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627025054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+daORgY14Wt4jkEfHQiD6DsrfjAOi8Y5e+ZnSYFh77E=;
+        b=NkqLqsWmXcHJ/A6wBr3wOG0bY6t6AADQCuKVPqloaHPCJiIbo8dIUnXEZRHI4U9rc4ZXdT
+        cuOv9lnwXH6tH+05VXf/6OCzvbS0G5xSA9TG7uTzc06UJy+j461ZIyfWmrfBhqIFNZXGN6
+        46DxrqeGbEuhF5tEDEzWij54jRGttW0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627025054;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=+daORgY14Wt4jkEfHQiD6DsrfjAOi8Y5e+ZnSYFh77E=;
+        b=VM3LzrMON8eQclhHptlymEzUHEzUNK6ZSt3YAD7o1Sfq1d9whXebHLFwyyN+GCrCh9svrw
+        bX2vQ9ha0zAgMSCQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 654E513697;
+        Fri, 23 Jul 2021 07:24:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id vLZ6GJ5u+mCaPgAAGKfGzw
+        (envelope-from <iivanov@suse.de>); Fri, 23 Jul 2021 07:24:14 +0000
+From:   "Ivan T. Ivanov" <iivanov@suse.de>
+To:     David Airlie <airlied@linux.ie>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/vc4: hdmi: Add debugfs prefix
+Date:   Fri, 23 Jul 2021 09:24:14 +0200
+Message-Id: <20210723072414.17590-1-iivanov@suse.de>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714084015.GM22278@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 09:40:15AM +0100, Russell King (Oracle) wrote:
-> On Tue, Jul 13, 2021 at 07:13:02PM +0100, Catalin Marinas wrote:
-> > We could try to clarify E2.2.1 to simply state that naturally aligned
-> > LDRD/STRD are single-copy atomic without any subsequent statement on the
-> > translation table.
-> 
-> I think that clarification would be most helpful. Thanks.
+Without prefix debugfs can't properly create component
+debug information tree when driver register more than
+one component per device, in this case two. Fix this.
 
-Thanks for the suggestion and confirmation, Russell & Catalin.
+debugfs: Directory 'fef00700.hdmi' with parent 'vc4-hdmi-0' already present!
 
-If so, I will implement the weak functions for
-compat_auxtrace_mmap__{read_head|write_tail}; and write the arm/arm64
-specific functions with using LDRD/STRD instructions.
+Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-For better patches organization, I will use a separate patch set for
-enabling the compat functions (in particular patches 10, 11/11) in
-the next spin.
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index aab1b36ceb3c..62b057f88df5 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -1523,6 +1523,9 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+ 	struct snd_soc_dai_link *dai_link = &vc4_hdmi->audio.link;
+ 	struct snd_soc_card *card = &vc4_hdmi->audio.card;
+ 	struct device *dev = &vc4_hdmi->pdev->dev;
++#ifdef CONFIG_DEBUG_FS
++	struct snd_soc_component *comp;
++#endif
+ 	const __be32 *addr;
+ 	int index;
+ 	int ret;
+@@ -1577,6 +1580,16 @@ static int vc4_hdmi_audio_init(struct vc4_hdmi *vc4_hdmi)
+ 		return ret;
+ 	}
+ 
++#ifdef CONFIG_DEBUG_FS
++	comp = snd_soc_lookup_component(dev, vc4_hdmi_audio_cpu_dai_comp.name);
++	if (comp)
++		comp->debugfs_prefix = "cpu";
++
++	comp = snd_soc_lookup_component(dev, vc4_hdmi_audio_component_drv.name);
++	if (comp)
++		comp->debugfs_prefix = "codec";
++#endif
++
+ 	dai_link->cpus		= &vc4_hdmi->audio.cpu;
+ 	dai_link->codecs	= &vc4_hdmi->audio.codec;
+ 	dai_link->platforms	= &vc4_hdmi->audio.platform;
+-- 
+2.32.0
 
-Thanks,
-Leo
