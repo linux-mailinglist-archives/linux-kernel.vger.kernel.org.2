@@ -2,90 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299D63D3468
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF2E3D3466
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233881AbhGWFXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:23:23 -0400
-Received: from m32-153.88.com ([43.250.32.153]:32951 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233845AbhGWFXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:23:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=5lPj+a2pbsHvRn+Mac/RbixboMLKIuDU1ETpc
-        1PjGe4=; b=kpFzOJnKpmlicHEKHz7S+zk5O6LDUUXa6uND38EYTE4pPavPguZIx
-        hxtOTJIPC9xzhmQ4ObU+btKOLqcsfllQ7T4ouNNxwlOr2FzsRYZpY71GriO4+CmX
-        7PW8YPIepUlHebDf4oXyyNlLM7b2Fi1wLhsEEpd/PFRrdRh0my8i50=
-Received: from localhost.localdomain (unknown [119.103.21.236])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgA3t6fAW_pgBXQCAA--.9292S2;
-        Fri, 23 Jul 2021 14:03:45 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     alexs@kernel.org, corbet@lwn.net
-Cc:     bobwxc@email.cn, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs/zh_CN: reformat zh_CN/dev-tools/testing-overview
-Date:   Fri, 23 Jul 2021 14:03:28 +0800
-Message-Id: <20210723060328.16581-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
+        id S233822AbhGWFXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:23:07 -0400
+Received: from relay.sw.ru ([185.231.240.75]:37122 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhGWFXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:23:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=fr+RAdrXYeZQV5eYbCDUwvlXBsDn7zY14pZ+tuJZJZM=; b=UNDm2xCO8IwLBIpmP
+        2Dkz0Mp+4weJh5Jga6K975SI7vfeV7iSDz23/5wYv4pXHTgmSLt+/Yg94F8zDQbLW0pw5ZYoydkiV
+        Ir4ejpwavHd15LR9TYdsGARMx6zLF4Ie0LK42QRPA6W1ymNsc9t3WU57bheoQXPd0ZTJM/3NjAHpw
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m6oHW-004yU3-Gd; Fri, 23 Jul 2021 09:03:34 +0300
+Subject: Re: [PATCH AUTOSEL 5.13 07/19] ipv6: allocate enough headroom in
+ ip6_finish_output2()
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+References: <20210723035721.531372-1-sashal@kernel.org>
+ <20210723035721.531372-7-sashal@kernel.org>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <2b57c728-3ef2-aeba-2ff3-ff2555fb6ee3@virtuozzo.com>
+Date:   Fri, 23 Jul 2021 09:03:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GiKnCgA3t6fAW_pgBXQCAA--.9292S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF4DurWfXw4kJw4xWF1fXrb_yoW8KFy7pr
-        4vkr92q3W8C345A3yI9FyUtF4jkr97Gw4UKa1xt347AryqkrsYkrZrtF90qFW3CryIvF98
-        ZF4rGFWq9340y3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2
-        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Cr1UJr1lOx8S6xCaFVCjc4AY
-        6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x
-        0EwIxGrwCF04k20xvE74AGY7Cv6cx26F4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I
-        3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxV
-        WUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8I
-        cVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aV
-        AFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuY
-        vjfUsvtCUUUUU
-X-Originating-IP: [119.103.21.236]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+In-Reply-To: <20210723035721.531372-7-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reorganise several long lines in order to satisfy the kernel coding
-style.
+this patch is incomplete, and requires following fixup
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2d85a1b31dde84038ea07ad825c3d8d3e71f4344
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
----
- .../zh_CN/dev-tools/testing-overview.rst          | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+Please backport it too.
 
-diff --git a/Documentation/translations/zh_CN/dev-tools/testing-overview.rst b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
-index 8206d5b477e2..b7a1d13da6c6 100644
---- a/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
-+++ b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
-@@ -70,13 +70,14 @@ kselftest也因此非常适合于全部功能的测试，因为这些功能会
- 确切函数或代码行。这有助于决定内核被测试了多少，或用来查找合适的测试
- 中没有覆盖到的极端情况。
- 
--Documentation/translations/zh_CN/dev-tools/gcov.rst 是GCC的覆盖率测试工具，能用于获取内核的全局或每个模块的
--覆盖率。与KCOV不同的是，这个工具不记录每个任务的覆盖率。覆盖率数据可
--以通过debugfs读取，并通过常规的gcov工具进行解释。
--
--Documentation/dev-tools/kcov.rst 是能够构建在内核之中，用于在每个任务的层面捕捉覆盖率的一
--个功能。因此，它对于模糊测试和关于代码执行期间信息的其它情况非常有用，
--比如在一个单一系统调用里使用它就很有用。
-+Documentation/translations/zh_CN/dev-tools/gcov.rst 是GCC的覆盖率测试
-+工具，能用于获取内核的全局或每个模块的覆盖率。与KCOV不同的是，这个工具
-+不记录每个任务的覆盖率。覆盖率数据可以通过debugfs读取，并通过常规的
-+gcov工具进行解释。
-+
-+Documentation/dev-tools/kcov.rst 是能够构建在内核之中，用于在每个任务
-+的层面捕捉覆盖率的一个功能。因此，它对于模糊测试和关于代码执行期间信
-+息的其它情况非常有用，比如在一个单一系统调用里使用它就很有用。
- 
- 动态分析工具
- ============
--- 
-2.25.1
+Thank you,
+	Vasily Averin
+
+On 7/23/21 6:57 AM, Sasha Levin wrote:
+> From: Vasily Averin <vvs@virtuozzo.com>
+> 
+> [ Upstream commit 5796015fa968a3349027a27dcd04c71d95c53ba5 ]
+> 
+> When TEE target mirrors traffic to another interface, sk_buff may
+> not have enough headroom to be processed correctly.
+> ip_finish_output2() detect this situation for ipv4 and allocates
+> new skb with enogh headroom. However ipv6 lacks this logic in
+> ip_finish_output2 and it leads to skb_under_panic:
+> 
+>  skbuff: skb_under_panic: text:ffffffffc0866ad4 len:96 put:24
+>  head:ffff97be85e31800 data:ffff97be85e317f8 tail:0x58 end:0xc0 dev:gre0
+>  ------------[ cut here ]------------
+>  kernel BUG at net/core/skbuff.c:110!
+>  invalid opcode: 0000 [#1] SMP PTI
+>  CPU: 2 PID: 393 Comm: kworker/2:2 Tainted: G           OE     5.13.0 #13
+>  Hardware name: Virtuozzo KVM, BIOS 1.11.0-2.vz7.4 04/01/2014
+>  Workqueue: ipv6_addrconf addrconf_dad_work
+>  RIP: 0010:skb_panic+0x48/0x4a
+>  Call Trace:
+>   skb_push.cold.111+0x10/0x10
+>   ipgre_header+0x24/0xf0 [ip_gre]
+>   neigh_connected_output+0xae/0xf0
+>   ip6_finish_output2+0x1a8/0x5a0
+>   ip6_output+0x5c/0x110
+>   nf_dup_ipv6+0x158/0x1000 [nf_dup_ipv6]
+>   tee_tg6+0x2e/0x40 [xt_TEE]
+>   ip6t_do_table+0x294/0x470 [ip6_tables]
+>   nf_hook_slow+0x44/0xc0
+>   nf_hook.constprop.34+0x72/0xe0
+>   ndisc_send_skb+0x20d/0x2e0
+>   ndisc_send_ns+0xd1/0x210
+>   addrconf_dad_work+0x3c8/0x540
+>   process_one_work+0x1d1/0x370
+>   worker_thread+0x30/0x390
+>   kthread+0x116/0x130
+>   ret_from_fork+0x22/0x30
+> 
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  net/ipv6/ip6_output.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+> index ff4f9ebcf7f6..0efcb9b04151 100644
+> --- a/net/ipv6/ip6_output.c
+> +++ b/net/ipv6/ip6_output.c
+> @@ -60,10 +60,38 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+>  {
+>  	struct dst_entry *dst = skb_dst(skb);
+>  	struct net_device *dev = dst->dev;
+> +	unsigned int hh_len = LL_RESERVED_SPACE(dev);
+> +	int delta = hh_len - skb_headroom(skb);
+>  	const struct in6_addr *nexthop;
+>  	struct neighbour *neigh;
+>  	int ret;
+>  
+> +	/* Be paranoid, rather than too clever. */
+> +	if (unlikely(delta > 0) && dev->header_ops) {
+> +		/* pskb_expand_head() might crash, if skb is shared */
+> +		if (skb_shared(skb)) {
+> +			struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+> +
+> +			if (likely(nskb)) {
+> +				if (skb->sk)
+> +					skb_set_owner_w(skb, skb->sk);
+> +				consume_skb(skb);
+> +			} else {
+> +				kfree_skb(skb);
+> +			}
+> +			skb = nskb;
+> +		}
+> +		if (skb &&
+> +		    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+> +			kfree_skb(skb);
+> +			skb = NULL;
+> +		}
+> +		if (!skb) {
+> +			IP6_INC_STATS(net, ip6_dst_idev(dst), IPSTATS_MIB_OUTDISCARDS);
+> +			return -ENOMEM;
+> +		}
+> +	}
+> +
+>  	if (ipv6_addr_is_multicast(&ipv6_hdr(skb)->daddr)) {
+>  		struct inet6_dev *idev = ip6_dst_idev(skb_dst(skb));
+>  
+> 
 
