@@ -2,195 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285913D3542
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF063D355E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhGWGuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
+        id S233497AbhGWGxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231949AbhGWGue (ORCPT
+        with ESMTP id S229733AbhGWGxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:50:34 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCE2C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:31:07 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id f26so961974ybj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:31:07 -0700 (PDT)
+        Fri, 23 Jul 2021 02:53:13 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34895C061575;
+        Fri, 23 Jul 2021 00:33:46 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id j2so1250234wrx.9;
+        Fri, 23 Jul 2021 00:33:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vs+we/6ft1FfVa0CVz20fRewulUcTgapCBk4PsMDMMQ=;
-        b=JPyoG4tDLazDPsS8Y3oVxlDJm75zO3sr5Mwj9G2MnrcoE/tXE6m8Q7IDz7QI/HrG18
-         xlTRSLavT1GWOuRuJSRa2gKNvB9Z25aSlfeFzmf4rtlDTcVQrSqDVdbuiz1aFt9AbmVS
-         Bn8n8SkRdYMai4NwvEI2Suhn5IvGbTMAXHcMmlN6kBJA2EWAbj7uqaOsdhx5HR6dXh8E
-         Qu1hiLp388RZyk+2SNzk0qHrlu7vQ9ohNOQXse3g8P03+XwbTLKU0GKBYXQl3hnFj5QG
-         4FyAaDXc/oappirdBhHoW7wA1+nwd8NCic04Fu6HtgJ0cfr4lCEuzvZxjEWRXAJEZ9Pv
-         uHGw==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=VgC3vPpNT5La+R1XF1jyN9pqTr6GT5OZov/rHCOsaMQ=;
+        b=LzzDWdADRUkSbBay5xrPP+bpll1wxkfmRtcG0CBrtdw+DL+zg1Yi46ZIFfgFWOJhe/
+         j06xVhF+MfX+GHHIaR5KAf6EhfMnvXHvObTNiOUAVsPOAltQvzrdeHD9Ehua9DrkWcVP
+         s/V/rDzauqd/j3+ZJC527TXO2Nhj7zYbVO9yzhFb0BjTms5yb1/6f4Yy3coD/V5wwxDE
+         NNaEVQhH1MLGwzk+5qCLZo29ilPVGRabcp+FyyUuaK0RzwhKh3p8twblp3+XfFeTIu/U
+         yJYHwboPdQkr1lcR/t2yyo7dHhm0J3qVK16emB1TdlS4OJeA3DBVYX3e78qKgcIA4IUi
+         TM6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vs+we/6ft1FfVa0CVz20fRewulUcTgapCBk4PsMDMMQ=;
-        b=WkH8bE2LyfV92hbk5rj/E3sF4QzX1zsLJuviKBJIY4gEQxzpI0ouM0dtHXDnCWKZGr
-         MQat7pynK+O4HajDIS96fe2rWfqE7uTrneHMD0VOdAvJ/RtDFlq4yzhVRQehguERMOsG
-         mBOSRzLqCPQhffKQ0IU3NvvgN6G0lyPpvADjyXTwZwF3kH8SLFmWsCFL81boEnRMlGBD
-         ncK/sOMgr+ZWi6LscyKJmb1w0GNvmeC2s4PLQiorMmIf37QzCdbvD2qo9zmFTFW+x975
-         AlmtSh9HtX47SUcwMbeAK3f8GDK9Tvg2sY+8FoRI3LZ2QsxnlVYxjX2XExm/PTrgqLpc
-         UzIw==
-X-Gm-Message-State: AOAM530f+46qm43IxJnByPqTsG7sUoby4xDHWEfy+Y3NW3q0XJN1jel1
-        0+tgAlyhCyfBlpuCF9IaOUy7j3lCbukH15pdXOyfsg==
-X-Google-Smtp-Source: ABdhPJwg0akw1mzLE5SRir9S3txrzipyiauGM7ybFw0aTjvqg6GRL6JrZTEfDza78OmWm3R7qONfl5YzUx+jnBc5bxE=
-X-Received: by 2002:a25:487:: with SMTP id 129mr5006427ybe.0.1627025466848;
- Fri, 23 Jul 2021 00:31:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VgC3vPpNT5La+R1XF1jyN9pqTr6GT5OZov/rHCOsaMQ=;
+        b=XqLzdIMmTpFU7v8/CSpGUxtDXeFWLovJ450exd4LIgmVXJMsg9l9yLUNTv4C5pgSrt
+         o4Y6A35G55oQpq0Qu5p+Un11/tfbljXzFWuE7+pZF73lMJzvi39EZQyG2qaVHw0DjO+G
+         cWffoRB/syw3ICFWXkphINlmR1lCg6ITafFtxshNzT6EetZfRyqebzT9RtAxh2Tn/SCc
+         ytHqy7T2rcxkh9Vg8bJDT01y3F47m7yLx3QNQST97wJ73Sj/krjC25RLas5d2c6jOSQf
+         uOJk6zWQMUQPxbHrbLK2s7yURBqvEudB/rPwj+MJF5Xu0wHGCeOji11jzjGh3onBC4IO
+         1o7Q==
+X-Gm-Message-State: AOAM533Py5dB0HJebdhaKPe0oUElME2dN00Hpru3Oky1rgP8JlWKo9as
+        V4a3CLbSFjn5oV6iNdVghR5A/L2nGWq9sA==
+X-Google-Smtp-Source: ABdhPJykCwF5I969etjP8bi0AekEUMs/Y+Rps6uy3Npu3PwBQ8byqJ5w7l2ggmdg8oNLePEi1rvN9Q==
+X-Received: by 2002:adf:ed08:: with SMTP id a8mr3612303wro.375.1627025624839;
+        Fri, 23 Jul 2021 00:33:44 -0700 (PDT)
+Received: from ?IPv6:2a02:810d:d40:2317:2ef0:5dff:fe0a:a2d5? ([2a02:810d:d40:2317:2ef0:5dff:fe0a:a2d5])
+        by smtp.gmail.com with ESMTPSA id n23sm26882957wmc.38.2021.07.23.00.33.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 00:33:44 -0700 (PDT)
+Subject: Re: [PATCH v2] Expose Peak USB device id in sysfs via phys_port_name.
+To:     =?UTF-8?Q?St=c3=a9phane_Grosjean?= <s.grosjean@peak-system.com>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210721124048.590426-1-nautsch2@gmail.com>
+ <20210721125926.593283-1-nautsch2@gmail.com>
+ <PA4PR03MB67973D473C7CE600A6104EE8D6E39@PA4PR03MB6797.eurprd03.prod.outlook.com>
+ <fe8998f2-7897-735c-926f-6b6b74018784@gmail.com>
+ <DBBPR03MB67952FE719401869BC8F1A77D6E59@DBBPR03MB6795.eurprd03.prod.outlook.com>
+From:   Andre Naujoks <nautsch2@gmail.com>
+Message-ID: <e3c8a6c1-a108-0a11-aaf7-f17e1851f6d7@gmail.com>
+Date:   Fri, 23 Jul 2021 09:33:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210712100317.23298-1-steven_lee@aspeedtech.com>
- <CAMpxmJXfUterUdaGHOJT5hwcVJ+3cqgSQVdp-6Atuyyo36FxfQ@mail.gmail.com> <20210723031615.GA10457@aspeedtech.com>
-In-Reply-To: <20210723031615.GA10457@aspeedtech.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 23 Jul 2021 09:30:56 +0200
-Message-ID: <CAMpxmJU4jN-hpNYPLHLbjx4uZ6vDqcyuMVQXhHg1BWXOqyS22A@mail.gmail.com>
-Subject: Re: [PATCH v6 0/9] ASPEED sgpio driver enhancement.
-To:     Steven Lee <steven_lee@aspeedtech.com>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DBBPR03MB67952FE719401869BC8F1A77D6E59@DBBPR03MB6795.eurprd03.prod.outlook.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 5:16 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> The 07/21/2021 21:27, Bartosz Golaszewski wrote:
-> > On Mon, Jul 12, 2021 at 12:03 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
-> > >
-> > > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
-> > > with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
-> > > supports up to 80 pins.
-> > > In the current driver design, the max number of sgpio pins is hardcoded
-> > > in macro MAX_NR_HW_SGPIO and the value is 80.
-> > >
-> > > For supporting sgpio master interfaces of AST2600 SoC, the patch series
-> > > contains the following enhancement:
-> > > - Convert txt dt-bindings to yaml.
-> > > - Update aspeed-g6 dtsi to support the enhanced sgpio.
-> > > - Support muiltiple SGPIO master interfaces.
-> > > - Support up to 128 pins by dts ngpios property.
-> > > - Pair input/output GPIOs instead of using 0 as GPIO input pin base and
-> > >   MAX_NR_HW_SGPIO as GPIO output pin base.
-> > > - Support wdt reset tolerance.
-> > > - Fix irq_chip issues which causes multiple sgpio devices use the same
-> > >   irq_chip data.
-> > > - Replace all of_*() APIs with device_*().
-> > >
-> > > Changes from v5:
-> > > * Squash v5 patch-05 and patch-06 to one patch.
-> > > * Remove MAX_NR_HW_SGPIO and corresponding design to make the gpio
-> > >   input/output pin base are determined by ngpios.
-> > >   For example, if MAX_NR_HW_SGPIO is 80 and ngpios is 10, the original
-> > >   pin order is as follows:
-> > >     Input:
-> > >     0 1 2 3 ... 9
-> > >     Output:
-> > >     80 81 82 ... 89
-> > >
-> > >   With the new design, pin order is changed as follows:
-> > >     Input:
-> > >     0 2 4 6 ... 18(ngpios * 2 - 2)
-> > >     Output:
-> > >     1 3 5 7 ... 19(ngpios * 2 - 1)
-> > > * Replace ast2600-sgpiom-128 and ast2600-sgpiom-80 compatibles by
-> > >   ast2600-sgpiom.
-> > > * Fix coding style issues.
-> > >
-> > > Changes from v4:
-> > > * Remove ngpios from dtsi
-> > > * Add ast2400 and ast2500 platform data.
-> > > * Remove unused macros.
-> > > * Add ngpios check in a separate patch.
-> > > * Fix coding style issues.
-> > >
-> > > Changes from v3:
-> > > * Split dt-bindings patch to 2 patches
-> > > * Rename ast2600-sgpiom1 compatible with ast2600-sgiom-128
-> > > * Rename ast2600-sgpiom2 compatible with ast2600-sgiom-80
-> > > * Correct the typo in commit messages.
-> > > * Fix coding style issues.
-> > > * Replace all of_*() APIs with device_*().
-> > >
-> > > Changes from v2:
-> > > * Remove maximum/minimum of ngpios from bindings.
-> > > * Remove max-ngpios from bindings and dtsi.
-> > > * Remove ast2400-sgpiom and ast2500-sgpiom compatibles from dts and
-> > >   driver.
-> > > * Add ast2600-sgpiom1 and ast2600-sgpiom2 compatibles as their max
-> > >   number of available gpio pins are different.
-> > > * Modify functions to pass aspeed_sgpio struct instead of passing
-> > >   max_ngpios.
-> > > * Split sgpio driver patch to 3 patches
-> > >
-> > > Changes from v1:
-> > > * Fix yaml format issues.
-> > > * Fix issues reported by kernel test robot.
-> > >
-> > > Please help to review.
-> > >
-> > > Thanks,
-> > > Steven
-> > >
-> > > Steven Lee (9):
-> > >   dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
-> > >   dt-bindings: aspeed-sgpio: Add ast2600 sgpio
-> > >   ARM: dts: aspeed-g6: Add SGPIO node.
-> > >   ARM: dts: aspeed-g5: Remove ngpios from sgpio node.
-> > >   gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
-> > >   gpio: gpio-aspeed-sgpio: Add set_config function
-> > >   gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
-> > >   gpio: gpio-aspeed-sgpio: Use generic device property APIs
-> > >   gpio: gpio-aspeed-sgpio: Return error if ngpios is not multiple of 8.
-> > >
-> > >  .../bindings/gpio/aspeed,sgpio.yaml           |  77 ++++++++
-> > >  .../devicetree/bindings/gpio/sgpio-aspeed.txt |  46 -----
-> > >  arch/arm/boot/dts/aspeed-g5.dtsi              |   1 -
-> > >  arch/arm/boot/dts/aspeed-g6.dtsi              |  28 +++
-> > >  drivers/gpio/gpio-aspeed-sgpio.c              | 178 +++++++++++-------
-> > >  5 files changed, 215 insertions(+), 115 deletions(-)
-> > >  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
-> > >  delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
-> > >
-> > > --
-> > > 2.17.1
-> > >
-> >
-> > The series looks good to me. Can the DTS and GPIO patches go into
-> > v5.15 separately?
-> >
->
-> Hi Bart,
->
-> Thanks for the review.
-> Shall we do anything to make the patches go into v5.15 or wait for picking-up?
->
-> Steven
->
-> > Bart
+Am 23.07.21 um 09:24 schrieb Stéphane Grosjean:
+> Hi,
+> 
+> We plan to send the patches during the next month.
 
-It's more of a question to the relevant SoC maintainers.
+Thank you for the info! Sounds great. I'm looking forward to it.
 
-Joel, Andrew: can I take the GPIO patches through the GPIO tree and
-you'll take the ARM patches separately into v5.15?
+Best Regards
+   Andre
 
-Bartosz
+> 
+> Regards,
+> 
+> — Stéphane
+> 
+> 
+> ------------------------------------------------------------------------
+> *De :* Andre Naujoks <nautsch2@gmail.com>
+> *Envoyé :* mercredi 21 juillet 2021 15:39
+> *À :* Stéphane Grosjean <s.grosjean@peak-system.com>; Wolfgang 
+> Grandegger <wg@grandegger.com>; Marc Kleine-Budde <mkl@pengutronix.de>; 
+> David S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; 
+> Vincent Mailhol <mailhol.vincent@wanadoo.fr>; Gustavo A. R. Silva 
+> <gustavoars@kernel.org>; Pavel Skripkin <paskripkin@gmail.com>; Colin 
+> Ian King <colin.king@canonical.com>; linux-can@vger.kernel.org 
+> <linux-can@vger.kernel.org>; netdev@vger.kernel.org 
+> <netdev@vger.kernel.org>; linux-kernel@vger.kernel.org 
+> <linux-kernel@vger.kernel.org>
+> *Objet :* Re: [PATCH v2] Expose Peak USB device id in sysfs via 
+> phys_port_name.
+> Am 21.07.21 um 15:29 schrieb Stéphane Grosjean:
+>> Hi,
+>> 
+>> The display and the possibility to change this "device_number" is a current modification of the peak_usb driver. This modification will offer this possibility for all CAN - USB interfaces of PEAK-System.
+> 
+> Hi.
+> 
+> By "current modification" you mean something not yet public? Do you have
+> a time frame for when you are planning to make it public? I'd really
+> like to use this :-)
+> 
+>> 
+>> However, it is planned to create new R/W entries for this (under /sys/class/net/canX/...) as is already the case in other USB - CAN interface drivers.
+> 
+> I'd be fine with that. I just chose something, that was already
+> available and looked as if it made the most sense without breaking anything.
+> 
+> Thanks for the reply!
+>     Andre
+> 
+>> 
+>> — Stéphane
+>> 
+>> 
+>> De : Andre Naujoks <nautsch2@gmail.com>
+>> Envoyé : mercredi 21 juillet 2021 14:59
+>> À : Wolfgang Grandegger <wg@grandegger.com>; Marc Kleine-Budde <mkl@pengutronix.de>; David S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Stéphane Grosjean <s.grosjean@peak-system.com>; Vincent Mailhol <mailhol.vincent@wanadoo.fr>; Gustavo  A. R. Silva <gustavoars@kernel.org>; Pavel Skripkin 
+> <paskripkin@gmail.com>; Colin Ian King <colin.king@canonical.com>; Andre 
+> Naujoks <nautsch2@gmail.com>; linux-can@vger.kernel.org 
+> <linux-can@vger.kernel.org>; netdev@vger.kernel.org 
+> <netdev@vger.kernel.org>; linux-kernel@vger.kernel.org 
+> <linux-kernel@vger.kernel.org>
+>> Objet : [PATCH v2] Expose Peak USB device id in sysfs via phys_port_name.
+>> 
+>> The Peak USB CAN adapters can be assigned a device id via the Peak
+>> provided tools (pcan-settings). This id can currently not be set by the
+>> upstream kernel drivers, but some devices expose this id already.
+>> 
+>> The id can be used for consistent naming of CAN interfaces regardless of
+>> order of attachment or recognition on the system. The classical CAN Peak
+>> USB adapters expose this id via bcdDevice (combined with another value)
+>> on USB-level in the sysfs tree and this value is then available in
+>> ID_REVISION from udev. This is not a feasible approach, when a single
+>> USB device offers more than one CAN-interface, like e.g. the PCAN-USB
+>> Pro FD devices.
+>> 
+>> This patch exposes those ids via the, up to now unused, netdevice sysfs
+>> attribute phys_port_name as a simple decimal ASCII representation of the
+>> id. phys_port_id was not used, since the default print functions from
+>> net/core/net-sysfs.c output a hex-encoded binary value, which is
+>> overkill for a one-byte device id, like this one.
+>> 
+>> Signed-off-by: Andre Naujoks <nautsch2@gmail.com>
+>> ---
+>>   drivers/net/can/usb/peak_usb/pcan_usb_core.c | 16 ++++++++++++++++
+>>   1 file changed, 16 insertions(+)
+>> 
+>> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+>> index e8f43ed90b72..f6cbb01a58cc 100644
+>> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+>> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+>> @@ -408,6 +408,21 @@ static netdev_tx_t peak_usb_ndo_start_xmit(struct sk_buff *skb,
+>>           return NETDEV_TX_OK;
+>>   }
+>> 
+>> +static int peak_usb_ndo_get_phys_port_name(struct net_device *netdev,
+>> +                                          char *name, size_t len)
+>> +{
+>> +       const struct peak_usb_device *dev = netdev_priv(netdev);
+>> +       int err;
+>> +
+>> +       err = snprintf(name, len, "%u", dev->device_number);
+>> +
+>> +       if (err >= len || err <= 0) {
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>>   /*
+>>    * start the CAN interface.
+>>    * Rx and Tx urbs are allocated here. Rx urbs are submitted here.
+>> @@ -769,6 +784,7 @@ static const struct net_device_ops peak_usb_netdev_ops = {
+>>           .ndo_stop = peak_usb_ndo_stop,
+>>           .ndo_start_xmit = peak_usb_ndo_start_xmit,
+>>           .ndo_change_mtu = can_change_mtu,
+>> +       .ndo_get_phys_port_name = peak_usb_ndo_get_phys_port_name,
+>>   };
+>> 
+>>   /*
+>> --
+>> 2.32.0
+>> 
+>> --
+>> PEAK-System Technik GmbH
+>> Sitz der Gesellschaft Darmstadt - HRB 9183
+>> Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
+>> Unsere Datenschutzerklaerung mit wichtigen Hinweisen
+>> zur Behandlung personenbezogener Daten finden Sie unter
+>> www.peak-system.com/Datenschutz.483.0.html 
+> <http://www.peak-system.com/Datenschutz.483.0.html>
+>> 
+> 
+> 
+> --
+> PEAK-System Technik GmbH
+> Sitz der Gesellschaft Darmstadt - HRB 9183
+> Geschaeftsfuehrung: Alexander Gach / Uwe Wilhelm
+> Unsere Datenschutzerklaerung mit wichtigen Hinweisen
+> zur Behandlung personenbezogener Daten finden Sie unter
+> www.peak-system.com/Datenschutz.483.0.html
+
