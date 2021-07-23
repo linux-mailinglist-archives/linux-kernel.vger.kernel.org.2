@@ -2,167 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328473D3A54
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770413D3A5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234895AbhGWLxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:53:52 -0400
-Received: from mail-dm6nam12on2064.outbound.protection.outlook.com ([40.107.243.64]:29025
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234601AbhGWLxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:53:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dSvkoFP+0WgtNuQrrSzGngy5PnU1G/ngzZ93bG21f7VL/mhh2uWmvZ2xPvYKVW62Sfxuz1cVqGFAGA9reg4zTBxIMe2IY4RWGbHK8G8xgFtYpOU1dQi9feka7OHEyqTF4lbXFNOARwFHz2pv8dwwTIwbLFQ945LsdA1gFBH1O1J7zDfEa1oC9Ukis3DCa00rjAu9TsUSciufW9H9oHiBEAUZvXnR+PRJ+NqfUySY0L2szsXxUwffR3IW3qqEtG2/ukY93MdDDqPTNweRjqizC1iGMwbzZNNfqk6B4xj0pznY3DmkN8oETX+45MYdMcvXHQXLeqFhlHdTzR1+VPYCKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=17BJ+A+Cc5O9NEHfK6tTa6wCNCnayhVTsjcCXD5rLU4=;
- b=ei6lldzxP0s13OtfEvy6SmJZIfqfhHsWyyjQCI0hws6wKxWla5yZmx1mV5V0tuXYTiSbeCKmJIIY4rCBUSon/9RHWO5lDG33Z/pN5WxAz29AGmOqY5cNbo61X8NdAklE93JMDio/oR8tN2xfeTrUlqbId5z4dhNVTwAJGwsdVN8AfMt/FI3w8HQ+igi9e34DGoM2VNZUEYB/f0boCC8KqXXvNAxGvLR9MNYm893fs+KL24vJXGrlJaHsU/2UAq4/AgzwzqfsTey0MM9icUPxio3Mcw3VhiAGcsg6u5ExPQhaKliZtH5XCpOknMJl6NA/xzJXWaun0GErfF1oRhZzdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=17BJ+A+Cc5O9NEHfK6tTa6wCNCnayhVTsjcCXD5rLU4=;
- b=I5rM9K+CNsKqTav7ZDkMB8FtuNs3xu7/am/eOl8YNjbx7FnYcd/5S9fX7a/4rhv6R9ajqwMW2KxxGfuWskaYLyHzetqLAXcUNJzIUAzKzhA/2q2VYnu5O8tca2MV0/8+SXLsHpVLiPXEVjMKyet4SGjtIXbLHEh6wYWx1t532sY=
-Authentication-Results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4111.namprd12.prod.outlook.com (2603:10b6:208:1de::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.28; Fri, 23 Jul
- 2021 12:34:18 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6c9e:1e08:7617:f756%5]) with mapi id 15.20.4352.028; Fri, 23 Jul 2021
- 12:34:18 +0000
-Subject: Re: [PATCH] dma-buf: WARN on dmabuf release with pending attachments
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        sumit.semwal@linaro.org
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org
-References: <1627043468-16381-1-git-send-email-charante@codeaurora.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <b057b0fe-75ae-d872-f500-a307543d8233@amd.com>
-Date:   Fri, 23 Jul 2021 14:34:13 +0200
+        id S234871AbhGWL4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 07:56:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35414 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234601AbhGWL4h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 07:56:37 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NCWcj8089636;
+        Fri, 23 Jul 2021 08:36:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=UBwwbHNFTltVZ16imvvarg3MRaB3K7QyU4RhoBUfrLc=;
+ b=B37CWwE37wMvq7LWImvZ3WPTO53aTZZ6JsVEnNNRdWcdysG9Zi1ij3FEkI3+WUdXqAR6
+ Y3ud+GdoQRl9cvsOVg1ZbKYwTH05CE0C/bQFwmoyA2lAoh49k3MKhDE9/echH6iWEw6d
+ kBzN5yfWQvKNSNrtA5YMGzIRF0TsMnem9yuRdJiHpXwfoGxV8MTklyOHXOswP1R87MdI
+ +r32Yf6Ufa9ztFDKuft/axbDbYVzyi1bsV0VPmrhbf6aa4ia9Yxm/g1hWeliR/Xe99vZ
+ masdJjbtaOuWeduT1SLSqC65vP5IrfJBH/9e2ci3VdTR4dzsQ1vhA/gcQN4+elEcNkYg Ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ywk4gsmj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 08:36:28 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16NCWpi1090483;
+        Fri, 23 Jul 2021 08:36:28 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ywk4gsks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 08:36:28 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16NCRUlT004819;
+        Fri, 23 Jul 2021 12:36:26 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 39vng72nhh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 12:36:26 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16NCaNKS25690474
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Jul 2021 12:36:23 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC81542045;
+        Fri, 23 Jul 2021 12:36:23 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0B9CC42054;
+        Fri, 23 Jul 2021 12:36:23 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 23 Jul 2021 12:36:22 +0000 (GMT)
+Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     peterz@infradead.org, bristot@redhat.com, bsegall@google.com,
+        dietmar.eggemann@arm.com, joshdon@google.com,
+        juri.lelli@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        rostedt@goodmis.org, valentin.schneider@arm.com,
+        vincent.guittot@linaro.org
+References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
+ <20210707123402.13999-1-borntraeger@de.ibm.com>
+ <20210707123402.13999-2-borntraeger@de.ibm.com>
+ <20210723093523.GX3809@techsingularity.net>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
+Date:   Fri, 23 Jul 2021 14:36:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <1627043468-16381-1-git-send-email-charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: PR0P264CA0085.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:18::25) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:4ae7:63c0:5e49:6388] (2a02:908:1252:fb60:4ae7:63c0:5e49:6388) by PR0P264CA0085.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:18::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25 via Frontend Transport; Fri, 23 Jul 2021 12:34:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 723abce7-5b5e-479f-c837-08d94dd63065
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4111:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4111CF20691913E345EC211583E59@MN2PR12MB4111.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9AGKMy6Tk/BoqskVWfstwgwltvWgFp9aYmypnhG7E8ScLAAYQn3XvwrfHC2YLwDre3Y2TaTAzDrS3R4Y4IORGS1Iz4xudWiAlPPEgvBD3Cqz8HYi/nw2y7QEsvrB1A6dNhC0XDVNtK7Sr534dFK/pYuxZxxTYfgjVeCc1EO1v4oQENqv6Y1m39aiIY9jzI+JXQyGbjESjddn/MG1sjGUj8gIhjOGm2qDi6eIuKOWsopVr3t/lbQlY9nCp8ptOfpTWNJ/+TSkBFBMACPrkqkK9oVw7nw9U9oPV29GS7Y7wqAwWqumwle3gqDElEofMNhccRAASoYVciDLaW6FFnFQFW8UOFLJhKE14jsUEFnPeJtjbvR5E9m4E6qgGfyaLQgYLby6TolPQz/+8WkkfjS6+S0kEi7tmCGWQDeJeWwq7XuGHEt0GvTCjjWQCpt+V3m9ZWQGSq3jXUmSA0YZmEy2nOtpQ3S00IEBF0cpMHX54+0IUa8hRfoa9b4K3ki1hUN5cygguxfvg7TBWNILFKeAOA4L5FLubKlQC06PhWZcIBwz/7OfbDYyfog69pV3TZOnkD2hr5fHVmgUXedD/OTtkc1EMK3fKKLpjrbstyCTuoug0eQHjVHt8m2ElnGgeKuF1/sTmW2NMTLAd+6RGlcicOsUrOoF+1zHnGaAKhspYTklA1qexoRFUMEb9aC5RJspqhnVaZKRiiGAZ1yi9f3r/ccKnjWwQI1x10u+cfnAB/ceOMhjbujsWCRShU4KCKEY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(396003)(366004)(83380400001)(31686004)(36756003)(31696002)(38100700002)(86362001)(5660300002)(8936002)(8676002)(66574015)(2906002)(186003)(478600001)(6666004)(316002)(4326008)(6486002)(66946007)(66556008)(2616005)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YmJOdnhyU1FsOGVidHprTzVubkRZdzc2RzBGSk5Cclp4MlF4RStnNTdYSkJ5?=
- =?utf-8?B?WUlTZmNHL0R6NmF2L2V4ZjEwdTYyYWVIUG5OcDFBcWJVbGJQcnV2dFBsbUh2?=
- =?utf-8?B?RTVLR2V5MjJtZmtxZHNzU0hYNzAxd3J1MzdYMlcyUFJGZ0YxWlhFclVuQmdZ?=
- =?utf-8?B?Y2JSbE9zY0xldFQrOWlLSlpKNkpxR29vOHU5NVVHZVR4eEd3QURtSmZhRmtK?=
- =?utf-8?B?aUd0NWoxR2dPUFZCakVDUU1UQkVkTlZKeGhORG1FMlBVUi9DYW9KNDcwNG12?=
- =?utf-8?B?L2liejduUGJxc0ttSVU4TmN3cEJzUkc0QnRKOEw5d0hlOG1GVTlrRnFLWEZ1?=
- =?utf-8?B?K1UvUW5kdHFIZlFHZk11YWI5cWxEMHRkUU0wL2YyVVZNelBHZDdEU2RHSURt?=
- =?utf-8?B?NmlKampyRzBveVlwQnNxQmdHS0pKOU5wWngxR3JOVXVPS08xR3V1TXBWT2dy?=
- =?utf-8?B?cy9FbE9yQTYrbHRPRDJpMVU5QXVqSkJCSHpsWGN5WnZqSWxyL3hEM2RheW9o?=
- =?utf-8?B?YldHU3lyNktJWVlhaS9hOFVlM2hjQmJoM08vNUliN2JZT0ZtRXRYVDhadEFj?=
- =?utf-8?B?Y1hWWGt5K0lwa0E4ZjV2bEQ5NUt2VFpVY2xuekZhWTM1dGJkaTR2TCtsa0tD?=
- =?utf-8?B?dXZsdy9uSTNpMkUySzE3VWNrUWJIZGRQT1lEc2E3NEp3NklvNWZYamNjQkM3?=
- =?utf-8?B?S1dHVXdETE5VUGs1ekF1bDJLSGJjUkJEVTk1RW94c0FHN0c3WFdPbXlUNmo4?=
- =?utf-8?B?MjJwcXQvK2RNOUw3NHFFTkl2MjBmVUxhNzZNb09SY0RzWTJmQUpZS210VTk1?=
- =?utf-8?B?NkZ5Zk54NzEvWkd5R1pRMXdOK2lVRDc4R3FLcFE5QVBYQXdaTzRNWUlXc0RS?=
- =?utf-8?B?L0VqUDkwRXF5Z1gvWUZXTjVHZ0tjRHd2cHpaN1hqc01yOEFnaGJwYit3M2R5?=
- =?utf-8?B?YjQvcjlBMmw2NHgxYW91NktCWnJaYVRqWHEybGdidUpHOGx0bk9FOVZheTNH?=
- =?utf-8?B?M0VjSTVlS3oxVUZUV3dzNzU2bU5jNndIR2pwaGk3c25ya3g2ckxudlM2ZVpJ?=
- =?utf-8?B?UStYa05pbjFXVWRGVGdIRVBuK3F1YitWYm9JTHNnYkZkYUhzUnpkQ2NBQXp6?=
- =?utf-8?B?cUtvV0JqZmdJdWRVU3lOd3hKV2RvSHBOM0YyeGxBTzdNcFd5aDBRV0VrK2c4?=
- =?utf-8?B?SmplZ0hVU2VmNnp1WlVobGVISzc1RWhlOGRnQUYxaUozOE9IRTgxUUxPU3Ba?=
- =?utf-8?B?UzNwQS93amQramQ3SFVWdGNxaS85alpOa2xQdWQ5azRBV3dBeHdXSy80dWhV?=
- =?utf-8?B?Y1JtYThjeEE4NXRZYmhxN09VLzBSaUk4UC9OK2pHcVBVQ25GS1NsNzZpWjFE?=
- =?utf-8?B?dUVQUUg1cW9LSG9mVTNDRUZNMzdMaTNDNzYzM0VPQWV1UkdWbElRZy9PajNH?=
- =?utf-8?B?ZGh4Sm5CTktjTnFDeU1oYllGcVdkMjdEZ1k3UHNTUExRcy9ZUlYvZ09YQmly?=
- =?utf-8?B?eExIN2RGRVJ1cXRUbksrdW1OU2xXTlIvaGJXUlBOUGFNTXBUeDNCUVliRUpL?=
- =?utf-8?B?a2I4NkZpSU5zVy9OT1JLTWhYcy9PdUJiQXNXTEh4SEJOV01vNjBQMGNkUmZT?=
- =?utf-8?B?bDU4RFAvekNPTnZKLytJeFR2VEt6bzcvZndkcmloZ0Vqc3FtOTNmeEtHNzhx?=
- =?utf-8?B?cFFiVW5wOWIxVCtHUlJYOEtHQWFwamIxcWthQTh0dEI1SXY0Wmw3UGxoenpN?=
- =?utf-8?B?RGJjdXBJZmQyTDFkMWRjNDc4a1I1Rjd5SUgxSW8zUk5xakV0eU0vMnJ4eW1W?=
- =?utf-8?B?OUV0MFBxa2JFWWxpNzRaQ3hCakNNcGIyN1dKZVVleDFOTWduR3ZWQms0MXV6?=
- =?utf-8?Q?c/FfwW8zh9Xnr?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 723abce7-5b5e-479f-c837-08d94dd63065
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2021 12:34:18.2161
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AGrVsVmWeL6nii9JwK1n1BCUNWvwxIeaHWWqdvP7+ViSXCiwm723HjETn6QS9oIF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4111
+In-Reply-To: <20210723093523.GX3809@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -NUXTObVFEL_2qBz5ys066VUffwwt3Xt
+X-Proofpoint-GUID: sWkq2cIXFjZugwzHhOOoTI6RbyYKl6lW
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-23_05:2021-07-23,2021-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ adultscore=0 mlxscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107230074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 23.07.21 um 14:31 schrieb Charan Teja Reddy:
-> It is expected from the clients to follow the below steps on an imported
-> dmabuf fd:
-> a) dmabuf = dma_buf_get(fd) // Get the dmabuf from fd
-> b) dma_buf_attach(dmabuf); // Clients attach to the dmabuf
->     o Here the kernel does some slab allocations, say for
-> dma_buf_attachment and may be some other slab allocation in the
-> dmabuf->ops->attach().
-> c) Client may need to do dma_buf_map_attachment().
-> d) Accordingly dma_buf_unmap_attachment() should be called.
-> e) dma_buf_detach () // Clients detach to the dmabuf.
->     o Here the slab allocations made in b) are freed.
-> f) dma_buf_put(dmabuf) // Can free the dmabuf if it is the last
-> reference.
->
-> Now say an erroneous client failed at step c) above thus it directly
-> called dma_buf_put(), step f) above. Considering that it may be the last
-> reference to the dmabuf, buffer will be freed with pending attachments
-> left to the dmabuf which can show up as the 'memory leak'. This should
-> at least be reported as the WARN().
->
-> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
 
-Good idea. I would expect a crash immediately, but from such a backtrace 
-it is quite hard to tell what the problem is.
 
-Patch is Reviewed-by: Christian König <christian.koenig@amd.com> and I'm 
-going to push this to drm-misc-next on Monday if nobody objects.
-
-Thanks,
-Christian.
-
+On 23.07.21 11:35, Mel Gorman wrote:
+> On Wed, Jul 07, 2021 at 02:34:02PM +0200, Christian Borntraeger wrote:
+>> After some debugging in situations where a smaller sched_latency_ns and
+>> smaller sched_migration_cost settings helped for KVM host, I was able to
+>> come up with a reduced testcase.
+>> This testcase has 2 vcpus working on a shared memory location and
+>> waiting for mem % 2 == cpu number to then do an add on the shared
+>> memory.
+>> To start simple I pinned all vcpus to one host CPU. Without the
+>> yield_to in KVM the testcase was horribly slow. This is expected as each
+>> vcpu will spin a whole time slice. With the yield_to from KVM things are
+>> much better, but I was still seeing yields being ignored.
+>> In the end pick_next_entity decided to keep the current process running
+>> due to fairness reasons.  On this path we really know that there is no
+>> point in continuing current. So let us make things a bit unfairer to
+>> current.
+>> This makes the reduced testcase noticeable faster. It improved a more
+>> realistic test case (many guests on some host CPUs with overcomitment)
+>> even more.
+>> In the end this is similar to the old compat_sched_yield approach with
+>> an important difference:
+>> Instead of doing it for all yields we now only do it for yield_to
+>> a place where we really know that current it waiting for the target.
+>>
+>> What are alternative implementations for this patch
+>> - do the same as the old compat_sched_yield:
+>>    current->vruntime = rightmost->vruntime+1
+>> - provide a new tunable sched_ns_yield_penalty: how much vruntime to add
+>>    (could be per architecture)
+>> - also fiddle with the vruntime of the target
+>>    e.g. subtract from the target what we add to the source
+>>
+>> Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> 
+> I think this one accidentally fell off everyones radar including mine.
+> At the time this patch was mailed I remembered thinking that playing games with
+> vruntime might have other consequences. For example, what I believe is
+> the most relevant problem for KVM is that a task spinning to acquire a
+> lock may be waiting on a vcpu holding the lock that has been
+> descheduled. Without vcpu pinning, it's possible that the holder is on
+> the same runqueue as the lock acquirer so the acquirer is wasting CPU.
+> 
+> In such a case, changing the acquirers vcpu may mean that it unfairly
+> loses CPU time simply because it's a lock acquirer. Vincent, what do you
+> think? Christian, would you mind testing this as an alternative with your
+> demonstration test case and more importantly the "realistic test case"?
+> 
+> --8<--
+> sched: Do not select highest priority task to run if it should be skipped
+> 
+> pick_next_entity will consider the "next buddy" over the highest priority
+> task if it's not unfair to do so (as determined by wakekup_preempt_entity).
+> The potential problem is that an in-kernel user of yield_to() such as
+> KVM may explicitly want to yield the current task because it is trying
+> to acquire a spinlock from a task that is currently descheduled and
+> potentially running on the same runqueue. However, if it's more fair from
+> the scheduler perspective to continue running the current task, it'll continue
+> to spin uselessly waiting on a descheduled task to run.
+> 
+> This patch will select the targeted task to run even if it's unfair if the
+> highest priority task is explicitly marked as "skip".
+> 
+> This was evaluated using a debugging patch to expose yield_to as a system
+> call. A demonstration program creates N number of threads and arranges
+> them in a ring that are updating a shared value in memory. Each thread
+> spins until the value matches the thread ID. It then updates the value
+> and wakes the next thread in the ring. It measures how many times it spins
+> before it gets its turn. Without the patch, the number of spins is highly
+> variable and unstable but with the patch it's more consistent.
+> 
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 > ---
->   drivers/dma-buf/dma-buf.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 511fe0d..733c8b1 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -79,6 +79,7 @@ static void dma_buf_release(struct dentry *dentry)
->   	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
->   		dma_resv_fini(dmabuf->resv);
+>   kernel/sched/fair.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 44c452072a1b..ddc0212d520f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4522,7 +4522,8 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+>   			se = second;
+>   	}
 >   
-> +	WARN_ON(!list_empty(&dmabuf->attachments));
->   	module_put(dmabuf->owner);
->   	kfree(dmabuf->name);
->   	kfree(dmabuf);
+> -	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
+> +	if (cfs_rq->next &&
+> +	    (cfs_rq->skip == left || wakeup_preempt_entity(cfs_rq->next, left) < 1)) {
+>   		/*
+>   		 * Someone really wants this to run. If it's not unfair, run it.
+>   		 */
+> 
 
+I do see a reduction in ignored yields, but from a performance aspect for my
+testcases this patch does not provide a benefit, while the the simple
+	curr->vruntime += sysctl_sched_min_granularity;
+does.
+I still think that your approach is probably the cleaner one, any chance to improve this
+somehow?
+
+FWIW,  I recently realized that my patch also does not solve the problem for KVM with libvirt.
+My testcase only improves with qemu started by hand. As soon as the cpu cgroup controller is
+active, my patch also no longer helps.
+
+If you have any patch to test, I can test it. Meanwhile I will also do some more testing.
