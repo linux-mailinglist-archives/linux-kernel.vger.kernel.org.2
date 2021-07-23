@@ -2,161 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C953D367C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D2F3D3680
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbhGWHgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:36:33 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:30093 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234537AbhGWHga (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:36:30 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 16N7x7uR041953;
-        Fri, 23 Jul 2021 15:59:07 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Jul
- 2021 16:15:41 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
-        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <p.zabel@pengutronix.de>, <linux-iio@vger.kernel.org>,
+        id S234561AbhGWHhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:37:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234311AbhGWHhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 03:37:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD7A60EBD;
+        Fri, 23 Jul 2021 08:17:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627028259;
+        bh=xnAmVgoDuokti2NByNq6/FFRGTSMhdQRxWuJi2rHC0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fzT5ISx3nPwKdbMu9BnIUTph2mjFB1lUM2vUb2DiOHFTRVsbeYjRZ9mIzVtd5w4BB
+         63ePNFLvEybFAJsW5Jd8b4VvRCudZ3uEULO/cI7h/8TaLYpaHj8U8tLSv9D/lxjAAz
+         NIQs5QlX5UnLX6OUSTzkVnUrKlMhXGZ29WXZ/1RE=
+Date:   Fri, 23 Jul 2021 10:17:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [v2 8/8] iio: adc: aspeed: Support battery sensing.
-Date:   Fri, 23 Jul 2021 16:16:21 +0800
-Message-ID: <20210723081621.29477-9-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210723081621.29477-1-billy_tsai@aspeedtech.com>
-References: <20210723081621.29477-1-billy_tsai@aspeedtech.com>
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <YPp7Gi9xKtNJpC1a@kroah.com>
+References: <20210721100220.ddfxwugivsndsedv@mobilestation>
+ <YPf29+ewbrYgHxRP@kroah.com>
+ <0064cb2c-5ca6-e693-2e89-8f045c8f7502@kernel.org>
+ <YPf+shNM6cXb3mfe@kroah.com>
+ <d853df77-8d36-30b0-dd26-da1bfcb068e0@kernel.org>
+ <20210721112531.xvu6ni5ksaehsrjh@mobilestation>
+ <CALAqxLViEqSO17P3JGRGYJh-wDoHaJiQQV48zeoRgnar4Xd5Bg@mail.gmail.com>
+ <20210722181221.xh3r5kyu7zlcojjx@mobilestation>
+ <YPnEO6NVFZDS1s//@yoga>
+ <20210722215451.cdhvh5jjvtv5zncl@mobilestation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 16N7x7uR041953
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722215451.cdhvh5jjvtv5zncl@mobilestation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ast2600, ADC integrate dividing circuit at last input channel for
-battery sensing. This patch use the dts property "battery-sensing" to
-enable this feature makes the last channel of each adc can tolerance
-higher voltage than reference voltage.
+On Fri, Jul 23, 2021 at 12:54:51AM +0300, Serge Semin wrote:
+> I always thought that ABI is supposed to be something what is
+> thoroughly documented and firmly declared to be so. It isn't something
+> claimed to be on a random nature but defined to be one when it's
+> more-or-less standardized. Thus the Linux kernel developers decide not
+> to change something unless it went through the series of iterations like
+> testing, stable, obsolete, remove. As I see it the rule-of-thumb is
+> supposed to be as "nothing is ABI unless it's declared as such".
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/iio/adc/aspeed_adc.c | 60 +++++++++++++++++++++++++++++++++---
- 1 file changed, 55 insertions(+), 5 deletions(-)
+Not true at all.  Again, if something works in an older kernel version,
+and you upgrade to a new kernel version and it breaks, that is a
+regression and must be fixed/reverted.
 
-diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-index 7e674b607e36..6c7e2bb7b1ac 100644
---- a/drivers/iio/adc/aspeed_adc.c
-+++ b/drivers/iio/adc/aspeed_adc.c
-@@ -45,6 +45,9 @@
- #define ASPEED_ADC_REF_VOLTAGE_1200mV		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 1)
- #define ASPEED_ADC_REF_VOLTAGE_EXT_HIGH		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 2)
- #define ASPEED_ADC_REF_VOLTAGE_EXT_LOW		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 3)
-+#define ASPEED_ADC_BATTERY_SENSING_DIV		BIT(6)
-+#define ASPEED_ADC_BATTERY_SENSING_DIV_2_3	FIELD_PREP(ASPEED_ADC_BATTERY_SENSING_DIV, 0)
-+#define ASPEED_ADC_BATTERY_SENSING_DIV_1_3	FIELD_PREP(ASPEED_ADC_BATTERY_SENSING_DIV, 1)
- #define ASPEED_ADC_CTRL_INIT_RDY		BIT(8)
- #define ASPEED_ADC_CH7_MODE			BIT(12)
- #define ASPEED_ADC_CH7_NORMAL			FIELD_PREP(ASPEED_ADC_CH7_MODE, 0)
-@@ -76,6 +79,11 @@ struct aspeed_adc_model_data {
- 	unsigned int num_channels;
- };
- 
-+struct adc_gain {
-+	u8 mult;
-+	u8 div;
-+};
-+
- struct aspeed_adc_data {
- 	struct device		*dev;
- 	void __iomem		*base;
-@@ -87,6 +95,8 @@ struct aspeed_adc_data {
- 	int			vref;
- 	u32			sample_period_ns;
- 	int			cv;
-+	bool			battery_sensing;
-+	struct adc_gain		battery_mode_gain;
- };
- 
- #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
-@@ -185,14 +195,38 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
- 			       int *val, int *val2, long mask)
- {
- 	struct aspeed_adc_data *data = iio_priv(indio_dev);
-+	u32 adc_engine_control_reg_val;
- 
- 	switch (mask) {
- 	case IIO_CHAN_INFO_RAW:
--		*val = readw(data->base + chan->address) + data->cv;
--		if (*val < 0)
--			*val = 0;
--		else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
--			*val = ASPEED_ADC_MAX_RAW_DATA;
-+		if (data->battery_sensing && chan->channel == 7) {
-+			adc_engine_control_reg_val =
-+				readl(data->base + ASPEED_REG_ENGINE_CONTROL);
-+			writel(adc_engine_control_reg_val |
-+				       ASPEED_ADC_CH7_BATTERY |
-+				       ASPEED_ADC_BATTERY_SENSING_ENABLE,
-+			       data->base + ASPEED_REG_ENGINE_CONTROL);
-+			/*
-+			 * After enable battery sensing mode need to wait some time for adc stable
-+			 * Experiment result is 1ms.
-+			 */
-+			mdelay(1);
-+			*val = readw(data->base + chan->address) + data->cv;
-+			if (*val < 0)
-+				*val = 0;
-+			else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
-+				*val = ASPEED_ADC_MAX_RAW_DATA;
-+			*val = (*val * data->battery_mode_gain.mult) /
-+			       data->battery_mode_gain.div;
-+			writel(adc_engine_control_reg_val,
-+			       data->base + ASPEED_REG_ENGINE_CONTROL);
-+		} else {
-+			*val = readw(data->base + chan->address) + data->cv;
-+			if (*val < 0)
-+				*val = 0;
-+			else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
-+				*val = ASPEED_ADC_MAX_RAW_DATA;
-+		}
- 		return IIO_VAL_INT;
- 
- 	case IIO_CHAN_INFO_SCALE:
-@@ -392,6 +426,22 @@ static int aspeed_adc_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto vref_config_error;
- 
-+	if (of_find_property(data->dev->of_node, "battery-sensing", NULL)) {
-+		if (model_data->version >= aspeed_adc_ast2600) {
-+			data->battery_sensing = 1;
-+			if (readl(data->base + ASPEED_REG_ENGINE_CONTROL) &
-+			    ASPEED_ADC_BATTERY_SENSING_DIV_1_3) {
-+				data->battery_mode_gain.mult = 3;
-+				data->battery_mode_gain.div = 1;
-+			} else {
-+				data->battery_mode_gain.mult = 3;
-+				data->battery_mode_gain.div = 2;
-+			}
-+		} else
-+			dev_warn(&pdev->dev,
-+				 "Failed to enable battey-sensing mode\n");
-+	}
-+
- 	if (model_data->wait_init_sequence) {
- 		adc_engine_control_reg_val =
- 			readl(data->base + ASPEED_REG_ENGINE_CONTROL);
--- 
-2.25.1
+Lack of documentation does not mean an ABI can be changed.
 
+greg k-h
