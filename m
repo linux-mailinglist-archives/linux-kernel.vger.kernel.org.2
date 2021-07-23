@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549473D3847
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9A23D3848
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhGWJUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbhGWJUH (ORCPT
+        id S231741AbhGWJUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:20:14 -0400
+Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:36102 "EHLO
+        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231542AbhGWJUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:20:07 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041E5C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 03:00:41 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id n10so1044428ljq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 03:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=55qDSs4WDIz8l0MaQDVpOoMRLPHxzbPjJoCBzhMJJ8M=;
-        b=t0VfOY5DOKMdO4UZ1wz28sycelxsa11TOCksLBsdZvZvMQczDIGKtx8a1UoVG9f66L
-         HD9XcjArtzwd4DkawwmM7Ns3/zOmBlp9BjoCfp50P0tPCluAXaDENmo+OdXQaKFZr+nk
-         F/H4rNK4st+nQz7TOK2RYbI371Yf8TSV1jwBbtTGiDXTBUmFgS2Nn0HsAFdxxjvU6pgQ
-         cbal5cDj8lzKLeh6gxijirLZ1zrY/XRiSczqnT7AwxoX9rcErjkjEMqa0vpOhEe0jxnp
-         WhCE+9N9OH2OFjzTMp7OJ/es6gvK7YIqqfWWyFRHxn5cjSOaAwP37M/kgQXO70hdNT+U
-         M7rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=55qDSs4WDIz8l0MaQDVpOoMRLPHxzbPjJoCBzhMJJ8M=;
-        b=JXIt4fc3OT9a4xCv19C6ZRXGe2QUp5SU+l0cSiXYxE40Mo3zxd327CdJIDXBFSVyZQ
-         OqaQhImd5MsL8OHU/PMLtU9AWCHXowtCaj+tdFmnLhij6Wh8V4You55OKjONDZ+iae1G
-         AKXPOlBrqpCsOyGFBlOOuBd1GbiUFPltxRAog33NSZKBGn4RjZSirQc9CfjXpG1wxAuk
-         0YlPDxcCmWPoL5GM44YdkLoAlvslIErzJwO4zBdar0kzbFCrpV7DgW8Ek+IB25sWTTqr
-         GwOcm1yl2yNz8jLLX6cVXd0COhsCF1wGObhB8vjX8o4pdpi4i6Z7vZt33WFFddqfAUsY
-         I3Sw==
-X-Gm-Message-State: AOAM531LvV2kYc/aolMJaMcwSXw8p0UhT9QvtGXTXhk69Qx21hQwEk4u
-        YOFohBMdxk83EhwvhhMhFDNhJ5AZ9LHc3+mK8XwGoA==
-X-Google-Smtp-Source: ABdhPJwmAzTPEt47e7H6MBHXMnZLqcBXHqbxHBeC/SzF8xZtLU2Y144wU08Unv3L6vzEGejGY0moi+vwH6czk+js7FU=
-X-Received: by 2002:a2e:9d15:: with SMTP id t21mr2854482lji.200.1627034439330;
- Fri, 23 Jul 2021 03:00:39 -0700 (PDT)
+        Fri, 23 Jul 2021 05:20:12 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id E6B9614802F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 11:00:44 +0100 (IST)
+Received: (qmail 8804 invoked from network); 23 Jul 2021 10:00:44 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPA; 23 Jul 2021 10:00:44 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/2] Protect vmstats on PREEMPT_RT
+Date:   Fri, 23 Jul 2021 11:00:32 +0100
+Message-Id: <20210723100034.13353-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210712100317.23298-1-steven_lee@aspeedtech.com> <20210712100317.23298-10-steven_lee@aspeedtech.com>
-In-Reply-To: <20210712100317.23298-10-steven_lee@aspeedtech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 23 Jul 2021 12:00:28 +0200
-Message-ID: <CACRpkdZkcQyN-JuNF24gHkNOx3uk9PEWD18-0k49fV-UO=ZB2A@mail.gmail.com>
-Subject: Re: [PATCH v6 9/9] gpio: gpio-aspeed-sgpio: Return error if ngpios is
- not multiple of 8.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:04 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
+When adding local_lock support to mm/page_alloc.c and reducing the overhead
+of vmstats in general, I wondered how vmstats could be safe on PREEMPT_RT
+as it partially relies on interrupts being disabled for the stats that
+must be accurate for correctness. As it turns out, the preempt-rt tree
+already encountered the same problem.
 
-> Add an else-if condition in the probe function to check whether ngpios is
-> multiple of 8.
-> Per AST datasheet, numbers of available serial GPIO pins in Serial GPIO
-> Configuration Register must be n bytes. For instance, if n = 1, it means
-> AST SoC supports 8 GPIO pins.
->
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+This series protects just the primary counters. While there is another
+vmstat-related patch, it is related to memcg getting using local_lock and
+I have not fully considered those patches and whether they are ok as-is
+or need modification but this series makes a start.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Patch 1 is authored by Thomas (cc'd) and has not being altered.
 
-Yours,
-Linus Walleij
+Patch 2 is authored by Ingo (cc'd) but I modified what he implemented
+for reasons explained in the changelog.
+
+This is specific to PREEMPT_RT which cannot be enabled on mainline yet
+and should have no impact on !PREEMPT_RT kernels.
+
+ include/linux/preempt.h | 18 +++++++++++++++++-
+ mm/vmstat.c             | 12 ++++++++++++
+ 2 files changed, 29 insertions(+), 1 deletion(-)
+
+-- 
+2.26.2
+
