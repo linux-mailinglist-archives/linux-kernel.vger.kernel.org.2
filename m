@@ -2,142 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A078F3D3562
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16DA3D357E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhGWGx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:53:57 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:8924 "EHLO mx1.tq-group.com"
+        id S234093AbhGWG7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:59:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233209AbhGWGx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:53:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1627025670; x=1658561670;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PM8f3fwg4vTHmRJ/1+StMf0BPVsuDWi5DwRx/RiHunA=;
-  b=BrbVp0Jd7yVosdT2g0B2nmfQSyYtSYdUPAmviZtHCaw8LeKKjWz02HaU
-   QGuB8V11B6dFELyChLNrjGkNqIvr6HRsy5C05iiPkk30LLpVVDPUUetV9
-   Hv1uXM5Hlph5ItiCKL6wbg5Wzk/eeZGD8EUl/wfsPtSohQUSzDgCn6eFG
-   MqxKwYSRC0Euw8K3SFOM8osodTAcFfwIXLsX4gAIteEZNn3ncgiBc14qD
-   fRb6roMAnFAUJl8A4u908gs9f5u7eL2RSmRg8DWtEZNI4ywCBgXO95uTn
-   tS75I3nC878hiTEK4iSgRAU0jMd5oB9FiLT5nn6qTizSWgWIIGb/2/pyO
-   w==;
-X-IronPort-AV: E=Sophos;i="5.84,263,1620684000"; 
-   d="scan'208";a="18606297"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 23 Jul 2021 09:34:29 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 23 Jul 2021 09:34:29 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 23 Jul 2021 09:34:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1627025669; x=1658561669;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PM8f3fwg4vTHmRJ/1+StMf0BPVsuDWi5DwRx/RiHunA=;
-  b=McEY8QCiFpR1v/k0fVBTtcBvwvw8Tzr6pT208JDM9xYKiuPBbhlfhyst
-   8IjDlE7vHyXp9ak7jGZEvN3vbmtacjy99krE4p6pOWfqb4iKQchJ+4e7U
-   t60CGOGxfNq8atugP64wU8XBqqLsH2vm+4uoDn6Ywbu3XI0QF+lEbbchy
-   Vi//alKCp9TaJLxnB0j0cJQVRjbqsrlP8C9IxYWTOp9Y6msFp+d8ECo+h
-   chjQwRdX4h9H1Dvm5pEYFOKmBm2/a7a3dFi7hHaK891wVTUVA9laq2DJV
-   HP/O3w75mbeBiGs0r+5gbI5tT3aoEugsmdnhIigd2r5Dlm/t3YzVUKTt7
-   w==;
-X-IronPort-AV: E=Sophos;i="5.84,263,1620684000"; 
-   d="scan'208";a="18606296"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 23 Jul 2021 09:34:29 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 2B08D280070;
-        Fri, 23 Jul 2021 09:34:29 +0200 (CEST)
-Message-ID: <75670688fbec759e8ab8b42356a16cca465dc430.camel@ew.tq-group.com>
-Subject: Re: Duplicate calls to regmap_debugfs_init() through
- regmap_attach_dev()
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org, Dong Aisheng <aisheng.dong@nxp.com>,
-        linux-arm-kernel@lists.infradead.org
-Date:   Fri, 23 Jul 2021 09:34:26 +0200
-In-Reply-To: <eb27b79ce46bde0202a4e7b047a3aaec8338fb6d.camel@ew.tq-group.com>
-References: <eb27b79ce46bde0202a4e7b047a3aaec8338fb6d.camel@ew.tq-group.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S233247AbhGWG7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A11CE60F02;
+        Fri, 23 Jul 2021 07:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627026012;
+        bh=OL8dCFXVHZ6IGGcIwpxKI/zg3sNOpblUin1Ka6UUq+Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tVM5nXhPD+1vNVuzcLxcdN46lI/6zX+oUcDFcB3VmzBSEhqmS3Zr9l70QZ/6tYoMn
+         jjXPxNDKpuGwBM/FssJm7fWqcSF/Z1pBn3/LrKIdBt8ax1wu9iMmH4NspMW/RQM+sN
+         REp4oCWdHHZTyFsCQRliY5kwOfWK8Awi0yFsxiZB3jtG8VQdKcRy7ca7AuK1iMeOA4
+         w8hnVKvfG4J1qCf5TU81Wz8jszpQ4BiwE2/DChO01wZTbTKzIqkOyQV1cy9UXbOOW/
+         8+ryhZYNJ5wkqdYy8nQ1lcIMn/Enrk5MKT8BfBGJR+0pICo+mOQ8vZCOzd4MhqL/xx
+         n3YLWzclGhmZg==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1m6pn0-00A6vF-G8; Fri, 23 Jul 2021 09:40:10 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: [PATCH v15 0/3] Move HiSilicon 6421v600 SPMI and USB drivers out of staging
+Date:   Fri, 23 Jul 2021 09:40:05 +0200
+Message-Id: <cover.1627025657.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-19 at 15:53 +0200, Matthias Schiffer wrote:
-> Hi everyone,
-> 
-> I hope I got the right list of maintainers for this issue, which seems
-> to be rooted in the interaction between regmap, syscon and pinctrl-imx.
-> 
-> With recent kernels (observed on v5.10.y, but the code doesn't look
-> significantly different on master/next) I've seen the following message
-> on boot on i.MX6UL SoCs:
-> 
-> > debugfs: Directory 'dummy-iomuxc-gpr@20e4000' with parent 'regmap' already present!
-> 
-> I've tracked this down to this piece of code in the pinctrl-imx driver:
-> 
-> > 		gpr = syscon_regmap_lookup_by_compatible(info->gpr_compatible);
-> > 		if (!IS_ERR(gpr))
-> > 			regmap_attach_dev(&pdev->dev, gpr, &config);
-> 
-> __regmap_init() (called by syscon_regmap_lookup_by_compatible()) has:
-> 
-> > 	if (dev) {
-> > 		ret = regmap_attach_dev(dev, map, config);
-> > 		if (ret != 0)
-> > 			goto err_regcache;
-> > 	} else {
-> > 		regmap_debugfs_init(map);
-> > 	}
-> 
-> As dev is NULL in this call, regmap_debugfs_init() will be called.
-> 
-> pinctrl-imx then calls regmap_attach_dev(), which calls
-> regmap_debugfs_init() again. Unless I'm missing something, this is very
-> problematic: regmap_debugfs_init() does a lot more than just adding
-> debugfs files - it also initializes list heads and mutices in the
-> regmap structure.
-> 
-> It seems to me that there is no correct way to use regmap_attach_dev()
-> from outside of __regmap_init(). In particular on a syscon regmap that
-> may be shared between different drivers, setting map->dev looks wrong
-> to me.
-> 
-> The total number of drivers that call regmap_attach_dev() is very low
-> (I count 5), but all of them use it on a syscon regmap. Some of them
-> perform further operations on the regmap as if they owned it, like
-> modifying the cache configuration.
-> 
-> While not directly related, could anyone tell me why the locking around
-> syscon_list in the syscon driver is correct (or if it is in fact
-> incorrect)? It looks to me like two tasks might call
-> device_node_get_regmap() at the same time, leading to two concurrent
-> constructions of the same syscon regmap.
-> 
-> Kind regards,
-> Matthias
+Hi Greg,
 
+Those are the remaining patches needed for USB3 to start working on HiKey 970.
 
-Another question regarding the syscon driver: Does the syscon platform
-device still have any use after bdb0066df96e ("mfd: syscon: Decouple
-syscon interface from platform devices")? All exported syscon functions
-use the regmaps stored in the global "syscon_list", which are
-compeletely independent of the devices handled by syscon_probe().
+I would prefer to have those merged during this cycle, as the PCIe patchset
+currently under review depends on patch 1 and 2 of this series.
 
-As the syscon platform_driver doesn't do anything, it seems to me like
-that part could just be removed, leaving only the handling of shared
-regmaps. Maybe that code should live under drivers/base/regmap instead
-of drivers/mfd?
+So, I dropped the cleanup patch from this series, due to a merge conflict with
+the regulator's tree. I'll re-submit it against the mfd tree after the merge window. 
+
+Mauro Carvalho Chehab (3):
+  mfd: hi6421-spmi-pmic: move driver from staging
+  dts: hisilicon: add support for the PMIC found on Hikey 970
+  dts: hisilicon: add support for USB3 on Hikey 970
+
+ .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 136 ++++++++++++++++++
+ MAINTAINERS                                   |   7 +
+ .../boot/dts/hisilicon/hi3670-hikey970.dts    | 129 ++++++++++++++---
+ arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  56 ++++++++
+ .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  86 +++++++++++
+ drivers/mfd/Kconfig                           |  16 +++
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/hi6421-spmi-pmic.c                |  72 ++++++++++
+ drivers/staging/Kconfig                       |   2 -
+ drivers/staging/Makefile                      |   1 -
+ drivers/staging/hikey9xx/Kconfig              |  19 ---
+ drivers/staging/hikey9xx/Makefile             |   3 -
+ drivers/staging/hikey9xx/TODO                 |   5 -
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c   |  72 ----------
+ .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 136 ------------------
+ 15 files changed, 484 insertions(+), 257 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+ create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+ create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+ delete mode 100644 drivers/staging/hikey9xx/Kconfig
+ delete mode 100644 drivers/staging/hikey9xx/Makefile
+ delete mode 100644 drivers/staging/hikey9xx/TODO
+ delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+ delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
+
+-- 
+2.31.1
+
 
