@@ -2,282 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C2A3D34D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2C63D34D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhGWGLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:11:36 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:62926 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234016AbhGWGLf (ORCPT
+        id S234137AbhGWGMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234117AbhGWGMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:11:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627023129; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=mhGTziIiW6WOD6A69omTzhtLWQHqYlyKpdcfV+WbaTs=; b=tDEqGXb1yPmN34KZgnFxdxM97TjL5YjpC/NgPx1sUO3y306/o8wiMNyk/WIsqv1dKr5AEQhG
- NpkP2FjicL+sqTUFympv1KKJgm+EHpsuMwb2DoSUe/vLzQSlUL96pqeObRfSwxDNwkoAnNGZ
- A9jgLyYJ+eCV8BdrxAWpnMY3Dlc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 60fa6715e81205dd0a87a871 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 06:52:05
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9699EC43460; Fri, 23 Jul 2021 06:52:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [59.89.229.109])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A589FC433D3;
-        Fri, 23 Jul 2021 06:52:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A589FC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [PATCH 3/3] drm/msm: Devfreq tuning
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Sean Paul <sean@poorly.run>
-References: <20210722222145.1759900-1-robdclark@gmail.com>
- <20210722222145.1759900-4-robdclark@gmail.com>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <f0040cae-94d7-8409-ac9e-8034dd4fd530@codeaurora.org>
-Date:   Fri, 23 Jul 2021 12:21:58 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        Fri, 23 Jul 2021 02:12:20 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CE4C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:52:54 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id j34-20020a05600c1c22b029024e75084404so13353wms.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ya9He3mx+An+H38g4cAl4dPts2pG7l+SCmDziNdLGEs=;
+        b=K7BNHZvkbpI4ObAoYJCPjTiyeTupZsbfXqqy18slasuejtC6liOlPJ6R/nKdJL6+O+
+         sBadQhK9t1+7voDdPSpRW+vU9Fn8e4VGJs8gyDvdVaxJw6frbzV5LVaZRzyy0o5jiU/p
+         tU1lnYsRjOurKvMo8gezHPxxx26LNKUZZCLoSYcOtQasone0o/nBplzzP9EWvLYUh2aX
+         ayTIZgEF84h9pL1xktIi0Fk0X5opexpzrYIACyB1CBugo1ZNaajol8aP4uwDwWEFp539
+         VGrViJm6tTAo3Wugl8lNBLtsNNC0uBY7mcigR3M4NBDWzENe82N5cqYrfA2sfs1eR8ip
+         jLJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ya9He3mx+An+H38g4cAl4dPts2pG7l+SCmDziNdLGEs=;
+        b=BzGs39QDI1sVIMw1Y2BfIJVDkaXMxsBaeO8Mdw+n32cbvvR+MzW/iHhCNkreUJ7x8c
+         MuaEMALe2KIW+PmxezCp+fWyD/UVcIhBT4LKZ7NHd1JzGFbntKjpeQF6Y/fLJZjopu6t
+         6jg8NyJ+PFy8yAPcH84kpcFFQEbT1SF32LdSR6pKT9oSONAaSa91IxOTHpJmAhlM7Enw
+         sDV0BccPOXecCScj2lfJ/5jAHb9joKp9CtckC/dJv0+NX9xR/4awgpxQEFF45Gj96/rM
+         Shb46DG0+yo4bGn0znB6NMoVS5j0uS157QPnXZ7ep+39GilaGq/70Mq8O3p02mwmhWpM
+         YKbA==
+X-Gm-Message-State: AOAM5313+XpyGkWGx5JxzDl7Mt8JPZo6+eeDtLUZrWrQGL6gObH1Cht3
+        +x6ru8XEZi1QHMdpwQko3bBUYw==
+X-Google-Smtp-Source: ABdhPJwbn1Fmn5Kv6/nTg6stKWf5mYcYve8PSphU/nVpcw1z69gxKcVuivQo+691wgUQvxPn/b/CQQ==
+X-Received: by 2002:a05:600c:2319:: with SMTP id 25mr12402603wmo.91.1627023172935;
+        Thu, 22 Jul 2021 23:52:52 -0700 (PDT)
+Received: from localhost.localdomain (p200300d997074400a6b220f1eb1d11cd.dip0.t-ipconnect.de. [2003:d9:9707:4400:a6b2:20f1:eb1d:11cd])
+        by smtp.googlemail.com with ESMTPSA id l2sm24496706wms.21.2021.07.22.23.52.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 23:52:52 -0700 (PDT)
+Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
+ heuristic lockless reads
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+ <20210721211003.869892-2-paulmck@kernel.org>
+ <20210723020846.GA26397@rowland.harvard.edu>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
+Date:   Fri, 23 Jul 2021 08:52:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210722222145.1759900-4-robdclark@gmail.com>
+In-Reply-To: <20210723020846.GA26397@rowland.harvard.edu>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/2021 3:51 AM, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
-> 
-> This adds a few things to try and make frequency scaling better match
-> the workload:
-> 
-> 1) Longer polling interval to avoid whip-lashing between too-high and
->     too-low frequencies in certain workloads, like mobile games which
->     throttle themselves to 30fps.
-> 
->     Previously our polling interval was short enough to let things
->     ramp down to minimum freq in the "off" frame, but long enough to
->     not react quickly enough when rendering started on the next frame,
->     leading to uneven frame times.  (Ie. rather than a consistent 33ms
->     it would alternate between 16/33/48ms.)
-> 
-> 2) Awareness of when the GPU is active vs idle.  Since we know when
->     the GPU is active vs idle, we can clamp the frequency down to the
->     minimum while it is idle.  (If it is idle for long enough, then
->     the autosuspend delay will eventually kick in and power down the
->     GPU.)
-> 
->     Since devfreq has no knowledge of powered-but-idle, this takes a
->     small bit of trickery to maintain a "fake" frequency while idle.
->     This, combined with the longer polling period allows devfreq to
->     arrive at a reasonable "active" frequency, while still clamping
->     to minimum freq when idle to reduce power draw.
-> 
-> 3) Boost.  Because simple_ondemand needs to see a certain threshold
->     of busyness to ramp up, we could end up needing multiple polling
->     cycles before it reacts appropriately on interactive workloads
->     (ex. scrolling a web page after reading for some time), on top
->     of the already lengthened polling interval, when we see a idle
->     to active transition after a period of idle time we boost the
->     frequency that we return to.
-> 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->   drivers/gpu/drm/msm/msm_gpu.c         |  8 +++
->   drivers/gpu/drm/msm/msm_gpu.h         |  9 ++++
->   drivers/gpu/drm/msm/msm_gpu_devfreq.c | 73 ++++++++++++++++++++++++++-
->   3 files changed, 89 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-> index 70d8610b1b73..68d2df590054 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu.c
-> @@ -667,6 +667,10 @@ static void retire_submit(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
->   	list_del(&submit->node);
->   	spin_unlock(&ring->submit_lock);
->   
-> +	/* Update devfreq on transition from active->idle: */
-> +	if (atomic_dec_return(&gpu->active_submits) == 0)
-This will race with the submit path. To avoid that, this test and the 
-msm_devfreq_idle should be under the same lock. Same applies for the 
-submit path.
+Hi Alan,
 
--Akhil
-> +		msm_devfreq_idle(gpu);
-> +
->   	msm_gem_submit_put(submit);
->   }
->   
-> @@ -747,6 +751,10 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
->   	list_add_tail(&submit->node, &ring->submits);
->   	spin_unlock(&ring->submit_lock);
->   
-> +	/* Update devfreq on transition from idle->active: */
-> +	if (atomic_inc_return(&gpu->active_submits) == 1)
-> +		msm_devfreq_active(gpu);
-> +
->   	gpu->funcs->submit(gpu, submit);
->   	priv->lastctx = submit->queue->ctx;
->   
-> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
-> index ada15e28f251..e14edda3d778 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu.h
-> +++ b/drivers/gpu/drm/msm/msm_gpu.h
-> @@ -84,6 +84,10 @@ struct msm_gpu_devfreq {
->   	struct devfreq *devfreq;
->   	u64 busy_cycles;
->   	ktime_t time;
-> +
-> +	/* Time and freq of last transition to idle: */
-> +	ktime_t idle_time;
-> +	unsigned long idle_freq;
->   };
->   
->   struct msm_gpu {
-> @@ -115,6 +119,9 @@ struct msm_gpu {
->   	 */
->   	struct list_head active_list;
->   
-> +	/* number of in-flight submits: */
-> +	atomic_t active_submits;
-> +
->   	/* does gpu need hw_init? */
->   	bool needs_hw_init;
->   
-> @@ -384,6 +391,8 @@ void msm_devfreq_init(struct msm_gpu *gpu);
->   void msm_devfreq_cleanup(struct msm_gpu *gpu);
->   void msm_devfreq_resume(struct msm_gpu *gpu);
->   void msm_devfreq_suspend(struct msm_gpu *gpu);
-> +void msm_devfreq_active(struct msm_gpu *gpu);
-> +void msm_devfreq_idle(struct msm_gpu *gpu);
->   
->   int msm_gpu_hw_init(struct msm_gpu *gpu);
->   
-> diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> index 2e24a97be624..0a1ee20296a2 100644
-> --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
-> @@ -22,6 +22,15 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
->   
->   	opp = devfreq_recommended_opp(dev, freq, flags);
->   
-> +	/*
-> +	 * If the GPU is idle, devfreq is not aware, so just ignore
-> +	 * it's requests
-> +	 */
-> +	if (gpu->devfreq.idle_freq) {
-> +		gpu->devfreq.idle_freq = *freq;
-> +		return 0;
-> +	}
-> +
->   	if (IS_ERR(opp))
->   		return PTR_ERR(opp);
->   
-> @@ -39,6 +48,9 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
->   
->   static unsigned long get_freq(struct msm_gpu *gpu)
->   {
-> +	if (gpu->devfreq.idle_freq)
-> +		return gpu->devfreq.idle_freq;
-> +
->   	if (gpu->funcs->gpu_get_freq)
->   		return gpu->funcs->gpu_get_freq(gpu);
->   
-> @@ -69,7 +81,8 @@ static int msm_devfreq_get_cur_freq(struct device *dev, unsigned long *freq)
->   }
->   
->   static struct devfreq_dev_profile msm_devfreq_profile = {
-> -	.polling_ms = 10,
-> +	.timer = DEVFREQ_TIMER_DELAYED,
-> +	.polling_ms = 50,
->   	.target = msm_devfreq_target,
->   	.get_dev_status = msm_devfreq_get_dev_status,
->   	.get_cur_freq = msm_devfreq_get_cur_freq,
-> @@ -130,3 +143,61 @@ void msm_devfreq_suspend(struct msm_gpu *gpu)
->   {
->   	devfreq_suspend_device(gpu->devfreq.devfreq);
->   }
-> +
-> +void msm_devfreq_active(struct msm_gpu *gpu)
-> +{
-> +	struct msm_gpu_devfreq *df = &gpu->devfreq;
-> +	struct devfreq_dev_status status;
-> +	unsigned int idle_time;
-> +	unsigned long target_freq = df->idle_freq;
-> +
-> +	/*
-> +	 * Hold devfreq lock to synchronize with get_dev_status()/
-> +	 * target() callbacks
-> +	 */
-> +	mutex_lock(&df->devfreq->lock);
-> +
-> +	idle_time = ktime_to_ms(ktime_sub(ktime_get(), df->idle_time));
-> +
-> +	/*
-> +	 * If we've been idle for a significant fraction of a polling
-> +	 * interval, then we won't meet the threshold of busyness for
-> +	 * the governor to ramp up the freq.. so give some boost
-> +	 */
-> +	if (idle_time > msm_devfreq_profile.polling_ms/2) {
-> +		target_freq *= 2;
-> +	}
-> +
-> +	df->idle_freq = 0;
-> +
-> +	msm_devfreq_target(&gpu->pdev->dev, &target_freq, 0);
-> +
-> +	/*
-> +	 * Reset the polling interval so we aren't inconsistent
-> +	 * about freq vs busy/total cycles
-> +	 */
-> +	msm_devfreq_get_dev_status(&gpu->pdev->dev, &status);
-> +
-> +	mutex_unlock(&df->devfreq->lock);
-> +}
-> +
-> +void msm_devfreq_idle(struct msm_gpu *gpu)
-> +{
-> +	struct msm_gpu_devfreq *df = &gpu->devfreq;
-> +	unsigned long idle_freq, target_freq = 0;
-> +
-> +	/*
-> +	 * Hold devfreq lock to synchronize with get_dev_status()/
-> +	 * target() callbacks
-> +	 */
-> +	mutex_lock(&df->devfreq->lock);
-> +
-> +	idle_freq = get_freq(gpu);
-> +
-> +	msm_devfreq_target(&gpu->pdev->dev, &target_freq, 0);
-> +
-> +	df->idle_time = ktime_get();
-> +	df->idle_freq = idle_freq;
-> +
-> +	mutex_unlock(&df->devfreq->lock);
-> +}
-> 
+On 7/23/21 4:08 AM, Alan Stern wrote:
+> On Wed, Jul 21, 2021 at 02:10:01PM -0700, Paul E. McKenney wrote:
+>> This commit adds example code for heuristic lockless reads, based loosely
+>> on the sem_lock() and sem_unlock() functions.
+>>
+>> Reported-by: Manfred Spraul <manfred@colorfullife.com>
+>> [ paulmck: Update per Manfred Spraul and Hillf Danton feedback. ]
+>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>> ---
+>>   .../Documentation/access-marking.txt          | 94 +++++++++++++++++++
+>>   1 file changed, 94 insertions(+)
+>>
+>> diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
+>> index 58bff26198767..be7d507997cf8 100644
+>> --- a/tools/memory-model/Documentation/access-marking.txt
+>> +++ b/tools/memory-model/Documentation/access-marking.txt
+>> @@ -319,6 +319,100 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
+>>   concurrent lockless write.
+>>   
+>>   
+>> +Lock-Protected Writes With Heuristic Lockless Reads
+>> +---------------------------------------------------
+>> +
+>> +For another example, suppose that the code can normally make use of
+>> +a per-data-structure lock, but there are times when a global lock
+>> +is required.  These times are indicated via a global flag.  The code
+>> +might look as follows, and is based loosely on nf_conntrack_lock(),
+>> +nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
+>> +
+>> +	bool global_flag;
+>> +	DEFINE_SPINLOCK(global_lock);
+>> +	struct foo {
+>> +		spinlock_t f_lock;
+>> +		int f_data;
+>> +	};
+>> +
+>> +	/* All foo structures are in the following array. */
+>> +	int nfoo;
+>> +	struct foo *foo_array;
+>> +
+>> +	void do_something_locked(struct foo *fp)
+>> +	{
+>> +		bool gf = true;
+>> +
+>> +		/* IMPORTANT: Heuristic plus spin_lock()! */
+>> +		if (!data_race(global_flag)) {
+>> +			spin_lock(&fp->f_lock);
+>> +			if (!smp_load_acquire(&global_flag)) {
+>> +				do_something(fp);
+>> +				spin_unlock(&fp->f_lock);
+>> +				return;
+>> +			}
+>> +			spin_unlock(&fp->f_lock);
+>> +		}
+>> +		spin_lock(&global_lock);
+>> +		/* Lock held, thus global flag cannot change. */
+>> +		if (!global_flag) {
+> How can global_flag ever be true at this point?  The only line of code
+> that sets it is in begin_global() below, it only runs while global_lock
+> is held, and global_flag is set back to false before the lock is
+> released.
+
+It can't be true. The code is a simplified version of the algorithm in 
+ipc/sem.c.
+
+For the ipc/sem.c, global_flag can remain true even after dropping 
+global_lock.
+
+When transferring the approach to nf_conntrack_core, I didn't notice 
+that nf_conntrack doesn't need a persistent global_flag.
+
+Thus the recheck after spin_lock(&global_lock) is not needed.
+
+
+>> +			spin_lock(&fp->f_lock);
+>> +			spin_unlock(&global_lock);
+>> +			gf = false;
+>> +		}
+>> +		do_something(fp);
+>> +		if (fg)
+> Should be gf, not fg.
+>
+>> +			spin_unlock(&global_lock);
+>> +		else
+>> +			spin_lock(&fp->f_lock);
+>> +	}
+>> +
+>> +	void begin_global(void)
+>> +	{
+>> +		int i;
+>> +
+>> +		spin_lock(&global_lock);
+>> +		WRITE_ONCE(global_flag, true);
+> Why does this need to be WRITE_ONCE?  It still races with the first read
+> of global_flag above.
+>
+>> +		for (i = 0; i < nfoo; i++) {
+>> +			/* Wait for pre-existing local locks. */
+>> +			spin_lock(&fp->f_lock);
+>> +			spin_unlock(&fp->f_lock);
+> Why not acquire all the locks here and release all of them in
+> end_global()?  Then global_flag wouldn't need acquire-release
+> sychronization.
+
+ From my understanding:
+spin_lock contains preempt_count_add, thus you can't acquire more than 
+255 spinlocks (actually 245, the warning limit is 10 below 255)
+
+>> +		}
+>> +	}
+>> +
+>> +	void end_global(void)
+>> +	{
+>> +		smp_store_release(&global_flag, false);
+>> +		/* Pre-existing global lock acquisitions will recheck. */
+> What does that comment mean?  How can there be any pre-existing global
+> lock acquisitions when we hold the lock right now?
+
+>> +		spin_unlock(&global_lock);
+>> +	}
+>> +
+>> +All code paths leading from the do_something_locked() function's first
+>> +read from global_flag acquire a lock, so endless load fusing cannot
+>> +happen.
+>> +
+>> +If the value read from global_flag is true, then global_flag is rechecked
+>> +while holding global_lock, which prevents global_flag from changing.
+>> +If this recheck finds that global_flag is now false, the acquisition
+> Again, how can't global_flag be false now?
+>
+> Did you originally have in mind some sort of scheme in which
+> begin_global() would release global_lock before returning and
+> end_global() would acquire global_lock before clearing global_flag?  But
+> I don't see how that could work without changes to do_something_locked().
+>
+>> +of ->f_lock prior to the release of global_lock will result in any subsequent
+>> +begin_global() invocation waiting to acquire ->f_lock.
+>> +
+>> +On the other hand, if the value read from global_flag is false, then
+>> +global_flag, then rechecking under ->f_lock combined with synchronization
+> ---^^^^^^^^^^^^^^^^^^
+>
+> Typo?
+>
+>> +with begin_global() guarantees than any erroneous read will cause the
+>> +do_something_locked() function's first do_something() invocation to happen
+>> +before begin_global() returns.  The combination of the smp_load_acquire()
+>> +in do_something_locked() and the smp_store_release() in end_global()
+>> +guarantees that either the do_something_locked() function's first
+>> +do_something() invocation happens after the call to end_global() or that
+>> +do_something_locked() acquires global_lock() and rechecks under the lock.
+> This last sentence also makes no sense unless you imagine dropping
+> global_lock between begin_global() and end_global().
+
+ipc/sem.c does that and needs that, nf_conntrack doesn't use this.
+
+
+--
+
+     Manfred
 
