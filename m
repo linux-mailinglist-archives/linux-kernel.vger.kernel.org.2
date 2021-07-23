@@ -2,171 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCBF3D4191
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFAE3D4195
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhGWTwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:52:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35084 "EHLO mail.kernel.org"
+        id S231645AbhGWTwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:52:37 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:26638 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231168AbhGWTwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:52:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF71760BD3;
-        Fri, 23 Jul 2021 20:32:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627072368;
-        bh=in6b+5u7t92PVOGj1WvqNrcjmMpAHD0cYSbWtJlLjBs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=abg1gkbNV0ohE8n9+AQOR3A7efYRm511wxqobEKiOxYcMTVl4jkkTecDD9uwKAFcE
-         Pb/PiLXLPCsSvsFO8y2a38wgR5oKJSKag7OVi/NoFFp+IoiUcxsA5FfKPxcjKqJ2Xf
-         hazoNujKofN261rvkWSZhXaDOKst4JMdu+PwN3QcdMR2lLxAwjlGMPJfviqweWJg0M
-         MmVSOKtc1SjIsbRDjdtODYM3vy7miQ0Ndv98wd9HAjEZUT4qMlwhz3jhYpkK4AFBgT
-         00TRYUDzD0KE297KxvhUJd8HE4Z1QD+XjqnphrnycnSlwfERLJ0cqj7/r0NBYhHa98
-         TDjLkaiMCT3nw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AEFF35C068F; Fri, 23 Jul 2021 13:32:48 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 13:32:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Manfred Spraul <manfred@colorfullife.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
- heuristic lockless reads
-Message-ID: <20210723203248.GL4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
- <20210721211003.869892-2-paulmck@kernel.org>
- <20210723020846.GA26397@rowland.harvard.edu>
- <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
- <20210723130554.GA38923@rowland.harvard.edu>
- <20210723163008.GG4397@paulmck-ThinkPad-P17-Gen-1>
- <20210723170820.GB46562@rowland.harvard.edu>
+        id S229461AbhGWTwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 15:52:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627072390; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lxM7FSYBNI/KMt33mBjhA8tdIQ6+GVXlVgXqExsNcZI=;
+ b=P0HNIsIU4Oc9IpR86Djs0Mgblq6IbVg0uBlq1Y42q2teFRU1i0mf9O/u7s8NkAA4ndLOzKcl
+ Y2+H81DHyIo4dx+G/flqecWWk4njQnPo1KQV3C9PEGwy7OuhvcUOgnXPkosgMzIQI1mJ5G2Y
+ Tchyy8Upyi0yIo4pzjfjJBf15f0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60fb2785290ea35ee62c72e3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 20:33:09
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8F07DC43143; Fri, 23 Jul 2021 20:33:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5EC2CC433F1;
+        Fri, 23 Jul 2021 20:33:07 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723170820.GB46562@rowland.harvard.edu>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 23 Jul 2021 13:33:07 -0700
+From:   abhinavk@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        freedreno@lists.freedesktop.org,
+        Chandan Uddaraju <chandanu@codeaurora.org>
+Subject: Re: [Freedreno] [PATCH 5/5] drm/msm/dp: Allow sub-regions to be
+ specified in DT
+In-Reply-To: <20210722024227.3313096-6-bjorn.andersson@linaro.org>
+References: <20210722024227.3313096-1-bjorn.andersson@linaro.org>
+ <20210722024227.3313096-6-bjorn.andersson@linaro.org>
+Message-ID: <2d969e35f13b6a5313a901ac8b6dde9e@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 01:08:20PM -0400, Alan Stern wrote:
-> On Fri, Jul 23, 2021 at 09:30:08AM -0700, Paul E. McKenney wrote:
-> > How about like this?
-> > 
-> > 							Thanx, Paul
+On 2021-07-21 19:42, Bjorn Andersson wrote:
+> Not all platforms has P0 at an offset of 0x1000 from the base address,
+> so add support for specifying each sub-region in DT. The code falls 
+> back
+> to the predefined offsets in the case that only a single reg is
+> specified, in order to support existing DT.
 > 
-> Generally a lot better, but still at least one issue.
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The change itself looks good, hence
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+
+But as a follow up to this change, can we move the existing DP DT on
+sc7180 to this model and then drop this legacy path?
+
+That will clean this up nicely.
+
+> ---
+>  drivers/gpu/drm/msm/dp/dp_parser.c | 49 +++++++++++++++++++++++-------
+>  1 file changed, 38 insertions(+), 11 deletions(-)
 > 
-> > ------------------------------------------------------------------------
-> > 
-> > Lock-Protected Writes With Heuristic Lockless Reads
-> > ---------------------------------------------------
-> > 
-> > For another example, suppose that the code can normally make use of
-> > a per-data-structure lock, but there are times when a global lock
-> > is required.  These times are indicated via a global flag.  The code
-> > might look as follows, and is based loosely on nf_conntrack_lock(),
-> > nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
-> > 
-> > 	bool global_flag;
-> > 	DEFINE_SPINLOCK(global_lock);
-> > 	struct foo {
-> > 		spinlock_t f_lock;
-> > 		int f_data;
-> > 	};
-> > 
-> > 	/* All foo structures are in the following array. */
-> > 	int nfoo;
-> > 	struct foo *foo_array;
-> > 
-> > 	void do_something_locked(struct foo *fp)
-> > 	{
-> > 		/* IMPORTANT: Heuristic plus spin_lock()! */
-> > 		if (!data_race(global_flag)) {
-> > 			spin_lock(&fp->f_lock);
-> > 			if (!smp_load_acquire(&global_flag)) {
-> > 				do_something(fp);
-> > 				spin_unlock(&fp->f_lock);
-> > 				return;
-> > 			}
-> > 			spin_unlock(&fp->f_lock);
-> > 		}
-> > 		spin_lock(&global_lock);
-> > 		/* global_lock held, thus global flag cannot be set. */
-> > 		spin_lock(&fp->f_lock);
-> > 		spin_unlock(&global_lock);
-> > 		/*
-> > 		 * global_flag might be set here, but begin_global()
-> > 		 * will wait for ->f_lock to be released.
-> > 		 */
-> > 		do_something(fp);
-> > 		spin_lock(&fp->f_lock);
+> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
+> b/drivers/gpu/drm/msm/dp/dp_parser.c
+> index 1a10901ae574..fc8a6452f641 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+> @@ -63,18 +63,45 @@ static int dp_parser_ctrl_res(struct dp_parser 
+> *parser)
+>  		return PTR_ERR(dss->ahb);
+>  	}
 > 
-> spin_unlock.
-
-Good eyes, fixed.
-
-> > }
-> > 
-> > 	void begin_global(void)
-> > 	{
-> > 		int i;
-> > 
-> > 		spin_lock(&global_lock);
-> > 		WRITE_ONCE(global_flag, true);
-> > 		for (i = 0; i < nfoo; i++) {
-> > 			/*
-> > 			 * Wait for pre-existing local locks.  One at
-> > 			 * a time to avoid lockdep limitations.
-> > 			 */
-> > 			spin_lock(&fp->f_lock);
-> > 			spin_unlock(&fp->f_lock);
-> > 		}
-> > 	}
-> > 
-> > 	void end_global(void)
-> > 	{
-> > 		smp_store_release(&global_flag, false);
-> > 		spin_unlock(&global_lock);
-> > 	}
-> > 
-> > All code paths leading from the do_something_locked() function's first
-> > read from global_flag acquire a lock, so endless load fusing cannot
-> > happen.
-> > 
-> > If the value read from global_flag is true, then global_flag is
-> > rechecked while holding ->f_lock, which, if global_flag is now false,
-> > prevents begin_global() from completing.  It is therefore safe to invoke
-> > do_something().
-> > 
-> > Otherwise, if either value read from global_flag is true, then after
-> > global_lock is acquired global_flag must be false.  The acquisition of
-> > ->f_lock will prevent any call to begin_global() from returning, which
-> > means that it is safe to release global_lock and invoke do_something().
-> > 
-> > For this to work, only those foo structures in foo_array[] may be passed
-> > to do_something_locked().  The reason for this is that the synchronization
-> > with begin_global() relies on momentarily holding the lock of each and
-> > every foo structure.
+> -	if (dss->ahb_len < DP_DEFAULT_P0_OFFSET + DP_DEFAULT_P0_SIZE) {
+> -		DRM_ERROR("legacy memory region not large enough\n");
+> -		return -EINVAL;
+> -	}
+> +	dss->aux = dp_ioremap(pdev, 1, &dss->aux_len);
+> +	if (IS_ERR(dss->aux)) {
+> +		/*
+> +		 * The initial binding had a single reg, but in order to
+> +		 * support variation in the sub-region sizes this was split.
+> +		 * dp_ioremap() will fail with -ENODEV here if only a single
+> +		 * reg is specified, so fill in the sub-region offsets and
+> +		 * lengths based on this single region.
+> +		 */
+> +		if (PTR_ERR(dss->aux) == -ENODEV) {
+> +			if (dss->ahb_len < DP_DEFAULT_P0_OFFSET + DP_DEFAULT_P0_SIZE) {
+> +				DRM_ERROR("legacy memory region not large enough\n");
+> +				return -EINVAL;
+> +			}
+> +
+> +			dss->ahb_len = DP_DEFAULT_AHB_SIZE;
+> +			dss->aux = dss->ahb + DP_DEFAULT_AUX_OFFSET;
+> +			dss->aux_len = DP_DEFAULT_AUX_SIZE;
+> +			dss->link = dss->ahb + DP_DEFAULT_LINK_OFFSET;
+> +			dss->link_len = DP_DEFAULT_LINK_SIZE;
+> +			dss->p0 = dss->ahb + DP_DEFAULT_P0_OFFSET;
+> +			dss->p0_len = DP_DEFAULT_P0_SIZE;
+> +		} else {
+> +			DRM_ERROR("unable to remap aux region: %pe\n", dss->aux);
+> +			return PTR_ERR(dss->aux);
+> +		}
+> +	} else {
+> +		dss->link = dp_ioremap(pdev, 2, &dss->link_len);
+> +		if (IS_ERR(dss->link)) {
+> +			DRM_ERROR("unable to remap link region: %pe\n", dss->link);
+> +			return PTR_ERR(dss->link);
+> +		}
 > 
-> This doesn't mention the reason for the acquire-release
-> synchronization of global_flag.  It's needed because work done between
-> begin_global() and end_global() can affect a foo structure without
-> holding its private f_lock member, and we want all such work to be
-> visible to other threads when they call do_something_locked() later.
-
-Like this added paragraph at the end?
-
-	The smp_load_acquire() and smp_store_release() are required
-	because changes to a foo structure between calls to begin_global()
-	and end_global() are carried out without holding that structure's
-	->f_lock.  The smp_load_acquire() and smp_store_release()
-	ensure that the next invocation of do_something() from the call
-	to do_something_locked() that acquires that ->f_lock will see
-	those changes.
-
-							Thanx, Paul
+> -	dss->ahb_len = DP_DEFAULT_AHB_SIZE;
+> -	dss->aux = dss->ahb + DP_DEFAULT_AUX_OFFSET;
+> -	dss->aux_len = DP_DEFAULT_AUX_SIZE;
+> -	dss->link = dss->ahb + DP_DEFAULT_LINK_OFFSET;
+> -	dss->link_len = DP_DEFAULT_LINK_SIZE;
+> -	dss->p0 = dss->ahb + DP_DEFAULT_P0_OFFSET;
+> -	dss->p0_len = DP_DEFAULT_P0_SIZE;
+> +		dss->p0 = dp_ioremap(pdev, 3, &dss->p0_len);
+> +		if (IS_ERR(dss->p0)) {
+> +			DRM_ERROR("unable to remap p0 region: %pe\n", dss->p0);
+> +			return PTR_ERR(dss->p0);
+> +		}
+> +	}
+> 
+>  	io->phy = devm_phy_get(&pdev->dev, "dp");
+>  	if (IS_ERR(io->phy))
