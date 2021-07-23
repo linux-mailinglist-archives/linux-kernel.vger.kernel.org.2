@@ -2,106 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D9B3D4327
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE723D432B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233049AbhGWWLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 18:11:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbhGWWLM (ORCPT
+        id S233024AbhGWWPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 18:15:52 -0400
+Received: from mail-il1-f170.google.com ([209.85.166.170]:45018 "EHLO
+        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231954AbhGWWPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 18:11:12 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9E8C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 15:51:44 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id m9so3477744ljp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 15:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4HCYw5NOde3g0l5ZK6C4CEhaJpOnGk3xLhiohruDlKI=;
-        b=e94pb9KK7d240/xJAprT09EB9LknVJlSRUpo+5OzKREm0YslQ4XR9WmWDwGhkRErua
-         Oey1lFWiof8IpPonwzdqJ8mWdNNAt8HtIqBLyaLZQL06WH6rdr4cS/wz5uGWvKT0unST
-         lvzXBjJLpx++wkSIf74FxFuWTFQnmfa3FpwB1p78Dv0I9QsLx/nIcLmFKUWnd1IrHab2
-         Rw5NvdvXL+mpogp0xEMiN5p2Tm7tzWWTL42CSUH3MLPxQSJjr631LO/5c2o9qywl9O5z
-         Le0pFUGlPKRUy5rMNXQD5zUr8eURZjaknYyp/GO8BdRiDwRbD3GzcMbM87iuDyrGeN/f
-         JYsA==
+        Fri, 23 Jul 2021 18:15:50 -0400
+Received: by mail-il1-f170.google.com with SMTP id o7so1764608ilh.11;
+        Fri, 23 Jul 2021 15:56:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4HCYw5NOde3g0l5ZK6C4CEhaJpOnGk3xLhiohruDlKI=;
-        b=NOVvNBnN5OPjRTmD5x31Ys9vT4WCl2V8f0w8iVuPK6hJ9FFAPF0Mj9CWBGX476DT5M
-         7n0aO6tMimoW8xlzIHgf9LkDmOXcO58gI6LgWZFE3liUkSWdvlfWSYa56owVDSBsgMUc
-         D1KnmJ/IXpoO8z3dzpUbdCaFbSM6JItx2/ORpHEmTat7JBfzc5EukRY2B55oQemoBazX
-         BX/Ejh4pnNVvIIsvm3UYD0k5fDyz1qy5CbnBLkCwjdWFTaUV5QBC1CcObTPAq7/LaLRR
-         gUdD/QVlMXVO3W237m9e+y5Z8pZWg6+Dus8ASbRt1KGOqAR6mQFV0TenVzCJFP/bh5tB
-         77ZA==
-X-Gm-Message-State: AOAM53186OGcyCVfbTJRadY8Qq42NpwZGmLLXOOvyauxhgmuM0AYXvKQ
-        4isXJz+Q9pg9AuiL/qcpKkzTqMdSvT0pfCZwLrLO7A==
-X-Google-Smtp-Source: ABdhPJxl+uDo/OTRC9mQH3UC8EV6VKvLrc7lEaFTUluCJJQHU2SNWnoB+56eazUSYmGAF2ttd/FpqI9v1LBAdi/edUI=
-X-Received: by 2002:a05:651c:160e:: with SMTP id f14mr4710051ljq.273.1627080702856;
- Fri, 23 Jul 2021 15:51:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Nf+qt9aa1rSV4UzSkW75Dv0K2P4ud9e7UDTiA2I8cjw=;
+        b=LHw3g99fNWK1QffD9Y6a4ejuVH/nSydDqYo6jySqsYMq+UeRMs81/Pazhx+JfO7wOU
+         BzVVQNlslUKqaXJscnPZfJ1L5fHULREMDVdgn12OQcN8WyK4juqwt5hAPE90g5lsZWsC
+         Sw1ShMQvLS8ljuhNFcRiOgBQKUYOZ3mC+ZLj0O8YWoL/ISe6/m+tux/fSoUwLQqjGvga
+         uPCOOEjyiKVpEyDzc0r8NNPtFJtQE7VciltTDEqxBQUjQ8y6kL7Uwk3RcipuRgwXYfk2
+         NTZJpCL6s98VGkyCT6xxCdk7f42kGPcE99UtdSL7rhQ03+Pgt9XfdisVXkuWQFCL6OSv
+         jrxw==
+X-Gm-Message-State: AOAM532OdPI5jQr7m/HyBOfYnT0hEYiKVNn3zEincgfD5mQOmbbLQr8I
+        qwvZZSJTJIFNOYzAVx3ESA==
+X-Google-Smtp-Source: ABdhPJxrMlYwMTsx9BussFd45y1mf1OXhr4YfBsrt5IJ9V81f6mHtK7gJpUnGtE1wTTvTrMQ/5KzAw==
+X-Received: by 2002:a05:6e02:1aa2:: with SMTP id l2mr4578165ilv.224.1627080982152;
+        Fri, 23 Jul 2021 15:56:22 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id t26sm8907513iob.19.2021.07.23.15.56.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 15:56:21 -0700 (PDT)
+Received: (nullmailer pid 2758526 invoked by uid 1000);
+        Fri, 23 Jul 2021 22:56:18 -0000
+Date:   Fri, 23 Jul 2021 16:56:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 09/10] dt-bindings: PCI: kirin-pcie.txt: Convert it to
+ yaml
+Message-ID: <20210723225618.GA2750572@robh.at.kernel.org>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org>
+ <656b8ffe505081b003650f040de4d52131d70b8f.1626855713.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210721151706.2439073-1-arnd@kernel.org>
-In-Reply-To: <20210721151706.2439073-1-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 24 Jul 2021 00:51:32 +0200
-Message-ID: <CACRpkdb3DMvof3-xdtss0Pc6KM36pJA-iy=WhvtNVnsDpeJ24Q@mail.gmail.com>
-Subject: Re: [PATCH] ARM: kasan: work around LPAE build warning
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <656b8ffe505081b003650f040de4d52131d70b8f.1626855713.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 5:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Wed, Jul 21, 2021 at 10:39:11AM +0200, Mauro Carvalho Chehab wrote:
+> Convert the file into a JSON description at the yaml format.
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> pgd_page_vaddr() returns an 'unsigned long' address, causing a warning
-> with the memcpy() call in kasan_init():
->
-> arch/arm/mm/kasan_init.c: In function 'kasan_init':
-> include/asm-generic/pgtable-nop4d.h:44:50: error: passing argument 2 of '__memcpy' makes pointer from integer without a cast [-Werror=int-conversion]
->    44 | #define pgd_page_vaddr(pgd)                     ((unsigned long)(p4d_pgtable((p4d_t){ pgd })))
->       |                                                 ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->       |                                                  |
->       |                                                  long unsigned int
-> arch/arm/include/asm/string.h:58:45: note: in definition of macro 'memcpy'
->    58 | #define memcpy(dst, src, len) __memcpy(dst, src, len)
->       |                                             ^~~
-> arch/arm/mm/kasan_init.c:229:16: note: in expansion of macro 'pgd_page_vaddr'
->   229 |                pgd_page_vaddr(*pgd_offset_k(KASAN_SHADOW_START)),
->       |                ^~~~~~~~~~~~~~
-> arch/arm/include/asm/string.h:21:47: note: expected 'const void *' but argument is of type 'long unsigned int'
->    21 | extern void *__memcpy(void *dest, const void *src, __kernel_size_t n);
->       |                                   ~~~~~~~~~~~~^~~
->
-> Avoid this by adding an explicit typecast.
->
-> Fixes: 5615f69bc209 ("ARM: 9016/2: Initialize the mapping of KASan shadow memory")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+And add 970...
 
-I can't think of anything better.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../bindings/pci/hisilicon,kirin-pcie.yaml    | 87 +++++++++++++++++++
+>  .../devicetree/bindings/pci/kirin-pcie.txt    | 50 -----------
+>  .../devicetree/bindings/pci/snps,dw-pcie.yaml |  2 +-
+>  MAINTAINERS                                   |  2 +-
+>  4 files changed, 89 insertions(+), 52 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/pci/kirin-pcie.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+> new file mode 100644
+> index 000000000000..eabc651c9766
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/hisilicon,kirin-pcie.yaml
+> @@ -0,0 +1,87 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/hisilicon,kirin-pcie.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiSilicon Kirin SoCs PCIe host DT description
+> +
+> +maintainers:
+> +  - Xiaowei Song <songxiaowei@hisilicon.com>
+> +  - Binghui Wang <wangbinghui@hisilicon.com>
+> +
+> +description: |
+> +  Kirin PCIe host controller is based on the Synopsys DesignWare PCI core.
+> +  It shares common functions with the PCIe DesignWare core driver and
+> +  inherits common properties defined in
+> +  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml.
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/snps,dw-pcie.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    contains:
+> +      enum:
+> +        - hisilicon,kirin960-pcie
+> +        - hisilicon,kirin970-pcie
+> +
+> +  reg:
+> +    description: |
+> +      Should contain rc_dbi, apb, config registers location and length.
+> +    minItems: 3
+> +    maxItems: 4
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dbi          # controller configuration registers
+> +      - const: apb          # apb Ctrl register defined by Kirin
+> +      - const: config       # PCIe configuration space registers
+> +      - const: phy          # apb PHY register used on Kirin 960 PHY
+> +    minItems: 3
+> +    maxItems: 4
+> +
+> +  reset-gpios:
+> +    description: The GPIO(s) to generate PCIe PERST# assert and deassert signal.
+> +    minItems: 1
+> +    maxItems: 4
 
-Will you add this patch to Russell's patch tracker?
+I'll apply this, but only with 'maxItems: 1' if you want to separate the 
+discussion on that part.
 
-Yours,
-Linus Walleij
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    soc {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      pcie: pcie@f4000000 {
+> +        compatible = "hisilicon,kirin970-pcie";
+> +        reg = <0x0 0xf4000000 0x0 0x1000>,
+> +              <0x0 0xff3fe000 0x0 0x1000>,
+> +              <0x0 0xf4000000 0 0x2000>;
+> +        reg-names = "dbi", "apb", "config";
+> +        bus-range = <0x0  0x1>;
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +        device_type = "pci";
+> +        ranges = <0x02000000 0x0 0x00000000 0x0 0xf5000000 0x0 0x2000000>;
+> +        num-lanes = <1>;
+> +        #interrupt-cells = <1>;
+> +        interrupts = <0 283 4>;
+> +        interrupt-names = "msi";
+> +        interrupt-map-mask = <0xf800 0 0 7>;
+> +        interrupt-map = <0x0 0 0 1 &gic GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0x0 0 0 2 &gic GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0x0 0 0 3 &gic GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
+> +                        <0x0 0 0 4 &gic GIC_SPI 285 IRQ_TYPE_LEVEL_HIGH>;
+> +        reset-gpios = <&gpio7 0 0 >, <&gpio25 2 0 >,
+> +                      <&gpio3 1 0 >, <&gpio27 4 0 >;
+> +      };
+> +    };
