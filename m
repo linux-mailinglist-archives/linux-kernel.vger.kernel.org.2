@@ -2,151 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE083D30EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46D83D30EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhGVXyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 19:54:06 -0400
-Received: from mx5.ucr.edu ([138.23.62.67]:25469 "EHLO mx5.ucr.edu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232730AbhGVXyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 19:54:05 -0400
+        id S232833AbhGVX5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 19:57:52 -0400
+Received: from mx-lax3-3.ucr.edu ([169.235.156.38]:15393 "EHLO
+        mx-lax3-3.ucr.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232730AbhGVX5v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 19:57:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1627000481; x=1658536481;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=WjZhPfz6WGA+e7+W6h7hHSdZYaAsvQABJiyNAJlDjpE=;
-  b=DpsWAv675HQscUWOYm4bE2aRfl/oR96f5VuFH3x3mTqwK9sf5ESCQq4T
-   xVWdHqs7QZLDS/5CIKj0lw0n35NHaO4dKIrV53fw5z1eoWmEi47CVHNuY
-   sBQBuv9vzlKba70i4CAqGrhmT3ZqdTmyZ6vX8VLyKpxX6mo1TOWtFBZfP
-   decThME2EsuI0xbuCXAkJRrIzuzBv2sJeMrRf8Nz+SgE5TMsbnvDCjjIH
-   rThOHJLWe7jSR0oTh7HNzeZ6/Xy3Z0Lj2glP73CbnDSQyqAv61W27rH2c
-   d2cstCQ8nN8TPln18+WEDWITtI/5rDArGDWeljhHEP2JTfAszVYGXuTVG
-   g==;
-IronPort-SDR: sV0leLweAYBHxHPaUxgj01+4nsLoHUAFSVAPxylBcRtD9Xk8qfSqOVe3LmbXoOQTGQ4YjJEQdo
- TCf3SxT6sdSKvUtmv0W1ybZkXgNlEKy95By4CKLob2AI0rRWPfvg9/2SPiPxIIqafzCHSVwgva
- MWCMm3dj+ZOeMU1JEH/JDnAkGipapKe+edo6ozSTNyMuOb7UKgnI0TvJfYZlEGkG9wbdi2jOc2
- 3q4ppxJDfFWW/QJoBkGQbRe3i5rnu4bPxVeHuo6BUmb2DxTCTWu6TsFzFR+ED+uqYEsUVLef00
- 1kTJIEjmkgvUIo7hc+NmyeVn
-X-IPAS-Result: =?us-ascii?q?A2FrBABBDfpghsbWVdFagmKDFmNVFpRmAQEGjCYYgQKGf?=
- =?us-ascii?q?IhmgXwCCQEBAQ0BAUEEAQGEVwKCeAIlNAkOAgQBAQEBAwIDAQEBAQEBAwEBB?=
- =?us-ascii?q?gEBAQEBAQUEAQECEAEBAQGBCgtZC2OBT4F5BgQ9gjgpg2UJAgEDEhVSED8SN?=
- =?us-ascii?q?AEFARwZIjmCFgGCYSYFnHCBBD2MMTOBAYgkAQkNgWMJAQiBKIh8hHAngRmBE?=
- =?us-ascii?q?IJQgTN1h2+CUASDHXsTgimBUAEBAZAxG4MGAYxmm2gBBgKDDByDEpsSRYZgj?=
- =?us-ascii?q?l2RJrsWAgoHBhAjgT2CFU0lgWwKgUFNAQIBAgEMAgECAQIBAgECCAEBAo41j?=
- =?us-ascii?q?jZBMjgCBgsBAQMJi1kB?=
-IronPort-PHdr: A9a23:abcPAxK9kTpxvhQgXtmcuJxmWUAX0o4c3iYr45Yqw4hDbr6kt8y7e
- hCFvbM20xSRAs3y0LFts6LuqafuWGgNs96qkUspV9hybSIDktgchAc6AcSIWgXRJf/uaDEmT
- owZDAc2t360PlJIF8ngelbcvmO97SIIGhX4KAF5Ovn5FpTdgsipy+y+4ZPebgdHiDahY755M
- Qm7oxjWusQKm4VpN7w/ygHOontGeuRWwX1nKFeOlBvi5cm+4YBu/T1It/0u68BPX6P6f78lT
- bNDFzQpL3o15MzwuhbdSwaE+2YRXX8XkhpMBAjF8Q36U5LsuSb0quZxxC+XNtDtQLsqRTqt8
- btkSB7wiCcGKTE59n3Xitdth65fuR6tugBzz5LRbIyTMfp+f7jdfcgbRWpHUcZaSjJPDJqhZ
- IsBDuoOI+JYoJTgrFcKoxayGQygCeXoxTJUiHL6wbA23/09HQ3bwQcsG88CvXTRoNjzKawcU
- /26zLPQwDvDcf1YxDnz5ovPfB8jr/GBRq58fdbLxEUzDQ7JkkmcpIr4ND2VzOQNtG2b4vJiW
- uKuim8nqxxxoj+yzcoriojIh4IVxUrF9Sll3Io4K8a1SFNnbt6+CpdfqTyVN5ZvT84kXmpnt
- zo0xKcctp6nYCgF1o4nxxjHZvKHc4aE/x3tWeeNLTl4i3xoZLGyiha9/0Wk1+DxS8q53UtKo
- ydbnNfBuHAA2hPO58aIV/Zw40Ss1SqL2g3T9OxJJ10/m6nDK5M53LI8ip4evV7AEyL2gkn6k
- rKae0o+9uS17+nqYa3qqoKdOoJwkA3yLKojl8ylDegmMAUCRXaX9fqy2bDl4Eb3Wq9Fjucsn
- ancqJ3aIMMbqbOnDAJNyYYj7gq/Dy+h0NQFgXkLNFJFdwyDj4juI1zOJer3Dfa7g1i1iDdrw
- +3KMqTvApnQKnXOk63tfbl6605bxwozyc5Q64hIBbEGJfL/Qk7xtNrGAR8lKwG43frrBdFn2
- o4dWW+DGLGVPL7dvFOS++4iJ+qBaJcQuDnnKvgl4/DujWU+mV8YZaSo3ZoWaHCiEfRnP0mVf
- XThj8wcEWgWpAoyVvLlh0CfUTJLfXa9Q7o85i0nCIKhFYrDQoGtgLqc3Ca0B5FWZX5JCkqKE
- Xj2c4WJQOkMaC2MLc97iDAEVqauS5Un1R6wsA/20b1nLvDb+n5Qm4jk0Y1E5v/TiBZ6oS1mD
- 82ciznWZ3x/hCUFSyJgj/M3mlB01lrWifswuPdfD9EGoq4UOjo=
-IronPort-HdrOrdr: A9a23:pjn0ZqOwjRk9hMBcTvyjsMiBIKoaSvp037Dk7TEVdfU7SL3+qy
- nDpoV56fawskdoZJhfo6HnBEDoexq1nv5ICMsqTMyftWHd2VdAR7sSibcKrQeQeREWNdQx6U
- 6jScJD4RHLYmSS9fyKmTVQ2uxNruW6zA==
+  t=1627000706; x=1658536706;
+  h=mime-version:references:in-reply-to:from:date:message-id:
+   subject:to:cc;
+  bh=garshgjdMJCMlsmeozlgmwx58jNaTBUCFx8jv84/gXE=;
+  b=cnln+m2nEemlN+n4AZytaHGQ54PGrm16B47FBixYaROuRTA9JBo1MaYg
+   aqOs2M2vg+VTkXNm7tH6jlOTjxTJfUeT1BEUa0V/hIRbnnXNlh1mvYarV
+   02J3L8GjVqPZ+Wx1MEKdpgpwimyupiLtmRlJAEEwB/FeaE3t4/KT+HgAt
+   6ay5FpaGHSpsfXDQeN3hZKYWIg4nBvVgBZspkZNuaeU0t+QGv1AW7RUCg
+   q7Dxlu6h0OwScs82t3NS4m4p+WsmzF/5BWwMYjVns3KFinXPZHRqRrW8B
+   +cnKq36cj+bMt0f0Kz3011UjxaGiOFwVVPYcqItc+FHocB7XK2OUFmIiC
+   A==;
+IronPort-SDR: mxibRdcZzqet9XOwMNXcsNtYDukJNouVv67Escngis9UPmPeP7eqwxmOQw/CnDAuKj9zyKbUBO
+ ZjX1R4a6rsD0IB2Tsmpu04WKQygwnUDcuTUWiS9UzDk/hVtJyVgIXJHz9H6HwO7MFr6VJLN8mN
+ ft7T71ZJf9nitvDOLYlY3zexj/gfSlFJbOo+P+l8UdFwi9GfKMjr9psqd1C7KK8txuQajr/F5O
+ Qzde/J0vvHRDt86ZQLUyGEPR1u9LO3fnoSHy5/JaydBJxuCyX1U8uPIdpOtrC2oWc0tOkcyKTj
+ UmED6zRTS/Hzm0jvzVMAw2ml
+X-IPAS-Result: =?us-ascii?q?A2FEAABQDvpgf0bYVdFaHQEBAQEJARIBBQUBQIFFCAELA?=
+ =?us-ascii?q?YN3bIRIiCSJRYcMlFKBfAIJAQEBD0EEAQGEVwKCeAIlNAkOAgQBAQEBAwIDA?=
+ =?us-ascii?q?QEBAQEBAwEBBgEBAQEBAQUEAQECEAEBgQwLWQtjgU+BeQYEPYI4KQGDbQEBA?=
+ =?us-ascii?q?QMSEUsLEAsLAwoCAiYCAiISAQUBHAYTIoVXnHaBBD2LMoEygQGIJAEJDYFjE?=
+ =?us-ascii?q?n4qAYcJhmIngimBS4I4BzA+h1uCZASDToEpD4EWODVFVgEBAZ8TnQ4BBgKDD?=
+ =?us-ascii?q?BySRIt6K5U9kSa7LxAjgT2CFTMaJU4xBmeBS00BAgECAQwCAQIBAgECAQIIA?=
+ =?us-ascii?q?QECnQskLzgCBgsBAQMJi1kBAQ?=
+IronPort-PHdr: A9a23:vRJenxQFsvyxgYm064BJHPIE99psorGfAWYlg6HPa5pwe6iut67vI
+ FbYra00ygOTBcOAtLkc1KL/iOPJYSQ4+5GPsXQPItRndiQuroEopTEmG9OPEkbhLfTnPGQQF
+ cVGU0J5rTngaRAGUMnxaEfPrXKs8DUcBgvwNRZvJuTyB4Xek9m72/q99pHNfwlEnjSwbLF9I
+ Bmqrwjaq9Ubj5ZlJqst0BXCv2FGe/5RxWNmJFKTmwjz68Kt95N98Cpepuws+ddYXar1Y6o3Q
+ 7pYDC87M28u/83kqQPDTQqU6XQCVGgdjwdFDBLE7BH+WZfxrzf6u+9g0ySUIcH6UbY5Uim54
+ qx1VBHnljsINz8h8GHWlMNwir5boAm8rBB72oLYfZ2ZOOZ7cq7bYNgUR3dOXtxJWiNODIOzb
+ YsBAeQCM+hFsYfyu0ADrQeiCQS2GO/j1iNEi33w0KYn0+ohCwbG3Ak4Et0MsXTVrdX1NLoVU
+ euoz6bIzS/Mb/JL0jr66InJcxAhruuNXb5sbcbcx1IiFx7ZgVWKs4DqIS6a1vkUvmWd8uFvW
+ v6hhXQ9pAFtvjig2N0sio/Ri48azl3J8SV0zogrKdC3TEN1bt2pHZReuiyaOYZ7XsIvTn1pt
+ Ss0ybAKpIO2cDUJxZk5yRPSZP+KfpWG7B/+SOucJypzinF9eL+nmRq+7Uytxvf/W8S0ylpGs
+ DdJn9jWun0PyxDe7NWMROFn8Ue7wzmP0hje6uRDIU8pi6XWM4UhwrsslpoLtkTDAzP2lF32j
+ KCIckUk/fCl6+H9bbXnop+QLpd0igPjPqg3lMyyA/g0PhIBX2ic/uS827nj8lPjTLpWif02l
+ 7HVsJHcJcsFuq60GxFZ3pon5hqlDDqr0M4UkWcaIF9EYh6KjZTlN0nLIP/iDPe/h1qskC1sx
+ /DDJrDgApTMLnjZn7fgYbpx90BRxREuzd9D/ZJYEK8OL+/uWkPprtzXEgc5MxCow+bgENh90
+ oIeWWSSAq6WKa/SskGH5vgpI+aSYI8Yoyj9K/c76P70l3M5mkESfbOv3ZQJbHC0BPNmI1+WY
+ SmkvtBUKnsHpgozSqTQj0GCTjNXYz7mRKwmzjoyDojgBJreScaqmrPH1TrtTbNMYWUTO1GeE
+ WrvP7eEUvZEPDOAIsZgymRffaWqUcks2Qz451yy8KZuMueBon5QjpnkztUgorSLzXkP
+IronPort-HdrOrdr: A9a23:nYfjE6ETXaKrQwbqpLqE08eALOsnbusQ8zAXPo5KOGVom62j5r
+ iTdZsgpHrJYVoqKRMdcJW7Scq9qBDnlKKdg7NhWYtKNTOO0ACVxcNZjbcKqAeQfBEWmNQts5
+ uIsJISNDQzNzJHZArBjzVQ2uxNruW6zA==
 X-IronPort-Anti-Spam-Filtered: true
 X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
-   d="scan'208";a="227850351"
-Received: from mail-pl1-f198.google.com ([209.85.214.198])
-  by smtpmx5.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Jul 2021 17:34:39 -0700
-Received: by mail-pl1-f198.google.com with SMTP id c1-20020a170902aa41b02901298fdd4067so867429plr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:34:38 -0700 (PDT)
+   d="scan'208";a="59233271"
+Received: from mail-pj1-f70.google.com ([209.85.216.70])
+  by smtp-lax3-3.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Jul 2021 17:38:25 -0700
+Received: by mail-pj1-f70.google.com with SMTP id a14-20020a17090a480eb02901726198443cso1962240pjh.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:38:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=gm4YUZj/EvvmVEru6DPj42P4a48GvfDB+tH0wczqnc0=;
-        b=nGKjr/EAieGfTilaVRTElX9aYrdyuCIQSMpeftJpFDINuN00IZLSuwfCLBtRjeX2ma
-         AR3ZoZedWlgDHY/vVXDI7puWqbf8ANu/NuPNDjoB5+vBmgdrTsrq3sAqqnmbjVGlJDpI
-         sMTLbP/Rj4uYGr1kCITIOt5YZtwzKmK/y4Xz7cW3GGxTgB+vfE7TOgYLRbrOVe6VoQYc
-         wCjyFd247XV4zfftCe11Cod1S9WNwGc5F7YO2WL4h0VH+VuhzQ1/o3d15Vx0TowQJb/a
-         yo/td8Vb43ViC/w4gfjrGV0by8Nz/FCvAyMoOwBZOD0S2s7poz20N0xXb8lidrSU+raR
-         nQNQ==
-X-Gm-Message-State: AOAM530rZCyYLoWFxbW606hmCOm+Zg+Xbhf4+xkBTU1lK8eF54UCvwHU
-        9ivKV39mxF4/Az8UnumUzyPnQNoPXrWulpu05c9T94gvekMv0P58Y1EgsESk4kVFcUNR3O1O7ec
-        DyqPE47Cl0uEH2MviwK013QNU0Q==
-X-Received: by 2002:a17:90a:474f:: with SMTP id y15mr2247991pjg.2.1627000478320;
-        Thu, 22 Jul 2021 17:34:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3T0RPoWuoz2nGgWu0oAbQM62TN09QruMzto43e2KyEy0LRuU/QLOYIutxXpEvtusHLp4qOA==
-X-Received: by 2002:a17:90a:474f:: with SMTP id y15mr2247975pjg.2.1627000478123;
-        Thu, 22 Jul 2021 17:34:38 -0700 (PDT)
-Received: from kq.cs.ucr.edu ([169.235.27.223])
-        by smtp.googlemail.com with ESMTPSA id b18sm4059224pji.39.2021.07.22.17.34.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 17:34:37 -0700 (PDT)
-From:   Yizhuo <yzhai003@ucr.edu>
-Cc:     Yizhuo <yzhai003@ucr.edu>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] media: atomisp: fix the uninitialized use and rename "retvalue"
-Date:   Fri, 23 Jul 2021 00:36:04 +0000
-Message-Id: <20210723003607.64179-1-yzhai003@ucr.edu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210723085145.1ce7ee5c@canb.auug.org.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=90ZPYQIIxrEQ8HDZV+gD6wEa3lFewktyltoq5V1ZqsU=;
+        b=MR/y21+s/XKr/FKiUwMR/VSwexdejYMCtcjkxGhZ8IIk1pWhrH2Cjxi/cGZTHlF/fJ
+         F0KBtGH7mmAU6WS1RXCBJhIWCMIpk9RR2yw1kyI8XgGxQ96sTIHm215rdr2qLwWN4/xO
+         z4fYhB5sdm9Iy4Z9gr2kX3LWO4Jq00oX++mUYrUqBps0F+POGKTx/4k92KQKPg2CTH2h
+         lSc+FU4QHc74MmlTF7NRCLvFHYa5q9Dnmy9vOXVVdmMlk9xy2co2HiAQb9ilVoWZs/3F
+         itI7pbi0LCs7Tm8TpJNEjk9PhP4Mqz2ICChDa99gACfXk6LhZNxBmMQOqP6/yJVXEiZL
+         RkOw==
+X-Gm-Message-State: AOAM531kMz2q7IK7CkRdA2rq5ibGbRSsMm7dboNSyclbfBaw/my+cYBZ
+        nsL9oKZLwJmjobCX0WNB2OmUqijeTApgXBqFdjoKCMdiPtb+smwKBOdLnf9spBN6foQ9CaoLpWQ
+        OsXSZfA7i5BM2SngImpEM4ro9t/aGbebsqDZ5Zf6/hQ==
+X-Received: by 2002:a17:90b:398:: with SMTP id ga24mr11456559pjb.121.1627000704544;
+        Thu, 22 Jul 2021 17:38:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzIHA+T7QwOB27+FG13Zxg0HUbQ8YtotMnwZ+asHHHo2WfeTzlqpgN8f79HzchI2DS3NyN7z9l+Ta6SYXxfpRU=
+X-Received: by 2002:a17:90b:398:: with SMTP id ga24mr11456528pjb.121.1627000704061;
+ Thu, 22 Jul 2021 17:38:24 -0700 (PDT)
+MIME-Version: 1.0
 References: <20210723085145.1ce7ee5c@canb.auug.org.au>
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210723085145.1ce7ee5c@canb.auug.org.au>
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Date:   Thu, 22 Jul 2021 17:38:13 -0700
+Message-ID: <CABvMjLTTtAwH7tT96TQ8THkCjTGUe-bMij449UALoyTSS94amQ@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the v4l-dvb-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inside function mt9m114_detect(), variable "retvalue" could
-be uninitialized if mt9m114_read_reg() returns error, however, it
-is used in the later if statement, which is potentially unsafe.
+All:
+I've fixed this issue and resend the patch to the maintainers. I'm so
+sorry for the inconvenience.
+Stephen:
+It seems you are not in the maintainers' mailing list, should I send a
+copy to you as well?
 
-The local variable "retvalue" is renamed to "model" to avoid
-confusion.
 
-Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
-Signed-off-by: Yizhuo <yzhai003@ucr.edu>
----
- drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+On Thu, Jul 22, 2021 at 3:51 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> In commit
+>
+>   c275e5d349b0 ("media: atomisp: fix the uninitialized use and rename "retvalue"")
+>
+> Fixes tag
+>
+>   Fixes: ad85094 (media / atomisp: fix the uninitialized use of model ID)
+>
+> has these problem(s):
+>
+>   - SHA1 should be at least 12 digits long
+>     Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+>     or later) just making sure it is not set (or set to "auto").
+>   - Subject does not match target commit subject
+>     Just use
+>         git log -1 --format='Fixes: %h ("%s")'
+>
+> maybe you meant
+>
+> Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-index f5de81132177..77293579a134 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-@@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
- static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
- {
- 	struct i2c_adapter *adapter = client->adapter;
--	u32 retvalue;
-+	u32 model;
-+	int ret;
- 
- 	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
- 		dev_err(&client->dev, "%s: i2c error", __func__);
- 		return -ENODEV;
- 	}
--	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
--	dev->real_model_id = retvalue;
-+	ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
-+	if (ret)
-+		return ret;
-+	dev->real_model_id = model;
- 
--	if (retvalue != MT9M114_MOD_ID) {
-+	if (model != MT9M114_MOD_ID) {
- 		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
- 			__func__, client->addr);
- 		return -ENODEV;
+
+
 -- 
-2.17.1
+Kind Regards,
 
+Yizhuo Zhai
+
+Computer Science, Graduate Student
+University of California, Riverside
