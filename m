@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865FD3D3B7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7994C3D3B7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235321AbhGWNPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:15:25 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:33675 "EHLO
+        id S235336AbhGWNP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:15:28 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:47081 "EHLO
         relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235126AbhGWNPY (ORCPT
+        with ESMTP id S233552AbhGWNPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:15:24 -0400
+        Fri, 23 Jul 2021 09:15:25 -0400
 Received: (Authenticated sender: clement.leger@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 84BE51BF208;
-        Fri, 23 Jul 2021 13:55:55 +0000 (UTC)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id CA45A1BF214;
+        Fri, 23 Jul 2021 13:55:56 +0000 (UTC)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>
 To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
         Mark Brown <broonie@kernel.org>,
@@ -26,9 +26,9 @@ Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <clement.leger@bootlin.com>,
         Peng Fan <peng.fan@nxp.com>,
         Sudeep Holla <sudeep.holla@arm.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: [PATCH 1/3] regmap: add regmap using ARM SMCCC
-Date:   Fri, 23 Jul 2021 15:52:37 +0200
-Message-Id: <20210723135239.388325-2-clement.leger@bootlin.com>
+Subject: [PATCH 2/3] syscon: add support for "syscon-smc" compatible
+Date:   Fri, 23 Jul 2021 15:52:38 +0200
+Message-Id: <20210723135239.388325-3-clement.leger@bootlin.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210723135239.388325-1-clement.leger@bootlin.com>
 References: <20210723135239.388325-1-clement.leger@bootlin.com>
@@ -39,261 +39,266 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running under secure monitor control, some controllers can be placed in
-secure world and their access is thus not possible from normal world. However,
-these controllers frequently contain registers than are needed by the normal
-world for a few specific operations.
+System controllers can be placed under secure monitor control when running
+under them. In order to keep existing code which accesses such system
+controllers using a syscon, add support for "syscon-smc" compatible.
 
-This patch adds a regmap where registers are accessed using SMCs. The secure
-monitor is then responsible to allow or deny access to the requested registers.
+When enable, the syscon will handle this new compatible and look for an
+"arm,smc-id" property to execute the appropriate SMC. A SMC regmap is then
+created to forward register access to the secure monitor.
 
 Signed-off-by: Clément Léger <clement.leger@bootlin.com>
 ---
- drivers/base/regmap/Kconfig        |   7 +-
- drivers/base/regmap/Makefile       |   1 +
- drivers/base/regmap/regmap-smccc.c | 131 +++++++++++++++++++++++++++++
- include/linux/regmap.h             |  38 +++++++++
- 4 files changed, 176 insertions(+), 1 deletion(-)
- create mode 100644 drivers/base/regmap/regmap-smccc.c
+ drivers/mfd/syscon.c | 170 ++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 145 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/base/regmap/Kconfig b/drivers/base/regmap/Kconfig
-index 159bac6c5046..6957a6b21ad9 100644
---- a/drivers/base/regmap/Kconfig
-+++ b/drivers/base/regmap/Kconfig
-@@ -4,7 +4,7 @@
- # subsystems should select the appropriate symbols.
+diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
+index 765c0210cb52..eb727b146315 100644
+--- a/drivers/mfd/syscon.c
++++ b/drivers/mfd/syscon.c
+@@ -40,7 +40,15 @@ static const struct regmap_config syscon_regmap_config = {
+ 	.reg_stride = 4,
+ };
  
- config REGMAP
--	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SOUNDWIRE || REGMAP_SOUNDWIRE_MBQ || REGMAP_SCCB || REGMAP_I3C || REGMAP_SPI_AVMM || REGMAP_MDIO)
-+	default y if (REGMAP_I2C || REGMAP_SPI || REGMAP_SPMI || REGMAP_W1 || REGMAP_AC97 || REGMAP_MMIO || REGMAP_IRQ || REGMAP_SOUNDWIRE || REGMAP_SOUNDWIRE_MBQ || REGMAP_SCCB || REGMAP_I3C || REGMAP_SPI_AVMM || REGMAP_MDIO || REGMAP_SMCCC)
- 	select IRQ_DOMAIN if REGMAP_IRQ
- 	select MDIO_BUS if REGMAP_MDIO
- 	bool
-@@ -65,3 +65,8 @@ config REGMAP_I3C
- config REGMAP_SPI_AVMM
- 	tristate
- 	depends on SPI
-+
-+config REGMAP_SMCCC
-+	default y if HAVE_ARM_SMCCC_DISCOVERY
-+	tristate
-+	depends on HAVE_ARM_SMCCC_DISCOVERY
-diff --git a/drivers/base/regmap/Makefile b/drivers/base/regmap/Makefile
-index 11facb32a027..3d92503a3b4e 100644
---- a/drivers/base/regmap/Makefile
-+++ b/drivers/base/regmap/Makefile
-@@ -20,3 +20,4 @@ obj-$(CONFIG_REGMAP_SCCB) += regmap-sccb.o
- obj-$(CONFIG_REGMAP_I3C) += regmap-i3c.o
- obj-$(CONFIG_REGMAP_SPI_AVMM) += regmap-spi-avmm.o
- obj-$(CONFIG_REGMAP_MDIO) += regmap-mdio.o
-+obj-$(CONFIG_REGMAP_SMCCC) += regmap-smccc.o
-diff --git a/drivers/base/regmap/regmap-smccc.c b/drivers/base/regmap/regmap-smccc.c
-new file mode 100644
-index 000000000000..a64d58f97d21
---- /dev/null
-+++ b/drivers/base/regmap/regmap-smccc.c
-@@ -0,0 +1,131 @@
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Copyright (c) 2021 Bootlin
-+
-+#include <linux/arm-smccc.h>
-+#include <linux/module.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/types.h>
-+
-+#define REGMAP_SMC_READ		0
-+#define REGMAP_SMC_WRITE	1
-+
-+struct regmap_smccc_ctx {
-+	u32 regmap_smc_id;
-+};
-+
-+static int regmap_smccc_reg_write(void *context, unsigned int reg,
-+				  unsigned int val)
+-static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
++static void syscon_add(struct syscon *syscon)
 +{
-+	struct regmap_smccc_ctx *ctx = context;
-+	struct arm_smccc_res res;
-+
-+	arm_smccc_1_1_invoke(ctx->regmap_smc_id, REGMAP_SMC_WRITE, reg, val,
-+			     &res);
-+
-+	if (res.a0)
-+		return -EACCES;
-+
-+	return 0;
++	spin_lock(&syscon_list_slock);
++	list_add_tail(&syscon->list, &syscon_list);
++	spin_unlock(&syscon_list_slock);
 +}
 +
-+static int regmap_smccc_reg_read(void *context, unsigned int reg,
-+				 unsigned int *val)
++static struct syscon *of_syscon_register_mmio(struct device_node *np,
++					      bool check_clk)
+ {
+ 	struct clk *clk;
+ 	struct syscon *syscon;
+@@ -132,10 +140,6 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+ 	syscon->regmap = regmap;
+ 	syscon->np = np;
+ 
+-	spin_lock(&syscon_list_slock);
+-	list_add_tail(&syscon->list, &syscon_list);
+-	spin_unlock(&syscon_list_slock);
+-
+ 	return syscon;
+ 
+ err_attach:
+@@ -150,8 +154,49 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
+ 	return ERR_PTR(ret);
+ }
+ 
++#ifdef CONFIG_REGMAP_SMCCC
++static struct syscon *of_syscon_register_smccc(struct device_node *np)
 +{
-+	struct regmap_smccc_ctx *ctx = context;
-+	struct arm_smccc_res res;
-+
-+	arm_smccc_1_1_invoke(ctx->regmap_smc_id, REGMAP_SMC_READ, reg, &res);
-+
-+	if (res.a0)
-+		return -EACCES;
-+
-+	*val = res.a1;
-+
-+	return 0;
-+}
-+
-+static struct regmap_bus regmap_smccc = {
-+	.reg_write = regmap_smccc_reg_write,
-+	.reg_read = regmap_smccc_reg_read,
-+};
-+
-+static int regmap_smccc_bits_is_supported(int val_bits)
-+{
-+	switch (val_bits) {
-+	case 8:
-+	case 16:
-+	case 32:
-+		return 0;
-+	case 64:
-+	/*
-+	 * SMCs are using registers to pass information so if architecture is
-+	 * not using 64 bits registers, we won't be able to pass information
-+	 * transparently.
-+	 */
-+#if !defined(CONFIG_64BIT)
-+		return -EINVAL;
-+#else
-+		return 0;
-+#endif
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static struct regmap_smccc_ctx *smccc_regmap_init_ctx(
-+					const struct regmap_config *config,
-+					u32 regmap_smc_id)
-+{
++	struct syscon *syscon;
++	struct regmap *regmap;
++	u32 reg_io_width = 4, smc_id;
 +	int ret;
-+	struct regmap_smccc_ctx *ctx;
++	struct regmap_config syscon_config = syscon_regmap_config;
 +
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
++	ret = of_property_read_u32(np, "arm,smc-id", &smc_id);
++	if (ret)
++		return ERR_PTR(-ENODEV);
++
++	syscon = kzalloc(sizeof(*syscon), GFP_KERNEL);
++	if (!syscon)
 +		return ERR_PTR(-ENOMEM);
 +
-+	ret = regmap_smccc_bits_is_supported(config->val_bits);
++	of_property_read_u32(np, "reg-io-width", &reg_io_width);
++
++	syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@smc%x", np, smc_id);
++	syscon_config.val_bits = reg_io_width * 8;
++
++	regmap = regmap_init_smccc(NULL, smc_id, &syscon_config);
++	if (IS_ERR(regmap)) {
++		ret = PTR_ERR(regmap);
++		goto err_regmap;
++	}
++
++	syscon->regmap = regmap;
++	syscon->np = np;
++
++	return syscon;
++
++err_regmap:
++	kfree(syscon_config.name);
++	kfree(syscon);
++
++	return ERR_PTR(ret);
++}
++#endif
++
+ static struct regmap *device_node_get_regmap(struct device_node *np,
+-					     bool check_clk)
++					     bool check_clk, bool use_smccc)
+ {
+ 	struct syscon *entry, *syscon = NULL;
+ 
+@@ -165,8 +210,19 @@ static struct regmap *device_node_get_regmap(struct device_node *np,
+ 
+ 	spin_unlock(&syscon_list_slock);
+ 
+-	if (!syscon)
+-		syscon = of_syscon_register(np, check_clk);
++	if (!syscon) {
++		if (use_smccc)
++#ifdef CONFIG_REGMAP_SMCCC
++			syscon = of_syscon_register_smccc(np);
++#else
++			syscon = NULL;
++#endif
++		else
++			syscon = of_syscon_register_mmio(np, check_clk);
++
++		if (!IS_ERR(syscon))
++			syscon_add(syscon);
++	}
+ 
+ 	if (IS_ERR(syscon))
+ 		return ERR_CAST(syscon);
+@@ -176,16 +232,19 @@ static struct regmap *device_node_get_regmap(struct device_node *np,
+ 
+ struct regmap *device_node_to_regmap(struct device_node *np)
+ {
+-	return device_node_get_regmap(np, false);
++	return device_node_get_regmap(np, false, false);
+ }
+ EXPORT_SYMBOL_GPL(device_node_to_regmap);
+ 
+ struct regmap *syscon_node_to_regmap(struct device_node *np)
+ {
+-	if (!of_device_is_compatible(np, "syscon"))
+-		return ERR_PTR(-EINVAL);
++	if (of_device_is_compatible(np, "syscon"))
++		return device_node_get_regmap(np, true, false);
++
++	if (of_device_is_compatible(np, "syscon-smc"))
++		return device_node_get_regmap(np, true, true);
+ 
+-	return device_node_get_regmap(np, true);
++	return ERR_PTR(-EINVAL);
+ }
+ EXPORT_SYMBOL_GPL(syscon_node_to_regmap);
+ 
+@@ -273,19 +332,19 @@ struct regmap *syscon_regmap_lookup_by_phandle_optional(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_optional);
+ 
+-static int syscon_probe(struct platform_device *pdev)
++struct syscon_driver_data {
++	int (*probe_func)(struct platform_device *pdev, struct device *dev,
++			  struct syscon *syscon);
++};
++
++static int syscon_probe_mmio(struct platform_device *pdev,
++			     struct device *dev,
++			     struct syscon *syscon)
+ {
+-	struct device *dev = &pdev->dev;
+-	struct syscon_platform_data *pdata = dev_get_platdata(dev);
+-	struct syscon *syscon;
+ 	struct regmap_config syscon_config = syscon_regmap_config;
+ 	struct resource *res;
+ 	void __iomem *base;
+ 
+-	syscon = devm_kzalloc(dev, sizeof(*syscon), GFP_KERNEL);
+-	if (!syscon)
+-		return -ENOMEM;
+-
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res)
+ 		return -ENOENT;
+@@ -295,23 +354,84 @@ static int syscon_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	syscon_config.max_register = resource_size(res) - 4;
+-	if (pdata)
+-		syscon_config.name = pdata->label;
++
+ 	syscon->regmap = devm_regmap_init_mmio(dev, base, &syscon_config);
+ 	if (IS_ERR(syscon->regmap)) {
+ 		dev_err(dev, "regmap init failed\n");
+ 		return PTR_ERR(syscon->regmap);
+ 	}
+ 
+-	platform_set_drvdata(pdev, syscon);
++	dev_dbg(dev, "regmap_mmio %pR registered\n", res);
++
++	return 0;
++}
++
++static const struct syscon_driver_data syscon_mmio_data = {
++	.probe_func = &syscon_probe_mmio,
++};
++
++#ifdef CONFIG_REGMAP_SMCCC
++
++static int syscon_probe_smc(struct platform_device *pdev,
++			    struct device *dev,
++			    struct syscon *syscon)
++{
++	struct regmap_config syscon_config = syscon_regmap_config;
++	int smc_id, ret;
++
++	ret = of_property_read_u32(dev->of_node, "arm,smc-id", &smc_id);
++	if (!ret)
++		return -ENODEV;
++
++	syscon->regmap = devm_regmap_init_smccc(dev, smc_id, &syscon_config);
++	if (IS_ERR(syscon->regmap)) {
++		dev_err(dev, "regmap init failed\n");
++		return PTR_ERR(syscon->regmap);
++	}
+ 
+-	dev_dbg(dev, "regmap %pR registered\n", res);
++	dev_dbg(dev, "regmap_smccc %x registered\n", smc_id);
++
++	return 0;
++}
++
++static const struct syscon_driver_data syscon_smc_data = {
++	.probe_func = &syscon_probe_smc,
++};
++#endif
++
++static int syscon_probe(struct platform_device *pdev)
++{
++	int ret;
++	struct device *dev = &pdev->dev;
++	struct syscon_platform_data *pdata = dev_get_platdata(dev);
++	struct regmap_config syscon_config = syscon_regmap_config;
++	struct syscon *syscon;
++	const struct syscon_driver_data *driver_data;
++
++	if (pdata)
++		syscon_config.name = pdata->label;
++
++	syscon = devm_kzalloc(dev, sizeof(*syscon), GFP_KERNEL);
++	if (!syscon)
++		return -ENOMEM;
++
++	driver_data = (const struct syscon_driver_data *)
++				platform_get_device_id(pdev)->driver_data;
++
++	ret = driver_data->probe_func(pdev, dev, syscon);
 +	if (ret)
-+		return ERR_PTR(ret);
++		return ret;
 +
-+	ctx->regmap_smc_id = regmap_smc_id;
-+
-+	return ctx;
-+}
-+
-+struct regmap *__regmap_init_smccc(struct device *dev, u32 regmap_smc_id,
-+				   const struct regmap_config *config,
-+				   struct lock_class_key *lock_key,
-+				   const char *lock_name)
-+{
-+	struct regmap_smccc_ctx *ctx;
-+
-+	ctx = smccc_regmap_init_ctx(config, regmap_smc_id);
-+	if (IS_ERR(ctx))
-+		return ERR_CAST(ctx);
-+
-+	return __regmap_init(dev, &regmap_smccc, ctx, config, lock_key,
-+			     lock_name);
-+}
-+EXPORT_SYMBOL_GPL(__regmap_init_smccc);
-+
-+struct regmap *__devm_regmap_init_smccc(struct device *dev, u32 regmap_smc_id,
-+					const struct regmap_config *config,
-+					struct lock_class_key *lock_key,
-+					const char *lock_name)
-+{
-+	struct regmap_smccc_ctx *ctx;
-+
-+	ctx = smccc_regmap_init_ctx(config, regmap_smc_id);
-+	if (IS_ERR(ctx))
-+		return ERR_CAST(ctx);
-+
-+	return __devm_regmap_init(dev, &regmap_smccc, ctx, config, lock_key,
-+				  lock_name);
-+}
-+EXPORT_SYMBOL_GPL(__devm_regmap_init_smccc);
-+
-+MODULE_AUTHOR("Clément Léger <clement.leger@bootlin.com>");
-+MODULE_DESCRIPTION("Regmap SMCCC Module");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-index f5f08dd0a116..08aa523403e8 100644
---- a/include/linux/regmap.h
-+++ b/include/linux/regmap.h
-@@ -591,6 +591,11 @@ struct regmap *__regmap_init_spi_avmm(struct spi_device *spi,
- 				      struct lock_class_key *lock_key,
- 				      const char *lock_name);
++	platform_set_drvdata(pdev, syscon);
  
-+struct regmap *__regmap_init_smccc(struct device *dev, u32 regmap_smc_id,
-+				   const struct regmap_config *config,
-+				   struct lock_class_key *lock_key,
-+				   const char *lock_name);
-+
- struct regmap *__devm_regmap_init(struct device *dev,
- 				  const struct regmap_bus *bus,
- 				  void *bus_context,
-@@ -655,6 +660,10 @@ struct regmap *__devm_regmap_init_spi_avmm(struct spi_device *spi,
- 					   const struct regmap_config *config,
- 					   struct lock_class_key *lock_key,
- 					   const char *lock_name);
-+struct regmap *__devm_regmap_init_smccc(struct device *dev, u32 regmap_smc_id,
-+					const struct regmap_config *config,
-+					struct lock_class_key *lock_key,
-+					const char *lock_name);
- /*
-  * Wrapper for regmap_init macros to include a unique lockdep key and name
-  * for each call. No-op if CONFIG_LOCKDEP is not set.
-@@ -881,6 +890,20 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
- 	__regmap_lockdep_wrapper(__regmap_init_spi_avmm, #config,		\
- 				 spi, config)
+ 	return 0;
+ }
  
-+/**
-+ * regmap_init_smccc() - Initialize register map for ARM SMCCC
-+ *
-+ * @dev: Device that will be interacted with
-+ * @smc_id: SMC id to used for calls
-+ * @config: Configuration for register map
-+ *
-+ * The return value will be an ERR_PTR() on error or a valid pointer
-+ * to a struct regmap.
-+ */
-+#define regmap_init_smccc(dev, smc_id, config)			\
-+	__regmap_lockdep_wrapper(__regmap_init_smccc, #config,	\
-+				 dev, smc_id, config)
-+
- /**
-  * devm_regmap_init() - Initialise managed register map
-  *
-@@ -1110,6 +1133,21 @@ bool regmap_ac97_default_volatile(struct device *dev, unsigned int reg);
- 	__regmap_lockdep_wrapper(__devm_regmap_init_spi_avmm, #config,	\
- 				 spi, config)
+ static const struct platform_device_id syscon_ids[] = {
+-	{ "syscon", },
++	{ .name = "syscon",	.driver_data = (kernel_ulong_t)&syscon_mmio_data},
++#ifdef CONFIG_REGMAP_SMCCC
++	{ .name = "syscon-smc",	.driver_data = (kernel_ulong_t)&syscon_smc_data},
++#endif
+ 	{ }
+ };
  
-+/**
-+ * devm_regmap_init_smccc() - Initialize register map for ARM SMCCC
-+ *
-+ * @dev: Device that will be interacted with
-+ * @smc_id: SMC id to used for calls
-+ * @config: Configuration for register map
-+ *
-+ * The return value will be an ERR_PTR() on error or a valid pointer
-+ * to a struct regmap.  The map will be automatically freed by the
-+ * device management code.
-+ */
-+#define devm_regmap_init_smccc(dev, smc_id, config)			\
-+	__regmap_lockdep_wrapper(__devm_regmap_init_smccc, #config,	\
-+				 dev, smc_id, config)
-+
- int regmap_mmio_attach_clk(struct regmap *map, struct clk *clk);
- void regmap_mmio_detach_clk(struct regmap *map);
- void regmap_exit(struct regmap *map);
 -- 
 2.32.0
 
