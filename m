@@ -2,119 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0553D3148
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6823D314C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbhGWAsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S233072AbhGWAtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbhGWAsF (ORCPT
+        with ESMTP id S232949AbhGWAtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:48:05 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4B4C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:28:40 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so734355qvt.20
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:28:40 -0700 (PDT)
+        Thu, 22 Jul 2021 20:49:31 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78E1C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:30:05 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id b6so5051pji.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:30:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Fn5O5gWOb6Ru+LgHgcwaMCAMb3hgNOKe/ej//OWLhcM=;
-        b=SACaWikoFPHWSTRsJ/h66/PZO6BUBliibjg3zOEZAYY7VRQaAW82XlbRTYz5A/JOha
-         k/M7KnmITZ7HdVTF4UvNOEj68TJ1JSD+U20oqmhiJIe/dTBf5WZgc6nejCksKWED2ewO
-         kHXYhB82pYLxnYV5NAT1CgUSZARRTvgAV3vF5Up+Hcxvj/vJLxn2oiyZglThnZAWfjrd
-         3PtDNgquIXrP9JmH6u4aq9fB7F9o9qdsnj1XLN1xJv7jY8ToLlDfQKnfQBhrgWDf4HPQ
-         VjCWqyruBWEYdFzeU5vm41QLutmGIPsm8mzmlwZkAdZpAHx277xx1ek32QLJqVbhNOD8
-         MEjg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=f06gqWc2bEaZJ6nbd8VrGNk6zDGVJAhrmVyUATfeuhY=;
+        b=uH3LTYq9lKkVh6FySVISF2uXoH17+HO/ef+NS7sXs7p8VhOdVPTkf+xDywOJI7ZGeq
+         J5vyXN5sIk5K28aSYCheQLYmLarcrwifRRqWOMDtKPWn4zvvxSsqTA/LMekE9uKmElQt
+         WO5XrD/lpIAFXo8o3ZlXZ2RLIn59Lahw6A0UOEnlf43IpUPKvrAWKBWbPmx+otKNLFFa
+         cTbOkddzUhdmQKUP9KIBFD+aEtLvw3nJaXWw8iW5F28MT+IBeoNC6LThOpDqosoE+XhQ
+         /2s1NQSFVXpy9aIoXoI7voS5KTgATBCgzW+ijmB6nTwYCppDaFbliHaMHs227vBPnrLv
+         UQEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Fn5O5gWOb6Ru+LgHgcwaMCAMb3hgNOKe/ej//OWLhcM=;
-        b=ko7lpWVwe7ZbOAg52qQ91GF0kq9WgcbGyFMRavQELTJqiUw4dm77crz+P8SliyVjv5
-         VrpqR3cOLxlcyT7mVx9rMOkoQLddagJA6MeSj+QzK8aaB9tbyPfku3zx3ozdZgdhq9It
-         945MVfH23fcz9AnznWxkeGT79Hd0W6Qy0jlS/gyzqoPmHrmdOhkJvZEIKebtGGiQyEbC
-         0LR4kSXQKlOujDR3XdGM9cYO3PF95OSQBGfrjwIc8dFjenSDGpLqtvQD5HJgB5FWceWO
-         soWMHxauolnM7zSe1rZVy0qmAGuxpSYIniU63b7et/+EjQh9TaHhdvebchaLQ8XZdGh0
-         aooQ==
-X-Gm-Message-State: AOAM532EuPHr1Rb/v0wNwmUAUubHQPVDzauTRq+Ctmh6k7HDSOJn/hpO
-        rVE0LxcCtT9LXrBJR/akutWbOBzXyG9N
-X-Google-Smtp-Source: ABdhPJz0qvqTMvCA4BIQ8mqve6awrI3mV5qSACM5ttL2tUHu17DzK2adJxKKurAI2NkQAHEhY96IsESVkZ9l
-X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:fdff:bbf6:d7ec:d92e])
- (user=rajatja job=sendgmr) by 2002:a05:6214:767:: with SMTP id
- f7mr2583972qvz.16.1627003719133; Thu, 22 Jul 2021 18:28:39 -0700 (PDT)
-Date:   Thu, 22 Jul 2021 18:28:34 -0700
-Message-Id: <20210723012835.1935471-1-rajatja@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH] thunderbolt: For dev authorization changes, include the
- actual event in udev change notification
-From:   Rajat Jain <rajatja@google.com>
-To:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rajat Jain <rajatja@google.com>, rajatxjain@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=f06gqWc2bEaZJ6nbd8VrGNk6zDGVJAhrmVyUATfeuhY=;
+        b=qdL1OvQSgCJ0XDMrMQPOjUIMqfm0PW5g9mbW5U32b16X4zRNFoOYcsbP/Tclf2oteb
+         wlMfxkSt2WKzH4gsU6U7tmI+UGUJM+6eOdHPc4ue48nz9M6HaoMxR1X6SqH+G5ecWir4
+         BQRkUMubBtc7TGhPc2CB0zKmVgrHYMz12yPVAlwOYHDrspf5uThzIeP1a5SMR1i7e88m
+         7L49p6npITCg6EjncoF/5XlCgjxG1wv/Jbs3kjVI145KzGra60m6Aqb4Vq16JKEETlNJ
+         P4fvhfOfE5sczTxofpQRJGD0Sa46Q+9Qi9pGHih5oiw/jrOmHrM/o/cHIdNFJpHsX/sp
+         OpSA==
+X-Gm-Message-State: AOAM531ntFj/yzHl4OlqzsZosUAmArIvv+XPPDl31UUqoLJMMEGXzHRV
+        ANkSdzpWmFn42xHqn409LFTogQ==
+X-Google-Smtp-Source: ABdhPJydmHBLdYGZ806rSsmrNTgmWWvO9B0B1rmVcJM9THK88hoR6AIbtcF5apFDFRDUXuwolLnX+g==
+X-Received: by 2002:a17:90a:4586:: with SMTP id v6mr2402677pjg.36.1627003805157;
+        Thu, 22 Jul 2021 18:30:05 -0700 (PDT)
+Received: from localhost ([106.201.108.2])
+        by smtp.gmail.com with ESMTPSA id z15sm35760876pgc.13.2021.07.22.18.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 18:30:04 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 07:00:00 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH V2 5/5] virtio: Bind virtio device to device-tree node
+Message-ID: <20210723013000.h43nfnrrichg6nap@vireshk-i7>
+References: <cover.1626947324.git.viresh.kumar@linaro.org>
+ <026ad5f274d64d46590623f9f3a04b8abfbe62d7.1626947324.git.viresh.kumar@linaro.org>
+ <CAK8P3a0iQ5dt_38Y9j6XCoj=n7YA+cPz7i6mjP24k9WY7QL+oA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a0iQ5dt_38Y9j6XCoj=n7YA+cPz7i6mjP24k9WY7QL+oA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For security, we would like to monitor and track when the
-thunderbolt devices are authorized and deauthorized. Currently
-the userspace gets a udev change notification when there is a
-change, but the state may have changed (again) by the time we
-look at the authorized attribute in sysfs. So an authorization
-event may go unnoticed. Thus make it easier by informing the
-actual change (authorized/deauthorized) in the udev change
-notification.
+On 22-07-21, 16:52, Arnd Bergmann wrote:
+> On Thu, Jul 22, 2021 at 11:56 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > +/* Virtio device compatibles and IDs */
+> > +static const struct of_device_id of_virtio_devices[] = {
+> > +       { .compatible = "virtio,22", .data = (void *)VIRTIO_ID_I2C_ADAPTER },
+> > +       { .compatible = "virtio,29", .data = (void *)VIRTIO_ID_GPIO },
+> > +       { }
+> > +};
+> > +
+> > +static int virtio_device_of_init(struct virtio_device *dev)
+> > +{
+> > +       struct device_node *np, *pnode = dev->dev.parent->of_node;
+> > +       const struct of_device_id *match;
+> > +       int ret, count;
+> > +
+> > +       if (!pnode)
+> > +               return 0;
+> > +
+> > +       count = of_get_available_child_count(pnode);
+> > +       if (!count)
+> > +               return 0;
+> > +
+> > +       /* There can be only 1 child node */
+> > +       if (WARN_ON(count > 1))
+> > +               return -EINVAL;
+> > +
+> > +       np = of_get_next_available_child(pnode, NULL);
+> > +       if (WARN_ON(!np))
+> > +               return -ENODEV;
+> > +
+> > +       match = of_match_node(of_virtio_devices, np);
+> > +       if (!match) {
+> > +               ret = -ENODEV;
+> > +               goto out;
+> > +       }
+> 
+> I think it would be better not to have to enumerate the of_virtio_devices[]
+> strings, but instead use of_device_is_compatible() to match against
+> "virtio,%d". Otherwise we end up modifying this function for every
+> virtio driver that needs a binding.
 
-Signed-off-by: Rajat Jain <rajatja@google.com>
----
- drivers/thunderbolt/switch.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Yeah, will do that.
 
-diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-index 83b1ef3d5d03..5d3e9dcba44a 100644
---- a/drivers/thunderbolt/switch.c
-+++ b/drivers/thunderbolt/switch.c
-@@ -1499,6 +1499,7 @@ static ssize_t authorized_show(struct device *dev,
- static int disapprove_switch(struct device *dev, void *not_used)
- {
- 	struct tb_switch *sw;
-+	char *envp[] = { "AUTHORIZED=0", NULL };
- 
- 	sw = tb_to_switch(dev);
- 	if (sw && sw->authorized) {
-@@ -1514,7 +1515,7 @@ static int disapprove_switch(struct device *dev, void *not_used)
- 			return ret;
- 
- 		sw->authorized = 0;
--		kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
-+		kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
- 	}
- 
- 	return 0;
-@@ -1523,6 +1524,8 @@ static int disapprove_switch(struct device *dev, void *not_used)
- static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
- {
- 	int ret = -EINVAL;
-+	char envp_string[13];
-+	char *envp[] = { envp_string, NULL };
- 
- 	if (!mutex_trylock(&sw->tb->lock))
- 		return restart_syscall();
-@@ -1560,7 +1563,8 @@ static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
- 	if (!ret) {
- 		sw->authorized = val;
- 		/* Notify status change to the userspace */
--		kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
-+		sprintf(envp_string, "AUTHORIZED=%u", val);
-+		kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
- 	}
- 
- unlock:
 -- 
-2.32.0.432.gabb21c7263-goog
-
+viresh
