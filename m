@@ -2,71 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484313D3C1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DFAE3D3C1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235444AbhGWORp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 10:17:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235351AbhGWORo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 10:17:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D0B060EB6;
-        Fri, 23 Jul 2021 14:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627052296;
-        bh=rZcEOxNvSLjMgqTg7OTDkrLNaseCvf9ayrUZM9yMcJk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=AXbXQheYmzpxNKpjGtsnIPVlrJuhAVnwG2b36TY1wIXfO9hq7ezEVwn2rjBxRMK9T
-         dhH/Y7F5btbwGnWWKaqwhTtS9lowx2fHwMipxEA9wTvkZUHLocxSOy01yOisegholo
-         Sq3hDeiHThl0n96o1WOC/vUibp1LmLN1n1X8j5MA=
-Date:   Fri, 23 Jul 2021 16:58:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [GIT PULL] Driver core fixes for 5.14-rc3
-Message-ID: <YPrZBiDr/6Y78Vda@kroah.com>
+        id S235479AbhGWOUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 10:20:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235437AbhGWOUs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 10:20:48 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB483C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:01:20 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 9-20020a05600c26c9b02901e44e9caa2aso1793592wmv.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=w9v+4s7/P2Cg+QjJMoNBlGX2Ekj8q+TMc1efLZ/J8+4=;
+        b=fj7JYwQb2WhybJAUx4rfOc25+s+QNn44GNfoxzaxvvv+Pb3suvS7pBkfDBusZwXXlf
+         m2ohNk1UieUIgdG4WzCnhOgYhZQUxbWqMI912foPZDh3S/Xyz1xqNn42hbT6j9xpiyaK
+         YtEu8H9SIRKgSAtAIMM9wzpHYJE1pq6x0zKXs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=w9v+4s7/P2Cg+QjJMoNBlGX2Ekj8q+TMc1efLZ/J8+4=;
+        b=fakTSJkkTP2ZCK3ivt2yaD3YiAwndkIPf8iPl8iUZNoZvwS/b8YF4a1bjTnrPKXcXm
+         LMgE2L8vef8VH7QF3QIsMVQedWIJYu8IOARa8dVSuA2SjUWVethAETAiM/On2oLeYj+K
+         vrEsezrmFmvIJI4PZsY571T4j+wwgBP1wea+jRMcOKWfixl97IO2JZNvKLe7ttmDoM9X
+         ScEkgIwjZhyIcvfrYs5CdO4ADqljrCwu+hAzQWYrJUWcu5xCMk9JWI9ENZP44txfzc4S
+         UHFstKl+SgDUGZGzNgR1qu3lR3sx6HD4GtM9ksGngja6FW2V/X022q4HjjPQVTT4+fiv
+         cy0g==
+X-Gm-Message-State: AOAM531Mpu+/INP6PU8kRYL80ivWuC50zPtiDi9PU0tgI9FN1tupTb71
+        jFnvidfCRrmvGP6+l4Keu+Rk8Q==
+X-Google-Smtp-Source: ABdhPJxAhoY4SO+Rljt8tSjDfVfejZCTQg8CZQ/u7VOQRIgpa+QXhopteYV2nXJ0mUMxsKF9l0l34Q==
+X-Received: by 2002:a05:600c:21cd:: with SMTP id x13mr5151839wmj.12.1627052479277;
+        Fri, 23 Jul 2021 08:01:19 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b6sm5468873wmj.34.2021.07.23.08.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 08:01:18 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 17:01:16 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Charan Teja Reddy <charante@codeaurora.org>,
+        sumit.semwal@linaro.org, linaro-mm-sig@lists.linaro.org,
+        vinmenon@codeaurora.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH] dma-buf: WARN on dmabuf release with pending attachments
+Message-ID: <YPrZvM8BI7VO8xQk@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Charan Teja Reddy <charante@codeaurora.org>,
+        sumit.semwal@linaro.org, linaro-mm-sig@lists.linaro.org,
+        vinmenon@codeaurora.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+References: <1627043468-16381-1-git-send-email-charante@codeaurora.org>
+ <b057b0fe-75ae-d872-f500-a307543d8233@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b057b0fe-75ae-d872-f500-a307543d8233@amd.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
+On Fri, Jul 23, 2021 at 02:34:13PM +0200, Christian König wrote:
+> Am 23.07.21 um 14:31 schrieb Charan Teja Reddy:
+> > It is expected from the clients to follow the below steps on an imported
+> > dmabuf fd:
+> > a) dmabuf = dma_buf_get(fd) // Get the dmabuf from fd
+> > b) dma_buf_attach(dmabuf); // Clients attach to the dmabuf
+> >     o Here the kernel does some slab allocations, say for
+> > dma_buf_attachment and may be some other slab allocation in the
+> > dmabuf->ops->attach().
+> > c) Client may need to do dma_buf_map_attachment().
+> > d) Accordingly dma_buf_unmap_attachment() should be called.
+> > e) dma_buf_detach () // Clients detach to the dmabuf.
+> >     o Here the slab allocations made in b) are freed.
+> > f) dma_buf_put(dmabuf) // Can free the dmabuf if it is the last
+> > reference.
+> > 
+> > Now say an erroneous client failed at step c) above thus it directly
+> > called dma_buf_put(), step f) above. Considering that it may be the last
+> > reference to the dmabuf, buffer will be freed with pending attachments
+> > left to the dmabuf which can show up as the 'memory leak'. This should
+> > at least be reported as the WARN().
+> > 
+> > Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+> 
+> Good idea. I would expect a crash immediately, but from such a backtrace it
+> is quite hard to tell what the problem is.
+> 
+> Patch is Reviewed-by: Christian König <christian.koenig@amd.com> and I'm
+> going to push this to drm-misc-next on Monday if nobody objects.
 
-  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
+The boom only happens a lot later when the offending import uses the
+attachment again. This here has a good chance to catch that early
+drm_buf_put(), so I think it's a good improvement. We'll still Oops later
+on ofc, but meh.
 
-are available in the Git repository at:
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> 
+> Thanks,
+> Christian.
+> 
+> > ---
+> >   drivers/dma-buf/dma-buf.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> > index 511fe0d..733c8b1 100644
+> > --- a/drivers/dma-buf/dma-buf.c
+> > +++ b/drivers/dma-buf/dma-buf.c
+> > @@ -79,6 +79,7 @@ static void dma_buf_release(struct dentry *dentry)
+> >   	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+> >   		dma_resv_fini(dmabuf->resv);
+> > +	WARN_ON(!list_empty(&dmabuf->attachments));
+> >   	module_put(dmabuf->owner);
+> >   	kfree(dmabuf->name);
+> >   	kfree(dmabuf);
+> 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.14-rc3
-
-for you to fetch changes up to e64daad660a0c9ace3acdc57099fffe5ed83f977:
-
-  driver core: Prevent warning when removing a device link from unregistered consumer (2021-07-21 17:28:42 +0200)
-
-----------------------------------------------------------------
-Driver core fixes for 5.14-rc3
-
-Here are 2 small driver core fixes to resolve some reported problems for
-5.14-rc3.  They include:
-	- aux bus memory leak fix
-	- unneeded warning message removed when removing a device link.
-
-Both have been in linux-next with no reported problems.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Adrian Hunter (1):
-      driver core: Prevent warning when removing a device link from unregistered consumer
-
-Peter Ujfalusi (1):
-      driver core: auxiliary bus: Fix memory leak when driver_register() fail
-
- drivers/base/auxiliary.c | 8 +++++++-
- drivers/base/core.c      | 6 ++++--
- 2 files changed, 11 insertions(+), 3 deletions(-)
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
