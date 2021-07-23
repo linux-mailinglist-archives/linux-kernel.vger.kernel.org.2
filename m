@@ -2,124 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F03B3D30E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE083D30EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbhGVXsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 19:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhGVXsf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 19:48:35 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88EDAC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=06FIoFo1++Bs1nXh2OQvBAB1I83x6yDvJoaM9tHykL0=; b=SsW/nOBciSh6t
-        7FOb3GX9o3RWpNlrvTVWFF+pJUz/WWgTX9JVb7f8Cjf4wwQwd9E/nqNjudYmuY2l
-        a3ysWsjbPf6N6u9VxDRh6BmzdeGwO+ADjP0e1ePxbU3RmxvVkfks3x+tf5055Fxb
-        cVOKDxI+1N7z8nX7spu2vp68NMitbc=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnL3coDfpgk9guAA--.6267S2;
-        Fri, 23 Jul 2021 08:28:24 +0800 (CST)
-Date:   Fri, 23 Jul 2021 08:22:26 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Atish Patra <atishp@atishpatra.org>
-Subject: [PATCH] riscv: stacktrace: pin the task's stack in get_wchan
-Message-ID: <20210723082226.7b7b4707@xhacker>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygAnL3coDfpgk9guAA--.6267S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxury3JF1UCF43Xry7Xr4fZrb_yoW5uF1kpr
-        13AF17CFW8Xr42yr13Ar1rXr48GFyDAay7Jr97tr15CF15Gw18X34DJanrGr1DXw1jqFy7
-        Gr1Dtw4kKr4DJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I
-        3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
-        WUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
-        wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcI
-        k0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
-        6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqEoXUUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+        id S232731AbhGVXyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 19:54:06 -0400
+Received: from mx5.ucr.edu ([138.23.62.67]:25469 "EHLO mx5.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232730AbhGVXyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 19:54:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1627000481; x=1658536481;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references;
+  bh=WjZhPfz6WGA+e7+W6h7hHSdZYaAsvQABJiyNAJlDjpE=;
+  b=DpsWAv675HQscUWOYm4bE2aRfl/oR96f5VuFH3x3mTqwK9sf5ESCQq4T
+   xVWdHqs7QZLDS/5CIKj0lw0n35NHaO4dKIrV53fw5z1eoWmEi47CVHNuY
+   sBQBuv9vzlKba70i4CAqGrhmT3ZqdTmyZ6vX8VLyKpxX6mo1TOWtFBZfP
+   decThME2EsuI0xbuCXAkJRrIzuzBv2sJeMrRf8Nz+SgE5TMsbnvDCjjIH
+   rThOHJLWe7jSR0oTh7HNzeZ6/Xy3Z0Lj2glP73CbnDSQyqAv61W27rH2c
+   d2cstCQ8nN8TPln18+WEDWITtI/5rDArGDWeljhHEP2JTfAszVYGXuTVG
+   g==;
+IronPort-SDR: sV0leLweAYBHxHPaUxgj01+4nsLoHUAFSVAPxylBcRtD9Xk8qfSqOVe3LmbXoOQTGQ4YjJEQdo
+ TCf3SxT6sdSKvUtmv0W1ybZkXgNlEKy95By4CKLob2AI0rRWPfvg9/2SPiPxIIqafzCHSVwgva
+ MWCMm3dj+ZOeMU1JEH/JDnAkGipapKe+edo6ozSTNyMuOb7UKgnI0TvJfYZlEGkG9wbdi2jOc2
+ 3q4ppxJDfFWW/QJoBkGQbRe3i5rnu4bPxVeHuo6BUmb2DxTCTWu6TsFzFR+ED+uqYEsUVLef00
+ 1kTJIEjmkgvUIo7hc+NmyeVn
+X-IPAS-Result: =?us-ascii?q?A2FrBABBDfpghsbWVdFagmKDFmNVFpRmAQEGjCYYgQKGf?=
+ =?us-ascii?q?IhmgXwCCQEBAQ0BAUEEAQGEVwKCeAIlNAkOAgQBAQEBAwIDAQEBAQEBAwEBB?=
+ =?us-ascii?q?gEBAQEBAQUEAQECEAEBAQGBCgtZC2OBT4F5BgQ9gjgpg2UJAgEDEhVSED8SN?=
+ =?us-ascii?q?AEFARwZIjmCFgGCYSYFnHCBBD2MMTOBAYgkAQkNgWMJAQiBKIh8hHAngRmBE?=
+ =?us-ascii?q?IJQgTN1h2+CUASDHXsTgimBUAEBAZAxG4MGAYxmm2gBBgKDDByDEpsSRYZgj?=
+ =?us-ascii?q?l2RJrsWAgoHBhAjgT2CFU0lgWwKgUFNAQIBAgEMAgECAQIBAgECCAEBAo41j?=
+ =?us-ascii?q?jZBMjgCBgsBAQMJi1kB?=
+IronPort-PHdr: A9a23:abcPAxK9kTpxvhQgXtmcuJxmWUAX0o4c3iYr45Yqw4hDbr6kt8y7e
+ hCFvbM20xSRAs3y0LFts6LuqafuWGgNs96qkUspV9hybSIDktgchAc6AcSIWgXRJf/uaDEmT
+ owZDAc2t360PlJIF8ngelbcvmO97SIIGhX4KAF5Ovn5FpTdgsipy+y+4ZPebgdHiDahY755M
+ Qm7oxjWusQKm4VpN7w/ygHOontGeuRWwX1nKFeOlBvi5cm+4YBu/T1It/0u68BPX6P6f78lT
+ bNDFzQpL3o15MzwuhbdSwaE+2YRXX8XkhpMBAjF8Q36U5LsuSb0quZxxC+XNtDtQLsqRTqt8
+ btkSB7wiCcGKTE59n3Xitdth65fuR6tugBzz5LRbIyTMfp+f7jdfcgbRWpHUcZaSjJPDJqhZ
+ IsBDuoOI+JYoJTgrFcKoxayGQygCeXoxTJUiHL6wbA23/09HQ3bwQcsG88CvXTRoNjzKawcU
+ /26zLPQwDvDcf1YxDnz5ovPfB8jr/GBRq58fdbLxEUzDQ7JkkmcpIr4ND2VzOQNtG2b4vJiW
+ uKuim8nqxxxoj+yzcoriojIh4IVxUrF9Sll3Io4K8a1SFNnbt6+CpdfqTyVN5ZvT84kXmpnt
+ zo0xKcctp6nYCgF1o4nxxjHZvKHc4aE/x3tWeeNLTl4i3xoZLGyiha9/0Wk1+DxS8q53UtKo
+ ydbnNfBuHAA2hPO58aIV/Zw40Ss1SqL2g3T9OxJJ10/m6nDK5M53LI8ip4evV7AEyL2gkn6k
+ rKae0o+9uS17+nqYa3qqoKdOoJwkA3yLKojl8ylDegmMAUCRXaX9fqy2bDl4Eb3Wq9Fjucsn
+ ancqJ3aIMMbqbOnDAJNyYYj7gq/Dy+h0NQFgXkLNFJFdwyDj4juI1zOJer3Dfa7g1i1iDdrw
+ +3KMqTvApnQKnXOk63tfbl6605bxwozyc5Q64hIBbEGJfL/Qk7xtNrGAR8lKwG43frrBdFn2
+ o4dWW+DGLGVPL7dvFOS++4iJ+qBaJcQuDnnKvgl4/DujWU+mV8YZaSo3ZoWaHCiEfRnP0mVf
+ XThj8wcEWgWpAoyVvLlh0CfUTJLfXa9Q7o85i0nCIKhFYrDQoGtgLqc3Ca0B5FWZX5JCkqKE
+ Xj2c4WJQOkMaC2MLc97iDAEVqauS5Un1R6wsA/20b1nLvDb+n5Qm4jk0Y1E5v/TiBZ6oS1mD
+ 82ciznWZ3x/hCUFSyJgj/M3mlB01lrWifswuPdfD9EGoq4UOjo=
+IronPort-HdrOrdr: A9a23:pjn0ZqOwjRk9hMBcTvyjsMiBIKoaSvp037Dk7TEVdfU7SL3+qy
+ nDpoV56fawskdoZJhfo6HnBEDoexq1nv5ICMsqTMyftWHd2VdAR7sSibcKrQeQeREWNdQx6U
+ 6jScJD4RHLYmSS9fyKmTVQ2uxNruW6zA==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
+   d="scan'208";a="227850351"
+Received: from mail-pl1-f198.google.com ([209.85.214.198])
+  by smtpmx5.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 22 Jul 2021 17:34:39 -0700
+Received: by mail-pl1-f198.google.com with SMTP id c1-20020a170902aa41b02901298fdd4067so867429plr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:34:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=gm4YUZj/EvvmVEru6DPj42P4a48GvfDB+tH0wczqnc0=;
+        b=nGKjr/EAieGfTilaVRTElX9aYrdyuCIQSMpeftJpFDINuN00IZLSuwfCLBtRjeX2ma
+         AR3ZoZedWlgDHY/vVXDI7puWqbf8ANu/NuPNDjoB5+vBmgdrTsrq3sAqqnmbjVGlJDpI
+         sMTLbP/Rj4uYGr1kCITIOt5YZtwzKmK/y4Xz7cW3GGxTgB+vfE7TOgYLRbrOVe6VoQYc
+         wCjyFd247XV4zfftCe11Cod1S9WNwGc5F7YO2WL4h0VH+VuhzQ1/o3d15Vx0TowQJb/a
+         yo/td8Vb43ViC/w4gfjrGV0by8Nz/FCvAyMoOwBZOD0S2s7poz20N0xXb8lidrSU+raR
+         nQNQ==
+X-Gm-Message-State: AOAM530rZCyYLoWFxbW606hmCOm+Zg+Xbhf4+xkBTU1lK8eF54UCvwHU
+        9ivKV39mxF4/Az8UnumUzyPnQNoPXrWulpu05c9T94gvekMv0P58Y1EgsESk4kVFcUNR3O1O7ec
+        DyqPE47Cl0uEH2MviwK013QNU0Q==
+X-Received: by 2002:a17:90a:474f:: with SMTP id y15mr2247991pjg.2.1627000478320;
+        Thu, 22 Jul 2021 17:34:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3T0RPoWuoz2nGgWu0oAbQM62TN09QruMzto43e2KyEy0LRuU/QLOYIutxXpEvtusHLp4qOA==
+X-Received: by 2002:a17:90a:474f:: with SMTP id y15mr2247975pjg.2.1627000478123;
+        Thu, 22 Jul 2021 17:34:38 -0700 (PDT)
+Received: from kq.cs.ucr.edu ([169.235.27.223])
+        by smtp.googlemail.com with ESMTPSA id b18sm4059224pji.39.2021.07.22.17.34.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 17:34:37 -0700 (PDT)
+From:   Yizhuo <yzhai003@ucr.edu>
+Cc:     Yizhuo <yzhai003@ucr.edu>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Juan Antonio Aldea-Armenteros <juant.aldea@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] media: atomisp: fix the uninitialized use and rename "retvalue"
+Date:   Fri, 23 Jul 2021 00:36:04 +0000
+Message-Id: <20210723003607.64179-1-yzhai003@ucr.edu>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210723085145.1ce7ee5c@canb.auug.org.au>
+References: <20210723085145.1ce7ee5c@canb.auug.org.au>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+Inside function mt9m114_detect(), variable "retvalue" could
+be uninitialized if mt9m114_read_reg() returns error, however, it
+is used in the later if statement, which is potentially unsafe.
 
-Pin the task's stack before calling walk_stackframe() in get_wchan().
-This can fix the panic as reported by Andreas when CONFIG_VMAP_STACK=y:
+The local variable "retvalue" is renamed to "model" to avoid
+confusion.
 
-[   65.609696] Unable to handle kernel paging request at virtual address ffffffd0003bbde8
-[   65.610460] Oops [#1]
-[   65.610626] Modules linked in: virtio_blk virtio_mmio rtc_goldfish btrfs blake2b_generic libcrc32c xor raid6_pq sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua efivarfs
-[   65.611670] CPU: 2 PID: 1 Comm: systemd Not tainted 5.14.0-rc1-1.g34fe32a-default #1 openSUSE Tumbleweed (unreleased) c62f7109153e5a0897ee58ba52393ad99b070fd2
-[   65.612334] Hardware name: riscv-virtio,qemu (DT)
-[   65.613008] epc : get_wchan+0x5c/0x88
-[   65.613334]  ra : get_wchan+0x42/0x88
-[   65.613625] epc : ffffffff800048a4 ra : ffffffff8000488a sp : ffffffd00021bb90
-[   65.614008]  gp : ffffffff817709f8 tp : ffffffe07fe91b80 t0 : 00000000000001f8
-[   65.614411]  t1 : 0000000000020000 t2 : 0000000000000000 s0 : ffffffd00021bbd0
-[   65.614818]  s1 : ffffffd0003bbdf0 a0 : 0000000000000001 a1 : 0000000000000002
-[   65.615237]  a2 : ffffffff81618008 a3 : 0000000000000000 a4 : 0000000000000000
-[   65.615637]  a5 : ffffffd0003bc000 a6 : 0000000000000002 a7 : ffffffe27d370000
-[   65.616022]  s2 : ffffffd0003bbd90 s3 : ffffffff8071a81e s4 : 0000000000003fff
-[   65.616407]  s5 : ffffffffffffc000 s6 : 0000000000000000 s7 : ffffffff81618008
-[   65.616845]  s8 : 0000000000000001 s9 : 0000000180000040 s10: 0000000000000000
-[   65.617248]  s11: 000000000000016b t3 : 000000ff00000000 t4 : 0c6aec92de5e3fd7
-[   65.617672]  t5 : fff78f60608fcfff t6 : 0000000000000078
-[   65.618088] status: 0000000000000120 badaddr: ffffffd0003bbde8 cause: 000000000000000d
-[   65.618621] [<ffffffff800048a4>] get_wchan+0x5c/0x88
-[   65.619008] [<ffffffff8022da88>] do_task_stat+0x7a2/0xa46
-[   65.619325] [<ffffffff8022e87e>] proc_tgid_stat+0xe/0x16
-[   65.619637] [<ffffffff80227dd6>] proc_single_show+0x46/0x96
-[   65.619979] [<ffffffff801ccb1e>] seq_read_iter+0x190/0x31e
-[   65.620341] [<ffffffff801ccd70>] seq_read+0xc4/0x104
-[   65.620633] [<ffffffff801a6bfe>] vfs_read+0x6a/0x112
-[   65.620922] [<ffffffff801a701c>] ksys_read+0x54/0xbe
-[   65.621206] [<ffffffff801a7094>] sys_read+0xe/0x16
-[   65.621474] [<ffffffff8000303e>] ret_from_syscall+0x0/0x2
-[   65.622169] ---[ end trace f24856ed2b8789c5 ]---
-[   65.622832] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Fixes: ad85094b293e ("Revert "media: staging: atomisp: Remove driver"")
+Signed-off-by: Yizhuo <yzhai003@ucr.edu>
 ---
- arch/riscv/kernel/stacktrace.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-index ff467b98c3e3..ac7593607fa6 100644
---- a/arch/riscv/kernel/stacktrace.c
-+++ b/arch/riscv/kernel/stacktrace.c
-@@ -132,8 +132,12 @@ unsigned long get_wchan(struct task_struct *task)
+diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+index f5de81132177..77293579a134 100644
+--- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
++++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
+@@ -1533,16 +1533,19 @@ static struct v4l2_ctrl_config mt9m114_controls[] = {
+ static int mt9m114_detect(struct mt9m114_device *dev, struct i2c_client *client)
  {
- 	unsigned long pc = 0;
+ 	struct i2c_adapter *adapter = client->adapter;
+-	u32 retvalue;
++	u32 model;
++	int ret;
  
--	if (likely(task && task != current && !task_is_running(task)))
-+	if (likely(task && task != current && !task_is_running(task))) {
-+		if (!try_get_task_stack(task))
-+			return 0;
- 		walk_stackframe(task, NULL, save_wchan, &pc);
-+		put_task_stack(task);
-+	}
- 	return pc;
- }
+ 	if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
+ 		dev_err(&client->dev, "%s: i2c error", __func__);
+ 		return -ENODEV;
+ 	}
+-	mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
+-	dev->real_model_id = retvalue;
++	ret = mt9m114_read_reg(client, MISENSOR_16BIT, MT9M114_PID, &model);
++	if (ret)
++		return ret;
++	dev->real_model_id = model;
  
+-	if (retvalue != MT9M114_MOD_ID) {
++	if (model != MT9M114_MOD_ID) {
+ 		dev_err(&client->dev, "%s: failed: client->addr = %x\n",
+ 			__func__, client->addr);
+ 		return -ENODEV;
 -- 
-2.32.0
-
+2.17.1
 
