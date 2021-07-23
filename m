@@ -2,161 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7FE3D3B35
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA173D3B33
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235264AbhGWMt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:49:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235255AbhGWMtw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:49:52 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0504DC061575;
-        Fri, 23 Jul 2021 06:30:26 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id he41so3683266ejc.6;
-        Fri, 23 Jul 2021 06:30:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hh2qQyV0e2ZUg+zl/VVNwTimvapqj+B4o1vSa2p3lFE=;
-        b=S7IGk/AW41JjfZBmwuLwKk/gXcjZZJQvKRS3UGBxtrpLuHq98VbkUnb7K8Dp3oCYPb
-         LyFucS1yf5F9ONLvvCZDVvZX+IAr2+nlIa0X9iTnsJ9elFYsgRUYenAG0Nh7q1rb/8/b
-         3DZ8iQzx5bdK+q/farrljjlJARX0llttk64kfnvLv0bLCVQ6pQHZg/8e7ppX9hvRY7Zq
-         GdgxtzlPgHvYAopLdj/j0NuzJV27Zta47RL/WaDvQdWUrd9Bj3bXKGHixGR/QaIZGdnn
-         Z2JZgXskmhhbr3bLwHogwHfp8hkmm63SPpMXTgYlBgJWC4ZKQg3KCmsFfG0kMbV/YCNk
-         W+zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hh2qQyV0e2ZUg+zl/VVNwTimvapqj+B4o1vSa2p3lFE=;
-        b=F1VvUSrMsJvKkTRJctuVbTAap2E1gGQOm8eQLIbL5UfITngo1uQZCkCnjEjH7ApFTJ
-         LxdSYV1duCjIntqtGc9G9CSkPWi5L6KCMJimr/B6ws+HTFTq4C8aQH+f3xyuxAY1VZSW
-         RzxHkuZehHRpLLFxhSFv4vw3j2AXGf/xUtIK0H8mO/BQTkhA5Y97gUmYqh04ifhX7K2L
-         SCbmXZS8jlo5uQTdBOoFGheW9t/O2ezdwovJ3NoNIZNeoMRof7iOmLnHsSwj0RxlAi/4
-         hHhiNyLPpmYahcEwEGDdED4llVWNX7lqZWDPGwIkzT9Sia41E8mCfN9swQ81KwQiiDRi
-         dDKQ==
-X-Gm-Message-State: AOAM531JXta/XC2Puigb7OB/73c4Kosqhh24zv1IB8Yg+Hdlc6n96E6G
-        cIfSS3tEYSgwn5Lap/c2qa/NHGFqRNfwPPovUxU=
-X-Google-Smtp-Source: ABdhPJyh9rVEh/TiP20JKVxKQoSCCKRb1SDRhz4hd1pZBrexxwTYaoeUif4GxghImDj6TeUzxG4b5cJnysIB2dH0Ssg=
-X-Received: by 2002:a17:906:32d8:: with SMTP id k24mr4711049ejk.422.1627047023886;
- Fri, 23 Jul 2021 06:30:23 -0700 (PDT)
+        id S235248AbhGWMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:49:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233037AbhGWMtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 08:49:41 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A3D360EB4;
+        Fri, 23 Jul 2021 13:30:15 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m6vFl-000UyF-5x; Fri, 23 Jul 2021 14:30:13 +0100
 MIME-Version: 1.0
-References: <20210723012317.4146-1-thunder.leizhen@huawei.com>
-In-Reply-To: <20210723012317.4146-1-thunder.leizhen@huawei.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Fri, 23 Jul 2021 22:30:11 +0900
-Message-ID: <CAKFNMonmM09Btxm+0E=39fNLJLvyZd0pryFT0d_y7rz-10rcKA@mail.gmail.com>
-Subject: Re: [PATCH] nilfs2: use refcount_dec_and_lock() to fix potential UAF
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Fri, 23 Jul 2021 14:30:13 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        will@kernel.org
+Subject: Re: [PATCH 10/16] KVM: arm64: Add some documentation for the MMIO
+ guard feature
+In-Reply-To: <20210721211743.hb2cxghhwl2y22yh@gator>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-11-maz@kernel.org>
+ <20210721211743.hb2cxghhwl2y22yh@gator>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <60d8e9e95ee4640cf3b457c53cb4cc7a@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: drjones@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@android.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2021-07-21 22:17, Andrew Jones wrote:
+> On Thu, Jul 15, 2021 at 05:31:53PM +0100, Marc Zyngier wrote:
+>> Document the hypercalls user for the MMIO guard infrastructure.
+>> 
+>> Signed-off-by: Marc Zyngier <maz@kernel.org>
+>> ---
+>>  Documentation/virt/kvm/arm/index.rst      |  1 +
+>>  Documentation/virt/kvm/arm/mmio-guard.rst | 73 
+>> +++++++++++++++++++++++
+>>  2 files changed, 74 insertions(+)
+>>  create mode 100644 Documentation/virt/kvm/arm/mmio-guard.rst
+>> 
+>> diff --git a/Documentation/virt/kvm/arm/index.rst 
+>> b/Documentation/virt/kvm/arm/index.rst
+>> index 78a9b670aafe..e77a0ee2e2d4 100644
+>> --- a/Documentation/virt/kvm/arm/index.rst
+>> +++ b/Documentation/virt/kvm/arm/index.rst
+>> @@ -11,3 +11,4 @@ ARM
+>>     psci
+>>     pvtime
+>>     ptp_kvm
+>> +   mmio-guard
+>> diff --git a/Documentation/virt/kvm/arm/mmio-guard.rst 
+>> b/Documentation/virt/kvm/arm/mmio-guard.rst
+>> new file mode 100644
+>> index 000000000000..a5563a3e12cc
+>> --- /dev/null
+>> +++ b/Documentation/virt/kvm/arm/mmio-guard.rst
+>> @@ -0,0 +1,73 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +==============
+>> +KVM MMIO guard
+>> +==============
+>> +
+>> +KVM implements device emulation by handling translation faults to any
+>> +IPA range that is not contained a memory slot. Such translation fault
+>                                   ^ in                ^ a
+> 
+>> +is in most cases passed on to userspace (or in rare cases to the host
+>> +kernel) with the address, size and possibly data of the access for
+>> +emulation.
+>> +
+>> +Should the guest exit with an address that is not one that 
+>> corresponds
+>> +to an emulatable device, userspace may take measures that are not the
+>> +most graceful as far as the guest is concerned (such as terminating 
+>> it
+>> +or delivering a fatal exception).
+>> +
+>> +There is also an element of trust: by forwarding the request to
+>> +userspace, the kernel asumes that the guest trusts userspace to do 
+>> the
+> 
+> assumes
+> 
+>> +right thing.
+>> +
+>> +The KVM MMIO guard offers a way to mitigate this last point: a guest
+>> +can request that only certainly regions of the IPA space are valid as
+> 
+> certain
 
-On Fri, Jul 23, 2021 at 10:28 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> When the refcount is decreased to 0, the resource reclamation branch is
-> entered. Before CPU0 reaches the race point (1), CPU1 may obtain the
-> spinlock and traverse the rbtree to find 'root', see nilfs_lookup_root().
-> Although CPU1 will call refcount_inc() to increase the refcount, it is
-> obviously too late. CPU0 will release 'root' directly, CPU1 then accesses
-> 'root' and triggers UAF.
->
-> Use refcount_dec_and_lock() to ensure that both the operations of decrease
-> refcount to 0 and link deletion are lock protected eliminates this risk.
->
->      CPU0                      CPU1
-> nilfs_put_root():
->                             <-------- (1)
-> spin_lock(&nilfs->ns_cptree_lock);
-> rb_erase(&root->rb_node, &nilfs->ns_cptree);
-> spin_unlock(&nilfs->ns_cptree_lock);
->
-> kfree(root);
->                             <-------- use-after-free
->
-> ========================================================================
-> refcount_t: underflow; use-after-free.
-> WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
-> refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-> Modules linked in:
-> CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
-> RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-> ... ...
-> Call Trace:
->  __refcount_sub_and_test include/linux/refcount.h:283 [inline]
->  __refcount_dec_and_test include/linux/refcount.h:315 [inline]
->  refcount_dec_and_test include/linux/refcount.h:333 [inline]
->  nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
->  nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
->  nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
->  nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
->  generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
->  kill_block_super+0x4a/0x90 fs/super.c:1446
->  deactivate_locked_super+0x6a/0xb0 fs/super.c:335
->  deactivate_super+0x85/0x90 fs/super.c:366
->  cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
->  __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
->  task_work_run+0x8e/0x110 kernel/task_work.c:151
->  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
->  exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
->  syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
->  do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> There is no reproduction program, and the above is only theoretical
-> analysis.
->
-> Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Thanks, all corrections applied.
 
-Thank you for sending this patch.   I understand the purpose of
-the correction.   I feel we need more review for  the life cycle
-management of nilfs_root structure related to kobject.
+> 
+>> +MMIO. Only these regions will be handled as an MMIO, and any other
+>> +will result in an exception being delivered to the guest.
+>> +
+>> +This relies on a set of hypercalls defined in the KVM-specific range,
+>> +using the HVC64 calling convention.
+>> +
+>> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_INFO
+>> +
+>> +    ==============    ========    ================================
+>> +    Function ID:      (uint32)    0xC6000002
+>> +    Arguments:        none
+>> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
+>> +                      (uint64)    Protection Granule (PG) size in
+>> +		                  bytes (r0)
+>> +    ==============    ========    ================================
+>> +
+>> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_ENROLL
+>> +
+>> +    ==============    ========    ==============================
+>> +    Function ID:      (uint32)    0xC6000003
+>> +    Arguments:        none
+>> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
+>> +                                  RET_SUCCESS(0) (r0)
+>> +    ==============    ========    ==============================
+>> +
+>> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_MAP
+>> +
+>> +    ==============    ========    
+>> ======================================
+>> +    Function ID:      (uint32)    0xC6000004
+>> +    Arguments:        (uint64)    The base of the PG-sized IPA range
+>> +                                  that is allowed to be accessed as
+>> +				  MMIO. Must aligned to the PG size (r1)
+> 
+> align
 
-Anyway,  I would like to apply this patch itself.
+Hmmm. Ugly mix of tab and spaces. I have no idea what the norm
+is here, so I'll just put spaces. I'm sure someone will let me
+know if I'm wrong! ;-)
 
-Thanks,
-Ryusuke Konishi
+> 
+>> +                      (uint64)    Index in the MAIR_EL1 register
+>> +		                  providing the memory attribute that
+>> +				  is used by the guest (r2)
+>> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
+>> +                                  RET_SUCCESS(0) (r0)
+>> +    ==============    ========    
+>> ======================================
+>> +
+>> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_UNMAP
+>> +
+>> +    ==============    ========    
+>> ======================================
+>> +    Function ID:      (uint32)    0xC6000004
+> 
+> copy+paste error, should be 0xC6000005
 
+Gah, well cpotted.
 
-> ---
->  fs/nilfs2/the_nilfs.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
-> index 8b7b01a380ce..c8bfc01da5d7 100644
-> --- a/fs/nilfs2/the_nilfs.c
-> +++ b/fs/nilfs2/the_nilfs.c
-> @@ -792,14 +792,13 @@ nilfs_find_or_create_root(struct the_nilfs *nilfs, __u64 cno)
->
->  void nilfs_put_root(struct nilfs_root *root)
->  {
-> -       if (refcount_dec_and_test(&root->count)) {
-> -               struct the_nilfs *nilfs = root->nilfs;
-> +       struct the_nilfs *nilfs = root->nilfs;
->
-> -               nilfs_sysfs_delete_snapshot_group(root);
-> -
-> -               spin_lock(&nilfs->ns_cptree_lock);
-> +       if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
->                 rb_erase(&root->rb_node, &nilfs->ns_cptree);
->                 spin_unlock(&nilfs->ns_cptree_lock);
-> +
-> +               nilfs_sysfs_delete_snapshot_group(root);
->                 iput(root->ifile);
->
->                 kfree(root);
-> --
-> 2.25.1
->
+> 
+>> +    Arguments:        (uint64)    The base of the PG-sized IPA range
+>> +                                  that is forbidden to be accessed as
+> 
+> is now forbidden
+> 
+> or
+> 
+> was allowed
+> 
+> or just drop that part of the sentence because its covered by the "and
+> have been previously mapped" part. Something like
+> 
+> PG-sized IPA range aligned to the PG size which has been previously 
+> mapped
+> (r1)
+
+Picked the latter.
+
+Thanks again,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
