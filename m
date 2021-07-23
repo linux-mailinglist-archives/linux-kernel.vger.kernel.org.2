@@ -2,100 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298DC3D4044
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719023D4052
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhGWRr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 13:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhGWRr6 (ORCPT
+        id S229657AbhGWRxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 13:53:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229461AbhGWRxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 13:47:58 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA22C061575;
-        Fri, 23 Jul 2021 11:28:30 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id l4so3318958wrs.4;
-        Fri, 23 Jul 2021 11:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KpyA1TnBrUntqw/SDmyoOo3Qud+7hXORa6MtI7AfCIk=;
-        b=SuafVSjdnc5jaGZ9OJK0cNqyraTPQWIF0XL0PTwDt9aZaJjP7A26+UJN6vZc01j2pm
-         O3rYneVlGs+8NvOec1LL+bpyixK2Lu2jI/0o6sAUJi1mGO5akdFstwsqo9FsyVO2sByI
-         8kKOi3ZrLM4vlu7IAMv0EBPD+h6YHmz9IhtpFr6JqHRcoXjp6YsUdSJCO2H5wOr41PWk
-         3zEs4Y95w/b4ggE7tj6PBJ/kfQfXyZsR1x7nJ5a66kaYFhpsMUpR9iCSWYrbJyjJg3E2
-         qhsbhhi0CwrRPKiTG9OEdm9qOZQRJ6+xptHFVamdGH7nCjDmwB+O2/NJWbuKNFORxutr
-         OHpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KpyA1TnBrUntqw/SDmyoOo3Qud+7hXORa6MtI7AfCIk=;
-        b=GHwGzMSOcfCJncK3aMa+3L7vcJwgu3rqmuftAJ/Pleu/LWja1+CAKbPaZsHmPqRqOp
-         7iUAgI++6XsbHAtqxhj2L7Ey7dHgIWr1y/OOi6CMJcRPPgr6yM91cU1vGCRaZWfPzRHV
-         mk69iKkxYKnPv2koEC+un8uhDkJU0F6Dk/7tbAvl/sIJgbhfx4Lb2/wokvNWifs34DJn
-         5Lrpi52cjwA34hWn1LPIKr2qiO2oeLF8+/hiPgS+lHip6HiNOM6Qn2+3s/PcQ4weCKed
-         iMySZDILDbdV8JDo5S0jlq7ap5EkckI8qeHSQanUQI0jy7saQmem5P7XjSk5nbxZtuaq
-         pNWg==
-X-Gm-Message-State: AOAM531E+qUGnTTJLw0inV29Qir2qlTKy1rXRjtiBIcrLAulGqWMdp/L
-        4Tr48cKEBOe7FGggVbrFzXC0BBgfvmi+Rw==
-X-Google-Smtp-Source: ABdhPJyC3RcdGX3UlpEucnTB1XO50iNyIcEdGGzqeoxJEIYNc83Z2ItHLBeTU7d3OLa9kSqYA0gP9Q==
-X-Received: by 2002:a5d:4cce:: with SMTP id c14mr6669929wrt.258.1627064908905;
-        Fri, 23 Jul 2021 11:28:28 -0700 (PDT)
-Received: from lb01399.fkb.profitbricks.net (p200300ca572b5e05c4ffd69035d3b735.dip0.t-ipconnect.de. [2003:ca:572b:5e05:c4ff:d690:35d3:b735])
-        by smtp.gmail.com with ESMTPSA id c2sm33626146wrn.28.2021.07.23.11.28.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 11:28:28 -0700 (PDT)
-From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-To:     rjw@rjwysocki.net, daniel.lezcano@linaro.org,
-        pankaj.gupta.linux@gmail.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pankaj Gupta <pankaj.gupta@ionos.com>
-Subject: [PATCH] cpuidle: set poll_limit_ns out of if-else
-Date:   Fri, 23 Jul 2021 20:27:59 +0200
-Message-Id: <20210723182759.74491-1-pankaj.gupta.linux@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 23 Jul 2021 13:53:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627065226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qDfl7lnPQWkblwQK8pYBwCbgesEBTz4liDN9cx6q6Ac=;
+        b=M0OS1FsH1bJ2B0/vVTb1P8LwAoID5LWnV7AqgCsqw7B2jM9Kh4vtzPs6SIuBEqrdwC1UyZ
+        errxLVFA1NqDigAbJN7qxwDnm3Q+QOh3uN2QRp2FL0lNERDQgfv1jMat/y96ePP799mN85
+        ZMenDyxEnn9oeNQPLJv2SfsaoCdh1ag=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284-EAAxFMj5MoChXwhbfNV9ug-1; Fri, 23 Jul 2021 14:33:44 -0400
+X-MC-Unique: EAAxFMj5MoChXwhbfNV9ug-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA71DC73B6;
+        Fri, 23 Jul 2021 18:33:43 +0000 (UTC)
+Received: from xps13k.happyassassin.net (ovpn-112-93.phx2.redhat.com [10.3.112.93])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 985F45F705;
+        Fri, 23 Jul 2021 18:33:43 +0000 (UTC)
+From:   Adam Williamson <awilliam@redhat.com>
+To:     guro@fb.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] writeback, cgroup: remove wb from offline list before releasing refcnt
+Date:   Fri, 23 Jul 2021 11:33:43 -0700
+Message-Id: <20210723183343.10017-1-awilliam@redhat.com>
+In-Reply-To: <20210716201039.3762203-1-guro@fb.com>
+References: <20210716201039.3762203-1-guro@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pankaj Gupta <pankaj.gupta@ionos.com>
+Hi folks! I'm not subscribed to the list and am trying to send this
+using git-send-email, apologies for any weirdness related to that.
 
- Since poll_limit_ns is being set at the end of both if and else statement.
- Moving and setting it out at one place.
+Just wanted to confirm the issue that this patch attempts to address,
+and ask if it can be reviewed/moved along. I look after Fedora's
+openQA automated test instance, and in tests of recent Fedora Rawhide
+composes, we're seeing at least one failure per compose that's caused
+by this crash (it usually prevents the system shutting down or
+rebooting correctly in a test which requires that to happen).
 
-Signed-off-by: Pankaj Gupta <pankaj.gupta@ionos.com>
----
- drivers/cpuidle/governors/haltpoll.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I can't actually confirm the fix as I can't really easily change our
+tests to run on a non-official kernel build, and our kernel maintainer
+(reasonably) says he won't backport the patch until it's at least got
+some review. But I'm definitely seeing the problem!
 
-diff --git a/drivers/cpuidle/governors/haltpoll.c b/drivers/cpuidle/governors/haltpoll.c
-index cb2a96eafc02..7d0e95bc94f3 100644
---- a/drivers/cpuidle/governors/haltpoll.c
-+++ b/drivers/cpuidle/governors/haltpoll.c
-@@ -90,7 +90,6 @@ static void adjust_poll_limit(struct cpuidle_device *dev, u64 block_ns)
- 		if (val > guest_halt_poll_ns)
- 			val = guest_halt_poll_ns;
- 
--		dev->poll_limit_ns = val;
- 	} else if (block_ns > guest_halt_poll_ns &&
- 		   guest_halt_poll_allow_shrink) {
- 		unsigned int shrink = guest_halt_poll_shrink;
-@@ -100,8 +99,9 @@ static void adjust_poll_limit(struct cpuidle_device *dev, u64 block_ns)
- 			val = 0;
- 		else
- 			val /= shrink;
--		dev->poll_limit_ns = val;
- 	}
-+
-+	dev->poll_limit_ns = val;
- }
- 
- /**
+Thanks folks.
 -- 
-2.25.1
+Adam Williamson
+Fedora QA
+IRC: adamw | Twitter: adamw_ha
+https://www.happyassassin.net
 
