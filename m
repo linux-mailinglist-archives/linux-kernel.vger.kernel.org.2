@@ -2,186 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1502D3D344D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 07:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE2F3D3456
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 07:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbhGWFLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:11:18 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49274 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231949AbhGWFLR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:11:17 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N5aPQV039717;
-        Fri, 23 Jul 2021 01:51:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=XkZ3m0PigwT5WyRPg6Lt98un09CnDDNjG2ReWBa7yCQ=;
- b=AXzBLmP6qNsPlrAwS7I9oGm+TMsdG5ySnXn17dpRUk/xzWPLCT0mJUQEXNELOq6po+ob
- 183ynsuo1uJKG/f8J8XAJqQDmwniuqpvVHG5eDrvNAIhPSu9YoZZKBHAeOHstIYLnXWd
- xqvzSmG0ETHzPNnqgHrNtgyKDIxAkEF+UzWXseM3aWtGIaWkEAtwQ4xciTFqg1SekOEy
- nXB1sUxL78ayCzbuE0Z3SamcCKG5/HLTyDYTsX1uAuYmJ/ikqG5AjDn/FmvqOVOMfOFl
- x0OWV+3k3dcSaNpggRimUZ4IUG2k7GEH4IHm/A9ok2q1BpjOOmzgpwNU3jHvmUDE5ZG6 Yg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39yq0w1cbm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 01:51:29 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N5pBV8032258;
-        Fri, 23 Jul 2021 05:51:28 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 39xhx4917w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 05:51:27 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N5pO3c17891682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 05:51:24 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD84542042;
-        Fri, 23 Jul 2021 05:51:24 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5141F4203F;
-        Fri, 23 Jul 2021 05:51:24 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 05:51:24 +0000 (GMT)
-Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Claire Chang <tientzu@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20210720133826.9075-1-will@kernel.org>
- <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
- <20210723031252.655d6a83.pasic@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <62da6479-a000-0b1a-d251-c4e27616fbc2@de.ibm.com>
-Date:   Fri, 23 Jul 2021 07:51:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210723031252.655d6a83.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: JDL3fP8eBNYXkkJGbBGOgcZFzzxpE9S3
-X-Proofpoint-ORIG-GUID: JDL3fP8eBNYXkkJGbBGOgcZFzzxpE9S3
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S233908AbhGWFNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:13:25 -0400
+Received: from ozlabs.org ([203.11.71.1]:54589 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231949AbhGWFNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:13:23 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GWJR6750Tz9sV8;
+        Fri, 23 Jul 2021 15:53:54 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1627019636;
+        bh=WoPtSDrgd4+nxPehyUOY84R2GRQnSOZORJvc76I7vwM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aYH/JWjGocUWZEargyee8KH0ndqgOQpy3Wdt77O6xRgm6dmqbb017efqrvnPCUSOr
+         EfLMpHJsOSJV7GiiH/gDPCCMtOwKdsEoncdX1mm3HYuKO0CsADxC9oVZiW0W7gTIHy
+         HmP2Ap3h7xOpqd+ughmXB2YiePpM2rSDvyzLEJYOmshdQcW1nzUfGS2tXiWvCAW66B
+         Mu9NMpfGrRovozg7X/2lczs4eEnp80l+ECvPvEGLdFWkE6FFPVvue4jnXjGthXfftx
+         cksk9FXGHRVHzlosmFDMNkBenhQ7AT/Zg2XFMHUdtRNSHLLKb4hzYLf0zjSFAY3OkH
+         YCfAjqPl9aCJA==
+Date:   Fri, 23 Jul 2021 15:53:54 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Vinod Koul <vkoul@kernel.org>, Greg KH <greg@kroah.com>
+Cc:     Dave Jiang <dave.jiang@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: linux-next: manual merge of the dmaengine tree with the driver-core
+ tree
+Message-ID: <20210723155354.082a62d8@canb.auug.org.au>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-22_16:2021-07-22,2021-07-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
- bulkscore=0 phishscore=0 clxscore=1015 adultscore=0 mlxscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230031
+Content-Type: multipart/signed; boundary="Sig_/P=0+wHJOhCum63MsBUwgCR/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/P=0+wHJOhCum63MsBUwgCR/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 23.07.21 03:12, Halil Pasic wrote:
-> On Thu, 22 Jul 2021 21:22:58 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-> 
->> On 20.07.21 15:38, Will Deacon wrote:
->>> Hi again, folks,
->>>
->>> This is version two of the patch series I posted yesterday:
->>>
->>>     https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
->>>
->>> The only changes since v1 are:
->>>
->>>     * Squash patches 2 and 3, amending the commit message accordingly
->>>     * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
->>>
->>> I'd usually leave it a bit longer between postings, but since this fixes
->>> issues with patches in -next I thought I'd spin a new version immediately.
->>>
->>> Cheers,
->>
->> FWIW, I just bisected virtio-errors with secure execution mode
->> qemu-system-s390x: virtio-serial-bus: Unexpected port id 4205794771 for device virtio-serial0.0
->>
->> to
->> commit 903cd0f315fe426c6a64c54ed389de0becb663dc
->> Author: Claire Chang <tientzu@chromium.org>
->> Date:   Thu Jun 24 23:55:20 2021 +0800
->>
->>        swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
->>
->> Unfortunately this patch series does NOT fix this issue, so it seems that even more
->> things are broken.
->>
->> Any idea what else might be broken?
-> 
-> I've done some debugging, and I think I know what is going on. Since
-> that commit we need to set force_swiotlb before the swiotlb itself is
-> initialized. So the patch below should fix the problem.
-> 
-> --------------------8<-------------------------------------
-> 
-> From: Halil Pasic <pasic@linux.ibm.com>
-> Date: Fri, 23 Jul 2021 02:57:06 +0200
-> Subject: [PATCH 1/1] s390/pv: fix the forcing of the swiotlb
-> 
-> Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
-> swiotlb data bouncing") if code sets swiotlb_force it needs to do so
-> before the swiotlb is initialised. Otherwise
-> io_tlb_default_mem->force_bounce will not get set to true, and devices
-> that use (the default) swiotlb will not bounce  despite switolb_force
-> having the value of SWIOTLB_FORCE.
-> 
-> Let us restore swiotlb functionality for PV by fulfilling this new
-> requirement.
-> 
-I would add:
-Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
-as this patch breaks things
-and
-Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
+Today's linux-next merge of the dmaengine tree got a conflict in:
 
-to make the s390 init code more robust in case people start backporting things.
+  drivers/dma/idxd/sysfs.c
 
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+between commit:
 
-I can confirm that this fixes the problem. This also makes sense codewise.
+  fc7a6209d571 ("bus: Make remove callback return void")
 
-Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+from the driver-core tree and commit:
 
-Konrad, Heiko, Vasily, any preference which tree this goes? I think s390
-would be easiest, but that requires that the patches in the swiotlb tree have
-fixed commit IDs.
+  d9e5481fca74 ("dmaengine: dsa: move dsa_bus_type out of idxd driver to st=
+andalone")
 
-> ---
->   arch/s390/mm/init.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 8ac710de1ab1..07bbee9b7320 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -186,9 +186,9 @@ static void pv_init(void)
->   		return;
->   
->   	/* make sure bounce buffers are shared */
-> +	swiotlb_force = SWIOTLB_FORCE;
->   	swiotlb_init(1);
->   	swiotlb_update_mem_attributes();
-> -	swiotlb_force = SWIOTLB_FORCE;
->   }
->   
->   void __init mem_init(void)
-> 
+from the dmaengine tree.
+
+I fixed it up (the latter moved the code updtaed by the former,
+so I added the following merge fix patch) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 23 Jul 2021 15:49:33 +1000
+Subject: [PATCH] fixup for "bus: Make remove callback return void"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/dma/idxd/bus.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/dma/idxd/bus.c b/drivers/dma/idxd/bus.c
+index 02837f0fb3e4..6f84621053c6 100644
+--- a/drivers/dma/idxd/bus.c
++++ b/drivers/dma/idxd/bus.c
+@@ -58,14 +58,13 @@ static int idxd_config_bus_probe(struct device *dev)
+ 	return idxd_drv->probe(idxd_dev);
+ }
+=20
+-static int idxd_config_bus_remove(struct device *dev)
++static void idxd_config_bus_remove(struct device *dev)
+ {
+ 	struct idxd_device_driver *idxd_drv =3D
+ 		container_of(dev->driver, struct idxd_device_driver, drv);
+ 	struct idxd_dev *idxd_dev =3D confdev_to_idxd_dev(dev);
+=20
+ 	idxd_drv->remove(idxd_dev);
+-	return 0;
+ }
+=20
+ struct bus_type dsa_bus_type =3D {
+--=20
+2.30.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/P=0+wHJOhCum63MsBUwgCR/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD6WXIACgkQAVBC80lX
+0Gx2pQf/ZDmRQIMNu1RVTAAIb7KnxLKSjFH82TdCRkxZ7EPczRcXLstR1JNpU3q7
+0Ubfs3KEe+vQ9Ut5F6OlGXC7jHZjaxjtNhFbbMHl1bmxsYpH0KxOM5q/qepclReE
+LJAWmvBj1yRgMI8KKnXg8YwxjR9EoF0gStCrU56XSnKzwFXe7E6ArcY/YgEEtGfu
+8P97TKwkExm3bTiUwTo81BT3aNE5ebI7RuFVPaN58v1UJysqb6w+Pyj10TTSxcRK
+ZsNAQHqhGQSyj9FPI09EswV5+tuvBoZf5/gOeJ9V6OJENAAH1A7c6cRCxvhyWdBq
+7iNY5DUIiRVeHWp55nJ8mOJmcYiJpA==
+=MgDe
+-----END PGP SIGNATURE-----
+
+--Sig_/P=0+wHJOhCum63MsBUwgCR/--
