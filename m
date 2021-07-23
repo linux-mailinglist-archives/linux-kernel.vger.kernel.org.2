@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273A33D3E42
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7AB3D3E49
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhGWQc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41910 "EHLO mail.kernel.org"
+        id S231231AbhGWQd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:33:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229686AbhGWQc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:32:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6566D60EAF;
-        Fri, 23 Jul 2021 17:13:30 +0000 (UTC)
+        id S229492AbhGWQdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:33:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A46A960EAF;
+        Fri, 23 Jul 2021 17:14:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627060410;
-        bh=2VYOvdLPz0wCDA2UPL7umAdWrABmYwHgrszriT+XD44=;
+        s=k20201202; t=1627060469;
+        bh=CYlpIedcz47SMki4XJaCg60Cl6KIGEWKSosuQM3Da5o=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fAqCMo3RXdkXXFegmieatPGCUCJWvQzLKS2m2ifIG5NjK8yInV5Y4sA4/nwBAtaWF
-         uPbyTCl07V+sSq88bJwhkYeq9eAS8kbzQkgbq980eCqxO45l/4zs3s3DHSFmXoeUJq
-         YIbh01H/E/8z53VBaD5YekJlDmF7SEWNoMuugb2M9Zv1CdDD+MFir1dWKugLgFt+Ws
-         u3Kzwqn31hrAu89sIo+CEO5a3ZRB5oMWXnXAjQEBl+cMr3kBCBCZJYJyzO9pwcDJC4
-         +3ToJfx+KvU89i/QA0sXsLS1mwvAVOV7dMRBenLhmbYDI29dzNXUQorAzbNVMg33EG
-         BlQ9xO8Y9mKPg==
-Date:   Fri, 23 Jul 2021 10:13:29 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyaprateek2357@gmail.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Satya Tangirala <satyat@google.com>
-Subject: Re: [PATCH v4 5/9] ufshcd: handle error from blk_ksm_register()
-Message-ID: <YPr4ubrFPQ1Pd5mE@gmail.com>
-References: <20210707052943.3960-1-satyaprateek2357@gmail.com>
- <20210707052943.3960-6-satyaprateek2357@gmail.com>
+        b=bYTpV6vr47MGtABBYcSiDYzO8bV0M74JyBnuTlcKTdYNO0dRbD2LXkAAhPy8Xm5BU
+         0ltitCpD2RVzy2y5Ah7KfrmLZUw1hzTHseWj3+GFpiTH0pfXI2qzw7dEqAAbPjb/ng
+         cu9gLDlEU4bTL+jDrdn15dhsq7zud4srBnx6t/c3wu61IujDJuE9fAn4bdG+QxdNDD
+         01iYQ9caSh9ow3XrIaQ2mcFwzu2keOCxXp1t7KlCeCbQitDsjv7DEjsKSLM9WZMBRu
+         IloX3G0vnS3G8UbhTQ2xMy9p31cKHOduXge6fQ368UR3fYN3NBd6EqOKEWciz94gC/
+         81iraSVD2HgYg==
+Date:   Fri, 23 Jul 2021 18:14:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Michael.Hennerich@analog.com, alexandru.ardelean@analog.com,
+        jic23@kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
+Subject: Re: [PATCH v2 2/2] iio: accel: Add driver support for ADXL355
+Message-ID: <20210723171422.GK5221@sirena.org.uk>
+References: <20210722062155.32998-1-puranjay12@gmail.com>
+ <20210722062155.32998-3-puranjay12@gmail.com>
+ <20210723181022.000032bd@Huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="++alDQ2ROsODg1x+"
 Content-Disposition: inline
-In-Reply-To: <20210707052943.3960-6-satyaprateek2357@gmail.com>
+In-Reply-To: <20210723181022.000032bd@Huawei.com>
+X-Cookie: Integrity has no need for rules.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 10:29:39PM -0700, Satya Tangirala wrote:
-> From: Satya Tangirala <satyat@google.com>
-> 
-> Handle any error from blk_ksm_register() in the callers. Previously,
-> the callers ignored the return value because blk_ksm_register() wouldn't
-> fail as long as the request_queue didn't have integrity support too, but
-> as this is no longer the case, it's safer for the callers to just handle
-> the return value appropriately.
-> 
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  drivers/scsi/ufs/ufshcd-crypto.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
-> index d70cdcd35e43..0fcf9d6752f8 100644
-> --- a/drivers/scsi/ufs/ufshcd-crypto.c
-> +++ b/drivers/scsi/ufs/ufshcd-crypto.c
-> @@ -233,6 +233,15 @@ void ufshcd_init_crypto(struct ufs_hba *hba)
->  void ufshcd_crypto_setup_rq_keyslot_manager(struct ufs_hba *hba,
->  					    struct request_queue *q)
->  {
-> -	if (hba->caps & UFSHCD_CAP_CRYPTO)
-> -		blk_ksm_register(&hba->ksm, q);
-> +	if (hba->caps & UFSHCD_CAP_CRYPTO) {
-> +		/*
-> +		 * This WARN_ON should never trigger since &hba->ksm won't be
-> +		 * "empty" (i.e. will support at least 1 crypto capability), a
-> +		 * UFS device's request queue doesn't support integrity, and
-> +		 * it also satisfies all the block layer constraints (i.e.
-> +		 * supports SG gaps, doesn't have chunk sectors, has a
-> +		 * sufficiently large supported max_segments per bio)
-> +		 */
-> +		WARN_ON(!blk_ksm_register(&hba->ksm, q));
-> +	}
 
-I guess this looks okay, but I think the comment should be a bit more concise
-and not so tied to the current implementation details, like:
+--++alDQ2ROsODg1x+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-                /*
-                 * This WARN_ON should never trigger since at least one of the
-                 * declared crypto capabilities should be compatible with the
-                 * UFS device, otherwise the UFS host driver shouldn't have
-                 * declared crypto support at all.
-                 */
+On Fri, Jul 23, 2021 at 06:10:22PM +0100, Jonathan Cameron wrote:
 
-Likewise for the similar MMC crypto patch.
+> @Mark.  This has come up a few times recently.  Are we now safe to assume
+> that regmap will always copy data when used with SPI and hence we no
+> longer need to ensure DMA safe buffers?  =20
 
-- Eric
+Only for single register I/O, I'd not assume that for things like raw
+I/O.
+
+Note that my name is spelt Mark.
+
+--++alDQ2ROsODg1x+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD6+O0ACgkQJNaLcl1U
+h9CqMgf9G6rh8/mDkku74x+s5FbZRx5bRl6DTaQU9k2ZoYnD7/AvmvmvbTCqouTE
+WggjQ3Xvayj6Lwjzbz95WXm/Ovc7bbnXHHWWrZecG4Q+WX7VhcwSKsslzILp686q
+4XDUpWkZYJTozBB4rkTIzaqzINC0egM3NjTZ/HASh055ttt9xXUVc6QE3Gi0b1hB
+PMH+1jHZIIW/OVJ8PKbFLS49QQTnTFe+2psoV54N39vEC2bCo6dtaP2qkICzkpY2
+TEMZwHOdRrIfhAkTzpjaysV63VcJ3Beku5Azp2BVrW3oyoqWpGKQ38jK8inGYKGz
+xwUU6LfgYze0IJaRrn6sslRfaLc3+Q==
+=yk9t
+-----END PGP SIGNATURE-----
+
+--++alDQ2ROsODg1x+--
