@@ -2,102 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A0B3D3161
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB133D3164
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbhGWBH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:07:58 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7045 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhGWBH5 (ORCPT
+        id S233122AbhGWBKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:10:39 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12240 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230318AbhGWBKi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:07:57 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GWBsD3fC8zYfQr;
-        Fri, 23 Jul 2021 09:42:40 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 09:48:29 +0800
-Received: from ubuntu1804.huawei.com (10.67.174.174) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+        Thu, 22 Jul 2021 21:10:38 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GWBwL0q2xz1CMrc;
+        Fri, 23 Jul 2021 09:45:22 +0800 (CST)
+Received: from [10.174.177.180] (10.174.177.180) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 23 Jul 2021 09:48:29 +0800
-From:   Li Huafei <lihuafei1@huawei.com>
-To:     <jolsa@kernel.org>, <acme@kernel.org>
-CC:     <peterz@infradead.org>, <mark.rutland@arm.com>, <mingo@redhat.com>,
-        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
-        <mliska@suse.cz>, <irogers@google.com>, <dzhu@wavecomp.com>,
-        <rickyman7@gmail.com>, <yao.jin@linux.intel.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhangjinhao2@huawei.com>
-Subject: [PATCH] perf env: Normalize aarch64.* to arm64 in normalize_arch()
-Date:   Fri, 23 Jul 2021 09:49:44 +0800
-Message-ID: <20210723014944.214887-1-lihuafei1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+ 15.1.2176.2; Fri, 23 Jul 2021 09:51:10 +0800
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Chris Clayton <chris2553@googlemail.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Boqun Feng <boqun.feng@gmail.com>, <paulmck@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>, Chris Rankin <rankincj@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>
+References: <c9fd1311-662c-f993-c8ef-54af036f2f78@googlemail.com>
+ <5812280.fcLxn8YiTP@natalenko.name> <YPVtBBumSTMKGuld@casper.infradead.org>
+ <2237123.PRLUojbHBq@natalenko.name>
+ <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
+ <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
+ <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
+ <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
+ <YPlmMnZKgkcLderp@casper.infradead.org> <YPlyHF5eNDiTMKzq@kroah.com>
+ <YPl5+PkfBPI0pdHn@kroah.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
+Date:   Fri, 23 Jul 2021 09:51:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema753-chm.china.huawei.com (10.1.198.195)
+In-Reply-To: <YPl5+PkfBPI0pdHn@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.180]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On my aarch64 big endian machine, the perf annotate does not work.
+On 2021/7/22 22:00, Greg KH wrote:
+> On Thu, Jul 22, 2021 at 03:26:52PM +0200, Greg KH wrote:
+>> On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
+>>> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
+>>>> Thanks for reviewing,
+>>>>
+>>>> What I have deduced from the dmesg  is:
+>>>> In function do_swap_page,
+>>>> after invoking
+>>>> 3385        si = get_swap_device(entry); /* rcu_read_lock */
+>>>> and before
+>>>> 3561    out:
+>>>> 3562        if (si)
+>>>> 3563            put_swap_device(si);
+>>>> The thread got scheduled out in
+>>>> 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
+>>>>
+>>>> I am only familiar with Linux RCU subsystem, hope mm people can solve our
+>>>> confusions.
+>>>
+>>> I don't understamd why you're still talking.  The problem is understood.
+>>> You need to revert the unnecessary backport of 2799e77529c2 and
+>>> 2efa33fc7f6e
+>>
+>> Sorry for the delay, will go do so in a minute...
+> 
+> Both now reverted from 5.10.y and 5.13.y.
+> 
 
- # perf annotate
-  Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (253 samples, percent: local period)
- --------------------------------------------------------------------------------------------------------------
-  Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (1 samples, percent: local period)
- ------------------------------------------------------------------------------------------------------------
-  Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (47 samples, percent: local period)
- -------------------------------------------------------------------------------------------------------------
- ...
+I browsed my previous backport notifying email and found that these two patches are also
+backported into 5.12. And it seems it's missed.
 
-This is because the arch_find() function uses the normalized architecture
-name provided by normalize_arch(), and my machine's architecture name
-aarch64_be is not normalized to arm64.  Like other architectures such as
-arm and powerpc, we can fuzzy match the architecture names associated with
-aarch64.* and normalize them.
+Thanks.
 
-Fixes: c34df25b40c2 ("perf annotate: Add symbol__annotate function")
-Signed-off-by: Li Huafei <lihuafei1@huawei.com>
----
- tools/perf/util/annotate.c | 4 +++-
- tools/perf/util/env.c      | 2 +-
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index aa04a3655236..cb280de3369f 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -2192,8 +2192,10 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
- 		return errno;
- 
- 	args.arch = arch = arch__find(arch_name);
--	if (arch == NULL)
-+	if (arch == NULL) {
-+		pr_err("%s: unsupported arch %s\n", __func__, arch_name);
- 		return ENOTSUP;
-+	}
- 
- 	if (parch)
- 		*parch = arch;
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index cec2e6cad8aa..a91da1e9b201 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -349,7 +349,7 @@ static const char *normalize_arch(char *arch)
- 		return "x86";
- 	if (!strcmp(arch, "sun4u") || !strncmp(arch, "sparc", 5))
- 		return "sparc";
--	if (!strcmp(arch, "aarch64") || !strcmp(arch, "arm64"))
-+	if (!strncmp(arch, "aarch64", 7) || !strcmp(arch, "arm64"))
- 		return "arm64";
- 	if (!strncmp(arch, "arm", 3) || !strcmp(arch, "sa110"))
- 		return "arm";
--- 
-2.17.1
+> thanks,
+> 
+> greg k-h
+> .
+> 
 
