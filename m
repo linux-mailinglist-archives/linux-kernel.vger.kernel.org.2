@@ -2,123 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079B53D3153
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15643D3156
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbhGWAxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:53:49 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:36842 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232892AbhGWAxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:53:48 -0400
-Received: from BC-Mail-Ex27.internal.baidu.com (unknown [172.31.51.21])
-        by Forcepoint Email with ESMTPS id B6466AD42759CA2F2F41;
-        Fri, 23 Jul 2021 09:34:19 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex27.internal.baidu.com (172.31.51.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 23 Jul 2021 09:34:19 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
- BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
- 15.01.2308.014; Fri, 23 Jul 2021 09:34:19 +0800
-From:   "Cai,Huoqing" <caihuoqing@baidu.com>
-To:     "Derrick, Jonathan" <jonathan.derrick@intel.com>
-CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/2] PCI: vmd: Make use of PCI_DEVICE_DATA() helper
- function
-Thread-Topic: [PATCH 2/2] PCI: vmd: Make use of PCI_DEVICE_DATA() helper
- function
-Thread-Index: AQHXfuz06iWan68U8E67FndxP9SPDKtOrgaAgAEY9JA=
-Date:   Fri, 23 Jul 2021 01:34:19 +0000
-Message-ID: <e44664317c2949e794497dc5f903f2a8@baidu.com>
-References: <20210722112954.477-1-caihuoqing@baidu.com>
- <20210722112954.477-3-caihuoqing@baidu.com>
- <f2aeb584-6293-78ce-e5aa-4bde34045a86@intel.com>
-In-Reply-To: <f2aeb584-6293-78ce-e5aa-4bde34045a86@intel.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.18.18.94]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S233098AbhGWAy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232892AbhGWAyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 20:54:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 330B760EBC;
+        Fri, 23 Jul 2021 01:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627004100;
+        bh=UNd3bIWUcQBPGw/tzJPpMP3Z/nPcaQLqw6OwZTTTgfs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=qLd7Z/FlQixU0m773qDvCDIxJ3BIVc7U/nUxqSYk0Vw5Vo036BJbhocQbQ26sGsJv
+         lT7FtosxWaAnRFReopXkbi/PSG1m+dsxUI49/VSWmtq3vYbp4kRxkxkPnYBoVLtxgb
+         u+MGxYmM6M1aruLrCC3vBjzrLG0qzcNaQq47Kh3WyTzGziFGzoVIK/8i0jeHDTSjGr
+         EJZODjQ2S5Xrp/RxGvIm/pGF1xAeas0VbdTtxY+MIQwSVC20+BZrVQXNSE8oWNkKy/
+         rNEAEWFoeQMwBR7yuMHmz+Crn1tomhMmJuO6LXw2lRVdMYkPaWeh2B7hpS95C559Cm
+         hD3sf8zHppkbg==
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: change fiemap way in printing
+ compression chunk
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+References: <20210722211921.3791312-1-daeho43@gmail.com>
+ <dc7776c7-2694-5eea-fe9a-12191c833389@kernel.org>
+ <CACOAw_wznnE_pMh_9aVYJdyF-JUn46AZ28hh_GSWcxSJYWsjkw@mail.gmail.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <3154e8b2-afa7-3fea-b671-09e267f98e2e@kernel.org>
+Date:   Fri, 23 Jul 2021 09:34:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <CACOAw_wznnE_pMh_9aVYJdyF-JUn46AZ28hh_GSWcxSJYWsjkw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8sDQoJUEFUQ0hbMi8yXSBoYXMgc29tZSBleHRyYSBpbmRlbnRhdGlvbiwgcGxlYXNlIGRv
-bid0IGFwcGx5IGl0ICwgDQpJJ2xsIHNlbmQgUEFUQ0ggVjIuDQpUSFgNCg0KLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCkZyb206IERlcnJpY2ssIEpvbmF0aGFuIDxqb25hdGhhbi5kZXJyaWNr
-QGludGVsLmNvbT4gDQpTZW50OiAyMDIx5bm0N+aciDIz5pelIDA6NDYNClRvOiBDYWksSHVvcWlu
-ZyA8Y2FpaHVvcWluZ0BiYWlkdS5jb20+DQpDYzogbGludXgtcGNpQHZnZXIua2VybmVsLm9yZzsg
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IFtQQVRDSCAyLzJdIFBD
-STogdm1kOiBNYWtlIHVzZSBvZiBQQ0lfREVWSUNFX0RBVEEoKSBoZWxwZXIgZnVuY3Rpb24NCg0K
-SGVsbG8sDQoNCk9uIDcvMjIvMjAyMSA1OjI5IEFNLCBDYWkgSHVvcWluZyB3cm90ZToNCj4gV2Ug
-Y291bGQgbWFrZSB1c2Ugb2YgUENJX0RFVklDRV9EQVRBKCkgaGVscGVyIGZ1bmN0aW9uDQo+IA0K
-PiBTaWduZWQtb2ZmLWJ5OiBDYWkgSHVvcWluZyA8Y2FpaHVvcWluZ0BiYWlkdS5jb20+DQo+IC0t
-LQ0KPiAgZHJpdmVycy9wY2kvY29udHJvbGxlci92bWQuYyB8IDM4ICsrKysrKysrKysrKysrKysr
-Ky0tLS0tLS0tLS0tLS0tLS0tLQ0KPiAgaW5jbHVkZS9saW51eC9wY2lfaWRzLmggICAgICB8ICAy
-ICsrDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDE5IGRlbGV0aW9ucygt
-KQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvdm1kLmMgDQo+IGIv
-ZHJpdmVycy9wY2kvY29udHJvbGxlci92bWQuYyBpbmRleCBlM2ZjZGZlYzU4YjMuLjU2NTY4MWVk
-MDBhMSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9wY2kvY29udHJvbGxlci92bWQuYw0KPiArKysg
-Yi9kcml2ZXJzL3BjaS9jb250cm9sbGVyL3ZtZC5jDQo+IEBAIC04NTksMjUgKzg1OSwyNSBAQCBz
-dGF0aWMgaW50IHZtZF9yZXN1bWUoc3RydWN0IGRldmljZSAqZGV2KSAgDQo+IHN0YXRpYyBTSU1Q
-TEVfREVWX1BNX09QUyh2bWRfZGV2X3BtX29wcywgdm1kX3N1c3BlbmQsIHZtZF9yZXN1bWUpOw0K
-PiAgDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IHBjaV9kZXZpY2VfaWQgdm1kX2lkc1tdID0gew0K
-PiAtICAgICAgIHtQQ0lfREVWSUNFKFBDSV9WRU5ET1JfSURfSU5URUwsIFBDSV9ERVZJQ0VfSURf
-SU5URUxfVk1EXzIwMUQpLA0KPiAtICAgICAgICAgICAgICAgLmRyaXZlcl9kYXRhID0gVk1EX0ZF
-QVRfSEFTX01FTUJBUl9TSEFET1dfVlNDQVAsfSwNCj4gLSAgICAgICB7UENJX0RFVklDRShQQ0lf
-VkVORE9SX0lEX0lOVEVMLCBQQ0lfREVWSUNFX0lEX0lOVEVMX1ZNRF8yOEMwKSwNCj4gLSAgICAg
-ICAgICAgICAgIC5kcml2ZXJfZGF0YSA9IFZNRF9GRUFUX0hBU19NRU1CQVJfU0hBRE9XIHwNCj4g
-LSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBWTURfRkVBVF9IQVNfQlVTX1JFU1RSSUNU
-SU9OUyB8DQo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVk1EX0ZFQVRfQ0FOX0JZ
-UEFTU19NU0lfUkVNQVAsfSwNCj4gLSAgICAgICB7UENJX0RFVklDRShQQ0lfVkVORE9SX0lEX0lO
-VEVMLCAweDQ2N2YpLA0KPiAtICAgICAgICAgICAgICAgLmRyaXZlcl9kYXRhID0gVk1EX0ZFQVRf
-SEFTX01FTUJBUl9TSEFET1dfVlNDQVAgfA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIFZNRF9GRUFUX0hBU19CVVNfUkVTVFJJQ1RJT05TIHwNCj4gLSAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBWTURfRkVBVF9PRkZTRVRfRklSU1RfVkVDVE9SLH0sDQo+IC0gICAgICAg
-e1BDSV9ERVZJQ0UoUENJX1ZFTkRPUl9JRF9JTlRFTCwgMHg0YzNkKSwNCj4gLSAgICAgICAgICAg
-ICAgIC5kcml2ZXJfZGF0YSA9IFZNRF9GRUFUX0hBU19NRU1CQVJfU0hBRE9XX1ZTQ0FQIHwNCj4g
-LSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBWTURfRkVBVF9IQVNfQlVTX1JFU1RSSUNU
-SU9OUyB8DQo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVk1EX0ZFQVRfT0ZGU0VU
-X0ZJUlNUX1ZFQ1RPUix9LA0KPiAtICAgICAgIHtQQ0lfREVWSUNFKFBDSV9WRU5ET1JfSURfSU5U
-RUwsIFBDSV9ERVZJQ0VfSURfSU5URUxfVk1EXzlBMEIpLA0KPiAtICAgICAgICAgICAgICAgLmRy
-aXZlcl9kYXRhID0gVk1EX0ZFQVRfSEFTX01FTUJBUl9TSEFET1dfVlNDQVAgfA0KPiAtICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIFZNRF9GRUFUX0hBU19CVVNfUkVTVFJJQ1RJT05TIHwN
-Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBWTURfRkVBVF9PRkZTRVRfRklSU1Rf
-VkVDVE9SLH0sDQo+IC0gICAgICAgezAsfQ0KPiArICAgICAgIHsgUENJX0RFVklDRV9EQVRBKElO
-VEVMLCBWTURfMjAxRCwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICBWTURfRkVBVF9IQVNf
-TUVNQkFSX1NIQURPV19WU0NBUCkgfSwNCj4gKyAgICAgICB7IFBDSV9ERVZJQ0VfREFUQShJTlRF
-TCwgVk1EXzI4QzAsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgVk1EX0ZFQVRfSEFTX01F
-TUJBUl9TSEFET1cgfA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgIFZNRF9GRUFUX0hBU19C
-VVNfUkVTVFJJQ1RJT05TIHwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICBWTURfRkVBVF9D
-QU5fQllQQVNTX01TSV9SRU1BUCkgfSwNCj4gKyAgICAgICB7IFBDSV9ERVZJQ0VfREFUQShJTlRF
-TCwgVk1EXzQ2N0YsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgVk1EX0ZFQVRfSEFTX01F
-TUJBUl9TSEFET1dfVlNDQVAgfA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgIFZNRF9GRUFU
-X0hBU19CVVNfUkVTVFJJQ1RJT05TIHwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICBWTURf
-RkVBVF9PRkZTRVRfRklSU1RfVkVDVE9SKSB9LA0KPiArICAgICAgIHsgUENJX0RFVklDRV9EQVRB
-KElOVEVMLCBWTURfNEMzRCwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICBWTURfRkVBVF9I
-QVNfTUVNQkFSX1NIQURPV19WU0NBUCB8DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgVk1E
-X0ZFQVRfSEFTX0JVU19SRVNUUklDVElPTlMgfA0KPiArICAgICAgICAgICAgICAgICAgICAgICAg
-IFZNRF9GRUFUX09GRlNFVF9GSVJTVF9WRUNUT1IpIH0sDQo+ICsgICAgICAgeyBQQ0lfREVWSUNF
-X0RBVEEoSU5URUwsIFZNRF85QTBCLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgIFZNRF9G
-RUFUX0hBU19NRU1CQVJfU0hBRE9XX1ZTQ0FQIHwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICBWTURfRkVBVF9IQVNfQlVTX1JFU1RSSUNUSU9OUyB8DQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgVk1EX0ZFQVRfT0ZGU0VUX0ZJUlNUX1ZFQ1RPUikgfSwNCj4gKyAgICAgICB7IH0sDQo+
-ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShwY2ksIHZtZF9pZHMpOw0KPiAgDQo+IGRpZmYg
-LS1naXQgYS9pbmNsdWRlL2xpbnV4L3BjaV9pZHMuaCBiL2luY2x1ZGUvbGludXgvcGNpX2lkcy5o
-IGluZGV4IA0KPiA0YmFjMTgzMWRlODAuLmQyNTU1MmI1YWUzZSAxMDA2NDQNCj4gLS0tIGEvaW5j
-bHVkZS9saW51eC9wY2lfaWRzLmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9wY2lfaWRzLmgNCj4g
-QEAgLTI5NTQsNiArMjk1NCw4IEBADQo+ICAjZGVmaW5lIFBDSV9ERVZJQ0VfSURfSU5URUxfU0JS
-SURHRV9CUiAgICAgICAgIDB4M2NmNSAgLyogMTMuNiAqLw0KPiAgI2RlZmluZSBQQ0lfREVWSUNF
-X0lEX0lOVEVMX1NCUklER0VfU0FEMSAgICAgICAweDNjZjYgIC8qIDEyLjcgKi8NCj4gICNkZWZp
-bmUgUENJX0RFVklDRV9JRF9JTlRFTF9JT0FUX1NOQiAgIDB4NDAyZg0KPiArI2RlZmluZSBQQ0lf
-REVWSUNFX0lEX0lOVEVMX1ZNRF80NjdGICAgMHg0NjdmDQo+ICsjZGVmaW5lIFBDSV9ERVZJQ0Vf
-SURfSU5URUxfVk1EXzRDM0QgICAweDRjM2QNCj4gICNkZWZpbmUgUENJX0RFVklDRV9JRF9JTlRF
-TF81MTAwXzE2ICAgIDB4NjVmMA0KPiAgI2RlZmluZSBQQ0lfREVWSUNFX0lEX0lOVEVMXzUxMDBf
-MTkgICAgMHg2NWYzDQo+ICAjZGVmaW5lIFBDSV9ERVZJQ0VfSURfSU5URUxfNTEwMF8yMSAgICAw
-eDY1ZjUNCj4gDQoNClRoaXMgaXMgZmluZSB3aXRoIG1lDQoNClJldmlld2VkLWJ5OiBKb24gRGVy
-cmljayA8am9uYXRoYW4uZGVycmlja0BpbnRlbC5jb20+DQo=
+On 2021/7/23 8:49, Daeho Jeong wrote:
+> On Thu, Jul 22, 2021 at 5:20 PM Chao Yu <chao@kernel.org> wrote:
+>>
+>> Hi Daeho,
+>>
+>> On 2021/7/23 5:19, Daeho Jeong wrote:
+>>> From: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> When we print out a discontinuous compression chunk, it shows like a
+>>> continuous chunk now. To show it more correctly, I've changed the way of
+>>> printing fiemap info like below. Plus, eliminated NEW_ADDR(-1) in fiemap
+>>> info, since it is not in fiemap user api manual.
+>>>
+>>>      Logical          Physical         Length           Flags
+>>> 0: 0000000000000000 0000000fdf692000 0000000000004000 1008
+>>> 1: 0000000000004000 0000000fdf693000 0000000000004000 1008
+>>> 2: 0000000000008000 0000000fdf694000 0000000000004000 1008
+>>> 3: 000000000000c000 0000000fdf695000 0000000000004000 1008
+>>> 4: 0000000000010000 0000000fdf696000 000000000000c000 1000
+>>> 5: 000000000001c000 0000000f8c60d000 0000000000010000 1000
+>>> 6: 000000000002c000 0000000f8c61d000 0000000000004000 1008
+>>> 7: 0000000000030000 0000000f8c620000 0000000000004000 1008
+>>> 8: 0000000000034000 0000000f8c623000 0000000000001000 1008
+>>> 9: 0000000000035000 0000000fc7af4000 0000000000003000 1008
+>>
+>> I wrote a file some like this:
+>>
+>> i_addr[0x9] cluster flag                [0xfffffffe : 4294967294]
+>> i_addr[0xa]                             [0x   72800 : 468992]
+>> i_addr[0xb] reserved flag               [0xffffffff : 4294967295]
+>> i_addr[0xc] reserved flag               [0xffffffff : 4294967295]
+>> i_addr[0xd] cluster flag                [0xfffffffe : 4294967294]
+>> i_addr[0xe]                             [0x   72801 : 468993]
+>> i_addr[0xf] reserved flag               [0xffffffff : 4294967295]
+>> i_addr[0x10] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x11]                            [0x   72832 : 469042]
+>> i_addr[0x12]                            [0x   72802 : 468994]
+>> i_addr[0x13]                            [0x   72833 : 469043]
+>> i_addr[0x14]                            [0x   72834 : 469044]
+>> i_addr[0x15] cluster flag               [0xfffffffe : 4294967294]
+>> i_addr[0x16]                            [0x   72803 : 468995]
+>> i_addr[0x17] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x18] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x19]                            [0x   72835 : 469045]
+>> i_addr[0x1a]                            [0x   72804 : 468996]
+>> i_addr[0x1b]                            [0x   72836 : 469046]
+>> i_addr[0x1c]                            [0x   72837 : 469047]
+>> i_addr[0x1d] cluster flag               [0xfffffffe : 4294967294]
+>> i_addr[0x1e]                            [0x   72805 : 468997]
+>> i_addr[0x1f] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x20] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x21] cluster flag               [0xfffffffe : 4294967294]
+>> i_addr[0x22]                            [0x   72806 : 468998]
+>> i_addr[0x23] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x24] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x25] cluster flag               [0xfffffffe : 4294967294]
+>> i_addr[0x26]                            [0x   72807 : 468999]
+>> i_addr[0x27] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x28] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x29] cluster flag               [0xfffffffe : 4294967294]
+>> i_addr[0x2a]                            [0x   72808 : 469000]
+>> i_addr[0x2b] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x2c] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x2d] cluster flag               [0xfffffffe : 4294967294]
+>> i_addr[0x2e]                            [0x   72809 : 469001]
+>> i_addr[0x2f] reserved flag              [0xffffffff : 4294967295]
+>> i_addr[0x30] reserved flag              [0xffffffff : 4294967295]
+>> i_nid[0]                                [0x       0 : 0]
+>> i_nid[1]                                [0x       0 : 0]
+>> i_nid[2]                                [0x       0 : 0]
+>> i_nid[3]                                [0x       0 : 0]
+>> i_nid[4]                                [0x       0 : 0]
+>>
+>> xfs_io file -c "fiemap -v" shows:
+>>
+>> before:
+>>    EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>>      0: [0..31]:         3751936..3751967    32 0x1008
+>>      1: [32..63]:        3751944..3751975    32 0x1008
+>>      2: [64..71]:        3752336..3752343     8 0x1000
+>>      3: [72..79]:        3751952..3751959     8 0x1000
+>>      4: [80..95]:        3752344..3752359    16 0x1000
+>>      5: [96..127]:       3751960..3751991    32 0x1008
+>>      6: [128..135]:      3752360..3752367     8 0x1000
+>>      7: [136..143]:      3751968..3751975     8 0x1000
+>>      8: [144..159]:      3752368..3752383    16 0x1000
+>>      9: [160..191]:      3751976..3752007    32 0x1008
+>>     10: [192..223]:      3751984..3752015    32 0x1008
+>>     11: [224..255]:      3751992..3752023    32 0x1008
+>>     12: [256..287]:      3752000..3752031    32 0x1008
+>>     13: [288..319]:      3752008..3752039    32 0x1009
+>>
+>> after:
+>>      0: [0..31]:         3751936..3751967    32 0x1008
+>>      1: [32..63]:        3751944..3751975    32 0x1008
+>>      2: [64..71]:        3752336..3752343     8 0x1000
+>>      3: [72..79]:        3751952..3751959     8 0x1000
+>>      4: [80..95]:        3752344..3752359    16 0x1000
+>>      5: [96..127]:       3751960..3751991    32 0x1008
+>>      6: [128..135]:      3752360..3752367     8 0x1000
+>>      7: [136..143]:      3751968..3751975     8 0x1000
+>>      8: [144..159]:      3752368..3752383    16 0x1000
+>>      9: [160..191]:      3751976..3752007    32 0x1008
+>>     10: [192..223]:      3751984..3752015    32 0x1008
+>>     11: [224..255]:      3751992..3752023    32 0x1008
+>>     12: [256..287]:      3752000..3752031    32 0x1008
+>>     13: [288..319]:      3752008..3752039    32 0x1008
+>>
+>> I don't see any obvious difference, except w/ current patch, last
+>> FIEMAP_EXTENT_LAST is missing.
+>>
+>> Sorry, I didn't get the point of this patch, could you please explain
+>> more details for that problem this patch tries to fix and show the
+>> difference before/after the patch in commit message?
+>>
+>> Thanks,
+>>
+>>>
+>>> Flags
+>>> 0x1000 => FIEMAP_EXTENT_MERGED
+>>> 0x0008 => FIEMAP_EXTENT_ENCODED
+>>>
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> ---
+>>> v2: changed the print format
+>>> ---
+>>>    fs/f2fs/data.c | 76 ++++++++++++++++++++++++++++----------------------
+>>>    1 file changed, 42 insertions(+), 34 deletions(-)
+>>>
+>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+>>> index 3a01a1b50104..058dc751e3a6 100644
+>>> --- a/fs/f2fs/data.c
+>>> +++ b/fs/f2fs/data.c
+>>> @@ -1843,8 +1843,9 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>>>        u64 logical = 0, phys = 0, size = 0;
+>>>        u32 flags = 0;
+>>>        int ret = 0;
+>>> -     bool compr_cluster = false;
+>>> +     bool compr_cluster = false, compr_appended;
+>>>        unsigned int cluster_size = F2FS_I(inode)->i_cluster_size;
+>>> +     unsigned int count_in_cluster;
+>>>        loff_t maxbytes;
+>>>
+>>>        if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
+>>> @@ -1892,8 +1893,10 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>>>        map.m_next_pgofs = &next_pgofs;
+>>>        map.m_seg_type = NO_CHECK_TYPE;
+>>>
+>>> -     if (compr_cluster)
+>>> -             map.m_len = cluster_size - 1;
+>>> +     if (compr_cluster) {
+>>> +             map.m_lblk += 1;
+>>> +             map.m_len = cluster_size - count_in_cluster;
+>>> +     }
+>>>
+>>>        ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
+>>>        if (ret)
+>>> @@ -1903,11 +1906,23 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>>>        if (!(map.m_flags & F2FS_MAP_FLAGS)) {
+>>>                start_blk = next_pgofs;
+>>>
+>>> -             if (blks_to_bytes(inode, start_blk) < blks_to_bytes(inode,
+>>> +             if (blks_to_bytes(inode, start_blk) >= blks_to_bytes(inode,
+>>>                                                max_inode_blocks(inode)))
+>>> +                     flags |= FIEMAP_EXTENT_LAST;
+>>> +             else if (!compr_cluster)
+>>>                        goto prep_next;
+>>> +     }
+>>> +
+>>> +     compr_appended = false;
+>>> +     /* In a case of compressed cluster, append this to the last extent */
+>>> +     if (compr_cluster && ((map.m_flags & F2FS_MAP_UNWRITTEN) ||
+>>> +                     !(map.m_flags & F2FS_MAP_FLAGS))) {
+>>> +             unsigned int appended_blks = cluster_size - count_in_cluster + 1;
+>>>
+>>> -             flags |= FIEMAP_EXTENT_LAST;
+>>> +             size += blks_to_bytes(inode, appended_blks);
+>>> +             if (map.m_flags & F2FS_MAP_UNWRITTEN)
+>>> +                     start_blk += appended_blks;
+>>> +             compr_appended = true;
+>>>        }
+>>>
+>>>        if (size) {
+>>> @@ -1926,38 +1941,31 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>>>        if (start_blk > last_blk)
+>>>                goto out;
+>>>
+>>> -     if (compr_cluster) {
+>>> -             compr_cluster = false;
+>>> -
+>>> -
+>>> -             logical = blks_to_bytes(inode, start_blk - 1);
+>>> -             phys = blks_to_bytes(inode, map.m_pblk);
+>>> -             size = blks_to_bytes(inode, cluster_size);
+>>> -
+>>> -             flags |= FIEMAP_EXTENT_ENCODED;
+>>> -
+>>> -             start_blk += cluster_size - 1;
+>>> -
+>>> -             if (start_blk > last_blk)
+>>> -                     goto out;
+>>> -
+>>> -             goto prep_next;
+>>> -     }
+>>> -
+>>>        if (map.m_pblk == COMPRESS_ADDR) {
+>>>                compr_cluster = true;
+>>> -             start_blk++;
+>>> -             goto prep_next;
+>>> -     }
+>>> -
+>>> -     logical = blks_to_bytes(inode, start_blk);
+>>> -     phys = blks_to_bytes(inode, map.m_pblk);
+>>> -     size = blks_to_bytes(inode, map.m_len);
+>>> -     flags = 0;
+>>> -     if (map.m_flags & F2FS_MAP_UNWRITTEN)
+>>> -             flags = FIEMAP_EXTENT_UNWRITTEN;
+>>> +             count_in_cluster = 1;
+>>> +     } else if (compr_appended) {
+>>> +             compr_cluster = false;
+>>> +     } else {
+>>> +             logical = blks_to_bytes(inode, start_blk);
+>>> +             phys = __is_valid_data_blkaddr(map.m_pblk) ?
+>>> +                     blks_to_bytes(inode, map.m_pblk) : 0;
+>>> +             size = blks_to_bytes(inode, map.m_len);
+>>> +             flags = 0;
+>>> +
+>>> +             if (compr_cluster) {
+>>> +                     flags = FIEMAP_EXTENT_ENCODED;
+>>> +                     count_in_cluster += map.m_len;
+>>> +                     if (count_in_cluster == cluster_size) {
+>>> +                             compr_cluster = false;
+>>> +                             size += blks_to_bytes(inode, 1);
+>>> +                     }
+>>> +             } else if (map.m_flags & F2FS_MAP_UNWRITTEN) {
+>>> +                     flags = FIEMAP_EXTENT_UNWRITTEN;
+>>> +             }
+>>>
+>>> -     start_blk += bytes_to_blks(inode, size);
+>>> +             start_blk += bytes_to_blks(inode, size);
+>>> +     }
+>>>
+>>>    prep_next:
+>>>        cond_resched();
+>>>
+> 
+> Oh, I am sorry for too concrete exlpanation.
+> I am trying to fix this issue. Let's assume 4 block cluster, which has
+> been compressed with 3 blocks whose address is 0x1000, 0x5000 and
+> 0x9000.
+> This cluster is discontinous cluster. In this condition, the previous
+> version just returns one extent starting from 0x1000 and we are
+> missing the information related to 0x5000 and 0x9000.
+> The current version will return 3 extents like below.
+> Logical Physical Len
+> 0x0      0x1000.  0x1000
+> 0x1.     0x5000.  0x1000
+> 0x2.     0x9000.  0x2000
+
+Ah, thanks for detailed explanation, I misread your commit message
+previously... :(
+
+> 
+> Thank you for letting me know a bug. I will fix it.
+
+So, let me review the patch after the fix. :)
+
+Thanks,
+
+> 
