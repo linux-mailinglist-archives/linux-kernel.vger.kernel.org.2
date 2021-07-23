@@ -2,118 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8E63D3518
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A718E3D351C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233497AbhGWGgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhGWGgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:36:07 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631F5C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:16:41 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id a17-20020a17090abe11b0290173ce472b8aso7710619pjs.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:16:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uci-edu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KJ32JKsbpweHxm/Oe2m0XCE83TA5ZDfxZUOm3KQD4+g=;
-        b=v5DXI7gMfxtI/KrtCorH0ZVVm26EV2ArJlOBECnLs/re4yGdwnumsMq72RIvzb0p3F
-         V8+BTnxpcRSsnp2AU8Byt+o0orbFdDqoQj+HvoTxap0DJUbZpaprZcVIr6NqeL1hvU/E
-         xL4629EnkMia4ACrvPHTw3KoRDCHRK/U6QuULRN9Rl1NsSLZNL3uD9M80AK+gsE7zqce
-         6IPAkcZLvjSNed24xJhsL107G1lyptJICKqT44P0e/NtBpoLZPNqEj7WGsgr/n4jUy/f
-         x6KE1/8qmIK2DjpBREjgjRVhDF04j5EayZcXIknHRK35GSUaqMhgF/dDoV+kJ7XS0phg
-         AHVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KJ32JKsbpweHxm/Oe2m0XCE83TA5ZDfxZUOm3KQD4+g=;
-        b=lj5CRbGkTVlK7JzSKcFPXvVKp6/r2eQ+tkyqFK6qB+HMZzuOEVDUlUjm/A2DBPgVCM
-         8XH7zKkEeepxSBiwFNkcQP2BgzBDOBDbJQYaZtS06reBb6HIKPqh4QSURx5TYtTqCGQo
-         gqVKBhCK13c6ImR/sMsZyKbRUMjLgf71XOkODQs3HWPR+BIZJ0fsjArgJVfCv8HkYGDJ
-         Q1L9MLjJ+qpe76W7eX3hCpLRJXeKbR5CFZnJg7KCGTgMwjYzP4GKQPOUQNnTQt4765Q8
-         eW3R4+R4w3XJVF8aEwxLhDggK4rjAM4XcJ8wYYjMa22BmWsvTBOe8HnYVdxTIvjtKRxC
-         hm+Q==
-X-Gm-Message-State: AOAM530Ht6blz6zdUkjoEuM70zB5PhUk6gtLUdTv1h1yB7NKcTT+vcqY
-        DjrIHfiM9YgypfOlErc0A3Sm/g==
-X-Google-Smtp-Source: ABdhPJw4RNjfW44tTWvF+QMKfvzq2FFk7kRKeD07yfn5twpfxvuJBUZoWE1LKD40ZKMXMhjjuGTNWA==
-X-Received: by 2002:a17:902:ead2:b029:12a:ec28:7bc9 with SMTP id p18-20020a170902ead2b029012aec287bc9mr2886521pld.79.1627024600876;
-        Fri, 23 Jul 2021 00:16:40 -0700 (PDT)
-Received: from [192.168.1.3] ([183.98.43.105])
-        by smtp.gmail.com with ESMTPSA id z9sm32569827pfa.2.2021.07.23.00.16.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Jul 2021 00:16:40 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
-From:   Dongjoo Seo <dseo3@uci.edu>
-In-Reply-To: <YPpq4u+b/UzAE/3u@kroah.com>
-Date:   Fri, 23 Jul 2021 16:16:27 +0900
-Cc:     SeongJae Park <sj38.park@gmail.com>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-        acme@kernel.org, akpm@linux-foundation.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendanhiggins@google.com,
-        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
-        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
-        gthelen@google.com, guoju.fgj@alibaba-inc.com, jgowans@amazon.com,
-        joe@perches.com, linux-damon@amazon.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mgorman@suse.de,
-        mheyne@amazon.de, minchan@kernel.org, mingo@redhat.com,
-        namhyung@kernel.org, peterz@infradead.org, riel@surriel.com,
-        rientjes@google.com, rostedt@goodmis.org, rppt@kernel.org,
-        shakeelb@google.com, shuah@kernel.org, sieberf@amazon.com,
-        sjpark@amazon.de, snu@zelle79.org, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <23F9BFF6-51B0-4EF7-AF2F-278F89D310C3@uci.edu>
-References: <2E16FC36-18B4-4F92-86AE-51249CCDB1A4@uci.edu>
- <YPpq4u+b/UzAE/3u@kroah.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        id S230355AbhGWGgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:36:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:54299 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229616AbhGWGgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:36:13 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="191418868"
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
+   d="scan'208";a="191418868"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 00:16:47 -0700
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
+   d="scan'208";a="471023868"
+Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 00:16:41 -0700
+Subject: Re: [PATCH v2 0/6] IPI virtualization support for VM
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Hu, Robert" <robert.hu@intel.com>,
+        "Gao, Chao" <chao.gao@intel.com>
+References: <20210723051626.18364-1-guang.zeng@intel.com>
+ <CANRm+CywPSiW=dniYEnUhYnK0NGGnnxV53AdC0goivndn6KR5g@mail.gmail.com>
+From:   Zeng Guang <guang.zeng@intel.com>
+Message-ID: <4e8f8b7f-0b20-5c2a-f23d-3f5d5321dd3a@intel.com>
+Date:   Fri, 23 Jul 2021 15:16:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <CANRm+CywPSiW=dniYEnUhYnK0NGGnnxV53AdC0goivndn6KR5g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for your comment!.
+On 7/23/2021 2:11 PM, Wanpeng Li wrote:
+> On Fri, 23 Jul 2021 at 13:41, Zeng Guang <guang.zeng@intel.com> wrote:
+>
+> --------------------------------------
+> IPI microbenchmark:
+> (https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com)
+>
+> 2 vCPUs, 1:1 pin vCPU to pCPU, guest VM runs with idle=poll, x2APIC mode
+> Improve the performance for unicast ipi is as expected, however, I
+> wonder whether the broadcast performance is worse than PV
+> IPIs/Thomas's IPI shorthands(IPI shorthands are supported by upstream
+> linux apic/x2apic driver). The hardware acceleration is not always
+> outstanding on AMD(https://lore.kernel.org/kvm/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com/),
+> how about your Intel guys? Please try a big VM at least 96 vCPUs as
+> below or more bigger.
 
-It has been a long time since Nvidia ended supporting the new kernel =
-version on tx2 boards, but for researchers, this set of boards (tx2, =
-px2, agx) is a very attractive candidate to use.
-That's why I asked. If it's impossible because the maintainer is busy =
-with other work, I'll do it myself!=20
+Intel IPIv target to accelerate unicast ipi process, not benefit to 
+broadcast performance.
 
-Best,
-Dongjoo Seo
+As to IPI benchmark, it's not big different to test with large or small 
+scale of vCPUs. In essential, Normal IPI test try
+to send ipi to any other online CPU in sequence. The cost on IPI process 
+itself should be similar.
 
-> On Jul 23, 2021, at 4:08 PM, Greg KH <gregkh@linuxfoundation.org> =
-wrote:
->=20
-> On Fri, Jul 23, 2021 at 04:02:44PM +0900, Dongjoo Seo wrote:
->> Hello, I am new user of this amazing tool.
->> I want to use this tool for Nvidia tx2 board with kernel version =
-4.9.140.
->>=20
->> Do you guys have any timeline or update schedule for different kernel =
-version compatibility?
->=20
-> Use a newer kernel on that board, there's no need for anyone to port =
-new
-> features to older kernel versions.
->=20
-> Why are you stuck with 4.9.140?  That's very old and known insecure =
-and
-> obsolete.  Please contact the vendor who is providing it to you to =
-give
-> you the latest version as you are paying them for that support.
->=20
-> good luck!
->=20
-> greg k-h
-
+>> Result with IPIv enabled:
+>>
+>> Dry-run:                         0,             272798 ns
+>> Self-IPI:                  5094123,           11114037 ns
+>> Normal IPI:              131697087,          173321200 ns
+>> Broadcast IPI:                   0,          155649075 ns
+>> Broadcast lock:                  0,          161518031 ns
+>>
+>> Result with IPIv disabled:
+>>
+>> Dry-run:                         0,             272766 ns
+>> Self-IPI:                  5091788,           11123699 ns
+>> Normal IPI:              145215772,          174558920 ns
+>> Broadcast IPI:                   0,          175785384 ns
+>> Broadcast lock:                  0,          149076195 ns
+>>
+>>
+>> As IPIv can benefit unicast IPI to other CPU, Noraml IPI test case gain
+>> about 9.73% time saving on average out of 15 test runs when IPIv is
+>> enabled.
+>>
+>>                  w/o IPIv                w/ IPIv
+>> Normal IPI:     145944306.6 ns          131742993.1 ns
+>> %Reduction                              -9.73%
+>>
+>> --------------------------------------
+>> hackbench:
+>>
+>> 8 vCPUs, guest VM free run, x2APIC mode
+>> ./hackbench -p -l 100000
+>>
+>>                  w/o IPIv        w/ IPIv
+>> Time:           91.887          74.605
+>> %Reduction:                     -18.808%
+>>
+>> 96 vCPUs, guest VM free run, x2APIC mode
+>> ./hackbench -p -l 1000000
+>>
+>>                  w/o IPIv        w/ IPIv
+>> Time:           287.504         235.185
+>> %Reduction:                     -18.198%
+> Good to know this.
+>
+>      Wanpeng
