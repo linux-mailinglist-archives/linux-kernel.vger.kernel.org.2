@@ -2,148 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933003D3DA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF673D3DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhGWPyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:54:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31477 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229492AbhGWPyU (ORCPT
+        id S230299AbhGWPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:55:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGWPzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:54:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627058093;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jBKfujrZeXlnAEPqRseOsz+DSjWxEDmI89ivOTZgHQY=;
-        b=csRU00dRsLRFPNxfCslsC0dsN8Li0kWCgGRiVV/n6NyhVBcD8WVYOtiAIY/24XTDp+iy5/
-        xbxOdgGYhxK69kt+1XK4RrktYldot/Ihs0ujtYTf2ruHsqzoxTzW3PJG1Iv5kfRAnArRIW
-        NhNHt/XRAmEECKTHa4WKDkm9xeEkADo=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-JZeeMcbGNJqLg7tgLd9N6g-1; Fri, 23 Jul 2021 12:34:51 -0400
-X-MC-Unique: JZeeMcbGNJqLg7tgLd9N6g-1
-Received: by mail-wr1-f70.google.com with SMTP id n1-20020a5d59810000b029013cd60e9baaso1189563wri.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 09:34:51 -0700 (PDT)
+        Fri, 23 Jul 2021 11:55:43 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FB4C061575;
+        Fri, 23 Jul 2021 09:36:16 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id u20so2098050ljo.0;
+        Fri, 23 Jul 2021 09:36:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version;
+        bh=/USRxrU13aqu7zhq+t3JvF75EdmVYTDZtcN8HN3tTxk=;
+        b=XcTLetOJ+2/MSjfBcdcA8mGbB8dewEH3zppwPDyKblQcid14hYlws5LMAVDPyewc47
+         IDK8x4/8zIRC6wFnm3/HvsUaAnSstrMytpcZnBEmLEp/Duc4ZUeWtQpibTGXdxCXcLqE
+         oovCn0LODMHN1hgS1hokyMZ56txwZXaE5D2RYO65fRosXgDZK+7LjDGZTEoAuUT0atGg
+         aPCLKNEER04WB2EuV6MJCw7rpkTjj3HYpJURthFe2YPeGg9Ofb+uhFcTlCREO/4i61Jm
+         7Rd+64kWyerlu0R6edpV7ISUj8pOF5NrExpNQrkwriRA6zleIrXQnYrBl//VwdYPMHtR
+         fPFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jBKfujrZeXlnAEPqRseOsz+DSjWxEDmI89ivOTZgHQY=;
-        b=WtQyDUQuMGHYjECBmHOr0VO4mCi0NvguQ/uO6QUvg/hGGj2GK4SHamVrSi4EedD15S
-         e/WiaSaZTDWQIXKDUqbpfF+Qv/FbQ5o8Ynfmvqoa/ZJsSp2KsqxdvYVDNb0YqP/sNNp7
-         pXo1eiTVVn5/yaodkHPI/zqGtADJzh50UgMuhH2sFgGJQvhZ+t2HKIuJWTke0+Vvf0eM
-         IP2XdbwDKpYb81W4gYYdRl9zeVGQpSdhqsoRwXO48A7F8Mrw/vfs1CjG3jC3yHjiKWjK
-         WoIwo3vMqW/Bqsg6s7srZbJuP1BNvw9RUmPeKMG/krfpXmfd7XaqFw/5k64DsLfzLMSh
-         ShPg==
-X-Gm-Message-State: AOAM533A77fGbn93HwZ088+V3F3QtZVXu7OMVG2SWpUNwCpI70PD+x3f
-        tm8/w3VEY/rpb4kamPS9G2LWxhNtf4WvFsO8KV23YipxKG6+2qHb2yQI7jQbBEIKxBXrDHpsGxC
-        SnNXY1sK0tV8F0c/xnCeuL5atdWqewuloX8QS1lw8
-X-Received: by 2002:adf:ec0c:: with SMTP id x12mr6485184wrn.113.1627058090618;
-        Fri, 23 Jul 2021 09:34:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyjZmLFiXzbRdB1FSZxk6Ci9/11PUg5q7Gnq6fHY+P642HnHn3ZO13MsX1/M3WvfMfwQhNQ9sYSLAOwuVdUjA0=
-X-Received: by 2002:adf:ec0c:: with SMTP id x12mr6485172wrn.113.1627058090493;
- Fri, 23 Jul 2021 09:34:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version;
+        bh=/USRxrU13aqu7zhq+t3JvF75EdmVYTDZtcN8HN3tTxk=;
+        b=sed+TWIgTHAM/+t9bzVjuak8anRxoYkhpjlVk7PnEicyEE+HIqUcH9xWugWEPE/E8O
+         8c1tOFpT++OIkm1E22eEDnqC+ciaCYyeJk6dnNPKBvaFlB+eXNZlU+KkxPINlrGUYqbM
+         mc0LQcdZVIechj8nh2gO3dq3GhgSxfsjL/1+q1OZ4td3DdFWMghCOldZzXZ01OLDYUev
+         vWuAGL7sK23bXhBwJqvJbbtfMwe7ROWUJr6PQGewhV/t3b4Avt107Hzmr4ZiXhAQEBoT
+         Fk6TkjQxdpczFsp9zolp/ErJZ6Ol6C45POBIHiCGT2QGBg1fcEI9hhE5Jqp+9/jWoAfz
+         qVLg==
+X-Gm-Message-State: AOAM530iF/3NQTo/WnuRKpmVL+pIMoCwCKAXVuepuLLgJ4JqaaqMb0Oq
+        3yKnUqMzFGhpG9soEJsnjS0=
+X-Google-Smtp-Source: ABdhPJxsZGGZtgDO2ScwU+VHsSRUrS9NeLgPnKJEwOtjcUo3ZXmFg6jQObIG4sUIcX5GNP3o2ipDbw==
+X-Received: by 2002:a2e:9010:: with SMTP id h16mr3973685ljg.62.1627058175105;
+        Fri, 23 Jul 2021 09:36:15 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.213])
+        by smtp.gmail.com with ESMTPSA id j26sm1643347lfh.71.2021.07.23.09.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 09:36:14 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 19:36:11 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     syzbot <syzbot+e6741b97d5552f97c24d@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, devicetree@vger.kernel.org,
+        frowand.list@gmail.com, gregkh@linuxfoundation.org,
+        jmaloy@redhat.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, rafael@kernel.org, robh+dt@kernel.org,
+        robh@kernel.org, syzkaller-bugs@googlegroups.com,
+        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
+Subject: Re: [syzbot] KASAN: use-after-free Read in tipc_recvmsg
+Message-ID: <20210723193611.746e7071@gmail.com>
+In-Reply-To: <00000000000017e9a105c768f7a0@google.com>
+References: <00000000000017e9a105c768f7a0@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <20210723091534.1730564-1-arnd@kernel.org> <a618e29a-e4b7-bda4-a3e0-7dfd67d64e92@infradead.org>
- <CACO55tvQoCnjQWRJhrJ+8TzY5MuDDSUSnwd5AU8G1qsQYCSCBg@mail.gmail.com> <7ddd0c7c-9bdc-9ea3-c635-f1d141d1e870@infradead.org>
-In-Reply-To: <7ddd0c7c-9bdc-9ea3-c635-f1d141d1e870@infradead.org>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Fri, 23 Jul 2021 18:34:39 +0200
-Message-ID: <CACO55ttjQO5kUeEA7opvGLAwT+a1t0vAguncKDhB4bdy96K7LA@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/kms/nv50-: fix build failure with CONFIG_BACKLIGHT=n
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Nikola Cornij <nikola.cornij@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="MP_/yRthpUK6XCZGPh=RhCsnSAD"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 6:31 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 7/23/21 8:15 AM, Karol Herbst wrote:
-> > On Fri, Jul 23, 2021 at 5:10 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >>
-> >> On 7/23/21 2:15 AM, Arnd Bergmann wrote:
-> >>> From: Arnd Bergmann <arnd@arndb.de>
-> >>>
-> >>> When the backlight support is disabled, the driver fails to build:
-> >>>
-> >>> drivers/gpu/drm/nouveau/dispnv50/disp.c: In function 'nv50_sor_atomic_disable':
-> >>> drivers/gpu/drm/nouveau/dispnv50/disp.c:1665:59: error: 'struct nouveau_connector' has no member named 'backlight'
-> >>>  1665 |         struct nouveau_backlight *backlight = nv_connector->backlight;
-> >>>       |                                                           ^~
-> >>> drivers/gpu/drm/nouveau/dispnv50/disp.c:1670:35: error: invalid use of undefined type 'struct nouveau_backlight'
-> >>>  1670 |         if (backlight && backlight->uses_dpcd) {
-> >>>       |                                   ^~
-> >>> drivers/gpu/drm/nouveau/dispnv50/disp.c:1671:64: error: invalid use of undefined type 'struct nouveau_backlight'
-> >>>  1671 |                 ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
-> >>>       |                                                                ^~
-> >>>
-> >>> The patch that introduced the problem already contains some #ifdef
-> >>> checks, so just add another one that makes it build again.
-> >>>
-> >>> Fixes: 6eca310e8924 ("drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau")
-> >>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >>> ---
-> >>>  drivers/gpu/drm/nouveau/dispnv50/disp.c | 11 +++++++----
-> >>>  1 file changed, 7 insertions(+), 4 deletions(-)
-> >>>
-> >>> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> >>> index 093e1f7163b3..fcf53e24db21 100644
-> >>> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> >>> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> >>> @@ -1659,20 +1659,23 @@ static void
-> >>>  nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
-> >>>  {
-> >>>       struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
-> >>> -     struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
-> >>>       struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
-> >>>       struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
-> >>> -     struct nouveau_backlight *backlight = nv_connector->backlight;
-> >>>       struct drm_dp_aux *aux = &nv_connector->aux;
-> >>> -     int ret;
-> >>>       u8 pwr;
-> >>>
-> >>> +#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
-> >>> +     struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
-> >>> +     struct nouveau_backlight *backlight = nv_connector->backlight;
-> >>> +
-> >>>       if (backlight && backlight->uses_dpcd) {
-> >>> -             ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
-> >>> +             int ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
-> >>> +
-> >>>               if (ret < 0)
-> >>>                       NV_ERROR(drm, "Failed to disable backlight on [CONNECTOR:%d:%s]: %d\n",
-> >>>                                nv_connector->base.base.id, nv_connector->base.name, ret);
-> >>>       }
-> >>> +#endif
-> >>>
-> >>>       if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
-> >>>               int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
-> >>>
-> >>
-> >> Hm, only Lyude Paul replied to this patch:
-> >>
-> >> https://lore.kernel.org/lkml/20210714171523.413-1-rdunlap@infradead.org/
-> >>
-> >
-> > what's actually the use case of compiling with
-> > CONFIG_DRM_NOUVEAU_BACKLIGHT=n anyway?
->
-> Dunno. In this case it was just a randconfig. Still, it needs to be
-> handled in some way - such as the other suggestion in this thread.
->
+--MP_/yRthpUK6XCZGPh=RhCsnSAD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-sure, I was just curious if there was a specific use case or just
-something random as you mentioned.
+On Sun, 18 Jul 2021 10:15:19 -0700
+syzbot <syzbot+e6741b97d5552f97c24d@syzkaller.appspotmail.com> wrote:
 
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    ab0441b4a920 Merge branch 'vmxnet3-version-6'
+> git tree:       net-next
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=1744ac6a300000 kernel
+> config:  https://syzkaller.appspot.com/x/.config?x=da140227e4f25b17
+> dashboard link:
+> https://syzkaller.appspot.com/bug?extid=e6741b97d5552f97c24d syz
+> repro:
+> https://syzkaller.appspot.com/x/repro.syz?x=13973a74300000 C
+> reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ffc902300000
+> 
+> The issue was bisected to:
+> 
+> commit 67a3156453859ceb40dc4448b7a6a99ea0ad27c7
+> Author: Rob Herring <robh@kernel.org>
+> Date:   Thu May 27 19:45:47 2021 +0000
+> 
+>     of: Merge of_address_to_resource() and
+> of_pci_address_to_resource() implementations
+> 
+> bisection log:
+> https://syzkaller.appspot.com/x/bisect.txt?x=129b0438300000 final
+> oops:     https://syzkaller.appspot.com/x/report.txt?x=119b0438300000
+> console output:
+> https://syzkaller.appspot.com/x/log.txt?x=169b0438300000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the
+> commit: Reported-by:
+> syzbot+e6741b97d5552f97c24d@syzkaller.appspotmail.com Fixes:
+> 67a315645385 ("of: Merge of_address_to_resource() and
+> of_pci_address_to_resource() implementations")
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in tipc_recvmsg+0xf77/0xf90
+> net/tipc/socket.c:1979 Read of size 4 at addr ffff8880328cf1c0 by
+> task kworker/u4:0/8
+> 
+
+Since code accesing skb_cb after possible kfree_skb() call let's just
+store bytes_read to variable and use it instead of acessing
+skb_cb->bytes_read
+
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+
+
+With regards,
+Pavel Skripkin
+
+--MP_/yRthpUK6XCZGPh=RhCsnSAD
+Content-Type: text/x-patch
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename=0001-tipc-fix-use-after-free-in-tipc_recvmsg.patch
+
+From 9f81f8574bfc1183209022b405848e01c35b86e6 Mon Sep 17 00:00:00 2001
+From: Pavel Skripkin <paskripkin@gmail.com>
+Date: Fri, 23 Jul 2021 19:34:06 +0300
+Subject: [PATCH] tipc: fix use-after-free in tipc_recvmsg
+
+/* .. */
+
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ net/tipc/socket.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 9b0b311c7ec1..0cf2468d209d 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -1886,6 +1886,7 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 	struct sk_buff *skb;
+ 	bool grp_evt;
+ 	long timeout;
++	unsigned int bytes_read;
+ 
+ 	/* Catch invalid receive requests */
+ 	if (unlikely(!buflen))
+@@ -1973,10 +1974,13 @@ static int tipc_recvmsg(struct socket *sock, struct msghdr *m,
+ 		tipc_node_distr_xmit(sock_net(sk), &xmitq);
+ 	}
+ 
+-	if (!skb_cb->bytes_read)
++	/* To avoid accesing skb_cb after tsk_advance_rx_queue */
++	bytes_read = skb_cb->bytes_read;
++
++	if (!bytes_read)
+ 		tsk_advance_rx_queue(sk);
+ 
+-	if (likely(!connected) || skb_cb->bytes_read)
++	if (likely(!connected) || bytes_read)
+ 		goto exit;
+ 
+ 	/* Send connection flow control advertisement when applicable */
+-- 
+2.32.0
+
+
+--MP_/yRthpUK6XCZGPh=RhCsnSAD--
