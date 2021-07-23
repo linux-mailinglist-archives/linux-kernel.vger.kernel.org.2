@@ -2,287 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7636C3D30B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2868A3D30BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232786AbhGVXkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 19:40:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44630 "EHLO mail.kernel.org"
+        id S232796AbhGVXk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 19:40:58 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50829 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232697AbhGVXkI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 19:40:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D536B60EB9;
-        Fri, 23 Jul 2021 00:20:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626999642;
-        bh=2HgQQtMtSR554/PjR/forrASJJzw4DuYeoLT/pUBrkA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=j3jX+Jr5vybYpXx9GpjEo11rZSPP6sB0W4rJwmsjP9lXhI2CahPF5Nse1dMDXpDyi
-         V3jLVst7Jj0vgQSwHMKK+SmD2lZcYBv1whDKXteIoDYalZhoSWQqb0jPBrdfQAoUal
-         4rVUVNSqW8pzDIoJ/YKwzO1v9hiC1+CY8sDMwNHMqVlopUQ3lTz3YB+0fyA/yVTqCy
-         2ZVrht5q2aSo3Z44VeI4TIEOxLEVgzzybeF854Dk0Ah9sKYDoX2whwuCwUu+r4sECW
-         DnoJ3vO+IU6CGUKPbF7jTZgv5w2wLZrXdc0PH1dlIdaVQ4oYObjzaTHRYR56H7D1cD
-         95Cno6qY1ITWg==
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: change fiemap way in printing
- compression chunk
-To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-References: <20210722211921.3791312-1-daeho43@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <dc7776c7-2694-5eea-fe9a-12191c833389@kernel.org>
-Date:   Fri, 23 Jul 2021 08:20:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232682AbhGVXk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 19:40:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GW93Y3j36z9sRN;
+        Fri, 23 Jul 2021 10:21:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1626999690;
+        bh=QVZhutB3ya+LYSZv7vxyfLMXu42kAtWhUyq07DbF+Ms=;
+        h=Date:From:To:Cc:Subject:From;
+        b=a/FWnu2xl2YHC/AhURrda7QSux7fYxURT8SeJKtW/Gn8AcJwHiq5khf4jmhKi4Bf5
+         ejFljOgff438KQNhLD1ZQImYw4wptShgYxyJNIe7t/98TJGD2/CUBJ6qJO0j8/3+gY
+         +FSzJlHIwrXe62T2pUQk/pF2tU7IPDUDrwpsmei7i0j0NDPwWveMJRh7j3XD3hxUOc
+         ycX2hWjnkmvY6eXoi+3wISHvEwuHuE7fuTxpZ5UdhNMjN16d8yg9pKbzm0ftPzK6Hm
+         xwxQuXoBRozBb9KY8D0gFeJcVx4po/0Wev1q8S8/MHl0iuRNE/y9qlO+XC08g+avqu
+         ZvTLWJHA9oS/Q==
+Date:   Fri, 23 Jul 2021 10:21:28 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>
+Cc:     Eric Biggers <ebiggers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the f2fs tree with the ext3 tree
+Message-ID: <20210723102128.5fc92369@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210722211921.3791312-1-daeho43@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/vdNYD7N=8MiRqmM3Cs8RyB=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daeho,
+--Sig_/vdNYD7N=8MiRqmM3Cs8RyB=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/7/23 5:19, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> When we print out a discontinuous compression chunk, it shows like a
-> continuous chunk now. To show it more correctly, I've changed the way of
-> printing fiemap info like below. Plus, eliminated NEW_ADDR(-1) in fiemap
-> info, since it is not in fiemap user api manual.
-> 
->     Logical          Physical         Length           Flags
-> 0: 0000000000000000 0000000fdf692000 0000000000004000 1008
-> 1: 0000000000004000 0000000fdf693000 0000000000004000 1008
-> 2: 0000000000008000 0000000fdf694000 0000000000004000 1008
-> 3: 000000000000c000 0000000fdf695000 0000000000004000 1008
-> 4: 0000000000010000 0000000fdf696000 000000000000c000 1000
-> 5: 000000000001c000 0000000f8c60d000 0000000000010000 1000
-> 6: 000000000002c000 0000000f8c61d000 0000000000004000 1008
-> 7: 0000000000030000 0000000f8c620000 0000000000004000 1008
-> 8: 0000000000034000 0000000f8c623000 0000000000001000 1008
-> 9: 0000000000035000 0000000fc7af4000 0000000000003000 1008
+Hi all,
 
-I wrote a file some like this:
+Today's linux-next merge of the f2fs tree got a conflict in:
 
-i_addr[0x9] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0xa]                 		[0x   72800 : 468992]
-i_addr[0xb] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0xc] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0xd] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0xe]                 		[0x   72801 : 468993]
-i_addr[0xf] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x10] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x11]                 		[0x   72832 : 469042]
-i_addr[0x12]                 		[0x   72802 : 468994]
-i_addr[0x13]                 		[0x   72833 : 469043]
-i_addr[0x14]                 		[0x   72834 : 469044]
-i_addr[0x15] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0x16]                 		[0x   72803 : 468995]
-i_addr[0x17] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x18] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x19]                 		[0x   72835 : 469045]
-i_addr[0x1a]                 		[0x   72804 : 468996]
-i_addr[0x1b]                 		[0x   72836 : 469046]
-i_addr[0x1c]                 		[0x   72837 : 469047]
-i_addr[0x1d] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0x1e]                 		[0x   72805 : 468997]
-i_addr[0x1f] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x20] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x21] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0x22]                 		[0x   72806 : 468998]
-i_addr[0x23] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x24] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x25] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0x26]                 		[0x   72807 : 468999]
-i_addr[0x27] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x28] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x29] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0x2a]                 		[0x   72808 : 469000]
-i_addr[0x2b] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x2c] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x2d] cluster flag    		[0xfffffffe : 4294967294]
-i_addr[0x2e]                 		[0x   72809 : 469001]
-i_addr[0x2f] reserved flag   		[0xffffffff : 4294967295]
-i_addr[0x30] reserved flag   		[0xffffffff : 4294967295]
-i_nid[0]                      		[0x       0 : 0]
-i_nid[1]                      		[0x       0 : 0]
-i_nid[2]                      		[0x       0 : 0]
-i_nid[3]                      		[0x       0 : 0]
-i_nid[4]                      		[0x       0 : 0]
+  fs/f2fs/file.c
 
-xfs_io file -c "fiemap -v" shows:
+between commit:
 
-before:
-  EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-    0: [0..31]:         3751936..3751967    32 0x1008
-    1: [32..63]:        3751944..3751975    32 0x1008
-    2: [64..71]:        3752336..3752343     8 0x1000
-    3: [72..79]:        3751952..3751959     8 0x1000
-    4: [80..95]:        3752344..3752359    16 0x1000
-    5: [96..127]:       3751960..3751991    32 0x1008
-    6: [128..135]:      3752360..3752367     8 0x1000
-    7: [136..143]:      3751968..3751975     8 0x1000
-    8: [144..159]:      3752368..3752383    16 0x1000
-    9: [160..191]:      3751976..3752007    32 0x1008
-   10: [192..223]:      3751984..3752015    32 0x1008
-   11: [224..255]:      3751992..3752023    32 0x1008
-   12: [256..287]:      3752000..3752031    32 0x1008
-   13: [288..319]:      3752008..3752039    32 0x1009
+  edc6d01bad73 ("f2fs: Convert to using invalidate_lock")
 
-after:
-    0: [0..31]:         3751936..3751967    32 0x1008
-    1: [32..63]:        3751944..3751975    32 0x1008
-    2: [64..71]:        3752336..3752343     8 0x1000
-    3: [72..79]:        3751952..3751959     8 0x1000
-    4: [80..95]:        3752344..3752359    16 0x1000
-    5: [96..127]:       3751960..3751991    32 0x1008
-    6: [128..135]:      3752360..3752367     8 0x1000
-    7: [136..143]:      3751968..3751975     8 0x1000
-    8: [144..159]:      3752368..3752383    16 0x1000
-    9: [160..191]:      3751976..3752007    32 0x1008
-   10: [192..223]:      3751984..3752015    32 0x1008
-   11: [224..255]:      3751992..3752023    32 0x1008
-   12: [256..287]:      3752000..3752031    32 0x1008
-   13: [288..319]:      3752008..3752039    32 0x1008
+from the ext3 tree and commit:
 
-I don't see any obvious difference, except w/ current patch, last
-FIEMAP_EXTENT_LAST is missing.
+  5f2632fa1471 ("f2fs: reduce indentation in f2fs_file_write_iter()")
 
-Sorry, I didn't get the point of this patch, could you please explain
-more details for that problem this patch tries to fix and show the
-difference before/after the patch in commit message?
+from the f2fs tree.
 
-Thanks,
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-> 
-> Flags
-> 0x1000 => FIEMAP_EXTENT_MERGED
-> 0x0008 => FIEMAP_EXTENT_ENCODED
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> 
-> ---
-> v2: changed the print format
-> ---
->   fs/f2fs/data.c | 76 ++++++++++++++++++++++++++++----------------------
->   1 file changed, 42 insertions(+), 34 deletions(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 3a01a1b50104..058dc751e3a6 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1843,8 +1843,9 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->   	u64 logical = 0, phys = 0, size = 0;
->   	u32 flags = 0;
->   	int ret = 0;
-> -	bool compr_cluster = false;
-> +	bool compr_cluster = false, compr_appended;
->   	unsigned int cluster_size = F2FS_I(inode)->i_cluster_size;
-> +	unsigned int count_in_cluster;
->   	loff_t maxbytes;
->   
->   	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
-> @@ -1892,8 +1893,10 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->   	map.m_next_pgofs = &next_pgofs;
->   	map.m_seg_type = NO_CHECK_TYPE;
->   
-> -	if (compr_cluster)
-> -		map.m_len = cluster_size - 1;
-> +	if (compr_cluster) {
-> +		map.m_lblk += 1;
-> +		map.m_len = cluster_size - count_in_cluster;
-> +	}
->   
->   	ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
->   	if (ret)
-> @@ -1903,11 +1906,23 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->   	if (!(map.m_flags & F2FS_MAP_FLAGS)) {
->   		start_blk = next_pgofs;
->   
-> -		if (blks_to_bytes(inode, start_blk) < blks_to_bytes(inode,
-> +		if (blks_to_bytes(inode, start_blk) >= blks_to_bytes(inode,
->   						max_inode_blocks(inode)))
-> +			flags |= FIEMAP_EXTENT_LAST;
-> +		else if (!compr_cluster)
->   			goto prep_next;
-> +	}
-> +
-> +	compr_appended = false;
-> +	/* In a case of compressed cluster, append this to the last extent */
-> +	if (compr_cluster && ((map.m_flags & F2FS_MAP_UNWRITTEN) ||
-> +			!(map.m_flags & F2FS_MAP_FLAGS))) {
-> +		unsigned int appended_blks = cluster_size - count_in_cluster + 1;
->   
-> -		flags |= FIEMAP_EXTENT_LAST;
-> +		size += blks_to_bytes(inode, appended_blks);
-> +		if (map.m_flags & F2FS_MAP_UNWRITTEN)
-> +			start_blk += appended_blks;
-> +		compr_appended = true;
->   	}
->   
->   	if (size) {
-> @@ -1926,38 +1941,31 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->   	if (start_blk > last_blk)
->   		goto out;
->   
-> -	if (compr_cluster) {
-> -		compr_cluster = false;
-> -
-> -
-> -		logical = blks_to_bytes(inode, start_blk - 1);
-> -		phys = blks_to_bytes(inode, map.m_pblk);
-> -		size = blks_to_bytes(inode, cluster_size);
-> -
-> -		flags |= FIEMAP_EXTENT_ENCODED;
-> -
-> -		start_blk += cluster_size - 1;
-> -
-> -		if (start_blk > last_blk)
-> -			goto out;
-> -
-> -		goto prep_next;
-> -	}
-> -
->   	if (map.m_pblk == COMPRESS_ADDR) {
->   		compr_cluster = true;
-> -		start_blk++;
-> -		goto prep_next;
-> -	}
-> -
-> -	logical = blks_to_bytes(inode, start_blk);
-> -	phys = blks_to_bytes(inode, map.m_pblk);
-> -	size = blks_to_bytes(inode, map.m_len);
-> -	flags = 0;
-> -	if (map.m_flags & F2FS_MAP_UNWRITTEN)
-> -		flags = FIEMAP_EXTENT_UNWRITTEN;
-> +		count_in_cluster = 1;
-> +	} else if (compr_appended) {
-> +		compr_cluster = false;
-> +	} else {
-> +		logical = blks_to_bytes(inode, start_blk);
-> +		phys = __is_valid_data_blkaddr(map.m_pblk) ?
-> +			blks_to_bytes(inode, map.m_pblk) : 0;
-> +		size = blks_to_bytes(inode, map.m_len);
-> +		flags = 0;
-> +
-> +		if (compr_cluster) {
-> +			flags = FIEMAP_EXTENT_ENCODED;
-> +			count_in_cluster += map.m_len;
-> +			if (count_in_cluster == cluster_size) {
-> +				compr_cluster = false;
-> +				size += blks_to_bytes(inode, 1);
-> +			}
-> +		} else if (map.m_flags & F2FS_MAP_UNWRITTEN) {
-> +			flags = FIEMAP_EXTENT_UNWRITTEN;
-> +		}
->   
-> -	start_blk += bytes_to_blks(inode, size);
-> +		start_blk += bytes_to_blks(inode, size);
-> +	}
->   
->   prep_next:
->   	cond_resched();
-> 
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/f2fs/file.c
+index 1ff333755721,279252c7f7bc..000000000000
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@@ -4252,79 -4318,54 +4316,54 @@@ static ssize_t f2fs_file_write_iter(str
+  	}
+ =20
+  	ret =3D generic_write_checks(iocb, from);
+- 	if (ret > 0) {
+- 		bool preallocated =3D false;
+- 		size_t target_size =3D 0;
+- 		int err;
+-=20
+- 		if (iov_iter_fault_in_readable(from, iov_iter_count(from)))
+- 			set_inode_flag(inode, FI_NO_PREALLOC);
+-=20
+- 		if ((iocb->ki_flags & IOCB_NOWAIT)) {
+- 			if (!f2fs_overwrite_io(inode, iocb->ki_pos,
+- 						iov_iter_count(from)) ||
+- 				f2fs_has_inline_data(inode) ||
+- 				f2fs_force_buffered_io(inode, iocb, from)) {
+- 				clear_inode_flag(inode, FI_NO_PREALLOC);
+- 				inode_unlock(inode);
+- 				ret =3D -EAGAIN;
+- 				goto out;
+- 			}
+- 			goto write;
+- 		}
+-=20
+- 		if (is_inode_flag_set(inode, FI_NO_PREALLOC))
+- 			goto write;
++ 	if (ret <=3D 0)
++ 		goto out_unlock;
+ =20
+- 		if (iocb->ki_flags & IOCB_DIRECT) {
+- 			/*
+- 			 * Convert inline data for Direct I/O before entering
+- 			 * f2fs_direct_IO().
+- 			 */
+- 			err =3D f2fs_convert_inline_inode(inode);
+- 			if (err)
+- 				goto out_err;
+- 			/*
+- 			 * If force_buffere_io() is true, we have to allocate
+- 			 * blocks all the time, since f2fs_direct_IO will fall
+- 			 * back to buffered IO.
+- 			 */
+- 			if (!f2fs_force_buffered_io(inode, iocb, from) &&
+- 					allow_outplace_dio(inode, iocb, from))
+- 				goto write;
++ 	if (iocb->ki_flags & IOCB_NOWAIT) {
++ 		if (!f2fs_overwrite_io(inode, iocb->ki_pos,
++ 				       iov_iter_count(from)) ||
++ 		    f2fs_has_inline_data(inode) ||
++ 		    f2fs_force_buffered_io(inode, iocb, from)) {
++ 			ret =3D -EAGAIN;
++ 			goto out_unlock;
+  		}
+- 		preallocated =3D true;
+- 		target_size =3D iocb->ki_pos + iov_iter_count(from);
++ 	}
++ 	if (iocb->ki_flags & IOCB_DIRECT) {
++ 		/*
++ 		 * Convert inline data for Direct I/O before entering
++ 		 * f2fs_direct_IO().
++ 		 */
++ 		ret =3D f2fs_convert_inline_inode(inode);
++ 		if (ret)
++ 			goto out_unlock;
++ 	}
+ =20
+- 		err =3D f2fs_preallocate_blocks(iocb, from);
+- 		if (err) {
+- out_err:
+- 			clear_inode_flag(inode, FI_NO_PREALLOC);
+- 			inode_unlock(inode);
+- 			ret =3D err;
+- 			goto out;
+- 		}
+- write:
+- 		ret =3D __generic_file_write_iter(iocb, from);
+- 		clear_inode_flag(inode, FI_NO_PREALLOC);
++ 	/* Possibly preallocate the blocks for the write. */
++ 	target_size =3D iocb->ki_pos + iov_iter_count(from);
++ 	preallocated =3D f2fs_preallocate_blocks(iocb, from);
++ 	if (preallocated < 0) {
++ 		ret =3D preallocated;
++ 		goto out_unlock;
++ 	}
+ =20
+- 		/* if we couldn't write data, we should deallocate blocks. */
+- 		if (preallocated && i_size_read(inode) < target_size) {
+- 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+- 			filemap_invalidate_lock(inode->i_mapping);
+- 			f2fs_truncate(inode);
+- 			filemap_invalidate_unlock(inode->i_mapping);
+- 			up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+- 		}
++ 	ret =3D __generic_file_write_iter(iocb, from);
+ =20
+- 		if (ret > 0)
+- 			f2fs_update_iostat(F2FS_I_SB(inode), APP_WRITE_IO, ret);
++ 	/* Don't leave any preallocated blocks around past i_size. */
++ 	if (preallocated > 0 && inode->i_size < target_size) {
++ 		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+ -		down_write(&F2FS_I(inode)->i_mmap_sem);
+++		filemap_invalidate_lock(inode->i_mapping);
++ 		f2fs_truncate(inode);
+ -		up_write(&F2FS_I(inode)->i_mmap_sem);
+++		filemap_invalidate_unlock(inode->i_mapping);
++ 		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+  	}
+- unlock:
++ 	clear_inode_flag(inode, FI_PREALLOCATED_ALL);
++=20
++ 	if (ret > 0)
++ 		f2fs_update_iostat(F2FS_I_SB(inode), APP_WRITE_IO, ret);
++ out_unlock:
+  	inode_unlock(inode);
+  out:
+- 	trace_f2fs_file_write_iter(inode, iocb->ki_pos,
+- 					iov_iter_count(from), ret);
++ 	trace_f2fs_file_write_iter(inode, orig_pos, orig_count, ret);
+  	if (ret > 0)
+  		ret =3D generic_write_sync(iocb, ret);
+  	return ret;
+
+--Sig_/vdNYD7N=8MiRqmM3Cs8RyB=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD6C4gACgkQAVBC80lX
+0Gz8CAf7BAW6NLfQF4SSpRLNMuecRDYGJldqGfVhORGVfX+xEMnlb8bYcPNHruhl
+qW4013tcW1oWofulIwNLToIsIXjBY8qgGHs8TjlvP/6vs3QnSeqpvJDFCjKIJ78y
+kBHyjGeaosPSblkXKPsCWErF404WijWHS1uchCwuOtv1YGSjtJuUEqdQlyG6p+G0
+UsoFrn07Wo4k44J1xLfuTvWN5suwpBTWEonbG2tklLHl47NKFVpnwWtUmVV6SCHb
+Ho8R+BPY1VZXKA4snSUaqJ2MgOWhYTd341zdvMcqF/CevF2fpqkSmC4CE7HwhKE1
+5USUwToPSGl2fucadWM+ytTGJQcCNw==
+=+VEq
+-----END PGP SIGNATURE-----
+
+--Sig_/vdNYD7N=8MiRqmM3Cs8RyB=--
