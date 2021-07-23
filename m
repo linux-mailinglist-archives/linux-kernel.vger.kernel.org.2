@@ -2,135 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFAE3D3C1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6700E3D3C25
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbhGWOUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 10:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42354 "EHLO
+        id S235457AbhGWOZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 10:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbhGWOUs (ORCPT
+        with ESMTP id S235351AbhGWOZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 10:20:48 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB483C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:01:20 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 9-20020a05600c26c9b02901e44e9caa2aso1793592wmv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=w9v+4s7/P2Cg+QjJMoNBlGX2Ekj8q+TMc1efLZ/J8+4=;
-        b=fj7JYwQb2WhybJAUx4rfOc25+s+QNn44GNfoxzaxvvv+Pb3suvS7pBkfDBusZwXXlf
-         m2ohNk1UieUIgdG4WzCnhOgYhZQUxbWqMI912foPZDh3S/Xyz1xqNn42hbT6j9xpiyaK
-         YtEu8H9SIRKgSAtAIMM9wzpHYJE1pq6x0zKXs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=w9v+4s7/P2Cg+QjJMoNBlGX2Ekj8q+TMc1efLZ/J8+4=;
-        b=fakTSJkkTP2ZCK3ivt2yaD3YiAwndkIPf8iPl8iUZNoZvwS/b8YF4a1bjTnrPKXcXm
-         LMgE2L8vef8VH7QF3QIsMVQedWIJYu8IOARa8dVSuA2SjUWVethAETAiM/On2oLeYj+K
-         vrEsezrmFmvIJI4PZsY571T4j+wwgBP1wea+jRMcOKWfixl97IO2JZNvKLe7ttmDoM9X
-         ScEkgIwjZhyIcvfrYs5CdO4ADqljrCwu+hAzQWYrJUWcu5xCMk9JWI9ENZP44txfzc4S
-         UHFstKl+SgDUGZGzNgR1qu3lR3sx6HD4GtM9ksGngja6FW2V/X022q4HjjPQVTT4+fiv
-         cy0g==
-X-Gm-Message-State: AOAM531Mpu+/INP6PU8kRYL80ivWuC50zPtiDi9PU0tgI9FN1tupTb71
-        jFnvidfCRrmvGP6+l4Keu+Rk8Q==
-X-Google-Smtp-Source: ABdhPJxAhoY4SO+Rljt8tSjDfVfejZCTQg8CZQ/u7VOQRIgpa+QXhopteYV2nXJ0mUMxsKF9l0l34Q==
-X-Received: by 2002:a05:600c:21cd:: with SMTP id x13mr5151839wmj.12.1627052479277;
-        Fri, 23 Jul 2021 08:01:19 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id b6sm5468873wmj.34.2021.07.23.08.01.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 08:01:18 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 17:01:16 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Charan Teja Reddy <charante@codeaurora.org>,
-        sumit.semwal@linaro.org, linaro-mm-sig@lists.linaro.org,
-        vinmenon@codeaurora.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH] dma-buf: WARN on dmabuf release with pending attachments
-Message-ID: <YPrZvM8BI7VO8xQk@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        sumit.semwal@linaro.org, linaro-mm-sig@lists.linaro.org,
-        vinmenon@codeaurora.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-References: <1627043468-16381-1-git-send-email-charante@codeaurora.org>
- <b057b0fe-75ae-d872-f500-a307543d8233@amd.com>
+        Fri, 23 Jul 2021 10:25:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE835C061575;
+        Fri, 23 Jul 2021 08:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TH+UO+4GlVJPwsICtqlb2GDVZ2D9S2sacJqluLD1cbU=; b=ryUceu+cYHelVxJMnHQDMyfPmq
+        1CmyM/LHAHkQgUx4cO8EdjLvKifP61OBPlPyUgIcxSaTkiH+a4dktu+nR+Gs+zi1cyNxG2Yd46ojm
+        KxL0i0AytbtSWTbmcpgpLAgCZKlIxwEIKAn6SRJrpA0ZkVBZTAaybsgiyKcmtqYMkV3R2cEOAMa8I
+        b9W8adfTMvE8RA61u57/ieX9FkjfJ1LgFRBAdezhXjx8d3AvAMQRJhAkIK1/urYh/4UGodi0SAHjZ
+        p/d6loPEz9qZZq7hJPbgZ4M/XQVjZLZs+zMZA2gXsxalO2C5fU/1Q/npBzRRu0DGpsfadyaxZ7dhm
+        TbWYshoQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6wjx-00BSns-9o; Fri, 23 Jul 2021 15:05:32 +0000
+Date:   Fri, 23 Jul 2021 16:05:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v6] iomap: support tail packing inline read
+Message-ID: <YPrauRjG7+vCw7f9@casper.infradead.org>
+References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
+ <20210722053947.GA28594@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b057b0fe-75ae-d872-f500-a307543d8233@amd.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210722053947.GA28594@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 02:34:13PM +0200, Christian König wrote:
-> Am 23.07.21 um 14:31 schrieb Charan Teja Reddy:
-> > It is expected from the clients to follow the below steps on an imported
-> > dmabuf fd:
-> > a) dmabuf = dma_buf_get(fd) // Get the dmabuf from fd
-> > b) dma_buf_attach(dmabuf); // Clients attach to the dmabuf
-> >     o Here the kernel does some slab allocations, say for
-> > dma_buf_attachment and may be some other slab allocation in the
-> > dmabuf->ops->attach().
-> > c) Client may need to do dma_buf_map_attachment().
-> > d) Accordingly dma_buf_unmap_attachment() should be called.
-> > e) dma_buf_detach () // Clients detach to the dmabuf.
-> >     o Here the slab allocations made in b) are freed.
-> > f) dma_buf_put(dmabuf) // Can free the dmabuf if it is the last
-> > reference.
-> > 
-> > Now say an erroneous client failed at step c) above thus it directly
-> > called dma_buf_put(), step f) above. Considering that it may be the last
-> > reference to the dmabuf, buffer will be freed with pending attachments
-> > left to the dmabuf which can show up as the 'memory leak'. This should
-> > at least be reported as the WARN().
-> > 
-> > Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-> 
-> Good idea. I would expect a crash immediately, but from such a backtrace it
-> is quite hard to tell what the problem is.
-> 
-> Patch is Reviewed-by: Christian König <christian.koenig@amd.com> and I'm
-> going to push this to drm-misc-next on Monday if nobody objects.
+On Thu, Jul 22, 2021 at 07:39:47AM +0200, Christoph Hellwig wrote:
+> @@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+>  
+>  	flush_dcache_page(page);
+>  	addr = kmap_atomic(page);
+> -	memcpy(iomap->inline_data + pos, addr + pos, copied);
+> +	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
 
-The boom only happens a lot later when the offending import uses the
-attachment again. This here has a good chance to catch that early
-drm_buf_put(), so I think it's a good improvement. We'll still Oops later
-on ofc, but meh.
+This is wrong; pos can be > PAGE_SIZE, so this needs to be
+addr + offset_in_page(pos).
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
-> Thanks,
-> Christian.
-> 
-> > ---
-> >   drivers/dma-buf/dma-buf.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> > index 511fe0d..733c8b1 100644
-> > --- a/drivers/dma-buf/dma-buf.c
-> > +++ b/drivers/dma-buf/dma-buf.c
-> > @@ -79,6 +79,7 @@ static void dma_buf_release(struct dentry *dentry)
-> >   	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
-> >   		dma_resv_fini(dmabuf->resv);
-> > +	WARN_ON(!list_empty(&dmabuf->attachments));
-> >   	module_put(dmabuf->owner);
-> >   	kfree(dmabuf->name);
-> >   	kfree(dmabuf);
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
