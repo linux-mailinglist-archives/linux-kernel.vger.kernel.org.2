@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C174A3D396C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:25:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876943D396E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbhGWKoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
+        id S232558AbhGWKpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbhGWKoa (ORCPT
+        with ESMTP id S231428AbhGWKpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:44:30 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDC1C061575;
-        Fri, 23 Jul 2021 04:25:04 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id BF891221E6;
-        Fri, 23 Jul 2021 13:25:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1627039502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fszxqKXDPtHSocdLQaBQmiEK73CDVbhWM36B8VGWOU0=;
-        b=eoAn61Mc/sXonKaf+4euIyA4sVsR8ZdWsIk3M0RkNvc+TBoKeJOyS0Ui3S6C/GnxtfBbU5
-        9VP428iFyhBTUtb3YpNMgJoJJdJF6cMBzK5KTb2l2aohOQ6duBaXC6jeV1LCsP8FDO5LN9
-        yXGoE0oepfrmZwilzU+RSOouxH4j7uo=
+        Fri, 23 Jul 2021 06:45:41 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5172C061575;
+        Fri, 23 Jul 2021 04:26:14 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id m38-20020a05600c3b26b02902161fccabf1so3301004wms.2;
+        Fri, 23 Jul 2021 04:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xwHUId3Owuh/R7H+8Rhy8RonM2a/Vt6Q48piROjEFzs=;
+        b=mhPSNxLS5zs/OwRLtsk0ZnQ9AEh8bjKhSy6MIZS/qlNqOye3zVfWWSc45eK1ZoAcCV
+         KSgabzUGMd0rYWj/jeYFSC9u8gpLJDQOuUE3ZiWLVgcGFNWqSp8Jmt3QrDeRcld8fX84
+         wjV+X+ns5PBddyEFRMlB1EaQ/AfUctcIXIGqLz05jyXCvWTdecAg8zceAMVxPE1LdP1C
+         2YDh30lxh9cMGSxg1IDmoiX3tAKYu/+H9H03JnAo8N1OGiy6HEsIN8mzRxByjT416XGF
+         1TPpbUSHcjQ9Y/3DwjccGTMk0cGKm6jEe+ptRM3K/PE/y9mAmNgsqQTioE4NwrBSmHJo
+         M4dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xwHUId3Owuh/R7H+8Rhy8RonM2a/Vt6Q48piROjEFzs=;
+        b=p6iUtwq1OLjGBQcLlev6Z+4mOx8USjjrWpo7ZAJm02SbFTaXpe+//437MFcbsduBYn
+         1T2UhygtCJb/IFn/QrIktgUYW2NKHLZ+DiE59wgeN2oYKlCjihzCdwxofdrcNZznYtP/
+         gMpYwbC9uinT8SCPkL52F/mAvp2ijDL+4R1UPStHx1ab8tfRLr9SApJ5xieih+xM9CT0
+         RgsxrVN9aLnkTmpsEeGS/9mLzJXpS3CZq4mCVXYn1djYIRpzitCp6jtcqau3vSuumhzz
+         2dEon5TNihE/ii4ACnmIomT8Zq2O/Pddcgb0sz+zSwJ+2tcv1vqTXu28FU9YMiw7HFXd
+         sDWw==
+X-Gm-Message-State: AOAM532EDuy8+8WZkpdTOLasI5decRwKTtQuu8jzINGovO0qMm7RAn2L
+        Vo6tgqNjuWPBYkNmxJpZqCw=
+X-Google-Smtp-Source: ABdhPJxIy9AuEheYKCGgPyeKVBkUixd2Ks9D0b53PYiPtkW4DWT8Q6JUMQhrSUvZhjGrrh+OoxYZbg==
+X-Received: by 2002:a1c:acca:: with SMTP id v193mr658665wme.107.1627039573231;
+        Fri, 23 Jul 2021 04:26:13 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id b15sm38331857wrr.27.2021.07.23.04.26.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 04:26:12 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 12:26:11 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/123] 5.10.53-rc2 review
+Message-ID: <YPqnU17OOfPhJ73j@debian>
+References: <20210722184939.163840701@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 23 Jul 2021 13:25:02 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     andrew@lunn.ch, davem@davemloft.net, f.fainelli@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, olteanv@gmail.com, vivien.didelot@gmail.com
-Subject: Re: [RFC] dsa: register every port with of_platform
-In-Reply-To: <YPqlmyvU2IjPFkXC@Ansuel-xps.localdomain>
-References: <20210723110505.9872-1-ansuelsmth@gmail.com>
- <20210723111328.20949-1-michael@walle.cc>
- <YPqlmyvU2IjPFkXC@Ansuel-xps.localdomain>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <168cb1440ebe1cff4a7b5e343502638a@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722184939.163840701@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-07-23 13:18, schrieb Ansuel Smith:
-> On Fri, Jul 23, 2021 at 01:13:28PM +0200, Michael Walle wrote:
->> > The declaration of a different mac-addr using the nvmem framework is
->> > currently broken. The dsa code uses the generic of_get_mac_address where
->> > the nvmem function requires the device node to be registered in the
->> > of_platform to be found by of_find_device_by_node. Register every port
->> 
->> Which tree are you on? This should be fixed with
->> 
->> f10843e04a07  of: net: fix of_get_mac_addr_nvmem() for non-platform 
->> devices
->> 
->> -michael
+Hi Greg,
+
+On Thu, Jul 22, 2021 at 08:50:22PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.53 release.
+> There are 123 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Thx a lot for the hint. So yes I missed that the problem was already
-> fixed. Sorry for the mess. Any idea if that will be backported?
+> Responses should be made by Sat, 24 Jul 2021 18:49:19 +0000.
+> Anything received after that time might be too late.
 
-I didn't include a Fixes tag, so it won't be automatically
-backported. Also I'm not sure if it qualifies for the stable trees
-because no in-tree users seem to be affected, no?
+Build test:
+mips (gcc version 11.1.1 20210702): 63 configs -> no failure
+arm (gcc version 11.1.1 20210702): 105 configs -> no new failure
+arm64 (gcc version 11.1.1 20210702): 3 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
--michael
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
+arm64: Booted on rpi4b (4GB model). No regression.
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
