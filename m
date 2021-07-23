@@ -2,174 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0675C3D3BAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F5A3D3BAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhGWNbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:31:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
+        id S235418AbhGWNc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:32:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235406AbhGWNbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:31:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64315608FE;
-        Fri, 23 Jul 2021 14:12:07 +0000 (UTC)
+        id S235351AbhGWNc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:32:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE4EA60EB4;
+        Fri, 23 Jul 2021 14:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627049527;
-        bh=z8iwka6cD/ub4QPaKx1T+2Ci+JoRGiOg0c2+AO3hLLA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fR7C7SGPOXmA16T2hOT+Q4z2ze+23eKNZRL6dvewF3z4NGjjemfvP+MZaGfImVJRn
-         gYrXzISLEljQr+tta7CJwTitlaJnjg0ewLq9cE5qnAtOrl6OFwS+3su3nIuRj4GHBS
-         9nTFMdV/dIy0ahfFGykLwueIDPaBMPjoOjJ4+wWI1nQFyDZpdVvdhYTnmZxIlouXT5
-         riWc+/qEKQ1rfiQJVgyf8rgpRtggYApBEKCiUuyYR45gEZ1Co4D3OXk6ifizUnI53L
-         XH3iKUdYdi4hFFw0TGPaWhY5oD+P+AJIxiuWE7tqGnmgKX37y/peOUdvFFv0QW+IYD
-         yWij0uJzbUfrA==
-Received: by pali.im (Postfix)
-        id 033E510D1; Fri, 23 Jul 2021 16:12:04 +0200 (CEST)
-Date:   Fri, 23 Jul 2021 16:12:04 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: marvell: armada-37xx: Extend PCIe MEM
- space
-Message-ID: <20210723141204.waiipazikhzzloj7@pali>
-References: <20210624215546.4015-1-pali@kernel.org>
- <20210624215546.4015-3-pali@kernel.org>
- <87pmv919bq.fsf@BL-laptop>
+        s=k20201202; t=1627049580;
+        bh=9zgAdN2R83/AZuFoRURWsWq5ldzAHeQTlvqMRC3gzBg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jCruH8X7ttLvopYjhCJO7sQuRtFQA9BDS5phMv2YmQjXfut/sQA3bOGpr9kl+ggyP
+         PDuH/e+s4vAzz5Kbwzi0SZtUQW16NTmqndd7jdnE3ZCuAANqbcUbGf58mVXGSRDpKj
+         LDCQrtLHCHZnJuXmjnqbTdEEZlZJs3wNuJy0atP593sM5RiSVFkwTwnCxfh4Wrv8tG
+         Ox1hr1TSxhukpenSIo80VcTfNSi1iHpmChFKycwaCzYPt8w2qITx/TVrOlYLBpvIlR
+         9YarBcIVpbHXdCdyAjnJzAHvB+RFTGDUVBtOM63GdeUR0T3rTGFbVlwuQLVjkLQ27L
+         vBKpJMr28iDZA==
+Received: by mail-oo1-f41.google.com with SMTP id k7-20020a4abd870000b029025e4d9b0a3dso412086oop.6;
+        Fri, 23 Jul 2021 07:13:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531+Nm4uxvv260GhbiPpSLyRPd8xAnMbtdaM/pZVicQfYCm9j1yk
+        nakpTCyofNw65tVzt0dKRYiO85bVmIKeNKP1jWs=
+X-Google-Smtp-Source: ABdhPJw1EADKet1m/Ts4jll8W2cR5Nkp1FQ05/qz/DVoG35kETxmRNs3KWUEW9UXNJ9E3g7oimll8XZHEWO4W71ls4o=
+X-Received: by 2002:a4a:6558:: with SMTP id z24mr2823148oog.41.1627049580214;
+ Fri, 23 Jul 2021 07:13:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87pmv919bq.fsf@BL-laptop>
-User-Agent: NeoMutt/20180716
+References: <20210722175157.1367122-1-valentin.schneider@arm.com>
+In-Reply-To: <20210722175157.1367122-1-valentin.schneider@arm.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 23 Jul 2021 16:12:49 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE8Yyn0orHe3DjFvCQ3k5mUKJF10BcJ3fJTessRoMShBA@mail.gmail.com>
+Message-ID: <CAMj1kXE8Yyn0orHe3DjFvCQ3k5mUKJF10BcJ3fJTessRoMShBA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] sched, x86, arm64: PREEMPT_RT, FPU and preemption
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-rt-users@vger.kernel.org, X86 ML <x86@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Mark Brown <broonie@kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 23 July 2021 14:52:25 Gregory CLEMENT wrote:
-> Hello Pali,
-> 
-> > Current PCIe MEM space of size 16 MB is not enough for some combination
-> > of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
-> > Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
-> > so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
-> > allocate more PCIe BARs for more PCIe cards.
-> >
-> > Without this change some combination of PCIe cards cannot be used and
-> > kernel show error messages in dmesg during initialization:
-> >
-> >     pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
-> >     pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> >     pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
-> >     pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
-> >     pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
-> >     pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
-> >     pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
-> >     pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
-> >     pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
-> >     pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
-> >     pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
-> >
-> > Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
-> > kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
-> > crashes during loading of kernel DTB file. This bug is present only in
-> > U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
-> > affected by this bug. Bug is fixed in U-Boot version 2021.07.
-> >
-> > To not break booting new kernels on existing versions of U-Boot on Turris
-> > Mox, use first 16 MB range for IO and second range with rest of PCIe window
-> > for MEM.
-> 
-> Is there any depencey with the firs patch of this series ?
-> 
-> What happend if this patch is applied without the other ?
+On Thu, 22 Jul 2021 at 19:53, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> Hi folks,
+>
+> This stems from some more v5.13-rt1 breakage on arm64. This time per-CPU access
+> safety isn't sufficient, we really need to keep preemption disabled.
+>
+> In a happy accident I stumbled on
+>
+>   cba08c5dc6dc ("x86/fpu: Make kernel FPU protection RT friendly")
+>
+> so I packaged what was done there into some common helpers and plastered them
+> over the problematic areas.
+>
+> Cheers,
+> Valentin
+>
+> Valentin Schneider (3):
+>   sched/preempt: Introduce preempt_{enable, disable}_bh()
+>   x86/fpu: Make FPU protection reuse common helper
+>   arm64/fpsimd: Fix FPSIMD context handling vs PREEMPT_RT
+>
 
-First patch is fixing reading and setting ranges configuration from DTS.
-Without first patch memory windows stays as they were in bootloader or
-in its default configuration. Which is that all 128 MB are transparently
-mapped to PCIe MEM space.
+Thanks for fixing this.
 
-Therefore this second DTS patch does not fixes issue with IO space
-(kernel still crashes when accessing it). But allows to use all PCIe MEM
-space (due to bootloader / default configuration) and therefore allows
-to use more PCIe cards (which needs more PCIe MEM space).
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 
-> Could you test it to see if any regression occure ?
-> 
-> Thanks,
-> 
-> Grégory
-> 
-> >
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
-> > ---
-> >  .../boot/dts/marvell/armada-3720-turris-mox.dts | 17 +++++++++++++++++
-> >  arch/arm64/boot/dts/marvell/armada-37xx.dtsi    | 11 +++++++++--
-> >  2 files changed, 26 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > index 53e817c5f6f3..86b3025f174b 100644
-> > --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> > @@ -134,6 +134,23 @@
-> >  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
-> >  	status = "okay";
-> >  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
-> > +	/*
-> > +	 * U-Boot port for Turris Mox has a bug which always expects that "ranges" DT property
-> > +	 * contains exactly 2 ranges with 3 (child) address cells, 2 (parent) address cells and
-> > +	 * 2 size cells and also expects that the second range starts at 16 MB offset. If these
-> > +	 * conditions are not met then U-Boot crashes during loading kernel DTB file. PCIe address
-> > +	 * space is 128 MB long, so the best split between MEM and IO is to use fixed 16 MB window
-> > +	 * for IO and the rest 112 MB (64+32+16) for MEM, despite that maximal IO size is just 64 kB.
-> > +	 * This bug is not present in U-Boot ports for other Armada 3700 devices and is fixed in
-> > +	 * U-Boot version 2021.07. See relevant U-Boot commits (the last one contains fix):
-> > +	 * https://source.denx.de/u-boot/u-boot/-/commit/cb2ddb291ee6fcbddd6d8f4ff49089dfe580f5d7
-> > +	 * https://source.denx.de/u-boot/u-boot/-/commit/c64ac3b3185aeb3846297ad7391fc6df8ecd73bf
-> > +	 * https://source.denx.de/u-boot/u-boot/-/commit/4a82fca8e330157081fc132a591ebd99ba02ee33
-> > +	 */
-> > +	#address-cells = <3>;
-> > +	#size-cells = <2>;
-> > +	ranges = <0x81000000 0 0xe8000000   0 0xe8000000   0 0x01000000   /* Port 0 IO */
-> > +		  0x82000000 0 0xe9000000   0 0xe9000000   0 0x07000000>; /* Port 0 MEM */
-> >  
-> >  	/* enabled by U-Boot if PCIe module is present */
-> >  	status = "disabled";
-> > diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > index 7a2df148c6a3..dac3007f2ac1 100644
-> > --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> > @@ -488,8 +488,15 @@
-> >  			#interrupt-cells = <1>;
-> >  			msi-parent = <&pcie0>;
-> >  			msi-controller;
-> > -			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
-> > -				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
-> > +			/*
-> > +			 * The 128 MiB address range [0xe8000000-0xf0000000] is
-> > +			 * dedicated for PCIe and can be assigned to 8 windows
-> > +			 * with size a power of two. Use one 64 KiB window for
-> > +			 * IO at the end and the remaining seven windows
-> > +			 * (totaling 127 MiB) for MEM.
-> > +			 */
-> > +			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
-> > +				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
-> >  			interrupt-map-mask = <0 0 0 7>;
-> >  			interrupt-map = <0 0 0 1 &pcie_intc 0>,
-> >  					<0 0 0 2 &pcie_intc 1>,
-> > -- 
-> > 2.20.1
-> >
-> 
-> -- 
-> Gregory Clement, Bootlin
-> Embedded Linux and Kernel engineering
-> http://bootlin.com
+
+>  arch/arm64/kernel/fpsimd.c     |  6 ++++--
+>  arch/x86/include/asm/fpu/api.h | 19 ++-----------------
+>  include/linux/bottom_half.h    | 26 ++++++++++++++++++++++++++
+>  3 files changed, 32 insertions(+), 19 deletions(-)
+>
+> --
+> 2.25.1
+>
