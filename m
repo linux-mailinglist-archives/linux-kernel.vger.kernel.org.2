@@ -2,138 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A28E3D335F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 06:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B598E3D335B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 06:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234974AbhGWDVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 23:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234505AbhGWDTY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 23:19:24 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366D3C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 20:58:46 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id t21so1536482plr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 20:58:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=un8J5f50KlXoN8UBa4hsGQdCO3pR6zbgd+IL6vlgdIA=;
-        b=Zbs/2a6fQawK/CttSHM+tr2A79wyGBgbeXhuuOJLULOF14Nw1VYVjzO/8YcyLa+cXY
-         ALoICMmLFg71PiIbbyBShV6mYQceCxLyYlrSmZoxwVpB1Pa30pDY6K5I/rqtL69spztX
-         cep9NOSEN9uBdDtq7RsAfVTC8E8ECzsGOQBgywDGB7ieYXHi3SXDODIFof/cxJK6ZlfA
-         hGVcBmJ2CxfYTFb6nJDdkcQxFjfTYanZ9SVJXqASwnS16VSTBGh/W2+mR966mSp1+OJr
-         exBSR+Z0nMwBIHgoTq6JUqlXmGc0SmLKb8FqW4aADnCp+rc/3DCI6TxgIVT8DxDW5RJi
-         B4jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=un8J5f50KlXoN8UBa4hsGQdCO3pR6zbgd+IL6vlgdIA=;
-        b=E8mXZ21GJZ5PHWxyWoxSbbOFiCBmJtNkUZgnDh7kijA9HXEtVZH1DLGbU1I7BkFeZA
-         cwXaPMVdH64g3dmy3Y4KnablyRGeoypeE2asRb25OEGalOdJdXPGkzu57QXn4GFUJGkc
-         s5xOVjuuPg9blav/0djTOJy92E54TrvU7XLJ2QzmTJjJuVsI4IlFe3r3KeLNZd0NXGko
-         lPAxZYAert9Q/zFqTNfM+dmS+0gD7wnN3K4uSM4WUMfbHCbmaFdKcFm6SmnfZtfhHsZK
-         cO1HUQTPkFDXIBD+gexQbjuXQgt5v0Af5MynD5xMlBX31BZj4/ZLrU3Sr0VNRxwuCUwC
-         YEBA==
-X-Gm-Message-State: AOAM532s2VWjBvSdwIF1Jsct35R/Z6himW634W8tD7yf2yc8nuNU12pI
-        xWzAiTvN9IcHp212gj11x3s=
-X-Google-Smtp-Source: ABdhPJw60JjpiyduZTVSwtK0+21UlfAsWzjv4g9tsxF57a7UL3pFL5+sybvri7NujsaWjUN6iv7ODw==
-X-Received: by 2002:a17:90a:b28a:: with SMTP id c10mr11587363pjr.59.1627012725726;
-        Thu, 22 Jul 2021 20:58:45 -0700 (PDT)
-Received: from liuchao12-Ubuntu.xiaomi.com ([209.9.72.214])
-        by smtp.gmail.com with ESMTPSA id x40sm32710755pfu.176.2021.07.22.20.58.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 20:58:45 -0700 (PDT)
-From:   Chao Liu <chaoliu719@gmail.com>
-X-Google-Original-From: Chao Liu <liuchao12@xiaomi.com>
-To:     chao@kernel.org, jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [f2fs-dev] [PATCH] resize.f2fs: add option to manually specify new overprovision
-Date:   Fri, 23 Jul 2021 11:58:41 +0800
-Message-Id: <20210723035841.1829101-1-liuchao12@xiaomi.com>
-X-Mailer: git-send-email 2.32.0
+        id S234429AbhGWDV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 23:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234344AbhGWDSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 23:18:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6FD760C41;
+        Fri, 23 Jul 2021 03:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627012735;
+        bh=mTGxb1Ejz9EMtgv3s0iB2uOWO/0q9PqqAQqhujIkmYw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=J3rZ7G5jq3otwzD8iz80+24WyHtB0KHprj3zctcE7mxHzoD+J16c7CxbADwBHNFyU
+         L0AkfMgGvfruvHFTqif7TLI9XLMb90N/zhd6BbK4Q67+lS3w8myK/pu3BV5ESS8DA2
+         o3OlNYAHBcBTAHCtUDPejTJZAMpwN1A1gxS8ApXwm+IGvb0hvm6tyr5FARk8CGYL5Z
+         OeeOHyFFwaE5P6WAD1ZrlUFCGMHTe1GiIRmOd4u6cyQmSHwlQBtcUQ7ttv1W74AB5y
+         nDdyAHnm12HasgZnh7mnKmHBmenZojsikR34ovgsw92fAnoDeQ+mvTvoY7yGyc1Ffr
+         bHFh/rx6JUDWg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 2/8] net/802/garp: fix memleak in garp_request_join()
+Date:   Thu, 22 Jul 2021 23:58:46 -0400
+Message-Id: <20210723035852.532303-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210723035852.532303-1-sashal@kernel.org>
+References: <20210723035852.532303-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make.f2fs supports manually specifying overprovision, and we expect
-resize.f2fs to support it as well.
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-This change add a new '-o' option to manually specify overprovision.
+[ Upstream commit 42ca63f980842918560b25f0244307fd83b4777c ]
 
-Signed-off-by: Chao Liu <liuchao12@xiaomi.com>
+I got kmemleak report when doing fuzz test:
+
+BUG: memory leak
+unreferenced object 0xffff88810c909b80 (size 64):
+  comm "syz", pid 957, jiffies 4295220394 (age 399.090s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 08 00 00 00 01 02 00 04  ................
+  backtrace:
+    [<00000000ca1f2e2e>] garp_request_join+0x285/0x3d0
+    [<00000000bf153351>] vlan_gvrp_request_join+0x15b/0x190
+    [<0000000024005e72>] vlan_dev_open+0x706/0x980
+    [<00000000dc20c4d4>] __dev_open+0x2bb/0x460
+    [<0000000066573004>] __dev_change_flags+0x501/0x650
+    [<0000000035b42f83>] rtnl_configure_link+0xee/0x280
+    [<00000000a5e69de0>] __rtnl_newlink+0xed5/0x1550
+    [<00000000a5258f4a>] rtnl_newlink+0x66/0x90
+    [<00000000506568ee>] rtnetlink_rcv_msg+0x439/0xbd0
+    [<00000000b7eaeae1>] netlink_rcv_skb+0x14d/0x420
+    [<00000000c373ce66>] netlink_unicast+0x550/0x750
+    [<00000000ec74ce74>] netlink_sendmsg+0x88b/0xda0
+    [<00000000381ff246>] sock_sendmsg+0xc9/0x120
+    [<000000008f6a2db3>] ____sys_sendmsg+0x6e8/0x820
+    [<000000008d9c1735>] ___sys_sendmsg+0x145/0x1c0
+    [<00000000aa39dd8b>] __sys_sendmsg+0xfe/0x1d0
+
+Calling garp_request_leave() after garp_request_join(), the attr->state
+is set to GARP_APPLICANT_VO, garp_attr_destroy() won't be called in last
+transmit event in garp_uninit_applicant(), the attr of applicant will be
+leaked. To fix this leak, iterate and free each attr of applicant before
+rerturning from garp_uninit_applicant().
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fsck/main.c   | 8 ++++++--
- fsck/resize.c | 9 ++++++++-
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ net/802/garp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/fsck/main.c b/fsck/main.c
-index 260ff29..06253e2 100644
---- a/fsck/main.c
-+++ b/fsck/main.c
-@@ -124,7 +124,8 @@ void resize_usage()
- 	MSG(0, "[options]:\n");
- 	MSG(0, "  -d debug level [default:0]\n");
- 	MSG(0, "  -i extended node bitmap, node ratio is 20%% by default\n");
--	MSG(0, "  -s safe resize (Does not resize metadata)");
-+	MSG(0, "  -o overprovision percentage [default:auto]\n");
-+	MSG(0, "  -s safe resize (Does not resize metadata)\n");
- 	MSG(0, "  -t target sectors [default: device size]\n");
- 	MSG(0, "  -V print the version number and exit\n");
- 	exit(1);
-@@ -529,7 +530,7 @@ void f2fs_parse_options(int argc, char *argv[])
- #endif
- 	} else if (!strcmp("resize.f2fs", prog)) {
- #ifdef WITH_RESIZE
--		const char *option_string = "d:fst:iV";
-+		const char *option_string = "d:fst:io:V";
-
- 		c.func = RESIZE;
- 		while ((option = getopt(argc, argv, option_string)) != EOF) {
-@@ -563,6 +564,9 @@ void f2fs_parse_options(int argc, char *argv[])
- 			case 'i':
- 				c.large_nat_bitmap = 1;
- 				break;
-+			case 'o':
-+				c.new_overprovision = atof(optarg);
-+				break;
- 			case 'V':
- 				show_version(prog);
- 				exit(0);
-diff --git a/fsck/resize.c b/fsck/resize.c
-index 78d578e..85a53c5 100644
---- a/fsck/resize.c
-+++ b/fsck/resize.c
-@@ -146,7 +146,9 @@ safe_resize:
- 						get_sb(segs_per_sec));
-
- 	/* Let's determine the best reserved and overprovisioned space */
--	c.new_overprovision = get_best_overprovision(sb);
-+	if (c.new_overprovision == 0)
-+		c.new_overprovision = get_best_overprovision(sb);
+diff --git a/net/802/garp.c b/net/802/garp.c
+index 2dac647ff420..237f6f076355 100644
+--- a/net/802/garp.c
++++ b/net/802/garp.c
+@@ -206,6 +206,19 @@ static void garp_attr_destroy(struct garp_applicant *app, struct garp_attr *attr
+ 	kfree(attr);
+ }
+ 
++static void garp_attr_destroy_all(struct garp_applicant *app)
++{
++	struct rb_node *node, *next;
++	struct garp_attr *attr;
 +
- 	c.new_reserved_segments =
- 		(2 * (100 / c.new_overprovision + 1) + 6) *
- 						get_sb(segs_per_sec);
-@@ -476,6 +478,11 @@ static void rebuild_checkpoint(struct f2fs_sb_info *sbi,
- 	set_cp(overprov_segment_count, get_cp(overprov_segment_count) +
- 						get_cp(rsvd_segment_count));
-
-+	MSG(0, "Info: Overprovision ratio = %.3lf%%\n", c.new_overprovision);
-+	MSG(0, "Info: Overprovision segments = %u (GC reserved = %u)\n",
-+					get_cp(overprov_segment_count),
-+					c.new_reserved_segments);
++	for (node = rb_first(&app->gid);
++	     next = node ? rb_next(node) : NULL, node != NULL;
++	     node = next) {
++		attr = rb_entry(node, struct garp_attr, node);
++		garp_attr_destroy(app, attr);
++	}
++}
 +
- 	free_segment_count = get_free_segments(sbi);
- 	new_segment_count = get_newsb(segment_count_main) -
- 					get_sb(segment_count_main);
---
-2.32.0
+ static int garp_pdu_init(struct garp_applicant *app)
+ {
+ 	struct sk_buff *skb;
+@@ -612,6 +625,7 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
+ 
+ 	spin_lock_bh(&app->lock);
+ 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
++	garp_attr_destroy_all(app);
+ 	garp_pdu_queue(app);
+ 	spin_unlock_bh(&app->lock);
+ 
+-- 
+2.30.2
 
