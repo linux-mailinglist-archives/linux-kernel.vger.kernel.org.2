@@ -2,162 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D5F3D3B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866B13D3B52
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235160AbhGWNAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:00:05 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:46966 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233486AbhGWNAE (ORCPT
+        id S235274AbhGWNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233486AbhGWNAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:00:04 -0400
-Received: by mail-ot1-f50.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso1207170ota.13;
-        Fri, 23 Jul 2021 06:40:36 -0700 (PDT)
+        Fri, 23 Jul 2021 09:00:34 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08800C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:41:07 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id h14so2127607lfv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:41:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8IUOnTm1w1NEGAKUMKN9++OeCABD3VuZuK8Yv72862w=;
+        b=gA0KTI9EjtWRrS83kMofDP16+r28w0JxI7MivS3NNKG3D7h0NX3kFG8jahIo/K4+j/
+         InBy0eAqybKo30iUV2ObUz79y65QEqzuqfkNGtvlG9qDbovYf1u1un6Ke2X6l0BQcFu3
+         q2ilMtGg0WxDs+eaJxTJ42jKEAk8ZC5FQCcKy9F9rN4zkZMmZAtFEsm862G3Sp4rfXt+
+         bWn2TLAs2bbq/De8aok+VvnJvts2urLLECzI97u8kviZl9k23Vte7DZGLFmO1BEBPF5P
+         xDFQ7wrG07ut5ziGOcjIEp43y+8WGHUOdB6/5aXhk06UdWjH2dL5UeZuP/j6p+J6uGi+
+         INXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EK7j/8f4gJtwvDFYwPxgaI/qysAXeirsjJ8IaeWGx4A=;
-        b=DtI0+IUTfd6sCTqduX3k2nhToE3k9/m7fF/5yrI9QRa5ip1cV8A3iALPHVSLsPBO+z
-         y4Rv5cqYgyjZpNsPEDIjPT9/njr41lVBT+lZuecNVVZRkl02attzZTSor3nb93wLdDPS
-         bzxu+37+N++xr7u5KoB3GlSXnyq8msqFqIghaVETc08/VV7Poe4TjF7egJyhqRbg+UWX
-         oFCUfB/hXr8PnPkH/0UzNylFKBI5WSpfcrygIk9zmtA8l77uxm8Si+J66gWJHUeyEQ5a
-         LkPxKuNjjC/itLm1XJiB0yM9WhpxGZHObnVmPpmeikeVOGEF8pA6pqXilb/lCQtM+qG5
-         jJiw==
-X-Gm-Message-State: AOAM532B79Ky999GihIWvi+Rl6QrCHinQiGSmFIdTgXroGLYa/SH6raO
-        Aidkl4bdfDjny0ePCVHrzJ7L/J8L08D6MdB3Ut3dJ/xu
-X-Google-Smtp-Source: ABdhPJxBOZZg33/bX+Gj1drL35xj7bWjUJV3tMno5E8SowAWHUbHFlYrmLbxlMDTjkDck0noTY8oYgoTuzqltlVYAIE=
-X-Received: by 2002:a9d:2968:: with SMTP id d95mr3048634otb.321.1627047625746;
- Fri, 23 Jul 2021 06:40:25 -0700 (PDT)
+        bh=8IUOnTm1w1NEGAKUMKN9++OeCABD3VuZuK8Yv72862w=;
+        b=gs6Rt6K7L4HA/HzZPHTQFmp+nbp3UW3A1CK6UCxQhSZTXrYf38vR+n8BF3DG6j4yxr
+         WuEOpd7x2m4xp9MG72Zi42IycVJmQp9w0MyAYmxYmMV8nzl4XNg2jSlF/aquZbR1gYkb
+         XM20t0V5jGrbX1+0k4EXfy6Z8okvpLy5Rel+2zGlXu4ijwH3Ef8usxFLZuKBTDuiMruR
+         ibEWHiu0ipyxRtQKuEMrNUYGA1qumvdjS3ME7YFnCazlqquYjwJ5+/5Vhm3iIY0SY44b
+         qqyXTozPHYr2PiWaXkr7iTiWXIH9Q5/OsNVdynZZMJTCxGWuGa5L/2gMTtliLFZ8OQnx
+         qmXg==
+X-Gm-Message-State: AOAM5332Bkeu0w6cAw3n3DBOtn8jtdbEJxAUCZV8Ti3ciMoYqGHnYrCK
+        rAqNJs0l4XofVJsWb4s/GZQguI2ehDsVsxw1mi2XcQ==
+X-Google-Smtp-Source: ABdhPJw8jqOznbPrS2TBhfpe4BhYyrVrnm33Cq5MfitNfhmTtB11IoaLYUskZkWSJpsoHlUm0sPAcJR3h0yAR38JgHQ=
+X-Received: by 2002:ac2:4d86:: with SMTP id g6mr3049839lfe.549.1627047665042;
+ Fri, 23 Jul 2021 06:41:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210722193450.35321-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210722193450.35321-1-andriy.shevchenko@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 23 Jul 2021 15:40:14 +0200
-Message-ID: <CAJZ5v0h6OQDB2hijnfinwpwpo_483UkcjGi8jYX4J6VETqLBEA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] clk: x86: Rename clk-lpt to more specific clk-lpss-atom
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
+References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+ <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com> <YPpfo2z8feq0vTlE@dhcp22.suse.cz>
+In-Reply-To: <YPpfo2z8feq0vTlE@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 23 Jul 2021 06:40:53 -0700
+Message-ID: <CALvZod470Q9yZzjRGZr5q3oZ2z7-EYc3fEGtoridk8MJu3k7jg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 9:34 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Thu, Jul 22, 2021 at 11:20 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> The LPT stands for Lynxpoint PCH. However the driver is used on a few
-> Intel Atom SoCs. Rename it to reflect this in a way how another clock
-> driver, i.e. clk-pmc-atom, is called.
+> On Thu 22-07-21 21:47:56, Suren Baghdasaryan wrote:
+> > On Thu, Jul 22, 2021, 7:04 PM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > > On Thu, Jul 22, 2021 at 6:14 PM Suren Baghdasaryan <surenb@google.com>
+> > > wrote:
+> > > >
+> > > [...]
+> > > > +
+> > > > +       mmap_read_lock(mm);
+> > >
+> > > How about mmap_read_trylock(mm) and return -EAGAIN on failure?
+> > >
+> >
+> > That sounds like a good idea. Thanks! I'll add that in the next respin.
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+> Why is that a good idea? Can you do anything meaningful about the
+> failure other than immediately retry the syscall and hope for the best?
 >
-> Good to go either via ACPI or CCF tree.
 
-In case you want the latter:
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
->  drivers/acpi/acpi_lpss.c                       |  6 ++++--
->  drivers/clk/x86/Makefile                       |  2 +-
->  drivers/clk/x86/{clk-lpt.c => clk-lpss-atom.c} | 12 ++++++------
->  include/linux/platform_data/x86/clk-lpss.h     |  2 +-
->  4 files changed, 12 insertions(+), 10 deletions(-)
->  rename drivers/clk/x86/{clk-lpt.c => clk-lpss-atom.c} (76%)
->
-> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-> index 894b7e6ae144..7f163074e4e4 100644
-> --- a/drivers/acpi/acpi_lpss.c
-> +++ b/drivers/acpi/acpi_lpss.c
-> @@ -385,7 +385,9 @@ static struct platform_device *lpss_clk_dev;
->
->  static inline void lpt_register_clock_device(void)
->  {
-> -       lpss_clk_dev = platform_device_register_simple("clk-lpt", -1, NULL, 0);
-> +       lpss_clk_dev = platform_device_register_simple("clk-lpss-atom",
-> +                                                      PLATFORM_DEVID_NONE,
-> +                                                      NULL, 0);
->  }
->
->  static int register_device_clock(struct acpi_device *adev,
-> @@ -1337,7 +1339,7 @@ void __init acpi_lpss_init(void)
->         const struct x86_cpu_id *id;
->         int ret;
->
-> -       ret = lpt_clk_init();
-> +       ret = lpss_atom_clk_init();
->         if (ret)
->                 return;
->
-> diff --git a/drivers/clk/x86/Makefile b/drivers/clk/x86/Makefile
-> index 18564efdc651..1244c4e568ff 100644
-> --- a/drivers/clk/x86/Makefile
-> +++ b/drivers/clk/x86/Makefile
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  obj-$(CONFIG_PMC_ATOM)         += clk-pmc-atom.o
->  obj-$(CONFIG_X86_AMD_PLATFORM_DEVICE)  += clk-fch.o
-> -clk-x86-lpss-objs              := clk-lpt.o
-> +clk-x86-lpss-y                 := clk-lpss-atom.o
->  obj-$(CONFIG_X86_INTEL_LPSS)   += clk-x86-lpss.o
->  obj-$(CONFIG_CLK_LGM_CGU)      += clk-cgu.o clk-cgu-pll.o clk-lgm.o
-> diff --git a/drivers/clk/x86/clk-lpt.c b/drivers/clk/x86/clk-lpss-atom.c
-> similarity index 76%
-> rename from drivers/clk/x86/clk-lpt.c
-> rename to drivers/clk/x86/clk-lpss-atom.c
-> index fbe9fd3ed948..aa9d0bb98f8b 100644
-> --- a/drivers/clk/x86/clk-lpt.c
-> +++ b/drivers/clk/x86/clk-lpss-atom.c
-> @@ -13,7 +13,7 @@
->  #include <linux/platform_data/x86/clk-lpss.h>
->  #include <linux/platform_device.h>
->
-> -static int lpt_clk_probe(struct platform_device *pdev)
-> +static int lpss_atom_clk_probe(struct platform_device *pdev)
->  {
->         struct lpss_clk_data *drvdata;
->         struct clk *clk;
-> @@ -34,14 +34,14 @@ static int lpt_clk_probe(struct platform_device *pdev)
->         return 0;
->  }
->
-> -static struct platform_driver lpt_clk_driver = {
-> +static struct platform_driver lpss_atom_clk_driver = {
->         .driver = {
-> -               .name = "clk-lpt",
-> +               .name = "clk-lpss-atom",
->         },
-> -       .probe = lpt_clk_probe,
-> +       .probe = lpss_atom_clk_probe,
->  };
->
-> -int __init lpt_clk_init(void)
-> +int __init lpss_atom_clk_init(void)
->  {
-> -       return platform_driver_register(&lpt_clk_driver);
-> +       return platform_driver_register(&lpss_atom_clk_driver);
->  }
-> diff --git a/include/linux/platform_data/x86/clk-lpss.h b/include/linux/platform_data/x86/clk-lpss.h
-> index 207e1a317800..41df326583f9 100644
-> --- a/include/linux/platform_data/x86/clk-lpss.h
-> +++ b/include/linux/platform_data/x86/clk-lpss.h
-> @@ -15,6 +15,6 @@ struct lpss_clk_data {
->         struct clk *clk;
->  };
->
-> -extern int lpt_clk_init(void);
-> +extern int lpss_atom_clk_init(void);
->
->  #endif /* __CLK_LPSS_H */
-> --
-> 2.30.2
->
+Yes we can. Based on the situation/impact we can select more victims.
