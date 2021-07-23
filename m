@@ -2,134 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF5B3D34B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B25133D34BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbhGWFuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:50:18 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:40844 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229839AbhGWFuR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:50:17 -0400
-X-UUID: f81627bc2a09413db9bfc3d25c959cde-20210723
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VplIr4nf+3ZqM9b1L9QLRHkdnwlVMd1mB2/G1siz49o=;
-        b=qn/2LQr9Dp5qBqvHYlKOOgSCUDJEYhTx+INSAfAoSBLS6QEvyZ3WLw+9b/bjjX+PcLdfdJXMeu9g8mBLZayagc+Y87hsMgYTTT+PqspRRQ7feGw+HFlQI/+fEx1YKeAL/7ootsRmeR5FqttXqDh2lTg/cTtmt2QoclIXBPLfZWw=;
-X-UUID: f81627bc2a09413db9bfc3d25c959cde-20210723
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 384168885; Fri, 23 Jul 2021 14:30:49 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs06n1.mediatek.inc
- (172.21.101.129) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Jul
- 2021 14:30:47 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Jul 2021 14:30:46 +0800
-Message-ID: <1627021846.17763.0.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 3/3] phy: phy-mtk-tphy: add support mt8195
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Date:   Fri, 23 Jul 2021 14:30:46 +0800
-In-Reply-To: <YPkzOWY0G4MFk7Nu@matsya>
-References: <1626331702-27825-1-git-send-email-chunfeng.yun@mediatek.com>
-         <1626331702-27825-3-git-send-email-chunfeng.yun@mediatek.com>
-         <YPaIYI70823rK68w@matsya> <1626837468.4247.3.camel@mhfsdcap03>
-         <YPkzOWY0G4MFk7Nu@matsya>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S234041AbhGWFzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:55:33 -0400
+Received: from mga12.intel.com ([192.55.52.136]:50829 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229839AbhGWFzc (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:55:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="191412009"
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
+   d="scan'208";a="191412009"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 23:36:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
+   d="scan'208";a="455002283"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by orsmga007.jf.intel.com with ESMTP; 22 Jul 2021 23:36:03 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v4 0/3] perf tool: Enable cpu list for hybrid
+Date:   Fri, 23 Jul 2021 14:34:30 +0800
+Message-Id: <20210723063433.7318-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA3LTIyIGF0IDE0OjI4ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOg0KPiBP
-biAyMS0wNy0yMSwgMTE6MTcsIENodW5mZW5nIFl1biB3cm90ZToNCj4gPiBPbiBUdWUsIDIwMjEt
-MDctMjAgYXQgMTM6NTUgKzA1MzAsIFZpbm9kIEtvdWwgd3JvdGU6DQo+ID4gPiBPbiAxNS0wNy0y
-MSwgMTQ6NDgsIENodW5mZW5nIFl1biB3cm90ZToNCj4gPiA+ID4gVGhlIGNvbnRyb2xsZXIgaXMg
-ZGVzaWduZWQgdG8gdXNlIHVzZSBQTEwgaW50ZWdlciBtb2RlLCBidXQNCj4gPiA+ID4gaW4gZmFj
-dCB1c2VkIGZyYWN0aW9uYWwgbW9kZSBmb3Igc29tZSBvbmVzIG9uIG10ODE5NSwgdGhpcw0KPiA+
-ID4gPiBjYXVzZXMgc2lnbmFsIGRlZ3JhZGF0aW9uIChlLmcuIGV5ZSBkaWFncmFtIHRlc3QgZmFp
-bCksIGZpeA0KPiA+ID4gPiBpdCBieSBzd2l0Y2hpbmcgUExMIHRvIDI2TWh6IGZyb20gZGVmYXVs
-dCA0OE1oeiB0byBpbXByb3ZlDQo+ID4gPiA+IHNpZ25hbCBxdWFsaXR5Lg0KPiA+ID4gPiANCj4g
-PiA+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsu
-Y29tPg0KPiA+ID4gPiAtLS0NCj4gPiA+ID4gdjJ+Mzogbm8gY2hhbmdlcw0KPiA+ID4gPiAtLS0N
-Cj4gPiA+ID4gIGRyaXZlcnMvcGh5L21lZGlhdGVrL3BoeS1tdGstdHBoeS5jIHwgNTIgKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysNCj4gPiA+ID4gIDEgZmlsZSBjaGFuZ2VkLCA1MiBpbnNl
-cnRpb25zKCspDQo+ID4gPiA+IA0KPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9waHkvbWVk
-aWF0ZWsvcGh5LW10ay10cGh5LmMgYi9kcml2ZXJzL3BoeS9tZWRpYXRlay9waHktbXRrLXRwaHku
-Yw0KPiA+ID4gPiBpbmRleCA0MmExMTc0ZGE2Y2MuLmMzZGMxNzYzYTdlYiAxMDA2NDQNCj4gPiA+
-ID4gLS0tIGEvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay10cGh5LmMNCj4gPiA+ID4gKysr
-IGIvZHJpdmVycy9waHkvbWVkaWF0ZWsvcGh5LW10ay10cGh5LmMNCj4gPiA+ID4gQEAgLTQxLDYg
-KzQxLDggQEANCj4gPiA+ID4gIA0KPiA+ID4gPiAgI2RlZmluZSBVM1BfVVNCUEhZQUNSMAkJMHgw
-MDANCj4gPiA+ID4gICNkZWZpbmUgUEEwX1JHX1UyUExMX0ZPUkNFX09OCQlCSVQoMTUpDQo+ID4g
-PiA+ICsjZGVmaW5lIFBBMF9VU0IyMF9QTExfUFJFRElWCQlHRU5NQVNLKDcsIDYpDQo+ID4gPiA+
-ICsjZGVmaW5lIFBBMF9VU0IyMF9QTExfUFJFRElWX1ZBTCh4KQkoKDB4MyAmICh4KSkgPDwgNikN
-Cj4gPiA+ID4gICNkZWZpbmUgUEEwX1JHX1VTQjIwX0lOVFJfRU4JCUJJVCg1KQ0KPiA+ID4gPiAg
-DQo+ID4gPiA+ICAjZGVmaW5lIFUzUF9VU0JQSFlBQ1IxCQkweDAwNA0KPiA+ID4gPiBAQCAtNTIs
-NiArNTQsOCBAQA0KPiA+ID4gPiAgI2RlZmluZSBQQTFfUkdfVEVSTV9TRUxfVkFMKHgpCSgoMHg3
-ICYgKHgpKSA8PCA4KQ0KPiA+ID4gPiAgDQo+ID4gPiA+ICAjZGVmaW5lIFUzUF9VU0JQSFlBQ1Iy
-CQkweDAwOA0KPiA+ID4gPiArI2RlZmluZSBQQTJfUkdfVTJQTExfQlcJCQlHRU5NQVNLKDIxLCAx
-OSkNCj4gPiA+ID4gKyNkZWZpbmUgUEEyX1JHX1UyUExMX0JXX1ZBTCh4KQkJKCgweDcgJiAoeCkp
-IDw8IDE5KQ0KPiA+ID4gPiAgI2RlZmluZSBQQTJfUkdfU0lGX1UyUExMX0ZPUkNFX0VOCUJJVCgx
-OCkNCj4gPiA+ID4gIA0KPiA+ID4gPiAgI2RlZmluZSBVM1BfVVNCUEhZQUNSNQkJMHgwMTQNCj4g
-PiA+ID4gQEAgLTczLDYgKzc3LDE0IEBADQo+ID4gPiA+ICAjZGVmaW5lIFAyQ19VU0IyMF9HUElP
-X01PREUJCUJJVCg4KQ0KPiA+ID4gPiAgI2RlZmluZSBQMkNfVTJfR1BJT19DVFJfTVNLCShQMkNf
-UkdfVVNCMjBfR1BJT19DVEwgfCBQMkNfVVNCMjBfR1BJT19NT0RFKQ0KPiA+ID4gPiAgDQo+ID4g
-PiA+ICsjZGVmaW5lIFUzUF9VMlBIWUFfUkVTVgkJMHgwMzANCj4gPiA+ID4gKyNkZWZpbmUgUDJS
-X1JHX1UyUExMX0ZCRElWXzI2TQkJMHgxYmIxM2INCj4gPiA+ID4gKyNkZWZpbmUgUDJSX1JHX1Uy
-UExMX0ZCRElWXzQ4TQkJMHgzYzAwMDANCj4gPiA+ID4gKw0KPiA+ID4gPiArI2RlZmluZSBVM1Bf
-VTJQSFlBX1JFU1YxCTB4MDQ0DQo+ID4gPiA+ICsjZGVmaW5lIFAyUl9SR19VMlBMTF9SRUZDTEtf
-U0VMCUJJVCg1KQ0KPiA+ID4gPiArI2RlZmluZSBQMlJfUkdfVTJQTExfRlJBX0VOCQlCSVQoMykN
-Cj4gPiA+ID4gKw0KPiA+ID4gPiAgI2RlZmluZSBVM0RfVTJQSFlEQ1IwCQkweDA2MA0KPiA+ID4g
-PiAgI2RlZmluZSBQMkNfUkdfU0lGX1UyUExMX0ZPUkNFX09OCUJJVCgyNCkNCj4gPiA+ID4gIA0K
-PiA+ID4gPiBAQCAtMjc3LDYgKzI4OSwxMiBAQCBlbnVtIG10a19waHlfdmVyc2lvbiB7DQo+ID4g
-PiA+ICBzdHJ1Y3QgbXRrX3BoeV9wZGF0YSB7DQo+ID4gPiA+ICAJLyogYXZvaWQgUlggc2Vuc2l0
-aXZpdHkgbGV2ZWwgZGVncmFkYXRpb24gb25seSBmb3IgbXQ4MTczICovDQo+ID4gPiA+ICAJYm9v
-bCBhdm9pZF9yeF9zZW5fZGVncmFkYXRpb247DQo+ID4gPiA+ICsJLyoNCj4gPiA+ID4gKwkgKiB1
-MnBoeSBzaG91bGQgdXNlIGludGVnZXIgbW9kZSBpbnN0ZWFkIG9mIGZyYWN0aW9uYWwgbW9kZSBv
-Zg0KPiA+ID4gPiArCSAqIDQ4TSBQTEwsIGZpeCBpdCBieSBzd2l0Y2hpbmcgUExMIHRvIDI2TSBm
-cm9tIGRlZmF1bHQgNDhNDQo+ID4gPiA+ICsJICogZm9yIG10ODE5NQ0KPiA+ID4gPiArCSAqLw0K
-PiA+ID4gPiArCWJvb2wgc3dfcGxsXzQ4bV90b18yNm07DQo+ID4gPiA+ICAJZW51bSBtdGtfcGh5
-X3ZlcnNpb24gdmVyc2lvbjsNCj4gPiA+ID4gIH07DQo+ID4gPiA+ICANCj4gPiA+ID4gQEAgLTQ1
-Niw2ICs0NzQsMzMgQEAgc3RhdGljIHZvaWQgdTNfcGh5X2luc3RhbmNlX2luaXQoc3RydWN0IG10
-a190cGh5ICp0cGh5LA0KPiA+ID4gPiAgCWRldl9kYmcodHBoeS0+ZGV2LCAiJXMoJWQpXG4iLCBf
-X2Z1bmNfXywgaW5zdGFuY2UtPmluZGV4KTsNCj4gPiA+ID4gIH0NCj4gPiA+ID4gIA0KPiA+ID4g
-PiArc3RhdGljIHZvaWQgdTJfcGh5X3BsbF8yNm1fc2V0KHN0cnVjdCBtdGtfdHBoeSAqdHBoeSwN
-Cj4gPiA+ID4gKwlzdHJ1Y3QgbXRrX3BoeV9pbnN0YW5jZSAqaW5zdGFuY2UpDQo+ID4gPiA+ICt7
-DQo+ID4gPiA+ICsJc3RydWN0IHUycGh5X2JhbmtzICp1Ml9iYW5rcyA9ICZpbnN0YW5jZS0+dTJf
-YmFua3M7DQo+ID4gPiA+ICsJdm9pZCBfX2lvbWVtICpjb20gPSB1Ml9iYW5rcy0+Y29tOw0KPiA+
-ID4gPiArCXUzMiB0bXA7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwlpZiAoIXRwaHktPnBkYXRhLT5z
-d19wbGxfNDhtX3RvXzI2bSkNCj4gPiA+ID4gKwkJcmV0dXJuOw0KPiA+ID4gPiArDQo+ID4gPiA+
-ICsJdG1wID0gcmVhZGwoY29tICsgVTNQX1VTQlBIWUFDUjApOw0KPiA+ID4gPiArCXRtcCAmPSB+
-UEEwX1VTQjIwX1BMTF9QUkVESVY7DQo+ID4gPiA+ICsJdG1wIHw9IFBBMF9VU0IyMF9QTExfUFJF
-RElWX1ZBTCgwKTsNCj4gPiA+ID4gKwl3cml0ZWwodG1wLCBjb20gKyBVM1BfVVNCUEhZQUNSMCk7
-DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwl0bXAgPSByZWFkbChjb20gKyBVM1BfVVNCUEhZQUNSMik7
-DQo+ID4gPiA+ICsJdG1wICY9IH5QQTJfUkdfVTJQTExfQlc7DQo+ID4gPiA+ICsJdG1wIHw9IFBB
-Ml9SR19VMlBMTF9CV19WQUwoMyk7DQo+ID4gPiA+ICsJd3JpdGVsKHRtcCwgY29tICsgVTNQX1VT
-QlBIWUFDUjIpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsJd3JpdGVsKFAyUl9SR19VMlBMTF9GQkRJ
-Vl8yNk0sIGNvbSArIFUzUF9VMlBIWUFfUkVTVik7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwl0bXAg
-PSByZWFkbChjb20gKyBVM1BfVTJQSFlBX1JFU1YxKTsNCj4gPiA+ID4gKwl0bXAgfD0gUDJSX1JH
-X1UyUExMX0ZSQV9FTiB8IFAyUl9SR19VMlBMTF9SRUZDTEtfU0VMOw0KPiA+ID4gPiArCXdyaXRl
-bCh0bXAsIGNvbSArIFUzUF9VMlBIWUFfUkVTVjEpOw0KPiA+ID4gPiArfQ0KPiA+ID4gPiArDQo+
-ID4gPiA+ICBzdGF0aWMgdm9pZCB1Ml9waHlfaW5zdGFuY2VfaW5pdChzdHJ1Y3QgbXRrX3RwaHkg
-KnRwaHksDQo+ID4gPiA+ICAJc3RydWN0IG10a19waHlfaW5zdGFuY2UgKmluc3RhbmNlKQ0KPiA+
-ID4gPiAgew0KPiA+ID4gPiBAQCAtOTQxLDYgKzk4Niw3IEBAIHN0YXRpYyBpbnQgbXRrX3BoeV9p
-bml0KHN0cnVjdCBwaHkgKnBoeSkNCj4gPiA+ID4gIA0KPiA+ID4gPiAgCXN3aXRjaCAoaW5zdGFu
-Y2UtPnR5cGUpIHsNCj4gPiA+ID4gIAljYXNlIFBIWV9UWVBFX1VTQjI6DQo+ID4gPiA+ICsJCXUy
-X3BoeV9wbGxfMjZtX3NldCh0cGh5LCBpbnN0YW5jZSk7DQo+ID4gPiANCj4gPiA+IHNob3VsZCB0
-aGlzIG5vdCBiZSBzZXQgb25seSBmb3IgTVRLX1BIWV9WMz8NCj4gPiBXb3JrYXJvdW5kIG9ubHkg
-Zm9yIG10ODE5NSwgSFcgd2lsbCBmaXggaXQgZm9yIG90aGVycyAoVjMpDQo+IA0KPiBQbHMgZG9j
-dW1lbnQgdGhhdCBpbiBjb21tZW50cyBoZXJlDQoNCk9rLCB0aGFua3MNCj4gDQoNCg==
+The perf-record and perf-stat have supported the option '-C/--cpus'
+to count or collect only on the list of CPUs provided. This option
+needs to be supported for hybrid as well.
+
+v4:
+---
+Rename evlist__use_cpu_list to evlist__fix_hybrid_cpus
+Add comments to evlist__fix_hybrid_cpus.
+
+v3:
+---
+Rebase to latest perf/core branch.
+
+v2:
+---
+Automatically map to hybrid pmu.
+
+For example,
+
+If cpu0-7 are 'cpu_core' and cpu9-11 are 'cpu_atom',
+
+  # perf stat -e cycles -C0,11 -- sleep 1
+  WARNING: use 0 in 'cpu_core' for 'cycles', skip other cpus in list.
+  WARNING: use 11 in 'cpu_atom' for 'cycles', skip other cpus in list.
+
+   Performance counter stats for 'CPU(s) 0,11':
+
+           1,914,704      cpu_core/cycles/
+           2,036,983      cpu_atom/cycles/
+
+         1.005815641 seconds time elapsed
+
+It automatically selects cpu0 for cpu_core/cycles/, selects cpu11 for
+cpu_atom/cycles/, also with some warnings output.
+
+Jin Yao (3):
+  libperf: Add perf_cpu_map__default_new()
+  perf tools: Create hybrid flag in target
+  perf tools: Enable on a list of CPUs for hybrid
+
+ tools/lib/perf/cpumap.c              |  5 ++
+ tools/lib/perf/include/perf/cpumap.h |  1 +
+ tools/perf/builtin-record.c          |  7 +++
+ tools/perf/builtin-stat.c            |  6 +++
+ tools/perf/util/evlist-hybrid.c      | 73 ++++++++++++++++++++++++++++
+ tools/perf/util/evlist-hybrid.h      |  1 +
+ tools/perf/util/evlist.c             |  3 +-
+ tools/perf/util/pmu.c                | 35 +++++++++++++
+ tools/perf/util/pmu.h                |  4 ++
+ tools/perf/util/target.h             |  1 +
+ 10 files changed, 135 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
 
