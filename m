@@ -2,131 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7BF3D42D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B61C3D42DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhGWVlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 17:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbhGWVll (ORCPT
+        id S232653AbhGWVqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 17:46:08 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41282
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231742AbhGWVqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 17:41:41 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CC3C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 15:22:14 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id k1so4601341plt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 15:22:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vYTn7+eGEI7Q1RMA/3vAFLMTCXFX8Sw72SaEzbA1bQ8=;
-        b=V8v8yV910H1isJ5XsUEWBXTYWsOJ2rSQR7nS/ui+zSIfggH79Jz0nHagCxU0muqQcm
-         JttIj9mM47GOQtuaCkUz0PdM6rv4stUaa5Gd+8SFgeaxz+uPcAmM1u2RuIlcbNy2pQUY
-         MhkmLzKxElBo6mP+yWQljBaqw9zHg+M3fWs+k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vYTn7+eGEI7Q1RMA/3vAFLMTCXFX8Sw72SaEzbA1bQ8=;
-        b=obJiUL9W0W6ta5NI8UfGx6pzt0YI6d5sbzbjg6fT4Vp8eTr8NnQS0xfVX7TJEsvpem
-         F5zhGBy+98RLqfAlCAu0sXVTqPPO3DzrWz5U2QaumSKZMVaQFOhiXMmQTJSD646T6+2I
-         zGk/z7PMxnFZzVuj7UtTEOrQ8XX8wtJIvl4075vhK4yq3G1XzPA7PI3glU1G9qFP3yN6
-         AFQ4BbEszRsYcm98J2M8ocdilTcr+cdURLXYbgjNe/AITQPLHg6aDOr1c0sccxyiq+cJ
-         CdRdRo2nUJUZU6PCeyIV2W610/DmWKi6/vRNxEw/gZ2ALpLt72TYiXzlt0S9GKev2q2w
-         4/qg==
-X-Gm-Message-State: AOAM530gbySa0pIeCEEXxVwsNxpPJP2P1seoTKAW6nwQ9vxURoEJi8N/
-        gyXWBbgLZtdUouS87FwUXrpFrw==
-X-Google-Smtp-Source: ABdhPJwGpoxHTO4J2/ehZrrS3qtHYMIaXCgBaMBERWm4W1J7IjUfFio6kzqtA0uhTGi9EX/Y5fMD9g==
-X-Received: by 2002:a17:903:22ca:b029:12b:9109:4097 with SMTP id y10-20020a17090322cab029012b91094097mr5425468plg.54.1627078934265;
-        Fri, 23 Jul 2021 15:22:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z12sm28581207pjd.39.2021.07.23.15.22.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 15:22:13 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 15:22:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [Linux-kernel-mentees] [PATCH v2] block/floppy: Prevent
- kernel-infoleak in raw_cmd_copyout()
-Message-ID: <202107231520.32B389411@keescook>
-References: <20200728141946.426245-1-yepeilin.cs@gmail.com>
- <20200729115157.8519-1-yepeilin.cs@gmail.com>
- <20200729125820.GB1840@kadam>
- <f2cf6137-987a-ab41-d88a-6828d46c255f@linux.com>
- <CAK8P3a20SEoYCrp3jOK32oZc9OkiPv+1KTjNZ2GxLbHpY4WexQ@mail.gmail.com>
- <202007301056.D3BD1805B0@keescook>
- <CAK8P3a2oUgdaYicdHwWvCY-HqjrcBAEzYA5yc5Gw14RLLoLdug@mail.gmail.com>
+        Fri, 23 Jul 2021 17:46:07 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E1BE33F322;
+        Fri, 23 Jul 2021 22:26:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627079199;
+        bh=E7967veUNT4BFpbHxKgzpjAHpzsSarN5QX8vpu3CUMg=;
+        h=From:Subject:To:Cc:Message-ID:Date:MIME-Version:Content-Type;
+        b=CkU/e9L9gGdwGx5fP6u5NENBcR6QFti4ZVGSr+vGEcfglJIaSGUFwSARLnDe6OpsK
+         VK0GTI3k79ItiMpTnAOPAAMfeWCtDxm9M+4TuWob4y2r4KJ54RWaenLL5rstxnMb4q
+         KybjyH824Cewj0OTYdC31siDBOTZAPQYY6iwUyG+760sMUCQmIhBRdCRPFiJDJQ9JG
+         QEfLdZxsg7Wel27NN2H0UjJA+W8yh6dy/Nc1iB0pvQ3QCzHaGEWp8+B/Xy74AQ8+Be
+         lpRa6FKGC59XgDfJf5BJjB3ZO4h7n/C/nmPLyzyXMfxIzW+XLzcGugp1Lmxd5id2f/
+         Xp2Ln59629H8A==
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: ovl: uninitialized pointer read in ovl_lookup_real_one
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>
+Cc:     overlayfs <linux-unionfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <737687ee-3449-aa3d-ee29-bd75ca0a18a9@canonical.com>
+Date:   Fri, 23 Jul 2021 23:26:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2oUgdaYicdHwWvCY-HqjrcBAEzYA5yc5Gw14RLLoLdug@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 30, 2020 at 10:45:02PM +0200, Arnd Bergmann wrote:
-> On Thu, Jul 30, 2020 at 8:10 PM Kees Cook <keescook@chromium.org> wrote:
-> > On Thu, Jul 30, 2020 at 10:11:07AM +0200, Arnd Bergmann wrote:
-> >
-> > test_stackinit.c intended to use six cases (where "full" is in the sense
-> > of "all members are named", this is intentionally testing the behavior
-> > of padding hole initialization):
-> 
-> Ok, so I read that correctly, thanks for confirming.
-> 
-> > >
-> > >    struct test_big_hole var = *arg;
-> >
-> > So this one is a "whole structure copy" which I didn't have any tests
-> > for, since I'd (perhaps inappropriately) assumed would be accomplished
-> > with memcpy() internally, which means the incoming "*arg"'s padding holes
-> > would be copied as-is. If the compiler is actually doing per-member copies
-> > and leaving holes in "var" untouched, that's unexpected, so clearly that
-> > needs to be added to test_stackinit.c! :)
-> 
-> For some reason I remembered this not turning into a memcpy()
-> somewhere, but I can't reproduce it in any of my recent attempts,
-> just like what Denis found.
-> 
-> > > or the a constructor like
-> > >
-> > >   struct test_big_hole var;
-> > >   var = (struct test_big_hole){ .one = arg->one, .two=arg->two, .three
-> > > = arg->three, .four = arg->four };
-> > >
-> > > Kees, do you know whether those two would behave differently?
-> > > Would it make sense to also check for those, or am I perhaps
-> > > misreading your code and it already gets checked?
-> >
-> > I *think* the above constructor would be covered under "full runtime
-> > init", but it does also seem likely it would be handled similarly to
-> > the "whole structure copy" in the previous example.
-> 
-> I would assume that at least with C99 it is more like the
-> "whole structure copy", based on the standard language of
-> 
->   "The value of the compound literal is that of an unnamed
->   object initialized by the initializer list. If the compound literal
->   occurs outside the body of a function, the object has static
->   storage duration; otherwise, it has automatic storage duration
->   associated with the enclosing block."
-> 
-> > I will go add more tests...
-> 
-> Thanks!
+Hi,
 
-Well, nearly exactly a year later, I've finally done this. :P
+Static analysis with Coverity has detected an uninitialized pointer read
+in function ovl_lookup_real_one in fs/overlayfs/export.c
 
-https://lore.kernel.org/lkml/20210723221933.3431999-1-keescook@chromium.org
+The issue was introduced with the following commit:
 
--- 
-Kees Cook
+commit 3985b70a3e3f58109dc6ae347eafe6e8610be41e
+Author: Amir Goldstein <amir73il@gmail.com>
+Date:   Thu Dec 28 18:36:16 2017 +0200
+
+    ovl: decode connected upper dir file handles
+
+The analysis is as follows:
+
+365static struct dentry *ovl_lookup_real_one(struct dentry *connected,
+366                                          struct dentry *real,
+367                                          const struct ovl_layer *layer)
+368{
+369        struct inode *dir = d_inode(connected);
+370        struct dentry *this, *parent = NULL;
+
+   1. var_decl: Declaring variable name without initializer.
+
+371        struct name_snapshot name;
+372        int err;
+373
+374        /*
+375         * Lookup child overlay dentry by real name. The dir mutex
+protects us
+376         * from racing with overlay rename. If the overlay dentry
+that is above
+377         * real has already been moved to a parent that is not under the
+378         * connected overlay dir, we return -ECHILD and restart the
+lookup of
+379         * connected real path from the top.
+380         */
+381        inode_lock_nested(dir, I_MUTEX_PARENT);
+382        err = -ECHILD;
+383        parent = dget_parent(real);
+
+   2. Condition ovl_dentry_real_at(connected, layer->idx) != parent,
+taking true branch.
+
+384        if (ovl_dentry_real_at(connected, layer->idx) != parent)
+
+   3. Jumping to label fail.
+
+385                goto fail;
+386
+387        /*
+388         * We also need to take a snapshot of real dentry name to
+protect us
+389         * from racing with underlying layer rename. In this case, we
+don't
+390         * care about returning ESTALE, only from dereferencing a
+free name
+391         * pointer because we hold no lock on the real dentry.
+392         */
+393        take_dentry_name_snapshot(&name, real);
+394        this = lookup_one_len(name.name.name, connected, name.name.len);
+395        err = PTR_ERR(this);
+396        if (IS_ERR(this)) {
+397                goto fail;
+398        } else if (!this || !this->d_inode) {
+399                dput(this);
+400                err = -ENOENT;
+401                goto fail;
+402        } else if (ovl_dentry_real_at(this, layer->idx) != real) {
+403                dput(this);
+404                err = -ESTALE;
+405                goto fail;
+406        }
+407
+408out:
+
+   Uninitialized pointer read
+   6. uninit_use_in_call: Using uninitialized value name.name.name when
+calling release_dentry_name_snapshot.
+
+409        release_dentry_name_snapshot(&name);
+410        dput(parent);
+411        inode_unlock(dir);
+412        return this;
+413
+414fail:
+
+   4. Condition ___ratelimit(&_rs, <anonymous>), taking false branch
+.
+415        pr_warn_ratelimited("failed to lookup one by real (%pd2,
+layer=%d, connected=%pd2, err=%i)\n",
+416                            real, layer->idx, connected, err);
+417        this = ERR_PTR(err);
+
+   5. Jumping to label out.
+
+418        goto out;
+419}
+
+The error exit path on line 395 ends up with an uninitialized structure
+name being passed to function release_dentry_name_snapshot() on line 409
+and this accesses the pointer name.name.name, see /fs/dcache.c as follows:
+
+303void release_dentry_name_snapshot(struct name_snapshot *name)
+304{
+
+   1. read_value: Reading value name->name.name.
+   2. Condition !!(name->name.name != name->inline_name), taking true
+branch.
+
+305        if (unlikely(name->name.name != name->inline_name)) {
+306                struct external_name *p;
+
+   3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
+!__builtin_types_compatible_p()) */, taking false branch.
+
+
+I suspect name should be initialized in line 371, e.g. name = { } and a
+null name check should be performed on line 409 before calling
+release_dentry_name_snapshot, but this seems a bit message as a fix.
+
+Colin
