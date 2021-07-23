@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9A23D3848
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1759F3D3849
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhGWJUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:20:14 -0400
-Received: from outbound-smtp22.blacknight.com ([81.17.249.190]:36102 "EHLO
-        outbound-smtp22.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231542AbhGWJUM (ORCPT
+        id S231765AbhGWJUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:20:23 -0400
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:50629 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231749AbhGWJUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:20:12 -0400
+        Fri, 23 Jul 2021 05:20:22 -0400
 Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp22.blacknight.com (Postfix) with ESMTPS id E6B9614802F
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 11:00:44 +0100 (IST)
-Received: (qmail 8804 invoked from network); 23 Jul 2021 10:00:44 -0000
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 1058D1C4972
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 11:00:55 +0100 (IST)
+Received: (qmail 9118 invoked from network); 23 Jul 2021 10:00:54 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPA; 23 Jul 2021 10:00:44 -0000
+  by 81.17.254.9 with ESMTPA; 23 Jul 2021 10:00:54 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -27,39 +27,65 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Linux-RT-Users <linux-rt-users@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 0/2] Protect vmstats on PREEMPT_RT
-Date:   Fri, 23 Jul 2021 11:00:32 +0100
-Message-Id: <20210723100034.13353-1-mgorman@techsingularity.net>
+Subject: [PATCH 1/2] preempt: Provide preempt_*_(no)rt variants
+Date:   Fri, 23 Jul 2021 11:00:33 +0100
+Message-Id: <20210723100034.13353-2-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210723100034.13353-1-mgorman@techsingularity.net>
+References: <20210723100034.13353-1-mgorman@techsingularity.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adding local_lock support to mm/page_alloc.c and reducing the overhead
-of vmstats in general, I wondered how vmstats could be safe on PREEMPT_RT
-as it partially relies on interrupts being disabled for the stats that
-must be accurate for correctness. As it turns out, the preempt-rt tree
-already encountered the same problem.
+From: Thomas Gleixner <tglx@linutronix.de>
 
-This series protects just the primary counters. While there is another
-vmstat-related patch, it is related to memcg getting using local_lock and
-I have not fully considered those patches and whether they are ok as-is
-or need modification but this series makes a start.
+RT needs a few preempt_disable/enable points which are not necessary
+otherwise. Implement variants to avoid #ifdeffery.
 
-Patch 1 is authored by Thomas (cc'd) and has not being altered.
-
-Patch 2 is authored by Ingo (cc'd) but I modified what he implemented
-for reasons explained in the changelog.
-
-This is specific to PREEMPT_RT which cannot be enabled on mainline yet
-and should have no impact on !PREEMPT_RT kernels.
-
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
  include/linux/preempt.h | 18 +++++++++++++++++-
- mm/vmstat.c             | 12 ++++++++++++
- 2 files changed, 29 insertions(+), 1 deletion(-)
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/preempt.h b/include/linux/preempt.h
+index 9881eac0698f..3434f4618178 100644
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -184,7 +184,11 @@ do { \
+ 	preempt_count_dec(); \
+ } while (0)
+ 
+-#define preempt_enable_no_resched() sched_preempt_enable_no_resched()
++#ifdef CONFIG_PREEMPT_RT
++# define preempt_enable_no_resched() sched_preempt_enable_no_resched()
++#else
++# define preempt_enable_no_resched() preempt_enable()
++#endif
+ 
+ #define preemptible()	(preempt_count() == 0 && !irqs_disabled())
+ 
+@@ -278,6 +282,18 @@ do { \
+ 		set_preempt_need_resched(); \
+ } while (0)
+ 
++#ifdef CONFIG_PREEMPT_RT
++# define preempt_disable_rt()		preempt_disable()
++# define preempt_enable_rt()		preempt_enable()
++# define preempt_disable_nort()		barrier()
++# define preempt_enable_nort()		barrier()
++#else
++# define preempt_disable_rt()		barrier()
++# define preempt_enable_rt()		barrier()
++# define preempt_disable_nort()		preempt_disable()
++# define preempt_enable_nort()		preempt_enable()
++#endif
++
+ #ifdef CONFIG_PREEMPT_NOTIFIERS
+ 
+ struct preempt_notifier;
 -- 
 2.26.2
 
