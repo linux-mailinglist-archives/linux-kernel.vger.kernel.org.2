@@ -2,212 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A3F3D3478
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123B03D347C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbhGWFbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbhGWFba (ORCPT
+        id S233869AbhGWFeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:34:14 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33816 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229788AbhGWFeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:31:30 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F3FC061575;
-        Thu, 22 Jul 2021 23:12:03 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id q6so764070oiw.7;
-        Thu, 22 Jul 2021 23:12:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AZKNDZPJaYefkpMUKBEqneOnIP2BNDuYsn0cDTJRRE0=;
-        b=JED08zydxY7bsFY4lnM+AZbZVFIX3Yho6mvopHNofOsMP3cVY/W2Cre3f0GHvrgZUE
-         PxdpxVTvd+ejeId7xwiGBX+73F/gc/+rwZcuWNk/XmYRfpI17lbI48VaUCX2wkWZa62Z
-         lZhlDbxzTqgVuHTAuOdmqSP9cIsbDW2z9vcwYlD3n4ISAT7NgOvwkSQC4eA491vVzL5R
-         LpYGfChkod2f0leP7uvDkv11AiJEMys4K4nSTRMkHe6XpiBkO9THtyWW47HoLqlQssAv
-         NZo/UmbepGZ3B+eJzd/FvMMryVD9tzuqttNwT+acYLG93f1nN3TYFcF7tSDefkpxP6fM
-         N/Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AZKNDZPJaYefkpMUKBEqneOnIP2BNDuYsn0cDTJRRE0=;
-        b=jW+QB/7mB05WMVvPH1QD2JS5FYwGDgFcrtff6VuJDIdn5UiCoHIQ5oZNqqhRloAcd/
-         tpbk1//vga/V3j7E5yKiJ0XLoT0H3EYJioGlRWx4cyAFCP5dcmSiZPM3rbE1Zdjw5FMx
-         Q4Ado5SrdH/i56HCjR0A15we9gD3tmV0/WuHTOyrUEPMInOs3KmuwG6lo4ty55jxSso3
-         5WRgCndUyxVgZJ/L5dPsCqefyRqLahsNaOFR6m9xiD+wQriZebtWYcy86OLU22Co6WIH
-         Ygy7bs+yAiozFYRvr2xo25vvzERqXaAhjtHi42Yv2ABItGG8+WOQNpZ3W9seIpX86Aik
-         Cpaw==
-X-Gm-Message-State: AOAM530CzlEqSxC0g+TqB7+as2i5q4KSyZxkxvizzAqLSqRVhul1VRpB
-        70wcVdxRgrfeUNNSIsg1ZCaLtXXkapdLsi+kb0Y=
-X-Google-Smtp-Source: ABdhPJxcgpkjyb1jD7G3yKubFEG/BUu91rZEanTZL99fRJf9XRT4HlXjbJWs/s3cGBXgeP0HlhJ6nsjncfJ2tThREPs=
-X-Received: by 2002:aca:d505:: with SMTP id m5mr5889860oig.5.1627020723344;
- Thu, 22 Jul 2021 23:12:03 -0700 (PDT)
+        Fri, 23 Jul 2021 01:34:13 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N680x1154708;
+        Fri, 23 Jul 2021 02:14:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
+ : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=RF+RAEs8+U5n3JMz636Knj9hNkDXHa3/dt62ULGTEi4=;
+ b=i5YaZbRop38UIdygOPoBopHly4JvG+pD7n9Gigxvt32Z0f6IjGvZfwmpBqSsq7lY2i+b
+ s2c/vZZfn4lr8g33wrN8PlgHYvxVnNsHW5QPCuTVTWctxGljRiMc9kbU8YLlwL9+8dID
+ A+covGoR9uh+hPTLwpPZi5G0vKi95v3fUiv2eYt3HhjbGoyV8OiO1/op5wRxKEqQwi9+
+ sPhKoOpMd8Hew7TKg69WYGSLMB70+suQsCIZtZv3S7ICnWHFOO0AIBy58C5Y67bEKEBr
+ lqskhShlFUArdC5Tx02IpH7lbzgRJJ6ZdNOmR9QTyVf8SCUT5x4XsOQqZ95ssO8TEQ3k sw== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ypjea9gj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 02:14:25 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N69ErS013314;
+        Fri, 23 Jul 2021 06:14:23 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 39vng72fse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 06:14:23 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N6BoSQ30409042
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Jul 2021 06:11:50 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4AC5F42042;
+        Fri, 23 Jul 2021 06:14:20 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C298442041;
+        Fri, 23 Jul 2021 06:14:19 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 23 Jul 2021 06:14:19 +0000 (GMT)
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Claire Chang <tientzu@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+References: <20210720133826.9075-1-will@kernel.org>
+ <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
+ <20210723031252.655d6a83.pasic@linux.ibm.com>
+Message-ID: <b8985c53-a83d-f11f-9fa8-af06d1d4bfd0@de.ibm.com>
+Date:   Fri, 23 Jul 2021 08:14:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210723031252.655d6a83.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: UrE2dl66hYVYxVrAj4LJDQFghwLh85Dh
+X-Proofpoint-ORIG-GUID: UrE2dl66hYVYxVrAj4LJDQFghwLh85Dh
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210723051626.18364-1-guang.zeng@intel.com>
-In-Reply-To: <20210723051626.18364-1-guang.zeng@intel.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Fri, 23 Jul 2021 14:11:52 +0800
-Message-ID: <CANRm+CywPSiW=dniYEnUhYnK0NGGnnxV53AdC0goivndn6KR5g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] IPI virtualization support for VM
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kai Huang <kai.huang@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Robert Hu <robert.hu@intel.com>, Gao Chao <chao.gao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-23_03:2021-07-22,2021-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ clxscore=1015 priorityscore=1501 spamscore=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107230031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 at 13:41, Zeng Guang <guang.zeng@intel.com> wrote:
->
-> Current IPI process in guest VM will virtualize the writing to interrupt
-> command register(ICR) of the local APIC which will cause VM-exit anyway
-> on source vCPU. Frequent VM-exit could induce much overhead accumulated
-> if running IPI intensive task.
->
-> IPI virtualization as a new VT-x feature targets to eliminate VM-exits
-> when issuing IPI on source vCPU. It introduces a new VM-execution
-> control - "IPI virtualization"(bit4) in the tertiary processor-based
-> VM-exection controls and a new data structure - "PID-pointer table
-> address" and "Last PID-pointer index" referenced by the VMCS. When "IPI
-> virtualization" is enabled, processor emulateds following kind of writes
-> to APIC registers that would send IPIs, moreover without causing VM-exits.
-> - Memory-mapped ICR writes
-> - MSR-mapped ICR writes
-> - SENDUIPI execution
->
-> This patch series implement IPI virtualization support in KVM.
->
-> Patches 1-4 add tertiary processor-based VM-execution support
-> framework.
->
-> Patch 5 implement interrupt dispatch support in x2APIC mode with
-> APIC-write VM exit. In previous platform, no CPU would produce
-> APIC-write VM exit with exit qulification 300H when the "virtual x2APIC
-> mode" VM-execution control was 1.
->
-> Patch 6 implement IPI virtualization related function including
-> feature enabling through tertiary processor-based VM-execution in
-> various scenario of VMCS configuration, PID table setup in vCPU creation
-> and vCPU block consideration.
->
-> Document for IPI virtualization is now available at the latest "Intel
-> Architecture Instruction Set Extensions Programming Reference".
->
-> Document Link:
-> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
->
-> We did experiment to measure average time sending IPI from source vCPU
-> to the target vCPU completing the IPI handling by kvm unittest w/ and
-> w/o IPI virtualization. When IPI virtualizatin enabled, it will reduce
-> 22.21% and 15.98% cycles consuming in xAPIC mode and x2APIC mode
-> respectly.
->
-> KMV unittest:vmexit/ipi, 2 vCPU, AP was modified to run in idle loop
-> instead of halt to ensure no VM exit impact on target vCPU.
->
->                 Cycles of IPI
->                 xAPIC mode              x2APIC mode
->         test    w/o IPIv  w/ IPIv       w/o IPIv  w/ IPIv
->         1       6106      4816          4265      3768
->         2       6244      4656          4404      3546
->         3       6165      4658          4233      3474
->         4       5992      4710          4363      3430
->         5       6083      4741          4215      3551
->         6       6238      4904          4304      3547
->         7       6164      4617          4263      3709
->         8       5984      4763          4518      3779
->         9       5931      4712          4645      3667
->         10      5955      4530          4332      3724
->         11      5897      4673          4283      3569
->         12      6140      4794          4178      3598
->         13      6183      4728          4363      3628
->         14      5991      4994          4509      3842
->         15      5866      4665          4520      3739
->         16      6032      4654          4229      3701
->         17      6050      4653          4185      3726
->         18      6004      4792          4319      3746
->         19      5961      4626          4196      3392
->         20      6194      4576          4433      3760
->
-> Average cycles  6059      4713.1        4337.85   3644.8
-> %Reduction                -22.21%                 -15.98%
->
-> --------------------------------------
-> IPI microbenchmark:
-> (https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com)
->
-> 2 vCPUs, 1:1 pin vCPU to pCPU, guest VM runs with idle=poll, x2APIC mode
+Resending with the correct email of Heiko....
 
-Improve the performance for unicast ipi is as expected, however, I
-wonder whether the broadcast performance is worse than PV
-IPIs/Thomas's IPI shorthands(IPI shorthands are supported by upstream
-linux apic/x2apic driver). The hardware acceleration is not always
-outstanding on AMD(https://lore.kernel.org/kvm/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com/),
-how about your Intel guys? Please try a big VM at least 96 vCPUs as
-below or more bigger.
+On 23.07.21 03:12, Halil Pasic wrote:
+> On Thu, 22 Jul 2021 21:22:58 +0200
+> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> 
+>> On 20.07.21 15:38, Will Deacon wrote:
+>>> Hi again, folks,
+>>>
+>>> This is version two of the patch series I posted yesterday:
+>>>
+>>>     https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
+>>>
+>>> The only changes since v1 are:
+>>>
+>>>     * Squash patches 2 and 3, amending the commit message accordingly
+>>>     * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
+>>>
+>>> I'd usually leave it a bit longer between postings, but since this fixes
+>>> issues with patches in -next I thought I'd spin a new version immediately.
+>>>
+>>> Cheers,
+>>
+>> FWIW, I just bisected virtio-errors with secure execution mode
+>> qemu-system-s390x: virtio-serial-bus: Unexpected port id 4205794771 for device virtio-serial0.0
+>>
+>> to
+>> commit 903cd0f315fe426c6a64c54ed389de0becb663dc
+>> Author: Claire Chang <tientzu@chromium.org>
+>> Date:   Thu Jun 24 23:55:20 2021 +0800
+>>
+>>        swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
+>>
+>> Unfortunately this patch series does NOT fix this issue, so it seems that even more
+>> things are broken.
+>>
+>> Any idea what else might be broken?
+> 
+> I've done some debugging, and I think I know what is going on. Since
+> that commit we need to set force_swiotlb before the swiotlb itself is
+> initialized. So the patch below should fix the problem.
+> 
+> --------------------8<-------------------------------------
+> 
+> From: Halil Pasic <pasic@linux.ibm.com>
+> Date: Fri, 23 Jul 2021 02:57:06 +0200
+> Subject: [PATCH 1/1] s390/pv: fix the forcing of the swiotlb
+> 
+> Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
+> swiotlb data bouncing") if code sets swiotlb_force it needs to do so
+> before the swiotlb is initialised. Otherwise
+> io_tlb_default_mem->force_bounce will not get set to true, and devices
+> that use (the default) swiotlb will not bounce  despite switolb_force
+> having the value of SWIOTLB_FORCE.
+> 
+> Let us restore swiotlb functionality for PV by fulfilling this new
+> requirement.
+> 
+I would add:
+Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
+as this patch breaks things
+and
+Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
 
->
-> Result with IPIv enabled:
->
-> Dry-run:                         0,             272798 ns
-> Self-IPI:                  5094123,           11114037 ns
-> Normal IPI:              131697087,          173321200 ns
-> Broadcast IPI:                   0,          155649075 ns
-> Broadcast lock:                  0,          161518031 ns
->
-> Result with IPIv disabled:
->
-> Dry-run:                         0,             272766 ns
-> Self-IPI:                  5091788,           11123699 ns
-> Normal IPI:              145215772,          174558920 ns
-> Broadcast IPI:                   0,          175785384 ns
-> Broadcast lock:                  0,          149076195 ns
->
->
-> As IPIv can benefit unicast IPI to other CPU, Noraml IPI test case gain
-> about 9.73% time saving on average out of 15 test runs when IPIv is
-> enabled.
->
->                 w/o IPIv                w/ IPIv
-> Normal IPI:     145944306.6 ns          131742993.1 ns
-> %Reduction                              -9.73%
->
-> --------------------------------------
-> hackbench:
->
-> 8 vCPUs, guest VM free run, x2APIC mode
-> ./hackbench -p -l 100000
->
->                 w/o IPIv        w/ IPIv
-> Time:           91.887          74.605
-> %Reduction:                     -18.808%
->
-> 96 vCPUs, guest VM free run, x2APIC mode
-> ./hackbench -p -l 1000000
->
->                 w/o IPIv        w/ IPIv
-> Time:           287.504         235.185
-> %Reduction:                     -18.198%
+to make the s390 init code more robust in case people start backporting things.
 
-Good to know this.
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
 
-    Wanpeng
+I can confirm that this fixes the problem. This also makes sense codewise.
+
+Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+
+Konrad, Heiko, Vasily, any preference which tree this goes? I think s390
+would be easiest, but that requires that the patches in the swiotlb tree have
+fixed commit IDs.
+
+> ---
+>   arch/s390/mm/init.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+> index 8ac710de1ab1..07bbee9b7320 100644
+> --- a/arch/s390/mm/init.c
+> +++ b/arch/s390/mm/init.c
+> @@ -186,9 +186,9 @@ static void pv_init(void)
+>   		return;
+>   
+>   	/* make sure bounce buffers are shared */
+> +	swiotlb_force = SWIOTLB_FORCE;
+>   	swiotlb_init(1);
+>   	swiotlb_update_mem_attributes();
+> -	swiotlb_force = SWIOTLB_FORCE;
+>   }
+>   
+>   void __init mem_init(void)
+> 
