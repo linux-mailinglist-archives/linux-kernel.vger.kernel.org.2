@@ -2,112 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5293D3516
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8E63D3518
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbhGWGcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:32:53 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12242 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbhGWGcw (ORCPT
+        id S233497AbhGWGgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhGWGgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:32:52 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GWL466T0Mz1CLTq;
-        Fri, 23 Jul 2021 15:07:34 +0800 (CST)
-Received: from [10.174.177.180] (10.174.177.180) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 23 Jul 2021 15:13:23 +0800
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+        Fri, 23 Jul 2021 02:36:07 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631F5C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:16:41 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id a17-20020a17090abe11b0290173ce472b8aso7710619pjs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:16:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uci-edu.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=KJ32JKsbpweHxm/Oe2m0XCE83TA5ZDfxZUOm3KQD4+g=;
+        b=v5DXI7gMfxtI/KrtCorH0ZVVm26EV2ArJlOBECnLs/re4yGdwnumsMq72RIvzb0p3F
+         V8+BTnxpcRSsnp2AU8Byt+o0orbFdDqoQj+HvoTxap0DJUbZpaprZcVIr6NqeL1hvU/E
+         xL4629EnkMia4ACrvPHTw3KoRDCHRK/U6QuULRN9Rl1NsSLZNL3uD9M80AK+gsE7zqce
+         6IPAkcZLvjSNed24xJhsL107G1lyptJICKqT44P0e/NtBpoLZPNqEj7WGsgr/n4jUy/f
+         x6KE1/8qmIK2DjpBREjgjRVhDF04j5EayZcXIknHRK35GSUaqMhgF/dDoV+kJ7XS0phg
+         AHVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=KJ32JKsbpweHxm/Oe2m0XCE83TA5ZDfxZUOm3KQD4+g=;
+        b=lj5CRbGkTVlK7JzSKcFPXvVKp6/r2eQ+tkyqFK6qB+HMZzuOEVDUlUjm/A2DBPgVCM
+         8XH7zKkEeepxSBiwFNkcQP2BgzBDOBDbJQYaZtS06reBb6HIKPqh4QSURx5TYtTqCGQo
+         gqVKBhCK13c6ImR/sMsZyKbRUMjLgf71XOkODQs3HWPR+BIZJ0fsjArgJVfCv8HkYGDJ
+         Q1L9MLjJ+qpe76W7eX3hCpLRJXeKbR5CFZnJg7KCGTgMwjYzP4GKQPOUQNnTQt4765Q8
+         eW3R4+R4w3XJVF8aEwxLhDggK4rjAM4XcJ8wYYjMa22BmWsvTBOe8HnYVdxTIvjtKRxC
+         hm+Q==
+X-Gm-Message-State: AOAM530Ht6blz6zdUkjoEuM70zB5PhUk6gtLUdTv1h1yB7NKcTT+vcqY
+        DjrIHfiM9YgypfOlErc0A3Sm/g==
+X-Google-Smtp-Source: ABdhPJw4RNjfW44tTWvF+QMKfvzq2FFk7kRKeD07yfn5twpfxvuJBUZoWE1LKD40ZKMXMhjjuGTNWA==
+X-Received: by 2002:a17:902:ead2:b029:12a:ec28:7bc9 with SMTP id p18-20020a170902ead2b029012aec287bc9mr2886521pld.79.1627024600876;
+        Fri, 23 Jul 2021 00:16:40 -0700 (PDT)
+Received: from [192.168.1.3] ([183.98.43.105])
+        by smtp.gmail.com with ESMTPSA id z9sm32569827pfa.2.2021.07.23.00.16.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Jul 2021 00:16:40 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
+From:   Dongjoo Seo <dseo3@uci.edu>
+In-Reply-To: <YPpq4u+b/UzAE/3u@kroah.com>
+Date:   Fri, 23 Jul 2021 16:16:27 +0900
+Cc:     SeongJae Park <sj38.park@gmail.com>,
+        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
+        acme@kernel.org, akpm@linux-foundation.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendanhiggins@google.com,
+        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
+        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
+        gthelen@google.com, guoju.fgj@alibaba-inc.com, jgowans@amazon.com,
+        joe@perches.com, linux-damon@amazon.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mgorman@suse.de,
+        mheyne@amazon.de, minchan@kernel.org, mingo@redhat.com,
+        namhyung@kernel.org, peterz@infradead.org, riel@surriel.com,
+        rientjes@google.com, rostedt@goodmis.org, rppt@kernel.org,
+        shakeelb@google.com, shuah@kernel.org, sieberf@amazon.com,
+        sjpark@amazon.de, snu@zelle79.org, vbabka@suse.cz,
+        vdavydov.dev@gmail.com, zgf574564920@gmail.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <23F9BFF6-51B0-4EF7-AF2F-278F89D310C3@uci.edu>
+References: <2E16FC36-18B4-4F92-86AE-51249CCDB1A4@uci.edu>
+ <YPpq4u+b/UzAE/3u@kroah.com>
 To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Matthew Wilcox <willy@infradead.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Chris Clayton <chris2553@googlemail.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Boqun Feng <boqun.feng@gmail.com>, <paulmck@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>
-References: <YPVtBBumSTMKGuld@casper.infradead.org>
- <2237123.PRLUojbHBq@natalenko.name>
- <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
- <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
- <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
- <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
- <YPlmMnZKgkcLderp@casper.infradead.org> <YPlyHF5eNDiTMKzq@kroah.com>
- <YPl5+PkfBPI0pdHn@kroah.com>
- <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
- <YPppbUqSPTNcm3f9@kroah.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <a48bfbcf-e20b-83b9-4523-8da9fbbd6bec@huawei.com>
-Date:   Fri, 23 Jul 2021 15:13:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <YPppbUqSPTNcm3f9@kroah.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.180]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/23 15:02, Greg KH wrote:
-> On Fri, Jul 23, 2021 at 09:51:09AM +0800, Miaohe Lin wrote:
->> On 2021/7/22 22:00, Greg KH wrote:
->>> On Thu, Jul 22, 2021 at 03:26:52PM +0200, Greg KH wrote:
->>>> On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
->>>>> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
->>>>>> Thanks for reviewing,
->>>>>>
->>>>>> What I have deduced from the dmesg  is:
->>>>>> In function do_swap_page,
->>>>>> after invoking
->>>>>> 3385        si = get_swap_device(entry); /* rcu_read_lock */
->>>>>> and before
->>>>>> 3561    out:
->>>>>> 3562        if (si)
->>>>>> 3563            put_swap_device(si);
->>>>>> The thread got scheduled out in
->>>>>> 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
->>>>>>
->>>>>> I am only familiar with Linux RCU subsystem, hope mm people can solve our
->>>>>> confusions.
->>>>>
->>>>> I don't understamd why you're still talking.  The problem is understood.
->>>>> You need to revert the unnecessary backport of 2799e77529c2 and
->>>>> 2efa33fc7f6e
->>>>
->>>> Sorry for the delay, will go do so in a minute...
->>>
->>> Both now reverted from 5.10.y and 5.13.y.
->>>
->>
->> I browsed my previous backport notifying email and found that these two patches are also
->> backported into 5.12. And it seems it's missed.
-> 
-> 5.12 is now end-of-life, it's not being touched anymore, and no one
-> should continue to use it.
-> 
-> thanks,
+Thank you for your comment!.
 
-I see! Many thanks for your kindly explanation! :)
+It has been a long time since Nvidia ended supporting the new kernel =
+version on tx2 boards, but for researchers, this set of boards (tx2, =
+px2, agx) is a very attractive candidate to use.
+That's why I asked. If it's impossible because the maintainer is busy =
+with other work, I'll do it myself!=20
 
-> 
+Best,
+Dongjoo Seo
+
+> On Jul 23, 2021, at 4:08 PM, Greg KH <gregkh@linuxfoundation.org> =
+wrote:
+>=20
+> On Fri, Jul 23, 2021 at 04:02:44PM +0900, Dongjoo Seo wrote:
+>> Hello, I am new user of this amazing tool.
+>> I want to use this tool for Nvidia tx2 board with kernel version =
+4.9.140.
+>>=20
+>> Do you guys have any timeline or update schedule for different kernel =
+version compatibility?
+>=20
+> Use a newer kernel on that board, there's no need for anyone to port =
+new
+> features to older kernel versions.
+>=20
+> Why are you stuck with 4.9.140?  That's very old and known insecure =
+and
+> obsolete.  Please contact the vendor who is providing it to you to =
+give
+> you the latest version as you are paying them for that support.
+>=20
+> good luck!
+>=20
 > greg k-h
-> .
-> 
 
