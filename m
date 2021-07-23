@@ -2,186 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123B03D347C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1503D347F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbhGWFeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:34:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33816 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229788AbhGWFeN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:34:13 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N680x1154708;
-        Fri, 23 Jul 2021 02:14:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : to : cc
- : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=RF+RAEs8+U5n3JMz636Knj9hNkDXHa3/dt62ULGTEi4=;
- b=i5YaZbRop38UIdygOPoBopHly4JvG+pD7n9Gigxvt32Z0f6IjGvZfwmpBqSsq7lY2i+b
- s2c/vZZfn4lr8g33wrN8PlgHYvxVnNsHW5QPCuTVTWctxGljRiMc9kbU8YLlwL9+8dID
- A+covGoR9uh+hPTLwpPZi5G0vKi95v3fUiv2eYt3HhjbGoyV8OiO1/op5wRxKEqQwi9+
- sPhKoOpMd8Hew7TKg69WYGSLMB70+suQsCIZtZv3S7ICnWHFOO0AIBy58C5Y67bEKEBr
- lqskhShlFUArdC5Tx02IpH7lbzgRJJ6ZdNOmR9QTyVf8SCUT5x4XsOQqZ95ssO8TEQ3k sw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39ypjea9gj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 02:14:25 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N69ErS013314;
-        Fri, 23 Jul 2021 06:14:23 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 39vng72fse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 06:14:23 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N6BoSQ30409042
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 06:11:50 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4AC5F42042;
-        Fri, 23 Jul 2021 06:14:20 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C298442041;
-        Fri, 23 Jul 2021 06:14:19 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 06:14:19 +0000 (GMT)
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Claire Chang <tientzu@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-References: <20210720133826.9075-1-will@kernel.org>
- <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
- <20210723031252.655d6a83.pasic@linux.ibm.com>
-Message-ID: <b8985c53-a83d-f11f-9fa8-af06d1d4bfd0@de.ibm.com>
-Date:   Fri, 23 Jul 2021 08:14:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210723031252.655d6a83.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: UrE2dl66hYVYxVrAj4LJDQFghwLh85Dh
-X-Proofpoint-ORIG-GUID: UrE2dl66hYVYxVrAj4LJDQFghwLh85Dh
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S233910AbhGWFff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:35:35 -0400
+Received: from mga14.intel.com ([192.55.52.115]:37245 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229788AbhGWFfd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:35:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="211538879"
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
+   d="scan'208";a="211538879"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 23:16:06 -0700
+X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
+   d="scan'208";a="471004329"
+Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 23:16:01 -0700
+Subject: Re: [PATCH 0/5] IPI virtualization support for VM
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Hu, Robert" <robert.hu@intel.com>,
+        "Gao, Chao" <chao.gao@intel.com>
+References: <20210716064808.14757-1-guang.zeng@intel.com>
+ <CANRm+Cy=ncU-H7duei5q+CG+pm-kXvG8N8CiUQavQ3OEpDj9eg@mail.gmail.com>
+ <d96aa6dc-0638-f77e-f412-e2af52053d2c@intel.com>
+ <CANRm+CyinezdL4udNv1fkCymCUdOjG7wjBPKsbcMTVw0pAbcjA@mail.gmail.com>
+From:   Zeng Guang <guang.zeng@intel.com>
+Message-ID: <d0fa2542-8c64-f6ab-a864-b71f64d50304@intel.com>
+Date:   Fri, 23 Jul 2021 14:15:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_03:2021-07-22,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- clxscore=1015 priorityscore=1501 spamscore=0 lowpriorityscore=0 mlxscore=0
- bulkscore=0 phishscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107230031
+In-Reply-To: <CANRm+CyinezdL4udNv1fkCymCUdOjG7wjBPKsbcMTVw0pAbcjA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resending with the correct email of Heiko....
-
-On 23.07.21 03:12, Halil Pasic wrote:
-> On Thu, 22 Jul 2021 21:22:58 +0200
-> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-> 
->> On 20.07.21 15:38, Will Deacon wrote:
->>> Hi again, folks,
->>>
->>> This is version two of the patch series I posted yesterday:
->>>
->>>     https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
->>>
->>> The only changes since v1 are:
->>>
->>>     * Squash patches 2 and 3, amending the commit message accordingly
->>>     * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
->>>
->>> I'd usually leave it a bit longer between postings, but since this fixes
->>> issues with patches in -next I thought I'd spin a new version immediately.
->>>
->>> Cheers,
+On 7/19/2021 3:37 PM, Wanpeng Li wrote:
+> On Mon, 19 Jul 2021 at 15:26, Zeng Guang <guang.zeng@intel.com> wrote:
+>> On 7/16/2021 5:25 PM, Wanpeng Li wrote:
+>>> On Fri, 16 Jul 2021 at 15:14, Zeng Guang <guang.zeng@intel.com> wrote:
+>>>> Current IPI process in guest VM will virtualize the writing to interrupt
+>>>> command register(ICR) of the local APIC which will cause VM-exit anyway
+>>>> on source vCPU. Frequent VM-exit could induce much overhead accumulated
+>>>> if running IPI intensive task.
+>>>>
+>>>> IPI virtualization as a new VT-x feature targets to eliminate VM-exits
+>>>> when issuing IPI on source vCPU. It introduces a new VM-execution
+>>>> control - "IPI virtualization"(bit4) in the tertiary processor-based
+>>>> VM-exection controls and a new data structure - "PID-pointer table
+>>>> address" and "Last PID-pointer index" referenced by the VMCS. When "IPI
+>>>> virtualization" is enabled, processor emulateds following kind of writes
+>>>> to APIC registers that would send IPIs, moreover without causing VM-exits.
+>>>> - Memory-mapped ICR writes
+>>>> - MSR-mapped ICR writes
+>>>> - SENDUIPI execution
+>>>>
+>>>> This patch series implement IPI virtualization support in KVM.
+>>>>
+>>>> Patches 1-3 add tertiary processor-based VM-execution support
+>>>> framework.
+>>>>
+>>>> Patch 4 implement interrupt dispatch support in x2APIC mode with
+>>>> APIC-write VM exit. In previous platform, no CPU would produce
+>>>> APIC-write VM exit with exit qulification 300H when the "virtual x2APIC
+>>>> mode" VM-execution control was 1.
+>>>>
+>>>> Patch 5 implement IPI virtualization related function including
+>>>> feature enabling through tertiary processor-based VM-execution in
+>>>> various scenario of VMCS configuration, PID table setup in vCPU creation
+>>>> and vCPU block consideration.
+>>>>
+>>>> Document for IPI virtualization is now available at the latest "Intel
+>>>> Architecture Instruction Set Extensions Programming Reference".
+>>>>
+>>>> Document Link:
+>>>> https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
+>>>>
+>>>> We did experiment to measure average time sending IPI from source vCPU
+>>>> to the target vCPU completing the IPI handling by kvm unittest w/ and
+>>>> w/o IPI virtualization. When IPI virtualizatin enabled, it will reduce
+>>>> 22.21% and 15.98% cycles comsuming in xAPIC mode and x2APIC mode
+>>>> respectly.
+>>>>
+>>>> KMV unittest:vmexit/ipi, 2 vCPU, AP runs without halt to ensure no VM
+>>>> exit impact on target vCPU.
+>>>>
+>>>>                   Cycles of IPI
+>>>>                   xAPIC mode              x2APIC mode
+>>>>           test    w/o IPIv  w/ IPIv       w/o IPIv  w/ IPIv
+>>>>           1       6106      4816          4265      3768
+>>>>           2       6244      4656          4404      3546
+>>>>           3       6165      4658          4233      3474
+>>>>           4       5992      4710          4363      3430
+>>>>           5       6083      4741          4215      3551
+>>>>           6       6238      4904          4304      3547
+>>>>           7       6164      4617          4263      3709
+>>>>           8       5984      4763          4518      3779
+>>>>           9       5931      4712          4645      3667
+>>>>           10      5955      4530          4332      3724
+>>>>           11      5897      4673          4283      3569
+>>>>           12      6140      4794          4178      3598
+>>>>           13      6183      4728          4363      3628
+>>>>           14      5991      4994          4509      3842
+>>>>           15      5866      4665          4520      3739
+>>>>           16      6032      4654          4229      3701
+>>>>           17      6050      4653          4185      3726
+>>>>           18      6004      4792          4319      3746
+>>>>           19      5961      4626          4196      3392
+>>>>           20      6194      4576          4433      3760
+>>>>
+>>>> Average cycles  6059      4713.1        4337.85   3644.8
+>>>> %Reduction                -22.21%                 -15.98%
+>>> Commit a9ab13ff6e (KVM: X86: Improve latency for single target IPI
+>>> fastpath) mentioned that the whole ipi fastpath feature reduces the
+>>> latency from 4238 to 3293 around 22.3% on SKX server, why your IPIv
+>>> hardware acceleration is worse than software emulation? In addition,
+>> Actually this performance data was measured on the basis of fastpath
+>> optimization while cpu runs at base frequency.
 >>
->> FWIW, I just bisected virtio-errors with secure execution mode
->> qemu-system-s390x: virtio-serial-bus: Unexpected port id 4205794771 for device virtio-serial0.0
->>
->> to
->> commit 903cd0f315fe426c6a64c54ed389de0becb663dc
->> Author: Claire Chang <tientzu@chromium.org>
->> Date:   Thu Jun 24 23:55:20 2021 +0800
->>
->>        swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
->>
->> Unfortunately this patch series does NOT fix this issue, so it seems that even more
->> things are broken.
->>
->> Any idea what else might be broken?
-> 
-> I've done some debugging, and I think I know what is going on. Since
-> that commit we need to set force_swiotlb before the swiotlb itself is
-> initialized. So the patch below should fix the problem.
-> 
-> --------------------8<-------------------------------------
-> 
-> From: Halil Pasic <pasic@linux.ibm.com>
-> Date: Fri, 23 Jul 2021 02:57:06 +0200
-> Subject: [PATCH 1/1] s390/pv: fix the forcing of the swiotlb
-> 
-> Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
-> swiotlb data bouncing") if code sets swiotlb_force it needs to do so
-> before the swiotlb is initialised. Otherwise
-> io_tlb_default_mem->force_bounce will not get set to true, and devices
-> that use (the default) swiotlb will not bounce  despite switolb_force
-> having the value of SWIOTLB_FORCE.
-> 
-> Let us restore swiotlb functionality for PV by fulfilling this new
-> requirement.
-> 
-I would add:
-Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
-as this patch breaks things
-and
-Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
+>> As a result, IPI virtualization could have extra 15.98% cost reduction
+>> over IPI fastpath process in x2apic mode.
+> I observed that adaptive advance lapic timer and adaptive halt-polling
+> will influence kvm-unit-tests/vmexit.flat IPI testing score, could you
+> post the score after disabling these features as commit a9ab13ff6e
+> (KVM: X86: Improve latency for single target IPI fastpath) mentioned？
+> In addition, please post the hackbench(./hackbench -l 1000000) and ipi
+> microbenchmark scores.
 
-to make the s390 init code more robust in case people start backporting things.
+We modified unittest to make AP runing with idle loop instead of hlt . 
+This eliminates the impact
+from adaptive halt-polling. So far we don't observe the influence from 
+adaptive advance lapic timer
+by test either. vmexit/ipi test should not involve lapic timer.
 
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+We post the hackbench and ipi microbenchmark score in patch V2 for your 
+reference.
 
-I can confirm that this fixes the problem. This also makes sense codewise.
+Thanks.
 
-Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-
-Konrad, Heiko, Vasily, any preference which tree this goes? I think s390
-would be easiest, but that requires that the patches in the swiotlb tree have
-fixed commit IDs.
-
-> ---
->   arch/s390/mm/init.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 8ac710de1ab1..07bbee9b7320 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -186,9 +186,9 @@ static void pv_init(void)
->   		return;
->   
->   	/* make sure bounce buffers are shared */
-> +	swiotlb_force = SWIOTLB_FORCE;
->   	swiotlb_init(1);
->   	swiotlb_update_mem_attributes();
-> -	swiotlb_force = SWIOTLB_FORCE;
->   }
->   
->   void __init mem_init(void)
-> 
+>
+>      Wanpeng
