@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995723D34FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C28D3D34FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbhGWGVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:21:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234089AbhGWGVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:21:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F252A60EE2;
-        Fri, 23 Jul 2021 07:02:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627023728;
-        bh=02LUfP9gRBAKznttDT6gEA8Wm5l4jpvhTQOhmSmp6TY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oYElD2rhN77kwhk3cHbdJs1c1K4EEL9wI8fe4Uw3mOaPEtxJSMnhDjUPbEEf1SAzA
-         YEHykz6fGqLgjZZ4asnYJ3GIswCFOu2g/Z98w+hF9lyqReoghUDstiJGuK44r8OyR6
-         EhDzQXwJgbKvoHxsJjXUSHkuXAx5ulAcvQyMelNA=
-Date:   Fri, 23 Jul 2021 09:02:05 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Zhouyi Zhou <zhouzhouyi@gmail.com>,
-        Chris Clayton <chris2553@googlemail.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Boqun Feng <boqun.feng@gmail.com>, paulmck@kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Chris Rankin <rankincj@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        rcu <rcu@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>
-Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
-Message-ID: <YPppbUqSPTNcm3f9@kroah.com>
-References: <YPVtBBumSTMKGuld@casper.infradead.org>
- <2237123.PRLUojbHBq@natalenko.name>
- <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
- <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
- <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
- <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
- <YPlmMnZKgkcLderp@casper.infradead.org>
- <YPlyHF5eNDiTMKzq@kroah.com>
- <YPl5+PkfBPI0pdHn@kroah.com>
- <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
+        id S234224AbhGWGWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:22:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234217AbhGWGWV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:22:21 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37757C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:02:55 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id m2-20020a17090a71c2b0290175cf22899cso2572456pjs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uci-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :cc:to;
+        bh=AdH+rx5+VPP3VWefoL3mhQLnCJH3lO4p1OcT4UPuSHw=;
+        b=hqJ2SYmIYX6GXRc9Jx1OUkc2/AX3IBRoSxOuaHp8m2rF4Ftr/LF8tw/YiHrCU3osXl
+         Q5hTdI+eG8cFd6SChXxLzNRFbLHVWHk9d8xlQoGSIc3dxENq9wjFjvzBlqu5kYgdp5EJ
+         VSp89rgdFqcBanykXujfxHXCc89vXcoCB2lq/Xe+B+V+Y16oGgyMnBMN2FiYBgIQC6uc
+         EtfJd2MrygQ3aV7e1ClCzh+Gtcjt9xPY0xEtQYd+bi3ZtvBhR7aEKPnG1AfuaUHjE4Z6
+         R175syYwMni1ay3fsxtD6+2flE2/eBYlhSo0+IkC/7UTbKRkSIPhNTqztUBbqYNGRxj4
+         kjXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:cc:to;
+        bh=AdH+rx5+VPP3VWefoL3mhQLnCJH3lO4p1OcT4UPuSHw=;
+        b=uh6PgqRRTcYzunCLCdGjpOv7DlOdX/ZRPNk2co8BWbkvmNZm6pDlHnrKE5jERI/7sD
+         wSZuBT/ijW/2KDeIbCDnt0b0YXgZuSKzSpT8SDAHZd9ROMoe3nkwJ5eJiQ7Z7fPui76A
+         rzGatg2qPc2THUuVAYy1TvG4jojap5sueq3ofuu71JKtsfM36FLw35pVXRtx9qnUH5tA
+         lCkqAR2hzqW0aHuFbkkSI1DgieilqqMlk63erNKkZJ77EQ2GNbGftZYUISSHBkSIIfSX
+         XUok3N7DysE0Xy0yP+ZaZ4EoCtUZGOXO4KZFQAwJwHvfkydkIq82Ksujv7grc1JZZ8ps
+         PwAQ==
+X-Gm-Message-State: AOAM532gKRpT69m/VThnXKKG7KxZR+lZ/8JO9i7uFP4i82nXC/9ch+SI
+        i2e+ec9NP/31mNlevZQRcr3liA==
+X-Google-Smtp-Source: ABdhPJw/fiEjM+NRZGB2+dG+Gyp/HN41VOVwQ79CbKl4rXQOQ76By2KyfQWR/6Rrc+nCRqwJhafIpA==
+X-Received: by 2002:a17:903:244f:b029:12a:f0f9:19a3 with SMTP id l15-20020a170903244fb029012af0f919a3mr3129556pls.42.1627023774767;
+        Fri, 23 Jul 2021 00:02:54 -0700 (PDT)
+Received: from [192.168.1.3] ([183.98.43.105])
+        by smtp.gmail.com with ESMTPSA id s5sm3501225pfk.114.2021.07.23.00.02.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Jul 2021 00:02:54 -0700 (PDT)
+From:   Dongjoo Seo <dseo3@uci.edu>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
+Message-Id: <2E16FC36-18B4-4F92-86AE-51249CCDB1A4@uci.edu>
+Date:   Fri, 23 Jul 2021 16:02:44 +0900
+Cc:     "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@Huawei.com>,
+        acme@kernel.org, akpm@linux-foundation.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendanhiggins@google.com,
+        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
+        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
+        greg@kroah.com, gthelen@google.com, guoju.fgj@alibaba-inc.com,
+        jgowans@amazon.com, joe@perches.com, linux-damon@amazon.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mgorman@suse.de, mheyne@amazon.de,
+        minchan@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, riel@surriel.com, rientjes@google.com,
+        rostedt@goodmis.org, rppt@kernel.org, shakeelb@google.com,
+        shuah@kernel.org, sieberf@amazon.com, sjpark@amazon.de,
+        snu@zelle79.org, vbabka@suse.cz, vdavydov.dev@gmail.com,
+        zgf574564920@gmail.com
+To:     SeongJae Park <sj38.park@gmail.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 09:51:09AM +0800, Miaohe Lin wrote:
-> On 2021/7/22 22:00, Greg KH wrote:
-> > On Thu, Jul 22, 2021 at 03:26:52PM +0200, Greg KH wrote:
-> >> On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
-> >>> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
-> >>>> Thanks for reviewing,
-> >>>>
-> >>>> What I have deduced from the dmesg  is:
-> >>>> In function do_swap_page,
-> >>>> after invoking
-> >>>> 3385        si = get_swap_device(entry); /* rcu_read_lock */
-> >>>> and before
-> >>>> 3561    out:
-> >>>> 3562        if (si)
-> >>>> 3563            put_swap_device(si);
-> >>>> The thread got scheduled out in
-> >>>> 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
-> >>>>
-> >>>> I am only familiar with Linux RCU subsystem, hope mm people can solve our
-> >>>> confusions.
-> >>>
-> >>> I don't understamd why you're still talking.  The problem is understood.
-> >>> You need to revert the unnecessary backport of 2799e77529c2 and
-> >>> 2efa33fc7f6e
-> >>
-> >> Sorry for the delay, will go do so in a minute...
-> > 
-> > Both now reverted from 5.10.y and 5.13.y.
-> > 
-> 
-> I browsed my previous backport notifying email and found that these two patches are also
-> backported into 5.12. And it seems it's missed.
+Hello, I am new user of this amazing tool.
+I want to use this tool for Nvidia tx2 board with kernel version =
+4.9.140.
 
-5.12 is now end-of-life, it's not being touched anymore, and no one
-should continue to use it.
+Do you guys have any timeline or update schedule for different kernel =
+version compatibility?
 
-thanks,
-
-greg k-h
+Best
+Dongjoo Seo=
