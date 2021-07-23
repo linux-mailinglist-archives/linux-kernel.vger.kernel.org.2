@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288FA3D3990
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6513E3D3999
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhGWKxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbhGWKw6 (ORCPT
+        id S234451AbhGWK5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:57:15 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:35797 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231703AbhGWK5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:52:58 -0400
-Received: from gpm.stappers.nl (gpm.stappers.nl [IPv6:2001:981:6c6a:1::49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 040CBC061575;
-        Fri, 23 Jul 2021 04:33:31 -0700 (PDT)
-Received: by gpm.stappers.nl (Postfix, from userid 1000)
-        id E62AB3041A7; Fri, 23 Jul 2021 13:33:27 +0200 (CEST)
-Date:   Fri, 23 Jul 2021 13:33:27 +0200
-From:   Geert Stappers <stappers@stappers.nl>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/17] Rust support, GPIO driver
-Message-ID: <20210723113327.cnw4wdjqdeg6o6x4@gpm.stappers.nl>
-References: <20210704202756.29107-1-ojeda@kernel.org>
- <YOVNJuA0ojmeLvKa@infradead.org>
- <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
- <YOWjLmg/Z7kr2+tx@kroah.com>
- <YOW1Nj8+a2Yth2++@google.com>
- <YOXB7FRqldZik2Xn@kroah.com>
- <BFD5298D-00CD-4FEF-AE77-61E69AF78604@kloenk.dev>
- <YOZNuEtNbsLxRM0R@casper.infradead.org>
- <YPn3fgDX8uNkF8Vp@google.com>
- <YPoYxiq63QcfUXg+@casper.infradead.org>
+        Fri, 23 Jul 2021 06:57:14 -0400
+Received: (Authenticated sender: hadess@hadess.net)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 12946100006;
+        Fri, 23 Jul 2021 11:37:45 +0000 (UTC)
+Message-ID: <ac1c288bc64183128d7bc0da09573ca6aaa6f299.camel@hadess.net>
+Subject: Re: [PATCH v2] HID: logitech-hidpp: battery: provide CAPACITY
+ property for newer devices
+From:   Bastien Nocera <hadess@hadess.net>
+To:     Hamza Mahfooz <someguy@effective-light.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>,
+        linux-input@vger.kernel.org
+Date:   Fri, 23 Jul 2021 13:37:45 +0200
+In-Reply-To: <20210723112337.101495-1-someguy@effective-light.com>
+References: <20210723112337.101495-1-someguy@effective-light.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="67mj6aqryecr4rvw"
-Content-Disposition: inline
-In-Reply-To: <YPoYxiq63QcfUXg+@casper.infradead.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2021-07-23 at 07:23 -0400, Hamza Mahfooz wrote:
+> For devices that only support the BATTERY_VOLTAGE (0x1001) feature,
+> UPower
+> requires the additional information provided by this patch, to set
+> them up.
+> 
+> v2: use ARRAY_SIZE() and set voltages[]'s size to 100
 
---67mj6aqryecr4rvw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This information should be under the "---" below, so that it gets
+stripped when the patch is applied by git. I'm sure Jiri can fix that
+up though.
 
-On Fri, Jul 23, 2021 at 02:17:58AM +0100, Matthew Wilcox wrote:
-> On Thu, Jul 22, 2021 at 11:55:58PM +0100, Wedson Almeida Filho wrote:
-> > Hey Matthew,
-> >=20
-> > On Thu, Jul 08, 2021 at 01:58:32AM +0100, Matthew Wilcox wrote:
-> > > Why are you so resistant to writing a real driver that deals with act=
-ual
-> > > hardware? =20
-> >=20
-> > I don't think it was so much resistance but rather a prioritisation thi=
-ng. Have
-> > you by any chance seen the gpio driver I posted a couple of days ago?
->=20
-> I haven't seen it, no ...
+> 
+> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+> ---
+>  drivers/hid/hid-logitech-hidpp.c | 30 +++++++++++++++++++++++++++++-
+>  1 file changed, 29 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-
+> logitech-hidpp.c
+> index 61635e629469..6d63804a9a0f 100644
+> --- a/drivers/hid/hid-logitech-hidpp.c
+> +++ b/drivers/hid/hid-logitech-hidpp.c
+> @@ -1331,6 +1331,31 @@ static int
+> hidpp20_battery_get_battery_voltage(struct hidpp_device *hidpp,
+>         return 0;
+>  }
+>  
+> +static int hidpp20_map_battery_capacity(int voltage)
+> +{
+> +       static const int voltages[100] = {
 
-Most likely it is https://lwn.net/Articles/863459/
+Looks good to me.
 
-=20
+Is there a way to make sure that there are actually 100 values being
+set in the array?
 
-=20
-Groeten
-Geert Stappers
---=20
-Silence is hard to parse
+> +               4186, 4156, 4143, 4133, 4122, 4113, 4103, 4094, 4086,
+> 4075,
+> +               4067, 4059, 4051, 4043, 4035, 4027, 4019, 4011, 4003,
+> 3997,
+> +               3989, 3983, 3976, 3969, 3961, 3955, 3949, 3942, 3935,
+> 3929,
+> +               3922, 3916, 3909, 3902, 3896, 3890, 3883, 3877, 3870,
+> 3865,
+> +               3859, 3853, 3848, 3842, 3837, 3833, 3828, 3824, 3819,
+> 3815,
+> +               3811, 3808, 3804, 3800, 3797, 3793, 3790, 3787, 3784,
+> 3781,
+> +               3778, 3775, 3772, 3770, 3767, 3764, 3762, 3759, 3757,
+> 3754,
+> +               3751, 3748, 3744, 3741, 3737, 3734, 3730, 3726, 3724,
+> 3720,
+> +               3717, 3714, 3710, 3706, 3702, 3697, 3693, 3688, 3683,
+> 3677,
+> +               3671, 3666, 3662, 3658, 3654, 3646, 3633, 3612, 3579,
+> 3537
+> +       };
+> +
+> +       int i;
+> +
+> +       for (i = 0; i < ARRAY_SIZE(voltages); i++) {
+> +               if (voltage >= voltages[i])
+> +                       return ARRAY_SIZE(voltages) - i;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int hidpp20_query_battery_voltage_info(struct hidpp_device
+> *hidpp)
+>  {
+>         u8 feature_type;
+> @@ -1354,6 +1379,7 @@ static int
+> hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
+>  
+>         hidpp->battery.status = status;
+>         hidpp->battery.voltage = voltage;
+> +       hidpp->battery.capacity =
+> hidpp20_map_battery_capacity(voltage);
+>         hidpp->battery.level = level;
+>         hidpp->battery.charge_type = charge_type;
+>         hidpp->battery.online = status !=
+> POWER_SUPPLY_STATUS_NOT_CHARGING;
+> @@ -1378,6 +1404,7 @@ static int hidpp20_battery_voltage_event(struct
+> hidpp_device *hidpp,
+>  
+>         if (voltage != hidpp->battery.voltage || status != hidpp-
+> >battery.status) {
+>                 hidpp->battery.voltage = voltage;
+> +               hidpp->battery.capacity =
+> hidpp20_map_battery_capacity(voltage);
+>                 hidpp->battery.status = status;
+>                 hidpp->battery.level = level;
+>                 hidpp->battery.charge_type = charge_type;
+> @@ -3717,7 +3744,8 @@ static int hidpp_initialize_battery(struct
+> hidpp_device *hidpp)
+>         num_battery_props = ARRAY_SIZE(hidpp_battery_props) - 3;
+>  
+>         if (hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_MILEAGE ||
+> -           hidpp->capabilities &
+> HIDPP_CAPABILITY_BATTERY_PERCENTAGE)
+> +           hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE
+> ||
+> +           hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_VOLTAGE)
+>                 battery_props[num_battery_props++] =
+>                                 POWER_SUPPLY_PROP_CAPACITY;
+>  
 
---67mj6aqryecr4rvw
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEin8gjG2ecykWV0FNITXRI9jBm+wFAmD6qQAACgkQITXRI9jB
-m+zOyw//R/ups+zRvGYwR/AI5OtWjOFKYdDUACDl9PGEMYn4IK8VJ72hfrVV03cA
-irukF91cUBa7sB/vaa9gpnD9cWapPCIcwgOT7cIWGPgyi06JpIDOB1StTGzlvZJV
-kjojc/qazR/V5uhe987qhXrc0N5mOkhvCuIwVYTZR0H2VSgfhhO5qKLhadzcKGij
-EaEooeI0uM4TbKAxrS9OJKI1PwHPg5Ww0lZPeUgU6OLgzyLscAxwWL9XtRHOTcQ0
-1/rZR+DWm4RvjweGitNy8pfQLEOjnjb6Y7U9u9FteeikfQhY4ChBgnAmdinO/wWw
-/J1v9Q3ODOHagU2ihgKaoZYo7g2cD/Ks/MN8ooxYSOE7/x3L6IAOdDMkORXN84Mc
-/OA4ZIGhy4IdiSzEBnHfyV2ituBBY3SUEm43iDR6ydOtkKXI5DNiEAIcImBYFtrB
-LiWi1inyawL1XCp2yYqUvbAWzDEdXpuUKOovNR5vZklQb1jzJcOVo6zm5yPP1x3C
-ckXaVqFXbKRR+1F9GklM/d5OA8mvjFY7HccIVcOkPfv0N6Lt+Y1NNu2dNmXHmFlo
-6GdCm6mXzRFh61tSkX59OVQRspSAlURhlauiKCO4i2tA5HtcIZ3/KANmuJOArTt6
-kAlodz13QWkYeDc1LtJ0i4hL/0hO9lUTbKD/PjAb0PYrT4wK8/s=
-=jmor
------END PGP SIGNATURE-----
-
---67mj6aqryecr4rvw--
