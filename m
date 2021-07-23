@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C694B3D31D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB1F3D31D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbhGWBsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233166AbhGWBsF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:48:05 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB611C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 19:28:38 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so1868495pjh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 19:28:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tAw85E8NXV/d5HgkTo259jtbI4ouhmcg6pjHUDSWPjc=;
-        b=Q7CIwrCSaunZRhC18Xlo4DvY8+aN4ehQ8+o9kvikwLv3PHHcQ4BFGQhX9vu8e28p3/
-         vuFeJmrPpxB4Ach1ym4qW9yJPyYnTIdLn4z3y/8Ihhe+s61EFqv8PjfvgMRR3rOXoUP6
-         nLDsUlogdx/HTaxNHdkBk0SzAQKwDkCxTN4Oqz8nvr2FEtbdXnFJt5R4W4Zyb2+qRanh
-         SiXn7ka7sLQPZSEj2AlCDkJF+v6Bf0C9cTO4QlY6svJJUVm5F07h6D/Zu4FYwIDkTdlN
-         vRLbZA4Lxz5Wp3xNxNCxmu8OO3+cRKITygD40IWp+Q7X5t0CFpEdR9FGfbmsJD6CmHgQ
-         g0dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tAw85E8NXV/d5HgkTo259jtbI4ouhmcg6pjHUDSWPjc=;
-        b=RE+qfX5a8DK6s+KWx+aNmGcSWzz6cT9IIHkEVjxD2rqmaibHc5cm9Ad1aoob1TTVk/
-         /8HVOi6vdcPhh0UMkUyWrdbfdukgCPCrHtP716/Tne0ZGlLNZAZhcUae91RrYFoCH13K
-         14lhClXeYcMqIeXdPn9XuWq+p2HanMivw3YrQiwZ/XrrbZ9qAesukzqVhgJxXV3LHsvF
-         5Fy/gC+VA6PqTVtPwz+DKyM23OcsAf0JV4Ia3JNNUXkjGBF7FmEz4o72qPsHtr8mB41p
-         YoL9E8Cdz0hIUDoAkkgd7tcYAgZEjwxA+vEllRtnTfFxuAmRZsGm7aY6hFCp1J27j2vy
-         iiZQ==
-X-Gm-Message-State: AOAM531lNUusza8J2lnWtz88aU9WYPx7dKS3Tmh12LWdtLywtio9cHKQ
-        JwpgMza1SRYQSsaETsA02EEqMA==
-X-Google-Smtp-Source: ABdhPJxSWSpC//R2a9331w7aLWF4tUcZt/V6puU33PGp87Oq9CNUj0lUb/eotMn0lPyFT2oVs4VjiQ==
-X-Received: by 2002:aa7:93ac:0:b029:32e:4fce:bde1 with SMTP id x12-20020aa793ac0000b029032e4fcebde1mr2586387pff.54.1627007318309;
-        Thu, 22 Jul 2021 19:28:38 -0700 (PDT)
-Received: from localhost ([106.201.108.2])
-        by smtp.gmail.com with ESMTPSA id y15sm32865753pfn.63.2021.07.22.19.28.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 19:28:37 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 07:58:36 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
-        pbonzini@redhat.com
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210723022836.ews7bshlwcsaktud@vireshk-i7>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <YNrw4rxihFLuqLtY@ninjato>
- <20210629101627.kwc2rszborc3kvjs@vireshk-i7>
- <YNr0uDx1fv+Gjd7m@ninjato>
- <20210629103014.nlk3mpetydc4mi6l@vireshk-i7>
- <YNr5Jf3WDTH7U5b7@ninjato>
- <YNr5ZRhT3qn+e9/m@ninjato>
- <20210705121832.fmye5xnlbydoc5ir@vireshk-i7>
- <YPmLoeLSPS1tfYUK@ninjato>
+        id S233243AbhGWBvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:51:45 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:54991 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233166AbhGWBvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 21:51:43 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GWCyR6zrGz9sRf;
+        Fri, 23 Jul 2021 12:32:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1627007536;
+        bh=koKq4TgjUYq9/R+UtF4SotsRvhgnCeYaWHfyAdtWN38=;
+        h=Date:From:To:Cc:Subject:From;
+        b=snHmio27KXWOC8YyLuSXO49MhT6QepEY/rtiduHufDnRgdYQO2FovZilwxrF6Wb+p
+         ZX66DufrRNbYpzjXaRJayta4WQfWpGHjb1Keo5J3ll27A7K+6LvY83qtPtDJ7EdnlX
+         87k8q0nvvlm9H94CAp2OcAs2NmSwAN0Jso4UydYiTgATnpO7CqHwXD0WbSS2yTINaE
+         qu2NQCUSPYXT9Mglo1wVCmLOzFh4ODQW4NAVZAL9bKssy4jcsQFges52NjDrVOoXSm
+         brusGyUg0nEZJHFGr+DUS4g9Ml/ja0+j8qAcg+vSgXDszFrwRu1As+spGunfRAdtfo
+         hJ8uwWWqSGVqQ==
+Date:   Fri, 23 Jul 2021 12:32:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wei Wang <weiwan@google.com>
+Subject: linux-next: manual merge of the net-next tree with Linus' tree
+Message-ID: <20210723123213.0a970ac7@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPmLoeLSPS1tfYUK@ninjato>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="Sig_/jzgtEvjBY3eTR9W_rvEUN.D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+--Sig_/jzgtEvjBY3eTR9W_rvEUN.D
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 22-07-21, 17:15, Wolfram Sang wrote:
-> Nope, I think you misinterpreted that. SMBUS_QUICK will not send any
-> byte. After the address phase (with the RW bit as data), a STOP will
-> immediately follow. len = 0 will ensure that.
-> 
-> msgbuf0[0] is set to 'command' because every mode except SMBUS_QUICK
-> will need that. So, it is convenient to always do it. For SMBUS_QUICK
-> it is superfluous but does not hurt.
+Hi all,
 
-Yeah, I think I was confused by this stuff.
+Today's linux-next merge of the net-next tree got a conflict in:
 
-> > If so, it would be difficult to implement this with the current i2c virtio
-> > specification, as the msg.len isn't really passed from guest to host, rather it
-> > is inferred using the length of the buffer itself. And so we can't really pass a
-> > buffer if length is 0.
-> 
-> And you can't leave out the buffer and assume len = 0 then?
+  net/ipv4/tcp_ipv4.c
 
-Would need a spec update, which I am going to send.
+between commit:
 
-We would also need another update to spec to make the Quick thing
-working. Lemme do it separately and we merge the latest version of the
-driver for linux-next until then.
+  213ad73d0607 ("tcp: disable TFO blackhole logic by default")
 
-I checked the code with i2cdetect -q and it worked fine, I was
-required to do some changes to the backend (and spec) to make it work.
-I will propose the changes to the spec first for the same.
+from Linus' tree and commit:
 
--- 
-viresh
+  e93abb840a2c ("net/tcp_fastopen: remove tcp_fastopen_ctx_lock")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc net/ipv4/tcp_ipv4.c
+index a692626c19e4,e9321dd39cdb..000000000000
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@@ -2964,8 -2964,7 +2964,7 @@@ static int __net_init tcp_sk_init(struc
+  	net->ipv4.sysctl_tcp_comp_sack_slack_ns =3D 100 * NSEC_PER_USEC;
+  	net->ipv4.sysctl_tcp_comp_sack_nr =3D 44;
+  	net->ipv4.sysctl_tcp_fastopen =3D TFO_CLIENT_ENABLE;
+- 	spin_lock_init(&net->ipv4.tcp_fastopen_ctx_lock);
+ -	net->ipv4.sysctl_tcp_fastopen_blackhole_timeout =3D 60 * 60;
+ +	net->ipv4.sysctl_tcp_fastopen_blackhole_timeout =3D 0;
+  	atomic_set(&net->ipv4.tfo_active_disable_times, 0);
+ =20
+  	/* Reno is always built in */
+
+--Sig_/jzgtEvjBY3eTR9W_rvEUN.D
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD6Ki0ACgkQAVBC80lX
+0GxZUgf/W9224sGFp0kqxPny1PD1fa2vNdUgOYvI8sLWEext9qFDZ3bJgN3vgzyR
+lDe/ph7OEKj3yOGdN1DRjWWSMPmP74BPW1EX0csRWG5KaPH0/vMjHqTBtP8NEnfu
+MMU67INKIniQi38nVIwruBpFJGg+P2FyE31lleznkBapy4PPrnpyXoUB5VEIwUkS
+1DczvTNpyHh39kS7f0r2bvME09RIkX8jeFv0VwkypErz6ijFQprYcD7tpEGsxGcZ
+76NdMOjFi5lk8nwp2H/g4elzr7Rr0LVRLIUuHl/W1XnTpfQoZ8bcKe5TPdMuAvDe
+WaT31X8PubruI/k5rujT3rv01eblew==
+=i9Q5
+-----END PGP SIGNATURE-----
+
+--Sig_/jzgtEvjBY3eTR9W_rvEUN.D--
