@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097AD3D33D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 06:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC873D33EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 07:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhGWEF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 00:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        id S230041AbhGWE3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 00:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhGWEF5 (ORCPT
+        with ESMTP id S229698AbhGWE3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 00:05:57 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9A76C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 21:46:30 -0700 (PDT)
+        Fri, 23 Jul 2021 00:29:11 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BADEC061575;
+        Thu, 22 Jul 2021 22:09:45 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id f1so1900994plt.7;
+        Thu, 22 Jul 2021 22:09:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=RmTFR5sHYq+p4KauoZP/+FHafSyPUXZ/4/
-        /YrkOuHv4=; b=AuaH15T+Drpa92yftNj9Ipz3eeGHqMV0QiPOFACxcspsLszpUF
-        2ULlnO22Qm3w+a758nws38HBc22FbjlIYt3xhoZzSdRUxhDaKn3jAqrEuwb5SAzu
-        +r7Wqs8XLQKzS++dO9OSK4a9o1Qbx44q6lMHnb8dRuV+ozzygU6cUB7Qw=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3Pv6bSfpgdPkxAA--.1487S2;
-        Fri, 23 Jul 2021 12:46:19 +0800 (CST)
-Date:   Fri, 23 Jul 2021 12:40:25 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     tongtiangen <tongtiangen@huawei.com>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
-Message-ID: <20210723124025.669cb4ec@xhacker>
-In-Reply-To: <20210723122925.67a14562@xhacker>
-References: <87bl6yrcmd.fsf@igel.home>
-        <mhng-e14c3232-cc4d-4146-8c93-c60ec81ed272@palmerdabbelt-glaptop>
-        <CAOnJCU+Ss0cO1mqr=GDVnpxV075uR+KipSnr7dN93099dAH+vQ@mail.gmail.com>
-        <20210722213724.1f12a0e7@xhacker>
-        <87zguexslf.fsf@igel.home>
-        <20210723075432.098634a2@xhacker>
-        <52e3626a-2b40-bda6-de0e-68ea12a86dd9@huawei.com>
-        <20210723122925.67a14562@xhacker>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PH147XuCWyb6h3MTkLRYNAK5eXqhCfzzFLL0PdUER9M=;
+        b=u+TQD/HHf+RGmWW2Eo+Bg0J0+rKaYoZSUaRklxLTVgr6ecH123Vki37uyvvDDQ/ZDC
+         3xsfcSk5oTX8+v3xbifKToSCfyfWVFuah/cKT5oZ2roERRD+FR4O8ZDQbAMghJXKqFAV
+         pyOUB8hC5+H+kfbOwGdHZrmjm8eTraCtlGkL/a8dqRa6swmwOLOcLabxqaCHgg+E605C
+         eY38aRwleVJsac6lXdqMdB1YlOyUuUunnvU+v/zavTaKSx7njtHWM5+qiLETs8HqRlyM
+         kf0zZv1xIjxgYmzE3HetFwJHkNfT6uvhMXer+hqMFGwVfMvOVAk7zJyuQg89RH9LBYN8
+         TCvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PH147XuCWyb6h3MTkLRYNAK5eXqhCfzzFLL0PdUER9M=;
+        b=YIbs7MiqRwcooXaY2Z7utx3muS8jSsB6vJe1LVw6yJr5DwTRScCZjjA7PP3IL8r8yW
+         rFOVKZ1wr5jyA/TcgUDdAekWWgpQq9JEumaPevC4DlC8es0KWkUDPGJKBWigYNcoaAvq
+         j6fdh8TO+JCfSSB/06s07AJEflacWChKlzcmtH3uZ0qoEwFnR3UBAg7/WBm9j51+oXAQ
+         ASFjx5M7wDaNffqTNOVWm8RXqiYTCQgYOl+86Qzw1RQ+y6XfpDz5CwHFoIYn2j2NDubl
+         6CwMA0ESO1GyqS+/xFVMSZ0gf4h2uc2b793wkk3LLd1z0iuy5BgWK6Assu7kCONhwttz
+         GZQQ==
+X-Gm-Message-State: AOAM530PPeRhFzEhVjwDuUAdxlr18T1RN+ZKnpMcWTrzCbZzDAUxtc+w
+        6wfmJWPGQHI+bBTGdsDGXrI=
+X-Google-Smtp-Source: ABdhPJxZi4QW2uiefQyknp3u4VnPLC6l95TEgpMpYcsGOoYx7Q5jBBz91jAOB88oF+BoR4HvsK//zw==
+X-Received: by 2002:a17:902:ed95:b029:ee:aa46:547a with SMTP id e21-20020a170902ed95b02900eeaa46547amr2511805plj.27.1627016984441;
+        Thu, 22 Jul 2021 22:09:44 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.166])
+        by smtp.gmail.com with ESMTPSA id s193sm32917483pfc.183.2021.07.22.22.09.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 22:09:43 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] cfg80211: free the object allocated in wiphy_apply_custom_regulatory
+Date:   Fri, 23 Jul 2021 13:09:14 +0800
+Message-Id: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID: LkAmygA3Pv6bSfpgdPkxAA--.1487S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cr4DXw4rWF47JFykArWfAFb_yoW8ZrW5pF
-        WUAa1akF4DJF1Ik3Z7Kw18Wa409Fs7A345Z3s5XF13AF9Yqa1rXr42gF45Ka47Gr13C3WY
-        vr48KF97Ww45Ja7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyIb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j
-        6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7y89DUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 12:29:25 +0800
-Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+The commit beee24695157 ("cfg80211: Save the regulatory domain when
+setting custom regulatory") forgets to free the newly allocated regd
+object.
 
-> On Fri, 23 Jul 2021 09:36:47 +0800
-> tongtiangen <tongtiangen@huawei.com> wrote:
->=20
-> > On 2021/7/23 7:54, Jisheng Zhang wrote: =20
-> > > On Thu, 22 Jul 2021 17:42:52 +0200
-> > > Andreas Schwab <schwab@linux-m68k.org> wrote:
-> > >   =20
-> > >> On Jul 22 2021, Jisheng Zhang wrote:
-> > >>   =20
-> > >>> I think we need to pin the stack before calling get_wchan(), could =
-you please
-> > >>> try below patch?   =20
-> > >>
-> > >> Thanks, this fixes the crash for me.
-> > >>
-> > >> Andreas.
-> > >>   =20
-> > >
-> > > Thanks for testing. I will send out formal patch later
-> > >
-> > > Thanks
-> > >
-> > > .
-> > >   =20
-> >=20
-> > Hi all:
-> > I tried to reproduced this crash in openSUSE code repo=EF=BC=88=20
-> > https://github.com/opensuse/kernel =EF=BC=89, but not reproduced succes=
-sfully.
-> >=20
-> >  From the patch of problem repair, the crash is due to task->stack is=20
-> > released before calling get_wchan, the task state of maybe TASK_DEAD.
-> >=20
-> > VMAP_STACK is used to detect kernel stack overflow, there is no=20
-> > connection between the two, it makes me a little confused. =20
->=20
-> I believe the bug exists from the first day of riscv mainlined.
->=20
-> Since THREAD_INFO_IN_TASK=3Dy in riscv, so when task stack can be freed
-> before being destroyed.
+Fix this by freeing the regd object in the error handling code and
+deletion function - mac80211_hwsim_del_radio.
 
-typo: task stack can be freed before task is destroyed
+Reported-by: syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com
+Fixes: beee24695157 ("cfg80211: Save the regulatory domain when setting custom regulatory")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ drivers/net/wireless/mac80211_hwsim.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->=20
-> When VMAP_STACK=3Dn, task's stack is allocated from linear mapping. When
-> task stack is freed, the corresponding mapping still exists, and since
-> get_wchan() only read, no harm is observed so far.
->=20
-> When VMAP_STACK=3Dy, task's stack is allocated from vmalloc area. When
-> task stack is freed, the corresponding mapping may not exist, so I expect
-> MMU fault here, thus the kernel panic.
->=20
-> In summary, the bug isn't related with VMAP_STACK, but VMAP_STACK makes
-> the bug observable.
->=20
-> Thanks
->=20
->=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index ffa894f7312a..20b870af6356 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -3404,6 +3404,8 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
+ 	debugfs_remove_recursive(data->debugfs);
+ 	ieee80211_unregister_hw(data->hw);
+ failed_hw:
++	if (param->regd)
++		kfree_rcu(get_wiphy_regdom(data->hw->wiphy));
+ 	device_release_driver(data->dev);
+ failed_bind:
+ 	device_unregister(data->dev);
+@@ -3454,6 +3456,8 @@ static void mac80211_hwsim_del_radio(struct mac80211_hwsim_data *data,
+ {
+ 	hwsim_mcast_del_radio(data->idx, hwname, info);
+ 	debugfs_remove_recursive(data->debugfs);
++	if (data->regd)
++		kfree_rcu(get_wiphy_regdom(data->hw->wiphy));
+ 	ieee80211_unregister_hw(data->hw);
+ 	device_release_driver(data->dev);
+ 	device_unregister(data->dev);
+-- 
+2.25.1
 
