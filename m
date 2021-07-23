@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B33A3D3E85
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990F73D3E87
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhGWQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:41:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
+        id S231430AbhGWQmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhGWQlx (ORCPT
+        with ESMTP id S231317AbhGWQmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:41:53 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46635C061575;
-        Fri, 23 Jul 2021 10:22:27 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so4595660pji.5;
-        Fri, 23 Jul 2021 10:22:27 -0700 (PDT)
+        Fri, 23 Jul 2021 12:42:08 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4EEC061575;
+        Fri, 23 Jul 2021 10:22:40 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id gt31so4586576ejc.12;
+        Fri, 23 Jul 2021 10:22:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oDwCL02ST1HyyrzXV52ZuPzIuQPAJ7yqctOiLr2rYbU=;
-        b=SUieFDHjIOGuh+2NjChbZRdYw0TJcJIXrVt1hbBjXX15tKaU8fYuXaITEH7+mHzE4O
-         4f4tGMyEOOw+ZncG0MpTToswsQxJ/KNR9PMepe/OUhIyPfaEmrYSTzz/XYPhfs5j7mCP
-         jlSetcaiJuTVIVWgTxZQcXBYLShr2Bt/C/m3equpVxseG1+N+ymKlHay5fsQV/2hA37Z
-         w5px4cmcMz3+uHzHDJfBp1ASiVmI/IN6z80yycvFA5l3Wdh89iSvPxDWu8GstAtcMgal
-         Rz0cH9JELD+6KQHfj/T4gbZgWQbyZxYX//Pw64cueHWlaUafbOjf53rlF72BUg9fnq26
-         /CgQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MEQCVop6cPBpgy2Y5Ip01XHU/jGOau6kU5gyPBsKTIc=;
+        b=iC8yPQ3hj9pherQ3A204v9L8QDQ+/OEoo9xlq0hZvJb2Lra35Fs/HQQHKo6aTBydx8
+         Seppj14NB9J9COH3Op5ppPzuveKkebPf0zc2/7pNf1H7/uaco3/1hOoq9tANzz2bumBR
+         Q/kweD+XKiswm4j7oJh82n5V0S+342h7tYF1cynMUhZ11HIt7lHe741Nfu/g3j6lsz6y
+         SPFMyrNnQDt7ySb8p8EHV/yYe8n9vgObaHxdz6bsEz7RBoa25v1njVXrXE6kOA0BOBMj
+         enLCQIos5AvSbWw7bMQz9PDUMmtzHqvlBW6/pNfV6B0W91+Z2gnC+Rd4zF+uvNHVIgVj
+         vR6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oDwCL02ST1HyyrzXV52ZuPzIuQPAJ7yqctOiLr2rYbU=;
-        b=Na9h9uFKlSzMMLt8djA1ugEIUjrAFx0tLvtztVyI1e6swg9yg26oAmWbyrMRmbaA+3
-         cd9J9f7gnyKGy9XWIzfsLLnswxryumWjtiWsD5SYZZYzlFTWawx4+rdc3BIrQZb82lLF
-         JLxZaiBUIJ/aI1IWBsJxcKSN0ggWusDf2uAiwLEt7l+FyiOczIZtyZM96sHcZOe/3FOb
-         zNw5jBALRhzGOj0GRJXtJ3MVLEfDKN3Vi/3vRBm4tfBnoteqIwSLv8w3PCuWlZesHuow
-         w9JBTkEykxugDLSjR6ycH5DtV5zRV2VtevF1shq5S2KUa3XMOktmgBQ3dFt1OoRHCrH4
-         Yu9w==
-X-Gm-Message-State: AOAM531nBhyjL20PcjWiR2sJoSZLE51FNY1ibTNbusZWiVK6UYym/sd+
-        9QiUlc1loD32RDLwOGJ/Mbwpo9ExWWg=
-X-Google-Smtp-Source: ABdhPJw6aHfNLqDW0gl+b5r3zBSdqz00TlgeD2pWobzcbvAFa+xRKFrCMaQLR2kkEQg63/humyGaEw==
-X-Received: by 2002:a17:90b:20b:: with SMTP id fy11mr2820845pjb.79.1627060946352;
-        Fri, 23 Jul 2021 10:22:26 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o184sm39238383pga.18.2021.07.23.10.22.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 10:22:25 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/156] 5.13.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MEQCVop6cPBpgy2Y5Ip01XHU/jGOau6kU5gyPBsKTIc=;
+        b=HCbIZ8w/1QukYPlsDFA+6krTSnbqOX7Vs+sxTa7BYZd0TsprEX4/Jti6LSoyuWOpfv
+         XPdR5Ygubze2ncg3dblh4ZnrFZYB1i25hsM1eyam7qpJOQ0RPz6sUfdnRiHKHhO4s5O6
+         T4xa6/j2V035z0v3fTV4GNRg3NPfgnkwsaTPVVwb4Fjv0lqXIs/rdQtifIo5wbm8BDqg
+         A5UJA+8Q1wqPKLl/lURU7df9++Jf5tXp7aLTKq4yAHO2xsOJyrxO1Z2Q/XZwFvobLyt4
+         9fUdIdKTQwDFbkAJHYGLIetHaEGymZIYZuCWcyt429sGCWomYy4sYDptMxA5aC1EGECF
+         1qHw==
+X-Gm-Message-State: AOAM532rCu4Y0RWzA9njBaBZz2gfBPvgkXJxXDAKyTr/EFaiEtHjnbE1
+        V8ozb8wU2y+VqiK5XCvPoIE=
+X-Google-Smtp-Source: ABdhPJxdw70WOUVY8zWtFbCxGn1hJG94OxVV9ng2g1kYmOiDEIYRc0g1A8m+H/GFKXev9hwhDtVOrw==
+X-Received: by 2002:a17:906:3b0b:: with SMTP id g11mr5764276ejf.286.1627060958793;
+        Fri, 23 Jul 2021 10:22:38 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id k3sm14342229edv.2.2021.07.23.10.22.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 10:22:38 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 18:22:35 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Steffen Maier <maier@linux.ibm.com>
+Cc:     aacraid@microsemi.com, "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        gregkh@linuxfoundation.org, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210722155628.371356843@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6bbd4f54-54f0-2a5f-f5bc-a1247f5f86cf@gmail.com>
-Date:   Fri, 23 Jul 2021 10:22:14 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Subject: Re: [RESEND] scsi: aacraid: aachba: replace if with max()
+Message-ID: <20210723172235.GA78880@pc>
+References: <20210722173212.GA5685@pc>
+ <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/22/2021 9:29 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.5 release.
-> There are 156 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Jul 23, 2021 at 06:56:51PM +0200, Steffen Maier wrote:
+> On 7/22/21 7:32 PM, Salah Triki wrote:
+> > Replace if with max() in order to make code more clean.
+> > 
+> > Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> > ---
+> >   drivers/scsi/aacraid/aachba.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
+> > index 46b8dffce2dd..330224f08fd3 100644
+> > --- a/drivers/scsi/aacraid/aachba.c
+> > +++ b/drivers/scsi/aacraid/aachba.c
+> > @@ -485,8 +485,8 @@ int aac_get_containers(struct aac_dev *dev)
+> >   	if (status != -ERESTARTSYS)
+> >   		aac_fib_free(fibptr);
+> > 
+> > -	if (maximum_num_containers < MAXIMUM_NUM_CONTAINERS)
+> > -		maximum_num_containers = MAXIMUM_NUM_CONTAINERS;
+> > +	maximum_num_containers = max(maximum_num_containers, MAXIMUM_NUM_CONTAINERS);
+> > +
 > 
-> Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
-> Anything received after that time might be too late.
+> Haven't really looked closely, but isn't the old code more like a min()
+> rather than a max()? maximum_num_containers being at least
+> MAXIMUM_NUM_CONTAINERS or higher?
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.5-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+In the old code, maximum_num_containers gets the value MAXIMUM_NUM_CONTAINERS if
+it is less than this value.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Thanx
