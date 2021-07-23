@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990F73D3E87
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C4A3D3E8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhGWQmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231317AbhGWQmI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:42:08 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4EEC061575;
-        Fri, 23 Jul 2021 10:22:40 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id gt31so4586576ejc.12;
-        Fri, 23 Jul 2021 10:22:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MEQCVop6cPBpgy2Y5Ip01XHU/jGOau6kU5gyPBsKTIc=;
-        b=iC8yPQ3hj9pherQ3A204v9L8QDQ+/OEoo9xlq0hZvJb2Lra35Fs/HQQHKo6aTBydx8
-         Seppj14NB9J9COH3Op5ppPzuveKkebPf0zc2/7pNf1H7/uaco3/1hOoq9tANzz2bumBR
-         Q/kweD+XKiswm4j7oJh82n5V0S+342h7tYF1cynMUhZ11HIt7lHe741Nfu/g3j6lsz6y
-         SPFMyrNnQDt7ySb8p8EHV/yYe8n9vgObaHxdz6bsEz7RBoa25v1njVXrXE6kOA0BOBMj
-         enLCQIos5AvSbWw7bMQz9PDUMmtzHqvlBW6/pNfV6B0W91+Z2gnC+Rd4zF+uvNHVIgVj
-         vR6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MEQCVop6cPBpgy2Y5Ip01XHU/jGOau6kU5gyPBsKTIc=;
-        b=HCbIZ8w/1QukYPlsDFA+6krTSnbqOX7Vs+sxTa7BYZd0TsprEX4/Jti6LSoyuWOpfv
-         XPdR5Ygubze2ncg3dblh4ZnrFZYB1i25hsM1eyam7qpJOQ0RPz6sUfdnRiHKHhO4s5O6
-         T4xa6/j2V035z0v3fTV4GNRg3NPfgnkwsaTPVVwb4Fjv0lqXIs/rdQtifIo5wbm8BDqg
-         A5UJA+8Q1wqPKLl/lURU7df9++Jf5tXp7aLTKq4yAHO2xsOJyrxO1Z2Q/XZwFvobLyt4
-         9fUdIdKTQwDFbkAJHYGLIetHaEGymZIYZuCWcyt429sGCWomYy4sYDptMxA5aC1EGECF
-         1qHw==
-X-Gm-Message-State: AOAM532rCu4Y0RWzA9njBaBZz2gfBPvgkXJxXDAKyTr/EFaiEtHjnbE1
-        V8ozb8wU2y+VqiK5XCvPoIE=
-X-Google-Smtp-Source: ABdhPJxdw70WOUVY8zWtFbCxGn1hJG94OxVV9ng2g1kYmOiDEIYRc0g1A8m+H/GFKXev9hwhDtVOrw==
-X-Received: by 2002:a17:906:3b0b:: with SMTP id g11mr5764276ejf.286.1627060958793;
-        Fri, 23 Jul 2021 10:22:38 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id k3sm14342229edv.2.2021.07.23.10.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 10:22:38 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 18:22:35 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Steffen Maier <maier@linux.ibm.com>
-Cc:     aacraid@microsemi.com, "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        gregkh@linuxfoundation.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND] scsi: aacraid: aachba: replace if with max()
-Message-ID: <20210723172235.GA78880@pc>
-References: <20210722173212.GA5685@pc>
- <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
+        id S231664AbhGWQnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230126AbhGWQnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:43:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AC35860E8F;
+        Fri, 23 Jul 2021 17:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627061014;
+        bh=AypiiTmw1uh7hr2hG4yvPeGano+1htfUfDNwQBuxj0o=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=pPHyzbzS0Cb3dqfYMCpl2TqSWGEFOHmPAuk8PpZb2tdMMxvY9kuGAtkTYU+A/PrzZ
+         13L3w3b0fYft7iaXBTT64EsnWgQ8mtx+gbmYKlFtM0FC4EPVkQ5pcoQdPYNw0z/AHC
+         ByDRtYzj+vkEDj+FTIGLBB4QLdRJt8hlY/s5F/S1w4eoTPsGYUHKClugScgxLPRLyc
+         CqMgNSYg9iewp0uZHW4F1jY4AGrKJrlNAJ3uauF/dqa5TQ7Lx7Axo/QpyUIW8owWCm
+         Z4JIHKIyVsQg+u11oeVu8BHi6CluePbTPMTZXZQEXZ3ztOVPhmrqb+XFv4wJz9I3TR
+         f7kWRxRiJeq3w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A183E60721;
+        Fri, 23 Jul 2021 17:23:34 +0000 (UTC)
+Subject: Re: [GIT PULL] USB fixes for 5.14-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YPrX98Lqa1xH8uH7@kroah.com>
+References: <YPrX98Lqa1xH8uH7@kroah.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YPrX98Lqa1xH8uH7@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.14-rc3
+X-PR-Tracked-Commit-Id: 1d1b97d5e7636d72890a5bdd0b40e980e54b2d34
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 74738c556db6c7f780a8b98340937e55b72c896a
+Message-Id: <162706101465.5428.9921481195595622083.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Jul 2021 17:23:34 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 06:56:51PM +0200, Steffen Maier wrote:
-> On 7/22/21 7:32 PM, Salah Triki wrote:
-> > Replace if with max() in order to make code more clean.
-> > 
-> > Signed-off-by: Salah Triki <salah.triki@gmail.com>
-> > ---
-> >   drivers/scsi/aacraid/aachba.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
-> > index 46b8dffce2dd..330224f08fd3 100644
-> > --- a/drivers/scsi/aacraid/aachba.c
-> > +++ b/drivers/scsi/aacraid/aachba.c
-> > @@ -485,8 +485,8 @@ int aac_get_containers(struct aac_dev *dev)
-> >   	if (status != -ERESTARTSYS)
-> >   		aac_fib_free(fibptr);
-> > 
-> > -	if (maximum_num_containers < MAXIMUM_NUM_CONTAINERS)
-> > -		maximum_num_containers = MAXIMUM_NUM_CONTAINERS;
-> > +	maximum_num_containers = max(maximum_num_containers, MAXIMUM_NUM_CONTAINERS);
-> > +
-> 
-> Haven't really looked closely, but isn't the old code more like a min()
-> rather than a max()? maximum_num_containers being at least
-> MAXIMUM_NUM_CONTAINERS or higher?
-> 
+The pull request you sent on Fri, 23 Jul 2021 16:53:43 +0200:
 
-In the old code, maximum_num_containers gets the value MAXIMUM_NUM_CONTAINERS if
-it is less than this value.
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.14-rc3
 
-Thanx
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/74738c556db6c7f780a8b98340937e55b72c896a
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
