@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A84D3D312E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C32F3D313F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhGWAiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232905AbhGWAh7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:37:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AD9C061575;
-        Thu, 22 Jul 2021 18:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WwS1LaIGUIRtAl4RX67oXHqtnkZGSLpu40O95p0Ahlc=; b=iY3hsy88NC4WR6KINmTuScd3nJ
-        1Nb7Qa1yP11v42t/Abvtl485R53ZB2n8oWQTs//xGmQes7f7lcZUlEDfws94kcynhRmmP1dMf1Rb5
-        1Zn2i0P5tX/mDRzG0/Hi9FIOCK8+Iw675WzBKez81GOjauxj1Wpec1qkQtQjbmrDr808qEMzDMuRY
-        E585Ywv9zpJXw8uJ5vsSg1Wnn19z9cLA2iV42VRhtHfRls6JKb+FO+Popo4FUA+rEkf6bhZmbG9FH
-        Q7H7630hzuBmDbHh1meQSLtkNJvRvtzVowEYkooMTiXbJL7CVA+asYcZxL5NHMnPCK7scqtxBy4/i
-        DQmSKXLA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m6jp9-00AsRo-1G; Fri, 23 Jul 2021 01:18:03 +0000
-Date:   Fri, 23 Jul 2021 02:17:58 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Wedson Almeida Filho <wedsonaf@google.com>
-Cc:     Finn Behrens <finn@kloenk.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/17] Rust support
-Message-ID: <YPoYxiq63QcfUXg+@casper.infradead.org>
-References: <20210704202756.29107-1-ojeda@kernel.org>
- <YOVNJuA0ojmeLvKa@infradead.org>
- <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
- <YOWjLmg/Z7kr2+tx@kroah.com>
- <YOW1Nj8+a2Yth2++@google.com>
- <YOXB7FRqldZik2Xn@kroah.com>
- <BFD5298D-00CD-4FEF-AE77-61E69AF78604@kloenk.dev>
- <YOZNuEtNbsLxRM0R@casper.infradead.org>
- <YPn3fgDX8uNkF8Vp@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPn3fgDX8uNkF8Vp@google.com>
+        id S233083AbhGWAlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:41:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233073AbhGWAlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 20:41:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22CB360EBA;
+        Fri, 23 Jul 2021 01:22:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627003334;
+        bh=TjZEmQ97xT2sXa9YqVF5fNPPzrHkrETAv/O2Zq7GrrU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ucd0CgMhHj51EYdcrhAgl4+idMbtHVxIJFydbKodlpolAmogp6FOXlaeSvcoOXa9W
+         xklYCNE/3LB6aobDBn9bBodGQAb5ZJCXeyzB0zXxq+MfzzLKK6X3L7BSJ9K2DYXf3H
+         38HTWU9M0zvUL9nOsBmZz7FkLDlivQBV+LiC7dk8s9bH7oljKvAVZD3ITKIta/ey8x
+         ZGpt36/FlNVNFzs5h0JoYC8k5diUDuNTBD9bDaN8ZQfu54Gm+8GHE10PsKkXWemmxC
+         7MfSPMETpPOleLyXIcwMxCNSvRNIgJK3YmJu/UEGjStoroJWu4A9BLSZxybFPsf/Si
+         CBAg1Oizs/KWA==
+Date:   Fri, 23 Jul 2021 10:22:11 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
+ for synthetic events
+Message-Id: <20210723102211.a9e0a5cfeb912384a0774145@kernel.org>
+In-Reply-To: <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
+References: <20210722142705.992001628@goodmis.org>
+        <20210722142837.458596338@goodmis.org>
+        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
+        <20210722123234.636d5363@oasis.local.home>
+        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 11:55:58PM +0100, Wedson Almeida Filho wrote:
-> Hey Matthew,
+On Fri, 23 Jul 2021 10:11:33 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> On Thu, 22 Jul 2021 12:32:34 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> On Thu, Jul 08, 2021 at 01:58:32AM +0100, Matthew Wilcox wrote:
-> > Why are you so resistant to writing a real driver that deals with actual
-> > hardware?  
+> > On Fri, 23 Jul 2021 01:19:35 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > 
+> > > > +/* Convert a var that points to common_pid.execname to a string */
+> > > > +static void update_var_execname(struct hist_field *hist_field)
+> > > > +{
+> > > > +	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
+> > > > +		HIST_FIELD_FL_EXECNAME;
+> > > > +	hist_field->size = MAX_FILTER_STR_VAL;
+> > > > +	hist_field->is_signed = 0;
+> > > > +
+> > > > +	kfree_const(hist_field->type);
+> > > > +	hist_field->type = "char[]";
+> > > > +
+> > > > +	hist_field->fn = hist_field_execname;
+> > > > +}  
+> > > 
+> > > Hmm, this is a bit ad-hoc.
+> > > 
+> > > Can't this be done in the create_hist_field()? If you check 'var_name' and
+> > > flags & HIST_FIELD_FL_EXECNAME, you can do the same thing I think.
+> > 
+> > Hi Masami,
+> > 
+> > I originally tried that, but then found that it converted the pid over
+> > to it as well. So this must be done only for vars, and not only that, it
+> > needs to be done in a single place, because I was spending hours
+> > debugging it.
 > 
-> I don't think it was so much resistance but rather a prioritisation thing. Have
-> you by any chance seen the gpio driver I posted a couple of days ago?
-
-I haven't seen it, no ...
-
-> > A simple NVMe driver is less than a thousand lines of C.
-> > I know the one in the kernel now is ridiculously complicated and has
-> > been thoroughly messed up with abstractions to support NVMeoF instead
-> > of having a separate driver, but it's really a simple interface at heart.
+> I understand. As far as I can see the code, it looks a bit complicated.
+> To simplify it, I need to understand the spec for "hist_field"
+> for keys and for vars. And maybe need to split both case.
 > 
-> The latest NVMe spec is 452 pages long, which seems to contradict your claim
-> that it's simple.
+> > I found this to be the least intrusive solution.
+> > 
+> > Maybe Tom has a better idea, but I don't have any more time to work on
+> > it, and I really want this feature for the next merge window.
+> > 
+> > If you can make it work, and have time to play with it, I'm happy to
+> > take an alternative :-)
+> 
+> Me neither at least this moment, need more investigation. Let me try.
 
-As I said, they've put all kinds of crap into NVMe these days.
-If you look at the 1.0e spec, it's 127 pages.
+But anyway, maybe I need this weekend to make a time.
+So, as far as it works OK, I'm OK for this patch.
 
-> In any case, translating less than 1K lines of C shouldn't be
-> too hard (after I've built the abstractions, of course). Would you mind sharing
-> the simple driver you mention above?
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Unfortunately, most of the early versions were lost during the
-kernel.org breakin.  If you check out commit 5da273fe3fd1 and look at
-drivers/block/nvme.c, you'll see a driver that's about 2000 lines.
+BTW, please update the ftracetest testcases for hist triggers.
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
