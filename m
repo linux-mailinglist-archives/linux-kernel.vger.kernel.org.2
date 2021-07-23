@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009FC3D4119
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E273D4122
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhGWTHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:07:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50422 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhGWTHl (ORCPT
+        id S229964AbhGWTLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhGWTLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:07:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 9053F220C7;
-        Fri, 23 Jul 2021 19:48:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627069693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=JzNDHNw6jpOjTMcIGbGOMoNsDs1xXc5Ogv+24S1ygOs=;
-        b=ANCDT7cEUOLQwyFZxOnIgXK8exC37K9XE5sdfxMooHt1yYljWkw4c6A6Yrfs1oOvDlDE3+
-        QPJtGHXkoWFx5tDEIl4hBSjGVuq9Lk2Zoi4Exs4nktqbaVkmIDsw1DffCSvEicoSVQKGtn
-        yoyD5Tpxp/5cm6226wk9GE9Vi/NHox8=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 88DA3A3B88;
-        Fri, 23 Jul 2021 19:48:13 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 42A34DA8EB; Fri, 23 Jul 2021 21:45:31 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Fri, 23 Jul 2021 15:11:47 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B4CC061575;
+        Fri, 23 Jul 2021 12:52:19 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so5191092pjh.3;
+        Fri, 23 Jul 2021 12:52:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zIQ2SX+9EqkYQOm6EVOCWmNjDkXrj36cJuW0CVNzCxY=;
+        b=KYZ/puNAR+EEaXAHKRni4SYMXBbBFva0ausmDq38IHOnHafyIi5DY3gFukJByTUNh+
+         72w8sx5Bc+uYwJX4+1zKmV1x41Okpv0/cnJyTZLDXz93yYJSYlmHHv4hN/6S940b/0o3
+         gSUFjFUEKt+Ycsny0UkcPnjeYdg61BS8zCZ4u9zHWCndlMBcs4j03BRsn2EQn94rGF+V
+         9PtKt2pVEzeQee6O4E+6eaLvfXGG75+t6NOt//SXnFWmVp0EednzqWxJ5RiF38wr2KmA
+         8mOVPcsuDh1GTH5wy6wt4mnrNUw5xTzCuKa5wlPX6xQwn2gvGHi9KkDPQ6VzcEGjWDuL
+         g33g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zIQ2SX+9EqkYQOm6EVOCWmNjDkXrj36cJuW0CVNzCxY=;
+        b=MCZMQ9n3PLem/jr7+qIaf6/gyya5VciH477Z8CtG6/KJUkANmNwcmqvc/BqiqWlLJi
+         f6doRmZk9E0769cGXlHZYTba4L2DaVzxTdj7DaB44LhHKqnVUnpqMXOLVBcxDCoLKyh+
+         hC2Bq8tAah98Xfei3e6vXWImdWgTqnmr/JF9biIhjuDpLTdxyR0ygeS+4IPFlP+ODiFv
+         6jughks1YuPvHRrYjbZezwp365xz1UxQ88wIDku2XzhPGZ09kNdWV22HsVnVoya8L2Ei
+         55RAq1Bw23BMLmipdneomyaGMcNDV5l1MqwQEh8YqZBCqe0vwD/FZ3B2GbmTBCKqOKL8
+         EvAg==
+X-Gm-Message-State: AOAM533FZlxp9lTLHZoVT6Epz2STK6KtnKL8CwOSs1n65UowiKydk+ND
+        HPVz/g3Md42nuWebioDXLVI=
+X-Google-Smtp-Source: ABdhPJxW9ZwgXlJRwgYjdROuim2ryUn2naOCKsGwc21azVvXJEnzT9GAwLkBtiW/IAXf5iz+SQkgTg==
+X-Received: by 2002:aa7:8154:0:b029:310:70d:a516 with SMTP id d20-20020aa781540000b0290310070da516mr6197004pfn.63.1627069939373;
+        Fri, 23 Jul 2021 12:52:19 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:55b1:90d5:6a79:755f])
+        by smtp.gmail.com with ESMTPSA id k20sm6760953pji.3.2021.07.23.12.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 12:52:18 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 12:52:15 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-input@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>,
+        satya priya <skakit@codeaurora.org>,
         linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.14-rc3
-Date:   Fri, 23 Jul 2021 21:45:29 +0200
-Message-Id: <cover.1627068865.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.31.1
+Subject: Re: [PATCH] Input: pm8941-pwrkey - fix comma vs semicolon issue
+Message-ID: <YPsd74LoRtB9tTKK@google.com>
+References: <YPsa1qCBn/SAmE5x@google.com>
+ <CAE-0n51y=o+8SZTL_==GPXrDa2OP8fhh98Amv+L4M63rLQVGZg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n51y=o+8SZTL_==GPXrDa2OP8fhh98Amv+L4M63rLQVGZg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jul 23, 2021 at 07:43:52PM +0000, Stephen Boyd wrote:
+> Quoting Dmitry Torokhov (2021-07-23 12:39:02)
+> > There is absolutely no reason to use comma operator in this code, 2
+> > separate statements make much more sense.
+> >
+> > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > ---
+> 
+> Fixes: 2fcbda9a822d ("Input: pm8941-pwrkey - add support for PMK8350
+> PON_HLOS PMIC peripheral")
 
-a few fixes and one patch to help some block layer API cleanups.
-Please pull, thanks.
+It actually predates this patch and also not really a fix as the
+original code ends up working properly, but looks weird.
 
-* skip missing device when running fstrim
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-* fix unpersisted i_size on fsync after expanding truncate
+Thanks!
 
-* fix lock inversion problem when doing qgroup extent tracing
-
-* replace bdgrab/bdput usage, replace gendisk by block_device
-
-----------------------------------------------------------------
-The following changes since commit ea32af47f00a046a1f953370514d6d946efe0152:
-
-  btrfs: zoned: fix wrong mutex unlock on failure to allocate log root tree (2021-07-07 18:27:44 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc2-tag
-
-for you to fetch changes up to c7c3a6dcb1efd52949acc1e640be9aad1206a13a:
-
-  btrfs: store a block_device in struct btrfs_ordered_extent (2021-07-22 15:50:15 +0200)
-
-----------------------------------------------------------------
-Anand Jain (1):
-      btrfs: check for missing device in btrfs_trim_fs
-
-Christoph Hellwig (1):
-      btrfs: store a block_device in struct btrfs_ordered_extent
-
-Filipe Manana (2):
-      btrfs: fix unpersisted i_size on fsync after expanding truncate
-      btrfs: fix lock inversion problem when doing qgroup extent tracing
-
- fs/btrfs/backref.c            |  6 +++---
- fs/btrfs/backref.h            |  3 ++-
- fs/btrfs/delayed-ref.c        |  4 ++--
- fs/btrfs/extent-tree.c        |  3 +++
- fs/btrfs/inode.c              |  2 +-
- fs/btrfs/ordered-data.c       |  2 --
- fs/btrfs/ordered-data.h       |  3 +--
- fs/btrfs/qgroup.c             | 38 ++++++++++++++++++++++++++++++--------
- fs/btrfs/qgroup.h             |  2 +-
- fs/btrfs/tests/qgroup-tests.c | 20 ++++++++++----------
- fs/btrfs/tree-log.c           | 31 ++++++++++++++++++++++---------
- fs/btrfs/zoned.c              | 12 ++++--------
- 12 files changed, 79 insertions(+), 47 deletions(-)
+-- 
+Dmitry
