@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C80C3D3830
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633973D3834
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbhGWJSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:18:14 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:29565 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231398AbhGWJSN (ORCPT
+        id S231637AbhGWJSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:18:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhGWJSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Jul 2021 05:18:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1627034327; x=1658570327;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=5TPgDp7uu8AWHC8wfoLLt+8jeaJijQ4miv9mRELySmU=;
-  b=kTszzSsJ0JddkAORUeQKGOvvlQCFciB3S4Y3TMT59YTxWnCNaNohPWrN
-   3d68UKpO0XIiN48e2sCuTuOcb0+MpXSBL5CxnwS2DfWVcbrJbF8w5IiKX
-   yVovaXoc2aB1ZDGhDmDZ58QZahmobOAYPuh8FMCaHGzCY2FLX2qM6LQB9
-   UnjtfJJm4CnitQgPvWbbMqY/RFTiaWQPpZAXO1iOmSg014Fj2DIepkoc0
-   y/xaOMOAgAb8ldpfNEazwMDrAeOYr93RRMhXtv2ix3/LUwPI36LgbYQeB
-   qv9nuSHN7b/Haju3paHFwpmLA9PaYY4/7vfLUx6980Yj+fHdsKnFROMiK
-   A==;
-IronPort-SDR: ccaHjp93TFp/Gshx6VOm+oKEiUGijmGI6Os8r+pDnd/DQGWtM9tEAzR4ZObcjnj2loC7lzk1lz
- srKYTrD82nJiKEoFczTN9TRd/8lAcBDu6EuwxVA5JW8d9JhmZlQKExvCxhj3qrD6wcvmbXAlNP
- BypfRKFfXxX4n6LR+Zo+6N49HtJImGOVEDsBCMRAp3cVWt5CJPIrLpH/Sc2t6+XE/LpiW1BY27
- pnQDeHjk+fE3pXJOW2Wocf7u1Cfbu+70+HEwaxo2ujecdde8kPcS4rB54Zr5YS14jrC2VGCIaS
- FKUQbvty1o1EhVq8ci007LQ1
-X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
-   d="scan'208";a="130084760"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jul 2021 02:58:46 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 02:58:28 -0700
-Received: from [10.12.72.197] (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Fri, 23 Jul 2021 02:58:26 -0700
-Subject: Re: [RESEND] gpu: ipu-v3: use swap()
-To:     Salah Triki <salah.triki@gmail.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <gregkh@linuxfoundation.org>,
-        "Tudor Ambarus" <Tudor.Ambarus@microchip.com>
-CC:     <linux-crypto@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210722165938.GA4116@pc>
-From:   Nicolas Ferre <nicolas.ferre@microchip.com>
-Organization: microchip
-Message-ID: <782cba94-2627-4c22-d445-31686866b722@microchip.com>
-Date:   Fri, 23 Jul 2021 11:58:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0817DC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:58:47 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id z2so1214880lft.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bXuM8D5k6/Yl7ozL3DfM+PVJYiIerLcTEkx5mVID/UU=;
+        b=NGgdq7v+o5iqkF3EI+m7OhMam7v6/wLB+PtgVWtPK+zgiAfitTZEjpKoG8KZfnGRZ0
+         XJ8xuYkmi14aUj966cwbUP99rci0Pn0csyZhH9ZTUDnuQSS32kadqR3lypzYlQJVtsnM
+         M/Ob2kqRn3bnETXtydx4LmnRgUUYyQCgOuGSK3GFT7vITGtGj0rltsuaNPV67aIl2IPE
+         bHvysTHvHR7wop3cRkd0567v6cxdtTxGnhtE0ta1ytVcgpKU5CaZP8raw12NEl4CmFcw
+         RqAlqSRFEHdmfT39ZgMX58L1/MNwxVvr9JKjOeHcHDvcFn9WS2ZMo7vYxE3BPlFA+Tmq
+         I92A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bXuM8D5k6/Yl7ozL3DfM+PVJYiIerLcTEkx5mVID/UU=;
+        b=rIDHTxJFNq/vxJrf96j/Xo/zQMYwBAiG0lqc8Nu6tznZJBxBpplneBPC5gjP4sv2re
+         t1nD/hPqZmyr3ndhkQ4Ie3MZ/jVb/6dD+qQjacfSXKAHMn9B1BLCKoIqm/Ujgb7+9vDu
+         HWBRsTs7CpWFYQaI+Imd3zlHP0SqUDaWJGqGN1YPefk9gocbXmQiZ3F9HsObofttDGOD
+         3LIXFCsApJiVmnELZZxSN9tduMhlZrldgSdT2PLCrOJN01/ELmTnp/8K00mjisYJZZ/x
+         Kx185p83Hd9SqMvCuI/QVBypFoaQkCNBHB9oG9C2sKPhmJoP2ar4QkcHsAc2A/RshGG4
+         ahyw==
+X-Gm-Message-State: AOAM533qZ/+N+72W2do1Skj2agpj3pWkLEA4OoDSHjYokHcV9ePb9kD3
+        p+4A5Wwr0c85JX6ebsfNQ1hv0iP8rCYpfwZMydcV9Q==
+X-Google-Smtp-Source: ABdhPJzUNSEtuAGq/AntijcVwb7VOysRbc8PRRpm+HrzsTl4s4LzDpYbxtndNsmw3C9e7zr97SPpp9rInqEhXg6DtRs=
+X-Received: by 2002:ac2:5e71:: with SMTP id a17mr2434778lfr.465.1627034325426;
+ Fri, 23 Jul 2021 02:58:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210722165938.GA4116@pc>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210712100317.23298-1-steven_lee@aspeedtech.com> <20210712100317.23298-7-steven_lee@aspeedtech.com>
+In-Reply-To: <20210712100317.23298-7-steven_lee@aspeedtech.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 23 Jul 2021 11:58:34 +0200
+Message-ID: <CACRpkdbKyV_Crw8MS63SZGf=nKztDkKnJgRprLdvXe0u7BmVNg@mail.gmail.com>
+Subject: Re: [PATCH v6 6/9] gpio: gpio-aspeed-sgpio: Add set_config function
+To:     Steven Lee <steven_lee@aspeedtech.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrong $subject then...
+On Mon, Jul 12, 2021 at 12:04 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
 
-On 22/07/2021 at 18:59, Salah Triki wrote:
-> Use swap() instead of implementing it in order to make code more clean.
-> 
-> Signed-off-by: Salah Triki <salah.triki@gmail.com>
-> ---
->   drivers/crypto/atmel-aes.c | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/crypto/atmel-aes.c b/drivers/crypto/atmel-aes.c
-> index b1d286004295..60041022c4f5 100644
-> --- a/drivers/crypto/atmel-aes.c
-> +++ b/drivers/crypto/atmel-aes.c
-> @@ -1819,12 +1819,8 @@ static int atmel_aes_xts_process_data(struct atmel_aes_dev *dd)
->           * the order of the ciphered tweak bytes need to be reversed before
->           * writing them into the ODATARx registers.
->           */
-> -       for (i = 0; i < AES_BLOCK_SIZE/2; ++i) {
-> -               u8 tmp = tweak_bytes[AES_BLOCK_SIZE - 1 - i];
-> -
-> -               tweak_bytes[AES_BLOCK_SIZE - 1 - i] = tweak_bytes[i];
-> -               tweak_bytes[i] = tmp;
-> -       }
-> +       for (i = 0; i < AES_BLOCK_SIZE/2; ++i)
-> +               swap(tweak_bytes[i], tweak_bytes[AES_BLOCK_SIZE - 1 - i]);
-> 
->          /* Process the data. */
->          atmel_aes_write_ctrl(dd, use_dma, NULL);
-> --
-> 2.25.1
-> 
+> AST SoC supports *retain pin state* function when wdt reset.
+> The patch adds set_config function for handling sgpio reset tolerance
+> register.
+>
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
 
+Excellent reuse of existing pin config property.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
--- 
-Nicolas Ferre
+Yours,
+Linus Walleij
