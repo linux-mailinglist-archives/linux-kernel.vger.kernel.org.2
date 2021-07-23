@@ -2,137 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084E33D4038
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D12F3D403A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhGWRiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 13:38:06 -0400
-Received: from mail-dm6nam11on2063.outbound.protection.outlook.com ([40.107.223.63]:50112
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229461AbhGWRiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 13:38:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iKs2BojEEvFmyvRgTbCI8+FFk1oDIMXF6niFIteQ/lERRSwxE5jO7LeM4wKVG7EuF3l2w6nryUh9y625HgFrSJ5M2sJqi+uYfne74f2wRU40z/YqTFg4siFCozY2x3Og9DDmY++qBX1fbZJIEb7u1v5A37cLuW21zXaPl3zUowX04QUnKSRE/q3AalFK+3EkRr0FSyTjDxFpEnyMYeMFnjV9EMJEpCeyCzM//SdRo+e21zOGy7oEw7xsBJ0MXRPbeQcZ+4szIFCbw2qOGqTOwK5gGVTjNwYYx7HGbRqJP6CsuliCuOfIar4SZ6wlO06aJzMksBweqT3Ff8fdpg4xsg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jc3JQwFqIBMQQiu0iwgOsHaoWKLBpXdqJqpnOXpmeSg=;
- b=ThNqlD00MtZbOC77cnjrWskjKfh4f4HAgr7CkdnAgv2GK571j3Ldbmhaf/IVr2klbrzGAFfHZ3gIj0BHETKYSRVmGLqntCIiDmkfiRd4a+t5CMqbAUXmKegzi0FUvfsSnAZ4vWf/X70DKYs9oNxoHyWyB4reyptiyh3ROfjfYFiUTDoNakZBRmOm1gtiTkLYMNBjiSwuvVRDB694gcPwEG5H/Z3KvXa4DGruYJZr/DUnralryrDLT2tU8NTtIxm7i8fsxahJTspERMdeb1GUmS2bm/RpYKdx89SaEdHuNixDuVVfTm2esfYdDBS1eCfm6OAMM0yh73CFf1nDBcrPww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jc3JQwFqIBMQQiu0iwgOsHaoWKLBpXdqJqpnOXpmeSg=;
- b=qfmApQ2QToxnigxf9CzQO04cfMM4gSiCVKmRyLWBuDh4pYPIf6L8pzq+ZVFpvFFSpRlGG1+SmYySenk1eFol2qz7bq4hSIkgWW/+/rPsCiIChAkQJxjFU/DPJeZH44neCUpDs7Klr7MpUl8Dn2bTvr9so+BxMcCBwsDYhi8GYq8=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3505.namprd12.prod.outlook.com (2603:10b6:408:69::17)
- by BN6PR1201MB0036.namprd12.prod.outlook.com (2603:10b6:405:4e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29; Fri, 23 Jul
- 2021 18:18:31 +0000
-Received: from BN8PR12MB3505.namprd12.prod.outlook.com
- ([fe80::6d98:68b7:bb66:c697]) by BN8PR12MB3505.namprd12.prod.outlook.com
- ([fe80::6d98:68b7:bb66:c697%4]) with mapi id 15.20.4352.026; Fri, 23 Jul 2021
- 18:18:31 +0000
-Subject: Re: [PATCH] EDAC/mce_amd: Do not load edac_mce_amd module on guests
-To:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Richter <rric@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>, yazen.ghannam@amd.com
-References: <20210628172740.245689-1-Smita.KoralahalliChannabasappa@amd.com>
-From:   Kim Phillips <kim.phillips@amd.com>
-Message-ID: <ce67dec8-f5c6-a91e-e0e7-4c819df87677@amd.com>
-Date:   Fri, 23 Jul 2021 13:18:29 -0500
+        id S229575AbhGWRkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 13:40:17 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42210 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhGWRkQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 13:40:16 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F3E92220AF;
+        Fri, 23 Jul 2021 18:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1627064449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Gul0DAeJqM1NXrZMDZHKg4hUtgqjD/tWebVi3Dzyyg=;
+        b=Yo64mDD4WMYHTtCWqnfYkYYrjlCmoJi5HNUPfX5+M4hRUbk9CViq7Cgzwu2MocQLpQBbjH
+        tOUEDFAqJaxitbmINCPzBKxFAtYxqty535OXogtbG7vpqNpxgC/zbvaaaD/dOVON69UumC
+        b5qCZ1BUAT+m5Mi54lFDPbnz0XvDyCI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1627064449;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Gul0DAeJqM1NXrZMDZHKg4hUtgqjD/tWebVi3Dzyyg=;
+        b=GCw/hI4ZvMwBaBDJ4XcHOUCf7CdJy/ybhQUJr7Jqed1C5GSDuWAEudWgo8VYbrvei3ja15
+        NPTfTpZl0hzAmxAg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AFD3213697;
+        Fri, 23 Jul 2021 18:20:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 6X5cKYAI+2AoXwAAGKfGzw
+        (envelope-from <tzimmermann@suse.de>); Fri, 23 Jul 2021 18:20:48 +0000
+Subject: Re: [PATCH] drm/hisilicon/hibmc: remove an unused variable
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210723091643.1768874-1-arnd@kernel.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <48de3803-e65b-0c4b-1b7a-5bead45ab8ca@suse.de>
+Date:   Fri, 23 Jul 2021 20:20:48 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
-In-Reply-To: <20210628172740.245689-1-Smita.KoralahalliChannabasappa@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0208.namprd04.prod.outlook.com
- (2603:10b6:806:126::33) To BN8PR12MB3505.namprd12.prod.outlook.com
- (2603:10b6:408:69::17)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.136.81] (165.204.77.1) by SN7PR04CA0208.namprd04.prod.outlook.com (2603:10b6:806:126::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Fri, 23 Jul 2021 18:18:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9ad08636-be80-4052-a68a-08d94e0646b1
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0036:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB00367984562911AA9A32E28187E59@BN6PR1201MB0036.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xtqyrPYoVbFkWqCCIZLWwV6a15E1evWW4+OD+R970R/uihvbJvf2WGGiiG4It9o+K6vlMOIHKdgr3RqK7mG+cP4IfJJAKEwrbrpm3rSMyzQnbFqRoDLaa5tR+rp+kZg2+Wr79VWIgK4P8Er97pj1WQNoGrcpIFoYJ4SV1ki09Sx236yZdK8we3+vDjU7W+p5KVhJtASXX4yLnRxZHPOjLVZ2PhynyFx0I8OVqEftUh98ifTxQRhL+B+d1gBw2lz6syaeTAGXyKJN0P0fO9bq6UODrh7I/fL+M3hK8phT+odyQrTpl81rC0YfmTvVFZvs7KQu8ImVfIJfC6lvLpjkEdrmZz/J7L+h4e77GWDbGyuew/KcTJGdM2bzmeobq13lm4rsYxQ2/g1htJD25RsbzAYpDVhK8ELZns9cIxvrhvG3Fgcqy4BWVTWtaGAhvmGnUQTRrnkj6S82SMFWcmWsbpxF+np/1bdTCo8bqHA7eaLFtVnpRziwTR/CAr+N5VuPjjjtu+lkfCegmClMY4tkZePyJJflYtR8AyTqDwFkEEWD1xW5MonP/nx7hxYNcFg3kz+kKpCyTfn4+0FFETpi8QuaZy862Uv3zeAvbv7eZWnx1sSTvBtQ3SxYQAAFF1HrODLRpmjl8Q6MkJQWkN8oJFmPYt1rqJf5lyxdTVRstxq8OeFmGMsRzgaMnk2CKzC9CqNsdAv2G0vwlGEYbq9Sj+HhHQqLi0ZLGMCnLKQgxYJdaHmCfKvSJoH7APPl2PX4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3505.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(396003)(366004)(38100700002)(53546011)(2906002)(31686004)(83380400001)(186003)(26005)(5660300002)(8936002)(6486002)(4744005)(44832011)(2616005)(8676002)(956004)(478600001)(31696002)(36756003)(66946007)(66476007)(86362001)(16576012)(316002)(66556008)(54906003)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NU5DTlEzYUNCQXB2YklERWpJcHVlYW9jQkEzTkYzbzBnemdzLzZBVTk5eGNM?=
- =?utf-8?B?QWxJL1plQ0loTUV3NTQwaFU2NGFxK2Z0a0xua0tQL25Gdy9SZHNCcFM5amlu?=
- =?utf-8?B?dHRtUVZ5MytpVlV1S3ZrQUhiUms3NURlZE1odDUxQ1ordThON1hSUE9yUFBv?=
- =?utf-8?B?bUxrZTdvc3ZNdHQxTjZPeEhNQ0h4RndsUVVRYi9CNVl0ektJZ05Vcmh3M3lJ?=
- =?utf-8?B?Q2lRUWx1WEVOVFQzVGhuT3QrVC9OcEZlc0xsTVlpUDBOWnV4UGdLZVY4aGpq?=
- =?utf-8?B?cERRaG9Ud1p1cEFoZDJNcTVLSDVUMWlpWTh0alJ0NU95UXJrdU5OcXBEQjJ4?=
- =?utf-8?B?c3FXMDhYTzZHcmpxNWpONnJHbnpDUERIK0VyRzgvUHRjVkhJVjJpZ3hqbnMz?=
- =?utf-8?B?VVBrN2hJcXR0K21ua1NEK0o1TWJJSElpSWZXK29XeWRrclVobkNacG1vdXlO?=
- =?utf-8?B?SFRuNS9QMytJQXFOOFRDbXp6dWc4SGs4bEVoZWtFaEdza0VFTlZRMTcxa253?=
- =?utf-8?B?OWtXMnBJeDBOUHJvdXloSHFqQVJxOHRVcGlnbHVIRjlNTUJ2cGZxVjFWNE9a?=
- =?utf-8?B?cEprcjF6L3I5NjhKMWJSbUpVL0JhL2p5ZnFkMXR2Rkw1eVVqSVJQbHFzWUlw?=
- =?utf-8?B?NnZQQ1cybnE0WlhMSEdMa3cwR1V2c3cwZXcvdVh6eENsUStXOHVsamVOelpR?=
- =?utf-8?B?RVhNcTlGS3VrTkhkY1hGVU1vWmVDQmxtTnVmUERpd0JoZERaM3lwK3dMb3pl?=
- =?utf-8?B?cVNrVFpUcy9KSDlia2VOb0plZDNxNHB0VCt1NmNENktleWd1UUYxTUlOT3pV?=
- =?utf-8?B?enFrWW1DaDNVVkJQbW1TVkY2dytFU044OG9VVnNiaC90b0EyT0gyMTBoU3Uz?=
- =?utf-8?B?bEZUMjhoSUJCRTdEdmJEVEpRejJCWFlkRVBTNW5saWQ5UlRFSFB1TmR0eWQr?=
- =?utf-8?B?Q0kwNHU2ZWFTem52d2tMbEFFeFVZZzcxRlFsaE9vODBORElLNllKcGhsbW1S?=
- =?utf-8?B?Y1BMSldqMTFhejNiQ1NqdklUVVE3eDdzblozRTJFTXgwTHQxNndXdXFFN0Zl?=
- =?utf-8?B?bmVxaVdSSXN1TmduaE0vajdqTzFIYWNIbTB0UEl1NXlCc01kWk9Va2JSUFVv?=
- =?utf-8?B?M2ZKdjBLWmxJaHRCM004MHJNQUs3Sy96TFJ6bDRlZitMckg2d1FzV2ZGSHlF?=
- =?utf-8?B?Q0pvVG1lTlpKK3ZlSlM4QWZCalcxbDhseVN2SmFhN1ZCWGM0a1h4S1k0RHRE?=
- =?utf-8?B?NGhBL25UTXF3MkN2WU4xaE9NSlNjVDUwbldobEFwUm5ETGRGYitaeHZpS2Nx?=
- =?utf-8?B?ekN4NWw1S3dneFRVelFoSkxNczRVcW9kTjA1aHllTFR6VUNUWFgvSUxqMm5y?=
- =?utf-8?B?NzdJcDJveUd3NWVxVk5kY25PUDI1aTlqdHFPUlI0dmcxYnpmam56aTFlY0gv?=
- =?utf-8?B?QnV2Z3BwR0xMRVhNK2EwME1KdUx6anlpN2RWQ0NFWWJiWTR6c1ZDT2lZZVd5?=
- =?utf-8?B?T2ZFTnhNYnRKRE9rbXM4TmFmZnp1MG4rWWlyS2ZwSzQyclFRU3UrRmQwYkZs?=
- =?utf-8?B?Wm9EdU5HV0xvOE5nZ0J3UC9ONHErZ0JVaWJIY29XK1E2Smd1blo1YjhaTkd1?=
- =?utf-8?B?OHQwcDVZS0YzMEc3b2ZVSGZlcnpIMWgrOEk4Q3UzOU5pMU5icU5jY2dJVXha?=
- =?utf-8?B?K0NlWHZSRkZ3WE9uMDJYU3lqSkdsMHZTZzdneXNpbUhjQzFOZnBqNi9DSURm?=
- =?utf-8?Q?kx6MfhVpWSVuAJFDSQJQ5rSVJUHvmZ1DrW4rMlc?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ad08636-be80-4052-a68a-08d94e0646b1
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3505.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jul 2021 18:18:31.5092
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WQDtHdF63cTwAcGyaI+gWxUmpui1JA1mxgPZopl+L6sNj3u5igCtg7rzQatXnxxsNxaziiH2bW1kvD837W9inw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0036
+In-Reply-To: <20210723091643.1768874-1-arnd@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="kJt0P1AE5RsBtsDFPEZmN90oqN9YwBEca"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/28/21 12:27 PM, Smita Koralahalli wrote:
-> Hypervisors may not expose SMCA feature to the guest.
-> 
-> Check for X86_FEATURE_HYPERVISOR on entry in mce_amd_init() and return
-> -ENODEV if set.
-> 
-> Suggested-by: Borislav Petkov <bp@suse.de>
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> ---
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--kJt0P1AE5RsBtsDFPEZmN90oqN9YwBEca
+Content-Type: multipart/mixed; boundary="imXddyz52Kw4fTdOcDP6ghLpgOAEnycpP";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Arnd Bergmann <arnd@kernel.org>, Xinliang Liu <xinliang.liu@linaro.org>,
+ Tian Tao <tiantao6@hisilicon.com>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, Maxime Ripard <maxime@cerno.tech>
+Cc: Arnd Bergmann <arnd@arndb.de>, John Stultz <john.stultz@linaro.org>,
+ Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+ Chen Feng <puck.chen@hisilicon.com>, Sam Ravnborg <sam@ravnborg.org>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <48de3803-e65b-0c4b-1b7a-5bead45ab8ca@suse.de>
+Subject: Re: [PATCH] drm/hisilicon/hibmc: remove an unused variable
+References: <20210723091643.1768874-1-arnd@kernel.org>
+In-Reply-To: <20210723091643.1768874-1-arnd@kernel.org>
 
-This gets rid of the "Huh? What family is it: 0x19?!" messages in my 
-F19h hosted guest:
+--imXddyz52Kw4fTdOcDP6ghLpgOAEnycpP
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 23.07.21 um 11:16 schrieb Arnd Bergmann:
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> A recent patch left an unused variable in place that needs to be
+> removed:
+>=20
+> drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c: In function 'hibmc_unl=
+oad':
+> drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c:252:35: error: unused v=
+ariable 'priv' [-Werror=3Dunused-variable]
+>    252 |         struct hibmc_drm_private *priv =3D to_hibmc_drm_privat=
+e(dev);
+>=20
+> Fixes: 39a364a19e03 ("drm/hisilicon/hibmc: Convert to Linux IRQ interfa=
+ces")
+
+Thanks for the patch. The issue has meanwhile been fixed in drm-misc-next=
+=2E
+
+Best regards
+Thomas
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
-Tested-by: Kim Phillips <kim.phillips@amd.com>
+--imXddyz52Kw4fTdOcDP6ghLpgOAEnycpP--
 
+--kJt0P1AE5RsBtsDFPEZmN90oqN9YwBEca
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Thanks,
+-----BEGIN PGP SIGNATURE-----
 
-Kim
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmD7CIAFAwAAAAAACgkQlh/E3EQov+Cf
+iA/8CGOqE+CSt02GiMOx9VMghz8C28yz0v20olq9dm6AF4n/xf4fKBn0VY8wxw/lvT01A1+b8GO/
+b1D6wBMwg32KeT3GzeEcarTNPpM+lHU/gFVt/b8be+ckLGKJO4xrUYl6X9l+ETEB9Wn1v8URktEZ
+7MpLEpyFUdMydtlhNFfss8iE2iN3Cy7aWLg3JzK/tTH5OSnY4mukMhqRQ2LELKNZLvvZbm832+Bo
+4/hxW4o17tasmy6M8jA1otC2gjI1PMDiQIKjsZquUrIMei75ELeBPrUZI07wyitWe8h6TPx+ri1h
+00mJEW9Ws3Sk0HPv2YZPMFwYKXLSVd1T1uc6CeB4lT0I2BzHggA5oRSdDOtcL6aQNPWpBmckxKgZ
+bObFVeAwQt7THQ6dTtlwhgDUfgMjoAcPYwDD2UpIWc4pmNR7fg89stE2gP6dj2A0P1Chdl8A+Dpu
+hRlAHKOSkSw3MSK9ntjuxDF8WwxrrEzG+IVbBqw/qTeHTV+e4niUAI57lLMBLnrrE2HPgO6RMLlY
+JMYDAOLEyooYJt5XnVHj7DMp99q0ntXsQWPVTlJ3TyDdyQR4nKf6MiscacMOAicra8U26p/wGKC8
+jqHWtN1lr00dM2C+LKvmhAuo5hqYRcqH7j+rC7pUDSCA6nC7M7++MIJe3ywrgiBiwGk+pNoNnq+w
+nF4=
+=kAJL
+-----END PGP SIGNATURE-----
+
+--kJt0P1AE5RsBtsDFPEZmN90oqN9YwBEca--
