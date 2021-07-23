@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D6E3D422B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813143D422D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhGWUog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:44:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48076 "EHLO mail.kernel.org"
+        id S231974AbhGWUpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:45:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232375AbhGWUof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 16:44:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80F3560EB1;
-        Fri, 23 Jul 2021 21:25:06 +0000 (UTC)
+        id S231600AbhGWUpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 16:45:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6D7160EB5;
+        Fri, 23 Jul 2021 21:25:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627075506;
-        bh=L2rxadH+AUh2Pwd80ajPT5po5yZXxvRMdsUUDexNG8U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=njGl9A2y+NSDXY8YVtI+QI0lOt2xP24i8NSn23mCptGQUj9BulHNDVazOYEKtRYjh
-         uDjYz+UXnG17wD4GAj0MVXMCfNvd1rLPGPglt+dWel2meaBI5Sks6shlm5+HVx+LFX
-         3BADzLXKRQ+fuiTA0eDOI+/55sLN4/By88hqTvjVERbfemdjbL+bs0oH94iCKe1Xev
-         1yZ05xJWHarLZnd+36spK4LOgE8paPuIOmY17/n4ZS3MmVz6POhJ3qiIfevC87JyBv
-         t5g3GWTuwT5gzXVGy1hZ4JAJK/eOtbOnbl5dOf5dplOlgE1pFA6O4fC1vf36tQv5eB
-         3ycOAjLIiYZOA==
-Date:   Fri, 23 Jul 2021 17:25:05 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH 5.10 038/125] arm64: dts: qcom: msm8996: Make CPUCC
- actually probe (and work)
-Message-ID: <YPszsUlUbE6W5MKg@sashalap>
-References: <20210722155624.672583740@linuxfoundation.org>
- <20210722155625.957020845@linuxfoundation.org>
- <20210723200732.GB22684@duo.ucw.cz>
+        s=k20201202; t=1627075557;
+        bh=Y2+4vWDQsufrxtPr5dxwMNbkWMxKsU9EX96nJ+a043I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E3ffraGq+WB0mYUbWa/KYU56Sph76jOXKA6DXdo8+V4/V+zHT8v9bAO78r853ZOTe
+         frTm+xmE3fPBKWYOe2706hl1CGL0CX/11AilB5wh9ejNuMg8iMCOwr9HHAGu9jfvSj
+         iEjjcayPfIXP6fp2lCPPmGN/hftU/nU3lB4o2d6d2E8ScpknRYFr9Lm99wvMKVjyyq
+         E+5XL6QAD0jkaI/4R+rOV7a8B1yGf+ul/EWBb9HWk+HBIAtgZolwtIitla0N7gQWtt
+         DeQfw8jucg/nRkZdNHkUSiPpZv7oREmXgCi1eUH4aBadAh/D0g6nVKD1UO5Lp5hlBj
+         grvg/xCQZt2ig==
+Received: by mail-ed1-f51.google.com with SMTP id da26so3405961edb.1;
+        Fri, 23 Jul 2021 14:25:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533HiaqyRa5OlR9e8DgFTOLxU4Uc/YwX3u9gGgHSA2UNUj33AoRz
+        MnEKhIBbipCI1O0k/070yqVbT2QHO7iJxFlCRA==
+X-Google-Smtp-Source: ABdhPJy1c3eyy/FP6EjBD5reeZRC6kaYEX0oNwJSz6lKuHUlbPJr2EpqmbxNRfwJj6+f08LjSJayXEiOO+ZI5WMI+Fo=
+X-Received: by 2002:aa7:df12:: with SMTP id c18mr7914633edy.62.1627075556418;
+ Fri, 23 Jul 2021 14:25:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210723200732.GB22684@duo.ucw.cz>
+References: <20210719195001.2412345-1-robh@kernel.org> <YPXZODWTE3qHQqEv@ravnborg.org>
+In-Reply-To: <YPXZODWTE3qHQqEv@ravnborg.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 23 Jul 2021 15:25:45 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJt=ifqBuvpAXkd5hXb=1tg16a4Sjcq+WuvsinccPuvuQ@mail.gmail.com>
+Message-ID: <CAL_JsqJt=ifqBuvpAXkd5hXb=1tg16a4Sjcq+WuvsinccPuvuQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: display: Fix graph 'unevaluatedProperties'
+ related warnings
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     devicetree@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        David Airlie <airlied@linux.ie>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 10:07:32PM +0200, Pavel Machek wrote:
->Hi!
->> Fix the compatible to make the driver probe and tell the
->> driver where to look for the "xo" clock to make sure everything
->> works.
->>
->> Then we get a happy (eh, happier) 8996:
->>
->> somainline-sdcard:/home/konrad# cat /sys/kernel/debug/clk/pwrcl_pll/clk_rate
->> 1152000000
->>
->> Don't backport without "arm64: dts: qcom: msm8996: Add CPU opps", as
->> the system fails to boot without consumers for these clocks.
+On Mon, Jul 19, 2021 at 1:57 PM Sam Ravnborg <sam@ravnborg.org> wrote:
 >
->Changelog says this has dependency on
->b502efda6480d7577f9f822fd450d6bc3a4ac2e6.
->
->But that one is not in 5.10 AFAICT.
+> Hi Rob,
+> On Mon, Jul 19, 2021 at 01:50:01PM -0600, Rob Herring wrote:
+> > The graph schema doesn't allow custom properties on endpoint nodes for
+> > '#/properties/port' and '#/$defs/port-base' should be used instead. This
+> > doesn't matter until 'unevaluatedProperties' support is implemented.
+> >
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Rob Clark <robdclark@gmail.com>
+> > Cc: Sean Paul <sean@poorly.run>
+> > Cc: Marek Vasut <marex@denx.de>
+> > Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
 
-I'll drop it from everywhere, thanks!
+Thanks. FYI, your mail only went thru on dri-devel, but not DT or LKML lists.
 
-
--- 
-Thanks,
-Sasha
+Rob
