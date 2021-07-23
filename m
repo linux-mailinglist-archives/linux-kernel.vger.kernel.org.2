@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA163D34A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89583D34AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhGWFq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:46:56 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59576
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233879AbhGWFqw (ORCPT
+        id S234078AbhGWFrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:47:14 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:52438
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234059AbhGWFrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:46:52 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        Fri, 23 Jul 2021 01:47:09 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 62C103F34B
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:27:25 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 006183F343
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:27:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627021645;
-        bh=BVfxHW5e0txMWNeBpenkIfYlW9+/vHPUxzadxmisj2M=;
+        s=20210705; t=1627021663;
+        bh=ScM5eUXjBnVPe8LbBTYSW47mZlMEZMzsEaWNVZaNkWQ=;
         h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version:Content-Type;
-        b=ZrnFRL0GfkWrskmb3/CFK89YlQ08WG+8vPLS1bmowGdzTdW+xJAjKbV62gIyv9ho2
-         Mgk4BQj3KGuZj4iCHdGmS3xUc3icnqrnH6daO7n7i/EozYAw6s7n6FNXAsC3dUZiqJ
-         CHn8Dtg+o7/a5415rTycOc92K2V+C3uQQhL6pR3TMB6CBXVMm2igknPfTLaIWPp8gc
-         y0VlRo8N5qa9PlG100s0njrByt24ir2DUkXpzWm3X1/1HZ4Nm7vmb4fO2kAZY5ANFS
-         9seE225FGDn+8nibd1pnXK2LYIQVH602qi76gvqPgb09oBl2fEMisv4Y/Uvy6kQN4W
-         cPKwcmCJqCi0Q==
-Received: by mail-ed1-f70.google.com with SMTP id b88-20020a509f610000b02903ab1f22e1dcso159340edf.23
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:27:25 -0700 (PDT)
+        b=jtwpKgCHgeeIwVDNX0/2tHKzGo3qN1ydck+/aEU3kBG7b4d1W9/f2NpamD2MeLH2f
+         HOdZq8uvkaI29zJ8IvlmGblL4sZ0CTmrKnjcwbk6oKp4u61oqxWdB4idDx/3NTSqCy
+         kFh31fua1tb64882x5MfyjA5ewOzUM6E0YUPLhCDWFzRBqyvHSzJsFkq9tei7ZP3hV
+         M7X+CPm86aoiOHR3PyZnqpWwJnzQTuoYa2hTqQyZk/cSTxwl94G4QGhOXvTZM4kRmW
+         jqGsnS/nhasHPRVvL2QUYOvsuRKIWfVCJYlPKgpM1PrcBmxGlYrZZgsvR6UEQF2TQ5
+         AjqcsAa1K7QIA==
+Received: by mail-ed1-f72.google.com with SMTP id p7-20020aa7c8870000b02903a1187e547cso252280eds.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BVfxHW5e0txMWNeBpenkIfYlW9+/vHPUxzadxmisj2M=;
-        b=XM8sET3AoD3pK3VkDCR4lP3Z36gw8GTPo1wmDfexZNYuugSIYr3gLRn5Cf+b3QR/DG
-         3rR5WAF2QrkvxE81dlU21FLHt9kiQs/w+wRTjG+wU/nBghKtY2Y0CSYAePjGrZ5XYVkL
-         gkr9U7cAA/fvDDuxwuPElCxKHqI/gQm9Ds5pgaBNb9qURFalWniDY0Jda0aOPD8B+yvn
-         pXjlJNJeyQ/6ZIf5eWTVVfc7oWyZ65LG+7H/BzWfDWDFjSnFpCbFN4+aGAIqcQ/vzUq5
-         0JYTu2C5/Xo16ujkJiGnLLjltGWL49SEhaTH3D22CYGoB96vqiRgqiiJb84lia+o16c1
-         EwTA==
-X-Gm-Message-State: AOAM531ZgfybMfa+T/rlZs6y+jOAAdB6tpcTUFAduHICm4R5xz4OMTLL
-        hTIUqPNdOPW6Bf8aJAUsCDP4k6ebvsjfs7egZRCy0hvm3ZcOV0VlOBwMCuFQm4WwjLvE99qUz+6
-        fDx+i6H2nbj7nfa3uThG+nGxggqfrd6ruEBkf7lEblg==
-X-Received: by 2002:a05:6402:14c7:: with SMTP id f7mr3836125edx.84.1627021645159;
-        Thu, 22 Jul 2021 23:27:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7YBaLklYdx8pMyrPGwqRyW3BrTXsuwbNayQmX95MvMBycvj7QgE68fkUlanxy0AVX3tZvBw==
-X-Received: by 2002:a05:6402:14c7:: with SMTP id f7mr3836115edx.84.1627021645050;
-        Thu, 22 Jul 2021 23:27:25 -0700 (PDT)
+        bh=ScM5eUXjBnVPe8LbBTYSW47mZlMEZMzsEaWNVZaNkWQ=;
+        b=GuhD4CHgBKr55k8WxtGVCXTGvCaRfXJ+B2294EsDkuORDbogg0E6yCBRBzPMhzVm+Z
+         iVWyXsXVju8oHNXvoDMXgiKP4F+TjkFmpBHdE7WbPirFF9zXd5+GRR0CWO+KfC6omhE0
+         RrYp6Mn1pTUJSoh0IE+fT2CgUTHhsLlVJVUGYKj/EzzOVXMkGEVXKwNxXLWuTKGvdi8q
+         9q7OCWNOwEDrhjhkyuSaL+QvRNLI0lL0OQCH0jOvsR5kGjO62DZbvHS6PSRDMXdxlIqy
+         JVmVgtZPvRST6v5ru8NAdQzlFMgpSauRlraHbeStTD6puD72m2ym/I4UrtCQ9UBCRFm0
+         +cOA==
+X-Gm-Message-State: AOAM533bo5lpIHWysVI0yHOAOhNhYp2q+lPHjceyDj2zv9uPuC9b9lYw
+        blc4XDJ7qYvc7zrRE9PmrM0eoBrzgvYA+rSlCecOTn8exM9B3b9+cIDvM2xT3LLkZwrhl3umBCZ
+        fiZcyZ65ZiYg4bJHN1kcH/iCn/9ePUJ/F346JjEUYuA==
+X-Received: by 2002:a17:906:e0e:: with SMTP id l14mr3313194eji.501.1627021662758;
+        Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZ+nyDEENcrVRLwr6YxB1sHYJA1zCxcGsDlpGPB37Ly4NJOfWs4Dn45abWgrRNkKKGjwgnGw==
+X-Received: by 2002:a17:906:e0e:: with SMTP id l14mr3313181eji.501.1627021662625;
+        Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id u5sm13449844edv.64.2021.07.22.23.27.24
+        by smtp.gmail.com with ESMTPSA id u5sm13449844edv.64.2021.07.22.23.27.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 23:27:24 -0700 (PDT)
+        Thu, 22 Jul 2021 23:27:42 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-tegra@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memory: tegra: fix unused-function warning
-Date:   Fri, 23 Jul 2021 08:27:17 +0200
-Message-Id: <162702163037.6229.205743572149857743.b4-ty@canonical.com>
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: (subset) [PATCH 00/15] Fix some DT binding references at next-20210722
+Date:   Fri, 23 Jul 2021 08:27:18 +0200
+Message-Id: <162702163038.6229.12663832282139727924.b4-ty@canonical.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210722090748.1157470-1-arnd@kernel.org>
-References: <20210722090748.1157470-1-arnd@kernel.org>
+In-Reply-To: <cover.1626947923.git.mchehab+huawei@kernel.org>
+References: <cover.1626947923.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -74,20 +81,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 11:07:43 +0200, Arnd Bergmann wrote:
-> The tegra186_mc_client_sid_override() is only called from
-> an #ifdef block:
+On Thu, 22 Jul 2021 11:59:57 +0200, Mauro Carvalho Chehab wrote:
+> Due to DT schema conversion to yaml, several references to dt-bindings got
+> broken.
 > 
-> drivers/memory/tegra/tegra186.c:74:13: error: 'tegra186_mc_client_sid_override' defined but not used [-Werror=unused-function]
->    74 | static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
->       |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> Update them.
+> 
+> Mauro Carvalho Chehab (15):
+>   dt-bindings: mtd: update mtd-physmap.yaml reference
+>   dt-bindings: firmware: update arm,scpi.yaml reference
+>   dt-bindings: net: dsa: sja1105: update nxp,sja1105.yaml reference
+>   MAINTAINERS: update mtd-physmap.yaml reference
+>   MAINTAINERS: update arm,vic.yaml reference
+>   MAINTAINERS: update aspeed,i2c.yaml reference
+>   MAINTAINERS: update faraday,ftrtc010.yaml reference
+>   MAINTAINERS: update fsl,fec.yaml reference
+>   MAINTAINERS: update mtd-physmap.yaml reference
+>   MAINTAINERS: update ti,am654-hbmc.yaml reference
+>   MAINTAINERS: update ti,sci.yaml reference
+>   MAINTAINERS: update gpio-zynq.yaml reference
+>   MAINTAINERS: update arm,pl353-smc.yaml reference
+>   MAINTAINERS: update intel,ixp46x-rng.yaml reference
+>   MAINTAINERS: update nxp,imx8-jpeg.yaml reference
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] memory: tegra: fix unused-function warning
-      commit: eaf89f1cd38cf7256ab64424fe94014632044d57
+[13/15] MAINTAINERS: update arm,pl353-smc.yaml reference
+        commit: e460a86aab669e00c5952a7643665f3096fbfe27
 
 Best regards,
 -- 
