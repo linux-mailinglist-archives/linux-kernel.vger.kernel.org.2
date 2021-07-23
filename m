@@ -2,105 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F399E3D3AD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EE93D3ADC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbhGWMYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235065AbhGWMY3 (ORCPT
+        id S235241AbhGWMZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:25:23 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:59925 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S235236AbhGWMZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:24:29 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D8AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:05:02 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id b7so2277480wri.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=CScnrJv6DM1l/GyT2F7M4STWfOPo8zjPQsEF1iUbnH8=;
-        b=pR359CZFThBQXx+RGAdzrSNm+hjKs+k3/Z8qg/279n6hfh0zH6rG2p8aopBgzt/8AR
-         yMfEx+YyL86rBJN1nVMQ7ZxGBD0V8oiQ1KHc1lRskOiY864aTXRiZa28hc3qg+uSFA6n
-         KB6xJgvNODuqyx2r7p/h5nu3CayR/cPZf01BVpwEkOc2KNTvBC7bf9rYE5hxo6kgOkh7
-         sWK0+oMbfEL6kP+iAZygyKzTLC63wvMXa6x2X5YJ1fBlhpgwlj9+E8SYcl999OZcTSDF
-         fmpAFhAoDwP+202GOpHnMcruXC72JJ86skPJk+cC/YLoyVgzeTIeTZBe3wVL4d/N+BFi
-         9+7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=CScnrJv6DM1l/GyT2F7M4STWfOPo8zjPQsEF1iUbnH8=;
-        b=EHDITtAZEuyPeHOG6UT47YQLa2LRjyHXyl46Rfr95kp10ZL18zO6QB33uOtilr/7Pv
-         MaLEee4BdQ8ZWYLJGyi5tckZ0OeXlxyJ0648i3/ifXm4o+VhfnFMOycmW2O1JPnJpWEn
-         lNw4lvX1U/e/6EJutdf2tQJvYSy0WWhsTOlrj9dnNNretvWyoYqJ61tWTHNRl8NxxZZw
-         vqrTMx79acAB/IJdf4s3G02DA1qmGnSrTCTbvknVqr5iYsMPnyMAO29dQnnpuWWwG/7k
-         I+HguLNCbJvOyRiDq2rZBbB7knAbt5tvomIxFOUrSQ/DcjU897a0CdN68XCXgGpXCOfe
-         TQfw==
-X-Gm-Message-State: AOAM531zL8T5TwI1jMVYJgs+25b58h7Yi8pkvGzDx4XYJBR3TFyLqmoX
-        CFhit/QHSef4dw3+h9rTqZU=
-X-Google-Smtp-Source: ABdhPJw9dNXpLiJi9Pj58WjglIrkMDrfUWmhHj8agQNbnnF0vTtUjz42Tc+gEicXpbvA+6VqqLPj0w==
-X-Received: by 2002:adf:a1c4:: with SMTP id v4mr5154351wrv.217.1627045501040;
-        Fri, 23 Jul 2021 06:05:01 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.106])
-        by smtp.gmail.com with ESMTPSA id y11sm5286318wmi.33.2021.07.23.06.05.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 06:05:00 -0700 (PDT)
-Subject: Re: [PATCH 1/2] device property: Check fwnode->secondary in
- fwnode_graph_get_next_endpoint()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        rafael@kernel.org, laurent.pinchart@ideasonboard.com
-References: <20210722201929.3585671-1-djrscally@gmail.com>
- <20210722201929.3585671-2-djrscally@gmail.com>
- <YPq28BNOmqZPdRqq@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <acf4838d-3c70-20c1-5fce-ee36765b06c4@gmail.com>
-Date:   Fri, 23 Jul 2021 14:04:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 23 Jul 2021 08:25:21 -0400
+Received: (qmail 39268 invoked by uid 1000); 23 Jul 2021 09:05:54 -0400
+Date:   Fri, 23 Jul 2021 09:05:54 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Manfred Spraul <manfred@colorfullife.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
+ heuristic lockless reads
+Message-ID: <20210723130554.GA38923@rowland.harvard.edu>
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+ <20210721211003.869892-2-paulmck@kernel.org>
+ <20210723020846.GA26397@rowland.harvard.edu>
+ <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
 MIME-Version: 1.0
-In-Reply-To: <YPq28BNOmqZPdRqq@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 23, 2021 at 08:52:50AM +0200, Manfred Spraul wrote:
+> Hi Alan,
 
-On 23/07/2021 13:32, Andy Shevchenko wrote:
-> On Thu, Jul 22, 2021 at 09:19:28PM +0100, Daniel Scally wrote:
->> Sensor drivers often check for an endpoint to make sure that they're
->> connected to a consuming device like a CIO2 during .probe(). Some of
->> those endpoints might be in the form of software_nodes assigned as
->> a secondary to the device's fwnode_handle. Account for this possibility
->> in fwnode_graph_get_next_endpoint() to avoid having to do it in the
->> sensor drivers themselves.
-> ...
->
->> +	ep = fwnode_call_ptr_op(parent, graph_get_next_endpoint, prev);
->> +
->> +	if (IS_ERR_OR_NULL(ep) && !IS_ERR_OR_NULL(parent) &&
->> +	    !IS_ERR_OR_NULL(parent->secondary))
-> Nit-pick, I would put it like:
->
-> 	if (!IS_ERR_OR_NULL(parent->secondary) && !IS_ERR_OR_NULL(parent) &&
-> 	    IS_ERR_OR_NULL(ep))
->
-> or
->
-> 	if (IS_ERR_OR_NULL(ep) &&
-> 	    !IS_ERR_OR_NULL(parent->secondary) && !IS_ERR_OR_NULL(parent))
->
-> for the sake of logical split.
+Hi.
 
+> On 7/23/21 4:08 AM, Alan Stern wrote:
+> > On Wed, Jul 21, 2021 at 02:10:01PM -0700, Paul E. McKenney wrote:
+> > > This commit adds example code for heuristic lockless reads, based loosely
+> > > on the sem_lock() and sem_unlock() functions.
+> > > 
+> > > Reported-by: Manfred Spraul <manfred@colorfullife.com>
+> > > [ paulmck: Update per Manfred Spraul and Hillf Danton feedback. ]
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > ---
+> > >   .../Documentation/access-marking.txt          | 94 +++++++++++++++++++
+> > >   1 file changed, 94 insertions(+)
+> > > 
+> > > diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
+> > > index 58bff26198767..be7d507997cf8 100644
+> > > --- a/tools/memory-model/Documentation/access-marking.txt
+> > > +++ b/tools/memory-model/Documentation/access-marking.txt
+> > > @@ -319,6 +319,100 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
+> > >   concurrent lockless write.
+> > > +Lock-Protected Writes With Heuristic Lockless Reads
+> > > +---------------------------------------------------
+> > > +
+> > > +For another example, suppose that the code can normally make use of
+> > > +a per-data-structure lock, but there are times when a global lock
+> > > +is required.  These times are indicated via a global flag.  The code
+> > > +might look as follows, and is based loosely on nf_conntrack_lock(),
+> > > +nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
+> > > +
+> > > +	bool global_flag;
+> > > +	DEFINE_SPINLOCK(global_lock);
+> > > +	struct foo {
+> > > +		spinlock_t f_lock;
+> > > +		int f_data;
+> > > +	};
+> > > +
+> > > +	/* All foo structures are in the following array. */
+> > > +	int nfoo;
+> > > +	struct foo *foo_array;
+> > > +
+> > > +	void do_something_locked(struct foo *fp)
+> > > +	{
+> > > +		bool gf = true;
+> > > +
+> > > +		/* IMPORTANT: Heuristic plus spin_lock()! */
+> > > +		if (!data_race(global_flag)) {
+> > > +			spin_lock(&fp->f_lock);
+> > > +			if (!smp_load_acquire(&global_flag)) {
+> > > +				do_something(fp);
+> > > +				spin_unlock(&fp->f_lock);
+> > > +				return;
+> > > +			}
+> > > +			spin_unlock(&fp->f_lock);
+> > > +		}
+> > > +		spin_lock(&global_lock);
+> > > +		/* Lock held, thus global flag cannot change. */
+> > > +		if (!global_flag) {
+> > How can global_flag ever be true at this point?  The only line of code
+> > that sets it is in begin_global() below, it only runs while global_lock
+> > is held, and global_flag is set back to false before the lock is
+> > released.
+> 
+> It can't be true. The code is a simplified version of the algorithm in
+> ipc/sem.c.
+> 
+> For the ipc/sem.c, global_flag can remain true even after dropping
+> global_lock.
+> 
+> When transferring the approach to nf_conntrack_core, I didn't notice that
+> nf_conntrack doesn't need a persistent global_flag.
+> 
+> Thus the recheck after spin_lock(&global_lock) is not needed.
 
-OK; I'll do the second one, feel like it's better to have ep as the
-first check.
+In fact, since global_flag is true if and only if global_lock is locked, 
+perhaps it can be removed entirely and replaced with 
+spin_is_locked(&global_lock).
 
->
->> +		ep = fwnode_graph_get_next_endpoint(parent->secondary, NULL);
+> > > +			spin_lock(&fp->f_lock);
+> > > +			spin_unlock(&global_lock);
+> > > +			gf = false;
+> > > +		}
+> > > +		do_something(fp);
+> > > +		if (fg)
+> > Should be gf, not fg.
+> > 
+> > > +			spin_unlock(&global_lock);
+> > > +		else
+> > > +			spin_lock(&fp->f_lock);
+> > > +	}
+> > > +
+> > > +	void begin_global(void)
+> > > +	{
+> > > +		int i;
+> > > +
+> > > +		spin_lock(&global_lock);
+> > > +		WRITE_ONCE(global_flag, true);
+> > Why does this need to be WRITE_ONCE?  It still races with the first read
+> > of global_flag above.
+> > 
+> > > +		for (i = 0; i < nfoo; i++) {
+> > > +			/* Wait for pre-existing local locks. */
+> > > +			spin_lock(&fp->f_lock);
+> > > +			spin_unlock(&fp->f_lock);
+> > Why not acquire all the locks here and release all of them in
+> > end_global()?  Then global_flag wouldn't need acquire-release
+> > sychronization.
+> 
+> From my understanding:
+> spin_lock contains preempt_count_add, thus you can't acquire more than 255
+> spinlocks (actually 245, the warning limit is 10 below 255)
+
+It might be worth mentioning this in a code comment.  Or in the 
+accompanying text.
+
+> > > +		}
+> > > +	}
+> > > +
+> > > +	void end_global(void)
+> > > +	{
+> > > +		smp_store_release(&global_flag, false);
+> > > +		/* Pre-existing global lock acquisitions will recheck. */
+> > What does that comment mean?  How can there be any pre-existing global
+> > lock acquisitions when we hold the lock right now?
+> 
+> > > +		spin_unlock(&global_lock);
+> > > +	}
+> > > +
+> > > +All code paths leading from the do_something_locked() function's first
+> > > +read from global_flag acquire a lock, so endless load fusing cannot
+> > > +happen.
+> > > +
+> > > +If the value read from global_flag is true, then global_flag is rechecked
+> > > +while holding global_lock, which prevents global_flag from changing.
+> > > +If this recheck finds that global_flag is now false, the acquisition
+> > Again, how can't global_flag be false now?
+> > 
+> > Did you originally have in mind some sort of scheme in which
+> > begin_global() would release global_lock before returning and
+> > end_global() would acquire global_lock before clearing global_flag?  But
+> > I don't see how that could work without changes to do_something_locked().
+> > 
+> > > +of ->f_lock prior to the release of global_lock will result in any subsequent
+> > > +begin_global() invocation waiting to acquire ->f_lock.
+> > > +
+> > > +On the other hand, if the value read from global_flag is false, then
+> > > +global_flag, then rechecking under ->f_lock combined with synchronization
+> > ---^^^^^^^^^^^^^^^^^^
+> > 
+> > Typo?
+> > 
+> > > +with begin_global() guarantees than any erroneous read will cause the
+> > > +do_something_locked() function's first do_something() invocation to happen
+> > > +before begin_global() returns.  The combination of the smp_load_acquire()
+> > > +in do_something_locked() and the smp_store_release() in end_global()
+> > > +guarantees that either the do_something_locked() function's first
+> > > +do_something() invocation happens after the call to end_global() or that
+> > > +do_something_locked() acquires global_lock() and rechecks under the lock.
+> > This last sentence also makes no sense unless you imagine dropping
+> > global_lock between begin_global() and end_global().
+> 
+> ipc/sem.c does that and needs that, nf_conntrack doesn't use this.
+
+Given all these issues, it seems like this patch needs to be re-written.
+
+Alan Stern
