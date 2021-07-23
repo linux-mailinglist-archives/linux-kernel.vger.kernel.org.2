@@ -2,197 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB143D3957
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB973D3966
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhGWKkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:40:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44370 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231304AbhGWKkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:40:51 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627039285; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=fHwTtapl35FE2Ue6XQbrKD2NlRjdE4DDciMxOgEZwF8=; b=suVsjFhnC3kbHH8H7dNy8VFRN7SFnxFUdIHjFiyPWZrORA1fZnEEs0WFJH9IM2cX6BEMPBpn
- JxzGv08mEdq5ApNLp8RKeSiBMP0LTKcvouD73V/+Ct/n8uRRTUQ/p5vHHjDlGbOM8oJugKm/
- EY5TIrsw4GCQ4VB0RtnJsrbSWK8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60faa6291dd16c8788e2baa1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 11:21:13
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C7DBDC433F1; Fri, 23 Jul 2021 11:21:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 85FEDC433D3;
-        Fri, 23 Jul 2021 11:21:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 85FEDC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno@lists.freedesktop.org, robh@kernel.org,
-        robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        georgi.djakov@linaro.org
-Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jordan@cosmicpenguin.net,
-        mka@chromium.org, jonathan@marek.ca, robdclark@gmail.com,
-        dianders@chromium.org, sboyd@kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc7280: Add gpu support
-Date:   Fri, 23 Jul 2021 16:50:54 +0530
-Message-Id: <1627039254-13083-1-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S234316AbhGWKne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:43:34 -0400
+Received: from mta-06-3.privateemail.com ([198.54.127.59]:24155 "EHLO
+        MTA-06-3.privateemail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231848AbhGWKnd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 06:43:33 -0400
+Received: from mta-06.privateemail.com (localhost [127.0.0.1])
+        by mta-06.privateemail.com (Postfix) with ESMTP id 8EFF418003C1;
+        Fri, 23 Jul 2021 07:24:06 -0400 (EDT)
+Received: from hal-station.. (unknown [10.20.151.217])
+        by mta-06.privateemail.com (Postfix) with ESMTPA id BED6218000BD;
+        Fri, 23 Jul 2021 07:24:05 -0400 (EDT)
+From:   Hamza Mahfooz <someguy@effective-light.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+        Bastien Nocera <hadess@hadess.net>,
+        linux-input@vger.kernel.org,
+        Hamza Mahfooz <someguy@effective-light.com>
+Subject: [PATCH v2] HID: logitech-hidpp: battery: provide CAPACITY property for newer devices
+Date:   Fri, 23 Jul 2021 07:23:37 -0400
+Message-Id: <20210723112337.101495-1-someguy@effective-light.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the necessary dt nodes for gpu support in sc7280.
+For devices that only support the BATTERY_VOLTAGE (0x1001) feature, UPower
+requires the additional information provided by this patch, to set them up.
 
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+v2: use ARRAY_SIZE() and set voltages[]'s size to 100
+
+Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
 ---
-This patch has dependency on the GPUCC bindings patch here:
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1619519590-3019-4-git-send-email-tdas@codeaurora.org/
+ drivers/hid/hid-logitech-hidpp.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 107 +++++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 029723a..beb313c 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -16,6 +16,8 @@
- #include <dt-bindings/reset/qcom,sdm845-pdc.h>
- #include <dt-bindings/soc/qcom,rpmh-rsc.h>
- #include <dt-bindings/thermal/thermal.h>
-+#include <dt-bindings/interconnect/qcom,sc7280.h>
-+#include <dt-bindings/clock/qcom,gpucc-sc7280.h>
+diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
+index 61635e629469..6d63804a9a0f 100644
+--- a/drivers/hid/hid-logitech-hidpp.c
++++ b/drivers/hid/hid-logitech-hidpp.c
+@@ -1331,6 +1331,31 @@ static int hidpp20_battery_get_battery_voltage(struct hidpp_device *hidpp,
+ 	return 0;
+ }
  
- / {
- 	interrupt-parent = <&intc>;
-@@ -592,6 +594,111 @@
- 			qcom,bcm-voters = <&apps_bcm_voter>;
- 		};
++static int hidpp20_map_battery_capacity(int voltage)
++{
++	static const int voltages[100] = {
++		4186, 4156, 4143, 4133, 4122, 4113, 4103, 4094, 4086, 4075,
++		4067, 4059, 4051, 4043, 4035, 4027, 4019, 4011, 4003, 3997,
++		3989, 3983, 3976, 3969, 3961, 3955, 3949, 3942, 3935, 3929,
++		3922, 3916, 3909, 3902, 3896, 3890, 3883, 3877, 3870, 3865,
++		3859, 3853, 3848, 3842, 3837, 3833, 3828, 3824, 3819, 3815,
++		3811, 3808, 3804, 3800, 3797, 3793, 3790, 3787, 3784, 3781,
++		3778, 3775, 3772, 3770, 3767, 3764, 3762, 3759, 3757, 3754,
++		3751, 3748, 3744, 3741, 3737, 3734, 3730, 3726, 3724, 3720,
++		3717, 3714, 3710, 3706, 3702, 3697, 3693, 3688, 3683, 3677,
++		3671, 3666, 3662, 3658, 3654, 3646, 3633, 3612, 3579, 3537
++	};
++
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(voltages); i++) {
++		if (voltage >= voltages[i])
++			return ARRAY_SIZE(voltages) - i;
++	}
++
++	return 0;
++}
++
+ static int hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
+ {
+ 	u8 feature_type;
+@@ -1354,6 +1379,7 @@ static int hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
  
-+		gpu: gpu@3d00000 {
-+			compatible = "qcom,adreno-635.0", "qcom,adreno";
-+			#stream-id-cells = <16>;
-+			reg = <0 0x03d00000 0 0x40000>, <0 0x03d9e000 0 0x1000>,
-+				<0 0x03d61000 0 0x800>;
-+			reg-names = "kgsl_3d0_reg_memory", "cx_mem", "cx_dbgc";
-+			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
-+			iommus = <&adreno_smmu 0 0x401>;
-+			operating-points-v2 = <&gpu_opp_table>;
-+			qcom,gmu = <&gmu>;
-+			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "gfx-mem";
-+
-+			gpu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-550000000 {
-+					opp-hz = /bits/ 64 <550000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+					opp-peak-kBps = <6832000>;
-+				};
-+
-+				opp-450000000 {
-+					opp-hz = /bits/ 64 <450000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+					opp-peak-kBps = <4068000>;
-+				};
-+
-+				opp-315000000 {
-+					opp-hz = /bits/ 64 <315000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+					opp-peak-kBps = <1804000>;
-+				};
-+			};
-+		};
-+
-+		adreno_smmu: iommu@3da0000 {
-+			compatible = "qcom,sc7280-smmu-500", "qcom,adreno-smmu", "arm,mmu-500";
-+			reg = <0 0x03da0000 0 0x20000>;
-+			#iommu-cells = <2>;
-+			#global-interrupts = <2>;
-+			interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 675 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-+					<&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
-+					<&gpucc GPU_CC_AHB_CLK>,
-+					<&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>,
-+					<&gpucc GPU_CC_CX_GMU_CLK>,
-+					<&gpucc GPU_CC_HUB_CX_INT_CLK>,
-+					<&gpucc GPU_CC_HUB_AON_CLK>;
-+			clock-names = "gcc_gpu_memnoc_gfx_clk",
-+					"gcc_gpu_snoc_dvm_gfx_clk",
-+					"gpu_cc_ahb_clk",
-+					"gpu_cc_hlos1_vote_gpu_smmu_clk",
-+					"gpu_cc_cx_gmu_clk",
-+					"gpu_cc_hub_cx_int_clk",
-+					"gpu_cc_hub_aon_clk";
-+
-+			power-domains = <&gpucc GPU_CC_CX_GDSC>;
-+		};
-+
-+		gmu: gmu@3d69000 {
-+			compatible="qcom,adreno-gmu-635.0", "qcom,adreno-gmu";
-+			reg = <0 0x03d6a000 0 0x34000>,
-+				<0 0x3de0000 0 0x10000>,
-+				<0 0x0b290000 0 0x10000>;
-+			reg-names = "gmu", "rscc", "gmu_pdc";
-+			interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "hfi", "gmu";
-+			clocks = <&gpucc GPU_CC_CX_GMU_CLK>,
-+					<&gpucc GPU_CC_CXO_CLK>,
-+					<&gcc GCC_DDRSS_GPU_AXI_CLK>,
-+					<&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-+					<&gpucc GPU_CC_AHB_CLK>,
-+					<&gpucc GPU_CC_HUB_CX_INT_CLK>,
-+					<&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>;
-+			clock-names = "gmu", "cxo", "axi", "memnoc", "ahb",
-+					"hub", "smmu_vote";
-+			power-domains = <&gpucc GPU_CC_CX_GDSC>, <&gpucc GPU_CC_GX_GDSC>;
-+			power-domain-names = "cx", "gx";
-+			iommus = <&adreno_smmu 5 0x400>;
-+			operating-points-v2 = <&gmu_opp_table>;
-+
-+			gmu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-200000000 {
-+					opp-hz = /bits/ 64 <200000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-+				};
-+			};
-+		};
-+
- 		gpucc: clock-controller@3d90000 {
- 			compatible = "qcom,sc7280-gpucc";
- 			reg = <0 0x03d90000 0 0x9000>;
+ 	hidpp->battery.status = status;
+ 	hidpp->battery.voltage = voltage;
++	hidpp->battery.capacity = hidpp20_map_battery_capacity(voltage);
+ 	hidpp->battery.level = level;
+ 	hidpp->battery.charge_type = charge_type;
+ 	hidpp->battery.online = status != POWER_SUPPLY_STATUS_NOT_CHARGING;
+@@ -1378,6 +1404,7 @@ static int hidpp20_battery_voltage_event(struct hidpp_device *hidpp,
+ 
+ 	if (voltage != hidpp->battery.voltage || status != hidpp->battery.status) {
+ 		hidpp->battery.voltage = voltage;
++		hidpp->battery.capacity = hidpp20_map_battery_capacity(voltage);
+ 		hidpp->battery.status = status;
+ 		hidpp->battery.level = level;
+ 		hidpp->battery.charge_type = charge_type;
+@@ -3717,7 +3744,8 @@ static int hidpp_initialize_battery(struct hidpp_device *hidpp)
+ 	num_battery_props = ARRAY_SIZE(hidpp_battery_props) - 3;
+ 
+ 	if (hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_MILEAGE ||
+-	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE)
++	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE ||
++	    hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_VOLTAGE)
+ 		battery_props[num_battery_props++] =
+ 				POWER_SUPPLY_PROP_CAPACITY;
+ 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
+2.32.0
 
