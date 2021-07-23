@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403D53D37F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936DD3D3801
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhGWJEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
+        id S231485AbhGWJE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231415AbhGWJEC (ORCPT
+        with ESMTP id S231430AbhGWJEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Jul 2021 05:04:02 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAE3C061796
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:44:34 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id l4so987665ljq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:44:34 -0700 (PDT)
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF40C06179A
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:44:35 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id h11so933480ljo.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a/bqTZzKIHdxC3kmt2eWiFK7QCi70Duu4Zv6wBW6jAs=;
-        b=Wre17vH1r/X0eGI3ub3IhX+LY6NyisVfyC8qRkjVRtDIdjQvxGDzjODeaerxk018+e
-         Jfkow/wywwMiwtR50JxRHzx8KNDPZalnSiP9ajJ0JcovcE4OiPkWhN5ndwtv70X7ujwj
-         +YegKy2IBiarSxeg/3uddwJojhDNatwolFX97w+o/E+rwXmdmh3OziNRbqT9aYJ5TbPx
-         UnT9Pccv9Wey/vrGVhr5CJqDfHB4hkDuLfrx5jYv0Idz0c+bXSaMVy9AhNiNIuF1VTAw
-         IRvKn4lx/lZV4F+dK4B87RFYmNeVVg8Ao3FrnwV1IVc+gmR7Oj3kKIcHADe6eC6LmRKY
-         Yprw==
+        bh=JoodeoEbWA8KFPSDaqBt6HBmf+JeOe0hbWt7ocF/yag=;
+        b=IQupQu096dOf2RXy1dTEeXIOMGbe6WjJhcaIEXhbvkmYHJXjdMb0znsum0XkoEfm0b
+         oZAyT0no0mbv1QNkEJCIL8Ycp+A2wxAnySr21P6vwmTnbM0x54jAaRuSlsmJSsk9KvIc
+         3+lzExnUxYmBgMM6D2awrRdlxwmCx0eFrn77sO8iolEDUBqktiTOwi+QBv6ve/3SK65f
+         welVLkY/7gXxj/KGu52/SQBYzf7iXLxHHs5Ovc7izB3FaJhmLEwKcyT/7PTU41IsPpqu
+         XvEPhAOHUMGRifagj7+ZhmEkZsJdF9rYyoUuXIHuqVnL/DUQ4h6w1oeymhdrXUOT6laJ
+         6eQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a/bqTZzKIHdxC3kmt2eWiFK7QCi70Duu4Zv6wBW6jAs=;
-        b=X1WgcW2kQaAUbkPui1IpJraC6jBfhl0d3/OKZT/6H3XqXiF2lS1CgEXJXkmd8eNYjP
-         0/Z5Zd/ztaOk41G7HnqI33w0pgVz/T+pswifoSfEtWAC1iIQ9TxI/APGCeHqFiV7A5p4
-         xB2xIuButaJfZqCqkPbMH0ngTNyTZ5Wh/gEOORoqcuvaBSL94UT5Uc6ldGTXBqnyXDoH
-         O4SCHW8CHSa1tX6hXMP/3GhPSODaeo+dkkdGhlB1X9L1se2RAdRW3KviAGdVXkwWU1S8
-         aUGrE2R8QN9o3Di5ONU45lwzBovdtqWKW40//LL53RcTCSCdtv2AVu1Mt0J9lPmj/6wy
-         hnKg==
-X-Gm-Message-State: AOAM5327khvKIx2FiQq2dLojK+8u/L/Ffq2fdQySgiZt0IQQZvvUZ7zB
-        3K0ZKDg/w+v9J0rUn15qOuguI+N5gNeotahL
-X-Google-Smtp-Source: ABdhPJwgaayYlGhMH6FoRP7pTpWRDBeBdQZDLPJ2kTl9qmB5jvRR/VWAISr1k4cjc8iHnmB7QeI2eQ==
-X-Received: by 2002:a2e:5c86:: with SMTP id q128mr2789959ljb.316.1627033472827;
-        Fri, 23 Jul 2021 02:44:32 -0700 (PDT)
+        bh=JoodeoEbWA8KFPSDaqBt6HBmf+JeOe0hbWt7ocF/yag=;
+        b=otAJWy4gRNgyKFbqkQo9DvNkJKTw/sa0gt+Z8zYCB3cuICOLwuJRRWpvrSMhDZviDj
+         zLCG760rBEYWABJ/jfFhu9t3NYZ+dlpKPWu0m90o/bqCtS6U7OtlTr54x20MiRfylL7+
+         EfRZaxfFRRiZtAwpyq0FJZweQRjO7TY3aT4aj1uwVC0zDQdd9J31qXQLCVll9bCp9UhP
+         T252RMYWawM0RhwLHDrIaxfP7c9zq7O7Uz/n53sTqag7q9gLG1yVj2+HM9exJsyoO9Nn
+         0CNa+LiT+PNjmIElrwjn5ImVPE3JiPEy1aCnLKu+OZBd3c+7XWM3tRtau3QtXKk0AVZ6
+         nIhg==
+X-Gm-Message-State: AOAM533GMJlVoWhGCf+hivXe3cMQsKmO5J6MDq3n0QGd9dnm65OwSElb
+        tBnwcGpziRm6ppxedA92Oxf9JCJylUhizFjU
+X-Google-Smtp-Source: ABdhPJxthOMwVWH+D74X2QymqEcjwWIzgiPvVu2K8kpmy+fsoCGXSl6heRTr6xFDRTRKY7MJE5SvuA==
+X-Received: by 2002:a2e:9b10:: with SMTP id u16mr2747522lji.228.1627033473706;
+        Fri, 23 Jul 2021 02:44:33 -0700 (PDT)
 Received: from jade.urgonet (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
-        by smtp.gmail.com with ESMTPSA id f2sm403808ljq.131.2021.07.23.02.44.31
+        by smtp.gmail.com with ESMTPSA id f2sm403808ljq.131.2021.07.23.02.44.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 02:44:32 -0700 (PDT)
+        Fri, 23 Jul 2021 02:44:33 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org,
@@ -61,9 +61,9 @@ Cc:     Jerome Forissier <jerome@forissier.org>,
         Ard Biesheuvel <ardb@kernel.org>,
         Marc Zyngier <maz@kernel.org>,
         Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH v3 2/6] dt-bindings: arm: optee: add interrupt property
-Date:   Fri, 23 Jul 2021 11:44:18 +0200
-Message-Id: <20210723094422.2150313-3-jens.wiklander@linaro.org>
+Subject: [PATCH v3 3/6] tee: fix put order in teedev_close_context()
+Date:   Fri, 23 Jul 2021 11:44:19 +0200
+Message-Id: <20210723094422.2150313-4-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210723094422.2150313-1-jens.wiklander@linaro.org>
 References: <20210723094422.2150313-1-jens.wiklander@linaro.org>
@@ -73,35 +73,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds an optional interrupt property to the optee binding.
+Prior to this patch was teedev_close_context() calling tee_device_put()
+before teedev_ctx_put() leading to teedev_ctx_release() accessing
+ctx->teedev just after the reference counter was decreased on the
+teedev. Fix this by calling teedev_ctx_put() before tee_device_put().
 
+Fixes: 217e0250cccb ("tee: use reference counting for tee_context")
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 ---
- .../devicetree/bindings/arm/firmware/linaro,optee-tz.yaml     | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/tee/tee_core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-index c24047c1fdd5..73811a5d1714 100644
---- a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-+++ b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-@@ -24,6 +24,9 @@ properties:
-   compatible:
-     const: linaro,optee-tz
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 2b37bc408fc3..85102d12d716 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -98,8 +98,10 @@ void teedev_ctx_put(struct tee_context *ctx)
  
-+  interrupts:
-+    maxItems: 1
+ static void teedev_close_context(struct tee_context *ctx)
+ {
+-	tee_device_put(ctx->teedev);
++	struct tee_device *teedev = ctx->teedev;
 +
-   method:
-     enum: [smc, hvc]
-     description: |
-@@ -46,6 +49,7 @@ examples:
-         optee  {
-             compatible = "linaro,optee-tz";
-             method = "smc";
-+            interrupts = <0 187 4>;
-         };
-     };
+ 	teedev_ctx_put(ctx);
++	tee_device_put(teedev);
+ }
  
+ static int tee_open(struct inode *inode, struct file *filp)
 -- 
 2.31.1
 
