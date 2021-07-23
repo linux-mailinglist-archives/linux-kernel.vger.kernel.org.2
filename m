@@ -2,181 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBAD3D4173
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506983D417A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhGWTlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:41:50 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:51773 "EHLO mout02.posteo.de"
+        id S231421AbhGWTow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:44:52 -0400
+Received: from mga11.intel.com ([192.55.52.93]:61244 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231350AbhGWTlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:41:49 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 45138240109
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 22:22:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1627071741; bh=X0rc+/5GGjVkSZK5TaqO7OYWpD1XlkC/UV67N8kNP9g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gXvRsXEesyFUeO2ci6TAUXnbtS72dQWm/abk76x2nqfyBP24n/2kFUPDnzNt91Fvl
-         ofYWilp1qdyqW2IZXD/ZIjfOMvwUyU6xgD2ufLiGPDnGTqGrG3qfz+Ujt4hRgy8w4e
-         J9Hd5s8mnvfFFRSlcbg2nLRzr1+3hF/rka8QWYcUJvu0foUQPZv/+VoCeLz/8y87rk
-         zWkjtWI2vZdZWRT96xjrBrYBOrRwOKXJCiskqAd/3n30teClDwMgu3btl8aPB87Gfr
-         RdwVgg8JBPcChcbtRtsTuw1TQOevotZFvhHgVnCNx75bnG1/ZUkzgaMgEIfD/DIF95
-         XE9gP/a9Oagog==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4GWgj81QCSz9rxd;
-        Fri, 23 Jul 2021 22:22:20 +0200 (CEST)
-From:   Julian Weigt <juw@posteo.de>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Julian Weigt <juw@posteo.de>
-Subject: [PATCH 2/2] ARM: dts: msm8974: castor: Add Bluetooth-related nodes
-Date:   Fri, 23 Jul 2021 20:21:01 +0000
-Message-Id: <20210723202101.65371-2-juw@posteo.de>
-In-Reply-To: <20210723202101.65371-1-juw@posteo.de>
-References: <20210723202101.65371-1-juw@posteo.de>
+        id S229655AbhGWTov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 15:44:51 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10054"; a="208833212"
+X-IronPort-AV: E=Sophos;i="5.84,265,1620716400"; 
+   d="scan'208";a="208833212"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 13:25:22 -0700
+X-IronPort-AV: E=Sophos;i="5.84,265,1620716400"; 
+   d="scan'208";a="471644941"
+Received: from otcpl-devbox.jf.intel.com ([10.54.39.31])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 13:25:18 -0700
+From:   Michael Bottini <michael.a.bottini@linux.intel.com>
+To:     rjw@rjwysocki.net, lenb@kernel.org, irenic.rajneesh@gmail.com,
+        david.e.box@linux.intel.com, hdegoede@redhat.com,
+        mgross@linux.intel.com
+Cc:     Michael Bottini <michael.a.bottini@linux.intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH 1/2] acpi: Add acpi_init_properties to ACPI driver code
+Date:   Fri, 23 Jul 2021 13:21:56 -0700
+Message-Id: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Some products in the field, like Intel Rocket Lake systems, contain
+AML code that can modify _DSD properties after they have been
+evaluated by ACPI init code. Therefore, there is a need for drivers
+to be able to reevaluate _DSDs so that the updated property values can
+be read. Export acpi_init_properties() for this purpose.
 
-Castor has a BCM4339 attached to BLSP2 UART7, add the necessary nodes to
-define the uart as well as the serdev BCM.
-
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Julian Weigt <juw@posteo.de>
+Signed-off-by: Michael Bottini <michael.a.bottini@linux.intel.com>
 ---
- .../dts/qcom-msm8974-sony-xperia-castor.dts   | 81 +++++++++++++++++++
- 1 file changed, 81 insertions(+)
+ drivers/acpi/property.c | 1 +
+ include/linux/acpi.h    | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-index f4ec08f13003..b4dd85bd4faf 100644
---- a/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-+++ b/arch/arm/boot/dts/qcom-msm8974-sony-xperia-castor.dts
-@@ -11,6 +11,7 @@ / {
+diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
+index e312ebaed8db..2c1f8cf1a8f0 100644
+--- a/drivers/acpi/property.c
++++ b/drivers/acpi/property.c
+@@ -432,6 +432,7 @@ void acpi_init_properties(struct acpi_device *adev)
+ 	if (!adev->data.pointer)
+ 		acpi_extract_apple_properties(adev);
+ }
++EXPORT_SYMBOL(acpi_init_properties);
  
- 	aliases {
- 		serial0 = &blsp1_uart2;
-+		serial1 = &blsp2_uart7;
- 	};
+ static void acpi_destroy_nondev_subnodes(struct list_head *list)
+ {
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 72e4f7fd268c..57defc3bc9b9 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -716,6 +716,8 @@ static inline u64 acpi_arch_get_root_pointer(void)
  
- 	chosen {
-@@ -336,6 +337,27 @@ serial@f991e000 {
- 		pinctrl-0 = <&blsp1_uart2_pin_a>;
- 	};
+ int acpi_get_local_address(acpi_handle handle, u32 *addr);
  
-+	serial@f995d000 {
-+		status = "ok";
++void acpi_init_properties(struct acpi_device *adev);
 +
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&blsp2_uart7_pin_a>;
-+
-+		bluetooth {
-+			compatible = "brcm,bcm43438-bt";
-+			max-speed = <3000000>;
-+
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&bt_host_wake_pin>,
-+				    <&bt_dev_wake_pin>,
-+				    <&bt_reg_on_pin>;
-+
-+			host-wakeup-gpios = <&msmgpio 95 GPIO_ACTIVE_HIGH>;
-+			device-wakeup-gpios = <&msmgpio 96 GPIO_ACTIVE_HIGH>;
-+			shutdown-gpios = <&pm8941_gpios 16 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
- 	usb@f9a55000 {
- 		status = "okay";
+ #else	/* !CONFIG_ACPI */
  
-@@ -380,6 +402,40 @@ tx {
- 			};
- 		};
+ #define acpi_disabled 1
+@@ -976,6 +978,10 @@ static inline int acpi_get_local_address(acpi_handle handle, u32 *addr)
+ 	return -ENODEV;
+ }
  
-+		blsp2_uart7_pin_a: blsp2-uart7-pin-active {
-+			tx {
-+				pins = "gpio41";
-+				function = "blsp_uart7";
++static inline void acpi_init_properties(struct acpi_device *adev)
++{
++}
 +
-+				drive-strength = <2>;
-+				bias-disable;
-+			};
-+
-+			rx {
-+				pins = "gpio42";
-+				function = "blsp_uart7";
-+
-+				drive-strength = <2>;
-+				bias-pull-up;
-+			};
-+
-+			cts {
-+				pins = "gpio43";
-+				function = "blsp_uart7";
-+
-+				drive-strength = <2>;
-+				bias-pull-up;
-+			};
-+
-+			rts {
-+				pins = "gpio44";
-+				function = "blsp_uart7";
-+
-+				drive-strength = <2>;
-+				bias-disable;
-+			};
-+		};
-+
- 		i2c8_pins: i2c8 {
- 			mux {
- 				pins = "gpio47", "gpio48";
-@@ -479,6 +535,23 @@ pin {
- 				input-enable;
- 			};
- 		};
-+
-+		bt_host_wake_pin: bt-host-wake {
-+			pins = "gpio95";
-+			function = "gpio";
-+
-+			drive-strength = <2>;
-+			bias-disable;
-+			output-low;
-+		};
-+
-+		bt_dev_wake_pin: bt-dev-wake {
-+			pins = "gpio96";
-+			function = "gpio";
-+
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
- 	};
+ #endif	/* !CONFIG_ACPI */
  
- 	i2c@f9964000 {
-@@ -606,6 +679,14 @@ gpio_keys_pin_a: gpio-keys-active {
- 				power-source = <PM8941_GPIO_S3>;
- 			};
- 
-+			bt_reg_on_pin: bt-reg-on {
-+				pins = "gpio16";
-+				function = "normal";
-+
-+				output-low;
-+				power-source = <PM8941_GPIO_S3>;
-+			};
-+
- 			wlan_sleep_clk_pin: wl-sleep-clk {
- 				pins = "gpio17";
- 				function = "func2";
+ #ifdef CONFIG_ACPI_HOTPLUG_IOAPIC
 -- 
-2.32.0
+2.25.1
 
