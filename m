@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 400023D3171
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AC73D3174
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhGWBQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
+        id S233200AbhGWBQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233145AbhGWBQE (ORCPT
+        with ESMTP id S233181AbhGWBQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:16:04 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF1DC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:56:37 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id o20so247914oiw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:56:37 -0700 (PDT)
+        Thu, 22 Jul 2021 21:16:21 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD660C061575;
+        Thu, 22 Jul 2021 18:56:54 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id j1so87387pjv.3;
+        Thu, 22 Jul 2021 18:56:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:subject:to:cc:references:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=f5Tj8x/M4U6ampYbsuwsF0GFRXuqhM0kUJh8KBosg4Y=;
-        b=aLRYnBgOctErKkAziof/5ga8PoklMUrDGQAAyll1gt5C1rrpM6CTzHHNSrIXJ6KCU8
-         vXJOVA0Sr/0pHRecD4EFWIF2NX/EBV379SP3Q+XR1qqa1z+6g5f+0MdBFPoc903G+Vzt
-         IbGECGBw4KU/D3UXMGo8YJDOqYk5gABHfWifkHYoD/rY9NNMDLR9bmo5VkuwLbgwXU5I
-         lxOe6H/lR1Xq9YbWRTJX3joeVTfuuMdqcCS7LAgdyQ8kLbVQb2CX5x0yEkPN94V7jvdd
-         6DLEKSalEicTshHR2h/gG8LNTr9zB53HNSTwwjVpiGKADn0FP25U2tc8ypFkmt1cEiV7
-         ndJg==
+        bh=SaBBsKSooT2THR7y3tZObTkjeHzlpmexL9S+wtcTGhQ=;
+        b=FUbGZwJtHW4O2yNb1uVTI+lh+tiBZK7uYBio8dHZXTdbrbvjQnwS4BNuQPispCwqcQ
+         fTk8CAL1fVmgu4EiV5HFxooTv4nkOTCaIIpG/mB67hkEXgIVJpF5lz+d7ca+7uvnPpH8
+         9sO5wp/vC9gJm8ooQ4HlvgWyoaGKuUYlvmncf0SijGDIe9t9xueqSCnxki8rHzIlAcP0
+         ohy5PcJp8y3chnx1h9BvYHSqa2tuo6DP+tM+mcKlBT5ODf302z09Nig1YQBCkwDEuAFP
+         GcPZc8IESZjUXuBcJvkxH41GaAx4FwoziqOBiK54ULOLh0/LUvHacPUjDU1MzKW0LCFN
+         jGIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:subject:to:cc:references:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=f5Tj8x/M4U6ampYbsuwsF0GFRXuqhM0kUJh8KBosg4Y=;
-        b=cvVXGL/EAnCoNojgnsnsVC0B3Ba8jAdnspWuKI/6/gGwiprbJYnnMp5JVnZiOpSWco
-         d7RNk/VAmlebj6qDZrCxMi06hz91pOm8sKhwFXCItjFpG20G2ZjOp/unWc3KZEWL7K2s
-         calYForXTLdxfeQss/m4ksQjFuF1QodgtlwVSbz3wulZnZVzw3+QEXiCYgSELTxttlSu
-         Oco5qc008RaDmBkGQSWH7ioXi6/XvoFvACdmFtwRgepd1kg4SN7x47iscd31lWFNaNqq
-         FeYZtRk88Pg3bNUYqKrKMysxXkhKxK2Tomo6Tvut1AB6D1A3lc3uVT+ovDQYGsqPMLsK
-         x2yA==
-X-Gm-Message-State: AOAM530Go33CTlhxrFIJlj1E7zObsunlZ+i80wRddZtNzuOJcn+kkXIW
-        CtoZ9uLUbWYVEJ79U+EgD6U=
-X-Google-Smtp-Source: ABdhPJxHvMvSWrkGs+kLqatInF7BnLPJuMLoqn9QY5GQKvo0G+T/QopqoV01kh5ZMPbgu8Qon1n6vA==
-X-Received: by 2002:aca:4587:: with SMTP id s129mr4153169oia.64.1627005397040;
-        Thu, 22 Jul 2021 18:56:37 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100c.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100c.res6.spectrum.com. [2603:8090:2005:39b3::100c])
-        by smtp.gmail.com with ESMTPSA id c16sm2518360otd.18.2021.07.22.18.56.35
+        bh=SaBBsKSooT2THR7y3tZObTkjeHzlpmexL9S+wtcTGhQ=;
+        b=Z03fxbVBga2Z5bR+dwZQxVrpk9UTvm/82h7Prp4FCJfLBG5xJT6BktxA7c26uQKTxN
+         FNfvdGqhg5kZRcBzfLPOcthUJNcWHYdU72QrU4tr/jo1SZ/f94fry0ntySpUZeFNQFEq
+         v3wHffvMXqf550FpYx80VzHT4yH6k+NOSvAiX59uDXYz76rgQNdh2Iw3N6JJA47fpBm9
+         TbQbWwMrOptq3juFuweU94DIfplXKlwkNn4D4LPUgA5SifTAr7u0JjlsMlnNXfWZtqdx
+         qFgdpIIleiuHnCxUmWii8EEFPYfYi0qtmyWl/ccUqSf+glexqVmBDd+NVM5ahsWRdNJK
+         MoNQ==
+X-Gm-Message-State: AOAM532hgIWPzSjAdAU+74n9fn/3KRlOsR/9nFQ5HV9NTMF5PA1+J6st
+        SRXKjOGAj4oaBtkbe4LxJ3kOz6tcjLU=
+X-Google-Smtp-Source: ABdhPJw0PlLazqVOuRIrX3AdjVLAy3M1PNyOSeiuaRdDzwxOUaeaSPe557GCVnkQfQ2bm7JFsRN73g==
+X-Received: by 2002:a17:90a:e2c5:: with SMTP id fr5mr2547763pjb.34.1627005413959;
+        Thu, 22 Jul 2021 18:56:53 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id f3sm26870776pjt.19.2021.07.22.18.56.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 18:56:36 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Subject: Re: [PATCH 0/7] staging: rtl8188eu: replace driver with better
- version
-To:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, fabioaiuto83@gmail.com
-References: <20210723004214.912295-1-phil@philpotter.co.uk>
-Message-ID: <630e139c-85e5-f006-6b64-e368847251fc@lwfinger.net>
-Date:   Thu, 22 Jul 2021 20:56:33 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thu, 22 Jul 2021 18:56:53 -0700 (PDT)
+Subject: Re: [PATCH net backport to 4.14,4.19,5.4] net: bcmgenet: ensure
+ EXT_ENERGY_DET_MASK is clear
+To:     Doug Berger <opendmb@gmail.com>, stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210723001509.3274508-1-opendmb@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <5f9ebe21-3d66-f439-f591-8c0b1fd0b534@gmail.com>
+Date:   Thu, 22 Jul 2021 18:56:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210723004214.912295-1-phil@philpotter.co.uk>
+In-Reply-To: <20210723001509.3274508-1-opendmb@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,47 +73,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/21 7:42 PM, Phillip Potter wrote:
-> I had to break this patchset up a bit to get around the file size limits
-> on the mailing list, and also I removed the hostapd stuff which is
-> userspace related and therefore not required.
+
+
+On 7/22/2021 5:15 PM, Doug Berger wrote:
+> [ Upstream commit 5a3c680aa2c12c90c44af383fe6882a39875ab81 ]
 > 
-> The driver currently in staging is older and less functional than the
-> version on Larry Finger's GitHub account, branch v5.2.2.4. This series
-> of patches therefore:
+> Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
+> logic of the internal PHY to prevent the system from sleeping. Some
+> internal PHYs will report that energy is detected when the network
+> interface is closed which can prevent the system from going to sleep
+> if WoL is enabled when the interface is brought down.
 > 
-> (1) Removes the current driver from staging.
-> (2) Imports the GitHub version mentioned above in its place.
+> Since the driver does not support waking the system on this logic,
+> this commit clears the bit whenever the internal PHY is powered up
+> and the other logic for manipulating the bit is removed since it
+> serves no useful function.
 > 
-> There is plenty of work to do to this driver, including to its Makefile,
-> but it is at least buildable/usable for now.
-> 
-> Phillip Potter (7):
->    staging: rtl8188eu: remove existing staging driver
->    staging: rtl8188eu: introduce new core dir for RTL8188eu driver
->    staging: rtl8188eu: introduce new hal dir for RTL8188eu driver
->    staging: rtl8188eu: introduce new os_dep dir for RTL8188eu driver
->    staging: rtl8188eu: introduce new include dir for RTL8188eu driver
->    staging: rtl8188eu: introduce new supporting files for RTL8188eu
->      driver
->    staging: rtl8188eu: attach newly imported driver to build system
+> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+> Signed-off-by: Doug Berger <opendmb@gmail.com>
 
-Phillip,
-
-Patch 3/7 fails with a
-drivers/staging/rtl8188eu/hal/phydm_precomp.h: already exists in error:
-working directory. When I deleted the file, the patch applied.
-
-Patch 5/7 fails with a drivers/staging/rtl8188eu/include/hal_data.h: already 
-exists in working directory. Again it applied when I manually deleted that file.
-
-Patches 2-6 all have trailing whitespace warnings.
-
-I have started testing. Unfortunately, my GitHub version has a fault in that it 
-runs systemd-udevd at 100% of a CPU. So far, I have found that an older commit 
-works fine. As soon as I find the fault, I will let you know.
-
-Larry
-
-
-
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
