@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42E33D3B6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7563D3B6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235243AbhGWNLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:11:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58940 "EHLO mail.kernel.org"
+        id S235294AbhGWNLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:11:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233552AbhGWNLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:11:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 535F260EE2;
-        Fri, 23 Jul 2021 13:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627048327;
-        bh=jFk+0LMES7S6Ja8o2wsbPLKGH7j8TpUeerYAYihrE5g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fAgesXjxnCrHQFC63+0zu1QAnLMUb/krMXzvhoUXFpw/hG/JnsJBmsrsYBv15zVWw
-         lDw+h+lom1f7KghsRfKm1UaoKqdoDOzwtMQypaJO+wfyrt62D+4kFST1838j47HWZx
-         qOITCI0JMt9qS35PfGfGKGQbs2lBYRHjzC5W5Rdc23BJmLBub8UXazhRhUCQrsXkuF
-         MPsNW10Xvax40ERdt4FFhEeeubP+z3DlE3d+7dEYnll8ftGeI5qVRj0X64d5soll5u
-         euA+ofLq32pIPgsslGmcK7NRJUP28V+rvZX/Gs7E6CUk8Fq3ZWo0IfXflyC5xNLHFN
-         iGnih1/AzMueQ==
-Date:   Fri, 23 Jul 2021 14:52:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Leilk Liu <leilk.liu@mediatek.com>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Peter Hess <peter.hess@ph-home.de>, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] spi: mediatek: fix fifo rx mode
-Message-ID: <20210723135201.GC5221@sirena.org.uk>
-References: <20210706121609.680534-1-linux@fw-web.de>
- <162608669457.4543.2374973099687363958.b4-ty@kernel.org>
- <363C87CD-F0C6-4A46-877C-86E07D14787D@public-files.de>
+        id S233552AbhGWNLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:11:54 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4835F60EBD;
+        Fri, 23 Jul 2021 13:52:28 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m6vbG-000VBj-B4; Fri, 23 Jul 2021 14:52:26 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2JFBq9zoW8cOFH7v"
-Content-Disposition: inline
-In-Reply-To: <363C87CD-F0C6-4A46-877C-86E07D14787D@public-files.de>
-X-Cookie: Integrity has no need for rules.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Date:   Fri, 23 Jul 2021 14:52:26 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        will@kernel.org
+Subject: Re: [PATCH 10/16] KVM: arm64: Add some documentation for the MMIO
+ guard feature
+In-Reply-To: <20210723133845.jwp3ljkfnupgv36i@gator>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-11-maz@kernel.org>
+ <20210721211743.hb2cxghhwl2y22yh@gator>
+ <60d8e9e95ee4640cf3b457c53cb4cc7a@kernel.org>
+ <20210723133845.jwp3ljkfnupgv36i@gator>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <6768b88a9119ea8b6e80d0d3e1935e42@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: drjones@redhat.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@android.com, vatsa@codeaurora.org, sdonthineni@nvidia.com, will@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-07-23 14:38, Andrew Jones wrote:
+> On Fri, Jul 23, 2021 at 02:30:13PM +0100, Marc Zyngier wrote:
+> ...
+>> > > +
+>> > > +    ==============    ========
+>> > > ======================================
+>> > > +    Function ID:      (uint32)    0xC6000004
+>> > > +    Arguments:        (uint64)    The base of the PG-sized IPA range
+>> > > +                                  that is allowed to be accessed as
+>> > > +				  MMIO. Must aligned to the PG size (r1)
+>> >
+>> > align
+>> 
+>> Hmmm. Ugly mix of tab and spaces. I have no idea what the norm
+>> is here, so I'll just put spaces. I'm sure someone will let me
+>> know if I'm wrong! ;-)
+> 
+> Actually, my comment wasn't regarding the alignment of the text. I was
+> commenting that we should change 'aligned' to 'align' in the text. 
+> (Sorry,
+> that was indeed ambiguous.) Hmm, it might be better to just add 'be', 
+> i.e.
+> 'be aligned'.
 
---2JFBq9zoW8cOFH7v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+*blink*. duh, of course.
 
-On Fri, Jul 23, 2021 at 03:46:02PM +0200, Frank Wunderlich wrote:
+> I'm not sure what to do about the tab/space mixing, but keeping it
+> consistent is good enough for me.
 
-> Can we add stable-tag i've missed to fix older kernel versions or
-> inform greg to add patch to at least 5.4/5.10?
+Thanks,
 
-Let the stable people know once it's in mainline (IIRC it is already) -
-there's a good chance they'll pick it up anyway based on the commit log.
-
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
-
---2JFBq9zoW8cOFH7v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD6yYAACgkQJNaLcl1U
-h9BS2wf9EAlL6oZ0DzmB1nfQW4jRM0cEjg0EP36GEgjC8qJ2a8SfLfNK5I4foIKf
-NHqPAvnsWm1hNqFqT717/B3qkrIGD2xhp6RAkzb94IKJID4WA5KCazzjUr/AYHz5
-rv2aaM/2qwq0F0vZAPP5d9Q7UqYmqceX9D9T/PBmVSwq6uyhd1lWngh+QR70HYB1
-n6XFqMkkujk/fXP5iWD9OUbI6EKaC4tclkJ/W8k/UvsffcKXM6NUzukrf4Mhl+uu
-kTYYkuwsNymyAySnUmze07H0P4aLCYefYMtIpXW2fp7GkioLH0smBUL7GKLV43Eo
-VSKbXqA+zjeKCooVhDXA+wlFBzOrCA==
-=oWDi
------END PGP SIGNATURE-----
-
---2JFBq9zoW8cOFH7v--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
