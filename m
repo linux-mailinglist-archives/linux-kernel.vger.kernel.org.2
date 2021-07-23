@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A5A3D3A80
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1A03D3A82
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhGWMIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:08:50 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28754 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234853AbhGWMIt (ORCPT
+        id S235020AbhGWMJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234857AbhGWMJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:08:49 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NCbtgS029851;
-        Fri, 23 Jul 2021 08:49:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=3F25Cp/BBTu4FvFQx+3kdA4ZNLHpZT3Aw62eqLBYjms=;
- b=YNA0SZHUUHbzYH6MSBueQVMzg3S3PK8FmGjrLvSiKjNRVe8LJEetWDZ1Lmv4vUET5V3k
- qdSstFR9Ecgad8s+5LZrIWOvnbYUz26lcr+1KyGBHArrdpQc17+gmxIppz9cBs7sQMp7
- MuCOP3S3I4BdsBHrJYE+1lCAuFYFpc696tQNM8fQ8CFPZ+CxBy74WARWgOwPxPayrPk1
- o3ludRmzv0CJgShdOOVGofM4FRNhhlKIyx/ohxWTvEBO0jCYQ5L+6SJeUJ9mtvhtKzZX
- OUXipsOEDmhxu8SWh1GxtgHgOaUf8lHXguHKeXq0jp3ANjlu4lXzj1SbQ90WwEV2CWrz Sw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39yvqvahc7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 08:49:16 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16NCcvDe035223;
-        Fri, 23 Jul 2021 08:49:15 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39yvqvahbn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 08:49:15 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16NCnEIP030993;
-        Fri, 23 Jul 2021 12:49:14 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 39vng72nq7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 12:49:14 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16NCnB9I29360452
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 12:49:11 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A33D6A4051;
-        Fri, 23 Jul 2021 12:49:11 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9801CA4040;
-        Fri, 23 Jul 2021 12:49:09 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.74.193])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 12:49:09 +0000 (GMT)
-Message-ID: <676e9af54eb252c26410788e6105c149c57b2c15.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 1/3] ima: Introduce ima_get_current_hash_algo()
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, paul@paul-moore.com
-Cc:     stephen.smalley.work@gmail.com, prsriva02@gmail.com,
-        tusharsu@linux.microsoft.com, nramas@linux.microsoft.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-Date:   Fri, 23 Jul 2021 08:49:08 -0400
-In-Reply-To: <20210723085304.1760138-2-roberto.sassu@huawei.com>
-References: <20210723085304.1760138-1-roberto.sassu@huawei.com>
-         <20210723085304.1760138-2-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-Mime-Version: 1.0
+        Fri, 23 Jul 2021 08:09:31 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D1FC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:50:04 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id l126so2323089ioa.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=S7/a0CrZBTQx9NCUvzRct8p/jgzivwtgpsB1BZn4Wfk=;
+        b=gUsPFbCrJ+3yw1Nlw2vUluw8VPUQXk3YdC8gUgl7vbdkzhglsE+E5M6rWWwKoURs7a
+         u8KnJbUuLB21o2xQvpI2rtgrq3TWPt3X2tIeQ1sjwXZMfUK8rTYoFWBeVWUY8aMQ6j9P
+         A0a+gE8LVAJ4Hcyiv4GaEPDDxZx0dlIIGXmsQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=S7/a0CrZBTQx9NCUvzRct8p/jgzivwtgpsB1BZn4Wfk=;
+        b=uDDUQW5pDONX0kt+xBwNQVQ0qyhccHrXrBTDuC/sQGh3oVBBqfSvmLZO2Kramx0lrv
+         XGBaPa6/9FtjuGPcz/YSoSlPrJe+MLwbh82D+0G9mFhZGKRAAiVZnz6EKMTxDd9vLNX9
+         mBK0zSwcNFHBv74Ut4ngEMqdZO9/nSVm4Ne0CcWno49NjlmCuYjTZOqX7DaR9qzkflYZ
+         oAof4JaIJgUfl5xZHFQA3s/C7P2Xpe5agrj/UxnPDV2hUO1azTDuRjn+82YNpO0Pt2xD
+         oPpF54mr/DEPdRvI57kLP+JMAfqFaz0TO4ZjRKH+1/YyUSoFKk8+oVTuixfc3wHUVt3r
+         Sisg==
+X-Gm-Message-State: AOAM5337GhY+0vrHHGG5TDWaonedBpI2CDH6up7MeBd2NeVpeGDhiq6O
+        Th9OlPSpL37K03oJXGnmlO5G9w==
+X-Google-Smtp-Source: ABdhPJyB/udUXxyiF/BbxySNBeh0CUCizKCk5P4GVLlvtdxxP1UNlUewyXfifjkW9NB+MvJxP4+mdg==
+X-Received: by 2002:a02:620a:: with SMTP id d10mr4159894jac.22.1627044603479;
+        Fri, 23 Jul 2021 05:50:03 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id c16sm16892911ilo.72.2021.07.23.05.50.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 05:50:02 -0700 (PDT)
+Subject: Re: [PATCH 7/8] tty: drop put_tty_driver
+To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
+        Jens Taprogge <jens.taprogge@taprogge.org>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+References: <20210723074317.32690-1-jslaby@suse.cz>
+ <20210723074317.32690-8-jslaby@suse.cz>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <26699850-f2a0-25d5-16d1-eaebe0f3100a@ieee.org>
+Date:   Fri, 23 Jul 2021 07:50:00 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210723074317.32690-8-jslaby@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: QxEPAdLGUjAbAVlowediwrlJB-nBSBeE
-X-Proofpoint-GUID: 7NUBRpYWJpG8rb7HwKkuwxv4SxsPPrRP
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_05:2021-07-23,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 lowpriorityscore=0 impostorscore=0
- malwarescore=0 phishscore=0 spamscore=0 clxscore=1015 adultscore=0
- bulkscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107230074
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-07-23 at 10:53 +0200, Roberto Sassu wrote:
-> Buffer measurements, unlike file measurements, are not accessible after the
-> measurement is done, as buffers are not suitable for use with the
-> integrity_iint_cache structure (there is no index, for files it is the
-> inode number). In the subsequent patches, the measurement (digest) will be
-> returned directly by the functions that perform the buffer measurement,
-> ima_measure_critical_data() and process_buffer_measurement().
-> 
-> A caller of those functions also needs to know the algorithm used to
-> calculate the digest. Instead of adding the algorithm as a new parameter to
-> the functions, this patch provides it separately with the new function
-> ima_get_current_hash_algo().
-> 
-> Since the hash algorithm does not change after the IMA setup phase, there
-> is no risk of races (obtaining a digest calculated with a different
-> algorithm than the one returned).
+On 7/23/21 2:43 AM, Jiri Slaby wrote:
+>   drivers/staging/greybus/uart.c         | 4 ++--
 
-Perfect explaination for annotating ima_hash_algo like:
-
-int __ro_after_init ima_hash_algo = HASH_ALGO_SHA1;
-
-Assuming you don't object, I'll include this change in this patch.
-
-thanks,
-
-Mimi
-
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-
+Acked-by: Alex Elder <elder@linaro.org>
