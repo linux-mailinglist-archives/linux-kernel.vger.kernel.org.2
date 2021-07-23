@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8233D3ABC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4FB3D3AC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbhGWMQW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 08:16:22 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:44479 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235336AbhGWMQT (ORCPT
+        id S235115AbhGWMRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:17:25 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:55557 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234952AbhGWMRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:16:19 -0400
+        Fri, 23 Jul 2021 08:17:21 -0400
 Received: (Authenticated sender: gregory.clement@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 786BDC000C;
-        Fri, 23 Jul 2021 12:56:50 +0000 (UTC)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D772E60009;
+        Fri, 23 Jul 2021 12:57:51 +0000 (UTC)
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        devicetree@vger.kernel.org
+Cc:     Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
         Andrew Lunn <andrew@lunn.ch>,
         Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: armada-3720-turris-mox: remove
- mrvl,i2c-fast-mode
-In-Reply-To: <20210628151229.25214-1-pali@kernel.org>
-References: <20210628121015.22660-1-pali@kernel.org>
- <20210628151229.25214-1-pali@kernel.org>
-Date:   Fri, 23 Jul 2021 14:56:50 +0200
-Message-ID: <87lf5x194d.fsf@BL-laptop>
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] arm64: dts: armada-3720-turris-mox: fixed
+ indices for the SDHC controllers
+In-Reply-To: <20210722101134.2514089-1-vladimir.oltean@nxp.com>
+References: <20210722101134.2514089-1-vladimir.oltean@nxp.com>
+Date:   Fri, 23 Jul 2021 14:57:51 +0200
+Message-ID: <87im11192o.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
+Hi Vladimir,
 
-> Some SFP modules are not detected when i2c-fast-mode is enabled even when
-> clock-frequency is already set to 100000. The I2C bus violates the timing
-> specifications when run in fast mode. So disable fast mode on Turris Mox.
+> Since drivers/mmc/host/sdhci-xenon.c declares the PROBE_PREFER_ASYNCHRONOUS
+> probe type, it is not guaranteed whether /dev/mmcblk0 will belong to
+> sdhci0 or sdhci1. In turn, this will break booting by:
 >
-> Same change was already applied for uDPU (also Armada 3720 board with SFP)
-> in commit fe3ec631a77d ("arm64: dts: uDPU: remove i2c-fast-mode").
+> root=/dev/mmcblk0p1
 >
-> Fixes: 7109d817db2e ("arm64: dts: marvell: add DTS for Turris Mox")
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
+> Fix the issue by adding aliases so that the old MMC controller indices
+> are preserved.
+>
+> Fixes: 7320915c8861 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.14")
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
 Applied on mvebu/fixes
 
@@ -58,23 +59,24 @@ Thanks,
 Gregory
 
 > ---
->  arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 2 ++
+>  1 file changed, 2 insertions(+)
 >
 > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> index 6bcc319a0161..85f15f2a4740 100644
+> index ce2bcddf396f..f2d7d6f071bc 100644
 > --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
 > +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> @@ -119,6 +119,7 @@
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&i2c1_pins>;
->  	clock-frequency = <100000>;
-> +	/delete-property/ mrvl,i2c-fast-mode;
->  	status = "okay";
+> @@ -19,6 +19,8 @@ / {
+>  	aliases {
+>  		spi0 = &spi0;
+>  		ethernet1 = &eth1;
+> +		mmc0 = &sdhci0;
+> +		mmc1 = &sdhci1;
+>  	};
 >  
->  	rtc@6f {
+>  	chosen {
 > -- 
-> 2.20.1
+> 2.25.1
 >
 
 -- 
