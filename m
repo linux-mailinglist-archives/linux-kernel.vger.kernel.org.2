@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1FF3D36E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A693D36E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234507AbhGWH4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:56:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhGWH4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:56:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 228D060E77;
-        Fri, 23 Jul 2021 08:37:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627029425;
-        bh=dWhTLXqakbXLA6nedRxVuPXSEgLwbVAi7l37hrF/PXo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f+ZZMDys7LqJPzHHxea8nHy9lcafyc3756O6dF6rhZC39k5gzsvY799yYHL6o07Qs
-         H/QAl1ASJfCP6UFakx6/X03KyNEXRbbRs1Xvu3CVGcZgzECC2UcM115KLtJFBpYmor
-         7bKG549++6qQHsGsxRSOXzW08Nn7uNPjxWAougY2ohGUJK0T3JRNwZ/d6HJKyNTAS+
-         IjPp48v8j7MivRuYg2OBAujxWEkTw+UggBvYZbQT69/UTdOkk8xGm7e0028cbO5UCM
-         nSnhY6y/sq8eaaxRHZlu3v7hwTmc6OS0FMYQcKoPB/ZeEO/aDkJo9thL+Aot7lwKo2
-         ncTtup37sSj7g==
-Received: by pali.im (Postfix)
-        id 9AE0A10D1; Fri, 23 Jul 2021 10:37:02 +0200 (CEST)
-Date:   Fri, 23 Jul 2021 10:37:02 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
- invoke PME and AER
-Message-ID: <20210723083702.nvhurkgbzbvrrmv3@pali>
-References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
- <20201124232037.GA595463@bjorn-Precision-5520>
- <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
- <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
- <20210718005109.6xwe3z7gxhuop5xc@pali>
- <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
- <20210722172627.i4n65lrz3j7pduiz@pali>
- <17c6eeee-692f-2e9a-5827-34f6939a21a6@socionext.com>
+        id S234554AbhGWH5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhGWH52 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 03:57:28 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B05C061575;
+        Fri, 23 Jul 2021 01:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=Obk6U+ay+sgJKpQCJECzXauTigDtAdD5YjEfRLDjgZw=;
+        t=1627029481; x=1628239081; b=u7Ax3Yfch2go1+9IrDAoBy4M7xiYnOU6I9tStZ3+nLi9QHF
+        M7y/0KaDoUidVY8s2XDMAxbfiz29syLv3fdjSighb7P4Z64rXZo06aZGcF6VSnHTqsicdb+bcjM3P
+        0eomAYt1HcBqpLkL0zg6rFE+wkc1oPFvGu0QUHyMQhi9zK7ENfIRqLcxd2HApL4psiKRZfHRIm97q
+        t3MCje3nZb21hVYKGU1TQvvrj8t8nFZgM6p1HHcWFznmf1zaiqbitobCr8i4lGMZNQ5/9YYvl4nif
+        PaGHS99xuIIwlJiUSi3l9EuRp3TMK+lqP2JSmUZyOjv9IGoqPVmpB2QUZXJq+T7A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1m6qeC-000T4h-Vr; Fri, 23 Jul 2021 10:37:47 +0200
+Message-ID: <d2b0f847dbf6b6d1e585ef8de1d9d367f8d9fd3b.camel@sipsolutions.net>
+Subject: Re: [PATCH] cfg80211: free the object allocated in
+ wiphy_apply_custom_regulatory
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>
+Cc:     syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 23 Jul 2021 10:37:45 +0200
+In-Reply-To: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
+References: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <17c6eeee-692f-2e9a-5827-34f6939a21a6@socionext.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 23 July 2021 15:59:12 Kunihiko Hayashi wrote:
-> Hi Pali,
-> 
-> On 2021/07/23 2:26, Pali Rohár wrote:
-> > On Friday 23 July 2021 01:54:10 Kunihiko Hayashi wrote:
-> > > On 2021/07/18 9:51, Pali Rohar wrote:
-> > > > > > IMO this should be modelled with a separate IRQ domain and chip for
-> > > > > > the root port (yes this implies describing the root port in the dts
-> > > > > > file with a separate msi-parent).
-> > > > > > 
-> > > > > > This series as it stands is a kludge.
-> > > > > 
-> > > > > I see. However I need some time to consider the way to separate IRQ domain.
-> > > > > Is there any idea or example to handle PME/AER with IRQ domain?
-> > > > 
-> > > > Seems that you are dealing with very similar issues as me with aardvark
-> > > > driver.
-> > > > 
-> > > > As an inspiration look at my aardvark patch which setup separate IRQ
-> > > > domain for PME, AER and HP interrupts:
-> > > > https://lore.kernel.org/linux-pci/20210506153153.30454-32-pali@kernel.org/
-> > > > 
-> > > > Thanks to custom driver map_irq function, it is not needed to describe
-> > > > root port with separate msi-parent in DTS.
-> > > 
-> > > I need to understand your solution, though, this might be the same situation as my driver.
-> > 
-> > I think it is very very similar as aardvark also returns zero as hw irq
-> > number (and it is not possible to change it).
-> > 
-> > So simple solution for you is also to register separate IRQ domain for
-> > Root Port Bridge and then re-trigger interrupt with number 0 (which you
-> > wrote that is default) as:
-> > 
-> >      virq = irq_find_mapping(priv->irq_domain, 0);
-> >      generic_handle_irq(virq);
-> > 
-> > in your uniphier_pcie_misc_isr() function.
-> 
-> I'm not sure "register separate IRQ domain for Root Port Bridge".
-> Do you mean that your suggestion is to create new IRQ domain, and add this domain to root port?
+On Fri, 2021-07-23 at 13:09 +0800, Dongliang Mu wrote:
+> The commit beee24695157 ("cfg80211: Save the regulatory domain when
+> setting custom regulatory") forgets to free the newly allocated regd
+> object.
 
-Yes.
+Not really? It's not forgetting it, it just saves it?
 
-> Or could you show me something example?
++       new_regd = reg_copy_regd(regd);
++       if (IS_ERR(new_regd))
++               return;
++
++       tmp = get_wiphy_regdom(wiphy);
++       rcu_assign_pointer(wiphy->regd, new_regd);
++       rcu_free_regdom(tmp);
 
-I have already sent link to patch above which it implements for
-pci-aardvark.c driver.
+> Fix this by freeing the regd object in the error handling code and
+> deletion function - mac80211_hwsim_del_radio.
 
-https://lore.kernel.org/linux-pci/20210506153153.30454-32-pali@kernel.org/
+This can't be right - the same would affect all other users of that
+function, no?
 
-In device prove callback register domain by irq_domain_add_linear().
-In bridge map_irq() callback use irq_create_mapping() for Root Port
-device (and otherwise default of_irq_parse_and_map_pci()). And in
-uniphier_pcie_misc_isr() retrigger interrupt into new domain.
+Perhaps somewhere we have a case where wiphy->regd is leaked, but than
+that should be fixed more generally in cfg80211?
 
-> The re-trigger part is the same method as v5 patch I wrote.
+johannes
 
-Just you need to specify that new/private IRQ domain into
-irq_find_mapping() call.
-
-> > There is no need to modify DTS. And also no need to use complicated
-> > logic for finding registered virq number via pcie_port_service_get_irq()
-> > and uniphier_pcie_port_get_irq() functions.
-> 
-> I see.
-> GIC interrupt for MSI is handled by the MSI domain by pcie-designware-host.c.
-> My concern is how to trigger PME/AER event with another IRQ domain.
-> 
-> Thank you,
-> 
-> ---
-> Best Regards
-> Kunihiko Hayashi
