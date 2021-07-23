@@ -2,181 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9493D3C0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200333D3C14
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235455AbhGWONS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 10:13:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235351AbhGWONQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 10:13:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C69B460EBC;
-        Fri, 23 Jul 2021 14:53:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627052030;
-        bh=vRu/xkzXNVGQFHkOTPQhC/L062RFRXp6Kp7+apFbUkI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bc4MwcaeBEBPAvowzxlB04Bzotr3TZlyy6hG2EZQkHCIHB/vzb/7/gNpJMD2v3V5b
-         6Rdbg+Em2VAGVftk+hXkfU9/Mvl+55TjdUac1rXiNGQwjmnW+oQUAyWHmGDfkYpmfJ
-         Kl1soYCLPNYXpojLNPyD/X4gJGomVtQ6SHCM7cNk=
-Date:   Fri, 23 Jul 2021 16:53:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB fixes for 5.14-rc3
-Message-ID: <YPrX98Lqa1xH8uH7@kroah.com>
+        id S235479AbhGWOP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 10:15:27 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3467 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235351AbhGWOPZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 10:15:25 -0400
+Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GWX7N6Hl5z6D909;
+        Fri, 23 Jul 2021 22:41:04 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 23 Jul 2021 16:55:56 +0200
+Received: from localhost (10.210.170.238) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 23 Jul
+ 2021 15:55:55 +0100
+Date:   Fri, 23 Jul 2021 15:55:30 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <p.zabel@pengutronix.de>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [v2 3/8] iio: adc: aspeed: completes the bitfield declare.
+Message-ID: <20210723155530.00000d1c@Huawei.com>
+In-Reply-To: <20210723081621.29477-4-billy_tsai@aspeedtech.com>
+References: <20210723081621.29477-1-billy_tsai@aspeedtech.com>
+        <20210723081621.29477-4-billy_tsai@aspeedtech.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.170.238]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+On Fri, 23 Jul 2021 16:16:16 +0800
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+> This patch completes the declare of adc register bitfields and uses the
+> same prefix ASPEED_ADC_* for these bitfields.
+> 
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+Hi Billy
 
-are available in the Git repository at:
+See inline,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.14-rc3
+Thanks,
 
-for you to fetch changes up to 1d1b97d5e7636d72890a5bdd0b40e980e54b2d34:
+Jonathan
 
-  Merge tag 'usb-serial-5.14-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus (2021-07-22 20:51:14 +0200)
+> ---
+>  drivers/iio/adc/aspeed_adc.c | 40 ++++++++++++++++++++++++------------
+>  1 file changed, 27 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+> index 19efaa41bc34..99466a5924c7 100644
+> --- a/drivers/iio/adc/aspeed_adc.c
+> +++ b/drivers/iio/adc/aspeed_adc.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/reset.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/types.h>
+> +#include <linux/bitfield.h>
+>  
+>  #include <linux/iio/iio.h>
+>  #include <linux/iio/driver.h>
+> @@ -28,15 +29,28 @@
+>  #define ASPEED_REG_INTERRUPT_CONTROL	0x04
+>  #define ASPEED_REG_VGA_DETECT_CONTROL	0x08
+>  #define ASPEED_REG_CLOCK_CONTROL	0x0C
+> -#define ASPEED_REG_MAX			0xC0
+> -
+> -#define ASPEED_OPERATION_MODE_POWER_DOWN	(0x0 << 1)
+> -#define ASPEED_OPERATION_MODE_STANDBY		(0x1 << 1)
+> -#define ASPEED_OPERATION_MODE_NORMAL		(0x7 << 1)
+> -
+> -#define ASPEED_ENGINE_ENABLE		BIT(0)
+> -
+> -#define ASPEED_ADC_CTRL_INIT_RDY	BIT(8)
+> +#define ASPEED_REG_COMPENSATION_TRIM	0xC4
+> +#define ASPEED_REG_MAX			0xCC
+> +
+> +#define ASPEED_ADC_ENGINE_ENABLE		BIT(0)
+> +#define ASPEED_ADC_OPERATION_MODE		GENMASK(3, 1)
+> +#define ASPEED_ADC_OPERATION_MODE_POWER_DOWN	FIELD_PREP(ASPEED_ADC_OPERATION_MODE, 0)
+It's more common to have the FIELD_PREP at the location where it
+is used and just have defines here to be to the value of the field.
 
-----------------------------------------------------------------
-USB fixes for 5.14-rc3
+Perhaps also consider some abbreviations as I think we can safely
+make them here without losing any meaning, given context.
 
-Here are some USB fixes for 5.14-rc3 to resolve a bunch of tiny problems
-reported.  Included in here are:
-	- dtsi revert to resolve a problem which broke android systems
-	  that relied on the dts name to find the USB controller device.
-	  People are still working out the "real" solution for this, but
-	  for now the revert is needed.
-	- core USB fix for pipe calculation found by syzbot
-	- typec fixes
-	- gadget driver fixes
-	- new usb-serial device ids
-	- new USB quirks
-	- xhci fixes
-	- usb hub fixes for power management issues reported
-	- other tiny fixes
+ASPEED_ADC_OP_MODE
+ASPEED_ADC_OP_MODE_PWR_DWN
+ASPEED_ADC_OP_MODE_STANDBY
+ASPEED_ADC_OP_MODE_NORMAL
 
-All have been in linux-next with no reported problems.
+etc.
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> +#define ASPEED_ADC_OPERATION_MODE_STANDBY	FIELD_PREP(ASPEED_ADC_OPERATION_MODE, 1)
+> +#define ASPEED_ADC_OPERATION_MODE_NORMAL	FIELD_PREP(ASPEED_ADC_OPERATION_MODE, 7)
+> +#define ASPEED_ADC_CTRL_COMPENSATION		BIT(4)
+> +#define ASPEED_ADC_AUTO_COMPENSATION		BIT(5)
+> +#define ASPEED_ADC_REF_VOLTAGE			GENMASK(7, 6)
+> +#define ASPEED_ADC_REF_VOLTAGE_2500mV		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 0)
+> +#define ASPEED_ADC_REF_VOLTAGE_1200mV		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 1)
+> +#define ASPEED_ADC_REF_VOLTAGE_EXT_HIGH		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 2)
+> +#define ASPEED_ADC_REF_VOLTAGE_EXT_LOW		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 3)
+> +#define ASPEED_ADC_CTRL_INIT_RDY		BIT(8)
+> +#define ASPEED_ADC_CH7_MODE			BIT(12)
+> +#define ASPEED_ADC_CH7_NORMAL			FIELD_PREP(ASPEED_ADC_CH7_MODE, 0)
+> +#define ASPEED_ADC_CH7_BATTERY			FIELD_PREP(ASPEED_ADC_CH7_MODE, 1)
+> +#define ASPEED_ADC_BATTERY_SENSING_ENABLE	BIT(13)
+> +#define ASPEED_ADC_CTRL_CHANNEL			GENMASK(31, 16)
+> +#define ASPEED_ADC_CTRL_CHANNEL_ENABLE(ch)	FIELD_PREP(ASPEED_ADC_CTRL_CHANNEL, BIT(ch))
+>  
+>  #define ASPEED_ADC_INIT_POLLING_TIME	500
+>  #define ASPEED_ADC_INIT_TIMEOUT		500000
+> @@ -226,7 +240,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  
+>  	if (model_data->wait_init_sequence) {
+>  		/* Enable engine in normal mode. */
+> -		writel(ASPEED_OPERATION_MODE_NORMAL | ASPEED_ENGINE_ENABLE,
+> +		writel(ASPEED_ADC_OPERATION_MODE_NORMAL | ASPEED_ADC_ENGINE_ENABLE,
+>  		       data->base + ASPEED_REG_ENGINE_CONTROL);
+>  
+>  		/* Wait for initial sequence complete. */
+> @@ -246,7 +260,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  		goto clk_enable_error;
+>  
+>  	adc_engine_control_reg_val = GENMASK(31, 16) |
+> -		ASPEED_OPERATION_MODE_NORMAL | ASPEED_ENGINE_ENABLE;
+> +		ASPEED_ADC_OPERATION_MODE_NORMAL | ASPEED_ADC_ENGINE_ENABLE;
+>  	writel(adc_engine_control_reg_val,
+>  		data->base + ASPEED_REG_ENGINE_CONTROL);
+>  
+> @@ -264,7 +278,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  iio_register_error:
+> -	writel(ASPEED_OPERATION_MODE_POWER_DOWN,
+> +	writel(ASPEED_ADC_OPERATION_MODE_POWER_DOWN,
+>  		data->base + ASPEED_REG_ENGINE_CONTROL);
+>  	clk_disable_unprepare(data->clk_scaler->clk);
+>  clk_enable_error:
+> @@ -283,7 +297,7 @@ static int aspeed_adc_remove(struct platform_device *pdev)
+>  	struct aspeed_adc_data *data = iio_priv(indio_dev);
+>  
+>  	iio_device_unregister(indio_dev);
+> -	writel(ASPEED_OPERATION_MODE_POWER_DOWN,
+> +	writel(ASPEED_ADC_OPERATION_MODE_POWER_DOWN,
+>  		data->base + ASPEED_REG_ENGINE_CONTROL);
+>  	clk_disable_unprepare(data->clk_scaler->clk);
+>  	reset_control_assert(data->rst);
 
-----------------------------------------------------------------
-Alan Stern (1):
-      USB: core: Fix incorrect pipe calculation in do_proc_control()
-
-Amelie Delaunay (2):
-      usb: typec: stusb160x: register role switch before interrupt registration
-      usb: typec: stusb160x: Don't block probing of consumer of "connector" nodes
-
-Artur Petrosyan (1):
-      usb: phy: Fix page fault from usb_phy_uevent
-
-Colin Ian King (1):
-      usb: gadget: u_serial: remove WARN_ON on null port
-
-David Jeffery (1):
-      usb: ehci: Prevent missed ehci interrupts with edge-triggered MSI
-
-Greg Kroah-Hartman (2):
-      Revert "arm64: dts: qcom: Harmonize DWC USB3 DT nodes name"
-      Merge tag 'usb-serial-5.14-rc3' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-linus
-
-Greg Thelen (1):
-      usb: xhci: avoid renesas_usb_fw.mem when it's unusable
-
-Ian Ray (1):
-      USB: serial: cp210x: fix comments for GE CS1000
-
-John Keeping (1):
-      USB: serial: cp210x: add ID for CEL EM3588 USB ZigBee stick
-
-Julian Sikorski (1):
-      USB: usb-storage: Add LaCie Rugged USB3-FW to IGNORE_UAS
-
-Linyu Yuan (1):
-      usb: dwc3: avoid NULL access of usb_gadget_driver
-
-Lukas Bulwahn (1):
-      MAINTAINERS: repair reference in USB IP DRIVER FOR HISILICON KIRIN 970
-
-Marco De Marco (1):
-      USB: serial: option: add support for u-blox LARA-R6 family
-
-Marek Szyprowski (1):
-      usb: dwc2: Skip clock gating on Samsung SoCs
-
-Mark Tomlinson (1):
-      usb: max-3421: Prevent corruption of freed memory
-
-Martin Kepplinger (1):
-      usb: typec: tipd: Don't block probing of consumer of "connector" nodes
-
-Mathias Nyman (3):
-      xhci: Fix lost USB 2 remote wake
-      usb: hub: Fix link power management max exit latency (MEL) calculations
-      usb: hub: Disable USB 3 device initiated lpm if exit latency is too high
-
-Minas Harutyunyan (2):
-      usb: dwc2: gadget: Fix GOUTNAK flow for Slave mode.
-      usb: dwc2: gadget: Fix sending zero length packet in DDMA mode.
-
-Moritz Fischer (1):
-      Revert "usb: renesas-xhci: Fix handling of unknown ROM state"
-
-Vincent Palatin (1):
-      Revert "USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem"
-
-Wei Yongjun (1):
-      usb: cdc-wdm: fix build error when CONFIG_WWAN_CORE is not set
-
-Yoshihiro Shimoda (1):
-      usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
-
-Zhang Qilong (1):
-      usb: gadget: Fix Unbalanced pm_runtime_enable in tegra_xudc_probe
-
- MAINTAINERS                                  |   2 +-
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi |   4 +-
- arch/arm64/boot/dts/qcom/ipq8074.dtsi        |   4 +-
- arch/arm64/boot/dts/qcom/msm8996.dtsi        |   4 +-
- arch/arm64/boot/dts/qcom/msm8998.dtsi        |   2 +-
- arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     |   2 +-
- arch/arm64/boot/dts/qcom/qcs404.dtsi         |   4 +-
- arch/arm64/boot/dts/qcom/sc7180.dtsi         |   2 +-
- arch/arm64/boot/dts/qcom/sdm845.dtsi         |   4 +-
- arch/arm64/boot/dts/qcom/sm8150.dtsi         |   2 +-
- drivers/usb/class/cdc-wdm.c                  |   6 +-
- drivers/usb/core/devio.c                     |   2 +-
- drivers/usb/core/hub.c                       | 120 +++++++++++++++++++--------
- drivers/usb/core/quirks.c                    |   4 -
- drivers/usb/dwc2/core.h                      |   4 +
- drivers/usb/dwc2/core_intr.c                 |   3 +-
- drivers/usb/dwc2/gadget.c                    |  31 ++++++-
- drivers/usb/dwc2/hcd.c                       |   6 +-
- drivers/usb/dwc2/params.c                    |   1 +
- drivers/usb/dwc3/core.h                      |   1 +
- drivers/usb/dwc3/ep0.c                       |  10 ++-
- drivers/usb/dwc3/gadget.c                    |  21 +++--
- drivers/usb/gadget/function/u_serial.c       |   2 +-
- drivers/usb/gadget/udc/tegra-xudc.c          |   1 +
- drivers/usb/host/ehci-hcd.c                  |  18 +++-
- drivers/usb/host/max3421-hcd.c               |  44 ++++------
- drivers/usb/host/xhci-hub.c                  |   3 +-
- drivers/usb/host/xhci-pci-renesas.c          |  16 ++--
- drivers/usb/host/xhci-pci.c                  |   7 ++
- drivers/usb/phy/phy.c                        |  10 ++-
- drivers/usb/renesas_usbhs/fifo.c             |   7 ++
- drivers/usb/serial/cp210x.c                  |   5 +-
- drivers/usb/serial/option.c                  |   3 +
- drivers/usb/storage/unusual_uas.h            |   7 ++
- drivers/usb/typec/stusb160x.c                |  20 ++++-
- drivers/usb/typec/tipd/core.c                |   9 ++
- 36 files changed, 264 insertions(+), 127 deletions(-)
