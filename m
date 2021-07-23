@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079413D3538
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB603D353A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233128AbhGWGtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50914 "EHLO
+        id S233303AbhGWGtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhGWGtA (ORCPT
+        with ESMTP id S229939AbhGWGtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:49:00 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E79C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:29:34 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id n10so2292051plf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:29:34 -0700 (PDT)
+        Fri, 23 Jul 2021 02:49:07 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5CCC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:29:40 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id ga41so2175544ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:29:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VChO2omdBa6xBgyLh+TiNRJBuShA8yMRkym4wucTZ+U=;
-        b=bIka9d35xriT8BASCxSqAQ/fwBpHL+tc3JRmwQAwzFAcZ1wO/uqV+SY2melq59GRL4
-         FMoLujsWglvOZZVG89dq06LuO/Ln3PUrUK/vVciP3Ur6xk9hbPX9GUglSbBw4cDYB1Fq
-         t4cp557idlsREaf3Zc62BSykTtp0ZEv1N77V21UT6m1EoXx9AdiDkC3hoen4IgvUOqNi
-         yjDNjBQc+e9XXvw5CRazomKKlRUWoTawYPOQNTWwQRbFpxFhE3pK15Ud2PU6Aes4ewy4
-         m2nVfmtoLG+sLaa+JfoRzVK3cx6l3JfHRyJW+3GEPacs2JSoD0MMTvSf/CAxGd30dHB/
-         O4GQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RyKdhfhM2ozADzjoi9snqvshlMAKUsPQuXC9VR1R4bY=;
+        b=SuDfJj3oDKJDiz7MT1FAYF4FSwDuxSs2g5RcA4xt64rTeUBtstcti2DpV2dXup53uX
+         ojjkF0eiIYXwP7lS3dhnPiFQzNNPTMvAdTfl2dXLCcmsdnrAq4qimMsmWm308ByoL7dj
+         RWjnPcX1z4Isr0Bf69Bvxc5shPAmUQi2mPCglcz3nfeHjaI6XCWPkHpW/ppgMabTpXy/
+         +UqxwCVOzzCmIsfYhTGApAj1aP8NRCH1o56vXQ7FkX9Yh7uLG2YGJGjHUbZ48twuPseT
+         vs+4tR+7exVJSzyweNNJMypsMBSpgUdStwMiller3U5I8D1NE8Z3LOtRZG37i1VNpXQQ
+         fvew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VChO2omdBa6xBgyLh+TiNRJBuShA8yMRkym4wucTZ+U=;
-        b=PEGDEHPx3XiG/mncjITaT5WKcq0hjhanjpqeUR4YuR4I7FY33n5cwj78NicRw9UQUJ
-         xbhB3F4t4u0Igy0q11gqVmJq5JrunaOYdA+Fjb/5p4dTwHuP2RUFOOnNHc9hzrdul2sZ
-         5FBfyxQ0jxfgmz8arwkJwe50+/QH1LoB2buSB2E6eRYt6oDZh4PXYzSjzv9itIG6L6em
-         D2e2llL146LdtMAjGOsHqAN9V1eUnSkIrdF4M7hcI9sXpTpTChhlCK/Ne+csqjuKOzt6
-         3XKA+KXTF2onK4F/la6x8NuCEZ76m2MfcMrCrSmYElDaIekZijQDxO+v78hz24GUMWEA
-         qf/g==
-X-Gm-Message-State: AOAM532ziRCDKZg3v0nmPiwohSLkdIC3g52Ta0dYfZGEI+76RktlGMtx
-        tFDMHr5gI8rfhoXP/ivgDr17IkjqjY1MmP+sUMQffg==
-X-Google-Smtp-Source: ABdhPJyyIiBT26wWo5YKktkUlF+hQhlBTD8cptsVoIIWiyN31bUFz3Cx0Zn7hnxl+WqrI082dPPPk1R9Nb6MuVwbwwI=
-X-Received: by 2002:a17:90a:1f49:: with SMTP id y9mr12540527pjy.225.1627025373613;
- Fri, 23 Jul 2021 00:29:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RyKdhfhM2ozADzjoi9snqvshlMAKUsPQuXC9VR1R4bY=;
+        b=hNNhSd6ExlN28GnP/KNc+y+UJBsdWZyBsPnclMIymaqdMd1SN8/E88hInydIwuYKRx
+         6IX199UL1bWdbKxrvAhtBWEoCTziLce1el0pIWdTpQzbtMZTHnD76vkXbFh0NV6+660+
+         5cDGe7awasauw3wmdcDvev4Ed3bjBkjTk1Vo1CP5ot8XrLxprZkkd54bdlrJA18kUrTq
+         /U139HoNX49mHDYXiyeTtVhUKJrhMAEEDraa5jBjDzSH9PwVxRmEr6fBK15a/layf2aH
+         A6XtkFryOjypLo5Qfn3N6tgGlGtVzcbNg4i5uuehXIieWf1/4jvPkddhYi032ouvR26H
+         YMDg==
+X-Gm-Message-State: AOAM533GsjLjZ4gomVZ2Dlp9USvPjjQ9CJ9B/5l79f4NoMLpoC9eS8Xn
+        sgAbW229DXmJITHdDDx7iaI=
+X-Google-Smtp-Source: ABdhPJy4X5MML4d5I6wlTr50QNM0NZRXqSCt/g6LMOLVd0QxCeG3+clvdMjt92GD7rPFhBfH2+mNQQ==
+X-Received: by 2002:a17:906:38ce:: with SMTP id r14mr3375484ejd.268.1627025379124;
+        Fri, 23 Jul 2021 00:29:39 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.31])
+        by smtp.gmail.com with ESMTPSA id da23sm13571604edb.34.2021.07.23.00.29.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 00:29:38 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 09:29:36 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH 6/7] staging: rtl8188eu: introduce new supporting files
+ for RTL8188eu driver
+Message-ID: <20210723072936.GA1613@agape.jhs>
+References: <20210723004214.912295-1-phil@philpotter.co.uk>
+ <20210723004214.912295-7-phil@philpotter.co.uk>
 MIME-Version: 1.0
-References: <20210723004214.912295-1-phil@philpotter.co.uk> <630e139c-85e5-f006-6b64-e368847251fc@lwfinger.net>
-In-Reply-To: <630e139c-85e5-f006-6b64-e368847251fc@lwfinger.net>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Fri, 23 Jul 2021 08:29:22 +0100
-Message-ID: <CAA=Fs0k0eQUpDgpxEcLAnZ-d87TM3LgPwPt9ydXO_hf39f_9ig@mail.gmail.com>
-Subject: Re: [PATCH 0/7] staging: rtl8188eu: replace driver with better version
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723004214.912295-7-phil@philpotter.co.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 at 02:56, Larry Finger <Larry.Finger@lwfinger.net> wrote:
->
-> On 7/22/21 7:42 PM, Phillip Potter wrote:
-> > I had to break this patchset up a bit to get around the file size limits
-> > on the mailing list, and also I removed the hostapd stuff which is
-> > userspace related and therefore not required.
-> >
-> > The driver currently in staging is older and less functional than the
-> > version on Larry Finger's GitHub account, branch v5.2.2.4. This series
-> > of patches therefore:
-> >
-> > (1) Removes the current driver from staging.
-> > (2) Imports the GitHub version mentioned above in its place.
-> >
-> > There is plenty of work to do to this driver, including to its Makefile,
-> > but it is at least buildable/usable for now.
-> >
-> > Phillip Potter (7):
-> >    staging: rtl8188eu: remove existing staging driver
-> >    staging: rtl8188eu: introduce new core dir for RTL8188eu driver
-> >    staging: rtl8188eu: introduce new hal dir for RTL8188eu driver
-> >    staging: rtl8188eu: introduce new os_dep dir for RTL8188eu driver
-> >    staging: rtl8188eu: introduce new include dir for RTL8188eu driver
-> >    staging: rtl8188eu: introduce new supporting files for RTL8188eu
-> >      driver
-> >    staging: rtl8188eu: attach newly imported driver to build system
->
-> Phillip,
->
-> Patch 3/7 fails with a
-> drivers/staging/rtl8188eu/hal/phydm_precomp.h: already exists in error:
-> working directory. When I deleted the file, the patch applied.
->
-> Patch 5/7 fails with a drivers/staging/rtl8188eu/include/hal_data.h: already
-> exists in working directory. Again it applied when I manually deleted that file.
->
-> Patches 2-6 all have trailing whitespace warnings.
->
-> I have started testing. Unfortunately, my GitHub version has a fault in that it
-> runs systemd-udevd at 100% of a CPU. So far, I have found that an older commit
-> works fine. As soon as I find the fault, I will let you know.
->
-> Larry
->
->
->
-Dear Larry,
+Hello Phillip,
 
-I obviously screwed up here somewhere as there should be no whitespace
-or conflicts, so apologies for that. I will do the patch set again
-after work when I've heard back from you about the relevant commit,
-and send out again.
+On Fri, Jul 23, 2021 at 01:42:13AM +0100, Phillip Potter wrote:
+> This patchset is split in order to keep the file sizes down. These
+> supporting files are part of the newer/better driver from GitHub modified by
+> Larry Finger. Import this as the basis for all future work going
+> forward. Also, modify Makefile so that driver has same module filename
+> as original rtl8188eu driver from staging.
+> 
+> Suggested-by: Larry Finger <Larry.Finger@lwfinger.net>
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>  drivers/staging/rtl8188eu/COPYING  | 356 ++++++++++++++++++++
+>  drivers/staging/rtl8188eu/Kconfig  |  25 ++
+>  drivers/staging/rtl8188eu/Makefile | 509 +++++++++++++++++++++++++++++
+>  3 files changed, 890 insertions(+)
+>  create mode 100644 drivers/staging/rtl8188eu/COPYING
+>  create mode 100644 drivers/staging/rtl8188eu/Kconfig
+>  create mode 100755 drivers/staging/rtl8188eu/Makefile
 
-Regards,
-Phil
+Nice work...
+
+a new TODO file is needed.
+
+@Larry, maybe you can help us telling what's needed
+to mainline this new rtl8188eu.
+
+thank you,
+
+fabio
