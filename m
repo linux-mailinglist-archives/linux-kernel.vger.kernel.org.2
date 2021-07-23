@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C251E3D41AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4077C3D41B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhGWUCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:02:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhGWUCW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 16:02:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75F8160F23;
-        Fri, 23 Jul 2021 20:42:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627072975;
-        bh=TQl9qpbSL80dQcAC9WCWLAGTK4VIfAAnAyZ6NEgT94M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T1+CBtZyuA9OIlEWZhVkp/TH/VYyWc/syzT/QR7XR/sSNAqlNn4jkiyy5MWY4ad6H
-         /Um9CPCGc2BTgVe5udLbu6YXr3zNu3Tj5HTvkQldQws8yBAst9mXG058FjKfPYm8FG
-         lFJv6t0o9xd+CM25ebapR9MFZ743Q7FMKIF+9QvEHFTAhKIuHuJaYlfVVWUROJlykA
-         9LGt8F0IwH4Yu59CYyJB1g283VPmCE8tIHrKm3ZwrE5NG7h+eag7crHnaHOCMmKILg
-         pfBQULmJlkI7OqponWRHDB+NsVIcDvIZxNi9duVI8cF5ib/oA7qYRGN+5NBvFy7E3B
-         i+m57No0e/C6w==
-Date:   Fri, 23 Jul 2021 13:42:54 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v9 3/9] fscrypt: add functions for direct I/O support
-Message-ID: <YPspzik6k71BD/EJ@gmail.com>
-References: <20210604210908.2105870-1-satyat@google.com>
- <20210604210908.2105870-4-satyat@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210604210908.2105870-4-satyat@google.com>
+        id S231640AbhGWUJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:09:38 -0400
+Received: from finn.gateworks.com ([108.161.129.64]:57720 "EHLO
+        finn.localdomain" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229575AbhGWUJf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 16:09:35 -0400
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+        by finn.localdomain with esmtp (Exim 4.93)
+        (envelope-from <tharvey@gateworks.com>)
+        id 1m727M-0057Vc-FI; Fri, 23 Jul 2021 20:50:00 +0000
+From:   Tim Harvey <tharvey@gateworks.com>
+To:     Richard Zhu <hongxing.zhu@nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH 0/6] Add IMX8M Mini PCI support
+Date:   Fri, 23 Jul 2021 13:49:52 -0700
+Message-Id: <20210723204958.7186-1-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 09:09:02PM +0000, Satya Tangirala wrote:
-> +bool fscrypt_dio_supported(struct kiocb *iocb, struct iov_iter *iter)
-> +{
-> +	const struct inode *inode = file_inode(iocb->ki_filp);
-> +	const unsigned int blocksize = i_blocksize(inode);
-> +
-> +	/* If the file is unencrypted, no veto from us. */
-> +	if (!fscrypt_needs_contents_encryption(inode))
-> +		return true;
-> +
-> +	/* We only support direct I/O with inline crypto, not fs-layer crypto */
-> +	if (!fscrypt_inode_uses_inline_crypto(inode))
-> +		return false;
-> +
-> +	/*
-> +	 * Since the granularity of encryption is filesystem blocks, the I/O
-> +	 * must be block aligned -- not just disk sector aligned.
-> +	 */
-> +	if (!IS_ALIGNED(iocb->ki_pos | iov_iter_count(iter), blocksize))
-> +		return false;
+The IMX8M Mini PCI controller shares much in common with the existing
+SoC's supported by the pci-imx6 driver.
 
-The above comment should make it clear that "block aligned" here intentionally
-applies to just the position and total length, not to the individual data
-buffers, for which only disk sector alignment is required.
+This series adds support for it. Driver changes came from the NXP
+downstream vendor kernel [1]
 
-- Eric
+This series depends on Lucas Stach's i.MX8MM GPC improvements and
+BLK_CTRL driver and is based on top of his v2 submission [2]
+
+The final patch adds PCIe support to the
+Tim
+[1] https://source.codeaurora.org/external/imx/linux-imx/
+[2]
+https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=519251
+
+Tim Harvey (6):
+  dt-bindings: imx6q-pcie: add compatible for IMX8MM support
+  dt-bindings: reset: imx8mq: add pcie reset
+  PCI: imx6: add IMX8MM support
+  reset: imx7: add resets for PCIe
+  arm64: dts: imx8mm: add PCIe support
+  arm64: dts: imx8mm: add gpc iomux compatible
+
+ .../bindings/pci/fsl,imx6q-pcie.txt           |   4 +-
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi     |  38 ++++++-
+ drivers/pci/controller/dwc/pci-imx6.c         | 103 +++++++++++++++++-
+ drivers/reset/reset-imx7.c                    |   3 +
+ include/dt-bindings/reset/imx8mq-reset.h      |   3 +-
+ 5 files changed, 147 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
+
