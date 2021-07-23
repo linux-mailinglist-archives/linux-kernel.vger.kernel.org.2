@@ -2,175 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB583D3E5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50CC3D3E62
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhGWQhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhGWQhs (ORCPT
+        id S231171AbhGWQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:39:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53170 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229492AbhGWQj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:37:48 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9BAC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:18:21 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id jm13so1679028qvb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eCv0QU6je2rmYu7A4iiFs2epRehoLyh4UDlFtuOF100=;
-        b=T38PXGyhDq3GOvv+TSyGaL98LpXC704ivvid7yFGErfCo8cZeMnXO2/DuN2QeCU21x
-         QbYbFj5q5lVkkgszSpL9hwaFK9IvDx60myR43gqYhJND+GKiAMUqC/EHZeIhC4mZsDXV
-         vqsdDWOVm6tzHAWQcXHiG7z18VEGZAg3sIOB3KkJ1ABYhjRSSL4WmgR8UoXkjKquWD91
-         vhRC7+6gUPxDzERD4zjjszGMozXGhfKvWS3JPWnImlunvIuRgOV7ohYapZMOcLMG+AUQ
-         6lL/WKs0MNB5Djc8tMcWkdvArbfRftyfAUBmUBX4JwODIHZX+KMjkptQvYNatBfZI/jW
-         KgtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eCv0QU6je2rmYu7A4iiFs2epRehoLyh4UDlFtuOF100=;
-        b=q7jUOHaEm4hQlNf8CNtD7sfE2lxyd43XGr5OsrfD8iLG8/iN0DvHbjJTUqWm/cvGr9
-         di5JxPVDQdckZQmUZnW9efhSSbARrAx53tJc6pZl0AfgcFdMdo/nydZOaRq8pZ6KpB1+
-         4B2xTwaAwikuHQQwFkamUBRBqkmfoqCIXpvuoNK8wgDTwxNJdaPfpqkw4NonrwgGueF2
-         LWbclKeiYirjv/HyIQl3UlkrW7bjyQbD0BdtxflCebfwPP1DjzrCzpJSdS6FitCulL5F
-         CUDJsT3KenaENcCYop276mspjoUQQhLncrZkF6eLTq1xMnUIpON5n0iTeqTjdnOWxcbZ
-         hVNw==
-X-Gm-Message-State: AOAM531aNClTh3JP6rC3Kqg0So9Og/m8q5xdwnBYSNfHDgKv6pb5a4sV
-        EOa2FE+idwxeOhQkXfSjdOtyA1+vUius8WzNd7IvFQ==
-X-Google-Smtp-Source: ABdhPJwnqwfHO2wjh7DgPt0pwDZnajREVOWdRwd3yK4zHaOZy6liw3a08k3kg/Z9WgRWDJpGdggxHF6DWGnBekrI7wI=
-X-Received: by 2002:a05:6214:e83:: with SMTP id hf3mr5823233qvb.19.1627060697501;
- Fri, 23 Jul 2021 10:18:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210716093916.1516845-1-kyletso@google.com>
-In-Reply-To: <20210716093916.1516845-1-kyletso@google.com>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Sat, 24 Jul 2021 01:18:01 +0800
-Message-ID: <CAGZ6i=3PJ+aRzM7=c6f9oCaCjvdQ7GqtCn+dv7H0yC8WMoe+KA@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: tcpm: Support non-PD mode
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        Fri, 23 Jul 2021 12:39:27 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NHDP0Q132756;
+        Fri, 23 Jul 2021 13:19:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
+ : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=VEAq6iynjckKWvoAaVOTkw1tJE3g63YroYl1HxSpEHw=;
+ b=femDne3KXi4SzQkac/6+bwL6whs/LZFGzPwAmU2AAmyt4uD2dPTsE0zcxpmUi5MIabMi
+ jljnxj8IAFAxH9gEOnfPB99KoPvHQXnGserhdiaWIHHB0uLKRlfWsJV0CkY3zov8XBJj
+ GFJe5T2ZOdBFOr39McSv1/QlcJpneZHyTUZSf+DIAk/A7TwrHhfYU46/SKweI20YJjFI
+ snAVUFSz9osPyG2+CiIJTuUqXVo00Bq4YcDFGaG+PjCojkzsCxAnOeds8HKV6JRZbKHm
+ UNwRqgQlL5XwRbtTVAyb+Y4cvP5Bj0makvthMxKrxvEiPkUs5Qv/RL1Ob/ASC/u0f9yZ Xw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a01yq050r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 13:19:57 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16NHFG0R140257;
+        Fri, 23 Jul 2021 13:19:56 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a01yq0500-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 13:19:56 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16NHITph030182;
+        Fri, 23 Jul 2021 17:19:54 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 39xhx49b97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 17:19:54 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16NHJqPS28901852
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Jul 2021 17:19:52 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE9D74C04E;
+        Fri, 23 Jul 2021 17:19:51 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8A8EE4C04A;
+        Fri, 23 Jul 2021 17:19:51 +0000 (GMT)
+Received: from li-c43276cc-23ad-11b2-a85c-bda00957cb67.ibm.com (unknown [9.145.176.214])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 23 Jul 2021 17:19:51 +0000 (GMT)
+Subject: Re: [RESEND] scsi: aacraid: aachba: replace if with max()
+From:   Steffen Maier <maier@linux.ibm.com>
+To:     Salah Triki <salah.triki@gmail.com>, aacraid@microsemi.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210722173212.GA5685@pc>
+ <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
+Message-ID: <923d4bad-ef51-c4d7-ac40-d2df5954d866@linux.ibm.com>
+Date:   Fri, 23 Jul 2021 19:19:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: rPYkOtP_ukyFwL_VRPXfl62pD-pLmGYK
+X-Proofpoint-ORIG-GUID: 80k7ehWkwUwil_whvc5FvklnXbS_zJyf
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-23_09:2021-07-23,2021-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 mlxlogscore=999 phishscore=0 suspectscore=0 clxscore=1015
+ bulkscore=0 spamscore=0 impostorscore=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107230102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 5:39 PM Kyle Tso <kyletso@google.com> wrote:
->
-> tcpm.c could work well without PD capabilities. Do not block the probe
-> if capabilities are not defined in fwnode and skip the PD power
-> negotiation in the state machine.
->
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-> ---
+On 7/23/21 6:56 PM, Steffen Maier wrote:
+> On 7/22/21 7:32 PM, Salah Triki wrote:
+>> Replace if with max() in order to make code more clean.
+>>
+>> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+>> ---
+>>   drivers/scsi/aacraid/aachba.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
+>> index 46b8dffce2dd..330224f08fd3 100644
+>> --- a/drivers/scsi/aacraid/aachba.c
+>> +++ b/drivers/scsi/aacraid/aachba.c
+>> @@ -485,8 +485,8 @@ int aac_get_containers(struct aac_dev *dev)
+>>       if (status != -ERESTARTSYS)
+>>           aac_fib_free(fibptr);
+>>
+>> -    if (maximum_num_containers < MAXIMUM_NUM_CONTAINERS)
+>> -        maximum_num_containers = MAXIMUM_NUM_CONTAINERS;
+>> +    maximum_num_containers = max(maximum_num_containers, 
+>> MAXIMUM_NUM_CONTAINERS);
+>> +
+> 
+> Haven't really looked closely, but isn't the old code more like a min() rather 
+> than a max()? maximum_num_containers being at least MAXIMUM_NUM_CONTAINERS or 
+> higher?
 
-Hi, any comments about this patch?
+Sorry, scratch that, it was nonsense.
 
-thanks,
-Kyle
 
->  drivers/usb/typec/tcpm/tcpm.c | 50 ++++++++++++++++++++---------------
->  1 file changed, 29 insertions(+), 21 deletions(-)
->
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 5b22a1c931a9..a42de5e17d24 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -3914,6 +3914,8 @@ static void run_state_machine(struct tcpm_port *port)
->                 if (port->ams == POWER_ROLE_SWAP ||
->                     port->ams == FAST_ROLE_SWAP)
->                         tcpm_ams_finish(port);
-> +               if (!port->nr_src_pdo)
-> +                       tcpm_set_state(port, SRC_READY, 0);
->                 port->upcoming_state = SRC_SEND_CAPABILITIES;
->                 tcpm_ams_start(port, POWER_NEGOTIATION);
->                 break;
-> @@ -4161,7 +4163,10 @@ static void run_state_machine(struct tcpm_port *port)
->                                 current_lim = PD_P_SNK_STDBY_MW / 5;
->                         tcpm_set_current_limit(port, current_lim, 5000);
->                         tcpm_set_charge(port, true);
-> -                       tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
-> +                       if (!port->nr_snk_pdo)
-> +                               tcpm_set_state(port, SNK_READY, 0);
-> +                       else
-> +                               tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
->                         break;
->                 }
->                 /*
-> @@ -5939,15 +5944,17 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
->
->         /* Get source pdos */
->         ret = fwnode_property_count_u32(fwnode, "source-pdos");
-> -       if (ret <= 0)
-> -               return -EINVAL;
-> +       if (ret < 0)
-> +               ret = 0;
->
->         port->nr_src_pdo = min(ret, PDO_MAX_OBJECTS);
-> -       ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
-> -                                            port->src_pdo, port->nr_src_pdo);
-> -       if ((ret < 0) || tcpm_validate_caps(port, port->src_pdo,
-> -                                           port->nr_src_pdo))
-> -               return -EINVAL;
-> +       if (port->nr_src_pdo) {
-> +               ret = fwnode_property_read_u32_array(fwnode, "source-pdos",
-> +                                                    port->src_pdo, port->nr_src_pdo);
-> +               if ((ret < 0) || tcpm_validate_caps(port, port->src_pdo,
-> +                                                   port->nr_src_pdo))
-> +                       return -EINVAL;
-> +       }
->
->         if (port->port_type == TYPEC_PORT_SRC)
->                 return 0;
-> @@ -5963,19 +5970,21 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
->  sink:
->         /* Get sink pdos */
->         ret = fwnode_property_count_u32(fwnode, "sink-pdos");
-> -       if (ret <= 0)
-> -               return -EINVAL;
-> +       if (ret < 0)
-> +               ret = 0;
->
->         port->nr_snk_pdo = min(ret, PDO_MAX_OBJECTS);
-> -       ret = fwnode_property_read_u32_array(fwnode, "sink-pdos",
-> -                                            port->snk_pdo, port->nr_snk_pdo);
-> -       if ((ret < 0) || tcpm_validate_caps(port, port->snk_pdo,
-> -                                           port->nr_snk_pdo))
-> -               return -EINVAL;
-> +       if (port->nr_snk_pdo) {
-> +               ret = fwnode_property_read_u32_array(fwnode, "sink-pdos",
-> +                                                    port->snk_pdo, port->nr_snk_pdo);
-> +               if ((ret < 0) || tcpm_validate_caps(port, port->snk_pdo,
-> +                                                   port->nr_snk_pdo))
-> +                       return -EINVAL;
->
-> -       if (fwnode_property_read_u32(fwnode, "op-sink-microwatt", &mw) < 0)
-> -               return -EINVAL;
-> -       port->operating_snk_mw = mw / 1000;
-> +               if (fwnode_property_read_u32(fwnode, "op-sink-microwatt", &mw) < 0)
-> +                       return -EINVAL;
-> +               port->operating_snk_mw = mw / 1000;
-> +       }
->
->         port->self_powered = fwnode_property_read_bool(fwnode, "self-powered");
->
-> @@ -6283,9 +6292,8 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
->         int err;
->
->         if (!dev || !tcpc ||
-> -           !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc ||
-> -           !tcpc->set_polarity || !tcpc->set_vconn || !tcpc->set_vbus ||
-> -           !tcpc->set_pd_rx || !tcpc->set_roles || !tcpc->pd_transmit)
-> +           !tcpc->get_vbus || !tcpc->set_cc || !tcpc->get_cc || !tcpc->set_polarity ||
-> +           !tcpc->set_vconn || !tcpc->set_vbus || !tcpc->set_roles)
->                 return ERR_PTR(-EINVAL);
->
->         port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
-> --
-> 2.32.0.402.g57bb445576-goog
->
+-- 
+Mit freundlichen Gruessen / Kind regards
+Steffen Maier
+
+Linux on IBM Z Development
+
+https://www.ibm.com/privacy/us/en/
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Matthias Hartmann
+Geschaeftsfuehrung: Dirk Wittkopp
+Sitz der Gesellschaft: Boeblingen
+Registergericht: Amtsgericht Stuttgart, HRB 243294
