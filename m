@@ -2,163 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91923D3206
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFBC3D3209
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhGWCFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 22:05:25 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:25845 "EHLO m43-7.mailgun.net"
+        id S233481AbhGWCGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 22:06:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233222AbhGWCFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 22:05:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627008357; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JAyHez6aM2XLJzve+XkvTj/UUvYa/5JtayFnGjuVnuo=;
- b=VIkQwjUh2Qg1Eg1GVhATk7BE1u8WF8o1KL/WsKNb+O0MIEJVpxOzX+5u+KDEkLTz2k02MCuQ
- pWlyNPGpBBC0OC9WQHxjUWNR62hk3fzsOEjJe6QF1p04SBNX6AbzHAGX8JoUWEYaIa+o68JC
- qUpT4bpE82MkylzsY8gUchv3z6Q=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60fa2d61d0100c7cf9ea9ecb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 02:45:53
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D6EE1C4338A; Fri, 23 Jul 2021 02:45:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5F868C433F1;
-        Fri, 23 Jul 2021 02:45:52 +0000 (UTC)
+        id S233222AbhGWCGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 22:06:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5602660EB0;
+        Fri, 23 Jul 2021 02:46:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627008413;
+        bh=B/F3gtie7BdyxaNs7POJY4LfkjZLp5Om/vcy69gI+ls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZIUaw/7kvSGstlsK8ueaOS7+DHZCodzsi7+DpXTQIMz3o6J/0NL7GFZZerlks1lu9
+         wm4Dn5D5WNASXOXjB4VV3/uhcKBdYofgdE1ZB8IU0OYE08Hja0BtaAQAO6BtL0gObB
+         RMXqodSp3yspF52EhrtpqRzK4e0wLaDQi/h7l4Sr0orhIZE2zT2atF+lKpx2CcAHqk
+         PubOXQmKdF9rPX6PHMrj7n15CS+KRFOMdbJBF2AsHebtAh0w1NGfN4/0Ca+l3UHQ9Z
+         FNv2ITCWRRinZ2ZfbgthcyW4SlOfi8Jzw+AwUrxlrPgvOmahtdVoRe1qCIQ6WBbs7S
+         H86//YzzFNPqw==
+Date:   Fri, 23 Jul 2021 10:46:47 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com
+Subject: Re: [PATCH v3] ARM: dts: imx7d-remarkable2: Add WiFi support
+Message-ID: <20210723024646.GD28658@dragon>
+References: <20210706114028.132-1-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 22 Jul 2021 19:45:52 -0700
-From:   hemantk@codeaurora.org
-To:     bbhatt@codeaurora.org
-Cc:     manivannan.sadhasivam@linaro.org, bqiang@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, bbhatt=codeaurora.org@codeaurora.org,
-        hemantk=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] net: qrtr: mhi: synchronize qrtr and mhi preparation
-In-Reply-To: <62daad3e0074400ee7011f55a6f255ac@codeaurora.org>
-References: <1626831778-31796-1-git-send-email-bbhatt@codeaurora.org>
- <4214f00fa8cbcced4f389125b392f3b3@codeaurora.org>
- <0da23f32f4313c0b701bafc078942a4e@codeaurora.org>
- <dc0f806dde7494629a4e4f85b0ba5b7e@codeaurora.org>
- <0e06bf8a7132cc9539e4d9b1e41b8863@codeaurora.org>
- <62daad3e0074400ee7011f55a6f255ac@codeaurora.org>
-Message-ID: <64bbb3db0e1bb33c03e31a6e467c9e42@codeaurora.org>
-X-Sender: hemantk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210706114028.132-1-alistair@alistair23.me>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-22 12:50, Bhaumik Bhatt wrote:
-> On 2021-07-22 12:04 PM, Bhaumik Bhatt wrote:
->> On 2021-07-21 03:27 PM, hemantk@codeaurora.org wrote:
->>> On 2021-07-21 11:07, Bhaumik Bhatt wrote:
->>>> On 2021-07-21 10:52 AM, hemantk@codeaurora.org wrote:
->>>>> On 2021-07-20 18:42, Bhaumik Bhatt wrote:
->>>>>> A dl callback can be received anytime after 
->>>>>> mhi_prepare_for_transfer
->>>>>> has been called. There is a window where the callback may happen
->>>>>> before the probe initializes the qrtr_mhi_dev state. Move the
->>>>>> mhi_prepare_for_transfer call after the registering the endpoint.
->>>>>> 
->>>>>> Once moved, the reverse can happen where qrtr will try to send a 
->>>>>> packet
->>>>>> before the channels are prepared. Add a wait in the sending path 
->>>>>> to
->>>>>> ensure the channels are prepared before trying to do a ul 
->>>>>> transfer.
->>>>>> 
->>>>>> Fixes: a2e2cc0dbb11 ("net: qrtr: Start MHI channels during init")
->>>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->>>>>> ---
->>>>>>  net/qrtr/mhi.c | 20 +++++++++++++++-----
->>>>>>  1 file changed, 15 insertions(+), 5 deletions(-)
->>>>>> 
->>>>>> diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
->>>>>> index 29b4fa3..22b0395 100644
->>>>>> --- a/net/qrtr/mhi.c
->>>>>> +++ b/net/qrtr/mhi.c
->>>>>> @@ -15,6 +15,7 @@ struct qrtr_mhi_dev {
->>>>>>  	struct qrtr_endpoint ep;
->>>>>>  	struct mhi_device *mhi_dev;
->>>>>>  	struct device *dev;
->>>>>> +	struct completion ready;
->>>>>>  };
->>>>>> 
->>>>>>  /* From MHI to QRTR */
->>>>>> @@ -50,6 +51,10 @@ static int qcom_mhi_qrtr_send(struct 
->>>>>> qrtr_endpoint
->>>>>> *ep, struct sk_buff *skb)
->>>>>>  	struct qrtr_mhi_dev *qdev = container_of(ep, struct 
->>>>>> qrtr_mhi_dev, ep);
->>>>>>  	int rc;
->>>>>> 
->>>>>> +	rc = wait_for_completion_interruptible(&qdev->ready);
->>>>>> +	if (rc)
->>>>>> +		goto free_skb;
->>>>>> +
->>>>>>  	if (skb->sk)
->>>>>>  		sock_hold(skb->sk);
->>>>>> 
->>>>>> @@ -78,11 +83,6 @@ static int qcom_mhi_qrtr_probe(struct 
->>>>>> mhi_device *mhi_dev,
->>>>>>  	struct qrtr_mhi_dev *qdev;
->>>>>>  	int rc;
->>>>>> 
->>>>>> -	/* start channels */
->>>>>> -	rc = mhi_prepare_for_transfer(mhi_dev, 
->>>>>> MHI_CH_INBOUND_ALLOC_BUFS);
->>>>>> -	if (rc)
->>>>>> -		return rc;
->>>>>> -
->>>>>>  	qdev = devm_kzalloc(&mhi_dev->dev, sizeof(*qdev), GFP_KERNEL);
->>>>>>  	if (!qdev)
->>>>>>  		return -ENOMEM;
->>>>> would it be good to init completion variable here (call 
->>>>> init_completion) ?
->>>> You mean just before setting qdev->mhi_dev? I don't see why that 
->>>> would
->>>> make a difference
->>>> mainly because the qcom_mhi_qrtr_send() will only happen after 
->>>> endpoint is
->>>> registered and DL xfer cb will also only come in after we have 
->>>> prepared the
->>>> channels and completed ready with dev_data already set.
->>> looks like qcom_mhi_qrtr_send is not going to get called directly. i
->>> was thinking
->>> what if this api is called before init_completion() returns. if it is
->>> only possible
->>> through ep.xmit call back only, can you move it right above
->>> qdev->ep.xmit = qcom_mhi_qrtr_send; ?
->>>> 
->> Ah. OK. I see your point. I will do that and upload a v2.
->> 
-> On second thought, this is not required because the ep.xmit() will not 
-> be called
-> until the qrtr_endpoint_register() is done.
+On Tue, Jul 06, 2021 at 09:40:28PM +1000, Alistair Francis wrote:
+> Add support for the bcm4329-fmac WiFi in the reMarkable 2, connected via SDHC.
 > 
-> So this version should be fine IMO.
-Thanks for checking that, Bhaumik.
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Applied, thanks!
