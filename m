@@ -2,77 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB363D3783
+	by mail.lfdr.de (Postfix) with ESMTP id B5CFD3D3784
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbhGWIgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:36:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231994AbhGWIgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:36:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A589860EC0;
-        Fri, 23 Jul 2021 09:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627031808;
-        bh=au86PxqA2mC/AGbvba2BAcsU2LvEED9SySjD6r/5nJU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=NTuP/2oGEHlnpXXX2Sfr75Vdi8CfXzGaW3DQULzfVypPu7mZl9Vo0xkmG34ozA9UN
-         0UROrUFybVrf5gBjGFLTcHA+WBQ98WsOGpuTZP5AKVaHJ6GR6hF27q8T5X7+zw9iyC
-         Onht6Vn5+zS/Bvfhnz8pZpCJAk3PcKoczwQR5SJCVwSuAQJdKwbAsDvY12EoYEtIsO
-         JRicpjEwIKl4N0V296sOE6UVdz9aD+lofQjbKc3WUuQXju+slkKX4l4LP1w/OUj1n0
-         tCcESe20bHMtcO/GubgitJ0Jp3K8CzPis09mgjTFuSyF/EdN+ODF1sFYbdBrMlTDsg
-         YjMdh3nL3JB3Q==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Xinliang Liu <xinliang.liu@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/hisilicon/hibmc: remove an unused variable
-Date:   Fri, 23 Jul 2021 11:16:34 +0200
-Message-Id: <20210723091643.1768874-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234661AbhGWIgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232265AbhGWIgU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 04:36:20 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB60AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:16:54 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m6rIV-0006rm-Hg; Fri, 23 Jul 2021 11:16:47 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m6rIP-00043Y-Re; Fri, 23 Jul 2021 11:16:41 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m6rIP-0007YL-Qa; Fri, 23 Jul 2021 11:16:41 +0200
+Date:   Fri, 23 Jul 2021 11:16:41 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Vinod Koul <vkoul@kernel.org>, Greg KH <greg@kroah.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the dmaengine tree with the
+ driver-core tree
+Message-ID: <20210723091641.zse42sotjt2pqiif@pengutronix.de>
+References: <20210723155354.082a62d8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fr5d5cyat2qyc4gs"
+Content-Disposition: inline
+In-Reply-To: <20210723155354.082a62d8@canb.auug.org.au>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-A recent patch left an unused variable in place that needs to be
-removed:
+--fr5d5cyat2qyc4gs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c: In function 'hibmc_unload':
-drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c:252:35: error: unused variable 'priv' [-Werror=unused-variable]
-  252 |         struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+Hello,
 
-Fixes: 39a364a19e03 ("drm/hisilicon/hibmc: Convert to Linux IRQ interfaces")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 1 -
- 1 file changed, 1 deletion(-)
+On Fri, Jul 23, 2021 at 03:53:54PM +1000, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> Today's linux-next merge of the dmaengine tree got a conflict in:
+>=20
+>   drivers/dma/idxd/sysfs.c
+>=20
+> between commit:
+>=20
+>   fc7a6209d571 ("bus: Make remove callback return void")
+>=20
+> from the driver-core tree and commit:
+>=20
+>   d9e5481fca74 ("dmaengine: dsa: move dsa_bus_type out of idxd driver to =
+standalone")
+>=20
+> from the dmaengine tree.
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-index f73a8e0ea12e..610fc8e135f9 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-@@ -249,7 +249,6 @@ static int hibmc_hw_init(struct hibmc_drm_private *priv)
- 
- static int hibmc_unload(struct drm_device *dev)
- {
--	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
- 	struct pci_dev *pdev = to_pci_dev(dev->dev);
- 
- 	drm_atomic_helper_shutdown(dev);
--- 
-2.29.2
+Greg provided a tag for this case at
 
+	git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/=
+bus_remove_return_void-5.15
+
+=2E Vinod might want to rebase on top of this or merge it into his tree
+with Stephen's conflict resolution.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--fr5d5cyat2qyc4gs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD6iPcACgkQwfwUeK3K
+7Am9PAf8DT64/bN05JlJzWdHDafV5UAYyevkebDweEgpAByiBeWNPjO1rMX68kK9
+8C4y7FM3HAZquL7yIrbXDULKcU2i/XwIs1UgkbT269v1b0Mb+wbyk6tYYIKita3M
+8rLC6khp1lzyuJT5vNeTYh3jMRC+IHQXNXmD4E+JY1JarAXB9A93xn7wLVUlNTYX
+/dGop5FL68mUEv3TKxdLOw8lwcrMyfY+l0VsahkIDfUFEz/QAbZXTN4EofUWxfyY
+hDHu/Z/bjnW2d0XT/l6QBFShZT5RzLMba9Bad3soFTIsITGj1ba6ux9ZPH30B+F/
+o0ksFs48CsLpTtniaoIwlihKT/T9/Q==
+=6Rbt
+-----END PGP SIGNATURE-----
+
+--fr5d5cyat2qyc4gs--
