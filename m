@@ -2,145 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939D23D4153
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05C93D415D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhGWTb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:31:29 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:22624 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbhGWTb2 (ORCPT
+        id S230289AbhGWTcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhGWTci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:31:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627071121; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=z6QEHbzcWaJW5HVjSSDuWiycF/xowMUpC7M51JZaVKk=;
- b=e1cAzcZwz7K5Y93y2sIBWUWsfUc5H62pMhRjiYjkjgNOM68SIvR+fZuUlwH1KpE8cVsWak5F
- fI4vzz+M+UJcXN2kAIyhwtr1AlwPtQ3f8p/16JbSnvA6GotdyAqwjXtFzxBbVGNz2EdIskrF
- LoCYHdP+7/TI8vpcQJmVFxdXJOU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60fb228ffcf9fe7b78dcc58b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 20:11:59
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id ECB7DC4323A; Fri, 23 Jul 2021 20:11:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 020BFC433F1;
-        Fri, 23 Jul 2021 20:11:58 +0000 (UTC)
+        Fri, 23 Jul 2021 15:32:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DBDC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:13:12 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m71XV-0005Yj-8f; Fri, 23 Jul 2021 22:12:57 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m71XR-0005GT-1q; Fri, 23 Jul 2021 22:12:53 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1m71XR-0000Yi-05; Fri, 23 Jul 2021 22:12:53 +0200
+Date:   Fri, 23 Jul 2021 22:12:50 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [v9 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20210723201250.x4ki5ackfznmn4aw@pengutronix.de>
+References: <20210709065217.6153-3-billy_tsai@aspeedtech.com>
+ <20210715150533.vppkw5oiomkxmfrn@pengutronix.de>
+ <BD5B012C-B377-45E2-B04E-61D12B086670@aspeedtech.com>
+ <20210716070943.ayxkz2irkwhgincz@pengutronix.de>
+ <DD5590B4-11BC-411B-95BF-03AC26C078E4@aspeedtech.com>
+ <20210716101301.l563tdwt5xuq5iq6@pengutronix.de>
+ <3F12A498-DF5C-4954-8BCE-8C0C66BC9734@aspeedtech.com>
+ <4BC9AEF6-31EA-4EDA-BCB2-7E4D44B6D5D2@aspeedtech.com>
+ <20210721124859.clv6qlitbyomdz6s@pengutronix.de>
+ <7F794DD8-0FC6-491D-B071-CAD6C216E044@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 23 Jul 2021 13:11:57 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH 2/5] drm/msm/dp: Use devres for ioremap()
-In-Reply-To: <20210722024227.3313096-3-bjorn.andersson@linaro.org>
-References: <20210722024227.3313096-1-bjorn.andersson@linaro.org>
- <20210722024227.3313096-3-bjorn.andersson@linaro.org>
-Message-ID: <612495cded56d0ec6abe502a296ebd6b@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="toxq6bq4j46rzjqb"
+Content-Disposition: inline
+In-Reply-To: <7F794DD8-0FC6-491D-B071-CAD6C216E044@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-21 19:42, Bjorn Andersson wrote:
-> The non-devres version of ioremap is used, which requires manual
-> cleanup. But the code paths leading here is mixed with other devres
-> users, so rely on this for ioremap as well to simplify the code.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_parser.c | 29 ++++-------------------------
->  1 file changed, 4 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
-> b/drivers/gpu/drm/msm/dp/dp_parser.c
-> index 0519dd3ac3c3..c064ced78278 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> @@ -32,7 +32,7 @@ static int msm_dss_ioremap(struct platform_device 
-> *pdev,
->  	}
-> 
->  	io_data->len = (u32)resource_size(res);
-> -	io_data->base = ioremap(res->start, io_data->len);
-> +	io_data->base = devm_ioremap(&pdev->dev, res->start, io_data->len);
->  	if (!io_data->base) {
->  		DRM_ERROR("%pS->%s: ioremap failed\n",
->  			__builtin_return_address(0), __func__);
-> @@ -42,22 +42,6 @@ static int msm_dss_ioremap(struct platform_device 
-> *pdev,
->  	return 0;
->  }
-> 
-> -static void msm_dss_iounmap(struct dss_io_data *io_data)
-> -{
-> -	if (io_data->base) {
-> -		iounmap(io_data->base);
-> -		io_data->base = NULL;
-> -	}
-> -	io_data->len = 0;
-> -}
-> -
-> -static void dp_parser_unmap_io_resources(struct dp_parser *parser)
-> -{
-> -	struct dp_io *io = &parser->io;
-> -
-> -	msm_dss_iounmap(&io->dp_controller);
-> -}
-> -
->  static int dp_parser_ctrl_res(struct dp_parser *parser)
->  {
->  	int rc = 0;
-> @@ -67,19 +51,14 @@ static int dp_parser_ctrl_res(struct dp_parser 
-> *parser)
->  	rc = msm_dss_ioremap(pdev, &io->dp_controller);
->  	if (rc) {
->  		DRM_ERROR("unable to remap dp io resources, rc=%d\n", rc);
-> -		goto err;
-> +		return rc;
->  	}
-> 
->  	io->phy = devm_phy_get(&pdev->dev, "dp");
-> -	if (IS_ERR(io->phy)) {
-> -		rc = PTR_ERR(io->phy);
-> -		goto err;
-> -	}
-> +	if (IS_ERR(io->phy))
-> +		return PTR_ERR(io->phy);
-> 
->  	return 0;
-> -err:
-> -	dp_parser_unmap_io_resources(parser);
-> -	return rc;
->  }
-> 
->  static int dp_parser_misc(struct dp_parser *parser)
+
+--toxq6bq4j46rzjqb
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Jul 23, 2021 at 04:23:23AM +0000, Billy Tsai wrote:
+> On 2021/7/23, 3:17 AM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@pengutronix.=
+de> wrote:
+>=20
+>     On Wed, Jul 21, 2021 at 10:52:21AM +0000, Billy Tsai wrote:
+>     >> Hi Uwe,
+>     >>=20
+>     >>     On 2021/7/16, 6:13 PM, "Uwe Kleine-K=F6nig" <u.kleine-koenig@p=
+engutronix.de> wrote:
+>     >>=20
+>     >>         On Fri, Jul 16, 2021 at 09:22:22AM +0000, Billy Tsai wrote:
+>     >>         >> On 2021/7/16, 3:10 PM, "Uwe Kleine-K=F6nig" <u.kleine-k=
+oenig@pengutronix.de> wrote:
+>     >>         >>=20
+>     >>         >>     On Fri, Jul 16, 2021 at 01:48:20AM +0000, Billy Tsa=
+i wrote:
+>     >>         >>     >> On 2021/7/15, 11:06 PM, "Uwe Kleine-K=F6nig" <u.=
+kleine-koenig@pengutronix.de>> wrote:
+>     >>         >>     >>     > Another is: The PWM doesn't support duty_c=
+ycle 0, on such a request the
+>     >>         >>     >>     > PWM is disabled which results in a constan=
+t inactive level.
+>     >>         >>     >>=20
+>     >>         >>     >>     > (This is correct, is it? Or does it yield =
+a constant 0 level?)
+>     >>         >>     >>=20
+>     >>         >>     >> Our pwm can support duty_cycle 0 by unset CLK_EN=
+ABLE.
+>     >>         >>=20
+>     >>         >>     > This has a slightly different semantic though. So=
+me consumer might
+>     >>         >>     > expect that the following sequence:
+>     >>         >>=20
+>     >>         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle=
+ =3D 10000, .enabled =3D true })
+>     >>         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle=
+ =3D 0, .enabled =3D true })
+>     >>         >>     >	pwm_apply(mypwm, { .period =3D 10000, .duty_cycle=
+ =3D 10000, .enabled =3D true })
+>     >>         >>=20
+>     >>         >>     > results in the output being low for an integer mu=
+ltiple of 10 =B5s. This
+>     >>         >>     > isn't given with setting CLK_ENABLE to zero, is i=
+t? (I didn't recheck,
+>     >>         >>     > if the PWM doesn't complete periods on reconfigur=
+ation this doesn't
+>     >>         >>     > matter much though.)
+>     >>         >> Thanks for the explanation.
+>     >>         >> Our hardware actually can only support duty from 1/256 =
+to 256/256.
+>     >>         >> For this situation I can do possible solution:
+>     >>         >> We can though change polarity to meet this requirement.=
+ Inverse the pin and use
+>     >>         >> duty_cycle 100.=20
+>     >>         >> But I think this is not a good solution for this proble=
+m right?
+>     >>=20
+>     >>         > If this doesn't result in more glitches that would be fi=
+ne for me.
+>     >>         > (Assuming it is documented good enough in the code to be
+>     >>         > understandable.)
+>     >>=20
+>     >>     > The polarity of our pwm controller will affect the duty cycl=
+e range:
+>     >>     > PWM_POLARITY_INVERSED : Support duty_cycle from 0% to 99%
+>     >>     > PWM_POLARITY_NORMAL: Support duty_cycle from 1% to 100%
+>     >>     > Dynamic change polarity will result in more glitches. Thus, =
+this will become
+>     >>     > a trade-off between 100% and 0% duty_cycle support for user =
+to use our pwm device.
+>     >>     > I will document it and send next patch.
+>     >>=20
+>     >> For handling the situation that the user want to set the duty cycl=
+e to 0%, the driver can:
+>     >> 1. Just return the error.
+>     >> 2. Use the minimum duty cycle value.
+>     >> I don't know which solution will be the better way or others.
+>     >> I would be grateful if you can give me some suggestion about this =
+problem.
+>=20
+>     > I thought if you disable the PWM it emits the inactive level? Then =
+this
+>     > is the best you can do if duty_cycle =3D 0 is requested.
+>=20
+> Thanks for your quick reply.
+> When duty_cycle =3D 0 is requested my driver currently will emit the inac=
+tive level.
+> So, the next patch I need to do is to add the comment about this?
+
+Not sure I got the complete picture now. The things I consider important
+are:
+
+ - If your hardware cannot emit a 100% or 0% relative duty cycle, note
+   this in the Limitations section
+
+ - Assuming your PWM emits the inactive level when disabled (that is 0
+   for PWM_POLARITY_NORMAL and 1 for PWM_POLARITY_INVERSED) this is the
+   best that can be done when a 0% relative duty cycle is requested
+   (assuming the hardware cannot implement that in a normal way).
+
+I hope this answered your remaining questions.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--toxq6bq4j46rzjqb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD7Ir8ACgkQwfwUeK3K
+7AkC4Qf/UySDPXNcbHOt72z/xM5f81I/l//h6KQb/ov/i2Acp8sazD1ANZ2+oN1/
+ZeecnsddK2CbLAHwuB53a7PUNfUmnFFf0hqaJGqG4k7ijswU+ln8mGj3Riaz1/8f
+P2fVTq62m7qmG7qF0WZoGcip9PHD0RO4yYOE/MwriQqsZV8e0z+rmd1xE536ys73
+A1JdFOThHpA8ZeQNbLaEvXkfHQ8qcamXcWGmnSgWyC6sUqYtRvyu+MPCgQs//ANB
+N+zGyKRfytVIl70GdbioHUn7vNQLwTVkfliecpdoCbdZaCpdQEzuZQVwztuEVctH
+siL6R66w7b074QtT3qfOvoKcLmeqIg==
+=LY3j
+-----END PGP SIGNATURE-----
+
+--toxq6bq4j46rzjqb--
