@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEAC3D3147
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA88F3D3140
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhGWArh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:47:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7044 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbhGWArg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:47:36 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GWBPl0GXszYd7K;
-        Fri, 23 Jul 2021 09:22:19 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 09:28:08 +0800
-Received: from thunder-town.china.huawei.com (10.174.179.0) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 09:28:07 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        linux-nilfs <linux-nilfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH] nilfs2: use refcount_dec_and_lock() to fix potential UAF
-Date:   Fri, 23 Jul 2021 09:23:17 +0800
-Message-ID: <20210723012317.4146-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        id S232996AbhGWAoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:44:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232892AbhGWAoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 20:44:06 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CAFF60EBA;
+        Fri, 23 Jul 2021 01:24:40 +0000 (UTC)
+Date:   Thu, 22 Jul 2021 21:24:38 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
+ for synthetic events
+Message-ID: <20210722212438.5933e714@rorschach.local.home>
+In-Reply-To: <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
+References: <20210722142705.992001628@goodmis.org>
+        <20210722142837.458596338@goodmis.org>
+        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
+        <20210722123234.636d5363@oasis.local.home>
+        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the refcount is decreased to 0, the resource reclamation branch is
-entered. Before CPU0 reaches the race point (1), CPU1 may obtain the
-spinlock and traverse the rbtree to find 'root', see nilfs_lookup_root().
-Although CPU1 will call refcount_inc() to increase the refcount, it is
-obviously too late. CPU0 will release 'root' directly, CPU1 then accesses
-'root' and triggers UAF.
+On Fri, 23 Jul 2021 10:11:33 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Use refcount_dec_and_lock() to ensure that both the operations of decrease
-refcount to 0 and link deletion are lock protected eliminates this risk.
+> I understand. As far as I can see the code, it looks a bit complicated.
+> To simplify it, I need to understand the spec for "hist_field"
+> for keys and for vars. And maybe need to split both case.
 
-     CPU0                      CPU1
-nilfs_put_root():
-			    <-------- (1)
-spin_lock(&nilfs->ns_cptree_lock);
-rb_erase(&root->rb_node, &nilfs->ns_cptree);
-spin_unlock(&nilfs->ns_cptree_lock);
+I'll give you a hint that took me a bit to figure out.
 
-kfree(root);
-			    <-------- use-after-free
+1) The execname is saved at the start of the histogram and not by one
+of the ->fn() functions.
 
-========================================================================
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
-refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-Modules linked in:
-CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
-RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
-... ...
-Call Trace:
- __refcount_sub_and_test include/linux/refcount.h:283 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
- nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
- nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
- nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
- generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
- kill_block_super+0x4a/0x90 fs/super.c:1446
- deactivate_locked_super+0x6a/0xb0 fs/super.c:335
- deactivate_super+0x85/0x90 fs/super.c:366
- cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
- __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
- task_work_run+0x8e/0x110 kernel/task_work.c:151
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
- exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
- syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
- do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+It's saved by hist_trigger_elt_data_init() if the elt_data->comm is
+allocated. That function is part of the "tracing_map_ops" which gets
+assigned by tracing_map_create() (in tracing_map.c) as the "elt_init"
+function, which is called when getting a new elt element by
+get_free_elt().
 
-There is no reproduction program, and the above is only theoretical
-analysis.
+2) That elt_data->comm is only allocated if it finds a "hist_field"
+that has HIST_FIELD_FL_EXECNAME flag set. It currently only looks for
+that flag in the "keys" fields, which means that .execname is useless
+for everything else. This patch changed it to search all hist_fields so
+that it can find that flag if a variable has it set (which I added).
 
-Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- fs/nilfs2/the_nilfs.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> > I found this to be the least intrusive solution.
+> > 
+> > Maybe Tom has a better idea, but I don't have any more time to work on
+> > it, and I really want this feature for the next merge window.
+> > 
+> > If you can make it work, and have time to play with it, I'm happy to
+> > take an alternative :-)  
+> 
+> Me neither at least this moment, need more investigation. Let me try.
 
-diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
-index 8b7b01a380ce..c8bfc01da5d7 100644
---- a/fs/nilfs2/the_nilfs.c
-+++ b/fs/nilfs2/the_nilfs.c
-@@ -792,14 +792,13 @@ nilfs_find_or_create_root(struct the_nilfs *nilfs, __u64 cno)
- 
- void nilfs_put_root(struct nilfs_root *root)
- {
--	if (refcount_dec_and_test(&root->count)) {
--		struct the_nilfs *nilfs = root->nilfs;
-+	struct the_nilfs *nilfs = root->nilfs;
- 
--		nilfs_sysfs_delete_snapshot_group(root);
--
--		spin_lock(&nilfs->ns_cptree_lock);
-+	if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
- 		rb_erase(&root->rb_node, &nilfs->ns_cptree);
- 		spin_unlock(&nilfs->ns_cptree_lock);
-+
-+		nilfs_sysfs_delete_snapshot_group(root);
- 		iput(root->ifile);
- 
- 		kfree(root);
--- 
-2.25.1
+Great! I can hold off on adding this. Or I can add it, and if you come
+up with a better solution, we can just swap it.
 
+-- Steve
