@@ -2,70 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01513D3A0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A383D3A0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234751AbhGWLlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:41:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234530AbhGWLlC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:41:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28E5A60ED7;
-        Fri, 23 Jul 2021 12:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627042895;
-        bh=9ttASHB3pgtVphs5ThtFEDTZUlMESs+xc3gYhWNXu7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w8IhHX/JqYeqrily4pkMsNcEcIDmcxFfFNBZXaGyZTBjf6hUdb/ck+vVeZvSyXSp+
-         SmMMlgNE+z41L+q3vq6Sk5Fwc81ryx7vTXKK32xXimXI+vBPYpfZxeJ1mnXRrLK540
-         yRVB2mJ+xoqZQgiFMdQEszARPi6wZbMnytYLkBrg=
-Date:   Fri, 23 Jul 2021 14:21:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
- as a permenent module
-Message-ID: <YPq0Td5ZDNVwvQ8r@kroah.com>
-References: <20210707045320.529186-1-john.stultz@linaro.org>
- <YPgK50dmV7Z69WsL@kroah.com>
- <CALAqxLUVgUT+1DyDGsFbF0138S0OYzpKADk__PsYbR4B4mbMhw@mail.gmail.com>
+        id S234814AbhGWLle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 07:41:34 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:17875 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234601AbhGWLld (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 07:41:33 -0400
+Received: from ubuntu-CJ.home ([80.15.159.30])
+        by mwinf5d50 with ME
+        id YcN32500M0feRjk03cN3ls; Fri, 23 Jul 2021 14:22:04 +0200
+X-ME-Helo: ubuntu-CJ.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 23 Jul 2021 14:22:04 +0200
+X-ME-IP: 80.15.159.30
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     song@kernel.org, linux-raid@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] md/bitmap: Use 'atomic_inc_return' instead of hand-writing it
+Date:   Fri, 23 Jul 2021 14:21:57 +0200
+Message-Id: <bb63b5d4e985be4bafa7a1922e6992fa81b399c4.1627042861.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALAqxLUVgUT+1DyDGsFbF0138S0OYzpKADk__PsYbR4B4mbMhw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 10:24:01AM -0700, John Stultz wrote:
-> On Wed, Jul 21, 2021 at 4:54 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Jul 07, 2021 at 04:53:20AM +0000, John Stultz wrote:
-> > > Allow the qcom_scm driver to be loadable as a permenent module.
-> >
-> > This feels like a regression, it should be allowed to be a module.
-> 
-> I'm sorry, I'm not sure I'm following you, Greg.  This patch is trying
-> to enable the driver to be able to be loaded as a module.
+'atomic_inc/atomic_read' is equivalent to 'atomic_inc_return' which is
+less verbose.
+So use the later.
 
-Ah, sorry, you are right, my mistake.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+First time a play with atomic functions, so apologies if I misunderstood
+something
+---
+ drivers/md/md-bitmap.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-nevermind...
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index e29c6298ef5c..9d47a2ca1cf3 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -1396,8 +1396,8 @@ int md_bitmap_startwrite(struct bitmap *bitmap, sector_t offset, unsigned long s
+ 
+ 	if (behind) {
+ 		int bw;
+-		atomic_inc(&bitmap->behind_writes);
+-		bw = atomic_read(&bitmap->behind_writes);
++
++		bw = atomic_inc_return(&bitmap->behind_writes);
+ 		if (bw > bitmap->behind_writes_used)
+ 			bitmap->behind_writes_used = bw;
+ 
+-- 
+2.30.2
+
