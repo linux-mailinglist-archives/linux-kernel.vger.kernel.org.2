@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9183D408C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251633D408E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhGWSaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 14:30:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        id S230172AbhGWSaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 14:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhGWSaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:30:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D028D60F21;
-        Fri, 23 Jul 2021 19:10:36 +0000 (UTC)
+        id S229971AbhGWSaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 14:30:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C3E7860F21;
+        Fri, 23 Jul 2021 19:10:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627067436;
-        bh=EHxfErzQ7VS9z13ZemEtr0R2+zPwluIq5xYEuMtWQ6s=;
+        s=k20201202; t=1627067437;
+        bh=OeeQjJ9vfrB0DfdGJyJy4kZAmknJ8pVTaYu9u8YeRcY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=fQuQPK1oVeUvIlNki1JNlJS8jgWQNAH/oNMELISPY7TJWvpm1cZQ0QbZBw2im+Psm
-         riP+7HVkTA4GgwDGtZZqPQgq0qFBD9N7/Y+gLekauUBUW2H6VBBAKNXxOzbM2pBTuB
-         zUpxiLBq0UmzZ/0DrFD5kcUZdUEBlZGA1PV3/sT0Hgd2RFs55VeugGu6/hMVPVf2lN
-         hsFv0b/af36hYCYB1UjZYhrnR7KUywSAv9pcK7s3IsUmCTiA29qNP7BMu9hjtiBT36
-         OMZV2gwOQgvjZvIYs+gayqVeTk6uu1nROw6RjD9mxhaiM2iyEncMnxAMVJ/jYI0nsw
-         U/rkmnk3tWvgg==
+        b=aXAhxnu0s6dsfbvHF6SyY6A9xwb8vT1cIpy/FHTxvgxcbeHrKo29pZXQI1IYqrJct
+         d0EMxiG/bA56glL9X3dw+aqhBuaB90zPSTmXWqD58k6xUmBU2G7LsQlE0ZAt4BC4OE
+         jI1vRu6I1rKmx0v1O490MMAaYRDxv7a/AbmFLOXTFoFxI5qamZXmgBjE1rYofAdjdw
+         aEuW74K6DsUec5k/FU9FmtiPXhTu0NNseMzpeCrGue9TuBCq7pGXZ/50+SD8Q9Fumx
+         puml9GwnOU2LeiT41FKh3Lv5UPjRaDZoqMijkBHx5wJgM2/2eUmgnLzejIxglpTkmM
+         Ryv6TACtQtnGA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B8B2E608AF;
-        Fri, 23 Jul 2021 19:10:36 +0000 (UTC)
-Subject: Re: [GIT PULL] ACPI fixes for v5.14-rc3
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BD9C360721;
+        Fri, 23 Jul 2021 19:10:37 +0000 (UTC)
+Subject: Re: [GIT PULL] Ceph fixes for 5.14-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0gEn3X2FCc0kC-BJ_7D8VXH4XRmhpj3Qn2dEC9K_BUCRQ@mail.gmail.com>
-References: <CAJZ5v0gEn3X2FCc0kC-BJ_7D8VXH4XRmhpj3Qn2dEC9K_BUCRQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0gEn3X2FCc0kC-BJ_7D8VXH4XRmhpj3Qn2dEC9K_BUCRQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.14-rc3
-X-PR-Tracked-Commit-Id: 0b8a53a8444c267114f6b5a85d21153ddea190eb
+In-Reply-To: <20210723163211.8436-1-idryomov@gmail.com>
+References: <20210723163211.8436-1-idryomov@gmail.com>
+X-PR-Tracked-List-Id: <ceph-devel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210723163211.8436-1-idryomov@gmail.com>
+X-PR-Tracked-Remote: https://github.com/ceph/ceph-client.git tags/ceph-for-5.14-rc3
+X-PR-Tracked-Commit-Id: 0077a50082729c3f9ea2836f59e35d9b7dacfb12
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ec6badfbe1cde0eb2bec4a0b8f6e738171156b5b
-Message-Id: <162706743669.23984.7408657958598552168.pr-tracker-bot@kernel.org>
-Date:   Fri, 23 Jul 2021 19:10:36 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+X-PR-Merge-Commit-Id: 704f4cba43d4ed31ef4beb422313f1263d87bc55
+Message-Id: <162706743777.23984.652162798367127498.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Jul 2021 19:10:37 +0000
+To:     Ilya Dryomov <idryomov@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 23 Jul 2021 17:23:47 +0200:
+The pull request you sent on Fri, 23 Jul 2021 18:32:11 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.14-rc3
+> https://github.com/ceph/ceph-client.git tags/ceph-for-5.14-rc3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ec6badfbe1cde0eb2bec4a0b8f6e738171156b5b
+https://git.kernel.org/torvalds/c/704f4cba43d4ed31ef4beb422313f1263d87bc55
 
 Thank you!
 
