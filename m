@@ -2,173 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0F63D3B85
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834573D3B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235314AbhGWNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235126AbhGWNQm (ORCPT
+        id S235342AbhGWNSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:18:41 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21391 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235274AbhGWNSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:16:42 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01694C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:57:16 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id e2so2466979wrq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=v5QzT0eQTS6nyU0BB8Gyy3vQ5uM5RyHUdVuAlNWQzlg=;
-        b=xKu9ud3E5jXcgwk2127yeFEUlp6Hv/hOhQ/v1+gfr4E33VaAmxY9zQF9yjgZItJHsR
-         CDjethkWpqlXFg2gkwu6wQ2GcJDdUaMSuRE4WN5cYPYMaadCVheAxy5+HXLYF75/5k+0
-         ij68FL9nvbzyEWFX9dbHm5wkJCjtXHH3X6cBal3u0EGXrgbUP2cyen0bl64y7MlBA0Sr
-         kCiTaAkRj1NGT6BNNBY28cxBHWzMEJ1LlgOBe5ozQSuqm/nyijvNwrZKEuNO0ZLBXWWZ
-         g5nzQxZYrZ56OAbhbZH7t75OR0l836XQ6p0jSWRKfsk0D2sYk+iWKLArGaJinSMU1ZrM
-         Fkqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=v5QzT0eQTS6nyU0BB8Gyy3vQ5uM5RyHUdVuAlNWQzlg=;
-        b=SYn3Cp0+ld5Yvu4EFeLrAzx4mfYIsNDAOeSRw9PtB6uEf4Md5HYdvEXr7cGtQePkK/
-         FnFbyFn2BX6GH3zot/OMuE8ieLCRWWWnHWOkNVRw1mY+3xcRA2K4jG1A+I9qUEgO6Laj
-         QRrrAWWzJzAK2yKdifD3AzYwrybe4aHVaO8646JApPZtYmQS82V0TD2VzYGH991+kOze
-         Ui0rDtoct09mk4UJeuOurVo9SEQZsjehAEI0urJs5kht03DMMk3+havjl2snhWOCHVVF
-         /yB/oMS7WfukMG452Ua9k1DdVj2Zl2BNFcGzpXfYBBop6nrjtEp7vKDDukH3AtBInrU6
-         Lu5Q==
-X-Gm-Message-State: AOAM531DoVf9bCC8vtkDvKLuV1EhxzCpK5PHyBrzPY6zqrZ5lZmUbJnk
-        zAocGfD1RS0c/KYeJfOA6LENcw==
-X-Google-Smtp-Source: ABdhPJzKURPqdGis9jm3/NLpkQkM5glrZhmoP9DguNmpIIE73bbQeXRNDc87Ni88i5JfSR9TpDXcng==
-X-Received: by 2002:a5d:6d89:: with SMTP id l9mr5347522wrs.371.1627048634627;
-        Fri, 23 Jul 2021 06:57:14 -0700 (PDT)
-Received: from localhost.localdomain (p200300d9972721003352be6dfa1c7751.dip0.t-ipconnect.de. [2003:d9:9727:2100:3352:be6d:fa1c:7751])
-        by smtp.googlemail.com with ESMTPSA id f2sm32803256wrq.69.2021.07.23.06.57.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 06:57:14 -0700 (PDT)
-Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
- heuristic lockless reads
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
- <20210721211003.869892-2-paulmck@kernel.org>
- <20210723020846.GA26397@rowland.harvard.edu>
- <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
- <20210723130554.GA38923@rowland.harvard.edu>
-From:   Manfred Spraul <manfred@colorfullife.com>
-Message-ID: <aaef6bbb-0711-7900-7cbc-cb3bb19bd25c@colorfullife.com>
-Date:   Fri, 23 Jul 2021 15:57:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 23 Jul 2021 09:18:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1627048750; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=R8M6pot0KH4dBzYhafMRyWWGB8/RpxJcQ5CZNrura6RNKkGPrxPpYtEIJRHQmod0R4o4XTd1+LIIQIAqNivy81+RLpqc52NuGgaLfDLbSEvHJml+FAD5V9DeX7pgNwxSrnjJVBe6SPOmP4AN4MiZYPUe5HjqZuGY6KB6VyXIaEU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1627048750; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=TxpcFVdjVneetVPAjUhcJ85V0DPbb9fcU0f8xmSlZCE=; 
+        b=UH7TT2aQe/DTviBsDNzO7AtuYY9mzkfbxYyLCsyEN/vDJbnZ/DDJN25BkwEfF/h6DwwNIAK+h93D4NBsHFJCjFygjJYZs+DPh6+KK4PFHQ2HkgEtD29OlSkW75rJ1H9SxoRIYfcqT3Brh760Dvx87zXhdNUpeAbNi8n+qu6j+Ms=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1627048750;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
+        bh=TxpcFVdjVneetVPAjUhcJ85V0DPbb9fcU0f8xmSlZCE=;
+        b=K6nCnkqU7tCPuhUgjFkvSoP16gLrGI3OQ1x68NdBSud+pciHAWOP2MWzjLuTIfKO
+        6NOauLuOYUwiPQDq/u7ad0Pf8JPsy4hxX6BTj0VyLLIaAFN/PFqEh0Daz7FjZIEiclt
+        MeUsIzKs5+16sUW4E7mKyYPbwt9xf7Vjr5zbuxbo=
+Received: from anirudhrb.com (106.51.106.224 [106.51.106.224]) by mx.zohomail.com
+        with SMTPS id 1627048746832872.2996466596402; Fri, 23 Jul 2021 06:59:06 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 19:28:59 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org, mail@anirudhrb.com
+Subject: Re: [PATCH v6 1/2] firmware_loader: use -ETIMEDOUT instead of
+ -EAGAIN in fw_load_sysfs_fallback
+Message-ID: <YPrLIzMpSghz6YGL@anirudhrb.com>
+References: <20210722123229.8731-1-mail@anirudhrb.com>
+ <20210722123229.8731-2-mail@anirudhrb.com>
+ <20210722195924.oezxwv3u3p5k737l@garbanzo>
 MIME-Version: 1.0
-In-Reply-To: <20210723130554.GA38923@rowland.harvard.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722195924.oezxwv3u3p5k737l@garbanzo>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alan,
+On Thu, Jul 22, 2021 at 12:59:24PM -0700, Luis Chamberlain wrote:
+> On Thu, Jul 22, 2021 at 06:02:28PM +0530, Anirudh Rayabharam wrote:
+> > The only motivation for using -EAGAIN in commit 0542ad88fbdd81bb
+> > ("firmware loader: Fix _request_firmware_load() return val for fw load
+> > abort") was to distinguish the error from -ENOMEM, and so there is no
+> > real reason in keeping it. Keeping -ETIMEDOU is much telling of what the
+> 
+> Since you'll have to respin, a missing here   ^, also add that the
+> -ETIMEDOUT is what we'd get when we do time out on the wait, as its
+> not clear from the conext being changed.
+> 
+> > reason for a failure is, so just use that.
+> > 
+> > The rest is just trying to document a bit more of the motivations for the
+> > error codes, as otherwise we'd lose this information easily.
+> 
+> This is a separate change, and it actually does more than just that.
+> Moving code around should be done separately. The idea is to
+> first just remove the -EAGAIN so that the change is *easy* to review.
+> A remove of a return code *and* a move of code around makes it less
+> obvious for code review. And part of the comment is wrong now that we
+> removed -EAGAIN. When breaking patches up please review each change
+> going into each patch and consider if it makes sense, atomically.
+> 
+> > Suggested-by: Luis Chamberlain <mcgrof@kernel.org>
+> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> > ---
+> >  drivers/base/firmware_loader/fallback.c | 34 +++++++++++++++++--------
+> >  1 file changed, 24 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
+> > index 91899d185e31..1db94165feaf 100644
+> > --- a/drivers/base/firmware_loader/fallback.c
+> > +++ b/drivers/base/firmware_loader/fallback.c
+> > @@ -70,7 +70,29 @@ static inline bool fw_sysfs_loading(struct fw_priv *fw_priv)
+> >  
+> >  static inline int fw_sysfs_wait_timeout(struct fw_priv *fw_priv,  long timeout)
+> >  {
+> > -	return __fw_state_wait_common(fw_priv, timeout);
+> > +	int ret = __fw_state_wait_common(fw_priv, timeout);
+> > +
+> > +	/*
+> > +	 * A signal could be sent to abort a wait. Consider Android's init
+> > +	 * gettting a SIGCHLD, which in turn was the same process issuing the
+> > +	 * sysfs store call for the fallback. In such cases we want to be able
+> > +	 * to tell apart in userspace when a signal caused a failure on the
+> > +	 * wait. In such cases we'd get -ERESTARTSYS.
+> > +	 *
+> > +	 * Likewise though another race can happen and abort the load earlier.
+> 
+> This comment is about the check for fw_load_abort() so since the move is
+> not going to happen when you remove -EAGAIN just leave it out. It can be
+> added once you do the move.
+> 
+> > +	 *
+> > +	 * In either case the situation is interrupted so we just inform
+> > +	 * userspace of that and we end things right away.
+> 
+> Be mindful that this is in context of both cases when re-writing the
+> patches.
+> 
+> > +	 *
+> > +	 * When we really time out just tell userspace it should try again,
+> > +	 * perhaps later.
+> 
+> That's the thing, we're getting rid of that -EAGAIN as it made no sense,
+> the goal was to just distinguish the error from -ENOMEM. That's it.
+> Since we are removing the -EAGAIN, this comment makes no sense as we
+> have clarified with Shuah that the goal of her patch was just to
+> distinguish the error.
+> 
+> So "tell userspace to try again" makes no sense since if a timeout
+> happened userspace can't really try again as we have aborted the whole
+> operation to allow firmware to be uploaded.
+> 
+> In fact, please add that to the commit log which removes the -EAGAIN,
+> something like:
+> 
+> "Using -EAGAIN is also not correct as this return code is typically used
+> to tell userspace to try something again, in this case re-using the
+> sysfs loading interface cannot be retried when a timeout happens, so
+> the return value is also bogus."
+> 
+> > +	 */
+> > +	if (ret == -ERESTARTSYS || fw_state_is_aborted(fw_priv))
+> > +		ret = -EINTR;
+> > +	else if (fw_priv->is_paged_buf && !fw_priv->data)
+> > +		ret = -ENOMEM;
+> > +
+> > +	return ret;
+> >  }
+> >  
+> >  struct fw_sysfs {
+> > @@ -526,20 +548,12 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
+> >  	}
+> >  
+> >  	retval = fw_sysfs_wait_timeout(fw_priv, timeout);
+> > -	if (retval < 0 && retval != -ENOENT) {
+> > +	if (retval < 0) {
+> >  		mutex_lock(&fw_lock);
+> >  		fw_load_abort(fw_sysfs);
+> >  		mutex_unlock(&fw_lock);
+> >  	}
+> >  
+> > -	if (fw_state_is_aborted(fw_priv)) {
+> > -		if (retval == -ERESTARTSYS)
+> > -			retval = -EINTR;
+> > -		else
+> > -			retval = -EAGAIN;
+> 
+> All we want to do is remove this -EAGAIN line in one patch. We
+> don't want to move code to another place. We do this to make code
 
-On 7/23/21 3:05 PM, Alan Stern wrote:
-> On Fri, Jul 23, 2021 at 08:52:50AM +0200, Manfred Spraul wrote:
->> Hi Alan,
-> Hi.
->
->> On 7/23/21 4:08 AM, Alan Stern wrote:
->>> On Wed, Jul 21, 2021 at 02:10:01PM -0700, Paul E. McKenney wrote:
->>>> This commit adds example code for heuristic lockless reads, based loosely
->>>> on the sem_lock() and sem_unlock() functions.
->>>>
->>>> Reported-by: Manfred Spraul <manfred@colorfullife.com>
->>>> [ paulmck: Update per Manfred Spraul and Hillf Danton feedback. ]
->>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->>>> ---
->>>>    .../Documentation/access-marking.txt          | 94 +++++++++++++++++++
->>>>    1 file changed, 94 insertions(+)
->>>>
->>>> diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
->>>> index 58bff26198767..be7d507997cf8 100644
->>>> --- a/tools/memory-model/Documentation/access-marking.txt
->>>> +++ b/tools/memory-model/Documentation/access-marking.txt
->>>> @@ -319,6 +319,100 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
->>>>    concurrent lockless write.
->>>> +Lock-Protected Writes With Heuristic Lockless Reads
->>>> +---------------------------------------------------
->>>> +
->>>> +For another example, suppose that the code can normally make use of
->>>> +a per-data-structure lock, but there are times when a global lock
->>>> +is required.  These times are indicated via a global flag.  The code
->>>> +might look as follows, and is based loosely on nf_conntrack_lock(),
->>>> +nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
->>>> +
->>>> +	bool global_flag;
->>>> +	DEFINE_SPINLOCK(global_lock);
->>>> +	struct foo {
->>>> +		spinlock_t f_lock;
->>>> +		int f_data;
->>>> +	};
->>>> +
->>>> +	/* All foo structures are in the following array. */
->>>> +	int nfoo;
->>>> +	struct foo *foo_array;
->>>> +
->>>> +	void do_something_locked(struct foo *fp)
->>>> +	{
->>>> +		bool gf = true;
->>>> +
->>>> +		/* IMPORTANT: Heuristic plus spin_lock()! */
->>>> +		if (!data_race(global_flag)) {
->>>> +			spin_lock(&fp->f_lock);
->>>> +			if (!smp_load_acquire(&global_flag)) {
->>>> +				do_something(fp);
->>>> +				spin_unlock(&fp->f_lock);
->>>> +				return;
->>>> +			}
->>>> +			spin_unlock(&fp->f_lock);
->>>> +		}
->>>> +		spin_lock(&global_lock);
->>>> +		/* Lock held, thus global flag cannot change. */
->>>> +		if (!global_flag) {
->>> How can global_flag ever be true at this point?  The only line of code
->>> that sets it is in begin_global() below, it only runs while global_lock
->>> is held, and global_flag is set back to false before the lock is
->>> released.
->> It can't be true. The code is a simplified version of the algorithm in
->> ipc/sem.c.
->>
->> For the ipc/sem.c, global_flag can remain true even after dropping
->> global_lock.
->>
->> When transferring the approach to nf_conntrack_core, I didn't notice that
->> nf_conntrack doesn't need a persistent global_flag.
->>
->> Thus the recheck after spin_lock(&global_lock) is not needed.
-> In fact, since global_flag is true if and only if global_lock is locked,
-> perhaps it can be removed entirely and replaced with
-> spin_is_locked(&global_lock).
+Is the move necessary or should I drop it from this series entirely?
 
-I try to avoid spin_is_locked():
+Thanks for the review!
 
-- spin_is_locked() is no memory barrier
+	- Anirudh.
 
-- spin_lock() is an acquire memory barrier - for the read part. There is 
-no barrier at all related to the write part.
-
-With an explicit variable, the memory barriers can be controlled much 
-better - and it is guaranteed to work in the same way on all architectures.
-
-
---
-
-     Manfred
-
+> easier to review.
+> 
+> We preserve the error code from the wait when a signal did not interrupt
+> the process (-ERESTARTSYS), and so this can only be -ETIMEDOUT.
+> 
+> > -	} else if (fw_priv->is_paged_buf && !fw_priv->data)
+> > -		retval = -ENOMEM;
+> > -
+> 
+> Thanks for keeping up with the series!
+> 
+>   Luis
