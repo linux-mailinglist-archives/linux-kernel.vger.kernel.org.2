@@ -2,131 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50CC3D3E62
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4173D3E68
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231171AbhGWQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:39:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53170 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229492AbhGWQj1 (ORCPT
+        id S231174AbhGWQkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGWQka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:39:27 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NHDP0Q132756;
-        Fri, 23 Jul 2021 13:19:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=VEAq6iynjckKWvoAaVOTkw1tJE3g63YroYl1HxSpEHw=;
- b=femDne3KXi4SzQkac/6+bwL6whs/LZFGzPwAmU2AAmyt4uD2dPTsE0zcxpmUi5MIabMi
- jljnxj8IAFAxH9gEOnfPB99KoPvHQXnGserhdiaWIHHB0uLKRlfWsJV0CkY3zov8XBJj
- GFJe5T2ZOdBFOr39McSv1/QlcJpneZHyTUZSf+DIAk/A7TwrHhfYU46/SKweI20YJjFI
- snAVUFSz9osPyG2+CiIJTuUqXVo00Bq4YcDFGaG+PjCojkzsCxAnOeds8HKV6JRZbKHm
- UNwRqgQlL5XwRbtTVAyb+Y4cvP5Bj0makvthMxKrxvEiPkUs5Qv/RL1Ob/ASC/u0f9yZ Xw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a01yq050r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 13:19:57 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16NHFG0R140257;
-        Fri, 23 Jul 2021 13:19:56 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a01yq0500-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 13:19:56 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16NHITph030182;
-        Fri, 23 Jul 2021 17:19:54 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 39xhx49b97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 17:19:54 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16NHJqPS28901852
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 17:19:52 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE9D74C04E;
-        Fri, 23 Jul 2021 17:19:51 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8A8EE4C04A;
-        Fri, 23 Jul 2021 17:19:51 +0000 (GMT)
-Received: from li-c43276cc-23ad-11b2-a85c-bda00957cb67.ibm.com (unknown [9.145.176.214])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 17:19:51 +0000 (GMT)
-Subject: Re: [RESEND] scsi: aacraid: aachba: replace if with max()
-From:   Steffen Maier <maier@linux.ibm.com>
-To:     Salah Triki <salah.triki@gmail.com>, aacraid@microsemi.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210722173212.GA5685@pc>
- <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
-Message-ID: <923d4bad-ef51-c4d7-ac40-d2df5954d866@linux.ibm.com>
-Date:   Fri, 23 Jul 2021 19:19:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rPYkOtP_ukyFwL_VRPXfl62pD-pLmGYK
-X-Proofpoint-ORIG-GUID: 80k7ehWkwUwil_whvc5FvklnXbS_zJyf
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 23 Jul 2021 12:40:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7702C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:21:03 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m6yr1-00050d-N2; Fri, 23 Jul 2021 19:20:55 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1m6yr0-0000IS-5s; Fri, 23 Jul 2021 19:20:54 +0200
+Date:   Fri, 23 Jul 2021 19:20:54 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     alexandru.tachici@analog.com
+Cc:     andrew@lunn.ch, alexandru.ardelean@analog.com, davem@davemloft.net,
+        devicetree@vger.kernel.org, hkallweit1@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        netdev@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: ADIN1100
+Message-ID: <20210723172054.nfq3shvfhidfnjyn@pengutronix.de>
+References: <YO3GNqqUbyxId+Mn@lunn.ch>
+ <20210716212427.55302-1-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_09:2021-07-23,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=999 phishscore=0 suspectscore=0 clxscore=1015
- bulkscore=0 spamscore=0 impostorscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230102
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210716212427.55302-1-alexandru.tachici@analog.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 19:19:14 up 233 days,  7:25, 27 users,  load average: 0.16, 0.13,
+ 0.09
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/21 6:56 PM, Steffen Maier wrote:
-> On 7/22/21 7:32 PM, Salah Triki wrote:
->> Replace if with max() in order to make code more clean.
->>
->> Signed-off-by: Salah Triki <salah.triki@gmail.com>
->> ---
->>   drivers/scsi/aacraid/aachba.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
->> index 46b8dffce2dd..330224f08fd3 100644
->> --- a/drivers/scsi/aacraid/aachba.c
->> +++ b/drivers/scsi/aacraid/aachba.c
->> @@ -485,8 +485,8 @@ int aac_get_containers(struct aac_dev *dev)
->>       if (status != -ERESTARTSYS)
->>           aac_fib_free(fibptr);
->>
->> -    if (maximum_num_containers < MAXIMUM_NUM_CONTAINERS)
->> -        maximum_num_containers = MAXIMUM_NUM_CONTAINERS;
->> +    maximum_num_containers = max(maximum_num_containers, 
->> MAXIMUM_NUM_CONTAINERS);
->> +
-> 
-> Haven't really looked closely, but isn't the old code more like a min() rather 
-> than a max()? maximum_num_containers being at least MAXIMUM_NUM_CONTAINERS or 
-> higher?
+On Sat, Jul 17, 2021 at 12:24:27AM +0300, alexandru.tachici@analog.com wrote:
+> No, ADIN1100 supports only full duplex mode. Added this one just to
+> report through ethtool if lp supports it or not.
 
-Sorry, scratch that, it was nonsense.
-
+Same about TI T1L phy, there is not half duplex support. I'm courios if
+this is actually required by the 802.3cg standard. 
 
 -- 
-Mit freundlichen Gruessen / Kind regards
-Steffen Maier
-
-Linux on IBM Z Development
-
-https://www.ibm.com/privacy/us/en/
-IBM Deutschland Research & Development GmbH
-Vorsitzender des Aufsichtsrats: Matthias Hartmann
-Geschaeftsfuehrung: Dirk Wittkopp
-Sitz der Gesellschaft: Boeblingen
-Registergericht: Amtsgericht Stuttgart, HRB 243294
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
