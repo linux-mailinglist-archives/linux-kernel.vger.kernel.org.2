@@ -2,154 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667653D31DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B523D31DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhGWBwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233166AbhGWBws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:52:48 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3D6260EB2;
-        Fri, 23 Jul 2021 02:33:21 +0000 (UTC)
-Date:   Thu, 22 Jul 2021 22:33:20 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] tracepoints: Update static_call before tp_funcs when adding
- a tracepoint
-Message-ID: <20210722223320.53900ddc@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233421AbhGWBwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233394AbhGWBww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 21:52:52 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD6D4C061575;
+        Thu, 22 Jul 2021 19:33:25 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id b29so9767095ljf.11;
+        Thu, 22 Jul 2021 19:33:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ipOP6nu3XG1kXuS3OM4viAcVR9JIka56vy3jKOuWT3o=;
+        b=nKa01dlI97kjhSSTozjBzsJdqXHp4fkJLkMnoygm1eVPcOTOU0wshVmszhzMDTJetO
+         ZfAKIOUc9W3mD+ENnPwwcwwMjM8+x3FpLArFDwI8Nx1NU4ZaliHJ2KW5a8/pn0u/e8od
+         yUgbH6jVeojzLkrUb9jItOBJealsoLx5NilEMPj3lZzO65Z6o6zH/SJhQe2jQKc2ueUm
+         svcMIg5asnRveBkytsG3gLwTK7FGE0ub7eeXg111HErgjUNZf4UA7HjE/02mlUlAD9jD
+         TkaFyMKG4PViOc3EwL4TRUkyecygX2LnD8VoXLJN6WcXHQsBZNc2OLvatM79XPQAv2NT
+         8PCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ipOP6nu3XG1kXuS3OM4viAcVR9JIka56vy3jKOuWT3o=;
+        b=g0VK6vVpBhQqXo8HDDQaRnMUdNEgRVSsDEEicz07+AtR0BNUtcLCZJDfVpU8sBf6rh
+         1Cp55IDLfaqYcMDQzkplgdV+UUt9eV71NyGf/DkLB+x2XlNWGuvVtgSNZQB1hzHrkutC
+         CjGVv0XOGhmqcKBmxRgCD6ObLgkHRthbESFJEcGXS6+PbT6ut2Knh5I+Li/EPnnnonE7
+         W0pCK4jiN/ntDsnzoY96iGhzQOxMB1iU/H2V9crUzGFDOMuMTGcGEyndX36bPi6z5zNO
+         WTlWNmkimQwjJisrJC1CGIwmT/I/gKY+pA/6t8EjO+sZHaui7IuE0ejgnisFsIEbASBm
+         E9eg==
+X-Gm-Message-State: AOAM531nslenARLEscC1OY+y+LKUnEmVZoobsE+Og7BPQzMog2D0AHZc
+        XZQkQX9D8ZVi5biTn65Havg=
+X-Google-Smtp-Source: ABdhPJzpFF6RCOwzFWG7FRpiYcp8g8/6WCMl1p+kDt6RdIFHYVyObMvByTfbxlbIkhtH5Qgrx3kTjQ==
+X-Received: by 2002:a2e:9852:: with SMTP id e18mr2041774ljj.6.1627007604089;
+        Thu, 22 Jul 2021 19:33:24 -0700 (PDT)
+Received: from mobilestation ([95.79.127.110])
+        by smtp.gmail.com with ESMTPSA id g14sm2104872lfv.213.2021.07.22.19.33.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 19:33:23 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 05:33:21 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "nandhini.srikandan@intel.com" <nandhini.srikandan@intel.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "kris.pan@intel.com" <kris.pan@intel.com>,
+        "kenchappa.demakkanavar@intel.com" <kenchappa.demakkanavar@intel.com>,
+        "furong.zhou@intel.com" <furong.zhou@intel.com>,
+        "mallikarjunappa.sangannavar@intel.com" 
+        <mallikarjunappa.sangannavar@intel.com>,
+        "mahesh.r.vaidya@intel.com" <mahesh.r.vaidya@intel.com>,
+        "rashmi.a@intel.com" <rashmi.a@intel.com>
+Subject: Re: =?utf-8?B?W+KAnFBBVENI?= =?utf-8?B?4oCd?= 2/2] spi: dw: Add
+ support for Intel Thunder Bay SPI
+Message-ID: <20210723023321.h63awes3kyigu7mx@mobilestation>
+References: <20210722053358.29682-1-nandhini.srikandan@intel.com>
+ <20210722053358.29682-3-nandhini.srikandan@intel.com>
+ <20210722170435.y6fla7ixfgzwkje2@mobilestation>
+ <CAHp75VeQ0Q174gUww0oqw9MmmE76AGMxcNLj4UkgjLZzhGy6Mw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeQ0Q174gUww0oqw9MmmE76AGMxcNLj4UkgjLZzhGy6Mw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Fri, Jul 23, 2021 at 01:31:07AM +0300, Andy Shevchenko wrote:
+> On Thursday, July 22, 2021, Serge Semin <fancer.lancer@gmail.com> wrote:
+> 
+> > On Thu, Jul 22, 2021 at 01:33:58PM +0800, nandhini.srikandan@intel.com
+> > wrote:
+> > > From: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> > >
+> > > Add support for Intel Thunder Bay SPI controller, which uses DesignWare
+> > > DWC_ssi core.
+> > > Bit 31 of CTRLR0 register is added for Thunder Bay, to
+> > > configure the device as a master or as a slave serial peripheral.
+> >
+> > > Bit 14(SSTE) of CTRLR0 register should be set(1) for Thunder Bay.
+> >
+> > Could you elaborate what this bit mean?
+> >
+> > > Added reset of SPI controller required for Thunder Bay.
+> >
+> > If it's really required (is it?) then you were supposed to reflect
+> > that in the code by returning a negative error if the driver fails to
+> > retrieve the reset control handler. In accordance with that the
+> > bindings should have been also updated so the dtbs_check procedure
+> > would make sure the Thunder Bay SPI DT-node comply to the requirements
+> > in that matter.
+> >
+> > Anyway I've got a few comments regarding this part of your patch.
+> > Please see them below.
+> >
+> > >
+> > > Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
+> > > ---
+> > >  drivers/spi/spi-dw-core.c |  6 ++++++
+> > >  drivers/spi/spi-dw-mmio.c | 20 ++++++++++++++++++++
+> > >  drivers/spi/spi-dw.h      | 15 +++++++++++++++
+> > >  3 files changed, 41 insertions(+)
+> > >
+> > > diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
+> > > index a305074c482e..eecf8dcd0677 100644
+> > > --- a/drivers/spi/spi-dw-core.c
+> > > +++ b/drivers/spi/spi-dw-core.c
+> > > @@ -302,6 +302,12 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws,
+> > struct spi_device *spi)
+> > >
+> > >               if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
+> > >                       cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
+> > > +
+> >
+> > > +             if (dws->caps & DW_SPI_CAP_THUNDERBAY_MST)
+> > > +                     cr0 |= DWC_SSI_CTRLR0_THUNDERBAY_MST;
+> >
+> > I guess that KeemBay and ThunderBay SPI controllers have been
+> > synthesized based on the same IP-core with a few differences. Is that
+> > true? Could you tell us what is the difference between them?
+> >
+> > Anyway regarding this the Master/Slave part. Is the ThunderBay
+> > implementation of the Master/Slave capability the same as it was
+> > embedded in the KeemBay controller? If so then what do you think about
+> > just renaming DW_SPI_CAP_KEEMBAY_MST to something like
+> > DW_SPI_CAP_INTEL_MST and using it then for both Keembay and ThunderBay
+> > versions of the SPI-controllers? (The similar renaming needs to be
+> > provided for the DWC_SSI_CTRLR0_KEEMBAY_MST macro then.) You can
+> > implement it as a preparation patch posted before this one in the
+> > series.
+> 
+> 
 
-Because of the significant overhead that retpolines pose on indirect
-calls, the tracepoint code was updated to use the new "static_calls" that
-can modify the running code to directly call a function instead of using
-an indirect caller, and this function can be changed at runtime.
+> 
+> Please, if you go this way add some more specific definition, b/c this IP
+> is being used on other intel SoCs which have nothing to do with these two.
+> 
 
-In the tracepoint code that calls all the registered callbacks that are
-attached to a tracepoint, the following is done:
+Does it have the same Master/Slave capability? If it does then we can
+stick with suggested name like DW_SPI_CAP_INTEL_MST, which could be
+perceived as "Intel-specific MST capability implemented for DW SPI".
+If it doesn't then does it have another type of the Master/Slave
+capability? If it does, then indeed we need to think on a better
+naming here. What name would you suggest in that case?
 
-	it_func_ptr = rcu_dereference_raw((&__tracepoint_##name)->funcs);
-	if (it_func_ptr) {
-		__data = (it_func_ptr)->data;
-		static_call(tp_func_##name)(__data, args);
-	}
+-Sergey
 
-If there's just a single callback, the static_call is updated to just call
-that callback directly. Once another handler is added, then the static
-caller is updated to call the iterator, that simply loops over all the
-funcs in the array and calls each of the callbacks like the old method
-using indirect calling.
-
-The issue was discovered with a race between updating the funcs array and
-updating the static_call. The funcs array was updated first and then the
-static_call was updated. This is not an issue as long as the first element
-in the old array is the same as the first element in the new array. But
-that assumption is incorrect, because callbacks also have a priority
-field, and if there's a callback added that has a higher priority than the
-callback on the old array, then it will become the first callback in the
-new array. This means that it is possible to call the old callback with
-the new callback data element, which can cause a kernel panic.
-
-	static_call = callback1()
-	funcs[] = {callback1,data1};
-	callback2 has higher priority than callback1
-
-	CPU 1				CPU 2
-	-----				-----
-
-   new_funcs = {callback2,data2},
-               {callback1,data1}
-
-   rcu_assign_pointer(tp->funcs, new_funcs);
-
-  /*
-   * Now tp->funcs has the new array
-   * but the static_call still calls callback1
-   */
-
-				it_func_ptr = tp->funcs [ new_funcs ]
-				data = it_func_ptr->data [ data2 ]
-				static_call(callback1, data);
-
-				/* Now callback1 is called with
-				 * callback2's data */
-
-				[ KERNEL PANIC ]
-
-   update_static_call(iterator);
-
-To prevent this from happening, always switch the static_call to the
-iterator before assigning the tp->funcs to the new array. The iterator will
-always properly match the callback with its data.
-
-To trigger this bug:
-
-  In one terminal:
-
-    while :; do hackbench 50; done
-
-  In another terminal
-
-    echo 1 > /sys/kernel/tracing/events/sched/sched_waking/enable
-    while :; do
-        echo 1 > /sys/kernel/tracing/set_event_pid;
-        sleep 0.5
-        echo 0 > /sys/kernel/tracing/set_event_pid;
-        sleep 0.5
-   done
-
-And it doesn't take long to crash. This is because the set_event_pid adds
-a callback to the sched_waking tracepoint with a high priority, which will
-be called before the sched_waking trace event callback is called.
-
-Note, the removal to a single callback updates the array first, before
-changing the static_call to single callback, which is the proper order as
-the first element in the array is the same as what the static_call is
-being changed to.
-
-Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
-
-Cc: stable@vger.kernel.org
-Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
-Reported-by: Stefan Metzmacher <metze@samba.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/tracepoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 976bf8ce8039..fc32821f8240 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -299,8 +299,8 @@ static int tracepoint_add_func(struct tracepoint *tp,
- 	 * a pointer to it.  This array is referenced by __DO_TRACE from
- 	 * include/linux/tracepoint.h using rcu_dereference_sched().
- 	 */
--	rcu_assign_pointer(tp->funcs, tp_funcs);
- 	tracepoint_update_call(tp, tp_funcs, false);
-+	rcu_assign_pointer(tp->funcs, tp_funcs);
- 	static_key_enable(&tp->key);
- 
- 	release_probes(old);
--- 
-2.31.1
-
+> 
+> >
+> > > +
+> > > +             if (dws->caps & DW_SPI_CAP_THUNDERBAY_SSTE)
+> > > +                     cr0 |= DWC_SSI_CTRLR0_THUNDERBAY_SSTE;
+> >
+> > Similar question regarding the SSTE bit. Is it something ThunderBay
+> > specific only? Was the corresponding functionality embedded into the
+> > KeemBay or any other Intel version of the DW SPI controller?
+> >
+> > >       }
+> > >
+> > >       return cr0;
+> > > diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
+> > > index 3379720cfcb8..ca9aad078752 100644
+> > > --- a/drivers/spi/spi-dw-mmio.c
+> > > +++ b/drivers/spi/spi-dw-mmio.c
+> > > @@ -222,6 +222,15 @@ static int dw_spi_keembay_init(struct
+> > platform_device *pdev,
+> > >       return 0;
+> > >  }
+> > >
+> > > +static int dw_spi_thunderbay_init(struct platform_device *pdev,
+> > > +                               struct dw_spi_mmio *dwsmmio)
+> > > +{
+> >
+> > > +     dwsmmio->dws.caps = DW_SPI_CAP_THUNDERBAY_MST |
+> > DW_SPI_CAP_THUNDERBAY_RST |
+> > > +                         DW_SPI_CAP_THUNDERBAY_SSTE |
+> > DW_SPI_CAP_DWC_SSI;
+> > > +
+> >
+> > Originally the DW_SPI_CAP-functionality was provided to modify the DW
+> > SPI core driver behavior when it was required. For instance it was
+> > mostly connected with the platform-specific CR0-register
+> > configurations. So as I see it the reset part can be successfully
+> > handled fully in the framework of the MMIO-platform glue-driver.
+> > Instead of defining a new capability you could have just added the
+> > next code in the ThunderBay init-method:
+> >
+> > +       if (!dwsmmio->rstc) {
+> > +               dev_err(&pdev->dev, "Reset control is missing\n");
+> > +               return -EINVAL;
+> > +       }
+> > +
+> > +       reset_control_assert(dwsmmio->rstc);
+> > +       udelay(2);
+> > +       reset_control_deassert(dwsmmio->rstc);
+> > +
+> >
+> > Thus you'd reuse the already implemented reset-controller handler
+> > defined in the dw_spi_mmio structure with no need of implementing
+> > a new capability.
+> >
+> > > +     return 0;
+> > > +}
+> > > +
+> > >  static int dw_spi_canaan_k210_init(struct platform_device *pdev,
+> > >                                  struct dw_spi_mmio *dwsmmio)
+> > >  {
+> > > @@ -243,6 +252,7 @@ static int dw_spi_mmio_probe(struct platform_device
+> > *pdev)
+> > >                        struct dw_spi_mmio *dwsmmio);
+> > >       struct dw_spi_mmio *dwsmmio;
+> > >       struct resource *mem;
+> > > +     struct reset_control *rst;
+> > >       struct dw_spi *dws;
+> > >       int ret;
+> > >       int num_cs;
+> > > @@ -309,6 +319,15 @@ static int dw_spi_mmio_probe(struct platform_device
+> > *pdev)
+> > >                       goto out;
+> > >       }
+> > >
+> >
+> > > +     if (dws->caps & DW_SPI_CAP_THUNDERBAY_RST) {
+> > > +             rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> > > +             if (!IS_ERR(rst)) {
+> > > +                     reset_control_assert(rst);
+> > > +                     udelay(2);
+> > > +                     reset_control_deassert(rst);
+> > > +             }
+> > > +     }
+> > > +
+> >
+> > Please see my comment above. We don't need to have this code here if
+> > you get to implement what I suggest there.
+> >
+> > >       pm_runtime_enable(&pdev->dev);
+> > >
+> > >       ret = dw_spi_add_host(&pdev->dev, dws);
+> > > @@ -349,6 +368,7 @@ static const struct of_device_id
+> > dw_spi_mmio_of_match[] = {
+> > >       { .compatible = "renesas,rzn1-spi", .data = dw_spi_dw_apb_init},
+> > >       { .compatible = "snps,dwc-ssi-1.01a", .data = dw_spi_dwc_ssi_init},
+> > >       { .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
+> > > +     { .compatible = "intel,thunderbay-ssi", .data =
+> > dw_spi_thunderbay_init},
+> > >       { .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
+> > >       { .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
+> > >       { /* end of table */}
+> > > diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
+> > > index b665e040862c..bfe1d5edc25a 100644
+> > > --- a/drivers/spi/spi-dw.h
+> > > +++ b/drivers/spi/spi-dw.h
+> > > @@ -82,6 +82,18 @@
+> > >   */
+> > >  #define DWC_SSI_CTRLR0_KEEMBAY_MST   BIT(31)
+> > >
+> >
+> > > +/*
+> > > + * For Thunder Bay, CTRLR0[14] should be set to 1.
+> > > + */
+> >
+> > Could you provide a bit more details what this bit has been
+> > implemented for?
+> >
+> > > +#define DWC_SSI_CTRLR0_THUNDERBAY_SSTE       BIT(14)
+> > > +
+> >
+> > > +/*
+> > > + * For Thunder Bay, CTRLR0[31] is used to select controller mode.
+> > > + * 0: SSI is slave
+> > > + * 1: SSI is master
+> > > + */
+> > > +#define DWC_SSI_CTRLR0_THUNDERBAY_MST        BIT(31)
+> >
+> > Please see my suggestion regarding the Master/Slave capability in one
+> > of the comments above.
+> >
+> > Regards
+> > -Serge
+> >
+> > > +
+> > >  /* Bit fields in CTRLR1 */
+> > >  #define SPI_NDF_MASK                 GENMASK(15, 0)
+> > >
+> > > @@ -125,6 +137,9 @@ enum dw_ssi_type {
+> > >  #define DW_SPI_CAP_KEEMBAY_MST               BIT(1)
+> > >  #define DW_SPI_CAP_DWC_SSI           BIT(2)
+> > >  #define DW_SPI_CAP_DFS32             BIT(3)
+> > > +#define DW_SPI_CAP_THUNDERBAY_MST    BIT(4)
+> > > +#define DW_SPI_CAP_THUNDERBAY_RST    BIT(5)
+> > > +#define DW_SPI_CAP_THUNDERBAY_SSTE   BIT(6)
+> > >
+> > >  /* Slave spi_transfer/spi_mem_op related */
+> > >  struct dw_spi_cfg {
+> > > --
+> > > 2.17.1
+> > >
+> >
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
