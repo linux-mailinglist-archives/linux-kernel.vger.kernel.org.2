@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEA53D37EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B24D3D3800
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhGWJEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54340 "EHLO
+        id S231408AbhGWJEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhGWJD6 (ORCPT
+        with ESMTP id S231467AbhGWJEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:03:58 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA0AC061575;
-        Fri, 23 Jul 2021 02:44:31 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id hp25so2651707ejc.11;
-        Fri, 23 Jul 2021 02:44:31 -0700 (PDT)
+        Fri, 23 Jul 2021 05:04:02 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA94C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:44:32 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id f12so1010932ljn.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oAM1lPNMA+DFw4p7BBzVOKB5jQsces3J/Pr+N+LyGeg=;
-        b=CYqV0zfZCndWTC02JCx5aK/OylW4KuxsCPJdkwUREzKMPzH7/R4HoDxrQUmMug8j+4
-         wy3EQlajwwON0WuEe+UkfMbBLveglqyMTWECor2uQVT7j57hPXp0dOVn0jXBxRzHgYuT
-         FstaVsCHA0VqdmWw/tjmC/ObcjtD91gIwm32ae3JV41r0RU1VTecyLbqpHnmhTddulvc
-         4KASqSxLtoBe3cz3lHzZ7BMp67FWEe16KK+qlcPcGnIN0PEP1xcHqIXEnfGn3ec/2jCr
-         30OP1iQvrbl7RC2y8smL3PhSFrVy9Pc5Pcq/Ejfc+S9p1RB2Eqt9aurNqnVESWp6HqOc
-         Nk8w==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=69jIFrc5Dv4sZ7Sebk4h84MxIXo7scSCzzsjBWeKzJc=;
+        b=iCTaBkn8Wq/y2QDYfWs0tpGbwl3wK0Smw2sYp7+mTg+YBR4aXfc+m4ikRdNrlBl0Lh
+         dA4u+C3d6esT3X8o3/y08Ez598/S+GT1RzHcK751GikQZYnWLwtz60yH/RETvQrbG0er
+         lQvWyp12oQaVqC6R2v+30vS6+91I4GIYNPmJ2jfDglJ4N0hP0Yp0Uv6uoe1Y6Il1v2ZO
+         8IKbbGGNhe2prb3PBHviMLYWn9IXV1eSt5+GGznfePvz/TL+a+NcpldA855fKVT4fvBG
+         eW41vRyQO4h/mt6bUMgUOoCQRw7X24snUeBogJ094lo5pxRnsE/u6I7tGUVMg+nJI+1p
+         +p3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oAM1lPNMA+DFw4p7BBzVOKB5jQsces3J/Pr+N+LyGeg=;
-        b=sBvfm1Mt9cgVkj2He98Mh/XDeAFsvqrYHcBaJV77UUPQBy9TQSx272mibVbX/JYa80
-         I1vDd8RSalYh0f9d+Z8iMPiipJS7lOdrozF2n6rBXTpc02kp8Bq3TPGcWGnnNAvlBuUF
-         TP73IVrdpCGYo66y8jEsayBk8f23KIUvPk2zXZDlPE2Q2SCCeqBNWflozxvQJULKVFVz
-         FpTYCXF7K8WTFfUrOClDbkgau5KBEU6/dryQAlqV69qI1FL0Wt+f/r1kmXm/GPQThRTF
-         dETupJYRgLw/iRk3hJkz6H/YA1RVeAb7vNEY+M2IMPDun5I49kIt1pA1jkF8eETZXr+B
-         m/GA==
-X-Gm-Message-State: AOAM530Te8FShVBptk+93R+CcInJnaRR+jLUSanibWPHNXuiK9ZVhyyR
-        ixFWqtI7uH7rMI7Znll8W0gBc+QKYtpfTzaWqSc=
-X-Google-Smtp-Source: ABdhPJz7+WsGlMw1zvCrS5q1cL9ef0ZYaCywy/k2ySJmHBA19cbaymZ8+4KA2MmrttCNpbAldppZ4DxP0H5fuQxpm+M=
-X-Received: by 2002:a17:906:eda7:: with SMTP id sa7mr3879937ejb.135.1627033469906;
- Fri, 23 Jul 2021 02:44:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=69jIFrc5Dv4sZ7Sebk4h84MxIXo7scSCzzsjBWeKzJc=;
+        b=kDfqTkXZ56n+a/Zs+/PNB4eyKBiqKHJW3UpZEC0OLwizFnBC+yUqLWur5LFLWZ0MHI
+         amit/nVeic9kXhcLzYvT08mYmjqCYzOs4DoT1A/90LK4G7UJ953VHsK1c4h9nLBPwOuj
+         JU1WuQDKzOPOyQ9OERPJa1ZrTxjx9VyZpEcFnGYlPIUdinEafxayjM6CxG2Qk/6vlotS
+         vcJlT4zwxW0ld81xcBH5+KYYuq14TeweoVvmK6d9rO6sFacdFdb5+FnNaZMHuzXhPl0I
+         /rkUhBqAq5rJcSRhbenoO2K7jY+/C3fyfIHrvF54/uJeqlMxgY/XBDsyZe/+OyUoRKd/
+         0v3Q==
+X-Gm-Message-State: AOAM530R3Lti2FPjZyzAE0aFFspuo0bSUuDJ/9kfxnGWQPJGZXSVjOYp
+        CpB4NB5oggMlBodLRDc7Qto92AkEP4ibGAEF
+X-Google-Smtp-Source: ABdhPJw89Ne0hTG4LO+wqfJGEsMvU7CNMyUkADS6cr0fy3AXG3aXIaCPSQws85V/t6u4l/fufUk38A==
+X-Received: by 2002:a2e:b4b4:: with SMTP id q20mr2777859ljm.155.1627033470502;
+        Fri, 23 Jul 2021 02:44:30 -0700 (PDT)
+Received: from jade.urgonet (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
+        by smtp.gmail.com with ESMTPSA id f2sm403808ljq.131.2021.07.23.02.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 02:44:30 -0700 (PDT)
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH v3 0/6] Asynchronous notifications from secure world
+Date:   Fri, 23 Jul 2021 11:44:16 +0200
+Message-Id: <20210723094422.2150313-1-jens.wiklander@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
- <6fa2aecc-ab64-894d-77c2-0a19b524cc03@gmail.com> <CAD-N9QXO4bX6SzMNir0fin0wVAZYhsS8-triiWPjY+Rz2WCy1w@mail.gmail.com>
- <2e9e6fa7-a405-088d-3b4c-da62b85f3fc6@gmail.com>
-In-Reply-To: <2e9e6fa7-a405-088d-3b4c-da62b85f3fc6@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Fri, 23 Jul 2021 17:44:03 +0800
-Message-ID: <CAD-N9QXdv2me8wSm0D9nN72j3oP8mc5vsLJ+ffbH2fbCS6_F_A@mail.gmail.com>
-Subject: Re: [PATCH] cfg80211: free the object allocated in wiphy_apply_custom_regulatory
-To:     xiaoqiang zhao <zhaoxiaoqiang007@gmail.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Ilan Peer <ilan.peer@intel.com>,
-        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-wireless@vger.kernel.org,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 5:36 PM xiaoqiang zhao
-<zhaoxiaoqiang007@gmail.com> wrote:
->
->
->
-> =E5=9C=A8 2021/7/23 17:25, Dongliang Mu =E5=86=99=E9=81=93:
-> > Can you point out the concrete code releasing regd? Maybe the link to e=
-lixir.
-> >
-> >>>       ieee80211_unregister_hw(data->hw);
-> >>>       device_release_driver(data->dev);
-> >>>       device_unregister(data->dev);
-> >>>
->
-> call graph seems like this:
->
-> ieee80211_unregister_hw
-> (https://elixir.bootlin.com/linux/v5.14-rc2/source/net/mac80211/main.c#L1=
-368)
->         wiphy_unregister
-> (https://elixir.bootlin.com/linux/v5.14-rc2/source/net/wireless/core.c#L1=
-011)
->                 wiphy_regulatory_deregister
-> (https://elixir.bootlin.com/linux/v5.14-rc2/source/net/wireless/reg.c#L40=
-57)
->                         rcu_free_regdom
+Hi all,
 
-Thanks very much. This is really helpful.
+This adds support for asynchronous notifications from OP-TEE in secure
+world to the OP-TEE driver. This allows a design with a top half and bottom
+half type of driver where the top half runs in secure interrupt context and
+a notifications tells normal world to schedule a yielding call to do the
+bottom half processing.
 
->
+An interrupt is used to notify the driver that there are asynchronous
+notifications pending.
+
+v2->v3:
+* Rebased on v5.14-rc2 which made the patch "dt-bindings: arm: Convert
+  optee binding to json-schema" from the V2 patch set obsolete.
+* Applied Ard's Acked-by on "optee: add asynchronous notifications"
+
+v1->v2:
+* Added documentation
+* Converted optee bindings to json-schema and added interrupt property
+* Configure notification interrupt from DT instead of getting it
+  from secure world, suggested by Ard Biesheuvel <ardb@kernel.org>.
+
+Thanks,
+Jens
+
+Jens Wiklander (6):
+  docs: staging/tee.rst: add a section on OP-TEE notifications
+  dt-bindings: arm: optee: add interrupt property
+  tee: fix put order in teedev_close_context()
+  tee: add tee_dev_open_helper() primitive
+  optee: separate notification functions
+  optee: add asynchronous notifications
+
+ .../arm/firmware/linaro,optee-tz.yaml         |   4 +
+ Documentation/staging/tee.rst                 |  27 +++
+ drivers/tee/optee/Makefile                    |   1 +
+ drivers/tee/optee/call.c                      |  27 +++
+ drivers/tee/optee/core.c                      |  87 +++++--
+ drivers/tee/optee/notif.c                     | 226 ++++++++++++++++++
+ drivers/tee/optee/optee_msg.h                 |   9 +
+ drivers/tee/optee/optee_private.h             |  23 +-
+ drivers/tee/optee/optee_rpc_cmd.h             |  31 +--
+ drivers/tee/optee/optee_smc.h                 |  75 +++++-
+ drivers/tee/optee/rpc.c                       |  73 +-----
+ drivers/tee/tee_core.c                        |  37 ++-
+ include/linux/tee_drv.h                       |  27 +++
+ 13 files changed, 523 insertions(+), 124 deletions(-)
+ create mode 100644 drivers/tee/optee/notif.c
+
+-- 
+2.31.1
+
