@@ -2,122 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EACB3D3101
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52473D3108
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233000AbhGWAEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:04:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32017 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232832AbhGWACh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:02:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627000990;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IzAgVUDW4F6INuiFdyg/5BoR655vppoe7oB6S9hgdEk=;
-        b=fTiA1RxrVU9vTRclYax/z/bT18HTYxbZ9fLzko7KHvTTytsETdPGcsxHfU+utlQ3Y0tzu0
-        hl2bhL2fmmIvvZKyZcdDOkSzx8yXWnkgriHjttnCzBA9Kk1+qV6WPpyXijrxXif++RYoUV
-        TlsUnMw6rgE8u8eaXenx5d9orCew1RY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-MXfsOGNcOt2WfyCpXaBMhA-1; Thu, 22 Jul 2021 20:43:09 -0400
-X-MC-Unique: MXfsOGNcOt2WfyCpXaBMhA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A64FA806688;
-        Fri, 23 Jul 2021 00:43:07 +0000 (UTC)
-Received: from [10.64.54.195] (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B1EB017A99;
-        Fri, 23 Jul 2021 00:43:04 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH v3 01/12] mm/debug_vm_pgtable: Introduce struct
- pgtable_debug_args
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719130613.334901-1-gshan@redhat.com>
- <20210719130613.334901-2-gshan@redhat.com>
- <ab0f9daa-0c49-e74c-e073-6e03a3cabb07@arm.com>
- <280a5740-b5dc-4b78-3a38-67e5adbb0afd@redhat.com>
- <04a4618f-9899-1518-cee1-0a48cb4df4c6@arm.com>
- <65078a0c-c35c-8e3f-d4d3-3090b0c3daaf@redhat.com>
- <4a534102-11ff-c849-781e-ed173e46da56@arm.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <118678e4-b67a-2141-8caa-3bbb9e9cdc19@redhat.com>
-Date:   Fri, 23 Jul 2021 10:43:20 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S232885AbhGWAIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:08:41 -0400
+Received: from mga02.intel.com ([134.134.136.20]:50093 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232730AbhGWAIk (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 20:08:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="198982410"
+X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
+   d="scan'208";a="198982410"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 17:49:06 -0700
+X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
+   d="scan'208";a="470881832"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 17:49:03 -0700
+Subject: Re: [PATCH v3 3/3] perf tools: Enable on a list of CPUs for hybrid
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210712071235.28533-1-yao.jin@linux.intel.com>
+ <20210712071235.28533-4-yao.jin@linux.intel.com> <YPXUMTFbj2Tl3eBz@krava>
+ <ecf0e815-616f-0a08-cefd-baac93c0e47d@linux.intel.com>
+ <YPaUc3iodIASdYRY@krava>
+ <598463ae-0bb0-7609-407b-4822112b2093@linux.intel.com>
+ <YPlGPC3OkPihS91A@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <57a972ea-bbe3-2baa-ab8d-9fbfe2eb4d32@linux.intel.com>
+Date:   Fri, 23 Jul 2021 08:49:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <4a534102-11ff-c849-781e-ed173e46da56@arm.com>
+In-Reply-To: <YPlGPC3OkPihS91A@krava>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Hi Jiri,
 
-On 7/22/21 5:08 PM, Anshuman Khandual wrote:
-> On 7/22/21 11:53 AM, Gavin Shan wrote:
->> On 7/22/21 2:41 PM, Anshuman Khandual wrote:
->>> On 7/21/21 3:50 PM, Gavin Shan wrote:
->>>> On 7/21/21 3:44 PM, Anshuman Khandual wrote:
->>>>> On 7/19/21 6:36 PM, Gavin Shan wrote:
->>>>>> In debug_vm_pgtable(), there are many local variables introduced to
->>>>>> track the needed information and they are passed to the functions for
->>>>>> various test cases. It'd better to introduce a struct as place holder
->>>>>> for these information. With it, what the functions for various test
->>>>>> cases need is the struct, to simplify the code. It also makes code
->>>>>> easier to be maintained.
->>>>>>
->>>>>> Besides, set_xxx_at() could access the data on the corresponding pages
->>>>>> in the page table modifying tests. So the accessed pages in the tests
->>>>>> should have been allocated from buddy. Otherwise, we're accessing pages
->>>>>> that aren't owned by us. This causes issues like page flag corruption.
->>>>>>
->>>>>> This introduces "struct pgtable_debug_args". The struct is initialized
->>>>>> and destroyed, but the information in the struct isn't used yet. They
->>>>>> will be used in subsequent patches.
->>>>>>
->>>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>>>>> ---
->>>>>>     mm/debug_vm_pgtable.c | 197 +++++++++++++++++++++++++++++++++++++++++-
->>>>>>     1 file changed, 196 insertions(+), 1 deletion(-)
->>>>>>
-
-[...]
-
+On 7/22/2021 6:19 PM, Jiri Olsa wrote:
+> On Wed, Jul 21, 2021 at 12:30:11PM +0800, Jin, Yao wrote:
+>> Hi Jiri,
+>>
+>> On 7/20/2021 5:16 PM, Jiri Olsa wrote:
+>>> On Tue, Jul 20, 2021 at 03:07:02PM +0800, Jin, Yao wrote:
 >>>
->>> IIRC it is also not guaranteed that PMD_SHIFT <= (MAX_ORDER - 1). Hence
->>> this same scheme should be followed for PMD level allocation as well.
+>>> SNIP
+>>>
+>>>>
+>>>> OK, evlist__fix_cpus() is better, use this name in v4.
+>>>>
+>>>>>> +{
+>>>>>> +	struct perf_cpu_map *cpus;
+>>>>>> +	struct evsel *evsel, *tmp;
+>>>>>> +	struct perf_pmu *pmu;
+>>>>>> +	int ret, unmatched_count = 0, events_nr = 0;
+>>>>>> +
+>>>>>> +	if (!perf_pmu__has_hybrid() || !cpu_list)
+>>>>>> +		return 0;
+>>>>>> +
+>>>>>> +	cpus = perf_cpu_map__new(cpu_list);
+>>>>>> +	if (!cpus)
+>>>>>> +		return -1;
+>>>>>> +
+>>>>>> +	evlist__for_each_entry_safe(evlist, tmp, evsel) {
+>>>>>> +		struct perf_cpu_map *matched_cpus, *unmatched_cpus;
+>>>>>> +		char buf1[128], buf2[128];
+>>>>>> +
+>>>>>> +		pmu = perf_pmu__find_hybrid_pmu(evsel->pmu_name);
+>>>>>> +		if (!pmu)
+>>>>>> +			continue;
+>>>>>> +
+>>>>>> +		ret = perf_pmu__cpus_match(pmu, cpus, &matched_cpus,
+>>>>>> +					   &unmatched_cpus);
+>>>>>> +		if (ret)
+>>>>>> +			goto out;
+>>>>>> +
+>>>>>> +		events_nr++;
+>>>>>> +
+>>>>>> +		if (matched_cpus->nr > 0 && (unmatched_cpus->nr > 0 ||
+>>>>>> +		    matched_cpus->nr < cpus->nr ||
+>>>>>> +		    matched_cpus->nr < pmu->cpus->nr)) {
+>>>>>> +			perf_cpu_map__put(evsel->core.cpus);
+>>>>>> +			perf_cpu_map__put(evsel->core.own_cpus);
+>>>>>> +			evsel->core.cpus = perf_cpu_map__get(matched_cpus);
+>>>>>> +			evsel->core.own_cpus = perf_cpu_map__get(matched_cpus);
+>>>>>
+>>>>> I'm bit confused in here.. AFAIUI there's 2 evsel objects create
+>>>>> for hybrid 'cycles' ... should they have already proper cpus set?
+>>>>>
+>>>>
+>>>> For 'cycles', yes two evsels are created automatically. One is for atom CPU
+>>>> (e.g. 8-11), the other is for core CPU (e.g. 0-7). In this example, these 2
+>>>> evsels have already the cpus set.
+>>>
+>>> hum, so those evsels are created with pmu's cpus, right?
 >>>
 >>
->> In theory, it's possible to have PMD_SHIFT <= (MAX_ORDER - 1) with misconfigured
->> kernel. I will apply the similar logic to PMD huge page in v4.
+>> Yes, that's right. But we also check and adjust the evsel->cpus by using
+>> user's cpu list on hybrid (what the evlist__use_cpu_list() does).
 >>
->>>>       [... The code to release the PUD huge page needs changes based on @args->is_contiguous_pud_page]
+>>>>
+>>>> While the 'cpus' here is just the user specified cpu list.
+>>>> cpus = perf_cpu_map__new(cpu_list);
 >>>
->>> Right, a flag would be needed to call the appropriate free function.
+>>> then I think they will be changed by evlist__create_maps
+>>> with whatever user wants?
 >>>
 >>
->> Yes. We need two falgs for PUD and PMD huge pages separately.
+>> No, it will not be changed by evlist__create_maps.
+>>
+>> In evlist__create_maps(),
+>> evlist->core.has_user_cpus = !!target->cpu_list && !target->hybrid;
+>>
+>> It disables has_user_cpus for hybrid.
+>>
+>> So in __perf_evlist__propagate_maps, they will not be changed by evlist->cpus.
+>>
+>> if (!evsel->own_cpus || evlist->has_user_cpus) {
+>> 	perf_cpu_map__put(evsel->cpus);
+>> 	evsel->cpus = perf_cpu_map__get(evlist->cpus);
+>> 	
+>>> could we just change __perf_evlist__propagate_maps to follow
+>>> pmu's cpus?
+>>>
+>>
+>> In __perf_evlist__propagate_maps, it has already followed pmu's cpus because
+>> the evlist->has_user_cpus is false for hybrid.
 > 
-> A single flag should be enough, the order would be dependent on
-> whether args->pud_pfn or args->pmd_pfn is valid.
+> sorry for delay
 > 
 
-Yes, it's correct that one flag is enough as we're sharing the PUD
-or PMD huge page.
+Never mind. :)
 
-Thanks,
-Gavin
+> ok, so we first fix the cpus on hybrid events and then
+> propagate maps.. I guess it's ok, because it's in libperf
+> and that has no notion of hybrid so far
+> 
 
+Yes. If we want the libperf to be hybrid aware, the interface has to be modified but actually we 
+need to avoid modifying the libperf interface. So I finally decide to adjust the evsel->cpus first 
+and then propatate maps.
+
+> could you please rename that function so it's also obvious
+> it's for hybrid only
+> 
+>    evlist__fix_hybrid_cpus ? not sure ;-)
+> 
+
+Sure, I will rename the funciton in v4.
+
+> and add some comment with example to explain what the
+> function is doing
+> 
+
+Got it!
+
+Thanks
+Jin Yao
+
+> thanks,
+> jirka
+> 
