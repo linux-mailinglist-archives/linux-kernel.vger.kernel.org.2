@@ -2,169 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B61C3D42DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900D23D42DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 00:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhGWVqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 17:46:08 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:41282
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231742AbhGWVqH (ORCPT
+        id S232875AbhGWVrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 17:47:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbhGWVrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 17:46:07 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id E1BE33F322;
-        Fri, 23 Jul 2021 22:26:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627079199;
-        bh=E7967veUNT4BFpbHxKgzpjAHpzsSarN5QX8vpu3CUMg=;
-        h=From:Subject:To:Cc:Message-ID:Date:MIME-Version:Content-Type;
-        b=CkU/e9L9gGdwGx5fP6u5NENBcR6QFti4ZVGSr+vGEcfglJIaSGUFwSARLnDe6OpsK
-         VK0GTI3k79ItiMpTnAOPAAMfeWCtDxm9M+4TuWob4y2r4KJ54RWaenLL5rstxnMb4q
-         KybjyH824Cewj0OTYdC31siDBOTZAPQYY6iwUyG+760sMUCQmIhBRdCRPFiJDJQ9JG
-         QEfLdZxsg7Wel27NN2H0UjJA+W8yh6dy/Nc1iB0pvQ3QCzHaGEWp8+B/Xy74AQ8+Be
-         lpRa6FKGC59XgDfJf5BJjB3ZO4h7n/C/nmPLyzyXMfxIzW+XLzcGugp1Lmxd5id2f/
-         Xp2Ln59629H8A==
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: ovl: uninitialized pointer read in ovl_lookup_real_one
-To:     Miklos Szeredi <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     overlayfs <linux-unionfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <737687ee-3449-aa3d-ee29-bd75ca0a18a9@canonical.com>
-Date:   Fri, 23 Jul 2021 23:26:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Fri, 23 Jul 2021 17:47:45 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9A7C061575;
+        Fri, 23 Jul 2021 15:28:18 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id e21so221487pla.5;
+        Fri, 23 Jul 2021 15:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=Sk6j9y98rQEk0nftaA7SWqmAdhrxmLBfOzmiEbrijuo=;
+        b=jG83Y/HaZ/LJxRsubsz0mZFIj9x2j2FC+fRWpdD1uNl8cb0XS1vyuI2LHzI0MdZuld
+         W05x68qwhHyF0WlKWf1oifIa4EpRyn+cldGkf6Yh8OfRsKvtT1dbXXqD3HZbCVYaQa/g
+         PG+9euDAEbsITvM4olAQdA2oB0q+0jLfenm9aXz9NPxmtZb9ENtMzKKE1i3hTw4jY6L8
+         UXbkIRfv8wsZAecxGsj9oe+US57IbQqKaOI+32nNHkS/TrfIt5U6OnAjxFmjW578Invi
+         oWbNHIeSQLoolL8ey0gKWbtRa7m8Tp79VaHnvCsTShfqXe/4sqS+Dl3J8YWUFfSmBs2P
+         VoQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=Sk6j9y98rQEk0nftaA7SWqmAdhrxmLBfOzmiEbrijuo=;
+        b=TnDmXB3zk8R26kDoaHr0U6H+m82TVHCtpi96VsbbC67L7tk1sDsmyerUnDTVvgmAgF
+         taEEB5/24PlHs9Na91+AfCyvyWhjhF/93nO/U9AkOKeVdMkjdsppfGO73pRtlvEiTv8x
+         8hlq55Idgk86ki4oeFRTJl7me1SgIIAjkm4R5zq/97AE77mw+WEgNjUO+Ya2YTHNjxXG
+         OwK5iYUE3xcFVvYhP1C+9SfeIrPEmLrq3yiklUP71LYkaHYlPJckHGvcEyg9NyZkVvB6
+         zzUdvUGB+K9k18vUQVUtUWZQCMrCehLePRtS4Xa7cqOdTMONbNfaQwxJc5ups84vLENt
+         akZQ==
+X-Gm-Message-State: AOAM533yzPFY5wKnM1QnNiUOv43zGA5z5ehsbOEoM7qSLURoHNPLzYRX
+        RLpnDkte4AaIbx4t7m30UhM=
+X-Google-Smtp-Source: ABdhPJyQvzo0zeoha+GMDlRcT/Bdx4QJD4b/A4QpnHsnU7NbxU+KvzSxBItdk+RzjJTTM9iFOyQu8Q==
+X-Received: by 2002:a05:6a00:7d7:b029:32c:b12a:d65d with SMTP id n23-20020a056a0007d7b029032cb12ad65dmr6394597pfu.44.1627079297876;
+        Fri, 23 Jul 2021 15:28:17 -0700 (PDT)
+Received: from [192.168.86.185] ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id i13sm26387885pfr.79.2021.07.23.15.28.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 15:28:17 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 19:28:12 -0300
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAP-5=fWUr91jLgD-BDYK08v0ELQtypFHDop7QW4uFOPscncCQw@mail.gmail.com>
+References: <20210715013343.2286699-1-irogers@google.com> <20210715013343.2286699-5-irogers@google.com> <YPsKLa0Qe5/as4Jh@kernel.org> <YPsQGZOXqoy7Tfe6@kernel.org> <YPsQ5En9N7xG1Cya@kernel.org> <CAP-5=fWUr91jLgD-BDYK08v0ELQtypFHDop7QW4uFOPscncCQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 4/7] perf doc: Add info pages to all target.
+To:     Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+From:   Arnaldo <arnaldo.melo@gmail.com>
+Message-ID: <956E2E1D-4F91-4C92-B06B-21FC8DE376C0@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Static analysis with Coverity has detected an uninitialized pointer read
-in function ovl_lookup_real_one in fs/overlayfs/export.c
-
-The issue was introduced with the following commit:
-
-commit 3985b70a3e3f58109dc6ae347eafe6e8610be41e
-Author: Amir Goldstein <amir73il@gmail.com>
-Date:   Thu Dec 28 18:36:16 2017 +0200
-
-    ovl: decode connected upper dir file handles
-
-The analysis is as follows:
-
-365static struct dentry *ovl_lookup_real_one(struct dentry *connected,
-366                                          struct dentry *real,
-367                                          const struct ovl_layer *layer)
-368{
-369        struct inode *dir = d_inode(connected);
-370        struct dentry *this, *parent = NULL;
-
-   1. var_decl: Declaring variable name without initializer.
-
-371        struct name_snapshot name;
-372        int err;
-373
-374        /*
-375         * Lookup child overlay dentry by real name. The dir mutex
-protects us
-376         * from racing with overlay rename. If the overlay dentry
-that is above
-377         * real has already been moved to a parent that is not under the
-378         * connected overlay dir, we return -ECHILD and restart the
-lookup of
-379         * connected real path from the top.
-380         */
-381        inode_lock_nested(dir, I_MUTEX_PARENT);
-382        err = -ECHILD;
-383        parent = dget_parent(real);
-
-   2. Condition ovl_dentry_real_at(connected, layer->idx) != parent,
-taking true branch.
-
-384        if (ovl_dentry_real_at(connected, layer->idx) != parent)
-
-   3. Jumping to label fail.
-
-385                goto fail;
-386
-387        /*
-388         * We also need to take a snapshot of real dentry name to
-protect us
-389         * from racing with underlying layer rename. In this case, we
-don't
-390         * care about returning ESTALE, only from dereferencing a
-free name
-391         * pointer because we hold no lock on the real dentry.
-392         */
-393        take_dentry_name_snapshot(&name, real);
-394        this = lookup_one_len(name.name.name, connected, name.name.len);
-395        err = PTR_ERR(this);
-396        if (IS_ERR(this)) {
-397                goto fail;
-398        } else if (!this || !this->d_inode) {
-399                dput(this);
-400                err = -ENOENT;
-401                goto fail;
-402        } else if (ovl_dentry_real_at(this, layer->idx) != real) {
-403                dput(this);
-404                err = -ESTALE;
-405                goto fail;
-406        }
-407
-408out:
-
-   Uninitialized pointer read
-   6. uninit_use_in_call: Using uninitialized value name.name.name when
-calling release_dentry_name_snapshot.
-
-409        release_dentry_name_snapshot(&name);
-410        dput(parent);
-411        inode_unlock(dir);
-412        return this;
-413
-414fail:
-
-   4. Condition ___ratelimit(&_rs, <anonymous>), taking false branch
-.
-415        pr_warn_ratelimited("failed to lookup one by real (%pd2,
-layer=%d, connected=%pd2, err=%i)\n",
-416                            real, layer->idx, connected, err);
-417        this = ERR_PTR(err);
-
-   5. Jumping to label out.
-
-418        goto out;
-419}
-
-The error exit path on line 395 ends up with an uninitialized structure
-name being passed to function release_dentry_name_snapshot() on line 409
-and this accesses the pointer name.name.name, see /fs/dcache.c as follows:
-
-303void release_dentry_name_snapshot(struct name_snapshot *name)
-304{
-
-   1. read_value: Reading value name->name.name.
-   2. Condition !!(name->name.name != name->inline_name), taking true
-branch.
-
-305        if (unlikely(name->name.name != name->inline_name)) {
-306                struct external_name *p;
-
-   3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
-!__builtin_types_compatible_p()) */, taking false branch.
 
 
-I suspect name should be initialized in line 371, e.g. name = { } and a
-null name check should be performed on line 409 before calling
-release_dentry_name_snapshot, but this seems a bit message as a fix.
+On July 23, 2021 6:03:16 PM GMT-03:00, Ian Rogers <irogers@google=2Ecom> w=
+rote:
+>On Fri, Jul 23, 2021 at 11:56 AM Arnaldo Carvalho de Melo
+><acme@kernel=2Eorg> wrote:
+>>
+>> Em Fri, Jul 23, 2021 at 03:53:14PM -0300, Arnaldo Carvalho de Melo
+>escreveu:
+>> > Em Fri, Jul 23, 2021 at 03:27:57PM -0300, Arnaldo Carvalho de Melo
+>escreveu:
+>> > > Em Wed, Jul 14, 2021 at 06:33:40PM -0700, Ian Rogers escreveu:
+>> > > > Enabled to ensure that info pages build=2E
+>> > >
+>> > > How did you test this? I tried installing texinfo, that is where
+>> > > makeinfo belongs:
+>> > >
+>> > > =E2=AC=A2[acme@toolbox perf]$ rpm -qf /usr/bin/makeinfo
+>> > > texinfo-6=2E7-10=2Efc34=2Ex86_64
+>> > > =E2=AC=A2[acme@toolbox perf]$ rpm -q texinfo
+>> > > texinfo-6=2E7-10=2Efc34=2Ex86_64
+>> > > =E2=AC=A2[acme@toolbox perf]$
+>> > >
+>> > > And then:
+>> > >
+>> > > =E2=AC=A2[acme@toolbox perf]$ make -C tools/perf O=3D/tmp/build/per=
+f
+>install-doc
+>> > > make: Entering directory '/var/home/acme/git/perf/tools/perf'
+>> > >   BUILD:   Doing 'make -j24' parallel build
+>> > >   INSTALL Documentation-man
+>> > > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+>> > > =E2=AC=A2[acme@toolbox perf]$
+>> >
+>> > Also:
+>>
+>> We get closer if we do:
+>>
+>> =E2=AC=A2[acme@toolbox perf]$ make -C tools/perf/Documentation/ install=
+-info
+>> make: Entering directory
+>'/var/home/acme/git/perf/tools/perf/Documentation'
+>>   ASCIIDOC perf=2Exml
+>>   DB2TEXI  perf=2Etexi
+>> /bin/sh: line 2: docbook2x-texi: command not found
+>> make: *** [Makefile:289: perf=2Etexi] Error 127
+>> make: Leaving directory
+>'/var/home/acme/git/perf/tools/perf/Documentation'
+>> =E2=AC=A2[acme@toolbox perf]$
+>
+>Do you need to install docbook2x?
 
-Colin
+Sure, but it seems the name of the binaries in the version in fedora are d=
+ifferent=2E
+
+>
+>$ dpkg -S /usr/bin/docbook2x-texi
+>docbook2x: /usr/bin/docbook2x-texi
+>
+>Thanks,
+>Ian
+>
+>> - Arnaldo
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
