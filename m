@@ -2,118 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049323D3C42
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0B23D3C44
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235497AbhGWOe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 10:34:56 -0400
-Received: from mout.gmx.net ([212.227.15.15]:49171 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235438AbhGWOey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 10:34:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627053313;
-        bh=OjiRy3yEmPn7YKRxpzy1s0ZNeFE94rnGLnb9AsXrlrs=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=H1Y1o8/WhCSLA3gc+0iqX22b/7RsEHnJ+T3K35hIWib/0K6FkHReRw18Lwe8bI2et
-         SGrfYjew+nX3eCngJhp4bJINYwa93afwF8BWifjCBUWOAEonZyleQtHHs2hyRhY01G
-         IwJp/GENms9sZCLvGyVZ4cqetB01vaPu1xhJaQZ0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([83.52.228.41]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N0X8o-1lCcqr2KVI-00wX6P; Fri, 23
- Jul 2021 17:15:13 +0200
-Date:   Fri, 23 Jul 2021 17:15:10 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        David Laight <David.Laight@ACULAB.COM>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging/rtl8712: Remove all strcpy() uses in favor of
- strscpy()
-Message-ID: <20210723151510.GB2612@titan>
-References: <20210717155145.15041-1-len.baker@gmx.com>
- <20210719053747.GN1931@kadam>
- <de94438319a84e0985b3ba0f5c00807b@AcuMS.aculab.com>
- <20210721080624.GV1931@kadam>
+        id S235511AbhGWOf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 10:35:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45894 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235438AbhGWOfX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 10:35:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627053356;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hg7Wgll5Dqrto/c+cLJ/aZ8SYqDsqKJnk73SqfFyHqc=;
+        b=fK3be8SkaWr/YhEko135ewzdb4KTwsW2WDb+qGEmtoBXGItPAh3efTUnDYcbF+EQm7Lm/J
+        tIqZmLFHjVQQcdqcNccTyIj7ZHDRCZrDpkgO3XUCUV5ev/fprFgn8/EnfjfIMXf6z+1QvI
+        C26NVxnG0gU9Ol4l+onk6WlP3J8q0/4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-205-_dXQgJpROGOxx9FyabIo2A-1; Fri, 23 Jul 2021 11:15:55 -0400
+X-MC-Unique: _dXQgJpROGOxx9FyabIo2A-1
+Received: by mail-wr1-f69.google.com with SMTP id u26-20020adfb21a0000b029013e2b4a9d1eso1118175wra.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:15:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hg7Wgll5Dqrto/c+cLJ/aZ8SYqDsqKJnk73SqfFyHqc=;
+        b=TSKvCFdp7+BkMXSpu/ZBKRE4EpKkTF8Oi/eV0PmI1I+gDmuFcUpt23cQJbRrZwX190
+         ZFvvDTqf3ygbjZ/EP4BMI1vszgx783LjDnXFc5Zzn1DPgZ+rSXdrk/UB+tKD4AaereZh
+         utXhdp5H6G1dtdGIcR0nLS7j1t/wy3imbUQqqSAq49d8cuKuRpohfoH/hk5YjcduoQ7D
+         56g8tOkoVYC9ynD5vivIxmZgr8xrohzcDe4wcOXODeCNv/SIVzDx1HUM95MgOYjZNSlm
+         RLkldz2UmtfQ0nTOr0ibu6zBV3AfAu1vPp/h4XO7dbU22TvgRmpOjBaBtuIqbL/zyX2C
+         GFEQ==
+X-Gm-Message-State: AOAM530quXrY9zkuTHHd16ZqDAPvJNf46Ad8xYAaMP+uFvWEaGQqECua
+        oCLXxiePqe7aH/Dowq4eAW4PP4nm2tP4MtCz14Jn2vEctJCPuMJRy/LdTXESRBfIWBmOeN2DdrX
+        WS3WCJ7paN70r1U6cF6VvCwLSY4GD4flslto1s0If
+X-Received: by 2002:a05:600c:287:: with SMTP id 7mr5053743wmk.1.1627053354279;
+        Fri, 23 Jul 2021 08:15:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwY8WT3or1Lwpu7iDbVDMw0gke7BYDmxM+rPUnWUEewCC1YlfLrsOiH2H5OFIGSgEJGHI7Q/9Go9PH9zpc3t5c=
+X-Received: by 2002:a05:600c:287:: with SMTP id 7mr5053718wmk.1.1627053354043;
+ Fri, 23 Jul 2021 08:15:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210721080624.GV1931@kadam>
-X-Provags-ID: V03:K1:EjRz48SDHlgr1UpUhBNgHpxEM7iMvIZeYSbMqtOd1Qri1AfHw4I
- rJ8JN6O4hqGwyTqfQgAAa79cnga98vlF3R/AeoCXJMUuBBVEM7AN/b2gMJKvDdoL5KRjeu/
- tovnT0UgvwdS5yr+DGM/NkVq5ZdlXaa5FYJU0cu48Xl65UsX07VNdRRzfvrr6NUSauVrMUE
- Qgi9u0UgkDwUkEGbx+lug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ojBJ4x3ZywM=:h8VEkbI3Xfc0vDCVs9p+5D
- bqZ5qDKdnnBaJRewL45NwPqchkzMZRs3ujPsDHwnzZLdzXD8ivKqQHDXdPd+oF2tWzjnb06Tt
- vb+cOG9kzhhZpCLpDRa8eLLwdO3bHosmcPg8p454Oj/4cMcngizLidvch0NNgIRTm/v6zUD5s
- wxtSZnmKHsbGsuUYzyyg4LVNWh5Jz5YxM8qj4LwD3zqBZWAZvSVNhqhjy0yUGfMrVRzf6ZbXp
- D7eukbykaSIw4SGWKyA/StUF71DAHH2mB37pJQUmthF27uWVFaU8lHmwrH6IturgtHQYSKlGz
- rF53Dcx9kzSxizsAMT4wQStt6O8wHlyg1PEpFpnnllknfoCjFfZ86KmtIKbqIJfxaDIoKb8cR
- KASpUSk7nUiRlgpAJGR/Cx4/xx/P76kujEjj3GiITHdlKFd/CKeepGrHdmqVgA+cGkzHs5bOz
- bouLDJ7IJK52zV+tRuamR9n/knyjaA8oPAHmjx2yEtmmzryhB34YkG4LzyLyne0X53MxHyjmt
- gqgWmQ5g8WsgHUzA6ooFyQTlOMXv9OdYhvyiqzX55xYtSObqKw1QTZ4JXU0J+b2Z0MwO9n1Tw
- AYCSnqPrmcVrZHjaOXTxb0FNpTPL/G7mo4kdBEPlG0kkk7ZfQfJ00+BO3wSb8RQoSt2qHyFrt
- SUUy47HmqwoRu9T8ghOcGUoCgAIsYbmrR0j+xTu9XkzSdArlgMbthdHneqiEn7R9LKDxOjxp1
- 2PLlpn7FAtzJezVh2TFHBJ39bPA4jI+eP55n5NzXPYdatAPbSawvrrNz92/oFSZdM+Rg4wd8K
- 5wM534+63/Pb85RCv8j3eEXvkkE+FLseNBtng0cTpuXBKJdFE1JdLowEn41wEO87DVJKCvZpd
- I/hURtPc3V45BPDCND2+lmZRhujieyXahNLamq5lP2t1Q0uTkMQLmLua8UU6TrTL/EgZcV0RZ
- 33lNN+BOtQg3Dkaij4um2v4VSt/n1zXfkjxiTKKi5RGolzeBbyaTKo9QILQKv9CpVd3B/ScNo
- CSjoH89x1JP9spRj0LL2vQ5TjGZ02LPfkdm/olRI2eXLFpHZRa63MNsIRwKuwbBuq4+KXQOC3
- IAXzqlhHgp88dpXZzruNW+LX1KhiQFQZr7q
-Content-Transfer-Encoding: quoted-printable
+References: <20210723091534.1730564-1-arnd@kernel.org> <a618e29a-e4b7-bda4-a3e0-7dfd67d64e92@infradead.org>
+In-Reply-To: <a618e29a-e4b7-bda4-a3e0-7dfd67d64e92@infradead.org>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Fri, 23 Jul 2021 17:15:43 +0200
+Message-ID: <CACO55tvQoCnjQWRJhrJ+8TzY5MuDDSUSnwd5AU8G1qsQYCSCBg@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/kms/nv50-: fix build failure with CONFIG_BACKLIGHT=n
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Ben Skeggs <bskeggs@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Nikola Cornij <nikola.cornij@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Wed, Jul 21, 2021 at 11:06:24AM +0300, Dan Carpenter wrote:
-> On Mon, Jul 19, 2021 at 03:24:38PM +0000, David Laight wrote:
-> > From: Dan Carpenter
-> > > Sent: 19 July 2021 06:38
-> > ...
-> > > Not related to your patch but this code is bad.  What it does is the
-> > > "ifname" can be set as a module parameter.  So instead of testing if=
- it
-> > > has been set, it uses the checking inside dev_alloc_name() to see if=
- we
-> > > can allocate what the user requested.  If not then set it to "wlan%d=
-".
-> > > If we cannot allocate what the user wants then we should return an
-> > > error.
-> > >
-> > > It should do:
-> > >
-> > > 	if (ifname[0] =3D=3D '\0')
-> > > 		strscpy(ifname, "wlan%d", sizeof(ifname));
-> > >
-> > > 	ret =3D dev_alloc_name(pnetdev, ifname);
-> > > 	if (ret < 0) {
-> > > 		dev_err(pnetdev, "allocating device name failed.\n");
-> > > 		return NULL;
-> > > 	}
+On Fri, Jul 23, 2021 at 5:10 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 7/23/21 2:15 AM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > I know only root can set module parameters, but having one
-> > that contains a string used as a printf format seems
-> > dangerous at best.
+> > When the backlight support is disabled, the driver fails to build:
 > >
-> > Isn't it best to let userspace rename the interfaces later on?
+> > drivers/gpu/drm/nouveau/dispnv50/disp.c: In function 'nv50_sor_atomic_disable':
+> > drivers/gpu/drm/nouveau/dispnv50/disp.c:1665:59: error: 'struct nouveau_connector' has no member named 'backlight'
+> >  1665 |         struct nouveau_backlight *backlight = nv_connector->backlight;
+> >       |                                                           ^~
+> > drivers/gpu/drm/nouveau/dispnv50/disp.c:1670:35: error: invalid use of undefined type 'struct nouveau_backlight'
+> >  1670 |         if (backlight && backlight->uses_dpcd) {
+> >       |                                   ^~
+> > drivers/gpu/drm/nouveau/dispnv50/disp.c:1671:64: error: invalid use of undefined type 'struct nouveau_backlight'
+> >  1671 |                 ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
+> >       |                                                                ^~
+> >
+> > The patch that introduced the problem already contains some #ifdef
+> > checks, so just add another one that makes it build again.
+> >
+> > Fixes: 6eca310e8924 ("drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/gpu/drm/nouveau/dispnv50/disp.c | 11 +++++++----
+> >  1 file changed, 7 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> > index 093e1f7163b3..fcf53e24db21 100644
+> > --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> > +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> > @@ -1659,20 +1659,23 @@ static void
+> >  nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
+> >  {
+> >       struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
+> > -     struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
+> >       struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
+> >       struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
+> > -     struct nouveau_backlight *backlight = nv_connector->backlight;
+> >       struct drm_dp_aux *aux = &nv_connector->aux;
+> > -     int ret;
+> >       u8 pwr;
+> >
+> > +#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
+> > +     struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
+> > +     struct nouveau_backlight *backlight = nv_connector->backlight;
+> > +
+> >       if (backlight && backlight->uses_dpcd) {
+> > -             ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
+> > +             int ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
+> > +
+> >               if (ret < 0)
+> >                       NV_ERROR(drm, "Failed to disable backlight on [CONNECTOR:%d:%s]: %d\n",
+> >                                nv_connector->base.base.id, nv_connector->base.name, ret);
+> >       }
+> > +#endif
+> >
+> >       if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
+> >               int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
+> >
 >
-> Yeah.  I think you're right.
-
-Sorry, but I don't understand if the code needs to be improved or not.
-Is the code shown by Dan not correct?
-
+> Hm, only Lyude Paul replied to this patch:
 >
-> regards,
-> dan carpenter
+> https://lore.kernel.org/lkml/20210714171523.413-1-rdunlap@infradead.org/
 >
 
-Thanks for your time,
-Len
+what's actually the use case of compiling with
+CONFIG_DRM_NOUVEAU_BACKLIGHT=n anyway?
+
+>
+>
+> --
+> ~Randy
+>
+
