@@ -2,122 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78E73D41E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194CE3D41E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:03:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhGWUXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWUW4 (ORCPT
+        id S231633AbhGWUXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:23:17 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:43335 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231551AbhGWUXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 16:22:56 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68134C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:03:29 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id z3so2716210ile.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=g4YpTcp3h+RgxTPRET9ugOvi0BQtHn/1JEwwqbGkE/U=;
-        b=McPl8puxnnTzPUlKiCepnHDluFGdGfpsoJG9x9z+8k0jttFilOAFD/NzvxAniBB4Vn
-         BOrG/jORLwFSuHSl5mbW+4i0QugLS+Q2uXgv1qUy33jHkPvE0CDpF2Jkqrmtdb3/wmL7
-         LKWdW68pxiHZEL4zDHKDvWLSRjEHMHZOpSHSI8HSPlimI+lvY6iF2X+F6lI3vkQV+5dG
-         jDPRGyDnBhEqBOBWTUtJQeHbbZfjv/YgnNdMekoAnUtB0ismdyj0qY843hGLe6TlPo1E
-         qnw43GFu1ADCcOMO0X7afn6TGBuLoiMGMl65CN7JwvB7fTgFf86pFDeMwusxKw+rUWWG
-         t24w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g4YpTcp3h+RgxTPRET9ugOvi0BQtHn/1JEwwqbGkE/U=;
-        b=pHV04Fn1+P5/X9Mt7GGLSMroardNSKBM5aBKA7977qATb6oj8OP5y2Dtw+nz8LuGaT
-         R8kmdRcdcajJx5A25s9asr2Y4rrOLR8/EZoTxvKxWqHbHYpErRbhP3Uq28lHTJNMvLut
-         8agHj24n2O5Bf75BdlRhNULkPhn9yhalxFrZYyaeQXG3GnAiRbrNewRK9adPRFOFG7rI
-         VOLtYgNdpo71urNfwVKXcEkLRn4WtqAdGhAflZi9zgki1PKqLnqzOv4xeZUW5BNFGLRn
-         Kh2zJNIKTk0C9x4jpwPbIT4UUyx+Q7YevX8uAvquGS2IHg2/ofxJQIBgsJ6d4eLkA35J
-         /UzA==
-X-Gm-Message-State: AOAM532X7zfNCUORGk4JqkT0gGHD4yNppDNxZ9L69S1Rm/nKq/YbDkRd
-        4iZnIVkMJiEgriQINifqipVIbLeYbJgVXv4gi8t9Mw==
-X-Google-Smtp-Source: ABdhPJzioucCwSXORMWbzuA2mStjVTrtGgEk04mE58I9viVa45egooDKurLRScco2qFR1s/S8sckjQPdaXNN5LnJ0Vk=
-X-Received: by 2002:a92:4a0d:: with SMTP id m13mr4794985ilf.129.1627074208652;
- Fri, 23 Jul 2021 14:03:28 -0700 (PDT)
+        Fri, 23 Jul 2021 16:23:15 -0400
+Received: (qmail 53715 invoked by uid 1000); 23 Jul 2021 17:03:47 -0400
+Date:   Fri, 23 Jul 2021 17:03:47 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Manfred Spraul <manfred@colorfullife.com>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
+ heuristic lockless reads
+Message-ID: <20210723210347.GA53526@rowland.harvard.edu>
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+ <20210721211003.869892-2-paulmck@kernel.org>
+ <20210723020846.GA26397@rowland.harvard.edu>
+ <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
+ <20210723130554.GA38923@rowland.harvard.edu>
+ <20210723163008.GG4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210723170820.GB46562@rowland.harvard.edu>
+ <20210723203248.GL4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20210715013343.2286699-1-irogers@google.com> <20210715013343.2286699-5-irogers@google.com>
- <YPsKLa0Qe5/as4Jh@kernel.org> <YPsQGZOXqoy7Tfe6@kernel.org> <YPsQ5En9N7xG1Cya@kernel.org>
-In-Reply-To: <YPsQ5En9N7xG1Cya@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 23 Jul 2021 14:03:16 -0700
-Message-ID: <CAP-5=fWUr91jLgD-BDYK08v0ELQtypFHDop7QW4uFOPscncCQw@mail.gmail.com>
-Subject: Re: [PATCH 4/7] perf doc: Add info pages to all target.
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723203248.GL4397@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 11:56 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, Jul 23, 2021 at 03:53:14PM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Fri, Jul 23, 2021 at 03:27:57PM -0300, Arnaldo Carvalho de Melo escr=
-eveu:
-> > > Em Wed, Jul 14, 2021 at 06:33:40PM -0700, Ian Rogers escreveu:
-> > > > Enabled to ensure that info pages build.
-> > >
-> > > How did you test this? I tried installing texinfo, that is where
-> > > makeinfo belongs:
-> > >
-> > > =E2=AC=A2[acme@toolbox perf]$ rpm -qf /usr/bin/makeinfo
-> > > texinfo-6.7-10.fc34.x86_64
-> > > =E2=AC=A2[acme@toolbox perf]$ rpm -q texinfo
-> > > texinfo-6.7-10.fc34.x86_64
-> > > =E2=AC=A2[acme@toolbox perf]$
-> > >
-> > > And then:
-> > >
-> > > =E2=AC=A2[acme@toolbox perf]$ make -C tools/perf O=3D/tmp/build/perf =
-install-doc
-> > > make: Entering directory '/var/home/acme/git/perf/tools/perf'
-> > >   BUILD:   Doing 'make -j24' parallel build
-> > >   INSTALL Documentation-man
-> > > make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-> > > =E2=AC=A2[acme@toolbox perf]$
+On Fri, Jul 23, 2021 at 01:28:11PM -0700, Paul E. McKenney wrote:
+> On Fri, Jul 23, 2021 at 02:11:38PM -0400, Alan Stern wrote:
+> > In other words, if the second read races with the WRITE_ONCE, it needs 
+to
+> > get either the value before the write or the value after the write;
+> > nothing else will do because it isn't a heuristic here.  Fair point.
 > >
-> > Also:
+> > >  (If the value changes immediately after being read, the fact that
+> > > ->f_lock is held prevents begin_global() from completing.)
+> >
+> > This seems like something worth explaining in the document.  That
+> > "IMPORTANT" comment doesn't really get the full point across.
 >
-> We get closer if we do:
+> How about this comment instead?
 >
-> =E2=AC=A2[acme@toolbox perf]$ make -C tools/perf/Documentation/ install-i=
-nfo
-> make: Entering directory '/var/home/acme/git/perf/tools/perf/Documentatio=
-n'
->   ASCIIDOC perf.xml
->   DB2TEXI  perf.texi
-> /bin/sh: line 2: docbook2x-texi: command not found
-> make: *** [Makefile:289: perf.texi] Error 127
-> make: Leaving directory '/var/home/acme/git/perf/tools/perf/Documentation=
-'
-> =E2=AC=A2[acme@toolbox perf]$
+>       /* This works even if data_race() returns nonsense. */
 
-Do you need to install docbook2x?
+That's somewhat better.
 
-$ dpkg -S /usr/bin/docbook2x-texi
-docbook2x: /usr/bin/docbook2x-texi
 
-Thanks,
-Ian
+On Fri, Jul 23, 2021 at 01:32:48PM -0700, Paul E. McKenney wrote:
+> On Fri, Jul 23, 2021 at 01:08:20PM -0400, Alan Stern wrote:
+> > This doesn't mention the reason for the acquire-release
+> > synchronization of global_flag.  It's needed because work done between
+> > begin_global() and end_global() can affect a foo structure without
+> > holding its private f_lock member, and we want all such work to be
+> > visible to other threads when they call do_something_locked() later.
+> 
+> Like this added paragraph at the end?
+> 
+> 	The smp_load_acquire() and smp_store_release() are required
+> 	because changes to a foo structure between calls to begin_global()
+> 	and end_global() are carried out without holding that structure's
+> 	->f_lock.  The smp_load_acquire() and smp_store_release()
+> 	ensure that the next invocation of do_something() from the call
+> 	to do_something_locked() that acquires that ->f_lock will see
+> 	those changes.
 
-> - Arnaldo
+I'd shorten the last sentence:
+
+	The smp_load_acquire() and smp_store_release() ensure that the
+	next invocation of do_something() from do_something_locked()
+	will see those changes.
+
+Alan
