@@ -2,128 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2787D3D364E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6883D3652
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhGWHe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:34:26 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63676 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233619AbhGWHeY (ORCPT
+        id S234407AbhGWHfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:35:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24121 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234386AbhGWHfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:34:24 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N8EolK049666;
-        Fri, 23 Jul 2021 04:14:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=3Vp960nm+QXQRy+n94qsdDw5q1zLDKVn2c13DCzVVko=;
- b=o1f5Jjm7mUPgA5YHnoMUMYEEOWOdNs1GxJb8KutLYOtpIH/C1khL/zQi0rNQHVfKiOsX
- cTr/Yu8tIgo5C2vZLhNMyF5a/HUt6c+Uik1R6FI3mCg9S3DacXr8ScoohwUkDG+vduRm
- KggIkLmx6Qms74efcwVpwxS+nIzEBq87nUSFlbFdT+aSt61KuSBQR4ZHubslbtt9LvQ9
- pVz+LIGJ4LoVUAluIJweqDyhU6Z4kLMc19OGNVtZTFhibot0UhdK4xxTJwUdDdQTPn0W
- mxyiDHE84WXrO8JGxeXgsN1pDdxREoBRPLJUGx1klXrxQSlF6TEbA5G1pY4uqBea/ztl Sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39yseeh03q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 04:14:57 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16N8EpxE049775;
-        Fri, 23 Jul 2021 04:14:57 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39yseeh033-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 04:14:57 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N8Cs45021268;
-        Fri, 23 Jul 2021 08:14:55 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 39upu8awp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 08:14:55 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N8Eqcp22413744
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 08:14:52 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 63CEF11C054;
-        Fri, 23 Jul 2021 08:14:52 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E579E11C050;
-        Fri, 23 Jul 2021 08:14:51 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 08:14:51 +0000 (GMT)
-Subject: Re: [PATCH v2 2/2] s390:kvm: Topology expose TOPOLOGY facility
-To:     Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        frankja@linux.ibm.com, cohuck@redhat.com, david@redhat.com,
-        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com
-References: <1626973353-17446-1-git-send-email-pmorel@linux.ibm.com>
- <1626973353-17446-3-git-send-email-pmorel@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <7163cf4a-479a-3121-2261-cfb6e4024d0c@de.ibm.com>
-Date:   Fri, 23 Jul 2021 10:14:51 +0200
+        Fri, 23 Jul 2021 03:35:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627028134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PsOmQhhV5hj9QM8KqB7droIKpWy0pXqJreEnaRUzjas=;
+        b=cIO0eb7x2WqMjqofHWDfp+RwqY4impJfvmINFExf13q3z4JYxLNWFczJs8vl45yGNztUIN
+        mQ+LXWPdZL33MJ5gIVPEKQezT1yQrRYVV24HCIhKP5u6POOp/q10DnGkyS4ik3YfGxrEtd
+        CSqSZ3iP50rAoMSpB9XvtdJV183JrnE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-aSwnmG7fOvq53abUP_oQwg-1; Fri, 23 Jul 2021 04:15:33 -0400
+X-MC-Unique: aSwnmG7fOvq53abUP_oQwg-1
+Received: by mail-wr1-f72.google.com with SMTP id d18-20020adfe8520000b02901524df25ad7so701275wrn.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 01:15:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=PsOmQhhV5hj9QM8KqB7droIKpWy0pXqJreEnaRUzjas=;
+        b=GFzLVXymtrKQrokvsgm3zIat4Hs9t4sz7754xGmX5cMh4PMn0+iHQUyIZ+feNx2SY0
+         wL9vgok7GRC+v9n/RZnDUXicXo31HC6zsAEvACZb8AxjcZ5uGu6Z8Ioct6OtNsba4e1Y
+         TW+AC+4qWlbTYY1DDPy3tYBE99lfxTqSOmvlaUZr4YKUuMrXNcKrybuLOwe3hBJlL7GE
+         6pl6/rb8woO5r7VdCllCYA5OKSy/vraNifY+IZGqZLHJhoRYuKVgf9TDlda8E0kUOJ9r
+         0lWYP+UhP7L5F1VGg8IQWuD7R+rQUxZOaP17rB2eSIiwi4NndYquomGaYjQ6MT2ZuhZ0
+         XCWA==
+X-Gm-Message-State: AOAM531OkRpYW8ToZ8/GpOl1+jCV8LnxvQ/7BW5pquTUpJxJqn3qwB2Q
+        gs7koioiZyTkpEK2afawNrtSZBw1tg7ExNTfd+ze8vAFKKPwZa9+45U6fhV4ve1inQmoxQ7O9Ei
+        LlO2bBUtXk2GRkbWgofINJ7lK
+X-Received: by 2002:a05:600c:4105:: with SMTP id j5mr3338906wmi.49.1627028132039;
+        Fri, 23 Jul 2021 01:15:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7Rr4Psd5MxeJacADEM5uXfuPl/hj7wRYNdObU8hvGa0HGoP8+m60PyLjmuurv4Hl+GMy/zQ==
+X-Received: by 2002:a05:600c:4105:: with SMTP id j5mr3338884wmi.49.1627028131852;
+        Fri, 23 Jul 2021 01:15:31 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c676e.dip0.t-ipconnect.de. [91.12.103.110])
+        by smtp.gmail.com with ESMTPSA id j23sm4305407wmo.26.2021.07.23.01.15.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 01:15:31 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+To:     Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+References: <20210723011436.60960-1-surenb@google.com>
+ <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+ <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
+ <YPpfo2z8feq0vTlE@dhcp22.suse.cz>
+ <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <23ed1d8d-fe55-fdbc-ca33-01a3ce392dff@redhat.com>
+Date:   Fri, 23 Jul 2021 10:15:30 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1626973353-17446-3-git-send-email-pmorel@linux.ibm.com>
+In-Reply-To: <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6ys7UDHx9dW0-ghGaPICSIBaVAL_qS5B
-X-Proofpoint-ORIG-GUID: 8J2ekmS3aBlDZfDz5ZQccFwlooSO9muO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_04:2021-07-23,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- priorityscore=1501 malwarescore=0 phishscore=0 mlxlogscore=999
- clxscore=1015 lowpriorityscore=0 spamscore=0 impostorscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230047
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22.07.21 19:02, Pierre Morel wrote:
-> We add a KVM extension KVM_CAP_S390_CPU_TOPOLOGY to tell the
-> userland hypervisor it is safe to activate the CPU Topology facility.
-
-I think the old variant of using the CPU model was actually better.
-It was just the patch description that was wrong.
-  
-> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
-> ---
->   arch/s390/kvm/kvm-s390.c | 1 +
->   include/uapi/linux/kvm.h | 1 +
->   2 files changed, 2 insertions(+)
+On 23.07.21 10:11, Suren Baghdasaryan wrote:
 > 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index b655a7d82bf0..8c695ee79612 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -568,6 +568,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   	case KVM_CAP_S390_VCPU_RESETS:
->   	case KVM_CAP_SET_GUEST_DEBUG:
->   	case KVM_CAP_S390_DIAG318:
-> +	case KVM_CAP_S390_CPU_TOPOLOGY:
->   		r = 1;
->   		break;
->   	case KVM_CAP_SET_GUEST_DEBUG2:
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index d9e4aabcb31a..081ce0cd44b9 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
->   #define KVM_CAP_BINARY_STATS_FD 203
->   #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
->   #define KVM_CAP_ARM_MTE 205
-> +#define KVM_CAP_S390_CPU_TOPOLOGY 206
->   
->   #ifdef KVM_CAP_IRQ_ROUTING
->   
 > 
+> On Thu, Jul 22, 2021, 11:20 PM Michal Hocko <mhocko@suse.com 
+> <mailto:mhocko@suse.com>> wrote:
+> 
+>     On Thu 22-07-21 21:47:56, Suren Baghdasaryan wrote:
+>      > On Thu, Jul 22, 2021, 7:04 PM Shakeel Butt <shakeelb@google.com
+>     <mailto:shakeelb@google.com>> wrote:
+>      >
+>      > > On Thu, Jul 22, 2021 at 6:14 PM Suren Baghdasaryan
+>     <surenb@google.com <mailto:surenb@google.com>>
+>      > > wrote:
+>      > > >
+>      > > [...]
+>      > > > +
+>      > > > +       mmap_read_lock(mm);
+>      > >
+>      > > How about mmap_read_trylock(mm) and return -EAGAIN on failure?
+>      > >
+>      >
+>      > That sounds like a good idea. Thanks! I'll add that in the next
+>     respin.
+> 
+>     Why is that a good idea? Can you do anything meaningful about the
+>     failure other than immediately retry the syscall and hope for the best?
+> 
+> 
+> I was thinking if this syscall implements "best effort without blocking" 
+> approach then for a more strict usage user can simply retry. However 
+> retrying means issuing another syscall, so additional overhead...
+> I guess such "best effort" approach would be unusual for a syscall, so 
+> maybe we can keep it as it is now and if such "do not block" mode is 
+> needed we can use flags to implement it later?
+
+The process is dying, so I am not sure what we are trying to optimize 
+here in respect to locking ...
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
