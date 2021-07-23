@@ -2,101 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0301F3D3B4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D5F3D3B50
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhGWM6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:58:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233365AbhGWM6T (ORCPT
+        id S235160AbhGWNAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:00:05 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:46966 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233486AbhGWNAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:58:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627047533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CNrCnNEi8YU3NjpLXktV8L2vGTneNrqBq6dOtm+we8Y=;
-        b=Qy0B92iPgcK/7NmNJRybTWm1a/mREHNEqGztBeLYGrEmHmZPqs02aPcfcPFLcVcFPmnQlg
-        6I/wQ8kAwhN65FhCrc6/NbXGKWZAx5Jb6vYC2L5Oq16MlwT0lO+kD/p897YCLNvHrrIXNd
-        xiXCe3ZX63ioDFtGcCwsXcko0inBSxU=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-597-hcCZl3VeOnSnrZA8GhJwzg-1; Fri, 23 Jul 2021 09:38:49 -0400
-X-MC-Unique: hcCZl3VeOnSnrZA8GhJwzg-1
-Received: by mail-io1-f70.google.com with SMTP id z21-20020a5d84d50000b02904e00bb129f0so1671959ior.18
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:38:49 -0700 (PDT)
+        Fri, 23 Jul 2021 09:00:04 -0400
+Received: by mail-ot1-f50.google.com with SMTP id v8-20020a0568301bc8b02904d5b4e5ca3aso1207170ota.13;
+        Fri, 23 Jul 2021 06:40:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CNrCnNEi8YU3NjpLXktV8L2vGTneNrqBq6dOtm+we8Y=;
-        b=jOCtGC8FfcxJaDFDM+RwG4j7TgzJCnxKnzoTEQXqgwAq9Hy6loeh5P9pOQuPmZGSN+
-         uzymZzYCJk0OxS44BskMEH5jJY5H3bZjICk/K/vRVz+3Hftgl/q4BXe9y+bOFRfpFEv8
-         KBFdFEkIhoxTKcNdBLFFjYHSsnLeI6ONSRsS5wIwhGBJARiDeKjdZhY7ddQMIRMF8qxg
-         zLRy/TEkApDnD1Xw7rwAP+zHTuv6ihNQzOSnNyeQtu/uSuxGkkCqkLXjIl1yjGnbd5Jp
-         EJrE1RTk6NPYtDf6eJuC0JxtBQCHWwJQsURcvz6E5UWq3u6VH5yW8bC5RNgpCEIwiygr
-         ir5A==
-X-Gm-Message-State: AOAM5323BTco6Wh5+Tks5AJ42/ymJuNXxbVebn9JrKvHxl+bXABi3R0c
-        +NnOCE7sByPU2OPm8uokrF3nuHJX2g5lAki4ii5gBMIQm0t1bdGSo/Z9f8cU8U1XVBCvQ3sSuMw
-        I1FNnPGQ0t8Y+wlavfLCSP6fV
-X-Received: by 2002:a02:cd0a:: with SMTP id g10mr4243225jaq.18.1627047529244;
-        Fri, 23 Jul 2021 06:38:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwek83fSduz7V8CLkiqtAngLuJBjs5iDFj4SG3DhS5HRyk7g8pS0JfJqY3+Yo29wQu7Wx0j/g==
-X-Received: by 2002:a02:cd0a:: with SMTP id g10mr4243213jaq.18.1627047529098;
-        Fri, 23 Jul 2021 06:38:49 -0700 (PDT)
-Received: from gator ([204.16.59.133])
-        by smtp.gmail.com with ESMTPSA id p8sm11466441iol.49.2021.07.23.06.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 06:38:48 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 15:38:45 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        will@kernel.org
-Subject: Re: [PATCH 10/16] KVM: arm64: Add some documentation for the MMIO
- guard feature
-Message-ID: <20210723133845.jwp3ljkfnupgv36i@gator>
-References: <20210715163159.1480168-1-maz@kernel.org>
- <20210715163159.1480168-11-maz@kernel.org>
- <20210721211743.hb2cxghhwl2y22yh@gator>
- <60d8e9e95ee4640cf3b457c53cb4cc7a@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EK7j/8f4gJtwvDFYwPxgaI/qysAXeirsjJ8IaeWGx4A=;
+        b=DtI0+IUTfd6sCTqduX3k2nhToE3k9/m7fF/5yrI9QRa5ip1cV8A3iALPHVSLsPBO+z
+         y4Rv5cqYgyjZpNsPEDIjPT9/njr41lVBT+lZuecNVVZRkl02attzZTSor3nb93wLdDPS
+         bzxu+37+N++xr7u5KoB3GlSXnyq8msqFqIghaVETc08/VV7Poe4TjF7egJyhqRbg+UWX
+         oFCUfB/hXr8PnPkH/0UzNylFKBI5WSpfcrygIk9zmtA8l77uxm8Si+J66gWJHUeyEQ5a
+         LkPxKuNjjC/itLm1XJiB0yM9WhpxGZHObnVmPpmeikeVOGEF8pA6pqXilb/lCQtM+qG5
+         jJiw==
+X-Gm-Message-State: AOAM532B79Ky999GihIWvi+Rl6QrCHinQiGSmFIdTgXroGLYa/SH6raO
+        Aidkl4bdfDjny0ePCVHrzJ7L/J8L08D6MdB3Ut3dJ/xu
+X-Google-Smtp-Source: ABdhPJxBOZZg33/bX+Gj1drL35xj7bWjUJV3tMno5E8SowAWHUbHFlYrmLbxlMDTjkDck0noTY8oYgoTuzqltlVYAIE=
+X-Received: by 2002:a9d:2968:: with SMTP id d95mr3048634otb.321.1627047625746;
+ Fri, 23 Jul 2021 06:40:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60d8e9e95ee4640cf3b457c53cb4cc7a@kernel.org>
+References: <20210722193450.35321-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210722193450.35321-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 23 Jul 2021 15:40:14 +0200
+Message-ID: <CAJZ5v0h6OQDB2hijnfinwpwpo_483UkcjGi8jYX4J6VETqLBEA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] clk: x86: Rename clk-lpt to more specific clk-lpss-atom
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 02:30:13PM +0100, Marc Zyngier wrote:
-...
-> > > +
-> > > +    ==============    ========
-> > > ======================================
-> > > +    Function ID:      (uint32)    0xC6000004
-> > > +    Arguments:        (uint64)    The base of the PG-sized IPA range
-> > > +                                  that is allowed to be accessed as
-> > > +				  MMIO. Must aligned to the PG size (r1)
-> > 
-> > align
-> 
-> Hmmm. Ugly mix of tab and spaces. I have no idea what the norm
-> is here, so I'll just put spaces. I'm sure someone will let me
-> know if I'm wrong! ;-)
+On Thu, Jul 22, 2021 at 9:34 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The LPT stands for Lynxpoint PCH. However the driver is used on a few
+> Intel Atom SoCs. Rename it to reflect this in a way how another clock
+> driver, i.e. clk-pmc-atom, is called.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>
+> Good to go either via ACPI or CCF tree.
 
-Actually, my comment wasn't regarding the alignment of the text. I was
-commenting that we should change 'aligned' to 'align' in the text. (Sorry,
-that was indeed ambiguous.) Hmm, it might be better to just add 'be', i.e.
-'be aligned'.
+In case you want the latter:
 
-I'm not sure what to do about the tab/space mixing, but keeping it
-consistent is good enough for me.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Thanks,
-drew
-
+>  drivers/acpi/acpi_lpss.c                       |  6 ++++--
+>  drivers/clk/x86/Makefile                       |  2 +-
+>  drivers/clk/x86/{clk-lpt.c => clk-lpss-atom.c} | 12 ++++++------
+>  include/linux/platform_data/x86/clk-lpss.h     |  2 +-
+>  4 files changed, 12 insertions(+), 10 deletions(-)
+>  rename drivers/clk/x86/{clk-lpt.c => clk-lpss-atom.c} (76%)
+>
+> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+> index 894b7e6ae144..7f163074e4e4 100644
+> --- a/drivers/acpi/acpi_lpss.c
+> +++ b/drivers/acpi/acpi_lpss.c
+> @@ -385,7 +385,9 @@ static struct platform_device *lpss_clk_dev;
+>
+>  static inline void lpt_register_clock_device(void)
+>  {
+> -       lpss_clk_dev = platform_device_register_simple("clk-lpt", -1, NULL, 0);
+> +       lpss_clk_dev = platform_device_register_simple("clk-lpss-atom",
+> +                                                      PLATFORM_DEVID_NONE,
+> +                                                      NULL, 0);
+>  }
+>
+>  static int register_device_clock(struct acpi_device *adev,
+> @@ -1337,7 +1339,7 @@ void __init acpi_lpss_init(void)
+>         const struct x86_cpu_id *id;
+>         int ret;
+>
+> -       ret = lpt_clk_init();
+> +       ret = lpss_atom_clk_init();
+>         if (ret)
+>                 return;
+>
+> diff --git a/drivers/clk/x86/Makefile b/drivers/clk/x86/Makefile
+> index 18564efdc651..1244c4e568ff 100644
+> --- a/drivers/clk/x86/Makefile
+> +++ b/drivers/clk/x86/Makefile
+> @@ -1,6 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  obj-$(CONFIG_PMC_ATOM)         += clk-pmc-atom.o
+>  obj-$(CONFIG_X86_AMD_PLATFORM_DEVICE)  += clk-fch.o
+> -clk-x86-lpss-objs              := clk-lpt.o
+> +clk-x86-lpss-y                 := clk-lpss-atom.o
+>  obj-$(CONFIG_X86_INTEL_LPSS)   += clk-x86-lpss.o
+>  obj-$(CONFIG_CLK_LGM_CGU)      += clk-cgu.o clk-cgu-pll.o clk-lgm.o
+> diff --git a/drivers/clk/x86/clk-lpt.c b/drivers/clk/x86/clk-lpss-atom.c
+> similarity index 76%
+> rename from drivers/clk/x86/clk-lpt.c
+> rename to drivers/clk/x86/clk-lpss-atom.c
+> index fbe9fd3ed948..aa9d0bb98f8b 100644
+> --- a/drivers/clk/x86/clk-lpt.c
+> +++ b/drivers/clk/x86/clk-lpss-atom.c
+> @@ -13,7 +13,7 @@
+>  #include <linux/platform_data/x86/clk-lpss.h>
+>  #include <linux/platform_device.h>
+>
+> -static int lpt_clk_probe(struct platform_device *pdev)
+> +static int lpss_atom_clk_probe(struct platform_device *pdev)
+>  {
+>         struct lpss_clk_data *drvdata;
+>         struct clk *clk;
+> @@ -34,14 +34,14 @@ static int lpt_clk_probe(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> -static struct platform_driver lpt_clk_driver = {
+> +static struct platform_driver lpss_atom_clk_driver = {
+>         .driver = {
+> -               .name = "clk-lpt",
+> +               .name = "clk-lpss-atom",
+>         },
+> -       .probe = lpt_clk_probe,
+> +       .probe = lpss_atom_clk_probe,
+>  };
+>
+> -int __init lpt_clk_init(void)
+> +int __init lpss_atom_clk_init(void)
+>  {
+> -       return platform_driver_register(&lpt_clk_driver);
+> +       return platform_driver_register(&lpss_atom_clk_driver);
+>  }
+> diff --git a/include/linux/platform_data/x86/clk-lpss.h b/include/linux/platform_data/x86/clk-lpss.h
+> index 207e1a317800..41df326583f9 100644
+> --- a/include/linux/platform_data/x86/clk-lpss.h
+> +++ b/include/linux/platform_data/x86/clk-lpss.h
+> @@ -15,6 +15,6 @@ struct lpss_clk_data {
+>         struct clk *clk;
+>  };
+>
+> -extern int lpt_clk_init(void);
+> +extern int lpss_atom_clk_init(void);
+>
+>  #endif /* __CLK_LPSS_H */
+> --
+> 2.30.2
+>
