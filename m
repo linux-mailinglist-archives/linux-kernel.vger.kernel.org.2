@@ -2,150 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E473D4174
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1BF3D4180
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbhGWTmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhGWTmv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:42:51 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A15C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:23:23 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id d17so1886786qvn.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:23:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=45B60HJHaOgGcCdEHrn+NEtQnhZ8BJLwR64MKRSCcOw=;
-        b=WOzGoY0UoRKQIR68vvCUm1gJHX56WcWzqPIivJlyGlU8Y9tUmbJxODyo9SLqeNnhLc
-         uVpi3uSg01b+SdP4/8aRuWnI/+R30oNwh2f4psNJ5KXHNHm/u80EjLMziY3I+usVH2gM
-         ZQpOCN3kIJvn0np7Ojs2dcE1ivGYcSu+zYt2gEAOWIhHi2l5ByTDXIM6VDwc1ZVcF+wy
-         lCsD40BIocS+UqirAQxeUjkvR7RzRbH3D///u8nyX3SkUSCtDUFCzgkDJgnOrR3pXdf3
-         7xCC4c/Gm2KgeqEXP7iTK/4DEjxCZjGiLxcCGaWYkckgCLjJ5/ITkqqMro/YzFrnraya
-         Q3sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=45B60HJHaOgGcCdEHrn+NEtQnhZ8BJLwR64MKRSCcOw=;
-        b=c+2mmUh7GW1n73/aPVnWGWhhS8SVnRplmjnwRjETI9qC+bQtL+DskSZNYP4Hpc5xFV
-         /MIoZZeBv0MxzsxYvbH0C2gb+wps55eX5dilpgv4nfyXQZ6FRxY/t338PURti76Z6hpI
-         BjJi0RAVGorYckd+gO/F7qKNxGSoh/d1fD20vbw8PbZSJq3L4D9nTDFMTKW2II/JO04N
-         MQ3aC+jNbicdtjBJMYN3/J6yhoUdwNX/eafSwfjWEGtiP9tTt1nHJL68zWud7AgPkYyd
-         2orNM87o8sqF0RzF5YzL1qZxBmqOTppWzKcUJcvahtFWifwYK1ptuMVFAJLrQbAQgue6
-         QjHA==
-X-Gm-Message-State: AOAM531nm0c+GQcvpR3qUDcKGepcE5njP3v1x7s7HyKs/B0LGqoPVbsa
-        uxSV7Fhf8MBAtOIf1zNSxahgxQ9QKS9WTg==
-X-Google-Smtp-Source: ABdhPJzxXfgfsKEfYExH/jpMpAVKqAigNlFjNj7YR7djS8EdDsfMH34XFakeiM7ER4mIVIinVum//g==
-X-Received: by 2002:a05:6214:da1:: with SMTP id h1mr6447709qvh.53.1627071801795;
-        Fri, 23 Jul 2021 13:23:21 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id c16sm12014765qtv.32.2021.07.23.13.23.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 13:23:21 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 13:23:07 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Huang Ying <ying.huang@intel.com>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
-In-Reply-To: <20210723080000.93953-1-ying.huang@intel.com>
-Message-ID: <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
-References: <20210723080000.93953-1-ying.huang@intel.com>
+        id S231395AbhGWTrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:47:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhGWTri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 15:47:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B90E60E94;
+        Fri, 23 Jul 2021 20:28:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627072091;
+        bh=oikyN+p4IRyE0L4SEjaNmzX3ZjbYgNMoIEpW+F4Yexk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AhlUrrG4qK0eAwXvQSfZoLjKNZzvbHjMTZJ/qPojYC+jkO/UKDQQ3Aw4cLWOGnHYg
+         yE+TKyWn3lkswgVf7NQNcsh2wGz7c+xHKyYe/UNADDuqeYbSXHebZiPfOQH6osrmrt
+         klDgxwLfBtFzP8JkR+klaMSwVFayNG1qityarIl9Ut9d9sKfXb7VuZFX4hpRb6ckzk
+         iOklu3D7ifYwho3wbT9t6qCDY/5oKufA/d0vTD9jSh0mG+JeTiyXqmzjvba3bh/OmG
+         O3znNSQGmB+nkI5XYd+xdaQeH7tniYINXo864QL0FN3iiYADutOL+JmwWG9t9sei/y
+         27rRqXO9C0gvw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5C78A5C068F; Fri, 23 Jul 2021 13:28:11 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 13:28:11 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com,
+        Manfred Spraul <manfred@colorfullife.com>
+Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
+ heuristic lockless reads
+Message-ID: <20210723202811.GK4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+ <20210721211003.869892-2-paulmck@kernel.org>
+ <20210723020846.GA26397@rowland.harvard.edu>
+ <20210723162431.GF4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210723165947.GA46562@rowland.harvard.edu>
+ <20210723173010.GI4397@paulmck-ThinkPad-P17-Gen-1>
+ <20210723181138.GA48833@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723181138.GA48833@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021, Huang Ying wrote:
-
-> "-" is missing before "EINVAL".
+On Fri, Jul 23, 2021 at 02:11:38PM -0400, Alan Stern wrote:
+> On Fri, Jul 23, 2021 at 10:30:10AM -0700, Paul E. McKenney wrote:
+> > On Fri, Jul 23, 2021 at 12:59:47PM -0400, Alan Stern wrote:
+> > > On Fri, Jul 23, 2021 at 09:24:31AM -0700, Paul E. McKenney wrote:
+> > > > On Thu, Jul 22, 2021 at 10:08:46PM -0400, Alan Stern wrote:
+> > > 
+> > > > > > +	void do_something_locked(struct foo *fp)
+> > > > > > +	{
+> > > > > > +		bool gf = true;
+> > > > > > +
+> > > > > > +		/* IMPORTANT: Heuristic plus spin_lock()! */
+> > > > > > +		if (!data_race(global_flag)) {
+> > > > > > +			spin_lock(&fp->f_lock);
+> > > > > > +			if (!smp_load_acquire(&global_flag)) {
+> > > 
+> > > > > > +	void begin_global(void)
+> > > > > > +	{
+> > > > > > +		int i;
+> > > > > > +
+> > > > > > +		spin_lock(&global_lock);
+> > > > > > +		WRITE_ONCE(global_flag, true);
+> > > > > 
+> > > > > Why does this need to be WRITE_ONCE?  It still races with the first read 
+> > > > > of global_flag above.
+> > > > 
+> > > > But also with the smp_load_acquire() of global_flag, right?
+> > > 
+> > > What I'm curious about is why, given these two races, you notate one of 
+> > > them by changing a normal write to WRITE_ONCE and you notate the other 
+> > > by changing a normal read to a data_race() read.  Why not handle them 
+> > > both the same way?
+> > 
+> > Because the code can tolerate the first read returning complete nonsense,
+> > but needs the value from the second read to be exact at that point in
+> > time.
 > 
-> Fixes: 2efa33fc7f6e ("mm/shmem: fix shmem_swapin() race with swapoff")
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Minchan Kim <minchan@kernel.org>
-> ---
->  mm/shmem.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> In other words, if the second read races with the WRITE_ONCE, it needs to 
+> get either the value before the write or the value after the write; 
+> nothing else will do because it isn't a heuristic here.  Fair point.
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 9af4b2173fe9..e201a3ba12fa 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1708,7 +1708,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->  	/* Prevent swapoff from happening to us. */
->  	si = get_swap_device(swap);
->  	if (!si) {
-> -		error = EINVAL;
-> +		error = -EINVAL;
->  		goto failed;
->  	}
->  	/* Look it up and read it in.. */
-> -- 
-> 2.30.2
+> >  (If the value changes immediately after being read, the fact that
+> > ->f_lock is held prevents begin_global() from completing.)
+> 
+> This seems like something worth explaining in the document.  That 
+> "IMPORTANT" comment doesn't really get the full point across.
 
-Thanks for catching that; and as David says, it's worse than a typo.
+How about this comment instead?
 
-But this is not the right fix:
-2efa33fc7f6e ("mm/shmem: fix shmem_swapin() race with swapoff")
-needs to be reverted.
+	/* This works even if data_race() returns nonsense. */
 
-It's been on my pile to look at for weeks: now I look at it and see
-it's just a bad patch.  Over-enthusiastic stablehands already rushed
-it out, I was wary, and reverts are already in -rc for 5.13 and 5.10,
-phew, but 5.12.19 EOL is stuck with it unfortunately, oh well.
-
-I was wary because, if the (never observed) race to be fixed is in
-swap_cluster_readahead(), why was shmem_swapin_page() being patched?
-Not explained in its commit message, probably a misunderstanding of
-how mm/shmem.c already manages races (and prefers not to be involved
-in swap_info_struct stuff).
-
-But why do I now say it's bad?  Because even if you correct the EINVAL
-to -EINVAL, that's an unexpected error: -EEXIST is common, -ENOMEM is
-not surprising, -ENOSPC can need consideration, but -EIO and anything
-else just end up as SIGBUS when faulting (or as error from syscall).
-So, 2efa33fc7f6e converts a race with swapoff to SIGBUS: not good,
-and I think much more likely than the race to be fixed (since
-swapoff's percpu_ref_kill() rightly comes before synchronize_rcu()).
-
-2efa33fc7f6e was intending to fix a race introduced by two-year-old
-8fd2e0b505d1 ("mm: swap: check if swap backing device is congested
-or not"), which added a call to inode_read_congested().  Certainly
-relying on si->swap_file->f_mapping->host there was new territory:
-whether actually racy I'm not sure offhand - I've forgotten whether
-synchronize_rcu() waits for preempted tasks or not.
-
-But if it is racy, then I wonder if the right fix might be to revert
-8fd2e0b505d1 too. Convincing numbers were offered for it, but I'm
-puzzled: because Matthew has in the past noted that the block layer
-broke and further broke bdi congestion tracking (I don't know the
-relevant release numbers), so I don't understand how checking
-inode_read_congested() is actually useful there nowadays.
-
-No need to hurry to a conclusion on 8fd2e0b505d1;
-but 2efa33fc7f6e should definitely be reverted.
-
-Thanks,
-Hugh
+							Thanx, Paul
