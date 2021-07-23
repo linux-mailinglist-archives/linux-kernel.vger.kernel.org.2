@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CAC53D3E6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B33A3D3E85
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhGWQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:40:57 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51134
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231166AbhGWQkx (ORCPT
+        id S231171AbhGWQlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGWQlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:40:53 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id AC9073F325;
-        Fri, 23 Jul 2021 17:21:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627060884;
-        bh=7FQD/B711wUP78UGWXd/xXfRyIQyD6tfXLIddfxdlcc=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=MIpg2zVyane9SunkaQ6m9KeX6+ptvvm8nBjPPToZ+jE+O8Udpx2/Hbt3KIM9AsnKT
-         15av06BGurLcNcGDj6vbShhx7AEj2S5U1YUJVBo9G4n5qkVO+o03wYR+ClVinO47rd
-         YMzTHOBW3XCPNf1b6cwBNLfQTObnplThPTRn+cf7LMBC9zC8dIWVJNMT5cCleyilum
-         +jYVy0XJ0ILlsAQMEspBu4tpIAeQsH2wBw3i+HsmtuGkTjr3kJUlkfl4wsxcDgIDcY
-         /D1H9HfoBkcbFQEKQWuVU5VAosMEY1/JylzJ5x8vS2kVVbFDoK7MVAjg+GNLXzAPKS
-         yPzFytvYsyq/g==
-From:   Colin King <colin.king@canonical.com>
-To:     James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] security: keys: trusted: Fix memory leaks on allocated blob
-Date:   Fri, 23 Jul 2021 18:21:21 +0100
-Message-Id: <20210723172121.156687-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 23 Jul 2021 12:41:53 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46635C061575;
+        Fri, 23 Jul 2021 10:22:27 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so4595660pji.5;
+        Fri, 23 Jul 2021 10:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oDwCL02ST1HyyrzXV52ZuPzIuQPAJ7yqctOiLr2rYbU=;
+        b=SUieFDHjIOGuh+2NjChbZRdYw0TJcJIXrVt1hbBjXX15tKaU8fYuXaITEH7+mHzE4O
+         4f4tGMyEOOw+ZncG0MpTToswsQxJ/KNR9PMepe/OUhIyPfaEmrYSTzz/XYPhfs5j7mCP
+         jlSetcaiJuTVIVWgTxZQcXBYLShr2Bt/C/m3equpVxseG1+N+ymKlHay5fsQV/2hA37Z
+         w5px4cmcMz3+uHzHDJfBp1ASiVmI/IN6z80yycvFA5l3Wdh89iSvPxDWu8GstAtcMgal
+         Rz0cH9JELD+6KQHfj/T4gbZgWQbyZxYX//Pw64cueHWlaUafbOjf53rlF72BUg9fnq26
+         /CgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oDwCL02ST1HyyrzXV52ZuPzIuQPAJ7yqctOiLr2rYbU=;
+        b=Na9h9uFKlSzMMLt8djA1ugEIUjrAFx0tLvtztVyI1e6swg9yg26oAmWbyrMRmbaA+3
+         cd9J9f7gnyKGy9XWIzfsLLnswxryumWjtiWsD5SYZZYzlFTWawx4+rdc3BIrQZb82lLF
+         JLxZaiBUIJ/aI1IWBsJxcKSN0ggWusDf2uAiwLEt7l+FyiOczIZtyZM96sHcZOe/3FOb
+         zNw5jBALRhzGOj0GRJXtJ3MVLEfDKN3Vi/3vRBm4tfBnoteqIwSLv8w3PCuWlZesHuow
+         w9JBTkEykxugDLSjR6ycH5DtV5zRV2VtevF1shq5S2KUa3XMOktmgBQ3dFt1OoRHCrH4
+         Yu9w==
+X-Gm-Message-State: AOAM531nBhyjL20PcjWiR2sJoSZLE51FNY1ibTNbusZWiVK6UYym/sd+
+        9QiUlc1loD32RDLwOGJ/Mbwpo9ExWWg=
+X-Google-Smtp-Source: ABdhPJw6aHfNLqDW0gl+b5r3zBSdqz00TlgeD2pWobzcbvAFa+xRKFrCMaQLR2kkEQg63/humyGaEw==
+X-Received: by 2002:a17:90b:20b:: with SMTP id fy11mr2820845pjb.79.1627060946352;
+        Fri, 23 Jul 2021 10:22:26 -0700 (PDT)
+Received: from [10.230.31.46] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o184sm39238383pga.18.2021.07.23.10.22.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 10:22:25 -0700 (PDT)
+Subject: Re: [PATCH 5.13 000/156] 5.13.5-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210722155628.371356843@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6bbd4f54-54f0-2a5f-f5bc-a1247f5f86cf@gmail.com>
+Date:   Fri, 23 Jul 2021 10:22:14 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210722155628.371356843@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-There are several error return paths that don't kfree the allocated
-blob, leading to memory leaks. Ensure blob is initialized to null as
-some of the error return paths in function tpm2_key_decode do not
-change blob. Add an error return path to kfree blob and use this on
-the current leaky returns.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- security/keys/trusted-keys/trusted_tpm2.c | 30 ++++++++++++++++-------
- 1 file changed, 21 insertions(+), 9 deletions(-)
+On 7/22/2021 9:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.13.5 release.
+> There are 156 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-index 0165da386289..930c67f98611 100644
---- a/security/keys/trusted-keys/trusted_tpm2.c
-+++ b/security/keys/trusted-keys/trusted_tpm2.c
-@@ -366,7 +366,7 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
- 	unsigned int private_len;
- 	unsigned int public_len;
- 	unsigned int blob_len;
--	u8 *blob, *pub;
-+	u8 *blob = NULL, *pub;
- 	int rc;
- 	u32 attrs;
- 
-@@ -378,22 +378,30 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
- 	}
- 
- 	/* new format carries keyhandle but old format doesn't */
--	if (!options->keyhandle)
--		return -EINVAL;
-+	if (!options->keyhandle) {
-+		rc = -EINVAL;
-+		goto err;
-+	}
- 
- 	/* must be big enough for at least the two be16 size counts */
--	if (payload->blob_len < 4)
--		return -EINVAL;
-+	if (payload->blob_len < 4) {
-+		rc = -EINVAL;
-+		goto err;
-+	}
- 
- 	private_len = get_unaligned_be16(blob);
- 
- 	/* must be big enough for following public_len */
--	if (private_len + 2 + 2 > (payload->blob_len))
--		return -E2BIG;
-+	if (private_len + 2 + 2 > (payload->blob_len)) {
-+		rc = -E2BIG;
-+		goto err;
-+	}
- 
- 	public_len = get_unaligned_be16(blob + 2 + private_len);
--	if (private_len + 2 + public_len + 2 > payload->blob_len)
--		return -E2BIG;
-+	if (private_len + 2 + public_len + 2 > payload->blob_len) {
-+		rc = -E2BIG;
-+		goto err;
-+	}
- 
- 	pub = blob + 2 + private_len + 2;
- 	/* key attributes are always at offset 4 */
-@@ -441,6 +449,10 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
- 		rc = -EPERM;
- 
- 	return rc;
-+
-+err:
-+	kfree(blob);
-+	return rc;
- }
- 
- /**
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.31.1
-
+Florian
