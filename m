@@ -2,172 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85B83D30DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F03B3D30E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhGVXmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 19:42:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
+        id S232800AbhGVXsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 19:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232881AbhGVXls (ORCPT
+        with ESMTP id S232762AbhGVXsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 19:41:48 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5866C0617BD
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:22:20 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so1534715pjh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:22:20 -0700 (PDT)
+        Thu, 22 Jul 2021 19:48:35 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88EDAC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:29:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cbDiUWXywQuHvWbK5KgToA8hljAFXRAZ8RdP96k0ztI=;
-        b=g+MMetn7ZgIZd9+ufiUGW8oAfNXo8QWuBLD1d0E7atOYLNbDLR2P/EyOZJg+zTuGzt
-         ixFiHfFjiqbspkrMlWwGpnjph8L5idjm6M+seAPG76+1GWbz5PlywdoeySLA8X6W7gLm
-         894t4F/EflgYTP7emt9lS3L4bauCmLnd29vTk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cbDiUWXywQuHvWbK5KgToA8hljAFXRAZ8RdP96k0ztI=;
-        b=mH3NZ1DEVfXciqrTcYaVE364pYorqBYPCpKHsH5mVmWap7TLj4blS5p2uYeRzFX3Ph
-         GjuXLMeEu3yl+IWJUrr8i1idWRJOIXtWbyD0KeFE/KNM20MU5LpurTP/Hm77hlfdthwO
-         SqHIaXL4UKqH0VQzbGHh7/t7AtVYXXYEOeuLfU1eWk8zYYSlNvxenD/dVjXJd5hkY167
-         HgzTg14ADupF6Ko/rdyGU9GjfkqVQcgXBlu9SQfm5HjFx5z1yiuw+L7VC3UHBjHBxORV
-         ZCDVGWI8SGthQ5/pi7bMienAZSDPNQgeA6o4OB6csuvGSv5bP/xTRpmxLmr0bY4JNjIx
-         576w==
-X-Gm-Message-State: AOAM5305cM7X/tiQmGJpKgkmvrKYU7ClC5BMUnHbvUNAlmkjHQyk0pDH
-        qRv9AaBuvRhum8h8eeYI9IMbqQ==
-X-Google-Smtp-Source: ABdhPJzzG/Dkx5U9t15FY1dr/BrlYj0ipVj0xo+4dULJS5i2lgAmf8BOEZlDWJChZ2JPF9c9NUKVWQ==
-X-Received: by 2002:a17:90a:4884:: with SMTP id b4mr11251465pjh.173.1626999740346;
-        Thu, 22 Jul 2021 17:22:20 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:5e70:6a49:67b5:2b7e])
-        by smtp.gmail.com with ESMTPSA id iy13sm4072377pjb.28.2021.07.22.17.22.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 17:22:20 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Steev Klimaszewski <steev@kali.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 8/8] arm64: dts: qcom: sc7180: trogdor devices can use probable eDP panels
-Date:   Thu, 22 Jul 2021 17:21:46 -0700
-Message-Id: <20210722172104.RFC.8.I038959fe65a202bd513cebeeffc7309114b5ffde@changeid>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-In-Reply-To: <20210723002146.1962910-1-dianders@chromium.org>
-References: <20210723002146.1962910-1-dianders@chromium.org>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=06FIoFo1++Bs1nXh2OQvBAB1I83x6yDvJoaM9tHykL0=; b=SsW/nOBciSh6t
+        7FOb3GX9o3RWpNlrvTVWFF+pJUz/WWgTX9JVb7f8Cjf4wwQwd9E/nqNjudYmuY2l
+        a3ysWsjbPf6N6u9VxDRh6BmzdeGwO+ADjP0e1ePxbU3RmxvVkfks3x+tf5055Fxb
+        cVOKDxI+1N7z8nX7spu2vp68NMitbc=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAnL3coDfpgk9guAA--.6267S2;
+        Fri, 23 Jul 2021 08:28:24 +0800 (CST)
+Date:   Fri, 23 Jul 2021 08:22:26 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Atish Patra <atishp@atishpatra.org>
+Subject: [PATCH] riscv: stacktrace: pin the task's stack in get_wchan
+Message-ID: <20210723082226.7b7b4707@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygAnL3coDfpgk9guAA--.6267S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxury3JF1UCF43Xry7Xr4fZrb_yoW5uF1kpr
+        13AF17CFW8Xr42yr13Ar1rXr48GFyDAay7Jr97tr15CF15Gw18X34DJanrGr1DXw1jqFy7
+        Gr1Dtw4kKr4DJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyqb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I
+        3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxV
+        WUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAF
+        wI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcI
+        k0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUqEoXUUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change enables probable eDP panels for all sc7180-trogdor
-variants, leaving the existing panel as a fallback.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Though this won't make any immediate change, it paves the way for
-supporting more second source panels on trogdor devices. It also
-removes a "little white lie" which is that some trogdor devices
-already had second sources for their panels but the panels were
-compatible enough that they could simply use the same delays across
-the board.
+Pin the task's stack before calling walk_stackframe() in get_wchan().
+This can fix the panic as reported by Andreas when CONFIG_VMAP_STACK=y:
 
-NOTE that all trogdor devices currently supported by mainline have HPD
-hooked up properly and so there is no need for the hpd-absent-delay on
-any of these. One of the trogdor devices does have a glitchy HPD upon
-first power on, though, so we need "hpd-reliable-delay" on lazor.
+[   65.609696] Unable to handle kernel paging request at virtual address ffffffd0003bbde8
+[   65.610460] Oops [#1]
+[   65.610626] Modules linked in: virtio_blk virtio_mmio rtc_goldfish btrfs blake2b_generic libcrc32c xor raid6_pq sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua efivarfs
+[   65.611670] CPU: 2 PID: 1 Comm: systemd Not tainted 5.14.0-rc1-1.g34fe32a-default #1 openSUSE Tumbleweed (unreleased) c62f7109153e5a0897ee58ba52393ad99b070fd2
+[   65.612334] Hardware name: riscv-virtio,qemu (DT)
+[   65.613008] epc : get_wchan+0x5c/0x88
+[   65.613334]  ra : get_wchan+0x42/0x88
+[   65.613625] epc : ffffffff800048a4 ra : ffffffff8000488a sp : ffffffd00021bb90
+[   65.614008]  gp : ffffffff817709f8 tp : ffffffe07fe91b80 t0 : 00000000000001f8
+[   65.614411]  t1 : 0000000000020000 t2 : 0000000000000000 s0 : ffffffd00021bbd0
+[   65.614818]  s1 : ffffffd0003bbdf0 a0 : 0000000000000001 a1 : 0000000000000002
+[   65.615237]  a2 : ffffffff81618008 a3 : 0000000000000000 a4 : 0000000000000000
+[   65.615637]  a5 : ffffffd0003bc000 a6 : 0000000000000002 a7 : ffffffe27d370000
+[   65.616022]  s2 : ffffffd0003bbd90 s3 : ffffffff8071a81e s4 : 0000000000003fff
+[   65.616407]  s5 : ffffffffffffc000 s6 : 0000000000000000 s7 : ffffffff81618008
+[   65.616845]  s8 : 0000000000000001 s9 : 0000000180000040 s10: 0000000000000000
+[   65.617248]  s11: 000000000000016b t3 : 000000ff00000000 t4 : 0c6aec92de5e3fd7
+[   65.617672]  t5 : fff78f60608fcfff t6 : 0000000000000078
+[   65.618088] status: 0000000000000120 badaddr: ffffffd0003bbde8 cause: 000000000000000d
+[   65.618621] [<ffffffff800048a4>] get_wchan+0x5c/0x88
+[   65.619008] [<ffffffff8022da88>] do_task_stat+0x7a2/0xa46
+[   65.619325] [<ffffffff8022e87e>] proc_tgid_stat+0xe/0x16
+[   65.619637] [<ffffffff80227dd6>] proc_single_show+0x46/0x96
+[   65.619979] [<ffffffff801ccb1e>] seq_read_iter+0x190/0x31e
+[   65.620341] [<ffffffff801ccd70>] seq_read+0xc4/0x104
+[   65.620633] [<ffffffff801a6bfe>] vfs_read+0x6a/0x112
+[   65.620922] [<ffffffff801a701c>] ksys_read+0x54/0xbe
+[   65.621206] [<ffffffff801a7094>] sys_read+0xe/0x16
+[   65.621474] [<ffffffff8000303e>] ret_from_syscall+0x0/0x2
+[   65.622169] ---[ end trace f24856ed2b8789c5 ]---
+[   65.622832] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
 
-This also removes the "innolux,n116bge" fallback from one of the
-limozeen models. The limozeen board never had this panel but the
-"innolux,n116bge" panel timings / delays worked OK and having this as
-a fallback compatible string helped until the "innolux,n116bca-ea1"
-panel was supported.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
+ arch/riscv/kernel/stacktrace.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
- arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi            | 2 +-
- .../arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dts | 2 +-
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dts     | 2 +-
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi             | 3 ++-
- arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi            | 2 +-
- 5 files changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-index 4c6e433c8226..b2ff87769a7b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
-@@ -74,7 +74,7 @@ &i2c9 {
- };
+diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+index ff467b98c3e3..ac7593607fa6 100644
+--- a/arch/riscv/kernel/stacktrace.c
++++ b/arch/riscv/kernel/stacktrace.c
+@@ -132,8 +132,12 @@ unsigned long get_wchan(struct task_struct *task)
+ {
+ 	unsigned long pc = 0;
  
- &panel {
--	compatible = "boe,nv110wtm-n61";
-+	compatible = "edp-panel", "boe,nv110wtm-n61";
- };
+-	if (likely(task && task != current && !task_is_running(task)))
++	if (likely(task && task != current && !task_is_running(task))) {
++		if (!try_get_task_stack(task))
++			return 0;
+ 		walk_stackframe(task, NULL, save_wchan, &pc);
++		put_task_stack(task);
++	}
+ 	return pc;
+ }
  
- &pp3300_dx_edp {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dts
-index 0456c7e05d00..56bff28cdd9e 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots.dts
-@@ -18,7 +18,7 @@ / {
- /delete-node/&ap_ts;
- 
- &panel {
--	compatible = "innolux,n116bca-ea1", "innolux,n116bge";
-+	compatible = "edp-panel", "innolux,n116bca-ea1";
- };
- 
- &sdhc_2 {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dts
-index e6ad6dae4e60..892f6ff8f155 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen.dts
-@@ -34,7 +34,7 @@ ap_ts: touchscreen@10 {
- };
- 
- &panel {
--	compatible = "auo,b116xa01";
-+	compatible = "edp-panel", "auo,b116xa01";
- };
- 
- &sdhc_2 {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-index 6b10b96173e8..f31a8f54c855 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
-@@ -42,7 +42,8 @@ ap_ts: touchscreen@10 {
- };
- 
- &panel {
--	compatible = "boe,nv133fhm-n62";
-+	compatible = "edp-panel", "boe,nv133fhm-n62";
-+	hpd-reliable-delay = <15>;
- };
- 
- &trackpad {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-index 622b5f1b88a2..bf0d2a8a195b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-@@ -108,7 +108,7 @@ ap_ts: touchscreen@10 {
- };
- 
- &panel {
--	compatible = "kingdisplay,kd116n21-30nv-a010";
-+	compatible = "edp-panel", "kingdisplay,kd116n21-30nv-a010";
- };
- 
- &pen_insert {
 -- 
-2.32.0.432.gabb21c7263-goog
+2.32.0
+
 
