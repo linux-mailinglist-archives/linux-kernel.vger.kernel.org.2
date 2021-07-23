@@ -2,180 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7323D369B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8F23D369E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbhGWHmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:42:55 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42264 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234443AbhGWHmu (ORCPT
+        id S234413AbhGWHoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:44:24 -0400
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:35999 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229907AbhGWHoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:42:50 -0400
-X-UUID: abf16b55734e49b9b9e28d41dd372acd-20210723
-X-UUID: abf16b55734e49b9b9e28d41dd372acd-20210723
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 725778532; Fri, 23 Jul 2021 16:23:21 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Jul 2021 16:23:19 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Jul 2021 16:23:19 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [PATCH v4 3/3] phy: phy-mtk-tphy: add support mt8195
-Date:   Fri, 23 Jul 2021 16:22:42 +0800
-Message-ID: <1627028562-23584-3-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1627028562-23584-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1627028562-23584-1-git-send-email-chunfeng.yun@mediatek.com>
+        Fri, 23 Jul 2021 03:44:23 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id 6qUImWbWFXTlc6qUJmAKUw; Fri, 23 Jul 2021 10:24:56 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1627028696; bh=G/gLVG+vEvPnW/X47dF5+ZZLjjYd169DWpYlduozbnk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=qx0fsSh4b8Bx9ZALtSJj7P3jqc6Mv+tb5nZttUQoYxl/Bf96l1jm8XHzGuscR9Kfc
+         2cjbw90oS/gIbnrvHdWAd6daxKUE4LyI1VumopGB+YLzPAdOBRBrxYYgyYLTbDMSgY
+         k8ybhjwJRHNnK/fncQ6BFF3l8pmF4vRcPLQUml5I88A8j/RQSha8Df42lNQ6DIY/Ud
+         g8ubT324NtcMEZiGgWXwg8eO99ogW71pHTeWkQobswbMcBLWLxhiSDtg0DOUyv/ljm
+         ywCbA/eyWp8JrcJOzNvayZEY6kkMWS3oX+hKIMHS9+18OVdxegqJ13ty9+s99BllIb
+         YprgyOe9yIuCA==
+Subject: Re: [PATCH REPOST] TDA1997x: replace video detection routine
+To:     =?UTF-8?Q?Krzysztof_Ha=c5=82asa?= <khalasa@piap.pl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+References: <m3k0lmejlw.fsf@t19.piap.pl>
+ <68bd6e41-4c32-240f-aa83-fd2b96929d45@xs4all.nl> <m3mtqedfsg.fsf@t19.piap.pl>
+ <m3im12df1m.fsf@t19.piap.pl>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <b2d74079-4858-1a2d-55b0-9504ebabc5e3@xs4all.nl>
+Date:   Fri, 23 Jul 2021 10:24:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <m3im12df1m.fsf@t19.piap.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfHhHGfiYtyj8PIqP3pooduSYtcUcgIPrNFBO6nPMztw2MN4qyN4Yt8nNqaXGvWHudh5Jl53ISfpd/M6y5gWkOVlmXB3EWRQyir1GrUjf6EaFE7NGHmEx
+ Mns3fJH/XtJR8Bdu0X+rhSRILjRyQMzSARVWysdbPPWd/PV66exagDVNoykD3tmWBSjkXiO2zMsZO4tBBLLounmChFAP5FQQ+Jtg9l4PgxnrTF4RZwEJ+Wyq
+ O/GJVl1wLvWID6dO9PWBEOUehbknPFVSZ6Ew3IW9exMzV2CIsQ99vm/wFGa94cHvlDJjTcBGQhK+eHu3K+zPem1+SR7oqEwSCyIRj9im4orN+MH5j3nhdLor
+ 5LlFr69VGiONwsjCB70Wxsl+6Zw3LTAkR9d+hWt1v55p3qnyf5A=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The controller is designed to use use PLL integer mode, but
-in fact used fractional mode for some ones on mt8195, this
-causes signal degradation (e.g. eye diagram test fail), fix
-it by switching PLL to 26Mhz from default 48Mhz to improve
-signal quality.
+Hi Krzysztof,
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v4:
-    1. add comments suggested by Vinod
-    2. move u2_phy_pll_26m_set() into u2_phy_instance_init()
+On 22/07/2021 08:43, Krzysztof Hałasa wrote:
+> Also, I have spotted an interesting loop condition in
+> drivers/media/v4l2-core/v4l2-dv-timings.c (dated 2013,
+> d1c65ad6a44b0ff79d2f0bf726fa6fd9248991f4).
+> It obviously works (unless the table grows to 600+ entries), but I guess
+> I should make it "standard", shouldn't I?
 
-v2~3: no changes
----
- drivers/phy/mediatek/phy-mtk-tphy.c | 54 +++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+Thanks for catching this!
 
-diff --git a/drivers/phy/mediatek/phy-mtk-tphy.c b/drivers/phy/mediatek/phy-mtk-tphy.c
-index 42a1174da6cc..33000b38fd1b 100644
---- a/drivers/phy/mediatek/phy-mtk-tphy.c
-+++ b/drivers/phy/mediatek/phy-mtk-tphy.c
-@@ -41,6 +41,8 @@
- 
- #define U3P_USBPHYACR0		0x000
- #define PA0_RG_U2PLL_FORCE_ON		BIT(15)
-+#define PA0_USB20_PLL_PREDIV		GENMASK(7, 6)
-+#define PA0_USB20_PLL_PREDIV_VAL(x)	((0x3 & (x)) << 6)
- #define PA0_RG_USB20_INTR_EN		BIT(5)
- 
- #define U3P_USBPHYACR1		0x004
-@@ -52,6 +54,8 @@
- #define PA1_RG_TERM_SEL_VAL(x)	((0x7 & (x)) << 8)
- 
- #define U3P_USBPHYACR2		0x008
-+#define PA2_RG_U2PLL_BW			GENMASK(21, 19)
-+#define PA2_RG_U2PLL_BW_VAL(x)		((0x7 & (x)) << 19)
- #define PA2_RG_SIF_U2PLL_FORCE_EN	BIT(18)
- 
- #define U3P_USBPHYACR5		0x014
-@@ -73,6 +77,14 @@
- #define P2C_USB20_GPIO_MODE		BIT(8)
- #define P2C_U2_GPIO_CTR_MSK	(P2C_RG_USB20_GPIO_CTL | P2C_USB20_GPIO_MODE)
- 
-+#define U3P_U2PHYA_RESV		0x030
-+#define P2R_RG_U2PLL_FBDIV_26M		0x1bb13b
-+#define P2R_RG_U2PLL_FBDIV_48M		0x3c0000
-+
-+#define U3P_U2PHYA_RESV1	0x044
-+#define P2R_RG_U2PLL_REFCLK_SEL	BIT(5)
-+#define P2R_RG_U2PLL_FRA_EN		BIT(3)
-+
- #define U3D_U2PHYDCR0		0x060
- #define P2C_RG_SIF_U2PLL_FORCE_ON	BIT(24)
- 
-@@ -277,6 +289,12 @@ enum mtk_phy_version {
- struct mtk_phy_pdata {
- 	/* avoid RX sensitivity level degradation only for mt8173 */
- 	bool avoid_rx_sen_degradation;
-+	/*
-+	 * workaround only for mt8195, HW fix it for others of V3,
-+	 * u2phy should use integer mode instead of fractional mode of
-+	 * 48M PLL, fix it by switching PLL to 26M from default 48M
-+	 */
-+	bool sw_pll_48m_to_26m;
- 	enum mtk_phy_version version;
- };
- 
-@@ -456,6 +474,33 @@ static void u3_phy_instance_init(struct mtk_tphy *tphy,
- 	dev_dbg(tphy->dev, "%s(%d)\n", __func__, instance->index);
- }
- 
-+static void u2_phy_pll_26m_set(struct mtk_tphy *tphy,
-+	struct mtk_phy_instance *instance)
-+{
-+	struct u2phy_banks *u2_banks = &instance->u2_banks;
-+	void __iomem *com = u2_banks->com;
-+	u32 tmp;
-+
-+	if (!tphy->pdata->sw_pll_48m_to_26m)
-+		return;
-+
-+	tmp = readl(com + U3P_USBPHYACR0);
-+	tmp &= ~PA0_USB20_PLL_PREDIV;
-+	tmp |= PA0_USB20_PLL_PREDIV_VAL(0);
-+	writel(tmp, com + U3P_USBPHYACR0);
-+
-+	tmp = readl(com + U3P_USBPHYACR2);
-+	tmp &= ~PA2_RG_U2PLL_BW;
-+	tmp |= PA2_RG_U2PLL_BW_VAL(3);
-+	writel(tmp, com + U3P_USBPHYACR2);
-+
-+	writel(P2R_RG_U2PLL_FBDIV_26M, com + U3P_U2PHYA_RESV);
-+
-+	tmp = readl(com + U3P_U2PHYA_RESV1);
-+	tmp |= P2R_RG_U2PLL_FRA_EN | P2R_RG_U2PLL_REFCLK_SEL;
-+	writel(tmp, com + U3P_U2PHYA_RESV1);
-+}
-+
- static void u2_phy_instance_init(struct mtk_tphy *tphy,
- 	struct mtk_phy_instance *instance)
- {
-@@ -515,6 +560,9 @@ static void u2_phy_instance_init(struct mtk_tphy *tphy,
- 	tmp |= PA6_RG_U2_SQTH_VAL(2);
- 	writel(tmp, com + U3P_USBPHYACR6);
- 
-+	/* Workaround only for mt8195, HW fix it for others (V3) */
-+	u2_phy_pll_26m_set(tphy, instance);
-+
- 	dev_dbg(tphy->dev, "%s(%d)\n", __func__, index);
- }
- 
-@@ -1094,10 +1142,16 @@ static const struct mtk_phy_pdata mt8173_pdata = {
- 	.version = MTK_PHY_V1,
- };
- 
-+static const struct mtk_phy_pdata mt8195_pdata = {
-+	.sw_pll_48m_to_26m = true,
-+	.version = MTK_PHY_V3,
-+};
-+
- static const struct of_device_id mtk_tphy_id_table[] = {
- 	{ .compatible = "mediatek,mt2701-u3phy", .data = &tphy_v1_pdata },
- 	{ .compatible = "mediatek,mt2712-u3phy", .data = &tphy_v2_pdata },
- 	{ .compatible = "mediatek,mt8173-u3phy", .data = &mt8173_pdata },
-+	{ .compatible = "mediatek,mt8195-tphy", .data = &mt8195_pdata },
- 	{ .compatible = "mediatek,generic-tphy-v1", .data = &tphy_v1_pdata },
- 	{ .compatible = "mediatek,generic-tphy-v2", .data = &tphy_v2_pdata },
- 	{ .compatible = "mediatek,generic-tphy-v3", .data = &tphy_v3_pdata },
--- 
-2.18.0
+I've posted a patch fixing it. Luckily it never broke anything, but it definitely
+had to be fixed.
+
+Regards,
+
+	Hans
+
+> 
+> The first case is pretty normal:
+> @@ -159,10 +161,10 @@ int v4l2_enum_dv_timings_cap(struct v4l2_enum_dv_timings *t,
+>      u32 i, idx;
+>  
+>      memset(t->reserved, 0, sizeof(t->reserved));
+> -    for (i = idx = 0; i < ARRAY_SIZE(timings); i++) {
+> -        if (v4l2_dv_valid_timings(timings + i, cap) &&
+> +    for (i = idx = 0; v4l2_dv_timings_presets[i].bt.width; i++) {
+> +        if (v4l2_dv_valid_timings(v4l2_dv_timings_presets + i, cap) &&
+>              idx++ == t->index) {
+> -            t->timings = timings[i];
+> +            t->timings = v4l2_dv_timings_presets[i];
+>              return 0;
+>          }
+>      }
+> 
+> This is the interesting part:
+> @@ -179,10 +181,10 @@ bool v4l2_find_dv_timings_cap(struct v4l2_dv_timings *t,
+>      if (!v4l2_dv_valid_timings(t, cap))
+>          return false;
+>  
+> -    for (i = 0; i < ARRAY_SIZE(timings); i++) {
+> -        if (v4l2_dv_valid_timings(timings + i, cap) &&
+> -            v4l2_match_dv_timings(t, timings + i, pclock_delta)) {
+> -            *t = timings[i];
+> +    for (i = 0; i < v4l2_dv_timings_presets[i].bt.width; i++) {
+>                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> +        if (v4l2_dv_valid_timings(v4l2_dv_timings_presets + i, cap) &&
+> +            v4l2_match_dv_timings(t, v4l2_dv_timings_presets + i, pclock_delta)) {
+> +            *t = v4l2_dv_timings_presets[i];
+>              return true;
+>          }
+>      }
+> 
 
