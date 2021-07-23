@@ -2,173 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52473D3108
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D9F3D3109
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhGWAIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:08:41 -0400
-Received: from mga02.intel.com ([134.134.136.20]:50093 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232730AbhGWAIk (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:08:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="198982410"
-X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
-   d="scan'208";a="198982410"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 17:49:06 -0700
-X-IronPort-AV: E=Sophos;i="5.84,262,1620716400"; 
-   d="scan'208";a="470881832"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 17:49:03 -0700
-Subject: Re: [PATCH v3 3/3] perf tools: Enable on a list of CPUs for hybrid
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210712071235.28533-1-yao.jin@linux.intel.com>
- <20210712071235.28533-4-yao.jin@linux.intel.com> <YPXUMTFbj2Tl3eBz@krava>
- <ecf0e815-616f-0a08-cefd-baac93c0e47d@linux.intel.com>
- <YPaUc3iodIASdYRY@krava>
- <598463ae-0bb0-7609-407b-4822112b2093@linux.intel.com>
- <YPlGPC3OkPihS91A@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <57a972ea-bbe3-2baa-ab8d-9fbfe2eb4d32@linux.intel.com>
-Date:   Fri, 23 Jul 2021 08:49:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232920AbhGWAIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232730AbhGWAIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 20:08:53 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EB6C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:49:25 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id u14so9669323ljh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R2WR76y4EE4IKn9g23ZCfDxjyNDy+13+LWLZTGdDMJQ=;
+        b=CKIz8q0ZCZM0Q8O4lVDY1q+MHMPl96BgWOOtBaXt6rd56XVfVUDwC5LAmZ9Wum4B+w
+         dhjLNF4NLVixabI/TSL0Xd7AIq5J8AwmNA6ftJy8XWqAjvFUicSQaCKCT05daJ9adAH5
+         W1xIViHPUN/EYS3dzN11eLA8C6j+yjsReL5/W6yw7sh6Peb6SeValxVNMYzlXDoTEjSZ
+         tcgQgJdAJHxvCybAHva3wEkWN1N1wGlAkgfQANzuv8oHruHMXTbChHFAgRpoG50dIv3z
+         Uc+nY4J9WD4Y6bmPoNv8N5LY9iV/VWtAbcjd8WRvEKjUX4hgN2whnmgVPhjFeNuG8Z5v
+         blnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R2WR76y4EE4IKn9g23ZCfDxjyNDy+13+LWLZTGdDMJQ=;
+        b=KgDGd829SpwIRDumPvRRpVZPLRItyv7NYsZ3QjkG6KGNp7mc3sh214K86GlQ3JiVnH
+         Yu6d3nWXjVkLMoc8RcALYbk1l9MnCMTZg4YjHvstWLTnRpdX9YQKTELIOzAdopc3J9Jf
+         slVhvmRwbot0JnL68rUT6/O1xwO2P+Xfo68kXJeSfnTl615WK3dex3WGEk7eBMyyWPiR
+         n2A+xOQYLtcVGdgKljjsNhxFmfnEdj+Sy46/gOr+RzRMKjUrJT72It10AHyaJqdOziuM
+         rfyr6yTYrVTVt2Zpl0QgWzVRicJdY98U87H+V8X9UFB+3EjLVLgbUMwzRX6b6wsEk60O
+         cO3A==
+X-Gm-Message-State: AOAM533wHAuJN6u+6rn4S234ji5RpSiPvWmRc1AGqD3ZJ7QcUofQ2v0H
+        oKyqPzAX2U46XQljqsiZihloLr4oC5+RgwAEiec=
+X-Google-Smtp-Source: ABdhPJyG5UUGNMqrzydpuJDEOwYAMik2fLtY+SeyvJRqGx5SNtI/Rgw5aYPQB/8OJgngoOhzRThkJ5viWsSOjMYshX8=
+X-Received: by 2002:a05:651c:1549:: with SMTP id y9mr1690336ljp.335.1627001364043;
+ Thu, 22 Jul 2021 17:49:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YPlGPC3OkPihS91A@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210722211921.3791312-1-daeho43@gmail.com> <dc7776c7-2694-5eea-fe9a-12191c833389@kernel.org>
+In-Reply-To: <dc7776c7-2694-5eea-fe9a-12191c833389@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Thu, 22 Jul 2021 17:49:12 -0700
+Message-ID: <CACOAw_wznnE_pMh_9aVYJdyF-JUn46AZ28hh_GSWcxSJYWsjkw@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: change fiemap way in printing
+ compression chunk
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+On Thu, Jul 22, 2021 at 5:20 PM Chao Yu <chao@kernel.org> wrote:
+>
+> Hi Daeho,
+>
+> On 2021/7/23 5:19, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> >
+> > When we print out a discontinuous compression chunk, it shows like a
+> > continuous chunk now. To show it more correctly, I've changed the way of
+> > printing fiemap info like below. Plus, eliminated NEW_ADDR(-1) in fiemap
+> > info, since it is not in fiemap user api manual.
+> >
+> >     Logical          Physical         Length           Flags
+> > 0: 0000000000000000 0000000fdf692000 0000000000004000 1008
+> > 1: 0000000000004000 0000000fdf693000 0000000000004000 1008
+> > 2: 0000000000008000 0000000fdf694000 0000000000004000 1008
+> > 3: 000000000000c000 0000000fdf695000 0000000000004000 1008
+> > 4: 0000000000010000 0000000fdf696000 000000000000c000 1000
+> > 5: 000000000001c000 0000000f8c60d000 0000000000010000 1000
+> > 6: 000000000002c000 0000000f8c61d000 0000000000004000 1008
+> > 7: 0000000000030000 0000000f8c620000 0000000000004000 1008
+> > 8: 0000000000034000 0000000f8c623000 0000000000001000 1008
+> > 9: 0000000000035000 0000000fc7af4000 0000000000003000 1008
+>
+> I wrote a file some like this:
+>
+> i_addr[0x9] cluster flag                [0xfffffffe : 4294967294]
+> i_addr[0xa]                             [0x   72800 : 468992]
+> i_addr[0xb] reserved flag               [0xffffffff : 4294967295]
+> i_addr[0xc] reserved flag               [0xffffffff : 4294967295]
+> i_addr[0xd] cluster flag                [0xfffffffe : 4294967294]
+> i_addr[0xe]                             [0x   72801 : 468993]
+> i_addr[0xf] reserved flag               [0xffffffff : 4294967295]
+> i_addr[0x10] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x11]                            [0x   72832 : 469042]
+> i_addr[0x12]                            [0x   72802 : 468994]
+> i_addr[0x13]                            [0x   72833 : 469043]
+> i_addr[0x14]                            [0x   72834 : 469044]
+> i_addr[0x15] cluster flag               [0xfffffffe : 4294967294]
+> i_addr[0x16]                            [0x   72803 : 468995]
+> i_addr[0x17] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x18] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x19]                            [0x   72835 : 469045]
+> i_addr[0x1a]                            [0x   72804 : 468996]
+> i_addr[0x1b]                            [0x   72836 : 469046]
+> i_addr[0x1c]                            [0x   72837 : 469047]
+> i_addr[0x1d] cluster flag               [0xfffffffe : 4294967294]
+> i_addr[0x1e]                            [0x   72805 : 468997]
+> i_addr[0x1f] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x20] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x21] cluster flag               [0xfffffffe : 4294967294]
+> i_addr[0x22]                            [0x   72806 : 468998]
+> i_addr[0x23] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x24] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x25] cluster flag               [0xfffffffe : 4294967294]
+> i_addr[0x26]                            [0x   72807 : 468999]
+> i_addr[0x27] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x28] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x29] cluster flag               [0xfffffffe : 4294967294]
+> i_addr[0x2a]                            [0x   72808 : 469000]
+> i_addr[0x2b] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x2c] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x2d] cluster flag               [0xfffffffe : 4294967294]
+> i_addr[0x2e]                            [0x   72809 : 469001]
+> i_addr[0x2f] reserved flag              [0xffffffff : 4294967295]
+> i_addr[0x30] reserved flag              [0xffffffff : 4294967295]
+> i_nid[0]                                [0x       0 : 0]
+> i_nid[1]                                [0x       0 : 0]
+> i_nid[2]                                [0x       0 : 0]
+> i_nid[3]                                [0x       0 : 0]
+> i_nid[4]                                [0x       0 : 0]
+>
+> xfs_io file -c "fiemap -v" shows:
+>
+> before:
+>   EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
+>     0: [0..31]:         3751936..3751967    32 0x1008
+>     1: [32..63]:        3751944..3751975    32 0x1008
+>     2: [64..71]:        3752336..3752343     8 0x1000
+>     3: [72..79]:        3751952..3751959     8 0x1000
+>     4: [80..95]:        3752344..3752359    16 0x1000
+>     5: [96..127]:       3751960..3751991    32 0x1008
+>     6: [128..135]:      3752360..3752367     8 0x1000
+>     7: [136..143]:      3751968..3751975     8 0x1000
+>     8: [144..159]:      3752368..3752383    16 0x1000
+>     9: [160..191]:      3751976..3752007    32 0x1008
+>    10: [192..223]:      3751984..3752015    32 0x1008
+>    11: [224..255]:      3751992..3752023    32 0x1008
+>    12: [256..287]:      3752000..3752031    32 0x1008
+>    13: [288..319]:      3752008..3752039    32 0x1009
+>
+> after:
+>     0: [0..31]:         3751936..3751967    32 0x1008
+>     1: [32..63]:        3751944..3751975    32 0x1008
+>     2: [64..71]:        3752336..3752343     8 0x1000
+>     3: [72..79]:        3751952..3751959     8 0x1000
+>     4: [80..95]:        3752344..3752359    16 0x1000
+>     5: [96..127]:       3751960..3751991    32 0x1008
+>     6: [128..135]:      3752360..3752367     8 0x1000
+>     7: [136..143]:      3751968..3751975     8 0x1000
+>     8: [144..159]:      3752368..3752383    16 0x1000
+>     9: [160..191]:      3751976..3752007    32 0x1008
+>    10: [192..223]:      3751984..3752015    32 0x1008
+>    11: [224..255]:      3751992..3752023    32 0x1008
+>    12: [256..287]:      3752000..3752031    32 0x1008
+>    13: [288..319]:      3752008..3752039    32 0x1008
+>
+> I don't see any obvious difference, except w/ current patch, last
+> FIEMAP_EXTENT_LAST is missing.
+>
+> Sorry, I didn't get the point of this patch, could you please explain
+> more details for that problem this patch tries to fix and show the
+> difference before/after the patch in commit message?
+>
+> Thanks,
+>
+> >
+> > Flags
+> > 0x1000 => FIEMAP_EXTENT_MERGED
+> > 0x0008 => FIEMAP_EXTENT_ENCODED
+> >
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> >
+> > ---
+> > v2: changed the print format
+> > ---
+> >   fs/f2fs/data.c | 76 ++++++++++++++++++++++++++++----------------------
+> >   1 file changed, 42 insertions(+), 34 deletions(-)
+> >
+> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> > index 3a01a1b50104..058dc751e3a6 100644
+> > --- a/fs/f2fs/data.c
+> > +++ b/fs/f2fs/data.c
+> > @@ -1843,8 +1843,9 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >       u64 logical = 0, phys = 0, size = 0;
+> >       u32 flags = 0;
+> >       int ret = 0;
+> > -     bool compr_cluster = false;
+> > +     bool compr_cluster = false, compr_appended;
+> >       unsigned int cluster_size = F2FS_I(inode)->i_cluster_size;
+> > +     unsigned int count_in_cluster;
+> >       loff_t maxbytes;
+> >
+> >       if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
+> > @@ -1892,8 +1893,10 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >       map.m_next_pgofs = &next_pgofs;
+> >       map.m_seg_type = NO_CHECK_TYPE;
+> >
+> > -     if (compr_cluster)
+> > -             map.m_len = cluster_size - 1;
+> > +     if (compr_cluster) {
+> > +             map.m_lblk += 1;
+> > +             map.m_len = cluster_size - count_in_cluster;
+> > +     }
+> >
+> >       ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
+> >       if (ret)
+> > @@ -1903,11 +1906,23 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >       if (!(map.m_flags & F2FS_MAP_FLAGS)) {
+> >               start_blk = next_pgofs;
+> >
+> > -             if (blks_to_bytes(inode, start_blk) < blks_to_bytes(inode,
+> > +             if (blks_to_bytes(inode, start_blk) >= blks_to_bytes(inode,
+> >                                               max_inode_blocks(inode)))
+> > +                     flags |= FIEMAP_EXTENT_LAST;
+> > +             else if (!compr_cluster)
+> >                       goto prep_next;
+> > +     }
+> > +
+> > +     compr_appended = false;
+> > +     /* In a case of compressed cluster, append this to the last extent */
+> > +     if (compr_cluster && ((map.m_flags & F2FS_MAP_UNWRITTEN) ||
+> > +                     !(map.m_flags & F2FS_MAP_FLAGS))) {
+> > +             unsigned int appended_blks = cluster_size - count_in_cluster + 1;
+> >
+> > -             flags |= FIEMAP_EXTENT_LAST;
+> > +             size += blks_to_bytes(inode, appended_blks);
+> > +             if (map.m_flags & F2FS_MAP_UNWRITTEN)
+> > +                     start_blk += appended_blks;
+> > +             compr_appended = true;
+> >       }
+> >
+> >       if (size) {
+> > @@ -1926,38 +1941,31 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+> >       if (start_blk > last_blk)
+> >               goto out;
+> >
+> > -     if (compr_cluster) {
+> > -             compr_cluster = false;
+> > -
+> > -
+> > -             logical = blks_to_bytes(inode, start_blk - 1);
+> > -             phys = blks_to_bytes(inode, map.m_pblk);
+> > -             size = blks_to_bytes(inode, cluster_size);
+> > -
+> > -             flags |= FIEMAP_EXTENT_ENCODED;
+> > -
+> > -             start_blk += cluster_size - 1;
+> > -
+> > -             if (start_blk > last_blk)
+> > -                     goto out;
+> > -
+> > -             goto prep_next;
+> > -     }
+> > -
+> >       if (map.m_pblk == COMPRESS_ADDR) {
+> >               compr_cluster = true;
+> > -             start_blk++;
+> > -             goto prep_next;
+> > -     }
+> > -
+> > -     logical = blks_to_bytes(inode, start_blk);
+> > -     phys = blks_to_bytes(inode, map.m_pblk);
+> > -     size = blks_to_bytes(inode, map.m_len);
+> > -     flags = 0;
+> > -     if (map.m_flags & F2FS_MAP_UNWRITTEN)
+> > -             flags = FIEMAP_EXTENT_UNWRITTEN;
+> > +             count_in_cluster = 1;
+> > +     } else if (compr_appended) {
+> > +             compr_cluster = false;
+> > +     } else {
+> > +             logical = blks_to_bytes(inode, start_blk);
+> > +             phys = __is_valid_data_blkaddr(map.m_pblk) ?
+> > +                     blks_to_bytes(inode, map.m_pblk) : 0;
+> > +             size = blks_to_bytes(inode, map.m_len);
+> > +             flags = 0;
+> > +
+> > +             if (compr_cluster) {
+> > +                     flags = FIEMAP_EXTENT_ENCODED;
+> > +                     count_in_cluster += map.m_len;
+> > +                     if (count_in_cluster == cluster_size) {
+> > +                             compr_cluster = false;
+> > +                             size += blks_to_bytes(inode, 1);
+> > +                     }
+> > +             } else if (map.m_flags & F2FS_MAP_UNWRITTEN) {
+> > +                     flags = FIEMAP_EXTENT_UNWRITTEN;
+> > +             }
+> >
+> > -     start_blk += bytes_to_blks(inode, size);
+> > +             start_blk += bytes_to_blks(inode, size);
+> > +     }
+> >
+> >   prep_next:
+> >       cond_resched();
+> >
 
-On 7/22/2021 6:19 PM, Jiri Olsa wrote:
-> On Wed, Jul 21, 2021 at 12:30:11PM +0800, Jin, Yao wrote:
->> Hi Jiri,
->>
->> On 7/20/2021 5:16 PM, Jiri Olsa wrote:
->>> On Tue, Jul 20, 2021 at 03:07:02PM +0800, Jin, Yao wrote:
->>>
->>> SNIP
->>>
->>>>
->>>> OK, evlist__fix_cpus() is better, use this name in v4.
->>>>
->>>>>> +{
->>>>>> +	struct perf_cpu_map *cpus;
->>>>>> +	struct evsel *evsel, *tmp;
->>>>>> +	struct perf_pmu *pmu;
->>>>>> +	int ret, unmatched_count = 0, events_nr = 0;
->>>>>> +
->>>>>> +	if (!perf_pmu__has_hybrid() || !cpu_list)
->>>>>> +		return 0;
->>>>>> +
->>>>>> +	cpus = perf_cpu_map__new(cpu_list);
->>>>>> +	if (!cpus)
->>>>>> +		return -1;
->>>>>> +
->>>>>> +	evlist__for_each_entry_safe(evlist, tmp, evsel) {
->>>>>> +		struct perf_cpu_map *matched_cpus, *unmatched_cpus;
->>>>>> +		char buf1[128], buf2[128];
->>>>>> +
->>>>>> +		pmu = perf_pmu__find_hybrid_pmu(evsel->pmu_name);
->>>>>> +		if (!pmu)
->>>>>> +			continue;
->>>>>> +
->>>>>> +		ret = perf_pmu__cpus_match(pmu, cpus, &matched_cpus,
->>>>>> +					   &unmatched_cpus);
->>>>>> +		if (ret)
->>>>>> +			goto out;
->>>>>> +
->>>>>> +		events_nr++;
->>>>>> +
->>>>>> +		if (matched_cpus->nr > 0 && (unmatched_cpus->nr > 0 ||
->>>>>> +		    matched_cpus->nr < cpus->nr ||
->>>>>> +		    matched_cpus->nr < pmu->cpus->nr)) {
->>>>>> +			perf_cpu_map__put(evsel->core.cpus);
->>>>>> +			perf_cpu_map__put(evsel->core.own_cpus);
->>>>>> +			evsel->core.cpus = perf_cpu_map__get(matched_cpus);
->>>>>> +			evsel->core.own_cpus = perf_cpu_map__get(matched_cpus);
->>>>>
->>>>> I'm bit confused in here.. AFAIUI there's 2 evsel objects create
->>>>> for hybrid 'cycles' ... should they have already proper cpus set?
->>>>>
->>>>
->>>> For 'cycles', yes two evsels are created automatically. One is for atom CPU
->>>> (e.g. 8-11), the other is for core CPU (e.g. 0-7). In this example, these 2
->>>> evsels have already the cpus set.
->>>
->>> hum, so those evsels are created with pmu's cpus, right?
->>>
->>
->> Yes, that's right. But we also check and adjust the evsel->cpus by using
->> user's cpu list on hybrid (what the evlist__use_cpu_list() does).
->>
->>>>
->>>> While the 'cpus' here is just the user specified cpu list.
->>>> cpus = perf_cpu_map__new(cpu_list);
->>>
->>> then I think they will be changed by evlist__create_maps
->>> with whatever user wants?
->>>
->>
->> No, it will not be changed by evlist__create_maps.
->>
->> In evlist__create_maps(),
->> evlist->core.has_user_cpus = !!target->cpu_list && !target->hybrid;
->>
->> It disables has_user_cpus for hybrid.
->>
->> So in __perf_evlist__propagate_maps, they will not be changed by evlist->cpus.
->>
->> if (!evsel->own_cpus || evlist->has_user_cpus) {
->> 	perf_cpu_map__put(evsel->cpus);
->> 	evsel->cpus = perf_cpu_map__get(evlist->cpus);
->> 	
->>> could we just change __perf_evlist__propagate_maps to follow
->>> pmu's cpus?
->>>
->>
->> In __perf_evlist__propagate_maps, it has already followed pmu's cpus because
->> the evlist->has_user_cpus is false for hybrid.
-> 
-> sorry for delay
-> 
+Oh, I am sorry for too concrete exlpanation.
+I am trying to fix this issue. Let's assume 4 block cluster, which has
+been compressed with 3 blocks whose address is 0x1000, 0x5000 and
+0x9000.
+This cluster is discontinous cluster. In this condition, the previous
+version just returns one extent starting from 0x1000 and we are
+missing the information related to 0x5000 and 0x9000.
+The current version will return 3 extents like below.
+Logical Physical Len
+0x0      0x1000.  0x1000
+0x1.     0x5000.  0x1000
+0x2.     0x9000.  0x2000
 
-Never mind. :)
-
-> ok, so we first fix the cpus on hybrid events and then
-> propagate maps.. I guess it's ok, because it's in libperf
-> and that has no notion of hybrid so far
-> 
-
-Yes. If we want the libperf to be hybrid aware, the interface has to be modified but actually we 
-need to avoid modifying the libperf interface. So I finally decide to adjust the evsel->cpus first 
-and then propatate maps.
-
-> could you please rename that function so it's also obvious
-> it's for hybrid only
-> 
->    evlist__fix_hybrid_cpus ? not sure ;-)
-> 
-
-Sure, I will rename the funciton in v4.
-
-> and add some comment with example to explain what the
-> function is doing
-> 
-
-Got it!
-
-Thanks
-Jin Yao
-
-> thanks,
-> jirka
-> 
+Thank you for letting me know a bug. I will fix it.
