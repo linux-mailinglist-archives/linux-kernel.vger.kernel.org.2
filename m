@@ -2,118 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBA83D3AC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2332A3D3ACE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235196AbhGWMSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234909AbhGWMSk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:18:40 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A4FDC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:59:14 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id f1so3145018plt.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:59:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=admFING+RTwbfb4knH3wY0aguWQ8mq91cUYAMzqn6ZY=;
-        b=WDOtDkjiFEClp/1dGC+DmEeghNPtOkKgH+2CbbTqLzl86nXh39DjrOL29GlO2l0YpE
-         tSqt59ExJJhqIuLls0zBfNdulOX/TCK/CRRZDtfb9S03gYNmfymoT45hfp+U8+MNQEBO
-         Z7BghqfiPc24awdBF28qCON6SqJa690UZ2v0tYadUAF8V3rTHsoT8jfdnUTFLBzVRDUo
-         RO9XbimJJiXBEzE0zKZ3FfyHBVIJ5DXzt1azyCFinR80CVFBxOenwANpfsmtuemzFMTV
-         bbOP+fYYaZlEJlsn7CE6a5kAnF61WK1cawtGhqO48RwnAeBNzMs+WDczu8ZieiB23sPv
-         AUYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=admFING+RTwbfb4knH3wY0aguWQ8mq91cUYAMzqn6ZY=;
-        b=b6U98alWUnJ/oi1TbX6j8gU9KX4jxVUZeo5l2/U5s6pZipQP0FKN+dkvZsGM6R1S1G
-         25MJvoxaqkwtNW7XwxCJuLkVmLg66CnhMPEOzPTw8uGfvJwXNRcB/NM5vnJpu6TocFr8
-         iarhN9J/kP9OPu8iZH2YtLTFtvlVy/yrxZT2q7PTfqJj1tkZRFbvtltcvz+1VlHnagRw
-         xn5pj1UfVZ3U547Y8XnD0aCw1VYRV8Xmwn5PcT7Ym59ENl4X/YXdEODjMF7w8LDzpAX7
-         oEzh3fR3WTyaKjrZgfOUaecN0FAVa9Q9vLIQgQDiimEMvhxHonTf9AWtcdepXLAp0RF2
-         5BoQ==
-X-Gm-Message-State: AOAM533QzcslZQH2F6VzO2hk7kpYH/Pt5IxuQ25oCSkquDgc3+tlC2Hl
-        Y2AftBMCljN1js6+7nSDLUc=
-X-Google-Smtp-Source: ABdhPJwDFkxQliqpPV+ayjxdoyQilsjLkT4M0H0k1VhO6v+eON3/S4gIfLAe7fgx9iUJA/6Fj6CJQg==
-X-Received: by 2002:a63:a1c:: with SMTP id 28mr4660873pgk.445.1627045153855;
-        Fri, 23 Jul 2021 05:59:13 -0700 (PDT)
-Received: from ojas ([122.161.50.107])
-        by smtp.gmail.com with ESMTPSA id k4sm27967694pjs.55.2021.07.23.05.59.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 05:59:13 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 18:29:00 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     nsaenz@kernel.org, stefan.wahren@i2se.com,
-        dan.carpenter@oracle.com, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/5] vchiq: Patch to separate platform and cdev code
-Message-ID: <20210723125900.GA279903@ojas>
-References: <cover.1626882325.git.ojaswin98@gmail.com>
- <YPqh0SHa8n3BugnB@kroah.com>
+        id S235234AbhGWMTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:19:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:59478 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235215AbhGWMS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 08:18:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="211592049"
+X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
+   d="scan'208";a="211592049"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 05:59:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
+   d="scan'208";a="660192790"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 23 Jul 2021 05:59:27 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 01F63FF; Fri, 23 Jul 2021 15:59:55 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dennis Giaya <dgiaya@whoi.edu>
+Subject: [PATCH v2 1/1] serial: max310x: Use clock-names property matching to recognize EXTCLK
+Date:   Fri, 23 Jul 2021 15:59:43 +0300
+Message-Id: <20210723125943.22039-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPqh0SHa8n3BugnB@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 01:02:41PM +0200, Greg KH wrote:
-> On Wed, Jul 21, 2021 at 09:50:48PM +0530, Ojaswin Mujoo wrote:
-> > Hello,
-> > 
-> > This patchset adderesses the TODO item number 10 specified at:
-> > 
-> >     drivers/staging/vc04-services/interface/TODO
-> > 
-> > For reference, the task is:
-> > 
-> >     10) Reorganize file structure: Move char driver to it's own file and join
-> >     both platform files
-> > 
-> >     The cdev is defined alongside with the platform code in vchiq_arm.c. It
-> >     would be nice to completely decouple it from the actual core code. For
-> >     instance to be able to use bcm2835-audio without having /dev/vchiq created.
-> >     One could argue it's better for security reasons or general cleanliness. It
-> >     could even be interesting to create two different kernel modules, something
-> >     the likes of vchiq-core.ko and vchiq-dev.ko. This would also ease the
-> >     upstreaming process.
-> > 
-> > A summary of the patches is as follows:
-> > 
-> > - Patch 1: Move cdev init code into a function
-> > - Patch 2: Shift some devlarations from vchiq_arm.c to vchiq_arm.h for
-> >            sharing
-> > - Patch 3: Move vchiq cdev init code from vchiq_arm.c into vchiq_dev.c
-> > - Patch 4: Decouple cdev code by defining a Kconfig entry to allow
-> >            optional compilation of it.
-> > - Patch 5: Merge code in vchiq_2835_arm.c to vchiq_arm.c
-> > 
-> > Changes since v3 [2]:
-> > 
-> > * In Patch 5, replace forward declarations of some of the functions with
-> >   function definition 
-> 
-> You dropped the reviews of others, so now I need to wait for them again
-> :(
-> 
-Hello Greg,
+Dennis reported that on ACPI-based systems the clock frequency
+isn't enough to configure device properly. We have to respect
+the clock source as well. To achieve this match the clock-names
+property against "osc" to recognize external clock connection.
+On DT-based system this doesn't change anything.
 
-Apologies for that, I was under the impression that a new version
-needed a separate review :(
+Reported-and-tested-by: Dennis Giaya <dgiaya@whoi.edu>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: added Tested-by tag (Dennis), inverted comparison to leave original flow
+ drivers/tty/serial/max310x.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-If its okay, I can alternately resubmit this (as v5?) with Stefan's
-Reviewed-By tags on unchanged commits intact. Let me know if that's okay
-or if its better to wait out.
+diff --git a/drivers/tty/serial/max310x.c b/drivers/tty/serial/max310x.c
+index ef11860cd69e..3df0788ddeb0 100644
+--- a/drivers/tty/serial/max310x.c
++++ b/drivers/tty/serial/max310x.c
+@@ -1271,18 +1271,13 @@ static int max310x_probe(struct device *dev, const struct max310x_devtype *devty
+ 	/* Always ask for fixed clock rate from a property. */
+ 	device_property_read_u32(dev, "clock-frequency", &uartclk);
+ 
+-	s->clk = devm_clk_get_optional(dev, "osc");
++	xtal = device_property_match_string(dev, "clock-names", "osc") < 0;
++	if (xtal)
++		s->clk = devm_clk_get_optional(dev, "xtal");
++	else
++		s->clk = devm_clk_get_optional(dev, "osc");
+ 	if (IS_ERR(s->clk))
+ 		return PTR_ERR(s->clk);
+-	if (s->clk) {
+-		xtal = false;
+-	} else {
+-		s->clk = devm_clk_get_optional(dev, "xtal");
+-		if (IS_ERR(s->clk))
+-			return PTR_ERR(s->clk);
+-
+-		xtal = true;
+-	}
+ 
+ 	ret = clk_prepare_enable(s->clk);
+ 	if (ret)
+-- 
+2.30.2
 
-Thank you!
-Ojaswin
