@@ -2,70 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C7F3D3E04
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A723D3E09
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhGWQTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:19:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230064AbhGWQTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:19:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E581660E98;
-        Fri, 23 Jul 2021 17:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627059604;
-        bh=h1WxRqe4Rb9K/gFjGg5RajjxIQUAgc0YmojtJ2166MI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=pGT3/W1/AaUVUHe5AyGn4OCQBgwTz6qVloQ5nZSfF/cvfq8vXtrJEmnFCQNNTYT3l
-         DNncRq3NPGq9uMdAyDFxnwePHCA7EClOaJIBrXFzA5wz0SJxl9M0xBqusuHcLeqy0I
-         xj4aeByFql2ZuBg2fE3OATMVFHlFoJvsRnqcvz3VAyLzCeWRkxXaidIWNV5hNiewem
-         5LKCJKCzgglN8rI7GUJgkb2LBhhlJpgmW+YXSj1sijJpDAXd55SxiOmF43LAi+xU7Y
-         tioK7M4QzsVZHwXr+wAfieLVKG2HTwS12B9fkgzhmNahz24lpbHOl6tFWzuBJ3T6WV
-         TlXkN7OoEbq3g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DA08A60976;
-        Fri, 23 Jul 2021 17:00:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231400AbhGWQUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229492AbhGWQUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:20:07 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25EBEC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:00:40 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id m13so3081753lfg.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mYrZg+fpRQAmubKOisYlI4PP99r2kR+Pc+emzbHA1zU=;
+        b=VIsnpgjCvbquqGy8008dby3WGq1lkP0WIKEXONe2zP3+7E8+Bqd70Z+nw+8CTxPdVG
+         fTF4I0uoy5w17M0iQl1dD64gcIXcr2NbpNJiRuoWnI2R4Nq8b9/4kritGYxRVpL+5Srq
+         Ontytx421RfBfulHBx4pTLtcUXqVFYwoX3BnhAaHltHe1YK1DFjT9yVaLkNq8wSLrXHC
+         ZAuOR1hE6s6zZrgvJFjs0y1eWGw9+dsO9w+ojiQbGaADbEXT4/RnUTJKpVZ70s5xFLv3
+         PTCtCXIz23hGMJvKvyJAPEpH4nKokDR+RvbDiNBfjqOH+sTZ2P4Zi6AP98qsI0pcz/Vn
+         aOMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mYrZg+fpRQAmubKOisYlI4PP99r2kR+Pc+emzbHA1zU=;
+        b=W6RTYlDTDHHviTQTQPr5tWYoBtP0Rb2aJsxs5nuI2aUdg89jPd3BO4WrPuNqJJHOVU
+         KEZ/BKBQgJzEizWvxH9DyTgFF+Sf9srB3753boUq3wnjamZewz5o7/QCut+nfUvXmNMU
+         YPoFcBOyPZndGvReStFZDstTcLoagvrso8BW5de4Y5gVtfKlQrcuG9neIMn/oRaFmZPv
+         K1tep4lhey6/WR3pEfeCqS20jmHJGWq1fhs8Fqhw97ji8ilGESIQd9X/GS/GMzZpFdb6
+         ghrxvNUaf4vXTFNJZXlIshAJErn7bJXq6ykYdk1WiDJYbXp775SJYcPnzuOG6Dn54I45
+         xYgw==
+X-Gm-Message-State: AOAM530OIg1yHsO6r9zsf2GBs4Hg7U32kTgAYjZhQL3OD+H35j+K9mAn
+        RHj0v/Ir/HWr1SHt2E/omuyojK7TvCy0Tloo51ueYw==
+X-Google-Smtp-Source: ABdhPJx+E64jFTPgcU+HWdNxXsKIHIGys4KGyK9bevyN+71SfSiqn0Ofw2Xe2zbrnwRUnVeYmcbPMNQdf80YQ2Nx5bA=
+X-Received: by 2002:a05:6512:c23:: with SMTP id z35mr3714473lfu.299.1627059638178;
+ Fri, 23 Jul 2021 10:00:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: phy: Remove unused including <linux/version.h>
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162705960488.25754.4752826923995126994.git-patchwork-notify@kernel.org>
-Date:   Fri, 23 Jul 2021 17:00:04 +0000
-References: <1627036707-73334-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1627036707-73334-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     lxu@maxlinear.com, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+ <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
+ <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
+ <YPqDnqULylkkzQG5@dhcp22.suse.cz> <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
+ <CAJuCfpGmpwTv92joNuVPaEJg1PigtGQn2daywHaqF4TXjuiCWQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpGmpwTv92joNuVPaEJg1PigtGQn2daywHaqF4TXjuiCWQ@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 23 Jul 2021 10:00:26 -0700
+Message-ID: <CALvZod7Vb2MKgCcSYtsMd8F4sFb2K7jQk3AGSECYfKvd3MNqzQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, Jul 23, 2021 at 9:09 AM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Fri, Jul 23, 2021 at 6:46 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Fri, Jul 23, 2021 at 1:53 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > [...]
+> > > > However
+> > > > retrying means issuing another syscall, so additional overhead...
+> > > > I guess such "best effort" approach would be unusual for a syscall, so
+> > > > maybe we can keep it as it is now and if such "do not block" mode is needed
+> > > > we can use flags to implement it later?
+> > >
+> > > Yeah, an explicit opt-in via flags would be an option if that turns out
+> > > to be really necessary.
+> > >
+> >
+> > I am fine with keeping it as it is but we do need the non-blocking
+> > option (via flags) to enable userspace to act more aggressively.
+>
+> I think you want to check memory conditions shortly after issuing
+> kill/reap requests irrespective of mmap_sem contention. The reason is
+> that even when memory release is not blocked, allocations from other
+> processes might consume memory faster than we release it. For example,
+> in Android we issue kill and start waiting on pidfd for its death
+> notification. As soon as the process is dead we reassess the situation
+> and possibly kill again. If the process is not dead within a
+> configurable timeout we check conditions again and might issue more
+> kill requests (IOW our wait for the process to die has a timeout). If
+> process_mrelease() is blocked on mmap_sem, we might timeout like this.
+> I imagine that a non-blocking option for process_mrelease() would not
+> really change this logic.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+On a containerized system, killing a job requires killing multiple
+processes and then process_mrelease() them. Now there is cgroup.kill
+to kill all the processes in a cgroup tree but we would still need to
+process_mrelease() all the processes in that tree. There is a chance
+that we get stuck in reaping the early process. Making
+process_mrelease() non-blocking will enable the userspace to go to
+other processes in the list.
 
-On Fri, 23 Jul 2021 18:38:27 +0800 you wrote:
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> 
-> Eliminate the follow versioncheck warning:
-> 
-> ./drivers/net/phy/mxl-gpy.c: 9 linux/version.h not needed.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> 
-> [...]
+An alternative would be to have a cgroup specific interface for
+reaping similar to cgroup.kill.
 
-Here is the summary with links:
-  - net: phy: Remove unused including <linux/version.h>
-    https://git.kernel.org/netdev/net-next/c/94a994d2b2b7
+> Adding such an option is trivial but I would like to make sure it's
+> indeed useful. Maybe after the syscall is in place you can experiment
+> with it and see if such an option would really change the way you use
+> it?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+SGTM.
