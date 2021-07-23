@@ -2,358 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9AF3D376F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6423D3776
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230404AbhGWIdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:33:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229771AbhGWIdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:33:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2F1960ED4;
-        Fri, 23 Jul 2021 09:14:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627031645;
-        bh=OMlUWydw84Ocn+60ZUuBoG7SH3/q7EoF1PwUFSPi0p8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OX/A9XVWdg05IyIaQNvN+OaGruL40ZHfdhs5+aKf/za5h9iCeIcVCO7kNC8yNYQN7
-         B8t8BF641FZumeICNB97MguEG1fsoioukEf9zEG02mGhnGrNxiGQnaihQq8LxbicSK
-         6hQFYsjTJZXzMwzbY5cPXf5SQvBMmJEbo7TA1875z/mGW14OfNklpdkj812ZOm6Lzr
-         l5Wg4mben5WHgtQ6bVo0WQYSlkPNSwXRNVXrdAY6LUdClTZQaDL0gmXee2qa3kPadH
-         XmVxo2dAVm0xFxV9hriyZ2ulhRN/GtB29nhtR6uJj/rmy8PocQShyUJgdTtaIjIRvq
-         X5I2w+YRK1nVA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Julian Braha <julianbraha@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: qcom: fix GPIOLIB dependencies
-Date:   Fri, 23 Jul 2021 11:13:52 +0200
-Message-Id: <20210723091400.1669716-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S234615AbhGWId5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:33:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234248AbhGWIdy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 04:33:54 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E7D0C061575;
+        Fri, 23 Jul 2021 02:14:27 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id h8so901828ede.4;
+        Fri, 23 Jul 2021 02:14:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NbPHQYpccgPPXxdL13skEjBuFu+tUEk7CeKyHs3IKUg=;
+        b=AWh/MIF8BIuxg8k9PNUfHx51+ad2EfWGynApPZiWxTlYcCX2TcCnTgC8/1D3Mco4JV
+         h9ZtzDdwZTZR+XialRBeb6vU3D0izXMF+HO07euIKTefo1B9aRNgOgy5HE41RrUqQxUA
+         bgbgOsgiNaJSR7vDIveXA0sAWcYeNtpjmyYnAxtS4tRY8arjYRBhDCrNIl5H3E4PW6yy
+         0V27JEGve+H2gxzSxB3+3C+EviDlGgfad0BPVMEqHq6yIbuvUX6HsBpt2AkAC+FK04N+
+         VH9R0n0I+VqY8TuU37svYGHguqBOGLx3YVo+xznpjwtjY0XpHrKr1WgyuQPDY/hDH6Cg
+         3ThQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NbPHQYpccgPPXxdL13skEjBuFu+tUEk7CeKyHs3IKUg=;
+        b=lLkoneAWcW4pFtw+DyQiTInAbQy07EACWuwMrulrF1AiGE7ip/UMGJwwLIo8XcNPtz
+         K2z/lhKCYMPNCS8e9cWrQ+ZCKJ4L6u4hrmnQv1I1qwBf/Kd1efBQ0Qxc1dcctL4cKeVl
+         0esy2l/JAXLDM/xsagDDS5UJVyCHmd++CTon0Sec1hdhUZLxJrVEGHlfUAoC1VM0YRIW
+         Wp+DpWvBGMcQLUusLVNCSp+6ryV+7u7sB5zcH5u1QgwnehRb5AZ49Fykzkrmijk7zrK0
+         OSHFXBgxJEhFcAEj7WN1DxDIfOGmRSIOGWXZR5z9DH3VjTHxq3qB+cuw0HiiNYAhxMv0
+         3eDg==
+X-Gm-Message-State: AOAM5302PuTXR9cSN9rvkTZT7NpvOjGym0KqGeubRa2cJpu4FbNiq38f
+        JKR9KuHOumDcPEKUnFA4cIqZSy98u9tjXYWjExU=
+X-Google-Smtp-Source: ABdhPJzniKTCol/NCrMd3ZkwCvOZwc4YHuCnfiYTstlFcAkt0DW9QXjlFFdHkOPPjyGRPda94lMnAZm6pVFXZQQLZ9E=
+X-Received: by 2002:aa7:d4c2:: with SMTP id t2mr4372223edr.241.1627031666105;
+ Fri, 23 Jul 2021 02:14:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210723050919.1910964-1-mudongliangabcd@gmail.com> <d2b0f847dbf6b6d1e585ef8de1d9d367f8d9fd3b.camel@sipsolutions.net>
+In-Reply-To: <d2b0f847dbf6b6d1e585ef8de1d9d367f8d9fd3b.camel@sipsolutions.net>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Fri, 23 Jul 2021 17:13:59 +0800
+Message-ID: <CAD-N9QWDNvo_3bdB=8edyYWvEV=b-66Tx-P6_7JGgrSYshDh0A@mail.gmail.com>
+Subject: Re: [PATCH] cfg80211: free the object allocated in wiphy_apply_custom_regulatory
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Jul 23, 2021 at 4:37 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Fri, 2021-07-23 at 13:09 +0800, Dongliang Mu wrote:
+> > The commit beee24695157 ("cfg80211: Save the regulatory domain when
+> > setting custom regulatory") forgets to free the newly allocated regd
+> > object.
+>
+> Not really? It's not forgetting it, it just saves it?
 
-Enabling the PINCTRL_SM8350 symbol without GPIOLIB or SCM causes a build
-failure:
+Yes, it saves the regd object in the function wiphy_apply_custom_regulatory.
 
-WARNING: unmet direct dependencies detected for PINCTRL_MSM
-  Depends on [m]: PINCTRL [=y] && (ARCH_QCOM [=y] || COMPILE_TEST [=y]) && GPIOLIB [=y] && (QCOM_SCM [=m] || !QCOM_SCM [=m])
-  Selected by [y]:
-  - PINCTRL_SM8350 [=y] && PINCTRL [=y] && (ARCH_QCOM [=y] || COMPILE_TEST [=y]) && GPIOLIB [=y] && OF [=y]
-aarch64-linux-ld: drivers/pinctrl/qcom/pinctrl-msm.o: in function `msm_gpio_irq_set_type':
-pinctrl-msm.c:(.text.msm_gpio_irq_set_type+0x1c8): undefined reference to `qcom_scm_io_readl'
+But its parent function - mac80211_hwsim_new_radio forgets to free
+this object when the ieee80211_register_hw fails.
 
-The main problem here is the 'select PINCTRL_MSM', which needs to be a
-'depends on' as it is for all the other front-ends. As the GPIOLIB
-dependency is now implied by that, symbol, remove the duplicate
-dependencies in the process.
+>
+> +       new_regd = reg_copy_regd(regd);
+> +       if (IS_ERR(new_regd))
+> +               return;
+> +
+> +       tmp = get_wiphy_regdom(wiphy);
+> +       rcu_assign_pointer(wiphy->regd, new_regd);
+> +       rcu_free_regdom(tmp);
+>
+> > Fix this by freeing the regd object in the error handling code and
+> > deletion function - mac80211_hwsim_del_radio.
+>
+> This can't be right - the same would affect all other users of that
+> function, no?
 
-Fixes: d5d348a3271f ("pinctrl: qcom: Add SM8350 pinctrl driver")
-Fixes: 376f9e34c10f ("drivers: pinctrl: qcom: fix Kconfig dependency on GPIOLIB")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/pinctrl/qcom/Kconfig | 63 ++++++++++++++++++------------------
- 1 file changed, 31 insertions(+), 32 deletions(-)
+The problem occurs in the error handling code of
+mac80211_hwsim_new_radio, not wiphy_apply_custom_regulatory. My commit
+message may be not very clear.
 
-diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-index 2f51b4f99393..cad4e60df618 100644
---- a/drivers/pinctrl/qcom/Kconfig
-+++ b/drivers/pinctrl/qcom/Kconfig
-@@ -13,7 +13,7 @@ config PINCTRL_MSM
- 
- config PINCTRL_APQ8064
- 	tristate "Qualcomm APQ8064 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -21,7 +21,7 @@ config PINCTRL_APQ8064
- 
- config PINCTRL_APQ8084
- 	tristate "Qualcomm APQ8084 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -29,7 +29,7 @@ config PINCTRL_APQ8084
- 
- config PINCTRL_IPQ4019
- 	tristate "Qualcomm IPQ4019 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -37,7 +37,7 @@ config PINCTRL_IPQ4019
- 
- config PINCTRL_IPQ8064
- 	tristate "Qualcomm IPQ8064 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -45,7 +45,7 @@ config PINCTRL_IPQ8064
- 
- config PINCTRL_IPQ8074
- 	tristate "Qualcomm Technologies, Inc. IPQ8074 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for
-@@ -55,7 +55,7 @@ config PINCTRL_IPQ8074
- 
- config PINCTRL_IPQ6018
- 	tristate "Qualcomm Technologies, Inc. IPQ6018 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for
-@@ -65,7 +65,7 @@ config PINCTRL_IPQ6018
- 
- config PINCTRL_MSM8226
- 	tristate "Qualcomm 8226 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -74,7 +74,7 @@ config PINCTRL_MSM8226
- 
- config PINCTRL_MSM8660
- 	tristate "Qualcomm 8660 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -82,7 +82,7 @@ config PINCTRL_MSM8660
- 
- config PINCTRL_MSM8960
- 	tristate "Qualcomm 8960 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -90,7 +90,7 @@ config PINCTRL_MSM8960
- 
- config PINCTRL_MDM9615
- 	tristate "Qualcomm 9615 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -98,7 +98,7 @@ config PINCTRL_MDM9615
- 
- config PINCTRL_MSM8X74
- 	tristate "Qualcomm 8x74 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -106,7 +106,7 @@ config PINCTRL_MSM8X74
- 
- config PINCTRL_MSM8916
- 	tristate "Qualcomm 8916 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -114,7 +114,7 @@ config PINCTRL_MSM8916
- 
- config PINCTRL_MSM8953
- 	tristate "Qualcomm 8953 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -124,7 +124,7 @@ config PINCTRL_MSM8953
- 
- config PINCTRL_MSM8976
- 	tristate "Qualcomm 8976 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -134,7 +134,7 @@ config PINCTRL_MSM8976
- 
- config PINCTRL_MSM8994
- 	tristate "Qualcomm 8994 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -143,7 +143,7 @@ config PINCTRL_MSM8994
- 
- config PINCTRL_MSM8996
- 	tristate "Qualcomm MSM8996 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -151,7 +151,7 @@ config PINCTRL_MSM8996
- 
- config PINCTRL_MSM8998
- 	tristate "Qualcomm MSM8998 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -159,7 +159,7 @@ config PINCTRL_MSM8998
- 
- config PINCTRL_QCS404
- 	tristate "Qualcomm QCS404 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -167,7 +167,7 @@ config PINCTRL_QCS404
- 
- config PINCTRL_QDF2XXX
- 	tristate "Qualcomm Technologies QDF2xxx pin controller driver"
--	depends on GPIOLIB && ACPI
-+	depends on ACPI
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the GPIO driver for the TLMM block found on the
-@@ -175,7 +175,7 @@ config PINCTRL_QDF2XXX
- 
- config PINCTRL_QCOM_SPMI_PMIC
- 	tristate "Qualcomm SPMI PMIC pin controller driver"
--	depends on GPIOLIB && OF && SPMI
-+	depends on OF && SPMI
- 	select REGMAP_SPMI
- 	select PINMUX
- 	select PINCONF
-@@ -190,7 +190,7 @@ config PINCTRL_QCOM_SPMI_PMIC
- 
- config PINCTRL_QCOM_SSBI_PMIC
- 	tristate "Qualcomm SSBI PMIC pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	select PINMUX
- 	select PINCONF
- 	select GENERIC_PINCONF
-@@ -204,7 +204,7 @@ config PINCTRL_QCOM_SSBI_PMIC
- 
- config PINCTRL_SC7180
- 	tristate "Qualcomm Technologies Inc SC7180 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -213,7 +213,7 @@ config PINCTRL_SC7180
- 
- config PINCTRL_SC7280
- 	tristate "Qualcomm Technologies Inc SC7280 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -222,7 +222,7 @@ config PINCTRL_SC7280
- 
- config PINCTRL_SC8180X
- 	tristate "Qualcomm Technologies Inc SC8180x pin controller driver"
--	depends on GPIOLIB && (OF || ACPI)
-+	depends on (OF || ACPI)
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -231,7 +231,7 @@ config PINCTRL_SC8180X
- 
- config PINCTRL_SDM660
- 	tristate "Qualcomm Technologies Inc SDM660 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	 This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -240,7 +240,7 @@ config PINCTRL_SDM660
- 
- config PINCTRL_SDM845
- 	tristate "Qualcomm Technologies Inc SDM845 pin controller driver"
--	depends on GPIOLIB && (OF || ACPI)
-+	depends on (OF || ACPI)
- 	depends on PINCTRL_MSM
- 	help
- 	 This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -249,7 +249,7 @@ config PINCTRL_SDM845
- 
- config PINCTRL_SDX55
- 	tristate "Qualcomm Technologies Inc SDX55 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	 This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -258,7 +258,7 @@ config PINCTRL_SDX55
- 
- config PINCTRL_SM6125
- 	tristate "Qualcomm Technologies Inc SM6125 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	 This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -267,7 +267,7 @@ config PINCTRL_SM6125
- 
- config PINCTRL_SM8150
- 	tristate "Qualcomm Technologies Inc SM8150 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	 This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -276,7 +276,7 @@ config PINCTRL_SM8150
- 
- config PINCTRL_SM8250
- 	tristate "Qualcomm Technologies Inc SM8250 pin controller driver"
--	depends on GPIOLIB && OF
-+	depends on OF
- 	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
-@@ -285,8 +285,7 @@ config PINCTRL_SM8250
- 
- config PINCTRL_SM8350
- 	tristate "Qualcomm Technologies Inc SM8350 pin controller driver"
--	depends on GPIOLIB && OF
--	select PINCTRL_MSM
-+	depends on PINCTRL_MSM
- 	help
- 	  This is the pinctrl, pinmux, pinconf and gpiolib driver for the
- 	  Qualcomm Technologies Inc TLMM block found on the Qualcomm
--- 
-2.29.2
+So I think the code in the mac80211_hwsim_del_radio paired with
+mac80211_hwsim_new_radio should be changed correspondingly. If I miss
+any problems, please let me know.
 
+I have successfully tested my patch in the syzbot dashboard [1].
+
+[1] https://syzkaller.appspot.com/bug?extid=1638e7c770eef6b6c0d0
+
+>
+> Perhaps somewhere we have a case where wiphy->regd is leaked, but than
+> that should be fixed more generally in cfg80211?
+>
+> johannes
+>
