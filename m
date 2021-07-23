@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2F43D35A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB7B3D35AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbhGWHET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:04:19 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:63565 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhGWHES (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:04:18 -0400
-Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 4532C40005;
-        Fri, 23 Jul 2021 07:44:48 +0000 (UTC)
-Date:   Fri, 23 Jul 2021 09:44:47 +0200
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
-        <linux-media@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
-Subject: Re: [PATCH 02/13] media: i2c: Fix incorrect value in comment
-Message-ID: <YPpzb5pqpSycAlxN@aptenodytes>
-References: <20210722203407.3588046-1-djrscally@gmail.com>
- <20210722203407.3588046-3-djrscally@gmail.com>
+        id S234202AbhGWHHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:07:22 -0400
+Received: from mout.gmx.net ([212.227.17.21]:44701 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233934AbhGWHHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 03:07:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627026462;
+        bh=/fEJDVuM73ewPFXlL4ozclwhCtYyATgSRFCVmakUf5E=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=baJo2WSCtcDVzfAVVAp/wl5k808pdAHPtU3A8EkYXpniNVP/QYHboQS1wxJoujZPa
+         a73M6jsI7IeaHcCL3hKx2EzxuuogU+FgyhyrWVjIGJfMJe3eKjLLFK5BlUvuzp7DLP
+         11Lf1q2yf2WQ60AyriNMiHk5iwQmXbEEtY0JFOOk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([149.172.237.67]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MSt8Q-1legwl3bKQ-00UJDg; Fri, 23
+ Jul 2021 09:47:41 +0200
+Subject: Re: [PATCH v2 1/2] net: dsa: ensure linearized SKBs in case of tail
+ taggers
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, woojung.huh@microchip.com,
+        UNGLinuxDriver@microchip.com, vivien.didelot@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210721215642.19866-1-LinoSanfilippo@gmx.de>
+ <20210721215642.19866-2-LinoSanfilippo@gmx.de>
+ <20210721233549.mhqlrt3l2bbyaawr@skbuf>
+ <8460fa10-6db7-273c-a2c2-9b54cc660d9a@gmail.com> <YPl9UX52nfvLzIFy@lunn.ch>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <7b99c47a-1a3e-662d-edcd-8c91ccb3911e@gmx.de>
+Date:   Fri, 23 Jul 2021 09:47:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="R/Y2PH++JXhbPuq9"
-Content-Disposition: inline
-In-Reply-To: <20210722203407.3588046-3-djrscally@gmail.com>
+In-Reply-To: <YPl9UX52nfvLzIFy@lunn.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:2EvYZgsYjImG+QnpsHG/lb36VH45qLyHwqi2rB+REkSpL5TmFJE
+ BwZGL22QU9MBQLCJoSTBWC8+xgq6K0LEjXWLB89ISRGQQHN1hax4SHpAwbK1spf1HzTZTeS
+ km+xwrPVb3RX88WvkYIZz6qluOKBuJ+wZuVRC9N3AKsQ3rfWNuJ+k+dke9rDHun34KDnFVA
+ yR/W8/PkQJgQd3b3x/KEQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SFRsrWPQqUI=:sYwdGNWS2MRNewN6GQ9Mql
+ rRdPHV4xsW82Kd6VlGdss+oXTKTtVH8b/eut9sGQGjB5F/CSpYp0ILcYyRQLuFW2WpKK2G2ge
+ lLG6YTlewTlNbP2krPhfUSQH/emJwcxRtkvqQ7AKkKtXVmyx+tXZA/+ZgE9ewTifkVbePQZnn
+ 7Q2qauOU+Lp3l7Le0E45IJg0HCTH+s7FHgaW8MG52W2URXxWIYaV/tYDJzCikrRVpb0aCxwPI
+ ZI14As4Plr9sBmzg0Iv1vlJh1xgYp5Y5XwlWO/9QATVkRwHvqHpmRD21SUbA17D7eLPwgIAPH
+ Gj1zFnEX7gj0L87hbpSUqzkOwkivcHxipZUieyPxsyZAcTTr0ENMqOFJaJHcQ0rcXtirIABA4
+ ScWR6WQ/KxiJxs+kqspMH0HJ4vu6DG7eywrboFdLfFSE0V6XvhUUXO1O5HlT2cZCeqT7Wjtlo
+ 4DJ7nB7xSNTIb2KC94mKwpxDPxDxH0YchVRz8eEnC6kHVxh76f2k6rEtEyfH1ACrpr1sDb8NC
+ GMAxK1ERv0Pa+3g+ZTLol7s9R67EUKuEVBkNa6clsIz1rXlbkP8pWg5LYr5SY40JFpMjhO97V
+ Ksdlf/qBcJ6Zj59lOq76qBWvDcqWyyZJSm8uvCmOPq8QIyUabDsj2rsntpTqBg55vTi72kleE
+ NwU8cLZtpLtALMpXLveX86jWb8i/6jXJFyv21T6hDDowEKLmBOKCBAEmthLlOtkIjhhHLtdqZ
+ k6gZGGQljYiNZucE+3oq2cW5lDSMQnwDbZegKLi7W8502FxkToIKGUCwZZGxLJ0hdQUb1CT9P
+ 0O49mB13bjqoG5+mjIv8+li4duN4RYXtW3heA2l/PdzU0sxKX97jNrsfLcVveovImiW+NdB7+
+ Wg8AreXQvY6u9zS+vbo6czlnTXgUHMnqfTbvyY/0SbW5snZZ58+FzvPso6XqDZG9hOmcEyvN5
+ t9pfZNEbm8D1dyNKmZh9Cuj6ASli/7EAFSyCA9XLxBeYreZ9WJRGS5e+GoXZn1LJ9P//mItC3
+ b3G4hmBf4LgM7ZCFl9tEEv8XwsajI3HshOGSgUZ3uJl8bGV3sBGllJPcL863XhTVScJkmxwy4
+ FyAcwHsGIHxTdVJQiA26njarc0rrSGb9zYI0jli6IdQ89dsrBhGKjzqHA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---R/Y2PH++JXhbPuq9
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 22.07.21 at 16:14, Andrew Lunn wrote:
+>> Agreed, with those fixed:
+>>
+>> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+>
+> Hi Florian, Vladimir
+>
+> I would suggest stop adding Reviewed-by: when you actual want changes
+> made. The bot does not seem to be reading the actual emails, it just
+> looks for tags. And when there are sufficient tags, it merges,
+> independent of requests for change, open questions, etc.
+>
+> 	    Andrew
+>
 
 Hi,
 
-On Thu 22 Jul 21, 21:33, Daniel Scally wrote:
-> The PLL configuration defined here sets 72MHz (which is correct), not
-> 80MHz. Correct the comment.
+since I got a message that the patches have already been applied to netdev=
+/net.git.
+How should I proceed if I want to send a new version of the series? Just i=
+gnore the
+merge to netdev and send the patches nevertheless?
 
-This is:
-
-Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-
-Thanks,
-
-Paul
-=20
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
->  drivers/media/i2c/ov8865.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
-> index fe60cda3dea7..2ef146e7e7ef 100644
-> --- a/drivers/media/i2c/ov8865.c
-> +++ b/drivers/media/i2c/ov8865.c
-> @@ -713,7 +713,7 @@ static const struct ov8865_pll2_config ov8865_pll2_co=
-nfig_native =3D {
->  /*
->   * EXTCLK =3D 24 MHz
->   * DAC_CLK =3D 360 MHz
-> - * SCLK =3D 80 MHz
-> + * SCLK =3D 72 MHz
->   */
-> =20
->  static const struct ov8865_pll2_config ov8865_pll2_config_binning =3D {
-> --=20
-> 2.25.1
->=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---R/Y2PH++JXhbPuq9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmD6c28ACgkQ3cLmz3+f
-v9GemQf/eS5FxzlwerdEt7CM/aYMaFHYwTUXIjaOp7zz/vDqMdy/g8b7KncfZ9bi
-PiEGMHVLobC0WhtTBBbggmj7mUMyLWu2xZ+3lzqQwqt4oHsMf35tcAc8WYSvz7H0
-D0eR7z9CBcSLAiXS/hX2jAMF03pY2MMgPvxbYQu21C9zSPiB+/7PCIwCscdwIRkC
-gS6CXXFu7Wq2QnmnfXJWpBkW4QubgpaRShC13O2I91R7WXk5G3rNUJxXCpnFyD/b
-S46VtsdwUhQjOzHdFjGZT4h1AHcubGltz/bb+0u+YlLhGcAX9/PAEVf0JpDguHpW
-g9a5pszIIl1vnnjoHCOfq8xOKLXyGQ==
-=yawe
------END PGP SIGNATURE-----
-
---R/Y2PH++JXhbPuq9--
+Regards,
+Lino
