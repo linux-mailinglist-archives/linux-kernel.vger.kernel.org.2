@@ -2,722 +2,719 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB283D349C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BD33D34A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhGWFo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:44:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:19076 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233835AbhGWFov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:44:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="199024541"
-X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
-   d="gz'50?scan'50,208,50";a="199024541"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jul 2021 23:25:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
-   d="gz'50?scan'50,208,50";a="496184547"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Jul 2021 23:25:19 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m6ocZ-0001J5-5Q; Fri, 23 Jul 2021 06:25:19 +0000
-Date:   Fri, 23 Jul 2021 14:24:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christina Jacob <cjacob@marvell.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:951
- otx2_get_fecparam() warn: always true condition '(pfvf->linfo.fec < 4) =>
- (0-3 < 4)'
-Message-ID: <202107231446.1pJe2j76-lkp@intel.com>
+        id S234061AbhGWFrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233993AbhGWFqy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:46:54 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32093C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:27:28 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id h9so415400ljq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T0GVrBvGmGImfKxPRzDcgNGotPikHKH3Mvpux25X6oY=;
+        b=Mq5GGCV+B929QRPJyrTzGMse9XBUGlyZKyPHB8fnqqtExM9Ug4A0KjLiEBT9A11qlU
+         /FmD1oC+m3k0Ygn4RPiBOPOzPguhhIe+EsjTtJmZVvW/4Zsc01M5kvLdrrTWBb85f8vV
+         jz95Y2cuiWk9C/ljQEWSe3/FL2hs/igcSXtao=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T0GVrBvGmGImfKxPRzDcgNGotPikHKH3Mvpux25X6oY=;
+        b=gM93XGPFqIuQgSMzQ4guhg8hh8aryIcoYP6KdXKAzNpQfyCzF9+CMzTru8pmq2klTp
+         3GnuLQeaSxSVYtmOG7bjdMrHmI6kqSF9Eg98aEf3sb62HfsviOfz5sRUxa0Lz6javFFZ
+         BRd+CX5AttItPnAsRYx/hEejq6vMw626ttKA3qkevqE5wQmViRrRhDZqhh/pVx2Q41b0
+         tC5bzdNO5kt+JTGvzgcffUW5EHQOPNRiX2FhENkCqaVKLW+1bysgcpBOGf5K0D1XoxZz
+         KMmN1VkYtqm1UtmGZ9/H0WiuV7qwjCXt3jnc9rB2q6epyZ7Fv9Ej0bN8sVyezcK0FHqd
+         D9WQ==
+X-Gm-Message-State: AOAM531zcpYVcvKFcz7D28EUng7n8O2k2be/+ieG5CEBnNUivlt+PCeV
+        RCvk5uK10Q3YyO9qPJuEFnRdhU2DPo0n2kd/BdKFoA==
+X-Google-Smtp-Source: ABdhPJynuPDuO/J+QwPgKhP9wnHfbra1cZFLxH2/3DFqLMhAdHNHuGZhflJxR8Mo4+dPNTgRrZsZNkYxtH6kov8bHoI=
+X-Received: by 2002:a2e:81c4:: with SMTP id s4mr2308055ljg.251.1627021646397;
+ Thu, 22 Jul 2021 23:27:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="tThc/1wpZn/ma/RB"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210629014736.31153-1-trevor.wu@mediatek.com>
+ <20210629014736.31153-6-trevor.wu@mediatek.com> <CAGXv+5FzOs+=9PbYAEahVXvdJG1FnRkSUo_r3AVYZzNKGqg0oA@mail.gmail.com>
+ <9929a3a20df1a89fc94baf7c75c0c65d9a61de0f.camel@mediatek.com>
+ <CAGXv+5HFjM_N_MM5ZddGLcuYVsOXAJwfNuKvB5Cfo0k=nO456g@mail.gmail.com>
+ <266fd1f5de56743292ac5fc64664113c0bb0e41a.camel@mediatek.com>
+ <CAGXv+5FVWNgCeAseULOJbU3=6ggQ=b=mtP_sEQd0NgtdX-ttiQ@mail.gmail.com> <31bcc613abb0f805400faa8b8108100cb578d9b1.camel@mediatek.com>
+In-Reply-To: <31bcc613abb0f805400faa8b8108100cb578d9b1.camel@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 23 Jul 2021 14:27:15 +0800
+Message-ID: <CAGXv+5HOL5j4gjgJa0RLjvf3+Vt2sGZcWU1KQXwjn7DOYy-JWg@mail.gmail.com>
+Subject: Re: [PATCH v2 5/8] ASoC: mediatek: mt8195: add platform driver
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>, broonie@kernel.org,
+        tiwai@suse.com, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org,
+        bicycle.tsai@mediatek.com, Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Jimmy Cheng-Yi Chiang <cychiang@google.com>,
+        Li-Yu Yu <aaronyu@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 22, 2021 at 4:56 PM Trevor Wu <trevor.wu@mediatek.com> wrote:
+>
+> On Mon, 2021-07-19 at 18:05 +0800, Chen-Yu Tsai wrote:
+> > Hi,
+> >
+> > On Thu, Jul 15, 2021 at 7:05 PM Trevor Wu <trevor.wu@mediatek.com>
+> > wrote:
+> > >
+> > > On Tue, 2021-07-13 at 14:00 +0800, Chen-Yu Tsai wrote:
+> > > > On Mon, Jul 12, 2021 at 11:10 PM Trevor Wu <
+> > > > trevor.wu@mediatek.com>
+> > > > wrote:
+> > > > >
+> > > > > On Mon, 2021-07-12 at 14:57 +0800, Chen-Yu Tsai wrote:
+> > > > > >  are all internal Hi,
+> > > > > >
+> > > > > > On Tue, Jun 29, 2021 at 9:49 AM Trevor Wu <
+> > > > > > trevor.wu@mediatek.com
+> > > > > > >
+> > > > > >
+> > > > > > wrote:
+> > > > > > >
+> > > > > > > This patch adds mt8195 platform and affiliated driver.
+> > > > > > >
+> > > > > > > Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> > > > > > > ---
+> > > > > > >  sound/soc/mediatek/Kconfig                     |    9 +
+> > > > > > >  sound/soc/mediatek/Makefile                   |    1 +
+> > > > > > >  sound/soc/mediatek/mt8195/Makefile            |   11 +
+> > > > > > >  sound/soc/mediatek/mt8195/mt8195-afe-clk.c    |  899 +++++
+> > > > > > >  sound/soc/mediatek/mt8195/mt8195-afe-clk.h    |  201 +
+> > > > > > >  sound/soc/mediatek/mt8195/mt8195-afe-common.h |  200 +
+> > > > > > >  sound/soc/mediatek/mt8195/mt8195-afe-pcm.c    | 3264
+> > > > > > > +++++++++++++++++
+> > > > > > >  sound/soc/mediatek/mt8195/mt8195-reg.h        | 2793
+> > > > > > > ++++++++++++++
+> > > > > > >  8 files changed, 7378 insertions(+)
+> > > > > > >  create mode 100644 sound/soc/mediatek/mt8195/Makefile
+> > > > > > >  create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-
+> > > > > > > clk.c
+> > > > > > >  create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-
+> > > > > > > clk.h
+> > > > > > >  create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-
+> > > > > > > common.h
+> > > > > > >  create mode 100644 sound/soc/mediatek/mt8195/mt8195-afe-
+> > > > > > > pcm.c
+> > > > > > >  create mode 100644 sound/soc/mediatek/mt8195/mt8195-reg.h
+> > > > > > >
+> > > > > > > diff --git a/sound/soc/mediatek/Kconfig
+> > > > > > > b/sound/soc/mediatek/Kconfig
+> > > > > > > index 74dae4332d17..3389f382be06 100644
+> > > > > > > --- a/sound/soc/mediatek/Kconfig
+> > > > > > > +++ b/sound/soc/mediatek/Kconfig
+> > > > > > > @@ -184,3 +184,12 @@ config
+> > > > > > > SND_SOC_MT8192_MT6359_RT1015_RT5682
+> > > > > > >           with the MT6359 RT1015 RT5682 audio codec.
+> > > > > > >           Select Y if you have such device.
+> > > > > > >           If unsure select "N".
+> > > > > > > +
+> > > > > > > +config SND_SOC_MT8195
+> > > > > > > +       tristate "ASoC support for Mediatek MT8195 chip"
+> > > > > > > +       select SND_SOC_MEDIATEK
+> > > > > > > +       help
+> > > > > > > +         This adds ASoC platform driver support for
+> > > > > > > Mediatek
+> > > > > > > MT8195 chip
+> > > > > > > +         that can be used with other codecs.
+> > > > > > > +         Select Y if you have such device.
+> > > > > > > +         If unsure select "N".
+> > > > > > > diff --git a/sound/soc/mediatek/Makefile
+> > > > > > > b/sound/soc/mediatek/Makefile
+> > > > > > > index f6cb6b8508e3..34778ca12106 100644
+> > > > > > > --- a/sound/soc/mediatek/Makefile
+> > > > > > > +++ b/sound/soc/mediatek/Makefile
+> > > > > > > @@ -5,3 +5,4 @@ obj-$(CONFIG_SND_SOC_MT6797) += mt6797/
+> > > > > > >  obj-$(CONFIG_SND_SOC_MT8173) += mt8173/
+> > > > > > >  obj-$(CONFIG_SND_SOC_MT8183) += mt8183/
+> > > > > > >  obj-$(CONFIG_SND_SOC_MT8192) += mt8192/
+> > > > > > > +obj-$(CONFIG_SND_SOC_MT8195) += mt8195/
+> > > > > > > diff --git a/sound/soc/mediatek/mt8195/Makefile
+> > > > > > > b/sound/soc/mediatek/mt8195/Makefile
+> > > > > > > new file mode 100644
+> > > > > > > index 000000000000..b2c9fd88f39e
+> > > > > > > --- /dev/null
+> > > > > > > +++ b/sound/soc/mediatek/mt8195/Makefile
+> > > > > > > @@ -0,0 +1,11 @@
+> > > > > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > > > > +
+> > > > > > > +# platform driver
+> > > > > > > +snd-soc-mt8195-afe-objs := \
+> > > > > > > +       mt8195-afe-clk.o \
+> > > > > > > +       mt8195-afe-pcm.o \
+> > > > > > > +       mt8195-dai-adda.o \
+> > > > > > > +       mt8195-dai-etdm.o \
+> > > > > > > +       mt8195-dai-pcm.o
+> > > > > > > +
+> > > > > > > +obj-$(CONFIG_SND_SOC_MT8195) += snd-soc-mt8195-afe.o
+> > > > > > > diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
+> > > > > > > b/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
+> > > > > > > new file mode 100644
+> > > > > > > index 000000000000..57aa799b4f41
+> > > > > > > --- /dev/null
+> > > > > > > +++ b/sound/soc/mediatek/mt8195/mt8195-afe-clk.c
+> > > > > > > @@ -0,0 +1,899 @@
+> > > > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > > > > +/*
+> > > > > > > + * mt8195-afe-clk.c  --  Mediatek 8195 afe clock ctrl
+> > > > > > > + *
+> > > > > > > + * Copyright (c) 2021 MediaTek Inc.
+> > > > > > > + * Author: Bicycle Tsai <bicycle.tsai@mediatek.com>
+> > > > > > > + *         Trevor Wu <trevor.wu@mediatek.com>
+> > > > > > > + */
+> > > > > > > +
+> > > > > > > +#include <linux/clk.h>
+> > > > > > > +
+> > > > > > > +#include "mt8195-afe-common.h"
+> > > > > > > +#include "mt8195-afe-clk.h"
+> > > > > > > +#include "mt8195-reg.h"
+> > > > > > > +
+> > > > > > > +static const char *aud_clks[MT8195_CLK_NUM] = {
+> > > > > >
+> > > > > > Most of these clocks are not described in the device tree
+> > > > > > binding. If
+> > > > > > the driver needs to reference them, they should be described.
+> > > > > > We
+> > > > > > should
+> > > > > > not be hard-coding clock names across different drivers.
+> > > > > >
+> > > > >
+> > > > > Sorry, I didn't know I have to list all clocks in the dt-
+> > > > > binding.
+> > > > > Originally, I thought these clocks will be described in the
+> > > > > clock
+> > > > > binding, so I didn't add them to the binding of afe driver.
+> > > > > I will add these clocks to mt8195-afe-pcm.yaml.
+> > > >
+> > > > If the device consumes clocks, then the clocks that get consumed
+> > > > should
+> > > > be listed in the device's bindings. This is not related to the
+> > > > clock
+> > > > bindings, which is a clock provider.
+> > > >
+> > >
+> > > Got it. Thanks.
+> > >
+> > > > > > The more important question is, why does the driver need to
+> > > > > > reference
+> > > > > > all of them? Maybe we should take a step back and draw out a
+> > > > > > clock
+> > > > > > tree
+> > > > > > diagram for the hardware?
+> > > > > >
+> > > > >
+> > > > > The clock structure is PLL -> MUX -> GATE.
+> > > > > xtal, pll and divider are the possible clock inputs for MUX.
+> > > > > Because we select the clock input of audio module based on the
+> > > > > use
+> > > > > case, we use clk_get to retrive all clocks which are possible
+> > > > > to be
+> > > > > used.
+> > > >
+> > > > So I see a couple the driver is doing reparenting:
+> > > >
+> > > >   a. Reparent audio_h to standard oscillator when ADDA is not
+> > > > used,
+> > > >      presumably to let the APLL be turned off
+> > > >
+> > > > Why not just turn off audio_h? It looks like audio_h feeds a
+> > > > couple
+> > > > clock
+> > > > gates in the audio subsystem. Just a guess, but is this the AHB
+> > > > bus
+> > > > clock?
+> > > > Why not just have it parented to "univpll_d7" all the time then?
+> > > >
+> > >
+> > > Sorry, I am not sure if it is the AHB bus clock.
+> > > I only know how audio module uses the clock.
+> > > audio_h feeds to some clock gate like aud_adc_hires, which is used
+> > > when
+> > > sampling rate is higher than 48kHz, and hardware designer suggests
+> > > us
+> > > use apll1_ck when AFE requrires the clock.
+> >
+> > I see. So the simplified explanation is high clock rate for high res
+> > audio.
+> > Would high clock rate work for standard sample rates?
+>
+> As far as I know, HW will switch clock to hires clock automatically
+> when the required rate is high,(ex: aud_adc and aud_adc_hires) so it
+> can't be controlled by driver.
 
---tThc/1wpZn/ma/RB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I see. That might not be so friendly to the Linux clk driver.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8baef6386baaefb776bdd09b5c7630cf057c51c6
-commit: d0cf9503e908ee7b235a5efecedeb74aabc482f3 octeontx2-pf: ethtool fec mode support
-date:   5 months ago
-config: ia64-randconfig-m031-20210723 (attached as .config)
-compiler: ia64-linux-gcc (GCC) 10.3.0
+> > Would using apll1 or univpll all the time work, instead of
+> > reparenting?
+> > What's the gain if we do reparenting?
+> >
+>
+> As you said before, the gain is apll can be turned off when the clock
+> is not requrired by ADDA. That's why we didn't use apll all the time.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Right, and what's the gain from turning it off? Lower power consumption?
 
-New smatch warnings:
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:951 otx2_get_fecparam() warn: always true condition '(pfvf->linfo.fec < 4) => (0-3 < 4)'
+> > > As I know, DSP also requires audio_h.
+> > > When we disable the clock in AFE driver, the ref count in CCF is
+> > > not
+> > > becoming zero if DSP still uses it.
+> > > But only AFE requires higher clock rate, so we reparent audio_h to
+> > > 26M
+> > > when it's not required in adda module.
+> >
+> > I see. Wouldn't reparenting the clock while it is in use by another
+> > module
+> > cause glitches?
+>
+> I checked with the DSP owner.
+> audio_h clock is required for DSP bus, but the clock rate is not
+> important.
+> The only thing it cares is audio_h should be powered on, so reparenting
+> is harmless for DSP.
 
-Old smatch warnings:
-drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:962 otx2_get_fecparam() error: buffer overflow 'fec' 4 <= 4
+OK.
 
-vim +951 drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
+> > > > Also, reparenting really should be done implicitly with
+> > > > clk_set_rate()
+> > > > with the clock driver supporting reparenting on rate changes.
+> > > >
+> > > >   b. Assignment of PLLs for I2S/PCM MCLK outputs
+> > > >
+> > > > Is there a reason for explicit assignment, other than clock rate
+> > > > conflicts?
+> > > > CCF supports requesting and locking the clock rate. And again,
+> > > > implicit
+> > > > reparenting should be the norm. The clock driver's purpose is to
+> > > > fulfill
+> > > > any and all clock rate requirements from its consumers. The
+> > > > consumer
+> > > > should
+> > > > only need to ask for the clock rate, not a specific parent,
+> > > > unless
+> > > > there
+> > > > are details that are not yet covered by the CCF.
+> > > >
+> > >
+> > > For MCLK output, we should configure divider to get the target
+> > > rate,
+> > > and it can only divide the clock from current parent source.
+> > > So we should do reparent to divider's parent in case the parent
+> > > rate is
+> > > not a multiple of target rate.
+> >
+> > Right. That is expected. What I'm saying is that the CCF provides the
+> > framework for automatically reparenting based on the requested clock
+> > rate. This is done in the clock driver's .determine_rate op.
+> >
+> > When properly implemented, and also restricting or locking the clock
+> > rates
+> > of the PLLs, then you can simply request a clock rate on the leaf
+> > clock,
+> > in this case one of the MCLKs, and the CCF and clock driver would
+> > handle
+> > everything else. The consumer should not be reparenting clocks
+> > manually
+> > unless for a very good reason which cannot be satisfied by the CCF.
+> >
+>
+> In some use cases, we really need to reparent clock manually.
+> For example, spdif in(slave) -> .... -> i2s out(master)
+>
+> APLL3/APLL4 are reserved for slave input like earc in or spdif in,
+> which can refer to the external clock source.(APLL3 syncs with earc,
+> and APLL4 syncs with spdif in.)
+>
+> When i2s out selects the clock source to APLL4, this makes sure that
+> spdif in and i2s out works in the same clock source.
+> If we just use APLL1/APLL2 on i2s out, there is little rate mismatch
+> between data input and output. Finally, it results in XRUN.
 
-   939	
-   940	static int otx2_get_fecparam(struct net_device *netdev,
-   941				     struct ethtool_fecparam *fecparam)
-   942	{
-   943		struct otx2_nic *pfvf = netdev_priv(netdev);
-   944		struct cgx_fw_data *rsp;
-   945		const int fec[] = {
-   946			ETHTOOL_FEC_OFF,
-   947			ETHTOOL_FEC_BASER,
-   948			ETHTOOL_FEC_RS,
-   949			ETHTOOL_FEC_BASER | ETHTOOL_FEC_RS};
-   950	#define FEC_MAX_INDEX 4
- > 951		if (pfvf->linfo.fec < FEC_MAX_INDEX)
-   952			fecparam->active_fec = fec[pfvf->linfo.fec];
-   953	
-   954		rsp = otx2_get_fwdata(pfvf);
-   955		if (IS_ERR(rsp))
-   956			return PTR_ERR(rsp);
-   957	
-   958		if (rsp->fwdata.supported_fec <= FEC_MAX_INDEX) {
-   959			if (!rsp->fwdata.supported_fec)
-   960				fecparam->fec = ETHTOOL_FEC_NONE;
-   961			else
-   962				fecparam->fec = fec[rsp->fwdata.supported_fec];
-   963		}
-   964		return 0;
-   965	}
-   966	
+I see, that makes more sense.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> If we only use set_rate, it's possible that it can't switch to the
+> expected PLL source, because the rate of APLL3/APLL4 should be close to
+> APLL1/APLL2.
 
---tThc/1wpZn/ma/RB
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+Well, in theory the CCF should choose the one with the closest rate.
+And if APLL3/APLL4 is already tracking the external clock source, its
+clock rate should match.
 
-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
+If it's a static requirement, maybe we could replace the *-mclk-source
+DT properties with standard assigned-clocks and assigned-clock-parents?
+This would get handled by CCF directly, and then the only thing the
+clk driver has to do is make sure it doesn't get reparented again.
 
---tThc/1wpZn/ma/RB--
+Or is there a need to do reparenting at runtime?
+
+> > > > A related question: the chip has five APLLs. How many MCLK
+> > > > combinations
+> > > > does the application need to support? I assume this includes the
+> > > > standard
+> > > > 24.576 MHz and 22.5792 MHz clock rates.
+> > > >
+> > >
+> > > APLL1 and APLL2 are used in most AFE modules, so their rate should
+> > > be
+> > > fixed.
+> > > APLL1 is fixed to 196608000Hz.
+> > > APLL2 is fixed to 180633600Hz.
+> > > APLL is inputed to the divider(8bit), and MCLK is the output of
+> > > divider.
+> > > Other APLLs are reserved for some special usage which can't be
+> > > supported by APLL1 & APLL2.
+> > > But APLL3~APLL5 aren't used in the series, so I will remove them in
+> > > v3.
+> > >
+> > > > > Some of them are not used in this series, because some modules
+> > > > > are
+> > > > > still developing. Should I only keep the clocks that have been
+> > > > > used
+> > > > > in
+> > > > > the series?
+> > > >
+> > > > Yes please. Only add the ones that are used. Things that aren't
+> > > > used
+> > > > don't get tested and verified, and end up as dead code. If there
+> > > > are
+> > > > plans to extend them in the future, and you can leave comments
+> > > > stating
+> > > > that intent, and also mention it in the cover letter.
+> > > >
+> > >
+> > > OK, I will remove the unused clock in v3.
+> > >
+> > > > > > > +       /* xtal */
+> > > > > > > +       [MT8195_CLK_XTAL_26M] = "clk26m",
+> > > > > > > +       /* pll */
+> > > > > > > +       [MT8195_CLK_APMIXED_APLL1] = "apll1",
+> > > > > > > +       [MT8195_CLK_APMIXED_APLL2] = "apll2",
+> > > > > > > +       [MT8195_CLK_APMIXED_APLL3] = "apll3",
+> > > > > > > +       [MT8195_CLK_APMIXED_APLL4] = "apll4",
+> > > > > > > +       [MT8195_CLK_APMIXED_APLL5] = "apll5",
+> > > > > > > +       [MT8195_CLK_APMIXED_HDMIRX_APLL] = "hdmirx_apll",
+> > > > > > > +       /* divider */
+> > > > > > > +       [MT8195_CLK_TOP_APLL1] = "apll1_ck",
+> > > > > > > +       [MT8195_CLK_TOP_APLL1_D4] = "apll1_d4",
+> > > > > > > +       [MT8195_CLK_TOP_APLL2] = "apll2_ck",
+> > > > > > > +       [MT8195_CLK_TOP_APLL2_D4] = "apll2_d4",
+> > > > > > > +       [MT8195_CLK_TOP_APLL3] = "apll3_ck",
+> > > > > > > +       [MT8195_CLK_TOP_APLL3_D4] = "apll3_d4",
+> > > > > > > +       [MT8195_CLK_TOP_APLL4] = "apll4_ck",
+> > > > > > > +       [MT8195_CLK_TOP_APLL4_D4] = "apll4_d4",
+> > > > > > > +       [MT8195_CLK_TOP_APLL5] = "apll5_ck",
+> > > > > > > +       [MT8195_CLK_TOP_APLL5_D4] = "apll5_d4",
+> > > > > > > +       [MT8195_CLK_TOP_APLL12_DIV0] = "apll12_div0",
+> > > > > > > +       [MT8195_CLK_TOP_APLL12_DIV1] = "apll12_div1",
+> > > > > > > +       [MT8195_CLK_TOP_APLL12_DIV2] = "apll12_div2",
+> > > > > > > +       [MT8195_CLK_TOP_APLL12_DIV3] = "apll12_div3",
+> > > > > > > +       [MT8195_CLK_TOP_APLL12_DIV4] = "apll12_div4",
+> > > > > > > +       [MT8195_CLK_TOP_APLL12_DIV9] = "apll12_div9",
+> > > > > > > +       [MT8195_CLK_TOP_HDMIRX_APLL] = "hdmirx_apll_ck",
+> > > > > > > +       [MT8195_CLK_TOP_MAINPLL_D4_D4] = "mainpll_d4_d4",
+> > > > > > > +       [MT8195_CLK_TOP_MAINPLL_D5_D2] = "mainpll_d5_d2",
+> > > > > > > +       [MT8195_CLK_TOP_MAINPLL_D7_D2] = "mainpll_d7_d2",
+> > > > > > > +       [MT8195_CLK_TOP_UNIVPLL_D4] = "univpll_d4",
+> > > > > > > +       /* mux */
+> > > > > > > +       [MT8195_CLK_TOP_APLL1_SEL] = "apll1_sel",
+> > > > > > > +       [MT8195_CLK_TOP_APLL2_SEL] = "apll2_sel",
+> > > > > > > +       [MT8195_CLK_TOP_APLL3_SEL] = "apll3_sel",
+> > > > > > > +       [MT8195_CLK_TOP_APLL4_SEL] = "apll4_sel",
+> > > > > > > +       [MT8195_CLK_TOP_APLL5_SEL] = "apll5_sel",
+> > > > > > > +       [MT8195_CLK_TOP_A1SYS_HP_SEL] = "a1sys_hp_sel",
+> > > > > > > +       [MT8195_CLK_TOP_A2SYS_SEL] = "a2sys_sel",
+> > > > > > > +       [MT8195_CLK_TOP_A3SYS_SEL] = "a3sys_sel",
+> > > > > > > +       [MT8195_CLK_TOP_A4SYS_SEL] = "a4sys_sel",
+> > > > > > > +       [MT8195_CLK_TOP_ASM_H_SEL] = "asm_h_sel",
+> > > > > > > +       [MT8195_CLK_TOP_ASM_M_SEL] = "asm_m_sel",
+> > > > > > > +       [MT8195_CLK_TOP_ASM_L_SEL] = "asm_l_sel",
+> > > > > > > +       [MT8195_CLK_TOP_AUD_IEC_SEL] = "aud_iec_sel",
+> > > > > > > +       [MT8195_CLK_TOP_AUD_INTBUS_SEL] = "aud_intbus_sel",
+> > > > > > > +       [MT8195_CLK_TOP_AUDIO_H_SEL] = "audio_h_sel",
+> > > > > > > +       [MT8195_CLK_TOP_AUDIO_LOCAL_BUS_SEL] =
+> > > > > > > "audio_local_bus_sel",
+> > > > > > > +       [MT8195_CLK_TOP_DPTX_M_SEL] = "dptx_m_sel",
+> > > > > > > +       [MT8195_CLK_TOP_INTDIR_SEL] = "intdir_sel",
+> > > > > > > +       [MT8195_CLK_TOP_I2SO1_M_SEL] = "i2so1_m_sel",
+> > > > > > > +       [MT8195_CLK_TOP_I2SO2_M_SEL] = "i2so2_m_sel",
+> > > > > > > +       [MT8195_CLK_TOP_I2SI1_M_SEL] = "i2si1_m_sel",
+> > > > > > > +       [MT8195_CLK_TOP_I2SI2_M_SEL] = "i2si2_m_sel",
+> > > > > > > +       /* clock gate */
+> > > > > > > +       [MT8195_CLK_TOP_MPHONE_SLAVE_B] = "mphone_slave_b",
+> > > > > > > +       [MT8195_CLK_TOP_CFG_26M_AUD] = "cfg_26m_aud",
+> > > > > > > +       [MT8195_CLK_INFRA_AO_AUDIO] = "infra_ao_audio",
+> > > > > > > +       [MT8195_CLK_INFRA_AO_AUDIO_26M_B] =
+> > > > > > > "infra_ao_audio_26m_b",
+> > > > > > > +       [MT8195_CLK_SCP_ADSP_AUDIODSP] =
+> > > > > > > "scp_adsp_audiodsp",
+> > > > > >
+> > > > > >
+> > > > > > > +       [MT8195_CLK_AUD_AFE] = "aud_afe",
+> > > > > > > +       [MT8195_CLK_AUD_LRCK_CNT] = "aud_lrck_cnt",
+> > > > > > > +       [MT8195_CLK_AUD_SPDIFIN_TUNER_APLL] =
+> > > > > > > "aud_spdifin_tuner_apll",
+> > > > > > > +       [MT8195_CLK_AUD_SPDIFIN_TUNER_DBG] =
+> > > > > > > "aud_spdifin_tuner_dbg",
+> > > > > > > +       [MT8195_CLK_AUD_UL_TML] = "aud_ul_tml",
+> > > > > > > +       [MT8195_CLK_AUD_APLL1_TUNER] = "aud_apll1_tuner",
+> > > > > > > +       [MT8195_CLK_AUD_APLL2_TUNER] = "aud_apll2_tuner",
+> > > > > > > +       [MT8195_CLK_AUD_TOP0_SPDF] = "aud_top0_spdf",
+> > > > > > > +       [MT8195_CLK_AUD_APLL] = "aud_apll",
+> > > > > > > +       [MT8195_CLK_AUD_APLL2] = "aud_apll2",
+> > > > > > > +       [MT8195_CLK_AUD_DAC] = "aud_dac",
+> > > > > > > +       [MT8195_CLK_AUD_DAC_PREDIS] = "aud_dac_predis",
+> > > > > > > +       [MT8195_CLK_AUD_TML] = "aud_tml",
+> > > > > > > +       [MT8195_CLK_AUD_ADC] = "aud_adc",
+> > > > > > > +       [MT8195_CLK_AUD_DAC_HIRES] = "aud_dac_hires",
+> > > > > > > +       [MT8195_CLK_AUD_A1SYS_HP] = "aud_a1sys_hp",
+> > > > > > > +       [MT8195_CLK_AUD_AFE_DMIC1] = "aud_afe_dmic1",
+> > > > > > > +       [MT8195_CLK_AUD_AFE_DMIC2] = "aud_afe_dmic2",
+> > > > > > > +       [MT8195_CLK_AUD_AFE_DMIC3] = "aud_afe_dmic3",
+> > > > > > > +       [MT8195_CLK_AUD_AFE_DMIC4] = "aud_afe_dmic4",
+> > > > > > > +       [MT8195_CLK_AUD_AFE_26M_DMIC_TM] =
+> > > > > > > "aud_afe_26m_dmic_tm",
+> > > > > > > +       [MT8195_CLK_AUD_UL_TML_HIRES] = "aud_ul_tml_hires",
+> > > > > > > +       [MT8195_CLK_AUD_ADC_HIRES] = "aud_adc_hires",
+> > > > > > > +       [MT8195_CLK_AUD_ADDA6_ADC] = "aud_adda6_adc",
+> > > > > > > +       [MT8195_CLK_AUD_ADDA6_ADC_HIRES] =
+> > > > > > > "aud_adda6_adc_hires",
+> > > > > > > +       [MT8195_CLK_AUD_LINEIN_TUNER] = "aud_linein_tuner",
+> > > > > > > +       [MT8195_CLK_AUD_EARC_TUNER] = "aud_earc_tuner",
+> > > > > > > +       [MT8195_CLK_AUD_I2SIN] = "aud_i2sin",
+> > > > > > > +       [MT8195_CLK_AUD_TDM_IN] = "aud_tdm_in",
+> > > > > > > +       [MT8195_CLK_AUD_I2S_OUT] = "aud_i2s_out",
+> > > > > > > +       [MT8195_CLK_AUD_TDM_OUT] = "aud_tdm_out",
+> > > > > > > +       [MT8195_CLK_AUD_HDMI_OUT] = "aud_hdmi_out",
+> > > > > > > +       [MT8195_CLK_AUD_ASRC11] = "aud_asrc11",
+> > > > > > > +       [MT8195_CLK_AUD_ASRC12] = "aud_asrc12",
+> > > > > > > +       [MT8195_CLK_AUD_MULTI_IN] = "aud_multi_in",
+> > > > > > > +       [MT8195_CLK_AUD_INTDIR] = "aud_intdir",
+> > > > > > > +       [MT8195_CLK_AUD_A1SYS] = "aud_a1sys",
+> > > > > > > +       [MT8195_CLK_AUD_A2SYS] = "aud_a2sys",
+> > > > > > > +       [MT8195_CLK_AUD_PCMIF] = "aud_pcmif",
+> > > > > > > +       [MT8195_CLK_AUD_A3SYS] = "aud_a3sys",
+> > > > > > > +       [MT8195_CLK_AUD_A4SYS] = "aud_a4sys",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL1] = "aud_memif_ul1",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL2] = "aud_memif_ul2",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL3] = "aud_memif_ul3",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL4] = "aud_memif_ul4",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL5] = "aud_memif_ul5",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL6] = "aud_memif_ul6",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL8] = "aud_memif_ul8",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL9] = "aud_memif_ul9",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_UL10] = "aud_memif_ul10",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_DL2] = "aud_memif_dl2",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_DL3] = "aud_memif_dl3",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_DL6] = "aud_memif_dl6",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_DL7] = "aud_memif_dl7",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_DL8] = "aud_memif_dl8",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_DL10] = "aud_memif_dl10",
+> > > > > > > +       [MT8195_CLK_AUD_MEMIF_DL11] = "aud_memif_dl11",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC0] = "aud_gasrc0",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC1] = "aud_gasrc1",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC2] = "aud_gasrc2",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC3] = "aud_gasrc3",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC4] = "aud_gasrc4",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC5] = "aud_gasrc5",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC6] = "aud_gasrc6",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC7] = "aud_gasrc7",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC8] = "aud_gasrc8",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC9] = "aud_gasrc9",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC10] = "aud_gasrc10",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC11] = "aud_gasrc11",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC12] = "aud_gasrc12",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC13] = "aud_gasrc13",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC14] = "aud_gasrc14",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC15] = "aud_gasrc15",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC16] = "aud_gasrc16",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC17] = "aud_gasrc17",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC18] = "aud_gasrc18",
+> > > > > > > +       [MT8195_CLK_AUD_GASRC19] = "aud_gasrc19",
+> > > > > >
+> > > > > > The MT8195_CLK_AUD_* clocks are all internal to the audio
+> > > > > > subsystem:
+> > > > > > the bits that control these clock gates are in the same
+> > > > > > address
+> > > > > > space
+> > > > > > as the audio parts. Would it be possible to model them as
+> > > > > > internal
+> > > > > > ASoC SUPPLY widgets? The external ones could be modeled using
+> > > > > > ASoC
+> > > > > > CLK_SUPPLY widgets, and the dependencies could be modeled
+> > > > > > with
+> > > > > > ASoC
+> > > > > > routes. The ASoC core could then handle power sequencing,
+> > > > > > which
+> > > > > > the
+> > > > > > driver currently does manually.
+> > > > > >
+> > > > > > IMO this is better than having two drivers handling two
+> > > > > > aspects
+> > > > > > of
+> > > > > > the same piece of hardware, while the two aspects are
+> > > > > > intertwined.
+> > > > > >
+> > > > >
+> > > > > Yes, it's ok to use the CLK_SUPPLY and SUPPLY to model such
+> > > > > clocks.
+> > > > > But those clocks are managed by CCF in the preceding SOCs like
+> > > > > mt2701,
+> > > > > mt6779 and mt8183. Additionally, in some audio modules, clocks
+> > > > > should
+> > > >
+> > > > This being a new driver, we have some more freedom to improve the
+> > > > design.
+> > > >
+> > > > > be enabled before configuring parameters(hw_params). As far as
+> > > > > I
+> > > > > know,
+> > > > > if we use CLK_SUPPLY or SUPPLY to model clocks, the power
+> > > > > sequence
+> > > > > is
+> > > > > controlled by DAPM. It seems to be impossible to fulfill all
+> > > > > use
+> > > > > cases.
+> > > > > That's why we just keep the manual control sequence and CCF
+> > > > > seems
+> > > > > to be
+> > > > > the best choice to model such clock gatess.
+> > > >
+> > > > I see. So yes, using CCF does give you reference counting,
+> > > > dependency
+> > > > tracking and other advantages. And using DAPM supplies means you
+> > > > can't
+> > > > enable the clock gates outside of DAPM without both pieces of
+> > > > code
+> > > > fighting for control.
+> > > >
+> > > > Can we at least move the audio clock gates into the audio driver
+> > > > though?
+> > > > The arbitrary separation into two devices and drivers is fishy.
+> > > > And
+> > > > with
+> > > > the move the external references to the audio clock gates can be
+> > > > removed.
+> > > >
+> > >
+> > > Because DAPM SUPPLY can't fit our control scenario.
+> > > Did you suggest us implement the simple logic control(including ref
+> > > count, clock dependency) for clock gate(MT8195_CLK_AUD_*) in afe
+> > > driver
+> > > instead of using CCF?
+> >
+> > I meant simply moving the CCF-based clk driver code (clk-mt8516-
+> > aud.c)
+> > from `drivers/clk` and incorporating it into the audio driver, likely
+> > in `mt8195-afe-clk.c` or maybe as a separate file. So the audio
+> > driver
+> > would be a clock provider, and a clock consumer. It will directly use
+> > the clocks it provides, internally, and you could remove all those
+> > clock references from the device tree.
+> >
+> > The goal is to have one hardware representation (device node) only,
+> > so
+> > that it matches the hardware, which is one single unified block.
+> >
+> > After the driver is completed, we can look for opportunities to
+> > improve
+> > it, if resources are available.
+>
+> Thanks for your detailed information.
+> I will try to move the CCF-based clk driver code to AFE driver.
+> If there are no other internal concerns and blocking problems, I will
+> include the changes in v3.
+
+Great.
+
+> > > > And regarding the clock requirements for different modules, could
+> > > > we
+> > > > have
+> > > > that information put in comments somewhere, so if someone were to
+> > > > revisit
+> > > > it later, they would have the information needed to understand
+> > > > and
+> > > > possibly
+> > > > improve it? Because right now there's just a bunch of clocks
+> > > > enabled
+> > > > and
+> > > > disabled and nothing to explain why that's needed.
+> > > >
+> > >
+> > > For example,
+> > > MT8195_CLK_AUD_ADC(clock gate) is one of the clock feeding to ADDA
+> > > module.
+> > > Did you want me show the clock gate list feeding to ADDA?
+> > > On the other hand, I didn't know how to show the information
+> > > properly
+> > > in comments. Could you kindly share me an example for reference?
+> >
+> >
+> > For example, in `mt8195_afe_enable_reg_rw_clk()` in mt8195-afe-clk.c:
+> >
+> >         unsigned int clk_array[] = {
+> >                 MT8195_CLK_SCP_ADSP_AUDIODSP,
+> >                 MT8195_CLK_TOP_AUDIO_LOCAL_BUS_SEL,
+> >                 MT8195_CLK_TOP_CFG_26M_AUD,
+> >                 MT8195_CLK_INFRA_AO_AUDIO,
+> >                 MT8195_CLK_INFRA_AO_AUDIO_26M_B,
+> >                 MT8195_CLK_TOP_AUD_INTBUS_SEL,
+> >                 MT8195_CLK_TOP_A1SYS_HP_SEL,
+> >                 MT8195_CLK_AUD_A1SYS_HP,
+> >                 MT8195_CLK_AUD_A1SYS,
+> >                 MT8195_CLK_TOP_AUDIO_H_SEL,
+> >         };
+> >
+> > You could add a comment after each line stating why that clock needs
+> > to
+> > be enabled. A simple note like "bus access clock" or "internal logic
+> > clock"
+> > would suffice.
+> >
+> OK, I will add short notes to such clock lists.
+>
+> > The above list also has some redundancies that could be eliminated.
+> > MT8195_CLK_TOP_A1SYS_HP_SEL is parent to both MT8195_CLK_AUD_A1SYS_HP
+> > and
+> > MT8195_CLK_AUD_A1SYS. When clocks are enabled, their parents are also
+> > enabled by CCF, so there's no need to enable them explicitly, unless
+> > that clock also directly feeds the clock consumer.
+> >
+> OK, I will review all clock usages and remove the unnecessary clocks.
+>
+> >
+> > Another thing I wanted to bring up: is any of the code after
+> >
+> >     struct mt8195_afe_tuner_cfg {
+> >
+> > used? It looks like it is used to configure the five extra PLLs in
+> > the audio
+> > subsystem, but the exposed (non-static) functions don't seem to be
+> > called
+> > anywhere. Are they for modules not yet supported?
+> >
+>
+> Yes, tuners are not supported now.
+> I will remove the code and add them back when tuners are required in
+> the future.
+
+Thanks.
+
+
+ChenYu
