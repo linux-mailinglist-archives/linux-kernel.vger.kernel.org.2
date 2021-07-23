@@ -2,126 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B51F3D3DFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDCE3D3E01
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhGWQQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:16:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11714 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230367AbhGWQQ0 (ORCPT
+        id S230498AbhGWQTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:19:16 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:44109 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230064AbhGWQTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:16:26 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NGYgDR117999;
-        Fri, 23 Jul 2021 12:56:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=y6haI9X+NGlUkjfD3/I4Gvnj8rC4Xc1Getr/31Nj+OI=;
- b=b6b1CavLQEEKkotZDAKd8GCWvWtO6CZvdveSWYEB+choR/6tcM9PfUtSBT7E20z6jZRH
- Dne+IfGX1iTKFNktu3ICupfMex1+SuIUvjUF9KE4zKFYg09cgjT0Za12eEr1PU4fWBAi
- +xgp7A1CcvkpoVq2RYB57pXnj74TylP+9QUZOM7OVJqWPQCUUgTD2jy7TfkMpuAoICCR
- IfINTY7W+v9IR1VnHARJVrWav9yiqtwTVK47k79pk9PK+aMqQJKC5OIQ9HE2pmjkxY/l
- BrWdg89unamkkS6sTeVVIh8mz6ZNuBvYlbiopbfZJLn/L+Vrb2yTa5Yq5gOPm79d2M2v eQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a00pct056-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 12:56:57 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16NGZImT120377;
-        Fri, 23 Jul 2021 12:56:56 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a00pct04f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 12:56:56 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16NGrG29000564;
-        Fri, 23 Jul 2021 16:56:55 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 39upu89xgt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 16:56:55 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16NGuqFE31654346
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 16:56:52 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 775754C04E;
-        Fri, 23 Jul 2021 16:56:52 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 149944C050;
-        Fri, 23 Jul 2021 16:56:52 +0000 (GMT)
-Received: from li-c43276cc-23ad-11b2-a85c-bda00957cb67.ibm.com (unknown [9.145.191.177])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 16:56:51 +0000 (GMT)
-Subject: Re: [RESEND] scsi: aacraid: aachba: replace if with max()
-To:     Salah Triki <salah.triki@gmail.com>, aacraid@microsemi.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210722173212.GA5685@pc>
-From:   Steffen Maier <maier@linux.ibm.com>
-Message-ID: <09202d04-d066-a552-7a33-6c4c3b669107@linux.ibm.com>
-Date:   Fri, 23 Jul 2021 18:56:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210722173212.GA5685@pc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: o4HPNuLbcKHvbgKRw7goe1qcEwsY_HSt
-X-Proofpoint-GUID: x9MOKj7ac6Ab-Stcyf7Q48wFrANDopLw
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 23 Jul 2021 12:19:15 -0400
+Received: (qmail 46912 invoked by uid 1000); 23 Jul 2021 12:59:47 -0400
+Date:   Fri, 23 Jul 2021 12:59:47 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com,
+        Manfred Spraul <manfred@colorfullife.com>
+Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
+ heuristic lockless reads
+Message-ID: <20210723165947.GA46562@rowland.harvard.edu>
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+ <20210721211003.869892-2-paulmck@kernel.org>
+ <20210723020846.GA26397@rowland.harvard.edu>
+ <20210723162431.GF4397@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_09:2021-07-23,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- priorityscore=1501 phishscore=0 adultscore=0 mlxscore=0 malwarescore=0
- bulkscore=0 clxscore=1011 lowpriorityscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230100
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723162431.GF4397@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/21 7:32 PM, Salah Triki wrote:
-> Replace if with max() in order to make code more clean.
+On Fri, Jul 23, 2021 at 09:24:31AM -0700, Paul E. McKenney wrote:
+> On Thu, Jul 22, 2021 at 10:08:46PM -0400, Alan Stern wrote:
+
+> > > +	void do_something_locked(struct foo *fp)
+> > > +	{
+> > > +		bool gf = true;
+> > > +
+> > > +		/* IMPORTANT: Heuristic plus spin_lock()! */
+> > > +		if (!data_race(global_flag)) {
+> > > +			spin_lock(&fp->f_lock);
+> > > +			if (!smp_load_acquire(&global_flag)) {
+
+> > > +	void begin_global(void)
+> > > +	{
+> > > +		int i;
+> > > +
+> > > +		spin_lock(&global_lock);
+> > > +		WRITE_ONCE(global_flag, true);
+> > 
+> > Why does this need to be WRITE_ONCE?  It still races with the first read 
+> > of global_flag above.
 > 
-> Signed-off-by: Salah Triki <salah.triki@gmail.com>
-> ---
->   drivers/scsi/aacraid/aachba.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
-> index 46b8dffce2dd..330224f08fd3 100644
-> --- a/drivers/scsi/aacraid/aachba.c
-> +++ b/drivers/scsi/aacraid/aachba.c
-> @@ -485,8 +485,8 @@ int aac_get_containers(struct aac_dev *dev)
->   	if (status != -ERESTARTSYS)
->   		aac_fib_free(fibptr);
-> 
-> -	if (maximum_num_containers < MAXIMUM_NUM_CONTAINERS)
-> -		maximum_num_containers = MAXIMUM_NUM_CONTAINERS;
-> +	maximum_num_containers = max(maximum_num_containers, MAXIMUM_NUM_CONTAINERS);
-> +
+> But also with the smp_load_acquire() of global_flag, right?
 
-Haven't really looked closely, but isn't the old code more like a min() rather 
-than a max()? maximum_num_containers being at least MAXIMUM_NUM_CONTAINERS or 
-higher?
+What I'm curious about is why, given these two races, you notate one of 
+them by changing a normal write to WRITE_ONCE and you notate the other 
+by changing a normal read to a data_race() read.  Why not handle them 
+both the same way?
 
-
--- 
-Mit freundlichen Gruessen / Kind regards
-Steffen Maier
-
-Linux on IBM Z Development
-
-https://www.ibm.com/privacy/us/en/
-IBM Deutschland Research & Development GmbH
-Vorsitzender des Aufsichtsrats: Matthias Hartmann
-Geschaeftsfuehrung: Dirk Wittkopp
-Sitz der Gesellschaft: Boeblingen
-Registergericht: Amtsgericht Stuttgart, HRB 243294
+Alan
