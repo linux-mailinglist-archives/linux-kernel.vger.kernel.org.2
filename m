@@ -2,151 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C053D37BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3933D37C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234130AbhGWIu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:50:59 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:37809 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGWIu6 (ORCPT
+        id S230506AbhGWIyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:54:54 -0400
+Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:43885 "EHLO
+        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230438AbhGWIyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:50:58 -0400
-Received: (Authenticated sender: hadess@hadess.net)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id ED1781BF20B;
-        Fri, 23 Jul 2021 09:31:29 +0000 (UTC)
-Message-ID: <e040d6e29632157dd40e6be90ae839265556af58.camel@hadess.net>
-Subject: Re: [PATCH] HID: logitech-hidpp: battery: provide CAPACITY property
- for newer devices
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Hamza Mahfooz <someguy@effective-light.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org,
-        Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>
-Date:   Fri, 23 Jul 2021 11:31:29 +0200
-In-Reply-To: <20210723062346.86259-1-someguy@effective-light.com>
-References: <20210723062346.86259-1-someguy@effective-light.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        Fri, 23 Jul 2021 04:54:53 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id E31E31C4926
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:35:24 +0100 (IST)
+Received: (qmail 13966 invoked from network); 23 Jul 2021 09:35:24 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 23 Jul 2021 09:35:24 -0000
+Date:   Fri, 23 Jul 2021 10:35:23 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     peterz@infradead.org, bristot@redhat.com, bsegall@google.com,
+        dietmar.eggemann@arm.com, joshdon@google.com,
+        juri.lelli@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        rostedt@goodmis.org, valentin.schneider@arm.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
+Message-ID: <20210723093523.GX3809@techsingularity.net>
+References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
+ <20210707123402.13999-1-borntraeger@de.ibm.com>
+ <20210707123402.13999-2-borntraeger@de.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210707123402.13999-2-borntraeger@de.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Hamza,
-
-On Fri, 2021-07-23 at 02:23 -0400, Hamza Mahfooz wrote:
-> For devices that only support the BATTERY_VOLTAGE (0x1001) feature,
-> UPower
-> requires the additional information provided by this patch, to set
-> them up.
+On Wed, Jul 07, 2021 at 02:34:02PM +0200, Christian Borntraeger wrote:
+> After some debugging in situations where a smaller sched_latency_ns and
+> smaller sched_migration_cost settings helped for KVM host, I was able to
+> come up with a reduced testcase.
+> This testcase has 2 vcpus working on a shared memory location and
+> waiting for mem % 2 == cpu number to then do an add on the shared
+> memory.
+> To start simple I pinned all vcpus to one host CPU. Without the
+> yield_to in KVM the testcase was horribly slow. This is expected as each
+> vcpu will spin a whole time slice. With the yield_to from KVM things are
+> much better, but I was still seeing yields being ignored.
+> In the end pick_next_entity decided to keep the current process running
+> due to fairness reasons.  On this path we really know that there is no
+> point in continuing current. So let us make things a bit unfairer to
+> current.
+> This makes the reduced testcase noticeable faster. It improved a more
+> realistic test case (many guests on some host CPUs with overcomitment)
+> even more.
+> In the end this is similar to the old compat_sched_yield approach with
+> an important difference:
+> Instead of doing it for all yields we now only do it for yield_to
+> a place where we really know that current it waiting for the target.
 > 
-> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
-> ---
->  drivers/hid/hid-logitech-hidpp.c | 31
-> ++++++++++++++++++++++++++++++-
->  1 file changed, 30 insertions(+), 1 deletion(-)
+> What are alternative implementations for this patch
+> - do the same as the old compat_sched_yield:
+>   current->vruntime = rightmost->vruntime+1
+> - provide a new tunable sched_ns_yield_penalty: how much vruntime to add
+>   (could be per architecture)
+> - also fiddle with the vruntime of the target
+>   e.g. subtract from the target what we add to the source
 > 
-> diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-
-> logitech-hidpp.c
-> index 61635e629469..662c335e9c17 100644
-> --- a/drivers/hid/hid-logitech-hidpp.c
-> +++ b/drivers/hid/hid-logitech-hidpp.c
-> @@ -1331,6 +1331,32 @@ static int
-> hidpp20_battery_get_battery_voltage(struct hidpp_device *hidpp,
->         return 0;
->  }
->  
-> +static int hidpp20_map_battery_capacity(int voltage)
-> +{
-> +       static const int voltages[] = {
-> +               4186, 4156, 4143, 4133, 4122, 4113, 4103, 4094, 4086,
-> 4075,
-> +               4067, 4059, 4051, 4043, 4035, 4027, 4019, 4011, 4003,
-> 3997,
-> +               3989, 3983, 3976, 3969, 3961, 3955, 3949, 3942, 3935,
-> 3929,
-> +               3922, 3916, 3909, 3902, 3896, 3890, 3883, 3877, 3870,
-> 3865,
-> +               3859, 3853, 3848, 3842, 3837, 3833, 3828, 3824, 3819,
-> 3815,
-> +               3811, 3808, 3804, 3800, 3797, 3793, 3790, 3787, 3784,
-> 3781,
-> +               3778, 3775, 3772, 3770, 3767, 3764, 3762, 3759, 3757,
-> 3754,
-> +               3751, 3748, 3744, 3741, 3737, 3734, 3730, 3726, 3724,
-> 3720,
-> +               3717, 3714, 3710, 3706, 3702, 3697, 3693, 3688, 3683,
-> 3677,
-> +               3671, 3666, 3662, 3658, 3654, 3646, 3633, 3612, 3579,
-> 3537,
-> +               3500
-> +       };
-> +
-> +       int i;
-> +
-> +       for (i = 0; i < (sizeof(voltages) / sizeof(int)); i++) {
+> Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 
-Use ARRAY_SIZE()
+I think this one accidentally fell off everyones radar including mine.
+At the time this patch was mailed I remembered thinking that playing games with
+vruntime might have other consequences. For example, what I believe is
+the most relevant problem for KVM is that a task spinning to acquire a
+lock may be waiting on a vcpu holding the lock that has been
+descheduled. Without vcpu pinning, it's possible that the holder is on
+the same runqueue as the lock acquirer so the acquirer is wasting CPU.
 
-> +               if (voltage >= voltages[i])
-> +                       return 100 - i;
+In such a case, changing the acquirers vcpu may mean that it unfairly
+loses CPU time simply because it's a lock acquirer. Vincent, what do you
+think? Christian, would you mind testing this as an alternative with your
+demonstration test case and more importantly the "realistic test case"?
 
-I don't really like this part, which seems to rely on things which
-aren't asserted. Is there a way to make sure that voltages[] is 100
-items and they're all initialised?
+--8<--
+sched: Do not select highest priority task to run if it should be skipped
 
-If you tested this, could you also mention which devices you tested
-this on in the commit message?
+pick_next_entity will consider the "next buddy" over the highest priority
+task if it's not unfair to do so (as determined by wakekup_preempt_entity).
+The potential problem is that an in-kernel user of yield_to() such as
+KVM may explicitly want to yield the current task because it is trying
+to acquire a spinlock from a task that is currently descheduled and
+potentially running on the same runqueue. However, if it's more fair from
+the scheduler perspective to continue running the current task, it'll continue
+to spin uselessly waiting on a descheduled task to run.
 
-Thanks for picking this up!
+This patch will select the targeted task to run even if it's unfair if the
+highest priority task is explicitly marked as "skip".
 
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static int hidpp20_query_battery_voltage_info(struct hidpp_device
-> *hidpp)
->  {
->         u8 feature_type;
-> @@ -1354,6 +1380,7 @@ static int
-> hidpp20_query_battery_voltage_info(struct hidpp_device *hidpp)
->  
->         hidpp->battery.status = status;
->         hidpp->battery.voltage = voltage;
-> +       hidpp->battery.capacity =
-> hidpp20_map_battery_capacity(voltage);
->         hidpp->battery.level = level;
->         hidpp->battery.charge_type = charge_type;
->         hidpp->battery.online = status !=
-> POWER_SUPPLY_STATUS_NOT_CHARGING;
-> @@ -1378,6 +1405,7 @@ static int hidpp20_battery_voltage_event(struct
-> hidpp_device *hidpp,
->  
->         if (voltage != hidpp->battery.voltage || status != hidpp-
-> >battery.status) {
->                 hidpp->battery.voltage = voltage;
-> +               hidpp->battery.capacity =
-> hidpp20_map_battery_capacity(voltage);
->                 hidpp->battery.status = status;
->                 hidpp->battery.level = level;
->                 hidpp->battery.charge_type = charge_type;
-> @@ -3717,7 +3745,8 @@ static int hidpp_initialize_battery(struct
-> hidpp_device *hidpp)
->         num_battery_props = ARRAY_SIZE(hidpp_battery_props) - 3;
->  
->         if (hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_MILEAGE ||
-> -           hidpp->capabilities &
-> HIDPP_CAPABILITY_BATTERY_PERCENTAGE)
-> +           hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_PERCENTAGE
-> ||
-> +           hidpp->capabilities & HIDPP_CAPABILITY_BATTERY_VOLTAGE)
->                 battery_props[num_battery_props++] =
->                                 POWER_SUPPLY_PROP_CAPACITY;
->  
+This was evaluated using a debugging patch to expose yield_to as a system
+call. A demonstration program creates N number of threads and arranges
+them in a ring that are updating a shared value in memory. Each thread
+spins until the value matches the thread ID. It then updates the value
+and wakes the next thread in the ring. It measures how many times it spins
+before it gets its turn. Without the patch, the number of spins is highly
+variable and unstable but with the patch it's more consistent.
 
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ kernel/sched/fair.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 44c452072a1b..ddc0212d520f 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4522,7 +4522,8 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+ 			se = second;
+ 	}
+ 
+-	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
++	if (cfs_rq->next &&
++	    (cfs_rq->skip == left || wakeup_preempt_entity(cfs_rq->next, left) < 1)) {
+ 		/*
+ 		 * Someone really wants this to run. If it's not unfair, run it.
+ 		 */
+
+-- 
+Mel Gorman
+SUSE Labs
