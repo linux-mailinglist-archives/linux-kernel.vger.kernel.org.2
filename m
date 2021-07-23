@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1117A3D379B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C4D3D37A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:23:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbhGWIk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:40:26 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:42016
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231994AbhGWIkY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:40:24 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id AC9993F255
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 09:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627032057;
-        bh=aTDeZwBMgFtKPnWXdcaT3ED7J8vSM5/RBLMh7ZrqdvU=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=LTu56HzuohgJhGJku3TsWRyTXyPZ1s6e0k0WnkA8sCEfd30pteFrgPS7cKQ7LQejw
-         i1SuxxcxG5m3c3dm3GF0/bI7al4Y6jbsjwZq6x+ndD0dnSKO34ZV7i4Y13CYm0VxnK
-         OPBxCDvnekdwlW7TSi2AYE6CcOaRVeCgkFoCVfIKrjQdxYr8D4sZWn132T447ehbz7
-         yuhSVFYVDtsLoSRw6QgkeZCuOXvftR2m5JGsCeVssyiSGrfjjPS2xeAPbOiXTJVtbh
-         H54+erW+hJ3zy2D5P5g1OLSjEycLHyoY2yogm9k78Io3JRSMOqMPmDVyceAn0DkH6Q
-         QPCMmtb0EtmnQ==
-Received: by mail-ed1-f72.google.com with SMTP id z15-20020a50f14f0000b02903aa750a46efso431021edl.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:20:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aTDeZwBMgFtKPnWXdcaT3ED7J8vSM5/RBLMh7ZrqdvU=;
-        b=beCTKkSkBUeMW3ueY5S30NTxu2Ko/YY1EZ452rPR2+86FOfnz+LzHSGPZbNDbgjVMS
-         jaPx1fzVlGbOjO1/uz2M16gQJcoTwUwkNXSYcN6UkGoS9ASemdHh/qIm7HjTp2nayC+m
-         W4jGL2nTsJgdq190aZyIBia6YDUBM/zDjzH0tIaqfXERRYN4SL7HshBkK4yBzZiT8Ho3
-         DGWY3oK5NghAlRU1Yh8WfEu/0QbMUdrYONOfo1ZDGrOdhGk8XnRRPBtOy8rqKbblBY26
-         GQ6spGoPumAebaJLZ0cvA9ykDFLUlKfzxYM8DUsTCDaRFz41Pvujr+KM1JVfMpZYlOrc
-         cQFQ==
-X-Gm-Message-State: AOAM533yR+0MKVm/9n/FnQn+d3f6KwYMihIP/I5bPlwYKOcpmZfbISbt
-        exBxFoaZWiW5Hu+geEMxKIJavKY2dPiGlEEc1rXeji5CNkgN3T1wH4WSKHO7e0oU3+2DSneNdbj
-        mA6ChIkyzFRPGjO9q11WLmCe345r/6gewGSNAlOYR7g==
-X-Received: by 2002:a05:6402:48f:: with SMTP id k15mr4410253edv.262.1627032056930;
-        Fri, 23 Jul 2021 02:20:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFWvw+F1lJTRxbZaqbZ3+elmi1lpNeFCfvGnWOh7b792sBrPXWzm9q8WmpJaHOZKdNudcPWg==
-X-Received: by 2002:a05:6402:48f:: with SMTP id k15mr4410243edv.262.1627032056837;
-        Fri, 23 Jul 2021 02:20:56 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id p23sm13602536edt.71.2021.07.23.02.20.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 02:20:56 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] nfc: port100: constify protocol list array
-Date:   Fri, 23 Jul 2021 11:20:34 +0200
-Message-Id: <20210723092034.22603-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S234152AbhGWIm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:42:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232347AbhGWImV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 04:42:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 551FF60ED4;
+        Fri, 23 Jul 2021 09:22:53 +0000 (UTC)
+Date:   Fri, 23 Jul 2021 11:22:50 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: A shift-out-of-bounds in minix_statfs in fs/minix/inode.c
+Message-ID: <20210723092250.6nvmikgcs4v5ekix@wittgenstein>
+References: <CAFcO6XOdMe-RgN8MCUT59cYEVBp+3VYTW-exzxhKdBk57q0GYw@mail.gmail.com>
+ <YPhbU/umyUZLdxIw@casper.infradead.org>
+ <YPnp/zXp3saLbz03@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YPnp/zXp3saLbz03@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-File-scope "port100_protocol" array is read-only and passed as pointer
-to const, so it can be made a const to increase code safety.
+On Thu, Jul 22, 2021 at 05:58:23PM -0400, Theodore Ts'o wrote:
+> On Wed, Jul 21, 2021 at 06:37:23PM +0100, Matthew Wilcox wrote:
+> > On Thu, Jul 22, 2021 at 01:14:06AM +0800, butt3rflyh4ck wrote:
+> > > ms = (struct minix_super_block *) bh->b_data; /// --------------> set
+> > > minix_super_block pointer
+> > > sbi->s_ms = ms;
+> > > sbi->s_sbh = bh;
+> > > sbi->s_mount_state = ms->s_state;
+> > > sbi->s_ninodes = ms->s_ninodes;
+> > > sbi->s_nzones = ms->s_nzones;
+> > > sbi->s_imap_blocks = ms->s_imap_blocks;
+> > > sbi->s_zmap_blocks = ms->s_zmap_blocks;
+> > > sbi->s_firstdatazone = ms->s_firstdatazone;
+> > > sbi->s_log_zone_size = ms->s_log_zone_size;  // ------------------>
+> > > set sbi->s_log_zone_size
+> > 
+> > So what you're saying is that if you construct a malicious minix image,
+> > you can produce undefined behaviour?  That's not something we're
+> > traditionally interested in, unless the filesystem is one customarily
+> > used for data interchange (like FAT or iso9660).
+> 
+> It's going to depend on the file system maintainer.  The traditional
+> answer is that block device is part of the Trusted Computing Base, and
+> malicious file system images are not considered part of the threat
+> model.  A system adminstration or developer which allows potentially
+> malicious agents to mount file system agents are cray-cray.
+> 
+> Unfortunately, those developers are also known as "Linux desktop devs"
+> (who implement unprivileged mounts of USB cards) or "container
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/nfc/port100.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+That has always been a weird approach for sure.
 
-diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
-index ee9429997565..217c5dfa8549 100644
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -217,7 +217,7 @@ struct port100_protocol {
- 	u8 value;
- } __packed;
- 
--static struct port100_protocol
-+static const struct port100_protocol
- in_protocols[][PORT100_IN_MAX_NUM_PROTOCOLS + 1] = {
- 	[NFC_DIGITAL_FRAMING_NFCA_SHORT] = {
- 		{ PORT100_IN_PROT_INITIAL_GUARD_TIME,      6 },
-@@ -391,7 +391,7 @@ in_protocols[][PORT100_IN_MAX_NUM_PROTOCOLS + 1] = {
- 	},
- };
- 
--static struct port100_protocol
-+static const struct port100_protocol
- tg_protocols[][PORT100_TG_MAX_NUM_PROTOCOLS + 1] = {
- 	[NFC_DIGITAL_FRAMING_NFCA_SHORT] = {
- 		{ PORT100_TG_PROT_END, 0 },
-@@ -1130,7 +1130,7 @@ static int port100_in_set_rf(struct nfc_digital_dev *ddev, u8 rf)
- static int port100_in_set_framing(struct nfc_digital_dev *ddev, int param)
- {
- 	struct port100 *dev = nfc_digital_get_drvdata(ddev);
--	struct port100_protocol *protocols;
-+	const struct port100_protocol *protocols;
- 	struct sk_buff *skb;
- 	struct sk_buff *resp;
- 	int num_protocols;
-@@ -1287,7 +1287,7 @@ static int port100_tg_set_rf(struct nfc_digital_dev *ddev, u8 rf)
- static int port100_tg_set_framing(struct nfc_digital_dev *ddev, int param)
- {
- 	struct port100 *dev = nfc_digital_get_drvdata(ddev);
--	struct port100_protocol *protocols;
-+	const struct port100_protocol *protocols;
- 	struct sk_buff *skb;
- 	struct sk_buff *resp;
- 	int rc;
--- 
-2.27.0
+> evangelists" who think containers should be treated as being Just As
+> Good as VM's From A Security Perspective.
 
+Mounting virtual filesystems like procfs, sysfs, cgroupfs, devpts,
+binderfs and so on in unprivileged containers makes a lot of sense but
+for filesystems like ext4, xfs, or btrfs making them mountable inside
+unprivileged containers aka user namespaces never made a lot of sense to
+me.
+
+Most users don't really want to or need to expose a whole filesystem
+image to their containers anyway. It's much more common that they want
+to expose a part of an existing filesystem that has been mounted by an
+administrator before. Which means they create bind mounts of the
+directories that they want to expose. And as soon as the filesystem
+supports idmapped mounts like ext4 does you can then serve all of those
+use-cases including creating an idmapped mount of the whole filesystem
+itself. And then you shouldn't need to require that the filesystem must
+be able to mount untrusted images.
+
+> 
+> So I do care about this for ext4, although I don't guarantee immediate
+> response, as it's something that I usually end up doing on my own
+> time.  I do get cranky that Syzkaller makes it painful to extract out
+> the fuzzed file system image, and I much prefer those fuzzing systems
+> which provide the file system image and the C program used to trigger
+> the failre as two seprate files.  Or failing that, if there was some
+> trivial way to get the syzkaller reproducer program to disgorge the
+> file system image to a specified output file.  As a result, if I have
+> a choice of spending time investigating fuzzing report from a more
+> file-system friendly fuzzing program and syzkaller, I'll tend choose
+> to spend my time dealing with other file system fuzzing reports first.
+> 
+> The problem for Minix is that it does not have an active maintainer.
+> So if you submit fuzzing reports for Minix, it's unlikely anyone will
+> spend time working on it.  But if you submit a patch, it can go in,
+> probably via Andrew Morton.  (Recent Minix fixes that have gone in
+> this way: 0a12c4a8069 and 32ac86efff9)
+> 
+> Cheers,
+> 
+> 					- Ted> 					
