@@ -2,145 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6AF3D3E30
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829DF3D3E34
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhGWQ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:27:49 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:53525 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230064AbhGWQ1r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:27:47 -0400
-Received: (qmail 47172 invoked by uid 1000); 23 Jul 2021 13:08:20 -0400
-Date:   Fri, 23 Jul 2021 13:08:20 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Manfred Spraul <manfred@colorfullife.com>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
-        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com
-Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
- heuristic lockless reads
-Message-ID: <20210723170820.GB46562@rowland.harvard.edu>
-References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
- <20210721211003.869892-2-paulmck@kernel.org>
- <20210723020846.GA26397@rowland.harvard.edu>
- <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
- <20210723130554.GA38923@rowland.harvard.edu>
- <20210723163008.GG4397@paulmck-ThinkPad-P17-Gen-1>
+        id S231430AbhGWQ2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:28:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231286AbhGWQ2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:28:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2795660E8F;
+        Fri, 23 Jul 2021 17:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627060113;
+        bh=pEMVaGk2rq1eXD7agrjxbGJNreoK3Lvrk9bUiB73VuA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IOp8SdiAl1zcfFAu3uaWBAGR7RN+6r6Z+E56fuqwmITyphj2ayKuVKAtK5dGKDws1
+         H9A0xgb0k16VTIJ2qynZVpybkrIaP7KaCXvXS1AUZ6hqUp4IHjb8xdFOxArUphMJ6j
+         BOuq4UbUmJNlg49vc4jVXmNL3okziy3IjJWBIYD8r0BpJZsFQ4Y7Mmyy30PNoBlJkR
+         DU9lO11RFu4mIq3cDK8Ru83iyGtVs2J63mbLoe8BFTwTb7DYKsFsy8gIRbqRXmm4IE
+         XrzCA/3/YugeA+TMtcJ+6BQ5k6NGbFKbsJytmjTwK47haU/V0wgMaabbKLMl8+kkZM
+         Q1pApGEEelS5Q==
+Date:   Fri, 23 Jul 2021 10:08:31 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyaprateek2357@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Satya Tangirala <satyat@google.com>
+Subject: Re: [PATCH v4 4/9] block: keyslot-manager: introduce
+ blk_ksm_restrict_dus_to_queue_limits()
+Message-ID: <YPr3j4fMTWhZfmAS@gmail.com>
+References: <20210707052943.3960-1-satyaprateek2357@gmail.com>
+ <20210707052943.3960-5-satyaprateek2357@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210723163008.GG4397@paulmck-ThinkPad-P17-Gen-1>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210707052943.3960-5-satyaprateek2357@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 09:30:08AM -0700, Paul E. McKenney wrote:
-> How about like this?
-> 
-> 							Thanx, Paul
+On Tue, Jul 06, 2021 at 10:29:38PM -0700, Satya Tangirala wrote:
+> +/*
+> + * Restrict the supported data unit sizes of the ksm based on the request queue
+> + * limits
+> + */
+> +static unsigned long
+> +blk_ksm_largest_dus_for_queue_limits(struct blk_keyslot_manager *ksm,
+> +				     struct request_queue *q)
+> +{
 
-Generally a lot better, but still at least one issue.
+The ksm argument to this function isn't actually used.
 
-> ------------------------------------------------------------------------
-> 
-> Lock-Protected Writes With Heuristic Lockless Reads
-> ---------------------------------------------------
-> 
-> For another example, suppose that the code can normally make use of
-> a per-data-structure lock, but there are times when a global lock
-> is required.  These times are indicated via a global flag.  The code
-> might look as follows, and is based loosely on nf_conntrack_lock(),
-> nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
-> 
-> 	bool global_flag;
-> 	DEFINE_SPINLOCK(global_lock);
-> 	struct foo {
-> 		spinlock_t f_lock;
-> 		int f_data;
-> 	};
-> 
-> 	/* All foo structures are in the following array. */
-> 	int nfoo;
-> 	struct foo *foo_array;
-> 
-> 	void do_something_locked(struct foo *fp)
-> 	{
-> 		/* IMPORTANT: Heuristic plus spin_lock()! */
-> 		if (!data_race(global_flag)) {
-> 			spin_lock(&fp->f_lock);
-> 			if (!smp_load_acquire(&global_flag)) {
-> 				do_something(fp);
-> 				spin_unlock(&fp->f_lock);
-> 				return;
-> 			}
-> 			spin_unlock(&fp->f_lock);
-> 		}
-> 		spin_lock(&global_lock);
-> 		/* global_lock held, thus global flag cannot be set. */
-> 		spin_lock(&fp->f_lock);
-> 		spin_unlock(&global_lock);
-> 		/*
-> 		 * global_flag might be set here, but begin_global()
-> 		 * will wait for ->f_lock to be released.
-> 		 */
-> 		do_something(fp);
-> 		spin_lock(&fp->f_lock);
+Also the comment should be fixed to be something like "Return the largest data
+unit size that is compatible with the given request queue.".
 
-spin_unlock.
+> +/**
+> + * blk_ksm_register() - Sets the queue's keyslot manager to the provided ksm, if
+> + *			compatible
+> + * @ksm: The ksm to register
+> + * @q: The request_queue to register the ksm to
+> + *
+> + * Checks if the keyslot manager provided is compatible with the request queue
+> + * (i.e. the queue shouldn't also support integrity). After that, the crypto
+> + * capabilities of the given keyslot manager are restricted to what the queue
+> + * can support based on it's limits. Note that if @ksm won't support any
+> + * crypto capabilities if its capabilities are restricted, the queue's ksm is
+> + * set to NULL, instead of being set to a pointer to an "empty" @ksm, and @ksm
+> + * is *not* modified.
+> + *
+> + * Return: true if @q's ksm is set to the provided @ksm, false otherwise
+> + *	   (in which case @ksm will not have been modified)
+> + */
 
-> }
-> 
-> 	void begin_global(void)
-> 	{
-> 		int i;
-> 
-> 		spin_lock(&global_lock);
-> 		WRITE_ONCE(global_flag, true);
-> 		for (i = 0; i < nfoo; i++) {
-> 			/*
-> 			 * Wait for pre-existing local locks.  One at
-> 			 * a time to avoid lockdep limitations.
-> 			 */
-> 			spin_lock(&fp->f_lock);
-> 			spin_unlock(&fp->f_lock);
-> 		}
-> 	}
-> 
-> 	void end_global(void)
-> 	{
-> 		smp_store_release(&global_flag, false);
-> 		spin_unlock(&global_lock);
-> 	}
-> 
-> All code paths leading from the do_something_locked() function's first
-> read from global_flag acquire a lock, so endless load fusing cannot
-> happen.
-> 
-> If the value read from global_flag is true, then global_flag is
-> rechecked while holding ->f_lock, which, if global_flag is now false,
-> prevents begin_global() from completing.  It is therefore safe to invoke
-> do_something().
-> 
-> Otherwise, if either value read from global_flag is true, then after
-> global_lock is acquired global_flag must be false.  The acquisition of
-> ->f_lock will prevent any call to begin_global() from returning, which
-> means that it is safe to release global_lock and invoke do_something().
-> 
-> For this to work, only those foo structures in foo_array[] may be passed
-> to do_something_locked().  The reason for this is that the synchronization
-> with begin_global() relies on momentarily holding the lock of each and
-> every foo structure.
+Can this comment be made more concise and less confusing?  Something like:
 
-This doesn't mention the reason for the acquire-release
-synchronization of global_flag.  It's needed because work done between
-begin_global() and end_global() can affect a foo structure without
-holding its private f_lock member, and we want all such work to be
-visible to other threads when they call do_something_locked() later.
+	Checks whether any of @ksm's crypto capabilities are compatible with the
+	request_queue, and if so, clears any incompatible capabilities from @ksm
+	and assigns @ksm to the request_queue.
 
-Alan
+	Return: %true if @ksm was assigned to @q, or %false if it was not (due
+	        to none of @ksm's crypto capabilities being compatible with @q)
+
+>  bool blk_ksm_register(struct blk_keyslot_manager *ksm, struct request_queue *q)
+>  {
+> +	unsigned long largest_dus_allowed;
+> +	unsigned int dus_allowed_mask;
+> +	bool dus_was_restricted = false;
+> +	int i;
+> +
+>  	if (blk_integrity_queue_supports_integrity(q)) {
+>  		pr_warn("Integrity and hardware inline encryption are not supported together. Disabling hardware inline encryption.\n");
+>  		return false;
+>  	}
+> +
+> +	largest_dus_allowed = blk_ksm_largest_dus_for_queue_limits(ksm, q);
+> +	dus_allowed_mask = (largest_dus_allowed << 1) - 1;
+> +
+> +	/*
+> +	 * Check if ksm will become empty if we clear disallowed data unit
+> +	 * sizes (in which case, don't modify the ksm)
+> +	 */
+> +	if (blk_ksm_is_empty_mask(ksm, dus_allowed_mask))
+> +		return false;
+> +
+> +	/* Clear all unsupported data unit sizes. */
+> +	for (i = 0; i < ARRAY_SIZE(ksm->crypto_modes_supported); i++) {
+> +		if (ksm->crypto_modes_supported[i] & (~dus_allowed_mask))
+
+There's no need for the parenthesis around ~dus_allowed_mask.
+
+> +			dus_was_restricted = true;
+> +		ksm->crypto_modes_supported[i] &= dus_allowed_mask;
+> +	}
+> +
+> +	if (dus_was_restricted) {
+> +		pr_warn("Device: %s - Disallowed use of encryption data unit sizes above %lu bytes with inline encryption hardware because of device request queue limits.\n",
+> +			q->backing_dev_info->dev_name, largest_dus_allowed);
+> +	}
+
+Is there a better way to get the queue/disk name?  Also, device names normally
+go at the very beginning of the messages, like "%s: <message>".
+
+This message is also very long; something more concise would be good.  Maybe:
+
+"%s: only allowing crypto data unit sizes up to %lu bytes due to device limitations\n"
+
+- Eric
