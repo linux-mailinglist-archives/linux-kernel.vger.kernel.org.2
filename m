@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2B53D3873
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A34723D3879
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhGWJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbhGWJgU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231718AbhGWJg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231602AbhGWJgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Jul 2021 05:36:20 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAF8C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 03:16:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k4so488964wms.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 03:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QO4j2IzOM4wXld1oT8EabRjAV6YqFAKfUcj8YzHBVaI=;
-        b=p4cx62NpsnLzf2m+W/3JJq7BI22oWbvFv0i1JckRLSteAer4gZOuRH15gI/fN+lg9w
-         siVxMEdqDosI3aqGGl9F6jnZHnetBuNBnSOem3WOdiUGAbldFFYf8ZssKFnvBDLp0RmS
-         3gn6RnAHQRVq8oJ/fgyOTBg0dO5t/3UaGWuOhKn1C9AVTXq6HOqPeiYtXBBZhgMuXzv1
-         mZ++vZrTNqqnqGbbaJTUK5ct3SLLBA3pCzneAjbKfInzuveVP9XdaZMHWxkKSeNCS3rp
-         FLE94xYozdI0j4m4CdozhSUBM55Yt7y2y2xXVT+7nPx6aMKsta55M6MB6/snld9AMeTX
-         5mtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QO4j2IzOM4wXld1oT8EabRjAV6YqFAKfUcj8YzHBVaI=;
-        b=WhnkPeew70xKHy84OZYyqVUEMXzQx6w7Jln8AbCQah/ND0YwPcvnzJEiMaY+ejb7ug
-         ztYc27A6hDyEwih0UE7tlo/Twlxuu+vAGiig7cLD+vdCNv8YpBNgmK5FoeiBjhtG5eB1
-         Vl+16K8LTTxrqvvrSFsd5QECT5+pES9pYH2wKrn/z9WPSYqNxHQ27SCB/fkJnl+xwqkC
-         PJDMFGDSjm9uaaWmArWw+xUtHQfiuPAxSewdHG7Fu0A7WhnC9l5mBaVdq3PL55Nq1evV
-         x02YmpqwE0PiSWoyDQJJLwNRZ4QlEFuJ9yzbdVrgsPoBa4qyx5xCgkixheS7DyxSYRwo
-         QZvw==
-X-Gm-Message-State: AOAM5310j/QEaIFDkNJmm5GFiu5t0W2Ta8WtNujyFmjNYO8mMWRLy61L
-        TZfEWlwOYv8gMgSZ2rMgjhTHtw==
-X-Google-Smtp-Source: ABdhPJwcozbpoFVBs05Zwspcd461WuCRshxtkqBNwhnzq02piQroC4Xf8Z0bCbz4m8KGE6IV7yRefw==
-X-Received: by 2002:a1c:7410:: with SMTP id p16mr12979418wmc.6.1627035412079;
-        Fri, 23 Jul 2021 03:16:52 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:a74:efb2:dddd:7915])
-        by smtp.gmail.com with ESMTPSA id f7sm32325442wru.11.2021.07.23.03.16.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 03:16:51 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 11:16:45 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        dbrazdil@google.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 04/16] KVM: arm64: Add MMIO checking infrastructure
-Message-ID: <YPqXDeRMZOX8bmNh@google.com>
-References: <20210715163159.1480168-1-maz@kernel.org>
- <20210715163159.1480168-5-maz@kernel.org>
- <YPav0Hye5Dat/yoL@google.com>
- <87wnpl86sz.wl-maz@kernel.org>
- <YPbwmVk1YD9+y7tr@google.com>
- <87wnpi1ayc.wl-maz@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wnpi1ayc.wl-maz@kernel.org>
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 59C5560EE6;
+        Fri, 23 Jul 2021 10:16:54 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m6sEe-000T4o-Id; Fri, 23 Jul 2021 11:16:52 +0100
+Date:   Fri, 23 Jul 2021 11:16:52 +0100
+Message-ID: <87zgud1giz.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jerome Forissier <jerome@forissier.org>,
+        Etienne Carriere <etienne.carriere@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v3 1/6] docs: staging/tee.rst: add a section on OP-TEE notifications
+In-Reply-To: <20210723094422.2150313-2-jens.wiklander@linaro.org>
+References: <20210723094422.2150313-1-jens.wiklander@linaro.org>
+        <20210723094422.2150313-2-jens.wiklander@linaro.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jens.wiklander@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, op-tee@lists.trustedfirmware.org, devicetree@vger.kernel.org, linux-doc@vger.kernel.org, jerome@forissier.org, etienne.carriere@linaro.org, sumit.garg@linaro.org, vincent.guittot@linaro.org, robh+dt@kernel.org, corbet@lwn.net, ardb@kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 22 Jul 2021 at 19:04:59 (+0100), Marc Zyngier wrote:
-> So FWIW, I've now pushed out an updated series for the THP changes[1],
-> and you will find a similar patch at the base of the branch. Please
-> have a look and let me know what you think!
+On Fri, 23 Jul 2021 10:44:17 +0100,
+Jens Wiklander <jens.wiklander@linaro.org> wrote:
+> 
+> Adds a section on notifications used by OP-TEE, synchronous and
+> asynchronous.
+> 
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> ---
+>  Documentation/staging/tee.rst | 27 +++++++++++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
+> diff --git a/Documentation/staging/tee.rst b/Documentation/staging/tee.rst
+> index 4d4b5f889603..37bdd097336f 100644
+> --- a/Documentation/staging/tee.rst
+> +++ b/Documentation/staging/tee.rst
+> @@ -184,6 +184,33 @@ order to support device enumeration. In other words, OP-TEE driver invokes this
+>  application to retrieve a list of Trusted Applications which can be registered
+>  as devices on the TEE bus.
+>  
+> +OP-TEE notifications
+> +--------------------
+> +
+> +There are two kinds of notifications that secure world can use to make
+> +normal world aware of some event.
+> +
+> +1. Synchronous notifications delivered with ``OPTEE_RPC_CMD_NOTIFICATION``
+> +   using the ``OPTEE_RPC_NOTIFICATION_SEND`` parameter.
+> +2. Asynchronous notifications delivered with a combination of a non-secure
+> +   interrupt and a fast call from the non-secure interrupt handler.
+> +
+> +Synchronous notifications are limited by depending on RPC for delivery,
+> +this is only usable when secure world is entered with a yielding call via
+> +``OPTEE_SMC_CALL_WITH_ARG``. This excludes such notifications from secure
+> +world interrupt handlers.
+> +
+> +An asynchronous notification is delivered via a non-secure interrupt to an
+> +interrupt handler registered in the OP-TEE driver. The actual notification
+> +value are retrieved with the fast call ``OPTEE_SMC_GET_ASYNC_NOTIF_VALUE``.
+> +
+> +One notification value ``OPTEE_SMC_ASYNC_NOTIF_VALUE_DO_BOTTOM_HALF`` has a
+> +special meaning. When this value is received it means that normal world is
+> +supposed to make a yielding call ``OPTEE_MSG_CMD_DO_BOTTOM_HALF``. This
+> +call is done from the thread assisting the interrupt handler. This is a
+> +building block for OP-TEE OS in secure world to implement the top half and
+> +bottom half style of device drivers.
+> +
 
-I Like the look of it! I'll pull this patch in my series and rebase on
-top -- that should introduce three new users or so, and allow a few nice
-cleanups.
+What I find missing here is a description of the trigger for this
+interrupt, and how it influences the way the kernel drivers interacts
+with the secure side:
 
-Thanks!
-Quentin
+- if it is edge triggered, this is 'fire and forget'. The interrupt
+  will be consumed by the kernel handler, and whether it eventually
+  calls into the secure side has no impact on the interrupt flow.
+
+- if it is level triggered, then the interrupt may be asserted until
+  the kernel calls into the secure side, which may then drop the line
+  level if no other requests are pending.
+
+These are evidently two very different flows, and you need to pick a
+side. Note that not all interrupt controllers support both signalling
+modes, so you are likely to leave something behind. Or you can try and
+support both flows, but that may make the driver slightly more
+complex.
+
+Either way, this needs specifying, here and in the DT binding.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
