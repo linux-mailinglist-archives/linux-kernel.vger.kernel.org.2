@@ -2,138 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFA13D37CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E529D3D37DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhGWIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:55:56 -0400
-Received: from mx.socionext.com ([202.248.49.38]:34561 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231262AbhGWIzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:55:51 -0400
-Received: from unknown (HELO kinkan2-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 23 Jul 2021 18:36:23 +0900
-Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
-        by kinkan2-ex.css.socionext.com (Postfix) with ESMTP id D133820142B4;
-        Fri, 23 Jul 2021 18:36:23 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Fri, 23 Jul 2021 18:36:23 +0900
-Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
-        by iyokan2.css.socionext.com (Postfix) with ESMTP id A4BF8B632B;
-        Fri, 23 Jul 2021 18:36:23 +0900 (JST)
-Received: from [10.212.29.159] (unknown [10.212.29.159])
-        by yuzu2.css.socionext.com (Postfix) with ESMTP id D418AB1D52;
-        Fri, 23 Jul 2021 18:36:21 +0900 (JST)
-Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
- invoke PME and AER
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-arm-kernel@lists.infradead.org
-References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
- <20201124232037.GA595463@bjorn-Precision-5520>
- <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
- <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
- <20210718005109.6xwe3z7gxhuop5xc@pali>
- <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
- <20210722172627.i4n65lrz3j7pduiz@pali>
- <17c6eeee-692f-2e9a-5827-34f6939a21a6@socionext.com>
- <20210723083702.nvhurkgbzbvrrmv3@pali>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <660e8597-bb7a-b5a0-e3d4-f108a211ae76@socionext.com>
-Date:   Fri, 23 Jul 2021 18:36:21 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231335AbhGWJBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:01:51 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:45964 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231195AbhGWJBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 05:01:48 -0400
+X-UUID: 856a4551f7634ab48935de2cc46ab8a0-20210723
+X-UUID: 856a4551f7634ab48935de2cc46ab8a0-20210723
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
+        (envelope-from <christine.zhu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1507509653; Fri, 23 Jul 2021 17:42:12 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 23 Jul 2021 17:42:11 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 23 Jul 2021 17:42:10 +0800
+From:   Christine Zhu <Christine.Zhu@mediatek.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
+        <Rex-BC.Chen@mediatek.com>,
+        Christine Zhu <Christine.Zhu@mediatek.com>
+Subject: [v6,1/3] dt-bindings: mediatek: mt8195: update mtk-wdt document
+Date:   Fri, 23 Jul 2021 17:41:36 +0800
+Message-ID: <20210723094138.24793-2-Christine.Zhu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210723094138.24793-1-Christine.Zhu@mediatek.com>
+References: <20210723094138.24793-1-Christine.Zhu@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210723083702.nvhurkgbzbvrrmv3@pali>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
+Update mtk-wdt document for MT8195 platform.
 
-On 2021/07/23 17:37, Pali Rohár wrote:
-> On Friday 23 July 2021 15:59:12 Kunihiko Hayashi wrote:
->> Hi Pali,
->>
->> On 2021/07/23 2:26, Pali Rohár wrote:
->>> On Friday 23 July 2021 01:54:10 Kunihiko Hayashi wrote:
->>>> On 2021/07/18 9:51, Pali Rohar wrote:
->>>>>>> IMO this should be modelled with a separate IRQ domain and chip for
->>>>>>> the root port (yes this implies describing the root port in the dts
->>>>>>> file with a separate msi-parent).
->>>>>>>
->>>>>>> This series as it stands is a kludge.
->>>>>>
->>>>>> I see. However I need some time to consider the way to separate IRQ domain.
->>>>>> Is there any idea or example to handle PME/AER with IRQ domain?
->>>>>
->>>>> Seems that you are dealing with very similar issues as me with aardvark
->>>>> driver.
->>>>>
->>>>> As an inspiration look at my aardvark patch which setup separate IRQ
->>>>> domain for PME, AER and HP interrupts:
->>>>> https://lore.kernel.org/linux-pci/20210506153153.30454-32-pali@kernel.org/
->>>>>
->>>>> Thanks to custom driver map_irq function, it is not needed to describe
->>>>> root port with separate msi-parent in DTS.
->>>>
->>>> I need to understand your solution, though, this might be the same situation as my driver.
->>>
->>> I think it is very very similar as aardvark also returns zero as hw irq
->>> number (and it is not possible to change it).
->>>
->>> So simple solution for you is also to register separate IRQ domain for
->>> Root Port Bridge and then re-trigger interrupt with number 0 (which you
->>> wrote that is default) as:
->>>
->>>       virq = irq_find_mapping(priv->irq_domain, 0);
->>>       generic_handle_irq(virq);
->>>
->>> in your uniphier_pcie_misc_isr() function.
->>
->> I'm not sure "register separate IRQ domain for Root Port Bridge".
->> Do you mean that your suggestion is to create new IRQ domain, and add this domain to root port?
-> 
-> Yes.
-> 
->> Or could you show me something example?
-> 
-> I have already sent link to patch above which it implements for
-> pci-aardvark.c driver.
-> 
-> https://lore.kernel.org/linux-pci/20210506153153.30454-32-pali@kernel.org/
-
-Thank you for the example.
-
-> In device prove callback register domain by irq_domain_add_linear().
-> In bridge map_irq() callback use irq_create_mapping() for Root Port
-> device (and otherwise default of_irq_parse_and_map_pci()). And in
-> uniphier_pcie_misc_isr() retrigger interrupt into new domain.
-
-I understand it late.
-The main point is to replace bridge->map_irq() with private own map_irq().
-
-> 
->> The re-trigger part is the same method as v5 patch I wrote.
-> 
-> Just you need to specify that new/private IRQ domain into
-> irq_find_mapping() call.
-
-I'll try to replace the events with new IRQ domain.
-
-Thank you,
-
+Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
-Best Regards
-Kunihiko Hayashi
+ Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+index e36ba60de829..ca9b67ab7c44 100644
+--- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
++++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+@@ -13,6 +13,7 @@ Required properties:
+ 	"mediatek,mt8183-wdt": for MT8183
+ 	"mediatek,mt8516-wdt", "mediatek,mt6589-wdt": for MT8516
+ 	"mediatek,mt8192-wdt": for MT8192
++	"mediatek,mt8195-wdt": for MT8195
+ 
+ - reg : Specifies base physical address and size of the registers.
+ 
+-- 
+2.18.0
+
