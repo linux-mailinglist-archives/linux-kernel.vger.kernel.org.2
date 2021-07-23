@@ -2,86 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278A03D39EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D8D3D39F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbhGWLXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234385AbhGWLXu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:23:50 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B75FC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:04:24 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GWSfR5Vqtz9sXM;
-        Fri, 23 Jul 2021 22:04:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1627041861;
-        bh=WEE70A1SmlcnlIsv9nVnRGPp1lz7FMXEUMxrnsgf+IU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=VunPNjPI5UTxmlZmtF6HnK+D0Dif1lwUaNWcXlVbCnOy3zlfgpBXZRcdGvCjeSpTD
-         9GtJzMFZAjmswf1Hvf+Shhuu3DtNGBXMNTQoMka2kFXjYcF/zGbOVaCZOBpwbNaHMV
-         epX/8JSDuS2F3jGKGPdB1wvzULNj0TkI4wo+Z5qZ8TF2KuuqLjMk0XTObjG1udah19
-         U1CpdO9KIVSiwPBast1gIEWa3fuADmNkO9j6lepWMRmuG+MHxyeWmwMTljc1HY+qcN
-         iPuTprU1H6rO2uX1bsNbdVNf6qs+BaSKB5njML9F9aEsaaPNMQrnX9vJgFwZ5rtJUH
-         0p1oAfMTFZbgA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        id S234672AbhGWL26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 07:28:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:45100 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234385AbhGWL25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 07:28:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50B60D6E;
+        Fri, 23 Jul 2021 05:09:30 -0700 (PDT)
+Received: from [10.57.33.208] (unknown [10.57.33.208])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 120B53F694;
+        Fri, 23 Jul 2021 05:09:27 -0700 (PDT)
+Subject: Re: [PATCH 3/6] perf cs-etm: Save TRCDEVARCH register
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        Leo Yan <leo.yan@linaro.org>, Al Grant <al.grant@arm.com>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        John Garry <john.garry@huawei.com>,
         Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linuxppc-dev@lists.ozlabs.org, Mark Rutland <mark.rutland@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Paul Mackerras <paulus@samba.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2] Revert "mm/pgtable: add stubs for
- {pmd/pub}_{set/clear}_huge"
-In-Reply-To: <162686329170.980657.905966885675716231.b4-ty@kernel.org>
-References: <20210720202627.Horde.vlszNhxkKrLIg0-3Sn2ucw5@messagerie.c-s.fr>
- <87r1fs1762.fsf@mpe.ellerman.id.au>
- <162686329170.980657.905966885675716231.b4-ty@kernel.org>
-Date:   Fri, 23 Jul 2021 22:04:10 +1000
-Message-ID: <87o8at1bk5.fsf@mpe.ellerman.id.au>
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+References: <20210721090706.21523-1-james.clark@arm.com>
+ <20210721090706.21523-4-james.clark@arm.com>
+ <CAJ9a7Vjz_CMugYrLcAqr_aFsK6jYcqR3xLwJUi9KTXB3aPjnEQ@mail.gmail.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <84e9e6ba-7903-d2d9-f09d-ba7a1a4332a9@arm.com>
+Date:   Fri, 23 Jul 2021 13:09:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAJ9a7Vjz_CMugYrLcAqr_aFsK6jYcqR3xLwJUi9KTXB3aPjnEQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Will Deacon <will@kernel.org> writes:
-> On Wed, 21 Jul 2021 17:02:13 +1000, Michael Ellerman wrote:
->> This reverts commit c742199a014de23ee92055c2473d91fe5561ffdf.
->> 
->> c742199a014d ("mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge")
->> breaks arm64 in at least two ways for configurations where PUD or PMD
->> folding occur:
->> 
->>   1. We no longer install huge-vmap mappings and silently fall back to
->>      page-granular entries, despite being able to install block entries
->>      at what is effectively the PGD level.
->> 
->> [...]
->
-> Thank you Michael! I owe you a beer next time I see you, if we don't go
-> extinct before then.
 
-No worries, thanks to Christophe for identifying the solution while on
-vacation!
 
-Beers seem a long way off, but hopefully one day :)
+On 21/07/2021 10:48, Mike Leach wrote:
+> HI James,
+> 
+> On Wed, 21 Jul 2021 at 10:07, James Clark <james.clark@arm.com> wrote:
+>>
+>> Now that the metadata has a length field we can add extra registers
+>> without breaking any previous versions of perf.
+>>
+>> Save the TRCDEVARCH register so that it can be used to configure the ETE
+>> decoder in the next commit. If the sysfs file doesn't exist then 0 will
+>> be saved which is an impossible register value and can also be used to
+>> signify that the file couldn't be read.
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  tools/perf/arch/arm/util/cs-etm.c | 13 ++++++++++++-
+>>  tools/perf/util/cs-etm.c          |  1 +
+>>  tools/perf/util/cs-etm.h          |  5 +++--
+>>  3 files changed, 16 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+>> index 85168d87b2d7..65a863bdf5cc 100644
+>> --- a/tools/perf/arch/arm/util/cs-etm.c
+>> +++ b/tools/perf/arch/arm/util/cs-etm.c
+>> @@ -53,6 +53,7 @@ static const char *metadata_etmv4_ro[CS_ETMV4_PRIV_MAX] = {
+>>         [CS_ETMV4_TRCIDR2]              = "trcidr/trcidr2",
+>>         [CS_ETMV4_TRCIDR8]              = "trcidr/trcidr8",
+>>         [CS_ETMV4_TRCAUTHSTATUS]        = "mgmt/trcauthstatus",
+>> +       [CS_ETE_TRCDEVARCH]             = "mgmt/trcdevarch"
+>>  };
+>>
+>>  static bool cs_etm_is_etmv4(struct auxtrace_record *itr, int cpu);
+>> @@ -73,7 +74,7 @@ static int cs_etm_set_context_id(struct auxtrace_record *itr,
+>>         if (!cs_etm_is_etmv4(itr, cpu))
+>>                 goto out;
+>>
+>> -       /* Get a handle on TRCIRD2 */
+>> +       /* Get a handle on TRCIDR2 */
+>>         snprintf(path, PATH_MAX, "cpu%d/%s",
+>>                  cpu, metadata_etmv4_ro[CS_ETMV4_TRCIDR2]);
+>>         err = perf_pmu__scan_file(cs_etm_pmu, path, "%x", &val);
+>> @@ -643,6 +644,16 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+>>                         cs_etm_get_ro(cs_etm_pmu, cpu,
+>>                                       metadata_etmv4_ro
+>>                                       [CS_ETMV4_TRCAUTHSTATUS]);
+>> +               /*
+>> +                * ETE uses the same registers as ETMv4 plus TRCDEVARCH. It's also backwards
+>> +                * compatible, so don't change the magic number otherwise that will reduce the
+>> +                * number of versions of perf that can open it. Just append TRCDEVARCH to the end of
+>> +                * the register block and allow newer versions of perf to make use. cs_etm_get_ro()
+>> +                * returns 0 if it couldn't be read.
+>> +                */
+> 
+> ETE is a superset of ETMv4, but an old perf that only knows ETMv4
+> cannot be guaranteed to decode all ETE due to new packet types.
+> Therefore do we want to allow old perfs to decode only some ETE,
+> possibly with errors?
+> 
+> I think it would be better to add in a new magic number for the new
+> decoder rather than have some grey overlap area were an "older" perf
+> might work intermittently dependent on the packets generated in a
+> particular trace run.
 
-cheers
+I did think about doing it this way and I'm also ok with adding a new
+magic number. I will wait till Al's back to get his opinion before
+making the change.
+
+Thanks
+James
+
+> 
+> Regards
+> 
+> Mike
+> 
+>> +               info->priv[*offset + CS_ETE_TRCDEVARCH] =
+>> +                       cs_etm_get_ro(cs_etm_pmu, cpu,
+>> +                                     metadata_etmv4_ro[CS_ETE_TRCDEVARCH]);
+>>
+>>                 /* How much space was used */
+>>                 increment = CS_ETMV4_PRIV_MAX;
+>> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+>> index 62769a84a53f..68978f6707a8 100644
+>> --- a/tools/perf/util/cs-etm.c
+>> +++ b/tools/perf/util/cs-etm.c
+>> @@ -2508,6 +2508,7 @@ static const char * const cs_etmv4_priv_fmts[] = {
+>>         [CS_ETMV4_TRCIDR2]      = "     TRCIDR2                        %llx\n",
+>>         [CS_ETMV4_TRCIDR8]      = "     TRCIDR8                        %llx\n",
+>>         [CS_ETMV4_TRCAUTHSTATUS] = "    TRCAUTHSTATUS                  %llx\n",
+>> +       [CS_ETE_TRCDEVARCH]     = "     TRCDEVARCH                     %llx\n"
+>>  };
+>>
+>>  static const char * const param_unk_fmt =
+>> diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+>> index d65c7b19407d..52d82dce9d59 100644
+>> --- a/tools/perf/util/cs-etm.h
+>> +++ b/tools/perf/util/cs-etm.h
+>> @@ -59,7 +59,7 @@ enum {
+>>  /* define fixed version 0 length - allow new format reader to read old files. */
+>>  #define CS_ETM_NR_TRC_PARAMS_V0 (CS_ETM_ETMIDR - CS_ETM_ETMCR + 1)
+>>
+>> -/* ETMv4 metadata */
+>> +/* ETMv4 + ETE metadata */
+>>  enum {
+>>         /* Dynamic, configurable parameters */
+>>         CS_ETMV4_TRCCONFIGR = CS_ETM_COMMON_BLK_MAX_V1,
+>> @@ -70,7 +70,8 @@ enum {
+>>         CS_ETMV4_TRCIDR2,
+>>         CS_ETMV4_TRCIDR8,
+>>         CS_ETMV4_TRCAUTHSTATUS,
+>> -       CS_ETMV4_PRIV_MAX,
+>> +       CS_ETE_TRCDEVARCH,
+>> +       CS_ETMV4_PRIV_MAX
+>>  };
+>>
+>>  /* define fixed version 0 length - allow new format reader to read old files. */
+>> --
+>> 2.28.0
+>>
+> 
+> 
