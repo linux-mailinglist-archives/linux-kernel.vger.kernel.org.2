@@ -2,322 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD0F43D31D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2123D31E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:34:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233281AbhGWBwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:52:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:37662 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233166AbhGWBwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:52:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CDE9113E;
-        Thu, 22 Jul 2021 19:33:04 -0700 (PDT)
-Received: from [10.163.66.36] (unknown [10.163.66.36])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A6FD3F694;
-        Thu, 22 Jul 2021 19:33:01 -0700 (PDT)
-Subject: Re: [PATCH v3 08/12] mm/debug_vm_pgtable: Use struct
- pgtable_debug_args in PMD modifying tests
-To:     Gavin Shan <gshan@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-References: <20210719130613.334901-1-gshan@redhat.com>
- <20210719130613.334901-9-gshan@redhat.com>
- <52a61d4a-f93d-af9e-4a34-d8ea7c476838@arm.com>
- <e2707943-8645-a6d5-be15-7cf56791fedb@redhat.com>
- <876f9722-c307-560d-5efd-3613c312c7bd@arm.com>
- <8d8daf85-0015-4221-aad5-5baa03e3f699@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <68b6ab2a-4b6d-a0b8-f753-01fdc165b24a@arm.com>
-Date:   Fri, 23 Jul 2021 08:03:48 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233466AbhGWBxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:53:32 -0400
+Received: from mail-pj1-f43.google.com ([209.85.216.43]:50821 "EHLO
+        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233433AbhGWBxa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 21:53:30 -0400
+Received: by mail-pj1-f43.google.com with SMTP id l19so318512pjz.0;
+        Thu, 22 Jul 2021 19:34:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RREWwRklaZFXt0C4quifntpsOFbK/AfnI0Sh0jnaUmg=;
+        b=U03foEPWsW2DfPCXBxWAflP/v0TXNeTiZkUSRDn3VN4ryGn2q1oioraLyzQxaRIx7R
+         awEPJuRcccvHB7WoD+0QvyhTsUyZ+FK8rl68oDrcv/XPnyY/ucLNjE5iEiwgR6TvnfNu
+         VCv/jfbj+e5Fo/ThqnMtwvR+iseWt54tz0bOxbwXBkP/oQvcCayKqxbqTYiDXeyon0f6
+         Tq7JG1KJBxHi50Cu8nMWsAdjb/zwpX0oeM1DD/HUs1osnfl54XHm8Osi6NQQ/rhnPHiE
+         liIKV1aYYS81X22fSSPU5eZiChDTjru+RihbX90NZBlgISH8HcYcW+/h4dIGE+D3Lfae
+         ch0g==
+X-Gm-Message-State: AOAM5304ajlCpEutEqEN+cM2cENxloaRbWMVqn9Wr/G3u9ksY1/K36Dl
+        1GfmY6FoQ6MGsnxFVhO4EIgM/kgwF5Gqgg==
+X-Google-Smtp-Source: ABdhPJzjHKo0c5RWosVq5DDhWmIZFHW08248o5ty3hGtbxQ6eznyCONZvxh4FQ926BfpYN3JbCEfbg==
+X-Received: by 2002:a17:902:b188:b029:11b:1549:da31 with SMTP id s8-20020a170902b188b029011b1549da31mr2169395plr.7.1627007642006;
+        Thu, 22 Jul 2021 19:34:02 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:286e:6a9d:f340:dcd9? ([2601:647:4000:d7:286e:6a9d:f340:dcd9])
+        by smtp.gmail.com with ESMTPSA id s7sm30561921pfk.12.2021.07.22.19.33.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 19:34:00 -0700 (PDT)
+Subject: Re: [PATCH] kernel/module: add documentation for try_module_get()
+To:     Luis Chamberlain <mcgrof@kernel.org>, gregkh@linuxfoundation.org,
+        tj@kernel.org, shuah@kernel.org, akpm@linux-foundation.org,
+        rafael@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, andriin@fb.com, daniel@iogearbox.net,
+        atenart@kernel.org, alobakin@pm.me, weiwan@google.com,
+        ap420073@gmail.com
+Cc:     jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210722221905.1718213-1-mcgrof@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <2e9f16ad-5668-f15d-b3c3-f787ba55bcda@acm.org>
+Date:   Thu, 22 Jul 2021 19:33:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <8d8daf85-0015-4221-aad5-5baa03e3f699@redhat.com>
+In-Reply-To: <20210722221905.1718213-1-mcgrof@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 7/22/21 3:19 PM, Luis Chamberlain wrote:
+> + * The real value to try_module_get() is the module_is_live() check which
+> + * ensures this the caller of try_module_get() can yields to userspace module
+> + * removal requests and fail whatever it was about to process.
 
+can yields -> can yield?
 
-On 7/23/21 6:30 AM, Gavin Shan wrote:
-> Hi Anshuman,
-> 
-> On 7/22/21 5:11 PM, Anshuman Khandual wrote:
->> On 7/22/21 12:11 PM, Gavin Shan wrote:
->>> On 7/22/21 3:45 PM, Anshuman Khandual wrote:
->>>> On 7/19/21 6:36 PM, Gavin Shan wrote:
->>>>> This uses struct pgtable_debug_args in PMD modifying tests. The allocated
->>>>> huge page is used when set_pmd_at() is used. The corresponding tests
->>>>> are skipped if the huge page doesn't exist. Besides, the unused variable
->>>>> @pmd_aligned in debug_vm_pgtable() is dropped.
->>>>
->>>> Please dont drop @pmd_aligned just yet.
->>>>
->>>
->>> We need do so. Otherwise, there is build warning to complain
->>> something like 'unused variable' after this patch is applied.
->>>
->>>>>
->>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
->>>>> ---
->>>>>    mm/debug_vm_pgtable.c | 102 ++++++++++++++++++++----------------------
->>>>>    1 file changed, 48 insertions(+), 54 deletions(-)
->>>>>
->>>>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
->>>>> index eb6dda88e0d9..cec3cbf99a6b 100644
->>>>> --- a/mm/debug_vm_pgtable.c
->>>>> +++ b/mm/debug_vm_pgtable.c
->>>>> @@ -213,54 +213,54 @@ static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx)
->>>>>        WARN_ON(!pmd_bad(pmd_mkhuge(pmd)));
->>>>>    }
->>>>>    -static void __init pmd_advanced_tests(struct mm_struct *mm,
->>>>> -                      struct vm_area_struct *vma, pmd_t *pmdp,
->>>>> -                      unsigned long pfn, unsigned long vaddr,
->>>>> -                      pgprot_t prot, pgtable_t pgtable)
->>>>> +static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
->>>>>    {
->>>>>        pmd_t pmd;
->>>>> +    unsigned long vaddr = (args->vaddr & HPAGE_PMD_MASK);
->>>>>          if (!has_transparent_hugepage())
->>>>>            return;
->>>>>          pr_debug("Validating PMD advanced\n");
->>>>> -    /* Align the address wrt HPAGE_PMD_SIZE */
->>>>> -    vaddr &= HPAGE_PMD_MASK;
->>>>
->>>> Please just leave these unchanged. If has_transparent_hugepage() evaluates
->>>> negative, it skips the masking operation. As mentioned earlier please avoid
->>>> changing the test in any manner during these transition patches.
->>>>
->>>
->>> Ok.
->>>
->>>>> +    if (args->pmd_pfn == ULONG_MAX) {
->>>>> +        pr_debug("%s: Skipped\n", __func__);
->>>>> +        return;
->>>>> +    }
->>>>
->>>> Just return. Please dont call out "Skipped".
->>>>
->>>
->>> Ok.
->>>
->>>>>    -    pgtable_trans_huge_deposit(mm, pmdp, pgtable);
->>>>> +    pgtable_trans_huge_deposit(args->mm, args->pmdp, args->start_ptep);
->>>>>    -    pmd = pfn_pmd(pfn, prot);
->>>>> -    set_pmd_at(mm, vaddr, pmdp, pmd);
->>>>> -    pmdp_set_wrprotect(mm, vaddr, pmdp);
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
->>>>> +    set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
->>>>> +    pmdp_set_wrprotect(args->mm, vaddr, args->pmdp);
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(pmd_write(pmd));
->>>>> -    pmdp_huge_get_and_clear(mm, vaddr, pmdp);
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    pmdp_huge_get_and_clear(args->mm, vaddr, args->pmdp);
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(!pmd_none(pmd));
->>>>>    -    pmd = pfn_pmd(pfn, prot);
->>>>> +    pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
->>>>>        pmd = pmd_wrprotect(pmd);
->>>>>        pmd = pmd_mkclean(pmd);
->>>>> -    set_pmd_at(mm, vaddr, pmdp, pmd);
->>>>> +    set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
->>>>>        pmd = pmd_mkwrite(pmd);
->>>>>        pmd = pmd_mkdirty(pmd);
->>>>> -    pmdp_set_access_flags(vma, vaddr, pmdp, pmd, 1);
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    pmdp_set_access_flags(args->vma, vaddr, args->pmdp, pmd, 1);
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(!(pmd_write(pmd) && pmd_dirty(pmd)));
->>>>> -    pmdp_huge_get_and_clear_full(vma, vaddr, pmdp, 1);
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    pmdp_huge_get_and_clear_full(args->vma, vaddr, args->pmdp, 1);
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(!pmd_none(pmd));
->>>>>    -    pmd = pmd_mkhuge(pfn_pmd(pfn, prot));
->>>>> +    pmd = pmd_mkhuge(pfn_pmd(args->pmd_pfn, args->page_prot));
->>>>>        pmd = pmd_mkyoung(pmd);
->>>>> -    set_pmd_at(mm, vaddr, pmdp, pmd);
->>>>> -    pmdp_test_and_clear_young(vma, vaddr, pmdp);
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
->>>>> +    pmdp_test_and_clear_young(args->vma, vaddr, args->pmdp);
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(pmd_young(pmd));
->>>>>          /*  Clear the pte entries  */
->>>>> -    pmdp_huge_get_and_clear(mm, vaddr, pmdp);
->>>>> -    pgtable = pgtable_trans_huge_withdraw(mm, pmdp);
->>>>> +    pmdp_huge_get_and_clear(args->mm, vaddr, args->pmdp);
->>>>> +    pgtable_trans_huge_withdraw(args->mm, args->pmdp);
->>>>>    }
->>>>>      static void __init pmd_leaf_tests(struct pgtable_debug_args *args)
->>>>> @@ -417,12 +417,7 @@ static void __init pud_leaf_tests(struct pgtable_debug_args *args) { }
->>>>>    #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
->>>>>    static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx) { }
->>>>>    static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx) { }
->>>>> -static void __init pmd_advanced_tests(struct mm_struct *mm,
->>>>> -                      struct vm_area_struct *vma, pmd_t *pmdp,
->>>>> -                      unsigned long pfn, unsigned long vaddr,
->>>>> -                      pgprot_t prot, pgtable_t pgtable)
->>>>> -{
->>>>> -}
->>>>> +static void __init pmd_advanced_tests(struct pgtable_debug_args *args) { }
->>>>>    static void __init pud_advanced_tests(struct mm_struct *mm,
->>>>>                          struct vm_area_struct *vma, pud_t *pudp,
->>>>>                          unsigned long pfn, unsigned long vaddr,
->>>>> @@ -435,11 +430,11 @@ static void __init pmd_savedwrite_tests(struct pgtable_debug_args *args) { }
->>>>>    #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->>>>>      #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
->>>>> -static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
->>>>> +static void __init pmd_huge_tests(struct pgtable_debug_args *args)
->>>>>    {
->>>>>        pmd_t pmd;
->>>>>    -    if (!arch_vmap_pmd_supported(prot))
->>>>> +    if (!arch_vmap_pmd_supported(args->page_prot))
->>>>>            return;
->>>>>          pr_debug("Validating PMD huge\n");
->>>>> @@ -447,10 +442,11 @@ static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
->>>>>         * X86 defined pmd_set_huge() verifies that the given
->>>>>         * PMD is not a populated non-leaf entry.
->>>>>         */
->>>>> -    WRITE_ONCE(*pmdp, __pmd(0));
->>>>> -    WARN_ON(!pmd_set_huge(pmdp, __pfn_to_phys(pfn), prot));
->>>>> -    WARN_ON(!pmd_clear_huge(pmdp));
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    WRITE_ONCE(*(args->pmdp), __pmd(0));
->>>>
->>>> Possible extra braces.
->>>>
->>>
->>> Will drop it in v4, thanks!
->>>
->>>>> +    WARN_ON(!pmd_set_huge(args->pmdp, __pfn_to_phys(args->fixed_pmd_pfn),
->>>>> +                  args->page_prot));
->>>>
->>>> Dont break the line.
->>>>
->>>
->>> Ok.
->>>
->>>>> +    WARN_ON(!pmd_clear_huge(args->pmdp));
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(!pmd_none(pmd));
->>>>>    }
->>>>>    @@ -473,7 +469,7 @@ static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
->>>>>        WARN_ON(!pud_none(pud));
->>>>>    }
->>>>>    #else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
->>>>> -static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot) { }
->>>>> +static void __init pmd_huge_tests(struct pgtable_debug_args *args) { }
->>>>>    static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
->>>>>    #endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
->>>>>    @@ -640,20 +636,19 @@ static void __init pte_clear_tests(struct pgtable_debug_args *args)
->>>>>        WARN_ON(!pte_none(pte));
->>>>>    }
->>>>>    -static void __init pmd_clear_tests(struct mm_struct *mm, pmd_t *pmdp)
->>>>> +static void __init pmd_clear_tests(struct pgtable_debug_args *args)
->>>>>    {
->>>>> -    pmd_t pmd = READ_ONCE(*pmdp);
->>>>> +    pmd_t pmd = READ_ONCE(*(args->pmdp));
->>>>>          pr_debug("Validating PMD clear\n");
->>>>>        pmd = __pmd(pmd_val(pmd) | RANDOM_ORVALUE);
->>>>> -    WRITE_ONCE(*pmdp, pmd);
->>>>> -    pmd_clear(pmdp);
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    WRITE_ONCE(*(args->pmdp), pmd);
->>>>> +    pmd_clear(args->pmdp);
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(!pmd_none(pmd));
->>>>>    }
->>>>>    -static void __init pmd_populate_tests(struct mm_struct *mm, pmd_t *pmdp,
->>>>> -                      pgtable_t pgtable)
->>>>> +static void __init pmd_populate_tests(struct pgtable_debug_args *args)
->>>>>    {
->>>>>        pmd_t pmd;
->>>>>    @@ -662,8 +657,8 @@ static void __init pmd_populate_tests(struct mm_struct *mm, pmd_t *pmdp,
->>>>>         * This entry points to next level page table page.
->>>>>         * Hence this must not qualify as pmd_bad().
->>>>>         */
->>>>> -    pmd_populate(mm, pmdp, pgtable);
->>>>> -    pmd = READ_ONCE(*pmdp);
->>>>> +    pmd_populate(args->mm, args->pmdp, args->start_ptep);
->>>>> +    pmd = READ_ONCE(*(args->pmdp));
->>>>>        WARN_ON(pmd_bad(pmd));
->>>>>    }
->>>>>    @@ -1159,7 +1154,7 @@ static int __init debug_vm_pgtable(void)
->>>>>        pgtable_t saved_ptep;
->>>>>        pgprot_t prot;
->>>>>        phys_addr_t paddr;
->>>>> -    unsigned long vaddr, pmd_aligned;
->>>>> +    unsigned long vaddr;
->>>>>        unsigned long pud_aligned;
->>>>>        spinlock_t *ptl = NULL;
->>>>>        int idx, ret;
->>>>> @@ -1194,7 +1189,6 @@ static int __init debug_vm_pgtable(void)
->>>>>         */
->>>>>        paddr = __pa_symbol(&start_kernel);
->>>>>    -    pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
->>>>
->>>> Please dont drop these just yet and wait until [PATCH 11/12].
->>>>
->>>
->>> Otherwise, it causes build warning: 'unused variable'.
->>
->> Why ? Just the evaluation of 'pmd_aligned' from 'paddr' should
->> be enough to avoid such warning. 'pmd_aligned' need not be used
->> afterwards.
->>
-> 
-> It's not enough to avoid the warning. I apply the patches till
-> this one (PATCH[v3 08/12]) and have additional code to keep
-> @pmd_aligned, then I run into build warning as below:
-> 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index cec3cbf99a6b..961c9bb6fc7c 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -1154,7 +1154,7 @@ static int __init debug_vm_pgtable(void)
->         pgtable_t saved_ptep;
->         pgprot_t prot;
->         phys_addr_t paddr;
-> -       unsigned long vaddr;
-> +       unsigned long vaddr, pmd_aligned;
->         unsigned long pud_aligned;
->         spinlock_t *ptl = NULL;
->         int idx, ret;
-> @@ -1189,6 +1189,7 @@ static int __init debug_vm_pgtable(void)
->          */
->         paddr = __pa_symbol(&start_kernel);
->  
-> +       pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
->         pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
->  
->         pgdp = pgd_offset(mm, vaddr);
-> 
-> [gwshan@gshan l]$ make W=1 mm/debug_vm_pgtable.o
->      :
-> mm/debug_vm_pgtable.c: In function ‘debug_vm_pgtable’:
-> mm/debug_vm_pgtable.c:1157:23: warning: variable ‘pmd_aligned’ set but not used [-Wunused-but-set-variable]
->  1157 |  unsigned long vaddr, pmd_aligned;
->       |                       ^~~~~~~~~~~
-> 
-> 
-> By the way, 0-day is trying to build kernel with "W=1". It means the
-> build warnings will be reported by 0-day if the unused variables aren't
-> dropped from individual patches. It makes the review a bit harder. However,
+Otherwise this looks really well written to me.
 
-It is not about keeping the review process simple. But rather the proposed
-patch changing as much what is really required and nothing else.
-
-> we still need to keep each individual patch complete to make 'git bisect'
-> friendly.
-
-With W=1 if this throws up a build error, I guess we dont have choice here.
-We need to keep the build clean for each individual patch applies.
+Bart.
