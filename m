@@ -2,81 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BBB3D3E0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E063D3E1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhGWQV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 12:21:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39390 "EHLO mail.kernel.org"
+        id S230392AbhGWQYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 12:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230098AbhGWQVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 12:21:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 506DD60EAF;
-        Fri, 23 Jul 2021 17:01:58 +0000 (UTC)
+        id S229564AbhGWQYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 12:24:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1844460EAF;
+        Fri, 23 Jul 2021 17:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627059719;
-        bh=s/BHG12tgApqgvctm7zwp9zN19QNZZdnL+jeha8tQ4w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KmGPOxeXPGzlvOFhqckW50tj9xuuxJoTMPjuVpT0WPDtcIPJMU1yLOD0OEnuGgQV8
-         B6iMQ1iOUbwyBTts5+eeyl6XZnlWD4yC+iOppPMdDP4wZGgfDEq4eSMflU3+M/tzAk
-         t0H6vOOlO5/nOiTDCs2a80trWjLoHU1VfRVPmGE9/U0E+YhpI9bWFTvi+nFhasjueE
-         vvXHArxD8B19lN4jARW1vvz/KfibjrIRju72TeVRu6cAnqtHZeLjWMTHWVKDHDMvZc
-         Co5CeujziRhR0bfjIe468Fpv6nM3anFePsck5ROUL+asE+l4N5q8S57viiwwxezu8l
-         jl/0kH76zSc6A==
-From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        markpearson@lenovo.com
-Subject: Re: [PATCH v3 1/2] ASoC: amd: Don't show messages about deferred probing by default
-Date:   Fri, 23 Jul 2021 18:01:51 +0100
-Message-Id: <162705877778.18788.10167377888396986791.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210722132731.13264-1-mario.limonciello@amd.com>
-References: <20210722132731.13264-1-mario.limonciello@amd.com>
+        s=k20201202; t=1627059927;
+        bh=gzbBPOiH5w2i76ACZ/O4KOXej6TzticgA1EQwiyI8ek=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IPnJPMY5QTaxCT0tE54esTaFqzpTHsWK2PDo28kqN8sGebc2FVvYxhfE4hJi0eRx/
+         pWwIdb9IHp6XmzS8SjaGcJg6XFrfvyBvivY/EHjK6ma0Jpq+6mTyE2LiY/DqhaVFW3
+         fGxu4hXiz3xrP4L4VQgC35yrJSaEZPXvo7ReJ36BuUso5btNeyhdpBxpNE/ns7kMeU
+         3ut8NkgGZhcLYSv4v8MOqWSWBwG+UC/bwA6oukDwmJ1WoXIOHQec6b55iPtmZk5J11
+         qBI/3uzfSLa2HgBmXG13AVO+m7bXADjMJq7Bwdl6eTxZxsxPtQKHmqjdC6/VJC/b+y
+         xyIefJ5FI7Afg==
+Received: by mail-lf1-f49.google.com with SMTP id y34so3145122lfa.8;
+        Fri, 23 Jul 2021 10:05:27 -0700 (PDT)
+X-Gm-Message-State: AOAM530UTEOYf+aLq67qcGVT7wTchY8dP6U2hjG93E8SOMno0Om6bTRt
+        wZlUGZqyQsjKMfbP2ASs/qgb+Y/qfFJW6Rxcm0g=
+X-Google-Smtp-Source: ABdhPJzK5zfFUjitlrwd5pXZorjbdCJaxI2bI1/V9lUdkxQ7/R+KDei3DkXE3OD1SgKNlLhOHaRMbYNK2Afni2TY1VA=
+X-Received: by 2002:ac2:4438:: with SMTP id w24mr3646153lfl.281.1627059925427;
+ Fri, 23 Jul 2021 10:05:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210715031533.9553-1-justin.he@arm.com> <20210715031533.9553-12-justin.he@arm.com>
+ <51d24b1a-7146-bacd-87ee-4be487c455d8@linux.dev>
+In-Reply-To: <51d24b1a-7146-bacd-87ee-4be487c455d8@linux.dev>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 23 Jul 2021 10:05:14 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7C5kjnutW1rdkg7jENsrg8k47_+R24G7RZRrM07s2Ymw@mail.gmail.com>
+Message-ID: <CAPhsuW7C5kjnutW1rdkg7jENsrg8k47_+R24G7RZRrM07s2Ymw@mail.gmail.com>
+Subject: Re: [PATCH RFC 11/13] md/bitmap: simplify the printing with '%pD' specifier
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     Jia He <justin.he@arm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com,
+        linux-raid <linux-raid@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Jul 2021 08:27:27 -0500, Mario Limonciello wrote:
-> Nearly every boot with a Lenovo P14s is showing
-> acp_pdm_mach acp_pdm_mach.0: snd_soc_register_card(acp) failed: -517
-> 
-> This isn't useful to a user, especially as probing will run again.
-> Use the dev_err_probe helper to hide the deferrerd probing messages.
+On Fri, Jul 16, 2021 at 2:41 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>
+>
+>
+> On 7/15/21 11:15 AM, Jia He wrote:
+> > After the behavior of '%pD' is changed to print the full path of file,
+> > the log printing can be simplified.
+> >
+> > Given the space with proper length would be allocated in vprintk_store(),
+> > it is worthy of dropping kmalloc()/kfree() to avoid additional space
+> > allocation. The error case is well handled in d_path_unsafe(), the error
+> > string would be copied in '%pD' buffer, no need to additionally handle
+> > IS_ERR().
+> >
+> > Cc: Song Liu <song@kernel.org>
+> > Cc: linux-raid@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Jia He <justin.he@arm.com>
+> > ---
+> >   drivers/md/md-bitmap.c | 13 ++-----------
+> >   1 file changed, 2 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+> > index e29c6298ef5c..a82f1c2ef83c 100644
+> > --- a/drivers/md/md-bitmap.c
+> > +++ b/drivers/md/md-bitmap.c
+> > @@ -862,21 +862,12 @@ static void md_bitmap_file_unmap(struct bitmap_storage *store)
+> >    */
+> >   static void md_bitmap_file_kick(struct bitmap *bitmap)
+> >   {
+> > -     char *path, *ptr = NULL;
+> > -
+> >       if (!test_and_set_bit(BITMAP_STALE, &bitmap->flags)) {
+> >               md_bitmap_update_sb(bitmap);
+> >
+> >               if (bitmap->storage.file) {
+> > -                     path = kmalloc(PAGE_SIZE, GFP_KERNEL);
+> > -                     if (path)
+> > -                             ptr = file_path(bitmap->storage.file,
+> > -                                          path, PAGE_SIZE);
+> > -
+> > -                     pr_warn("%s: kicking failed bitmap file %s from array!\n",
+> > -                             bmname(bitmap), IS_ERR(ptr) ? "" : ptr);
+> > -
+> > -                     kfree(path);
+> > +                     pr_warn("%s: kicking failed bitmap file %pD from array!\n",
+> > +                             bmname(bitmap), bitmap->storage.file);
 
-Applied to
+This is neat!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Acked-by: Song Liu <song@kernel.org>
 
-Thanks!
 
-[1/2] ASoC: amd: Don't show messages about deferred probing by default
-      commit: af7dc6f194a866cb3e991ef5248ffdeb3ef5c46a
-[2/2] ASoC: amd: Use dev_probe_err helper
-      commit: 718693352d8bcea65276615f4f8c8d531246b644
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+> >               } else
+> >                       pr_warn("%s: disabling internal bitmap due to errors\n",
+> >                               bmname(bitmap));
+>
+> Looks good,  Acked-by: Guoqing Jiang <guoqing.jiang@linux.dev>
