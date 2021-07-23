@@ -2,91 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F363D39EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278A03D39EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234735AbhGWLXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234385AbhGWLXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:23:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDE8360ED4;
-        Fri, 23 Jul 2021 12:03:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627041819;
-        bh=PwjtfCTo8tHsPYPLNc6oR+NsanQdP6K5wpoC58YhcD4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NWOOfsfzvJ7ztmEmEZDPGApUZaC7JkdjD65E2rZZD6219b0QDxn0mPZdfJl5VrviB
-         nE4o7MF7oxSimILe2n9LYnzMusBjsyjSiMh6o2iJIs5T5odKEZtfy1BDTuqptC0dAZ
-         F3l8kI2YE4CJq5sD1AQtS/sbkLVseyZ4B8wGIA5g=
-Date:   Fri, 23 Jul 2021 14:03:35 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        id S234757AbhGWLXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 07:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234385AbhGWLXu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 07:23:50 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B75FC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:04:24 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GWSfR5Vqtz9sXM;
+        Fri, 23 Jul 2021 22:04:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1627041861;
+        bh=WEE70A1SmlcnlIsv9nVnRGPp1lz7FMXEUMxrnsgf+IU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=VunPNjPI5UTxmlZmtF6HnK+D0Dif1lwUaNWcXlVbCnOy3zlfgpBXZRcdGvCjeSpTD
+         9GtJzMFZAjmswf1Hvf+Shhuu3DtNGBXMNTQoMka2kFXjYcF/zGbOVaCZOBpwbNaHMV
+         epX/8JSDuS2F3jGKGPdB1wvzULNj0TkI4wo+Z5qZ8TF2KuuqLjMk0XTObjG1udah19
+         U1CpdO9KIVSiwPBast1gIEWa3fuADmNkO9j6lepWMRmuG+MHxyeWmwMTljc1HY+qcN
+         iPuTprU1H6rO2uX1bsNbdVNf6qs+BaSKB5njML9F9aEsaaPNMQrnX9vJgFwZ5rtJUH
+         0p1oAfMTFZbgA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linuxppc-dev@lists.ozlabs.org, Mark Rutland <mark.rutland@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, LTP List <ltp@lists.linux.it>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 5.13 000/156] 5.13.5-rc1 review
-Message-ID: <YPqwF7wtM6n3wHlr@kroah.com>
-References: <20210722155628.371356843@linuxfoundation.org>
- <CA+G9fYt_9nfDcQzKm8SZtmQXzzrybutS9vD4GgUw_0o8UD1HOQ@mail.gmail.com>
+        Mike Rapoport <rppt@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Paul Mackerras <paulus@samba.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v2] Revert "mm/pgtable: add stubs for
+ {pmd/pub}_{set/clear}_huge"
+In-Reply-To: <162686329170.980657.905966885675716231.b4-ty@kernel.org>
+References: <20210720202627.Horde.vlszNhxkKrLIg0-3Sn2ucw5@messagerie.c-s.fr>
+ <87r1fs1762.fsf@mpe.ellerman.id.au>
+ <162686329170.980657.905966885675716231.b4-ty@kernel.org>
+Date:   Fri, 23 Jul 2021 22:04:10 +1000
+Message-ID: <87o8at1bk5.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYt_9nfDcQzKm8SZtmQXzzrybutS9vD4GgUw_0o8UD1HOQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 05:26:22PM +0530, Naresh Kamboju wrote:
-> On Thu, 22 Jul 2021 at 22:17, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.13.5 release.
-> > There are 156 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.5-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> The following error is due to SATA drive format failing with arm64 64k-page
-> size ( CONFIG_ARM64_64K_PAGES=y ) kernel.
-> while running LTP syscalls test suite on running 5.13.3 and 5.13.5-rc1 kernel.
-> 
-> First it was noticed on the stable-rc 5.13.3-rc2 kernel.
-> 
-> Whereas 64bit kernel and 32bit kernel pass with 4K page size.
-> 
-> Initially, I thought it could be a Hard drive fault but it is reproducible on
-> other devices but not always. Which is a blocker to bisect the problem.
-> 
-> The steps to reproduce:
->  - Boot arm64 juno device with 64k page stable-rc 5.13 kernel Image [1]
->    - CONFIG_ARM64_64K_PAGES=y
->  - format connected SATA drives and mount /scratch
->  - Use the mounted /scratch for LTP runs to create and delete files from this
->  - cd /opt/ltp
->  - ./runltp -d /scratch -f syscalls
+Will Deacon <will@kernel.org> writes:
+> On Wed, 21 Jul 2021 17:02:13 +1000, Michael Ellerman wrote:
+>> This reverts commit c742199a014de23ee92055c2473d91fe5561ffdf.
+>> 
+>> c742199a014d ("mm/pgtable: add stubs for {pmd/pub}_{set/clear}_huge")
+>> breaks arm64 in at least two ways for configurations where PUD or PMD
+>> folding occur:
+>> 
+>>   1. We no longer install huge-vmap mappings and silently fall back to
+>>      page-granular entries, despite being able to install block entries
+>>      at what is effectively the PGD level.
+>> 
+>> [...]
+>
+> Thank you Michael! I owe you a beer next time I see you, if we don't go
+> extinct before then.
 
-And does that also fail for 5.13.2?
+No worries, thanks to Christophe for identifying the solution while on
+vacation!
 
+Beers seem a long way off, but hopefully one day :)
+
+cheers
