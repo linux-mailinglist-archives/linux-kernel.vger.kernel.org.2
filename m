@@ -2,125 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD643D34CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C2A3D34D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbhGWGEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:04:40 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:47125 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232401AbhGWGEj (ORCPT
+        id S234097AbhGWGLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:11:36 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:62926 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234016AbhGWGLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:04:39 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6F1325C0158;
-        Fri, 23 Jul 2021 02:45:13 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 23 Jul 2021 02:45:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=X5xr8e+KoIfokOs+HQGYJ7g9t86
-        HbY4x2Os0/wIYqwY=; b=zwEAn+DxB2gojWkMz3NO4lnm7jmTRdUprVli3TkCIVC
-        hSHQP5dWO+M22UEutlxPpkOvbhtk2/eQFyqHsO++3IcFCNwKwJk+QdSh8TuTTfEs
-        Ofv+8j7KY9a4ccQB7VIErrJ3rgEFBoh5BE6ZODD2MXPl6EtIb6T4iQcDGqbgvhdO
-        eSd6AMMwtXehWiKLmQxOdtE10Hw5EkudJZiXgov+nYWElt3wpze3P1q1umoawZag
-        um0sumX0PS+o4YpslBvjw1kZ8Edxk6Fvn8EqFVoArs+3nzbxHM5gPR43kCKapvSC
-        TkRB0lE/zooQk10Thp0d83wmNhwCMPZ9JOvJULNueyA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=X5xr8e
-        +KoIfokOs+HQGYJ7g9t86HbY4x2Os0/wIYqwY=; b=AINFSgqPLk1fa6PwRbTJB0
-        1NqaO3HXxBsz+8QTLz58a7S7TFaQ5p9ZiKiBLM11t5C++Xd41hrmn2OUZzs6XRnS
-        hhfxnz4eU6nNn8Ef03rCdsrjlYbuNeEfjgphMH3lyn6lrHYh8+nIJKxdUYJCgOMn
-        sVdhdVPSebDvvSRU5JJzWgD+/YDg2A9VFy4CQ8XbST+GhHVWmo2Ov4sH9JMXh8ul
-        Q7tZ1E1lNfBuvAX5lW9URQ0+yx5Nm5HDwKTQwT4M9hRB4qSridnZDAwWA26OtISY
-        6/g6YaDGnIOY26FmkUCls+MnjfgCzQ6SsYMsfJunqYB/8Le7DxfifcVKGxss7WAg
-        ==
-X-ME-Sender: <xms:eGX6YE_6bO1XrGuGoi26lGkhJFbos8O3TVdPAcDdmpYvGMW21fCpkA>
-    <xme:eGX6YMupE4vC3NSmeVVu5MIMNzqAM2qIrOkwlR3rhuN5cKW9hFkK7Yxxpa_zumA7X
-    F4-6oXdKpNdZg>
-X-ME-Received: <xmr:eGX6YKAFcGrp3nlcKOzw-SMoaX3D_hQ6SXyC1djAEmjcwmpXYpuavF1w-DCFT8dtcfhyeSPkNS1USnl8by47OVNkHyC5ETLF>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeejgddutdejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtro
-    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
-    necuggftrfgrthhtvghrnhepveehgfejiedtffefhfdvgeelieegjeegieffkeeiffejfe
-    elhfeigeethfdujeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:eGX6YEeRIysuub-XI7JrvQ0jBzrx7bcf9chj6D2yDP5f2WwuqXM5xg>
-    <xmx:eGX6YJNpYg4gg6vU_y5RdLa_mViaBPpu_MdBICVq_vl35d1lza_s2Q>
-    <xmx:eGX6YOmhK9nx2-tKxc6IxBkEQIgrpb4roDuJQDNYMLUbZSkcK9ri9Q>
-    <xmx:eWX6YFCR2dmJMrhXXOO35GR42UypfFcjQv8UJRG_NL6eCaR2vhAwJg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 23 Jul 2021 02:45:12 -0400 (EDT)
-Date:   Fri, 23 Jul 2021 08:45:08 +0200
-From:   Greg KH <greg@kroah.com>
-To:     vpuh1 <baxtiarovartem@gmail.com>
-Cc:     gregkh@suse.de, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Drivers: comedi: Lindented files.
-Message-ID: <YPpldJCdVLfwHKhn@kroah.com>
-References: <20210722210927.GA41649@ideapad>
+        Fri, 23 Jul 2021 02:11:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627023129; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=mhGTziIiW6WOD6A69omTzhtLWQHqYlyKpdcfV+WbaTs=; b=tDEqGXb1yPmN34KZgnFxdxM97TjL5YjpC/NgPx1sUO3y306/o8wiMNyk/WIsqv1dKr5AEQhG
+ NpkP2FjicL+sqTUFympv1KKJgm+EHpsuMwb2DoSUe/vLzQSlUL96pqeObRfSwxDNwkoAnNGZ
+ A9jgLyYJ+eCV8BdrxAWpnMY3Dlc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60fa6715e81205dd0a87a871 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 06:52:05
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9699EC43460; Fri, 23 Jul 2021 06:52:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.105] (unknown [59.89.229.109])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A589FC433D3;
+        Fri, 23 Jul 2021 06:52:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A589FC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+Subject: Re: [PATCH 3/3] drm/msm: Devfreq tuning
+To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>
+References: <20210722222145.1759900-1-robdclark@gmail.com>
+ <20210722222145.1759900-4-robdclark@gmail.com>
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+Message-ID: <f0040cae-94d7-8409-ac9e-8034dd4fd530@codeaurora.org>
+Date:   Fri, 23 Jul 2021 12:21:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722210927.GA41649@ideapad>
+In-Reply-To: <20210722222145.1759900-4-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 12:09:27AM +0300, vpuh1 wrote:
-> Indented files in drivers/comedi directory using scripts/Lindent.
+On 7/23/2021 3:51 AM, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Signed-off-by: Artem Baxtiarov <baxtiarovartem@gmail.com>
+> This adds a few things to try and make frequency scaling better match
+> the workload:
+> 
+> 1) Longer polling interval to avoid whip-lashing between too-high and
+>     too-low frequencies in certain workloads, like mobile games which
+>     throttle themselves to 30fps.
+> 
+>     Previously our polling interval was short enough to let things
+>     ramp down to minimum freq in the "off" frame, but long enough to
+>     not react quickly enough when rendering started on the next frame,
+>     leading to uneven frame times.  (Ie. rather than a consistent 33ms
+>     it would alternate between 16/33/48ms.)
+> 
+> 2) Awareness of when the GPU is active vs idle.  Since we know when
+>     the GPU is active vs idle, we can clamp the frequency down to the
+>     minimum while it is idle.  (If it is idle for long enough, then
+>     the autosuspend delay will eventually kick in and power down the
+>     GPU.)
+> 
+>     Since devfreq has no knowledge of powered-but-idle, this takes a
+>     small bit of trickery to maintain a "fake" frequency while idle.
+>     This, combined with the longer polling period allows devfreq to
+>     arrive at a reasonable "active" frequency, while still clamping
+>     to minimum freq when idle to reduce power draw.
+> 
+> 3) Boost.  Because simple_ondemand needs to see a certain threshold
+>     of busyness to ramp up, we could end up needing multiple polling
+>     cycles before it reacts appropriately on interactive workloads
+>     (ex. scrolling a web page after reading for some time), on top
+>     of the already lengthened polling interval, when we see a idle
+>     to active transition after a period of idle time we boost the
+>     frequency that we return to.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>   drivers/gpu/drm/msm/msm_gpu.c         |  8 +++
+>   drivers/gpu/drm/msm/msm_gpu.h         |  9 ++++
+>   drivers/gpu/drm/msm/msm_gpu_devfreq.c | 73 ++++++++++++++++++++++++++-
+>   3 files changed, 89 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+> index 70d8610b1b73..68d2df590054 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu.c
+> @@ -667,6 +667,10 @@ static void retire_submit(struct msm_gpu *gpu, struct msm_ringbuffer *ring,
+>   	list_del(&submit->node);
+>   	spin_unlock(&ring->submit_lock);
+>   
+> +	/* Update devfreq on transition from active->idle: */
+> +	if (atomic_dec_return(&gpu->active_submits) == 0)
+This will race with the submit path. To avoid that, this test and the 
+msm_devfreq_idle should be under the same lock. Same applies for the 
+submit path.
 
-Hi,
+-Akhil
+> +		msm_devfreq_idle(gpu);
+> +
+>   	msm_gem_submit_put(submit);
+>   }
+>   
+> @@ -747,6 +751,10 @@ void msm_gpu_submit(struct msm_gpu *gpu, struct msm_gem_submit *submit)
+>   	list_add_tail(&submit->node, &ring->submits);
+>   	spin_unlock(&ring->submit_lock);
+>   
+> +	/* Update devfreq on transition from idle->active: */
+> +	if (atomic_inc_return(&gpu->active_submits) == 1)
+> +		msm_devfreq_active(gpu);
+> +
+>   	gpu->funcs->submit(gpu, submit);
+>   	priv->lastctx = submit->queue->ctx;
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_gpu.h b/drivers/gpu/drm/msm/msm_gpu.h
+> index ada15e28f251..e14edda3d778 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu.h
+> +++ b/drivers/gpu/drm/msm/msm_gpu.h
+> @@ -84,6 +84,10 @@ struct msm_gpu_devfreq {
+>   	struct devfreq *devfreq;
+>   	u64 busy_cycles;
+>   	ktime_t time;
+> +
+> +	/* Time and freq of last transition to idle: */
+> +	ktime_t idle_time;
+> +	unsigned long idle_freq;
+>   };
+>   
+>   struct msm_gpu {
+> @@ -115,6 +119,9 @@ struct msm_gpu {
+>   	 */
+>   	struct list_head active_list;
+>   
+> +	/* number of in-flight submits: */
+> +	atomic_t active_submits;
+> +
+>   	/* does gpu need hw_init? */
+>   	bool needs_hw_init;
+>   
+> @@ -384,6 +391,8 @@ void msm_devfreq_init(struct msm_gpu *gpu);
+>   void msm_devfreq_cleanup(struct msm_gpu *gpu);
+>   void msm_devfreq_resume(struct msm_gpu *gpu);
+>   void msm_devfreq_suspend(struct msm_gpu *gpu);
+> +void msm_devfreq_active(struct msm_gpu *gpu);
+> +void msm_devfreq_idle(struct msm_gpu *gpu);
+>   
+>   int msm_gpu_hw_init(struct msm_gpu *gpu);
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_gpu_devfreq.c b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> index 2e24a97be624..0a1ee20296a2 100644
+> --- a/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> +++ b/drivers/gpu/drm/msm/msm_gpu_devfreq.c
+> @@ -22,6 +22,15 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+>   
+>   	opp = devfreq_recommended_opp(dev, freq, flags);
+>   
+> +	/*
+> +	 * If the GPU is idle, devfreq is not aware, so just ignore
+> +	 * it's requests
+> +	 */
+> +	if (gpu->devfreq.idle_freq) {
+> +		gpu->devfreq.idle_freq = *freq;
+> +		return 0;
+> +	}
+> +
+>   	if (IS_ERR(opp))
+>   		return PTR_ERR(opp);
+>   
+> @@ -39,6 +48,9 @@ static int msm_devfreq_target(struct device *dev, unsigned long *freq,
+>   
+>   static unsigned long get_freq(struct msm_gpu *gpu)
+>   {
+> +	if (gpu->devfreq.idle_freq)
+> +		return gpu->devfreq.idle_freq;
+> +
+>   	if (gpu->funcs->gpu_get_freq)
+>   		return gpu->funcs->gpu_get_freq(gpu);
+>   
+> @@ -69,7 +81,8 @@ static int msm_devfreq_get_cur_freq(struct device *dev, unsigned long *freq)
+>   }
+>   
+>   static struct devfreq_dev_profile msm_devfreq_profile = {
+> -	.polling_ms = 10,
+> +	.timer = DEVFREQ_TIMER_DELAYED,
+> +	.polling_ms = 50,
+>   	.target = msm_devfreq_target,
+>   	.get_dev_status = msm_devfreq_get_dev_status,
+>   	.get_cur_freq = msm_devfreq_get_cur_freq,
+> @@ -130,3 +143,61 @@ void msm_devfreq_suspend(struct msm_gpu *gpu)
+>   {
+>   	devfreq_suspend_device(gpu->devfreq.devfreq);
+>   }
+> +
+> +void msm_devfreq_active(struct msm_gpu *gpu)
+> +{
+> +	struct msm_gpu_devfreq *df = &gpu->devfreq;
+> +	struct devfreq_dev_status status;
+> +	unsigned int idle_time;
+> +	unsigned long target_freq = df->idle_freq;
+> +
+> +	/*
+> +	 * Hold devfreq lock to synchronize with get_dev_status()/
+> +	 * target() callbacks
+> +	 */
+> +	mutex_lock(&df->devfreq->lock);
+> +
+> +	idle_time = ktime_to_ms(ktime_sub(ktime_get(), df->idle_time));
+> +
+> +	/*
+> +	 * If we've been idle for a significant fraction of a polling
+> +	 * interval, then we won't meet the threshold of busyness for
+> +	 * the governor to ramp up the freq.. so give some boost
+> +	 */
+> +	if (idle_time > msm_devfreq_profile.polling_ms/2) {
+> +		target_freq *= 2;
+> +	}
+> +
+> +	df->idle_freq = 0;
+> +
+> +	msm_devfreq_target(&gpu->pdev->dev, &target_freq, 0);
+> +
+> +	/*
+> +	 * Reset the polling interval so we aren't inconsistent
+> +	 * about freq vs busy/total cycles
+> +	 */
+> +	msm_devfreq_get_dev_status(&gpu->pdev->dev, &status);
+> +
+> +	mutex_unlock(&df->devfreq->lock);
+> +}
+> +
+> +void msm_devfreq_idle(struct msm_gpu *gpu)
+> +{
+> +	struct msm_gpu_devfreq *df = &gpu->devfreq;
+> +	unsigned long idle_freq, target_freq = 0;
+> +
+> +	/*
+> +	 * Hold devfreq lock to synchronize with get_dev_status()/
+> +	 * target() callbacks
+> +	 */
+> +	mutex_lock(&df->devfreq->lock);
+> +
+> +	idle_freq = get_freq(gpu);
+> +
+> +	msm_devfreq_target(&gpu->pdev->dev, &target_freq, 0);
+> +
+> +	df->idle_time = ktime_get();
+> +	df->idle_freq = idle_freq;
+> +
+> +	mutex_unlock(&df->devfreq->lock);
+> +}
+> 
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch contains warnings and/or errors noticed by the
-  scripts/checkpatch.pl tool.
-
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file, Documentation/SubmittingPatches
-  for how to do this correctly.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
