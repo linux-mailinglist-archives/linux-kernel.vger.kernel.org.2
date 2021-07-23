@@ -2,124 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438803D3BBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A3C3D3BC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhGWNns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhGWNnq (ORCPT
+        id S235376AbhGWNqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:46:12 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20134 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233666AbhGWNqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:43:46 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6475C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 07:24:18 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 19-20020a9d08930000b02904b98d90c82cso2208736otf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 07:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TFOUkgVe/De3oymeenLBuNPer+TUmPN7lpMy3blENNw=;
-        b=kMYc3VLcZ8HQkeGDP4GCj08ozIhO820sv8drLzH/p0tt+jnIl+jqN4ig75T2p0lKw/
-         GbMiV85J/nc0wqsoDrAy0FBoq8f4oWdxggAf3+1YZZPlqb/CIQw5PVwLqx2g1fKTU/xJ
-         2zCvCUTIqjmHIwMlzDo3Cq42Eirw6Z6bccTo6dTdRcjCoYtQKxDXrejsuVsuSV7LCRQR
-         tuD974zCr28piclys4fQ7Y+lvwA+YYLmvDQ7giWULxqVOoa7Wshd7pAgkk+NcwkU53VM
-         XgANK5fQb4M+ZZKMo9j6bpevRaDl4Dkyn+6PvhDQZiXVmnZmgWeY7qgorQkOPqWuAEcY
-         HFBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TFOUkgVe/De3oymeenLBuNPer+TUmPN7lpMy3blENNw=;
-        b=Q0Q/N3n9UJsugGQGwoTDG2+8q4fYkEEcfILTTEWwEnTVyH1KgskYLF70jtKbW07/UL
-         feCFkgEgFUeEkquWMTU2y9xsBzo1IqBFJwrbvfKSoqk3WKjzxCuVLo3rFDNbSJiiZkCc
-         WWYMqBzESlWcAHxfRdU/762aFuZAo7QZsEB+6V0vGdjFPOAHLVRs9g3INaPTnYXoCR1b
-         7nCzVSB1qPa9eidP39+5SDnEp+7PlaBD6BEqrOF/ZEcsBGgX2OqB9+wz7Rf6q8tE6Z/v
-         OeoOem2n0iTuW8Ej6BJzi3qrLPBFmmPLD2jVzNH3pPyRsLAAtB5Pv2r5ly+wat2BKwPN
-         yLlg==
-X-Gm-Message-State: AOAM532oZz2i5r/CouNckylKuM3kBQPowUJLdCZbX0K9hgYtIwNCg7Kr
-        uJtQWUt9LwykeSQTbM6GP5B5Uw==
-X-Google-Smtp-Source: ABdhPJz+8ZHqxxjGU86tyolNaSdy9VlLyxBEJo+yDX15pPrPdOO0ZWJWGxlkjLP/OhHNkko5BhKtfA==
-X-Received: by 2002:a9d:2c61:: with SMTP id f88mr3251914otb.62.1627050257958;
-        Fri, 23 Jul 2021 07:24:17 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s7sm3420836ool.14.2021.07.23.07.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 07:24:17 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 09:24:14 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Andy Gross <agross@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Todd Kjos <tkjos@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH] firmware: QCOM_SCM: Allow qcom_scm driver to be loadable
- as a permenent module
-Message-ID: <YPrRDrmlmF4ws4DQ@yoga>
-References: <20210707045320.529186-1-john.stultz@linaro.org>
- <YPgK50dmV7Z69WsL@kroah.com>
- <CALAqxLUVgUT+1DyDGsFbF0138S0OYzpKADk__PsYbR4B4mbMhw@mail.gmail.com>
- <CAGETcx91URbHCYMoGt_cCgvMXNkVyJb4Ek-ng8jwR+eQhvZN1A@mail.gmail.com>
- <YPiCSOys6zEH6Kfg@yoga>
- <CAGETcx8Yw2QDYBYNpqVt_kPHnokFR+qinr5GAJ1byVWMuc3PLQ@mail.gmail.com>
+        Fri, 23 Jul 2021 09:46:07 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NEKTEe191630;
+        Fri, 23 Jul 2021 10:26:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=3Spo8q7XmHT8k9bDd30RKxErqWuR5QT5w15Nadhhdj8=;
+ b=K+d3wRkZj6r4jc2Vw9/VHWPVnAq7dtlsRMmyYxywzW12l7rCUrSkz7TVAAuIg9rO0eN4
+ B/ZvlusM5aF9XaYx5ISPumjKpykfngfiCEk/xm3JUX4ytwLB8dbISr+ofzjCa41XqfgL
+ lv4NuZPSmTuqnEisitQp/VQKl/0/WeeOf4dJHzhP/Pts4+7OlXnKUnIhmqId+VmGNW8F
+ RrDkd7WJlFXp8pFmk1dQkP633ahgahqWIfUvSPqjSWSxV9Z2qgsG09+ZJ3SZvjIkWzVf
+ gMKNIAB302gGg6vRjngeRUXDeQJGVIEUPv++S6C6QR9J9UPqf35y3vKdoI+/e0T6JLeE Dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39yyetr3xt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 10:26:39 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16NEKikE193061;
+        Fri, 23 Jul 2021 10:26:39 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39yyetr3wu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 10:26:38 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16NEKlPS015763;
+        Fri, 23 Jul 2021 14:26:36 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 39upu89w7a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 14:26:36 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16NEQXYJ26345854
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Jul 2021 14:26:33 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20AA9AE055;
+        Fri, 23 Jul 2021 14:26:33 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2972CAE04D;
+        Fri, 23 Jul 2021 14:26:32 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.6.217])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 23 Jul 2021 14:26:32 +0000 (GMT)
+Date:   Fri, 23 Jul 2021 16:26:25 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+Message-ID: <20210723162625.59cead27.pasic@linux.ibm.com>
+In-Reply-To: <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+        <20210719193503.793910-3-akrowiak@linux.ibm.com>
+        <20210721164550.5402fe1c.pasic@linux.ibm.com>
+        <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8Yw2QDYBYNpqVt_kPHnokFR+qinr5GAJ1byVWMuc3PLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: m4ymPi2y4JFMoQVTobtmf4UV69Szicgs
+X-Proofpoint-ORIG-GUID: olJ_G38DjWZtccgGW2vk6j5N1c0FGCMT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-23_08:2021-07-23,2021-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 clxscore=1015 adultscore=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 spamscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107230083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 21 Jul 16:07 CDT 2021, Saravana Kannan wrote:
+On Thu, 22 Jul 2021 09:09:26 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> On Wed, Jul 21, 2021 at 1:23 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Wed 21 Jul 13:00 CDT 2021, Saravana Kannan wrote:
-> >
-> > > On Wed, Jul 21, 2021 at 10:24 AM John Stultz <john.stultz@linaro.org> wrote:
-> > > >
-> > > > On Wed, Jul 21, 2021 at 4:54 AM Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Wed, Jul 07, 2021 at 04:53:20AM +0000, John Stultz wrote:
-> > > > > > Allow the qcom_scm driver to be loadable as a permenent module.
-> > > > >
-> > > > > This feels like a regression, it should be allowed to be a module.
-> > > >
-> > > > I'm sorry, I'm not sure I'm following you, Greg.  This patch is trying
-> > > > to enable the driver to be able to be loaded as a module.
-> > >
-> > > I think the mix up might be that Greg mentally read "permanent module"
-> > > as "builtin"?
-> > >
-> > > "permanent module" is just something that can't be unloaded once it's
-> > > loaded. It's not "builtin".
-> > >
-> >
-> > Afaict there's nothing in this patch that makes it more or less
-> > permanent.
+> On 7/21/21 10:45 AM, Halil Pasic wrote:
+> > On Mon, 19 Jul 2021 15:35:03 -0400
+> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> >  
+> >> It was pointed out during an unrelated patch review that locks should not  
+> > [..]
+> >  
+> >> -static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
+> >> +static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev,
+> >> +				   struct kvm *kvm)
+> >>   {
+> >> -	/*
+> >> -	 * If the KVM pointer is in the process of being set, wait until the
+> >> -	 * process has completed.
+> >> -	 */
+> >> -	wait_event_cmd(matrix_mdev->wait_for_kvm,
+> >> -		       !matrix_mdev->kvm_busy,
+> >> -		       mutex_unlock(&matrix_dev->lock),
+> >> -		       mutex_lock(&matrix_dev->lock));
+> >> -
+> >> -	if (matrix_mdev->kvm) {  
+> > We used to check if matrix_mdev->kvm is null, but ...
+> >  
+> >> -		matrix_mdev->kvm_busy = true;
+> >> -		mutex_unlock(&matrix_dev->lock);
+> >> -
+> >> -		if (matrix_mdev->kvm->arch.crypto.crycbd) {
+> >> -			down_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> >> -			matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+> >> -			up_write(&matrix_mdev->kvm->arch.crypto.pqap_hook_rwsem);
+> >> -
+> >> -			kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> >> -		}
+> >> +	if (kvm->arch.crypto.crycbd) {  
+> > ... now we just try to dereference it. And ..  
 > 
-> The lack of a module_exit() makes it a permanent module. If you do
-> lsmod, it'll mark this as "[permanent]".
+> We used to check matrix_mdev->kvm, now the kvm pointer is passed into
+> the function; however, having said that, the pointer passed in should be
+> checked before de-referencing it.
 > 
+> >  
+> >> +		down_write(&kvm->arch.crypto.pqap_hook_rwsem);
+> >> +		kvm->arch.crypto.pqap_hook = NULL;
+> >> +		up_write(&kvm->arch.crypto.pqap_hook_rwsem);
+> >>
+> >> +		mutex_lock(&kvm->lock);
+> >>   		mutex_lock(&matrix_dev->lock);
+> >> +
+> >> +		kvm_arch_crypto_clear_masks(kvm);
+> >>   		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
+> >> -		kvm_put_kvm(matrix_mdev->kvm);
+> >> +		kvm_put_kvm(kvm);
+> >>   		matrix_mdev->kvm = NULL;
+> >> -		matrix_mdev->kvm_busy = false;
+> >> -		wake_up_all(&matrix_mdev->wait_for_kvm);
+> >> +
+> >> +		mutex_unlock(&kvm->lock);
+> >> +		mutex_unlock(&matrix_dev->lock);
+> >>   	}
+> >>   }
+> >>  
+> > [..]
+> >  
+> >> @@ -1363,14 +1323,11 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
+> >>   {
+> >>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+> >>
+> >> -	mutex_lock(&matrix_dev->lock);
+> >> -	vfio_ap_mdev_unset_kvm(matrix_mdev);
+> >> -	mutex_unlock(&matrix_dev->lock);
+> >> -  
+> > .. before access to the matrix_mdev->kvm used to be protected by
+> > the matrix_dev->lock ...
+> >  
+> >>   	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
+> >>   				 &matrix_mdev->iommu_notifier);
+> >>   	vfio_unregister_notifier(mdev_dev(mdev), VFIO_GROUP_NOTIFY,
+> >>   				 &matrix_mdev->group_notifier);
+> >> +	vfio_ap_mdev_unset_kvm(matrix_mdev, matrix_mdev->kvm);  
+> > ... but it is not any more. BTW I don't think the code is guaranteed
+> > to fetch ->kvm just once.  
+> 
+> There are a couple of things to point out here:
+> 1. The vfio_ap_mdev_unset_kvm function() is the only place where the
+>      matrix_mdev->kvm pointer is cleared. That function is called here
+>      as well as by the group notifier callback for VFIO_GROUP_NOTIFY_SET_KVM
+>      events. If you notice in the code above, the group notifier is 
+> unregistered
+>      before calling the unset function, so either the notifier will have 
+> already
+>      been invoked and the pointer cleared (which is why you are correct
+>      that the KVM pointer passed in needs to get checked in the unset 
+> function),
+>      or will get cleared here.
 
-Cool, I didn't know that.
+Hm, vfio_unregister_notifier() indeed seems to guarantee, that by the
+time it returns no notifer is running. I didn't know that. But this
+blocking notifier chain uses an rwsem. So mutual exclusion with
+vfio_ap_mdev_open() is guaranteed, than it is indeed guaranteed. A quick
+glance at the code didn't tell me if vfio/mdev guarantees that. 
 
-Thanks,
-Bjorn
+I mean it would make sense to me to make the init and the cleanup
+mutually exclusive, but I'm reluctant to just assume it is like that.
+Can you please point me into the right direction?
+
+
+> 2. The release callback is invoked when the mdev fd is closed by userspace.
+>      The remove callback is the only place where the matrix_mdev is 
+> freed. The
+>      remove callback is not called until the mdev fd is released, so it 
+> is guaranteed
+>      the matrix_mdev will exist when the release callback is invoked.
+> 3. The matrix_dev->lock is then taken in the vfio_ap_mdev_unset_kvm function
+>      before doing any operations that modify the matrix_mdev.
+
+Yeah but both the reader, and the writer needs to use the same lock to
+have the protected by the lock type of situation. That is why I asked
+about the place where you read matrix_mdev members outside the
+matrix_dev->lock.
+
+Regards,
+Halil
