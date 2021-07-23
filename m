@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1C03D312A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A84D3D312E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhGWAfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 20:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52356 "EHLO
+        id S233007AbhGWAiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 20:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232905AbhGWAff (ORCPT
+        with ESMTP id S232905AbhGWAh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 20:35:35 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113E2C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:16:09 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id c204so7436944ybb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 18:16:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3GzZUiWRloPQrXBdUYorJDMZSlFJKnkE4RwHu5ZYLM4=;
-        b=IAlCVu8/mqkfWitvqAfF6S/1PxmHsrL1hI3yjJtBfzQ89rf2bO8G3Vv4EmdUTjyCv4
-         vErCIaWL0RSz/07P0pjWzM0Szka8jRxHUncJUX/VcOsSXI5bqBfHCc9VrH8BuzHdCMxa
-         xScBENnfqpq3t6Wz9djsWnyugd8bYwvHF00f+WSd7eXfSISchVbTd792koY6PtUhCMB8
-         F61QuaR2C7IkVoGlrIu/WkstgmvAzHIbXn9LQjmCyQAZCpNOgj78mN7vjhDzIP6ihwZt
-         KIlL4qDOWPdRpnjLt4XbDSd5gL4XLGVADSaqIc3WQyVavvmEkIGrZSSo6+Gu+FqGME82
-         zryw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3GzZUiWRloPQrXBdUYorJDMZSlFJKnkE4RwHu5ZYLM4=;
-        b=tc0RIqbQm661cTxPnzqvK3t0JWXbtt0QAQ1QiWyZXNlAYUK4LHSc9NdKDedaSh0/Je
-         iQhyixSBSrD4u9/mgbkb7sHwVwiQ0vNuc5hpFjuqLwRvyIycIt+KVRTe3xQNadqz+KO0
-         YSlvMV+tc56Qj9JIWoJ598rVgoUtq3Mm/AcpFprYa2bRHdlWYwMj3fXfMKWWlV1iUWBc
-         LakCtaorxhNaVdGVskA/kwD2q6KdVJKKNZvY8HEmB0+2zbEbxP4A6V30FBYf7MBbR0Wr
-         2gYtBreEKP/3CHouQP9dC1TIKZZ/Lk+pAw2yL+aVwh/qKFQYVj//pyGy+9Cw+LZEDo88
-         mJaQ==
-X-Gm-Message-State: AOAM531yvZwEeSutckmhPi8zVXZIs8n4ku96lst0roThCGuBMZ1P8p7Y
-        xvji4chkVzilLoWWhJSioR010jECxLGDneS6TRqi4Q==
-X-Google-Smtp-Source: ABdhPJyq45hMHallqmqyOyy6fSXBjwl/uWwFFwTNoBAyZ8V7mgCKBB69jXsoebr7Ozr+T0JmNGzVP/AhVgeCaqQB5Z0=
-X-Received: by 2002:a25:ba08:: with SMTP id t8mr3115977ybg.111.1627002968071;
- Thu, 22 Jul 2021 18:16:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210718214134.2619099-1-surenb@google.com> <7eb17da6-03a6-5eaf-16e6-97b53ba163d8@redhat.com>
- <20210720160707.2332738708948f7d865d67c1@linux-foundation.org>
- <ba763ed3-9ad1-9502-1ffc-3175446570d1@redhat.com> <CAJuCfpEB994Xj3FcmzyH1p3yOdLVf6EwZaGaRj7NJi_c9hbsRQ@mail.gmail.com>
- <0ee6775b-589c-3243-1c01-aafad5eecb73@redhat.com> <CAJuCfpHtRzCNH6Cspu8ngjw+WLvZTMsVbmBu_F-z8YY_n=RbvA@mail.gmail.com>
- <20210721135056.84d12dd49c07adff7b0beffb@linux-foundation.org> <CAJuCfpGsSFccjV9Qd86PCdLHjRG9gdP7snfy-856pzmfxdGO1w@mail.gmail.com>
-In-Reply-To: <CAJuCfpGsSFccjV9Qd86PCdLHjRG9gdP7snfy-856pzmfxdGO1w@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Thu, 22 Jul 2021 18:15:57 -0700
-Message-ID: <CAJuCfpFRXkfV_2dFt1vE-qJw8_oerE6tEza8hGZgFetPyQ6NkQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] mm, oom: move task_will_free_mem up in the file to
- be used in process_mrelease
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
+        Thu, 22 Jul 2021 20:37:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AD9C061575;
+        Thu, 22 Jul 2021 18:18:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WwS1LaIGUIRtAl4RX67oXHqtnkZGSLpu40O95p0Ahlc=; b=iY3hsy88NC4WR6KINmTuScd3nJ
+        1Nb7Qa1yP11v42t/Abvtl485R53ZB2n8oWQTs//xGmQes7f7lcZUlEDfws94kcynhRmmP1dMf1Rb5
+        1Zn2i0P5tX/mDRzG0/Hi9FIOCK8+Iw675WzBKez81GOjauxj1Wpec1qkQtQjbmrDr808qEMzDMuRY
+        E585Ywv9zpJXw8uJ5vsSg1Wnn19z9cLA2iV42VRhtHfRls6JKb+FO+Popo4FUA+rEkf6bhZmbG9FH
+        Q7H7630hzuBmDbHh1meQSLtkNJvRvtzVowEYkooMTiXbJL7CVA+asYcZxL5NHMnPCK7scqtxBy4/i
+        DQmSKXLA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m6jp9-00AsRo-1G; Fri, 23 Jul 2021 01:18:03 +0000
+Date:   Fri, 23 Jul 2021 02:17:58 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Wedson Almeida Filho <wedsonaf@google.com>
+Cc:     Finn Behrens <finn@kloenk.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
         Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/17] Rust support
+Message-ID: <YPoYxiq63QcfUXg+@casper.infradead.org>
+References: <20210704202756.29107-1-ojeda@kernel.org>
+ <YOVNJuA0ojmeLvKa@infradead.org>
+ <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
+ <YOWjLmg/Z7kr2+tx@kroah.com>
+ <YOW1Nj8+a2Yth2++@google.com>
+ <YOXB7FRqldZik2Xn@kroah.com>
+ <BFD5298D-00CD-4FEF-AE77-61E69AF78604@kloenk.dev>
+ <YOZNuEtNbsLxRM0R@casper.infradead.org>
+ <YPn3fgDX8uNkF8Vp@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPn3fgDX8uNkF8Vp@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 1:59 PM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Wed, Jul 21, 2021 at 1:51 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Wed, 21 Jul 2021 13:19:35 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
-> >
-> > > > > This would not require moving other functions.
-> > > > > Would that be better than the current approach or the forward declaration?
-> > > >
-> > > > IMHO that could be an easy, possible alternative.
-> > >
-> > > Andrew, others? Should I follow this path instead?
-> >
-> > Whatever you prefer ;)
->
-> I understand David's concern too well to ignore it, so I prefer to
-> follow this middle-ground approach if you don't mind :)
+On Thu, Jul 22, 2021 at 11:55:58PM +0100, Wedson Almeida Filho wrote:
+> Hey Matthew,
+> 
+> On Thu, Jul 08, 2021 at 01:58:32AM +0100, Matthew Wilcox wrote:
+> > Why are you so resistant to writing a real driver that deals with actual
+> > hardware?  
+> 
+> I don't think it was so much resistance but rather a prioritisation thing. Have
+> you by any chance seen the gpio driver I posted a couple of days ago?
 
-v3 with the refactoring is posted at
-https://lore.kernel.org/patchwork/project/lkml/list/?series=509230
+I haven't seen it, no ...
+
+> > A simple NVMe driver is less than a thousand lines of C.
+> > I know the one in the kernel now is ridiculously complicated and has
+> > been thoroughly messed up with abstractions to support NVMeoF instead
+> > of having a separate driver, but it's really a simple interface at heart.
+> 
+> The latest NVMe spec is 452 pages long, which seems to contradict your claim
+> that it's simple.
+
+As I said, they've put all kinds of crap into NVMe these days.
+If you look at the 1.0e spec, it's 127 pages.
+
+> In any case, translating less than 1K lines of C shouldn't be
+> too hard (after I've built the abstractions, of course). Would you mind sharing
+> the simple driver you mention above?
+
+Unfortunately, most of the early versions were lost during the
+kernel.org breakin.  If you check out commit 5da273fe3fd1 and look at
+drivers/block/nvme.c, you'll see a driver that's about 2000 lines.
