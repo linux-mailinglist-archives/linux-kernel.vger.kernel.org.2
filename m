@@ -2,240 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA423D425F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE4E3D4276
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232681AbhGWVB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 17:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        id S232424AbhGWVOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 17:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231839AbhGWVB2 (ORCPT
+        with ESMTP id S231954AbhGWVOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 17:01:28 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60683C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:42:01 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id a201so4376382ybg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:42:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z4wRlXm54e3C3fuLfTWWm+AhBVsv03apMT1xPphwuac=;
-        b=dB+dx1fxF4JegMhLECUyoU5542K4bedOLBloAj9atRP2r5OkvIja8syfi3HPvdd/g2
-         qEbjfmLxW1YZ9GCendFo8POwz8rNKhQnjLbWNBt7Vo1FMgA16fFeVFumICSZ/kIjrPRg
-         4m0PJyvKwTmK0lfdRFJDGf4snvmoLoCd+PGQM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z4wRlXm54e3C3fuLfTWWm+AhBVsv03apMT1xPphwuac=;
-        b=Za/gIDzNuxjlf4TmxdKksMzc2XeNqsNKN98ffiVKniSqsWH7HS3gRH35OoXfITCXTj
-         LtPvjVCSQSk/69qElPlBcPpIiN3fFmwvCjLWfJ06sW5jUSVA4b9qrf3w8Dp6FTZKYTKG
-         PiOHEZVbwOTwtRatIWQi2NgMQXuUskx3/n7nidvi8IQ5cv4EJwsdevWpJ1k006r5wtmY
-         WaTmT0coPxANQTH3/CMGhP9JwNqRpvtwXW/06d6gB+Z8xilRvw4GDiTW47qE693+S9RV
-         KW29SVZJjGqvhEpEDLIKgMmQd1veGxR9nYWhDBRd7wk0iBU2dbfc03pPQ2aynNfDQF2g
-         ww4w==
-X-Gm-Message-State: AOAM5328zF3O1t7ILVN/3awSBlN3ZkI0LZUvknlmT+ynxFeZqjyBdbFY
-        HcvCGYIUSdWUYPyBwzePNgjTEtZPmxUGBHDkTBMT
-X-Google-Smtp-Source: ABdhPJyxNk4dBKh+nVb0yY5onNvD2+GMd5ddJFERs4q+Noxze2O0nDCTkCDvf/IfUkf03HDgO2GXZQt2BunJYA4hhxs=
-X-Received: by 2002:a25:d015:: with SMTP id h21mr8642248ybg.202.1627076520639;
- Fri, 23 Jul 2021 14:42:00 -0700 (PDT)
+        Fri, 23 Jul 2021 17:14:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641D9C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kdgrmM/4B1zIITGzh1S8nGZIo69an1gVWYkQmjkwQuI=; b=GXDzwmUkiDX8PVhs4if4UKHl5V
+        uKk2esXvWHiA3xZEXXRYOIpChTAvlSlDocPcMc1pQXYlD6xAxGnFLrH0BaIEbXYAV9n4ta+dGo4Wz
+        bA2/UY6Gge6TL6rAaocs4FrJXTLDEraDWgLciHmCSnJxpimqd96N+ZbSfEgS3Xov5gY7fcRanKBmr
+        PiUGPFwL5Bksbiq1zstJDS7wC1boPEJcJ9tX4Ddgk3IFm3uL/Q1h7hC7onVunWIAyRfY1X94NADZ5
+        KtbERfyR3Hig5Uew6oNQ/RKGJZEAuuGDbjHVSQGRtYCnw+eX0pEc9q2sGbWfJqFp0rot6KwYM+/0N
+        VQFH+0dA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m737B-00BmSR-6k; Fri, 23 Jul 2021 21:53:55 +0000
+Date:   Fri, 23 Jul 2021 22:53:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
+Message-ID: <YPs6cQo7iG1JcOn8@casper.infradead.org>
+References: <20210723080000.93953-1-ying.huang@intel.com>
+ <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
 MIME-Version: 1.0
-References: <20210712061704.4162464-1-hch@lst.de> <20210712061704.4162464-7-hch@lst.de>
-In-Reply-To: <20210712061704.4162464-7-hch@lst.de>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 23 Jul 2021 14:41:50 -0700
-Message-ID: <CAOnJCUJyBCwCzCAjpO2Kn4+eNx+FAGbbxotW4UqEnFVJN69GXQ@mail.gmail.com>
-Subject: Re: [PATCH 6/7] dma-mapping: make the global coherent pool conditional
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     iommu@lists.linux-foundation.org,
-        Russell King <linux@armlinux.org.uk>,
-        Brian Cain <bcain@codeaurora.org>,
-        linux-hexagon@vger.kernel.org,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        Dillon Min <dillon.minfei@gmail.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 11, 2021 at 11:25 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> Only build the code to support the global coherent pool if support for
-> it is enabled.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Dillon Min <dillon.minfei@gmail.com>
-> ---
->  include/linux/dma-map-ops.h | 18 +++++++-------
->  kernel/dma/coherent.c       | 47 ++++++++++++++++++++-----------------
->  2 files changed, 35 insertions(+), 30 deletions(-)
->
-> diff --git a/include/linux/dma-map-ops.h b/include/linux/dma-map-ops.h
-> index 7e49bb86a0c0..9b79aa4dd300 100644
-> --- a/include/linux/dma-map-ops.h
-> +++ b/include/linux/dma-map-ops.h
-> @@ -170,13 +170,6 @@ int dma_alloc_from_dev_coherent(struct device *dev, ssize_t size,
->  int dma_release_from_dev_coherent(struct device *dev, int order, void *vaddr);
->  int dma_mmap_from_dev_coherent(struct device *dev, struct vm_area_struct *vma,
->                 void *cpu_addr, size_t size, int *ret);
-> -
-> -void *dma_alloc_from_global_coherent(struct device *dev, ssize_t size,
-> -               dma_addr_t *dma_handle);
-> -int dma_release_from_global_coherent(int order, void *vaddr);
-> -int dma_mmap_from_global_coherent(struct vm_area_struct *vma, void *cpu_addr,
-> -               size_t size, int *ret);
-> -int dma_init_global_coherent(phys_addr_t phys_addr, size_t size);
->  #else
->  static inline int dma_declare_coherent_memory(struct device *dev,
->                 phys_addr_t phys_addr, dma_addr_t device_addr, size_t size)
-> @@ -186,7 +179,16 @@ static inline int dma_declare_coherent_memory(struct device *dev,
->  #define dma_alloc_from_dev_coherent(dev, size, handle, ret) (0)
->  #define dma_release_from_dev_coherent(dev, order, vaddr) (0)
->  #define dma_mmap_from_dev_coherent(dev, vma, vaddr, order, ret) (0)
-> +#endif /* CONFIG_DMA_DECLARE_COHERENT */
->
-> +#ifdef CONFIG_DMA_GLOBAL_POOL
-> +void *dma_alloc_from_global_coherent(struct device *dev, ssize_t size,
-> +               dma_addr_t *dma_handle);
-> +int dma_release_from_global_coherent(int order, void *vaddr);
-> +int dma_mmap_from_global_coherent(struct vm_area_struct *vma, void *cpu_addr,
-> +               size_t size, int *ret);
-> +int dma_init_global_coherent(phys_addr_t phys_addr, size_t size);
-> +#else
->  static inline void *dma_alloc_from_global_coherent(struct device *dev,
->                 ssize_t size, dma_addr_t *dma_handle)
->  {
-> @@ -201,7 +203,7 @@ static inline int dma_mmap_from_global_coherent(struct vm_area_struct *vma,
->  {
->         return 0;
->  }
-> -#endif /* CONFIG_DMA_DECLARE_COHERENT */
-> +#endif /* CONFIG_DMA_GLOBAL_POOL */
->
->  /*
->   * This is the actual return value from the ->alloc_noncontiguous method.
-> diff --git a/kernel/dma/coherent.c b/kernel/dma/coherent.c
-> index 160d4e246ecb..c05408902a68 100644
-> --- a/kernel/dma/coherent.c
-> +++ b/kernel/dma/coherent.c
-> @@ -20,8 +20,6 @@ struct dma_coherent_mem {
->         bool            use_dev_dma_pfn_offset;
->  };
->
-> -static struct dma_coherent_mem *dma_coherent_default_memory __ro_after_init;
-> -
->  static inline struct dma_coherent_mem *dev_get_coherent_memory(struct device *dev)
->  {
->         if (dev && dev->dma_mem)
-> @@ -191,16 +189,6 @@ int dma_alloc_from_dev_coherent(struct device *dev, ssize_t size,
->         return 1;
->  }
->
-> -void *dma_alloc_from_global_coherent(struct device *dev, ssize_t size,
-> -                                    dma_addr_t *dma_handle)
-> -{
-> -       if (!dma_coherent_default_memory)
-> -               return NULL;
-> -
-> -       return __dma_alloc_from_coherent(dev, dma_coherent_default_memory, size,
-> -                                        dma_handle);
-> -}
-> -
->  static int __dma_release_from_coherent(struct dma_coherent_mem *mem,
->                                        int order, void *vaddr)
->  {
-> @@ -236,15 +224,6 @@ int dma_release_from_dev_coherent(struct device *dev, int order, void *vaddr)
->         return __dma_release_from_coherent(mem, order, vaddr);
->  }
->
-> -int dma_release_from_global_coherent(int order, void *vaddr)
-> -{
-> -       if (!dma_coherent_default_memory)
-> -               return 0;
-> -
-> -       return __dma_release_from_coherent(dma_coherent_default_memory, order,
-> -                       vaddr);
-> -}
-> -
->  static int __dma_mmap_from_coherent(struct dma_coherent_mem *mem,
->                 struct vm_area_struct *vma, void *vaddr, size_t size, int *ret)
->  {
-> @@ -290,6 +269,28 @@ int dma_mmap_from_dev_coherent(struct device *dev, struct vm_area_struct *vma,
->         return __dma_mmap_from_coherent(mem, vma, vaddr, size, ret);
->  }
->
-> +#ifdef CONFIG_DMA_GLOBAL_POOL
-> +static struct dma_coherent_mem *dma_coherent_default_memory __ro_after_init;
-> +
-> +void *dma_alloc_from_global_coherent(struct device *dev, ssize_t size,
-> +                                    dma_addr_t *dma_handle)
-> +{
-> +       if (!dma_coherent_default_memory)
-> +               return NULL;
-> +
-> +       return __dma_alloc_from_coherent(dev, dma_coherent_default_memory, size,
-> +                                        dma_handle);
-> +}
-> +
-> +int dma_release_from_global_coherent(int order, void *vaddr)
-> +{
-> +       if (!dma_coherent_default_memory)
-> +               return 0;
-> +
-> +       return __dma_release_from_coherent(dma_coherent_default_memory, order,
-> +                       vaddr);
-> +}
-> +
->  int dma_mmap_from_global_coherent(struct vm_area_struct *vma, void *vaddr,
->                                    size_t size, int *ret)
->  {
-> @@ -311,6 +312,7 @@ int dma_init_global_coherent(phys_addr_t phys_addr, size_t size)
->         pr_info("DMA: default coherent area is set\n");
->         return 0;
->  }
-> +#endif /* CONFIG_DMA_GLOBAL_POOL */
->
->  /*
->   * Support for reserved memory regions defined in device tree
-> @@ -377,6 +379,7 @@ static int __init rmem_dma_setup(struct reserved_mem *rmem)
->         return 0;
->  }
->
-> +#ifdef CONFIG_DMA_GLOBAL_POOL
->  static int __init dma_init_reserved_memory(void)
->  {
->         if (!dma_reserved_default_memory)
-> @@ -384,8 +387,8 @@ static int __init dma_init_reserved_memory(void)
->         return dma_init_global_coherent(dma_reserved_default_memory->base,
->                                         dma_reserved_default_memory->size);
+On Fri, Jul 23, 2021 at 01:23:07PM -0700, Hugh Dickins wrote:
+> I was wary because, if the (never observed) race to be fixed is in
+> swap_cluster_readahead(), why was shmem_swapin_page() being patched?
+> Not explained in its commit message, probably a misunderstanding of
+> how mm/shmem.c already manages races (and prefers not to be involved
+> in swap_info_struct stuff).
+> 
+> But why do I now say it's bad?  Because even if you correct the EINVAL
+> to -EINVAL, that's an unexpected error: -EEXIST is common, -ENOMEM is
+> not surprising, -ENOSPC can need consideration, but -EIO and anything
+> else just end up as SIGBUS when faulting (or as error from syscall).
+> So, 2efa33fc7f6e converts a race with swapoff to SIGBUS: not good,
+> and I think much more likely than the race to be fixed (since
+> swapoff's percpu_ref_kill() rightly comes before synchronize_rcu()).
 
-dma_reserved_default_memory also needs to be moved inside
-CONFIG_DMA_GLOBAL_POOL because
-all the usages are already part of that config.
+Yes, I think a lot more thought was needed here.  And I would have
+preferred to start with a reproducer instead of "hey, this could
+happen".  Maybe something like booting a 1GB VM, adding two 2GB swap
+partitions, swapon(partition A); run a 2GB memhog and then
 
+loop:
+	swapon(part B);
+	swapoff(part A);
+	swapon(part A);
+	swapoff(part B);
 
->  }
-> -
->  core_initcall(dma_init_reserved_memory);
-> +#endif /* CONFIG_DMA_GLOBAL_POOL */
->
->  RESERVEDMEM_OF_DECLARE(dma, "shared-dma-pool", rmem_dma_setup);
->  #endif
-> --
-> 2.30.2
->
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+to make this happen.
 
+but if it does happen, why would returning EINVAL be the right thing
+to do?  We've swapped it out.  It must be on swap somewhere, or we've
+really messed up.  So I could see there being a race where we get
+preempted between looking up the swap entry and calling get_swap_device().
+But if that does happen, then the page gets brought in, and potentially
+reswapped to the other swap device.
 
+So returning -EEXIST here would actually work.  That forces a re-lookup
+in the page cache, so we'll get the new swap entry that tells us which
+swap device the page is now on.
 
---
-Regards,
-Atish
+But I REALLY REALLY REALLY want a reproducer.  Right now, I have a hard
+time believing this, or any of the other races can really happen.
+
+> 2efa33fc7f6e was intending to fix a race introduced by two-year-old
+> 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested
+> or not"), which added a call to inode_read_congested().  Certainly
+> relying on si->swap_file->f_mapping->host there was new territory:
+> whether actually racy I'm not sure offhand - I've forgotten whether
+> synchronize_rcu() waits for preempted tasks or not.
+> 
+> But if it is racy, then I wonder if the right fix might be to revert
+> 8fd2e0b505d1 too. Convincing numbers were offered for it, but I'm
+> puzzled: because Matthew has in the past noted that the block layer
+> broke and further broke bdi congestion tracking (I don't know the
+> relevant release numbers), so I don't understand how checking
+> inode_read_congested() is actually useful there nowadays.
+
+It might be useful for NFS?  I don't think congestion is broken there
+(except how does the NFS client have any idea whether the server is
+congested or not?)
