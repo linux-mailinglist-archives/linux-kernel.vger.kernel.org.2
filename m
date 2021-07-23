@@ -2,109 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F503D37B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A2E3D37BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233784AbhGWIum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGWIul (ORCPT
+        id S231231AbhGWIwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:52:01 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:33494 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229949AbhGWIv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:50:41 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E20FC061575;
-        Fri, 23 Jul 2021 02:31:14 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id h10so933543edv.8;
-        Fri, 23 Jul 2021 02:31:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ao2RnG7ISGLnAa4hG4vDQIREJNPq/pTbnRjpX9KH6vY=;
-        b=FS8hYJMt0WhpUPxRpcq7UOVN0vy83RBinj5w0q65KdLgaiDpl/Guqj2usyZdTeY1TC
-         OjIiw8+Tw7y571dJ5uHAvzqioHPYPXb8JwZUBB+bV4CS6H1xF78pUZqOUKQe+e7ej86H
-         SK+mLKCmfxVGmDUFNgx1ICeFuu5DflY3PepgZXPERNWIP2oTj3xdydKO5p8UHwAkCuSO
-         gPqat8PgATLyYL1T2IAps4QnWkAPlJROIXAkfEkkXqG6u7qHj4su33FcINeDXjCXP4d/
-         OGRtF7Zmf5EwAitlUpUWsnJE8nME9s8PRzdLhyEk9SQ5qjOWDmraMQrg1SKngF2AVKyE
-         tVeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ao2RnG7ISGLnAa4hG4vDQIREJNPq/pTbnRjpX9KH6vY=;
-        b=ub3qmQRuIMVUfAN+X9aiBsEdYFVW7CnrHK5ojyTv2aOx8SLUfqh0ny1TjPo3I1U2ei
-         FTSoOR2STIUyT06hRr6uajrY9pQEGMhslytUNUfGM4ZzAPRykVjrcrR7P+gcNWHIbrxf
-         A1k70xNyptMzWvmM8EQRriy7sgDv0cfbyyReYBOGs5iYkcX9OG093ZQj9iU5Cx+ax+7u
-         jQjdIe6iLE51zMbm3CNcasTX+qZeEyxMs5uPHhbqPB4JwpyyRZ0pc7i1QP28NktF39I3
-         4V73xyFwQvy3EEsqjsThen+zxXI1IcB4c6LK2zrMy01xM9U5TyvfIWN1+zDa8CmPNgHZ
-         RMtA==
-X-Gm-Message-State: AOAM532hPcHx/PAAZ8a41X18aQQumcOh9xfljhAM9Nz8bhi5Qx8EpyrY
-        0apYGjVkXflMlAYJr1FRjLvp49c5nVXL8mfWEdg=
-X-Google-Smtp-Source: ABdhPJwmxxSBbdDMkBKBpbzgA6W119m/cttuRzaIzPul/alqvQSBQq9M5HNGMLSUCWRTCrpakiINtxNtwwqjMLKlBHQ=
-X-Received: by 2002:a05:6402:1c10:: with SMTP id ck16mr4375755edb.339.1627032672678;
- Fri, 23 Jul 2021 02:31:12 -0700 (PDT)
+        Fri, 23 Jul 2021 04:51:59 -0400
+X-UUID: d4173402705d470d9d8b5dc487989237-20210723
+X-UUID: d4173402705d470d9d8b5dc487989237-20210723
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <christine.zhu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 29985510; Fri, 23 Jul 2021 17:32:30 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 23 Jul 2021 17:32:29 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 23 Jul 2021 17:32:28 +0800
+From:   Christine Zhu <Christine.Zhu@mediatek.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
+        <Rex-BC.Chen@mediatek.com>,
+        Christine Zhu <Christine.Zhu@mediatek.com>
+Subject: [v6,1/3] dt-bindings: mediatek: mt8195: update mtk-wdt document
+Date:   Fri, 23 Jul 2021 17:31:26 +0800
+Message-ID: <20210723093127.24568-2-Christine.Zhu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210723093127.24568-1-Christine.Zhu@mediatek.com>
+References: <20210723093127.24568-1-Christine.Zhu@mediatek.com>
 MIME-Version: 1.0
-References: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
- <d2b0f847dbf6b6d1e585ef8de1d9d367f8d9fd3b.camel@sipsolutions.net>
- <CAD-N9QWDNvo_3bdB=8edyYWvEV=b-66Tx-P6_7JGgrSYshDh0A@mail.gmail.com> <11ba299b812212a07fe3631b7be0e8b8fd5fb569.camel@sipsolutions.net>
-In-Reply-To: <11ba299b812212a07fe3631b7be0e8b8fd5fb569.camel@sipsolutions.net>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Fri, 23 Jul 2021 17:30:46 +0800
-Message-ID: <CAD-N9QWRNyZnnDQ3XTQ_SAWNEgiMCJV+5Z69eHtRVcxYtXcM+A@mail.gmail.com>
-Subject: Re: [PATCH] cfg80211: free the object allocated in wiphy_apply_custom_regulatory
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Ilan Peer <ilan.peer@intel.com>,
-        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
-        linux-wireless@vger.kernel.org,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 5:18 PM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> On Fri, 2021-07-23 at 17:13 +0800, Dongliang Mu wrote:
-> > On Fri, Jul 23, 2021 at 4:37 PM Johannes Berg <johannes@sipsolutions.net> wrote:
-> > >
-> > > On Fri, 2021-07-23 at 13:09 +0800, Dongliang Mu wrote:
-> > > > The commit beee24695157 ("cfg80211: Save the regulatory domain when
-> > > > setting custom regulatory") forgets to free the newly allocated regd
-> > > > object.
-> > >
-> > > Not really? It's not forgetting it, it just saves it?
-> >
-> > Yes, it saves the regd object in the function wiphy_apply_custom_regulatory.
->
-> Right.
->
-> > But its parent function - mac80211_hwsim_new_radio forgets to free
-> > this object when the ieee80211_register_hw fails.
->
-> But why is this specific to mac80211-hwsim?
->
-> Any other code calling wiphy_apply_custom_regulatory() and then failing
-> the subsequent wiphy_register() or otherwise calling wiphy_free() will
-> run into the same situation.
->
-> So why wouldn't we free this in wiphy_free(), if it exists?
->
+Update mtk-wdt document for MT8195 platform.
 
-Hi Johannes,
+Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-if zhao in the thread is right, we don't need to add this free
-operation to wiphy_free().
+diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+index e36ba60de829..ca9b67ab7c44 100644
+--- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
++++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
+@@ -13,6 +13,7 @@ Required properties:
+ 	"mediatek,mt8183-wdt": for MT8183
+ 	"mediatek,mt8516-wdt", "mediatek,mt6589-wdt": for MT8516
+ 	"mediatek,mt8192-wdt": for MT8192
++	"mediatek,mt8195-wdt": for MT8195
+ 
+ - reg : Specifies base physical address and size of the registers.
+ 
+-- 
+2.18.0
 
-What we should do is to only handle regd in the error handling code of
-mac80211_hwsim_new_radio. This will not affect other users of
-mac80211-hwsim. Any idea?
-
-> johannes
->
