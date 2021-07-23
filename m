@@ -2,141 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EC73D3F25
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFC63D3F34
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhGWRIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 13:08:50 -0400
-Received: from mail-pj1-f41.google.com ([209.85.216.41]:53037 "EHLO
-        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGWRIt (ORCPT
+        id S231848AbhGWRJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 13:09:48 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:50568 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231166AbhGWRJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 13:08:49 -0400
-Received: by mail-pj1-f41.google.com with SMTP id m1so3303284pjv.2;
-        Fri, 23 Jul 2021 10:49:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vVq7BuihyDs6U5fbD+HjeGXA6oSWtvxoBeFtNKI0rF4=;
-        b=n2AUiOH1UF5IQ36xjaaI358Wwt1nvI3AFipRBBAZsbGOg1iDPlG4k9fkLOwMXlDI8k
-         Tsr594tBxDMd/ttSvM8MUMRycI9UeFHMEzbqE7PCtXoCGyjnZIcxHZvS/D5kmdUOL8p1
-         5j5c9lNZrlYb3LqjcuRMMk+R6svJ9Vkgj5eC2gjxtgNZfLT+dbOGPumDjl+R4+cREP4X
-         Tabl7ebZpHUt+pxBDUIdnhZWTlUF67PG/6aExAJ39uLNaN19RkUu/76MW3Jt4OwYORz6
-         0K0sknLntQA14E54hVB24tjHledlwTGF9wF10Soc/aXII5nz08LZus2jPRDEUXu9PKKK
-         UCFQ==
-X-Gm-Message-State: AOAM5339FBHmTpZuePX9BXdMVUTt1yXpziyMkvPibS+uqGm8iY0lxkPY
-        4LPjI5v9aihUe/sQBMynhZw=
-X-Google-Smtp-Source: ABdhPJxBqtQcKyF1sSsYYs3OWkdIcNd2VpqffePNt9jVQr4QToTgSVSslxrOsKh+UU91fYCM3uwM2w==
-X-Received: by 2002:a17:902:d4d2:b029:12b:72cf:9178 with SMTP id o18-20020a170902d4d2b029012b72cf9178mr4657436plg.53.1627062562844;
-        Fri, 23 Jul 2021 10:49:22 -0700 (PDT)
-Received: from garbanzo ([191.96.121.239])
-        by smtp.gmail.com with ESMTPSA id t10sm38653566pgv.52.2021.07.23.10.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 10:49:21 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 10:49:19 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        rafael@kernel.org, axboe@kernel.dk, tj@kernel.org, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] zram: fix deadlock with sysfs attribute usage and
- module removal
-Message-ID: <20210723174919.ka3tzyre432uilf7@garbanzo>
-References: <20210703001958.620899-1-mcgrof@kernel.org>
- <20210703001958.620899-3-mcgrof@kernel.org>
- <YPgFGd+FZQZWODY7@kroah.com>
- <20210722221705.kyrdkpt6fwf5k56o@garbanzo>
- <YPqk5WCBgvNQzq4S@kroah.com>
+        Fri, 23 Jul 2021 13:09:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:Message-Id:Date:Cc:To:From
+        :references:content-disposition:in-reply-to;
+        bh=LQAXJCFOAL4wucMr1J1VtJo8YmjL7Kj+0Z4w4rvIHlA=; b=TaYSXIwq9R6P6E55tx/ubbtnmS
+        Ix5S11dwF37+JjGSmV0s6xjYEbeV6HdQPY8L4ceTMQxqpBLWTmndOS7kQPDkYi2krgtZOLSSVrbb9
+        c0wyfIKZ/WK/9ISrP+H4LcIuYdyOl+C/RV6yOHboEG5zPmMsNfK3aO2OoJum1Yw5QAO6ceknbIXSK
+        YJ19q++0q3iOK/z8UWCCZbVtohsVag7m/aVg7sT15ZTzk7ir/QgR0nCButA7tc9Ka/8+8ms4RDMBa
+        ZTvS5QgWu1CMefIqiLZqWI4h41+KbLiC3sS/uG0C6Qqc+uqKCjukEFJp4LCqKNzSSEPRjV4K5xyIk
+        redVVngg==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m6zJN-0005Lg-Sm; Fri, 23 Jul 2021 11:50:14 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m6zJK-0005qW-Eh; Fri, 23 Jul 2021 11:50:10 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Logan Gunthorpe <logang@deltatee.com>
+Date:   Fri, 23 Jul 2021 11:49:47 -0600
+Message-Id: <20210723175008.22410-1-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPqk5WCBgvNQzq4S@kroah.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        MYRULES_NO_TEXT autolearn=no autolearn_force=no version=3.4.2
+Subject: [PATCH v2 00/21] .map_sg() error cleanup
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 01:15:49PM +0200, Greg KH wrote:
-> On Thu, Jul 22, 2021 at 03:17:05PM -0700, Luis Chamberlain wrote:
-> > On Wed, Jul 21, 2021 at 01:29:29PM +0200, Greg KH wrote:
-> > > On Fri, Jul 02, 2021 at 05:19:57PM -0700, Luis Chamberlain wrote:
-> > > > +#define MODULE_DEVICE_ATTR_FUNC_STORE(_name) \
-> > > > +static ssize_t module_ ## _name ## _store(struct device *dev, \
-> > > > +				   struct device_attribute *attr, \
-> > > > +				   const char *buf, size_t len) \
-> > > > +{ \
-> > > > +	ssize_t __ret; \
-> > > > +	if (!try_module_get(THIS_MODULE)) \
-> > > > +		return -ENODEV; \
-> > > 
-> > > I feel like this needs to be written down somewhere as I see it come up
-> > > all the time.
-> > 
-> > I'll go ahead and cook up a patch to do just this after I send this
-> > email out.
-> > 
-> > > Again, this is racy and broken code.  You can NEVER try to increment
-> > > your own module reference count unless it has already been incremented
-> > > by someone external first.
-> > 
-> > In the zram driver's case the sysfs files are still pegged on, because
-> > as we noted before the kernfs active reference will ensure the store
-> > operation still exists.
-> 
-> How does that happen without a module lock?
+Hi,
 
-If a read / write operations is happening on a sysfs file created by a
-module, the module cannot be removed because it is the module's own
-responsibility to remove the sysfs file on module exit. There is no
-module lock. It is inferred.
+This v2 of the series is spun out and expanded from my work to add
+P2PDMA support to DMA map operations[1]. v1 is at [2]. The main changes
+in v1 are to more carefully define the meaning of the error codes for
+dma_map_sgtable().
 
-> > If the driver removes the operation prior to
-> > getting the active reference, the write will just fail. kernfs ensures
-> > once a file is opened the op is not removed until the operation completes.
-> 
-> How does it do that?
+The P2PDMA work requires distinguishing different error conditions in
+a map_sg operation. dma_map_sgtable() already allows for returning an
+error code (where as dma_map_sg() is only allowed to return zero)
+however, it currently only returns -EINVAL when a .map_sg() call returns
+zero.
 
-Using an active reference.
+This series cleans up all .map_sg() implementations to return appropriate
+error codes. After the cleanup, dma_map_sg() will still return zero,
+however dma_map_sgtable() will pass the error code from the .map_sg()
+call. Thanks go to Martn Oliveira for doing a lot of the cleanup of the
+obscure implementations.
 
-> > If a file is opened then, the module cannot possibly be removed. The
-> > piece of information we realy care about is the use of module_is_live()
-> > inside try_module_get() which does:
-> > 
-> > static inline bool module_is_live(struct module *mod)
-> > {                                                                               
-> > 	return mod->state != MODULE_STATE_GOING;
-> > }
-> > 
-> > The try allows module removal to trump use of the sysfs file. If
-> > userspace wants the module removed, it gives up in favor for that
-> > operation.
-> 
-> I do not see the tie in kernfs to module reference counts, what am I
-> missing?
+The patch set is based off of v5.14-rc2 and a git repo can be found
+here:
 
-Let me try to describe this again. Let's take it step by step, premise
-by premise on the inference assumption. Let me know at which point you
-disagree.
+  https://github.com/sbates130272/linux-p2pmem map_sg_err_cleanup_v2
 
-We are talking about sysfs files and you're argument is that
-try_module_get() should lock the module, and so cannot be used
-in sysfs files. My point is that such module lock is inferred:
+Thanks,
 
-1) Sysfs files are created by a module, that same module is responsible
-   for removing the same sysfs files.
-2) The module can only be removed and gone, once *all* sysfs files are
-   removed first.
-3) If any of the module's sysfs files are present the module must
-   still be present
-4) kernfs ensures that if a file is opened the file will not be
-   removed until any pending operation completes
-5) If a sysfs file is used to write something, that means the
-   sysfs file has not yet been removed, and we know it will
-   remain in existance throughout its entire operation
-6) When a sysfs file operation is being run, the module must
-   always exist
+Logan
 
-  Luis
+[1] https://lore.kernel.org/linux-block/20210513223203.5542-1-logang@deltatee.com/
+[2] https://lore.kernel.org/linux-mips/20210715164544.6827-1-logang@deltatee.com/
+
+--
+
+Changes in v2:
+  - Attempt to define the meanings of the errors returned by
+    dma_map_sgtable() and restrict the valid return codes of
+    .map_sg implementations. (Per Christoph)
+  - Change dma_map_sgtable() to EXPORT_SYMBOL_GPL() (Per Christoph)
+  - Add patches to remove the erroneous setting of sg->dma_address
+    to DMA_MAP_ERROR in a few .map_sg(0 implementations. (Per
+    Christoph).
+
+--
+
+Logan Gunthorpe (10):
+  dma-mapping: Allow map_sg() ops to return negative error codes
+  dma-direct: Return appropriate error code from dma_direct_map_sg()
+  iommu: Return full error code from iommu_map_sg[_atomic]()
+  dma-iommu: Return error code from iommu_dma_map_sg()
+  ARM/dma-mapping: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  powerpc/iommu: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  s390/pci: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  sparc/iommu: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  x86/amd_gart: don't set failed sg dma_address to DMA_MAPPING_ERROR
+  dma-mapping: Disallow .map_sg operations from returning zero on error
+
+Martin Oliveira (11):
+  alpha: return error code from alpha_pci_map_sg()
+  ARM/dma-mapping: return error code from .map_sg() ops
+  ia64/sba_iommu: return error code from sba_map_sg_attrs()
+  MIPS/jazzdma: return error code from jazz_dma_map_sg()
+  powerpc/iommu: return error code from .map_sg() ops
+  s390/pci: return error code from s390_dma_map_sg()
+  sparc/iommu: return error codes from .map_sg() ops
+  parisc: return error code from .map_sg() ops
+  xen: swiotlb: return error code from xen_swiotlb_map_sg()
+  x86/amd_gart: return error code from gart_map_sg()
+  dma-mapping: return error code from dma_dummy_map_sg()
+
+ arch/alpha/kernel/pci_iommu.c           | 10 ++-
+ arch/arm/mm/dma-mapping.c               | 26 +++++---
+ arch/ia64/hp/common/sba_iommu.c         |  6 +-
+ arch/mips/jazz/jazzdma.c                |  2 +-
+ arch/powerpc/kernel/iommu.c             |  6 +-
+ arch/powerpc/platforms/ps3/system-bus.c |  2 +-
+ arch/powerpc/platforms/pseries/vio.c    |  5 +-
+ arch/s390/pci/pci_dma.c                 | 13 ++--
+ arch/sparc/kernel/iommu.c               |  6 +-
+ arch/sparc/kernel/pci_sun4v.c           |  6 +-
+ arch/sparc/mm/iommu.c                   |  2 +-
+ arch/x86/kernel/amd_gart_64.c           | 18 +++---
+ drivers/iommu/dma-iommu.c               | 23 +++++--
+ drivers/iommu/iommu.c                   | 15 ++---
+ drivers/parisc/ccio-dma.c               |  2 +-
+ drivers/parisc/sba_iommu.c              |  2 +-
+ drivers/xen/swiotlb-xen.c               |  2 +-
+ include/linux/dma-map-ops.h             |  5 +-
+ include/linux/dma-mapping.h             | 35 ++--------
+ include/linux/iommu.h                   | 22 +++----
+ kernel/dma/direct.c                     |  2 +-
+ kernel/dma/dummy.c                      |  2 +-
+ kernel/dma/mapping.c                    | 86 ++++++++++++++++++++++---
+ 23 files changed, 181 insertions(+), 117 deletions(-)
+
+
+base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
+--
+2.20.1
