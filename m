@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385003D4259
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE833D425B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhGWVAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 17:00:14 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:53127 "EHLO
+        id S232850AbhGWVAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 17:00:17 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:53135 "EHLO
         esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbhGWVAF (ORCPT
+        with ESMTP id S232550AbhGWVAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Jul 2021 17:00:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
@@ -17,30 +17,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   t=1627076438; x=1658612438;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FZmD5JDut8+hqQnxscDF4nA471lKHOPpWVdLU/AZ18o=;
-  b=NzEP6GJ+vTrZoRsYL1+hVW6/+YPNJDfc5n3/6RZW4PS2/rXhDcO+YApS
-   AL5bqTuhZkv7/MMOw0copSp7mjUWFZJ8w/T7we6iCxzJkQudfmG6Izyhb
-   cf0jQzXnpCazii7TWqbIfQGAmjt4wLw2InJmRZ/enzeyzBUqesFqcwLQ1
-   mwu7dcSkXfxAhNGRd9zhgav+wjILac8t66aTwcxW3wYPWqh7FhC2kccl5
-   XVPg7r8LKd+mVRVpoPdshgfaxvTLMT55QzbIR/Vf7B780gprIQD/QrG81
-   Bn2DCWaDvNU5qMMqbxMQz4f7v2DZPMaY7bKvsjTtVQWapRwQeNzE5LNvn
-   A==;
+  bh=CVn7oX0CjfibpYFFpqHWKgpHrrL7Xnf/XJqEMEbWufY=;
+  b=I3YhLYCYXOyjQmfd7NjMgSObNw8JiNTFxnRo8fqzh2qWV45pc5DfbL+Y
+   5YvdAe4WfY4N4PZAjlnX9cZtX8ZrGun5JUlnuVyxvs7e6y7dnc5PrnYAh
+   2f1/l1dvOBUW2gNkpXfE0hLm7fFRodvwlC1zxWRF91KdMD8h5J+x8SHW4
+   Zs4mAh5ntglJIhbqVFsYr0jMYwGB5wXbzdljSipEBByVD8dYwnmQ64HTI
+   VKkFu7C5T8iak80e/N0eIC3XQ6/lBKnE6aWHSD4J2VQ3E13sEeDNlWsqB
+   mAvNf57iybdhlONt1QHcvV4qE9OkW64o4vz8ulVBxod3/dil/f2Y7Fdvz
+   g==;
 X-IronPort-AV: E=Sophos;i="5.84,265,1620662400"; 
-   d="scan'208";a="279198469"
+   d="scan'208";a="279198474"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 24 Jul 2021 05:40:37 +0800
-IronPort-SDR: GgCkjKQ4iqVvVxjYx5RuhbEcge46hNARB3+SjKedpBGGjlxs9Cq+5VPWCpc2OM7sIktONEtJxy
- UTVW8GdAeM/us/9/TE9Zw2XHUgaJpmxL3IGW/ZKZUb0avXb/KX4/kOEQOdtIYDP2OqP2D5QabK
- BV2aPbnztX4pmbLE4AAUE572bXANpv1UT0rh9FJk6ajYLKn8ZZbBZIxWqbOogvtGPTsvJ09vML
- 79SnAxCWYDkio/ucKlJagq0iSXEKKOjUJj2aKRQRHqEV4AxzSw6gJoFTGqgyXi0AFaAym9Ln6Q
- LatYEJ/vlYlM91ZzAtaVcBGI
+  by ob1.hgst.iphmx.com with ESMTP; 24 Jul 2021 05:40:38 +0800
+IronPort-SDR: MaPQalYt1s5J/irtK+2I9xeyOvHsqOmB0UDaXcwP8LNGJIKICd1z7bWoF7Ml4qDEtEVeiDZfm6
+ tzcQDO3BZ25QZ6897uCRHP1EC5Tp9QBlHlEfLs07Hd2k489vfRHxDo9QU6LC9cWhjh3/NBhJl5
+ 5f5T36cXl8GpClyBuEzBBxAy1KLBDtq0UffrA4qDPoPRMMGxtfLrjEs+3x/3xzvV4+isGY5AO2
+ ir8v/Kyj24mrzaXT58QoCVkasIxOx9rAzBQN6OgbfQQNLC6N08vlPRiN51uopbtoEgrOKpvJOf
+ mF0SU2aw+VS9j4xq5c39ORRz
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 14:16:46 -0700
-IronPort-SDR: LjlOnqwO6a/04wGjvbug293m/8qn7cznMgBruMkmo6Tel5ZJMkE6+M7OvZdwEvPubcxMheZERt
- lQ+sNikSqbrehg8ASur9Vjq9mL3Z4lqGj5A946yoMS6Ts92f/InosBlv1k2y7BMcnZXeI9zPvx
- mJQEjGWo0n4PPJ7AA4mRZXBBF3gLp53/vEUqb9aWh7AAOyzSZkDvpyEMe1gzV0DokMofyshPSa
- GwceP5V147VgMQfr8U+sGdKkY+aTpBTNx89lHFjrE172mP1ushHKqjMVO+Y4cL8vURhvNaPxhK
- Jzc=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 14:16:47 -0700
+IronPort-SDR: qhmdgrA1THlc1t/uoxnlsIj0rUGoMMu54qei7gUWzJ87apTwDnCvOIRNBoziAyb682Fgk8jRYW
+ UcnQ0MFzhh8mMx4cCW8MaT8l+6SGuqwmTGzpjclU1SRda/TiKJfNmAERHZ7vruJbQbqj+9akst
+ Zy3PrYdD05YDUud56v6fL93ksTdhe8tU/rO4Z3KZSrDBVeLvwxNigChWwMk+eKF4Kh9+8OoRpp
+ HbIAUxanozLZ7K6AaSrtNE+1ypjkoxDYqn0/HSxVF48FGlduZ0tmkOcdTrI8grrvNtTC8wvyvW
+ Vu0=
 WDCIronportException: Internal
 Received: from ucfbox21.ad.shared (HELO hulk.wdc.com) ([10.225.167.4])
   by uls-op-cesaip01.wdc.com with ESMTP; 23 Jul 2021 14:40:38 -0700
@@ -59,9 +59,9 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Rob Herring <robh+dt@kernel.org>,
         Robin Murphy <robin.murphy@arm.com>,
         Tobias Klauser <tklauser@distanz.ch>
-Subject: [RFC 4/5] dma-direct: Allocate dma pages directly if global pool allocation fails
-Date:   Fri, 23 Jul 2021 14:40:30 -0700
-Message-Id: <20210723214031.3251801-5-atish.patra@wdc.com>
+Subject: [RFC 5/5] RISC-V: Support a new config option for non-coherent DMA
+Date:   Fri, 23 Jul 2021 14:40:31 -0700
+Message-Id: <20210723214031.3251801-6-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210723214031.3251801-1-atish.patra@wdc.com>
 References: <20210723214031.3251801-1-atish.patra@wdc.com>
@@ -71,40 +71,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DMA_GLOBAL_POOL config may be enabled for platforms where global pool is
-not supported because a generic defconfig is expected to boot on different
-platforms. Specifically, some RISC-V platforms may use global pool for
-non-coherent devices while some other platforms are completely coherent.
-However, it is expected that single kernel image must boot on all the
-platforms.
-
-Continue the dma direct allocation if a allocation from global pool failed.
-This indicates that the platform is relying on some other method (direct
-remap) or just have coherent devices.
+In future, there will be more RISC-V platforms with non-coherent DMA.
+Instead of selecting all the required config options in every soc, create
+a new config that selects all the required configs related non-coherent
+DMA.
 
 Signed-off-by: Atish Patra <atish.patra@wdc.com>
 ---
- kernel/dma/direct.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/riscv/Kconfig | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-index d1d0258ed6d0..984ea776f099 100644
---- a/kernel/dma/direct.c
-+++ b/kernel/dma/direct.c
-@@ -161,8 +161,11 @@ void *dma_direct_alloc(struct device *dev, size_t size,
- 		return arch_dma_alloc(dev, size, dma_handle, gfp, attrs);
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 8fcceb8eda07..931b283c8ec9 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -209,6 +209,14 @@ config PGTABLE_LEVELS
+ config LOCKDEP_SUPPORT
+ 	def_bool y
  
- 	if (IS_ENABLED(CONFIG_DMA_GLOBAL_POOL) &&
--	    !dev_is_dma_coherent(dev))
--		return dma_alloc_from_global_coherent(dev, size, dma_handle);
-+	    !dev_is_dma_coherent(dev)) {
-+		ret = dma_alloc_from_global_coherent(dev, size, dma_handle);
-+		if (ret)
-+			return ret;
-+	}
++config RISCV_DMA_NONCOHERENT
++	bool
++	select ARCH_HAS_DMA_PREP_COHERENT
++	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
++	select ARCH_HAS_SYNC_DMA_FOR_CPU
++	select ARCH_HAS_SETUP_DMA_OPS
++	select DMA_GLOBAL_POOL
++
+ source "arch/riscv/Kconfig.socs"
+ source "arch/riscv/Kconfig.erratas"
  
- 	/*
- 	 * Remapping or decrypting memory may block. If either is required and
 -- 
 2.31.1
 
