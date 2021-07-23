@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287203D36F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246B53D36F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhGWH7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:59:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35594 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234586AbhGWH7d (ORCPT
+        id S234618AbhGWIAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234253AbhGWIAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:59:33 -0400
-X-UUID: 99d6bfe353d04a4ebba226ceb58f3499-20210723
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=6eFxbfXU1aGruy1a6KsbRzQX11yjS2zTUljrzlkeqUU=;
-        b=hr79QuZ31l8PtsKCPcPzv+oHGdsHt3MktK/1aYXM1h48h69CZQE+srWopEqrpXsCDNP7kFKkDmvDtBcD/BXYF9MzhwtiJVU90NHMPqzPg/Ha79sUlv/2uTjrqYtEutODQmvZvcxZxyADoVplg9WSQFMkYuTzXhYnJKPHXlJL2M4=;
-X-UUID: 99d6bfe353d04a4ebba226ceb58f3499-20210723
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1807898697; Fri, 23 Jul 2021 16:40:03 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Jul 2021 16:40:02 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Jul 2021 16:40:01 +0800
-Message-ID: <1627029602.14347.6.camel@mtkswgap22>
-Subject: Re: [RESEND PATCH v2] mm/sparse: clarify pgdat_to_phys
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Date:   Fri, 23 Jul 2021 16:40:02 +0800
-In-Reply-To: <a042906d-7d07-d1af-57d2-ab4cbdc53f36@redhat.com>
-References: <20210723070137.23321-1-miles.chen@mediatek.com>
-         <a042906d-7d07-d1af-57d2-ab4cbdc53f36@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Fri, 23 Jul 2021 04:00:07 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAB6C061575;
+        Fri, 23 Jul 2021 01:40:40 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id o13so673228qkk.9;
+        Fri, 23 Jul 2021 01:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to;
+        bh=5fHOWqJ8qh0WwR9vw60QMKf5JORbjfW0NMV+4iT7I6w=;
+        b=tTj5kE3E1A4aR+RRnZGKWdDEH8JLh4yP9kt680dTW6xjBwBfV942ghN1IRoaIsihID
+         Fq3ntV/U9GGC5L2GxV/cnFRA17KepG50tEV1gYy0GB7m5NHn4woQ9pTuTYFf02lrjGOQ
+         AqsnGyyGHJYIEm93hWMt4huH4/bC0Ic4MbfiblMpMJQPaqv5JP2w3qPk6TadjZyM8MuB
+         mBWlNzUXHkQE1OYxhpgiKmTwzd6CDt094wddLKcZvG5H4pGTabceNPjJHJnL8c0E/4Xj
+         2yBGWabfH2iQfBNtzi1MyOltVKPtd0mvBZAg4NypM9y7GcgF1YQ3ZFhu17defB60pbAH
+         rmkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to;
+        bh=5fHOWqJ8qh0WwR9vw60QMKf5JORbjfW0NMV+4iT7I6w=;
+        b=i92g81igNm1nU0v4hQclZ0b0Dln+5faix3/KFR78K2G4+eW/8D7u8aU0orp16qhRHn
+         rzSadgr5VjbdWEjVDey8bjYZtuCpb8MLmbi4pfDzRAQYj2v1HiadZCNdUlugzFAAkCS2
+         Ya+nARSx3ZAq2k0TQy6teQz1oox+xS9jQLyMnlu20fzaqmHoe4EcvNmXbX9T5RlUfpsx
+         4bky4plNDfs3iTEaqPh07XCiPgjbRq4Y1xtyEHcPl4bF69eKWzmjYKF07MdqsJA/tb9o
+         nuXVB1wL1KS0gyGcE48oWKSpbI3E5j2l56RiHi8hTuPVqOtCm8Yyzm7kNyenanPj7/RF
+         jcnQ==
+X-Gm-Message-State: AOAM530mhXs8TT75JE5roeV8NIRh8M3ZKHAPtMBkKJ15Gw9TXojgCFNG
+        C0wXQ2oaXq5Fim7a2yM0hSk=
+X-Google-Smtp-Source: ABdhPJzOHyPxVKfFwgTUboDXq2NPyhFtWQ1kiQEeENNEWaCTpqjquv6jAZ18ejSXY418BqdpbT2Zwg==
+X-Received: by 2002:ae9:ed05:: with SMTP id c5mr3466245qkg.24.1627029639612;
+        Fri, 23 Jul 2021 01:40:39 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id z12sm11105576qtw.90.2021.07.23.01.40.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 01:40:39 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+X-Google-Original-From: SeongJae Park <sjpark@amazon.de>
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     Dongjoo Seo <dseo3@uci.edu>,
+        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@Huawei.com>,
+        acme@kernel.org, akpm@linux-foundation.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendanhiggins@google.com,
+        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
+        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
+        greg@kroah.com, gthelen@google.com, guoju.fgj@alibaba-inc.com,
+        jgowans@amazon.com, joe@perches.com, linux-damon@amazon.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mgorman@suse.de, mheyne@amazon.de,
+        minchan@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, riel@surriel.com, rientjes@google.com,
+        rostedt@goodmis.org, rppt@kernel.org, shakeelb@google.com,
+        shuah@kernel.org, sieberf@amazon.com, sjpark@amazon.de,
+        snu@zelle79.org, vbabka@suse.cz, vdavydov.dev@gmail.com,
+        zgf574564920@gmail.com
+Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
+Date:   Fri, 23 Jul 2021 08:40:32 +0000
+Message-Id: <20210723084032.2935-1-sjpark@amazon.de>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210723083042.2720-1-sjpark@amazon.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA3LTIzIGF0IDA5OjEwICswMjAwLCBEYXZpZCBIaWxkZW5icmFuZCB3cm90
-ZToNCj4gT24gMjMuMDcuMjEgMDk6MDEsIE1pbGVzIENoZW4gd3JvdGU6DQo+ID4gQ2xhcmlmeSBw
-Z2RhdF90b19waHlzKCkgYnkgdGVzdGluZyBpZg0KPiA+IHBnZGF0ID09ICZjb250aWdfcGFnZV9k
-YXRhIHdoZW4gQ09ORklHX05VTUE9bi4NCj4gPiANCj4gPiBjb250aWdfcGFnZV9kYXRhIGlzIG9u
-bHkgYXZhaWxhYmxlIHdoZW4gQ09ORklHX05VTUE9bg0KPiA+IHNvIHdlIGhhdmUgdG8gdXNlICNp
-Zm5kZWYgaGVyZS4NCj4gPiANCj4gPiBObyBmdW5jdGlvbmFsIGNoYW5nZSBpbnRlbmRlZC4NCj4g
-PiANCj4gPiBDb21tZW50IGZyb20gTWFyayBbMV06DQo+ID4gIg0KPiA+IC4uLiBhbmQgSSByZWNr
-b24gaXQnZCBiZSBjbGVhcmVyIGFuZCBtb3JlIHJvYnVzdCB0byBkZWZpbmUNCj4gPiBwZ2RhdF90
-b19waHlzKCkgaW4gdGhlIHNhbWUgaWZkZWZzIGFzIGNvbnRpZ19wYWdlX2RhdGEgc28NCj4gPiB0
-aGF0IHRoZXNlLCBzdGF5IGluLXN5bmMuIGUuZy4gaGF2ZToNCj4gPiANCj4gPiB8ICNpZmRlZiBD
-T05GSUdfTlVNQQ0KPiA+IHwgI2RlZmluZSBwZ2RhdF90b19waHlzKHgpCXZpcnRfdG9fcGh5cyh4
-KQ0KPiA+IHwgI2Vsc2UgLyogQ09ORklHX05VTUEgKi8NCj4gPiB8DQo+ID4gfCBleHRlcm4gc3Ry
-dWN0IHBnbGlzdF9kYXRhIGNvbnRpZ19wYWdlX2RhdGE7DQo+ID4gfCAuLi4NCj4gPiB8ICNkZWZp
-bmUgcGdkYXRfdG9fcGh5cyh4KQlfX3BhX3N5bWJvbCgmY29udGlnX3BhZ2VfZGF0YSkNCj4gPiB8
-DQo+ID4gfCAjZW5kaWYgLyogQ09OSUZJR19OVU1BICovDQo+ID4gIg0KPiA+IA0KPiA+IENvbW1l
-bnQgZnJvbSBNaWtlIFsyXToNCj4gPiAiDQo+ID4gSSdtIG5vdCBzdXJlIGEgbWFjcm8gaXMgYmV0
-dGVyIHRoYW4gYSBzdGF0aWMgaW5saW5lLg0KPiA+IA0KPiA+IE1heWJlIHdlJ2Qgd2FudCB0byB3
-YXJuIGlmIHBnZGF0IHBhc3NlZCB0byBwZ3RhdF90b19waHlzKCkgaXMgbm90DQo+ID4gJmNvbnRp
-Z19wYWdlX2RhdGEsIGUuZyBzb21ldGhpbmcgbGlrZQ0KPiA+IA0KPiA+IHN0YXRpYyBpbmxpbmUg
-cGh5c19hZGRyX3QgcGdkYXRfdG9fcGh5cyhzdHJ1Y3QgcGdsaXN0X2RhdGEgKnBnZGF0KQ0KPiA+
-IHsNCj4gPiAJaWYgKCFJU19FTkFCTEVEKENPTkZJR19OVU1BKSkgew0KPiA+IAkJaWYgKHBnZGF0
-ID09ICZjb250aWdfcGFnZV9kYXRhKQ0KPiA+IAkJCXJldHVybiBfX3BhX3N5bWJvbCgmY29udGln
-X3BhZ2VfZGF0YSk7DQo+ID4gCQllbHNlDQo+ID4gCQkJcHJfd2FybigiVW5leHBlY3RlZCBwZ2xp
-c3RfZGF0YSBwb2ludGVyIVxuIik7DQo+ID4gCX0NCj4gPiANCj4gPiAJcmV0dXJuIF9fcGEocGdk
-YXQpOw0KPiA+IH0NCj4gPiAiDQo+ID4gDQo+ID4gWzFdIGh0dHBzOi8vdXJsZGVmZW5zZS5jb20v
-djMvX19odHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1hcm0ta2VybmVsLzIwMjEwNjE1MTMx
-OTAyLkdCNDcxMjFAQzAyVEQwVVRIRjFULmxvY2FsL19fOyEhQ1RSTktBOXdNZzBBUmJ3ITFiSlRu
-SDJnSjZRdnNCS1RYSDh4T2lLZkhGLXhxXzFkb2szY25FVEQ0ZTRxanJ5bnRGbThLMFhqdEVta0hB
-eEc2ZyQgDQo+ID4gWzJdIGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19odHRwczovL2xvcmUu
-a2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvMTQ1MjkwMy8qMTY1MDc1OV9fO0l3ISFDVFJOS0E5
-d01nMEFSYnchMWJKVG5IMmdKNlF2c0JLVFhIOHhPaUtmSEYteHFfMWRvazNjbkVURDRlNHFqcnlu
-dEZtOEswWGp0RW1iR1hFa1ZnJCANCj4gPiANCj4gPiBDYzogTWlrZSBSYXBvcG9ydCA8cnBwdEBr
-ZXJuZWwub3JnPg0KPiA+IENjOiBNYXJrIFJ1dGxhbmQgPG1hcmsucnV0bGFuZEBhcm0uY29tPg0K
-PiA+IFNpZ25lZC1vZmYtYnk6IE1pbGVzIENoZW4gPG1pbGVzLmNoZW5AbWVkaWF0ZWsuY29tPg0K
-PiA+IA0KPiA+IC0tLQ0KPiA+IA0KPiA+IENoYW5nZSBzaW5jZSB2MToNCj4gPiBUaGFua3MgZm9y
-IE1pa2UncyBjb21tZW50LCBjaGVjayBpZiBwZ2RhdCA9PSAmY29udGlnX3BhZ2VfZGF0YSwNCj4g
-PiBzbyBpdCBpcyBjbGVhcmVyIHRoYXQgd2Ugb25seSBleHBlY3QgY29udGlnX3BhZ2VfZGF0YSB3
-aGVuDQo+ID4gQ09ORklHX05VTUE9bi4NCj4gPiAtLS0NCj4gPiAgIG1tL3NwYXJzZS5jIHwgNyAr
-KysrLS0tDQo+ID4gICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9u
-cygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9tbS9zcGFyc2UuYyBiL21tL3NwYXJzZS5jDQo+
-ID4gaW5kZXggNjMyNmNkZjM2YzRmLi5mNzNmZjNjMTI0YzUgMTAwNjQ0DQo+ID4gLS0tIGEvbW0v
-c3BhcnNlLmMNCj4gPiArKysgYi9tbS9zcGFyc2UuYw0KPiA+IEBAIC0zNDgsMTAgKzM0OCwxMSBA
-QCBzaXplX3QgbWVtX3NlY3Rpb25fdXNhZ2Vfc2l6ZSh2b2lkKQ0KPiA+ICAgc3RhdGljIGlubGlu
-ZSBwaHlzX2FkZHJfdCBwZ2RhdF90b19waHlzKHN0cnVjdCBwZ2xpc3RfZGF0YSAqcGdkYXQpDQo+
-ID4gICB7DQo+ID4gICAjaWZuZGVmIENPTkZJR19OVU1BDQo+ID4gLQlyZXR1cm4gX19wYV9zeW1i
-b2wocGdkYXQpOw0KPiA+IC0jZWxzZQ0KPiA+ICsJaWYgKHBnZGF0ID09ICZjb250aWdfcGFnZV9k
-YXRhKQ0KPiA+ICsJCXJldHVybiBfX3BhX3N5bWJvbCgmY29udGlnX3BhZ2VfZGF0YSk7DQo+ID4g
-Kwlwcl93YXJuKCJVbmV4cGVjdGVkIHBnbGlzdF9kYXRhIHBvaW50ZXIhXG4iKTsNCj4gDQo+IFNo
-b3VsZG4ndCB0aGlzIHJhdGhlciBiZSBhIFZNX0JVR19PTigpPw0KPiANCj4gQmVjYXVzZSBpdCBs
-b29rcyBsaWtlIHNvbWV0aGluZyB0aGF0IHNob3VsZCBiYXJlbHkgaGFwcGVuIGFuZCB3ZSBtaWdo
-dCANCj4gbm90IHdhbnQgdG8gcGVyZm9ybSBydW50aW1lIGNoZWNrcyBvbiBlYWNoIGFuZCBldmVy
-eSBzeXN0ZW0/DQoNCnRoYW5rcyBmb3IgeW91ciBjb21tZW50LCBJIHdpbGwgdXNlIFZNX0JVR19P
-TigpIHRvIGNoZWNrIGlmIHBnZGF0ID09DQpjb250aWdfcGFnZV9kYXRhIHRvIGF2b2lkIHRoZSBy
-dW50aW1lIGNoZWNrLg0KPiANCj4gDQoNCg==
+From: SeongJae Park <sjpark@amazon.de>
 
+On Fri, 23 Jul 2021 08:30:41 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Hello Dongjoo,
+> 
+> 
+> On Fri, 23 Jul 2021 16:02:44 +0900 Dongjoo Seo <dseo3@uci.edu> wrote:
+> 
+> > Hello, I am new user of this amazing tool.
+> 
+> Thank you!  It's always great to meet a new user!
+> 
+> > I want to use this tool for Nvidia tx2 board with kernel version 4.9.140.
+> > 
+> > Do you guys have any timeline or update schedule for different kernel version compatibility?
+> 
+> I didn't have such a plan until now,
+
+BTW, note that we are supporting latest two LTS kernels:
+
+    For people who want to test DAMON but using LTS kernels, there are another
+    couple of trees based on two latest LTS kernels respectively and containing the
+    'damon/master' backports.
+ 
+    - For v5.4.y: https://github.com/sjp38/linux/tree/damon/for-v5.4.y
+    - For v5.10.y: https://github.com/sjp38/linux/tree/damon/for-v5.10.y
+
+
+Thanks,
+SeongJae Park
+
+[...]
