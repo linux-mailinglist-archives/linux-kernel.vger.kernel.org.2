@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258C63D387D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A1A3D3880
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhGWJhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhGWJhq (ORCPT
+        id S231759AbhGWJiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:38:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30580 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230046AbhGWJiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:37:46 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B664BC061575;
-        Fri, 23 Jul 2021 03:18:18 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id z26so1161169edr.0;
-        Fri, 23 Jul 2021 03:18:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FBPRKY3kAU7k5qQgFJyXkiaf1woJOD/WKKAjcqGHd5U=;
-        b=hkYhqb+jNLAqV05N76rJ81VuMYz8g6RicGw00y/l3CFcIHdn7GaLggMFnHYy70sZYJ
-         mTeZZ1a1OKe5GW27ABJqWKTACATxk+3V8P9iAvSzg9xzq/gBGNRKcwNqpTj2s6H/Ydgj
-         1OUxVyw/RkETRVb8coSDiE+5+XAI0jfpXpZ2yDTfHbLDqdlhW8v/xFD/SXy+N+pWLo8c
-         FaNFz4yBP2VA8LwWSZciw/W8B68pJn/ZSVph6OwF3So7crEVZXeatwvUszBzXqnllAaF
-         TYgMrz/PxzIt0uVjJjALEiSTnm094dd1RtbaCPinu9Wr8EW9YqeOJJ88yvqVep5mv3Yc
-         iixg==
+        Fri, 23 Jul 2021 05:38:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627035526;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wAtWjoPMs7b2mfoHjDz+Kbot8us4IZ8w5i6dg1usQ+I=;
+        b=bRJ+rGYhu10F5VCA6QcsxBUElfmLVTKn46kyz5D3OU5/DrCbWhAErknma4SM+bBSmzVr2J
+        FaW/6R/v04r3Tv2qe1+BnHYUqOCrAiWCfTi8E5TN60V61bQrcYqhGuDe5vuCsVcp90gTfO
+        MN8LgHXkQ+pp6KkVK19/zz00AW5dGsQ=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-mkmRiEr-MDODR5R7V5TSBg-1; Fri, 23 Jul 2021 06:18:44 -0400
+X-MC-Unique: mkmRiEr-MDODR5R7V5TSBg-1
+Received: by mail-il1-f199.google.com with SMTP id x9-20020a92b0090000b0290214927ba4d8so770248ilh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 03:18:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FBPRKY3kAU7k5qQgFJyXkiaf1woJOD/WKKAjcqGHd5U=;
-        b=sHFtoWQAvJx4Eqh0VhUKLjYl3pzzsGJjEY2v22r8DBuL3Bn1gOzv0kCYz7m8/gwsmH
-         kYmK7xAdkF39pYwLenKejER9pUBJsjG2Go8hs40YSnIT1t5vSxgrmRz9lLsug2iz9UHj
-         8nK/0CD/9gzvACt9jHQ95kG75EDO+hOGeOrCvt1B+G4340raAaNNWnVGLCh7/jSznAEL
-         YlMhP2voWY8iKC/Ou/TyH1bQJHXkfKiNQ9GCo6ci2619dz+kX1//zaP2hnJDByKkSIyy
-         FRhtTQdsOxZ9mD11n4nv0NALeF7/PdnsmSwh5lBk0MKfUT1lLO6Oj8GboBgf2Cryk+UJ
-         0/4g==
-X-Gm-Message-State: AOAM533u4qDEVZ9GutJFH0wG9jS4l1K22lWaOjMl023RdUdmZpvvDAFv
-        0+CiLHwvLaYpwJKX+zg3kZZa4r6990otI02Y15Q=
-X-Google-Smtp-Source: ABdhPJw2Ynvl7onUFB8T7RfBl9YWi2ELmdwKrnUPYTZpXvVDDoy4Uf6lMGaBkm6qck3YoWSYv+Eb+kS9i2d9p7EoC8w=
-X-Received: by 2002:aa7:c1ca:: with SMTP id d10mr4479428edp.107.1627035497315;
- Fri, 23 Jul 2021 03:18:17 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wAtWjoPMs7b2mfoHjDz+Kbot8us4IZ8w5i6dg1usQ+I=;
+        b=YlhCWUxqrb93xY/NOUxc8u7AM8dX7kbGb24UpYFRCwOxAWPoWnR6SHdgp0RpH+g8M/
+         xwY/KQA2WfKkn1KoksT1Oam2Rpmrs0bmGbOsYg9NE3iNX5y8twUjQT6jTZyQR1C0EkBP
+         3CewTGQILq7S3Fv8S0DucZb47lZH+H1yF8TSbH2li5iClx3Ego0bb5p95yLjO5Tmx1FG
+         5V2FxCJSGxBOADY98l9v79ByQXySc06iO0Ha34ucpMxkQtyfB62mv1DyFNiUKjUM5Xz+
+         QtvLVcIlFd+vx1dFVa6Tj4wCkDbOA0TvFFcW08DfgyhOkn1GM7nCZaRTlLh+seAphv37
+         JLmw==
+X-Gm-Message-State: AOAM533WKNN0ibdfN8goxG8uvFZv6ICOn/q28hWMIXbJOshfujarCjF+
+        ewdbqUGjbtJ7wD2u9hKRPAMIEwsYwhWwO5V2mbsH+2YPgccNSb7WM1N/pDhONRqru4VGJSA1RwM
+        d+2p4dL0lWda8RssjmFAnDpViwN9tVh3ym1YZ9V6j
+X-Received: by 2002:a92:8747:: with SMTP id d7mr3114541ilm.173.1627035524403;
+        Fri, 23 Jul 2021 03:18:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnLBvtdojuHWZ+mNPTTTHfo9sbPOXAPakPJPZrby6KidLaTImlo80uTrFXXtrK0loo+mBtHtFm2LaSGMOgU7E=
+X-Received: by 2002:a92:8747:: with SMTP id d7mr3114532ilm.173.1627035524289;
+ Fri, 23 Jul 2021 03:18:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210723074317.32690-1-jslaby@suse.cz> <20210723074317.32690-2-jslaby@suse.cz>
-In-Reply-To: <20210723074317.32690-2-jslaby@suse.cz>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Fri, 23 Jul 2021 03:18:05 -0700
-Message-ID: <CAMo8Bf+Hm+qg_oUjN6P8ATOqXxHFBPnXA3D9SG+X4P3+wDzPjw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] xtensa: ISS: don't panic in rs_init
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
+References: <20210723035721.531372-1-sashal@kernel.org> <20210723035721.531372-9-sashal@kernel.org>
+ <CACT4oucVa5Lw538M2TEc1ZNU4mUZms+9fiTxw-p5-7J7xcM+kQ@mail.gmail.com>
+In-Reply-To: <CACT4oucVa5Lw538M2TEc1ZNU4mUZms+9fiTxw-p5-7J7xcM+kQ@mail.gmail.com>
+From:   =?UTF-8?B?w43DsWlnbyBIdWd1ZXQ=?= <ihuguet@redhat.com>
+Date:   Fri, 23 Jul 2021 12:18:33 +0200
+Message-ID: <CACT4oudPRf=RjqxncVrWGpMNfYTUhHOEbydtTq1O-R70P47guA@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.13 09/19] sfc: ensure correct number of XDP queues
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 12:43 AM Jiri Slaby <jslaby@suse.cz> wrote:
->
-> While alloc_tty_driver failure in rs_init would mean we have much bigger
-> problem, there is no reason to panic when tty_register_driver fails
-> there. It can fail for various reasons.
->
-> So handle the failure gracefully. Actually handle them both while at it.
-> This will make at least the console functional as it was enabled earlier
-> by console_initcall in iss_console_init. Instead of shooting down the
-> whole system.
->
-> We move tty_port_init() after alloc_tty_driver(), so that we don't need
-> to destroy the port in case the latter function fails.
->
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: linux-xtensa@linux-xtensa.org
-> ---
->  arch/xtensa/platforms/iss/console.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
+On Fri, Jul 23, 2021 at 12:12 PM =C3=8D=C3=B1igo Huguet <ihuguet@redhat.com=
+> wrote:
+> This one can be applied too, but not really a must-have.
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Sorry, I have to correct myself. Both must be applied:
+58e3bb77bf1b sfc: ensure correct number of XDP queues
+f43a24f446da sfc: fix lack of XDP TX queues - error XDP TX failed (-22)
 
--- 
-Thanks.
--- Max
+Otherwise, if there are some left-over TXQs because of round up,
+xdp_tx_queue_count coud be set to a wrong value, higher than it should
+be.
+
+Regards
+--=20
+=C3=8D=C3=B1igo Huguet
+
