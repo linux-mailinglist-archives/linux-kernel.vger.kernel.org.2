@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DCC3D34F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995723D34FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234182AbhGWGVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:21:11 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45448 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234089AbhGWGVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:21:10 -0400
-X-UUID: 42790fba2b7741d88ac8bd1a6ae43166-20210723
-X-UUID: 42790fba2b7741d88ac8bd1a6ae43166-20210723
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 733327149; Fri, 23 Jul 2021 15:01:40 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Jul 2021 15:01:38 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Jul 2021 15:01:38 +0800
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        Miles Chen <miles.chen@mediatek.com>
-Subject: [RESEND PATCH v2] mm/sparse: clarify pgdat_to_phys
-Date:   Fri, 23 Jul 2021 15:01:37 +0800
-Message-ID: <20210723070137.23321-1-miles.chen@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S234212AbhGWGVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:21:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234089AbhGWGVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:21:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F252A60EE2;
+        Fri, 23 Jul 2021 07:02:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627023728;
+        bh=02LUfP9gRBAKznttDT6gEA8Wm5l4jpvhTQOhmSmp6TY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oYElD2rhN77kwhk3cHbdJs1c1K4EEL9wI8fe4Uw3mOaPEtxJSMnhDjUPbEEf1SAzA
+         YEHykz6fGqLgjZZ4asnYJ3GIswCFOu2g/Z98w+hF9lyqReoghUDstiJGuK44r8OyR6
+         EhDzQXwJgbKvoHxsJjXUSHkuXAx5ulAcvQyMelNA=
+Date:   Fri, 23 Jul 2021 09:02:05 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Zhouyi Zhou <zhouzhouyi@gmail.com>,
+        Chris Clayton <chris2553@googlemail.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Boqun Feng <boqun.feng@gmail.com>, paulmck@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Chris Rankin <rankincj@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        rcu <rcu@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>
+Subject: Re: linux-5.13.2: warning from kernel/rcu/tree_plugin.h:359
+Message-ID: <YPppbUqSPTNcm3f9@kroah.com>
+References: <YPVtBBumSTMKGuld@casper.infradead.org>
+ <2237123.PRLUojbHBq@natalenko.name>
+ <CAABZP2w4VKRPjNz+TW1_n=NhGw=CBNccMp-WGVRy32XxAVobRg@mail.gmail.com>
+ <CAABZP2yh3J8+P=3PLZVaC47ymKC7PcfQCBBxjXJ9Ybn+HREbdg@mail.gmail.com>
+ <fb8b8639-bf2d-161e-dc9a-6a63bf9db46e@googlemail.com>
+ <CAABZP2xST9787xNujWeKODEW79KpjL7vHtqYjjGxOwoqXSWXDQ@mail.gmail.com>
+ <YPlmMnZKgkcLderp@casper.infradead.org>
+ <YPlyHF5eNDiTMKzq@kroah.com>
+ <YPl5+PkfBPI0pdHn@kroah.com>
+ <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <01fef2db-bd7e-12b6-ec21-2addd02e7062@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clarify pgdat_to_phys() by testing if
-pgdat == &contig_page_data when CONFIG_NUMA=n.
+On Fri, Jul 23, 2021 at 09:51:09AM +0800, Miaohe Lin wrote:
+> On 2021/7/22 22:00, Greg KH wrote:
+> > On Thu, Jul 22, 2021 at 03:26:52PM +0200, Greg KH wrote:
+> >> On Thu, Jul 22, 2021 at 01:36:02PM +0100, Matthew Wilcox wrote:
+> >>> On Thu, Jul 22, 2021 at 04:57:57PM +0800, Zhouyi Zhou wrote:
+> >>>> Thanks for reviewing,
+> >>>>
+> >>>> What I have deduced from the dmesg  is:
+> >>>> In function do_swap_page,
+> >>>> after invoking
+> >>>> 3385        si = get_swap_device(entry); /* rcu_read_lock */
+> >>>> and before
+> >>>> 3561    out:
+> >>>> 3562        if (si)
+> >>>> 3563            put_swap_device(si);
+> >>>> The thread got scheduled out in
+> >>>> 3454        locked = lock_page_or_retry(page, vma->vm_mm, vmf->flags);
+> >>>>
+> >>>> I am only familiar with Linux RCU subsystem, hope mm people can solve our
+> >>>> confusions.
+> >>>
+> >>> I don't understamd why you're still talking.  The problem is understood.
+> >>> You need to revert the unnecessary backport of 2799e77529c2 and
+> >>> 2efa33fc7f6e
+> >>
+> >> Sorry for the delay, will go do so in a minute...
+> > 
+> > Both now reverted from 5.10.y and 5.13.y.
+> > 
+> 
+> I browsed my previous backport notifying email and found that these two patches are also
+> backported into 5.12. And it seems it's missed.
 
-contig_page_data is only available when CONFIG_NUMA=n
-so we have to use #ifndef here.
+5.12 is now end-of-life, it's not being touched anymore, and no one
+should continue to use it.
 
-No functional change intended.
+thanks,
 
-Comment from Mark [1]:
-"
-... and I reckon it'd be clearer and more robust to define
-pgdat_to_phys() in the same ifdefs as contig_page_data so
-that these, stay in-sync. e.g. have:
-
-| #ifdef CONFIG_NUMA
-| #define pgdat_to_phys(x)	virt_to_phys(x)
-| #else /* CONFIG_NUMA */
-|
-| extern struct pglist_data contig_page_data;
-| ...
-| #define pgdat_to_phys(x)	__pa_symbol(&contig_page_data)
-|
-| #endif /* CONIFIG_NUMA */
-"
-
-Comment from Mike [2]:
-"
-I'm not sure a macro is better than a static inline.
-
-Maybe we'd want to warn if pgdat passed to pgtat_to_phys() is not
-&contig_page_data, e.g something like
-
-static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
-{
-	if (!IS_ENABLED(CONFIG_NUMA)) {
-		if (pgdat == &contig_page_data)
-			return __pa_symbol(&contig_page_data);
-		else
-			pr_warn("Unexpected pglist_data pointer!\n");
-	}
-
-	return __pa(pgdat);
-}
-"
-
-[1] https://lore.kernel.org/linux-arm-kernel/20210615131902.GB47121@C02TD0UTHF1T.local/
-[2] https://lore.kernel.org/patchwork/patch/1452903/#1650759
-
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Miles Chen <miles.chen@mediatek.com>
-
----
-
-Change since v1:
-Thanks for Mike's comment, check if pgdat == &contig_page_data,
-so it is clearer that we only expect contig_page_data when
-CONFIG_NUMA=n.
----
- mm/sparse.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 6326cdf36c4f..f73ff3c124c5 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -348,10 +348,11 @@ size_t mem_section_usage_size(void)
- static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
- {
- #ifndef CONFIG_NUMA
--	return __pa_symbol(pgdat);
--#else
-+	if (pgdat == &contig_page_data)
-+		return __pa_symbol(&contig_page_data);
-+	pr_warn("Unexpected pglist_data pointer!\n");
-+#endif /* !CONFIG_NUMA */
- 	return __pa(pgdat);
--#endif
- }
- 
- #ifdef CONFIG_MEMORY_HOTREMOVE
--- 
-2.18.0
-
+greg k-h
