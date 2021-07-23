@@ -2,97 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D2C3D3B5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42E33D3B6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhGWNFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbhGWNFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:05:45 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1907AC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:46:19 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id b21so1717521ljo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R+ag2d72KvvFEXZNBsdQcAfMeju6Pa8JiIFVIvwyZAs=;
-        b=Bel0NWzfFa7+d0KBmjVVM5nyRPf5LEz7p5f/UNtfAB3KKC96xHbvTXWvvBbDrM72ZT
-         SXzM2conoYeEZZEkJzsgAfViHZODQnnziIxW6NqqsuypTghZgf8poGb2JK44l6zAAcaC
-         i9Zy6ftMma9CWf8ne5JIemBQgOSSMEEMmUCloaNBkmVSkf/4xN9A9PdqMccjr86sO/L0
-         SlZ2zOvit+JbzDXBXK2HNeAo9yEGfaIhs58ErsHRUutYP/eJa7m9LcUCFmPE1kKKpqWX
-         WV/fA8ZMK01uTIlDsfdmpgAb14HExE356njQnykVutaFhedklFS4hrmq3dh94Ebo0o7a
-         JtWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R+ag2d72KvvFEXZNBsdQcAfMeju6Pa8JiIFVIvwyZAs=;
-        b=dQM1FW47G60vmzDa5CvD7EgnIZtGlio/RdodbkXtQDazqGV8f42NZa+J0wvsygeHpP
-         xaF4vT0LfoWroEkgsvQJiAS0D77QkZYdLp+mmRJiUsOjK4UHxxYJJqb142bTCPjPAvqp
-         MCh4n1ssbSDiD3E1UTkKCzL9jA0uwWzI2buFqku1elyVxVAj+BjOhepm0u4pAomtii7H
-         cQIZ87CBH6boU7+WGMhSd65UMusKibIg648sAoUdwA4DS261l89wMi/icZNdTdyjmkp8
-         eDdJR38Bh+RL4ZGsK3sbUTPDzvfQpTiydqJOJVZaCpc1mzmd/2kCtgKOjWtEB5//ddCc
-         pPdQ==
-X-Gm-Message-State: AOAM532irfi3g3SxO4PiAiWoDGcaeYyFOZ636/JpKKxfdRleClH57Okh
-        pwD+InmOcA13fW2kYWbpGygsxLk53wt0iv9Xw3imGA==
-X-Google-Smtp-Source: ABdhPJxHBOisaZMsrpVGL5IjrNztOtO9ALzW8qKpkWXbWzvMb52gUbcej6/EFccqagBqkkFhvSoB5KjNacZFYxqbkBQ=
-X-Received: by 2002:a2e:9ec1:: with SMTP id h1mr3464593ljk.0.1627047977179;
- Fri, 23 Jul 2021 06:46:17 -0700 (PDT)
+        id S235243AbhGWNLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:11:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233552AbhGWNLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:11:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 535F260EE2;
+        Fri, 23 Jul 2021 13:52:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627048327;
+        bh=jFk+0LMES7S6Ja8o2wsbPLKGH7j8TpUeerYAYihrE5g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fAgesXjxnCrHQFC63+0zu1QAnLMUb/krMXzvhoUXFpw/hG/JnsJBmsrsYBv15zVWw
+         lDw+h+lom1f7KghsRfKm1UaoKqdoDOzwtMQypaJO+wfyrt62D+4kFST1838j47HWZx
+         qOITCI0JMt9qS35PfGfGKGQbs2lBYRHjzC5W5Rdc23BJmLBub8UXazhRhUCQrsXkuF
+         MPsNW10Xvax40ERdt4FFhEeeubP+z3DlE3d+7dEYnll8ftGeI5qVRj0X64d5soll5u
+         euA+ofLq32pIPgsslGmcK7NRJUP28V+rvZX/Gs7E6CUk8Fq3ZWo0IfXflyC5xNLHFN
+         iGnih1/AzMueQ==
+Date:   Fri, 23 Jul 2021 14:52:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Frank Wunderlich <frank-w@public-files.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <linux@fw-web.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Leilk Liu <leilk.liu@mediatek.com>,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Peter Hess <peter.hess@ph-home.de>, linux-spi@vger.kernel.org
+Subject: Re: [PATCH] spi: mediatek: fix fifo rx mode
+Message-ID: <20210723135201.GC5221@sirena.org.uk>
+References: <20210706121609.680534-1-linux@fw-web.de>
+ <162608669457.4543.2374973099687363958.b4-ty@kernel.org>
+ <363C87CD-F0C6-4A46-877C-86E07D14787D@public-files.de>
 MIME-Version: 1.0
-References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
- <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
- <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
- <YPqDnqULylkkzQG5@dhcp22.suse.cz>
-In-Reply-To: <YPqDnqULylkkzQG5@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 23 Jul 2021 06:46:06 -0700
-Message-ID: <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2JFBq9zoW8cOFH7v"
+Content-Disposition: inline
+In-Reply-To: <363C87CD-F0C6-4A46-877C-86E07D14787D@public-files.de>
+X-Cookie: Integrity has no need for rules.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 1:53 AM Michal Hocko <mhocko@suse.com> wrote:
->
-[...]
-> > However
-> > retrying means issuing another syscall, so additional overhead...
-> > I guess such "best effort" approach would be unusual for a syscall, so
-> > maybe we can keep it as it is now and if such "do not block" mode is needed
-> > we can use flags to implement it later?
->
-> Yeah, an explicit opt-in via flags would be an option if that turns out
-> to be really necessary.
->
 
-I am fine with keeping it as it is but we do need the non-blocking
-option (via flags) to enable userspace to act more aggressively.
+--2JFBq9zoW8cOFH7v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jul 23, 2021 at 03:46:02PM +0200, Frank Wunderlich wrote:
+
+> Can we add stable-tag i've missed to fix older kernel versions or
+> inform greg to add patch to at least 5.4/5.10?
+
+Let the stable people know once it's in mainline (IIRC it is already) -
+there's a good chance they'll pick it up anyway based on the commit log.
+
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
+
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
+
+--2JFBq9zoW8cOFH7v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD6yYAACgkQJNaLcl1U
+h9BS2wf9EAlL6oZ0DzmB1nfQW4jRM0cEjg0EP36GEgjC8qJ2a8SfLfNK5I4foIKf
+NHqPAvnsWm1hNqFqT717/B3qkrIGD2xhp6RAkzb94IKJID4WA5KCazzjUr/AYHz5
+rv2aaM/2qwq0F0vZAPP5d9Q7UqYmqceX9D9T/PBmVSwq6uyhd1lWngh+QR70HYB1
+n6XFqMkkujk/fXP5iWD9OUbI6EKaC4tclkJ/W8k/UvsffcKXM6NUzukrf4Mhl+uu
+kTYYkuwsNymyAySnUmze07H0P4aLCYefYMtIpXW2fp7GkioLH0smBUL7GKLV43Eo
+VSKbXqA+zjeKCooVhDXA+wlFBzOrCA==
+=oWDi
+-----END PGP SIGNATURE-----
+
+--2JFBq9zoW8cOFH7v--
