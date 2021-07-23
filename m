@@ -2,264 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3343D3B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0F63D3B85
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235335AbhGWNRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:17:21 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:35472 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235126AbhGWNRU (ORCPT
+        id S235314AbhGWNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235126AbhGWNQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:17:20 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16NDvkd6114744;
-        Fri, 23 Jul 2021 08:57:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627048666;
-        bh=UrlhvU1cbISnK3sc3BDNd1cDdK5Y7MGQS101DTVOkmw=;
-        h=From:To:CC:Subject:Date;
-        b=JoHhlWOPd6LH0LcpClGET4bhNoFP5m4o6OhQJNfyIvC2LR6UWZPe4K8WFOoLIvzWC
-         sOq3D/Goxod8iF4E3C/7XQQm/dFw27lH8RhmRt4vDbSzrJ4zZ6d67E0Kl00tobftxU
-         GZ6PK2OTGyBW4mekEbpK1c5I6BvpbVbqIllgclro=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16NDvkdU123798
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 23 Jul 2021 08:57:46 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 23
- Jul 2021 08:56:09 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 23 Jul 2021 08:56:10 -0500
-Received: from a0393678-ssd.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16NDu6NP058671;
-        Fri, 23 Jul 2021 08:56:07 -0500
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-CC:     <lokeshvutla@ti.com>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] dt-bindings: phy: Convert AM654 SERDES bindings to YAML
-Date:   Fri, 23 Jul 2021 19:26:05 +0530
-Message-ID: <20210723135605.23572-1-kishon@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 23 Jul 2021 09:16:42 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01694C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:57:16 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id e2so2466979wrq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:57:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorfullife-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=v5QzT0eQTS6nyU0BB8Gyy3vQ5uM5RyHUdVuAlNWQzlg=;
+        b=xKu9ud3E5jXcgwk2127yeFEUlp6Hv/hOhQ/v1+gfr4E33VaAmxY9zQF9yjgZItJHsR
+         CDjethkWpqlXFg2gkwu6wQ2GcJDdUaMSuRE4WN5cYPYMaadCVheAxy5+HXLYF75/5k+0
+         ij68FL9nvbzyEWFX9dbHm5wkJCjtXHH3X6cBal3u0EGXrgbUP2cyen0bl64y7MlBA0Sr
+         kCiTaAkRj1NGT6BNNBY28cxBHWzMEJ1LlgOBe5ozQSuqm/nyijvNwrZKEuNO0ZLBXWWZ
+         g5nzQxZYrZ56OAbhbZH7t75OR0l836XQ6p0jSWRKfsk0D2sYk+iWKLArGaJinSMU1ZrM
+         Fkqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=v5QzT0eQTS6nyU0BB8Gyy3vQ5uM5RyHUdVuAlNWQzlg=;
+        b=SYn3Cp0+ld5Yvu4EFeLrAzx4mfYIsNDAOeSRw9PtB6uEf4Md5HYdvEXr7cGtQePkK/
+         FnFbyFn2BX6GH3zot/OMuE8ieLCRWWWnHWOkNVRw1mY+3xcRA2K4jG1A+I9qUEgO6Laj
+         QRrrAWWzJzAK2yKdifD3AzYwrybe4aHVaO8646JApPZtYmQS82V0TD2VzYGH991+kOze
+         Ui0rDtoct09mk4UJeuOurVo9SEQZsjehAEI0urJs5kht03DMMk3+havjl2snhWOCHVVF
+         /yB/oMS7WfukMG452Ua9k1DdVj2Zl2BNFcGzpXfYBBop6nrjtEp7vKDDukH3AtBInrU6
+         Lu5Q==
+X-Gm-Message-State: AOAM531DoVf9bCC8vtkDvKLuV1EhxzCpK5PHyBrzPY6zqrZ5lZmUbJnk
+        zAocGfD1RS0c/KYeJfOA6LENcw==
+X-Google-Smtp-Source: ABdhPJzKURPqdGis9jm3/NLpkQkM5glrZhmoP9DguNmpIIE73bbQeXRNDc87Ni88i5JfSR9TpDXcng==
+X-Received: by 2002:a5d:6d89:: with SMTP id l9mr5347522wrs.371.1627048634627;
+        Fri, 23 Jul 2021 06:57:14 -0700 (PDT)
+Received: from localhost.localdomain (p200300d9972721003352be6dfa1c7751.dip0.t-ipconnect.de. [2003:d9:9727:2100:3352:be6d:fa1c:7751])
+        by smtp.googlemail.com with ESMTPSA id f2sm32803256wrq.69.2021.07.23.06.57.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 06:57:14 -0700 (PDT)
+Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
+ heuristic lockless reads
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+ <20210721211003.869892-2-paulmck@kernel.org>
+ <20210723020846.GA26397@rowland.harvard.edu>
+ <e4aa3346-ba2c-f6cc-9f3c-349e22cd6ee8@colorfullife.com>
+ <20210723130554.GA38923@rowland.harvard.edu>
+From:   Manfred Spraul <manfred@colorfullife.com>
+Message-ID: <aaef6bbb-0711-7900-7cbc-cb3bb19bd25c@colorfullife.com>
+Date:   Fri, 23 Jul 2021 15:57:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210723130554.GA38923@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert SERDES dt-bindings for TI's AM654 SoC to YAML binding.
+Hi Alan,
 
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
----
- .../bindings/phy/ti,phy-am654-serdes.txt      |  82 --------------
- .../bindings/phy/ti,phy-am654-serdes.yaml     | 103 ++++++++++++++++++
- 2 files changed, 103 insertions(+), 82 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.txt
- create mode 100644 Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.yaml
+On 7/23/21 3:05 PM, Alan Stern wrote:
+> On Fri, Jul 23, 2021 at 08:52:50AM +0200, Manfred Spraul wrote:
+>> Hi Alan,
+> Hi.
+>
+>> On 7/23/21 4:08 AM, Alan Stern wrote:
+>>> On Wed, Jul 21, 2021 at 02:10:01PM -0700, Paul E. McKenney wrote:
+>>>> This commit adds example code for heuristic lockless reads, based loosely
+>>>> on the sem_lock() and sem_unlock() functions.
+>>>>
+>>>> Reported-by: Manfred Spraul <manfred@colorfullife.com>
+>>>> [ paulmck: Update per Manfred Spraul and Hillf Danton feedback. ]
+>>>> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>>>> ---
+>>>>    .../Documentation/access-marking.txt          | 94 +++++++++++++++++++
+>>>>    1 file changed, 94 insertions(+)
+>>>>
+>>>> diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
+>>>> index 58bff26198767..be7d507997cf8 100644
+>>>> --- a/tools/memory-model/Documentation/access-marking.txt
+>>>> +++ b/tools/memory-model/Documentation/access-marking.txt
+>>>> @@ -319,6 +319,100 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
+>>>>    concurrent lockless write.
+>>>> +Lock-Protected Writes With Heuristic Lockless Reads
+>>>> +---------------------------------------------------
+>>>> +
+>>>> +For another example, suppose that the code can normally make use of
+>>>> +a per-data-structure lock, but there are times when a global lock
+>>>> +is required.  These times are indicated via a global flag.  The code
+>>>> +might look as follows, and is based loosely on nf_conntrack_lock(),
+>>>> +nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
+>>>> +
+>>>> +	bool global_flag;
+>>>> +	DEFINE_SPINLOCK(global_lock);
+>>>> +	struct foo {
+>>>> +		spinlock_t f_lock;
+>>>> +		int f_data;
+>>>> +	};
+>>>> +
+>>>> +	/* All foo structures are in the following array. */
+>>>> +	int nfoo;
+>>>> +	struct foo *foo_array;
+>>>> +
+>>>> +	void do_something_locked(struct foo *fp)
+>>>> +	{
+>>>> +		bool gf = true;
+>>>> +
+>>>> +		/* IMPORTANT: Heuristic plus spin_lock()! */
+>>>> +		if (!data_race(global_flag)) {
+>>>> +			spin_lock(&fp->f_lock);
+>>>> +			if (!smp_load_acquire(&global_flag)) {
+>>>> +				do_something(fp);
+>>>> +				spin_unlock(&fp->f_lock);
+>>>> +				return;
+>>>> +			}
+>>>> +			spin_unlock(&fp->f_lock);
+>>>> +		}
+>>>> +		spin_lock(&global_lock);
+>>>> +		/* Lock held, thus global flag cannot change. */
+>>>> +		if (!global_flag) {
+>>> How can global_flag ever be true at this point?  The only line of code
+>>> that sets it is in begin_global() below, it only runs while global_lock
+>>> is held, and global_flag is set back to false before the lock is
+>>> released.
+>> It can't be true. The code is a simplified version of the algorithm in
+>> ipc/sem.c.
+>>
+>> For the ipc/sem.c, global_flag can remain true even after dropping
+>> global_lock.
+>>
+>> When transferring the approach to nf_conntrack_core, I didn't notice that
+>> nf_conntrack doesn't need a persistent global_flag.
+>>
+>> Thus the recheck after spin_lock(&global_lock) is not needed.
+> In fact, since global_flag is true if and only if global_lock is locked,
+> perhaps it can be removed entirely and replaced with
+> spin_is_locked(&global_lock).
 
-diff --git a/Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.txt b/Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.txt
-deleted file mode 100644
-index 64b286d2d398..000000000000
---- a/Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.txt
-+++ /dev/null
-@@ -1,82 +0,0 @@
--TI AM654 SERDES
--
--Required properties:
-- - compatible: Should be "ti,phy-am654-serdes"
-- - reg : Address and length of the register set for the device.
-- - #phy-cells: determine the number of cells that should be given in the
--	phandle while referencing this phy. Should be "2". The 1st cell
--	corresponds to the phy type (should be one of the types specified in
--	include/dt-bindings/phy/phy.h) and the 2nd cell should be the serdes
--	lane function.
--	If SERDES0 is referenced 2nd cell should be:
--		0 - USB3
--		1 - PCIe0 Lane0
--		2 - ICSS2 SGMII Lane0
--	If SERDES1 is referenced 2nd cell should be:
--		0 - PCIe1 Lane0
--		1 - PCIe0 Lane1
--		2 - ICSS2 SGMII Lane1
-- - power-domains: As documented by the generic PM domain bindings in
--	Documentation/devicetree/bindings/power/power_domain.txt.
-- - clocks: List of clock-specifiers representing the input to the SERDES.
--	Should have 3 items representing the left input clock, external
--	reference clock and right input clock in that order.
-- - clock-output-names: List of clock names for each of the clock outputs of
--	SERDES. Should have 3 items for CMU reference clock,
--	left output clock and right output clock in that order.
-- - assigned-clocks: As defined in
--	Documentation/devicetree/bindings/clock/clock-bindings.txt
-- - assigned-clock-parents: As defined in
--	Documentation/devicetree/bindings/clock/clock-bindings.txt
-- - #clock-cells: Should be <1> to choose between the 3 output clocks.
--	Defined in Documentation/devicetree/bindings/clock/clock-bindings.txt
--
--   The following macros are defined in dt-bindings/phy/phy-am654-serdes.h
--   for selecting the correct reference clock. This can be used while
--   specifying the clocks created by SERDES.
--	=> AM654_SERDES_CMU_REFCLK
--	=> AM654_SERDES_LO_REFCLK
--	=> AM654_SERDES_RO_REFCLK
--
-- - mux-controls: Phandle to the multiplexer that is used to select the lane
--	function. See #phy-cells above to see the multiplex values.
--
--Example:
--
--Example for SERDES0 is given below. It has 3 clock inputs;
--left input reference clock as indicated by <&k3_clks 153 4>, external
--reference clock as indicated by <&k3_clks 153 1> and right input
--reference clock as indicated by <&serdes1 AM654_SERDES_LO_REFCLK>. (The
--right input of SERDES0 is connected to the left output of SERDES1).
--
--SERDES0 registers 3 clock outputs as indicated in clock-output-names. The
--first refers to the CMU reference clock, second refers to the left output
--reference clock and the third refers to the right output reference clock.
--
--The assigned-clocks and assigned-clock-parents is used here to set the
--parent of left input reference clock to MAINHSDIV_CLKOUT4 and parent of
--CMU reference clock to left input reference clock.
--
--serdes0: serdes@900000 {
--	compatible = "ti,phy-am654-serdes";
--	reg = <0x0 0x900000 0x0 0x2000>;
--	reg-names = "serdes";
--	#phy-cells = <2>;
--	power-domains = <&k3_pds 153>;
--	clocks = <&k3_clks 153 4>, <&k3_clks 153 1>,
--			<&serdes1 AM654_SERDES_LO_REFCLK>;
--	clock-output-names = "serdes0_cmu_refclk", "serdes0_lo_refclk",
--				"serdes0_ro_refclk";
--	assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
--	assigned-clock-parents = <&k3_clks 153 8>, <&k3_clks 153 4>;
--	ti,serdes-clk = <&serdes0_clk>;
--	mux-controls = <&serdes_mux 0>;
--	#clock-cells = <1>;
--};
--
--Example for PCIe consumer node using the SERDES PHY specifier is given below.
--&pcie0_rc {
--        num-lanes = <2>;
--        phys = <&serdes0 PHY_TYPE_PCIE 1>, <&serdes1 PHY_TYPE_PCIE 1>;
--        phy-names = "pcie-phy0", "pcie-phy1";
--};
-diff --git a/Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.yaml b/Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.yaml
-new file mode 100644
-index 000000000000..62dcb84c08aa
---- /dev/null
-+++ b/Documentation/devicetree/bindings/phy/ti,phy-am654-serdes.yaml
-@@ -0,0 +1,103 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/ti,phy-am654-serdes.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: TI AM654 SERDES binding
-+
-+description:
-+  This binding describes the TI AM654 SERDES. AM654 SERDES can be configured
-+  to be used with either PCIe or USB or SGMII.
-+
-+maintainers:
-+  - Kishon Vijay Abraham I <kishon@ti.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,phy-am654-serdes
-+
-+  reg:
-+    maxItems: 1
-+
-+  reg-names:
-+    items:
-+      - const: serdes
-+
-+  power-domains:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 3
-+    description:
-+      Three input clocks referring to left input reference clock, refclk and right input reference
-+      clock.
-+
-+  assigned-clocks:
-+    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-+  assigned-clock-parents:
-+    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-+
-+  '#phy-cells':
-+    const: 2
-+    description:
-+      The 1st cell corresponds to the phy type (should be one of the types specified in
-+      include/dt-bindings/phy/phy.h) and the 2nd cell should be the serdes lane function.
-+
-+  ti,serdes-clk:
-+    description: Phandle to the SYSCON entry required for configuring SERDES clock selection.
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  mux-controls:
-+    maxItems: 1
-+    description: Phandle to the SYSCON entry required for configuring SERDES lane function.
-+
-+  clock-output-names:
-+    oneOf:
-+      - description: Clock output names for SERDES 0
-+        items:
-+          - const: serdes0_cmu_refclk
-+          - const: serdes0_lo_refclk
-+          - const: serdes0_ro_refclk
-+      - description: Clock output names for SERDES 1
-+        items:
-+          - const: serdes1_cmu_refclk
-+          - const: serdes1_lo_refclk
-+          - const: serdes1_ro_refclk
-+
-+required:
-+  - compatible
-+  - reg
-+  - power-domains
-+  - clocks
-+  - assigned-clocks
-+  - assigned-clock-parents
-+  - ti,serdes-clk
-+  - mux-controls
-+  - clock-output-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/phy/phy-am654-serdes.h>
-+
-+    serdes0: serdes@900000 {
-+      compatible = "ti,phy-am654-serdes";
-+      reg = <0x900000 0x2000>;
-+      reg-names = "serdes";
-+      #phy-cells = <2>;
-+      power-domains = <&k3_pds 153>;
-+      clocks = <&k3_clks 153 4>, <&k3_clks 153 1>,
-+               <&serdes1 AM654_SERDES_LO_REFCLK>;
-+      clock-output-names = "serdes0_cmu_refclk", "serdes0_lo_refclk", "serdes0_ro_refclk";
-+      assigned-clocks = <&k3_clks 153 4>, <&serdes0 AM654_SERDES_CMU_REFCLK>;
-+      assigned-clock-parents = <&k3_clks 153 8>, <&k3_clks 153 4>;
-+      ti,serdes-clk = <&serdes0_clk>;
-+      mux-controls = <&serdes_mux 0>;
-+      #clock-cells = <1>;
-+    };
--- 
-2.17.1
+I try to avoid spin_is_locked():
+
+- spin_is_locked() is no memory barrier
+
+- spin_lock() is an acquire memory barrier - for the read part. There is 
+no barrier at all related to the write part.
+
+With an explicit variable, the memory barriers can be controlled much 
+better - and it is guaranteed to work in the same way on all architectures.
+
+
+--
+
+     Manfred
 
