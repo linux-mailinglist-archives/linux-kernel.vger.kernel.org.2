@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866B13D3B52
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1823D3B54
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbhGWNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233486AbhGWNAe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:00:34 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08800C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:41:07 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id h14so2127607lfv.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:41:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8IUOnTm1w1NEGAKUMKN9++OeCABD3VuZuK8Yv72862w=;
-        b=gA0KTI9EjtWRrS83kMofDP16+r28w0JxI7MivS3NNKG3D7h0NX3kFG8jahIo/K4+j/
-         InBy0eAqybKo30iUV2ObUz79y65QEqzuqfkNGtvlG9qDbovYf1u1un6Ke2X6l0BQcFu3
-         q2ilMtGg0WxDs+eaJxTJ42jKEAk8ZC5FQCcKy9F9rN4zkZMmZAtFEsm862G3Sp4rfXt+
-         bWn2TLAs2bbq/De8aok+VvnJvts2urLLECzI97u8kviZl9k23Vte7DZGLFmO1BEBPF5P
-         xDFQ7wrG07ut5ziGOcjIEp43y+8WGHUOdB6/5aXhk06UdWjH2dL5UeZuP/j6p+J6uGi+
-         INXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8IUOnTm1w1NEGAKUMKN9++OeCABD3VuZuK8Yv72862w=;
-        b=gs6Rt6K7L4HA/HzZPHTQFmp+nbp3UW3A1CK6UCxQhSZTXrYf38vR+n8BF3DG6j4yxr
-         WuEOpd7x2m4xp9MG72Zi42IycVJmQp9w0MyAYmxYmMV8nzl4XNg2jSlF/aquZbR1gYkb
-         XM20t0V5jGrbX1+0k4EXfy6Z8okvpLy5Rel+2zGlXu4ijwH3Ef8usxFLZuKBTDuiMruR
-         ibEWHiu0ipyxRtQKuEMrNUYGA1qumvdjS3ME7YFnCazlqquYjwJ5+/5Vhm3iIY0SY44b
-         qqyXTozPHYr2PiWaXkr7iTiWXIH9Q5/OsNVdynZZMJTCxGWuGa5L/2gMTtliLFZ8OQnx
-         qmXg==
-X-Gm-Message-State: AOAM5332Bkeu0w6cAw3n3DBOtn8jtdbEJxAUCZV8Ti3ciMoYqGHnYrCK
-        rAqNJs0l4XofVJsWb4s/GZQguI2ehDsVsxw1mi2XcQ==
-X-Google-Smtp-Source: ABdhPJw8jqOznbPrS2TBhfpe4BhYyrVrnm33Cq5MfitNfhmTtB11IoaLYUskZkWSJpsoHlUm0sPAcJR3h0yAR38JgHQ=
-X-Received: by 2002:ac2:4d86:: with SMTP id g6mr3049839lfe.549.1627047665042;
- Fri, 23 Jul 2021 06:41:05 -0700 (PDT)
+        id S235302AbhGWNBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:01:15 -0400
+Received: from mout.gmx.net ([212.227.17.20]:39913 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233486AbhGWNBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:01:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627047682;
+        bh=LaTL2iNrZOppNwoRX/A0sZoQfAeM0sYpNYrF9YslHt8=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=QD35GZSH+vafo8Iulhbo3gkuQvKp/5Rsy0yrcbLNHI05u/wTc/D5dr1cHHuVEqDP/
+         Vpa6L1G+xYDUquVKxpyraAKR6a8gKEEhypkCCj0DHKZJ4Rch00rPou4IcR9WesLyXu
+         mKUFsncx8cs8yvzqtCsx6n8QDCK0HqPV1BM7iW+w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([149.172.237.67]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEUz4-1lr2CW3C4g-00G4CU; Fri, 23
+ Jul 2021 15:41:22 +0200
+Subject: Re: [PATCH v2 1/2] net: dsa: ensure linearized SKBs in case of tail
+ taggers
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        woojung.huh@microchip.com, UNGLinuxDriver@microchip.com,
+        vivien.didelot@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210721215642.19866-1-LinoSanfilippo@gmx.de>
+ <20210721215642.19866-2-LinoSanfilippo@gmx.de>
+ <20210721233549.mhqlrt3l2bbyaawr@skbuf>
+ <8460fa10-6db7-273c-a2c2-9b54cc660d9a@gmail.com> <YPl9UX52nfvLzIFy@lunn.ch>
+ <7b99c47a-1a3e-662d-edcd-8c91ccb3911e@gmx.de>
+ <20210723122213.fvhudwyk36u7pw52@skbuf>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <e5438617-8dc5-b9c8-7176-91075ca1fc36@gmx.de>
+Date:   Fri, 23 Jul 2021 15:41:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
- <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com> <YPpfo2z8feq0vTlE@dhcp22.suse.cz>
-In-Reply-To: <YPpfo2z8feq0vTlE@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 23 Jul 2021 06:40:53 -0700
-Message-ID: <CALvZod470Q9yZzjRGZr5q3oZ2z7-EYc3fEGtoridk8MJu3k7jg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210723122213.fvhudwyk36u7pw52@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:eORuWqFC1LqZeP5vatnZ0e0ZXIxGitqetBp4/u7C1gUzPTtle/f
+ tQkEbWoOQcuh3RW39mfmxE5t8Sqn1LWHyjB2gTnZ6k7zrH3MxuW4sT8Bue5bbpXayaKRIKd
+ GIo06CYJV4gxIsVr3Hsw2rmmhCR/dX1+vLAWMfxy1V87Q9d0bK/jrXbSr0AMEfZ4jFq7p47
+ jqC8QU/BX9AtQoTKTVDWg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:32GnEuQFGiI=:u4jqjWjqCpGE7+9A6H0Grz
+ TbrAWpvyWL24a0nGupeTUGJAe4iJMofzgHHKV6DZLE3aU798wLUEUzoA5PapTDLezBa5HGMjO
+ jFWRKj2OQUXXpc/1h+XnYkuOlg/94UKG4DeVEey/yhbDi1dF/Vou81JCkU4RDg+Mk+/C20+HX
+ FjjByOTUKhnoZSvEFu5zhPlTZHjFsgmbTD81W7c78M+Asjw1crwfzCH9pMYz/uHLYfI9JeduG
+ GE7PLw3TlXWm070mNur8hP7baSJOp3P5larHuFN9HDjRAjAtIgsuUvKPUboxKuPqQn86AxW3j
+ 4vn8f4uJZrLa9DelcWWEC/cbD7qa/N5daii2RAhlJAEKiV3ARNCjVQfb+AJ3VS6KLrKVkZAy0
+ WqO4jn2OS40OqWgPs+KVLDaL1rZwPAEOMa6orBqZy9F43C2089Tk/A/pCO6X0j2p5MWYr2Ruq
+ rMCtUO0k8dUn3Y0Vor8eTkoKDA/Uwbn6SlKEEYtQJugG8MPv9mGncdPj2aakZYxWTiuAIWKeq
+ wlhEeRM/MsxzMYuqr3uiHI6yCEa0+wVOJcdzHSvZ1kVXsYXkSQYlHZtATXVVciJPGgE+Hqa9h
+ aK9R4tmrFfB+uPcCW0qtHRIJBnr/vPsL1zr2+EtE8GscgKHsqnboXxhpotS6MrTUmsjWRMuoC
+ tfuv5QJJx5+xlA5W5yCIWLhfyENGZsnq8YW4LmIyhSkLVAVtWtSzHdEG+75fA72pR0CgUL9qP
+ QZPb/DhTZqULW1w+IH5xLFmepZuaFUPunuice19oqnLLLbUey4vHsjwxBZsoSvozu4XrO4c6n
+ u4XqnkG7ITyIa7Nmap9+YnNKlOueyHC71bRC9T7G1R6nz7F2d+0Dhr+QbyGnYZO47AeVvc2fW
+ U50hFZrLvWa8oKhWgU1RekfzYHdn2fV7KqbsKZgp7YOWCYzitKLAvQqyX0ub6eF7+BffMBGJO
+ /ihNsTNINtPZRNW+J1IGv1r+iAO+5MEXb1xFKQw9lk4G0sWE29Yl5D0MOY6KzqUk247eXOXoL
+ VyyaNnqR7PeQ/ZL4zirlC+lFgf3zjcg1beMeiElW3uO/K40kBPA9UojeNg9OQTWRxhlYtjVB2
+ DZmwcqo17NT2CSlhllzjk1ejIWyQZQC3/Zdc2ht9gjqJKeRq/fW78xlwA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 11:20 PM Michal Hocko <mhocko@suse.com> wrote:
+
+Hi Vladimir,
+
+On 23.07.21 at 14:22, Vladimir Oltean wrote:
+> On Fri, Jul 23, 2021 at 09:47:39AM +0200, Lino Sanfilippo wrote:
+>> since I got a message that the patches have already been applied to net=
+dev/net.git.
+>> How should I proceed if I want to send a new version of the series? Jus=
+t ignore the
+>> merge to netdev and send the patches nevertheless?
 >
-> On Thu 22-07-21 21:47:56, Suren Baghdasaryan wrote:
-> > On Thu, Jul 22, 2021, 7:04 PM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > > On Thu, Jul 22, 2021 at 6:14 PM Suren Baghdasaryan <surenb@google.com>
-> > > wrote:
-> > > >
-> > > [...]
-> > > > +
-> > > > +       mmap_read_lock(mm);
-> > >
-> > > How about mmap_read_trylock(mm) and return -EAGAIN on failure?
-> > >
-> >
-> > That sounds like a good idea. Thanks! I'll add that in the next respin.
->
-> Why is that a good idea? Can you do anything meaningful about the
-> failure other than immediately retry the syscall and hope for the best?
+> Since the git history is immutable you need to work with what is already
+> in the current net/master branch. What do you want to change, just
+> address the feedback I gave? If that is all, just don't bother, I intend
+> to look at adding a framework through which the DSA master can declare
+> what features it supports in conjunction with specific DSA tagging proto=
+cols.
+> That is material for net-next, and Dave took your patch at the last
+> minute for the "net" pull request towards Linus' tree. If you send
+> another patch on "net" in that area now, we'd have to wait for another
+> week or two until "net" will be merged again into "net-next". Not sure
+> if it's worth it. The only thing that was of concern to me is that you
+> assign the DSA interface's slave->vlan_features =3D master->vlan_feature=
+s.
+> So even though you clear the NETIF_F_SG feature for the DSA slave
+> interface, VLAN uppers on top of DSA interfaces will still have NETIF_F_=
+SG.
+> However, those skbs will be linearized during the dev_queue_xmit call
+> done by the 8021q driver towards DSA, so in the end, the way in which
+> you restructured the code may not be cosmetically ideal, but also
+> appears to not be functionally problematic.
+> Anyway, your patch will probably conflict with the stable trees (the
+> tag_ops->needed_tailroom was introduced very recently), so we will have
+> another chance to fix it up when Greg sends the email that the patch
+> failed to apply.
 >
 
-Yes we can. Based on the situation/impact we can select more victims.
+Yes, I just wanted to address your feedback concerning the feature assignm=
+ent
+in a new patch version. But as you explained this is not needed and would =
+make
+things just unnecessary complicated. So lets wait and see if there are any
+conflicts with Gregs stable tree. Thanks for the explanation.
+
+Best Regards,
+Lino
