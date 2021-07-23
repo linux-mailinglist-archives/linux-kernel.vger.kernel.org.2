@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CEC3D37DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9FE3D37E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhGWJBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:01:49 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:37662 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230397AbhGWJBs (ORCPT
+        id S231434AbhGWJCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231231AbhGWJCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:01:48 -0400
-X-UUID: f5ae721a6bd84a79abd5cd54c09ec9a2-20210723
-X-UUID: f5ae721a6bd84a79abd5cd54c09ec9a2-20210723
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <christine.zhu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1175072792; Fri, 23 Jul 2021 17:42:15 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Jul 2021 17:42:13 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Jul 2021 17:42:12 +0800
-From:   Christine Zhu <Christine.Zhu@mediatek.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
-        <Rex-BC.Chen@mediatek.com>,
-        Christine Zhu <Christine.Zhu@mediatek.com>
-Subject: [v6,3/3] watchdog: mediatek: mt8195: add wdt support
-Date:   Fri, 23 Jul 2021 17:41:38 +0800
-Message-ID: <20210723094138.24793-4-Christine.Zhu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210723094138.24793-1-Christine.Zhu@mediatek.com>
-References: <20210723094138.24793-1-Christine.Zhu@mediatek.com>
+        Fri, 23 Jul 2021 05:02:15 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77354C061575;
+        Fri, 23 Jul 2021 02:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=QL92lUyzg90XLPkGnyYRK/cIIOXbUO/VZDi5JxFk4aQ=;
+        t=1627033369; x=1628242969; b=UvFIjfYU8BvW5RN2N50q0aLQrge7TE0SXPuq3D72g9CsYBt
+        dvjqdaACHDOWOtk3gGjEuQjRgftzY3o/NU7qzya7xJoEYY4aay1SAih7/knD/cAI5vv7fkBpxJMME
+        xj8oOJHm3pRCCOrRy61gjo7ZcMPkqynQU5bg5q9QN2CpHz5sQJRzeAaU01BR9dHQEAPeesMmcT+kg
+        BcwwX+ae6d2OBBB7nNHPk56/IgRlQUWUvid54j7VAB6iWSxQw0DE9OfZmj/r2D0kWe43aQXbE96lp
+        e7zGptITyorX2awH77SfiO88SDBPRNP4h40/MkRm9qoJWH+1wFYAX84SkKBJx8wg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1m6rf0-000UUq-A6; Fri, 23 Jul 2021 11:42:41 +0200
+Message-ID: <e549fbb09d7c618762996aca4242c2ae50f85a5c.camel@sipsolutions.net>
+Subject: Re: [PATCH] cfg80211: free the object allocated in
+ wiphy_apply_custom_regulatory
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Fri, 23 Jul 2021 11:42:40 +0200
+In-Reply-To: <CAD-N9QWRNyZnnDQ3XTQ_SAWNEgiMCJV+5Z69eHtRVcxYtXcM+A@mail.gmail.com>
+References: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
+         <d2b0f847dbf6b6d1e585ef8de1d9d367f8d9fd3b.camel@sipsolutions.net>
+         <CAD-N9QWDNvo_3bdB=8edyYWvEV=b-66Tx-P6_7JGgrSYshDh0A@mail.gmail.com>
+         <11ba299b812212a07fe3631b7be0e8b8fd5fb569.camel@sipsolutions.net>
+         <CAD-N9QWRNyZnnDQ3XTQ_SAWNEgiMCJV+5Z69eHtRVcxYtXcM+A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support MT8195 watchdog device.
+Hi,
 
-Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
----
- drivers/watchdog/mtk_wdt.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Fri, 2021-07-23 at 17:30 +0800, Dongliang Mu wrote:
+> if zhao in the thread is right, we don't need to add this free
+> operation to wiphy_free().
 
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 97ca993bd009..8231cb9cf5f9 100644
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -12,6 +12,7 @@
- #include <dt-bindings/reset-controller/mt2712-resets.h>
- #include <dt-bindings/reset-controller/mt8183-resets.h>
- #include <dt-bindings/reset-controller/mt8192-resets.h>
-+#include <dt-bindings/reset-controller/mt8195-resets.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -81,6 +82,10 @@ static const struct mtk_wdt_data mt8192_data = {
- 	.toprgu_sw_rst_num = MT8192_TOPRGU_SW_RST_NUM,
- };
- 
-+static const struct mtk_wdt_data mt8195_data = {
-+	.toprgu_sw_rst_num = MT8195_TOPRGU_SW_RST_NUM,
-+};
-+
- static int toprgu_reset_update(struct reset_controller_dev *rcdev,
- 			       unsigned long id, bool assert)
- {
-@@ -341,6 +346,7 @@ static const struct of_device_id mtk_wdt_dt_ids[] = {
- 	{ .compatible = "mediatek,mt6589-wdt" },
- 	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
- 	{ .compatible = "mediatek,mt8192-wdt", .data = &mt8192_data },
-+	{ .compatible = "mediatek,mt8195-wdt", .data = &mt8195_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_wdt_dt_ids);
--- 
-2.18.0
+Actually, no, that statement is not true.
+
+All that zhao claimed was that the free happens correctly during
+unregister (or later), and that is indeed true, since it happens from
+
+ieee80211_unregister_hw()
+ -> wiphy_unregister()
+ -> wiphy_regulatory_deregister()
+
+
+However, syzbot of course is also correct. Abstracting a bit and
+ignoring mac80211, the problem is that here we assign it before
+wiphy_register(), then wiphy_register() doesn't get called or fails, and
+therefore we don't call wiphy_unregister(), only wiphy_free().
+
+Hence the leak.
+
+But you can also easily see from that description that it's not related
+to hwsim - we should add a secondary round of cleanups in wiphy_free()
+or even move the call to wiphy_regulatory_deregister() into
+wiphy_free(), we need to look what else this does to see if we can move
+it or not.
+
+johannes
 
