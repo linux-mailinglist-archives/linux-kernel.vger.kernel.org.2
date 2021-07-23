@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A804B3D3A69
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0903D3AAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbhGWMD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:03:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234601AbhGWMD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:03:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4AD260F36;
-        Fri, 23 Jul 2021 12:44:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627044271;
-        bh=I8EG8KvdkCZRoKrlaYWdZuQlSurV1+XMVadCAjX5YV4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nVxmkMHvcnPo9v2E4P0wQkD5Ik+U5FdrwPKUZdVAwInoplBd5SiBtgDftaE8WbUSd
-         BzDFLWC46eIel1r1PDWlUs6Aa7qRa4QBxa4elUzKQ+IZiE/8G95d/2F9hgXMYEZdbj
-         sMg3Wb+lKhTRCHN7stY+1Hm1oedJnMmb/UTzIC/Vk8Wp7DpG0reeVfShYalWOAASME
-         GM9qN4Fvf0xu0543uk/BuTpand2x7kIefBwqsjbqNcc4Yj9KqV03mrOAWGUpjW9/0z
-         6728tFNaWvzzzLYtTMR2BbywvcxIJp5tfi5cQRx10e2gbHJ+GgD00wTQ9Gtzrcn5RS
-         PPsrAmO3PGAhw==
-Received: by mail-wm1-f41.google.com with SMTP id b128so727887wmb.4;
-        Fri, 23 Jul 2021 05:44:30 -0700 (PDT)
-X-Gm-Message-State: AOAM530pEiLHbtrp3jdZkPLGXMKufU3nLI1ESMmpJg/iRvkMLuEpgQqI
-        +7whXfT1cGOA3uT552r5OrFDJeASxj74HubVceU=
-X-Google-Smtp-Source: ABdhPJybmE1yWKNDIQhUELIEmJrbg4IG3VwSlneVoVTxcOHKvr1IKdvANRWVax10Jjs87DppXb3M6ypgcLHba74gdzk=
-X-Received: by 2002:a1c:4e0c:: with SMTP id g12mr13900636wmh.120.1627044269416;
- Fri, 23 Jul 2021 05:44:29 -0700 (PDT)
+        id S235094AbhGWMPZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 08:15:25 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:34173 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234909AbhGWMPY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 08:15:24 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id 779EBC989F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:46:19 +0000 (UTC)
+Received: (Authenticated sender: gregory.clement@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E5647C0006;
+        Fri, 23 Jul 2021 12:45:56 +0000 (UTC)
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 mvebu 0/4] firmware: turris-mox-rwtm: fixups
+In-Reply-To: <20210707181452.zwnltjqssotzc67v@pali>
+References: <20210308153703.23097-1-kabel@kernel.org>
+ <20210520113520.32240-1-pali@kernel.org> <87sg1g1vys.fsf@BL-laptop>
+ <20210707181452.zwnltjqssotzc67v@pali>
+Date:   Fri, 23 Jul 2021 14:45:56 +0200
+Message-ID: <87sg0519mj.fsf@BL-laptop>
 MIME-Version: 1.0
-References: <20210722124814.778059-1-arnd@kernel.org> <20210722124814.778059-10-arnd@kernel.org>
- <29adc1c164805e355b37d1d4668ebda9fb7fa872.camel@sipsolutions.net>
- <CAK8P3a0xZAHknG8_kc62aaKrKdzD-QwQYHT61_wTbFDYADu-zw@mail.gmail.com> <YPnQAksI2+YBivHb@osiris>
-In-Reply-To: <YPnQAksI2+YBivHb@osiris>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 23 Jul 2021 14:44:13 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0VDtatPx93FAa4ZUszZbcHPyX+aQWnZ2aTuL-dHZ_x5A@mail.gmail.com>
-Message-ID: <CAK8P3a0VDtatPx93FAa4ZUszZbcHPyX+aQWnZ2aTuL-dHZ_x5A@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] asm-generic: reverse GENERIC_{STRNCPY_FROM,
- STRNLEN}_USER symbols
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Brian Cain <bcain@codeaurora.org>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>,
-        Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-csky@vger.kernel.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 10:07 PM Heiko Carstens <hca@linux.ibm.com> wrote:
+Hello Pali,
+
+> Hello Gregory!
 >
-> Feel free to add the s390 patch below on top of your series.
-
-Thanks a lot, added now.
-
-> However one question: the strncpy_from_user() prototype now comes everywhere
-> without the __must_check attribute. Is there any reason for that?
+> I see that you put this patch into mvebu/fixes branch and tagged it for
+> 5.13 kernel:
+> https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/tag/?h=mvebu-fixes-5.13-1
 >
-> At least for s390 I want to keep that.
+> But it looks like it was not merged into 5.13. Are you going to re-send
+> all pending patches to 5.14?
 
-Makes sense, I'll add a patch for that as well.
+They have been merged in 5.14 during merged windows and they are now
+also in 5.13.4. So I think everything is OK now.
 
-        Arnd
+Gregory
+
+>
+> On Thursday 17 June 2021 15:06:51 Gregory CLEMENT wrote:
+>> Hello,
+>> 
+>> Series applied on mvebu/fixes
+>> 
+>> Thanks,
+>> 
+>> Gregory
+>> 
+>> > These 4 patches are just fixups. Per Andrew's request I have split them
+>> > from V3 series, so they can be applied to stable.
+>> >
+>> > Marek Behún (2):
+>> >   firmware: turris-mox-rwtm: fix reply status decoding function
+>> >   firmware: turris-mox-rwtm: report failures better
+>> >
+>> > Pali Rohár (2):
+>> >   firmware: turris-mox-rwtm: fail probing when firmware does not support
+>> >     hwrng
+>> >   firmware: turris-mox-rwtm: show message about HWRNG registration
+>> >
+>> >  drivers/firmware/turris-mox-rwtm.c | 55 +++++++++++++++++++++++++-----
+>> >  1 file changed, 47 insertions(+), 8 deletions(-)
+>> >
+>> > -- 
+>> > 2.20.1
+>> >
+>> 
+>> -- 
+>> Gregory Clement, Bootlin
+>> Embedded Linux and Kernel engineering
+>> http://bootlin.com
+
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
