@@ -2,78 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1133D4057
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECA53D405E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbhGWSAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 14:00:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhGWSAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:00:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB85460F35
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 18:40:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627065637;
-        bh=luXtGcA9XPkn2pKeuXVILcPOHo+qWZTOu992ZyXafQg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=N83j4dx3rfgzlrRme4TcsorPA3CwCjlYZTPM33Jyuu5g1ZFvrbAHK2bAaJG+hdmG0
-         hw4wiFRurvy5qLdIXD/jJMuUTRK55/Zyq1SHsITZ1PxD/nANq7uea7MJeEe4jJGklt
-         RScFbpJrFaNHDHSC0ibEy3+SX+3454CDR5eai2/u+EzZIZKAUyRrt/FWB+HWCSjBWR
-         3fNyj1im4apMuZSUXjAjCj0uGL3hPloYHnxqhVBBxc7UR21uRr9wy1tDCgeJAltvT0
-         oVvrJo3YOpzgXI2lpBpYGicBY+ir8bpx/qrVBXlHs3/VacQ/0dOuS+AFXQX5oBVVco
-         GdQN4tYxbg/0g==
-Received: by mail-wr1-f51.google.com with SMTP id o1so3348299wrp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 11:40:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531iy/wJ9TJUvl2ThBwZKX2ZlvaBp40387HAultsncqLpzgA31yR
-        NKkJGA8bRkREwAaFChsVSz44ytrBPORQ36zBq7E=
-X-Google-Smtp-Source: ABdhPJwMCndPGt5XAO6Dm7un4OXszpJWIOXjaITxEdSd5iU9hBRvRdKTCo042U0vc2Fd3fqthaHa2RFxAK6soz4ZCx0=
-X-Received: by 2002:a5d:65cb:: with SMTP id e11mr6959840wrw.105.1627065636499;
- Fri, 23 Jul 2021 11:40:36 -0700 (PDT)
+        id S229783AbhGWSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 14:01:26 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55528 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhGWSBZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 14:01:25 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: aratiu)
+        with ESMTPSA id B110B1F44C5C
+From:   Adrian Ratiu <adrian.ratiu@collabora.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: [PATCH 1/2] char: tpm: Kconfig: remove bad i2c cr50 select
+Date:   Fri, 23 Jul 2021 21:41:49 +0300
+Message-Id: <20210723184150.2596604-1-adrian.ratiu@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210723091534.1730564-1-arnd@kernel.org> <a618e29a-e4b7-bda4-a3e0-7dfd67d64e92@infradead.org>
- <CACO55tvQoCnjQWRJhrJ+8TzY5MuDDSUSnwd5AU8G1qsQYCSCBg@mail.gmail.com>
- <7ddd0c7c-9bdc-9ea3-c635-f1d141d1e870@infradead.org> <CACO55ttjQO5kUeEA7opvGLAwT+a1t0vAguncKDhB4bdy96K7LA@mail.gmail.com>
-In-Reply-To: <CACO55ttjQO5kUeEA7opvGLAwT+a1t0vAguncKDhB4bdy96K7LA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 23 Jul 2021 20:40:19 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0YiAgTLptmPbK6vczkMi7F=tzE-Ae8GPFnBtbvQnoF0Q@mail.gmail.com>
-Message-ID: <CAK8P3a0YiAgTLptmPbK6vczkMi7F=tzE-Ae8GPFnBtbvQnoF0Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/kms/nv50-: fix build failure with CONFIG_BACKLIGHT=n
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Lyude Paul <lyude@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Nikola Cornij <nikola.cornij@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 6:34 PM Karol Herbst <kherbst@redhat.com> wrote:
-> On Fri, Jul 23, 2021 at 6:31 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> > On 7/23/21 8:15 AM, Karol Herbst wrote:
-> > > On Fri, Jul 23, 2021 at 5:10 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> > >
-> > > what's actually the use case of compiling with
-> > > CONFIG_DRM_NOUVEAU_BACKLIGHT=n anyway?
-> >
-> > Dunno. In this case it was just a randconfig. Still, it needs to be
-> > handled in some way - such as the other suggestion in this thread.
-> >
->
-> sure, I was just curious if there was a specific use case or just
-> something random as you mentioned.
+This fixes a minor bug which went unnoticed during the initial
+driver upstreaming review: TCG_CR50 does not exist in mainline
+kernels, so remove it.
 
-I think this is purely done because of tradition. A long time ago, we had
-tiny framebuffer drivers and most PCs did not have backlights, so it
-made sense to leave this optional.
+Fixes: 3a253caaad11 ("char: tpm: add i2c driver for cr50")
+Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+---
+ drivers/char/tpm/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-This was probably just always carried over.
+diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
+index 4308f9ca7a43..d6ba644f6b00 100644
+--- a/drivers/char/tpm/Kconfig
++++ b/drivers/char/tpm/Kconfig
+@@ -89,7 +89,6 @@ config TCG_TIS_SYNQUACER
+ config TCG_TIS_I2C_CR50
+ 	tristate "TPM Interface Specification 2.0 Interface (I2C - CR50)"
+ 	depends on I2C
+-	select TCG_CR50
+ 	help
+ 	  This is a driver for the Google cr50 I2C TPM interface which is a
+ 	  custom microcontroller and requires a custom i2c protocol interface
+-- 
+2.32.0
 
-         Arnd
