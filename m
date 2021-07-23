@@ -2,174 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3AC3D417D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E473D4174
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbhGWToy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:44:54 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61244 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231350AbhGWTov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:44:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10054"; a="208833217"
-X-IronPort-AV: E=Sophos;i="5.84,265,1620716400"; 
-   d="scan'208";a="208833217"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 13:25:24 -0700
-X-IronPort-AV: E=Sophos;i="5.84,265,1620716400"; 
-   d="scan'208";a="471644953"
-Received: from otcpl-devbox.jf.intel.com ([10.54.39.31])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 13:25:24 -0700
-From:   Michael Bottini <michael.a.bottini@linux.intel.com>
-To:     rjw@rjwysocki.net, lenb@kernel.org, irenic.rajneesh@gmail.com,
-        david.e.box@linux.intel.com, hdegoede@redhat.com,
-        mgross@linux.intel.com
-Cc:     Michael Bottini <michael.a.bottini@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-Subject: [PATCH 2/2] platform/x86/intel/pmc: Add PSON residency counter
-Date:   Fri, 23 Jul 2021 13:21:57 -0700
-Message-Id: <20210723202157.2425-2-michael.a.bottini@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
-References: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
+        id S229535AbhGWTmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229575AbhGWTmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 15:42:51 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A15C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:23:23 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id d17so1886786qvn.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=45B60HJHaOgGcCdEHrn+NEtQnhZ8BJLwR64MKRSCcOw=;
+        b=WOzGoY0UoRKQIR68vvCUm1gJHX56WcWzqPIivJlyGlU8Y9tUmbJxODyo9SLqeNnhLc
+         uVpi3uSg01b+SdP4/8aRuWnI/+R30oNwh2f4psNJ5KXHNHm/u80EjLMziY3I+usVH2gM
+         ZQpOCN3kIJvn0np7Ojs2dcE1ivGYcSu+zYt2gEAOWIhHi2l5ByTDXIM6VDwc1ZVcF+wy
+         lCsD40BIocS+UqirAQxeUjkvR7RzRbH3D///u8nyX3SkUSCtDUFCzgkDJgnOrR3pXdf3
+         7xCC4c/Gm2KgeqEXP7iTK/4DEjxCZjGiLxcCGaWYkckgCLjJ5/ITkqqMro/YzFrnraya
+         Q3sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=45B60HJHaOgGcCdEHrn+NEtQnhZ8BJLwR64MKRSCcOw=;
+        b=c+2mmUh7GW1n73/aPVnWGWhhS8SVnRplmjnwRjETI9qC+bQtL+DskSZNYP4Hpc5xFV
+         /MIoZZeBv0MxzsxYvbH0C2gb+wps55eX5dilpgv4nfyXQZ6FRxY/t338PURti76Z6hpI
+         BjJi0RAVGorYckd+gO/F7qKNxGSoh/d1fD20vbw8PbZSJq3L4D9nTDFMTKW2II/JO04N
+         MQ3aC+jNbicdtjBJMYN3/J6yhoUdwNX/eafSwfjWEGtiP9tTt1nHJL68zWud7AgPkYyd
+         2orNM87o8sqF0RzF5YzL1qZxBmqOTppWzKcUJcvahtFWifwYK1ptuMVFAJLrQbAQgue6
+         QjHA==
+X-Gm-Message-State: AOAM531nm0c+GQcvpR3qUDcKGepcE5njP3v1x7s7HyKs/B0LGqoPVbsa
+        uxSV7Fhf8MBAtOIf1zNSxahgxQ9QKS9WTg==
+X-Google-Smtp-Source: ABdhPJzxXfgfsKEfYExH/jpMpAVKqAigNlFjNj7YR7djS8EdDsfMH34XFakeiM7ER4mIVIinVum//g==
+X-Received: by 2002:a05:6214:da1:: with SMTP id h1mr6447709qvh.53.1627071801795;
+        Fri, 23 Jul 2021 13:23:21 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id c16sm12014765qtv.32.2021.07.23.13.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 13:23:21 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 13:23:07 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Huang Ying <ying.huang@intel.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH] mm,shmem: Fix a typo in shmem_swapin_page()
+In-Reply-To: <20210723080000.93953-1-ying.huang@intel.com>
+Message-ID: <24187e5e-069-9f3f-cefe-39ac70783753@google.com>
+References: <20210723080000.93953-1-ying.huang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tiger Lake devices have the capability to track the duration
-of time that their Power Supply Units (PSUs) are turned off during S0ix.
-This patch adds a debugfs file `pson_residency_usec` to provide
-access to this counter.
+On Fri, 23 Jul 2021, Huang Ying wrote:
 
-In order to determine whether the device is capable of PSON,
-use acpi_init_properties() to reevaluate _DSD.
+> "-" is missing before "EINVAL".
+> 
+> Fixes: 2efa33fc7f6e ("mm/shmem: fix shmem_swapin() race with swapoff")
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Miaohe Lin <linmiaohe@huawei.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Minchan Kim <minchan@kernel.org>
+> ---
+>  mm/shmem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 9af4b2173fe9..e201a3ba12fa 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1708,7 +1708,7 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+>  	/* Prevent swapoff from happening to us. */
+>  	si = get_swap_device(swap);
+>  	if (!si) {
+> -		error = EINVAL;
+> +		error = -EINVAL;
+>  		goto failed;
+>  	}
+>  	/* Look it up and read it in.. */
+> -- 
+> 2.30.2
 
-Signed-off-by: Michael Bottini <michael.a.bottini@linux.intel.com>
----
- drivers/platform/x86/intel/pmc/core.c | 46 +++++++++++++++++++++++++++
- drivers/platform/x86/intel/pmc/core.h |  7 ++++
- 2 files changed, 53 insertions(+)
+Thanks for catching that; and as David says, it's worse than a typo.
 
-diff --git a/drivers/platform/x86/intel/pmc/core.c b/drivers/platform/x86/intel/pmc/core.c
-index 7c4bf7d22fd5..6cf06aecf368 100644
---- a/drivers/platform/x86/intel/pmc/core.c
-+++ b/drivers/platform/x86/intel/pmc/core.c
-@@ -595,6 +595,8 @@ static const struct pmc_reg_map tgl_reg_map = {
- 	.lpm_sts = tgl_lpm_maps,
- 	.lpm_status_offset = TGL_LPM_STATUS_OFFSET,
- 	.lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
-+	.pson_residency_offset = TGL_PSON_RESIDENCY_OFFSET,
-+	.pson_residency_counter_step = TGL_PSON_RES_COUNTER_STEP,
- 	.etr3_offset = ETR3_OFFSET,
- };
- 
-@@ -1084,6 +1086,20 @@ static int pmc_core_dev_state_get(void *data, u64 *val)
- 
- DEFINE_DEBUGFS_ATTRIBUTE(pmc_core_dev_state, pmc_core_dev_state_get, NULL, "%llu\n");
- 
-+static int pmc_core_pson_residency_get(void *data, u64 *val)
-+{
-+	struct pmc_dev *pmcdev = data;
-+	const struct pmc_reg_map *map = pmcdev->map;
-+	u32 value;
-+
-+	value = pmc_core_reg_read(pmcdev, map->pson_residency_offset);
-+	*val = (u64)value * pmcdev->map->pson_residency_counter_step;
-+
-+	return 0;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(pmc_core_pson_residency, pmc_core_pson_residency_get, NULL, "%llu\n");
-+
- static int pmc_core_check_read_lock_bit(struct pmc_dev *pmcdev)
- {
- 	u32 value;
-@@ -1788,6 +1804,30 @@ static void pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
- 	}
- }
- 
-+static bool pmc_core_is_pson_residency_enabled(struct pmc_dev *pmcdev)
-+{
-+	struct platform_device *pdev = pmcdev->pdev;
-+	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
-+	acpi_status status;
-+	u8 val;
-+
-+	if (!adev)
-+		return false;
-+
-+	acpi_init_properties(adev);
-+	status = acpi_evaluate_object(adev->handle, "PSOP", NULL, NULL);
-+
-+	if (ACPI_FAILURE(status))
-+		return false;
-+
-+	if (fwnode_property_read_u8(acpi_fwnode_handle(adev),
-+				    "intel-cec-pson-switching-enabled-in-s0",
-+				    &val))
-+		return false;
-+
-+	return val == 1;
-+}
-+
- static void pmc_core_dbgfs_unregister(struct pmc_dev *pmcdev)
- {
- 	debugfs_remove_recursive(pmcdev->dbgfs_dir);
-@@ -1856,6 +1896,11 @@ static void pmc_core_dbgfs_register(struct pmc_dev *pmcdev)
- 				    pmcdev->dbgfs_dir, pmcdev,
- 				    &pmc_core_substate_req_regs_fops);
- 	}
-+
-+	if (pmcdev->map->pson_residency_offset && pmc_core_is_pson_residency_enabled(pmcdev)) {
-+		debugfs_create_file("pson_residency_usec", 0444,
-+				    pmcdev->dbgfs_dir, pmcdev, &pmc_core_pson_residency);
-+	}
- }
- 
- static const struct x86_cpu_id intel_pmc_core_ids[] = {
-@@ -1944,6 +1989,7 @@ static int pmc_core_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	platform_set_drvdata(pdev, pmcdev);
-+	pmcdev->pdev = pdev;
- 
- 	cpu_id = x86_match_cpu(intel_pmc_core_ids);
- 	if (!cpu_id)
-diff --git a/drivers/platform/x86/intel/pmc/core.h b/drivers/platform/x86/intel/pmc/core.h
-index 333e25981e8e..822d77f49861 100644
---- a/drivers/platform/x86/intel/pmc/core.h
-+++ b/drivers/platform/x86/intel/pmc/core.h
-@@ -214,6 +214,10 @@ enum ppfear_regs {
- #define TGL_LPM_PRI_OFFSET			0x1C7C
- #define TGL_LPM_NUM_MAPS			6
- 
-+/* Tigerlake PSON residency register */
-+#define TGL_PSON_RESIDENCY_OFFSET		0x18f8
-+#define TGL_PSON_RES_COUNTER_STEP		0x7A
-+
- /* Extended Test Mode Register 3 (CNL and later) */
- #define ETR3_OFFSET				0x1048
- #define ETR3_CF9GR				BIT(20)
-@@ -301,6 +305,8 @@ struct pmc_reg_map {
- 	const u32 lpm_residency_offset;
- 	const u32 lpm_status_offset;
- 	const u32 lpm_live_status_offset;
-+	const u32 pson_residency_offset;
-+	const u32 pson_residency_counter_step;
- 	const u32 etr3_offset;
- };
- 
-@@ -337,6 +343,7 @@ struct pmc_dev {
- 	int num_lpm_modes;
- 	int lpm_en_modes[LPM_MAX_NUM_MODES];
- 	u32 *lpm_req_regs;
-+	struct platform_device *pdev;
- };
- 
- #define pmc_for_each_mode(i, mode, pmcdev)		\
--- 
-2.25.1
+But this is not the right fix:
+2efa33fc7f6e ("mm/shmem: fix shmem_swapin() race with swapoff")
+needs to be reverted.
 
+It's been on my pile to look at for weeks: now I look at it and see
+it's just a bad patch.  Over-enthusiastic stablehands already rushed
+it out, I was wary, and reverts are already in -rc for 5.13 and 5.10,
+phew, but 5.12.19 EOL is stuck with it unfortunately, oh well.
+
+I was wary because, if the (never observed) race to be fixed is in
+swap_cluster_readahead(), why was shmem_swapin_page() being patched?
+Not explained in its commit message, probably a misunderstanding of
+how mm/shmem.c already manages races (and prefers not to be involved
+in swap_info_struct stuff).
+
+But why do I now say it's bad?  Because even if you correct the EINVAL
+to -EINVAL, that's an unexpected error: -EEXIST is common, -ENOMEM is
+not surprising, -ENOSPC can need consideration, but -EIO and anything
+else just end up as SIGBUS when faulting (or as error from syscall).
+So, 2efa33fc7f6e converts a race with swapoff to SIGBUS: not good,
+and I think much more likely than the race to be fixed (since
+swapoff's percpu_ref_kill() rightly comes before synchronize_rcu()).
+
+2efa33fc7f6e was intending to fix a race introduced by two-year-old
+8fd2e0b505d1 ("mm: swap: check if swap backing device is congested
+or not"), which added a call to inode_read_congested().  Certainly
+relying on si->swap_file->f_mapping->host there was new territory:
+whether actually racy I'm not sure offhand - I've forgotten whether
+synchronize_rcu() waits for preempted tasks or not.
+
+But if it is racy, then I wonder if the right fix might be to revert
+8fd2e0b505d1 too. Convincing numbers were offered for it, but I'm
+puzzled: because Matthew has in the past noted that the block layer
+broke and further broke bdi congestion tracking (I don't know the
+relevant release numbers), so I don't understand how checking
+inode_read_congested() is actually useful there nowadays.
+
+No need to hurry to a conclusion on 8fd2e0b505d1;
+but 2efa33fc7f6e should definitely be reverted.
+
+Thanks,
+Hugh
