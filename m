@@ -2,159 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5643D3812
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710D93D381D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbhGWJLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:11:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11626 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhGWJLg (ORCPT
+        id S231466AbhGWJN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231273AbhGWJN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:11:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627033930; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=tYrSO2v1n28HiQyEKrtZZMF4Ts4S6j7d7SH0Fl55WOE=; b=jFmGDFWy92DAjTPpg4Zu9Cga2ntt8zFp2VtAJFNzs2kP6bBs33GX5FsjHQRs2WB64M7M7lvy
- JKw9EGmJ/00IWvsuXUi3YT6f3qoMVCtBX/fkfwVV2FPl520VOBoxZK3t6T06GNaxgI2GgoPM
- z6TIyuJ1VcKxyQ/4xDJmwx+6TNw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60fa914ab653fbdadd74e32a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 09:52:10
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2CF2AC4360C; Fri, 23 Jul 2021 09:52:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.3] (unknown [106.202.252.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 83443C433D3;
-        Fri, 23 Jul 2021 09:52:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 83443C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
-Subject: Re: [PATCH v4 1/2] soc: qcom: aoss: Expose send for generic usecase
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        Chris Lew <clew@codeaurora.org>
-References: <1623237532-20829-1-git-send-email-sibis@codeaurora.org>
- <1623237532-20829-2-git-send-email-sibis@codeaurora.org>
- <CAE-0n506v5cmyUb+Ge-H7t1HsqNatgxDmq28rqdyGZDbsM4pXg@mail.gmail.com>
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-Message-ID: <eaa90fa6-e7a4-169d-4ac0-42f8c9545a5b@codeaurora.org>
-Date:   Fri, 23 Jul 2021 15:21:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 23 Jul 2021 05:13:56 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121CDC061575;
+        Fri, 23 Jul 2021 02:54:29 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id a5-20020a05683012c5b029036edcf8f9a6so1535801otq.3;
+        Fri, 23 Jul 2021 02:54:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5bndOuFZX3tiZBmJcO1TQjXh09mw6xwzbGzrURFBWw4=;
+        b=OGfwqkbgF1tjhCLbVtickH2E5YJ3FaptPyEUgsChnGfDKEBnyvoSezdKA08OFY/F9c
+         rnOABX6HJpFy1iy5XWYvOHQXHpR5S5WBN0/+oVqx35WiYg1MUFgfNk0m0D6+VIY3SSos
+         kzmPvUG27pefM37stoDT3uvKdNrkiMq2WLBAu5JODSYGvvIW2k6jVEYFP4X6bI7bfjtH
+         hCZota0zxq5/f74ziFvEGFvn99uZG0f/3SZxR5Km01OVzidzLKA80EPiL8uKojcbrvLr
+         EdpZq2kZmtFgihZDfeqrTm17jXPJxZzxHubLCLycZFN0bz+1+19PtTzvYp7GzeqZ2OY9
+         8Krw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5bndOuFZX3tiZBmJcO1TQjXh09mw6xwzbGzrURFBWw4=;
+        b=sEsi7GM8OveFEzL63Np8+/dWXmy+tiqiJAFv3Sh8H8NqVTbbrKKLP3mDdPO/V0RZOA
+         61ezZwGCUZJZbpTt2TDNtLIPVP8gXOV8RnHbn2yElvp0TcG3eaP9PqIt4cyex3McvFP7
+         nPkK5TgaSoiYFxMTo3xx+hLdp9m894F1AQLQD3AQ+9YGDOlmEh4kWJ/5XT799CxsCMBp
+         QzQGEIL+mnJc0eUZ8Jz1/RSlXm6UzSaBn1dhU8aukJx1xVYu2x0ZEwQOoJVYKSroczUJ
+         oFWhc5xq/TuLhGjK9nVN3cP18ieb0z40O5mm4cDbf4ceXNJes1pc2Y6rpWSb1aIf+xTq
+         EQqg==
+X-Gm-Message-State: AOAM531O2fcFBOL1qKsdFjP24WfT8xQepjoUPIAAZyb0Qn4AIjMLWDMG
+        6q+fmaOZJZUu4mtpPzhxNUblK4d80jRi03OFVDo=
+X-Google-Smtp-Source: ABdhPJxyIuiIK8mtbPFlozBKzC68z5rXhaTfJeXWaPyq8oeJQuai1UiBZzvI0z3m1KDj7fGWx3TOJsb2yM7a6bwcV7U=
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr2525083otb.281.1627034068504;
+ Fri, 23 Jul 2021 02:54:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n506v5cmyUb+Ge-H7t1HsqNatgxDmq28rqdyGZDbsM4pXg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210723094138.24793-1-Christine.Zhu@mediatek.com> <20210723094138.24793-3-Christine.Zhu@mediatek.com>
+In-Reply-To: <20210723094138.24793-3-Christine.Zhu@mediatek.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Fri, 23 Jul 2021 11:54:17 +0200
+Message-ID: <CAFqH_539HesXQZz5F3mNXveHvHUjKTTBOkpZxmEf_BBOODHZcQ@mail.gmail.com>
+Subject: Re: [v6,2/3] dt-bindings: reset: mt8195: add toprgu reset-controller
+ header file
+To:     Christine Zhu <Christine.Zhu@mediatek.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        Rex-BC Chen <Rex-BC.Chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christine,
 
-On 7/21/2021 12:07 PM, Stephen Boyd wrote:
-> Quoting Sibi Sankar (2021-06-09 04:18:51)
->> From: Deepak Kumar Singh <deesin@codeaurora.org>
->>
->> Not all upcoming usecases will have an interface to allow the aoss
->> driver to hook onto. Expose the send api and create a get function to
->> enable drivers to send their own messages to aoss.
->>
->> Signed-off-by: Chris Lew <clew@codeaurora.org>
->> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
->> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->>
->> v4:
->>   * Fix compilation error due to missing qmp_put
->>   * Minor typos [s/tarcks/tracks]
->>
->>   drivers/soc/qcom/qcom_aoss.c       | 70 ++++++++++++++++++++++++++++++++++++--
->>   include/linux/soc/qcom/qcom_aoss.h | 36 ++++++++++++++++++++
->>   2 files changed, 104 insertions(+), 2 deletions(-)
->>   create mode 100644 include/linux/soc/qcom/qcom_aoss.h
->>
->> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
->> index 934fcc4d2b05..e8f48760bac8 100644
->> --- a/drivers/soc/qcom/qcom_aoss.c
->> +++ b/drivers/soc/qcom/qcom_aoss.c
->> @@ -522,13 +582,14 @@ static int qmp_probe(struct platform_device *pdev)
->>          int irq;
->>          int ret;
->>
->> -       qmp = devm_kzalloc(&pdev->dev, sizeof(*qmp), GFP_KERNEL);
->> +       qmp = kzalloc(sizeof(*qmp), GFP_KERNEL);
->>          if (!qmp)
->>                  return -ENOMEM;
->>
->>          qmp->dev = &pdev->dev;
->>          init_waitqueue_head(&qmp->event);
->>          mutex_init(&qmp->tx_lock);
->> +       kref_init(&qmp->refcount);
->>
->>          res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>          qmp->msgram = devm_ioremap_resource(&pdev->dev, res);
->> @@ -569,6 +630,8 @@ static int qmp_probe(struct platform_device *pdev)
->>
->>          platform_set_drvdata(pdev, qmp);
->>
->> +       atomic_set(&qmp->orphan, 0);
->> +
->>          return 0;
->>
->>   err_remove_qdss_clk:
->> @@ -577,6 +640,7 @@ static int qmp_probe(struct platform_device *pdev)
->>          qmp_close(qmp);
->>   err_free_mbox:
->>          mbox_free_channel(qmp->mbox_chan);
->> +       kfree(qmp);
->>
->>          return ret;
->>   }
->> @@ -590,7 +654,9 @@ static int qmp_remove(struct platform_device *pdev)
->>          qmp_cooling_devices_remove(qmp);
->>
->>          qmp_close(qmp);
->> +       atomic_set(&qmp->orphan, 1);
-> This looks odd. Why are we letting the device be removed while it is in
-> use by other drivers? Can't we pin the device with get_device() so it
-> can't be removed and then prevent the driver from being removed until
-> all the consumer drivers drop the reference, i.e. suppress sysfs unbind?
+Thank you for your patch.
+
+Missatge de Christine Zhu <Christine.Zhu@mediatek.com> del dia dv., 23
+de jul. 2021 a les 11:45:
 >
-> Otherwise it looks like a generic problem that all provider devices,
-> clks, regulators, gpios, etc. have to deal with and thus this
-> hand-rolled mechanism can't be right.
+> Add toprgu reset-controller header file for MT8195 platform
+>
+> Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
+> ---
+>  .../reset-controller/mt8195-resets.h          | 32 +++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>  create mode 100644 include/dt-bindings/reset-controller/mt8195-resets.h
+>
+> diff --git a/include/dt-bindings/reset-controller/mt8195-resets.h b/include/dt-bindings/reset-controller/mt8195-resets.h
 
-As per my earlier discussion with Bjorn, device could be unbound using 
-sysfs, in which case
+The DT binding includes for reset controllers are located in
+`include/dt-bindings/reset/` Move the Mediatek reset constants there
+instead of the `reset-controller`directory. We're doing this also for
+current files that are there, see [1]
 
-remove() is called irrespective of whether any client driver is holding 
-struct device reference
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/20210714121116.v2.1.I514d9aafff3a062f751b37d3fea7402f67595b86@changeid/
 
-or not. That's why i have added separate refcount for qmp handle and 
-marking it invalid if
+> new file mode 100644
+> index 000000000000..8176a3e5063f
+> --- /dev/null
+> +++ b/include/dt-bindings/reset-controller/mt8195-resets.h
+> @@ -0,0 +1,32 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
+> +/*
+> + * This file is provided under a dual BSD/GPLv2 license.  When using or
+> + * redistributing this file, you may do so under either licens
 
-qmp_remove() is called.
+This is implicit in the SPDX-License-Identifier, so you can remove
+these two lines.
 
->>          mbox_free_channel(qmp->mbox_chan);
->> +       kref_put(&qmp->refcount, qmp_handle_release);
->>
->>          return 0;
->>   }
+Thanks,
+  Enric
+
+> + *
+> + * Copyright (c) 2021 MediaTek Inc.
+> + * Author: Christine Zhu <christine.zhu@mediatek.com>
+> + */
+> +
+> +#ifndef _DT_BINDINGS_RESET_CONTROLLER_MT8195
+> +#define _DT_BINDINGS_RESET_CONTROLLER_MT8195
+> +
+> +#define MT8195_TOPRGU_CONN_MCU_SW_RST          0
+> +#define MT8195_TOPRGU_INFRA_GRST_SW_RST        1
+> +#define MT8195_TOPRGU_APU_SW_RST               2
+> +#define MT8195_TOPRGU_INFRA_AO_GRST_SW_RST     6
+> +#define MT8195_TOPRGU_MMSYS_SW_RST             7
+> +#define MT8195_TOPRGU_MFG_SW_RST               8
+> +#define MT8195_TOPRGU_VENC_SW_RST              9
+> +#define MT8195_TOPRGU_VDEC_SW_RST              10
+> +#define MT8195_TOPRGU_IMG_SW_RST               11
+> +#define MT8195_TOPRGU_APMIXEDSYS_SW_RST        13
+> +#define MT8195_TOPRGU_AUDIO_SW_RST             14
+> +#define MT8195_TOPRGU_CAMSYS_SW_RST            15
+> +#define MT8195_TOPRGU_EDPTX_SW_RST             16
+> +#define MT8195_TOPRGU_ADSPSYS_SW_RST           21
+> +#define MT8195_TOPRGU_DPTX_SW_RST              22
+> +#define MT8195_TOPRGU_SPMI_MST_SW_RST          23
+> +
+> +#define MT8195_TOPRGU_SW_RST_NUM               16
+> +
+> +#endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
+> --
+> 2.18.0
+>
