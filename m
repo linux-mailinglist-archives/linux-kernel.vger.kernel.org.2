@@ -2,100 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970773D3AE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818673D3AEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235210AbhGWM22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:28:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S235185AbhGWM3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235202AbhGWM21 (ORCPT
+        with ESMTP id S234972AbhGWM3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:28:27 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E6CAC061575;
-        Fri, 23 Jul 2021 06:08:59 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id d16so375436vkp.4;
-        Fri, 23 Jul 2021 06:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kVBfC6co2VsHDzY9tpVsgW1qF6lGCAzJxuznl8I/9GE=;
-        b=S7yHpcB0mbS1di7E5oWpwhpxwwZ2/SiAg+gx57RoBO0r4PvBN81gZFYvQSTBVXpkri
-         YUOnreKPJdPh9H7ClkUAZtgq0HexnNabAP1nftaQovyy214cqPbsC6xU4xPi1+6HF1aQ
-         0/j1uTvscTLhK0PE1Z7bgekrYAnESQqxHVEzA9/3FtLOiv9IYrictiJcIOD9tYL/8BhY
-         j6G4P7zHrG+t5k0sGGAWuPMDn1svydRZ908pPwvtPqK6FntCVHG2lDxUUv55YIWuRAgq
-         egB46wg9CNEMt/9XXbGl7Q0krzeJRHgSKKZUd3NZO93FEIN9Sb3pTNA48ud83njIAzza
-         XADA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kVBfC6co2VsHDzY9tpVsgW1qF6lGCAzJxuznl8I/9GE=;
-        b=eywsFOmv784Gw5Yckw01Gz/2Na5yfO5kYtO5UbfvYX5tSxjAAubPYw+vZz4WPQUmnb
-         yGKqmhaXRHIPRbc9RV8nHfuZj93wJ11/dAZXMDa2RE/tnY65qS2g8FpPfbtk1SD24qoz
-         T5j3QtsTx/mZz1wbkVcN4qAnygd7jVRIvZSXME4zFNvohBLEwY+FRJzZI9TYk4SMhIAF
-         3bXHcBz2wP4exALn/nw9MKDAlbrNe0ajnJLH3OGIGpwLTggdTFIxmU9D9Jklu6XYRLtR
-         RNateaKpUrnACuYfsuhVyaG6WcC1CkPrwotHCoPAlDN20L33QKxQE3hJSiym0s+Ql6dL
-         59Rw==
-X-Gm-Message-State: AOAM5328ZzETKEnGqgoivO3GeVzjy+qFpcxDn4v9FFb8aXu2q0jk2ely
-        rzLJYreWVNga3Ppj+gb7Z2dCHdZSQCa/K5QTBTU=
-X-Google-Smtp-Source: ABdhPJzm4WOjliZN4J/jn8+c1kgtEDm9FOG1JP5fQJzmTsotnWi265Upc6UbXRPTWQZb1IP+PBk1yHG5isNcMSmo9bU=
-X-Received: by 2002:ac5:c888:: with SMTP id n8mr3669958vkl.22.1627045738539;
- Fri, 23 Jul 2021 06:08:58 -0700 (PDT)
+        Fri, 23 Jul 2021 08:29:45 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5743C061575;
+        Fri, 23 Jul 2021 06:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=W6wJL+7nnUO08SMNG3U7r9AB3QZ2lCJON3hvs8YkDQ4=; b=xIm9Fq7MVQRA/TIcmSnr9xclI
+        gzYQspxawTMz64c+VbIHX8z/Gvg0dD7CuOCjhelSlSDK7BFiiFADWuTbyVCG3+GOCkMugGIQ4Cqd8
+        XGN3GtVfDAumsyQILaR/JDmjDgFxSq2y9HteZZZ8BD5aomX56xcqO7Lv5DWiUoZ+/Ru/1+T9ybD77
+        lY9KtWD8fdMCYFrNNLYSrY0Q9qIFKJvtyR/pqHWUpvAWldajwb6Av98Eyl7zMC7q2fwKYDZFY8bAu
+        HsqKNbFel5/yBhLGDN2140iX/bjKoUnWxmEvtA4lXmtoDpWVXn0yN5j4gYwuMpw63evVxEpabb0ax
+        V3FHarsaQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46512)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1m6uwO-00020S-QA; Fri, 23 Jul 2021 14:10:12 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1m6uwN-0001oq-2L; Fri, 23 Jul 2021 14:10:11 +0100
+Date:   Fri, 23 Jul 2021 14:10:11 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     lxu@maxlinear.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: Remove unused including <linux/version.h>
+Message-ID: <20210723131010.GC22278@shell.armlinux.org.uk>
+References: <1627036707-73334-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-References: <CAJfuBxxVEVwj=hGa+FoQUV6i7BtoUbiJwGunnRq26Fp=Ax2ziQ@mail.gmail.com>
- <8057650.rSI8SBESIY@natalenko.name> <98103103-c517-59d2-a4d6-9b0758cbdfc1@kernel.dk>
-In-Reply-To: <98103103-c517-59d2-a4d6-9b0758cbdfc1@kernel.dk>
-From:   jim.cromie@gmail.com
-Date:   Fri, 23 Jul 2021 09:08:32 -0400
-Message-ID: <CAJfuBxwJam5=s3Rr06RyLoO19s3HTBomnNi6P3dw59s_b7we+Q@mail.gmail.com>
-Subject: Re: 5.14.0-rc1 KASAN use after free
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1627036707-73334-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 5:58 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 7/18/21 3:08 PM, Oleksandr Natalenko wrote:
-> > + Paolo, Jens et al.
-> >
-> > On =C4=8Dtvrtek 15. =C4=8Dervence 2021 16:32:29 CEST jim.cromie@gmail.c=
-om wrote:
-> >> hi all,
-> >>
-> >> I noticed this report this morning, from 3 days ago,
-> >> about 10 minutes after boot.
-> >> Its easiest to ignore it, and I dont want to make a fuss,
-> >> but it looks useful to someone
-> >>
-> >>
-> >> [   33.663464] Bluetooth: RFCOMM ver 1.11
-> >> [  646.343628]
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D [
-> >> 646.343649] BUG: KASAN: use-after-free in bfq_get_queue+0x47d/0x900 [
-> >> 646.343680] Read of size 8 at addr ffff88810d864a00 by task
-> >> journal-offline/1639
->
-> There are only a few commits between 5.13 and master in this area, see
-> attached. I'd just start reverting from the top, one by one, and see
-> which one is causing the issue. Jim, would that be feasible?
->
+On Fri, Jul 23, 2021 at 06:38:27PM +0800, Jiapeng Chong wrote:
+> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+> 
+> Eliminate the follow versioncheck warning:
+> 
+> ./drivers/net/phy/mxl-gpy.c: 9 linux/version.h not needed.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-oops, didn't see this earlier.
-It hasnt happened since, I can try to recreate mid-next-week
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
+Thanks!
 
-> --
-> Jens Axboe
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
