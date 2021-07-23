@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE2F3D3456
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 07:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D4F3D345D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 07:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233908AbhGWFNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:13:25 -0400
-Received: from ozlabs.org ([203.11.71.1]:54589 "EHLO ozlabs.org"
+        id S233789AbhGWFRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:17:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:40920 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231949AbhGWFNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:13:23 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GWJR6750Tz9sV8;
-        Fri, 23 Jul 2021 15:53:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1627019636;
-        bh=WoPtSDrgd4+nxPehyUOY84R2GRQnSOZORJvc76I7vwM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=aYH/JWjGocUWZEargyee8KH0ndqgOQpy3Wdt77O6xRgm6dmqbb017efqrvnPCUSOr
-         EfLMpHJsOSJV7GiiH/gDPCCMtOwKdsEoncdX1mm3HYuKO0CsADxC9oVZiW0W7gTIHy
-         HmP2Ap3h7xOpqd+ughmXB2YiePpM2rSDvyzLEJYOmshdQcW1nzUfGS2tXiWvCAW66B
-         Mu9NMpfGrRovozg7X/2lczs4eEnp80l+ECvPvEGLdFWkE6FFPVvue4jnXjGthXfftx
-         cksk9FXGHRVHzlosmFDMNkBenhQ7AT/Zg2XFMHUdtRNSHLLKb4hzYLf0zjSFAY3OkH
-         YCfAjqPl9aCJA==
-Date:   Fri, 23 Jul 2021 15:53:54 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>, Greg KH <greg@kroah.com>
-Cc:     Dave Jiang <dave.jiang@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: linux-next: manual merge of the dmaengine tree with the driver-core
- tree
-Message-ID: <20210723155354.082a62d8@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P=0+wHJOhCum63MsBUwgCR/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S233740AbhGWFRH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 01:17:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5493D106F;
+        Thu, 22 Jul 2021 22:57:41 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.66.36])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B9D5B3F66F;
+        Thu, 22 Jul 2021 22:57:38 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     suzuki.poulose@arm.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>, linux-kernel@vger.kernel.org
+Subject: [RFC] arm64/mm: Fix idmap on [16K|36VA|48PA]
+Date:   Fri, 23 Jul 2021 11:28:14 +0530
+Message-Id: <1627019894-14819-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P=0+wHJOhCum63MsBUwgCR/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When creating the idmap, the kernel may add one extra level to idmap memory
+outside the VA range. But for [16K|36VA|48PA], we need two levels to reach
+48 bits. If the bootloader places the kernel in memory above (1 << 46), the
+kernel will fail to enable the MMU. Although we are not aware of a platform
+where this happens, it is worth to accommodate such scenarios and prevent a
+possible kernel crash.
 
-Hi all,
+Lets fix the problem on the above configuration by creating two additional
+idmap page table levels when 'idmap_text_end' is outside the VA range. This
+reduces 'idmap_t0sz' to cover the entire PA range which would prevent table
+misconfiguration (fault) when a given 'idmap_t0sz' value requires a single
+additional page table level where as two have been built.
 
-Today's linux-next merge of the dmaengine tree got a conflict in:
-
-  drivers/dma/idxd/sysfs.c
-
-between commit:
-
-  fc7a6209d571 ("bus: Make remove callback return void")
-
-from the driver-core tree and commit:
-
-  d9e5481fca74 ("dmaengine: dsa: move dsa_bus_type out of idxd driver to st=
-andalone")
-
-from the dmaengine tree.
-
-I fixed it up (the latter moved the code updtaed by the former,
-so I added the following merge fix patch) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Fri, 23 Jul 2021 15:49:33 +1000
-Subject: [PATCH] fixup for "bus: Make remove callback return void"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Fixes: 215399392fe4 ("arm64: 36 bit VA")
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/dma/idxd/bus.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This applies on v5.14-rc2
 
-diff --git a/drivers/dma/idxd/bus.c b/drivers/dma/idxd/bus.c
-index 02837f0fb3e4..6f84621053c6 100644
---- a/drivers/dma/idxd/bus.c
-+++ b/drivers/dma/idxd/bus.c
-@@ -58,14 +58,13 @@ static int idxd_config_bus_probe(struct device *dev)
- 	return idxd_drv->probe(idxd_dev);
- }
-=20
--static int idxd_config_bus_remove(struct device *dev)
-+static void idxd_config_bus_remove(struct device *dev)
- {
- 	struct idxd_device_driver *idxd_drv =3D
- 		container_of(dev->driver, struct idxd_device_driver, drv);
- 	struct idxd_dev *idxd_dev =3D confdev_to_idxd_dev(dev);
-=20
- 	idxd_drv->remove(idxd_dev);
--	return 0;
- }
-=20
- struct bus_type dsa_bus_type =3D {
---=20
-2.30.2
+ arch/arm64/kernel/head.S | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
---=20
-Cheers,
-Stephen Rothwell
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index c5c994a..da33bbc 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -329,7 +329,9 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+ 
+ #if (VA_BITS < 48)
+ #define EXTRA_SHIFT	(PGDIR_SHIFT + PAGE_SHIFT - 3)
++#define EXTRA_SHIFT_1	(EXTRA_SHIFT + PAGE_SHIFT - 3)
+ #define EXTRA_PTRS	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT))
++#define EXTRA_PTRS_1	(1 << (PHYS_MASK_SHIFT - EXTRA_SHIFT_1))
+ 
+ 	/*
+ 	 * If VA_BITS < 48, we have to configure an additional table level.
+@@ -342,8 +344,30 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
+ #error "Mismatch between VA_BITS and page size/number of translation levels"
+ #endif
+ 
++/*
++ * In this particular CONFIG_ARM64_16K_PAGES config, there might be a
++ * scenario where 'idmap_text_end' ends up high enough in the PA range
++ * requiring two additional idmap page table levels. Reduce idmap_t0sz
++ * to cover the entire PA range. This prevents table misconfiguration
++ * when a given idmap_t0sz value just requires single additional level
++ * where as two levels have been built.
++ */
++#if defined(CONFIG_ARM64_VA_BITS_36) && defined(CONFIG_ARM64_PA_BITS_48)
++	mov	x4, EXTRA_PTRS_1
++	create_table_entry x0, x3, EXTRA_SHIFT_1, x4, x5, x6
++
++	mov	x4, PTRS_PER_PTE
++	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
++
++	mov	x5, #64 - PHYS_MASK_SHIFT
++	adr_l	x6, idmap_t0sz
++	str	x5, [x6]
++	dmb	sy
++	dc	ivac, x6
++#else
+ 	mov	x4, EXTRA_PTRS
+ 	create_table_entry x0, x3, EXTRA_SHIFT, x4, x5, x6
++#endif
+ #else
+ 	/*
+ 	 * If VA_BITS == 48, we don't have to configure an additional
+-- 
+2.7.4
 
---Sig_/P=0+wHJOhCum63MsBUwgCR/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD6WXIACgkQAVBC80lX
-0Gx2pQf/ZDmRQIMNu1RVTAAIb7KnxLKSjFH82TdCRkxZ7EPczRcXLstR1JNpU3q7
-0Ubfs3KEe+vQ9Ut5F6OlGXC7jHZjaxjtNhFbbMHl1bmxsYpH0KxOM5q/qepclReE
-LJAWmvBj1yRgMI8KKnXg8YwxjR9EoF0gStCrU56XSnKzwFXe7E6ArcY/YgEEtGfu
-8P97TKwkExm3bTiUwTo81BT3aNE5ebI7RuFVPaN58v1UJysqb6w+Pyj10TTSxcRK
-ZsNAQHqhGQSyj9FPI09EswV5+tuvBoZf5/gOeJ9V6OJENAAH1A7c6cRCxvhyWdBq
-7iNY5DUIiRVeHWp55nJ8mOJmcYiJpA==
-=MgDe
------END PGP SIGNATURE-----
-
---Sig_/P=0+wHJOhCum63MsBUwgCR/--
