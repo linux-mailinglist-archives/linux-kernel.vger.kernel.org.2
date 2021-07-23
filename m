@@ -2,250 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9D93D3903
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB7C3D3907
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231976AbhGWKXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
+        id S232075AbhGWKYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbhGWKX2 (ORCPT
+        with ESMTP id S231296AbhGWKYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:23:28 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B55CC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 04:04:02 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id j34-20020a05600c1c22b029024e75084404so417050wms.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 04:04:02 -0700 (PDT)
+        Fri, 23 Jul 2021 06:24:36 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED749C061575;
+        Fri, 23 Jul 2021 04:05:08 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id gn11so3240188ejc.0;
+        Fri, 23 Jul 2021 04:05:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zS2GWn48je0bjrRKkqgGo/XGjFxQUky99Wi4nJkA+88=;
-        b=G7PfQVwbTct99uIkTWzMyoXTLraDkSlKbm/Xbh7VjFeJGaKm6pqms2ifNfSHPFHUPa
-         sx5cJj87jyfUixwhlYOzFnfk7JLUPpTlKiJoggiiQEQ8MYMKe3ueLtY9DY8R0IjoesLc
-         ixq4b15VCtZpnoJhN/lkrqlrQjbN4UEt2PXvj/CWEHF9sA9gM7F+pdcEKGQNvYh+SYpF
-         AY6nnT4cBdmbYVtTirbReGkptGvI48FYtp8TjFPrQ4dKkZKSMsxVCguOHepAR5jV2bOh
-         BZdBuT4YOS4PKlCS9tbC9HZG4PT8saRMG/AbkhI0qn/y352UmjCA9Rj4uRr0288B4Jrl
-         sdnQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZvOmuGDjboR93aCXrzX4U2TF9OvHadby7OHnyO1dGdc=;
+        b=cEnVnGpDkavf9X4sTJbxQwJBP2ILnS2Tvy7GZKQrKj5iinFuOKRqgBfM58DMuu9Xhf
+         rbcl/ircBWtpt39Rc9adb5ODyEdlgtj+zUqgc0t6kM0PUClEpTWxY3gb4YpjgfpAYsQL
+         H7rqdOQk+A+b5al/0wMM0U4NNnVzIq3tHPF+ZM9+zbb1ux0Rwoa+0PZhRmfdaHk41eYH
+         +JcZxUyp7pYbcQGSASjldrNmY3XwLHaKDmy3ZKKA5C0KYFS42ztfA8AQceGK6leBf9IT
+         1+ZfuqsWXQmkNTxjJ+nyEPwjxFNTIVUsrcJdUfcPg7vvj5jwOJWTzV+uVa28TN7rKQkb
+         T4Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zS2GWn48je0bjrRKkqgGo/XGjFxQUky99Wi4nJkA+88=;
-        b=pr/pnRgR9iLQ49RUK1a7p6/h+w3Pf8TbNntmEZga1evc2DRXhKS4TEqOZKrKAEg29q
-         HEqBQGPFRIpMTQfFxr+ADt7ulR5fz8Sj9I26eYX+RbM90lS7yc8ZUvc8LWAaOfS/EgFK
-         ouizr+R/cDuCE/sSynyAGFgvsJ1Y36kTCV+nNbs+JHJG8HpaPaAGdsQPVQ+Kxdu0r9YA
-         3BzRfKrEPOhBgiVfaq7hDD2JqMV2y8xVp6C2QF6t9Gtq5tzRBYXR2J2FML+4SOUiT4Pu
-         aVHkTRRXXR3gqocWOof5dyt7F50vNepUQC0Jc8/ES45JvmRzj/o4sOxpC3+qTaSE+7Jz
-         0hBA==
-X-Gm-Message-State: AOAM533jGpB6TVwIgwRT1fe5tyFFPDOM9sz0f6szK7Uz5d16n5HNSY8i
-        /1lMhEuK/dBjntpxItJaj5JWZA==
-X-Google-Smtp-Source: ABdhPJwXjYd/l4dQLMWFtE8wkIOw/4pJFY+8TKTo/OL8hFIe/dm7K2TB2C3x4d1nl4jaIOXOk4Dlaw==
-X-Received: by 2002:a1c:9851:: with SMTP id a78mr13505101wme.33.1627038240862;
-        Fri, 23 Jul 2021 04:04:00 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id w18sm35025315wrg.68.2021.07.23.04.03.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZvOmuGDjboR93aCXrzX4U2TF9OvHadby7OHnyO1dGdc=;
+        b=edWt7S4DAUR7JngbJi8Mt2eOIZ7KTq6MPAYEjkkNTWtKaIIgMc0MWWiIralo8ELwdB
+         B5fN0u9DkxUMLIGML+GTYAqA+YC5J88Z7yMlmOzLr4XH4Mgj0DKkgYX05Hf8aHYKzeRo
+         Im8CCCqhkVsTiYIyi30qc9f0ixzuOPvWWgH6U1tZ6EdwzCjMv1EfN4N/TpMtm0lTzqov
+         q4eWm3OwMzwgWMCD2opK+u1BjtnmaJhm6ATty/fEifF60QjoMJSC0f+s7NsSq/YfeZ/H
+         ut92aBzi1HKuRteRJBbpr++lDAMVP+7l1F6EvqtVrLVeLUTHFgVHEzJ6LHifb428ZFbb
+         N8EQ==
+X-Gm-Message-State: AOAM530gQc4cKx4RRduTpZu8n19KeBnO/b9r0DxXwMpkn0Qa609zU6vy
+        cJs1IBtu3sMcyilS52feqQ0=
+X-Google-Smtp-Source: ABdhPJyjIiqskyiB67wW/SpOemPa/+6rGZRkAgkCxgURFe0aUmtLXwfNLznYctF9Sgyk8jB4KgnZ4g==
+X-Received: by 2002:a17:906:5fc1:: with SMTP id k1mr4001512ejv.360.1627038307340;
+        Fri, 23 Jul 2021 04:05:07 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (host-79-26-254-101.retail.telecomitalia.it. [79.26.254.101])
+        by smtp.googlemail.com with ESMTPSA id kj26sm10670958ejc.24.2021.07.23.04.05.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 04:03:59 -0700 (PDT)
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        stable@vger.kernel.org
-Subject: [PATCH v3] backlight: pwm_bl: Improve bootloader/kernel device handover
-Date:   Fri, 23 Jul 2021 12:03:45 +0100
-Message-Id: <20210723110345.1724410-1-daniel.thompson@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210722145227.1573115-1-daniel.thompson@linaro.org>
-References: <20210722145227.1573115-1-daniel.thompson@linaro.org>
+        Fri, 23 Jul 2021 04:05:06 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [RFC] dsa: register every port with of_platform
+Date:   Fri, 23 Jul 2021 13:05:05 +0200
+Message-Id: <20210723110505.9872-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently there are (at least) two problems in the way pwm_bl starts
-managing the enable_gpio pin. Both occur when the backlight is initially
-off and the driver finds the pin not already in output mode and, as a
-result, unconditionally switches it to output-mode and asserts the signal.
+The declaration of a different mac-addr using the nvmem framework is
+currently broken. The dsa code uses the generic of_get_mac_address where
+the nvmem function requires the device node to be registered in the
+of_platform to be found by of_find_device_by_node. Register every port
+in the of_platform so they can correctly found and a custom mac-addr can
+correctly be declared using a nvmem-cell declared in the dts.
 
-Problem 1: This could cause the backlight to flicker since, at this stage
-in driver initialisation, we have no idea what the PWM and regulator are
-doing (an unconfigured PWM could easily "rest" at 100% duty cycle).
+An example of this would be a device that use a specific mac-addr for the
+wan port and declare the source of that with a nvmem-cell.
+In the current state, nvmem will always fail to find the declared cell
+but registering the devicenode with the of_platform doesn't look correct
+to me so am I missing something? Is this not supported? (declaring nvmem
+cell for the mac-addrs in the port node) In theory it should since
+of_get_mac_address supports exactly that.
 
-Problem 2: This will cause us not to correctly honour the
-post_pwm_on_delay (which also risks flickers).
+If I'm not missing something, I see this as the only solution or change
+the logic of how the function in of_get_mac_address find the cell.
 
-Fix this by moving the code to configure the GPIO output mode until after
-we have examines the handover state. That allows us to initialize
-enable_gpio to off if the backlight is currently off and on if the
-backlight is on.
+I hope someone take care of this as currently the function doesn't work
+most of the time, if this workaround is not used. Since mtd now actually
+supports declaring of nvmem cells, we are starting to adopt this new
+implementation and we found this problem.
+Also a mediatek drivert suffer of the same problem where it does declare
+special mac port without using the of_platform (and so requires manual
+registration using the function in this patch) with the compatible 
+"mediatek,eth-mac"
 
-There has also been lots of discussion recently about how pwm_bl inherits
-the initial state established by the bootloader (or by power-on reset if
-the bootloader doesn't do anything to the backlight). Let's take this
-chance to document the four handover cases.
-
-Reported-by: Marek Vasut <marex@denx.de>
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: stable@vger.kernel.org
-Fixes: 3698d7e7d221 ("backlight: pwm_bl: Avoid backlight flicker when probed from DT")
-Acked-by: Marek Vasut <marex@denx.de>
-Tested-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 ---
+ net/dsa/dsa2.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Notes:
-    v3: Added better documentation of the different handover cases (thanks
-        Marek)
-    v2: Added Fixes: tag (sorry for the noise)
-
- drivers/video/backlight/pwm_bl.c | 110 +++++++++++++++++++++++--------
- 1 file changed, 83 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
-index e48fded3e414..5dda3f11129a 100644
---- a/drivers/video/backlight/pwm_bl.c
-+++ b/drivers/video/backlight/pwm_bl.c
-@@ -406,9 +406,90 @@ static bool pwm_backlight_is_linear(struct platform_pwm_backlight_data *data)
- 	return true;
- }
-
-+/*
-+ * Inherit the initial power state from the hardware.
-+ *
-+ * This function provides the features necessary to achieve a flicker-free boot
-+ * sequence regardless of the initial state of the backlight.
-+ *
-+ * There are two factors that affect the behaviour of this function.
-+ *
-+ * 1. Whether the backlight was on or off when the kernel was booted.  We
-+ *    currently determine the state of the backlight by checking if the PWM is
-+ *    enabled, whether the regulator (if there is one) is enabled and whether
-+ *    the enable_gpio (if there is one) is asserted.  All must be enabled for
-+ *    the backlight to be on.
-+ *
-+ * 2. Whether the backlight is linked to a display device. This matters because
-+ *    when there is a linked display is will automatically handle the
-+ *    backlight as part of its own blank/unblanking.
-+ *
-+ * This gives us four possible cases.
-+ *
-+ * Backlight initially off, display linked:
-+ *
-+ *   The backlight must remain off (a.k.a. FB_BLANK_POWERDOWN) during and after
-+ *   the backlight probe. This allows a splash screen to be drawn before the
-+ *   backlight is enabled by the display driver. This avoids a flicker when the
-+ *   backlight comes on (which typically changes the black level slightly)
-+ *   before the splash image has been drawn.
-+ *
-+ * Backlight initially on, display linked:
-+ *
-+ *   The backlight must remain on (a.k.a. FB_BLANK_UNBLANK) during and after
-+ *   the backlight probe.  This allows a bootloader to show a splash screen and
-+ *   for the display system (including the backlight) to continue showing the
-+ *   splash image until the kernel is ready to take over the display and draw
-+ *   something else.
-+ *
-+ * Backlight initially off, no display:
-+ *
-+ *   The backlight must transition from off to on (a.k.a. FB_BLANK_UNBLANK)
-+ *   during the backlight probe. This is largely a legacy case. We must
-+ *   unblank the backlight at boot because some userspaces are not
-+ *   capable of changing the power state of a free-standing backlight
-+ *   (they only know how to set the brightness level).
-+ *
-+ * Backlight initially on, no display:
-+ *
-+ *   Identical to the initially on, display linked case.
-+ *
-+ * Note: In both cases where backlight is initially off then we must
-+ *       explicitly deassert the enable_gpio in order to ensure we
-+ *       honour the post_pwm_on_delay when the backlight is eventually
-+ *       activated.  This is required regardless of both the initial state of
-+ *       the enable pin and whether we intend to activate the backlight during
-+ *       the probe.
-+ */
- static int pwm_backlight_initial_power_state(const struct pwm_bl_data *pb)
- {
--	struct device_node *node = pb->dev->of_node;
-+	struct device_node *node = pb->dev->of_node; bool active = true;
-+
-+	/*
-+	 * If the enable GPIO is present, observable (either as input
-+	 * or output) and off then the backlight is not currently active.
-+	 */
-+	if (pb->enable_gpio && gpiod_get_value_cansleep(pb->enable_gpio) == 0)
-+		active = false;
-+
-+	if (!regulator_is_enabled(pb->power_supply))
-+		active = false;
-+
-+	if (!pwm_is_enabled(pb->pwm))
-+		active = false;
-+
-+	/*
-+	 * Synchronize the enable_gpio with the observed state of the
-+	 * hardware.
-+	 */
-+	if (pb->enable_gpio)
-+		gpiod_direction_output(pb->enable_gpio, active);
-+
-+	/*
-+	 * Do not change pb->enabled here! pb->enabled essentially
-+	 * tells us if we own one of the regulator's use counts and
-+	 * right now we do not.
-+	 */
-
- 	/* Not booted with device tree or no phandle link to the node */
- 	if (!node || !node->phandle)
-@@ -420,20 +501,7 @@ static int pwm_backlight_initial_power_state(const struct pwm_bl_data *pb)
- 	 * assume that another driver will enable the backlight at the
- 	 * appropriate time. Therefore, if it is disabled, keep it so.
- 	 */
--
--	/* if the enable GPIO is disabled, do not enable the backlight */
--	if (pb->enable_gpio && gpiod_get_value_cansleep(pb->enable_gpio) == 0)
--		return FB_BLANK_POWERDOWN;
--
--	/* The regulator is disabled, do not enable the backlight */
--	if (!regulator_is_enabled(pb->power_supply))
--		return FB_BLANK_POWERDOWN;
--
--	/* The PWM is disabled, keep it like this */
--	if (!pwm_is_enabled(pb->pwm))
--		return FB_BLANK_POWERDOWN;
--
--	return FB_BLANK_UNBLANK;
-+	return active ? FB_BLANK_UNBLANK : FB_BLANK_POWERDOWN;
- }
-
- static int pwm_backlight_probe(struct platform_device *pdev)
-@@ -486,18 +554,6 @@ static int pwm_backlight_probe(struct platform_device *pdev)
- 		goto err_alloc;
- 	}
-
--	/*
--	 * If the GPIO is not known to be already configured as output, that
--	 * is, if gpiod_get_direction returns either 1 or -EINVAL, change the
--	 * direction to output and set the GPIO as active.
--	 * Do not force the GPIO to active when it was already output as it
--	 * could cause backlight flickering or we would enable the backlight too
--	 * early. Leave the decision of the initial backlight state for later.
--	 */
--	if (pb->enable_gpio &&
--	    gpiod_get_direction(pb->enable_gpio) != 0)
--		gpiod_direction_output(pb->enable_gpio, 1);
--
- 	pb->power_supply = devm_regulator_get(&pdev->dev, "power");
- 	if (IS_ERR(pb->power_supply)) {
- 		ret = PTR_ERR(pb->power_supply);
-
-base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
---
-2.30.2
+diff --git a/net/dsa/dsa2.c b/net/dsa/dsa2.c
+index b71e87909f0e..30b1df69ace6 100644
+--- a/net/dsa/dsa2.c
++++ b/net/dsa/dsa2.c
+@@ -14,6 +14,7 @@
+ #include <linux/rtnetlink.h>
+ #include <linux/of.h>
+ #include <linux/of_net.h>
++#include <linux/of_platform.h>
+ #include <net/devlink.h>
+ 
+ #include "dsa_priv.h"
+@@ -392,6 +393,7 @@ static int dsa_port_setup(struct dsa_port *dp)
+ 
+ 		break;
+ 	case DSA_PORT_TYPE_USER:
++		of_platform_device_create(dp->dn, NULL, NULL);
+ 		of_get_mac_address(dp->dn, dp->mac);
+ 		err = dsa_slave_create(dp);
+ 		if (err)
+-- 
+2.31.1
 
