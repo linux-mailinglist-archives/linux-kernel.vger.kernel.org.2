@@ -2,205 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E183D3702
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201CC3D3707
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbhGWIGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:06:55 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:43082 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234311AbhGWIGy (ORCPT
+        id S234541AbhGWIId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:08:33 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:42085 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234276AbhGWIIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:06:54 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N8Xf5n078056;
-        Fri, 23 Jul 2021 04:47:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=zBjhx0J/gTbLIX8o/G22Lyc4piL3CKnQLcUrRMOIbSw=;
- b=MerVx9hmWCH0UlossvG4YR4Yxg1XtuUkMRPphHqN4yCPj9M1i087UF4Bf9nCOB22mOHK
- cPmYY+35gZNdbxKu8AdG3fEYoAZdYhlD5qPiPAfhkg9HF3ZYti9BtkgSyIudhw47xG6g
- AhovUYFP7134qkVUJNMbUGm22IYHDbJK00Dq7MEMm7fuitrvKbqVNZBEYO/P9nENogZw
- UO0AludyiYV9qaMQq8OZKhnrCFQyDHHkCfkEucKOf1/srRIRBRA8sXd7G1Xl3gfa1mqD
- +UKSXZRMR7zOlBp2zjEqr+O6/2XOu7K0m1ffRjG1BjPfXT87se7r2llYkHzpekbyN4CM PQ== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39ytc78bty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 04:47:09 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N8Y1s7007131;
-        Fri, 23 Jul 2021 08:47:07 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06fra.de.ibm.com with ESMTP id 39upfh9swt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 08:47:07 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N8iaSg23658884
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 08:44:36 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 487E94204F;
-        Fri, 23 Jul 2021 08:47:04 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F75742041;
-        Fri, 23 Jul 2021 08:47:03 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.6.217])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 23 Jul 2021 08:47:03 +0000 (GMT)
-Date:   Fri, 23 Jul 2021 10:47:01 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Claire Chang <tientzu@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
-Message-ID: <20210723104701.3f8ac227.pasic@linux.ibm.com>
-In-Reply-To: <b8985c53-a83d-f11f-9fa8-af06d1d4bfd0@de.ibm.com>
-References: <20210720133826.9075-1-will@kernel.org>
-        <57e37ef9-c055-d6a6-2244-2c7dd243b5c1@de.ibm.com>
-        <20210723031252.655d6a83.pasic@linux.ibm.com>
-        <b8985c53-a83d-f11f-9fa8-af06d1d4bfd0@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sUv-Q8d94Qfk_kxPtGywvzAB6JS8DuBE
-X-Proofpoint-ORIG-GUID: sUv-Q8d94Qfk_kxPtGywvzAB6JS8DuBE
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 23 Jul 2021 04:08:30 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id 6qrdmWn3cXTlc6qremAOPS; Fri, 23 Jul 2021 10:49:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1627030142; bh=HXahCBWhsxCXk9WRb5V0XD/vAj7NUOOwa5HNuAsYmrs=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=k7/3Qab3slPYOBfLS66bBQBYe0wFLQPkUeeidCe7kIFDDbBuv4lZE2Ze6yVeDhGCB
+         KrDZHdwx4VSH6ts2Q5CtJiUn0xtLNjumWBZwlHnIfND07Ryb77SKITxb+cSO4NXqb1
+         9jq1auqpeA6yS3LM6LSqINXHZa2it1TZTqnpb+fTBbBnvSA/w/TEbPbVr/6wA77cbY
+         s2eEMPrM5B0vbL4UGdy+LfQrzTdFYvZ87XTruPksM+6d2gtAZe+X8FLDxXqH2hsNqo
+         g57xjD5pu7Toq9sSSGqmeUF8+xz5jDeIJm2etGeQdX/NW4nmRFcupl4TkzmAf5iTRT
+         5TSPzhLDZZCyQ==
+Subject: Re: [PATCH REPOST] TDA1997x: replace video detection routine
+To:     =?UTF-8?Q?Krzysztof_Ha=c5=82asa?= <khalasa@piap.pl>
+Cc:     Tim Harvey <tharvey@gateworks.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>
+References: <m3k0lmejlw.fsf@t19.piap.pl>
+ <68bd6e41-4c32-240f-aa83-fd2b96929d45@xs4all.nl> <m3mtqedfsg.fsf@t19.piap.pl>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <798b2128-24a6-1a62-f98c-f228134e8d5c@xs4all.nl>
+Date:   Fri, 23 Jul 2021 10:49:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_04:2021-07-23,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 adultscore=0 impostorscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230049
+In-Reply-To: <m3mtqedfsg.fsf@t19.piap.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfNEq1EtzebInsdpHKuFMkWFtfyV27oxkA4/1eTPcBhvmNMPqvlqrHmFu5e2iaNP8NIpUsBKBmMFbYeIKltYME0pFVh13X3Cq0Mt8PRLWEAl/xfYGaf5t
+ Yj/N1OA7boTOeME85S18RkNvdmypcHeuVpddZzdFoWwpfAwkm/VXkOMOyXceiwGkHCwhcaq14ad572qdgjs3fN/Qfjx9SxJrqRCJnBIKZZrxeYpmiTkQemwo
+ uvachFnKdOE4osKjatBPPFdqGwWAa2NC3YHkXEAhkDNxsWD7mLKm1i+eMPY+rJKui3c/WSPBp9sHXyzWk8lC1Z/nNo1RYMQdB0PmH2todKxPRzwCSpqzCTaM
+ rRvooEQzLWmz1/ibyrve60hLmBc4MkRNZhCftc+bjMo5s4ylxp58oqmCfllf5FXt+rhXDvR/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 08:14:19 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-
-> Resending with the correct email of Heiko....
+On 22/07/2021 08:27, Krzysztof Hałasa wrote:
+> Hans,
 > 
-> On 23.07.21 03:12, Halil Pasic wrote:
-> > On Thu, 22 Jul 2021 21:22:58 +0200
-> > Christian Borntraeger <borntraeger@de.ibm.com> wrote:
-> >   
-> >> On 20.07.21 15:38, Will Deacon wrote:  
-> >>> Hi again, folks,
-> >>>
-> >>> This is version two of the patch series I posted yesterday:
-> >>>
-> >>>     https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
-> >>>
-> >>> The only changes since v1 are:
-> >>>
-> >>>     * Squash patches 2 and 3, amending the commit message accordingly
-> >>>     * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
-> >>>
-> >>> I'd usually leave it a bit longer between postings, but since this fixes
-> >>> issues with patches in -next I thought I'd spin a new version immediately.
-> >>>
-> >>> Cheers,  
-> >>
-> >> FWIW, I just bisected virtio-errors with secure execution mode
-> >> qemu-system-s390x: virtio-serial-bus: Unexpected port id 4205794771 for device virtio-serial0.0
-> >>
-> >> to
-> >> commit 903cd0f315fe426c6a64c54ed389de0becb663dc
-> >> Author: Claire Chang <tientzu@chromium.org>
-> >> Date:   Thu Jun 24 23:55:20 2021 +0800
-> >>
-> >>        swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing
-> >>
-> >> Unfortunately this patch series does NOT fix this issue, so it seems that even more
-> >> things are broken.
-> >>
-> >> Any idea what else might be broken?  
-> > 
-> > I've done some debugging, and I think I know what is going on. Since
-> > that commit we need to set force_swiotlb before the swiotlb itself is
-> > initialized. So the patch below should fix the problem.
-> > 
-> > --------------------8<-------------------------------------
-> > 
-> > From: Halil Pasic <pasic@linux.ibm.com>
-> > Date: Fri, 23 Jul 2021 02:57:06 +0200
-> > Subject: [PATCH 1/1] s390/pv: fix the forcing of the swiotlb
-> > 
-> > Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
-> > swiotlb data bouncing") if code sets swiotlb_force it needs to do so
-> > before the swiotlb is initialised. Otherwise
-> > io_tlb_default_mem->force_bounce will not get set to true, and devices
-> > that use (the default) swiotlb will not bounce  despite switolb_force
-> > having the value of SWIOTLB_FORCE.
-> > 
-> > Let us restore swiotlb functionality for PV by fulfilling this new
-> > requirement.
-> >   
-> I would add:
-> Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
-> as this patch breaks things
-> and
-> Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
-> 
-> to make the s390 init code more robust in case people start backporting things.
+> I have a problem with matching H/V sync polarities. It appears the
+> standard modes use different polarity settings, and HDMI doesn't have
+> separate sync lines, it uses in-band signaling. I don't know what
+> polarity should I set for the v4l2_find_dv_timings_cap() ->
+> v4l2_match_dv_timings() to succeed.
 
-I agree. Do we want this backported to the stable releases that have
-64e1f0c531d1  (i.e. do we need a cc stable) or should the fixes tag just
-serve as metadata? My guess is, it's the former. In that sense should I
-add the tags along with an explanation for the second fixes respin with
-cc stable? 
+The tda1997x doesn't have any method of obtaining the sync polarities?
 
-(BTW I don't think this formally qualifies for the stable backports, but
-I hope we can make an exception...)
+HSync and VSync are, as you say, using in-band signaling, but the 'polarity'
+still matters when it comes to detecting timings. All HDMI receivers I have
+ever seen have a register that reports the polarities. I find it *very* hard
+to imagine that this device doesn't support that.
+
+Do you have a datasheet for this device?
 
 > 
-> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>  
+> 1. I can try all 4 combinations (+/+, +/-, -/+, -/-) and see if there is
+> a match. Seems weird to me.
 > 
-> I can confirm that this fixes the problem. This also makes sense codewise.
+> 2. I can add a flag to v4l2_find_dv_timings_cap() ->
+> v4l2_match_dv_timings() which asks for the polarities to be ignored.
 > 
-> Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> 3. I could add
+>  #define V4L2_DV_VSYNC_POS_POL   0x00000001
+>  #define V4L2_DV_HSYNC_POS_POL   0x00000002
+> +#define V4L2_DV_VSYNC_ANY_POL   0x00000004
+> +#define V4L2_DV_HSYNC_ANY_POL   0x00000008
+> 
+> and v4l2_match_dv_timings() would skip comparing them. A bit hacky.
+> 
+> 4. I could also add
+>  #define V4L2_DV_VSYNC_POS_POL   0x00000001
+>  #define V4L2_DV_HSYNC_POS_POL   0x00000002
+> +#define V4L2_DV_VSYNC_NEG_POL   0x00000004
+> +#define V4L2_DV_HSYNC_NEG_POL   0x00000008
+> 
+> and, likewise, v4l2_match_dv_timings() would know what to do. This is
+> IMHO cleaner but requires much more changes in other code (like
+> drivers).
+> 
+> Any other idea?
+> Perhaps I should do "2"?
 
-Thanks!
+If there really is no register that reports the polarities, then option 2 is
+the best approach. There are other reasons why you might want to ignore the
+polarities: not all video sources use the correct polarities.
+
+What I think would be best is to make a flags argument that allows the
+match code to skip certain tests:
+
+#define V4L2_DV_TIM_IGNORE_POLARITIES	BIT(0)
+#define V4L2_DV_TIM_IGNORE_HPORCHES	BIT(1)
+#define V4L2_DV_TIM_IGNORE_VPORCHES	BIT(2)
+#define V4L2_DV_TIM_IGNORE_HSYNC	BIT(3)
+#define V4L2_DV_TIM_IGNORE_VSYNC	BIT(4)
+
+IGNORE_HPORCHES would just check hsync and total horizontal blanking,
+IGNORE_HSYNC would just check total horizontal blanking.
+IGNORE_HSYNC implies IGNORE_HPORCHES.
 
 Regards,
-Halil
-> 
-> Konrad, Heiko, Vasily, any preference which tree this goes? I think s390
-> would be easiest, but that requires that the patches in the swiotlb tree have
-> fixed commit IDs.
-> 
-> > ---
-> >   arch/s390/mm/init.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> > index 8ac710de1ab1..07bbee9b7320 100644
-> > --- a/arch/s390/mm/init.c
-> > +++ b/arch/s390/mm/init.c
-> > @@ -186,9 +186,9 @@ static void pv_init(void)
-> >   		return;
-> >   
-> >   	/* make sure bounce buffers are shared */
-> > +	swiotlb_force = SWIOTLB_FORCE;
-> >   	swiotlb_init(1);
-> >   	swiotlb_update_mem_attributes();
-> > -	swiotlb_force = SWIOTLB_FORCE;
-> >   }
-> >   
-> >   void __init mem_init(void)
-> >   
 
+	Hans
