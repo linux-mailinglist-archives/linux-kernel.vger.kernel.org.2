@@ -2,161 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A393D398A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288FA3D3990
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbhGWKvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
+        id S234438AbhGWKxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234549AbhGWKvn (ORCPT
+        with ESMTP id S234218AbhGWKw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:51:43 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4A8C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 04:32:16 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id 10-20020a0562140d0ab02902ea7953f97fso1508849qvh.22
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 04:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=wopAMfAFodufVPIjdUMCKKzBY2Yv7x4TcVUiniEv4ds=;
-        b=nJFm0U+LLxx1CSpdg2n2/hM1YuQ1BSQx3wRINnedjPgDNlptDEDPIoBFU/mzv9LR4v
-         Jgj36Mvy4Ec7Cbec8uam/ygQfPWXrwnGM+6cp42x0AP17UE6e45ScX1D++SSsQPv43p3
-         E7mcIwgeUB5elAXvfzfG8KfuQxL5+qG5yjY3KGRhpmZEW3JkYGjkH/aKohTX0vGXE21X
-         ZPoNLqEqkNgz9qccmvc2h+ldkMEairCnBg9Bw9ARVvC/NHhLZAHuIt8biurg3Hvv+fUN
-         nrVTUUCKyezRSHdOeAvalsGXbKCMOHdYqnl9N0Qte7M7a2ZlE74TxYn21kx+SxtiYxDf
-         V2xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=wopAMfAFodufVPIjdUMCKKzBY2Yv7x4TcVUiniEv4ds=;
-        b=WBGvKLCzNqGRpQH8pvoIYeZuwYBhFeEiiYf4P7HsbWWUxIhSYkmIxLIlNxbIJ16Au7
-         yy9SyDqLqtc9l3n0vFk84sjASygCNDcAgQhSMehfIx5Y7YwtdSHUYIaRc/OnntNkuOBa
-         V1xHTVW8f3tNqObK8WwEEUFMwRUVyM90A95T6x5FBwz1Hap+dj8TNp/nBYxQYQYDJlCK
-         kcImhqrsZ0YBFIhBySqEHljNFNHLYXA8avOt+6UoB9OQTPn7CI45ugqOd6NsS7LxJRpM
-         lrt8l33xqQUvbivB1mj1gxJN6jG01oKq7/ce4HRSunuyp/LJMSfbMYpZZ/jLqIxXVw1M
-         X7AQ==
-X-Gm-Message-State: AOAM533e+FFfxEpOpUxSOIVvx6d/Vse/2JsDKAfJ+7yoQUMiApIvx1hW
-        bZQzL+SRaRtr8vzL+mZkzPi7nwG0nYNR
-X-Google-Smtp-Source: ABdhPJzzciscGeoQb/3TDTQkKv1iVFzZNg+dYYKjG3X4UaiQH6HE1XMRjwR0xZTJLi8Qf8xKe1ZjgwW1LDMy
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:ddde:33b:f989:cd76])
- (user=apusaka job=sendgmr) by 2002:a05:6214:10c8:: with SMTP id
- r8mr4346292qvs.28.1627039935616; Fri, 23 Jul 2021 04:32:15 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 19:31:57 +0800
-In-Reply-To: <20210723193137.v3.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
-Message-Id: <20210723193137.v3.3.I4b323d2adf1dca62777c41de344a7d2f79b7f908@changeid>
-Mime-Version: 1.0
-References: <20210723193137.v3.1.I68649745bd11a83265f1e816bf34ecc82775e95a@changeid>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v3 3/3] Bluetooth: hci_h5: Add runtime suspend
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Hilda Wu <hildawu@realtek.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 23 Jul 2021 06:52:58 -0400
+Received: from gpm.stappers.nl (gpm.stappers.nl [IPv6:2001:981:6c6a:1::49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 040CBC061575;
+        Fri, 23 Jul 2021 04:33:31 -0700 (PDT)
+Received: by gpm.stappers.nl (Postfix, from userid 1000)
+        id E62AB3041A7; Fri, 23 Jul 2021 13:33:27 +0200 (CEST)
+Date:   Fri, 23 Jul 2021 13:33:27 +0200
+From:   Geert Stappers <stappers@stappers.nl>
+To:     Matthew Wilcox <willy@infradead.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/17] Rust support, GPIO driver
+Message-ID: <20210723113327.cnw4wdjqdeg6o6x4@gpm.stappers.nl>
+References: <20210704202756.29107-1-ojeda@kernel.org>
+ <YOVNJuA0ojmeLvKa@infradead.org>
+ <CANiq72mKPFtB4CtHcc94a_y1V4bEOXXN2CwttQFvyzwXJv62kw@mail.gmail.com>
+ <YOWjLmg/Z7kr2+tx@kroah.com>
+ <YOW1Nj8+a2Yth2++@google.com>
+ <YOXB7FRqldZik2Xn@kroah.com>
+ <BFD5298D-00CD-4FEF-AE77-61E69AF78604@kloenk.dev>
+ <YOZNuEtNbsLxRM0R@casper.infradead.org>
+ <YPn3fgDX8uNkF8Vp@google.com>
+ <YPoYxiq63QcfUXg+@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="67mj6aqryecr4rvw"
+Content-Disposition: inline
+In-Reply-To: <YPoYxiq63QcfUXg+@casper.infradead.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
 
-This patch allows the controller to suspend after a short period of
-inactivity.
+--67mj6aqryecr4rvw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Hilda Wu <hildawu@realtek.com>
+On Fri, Jul 23, 2021 at 02:17:58AM +0100, Matthew Wilcox wrote:
+> On Thu, Jul 22, 2021 at 11:55:58PM +0100, Wedson Almeida Filho wrote:
+> > Hey Matthew,
+> >=20
+> > On Thu, Jul 08, 2021 at 01:58:32AM +0100, Matthew Wilcox wrote:
+> > > Why are you so resistant to writing a real driver that deals with act=
+ual
+> > > hardware? =20
+> >=20
+> > I don't think it was so much resistance but rather a prioritisation thi=
+ng. Have
+> > you by any chance seen the gpio driver I posted a couple of days ago?
+>=20
+> I haven't seen it, no ...
 
----
+Most likely it is https://lwn.net/Articles/863459/
 
-Changes in v3:
-* Reordering #include
+=20
 
- drivers/bluetooth/hci_h5.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+=20
+Groeten
+Geert Stappers
+--=20
+Silence is hard to parse
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index cbc63b057f33..0c0dedece59c 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -12,6 +12,7 @@
- #include <linux/kernel.h>
- #include <linux/mod_devicetable.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/serdev.h>
- #include <linux/skbuff.h>
- 
-@@ -21,6 +22,8 @@
- #include "btrtl.h"
- #include "hci_uart.h"
- 
-+#define SUSPEND_TIMEOUT_MS	6000
-+
- #define HCI_3WIRE_ACK_PKT	0
- #define HCI_3WIRE_LINK_PKT	15
- 
-@@ -584,6 +587,10 @@ static int h5_recv(struct hci_uart *hu, const void *data, int count)
- 		count -= processed;
- 	}
- 
-+	pm_runtime_get(&hu->serdev->dev);
-+	pm_runtime_mark_last_busy(&hu->serdev->dev);
-+	pm_runtime_put_autosuspend(&hu->serdev->dev);
-+
- 	return 0;
- }
- 
-@@ -620,6 +627,10 @@ static int h5_enqueue(struct hci_uart *hu, struct sk_buff *skb)
- 		break;
- 	}
- 
-+	pm_runtime_get_sync(&hu->serdev->dev);
-+	pm_runtime_mark_last_busy(&hu->serdev->dev);
-+	pm_runtime_put_autosuspend(&hu->serdev->dev);
-+
- 	return 0;
- }
- 
-@@ -951,6 +962,12 @@ static void h5_btrtl_open(struct h5 *h5)
- 	serdev_device_set_parity(h5->hu->serdev, SERDEV_PARITY_EVEN);
- 	serdev_device_set_baudrate(h5->hu->serdev, 115200);
- 
-+	pm_runtime_set_active(&h5->hu->serdev->dev);
-+	pm_runtime_use_autosuspend(&h5->hu->serdev->dev);
-+	pm_runtime_set_autosuspend_delay(&h5->hu->serdev->dev,
-+					 SUSPEND_TIMEOUT_MS);
-+	pm_runtime_enable(&h5->hu->serdev->dev);
-+
- 	/* The controller needs up to 500ms to wakeup */
- 	gpiod_set_value_cansleep(h5->enable_gpio, 1);
- 	gpiod_set_value_cansleep(h5->device_wake_gpio, 1);
-@@ -959,6 +976,8 @@ static void h5_btrtl_open(struct h5 *h5)
- 
- static void h5_btrtl_close(struct h5 *h5)
- {
-+	pm_runtime_disable(&h5->hu->serdev->dev);
-+
- 	gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
- 	gpiod_set_value_cansleep(h5->enable_gpio, 0);
- }
-@@ -1066,6 +1085,7 @@ MODULE_DEVICE_TABLE(acpi, h5_acpi_match);
- 
- static const struct dev_pm_ops h5_serdev_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(h5_serdev_suspend, h5_serdev_resume)
-+	SET_RUNTIME_PM_OPS(h5_serdev_suspend, h5_serdev_resume, NULL)
- };
- 
- static const struct of_device_id rtl_bluetooth_of_match[] = {
--- 
-2.32.0.432.gabb21c7263-goog
+--67mj6aqryecr4rvw
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEin8gjG2ecykWV0FNITXRI9jBm+wFAmD6qQAACgkQITXRI9jB
+m+zOyw//R/ups+zRvGYwR/AI5OtWjOFKYdDUACDl9PGEMYn4IK8VJ72hfrVV03cA
+irukF91cUBa7sB/vaa9gpnD9cWapPCIcwgOT7cIWGPgyi06JpIDOB1StTGzlvZJV
+kjojc/qazR/V5uhe987qhXrc0N5mOkhvCuIwVYTZR0H2VSgfhhO5qKLhadzcKGij
+EaEooeI0uM4TbKAxrS9OJKI1PwHPg5Ww0lZPeUgU6OLgzyLscAxwWL9XtRHOTcQ0
+1/rZR+DWm4RvjweGitNy8pfQLEOjnjb6Y7U9u9FteeikfQhY4ChBgnAmdinO/wWw
+/J1v9Q3ODOHagU2ihgKaoZYo7g2cD/Ks/MN8ooxYSOE7/x3L6IAOdDMkORXN84Mc
+/OA4ZIGhy4IdiSzEBnHfyV2ituBBY3SUEm43iDR6ydOtkKXI5DNiEAIcImBYFtrB
+LiWi1inyawL1XCp2yYqUvbAWzDEdXpuUKOovNR5vZklQb1jzJcOVo6zm5yPP1x3C
+ckXaVqFXbKRR+1F9GklM/d5OA8mvjFY7HccIVcOkPfv0N6Lt+Y1NNu2dNmXHmFlo
+6GdCm6mXzRFh61tSkX59OVQRspSAlURhlauiKCO4i2tA5HtcIZ3/KANmuJOArTt6
+kAlodz13QWkYeDc1LtJ0i4hL/0hO9lUTbKD/PjAb0PYrT4wK8/s=
+=jmor
+-----END PGP SIGNATURE-----
+
+--67mj6aqryecr4rvw--
