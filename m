@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47B73D3975
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FA93D3978
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhGWKrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234316AbhGWKrj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:47:39 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172D4C061575;
-        Fri, 23 Jul 2021 04:28:13 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id w12so1919539wro.13;
-        Fri, 23 Jul 2021 04:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sND+KookjI/QWXdXaqJQ/mqZiVlgkXsyRcvcp/RwyvY=;
-        b=CAXJDTBX8Wh8KdVWOqma6FPbtt61veTJbvHv0G8VpvdK9F899t9cPmKC+KdvmFg7iT
-         Ewm65+9m3omS9/mLeYTjxgUveS1XaKNXgbpYXbRV99WpnfUNyrXZUGtWZV88HocpM7OO
-         DU0JeIs37UzH7Cj9/LglKH/1XRu8a2nXUOvoOcWIDVMEtqhxwwS/X8bt7vForBhIdtHc
-         uSYredGfxU4VvD39p3zZwOAGrzEy7KoeuWWGm20y+AVQaXFkDrH2+moDrLc1PxwIlzxb
-         AxKZ8o9Ki1zTQXK7wpqOOStEppHA6ObRop07HQjcogGMmXRXbdDlTCuO7jaXFuRm1tS3
-         Oc5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sND+KookjI/QWXdXaqJQ/mqZiVlgkXsyRcvcp/RwyvY=;
-        b=J/IIe8Tg9oN6z76W/tGuAlTK2k7x20nk/h1pqp4sYCmKoCxHptLdygxGtGpEgmEIN3
-         /Rtux/RWyL3X2tOrNEpvSbirRCmegkQ6t7/PuwEj7Vuz9Eg4LKVuJRNHKM+qsY1zfKTL
-         teqBN/6JcvpE2nlv5SmWrMTEBM97IYN25ZdcnovBJj9A+cJJ9l/oduY6M5Rx+0/r7ByN
-         /QbBNhR6Hyui25bsE+1jbzk+vDAmdCTOMZQJTxwQkzRxVlT9ik6IGdesNVO2annNCs3X
-         0auTmuQQCGR4UNSaOte7aDZpaFugPSmshSCyG73jYHM9AWBlLId4pHtUBwPHaOTB3cEY
-         IsjA==
-X-Gm-Message-State: AOAM5313g+oklqQIad4vKuflR1ErHZMzduaGSFqf7kTz1bztyGk+xHe6
-        T71PiQqHAzyQXaCRy34rFUw=
-X-Google-Smtp-Source: ABdhPJz0fdlAGTIcvigt15qs8t9+66ARM4QrYQVkW0tFI/Yjs0wnBI9q4r1DnxZ9DA4FRgCJ0hGomA==
-X-Received: by 2002:a5d:4a85:: with SMTP id o5mr4796501wrq.410.1627039691688;
-        Fri, 23 Jul 2021 04:28:11 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id p11sm32991320wrw.53.2021.07.23.04.28.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 04:28:11 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 12:28:09 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/71] 5.4.135-rc1 review
-Message-ID: <YPqnycJLQEoR9YxJ@debian>
-References: <20210722155617.865866034@linuxfoundation.org>
+        id S234457AbhGWKsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:48:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231703AbhGWKsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 06:48:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10F93608FE;
+        Fri, 23 Jul 2021 11:28:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627039719;
+        bh=o+tyEe6E2yY0cCqULkCIT3sxBdyYAIFVQGoL8ZDwEM4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yJCxL3/FRkZsMKSMEwAU73noA9LdiUKH0tz1gENQJwM6z2Yhk5T4uprW5uify8Xcc
+         LbdJkU7lw8sEomDOmSjq8yjt4fUbeT4ATnrflWDyGJlgzj3gfyrBbBvQBb0kzdnBRZ
+         VcEwU3bEctWN6pD51vtPv6fIMFlNnusM0qJTucmI=
+Date:   Fri, 23 Jul 2021 13:28:37 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH 1/2] CPU, NUMA topology ABIs: clarify the overflow issue
+ of sysfs pagebuf
+Message-ID: <YPqn5SDi6bzLHsOY@kroah.com>
+References: <1619679819-45256-1-git-send-email-tiantao6@hisilicon.com>
+ <1619679819-45256-2-git-send-email-tiantao6@hisilicon.com>
+ <146e051b-603c-a6d3-43d8-d083cf2c8119@intel.com>
+ <602918a1e2214ea7bd0890a751975566@hisilicon.com>
+ <7c663f7e-07e0-6d95-3012-6e31a1b78f7e@intel.com>
+ <4bf6870f7f3942398e4d1fdaa42184c7@hisilicon.com>
+ <fd78ac30-dd3b-a7d7-eae8-193b09a7d49a@intel.com>
+ <e9610060a8d046e783ab9a229f35410c@hisilicon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210722155617.865866034@linuxfoundation.org>
+In-Reply-To: <e9610060a8d046e783ab9a229f35410c@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Thu, Jul 22, 2021 at 06:30:35PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.135 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Jul 23, 2021 at 11:20:19AM +0000, Song Bao Hua (Barry Song) wrote:
 > 
-> Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
-> Anything received after that time might be too late.
+> 
+> > -----Original Message-----
+> > From: Dave Hansen [mailto:dave.hansen@intel.com]
+> > Sent: Friday, April 30, 2021 10:39 AM
+> > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>; tiantao (H)
+> > <tiantao6@hisilicon.com>; corbet@lwn.net; gregkh@linuxfoundation.org
+> > Cc: linux-doc@vger.kernel.org; linux-kernel@vger.kernel.org; Rafael J.
+> > Wysocki <rafael@kernel.org>; Peter Zijlstra <peterz@infradead.org>; Valentin
+> > Schneider <valentin.schneider@arm.com>; Dave Hansen
+> > <dave.hansen@linux.intel.com>; Daniel Bristot de Oliveira <bristot@redhat.com>
+> > Subject: Re: [PATCH 1/2] CPU, NUMA topology ABIs: clarify the overflow issue
+> > of sysfs pagebuf
+> > 
+> > On 4/29/21 3:32 PM, Song Bao Hua (Barry Song) wrote:
+> > > $ strace numactl --hardware  2>&1 | grep cpu
+> > > openat(AT_FDCWD, "/sys/devices/system/cpu",
+> > > O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC) = 3
+> > > openat(AT_FDCWD, "/sys/devices/system/node/node0/cpumap", O_RDONLY) = 3
+> > > openat(AT_FDCWD, "/sys/devices/system/node/node1/cpumap", O_RDONLY) = 3
+> > > openat(AT_FDCWD, "/sys/devices/system/node/node2/cpumap", O_RDONLY) = 3
+> > > openat(AT_FDCWD, "/sys/devices/system/node/node3/cpumap", O_RDONLY) = 3
+> > >
+> > > If we move to binary, it means we have to change those applications.
+> > 
+> > I thought Greg was saying to using a sysfs binary attribute using
+> > something like like sysfs_create_bin_file().  Those don't have the
+> > PAGE_SIZE limitation.  But, there's also nothing to keep us from spewing
+> > nice human-readable text via the "binary" file.
+> > 
+> > We don't need to change the file format, just the internal kernel API
+> > that we produce the files with.
+> 
+> Sorry for waking-up the old thread.
+> 
+> I am not sure how common a regular device_attribute will be larger than
+> 4KB and have to work around by bin_attribute. But I wrote a prototype
+> which can initially support large regular sysfs entry and be able to
+> fill the entire buffer by only one show() entry. The other words to say,
+> we don't need to call read() of bin_attribute multiple times for a large
+> regular file. Right now, only read-only attribute is supported.
+> 
+> Subject: [RFC PATCH] sysfs: support regular device attr which can be larger than
+>  PAGE_SIZE
+> 
+> A regular sysfs ABI could be more than 4KB, right now, we are using
+> bin_attribute to workaround and break this limit. A better solution
+> would be supporting long device attribute. In this case, we will
+> still be able to enjoy the advantages of buffering and seeking of
+> seq file and only need to fill the entire buffer of sysfs entry
+> once.
 
-Build test:
-mips (gcc version 11.1.1 20210702): 65 configs -> no failure
-arm (gcc version 11.1.1 20210702): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210702): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+No, please no.  I WANT people to run into this problem and realize that
+it went totally wrong because they should not be having more than one
+"value" in a sysfs file like this.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+Let's not make it easy on people please, moving to a bin attribute is a
+big deal, let's keep it that way.
 
+thanks,
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+greg k-h
