@@ -2,216 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5BC3D3EF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 122CB3D3F0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 19:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhGWRBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 13:01:10 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:45206 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230094AbhGWRBI (ORCPT
+        id S231428AbhGWRC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 13:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhGWRC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 13:01:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UgjVCmC_1627062093;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgjVCmC_1627062093)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 24 Jul 2021 01:41:38 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
-        Huang Jianan <huangjianan@oppo.com>
-Subject: [PATCH v7] iomap: make inline data support more flexible
-Date:   Sat, 24 Jul 2021 01:41:31 +0800
-Message-Id: <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
+        Fri, 23 Jul 2021 13:02:56 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFC7C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:43:30 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id u15so3421054iol.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m10Puhi8U7Xm+Z+23EuZE31Pfmuoew3URKG5OlVrqjA=;
+        b=OyVt8d/ykK/727qMSO7qe3FOozmecngeGg5/kJVSAZEmGR9GutIjhVYvMHftZSeQFX
+         XbOmzyO/qwS25YuNggANk3VWTpwL2sD7ndSL+M/l4YUmy/ltGuLHBQac4XHwZQH9/TlD
+         QDgqehXJgHLURduXI2BeiRkDCBeevLJTdAoSk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m10Puhi8U7Xm+Z+23EuZE31Pfmuoew3URKG5OlVrqjA=;
+        b=W5w62p8YIJpbreW9VoudRd6uuz3sbpTxhz2t2vwT2opmiZngS0B61w4WDtdULMlvDo
+         U8Pc1gaPwpHpwIR0TIo795MOPKI8QFuccV+IdvlE1p1sba1zwJmcV6yQdoTyfYeRK8bt
+         17cYfrwsoYhT29mld9ZCN4iyiNbcyCNI09C6G2aGjETgp6NvjYVvunUQi8gIoS3pBh6P
+         aXMG/LEA4EovvslNL0Y6AWsU8iY9aKAEQubyrPzHa/UMuMYIk9Qski4qs01ORJ1jg5sB
+         xKUdFU49FaugeGe1KiXsuAVyaK772itDN2K+zQGWg0hu5khV303W+DsjW2AN2oYwfxvk
+         cijQ==
+X-Gm-Message-State: AOAM5317aef7DcJxf0lTQ+pmxTkR6tTfIDl4XLWY3p1NZOHe2mF6lXzj
+        WjV23cHmleA/FXybuP7QhNVG3WEE2Vaj6w==
+X-Google-Smtp-Source: ABdhPJzWLZE/+u1IofyNAjswQd6BPCe3QXgwi/Ejgkff2QAjVIigrbud9wpKEWvGy31S+9xqjhaVdQ==
+X-Received: by 2002:a02:6f1c:: with SMTP id x28mr5076956jab.95.1627062209627;
+        Fri, 23 Jul 2021 10:43:29 -0700 (PDT)
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com. [209.85.166.180])
+        by smtp.gmail.com with ESMTPSA id j4sm17829491iom.28.2021.07.23.10.43.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 10:43:28 -0700 (PDT)
+Received: by mail-il1-f180.google.com with SMTP id o7so1082938ilh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 10:43:27 -0700 (PDT)
+X-Received: by 2002:a05:6e02:13e2:: with SMTP id w2mr4246414ilj.308.1627062207416;
+ Fri, 23 Jul 2021 10:43:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210721143946.v3.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+ <dd405f78-ac37-18d4-23f1-7d43507edee6@redhat.com> <CAE=gft7eY0scobDwQGq-OuFk4Ec2APFQF-4K6UVkTN-TOGwETw@mail.gmail.com>
+ <3c46df04-abf4-4bcb-b9cf-430bb1d15b07@redhat.com>
+In-Reply-To: <3c46df04-abf4-4bcb-b9cf-430bb1d15b07@redhat.com>
+From:   Evan Green <evgreen@chromium.org>
+Date:   Fri, 23 Jul 2021 10:42:51 -0700
+X-Gmail-Original-Message-ID: <CAE=gft4+tw2Lh_aVm1-K0P12Lb5byh4Nv8nGk_qQVQ8MAiTnRw@mail.gmail.com>
+Message-ID: <CAE=gft4+tw2Lh_aVm1-K0P12Lb5byh4Nv8nGk_qQVQ8MAiTnRw@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: Enable suspend-only swap spaces
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-api@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        Pavel Machek <pavel@ucw.cz>, Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for reading inline data content into the page cache from
-nonzero page-aligned file offsets.  This enables the EROFS tailpacking
-mode where the last few bytes of the file are stored right after the
-inode.
+On Thu, Jul 22, 2021 at 11:58 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 22.07.21 20:00, Evan Green wrote:
+> > On Thu, Jul 22, 2021 at 12:12 AM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 21.07.21 23:40, Evan Green wrote:
+> >>> Currently it's not possible to enable hibernation without also enabling
+> >>> generic swap for a given swap area. These two use cases are not the
+> >>> same. For example there may be users who want to enable hibernation,
+> >>> but whose drives don't have the write endurance for generic swap
+> >>> activities. Swap and hibernate also have different security/integrity
+> >>> requirements, prompting folks to possibly set up something like block-level
+> >>> integrity for swap and image-level integrity for hibernate. Keeping swap
+> >>> and hibernate separate in these cases becomes not just a matter of
+> >>> preference, but correctness.
+> >>>
+> >>> Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
+> >>> generic swapping to it. This region can still be wired up for use in
+> >>> suspend-to-disk activities, but will never have regular pages swapped to
+> >>> it. This flag will be passed in by utilities like swapon(8), usage would
+> >>> probably look something like: swapon -o noswap /dev/sda2.
+> >>
+> >> Just a minor comment, I'd call it rather SWAP_FLAG_HIBERNATE_ONLY and
+> >> SWAP_FLAG_HIBERNATE_ONLY -- that calls the child by its name.
+> >
+> > I went back and forth on this too. It seemed pretty close to toss-up
+> > to me. I went with NOSWAP ultimately because it seemed more closely
+> > tied to what the flag was actually doing, rather than building in my
+> > one expected use case into the name. In some world years from now
+> > where either hibernate has diverged, been deleted, or maybe some new
+> > usage has been invented for swap space, the NOSWAP name felt like it
+> > had a better chance of holding up. The argument is weak though, as
+> > these features are pretty well cast in stone, and the likelihood of
+> > any of those outcomes seems low. I can change it if you feel strongly,
+> > but would probably keep it as-is otherwise.
+>
+> Just imagine technology Z popping up and using also the swap
+> infrastructure. What would be the semantics of NOSWAP? With
+> HIBERNATE_ONLY it's clear -- enable that device only for hibernation,
+> nothing else.
+>
+> But you raise a good point: if hibernation isn't even possible in a
+> configuration (e.g., not configured into the kernel), we should simply
+> reject that flag. So if hibernation would vanish at some point
+> completely from the system, it would all be handled accordingly.
+>
+> That would result in quite a consistent definition of
+> SWAP_FLAG_HIBERNATE_ONLY IMHO.
+>
+> Makes sense?
 
-The buffered write path remains untouched since EROFS cannot be used
-for testing. It'd be better to be implemented if upcoming real users
-care and provide a real pattern rather than leave untested dead code
-around.
+Ok, I'll change the name, and reject the flag if hibernation is not enabled.
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-v6: https://lore.kernel.org/r/20210722031729.51628-1-hsiangkao@linux.alibaba.com
-changes since v6:
- - based on Christoph's reply;
- - update commit message suggested by Darrick;
- - disable buffered write path until some real fs users.
+>
+> >
+> >>
+> >> I think some other flags might not apply with that new flag set, right?
+> >> For example, does SWAP_FLAG_DISCARD_ONCE or SWP_AREA_DISCARD still have
+> >> any meaning with the new flag being set?
+> >>
+> >> We should most probably disallow enabling any flag that doesn't make any
+> >> sense in combination.
+> >
+> > Good point, I can send a followup patch for that. From my reading
+>
+> I'd actually enjoy if we'd have that logic in the introducing patch.
 
- fs/iomap/buffered-io.c | 42 ++++++++++++++++++++++++++----------------
- fs/iomap/direct-io.c   | 10 ++++++----
- include/linux/iomap.h  | 14 ++++++++++++++
- 3 files changed, 46 insertions(+), 20 deletions(-)
+Ok.
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..f351e1f9e3f6 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
--iomap_read_inline_data(struct inode *inode, struct page *page,
--		struct iomap *iomap)
-+static int iomap_read_inline_data(struct inode *inode, struct page *page,
-+		struct iomap *iomap, loff_t pos)
- {
--	size_t size = i_size_read(inode);
-+	size_t size = iomap->length + iomap->offset - pos;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return PAGE_SIZE;
- 
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline data must start page aligned in the file */
-+	if (WARN_ON_ONCE(offset_in_page(pos)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(page_has_private(page)))
-+		return -EIO;
- 
- 	addr = kmap_atomic(page);
--	memcpy(addr, iomap->inline_data, size);
-+	memcpy(addr, iomap_inline_buf(iomap, pos), size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return PAGE_SIZE;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -246,11 +250,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	unsigned poff, plen;
- 	sector_t sector;
- 
--	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
--		return PAGE_SIZE;
--	}
-+	if (iomap->type == IOMAP_INLINE)
-+		return iomap_read_inline_data(inode, page, iomap, pos);
- 
- 	/* zero post-eof blocks as the page may be mapped */
- 	iop = iomap_page_create(inode, page);
-@@ -589,6 +590,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(srcmap->offset != 0))
-+		return -EIO;
-+	return iomap_read_inline_data(inode, page, srcmap, 0);
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,14 +628,14 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
- 		status = __iomap_write_begin(inode, pos, len, flags, page,
- 				srcmap);
- 
--	if (unlikely(status))
-+	if (unlikely(status < 0))
- 		goto out_unlock;
- 
- 	*pagep = page;
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..a6aaea2764a5 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 		struct iomap_dio *dio, struct iomap *iomap)
- {
- 	struct iov_iter *iter = dio->submit.iter;
-+	void *dst = iomap_inline_buf(iomap, pos);
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_buf(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(dst, length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(dst, length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e221..56b118c6d05c 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -97,6 +97,20 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+static inline void *iomap_inline_buf(const struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data - iomap->offset + pos;
-+}
-+
-+/*
-+ * iomap->inline_data is a potentially kmapped page, ensure it never crosses a
-+ * page boundary.
-+ */
-+static inline bool iomap_inline_data_size_valid(const struct iomap *iomap)
-+{
-+	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
--- 
-2.24.4
+>
+> > SWAP_FLAG_DISCARD and SWAP_FLAG_DISCARD_ONCE are still valid, since
+> > the discard can be run at swapon() time. SWAP_FLAG_PREFER (specifying
+> > the priority) doesn't make sense, and SWAP_FLAG_DISCARD_PAGES never
+> > kicks in because it's called at the cluster level. Hm, that sort of
+> > seems like a bug that freed hibernate swap doesn't get discarded. I
+> > can disallow it now as unsupported, but might send a patch to fix it
+> > later.
+>
+> Might be worth fixing, indeed.
+>
+> >
+> >>
+> >> Apart from that, I'd love to see a comment in here why the workaround
+> >> suggested by Michal isn't feasible -- essentially a summary of what we
+> >> discussed.
+> >
+> > Ah sorry, I had tried to clarify that in the commit text, but didn't
+> > explicitly address the workaround. To summarize, the workaround keeps
+> > generic swap out of your hibernate region... until hibernate time. But
+> > once hibernate starts, a lot of swapping tends to happen when the
+> > hiber-image is allocated. At this point the hibernate region is
+> > eligible for general swap even with the workaround. The reasons I gave
+> > for wanting to exclusively steer swap and hibernate are SSD write
+> > wearing, different integrity solutions for swap vs hibernate, and our
+> > own security changes that no-op out the swapon/swapoff syscalls after
+> > init.
+> >
+>
+> That would be nice to have in the patch description :)
 
+Sure, I'll add that as well and send out a v4 shortly.
+-Evan
