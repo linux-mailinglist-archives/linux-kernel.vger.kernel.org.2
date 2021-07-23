@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF083D3B5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D2C3D3B5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbhGWNFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:05:53 -0400
-Received: from mout.gmx.net ([212.227.15.18]:56807 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235243AbhGWNFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:05:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627047967;
-        bh=uOVWPoV+0COS1ebm/CTCvdHxMf0SfnJuHXMIargNVL0=;
-        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
-         CC:From;
-        b=aPHbf+xJ1KxStTo6yeuHU9FIsQmVYlMygx9eTy/lWxaQz/dkRb+csx2vne5uMe4oY
-         wIqh9pqb5+UUcx3wbbBuCrdmTXRektn+m9wG9wmUgMkFXznhNuRMiFLIpLgFgFJ0ye
-         3LvfQxSoWagdr+dimu5theYh7SfG1HUFJ5ZlD1Gc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from frank-s9 ([157.180.225.23]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIMfW-1lusod2JfA-00EK3z; Fri, 23
- Jul 2021 15:46:07 +0200
-Date:   Fri, 23 Jul 2021 15:46:02 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <162608669457.4543.2374973099687363958.b4-ty@kernel.org>
-References: <20210706121609.680534-1-linux@fw-web.de> <162608669457.4543.2374973099687363958.b4-ty@kernel.org>
+        id S235274AbhGWNFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235243AbhGWNFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:05:45 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1907AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:46:19 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id b21so1717521ljo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R+ag2d72KvvFEXZNBsdQcAfMeju6Pa8JiIFVIvwyZAs=;
+        b=Bel0NWzfFa7+d0KBmjVVM5nyRPf5LEz7p5f/UNtfAB3KKC96xHbvTXWvvBbDrM72ZT
+         SXzM2conoYeEZZEkJzsgAfViHZODQnnziIxW6NqqsuypTghZgf8poGb2JK44l6zAAcaC
+         i9Zy6ftMma9CWf8ne5JIemBQgOSSMEEMmUCloaNBkmVSkf/4xN9A9PdqMccjr86sO/L0
+         SlZ2zOvit+JbzDXBXK2HNeAo9yEGfaIhs58ErsHRUutYP/eJa7m9LcUCFmPE1kKKpqWX
+         WV/fA8ZMK01uTIlDsfdmpgAb14HExE356njQnykVutaFhedklFS4hrmq3dh94Ebo0o7a
+         JtWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R+ag2d72KvvFEXZNBsdQcAfMeju6Pa8JiIFVIvwyZAs=;
+        b=dQM1FW47G60vmzDa5CvD7EgnIZtGlio/RdodbkXtQDazqGV8f42NZa+J0wvsygeHpP
+         xaF4vT0LfoWroEkgsvQJiAS0D77QkZYdLp+mmRJiUsOjK4UHxxYJJqb142bTCPjPAvqp
+         MCh4n1ssbSDiD3E1UTkKCzL9jA0uwWzI2buFqku1elyVxVAj+BjOhepm0u4pAomtii7H
+         cQIZ87CBH6boU7+WGMhSd65UMusKibIg648sAoUdwA4DS261l89wMi/icZNdTdyjmkp8
+         eDdJR38Bh+RL4ZGsK3sbUTPDzvfQpTiydqJOJVZaCpc1mzmd/2kCtgKOjWtEB5//ddCc
+         pPdQ==
+X-Gm-Message-State: AOAM532irfi3g3SxO4PiAiWoDGcaeYyFOZ636/JpKKxfdRleClH57Okh
+        pwD+InmOcA13fW2kYWbpGygsxLk53wt0iv9Xw3imGA==
+X-Google-Smtp-Source: ABdhPJxHBOisaZMsrpVGL5IjrNztOtO9ALzW8qKpkWXbWzvMb52gUbcej6/EFccqagBqkkFhvSoB5KjNacZFYxqbkBQ=
+X-Received: by 2002:a2e:9ec1:: with SMTP id h1mr3464593ljk.0.1627047977179;
+ Fri, 23 Jul 2021 06:46:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] spi: mediatek: fix fifo rx mode
-Reply-to: frank-w@public-files.de
-To:     linux-mediatek@lists.infradead.org,
-        Mark Brown <broonie@kernel.org>,
-        Frank Wunderlich <linux@fw-web.de>
-CC:     linux-arm-kernel@lists.infradead.org,
-        Leilk Liu <leilk.liu@mediatek.com>,
-        linux-kernel@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Peter Hess <peter.hess@ph-home.de>, linux-spi@vger.kernel.org
-From:   Frank Wunderlich <frank-w@public-files.de>
-Message-ID: <363C87CD-F0C6-4A46-877C-86E07D14787D@public-files.de>
-X-Provags-ID: V03:K1:dZfvZWxqxCmhDGOcOppaRh1/0B9ez7nDj/olxCAjAF0eeXmOZfS
- ZRu5+cbCocF31onn+8vNjXxIZ9zb/IiTtjtxpvxrkR8lpdo+az1kVokB0SHlid8ear3IFd4
- ri7OgVx8sAWkCogEgnd7HlG83y90URWfz87/PSeGwYF2Za1If/4WpBzKvYtEWL3wFX6VMUf
- ckChCP3vcqP5kCP2mnyDQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:stqKK/Xd/L0=:piszGl6K2a+xGIZxVsOsYi
- RHbRVNglDVIYZQZJd7R96OCkI4JgKkJxmXUNrK5LXvwrHRTyo4VoHTEEL34HxYj6hLRjnGIRq
- PkF9t8U6ngAKSKSxcbrnYoNJtbimGxmJkrRccHC9oDXD3zKY3YeSanLVhXDGIpt+poCxasYxI
- 2IbDGejnp8UHK01fle62S8eXHtvZAhZ5dEm76hegTM5D8lUMIrvvZkD8jGEGXwxJdx0X387NV
- //6NAJBLHAAsZ+eV3NyJyAhwth24ORZGyHJWaY2ft1itZLEi8z1do3NzoV3foQ5+ENrpjVbFr
- NtnrVikK70h1WBQZoqwrGekYz89zKdcDK9+NrMwcQqlIxcVxyD3lUTsIZ57bvD0HxoyCHPFyQ
- V4ftcZjY+yhXgr8G9jC3k8CVBpny2iExVQXX3NdWECEMVsTjtPPvKiNeHP/R6OlDxx655rY1h
- Yc+/uMnhUwu2NG4WyQ7OHT/Dj1Ab9FlH3zIbrTz1cGaaMbKv63uSw9TVRXwopVFrjleZUp2Ub
- NX6hXv3R0Xfj9lQf79osB2PpvOIjUqLj9TttPNs+9sJMJsJE2WR0jX5mhgq3Ha39uAC6L8YZ/
- QqcH2SQhyGbb0rs/QE5WMIXlWyOnV8lhfzPaCSJCc16992GJ8bi7SLePRetMQZZDdLkLj/jfE
- IT4LwmmSogSErnBJn2k6IZO8FfTrYuSavaCyEBRZv4fVO1/QODgQeiPyVE3z+a2eCdz7FkJfm
- fvj9Ym+P6Q4P7VOg+8dgSYGWQbpclCsm9DUAv5ctPDNwhGsA+wmTzUor/nwHVWtKVjUDFMOH0
- IKepA0N4StjHUhXB3CGrqtD0KGhdidjFFM/qKhTvEbuLEMIU3b+4RpMyQTIArSB6mDUOm/XtS
- 511X5e3kAYE8JA11M3hbe6EX4H7tQj1iaz//6ZKrJw4iYx/nGNF2QSEqdrSWZ2i7f5sU+ULG9
- EypiNUkOnheFshvAsdrUp64PEjVsdpfx1Iupn1jEbBqEz3CBXnxw42uAB7DBnjCDb4VH0g7pt
- zoWu4BZmkCTmuQ6by6WInWgXjSi+otMbayhbj7fp5dTO1CGzUZWboYNaENQub0rMl5rcNf4Zk
- T0DeQ8Yx9rWzMYNqw/rZisY+tjYPXmftXZ2bgRMNyrM6ewRvGX2tKCnxg==
+References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+ <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
+ <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
+ <YPqDnqULylkkzQG5@dhcp22.suse.cz>
+In-Reply-To: <YPqDnqULylkkzQG5@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 23 Jul 2021 06:46:06 -0700
+Message-ID: <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Fri, Jul 23, 2021 at 1:53 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+[...]
+> > However
+> > retrying means issuing another syscall, so additional overhead...
+> > I guess such "best effort" approach would be unusual for a syscall, so
+> > maybe we can keep it as it is now and if such "do not block" mode is needed
+> > we can use flags to implement it later?
+>
+> Yeah, an explicit opt-in via flags would be an option if that turns out
+> to be really necessary.
+>
 
-Can we add stable-tag i've missed to fix older kernel versions or inform g=
-reg to add patch to at least 5=2E4/5=2E10?
-
-Regards Frank
+I am fine with keeping it as it is but we do need the non-blocking
+option (via flags) to enable userspace to act more aggressively.
