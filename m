@@ -2,81 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F613D34ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 677773D34EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbhGWGSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:18:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46987 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234095AbhGWGSL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:18:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627023525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ElwTUrgx2uwYZtx6RXk2BFBNKStGzvaPr0AwpeE9zds=;
-        b=Ar6XOjQndwGIAZJ8LffQEs39bnM1MD1rJDDVK8tyZNTlvxW/AsD67ofM5QAeOWG0SphHbt
-        T09j+nfh+n0aFCnrm4RneULBS2g0TpXEY079QW+wEpIvW+xJaWvyA9wHiR/3HoaAlOCUWe
-        PNKT/T259kGoveBC/axkfEwzL9p+OSA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-104-u1uMuu7fPGajssi2XTzS8w-1; Fri, 23 Jul 2021 02:58:43 -0400
-X-MC-Unique: u1uMuu7fPGajssi2XTzS8w-1
-Received: by mail-wm1-f70.google.com with SMTP id g39-20020a05600c4ca7b0290236a25b0497so45422wmp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:58:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ElwTUrgx2uwYZtx6RXk2BFBNKStGzvaPr0AwpeE9zds=;
-        b=Z7Bp3czmj26AvrttfJwumMt87Fm579U20qEuMcQiID+8awx4M6sSr964Fm2+vPyRds
-         cKqv98ybpJYEaT348RmRlhzbmZhe6g9ioacVzWz6Kk3Ct4XDPndo4hPZjGJql0933uvk
-         VnqKtc3MeDf+cR5abkIe2CUiimT6Nud4PTIl6qdAq4XQBLq6jT/kt8vj2XLIp4tgduuh
-         AfavO4xExLsby0+zAQigaS+rbcde3R/IaB8m3DnpgsVAm5Zx+EoVl6sDsVMCBRZIcKNd
-         POgpTz1xi4xuSfq5EqsylMxhXQSIqKEBfAG9YPJS5klOfKemueZ6tNDIKF2BgrPrv90w
-         pYLQ==
-X-Gm-Message-State: AOAM532hvVvVuhzA1klz6oPJi3+G1gOAwsmIwNfUSHXVXayc+lzQjkcF
-        ObBHT9aMEhZrOhS7ik5IRiL0xcbVGjslRiHdYhR9pftgQbLnqXpFvxnWDoQ2A/+pToYxelQnc/B
-        G5gAMAEFADdLwftN9zmaN38Vd
-X-Received: by 2002:a5d:4cce:: with SMTP id c14mr3584270wrt.258.1627023522728;
-        Thu, 22 Jul 2021 23:58:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrQGpf3ok0FD5zzDYTaQhQ8SpdhoX7AkzghoaJR37V7X600SqkQ0mX4yh/Ddrw/dZMWcySGA==
-X-Received: by 2002:a5d:4cce:: with SMTP id c14mr3584258wrt.258.1627023522457;
-        Thu, 22 Jul 2021 23:58:42 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c676e.dip0.t-ipconnect.de. [91.12.103.110])
-        by smtp.gmail.com with ESMTPSA id z13sm32834744wro.79.2021.07.22.23.58.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 23:58:41 -0700 (PDT)
-To:     Evan Green <evgreen@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-api@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Pavel Machek <pavel@ucw.cz>, Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-References: <20210721143946.v3.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
- <dd405f78-ac37-18d4-23f1-7d43507edee6@redhat.com>
- <CAE=gft7eY0scobDwQGq-OuFk4Ec2APFQF-4K6UVkTN-TOGwETw@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v3] mm: Enable suspend-only swap spaces
-Message-ID: <3c46df04-abf4-4bcb-b9cf-430bb1d15b07@redhat.com>
-Date:   Fri, 23 Jul 2021 08:58:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S234185AbhGWGSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:18:42 -0400
+Received: from mx.socionext.com ([202.248.49.38]:61222 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234104AbhGWGSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:18:41 -0400
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 23 Jul 2021 15:59:13 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id BD40420566E0;
+        Fri, 23 Jul 2021 15:59:13 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 23 Jul 2021 15:59:13 +0900
+Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id A338FB6342;
+        Fri, 23 Jul 2021 15:59:13 +0900 (JST)
+Received: from [10.212.30.170] (unknown [10.212.30.170])
+        by yuzu2.css.socionext.com (Postfix) with ESMTP id 07BD4B1D52;
+        Fri, 23 Jul 2021 15:59:12 +0900 (JST)
+Subject: Re: [PATCH v8 3/3] PCI: uniphier: Add misc interrupt handler to
+ invoke PME and AER
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-arm-kernel@lists.infradead.org
+References: <1603848703-21099-4-git-send-email-hayashi.kunihiko@socionext.com>
+ <20201124232037.GA595463@bjorn-Precision-5520>
+ <20201125102328.GA31700@e121166-lin.cambridge.arm.com>
+ <f49a236d-c5f8-c445-f74e-7aa4eea70c3a@socionext.com>
+ <20210718005109.6xwe3z7gxhuop5xc@pali>
+ <2dfa5ec9-2a33-ae72-3904-999d8b8a2f71@socionext.com>
+ <20210722172627.i4n65lrz3j7pduiz@pali>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <17c6eeee-692f-2e9a-5827-34f6939a21a6@socionext.com>
+Date:   Fri, 23 Jul 2021 15:59:12 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAE=gft7eY0scobDwQGq-OuFk4Ec2APFQF-4K6UVkTN-TOGwETw@mail.gmail.com>
+In-Reply-To: <20210722172627.i4n65lrz3j7pduiz@pali>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,100 +58,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.07.21 20:00, Evan Green wrote:
-> On Thu, Jul 22, 2021 at 12:12 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 21.07.21 23:40, Evan Green wrote:
->>> Currently it's not possible to enable hibernation without also enabling
->>> generic swap for a given swap area. These two use cases are not the
->>> same. For example there may be users who want to enable hibernation,
->>> but whose drives don't have the write endurance for generic swap
->>> activities. Swap and hibernate also have different security/integrity
->>> requirements, prompting folks to possibly set up something like block-level
->>> integrity for swap and image-level integrity for hibernate. Keeping swap
->>> and hibernate separate in these cases becomes not just a matter of
->>> preference, but correctness.
+Hi Pali,
+
+On 2021/07/23 2:26, Pali Rohár wrote:
+> On Friday 23 July 2021 01:54:10 Kunihiko Hayashi wrote:
+>> On 2021/07/18 9:51, Pali Rohar wrote:
+>>>>> IMO this should be modelled with a separate IRQ domain and chip for
+>>>>> the root port (yes this implies describing the root port in the dts
+>>>>> file with a separate msi-parent).
+>>>>>
+>>>>> This series as it stands is a kludge.
+>>>>
+>>>> I see. However I need some time to consider the way to separate IRQ domain.
+>>>> Is there any idea or example to handle PME/AER with IRQ domain?
 >>>
->>> Add a new SWAP_FLAG_NOSWAP that adds a swap region but refuses to allow
->>> generic swapping to it. This region can still be wired up for use in
->>> suspend-to-disk activities, but will never have regular pages swapped to
->>> it. This flag will be passed in by utilities like swapon(8), usage would
->>> probably look something like: swapon -o noswap /dev/sda2.
+>>> Seems that you are dealing with very similar issues as me with aardvark
+>>> driver.
+>>>
+>>> As an inspiration look at my aardvark patch which setup separate IRQ
+>>> domain for PME, AER and HP interrupts:
+>>> https://lore.kernel.org/linux-pci/20210506153153.30454-32-pali@kernel.org/
+>>>
+>>> Thanks to custom driver map_irq function, it is not needed to describe
+>>> root port with separate msi-parent in DTS.
 >>
->> Just a minor comment, I'd call it rather SWAP_FLAG_HIBERNATE_ONLY and
->> SWAP_FLAG_HIBERNATE_ONLY -- that calls the child by its name.
+>> I need to understand your solution, though, this might be the same situation as my driver.
 > 
-> I went back and forth on this too. It seemed pretty close to toss-up
-> to me. I went with NOSWAP ultimately because it seemed more closely
-> tied to what the flag was actually doing, rather than building in my
-> one expected use case into the name. In some world years from now
-> where either hibernate has diverged, been deleted, or maybe some new
-> usage has been invented for swap space, the NOSWAP name felt like it
-> had a better chance of holding up. The argument is weak though, as
-> these features are pretty well cast in stone, and the likelihood of
-> any of those outcomes seems low. I can change it if you feel strongly,
-> but would probably keep it as-is otherwise.
-
-Just imagine technology Z popping up and using also the swap 
-infrastructure. What would be the semantics of NOSWAP? With 
-HIBERNATE_ONLY it's clear -- enable that device only for hibernation, 
-nothing else.
-
-But you raise a good point: if hibernation isn't even possible in a 
-configuration (e.g., not configured into the kernel), we should simply 
-reject that flag. So if hibernation would vanish at some point 
-completely from the system, it would all be handled accordingly.
-
-That would result in quite a consistent definition of 
-SWAP_FLAG_HIBERNATE_ONLY IMHO.
-
-Makes sense?
-
+> I think it is very very similar as aardvark also returns zero as hw irq
+> number (and it is not possible to change it).
 > 
->>
->> I think some other flags might not apply with that new flag set, right?
->> For example, does SWAP_FLAG_DISCARD_ONCE or SWP_AREA_DISCARD still have
->> any meaning with the new flag being set?
->>
->> We should most probably disallow enabling any flag that doesn't make any
->> sense in combination.
+> So simple solution for you is also to register separate IRQ domain for
+> Root Port Bridge and then re-trigger interrupt with number 0 (which you
+> wrote that is default) as:
 > 
-> Good point, I can send a followup patch for that. From my reading
-
-I'd actually enjoy if we'd have that logic in the introducing patch.
-
-> SWAP_FLAG_DISCARD and SWAP_FLAG_DISCARD_ONCE are still valid, since
-> the discard can be run at swapon() time. SWAP_FLAG_PREFER (specifying
-> the priority) doesn't make sense, and SWAP_FLAG_DISCARD_PAGES never
-> kicks in because it's called at the cluster level. Hm, that sort of
-> seems like a bug that freed hibernate swap doesn't get discarded. I
-> can disallow it now as unsupported, but might send a patch to fix it
-> later.
-
-Might be worth fixing, indeed.
-
+>      virq = irq_find_mapping(priv->irq_domain, 0);
+>      generic_handle_irq(virq);
 > 
->>
->> Apart from that, I'd love to see a comment in here why the workaround
->> suggested by Michal isn't feasible -- essentially a summary of what we
->> discussed.
-> 
-> Ah sorry, I had tried to clarify that in the commit text, but didn't
-> explicitly address the workaround. To summarize, the workaround keeps
-> generic swap out of your hibernate region... until hibernate time. But
-> once hibernate starts, a lot of swapping tends to happen when the
-> hiber-image is allocated. At this point the hibernate region is
-> eligible for general swap even with the workaround. The reasons I gave
-> for wanting to exclusively steer swap and hibernate are SSD write
-> wearing, different integrity solutions for swap vs hibernate, and our
-> own security changes that no-op out the swapon/swapoff syscalls after
-> init.
-> 
+> in your uniphier_pcie_misc_isr() function.
 
-That would be nice to have in the patch description :)
+I'm not sure "register separate IRQ domain for Root Port Bridge".
+Do you mean that your suggestion is to create new IRQ domain, and add this domain to root port?
+Or could you show me something example?
 
--- 
-Thanks,
+The re-trigger part is the same method as v5 patch I wrote.
 
-David / dhildenb
+> There is no need to modify DTS. And also no need to use complicated
+> logic for finding registered virq number via pcie_port_service_get_irq()
+> and uniphier_pcie_port_get_irq() functions.
 
+I see.
+GIC interrupt for MSI is handled by the MSI domain by pcie-designware-host.c.
+My concern is how to trigger PME/AER event with another IRQ domain.
+
+Thank you,
+
+---
+Best Regards
+Kunihiko Hayashi
