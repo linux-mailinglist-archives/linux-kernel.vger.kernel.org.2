@@ -2,112 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E712E3D3B07
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7FE3D3B35
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235175AbhGWMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        id S235264AbhGWMt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:49:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235075AbhGWMm4 (ORCPT
+        with ESMTP id S235255AbhGWMtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:42:56 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AEAC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:23:28 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id x14-20020a7bc20e0000b0290249f2904453so4206507wmi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:23:28 -0700 (PDT)
+        Fri, 23 Jul 2021 08:49:52 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0504DC061575;
+        Fri, 23 Jul 2021 06:30:26 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id he41so3683266ejc.6;
+        Fri, 23 Jul 2021 06:30:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=ZkYDta2fk/bU/8g67PbA751XL8H00snBSaWg+n28pmQ=;
-        b=i3ChRDvjrvOCnGIsTtIulpn/RRAXEjWknfRLq0o/bLpJzYLiR5KgOlUgbFOhvSUBiv
-         tq1xHOIe4NTqIIF1hzW3svoh1a7gnEsJn+6c3+88KIIh+X48kjMGU/3mN/7k2kkVjG52
-         qtfxGfChDXyNGASf1rS7YSJoQMqmB7ocO1T0oA24tBrZbEuq5189WYli3kyaeutBXgF9
-         EuJOcCekneVN3LbGza0++PLIAwXyo6aHKxcRbdQAmtbE81+imS67BkGqpsfSeP8qY80X
-         D8rIs+IRcqmWPR2FkcXHa7mneU9k3EX8hZ5lABUlPkXn93LqMIyPe7OVLbCzVjFKFCBT
-         djXQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hh2qQyV0e2ZUg+zl/VVNwTimvapqj+B4o1vSa2p3lFE=;
+        b=S7IGk/AW41JjfZBmwuLwKk/gXcjZZJQvKRS3UGBxtrpLuHq98VbkUnb7K8Dp3oCYPb
+         LyFucS1yf5F9ONLvvCZDVvZX+IAr2+nlIa0X9iTnsJ9elFYsgRUYenAG0Nh7q1rb/8/b
+         3DZ8iQzx5bdK+q/farrljjlJARX0llttk64kfnvLv0bLCVQ6pQHZg/8e7ppX9hvRY7Zq
+         GdgxtzlPgHvYAopLdj/j0NuzJV27Zta47RL/WaDvQdWUrd9Bj3bXKGHixGR/QaIZGdnn
+         Z2JZgXskmhhbr3bLwHogwHfp8hkmm63SPpMXTgYlBgJWC4ZKQg3KCmsFfG0kMbV/YCNk
+         W+zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ZkYDta2fk/bU/8g67PbA751XL8H00snBSaWg+n28pmQ=;
-        b=AbJEvx/zPJVtj2QpMYeaX1H1nRx54c2+I23nw5gumy8GB1UZqdY9RceNCwLMnNLL6Y
-         pXxPSTP9q6j900LBbuGC55LOYARQ7HM7XsQyQ5wqrt/fhFci6Gk62wPsQDRHUVg3mgjM
-         4OAaeAlPIXLPyh9ZNFtISQaWU1GvTAIg/hu3oxhBDpxIY/D7izLaQi+nWkmz0tEv0cFj
-         bYD7V1ht/Xln+wZuLy7OBev3H/Q+zjNC0vsOzOdqC4qJLvnzZNOpYwk9ki6PNxonVrMd
-         sY2e5aZfbC20yz3E85OizcmFJ0K6EH4RoDqcWfrh5jyc0ANXS4XzZFKziUiBqFE8S5rx
-         7mig==
-X-Gm-Message-State: AOAM533i7GiMf/1nvh8Jvo5qbmqFyS4uuICeogBMB7PyYlebP+He8jhE
-        5UYPJmbb/yBOqf7JCiHrwzSirA==
-X-Google-Smtp-Source: ABdhPJyQdcRO+wkAR+Y+fC0Zhu1kxgf6fMJoYKzGwFiLSEFala+gnxw786uInQreYNyv1cNp0r019g==
-X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr4482762wmq.137.1627046607228;
-        Fri, 23 Jul 2021 06:23:27 -0700 (PDT)
-Received: from localhost ([2a01:cb19:826e:8e00:4e65:8d4e:279c:96ff])
-        by smtp.gmail.com with ESMTPSA id c125sm6009522wme.36.2021.07.23.06.23.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 06:23:26 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] input: MT6358 PMIC button support
-In-Reply-To: <20210702134310.3451560-1-mkorpershoek@baylibre.com>
-References: <20210702134310.3451560-1-mkorpershoek@baylibre.com>
-Date:   Fri, 23 Jul 2021 15:23:25 +0200
-Message-ID: <87eebp88qa.fsf@baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hh2qQyV0e2ZUg+zl/VVNwTimvapqj+B4o1vSa2p3lFE=;
+        b=F1VvUSrMsJvKkTRJctuVbTAap2E1gGQOm8eQLIbL5UfITngo1uQZCkCnjEjH7ApFTJ
+         LxdSYV1duCjIntqtGc9G9CSkPWi5L6KCMJimr/B6ws+HTFTq4C8aQH+f3xyuxAY1VZSW
+         RzxHkuZehHRpLLFxhSFv4vw3j2AXGf/xUtIK0H8mO/BQTkhA5Y97gUmYqh04ifhX7K2L
+         SCbmXZS8jlo5uQTdBOoFGheW9t/O2ezdwovJ3NoNIZNeoMRof7iOmLnHsSwj0RxlAi/4
+         hHhiNyLPpmYahcEwEGDdED4llVWNX7lqZWDPGwIkzT9Sia41E8mCfN9swQ81KwQiiDRi
+         dDKQ==
+X-Gm-Message-State: AOAM531JXta/XC2Puigb7OB/73c4Kosqhh24zv1IB8Yg+Hdlc6n96E6G
+        cIfSS3tEYSgwn5Lap/c2qa/NHGFqRNfwPPovUxU=
+X-Google-Smtp-Source: ABdhPJyh9rVEh/TiP20JKVxKQoSCCKRb1SDRhz4hd1pZBrexxwTYaoeUif4GxghImDj6TeUzxG4b5cJnysIB2dH0Ssg=
+X-Received: by 2002:a17:906:32d8:: with SMTP id k24mr4711049ejk.422.1627047023886;
+ Fri, 23 Jul 2021 06:30:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210723012317.4146-1-thunder.leizhen@huawei.com>
+In-Reply-To: <20210723012317.4146-1-thunder.leizhen@huawei.com>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Fri, 23 Jul 2021 22:30:11 +0900
+Message-ID: <CAKFNMonmM09Btxm+0E=39fNLJLvyZd0pryFT0d_y7rz-10rcKA@mail.gmail.com>
+Subject: Re: [PATCH] nilfs2: use refcount_dec_and_lock() to fix potential UAF
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     linux-nilfs <linux-nilfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear maintainers,
+Hi,
 
-Gentle ping for this series
+On Fri, Jul 23, 2021 at 10:28 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>
+> When the refcount is decreased to 0, the resource reclamation branch is
+> entered. Before CPU0 reaches the race point (1), CPU1 may obtain the
+> spinlock and traverse the rbtree to find 'root', see nilfs_lookup_root().
+> Although CPU1 will call refcount_inc() to increase the refcount, it is
+> obviously too late. CPU0 will release 'root' directly, CPU1 then accesses
+> 'root' and triggers UAF.
+>
+> Use refcount_dec_and_lock() to ensure that both the operations of decrease
+> refcount to 0 and link deletion are lock protected eliminates this risk.
+>
+>      CPU0                      CPU1
+> nilfs_put_root():
+>                             <-------- (1)
+> spin_lock(&nilfs->ns_cptree_lock);
+> rb_erase(&root->rb_node, &nilfs->ns_cptree);
+> spin_unlock(&nilfs->ns_cptree_lock);
+>
+> kfree(root);
+>                             <-------- use-after-free
+>
+> ========================================================================
+> refcount_t: underflow; use-after-free.
+> WARNING: CPU: 2 PID: 9476 at lib/refcount.c:28 \
+> refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+> Modules linked in:
+> CPU: 2 PID: 9476 Comm: syz-executor.0 Not tainted 5.10.45-rc1+ #3
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), ...
+> RIP: 0010:refcount_warn_saturate+0x1cf/0x210 lib/refcount.c:28
+> ... ...
+> Call Trace:
+>  __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+>  __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+>  refcount_dec_and_test include/linux/refcount.h:333 [inline]
+>  nilfs_put_root+0xc1/0xd0 fs/nilfs2/the_nilfs.c:795
+>  nilfs_segctor_destroy fs/nilfs2/segment.c:2749 [inline]
+>  nilfs_detach_log_writer+0x3fa/0x570 fs/nilfs2/segment.c:2812
+>  nilfs_put_super+0x2f/0xf0 fs/nilfs2/super.c:467
+>  generic_shutdown_super+0xcd/0x1f0 fs/super.c:464
+>  kill_block_super+0x4a/0x90 fs/super.c:1446
+>  deactivate_locked_super+0x6a/0xb0 fs/super.c:335
+>  deactivate_super+0x85/0x90 fs/super.c:366
+>  cleanup_mnt+0x277/0x2e0 fs/namespace.c:1118
+>  __cleanup_mnt+0x15/0x20 fs/namespace.c:1125
+>  task_work_run+0x8e/0x110 kernel/task_work.c:151
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:164 [inline]
+>  exit_to_user_mode_prepare+0x13c/0x170 kernel/entry/common.c:191
+>  syscall_exit_to_user_mode+0x16/0x30 kernel/entry/common.c:266
+>  do_syscall_64+0x45/0x80 arch/x86/entry/common.c:56
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+> There is no reproduction program, and the above is only theoretical
+> analysis.
+>
+> Fixes: ba65ae4729bf ("nilfs2: add checkpoint tree to nilfs object")
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-Mattijs Korpershoek <mkorpershoek@baylibre.com> writes:
+Thank you for sending this patch.   I understand the purpose of
+the correction.   I feel we need more review for  the life cycle
+management of nilfs_root structure related to kobject.
 
-> The MediaTek MT6358 PMIC has support for two buttons: PWR and HOME.
->
-> The interrupt logic is a little different than other PMICs from the
-> same family:
-> for MT6323 and MT6397, we have one interrupt source per button
-> * for MT6358, we have two interrupts lines per button: the press and
-> * release interrupts are distinct sources.
->
-> Changes since original v2 at [1]:
-> * added 4th patch with device tree enable
-> * cover letter title prefixed with 'input'
->
-> This series depends on [2]
->
-> [1] https://lore.kernel.org/r/20210512152648.39961-1-mkorpershoek@baylibre.com
-> [2] https://lore.kernel.org/r/20210506094116.638527-1-mkorpershoek@baylibre.com
-The MFD dependency has been merged in linux-next.
+Anyway,  I would like to apply this patch itself.
 
+Thanks,
+Ryusuke Konishi
+
+
+> ---
+>  fs/nilfs2/the_nilfs.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 >
-> This has been tested with evtest on mt8183-pumpkin
-> using for-mfd-next as base tree.
+> diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
+> index 8b7b01a380ce..c8bfc01da5d7 100644
+> --- a/fs/nilfs2/the_nilfs.c
+> +++ b/fs/nilfs2/the_nilfs.c
+> @@ -792,14 +792,13 @@ nilfs_find_or_create_root(struct the_nilfs *nilfs, __u64 cno)
 >
-> Mattijs Korpershoek (4):
->   Input: mtk-pmic-keys - use get_irq_byname() instead of index
->   dt-bindings: input: mtk-pmic-keys: add MT6358 binding definition
->   Input: mtk-pmic-keys - add support for MT6358
->   arm64: dts: mt6358: add mt6358-keys node
+>  void nilfs_put_root(struct nilfs_root *root)
+>  {
+> -       if (refcount_dec_and_test(&root->count)) {
+> -               struct the_nilfs *nilfs = root->nilfs;
+> +       struct the_nilfs *nilfs = root->nilfs;
 >
->  .../bindings/input/mtk-pmic-keys.txt          |  5 +-
->  arch/arm64/boot/dts/mediatek/mt6358.dtsi      | 12 ++++
->  drivers/input/keyboard/mtk-pmic-keys.c        | 56 +++++++++++++++++--
->  3 files changed, 68 insertions(+), 5 deletions(-)
+> -               nilfs_sysfs_delete_snapshot_group(root);
+> -
+> -               spin_lock(&nilfs->ns_cptree_lock);
+> +       if (refcount_dec_and_lock(&root->count, &nilfs->ns_cptree_lock)) {
+>                 rb_erase(&root->rb_node, &nilfs->ns_cptree);
+>                 spin_unlock(&nilfs->ns_cptree_lock);
+> +
+> +               nilfs_sysfs_delete_snapshot_group(root);
+>                 iput(root->ifile);
 >
+>                 kfree(root);
+> --
+> 2.25.1
 >
-> base-commit: 495fb48dbd9bcbe15859e086edd24519a6bd2961
-> -- 
-> 2.27.0
