@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8C13D3B4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0301F3D3B4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbhGWM6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:58:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34133 "EHLO
+        id S235155AbhGWM6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:58:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41483 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235245AbhGWM6Y (ORCPT
+        by vger.kernel.org with ESMTP id S233365AbhGWM6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:58:24 -0400
+        Fri, 23 Jul 2021 08:58:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627047538;
+        s=mimecast20190719; t=1627047533;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=vn0/0GkL0S3h1OMfPoUZw0xiOiSwbFnbpLTaXgDIttk=;
-        b=e+javnxPkaz8VvZW9GNsJR0qclbbX6/17hgUYHhrtbegZ1XHPtvw4MmJ2PV4L2VT9CeMhJ
-        2RhjohueQduugNaMUsXyuVUQfw+L4KstalukQv5g7RlnIV/dZIIJdrrw69d0LFZWPkFN1q
-        QtNqSzdGt5Kl57YA4q0aGVXjafoCzUc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-pFCaFyLxMSav7OVAyPm3_w-1; Fri, 23 Jul 2021 09:38:54 -0400
-X-MC-Unique: pFCaFyLxMSav7OVAyPm3_w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85F9087D543;
-        Fri, 23 Jul 2021 13:38:53 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.32.128])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0CE88189BB;
-        Fri, 23 Jul 2021 13:38:45 +0000 (UTC)
-Date:   Fri, 23 Jul 2021 09:38:44 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] sched: Fix nr_uninterruptible race causing increasing
- load average
-Message-ID: <YPrGZK+ud5A17lSL@lorien.usersys.redhat.com>
-References: <20210707190457.60521-1-pauld@redhat.com>
- <YOaoomJAS2FzXi7I@hirez.programming.kicks-ass.net>
- <YOb82exzMcrOxfHa@lorien.usersys.redhat.com>
- <YOg1LHSDknjobJfR@hirez.programming.kicks-ass.net>
+        bh=CNrCnNEi8YU3NjpLXktV8L2vGTneNrqBq6dOtm+we8Y=;
+        b=Qy0B92iPgcK/7NmNJRybTWm1a/mREHNEqGztBeLYGrEmHmZPqs02aPcfcPFLcVcFPmnQlg
+        6I/wQ8kAwhN65FhCrc6/NbXGKWZAx5Jb6vYC2L5Oq16MlwT0lO+kD/p897YCLNvHrrIXNd
+        xiXCe3ZX63ioDFtGcCwsXcko0inBSxU=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-hcCZl3VeOnSnrZA8GhJwzg-1; Fri, 23 Jul 2021 09:38:49 -0400
+X-MC-Unique: hcCZl3VeOnSnrZA8GhJwzg-1
+Received: by mail-io1-f70.google.com with SMTP id z21-20020a5d84d50000b02904e00bb129f0so1671959ior.18
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:38:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CNrCnNEi8YU3NjpLXktV8L2vGTneNrqBq6dOtm+we8Y=;
+        b=jOCtGC8FfcxJaDFDM+RwG4j7TgzJCnxKnzoTEQXqgwAq9Hy6loeh5P9pOQuPmZGSN+
+         uzymZzYCJk0OxS44BskMEH5jJY5H3bZjICk/K/vRVz+3Hftgl/q4BXe9y+bOFRfpFEv8
+         KBFdFEkIhoxTKcNdBLFFjYHSsnLeI6ONSRsS5wIwhGBJARiDeKjdZhY7ddQMIRMF8qxg
+         zLRy/TEkApDnD1Xw7rwAP+zHTuv6ihNQzOSnNyeQtu/uSuxGkkCqkLXjIl1yjGnbd5Jp
+         EJrE1RTk6NPYtDf6eJuC0JxtBQCHWwJQsURcvz6E5UWq3u6VH5yW8bC5RNgpCEIwiygr
+         ir5A==
+X-Gm-Message-State: AOAM5323BTco6Wh5+Tks5AJ42/ymJuNXxbVebn9JrKvHxl+bXABi3R0c
+        +NnOCE7sByPU2OPm8uokrF3nuHJX2g5lAki4ii5gBMIQm0t1bdGSo/Z9f8cU8U1XVBCvQ3sSuMw
+        I1FNnPGQ0t8Y+wlavfLCSP6fV
+X-Received: by 2002:a02:cd0a:: with SMTP id g10mr4243225jaq.18.1627047529244;
+        Fri, 23 Jul 2021 06:38:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwek83fSduz7V8CLkiqtAngLuJBjs5iDFj4SG3DhS5HRyk7g8pS0JfJqY3+Yo29wQu7Wx0j/g==
+X-Received: by 2002:a02:cd0a:: with SMTP id g10mr4243213jaq.18.1627047529098;
+        Fri, 23 Jul 2021 06:38:49 -0700 (PDT)
+Received: from gator ([204.16.59.133])
+        by smtp.gmail.com with ESMTPSA id p8sm11466441iol.49.2021.07.23.06.38.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 06:38:48 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 15:38:45 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Srivatsa Vaddagiri <vatsa@codeaurora.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        will@kernel.org
+Subject: Re: [PATCH 10/16] KVM: arm64: Add some documentation for the MMIO
+ guard feature
+Message-ID: <20210723133845.jwp3ljkfnupgv36i@gator>
+References: <20210715163159.1480168-1-maz@kernel.org>
+ <20210715163159.1480168-11-maz@kernel.org>
+ <20210721211743.hb2cxghhwl2y22yh@gator>
+ <60d8e9e95ee4640cf3b457c53cb4cc7a@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YOg1LHSDknjobJfR@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <60d8e9e95ee4640cf3b457c53cb4cc7a@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 01:38:20PM +0200 Peter Zijlstra wrote:
-> On Thu, Jul 08, 2021 at 09:25:45AM -0400, Phil Auld wrote:
-> > Hi Peter,
+On Fri, Jul 23, 2021 at 02:30:13PM +0100, Marc Zyngier wrote:
+...
+> > > +
+> > > +    ==============    ========
+> > > ======================================
+> > > +    Function ID:      (uint32)    0xC6000004
+> > > +    Arguments:        (uint64)    The base of the PG-sized IPA range
+> > > +                                  that is allowed to be accessed as
+> > > +				  MMIO. Must aligned to the PG size (r1)
 > > 
-> > On Thu, Jul 08, 2021 at 09:26:26AM +0200 Peter Zijlstra wrote:
-> > > On Wed, Jul 07, 2021 at 03:04:57PM -0400, Phil Auld wrote:
-> > > > On systems with weaker memory ordering (e.g. power) commit dbfb089d360b
-> > > > ("sched: Fix loadavg accounting race") causes increasing values of load
-> > > > average (via rq->calc_load_active and calc_load_tasks) due to the wakeup
-> > > > CPU not always seeing the write to task->sched_contributes_to_load in
-> > > > __schedule(). Missing that we fail to decrement nr_uninterruptible when
-> > > > waking up a task which incremented nr_uninterruptible when it slept.
-> > > > 
-> > > > The rq->lock serialization is insufficient across different rq->locks.
-> > > > 
-> > > > Add smp_wmb() to schedule and smp_rmb() before the read in
-> > > > ttwu_do_activate().
-> > > 
-> > > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > > > index 4ca80df205ce..ced7074716eb 100644
-> > > > --- a/kernel/sched/core.c
-> > > > +++ b/kernel/sched/core.c
-> > > > @@ -2992,6 +2992,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
-> > > >  
-> > > >  	lockdep_assert_held(&rq->lock);
-> > > >  
-> > > > +	/* Pairs with smp_wmb in __schedule() */
-> > > > +	smp_rmb();
-> > > >  	if (p->sched_contributes_to_load)
-> > > >  		rq->nr_uninterruptible--;
-> > > >  
-> > > 
-> > > Is this really needed ?! (this question is a big fat clue the comment is
-> > > insufficient). AFAICT try_to_wake_up() has a LOAD-ACQUIRE on p->on_rq
-> > > and hence the p->sched_contributed_to_load must already happen after.
-> > >
-> > 
-> > Yes, it is needed.  We've got idle power systems with load average of 530.21.
-> > Calc_load_tasks is 530, and the sum of both nr_uninterruptible and
-> > calc_load_active across all the runqueues is 530. Basically monotonically
-> > non-decreasing load average. With the patch this no longer happens.
+> > align
 > 
-> Have you tried without the rmb here? Do you really need both barriers?
->
+> Hmmm. Ugly mix of tab and spaces. I have no idea what the norm
+> is here, so I'll just put spaces. I'm sure someone will let me
+> know if I'm wrong! ;-)
 
-You're right here. (I see now that you were asking about the rmb specifically
-in the first question) The rmb is not needed. 
+Actually, my comment wasn't regarding the alignment of the text. I was
+commenting that we should change 'aligned' to 'align' in the text. (Sorry,
+that was indeed ambiguous.) Hmm, it might be better to just add 'be', i.e.
+'be aligned'.
 
-I was unable to reproducde it with the upstream kernel. I still think it is
-a problem though since the code in question is all the same. The recent
-changes to unbound workqueues which make it more likely to run on the
-submitting cpu may be masking the problem since it obviously requires
-multiple cpus to hit.
+I'm not sure what to do about the tab/space mixing, but keeping it
+consistent is good enough for me.
 
-If I can isolate those changes I can try to revert them in upstream and
-see if I can get it there.
-
-I suppose pulling those changes back could get us past this but
-I'm not a fan of just hiding it by making it harder to hit.
-
-I've not gotten to the disable TTWU_QUEUE test, that's next...
-
-
-Cheers,
-Phil
-
--- 
+Thanks,
+drew
 
