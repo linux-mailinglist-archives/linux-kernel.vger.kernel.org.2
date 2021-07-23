@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F0F3D3B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E712E3D3B07
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235065AbhGWMmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:42:22 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:42336 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233037AbhGWMl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:41:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=vHXNKEv7LkkV4lJkCF5sXM2xDe7Ke1gz3Z6CdP9WlUw=; b=tl
-        0TqK87MEnAv9XxbGFqDdfFh1wMSPh6qZe2q5Lc6VfUcM8U+azFmXC2nXHhCf95+CGUIntSeZGM3Gw
-        HpunGGx0AmK5QbhIz2o6rOmd+qC9awp8CpOLGsndrL8jfeILCKY54S7NhGyuPtTY6uRMxtVfL4dMw
-        ALZn0KLOoVgp/Cs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m6v84-00EUqk-Ui; Fri, 23 Jul 2021 15:22:16 +0200
-Date:   Fri, 23 Jul 2021 15:22:16 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Dan Murphy <dmurphy@ti.com>,
-        kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH net-next v1 1/1] net: phy: dp83td510: Add basic support
- for the DP83TD510 Ethernet PHY
-Message-ID: <YPrCiIz7baU26kLU@lunn.ch>
-References: <20210723104218.25361-1-o.rempel@pengutronix.de>
+        id S235175AbhGWMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235075AbhGWMm4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 08:42:56 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AEAC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:23:28 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id x14-20020a7bc20e0000b0290249f2904453so4206507wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 06:23:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=ZkYDta2fk/bU/8g67PbA751XL8H00snBSaWg+n28pmQ=;
+        b=i3ChRDvjrvOCnGIsTtIulpn/RRAXEjWknfRLq0o/bLpJzYLiR5KgOlUgbFOhvSUBiv
+         tq1xHOIe4NTqIIF1hzW3svoh1a7gnEsJn+6c3+88KIIh+X48kjMGU/3mN/7k2kkVjG52
+         qtfxGfChDXyNGASf1rS7YSJoQMqmB7ocO1T0oA24tBrZbEuq5189WYli3kyaeutBXgF9
+         EuJOcCekneVN3LbGza0++PLIAwXyo6aHKxcRbdQAmtbE81+imS67BkGqpsfSeP8qY80X
+         D8rIs+IRcqmWPR2FkcXHa7mneU9k3EX8hZ5lABUlPkXn93LqMIyPe7OVLbCzVjFKFCBT
+         djXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ZkYDta2fk/bU/8g67PbA751XL8H00snBSaWg+n28pmQ=;
+        b=AbJEvx/zPJVtj2QpMYeaX1H1nRx54c2+I23nw5gumy8GB1UZqdY9RceNCwLMnNLL6Y
+         pXxPSTP9q6j900LBbuGC55LOYARQ7HM7XsQyQ5wqrt/fhFci6Gk62wPsQDRHUVg3mgjM
+         4OAaeAlPIXLPyh9ZNFtISQaWU1GvTAIg/hu3oxhBDpxIY/D7izLaQi+nWkmz0tEv0cFj
+         bYD7V1ht/Xln+wZuLy7OBev3H/Q+zjNC0vsOzOdqC4qJLvnzZNOpYwk9ki6PNxonVrMd
+         sY2e5aZfbC20yz3E85OizcmFJ0K6EH4RoDqcWfrh5jyc0ANXS4XzZFKziUiBqFE8S5rx
+         7mig==
+X-Gm-Message-State: AOAM533i7GiMf/1nvh8Jvo5qbmqFyS4uuICeogBMB7PyYlebP+He8jhE
+        5UYPJmbb/yBOqf7JCiHrwzSirA==
+X-Google-Smtp-Source: ABdhPJyQdcRO+wkAR+Y+fC0Zhu1kxgf6fMJoYKzGwFiLSEFala+gnxw786uInQreYNyv1cNp0r019g==
+X-Received: by 2002:a05:600c:4f96:: with SMTP id n22mr4482762wmq.137.1627046607228;
+        Fri, 23 Jul 2021 06:23:27 -0700 (PDT)
+Received: from localhost ([2a01:cb19:826e:8e00:4e65:8d4e:279c:96ff])
+        by smtp.gmail.com with ESMTPSA id c125sm6009522wme.36.2021.07.23.06.23.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 06:23:26 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Fabien Parent <fparent@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] input: MT6358 PMIC button support
+In-Reply-To: <20210702134310.3451560-1-mkorpershoek@baylibre.com>
+References: <20210702134310.3451560-1-mkorpershoek@baylibre.com>
+Date:   Fri, 23 Jul 2021 15:23:25 +0200
+Message-ID: <87eebp88qa.fsf@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210723104218.25361-1-o.rempel@pengutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 12:42:18PM +0200, Oleksij Rempel wrote:
-> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
-> that supports 10M single pair cable.
-> 
-> This driver provides basic support for this chip:
-> - link status
-> - autoneg can be turned off
-> - master/slave can be configured to be able to work without autoneg
-> 
-> This driver and PHY was tested with ASIX AX88772B USB Ethernet controller.
+Dear maintainers,
 
-Hi Oleksij
+Gentle ping for this series
 
-There were patches flying around recently for another T1L PHY which
-added new link modes. Please could you work together with that patch
-to set the phydev features correctly to indicate this PHY is also a
-T1L, and if it support 2.4v etc.
+Mattijs Korpershoek <mkorpershoek@baylibre.com> writes:
 
-> +static int dp83td510_config_aneg(struct phy_device *phydev)
-> +{
-> +	u16 ctrl = 0, pmd_ctrl = 0;
-> +	int ret;
-> +
-> +	switch (phydev->master_slave_set) {
-> +	case MASTER_SLAVE_CFG_MASTER_FORCE:
-> +		if (phydev->autoneg) {
-> +			phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
-> +			phydev_warn(phydev, "Can't force master mode if autoneg is enabled\n");
-> +			goto do_aneg;
-> +		}
-> +		pmd_ctrl |= DP83TD510_PMD_CTRL_MASTER_MODE;
-> +		break;
-> +	case MASTER_SLAVE_CFG_SLAVE_FORCE:
-> +		if (phydev->autoneg) {
-> +			phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
-> +			phydev_warn(phydev, "Can't force slave mode if autoneg is enabled\n");
-> +			goto do_aneg;
-> +		}
-> +		break;
-> +	case MASTER_SLAVE_CFG_MASTER_PREFERRED:
-> +	case MASTER_SLAVE_CFG_SLAVE_PREFERRED:
-> +		phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
-> +		phydev_warn(phydev, "Preferred master/slave modes are not supported\n");
-> +		goto do_aneg;
-> +	case MASTER_SLAVE_CFG_UNKNOWN:
-> +	case MASTER_SLAVE_CFG_UNSUPPORTED:
-> +		goto do_aneg;
-> +	default:
-> +		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	ret = dp83td510_modify(phydev, DP83TD510_PMA_PMD_CTRL,
-> +			       DP83TD510_PMD_CTRL_MASTER_MODE, pmd_ctrl);
-> +	if (ret)
-> +		return ret;
-> +
-> +do_aneg:
-> +	if (phydev->autoneg)
-> +		ctrl |= DP83TD510_AN_ENABLE;
-> +
-> +	ret = dp83td510_modify_changed(phydev, DP83TD510_AN_CONTROL,
-> +				       DP83TD510_AN_ENABLE, ctrl);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* Reset link if settings are changed */
-> +	if (ret)
-> +		ret = dp83td510_write(phydev, MII_BMCR, BMCR_RESET);
-> +
-> +	return ret;
-> +}
-> +
-> +static int dp83td510_strap(struct phy_device *phydev)
-> +{
+> The MediaTek MT6358 PMIC has support for two buttons: PWR and HOME.
+>
+> The interrupt logic is a little different than other PMICs from the
+> same family:
+> for MT6323 and MT6397, we have one interrupt source per button
+> * for MT6358, we have two interrupts lines per button: the press and
+> * release interrupts are distinct sources.
+>
+> Changes since original v2 at [1]:
+> * added 4th patch with device tree enable
+> * cover letter title prefixed with 'input'
+>
+> This series depends on [2]
+>
+> [1] https://lore.kernel.org/r/20210512152648.39961-1-mkorpershoek@baylibre.com
+> [2] https://lore.kernel.org/r/20210506094116.638527-1-mkorpershoek@baylibre.com
+The MFD dependency has been merged in linux-next.
 
-> +	phydev_info(phydev,
-> +		    "bootstrap cfg: Pin 18: %s, Pin 30: %s, TX Vpp: %s, RX trap: %s, xMII mode: %s, PHY addr: 0x%x\n",
-> +		    pin18 ? "RX_DV" : "CRS_DV",
-> +		    pin30 ? "LED_1" : "CLKOUT",
-> +		    tx_vpp ? "1.0V p2p" : "2.4V & 1.0V p2p",
-> +		    rx_trap ? "< 40Ω" : "50Ω",
-> +		    dp83td510_get_xmii_mode_str(xmii_mode),
-> +		    addr);
-
-What i learned reviewing the other T1L driver is that 2.4v operation
-seems to be something you negotiate. Yet i don't see anything about it
-in dp83td510_config_aneg() ?
-
-   Andrew
+>
+> This has been tested with evtest on mt8183-pumpkin
+> using for-mfd-next as base tree.
+>
+> Mattijs Korpershoek (4):
+>   Input: mtk-pmic-keys - use get_irq_byname() instead of index
+>   dt-bindings: input: mtk-pmic-keys: add MT6358 binding definition
+>   Input: mtk-pmic-keys - add support for MT6358
+>   arm64: dts: mt6358: add mt6358-keys node
+>
+>  .../bindings/input/mtk-pmic-keys.txt          |  5 +-
+>  arch/arm64/boot/dts/mediatek/mt6358.dtsi      | 12 ++++
+>  drivers/input/keyboard/mtk-pmic-keys.c        | 56 +++++++++++++++++--
+>  3 files changed, 68 insertions(+), 5 deletions(-)
+>
+>
+> base-commit: 495fb48dbd9bcbe15859e086edd24519a6bd2961
+> -- 
+> 2.27.0
