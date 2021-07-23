@@ -2,127 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A718E3D351C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2BE3D351D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhGWGgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:36:15 -0400
-Received: from mga12.intel.com ([192.55.52.136]:54299 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229616AbhGWGgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:36:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="191418868"
-X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
-   d="scan'208";a="191418868"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 00:16:47 -0700
-X-IronPort-AV: E=Sophos;i="5.84,263,1620716400"; 
-   d="scan'208";a="471023868"
-Received: from zengguan-mobl.ccr.corp.intel.com (HELO [10.238.0.133]) ([10.238.0.133])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 00:16:41 -0700
-Subject: Re: [PATCH v2 0/6] IPI virtualization support for VM
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
+        id S232884AbhGWGgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhGWGgR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:36:17 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80BF0C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:16:51 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id l126so1336488ioa.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:16:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xe2OINBH+BRr0c0B6Rjuunf1y/CF6ftNbio56e+sO/U=;
+        b=B/E7k4toRTdG51Xn1+b8uQblMIAYTeDSYwFtqlEV9w+f2GnxRubcqAxTzyIeWJN8mH
+         O6n61pgcCQYYe9DBzfjgPrMspAwBHD985Z2CH1soCmAVawStI9gQczByWPtOiU+HCdU3
+         B6PgMeVBSNKhRW94qwYABJ+F06HZE2vfgi7TX85mWBI1t8aS7+gbGRMjp9DCqtzZPsx0
+         +AGDC23HR5qLj09CNuvI0JYT3mjgLs+VaFIVVo2EeyKQ2KNwM/2oDYzHZkV/2JVE42L8
+         LSCrIvYdben9raJIiSfC43nD6SoE6NEJ7xDPibMhfShJAr/GNAQWg67gD1byv3Xnjk4O
+         Zd/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xe2OINBH+BRr0c0B6Rjuunf1y/CF6ftNbio56e+sO/U=;
+        b=uVdPYCWQM4aSc0d/0GRKiYA4HHGw8hpB0QdL5RLUe3obJzWoEl5237baJ5qoExcu3r
+         0UOFOHRSBEuq3E3k7OMUHsg6D/wG4+nl8iM2SmA5dLCvB2YXQOrwZcS3sy/ycyWIUqUB
+         WLYsnwWHm+UXGj8YKkv22SqYG+JNZhTlHGoCfYA+CKLHS6DvnaxdNsWg930M3RWky2xw
+         AAtyide8w5FNiyltGBI7KoMlx0xTvAz9p9Ks1/rUlM+R1Hu3OEiKsZrmQPGNJEXhaLa7
+         I5LHoMdrYZD5Jvih+7k8ZWXEDjFCL92Sbl1zx4tge9jc8ABX3htCaRJ3Q4i3aVLwtLGO
+         GzYA==
+X-Gm-Message-State: AOAM532j5ZX0i3+OKKmqCD5AFvTzoHf6epACFnC7o1FNf2BVfpyTnSGn
+        43kQkcKwTJMQhluN9MH2Voo=
+X-Google-Smtp-Source: ABdhPJyIuQBU8O+4oz9gwGN1TLTCzxwB5DCKMsiP+uv75Gp3fk/x11JK7NIqOzv5tmMQkd+M+WZgbA==
+X-Received: by 2002:a02:666d:: with SMTP id l45mr3089958jaf.0.1627024610836;
+        Fri, 23 Jul 2021 00:16:50 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id w10sm15622116ilo.17.2021.07.23.00.16.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 00:16:50 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 9C8A227C0054;
+        Fri, 23 Jul 2021 03:16:49 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 23 Jul 2021 03:16:49 -0400
+X-ME-Sender: <xms:4Gz6YKJPK3nkWfQ4Geob8UDl6rxghgbcCBcYaE4I5AsrOKW3ksf4xg>
+    <xme:4Gz6YCKQSq4OwcSULkMIKh3wz9UsIoV_0pgSXS7N2pX7gHQ8sWkcXFtxamWL8HVIN
+    pglgYAvrz3QxMV8OQ>
+X-ME-Received: <xmr:4Gz6YKtC9oV0cEIqPE0hemsadw3evFS6KYBhguqd84lE7ahl_IMVdXmE-328zA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeejgdduudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepgedugeeftdejtdffvdelleetfeduvdekgfehjeeuudejheefleekteejgedt
+    fefgnecuffhomhgrihhnpehffhiflhhlrdgthhenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
+    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
+    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:4Gz6YPZwR069ffaPF6qhZ1SRoGyrRiurkAcN6zUNEw8wnZU8j5IJng>
+    <xmx:4Gz6YBbh8zYyKBTFS47YY4YIHXVVE0_3vKScH7aqwxqY0k_9bhpLZQ>
+    <xmx:4Gz6YLA2P5ebpABLcjMU7NYIARdy_qoPX4YTtg5PlcScZVoAbHYSEA>
+    <xmx:4Wz6YFpL2rMhdkiJLKmiCjOF9eUuXLcqZBwi7EC5yR-v0k4DLOvvGXn17-A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 23 Jul 2021 03:16:48 -0400 (EDT)
+Date:   Fri, 23 Jul 2021 15:16:42 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        "Hu, Robert" <robert.hu@intel.com>,
-        "Gao, Chao" <chao.gao@intel.com>
-References: <20210723051626.18364-1-guang.zeng@intel.com>
- <CANRm+CywPSiW=dniYEnUhYnK0NGGnnxV53AdC0goivndn6KR5g@mail.gmail.com>
-From:   Zeng Guang <guang.zeng@intel.com>
-Message-ID: <4e8f8b7f-0b20-5c2a-f23d-3f5d5321dd3a@intel.com>
-Date:   Fri, 23 Jul 2021 15:16:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        Peter Zijlstra <peterz@infradead.org>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, Dave Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 1/3] drm: use the lookup lock in drm_is_current_master
+Message-ID: <YPps2hoA+PXQGqQZ@boqun-archlinux>
+References: <20210722092929.244629-1-desmondcheongzx@gmail.com>
+ <20210722092929.244629-2-desmondcheongzx@gmail.com>
+ <YPlKkvelm/mcnCj0@phenom.ffwll.local>
+ <YPmJEYrnB0j17cZV@boqun-archlinux>
+ <CAKMK7uGSc_YMf2e=oA23KeAvC8i_pqJBU82v8oRGfnwsT41WLQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CANRm+CywPSiW=dniYEnUhYnK0NGGnnxV53AdC0goivndn6KR5g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uGSc_YMf2e=oA23KeAvC8i_pqJBU82v8oRGfnwsT41WLQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/23/2021 2:11 PM, Wanpeng Li wrote:
-> On Fri, 23 Jul 2021 at 13:41, Zeng Guang <guang.zeng@intel.com> wrote:
->
-> --------------------------------------
-> IPI microbenchmark:
-> (https://lore.kernel.org/kvm/20171219085010.4081-1-ynorov@caviumnetworks.com)
->
-> 2 vCPUs, 1:1 pin vCPU to pCPU, guest VM runs with idle=poll, x2APIC mode
-> Improve the performance for unicast ipi is as expected, however, I
-> wonder whether the broadcast performance is worse than PV
-> IPIs/Thomas's IPI shorthands(IPI shorthands are supported by upstream
-> linux apic/x2apic driver). The hardware acceleration is not always
-> outstanding on AMD(https://lore.kernel.org/kvm/CANRm+Cx597FNRUCyVz1D=B6Vs2GX3Sw57X7Muk+yMpi_hb+v1w@mail.gmail.com/),
-> how about your Intel guys? Please try a big VM at least 96 vCPUs as
-> below or more bigger.
+On Thu, Jul 22, 2021 at 09:02:41PM +0200, Daniel Vetter wrote:
+> On Thu, Jul 22, 2021 at 6:00 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >
+> > On Thu, Jul 22, 2021 at 12:38:10PM +0200, Daniel Vetter wrote:
+> > > On Thu, Jul 22, 2021 at 05:29:27PM +0800, Desmond Cheong Zhi Xi wrote:
+> > > > Inside drm_is_current_master, using the outer drm_device.master_mutex
+> > > > to protect reads of drm_file.master makes the function prone to creating
+> > > > lock hierarchy inversions. Instead, we can use the
+> > > > drm_file.master_lookup_lock that sits at the bottom of the lock
+> > > > hierarchy.
+> > > >
+> > > > Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > > > Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> > > > ---
+> > > >  drivers/gpu/drm/drm_auth.c | 9 +++++----
+> > > >  1 file changed, 5 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/drm_auth.c b/drivers/gpu/drm/drm_auth.c
+> > > > index f00354bec3fb..9c24b8cc8e36 100644
+> > > > --- a/drivers/gpu/drm/drm_auth.c
+> > > > +++ b/drivers/gpu/drm/drm_auth.c
+> > > > @@ -63,8 +63,9 @@
+> > > >
+> > > >  static bool drm_is_current_master_locked(struct drm_file *fpriv)
+> > > >  {
+> > > > -   lockdep_assert_held_once(&fpriv->minor->dev->master_mutex);
+> > > > -
+> > > > +   /* Either drm_device.master_mutex or drm_file.master_lookup_lock
+> > > > +    * should be held here.
+> > > > +    */
+> > >
+> > > Disappointing that lockdep can't check or conditions for us, a
+> > > lockdep_assert_held_either would be really neat in some cases.
+> > >
+> >
+> > The implementation is not hard but I don't understand the usage, for
+> > example, if we have a global variable x, and two locks L1 and L2, and
+> > the function
+> >
+> >         void do_something_to_x(void)
+> >         {
+> >                 lockdep_assert_held_either(L1, L2);
+> >                 x++;
+> >         }
+> >
+> > and two call sites:
+> >
+> >         void f(void)
+> >         {
+> >                 lock(L1);
+> >                 do_something_to_x();
+> >                 unlock(L1);
+> >         }
+> >
+> >         void g(void)
+> >         {
+> >                 lock(L2);
+> >                 do_something_to_x();
+> >                 unlock(L2);
+> >         }
+> >
+> > , wouldn't it be racy if f() and g() called by two threads at the same
+> > time? Usually I would expect there exists a third synchronazition
+> > mechanism (say M), which synchronizes the calls to f() and g(), and we
+> > put M in the lockdep_assert_held() check inside do_something_to_x()
+> > like:
+> >
+> >         void do_something_to_x(void)
+> >         {
+> >                 lockdep_assert_held_once(M);
+> >                 x++;
+> >         }
+> >
+> > But of course, M may not be a lock, so we cannot put the assert there.
+> >
+> > My cscope failed to find ->master_lookup_lock in -rc2 and seems it's not
+> > introduced in the patchset either, could you point me the branch this
+> > patchset is based on, so that I could understand this better, and maybe
+> > come up with a solution? Thanks ;-)
+> 
+> The use case is essentially 2 nesting locks, and only the innermost is
+> used to update a field. So when you only read this field, it's safe if
+> either of these two locks are held. Essentially this is a read/write lock
+> type of thing, except for various reasons the two locks might not be of
+> the same type (like here where the write lock is a mutex, but the read
+> lock is a spinlock).
+> 
+> It's a bit like the rcu_derefence macro where it's ok to either be in a
+> rcu_read_lock() section, or holding the relevant lock that's used to
+> update the value. We do _not_ have two different locks that allow writing
+> to the same X.
+> 
+> Does that make it clearer what's the use-case here?
+> 
+> In an example:
+> 
+> void * interesting_pointer.
+> 
+> do_update_interesting_pointer()
+> {
+> 	mutex_lock(A);
+> 	/* do more stuff to prepare things */
+> 	spin_lock(B);
+> 	interesting_pointer = new_value;
+> 	spin_unlock(B);
+> 	mutex_unlock(A);
+> }
+> 
+> read_interesting_thing_locked()
+> {
+> 	lockdep_assert_held_either(A, B);
+> 
+> 	return interesting_pointer->thing;
+> }
+> 
+> read_interesting_thing()
+> {
+> 	int thing;
+> 	spin_lock(B);
+> 	thing = interesting_pointer->thing;
+> 	spin_unlock(B);
+> 
+> 	return B;
+> }
+> 
+> spinlock might also be irqsafe here if this can be called from irq
+> context.
+> 
 
-Intel IPIv target to accelerate unicast ipi process, not benefit to 
-broadcast performance.
+Make sense, so we'd better also provide lockdep_assert_held_both(), I
+think, to use it at the update side, something as below:
 
-As to IPI benchmark, it's not big different to test with large or small 
-scale of vCPUs. In essential, Normal IPI test try
-to send ipi to any other online CPU in sequence. The cost on IPI process 
-itself should be similar.
 
->> Result with IPIv enabled:
->>
->> Dry-run:                         0,             272798 ns
->> Self-IPI:                  5094123,           11114037 ns
->> Normal IPI:              131697087,          173321200 ns
->> Broadcast IPI:                   0,          155649075 ns
->> Broadcast lock:                  0,          161518031 ns
->>
->> Result with IPIv disabled:
->>
->> Dry-run:                         0,             272766 ns
->> Self-IPI:                  5091788,           11123699 ns
->> Normal IPI:              145215772,          174558920 ns
->> Broadcast IPI:                   0,          175785384 ns
->> Broadcast lock:                  0,          149076195 ns
->>
->>
->> As IPIv can benefit unicast IPI to other CPU, Noraml IPI test case gain
->> about 9.73% time saving on average out of 15 test runs when IPIv is
->> enabled.
->>
->>                  w/o IPIv                w/ IPIv
->> Normal IPI:     145944306.6 ns          131742993.1 ns
->> %Reduction                              -9.73%
->>
->> --------------------------------------
->> hackbench:
->>
->> 8 vCPUs, guest VM free run, x2APIC mode
->> ./hackbench -p -l 100000
->>
->>                  w/o IPIv        w/ IPIv
->> Time:           91.887          74.605
->> %Reduction:                     -18.808%
->>
->> 96 vCPUs, guest VM free run, x2APIC mode
->> ./hackbench -p -l 1000000
->>
->>                  w/o IPIv        w/ IPIv
->> Time:           287.504         235.185
->> %Reduction:                     -18.198%
-> Good to know this.
->
->      Wanpeng
+	/*
+	 * lockdep_assert_held_{both,either}().
+	 * 
+	 * Sometimes users can use a combination of two locks to
+	 * implement a rwlock-like lock, for example, say we have
+	 * locks L1 and L2, and we only allow updates when two locks
+	 * both held like:
+	 * 
+	 * update()
+	 * {
+	 *	lockdep_assert_held_both(L1, L2);
+	 *	x++; // update x
+	 * }
+	 *
+	 * while for read-only accesses, either lock suffices (since
+	 * holding either lock means others cannot hold both, so readers
+	 * serialized with the updaters):
+	 *
+	 * read()
+	 * {
+	 * 	lockdep_assert_held_either(L1, L2);
+	 *	r = x; // read x
+	 * }
+	 */
+
+	#define lockdep_assert_held_both(l1, l2)	do {			\
+			WARN_ON_ONCE(debug_locks &&				\
+					(!lockdep_is_held(l1) ||		\
+					 !lockdep_is_held(l2)));		\
+	} while (0)
+
+	#define lockdep_assert_held_either(l1, l2)	do {			\
+			WARN_ON_ONCE(debug_locks &&				\
+					(!lockdep_is_held(l1) &&		\
+					 !lockdep_is_held(l2)));		\
+	} while (0)
+
+Still need sometime to think through this (e.g. on whether this it the
+best implementation).
+
+Regards,
+Boqun
+
+> Cheers, Daniel
+> 
+> > Regards,
+> > Boqun
+> >
+> > > Adding lockdep folks, maybe they have ideas.
+> > >
+> > > On the patch:
+> > >
+> > > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > >
+> > > >     return fpriv->is_master && drm_lease_owner(fpriv->master) == fpriv->minor->dev->master;
+> > > >  }
+> > > >
+> > > > @@ -82,9 +83,9 @@ bool drm_is_current_master(struct drm_file *fpriv)
+> > > >  {
+> > > >     bool ret;
+> > > >
+> > > > -   mutex_lock(&fpriv->minor->dev->master_mutex);
+> > > > +   spin_lock(&fpriv->master_lookup_lock);
+> > > >     ret = drm_is_current_master_locked(fpriv);
+> > > > -   mutex_unlock(&fpriv->minor->dev->master_mutex);
+> > > > +   spin_unlock(&fpriv->master_lookup_lock);
+> > > >
+> > > >     return ret;
+> > > >  }
+> > > > --
+> > > > 2.25.1
+> > > >
+> > >
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
+> 
+> 
+> 
+> -- 
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
