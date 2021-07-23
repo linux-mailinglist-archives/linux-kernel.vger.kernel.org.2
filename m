@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BEFB3D378B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2153D378D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbhGWIh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
+        id S234418AbhGWIhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232394AbhGWIh1 (ORCPT
+        with ESMTP id S231994AbhGWIht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:37:27 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D56C061575;
-        Fri, 23 Jul 2021 02:18:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JtK3F4ur0xXfBHq8xF2md1hvbLFHPIXsScOT7FC0TmA=; b=14617pCIhQkbwxkrZKJUiAaqsS
-        G73+8csRqRRchneM8D5h9nEY7r68bTusQyVhYoXRFixZhkZfQBBps9y+otlHNFp5vyFGEaKXvpqM7
-        sOd5YDjjvOxGp5SIecm16We7x42yZtpxeql7roGROnm6QP3vJxHIs0L7Qx29LDG+zJDeE1onQu3uh
-        NQznJUuvDO5ZfqDcIidnTtz5/MoWQ+kr4NXSzXpym/Sx0CEc++t8Sy4FoTgop9V3xN+TmprbPcMKW
-        xnJ9512y5lS1uaRiywjTK/5SfqdlrlNFSwW/Xi8Il3szZMNmiBoGvA/RqhIxhXgwKJ7DIevM6EifA
-        heWuK52w==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1m6rJc-0006dv-Rh; Fri, 23 Jul 2021 12:17:56 +0300
-Subject: Re: [PATCH] gpu: host1x: select CONFIG_SYNC_FILE
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210723091424.1682193-1-arnd@kernel.org>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <0f4d1f0a-c313-a60e-6a72-fd4b0c757bc3@kapsi.fi>
-Date:   Fri, 23 Jul 2021 12:17:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 23 Jul 2021 04:37:49 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9FDC061575;
+        Fri, 23 Jul 2021 02:18:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=K0D57hY2oduItIBhxD08gu3o/OffxO5BlZSmT2p5cZc=;
+        t=1627031903; x=1628241503; b=tZIS8ZhKdrx0Zip5fcU06KVeEFWdoYsQBzFDAG0rzUMf7pg
+        R9B8ufPPVyh9+7iyi2tRZzOHSO5+0aQOUD4qCJ7XDLXn/+zSBolHiOdSxhbhWPCPpIrD0GRvk78Cr
+        ktRpbW0ml+2fVf6PjewzDEuA/6BZbi1Gi4Zwrhb3meFmWSO48jw6U90py+W8xdo1Gr8yJCBwozSGQ
+        7n8JytqDclH0Z4Jyq/oQ2wYqn45ysE6ZOuXmQX4uurUt2HCuCUigFwmMoKca7jTBMumB9f1bKuMJN
+        XFvo4eyyTbD0DMoptsdwTSfhLKaW6ovSPiqgbmaGnWuaeoTBaHU38nJrBt1McdKA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1m6rHI-000TqY-HV; Fri, 23 Jul 2021 11:18:11 +0200
+Message-ID: <11ba299b812212a07fe3631b7be0e8b8fd5fb569.camel@sipsolutions.net>
+Subject: Re: [PATCH] cfg80211: free the object allocated in
+ wiphy_apply_custom_regulatory
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Fri, 23 Jul 2021 11:18:10 +0200
+In-Reply-To: <CAD-N9QWDNvo_3bdB=8edyYWvEV=b-66Tx-P6_7JGgrSYshDh0A@mail.gmail.com>
+References: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
+         <d2b0f847dbf6b6d1e585ef8de1d9d367f8d9fd3b.camel@sipsolutions.net>
+         <CAD-N9QWDNvo_3bdB=8edyYWvEV=b-66Tx-P6_7JGgrSYshDh0A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210723091424.1682193-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Fri, 2021-07-23 at 17:13 +0800, Dongliang Mu wrote:
+> On Fri, Jul 23, 2021 at 4:37 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> > 
+> > On Fri, 2021-07-23 at 13:09 +0800, Dongliang Mu wrote:
+> > > The commit beee24695157 ("cfg80211: Save the regulatory domain when
+> > > setting custom regulatory") forgets to free the newly allocated regd
+> > > object.
+> > 
+> > Not really? It's not forgetting it, it just saves it?
+> 
+> Yes, it saves the regd object in the function wiphy_apply_custom_regulatory.
 
-I think the best fix for this is to just remove that function -- it is 
-currently not used anywhere. I posted a patch to do that, but Thierry is 
-currently on vacation so it hasn't been picked up yet.
+Right.
 
-thanks,
-Mikko
+> But its parent function - mac80211_hwsim_new_radio forgets to free
+> this object when the ieee80211_register_hw fails.
 
-On 7/23/21 12:14 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> With the addition of the DMA fence, the host1x driver now fails to
-> build without the sync_file helper:
-> 
-> arm-linux-gnueabi-ld: drivers/gpu/host1x/fence.o: in function `host1x_fence_create_fd':
-> fence.c:(.text+0x624): undefined reference to `sync_file_create'
-> 
-> Fixes: ad0529424def ("gpu: host1x: Add DMA fence implementation")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   drivers/gpu/host1x/Kconfig | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/host1x/Kconfig b/drivers/gpu/host1x/Kconfig
-> index 6dab94adf25e..6f7ea1720a39 100644
-> --- a/drivers/gpu/host1x/Kconfig
-> +++ b/drivers/gpu/host1x/Kconfig
-> @@ -3,6 +3,7 @@ config TEGRA_HOST1X
->   	tristate "NVIDIA Tegra host1x driver"
->   	depends on ARCH_TEGRA || (ARM && COMPILE_TEST)
->   	select IOMMU_IOVA
-> +	select SYNC_FILE
->   	help
->   	  Driver for the NVIDIA Tegra host1x hardware.
->   
-> 
+But why is this specific to mac80211-hwsim?
+
+Any other code calling wiphy_apply_custom_regulatory() and then failing
+the subsequent wiphy_register() or otherwise calling wiphy_free() will
+run into the same situation.
+
+So why wouldn't we free this in wiphy_free(), if it exists?
+
+johannes
+
