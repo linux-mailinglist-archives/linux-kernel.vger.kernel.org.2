@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C193D393D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883313D393F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234252AbhGWKd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234152AbhGWKdZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:33:25 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D38C061575;
-        Fri, 23 Jul 2021 04:13:59 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id 13-20020a4ae1ad0000b029024b19a4d98eso299403ooy.5;
-        Fri, 23 Jul 2021 04:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4Nwk9qPAQEz7a/8yg7VWdxwdIwFtkYHBh+612HjXFR8=;
-        b=ed8KUGsfCqWAQcQfBhF88Y9OVbMf4kku9i0iSmPQyK4UKJA8IW5SwF4EiYlGu5gvXZ
-         9zOtQB+o4iAK73tSfN3TlCHiB0dOF9wOXyxpoQ3Hk3aw/Iwif3d9xeq0OWQ06Mo0P9Vk
-         5d//f/EJQcO/kNZCkh/zg9Z6DEE9RnSunxT6W/jy9Fa9XF/EaGVTWFs1uda5bTvuHhhm
-         pCjHFdJfBbdSyBt2DY/Cv5PKRLsF6cHoKCJe7/sxvC7sZlEHwS016uiJb36x3RQoTKc5
-         lL1D5HjuBEmQXMoBhVXoTfAg09+M0tKn2jLDax6QxhSO7OiFYp7fSUwUFTJAKhCi3dc2
-         R8eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Nwk9qPAQEz7a/8yg7VWdxwdIwFtkYHBh+612HjXFR8=;
-        b=PF1/VJJVsBPEUJ6kacyHebTrufyppYTAlUCcn7exvZezFEKNdP4DXmKtkYOQXQOY4o
-         fXbXAbpHWOBI+dcru3bDzKIK4UFfS/XqfMKbwLt1/iL3nHQ0Dv5QAS76xbkc45ZquNXt
-         ekSiwkshk0Vjk0ugqa8uwwIczIq4q9E051DTZ5eZ9WCCR6AZ29MsK8mBEf/VULDAiBcH
-         YEWKA1LQH9fwSFQlGv3C+ztwLHWGINOXAKvKjYGSgryi+pvlbZSZfkRK40vNZp4uZluW
-         7yjdD9evD3PbOesvepAuSLQKJvUcSfAQ167O8OZ7i0g9Zbdj01noSCPO6x3i2/1cvOK1
-         trPg==
-X-Gm-Message-State: AOAM532e1UcED3HgpUYAJfVh2bh5o5ZqyqrvFECcMMpVZrbAj1E8Vmi+
-        PImLjwGhlXxk7PnBa/7S+uQGuHddGQVFz/C5G9U=
-X-Google-Smtp-Source: ABdhPJzNCCp8fTtO0kzSFLOUM+lawDoT2CfKUL3Rr/JKyIfNM4DwmUjfKyJ5eSEbSZzASHckgWxaWjAwJmhGfdvT0m0=
-X-Received: by 2002:a05:6820:444:: with SMTP id p4mr2336576oou.75.1627038838422;
- Fri, 23 Jul 2021 04:13:58 -0700 (PDT)
+        id S234327AbhGWKdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:33:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231912AbhGWKdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 06:33:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F54A60EBC;
+        Fri, 23 Jul 2021 11:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627038853;
+        bh=UseeaPrqz/YFBbxCMHsqNT553PVjChHK30Ly8GJbOzY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gcm1Bu58yDiqm7o+2RQfbtbjTVUXcnVtaXqR0WK1ItRi8qm6Rg+SLWNqFN7CgV2a/
+         Aefq3umIun7VbH9UACMuIL6CA1AGjlJrgZTbyv3Yq0Eygu9ySs+RL7Pqy0ZPfieMiG
+         1qqAEQVak1z6BeLmY3reMagLPWlqBJCr6ZecXdno=
+Date:   Fri, 23 Jul 2021 13:14:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, rafael@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, andriin@fb.com,
+        daniel@iogearbox.net, atenart@kernel.org, alobakin@pm.me,
+        weiwan@google.com, ap420073@gmail.com, jeyu@kernel.org,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        minchan@kernel.org, axboe@kernel.dk, mbenes@suse.com,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] sysfs: fix kobject refcount to address races with
+ kobject removal
+Message-ID: <YPqkgqxXQI1qYaxv@kroah.com>
+References: <20210623215007.862787-1-mcgrof@kernel.org>
+ <YNRnzxTabyoToKKJ@kroah.com>
+ <20210625215558.xn4a24ts26bdyfzo@garbanzo>
+ <20210701224816.pkzeyo4uqu3kbqdo@garbanzo>
+ <YPgFVRAMQ9hN3dnB@kroah.com>
+ <20210722213137.jegpykf2ddwmmck5@garbanzo>
 MIME-Version: 1.0
-References: <20210722092624.14401-1-jason-jh.lin@mediatek.com> <20210722092624.14401-2-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210722092624.14401-2-jason-jh.lin@mediatek.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Fri, 23 Jul 2021 13:13:46 +0200
-Message-ID: <CAFqH_51qKkxMit5fkSh_AyeNAYwKnoPe09nwJLKaKez26+HUew@mail.gmail.com>
-Subject: Re: [PATCH v1 1/5] dt-bindings: arm: mediatek: mmsys: add mt8195 SoC binding
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devicetree <devicetree@vger.kernel.org>,
-        Jitao shi <jitao.shi@mediatek.com>, fshao@chromium.org,
-        David Airlie <airlied@linux.ie>, singo.chang@mediatek.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        "Nancy.Lin" <nancy.lin@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722213137.jegpykf2ddwmmck5@garbanzo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On Thu, Jul 22, 2021 at 02:31:37PM -0700, Luis Chamberlain wrote:
+> On Wed, Jul 21, 2021 at 01:30:29PM +0200, Greg KH wrote:
+> > On Thu, Jul 01, 2021 at 03:48:16PM -0700, Luis Chamberlain wrote:
+> > > On Fri, Jun 25, 2021 at 02:56:03PM -0700, Luis Chamberlain wrote:
+> > > > On Thu, Jun 24, 2021 at 01:09:03PM +0200, Greg KH wrote:
+> > > > > thanks for making this change and sticking with it!
+> > > > > 
+> > > > > Oh, and with this change, does your modprobe/rmmod crazy test now work?
+> > > > 
+> > > > It does but I wrote a test_syfs driver and I believe I see an issue with
+> > > > this. I'll debug a bit more and see what it was, and I'll then also use
+> > > > the driver to demo the issue more clearly, and then verification can be
+> > > > an easy selftest test.
+> > > 
+> > > OK my conclusion based on a new selftest driver I wrote is we can drop
+> > > this patch safely. The selftest will cover this corner case well now.
+> > > 
+> > > In short: the kernfs active reference will ensure the store operation
+> > > still exists. The kernfs mutex is not enough, but if the driver removes
+> > > the operation prior to getting the active reference, the write will just
+> > > fail. The deferencing inside of the sysfs operation is abstract to
+> > > kernfs, and while kernfs can't do anything to prevent a driver from
+> > > doing something stupid, it at least can ensure an open file ensure the
+> > > op is not removed until the operation completes.
+> > 
+> > Ok, so all is good?
+> 
+> It would seem to be the case.
+> 
+> > Then why is your zram test code blowing up so badly?
+> 
+> I checked the logs for the backtrace where the crash did happen
+> and we did see clear evidence of the race we feared here. The *first*
+> bug that happened was the CPU hotplug race:
+> 
+> [132004.787099] Error: Removing state 61 which has instances left.
+> [132004.787124] WARNING: CPU: 17 PID: 9307 at ../kernel/cpu.c:1879 __cpuhp_remove_state_cpuslocked+0x1c4/0x1d0
 
-Thank you for your patch.
+I do not understand what this issue is, is it fixed?  Why is a cpu being
+hot unplugged at the same time a zram?
 
-Missatge de jason-jh.lin <jason-jh.lin@mediatek.com> del dia dj., 22
-de jul. 2021 a les 11:26:
->
-> There are 2 display hardware path in mt8195, namely vdosys0 and
-> vdosys1, so add their definition in mtk-mmsys documentation.
->
+thanks,
 
-Just having 2 display hardware paths is not a reason to have two
-compatibles, isn't the IP block the same? Why do you need to introduce
-the two compatibles?
-
-Thanks,
-  Enric
-
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
-> this patch is base on [1][2]
->
-> [1] dt-bindings: arm: mediatek: mmsys: convert to YAML format
-> - https://patchwork.kernel.org/project/linux-mediatek/patch/20210519161847.3747352-1-fparent@baylibre.com/
-> [2] dt-bindings: arm: mediatek: mmsys: add MT8365 SoC binding
-> - https://patchwork.kernel.org/project/linux-mediatek/patch/20210519161847.3747352-2-fparent@baylibre.com/
-> ---
->  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml        | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> index 2d4ff0ce387b..0789a9614f12 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> @@ -30,6 +30,8 @@ properties:
->                - mediatek,mt8173-mmsys
->                - mediatek,mt8183-mmsys
->                - mediatek,mt8365-mmsys
-> +              - mediatek,mt8195-vdosys0
-> +              - mediatek,mt8195-vdosys1
->            - const: syscon
->        - items:
->            - const: mediatek,mt7623-mmsys
-> --
-> 2.18.0
->
+greg k-h
