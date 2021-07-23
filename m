@@ -2,933 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1861C3D337A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 06:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7093D3382
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 06:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhGWD0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 23:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33932 "EHLO
+        id S233608AbhGWDgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 23:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233670AbhGWD0a (ORCPT
+        with ESMTP id S233558AbhGWDgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 23:26:30 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E99CC0613D3;
-        Thu, 22 Jul 2021 21:07:02 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id n10so1815373plf.4;
-        Thu, 22 Jul 2021 21:07:02 -0700 (PDT)
+        Thu, 22 Jul 2021 23:36:19 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D98FC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 21:16:53 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id w193so139466vkw.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 21:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IQRKRQq+ppZZQjhzVhSUB/UHn9VMaT6QTfTpkIDhRQI=;
-        b=H3lo744reWojIp1GyZdVK46sIiZYEgZmDLiO3ezCXeRfWjbB1x3fwuFCCCxuD/gNmA
-         vjvBPnSj0sKiRnBCm+IWP2HMaOsAby6blAGtXjUbxaiheLl87r4Ya1EJYeQRKLZZmQXJ
-         a2IShTcRzDdT7cD1+YE/Yaa5n4WF06jmtnn3RoXUqNBvpqD4jG1gGpFvbkuZLGJy9ggb
-         eOLN0pV150Ty/F8EoLUXzbKQ0N+ZTTAbiqw1RALixwXWkUTp2MzBU0r2d0ss5YghBshq
-         erodpU73DmGmYqEQX9s5yOqu2Dr0EkEKOFx5AlnHbJXXh0NNCG9O1ZIfutNB4ofyMBXW
-         OouQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6NnYz1iNIJhzHIpHY3i7AC/PL1h4WWIN/9Zu2pseyMM=;
+        b=AZJdFW+r1qJWaIOq18g5RGslCbMDM6EDd2J24goRI0W5EwPTWWDQMFpDWIpLbGDQlE
+         t7W45Vl8JvT7haAvXnmOJ3TFJVBZ+MkNDdRgej0HPb5BMaZth8X3TpUEH6CQI0isBYnU
+         4RoYAsgVDjzpK/aRqTgkea65g9lGsbDdq4gQ/IyAR98RQ74Zjv/dsVZ9AWgf3IKwQA5J
+         TMFgQYFd3O9i85QsokNRL6dHUQaXwwbbsPu3N23LXOAUcjzHKoxB8qr2pTfahfvPbuwW
+         bQD2Q71jeGPlhPgyvn2J/SMnMcoJOMTuQTDQOiLh6HAriI4AVRKhWte7N1uULoqTf8vZ
+         hdUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=IQRKRQq+ppZZQjhzVhSUB/UHn9VMaT6QTfTpkIDhRQI=;
-        b=KK8YX15KHBzO4NSnJdQ84zRQSHmBZVIy17nVWshyq/ckDGljsPRMS/89yjPs9F9XL9
-         cdG/8OcaJbefVTu9MhYe+Nqd6C4k9ZzfSGMYG0ySOqAyudF8Aq4N3ThALHAdyhJ6Twfo
-         yQFA8Ne5znqFc8iwieybcVVShiktl70HfNn9Ph9y0EC48J/mWVgbdV/oPOXbeMqaykiS
-         ggZgPyYo7OsXjxfFXATCrukqE3pQ8gfr9cHlMgrOGjQLNHyoYqXl31TI/1z7ITKB8Vr0
-         0ytb6156MTIg/IB8doRnVwSlCvMH6YjfmZOHIqpcjn84qa2KC6KK1TKoAuKjnhCW7o1b
-         5gCg==
-X-Gm-Message-State: AOAM533V1+WvdQsKxmARUWuFz9otefphEfpheX7glXoJy/EKiG5Wnz+g
-        SLgnwSndRPcXw/rb0tMQn8w=
-X-Google-Smtp-Source: ABdhPJxFM/fWD2b9j1qBQ4Ym72CYy11R5S3mpGG3J3quDTLTGgaP9q3pqclAaA/ykXpOnbBuPRLkDg==
-X-Received: by 2002:a63:fd07:: with SMTP id d7mr3116268pgh.288.1627013221679;
-        Thu, 22 Jul 2021 21:07:01 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id p3sm35474910pgi.20.2021.07.22.21.06.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 22 Jul 2021 21:07:01 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     laurent.pinchart@ideasonboard.com, thierry.reding@gmail.com,
-        sam@ravnborg.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, linus.walleij@linaro.org,
-        alexandre.torgue@foss.st.com, mcoquelin.stm32@gmail.com
-Cc:     noralf@tronnes.org, dianders@chromium.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>
-Subject: [PATCH v3 3/3] drm/panel: Add ilitek ili9341 panel driver
-Date:   Fri, 23 Jul 2021 12:06:43 +0800
-Message-Id: <1627013203-23099-4-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1627013203-23099-1-git-send-email-dillon.minfei@gmail.com>
-References: <1627013203-23099-1-git-send-email-dillon.minfei@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6NnYz1iNIJhzHIpHY3i7AC/PL1h4WWIN/9Zu2pseyMM=;
+        b=Tc4VQ0YJojRmHRcdQsnMblkiHLM98HEIZHRb8xWsJP31tPBbu6axluVHcvaKis8K8p
+         J94tdc1bMg7n3csGvkV3+psSEaLZzlwZJlwxSW8FPKLOEBPPkizUVaOto6tP2Rn5wsvy
+         bykVz58bCOOpwyRJIKSK5Hpk8ckWI1R9OXabPzb/0hbngz5IzuCc0ARA8/QC8bRAIENx
+         g4VOE6q5xKuxAu6mrs12miXGyESsFjmR9bklPlFEtZXzg0F1qc9t4OfYOZYSX7qxSkJs
+         XRB0Sx43cR/8YGUBM6X+Y3tFHCpuaCLoq40jDwory6pNRuQ/3661CBKIe0K1C+1Hpnsw
+         AkSg==
+X-Gm-Message-State: AOAM530oZ01qTpVRY8vEmF+guJopDyIlqMjhkNDB0SA0EdSiIj9FNNZB
+        rMgHfrTdpY2i0/FKGPIsiBOOwsXEuySH/YQWc4pGvQ==
+X-Google-Smtp-Source: ABdhPJwZNrd//Qm6E0WasD+fHTkPxy6ahCgH393B/+gnefLb0a3vT8t4ESyooIGyde+hTp9vUvp/oVq8kMcTfQhewAM=
+X-Received: by 2002:a1f:7309:: with SMTP id o9mr2625176vkc.19.1627013811893;
+ Thu, 22 Jul 2021 21:16:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAPcxDJ7YsnYtyzSmgfBj-rmALkjigKx2ODB=SCYCzY8FJYg4iA@mail.gmail.com>
+ <20210722151930.GA1453521@agluck-desk2.amr.corp.intel.com>
+ <CAPcxDJ6bB7GEhTq9fkHuT4chRTUk_s-crci=nh+COCwAzMP8Yw@mail.gmail.com>
+ <20210723001436.GA1460637@agluck-desk2.amr.corp.intel.com>
+ <CAPcxDJ4Liv1_zASzRxdGKu7MmjRQ9inXPfhPMQdEZrEjL0U=zw@mail.gmail.com> <0e39ef0e1b6d4532a09ad2d6e0b28310@intel.com>
+In-Reply-To: <0e39ef0e1b6d4532a09ad2d6e0b28310@intel.com>
+From:   Jue Wang <juew@google.com>
+Date:   Thu, 22 Jul 2021 21:16:40 -0700
+Message-ID: <CAPcxDJ7=UsAkDwVuoQcTt2B2UA4RWjs_o_=Fnk4Hfuqj+V8hAA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] x86/mce: Avoid infinite loop for copy from user recovery
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        "dinghui@sangfor.com.cn" <dinghui@sangfor.com.cn>,
+        "huangcun@sangfor.com.cn" <huangcun@sangfor.com.cn>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Oscar Salvador <osalvador@suse.de>,
+        x86 <x86@kernel.org>, "Song, Youquan" <youquan.song@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dillon Min <dillon.minfei@gmail.com>
+On Thu, Jul 22, 2021 at 9:01 PM Luck, Tony <tony.luck@intel.com> wrote:
+>
+> >> I'm not aware of, nor expecting to find, places where the kernel
+> >> tries to access user address A and hits poison, and then tries to
+> >> access user address B (without returrning to user between access
+> >> A and access B).
+> >This seems a reasonablely easy scenario.
+> >
+> > A user space app allocates a buffer of xyz KB/MB/GB.
+> >
+> > Unfortunately the dimms are bad and multiple cache lines have
+> > uncorrectable errors in them on different pages.
+> >
+> > Then the user space app tries to write the content of the buffer into some
+> > file via write(2) from the entire buffer in one go.
+>
+> Before this patch Linux gets into an infinite loop taking machine
+> checks on the first of the poison addresses in the buffer.
+>
+> With this patch (and also patch 3/3 in this series). There are
+> a few machine checks on the first poison address (I think the number
+> depends on the alignment of the poison within a page ... but I'm
+> not sure). My test code shows 4 machine checks at the same
+> address. Then Linux returns a short byte count to the user
+> showing how many bytes were actually written to the file.
+>
+> The fast that there are many more poison lines in the buffer
+> beyond the place where the write stopped on the first one is
+> irrelevant.
+In our test, the application memory was anon.
+With 1 UC error injected, the test always passes with the error
+recovered and a SIGBUS delivered to user space.
 
-This driver combines tiny/ili9341.c mipi_dbi_interface driver
-with mipi_dpi_interface driver, and can support ili9341 with serial
-mode or parallel rgb interface mode by register configuration.
-
-Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Jagan Teki <jagan@amarulasolutions.com>
----
-v3:
-all the v3 updates are based on Sam and Jagan's review.
-- collect reviewed-by tags from linus and jagan.
-- replace DRM_ERROR() with dev_err() or drm_err().
-- remove kernel-doc markers from struct ili9341_config{}.
-- reorder include headers.
-- remove the struct device *dev from struct ili9341{}.
-- restructure the ili9341_probe() function, add two ili9341_{dbi,dpi)_probe()
-  to make it more readable according to jagan's suggestion, thanks.
-
-For "So this is a full display driver. The more relevant home for this driver
-is inside drm/tiny/."
-
-I'm not sure if this is to ask me move the dpi code to drm/tiny/ili9341.c, and
-remove this driver. or just remove the dbi code from this driver, but this will
-result in two drivers to support the same panel (as Noralf does not agree with it).
-
-so, waiting for the decision from Sam, Laurent, then will update in v4, thanks.
-
- drivers/gpu/drm/panel/Kconfig                |  12 +
- drivers/gpu/drm/panel/Makefile               |   1 +
- drivers/gpu/drm/panel/panel-ilitek-ili9341.c | 786 +++++++++++++++++++++++++++
- 3 files changed, 799 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index ef87d92cdf49..eb34b8d1b19a 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -124,6 +124,18 @@ config DRM_PANEL_ILITEK_IL9322
- 	  Say Y here if you want to enable support for Ilitek IL9322
- 	  QVGA (320x240) RGB, YUV and ITU-T BT.656 panels.
- 
-+config DRM_PANEL_ILITEK_ILI9341
-+	tristate "Ilitek ILI9341 240x320 QVGA panels"
-+	depends on OF && SPI
-+	depends on DRM_KMS_HELPER
-+	depends on DRM_KMS_CMA_HELPER
-+	depends on BACKLIGHT_CLASS_DEVICE
-+	select DRM_MIPI_DBI
-+	help
-+	  Say Y here if you want to enable support for Ilitek IL9341
-+	  QVGA (240x320) RGB panels. support serial & parallel rgb
-+	  interface.
-+
- config DRM_PANEL_ILITEK_ILI9881C
- 	tristate "Ilitek ILI9881C-based panels"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index cae4d976c069..0ecde184665d 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_DRM_PANEL_ELIDA_KD35T133) += panel-elida-kd35t133.o
- obj-$(CONFIG_DRM_PANEL_FEIXIN_K101_IM2BA02) += panel-feixin-k101-im2ba02.o
- obj-$(CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D) += panel-feiyang-fy07024di26a30d.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
-+obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9341) += panel-ilitek-ili9341.o
- obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
- obj-$(CONFIG_DRM_PANEL_INNOLUX_P079ZCA) += panel-innolux-p079zca.o
- obj-$(CONFIG_DRM_PANEL_JDI_LT070ME05000) += panel-jdi-lt070me05000.o
-diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9341.c b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-new file mode 100644
-index 000000000000..5ab6f18c3ce1
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-ilitek-ili9341.c
-@@ -0,0 +1,786 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Ilitek ILI9341 TFT LCD drm_panel driver.
-+ *
-+ * This panel can be configured to support:
-+ * - 16-bit parallel RGB interface
-+ * - 18-bit parallel RGB interface
-+ * - 4-line serial spi interface
-+ *
-+ * Copyright (C) 2021 Dillon Min <dillon.minfei@gmail.com>
-+ * Derived from drivers/drm/gpu/panel/panel-ilitek-ili9322.c
-+ * the reuse of DBI abstraction part referred from Linus's patch
-+ * "drm/panel: s6e63m0: Switch to DBI abstraction for SPI"
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/spi/spi.h>
-+
-+#include <video/mipi_display.h>
-+
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_drv.h>
-+#include <drm/drm_fb_helper.h>
-+#include <drm/drm_gem_atomic_helper.h>
-+#include <drm/drm_gem_cma_helper.h>
-+#include <drm/drm_gem_framebuffer_helper.h>
-+#include <drm/drm_mipi_dbi.h>
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+#include <drm/drm_print.h>
-+
-+#define ILI9341_RGB_INTERFACE  0xb0   /* RGB Interface Signal Control */
-+#define ILI9341_FRC            0xb1   /* Frame Rate Control register */
-+#define ILI9341_DFC            0xb6   /* Display Function Control register */
-+#define ILI9341_POWER1         0xc0   /* Power Control 1 register */
-+#define ILI9341_POWER2         0xc1   /* Power Control 2 register */
-+#define ILI9341_VCOM1          0xc5   /* VCOM Control 1 register */
-+#define ILI9341_VCOM2          0xc7   /* VCOM Control 2 register */
-+#define ILI9341_POWERA         0xcb   /* Power control A register */
-+#define ILI9341_POWERB         0xcf   /* Power control B register */
-+#define ILI9341_PGAMMA         0xe0   /* Positive Gamma Correction register */
-+#define ILI9341_NGAMMA         0xe1   /* Negative Gamma Correction register */
-+#define ILI9341_DTCA           0xe8   /* Driver timing control A */
-+#define ILI9341_DTCB           0xea   /* Driver timing control B */
-+#define ILI9341_POWER_SEQ      0xed   /* Power on sequence register */
-+#define ILI9341_3GAMMA_EN      0xf2   /* 3 Gamma enable register */
-+#define ILI9341_INTERFACE      0xf6   /* Interface control register */
-+#define ILI9341_PRC            0xf7   /* Pump ratio control register */
-+#define ILI9341_ETMOD	       0xb7   /* Entry mode set */
-+
-+#define ILI9341_MADCTL_BGR	BIT(3)
-+#define ILI9341_MADCTL_MV	BIT(5)
-+#define ILI9341_MADCTL_MX	BIT(6)
-+#define ILI9341_MADCTL_MY	BIT(7)
-+
-+#define ILI9341_POWER_B_LEN	3
-+#define ILI9341_POWER_SEQ_LEN	4
-+#define ILI9341_DTCA_LEN	3
-+#define ILI9341_DTCB_LEN	2
-+#define ILI9341_POWER_A_LEN	5
-+#define ILI9341_DFC_1_LEN	2
-+#define ILI9341_FRC_LEN		2
-+#define ILI9341_VCOM_1_LEN	2
-+#define ILI9341_DFC_2_LEN	4
-+#define ILI9341_COLUMN_ADDR_LEN	4
-+#define ILI9341_PAGE_ADDR_LEN	4
-+#define ILI9341_INTERFACE_LEN	3
-+#define ILI9341_PGAMMA_LEN	15
-+#define ILI9341_NGAMMA_LEN	15
-+#define ILI9341_CA_LEN		3
-+
-+#define ILI9341_PIXEL_DPI_16_BITS	(BIT(6) | BIT(4))
-+#define ILI9341_PIXEL_DPI_18_BITS	(BIT(6) | BIT(5))
-+#define ILI9341_GAMMA_CURVE_1		BIT(0)
-+#define ILI9341_IF_WE_MODE		BIT(0)
-+#define ILI9341_IF_BIG_ENDIAN		0x00
-+#define ILI9341_IF_DM_RGB		BIT(2)
-+#define ILI9341_IF_DM_INTERNAL		0x00
-+#define ILI9341_IF_DM_VSYNC		BIT(3)
-+#define ILI9341_IF_RM_RGB		BIT(1)
-+#define ILI9341_IF_RIM_RGB		0x00
-+
-+#define ILI9341_COLUMN_ADDR		0x00ef
-+#define ILI9341_PAGE_ADDR		0x013f
-+
-+#define ILI9341_RGB_EPL			BIT(0)
-+#define ILI9341_RGB_DPL			BIT(1)
-+#define ILI9341_RGB_HSPL		BIT(2)
-+#define ILI9341_RGB_VSPL		BIT(3)
-+#define ILI9341_RGB_DE_MODE		BIT(6)
-+#define ILI9341_RGB_DISP_PATH_MEM	BIT(7)
-+
-+#define ILI9341_DBI_VCOMH_4P6V		0x23
-+#define ILI9341_DBI_PWR_2_DEFAULT	0x10
-+#define ILI9341_DBI_PRC_NORMAL		0x20
-+#define ILI9341_DBI_VCOM_1_VMH_4P25V	0x3e
-+#define ILI9341_DBI_VCOM_1_VML_1P5V	0x28
-+#define ILI9341_DBI_VCOM_2_DEC_58	0x86
-+#define ILI9341_DBI_FRC_DIVA		0x00
-+#define ILI9341_DBI_FRC_RTNA		0x1b
-+#define ILI9341_DBI_EMS_GAS		BIT(0)
-+#define ILI9341_DBI_EMS_DTS		BIT(1)
-+#define ILI9341_DBI_EMS_GON		BIT(2)
-+
-+/* struct ili9341_config - the system specific ILI9341 configuration */
-+struct ili9341_config {
-+	u32 max_spi_speed;
-+	/* mode: the drm display mode */
-+	const struct drm_display_mode mode;
-+	/* ca: TODO: need comments for this register */
-+	u8 ca[ILI9341_CA_LEN];
-+	/* power_b: TODO: need comments for this register */
-+	u8 power_b[ILI9341_POWER_B_LEN];
-+	/* power_seq: TODO: need comments for this register */
-+	u8 power_seq[ILI9341_POWER_SEQ_LEN];
-+	/* dtca: TODO: need comments for this register */
-+	u8 dtca[ILI9341_DTCA_LEN];
-+	/* dtcb: TODO: need comments for this register */
-+	u8 dtcb[ILI9341_DTCB_LEN];
-+	/* power_a: TODO: need comments for this register */
-+	u8 power_a[ILI9341_POWER_A_LEN];
-+	/* frc: Frame Rate Control (In Normal Mode/Full Colors) (B1h) */
-+	u8 frc[ILI9341_FRC_LEN];
-+	/* prc: TODO: need comments for this register */
-+	u8 prc;
-+	/* dfc_1: B6h DISCTRL (Display Function Control) */
-+	u8 dfc_1[ILI9341_DFC_1_LEN];
-+	/* power_1: Power Control 1 (C0h) */
-+	u8 power_1;
-+	/* power_2: Power Control 2 (C1h) */
-+	u8 power_2;
-+	/* vcom_1: VCOM Control 1(C5h) */
-+	u8 vcom_1[ILI9341_VCOM_1_LEN];
-+	/* vcom_2: VCOM Control 2(C7h) */
-+	u8 vcom_2;
-+	/* address_mode: Memory Access Control (36h) */
-+	u8 address_mode;
-+	/* g3amma_en: TODO: need comments for this register */
-+	u8 g3amma_en;
-+	/* rgb_interface: RGB Interface Signal Control (B0h) */
-+	u8 rgb_interface;
-+	/* dfc_2: refer to dfc_1 */
-+	u8 dfc_2[ILI9341_DFC_2_LEN];
-+	/* column_addr: Column Address Set (2Ah) */
-+	u8 column_addr[ILI9341_COLUMN_ADDR_LEN];
-+	/* page_addr: Page Address Set (2Bh) */
-+	u8 page_addr[ILI9341_PAGE_ADDR_LEN];
-+	/* interface: Interface Control (F6h) */
-+	u8 interface[ILI9341_INTERFACE_LEN];
-+	/*
-+	 * pixel_format: This command sets the pixel format for the RGB
-+	 * image data used by
-+	 */
-+	u8 pixel_format;
-+	/*
-+	 * gamma_curve: This command is used to select the desired Gamma
-+	 * curve for the
-+	 */
-+	u8 gamma_curve;
-+	/* pgamma: Positive Gamma Correction (E0h) */
-+	u8 pgamma[ILI9341_PGAMMA_LEN];
-+	/* ngamma: Negative Gamma Correction (E1h) */
-+	u8 ngamma[ILI9341_NGAMMA_LEN];
-+};
-+
-+struct ili9341 {
-+	struct device *dev;
-+	const struct ili9341_config *conf;
-+	struct drm_panel panel;
-+	struct gpio_desc *reset_gpio;
-+	struct gpio_desc *dc_gpio;
-+	struct mipi_dbi *dbi;
-+	u32 max_spi_speed;
-+	struct regulator_bulk_data supplies[3];
-+};
-+
-+/*
-+ * The Stm32f429-disco board has a panel ili9341 connected to ltdc controller
-+ */
-+static const struct ili9341_config ili9341_stm32f429_disco_data = {
-+	.max_spi_speed = 10000000,
-+	.mode = {
-+		.clock = 6100,
-+		.hdisplay = 240,
-+		.hsync_start = 240 + 10,/* hfp 10 */
-+		.hsync_end = 240 + 10 + 10,/* hsync 10 */
-+		.htotal = 240 + 10 + 10 + 20,/* hbp 20 */
-+		.vdisplay = 320,
-+		.vsync_start = 320 + 4,/* vfp 4 */
-+		.vsync_end = 320 + 4 + 2,/* vsync 2 */
-+		.vtotal = 320 + 4 + 2 + 2,/* vbp 2 */
-+		.flags = 0,
-+		.width_mm = 65,
-+		.height_mm = 50,
-+		.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
-+	},
-+	.ca = {0xc3, 0x08, 0x50},
-+	.power_b = {0x00, 0xc1, 0x30},
-+	.power_seq = {0x64, 0x03, 0x12, 0x81},
-+	.dtca = {0x85, 0x00, 0x78},
-+	.power_a = {0x39, 0x2c, 0x00, 0x34, 0x02},
-+	.prc = 0x20,
-+	.dtcb = {0x00, 0x00},
-+	/* 0x00 fosc, 0x1b 70hz */
-+	.frc = {0x00, 0x1b},
-+	/*
-+	 * 0x0a Interval scan, AGND AGND AGND AGND
-+	 * 0xa2 Normally white, G1 -> G320, S720 -> S1,
-+	 *	Scan Cycle 5 frames,85ms
-+	 */
-+	.dfc_1 = {0x0a, 0xa2},
-+	/* 0x10 3.65v */
-+	.power_1 = 0x10,
-+	/* 0x10 AVDD=vci*2, VGH=vci*7, VGL=-vci*4 */
-+	.power_2 = 0x10,
-+	/* 0x45 VCOMH 4.425v, 0x15 VCOML -1.975*/
-+	.vcom_1 = {0x45, 0x15},
-+	/* 0x90 offset voltage, VMH-48, VML-48 */
-+	.vcom_2 = 0x90,
-+	/*
-+	 * 0xc8 Row Address Order, Column Address Order
-+	 * BGR 1
-+	 */
-+	.address_mode = 0xc8,
-+	.g3amma_en = 0x00,
-+	/*
-+	 * 0xc2
-+	 * Display Data Path: Memory
-+	 * RGB: DE mode
-+	 * DOTCLK polarity set (data fetched at the falling time)
-+	 */
-+	.rgb_interface = ILI9341_RGB_DISP_PATH_MEM |
-+			ILI9341_RGB_DE_MODE |
-+			ILI9341_RGB_DPL,
-+	/*
-+	 * 0x0a
-+	 * Gate outputs in non-display area: Interval scan
-+	 * Determine source/VCOM output in a non-display area in the partial
-+	 * display mode: AGND AGND AGND AGND
-+	 *
-+	 * 0xa7
-+	 * Scan Cycle: 15 frames
-+	 * fFLM = 60Hz: 255ms
-+	 * Liquid crystal type: Normally white
-+	 * Gate Output Scan Direction: G1 -> G320
-+	 * Source Output Scan Direction: S720 -> S1
-+	 *
-+	 * 0x27
-+	 * LCD Driver Line: 320 lines
-+	 *
-+	 * 0x04
-+	 * PCDIV: 4
-+	 */
-+	.dfc_2 = {0x0a, 0xa7, 0x27, 0x04},
-+	/* column address: 240 */
-+	.column_addr = {0x00, 0x00, (ILI9341_COLUMN_ADDR >> 4) & 0xff,
-+				ILI9341_COLUMN_ADDR & 0xff},
-+	/* page address: 320 */
-+	.page_addr = {0x00, 0x00, (ILI9341_PAGE_ADDR >> 4) & 0xff,
-+				ILI9341_PAGE_ADDR & 0xff},
-+	/*
-+	 * Memory write control: When the transfer number of data exceeds
-+	 * (EC-SC+1)*(EP-SP+1), the column and page number will be
-+	 * reset, and the exceeding data will be written into the following
-+	 * column and page.
-+	 * Display Operation Mode: RGB Interface Mode
-+	 * Interface for RAM Access: RGB interface
-+	 * 16- bit RGB interface (1 transfer/pixel)
-+	 */
-+	.interface = {ILI9341_IF_WE_MODE, 0x00,
-+			ILI9341_IF_DM_RGB | ILI9341_IF_RM_RGB},
-+	/* DPI: 16 bits / pixel */
-+	.pixel_format = ILI9341_PIXEL_DPI_16_BITS,
-+	/* Curve Selected: Gamma curve 1 (G2.2) */
-+	.gamma_curve = ILI9341_GAMMA_CURVE_1,
-+	.pgamma = {0x0f, 0x29, 0x24, 0x0c, 0x0e,
-+			0x09, 0x4e, 0x78, 0x3c, 0x09,
-+			0x13, 0x05, 0x17, 0x11, 0x00},
-+	.ngamma = {0x00, 0x16, 0x1b, 0x04, 0x11,
-+			0x07, 0x31, 0x33, 0x42, 0x05,
-+			0x0c, 0x0a, 0x28, 0x2f, 0x0f},
-+};
-+
-+static inline struct ili9341 *panel_to_ili9341(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct ili9341, panel);
-+}
-+
-+static void ili9341_dpi_init(struct ili9341 *ili)
-+{
-+	struct device *dev = (&ili->panel)->dev;
-+	struct mipi_dbi *dbi = ili->dbi;
-+	struct ili9341_config *cfg = (struct ili9341_config *)ili->conf;
-+
-+	/* Power Control */
-+	mipi_dbi_command_stackbuf(dbi, 0xca, cfg->ca, ILI9341_CA_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_POWERB, cfg->power_b,
-+				  ILI9341_POWER_B_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_POWER_SEQ, cfg->power_seq,
-+				  ILI9341_POWER_SEQ_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_DTCA, cfg->dtca,
-+				  ILI9341_DTCA_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_POWERA, cfg->power_a,
-+				  ILI9341_POWER_A_LEN);
-+	mipi_dbi_command(ili->dbi, ILI9341_PRC, cfg->prc);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_DTCB, cfg->dtcb,
-+				  ILI9341_DTCB_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_FRC, cfg->frc, ILI9341_FRC_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_DFC, cfg->dfc_1,
-+				  ILI9341_DFC_1_LEN);
-+	mipi_dbi_command(dbi, ILI9341_POWER1, cfg->power_1);
-+	mipi_dbi_command(dbi, ILI9341_POWER2, cfg->power_2);
-+
-+	/* VCOM */
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_VCOM1, cfg->vcom_1,
-+				  ILI9341_VCOM_1_LEN);
-+	mipi_dbi_command(dbi, ILI9341_VCOM2, cfg->vcom_2);
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_ADDRESS_MODE, cfg->address_mode);
-+
-+	/* Gamma */
-+	mipi_dbi_command(dbi, ILI9341_3GAMMA_EN, cfg->g3amma_en);
-+	mipi_dbi_command(dbi, ILI9341_RGB_INTERFACE, cfg->rgb_interface);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_DFC, cfg->dfc_2,
-+				  ILI9341_DFC_2_LEN);
-+
-+	/* Colomn address set */
-+	mipi_dbi_command_stackbuf(dbi, MIPI_DCS_SET_COLUMN_ADDRESS,
-+				  cfg->column_addr, ILI9341_COLUMN_ADDR_LEN);
-+
-+	/* Page address set */
-+	mipi_dbi_command_stackbuf(dbi, MIPI_DCS_SET_PAGE_ADDRESS,
-+				  cfg->page_addr, ILI9341_PAGE_ADDR_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_INTERFACE, cfg->interface,
-+				  ILI9341_INTERFACE_LEN);
-+
-+	/* Format */
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_PIXEL_FORMAT, cfg->pixel_format);
-+	mipi_dbi_command(dbi, MIPI_DCS_WRITE_MEMORY_START);
-+	msleep(200);
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_GAMMA_CURVE, cfg->gamma_curve);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_PGAMMA, cfg->pgamma,
-+				  ILI9341_PGAMMA_LEN);
-+	mipi_dbi_command_stackbuf(dbi, ILI9341_NGAMMA, cfg->ngamma,
-+				  ILI9341_NGAMMA_LEN);
-+	mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
-+	msleep(200);
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON);
-+	mipi_dbi_command(dbi, MIPI_DCS_WRITE_MEMORY_START);
-+
-+	dev_info(dev, "Initialized display rgb interface\n");
-+}
-+
-+static int ili9341_dpi_power_on(struct ili9341 *ili)
-+{
-+	struct device *dev = (&ili->panel)->dev;
-+	int ret = 0;
-+
-+	/* Assert RESET */
-+	gpiod_set_value(ili->reset_gpio, 1);
-+
-+	/* Enable power */
-+	ret = regulator_bulk_enable(ARRAY_SIZE(ili->supplies),
-+				    ili->supplies);
-+	if (ret < 0) {
-+		dev_err(dev, "unable to enable vcc\n");
-+		return ret;
-+	}
-+	msleep(20);
-+
-+	/* De-assert RESET */
-+	gpiod_set_value(ili->reset_gpio, 0);
-+	msleep(20);
-+
-+	return 0;
-+}
-+
-+static int ili9341_dpi_power_off(struct ili9341 *ili)
-+{
-+	/* Assert RESET */
-+	gpiod_set_value(ili->reset_gpio, 1);
-+
-+	/* Disable power */
-+	return regulator_bulk_disable(ARRAY_SIZE(ili->supplies),
-+				      ili->supplies);
-+}
-+
-+static int ili9341_dpi_disable(struct drm_panel *panel)
-+{
-+	struct ili9341 *ili = panel_to_ili9341(panel);
-+
-+	mipi_dbi_command(ili->dbi, MIPI_DCS_SET_DISPLAY_OFF);
-+	return 0;
-+}
-+
-+static int ili9341_dpi_unprepare(struct drm_panel *panel)
-+{
-+	struct ili9341 *ili = panel_to_ili9341(panel);
-+
-+	return ili9341_dpi_power_off(ili);
-+}
-+
-+static int ili9341_dpi_prepare(struct drm_panel *panel)
-+{
-+	struct ili9341 *ili = panel_to_ili9341(panel);
-+	int ret;
-+
-+	ret = ili9341_dpi_power_on(ili);
-+	if (ret < 0)
-+		return ret;
-+
-+	ili9341_dpi_init(ili);
-+
-+	return ret;
-+}
-+
-+static int ili9341_dpi_enable(struct drm_panel *panel)
-+{
-+	struct ili9341 *ili = panel_to_ili9341(panel);
-+
-+	mipi_dbi_command(ili->dbi, MIPI_DCS_SET_DISPLAY_ON);
-+	return 0;
-+}
-+
-+static int ili9341_dpi_get_modes(struct drm_panel *panel,
-+				 struct drm_connector *connector)
-+{
-+	struct ili9341 *ili = panel_to_ili9341(panel);
-+	struct drm_device *drm = connector->dev;
-+	struct drm_display_mode *mode;
-+	struct drm_display_info *info;
-+
-+	info = &connector->display_info;
-+	info->width_mm = ili->conf->mode.width_mm;
-+	info->height_mm = ili->conf->mode.height_mm;
-+
-+	if (ili->conf->rgb_interface & ILI9341_RGB_DPL)
-+		info->bus_flags |= DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE;
-+	else
-+		info->bus_flags |= DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE;
-+
-+	if (ili->conf->rgb_interface & ILI9341_RGB_EPL)
-+		info->bus_flags |= DRM_BUS_FLAG_DE_LOW;
-+	else
-+		info->bus_flags |= DRM_BUS_FLAG_DE_HIGH;
-+
-+	mode = drm_mode_duplicate(drm, &ili->conf->mode);
-+	if (!mode) {
-+		drm_err(drm, "bad mode or failed to add mode\n");
-+		return -EINVAL;
-+	}
-+	drm_mode_set_name(mode);
-+
-+	/* Set up the polarity */
-+	if (ili->conf->rgb_interface & ILI9341_RGB_HSPL)
-+		mode->flags |= DRM_MODE_FLAG_PHSYNC;
-+	else
-+		mode->flags |= DRM_MODE_FLAG_NHSYNC;
-+
-+	if (ili->conf->rgb_interface & ILI9341_RGB_VSPL)
-+		mode->flags |= DRM_MODE_FLAG_PVSYNC;
-+	else
-+		mode->flags |= DRM_MODE_FLAG_NVSYNC;
-+
-+	drm_mode_probed_add(connector, mode);
-+
-+	return 1; /* Number of modes */
-+}
-+
-+static const struct drm_panel_funcs ili9341_dpi_funcs = {
-+	.disable = ili9341_dpi_disable,
-+	.unprepare = ili9341_dpi_unprepare,
-+	.prepare = ili9341_dpi_prepare,
-+	.enable = ili9341_dpi_enable,
-+	.get_modes = ili9341_dpi_get_modes,
-+};
-+
-+static void ili9341_dbi_enable(struct drm_simple_display_pipe *pipe,
-+			       struct drm_crtc_state *crtc_state,
-+			       struct drm_plane_state *plane_state)
-+{
-+	struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(pipe->crtc.dev);
-+	struct mipi_dbi *dbi = &dbidev->dbi;
-+	u8 addr_mode;
-+	int ret, idx;
-+
-+	if (!drm_dev_enter(pipe->crtc.dev, &idx))
-+		return;
-+
-+	ret = mipi_dbi_poweron_conditional_reset(dbidev);
-+	if (ret < 0)
-+		goto out_exit;
-+	if (ret == 1)
-+		goto out_enable;
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_OFF);
-+
-+	mipi_dbi_command(dbi, ILI9341_POWERB, 0x00, 0xc1, 0x30);
-+	mipi_dbi_command(dbi, ILI9341_POWER_SEQ, 0x64, 0x03, 0x12, 0x81);
-+	mipi_dbi_command(dbi, ILI9341_DTCA, 0x85, 0x00, 0x78);
-+	mipi_dbi_command(dbi, ILI9341_POWERA, 0x39, 0x2c, 0x00, 0x34, 0x02);
-+	mipi_dbi_command(dbi, ILI9341_PRC, ILI9341_DBI_PRC_NORMAL);
-+	mipi_dbi_command(dbi, ILI9341_DTCB, 0x00, 0x00);
-+
-+	/* Power Control */
-+	mipi_dbi_command(dbi, ILI9341_POWER1, ILI9341_DBI_VCOMH_4P6V);
-+	mipi_dbi_command(dbi, ILI9341_POWER2, ILI9341_DBI_PWR_2_DEFAULT);
-+	/* VCOM */
-+	mipi_dbi_command(dbi, ILI9341_VCOM1, ILI9341_DBI_VCOM_1_VMH_4P25V,
-+			 ILI9341_DBI_VCOM_1_VML_1P5V);
-+	mipi_dbi_command(dbi, ILI9341_VCOM2, ILI9341_DBI_VCOM_2_DEC_58);
-+
-+	/* Memory Access Control */
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_PIXEL_FORMAT,
-+			 MIPI_DCS_PIXEL_FMT_16BIT);
-+
-+	/* Frame Rate */
-+	mipi_dbi_command(dbi, ILI9341_FRC, ILI9341_DBI_FRC_DIVA & 0x03,
-+			 ILI9341_DBI_FRC_RTNA & 0x1f);
-+
-+	/* Gamma */
-+	mipi_dbi_command(dbi, ILI9341_3GAMMA_EN, 0x00);
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_GAMMA_CURVE, ILI9341_GAMMA_CURVE_1);
-+	mipi_dbi_command(dbi, ILI9341_PGAMMA,
-+			 0x0f, 0x31, 0x2b, 0x0c, 0x0e, 0x08, 0x4e, 0xf1,
-+			 0x37, 0x07, 0x10, 0x03, 0x0e, 0x09, 0x00);
-+	mipi_dbi_command(dbi, ILI9341_NGAMMA,
-+			 0x00, 0x0e, 0x14, 0x03, 0x11, 0x07, 0x31, 0xc1,
-+			 0x48, 0x08, 0x0f, 0x0c, 0x31, 0x36, 0x0f);
-+
-+	/* DDRAM */
-+	mipi_dbi_command(dbi, ILI9341_ETMOD, ILI9341_DBI_EMS_GAS |
-+			 ILI9341_DBI_EMS_DTS |
-+			 ILI9341_DBI_EMS_GON);
-+
-+	/* Display */
-+	mipi_dbi_command(dbi, ILI9341_DFC, 0x08, 0x82, 0x27, 0x00);
-+	mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
-+	msleep(100);
-+
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON);
-+	msleep(100);
-+
-+out_enable:
-+	switch (dbidev->rotation) {
-+	default:
-+		addr_mode = ILI9341_MADCTL_MX;
-+		break;
-+	case 90:
-+		addr_mode = ILI9341_MADCTL_MV;
-+		break;
-+	case 180:
-+		addr_mode = ILI9341_MADCTL_MY;
-+		break;
-+	case 270:
-+		addr_mode = ILI9341_MADCTL_MV | ILI9341_MADCTL_MY |
-+			    ILI9341_MADCTL_MX;
-+		break;
-+	}
-+
-+	addr_mode |= ILI9341_MADCTL_BGR;
-+	mipi_dbi_command(dbi, MIPI_DCS_SET_ADDRESS_MODE, addr_mode);
-+	mipi_dbi_enable_flush(dbidev, crtc_state, plane_state);
-+	drm_info(&dbidev->drm, "Initialized display serial interface\n");
-+out_exit:
-+	drm_dev_exit(idx);
-+}
-+
-+static const struct drm_simple_display_pipe_funcs ili9341_dbi_funcs = {
-+	.enable = ili9341_dbi_enable,
-+	.disable = mipi_dbi_pipe_disable,
-+	.update = mipi_dbi_pipe_update,
-+	.prepare_fb = drm_gem_simple_display_pipe_prepare_fb,
-+};
-+
-+static const struct drm_display_mode ili9341_dbi_mode = {
-+	DRM_SIMPLE_MODE(240, 320, 37, 49),
-+};
-+
-+DEFINE_DRM_GEM_CMA_FOPS(ili9341_dbi_fops);
-+
-+static struct drm_driver ili9341_dbi_driver = {
-+	.driver_features	= DRIVER_GEM | DRIVER_MODESET | DRIVER_ATOMIC,
-+	.fops			= &ili9341_dbi_fops,
-+	DRM_GEM_CMA_DRIVER_OPS_VMAP,
-+	.debugfs_init		= mipi_dbi_debugfs_init,
-+	.name			= "ili9341",
-+	.desc			= "Ilitek ILI9341",
-+	.date			= "20210716",
-+	.major			= 1,
-+	.minor			= 0,
-+};
-+
-+static int ili9341_dbi_probe(struct spi_device *spi, struct gpio_desc *dc,
-+			     struct gpio_desc *reset)
-+{
-+	struct device *dev = &spi->dev;
-+	struct mipi_dbi_dev *dbidev;
-+	struct mipi_dbi *dbi;
-+	struct drm_device *drm;
-+	struct regulator *vcc;
-+	u32 rotation = 0;
-+	int ret;
-+
-+	vcc = devm_regulator_get_optional(dev, "vcc");
-+	if (IS_ERR(vcc))
-+		dev_err(dev, "get optional vcc failed\n");
-+
-+	dbidev = devm_drm_dev_alloc(dev, &ili9341_dbi_driver,
-+				    struct mipi_dbi_dev, drm);
-+	if (IS_ERR(dbidev))
-+		return PTR_ERR(dbidev);
-+
-+	dbi = &dbidev->dbi;
-+	drm = &dbidev->drm;
-+	dbi->reset = reset;
-+	dbidev->regulator = vcc;
-+
-+	drm_mode_config_init(drm);
-+
-+	dbidev->backlight = devm_of_find_backlight(dev);
-+	if (IS_ERR(dbidev->backlight))
-+		return PTR_ERR(dbidev->backlight);
-+
-+	device_property_read_u32(dev, "rotation", &rotation);
-+
-+	ret = mipi_dbi_spi_init(spi, dbi, dc);
-+	if (ret)
-+		return ret;
-+
-+	ret = mipi_dbi_dev_init(dbidev, &ili9341_dbi_funcs,
-+				&ili9341_dbi_mode, rotation);
-+	if (ret)
-+		return ret;
-+
-+	drm_mode_config_reset(drm);
-+
-+	ret = drm_dev_register(drm, 0);
-+	if (ret)
-+		return ret;
-+
-+	spi_set_drvdata(spi, drm);
-+
-+	drm_fbdev_generic_setup(drm, 0);
-+
-+	return 0;
-+}
-+
-+static int ili9341_dpi_probe(struct spi_device *spi, struct gpio_desc *dc,
-+			     struct gpio_desc *reset)
-+{
-+	struct device *dev = &spi->dev;
-+	struct ili9341 *ili;
-+	int ret;
-+
-+	ili = devm_kzalloc(dev, sizeof(struct ili9341), GFP_KERNEL);
-+	if (!ili)
-+		return -ENOMEM;
-+
-+	ili->dbi = devm_kzalloc(dev, sizeof(struct mipi_dbi),
-+				GFP_KERNEL);
-+	if (!ili->dbi)
-+		return -ENOMEM;
-+
-+	ili->supplies[0].supply = "vci";
-+	ili->supplies[1].supply = "vddi";
-+	ili->supplies[2].supply = "vddi-led";
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ili->supplies),
-+				      ili->supplies);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to get regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = mipi_dbi_spi_init(spi, ili->dbi, dc);
-+	if (ret)
-+		return ret;
-+
-+	spi_set_drvdata(spi, ili);
-+	ili->reset_gpio = reset;
-+	/*
-+	 * Every new incarnation of this display must have a unique
-+	 * data entry for the system in this driver.
-+	 */
-+	ili->conf = of_device_get_match_data(dev);
-+	if (!ili->conf) {
-+		dev_err(dev, "missing device configuration\n");
-+		return -ENODEV;
-+	}
-+
-+	ili->max_spi_speed = ili->conf->max_spi_speed;
-+	drm_panel_init(&ili->panel, dev, &ili9341_dpi_funcs,
-+		       DRM_MODE_CONNECTOR_DPI);
-+	drm_panel_add(&ili->panel);
-+
-+	return 0;
-+}
-+
-+static int ili9341_probe(struct spi_device *spi)
-+{
-+	struct device *dev = &spi->dev;
-+	struct gpio_desc *dc;
-+	struct gpio_desc *reset;
-+	const struct spi_device_id *id = spi_get_device_id(spi);
-+
-+	reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(reset))
-+		dev_err(dev, "Failed to get gpio 'reset'\n");
-+
-+	dc = devm_gpiod_get_optional(dev, "dc", GPIOD_OUT_LOW);
-+	if (IS_ERR(dc))
-+		dev_err(dev, "Failed to get gpio 'dc'\n");
-+
-+	if (!strcmp(id->name, "sf-tc240t-9370-t"))
-+		return ili9341_dpi_probe(spi, dc, reset);
-+	else if (!strcmp(id->name, "yx240qv29"))
-+		return ili9341_dbi_probe(spi, dc, reset);
-+
-+	return -1;
-+}
-+
-+static int ili9341_remove(struct spi_device *spi)
-+{
-+	const struct spi_device_id *id = spi_get_device_id(spi);
-+	struct ili9341 *ili = spi_get_drvdata(spi);
-+	struct drm_device *drm = spi_get_drvdata(spi);
-+
-+	if (!strcmp(id->name, "sf-tc240t-9370-t")) {
-+		ili9341_dpi_power_off(ili);
-+		drm_panel_remove(&ili->panel);
-+	} else if (!strcmp(id->name, "yx240qv29")) {
-+		drm_dev_unplug(drm);
-+		drm_atomic_helper_shutdown(drm);
-+	}
-+	return 0;
-+}
-+
-+static void ili9341_shutdown(struct spi_device *spi)
-+{
-+	const struct spi_device_id *id = spi_get_device_id(spi);
-+
-+	if (!strcmp(id->name, "yx240qv29"))
-+		drm_atomic_helper_shutdown(spi_get_drvdata(spi));
-+}
-+
-+static const struct of_device_id ili9341_of_match[] = {
-+	{
-+		.compatible = "st,sf-tc240t-9370-t",
-+		.data = &ili9341_stm32f429_disco_data,
-+	},
-+	{
-+		/* porting from tiny/ili9341.c
-+		 * for original mipi dbi compitable
-+		 */
-+		.compatible = "adafruit,yx240qv29",
-+		.data = NULL,
-+	},
-+};
-+MODULE_DEVICE_TABLE(of, ili9341_of_match);
-+
-+static const struct spi_device_id ili9341_id[] = {
-+	{ "yx240qv29", 0 },
-+	{ "sf-tc240t-9370-t", 0 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(spi, ili9341_id);
-+
-+static struct spi_driver ili9341_driver = {
-+	.probe = ili9341_probe,
-+	.remove = ili9341_remove,
-+	.shutdown = ili9341_shutdown,
-+	.id_table = ili9341_id,
-+	.driver = {
-+		.name = "panel-ilitek-ili9341",
-+		.of_match_table = ili9341_of_match,
-+	},
-+};
-+module_spi_driver(ili9341_driver);
-+
-+MODULE_AUTHOR("Dillon Min <dillon.minfei@gmail.com>");
-+MODULE_DESCRIPTION("ILI9341 LCD panel driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
-
+When there are >1 UC errors in buffer, then indefinite mce loop.
+>
+> [Well, if the second poisoned line is immediately after the first
+> you may hit h/w prefetch issues and h/w may signal a fatal
+> machine check ... but that's a different problem that s/w could
+> only solve with painful LFENCE operations between each 64-bytes
+> of the copy]
+>
+> -Tony
