@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D923D41F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFAE23D41FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhGWU2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWU2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 16:28:07 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1281C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:08:40 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id l12-20020a4a94cc0000b02902618ad2ea55so697350ooi.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 14:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q28rl9kNUsAPWQWzzwWvjDv6rjv25WQeL3NBF08E448=;
-        b=ioJMxrYAkzbjtt24YQYQGYTEF9s0rNZsuAGluyGyubekl6bLSynz2WwwtEZbZhaF6T
-         dgq0yowAhFXDQjSrQ8Rdxu2YYceUSdUkN6Uobg6zge5/DLzWrrgQ5+QUCitfUcFRU5F0
-         rs62QunBXcLUKvG19l1LyxiBE8cDX8iK+0ZX0lUlyU0T7J0OWi6RtuEXcG0grbvwv9yR
-         c9yfezc+hK29MvSyaMSx1UXBdXbsvmMZigb4m2+e4IzQ3KpZ61GndQO9/NEXATt3ePgA
-         hZ8ugNgaSAdVbwRTJ0mrZhHInZWI8cLWlmf3vAwxGbkYFPmyJlqug5KVmJ11EghFB1hh
-         fWzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q28rl9kNUsAPWQWzzwWvjDv6rjv25WQeL3NBF08E448=;
-        b=r2sViMy7hVQidF5uwwspMBaqvVYCV1UsBHt7Zpluf7fzuU8cH7ArZF7Oz6UTqfc1qk
-         voHSif3OKGyALGuaeGwzfzjBdACObtw2luFTK17+S6krJUz6uCIRgcDLP5F554swedjl
-         Ymslrp9yog2o0BMNFuiulN8pPrWwHuvEuOflc9WYSm90Hc7P9jTmwPH5wVil0Tb2D09/
-         kwCskKgma+ttiNNvCGLGVfNHNn4qfPNkxfChnzULAYFXGSFFrDylNU9v2tNHqCQ/8fsO
-         F24F12tSuIZLk7LVk4B6myL/VQS2+605+BkdQtKXdUfKwctrx75A5uAjVmv/N8B3oUSl
-         0mFg==
-X-Gm-Message-State: AOAM531+y9YYexeauR31VRyHamTEij5uz4i5Deo68yqPpbbcg908kelE
-        AXsWuPbXPEE5bmpN9mDj/eNzfVToM1M=
-X-Google-Smtp-Source: ABdhPJySKOMKjcpCFtSaX0UmA10jAADI/z83tQWzVQbpzR44aqsQqMSIA4d5/M6LI+QaSCrZchH73w==
-X-Received: by 2002:a4a:241a:: with SMTP id m26mr3880957oof.76.1627074520107;
-        Fri, 23 Jul 2021 14:08:40 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id x38sm3443379ott.42.2021.07.23.14.08.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 14:08:39 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH 0/7] staging: rtl8188eu: replace driver with better
- version
-To:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, fabioaiuto83@gmail.com
-References: <20210723004214.912295-1-phil@philpotter.co.uk>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <42086ca2-69b2-b2d4-893f-82418df2ec7a@lwfinger.net>
-Date:   Fri, 23 Jul 2021 16:08:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232003AbhGWU3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:29:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhGWU3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 16:29:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E84F060F23;
+        Fri, 23 Jul 2021 21:09:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627074594;
+        bh=S1RyrhXdrAJLHGDiVIMsUz+rt8tFgWcQL/m10hYrsUc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=oYQHD/nzWUvyhydsxnXQU6BFh3kD8PGkXNyavmuRPi31TBZLvUmkxWSjBfELnIRMX
+         AqAUdSwdfEIdwfrk3p37KlC3U/mseazwl5+g3Q1XLxwZtJg9ZdMCRLkd4Y5q9JnajD
+         jc+R/ClrGGr5oHBytuXHPUtmz31LHrZOe96m7gX7jjB/n+KVfwe53jNIS2t/VQlmvc
+         ck8IHtxoU8dXvLhSOYSiRcunLSCjfYlpbDN0RfQDaVAM4LjPUh7Ls8UlzalS3STzvZ
+         6obQNdffUGNFa3P8DBda7jlZ1YXfP0LHE+iQ3NpRcmbcTy7eZZseVlzoll8DpDB2AE
+         t83/7tVTFy8TA==
+Date:   Fri, 23 Jul 2021 16:09:52 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Rahul Tanwar <rtanwar@maxlinear.com>, bhelgaas@google.com,
+        robh@kernel.org, kw@linux.com, jingoohan1@gmail.com,
+        gustavo.pimentel@synopsys.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ckim@maxlinear.com,
+        qwu@maxlinear.com, rahul.tanwar.linux@gmail.com
+Subject: Re: [PATCH] PCI: dwc/intel-gw: Update MAINTAINERS file
+Message-ID: <20210723210952.GA440386@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210723004214.912295-1-phil@philpotter.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723152805.GA4103@lpieralisi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/21 7:42 PM, Phillip Potter wrote:
-> I had to break this patchset up a bit to get around the file size limits
-> on the mailing list, and also I removed the hostapd stuff which is
-> userspace related and therefore not required.
+On Fri, Jul 23, 2021 at 04:28:05PM +0100, Lorenzo Pieralisi wrote:
+> On Tue, Jul 06, 2021 at 04:20:59PM +0800, Rahul Tanwar wrote:
+> > Add maintainer for PCIe RC controller driver for Intel LGM gateway SoC.
+> > 
+> > Signed-off-by: Rahul Tanwar <rtanwar@maxlinear.com>
+> > ---
+> >  MAINTAINERS | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 3298f4592ce7..61c1cfcc453b 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -14392,6 +14392,13 @@ S:	Maintained
+> >  F:	Documentation/devicetree/bindings/pci/hisilicon-histb-pcie.txt
+> >  F:	drivers/pci/controller/dwc/pcie-histb.c
+> >  
+> > +PCIE DRIVER FOR INTEL LGM GW SOC
+> > +M:	Rahul Tanwar <rtanwar@maxlinear.com>
+> > +L:	linux-pci@vger.kernel.org
+> > +S:	Maintained
+> > +F:	Documentation/devicetree/bindings/pci/intel-gw-pcie.yaml
+> > +F:	drivers/pci/controller/dwc/pcie-intel-gw.c
+> > +
+> 
+> Hi Bjorn,
+> 
+> do you think we can merge this patch as a fix in one of the upcoming
+> -rcX ?
 
-Phillip,
-
-I'm sorry that I have mislead you, but the v5.2.2.4 branch appears to be broken. 
-I have not been able to get that one to work.
-
-The master branch, which is v4.1.4_6773.20130222, is working quite well. It 
-suffers from the problem that when it is scanning, the USB receive buffer is 
-ignored, but that is a problem with most of the Realtek USB drivers. As a 
-result, the ping time to my router will sometimes get to 2 sec, rather than the 
-usual 1-2 ms.That is something that I will try to fix. My suspicion is that 
-scanning should be left to the network manager.
-
-This version also behaves nicely with NetworkManager.
-
-None of the source files in this branch have trailing white space.
-
-Sorry for the confusion.
-
-Larry
-
+Applied to for-linus for v5.14, thanks!
