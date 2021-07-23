@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A533D4159
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58903D4161
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231350AbhGWTc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
+        id S230312AbhGWTe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhGWTc0 (ORCPT
+        with ESMTP id S229530AbhGWTeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:32:26 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8EFC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:12:59 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id y18so3123210oiv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:12:59 -0700 (PDT)
+        Fri, 23 Jul 2021 15:34:25 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71899C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:14:58 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id z18so4107848ybg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 13:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=iWKsxqaLuKKt7r1ybco35OuqISL9Q6eRrAXI7L+rDDo=;
-        b=PPzW/qAs5wuxrT5U0bkozRW2HaxMAaUGE3JwrNMv8MPBBWl9h1FmY7g4/+it3cHcar
-         UQxysCb003ez8WPNpFgmkTNQTcxzGwl3BYhl7dhr6jJG8b1RthNcgdl9xqckEJ6hcnsG
-         09Gkppkoi2B2IF9te3kllT2T00TY+Akg6DoHw=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JW/rwU7b6kzp3YJbh941iVFxl/dOjxShWSeuq57arn0=;
+        b=ejuCBxTHWoDQk2rpo3CBOdisKE1Idn1+7jR7tmspL4j95vYcWJKKFbcfRnk2ovHRKA
+         HKkN9ZlHTqU3TWNnvq+NoX4qQq5Xct/bm2s6VZluUEnzpXuSddd2jEDmB7+w6x0x4Psu
+         MdhYeED/cqsTIeNpHVEsSENL6O5N16imzeylZp7NFGjFJO4S2nVScbECYhBuS6g8+6Jt
+         /wjXgNHDvrMu6HXfNZhhWMHst9hTvn1KqJXVWZEPafheEXztF3V4L43TrPahw97T/O0D
+         2sO8vpMKo4e0y+Y0YGaR8/Qzm5kKgMQRChvpuurwT8wgNBam0ImxXlQh1u1YnekkY3sH
+         Psvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=iWKsxqaLuKKt7r1ybco35OuqISL9Q6eRrAXI7L+rDDo=;
-        b=iy9yd2H7J1zi8mf4nhs+XMDyawfW4KdO4L6mcierWNVy0+L/6d9ujG9CHxxXrDXXKc
-         P0eMWWVLCCyGyt+Xqon5GOh765V1Cd+4rXPAVlEuV5ARdp/0RAQvz4dW7G4Miz7sfxwd
-         suKxMPZhgth4ZATbzCNaPUhWh6xHL/Wen5q4kNEoXkvaCeapfFHha5M0akZVStDYSjkO
-         ABVg5/yEq00mHEJUigb7vC6nD1UppUde/l5wuwr6qR4xSbT+2kTBboRm0oZ25svzAO9D
-         8F7Wt83N7ccWB2zSDDGkoHVXcUPvK4YUizkoKETGEllY7VagPPRTcTnzUiCftcrxPP/8
-         pMlA==
-X-Gm-Message-State: AOAM531fAAoSj7KjXIfHA6zD9ebHBdv3sWuofchrnif1F/NzkTkH8ow4
-        jhs8LG1jMzQ2Q9X9uRmIg72FBMkSkXWb+l57Ksosjw==
-X-Google-Smtp-Source: ABdhPJychER1jemf23dOU3zqarRWN2XH+0UzO49bwOXeyzNfynn0OHwpFypLFF9y16OeQTr1wy7vpfKtK5Ue9RNQPcM=
-X-Received: by 2002:aca:4dc6:: with SMTP id a189mr10234216oib.166.1627071178884;
- Fri, 23 Jul 2021 13:12:58 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 23 Jul 2021 20:12:58 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JW/rwU7b6kzp3YJbh941iVFxl/dOjxShWSeuq57arn0=;
+        b=Gw/BORaAHYfP6IIer4ET8fLvJClxqDqJK3z3VuM0RHSmZKV+KkdzHQpUamlHR07OEq
+         v1KyHZwgS82Oo+4KScCy4IrmV5rutSAobhavZfmFzKAlJ79FeY6qUw/fnmPhdrtQTe+h
+         mV99+MqPMVyU4/9yd3k8NomwobOEoUZmYBMPTA/sDvuCnVgpQCJL7zCn+sNGRVwDw6Go
+         QRV3FwP01IfumgT9jtXNUCGCR2hcCl4+Fb/pChN2rhW07lKt5E8uWRV6iXQfZDalwXmh
+         U85QANChSnEYsNcNhaY4sJMx+Roy/SNG1tTdrB+biJKv8LcucetFUoODPWzHxzdWgAhf
+         VASA==
+X-Gm-Message-State: AOAM5310Qk5xe5YuxhrjOQE+9bJmYbrik0MFW6S9zz4IkfuDdXDoYWNq
+        cUoUi+ztdjun1ASj/h2xQ8+1zy4BVrkZnp5PW2rR7w==
+X-Google-Smtp-Source: ABdhPJz77EfUvYsyDTWGOFgpEtmRaxbSsmh1wSynvlFpZ5iu4xrBUExPDobX8h47Xs9+dj6RzdBF4mHzsx2bI9LTF8s=
+X-Received: by 2002:a25:2e49:: with SMTP id b9mr9041411ybn.250.1627071297518;
+ Fri, 23 Jul 2021 13:14:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YPsd74LoRtB9tTKK@google.com>
-References: <YPsa1qCBn/SAmE5x@google.com> <CAE-0n51y=o+8SZTL_==GPXrDa2OP8fhh98Amv+L4M63rLQVGZg@mail.gmail.com>
- <YPsd74LoRtB9tTKK@google.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 23 Jul 2021 20:12:58 +0000
-Message-ID: <CAE-0n52ZFNWLhwis4UT9vWuCyzy=u4QkeeuZdygFFwvLJiq1Eg@mail.gmail.com>
-Subject: Re: [PATCH] Input: pm8941-pwrkey - fix comma vs semicolon issue
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>,
-        satya priya <skakit@codeaurora.org>,
-        linux-kernel@vger.kernel.org
+References: <20210723200514.10139-1-fmdefrancesco@gmail.com>
+In-Reply-To: <20210723200514.10139-1-fmdefrancesco@gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Fri, 23 Jul 2021 13:14:46 -0700
+Message-ID: <CAJuCfpF37KXw2SG37_XoRyhGWc+uueU0NaxcEfU1=FH-rRm+bQ@mail.gmail.com>
+Subject: Re: [PATCH] staging: android: Remove set but unused variable in ashmem.c
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        Hridya Valsaraju <hridya@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Torokhov (2021-07-23 12:52:15)
-> On Fri, Jul 23, 2021 at 07:43:52PM +0000, Stephen Boyd wrote:
-> > Quoting Dmitry Torokhov (2021-07-23 12:39:02)
-> > > There is absolutely no reason to use comma operator in this code, 2
-> > > separate statements make much more sense.
-> > >
-> > > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > > ---
-> >
-> > Fixes: 2fcbda9a822d ("Input: pm8941-pwrkey - add support for PMK8350
-> > PON_HLOS PMIC peripheral")
+On Fri, Jul 23, 2021 at 1:05 PM Fabio M. De Francesco
+<fmdefrancesco@gmail.com> wrote:
 >
-> It actually predates this patch and also not really a fix as the
-> original code ends up working properly, but looks weird.
+> Remove variable 'inode' tnat is set but unused. Issue detected
+> by building with warning option -Wunused-but-set-variable.
+>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>  drivers/staging/android/ashmem.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+> index ddbde3f8430e..606e988d3f63 100644
+> --- a/drivers/staging/android/ashmem.c
+> +++ b/drivers/staging/android/ashmem.c
+> @@ -406,7 +406,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+>         if (!asma->file) {
+>                 char *name = ASHMEM_NAME_DEF;
+>                 struct file *vmfile;
+> -               struct inode *inode;
+>
+>                 if (asma->name[ASHMEM_NAME_PREFIX_LEN] != '\0')
+>                         name = asma->name;
+> @@ -418,7 +417,6 @@ static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
+>                         goto out;
+>                 }
+>                 vmfile->f_mode |= FMODE_LSEEK;
+> -               inode = file_inode(vmfile);
+>                 lockdep_set_class(&inode->i_rwsem, &backing_shmem_inode_class);
 
-Alright.
+How about its usage in the above lockdep_set_class(&inode->i_rwsem,
+...) call? I'm guessing you are building with CONFIG_LOCKDEP=n.
+Have you tried adding __maybe_unused in inode variable definition to
+get rid of the warning?
+
+
+>                 asma->file = vmfile;
+>                 /*
+> --
+> 2.32.0
+>
