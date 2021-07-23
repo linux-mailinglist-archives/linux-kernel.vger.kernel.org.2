@@ -2,135 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216623D3687
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A0A3D368A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbhGWHig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234329AbhGWHie (ORCPT
+        id S234418AbhGWHjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:39:19 -0400
+Received: from mail.netline.ch ([148.251.143.180]:36388 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhGWHjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:38:34 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57798C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 01:19:08 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id x192so1201956ybe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 01:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fq4Fh4QeM8XI+vyUIqPOIRXCTIfB49cqBPc4/QtIH+U=;
-        b=dloDLGg4fXJdm4/Wrm6ZB7K2+ON08uA2iW/97Bm40pzw8M0/y7TC+Ng9UT76mHJTHv
-         C0ppKytkc/8u6eXp5NPtf8qz9fLJ4PnCfsAlWmJSEwVuOXPPfc5JrsZSiewGVn1O+j3E
-         +9CIZ9AStO6ZN1E5axBcLR360dWP15ECEtw0YcmpOOL57pJfwMUbMbM5sfgYMo73zZKa
-         87v3CqCZm5KRP1BTwwU3aiDizqsM5qdcfblypkxCZaLvV8Lj+mnOWHFF7CKGSREHryH1
-         Oz5fmSrrkfNlopqiP/MEcHyTC28TQklU/D095rjZB28dYTRbOLA7Um0ywW2b0/uR6bl9
-         Y5tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fq4Fh4QeM8XI+vyUIqPOIRXCTIfB49cqBPc4/QtIH+U=;
-        b=rVA84RFIRg8OBMekh4Q98XIxjCGhGdO/oz14D4XWIKn3vKpUc4TrtgNQ37JYDRZtvb
-         DrgO1+5t/CsMDKx+Bo26JAJSxegJTdaRmY/++AYmIGHSjgAGtXypK2Ex/nqePchR489k
-         jggVEnhPHtrzBf8lc9/6dUpiOX2u/ODWK1LCClUK+N/isPQV2aXPGpdOWYkv569vRsZY
-         BsBPbU1uhffDBwE3bwTtDPRfbMPKNx123fe7Ezhsbpbto9CdW3MPxbjqo0Aacb1yCZ59
-         sn69pS7UFNakKx1Bi/3ZmL+FRD/t28CkbJn9dCHvoiWxLhFpZoLzfrr3ki6lClcu1FzO
-         5KUA==
-X-Gm-Message-State: AOAM532Nb1LRqr4/1U7nQQw6NkGL+oZ1E62ZnAQ5XjcupB0Un6Beb2Yk
-        BKXOBfgst61fnfl0pTzUjrzEDxbj72icdaJ6RYEwXw==
-X-Google-Smtp-Source: ABdhPJwgDfc0aM41zUz0in82Zs/wTUFLmp89jRt6vYbZp2U5yjFxAH0SP/iwlkBSF3REEbD+9yUtJDVjnWKmWsf9TDk=
-X-Received: by 2002:a25:7ec4:: with SMTP id z187mr5079566ybc.136.1627028347391;
- Fri, 23 Jul 2021 01:19:07 -0700 (PDT)
+        Fri, 23 Jul 2021 03:39:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 63ED820201B;
+        Fri, 23 Jul 2021 10:19:51 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id s2CfGk7xNlVi; Fri, 23 Jul 2021 10:19:51 +0200 (CEST)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPA id EDA9620201A;
+        Fri, 23 Jul 2021 10:19:50 +0200 (CEST)
+Received: from localhost ([::1])
+        by thor with esmtp (Exim 4.94.2)
+        (envelope-from <michel@daenzer.net>)
+        id 1m6qPO-000B7e-5b; Fri, 23 Jul 2021 10:19:50 +0200
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+References: <20210723075857.4065-1-michel@daenzer.net>
+ <f5f37693-bfe2-e52f-172b-00f4aa94dbd9@amd.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [PATCH] dma-buf/poll: Get a file reference for outstanding fence
+ callbacks
+Message-ID: <4cf94f59-f953-f5d7-9901-cfe5fd63bfbc@daenzer.net>
+Date:   Fri, 23 Jul 2021 10:19:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
- <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
- <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
- <23ed1d8d-fe55-fdbc-ca33-01a3ce392dff@redhat.com>
-In-Reply-To: <23ed1d8d-fe55-fdbc-ca33-01a3ce392dff@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 23 Jul 2021 01:18:56 -0700
-Message-ID: <CAJuCfpFSi2eLQL1YkHOubX+53Aa1ngZ1hS2+QervFnt5dLEQSw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f5f37693-bfe2-e52f-172b-00f4aa94dbd9@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 1:15 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 23.07.21 10:11, Suren Baghdasaryan wrote:
-> >
-> >
-> > On Thu, Jul 22, 2021, 11:20 PM Michal Hocko <mhocko@suse.com
-> > <mailto:mhocko@suse.com>> wrote:
-> >
-> >     On Thu 22-07-21 21:47:56, Suren Baghdasaryan wrote:
-> >      > On Thu, Jul 22, 2021, 7:04 PM Shakeel Butt <shakeelb@google.com
-> >     <mailto:shakeelb@google.com>> wrote:
-> >      >
-> >      > > On Thu, Jul 22, 2021 at 6:14 PM Suren Baghdasaryan
-> >     <surenb@google.com <mailto:surenb@google.com>>
-> >      > > wrote:
-> >      > > >
-> >      > > [...]
-> >      > > > +
-> >      > > > +       mmap_read_lock(mm);
-> >      > >
-> >      > > How about mmap_read_trylock(mm) and return -EAGAIN on failure?
-> >      > >
-> >      >
-> >      > That sounds like a good idea. Thanks! I'll add that in the next
-> >     respin.
-> >
-> >     Why is that a good idea? Can you do anything meaningful about the
-> >     failure other than immediately retry the syscall and hope for the best?
-> >
-> >
-> > I was thinking if this syscall implements "best effort without blocking"
-> > approach then for a more strict usage user can simply retry. However
-> > retrying means issuing another syscall, so additional overhead...
-> > I guess such "best effort" approach would be unusual for a syscall, so
-> > maybe we can keep it as it is now and if such "do not block" mode is
-> > needed we can use flags to implement it later?
->
-> The process is dying, so I am not sure what we are trying to optimize
-> here in respect to locking ...
+On 2021-07-23 10:04 a.m., Christian König wrote:
+> Am 23.07.21 um 09:58 schrieb Michel Dänzer:
+>> From: Michel Dänzer <mdaenzer@redhat.com>
+>>
+>> This makes sure we don't hit the
+>>
+>>     BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
+>>
+>> in dma_buf_release, which could be triggered by user space closing the
+>> dma-buf file description while there are outstanding fence callbacks
+>> from dma_buf_poll.
+> 
+> I was also wondering the same thing while working on this, but then thought that the poll interface would take care of this.
 
-Trying not to block the caller, which is likely a system health
-monitoring process. However, if not blocking is important, it can
-issue this syscall from a separate thread... Let's scratch that "do
-not block" mode and keep it simple as it is now.
+I was able to hit the BUG_ON with https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1880 .
 
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
+>> ---
+>>   drivers/dma-buf/dma-buf.c | 18 ++++++++++++------
+>>   1 file changed, 12 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+>> index 6c520c9bd93c..ec25498a971f 100644
+>> --- a/drivers/dma-buf/dma-buf.c
+>> +++ b/drivers/dma-buf/dma-buf.c
+>> @@ -65,12 +65,9 @@ static void dma_buf_release(struct dentry *dentry)
+>>       BUG_ON(dmabuf->vmapping_counter);
+>>         /*
+>> -     * Any fences that a dma-buf poll can wait on should be signaled
+>> -     * before releasing dma-buf. This is the responsibility of each
+>> -     * driver that uses the reservation objects.
+>> -     *
+>> -     * If you hit this BUG() it means someone dropped their ref to the
+>> -     * dma-buf while still having pending operation to the buffer.
+>> +     * If you hit this BUG() it could mean:
+>> +     * * There's a file reference imbalance in dma_buf_poll / dma_buf_poll_cb or somewhere else
+>> +     * * dmabuf->cb_in/out.active are non-0 despite no pending fence callback
+>>        */
+>>       BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
+>>   @@ -196,6 +193,7 @@ static loff_t dma_buf_llseek(struct file *file, loff_t offset, int whence)
+>>   static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
+>>   {
+>>       struct dma_buf_poll_cb_t *dcb = (struct dma_buf_poll_cb_t *)cb;
+>> +    struct dma_buf *dmabuf = container_of(dcb->poll, struct dma_buf, poll);
+>>       unsigned long flags;
+>>         spin_lock_irqsave(&dcb->poll->lock, flags);
+>> @@ -203,6 +201,8 @@ static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
+>>       dcb->active = 0;
+>>       spin_unlock_irqrestore(&dcb->poll->lock, flags);
+>>       dma_fence_put(fence);
+>> +    /* Paired with get_file in dma_buf_poll */
+>> +    fput(dmabuf->file);
+> 
+> Is calling fput() in interrupt context ok? IIRC that could potentially sleep.
+
+Looks fine AFAICT: It has
+
+		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
+
+and as a fallback for that, it adds the file to a lock-less delayed_fput_list which is processed by a workqueue.
+
+
+-- 
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
