@@ -2,108 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E1A43D38C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954833D38C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234353AbhGWJvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234261AbhGWJvp (ORCPT
+        id S231829AbhGWJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:52:33 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:54275 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230238AbhGWJwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:51:45 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD57C061575;
-        Fri, 23 Jul 2021 03:32:18 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id h10so1135234edv.8;
-        Fri, 23 Jul 2021 03:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j2Vkuzv3cnuMP0GxiEF27wDY+yi/FEH4Ut6uI+huwP0=;
-        b=M4HA+KzzNqeB7KYgOeW+k+S/J92R0GVg6qALNZz8NSXXlQnxoiOsIXEr8vo9EUEUJt
-         9JykDOJAWstEAUy/Q5glBMHiCcjYtg58hY/aHkPdkdtoqkU7CyDef3xAkXzwwu0+vHH+
-         xCvYxrpbSm0XpQn2jinK13cUkqFBcTXhPiNnAah0uss4Zp+q2kY3VnaIPmKw/gqVhVrX
-         EprCxL9RSIxdV7NHYElgFcewofa9FMmXx8/kGCkFk5MEW/BTm9WNegtHE3RjDJxXaj0W
-         Ydwd6m9Y3ZbSPXx/gy3cGeXtdv7l64Wcm3wDIuBNsGwnLxlQHqKHsr91TuPM6wBSmhqP
-         nDXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j2Vkuzv3cnuMP0GxiEF27wDY+yi/FEH4Ut6uI+huwP0=;
-        b=TyepV7nB7y/KZ4IkF1tClZ78Jo3xJEUOvp0Bc6TVWDiDSU4Lnd1sBNSV6b8RfnnR65
-         SMFGwYg5Ik6VN2NNAEAbmID+QqhBb8f/c2fjyY18GXa9ijVCq69mVfkQsfz1UJp29LHb
-         /qNa7+C/WEr3IwlaFSigtHbEdcrOkjND0Lzh+ZqZFdrgGrkhVH5BB5R8Wv7zeIopg51U
-         gceh1L4+ZWFvJ+JY5pYmSuHrHbvvwDijOVhwlmewF3ZjgGX7N0hMASIKwZIM8PDcv613
-         tiSS3irQ8vqSRgXyNHolaZTbljbOfjn0yLQBqCC+gNyn8FtSh4zg2iKgBfXaM4+vFqVs
-         vcaA==
-X-Gm-Message-State: AOAM5331kNtomJjW07tET1nb3858jpKvQGzjkOVl/0gHzUVv2Bcy5EFO
-        Hsoq27MN/wUHMSqZcJWxZSm/RXheqYBT4Y6Q0Ng=
-X-Google-Smtp-Source: ABdhPJwfshdjPb/onbK/Z9mze7NQAQt1TO6WQHDhR0dOZOK0WYlU1JOXQ8GWGsV1BQbG6Lex8Z3vAXFsBGsa1aOoOys=
-X-Received: by 2002:a05:6402:26c5:: with SMTP id x5mr4750849edd.237.1627036336984;
- Fri, 23 Jul 2021 03:32:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210723074317.32690-1-jslaby@suse.cz> <20210723074317.32690-8-jslaby@suse.cz>
-In-Reply-To: <20210723074317.32690-8-jslaby@suse.cz>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Fri, 23 Jul 2021 03:32:05 -0700
-Message-ID: <CAMo8Bf+bLr73Gt67A0UFRQ_3yY5bxEuFA2VgvuDEdSfsAx0ywg@mail.gmail.com>
-Subject: Re: [PATCH 7/8] tty: drop put_tty_driver
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>, Arnd Bergmann <arnd@arndb.de>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
-        Alex Elder <elder@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 23 Jul 2021 05:52:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ugi2esO_1627036381;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ugi2esO_1627036381)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 23 Jul 2021 18:33:05 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mustafa.ismail@intel.com
+Cc:     shiraz.saleem@intel.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] RDMA/irdma: Fix missing error code in irdma_modify_qp_roce()
+Date:   Fri, 23 Jul 2021 18:32:53 +0800
+Message-Id: <1627036373-69929-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 12:43 AM Jiri Slaby <jslaby@suse.cz> wrote:
->
-> put_tty_driver() is an alias for tty_driver_kref_put(). There is no need
-> for two exported identical functions, therefore switch all users of
-> old put_tty_driver() to new tty_driver_kref_put() and remove the former
-> for good.
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
->  arch/xtensa/platforms/iss/console.c    | 2 +-
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'ret'.
 
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+Eliminate the follow smatch warning:
+
+drivers/infiniband/hw/irdma/verbs.c:1344 irdma_modify_qp_roce() warn:
+missing error code 'ret'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/infiniband/hw/irdma/verbs.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 717147e..406c8b05 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -1341,6 +1341,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 			break;
+ 		case IB_QPS_SQD:
+ 			if (iwqp->iwarp_state == IRDMA_QP_STATE_SQD)
++				ret = -EINVAL;
+ 				goto exit;
+ 
+ 			if (iwqp->iwarp_state != IRDMA_QP_STATE_RTS) {
 -- 
-Thanks.
--- Max
+1.8.3.1
+
