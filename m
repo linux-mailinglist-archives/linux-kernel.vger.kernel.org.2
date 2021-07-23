@@ -2,111 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5549E3D3AFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F0F3D3B04
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 15:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235214AbhGWMjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 08:39:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48728 "EHLO mail.kernel.org"
+        id S235065AbhGWMmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:42:22 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42336 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234972AbhGWMiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:38:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF31460E53;
-        Fri, 23 Jul 2021 13:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627046368;
-        bh=HF9mEOeDzgAHUKTOnj4D2xJBtY+l26ejPiu1VK+Ubac=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gvRGMh3HPHQxDoyNBW2e73F2YascTeEZw4O9XwDU1k1PepwS+Eu7DosJsYEiv31Ob
-         tZc4kKovIEmp3pPVg4rc4ApjIvTS7aUQzHq47owKyzZRFIRet2X3eR2wYfXQ5VYI/9
-         rebA/1CGuiODi3D5HxgcOaHJHcoMZZfmvaB+d4G8=
-Date:   Fri, 23 Jul 2021 15:19:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, LTP List <ltp@lists.linux.it>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 5.13 000/156] 5.13.5-rc1 review
-Message-ID: <YPrB3rvRPjn5D8oI@kroah.com>
-References: <20210722155628.371356843@linuxfoundation.org>
- <CA+G9fYt_9nfDcQzKm8SZtmQXzzrybutS9vD4GgUw_0o8UD1HOQ@mail.gmail.com>
- <YPqwF7wtM6n3wHlr@kroah.com>
- <CA+G9fYvjgkaQxdW52sMzQm73f2xJreQzrPiCV48qD+5EN-b0Kw@mail.gmail.com>
+        id S233037AbhGWMl4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 08:41:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=vHXNKEv7LkkV4lJkCF5sXM2xDe7Ke1gz3Z6CdP9WlUw=; b=tl
+        0TqK87MEnAv9XxbGFqDdfFh1wMSPh6qZe2q5Lc6VfUcM8U+azFmXC2nXHhCf95+CGUIntSeZGM3Gw
+        HpunGGx0AmK5QbhIz2o6rOmd+qC9awp8CpOLGsndrL8jfeILCKY54S7NhGyuPtTY6uRMxtVfL4dMw
+        ALZn0KLOoVgp/Cs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1m6v84-00EUqk-Ui; Fri, 23 Jul 2021 15:22:16 +0200
+Date:   Fri, 23 Jul 2021 15:22:16 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Dan Murphy <dmurphy@ti.com>,
+        kernel@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>
+Subject: Re: [PATCH net-next v1 1/1] net: phy: dp83td510: Add basic support
+ for the DP83TD510 Ethernet PHY
+Message-ID: <YPrCiIz7baU26kLU@lunn.ch>
+References: <20210723104218.25361-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYvjgkaQxdW52sMzQm73f2xJreQzrPiCV48qD+5EN-b0Kw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210723104218.25361-1-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 05:55:15PM +0530, Naresh Kamboju wrote:
-> On Fri, 23 Jul 2021 at 17:33, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Jul 23, 2021 at 05:26:22PM +0530, Naresh Kamboju wrote:
-> > > On Thu, 22 Jul 2021 at 22:17, Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > This is the start of the stable review cycle for the 5.13.5 release.
-> > > > There are 156 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.5-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > > The following error is due to SATA drive format failing with arm64 64k-page
-> > > size ( CONFIG_ARM64_64K_PAGES=y ) kernel.
-> > > while running LTP syscalls test suite on running 5.13.3 and 5.13.5-rc1 kernel.
-> > >
-> > > First it was noticed on the stable-rc 5.13.3-rc2 kernel.
-> > >
-> > > Whereas 64bit kernel and 32bit kernel pass with 4K page size.
-> > >
-> > > Initially, I thought it could be a Hard drive fault but it is reproducible on
-> > > other devices but not always. Which is a blocker to bisect the problem.
-> > >
-> > > The steps to reproduce:
-> > >  - Boot arm64 juno device with 64k page stable-rc 5.13 kernel Image [1]
-> > >    - CONFIG_ARM64_64K_PAGES=y
-> > >  - format connected SATA drives and mount /scratch
-> > >  - Use the mounted /scratch for LTP runs to create and delete files from this
-> > >  - cd /opt/ltp
-> > >  - ./runltp -d /scratch -f syscalls
-> >
-> > And does that also fail for 5.13.2?
+On Fri, Jul 23, 2021 at 12:42:18PM +0200, Oleksij Rempel wrote:
+> The DP83TD510E is an ultra-low power Ethernet physical layer transceiver
+> that supports 10M single pair cable.
 > 
-> Yes. It failed on 5.13.2 also.
+> This driver provides basic support for this chip:
+> - link status
+> - autoneg can be turned off
+> - master/slave can be configured to be able to work without autoneg
 > 
-> Ref failed log:
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.13.y/build/v5.13.2/testrun/5147287/suite/ltp-syscalls-tests/test/copy_file_range01/log
+> This driver and PHY was tested with ASIX AX88772B USB Ethernet controller.
 
-Great, not a new problem?
+Hi Oleksij
 
-5.13.0?
+There were patches flying around recently for another T1L PHY which
+added new link modes. Please could you work together with that patch
+to set the phydev features correctly to indicate this PHY is also a
+T1L, and if it support 2.4v etc.
 
-bisection would be most helpful.
+> +static int dp83td510_config_aneg(struct phy_device *phydev)
+> +{
+> +	u16 ctrl = 0, pmd_ctrl = 0;
+> +	int ret;
+> +
+> +	switch (phydev->master_slave_set) {
+> +	case MASTER_SLAVE_CFG_MASTER_FORCE:
+> +		if (phydev->autoneg) {
+> +			phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
+> +			phydev_warn(phydev, "Can't force master mode if autoneg is enabled\n");
+> +			goto do_aneg;
+> +		}
+> +		pmd_ctrl |= DP83TD510_PMD_CTRL_MASTER_MODE;
+> +		break;
+> +	case MASTER_SLAVE_CFG_SLAVE_FORCE:
+> +		if (phydev->autoneg) {
+> +			phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
+> +			phydev_warn(phydev, "Can't force slave mode if autoneg is enabled\n");
+> +			goto do_aneg;
+> +		}
+> +		break;
+> +	case MASTER_SLAVE_CFG_MASTER_PREFERRED:
+> +	case MASTER_SLAVE_CFG_SLAVE_PREFERRED:
+> +		phydev->master_slave_set = MASTER_SLAVE_CFG_UNSUPPORTED;
+> +		phydev_warn(phydev, "Preferred master/slave modes are not supported\n");
+> +		goto do_aneg;
+> +	case MASTER_SLAVE_CFG_UNKNOWN:
+> +	case MASTER_SLAVE_CFG_UNSUPPORTED:
+> +		goto do_aneg;
+> +	default:
+> +		phydev_warn(phydev, "Unsupported Master/Slave mode\n");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	ret = dp83td510_modify(phydev, DP83TD510_PMA_PMD_CTRL,
+> +			       DP83TD510_PMD_CTRL_MASTER_MODE, pmd_ctrl);
+> +	if (ret)
+> +		return ret;
+> +
+> +do_aneg:
+> +	if (phydev->autoneg)
+> +		ctrl |= DP83TD510_AN_ENABLE;
+> +
+> +	ret = dp83td510_modify_changed(phydev, DP83TD510_AN_CONTROL,
+> +				       DP83TD510_AN_ENABLE, ctrl);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Reset link if settings are changed */
+> +	if (ret)
+> +		ret = dp83td510_write(phydev, MII_BMCR, BMCR_RESET);
+> +
+> +	return ret;
+> +}
+> +
+> +static int dp83td510_strap(struct phy_device *phydev)
+> +{
 
-thanks,
+> +	phydev_info(phydev,
+> +		    "bootstrap cfg: Pin 18: %s, Pin 30: %s, TX Vpp: %s, RX trap: %s, xMII mode: %s, PHY addr: 0x%x\n",
+> +		    pin18 ? "RX_DV" : "CRS_DV",
+> +		    pin30 ? "LED_1" : "CLKOUT",
+> +		    tx_vpp ? "1.0V p2p" : "2.4V & 1.0V p2p",
+> +		    rx_trap ? "< 40Ω" : "50Ω",
+> +		    dp83td510_get_xmii_mode_str(xmii_mode),
+> +		    addr);
 
-greg k-h
+What i learned reviewing the other T1L driver is that 2.4v operation
+seems to be something you negotiate. Yet i don't see anything about it
+in dp83td510_config_aneg() ?
+
+   Andrew
