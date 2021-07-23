@@ -2,133 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2AA3D37AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093AF3D37B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhGWIpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhGWIpZ (ORCPT
+        id S233628AbhGWIsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:48:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32436 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229949AbhGWIsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:45:25 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7530C061575;
-        Fri, 23 Jul 2021 02:25:57 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ga41so2599558ejc.10;
-        Fri, 23 Jul 2021 02:25:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FB3AqglCoLXT/Z22dR2tyxUlBgErLMHulIf7evT83VQ=;
-        b=GRNJGlPn9WbmOWkppKf8rxFmSHhoprrr3fuaDOwQFyo0Sjuzc3GbOp31OkNf20c9yw
-         nC4OfiLlZZtBMkl3h5ylX7IbFIXknwviRSCqJVPh7+AD7NcpZD05R7kH3AUU7chn+KKO
-         0FmNBAMQfdzddRYrSehctXKgeR7zw382Vyoyt+PkImmXew5K3mjXDUmo4kl9re8PNar8
-         M8/SerCH987rO8yJuAt+zD333EHmn6qSeAe/TEs9wJwkWJo+SMU7xgDpMIMl3C/aVxrM
-         +tP/bePHbDYPPe6edbieR5RGtYeSzGScN0z0AAu6UdMd20kUVcpuofgp2z3fRYkofqJA
-         iIzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FB3AqglCoLXT/Z22dR2tyxUlBgErLMHulIf7evT83VQ=;
-        b=oVLa1OvyguJIQO5kjfViByLOF97aQb/r3Oq4vP2RZQbMo7/8mSaEsM7PIrTyCAdZJa
-         Jf/du5hKruoDMRwXHt+BSNVzAFUxRMDYLjOJdRRqd7sbFKWD9I5tqzfOLvC2zDcs5otR
-         I7lq3W1k2XT18JcB0CkdJ8v9FfiDE8QZmpq2RngHlxt0HMfOXS+1uwkF0hQeUjV87TxK
-         aC+cBsG1GHvKFlTbMBA12wf+n6uYd13PLywTYXHHp3To6zx1nXnqdYUQX9r5CIhaRbSd
-         swQPAWss8hx1y2snYocsklofXzDDIYrJsyCv36k2LAzN6UDSL2xJ/6BC35LtMN/O/hjE
-         kZ5g==
-X-Gm-Message-State: AOAM5321BVQ4fmt+0xo38CRsgBTnsw/eTYbWPCSvcYDyr1EZJfnUdWDu
-        FfnLWaBF63SKYcidJOCh78rDwG9loTDGCLHz1hg=
-X-Google-Smtp-Source: ABdhPJyWb/3efTBph4+zgG/RGwECZ6alS/cy0yHRiSgYm1166Dbwpd7gSShUSWJQ5lwE4pb+KipgSk2cpLGuqzjpKhU=
-X-Received: by 2002:a17:906:eda7:: with SMTP id sa7mr3822014ejb.135.1627032356226;
- Fri, 23 Jul 2021 02:25:56 -0700 (PDT)
+        Fri, 23 Jul 2021 04:48:07 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N9FWep126772;
+        Fri, 23 Jul 2021 05:28:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=FWhckn2QmUBUuvc+zxmTC8ZxdPrw/XzmpyK+wnIrgPM=;
+ b=eQHEsWiFg7w2+y2P0g28p8hxF8TECETn82lBIIZPyppyPL5AdIgFRUyxG5RtVQ+FlA3S
+ umYG2zc2a76faR8nrHKdoyvDD3SfxpIo0ZhTQkO8q+QNFCN3Txu9uv3ekrGTvSya6A7n
+ HBrlMtj5p3ZIM7RTTLmq07D2NmQED7a8+tVWCblVA5SrQNVS4kfBUxBag0qSF+7roRBc
+ b47U91N2kx/j9sNhKr1CQxGVWpf0MF6GdDrC0/JF8kQlCFFnTPam5+0jDPXgOirR+QI2
+ L5j6JNLfsRDHbuMjYgVtMarwodvFrzjD1xDoelFZbxt9HawrUCG05KeFYphg/Jq3KPQ3 CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ytykr8t0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 05:28:40 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16N9HBnV134605;
+        Fri, 23 Jul 2021 05:28:39 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39ytykr8sj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 05:28:39 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N9HUcM009316;
+        Fri, 23 Jul 2021 09:28:38 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 39upfh9ta5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 09:28:37 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N9SYmk29360480
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Jul 2021 09:28:34 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D0B6311C050;
+        Fri, 23 Jul 2021 09:28:34 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 589E211C04C;
+        Fri, 23 Jul 2021 09:28:34 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 23 Jul 2021 09:28:34 +0000 (GMT)
+Subject: Re: [PATCH v2 2/2] s390:kvm: Topology expose TOPOLOGY facility
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        frankja@linux.ibm.com, david@redhat.com, thuth@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+References: <1626973353-17446-1-git-send-email-pmorel@linux.ibm.com>
+ <1626973353-17446-3-git-send-email-pmorel@linux.ibm.com>
+ <7163cf4a-479a-3121-2261-cfb6e4024d0c@de.ibm.com> <87wnph5rz7.fsf@redhat.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <46229585-507d-70a2-cc60-c06fb172fbfd@de.ibm.com>
+Date:   Fri, 23 Jul 2021 11:28:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210723050919.1910964-1-mudongliangabcd@gmail.com> <6fa2aecc-ab64-894d-77c2-0a19b524cc03@gmail.com>
-In-Reply-To: <6fa2aecc-ab64-894d-77c2-0a19b524cc03@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Fri, 23 Jul 2021 17:25:29 +0800
-Message-ID: <CAD-N9QXO4bX6SzMNir0fin0wVAZYhsS8-triiWPjY+Rz2WCy1w@mail.gmail.com>
-Subject: Re: [PATCH] cfg80211: free the object allocated in wiphy_apply_custom_regulatory
-To:     xiaoqiang zhao <zhaoxiaoqiang007@gmail.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Ilan Peer <ilan.peer@intel.com>,
-        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-wireless@vger.kernel.org,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87wnph5rz7.fsf@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5dXANetEhahmKsP6LH3aogLXKf6BnP9u
+X-Proofpoint-ORIG-GUID: Ed1U4fYetx9-euYQM4bOFrYoqD3MUbLP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-23_04:2021-07-23,2021-07-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 spamscore=0 priorityscore=1501 suspectscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107230051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 5:18 PM xiaoqiang zhao
-<zhaoxiaoqiang007@gmail.com> wrote:
->
->
->
-> =E5=9C=A8 2021/7/23 13:09, Dongliang Mu =E5=86=99=E9=81=93:
-> > The commit beee24695157 ("cfg80211: Save the regulatory domain when
-> > setting custom regulatory") forgets to free the newly allocated regd
-> > object.
-> >
-> > Fix this by freeing the regd object in the error handling code and
-> > deletion function - mac80211_hwsim_del_radio.
-> >
-> > Reported-by: syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com
-> > Fixes: beee24695157 ("cfg80211: Save the regulatory domain when setting=
- custom regulatory")
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  drivers/net/wireless/mac80211_hwsim.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wirele=
-ss/mac80211_hwsim.c
-> > index ffa894f7312a..20b870af6356 100644
-> > --- a/drivers/net/wireless/mac80211_hwsim.c
-> > +++ b/drivers/net/wireless/mac80211_hwsim.c
-> > @@ -3404,6 +3404,8 @@ static int mac80211_hwsim_new_radio(struct genl_i=
-nfo *info,
-> >       debugfs_remove_recursive(data->debugfs);
-> >       ieee80211_unregister_hw(data->hw);
-> >  failed_hw:
-> > +     if (param->regd)
-> > +             kfree_rcu(get_wiphy_regdom(data->hw->wiphy));
-> >       device_release_driver(data->dev);
->
-> hw->wiphy->regd may be NULL if previous reg_copy_regd failed, so how abou=
-t:
-> if (hw->wiphy->regd)
->         rcu_free_regdom(get_wiphy_regdom(hw->wiphy))
 
-Previously I would like to use this API(rcu_free_regdom), but it is
-static and located in non-global header file - reg.h.
 
->
-> >  failed_bind:
-> >       device_unregister(data->dev);
-> > @@ -3454,6 +3456,8 @@ static void mac80211_hwsim_del_radio(struct mac80=
-211_hwsim_data *data,
-> >  {
-> >       hwsim_mcast_del_radio(data->idx, hwname, info);
-> >       debugfs_remove_recursive(data->debugfs);
-> > +     if (data->regd)
-> > +             kfree_rcu(get_wiphy_regdom(data->hw->wiphy));
-> this is not correct, because ieee80211_unregister_hw below will free
-> data->hw_wiphy->regd
+On 23.07.21 10:55, Cornelia Huck wrote:
+> On Fri, Jul 23 2021, Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> 
+>> On 22.07.21 19:02, Pierre Morel wrote:
+>>> We add a KVM extension KVM_CAP_S390_CPU_TOPOLOGY to tell the
+>>> userland hypervisor it is safe to activate the CPU Topology facility.
+>>
+>> I think the old variant of using the CPU model was actually better.
+>> It was just the patch description that was wrong.
+> 
+> I thought we wanted a cap that userspace can enable to get ptf
+> intercepts? I'm confused.
+> 
 
-Can you point out the concrete code releasing regd? Maybe the link to elixi=
-r.
+PTF goes to userspace in any case as every instruction that is
+not handled by kvm and where interpretion is not enabled.
+Now, having said that, we actually want PTF interpretion to be enabled
+for "Check topology-change status" as this is supposed to be a fast
+operation. Some OSes do query that in their interrupt handlers.
 
-> >       ieee80211_unregister_hw(data->hw);
-> >       device_release_driver(data->dev);
-> >       device_unregister(data->dev);
-> >
+
+>>    
+>>> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
+>>> ---
+>>>    arch/s390/kvm/kvm-s390.c | 1 +
+>>>    include/uapi/linux/kvm.h | 1 +
+>>>    2 files changed, 2 insertions(+)
+>>>
+>>> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+>>> index b655a7d82bf0..8c695ee79612 100644
+>>> --- a/arch/s390/kvm/kvm-s390.c
+>>> +++ b/arch/s390/kvm/kvm-s390.c
+>>> @@ -568,6 +568,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>>>    	case KVM_CAP_S390_VCPU_RESETS:
+>>>    	case KVM_CAP_SET_GUEST_DEBUG:
+>>>    	case KVM_CAP_S390_DIAG318:
+>>> +	case KVM_CAP_S390_CPU_TOPOLOGY:
+>>>    		r = 1;
+>>>    		break;
+>>>    	case KVM_CAP_SET_GUEST_DEBUG2:
+>>> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+>>> index d9e4aabcb31a..081ce0cd44b9 100644
+>>> --- a/include/uapi/linux/kvm.h
+>>> +++ b/include/uapi/linux/kvm.h
+>>> @@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
+>>>    #define KVM_CAP_BINARY_STATS_FD 203
+>>>    #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
+>>>    #define KVM_CAP_ARM_MTE 205
+>>> +#define KVM_CAP_S390_CPU_TOPOLOGY 206
+>>>    
+>>>    #ifdef KVM_CAP_IRQ_ROUTING
+>>>    
+>>>
+> 
+> Regardless of what we end up with: we need documentation for any new cap
+> :)
+> 
