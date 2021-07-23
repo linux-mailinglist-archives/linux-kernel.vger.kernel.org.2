@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6113D424D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F4A3D4256
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 23:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhGWVAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 17:00:04 -0400
+        id S232617AbhGWVAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 17:00:07 -0400
 Received: from esa2.hgst.iphmx.com ([68.232.143.124]:17043 "EHLO
         esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhGWVAC (ORCPT
+        with ESMTP id S231803AbhGWVAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Jul 2021 17:00:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
   t=1627076435; x=1658612435;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mh2H2AqgX7zCMJmvVV14kJPveSdfSaOx1iNS29W3dS0=;
-  b=dsnxNfr3FThXvDmU/uSClNtSrEBvX5pqe2Lsb1vdAJj4m8tX2utldZpv
-   4lab3liCWKjJGoEgJS1Helikq2WBzF4aVlBGoHemH9DwRkhu0VzVkjqTg
-   TQrxYaA3Qwk1bJ0y2AehW6hUq0TPxRYlni+/tAampKUfkULsieLgs1eDm
-   RVm2btDRK+q+2IZyb3zbF6Rfg/9OEyMu2bfbalNsvl4+zGbSVoRuoNk1J
-   4Vz8kMqxECJvcMR9GLXAxza2HsVT4q9luotVXeXu+Hf/bNVN8VvofHB01
-   CankbsuuTa4rZvSf8bpeljg/Q4WGjgNZBtUxobkWfaMpqo0QLm/JPF2QY
-   Q==;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=z1V0kd2qCOL9tX4hStPvB2PLIDsfutT0f6QLFPZOYuY=;
+  b=iG7AibeurwyiXWIYpcVlKNGlMgi7EDzIF5Xxk3W4fxTwmHWWgn5LQq37
+   EyncGuAeFqlEjjIo2GtiTMrs0dnVQBUAPzCx++xE6sfgtlXBU0TDwSG8C
+   zvlc0cnVC/wrc4wSxf9osnSG6CyIlyBpwqmXhMXa8RJxG65gvrsLefx9M
+   dBkxR4weihxTcnAKNNP0Ib2eqnOwmYzQSE57960+AF4j9++sWUdISpKL3
+   NfoGOqZ8rwjQNkcfUhmX0q57YYhPtvrX+MYzZHhae8vwGGkEzmsJ6vZx9
+   k9vcc+QjYc+fBKy2OORvQcOO3D6dnq5ufjewrq65LszRn7KdbN1visNxh
+   g==;
 X-IronPort-AV: E=Sophos;i="5.84,265,1620662400"; 
-   d="scan'208";a="279198449"
+   d="scan'208";a="279198454"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
   by ob1.hgst.iphmx.com with ESMTP; 24 Jul 2021 05:40:35 +0800
-IronPort-SDR: MQwxW3GIn+2mR9Jg/P1JPzictIUalmQFiMnUAuTiu+BtpljLy7z70anbmQyinRfDG5a25IKRfP
- xTzdFw6f1sHi1VHjbAVI52//Hv5TbfOlYr1Szq7qLNrkeIPIDO18M6W1bUAtFAfGL5OTq3Aje7
- 6LS7qmPKQA0FQbZflGDSxICcl8U22fspy2UfOlH00HysA5Ob4oFASUREhueRupeB5hEyHw/zlE
- H6Z0TTNIOS0w/vvm38lQ11/6I4TfJmjRQ+ydTurzKIrXp6o6zG2hQRsSEj18iMieBDkg/tzcLL
- YnySNNQ8kDu6+7uOTnA+E16S
+IronPort-SDR: wlAe2RrtPk9YszOES+guOlXkGe2D44T+KKaARqmja73Dzx8L0FtZFW/CMCcfebahCdNLwshpqK
+ b5+rXAR7Mw7AGOqufqWAsR+mflFSUL/ldvdX0sCn60MFsdQDbMfkUj+ZYaKcdX70fkFjJxhrHR
+ DmuFlJE6fnHWC6xCTlfu9pkpa7+2TKw75vfgcWTdPMl6DlQzWWn5YejCne0T7FWRkeLhF7w9aH
+ XaTzu4hxk6ZlEu7BdXXocF8upktR+K8n+pSM9DDtQw/z8HEcjIhwVokNgXD2rD3GHUP+0FzExJ
+ n/aYEMkxvR8CGU2ffJvcWug2
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 14:16:43 -0700
-IronPort-SDR: S4LhvUQ74NR2pVUEi2iTWK2rF8yj17ZaeIV3WL/BXkS6QFGmU8kh/4TeJIUSHlFaNwOsG1NQAn
- xppqY2Z9lrhrzfXSczZj+czih/cqibkinofktm7F6aEhMYJnPYQWxN/sknVi5xcjOpJVosupM2
- O42MX0dNi1Y+YMpbypuzOq4wGPiD/5HaOupgAhHRmSXp+gEce2HrJ/hdPg24Yln6P6Cbd2XCa6
- c1XNQeTqq0mai1j7h7sDxqR9fQFKgHDHx+clem2xb0gcj9Mh5q3l6kf8xgR9idp/ttiMgjWziv
- /HY=
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 14:16:44 -0700
+IronPort-SDR: 7ealWTp55CZ7bL3tJ/aaVbGP16h6pCxLZLGJvdMqFInFeK8lXI6qJJN+T294Fk+cYCKbuRL5a4
+ DhDqryWpLNkLiLpQOnSDhKLtI/n83up5yrg0WRdErqNgFt6WnEsy6VIRw8FiXw0beTku/Xy+2j
+ Cn5C3UcecDXN800Im5bjdY1oxeqxFb3MnA6CPcHcUHHba368h5HZWtH2v9d/0hlW7IwbBfjpDC
+ xgEeNzkU5VFflnDZT1HNlyhkeQBEszXMbNruQNMxO/1AVPQTvXu4H3WBXPGZCJ/IUvMI+MhHm5
+ AlM=
 WDCIronportException: Internal
 Received: from ucfbox21.ad.shared (HELO hulk.wdc.com) ([10.225.167.4])
-  by uls-op-cesaip01.wdc.com with ESMTP; 23 Jul 2021 14:40:35 -0700
+  by uls-op-cesaip01.wdc.com with ESMTP; 23 Jul 2021 14:40:36 -0700
 From:   Atish Patra <atish.patra@wdc.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Atish Patra <atish.patra@wdc.com>,
@@ -59,84 +59,138 @@ Cc:     Atish Patra <atish.patra@wdc.com>,
         Rob Herring <robh+dt@kernel.org>,
         Robin Murphy <robin.murphy@arm.com>,
         Tobias Klauser <tklauser@distanz.ch>
-Subject: [RFC 0/5] Support non-coherent DMA on RISC-V using a global pool
-Date:   Fri, 23 Jul 2021 14:40:26 -0700
-Message-Id: <20210723214031.3251801-1-atish.patra@wdc.com>
+Subject: [RFC 1/5] RISC-V: Implement arch_sync_dma* functions
+Date:   Fri, 23 Jul 2021 14:40:27 -0700
+Message-Id: <20210723214031.3251801-2-atish.patra@wdc.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210723214031.3251801-1-atish.patra@wdc.com>
+References: <20210723214031.3251801-1-atish.patra@wdc.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RISC-V privilege specification doesn't define an IOMMU or any method modify
-PMA attributes or PTE entries to allow non-coherent mappings yet. In
-the beginning, this approach was adopted assuming that most of the RISC-V
-platforms would support full cache-coherent IO. Here is excerpt from the
-priv spec section 3.6.5
+To facilitate streaming DMA APIs, this patch introduces a set of generic
+cache operations related dma sync. Any platform can use the generic ops
+to provide platform specific cache management operations. Once the
+standard RISC-V CMO extension is available, it can be built on top of it.
 
-"In RISC-V platforms, the use of hardware-incoherent regions is discouraged
-due to software complexity, performance, and energy impacts."
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+---
+ arch/riscv/include/asm/dma-noncoherent.h | 19 +++++++
+ arch/riscv/mm/Makefile                   |  1 +
+ arch/riscv/mm/dma-noncoherent.c          | 66 ++++++++++++++++++++++++
+ 3 files changed, 86 insertions(+)
+ create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
+ create mode 100644 arch/riscv/mm/dma-noncoherent.c
 
-While some of the RISC-V platforms adhere to the above suggestion, not all
-platforms can afford to build to fully cache-coherent I/O devices. To
-address DMA for non-coherent I/O devices, we need to mark a region of memory
-as non-cacheable. Some of the platforms rely on a fixed region of uncached
-memory that is remapped to the system memory while some other modify
-the PTE entries to achieve that.
-
-The patch3 solves the issue for the fist use case by using a global
-pool of memory that is reserved for DMA. The device access the reserved area
-of the region while corresponding CPU address will be from uncached region
-As the uncached region is remapped to the beginning of the system ram, both
-CPU and device get the same view.
-
-To facilitate streaming DMA APIs, patch 1 introduces a set of generic
-cache operations. Any platform can use the generic ops to provide platform
-specific cache management operations. Once the standard RISC-V CMO extension
-is available, it will also use these generic ops.
-
-To address the second use case, Page Based Memory Attribute (PBMT) extension
-is proposed. Once the extension is in good shape, we can leverage that
-using CONFIG_DIRECT_REMAP. Currently, it is selected via a compile time config
-option. We will probably need another arch specific hooks to know if the
-platform supports direct remap at runtime. For RISC-V, it will check the
-presence of PBMT extension while other arch function will simply return true
-if DIRECT_REMAP is enabled. This is required as arious different config
-(DIRECT_REMAP, GLOBAL_POOL) will be enabled in the defconfig so that a
-unified kernel image can boot on all RISC-V platforms.
-
-This patch series depends on Christoph's global pool support series[1].
-Tested on Qemu, HiFive unleashed and beagleV. This series is also available
-at [2]. 
-This series also solves the non-coherent DMA support on beagleV but requires
-additional beagleV specific patches[3] which will be upstreamed soon.
-
-
-[1] https://lists.linuxfoundation.org/pipermail/iommu/2021-July/057266.html 
-[2] https://github.com/atishp04/linux/tree/riscv_nc_global_pool
-[3] https://github.com/atishp04/linux/tree/wip_beaglev_dma_nc_global
-
-Atish Patra (5):
-RISC-V: Implement arch_sync_dma* functions
-of: Move of_dma_get_range to of_address.h
-dma-mapping: Enable global non-coherent pool support for RISC-V
-dma-direct: Allocate dma pages directly if global pool allocation
-fails
-RISC-V: Support a new config option for non-coherent DMA
-
-arch/riscv/Kconfig                       |  8 +++
-arch/riscv/include/asm/dma-noncoherent.h | 19 +++++++
-arch/riscv/mm/Makefile                   |  1 +
-arch/riscv/mm/dma-noncoherent.c          | 66 ++++++++++++++++++++++++
-drivers/of/of_private.h                  | 10 ----
-include/linux/of_address.h               | 12 +++++
-kernel/dma/coherent.c                    | 49 +++++++++++++++---
-kernel/dma/direct.c                      |  7 ++-
-8 files changed, 152 insertions(+), 20 deletions(-)
-create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
-create mode 100644 arch/riscv/mm/dma-noncoherent.c
-
---
+diff --git a/arch/riscv/include/asm/dma-noncoherent.h b/arch/riscv/include/asm/dma-noncoherent.h
+new file mode 100644
+index 000000000000..5bdb03c9c427
+--- /dev/null
++++ b/arch/riscv/include/asm/dma-noncoherent.h
+@@ -0,0 +1,19 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
++ */
++
++#ifndef __ASM_RISCV_DMA_NON_COHERENT_H
++#define __ASM_RISCV_DMA_NON_COHERENT_H
++
++#ifdef CONFIG_RISCV_DMA_NONCOHERENT
++struct riscv_dma_cache_sync {
++	void (*cache_invalidate)(phys_addr_t paddr, size_t size);
++	void (*cache_clean)(phys_addr_t paddr, size_t size);
++	void (*cache_flush)(phys_addr_t paddr, size_t size);
++};
++
++void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops);
++#endif
++
++#endif
+diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+index 7ebaef10ea1b..959bef49098b 100644
+--- a/arch/riscv/mm/Makefile
++++ b/arch/riscv/mm/Makefile
+@@ -27,3 +27,4 @@ KASAN_SANITIZE_init.o := n
+ endif
+ 
+ obj-$(CONFIG_DEBUG_VIRTUAL) += physaddr.o
++obj-$(CONFIG_RISCV_DMA_NONCOHERENT) += dma-noncoherent.o
+diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
+new file mode 100644
+index 000000000000..2f6e9627c4aa
+--- /dev/null
++++ b/arch/riscv/mm/dma-noncoherent.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * RISC-V specific functions to support DMA for non-coherent devices
++ *
++ * Copyright (c) 2021 Western Digital Corporation or its affiliates.
++ */
++
++#include <linux/dma-direct.h>
++#include <linux/dma-map-ops.h>
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/libfdt.h>
++#include <linux/mm.h>
++#include <linux/of.h>
++#include <linux/of_fdt.h>
++#include <asm/dma-noncoherent.h>
++
++static struct riscv_dma_cache_sync *dma_cache_sync;
++unsigned long riscv_dma_uc_offset;
++
++static void __dma_sync(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
++{
++	if ((dir == DMA_FROM_DEVICE) && (dma_cache_sync->cache_invalidate))
++		dma_cache_sync->cache_invalidate(paddr, size);
++	else if ((dir == DMA_TO_DEVICE) && (dma_cache_sync->cache_clean))
++		dma_cache_sync->cache_clean(paddr, size);
++	else if ((dir == DMA_BIDIRECTIONAL) && dma_cache_sync->cache_flush)
++		dma_cache_sync->cache_flush(paddr, size);
++}
++
++void arch_sync_dma_for_device(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
++{
++	if (!dma_cache_sync)
++		return;
++
++	__dma_sync(paddr, size, dir);
++}
++
++void arch_sync_dma_for_cpu(phys_addr_t paddr, size_t size, enum dma_data_direction dir)
++{
++	if (!dma_cache_sync)
++		return;
++
++	__dma_sync(paddr, size, dir);
++}
++
++void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
++		const struct iommu_ops *iommu, bool coherent)
++{
++	/* If a specific device is dma-coherent, set it here */
++	dev->dma_coherent = coherent;
++}
++
++void arch_dma_prep_coherent(struct page *page, size_t size)
++{
++	void *flush_addr = page_address(page);
++
++	memset(flush_addr, 0, size);
++	if (dma_cache_sync && dma_cache_sync->cache_flush)
++		dma_cache_sync->cache_flush(__pa(flush_addr), size);
++}
++
++void riscv_dma_cache_sync_set(struct riscv_dma_cache_sync *ops)
++{
++	dma_cache_sync = ops;
++}
+-- 
 2.31.1
 
