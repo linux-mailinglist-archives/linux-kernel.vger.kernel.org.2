@@ -2,150 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F033D3A8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD6F3D3AAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhGWMLz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 08:11:55 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:39415 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234929AbhGWMLy (ORCPT
+        id S235197AbhGWMNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 08:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235175AbhGWMNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 08:11:54 -0400
-X-Greylist: delayed 388 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Jul 2021 08:11:53 EDT
-Received: (Authenticated sender: gregory.clement@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id ADC99C0010;
-        Fri, 23 Jul 2021 12:52:25 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: marvell: armada-37xx: Extend PCIe MEM
- space
-In-Reply-To: <20210624215546.4015-3-pali@kernel.org>
-References: <20210624215546.4015-1-pali@kernel.org>
- <20210624215546.4015-3-pali@kernel.org>
-Date:   Fri, 23 Jul 2021 14:52:25 +0200
-Message-ID: <87pmv919bq.fsf@BL-laptop>
+        Fri, 23 Jul 2021 08:13:39 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910ACC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:54:12 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id u10so1711908oiw.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 05:54:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vQVC7Jc8Kgn31TrRkrJGP5tkGusHcyIDihMXoOn9Mu4=;
+        b=Ui5rt3XoWydvgfhOnGdtzS8HA5EfM77uc1aizfDu1vkEVRPlFVHP/4va2lPuS5Skov
+         wIQ6NIPSSRSe24aJJw5C6vz9ep5cp+FC+mhora0NpgteXo6G7JkALJeVhxWF07NGD2hU
+         /qU0cUY3mwRFkHoMgdJRy4OgFTM5b+ZXD/Rowh+wryaHyRb4wyiTwUXzz3VXeoS/z3L/
+         rUZY2MDa/Ap5ALn6g4m6HHG+jFvYphtDzxG+Hq+4fr3pOGVPcQ0XMWj2iWd9JYVYLa48
+         2HAM748x+EzvRQ45bkJ8F/plRswTN2LU+VVBwKnnZN0RPvGApVTDQxaHPLgO3S4gBpm0
+         Ghxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vQVC7Jc8Kgn31TrRkrJGP5tkGusHcyIDihMXoOn9Mu4=;
+        b=SvWexclui0UZN/gs8hKyLfTZ4pc8hydISNKh7yfhPxTiiKpIHxjf/B32MGHAPuVuqu
+         u+Xlsy5gN21fFezUs8MV51kkz4XzZQSJo593XTmA3/lELynGKC04huNgNMACxQcUJLy8
+         XtSPGeHaEDZjbA4K1xx26fRYrviiG2r3kXTssW03IkpIdQF5oAEZ9BWRumyOOkn/7KIJ
+         m4NBE2H/EMXzDXN52NezmbUnMl95FzOsn1teVAoCCg5JceINlu8cPrHJFLgDI4xjsKDR
+         5uE8i+efU5Ybg7KClCBGNGWZDIvmy7pH42bd8f5UdqytJ8EW4hNBIExfm4u1Ds4eDTfj
+         sGpQ==
+X-Gm-Message-State: AOAM533mVmZ5XyU/SasqJ1ra7Z24F2Kqz4zFkXgGRJGPTQWT84UcALdc
+        JIfaHg7PQo9bLkchCg8tl9MknRl3fXGWlkHPstInUA==
+X-Google-Smtp-Source: ABdhPJy5G64MSkCXL6pd+oFXu0Tvai4ZPNlLJTPNCb5wG+3S3XTXSidfpywJphOOFpwt6xI61anAo33sG48ESQgmfFY=
+X-Received: by 2002:aca:abd4:: with SMTP id u203mr2984289oie.13.1627044851764;
+ Fri, 23 Jul 2021 05:54:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <20210722155617.865866034@linuxfoundation.org>
+In-Reply-To: <20210722155617.865866034@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 23 Jul 2021 18:24:00 +0530
+Message-ID: <CA+G9fYtN0ReCw4RWzDVbS0rRMADXMO4xFdX1uLiiSEiQUM6odQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/71] 5.4.135-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pali,
-
-> Current PCIe MEM space of size 16 MB is not enough for some combination
-> of PCIe cards (e.g. NVMe disk together with ath11k wifi card). ARM Trusted
-> Firmware for Armada 3700 platform already assigns 128 MB for PCIe window,
-> so extend PCIe MEM space to the end of 128 MB PCIe window which allows to
-> allocate more PCIe BARs for more PCIe cards.
+On Thu, 22 Jul 2021 at 22:04, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Without this change some combination of PCIe cards cannot be used and
-> kernel show error messages in dmesg during initialization:
+> This is the start of the stable review cycle for the 5.4.135 release.
+> There are 71 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
->     pci 0000:00:00.0: BAR 8: no space for [mem size 0x01800000]
->     pci 0000:00:00.0: BAR 8: failed to assign [mem size 0x01800000]
->     pci 0000:00:00.0: BAR 6: assigned [mem 0xe8000000-0xe80007ff pref]
->     pci 0000:01:00.0: BAR 8: no space for [mem size 0x01800000]
->     pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x01800000]
->     pci 0000:02:03.0: BAR 8: no space for [mem size 0x01000000]
->     pci 0000:02:03.0: BAR 8: failed to assign [mem size 0x01000000]
->     pci 0000:02:07.0: BAR 8: no space for [mem size 0x00100000]
->     pci 0000:02:07.0: BAR 8: failed to assign [mem size 0x00100000]
->     pci 0000:03:00.0: BAR 0: no space for [mem size 0x01000000 64bit]
->     pci 0000:03:00.0: BAR 0: failed to assign [mem size 0x01000000 64bit]
+> Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
+> Anything received after that time might be too late.
 >
-> Due to bugs in U-Boot port for Turris Mox, the second range in Turris Mox
-> kernel DTS file for PCIe must start at 16 MB offset. Otherwise U-Boot
-> crashes during loading of kernel DTB file. This bug is present only in
-> U-Boot code for Turris Mox and therefore other Armada 3700 devices are not
-> affected by this bug. Bug is fixed in U-Boot version 2021.07.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.135-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
 >
-> To not break booting new kernels on existing versions of U-Boot on Turris
-> Mox, use first 16 MB range for IO and second range with rest of PCIe window
-> for MEM.
-
-Is there any depencey with the firs patch of this series ?
-
-What happend if this patch is applied without the other ?
-Could you test it to see if any regression occure ?
-
-Thanks,
-
-Grégory
-
+> thanks,
 >
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Fixes: 76f6386b25cc ("arm64: dts: marvell: Add Aardvark PCIe support for Armada 3700")
-> ---
->  .../boot/dts/marvell/armada-3720-turris-mox.dts | 17 +++++++++++++++++
->  arch/arm64/boot/dts/marvell/armada-37xx.dtsi    | 11 +++++++++--
->  2 files changed, 26 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> index 53e817c5f6f3..86b3025f174b 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-> @@ -134,6 +134,23 @@
->  	pinctrl-0 = <&pcie_reset_pins &pcie_clkreq_pins>;
->  	status = "okay";
->  	reset-gpios = <&gpiosb 3 GPIO_ACTIVE_LOW>;
-> +	/*
-> +	 * U-Boot port for Turris Mox has a bug which always expects that "ranges" DT property
-> +	 * contains exactly 2 ranges with 3 (child) address cells, 2 (parent) address cells and
-> +	 * 2 size cells and also expects that the second range starts at 16 MB offset. If these
-> +	 * conditions are not met then U-Boot crashes during loading kernel DTB file. PCIe address
-> +	 * space is 128 MB long, so the best split between MEM and IO is to use fixed 16 MB window
-> +	 * for IO and the rest 112 MB (64+32+16) for MEM, despite that maximal IO size is just 64 kB.
-> +	 * This bug is not present in U-Boot ports for other Armada 3700 devices and is fixed in
-> +	 * U-Boot version 2021.07. See relevant U-Boot commits (the last one contains fix):
-> +	 * https://source.denx.de/u-boot/u-boot/-/commit/cb2ddb291ee6fcbddd6d8f4ff49089dfe580f5d7
-> +	 * https://source.denx.de/u-boot/u-boot/-/commit/c64ac3b3185aeb3846297ad7391fc6df8ecd73bf
-> +	 * https://source.denx.de/u-boot/u-boot/-/commit/4a82fca8e330157081fc132a591ebd99ba02ee33
-> +	 */
-> +	#address-cells = <3>;
-> +	#size-cells = <2>;
-> +	ranges = <0x81000000 0 0xe8000000   0 0xe8000000   0 0x01000000   /* Port 0 IO */
-> +		  0x82000000 0 0xe9000000   0 0xe9000000   0 0x07000000>; /* Port 0 MEM */
->  
->  	/* enabled by U-Boot if PCIe module is present */
->  	status = "disabled";
-> diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> index 7a2df148c6a3..dac3007f2ac1 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-> @@ -488,8 +488,15 @@
->  			#interrupt-cells = <1>;
->  			msi-parent = <&pcie0>;
->  			msi-controller;
-> -			ranges = <0x82000000 0 0xe8000000   0 0xe8000000 0 0x1000000 /* Port 0 MEM */
-> -				  0x81000000 0 0xe9000000   0 0xe9000000 0 0x10000>; /* Port 0 IO*/
-> +			/*
-> +			 * The 128 MiB address range [0xe8000000-0xf0000000] is
-> +			 * dedicated for PCIe and can be assigned to 8 windows
-> +			 * with size a power of two. Use one 64 KiB window for
-> +			 * IO at the end and the remaining seven windows
-> +			 * (totaling 127 MiB) for MEM.
-> +			 */
-> +			ranges = <0x82000000 0 0xe8000000   0 0xe8000000   0 0x07f00000   /* Port 0 MEM */
-> +				  0x81000000 0 0xefff0000   0 0xefff0000   0 0x00010000>; /* Port 0 IO */
->  			interrupt-map-mask = <0 0 0 7>;
->  			interrupt-map = <0 0 0 1 &pcie_intc 0>,
->  					<0 0 0 2 &pcie_intc 1>,
-> -- 
-> 2.20.1
->
+> greg k-h
 
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.4.135-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: dcc7e2dee7e982554072d1e726ada8872dd7a27e
+* git describe: v5.4.133-221-gdcc7e2dee7e9
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+33-221-gdcc7e2dee7e9
+
+## No regressions (compared to v5.4.133-149-g0274752daa49)
+
+## No fixes (compared to v5.4.133-149-g0274752daa49)
+
+## Test result summary
+ total: 73381, pass: 60421, fail: 446, skip: 10938, xfail: 1576,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
