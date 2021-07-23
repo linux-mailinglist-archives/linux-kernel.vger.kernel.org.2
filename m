@@ -2,98 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDD03D3D60
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A09523D3D6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhGWPgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:36:50 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3476 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbhGWPgt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:36:49 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GWZ141rb2z6H7qR;
-        Sat, 24 Jul 2021 00:05:44 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 18:17:21 +0200
-Received: from localhost (10.210.170.238) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 23 Jul
- 2021 17:17:20 +0100
-Date:   Fri, 23 Jul 2021 17:16:57 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Christophe Branchereau <cbranchereau@gmail.com>
-CC:     <paul@crapouillou.net>, <jic23@kernel.org>, <lars@metafoo.de>,
-        <linux-mips@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux@roeck-us.net>,
-        <contact@artur-rojek.eu>
-Subject: Re: [PATCH V2 5/5] dt-bindings: iio/adc: ingenic: add the JZ4760(B)
- socs to the sadc Documentation
-Message-ID: <20210723171657.00003d7f@Huawei.com>
-In-Reply-To: <20210723085813.1523934-6-cbranchereau@gmail.com>
-References: <893d6165-0f12-d0da-44be-449a4ae96ac2@roeck-us.net>
-        <20210723085813.1523934-1-cbranchereau@gmail.com>
-        <20210723085813.1523934-6-cbranchereau@gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S230132AbhGWPjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229788AbhGWPjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 11:39:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8F29360EB6;
+        Fri, 23 Jul 2021 16:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627057205;
+        bh=kqS2kByvwynWZWKFwSZmaJR1oj2dffPL6WtIB/tyOyw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=W/6JYuTsDAYkJIR3edDeImX/gm0u5eYKo1SwbSIfhMIT28n/XIatQvuNUsB3vHqok
+         JHgAbkzO7e9OUT3a5630Ku7ciUnbYhmj/jQn6+DpBrIvK4BpHZ+J1fwLXpGX1JXb8l
+         QUE9iygmG/TmfcgZKx8ZyBOTqQBGTeCbKmmhVMhIcQYk8cFDVSd+u3nMlhBU9JFJWI
+         Nzz2xGcuzOsdx5JspJT27JSmOdUSV9ppk9ywub8pMhF2lCjrwcMaxniZq6mOBF0gdH
+         ofk2LZL1L4b4Cw8VQp15m65kcaMM5ZsBHs39c2zF2WqYBIu4HjyF1RqL5IcgLvwBe9
+         UvKmf/PJbO7IA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 89E1460976;
+        Fri, 23 Jul 2021 16:20:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.170.238]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] mpls: defer ttl decrement in mpls_forward()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162705720556.6547.10125703038792378091.git-patchwork-notify@kernel.org>
+Date:   Fri, 23 Jul 2021 16:20:05 +0000
+References: <20210722185028.17555-1-l4stpr0gr4m@gmail.com>
+In-Reply-To: <20210722185028.17555-1-l4stpr0gr4m@gmail.com>
+To:     Kangmin Park <l4stpr0gr4m@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, martin.varghese@nokia.com,
+        jiapeng.chong@linux.alibaba.com, gustavoars@kernel.org,
+        gnault@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 10:58:13 +0200
-Christophe Branchereau <cbranchereau@gmail.com> wrote:
+Hello:
 
-> The jz4760b variant differs slightly from the jz4760, add a property to 
-> let users sample the internal divider if needed and document it.
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Fri, 23 Jul 2021 03:50:28 +0900 you wrote:
+> Defer ttl decrement to optimize in tx_err case. There is no need
+> to decrease ttl in the case of goto tx_err.
 > 
-> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
+> Signed-off-by: Kangmin Park <l4stpr0gr4m@gmail.com>
 > ---
->  .../devicetree/bindings/iio/adc/ingenic,adc.yaml         | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-> index 433a3fb55a2e..0dc42959a64f 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-> @@ -23,6 +23,8 @@ properties:
->      enum:
->        - ingenic,jz4725b-adc
->        - ingenic,jz4740-adc
-> +      - ingenic,jz4760-adc
-> +      - ingenic,jz4760b-adc
->        - ingenic,jz4770-adc
->  
->    '#io-channel-cells':
-> @@ -43,6 +45,13 @@ properties:
->    interrupts:
->      maxItems: 1
->  
-> +  ingenic,use-internal-divider:
-> +    description:
-> +      This property can be used to set VBAT_SEL in the JZ4760B CFG register
-> +      to sample the battery voltage from the internal divider. If absent, it
-> +      will sample the external divider.
-> +    type: boolean
-> +
-See reply to the v1 patch for hint on how to 'enforce' that this
-only exists for the jz4760b
+>  net/mpls/af_mpls.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+Here is the summary with links:
+  - mpls: defer ttl decrement in mpls_forward()
+    https://git.kernel.org/netdev/net-next/c/6a6b83ca471c
 
-Jonathan
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->  required:
->    - compatible
->    - '#io-channel-cells'
 
