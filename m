@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5733D3837
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885AE3D383E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 12:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhGWJS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 05:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
+        id S231688AbhGWJTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 05:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhGWJS5 (ORCPT
+        with ESMTP id S231309AbhGWJTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:18:57 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A637EC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:59:30 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id bp1so1190992lfb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:59:30 -0700 (PDT)
+        Fri, 23 Jul 2021 05:19:34 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0F5C061575;
+        Fri, 23 Jul 2021 03:00:07 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id m24so997460edp.12;
+        Fri, 23 Jul 2021 03:00:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SpdYc3xSgtWajYNjziQJhjZECPeeHzOqtqZRcb4yQqc=;
-        b=J4vXy3PkMvHxHdXmu8xSRDtPSWRGZj4bvC9RE+NDkeFb/PTCBojquyjxYoZngKBukS
-         StiIvPkV6z3a4W0B8hsOOpPd56wDC4/LyODf5o51sUjkXGS3ucbtUeYTkr94FeLsZI9I
-         d/R2VLKwJQK3bJWZQLXJSN6SLC9IZL6xwfLqxpqKB27esWapnkfxI/ZewCl9USmE1DTo
-         kZb5/7oUS8YBZG820r03EGq5+fhpw5hGyE/Qt+x4QpGZ5MjPKM/SHl6GNiSaYRBBDAWC
-         bljyLdTixfD+4zsprywxA0yyv73D4hssAtXXAZHB7zNeFMXzeqagJqMleKxY2ih80i8M
-         7oiA==
+        bh=ZpV/vhONNALORyd7/Lzj0LakU5S+Xd5zMk4SZvs6RU4=;
+        b=C3gTWjAIVXsJ4l7MrNGFHWpm+9NAtWTyOYv1gLDC2Is/bpbyYO31SXCbabv0iIItbv
+         DWS6UpYh+hAYbrO+H2hp/7BxPtBtjX3CVJpBGNuBZsjNbZDlpOGoM1NEcjv0I6nlFUIk
+         hh+eUrgUM+y6uEeLV9/Cwqv/TtZoqxrCD7KzzyAk7d5I31yGpkjPWAf0CSFBEBd5izHo
+         gqr4dLVkDNskq6a40gGnSOVpvOcaM9zuCHvkQ7cYX0el5EL2tpYJlTSvBWnn5vTC3h4n
+         kM+aVZJ6Qdf+j9TGk2iccKz5VWt4nbUbFLnqr3B1WxvHLrC3mv1VkCq3RlCf10ggCJb3
+         IF5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SpdYc3xSgtWajYNjziQJhjZECPeeHzOqtqZRcb4yQqc=;
-        b=AjtUsmDgYGMk+1HQq1Z2eGt/wjqqBWzgP9M1T6NR4f7ZLjOqSLtZw2Tfamm8OhMOEi
-         xuo8hikyBHlNHVBx3xIqCnHQMCHMtNWMPmr63FUt6xScWciwQq7XipPsiqWmE1rocs65
-         HoyMToalRPY4yWnDqFBL1vauSx4Q30PdGgC4uYw33rW9S2118mYDFbBGwOeDG3CVbxEB
-         HaN1CFF0ClIw2Mu69BXbm6aXRg/wmaXs0PAq1SlCeK3t/sTVYshqvhTx01IHvJ3LJ6gB
-         yIAIUEWaUT2UfGjKBErAPChCd97rcE+IinwyFdDNr4DvqfKvS0XgubgwBxOfzFubBCQ8
-         xT4Q==
-X-Gm-Message-State: AOAM530kR7Q3gqnyV00F3hnZmoy/2cy9EAc0k8VfbGF67etHRQAwNUfK
-        cmOhpu6cG/tIXwUpAo8KUC+8ElYEZl1ODus+rqAGwQ==
-X-Google-Smtp-Source: ABdhPJx7muHNH1C+xeS6T8GmAgw9HYxGXW+SzTbL9t3ZL9EWXY9r5EfsyJ1gcQxXWpZrxgEPKQxHcPJfogHCjHnb5R4=
-X-Received: by 2002:a05:6512:3f1f:: with SMTP id y31mr2589495lfa.29.1627034369078;
- Fri, 23 Jul 2021 02:59:29 -0700 (PDT)
+        bh=ZpV/vhONNALORyd7/Lzj0LakU5S+Xd5zMk4SZvs6RU4=;
+        b=XNotwsh2TjhnPw5pRs4OlCRc7U74c4SjArTLH9FdJrWlLcIU1LZhaCcFNBjuAMLbTv
+         26PBbKCp9AtKREWeEK6CYIA9sDbpfm37pIggZFmwFvA8CshITCofgHkF6Iv2VxEOuZj0
+         NvdfFurVNfKMOxWXi1tFIwx/AbyIS8tSTNlSfLHJowLoV5pStOPCKLC5gzZGPsnTQWzc
+         umqvHs/ucQaCd7I5s4zzYedxys47frb/f7MuV2EXaSSIcLUo6YABtxCD3VuL2abf7wSv
+         FVzI6wXk4aOjIWgnGdD0mSYJ8GuZuCaN558VDbXfECUGAMIAWGnj0H53pOwdNOOuu2oQ
+         Z6xw==
+X-Gm-Message-State: AOAM533b5vojx+TCba3NTi6+qVp1z/2bWWSXMdrS0dvhbd2C1Ud/yh+Q
+        oNowZEdGlbyr2KHzcpd3acy0/wne9TX0m7b1MdU=
+X-Google-Smtp-Source: ABdhPJwmJ5S6cM321VniOs3i8XtSQTT+mmPx00cCX2ciWS4LDxVGR9JZeJeFJ8g6TDTiNcVVhr/9AYLYFdyrKl9UIvs=
+X-Received: by 2002:a05:6402:2228:: with SMTP id cr8mr4644804edb.309.1627034405768;
+ Fri, 23 Jul 2021 03:00:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210712100317.23298-1-steven_lee@aspeedtech.com> <20210712100317.23298-8-steven_lee@aspeedtech.com>
-In-Reply-To: <20210712100317.23298-8-steven_lee@aspeedtech.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 23 Jul 2021 11:59:18 +0200
-Message-ID: <CACRpkdZh1TW32bqb91+g8OWkXBVDt0vsoObJ6GCX3LL+86_daQ@mail.gmail.com>
-Subject: Re: [PATCH v6 7/9] gpio: gpio-aspeed-sgpio: Move irq_chip to
- aspeed-sgpio struct
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Billy Tsai <billy_tsai@aspeedtech.com>
+References: <20210723050919.1910964-1-mudongliangabcd@gmail.com>
+ <d2b0f847dbf6b6d1e585ef8de1d9d367f8d9fd3b.camel@sipsolutions.net>
+ <CAD-N9QWDNvo_3bdB=8edyYWvEV=b-66Tx-P6_7JGgrSYshDh0A@mail.gmail.com>
+ <11ba299b812212a07fe3631b7be0e8b8fd5fb569.camel@sipsolutions.net>
+ <CAD-N9QWRNyZnnDQ3XTQ_SAWNEgiMCJV+5Z69eHtRVcxYtXcM+A@mail.gmail.com> <e549fbb09d7c618762996aca4242c2ae50f85a5c.camel@sipsolutions.net>
+In-Reply-To: <e549fbb09d7c618762996aca4242c2ae50f85a5c.camel@sipsolutions.net>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Fri, 23 Jul 2021 17:59:39 +0800
+Message-ID: <CAD-N9QV02fnr8LLSwxTuyevYgkL_2aicO2b_7uZ46s6BGKaTmw@mail.gmail.com>
+Subject: Re: [PATCH] cfg80211: free the object allocated in wiphy_apply_custom_regulatory
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        linux-wireless@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:04 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
-
-> The current design initializes irq->chip from a global irqchip struct,
-> which causes multiple sgpio devices use the same irq_chip.
-> The patch moves irq_chip to aspeed_sgpio struct for initializing
-> irq_chip from their private gpio struct.
+On Fri, Jul 23, 2021 at 5:42 PM Johannes Berg <johannes@sipsolutions.net> wrote:
 >
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> Hi,
+>
+> On Fri, 2021-07-23 at 17:30 +0800, Dongliang Mu wrote:
+> > if zhao in the thread is right, we don't need to add this free
+> > operation to wiphy_free().
+>
+> Actually, no, that statement is not true.
+>
+> All that zhao claimed was that the free happens correctly during
+> unregister (or later), and that is indeed true, since it happens from
+>
+> ieee80211_unregister_hw()
+>  -> wiphy_unregister()
+>  -> wiphy_regulatory_deregister()
+>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Thanks for your explanation. Now the situation is more clear.
 
-Yours,
-Linus Walleij
+>
+> However, syzbot of course is also correct. Abstracting a bit and
+> ignoring mac80211, the problem is that here we assign it before
+> wiphy_register(), then wiphy_register() doesn't get called or fails, and
+> therefore we don't call wiphy_unregister(), only wiphy_free().
+
+Yes, you're right. In this case, wiphy_register is not called. We
+should not call wiphy_unregister() to clean up anything.
+
+>
+> Hence the leak.
+>
+> But you can also easily see from that description that it's not related
+> to hwsim - we should add a secondary round of cleanups in wiphy_free()
+> or even move the call to wiphy_regulatory_deregister() into
+> wiphy_free(), we need to look what else this does to see if we can move
+> it or not.
+
+I agree to move the cleanup operation of regd to wiphy_free API.
+That's the partial functionability of this function.
+
+>
+> johannes
+>
