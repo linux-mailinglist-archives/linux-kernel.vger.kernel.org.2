@@ -2,80 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B815A3D3CBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003943D3CC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235613AbhGWPHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:07:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235472AbhGWPHB (ORCPT
+        id S235644AbhGWPIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:08:11 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:33348 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235472AbhGWPIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:07:01 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D632C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:47:34 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id y34so2781236lfa.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mfaVccn2yUG8jAakkQEcB71eHXs5I/bh68jZ/8jluNg=;
-        b=Nhx2MkSRS2kizVwD8IW5xLiT5Dp4EN7ZX62X9d1tK9hq5M0pJnS9vlG+xY1LLWtjln
-         PkXX+EOXgFr3Fbyvvde5qMhycVBjEMl/Fd3mGgZ3pu7nN3sLH6eWlEQOu/+WjisMUOx0
-         CjLmBptaAHg6Nbn5oiKXIDHp5hvG6lzvpGvknUmLVtYTtMQdYdCmDsKq6w+lvoMXctnC
-         k+SBnKtTC6FFC6X49GsdGH/k3fYX4+VZZZEBlTVh+HoxeQp4SpTGdmzSHVzqPyTBjkyA
-         OHS2TFIg9lZHbrs46w00dNwI3yRsZUczAHkcPQAFQyyuUql8APmdTf5mcd2/7RaCevFb
-         L3Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mfaVccn2yUG8jAakkQEcB71eHXs5I/bh68jZ/8jluNg=;
-        b=H/aG522B3s8QSMK49Gk17h+B4qa6YUQ+YOIQCBk1WG45NvXSy39CAL1VtQULEy0mDI
-         9YDzQLaFaht8PQkD4OBjH1QMSWUEktskjoS87y6b9DNSLry6Zv4/1NamTiqSCBT163si
-         BbfgCDJmVeBX14M3gyJ9aXaKAU1vJ8Hr1YSWx049efugeeu8HDEMIXZmwUx8rmUtApSV
-         xcIr+Jf1yWL/+OpvG6/FGNsHGVTURSb8zb/CRfzcFugBesqGdaritFMhHcHXC3ukapVw
-         pyWmt0Kf6xaKQbr2IJN/wD6pqiaflfoZ16iu8BBF8J/4t5V7osM/tF83oaz/SbPPDd4Q
-         nKBQ==
-X-Gm-Message-State: AOAM533q8SKZ7B5bpLjTv1hAJ46oAz8vxt9DzEkWSJyJl6Oo2D8acvKo
-        sMGC9nK9I+KTSkrS1ibFgHlmG/VzbJxfY6F5SRykcA==
-X-Google-Smtp-Source: ABdhPJy9aCBd3SRx8tnm/82WwlHUhxYgRe2uHT4Krpm7X5eJKpAR7GP1nhUGc2PzUTyfXut4k8tOdzt+Yw5Ih0qwF/c=
-X-Received: by 2002:a05:6512:3f1f:: with SMTP id y31mr3557468lfa.29.1627055252479;
- Fri, 23 Jul 2021 08:47:32 -0700 (PDT)
+        Fri, 23 Jul 2021 11:08:10 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16NFlc19019262;
+        Fri, 23 Jul 2021 17:48:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : cc : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=qRGG2i9Lrz9yXza6u0c0FNllWgMq1WbeZtqIwyy2/Go=;
+ b=RW4bLVnkejOvfzx744xMBFRMn6Zx6my+ih8tRlSRcJ9mn9YF9z6oKKp1IqoNdRjAFg/k
+ Pav4Qj5K+/rOrbXGNm56segpb+CQIer+Nmo23XjomsuWoh9N7mulMrKvM/XeVelffY8+
+ EzzycuXLP9LX1CZRQVFsG9xJRP2DxM4jDAxgw9FvByQp2AQrnlUQ5GHVuMcL0AZ1UAkp
+ 8F6oY18NO/Z44F1nAUcrFy4/asHTTJ+vNNVsxk6I8zecF3ZHXt+cxYSXrjvAIPnRriPS
+ qjkBYIiF1VgOaVyBfrj5ou290ZPQ4k9wDTQTPW6aH1QsA1xNwxFaZarZ+u72rhoLmDb2 qw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39yt68a4w3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Jul 2021 17:48:40 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BF61310002A;
+        Fri, 23 Jul 2021 17:48:39 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B026C22A6D5;
+        Fri, 23 Jul 2021 17:48:39 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 23 Jul
+ 2021 17:48:39 +0200
+Subject: Re: [PATCH] MAINTAINERS: Update Benjamin Gaignard maintainer status
+To:     Arnd Bergmann <arnd@arndb.de>
+References: <20210706163033.795805-1-benjamin.gaignard@collabora.com>
+CC:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        <linux-kernel@vger.kernel.org>,
+        Philippe CORNU <philippe.cornu@st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <a1df40c2-f414-56e9-2e42-83e28ad54cee@foss.st.com>
+Date:   Fri, 23 Jul 2021 17:48:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210624064913.41788-1-wangborong@cdjrlc.com>
-In-Reply-To: <20210624064913.41788-1-wangborong@cdjrlc.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 23 Jul 2021 17:47:21 +0200
-Message-ID: <CACRpkdZm7LQOLnFY29UDtbSfAKTmeDG17C2M7M23J3UWX_GM9A@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: bcm2835: Replace BUG with BUG_ON
-To:     wangborong@cdjrlc.com
-Cc:     Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        "Ivan T. Ivanov" <iivanov@suse.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210706163033.795805-1-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.47]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-23_08:2021-07-23,2021-07-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 8:50 AM Jason Wang <wangborong@cdjrlc.com> wrote:
+Hi Arnd
 
-> The if condition followed by BUG can be replaced to BUG_ON which is
-> more compact and formal in linux source.
->
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+On 7/6/21 6:30 PM, Benjamin Gaignard wrote:
+> Update Benjamin Gaignard address and remove it from no more maintained
+> drivers.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-Patch applied.
+How to handle this kind of patch ? Do I take it or do you take it 
+directly through arm-soc tree ?
 
-Yours,
-Linus Walleij
+regards
+Alex
+
+> ---
+>   MAINTAINERS | 5 +----
+>   1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8c5ee008301a6..c6356cd0446a8 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -5460,7 +5460,7 @@ F:	tools/testing/selftests/dma/
+>   
+>   DMA-BUF HEAPS FRAMEWORK
+>   M:	Sumit Semwal <sumit.semwal@linaro.org>
+> -R:	Benjamin Gaignard <benjamin.gaignard@linaro.org>
+> +R:	Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>   R:	Liam Mark <lmark@codeaurora.org>
+>   R:	Laura Abbott <labbott@redhat.com>
+>   R:	Brian Starkey <Brian.Starkey@arm.com>
+> @@ -6141,7 +6141,6 @@ F:	Documentation/devicetree/bindings/display/rockchip/
+>   F:	drivers/gpu/drm/rockchip/
+>   
+>   DRM DRIVERS FOR STI
+> -M:	Benjamin Gaignard <benjamin.gaignard@linaro.org>
+>   L:	dri-devel@lists.freedesktop.org
+>   S:	Maintained
+>   T:	git git://anongit.freedesktop.org/drm/drm-misc
+> @@ -6151,7 +6150,6 @@ F:	drivers/gpu/drm/sti
+>   DRM DRIVERS FOR STM
+>   M:	Yannick Fertre <yannick.fertre@foss.st.com>
+>   M:	Philippe Cornu <philippe.cornu@foss.st.com>
+> -M:	Benjamin Gaignard <benjamin.gaignard@linaro.org>
+>   L:	dri-devel@lists.freedesktop.org
+>   S:	Maintained
+>   T:	git git://anongit.freedesktop.org/drm/drm-misc
+> @@ -17453,7 +17451,6 @@ F:	Documentation/devicetree/bindings/sound/st,sti-asoc-card.txt
+>   F:	sound/soc/sti/
+>   
+>   STI CEC DRIVER
+> -M:	Benjamin Gaignard <benjamin.gaignard@linaro.org>
+>   S:	Maintained
+>   F:	Documentation/devicetree/bindings/media/stih-cec.txt
+>   F:	drivers/media/cec/platform/sti/
+> 
+
