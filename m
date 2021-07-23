@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513F93D3944
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BDC3D3949
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhGWKeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:34:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:37862 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234477AbhGWKeO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:34:14 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 3701A1FF8B;
-        Fri, 23 Jul 2021 11:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627038887; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BgKU+oVyDpJDVR2LplS5YDMjtUltq++qUxahmBkDXCc=;
-        b=XnubrHlo4Oq6lHWPxFowlPnyqUjSREs+3a7pReuDNRTdBXBPiiUaUUMC0D5dvRlCrsh/lu
-        CX1BfKat0PrKKkDJq6JxKHJHqqP37gtxDDeISxyMQu9RuNqHUTUjerm+LsPtsvfHSzN/0L
-        izi+YxhYIe9+15kUHoIR/LcX/TpKUQ0=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 18600A3B8F;
-        Fri, 23 Jul 2021 11:14:47 +0000 (UTC)
-Date:   Fri, 23 Jul 2021 13:14:46 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the printk tree
-Message-ID: <YPqkpsc/k0tXfISe@alley>
-References: <20210720174300.018cc765@canb.auug.org.au>
- <20210723090136.04ca2091@canb.auug.org.au>
+        id S232546AbhGWKfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:35:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231428AbhGWKfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 06:35:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB1CF60EBD;
+        Fri, 23 Jul 2021 11:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627038951;
+        bh=vPpc4EBJHfaWG3UHa1IL/ov8VeoKpBgjAjG5K6zxFA8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NIKLySDVvcFzKJ/ht2HpdPzrhRBzdM63jR4veD8E24cNoyNWHpYsFnuTJfMNOrqN/
+         mrE/yotkZCfG+BlWLB57UZo9Sz7yaMqUBFlRJBf75pFfZG9gNGI8/zcEn9h2fn0mkM
+         0AYxMggHkHJycXvRQTjJYqN/xU+1xK0f3QTLG81U=
+Date:   Fri, 23 Jul 2021 13:15:49 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        rafael@kernel.org, axboe@kernel.dk, tj@kernel.org, mbenes@suse.com,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/3] zram: fix deadlock with sysfs attribute usage and
+ module removal
+Message-ID: <YPqk5WCBgvNQzq4S@kroah.com>
+References: <20210703001958.620899-1-mcgrof@kernel.org>
+ <20210703001958.620899-3-mcgrof@kernel.org>
+ <YPgFGd+FZQZWODY7@kroah.com>
+ <20210722221705.kyrdkpt6fwf5k56o@garbanzo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210723090136.04ca2091@canb.auug.org.au>
+In-Reply-To: <20210722221705.kyrdkpt6fwf5k56o@garbanzo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-07-23 09:01:36, Stephen Rothwell wrote:
-> Hi all,
+On Thu, Jul 22, 2021 at 03:17:05PM -0700, Luis Chamberlain wrote:
+> On Wed, Jul 21, 2021 at 01:29:29PM +0200, Greg KH wrote:
+> > On Fri, Jul 02, 2021 at 05:19:57PM -0700, Luis Chamberlain wrote:
+> > > +#define MODULE_DEVICE_ATTR_FUNC_STORE(_name) \
+> > > +static ssize_t module_ ## _name ## _store(struct device *dev, \
+> > > +				   struct device_attribute *attr, \
+> > > +				   const char *buf, size_t len) \
+> > > +{ \
+> > > +	ssize_t __ret; \
+> > > +	if (!try_module_get(THIS_MODULE)) \
+> > > +		return -ENODEV; \
+> > 
+> > I feel like this needs to be written down somewhere as I see it come up
+> > all the time.
 > 
-> On Tue, 20 Jul 2021 17:43:00 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> > 
-> > After merging the printk tree, today's linux-next build (mips allnoconfig)
-> > failed like this:
-> > 
-> > arch/mips/kernel/genex.o: In function `handle_mcheck_int':
-> > (.text+0x190c): undefined reference to `printk'
-> > arch/mips/kernel/genex.o: In function `handle_reserved_int':
-> > (.text+0x1c8c): undefined reference to `printk'
-> > 
-> > Caused by commit
-> > 
-> >   337015573718 ("printk: Userspace format indexing support")
+> I'll go ahead and cook up a patch to do just this after I send this
+> email out.
 > 
-> I am still getting these failures.
+> > Again, this is racy and broken code.  You can NEVER try to increment
+> > your own module reference count unless it has already been incremented
+> > by someone external first.
+> 
+> In the zram driver's case the sysfs files are still pegged on, because
+> as we noted before the kernfs active reference will ensure the store
+> operation still exists.
 
-I have just pushed the proposed fix into printk/linux.git,
-branch for-5.15-printk-index.
+How does that happen without a module lock?
 
-I am sorry for the delay. I waited for a patch with reasonable commit
-message from Chris. I did it myself after all.
+> If the driver removes the operation prior to
+> getting the active reference, the write will just fail. kernfs ensures
+> once a file is opened the op is not removed until the operation completes.
 
-Thanks for the report.
+How does it do that?
 
-Best Regards,
-Petr
+> If a file is opened then, the module cannot possibly be removed. The
+> piece of information we realy care about is the use of module_is_live()
+> inside try_module_get() which does:
+> 
+> static inline bool module_is_live(struct module *mod)
+> {                                                                               
+> 	return mod->state != MODULE_STATE_GOING;
+> }
+> 
+> The try allows module removal to trump use of the sysfs file. If
+> userspace wants the module removed, it gives up in favor for that
+> operation.
+
+I do not see the tie in kernfs to module reference counts, what am I
+missing?
+
+thanks,
+
+greg k-h
