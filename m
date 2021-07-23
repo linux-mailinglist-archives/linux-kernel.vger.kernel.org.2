@@ -2,588 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6793D34A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC013D3475
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbhGWFqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:46:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8254 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233835AbhGWFqC (ORCPT
+        id S233751AbhGWFbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 01:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229852AbhGWFbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:46:02 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N64WYq143351;
-        Fri, 23 Jul 2021 02:26:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=11A2hcNl2kVbubUz6loCPZhzuFTOFvSqMmtJkSEwxeI=;
- b=VxlBb1miykqO0sBEQ/51lRmjDA+tsv2uXEQxSOOOjz5BtQYVGm6jQA/ogP1xkepQSGBs
- WlaXkS5rYf5GQE9pdk7vNaHeWeB7w4NoRT794Pqiftch61SdRIeLetQCCfNU5hoCmjHX
- x2Quiq/D05eGhTZ/ehBp4FJwhbnCC263ilMUG+CylXNdVV3a81d8GM92CKs4vJGLY1yw
- npVP8A0l8HaVrkI3krPqsJXnp3GBmNaGyP8krjn34HAmKZsdH2nBTGMBf5Ep2p4hNrf0
- t37ChaVx11AKj8NYHQAbS6cOhm60DA2J75Nh6DR6pInpFn6USa+pQkcaN45uCASOWWPo bw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39yq0w26q6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 02:26:10 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16N657WS145904;
-        Fri, 23 Jul 2021 02:26:10 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 39yq0w26cs-28
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 02:26:10 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N67SFD026858;
-        Fri, 23 Jul 2021 06:10:20 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 39y0bp20wv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 06:10:20 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N6AJqa12583772
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 06:10:19 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A0477AC060;
-        Fri, 23 Jul 2021 06:10:19 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 27EAAAC05E;
-        Fri, 23 Jul 2021 06:10:16 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.38.17])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 06:10:15 +0000 (GMT)
-Subject: Re: [PATCH v7 1/1] powerpc/pseries: Interface to represent PAPR
- firmware attributes
-To:     "Pratik R. Sampat" <psampat@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, farosas@linux.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
-References: <20210723054609.15033-1-psampat@linux.ibm.com>
- <20210723054609.15033-2-psampat@linux.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <90a4fca2-4bae-c9aa-d468-0d001c848ebd@linux.ibm.com>
-Date:   Fri, 23 Jul 2021 11:40:14 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 23 Jul 2021 01:31:04 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD737C061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:11:37 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id p5-20020a17090a8685b029015d1a9a6f1aso5434046pjn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 23:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BPDQ2kVL0UdvRLtrnYW5IaWsLJTP3znWjR1im+Y6laM=;
+        b=RvwcrzV5uqh1+tuqehkGGlROHKEcLre8WM6HULfyzeNhzxZS3xa0TDvLo7rqbPwM8f
+         6/TmZMCTk98uBL6PRA4fWEKrT4kWSWdVo1EPXell3eibaPvYB5BGl4ElmL5zV4q5GNgU
+         Y4hGXuo+FyXcm97D5To7/8AklWcrz0VLt48wF95DChUyC0JY90o/B8U+erPmvFpKZqFe
+         rBR8al5p7HUYanfJjWxwmU0Uq6k25KOl75QP/F9TfMB+CFNa4rn7Ne+I2VLKgiPCbizA
+         G4T2Ju6JCVrO65waa3hCnRMGfpZr6F0GJ5B3F2g/g+LGRxCmGvoV9TEJ5C0O/wvP9x3a
+         Vl+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BPDQ2kVL0UdvRLtrnYW5IaWsLJTP3znWjR1im+Y6laM=;
+        b=T/ibUF9pa1ZJ+y4SrgMfN9YiGUo/Dp2pnUX4+bgNGV53Xzaz5YL9tPQuJ12dm1b9wK
+         mwQ4OdAD2MwxbHkTdzbQN7pe4B5ggc+ngFoHUm6LPr6InQbfrtpf9xd+aXHtTXSNuaJh
+         8oV1OwlfWdDTJUZKlF2wH0//Pvw0uETduLp7iLoykKkKaQoAmPPMQoO+zra+5Mbj89tX
+         9OVw1J3yYzVqXvZEKeG0QEG904J2JG2zPHujYsv4BxAeKRnztZoA4hWQSKxOJFbzpgyG
+         VstXQU25o9sJ9P0W26cKG/b18UzHTB9D12sjIXCGdQ/Cl4GGbwYCAcjxYHLKMQzNJGlO
+         NxXw==
+X-Gm-Message-State: AOAM533qtmsGondhj7PEKywuQdR+26oRNOJ8+1cZgle/XlbADCi7xEf9
+        nyu89H5Rvv8BWitlIBvKE98HtA==
+X-Google-Smtp-Source: ABdhPJySZza7P56XmnuJ3Cil+h7yPhUfS2othNjGYfb7MFSL04v38Aiyv3G2haUnbVxgIAr6POQIzA==
+X-Received: by 2002:a17:90a:c57:: with SMTP id u23mr843021pje.186.1627020697200;
+        Thu, 22 Jul 2021 23:11:37 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id ie13sm4902106pjb.45.2021.07.22.23.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 23:11:35 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH V2.1 5/5] virtio: Bind virtio device to device-tree node
+Date:   Fri, 23 Jul 2021 11:41:31 +0530
+Message-Id: <3606cdcc637682a3eb401d617e6e247431b78ec6.1627019436.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+In-Reply-To: <026ad5f274d64d46590623f9f3a04b8abfbe62d7.1626947324.git.viresh.kumar@linaro.org>
+References: <026ad5f274d64d46590623f9f3a04b8abfbe62d7.1626947324.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210723054609.15033-2-psampat@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WwsCQLSf0w9OOm2KqLWwPI56C2xMHDZd
-X-Proofpoint-ORIG-GUID: NqVimUHD4T6WcfcHE202hasdCi57WWJx
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_03:2021-07-22,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
- bulkscore=0 phishscore=0 clxscore=1015 adultscore=0 mlxscore=0
- malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230031
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Bind the virtio devices with their of_node. This will help users of the
+virtio devices to mention their dependencies on the device in the DT
+itself. Like GPIO pin users can use the phandle of the device node, or
+the node may contain more subnodes to add i2c or spi eeproms and other
+users.
 
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V2->V2.1
+- Remove list of virtio device and use of_device_is_compatible() instead.
 
-On 7/23/21 11:16 AM, Pratik R. Sampat wrote:
-> Adds a generic interface to represent the energy and frequency related
-> PAPR attributes on the system using the new H_CALL
-> "H_GET_ENERGY_SCALE_INFO".
-> 
-> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
-> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
-> will be deprecated P10 onwards.
-> 
-> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
-> hcall(
->   uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
->   uint64 flags,           // Per the flag request
->   uint64 firstAttributeId,// The attribute id
->   uint64 bufferAddress,   // Guest physical address of the output buffer
->   uint64 bufferSize       // The size in bytes of the output buffer
-> );
-> 
-> This H_CALL can query either all the attributes at once with
-> firstAttributeId = 0, flags = 0 as well as query only one attribute
-> at a time with firstAttributeId = id, flags = 1.
-> 
-> The output buffer consists of the following
-> 1. number of attributes              - 8 bytes
-> 2. array offset to the data location - 8 bytes
-> 3. version info                      - 1 byte
-> 4. A data array of size num attributes, which contains the following:
->   a. attribute ID              - 8 bytes
->   b. attribute value in number - 8 bytes
->   c. attribute name in string  - 64 bytes
->   d. attribute value in string - 64 bytes
-> 
-> The new H_CALL exports information in direct string value format, hence
-> a new interface has been introduced in
-> /sys/firmware/papr/energy_scale_info to export this information to
-> userspace in an extensible pass-through format.
-> 
-> The H_CALL returns the name, numeric value and string value (if exists)
-> 
-> The format of exposing the sysfs information is as follows:
-> /sys/firmware/papr/energy_scale_info/
->    |-- <id>/
->      |-- desc
->      |-- value
->      |-- value_desc (if exists)
->    |-- <id>/
->      |-- desc
->      |-- value
->      |-- value_desc (if exists)
-> ...
-> 
-> The energy information that is exported is useful for userspace tools
-> such as powerpc-utils. Currently these tools infer the
-> "power_mode_data" value in the lparcfg, which in turn is obtained from
-> the to be deprecated H_GET_EM_PARMS H_CALL.
-> On future platforms, such userspace utilities will have to look at the
-> data returned from the new H_CALL being populated in this new sysfs
-> interface and report this information directly without the need of
-> interpretation.
-> 
+ drivers/virtio/virtio.c | 56 ++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 53 insertions(+), 3 deletions(-)
 
-Patch looks good to me.
-Reviewed-by: Kajol Jain <kjain@linux.ibm.com>
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index 4b15c00c0a0a..7c56b3416895 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -4,6 +4,7 @@
+ #include <linux/virtio_config.h>
+ #include <linux/module.h>
+ #include <linux/idr.h>
++#include <linux/of.h>
+ #include <uapi/linux/virtio_ids.h>
+ 
+ /* Unique numbering for virtio devices. */
+@@ -292,6 +293,9 @@ static int virtio_dev_remove(struct device *_d)
+ 
+ 	/* Acknowledge the device's existence again. */
+ 	virtio_add_status(dev, VIRTIO_CONFIG_S_ACKNOWLEDGE);
++
++	of_node_put(dev->dev.of_node);
++
+ 	return 0;
+ }
+ 
+@@ -319,6 +323,42 @@ void unregister_virtio_driver(struct virtio_driver *driver)
+ }
+ EXPORT_SYMBOL_GPL(unregister_virtio_driver);
+ 
++static int virtio_device_of_init(struct virtio_device *dev)
++{
++	struct device_node *np, *pnode = dev->dev.parent->of_node;
++	int ret, count;
++	char compat[12];
++
++	if (!pnode)
++		return 0;
++
++	count = of_get_available_child_count(pnode);
++	if (!count)
++		return 0;
++
++	/* There can be only 1 child node */
++	if (WARN_ON(count > 1))
++		return -EINVAL;
++
++	np = of_get_next_available_child(pnode, NULL);
++	if (WARN_ON(!np))
++		return -ENODEV;
++
++	snprintf(compat, sizeof(compat), "virtio,%x", dev->id.device);
++
++	if (!of_device_is_compatible(np, compat)) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	dev->dev.of_node = np;
++	return 0;
++
++out:
++	of_node_put(np);
++	return ret;
++}
++
+ /**
+  * register_virtio_device - register virtio device
+  * @dev        : virtio device to be registered
+@@ -343,6 +383,10 @@ int register_virtio_device(struct virtio_device *dev)
+ 	dev->index = err;
+ 	dev_set_name(&dev->dev, "virtio%u", dev->index);
+ 
++	err = virtio_device_of_init(dev);
++	if (err)
++		goto out_ida_remove;
++
+ 	spin_lock_init(&dev->config_lock);
+ 	dev->config_enabled = false;
+ 	dev->config_change_pending = false;
+@@ -362,10 +406,16 @@ int register_virtio_device(struct virtio_device *dev)
+ 	 */
+ 	err = device_add(&dev->dev);
+ 	if (err)
+-		ida_simple_remove(&virtio_index_ida, dev->index);
++		goto out_of_node_put;
++
++	return 0;
++
++out_of_node_put:
++	of_node_put(dev->dev.of_node);
++out_ida_remove:
++	ida_simple_remove(&virtio_index_ida, dev->index);
+ out:
+-	if (err)
+-		virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
++	virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(register_virtio_device);
+-- 
+2.31.1.272.g89b43f80a514
 
-Thanks,
-Kajol Jain
-
-> Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-> Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
-> ---
->  .../sysfs-firmware-papr-energy-scale-info     |  26 ++
->  arch/powerpc/include/asm/hvcall.h             |  24 +-
->  arch/powerpc/kvm/trace_hv.h                   |   1 +
->  arch/powerpc/platforms/pseries/Makefile       |   3 +-
->  .../pseries/papr_platform_attributes.c        | 312 ++++++++++++++++++
->  5 files changed, 364 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
->  create mode 100644 arch/powerpc/platforms/pseries/papr_platform_attributes.c
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> new file mode 100644
-> index 000000000000..139a576c7c9d
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-firmware-papr-energy-scale-info
-> @@ -0,0 +1,26 @@
-> +What:		/sys/firmware/papr/energy_scale_info
-> +Date:		June 2021
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Description:	Directory hosting a set of platform attributes like
-> +		energy/frequency on Linux running as a PAPR guest.
-> +
-> +		Each file in a directory contains a platform
-> +		attribute hierarchy pertaining to performance/
-> +		energy-savings mode and processor frequency.
-> +
-> +What:		/sys/firmware/papr/energy_scale_info/<id>
-> +		/sys/firmware/papr/energy_scale_info/<id>/desc
-> +		/sys/firmware/papr/energy_scale_info/<id>/value
-> +		/sys/firmware/papr/energy_scale_info/<id>/value_desc
-> +Date:		June 2021
-> +Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-> +Description:	Energy, frequency attributes directory for POWERVM servers
-> +
-> +		This directory provides energy, frequency, folding information. It
-> +		contains below sysfs attributes:
-> +
-> +		- desc: String description of the attribute <id>
-> +
-> +		- value: Numeric value of attribute <id>
-> +
-> +		- value_desc: String value of attribute <id>
-> diff --git a/arch/powerpc/include/asm/hvcall.h b/arch/powerpc/include/asm/hvcall.h
-> index e3b29eda8074..c91714ea6719 100644
-> --- a/arch/powerpc/include/asm/hvcall.h
-> +++ b/arch/powerpc/include/asm/hvcall.h
-> @@ -316,7 +316,8 @@
->  #define H_SCM_PERFORMANCE_STATS 0x418
->  #define H_RPT_INVALIDATE	0x448
->  #define H_SCM_FLUSH		0x44C
-> -#define MAX_HCALL_OPCODE	H_SCM_FLUSH
-> +#define H_GET_ENERGY_SCALE_INFO	0x450
-> +#define MAX_HCALL_OPCODE	H_GET_ENERGY_SCALE_INFO
->  
->  /* Scope args for H_SCM_UNBIND_ALL */
->  #define H_UNBIND_SCOPE_ALL (0x1)
-> @@ -631,6 +632,27 @@ struct hv_gpci_request_buffer {
->  	uint8_t bytes[HGPCI_MAX_DATA_BYTES];
->  } __packed;
->  
-> +#define ESI_VERSION	0x1
-> +#define MAX_ESI_ATTRS	10
-> +#define MAX_BUF_SZ	(sizeof(struct h_energy_scale_info_hdr) + \
-> +			(sizeof(struct energy_scale_attribute) * MAX_ESI_ATTRS))
-> +
-> +struct energy_scale_attribute {
-> +	__be64 id;
-> +	__be64 value;
-> +	unsigned char desc[64];
-> +	unsigned char value_desc[64];
-> +} __packed;
-> +
-> +struct h_energy_scale_info_hdr {
-> +	__be64 num_attrs;
-> +	__be64 array_offset;
-> +	__u8 data_header_version;
-> +} __packed;
-> +
-> +/* /sys/firmware/papr */
-> +extern struct kobject *papr_kobj;
-> +
->  #endif /* __ASSEMBLY__ */
->  #endif /* __KERNEL__ */
->  #endif /* _ASM_POWERPC_HVCALL_H */
-> diff --git a/arch/powerpc/kvm/trace_hv.h b/arch/powerpc/kvm/trace_hv.h
-> index 830a126e095d..38cd0ed0a617 100644
-> --- a/arch/powerpc/kvm/trace_hv.h
-> +++ b/arch/powerpc/kvm/trace_hv.h
-> @@ -115,6 +115,7 @@
->  	{H_VASI_STATE,			"H_VASI_STATE"}, \
->  	{H_ENABLE_CRQ,			"H_ENABLE_CRQ"}, \
->  	{H_GET_EM_PARMS,		"H_GET_EM_PARMS"}, \
-> +	{H_GET_ENERGY_SCALE_INFO,	"H_GET_ENERGY_SCALE_INFO"}, \
->  	{H_SET_MPP,			"H_SET_MPP"}, \
->  	{H_GET_MPP,			"H_GET_MPP"}, \
->  	{H_HOME_NODE_ASSOCIATIVITY,	"H_HOME_NODE_ASSOCIATIVITY"}, \
-> diff --git a/arch/powerpc/platforms/pseries/Makefile b/arch/powerpc/platforms/pseries/Makefile
-> index c8a2b0b05ac0..d14fca89ac25 100644
-> --- a/arch/powerpc/platforms/pseries/Makefile
-> +++ b/arch/powerpc/platforms/pseries/Makefile
-> @@ -6,7 +6,8 @@ obj-y			:= lpar.o hvCall.o nvram.o reconfig.o \
->  			   of_helpers.o \
->  			   setup.o iommu.o event_sources.o ras.o \
->  			   firmware.o power.o dlpar.o mobility.o rng.o \
-> -			   pci.o pci_dlpar.o eeh_pseries.o msi.o
-> +			   pci.o pci_dlpar.o eeh_pseries.o msi.o \
-> +			   papr_platform_attributes.o
->  obj-$(CONFIG_SMP)	+= smp.o
->  obj-$(CONFIG_SCANLOG)	+= scanlog.o
->  obj-$(CONFIG_KEXEC_CORE)	+= kexec.o
-> diff --git a/arch/powerpc/platforms/pseries/papr_platform_attributes.c b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-> new file mode 100644
-> index 000000000000..84ddce52e519
-> --- /dev/null
-> +++ b/arch/powerpc/platforms/pseries/papr_platform_attributes.c
-> @@ -0,0 +1,312 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Platform energy and frequency attributes driver
-> + *
-> + * This driver creates a sys file at /sys/firmware/papr/ which encapsulates a
-> + * directory structure containing files in keyword - value pairs that specify
-> + * energy and frequency configuration of the system.
-> + *
-> + * The format of exposing the sysfs information is as follows:
-> + * /sys/firmware/papr/energy_scale_info/
-> + *  |-- <id>/
-> + *    |-- desc
-> + *    |-- value
-> + *    |-- value_desc (if exists)
-> + *  |-- <id>/
-> + *    |-- desc
-> + *    |-- value
-> + *    |-- value_desc (if exists)
-> + *
-> + * Copyright 2021 IBM Corp.
-> + */
-> +
-> +#include <asm/hvcall.h>
-> +#include <asm/machdep.h>
-> +
-> +#include "pseries.h"
-> +
-> +/*
-> + * Flag attributes to fetch either all or one attribute from the HCALL
-> + * flag = BE(0) => fetch all attributes with firstAttributeId = 0
-> + * flag = BE(1) => fetch a single attribute with firstAttributeId = id
-> + */
-> +#define ESI_FLAGS_ALL		0
-> +#define ESI_FLAGS_SINGLE	PPC_BIT(0)
-> +
-> +#define MAX_ATTRS		3
-> +
-> +struct papr_attr {
-> +	u64 id;
-> +	struct kobj_attribute kobj_attr;
-> +};
-> +struct papr_group {
-> +	struct attribute_group pg;
-> +	struct papr_attr pgattrs[MAX_ATTRS];
-> +} *pgs;
-> +
-> +/* /sys/firmware/papr */
-> +struct kobject *papr_kobj;
-> +/* /sys/firmware/papr/energy_scale_info */
-> +struct kobject *esi_kobj;
-> +
-> +/*
-> + * Extract and export the description of the energy scale attributes
-> + */
-> +static ssize_t papr_show_desc(struct kobject *kobj,
-> +			       struct kobj_attribute *kobj_attr,
-> +			       char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	char *t_buf;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = snprintf(buf, sizeof(t_esi->desc), "%s\n", t_esi->desc);
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Extract and export the numeric value of the energy scale attributes
-> + */
-> +static ssize_t papr_show_value(struct kobject *kobj,
-> +				struct kobj_attribute *kobj_attr,
-> +				char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	char *t_buf;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = snprintf(buf, sizeof(t_esi->value), "%llu\n",
-> +		       be64_to_cpu(t_esi->value));
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * Extract and export the value description in string format of the energy
-> + * scale attributes
-> + */
-> +static ssize_t papr_show_value_desc(struct kobject *kobj,
-> +				     struct kobj_attribute *kobj_attr,
-> +				     char *buf)
-> +{
-> +	struct papr_attr *pattr = container_of(kobj_attr, struct papr_attr,
-> +					       kobj_attr);
-> +	struct h_energy_scale_info_hdr *t_hdr;
-> +	struct energy_scale_attribute *t_esi;
-> +	char *t_buf;
-> +	int ret = 0;
-> +
-> +	t_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (t_buf == NULL)
-> +		return -ENOMEM;
-> +
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_SINGLE,
-> +				 pattr->id, virt_to_phys(t_buf),
-> +				 MAX_BUF_SZ);
-> +
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	t_hdr = (struct h_energy_scale_info_hdr *) t_buf;
-> +	t_esi = (struct energy_scale_attribute *)
-> +		(t_buf + be64_to_cpu(t_hdr->array_offset));
-> +
-> +	ret = snprintf(buf, sizeof(t_esi->value_desc), "%s\n",
-> +		       t_esi->value_desc);
-> +	if (ret < 0)
-> +		ret = -EIO;
-> +out:
-> +	kfree(t_buf);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct papr_ops_info {
-> +	const char *attr_name;
-> +	ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *kobj_attr,
-> +			char *buf);
-> +} ops_info[MAX_ATTRS] = {
-> +	{ "desc", papr_show_desc },
-> +	{ "value", papr_show_value },
-> +	{ "value_desc", papr_show_value_desc },
-> +};
-> +
-> +static void add_attr(u64 id, int index, struct papr_attr *attr)
-> +{
-> +	attr->id = id;
-> +	sysfs_attr_init(&attr->kobj_attr.attr);
-> +	attr->kobj_attr.attr.name = ops_info[index].attr_name;
-> +	attr->kobj_attr.attr.mode = 0444;
-> +	attr->kobj_attr.show = ops_info[index].show;
-> +}
-> +
-> +static int add_attr_group(u64 id, struct papr_group *pg, bool show_val_desc)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < MAX_ATTRS; i++) {
-> +		if (!strcmp(ops_info[i].attr_name, "value_desc") &&
-> +		    !show_val_desc) {
-> +			continue;
-> +		}
-> +		add_attr(id, i, &pg->pgattrs[i]);
-> +		pg->pg.attrs[i] = &pg->pgattrs[i].kobj_attr.attr;
-> +	}
-> +
-> +	return sysfs_create_group(esi_kobj, &pg->pg);
-> +}
-> +
-> +static int __init papr_init(void)
-> +{
-> +	struct h_energy_scale_info_hdr *esi_hdr;
-> +	struct energy_scale_attribute *esi_attrs;
-> +	uint64_t num_attrs;
-> +	int ret, idx, i;
-> +	char *esi_buf;
-> +
-> +	if (!firmware_has_feature(FW_FEATURE_LPAR))
-> +		return -ENXIO;
-> +
-> +	esi_buf = kmalloc(MAX_BUF_SZ, GFP_KERNEL);
-> +	if (esi_buf == NULL)
-> +		return -ENOMEM;
-> +	/*
-> +	 * hcall(
-> +	 * uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
-> +	 * uint64 flags,            // Per the flag request
-> +	 * uint64 firstAttributeId, // The attribute id
-> +	 * uint64 bufferAddress,    // Guest physical address of the output buffer
-> +	 * uint64 bufferSize);      // The size in bytes of the output buffer
-> +	 */
-> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, ESI_FLAGS_ALL, 0,
-> +				 virt_to_phys(esi_buf), MAX_BUF_SZ);
-> +	if (ret != H_SUCCESS) {
-> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
-> +		goto out;
-> +	}
-> +
-> +	esi_hdr = (struct h_energy_scale_info_hdr *) esi_buf;
-> +	if (esi_hdr->data_header_version != ESI_VERSION) {
-> +		pr_warn("H_GET_ENERGY_SCALE_INFO VER MISMATCH - EXP: 0x%x, REC: 0x%x",
-> +			ESI_VERSION, esi_hdr->data_header_version);
-> +	}
-> +
-> +	num_attrs = be64_to_cpu(esi_hdr->num_attrs);
-> +	esi_attrs = (struct energy_scale_attribute *)
-> +		    (esi_buf + be64_to_cpu(esi_hdr->array_offset));
-> +
-> +	pgs = kcalloc(num_attrs, sizeof(*pgs), GFP_KERNEL);
-> +	if (!pgs)
-> +		goto out;
-> +
-> +	papr_kobj = kobject_create_and_add("papr", firmware_kobj);
-> +	if (!papr_kobj) {
-> +		pr_warn("kobject_create_and_add papr failed\n");
-> +		goto out_pgs;
-> +	}
-> +
-> +	esi_kobj = kobject_create_and_add("energy_scale_info", papr_kobj);
-> +	if (!esi_kobj) {
-> +		pr_warn("kobject_create_and_add energy_scale_info failed\n");
-> +		goto out_kobj;
-> +	}
-> +
-> +	for (idx = 0; idx < num_attrs; idx++) {
-> +		bool show_val_desc = true;
-> +
-> +		pgs[idx].pg.attrs = kcalloc(MAX_ATTRS + 1,
-> +					    sizeof(*pgs[idx].pg.attrs),
-> +					    GFP_KERNEL);
-> +		if (!pgs[idx].pg.attrs) {
-> +			goto out_pgattrs;
-> +		}
-> +
-> +		pgs[idx].pg.name = kasprintf(GFP_KERNEL, "%lld",
-> +					     be64_to_cpu(esi_attrs[idx].id));
-> +		if (pgs[idx].pg.name == NULL) {
-> +			goto out_pgattrs;
-> +		}
-> +		/* Do not add the value description if it does not exist */
-> +		if (strnlen(esi_attrs[idx].value_desc,
-> +			    sizeof(esi_attrs[idx].value_desc)) == 0)
-> +			show_val_desc = false;
-> +
-> +		if (add_attr_group(be64_to_cpu(esi_attrs[idx].id), &pgs[idx],
-> +				   show_val_desc)) {
-> +			pr_warn("Failed to create papr attribute group %s\n",
-> +				pgs[idx].pg.name);
-> +			goto out_pgattrs;
-> +		}
-> +	}
-> +
-> +	kfree(esi_buf);
-> +	return 0;
-> +
-> +out_pgattrs:
-> +	for (i = 0; i < idx ; i++) {
-> +		kfree(pgs[i].pg.attrs);
-> +		kfree(pgs[i].pg.name);
-> +	}
-> +	kobject_put(esi_kobj);
-> +out_kobj:
-> +	kobject_put(papr_kobj);
-> +out_pgs:
-> +	kfree(pgs);
-> +out:
-> +	kfree(esi_buf);
-> +
-> +	return -ENOMEM;
-> +}
-> +
-> +machine_device_initcall(pseries, papr_init);
-> 
