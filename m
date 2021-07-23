@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D446B3D40FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC843D4101
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhGWS6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 14:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S230114AbhGWTAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhGWS6e (ORCPT
+        with ESMTP id S229528AbhGWTAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:58:34 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D2FC061575;
-        Fri, 23 Jul 2021 12:39:06 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id a20so4469048plm.0;
-        Fri, 23 Jul 2021 12:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=O07PofvR6wtYaFYmZwu709/uHQuZ+IXZRe89ZgE8wvI=;
-        b=gYa6UGgHkK9IfA2M24dRu56uTGIC6QhmTUcIoEtE+4lTaa/dvK/NvIaE+yPovqUeWE
-         fEswFlLpNRdFZATn9kCB5xhGI4VY/EDx5Pzc3SqSFbEIy81RunLggK5O7+aT5jBNmCnJ
-         AMOWcKdp2YvXeUTkvA8RAtuSV+GIu0Ga1OUrZme7bcHmlzq6mKbYEb0lI33uEsnGpL5I
-         MVkrYm1jqBEkdjiqTZ4qQvgrcTwRoGokoYmqyT/2xbdtsIGfJ4OBdUMcG9RDF9nx9qMv
-         cAfHpw3LRAx1qDTkg/Yo3YiMJB3Anu1qao9mL8u5nEevIOyQ4mUlrNXvIfX2z6zNIIjC
-         hveg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=O07PofvR6wtYaFYmZwu709/uHQuZ+IXZRe89ZgE8wvI=;
-        b=podlusQ4Ubj+rMBPA0gjVAjgJw0HBSY/JW/GA5RjUH5K/SxwYG8jcRyYWIg2LDri3I
-         05a6PDGpsSu8VwHRbB0T1L+LHi1sjBrJzyNUPG5Ws36a+gsQhK1ryOgohCVgxnsP6H7r
-         m91ikdCRtMTgOLZOef3H73aRZT7QcOmF2VyVf1AhfOOAadlalgOadj7SGDyAKeCWdy1w
-         9QFLkSGduOqwPjiwXpj245EyShKCDUPDhIJ3p7Yu5cYlV5EfTucYQT1EOl+mZj+R+w52
-         dmsrafPUkylHmsZw4VHL1Cwy7pDLLcZJiBTbA3dlPMqBWe5FHO5Ssm0LLZwbIk1WQNIB
-         HDow==
-X-Gm-Message-State: AOAM530zQyoYMp96jacMn0rL/XEUz6tSM6eiloEhZjzmn/bLyTRGutOW
-        SPbZ/hPQ0GC+g29iJYPsABouftD3ON8=
-X-Google-Smtp-Source: ABdhPJzmMRQ5q99h3FuptuoSbN5dBTjPGKya8Oz3KXekh2m6ASBd9cdHW1D2VOc3gsvRG65Da+dirg==
-X-Received: by 2002:a63:d311:: with SMTP id b17mr6209279pgg.332.1627069145721;
-        Fri, 23 Jul 2021 12:39:05 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:55b1:90d5:6a79:755f])
-        by smtp.gmail.com with ESMTPSA id j6sm38941894pgq.0.2021.07.23.12.39.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 12:39:04 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 12:39:02 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        satya priya <skakit@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Input: pm8941-pwrkey - fix comma vs semicolon issue
-Message-ID: <YPsa1qCBn/SAmE5x@google.com>
+        Fri, 23 Jul 2021 15:00:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE78C061575;
+        Fri, 23 Jul 2021 12:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wLxpkipMgvxMPaddvglb23fn92nRwXLxVzoe/PF9JSQ=; b=DUvza/oQxDEBXJqJ5qe+4PTwXC
+        ChPVxolPzM+XTosRn0XRvWFQ1OexQFajE9Z4o9uitWBobGl7UU32YrNCyj13LnbxrrY7sbjBM5sOR
+        jem8Ki3m+t/iECfVFQlshxNX45nc/eyPN3oj8wmvTLfxkTpY33/OiXq+3GtkUPO3QkQoHn9w6nVwp
+        uzii5hHtVnIYlPPFUwAKLO3vYU7S7rkj+XqvPCeK8GEQtCKAATVF/wDFqFQwJgz4us0q/h/xs0hY6
+        WtG0OT4Y1X0p3fVH2+2M05eariMyo6FgboYSkFr32VXkQ9kHDCOKAkAzitN4xwH7RALnAOMwdwUqX
+        gIUnrWJQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m712R-00BgWf-O0; Fri, 23 Jul 2021 19:41:00 +0000
+Date:   Fri, 23 Jul 2021 20:40:51 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
+        Huang Jianan <huangjianan@oppo.com>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+Message-ID: <YPsbQzcNz+r4V7P2@casper.infradead.org>
+References: <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is absolutely no reason to use comma operator in this code, 2
-separate statements make much more sense.
+On Sat, Jul 24, 2021 at 01:41:31AM +0800, Gao Xiang wrote:
+> Add support for reading inline data content into the page cache from
+> nonzero page-aligned file offsets.  This enables the EROFS tailpacking
+> mode where the last few bytes of the file are stored right after the
+> inode.
+> 
+> The buffered write path remains untouched since EROFS cannot be used
+> for testing. It'd be better to be implemented if upcoming real users
+> care and provide a real pattern rather than leave untested dead code
+> around.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- drivers/input/misc/pm8941-pwrkey.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My one complaint with this version is the subject line.  It's a bit vague.
+I went with:
 
-diff --git a/drivers/input/misc/pm8941-pwrkey.c b/drivers/input/misc/pm8941-pwrkey.c
-index 10e3fc0eac6e..33609603245d 100644
---- a/drivers/input/misc/pm8941-pwrkey.c
-+++ b/drivers/input/misc/pm8941-pwrkey.c
-@@ -284,7 +284,7 @@ static int pm8941_pwrkey_probe(struct platform_device *pdev)
- 	}
- 
- 	if (pwrkey->data->supports_ps_hold_poff_config) {
--		pwrkey->reboot_notifier.notifier_call = pm8941_reboot_notify,
-+		pwrkey->reboot_notifier.notifier_call = pm8941_reboot_notify;
- 		error = register_reboot_notifier(&pwrkey->reboot_notifier);
- 		if (error) {
- 			dev_err(&pdev->dev, "failed to register reboot notifier: %d\n",
--- 
-2.32.0.432.gabb21c7263-goog
+iomap: Support file tail packing
 
+I also wrote a changelog entry that reads:
+    The existing inline data support only works for cases where the entire
+    file is stored as inline data.  For larger files, EROFS stores the
+    initial blocks separately and then can pack a small tail adjacent to
+    the inode.  Generalise inline data to allow for tail packing.  Tails
+    may not cross a page boundary in memory.
 
--- 
-Dmitry
+... but I'm not sure that's necessarily better than what you've written
+here.
+
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Darrick J. Wong <djwong@kernel.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
