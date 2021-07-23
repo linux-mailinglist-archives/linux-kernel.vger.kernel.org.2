@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6513D392C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E2A3D3932
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 13:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232709AbhGWK3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 06:29:15 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60006 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232037AbhGWK3K (ORCPT
+        id S232037AbhGWKaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 06:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230135AbhGWK3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:29:10 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 34A9C22651;
-        Fri, 23 Jul 2021 11:09:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627038583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5/VuAuA8TTB/OqfzWiuUX41Ip/fB8TlfGEDwF7IigoI=;
-        b=FOb+yjQ4MaUhNtGGVRPLDb3vtFN1lm1zxb1S6okTAfRpEAGH8+DKFbA4+88rj2N350mNbM
-        MtL9b8vXxFE4xwjsEAWV2/+BnPwF+D5Ttn1+aWSCngkpa12R2nWT2x9Asp4UwzEjObAnaA
-        JLbd+Ll+2ys0QvDl2ygoyBx0Hc2+IPA=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 06037A3B84;
-        Fri, 23 Jul 2021 11:09:42 +0000 (UTC)
-Date:   Fri, 23 Jul 2021 13:09:42 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: [PATCH] printk/documentation: Update printk()/_printk() documentation
-Message-ID: <YPqjdqSH5j69FnHV@alley>
-References: <20210720162423.75f61ce0@canb.auug.org.au>
- <YPa/D8tSyk7dw1/l@chrisdown.name>
- <YPbABBSTkN+xNY0w@chrisdown.name>
+        Fri, 23 Jul 2021 06:29:53 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2038C061575;
+        Fri, 23 Jul 2021 04:10:26 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so1617827oto.12;
+        Fri, 23 Jul 2021 04:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ItsRsZ0+rGylQYA+RELfRwpVcM273u0/L6xue3YIFTA=;
+        b=mgZxllDJunjoK3CtlARUlfLQNAlHIMceNdssna93H1gvGsVkjbKCjeXwfaKALFHizP
+         +Y1XZcKvjH1iQnJ0/Ky5KHtTGpXSvz9a4yB31+JlI9uF3CHnUEVO1K2oEON+GxU4rCkI
+         L0wstpPWTGcGN3ukpI4x1nmdMQaYvvW8wHQbsFxP47E/bxFXJ4AF5QvtFeKtSnuJBKfg
+         MjUE2uePwDC+tZXum5IbjSHP8qOVpr5oXCFRJaxZXEyyxD8GK7q7EeAoC/fzug6goK73
+         mGfo5Lz8KQNUMm3jwzRPh5K0HgVo8KfnWG58LKxGV0f2KFcDCBE0PMNzrJHv6r/LAKNh
+         fCqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ItsRsZ0+rGylQYA+RELfRwpVcM273u0/L6xue3YIFTA=;
+        b=aXeozuwZVcjmPTlwopTas3S75qk0Di6Qcx6DDlFiaO/O5BZm7+zz1e0CO2PvChg2G1
+         bhnCUfX9KXuKhxCO22KcdZbxZyibWXCIuuHpp2ZX98TnequCzDSSfl5taM5qDi+im1bf
+         GxYtXcM7828OrglNPchlpGn1JZJdEMvTWAs6HFWf6/gZTQiCepkr+6ieJDhYa2pqQshI
+         s76lyEDMc0HnNkLgU8HvGuKcMEQ2YCJ63jkIS6ANy+c24Ba/YBOrbzuk8YqwNFof6UhE
+         NxR7gLwfqFW35mkluM1VGXqxmqRGrfLYmE70gGJbMltDGna2BdW0JiHo+pcVR1vgcMn6
+         JzwQ==
+X-Gm-Message-State: AOAM533zyJwCIamlDVviZDsXp3FJ8yNvSQA6JaQXeeUJ4V/S49vE4HCk
+        wGdKFzmzN9/msS/Uz5stokESTOocKtnTaVaz+TI=
+X-Google-Smtp-Source: ABdhPJyTbyPS7OPxgzkKeQ0xejJgwTXa3EwT7cNdLuCl25tp5G3mArCVKEQZIg8TwboZwxHRabaGbXKTcoVEzwUnzvo=
+X-Received: by 2002:a9d:491:: with SMTP id 17mr2724546otm.184.1627038626371;
+ Fri, 23 Jul 2021 04:10:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPbABBSTkN+xNY0w@chrisdown.name>
+References: <20210722094551.15255-1-nancy.lin@mediatek.com> <20210722094551.15255-5-nancy.lin@mediatek.com>
+In-Reply-To: <20210722094551.15255-5-nancy.lin@mediatek.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Fri, 23 Jul 2021 13:10:14 +0200
+Message-ID: <CAFqH_50qC985oTcPWDLRJt6yVvwtHsizPOTnTMBh84m6Hy6hFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 04/14] dt-bindings: reset: mt8195: Move reset
+ controller constants into common location
+To:     "Nancy.Lin" <nancy.lin@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        singo.chang@mediatek.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 337015573718b161 ("printk: Userspace format indexing support")
-caused the following warning when building htmldocs:
+Hi Nancy,
 
-kernel/printk/printk.c:1: warning: 'printk' not found
+Thank you for your patch
 
-The problem is that printk() became a macro that is defined
-in include/linux/printk.h instead of kernel/printk.c. The original
-function was renamed to _printk().
+Missatge de Nancy.Lin <nancy.lin@mediatek.com> del dia dj., 22 de jul.
+2021 a les 11:46:
+>
+> The DT binding includes for reset controllers are located in
+> include/dt-bindings/reset/. Move the Mediatek reset constants in there.
+>
 
-Fixes: 337015573718b161 ("printk: Userspace format indexing support")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/YPbBfdz9srIpI+bb@chrisdown.name
----
-This should do the trick. I do not longer see the warning.
+I think that the patch that introduces mt8195-resets.h into the
+reset-controller directory didn't land yet, please sync with the
+author of that patch and just put it in the correct place the first
+time.
 
-Documentation/core-api/printk-basics.rst |  6 +++---
- include/linux/printk.h                   | 12 ++++++++++++
- kernel/printk/printk.c                   |  3 ++-
- 3 files changed, 17 insertions(+), 4 deletions(-)
+Thanks,
+  Enric
 
-diff --git a/Documentation/core-api/printk-basics.rst b/Documentation/core-api/printk-basics.rst
-index 965e4281eddd..3160a73c27b1 100644
---- a/Documentation/core-api/printk-basics.rst
-+++ b/Documentation/core-api/printk-basics.rst
-@@ -108,8 +108,8 @@ Function reference
- ==================
- 
- .. kernel-doc:: kernel/printk/printk.c
--   :functions: printk
-+   :functions: _printk
- 
- .. kernel-doc:: include/linux/printk.h
--   :functions: pr_emerg pr_alert pr_crit pr_err pr_warn pr_notice pr_info
--      pr_fmt pr_debug pr_devel pr_cont
-+   :functions: printk pr_emerg pr_alert pr_crit pr_err pr_warn
-+	pr_notice pr_info pr_fmt pr_debug pr_devel pr_cont
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index 2651b82ed352..e0e3411db67b 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -431,6 +431,18 @@ struct pi_entry {
- 	})
- 
- 
-+/**
-+ * printk - Print a message
-+ * @fmt: format string
-+ * @...: arguments for the format string
-+ *
-+ * This macro generates metadata for printk indexing and prints the message
-+ * using _printk(). It uses pr_fmt() to generate the format string.
-+ *
-+ * The default log level is used when a particular one is not part of
-+ * the message prefix. pr_<level>() macros are preferred because each
-+ * caller should know the exact purpose of the message.
-+ */
- #define printk(fmt, ...) printk_index_wrap(_printk, fmt, ##__VA_ARGS__)
- #define printk_deferred(fmt, ...)					\
- 	printk_index_wrap(_printk_deferred, fmt, ##__VA_ARGS__)
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 765f7af6ce56..2e5559175214 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2187,7 +2187,8 @@ EXPORT_SYMBOL_GPL(vprintk_default);
-  * _printk - print a kernel message
-  * @fmt: format string
-  *
-- * This is _printk(). It can be called from any context. We want it to work.
-+ * This is printk() implementation. It can be called from any context.
-+ * We want it to work.
-  *
-  * If printk indexing is enabled, _printk() is called from printk_index_wrap.
-  * Otherwise, printk is simply #defined to _printk.
--- 
-2.26.2
-
+> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
+> ---
+>  include/dt-bindings/{reset-controller => reset}/mt8195-resets.h | 0
+>  1 file changed, 0 insertions(+), 0 deletions(-)
+>  rename include/dt-bindings/{reset-controller => reset}/mt8195-resets.h (100%)
+>
+> diff --git a/include/dt-bindings/reset-controller/mt8195-resets.h b/include/dt-bindings/reset/mt8195-resets.h
+> similarity index 100%
+> rename from include/dt-bindings/reset-controller/mt8195-resets.h
+> rename to include/dt-bindings/reset/mt8195-resets.h
+> --
+> 2.18.0
+>
