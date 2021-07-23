@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1663D41C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8CA3D41CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbhGWUPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 16:15:02 -0400
-Received: from mga03.intel.com ([134.134.136.65]:27083 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhGWUPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 16:15:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10054"; a="212010257"
-X-IronPort-AV: E=Sophos;i="5.84,265,1620716400"; 
-   d="scan'208";a="212010257"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 13:55:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,265,1620716400"; 
-   d="scan'208";a="660321486"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 23 Jul 2021 13:55:31 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m72Cg-0002KD-Ii; Fri, 23 Jul 2021 20:55:30 +0000
-Date:   Sat, 24 Jul 2021 04:54:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:for-next/clang-fallthrough] BUILD SUCCESS
- 49e42c96f96bea335ea7f51af973804e8134afc4
-Message-ID: <60fb2ca3.zNoIxQ1DpVXHGTh+%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231447AbhGWUSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 16:18:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55962 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229530AbhGWUST (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 16:18:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627073932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/nhpAW6DhddRuT8w8zINHZDUaJ16Ga0NWcS3sD7FPLI=;
+        b=i3YU6OEQ3NvSg56KoUJJ8QdGQzjciuigSTtilD+ugL1V+1jYyEoJDGxaenl8ynnCosFzRF
+        vZH00/mjm4IVxkk990kiGoDB9Dp0TbUbBwBsQf9yAb0eqGRidEYW9VRRqkWaQhpKTOnQYD
+        U/tv+S7epxa8KaG74lfyGd8WSw/hNeo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-325-_DZBFc4uPuKedgN0ZWTt4w-1; Fri, 23 Jul 2021 16:58:50 -0400
+X-MC-Unique: _DZBFc4uPuKedgN0ZWTt4w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C62CA3639F;
+        Fri, 23 Jul 2021 20:58:48 +0000 (UTC)
+Received: from max.com (unknown [10.40.194.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9FB8C100238C;
+        Fri, 23 Jul 2021 20:58:42 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH v3 0/7] gfs2: Fix mmap + page fault deadlocks
+Date:   Fri, 23 Jul 2021 22:58:33 +0200
+Message-Id: <20210723205840.299280-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
-branch HEAD: 49e42c96f96bea335ea7f51af973804e8134afc4  Revert "Revert "Makefile: Enable -Wimplicit-fallthrough for Clang""
+Hi Linus et al.,
 
-elapsed time: 722m
+here's an update of my gfs2 mmap + page fault fixes (against -rc2).
+From my point of view,
 
-configs tested: 122
-configs skipped: 4
+  * these two are ready and need to be looked at by Al:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+    iov_iter: Introduce fault_in_iov_iter helper
+    iov_iter: Introduce noio flag to disable page faults
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210723
-sh                          rsk7203_defconfig
-powerpc                     redwood_defconfig
-powerpc                       holly_defconfig
-powerpc                          allmodconfig
-mips                            gpr_defconfig
-powerpc                      pcm030_defconfig
-mips                      pic32mzda_defconfig
-ia64                        generic_defconfig
-m68k                         amcore_defconfig
-mips                    maltaup_xpa_defconfig
-sh                        dreamcast_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                 mpc8540_ads_defconfig
-sh                               j2_defconfig
-arm                          ixp4xx_defconfig
-arm                     davinci_all_defconfig
-mips                        workpad_defconfig
-nios2                            allyesconfig
-powerpc                        fsp2_defconfig
-arm                         vf610m4_defconfig
-m68k                                defconfig
-h8300                            allyesconfig
-arm                          gemini_defconfig
-microblaze                          defconfig
-arm                         axm55xx_defconfig
-mips                     loongson2k_defconfig
-sh                          sdk7780_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                            xcep_defconfig
-ia64                            zx1_defconfig
-openrisc                  or1klitex_defconfig
-sh                          r7785rp_defconfig
-h8300                            alldefconfig
-powerpc                 mpc85xx_cds_defconfig
-nds32                               defconfig
-arm                            hisi_defconfig
-arm                         orion5x_defconfig
-mips                           ci20_defconfig
-sh                             espt_defconfig
-powerpc                     tqm8555_defconfig
-alpha                               defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                 canyonlands_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210722
-i386                 randconfig-a003-20210722
-i386                 randconfig-a004-20210722
-i386                 randconfig-a002-20210722
-i386                 randconfig-a001-20210722
-i386                 randconfig-a006-20210722
-i386                 randconfig-a005-20210723
-i386                 randconfig-a003-20210723
-i386                 randconfig-a004-20210723
-i386                 randconfig-a002-20210723
-i386                 randconfig-a001-20210723
-i386                 randconfig-a006-20210723
-x86_64               randconfig-a011-20210723
-x86_64               randconfig-a016-20210723
-x86_64               randconfig-a013-20210723
-x86_64               randconfig-a014-20210723
-x86_64               randconfig-a012-20210723
-x86_64               randconfig-a015-20210723
-i386                 randconfig-a016-20210723
-i386                 randconfig-a013-20210723
-i386                 randconfig-a012-20210723
-i386                 randconfig-a011-20210723
-i386                 randconfig-a014-20210723
-i386                 randconfig-a015-20210723
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+  * these two need to be reviewed by Christoph at least:
 
-clang tested configs:
-x86_64               randconfig-c001-20210723
-x86_64               randconfig-b001-20210723
-x86_64               randconfig-a003-20210723
-x86_64               randconfig-a006-20210723
-x86_64               randconfig-a001-20210723
-x86_64               randconfig-a005-20210723
-x86_64               randconfig-a004-20210723
-x86_64               randconfig-a002-20210723
+    iomap: Fix iomap_dio_rw return value for user copies
+    iomap: Support restarting direct I/O requests after user copy failures
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks a lot,
+Andreas
+
+Andreas Gruenbacher (7):
+  iov_iter: Introduce fault_in_iov_iter helper
+  gfs2: Add wrapper for iomap_file_buffered_write
+  gfs2: Fix mmap + page fault deadlocks for buffered I/O
+  iomap: Fix iomap_dio_rw return value for user copies
+  iomap: Support restarting direct I/O requests after user copy failures
+  iov_iter: Introduce noio flag to disable page faults
+  gfs2: Fix mmap + page fault deadlocks for direct I/O
+
+ fs/gfs2/file.c       | 77 ++++++++++++++++++++++++++++++++++++++++----
+ fs/iomap/direct-io.c | 13 ++++++--
+ include/linux/mm.h   |  3 ++
+ include/linux/uio.h  |  2 ++
+ lib/iov_iter.c       | 62 ++++++++++++++++++++++++++++++++---
+ mm/gup.c             | 68 ++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 211 insertions(+), 14 deletions(-)
+
+-- 
+2.26.3
+
