@@ -2,158 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A8D3D4167
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8857E3D416B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 22:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhGWTga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 15:36:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24600 "EHLO m43-7.mailgun.net"
+        id S231126AbhGWTjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 15:39:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhGWTg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 15:36:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627071422; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=HRN/UDX2HXLKNeRvuGxP4vsevVc7LCnZM359D66adWU=;
- b=Jip3vyfaDo8sQ6iS91TUaq2k+DVO+tflZMI4CcQZHT2Mg7RnukpZSZ5ElCUNQxF3cGAs70s5
- cd5g/BB1u6Kt+OQhOaac98ybQSUycDu1A1dSyymUikptzq3BlX1geELS/0kEPzt5NuuzIZRe
- EZBjCTvRtAcYy/plWEc90kp/Ch8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60fb23b34815712f3ade4dae (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Jul 2021 20:16:51
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3BC2DC43460; Fri, 23 Jul 2021 20:16:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 63712C433D3;
-        Fri, 23 Jul 2021 20:16:49 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        id S229461AbhGWTjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 15:39:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A189A60ED7;
+        Fri, 23 Jul 2021 20:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1627071574;
+        bh=0BAO7UovvvSbaYafDUDdTwXZEq2gIph4eDBcdB5yieQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d6DCfyTB0esEzQbIWFCeaUvfgjwA4lX8+8wNkEy2usvctfv4WVW3j2w1Uyd50o/a+
+         8T1BPd2lB2f+833Rx9YjdKx+35W+Qg6L13oYLc0tpGhUBn/V+tuNEbAhsK7ZclSndD
+         F9V2ely94T/BSrRzewRhufSwvzowyvkdPyYwdcVI=
+Date:   Fri, 23 Jul 2021 13:19:32 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>
+Subject: Re: [PATCH] mm,do_huge_pmd_numa_page: remove unnecessary TLB
+ flushing code
+Message-Id: <20210723131932.aa889158e9c8cd3ac089e8e5@linux-foundation.org>
+In-Reply-To: <878s1xaobl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+References: <20210720065529.716031-1-ying.huang@intel.com>
+        <eadff602-3824-f69d-e110-466b37535c99@de.ibm.com>
+        <CAHbLzkp6LDLUK9TLM+geQM6+X6+toxAGi53UBd49Zm5xgc5aWQ@mail.gmail.com>
+        <0D75A92F-E2AA-480C-9E9A-0B6EE7897757@nvidia.com>
+        <CAHbLzkqZZEic7+H0ky9u+aKO5o_cF0N5xQ=JO2tMpc8jg8RcnQ@mail.gmail.com>
+        <YPhAEcHOCZ5yII/T@google.com>
+        <87lf5z9osl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <572f1ddd-9ac6-fb09-9a24-1c667dbd1d03@de.ibm.com>
+        <878s1xaobl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 23 Jul 2021 13:16:49 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        freedreno@lists.freedesktop.org,
-        Chandan Uddaraju <chandanu@codeaurora.org>
-Subject: Re: [Freedreno] [PATCH 3/5] drm/msm/dp: Refactor ioremap wrapper
-In-Reply-To: <20210722024227.3313096-4-bjorn.andersson@linaro.org>
-References: <20210722024227.3313096-1-bjorn.andersson@linaro.org>
- <20210722024227.3313096-4-bjorn.andersson@linaro.org>
-Message-ID: <a9136a5ecdda1a60e9b6ea03fece6150@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-21 19:42, Bjorn Andersson wrote:
-> In order to deal with multiple memory ranges in the following commit
-> change the ioremap wrapper to not poke directly into the dss_io_data
-> struct.
+On Fri, 23 Jul 2021 08:03:42 +0800 "Huang, Ying" <ying.huang@intel.com> wrote:
+
+> Can you help to add the following text to the end of the original patch
+> description?
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-I think we can squash this one and the next patch into one.
-Because the APIs and structs you are modifying here are again getting 
-touched in the next one too.
-> ---
->  drivers/gpu/drm/msm/dp/dp_parser.c | 28 ++++++++++++++--------------
->  drivers/gpu/drm/msm/dp/dp_parser.h |  2 +-
->  2 files changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c
-> b/drivers/gpu/drm/msm/dp/dp_parser.c
-> index c064ced78278..e68dacef547c 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.c
-> @@ -19,39 +19,39 @@ static const struct dp_regulator_cfg 
-> sdm845_dp_reg_cfg = {
->  	},
->  };
-> 
-> -static int msm_dss_ioremap(struct platform_device *pdev,
-> -				struct dss_io_data *io_data)
-> +static void __iomem *dp_ioremap(struct platform_device *pdev, int
-> idx, size_t *len)
->  {
->  	struct resource *res = NULL;
-> +	void __iomem *base;
-> 
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, idx);
->  	if (!res) {
->  		DRM_ERROR("%pS->%s: msm_dss_get_res failed\n",
->  			__builtin_return_address(0), __func__);
-> -		return -ENODEV;
-> +		return ERR_PTR(-ENODEV);
->  	}
-> 
-> -	io_data->len = (u32)resource_size(res);
-> -	io_data->base = devm_ioremap(&pdev->dev, res->start, io_data->len);
-> -	if (!io_data->base) {
-> +	base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (!base) {
->  		DRM_ERROR("%pS->%s: ioremap failed\n",
->  			__builtin_return_address(0), __func__);
-> -		return -EIO;
-> +		return ERR_PTR(-EIO);
->  	}
-> 
-> -	return 0;
-> +	*len = resource_size(res);
-> +	return base;
->  }
-> 
->  static int dp_parser_ctrl_res(struct dp_parser *parser)
->  {
-> -	int rc = 0;
->  	struct platform_device *pdev = parser->pdev;
->  	struct dp_io *io = &parser->io;
-> +	struct dss_io_data *dss = &io->dp_controller;
-> 
-> -	rc = msm_dss_ioremap(pdev, &io->dp_controller);
-> -	if (rc) {
-> -		DRM_ERROR("unable to remap dp io resources, rc=%d\n", rc);
-> -		return rc;
-> +	dss->base = dp_ioremap(pdev, 0, &dss->len);
-> +	if (IS_ERR(dss->base)) {
-> +		DRM_ERROR("unable to remap dp io region: %pe\n", dss->base);
-> +		return PTR_ERR(dss->base);
->  	}
-> 
->  	io->phy = devm_phy_get(&pdev->dev, "dp");
-> diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h
-> b/drivers/gpu/drm/msm/dp/dp_parser.h
-> index 34b49628bbaf..dc62e70b1640 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_parser.h
-> +++ b/drivers/gpu/drm/msm/dp/dp_parser.h
-> @@ -26,7 +26,7 @@ enum dp_pm_type {
->  };
-> 
->  struct dss_io_data {
-> -	u32 len;
-> +	size_t len;
->  	void __iomem *base;
->  };
+> "
+> The mmu_notifier_invalidate_range() in do_huge_pmd_numa_page() is
+> deleted too.  Because migrate_pages() takes care of that too when CPU
+> TLB is flushed.
+> "
+
+Done.
