@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B943D3B99
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45493D3B9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 16:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhGWNYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 09:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233663AbhGWNYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 09:24:18 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7009EC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 07:04:51 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c09c:f31e:25f6:b717])
-        by laurent.telenet-ops.be with bizsmtp
-        id Ye4n25004167rCQ01e4nQb; Fri, 23 Jul 2021 16:04:47 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m6vnC-001ojW-Qp; Fri, 23 Jul 2021 16:04:46 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m6vnC-00BrLx-7n; Fri, 23 Jul 2021 16:04:46 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [GIT PULL] m68k updates for 5.14 (take two)
-Date:   Fri, 23 Jul 2021 16:04:43 +0200
-Message-Id: <20210723140443.2826648-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S235342AbhGWNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 09:25:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233663AbhGWNZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:25:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EAE7608FE;
+        Fri, 23 Jul 2021 14:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627049169;
+        bh=aOlW7HflLLCB43LLa1QBe7XH3wZ0g0g9L9bhVoxp6OM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dCgPkn06oMpesYXjNUonsk8Oee7bC8Zioxog0T7k3BHdW9g8fFGAVP4NOg1/01Hat
+         khE+bqmg/0Yi/2JI0uTGZ4KXAO6P5NnljWbhhGMDdK1Nexoa09fuRb/z5O4YlG0sCq
+         DzViw2a+XjG3bVb0ByMSSFr2YDfyqMwQ5Zetl3p+IE7cgj3Kbs91XBCqn9ubpvkek+
+         C4QIua1dVqNK3jPPBtMSl3c1g1JJq/lFPjSYGIfWeplLm9mcsm7XVRhuSL/plD4Rzu
+         xz27MzUyjNBY0UqhDM+FsXfLuYWrF4eB+kqJU50zh+onyDGVjgJgc4iGnuXp+XG47k
+         w7Msjxyf+eNDA==
+Date:   Fri, 23 Jul 2021 15:06:02 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: Duplicate calls to regmap_debugfs_init() through
+ regmap_attach_dev()
+Message-ID: <20210723140602.GE5221@sirena.org.uk>
+References: <eb27b79ce46bde0202a4e7b047a3aaec8338fb6d.camel@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EXKGNeO8l0xGFBjy"
+Content-Disposition: inline
+In-Reply-To: <eb27b79ce46bde0202a4e7b047a3aaec8338fb6d.camel@ew.tq-group.com>
+X-Cookie: Integrity has no need for rules.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Hi Linus,
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+--EXKGNeO8l0xGFBjy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+On Mon, Jul 19, 2021 at 03:53:38PM +0200, Matthias Schiffer wrote:
 
-are available in the Git repository at:
+> With recent kernels (observed on v5.10.y, but the code doesn't look
+> significantly different on master/next) I've seen the following message
+> on boot on i.MX6UL SoCs:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.14-tag2
+That's not recent but anyway...
 
-for you to fetch changes up to 21ed49265986931b8921a2404394426870245bd2:
+> It seems to me that there is no correct way to use regmap_attach_dev()
+> from outside of __regmap_init(). In particular on a syscon regmap that
+> may be shared between different drivers, setting map->dev looks wrong
+> to me.
 
-  m68k: MAC should select HAVE_PATA_PLATFORM (2021-07-19 12:18:42 +0200)
+Yes, trying to set the device on a regmap that already has a device is
+not a good idea, if the syscon code is doing it transparently as part of
+lookup then syscon users shouldn't do it by hand.
 
-----------------------------------------------------------------
-m68k updates for v5.14 (take two)
+--EXKGNeO8l0xGFBjy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  - Fix a Mac defconfig regression due to the IDE -> ATA switch.
+-----BEGIN PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      m68k: MAC should select HAVE_PATA_PLATFORM
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD6zMkACgkQJNaLcl1U
+h9DdOQf+IFCCmuyjvdU07qtZveGKpzQ3rYjXfzpvmcAgUP45gWCpomIlz2rSQjcS
+bUHdGQ/pUQNx7IY7NjbMJrCi2EiolGihLU7WB77VhT1tHItzx2MtohzpC/Q5veSm
+t2YZHAW85GOsqM6OfSbled1s+J8jD+Gsn1iz5sDcbKtIRDq0DaYtD1Peh+etW3SB
+P9bYqQNBhDYbTVYohISzRarAerdUSNd3DfmTrFjVbdsvAonRAKTGTcA89rTonTC8
+5PdIuQ2bxdvwj53w1N+Kox6/0TH9wDAzHdSsCQmWL/3bUdwFutX6RF8SWzoY3U/W
+qrCXBWuT2Jfze14QuArNDg6a96UBOQ==
+=43yC
+-----END PGP SIGNATURE-----
 
- arch/m68k/Kconfig.machine | 1 +
- 1 file changed, 1 insertion(+)
-
-Thanks for pulling!
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+--EXKGNeO8l0xGFBjy--
