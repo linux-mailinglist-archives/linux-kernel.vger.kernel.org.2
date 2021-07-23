@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309573D3CA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D182F3D3CA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235594AbhGWPC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235472AbhGWPCZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:02:25 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FC5C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:42:58 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id q2so2226603ljq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O/f1g+Bd2m3qWx8HKI2UdTdvCSkFMuvtajEPkZseSXo=;
-        b=P9WIEootakX6Goscgqro+lI7BeHd2NnvAGsPf77p8dHmtnMv5PdY+XquMleRjOo0en
-         N8dQ9HMTolWKMbRpxmESYskXGStw0BdpZAQsqoXuhmojOIhJ53Sf6uQcQjQ9tG2RLPTZ
-         DK4DQ5uJCDdpcyd+LAgvJ7+wh7S2b3FoMzV0i+2QMBVGLRM+mOsqIeADs/3lkS4+z1+A
-         99y88jczDL0H+qZ3diqcU528DJKCL2eP/9ale4Sv7vMfvEd7WnL0y/xqtS6t8elZqsEY
-         MN5cWFh21q1qmIBNQNsH8VgYf4mbUd/8wEympPPSlUh8I046ULUvC167RulQd0mVko7O
-         jnTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O/f1g+Bd2m3qWx8HKI2UdTdvCSkFMuvtajEPkZseSXo=;
-        b=XLW3b6gY9irzNXsDc2YsCM89IYA7kxiIGABA46ifdrh7ae7nzizwJILQxTmM/O7RHQ
-         pZ2+XWnrTvEyZs6bA5YSnYormqbhK2r1KtEFjElyQnqiVmRTEQCC9ZQ0ffvDgYVjDTSt
-         yZfzKJ1dX2+/iANRc1Z2ZYWDUMBoA2ahJ99QJNm6MPqF74pVPZnnsCnCngwORyVqhFdJ
-         XWVmPQH69baqRiW+JDqKhBgaaWeNjdHEce0H48Wvor764z3wV/lvBdeH5L8HXevugT4r
-         h3K5fy7R+3YXajO1ggUHpbOvc93ChMKP0bVdxZB7B9SINUldr3OmoRsP0/k0bvzIetHk
-         c30w==
-X-Gm-Message-State: AOAM533dVOAggxM/55GthtAokY7Eda+BIsrqM70QiJ8e/UuTGlyaBq53
-        RWVi858Vi/j3bzIvHrpsBeSdUzcPqa4NNqtoe2G8Nw==
-X-Google-Smtp-Source: ABdhPJy1g6Lo0FVctRSfD7xM4QliObCTb5e2mkP+drcrUUsa0a8KNePvOCiQfbXrF4S6/RGLWayNHJSo1qU6BxwNWB0=
-X-Received: by 2002:a05:651c:169a:: with SMTP id bd26mr3717379ljb.368.1627054976984;
- Fri, 23 Jul 2021 08:42:56 -0700 (PDT)
+        id S235619AbhGWPDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:03:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235470AbhGWPDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 11:03:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB88760C51;
+        Fri, 23 Jul 2021 15:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627055044;
+        bh=vhxORIpUlFOlz7p1YyAS/UfRmjF+Aiod9z/B9WU45dc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d17zTnCr9JLhnCtYCuiVILkQ+lwK4yTgpCMDm+HZhgUL/mnqy2h8bjllIojs4vPaJ
+         eUGtkl3ObvGBORX+NHbXDO6EhN+HGiITJHk0hCN9WT+tLMWofcaWDTx3YAmyBCz32o
+         jgYXraP9rkJtQeGvsXTw+nvcah7BUyv901yQ4JiN3F9sRnZ8cd3y2kjP0kz7LvCHs0
+         4O6Hmar785mEng8Serdnu6IW52cjza1755PERDNLtNqd1rtW8RfijvMO7MjPzPZLVk
+         bbNidAUrC5hFS3euLftq0POnCYn/9kEdqKaq8dLw9no3Od/9gJBt1ldDhBKCiidOXi
+         6+1MdARmX0JHw==
+Date:   Fri, 23 Jul 2021 21:13:50 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, loic.poulain@linaro.org,
+        bjorn.andersson@linaro.org, xiyou.wangcong@gmail.com,
+        edumazet@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] net: qrtr: fix memory leaks
+Message-ID: <20210723154350.GB3739@thinkpad>
+References: <20210723122753.GA3739@thinkpad>
+ <20210723153132.6159-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-References: <20210701080955.2660294-1-hsinyi@chromium.org>
-In-Reply-To: <20210701080955.2660294-1-hsinyi@chromium.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 23 Jul 2021 17:42:46 +0200
-Message-ID: <CACRpkdbaeXTum_tpfyoHnaNtS8Kz1JiXtardc8UsRcGRLHO8Mw@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: mediatek: Fix fallback behavior for bias_set_combo
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Sean Wang <sean.wang@kernel.org>,
-        Zhiyong Tao <zhiyong.tao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723153132.6159-1-paskripkin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi,
+On Fri, Jul 23, 2021 at 06:31:32PM +0300, Pavel Skripkin wrote:
+> Syzbot reported memory leak in qrtr. The problem was in unputted
+> struct sock. qrtr_local_enqueue() function calls qrtr_port_lookup()
+> which takes sock reference if port was found. Then there is the following
+> check:
+> 
+> if (!ipc || &ipc->sk == skb->sk) {
+> 	...
+> 	return -ENODEV;
+> }
+> 
+> Since we should drop the reference before returning from this function and
+> ipc can be non-NULL inside this if, we should add qrtr_port_put() inside
+> this if.
+> 
+> The similar corner case is in qrtr_endpoint_post() as Manivannan
+> reported. In case of sock_queue_rcv_skb() failure we need to put
+> port reference to avoid leaking struct sock pointer.
+> 
+> Fixes: e04df98adf7d ("net: qrtr: Remove receive worker")
+> Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
+> Reported-and-tested-by: syzbot+35a511c72ea7356cdcf3@syzkaller.appspotmail.com
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-On Thu, Jul 1, 2021 at 10:10 AM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->
-> Some pin doesn't support PUPD register, if it fails and fallbacks with
-> bias_set_combo case, it will call mtk_pinconf_bias_set_pupd_r1_r0() to
-> modify the PUPD pin again.
->
-> Since the general bias set are either PU/PD or PULLSEL/PULLEN, try
-> bias_set or bias_set_rev1 for the other fallback case. If the pin
-> doesn't support neither PU/PD nor PULLSEL/PULLEN, it will return
-> -ENOTSUPP.
->
-> Fixes: 81bd1579b43e ("pinctrl: mediatek: Fix fallback call path")
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+
+Thanks,
+Mani
+
 > ---
-> v2: fix v1 comments
-
-Thanks for fixing this up so nicely, great work.
-Patch applied for fixes!
-
-Yours,
-Linus Walleij
+> 
+> Changes in v2:
+> 	Added missing qrtr_port_put() in qrtr_endpoint_post() as Manivannan
+> 	reported.
+> 
+> ---
+>  net/qrtr/qrtr.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+> index b34358282f37..a8b2c9b21a8d 100644
+> --- a/net/qrtr/qrtr.c
+> +++ b/net/qrtr/qrtr.c
+> @@ -514,8 +514,10 @@ int qrtr_endpoint_post(struct qrtr_endpoint *ep, const void *data, size_t len)
+>  		if (!ipc)
+>  			goto err;
+>  
+> -		if (sock_queue_rcv_skb(&ipc->sk, skb))
+> +		if (sock_queue_rcv_skb(&ipc->sk, skb)) {
+> +			qrtr_port_put(ipc);
+>  			goto err;
+> +		}
+>  
+>  		qrtr_port_put(ipc);
+>  	}
+> @@ -850,6 +852,8 @@ static int qrtr_local_enqueue(struct qrtr_node *node, struct sk_buff *skb,
+>  
+>  	ipc = qrtr_port_lookup(to->sq_port);
+>  	if (!ipc || &ipc->sk == skb->sk) { /* do not send to self */
+> +		if (ipc)
+> +			qrtr_port_put(ipc);
+>  		kfree_skb(skb);
+>  		return -ENODEV;
+>  	}
+> -- 
+> 2.32.0
+> 
