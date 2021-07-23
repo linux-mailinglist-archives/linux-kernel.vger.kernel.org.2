@@ -2,341 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790C83D3CFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C5B3D3D00
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235705AbhGWPPc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Jul 2021 11:15:32 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:34449 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235660AbhGWPPb (ORCPT
+        id S235700AbhGWPQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:16:26 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3471 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235582AbhGWPQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:15:31 -0400
-Received: (Authenticated sender: clement.leger@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id A8F031C0007;
-        Fri, 23 Jul 2021 15:56:02 +0000 (UTC)
-Date:   Fri, 23 Jul 2021 17:56:01 +0200
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH 2/3] syscon: add support for "syscon-smc" compatible
-Message-ID: <20210723175601.59febf75@fixe.home>
-In-Reply-To: <YPrf/5g7JAtf1c4u@google.com>
-References: <20210723135239.388325-1-clement.leger@bootlin.com>
-        <20210723135239.388325-3-clement.leger@bootlin.com>
-        <YPrf/5g7JAtf1c4u@google.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 23 Jul 2021 11:16:25 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GWYYW0jbQz6H7lk;
+        Fri, 23 Jul 2021 23:45:19 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 23 Jul 2021 17:56:56 +0200
+Received: from localhost (10.210.170.238) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 23 Jul
+ 2021 16:56:55 +0100
+Date:   Fri, 23 Jul 2021 16:56:29 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>, <pmeerw@pmeerw.net>,
+        <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <p.zabel@pengutronix.de>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [v2 8/8] iio: adc: aspeed: Support battery sensing.
+Message-ID: <20210723165629.00005610@Huawei.com>
+In-Reply-To: <20210723081621.29477-9-billy_tsai@aspeedtech.com>
+References: <20210723081621.29477-1-billy_tsai@aspeedtech.com>
+        <20210723081621.29477-9-billy_tsai@aspeedtech.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.170.238]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Fri, 23 Jul 2021 16:27:59 +0100,
-Lee Jones <lee.jones@linaro.org> a écrit :
+On Fri, 23 Jul 2021 16:16:21 +0800
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-> On Fri, 23 Jul 2021, Clément Léger wrote:
-> 
-> > System controllers can be placed under secure monitor control when
-> > running under them. In order to keep existing code which accesses
-> > such system controllers using a syscon, add support for
-> > "syscon-smc" compatible.
-> > 
-> > When enable, the syscon will handle this new compatible and look
-> > for an "arm,smc-id" property to execute the appropriate SMC. A SMC
-> > regmap is then created to forward register access to the secure
-> > monitor.
-> > 
-> > Signed-off-by: Clément Léger <clement.leger@bootlin.com>
-> > ---
-> >  drivers/mfd/syscon.c | 170
-> > ++++++++++++++++++++++++++++++++++++------- 1 file changed, 145
-> > insertions(+), 25 deletions(-)  
-> 
-> I'm going to let Arnd have at this, but just a couple of points.
-> 
-> > diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-> > index 765c0210cb52..eb727b146315 100644
-> > --- a/drivers/mfd/syscon.c
-> > +++ b/drivers/mfd/syscon.c
-> > @@ -40,7 +40,15 @@ static const struct regmap_config
-> > syscon_regmap_config = { .reg_stride = 4,
-> >  };
-> >  
-> > -static struct syscon *of_syscon_register(struct device_node *np,
-> > bool check_clk) +static void syscon_add(struct syscon *syscon)
-> > +{
-> > +	spin_lock(&syscon_list_slock);
-> > +	list_add_tail(&syscon->list, &syscon_list);
-> > +	spin_unlock(&syscon_list_slock);
-> > +}
-> > +
-> > +static struct syscon *of_syscon_register_mmio(struct device_node
-> > *np,
-> > +					      bool check_clk)
-> >  {
-> >  	struct clk *clk;
-> >  	struct syscon *syscon;
-> > @@ -132,10 +140,6 @@ static struct syscon
-> > *of_syscon_register(struct device_node *np, bool check_clk)
-> > syscon->regmap = regmap; syscon->np = np;
-> >  
-> > -	spin_lock(&syscon_list_slock);
-> > -	list_add_tail(&syscon->list, &syscon_list);
-> > -	spin_unlock(&syscon_list_slock);
-> > -
-> >  	return syscon;
-> >  
-> >  err_attach:
-> > @@ -150,8 +154,49 @@ static struct syscon
-> > *of_syscon_register(struct device_node *np, bool check_clk) return
-> > ERR_PTR(ret); }
-> >  
-> > +#ifdef CONFIG_REGMAP_SMCCC
-> > +static struct syscon *of_syscon_register_smccc(struct device_node
-> > *np) +{
-> > +	struct syscon *syscon;
-> > +	struct regmap *regmap;
-> > +	u32 reg_io_width = 4, smc_id;
-> > +	int ret;
-> > +	struct regmap_config syscon_config = syscon_regmap_config;
-> > +
-> > +	ret = of_property_read_u32(np, "arm,smc-id", &smc_id);  
-> 
-> So this is Arm specific.
-> 
-> Not sure we want to be creating bespoke support for specific
-> architectures/platforms in the generic syscon implementation.
+> In ast2600, ADC integrate dividing circuit at last input channel for
+> battery sensing. This patch use the dts property "battery-sensing" to
+> enable this feature makes the last channel of each adc can tolerance
 
-Agreed, I wanted to keep an existing property name but having such
-thing in the syscon is indeed a bad idea.
+this feature allows the last channel of each ADC to tolerate a higher
+voltage than the reference voltage.
 
+> higher voltage than reference voltage.
 > 
-> > +	if (ret)
-> > +		return ERR_PTR(-ENODEV);
-> > +
-> > +	syscon = kzalloc(sizeof(*syscon), GFP_KERNEL);
-> > +	if (!syscon)
-> > +		return ERR_PTR(-ENOMEM);
-> > +
-> > +	of_property_read_u32(np, "reg-io-width", &reg_io_width);
-> > +
-> > +	syscon_config.name = kasprintf(GFP_KERNEL, "%pOFn@smc%x",
-> > np, smc_id);
-> > +	syscon_config.val_bits = reg_io_width * 8;
-> > +
-> > +	regmap = regmap_init_smccc(NULL, smc_id, &syscon_config);
-> > +	if (IS_ERR(regmap)) {
-> > +		ret = PTR_ERR(regmap);
-> > +		goto err_regmap;
-> > +	}
-> > +
-> > +	syscon->regmap = regmap;
-> > +	syscon->np = np;
-> > +
-> > +	return syscon;
-> > +
-> > +err_regmap:
-> > +	kfree(syscon_config.name);
-> > +	kfree(syscon);
-> > +
-> > +	return ERR_PTR(ret);
-> > +}
-> > +#endif
-> > +
-> >  static struct regmap *device_node_get_regmap(struct device_node
-> > *np,
-> > -					     bool check_clk)
-> > +					     bool check_clk, bool
-> > use_smccc) {
-> >  	struct syscon *entry, *syscon = NULL;
-> >  
-> > @@ -165,8 +210,19 @@ static struct regmap
-> > *device_node_get_regmap(struct device_node *np, 
-> >  	spin_unlock(&syscon_list_slock);
-> >  
-> > -	if (!syscon)
-> > -		syscon = of_syscon_register(np, check_clk);
-> > +	if (!syscon) {
-> > +		if (use_smccc)
-> > +#ifdef CONFIG_REGMAP_SMCCC
-> > +			syscon = of_syscon_register_smccc(np);
-> > +#else
-> > +			syscon = NULL;
-> > +#endif  
-> 
-> ... and we certainly don't want to be doing so using #ifdefery.
-> 
-> Please find a better way to support this feature.
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+This looks fine otherwise, but one more general question inline.
 
-Agreed too, best solution would probably be to allow having multiple
-syscon "backends" split in multiple files which would create the
-correct regmap according to the devicetree.
+Thanks,
 
-Clément
+Jonathan
 
+> ---
+>  drivers/iio/adc/aspeed_adc.c | 60 +++++++++++++++++++++++++++++++++---
+>  1 file changed, 55 insertions(+), 5 deletions(-)
 > 
-> > +		else
-> > +			syscon = of_syscon_register_mmio(np,
-> > check_clk); +
-> > +		if (!IS_ERR(syscon))
-> > +			syscon_add(syscon);
-> > +	}
-> >  
-> >  	if (IS_ERR(syscon))
-> >  		return ERR_CAST(syscon);
-> > @@ -176,16 +232,19 @@ static struct regmap
-> > *device_node_get_regmap(struct device_node *np, 
-> >  struct regmap *device_node_to_regmap(struct device_node *np)
-> >  {
-> > -	return device_node_get_regmap(np, false);
-> > +	return device_node_get_regmap(np, false, false);
-> >  }
-> >  EXPORT_SYMBOL_GPL(device_node_to_regmap);
-> >  
-> >  struct regmap *syscon_node_to_regmap(struct device_node *np)
-> >  {
-> > -	if (!of_device_is_compatible(np, "syscon"))
-> > -		return ERR_PTR(-EINVAL);
-> > +	if (of_device_is_compatible(np, "syscon"))
-> > +		return device_node_get_regmap(np, true, false);
-> > +
-> > +	if (of_device_is_compatible(np, "syscon-smc"))
-> > +		return device_node_get_regmap(np, true, true);
-> >  
-> > -	return device_node_get_regmap(np, true);
-> > +	return ERR_PTR(-EINVAL);
-> >  }
-> >  EXPORT_SYMBOL_GPL(syscon_node_to_regmap);
-> >  
-> > @@ -273,19 +332,19 @@ struct regmap
-> > *syscon_regmap_lookup_by_phandle_optional(struct device_node *np, }
-> >  EXPORT_SYMBOL_GPL(syscon_regmap_lookup_by_phandle_optional);
-> >  
-> > -static int syscon_probe(struct platform_device *pdev)
-> > +struct syscon_driver_data {
-> > +	int (*probe_func)(struct platform_device *pdev, struct
-> > device *dev,
-> > +			  struct syscon *syscon);
-> > +};
-> > +
-> > +static int syscon_probe_mmio(struct platform_device *pdev,
-> > +			     struct device *dev,
-> > +			     struct syscon *syscon)
-> >  {
-> > -	struct device *dev = &pdev->dev;
-> > -	struct syscon_platform_data *pdata = dev_get_platdata(dev);
-> > -	struct syscon *syscon;
-> >  	struct regmap_config syscon_config = syscon_regmap_config;
-> >  	struct resource *res;
-> >  	void __iomem *base;
-> >  
-> > -	syscon = devm_kzalloc(dev, sizeof(*syscon), GFP_KERNEL);
-> > -	if (!syscon)
-> > -		return -ENOMEM;
-> > -
-> >  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >  	if (!res)
-> >  		return -ENOENT;
-> > @@ -295,23 +354,84 @@ static int syscon_probe(struct
-> > platform_device *pdev) return -ENOMEM;
-> >  
-> >  	syscon_config.max_register = resource_size(res) - 4;
-> > -	if (pdata)
-> > -		syscon_config.name = pdata->label;
-> > +
-> >  	syscon->regmap = devm_regmap_init_mmio(dev, base,
-> > &syscon_config); if (IS_ERR(syscon->regmap)) {
-> >  		dev_err(dev, "regmap init failed\n");
-> >  		return PTR_ERR(syscon->regmap);
-> >  	}
-> >  
-> > -	platform_set_drvdata(pdev, syscon);
-> > +	dev_dbg(dev, "regmap_mmio %pR registered\n", res);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct syscon_driver_data syscon_mmio_data = {
-> > +	.probe_func = &syscon_probe_mmio,
-> > +};
-> > +
-> > +#ifdef CONFIG_REGMAP_SMCCC
-> > +
-> > +static int syscon_probe_smc(struct platform_device *pdev,
-> > +			    struct device *dev,
-> > +			    struct syscon *syscon)
-> > +{
-> > +	struct regmap_config syscon_config = syscon_regmap_config;
-> > +	int smc_id, ret;
-> > +
-> > +	ret = of_property_read_u32(dev->of_node, "arm,smc-id",
-> > &smc_id);
-> > +	if (!ret)
-> > +		return -ENODEV;
-> > +
-> > +	syscon->regmap = devm_regmap_init_smccc(dev, smc_id,
-> > &syscon_config);
-> > +	if (IS_ERR(syscon->regmap)) {
-> > +		dev_err(dev, "regmap init failed\n");
-> > +		return PTR_ERR(syscon->regmap);
-> > +	}
-> >  
-> > -	dev_dbg(dev, "regmap %pR registered\n", res);
-> > +	dev_dbg(dev, "regmap_smccc %x registered\n", smc_id);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct syscon_driver_data syscon_smc_data = {
-> > +	.probe_func = &syscon_probe_smc,
-> > +};
-> > +#endif
-> > +
-> > +static int syscon_probe(struct platform_device *pdev)
-> > +{
-> > +	int ret;
-> > +	struct device *dev = &pdev->dev;
-> > +	struct syscon_platform_data *pdata = dev_get_platdata(dev);
-> > +	struct regmap_config syscon_config = syscon_regmap_config;
-> > +	struct syscon *syscon;
-> > +	const struct syscon_driver_data *driver_data;
-> > +
-> > +	if (pdata)
-> > +		syscon_config.name = pdata->label;
-> > +
-> > +	syscon = devm_kzalloc(dev, sizeof(*syscon), GFP_KERNEL);
-> > +	if (!syscon)
-> > +		return -ENOMEM;
-> > +
-> > +	driver_data = (const struct syscon_driver_data *)
-> > +
-> > platform_get_device_id(pdev)->driver_data; +
-> > +	ret = driver_data->probe_func(pdev, dev, syscon);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	platform_set_drvdata(pdev, syscon);
-> >  
-> >  	return 0;
-> >  }
-> >  
-> >  static const struct platform_device_id syscon_ids[] = {
-> > -	{ "syscon", },
-> > +	{ .name = "syscon",	.driver_data =
-> > (kernel_ulong_t)&syscon_mmio_data}, +#ifdef CONFIG_REGMAP_SMCCC
-> > +	{ .name = "syscon-smc",	.driver_data =
-> > (kernel_ulong_t)&syscon_smc_data}, +#endif
-> >  	{ }
-> >  };
-> >    
-> 
+> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+> index 7e674b607e36..6c7e2bb7b1ac 100644
+> --- a/drivers/iio/adc/aspeed_adc.c
+> +++ b/drivers/iio/adc/aspeed_adc.c
+> @@ -45,6 +45,9 @@
+>  #define ASPEED_ADC_REF_VOLTAGE_1200mV		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 1)
+>  #define ASPEED_ADC_REF_VOLTAGE_EXT_HIGH		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 2)
+>  #define ASPEED_ADC_REF_VOLTAGE_EXT_LOW		FIELD_PREP(ASPEED_ADC_REF_VOLTAGE, 3)
+> +#define ASPEED_ADC_BATTERY_SENSING_DIV		BIT(6)
+> +#define ASPEED_ADC_BATTERY_SENSING_DIV_2_3	FIELD_PREP(ASPEED_ADC_BATTERY_SENSING_DIV, 0)
+> +#define ASPEED_ADC_BATTERY_SENSING_DIV_1_3	FIELD_PREP(ASPEED_ADC_BATTERY_SENSING_DIV, 1)
+>  #define ASPEED_ADC_CTRL_INIT_RDY		BIT(8)
+>  #define ASPEED_ADC_CH7_MODE			BIT(12)
+>  #define ASPEED_ADC_CH7_NORMAL			FIELD_PREP(ASPEED_ADC_CH7_MODE, 0)
+> @@ -76,6 +79,11 @@ struct aspeed_adc_model_data {
+>  	unsigned int num_channels;
+>  };
+>  
+> +struct adc_gain {
+> +	u8 mult;
+> +	u8 div;
+> +};
+> +
+>  struct aspeed_adc_data {
+>  	struct device		*dev;
+>  	void __iomem		*base;
+> @@ -87,6 +95,8 @@ struct aspeed_adc_data {
+>  	int			vref;
+>  	u32			sample_period_ns;
+>  	int			cv;
+> +	bool			battery_sensing;
+> +	struct adc_gain		battery_mode_gain;
+>  };
+>  
+>  #define ASPEED_CHAN(_idx, _data_reg_addr) {			\
+> @@ -185,14 +195,38 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
+>  			       int *val, int *val2, long mask)
+>  {
+>  	struct aspeed_adc_data *data = iio_priv(indio_dev);
+> +	u32 adc_engine_control_reg_val;
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_RAW:
+> -		*val = readw(data->base + chan->address) + data->cv;
+> -		if (*val < 0)
+> -			*val = 0;
+> -		else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
+> -			*val = ASPEED_ADC_MAX_RAW_DATA;
+
+Not related to this patch, but can the device support a per channel
+reference selection? I.e. some channels use different internal references or
+external references from others?
+
+If so we should consider if it is necessary to expose that functionality
+in the dt-binding.
+
+> +		if (data->battery_sensing && chan->channel == 7) {
+> +			adc_engine_control_reg_val =
+> +				readl(data->base + ASPEED_REG_ENGINE_CONTROL);
+> +			writel(adc_engine_control_reg_val |
+> +				       ASPEED_ADC_CH7_BATTERY |
+> +				       ASPEED_ADC_BATTERY_SENSING_ENABLE,
+> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
+> +			/*
+> +			 * After enable battery sensing mode need to wait some time for adc stable
+> +			 * Experiment result is 1ms.
+> +			 */
+> +			mdelay(1);
+> +			*val = readw(data->base + chan->address) + data->cv;
+> +			if (*val < 0)
+> +				*val = 0;
+> +			else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
+> +				*val = ASPEED_ADC_MAX_RAW_DATA;
+> +			*val = (*val * data->battery_mode_gain.mult) /
+> +			       data->battery_mode_gain.div;
+> +			writel(adc_engine_control_reg_val,
+> +			       data->base + ASPEED_REG_ENGINE_CONTROL);
+> +		} else {
+> +			*val = readw(data->base + chan->address) + data->cv;
+> +			if (*val < 0)
+> +				*val = 0;
+> +			else if (*val >= ASPEED_ADC_MAX_RAW_DATA)
+> +				*val = ASPEED_ADC_MAX_RAW_DATA;
+> +		}
+>  		return IIO_VAL_INT;
+>  
+>  	case IIO_CHAN_INFO_SCALE:
+> @@ -392,6 +426,22 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto vref_config_error;
+>  
+> +	if (of_find_property(data->dev->of_node, "battery-sensing", NULL)) {
+> +		if (model_data->version >= aspeed_adc_ast2600) {
+> +			data->battery_sensing = 1;
+> +			if (readl(data->base + ASPEED_REG_ENGINE_CONTROL) &
+> +			    ASPEED_ADC_BATTERY_SENSING_DIV_1_3) {
+> +				data->battery_mode_gain.mult = 3;
+> +				data->battery_mode_gain.div = 1;
+> +			} else {
+> +				data->battery_mode_gain.mult = 3;
+> +				data->battery_mode_gain.div = 2;
+> +			}
+> +		} else
+> +			dev_warn(&pdev->dev,
+> +				 "Failed to enable battey-sensing mode\n");
+> +	}
+> +
+>  	if (model_data->wait_init_sequence) {
+>  		adc_engine_control_reg_val =
+>  			readl(data->base + ASPEED_REG_ENGINE_CONTROL);
 
