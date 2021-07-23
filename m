@@ -2,138 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A2F3D35C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA5F3D35C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhGWHQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:16:25 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43570 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229799AbhGWHQY (ORCPT
+        id S234232AbhGWHQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:16:49 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:35801 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233291AbhGWHQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:16:24 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16N7brTW141724;
-        Fri, 23 Jul 2021 03:55:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=/YI0iVS/WgfTLDZh3OyVkj9QsRID5ja6oabQZPd5K1E=;
- b=U9wMIkS263lX3zPfzdGYwrp6YPOsdcpVb7/u985I+dadTiT3NQ5+VphTEZC4Ws+FtPcA
- 9Bth+o9hwLqDUZP3FQXmjDgnRTSlFvzrXIMCEbOvqt25tkaqS3PChC65W8MAdAljQywZ
- GJcvW/vbRW4ghI8EqF+GKmnWryaT4MXbgnZ9a4ojvemhlZavWARwuUV0koYelh/4nsAz
- gDwKGFSk/VHxGKM6yqYv9fy9reYFsMbArihzWFOrSh4kjDfIB40grrLjvX9SUSd45kM+
- oOUuv/+7KjhdbOAaLYTFLScHUHRXWjyhXlA1kqCNSGZ/GOO5NvRT9rbRowwbSiYVePUU ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39yraqtc4e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 03:55:41 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16N7c32E142739;
-        Fri, 23 Jul 2021 03:55:40 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39yraqtc3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 03:55:40 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16N7lDEM026631;
-        Fri, 23 Jul 2021 07:55:38 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 39vng72h4s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Jul 2021 07:55:38 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16N7tYn130212536
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Jul 2021 07:55:34 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AF67B11C04C;
-        Fri, 23 Jul 2021 07:55:34 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1987911C04A;
-        Fri, 23 Jul 2021 07:55:33 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.25.128])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Jul 2021 07:55:33 +0000 (GMT)
-Subject: Re: [PATCH 7/8] tty: drop put_tty_driver
-To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
-        Alex Elder <elder@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-References: <20210723074317.32690-1-jslaby@suse.cz>
- <20210723074317.32690-8-jslaby@suse.cz>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <23a89de9-152e-2e7a-55f7-820f225ae697@de.ibm.com>
-Date:   Fri, 23 Jul 2021 09:55:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 23 Jul 2021 03:16:48 -0400
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 80AA040005;
+        Fri, 23 Jul 2021 07:57:19 +0000 (UTC)
+Date:   Fri, 23 Jul 2021 09:57:19 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH 06/13] media: i2c: Switch control to
+ V4L2_CID_ANALOGUE_GAIN
+Message-ID: <YPp2X71VoMV4O+io@aptenodytes>
+References: <20210722203407.3588046-1-djrscally@gmail.com>
+ <20210722203407.3588046-7-djrscally@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210723074317.32690-8-jslaby@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oKUYiXL0R6NUjSrMjt1d9plqUGlmubCB
-X-Proofpoint-ORIG-GUID: dAFOCtLxHxtRvAsb4qvWAkJMCr1LRytt
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-23_03:2021-07-23,2021-07-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 adultscore=0 clxscore=1011 suspectscore=0
- mlxlogscore=822 mlxscore=0 bulkscore=0 impostorscore=0 malwarescore=0
- spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107230043
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="GdqoQrFo9RXxs74D"
+Content-Disposition: inline
+In-Reply-To: <20210722203407.3588046-7-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--GdqoQrFo9RXxs74D
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 23.07.21 09:43, Jiri Slaby wrote:
-> put_tty_driver() is an alias for tty_driver_kref_put(). There is no need
-> for two exported identical functions, therefore switch all users of
-> old put_tty_driver() to new tty_driver_kref_put() and remove the former
-> for good.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-[...]
-for the s390 parts
+Hi,
 
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
->   drivers/s390/char/con3215.c            | 4 ++--
->   drivers/s390/char/sclp_tty.c           | 8 ++++----
->   drivers/s390/char/sclp_vt220.c         | 2 +-
->   drivers/s390/char/tty3270.c            | 4 ++--
+On Thu 22 Jul 21, 21:34, Daniel Scally wrote:
+> The V4L2_CID_GAIN control for this driver configures registers that
+> the datasheet specifies as analogue gain. Switch the control's ID
+> to V4L2_CID_ANALOGUE_GAIN.
+
+I had some doubts about this when writing the driver because it's called
+"AEC gain" but it seems that you're right. The datasheet also defines
+0x350a and 0x350b as digital gain (which are unused by the driver).
+
+This is:
+Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+
+Cheers,
+
+Paul
+
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+>  drivers/media/i2c/ov8865.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
+> index c012f5cb11ab..09558a3342dd 100644
+> --- a/drivers/media/i2c/ov8865.c
+> +++ b/drivers/media/i2c/ov8865.c
+> @@ -2137,7 +2137,7 @@ static int ov8865_exposure_configure(struct ov8865_=
+sensor *sensor, u32 exposure)
+> =20
+>  /* Gain */
+> =20
+> -static int ov8865_gain_configure(struct ov8865_sensor *sensor, u32 gain)
+> +static int ov8865_analog_gain_configure(struct ov8865_sensor *sensor, u3=
+2 gain)
+>  {
+>  	int ret;
+> =20
+> @@ -2447,8 +2447,8 @@ static int ov8865_s_ctrl(struct v4l2_ctrl *ctrl)
+>  		if (ret)
+>  			return ret;
+>  		break;
+> -	case V4L2_CID_GAIN:
+> -		ret =3D ov8865_gain_configure(sensor, ctrl->val);
+> +	case V4L2_CID_ANALOGUE_GAIN:
+> +		ret =3D ov8865_analog_gain_configure(sensor, ctrl->val);
+>  		if (ret)
+>  			return ret;
+>  		break;
+> @@ -2493,7 +2493,7 @@ static int ov8865_ctrls_init(struct ov8865_sensor *=
+sensor)
+> =20
+>  	/* Gain */
+> =20
+> -	v4l2_ctrl_new_std(handler, ops, V4L2_CID_GAIN, 128, 8191, 128, 128);
+> +	v4l2_ctrl_new_std(handler, ops, V4L2_CID_ANALOGUE_GAIN, 128, 8191, 128,=
+ 128);
+> =20
+>  	/* White Balance */
+> =20
+> --=20
+> 2.25.1
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--GdqoQrFo9RXxs74D
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmD6dl8ACgkQ3cLmz3+f
+v9EqeggAhd74OeKQ9EfYhrxk87Xwbzv4vpC7IgT75yC2Wgtz7cXH1+ZwbrUlRMxS
+vUZGvrbKcaWZTskIsHSSZXyKDvfe3QzC4YSierJNGAQ1uoZa+db+dVrUqlBTXWE/
+8F70MBOdOjMkOkJpMYDZ/TN6vn/x1831rdEwYddjGxwK0Tv9YuNochPWYGTB6QPF
+7NAsbzl216bim1hcq5lsku6sKqHEfMtOZ+gwRqhj8L5Nu6Zh6hFrSMJo7fwHxy3g
+HOWUiQhO96U1GD9XZr87m2CneWJ1OSKqmy6cobrYriG3iMv86pc204xV4kv+jzNV
+QYAOwbpDIIr53ANW2qv/HgVae3f18Q==
+=WUlq
+-----END PGP SIGNATURE-----
+
+--GdqoQrFo9RXxs74D--
