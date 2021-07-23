@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15A63D34C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596DB3D34C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 08:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhGWF4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 01:56:11 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7046 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234115AbhGWF4K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 01:56:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GWKFm6Wj3zYd7w;
-        Fri, 23 Jul 2021 14:30:52 +0800 (CST)
-Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 23 Jul 2021 14:36:42 +0800
-Received: from [10.174.178.208] (10.174.178.208) by
- dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 23 Jul 2021 14:36:41 +0800
-Subject: Re: [PATCH 5.4 00/71] 5.4.135-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210722155617.865866034@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <cf8d3248-bba2-b609-970a-ecd84732ae01@huawei.com>
-Date:   Fri, 23 Jul 2021 14:36:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S234066AbhGWGDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:03:04 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:51488 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233973AbhGWGDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:03:03 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1m6ouC-00076e-Fk; Fri, 23 Jul 2021 14:43:32 +0800
+Received: from herbert by gondobar with local (Exim 4.92)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1m6ou8-00025Z-KF; Fri, 23 Jul 2021 14:43:28 +0800
+Date:   Fri, 23 Jul 2021 14:43:28 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com
+Subject: Re: [RFC v1 1/2] crypto: tcrypt: minimal conversion to run under
+ KUnit
+Message-ID: <20210723064328.GA7986@gondor.apana.org.au>
+References: <20210715213138.1363079-1-dlatypov@google.com>
+ <20210715213138.1363079-2-dlatypov@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210722155617.865866034@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi762-chm.china.huawei.com (10.1.198.148)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715213138.1363079-2-dlatypov@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 15, 2021 at 02:31:37PM -0700, Daniel Latypov wrote:
+>> == Questions ==
+> * does this seem like it would make running the test easier?
 
+I don't mind.  tcrypt these days isn't used so much for correctness
+testing.  It's mostly being used for speed testing.  A secondary
+use is to instantiate templates.
 
-On 2021/7/23 0:30, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.135 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 24 Jul 2021 15:56:00 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.135-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> * does `tvmem` actually need page-aligned buffers?
 
-Tested on arm64 and x86 for 5.4.135-rc1,
+I think it may be needed for those split-SG test cases where
+we deliberately create a buffer that straddles a page boundary.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.4.y
-Version: 5.4.135-rc1
-Commit: dcc7e2dee7e982554072d1e726ada8872dd7a27e
-Compiler: gcc version 7.3.0 (GCC)
+> * I have no clue how FIPS intersects with all of this.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+It doesn't really matter because in FIPS mode when a correctness
+test fails the kernel panics.
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8905
-passed: 8905
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+>   * would it be fine to leave the test code built-in for FIPS instead of
+>   returning -EAGAIN?
 
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+The returning -EAGAIN is irrelevant in FIPS mode.  It's more of
+an aid in normal mode when you use tcrypt for speed testing.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
