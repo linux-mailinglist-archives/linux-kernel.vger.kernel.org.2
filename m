@@ -2,158 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365253D341D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 07:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49F73D3421
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 07:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhGWEyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 00:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S233818AbhGWEyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 00:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhGWEx7 (ORCPT
+        with ESMTP id S229904AbhGWEx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Jul 2021 00:53:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170A9C061757
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 22:34:33 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m6npG-0005rP-96; Fri, 23 Jul 2021 07:34:22 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m6npC-0003jJ-Gc; Fri, 23 Jul 2021 07:34:18 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m6npC-00075a-Ff; Fri, 23 Jul 2021 07:34:18 +0200
-Date:   Fri, 23 Jul 2021 07:34:18 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <greg@kroah.com>, Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the driver-core tree
-Message-ID: <20210723053418.fizdbfnu4if2hs5x@pengutronix.de>
-References: <20210723150944.528c10af@canb.auug.org.au>
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEF1C061575
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 22:34:32 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id m2-20020a17090a71c2b0290175cf22899cso2342312pjs.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 22:34:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=R31IBsRAfuuPKWQktgrPBsM8qqZTNdn0VUlW4YQ6CmU=;
+        b=shYdbYpKnnZqm3nw+0kpBihqH8f7KJROTlNmKF6YN4j4mx9oxE9amV1mosmOA6XqFB
+         MVjyzhtn+B+ahOWqplFIYkLSU+nMzE6N0JSo+x9HY2zsO60MQfzTIzwgg3AhDYqimSRh
+         6eu3wJ5bfyiCjKf6iRfpZ6d4Jg5azuCRs9nxkVvmhtu2Rd8yMNQb1ekVMChSypNwNlXs
+         6g9SbsBaiRoWq4MfOTVh7QP4eU0iNr9hbYlLRSY3nVX5f/8wWbNux4QWD8B5f7XDPD0m
+         WUsIdOtdX1g8NK05c0UHfuBF42+/UItgWfFng0ZZJ0q/BRt1URVN1jPQzVX26cA+NuqH
+         X8Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=R31IBsRAfuuPKWQktgrPBsM8qqZTNdn0VUlW4YQ6CmU=;
+        b=XkfVhPA9b8hOIVcL4jEqD9yIoW19wch84BeZKwEFioSf4Mqxp9OsWTQ4URrsBieMs9
+         DbdrRwSKmH7A0G8sLhx/S3C4zgOJdEgBXhuTRYb3rhd0/J2X9dIQLgzHc246KlDpoLgr
+         tFOkBsguYs+FFmsoOTqXAAWj0ogrJmBVDNTg8I28WJGg9s1E2cBz4WQApsubndqFeLiv
+         RZVooSwvdeJHzsP5zi9f4/G4Lk2WKCcCg9W8j84H/CnZ678swGSXoEgYwnDk9zGLYAQs
+         UIEfFLmTJ6hTQY+7FrdRQstooS8pSgnCvwh2qr+DuWEbK+8+tHOs94g7SmIJc36TtHgT
+         zqMQ==
+X-Gm-Message-State: AOAM531UBhVgzxgB41lp3CP86hBSbnJ0kb+PxneV8pllZesOBsETIgBy
+        5XZDLSQ1WEqfRebhq4r6doY41Q==
+X-Google-Smtp-Source: ABdhPJx3Ec2rarEh2fRASsiuYDsAF/2MRAJnhHTqu5M1OIbZbAHGF9soOBmIOC9+kPoM1DowUbhUPg==
+X-Received: by 2002:a17:90a:420c:: with SMTP id o12mr3076303pjg.101.1627018472138;
+        Thu, 22 Jul 2021 22:34:32 -0700 (PDT)
+Received: from [192.168.10.23] (219-90-184-65.ip.adam.com.au. [219.90.184.65])
+        by smtp.gmail.com with UTF8SMTPSA id n22sm31926155pfo.125.2021.07.22.22.34.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Jul 2021 22:34:31 -0700 (PDT)
+Message-ID: <75c84c0b-46b3-2600-c186-257aec05c645@ozlabs.ru>
+Date:   Fri, 23 Jul 2021 15:34:25 +1000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wwe4bxoweyfjcqqy"
-Content-Disposition: inline
-In-Reply-To: <20210723150944.528c10af@canb.auug.org.au>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0
+Subject: Re: [PATCH v5 10/11] powerpc/pseries/iommu: Make use of DDW for
+ indirect mapping
+Content-Language: en-US
+To:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210716082755.428187-1-leobras.c@gmail.com>
+ <20210716082755.428187-11-leobras.c@gmail.com>
+ <b98f696a-ed64-4c9e-ccb6-549ae8bc7fd6@linux.ibm.com>
+ <8dfb28d5-b654-746c-03d8-aeee3d438240@ozlabs.ru>
+ <994051df-73b3-4dad-76aa-1a03d9afaf6d@linux.ibm.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <994051df-73b3-4dad-76aa-1a03d9afaf6d@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---wwe4bxoweyfjcqqy
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Stephen,
+On 22/07/2021 01:04, Frederic Barrat wrote:
+> 
+> 
+> On 21/07/2021 05:32, Alexey Kardashevskiy wrote:
+>>>> +        struct iommu_table *newtbl;
+>>>> +        int i;
+>>>> +
+>>>> +        for (i = 0; i < ARRAY_SIZE(pci->phb->mem_resources); i++) {
+>>>> +            const unsigned long mask = IORESOURCE_MEM_64 | 
+>>>> IORESOURCE_MEM;
+>>>> +
+>>>> +            /* Look for MMIO32 */
+>>>> +            if ((pci->phb->mem_resources[i].flags & mask) == 
+>>>> IORESOURCE_MEM)
+>>>> +                break;
+>>>> +        }
+>>>> +
+>>>> +        if (i == ARRAY_SIZE(pci->phb->mem_resources))
+>>>> +            goto out_del_list;
+>>>
+>>>
+>>> So we exit and do nothing if there's no MMIO32 bar?
+>>> Isn't the intent just to figure out the MMIO32 area to reserve it 
+>>> when init'ing the table? In which case we could default to 0,0
+>>>
+>>> I'm actually not clear why we are reserving this area on pseries.
+>>
+>>
+>>
+>> If we do not reserve it, then the iommu code will allocate DMA pages 
+>> from there and these addresses are MMIO32 from the kernel pov at 
+>> least. I saw crashes when (I think) a device tried DMAing to the top 
+>> 2GB of the bus space which happened to be a some other device's BAR.
+> 
+> 
+> hmmm... then figuring out the correct range needs more work. We could 
+> have more than one MMIO32 bar. And they don't have to be adjacent. 
 
-On Fri, Jul 23, 2021 at 03:09:44PM +1000, Stephen Rothwell wrote:
-> Hi all,
->=20
-> After merging the driver-core tree, today's linux-next build (arm
-> multi_v7_defconfig) failed like this:
->=20
-> drivers/gpu/drm/drm_dp_aux_bus.c:106:13: error: initialization of 'void (=
-*)(struct device *)' from incompatible pointer type 'int (*)(struct device =
-*)' [-Werror=3Dincompatible-pointer-types]
->   106 |  .remove  =3D dp_aux_ep_remove,
->       |             ^~~~~~~~~~~~~~~~
-> drivers/gpu/drm/drm_dp_aux_bus.c:106:13: note: (near initialization for '=
-dp_aux_bus_type.remove')
->=20
-> Caused by commit
->=20
->   aeb33699fc2c ("drm: Introduce the DP AUX bus")
->=20
-> from the drm tree interacting with commit
->=20
->   fc7a6209d571 ("bus: Make remove callback return void")
->=20
-> from the driver-core tree.
->=20
-> I applied the following merge fix patch.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Fri, 23 Jul 2021 14:58:25 +1000
-> Subject: [PATCH] fix for "drm: Introduce the DP AUX bus"
->=20
-> interaction with "bus: Make remove callback return void"
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  drivers/gpu/drm/drm_dp_aux_bus.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/drm_dp_aux_bus.c b/drivers/gpu/drm/drm_dp_au=
-x_bus.c
-> index e49a70f3691b..298ea7a49591 100644
-> --- a/drivers/gpu/drm/drm_dp_aux_bus.c
-> +++ b/drivers/gpu/drm/drm_dp_aux_bus.c
-> @@ -67,9 +67,8 @@ static int dp_aux_ep_probe(struct device *dev)
->   *
->   * Calls through to the endpoint driver remove.
->   *
-> - * Return: 0 if no error or negative error code.
->   */
-> -static int dp_aux_ep_remove(struct device *dev)
-> +static void dp_aux_ep_remove(struct device *dev)
->  {
->  	struct dp_aux_ep_driver *aux_ep_drv =3D to_dp_aux_ep_drv(dev->driver);
->  	struct dp_aux_ep_device *aux_ep =3D to_dp_aux_ep_dev(dev);
-> @@ -77,8 +76,6 @@ static int dp_aux_ep_remove(struct device *dev)
->  	if (aux_ep_drv->remove)
->  		aux_ep_drv->remove(aux_ep);
->  	dev_pm_domain_detach(dev, true);
-> -
-> -	return 0;
->  }
+They all have to be within the MMIO32 window of a PHB and we reserve the 
+entire window here.
 
-This looks right.
+> I 
+> don't see that we are reserving any range on the initial table though 
+> (on pseries).
+True, we did not need to, as the hypervisor always took care of DMA and 
+MMIO32 regions to not overlap.
 
-Greg provided a tag containing fc7a6209d571 ("bus: Make remove callback
-return void") at
+And in this series we do not (strictly speaking) need this either as 
+phyp never allocates more than one window dynamically and that only 
+window is always the second one starting from 0x800.0000.0000.0000. It 
+is probably my mistake that KVM allows a new window to start from 0 - 
+PAPR did not prohibit this explicitly.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/=
-bus_remove_return_void-5.15
+And for the KVM case, we do not need to remove the default window as KVM 
+can pretty much always allocate as many TCE as the VM wants. But we 
+still allow removing the default window and creating a huge one instead 
+at 0x0 as this way we can allow 1:1 for every single PCI device even if 
+it only allows 48 (or similar but less than 64bit) DMA. Hope this makes 
+sense. Thanks,
 
-(see https://lore.kernel.org/lkml/YPkwQwf0dUKnGA7L@kroah.com).
 
-It would be great if this could be merged into the drm tree with the
-above diff squashed into the merge commit.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---wwe4bxoweyfjcqqy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD6VNcACgkQwfwUeK3K
-7AlfBAf/Zy8qvQXPKZUxJSnVaxZnzyG/ohkmvclUmS6qFSFq7xB/q+AeOkPrdpEG
-lehUg+vcs4e4IH2aLTGJmh22cu2PV8B5JcOG7clivg6FJJhxfjUE4/9OKgXJmLub
-nmxhlNhDQ9P0rtn//0oXrsTh5D7WAYASV9gCdGymGmsOsX6FjwfoH5eTes0O6Xif
-GNsBwBOziDhup7TniikMZ7wGnMZK873J5ftporulm48c/ytDaoFHeHeQsxkHwmzX
-2fHwJh6w7Biipd1wSYILy/bbkhq8wYtSbXq5Bh4vkAX4kgomgueirRozeuye9mDR
-pQ33bclEaAX2dCKQQmj8cKnjyA6DIw==
-=ach8
------END PGP SIGNATURE-----
-
---wwe4bxoweyfjcqqy--
+-- 
+Alexey
