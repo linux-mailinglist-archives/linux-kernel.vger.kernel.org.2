@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104713D3177
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 03:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F823D317B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbhGWBQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbhGWBQ3 (ORCPT
+        id S233142AbhGWBTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:19:44 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:39610 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhGWBTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:16:29 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D5AC061575;
-        Thu, 22 Jul 2021 18:57:02 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id gv20-20020a17090b11d4b0290173b9578f1cso5011098pjb.0;
-        Thu, 22 Jul 2021 18:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SaBBsKSooT2THR7y3tZObTkjeHzlpmexL9S+wtcTGhQ=;
-        b=XPQ4FL8MYHQ3dClLMXwF2ZgyfNQIqAPq7pvGf6q8iuRzTJl0C+Tp0ySafmQ4kqFjUM
-         lKFTAkQqtVBaXhe88UA9Lj8lHIC6tS1QVvxlXZaxQvhOlXHYw6Ylg+DeuDS5drJJLzUu
-         ev/hf3dCb8y3JTNTeX4fS8d1Dyy64Uyy2IAwWQdhv7ZH0jvyMwv757JSGb9d4ORais9v
-         ecICqev5i4FsIdHYk34PuR0lIYW75BYbeklBfXpVvnAzVJC0FbXX5ICTQXHNSi2fNji+
-         BTDJoGWK0wKkCwFBy9yvqtRtPiiKNYs4Iz5gDuTeI63N2kyiJuvtx9bFh4MPpQQ4FugM
-         VWWQ==
+        Thu, 22 Jul 2021 21:19:42 -0400
+Received: by mail-wm1-f50.google.com with SMTP id o3-20020a05600c5103b029024c0f9e1a5fso2349095wms.4;
+        Thu, 22 Jul 2021 19:00:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SaBBsKSooT2THR7y3tZObTkjeHzlpmexL9S+wtcTGhQ=;
-        b=fg/TEHQv45sQpYEusRNePC/NF52JKRMVpjTDPh+r+PRnUjc5g0epSFdVAd9oO+FDBn
-         9MkXQrdvCONotNgYcHvc+sOrGhPgyzkZXxbvjIBnDYYSFZVcqIXnqe7B1ai1yZTkkQ5K
-         kLLINplKgmWXoYx/hQZkZeqI8qa7+EiNqq1KF5UD7SGbBicLtN8swNkZJWD9YUMRVXla
-         KCaqnTp5chkjQSFUPlMuGbTJBuP8P3euoeOAgIincQX0Wi9DpJVVpLKwtyfzjrX/r1ja
-         XfQvbNBJ0J4tblUrR7OztnE7qpRORSbE5LDno2zZSbn/myliR8u4Nms9G5aBjFOC7uAH
-         n5xw==
-X-Gm-Message-State: AOAM533/0cBl2WJ/cJ/6c17Qoy1eIGBpA5oAvZPpbk/3FLKAbLaEq/h2
-        +XBAj+5yffR7LCMH2h50yhMRYwQ/hNo=
-X-Google-Smtp-Source: ABdhPJx54k3pFrN07l3RGpnf1QxzOBbyrmz/sPOSp6sjFYxfBkgaV+IzsRqg5X+Vhf8a1nGLWvYUhQ==
-X-Received: by 2002:a17:90a:aa14:: with SMTP id k20mr11817758pjq.88.1627005421983;
-        Thu, 22 Jul 2021 18:57:01 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id bv22sm23799703pjb.21.2021.07.22.18.57.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 18:57:01 -0700 (PDT)
-Subject: Re: [PATCH net backport to 4.4,4.9] net: bcmgenet: ensure
- EXT_ENERGY_DET_MASK is clear
-To:     Doug Berger <opendmb@gmail.com>, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210723001552.3274565-1-opendmb@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <d58ab19d-b80a-b0db-668a-6c467bd6e0ea@gmail.com>
-Date:   Thu, 22 Jul 2021 18:56:59 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wqNvNl7Y9I+Lc0bDPRY2qK0RJphn3sKkuEuDxwoy3ro=;
+        b=CrAIV5S8Id5z9sfYuOBpvLXiagAlg41kohLPRcNjWGA7MLVgrBrzQh6/9RrTYHUobb
+         gjrcZs1JJCGXO0hPukMDFmjd10v4iEvdNFVzuzPSbywUQx3hn6H8EqHj6kFc28lKIkBh
+         p844a5kLg+aOFVbxRvvBABtVZq09U46adHUnRcqn2Hbng5YmsPaHoWCamiB98ABoAQxq
+         u7S8cRyF/iXtSc131xTJvE7kvEzHo27wW/O04TVCAWk7/jQ4IdyaKtj1sFAcvA3I6TqZ
+         0OomFqdIeJD2tGxYOeiF78adcUYulrz/luOuIBrmZmKKR3OM5MlNPuv8Y81DJwFCMJgp
+         VPgQ==
+X-Gm-Message-State: AOAM531IFPYhoMZMjEyABndkaBff9g4lC10Wa73NSZOpcEGuKV6OVQ4R
+        mRFRifoXrOQnxFeliSAmuR0L2jgsrPxEz97c
+X-Google-Smtp-Source: ABdhPJxHcH9H+rY/nRSOPjZVi/EOVXfDrri03O4YuxnL/vddt147+tHPnc93ILllYE3BRn/tcJ/XCA==
+X-Received: by 2002:a05:600c:1ca3:: with SMTP id k35mr11536840wms.174.1627005615058;
+        Thu, 22 Jul 2021 19:00:15 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id l22sm3804431wmp.41.2021.07.22.19.00.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 19:00:14 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 04:00:13 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     "Cai,Huoqing" <caihuoqing@baidu.com>
+Cc:     "Derrick, Jonathan" <jonathan.derrick@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] PCI: vmd: Make use of PCI_DEVICE_DATA() helper
+ function
+Message-ID: <20210723020013.GA2170028@rocinante>
+References: <20210722112954.477-1-caihuoqing@baidu.com>
+ <20210722112954.477-3-caihuoqing@baidu.com>
+ <f2aeb584-6293-78ce-e5aa-4bde34045a86@intel.com>
+ <e44664317c2949e794497dc5f903f2a8@baidu.com>
 MIME-Version: 1.0
-In-Reply-To: <20210723001552.3274565-1-opendmb@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e44664317c2949e794497dc5f903f2a8@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+Thank you for sending the patch over!
 
-On 7/22/2021 5:15 PM, Doug Berger wrote:
-> [ Upstream commit 5a3c680aa2c12c90c44af383fe6882a39875ab81 ]
-> 
-> Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
-> logic of the internal PHY to prevent the system from sleeping. Some
-> internal PHYs will report that energy is detected when the network
-> interface is closed which can prevent the system from going to sleep
-> if WoL is enabled when the interface is brought down.
-> 
-> Since the driver does not support waking the system on this logic,
-> this commit clears the bit whenever the internal PHY is powered up
-> and the other logic for manipulating the bit is removed since it
-> serves no useful function.
-> 
-> Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-> Signed-off-by: Doug Berger <opendmb@gmail.com>
+> 	PATCH[2/2] has some extra indentation, please don't apply it , 
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+You might know this already, but just in case make sure to run the
+"checkpatch.pl" script over the patch before submission.
+
+> I'll send PATCH V2.
+
+You mean v3?  Make sure to include a changelog, if possible.
+
+A small nitpick: the PCI_DEVICE_DATA() is technically a macro rather
+than a function, so you could update both the subject line and the
+commit message accordingly, if you want.
+
+Also, since you are about to send another version, add period at the end
+of the sentence in the commit message.
+
+Aside of the above, it's a nice refactor, thank you!
+
+	Krzysztof
