@@ -2,218 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2868A3D30BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0803D30BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 02:22:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhGVXk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 19:40:58 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:50829 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232682AbhGVXk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 19:40:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GW93Y3j36z9sRN;
-        Fri, 23 Jul 2021 10:21:29 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1626999690;
-        bh=QVZhutB3ya+LYSZv7vxyfLMXu42kAtWhUyq07DbF+Ms=;
-        h=Date:From:To:Cc:Subject:From;
-        b=a/FWnu2xl2YHC/AhURrda7QSux7fYxURT8SeJKtW/Gn8AcJwHiq5khf4jmhKi4Bf5
-         ejFljOgff438KQNhLD1ZQImYw4wptShgYxyJNIe7t/98TJGD2/CUBJ6qJO0j8/3+gY
-         +FSzJlHIwrXe62T2pUQk/pF2tU7IPDUDrwpsmei7i0j0NDPwWveMJRh7j3XD3hxUOc
-         ycX2hWjnkmvY6eXoi+3wISHvEwuHuE7fuTxpZ5UdhNMjN16d8yg9pKbzm0ftPzK6Hm
-         xwxQuXoBRozBb9KY8D0gFeJcVx4po/0Wev1q8S8/MHl0iuRNE/y9qlO+XC08g+avqu
-         ZvTLWJHA9oS/Q==
-Date:   Fri, 23 Jul 2021 10:21:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>
-Cc:     Eric Biggers <ebiggers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the f2fs tree with the ext3 tree
-Message-ID: <20210723102128.5fc92369@canb.auug.org.au>
+        id S232830AbhGVXlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 19:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232800AbhGVXle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 19:41:34 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BFCC061757
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:22:08 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id bt15so8408250pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 17:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ilHV4zkFYV/inpNlTjXcax19NKR7g9Dp2bd3Wi4nieU=;
+        b=H5PMaoBwCj/x/6zyYxozhyvWGMrvIQXzg/TlzwMXxkPxuAO0Sobu8MZT/+xdkHdx8U
+         KOOwY8KyFWw/2ShculMhRh/bi+M+p5yRTBQBIftJ/YDVi3aoASgjN4QuoUoSFqXWbmFt
+         ryb2z3k6h/2m3ta2j+N25Qa/slTSq5y5E/zuY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ilHV4zkFYV/inpNlTjXcax19NKR7g9Dp2bd3Wi4nieU=;
+        b=tGwjOHtq6hX53GdTPkPDDqtV/qPlgp2QEheULsn5TPch7hCU3lh515BZa//fl2XpHf
+         j9pIPtvh6G2EpO+IcIxdQ6a25FmKL+tK5hQYMRqHiePn2C4w5ofW5eZuFi1CpNp2C1uD
+         2Aav70AUtUhdHgSU2Qcy09t1AQXo2+3njWmdwUaj3AvX6u6miRrxPQbuyVIww2SAZHaK
+         OBj3Dx2jpcuf2Fdx515BLTC4kDOmsS/uA3vsUZE9sEMm1XylFQviustHd9v0/DkGQvuF
+         YiIhvwvAsAX6XADrcugiNDiH97Pj/3JN6mhi86MM7ghmIqqFFap1j/bQOtcuovOL7K06
+         yjfA==
+X-Gm-Message-State: AOAM530v2UF0t36t9BbJ0XruH/tO4Cd1j/IlIOm4i5+A+mbZ5/HG3ckO
+        gy23RXjqM8i8itLa5HnhfzUIYw==
+X-Google-Smtp-Source: ABdhPJy3fNIhcYUlCjPQ6rsNOgNRR30C3i3qn3hSQwAIOxUXOxQpz3bxuGzhyKhNARRvDRL91VLEsQ==
+X-Received: by 2002:a05:6a00:1951:b029:333:64d3:e1f1 with SMTP id s17-20020a056a001951b029033364d3e1f1mr2175927pfk.43.1626999727675;
+        Thu, 22 Jul 2021 17:22:07 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:5e70:6a49:67b5:2b7e])
+        by smtp.gmail.com with ESMTPSA id iy13sm4072377pjb.28.2021.07.22.17.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Jul 2021 17:22:07 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/8] eDP: Support probing eDP panels dynamically instead of hardcoding
+Date:   Thu, 22 Jul 2021 17:21:38 -0700
+Message-Id: <20210723002146.1962910-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vdNYD7N=8MiRqmM3Cs8RyB=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vdNYD7N=8MiRqmM3Cs8RyB=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+The goal of this patch series is to move away from hardcoding exact
+eDP panels in device tree files. As discussed in the various patches
+in this series (I'm not repeating everything here), most eDP panels
+are 99% probable and we can get that last 1% by allowing two "power
+up" delays to be specified in the device tree file and then using the
+panel ID (found in the EDID) to look up additional power sequencing
+delays for the panel.
 
-Today's linux-next merge of the f2fs tree got a conflict in:
+This patch series is the logical contiunation of a previous patch
+series where I proposed solving this problem by adding a
+board-specific compatible string [1]. In the discussion that followed
+it sounded like people were open to something like the solution
+proposed in this new series.
 
-  fs/f2fs/file.c
+[1] https://lore.kernel.org/r/YFKQaXOmOwYyeqvM@google.com/
 
-between commit:
 
-  edc6d01bad73 ("f2fs: Convert to using invalidate_lock")
+Douglas Anderson (8):
+  dt-bindings: drm/panel-simple: Introduce generic eDP panels
+  drm/edid: Break out reading block 0 of the EDID
+  drm/edid: Allow the querying/working with the panel ID from the EDID
+  drm/panel-simple: Don't re-read the EDID every time we power off the
+    panel
+  drm/panel-simple: Copy "desc" into driver data; don't store a pointer
+  drm/panel-simple: Split the delay structure out of the panel
+    description
+  drm/panel-simple: Implement generic "edp-panel"s probed by EDID
+  arm64: dts: qcom: sc7180: trogdor devices can use probable eDP panels
 
-from the ext3 tree and commit:
+ .../bindings/display/panel/panel-edp.yaml     | 196 ++++++
+ .../bindings/display/panel/panel-simple.yaml  | 559 +++++++++---------
+ .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi  |   2 +-
+ .../sc7180-trogdor-lazor-limozeen-nots.dts    |   2 +-
+ .../qcom/sc7180-trogdor-lazor-limozeen.dts    |   2 +-
+ .../boot/dts/qcom/sc7180-trogdor-lazor.dtsi   |   3 +-
+ .../boot/dts/qcom/sc7180-trogdor-pompom.dtsi  |   2 +-
+ drivers/gpu/drm/drm_edid.c                    | 113 +++-
+ drivers/gpu/drm/panel/panel-simple.c          | 497 +++++++++++-----
+ include/drm/drm_edid.h                        |  47 ++
+ 10 files changed, 965 insertions(+), 458 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/panel-edp.yaml
 
-  5f2632fa1471 ("f2fs: reduce indentation in f2fs_file_write_iter()")
+-- 
+2.32.0.432.gabb21c7263-goog
 
-from the f2fs tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc fs/f2fs/file.c
-index 1ff333755721,279252c7f7bc..000000000000
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@@ -4252,79 -4318,54 +4316,54 @@@ static ssize_t f2fs_file_write_iter(str
-  	}
- =20
-  	ret =3D generic_write_checks(iocb, from);
-- 	if (ret > 0) {
-- 		bool preallocated =3D false;
-- 		size_t target_size =3D 0;
-- 		int err;
--=20
-- 		if (iov_iter_fault_in_readable(from, iov_iter_count(from)))
-- 			set_inode_flag(inode, FI_NO_PREALLOC);
--=20
-- 		if ((iocb->ki_flags & IOCB_NOWAIT)) {
-- 			if (!f2fs_overwrite_io(inode, iocb->ki_pos,
-- 						iov_iter_count(from)) ||
-- 				f2fs_has_inline_data(inode) ||
-- 				f2fs_force_buffered_io(inode, iocb, from)) {
-- 				clear_inode_flag(inode, FI_NO_PREALLOC);
-- 				inode_unlock(inode);
-- 				ret =3D -EAGAIN;
-- 				goto out;
-- 			}
-- 			goto write;
-- 		}
--=20
-- 		if (is_inode_flag_set(inode, FI_NO_PREALLOC))
-- 			goto write;
-+ 	if (ret <=3D 0)
-+ 		goto out_unlock;
- =20
-- 		if (iocb->ki_flags & IOCB_DIRECT) {
-- 			/*
-- 			 * Convert inline data for Direct I/O before entering
-- 			 * f2fs_direct_IO().
-- 			 */
-- 			err =3D f2fs_convert_inline_inode(inode);
-- 			if (err)
-- 				goto out_err;
-- 			/*
-- 			 * If force_buffere_io() is true, we have to allocate
-- 			 * blocks all the time, since f2fs_direct_IO will fall
-- 			 * back to buffered IO.
-- 			 */
-- 			if (!f2fs_force_buffered_io(inode, iocb, from) &&
-- 					allow_outplace_dio(inode, iocb, from))
-- 				goto write;
-+ 	if (iocb->ki_flags & IOCB_NOWAIT) {
-+ 		if (!f2fs_overwrite_io(inode, iocb->ki_pos,
-+ 				       iov_iter_count(from)) ||
-+ 		    f2fs_has_inline_data(inode) ||
-+ 		    f2fs_force_buffered_io(inode, iocb, from)) {
-+ 			ret =3D -EAGAIN;
-+ 			goto out_unlock;
-  		}
-- 		preallocated =3D true;
-- 		target_size =3D iocb->ki_pos + iov_iter_count(from);
-+ 	}
-+ 	if (iocb->ki_flags & IOCB_DIRECT) {
-+ 		/*
-+ 		 * Convert inline data for Direct I/O before entering
-+ 		 * f2fs_direct_IO().
-+ 		 */
-+ 		ret =3D f2fs_convert_inline_inode(inode);
-+ 		if (ret)
-+ 			goto out_unlock;
-+ 	}
- =20
-- 		err =3D f2fs_preallocate_blocks(iocb, from);
-- 		if (err) {
-- out_err:
-- 			clear_inode_flag(inode, FI_NO_PREALLOC);
-- 			inode_unlock(inode);
-- 			ret =3D err;
-- 			goto out;
-- 		}
-- write:
-- 		ret =3D __generic_file_write_iter(iocb, from);
-- 		clear_inode_flag(inode, FI_NO_PREALLOC);
-+ 	/* Possibly preallocate the blocks for the write. */
-+ 	target_size =3D iocb->ki_pos + iov_iter_count(from);
-+ 	preallocated =3D f2fs_preallocate_blocks(iocb, from);
-+ 	if (preallocated < 0) {
-+ 		ret =3D preallocated;
-+ 		goto out_unlock;
-+ 	}
- =20
-- 		/* if we couldn't write data, we should deallocate blocks. */
-- 		if (preallocated && i_size_read(inode) < target_size) {
-- 			down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-- 			filemap_invalidate_lock(inode->i_mapping);
-- 			f2fs_truncate(inode);
-- 			filemap_invalidate_unlock(inode->i_mapping);
-- 			up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-- 		}
-+ 	ret =3D __generic_file_write_iter(iocb, from);
- =20
-- 		if (ret > 0)
-- 			f2fs_update_iostat(F2FS_I_SB(inode), APP_WRITE_IO, ret);
-+ 	/* Don't leave any preallocated blocks around past i_size. */
-+ 	if (preallocated > 0 && inode->i_size < target_size) {
-+ 		down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- -		down_write(&F2FS_I(inode)->i_mmap_sem);
-++		filemap_invalidate_lock(inode->i_mapping);
-+ 		f2fs_truncate(inode);
- -		up_write(&F2FS_I(inode)->i_mmap_sem);
-++		filemap_invalidate_unlock(inode->i_mapping);
-+ 		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-  	}
-- unlock:
-+ 	clear_inode_flag(inode, FI_PREALLOCATED_ALL);
-+=20
-+ 	if (ret > 0)
-+ 		f2fs_update_iostat(F2FS_I_SB(inode), APP_WRITE_IO, ret);
-+ out_unlock:
-  	inode_unlock(inode);
-  out:
-- 	trace_f2fs_file_write_iter(inode, iocb->ki_pos,
-- 					iov_iter_count(from), ret);
-+ 	trace_f2fs_file_write_iter(inode, orig_pos, orig_count, ret);
-  	if (ret > 0)
-  		ret =3D generic_write_sync(iocb, ret);
-  	return ret;
-
---Sig_/vdNYD7N=8MiRqmM3Cs8RyB=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmD6C4gACgkQAVBC80lX
-0Gz8CAf7BAW6NLfQF4SSpRLNMuecRDYGJldqGfVhORGVfX+xEMnlb8bYcPNHruhl
-qW4013tcW1oWofulIwNLToIsIXjBY8qgGHs8TjlvP/6vs3QnSeqpvJDFCjKIJ78y
-kBHyjGeaosPSblkXKPsCWErF404WijWHS1uchCwuOtv1YGSjtJuUEqdQlyG6p+G0
-UsoFrn07Wo4k44J1xLfuTvWN5suwpBTWEonbG2tklLHl47NKFVpnwWtUmVV6SCHb
-Ho8R+BPY1VZXKA4snSUaqJ2MgOWhYTd341zdvMcqF/CevF2fpqkSmC4CE7HwhKE1
-5USUwToPSGl2fucadWM+ytTGJQcCNw==
-=+VEq
------END PGP SIGNATURE-----
-
---Sig_/vdNYD7N=8MiRqmM3Cs8RyB=--
