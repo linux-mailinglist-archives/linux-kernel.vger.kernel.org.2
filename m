@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43063D3A38
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF883D3A40
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 14:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbhGWLs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 07:48:28 -0400
-Received: from mga18.intel.com ([134.134.136.126]:43477 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234750AbhGWLsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 07:48:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10053"; a="199131289"
-X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
-   d="scan'208";a="199131289"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 05:28:48 -0700
-X-IronPort-AV: E=Sophos;i="5.84,264,1620716400"; 
-   d="scan'208";a="663257150"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2021 05:28:46 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1m6uIC-00HMKm-SH; Fri, 23 Jul 2021 15:28:40 +0300
-Date:   Fri, 23 Jul 2021 15:28:40 +0300
-From:   "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>
-To:     Dennis Giaya <dgiaya@whoi.edu>
-Cc:     "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 1/1] serial: max310x: Use clock-names property
- matching to recognize XTAL
-Message-ID: <YPq1+NzJeqLZVctW@smile.fi.intel.com>
-References: <20210722150233.30897-1-andriy.shevchenko@linux.intel.com>
- <YPmSpNZr/yQiPqsO@smile.fi.intel.com>
- <0acef8aa86d69cac0ea1a3dbdafc41625580e0eb.camel@whoi.edu>
+        id S234890AbhGWLt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 07:49:28 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:45983 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234774AbhGWLtQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 07:49:16 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id ED17A3200934;
+        Fri, 23 Jul 2021 08:29:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 23 Jul 2021 08:29:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=+eOXjkFr/vzl4LWj2qFm/QH3AyJ
+        2LUE6Kqq+Nzq4Hmw=; b=aFoYCfq/zea4KY88rBSjeQ6mfQMaJ7Q2UitG3WdFFfl
+        1AaISfon+I8XJeogcaEMi6X9NCDmCbBGpzQ5dsMSBFD2W07948Fg+GuIcMZW3mRO
+        r4JkKTcek5+wrClYPSEPqAZMfLUgezQUS2nXEK3Blz13qOHX87Cjt7kTfAaGItj1
+        IUcPZkTHkO68V6vL1T1Wa7J+rLXbmstpSZQG9zEsolqnLPzQdoKzcaR6DcBOAYJZ
+        T+m3w8myE+YXSiIlSExkxcBkuJotDMUFir1SBRoZBz9uXEU0pObtZ0WYUcHaVte0
+        8Tew8g0Ui3mQ+JvQFnqxf9CpNzmkIDxIqUI+dmsSaKw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+eOXjk
+        Fr/vzl4LWj2qFm/QH3AyJ2LUE6Kqq+Nzq4Hmw=; b=SFug+O5ZtgCZZnm5H/40Uv
+        c3E1M0T8TBP8WT/e1TQ0r1zUr9YxR75Egc+bZBd4zL2obzMhXnjXXmbc8BhN7Mx7
+        iWQEWOMz1QFJeeE8LtcaAeXmlZI2hqVLgUAnCfIVv32JYYOfLLPL0xv/qQ7iaV6L
+        NBHZg6ekb1qie6bfxoQeKOt3kCG9/BktDR1TglsUMJFPLm3tbuRBICUHFqMTQNUK
+        oDjbhthAS0sLJnWG2ZjeKJE1MHNbivKcKMFYHFlJ9O8Vp524Z63Kst79hMWmKvYm
+        HEW2sJBGhoqZB+/+wt47nNJFK9B94ESL7kiV0S5rfOB1r01bUPHXZBy2I9HW0vGQ
+        ==
+X-ME-Sender: <xms:Orb6YJQUzgdVTxOqNRoXgrHPiBVp9EEFwOflLRaHQf_UyYwj6Pfaug>
+    <xme:Orb6YCzXoRGl5K2LHxBHvekuFQ8C1W-Dd9W3BTBRkrWj8YbHFQ4uRDtBkNgf11S1n
+    elqFZfUPg5Hqg>
+X-ME-Received: <xmr:Orb6YO19KmXKr36Dye5c7H4N7obx4bb7_9t_V3JclsCzKO0CpXLJuN3cbLqq1Yzs95XHXiVhaLOCdK555sBbwA_xbmADf3EZ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrfeekgdehfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:Orb6YBD4mSFvaDvaXRbs40vILO2a06tSsiP6GY5Bh9-D44RZrX5Svg>
+    <xmx:Orb6YCjDcG5xTE7uS0U8AdSGxH1r12IKHCLx2ROCGWMcDGvui9_dwg>
+    <xmx:Orb6YFqkH29W5sPTOKSxjWk2_b_RVzXlrdVVA-FH0lCG1m2x-Dz5iQ>
+    <xmx:O7b6YLW72Ctj5gWPcyiOA-PoRe9h0Yn54iRh1uFMcL6ozFQTGSyoCw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 23 Jul 2021 08:29:46 -0400 (EDT)
+Date:   Fri, 23 Jul 2021 14:29:43 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linyu Yuan <linyyuan@codeaurora.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: Re: linux-next: manual merge of the usb tree with the usb.current
+ tree
+Message-ID: <YPq2Nxq7oa4p0b0Q@kroah.com>
+References: <20210722141228.57a92e94@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0acef8aa86d69cac0ea1a3dbdafc41625580e0eb.camel@whoi.edu>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210722141228.57a92e94@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 09:05:13PM +0000, Dennis Giaya wrote:
-> Andy,
+On Thu, Jul 22, 2021 at 02:12:28PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> I've tested this out on my hardware that uses an external oscillator
-> 'osc' (as opposed to external crystal 'xtal').
+> Today's linux-next merge of the usb tree got a conflict in:
 > 
-> With the relevant asl
-> 	Package () {"compatible", "maxim,max14830"},
-> 	Package ()
-> {"clock-frequency", 19200000},
-> 	Package () {"clock-names", "osc"},
+>   drivers/usb/dwc3/gadget.c
 > 
-> Previously, the driver logic would default to 'xtal' and then compare
-> against the narrower frequency range and throw an error because 19.2MHz
-> was not allowed. With your patch, it proceeds as 'osc' and appears to
-> work as intended.
+> between commit:
+> 
+>   40edb52298df ("usb: dwc3: avoid NULL access of usb_gadget_driver")
+> 
+> from the usb.current tree and commit:
+> 
+>   9f607a309fbe ("usb: dwc3: Resize TX FIFOs to meet EP bursting requirements")
+> 
+> from the usb tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Thanks for testing!
-I assume I may convert above to the Tested-by: or equivalent tag.
+Thanks, I'll fix this up when Linus takes my usb-linus branch soon.
 
-JFYI, in OSS mailing lists we do not top post.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
