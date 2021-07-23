@@ -2,140 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B87723D37A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2AA3D37AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 11:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhGWIoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 04:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        id S234236AbhGWIpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 04:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbhGWIoK (ORCPT
+        with ESMTP id S229949AbhGWIpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 04:44:10 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C99C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:24:44 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id t14so1244174oiw.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 02:24:43 -0700 (PDT)
+        Fri, 23 Jul 2021 04:45:25 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7530C061575;
+        Fri, 23 Jul 2021 02:25:57 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id ga41so2599558ejc.10;
+        Fri, 23 Jul 2021 02:25:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e30m4UPG96stOKc9AAKHmmDvPceuMEjTC/oE9rnemL8=;
-        b=kqGrIiB/LDwg0WCxZ8DhN1/fGwYijFuvJQbIO3b1viS2rD29dJRysDWAOVB8Rubitl
-         AyY7ROW2xqDesH1d5+Sdx1fg6fqsPqp+Gjj9A8S8OibqPvLsWW998o0xN7+OXzkM+nVl
-         WGFurJZj5+2B5v68/fEm3CkgfS8MCZTQB3v6M=
+         :cc:content-transfer-encoding;
+        bh=FB3AqglCoLXT/Z22dR2tyxUlBgErLMHulIf7evT83VQ=;
+        b=GRNJGlPn9WbmOWkppKf8rxFmSHhoprrr3fuaDOwQFyo0Sjuzc3GbOp31OkNf20c9yw
+         nC4OfiLlZZtBMkl3h5ylX7IbFIXknwviRSCqJVPh7+AD7NcpZD05R7kH3AUU7chn+KKO
+         0FmNBAMQfdzddRYrSehctXKgeR7zw382Vyoyt+PkImmXew5K3mjXDUmo4kl9re8PNar8
+         M8/SerCH987rO8yJuAt+zD333EHmn6qSeAe/TEs9wJwkWJo+SMU7xgDpMIMl3C/aVxrM
+         +tP/bePHbDYPPe6edbieR5RGtYeSzGScN0z0AAu6UdMd20kUVcpuofgp2z3fRYkofqJA
+         iIzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e30m4UPG96stOKc9AAKHmmDvPceuMEjTC/oE9rnemL8=;
-        b=T3wZXsroLr1BYoUKnmVQlxbGhzm0Mx8YvdCoIG9+de2kVq+UYj51x8IR86B3q7OtU+
-         tC2NLsANPleH0YQ1QTE2neUvxCMp+E43ENWoydrWVMO6x2dLse7kFhCtc801mg9GW8hH
-         JgVpsttxxB+ehaumnk7OvZYO5zamLfFNv0vTHLMFn42+F/XZZlCSygk2q+Fs2NqO8bKh
-         sQFC/uMT52tfXXJdsaXBvDlLQRD3uzPoW1utfSGrem3pWiZooHJDcjUwuZY3xKgcdFKo
-         JoHI4HclgxmzRn+OM/RsUnewjQFjBIYCYAleM3yy0s8j3R9ggIH5ZEOsclWWqeHkIPOS
-         x56A==
-X-Gm-Message-State: AOAM530JVsEWT+DSsYj4lqyx3L3jLmLzpXqwiWnumHMSxnjlKcHPeXaJ
-        /OVQIqni7XkIEEQjjpdkiSSpCUkV7rRDUxc0taSqRw==
-X-Google-Smtp-Source: ABdhPJy2No+cuZ76/SxEQnH4zinzF2kmRucefQc9Y7v0x1BAgQW8WF9jPryfnWoCo+N0dsICDiQ1KmHu4e+YHQ1LzpI=
-X-Received: by 2002:aca:3085:: with SMTP id w127mr7843600oiw.101.1627032283413;
- Fri, 23 Jul 2021 02:24:43 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FB3AqglCoLXT/Z22dR2tyxUlBgErLMHulIf7evT83VQ=;
+        b=oVLa1OvyguJIQO5kjfViByLOF97aQb/r3Oq4vP2RZQbMo7/8mSaEsM7PIrTyCAdZJa
+         Jf/du5hKruoDMRwXHt+BSNVzAFUxRMDYLjOJdRRqd7sbFKWD9I5tqzfOLvC2zDcs5otR
+         I7lq3W1k2XT18JcB0CkdJ8v9FfiDE8QZmpq2RngHlxt0HMfOXS+1uwkF0hQeUjV87TxK
+         aC+cBsG1GHvKFlTbMBA12wf+n6uYd13PLywTYXHHp3To6zx1nXnqdYUQX9r5CIhaRbSd
+         swQPAWss8hx1y2snYocsklofXzDDIYrJsyCv36k2LAzN6UDSL2xJ/6BC35LtMN/O/hjE
+         kZ5g==
+X-Gm-Message-State: AOAM5321BVQ4fmt+0xo38CRsgBTnsw/eTYbWPCSvcYDyr1EZJfnUdWDu
+        FfnLWaBF63SKYcidJOCh78rDwG9loTDGCLHz1hg=
+X-Google-Smtp-Source: ABdhPJyWb/3efTBph4+zgG/RGwECZ6alS/cy0yHRiSgYm1166Dbwpd7gSShUSWJQ5lwE4pb+KipgSk2cpLGuqzjpKhU=
+X-Received: by 2002:a17:906:eda7:: with SMTP id sa7mr3822014ejb.135.1627032356226;
+ Fri, 23 Jul 2021 02:25:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210723091534.1730564-1-arnd@kernel.org>
-In-Reply-To: <20210723091534.1730564-1-arnd@kernel.org>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 23 Jul 2021 11:24:32 +0200
-Message-ID: <CAKMK7uHG0T7kgHzrkxoGj+Cv1-5f=GaH1CviunoZd_wEL5G4YQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/kms/nv50-: fix build failure with CONFIG_BACKLIGHT=n
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
-        Lyude Paul <lyude@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Nikola Cornij <nikola.cornij@amd.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Nouveau Dev <nouveau@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210723050919.1910964-1-mudongliangabcd@gmail.com> <6fa2aecc-ab64-894d-77c2-0a19b524cc03@gmail.com>
+In-Reply-To: <6fa2aecc-ab64-894d-77c2-0a19b524cc03@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Fri, 23 Jul 2021 17:25:29 +0800
+Message-ID: <CAD-N9QXO4bX6SzMNir0fin0wVAZYhsS8-triiWPjY+Rz2WCy1w@mail.gmail.com>
+Subject: Re: [PATCH] cfg80211: free the object allocated in wiphy_apply_custom_regulatory
+To:     xiaoqiang zhao <zhaoxiaoqiang007@gmail.com>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Ilan Peer <ilan.peer@intel.com>,
+        syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-wireless@vger.kernel.org,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 11:15 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Fri, Jul 23, 2021 at 5:18 PM xiaoqiang zhao
+<zhaoxiaoqiang007@gmail.com> wrote:
 >
-> From: Arnd Bergmann <arnd@arndb.de>
 >
-> When the backlight support is disabled, the driver fails to build:
 >
-> drivers/gpu/drm/nouveau/dispnv50/disp.c: In function 'nv50_sor_atomic_disable':
-> drivers/gpu/drm/nouveau/dispnv50/disp.c:1665:59: error: 'struct nouveau_connector' has no member named 'backlight'
->  1665 |         struct nouveau_backlight *backlight = nv_connector->backlight;
->       |                                                           ^~
-> drivers/gpu/drm/nouveau/dispnv50/disp.c:1670:35: error: invalid use of undefined type 'struct nouveau_backlight'
->  1670 |         if (backlight && backlight->uses_dpcd) {
->       |                                   ^~
-> drivers/gpu/drm/nouveau/dispnv50/disp.c:1671:64: error: invalid use of undefined type 'struct nouveau_backlight'
->  1671 |                 ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
->       |                                                                ^~
+> =E5=9C=A8 2021/7/23 13:09, Dongliang Mu =E5=86=99=E9=81=93:
+> > The commit beee24695157 ("cfg80211: Save the regulatory domain when
+> > setting custom regulatory") forgets to free the newly allocated regd
+> > object.
+> >
+> > Fix this by freeing the regd object in the error handling code and
+> > deletion function - mac80211_hwsim_del_radio.
+> >
+> > Reported-by: syzbot+1638e7c770eef6b6c0d0@syzkaller.appspotmail.com
+> > Fixes: beee24695157 ("cfg80211: Save the regulatory domain when setting=
+ custom regulatory")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > ---
+> >  drivers/net/wireless/mac80211_hwsim.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wirele=
+ss/mac80211_hwsim.c
+> > index ffa894f7312a..20b870af6356 100644
+> > --- a/drivers/net/wireless/mac80211_hwsim.c
+> > +++ b/drivers/net/wireless/mac80211_hwsim.c
+> > @@ -3404,6 +3404,8 @@ static int mac80211_hwsim_new_radio(struct genl_i=
+nfo *info,
+> >       debugfs_remove_recursive(data->debugfs);
+> >       ieee80211_unregister_hw(data->hw);
+> >  failed_hw:
+> > +     if (param->regd)
+> > +             kfree_rcu(get_wiphy_regdom(data->hw->wiphy));
+> >       device_release_driver(data->dev);
 >
-> The patch that introduced the problem already contains some #ifdef
-> checks, so just add another one that makes it build again.
->
-> Fixes: 6eca310e8924 ("drm/nouveau/kms/nv50-: Add basic DPCD backlight support for nouveau")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> hw->wiphy->regd may be NULL if previous reg_copy_regd failed, so how abou=
+t:
+> if (hw->wiphy->regd)
+>         rcu_free_regdom(get_wiphy_regdom(hw->wiphy))
 
-Can we just toss the idea that BACKTLIGHT=n is a reasonable config for
-drm drivers using backlights, and add depends BACKLIGHT to all of
-them?
+Previously I would like to use this API(rcu_free_regdom), but it is
+static and located in non-global header file - reg.h.
 
-I mean this is a perfect source of continued patch streams to keep us
-all busy, but beyond that I really don't see the point ... I frankly
-have better things to do, and especially with the big drivers we have
-making backlight optional saves comparitively nothing.
--Daniel
+>
+> >  failed_bind:
+> >       device_unregister(data->dev);
+> > @@ -3454,6 +3456,8 @@ static void mac80211_hwsim_del_radio(struct mac80=
+211_hwsim_data *data,
+> >  {
+> >       hwsim_mcast_del_radio(data->idx, hwname, info);
+> >       debugfs_remove_recursive(data->debugfs);
+> > +     if (data->regd)
+> > +             kfree_rcu(get_wiphy_regdom(data->hw->wiphy));
+> this is not correct, because ieee80211_unregister_hw below will free
+> data->hw_wiphy->regd
 
-> ---
->  drivers/gpu/drm/nouveau/dispnv50/disp.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> index 093e1f7163b3..fcf53e24db21 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> @@ -1659,20 +1659,23 @@ static void
->  nv50_sor_atomic_disable(struct drm_encoder *encoder, struct drm_atomic_state *state)
->  {
->         struct nouveau_encoder *nv_encoder = nouveau_encoder(encoder);
-> -       struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
->         struct nouveau_crtc *nv_crtc = nouveau_crtc(nv_encoder->crtc);
->         struct nouveau_connector *nv_connector = nv50_outp_get_old_connector(state, nv_encoder);
-> -       struct nouveau_backlight *backlight = nv_connector->backlight;
->         struct drm_dp_aux *aux = &nv_connector->aux;
-> -       int ret;
->         u8 pwr;
->
-> +#ifdef CONFIG_DRM_NOUVEAU_BACKLIGHT
-> +       struct nouveau_drm *drm = nouveau_drm(nv_encoder->base.base.dev);
-> +       struct nouveau_backlight *backlight = nv_connector->backlight;
-> +
->         if (backlight && backlight->uses_dpcd) {
-> -               ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
-> +               int ret = drm_edp_backlight_disable(aux, &backlight->edp_info);
-> +
->                 if (ret < 0)
->                         NV_ERROR(drm, "Failed to disable backlight on [CONNECTOR:%d:%s]: %d\n",
->                                  nv_connector->base.base.id, nv_connector->base.name, ret);
->         }
-> +#endif
->
->         if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {
->                 int ret = drm_dp_dpcd_readb(aux, DP_SET_POWER, &pwr);
-> --
-> 2.29.2
->
+Can you point out the concrete code releasing regd? Maybe the link to elixi=
+r.
 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> >       ieee80211_unregister_hw(data->hw);
+> >       device_release_driver(data->dev);
+> >       device_unregister(data->dev);
+> >
