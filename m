@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC8E3D3694
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4406E3D3697
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 10:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234348AbhGWHmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 03:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234030AbhGWHmE (ORCPT
+        id S234405AbhGWHms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 03:42:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42194 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234263AbhGWHmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 03:42:04 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7900FC061575;
-        Fri, 23 Jul 2021 01:22:38 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id r2so1462674wrl.1;
-        Fri, 23 Jul 2021 01:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=eHQIcjQXUTuq7R+K/4eHvbaN0F5Gzr6UU0DXUwmBLJk=;
-        b=nzcmKaSw5a9/iHEpD8IGwqxpV6+wQbsa6rC46XSES6JjF07FEKVg5FjKb1JTD1MJUp
-         UWb+whYWfBLhf/apn1zGhcaT4qohXVV9Xxj+alDN1LG2wDWWnRrc4X6n0KHkAXqB4ry3
-         EuYXMqVBCY8zFOqB5Bl21/xMzA/+RuztnUcARafe2vZJkDUEysgxx9fP8cYwtGQeWGrr
-         KCFLMGwrWz1DZBQekRznkbB/lVRCjDPnvOmYPL749yv5CiBnHTr6FGF8M0FDMUoObyn7
-         lu/nEXdekEdZuKsYKFZGN/QFViN1Fvqo8TvwjUbGuzVt2NKGXWZHmUzfVR28BQ1W3bzs
-         x78A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=eHQIcjQXUTuq7R+K/4eHvbaN0F5Gzr6UU0DXUwmBLJk=;
-        b=WprMjUyWzjyFvGM5OnZj/nob9OzjjW6f+Jl88PV09NmvH3/qCY+IKefCryWf3kZSCn
-         8Xqq18SrYpnH/NM5dYrfQztkR/0AfzGg999D+d7lxUGDYSnqNSyBHd7XZzbksKT6on9b
-         ydbuMeFBahmQYadLBPCcQENXAZvJXwx7HfdqWUJTrdvK7ilyImZ0N7AMg8xmenThCTBK
-         f2UxsVTO32MNFlM6k+tpYdp7Gp7rdhzHGafnh6Hgar99ouE8hwkf4V6/JW93M7pTwv+J
-         B0lwpSgn6BI/btyUMb035h2AhlrWXxPxDYTbANMkSKZaXqvLfxlhFSsO9HubgO6AFc9P
-         Na5A==
-X-Gm-Message-State: AOAM530I3a/2IKFCZfzm0GPtT2hRVAoAu01RWHDUNnQTItTSRjFEltQh
-        u6cbJzVzoqZnT9154Ub2G7WwHQ5MEOs=
-X-Google-Smtp-Source: ABdhPJzNsXd0xn+ZYk/hKsrkSpo+O4LewrB8Z7g153yCkw6fE4ToY+F0tCUlfnCAi8qU3Z4xnS7gPA==
-X-Received: by 2002:adf:f6cc:: with SMTP id y12mr1609495wrp.178.1627028556944;
-        Fri, 23 Jul 2021 01:22:36 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:a0d7:cc1c:9090:5782? ([2a02:908:1252:fb60:a0d7:cc1c:9090:5782])
-        by smtp.gmail.com with ESMTPSA id s24sm34555606wra.33.2021.07.23.01.22.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Jul 2021 01:22:36 -0700 (PDT)
-Subject: Re: [Linaro-mm-sig] [PATCH] dma-buf/poll: Get a file reference for
- outstanding fence callbacks
-To:     =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Cc:     linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
-References: <20210723075857.4065-1-michel@daenzer.net>
- <f5f37693-bfe2-e52f-172b-00f4aa94dbd9@amd.com>
- <4cf94f59-f953-f5d7-9901-cfe5fd63bfbc@daenzer.net>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <884050b3-5e7d-c00b-5467-290cfc57e0ea@gmail.com>
-Date:   Fri, 23 Jul 2021 10:22:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 23 Jul 2021 03:42:47 -0400
+X-UUID: 5e3aceeea4dd4036aedac74bcfae7582-20210723
+X-UUID: 5e3aceeea4dd4036aedac74bcfae7582-20210723
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 595526317; Fri, 23 Jul 2021 16:23:19 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 23 Jul 2021 16:23:18 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 23 Jul 2021 16:23:17 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: [PATCH v4 1/3] dt-bindings: phy: mediatek: tphy: add support hardware version 3
+Date:   Fri, 23 Jul 2021 16:22:40 +0800
+Message-ID: <1627028562-23584-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <4cf94f59-f953-f5d7-9901-cfe5fd63bfbc@daenzer.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The PHYA architecture is updated, and doesn't support slew rate
+calibration anymore on 7nm or advanced process, add a new version
+number to support it.
+Due to the FreqMeter bank is not used but reserved, it's backward
+with v2 until now.
+For mt8195, no function changes when use generic v2 or v3 compatible,
+but prefer to use v3's compatible, it will not waste the time to
+calibrate the slew rate, and also correspond with hardware version.
 
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+v4: no changes
+v3: add Acked-by Rob
+v2: add more commit log suggested by Rob
+---
+ .../devicetree/bindings/phy/mediatek,tphy.yaml     | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Am 23.07.21 um 10:19 schrieb Michel Dänzer:
-> On 2021-07-23 10:04 a.m., Christian König wrote:
->> Am 23.07.21 um 09:58 schrieb Michel Dänzer:
->>> From: Michel Dänzer <mdaenzer@redhat.com>
->>>
->>> This makes sure we don't hit the
->>>
->>>      BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
->>>
->>> in dma_buf_release, which could be triggered by user space closing the
->>> dma-buf file description while there are outstanding fence callbacks
->>> from dma_buf_poll.
->> I was also wondering the same thing while working on this, but then thought that the poll interface would take care of this.
-> I was able to hit the BUG_ON with https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1880 .
->
->
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Michel Dänzer <mdaenzer@redhat.com>
->>> ---
->>>    drivers/dma-buf/dma-buf.c | 18 ++++++++++++------
->>>    1 file changed, 12 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
->>> index 6c520c9bd93c..ec25498a971f 100644
->>> --- a/drivers/dma-buf/dma-buf.c
->>> +++ b/drivers/dma-buf/dma-buf.c
->>> @@ -65,12 +65,9 @@ static void dma_buf_release(struct dentry *dentry)
->>>        BUG_ON(dmabuf->vmapping_counter);
->>>          /*
->>> -     * Any fences that a dma-buf poll can wait on should be signaled
->>> -     * before releasing dma-buf. This is the responsibility of each
->>> -     * driver that uses the reservation objects.
->>> -     *
->>> -     * If you hit this BUG() it means someone dropped their ref to the
->>> -     * dma-buf while still having pending operation to the buffer.
->>> +     * If you hit this BUG() it could mean:
->>> +     * * There's a file reference imbalance in dma_buf_poll / dma_buf_poll_cb or somewhere else
->>> +     * * dmabuf->cb_in/out.active are non-0 despite no pending fence callback
->>>         */
->>>        BUG_ON(dmabuf->cb_in.active || dmabuf->cb_out.active);
->>>    @@ -196,6 +193,7 @@ static loff_t dma_buf_llseek(struct file *file, loff_t offset, int whence)
->>>    static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
->>>    {
->>>        struct dma_buf_poll_cb_t *dcb = (struct dma_buf_poll_cb_t *)cb;
->>> +    struct dma_buf *dmabuf = container_of(dcb->poll, struct dma_buf, poll);
->>>        unsigned long flags;
->>>          spin_lock_irqsave(&dcb->poll->lock, flags);
->>> @@ -203,6 +201,8 @@ static void dma_buf_poll_cb(struct dma_fence *fence, struct dma_fence_cb *cb)
->>>        dcb->active = 0;
->>>        spin_unlock_irqrestore(&dcb->poll->lock, flags);
->>>        dma_fence_put(fence);
->>> +    /* Paired with get_file in dma_buf_poll */
->>> +    fput(dmabuf->file);
->> Is calling fput() in interrupt context ok? IIRC that could potentially sleep.
-> Looks fine AFAICT: It has
->
-> 		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
->
-> and as a fallback for that, it adds the file to a lock-less delayed_fput_list which is processed by a workqueue.
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+index ef9d9d4e6875..838852cb8527 100644
+--- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
++++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+@@ -15,7 +15,7 @@ description: |
+   controllers on MediaTek SoCs, includes USB2.0, USB3.0, PCIe and SATA.
+ 
+   Layout differences of banks between T-PHY V1 (mt8173/mt2701) and
+-  T-PHY V2 (mt2712) when works on USB mode:
++  T-PHY V2 (mt2712) / V3 (mt8195) when works on USB mode:
+   -----------------------------------
+   Version 1:
+   port        offset    bank
+@@ -34,7 +34,7 @@ description: |
+   u2 port2    0x1800    U2PHY_COM
+               ...
+ 
+-  Version 2:
++  Version 2/3:
+   port        offset    bank
+   u2 port0    0x0000    MISC
+               0x0100    FMREG
+@@ -59,7 +59,8 @@ description: |
+ 
+   SPLLC shared by u3 ports and FMREG shared by u2 ports on V1 are put back
+   into each port; a new bank MISC for u2 ports and CHIP for u3 ports are
+-  added on V2.
++  added on V2; the FMREG bank for slew rate calibration is not used anymore
++  and reserved on V3;
+ 
+ properties:
+   $nodename:
+@@ -79,8 +80,11 @@ properties:
+               - mediatek,mt2712-tphy
+               - mediatek,mt7629-tphy
+               - mediatek,mt8183-tphy
+-              - mediatek,mt8195-tphy
+           - const: mediatek,generic-tphy-v2
++      - items:
++          - enum:
++              - mediatek,mt8195-tphy
++          - const: mediatek,generic-tphy-v3
+       - const: mediatek,mt2701-u3phy
+         deprecated: true
+       - const: mediatek,mt2712-u3phy
+@@ -91,7 +95,7 @@ properties:
+     description:
+       Register shared by multiple ports, exclude port's private register.
+       It is needed for T-PHY V1, such as mt2701 and mt8173, but not for
+-      T-PHY V2, such as mt2712.
++      T-PHY V2/V3, such as mt2712.
+     maxItems: 1
+ 
+   "#address-cells":
+-- 
+2.18.0
 
-Ah, yes that makes sense.
-
-Fell free to add Reviewed-by: Christian König <christian.koenig@amd.com>
-
-Thanks,
-Christian.
