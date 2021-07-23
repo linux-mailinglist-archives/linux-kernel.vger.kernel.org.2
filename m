@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC233D3CF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A533D3CF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235791AbhGWPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:14:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235702AbhGWPOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:14:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 592D260725;
-        Fri, 23 Jul 2021 15:54:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627055696;
-        bh=gGq+nFNtYhXh8+LTHNU1d09X9anaFb/jJcdQ6OGEm6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=w7TXf5P/3VOLNqa3IGJS+/tL1WqsO3lubM2fNseWUGtviwChA0JbxioddqK5Xebzu
-         VBKcT7W2dFhFjKmcOBccaxPRa5CzvwMBY/+1zUDb1IQTjrxjksklcYYYeIcEmsMOL3
-         /z4TEJgfF9/B/bm0KWjIW9F/WJgTnJpsvFiJnY0U=
-Date:   Fri, 23 Jul 2021 17:54:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        John Stultz <john.stultz@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Amit Pundir <amit.pundir@linaro.org>
-Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Message-ID: <YPrmTYQJ33AIxcwP@kroah.com>
-References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-30-Sergey.Semin@baikalelectronics.ru>
- <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
- <20210714124807.o22mottsrg3tv6nt@mobilestation>
- <YPfPDqJhfzbvDLvB@kroah.com>
- <20210721100220.ddfxwugivsndsedv@mobilestation>
- <YPf29+ewbrYgHxRP@kroah.com>
- <YPh/AS5svBk+gddY@yoga>
- <YPp7Q4IofUYQlrqd@kroah.com>
- <YPrTbC7fNOY3qCcJ@yoga>
+        id S235744AbhGWPOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235823AbhGWPOp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 11:14:45 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD426C06179F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:55:06 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id q6so2274399oiw.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 08:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HLcJ6bn51jThAKxoDCYpx6oLwVsRRf9KRCMxlyUDhR8=;
+        b=GXN00ktEiOJgI3bJLby0Yxh/oRfelw7Q81ujxHwhEa/ls4Ts2F1nApgVX0xn+FAfGB
+         Pd2BG2Va95BaS53tH5nmy6nQkQgn2TvPUotk+QZ9TDe5kqXfU7V+T6P3Ch//xIoBdYwC
+         2kCXeKluZn1jJiDP8DTPV0JjFHqwSphnDcAEI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HLcJ6bn51jThAKxoDCYpx6oLwVsRRf9KRCMxlyUDhR8=;
+        b=AxGOu8I/Rohvd4p70CwSBO90khOFMMDb2kXUhNz2cZxlwcSYwzou2VsIbN7EYzBFB4
+         nHyIaRgGGuIMD8iPlR+6/wCdklkExY3DRYeQ4xlyFlVjOh97IamctJ0KFtXpCyMWkxAG
+         Oci/5tFAAdQfwZT9ZyOz71hfxHo/rO1cyqI0yb5beX4datzeHKrMXhUmPiwlbX3KEZP4
+         N0fULWQUa6dNiYT9D6StGfvlcuBKXFlhNcMUGuU1c7mzObeI32TvkKlDPVVlwMsPXDLB
+         Fis7s6Il+Tw/mn9Y4UgfZa8F+ePtwmeLl9cpOWYkguDGcx/iSJVyy8dBcCj6E4pAXUCX
+         Eo9g==
+X-Gm-Message-State: AOAM5313vkiT78l+TFyE2AxZ1hcSE6LCgKZzSKkt3k74+JyPmA3v/d//
+        lDPPozwYF5YxN7qpZHV6xcZqMA==
+X-Google-Smtp-Source: ABdhPJy0zDwrJFmO2vPtNQKVtWxqRxeW95vdcE5f/LO8c8ZcKR3VynznebvfrnIM4juBTlB3FutBCw==
+X-Received: by 2002:a54:4690:: with SMTP id k16mr3467119oic.49.1627055705788;
+        Fri, 23 Jul 2021 08:55:05 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id k7sm5401284otn.60.2021.07.23.08.55.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Jul 2021 08:55:05 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/123] 5.10.53-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210722184939.163840701@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <03289731-3f8c-afe8-a351-0241516b687e@linuxfoundation.org>
+Date:   Fri, 23 Jul 2021 09:55:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPrTbC7fNOY3qCcJ@yoga>
+In-Reply-To: <20210722184939.163840701@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 09:34:20AM -0500, Bjorn Andersson wrote:
-> On Fri 23 Jul 03:18 CDT 2021, Greg Kroah-Hartman wrote:
+On 7/22/21 12:50 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.53 release.
+> There are 123 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > On Wed, Jul 21, 2021 at 03:09:37PM -0500, Bjorn Andersson wrote:
-> > > Which tree did you revert this in? 5.13.stable?)
-> > 
-> > My usb-linus branch which will go to Linus later today.  Then we can
-> > backport the revert to older kernels as needed.
-> > 
+> Responses should be made by Sat, 24 Jul 2021 18:49:19 +0000.
+> Anything received after that time might be too late.
 > 
-> I'm not worried about the backports, I'm worried about conflicts you're
-> causing because you're taking a non-usb patch through the usb tree.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.53-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 > 
-> I was about to push a revert (to this and the other Qualcomm platforms),
-> but as you're taking some set of reverts through the usb tree we're just
-> in for a bunch of merge conflicts.
+> thanks,
+> 
+> greg k-h
+> 
 
-It shouldn't be a merge conflict as you can apply the same revert to
-your tree now and keep on merging.  When you pick up 5.14-rc3 from Linus
-it should merge "correctly", right?
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
 thanks,
+-- Shuah
 
-greg k-h
