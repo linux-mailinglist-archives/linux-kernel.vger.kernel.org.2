@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01293D4041
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8F93D4042
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 20:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhGWRqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 13:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbhGWRqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 13:46:15 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF726C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 11:26:47 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id a14so4125196plh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 11:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=Z9jCaSUwBp3ShHF/9OP0tyS8Cc0mRgMlGmxjwb3Oo8g=;
-        b=bPj+eyDk+Qt4kwfCR2iC8toS/CqC2FOCAh6HnkFXL2d9J1259sA4FEKgfawaseqO8j
-         nHhN3lQ5lWMTrym5DjHjnZsLUlVwmQMD3swC4af9TaME63wrHBYeMm3dXBXnrk2m9D5W
-         3tjnZhjGkibabkj+pa32x0vYJkZbx16FLVWF/PuQg0sGNkaG3gUhoKX2z1MiRB3xNnW8
-         zskmV0FzKoH20zJkWjqwwQDfaHmPi6jyWVO4NbKnkU4qEth6/ZXg/U3ljmAmiAA0Efpz
-         2TUK3IFg000dUaTSAmQEACNx57nPSUhCQCGUUCrDu3xpuDeFI7pS2c3Zi/YdrUCDJzY3
-         1WPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=Z9jCaSUwBp3ShHF/9OP0tyS8Cc0mRgMlGmxjwb3Oo8g=;
-        b=FkMCt2GKmYRtxU11FYTCXkaXdcUny/Garay+aGiw8QYpMEo/QHXHpFZDYI6pIrQOCu
-         xlL9csrv0AuINw32oWvHvLAavbfcrT/iqknKW2f4TzeNIze5ZbOAf2VIS8ekK11xMfBE
-         za9kjCESTE5ZCC8LP5z/YokrbFJZ6iDNaUagc4/IjZWxnDy5ox98R7/c0en9Qh+1ieLl
-         WUf/dIPAtdE4fhR7ndJGjzwj4Ih8JicXcnE3KfxHgwtCdqZ3/6V+UiNNx0vMzJeoZwXz
-         +Ak4i+hKrtu2acYOHffIDrfb88vM4Sk0v2QvpDO2cFhK0AmIvIlsYHs/QHJ1vyjdQMwM
-         f+zQ==
-X-Gm-Message-State: AOAM532cLbWGomGAwGH5+IfH4Q6i9lDZp/5LePkUmYT/ioVG8reP44/e
-        Jp/Qypn/1nekkmdh5iVBYJTyy9v0/MvAupFnGLA=
-X-Google-Smtp-Source: ABdhPJwCaw8xUkvRB98+6/e7SXv5pjtlJerOWJwn/WbaeJsGwhvP3U9NyRr98wBCsJLMYAIXyvSUXojr0VGyy9FgGPI=
-X-Received: by 2002:a63:f751:: with SMTP id f17mr5968846pgk.373.1627064807330;
- Fri, 23 Jul 2021 11:26:47 -0700 (PDT)
+        id S229708AbhGWRra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 13:47:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhGWRr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 13:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA4E660EFD;
+        Fri, 23 Jul 2021 18:28:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627064880;
+        bh=HaFshbfHZgqNHNDQcEHSqY8d1j1xYZH4fiC/lGShs2o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QCrlsRVc8pXKhcqz7MCxSxAehpyowqwPWDdWsxLavMC2RMf5O5KJ+i0OBbxczG5w8
+         u1/nODLG6EbS3+N8d8mPJ32vos4BnXKs/4dqKHuTBoOfavDS8ZlBKPsa/TWbSSmXqB
+         SygffDymBmkmUMsSv2LXCpQV3nN3IQ5b7Z5+FkhLLFjOYGi6RxOTV6m7WTEHMHJl4L
+         aQ6hkcolm5/PHaOxMoSjG4mxuQrnMTQst7u0Og9K4U+wla/yNXtj1yp7wenENN2iw2
+         8wNbuwtHfY61EhgwZQrwy+WMo738R+LKZmTCk90JRGyyHnJvUOwb8I4fX8QuKYpxxL
+         0k1Ao8kIj4OxQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5DB6F403F2; Fri, 23 Jul 2021 15:27:57 -0300 (-03)
+Date:   Fri, 23 Jul 2021 15:27:57 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com
+Subject: Re: [PATCH 4/7] perf doc: Add info pages to all target.
+Message-ID: <YPsKLa0Qe5/as4Jh@kernel.org>
+References: <20210715013343.2286699-1-irogers@google.com>
+ <20210715013343.2286699-5-irogers@google.com>
 MIME-Version: 1.0
-Sender: mrsaishiag6@gmail.com
-Received: by 2002:a05:6a10:c653:0:0:0:0 with HTTP; Fri, 23 Jul 2021 11:26:46
- -0700 (PDT)
-From:   Mrs Aisha Al-Qaddafi <mrsaishag6555@gmail.com>
-Date:   Fri, 23 Jul 2021 11:26:46 -0700
-X-Google-Sender-Auth: hgflZKtIOt4QNEtiNSj3v3nG8w4
-Message-ID: <CAMhFSh+QcJEwuOCUo4upRHJz6PsD-PtUFh4OTeUMq6udyVqA2w@mail.gmail.com>
-Subject: hello dear friend please can i trust you
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210715013343.2286699-5-irogers@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I came across your e-mail contact prior a private search while in need
-of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
-I am willing to negotiate investment/business profit sharing ratio
-with you base on the future investment earning profits.
-If you are willing to handle this project on my behalf kindly reply
-urgent to enable me provide you more information about the investment
-funds.
-Your Urgent Reply Will Be Appreciated
-Best Regards
-Mrs Aisha Al-Qaddafi
+Em Wed, Jul 14, 2021 at 06:33:40PM -0700, Ian Rogers escreveu:
+> Enabled to ensure that info pages build.
+
+How did you test this? I tried installing texinfo, that is where
+makeinfo belongs:
+
+⬢[acme@toolbox perf]$ rpm -qf /usr/bin/makeinfo
+texinfo-6.7-10.fc34.x86_64
+⬢[acme@toolbox perf]$ rpm -q texinfo
+texinfo-6.7-10.fc34.x86_64
+⬢[acme@toolbox perf]$
+
+And then:
+
+⬢[acme@toolbox perf]$ make -C tools/perf O=/tmp/build/perf install-doc
+make: Entering directory '/var/home/acme/git/perf/tools/perf'
+  BUILD:   Doing 'make -j24' parallel build
+  INSTALL Documentation-man
+make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+⬢[acme@toolbox perf]$
+
+⬢[acme@toolbox perf]$ find ~/share/ -name "*.info"
+⬢[acme@toolbox perf]$ find ~/share/ -name "*.1"
+/var/home/acme/share/man/man1/perf-annotate.1
+/var/home/acme/share/man/man1/perf-archive.1
+/var/home/acme/share/man/man1/perf-bench.1
+/var/home/acme/share/man/man1/perf-buildid-cache.1
+/var/home/acme/share/man/man1/perf-buildid-list.1
+/var/home/acme/share/man/man1/perf-c2c.1
+/var/home/acme/share/man/man1/perf-config.1
+/var/home/acme/share/man/man1/perf-daemon.1
+/var/home/acme/share/man/man1/perf-data.1
+/var/home/acme/share/man/man1/perf-diff.1
+/var/home/acme/share/man/man1/perf-dlfilter.1
+/var/home/acme/share/man/man1/perf-evlist.1
+/var/home/acme/share/man/man1/perf-ftrace.1
+/var/home/acme/share/man/man1/perf-help.1
+/var/home/acme/share/man/man1/perf-inject.1
+/var/home/acme/share/man/man1/perf-intel-pt.1
+/var/home/acme/share/man/man1/perf-iostat.1
+/var/home/acme/share/man/man1/perf-kallsyms.1
+/var/home/acme/share/man/man1/perf-kmem.1
+/var/home/acme/share/man/man1/perf-kvm.1
+/var/home/acme/share/man/man1/perf-list.1
+/var/home/acme/share/man/man1/perf-lock.1
+/var/home/acme/share/man/man1/perf-mem.1
+/var/home/acme/share/man/man1/perf-probe.1
+/var/home/acme/share/man/man1/perf-record.1
+/var/home/acme/share/man/man1/perf-report.1
+/var/home/acme/share/man/man1/perf-sched.1
+/var/home/acme/share/man/man1/perf-script-perl.1
+/var/home/acme/share/man/man1/perf-script-python.1
+/var/home/acme/share/man/man1/perf-script.1
+/var/home/acme/share/man/man1/perf-stat.1
+/var/home/acme/share/man/man1/perf-test.1
+/var/home/acme/share/man/man1/perf-timechart.1
+/var/home/acme/share/man/man1/perf-top.1
+/var/home/acme/share/man/man1/perf-trace.1
+/var/home/acme/share/man/man1/perf-version.1
+/var/home/acme/share/man/man1/perf.1
+⬢[acme@toolbox perf]$
+⬢[acme@toolbox perf]$ ls -la ~/share/info
+ls: cannot access '/var/home/acme/share/info': No such file or directory
+
+- Arnaldo
