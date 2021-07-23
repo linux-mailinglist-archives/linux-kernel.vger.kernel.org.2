@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFA73D3348
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 06:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F81D3D333A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 06:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbhGWDUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 23:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39564 "EHLO mail.kernel.org"
+        id S234101AbhGWDUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 23:20:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234379AbhGWDS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 23:18:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A91D60F22;
-        Fri, 23 Jul 2021 03:58:58 +0000 (UTC)
+        id S234429AbhGWDSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 23:18:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9962A60F37;
+        Fri, 23 Jul 2021 03:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627012740;
-        bh=jJqvK8HGRjD3gSq3yeANfgSOtangEB0762+udH++WA8=;
+        s=k20201202; t=1627012749;
+        bh=mYSAb2tblnHSTGfIlA7dILXS4txeVAS9pK0nlQbYLr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tHDaxvTbQmQJLGijWGWisM8eOX4JVsc5tdGA5jEMXfpyAtjkAPe1g3dwHRc4grSW2
-         k0IWoX+BhUOH1h//KCdYCpzVCnO5RAHbB7261TvIogzsyqNx8T14HMUwuoE3lukxlr
-         JXh9w6qwv/mKFfpExuNX+fK8Z0TB3Fe8oVTFLI64FtJ2mq1/OV5ujDYCJoaUrZgUdw
-         y26wBqrZICq+PPaU939MLB0Q+Wv+TD0Gs72Nkulgse8DVEslzELRh3B/vhUCbjVLe4
-         y5QfW4ulroHm5i+3DthBKjP/sVzosuFJujLsoFZFz2dk8dEIImmax5bF5S4dTLrr45
-         uZ96sV+nP5Sqw==
+        b=dfsar6M5aMP8yxmoQ2qe80UJydXlo2/1sYLa81lHA2WUDs7CSZjWRXmrr9TpU1ePt
+         zVLYWnUnY1dqBUbwD2RJ3JyVMh5NinaqJ2VwjPVIVpeF+FtfohVjRJzOpPDf5fGHSC
+         Tz1IkvRnvccwWAjyIrteESwFD8YaNWIucAWGwB4Mx+dZO+YfE34zCxEGUuQBPwYXra
+         4nACqUbuQgZAhuyZTbtqPMWPwC5vkF6iMjl2kl+p/EPieivJMT+pJPlq4MCwN1UyTD
+         K3UjB5YyrYoy9tlnrZd5jpMCyFXAD32FNXm39E41vbdrnPxHbCOb8uPapP6hQUmaUL
+         FTIXbTUK95msw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 5/8] hfs: add missing clean-up in hfs_fill_super
-Date:   Thu, 22 Jul 2021 23:58:49 -0400
-Message-Id: <20210723035852.532303-5-sashal@kernel.org>
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 2/7] net/802/garp: fix memleak in garp_request_join()
+Date:   Thu, 22 Jul 2021 23:59:01 -0400
+Message-Id: <20210723035906.532444-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210723035852.532303-1-sashal@kernel.org>
-References: <20210723035852.532303-1-sashal@kernel.org>
+In-Reply-To: <20210723035906.532444-1-sashal@kernel.org>
+References: <20210723035906.532444-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -48,84 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 16ee572eaf0d09daa4c8a755fdb71e40dbf8562d ]
+[ Upstream commit 42ca63f980842918560b25f0244307fd83b4777c ]
 
-Patch series "hfs: fix various errors", v2.
+I got kmemleak report when doing fuzz test:
 
-This series ultimately aims to address a lockdep warning in
-hfs_find_init reported by Syzbot [1].
+BUG: memory leak
+unreferenced object 0xffff88810c909b80 (size 64):
+  comm "syz", pid 957, jiffies 4295220394 (age 399.090s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 08 00 00 00 01 02 00 04  ................
+  backtrace:
+    [<00000000ca1f2e2e>] garp_request_join+0x285/0x3d0
+    [<00000000bf153351>] vlan_gvrp_request_join+0x15b/0x190
+    [<0000000024005e72>] vlan_dev_open+0x706/0x980
+    [<00000000dc20c4d4>] __dev_open+0x2bb/0x460
+    [<0000000066573004>] __dev_change_flags+0x501/0x650
+    [<0000000035b42f83>] rtnl_configure_link+0xee/0x280
+    [<00000000a5e69de0>] __rtnl_newlink+0xed5/0x1550
+    [<00000000a5258f4a>] rtnl_newlink+0x66/0x90
+    [<00000000506568ee>] rtnetlink_rcv_msg+0x439/0xbd0
+    [<00000000b7eaeae1>] netlink_rcv_skb+0x14d/0x420
+    [<00000000c373ce66>] netlink_unicast+0x550/0x750
+    [<00000000ec74ce74>] netlink_sendmsg+0x88b/0xda0
+    [<00000000381ff246>] sock_sendmsg+0xc9/0x120
+    [<000000008f6a2db3>] ____sys_sendmsg+0x6e8/0x820
+    [<000000008d9c1735>] ___sys_sendmsg+0x145/0x1c0
+    [<00000000aa39dd8b>] __sys_sendmsg+0xfe/0x1d0
 
-The work done for this led to the discovery of another bug, and the
-Syzkaller repro test also reveals an invalid memory access error after
-clearing the lockdep warning.  Hence, this series is broken up into
-three patches:
+Calling garp_request_leave() after garp_request_join(), the attr->state
+is set to GARP_APPLICANT_VO, garp_attr_destroy() won't be called in last
+transmit event in garp_uninit_applicant(), the attr of applicant will be
+leaked. To fix this leak, iterate and free each attr of applicant before
+rerturning from garp_uninit_applicant().
 
-1. Add a missing call to hfs_find_exit for an error path in
-   hfs_fill_super
-
-2. Fix memory mapping in hfs_bnode_read by fixing calls to kmap
-
-3. Add lock nesting notation to tell lockdep that the observed locking
-   hierarchy is safe
-
-This patch (of 3):
-
-Before exiting hfs_fill_super, the struct hfs_find_data used in
-hfs_find_init should be passed to hfs_find_exit to be cleaned up, and to
-release the lock held on the btree.
-
-The call to hfs_find_exit is missing from an error path.  We add it back
-in by consolidating calls to hfs_find_exit for error paths.
-
-Link: https://syzkaller.appspot.com/bug?id=f007ef1d7a31a469e3be7aeb0fde0769b18585db [1]
-Link: https://lkml.kernel.org/r/20210701030756.58760-1-desmondcheongzx@gmail.com
-Link: https://lkml.kernel.org/r/20210701030756.58760-2-desmondcheongzx@gmail.com
-Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Reviewed-by: Viacheslav Dubeyko <slava@dubeyko.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hfs/super.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ net/802/garp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/fs/hfs/super.c b/fs/hfs/super.c
-index 7e0d65e9586c..691810b0e6bc 100644
---- a/fs/hfs/super.c
-+++ b/fs/hfs/super.c
-@@ -427,14 +427,12 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!res) {
- 		if (fd.entrylength > sizeof(rec) || fd.entrylength < 0) {
- 			res =  -EIO;
--			goto bail;
-+			goto bail_hfs_find;
- 		}
- 		hfs_bnode_read(fd.bnode, &rec, fd.entryoffset, fd.entrylength);
- 	}
--	if (res) {
--		hfs_find_exit(&fd);
--		goto bail_no_root;
--	}
-+	if (res)
-+		goto bail_hfs_find;
- 	res = -EINVAL;
- 	root_inode = hfs_iget(sb, &fd.search_key->cat, &rec);
- 	hfs_find_exit(&fd);
-@@ -450,6 +448,8 @@ static int hfs_fill_super(struct super_block *sb, void *data, int silent)
- 	/* everything's okay */
- 	return 0;
+diff --git a/net/802/garp.c b/net/802/garp.c
+index b38ee6dcba45..5239b8f244e7 100644
+--- a/net/802/garp.c
++++ b/net/802/garp.c
+@@ -206,6 +206,19 @@ static void garp_attr_destroy(struct garp_applicant *app, struct garp_attr *attr
+ 	kfree(attr);
+ }
  
-+bail_hfs_find:
-+	hfs_find_exit(&fd);
- bail_no_root:
- 	pr_err("get root inode failed\n");
- bail:
++static void garp_attr_destroy_all(struct garp_applicant *app)
++{
++	struct rb_node *node, *next;
++	struct garp_attr *attr;
++
++	for (node = rb_first(&app->gid);
++	     next = node ? rb_next(node) : NULL, node != NULL;
++	     node = next) {
++		attr = rb_entry(node, struct garp_attr, node);
++		garp_attr_destroy(app, attr);
++	}
++}
++
+ static int garp_pdu_init(struct garp_applicant *app)
+ {
+ 	struct sk_buff *skb;
+@@ -612,6 +625,7 @@ void garp_uninit_applicant(struct net_device *dev, struct garp_application *appl
+ 
+ 	spin_lock_bh(&app->lock);
+ 	garp_gid_event(app, GARP_EVENT_TRANSMIT_PDU);
++	garp_attr_destroy_all(app);
+ 	garp_pdu_queue(app);
+ 	spin_unlock_bh(&app->lock);
+ 
 -- 
 2.30.2
 
