@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2123D31E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CAE3D31E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 04:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbhGWBxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 21:53:32 -0400
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:50821 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233433AbhGWBxa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 21:53:30 -0400
-Received: by mail-pj1-f43.google.com with SMTP id l19so318512pjz.0;
-        Thu, 22 Jul 2021 19:34:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RREWwRklaZFXt0C4quifntpsOFbK/AfnI0Sh0jnaUmg=;
-        b=U03foEPWsW2DfPCXBxWAflP/v0TXNeTiZkUSRDn3VN4ryGn2q1oioraLyzQxaRIx7R
-         awEPJuRcccvHB7WoD+0QvyhTsUyZ+FK8rl68oDrcv/XPnyY/ucLNjE5iEiwgR6TvnfNu
-         VCv/jfbj+e5Fo/ThqnMtwvR+iseWt54tz0bOxbwXBkP/oQvcCayKqxbqTYiDXeyon0f6
-         Tq7JG1KJBxHi50Cu8nMWsAdjb/zwpX0oeM1DD/HUs1osnfl54XHm8Osi6NQQ/rhnPHiE
-         liIKV1aYYS81X22fSSPU5eZiChDTjru+RihbX90NZBlgISH8HcYcW+/h4dIGE+D3Lfae
-         ch0g==
-X-Gm-Message-State: AOAM5304ajlCpEutEqEN+cM2cENxloaRbWMVqn9Wr/G3u9ksY1/K36Dl
-        1GfmY6FoQ6MGsnxFVhO4EIgM/kgwF5Gqgg==
-X-Google-Smtp-Source: ABdhPJzjHKo0c5RWosVq5DDhWmIZFHW08248o5ty3hGtbxQ6eznyCONZvxh4FQ926BfpYN3JbCEfbg==
-X-Received: by 2002:a17:902:b188:b029:11b:1549:da31 with SMTP id s8-20020a170902b188b029011b1549da31mr2169395plr.7.1627007642006;
-        Thu, 22 Jul 2021 19:34:02 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:286e:6a9d:f340:dcd9? ([2601:647:4000:d7:286e:6a9d:f340:dcd9])
-        by smtp.gmail.com with ESMTPSA id s7sm30561921pfk.12.2021.07.22.19.33.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 19:34:00 -0700 (PDT)
-Subject: Re: [PATCH] kernel/module: add documentation for try_module_get()
-To:     Luis Chamberlain <mcgrof@kernel.org>, gregkh@linuxfoundation.org,
-        tj@kernel.org, shuah@kernel.org, akpm@linux-foundation.org,
-        rafael@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, andriin@fb.com, daniel@iogearbox.net,
-        atenart@kernel.org, alobakin@pm.me, weiwan@google.com,
-        ap420073@gmail.com
-Cc:     jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
-        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
-        rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210722221905.1718213-1-mcgrof@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <2e9f16ad-5668-f15d-b3c3-f787ba55bcda@acm.org>
-Date:   Thu, 22 Jul 2021 19:33:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233256AbhGWBzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 21:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41420 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231663AbhGWBzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 21:55:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3263D60EBE;
+        Fri, 23 Jul 2021 02:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627007758;
+        bh=/Mwrac25+uC81BGpDWykRwtoURQdfGp5sL5q4DXj/l0=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=YnRvh2lbNgYSQOdHwmOSjNxugVvcHBoIbv6a0ZZ+gW9aJrFU1qeiv2QZFqx/XauPA
+         6kJixcenGQri9j7ONCZGaGBkYEnpxsFVUBR5vzCBVXlqrXiv0McEPar+FmtNUMU4Tf
+         /9Ae+BqLuk/gm06lL/rNegJy6srSACvlxKaX4+D9JEufxYPH9Wpyc3Gnpqsu9RcaUo
+         PZPfJ+/6UfpT+UZy4zqZMO11FWboir9YIcx2IkKn5wCgJtipLcwG6vfMrGl+6s7+co
+         j0SxnogBm+6qvuK8aJ1kk+q9OOwImWWmX4Vjx+tdwn1UQRDuCFiO3qu1vYLOXf/oBC
+         pA/3c//xEptyA==
+Date:   Thu, 22 Jul 2021 19:35:56 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v3] f2fs: don't sleep while grabing nat_tree_lock
+Message-ID: <YPorDEwJcW3bi4DF@google.com>
+References: <20210722014149.525166-1-jaegeuk@kernel.org>
+ <YPmufPvn9FJXfcip@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210722221905.1718213-1-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPmufPvn9FJXfcip@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/21 3:19 PM, Luis Chamberlain wrote:
-> + * The real value to try_module_get() is the module_is_live() check which
-> + * ensures this the caller of try_module_get() can yields to userspace module
-> + * removal requests and fail whatever it was about to process.
+This tries to fix priority inversion in the below condition resulting in
+long checkpoint delay.
 
-can yields -> can yield?
+f2fs_get_node_info()
+ - nat_tree_lock
+  -> sleep to grab journal_rwsem by contention
 
-Otherwise this looks really well written to me.
+                                     checkpoint
+                                     - waiting for nat_tree_lock
 
-Bart.
+In order to let checkpoint go, let's release nat_tree_lock, if there's a
+journal_rwsem contention.
+
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ Change log from v2:
+  - don't bother checkpoint
+
+ fs/f2fs/node.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 0be9e2d7120e..b26642daa3d2 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -552,7 +552,7 @@ int f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
+ 	int i;
+ 
+ 	ni->nid = nid;
+-
++retry:
+ 	/* Check nat cache */
+ 	down_read(&nm_i->nat_tree_lock);
+ 	e = __lookup_nat_cache(nm_i, nid);
+@@ -564,10 +564,19 @@ int f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
+ 		return 0;
+ 	}
+ 
+-	memset(&ne, 0, sizeof(struct f2fs_nat_entry));
++	/*
++	 * Check current segment summary by trying to grab journal_rwsem first.
++	 * This sem is on the critical path on the checkpoint requiring the above
++	 * nat_tree_lock. Therefore, we should retry, if we failed to grab here
++	 * while not bothering checkpoint.
++	 */
++	if (rwsem_is_locked(&sbi->cp_global_sem)) {
++		down_read(&curseg->journal_rwsem);
++	} else if (!down_read_trylock(&curseg->journal_rwsem)) {
++		up_read(&nm_i->nat_tree_lock);
++		goto retry;
++	}
+ 
+-	/* Check current segment summary */
+-	down_read(&curseg->journal_rwsem);
+ 	i = f2fs_lookup_journal_in_cursum(journal, NAT_JOURNAL, nid, 0);
+ 	if (i >= 0) {
+ 		ne = nat_in_journal(journal, i);
+-- 
+2.32.0.432.gabb21c7263-goog
+
