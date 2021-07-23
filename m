@@ -2,154 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEAE3D40B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76803D40D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 21:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhGWSrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 14:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
+        id S230527AbhGWSvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 14:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGWSrl (ORCPT
+        with ESMTP id S229762AbhGWSvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 14:47:41 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F6E4C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:28:14 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 19-20020a9d08930000b02904b98d90c82cso3106440otf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:28:14 -0700 (PDT)
+        Fri, 23 Jul 2021 14:51:08 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3865AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:31:41 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id m13so3831747iol.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 12:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Bs+9Wf2Rg7YUqulOFkE7bAQ3itXKARyReOSzJvhssws=;
-        b=EZ92o+lU4+P+XV7xO6773WcUyvEJ/+NHJbWZkHjHBnYF8dDDdjb+oH7HgG/fmo4XEQ
-         8ZnGklqLIagB3CjPx52/0BFFaDy3J1PTTuLAi/AUmOx77rJR7GlZ2OxfBmx9+QKqLayf
-         44+/7xRfVvPMZMYJRm31me7qFPlWYWG/Np0ao=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O4duAkdP8nGjwQz3gP8+9f75sObkeoEVncrqoagaAf8=;
+        b=Qt8EzUllMk+BQxwjEg3h2dLhND6WXelcF1KCJ/OESaIZQAXOBaluspkozlZW4JU2R+
+         Znk6RH2WGkvMVtpnF6jQsDJNRstUK2sj7oCQyqLlSAZGRo+RcEouepg9OhlYyiS/p4yQ
+         s9ltX/w4poTJ8k5MZwNSxVDzds6mULz9zIVop40Cl/D4JyEaTpsTD49WyrV2fPgZYlhG
+         XcFHEPNTXItFCgL5d2CgCSWzRH/nvr1uyeVYf5CLU3ivAePMLLTfgV+8gexujzqlY15+
+         aQvrAO63kiibVX+tnhTalXzk/+TvDNI9CpZMk4mheAcD9/zMdCubD3WiP9JyDYFvu1mI
+         jzxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Bs+9Wf2Rg7YUqulOFkE7bAQ3itXKARyReOSzJvhssws=;
-        b=LdNoKPgOwaV9txy/Uju/PtQLQxtO/qFaeWRbKkcvQjohInb31406baVvUZarrwBLAy
-         36TqNOvYUdDYxFJvbifz5xuj4L7fbcvyUe8xY3ihjpXoZpHVwU+nRLurYFpuqN0AIsfY
-         1gcuCE6LC2TNGkb5o8RAnDMb7EpWU3TwABblzViN3GkEtK85cgfnO8Esg8pCdj2xoX45
-         92Kn1Ce68mbEiWjXus6GnYMs1yE42MbpiemQqUSgz8sL7b2QKXumHIRf7LFsa3m/LkgY
-         EWMdny6cf97dclordkEsZ/e0lDKzqGL+EHPho1Lso+2e3pJh79dV3R/EzNblxpFqqtpt
-         HtjQ==
-X-Gm-Message-State: AOAM531NCCNfcDLN9+gElP10oCsIj3soR2yKmo/5M4eDaEzrSIqdNwRH
-        fRyAsmwz1zNFb8IjPxP0hBPER2KNwD+yrtuG4l4JMA==
-X-Google-Smtp-Source: ABdhPJz6hKhnuc07sMCNisJAktb5x8bleD4y8wHakw0tll6AwU3RSHxxohogKWMuvWqjWon3uBzCV+xu7sZ4SrYCDkM=
-X-Received: by 2002:a9d:8c7:: with SMTP id 65mr4160483otf.25.1627068493821;
- Fri, 23 Jul 2021 12:28:13 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 23 Jul 2021 19:28:13 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O4duAkdP8nGjwQz3gP8+9f75sObkeoEVncrqoagaAf8=;
+        b=BWkFNTcxrvrpCmWFW6uJA/hafUZYfmuloM3q4NlB2LTomMoWAe+qq9KXWkv/1TnJ3q
+         hHShIrg3TxGeRGypZ39mhhXYNm2Ki2UOG1u2bCDEuY1oW+/+JuQkcDeAFf/SS6avM0uS
+         st3hmXQgBClV5HSWZx1n9V8utyb3b3O1PZobHavW8J+BGSfDn76GiCNYuL0ENtVQU5kk
+         XXVDXwXvB1bn44XfW0rxYadeeejYa2plW2GbCOr5JSJOhdfoggmFDj1yU1M4U9OGOpCp
+         BmpNWYt0nOE713tk3yYRQXq1Ph6jv7YzahHG31ExzWGMR3qWCgMVspbflmPNYtqdLSTE
+         uyQA==
+X-Gm-Message-State: AOAM53280muRrajibGxDX64wkTd0IbzKpIZyazkyqGIAFbbMA0X+XWsx
+        lbfycSIZ9Oy0D1zNoih6IeidxPmgVt1jtTUbnt0JGA==
+X-Google-Smtp-Source: ABdhPJzQnB2OGYyKJRiAlpkY+h5/eC/6eYxynuNX9zjXWewneFpScPqGwjaHuFnLWDGRX/KG8nxcoAVFaz+fzETIVUI=
+X-Received: by 2002:a5d:9599:: with SMTP id a25mr5155045ioo.86.1627068700385;
+ Fri, 23 Jul 2021 12:31:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <eaa90fa6-e7a4-169d-4ac0-42f8c9545a5b@codeaurora.org>
-References: <1623237532-20829-1-git-send-email-sibis@codeaurora.org>
- <1623237532-20829-2-git-send-email-sibis@codeaurora.org> <CAE-0n506v5cmyUb+Ge-H7t1HsqNatgxDmq28rqdyGZDbsM4pXg@mail.gmail.com>
- <eaa90fa6-e7a4-169d-4ac0-42f8c9545a5b@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 23 Jul 2021 19:28:13 +0000
-Message-ID: <CAE-0n50Nkd2etcS_ciiT6Pmz5NXPJm4xS_YaABPNgBUF2mFrzg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] soc: qcom: aoss: Expose send for generic usecase
-To:     Deepak Kumar Singh <deesin@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        Chris Lew <clew@codeaurora.org>
+References: <20210715213138.1363079-1-dlatypov@google.com> <20210715213138.1363079-2-dlatypov@google.com>
+ <20210723064328.GA7986@gondor.apana.org.au>
+In-Reply-To: <20210723064328.GA7986@gondor.apana.org.au>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 23 Jul 2021 12:31:28 -0700
+Message-ID: <CAGS_qxqOD+Bcvy7xti7_eg8+H1cJcfp94BtnRhuzijDcaGF_uA@mail.gmail.com>
+Subject: Re: [RFC v1 1/2] crypto: tcrypt: minimal conversion to run under KUnit
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Deepak Kumar Singh (2021-07-23 02:51:50)
+On Thu, Jul 22, 2021 at 11:43 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
 >
-> On 7/21/2021 12:07 PM, Stephen Boyd wrote:
-> > Quoting Sibi Sankar (2021-06-09 04:18:51)
-> >> From: Deepak Kumar Singh <deesin@codeaurora.org>
-> >>
-> >> Not all upcoming usecases will have an interface to allow the aoss
-> >> driver to hook onto. Expose the send api and create a get function to
-> >> enable drivers to send their own messages to aoss.
-> >>
-> >> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> >> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> >> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> >> ---
-> >>
-> >> v4:
-> >>   * Fix compilation error due to missing qmp_put
-> >>   * Minor typos [s/tarcks/tracks]
-> >>
-> >>   drivers/soc/qcom/qcom_aoss.c       | 70 ++++++++++++++++++++++++++++++++++++--
-> >>   include/linux/soc/qcom/qcom_aoss.h | 36 ++++++++++++++++++++
-> >>   2 files changed, 104 insertions(+), 2 deletions(-)
-> >>   create mode 100644 include/linux/soc/qcom/qcom_aoss.h
-> >>
-> >> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> >> index 934fcc4d2b05..e8f48760bac8 100644
-> >> --- a/drivers/soc/qcom/qcom_aoss.c
-> >> +++ b/drivers/soc/qcom/qcom_aoss.c
-> >> @@ -522,13 +582,14 @@ static int qmp_probe(struct platform_device *pdev)
-> >>          int irq;
-> >>          int ret;
-> >>
-> >> -       qmp = devm_kzalloc(&pdev->dev, sizeof(*qmp), GFP_KERNEL);
-> >> +       qmp = kzalloc(sizeof(*qmp), GFP_KERNEL);
-> >>          if (!qmp)
-> >>                  return -ENOMEM;
-> >>
-> >>          qmp->dev = &pdev->dev;
-> >>          init_waitqueue_head(&qmp->event);
-> >>          mutex_init(&qmp->tx_lock);
-> >> +       kref_init(&qmp->refcount);
-> >>
-> >>          res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >>          qmp->msgram = devm_ioremap_resource(&pdev->dev, res);
-> >> @@ -569,6 +630,8 @@ static int qmp_probe(struct platform_device *pdev)
-> >>
-> >>          platform_set_drvdata(pdev, qmp);
-> >>
-> >> +       atomic_set(&qmp->orphan, 0);
-> >> +
-> >>          return 0;
-> >>
-> >>   err_remove_qdss_clk:
-> >> @@ -577,6 +640,7 @@ static int qmp_probe(struct platform_device *pdev)
-> >>          qmp_close(qmp);
-> >>   err_free_mbox:
-> >>          mbox_free_channel(qmp->mbox_chan);
-> >> +       kfree(qmp);
-> >>
-> >>          return ret;
-> >>   }
-> >> @@ -590,7 +654,9 @@ static int qmp_remove(struct platform_device *pdev)
-> >>          qmp_cooling_devices_remove(qmp);
-> >>
-> >>          qmp_close(qmp);
-> >> +       atomic_set(&qmp->orphan, 1);
-> > This looks odd. Why are we letting the device be removed while it is in
-> > use by other drivers? Can't we pin the device with get_device() so it
-> > can't be removed and then prevent the driver from being removed until
-> > all the consumer drivers drop the reference, i.e. suppress sysfs unbind?
-> >
-> > Otherwise it looks like a generic problem that all provider devices,
-> > clks, regulators, gpios, etc. have to deal with and thus this
-> > hand-rolled mechanism can't be right.
+> On Thu, Jul 15, 2021 at 02:31:37PM -0700, Daniel Latypov wrote:
+> >> == Questions ==
+> > * does this seem like it would make running the test easier?
 >
-> As per my earlier discussion with Bjorn, device could be unbound using
-> sysfs, in which case
->
-> remove() is called irrespective of whether any client driver is holding
-> struct device reference
->
-> or not. That's why i have added separate refcount for qmp handle and
-> marking it invalid if
->
-> qmp_remove() is called.
->
+> I don't mind.  tcrypt these days isn't used so much for correctness
+> testing.  It's mostly being used for speed testing.  A secondary
+> use is to instantiate templates.
 
-We have struct device_driver::suppress_bind_attrs for that. Can you set
-it?
+Thanks, that makes a lot of sense.
+In that case, how useful would `kunit.py run` be? I.e. Do people
+mostly want to see numbers on bare metal?
+
+The default mode of `kunit.py run` is to use ARCH=um.
+I assume (for at least most of the library-type crypto code) it should
+have the same performance characteristics, but that might not be the
+case. I can try and get some numbers on that.
+
+There's an option to make `kunit.py run` use ARCH=86_64, but it'll be
+in a QEMU VM, so again there's some performance overhead.
+
+If either option seems useful, then perhaps a minimal patch like this
+would be beneficial.
+I can make it even smaller and less intrusive by restoring the "ret +=
+..." code and having a single `KUNIT_EXPECT_EQ_MSG(test, ret, 0, "at
+least one test case failed")` at the very end.
+
+It does not sound like patch #2 or any future attempts to try and make
+use of KUnit features is necessarily worth it, if correctness testing
+isn't really the goal of tcrypt.c anymore.
+
+>
+> > * does `tvmem` actually need page-aligned buffers?
+>
+> I think it may be needed for those split-SG test cases where
+> we deliberately create a buffer that straddles a page boundary.
+>
+> > * I have no clue how FIPS intersects with all of this.
+>
+> It doesn't really matter because in FIPS mode when a correctness
+> test fails the kernel panics.
+>
+> >   * would it be fine to leave the test code built-in for FIPS instead of
+> >   returning -EAGAIN?
+>
+> The returning -EAGAIN is irrelevant in FIPS mode.  It's more of
+> an aid in normal mode when you use tcrypt for speed testing.
+>
+> Thanks,
+> --
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
