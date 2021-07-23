@@ -2,76 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DC93D353E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285913D3542
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 09:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhGWGtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 02:49:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhGWGtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 02:49:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F11CD60E90;
-        Fri, 23 Jul 2021 07:30:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627025421;
-        bh=UnS96zYM0c8w/kcN1k1/95kES/5k9EDsz9trSoOA8Co=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NMSjuOUCyj+acp7j0je4E+one/7OqGHT88K2d5Msm2HpUgzZX2ZnWpJH9DGw8sUTX
-         103XhrCNGWn/LvuKN3n30ScUxCJVPr3Atbc8CLiwWV9e9fWsCIb8ZyxFB11IpJMhd2
-         hFEljvbcqB/9aOEVlCA9Gmxnhn62O/DVN1ldemSs=
-Date:   Fri, 23 Jul 2021 09:30:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dongjoo Seo <dseo3@uci.edu>
-Cc:     SeongJae Park <sj38.park@gmail.com>,
-        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
-        acme@kernel.org, akpm@linux-foundation.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendanhiggins@google.com,
-        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
-        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
-        gthelen@google.com, guoju.fgj@alibaba-inc.com, jgowans@amazon.com,
-        joe@perches.com, linux-damon@amazon.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mgorman@suse.de,
-        mheyne@amazon.de, minchan@kernel.org, mingo@redhat.com,
-        namhyung@kernel.org, peterz@infradead.org, riel@surriel.com,
-        rientjes@google.com, rostedt@goodmis.org, rppt@kernel.org,
-        shakeelb@google.com, shuah@kernel.org, sieberf@amazon.com,
-        sjpark@amazon.de, snu@zelle79.org, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com
-Subject: Re: [PATCH v34 00/13] Introduce Data Access MONitor (DAMON)
-Message-ID: <YPpwCS4CpGtJTy9t@kroah.com>
-References: <2E16FC36-18B4-4F92-86AE-51249CCDB1A4@uci.edu>
- <YPpq4u+b/UzAE/3u@kroah.com>
- <23F9BFF6-51B0-4EF7-AF2F-278F89D310C3@uci.edu>
+        id S233381AbhGWGuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 02:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231949AbhGWGue (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 02:50:34 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCE2C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:31:07 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id f26so961974ybj.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 00:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vs+we/6ft1FfVa0CVz20fRewulUcTgapCBk4PsMDMMQ=;
+        b=JPyoG4tDLazDPsS8Y3oVxlDJm75zO3sr5Mwj9G2MnrcoE/tXE6m8Q7IDz7QI/HrG18
+         xlTRSLavT1GWOuRuJSRa2gKNvB9Z25aSlfeFzmf4rtlDTcVQrSqDVdbuiz1aFt9AbmVS
+         Bn8n8SkRdYMai4NwvEI2Suhn5IvGbTMAXHcMmlN6kBJA2EWAbj7uqaOsdhx5HR6dXh8E
+         Qu1hiLp388RZyk+2SNzk0qHrlu7vQ9ohNOQXse3g8P03+XwbTLKU0GKBYXQl3hnFj5QG
+         4FyAaDXc/oappirdBhHoW7wA1+nwd8NCic04Fu6HtgJ0cfr4lCEuzvZxjEWRXAJEZ9Pv
+         uHGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vs+we/6ft1FfVa0CVz20fRewulUcTgapCBk4PsMDMMQ=;
+        b=WkH8bE2LyfV92hbk5rj/E3sF4QzX1zsLJuviKBJIY4gEQxzpI0ouM0dtHXDnCWKZGr
+         MQat7pynK+O4HajDIS96fe2rWfqE7uTrneHMD0VOdAvJ/RtDFlq4yzhVRQehguERMOsG
+         mBOSRzLqCPQhffKQ0IU3NvvgN6G0lyPpvADjyXTwZwF3kH8SLFmWsCFL81boEnRMlGBD
+         ncK/sOMgr+ZWi6LscyKJmb1w0GNvmeC2s4PLQiorMmIf37QzCdbvD2qo9zmFTFW+x975
+         AlmtSh9HtX47SUcwMbeAK3f8GDK9Tvg2sY+8FoRI3LZ2QsxnlVYxjX2XExm/PTrgqLpc
+         UzIw==
+X-Gm-Message-State: AOAM530f+46qm43IxJnByPqTsG7sUoby4xDHWEfy+Y3NW3q0XJN1jel1
+        0+tgAlyhCyfBlpuCF9IaOUy7j3lCbukH15pdXOyfsg==
+X-Google-Smtp-Source: ABdhPJwg0akw1mzLE5SRir9S3txrzipyiauGM7ybFw0aTjvqg6GRL6JrZTEfDza78OmWm3R7qONfl5YzUx+jnBc5bxE=
+X-Received: by 2002:a25:487:: with SMTP id 129mr5006427ybe.0.1627025466848;
+ Fri, 23 Jul 2021 00:31:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <23F9BFF6-51B0-4EF7-AF2F-278F89D310C3@uci.edu>
+References: <20210712100317.23298-1-steven_lee@aspeedtech.com>
+ <CAMpxmJXfUterUdaGHOJT5hwcVJ+3cqgSQVdp-6Atuyyo36FxfQ@mail.gmail.com> <20210723031615.GA10457@aspeedtech.com>
+In-Reply-To: <20210723031615.GA10457@aspeedtech.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 23 Jul 2021 09:30:56 +0200
+Message-ID: <CAMpxmJU4jN-hpNYPLHLbjx4uZ6vDqcyuMVQXhHg1BWXOqyS22A@mail.gmail.com>
+Subject: Re: [PATCH v6 0/9] ASPEED sgpio driver enhancement.
+To:     Steven Lee <steven_lee@aspeedtech.com>,
+        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Hongwei Zhang <Hongweiz@ami.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Billy Tsai <billy_tsai@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
+On Fri, Jul 23, 2021 at 5:16 AM Steven Lee <steven_lee@aspeedtech.com> wrote:
+>
+> The 07/21/2021 21:27, Bartosz Golaszewski wrote:
+> > On Mon, Jul 12, 2021 at 12:03 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
+> > >
+> > > AST2600 SoC has 2 SGPIO master interfaces one with 128 pins another one
+> > > with 80 pins, AST2500/AST2400 SoC has 1 SGPIO master interface that
+> > > supports up to 80 pins.
+> > > In the current driver design, the max number of sgpio pins is hardcoded
+> > > in macro MAX_NR_HW_SGPIO and the value is 80.
+> > >
+> > > For supporting sgpio master interfaces of AST2600 SoC, the patch series
+> > > contains the following enhancement:
+> > > - Convert txt dt-bindings to yaml.
+> > > - Update aspeed-g6 dtsi to support the enhanced sgpio.
+> > > - Support muiltiple SGPIO master interfaces.
+> > > - Support up to 128 pins by dts ngpios property.
+> > > - Pair input/output GPIOs instead of using 0 as GPIO input pin base and
+> > >   MAX_NR_HW_SGPIO as GPIO output pin base.
+> > > - Support wdt reset tolerance.
+> > > - Fix irq_chip issues which causes multiple sgpio devices use the same
+> > >   irq_chip data.
+> > > - Replace all of_*() APIs with device_*().
+> > >
+> > > Changes from v5:
+> > > * Squash v5 patch-05 and patch-06 to one patch.
+> > > * Remove MAX_NR_HW_SGPIO and corresponding design to make the gpio
+> > >   input/output pin base are determined by ngpios.
+> > >   For example, if MAX_NR_HW_SGPIO is 80 and ngpios is 10, the original
+> > >   pin order is as follows:
+> > >     Input:
+> > >     0 1 2 3 ... 9
+> > >     Output:
+> > >     80 81 82 ... 89
+> > >
+> > >   With the new design, pin order is changed as follows:
+> > >     Input:
+> > >     0 2 4 6 ... 18(ngpios * 2 - 2)
+> > >     Output:
+> > >     1 3 5 7 ... 19(ngpios * 2 - 1)
+> > > * Replace ast2600-sgpiom-128 and ast2600-sgpiom-80 compatibles by
+> > >   ast2600-sgpiom.
+> > > * Fix coding style issues.
+> > >
+> > > Changes from v4:
+> > > * Remove ngpios from dtsi
+> > > * Add ast2400 and ast2500 platform data.
+> > > * Remove unused macros.
+> > > * Add ngpios check in a separate patch.
+> > > * Fix coding style issues.
+> > >
+> > > Changes from v3:
+> > > * Split dt-bindings patch to 2 patches
+> > > * Rename ast2600-sgpiom1 compatible with ast2600-sgiom-128
+> > > * Rename ast2600-sgpiom2 compatible with ast2600-sgiom-80
+> > > * Correct the typo in commit messages.
+> > > * Fix coding style issues.
+> > > * Replace all of_*() APIs with device_*().
+> > >
+> > > Changes from v2:
+> > > * Remove maximum/minimum of ngpios from bindings.
+> > > * Remove max-ngpios from bindings and dtsi.
+> > > * Remove ast2400-sgpiom and ast2500-sgpiom compatibles from dts and
+> > >   driver.
+> > > * Add ast2600-sgpiom1 and ast2600-sgpiom2 compatibles as their max
+> > >   number of available gpio pins are different.
+> > > * Modify functions to pass aspeed_sgpio struct instead of passing
+> > >   max_ngpios.
+> > > * Split sgpio driver patch to 3 patches
+> > >
+> > > Changes from v1:
+> > > * Fix yaml format issues.
+> > > * Fix issues reported by kernel test robot.
+> > >
+> > > Please help to review.
+> > >
+> > > Thanks,
+> > > Steven
+> > >
+> > > Steven Lee (9):
+> > >   dt-bindings: aspeed-sgpio: Convert txt bindings to yaml.
+> > >   dt-bindings: aspeed-sgpio: Add ast2600 sgpio
+> > >   ARM: dts: aspeed-g6: Add SGPIO node.
+> > >   ARM: dts: aspeed-g5: Remove ngpios from sgpio node.
+> > >   gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+> > >   gpio: gpio-aspeed-sgpio: Add set_config function
+> > >   gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
+> > >   gpio: gpio-aspeed-sgpio: Use generic device property APIs
+> > >   gpio: gpio-aspeed-sgpio: Return error if ngpios is not multiple of 8.
+> > >
+> > >  .../bindings/gpio/aspeed,sgpio.yaml           |  77 ++++++++
+> > >  .../devicetree/bindings/gpio/sgpio-aspeed.txt |  46 -----
+> > >  arch/arm/boot/dts/aspeed-g5.dtsi              |   1 -
+> > >  arch/arm/boot/dts/aspeed-g6.dtsi              |  28 +++
+> > >  drivers/gpio/gpio-aspeed-sgpio.c              | 178 +++++++++++-------
+> > >  5 files changed, 215 insertions(+), 115 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,sgpio.yaml
+> > >  delete mode 100644 Documentation/devicetree/bindings/gpio/sgpio-aspeed.txt
+> > >
+> > > --
+> > > 2.17.1
+> > >
+> >
+> > The series looks good to me. Can the DTS and GPIO patches go into
+> > v5.15 separately?
+> >
+>
+> Hi Bart,
+>
+> Thanks for the review.
+> Shall we do anything to make the patches go into v5.15 or wait for picking-up?
+>
+> Steven
+>
+> > Bart
 
-A: No.
-Q: Should I include quotations after my reply?
+It's more of a question to the relevant SoC maintainers.
 
-http://daringfireball.net/2007/07/on_top
+Joel, Andrew: can I take the GPIO patches through the GPIO tree and
+you'll take the ARM patches separately into v5.15?
 
-On Fri, Jul 23, 2021 at 04:16:27PM +0900, Dongjoo Seo wrote:
-> Thank you for your comment!.
-> 
-> It has been a long time since Nvidia ended supporting the new kernel
-> version on tx2 boards, but for researchers, this set of boards (tx2,
-> px2, agx) is a very attractive candidate to use.
-
-But why are you stuck at a known-buggy and insecure kernel version?  I
-would work on fixing that first, before worrying about new features.
-
-good luck!
-
-greg k-h
+Bartosz
