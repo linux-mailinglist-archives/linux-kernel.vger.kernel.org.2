@@ -2,88 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CD63D3D7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D0DC3D3D83
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 18:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhGWPng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 11:43:36 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:53151 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229510AbhGWPnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 11:43:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgjV2MC_1627057445;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgjV2MC_1627057445)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 24 Jul 2021 00:24:06 +0800
-Date:   Sat, 24 Jul 2021 00:24:04 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v6] iomap: support tail packing inline read
-Message-ID: <YPrtJLLsjvvQm1sD@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <20210722031729.51628-1-hsiangkao@linux.alibaba.com>
- <20210722053947.GA28594@lst.de>
- <YPrauRjG7+vCw7f9@casper.infradead.org>
- <YPre+j906ywgRHEZ@B-P7TQMD6M-0146.local>
- <YPrms0fWPwEZGNAL@casper.infradead.org>
+        id S230172AbhGWPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 11:44:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229808AbhGWPn6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 11:43:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 956B560F25;
+        Fri, 23 Jul 2021 16:24:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627057471;
+        bh=yfVas8pkZzjIrazNnLtCrpfYeDX2OLkkNp5GOhcpfM0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=g0GzEQE45y5965lS+njoyCr6kqS6qosqheU4CJ8EM/FEGL3Akx99ZyiP82H+Gj+w2
+         3epexPLIUl/MPutPVP/5jJS4p3u7IOmGV7lr8kZ1z9yM51Na1ZdKMH9yUPw4zUowe+
+         6jrEF/uNyrtU3Bxb47L0tCuMBXzdrdGjWzDKlD647yJ+k0Dn8zxeFPF+tn61u3Iu6F
+         bBxM9O6WfwWqnSf7EjqkkS9r9g+V2IvUF7n0GYCRLPyMkxz32Ue9NtNvCFuxSsRisn
+         xlDMKsQa07FzsLIzUTgn6129Q4pT5VC8Fu4OVueZtoK2ctF2USMQIlKDezs6cVt+ur
+         MAFSurkiAAL2A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6491A5C0378; Fri, 23 Jul 2021 09:24:31 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 09:24:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, parri.andrea@gmail.com,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com,
+        Manfred Spraul <manfred@colorfullife.com>
+Subject: Re: [PATCH memory-model 2/4] tools/memory-model: Add example for
+ heuristic lockless reads
+Message-ID: <20210723162431.GF4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210721210726.GA828672@paulmck-ThinkPad-P17-Gen-1>
+ <20210721211003.869892-2-paulmck@kernel.org>
+ <20210723020846.GA26397@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YPrms0fWPwEZGNAL@casper.infradead.org>
+In-Reply-To: <20210723020846.GA26397@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 04:56:35PM +0100, Matthew Wilcox wrote:
-> On Fri, Jul 23, 2021 at 11:23:38PM +0800, Gao Xiang wrote:
-> > Hi Matthew,
+On Thu, Jul 22, 2021 at 10:08:46PM -0400, Alan Stern wrote:
+> On Wed, Jul 21, 2021 at 02:10:01PM -0700, Paul E. McKenney wrote:
+> > This commit adds example code for heuristic lockless reads, based loosely
+> > on the sem_lock() and sem_unlock() functions.
 > > 
-> > On Fri, Jul 23, 2021 at 04:05:29PM +0100, Matthew Wilcox wrote:
-> > > On Thu, Jul 22, 2021 at 07:39:47AM +0200, Christoph Hellwig wrote:
-> > > > @@ -675,7 +676,7 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
-> > > >  
-> > > >  	flush_dcache_page(page);
-> > > >  	addr = kmap_atomic(page);
-> > > > -	memcpy(iomap->inline_data + pos, addr + pos, copied);
-> > > > +	memcpy(iomap_inline_buf(iomap, pos), addr + pos, copied);
-> > > 
-> > > This is wrong; pos can be > PAGE_SIZE, so this needs to be
-> > > addr + offset_in_page(pos).
+> > Reported-by: Manfred Spraul <manfred@colorfullife.com>
+> > [ paulmck: Update per Manfred Spraul and Hillf Danton feedback. ]
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  .../Documentation/access-marking.txt          | 94 +++++++++++++++++++
+> >  1 file changed, 94 insertions(+)
 > > 
-> > Yeah, thanks for pointing out. It seems so, since EROFS cannot test
-> > such write path, previously it was disabled explicitly. I could
-> > update it in the next version as above.
+> > diff --git a/tools/memory-model/Documentation/access-marking.txt b/tools/memory-model/Documentation/access-marking.txt
+> > index 58bff26198767..be7d507997cf8 100644
+> > --- a/tools/memory-model/Documentation/access-marking.txt
+> > +++ b/tools/memory-model/Documentation/access-marking.txt
+> > @@ -319,6 +319,100 @@ of the ASSERT_EXCLUSIVE_WRITER() is to allow KCSAN to check for a buggy
+> >  concurrent lockless write.
+> >  
+> >  
+> > +Lock-Protected Writes With Heuristic Lockless Reads
+> > +---------------------------------------------------
+> > +
+> > +For another example, suppose that the code can normally make use of
+> > +a per-data-structure lock, but there are times when a global lock
+> > +is required.  These times are indicated via a global flag.  The code
+> > +might look as follows, and is based loosely on nf_conntrack_lock(),
+> > +nf_conntrack_all_lock(), and nf_conntrack_all_unlock():
+> > +
+> > +	bool global_flag;
+> > +	DEFINE_SPINLOCK(global_lock);
+> > +	struct foo {
+> > +		spinlock_t f_lock;
+> > +		int f_data;
+> > +	};
+> > +
+> > +	/* All foo structures are in the following array. */
+> > +	int nfoo;
+> > +	struct foo *foo_array;
+> > +
+> > +	void do_something_locked(struct foo *fp)
+> > +	{
+> > +		bool gf = true;
+> > +
+> > +		/* IMPORTANT: Heuristic plus spin_lock()! */
+> > +		if (!data_race(global_flag)) {
+> > +			spin_lock(&fp->f_lock);
+> > +			if (!smp_load_acquire(&global_flag)) {
+> > +				do_something(fp);
+> > +				spin_unlock(&fp->f_lock);
+> > +				return;
+> > +			}
+> > +			spin_unlock(&fp->f_lock);
+> > +		}
+> > +		spin_lock(&global_lock);
+> > +		/* Lock held, thus global flag cannot change. */
+> > +		if (!global_flag) {
 > 
-> We're also missing a call to __set_page_dirty_nobuffers().  This
-> matters to nobody right now -- erofs is read-only and gfs2 only
-> supports inline data in the inode.  I presume what is happening
-> for gfs2 is that at inode writeback time, it copies the ~60 bytes
-> from the page cache into the inode and then schedules the inode
-> for writeback.
+> How can global_flag ever be true at this point?  The only line of code 
+> that sets it is in begin_global() below, it only runs while global_lock 
+> is held, and global_flag is set back to false before the lock is 
+> released.
+
+Good point.  The fact that wwe hold global_lock means that global_flag
+cannot be set, which means that we can unconditionally acquire the
+per-foo lock and release global_lock.
+
+> > +			spin_lock(&fp->f_lock);
+> > +			spin_unlock(&global_lock);
+> > +			gf = false;
+> > +		}
+> > +		do_something(fp);
+> > +		if (fg)
 > 
-> But logically, we should mark the page as dirty.  It'll be marked
-> as dirty by ->mkwrite, should the page be mmaped, so gfs2 must
-> already cope with a dirty page for inline data.
+> Should be gf, not fg.
 
-I'd suggest we still disable tail-packing inline for buffered write
-path until some real user for testing. I can see some (maybe) page
-writeback, inode writeback and inline converting cases which is
-somewhat complicated than just update like this.
+And we can also eliminate gf and its typo.
 
-I suggest it could be implemented with some real users, at least it can
-provide the real write pattern and paths for testing. I will send the
-next version like my previous version to disable it until some real fs
-user cares and works out a real pattern.
+> > +			spin_unlock(&global_lock);
+> > +		else
+> > +			spin_lock(&fp->f_lock);
+> > +	}
+> > +
+> > +	void begin_global(void)
+> > +	{
+> > +		int i;
+> > +
+> > +		spin_lock(&global_lock);
+> > +		WRITE_ONCE(global_flag, true);
+> 
+> Why does this need to be WRITE_ONCE?  It still races with the first read 
+> of global_flag above.
 
-Thanks,
-Gao Xiang
+But also with the smp_load_acquire() of global_flag, right?
 
+> > +		for (i = 0; i < nfoo; i++) {
+> > +			/* Wait for pre-existing local locks. */
+> > +			spin_lock(&fp->f_lock);
+> > +			spin_unlock(&fp->f_lock);
+> 
+> Why not acquire all the locks here and release all of them in 
+> end_global()?  Then global_flag wouldn't need acquire-release 
+> sychronization.
+
+As suggested later in this thread, I have added a comment.
+
+> > +		}
+> > +	}
+> > +
+> > +	void end_global(void)
+> > +	{
+> > +		smp_store_release(&global_flag, false);
+> > +		/* Pre-existing global lock acquisitions will recheck. */
+> 
+> What does that comment mean?  How can there be any pre-existing global 
+> lock acquisitions when we hold the lock right now?
+
+I have removed this comment.  The last shred of reason for it went away
+with the gf local variable.
+
+> > +		spin_unlock(&global_lock);
+> > +	}
+> > +
+> > +All code paths leading from the do_something_locked() function's first
+> > +read from global_flag acquire a lock, so endless load fusing cannot
+> > +happen.
+> > +
+> > +If the value read from global_flag is true, then global_flag is rechecked
+> > +while holding global_lock, which prevents global_flag from changing.
+> > +If this recheck finds that global_flag is now false, the acquisition
+> 
+> Again, how can't global_flag be false now?
+> 
+> Did you originally have in mind some sort of scheme in which 
+> begin_global() would release global_lock before returning and 
+> end_global() would acquire global_lock before clearing global_flag?  But 
+> I don't see how that could work without changes to do_something_locked().
+
+I was thinking along those lines, but I clearly wasn't thinking very
+clearly.  :-/
+
+> > +of ->f_lock prior to the release of global_lock will result in any subsequent
+> > +begin_global() invocation waiting to acquire ->f_lock.
+> > +
+> > +On the other hand, if the value read from global_flag is false, then
+> > +global_flag, then rechecking under ->f_lock combined with synchronization
+> ---^^^^^^^^^^^^^^^^^^
+> 
+> Typo?
+
+Good catch, and I took care of this by rewriting this paragraph.
+
+Likely introducing other typos in the process, but so it goes.
+
+> > +with begin_global() guarantees than any erroneous read will cause the
+> > +do_something_locked() function's first do_something() invocation to happen
+> > +before begin_global() returns.  The combination of the smp_load_acquire()
+> > +in do_something_locked() and the smp_store_release() in end_global()
+> > +guarantees that either the do_something_locked() function's first
+> > +do_something() invocation happens after the call to end_global() or that
+> > +do_something_locked() acquires global_lock() and rechecks under the lock.
+> 
+> This last sentence also makes no sense unless you imagine dropping 
+> global_lock between begin_global() and end_global().
+
+Agreed.
+
+						Thanx, Paul
