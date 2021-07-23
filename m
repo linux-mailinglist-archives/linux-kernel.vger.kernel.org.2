@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE393D3265
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 05:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38743D3268
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Jul 2021 05:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbhGWDP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Jul 2021 23:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233542AbhGWDP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Jul 2021 23:15:28 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1D7C061575
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 20:56:01 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id g8so11726031lfh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Jul 2021 20:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4CILyKiyZ9Cyy/Achhyq3C7m86Us0H0wmdQwbCBhk7s=;
-        b=VwtvKVgL5/N4lanX2A2VRo1qXku2gUfEVD2s/U5WlPiq9OFziJ+BtHZMXR/MRdv16y
-         /1L63/rJZ41A0Wl77mLrcCV6BaW9dTV6A8qol6JfhV254/wpSpEvo1JFbMisVS4vwo9x
-         XcEzjBUTVDmWl3+Jv4LwacjbtdtJ4BliaISdwDNxazEY9OVmqnDShwSsyaDByuRNcijc
-         jOVGddAudOJzm8EpZFNF9YfFbsIcP1LxWFgmHTNAqAh5Wy9aPiN2WrytSS+DiF/blwx2
-         QRwRQxcg8Ku1g+3Bzs5PjRcC1qn9EWV5/Zjrl2C8BYQrU7Q7zsYP0QoF5I/mSa089ThI
-         I3VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4CILyKiyZ9Cyy/Achhyq3C7m86Us0H0wmdQwbCBhk7s=;
-        b=eJOeYoJ9hEp1XRydApUVMjI/t7cpnvFfJuAOEbLIzJyl3oWAsCFMk9nFidosAkU4q+
-         4t3aE1xqWzgwNt7ZY9wGjXweZa70xML5aW3dYG2uefbLQ8nxYX0fUNpALKCKuZW/ael+
-         hPImcbThIyhWeOctNsjrCv6rScgfiiFB0hl9vnDRMK8zQ8u0cKfQplcsY8ljtm7CcCIi
-         UGSE9jX+y5+yxRPEo0MWz8mE33wB6UU3dui1pgqParObo0kU4j1+RNhUUFg7v9OwrHm6
-         Ea8d3ZNEMeBYoaL4rSKgPmXAtxhX7EUbz0b4HzTwox5UkUx41JciSBKQIvhfM7R8Creo
-         zguA==
-X-Gm-Message-State: AOAM5307fzRCgzjgzukRCSvPboQbqOrMuGEePO0cScZYJ55LOwTWkuu2
-        /67k+FVQN/Esf4Ntio+QOb1HXbf4BocfIxlYvyA=
-X-Google-Smtp-Source: ABdhPJxQCkbhChbxfF8wgnof5n2r5pMNP76Vlr2+k91tH7qvXsi7ccr+B1Bssgyt3RPfcUTXpvPQ5LS9+oTH3Ig/alQ=
-X-Received: by 2002:a19:f018:: with SMTP id p24mr1771467lfc.162.1627012559512;
- Thu, 22 Jul 2021 20:55:59 -0700 (PDT)
+        id S233600AbhGWDQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Jul 2021 23:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233542AbhGWDQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Jul 2021 23:16:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F2C160E9C;
+        Fri, 23 Jul 2021 03:57:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627012643;
+        bh=GEMrgZ1BSUX+9zlkMV2VjhWoKC9SDQxjvZcaOc7xg3k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Yb9HoZ88JTVegHbduAxqU3cM/VChFZ81cOCB8HW5oHyYvSksLylZQ41Zsmsr+3850
+         PqCdTtzWnLR2MPoSgNtf0N1SpfAYeSKc6Ah9eXpHJ5HRHxYe37H02529Dti6w4+vvv
+         9AovqiaJ26NffNEsN2DhIunxAl8OHtHtXv/oJMUip0qpznhoXDdKppkVLfe33SnmZb
+         bCY/dY+uc158VGv6K/VPQYGHSbsFoLbzFFtGovYPGx2iHfbeOV5rB5vUIJoiCT0Mvo
+         Be8EpnRMRulGlDEIS3ERiyGbsNZA0o9oWoqh7PXS6ZL2FHrXHZv8//jFxPL5Ac+SeD
+         8SZTGI6ZFZtlw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.13 01/19] net/802/mrp: fix memleak in mrp_request_join()
+Date:   Thu, 22 Jul 2021 23:57:02 -0400
+Message-Id: <20210723035721.531372-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210723034622.1820891-1-liuchao12@xiaomi.com>
-In-Reply-To: <20210723034622.1820891-1-liuchao12@xiaomi.com>
-From:   Chao Liu <chaoliu719@gmail.com>
-Date:   Fri, 23 Jul 2021 11:55:48 +0800
-Message-ID: <CAKaaq-XC8v25_vHwtHgob5QZ+FW5t2mvopTGO7fB1XViyoqNrQ@mail.gmail.com>
-Subject: Re: [PATCH] resize.f2fs: add option to manually specify new overprovision
-To:     chao@kernel.org, jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, I forgot to add the f2fs-dev label. I will send it again later.
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-On Fri, Jul 23, 2021 at 11:46 AM Chao Liu <chaoliu719@gmail.com> wrote:
->
-> Make.f2fs supports manually specifying overprovision, and we expect
-> resize.f2fs to support it as well.
->
-> This change add a new '-o' option to manually specify overprovision.
->
-> Signed-off-by: Chao Liu <liuchao12@xiaomi.com>
-> ---
->  fsck/main.c   | 8 ++++++--
->  fsck/resize.c | 9 ++++++++-
->  2 files changed, 14 insertions(+), 3 deletions(-)
->
-> diff --git a/fsck/main.c b/fsck/main.c
-> index 260ff29..06253e2 100644
-> --- a/fsck/main.c
-> +++ b/fsck/main.c
-> @@ -124,7 +124,8 @@ void resize_usage()
->         MSG(0, "[options]:\n");
->         MSG(0, "  -d debug level [default:0]\n");
->         MSG(0, "  -i extended node bitmap, node ratio is 20%% by default\n");
-> -       MSG(0, "  -s safe resize (Does not resize metadata)");
-> +       MSG(0, "  -o overprovision percentage [default:auto]\n");
-> +       MSG(0, "  -s safe resize (Does not resize metadata)\n");
->         MSG(0, "  -t target sectors [default: device size]\n");
->         MSG(0, "  -V print the version number and exit\n");
->         exit(1);
-> @@ -529,7 +530,7 @@ void f2fs_parse_options(int argc, char *argv[])
->  #endif
->         } else if (!strcmp("resize.f2fs", prog)) {
->  #ifdef WITH_RESIZE
-> -               const char *option_string = "d:fst:iV";
-> +               const char *option_string = "d:fst:io:V";
->
->                 c.func = RESIZE;
->                 while ((option = getopt(argc, argv, option_string)) != EOF) {
-> @@ -563,6 +564,9 @@ void f2fs_parse_options(int argc, char *argv[])
->                         case 'i':
->                                 c.large_nat_bitmap = 1;
->                                 break;
-> +                       case 'o':
-> +                               c.new_overprovision = atof(optarg);
-> +                               break;
->                         case 'V':
->                                 show_version(prog);
->                                 exit(0);
-> diff --git a/fsck/resize.c b/fsck/resize.c
-> index 78d578e..85a53c5 100644
-> --- a/fsck/resize.c
-> +++ b/fsck/resize.c
-> @@ -146,7 +146,9 @@ safe_resize:
->                                                 get_sb(segs_per_sec));
->
->         /* Let's determine the best reserved and overprovisioned space */
-> -       c.new_overprovision = get_best_overprovision(sb);
-> +       if (c.new_overprovision == 0)
-> +               c.new_overprovision = get_best_overprovision(sb);
-> +
->         c.new_reserved_segments =
->                 (2 * (100 / c.new_overprovision + 1) + 6) *
->                                                 get_sb(segs_per_sec);
-> @@ -476,6 +478,11 @@ static void rebuild_checkpoint(struct f2fs_sb_info *sbi,
->         set_cp(overprov_segment_count, get_cp(overprov_segment_count) +
->                                                 get_cp(rsvd_segment_count));
->
-> +       MSG(0, "Info: Overprovision ratio = %.3lf%%\n", c.new_overprovision);
-> +       MSG(0, "Info: Overprovision segments = %u (GC reserved = %u)\n",
-> +                                       get_cp(overprov_segment_count),
-> +                                       c.new_reserved_segments);
-> +
->         free_segment_count = get_free_segments(sbi);
->         new_segment_count = get_newsb(segment_count_main) -
->                                         get_sb(segment_count_main);
-> --
-> 2.32.0
->
+[ Upstream commit 996af62167d0e0ec69b938a3561e96f84ffff1aa ]
+
+I got kmemleak report when doing fuzz test:
+
+BUG: memory leak
+unreferenced object 0xffff88810c239500 (size 64):
+comm "syz-executor940", pid 882, jiffies 4294712870 (age 14.631s)
+hex dump (first 32 bytes):
+01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+00 00 00 00 00 00 00 00 01 00 00 00 01 02 00 04 ................
+backtrace:
+[<00000000a323afa4>] slab_alloc_node mm/slub.c:2972 [inline]
+[<00000000a323afa4>] slab_alloc mm/slub.c:2980 [inline]
+[<00000000a323afa4>] __kmalloc+0x167/0x340 mm/slub.c:4130
+[<000000005034ca11>] kmalloc include/linux/slab.h:595 [inline]
+[<000000005034ca11>] mrp_attr_create net/802/mrp.c:276 [inline]
+[<000000005034ca11>] mrp_request_join+0x265/0x550 net/802/mrp.c:530
+[<00000000fcfd81f3>] vlan_mvrp_request_join+0x145/0x170 net/8021q/vlan_mvrp.c:40
+[<000000009258546e>] vlan_dev_open+0x477/0x890 net/8021q/vlan_dev.c:292
+[<0000000059acd82b>] __dev_open+0x281/0x410 net/core/dev.c:1609
+[<000000004e6dc695>] __dev_change_flags+0x424/0x560 net/core/dev.c:8767
+[<00000000471a09af>] rtnl_configure_link+0xd9/0x210 net/core/rtnetlink.c:3122
+[<0000000037a4672b>] __rtnl_newlink+0xe08/0x13e0 net/core/rtnetlink.c:3448
+[<000000008d5d0fda>] rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3488
+[<000000004882fe39>] rtnetlink_rcv_msg+0x369/0xa10 net/core/rtnetlink.c:5552
+[<00000000907e6c54>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
+[<00000000e7d7a8c4>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+[<00000000e7d7a8c4>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
+[<00000000e0645d50>] netlink_sendmsg+0x78e/0xc90 net/netlink/af_netlink.c:1929
+[<00000000c24559b7>] sock_sendmsg_nosec net/socket.c:654 [inline]
+[<00000000c24559b7>] sock_sendmsg+0x139/0x170 net/socket.c:674
+[<00000000fc210bc2>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
+[<00000000be4577b5>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
+
+Calling mrp_request_leave() after mrp_request_join(), the attr->state
+is set to MRP_APPLICANT_VO, mrp_attr_destroy() won't be called in last
+TX event in mrp_uninit_applicant(), the attr of applicant will be leaked.
+To fix this leak, iterate and free each attr of applicant before rerturning
+from mrp_uninit_applicant().
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/802/mrp.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/net/802/mrp.c b/net/802/mrp.c
+index bea6e43d45a0..35e04cc5390c 100644
+--- a/net/802/mrp.c
++++ b/net/802/mrp.c
+@@ -292,6 +292,19 @@ static void mrp_attr_destroy(struct mrp_applicant *app, struct mrp_attr *attr)
+ 	kfree(attr);
+ }
+ 
++static void mrp_attr_destroy_all(struct mrp_applicant *app)
++{
++	struct rb_node *node, *next;
++	struct mrp_attr *attr;
++
++	for (node = rb_first(&app->mad);
++	     next = node ? rb_next(node) : NULL, node != NULL;
++	     node = next) {
++		attr = rb_entry(node, struct mrp_attr, node);
++		mrp_attr_destroy(app, attr);
++	}
++}
++
+ static int mrp_pdu_init(struct mrp_applicant *app)
+ {
+ 	struct sk_buff *skb;
+@@ -895,6 +908,7 @@ void mrp_uninit_applicant(struct net_device *dev, struct mrp_application *appl)
+ 
+ 	spin_lock_bh(&app->lock);
+ 	mrp_mad_event(app, MRP_EVENT_TX);
++	mrp_attr_destroy_all(app);
+ 	mrp_pdu_queue(app);
+ 	spin_unlock_bh(&app->lock);
+ 
+-- 
+2.30.2
+
