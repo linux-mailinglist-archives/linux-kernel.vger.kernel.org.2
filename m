@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F323D4A9B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 01:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA073D4AAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 01:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhGXWfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 18:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhGXWfH (ORCPT
+        id S229982AbhGXW7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 18:59:11 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:55380 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhGXW7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 18:35:07 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B388C061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 16:15:37 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id a26so8482489lfr.11
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 16:15:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kdnKGE0h9qI+tmxgP9+1tJVm1vnoK/WzHBNxULDN6vA=;
-        b=wbal8hLKRcfXaex8SOilcrDsZlgOfdL/apFUPtkM4Qi34BAlhL64+3viHVTn5rqvk6
-         rwQxmhudbAEFEJulcpNIHff8u3zXV3kiru9rJar4Tm501ISjxdQNiwHy4y4QgA3zKmXp
-         2RQcSwuoU38oNwZnQoeiwzIbbHr0Kq7xRC8GEPagxbcx0sFhF8/rTFlD9Z89ECEuiBvg
-         SmO3bdxUJHhtxcmD2JU9bRNcQeOHBmFeuvshv2ri0xmG67mWjGYvOkmeV62kA+x/fS/t
-         5Cxth4k3RcRHkPpPGeqBmgw37peni6aDewEOqzOZT/QJ1PVhncU9He6FzEeykiTDiAlH
-         /FnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kdnKGE0h9qI+tmxgP9+1tJVm1vnoK/WzHBNxULDN6vA=;
-        b=Y5Y85BQwXGBfVXujM60jc8e2KO+4zrEAQHE1SUdwvUD4FYsJeej02Qq00mHir5BZP4
-         4hOsfXqBm0vBuImPv5/YxmJPxGT2c6tL98p6Te4vEcfG1bBx+bHgmhSqSM5zXo7UAsQ8
-         y88mR2eCKwye2oyN69lY2jZj7OnGadoidJoBNYFEUNr2STn/zhHf1WujhvaVoLjWeyvx
-         PNiZUGENUObJ2qIGfAt4ksRYB6SYx8MwCYx6cVGSR7jaZ2njTwjKFt3CwacnOSp68EWi
-         f7sHK/6PJmFOS6svIDDj0oZ7d+05MI9iHithdRr9mT39iu8EKWuKWVWGFKOYqXTiOAot
-         2ekQ==
-X-Gm-Message-State: AOAM531B3OCVnayXKzzt+7c0e3DTPMBamCVS4NhywxDS4wH5mdlSWGp/
-        NKidjvZ2qusoXbG+ar/xQt2ffA==
-X-Google-Smtp-Source: ABdhPJxLu44Gu/tOuT5dP6RrIV1x6/qviaS9oNFaJqC2x8QznPnTVt5HHb+NIVntCHV/OcnmeM9rPQ==
-X-Received: by 2002:a05:6512:3a8d:: with SMTP id q13mr7467642lfu.401.1627168535752;
-        Sat, 24 Jul 2021 16:15:35 -0700 (PDT)
-Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
-        by smtp.gmail.com with ESMTPSA id e7sm4063553ljp.45.2021.07.24.16.15.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 16:15:35 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Joel Stanley <joel@jms.id.au>
-Subject: [PATCH] clocksource/drivers/fttmr010: Clear also overflow bit on AST2600
-Date:   Sun, 25 Jul 2021 01:13:32 +0200
-Message-Id: <20210724231332.2129616-1-linus.walleij@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        Sat, 24 Jul 2021 18:59:09 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m7REv-003hHv-87; Sat, 24 Jul 2021 23:39:29 +0000
+Date:   Sat, 24 Jul 2021 23:39:29 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v4 1/8] iov_iter: Introduce iov_iter_fault_in_writeable
+ helper
+Message-ID: <YPyksQ/53I8OGY/D@zeniv-ca.linux.org.uk>
+References: <20210724193449.361667-1-agruenba@redhat.com>
+ <20210724193449.361667-2-agruenba@redhat.com>
+ <CAHk-=whodi=ZPhoJy_a47VD+-aFtz385B4_GHvQp8Bp9NdTKUg@mail.gmail.com>
+ <YPx28cEvrVl6YrDk@zeniv-ca.linux.org.uk>
+ <CAHc6FU5nGRn1_oc-8rSOCPfkasWknH1Wb3FeeQYP29zb_5fFGQ@mail.gmail.com>
+ <YPyMyPCpZKGlfAGk@zeniv-ca.linux.org.uk>
+ <CAHc6FU4aVL_g3LHEWng1fr8j3jJt+QVK3wAda2q6pfi+xRJcwg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHc6FU4aVL_g3LHEWng1fr8j3jJt+QVK3wAda2q6pfi+xRJcwg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code was originally just writing 0x1 into TIMER_INTR_STATE
-on the AST2600. But that is just the bit for TIMER_1_INT_MATCH1
-so if we're using periodic IRQs we also need to clear
-TIMER_1_INT_OVERFLOW.
+On Sun, Jul 25, 2021 at 12:06:41AM +0200, Andreas Gruenbacher wrote:
+> On Sat, Jul 24, 2021 at 11:57 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > On Sat, Jul 24, 2021 at 11:38:20PM +0200, Andreas Gruenbacher wrote:
+> >
+> > > Hmm, how could we have sub-page failure areas when this is about if
+> > > and how pages are mapped? If we return the number of bytes that are
+> > > accessible, then users will know if they got nothing, something, or
+> > > everything, and they can act accordingly.
+> >
+> > What I'm saying is that in situation when you have cacheline-sized
+> > poisoned areas, there's no way to get an accurate count of readable
+> > area other than try and copy it out.
+> >
+> > What's more, "something" is essentially useless information - the
+> > pages might get unmapped right as your function returns; the caller
+> > still needs to deal with partial copies.  And that's a slow path
+> > by definition, so informing them of a partial fault-in is not
+> > going to be useful.
+> >
+> > As far as callers are concerned, it's "nothing suitable in the
+> > beginning of the area" vs. "something might be accessible".
+> 
+> Yes, and the third case would be "something might be accessible, but
+> not all of it". There probably are callers that give up when they
+> don't have it all.
 
-Cc: Cédric Le Goater <clg@kaod.org>
-Cc: Joel Stanley <joel@jms.id.au>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
-This patch goes on top of the other two I just sent.
----
- drivers/clocksource/timer-fttmr010.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Who cares?  Again,
+	1) those callers *still* have to cope with copyin/copyout failures
+halfway through.  Fully successful fault-in does not guarantee anything
+whatsoever.  IOW, you won't get rid of any complexity that way.
+	2) earlier bailout in rare error case is not worth bothering with.
+If you'd been given an iov_iter spanning an unmapped/unreadable/unwritable
+area of user memory, it's either a fucking rare race with truncate() of
+an mmapped file or a pilot error.  Neither case is worth optimizing for.
 
-diff --git a/drivers/clocksource/timer-fttmr010.c b/drivers/clocksource/timer-fttmr010.c
-index de29d424ec95..24f62698d17f 100644
---- a/drivers/clocksource/timer-fttmr010.c
-+++ b/drivers/clocksource/timer-fttmr010.c
-@@ -275,7 +275,8 @@ static irqreturn_t ast2600_timer_interrupt(int irq, void *dev_id)
- 
- 	val = readl(fttmr010->base + TIMER_INTR_STATE);
- 	if (val & (TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW)) {
--		writel(TIMER_1_INT_MATCH1, fttmr010->base + TIMER_INTR_STATE);
-+		writel(TIMER_1_INT_MATCH1 | TIMER_1_INT_OVERFLOW,
-+		       fttmr010->base + TIMER_INTR_STATE);
- 		evt->event_handler(evt);
- 	} else {
- 		/* Just clear any spurious IRQs from the block */
--- 
-2.31.1
-
+	The difference between partially accessible and completely accessible
+at the fault-in time is useless for callers.  Really.
