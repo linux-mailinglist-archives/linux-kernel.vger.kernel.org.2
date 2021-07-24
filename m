@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACA43D441F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D633D4420
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhGXARi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 20:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36424 "EHLO
+        id S233690AbhGXARm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 20:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233298AbhGXARh (ORCPT
+        with ESMTP id S233298AbhGXARj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 20:17:37 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADA1C061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id mt6so4596831pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:10 -0700 (PDT)
+        Fri, 23 Jul 2021 20:17:39 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD5CC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:11 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t21so4871068plr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=yegDLmukDQ2JB2JCLLriIkxE39W69jFwF0gijUvKoJQ=;
-        b=UM9VFt1ES2LcfrgrnKsG91iO7iaf+jMeIpvH309u+n00IMhlXncu4w2+BKUHRzGuW/
-         RzSjMkTF8DwnZdkjER+3lt+SVuekYLwoSP+4Byq3CzRATmIj6xWriBfpM+zltxwO5yn/
-         3kQ3q96GIs+oJ7geZ4roamYniXxpo1n1aGS8CMXfPqMXlvpIrNgcpJn8rPCTESZ62olK
-         p+piPu/eQsndv+hSbzdTq8M9mkopbBYfCKmZNDx1Ca8GRUduY+BKVQ4TVkXQ9YRHP1c/
-         Aab968IMEOnlPTEEeEoIWBqX5hB2CZBr72IZSDLKsxWFjEvFVMHxnNzdHYLTI/HU4Q90
-         uhJw==
+        bh=vCPnA7IeT+1hjcpO3XpnPqAK8HPq6UrGaHaA0kO+qzY=;
+        b=M+kZLvEoxZ29UvAOrnVgnF3KSsbu1JRIGRWRoSp5bf9EwJANF6nEj+Z58uDplkpHsL
+         qn/w2qY7ASgP7n+BV5JliL7bBivpzL4LxMoQNnsZOVFCqFQV+81eRjBzNe3qCbryzqUg
+         kEUq2efMky5Y5w+5iuwLfFNVN+18ryT4xzuebxd78O3fl1BzATSiZOArFXdQwaHhUca+
+         h/mg/8aB8WTkbNhPMHkgCAJTlYkcnh8I3Y0rWdEtkTKDNalBTiPaPlNm/MPOy7eeHt72
+         L6eVBpgvPSBF344a+uGbLwZVwhDn+zYT4VUs5IdIRoHHYIRoLPCV2dOfE6FCMzvMiKK4
+         5nvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=yegDLmukDQ2JB2JCLLriIkxE39W69jFwF0gijUvKoJQ=;
-        b=p2IyS4YBT0RHd1bBEAFct0vSX3u4YauJnwjHziK7x0rhx2SU3y+/GwvoQg+vEP9HoR
-         W1T5TTQqOUz0RLWZNnGGSX99vWeiegCkZ3tINJtqOc67Or/LDTU+CWJNmlzC+umga7Pt
-         LcA/XtyhdCZ4SKafrdIsPmX6aelMKJPGmeFJcNRli5Hekctmly0z3JPU+YXyXf2rslkj
-         rhYTuBdZngLrimAmpBg3tlI6oZjx2ooCXj8epZMQ8W+SI8D9UKFD5nO7UGd1VadGyEFj
-         txeM0VnRbveirDtMLl1hybzfA8PgPs5snvhsUcnWSeJQme9v+vghG0PRMeb8Vime/8dx
-         ylTQ==
-X-Gm-Message-State: AOAM533aiP6UfN10OGq93vo1UxXjtpIJorLTXAO4rjl7eAopeIk94Vuo
-        FJJIWCkntk7Ex2PAU4BFl9mfLw==
-X-Google-Smtp-Source: ABdhPJwdm7uhTD7vpi2jUUSlUWMyAV01UNjzssdq3ewTKXSFrUrGVN6mN/1O80Z1nw8okCfncLItvA==
-X-Received: by 2002:a63:443:: with SMTP id 64mr7315283pge.375.1627088289636;
-        Fri, 23 Jul 2021 17:58:09 -0700 (PDT)
+        bh=vCPnA7IeT+1hjcpO3XpnPqAK8HPq6UrGaHaA0kO+qzY=;
+        b=GSvtqLcp5E0Cj20NHTsJsHBAVnp2X/L09jCdASgQQ288jtyN06fcKyPWeb2X6hZaAe
+         GWaYat0D3onA5nNzOqVjCCcJNjw39IvbgaFlX6r6yMkXRprE2RcJ1qiOHBuSOQ/Ndejk
+         jli2546Hw1/0DLrDgZhNZVNoXDtHlKTfEh8cTLU/Ad4mrreAFWeRe4uHY5I5E1PiwsI1
+         9AFvTjhTWZGVpF5i4aFlJh6+jMIhPkQ5XWNv0zy/Yk0iwR4faHV4E3FpWH4hNZCunrZL
+         Vd+GKG9US1+Mfk4cjIZQIReJb4RT/BuHlEhXfzfeksdGLZUDYdJXFCsChNWU/C+kA479
+         GM3g==
+X-Gm-Message-State: AOAM5311JO9YV45zvsQy6gxSoEm2MA7Ot4WKTFkYZdQVXe5KrI2TnBgk
+        XFAydLN6pmvjNYd66EHVEh33Rw==
+X-Google-Smtp-Source: ABdhPJxIBNPvadCNK7jQpm/kPWrtZmYT1yF1DSR9HmcCxzy24G3S/GGCR15AWv4T0egdgTvfp2lqqw==
+X-Received: by 2002:aa7:93cd:0:b029:328:9d89:a790 with SMTP id y13-20020aa793cd0000b02903289d89a790mr6783536pff.71.1627088291326;
+        Fri, 23 Jul 2021 17:58:11 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id f15sm31888949pgv.92.2021.07.23.17.58.08
+        by smtp.gmail.com with ESMTPSA id e3sm30458869pjw.20.2021.07.23.17.58.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 17:58:08 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 17:58:08 -0700 (PDT)
-X-Google-Original-Date: Fri, 23 Jul 2021 17:32:33 PDT (-0700)
-Subject:     Re: [PATCH 3/3] riscv: Make sure the kernel mapping does not overlap with IS_ERR_VALUE
-In-Reply-To: <20210629091349.3802690-3-alex@ghiti.fr>
+        Fri, 23 Jul 2021 17:58:10 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 17:58:10 -0700 (PDT)
+X-Google-Original-Date: Fri, 23 Jul 2021 17:43:59 PDT (-0700)
+Subject:     Re: [PATCH] riscv: stacktrace: pin the task's stack in get_wchan
+In-Reply-To: <20210723082226.7b7b4707@xhacker>
 CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        wangkefeng.wang@huawei.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, alex@ghiti.fr
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        schwab@linux-m68k.org, atishp@atishpatra.org
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-bc552805-71aa-4a1e-afa7-dfd08cfba35b@palmerdabbelt-glaptop>
+To:     jszhang3@mail.ustc.edu.cn
+Message-ID: <mhng-cf2c0120-e598-4cfe-b76e-aba76b722f19@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -65,74 +65,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Jun 2021 02:13:48 PDT (-0700), alex@ghiti.fr wrote:
-> The check that is done in setup_bootmem currently only works for 32-bit
-> kernel since the kernel mapping has been moved outside of the linear
-> mapping for 64-bit kernel. So make sure that for 64-bit kernel, the kernel
-> mapping does not overlap with the last 4K of the addressable memory.
+On Thu, 22 Jul 2021 17:22:26 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
 >
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> Pin the task's stack before calling walk_stackframe() in get_wchan().
+> This can fix the panic as reported by Andreas when CONFIG_VMAP_STACK=y:
+>
+> [   65.609696] Unable to handle kernel paging request at virtual address ffffffd0003bbde8
+> [   65.610460] Oops [#1]
+> [   65.610626] Modules linked in: virtio_blk virtio_mmio rtc_goldfish btrfs blake2b_generic libcrc32c xor raid6_pq sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua efivarfs
+> [   65.611670] CPU: 2 PID: 1 Comm: systemd Not tainted 5.14.0-rc1-1.g34fe32a-default #1 openSUSE Tumbleweed (unreleased) c62f7109153e5a0897ee58ba52393ad99b070fd2
+> [   65.612334] Hardware name: riscv-virtio,qemu (DT)
+> [   65.613008] epc : get_wchan+0x5c/0x88
+> [   65.613334]  ra : get_wchan+0x42/0x88
+> [   65.613625] epc : ffffffff800048a4 ra : ffffffff8000488a sp : ffffffd00021bb90
+> [   65.614008]  gp : ffffffff817709f8 tp : ffffffe07fe91b80 t0 : 00000000000001f8
+> [   65.614411]  t1 : 0000000000020000 t2 : 0000000000000000 s0 : ffffffd00021bbd0
+> [   65.614818]  s1 : ffffffd0003bbdf0 a0 : 0000000000000001 a1 : 0000000000000002
+> [   65.615237]  a2 : ffffffff81618008 a3 : 0000000000000000 a4 : 0000000000000000
+> [   65.615637]  a5 : ffffffd0003bc000 a6 : 0000000000000002 a7 : ffffffe27d370000
+> [   65.616022]  s2 : ffffffd0003bbd90 s3 : ffffffff8071a81e s4 : 0000000000003fff
+> [   65.616407]  s5 : ffffffffffffc000 s6 : 0000000000000000 s7 : ffffffff81618008
+> [   65.616845]  s8 : 0000000000000001 s9 : 0000000180000040 s10: 0000000000000000
+> [   65.617248]  s11: 000000000000016b t3 : 000000ff00000000 t4 : 0c6aec92de5e3fd7
+> [   65.617672]  t5 : fff78f60608fcfff t6 : 0000000000000078
+> [   65.618088] status: 0000000000000120 badaddr: ffffffd0003bbde8 cause: 000000000000000d
+> [   65.618621] [<ffffffff800048a4>] get_wchan+0x5c/0x88
+> [   65.619008] [<ffffffff8022da88>] do_task_stat+0x7a2/0xa46
+> [   65.619325] [<ffffffff8022e87e>] proc_tgid_stat+0xe/0x16
+> [   65.619637] [<ffffffff80227dd6>] proc_single_show+0x46/0x96
+> [   65.619979] [<ffffffff801ccb1e>] seq_read_iter+0x190/0x31e
+> [   65.620341] [<ffffffff801ccd70>] seq_read+0xc4/0x104
+> [   65.620633] [<ffffffff801a6bfe>] vfs_read+0x6a/0x112
+> [   65.620922] [<ffffffff801a701c>] ksys_read+0x54/0xbe
+> [   65.621206] [<ffffffff801a7094>] sys_read+0xe/0x16
+> [   65.621474] [<ffffffff8000303e>] ret_from_syscall+0x0/0x2
+> [   65.622169] ---[ end trace f24856ed2b8789c5 ]---
+> [   65.622832] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
->  arch/riscv/mm/init.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
+>  arch/riscv/kernel/stacktrace.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index a1a0c4afa80f..a90c41bc9485 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -156,7 +156,7 @@ static void __init setup_bootmem(void)
+> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+> index ff467b98c3e3..ac7593607fa6 100644
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -132,8 +132,12 @@ unsigned long get_wchan(struct task_struct *task)
 >  {
->  	phys_addr_t vmlinux_end = __pa_symbol(&_end);
->  	phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> -	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
-> +	phys_addr_t __maybe_unused max_mapped_addr;
->  	phys_addr_t dram_end;
+>  	unsigned long pc = 0;
 >
->  #ifdef CONFIG_XIP_KERNEL
-> @@ -179,14 +179,20 @@ static void __init setup_bootmem(void)
->  	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
->
->  	dram_end = memblock_end_of_DRAM();
-> +#ifndef CONFIG_64BIT
->  	/*
->  	 * memblock allocator is not aware of the fact that last 4K bytes of
->  	 * the addressable memory can not be mapped because of IS_ERR_VALUE
->  	 * macro. Make sure that last 4k bytes are not usable by memblock
-> -	 * if end of dram is equal to maximum addressable memory.
-> +	 * if end of dram is equal to maximum addressable memory. For 64-bit
-> +	 * kernel, this problem can't happen here as the end of the virtual
-> +	 * address space is occupied by the kernel mapping then this check must
-> +	 * be done in create_kernel_page_table.
->  	 */
-> +	max_mapped_addr = __pa(~(ulong)0);
->  	if (max_mapped_addr == (dram_end - 1))
->  		memblock_set_current_limit(max_mapped_addr - 4096);
-> +#endif
->
->  	min_low_pfn = PFN_UP(memblock_start_of_DRAM());
->  	max_low_pfn = max_pfn = PFN_DOWN(dram_end);
-> @@ -556,6 +562,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
->  	uintptr_t va, end_va;
->
->  	end_va = kernel_virt_addr + load_sz;
-> +
->  	for (va = kernel_virt_addr; va < end_va; va += map_size)
->  		create_pgd_mapping(pgdir, va,
->  				   load_pa + (va - kernel_virt_addr),
-> @@ -602,6 +609,13 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  	/* Sanity check alignment and size */
->  	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
->  	BUG_ON((load_pa % map_size) != 0);
-> +#ifdef CONFIG_64BIT
-> +	/*
-> +	 * The last 4K bytes of the addressable memory can not be mapped because
-> +	 * of IS_ERR_VALUE macro.
-> +	 */
-> +	BUG_ON((kernel_virt_addr + load_sz) > ADDRESS_SPACE_END - SZ_4K);
-> +#endif
->
->  	pt_ops.alloc_pte = alloc_pte_early;
->  	pt_ops.get_pte_virt = get_pte_virt_early;
+> -	if (likely(task && task != current && !task_is_running(task)))
+> +	if (likely(task && task != current && !task_is_running(task))) {
+> +		if (!try_get_task_stack(task))
+> +			return 0;
+>  		walk_stackframe(task, NULL, save_wchan, &pc);
+> +		put_task_stack(task);
+> +	}
+>  	return pc;
+>  }
 
-Thanks.  These are on fixes, with some fixes tags added.  This one had 
-some merge conflicts that I had to fix up, LMK if something went wrong.
+Thanks, this is on fixes.
