@@ -2,90 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFF93D45AC
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7713D45D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234277AbhGXGlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 02:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234269AbhGXGlT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 02:41:19 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE54C061760
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:21:51 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id u25so4484961oiv.5
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YCIh3fMX63lUF8i5fYD8BvOZCJrvnxU7VR8u7cCIPkM=;
-        b=F8KsU4oCjmUbDiG/44a1/9d/K1RSICyr8qRoUBatEcm2yuOnbH7x5u34aeTyoaGedf
-         XspnhRRwzNL7+g4/Nx6pvKw6xYviqluCbfQMDZ6FKgnJwS48kDaZFoVynRZdK9Wuy2Kz
-         TNqPsk76y8BVKooKPaYtVeGe7DdKKQnkt3Q0duAmpsRisp/WAw9balXiT9DlpU3OV43I
-         aHFh0qKcNZuG1qHOCvcevEhEnjkx1YviTBbBqxeFr7PeZminYEs2vEQqG4fenEMeByTW
-         m0LX5Krh3ZG5XzrPwf0n85LySwF2henr06R0Fr3gGC8nvwjzVmc7MFh35mb8k+e4PXmk
-         WBRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YCIh3fMX63lUF8i5fYD8BvOZCJrvnxU7VR8u7cCIPkM=;
-        b=WRFNQgzgFugKjI4bkFRBumoi4oLfz5zsemH9vhHiz7vmaCTsWmV9rZVIgmrwbuPUMc
-         89BQV01Y2Rt9Qog9+kuaN6j5e5FNMwNqm9OQ7x7qOPXCMHCA7yHSG2Z/n6lmyCtIIxaV
-         IRLf/m6NQRO54lHKZN7STlrns0jagudSPkWeELkluDYwUZH83yeww8DLVNjrH0iBXf+g
-         C0oVBiH3GNT7/Ed3bWlIA2Ljbk2o6m6UyX38yEEp8xECglNarGlJQeIkFJEJogEJ1dM+
-         VyIgwLbWGUPpXCK43x7Toh0aaQXR2FGvLdnoWW8zYZDhawgClkq6GHN2574VUMjUz/jl
-         BN7Q==
-X-Gm-Message-State: AOAM531exNh67OQj8RmfACNnt8K58kKgxnC3gPeqiGd4usI6UfM9qnFi
-        eKLLN/+6dkKvk5EtgE30muVfFZOL4Xnk0FguhazVog==
-X-Google-Smtp-Source: ABdhPJx2xQLq56xZ6EcRh66jo509CDGGbajlVjK2lo9Espbwz0WE2eEyyxbA+1wnATCEeMJ9qDOhrzNjdfKPytQAOmY=
-X-Received: by 2002:aca:af10:: with SMTP id y16mr10638074oie.12.1627111310129;
- Sat, 24 Jul 2021 00:21:50 -0700 (PDT)
+        id S234381AbhGXGtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 02:49:36 -0400
+Received: from mout.gmx.net ([212.227.15.15]:43123 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234287AbhGXGtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 02:49:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627111802;
+        bh=9Ng847uXLDIObzWv5Yi0qwMF67Zqe0s18408az0TfjQ=;
+        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
+         CC:From;
+        b=UmgrV1ApX/l6PY5LDRkR1ULPidqMQIfmJO29cjBNDa0G17whcegPZQhlOrX3NZZxu
+         8ZtaikbqBu5ZET/I87oZGuA51KsNch+XIOMbpcnaYhojwBaQ0z+L2rhgXCecZ8T7eN
+         jm6L7+m6xdO5s2WekQML8+kPy8wbiE4+MKYdAAdE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from frank-s9 ([217.61.144.209]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIMfW-1lv9PJ3rQi-00ELOM; Sat, 24
+ Jul 2021 09:30:02 +0200
+Date:   Sat, 24 Jul 2021 09:29:58 +0200
+User-Agent: K-9 Mail for Android
+In-Reply-To: <3122A872-7168-4D60-8F65-DDAA9E1AB3D1@public-files.de>
+References: <3122A872-7168-4D60-8F65-DDAA9E1AB3D1@public-files.de>
 MIME-Version: 1.0
-References: <20210629123407.82561-1-bhupesh.sharma@linaro.org> <CACRpkdacTi-9YzhOqpfFkNhzSATmbWHs=wMoJcsXwG8pBeW7Mg@mail.gmail.com>
-In-Reply-To: <CACRpkdacTi-9YzhOqpfFkNhzSATmbWHs=wMoJcsXwG8pBeW7Mg@mail.gmail.com>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Sat, 24 Jul 2021 12:51:38 +0530
-Message-ID: <CAH=2Ntxk5NdcPCsOD=SRyFFKrgtUqOxV2UpuJP21W-dpaPHrrQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] pinctrl: qcom/pinctrl-spmi-gpio: Add support for
- pmic-gpio on SA8155p-adp
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     MSM <linux-arm-msm@vger.kernel.org>, bhupesh.linux@gmail.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Mtk Spi fix for stable
+Reply-to: frank-w@public-files.de
+To:     stable@vger.kernel.org
+CC:     linux-kernel@vger.kernel.org
+From:   Frank Wunderlich <frank-w@public-files.de>
+Message-ID: <BFD312E8-7AAE-4A86-A599-9A81904F56A6@public-files.de>
+X-Provags-ID: V03:K1:z3ybpe3roEOHBFAE0RrvfSRe4NYVRg4++KZNKr+2xtSltzU9/wj
+ dIa4VgOXvda9db0W1VFxNfifQQd3C6ELf2S3S7TBmsQD4BA/a8Os70LDSJQIwt+H3Q2576b
+ 9aT1eyHFw0xZQyE+NPl2vOxAPubwLdPDBRBVKtkAnllqjjSODFDHl3d1PP+uTTHz4g0cZgs
+ zB83WC88wYsH7xyhx3tzA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:r21jBk5x72I=:rjCGmX76LH4m8bO5miXODA
+ o6dZypwZzWKHpk3M/0dKvtTpE1rn8QxlxwL5hXrV1VcbmlSkwS6cTorenjHc8+vs9PGE6pezv
+ vJtJZ+R6+Uh/WCs3C5LaKD4TUwMCoFCf7LNfuzLNMCAHKRYyn1Ot5nt6WKYB4j+Nkvqr8+2L3
+ Acd7XhjhbUVl4mTRqa05eQZZu1vDIa+K/2YJRkYJ4e/jDVOvaOyjjmPnuhfdlAh+8r+tMROjb
+ NwmI5ci6G0BWWGKgdiXTYDZiqUVa53bgcza1Nxd8ApE4NFk0tamyF+A1yhHhd8YTFs38/PNyc
+ Q9SpGJWu3DExHzLDEvlD5D3Hj+75lov5b0gXUQJBNCE6K5ZY4SP1WbOw+r4FB0fFOuo9ezvcV
+ 4eUbcUILwdFJyRYrOTss0e1/Em0HI1LbgZzARfE3KoJcG/Oz6+5Kqo5WNlChNWZsJM2livETQ
+ W86/OF5e5ELVDjULYujWpXCUPJPUA0gAnRV3ahF6IH/Nm22HF7OsunTESu3ozEeCzYJRULgov
+ DM/dLyjNDKLbsOEcZOloCh8sgYmubbl77rLmrSZk0VoOD7CG16gTF8/11RnEvnUbVcxpDRJ1L
+ S/BZ2PK3PxN7F4x3hlnQ0jhPWB9h4wwKt3BEzBSbGTHP46SgQUC57yNsparVcL2s5P8bnwYH3
+ lzw3H3TwGaUhQsR3+ZqrMsK2uoh9xsWC7AaDhs+YGDCS231NIDEf6ZaaVaqfecUEq2vqU+XoK
+ fMLT5ovgBUej0mfz1v+Yh9AJloHn/tqZkiodbY8+MT/Bai8NQ6o7+YcPW+0kC0IWaGGzACRJm
+ 1LoQp/r8SbzNBTdRsDj1wVkQIsge0APOEtUcerdtx6UExgVBs7tn6wxaBqi9wTvmjgnsngsAc
+ ZOGZti5FmlVgMCD7kvZ3sZh6l6mtU7FEs1blQDhVhGzOt+LWCpBPpNnQE59+eLrP5NP4L/8wm
+ DTCzcFo3i0oI4+vTHmaXvFZhgbIPqTxjkDTzxu538WvuJakBakalG2DU3vnuxbEdwGjPNLnmQ
+ bPsNZz3GyZcSfxjjiEAZAX+/0sXpBV7zTpsOkyMRh8W+niMp5N2S/aoqJVXHZb1yj7n62feoV
+ 5MeKtuaG3VDU6nn1amz3Ky126sQuIW3JLNBOgkUCTy0Lr+uBUfcWZ1XZw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-On Fri, 23 Jul 2021 at 21:51, Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Tue, Jun 29, 2021 at 2:34 PM Bhupesh Sharma
-> <bhupesh.sharma@linaro.org> wrote:
->
-> > Changes since v3:
-> > -----------------
-> > - v3 series can be found here: https://lore.kernel.org/linux-arm-msm/20210617053432.350486-1-bhupesh.sharma@linaro.org/T/#m2b1bf2d32dfdde3196dc5342722e356ee1f87456
-> > - Rebased patchset on pinctrl/devel branch.
-> > - Added Reviewed-by from Bjorn for patches 1 to 4 and Ack from Rob for
-> >   patches 1 and 2.
->
-> This v4 patch set applied!
->
-> Sorry for taking so long, I had a bit too much to do.
->
-> Excellent work on the patches Bhupesh!
+I noticed i've missed stable tag :(
 
-Thanks for picking the patchset.
+Can you please pick this up for at least 5=2E4/5=2E10?
 
-Regards,
-Bhupesh
+https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/torvalds/linux=2Egit/c=
+ommit/?id=3D3a70dd2d050331ee4cf5ad9d5c0a32d83ead9a43
+
+regards Frank
