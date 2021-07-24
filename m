@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3BF3D4421
+	by mail.lfdr.de (Postfix) with ESMTP id B69673D4422
 	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhGXARo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 20:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
+        id S233755AbhGXARp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 20:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233665AbhGXARl (ORCPT
+        with ESMTP id S233662AbhGXARm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 20:17:41 -0400
+        Fri, 23 Jul 2021 20:17:42 -0400
 Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A3AC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:13 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id e5so3065343pld.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC9EDC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:14 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id k1so4911240plt.12
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:58:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=ixp2Efw04Zmd3ojpMMirglfvU4JyFrlYnefPbpvE9qQ=;
-        b=l9EmVZ1b8261Fr7etjdogpbySpGIQb72E9mXlzLasGgTGWAJ8EtVZTKMd8zbqGSMJc
-         7YIbBQh9V9p0HVnWd19DovMR24aEgea4rFtpb21KtqEp1fAJ1bQIsxr+Ro7Ca+XRbJti
-         AaPBqClr83WbK38H6hMlj8Ux1ezhqf6w3PM1/0f/1tSq0cHWZb7pNMI5Q0ClyXlxf41X
-         7rqvgNVh5C4wJEO0M59w2xU8cdceEWdq6sVIY+rrJMLcVFAAFqhc2pOn6gckWmsnB9a2
-         zu+husRrFIUNK3nLfWZLOnroMNLehpEAurSlwX4ZzIJJ/GqkKknqJzQR2dJaVqeU/AQN
-         5ESw==
+        bh=OlwUZcWU+zFAtM9hiJyMkmJtbQEHkL3Q1I7IsXb7FPU=;
+        b=zk/id2ENEx5PqxL1+6dzRIQTqgm2OzCjl3e1YqmEJmSkUNm7ef5pbGC5CdB5WRfLXZ
+         g2z7NXgg7LiMMHyc2IburHwZAWvOYdrfdhRS2IbDkkV+Jif1i0e7avh717Zfe5rmiXYH
+         Gr0fL2dOCvNri4/oM0pZ5R3wDdfcohsT01xPjVURvHGAm/P6uOkKitsIrqv2DKineAlk
+         WRuIStOxDSwd0pRBgHCYgie8I6y9I5mRHbNNDAJE5W5ZycILrtDuZ0fox6G0izjoy+nQ
+         gGvoOR5gDDfDWXEUYh/q0EPIYS8G7XQwtzIZX+6kP2U+4kQB6yi1eggJ0FVnLaDCBX3p
+         PBOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=ixp2Efw04Zmd3ojpMMirglfvU4JyFrlYnefPbpvE9qQ=;
-        b=nH8cslNIfpkOYQz9c1zRqWVj2q6zRrAatSMe/PMGQKZnnQnqtJreCygfnoDpDJczAT
-         3Kr8LnTeFnZwtYiKlmw32JQlg5egNnk9V1ztP51CA9XEwCVza42yUTg5yWRcxPm//smn
-         iuozNYuoiUYPsHSlbRNkDNMSUMvQhBjw/JtDsMiI6c2KlGj0ePJgp4HSC8GhiM+wiGdA
-         jMohA3WOOJLL4rBJwev9jA1rEDP61s51vCRCg/oSQKRq2iKFRklh2y3wJevOebpMClFo
-         AdzB1u44QFY2mUn+IWIuMLITYUcnh0ryf8cZ/FdQzl9HgGlWC2iaU5L05y9xUQ+RaSBR
-         VTSg==
-X-Gm-Message-State: AOAM532knKvq5REvTmgMBw4w/RqElZH4AVBTxvgWIDG01iRIXX5uYNuP
-        mZoyneSel8ed/LKpj/p1KWl6AQ==
-X-Google-Smtp-Source: ABdhPJxSoQnZ7ArDNB+xyZSWKkPLPV63ZJuP3n9jQ2eYDIVHIqFpcrorc0FpHDVXGSt+1cbT3m/aGA==
-X-Received: by 2002:a17:902:dcd4:b029:12b:fd1:d95 with SMTP id t20-20020a170902dcd4b029012b0fd10d95mr5740043pll.13.1627088292770;
-        Fri, 23 Jul 2021 17:58:12 -0700 (PDT)
+        bh=OlwUZcWU+zFAtM9hiJyMkmJtbQEHkL3Q1I7IsXb7FPU=;
+        b=X305OyftmA4lkClJb+pPuSkv0K3OOEf9qN1erwAr9AQ0kBL8UYfI178o6VZHmWCZea
+         VdOLZ1gRGEaTXI3E06Oi/axsq2yFwq2rNbEgXIFW5QkHbXEDBnVC4n3LVpgkEYGnj2wI
+         RVmZi0km0jP8+ioZrMfSjK0AO03+Oc5shmjWfkpoCNiflHdySC2SkGvRnEpnxPEXt35u
+         /9Te7pZcaDgBYjdsIEvs/H5rDzjU/BOt+Yh5J/vBvSHwdVq2OFi3tpWcMvXoR4RDjYzv
+         vS8TtQH9WUAIk+isaeZWVoUf4SXjJnOMZYyWKt2jam68sDr7lfIJ5qXjd+Y/nb/3cRKL
+         XFBw==
+X-Gm-Message-State: AOAM532S9JUIhJlR4I0fl11ALWR1vJM7HHvLIYBUzC1680w++TkngaS0
+        dixSil5slZlYErvyZylEUDuYTQ==
+X-Google-Smtp-Source: ABdhPJwwuS8XMIz5osqmii+ofeK+AxcFj6tz3jfzu4bBDrPYA1HFkK5Ffq2k+YOf3WwJ52D6argBYg==
+X-Received: by 2002:a17:90b:2246:: with SMTP id hk6mr3739863pjb.112.1627088294369;
+        Fri, 23 Jul 2021 17:58:14 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id d3sm11434430pfj.17.2021.07.23.17.58.12
+        by smtp.gmail.com with ESMTPSA id 201sm14427514pgd.37.2021.07.23.17.58.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 17:58:12 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 17:58:12 -0700 (PDT)
-X-Google-Original-Date: Fri, 23 Jul 2021 17:51:10 PDT (-0700)
-Subject:     Re: [PATCH 0/4] __asm_copy_to-from_user: Fixes
-In-Reply-To: <37097718-c472-025a-2058-55667badc5b9@gmail.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, linux@roeck-us.net,
-        geert@linux-m68k.org, aou@eecs.berkeley.edu,
-        akira.tsukamoto@gmail.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+        Fri, 23 Jul 2021 17:58:13 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 17:58:13 -0700 (PDT)
+X-Google-Original-Date: Fri, 23 Jul 2021 17:52:41 PDT (-0700)
+Subject:     Re: [PATCH] riscv: Disable STACKPROTECTOR_PER_TASK if GCC_PLUGIN_RANDSTRUCT is enabled
+In-Reply-To: <20210706162621.940924-1-linux@roeck-us.net>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, guoren@linux.alibaba.com
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     akira.tsukamoto@gmail.com
-Message-ID: <mhng-b80245ea-c042-4de9-8a2c-22b3e188434c@palmerdabbelt-glaptop>
+To:     linux@roeck-us.net
+Message-ID: <mhng-1b892781-2ee8-476b-90b8-44b5cca45cf9@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -66,25 +65,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 01:49:42 PDT (-0700), akira.tsukamoto@gmail.com wrote:
-> These are series for the fix reported by Guenter, Geert and Qiu.
+On Tue, 06 Jul 2021 09:26:21 PDT (-0700), linux@roeck-us.net wrote:
+> riscv uses the value of TSK_STACK_CANARY to set
+> stack-protector-guard-offset. With GCC_PLUGIN_RANDSTRUCT enabled, that
+> value is non-deterministic, and with riscv:allmodconfig often results
+> in build errors such as
 >
-> One patch to fix overrun memory access, one patch to fix on rv32.
-> And two more for clean up and typos.
+> cc1: error: '8120' is not a valid offset in '-mstack-protector-guard-offset='
 >
-> Have tested on qemu rv32, qemu rv64 and beaglev beta board.
+> Enable STACKPROTECTOR_PER_TASK only if GCC_PLUGIN_RANDSTRUCT is disabled
+> to fix the problem.
 >
-> Thanks for the report and instructions to reproduce the error on rv32.
+> Fixes: fea2fed201ee5 ("riscv: Enable per-task stack canaries")
+> Cc: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  arch/riscv/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> Akira
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 469a70bd8da6..3afb84fa2190 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -486,6 +486,7 @@ config CC_HAVE_STACKPROTECTOR_TLS
 >
-> Akira Tsukamoto (4):
->   riscv: __asm_copy_to-from_user: Fix: overrun copy
->   riscv: __asm_copy_to-from_user: Fix: fail on RV32
->   riscv: __asm_copy_to-from_user: Remove unnecessary size check
->   riscv: __asm_copy_to-from_user: Fix: Typos in comments
+>  config STACKPROTECTOR_PER_TASK
+>  	def_bool y
+> +	depends on !GCC_PLUGIN_RANDSTRUCT
+>  	depends on STACKPROTECTOR && CC_HAVE_STACKPROTECTOR_TLS
 >
->  arch/riscv/lib/uaccess.S | 27 +++++++++++++--------------
->  1 file changed, 13 insertions(+), 14 deletions(-)
+>  config PHYS_RAM_BASE_FIXED
 
-Thanks, these are on fixes.
+Thanks, this is on fixes.  I do an allmodconfig build and haven't seen 
+these failures, is there something special I need to do to get this 
+working?  I know nothing about GCC plugins...
