@@ -2,215 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F973D47E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 15:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C92C3D47F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 15:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhGXMzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 08:55:45 -0400
-Received: from out29-121.mail.aliyun.com ([115.124.29.121]:46947 "EHLO
-        out29-121.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhGXMzo (ORCPT
+        id S234319AbhGXNGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 09:06:42 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:36023 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhGXNGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 08:55:44 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436834|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_regular_dialog|0.0659764-0.0011159-0.932908;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Kq.PDff_1627133772;
-Received: from 192.168.88.130(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Kq.PDff_1627133772)
-          by smtp.aliyun-inc.com(10.147.43.95);
-          Sat, 24 Jul 2021 21:36:14 +0800
-Subject: Re: [PATCH] cpuidle: JZ4780: Add Ingenic JZ4780 cpuidle driver.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     rjw@rjwysocki.net, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com, Alex Smith <alex.smith@imgtec.com>
-References: <1627118399-125388-1-git-send-email-zhouyanjie@wanyeetech.com>
- <B0YQWQ.OWLDE6KM3L551@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <d8445fe8-01df-2fcc-32b0-cf10432e7d73@wanyeetech.com>
-Date:   Sat, 24 Jul 2021 21:36:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Sat, 24 Jul 2021 09:06:37 -0400
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 16ODkfnA024963;
+        Sat, 24 Jul 2021 22:46:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 16ODkfnA024963
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627134402;
+        bh=xIH/ltmFtWJmcRQmRg8PWr+q47o4O2EpTM1yT4rZrmI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EbqaBoyOEep+aRck6WDXQ8xcyqFY0pHcZo9qObQiyzIvekMZ6Erf+fKq8BxQSIFi9
+         kbRlgmAphBoSWRVbkmhnKFAyNn5wBoRN8fWf3/NZJXE/HbEtFz4MZE0yDRLKTNKmUZ
+         ZXujegaMA2NLj4g6rvQVgoV3imYjCvqv1tv67H9ivUS0rF6+CNKAhCflm+xyFmns4B
+         cmzV6LCIB3oq4MI2nY0OeHf+7BWS18ZTHjI3QWbt8mVaPyIKjai9YbZjLdXQNdK72t
+         cIOVhoQzbWU2mceldKJFi+7+FcJjQivauis6o8PHy6h8OrAJIDuCztUBYZApt9oEJj
+         meYD7a5ZDwASA==
+X-Nifty-SrcIP: [209.85.214.178]
+Received: by mail-pl1-f178.google.com with SMTP id i1so6367784plr.9;
+        Sat, 24 Jul 2021 06:46:41 -0700 (PDT)
+X-Gm-Message-State: AOAM530ZZS9pg3sXnUWmBvlmqmUloaGcVaPczTMeBmnfQCJ0YAy6Aqw7
+        mpzptlQIivOSUc7Xk/UvSolPKoSI2tE4mx8Aok4=
+X-Google-Smtp-Source: ABdhPJwzBx6PuThiVpsvzU+dyvbWRChWN9xv7GsNFlcN5NVApjydszOkLt/Jzms/Uaj3pa+GqUfGGFzJkPrzWii75VM=
+X-Received: by 2002:a65:609a:: with SMTP id t26mr9654545pgu.175.1627134400955;
+ Sat, 24 Jul 2021 06:46:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <B0YQWQ.OWLDE6KM3L551@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+ <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
+ <CAK7LNATLy2F-2zkHm4ENSufBT_o5p=9jc5k1K-xOV8cQf7kKDw@mail.gmail.com> <CAMuHMdXJBqrpzaSNDJgic14ESiHV6cCcb_5E-st6iniXdmm9_g@mail.gmail.com>
+In-Reply-To: <CAMuHMdXJBqrpzaSNDJgic14ESiHV6cCcb_5E-st6iniXdmm9_g@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 24 Jul 2021 22:46:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARrP3jAbRxOr1F+k=Ho__s1+iqCtvrn4hH7uJ_sRvkO3A@mail.gmail.com>
+Message-ID: <CAK7LNARrP3jAbRxOr1F+k=Ho__s1+iqCtvrn4hH7uJ_sRvkO3A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On 2021/7/24 下午7:16, Paul Cercueil wrote:
-> Hi Zhou,
+On Sat, Jul 24, 2021 at 4:54 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Le sam., juil. 24 2021 at 17:19:59 +0800, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> The JZ4780 has a high overhead to executing a MIPS wait on SMP, as a
->> core must flush out dirty cache lines from its data cache before doing
->> so. This is because the core clock is gated during a wait and if the
->> other core tries to access a dirty line from the waiting core's cache,
->> it will lock up.
->>
->> To mitigate some of this impact, this driver provides a simple polling
->> top level idle state, to try to avoid the cache flushing overhead when
->> the wait will only be short. The second level state is implemented with
->> the MIPS wait instruction.
->>
->> This patch first found in the github repository of CI20, the original
->> author is Alex Smith. Because there is a chance to cause kernel hang
->> scenarios which can occur within hours or even within days, so this
->> patch was abandoned, but now it is determined that this is not the
->> problem caused by this patch, but caused by the cache driver. With
->> the new Ingenic specific cache driver, it has been working properly
->> on CI20 v1 for more than one week.
->>
->> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
->> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->>  drivers/cpuidle/Kconfig.mips     |  8 +++++
->>  drivers/cpuidle/Makefile         |  1 +
->>  drivers/cpuidle/cpuidle-jz4780.c | 74 
->> ++++++++++++++++++++++++++++++++++++++++
->>  3 files changed, 83 insertions(+)
->>  create mode 100644 drivers/cpuidle/cpuidle-jz4780.c
->>
->> diff --git a/drivers/cpuidle/Kconfig.mips b/drivers/cpuidle/Kconfig.mips
->> index c3c011a..4a55d24 100644
->> --- a/drivers/cpuidle/Kconfig.mips
->> +++ b/drivers/cpuidle/Kconfig.mips
->> @@ -16,3 +16,11 @@ config MIPS_CPS_CPUIDLE
->>        Processing System (CPS) architecture. In order to make use of
->>        the deepest idle states you will need to ensure that you are
->>        also using the CONFIG_MIPS_CPS SMP implementation.
->> +
->> +config MIPS_JZ4780_CPUIDLE
->> +    bool "CPU Idle driver for Ingenic JZ4780"
->> +    depends on MACH_JZ4780 && SMP
->> +    default y
->> +    help
->> +      Select this option to enable CPU idle state management through
->> +      cpuidle for Ingenic JZ4780 platforms.
->> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
->> index 26bbc5e..1dd372f 100644
->> --- a/drivers/cpuidle/Makefile
->> +++ b/drivers/cpuidle/Makefile
->> @@ -29,6 +29,7 @@ obj-$(CONFIG_ARM_QCOM_SPM_CPUIDLE)    += 
->> cpuidle-qcom-spm.o
->>
->> ############################################################################### 
->>
->>  # MIPS drivers
->>  obj-$(CONFIG_MIPS_CPS_CPUIDLE)        += cpuidle-cps.o
->> +obj-$(CONFIG_MIPS_JZ4780_CPUIDLE)    += cpuidle-jz4780.o
->>
->>
->> ############################################################################### 
->>
->>  # POWERPC drivers
->> diff --git a/drivers/cpuidle/cpuidle-jz4780.c 
->> b/drivers/cpuidle/cpuidle-jz4780.c
->> new file mode 100644
->> index 00000000..2025de4
->> --- /dev/null
->> +++ b/drivers/cpuidle/cpuidle-jz4780.c
->> @@ -0,0 +1,74 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * JZ4780 CPU idle driver
->> + * Copyright (C) 2015 Imagination Technologies
->> + * Author: Alex Smith <alex.smith@imgtec.com>
->> + * Copyright (c) 2020 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> + */
->> +
->> +#include <linux/cpuidle.h>
->> +#include <linux/init.h>
->> +#include <linux/sched.h>
->> +#include <linux/sched/idle.h>
->> +
->> +#include <asm/idle.h>
->> +#include <asm/mipsregs.h>
->> +
->> +/*
->> + * The JZ4780 has a high overhead to entering just the basic MIPS 
->> wait on SMP,
->> + * due to the requirement to flush out dirty lines from the dcache 
->> before
->> + * waiting. Therefore, we try to mitigate this overhead by using a 
->> simple
->> + * polling loop for short waits.
->> + */
->> +static int jz4780_cpuidle_poll_enter(struct cpuidle_device *dev,
->> +                     struct cpuidle_driver *drv, int index)
->> +{
->> +    if (!current_set_polling_and_test())
->> +        while (!need_resched() && !(read_c0_cause() & 
->> read_c0_status() & CAUSEF_IP))
->> +            cpu_relax();
->> +
->> +    current_clr_polling();
->> +    local_irq_enable();
->> +
->> +    return index;
->> +}
->> +
->> +static struct cpuidle_driver jz4780_cpuidle_driver = {
->> +    .name = "jz4780_cpuidle",
->> +    .owner = THIS_MODULE,
->> +    .states = {
->> +        {
->> +            .enter = jz4780_cpuidle_poll_enter,
->> +            .exit_latency = 1,
->> +            .target_residency = 1,
->> +            .power_usage = UINT_MAX,
->> +            .name = "poll",
->> +            .desc = "polling loop",
->> +        },
->> +        {
->> +            .enter = mips_cpuidle_wait_enter,
->> +            .exit_latency = 50,
->> +            .target_residency = 300,
->> +            .power_usage = UINT_MAX,
->> +            .name = "wait",
->> +            .desc = "MIPS wait",
->> +        },
->> +    },
->> +    .state_count = 2,
->> +};
->> +
->> +static int __init jz4780_cpuidle_init(void)
->> +{
->> +    int ret;
->> +
->> +    ret = cpuidle_register(&jz4780_cpuidle_driver, NULL);
+> Hi Yamada-san,
 >
-> You're missing something here - you never check that the kernel is 
-> actually running on a JZ4780.
-
-
-Sure, I will try to fix it.
-
-
-Thanks and best regards!
-
-
+> On Wed, Jul 21, 2021 at 6:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > On Wed, Jul 21, 2021 at 4:58 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > On Tue, Jul 20, 2021 at 7:43 PM Linus Torvalds
+> > > <torvalds@linux-foundation.org> wrote:
+> > > > On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > >
+> > > > We do most of the other heavy lifting in this area in Kconfig anyway,
+> > > > why not add that compiler choice?
+> > > >
+> > > > Obviously it would be gated by the tests to see which compilers are
+> > > > _installed_ (and that they are valid versions), so that it doesn't ask
+> > > > stupid things ("do you want gcc or clang" when only one of them is
+> > > > installed and/or viable).
+> > >
+> > > I don't see a good way of making Kconfig options both select the
+> > > compiler and defining variables based on the compiler, since that
+> > > would mean teaching Kconfig about re-evaluating all compiler
+> > > dependent settings whenever the first option changes.
+> > >
+> > > I do have another idea that I think would work though.
+> > >
+> > > > Hmm? So then any "LLVM=1" thing would be about the "make config"
+> > > > stage, not the actual build stage.
+> > > >
+> > > > (It has annoyed me for years that if you want to cross-compile, you
+> > > > first have to do "make ARCH=xyz config" and then remember to do "make
+> > > > ARCH=xyz" for the build too, but I cross-compile so seldom that I've
+> > > > never really cared).
+> > >
+> > > The best thing that I have come up with is a pre-configure step, where
+> > > an object tree gets seeded with a makefile fragment that gets included
+> > > for any 'make' invocation. This would set 'ARCH=', 'CROSS_COMPILE',
+> > > 'CC=' and possibly any other option that gets passed to 'make' as
+> > > a variable and has to exist before calling 'make *config'.
+> >
+> >
+> > There is no need to add a hook to include such makefile fragment(s).
+> >
+> > Quite opposite, you can put your Makefile (in a different filename)
+> > that includes the top Makefile.
+> >
+> >
+> > I think this is what people are already doing:
+> >
+> >
+> > GNU Make looks for 'GNUmakefile', 'makefile', and 'Makefile'
+> > in this order.
 >
-> Cheers,
-> -Paul
+> Exactly. I only have a few source repositories, but lots of build directories
+> (I never build in a repo directory). Each build directory has a GNUmakefile:
 >
->> +    if (ret) {
->> +        pr_err("Failed to register JZ4780 idle driver: %d\n", ret);
->> +        return ret;
->> +    }
->> +
->> +    pr_info("JZ4780 idle driver registered\n");
->> +
->> +    return 0;
->> +}
->> +device_initcall(jz4780_cpuidle_init);
->> -- 
->> 2.7.4
->>
+>     build/linux-riscv-starlight$ cat GNUmakefile
+>     MAKEARGS = ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-
 >
+>     include ~/linux/default.mk
+>     build/linux-riscv-starlight$ cat ~/linux/default.mk
+>     MAKEFLAGS += --no-print-directory
+>
+>     .PHONY: all $(MAKECMDGOALS)
+>
+>     all := $(filter-out all Makefile,$(MAKECMDGOALS))
+>
+>     all:
+>             @$(MAKE) $(MAKEARGS) $(all) -f Makefile
+>
+>     Makefile:;
+>
+>     $(all): all
+>             @:
+>
+>     %/: all
+>             @:
+>     build/linux-riscv-starlight$
+>
+> Perhaps we could have a "make setup ARCH=foo CROSS_COMPILE=bar" target,
+> which creates such a GNUmakefile?
+
+No, I do not think so.
+
+Your GNUmakefile is customized in your way.
+Other people implement GNUmakefile in their own way.
+
+Upstream is not a place to merge everybody's local tools.
+
+
+
+
+
+
+
+
+> P.S. I put the extra logic in ~/linux/default.mk, so I don't have to update all
+>      GNUmakefiles when I want to make a change to the main logic.
+>
+>      For build dirs where I want to track a specific config, I have a slightly
+>      different version:
+>
+>          build/linux-m68k-allmodconfig-sun3$ cat GNUmakefile
+>          MAKEARGS = ARCH=m68k KCONFIG_ALLCONFIG=1
+>          DEFCONFIG = allmodconfig
+>
+>          include ~/linux/override-oldconfig.mk
+>          build/linux-m68k-allmodconfig-sun3$ cat ~/linux/override-oldconfig.mk
+>          MAKEFLAGS += --no-print-directory
+>
+>          .PHONY: all oldconfig realoldconfig $(MAKECMDGOALS)
+>
+>          all := $(filter-out all oldconfig realoldconfig
+> Makefile,$(MAKECMDGOALS))
+>
+>          all:
+>                  @$(MAKE) $(MAKEARGS) $(all) -f Makefile
+>
+>          # Replace oldconfig by $(DEFCONFIG)
+>          oldconfig:
+>                  @$(MAKE) $(MAKEARGS) $(DEFCONFIG) -f Makefile
+>
+>          realoldconfig:
+>                  @$(MAKE) $(MAKEARGS) oldconfig -f Makefile
+>
+>          Makefile:;
+>
+>          $(all): all
+>                  @:
+>
+>          %/: all
+>                  @:
+>          build/linux-m68k-allmodconfig-sun3$
+>
+>      That way I can always just type "make oldconfig", and it will do what
+>      I want.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAMuHMdXJBqrpzaSNDJgic14ESiHV6cCcb_5E-st6iniXdmm9_g%40mail.gmail.com.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
