@@ -2,287 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A2E3D44AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 06:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AFF3D44C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 06:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233965AbhGXDVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 23:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S233937AbhGXDba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 23:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbhGXDVC (ORCPT
+        with ESMTP id S233850AbhGXDb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 23:21:02 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8E4C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 21:01:34 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id i10so2251368pla.3
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 21:01:34 -0700 (PDT)
+        Fri, 23 Jul 2021 23:31:29 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BBBC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 21:12:01 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id a20so5592796plm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 21:12:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mJr+oOn2kzfFr95dbii2sDJLx3MlairPe7CB6pB0iVo=;
-        b=rvfpXUneFylzXmhG+Vn5BVvUlocS2doNWsq8mYo+r+o++PdCpeWeW3Uni7D9haTHwh
-         hK4jtByRiwH50L/hlVTXQb640u7ESKJB8ZsDc0uzjUiG7/xjDAdWNPdljJBwoBxQUebP
-         wOUtpugVGOpBBpCl9b2+CX21MOICxUZ+v1n8r7IBYCwDu3Gr/dya3iejx/XltCeC76jb
-         eACWt0sfNHbeeJFKnsVBcdVCpYocXdP4ITydYL0RJE+QY//hRBN4qSMDSKnf26beeClg
-         n/hZnrzGy+zYBinNCQiOvqjSVvsXiyrn9Pgi9+U0PXXftqHLzDBXQWVXohxulmdON8R1
-         X75w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hUphzkjUs+f4n/CtLJYGpw/KLAKzYjnMeedmlil2VfU=;
+        b=zTJH4iNYY4OUanJzT20qn/k2Y3F7vryjGfoUP8T44ogvs/tbifGEMY8h92eSXNX79z
+         drsWuep/h7XBbGu3TOJ5aAMylJhOHGZgNCoffJn5naPY94gNxUp6YbNj4a6FV+Bq6YF/
+         cih62d1jmupILuZyU2u/sQed37mBAe//xyFWp/N4qy0oBjqDp9w5N3THpSmK6CMYx1HW
+         1xpPcZdXB+b5Vjo3BTseCh0qU8Eng7QVRBu9u7S3j4KZFTfGgRy0+iLGoRJP+0e3KODF
+         tgqobbIMhJ/zhfyHjS41YJCtoBIQsvjpGoPvQr8MOw2o0pcM5pa8nhP3o6dRc1tdrHbT
+         iE4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=mJr+oOn2kzfFr95dbii2sDJLx3MlairPe7CB6pB0iVo=;
-        b=lsK4RUFJMVjUBX8wT+I1Fa5fYtX0QCX6V1daNxwTtcOAoK8QpBceaxz9HCN2kozIhz
-         DeDPcQnvYKSY/X8CO2YaY5/SfREazkFZA/Kro4B5mUAKcPImSU1IaxK/J/Ny2gdKXpky
-         Mv/aDRzRPtY0S3BUXN3B9QMmK/IqBWKWHoPxKnN7Vv2p5w4QyenxB5AZuTXufYve+zsY
-         77j6CtAo27Wv/DQpCAFTJ36a4C/FuIxOyhsv8p4QioJmPu3CPyPLWOjUHWL9sE32V40t
-         kxtULFhRKORET/PoFZorh7L3WS8jh1G5CtB6GZk2yvPuzTxJ+8/d8bVA0xCNWwVImUrS
-         T4eg==
-X-Gm-Message-State: AOAM532scvAOBKqkIPpOx7kMT8kkrF/zXt4/98BS9voLdcd1AiPSS9gG
-        hCYpQLnt0qdG/8DPJtC2gIMuHJGEsQc=
-X-Google-Smtp-Source: ABdhPJwpLazcNmWHoWt4ExjZ3wc1bU60R/7/AAVpPKZJCqbraNHCl14gw1qTv9dhkJVjVA+kunLtPA==
-X-Received: by 2002:a63:cc0c:: with SMTP id x12mr7705309pgf.1.1627099293911;
-        Fri, 23 Jul 2021 21:01:33 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:301a:22b9:cd4b:11f9])
-        by smtp.gmail.com with ESMTPSA id x18sm34008217pfh.48.2021.07.23.21.01.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hUphzkjUs+f4n/CtLJYGpw/KLAKzYjnMeedmlil2VfU=;
+        b=pstRNCOrVNws+RjQuE20kQMxjOGA/jOkRnesHHRbI8RTvzhhkBVBY5urCAT1p13TjO
+         62ahBysNLNviSzb/RCvwXk1Pr22jNvQplQnjT4eclpQyqXVRVxdfJK9yq/IRIWrE/DAV
+         YleWHUdksXaL7hhpT6fEIvCFDDim7mDrXksnCSUit1RYf26ttjtvd6NnYCSdJH/xgAhx
+         S/AhsqSdJj6V29wbkoY1uRtXyWQMfBrt/BMsgbzMGzJ1EU/gU3rc4uy1sygUibvMlgBF
+         ViN4fpFdrmlNnHtg1821Ckq19mW2aWniaPo/M2qIg3ysPBnjjl7ds5853UE2JFTk/PrL
+         mJVg==
+X-Gm-Message-State: AOAM530G/eki01wX0Y2JBSCPiBvDh5lR8o2jf5LMGyYjQJ1ROxkiLVDk
+        9hmtVjkRiuHO1/cJP+aa1yxQ
+X-Google-Smtp-Source: ABdhPJyF8KwnLqCkSTt9iDq9FhsyJmhA8Jj9Zs+eo6AdGTjl2rCUNhFYnLMiGShGiRUHgcl8UBEiwQ==
+X-Received: by 2002:a63:a01:: with SMTP id 1mr7721060pgk.360.1627099921090;
+        Fri, 23 Jul 2021 21:12:01 -0700 (PDT)
+Received: from thinkpad ([2409:4072:6d0b:3004:b3d2:21bb:b6c1:27fa])
+        by smtp.gmail.com with ESMTPSA id b1sm7319151pjn.11.2021.07.23.21.11.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 21:01:33 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 2/2] perf record: Add --synth option
-Date:   Fri, 23 Jul 2021 21:01:29 -0700
-Message-Id: <20210724040129.2268452-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-In-Reply-To: <20210724040129.2268452-1-namhyung@kernel.org>
-References: <20210724040129.2268452-1-namhyung@kernel.org>
+        Fri, 23 Jul 2021 21:11:59 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 09:41:50 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v7 08/10] arm64: dts: HiSilicon: Add support for HiKey
+ 970 PCIe controller hardware
+Message-ID: <20210724041150.GA4053@thinkpad>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org>
+ <e483ba44ed3d70e1f4ca899bb287fa38ee8a2876.1626855713.git.mchehab+huawei@kernel.org>
+ <20210722133628.GC4446@workstation>
+ <20210723085318.243f155f@coco.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723085318.243f155f@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an option to control synthesize behavior.
+On Fri, Jul 23, 2021 at 08:53:18AM +0200, Mauro Carvalho Chehab wrote:
+> Em Thu, 22 Jul 2021 19:06:28 +0530
+> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> escreveu:
+> 
+> > On Wed, Jul 21, 2021 at 10:39:10AM +0200, Mauro Carvalho Chehab wrote:
+> > > From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > 
+> > > Add DTS bindings for the HiKey 970 board's PCIe hardware.
+> > > 
+> > > Co-developed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > ---
+> > >  arch/arm64/boot/dts/hisilicon/hi3670.dtsi     | 71 +++++++++++++++++++
+> > >  .../boot/dts/hisilicon/hikey970-pmic.dtsi     |  1 -
+> > >  drivers/pci/controller/dwc/pcie-kirin.c       | 12 ----
+> > >  3 files changed, 71 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> > > index 1f228612192c..6dfcfcfeedae 100644
+> > > --- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> > > +++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
+> > > @@ -177,6 +177,12 @@ sctrl: sctrl@fff0a000 {
+> > >  			#clock-cells = <1>;
+> > >  		};
+> > >  
+> > > +		pmctrl: pmctrl@fff31000 {
+> > > +			compatible = "hisilicon,hi3670-pmctrl", "syscon";
+> > > +			reg = <0x0 0xfff31000 0x0 0x1000>;
+> > > +			#clock-cells = <1>;
+> > > +		};
+> > > +  
+> > 
+> > Irrelevant change to this patch.
+> 
+> Huh?
+> 
+> This is used by PCIe PHY, as part of the power on procedures:
+> 
+> 	+static int hi3670_pcie_noc_power(struct hi3670_pcie_phy *phy, bool enable)
+> 	+{
+> 	+       struct device *dev = phy->dev;
+> 	+       u32 time = 100;
+> 	+       unsigned int val = NOC_PW_MASK;
+> 	+       int rst;
+> 	+
+> 	+       if (enable)
+> 	+               val = NOC_PW_MASK | NOC_PW_SET_BIT;
+> 	+       else
+> 	+               val = NOC_PW_MASK;
+> 	+       rst = enable ? 1 : 0;
+> 	+
+> 	+       regmap_write(phy->pmctrl, NOC_POWER_IDLEREQ_1, val);
+> 
+> 
 
-    --synth <no|all|task|mmap|cgroup>
-                      Fine-tune event synthesis: default=all
+Ah... you're hardcoding the syscon compatible in driver. Sorry missed that.
 
-This can be useful when we know it doesn't need some synthesis like
-in a specific usecase and/or when using pipe:
+But if these syscon nodes are independent memory regions or belong to non
+PCI/PHY memory map, you could've fetched the reference through a DT property
+along with the offset then used it in driver.
 
-  $ perf record -a --all-cgroups --synth cgroup -o- sleep 1 | \
-  > perf report -i- -s cgroup
+Like,
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/Documentation/perf-record.txt |  9 +++++
- tools/perf/builtin-record.c              | 48 +++++++++++++++++++-----
- tools/perf/util/record.h                 |  1 +
- tools/perf/util/synthetic-events.c       | 28 ++++++++++++++
- tools/perf/util/synthetic-events.h       | 12 ++++++
- 5 files changed, 89 insertions(+), 9 deletions(-)
+	pcie_phy: pcie-phy@fc000000 {
+		...
+		hisilicon,noc-power-regs = <&pmctrl 0x38c>;
+		hisilicon,sctrl-cmos-regs = <&sctrl 0x60>;
+		...
+	};
 
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index d71bac847936..03a41bec0583 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -596,6 +596,15 @@ options.
- 'perf record --dry-run -e' can act as a BPF script compiler if llvm.dump-obj
- in config file is set to true.
- 
-+--synth=TYPE::
-+Collect and synthesize given type of events (comma separated).
-+Available types are:
-+  'task'    - synthesize FORK and COMM events for each task
-+  'mmap'    - synthesize MMAP events for each process (implies 'task')
-+  'cgroup'  - synthesize CGROUP events for each cgroup
-+  'all'     - synthesize all events (default)
-+  'no'      - do not synthesize any of the above events
-+
- --tail-synthesize::
- Instead of collecting non-sample events (for example, fork, comm, mmap) at
- the beginning of record, collect them during finalizing an output file.
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 535da4dfd8d3..caaada3594ce 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1254,6 +1254,7 @@ static int record__synthesize_workload(struct record *rec, bool tail)
- {
- 	int err;
- 	struct perf_thread_map *thread_map;
-+	bool needs_mmap = rec->opts.synth & PERF_SYNTH_MMAP;
- 
- 	if (rec->opts.tail_synthesize != tail)
- 		return 0;
-@@ -1265,7 +1266,7 @@ static int record__synthesize_workload(struct record *rec, bool tail)
- 	err = perf_event__synthesize_thread_map(&rec->tool, thread_map,
- 						 process_synthesized_event,
- 						 &rec->session->machines.host,
--						 true,
-+						 needs_mmap,
- 						 rec->opts.sample_address);
- 	perf_thread_map__put(thread_map);
- 	return err;
-@@ -1500,20 +1501,26 @@ static int record__synthesize(struct record *rec, bool tail)
- 	if (err < 0)
- 		pr_warning("Couldn't synthesize bpf events.\n");
- 
--	err = perf_event__synthesize_cgroups(tool, process_synthesized_event,
--					     machine);
--	if (err < 0)
--		pr_warning("Couldn't synthesize cgroup events.\n");
-+	if (rec->opts.synth & PERF_SYNTH_CGROUP) {
-+		err = perf_event__synthesize_cgroups(tool, process_synthesized_event,
-+						     machine);
-+		if (err < 0)
-+			pr_warning("Couldn't synthesize cgroup events.\n");
-+	}
- 
- 	if (rec->opts.nr_threads_synthesize > 1) {
- 		perf_set_multithreaded();
- 		f = process_locked_synthesized_event;
- 	}
- 
--	err = __machine__synthesize_threads(machine, tool, &opts->target,
--					    rec->evlist->core.threads,
--					    f, true, opts->sample_address,
--					    rec->opts.nr_threads_synthesize);
-+	if (rec->opts.synth & PERF_SYNTH_TASK) {
-+		bool needs_mmap = rec->opts.synth & PERF_SYNTH_MMAP;
-+
-+		err = __machine__synthesize_threads(machine, tool, &opts->target,
-+						    rec->evlist->core.threads,
-+						    f, needs_mmap, opts->sample_address,
-+						    rec->opts.nr_threads_synthesize);
-+	}
- 
- 	if (rec->opts.nr_threads_synthesize > 1)
- 		perf_set_singlethreaded();
-@@ -2422,6 +2429,26 @@ static int process_timestamp_boundary(struct perf_tool *tool,
- 	return 0;
- }
- 
-+static int parse_record_synth_option(const struct option *opt,
-+				     const char *str,
-+				     int unset __maybe_unused)
-+{
-+	struct record_opts *opts = opt->value;
-+	char *p = strdup(str);
-+
-+	if (p == NULL)
-+		return -1;
-+
-+	opts->synth = parse_synth_opt(p);
-+	free(p);
-+
-+	if (opts->synth < 0) {
-+		pr_err("Invalid synth option: %s\n", str);
-+		return -1;
-+	}
-+	return 0;
-+}
-+
- /*
-  * XXX Ideally would be local to cmd_record() and passed to a record__new
-  * because we need to have access to it in record__exit, that is called
-@@ -2447,6 +2474,7 @@ static struct record record = {
- 		.nr_threads_synthesize = 1,
- 		.ctl_fd              = -1,
- 		.ctl_fd_ack          = -1,
-+		.synth               = PERF_SYNTH_ALL,
- 	},
- 	.tool = {
- 		.sample		= process_sample_event,
-@@ -2662,6 +2690,8 @@ static struct option __record_options[] = {
- 		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
- 		     "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
- 		      parse_control_option),
-+	OPT_CALLBACK(0, "synth", &record.opts, "no|all|task|mmap|cgroup",
-+		     "Fine-tune event synthesis: default=all", parse_record_synth_option),
- 	OPT_END()
- };
- 
-diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
-index 68f471d9a88b..ef6c2715fdd9 100644
---- a/tools/perf/util/record.h
-+++ b/tools/perf/util/record.h
-@@ -77,6 +77,7 @@ struct record_opts {
- 	int	      ctl_fd;
- 	int	      ctl_fd_ack;
- 	bool	      ctl_fd_close;
-+	int	      synth;
- };
- 
- extern const char * const *record_usage;
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 566e0859fcfb..9485d0532b9c 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -2186,3 +2186,31 @@ int perf_event__synthesize_features(struct perf_tool *tool, struct perf_session
- 	free(ff.buf);
- 	return ret;
- }
-+
-+int parse_synth_opt(char *synth)
-+{
-+	char *p, *q;
-+	int ret = 0;
-+
-+	if (synth == NULL)
-+		return -1;
-+
-+	for (q = synth; (p = strsep(&q, ",")); p = q) {
-+		if (!strcasecmp(p, "no") || !strcasecmp(p, "none"))
-+			return 0;
-+
-+		if (!strcasecmp(p, "all"))
-+			return PERF_SYNTH_ALL;
-+
-+		if (!strcasecmp(p, "task"))
-+			ret |= PERF_SYNTH_TASK;
-+		else if (!strcasecmp(p, "mmap"))
-+			ret |= PERF_SYNTH_TASK | PERF_SYNTH_MMAP;
-+		else if (!strcasecmp(p, "cgroup"))
-+			ret |= PERF_SYNTH_CGROUP;
-+		else
-+			return -1;
-+	}
-+
-+	return ret;
-+}
-diff --git a/tools/perf/util/synthetic-events.h b/tools/perf/util/synthetic-events.h
-index 61bbdb3b64df..913803506345 100644
---- a/tools/perf/util/synthetic-events.h
-+++ b/tools/perf/util/synthetic-events.h
-@@ -26,6 +26,18 @@ struct target;
- 
- union perf_event;
- 
-+enum perf_record_synth {
-+	PERF_SYNTH_TASK		= 1 << 0,
-+	PERF_SYNTH_MMAP		= 1 << 1,
-+	PERF_SYNTH_CGROUP	= 1 << 2,
-+
-+	/* last element */
-+	PERF_SYNTH_MAX		= 1 << 3,
-+};
-+#define PERF_SYNTH_ALL  (PERF_SYNTH_MAX - 1)
-+
-+int parse_synth_opt(char *str);
-+
- typedef int (*perf_event__handler_t)(struct perf_tool *tool, union perf_event *event,
- 				     struct perf_sample *sample, struct machine *machine);
- 
--- 
-2.32.0.432.gabb21c7263-goog
+The benefit of doing this way is, if the pmctrl, sctrl register layout changes
+in future, you can handle it without any issues.
 
+> 
+> > 
+> > >  		iomcu: iomcu@ffd7e000 {
+> > >  			compatible = "hisilicon,hi3670-iomcu", "syscon";
+> > >  			reg = <0x0 0xffd7e000 0x0 0x1000>;
+> > > @@ -660,6 +666,71 @@ gpio28: gpio@fff1d000 {
+> > >  			clock-names = "apb_pclk";
+> > >  		};
+> > >    
+> > 
+> > [...]
+> > 
+> > > +			#interrupt-cells = <1>;
+> > > +			interrupts = <0 283 4>;  
+> > 
+> > Use the DT flag for interrupts instead of hardcoded value
+> 
+> Do you mean like this?
+> 
+> 	interrupts = <0 283 IRQ_TYPE_LEVEL_HIGH>;
+> 
+
+yes but you could also use,
+
+	interrupts = <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>;
+
+Thanks,
+Mani
