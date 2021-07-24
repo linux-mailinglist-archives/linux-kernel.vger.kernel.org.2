@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFCD3D48DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8F13D48F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhGXQrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 12:47:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60338 "EHLO mail.kernel.org"
+        id S229738AbhGXRE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 13:04:26 -0400
+Received: from mout.gmx.net ([212.227.15.15]:59081 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229689AbhGXQrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 12:47:06 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82F5F60E8E;
-        Sat, 24 Jul 2021 17:27:32 +0000 (UTC)
-Date:   Sat, 24 Jul 2021 18:30:03 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "hui.liu" <hui.liu@mediatek.com>
-Cc:     <robh+dt@kernel.org>, <knaack.h@gmx.de>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <srv_heupstream@mediatek.com>,
-        <zhiyong.tao@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <seiya.wang@mediatek.com>,
-        <matthias.bgg@gmail.com>, <s.hauer@pengutronix.de>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH] iio: mtk-auxadc: add mutex_destroy
-Message-ID: <20210724183003.6f3bc1d5@jic23-huawei>
-In-Reply-To: <1627042875.27985.15.camel@mhfsdcap03>
-References: <20210715093523.29844-1-hui.liu@mediatek.com>
-        <20210715093523.29844-2-hui.liu@mediatek.com>
-        <20210717174432.7e69e4e9@jic23-huawei>
-        <1627042875.27985.15.camel@mhfsdcap03>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229461AbhGXREY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 13:04:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627148677;
+        bh=NnnKncfAnaFeKpuZRfNKoEnQZQQS40lYryGaD8rwMk4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=NFNUK8e1lGKlLsZ78wPfP5vHKXND1wmC2AI4RH71M5Ie9Y8wYdWHqJVuRDtIJ3wW3
+         VXs2CX4KUZKOYnpaq3xLdSs4YyW7qx6gNhO3e4eHKLo/QnqC/AzUNWViHh7ztLdfXa
+         a3TfKXl//kPVXrValL65VXLVmtUKycHLbFO8vyjI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1Ml6mE-1lMEif0gvs-00lTqs; Sat, 24 Jul 2021 19:44:37 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Phil Reid <preid@electromag.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/3] staging/fbtft: Fix braces coding style
+Date:   Sat, 24 Jul 2021 17:14:11 +0200
+Message-Id: <20210724151411.9531-4-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210724151411.9531-1-len.baker@gmx.com>
+References: <20210724151411.9531-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Lxq6kiLtjzFc7OrUMkOeAtgYvYuYKRc/giZKldt3BoFUT8h46VN
+ Kg9FIPsCHHoEzU1Mpx9okxfyNGfBWPsPHYWimuPRdKM7YMgx2f/hyOp2LoOaeTQQ39tB119
+ r00lutgbYittzltAdnF6QCZZMkyT5+zF0brw7VKPt3rZbRv5z9hwxA/m471V2iAF4Ivk4re
+ fJ9snb6LaTghFsDzNuZKg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+WwuL9lnI14=:Lg8CcfCZ7rwXHqQl323hZy
+ fGlFde99fZWlaom5py+XLvoegd+qdqmZEnaZcZfjaZXvCeQfq1VcgF/kPHuf3DX7+Dnc+fEYM
+ GF5J3HJvxIuQB/LKFn2AYmrVe+k7eP8fdhESjiwle6j2jlpdvGJkY53L22oeIQ9pjNVzIssJR
+ lTeRxVTZoFtv7PJXi4frv7WYleVjSsoS+aMSpp7psFbCVzS0eR36Fl61cRvfhokOfM3YVs71d
+ TSUNWgcaTPd2gGx/iffDIqzBPfpZfSPZ57NqUjGggEfbgwrNQyh7zBArIEtgH6Qdl/hRT32PJ
+ JXoI9p0V8gNiUjVGp1f1s9Uz/+ibpDt7QxC6XeQ+0bo1/uw6tqnO3lVGaVIHVWKq7VzeNY4+d
+ 2OpnbFIPjtMG4G37mboGXULo2eh2u2o6A0XFu2pYtyK0J8GAyB5aIjgh7s9SVTV94dYXhLCBv
+ 0miwN3QGGRxpnD5Kxw+0pfJfAJubKiXXXruRCsawp5sJ1aqNmI/GellC7vWzdjvW3M7JFhBxV
+ D+LTiSfdu6TIqkaju1DEGsoHLejU9iO+jg2GOwpf4tsTVfz1rkaaYRT/YilFHbaxeuENaDVUZ
+ KlfGAn9Q7eBgvNoXqYPJUM5Pt6dN/Eo6NbpkJs5P7okfSgpPdP2YqDk9OMZRSdn0kNciNMdl+
+ MXvkoUTAtJe1fy93gvr7MVIvwmN5QCaxcMZI9NMCETYMV7S45tDl+wEZvFEdBP9aSuXC0ughK
+ 9odmeqPINVGQWl1Vd5BMuvN1jf1ucvBSmD+b+XDCaA8oPJGqNg94oTA5jI2lbELcTe+UEUC4k
+ 2VZZkSasNSfjuaS0Qw9UY62tOGme/eW2xzVXIUdkAfKzSdOYg5SspQsEp7tl/gKC640W26ivK
+ +3GDojDJUFZNf5dAvtRwplJIKRuG3mo4RXhFXDekbKGom+ybJq+s19ZFJRtYW30q99dg66Oqn
+ NVZ/95qRcpoIbhYb87SLwP2G1O9gMhadg3TgGQpfaJZstM6uK6dGjVuaN6h/ixb7IWFI5k/Nl
+ 7wG2olAL5nGf7iJQ2NFtfHQ9f0MCh6jDVlSoiwy4qZmjA2XnlK5rUjsDTiI6vIPDskEW+/YdI
+ DBKweJCMhiMW2bjwr0ar/okB4t5uJ6NbzgQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 20:21:15 +0800
-hui.liu <hui.liu@mediatek.com> wrote:
+Add braces to the "for" loop and remove braces from the "if" statement.
+This way the kernel coding style is followed.
 
-> On Sat, 2021-07-17 at 17:44 +0100, Jonathan Cameron wrote:
-> > On Thu, 15 Jul 2021 17:35:23 +0800
-> > Hui Liu <hui.liu@mediatek.com> wrote:
-> >   
-> > > Add mutex_destroy when probe fail and remove device.
-> > > 
-> > > Signed-off-by: Hui Liu <hui.liu@mediatek.com>  
-> > Hi Hui Liu,
-> > 
-> > We very very rarely bother to call mutex_destroy().  The reason is
-> > that it is only a non noop in when mutex debugging is enabled and
-> > that is only useful if there is a plausible route in which it could
-> > be used after the mutex_destroy.   Given these are both at the ends
-> > of removal paths, I don't think this is useful.  That's why you will
-> > rarely find mutex_destroy() being called.
-> > 
-> > Thanks,
-> > 
-> > Jonathan  
-> 
-> Hi Jonathon,
-> 
-> I think this patch could assurance the integrity of code.
-> mutex_init will be called when driver probe. If driver probe fail or
-> device removed, mutex_destroy could set lock->magic to NULL.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/fbtft/fbtft-core.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-I'm not seeing the use case here given the location doesn't leave
-a huge amount of code that could have such a bug.  There might have been
-something if we had any route to increment the reference count of the
-structure this mutex is ultimately embedded in and so have it outlast
-the remove function or error path. In this driver it looks like there is
-no such path.  Hence you are protecting against a automated
-cleanup of core code (nothing in the driver itself) which is obviously
-not going to try taking a driver specific mutex.
+diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fb=
+tft-core.c
+index cc2bee22f7ad..d87792649efe 100644
+=2D-- a/drivers/staging/fbtft/fbtft-core.c
++++ b/drivers/staging/fbtft/fbtft-core.c
+@@ -1003,9 +1003,11 @@ int fbtft_init_display(struct fbtft_par *par)
+ 	}
 
-A few side notes:
+ 	/* make sure stop marker exists */
+-	for (i =3D 0; i < FBTFT_MAX_INIT_SEQUENCE; i++)
++	for (i =3D 0; i < FBTFT_MAX_INIT_SEQUENCE; i++) {
+ 		if (par->init_sequence[i] =3D=3D -3)
+ 			break;
++	}
++
+ 	if (i =3D=3D FBTFT_MAX_INIT_SEQUENCE) {
+ 		dev_err(par->info->device,
+ 			"missing stop marker at end of init sequence\n");
+@@ -1016,10 +1018,9 @@ int fbtft_init_display(struct fbtft_par *par)
 
-You are calling it wrong place in remove. The ordering in remove
-should be the opposite of that in probe so the mutex_destroy should either
-be a few lines earlier, or you should have a comment there to say why you
-are doing it where you have chosen to do so.
-
-The style of this probe is to do error handling in a block at the end.
-So this handling should be there, not in the if statement.
-
-Jonathan
-
-
-
-> 
-> Thanks.
-> Hui
-> 
-> >   
-> > > ---
-> > >  drivers/iio/adc/mt6577_auxadc.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > > 
-> > > diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
-> > > index 79c1dd68b909..d57243037ad6 100644
-> > > --- a/drivers/iio/adc/mt6577_auxadc.c
-> > > +++ b/drivers/iio/adc/mt6577_auxadc.c
-> > > @@ -289,6 +289,7 @@ static int mt6577_auxadc_probe(struct platform_device *pdev)
-> > >  	ret = iio_device_register(indio_dev);
-> > >  	if (ret < 0) {
-> > >  		dev_err(&pdev->dev, "failed to register iio device\n");
-> > > +		mutex_destroy(&adc_dev->lock);
-> > >  		goto err_power_off;
-> > >  	}
-> > >  
-> > > @@ -313,6 +314,7 @@ static int mt6577_auxadc_remove(struct platform_device *pdev)
-> > >  			      0, MT6577_AUXADC_PDN_EN);
-> > >  
-> > >  	clk_disable_unprepare(adc_dev->adc_clk);
-> > > +	mutex_destroy(&adc_dev->lock);
-> > >  
-> > >  	return 0;
-> > >  }  
-> >   
-> 
+ 	i =3D 0;
+ 	while (i < FBTFT_MAX_INIT_SEQUENCE) {
+-		if (par->init_sequence[i] =3D=3D -3) {
+-			/* done */
+-			return 0;
+-		}
++		if (par->init_sequence[i] =3D=3D -3)
++			return 0; /* done */
++
+ 		if (par->init_sequence[i] >=3D 0) {
+ 			dev_err(par->info->device,
+ 				"missing delimiter at position %d\n", i);
+=2D-
+2.25.1
 
