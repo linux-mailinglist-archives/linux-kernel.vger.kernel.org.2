@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92F73D43E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB5C3D43F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhGWXhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 19:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        id S233451AbhGWXr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 19:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbhGWXhG (ORCPT
+        with ESMTP id S232724AbhGWXr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 19:37:06 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D24AC061575
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:17:39 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id bm25-20020a05620a1999b02903a9c3f8b89fso2437296qkb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:17:39 -0700 (PDT)
+        Fri, 23 Jul 2021 19:47:28 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A20CC061575;
+        Fri, 23 Jul 2021 17:28:00 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id h10so2837360qth.5;
+        Fri, 23 Jul 2021 17:28:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=HOlFjIupBaRC8Gj2HRr1sX5wQQLAab9xCES8dhta9ys=;
-        b=ILx4pqCqbGkzhWIJTLtu9nC1m+It4WUw0yZM1Q3U2n7JCxtIkWzPzay+m+X2RL7tLL
-         J43O8vOtq3f9YScoL53U0MNLyYvG9logrmR1gkRtiMzm3fF9a2MS76njxQjHiufgSfhS
-         9PoM70rrHjJQ/AN9bC3OXw1E1roXQOWEayQBornKkrCpw8HPrBf7u5308KE9UYa/js9L
-         tnTlhGUYOoLnW/bwjfi8xAzydX5n+psmkKUmG6y+0CtZbYGVqnZ+SQBCKS5La9aVd3WZ
-         Cswd3cO9DNbgszs/u/NiWPlAU6RLmO+5SiJ6Fh3ecGmFhlQzx3G8rc+dyzQ49az0QeAm
-         GgQA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yUR9vJJVBZ++4KfjLkcZVAYSvkA3ayEGS4PyGfLalPM=;
+        b=fEg7jmTITwuBlSObLCFYUgVdaZDKJo3E9aqB9Xs8g8wePAAwzjlXTfYPChZoE60gPy
+         GxArM5zAYk22cjsHQiobsf4uDInsfcVjl6o5Uj7n/h3qAGesmatZS+tPp790DXpEsMCo
+         Nw37ZtOfkWZiO+ROkp4UIZv3Yp69+x1iVegf1OsXbwvthf4sq/9icxsp+2UN6hE3ZMin
+         YMmX6/Y0B8g+L6g0PSwp1SnwnkNTW41BYPWka4qE7h+0JpF9CzBwnomLzuopBGS0boXg
+         EeNTihTE+EgswZv1sREROSkd4cCdE/PkKX4lrZ91gzjsgttwNV/D5Z9wfDsra7CxBEMW
+         aMpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=HOlFjIupBaRC8Gj2HRr1sX5wQQLAab9xCES8dhta9ys=;
-        b=X4rtjDM31/SCxTfk+3MNYv7OA35oUYcENqvHKkD2xAu+9CkpLlAJO2pNQpXLyVwaBD
-         BZzJUTvcytxA4yoGJyVGlmpvKjcn1vOCnU36KrhwhYpSOvW0wdQZrBR9BKaY6iKBwaxm
-         9jnZTmYYT89d6JbUFBOK2CiBNsONmJEO8ZdhsaBFoBrAbQKFOPwHBCDathTzXEJ4K/Ro
-         AvJWALX5c5rG/jExvTjOFG+Npur+G+rjd+6mF8UHsC4oBdyYwxW7EHwb3mfpY+xT2piB
-         Wzy+wRWi5LwXOHpcIybkvGZ3LXeOpkQoKONvoS+Bsm0XQXaiditE5TbE37wHRFQ5UX1l
-         w/ag==
-X-Gm-Message-State: AOAM532jvsX3PNGxpNZVYXbUgOPfdzOl9zo1nB78mgc903xqqbvaYGda
-        S/DZ01E132yKJfwkYerxiY5+q0A9Qr1PxQ8SPA==
-X-Google-Smtp-Source: ABdhPJxXDydiKx4ZebBCkBSRRlKUeS0PpaZROv9k4Ocf+GWRrYX4ALpcUwlhCr6StwlF9ZqKEldZImucfpWS8KP+mA==
-X-Received: from michaelfsun.mtv.corp.google.com ([2620:15c:202:201:153b:286b:8047:586b])
- (user=michaelfsun job=sendgmr) by 2002:a05:6214:cac:: with SMTP id
- s12mr7031703qvs.29.1627085858563; Fri, 23 Jul 2021 17:17:38 -0700 (PDT)
-Date:   Fri, 23 Jul 2021 17:17:31 -0700
-Message-Id: <20210723171729.1.I98b1da8cdd72c1f355366f623cb34ddfc0fe40ae@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH] Bluetooth: btusb: Add valid le states quirk
-From:   Michael Sun <michaelfsun@google.com>
-To:     linux-bluetooth@vger.kernel.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Michael Sun <michaelfsun@google.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=yUR9vJJVBZ++4KfjLkcZVAYSvkA3ayEGS4PyGfLalPM=;
+        b=SuZrmE/Kw6G4EPsE/vj9Mvn+Y8+c1hmUyZ1dsRiLPY9TGr1pDxKFcPr1mWRwwUgLr7
+         SjM2aC/A8xFdYIYdOa7Mnstoi2amRfotyzlqh+BHvAFl6hdYojmxCZpPbwwBkXlzv2Fo
+         7AdiRhoXRLr2ZZRcGjig2QKpOo+41LnkgPWPKWvx2734P0N2rfbvXMBxnCa45+PzX3d2
+         d67n6k9JrMHdeV+EtoqZczms+H4TaM3LlyikEWZPqpB1kzrUw8GtbdCBgG5pca6plJ2W
+         cbvdVso5B90ouNtXiROERVOPm53lCu5pCAJLvvYjXbt+Puhb9L/Kw8Te0hkAon87vzzf
+         OQZg==
+X-Gm-Message-State: AOAM530d4jnEae7G7MBikHQGVplEqfVxcC6sI/neNk9TDXWjGLLazZy+
+        Qva8iaNz72siVoWyQviJaCE=
+X-Google-Smtp-Source: ABdhPJwrxhDAQ7ceVK5GvlpstNHsjFggcc2RjjEe4hnZLSCi08MSUUiNXVpC2HZ/36bcBUz5JS1Hhw==
+X-Received: by 2002:ac8:584e:: with SMTP id h14mr6051271qth.339.1627086479562;
+        Fri, 23 Jul 2021 17:27:59 -0700 (PDT)
+Received: from fedora ([130.44.160.152])
+        by smtp.gmail.com with ESMTPSA id bl41sm4445922qkb.17.2021.07.23.17.27.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Jul 2021 17:27:58 -0700 (PDT)
+Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
+Date:   Fri, 23 Jul 2021 20:27:56 -0400
+From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, stable@vger.kernel.org,
+        Claire Chang <tientzu@chromium.org>,
+        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2 1/1] s390/pv: fix the forcing of the swiotlb
+Message-ID: <YPtejB62iu+iNrM+@fedora>
+References: <20210723231746.3964989-1-pasic@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723231746.3964989-1-pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the valid le states quirk for WCN6855 and GarfieldPeak controller
-so the 'central-peripheral' role is exposed in userspace.
+On Sat, Jul 24, 2021 at 01:17:46AM +0200, Halil Pasic wrote:
+> Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
+> swiotlb data bouncing") if code sets swiotlb_force it needs to do so
+> before the swiotlb is initialised. Otherwise
+> io_tlb_default_mem->force_bounce will not get set to true, and devices
+> that use (the default) swiotlb will not bounce despite switolb_force
+> having the value of SWIOTLB_FORCE.
+> 
+> Let us restore swiotlb functionality for PV by fulfilling this new
+> requirement.
+> 
+> This change addresses what turned out to be a fragility in
+> commit 64e1f0c531d1 ("s390/mm: force swiotlb for protected
+> virtualization"), which ain't exactly broken in its original context,
+> but could give us some more headache if people backport the broken
+> change and forget this fix.
+> 
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
+> Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
+> Cc: stable@vger.kernel.org #5.3+
+> 
+> ---
 
-Signed-off-by: Michael Sun <michaelfsun@google.com>
----
-
- drivers/bluetooth/btusb.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 7b69a97bd0e9..1876a960b3dc 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -297,7 +297,8 @@ static const struct usb_device_id blacklist_table[] = {
- 
- 	/* QCA WCN6855 chipset */
- 	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
--						     BTUSB_WIDEBAND_SPEECH },
-+						     BTUSB_WIDEBAND_SPEECH |
-+						     BTUSB_VALID_LE_STATES },
- 
- 	/* Broadcom BCM2035 */
- 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
-@@ -371,7 +372,8 @@ static const struct usb_device_id blacklist_table[] = {
- 	{ USB_DEVICE(0x8087, 0x0032), .driver_info = BTUSB_INTEL_NEWGEN |
- 						     BTUSB_WIDEBAND_SPEECH},
- 	{ USB_DEVICE(0x8087, 0x0033), .driver_info = BTUSB_INTEL_NEWGEN |
--						     BTUSB_WIDEBAND_SPEECH},
-+						     BTUSB_WIDEBAND_SPEECH |
-+						     BTUSB_VALID_LE_STATES },
- 	{ USB_DEVICE(0x8087, 0x07da), .driver_info = BTUSB_CSR },
- 	{ USB_DEVICE(0x8087, 0x07dc), .driver_info = BTUSB_INTEL },
- 	{ USB_DEVICE(0x8087, 0x0a2a), .driver_info = BTUSB_INTEL },
--- 
-2.32.0.432.gabb21c7263-goog
-
+Picked it up and stuck it in linux-next with the other set of patches (Will's fixes).
