@@ -2,143 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E206C3D4A27
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6823D4A32
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhGXVDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 17:03:47 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:37751 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229510AbhGXVDq (ORCPT
+        id S230115AbhGXVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 17:07:44 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:58406
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229573AbhGXVHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 17:03:46 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 2EBEF320024A;
-        Sat, 24 Jul 2021 17:44:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 24 Jul 2021 17:44:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=3V7FevWb1p5n5Vec3/jBp3sIx0K
-        Qg89281MvPR3XSBw=; b=MhmoEUW9N5gQrmySruuN/8u/+OjCR8a1gNKZ/JLHgTD
-        VVIXWTiXhsHcTYjCJ1nJCsTjeVcmXWxau0BiD498s/6ytid/QtblgtDKrR5HJz6e
-        BLwbh/FXOMWObfcQNLgOao1QRGh5WIHEayLnP4NrwWVG5xlWopZAx5Mq7PWvysH5
-        AkqQ3nNN0/GI6fszm2OiFLLj3sOIQt0FkZ0tdCJpgEvuxlgxXd2pfR77+qrYCD25
-        cNMNZJSF25q4UMqFG/5ZiwxM87F9J6t95ATeoSOcYcph2tkxTUTV9ip1JF63XD09
-        ZPXGtlh5ib7eZxUUGqoUmzUqBxBcjQLYnYsWAGQpLMw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=3V7Fev
-        Wb1p5n5Vec3/jBp3sIx0KQg89281MvPR3XSBw=; b=ChNj0gcB73QLDqaNGZC61C
-        QJ3uy13y/8L5kegrtWxbbVjo6fte5IN4bDiB4KAP4cQoWBegXRRDUVksBs6oKOZM
-        YLaEftfiIZ2OYfCrmQRA227N8yR/pqbzsFZZlnB7lCYTxxXB6bBlS3MHmKQ0gc8y
-        o9NeBdlIY278Xm4GCiDsJhLBDudGoB7Z84C/Kdl7CWQAOEshUuZnQyzZmuYhToDT
-        FAYg0NePFPh32+WJycFQ8QdHmeFfgwBoBb22QfcENgoUiFPH69cvVo8wyqKpVLpN
-        CrEN2PwUELB8364UFcbc2dMp0s8Y+PzK3o0u9xxGxAi3hVoJsK/8z4zRr4FjUMwQ
-        ==
-X-ME-Sender: <xms:r4n8YFe5siCEm4SWjXouxUT52wGaSzYPr6Rye2w45Vkc7pcPr62nKg>
-    <xme:r4n8YDMwxxQUhZBFn0Q90Kphsd4zj1tGHJQVPHi9srjZ5M91Uf7CuA6IB-Kbv_0my
-    npgc8CSMiAYZqHM8Q>
-X-ME-Received: <xmr:r4n8YOivgW5apjjM6W0lzEDQtMNvBB6e98tee9cBZK1wfLLppsEEgWf259okcPg2aBFpUWl_H8VDKBuxp1pq2weGAfjCxIR2Hpvn1frhlIzKO-CFY0geCrBvlAWl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgedugddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
-    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
-    htvghrnhepudeuvefhudevtefhgeehveetjedutdekfeejudehkedttdeuueeikeekteev
-    tedunecuffhomhgrihhnpehgihhthhhusgdrtghomhdpihhnshhtrghllhdrshhhnecuve
-    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvghs
-    segrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:r4n8YO_BBTBYiE1XI-abMGwlC5SwauLzCcSoSbDBex4VriG3sb7FYg>
-    <xmx:r4n8YBsRSOVJ-jNmUXa1LYJ3VCgrYSu6iQI_psvFVjUvmCfjH0Woxg>
-    <xmx:r4n8YNEm2A4fyIwbeipmDIdqPVeYS_-Bo5Y4y4FZMayYKjjf-MmWJg>
-    <xmx:sIn8YHBiHP9ZyaftQ2fHqj8Lx60eDGKn9-ZqhQeNDlWKmiZJcBMLcQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 24 Jul 2021 17:44:15 -0400 (EDT)
-Date:   Sat, 24 Jul 2021 14:44:13 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Michael Larabel <Michael@michaellarabel.com>
-Subject: Re: Folios give an 80% performance win
-Message-ID: <20210724214413.fqsbjxhhodfzchs6@alap3.anarazel.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <YPxNkRYMuWmuRnA5@casper.infradead.org>
- <1e48f7edcb6d9a67e8b78823660939007e14bae1.camel@HansenPartnership.com>
- <YPxYdhEirWL0XExY@casper.infradead.org>
- <b12f95c9f817f05e91ecd1aec81316afa1da1e42.camel@HansenPartnership.com>
- <17a9d8bf-cd52-4e6c-9b3e-2fbc1e4592d9@www.fastmail.com>
- <YPxjbopzwFYJw9hV@casper.infradead.org>
- <4c634d08-c658-44cf-ac92-92097eeb8532@www.fastmail.com>
+        Sat, 24 Jul 2021 17:07:42 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 04BF03F35C
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:48:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627163292;
+        bh=G9KCxkZ1DdC15NET5kZk+LZOMEIZ/z14F2Hvsqu6jDI=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=ZJU0cdpCYfx3grk1C7T83yGbEWk07y1MEa4GZeIFZMT9b4zzOQd/OqzVpGBq+XWgu
+         gUW/aTMt5Tc4kqXz4jIWBj1W41YNyfqErIbrx03Pa3eV9o7Kqb6Y3Py5YiEGOyP9lt
+         cZerehvKvwKPbFqaKE/aagOt4RWK/XjxMoIP37uh+ErpjHq4QWBREmYCW2QTJzgGj/
+         ZbpyQEq07eDgtRGpZs5hoQdGPuNrlKoPZ5da1CjrFQ6vA+Bag1jUjtgJxdyRRL5nC3
+         I0c30CgTkZMayWkf1psaMVc8SpT3i0Cj+I40vWQtkAVp60646NB6eXS20DNfCVBrQT
+         OQKytz+B60cbw==
+Received: by mail-ed1-f70.google.com with SMTP id b13-20020a056402278db029039c013d5b80so2803255ede.7
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:48:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G9KCxkZ1DdC15NET5kZk+LZOMEIZ/z14F2Hvsqu6jDI=;
+        b=QpGIwWBkXgAEmxpPlWADmNFQgaQ/mDFZnDiDlpJ2tGwScD6yVlBXOyKX5tR4uY37XQ
+         cKtpCiYKIu1GvjhpLifXCNi9goAvmFqR+KGAOJfCbGq4WfN0Z4j1pOrv5DXpoa5KaeRG
+         FYf9dv+ELpjQoJB1T+kAfEZwn9H62vUmLeNBQGPqDa5FNbo8aGlrpweXy5YfY72DyWai
+         wqHl8YwhgX5En+tOmYp6hx+DnH3XsNyZiOGvKuTthqRmg5MZUc9nvc7q1tpyBi6DxlVY
+         eCQSCDOf91/d8h49nuh1Zj6UDckb9LI/xazCDfU42tm4w/kfzG34zFwLXhFHZHqJcl76
+         pqEQ==
+X-Gm-Message-State: AOAM5330Jhxaaux9Ghj14vjdChp9Rscr4tKqpM1g1K2sbylljM+64a5X
+        AJg62v9ErQBxBcyqbrhU3KjMuV57fAKWlrJPwsmCE1WO2db25EJBvJdzfzL7EjN3tUFWjubkzYr
+        WssHD9HaDjmVVdl2TJNRE+hlNK+0eu4Nzmb2FqtBktQ==
+X-Received: by 2002:a17:906:8047:: with SMTP id x7mr46589ejw.453.1627163286816;
+        Sat, 24 Jul 2021 14:48:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOmFVBri8CQWcWZUF1IqokLpZwOavdWOwnGXxKa0UI7mA9/SGqL9hAGuBdFfYDwRxhCsOSoA==
+X-Received: by 2002:a17:906:8047:: with SMTP id x7mr46579ejw.453.1627163286677;
+        Sat, 24 Jul 2021 14:48:06 -0700 (PDT)
+Received: from localhost.localdomain ([86.32.47.9])
+        by smtp.gmail.com with ESMTPSA id j5sm8383005edv.10.2021.07.24.14.48.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 14:48:06 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Charles Gorand <charles.gorand@effinnov.com>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Bongsu Jeon <bongsu.jeon@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH 00/12] nfc: constify data structures
+Date:   Sat, 24 Jul 2021 23:47:31 +0200
+Message-Id: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4c634d08-c658-44cf-ac92-92097eeb8532@www.fastmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 2021-07-24 12:12:36 -0700, Andres Freund wrote:
-> On Sat, Jul 24, 2021, at 12:01, Matthew Wilcox wrote:
-> > On Sat, Jul 24, 2021 at 11:45:26AM -0700, Andres Freund wrote:
-> > It's always possible I just broke something.  The xfstests aren't
-> > exhaustive, and no regressions doesn't mean no problems.
-> > 
-> > Can you guide Michael towards parameters for pgbench that might give
-> > an indication of performance on a more realistic workload that doesn't
-> > entirely fit in memory?
-> 
-> Fitting in memory isn't bad - that's a large post of real workloads. It just makes it hard to believe the performance improvement, given that we expect to be bound by disk sync speed...
+Constify pointers to several data structures which are not modified by
+NFC core or by drivers to make it slightly safer.  No functional impact
+expected.
 
-I just tried to compare folio-14 vs its baseline, testing commit 8096acd7442e
-against 480552d0322d. In a VM however (but at least with its memory being
-backed by huge pages and storage being passed through).  I got about 7%
-improvement with just some baseline tuning of postgres applied. I think a 1-2%
-of that is potentially runtime variance (I saw slightly different timings
-leading around checkpointing that lead to a bit "unfair" advantage to the
-folio run).
+Best regards,
+Krzysztof
 
-That's a *nice* win!
 
-WRT the ~70% improvement:
+Krzysztof Kozlowski (12):
+  nfc: constify payload argument in nci_send_cmd()
+  nfc: constify nci_ops
+  nfc: s3fwrn5: constify nci_ops
+  nfc: constify nci_driver_ops (prop_ops and core_ops)
+  nfc: constify nfc_phy_ops
+  nfc: st21nfca: constify file-scope arrays
+  nfc: constify pointer to nfc_vendor_cmd
+  nfc: constify nfc_hci_gate
+  nfc: constify nfc_ops
+  nfc: constify nfc_hci_ops
+  nfc: constify nfc_llc_ops
+  nfc: constify nfc_digital_ops
 
-> Michael, where do I find more details about the codification used during the
-> run?
+ Documentation/driver-api/nfc/nfc-hci.rst |  2 +-
+ drivers/nfc/fdp/fdp.c                    | 11 ++++++-----
+ drivers/nfc/fdp/fdp.h                    |  2 +-
+ drivers/nfc/fdp/i2c.c                    |  2 +-
+ drivers/nfc/mei_phy.c                    |  2 +-
+ drivers/nfc/mei_phy.h                    |  2 +-
+ drivers/nfc/microread/i2c.c              |  2 +-
+ drivers/nfc/microread/microread.c        | 12 ++++++------
+ drivers/nfc/microread/microread.h        |  6 +++---
+ drivers/nfc/nfcmrvl/main.c               |  2 +-
+ drivers/nfc/nfcsim.c                     |  2 +-
+ drivers/nfc/nxp-nci/core.c               |  2 +-
+ drivers/nfc/pn533/pn533.c                |  2 +-
+ drivers/nfc/pn544/i2c.c                  |  2 +-
+ drivers/nfc/pn544/pn544.c                | 13 ++++++------
+ drivers/nfc/pn544/pn544.h                |  7 ++++---
+ drivers/nfc/port100.c                    |  2 +-
+ drivers/nfc/s3fwrn5/core.c               |  7 +++----
+ drivers/nfc/s3fwrn5/nci.c                |  8 +-------
+ drivers/nfc/s3fwrn5/nci.h                |  2 +-
+ drivers/nfc/st-nci/core.c                |  5 +++--
+ drivers/nfc/st-nci/i2c.c                 |  2 +-
+ drivers/nfc/st-nci/ndlc.c                |  6 +++---
+ drivers/nfc/st-nci/ndlc.h                |  8 ++++----
+ drivers/nfc/st-nci/spi.c                 |  2 +-
+ drivers/nfc/st-nci/vendor_cmds.c         |  2 +-
+ drivers/nfc/st21nfca/core.c              |  6 +++---
+ drivers/nfc/st21nfca/i2c.c               |  6 +++---
+ drivers/nfc/st21nfca/st21nfca.h          |  4 ++--
+ drivers/nfc/st21nfca/vendor_cmds.c       |  2 +-
+ drivers/nfc/st95hf/core.c                |  2 +-
+ drivers/nfc/trf7970a.c                   |  2 +-
+ drivers/nfc/virtual_ncidev.c             |  2 +-
+ include/net/nfc/digital.h                |  4 ++--
+ include/net/nfc/hci.h                    |  6 +++---
+ include/net/nfc/nci_core.h               | 12 ++++++------
+ include/net/nfc/nfc.h                    |  8 ++++----
+ net/nfc/core.c                           |  2 +-
+ net/nfc/digital_core.c                   |  4 ++--
+ net/nfc/hci/core.c                       |  6 +++---
+ net/nfc/hci/llc.c                        |  2 +-
+ net/nfc/hci/llc.h                        |  6 +++---
+ net/nfc/hci/llc_nop.c                    |  2 +-
+ net/nfc/hci/llc_shdlc.c                  |  2 +-
+ net/nfc/nci/core.c                       | 25 ++++++++++++------------
+ net/nfc/netlink.c                        |  2 +-
+ 46 files changed, 108 insertions(+), 112 deletions(-)
 
-After some digging I found https://github.com/phoronix-test-suite/phoronix-test-suite/blob/94562dd4a808637be526b639d220c7cd937e2aa1/ob-cache/test-profiles/pts/pgbench-1.10.1/install.sh
-For one the test says its done on ext4, while I used xfs. But I think the
-bigger thing is the following:
+-- 
+2.27.0
 
-The phoronix test uses postgres with only one relevant setting adjusted
-(increasing the max connection count). That will end up using a buffer pool of
-128MB, no huge pages, and importantly is configured to aim for not more than
-1GB for postgres' journal, which will lead to constant checkpointing. The test
-also only runs for 15 seconds, which likely isn't even enough to "warm up"
-(the creation of the data set here will take longer than the run).
-
-Given that the dataset phoronix is using is about ~16GB of data (excluding
-WAL), and uses 256 concurrent clients running full tilt, using that limited
-postgres settings doesn't end up measuring something particularly interesting
-in my opinion.
-
-Without changing the filesystem, using a configuration more similar to
-phoronix', I do get a bigger win. But the run-to-run variance is so high
-(largely due to the short test duration) that I don't trust those results
-much.
-
-It does look like there's a less slowdown due to checkpoints (i.e. fsyncing
-all data files postgres modified since the last checkpoints) on the folio
-branch, which does make some sense to me and would be a welcome improvement.
-
-Greetings,
-
-Andres Freund
