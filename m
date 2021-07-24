@@ -2,97 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686303D49CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5DF3D49D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbhGXTlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 15:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGXTlJ (ORCPT
+        id S229689AbhGXTqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 15:46:03 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:47568 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhGXTqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 15:41:09 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6552CC061575;
-        Sat, 24 Jul 2021 13:21:41 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so8633029pjh.3;
-        Sat, 24 Jul 2021 13:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CaGEdpDA93dZP0T/+1LD+f5/OqGOURSdBO4AdBPyvbk=;
-        b=AI4mpHFjoc+Y2m9BVS+3RhJtiRCm72bWPg5xeFX3yUwqR9Kdvzh37YFqhkJlkxPQt7
-         kgl/LMUCRXv8Cpzf/xkr1Mk29l5n/cBKw8q/Pzzs17W0xS8iRR0G/dA4p2WktS3yTBD5
-         vkvSfAvXlt7/VtugQrsqlNR7rSq+e/qVLW61GE+/jOBJCTfHwLRuuX6u0aRQ960n8uab
-         2P+UTPnucB2iQqQRZ/IIdNbmc/T7yfMNUddULY9b7pa3CzHYN5sitUrElKRkuglqSVqd
-         hD04yQtRjEzvbJneJ2RZwezrBm7zI8/YRhcxZRGfhuKJax+aTmEryBLZPU1NqIUQicG6
-         qFew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CaGEdpDA93dZP0T/+1LD+f5/OqGOURSdBO4AdBPyvbk=;
-        b=tqmDHnqlrPSLEE3+SD/cl4JHapR5UWAtJ947e6ieKlaug9ey0RxnStvZI3TneMquM8
-         LugvTGv5vxbcV2uS31123v+6U12cvQ59PCNZO3RSfg6zu20Z08Kfam3ftxVWQeLJfi3a
-         P82LglJgQKfquyEYHBOjuywr7ysm34JzivkYmoHznHEvl/CHZK8PNy6qjJNgZM54n2s/
-         YppEIPNA11QYf6/nRIUgQ2yPEhPoVu/A3F2Dz/rS/TTIqVvstXYFGXlZpTNl6sVQ1xCO
-         KMT+i4NImaSzAIkzlhVZrZn1PwrXSFWUaRUoBqb2Ugs1yXA+k6lBZ6Delh02VBQjeCYj
-         pfxA==
-X-Gm-Message-State: AOAM531zKUHzdDcZ5IG7nMB+pDdKsuDr6tl3Q0kBez5hTXnFszMe2J5P
-        ejy+7w0H8QRAOOPBmXO7DG65jwoOiEGu+Ny5Oww=
-X-Google-Smtp-Source: ABdhPJxIurtl+fyEVAfteEQTQRQm0hJYAmrkxEIc3ejHJa8Sxk7bXTxc+lF8kHpmsI9dOr0LIZjXQdwtFgfOfFRHTCw=
-X-Received: by 2002:a63:cf0a:: with SMTP id j10mr11150254pgg.4.1627158100931;
- Sat, 24 Jul 2021 13:21:40 -0700 (PDT)
+        Sat, 24 Jul 2021 15:46:02 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m7OC1-003eaC-FU; Sat, 24 Jul 2021 20:24:17 +0000
+Date:   Sat, 24 Jul 2021 20:24:17 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v4 1/8] iov_iter: Introduce iov_iter_fault_in_writeable
+ helper
+Message-ID: <YPx28cEvrVl6YrDk@zeniv-ca.linux.org.uk>
+References: <20210724193449.361667-1-agruenba@redhat.com>
+ <20210724193449.361667-2-agruenba@redhat.com>
+ <CAHk-=whodi=ZPhoJy_a47VD+-aFtz385B4_GHvQp8Bp9NdTKUg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210724151411.9531-1-len.baker@gmx.com> <20210724151411.9531-2-len.baker@gmx.com>
-In-Reply-To: <20210724151411.9531-2-len.baker@gmx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 24 Jul 2021 23:21:04 +0300
-Message-ID: <CAHp75Vd+ZM_yO6CU_6oJieePMt00Sp6oKEU2+QEyZxLDg5PN8A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] staging/fbtft: Remove all strcpy() uses
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whodi=ZPhoJy_a47VD+-aFtz385B4_GHvQp8Bp9NdTKUg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 7:05 PM Len Baker <len.baker@gmx.com> wrote:
->
-> strcpy() performs no bounds checking on the destination buffer. This
-> could result in linear overflows beyond the end of the buffer, leading
-> to all kinds of misbehaviors. The safe replacement is strscpy() but in
-> this case it is simpler to use the "%*ph" format specifier.
+On Sat, Jul 24, 2021 at 12:52:34PM -0700, Linus Torvalds wrote:
+> ...
+> > +                       if (fault_in_user_pages(start, len, true) != len)
+> > +                               return -EFAULT;
+> 
+> Looking at this once more, I think this is likely wrong.
+> 
+> Why?
+> 
+> Because any user can/should only care about at least *part* of the
+> area being writable.
+> 
+> Imagine that you're doing a large read. If the *first* page is
+> writable, you should still return the partial read, not -EFAULT.
 
-...
+Agreed.
 
-> -       char msg[128];
+> So I think the code needs to return 0 if _any_ fault was successful.
 
-128 / 4 = 32. So, this buffer is enough to debug print only up to 32
-bytes. Hence %*ph replacement won't cut output earlier than requested.
+s/any/the first/...
 
-...
-
-> +                       for (j = i + 1; par->init_sequence[j] >= 0; j++);
-
-Why is i + 1 initial for the j? You may rather access the 'i + 1 +
-j'th element in the array...
-
-...
-
-> +                                     par->init_sequence[i], j - i - 1,
-
-...and get rid of the ' - i -1' part here.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+The same goes for fault-in for read, of course; I've a half-baked conversion
+to such semantics (-EFAULT vs. 0; precise length is unreliable anyway,
+especially if you have sub-page failure areas), need to finish and post
+it...
