@@ -2,115 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3253D4798
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 14:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1923D479B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 14:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbhGXLmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 07:42:06 -0400
-Received: from mout.gmx.net ([212.227.15.19]:53465 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234250AbhGXLly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 07:41:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627129344;
-        bh=93pczZ/TrPgKDCMWQvii3munN+eykEYdV1vWI5tNV6E=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=DV7utWnuj6pUqJRfpUqPq9GGrIHQPjiUqaMsNNAgD/mrN2dL3b2lUtrzf0REXdNwD
-         YKEUQKTxn6kMdoVRatta6uCoaTQxrwlFQJ5calEmFjZEXYZ82syHOJuYsQ/lvWossP
-         QIZfubWwX5bxUSIGK0nza2lESABkBm/8D1/cyh9Q=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([83.52.228.41]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MC34h-1lvTt43vp7-00CPhb; Sat, 24
- Jul 2021 14:22:24 +0200
-Date:   Sat, 24 Jul 2021 14:22:21 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Adam Sampson <ats@offog.org>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] drivers/bluetooth: Remove all strcpy() uses
-Message-ID: <20210724112139.GC4709@titan>
-References: <20210718153626.18382-1-len.baker@gmx.com>
- <y2awnpnfvnc.fsf@offog.org>
+        id S234175AbhGXLof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 07:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231511AbhGXLoe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 07:44:34 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91551C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 05:25:05 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id a93so6681375ybi.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 05:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OfTCY6Q1XyMDEX9DVOz9K3zrVvuQkwU/1W31IYyKkc0=;
+        b=GJ+gnPG4z4EL7kKpAsPj6nS8l+2eZRO5IKF4KfzamvQTgDWW2y+WQThswTYmbhYOCp
+         GlD6jEXpFKWPn3RNp1JnD9BJIhIA62DZ/n6whYBpViWOdWb2rvWvGV7F8sv9L/JCIeP7
+         4fN6C01Z3QNq+m2idu3An8EqzmwYCdFQpmGGtUnmpQXppZCijNjSivXGQ5WxLhsrAtkN
+         U/jQjNue1caLg7tPtThVNRv5NZvZjrRXjerui1WitSQCjy1JvJacXS+NMPNvYxoBVv9i
+         dZ9ESKHEFWj9DhhZeA04/jsSQc9yqx93m1+BxDagc8RIp+2jFgTBfu2bChhajx+ICqPV
+         vESA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OfTCY6Q1XyMDEX9DVOz9K3zrVvuQkwU/1W31IYyKkc0=;
+        b=bYBRxrBF/k5hYSoBerNfUoYoCTXwlyaTQwpwhJ4X6L4bGypbkRjj8rUmCEPvRg7tN+
+         Chw6hKoQHhYWZDcjYwGfIAvPnewucdlqlx4yOvF5DX/SCw5hRJtDei2nSSdbopMFMMHc
+         oR8VEBF9E0Al7dueJOBsmWSLNn5k1rj/wXlCQewxXCuP804DUrtLKBF6VW3I+wlQi9D2
+         BJB0HNTEB/fPvgwfUh8STIg9+ngG18R2oG289GnHiLc2OQ38e6SlEjL98Bw7DiO0OMWR
+         53YbLv/v3lpSyqahQFae0LA6SkZuRTQq8gyMhRVBkWKNdTgqW1iRwepbQgcK2iE46/gK
+         ZO2A==
+X-Gm-Message-State: AOAM5336MIMiqlwN0R54+t8+wu8lLeudm/9fqpMBF0y6IMaVOPNLZUuz
+        UbXK2Si9TF7gvUMBMTXCW9/+UyuymtwSViOwFtU=
+X-Google-Smtp-Source: ABdhPJx2hwrNfrEEUAmQ6cWrsshp3IXPCarsjyhX4EuWuHIoDfwMJkfrez5jKqhkjCcWHa7WPWgXihUzhWuz81HJiiI=
+X-Received: by 2002:a25:80d4:: with SMTP id c20mr12271937ybm.345.1627129504733;
+ Sat, 24 Jul 2021 05:25:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <y2awnpnfvnc.fsf@offog.org>
-X-Provags-ID: V03:K1:ydVGEqIMa6taHulJ5X8IxGd16Qcx4W/RSiaUkXIKSJ1yWPZ1s/+
- scbvgai6zJXARlLtQEymAiNlZ90BsVDxkmWllgbA/tesQqEU9dkwS0gi9XGDLyS4iR5MWbM
- v1KyoH6YX5HB4iDSpJIp2WShcnYWyXnS1fN9lVg5cugfpqyQLRueu4mGTQTeHAjMqmMD/SC
- V6AVOMfGPrtjUl5FK5i4g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JK6Vv9Z4NjE=:PnZZZ7PGYLk7TF+E1Er85G
- Ve146W1MrrTbC/32ZYq0plgoMZds10cV+ZkR4JoSJQfrdBC4Xv+nC2l0G4eTkdza7B/ZiNtjq
- sdTjDwXIuYgP3qly0VMsjh5ixbSxQjCyTMaEXYGP/0kh62Y35Jr3LoHAhjHTQqHhfpLqXQx1u
- M9UWpAWcGoTAODVttWdwogf6lawSeekabHO91ImcPpMIqh/pTdnctLCTXXxWOZh3cnYTHXWOQ
- B2FClPO2CfdxwIAWfbkXjPm4o+V2osCc/oq2KBkcmGOl6zq1d0V3+OOKk/Lrno8mobe5efAZT
- 1Y8ASbaSdx2j1GW0wBAO/yAv0L0LBLiPQyiUfe18F26x+7j4h0bku5apLl8+DEO7KQjlpfKzT
- o66rXLsV9KlU5+t2zo46orH3Fws4h1oQ+v49bGS9PzJA9OlJwxpGfdJNq5Z85PjAW4fSBKhTv
- rS0ExHbXv6MtRT0pwdrjE+BFEiarMyTnKd45MyBAkDaE39IQAbumdw888os/6nbzZQde8ijA2
- Jxk73Y1wTP3yLrlmBaN9kEYzeBShlLpB7qqxx5LRLAG4/k2xvz2H4ABJ10L4yhNpdVbR79Si2
- 2IfqdlZfvIEI8f/wioTV2EGWnFDKzpnPVUGzBxGda6Zj5f8gMn8ke9d9FYpwCGKmM+1KTnGdy
- n0m0ZzPah0QvY/AaVQeFFkcFkV7BRGwvBsJtNP12tQ5gb15KOvsBXmSQwfWMe6yxcgEHUnYRH
- iTdrhKfzLfNjp7oXZdl+vnOB02owfDVibQDswA+EfCPRNbwLHTsJoXkPCcGMWUtR0vpQa+4CH
- 2j52wLiefWzKYt/OxooayxrGYMoto4oVaKKUSFp/RPiHUQN9Tb1A0J3vMDnbn32XE1hPMtPjl
- MlYb4DQg8qgNnjHMBnfCeok2YYWihpUX1Lyp+E9PsoojGeRaDyw+6gipWXH0N7VFVb2lwhch9
- fj4+7e+nVh6UT39l764P8bRG2VXA+1SfOZuFdM6GGghnYEPCfDy4Q0QPAXaCiMITRqJXbxgaN
- t/tlpuduFxK0zz30d1FDexhyLgzjW4T+l6tuEcQsgLR4apiUj0JlxHxg6y3G9BnLnMcEDJWn6
- /KxB67SI1KV5Y9P3dvYCREL1xxDUWjvC4WJ
-Content-Transfer-Encoding: quoted-printable
+Received: by 2002:a05:7110:1094:b029:d2:6792:e1c4 with HTTP; Sat, 24 Jul 2021
+ 05:25:04 -0700 (PDT)
+Reply-To: Bill.Chantal.Lawrence20@europe.com
+From:   "Mrs. bill Chantal " <yykjuibgcxf@gmail.com>
+Date:   Sat, 24 Jul 2021 12:25:04 +0000
+Message-ID: <CAJ6Nfum2tGaBDogkzUK_Pxz5xAFGU=pOF6Txo0+ipVBO45bz4Q@mail.gmail.com>
+Subject: Mrs. bill Chantal
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Dear Friend
 
-On Sun, Jul 18, 2021 at 05:12:55PM +0100, Adam Sampson wrote:
-> Len Baker <len.baker@gmx.com> writes:
->
-> > strcpy() performs no bounds checking on the destination buffer. This
-> > could result in linear overflows beyond the end of the buffer, leading
-> > to all kinds of misbehaviors. The safe replacement is strscpy() but in
-> > this case it is better to use the scnprintf to simplify the arithmetic=
-.
-> >
-> > This is a previous step in the path to remove the strcpy() function
-> > entirely from the kernel.
-> >
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
-> > ---
-> >  drivers/bluetooth/btmrvl_sdio.c | 27 +++++++++++++--------------
-> >  1 file changed, 13 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/bluetooth/btmrvl_sdio.c b/drivers/bluetooth/btmrv=
-l_sdio.c
-> > index cddd350beba3..d6674b367e05 100644
-> > --- a/drivers/bluetooth/btmrvl_sdio.c
-> > +++ b/drivers/bluetooth/btmrvl_sdio.c
-> > @@ -1350,6 +1350,7 @@ static void btmrvl_sdio_coredump(struct device *=
-dev)
-> >  	u8 *dbg_ptr, *end_ptr, *fw_dump_data, *fw_dump_ptr;
-> [...]
-> > +			size +=3D scnprintf(fw_dump_ptr + size,
-> > +					  sizeof(fw_dump_ptr) - size,
-> [...]
-> > +			size +=3D scnprintf(fw_dump_ptr + size,
-> > +					  sizeof(fw_dump_ptr) - size,
->
-> sizeof(fw_dump_ptr) there looks wrong -- you want the size of the buffer
-> it points to (fw_dump_len + 1)?
+You have been compensated with the sum of 4.4 million dollars in this
+united nation the payment will be Issue into ATM visa card and send to
+you from the Santander bank in Spain we need your address passport and
+your whatsapp number.
+Thanks
 
-Apologies. I will work on it and I will send a new version for review.
-Thanks for the feedback.
-
->
-> Thanks,
->
-> --
-> Adam Sampson <ats@offog.org>                         <http://offog.org/>
-
-Regards,
-Len
+Mrs. bill Chantal
