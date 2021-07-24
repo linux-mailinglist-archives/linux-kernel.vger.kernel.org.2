@@ -2,59 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC11D3D440A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2DF3D441A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbhGXADA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 20:03:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233337AbhGXAC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 20:02:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5BDB4600D3;
-        Sat, 24 Jul 2021 00:43:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627087411;
-        bh=ToTblDG9PYv4Gwwcz2H9L07OwkGImR4cYwZY0k6WBDk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Qvb3Rz1LkgJOOFU90HiSf4+RoDg+ElD6E7wlrsz+oqrjXlAJeaimjheVCvCbejG+I
-         oSaeeJQM+44FaRUmRdJXCPsZC+S8uttn5hUcXl69mkFkKaZ5RBSioEDuWAKukqro5y
-         sqtmzusoynmFxpvbYB6ii+5yv2nbbMxrjEQxYk2h5Yn3NaOGeAkBH9vXffuLjkX6L+
-         jsaQwVt75oUQ4yUADvfZaMGRlzviFCwCkCRn4ircFamb1d9/wNK0PQf0qFW+tgmS2Q
-         9fBUYk7/b7MzMOA2By6/DqIIlVzxK1qX6uGsnQHNFW3/cXcrEvbUHSoxcqeFpXoau7
-         RQRu8/SDk0A1w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4987560972;
-        Sat, 24 Jul 2021 00:43:31 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 5.14-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1627068865.git.dsterba@suse.com>
-References: <cover.1627068865.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1627068865.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc2-tag
-X-PR-Tracked-Commit-Id: c7c3a6dcb1efd52949acc1e640be9aad1206a13a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f0fddcec6b6254b4b3611388786bbafb703ad257
-Message-Id: <162708741124.15696.18236474466511747868.pr-tracker-bot@kernel.org>
-Date:   Sat, 24 Jul 2021 00:43:31 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S233585AbhGXANm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 20:13:42 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:37922 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233337AbhGXANl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 20:13:41 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UgkuJRR_1627088050;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgkuJRR_1627088050)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 24 Jul 2021 08:54:12 +0800
+Date:   Sat, 24 Jul 2021 08:54:10 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
+        Huang Jianan <huangjianan@oppo.com>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+Message-ID: <YPtksjmvVbcsKwlK@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
+        Huang Jianan <huangjianan@oppo.com>
+References: <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
+ <YPsbQzcNz+r4V7P2@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YPsbQzcNz+r4V7P2@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 23 Jul 2021 21:45:29 +0200:
+Hi Matthew,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.14-rc2-tag
+On Fri, Jul 23, 2021 at 08:40:51PM +0100, Matthew Wilcox wrote:
+> On Sat, Jul 24, 2021 at 01:41:31AM +0800, Gao Xiang wrote:
+> > Add support for reading inline data content into the page cache from
+> > nonzero page-aligned file offsets.  This enables the EROFS tailpacking
+> > mode where the last few bytes of the file are stored right after the
+> > inode.
+> > 
+> > The buffered write path remains untouched since EROFS cannot be used
+> > for testing. It'd be better to be implemented if upcoming real users
+> > care and provide a real pattern rather than leave untested dead code
+> > around.
+> 
+> My one complaint with this version is the subject line.  It's a bit vague.
+> I went with:
+> 
+> iomap: Support file tail packing
+> 
+> I also wrote a changelog entry that reads:
+>     The existing inline data support only works for cases where the entire
+>     file is stored as inline data.  For larger files, EROFS stores the
+>     initial blocks separately and then can pack a small tail adjacent to
+>     the inode.  Generalise inline data to allow for tail packing.  Tails
+>     may not cross a page boundary in memory.
+>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f0fddcec6b6254b4b3611388786bbafb703ad257
+Yeah, we could complete the commit message like this.
 
-Thank you!
+Actually EROFS inode base is only 32-byte or 64-byte (so the maximum could
+not be exactly small), compared to using another tail block or storing other
+(maybe) irrelevant inodes. According to cache locality principle, a strategy
+can be selected by mkfs to load tail block with the inode base itself to the
+page cache by the tail-packing inline and so reduce I/O and fragmentation.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> ... but I'm not sure that's necessarily better than what you've written
+> here.
+> 
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Darrick J. Wong <djwong@kernel.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> > Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> 
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+Many thanks for the review!
+
+Thanks,
+Gao Xiang
+
