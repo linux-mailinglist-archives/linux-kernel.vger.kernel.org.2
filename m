@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66A03D4907
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBB63D491F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229895AbhGXRXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 13:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
+        id S229773AbhGXRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 13:40:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGXRXv (ORCPT
+        with ESMTP id S229530AbhGXRkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 13:23:51 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC02FC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 11:04:21 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id a19so4018945qtx.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 11:04:21 -0700 (PDT)
+        Sat, 24 Jul 2021 13:40:24 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC01C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 11:20:56 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id cv7so2987355qvb.12
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 11:20:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ySjT+9vhA6LvbQeBz3snrx5GQAIqPB2FJPEofd/VFlc=;
-        b=CpeZupTFKNWztEfPSidkKyHokcBAMt2Wi3fxZGNLVd9kQwfMEr8hmCzrpiZN8OajUR
-         1+Xgsg4E676KQ74nsIIUiTPr4+Zw4V/ZN5RKuKdZ6K8oXET13wSGXe+qjA54BIHiMkKm
-         sHm8dYljb49cClUOdGMEM0pvJj4lj4UDwxdJinCyQHxn9TCwvT70YBBHtQPFkZbobDu9
-         WF6iQDBjKpudNhx11mX6Mo0MhxNMN6RVUnju9CLdigEgMEXAXweTi0zWlz3/Ykl66JXW
-         N+vs6XUlGIKVitlY1Q7e8wm2R9Y2VsNVnlQKT0a5UqVO6HFYANzF8JobRi+jguYBiwJO
-         y3BA==
+        bh=KeMJR/oOT6vnUfEf1QGuRaqBtn1buVaEAa8SwfA3FM8=;
+        b=ZgQiFzz0yfKej069imP4GcuB6HeHasV7gVLeT/CfcWN/DTJJg/Spjk6rqSuFDFhlT1
+         oVmOW7zBobMisHPGm2lJ6U2deTrWP2dVpcAnkBwrEckp1xEgEVLqrGzio/uH9L0FtJ5x
+         YwuITmQmANyJv6cVc1xXEw2bnfEQi9ni8vCVJEQierUO67Va65eBkypz5yIlWnx/sRnj
+         Rn1vhvhajRBLIKYV1ZblyUfw7X488U151n4vUehE3r4BY6PlShmmVWoqx8oKVthyfLw6
+         T5LvrGgwzMWi8l148NpGRoEnKkQskY2AUFedNhoTmCnP1WvfH1mAVmzhtgS6HRfQ60yb
+         t50Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ySjT+9vhA6LvbQeBz3snrx5GQAIqPB2FJPEofd/VFlc=;
-        b=nupNke781RkPugWg6HI+TYZWK0jSg0DSBYT4T5seODdidxEjm/rMyZ6lhEBWTOiXSD
-         sAuDH6jw+rSLyhMV92g/XpR2r04jiqUkJxIZWx4l7AgG879SjSyqpuSzYnXJ+zsH2qe7
-         WVKmmqu+7S7Lgk67uHwh+mteW8wStxfOXrgR01CmUcUupIRW8PPxCdmzn5y3QyjNyXiW
-         iaeyx/XFU8AX725Ol2E0idVXJ9B4JP3xcUJ26JEYf1iLdeN7xl5KT/IhBRczDWP4gHqN
-         NdhJP7eCvPavSZatKh4rk2xLAZTMsKXa7SvWWqKwQxI2wiXyIweNeOwMIfSFAEb+19pB
-         zxzA==
-X-Gm-Message-State: AOAM530Lky9rr4aJAdOeuY+wG59AoOLV+cHBf9G9PznsiuSgIoshOIBb
-        iUWHE0oU+pL6oBkFl/yhTgKqEVaaYuwWEvfsoS4=
-X-Google-Smtp-Source: ABdhPJxMOQJzEBbdDPWv1NzazwoX7K1S3r0NWDDWZvXR+QrtOrw9xPXY6S+kNGfbhguYEAiamAOcEG/7A5ZLh49DO54=
-X-Received: by 2002:ac8:1483:: with SMTP id l3mr8917231qtj.142.1627149861044;
- Sat, 24 Jul 2021 11:04:21 -0700 (PDT)
+        bh=KeMJR/oOT6vnUfEf1QGuRaqBtn1buVaEAa8SwfA3FM8=;
+        b=QItpq/zKriiRu9VaVJT9hrVvuxEjt7RkBn69ZA3aOyGXrBpksTYlCTmPr+sY6efoKs
+         zsazrE85TG5t8mRHmBQMkcopIYoSRFChn2uVzTLg15llBUEGqGAc+pT1CEoN6nSRH+ok
+         BjSyMfonV1MSDK4zRpEbNxEG4Gcwn5+CTNds4qYVLNgmgjjniV0oYNs+kzzVvHrfQNkE
+         l8rylH43hfA8g/eBHKjobI/nSbiO3S2de++K7R/Ig/0Bxd6ao6ISzf0qHL9IhIlr77KE
+         UDUBFqwITFbQz51kd9g21LfXeCsIBo9lWr4xUVO2upIcaQWKKZB8PwScuqAzaZVKKX1U
+         ASWg==
+X-Gm-Message-State: AOAM530IMz/KRKa7kfaCjzPYBeqcmfVET1eC7JLzqPvaRGj+b56Lq1h4
+        VsGLhbVS4duiKTbkuCcuwDn29c3MZ3fS9oDxc2M=
+X-Google-Smtp-Source: ABdhPJwue+Tzkl6UbAMvQoa11TWdFyaB3DBO04u2KVlOxPM50w9P2ankRPrOl20M6vwOqwo8EisbJUGjr8bJVz62/Qo=
+X-Received: by 2002:a0c:d68f:: with SMTP id k15mr10642939qvi.14.1627150855374;
+ Sat, 24 Jul 2021 11:20:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <1627100621-19225-1-git-send-email-chihhao.chen@mediatek.com> <s5h7dhgi1e2.wl-tiwai@suse.de>
-In-Reply-To: <s5h7dhgi1e2.wl-tiwai@suse.de>
+References: <1627100621-19225-1-git-send-email-chihhao.chen@mediatek.com>
+ <s5h7dhgi1e2.wl-tiwai@suse.de> <CAEsQvcs3P+TqQFzQetPfRycpo66eJFwnzwhk2JyCXFaCLFHmFg@mail.gmail.com>
+In-Reply-To: <CAEsQvcs3P+TqQFzQetPfRycpo66eJFwnzwhk2JyCXFaCLFHmFg@mail.gmail.com>
 From:   Geraldo Nascimento <geraldogabriel@gmail.com>
-Date:   Sat, 24 Jul 2021 15:04:13 +0000
-Message-ID: <CAEsQvcs3P+TqQFzQetPfRycpo66eJFwnzwhk2JyCXFaCLFHmFg@mail.gmail.com>
+Date:   Sat, 24 Jul 2021 15:20:47 +0000
+Message-ID: <CAEsQvcu3jXa4fXJAu7nvT+G+-S2bZ1BPkcuwnT4VjbrnW1Pkog@mail.gmail.com>
 Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
 To:     Takashi Iwai <tiwai@suse.de>
 Cc:     chihhao.chen@mediatek.com, alsa-devel@alsa-project.org,
@@ -61,23 +62,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 8:05 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> This looks like a regression introduced by the recent commit
-> d2e8f641257d ("ALSA: usb-audio: Explicitly set up the clock
-> selector"), which is a fix for certain devices.  Too bad that the
-> behavior really depends on the device...
+> Dr. Iwai, perhaps we could restrict the generalized fix for the
+> Behringer UFX1604 / UFX1204 with some simple logic to devices that
+> only have *one* clock source.
 
-Dr. Iwai, perhaps we could restrict the generalized fix for the
-Behringer UFX1604 / UFX1204 with some simple logic to devices that
-only have *one* clock source.
+Okay, rereading the original commit log from Cihhao Chen I gather
+Samsung USBC Headset (AKG) with VID/PID (0x04e8/0xa051) actually has
+two clock selectors and only one clock source.
 
-In that case the clock selector must be set to the only clock source.
+Correct me if I'm wrong.
 
-This way we keep the generalization without breaking devices with more
-than one clock source.
+This is complicated by the fact I haven't been able to find a lsusb -v
+of Samsung USBC Headset (AKG) with VID/PID (0x04e8/0xa051)
 
-Just an idea.
-
-Thank you,
-Geraldo Nascimento
+Even so, my proposition still stands: devices with only one clock
+source and only one clock selector should be able to handle us
+selecting the clock selector to the only clock source.
