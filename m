@@ -2,151 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3523D4713
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6AC3D471B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbhGXJoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 05:44:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40260 "EHLO mail.kernel.org"
+        id S235132AbhGXJvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 05:51:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235175AbhGXJmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 05:42:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CDE66056B;
-        Sat, 24 Jul 2021 10:22:45 +0000 (UTC)
+        id S234333AbhGXJvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 05:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BEAC60E53;
+        Sat, 24 Jul 2021 10:31:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627122165;
-        bh=X4HAMm3gTxqi5bWjYeoEG0UKYk1l0SMi0+wmdif+7j0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AErLL9qKBefBLC9IBaTWC/0I2yXMYeFQ+QGNbmWW/EqEGw1jUGZ/Q8U3dURsGW1bl
-         qumlIBFUZD21h7ttkwT8aq6c2ku5Y1ocY0ParWLVuZQpbfWon2YV353h+3+zpU/iaj
-         tHw+HL/lst2i2Ho1cQWmBfWcMLo6f3pY0DhAUFUIb28/Ci8epBhFOtl6pmLFdvJKwj
-         I8LoD+Oqzq/Zqj/ofCba+MW+ImpF8RNIKFR/dooEDQO2VHoikSu+jJk80clXB7WNam
-         8HeasVrRHrzYRLa0Oh7pVZHlguSvnFSbwzAyo70YlrSbcWC1r40WDoMlOlkxo2pRkQ
-         prfP08rUddirA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1m7Enr-00BJmz-3M; Sat, 24 Jul 2021 12:22:43 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] regulator: hi6421v600: rename voltage range arrays
-Date:   Sat, 24 Jul 2021 12:22:42 +0200
-Message-Id: <1bdff1d1f23753b69c8044160decfad1e8553d08.1627121912.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627121912.git.mchehab+huawei@kernel.org>
-References: <cover.1627121912.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+        s=k20201202; t=1627122708;
+        bh=oweY6g0tMz3+2WXRwdOKI4rJeUgbxYuG9AEckBYmgaY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JRC9qCl1kk1PAsOhqoncvQhEgTG1UIYxVOrBYjUuLljy6dMlB9krZ8H/rtR2K1Lnm
+         TutnpwX1fBCgbG0E2svY3MgslTgmKw3iKSqJG+95NSlhZniOJBmR0UQx8FywkNc1pq
+         0oOBYuUkUIu4LcHLcf2dc/VxKs7TcaDYIQOI/8u9PxmCOuUnc+QEcHFW5XpSbqKqC+
+         VAJ/B8jb2TGdeOvBOz+xXodjM4SDQDtIt9Ww1UVaoOud14gq4dFRv4EU2RZTxJ0Zlr
+         23llm6UIjMLIYU1lInkpZ1kWzWnODRo6nJGkM1JBAWcwMSJNgLo+huXZQP489ccyFE
+         ZfqX3iWdkZ+AA==
+Date:   Sat, 24 Jul 2021 19:31:45 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
+ for synthetic events
+Message-Id: <20210724193145.c63b44aa843e05ed9c0b4fdc@kernel.org>
+In-Reply-To: <20210722212438.5933e714@rorschach.local.home>
+References: <20210722142705.992001628@goodmis.org>
+        <20210722142837.458596338@goodmis.org>
+        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
+        <20210722123234.636d5363@oasis.local.home>
+        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
+        <20210722212438.5933e714@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The arrays containing the regulator's voltage ranges are
-currently named after the first ldo which uses such range.
+Hi Steve,
 
-However, it sounds a lot clearer if those are named with
-the voltage range instead.
+On Thu, 22 Jul 2021 21:24:38 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-No functional changes.
+> On Fri, 23 Jul 2021 10:11:33 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > I understand. As far as I can see the code, it looks a bit complicated.
+> > To simplify it, I need to understand the spec for "hist_field"
+> > for keys and for vars. And maybe need to split both case.
+> 
+> I'll give you a hint that took me a bit to figure out.
+> 
+> 1) The execname is saved at the start of the histogram and not by one
+> of the ->fn() functions.
+> 
+> It's saved by hist_trigger_elt_data_init() if the elt_data->comm is
+> allocated. That function is part of the "tracing_map_ops" which gets
+> assigned by tracing_map_create() (in tracing_map.c) as the "elt_init"
+> function, which is called when getting a new elt element by
+> get_free_elt().
+> 
+> 2) That elt_data->comm is only allocated if it finds a "hist_field"
+> that has HIST_FIELD_FL_EXECNAME flag set. It currently only looks for
+> that flag in the "keys" fields, which means that .execname is useless
+> for everything else. This patch changed it to search all hist_fields so
+> that it can find that flag if a variable has it set (which I added).
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Thanks for the hints, but actually, that part looks good to me.
+
+So, what I pointed was the part of update_var_execname(). Below diff
+is what I intended.
+This moves HIST_FIELD_FL_EXECNAME setup in the create_hist_field()
+as same as other flags, and removed the add-hoc update_var_execname()
+fixup function.
+
+I confirmed it passed the ftracetest trigger testcases and your
+example code.
+
+Thank you,
+
 ---
- drivers/regulator/hi6421v600-regulator.c | 28 ++++++++++++------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ kernel/trace/trace_events_hist.c | 69 ++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
-index f71e7661b6d7..4671678f6b19 100644
---- a/drivers/regulator/hi6421v600-regulator.c
-+++ b/drivers/regulator/hi6421v600-regulator.c
-@@ -27,34 +27,34 @@ struct hi6421_spmi_reg_info {
- 	u32			eco_uA;
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 14b840de1326..2fab91a22628 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -492,6 +492,27 @@ struct snapshot_context {
+ 	void			*key;
  };
  
--static const unsigned int ldo3_voltages[] = {
-+static const unsigned int range_1v5_to_2v0[] = {
- 	1500000, 1550000, 1600000, 1650000,
- 	1700000, 1725000, 1750000, 1775000,
- 	1800000, 1825000, 1850000, 1875000,
- 	1900000, 1925000, 1950000, 2000000
- };
++static const char *no_comm = "(no comm)";
++
++static u64 hist_field_execname(struct hist_field *hist_field,
++			       struct tracing_map_elt *elt,
++			       struct trace_buffer *buffer,
++			       struct ring_buffer_event *rbe,
++			       void *event)
++{
++	struct hist_elt_data *elt_data;
++
++	if (WARN_ON_ONCE(!elt))
++		return (u64)(unsigned long)no_comm;
++
++	elt_data = elt->private_data;
++
++	if (WARN_ON_ONCE(!elt_data->comm))
++		return (u64)(unsigned long)no_comm;
++
++	return (u64)(unsigned long)(elt_data->comm);
++}
++
+ static void track_data_free(struct track_data *track_data)
+ {
+ 	struct hist_elt_data *elt_data;
+@@ -1682,6 +1703,16 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+ 		goto out;
+ 	}
  
--static const unsigned int ldo4_voltages[] = {
-+static const unsigned int range_1v725_to_1v9[] = {
- 	1725000, 1750000, 1775000, 1800000,
- 	1825000, 1850000, 1875000, 1900000
- };
++	if ((flags & HIST_FIELD_FL_EXECNAME) && var_name) {
++		flags |= HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR;
++		hist_field->size = MAX_FILTER_STR_VAL;
++		hist_field->is_signed = 0;
++
++		hist_field->type = "char[]";
++		hist_field->fn = hist_field_execname;
++		goto out;
++	}
++
+ 	if (WARN_ON_ONCE(!field))
+ 		goto out;
  
--static const unsigned int ldo9_voltages[] = {
-+static const unsigned int range_1v75_to_3v3[] = {
- 	1750000, 1800000, 1825000, 2800000,
- 	2850000, 2950000, 3000000, 3300000
- };
+@@ -3703,41 +3734,6 @@ static int create_val_field(struct hist_trigger_data *hist_data,
+ 	return __create_val_field(hist_data, val_idx, file, NULL, field_str, 0);
+ }
  
--static const unsigned int ldo15_voltages[] = {
-+static const unsigned int range_1v8_to_3v0[] = {
- 	1800000, 1850000, 2400000, 2600000,
- 	2700000, 2850000, 2950000, 3000000
- };
+-static const char *no_comm = "(no comm)";
+-
+-static u64 hist_field_execname(struct hist_field *hist_field,
+-			       struct tracing_map_elt *elt,
+-			       struct trace_buffer *buffer,
+-			       struct ring_buffer_event *rbe,
+-			       void *event)
+-{
+-	struct hist_elt_data *elt_data;
+-
+-	if (WARN_ON_ONCE(!elt))
+-		return (u64)(unsigned long)no_comm;
+-
+-	elt_data = elt->private_data;
+-
+-	if (WARN_ON_ONCE(!elt_data->comm))
+-		return (u64)(unsigned long)no_comm;
+-
+-	return (u64)(unsigned long)(elt_data->comm);
+-}
+-
+-/* Convert a var that points to common_pid.execname to a string */
+-static void update_var_execname(struct hist_field *hist_field)
+-{
+-	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
+-		HIST_FIELD_FL_EXECNAME;
+-	hist_field->size = MAX_FILTER_STR_VAL;
+-	hist_field->is_signed = 0;
+-
+-	kfree_const(hist_field->type);
+-	hist_field->type = "char[]";
+-
+-	hist_field->fn = hist_field_execname;
+-}
+-
+ static int create_var_field(struct hist_trigger_data *hist_data,
+ 			    unsigned int val_idx,
+ 			    struct trace_event_file *file,
+@@ -3762,9 +3758,6 @@ static int create_var_field(struct hist_trigger_data *hist_data,
  
--static const unsigned int ldo17_voltages[] = {
-+static const unsigned int range_2v5_to_3v3[] = {
- 	2500000, 2600000, 2700000, 2800000,
- 	3000000, 3100000, 3200000, 3300000
- };
+ 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
  
--static const unsigned int ldo34_voltages[] = {
-+static const unsigned int range_2v6_to_3v3[] = {
- 	2600000, 2700000, 2800000, 2900000,
- 	3000000, 3100000, 3200000, 3300000
- };
-@@ -196,35 +196,35 @@ enum hi6421_spmi_regulator_id {
- };
+-	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_EXECNAME)
+-		update_var_execname(hist_data->fields[val_idx]);
+-
+ 	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
+ 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
  
- static struct hi6421_spmi_reg_info regulator_info[] = {
--	HI6421V600_LDO(ldo3, ldo3_voltages,
-+	HI6421V600_LDO(ldo3, range_1v5_to_2v0,
- 		       0x16, 0x01, 0x51,
- 		       20000, 120,
- 		       0, 0),
--	HI6421V600_LDO(ldo4, ldo4_voltages,
-+	HI6421V600_LDO(ldo4, range_1v725_to_1v9,
- 		       0x17, 0x01, 0x52,
- 		       20000, 120,
- 		       0x10, 10000),
--	HI6421V600_LDO(ldo9, ldo9_voltages,
-+	HI6421V600_LDO(ldo9, range_1v75_to_3v3,
- 		       0x1c, 0x01, 0x57,
- 		       20000, 360,
- 		       0x10, 10000),
--	HI6421V600_LDO(ldo15, ldo15_voltages,
-+	HI6421V600_LDO(ldo15, range_1v8_to_3v0,
- 		       0x21, 0x01, 0x5c,
- 		       20000, 360,
- 		       0x10, 10000),
--	HI6421V600_LDO(ldo16, ldo15_voltages,
-+	HI6421V600_LDO(ldo16, range_1v8_to_3v0,
- 		       0x22, 0x01, 0x5d,
- 		       20000, 360,
- 		       0x10, 10000),
--	HI6421V600_LDO(ldo17, ldo17_voltages,
-+	HI6421V600_LDO(ldo17, range_2v5_to_3v3,
- 		       0x23, 0x01, 0x5e,
- 		       20000, 120,
- 		       0x10, 10000),
--	HI6421V600_LDO(ldo33, ldo17_voltages,
-+	HI6421V600_LDO(ldo33, range_2v5_to_3v3,
- 		       0x32, 0x01, 0x6d,
- 		       20000, 120,
- 		       0, 0),
--	HI6421V600_LDO(ldo34, ldo34_voltages,
-+	HI6421V600_LDO(ldo34, range_2v6_to_3v3,
- 		       0x33, 0x01, 0x6e,
- 		       20000, 120,
- 		       0, 0),
 -- 
-2.31.1
+2.25.1
 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
