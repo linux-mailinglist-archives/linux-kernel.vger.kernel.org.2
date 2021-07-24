@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E223D459E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFF93D45AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234232AbhGXGjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 02:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        id S234277AbhGXGlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 02:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhGXGjK (ORCPT
+        with ESMTP id S234269AbhGXGlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 02:39:10 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EB9C061575;
-        Sat, 24 Jul 2021 00:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O/XU7BaOJ1uvC1EkMCQUlQz3U2U8xvRd2MbfcwD2IpA=; b=MDgreUOWODAfOvefRAPYEl3Oia
-        dHU4LYmu8cbdWaaqhowrU9J6cLhO6rLSUkrKQy0hsdL3ePEwcProggNMwZU75a92cRzyw6YUByyPQ
-        5Y9tgXQqRw4Dlqh6wGhbGvJGcbVMxiFloSSZdc4WjU1y9Z0a0eStaG+OMLSPdiTV1bn6NuTRM9ZDF
-        xUDXHwdc8arrh21Zj74m9ppkAhoqn0v6yJpyIxNTnNmDMOjsSClzfb7I+oUFSrsBHY15IW2yzWR66
-        XSg8y9K9nagTX9+/MW2gvdnz6aUoY0TbQxc1iUbHC92XmfQd0Tym2t+KeBL/HI4T3iAfcR6zWo6OI
-        ElGynbeA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m7BwJ-00C4tG-OZ; Sat, 24 Jul 2021 07:19:17 +0000
-Date:   Sat, 24 Jul 2021 08:19:15 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Satya Tangirala <satyat@google.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v9 5/9] block: Make bio_iov_iter_get_pages() respect
- bio_required_sector_alignment()
-Message-ID: <YPu+88KReGlt94o3@infradead.org>
-References: <20210604210908.2105870-1-satyat@google.com>
- <20210604210908.2105870-6-satyat@google.com>
- <YPs1jlAsvXLomSJJ@gmail.com>
+        Sat, 24 Jul 2021 02:41:19 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE54C061760
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:21:51 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id u25so4484961oiv.5
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:21:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YCIh3fMX63lUF8i5fYD8BvOZCJrvnxU7VR8u7cCIPkM=;
+        b=F8KsU4oCjmUbDiG/44a1/9d/K1RSICyr8qRoUBatEcm2yuOnbH7x5u34aeTyoaGedf
+         XspnhRRwzNL7+g4/Nx6pvKw6xYviqluCbfQMDZ6FKgnJwS48kDaZFoVynRZdK9Wuy2Kz
+         TNqPsk76y8BVKooKPaYtVeGe7DdKKQnkt3Q0duAmpsRisp/WAw9balXiT9DlpU3OV43I
+         aHFh0qKcNZuG1qHOCvcevEhEnjkx1YviTBbBqxeFr7PeZminYEs2vEQqG4fenEMeByTW
+         m0LX5Krh3ZG5XzrPwf0n85LySwF2henr06R0Fr3gGC8nvwjzVmc7MFh35mb8k+e4PXmk
+         WBRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YCIh3fMX63lUF8i5fYD8BvOZCJrvnxU7VR8u7cCIPkM=;
+        b=WRFNQgzgFugKjI4bkFRBumoi4oLfz5zsemH9vhHiz7vmaCTsWmV9rZVIgmrwbuPUMc
+         89BQV01Y2Rt9Qog9+kuaN6j5e5FNMwNqm9OQ7x7qOPXCMHCA7yHSG2Z/n6lmyCtIIxaV
+         IRLf/m6NQRO54lHKZN7STlrns0jagudSPkWeELkluDYwUZH83yeww8DLVNjrH0iBXf+g
+         C0oVBiH3GNT7/Ed3bWlIA2Ljbk2o6m6UyX38yEEp8xECglNarGlJQeIkFJEJogEJ1dM+
+         VyIgwLbWGUPpXCK43x7Toh0aaQXR2FGvLdnoWW8zYZDhawgClkq6GHN2574VUMjUz/jl
+         BN7Q==
+X-Gm-Message-State: AOAM531exNh67OQj8RmfACNnt8K58kKgxnC3gPeqiGd4usI6UfM9qnFi
+        eKLLN/+6dkKvk5EtgE30muVfFZOL4Xnk0FguhazVog==
+X-Google-Smtp-Source: ABdhPJx2xQLq56xZ6EcRh66jo509CDGGbajlVjK2lo9Espbwz0WE2eEyyxbA+1wnATCEeMJ9qDOhrzNjdfKPytQAOmY=
+X-Received: by 2002:aca:af10:: with SMTP id y16mr10638074oie.12.1627111310129;
+ Sat, 24 Jul 2021 00:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPs1jlAsvXLomSJJ@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210629123407.82561-1-bhupesh.sharma@linaro.org> <CACRpkdacTi-9YzhOqpfFkNhzSATmbWHs=wMoJcsXwG8pBeW7Mg@mail.gmail.com>
+In-Reply-To: <CACRpkdacTi-9YzhOqpfFkNhzSATmbWHs=wMoJcsXwG8pBeW7Mg@mail.gmail.com>
+From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Date:   Sat, 24 Jul 2021 12:51:38 +0530
+Message-ID: <CAH=2Ntxk5NdcPCsOD=SRyFFKrgtUqOxV2UpuJP21W-dpaPHrrQ@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] pinctrl: qcom/pinctrl-spmi-gpio: Add support for
+ pmic-gpio on SA8155p-adp
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>, bhupesh.linux@gmail.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 02:33:02PM -0700, Eric Biggers wrote:
-> I do still wonder if we should just not support that...  Dave is the only person
-> who has asked for it, and it's a lot of trouble to support.
-> 
-> I also noticed that f2fs has always only supported direct I/O that is *fully*
-> fs-block aligned (including the I/O segments) anyway.  So presumably that
-> limitation is not really that important after all...
-> 
-> Does anyone else have thoughts on this?
+Hi Linus,
 
-There are some use cases that really like sector aligned direct I/O,
-what comes to mind is some data bases, and file system repair tools
-(the latter on the raw block device).  So it is nice to support, but not
-really required.
+On Fri, 23 Jul 2021 at 21:51, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Jun 29, 2021 at 2:34 PM Bhupesh Sharma
+> <bhupesh.sharma@linaro.org> wrote:
+>
+> > Changes since v3:
+> > -----------------
+> > - v3 series can be found here: https://lore.kernel.org/linux-arm-msm/20210617053432.350486-1-bhupesh.sharma@linaro.org/T/#m2b1bf2d32dfdde3196dc5342722e356ee1f87456
+> > - Rebased patchset on pinctrl/devel branch.
+> > - Added Reviewed-by from Bjorn for patches 1 to 4 and Ack from Rob for
+> >   patches 1 and 2.
+>
+> This v4 patch set applied!
+>
+> Sorry for taking so long, I had a bit too much to do.
+>
+> Excellent work on the patches Bhupesh!
 
-So for now I'd much prefer to initially support inline encryption for
-direct I/O without that if that simplifies the support.  We can revisit
-the additional complexity later.
+Thanks for picking the patchset.
 
-Also note that for cheap flash media pretending support for 512 byte
-blocks is actually a bit awwkward, so just presenting the media as
-having 4096 sectors in these setups would be the better choice anyway.
+Regards,
+Bhupesh
