@@ -2,81 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C243D4A7F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 00:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE093D4A82
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 00:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbhGXV44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 17:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
+        id S230077AbhGXWGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 18:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhGXV4z (ORCPT
+        with ESMTP id S229588AbhGXWGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 17:56:55 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48594C061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 15:37:25 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id a26so8389998lfr.11
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 15:37:25 -0700 (PDT)
+        Sat, 24 Jul 2021 18:06:02 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AD0C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 15:46:33 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id r26so8489457lfp.5
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 15:46:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cY0BhOrvODPENyUsm9z1Yrl8qRt1JzTAgFuu64aV0Eg=;
-        b=OBvZE5As6RWvMwX/zaxwZ3OSGMw1WumbTwVJejWQU2z95xYFqYwLXNy7yKOczs99d/
-         p1iGOZWkMDb4T6CY6qYMEp/ei/5qjBNu+dZMkz3BLHBt5Cbq9T38wDlOwzi0cPsb0qVU
-         7UBZgavtuCMPYPq5peWA+Pya76+VYDAgKfmmM=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v2YDwfyfXMZsvIrwhBC0bDFhpDuSjGAVE8/bmWDh7Hc=;
+        b=ZPyVAuxaf1mlV6vSQfR/7Ph3MCesPl98iNVOuPC6S/4jSb8POwvQ0x9D3T9AFqtVWH
+         KCafcvDURAACtJCn7LUaNcGRt0k3O4vgPIBx2wKc8oVOQ/M0F756DJCwyJqlzQAvMboP
+         0CPFPw/X3Egny8skvNEgkFCSpkfqnkkRDJyyddci1ShMfy2MFeHRnvV4s4s65Et3NajP
+         DNjFekMkubOXlzuW2PKuW9FpEh7BsSyEBMBOh7HruMsCCHK2m9WkYYFlsitmHNjMghiQ
+         CYzTpvezfxj50sd8L3p6q252FYWToHUnBEG27n7QjPKwr8iX4oZ7hAvhbW2LDqhV0gVp
+         j3/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cY0BhOrvODPENyUsm9z1Yrl8qRt1JzTAgFuu64aV0Eg=;
-        b=sA+VWw1C3ltOLSqENfuZq1CvMvFIN1xR1pJBUaTENrxhpObgcDkbF1g48lOfnH/HrI
-         BNZHzO1+ajxL7t+H0niitANDzVzYnTH2YWb3lLngxgsn0GAjpxaTeYb9/YhOnT2meTbo
-         dF7Wa9UnFwaWmkk3fKQsYuZMZLBROqV0q7xr171GrKrkFpkplCDNCUJp9SWJCKM612/7
-         mhmoj3w6+PMnw8Aqc4krZTlddc7mwWy4Wpnj0l9tKrjd7qCOA0pJ7YJ9fmfFBpERMFdX
-         ROWwRMdiUXglcZ38AcdTCC1bx3DCSOEeC/LnFsPjXm5vg+pE8z2pOI/gMEmjmn79lojI
-         H4pA==
-X-Gm-Message-State: AOAM532M9tGF9kySx8hThFz5f+SM3gzSk9fED8tQQgKuGs8CeygR/lZu
-        z/dJv0+8HP3T6/7q6rFRyuBNcqQHBa/+TkEQ
-X-Google-Smtp-Source: ABdhPJz3Ov+S4BPNqPSQC4FkvzZm0MY9R7lQLFHJuzElf9hCLovur2ov9Kra1Q9fm3BILkThyy0PrA==
-X-Received: by 2002:a19:e00a:: with SMTP id x10mr7761523lfg.536.1627166243281;
-        Sat, 24 Jul 2021 15:37:23 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id p7sm2592120lfk.51.2021.07.24.15.37.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jul 2021 15:37:22 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id h11so6396388ljo.12
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 15:37:22 -0700 (PDT)
-X-Received: by 2002:a2e:9241:: with SMTP id v1mr7293290ljg.48.1627166242379;
- Sat, 24 Jul 2021 15:37:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v2YDwfyfXMZsvIrwhBC0bDFhpDuSjGAVE8/bmWDh7Hc=;
+        b=d6MInS5W+FGB3LKazKBuoZDPcP8vZN4IjygRBaIbANN7SKuuKasfasw4giEf9KjDNO
+         aTRA66onGiSyABZGx751vVP8fmRzr9pHNkxHHNpSA/fQfM6oUZRqhRqZz00V2fMU+ZFR
+         ZTYqLQpNYUcs3+gg8oinX74BMnxZRxaF0aMq3TLPjpLUdtL7FNWY1LXpiD3FdxITPX8D
+         LjMThkjxTl/qivzoZ19Zq4xjaFTUraFwPpmUDUQzzLNxDD+aNsGYYR+t0OR+cjCWHLfq
+         WDWWj6ztniFL9F5uJIWulCebuCi2DNYCGh4FmPSzeCJ583E80eZY5kmdsN//TA44uYrp
+         NEkQ==
+X-Gm-Message-State: AOAM533kuFZ9ct5+mbIEoVxueBb1gTsOT27NmTHx8BwaqO8UHxMk5dN1
+        9fwJoo8mHBl4zXRxJu05oSxe9A==
+X-Google-Smtp-Source: ABdhPJzj/1lC3WK8ARfMrQdsWZzgYYgfRxnKigMi/pcHxRUmH5OsNJMsPbBT/kJD1ktns605w5/nyQ==
+X-Received: by 2002:a05:6512:3e13:: with SMTP id i19mr7606162lfv.330.1627166791746;
+        Sat, 24 Jul 2021 15:46:31 -0700 (PDT)
+Received: from localhost.localdomain (c-fdcc225c.014-348-6c756e10.bbcust.telenor.se. [92.34.204.253])
+        by smtp.gmail.com with ESMTPSA id f14sm3778676ljk.42.2021.07.24.15.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 15:46:31 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        Joel Stanley <joel@jms.id.au>
+Subject: [PATCH 1/2] clocksource/drivers/fttmr010: Pass around less pointers
+Date:   Sun, 25 Jul 2021 00:44:23 +0200
+Message-Id: <20210724224424.2085404-1-linus.walleij@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
- <a607c149-6bf6-0fd0-0e31-100378504da2@kernel.dk> <99068691-01ea-d2b5-3dd3-1a2852fe5723@kernel.dk>
- <CAHp75Vc-RMBMO9eR3apX=zC30FA+22CgZeT4vee45XxFCqpjjg@mail.gmail.com>
- <8d6122f0-3ffc-d26a-0dd3-3e45843435a9@kernel.dk> <CAHp75VeJwuUmpn15iS4NgzO9Qh=O5ve9i62xCzQEJ=5Mm11N3g@mail.gmail.com>
- <53345d55-9f8c-13d1-9da7-08262bc81a4e@kernel.dk> <7632e656-ff4d-3964-b3fc-5802935183c8@kernel.dk>
-In-Reply-To: <7632e656-ff4d-3964-b3fc-5802935183c8@kernel.dk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 24 Jul 2021 15:37:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi=3u-_QXWSDzMPhv04zNNB3DcNHZGVthBvaa+iX8F=fA@mail.gmail.com>
-Message-ID: <CAHk-=wi=3u-_QXWSDzMPhv04zNNB3DcNHZGVthBvaa+iX8F=fA@mail.gmail.com>
-Subject: Re: 5.14-rc failure to resume
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 2:39 PM Jens Axboe <axboe@kernel.dk> wrote:
->
-> Yep, works with acpi_dev_put() checking for != NULL before doing the
-> put.
+Just pass bool flags from the different initcalls and use the
+flags to set the right pointers. This results in less pointers
+passed around in init.
 
-Ok, pushed the oneliner fix so that we get rid of this issue asap.
+Cc: Cédric Le Goater <clg@kaod.org>
+Cc: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/clocksource/timer-fttmr010.c | 32 ++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-            Linus
+diff --git a/drivers/clocksource/timer-fttmr010.c b/drivers/clocksource/timer-fttmr010.c
+index edb1d5f193f5..126fb1f259b2 100644
+--- a/drivers/clocksource/timer-fttmr010.c
++++ b/drivers/clocksource/timer-fttmr010.c
+@@ -271,9 +271,7 @@ static irqreturn_t ast2600_timer_interrupt(int irq, void *dev_id)
+ }
+ 
+ static int __init fttmr010_common_init(struct device_node *np,
+-		bool is_aspeed,
+-		int (*timer_shutdown)(struct clock_event_device *),
+-		irq_handler_t irq_handler)
++				       bool is_aspeed, bool is_ast2600)
+ {
+ 	struct fttmr010 *fttmr010;
+ 	int irq;
+@@ -374,8 +372,6 @@ static int __init fttmr010_common_init(struct device_node *np,
+ 				     fttmr010->tick_rate);
+ 	}
+ 
+-	fttmr010->timer_shutdown = timer_shutdown;
+-
+ 	/*
+ 	 * Setup clockevent timer (interrupt-driven) on timer 1.
+ 	 */
+@@ -383,8 +379,18 @@ static int __init fttmr010_common_init(struct device_node *np,
+ 	writel(0, fttmr010->base + TIMER1_LOAD);
+ 	writel(0, fttmr010->base + TIMER1_MATCH1);
+ 	writel(0, fttmr010->base + TIMER1_MATCH2);
+-	ret = request_irq(irq, irq_handler, IRQF_TIMER,
+-			  "FTTMR010-TIMER1", &fttmr010->clkevt);
++
++	if (is_ast2600) {
++		fttmr010->timer_shutdown = ast2600_timer_shutdown;
++		ret = request_irq(irq, ast2600_timer_interrupt,
++				  IRQF_TIMER, "FTTMR010-TIMER1",
++				  &fttmr010->clkevt);
++	} else {
++		fttmr010->timer_shutdown = fttmr010_timer_shutdown;
++		ret = request_irq(irq, fttmr010_timer_interrupt,
++				  IRQF_TIMER, "FTTMR010-TIMER1",
++				  &fttmr010->clkevt);
++	}
+ 	if (ret) {
+ 		pr_err("FTTMR010-TIMER1 no IRQ\n");
+ 		goto out_unmap;
+@@ -432,23 +438,17 @@ static int __init fttmr010_common_init(struct device_node *np,
+ 
+ static __init int ast2600_timer_init(struct device_node *np)
+ {
+-	return fttmr010_common_init(np, true,
+-			ast2600_timer_shutdown,
+-			ast2600_timer_interrupt);
++	return fttmr010_common_init(np, true, true);
+ }
+ 
+ static __init int aspeed_timer_init(struct device_node *np)
+ {
+-	return fttmr010_common_init(np, true,
+-			fttmr010_timer_shutdown,
+-			fttmr010_timer_interrupt);
++	return fttmr010_common_init(np, true, false);
+ }
+ 
+ static __init int fttmr010_timer_init(struct device_node *np)
+ {
+-	return fttmr010_common_init(np, false,
+-			fttmr010_timer_shutdown,
+-			fttmr010_timer_interrupt);
++	return fttmr010_common_init(np, false, false);
+ }
+ 
+ TIMER_OF_DECLARE(fttmr010, "faraday,fttmr010", fttmr010_timer_init);
+-- 
+2.31.1
+
