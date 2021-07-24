@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 919763D49C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09EAA3D49C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhGXTgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 15:36:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52558 "EHLO mail.kernel.org"
+        id S229778AbhGXTgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 15:36:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhGXTgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229570AbhGXTgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 24 Jul 2021 15:36:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1CCC160E96;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2E04C60E09;
         Sat, 24 Jul 2021 20:16:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1627157797;
-        bh=0tuTu9SyqVjNrsShR1nRD8G8erhEGh/oWKWHsBRXWJw=;
+        bh=vba6K/cIew498zlQRqU+8uu0Y73uWdHdbqKfvD8Qaco=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CIjb7rpnUxnSWKK3LF1tMhccJYBh9XTAkruaTzx6aDBLhFrLyUjT5lU2LOomAF0XT
-         ZvmYsW+Q5/ZgQ8yTkaqZIRPtV6eZIoq/kbtljSIlfEUhVFPwmxWkF/qERQUvze7bdc
-         J/RxWJudSonWRmrwhlbL915/w7llpE2VX4XPbRuNEaLWwNVLXD+iDo5Rju52mUY/ID
-         v8PalOt1VxEa/B4W0zoNUoqG3cmYRyZLIVL701oiz2CRWFs9p14iyeit2hsjz0F0M0
-         NidiM1RDX5gUlcnRWHN4B32LK8Fg1ZSiAUiqyXTitHq661BK1gEdIzQ1izwBhY1XmE
-         UyGASPBYMgGzg==
+        b=jB88ztBdChJcI06wTtyIJhEBypLeBgpAG3eTxNDmVrHY6u3LIGebV34bVc/tLV7Py
+         FTGlPed5+cFI+kQfhSjBb0Ugi2Sf0ba6LXs7T6PQsD277wDGQHKhHP/aZQFEMBitBk
+         tbxRt/hbu9DGM4Syz45PO3chyn2tMdSXgrIN2V4QHU+oXsnJ1z6rMIrbdscc0zOtzJ
+         mjRwzRyHY+uJImx3uSDjRsdTTyWVabUrPTseLj+/P9GDHCGGfz6E2pOF1+en89WQ7v
+         I53iJFDUdYTYQIBS82D1G9n/Pl6ccAI6O/wBn7IoaEwSPgA2LoMZuIhLxRdW53vmhi
+         DxUIMzR31j7Ug==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0A48560972;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2270560A08;
         Sat, 24 Jul 2021 20:16:37 +0000 (UTC)
-Subject: Re: [PULL REQUEST] i2c for v5.14
+Subject: Re: [GIT PULL] SCSI fixes for 5.14-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YPvtwtk3wPtFnB8L@kunai>
-References: <YPvtwtk3wPtFnB8L@kunai>
+In-Reply-To: <f3170ad9241f47278fa2bcb8c2e95a7e1b7dba68.camel@HansenPartnership.com>
+References: <f3170ad9241f47278fa2bcb8c2e95a7e1b7dba68.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YPvtwtk3wPtFnB8L@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-X-PR-Tracked-Commit-Id: 4a8ac5e45cdaa88884b4ce05303e304cbabeb367
+X-PR-Tracked-Message-Id: <f3170ad9241f47278fa2bcb8c2e95a7e1b7dba68.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: a47fa41381a09e5997afd762664db4f5f6657e03
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0823baef164686c98d084b16877f271681e2377f
-Message-Id: <162715779698.1145.13051763326172483180.pr-tracker-bot@kernel.org>
-Date:   Sat, 24 Jul 2021 20:16:36 +0000
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+X-PR-Merge-Commit-Id: 7ffca2bb9d8bf6813db50364b1dd2c02f58fb65e
+Message-Id: <162715779713.1145.10797501719117113123.pr-tracker-bot@kernel.org>
+Date:   Sat, 24 Jul 2021 20:16:37 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 24 Jul 2021 12:38:58 +0200:
+The pull request you sent on Sat, 24 Jul 2021 10:19:38 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0823baef164686c98d084b16877f271681e2377f
+https://git.kernel.org/torvalds/c/7ffca2bb9d8bf6813db50364b1dd2c02f58fb65e
 
 Thank you!
 
