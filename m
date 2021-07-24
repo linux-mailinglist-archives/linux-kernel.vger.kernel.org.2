@@ -2,109 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD1A3D49E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15ADC3D49F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhGXT5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 15:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        id S229609AbhGXUDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 16:03:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhGXT47 (ORCPT
+        with ESMTP id S229510AbhGXUDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 15:56:59 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6DFC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 13:37:29 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id n6so6186482ljp.9
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 13:37:29 -0700 (PDT)
+        Sat, 24 Jul 2021 16:03:33 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91353C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 13:44:03 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id m1so7302220pjv.2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 13:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ho2aOvJzVUGxbigA5Ok8jwjbjidvHRLuevL3w0ehES8=;
-        b=RYJdn54XZvqgDpdCoHMx7X/1qdNndwkSiwPLlTPxcMWweYY3UpjJeM3vyKj+NX7+9Q
-         cWCj7Nl9Y+araWN9VJGCF1HNiqElOH2DLKWtSDySUgro0NqFzvf69OLHIXVIRFhQlf1q
-         ehxcrzIzzq3rOn8v+Y3XavxPhUhKvOx9U+xKs=
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=fHIy9lbXbq0EmnYScsYc3vFgkMSvcm99KjgBrTvkyn0=;
+        b=H3CGoVuCtjdwfAW606o7bV2y2BhORwoA13jObogqQSfUDRtr5fwzf/E+TmEpIIIgRZ
+         ra3maKZ2KdoWHuQ57W3xIdeMipuGk27jYJz34mIkmZ/g7riZCHCYIEWg5K+2DKoF+o5T
+         QvozPGtsBbJFY5zHfphpELhtamu0wkNyPHvMu+WgDPDo0HKrecpU/HQjIH8DYHpOmk2u
+         dTJfNnYMusS3I7pasRuG/tcxgJl68WYjDmkkPKZjSw9Z8kKe1qHbv36xDnWyDQNQtXGd
+         TGlo8zNCSXwX9FY2Hu+FQPPRRXp6nF5X104oficHDKMphOm7L9PQhNbJAyp190DKS/+M
+         IgYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ho2aOvJzVUGxbigA5Ok8jwjbjidvHRLuevL3w0ehES8=;
-        b=jHXioLRt4Vyks8TOP60ruuXwV5Pp2PcastlQdY30H19suW83HJVvUPFFSiAaLSLCo+
-         QaSw06TaCZKjp4ZvlQ1WMNj9WNba/vp7FNkiRI0q0hGy6t8ttpwG3POgFitk9WVlL02k
-         xj6/hFDEs4Ge0qzwYPX0Ps77Y6fFHzyNmVyyZhGNipZiGZopVn5MwfA3kJSOIHJsPmK3
-         RXw0j3nhI8o6I8FLRNLjyNS+CBCXw7z9nFhQ28tN7eji5YAPQk9QzFj5e7J53ESnTeRu
-         kPIPJGAQAyvc5n07cEvmEzDstDIN0e6ehr9VN+EwZCkGmF3bmWj+vZG/zCHI0it1ldr7
-         PF6A==
-X-Gm-Message-State: AOAM530qtuH3TSKcr8nljv9IhAC+mgK1xdRIXjedyGclpWdQTxe2dSkj
-        PlWWc8wknwAMUIdC/cAuHzm76SCn3Fw9nlRd
-X-Google-Smtp-Source: ABdhPJzMZssFMKLSxiScdLu8RaP3AebGvQgSr63hoMu303YRxov5pvyjTaouNU7w+arLfoMFNoEO5g==
-X-Received: by 2002:a05:651c:130f:: with SMTP id u15mr7396605lja.485.1627159047672;
-        Sat, 24 Jul 2021 13:37:27 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id q14sm2574020lfe.106.2021.07.24.13.37.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jul 2021 13:37:26 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id h2so8173599lfu.4
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 13:37:26 -0700 (PDT)
-X-Received: by 2002:ac2:44ad:: with SMTP id c13mr7135571lfm.377.1627159045780;
- Sat, 24 Jul 2021 13:37:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210724193449.361667-1-agruenba@redhat.com> <20210724193449.361667-2-agruenba@redhat.com>
- <CAHk-=whodi=ZPhoJy_a47VD+-aFtz385B4_GHvQp8Bp9NdTKUg@mail.gmail.com> <YPx28cEvrVl6YrDk@zeniv-ca.linux.org.uk>
-In-Reply-To: <YPx28cEvrVl6YrDk@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 24 Jul 2021 13:37:09 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj1d2ELuN-Qtf59dsJ4OG-YRqAk2YrLS3=PRMTc2trZvA@mail.gmail.com>
-Message-ID: <CAHk-=wj1d2ELuN-Qtf59dsJ4OG-YRqAk2YrLS3=PRMTc2trZvA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/8] iov_iter: Introduce iov_iter_fault_in_writeable helper
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=fHIy9lbXbq0EmnYScsYc3vFgkMSvcm99KjgBrTvkyn0=;
+        b=iiBSOzBOKWF3cy67d1DHSkC+1f7Pa/omR0s2tPaVPTnTxQeXKBEjgCeHiBHIRk7Jhz
+         myKvu0PA8bYEyIh0OKz0aQah5+LnqJlDjOwq/4/H79EJXw/YWP0KNbVet9yWzfwExZYz
+         qnfbKlfto26hOdBEyVE5ACvGhkQtSZG2fP1EpVk8hlpcwWUhiDzMZoCAlQGLP5Y5n95u
+         4cg7ho3DYZOCcacZ9BsvM/u3rpm8Qg/0SfxUzttTIu2dEkPQXw+LfH8dIWcIrxcaL1nX
+         aoMZKpoZBXP8Y2riHWwBo0dgFNXeKcBG98Ec/VNyKUrnz5VxvfD0k3kxEZyrkobTDcNe
+         R5Dg==
+X-Gm-Message-State: AOAM532IAMdebSxaCM/ckzr5zQvY5HN5GWSsYtz3ETOQDNT76CcOaJC1
+        2kTYRakdYLDdRbTKG/UD7Xq4mA==
+X-Google-Smtp-Source: ABdhPJxkRP8dTyMihWOc+yCMatwPIuV/OqQ1vH8UmPqXdst02KAcWYVEld4KGK6M5R87WuR98uUuHg==
+X-Received: by 2002:a17:90a:de11:: with SMTP id m17mr9949261pjv.5.1627159442791;
+        Sat, 24 Jul 2021 13:44:02 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id d9sm30976770pgm.89.2021.07.24.13.44.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 13:44:02 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 13:44:02 -0700 (PDT)
+X-Google-Original-Date: Sat, 24 Jul 2021 13:43:59 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.13-rc3
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-5cd676be-7ed7-48de-b740-0e809ae67a56@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 1:26 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Sat, Jul 24, 2021 at 12:52:34PM -0700, Linus Torvalds wrote:
->
-> > So I think the code needs to return 0 if _any_ fault was successful.
->
-> s/any/the first/...
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-Yes, but as long as we do them in order, and stop when it fails, "any"
-and "first" end up being the same thing ;)
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-> The same goes for fault-in for read
+are available in the Git repository at:
 
-Yeah. That said, a partial write() (ie "read from user space") might
-be something that a filesystem is not willing to touch for other
-reasons, so I think returning -EFAULT in that case is, I think,
-slightly more reasonable.
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.14-rc3
 
-Things like "I have to prepare buffers to be filled" etc.
+for you to fetch changes up to ea196c548c0ac407afd31d142712b6da8bd00244:
 
-The partial read() case is at least something that a filesystem should
-be able to handle fairly easily.
+  riscv: __asm_copy_to-from_user: Fix: Typos in comments (2021-07-23 17:49:12 -0700)
 
-And I don't think returning -EFAULT early is necessarily wrong - we
-obviously do it anyway if you give really invalid addresses.
+----------------------------------------------------------------
+RISC-V Fixes for 5.13-rc3
 
-But we have generally strived to allow partial IO for missing pages,
-because people sometimes play games with unmapping things dynamically
-or using mprotect() to catch modifications (ie doing things like catch
-SIGSEGV/SIGBUS, and remap it).
+* A fix to properly set the memory size, which fixes 32-bit systems.
+* A fix to allow the initrd to load anywhere in memory, rather that
+  restricting it to the first 256MiB.
+* A fix for the mem= parameter on 64-bit systems, to properly account
+  for the maximum supported memory now that the kernel is outside the
+  linear map.
+* A fix to avoid installing mappings into the last 4KiB of memory, which
+  conflicts with error values.
+* A fix to avoid the stack from being freed while it is being walked.
+* A handful of fixes to the new copy to/from user routines.
+---
+There is one particularly odd bit in the history here: the fix for the 32-bit
+boot failure is based on an older release, because a recent feature addition
+also fixed the bug.  I wanted to take that patch so it could be backported to
+stable, but it's erased by its own merge.  Not sure if there's a better way to
+do this, but I figured this was saner than reverting the feature and then
+bringing it back.
 
-But those kinds of uses tend to have to catch -EFAULT anyway, so I
-guess it's not a big deal either way.
+----------------------------------------------------------------
+Akira Tsukamoto (4):
+      riscv: __asm_copy_to-from_user: Fix: overrun copy
+      riscv: __asm_copy_to-from_user: Fix: fail on RV32
+      riscv: __asm_copy_to-from_user: Remove unnecessary size check
+      riscv: __asm_copy_to-from_user: Fix: Typos in comments
 
-           Linus
+Alexandre Ghiti (3):
+      riscv: Fix memory_limit for 64-bit kernel
+      riscv: Make sure the linear mapping does not use the kernel mapping
+      riscv: Make sure the kernel mapping does not overlap with IS_ERR_VALUE
+
+Bin Meng (1):
+      riscv: Fix 32-bit RISC-V boot failure
+
+Heinrich Schuchardt (1):
+      RISC-V: load initrd wherever it fits into memory
+
+Jisheng Zhang (1):
+      riscv: stacktrace: pin the task's stack in get_wchan
+
+Palmer Dabbelt (1):
+      Merge remote-tracking branch 'riscv/riscv-fix-32bit' into fixes
+
+ arch/riscv/include/asm/efi.h   |  4 ++--
+ arch/riscv/kernel/stacktrace.c |  6 +++++-
+ arch/riscv/lib/uaccess.S       | 27 +++++++++++++--------------
+ arch/riscv/mm/init.c           | 32 ++++++++++++++++++++++++++++----
+ 4 files changed, 48 insertions(+), 21 deletions(-)
