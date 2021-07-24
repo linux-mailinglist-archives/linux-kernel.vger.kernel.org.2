@@ -2,129 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1E03D461C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD3A3D461E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbhGXHG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 03:06:58 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36480 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbhGXHG5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 03:06:57 -0400
-Received: by mail-io1-f70.google.com with SMTP id k20-20020a6b6f140000b029053817be16cdso3568296ioc.3
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:47:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=4XG3PYSleC8EliCRO9+aVPrJ5jiqCH3K7OK1Vx67Dpw=;
-        b=IRF54CuYzf3ApMYYPt97g0ej0t8X6dliX5wvynKvN/EpsuKx4dWd1Ab1+CPWl5RJ+A
-         SU7BUZG3U52x0upPXAJl848LHKqOwZLAqNJiBB90zl5MTPYb46QMzWLU8+0ew3m3bgdJ
-         YbCKcvw+u93F7jxNysFQF3qrcI5d9eC8uvXJ6HGLQtt4JAsWJiYTRMHYsFYHLPcsWMvQ
-         G/5jMymrtN5qtNnBNNwP1GDj5sWB6V1MYp6pR5KI7mz12UBeYugqI9Xyc7TpwbNEYC80
-         yUxGybZSWj0ZnguSEXRdiJXetL5fD+1gYD3bh5z54/semjc6dP7qbXe8lvPl7IPbieci
-         TcLw==
-X-Gm-Message-State: AOAM533Bo5n/k+L0Wi6y73uF7n4dOqQJHMJwpluCGjDBUKM+fuBaotMJ
-        UmGmFh2tBPvltI8Tqr1ONYoDWbruivNKpa9XP3Juy8Cqdbie
-X-Google-Smtp-Source: ABdhPJwt5vSsnNiOYajOEOhq70lFbdplj8PE/SqfAm3S8a9QfkRD3CwKgLlrlXRWjgy2JwqKF4cOzbO+9lP7NwH2HMgQx1tgBGcM
+        id S234600AbhGXHHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 03:07:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234403AbhGXHHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 03:07:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D02E160E93;
+        Sat, 24 Jul 2021 07:47:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627112859;
+        bh=83jYqHd7Z3wZAPt5SDx4EmmdLiCWHkDxcjRrWNIZ0kE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dV+JwbWV9suCiexF3CXkLJt4ap8IBg5xYeWS7BVIDBXUtK33/2VPwz9pSvQdHO1A3
+         yIrHu3+n1ufzNNfG1igKzqVT1hcEH/iMlQUvkRPrv1HO9FmO4HHM/SaoH5vdLO75Xt
+         82aiN+l4G+1Z9Kz8UTGFmXYa8xad5zeGCLzUMdP9E5ezcoOVBqOb4kWVXT59yaFEhG
+         i4D04rUrLcpJ7HtUr13dBD0kkYLRCN0WmdAo3q9UC98qSWlbPf0QIr3JtqkWtNqMtA
+         QZpyiVT0NIL/r+deATsBXLKcs9QG7X31C5TzhlzS1KQisaBB6aZjXeWW9cy28+fjEQ
+         5+UMcZFUNjrJQ==
+Date:   Sat, 24 Jul 2021 10:47:33 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v3] mm/sparse: clarify pgdat_to_phys
+Message-ID: <YPvFlagk2Z/4ceS1@kernel.org>
+References: <20210723123342.26406-1-miles.chen@mediatek.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2f09:: with SMTP id q9mr6846237iow.196.1627112849887;
- Sat, 24 Jul 2021 00:47:29 -0700 (PDT)
-Date:   Sat, 24 Jul 2021 00:47:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006d5cab05c7d9bb87@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in bpf_get_current_cgroup_id
-From:   syzbot <syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723123342.26406-1-miles.chen@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Jul 23, 2021 at 08:33:42PM +0800, Miles Chen wrote:
+> Clarify pgdat_to_phys() by testing if
+> pgdat == &contig_page_data when CONFIG_NUMA=n.
+> 
+> We only expect contig_page_data in such case, so we
+> use &contig_page_data directly instead of pgdat.
+> 
+> No functional change intended when CONFIG_BUG_VM=n.
+> 
+> Comment from Mark [1]:
+> "
+> ... and I reckon it'd be clearer and more robust to define
+> pgdat_to_phys() in the same ifdefs as contig_page_data so
+> that these, stay in-sync. e.g. have:
+> 
+> | #ifdef CONFIG_NUMA
+> | #define pgdat_to_phys(x)	virt_to_phys(x)
+> | #else /* CONFIG_NUMA */
+> |
+> | extern struct pglist_data contig_page_data;
+> | ...
+> | #define pgdat_to_phys(x)	__pa_symbol(&contig_page_data)
+> |
+> | #endif /* CONIFIG_NUMA */
+> "
+> 
+> [1] https://lore.kernel.org/linux-arm-kernel/20210615131902.GB47121@C02TD0UTHF1T.local/
+> 
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
 
-syzbot found the following issue on:
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
 
-HEAD commit:    d6371c76e20d bpf: Fix OOB read when printing XDP link fdinfo
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=146597f2300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6da37c7627210105
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ee5c2c09c284495371f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126b7c40300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1616cf6a300000
+> 
+> --
+> 
+> Change since v1:
+> Thanks for Mike's comment, check if pgdat == &contig_page_data,
+> so it is clearer that we only expect contig_page_data when
+> CONFIG_NUMA=n.
+> 
+> Change since v2:
+> use VM_BUG_ON() to avoid runtime checking when CONFIG_BUG_VM=n
+> ---
+>  mm/sparse.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/sparse.c b/mm/sparse.c
+> index 6326cdf36c4f..d13d831f88a5 100644
+> --- a/mm/sparse.c
+> +++ b/mm/sparse.c
+> @@ -348,7 +348,8 @@ size_t mem_section_usage_size(void)
+>  static inline phys_addr_t pgdat_to_phys(struct pglist_data *pgdat)
+>  {
+>  #ifndef CONFIG_NUMA
+> -	return __pa_symbol(pgdat);
+> +	VM_BUG_ON(pgdat != &contig_page_data);
+> +	return __pa_symbol(&contig_page_data);
+>  #else
+>  	return __pa(pgdat);
+>  #endif
+> -- 
+> 2.18.0
+> 
 
-The issue was bisected to:
-
-commit 79a7f8bdb159d9914b58740f3d31d602a6e4aca8
-Author: Alexei Starovoitov <ast@kernel.org>
-Date:   Fri May 14 00:36:03 2021 +0000
-
-    bpf: Introduce bpf_sys_bpf() helper and program type.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a73112300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a73112300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12a73112300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
-Fixes: 79a7f8bdb159 ("bpf: Introduce bpf_sys_bpf() helper and program type.")
-
-=============================
-WARNING: suspicious RCU usage
-5.14.0-rc1-syzkaller #0 Not tainted
------------------------------
-include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by syz-executor499/8468.
-
-stack backtrace:
-CPU: 1 PID: 8468 Comm: syz-executor499 Not tainted 5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- task_css_set include/linux/cgroup.h:481 [inline]
- task_dfl_cgroup include/linux/cgroup.h:550 [inline]
- ____bpf_get_current_cgroup_id kernel/bpf/helpers.c:356 [inline]
- bpf_get_current_cgroup_id+0x1ce/0x210 kernel/bpf/helpers.c:354
- bpf_prog_08c4887f705f20b8+0x10/0x824
- bpf_dispatcher_nop_func include/linux/bpf.h:687 [inline]
- bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
- bpf_prog_test_run_syscall+0x2cf/0x5f0 net/bpf/test_run.c:954
- bpf_prog_test_run kernel/bpf/syscall.c:3207 [inline]
- __sys_bpf+0x1993/0x53b0 kernel/bpf/syscall.c:4487
- __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x44d6a9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 01 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f32119dd318 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004cb3e8 RCX: 000000000044d6a9
-RDX: 0000000000000048 RSI: 0000000020000500 RDI: 000000000000000a
-RBP: 00000000004cb3e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 656c6c616b7a7973
-R13: 00007ffeb7672e8f R14: 00007f32119dd400 R15: 0000000000022000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+Sincerely yours,
+Mike.
