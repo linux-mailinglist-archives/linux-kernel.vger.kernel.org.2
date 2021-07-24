@@ -2,66 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866E83D4858
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A0F3D4853
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhGXOrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 10:47:36 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:33589 "EHLO 1wt.eu"
+        id S229961AbhGXOoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 10:44:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhGXOrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 10:47:35 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 16OFS0nN018768;
-        Sat, 24 Jul 2021 17:28:00 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Willy Tarreau <w@1wt.eu>
-Subject: [PATCH] USB: serial: ch341: fix character loss at high transfer rates
-Date:   Sat, 24 Jul 2021 17:27:39 +0200
-Message-Id: <20210724152739.18726-1-w@1wt.eu>
-X-Mailer: git-send-email 2.17.5
+        id S229545AbhGXOon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 10:44:43 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C879A6056C;
+        Sat, 24 Jul 2021 15:25:10 +0000 (UTC)
+Date:   Sat, 24 Jul 2021 16:27:41 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        broonie@kernel.org, lgirdwood@gmail.com, linux-iio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] iio: adc: fsl-imx25-gcq: Use the defined variable to
+ clean code
+Message-ID: <20210724162741.15a8b8b6@jic23-huawei>
+In-Reply-To: <20210720125945.11548-1-tangbin@cmss.chinamobile.com>
+References: <20210720125945.11548-1-tangbin@cmss.chinamobile.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The chip supports high transfer rates, but with the small default buffers
-(64 bytes read), some entire blocks are regularly lost. This typically
-happens at 1.5 Mbps (which is the default speed on Rockchip devices) when
-used as a console to access U-Boot where the output of the "help" command
-misses many lines and where "printenv" mangles the environment.
+On Tue, 20 Jul 2021 20:59:45 +0800
+Tang Bin <tangbin@cmss.chinamobile.com> wrote:
 
-The FTDI driver doesn't suffer at all from this. One difference is that
-it uses 512 bytes rx buffers and 256 bytes tx buffers. Adopting these
-values completely resolved the issue, even the output of "dmesg" is
-reliable. I preferred to leave the Tx value unchanged as it is not
-involved in this issue, while a change could increase the risk of
-triggering the same issue with other devices having too small buffers.
+> Use the defined variable "dev" to make the code cleaner.
+> 
+> Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 
-I verified that it backports well (and works) at least to 5.4. It's of
-low importance enough to be dropped where it doesn't trivially apply
-anymore.
+Applied.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Willy Tarreau <w@1wt.eu>
----
- drivers/usb/serial/ch341.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
 
-diff --git a/drivers/usb/serial/ch341.c b/drivers/usb/serial/ch341.c
-index 2db917eab799..8a521b5ea769 100644
---- a/drivers/usb/serial/ch341.c
-+++ b/drivers/usb/serial/ch341.c
-@@ -851,6 +851,7 @@ static struct usb_serial_driver ch341_device = {
- 		.owner	= THIS_MODULE,
- 		.name	= "ch341-uart",
- 	},
-+	.bulk_in_size      = 512,
- 	.id_table          = id_table,
- 	.num_ports         = 1,
- 	.open              = ch341_open,
--- 
-2.17.5
+Jonathan
+
+> ---
+>  drivers/iio/adc/fsl-imx25-gcq.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
+> index d28976f21..01fe5b137 100644
+> --- a/drivers/iio/adc/fsl-imx25-gcq.c
+> +++ b/drivers/iio/adc/fsl-imx25-gcq.c
+> @@ -192,11 +192,11 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
+>  	 */
+>  	priv->vref[MX25_ADC_REFP_INT] = NULL;
+>  	priv->vref[MX25_ADC_REFP_EXT] =
+> -		devm_regulator_get_optional(&pdev->dev, "vref-ext");
+> +		devm_regulator_get_optional(dev, "vref-ext");
+>  	priv->vref[MX25_ADC_REFP_XP] =
+> -		devm_regulator_get_optional(&pdev->dev, "vref-xp");
+> +		devm_regulator_get_optional(dev, "vref-xp");
+>  	priv->vref[MX25_ADC_REFP_YP] =
+> -		devm_regulator_get_optional(&pdev->dev, "vref-yp");
+> +		devm_regulator_get_optional(dev, "vref-yp");
+>  
+>  	for_each_child_of_node(np, child) {
+>  		u32 reg;
+> @@ -298,7 +298,7 @@ static int mx25_gcq_probe(struct platform_device *pdev)
+>  	int ret;
+>  	int i;
+>  
+> -	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*priv));
+> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*priv));
+>  	if (!indio_dev)
+>  		return -ENOMEM;
+>  
 
