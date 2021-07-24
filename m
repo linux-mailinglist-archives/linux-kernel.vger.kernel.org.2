@@ -2,180 +2,588 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4991E3D4A5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CFE3D4A60
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhGXVJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 17:09:42 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:58736
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230461AbhGXVJ1 (ORCPT
+        id S229928AbhGXVPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 17:15:49 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:33759 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhGXVPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 17:09:27 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id EFEB53F35A
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627163397;
-        bh=i+Q0llccIqMx5SsL7f2qLyVatbD4Rx39C8icqgEfdwA=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=ekS53k4Smw9XVnH+au6OsJ+Mkenc5/eTJ/Oxz07HCWukS7Il0jH4iJyrEw3aulfFc
-         ALcyMHXOMPCP/9M8i2GXnsCRplk+AF1WErU25f5Ww9JCPHOuDEPo3BpkYGpTcbU6v+
-         W7sP1bcjZmyQIpbyYTDtsT6lk5Ll3g/mRHF5B7ZhqCi4XVPlArISgmUEYclf7WCO7N
-         4eqgHRm4TUoAsvsxQ14g3gGvhIKXPEBEsiZiRluq5/yLCG50w69/D0h5yzFidzQaHj
-         9W+mo7ELle2tO2V4RORqnq4Qv+UKhH2eoTDwrOKkQGUnHH72yHuNKpXJzVhDco5ZsP
-         YWni+HPDEfGRw==
-Received: by mail-ed1-f71.google.com with SMTP id s8-20020a0564020148b02903948b71f25cso2801961edu.4
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:49:57 -0700 (PDT)
+        Sat, 24 Jul 2021 17:15:48 -0400
+Received: by mail-io1-f70.google.com with SMTP id l9-20020a6b70090000b02904df6556dad4so4931132ioc.0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:56:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=i+Q0llccIqMx5SsL7f2qLyVatbD4Rx39C8icqgEfdwA=;
-        b=Q6h1naLBxKcDmVy8aYgvxFsuNUYkTQpr7cnK3e0ToEs53cUrUClb+PoSGgj0bPZKCA
-         XaQrSJsFoD3QUVWEnC2neHZ/zlEejl7RNcxs7AVzO6DMVbb7Y1OsGUoQC1wtoo3OrJrD
-         DfNZXt0GHvwZ7IkGgXr9rNgYEFS4o/wZN7qiC6gNLniKmKS+nyqz8E7lm+V1wkUUMBwq
-         ygwCdwvXxka+s5bRdUPAH3+kj3DZ8N5rtmvrUMvOIUkepyAUlVNIRQq6RXVVqh74dOHk
-         EU10ryVcmsIKo8hxZnLzpjl4dMm5XyRNMD6Qzs/vrsGOT1E4Y5pnLXYeef6tIteCRQIh
-         Cu1g==
-X-Gm-Message-State: AOAM530HfCM1QeWeiMw7Acr4qeODwYk5D/cgooF5lWvNpuaPRaGUZE3s
-        pNQraIBUYZf+XKaLrdX0pNJmdWFNRcpBpCcdTKQzBowtM/Ub/drrFGxlFZ9+ZSNkCS8/8Qid3Lo
-        uUpwtwjI70N3atfP9G+1FJ3iBsr/LLvJPaTaAXifdAw==
-X-Received: by 2002:a05:6402:430e:: with SMTP id m14mr10296148edc.120.1627163397540;
-        Sat, 24 Jul 2021 14:49:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJymDQtRzFb9UEZAtt6Ovb/j39XIvk8E2P6p5LIuQnS1n8kjgb+MF7fTYK1hCJjwQajwuR/7Qw==
-X-Received: by 2002:a05:6402:430e:: with SMTP id m14mr10296138edc.120.1627163397361;
-        Sat, 24 Jul 2021 14:49:57 -0700 (PDT)
-Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id s10sm12821908ejc.39.2021.07.24.14.49.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 14:49:56 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Charles Gorand <charles.gorand@effinnov.com>,
-        Krzysztof Opasiak <k.opasiak@samsung.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-Subject: [PATCH 12/12] nfc: constify nfc_digital_ops
-Date:   Sat, 24 Jul 2021 23:49:28 +0200
-Message-Id: <20210724214928.122096-7-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
-References: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=9iYrqGAAdxwKje2sxdJy/PYqYhRehawHyrqfWvqBrbQ=;
+        b=hPRFcnYb1SEADonYc6ekiqgFXgVb10qFr6cAo90GagvF4m9YTwIxCl3a4oBOC1PhnQ
+         F2IKg38xBHpcJdSX/4oPEZw5EW2X3NLrNsbMn+R02NMOSDkqbH94ZjXyCR/ZpDhdG7Ah
+         FSJiwNKDXT8jWJOh1wG0kCSwYri13AqCxB5mWzS0MN5j1Sj/nKRe+Q/a1niou1maGbre
+         +6YAUXm1pjp2g4wY6nCwZryw+yki+C4FDqLMbL3YP1umeEtHUVWLsZHRlaFE/C+SL3P+
+         MJ0//o2jai6Z+8LxySbx1pgHq3b06rI8kVRicubwJotFhNQWPexF6clkh0dIQAVB74S4
+         uKBQ==
+X-Gm-Message-State: AOAM530D6Ns8Vbo9hXZPB0dzAayJfXoOQF6BLqgQwpCXPlcmRx/VFVXI
+        Gu4DMKDmW6puqKFV1zGo2Pmn3K0mt0tL6I2WE/gGeRbm4eQS
+X-Google-Smtp-Source: ABdhPJytZBrtn3ZR1FVixAo+62Fhqm0xl9opg0g3YFB9i9+eoO2FLjuusJUb4QDuVZ5+jtaasbBzIsxBFVUAoblr18aBLgDztBm8
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:35aa:: with SMTP id v42mr4547689jal.21.1627163780048;
+ Sat, 24 Jul 2021 14:56:20 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 14:56:20 -0700
+In-Reply-To: <0000000000003a41f705a9c74dfa@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000019ea4305c7e597d4@google.com>
+Subject: Re: [syzbot] INFO: task hung in usb_register_dev
+From:   syzbot <syzbot+e761775e8f4a28711f19@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, charu@tickmarks.net,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neither the core nor the drivers modify the passed pointer to struct
-nfc_digital_ops, so make it a pointer to const for correctness and safety.
+syzbot has found a reproducer for the following issue on:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/nfc/nfcsim.c      | 2 +-
- drivers/nfc/port100.c     | 2 +-
- drivers/nfc/st95hf/core.c | 2 +-
- drivers/nfc/trf7970a.c    | 2 +-
- include/net/nfc/digital.h | 4 ++--
- net/nfc/digital_core.c    | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+HEAD commit:    8e6cb5d27e82 usb: dwc3: dwc3-qcom: Fix typo in the dwc3 vb..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=147c6fea300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=db8b503c237253ee
+dashboard link: https://syzkaller.appspot.com/bug?extid=e761775e8f4a28711f19
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=144874dc300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f8aa92300000
 
-diff --git a/drivers/nfc/nfcsim.c b/drivers/nfc/nfcsim.c
-index a9864fcdfba6..143dc49b815b 100644
---- a/drivers/nfc/nfcsim.c
-+++ b/drivers/nfc/nfcsim.c
-@@ -320,7 +320,7 @@ static int nfcsim_tg_listen(struct nfc_digital_dev *ddev, u16 timeout,
- 	return nfcsim_send(ddev, NULL, timeout, cb, arg);
- }
- 
--static struct nfc_digital_ops nfcsim_digital_ops = {
-+static const struct nfc_digital_ops nfcsim_digital_ops = {
- 	.in_configure_hw = nfcsim_in_configure_hw,
- 	.in_send_cmd = nfcsim_in_send_cmd,
- 
-diff --git a/drivers/nfc/port100.c b/drivers/nfc/port100.c
-index 1d614f9d864a..ccb5c5fab905 100644
---- a/drivers/nfc/port100.c
-+++ b/drivers/nfc/port100.c
-@@ -1463,7 +1463,7 @@ static int port100_listen(struct nfc_digital_dev *ddev, u16 timeout,
- 	return port100_tg_send_cmd(ddev, skb, timeout, cb, arg);
- }
- 
--static struct nfc_digital_ops port100_digital_ops = {
-+static const struct nfc_digital_ops port100_digital_ops = {
- 	.in_configure_hw = port100_in_configure_hw,
- 	.in_send_cmd = port100_in_send_cmd,
- 
-diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
-index 2dc788c363fd..993818742570 100644
---- a/drivers/nfc/st95hf/core.c
-+++ b/drivers/nfc/st95hf/core.c
-@@ -1037,7 +1037,7 @@ static void st95hf_abort_cmd(struct nfc_digital_dev *ddev)
- {
- }
- 
--static struct nfc_digital_ops st95hf_nfc_digital_ops = {
-+static const struct nfc_digital_ops st95hf_nfc_digital_ops = {
- 	.in_configure_hw = st95hf_in_configure_hw,
- 	.in_send_cmd = st95hf_in_send_cmd,
- 
-diff --git a/drivers/nfc/trf7970a.c b/drivers/nfc/trf7970a.c
-index 33978022ae47..1aed44629aaa 100644
---- a/drivers/nfc/trf7970a.c
-+++ b/drivers/nfc/trf7970a.c
-@@ -1861,7 +1861,7 @@ static void trf7970a_abort_cmd(struct nfc_digital_dev *ddev)
- 	mutex_unlock(&trf->lock);
- }
- 
--static struct nfc_digital_ops trf7970a_nfc_ops = {
-+static const struct nfc_digital_ops trf7970a_nfc_ops = {
- 	.in_configure_hw	= trf7970a_in_configure_hw,
- 	.in_send_cmd		= trf7970a_send_cmd,
- 	.tg_configure_hw	= trf7970a_tg_configure_hw,
-diff --git a/include/net/nfc/digital.h b/include/net/nfc/digital.h
-index 963db96bcbbb..bb3e8fdc0692 100644
---- a/include/net/nfc/digital.h
-+++ b/include/net/nfc/digital.h
-@@ -191,7 +191,7 @@ struct digital_poll_tech {
- 
- struct nfc_digital_dev {
- 	struct nfc_dev *nfc_dev;
--	struct nfc_digital_ops *ops;
-+	const struct nfc_digital_ops *ops;
- 
- 	u32 protocols;
- 
-@@ -236,7 +236,7 @@ struct nfc_digital_dev {
- 	void (*skb_add_crc)(struct sk_buff *skb);
- };
- 
--struct nfc_digital_dev *nfc_digital_allocate_device(struct nfc_digital_ops *ops,
-+struct nfc_digital_dev *nfc_digital_allocate_device(const struct nfc_digital_ops *ops,
- 						    __u32 supported_protocols,
- 						    __u32 driver_capabilities,
- 						    int tx_headroom,
-diff --git a/net/nfc/digital_core.c b/net/nfc/digital_core.c
-index 8f2572decccd..fefc03674f4f 100644
---- a/net/nfc/digital_core.c
-+++ b/net/nfc/digital_core.c
-@@ -745,7 +745,7 @@ static const struct nfc_ops digital_nfc_ops = {
- 	.im_transceive = digital_in_send,
- };
- 
--struct nfc_digital_dev *nfc_digital_allocate_device(struct nfc_digital_ops *ops,
-+struct nfc_digital_dev *nfc_digital_allocate_device(const struct nfc_digital_ops *ops,
- 					    __u32 supported_protocols,
- 					    __u32 driver_capabilities,
- 					    int tx_headroom, int tx_tailroom)
--- 
-2.27.0
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e761775e8f4a28711f19@syzkaller.appspotmail.com
+
+INFO: task kworker/0:1:7 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:1     state:D stack:25496 pid:    7 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ rwsem_down_write_slowpath+0x8e3/0x1190 kernel/locking/rwsem.c:1106
+ __down_write_common kernel/locking/rwsem.c:1261 [inline]
+ __down_write_common kernel/locking/rwsem.c:1258 [inline]
+ __down_write kernel/locking/rwsem.c:1270 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1407
+ usb_register_dev drivers/usb/core/file.c:187 [inline]
+ usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+ sisusb_probe+0x21c/0xbe3 drivers/usb/misc/sisusbvga/sisusb.c:3038
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_new_device.cold+0x63f/0x108e drivers/usb/core/hub.c:2559
+ hub_port_connect drivers/usb/core/hub.c:5300 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+ port_event drivers/usb/core/hub.c:5586 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5668
+ process_one_work+0x98d/0x15b0 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: task kworker/0:2:2618 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:2     state:D stack:25496 pid: 2618 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ rwsem_down_write_slowpath+0x8e3/0x1190 kernel/locking/rwsem.c:1106
+ __down_write_common kernel/locking/rwsem.c:1261 [inline]
+ __down_write_common kernel/locking/rwsem.c:1258 [inline]
+ __down_write kernel/locking/rwsem.c:1270 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1407
+ usb_register_dev drivers/usb/core/file.c:187 [inline]
+ usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+ sisusb_probe+0x21c/0xbe3 drivers/usb/misc/sisusbvga/sisusb.c:3038
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_new_device.cold+0x63f/0x108e drivers/usb/core/hub.c:2559
+ hub_port_connect drivers/usb/core/hub.c:5300 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+ port_event drivers/usb/core/hub.c:5586 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5668
+ process_one_work+0x98d/0x15b0 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: task kworker/0:0:4391 blocked for more than 144 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:0     state:D stack:24504 pid: 4391 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ rwsem_down_write_slowpath+0x8e3/0x1190 kernel/locking/rwsem.c:1106
+ __down_write_common kernel/locking/rwsem.c:1261 [inline]
+ __down_write_common kernel/locking/rwsem.c:1258 [inline]
+ __down_write kernel/locking/rwsem.c:1270 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1407
+ usb_register_dev drivers/usb/core/file.c:187 [inline]
+ usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+ sisusb_probe+0x21c/0xbe3 drivers/usb/misc/sisusbvga/sisusb.c:3038
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_new_device.cold+0x63f/0x108e drivers/usb/core/hub.c:2559
+ hub_port_connect drivers/usb/core/hub.c:5300 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+ port_event drivers/usb/core/hub.c:5586 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5668
+ process_one_work+0x98d/0x15b0 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: task kworker/0:3:4397 blocked for more than 144 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:3     state:D stack:25128 pid: 4397 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ rwsem_down_write_slowpath+0x8e3/0x1190 kernel/locking/rwsem.c:1106
+ __down_write_common kernel/locking/rwsem.c:1261 [inline]
+ __down_write_common kernel/locking/rwsem.c:1258 [inline]
+ __down_write kernel/locking/rwsem.c:1270 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1407
+ usb_register_dev drivers/usb/core/file.c:187 [inline]
+ usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+ sisusb_probe+0x21c/0xbe3 drivers/usb/misc/sisusbvga/sisusb.c:3038
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_new_device.cold+0x63f/0x108e drivers/usb/core/hub.c:2559
+ hub_port_connect drivers/usb/core/hub.c:5300 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+ port_event drivers/usb/core/hub.c:5586 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5668
+ process_one_work+0x98d/0x15b0 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: task kworker/0:4:4401 blocked for more than 145 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:4     state:D stack:24368 pid: 4401 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ rwsem_down_write_slowpath+0x8e3/0x1190 kernel/locking/rwsem.c:1106
+ __down_write_common kernel/locking/rwsem.c:1261 [inline]
+ __down_write_common kernel/locking/rwsem.c:1258 [inline]
+ __down_write kernel/locking/rwsem.c:1270 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1407
+ usb_register_dev drivers/usb/core/file.c:187 [inline]
+ usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+ sisusb_probe+0x21c/0xbe3 drivers/usb/misc/sisusbvga/sisusb.c:3038
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_new_device.cold+0x63f/0x108e drivers/usb/core/hub.c:2559
+ hub_port_connect drivers/usb/core/hub.c:5300 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+ port_event drivers/usb/core/hub.c:5586 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5668
+ process_one_work+0x98d/0x15b0 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: task kworker/0:5:4403 blocked for more than 145 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:5     state:D stack:25416 pid: 4403 ppid:     2 flags:0x00004000
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ rwsem_down_write_slowpath+0x8e3/0x1190 kernel/locking/rwsem.c:1106
+ __down_write_common kernel/locking/rwsem.c:1261 [inline]
+ __down_write_common kernel/locking/rwsem.c:1258 [inline]
+ __down_write kernel/locking/rwsem.c:1270 [inline]
+ down_write+0x137/0x150 kernel/locking/rwsem.c:1407
+ usb_register_dev drivers/usb/core/file.c:187 [inline]
+ usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+ sisusb_probe+0x21c/0xbe3 drivers/usb/misc/sisusbvga/sisusb.c:3038
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x23c/0xcd0 drivers/base/dd.c:595
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:965
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc2f/0x2180 drivers/base/core.c:3352
+ usb_new_device.cold+0x63f/0x108e drivers/usb/core/hub.c:2559
+ hub_port_connect drivers/usb/core/hub.c:5300 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5440 [inline]
+ port_event drivers/usb/core/hub.c:5586 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5668
+ process_one_work+0x98d/0x15b0 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: task syz-executor259:4947 blocked for more than 146 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor259 state:D stack:28160 pid: 4947 ppid:  4378 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ schedule_preempt_disabled+0xc/0x20 kernel/sched/core.c:6078
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x786/0x1060 kernel/locking/mutex.c:1104
+ sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+ usb_open+0x204/0x2e0 drivers/usb/core/file.c:48
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x4c3/0x1110 fs/open.c:826
+ do_open fs/namei.c:3374 [inline]
+ path_openat+0x1c23/0x27f0 fs/namei.c:3507
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_openat fs/open.c:1236 [inline]
+ __se_sys_openat fs/open.c:1231 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1231
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x403ce7
+RSP: 002b:00007fffe48c13f0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00000000000f4240 RCX: 0000000000403ce7
+RDX: 0000000000000002 RSI: 00007fffe48c1470 RDI: 00000000ffffff9c
+RBP: 00007fffe48c1470 R08: 0000000000000000 R09: 000000000000000f
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007fffe48c150c R14: 00007fffe48c1520 R15: 00007fffe48c1510
+INFO: task syz-executor259:4950 blocked for more than 146 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor259 state:D stack:27640 pid: 4950 ppid:  4382 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ schedule_preempt_disabled+0xc/0x20 kernel/sched/core.c:6078
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x786/0x1060 kernel/locking/mutex.c:1104
+ sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+ usb_open+0x204/0x2e0 drivers/usb/core/file.c:48
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x4c3/0x1110 fs/open.c:826
+ do_open fs/namei.c:3374 [inline]
+ path_openat+0x1c23/0x27f0 fs/namei.c:3507
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_openat fs/open.c:1236 [inline]
+ __se_sys_openat fs/open.c:1231 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1231
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x403ce7
+RSP: 002b:00007fffe48c13f0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00000000000f4240 RCX: 0000000000403ce7
+RDX: 0000000000000002 RSI: 00007fffe48c1470 RDI: 00000000ffffff9c
+RBP: 00007fffe48c1470 R08: 0000000000000000 R09: 000000000000000f
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007fffe48c150c R14: 00007fffe48c1520 R15: 00007fffe48c1510
+INFO: task syz-executor259:4952 blocked for more than 146 seconds.
+      Not tainted 5.14.0-rc1-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor259 state:D stack:28848 pid: 4952 ppid:  4383 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x941/0x22b0 kernel/sched/core.c:5940
+ schedule+0xcf/0x270 kernel/sched/core.c:6019
+ schedule_preempt_disabled+0xc/0x20 kernel/sched/core.c:6078
+ __mutex_lock_common kernel/locking/mutex.c:1036 [inline]
+ __mutex_lock+0x786/0x1060 kernel/locking/mutex.c:1104
+ sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+ usb_open+0x204/0x2e0 drivers/usb/core/file.c:48
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x4c3/0x1110 fs/open.c:826
+ do_open fs/namei.c:3374 [inline]
+ path_openat+0x1c23/0x27f0 fs/namei.c:3507
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_openat fs/open.c:1236 [inline]
+ __se_sys_openat fs/open.c:1231 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1231
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x403ce7
+RSP: 002b:00007fffe48c13f0 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 00000000000f4240 RCX: 0000000000403ce7
+RDX: 0000000000000002 RSI: 00007fffe48c1470 RDI: 00000000ffffff9c
+RBP: 00007fffe48c1470 R08: 0000000000000000 R09: 000000000000000f
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007fffe48c150c R14: 00007fffe48c1520 R15: 00007fffe48c1510
+
+Showing all locks held in the system:
+6 locks held by kworker/0:1/7:
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x15b0 kernel/workqueue.c:2247
+ #1: ffffc9000007fdb0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15b0 kernel/workqueue.c:2251
+ #2: ffff88810f832220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #2: ffff88810f832220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5614
+ #3: ffff88811b06e220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #3: ffff88811b06e220 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #4: ffff8881156461a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #4: ffff8881156461a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev drivers/usb/core/file.c:187 [inline]
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+1 lock held by khungtaskd/1275:
+ #0: ffffffff8767e500 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x269 kernel/locking/lockdep.c:6446
+6 locks held by kworker/0:2/2618:
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x15b0 kernel/workqueue.c:2247
+ #1: ffffc90007877db0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15b0 kernel/workqueue.c:2251
+ #2: ffff88810f8f7220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #2: ffff88810f8f7220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5614
+ #3: ffff88811b06f220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #3: ffff88811b06f220 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #4: ffff888119e851a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #4: ffff888119e851a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev drivers/usb/core/file.c:187 [inline]
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+2 locks held by in:imklog/4301:
+6 locks held by kworker/0:0/4391:
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x15b0 kernel/workqueue.c:2247
+ #1: ffffc900002c7db0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15b0 kernel/workqueue.c:2251
+ #2: ffff88810f897220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #2: ffff88810f897220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5614
+ #3: ffff88811b178220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #3: ffff88811b178220 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #4: ffff888114a4d1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #4: ffff888114a4d1a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev drivers/usb/core/file.c:187 [inline]
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+6 locks held by kworker/0:3/4397:
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x15b0 kernel/workqueue.c:2247
+ #1: ffffc900002b7db0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15b0 kernel/workqueue.c:2251
+ #2: ffff88810f96f220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #2: ffff88810f96f220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5614
+ #3: ffff88811b179220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #3: ffff88811b179220 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #4: ffff888119e501a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #4: ffff888119e501a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev drivers/usb/core/file.c:187 [inline]
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+6 locks held by kworker/0:4/4401:
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x15b0 kernel/workqueue.c:2247
+ #1: ffffc90000347db0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15b0 kernel/workqueue.c:2251
+ #2: ffff88810f907220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #2: ffff88810f907220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5614
+ #3: ffff88811b17a220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #3: ffff88811b17a220 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #4: ffff8881148fc1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #4: ffff8881148fc1a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev drivers/usb/core/file.c:187 [inline]
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+6 locks held by kworker/0:5/4403:
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
+ #0: ffff88810a489538 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x15b0 kernel/workqueue.c:2247
+ #1: ffffc90000337db0 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15b0 kernel/workqueue.c:2251
+ #2: ffff88810f91f220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #2: ffff88810f91f220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5614
+ #3: ffff88811b17b220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #3: ffff88811b17b220 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #4: ffff888119e821a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:754 [inline]
+ #4: ffff888119e821a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4a0 drivers/base/dd.c:940
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev drivers/usb/core/file.c:187 [inline]
+ #5: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_register_dev+0x19d/0x7e0 drivers/usb/core/file.c:156
+2 locks held by syz-executor259/4944:
+ #0: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_open+0x24/0x2e0 drivers/usb/core/file.c:39
+ #1: ffff88811b1cf8d0 (&(sisusb->lock)){+.+.}-{3:3}, at: sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+2 locks held by syz-executor259/4947:
+ #0: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_open+0x24/0x2e0 drivers/usb/core/file.c:39
+ #1: ffff88811b1cf8d0 (&(sisusb->lock)){+.+.}-{3:3}, at: sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+2 locks held by syz-executor259/4950:
+ #0: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_open+0x24/0x2e0 drivers/usb/core/file.c:39
+ #1: ffff88811b1cf8d0 (&(sisusb->lock)){+.+.}-{3:3}, at: sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+2 locks held by syz-executor259/4952:
+ #0: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_open+0x24/0x2e0 drivers/usb/core/file.c:39
+ #1: ffff88811b1cf8d0 (&(sisusb->lock)){+.+.}-{3:3}, at: sisusb_open+0xb2/0x4d0 drivers/usb/misc/sisusbvga/sisusb.c:2396
+1 lock held by syz-executor259/4971:
+ #0: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_open+0x24/0x2e0 drivers/usb/core/file.c:39
+1 lock held by syz-executor259/4972:
+ #0: ffffffff87f79730 (minor_rwsem){++++}-{3:3}, at: usb_open+0x24/0x2e0 drivers/usb/core/file.c:39
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 1275 Comm: khungtaskd Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x46/0xe0 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1da/0x200 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xcf4/0xf90 kernel/hung_task.c:295
+ kthread+0x3c0/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 0 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 0 skipped: idling at acpi_safe_halt drivers/acpi/processor_idle.c:109 [inline]
+NMI backtrace for cpu 0 skipped: idling at acpi_idle_do_entry+0x1c6/0x250 drivers/acpi/processor_idle.c:553
 
