@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6823D4A32
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FD73D4A2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhGXVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 17:07:44 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:58406
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229573AbhGXVHm (ORCPT
+        id S229831AbhGXVHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 17:07:46 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:43784
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229852AbhGXVHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 24 Jul 2021 17:07:42 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 04BF03F35C
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:48:07 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id EE4F73F347
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:48:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627163292;
-        bh=G9KCxkZ1DdC15NET5kZk+LZOMEIZ/z14F2Hvsqu6jDI=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=ZJU0cdpCYfx3grk1C7T83yGbEWk07y1MEa4GZeIFZMT9b4zzOQd/OqzVpGBq+XWgu
-         gUW/aTMt5Tc4kqXz4jIWBj1W41YNyfqErIbrx03Pa3eV9o7Kqb6Y3Py5YiEGOyP9lt
-         cZerehvKvwKPbFqaKE/aagOt4RWK/XjxMoIP37uh+ErpjHq4QWBREmYCW2QTJzgGj/
-         ZbpyQEq07eDgtRGpZs5hoQdGPuNrlKoPZ5da1CjrFQ6vA+Bag1jUjtgJxdyRRL5nC3
-         I0c30CgTkZMayWkf1psaMVc8SpT3i0Cj+I40vWQtkAVp60646NB6eXS20DNfCVBrQT
-         OQKytz+B60cbw==
-Received: by mail-ed1-f70.google.com with SMTP id b13-20020a056402278db029039c013d5b80so2803255ede.7
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:48:07 -0700 (PDT)
+        s=20210705; t=1627163291;
+        bh=ov7yn4H0ornXwxrX1ZBFt/XnbBsClxe6Xsh+B5h5Cag=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version;
+        b=BjN0/bNBaiaHopwYXYLf3BdjG40rIjk9OiBA7Am9VklfQ3JD2ee+x5ZgiGtm9KM4e
+         ZGr56xLuygUtRzN0watEHfSjmWidd6bhi1OjPqrmaXrrFP6bLoCoY3aNLxbR0FWolR
+         URPbx4ZSC6BfpiKJ+F5RjeMzt77v2q0Z68WUhR2bwXHCSgcqenbPm8BodLx5iU2xwZ
+         iKxO3SeO6tuBN9TDHlX9GTtFq48aF8RTCJX3qBepy+BsFOvqsyOmUNMHl79PWrFBAX
+         U3iaQKDuB3HOUnsJ2v5ziIEoGGHBZ/pzFEk8pWMu9gehaodnm7OTYnEjXOsI0Ds/en
+         6+WTOrTwW5a8A==
+Received: by mail-ed1-f71.google.com with SMTP id v9-20020aa7cd490000b02903ae404e7fb4so2805156edw.12
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:48:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G9KCxkZ1DdC15NET5kZk+LZOMEIZ/z14F2Hvsqu6jDI=;
-        b=QpGIwWBkXgAEmxpPlWADmNFQgaQ/mDFZnDiDlpJ2tGwScD6yVlBXOyKX5tR4uY37XQ
-         cKtpCiYKIu1GvjhpLifXCNi9goAvmFqR+KGAOJfCbGq4WfN0Z4j1pOrv5DXpoa5KaeRG
-         FYf9dv+ELpjQoJB1T+kAfEZwn9H62vUmLeNBQGPqDa5FNbo8aGlrpweXy5YfY72DyWai
-         wqHl8YwhgX5En+tOmYp6hx+DnH3XsNyZiOGvKuTthqRmg5MZUc9nvc7q1tpyBi6DxlVY
-         eCQSCDOf91/d8h49nuh1Zj6UDckb9LI/xazCDfU42tm4w/kfzG34zFwLXhFHZHqJcl76
-         pqEQ==
-X-Gm-Message-State: AOAM5330Jhxaaux9Ghj14vjdChp9Rscr4tKqpM1g1K2sbylljM+64a5X
-        AJg62v9ErQBxBcyqbrhU3KjMuV57fAKWlrJPwsmCE1WO2db25EJBvJdzfzL7EjN3tUFWjubkzYr
-        WssHD9HaDjmVVdl2TJNRE+hlNK+0eu4Nzmb2FqtBktQ==
-X-Received: by 2002:a17:906:8047:: with SMTP id x7mr46589ejw.453.1627163286816;
-        Sat, 24 Jul 2021 14:48:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxOmFVBri8CQWcWZUF1IqokLpZwOavdWOwnGXxKa0UI7mA9/SGqL9hAGuBdFfYDwRxhCsOSoA==
-X-Received: by 2002:a17:906:8047:: with SMTP id x7mr46579ejw.453.1627163286677;
-        Sat, 24 Jul 2021 14:48:06 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ov7yn4H0ornXwxrX1ZBFt/XnbBsClxe6Xsh+B5h5Cag=;
+        b=BgZDSs+4JB1czElVD9uH3z+Fau1CWchP0JpX2ZvETX3TNRXKQMQMAo2JjgWJHBYuPw
+         BeH7nmmck8+GO6O7u4XDm+w245HvXf4pNGecQZyO3YRWayvN/2OO9KHSrXzEKB66SKwU
+         Y+1WCipoVDZWBXQ7yb5udhZGZA6jQbyrlF9z0Fnbvw47ZpGiqQlawcd3qaklq9NayDD7
+         eDsw7zWroxKQke9Bv8hI5qCqn1aK7ix8Fsd4bOVTp6O1Kp5X4Z9gw7f+AKs4CdLrqwWv
+         BQ0DgQjACX2SIHOoByWJRuEE55vXxu5CuR3bytkUb00vmJMcjnMYyBhQsBXJdicNTT8D
+         9Szg==
+X-Gm-Message-State: AOAM531ZtY8xDoT2rNF1tTPUWF4G7JvUCyEpyTUZ/CVRcoaXjffIc/B0
+        WtBDqZr2E/p8UOR5CHswO1Erd339z2xGBc1bPtjikUEcVbpZAyxnNYq1/IxU6zQVPMcaLVFgcng
+        f5cNAk6bRsyMmx4zsvYsX64rNaHpjZEk2rvYtmAGtHQ==
+X-Received: by 2002:a17:906:5e4c:: with SMTP id b12mr10085426eju.230.1627163288266;
+        Sat, 24 Jul 2021 14:48:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4DjgiuYIHPq50fWezEY5ArO3iNlytrDP/udlFADjFqzzpxgUDWdNRebg5J3N9yopeTwgO0Q==
+X-Received: by 2002:a17:906:5e4c:: with SMTP id b12mr10085415eju.230.1627163288139;
+        Sat, 24 Jul 2021 14:48:08 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id j5sm8383005edv.10.2021.07.24.14.48.05
+        by smtp.gmail.com with ESMTPSA id j5sm8383005edv.10.2021.07.24.14.48.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 14:48:06 -0700 (PDT)
+        Sat, 24 Jul 2021 14:48:07 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Charles Gorand <charles.gorand@effinnov.com>,
@@ -63,88 +64,54 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-wireless@vger.kernel.org
-Subject: [PATCH 00/12] nfc: constify data structures
-Date:   Sat, 24 Jul 2021 23:47:31 +0200
-Message-Id: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 01/12] nfc: constify payload argument in nci_send_cmd()
+Date:   Sat, 24 Jul 2021 23:47:32 +0200
+Message-Id: <20210724214743.121884-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
+References: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The nci_send_cmd() payload argument is passed directly to skb_put_data()
+which already accepts a pointer to const, so make it const as well for
+correctness and safety.
 
-Constify pointers to several data structures which are not modified by
-NFC core or by drivers to make it slightly safer.  No functional impact
-expected.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ include/net/nfc/nci_core.h | 2 +-
+ net/nfc/nci/core.c         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Best regards,
-Krzysztof
-
-
-Krzysztof Kozlowski (12):
-  nfc: constify payload argument in nci_send_cmd()
-  nfc: constify nci_ops
-  nfc: s3fwrn5: constify nci_ops
-  nfc: constify nci_driver_ops (prop_ops and core_ops)
-  nfc: constify nfc_phy_ops
-  nfc: st21nfca: constify file-scope arrays
-  nfc: constify pointer to nfc_vendor_cmd
-  nfc: constify nfc_hci_gate
-  nfc: constify nfc_ops
-  nfc: constify nfc_hci_ops
-  nfc: constify nfc_llc_ops
-  nfc: constify nfc_digital_ops
-
- Documentation/driver-api/nfc/nfc-hci.rst |  2 +-
- drivers/nfc/fdp/fdp.c                    | 11 ++++++-----
- drivers/nfc/fdp/fdp.h                    |  2 +-
- drivers/nfc/fdp/i2c.c                    |  2 +-
- drivers/nfc/mei_phy.c                    |  2 +-
- drivers/nfc/mei_phy.h                    |  2 +-
- drivers/nfc/microread/i2c.c              |  2 +-
- drivers/nfc/microread/microread.c        | 12 ++++++------
- drivers/nfc/microread/microread.h        |  6 +++---
- drivers/nfc/nfcmrvl/main.c               |  2 +-
- drivers/nfc/nfcsim.c                     |  2 +-
- drivers/nfc/nxp-nci/core.c               |  2 +-
- drivers/nfc/pn533/pn533.c                |  2 +-
- drivers/nfc/pn544/i2c.c                  |  2 +-
- drivers/nfc/pn544/pn544.c                | 13 ++++++------
- drivers/nfc/pn544/pn544.h                |  7 ++++---
- drivers/nfc/port100.c                    |  2 +-
- drivers/nfc/s3fwrn5/core.c               |  7 +++----
- drivers/nfc/s3fwrn5/nci.c                |  8 +-------
- drivers/nfc/s3fwrn5/nci.h                |  2 +-
- drivers/nfc/st-nci/core.c                |  5 +++--
- drivers/nfc/st-nci/i2c.c                 |  2 +-
- drivers/nfc/st-nci/ndlc.c                |  6 +++---
- drivers/nfc/st-nci/ndlc.h                |  8 ++++----
- drivers/nfc/st-nci/spi.c                 |  2 +-
- drivers/nfc/st-nci/vendor_cmds.c         |  2 +-
- drivers/nfc/st21nfca/core.c              |  6 +++---
- drivers/nfc/st21nfca/i2c.c               |  6 +++---
- drivers/nfc/st21nfca/st21nfca.h          |  4 ++--
- drivers/nfc/st21nfca/vendor_cmds.c       |  2 +-
- drivers/nfc/st95hf/core.c                |  2 +-
- drivers/nfc/trf7970a.c                   |  2 +-
- drivers/nfc/virtual_ncidev.c             |  2 +-
- include/net/nfc/digital.h                |  4 ++--
- include/net/nfc/hci.h                    |  6 +++---
- include/net/nfc/nci_core.h               | 12 ++++++------
- include/net/nfc/nfc.h                    |  8 ++++----
- net/nfc/core.c                           |  2 +-
- net/nfc/digital_core.c                   |  4 ++--
- net/nfc/hci/core.c                       |  6 +++---
- net/nfc/hci/llc.c                        |  2 +-
- net/nfc/hci/llc.h                        |  6 +++---
- net/nfc/hci/llc_nop.c                    |  2 +-
- net/nfc/hci/llc_shdlc.c                  |  2 +-
- net/nfc/nci/core.c                       | 25 ++++++++++++------------
- net/nfc/netlink.c                        |  2 +-
- 46 files changed, 108 insertions(+), 112 deletions(-)
-
+diff --git a/include/net/nfc/nci_core.h b/include/net/nfc/nci_core.h
+index 1df0f8074c9d..bf573eca07ca 100644
+--- a/include/net/nfc/nci_core.h
++++ b/include/net/nfc/nci_core.h
+@@ -360,7 +360,7 @@ int nci_core_rsp_packet(struct nci_dev *ndev, __u16 opcode,
+ int nci_core_ntf_packet(struct nci_dev *ndev, __u16 opcode,
+ 			struct sk_buff *skb);
+ void nci_rx_data_packet(struct nci_dev *ndev, struct sk_buff *skb);
+-int nci_send_cmd(struct nci_dev *ndev, __u16 opcode, __u8 plen, void *payload);
++int nci_send_cmd(struct nci_dev *ndev, __u16 opcode, __u8 plen, const void *payload);
+ int nci_send_data(struct nci_dev *ndev, __u8 conn_id, struct sk_buff *skb);
+ int nci_conn_max_data_pkt_payload_size(struct nci_dev *ndev, __u8 conn_id);
+ void nci_data_exchange_complete(struct nci_dev *ndev, struct sk_buff *skb,
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index da7fe9db1b00..09967b836361 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1332,7 +1332,7 @@ int nci_send_frame(struct nci_dev *ndev, struct sk_buff *skb)
+ EXPORT_SYMBOL(nci_send_frame);
+ 
+ /* Send NCI command */
+-int nci_send_cmd(struct nci_dev *ndev, __u16 opcode, __u8 plen, void *payload)
++int nci_send_cmd(struct nci_dev *ndev, __u16 opcode, __u8 plen, const void *payload)
+ {
+ 	struct nci_ctrl_hdr *hdr;
+ 	struct sk_buff *skb;
 -- 
 2.27.0
 
