@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB5C3D43F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6623D43F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:29:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbhGWXr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 19:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
+        id S233499AbhGWXst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 19:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbhGWXr2 (ORCPT
+        with ESMTP id S232724AbhGWXss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 19:47:28 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A20CC061575;
-        Fri, 23 Jul 2021 17:28:00 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id h10so2837360qth.5;
-        Fri, 23 Jul 2021 17:28:00 -0700 (PDT)
+        Fri, 23 Jul 2021 19:48:48 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337A4C061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:29:20 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id t66so3148166qkb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:29:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=yUR9vJJVBZ++4KfjLkcZVAYSvkA3ayEGS4PyGfLalPM=;
-        b=fEg7jmTITwuBlSObLCFYUgVdaZDKJo3E9aqB9Xs8g8wePAAwzjlXTfYPChZoE60gPy
-         GxArM5zAYk22cjsHQiobsf4uDInsfcVjl6o5Uj7n/h3qAGesmatZS+tPp790DXpEsMCo
-         Nw37ZtOfkWZiO+ROkp4UIZv3Yp69+x1iVegf1OsXbwvthf4sq/9icxsp+2UN6hE3ZMin
-         YMmX6/Y0B8g+L6g0PSwp1SnwnkNTW41BYPWka4qE7h+0JpF9CzBwnomLzuopBGS0boXg
-         EeNTihTE+EgswZv1sREROSkd4cCdE/PkKX4lrZ91gzjsgttwNV/D5Z9wfDsra7CxBEMW
-         aMpw==
+        bh=qf6d8SRXv1lvTGNIT1Gr1+kbBtlMdmpvy2P7MIdCQCU=;
+        b=NotMNJPtiWda/Z83VeqYVn1Tvo3zIyWM28lAJ03A1MtE75FbinSxcoodvtEZK3DPNo
+         thZDa0pspMfmbugGk8QbOAzLK5xYC098P7RQXfaT8595umyyC7tlO501YAl9n0AnHW/y
+         t2LUf5tWOx3Uq6uxM6qSKVAUu2gPKkFBNtqDDBZfOJiGTbai3n1UZy8rNkGMaX7b9Bwj
+         STvudW9XdjlS3CzdLSXed+f0BwOCz1UB64k9V5R/uYF5wH4js11neBvELOCJDMjJuV3w
+         IozLJRmet/NK+9joSIgOIvKw83lvXXsmWlJkCUbWDGOFHY4kK1oMqk7+ussjt6rKCVo+
+         sZqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=yUR9vJJVBZ++4KfjLkcZVAYSvkA3ayEGS4PyGfLalPM=;
-        b=SuZrmE/Kw6G4EPsE/vj9Mvn+Y8+c1hmUyZ1dsRiLPY9TGr1pDxKFcPr1mWRwwUgLr7
-         SjM2aC/A8xFdYIYdOa7Mnstoi2amRfotyzlqh+BHvAFl6hdYojmxCZpPbwwBkXlzv2Fo
-         7AdiRhoXRLr2ZZRcGjig2QKpOo+41LnkgPWPKWvx2734P0N2rfbvXMBxnCa45+PzX3d2
-         d67n6k9JrMHdeV+EtoqZczms+H4TaM3LlyikEWZPqpB1kzrUw8GtbdCBgG5pca6plJ2W
-         cbvdVso5B90ouNtXiROERVOPm53lCu5pCAJLvvYjXbt+Puhb9L/Kw8Te0hkAon87vzzf
-         OQZg==
-X-Gm-Message-State: AOAM530d4jnEae7G7MBikHQGVplEqfVxcC6sI/neNk9TDXWjGLLazZy+
-        Qva8iaNz72siVoWyQviJaCE=
-X-Google-Smtp-Source: ABdhPJwrxhDAQ7ceVK5GvlpstNHsjFggcc2RjjEe4hnZLSCi08MSUUiNXVpC2HZ/36bcBUz5JS1Hhw==
-X-Received: by 2002:ac8:584e:: with SMTP id h14mr6051271qth.339.1627086479562;
-        Fri, 23 Jul 2021 17:27:59 -0700 (PDT)
+        bh=qf6d8SRXv1lvTGNIT1Gr1+kbBtlMdmpvy2P7MIdCQCU=;
+        b=Hz6DobsXKVumhRKKpv5IJfMEnkgM10NoZlinPcFmWoxNknG5PkAjedP0WbiUsvyjo7
+         d07YmpB224oXJhuexCUBFQiAgn6QFTi37GL0ASZNpzJ4l9rY8X90He266j2qktUcyqeK
+         Eq9VWNxvEj5n/VMYX1xvF5sfy3UnqgOcdDHadmKOT1YoYRMx1cz1+nk5Bpk58DrB7fBn
+         OwnKSlbP7FzLNCcQowZ/muGbScBC4Au/HaStEpbXHe9OFREF8idklvmx65F3s6Hgv06G
+         F2zFSP3egI04gaiVfNNalnjh2Lu38uB2nFda0PWR2sFvfdC817tFXelHd05wp2kDj1lM
+         RQ0w==
+X-Gm-Message-State: AOAM531UHr1hElk9wWPVWqQFAKUuS2qU0cgpkqvmTh9eBGSgAbox9JZG
+        MbfZcShRswZCX2pscvN8htM=
+X-Google-Smtp-Source: ABdhPJyMLqR3nayBDmkd63sKrmioXTMGScqttjDSlSqS/KFNaC/c42XefEHO1dentzlT5yAG7r/yVA==
+X-Received: by 2002:a05:620a:2fb:: with SMTP id a27mr7121715qko.279.1627086559400;
+        Fri, 23 Jul 2021 17:29:19 -0700 (PDT)
 Received: from fedora ([130.44.160.152])
-        by smtp.gmail.com with ESMTPSA id bl41sm4445922qkb.17.2021.07.23.17.27.57
+        by smtp.gmail.com with ESMTPSA id x23sm1041976qkf.36.2021.07.23.17.29.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Jul 2021 17:27:58 -0700 (PDT)
+        Fri, 23 Jul 2021 17:29:19 -0700 (PDT)
 Sender: Konrad Rzeszutek Wilk <konrad.r.wilk@gmail.com>
-Date:   Fri, 23 Jul 2021 20:27:56 -0400
+Date:   Fri, 23 Jul 2021 20:29:16 -0400
 From:   Konrad Rzeszutek Wilk <konrad@darnok.org>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, stable@vger.kernel.org,
+To:     Will Deacon <will@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
         Claire Chang <tientzu@chromium.org>,
-        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 1/1] s390/pv: fix the forcing of the swiotlb
-Message-ID: <YPtejB62iu+iNrM+@fedora>
-References: <20210723231746.3964989-1-pasic@linux.ibm.com>
+        Christoph Hellwig <hch@lst.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v2 0/4] Fix restricted DMA vs swiotlb_exit()
+Message-ID: <YPte3K+4PPjGAQt/@fedora>
+References: <20210720133826.9075-1-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210723231746.3964989-1-pasic@linux.ibm.com>
+In-Reply-To: <20210720133826.9075-1-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 01:17:46AM +0200, Halil Pasic wrote:
-> Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
-> swiotlb data bouncing") if code sets swiotlb_force it needs to do so
-> before the swiotlb is initialised. Otherwise
-> io_tlb_default_mem->force_bounce will not get set to true, and devices
-> that use (the default) swiotlb will not bounce despite switolb_force
-> having the value of SWIOTLB_FORCE.
+On Tue, Jul 20, 2021 at 02:38:22PM +0100, Will Deacon wrote:
+> Hi again, folks,
 > 
-> Let us restore swiotlb functionality for PV by fulfilling this new
-> requirement.
+> This is version two of the patch series I posted yesterday:
 > 
-> This change addresses what turned out to be a fragility in
-> commit 64e1f0c531d1 ("s390/mm: force swiotlb for protected
-> virtualization"), which ain't exactly broken in its original context,
-> but could give us some more headache if people backport the broken
-> change and forget this fix.
+>   https://lore.kernel.org/r/20210719123054.6844-1-will@kernel.org
 > 
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
-> Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
-> Cc: stable@vger.kernel.org #5.3+
+> The only changes since v1 are:
 > 
-> ---
+>   * Squash patches 2 and 3, amending the commit message accordingly
+>   * Add Reviewed-by and Tested-by tags from Christoph and Claire (thanks!)
+> 
+> I'd usually leave it a bit longer between postings, but since this fixes
+> issues with patches in -next I thought I'd spin a new version immediately.
 
-Picked it up and stuck it in linux-next with the other set of patches (Will's fixes).
+Thank you!
+
+I put them in devel/for-linus-5.15 and linux-next.
