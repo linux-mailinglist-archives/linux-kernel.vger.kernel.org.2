@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA073D4AAE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 01:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A669B3D4AB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 01:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229982AbhGXW7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 18:59:11 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:55380 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhGXW7J (ORCPT
+        id S229971AbhGXXQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 19:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhGXXQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 18:59:09 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m7REv-003hHv-87; Sat, 24 Jul 2021 23:39:29 +0000
-Date:   Sat, 24 Jul 2021 23:39:29 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v4 1/8] iov_iter: Introduce iov_iter_fault_in_writeable
- helper
-Message-ID: <YPyksQ/53I8OGY/D@zeniv-ca.linux.org.uk>
-References: <20210724193449.361667-1-agruenba@redhat.com>
- <20210724193449.361667-2-agruenba@redhat.com>
- <CAHk-=whodi=ZPhoJy_a47VD+-aFtz385B4_GHvQp8Bp9NdTKUg@mail.gmail.com>
- <YPx28cEvrVl6YrDk@zeniv-ca.linux.org.uk>
- <CAHc6FU5nGRn1_oc-8rSOCPfkasWknH1Wb3FeeQYP29zb_5fFGQ@mail.gmail.com>
- <YPyMyPCpZKGlfAGk@zeniv-ca.linux.org.uk>
- <CAHc6FU4aVL_g3LHEWng1fr8j3jJt+QVK3wAda2q6pfi+xRJcwg@mail.gmail.com>
+        Sat, 24 Jul 2021 19:16:10 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB161C061575;
+        Sat, 24 Jul 2021 16:56:41 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id h8so6607608ede.4;
+        Sat, 24 Jul 2021 16:56:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sTT02yc54QuiI+WSS8+q0Wem8gLR0T4+uhTFU7IOQg8=;
+        b=sSp8s4HgWMf2XSTI3SyPBsTQMifdhTl+17fnipaSDC2HdbVl4kIYSwc3sOBdfphUA+
+         wzb+AEEr8tatFpJLq1rmUJmTudqvqytThB06ZHwhb6xxUBBmUTbHy+KN7KPIxGhIB7Hr
+         d21iOZSlj3TfKWefeEv2f+lGQkB0yRVm4gX7DVrwNbTTCyZibzQHrI2+rqwP/16Hjbys
+         RbN4t2OikeRkwWm7zNQAwA3H+grun+qn/P7t6pKjBycb7dk9mH3Y2P3eOPuOgjKqrSM3
+         y7XeY+br4HHOnEZ3/qK00+cWjpmuUGmDfUGmyI2StcOfM/jbomuCt1Xr4KQyGHg8scLt
+         0N/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sTT02yc54QuiI+WSS8+q0Wem8gLR0T4+uhTFU7IOQg8=;
+        b=P6dLNmtOYauvsy7X2KsvyF0MesmYc5xBkTad6PJ+KLZSoNOEcIuHbt2qiOyoSW9fMk
+         1F0nPojyrvkhTGB4ruJt0TjIX00IioUQaLa6xxderduaXlv138Qtye7c+82N9Z+pIUe4
+         RdxAdZueNfUPg9qOYbrURopZduCkGYFKhOYs9/2s5vzuy+TmjP7GVMadrxP2e9ndfjhO
+         omsSbr86sjHs7YKlFEBMjxy83DuusrP0YO6iEFgBJpvLEK+RV/Lgt7AHvhSMkXXKYF1S
+         2f9lbrZND1/Hwx1hm/tAJdzMqvG0CpsBAtRa/UJ/ADKtA8kZdvSGU41+9i2UmsdhP8QL
+         QCxw==
+X-Gm-Message-State: AOAM531YYT9PBDRtjjavjfsCJFJqR4Qk/iaH8Le4wPJ4Ws16NmiwL3zd
+        B8ku454GEqFj13k2lcHeTBE=
+X-Google-Smtp-Source: ABdhPJzdm+u+kcIT7+ag4ihHiHvSQ2zD4g5XG9cQ5beUUTZnqOL+0jLOP+8oRIfduWb+AF3YJqJ8dg==
+X-Received: by 2002:a05:6402:898:: with SMTP id e24mr6770361edy.197.1627171000269;
+        Sat, 24 Jul 2021 16:56:40 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id dj16sm16993384edb.0.2021.07.24.16.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 16:56:39 -0700 (PDT)
+Date:   Sun, 25 Jul 2021 00:56:37 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc: powermate: update the reference count of the usb
+ interface structure
+Message-ID: <20210724235637.GA590874@pc>
+References: <20210724212016.GA568154@pc>
+ <YPydUp9vc5U7vGIw@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHc6FU4aVL_g3LHEWng1fr8j3jJt+QVK3wAda2q6pfi+xRJcwg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <YPydUp9vc5U7vGIw@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 12:06:41AM +0200, Andreas Gruenbacher wrote:
-> On Sat, Jul 24, 2021 at 11:57 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> > On Sat, Jul 24, 2021 at 11:38:20PM +0200, Andreas Gruenbacher wrote:
-> >
-> > > Hmm, how could we have sub-page failure areas when this is about if
-> > > and how pages are mapped? If we return the number of bytes that are
-> > > accessible, then users will know if they got nothing, something, or
-> > > everything, and they can act accordingly.
-> >
-> > What I'm saying is that in situation when you have cacheline-sized
-> > poisoned areas, there's no way to get an accurate count of readable
-> > area other than try and copy it out.
-> >
-> > What's more, "something" is essentially useless information - the
-> > pages might get unmapped right as your function returns; the caller
-> > still needs to deal with partial copies.  And that's a slow path
-> > by definition, so informing them of a partial fault-in is not
-> > going to be useful.
-> >
-> > As far as callers are concerned, it's "nothing suitable in the
-> > beginning of the area" vs. "something might be accessible".
+Hi,
+
+On Sat, Jul 24, 2021 at 04:08:02PM -0700, Dmitry Torokhov wrote:
 > 
-> Yes, and the third case would be "something might be accessible, but
-> not all of it". There probably are callers that give up when they
-> don't have it all.
+> On Sat, Jul 24, 2021 at 10:20:16PM +0100, Salah Triki wrote:
+> > Use usb_get_intf() and usb_put_intf() in order to update the reference
+> > count of the usb interface structure.
+> 
+> This is quite pointless as the driver will be unbound from the interface
+> before interface is deleted.
 
-Who cares?  Again,
-	1) those callers *still* have to cope with copyin/copyout failures
-halfway through.  Fully successful fault-in does not guarantee anything
-whatsoever.  IOW, you won't get rid of any complexity that way.
-	2) earlier bailout in rare error case is not worth bothering with.
-If you'd been given an iov_iter spanning an unmapped/unreadable/unwritable
-area of user memory, it's either a fucking rare race with truncate() of
-an mmapped file or a pilot error.  Neither case is worth optimizing for.
+From the documentation of usb_get_intf():
 
-	The difference between partially accessible and completely accessible
-at the fault-in time is useless for callers.  Really.
+[quote]
+
+Each live reference to a interface must be refcounted.
+
+Drivers for USB interfaces should normally record such references in their 
+probe() methods, when they bind to an interface, and release them by calling
+usb_put_intf(), in their disconnect() methods.
+
+[/quote]
+
+Thanx
