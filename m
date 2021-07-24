@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00293D4916
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 567993D4922
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229928AbhGXRdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 13:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
+        id S229925AbhGXRkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 13:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhGXRdx (ORCPT
+        with ESMTP id S229865AbhGXRk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 13:33:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC88EC061575;
-        Sat, 24 Jul 2021 11:14:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w8yKGTD/K4w2fC7pZFl5Bs3NRSbkCF/Y0TLmM7Sde20=; b=l3twtMHxEoCrMzv/WZ2WQYxlgE
-        fFExxVJhEit1ghlINmX1ue8wIBc8CaCq7YziFHUe1MKap/XZje8Ujcu9UDuSkwSLPdirHlV/NYxGE
-        i0m7iM8fyMOt6/+Hvc0qquHlEWDf0lUGtavMG2C2+piXlkftDYnEM0CcstMNz4AU1m0MrFq5YTcXP
-        YBFh2cfXasMuHxQVznQyudJdMs19qOIIxR6E9LwWo9ZT6aPP/laK8BB+01sIUGzOFsz1qX2cxUrEu
-        fMJIKVYr/+CD7S1eLHXVYGY+j+Iv2zEgjSMvORafDqSjhr++LlwuTg+th23/0nX3Bp7PzEEQKkXPn
-        3L7E02ww==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m7MAA-00CSBO-B0; Sat, 24 Jul 2021 18:14:15 +0000
-Date:   Sat, 24 Jul 2021 19:14:14 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andres Freund <andres@anarazel.de>,
-        Michael Larabel <Michael@michaellarabel.com>
-Subject: Re: Folios give an 80% performance win
-Message-ID: <YPxYdhEirWL0XExY@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
- <YPxNkRYMuWmuRnA5@casper.infradead.org>
- <1e48f7edcb6d9a67e8b78823660939007e14bae1.camel@HansenPartnership.com>
+        Sat, 24 Jul 2021 13:40:28 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE62C061575;
+        Sat, 24 Jul 2021 11:20:59 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id gt31so8591364ejc.12;
+        Sat, 24 Jul 2021 11:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=VoDoE+K4ajdEkrYCeli3UDgiK2FyXtPR8yc3ofmqbUs=;
+        b=h8QhkqXrf5WnnGU62G8nHUllnOhFHS7kSg7tHJfGAVvQfiISrBOvWRv9B6cc6Z+1XI
+         ks2WUL1pUbuM6UiG9zjepo0XQHPy78Fz9hHKa3vRIT6Ds7QQeap1hyVBcW0aOT8g/QXi
+         wGtMRqNQ+yxjxhc78SP/46YFDSw5lZF6ZD49Oe48udZmvSZvk7SV5gjHXLYB7VjRga1C
+         q2sp0n6d5RZIxXPz7qQOlIaQTSFHk/4iYdFk/b5lWk8Y3gz1OPYXf6hSoXkaR5LDtcZk
+         g3BTWX7N+Hp4Osi9eoMWYLVbuYpN5zBWpENr+gzA3EFegjFZAspsr31FSfyPn0KmCWww
+         C2nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=VoDoE+K4ajdEkrYCeli3UDgiK2FyXtPR8yc3ofmqbUs=;
+        b=hpYJvIW9mxeualFZpYrzbt1msFxBa9V9hkStBC4uBh/wwdRYFsa+2aY6GbkV8R0zzz
+         49QaQKeuL3FdvJeqNxy8VLTUpWlgiO8c9oGxh4wy78mtI09FhEhGKrVpu/VA2XrAsSRU
+         8lPicN/Wv60uBv+cXzBh2T4KrXbEN0230WLCSr68xQk90YLC5sj1BGjYg6C/xBFXxc4k
+         NxFIbXjZJ9Ljy8Ndo5XDFFh4IfM8vQog/L+IigL6kfpj6aY3c4llZ6Mq/qe01GEnbe+l
+         +TfiLLQH4x3Jm1C/V2mvv1OxBXxp/3xXqphCnquSpSGmzUQIm7Di2jdYHr2T2oMpcg2p
+         7SvQ==
+X-Gm-Message-State: AOAM530/bgw5+MLEBAWZxgToeERPaes+QGbymfAHJ7Dz8rgBgTzGtyYD
+        yTJ2VqaYr+GKaNtdq+mJPJU1evKVpAo=
+X-Google-Smtp-Source: ABdhPJyX5evBzDv2P/ctYj1DMp485sTeiM34aIVR6W42yPyT64nTP2dX/I5JHaSEROElHYW3xVXA1g==
+X-Received: by 2002:a17:906:f6d5:: with SMTP id jo21mr9870816ejb.444.1627150857771;
+        Sat, 24 Jul 2021 11:20:57 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id k1sm12652835eji.84.2021.07.24.11.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 11:20:57 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 19:20:54 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bluetooth: bcm203x: update the reference count of udev
+Message-ID: <20210724182054.GA451351@pc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1e48f7edcb6d9a67e8b78823660939007e14bae1.camel@HansenPartnership.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 11:09:02AM -0700, James Bottomley wrote:
-> On Sat, 2021-07-24 at 18:27 +0100, Matthew Wilcox wrote:
-> > What blows me away is the 80% performance improvement for PostgreSQL.
-> > I know they use the page cache extensively, so it's plausibly real.
-> > I'm a bit surprised that it has such good locality, and the size of
-> > the win far exceeds my expectations.  We should probably dive into it
-> > and figure out exactly what's going on.
-> 
-> Since none of the other tested databases showed more than a 3%
-> improvement, this looks like an anomalous result specific to something
-> in postgres ... although the next biggest db: mariadb wasn't part of
-> the tests so I'm not sure that's definitive.  Perhaps the next step
-> should be to test mariadb?  Since they're fairly similar in domain
-> (both full SQL) if mariadb shows this type of improvement, you can
-> safely assume it's something in the way SQL databases handle paging and
-> if it doesn't, it's likely fixing a postgres inefficiency.
+Use usb_get_dev() and usb_put_dev() in order to update the reference
+count of udev.
 
-I think the thing that's specific to PostgreSQL is that it's a heavy
-user of the page cache.  My understanding is that most databases use
-direct IO and manage their own page cache, while PostgreSQL trusts
-the kernel to get it right.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+ drivers/bluetooth/bcm203x.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Regardless of whether postgres is "doing something wrong" or not,
-do you not think that an 80% performance win would exert a certain
-amount of pressure on distros to do the backport?
+diff --git a/drivers/bluetooth/bcm203x.c b/drivers/bluetooth/bcm203x.c
+index e667933c3d70..547d35425d70 100644
+--- a/drivers/bluetooth/bcm203x.c
++++ b/drivers/bluetooth/bcm203x.c
+@@ -166,7 +166,7 @@ static int bcm203x_probe(struct usb_interface *intf, const struct usb_device_id
+ 	if (!data)
+ 		return -ENOMEM;
+ 
+-	data->udev  = udev;
++	data->udev  = usb_get_dev(udev);
+ 	data->state = BCM203X_LOAD_MINIDRV;
+ 
+ 	data->urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -244,6 +244,8 @@ static void bcm203x_disconnect(struct usb_interface *intf)
+ 
+ 	usb_set_intfdata(intf, NULL);
+ 
++	usb_put_dev(data->udev);
++
+ 	usb_free_urb(data->urb);
+ 	kfree(data->fw_data);
+ 	kfree(data->buffer);
+-- 
+2.25.1
+
