@@ -2,215 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74C33D48E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFCD3D48DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhGXQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 12:49:00 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:45149 "EHLO m43-7.mailgun.net"
+        id S230093AbhGXQrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 12:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229689AbhGXQs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 12:48:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627147770; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Ktj1i3AlaWGew5NfuLfcGEy2Chnk/dvK1HpNHbnFwgA=; b=QqauvPxG26UGdYgjjE5/QZ3SJSs/mteKQftaW84Hsm5rBgqJI3nMVN90htm7zMGrakOquIg7
- SIz1lQx7Rwz92QgFOIk8X15OH4Irmff35OeVNKPNoARTkp3Ccxe13XGiecW/KepLg7EgdTJv
- y1c+wQpigzHldOClacz3MbcQRfk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 60fc4df4e31d882d180b0096 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 24 Jul 2021 17:29:24
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 26A82C4323A; Sat, 24 Jul 2021 17:29:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S229689AbhGXQrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 12:47:06 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3176C433D3;
-        Sat, 24 Jul 2021 17:29:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A3176C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-To:     freedreno <freedreno@lists.freedesktop.org>,
-        dri-devel@lists.freedesktop.org,
-        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
-        <devicetree@vger.kernel.org>, linux-arm-msm@vger.kernel.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: qcom: sc7280: Add gpu support
-Date:   Sat, 24 Jul 2021 22:59:00 +0530
-Message-Id: <1627147740-11590-1-git-send-email-akhilpo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 82F5F60E8E;
+        Sat, 24 Jul 2021 17:27:32 +0000 (UTC)
+Date:   Sat, 24 Jul 2021 18:30:03 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "hui.liu" <hui.liu@mediatek.com>
+Cc:     <robh+dt@kernel.org>, <knaack.h@gmx.de>, <lars@metafoo.de>,
+        <pmeerw@pmeerw.net>, <srv_heupstream@mediatek.com>,
+        <zhiyong.tao@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <yingjoe.chen@mediatek.com>, <seiya.wang@mediatek.com>,
+        <matthias.bgg@gmail.com>, <s.hauer@pengutronix.de>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH] iio: mtk-auxadc: add mutex_destroy
+Message-ID: <20210724183003.6f3bc1d5@jic23-huawei>
+In-Reply-To: <1627042875.27985.15.camel@mhfsdcap03>
+References: <20210715093523.29844-1-hui.liu@mediatek.com>
+        <20210715093523.29844-2-hui.liu@mediatek.com>
+        <20210717174432.7e69e4e9@jic23-huawei>
+        <1627042875.27985.15.camel@mhfsdcap03>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the necessary dt nodes for gpu support in sc7280.
+On Fri, 23 Jul 2021 20:21:15 +0800
+hui.liu <hui.liu@mediatek.com> wrote:
 
-Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
----
-This patch has dependency on the GPUCC bindings patch here:
-https://patchwork.kernel.org/project/linux-arm-msm/patch/1619519590-3019-4-git-send-email-tdas@codeaurora.org/
+> On Sat, 2021-07-17 at 17:44 +0100, Jonathan Cameron wrote:
+> > On Thu, 15 Jul 2021 17:35:23 +0800
+> > Hui Liu <hui.liu@mediatek.com> wrote:
+> >   
+> > > Add mutex_destroy when probe fail and remove device.
+> > > 
+> > > Signed-off-by: Hui Liu <hui.liu@mediatek.com>  
+> > Hi Hui Liu,
+> > 
+> > We very very rarely bother to call mutex_destroy().  The reason is
+> > that it is only a non noop in when mutex debugging is enabled and
+> > that is only useful if there is a plausible route in which it could
+> > be used after the mutex_destroy.   Given these are both at the ends
+> > of removal paths, I don't think this is useful.  That's why you will
+> > rarely find mutex_destroy() being called.
+> > 
+> > Thanks,
+> > 
+> > Jonathan  
+> 
+> Hi Jonathon,
+> 
+> I think this patch could assurance the integrity of code.
+> mutex_init will be called when driver probe. If driver probe fail or
+> device removed, mutex_destroy could set lock->magic to NULL.
 
-Changes in v2:
-- formatting update and removed a duplicate header (Stephan)
+I'm not seeing the use case here given the location doesn't leave
+a huge amount of code that could have such a bug.  There might have been
+something if we had any route to increment the reference count of the
+structure this mutex is ultimately embedded in and so have it outlast
+the remove function or error path. In this driver it looks like there is
+no such path.  Hence you are protecting against a automated
+cleanup of core code (nothing in the driver itself) which is obviously
+not going to try taking a driver specific mutex.
 
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 116 +++++++++++++++++++++++++++++++++++
- 1 file changed, 116 insertions(+)
+A few side notes:
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 029723a..524a5e0 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -6,6 +6,7 @@
-  */
- 
- #include <dt-bindings/clock/qcom,gcc-sc7280.h>
-+#include <dt-bindings/clock/qcom,gpucc-sc7280.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/interconnect/qcom,sc7280.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-@@ -585,6 +586,121 @@
- 			#clock-cells = <1>;
- 		};
- 
-+		gpu@3d00000 {
-+			compatible = "qcom,adreno-635.0", "qcom,adreno";
-+			#stream-id-cells = <16>;
-+			reg = <0 0x03d00000 0 0x40000>,
-+			      <0 0x03d9e000 0 0x1000>,
-+			      <0 0x03d61000 0 0x800>;
-+			reg-names = "kgsl_3d0_reg_memory",
-+				    "cx_mem",
-+				    "cx_dbgc";
-+			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
-+			iommus = <&adreno_smmu 0 0x401>;
-+			operating-points-v2 = <&gpu_opp_table>;
-+			qcom,gmu = <&gmu>;
-+			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
-+			interconnect-names = "gfx-mem";
-+
-+			gpu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-550000000 {
-+					opp-hz = /bits/ 64 <550000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
-+					opp-peak-kBps = <6832000>;
-+				};
-+
-+				opp-450000000 {
-+					opp-hz = /bits/ 64 <450000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
-+					opp-peak-kBps = <4068000>;
-+				};
-+
-+				opp-315000000 {
-+					opp-hz = /bits/ 64 <315000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
-+					opp-peak-kBps = <1804000>;
-+				};
-+			};
-+		};
-+
-+		gmu: gmu@3d69000 {
-+			compatible="qcom,adreno-gmu-635.0", "qcom,adreno-gmu";
-+			reg = <0 0x03d6a000 0 0x34000>,
-+				<0 0x3de0000 0 0x10000>,
-+				<0 0x0b290000 0 0x10000>;
-+			reg-names = "gmu", "rscc", "gmu_pdc";
-+			interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "hfi", "gmu";
-+			clocks = <&gpucc GPU_CC_CX_GMU_CLK>,
-+					<&gpucc GPU_CC_CXO_CLK>,
-+					<&gcc GCC_DDRSS_GPU_AXI_CLK>,
-+					<&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-+					<&gpucc GPU_CC_AHB_CLK>,
-+					<&gpucc GPU_CC_HUB_CX_INT_CLK>,
-+					<&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>;
-+			clock-names = "gmu",
-+				      "cxo",
-+				      "axi",
-+				      "memnoc",
-+				      "ahb",
-+				      "hub",
-+				      "smmu_vote";
-+			power-domains = <&gpucc GPU_CC_CX_GDSC>,
-+					<&gpucc GPU_CC_GX_GDSC>;
-+			power-domain-names = "cx",
-+					     "gx";
-+			iommus = <&adreno_smmu 5 0x400>;
-+			operating-points-v2 = <&gmu_opp_table>;
-+
-+			gmu_opp_table: opp-table {
-+				compatible = "operating-points-v2";
-+
-+				opp-200000000 {
-+					opp-hz = /bits/ 64 <200000000>;
-+					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
-+				};
-+			};
-+		};
-+
-+		adreno_smmu: iommu@3da0000 {
-+			compatible = "qcom,sc7280-smmu-500", "qcom,adreno-smmu", "arm,mmu-500";
-+			reg = <0 0x03da0000 0 0x20000>;
-+			#iommu-cells = <2>;
-+			#global-interrupts = <2>;
-+			interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 675 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
-+					<GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			clocks = <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
-+					<&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
-+					<&gpucc GPU_CC_AHB_CLK>,
-+					<&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>,
-+					<&gpucc GPU_CC_CX_GMU_CLK>,
-+					<&gpucc GPU_CC_HUB_CX_INT_CLK>,
-+					<&gpucc GPU_CC_HUB_AON_CLK>;
-+			clock-names = "gcc_gpu_memnoc_gfx_clk",
-+					"gcc_gpu_snoc_dvm_gfx_clk",
-+					"gpu_cc_ahb_clk",
-+					"gpu_cc_hlos1_vote_gpu_smmu_clk",
-+					"gpu_cc_cx_gmu_clk",
-+					"gpu_cc_hub_cx_int_clk",
-+					"gpu_cc_hub_aon_clk";
-+
-+			power-domains = <&gpucc GPU_CC_CX_GDSC>;
-+		};
-+
- 		lpass_ag_noc: interconnect@3c40000 {
- 			reg = <0 0x03c40000 0 0xf080>;
- 			compatible = "qcom,sc7280-lpass-ag-noc";
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
+You are calling it wrong place in remove. The ordering in remove
+should be the opposite of that in probe so the mutex_destroy should either
+be a few lines earlier, or you should have a comment there to say why you
+are doing it where you have chosen to do so.
+
+The style of this probe is to do error handling in a block at the end.
+So this handling should be there, not in the if statement.
+
+Jonathan
+
+
+
+> 
+> Thanks.
+> Hui
+> 
+> >   
+> > > ---
+> > >  drivers/iio/adc/mt6577_auxadc.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/iio/adc/mt6577_auxadc.c b/drivers/iio/adc/mt6577_auxadc.c
+> > > index 79c1dd68b909..d57243037ad6 100644
+> > > --- a/drivers/iio/adc/mt6577_auxadc.c
+> > > +++ b/drivers/iio/adc/mt6577_auxadc.c
+> > > @@ -289,6 +289,7 @@ static int mt6577_auxadc_probe(struct platform_device *pdev)
+> > >  	ret = iio_device_register(indio_dev);
+> > >  	if (ret < 0) {
+> > >  		dev_err(&pdev->dev, "failed to register iio device\n");
+> > > +		mutex_destroy(&adc_dev->lock);
+> > >  		goto err_power_off;
+> > >  	}
+> > >  
+> > > @@ -313,6 +314,7 @@ static int mt6577_auxadc_remove(struct platform_device *pdev)
+> > >  			      0, MT6577_AUXADC_PDN_EN);
+> > >  
+> > >  	clk_disable_unprepare(adc_dev->adc_clk);
+> > > +	mutex_destroy(&adc_dev->lock);
+> > >  
+> > >  	return 0;
+> > >  }  
+> >   
+> 
 
