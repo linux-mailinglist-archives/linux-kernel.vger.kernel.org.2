@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6166D3D48A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 18:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDE93D48B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhGXPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 11:53:09 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:43918 "EHLO vps0.lunn.ch"
+        id S229852AbhGXQUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 12:20:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhGXPxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 11:53:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=twJ8xIjqD5TS4LTpX8lw+/A1muRMGOB9w8Tr8EsfDFM=; b=T2
-        GfZzF7+1cPrdQw/snjzYv5Lyyz3JLiRE8v41W8Qf0R52hffRWff6c8vj0hyoFKkW7v3LULZjrNe3J
-        tA4b80bww3+rQqBPNqxgptjIwSpjQJYzSem49KaAUAJR3tbM7UPgvDKjd2wLtLLsK5GUv7jJb4EBo
-        u/Fs9ge70YTxe/M=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1m7Kak-00Edt2-0O; Sat, 24 Jul 2021 18:33:34 +0200
-Date:   Sat, 24 Jul 2021 18:33:33 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/5] serial: mvebu-uart: implement UART clock driver
- for configuring UART base clock
-Message-ID: <YPxA3Zcfw8ZPNYZp@lunn.ch>
-References: <20210624224909.6350-1-pali@kernel.org>
- <20210717123829.5201-1-pali@kernel.org>
- <20210717123829.5201-3-pali@kernel.org>
- <YPMS24faTg9tqreR@lunn.ch>
- <20210717180540.ersg5bslik6ivjie@pali>
- <20210724094816.2y3peclaftx26kwj@pali>
+        id S229530AbhGXQUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 12:20:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29DC660C51;
+        Sat, 24 Jul 2021 17:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627146050;
+        bh=U7ErnqKddTl3+stSZEu0MbjJIM+dNM8lp22tD0zMf/w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZG+vTkGSCmHMp2j43cG+mNNhWzaQDsdIYLOOCkVEYQJZMq3HZvq/tRLJZWeRyelS5
+         Rkgaj5aHtmxAJNYHBfWwFgUV1QNvy7gJnRQlfaeE2q63pC4p7BIOFLSxaly+e0JYW2
+         UJNkaBtfA2iiTs6WkN6mDCrCTE1oSjbX2iyiTtErLNqLHigZ4CVxAJ16q2l6UeA4Ty
+         vw7dC9wLdoFXGD3IFiKGQcEArdJYjhGKzVgKokEuddTmCxQlLn/wmmTOWYfrGH13wt
+         3LoEVgkVLXbwdAaxjS5ae20CbTmrtW29z4ewYdMp/dmY+iyqREFckesaMbdE8X3qpC
+         KKlieNZ2ZffjA==
+Received: by mail-wr1-f41.google.com with SMTP id y8so5706632wrt.10;
+        Sat, 24 Jul 2021 10:00:50 -0700 (PDT)
+X-Gm-Message-State: AOAM531WWxn3MJH8Sy6mOQz9n2DUbhIM/quFnKHRqXcBMtJBAoHrvsvj
+        Fm9JuAHa2SYXNCBNN8CjcIdF5Z5jXz1VrbnlKCg=
+X-Google-Smtp-Source: ABdhPJzpglz8S2nrBERfhhEwaUccRqGlAfPlsrzXUqY1/gWJcDj8nrzbegAKRKxnfxES9gcgoWIq9LL5CdSq6prVY5I=
+X-Received: by 2002:a5d:65cb:: with SMTP id e11mr11085586wrw.105.1627146048693;
+ Sat, 24 Jul 2021 10:00:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210724094816.2y3peclaftx26kwj@pali>
+References: <20210721151330.2176653-1-arnd@kernel.org> <CAHp75VeWSfBek+m6hQoc6G7wP+JNN-V3S0kfcGBESZLR+6QAxg@mail.gmail.com>
+ <CAK8P3a0wU+yAm0X_URFVuM=GragqQnvz2Reto5e09fzqCVrUqQ@mail.gmail.com>
+ <CAHp75VfQLGX4ir8XxMZBMkPaK2SoazJwr3axsk-5p1ok6uf6jg@mail.gmail.com>
+ <CAK8P3a3SMGHvj2cywrPVQchJTmhvwq9ERsPDmV0E0K6zC0St5w@mail.gmail.com> <20210724161635.479e5238@jic23-huawei>
+In-Reply-To: <20210724161635.479e5238@jic23-huawei>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 24 Jul 2021 19:00:32 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0zPwH6rzMJZQa0_37UoU9LAnR36jMEJfxYpwjNsXCfVA@mail.gmail.com>
+Message-ID: <CAK8P3a0zPwH6rzMJZQa0_37UoU9LAnR36jMEJfxYpwjNsXCfVA@mail.gmail.com>
+Subject: Re: [PATCH] iio: accel: fxls8962af: fix i2c dependency
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sean Nyekjaer <sean@geanix.com>, Arnd Bergmann <arnd@arndb.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Tomas Melin <tomas.melin@vaisala.com>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 11:48:16AM +0200, Pali Rohár wrote:
-> On Saturday 17 July 2021 20:05:40 Pali Rohár wrote:
-> > On Saturday 17 July 2021 19:26:51 Andrew Lunn wrote:
-> > > On Sat, Jul 17, 2021 at 02:38:26PM +0200, Pali Rohár wrote:
-> > > > @@ -445,6 +472,7 @@ static void mvebu_uart_shutdown(struct uart_port *port)
-> > > >  static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
-> > > >  {
-> > > >  	unsigned int d_divisor, m_divisor;
-> > > > +	unsigned long flags;
-> > > >  	u32 brdv, osamp;
-> > > >  
-> > > >  	if (!port->uartclk)
-> > > > @@ -463,10 +491,12 @@ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
-> > > >  	m_divisor = OSAMP_DEFAULT_DIVISOR;
-> > > >  	d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
-> > > >  
-> > > > +	spin_lock_irqsave(&mvebu_uart_lock, flags);
-> > > 
-> > > Hi Pali
-> > > 
-> > > You only need spin_lock_irqsave() if you plan on taking the spinlock
-> > > in an interrupt handler. It seems unlikely the baud rate will be
-> > > changed in interrupt context? Please check, and then swap to plain
-> > > spin_lock().
-> > 
-> > Hello! Ok, I will check it.
-> 
-> Well, driver is already using spin_lock_irqsave() in all other
-> functions.
+On Sat, Jul 24, 2021 at 5:15 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> On Wed, 21 Jul 2021 20:40:30 +0200 Arnd Bergmann <arnd@kernel.org> wrote:
 
-And some of those functions are called from interrupt context i
-expect. For each lock you have, you need to decide if interrupt
-context is an issue or not. spin_lock_irqsave() is more expansive,
-since it has to disable interrupts, etc. It can upset real time
-latency etc. So in the hot path, you want to try to avoid it, unless
-you actually need it. But changing the baud rate is not the hot path,
-it hardly every happens, so we can live with the unneeded overhead.
+> I didn't think of this particularly combination when we dealt with
+> last build issue the workaround brought in.  I've applied this to the
+> fixes-togreg branch of iio.git as an immediately solution, but longer
+> term we should think about just using a function pointer to allow us
+> to move this into the i2c specific module.  If we do that we can
+> drop this complex build logic later.
 
-> And in linux/clk-provider.h is documented that drivers can call
-> clk_enable() from an interrupt, so it means that spin_lock_irqsave() is
-> really needed for mvebu_uart_lock.
+Ok, that sounds good to me, thanks!
 
-Sure, drivers can. But in this case, does a driver actually do that?
-Does it change the baud rate in interrupt context?
-
-> > In other patches is updated function mvebu_uart_set_termios() which
-> > verifies that you can set particular baudrate.
-
-Great. It is not clear from the patches or the commit message that
-this has been considered. It is something worth mentioning, just to
-avoid questions.
-
-> > Also note that all A3720 boards have disabled UART2 in DTS. And I'm not
-> > sure if there is somebody who uses UART2 or who uses both UARTs.
-
-That does not really matter. You should not regression a feature
-because you think nobody is using it.
-
-	Andrew
+       Arnd
