@@ -2,197 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B96F3D4758
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 13:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BFF3D475B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 13:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234149AbhGXKgj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 24 Jul 2021 06:36:39 -0400
-Received: from aposti.net ([89.234.176.197]:51530 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232233AbhGXKgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 06:36:38 -0400
-Date:   Sat, 24 Jul 2021 12:16:59 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] cpuidle: JZ4780: Add Ingenic JZ4780 cpuidle driver.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     rjw@rjwysocki.net, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com, Alex Smith <alex.smith@imgtec.com>
-Message-Id: <B0YQWQ.OWLDE6KM3L551@crapouillou.net>
-In-Reply-To: <1627118399-125388-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1627118399-125388-1-git-send-email-zhouyanjie@wanyeetech.com>
+        id S232233AbhGXKia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 06:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231815AbhGXKi3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 06:38:29 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E132C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 04:19:00 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso12698943pjb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 04:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fu+EOl8MzFHnqJUqNfrpGZTo0/rhrJKaN+eR+XuGHMc=;
+        b=O85DMHyeVRIuNVgeITMNvJFbLraGrRkBIWg4sV/aVqhdxkebXDwNJJLp+AUkqsDeEL
+         Na7LsPIPk6TvdsnmYa2vHP35R21S4kl96KOk9HSz0FzBQ6wgclLdqQZs74HukQKS0ckC
+         shl5r8IQqN4Esh1S1GLl8L4MppOhtJku495fCCLt1X6Zj601Rljo4zYNmKVItA6h8/St
+         D/mC85zB75DvGX/fE3DM0VpUNJeagVUTRdXcN4jxdZOE+Nq6WlYcWdZqOEFZ5mU6BCY9
+         2VniXcW1EHtTMG0eT76mpjoJcRkv6UMuoA0DWDS2+bmBoQrSfP6m8FFfTG3slhbMHdZo
+         jEhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fu+EOl8MzFHnqJUqNfrpGZTo0/rhrJKaN+eR+XuGHMc=;
+        b=iMgzfPoSaI3oJWXLWWAUdHYBvvVm80/E801fMb8EYlP0XYztAo3hsr75PP4nbWMS24
+         epPx7DfHYF4KSEdUY98D+da/GDwlNUJkenZjNi5A89ZO2+cpe2a+SbXDRfJ3ui0DKiA/
+         6D/YwTYOH/lglKd42uGC3o4RIWZe+MJsX/Bvm4Go40ecLLOj9dyu0lDQyxXTpCTDawE/
+         qcyGwDGgMUSEpzQlD6U/uo5s1xNsaUUmGZKCluf8rlATrfYdV3cPmbIyKqkVp3qoXvgY
+         JVnkQWphsejRMUmCVlrXSY8SzSwxLSryOadUYeBWQDjg1SE7rh3kWnWcPv4I+d7Lb5hB
+         fTrQ==
+X-Gm-Message-State: AOAM530U3YhDuBqsSRQ5tV6hjVjxvGhkOHCURI5BSQJUbnbzwMFyLuqx
+        uYFPMf98XZgk27e5zGt1vmA=
+X-Google-Smtp-Source: ABdhPJxbdpJ6RuIPKFdq0gqilzFZT9DQCDdNnN2S5MzYOUyd3XCuX/ms1akPJbumH/5igHmyD+GLbg==
+X-Received: by 2002:a17:90b:b12:: with SMTP id bf18mr17739337pjb.74.1627125540031;
+        Sat, 24 Jul 2021 04:19:00 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id v15sm21310057pff.105.2021.07.24.04.18.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 04:18:59 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     linux-graphics-maintainer@vmware.com, zackr@vmware.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, corbet@lwn.net
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v2 0/3] drm, drm/vmwgfx: fixes and updates related to drm_master
+Date:   Sat, 24 Jul 2021 19:18:21 +0800
+Message-Id: <20210724111824.59266-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+Hi,
 
-Le sam., juil. 24 2021 at 17:19:59 +0800, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> The JZ4780 has a high overhead to executing a MIPS wait on SMP, as a
-> core must flush out dirty cache lines from its data cache before doing
-> so. This is because the core clock is gated during a wait and if the
-> other core tries to access a dirty line from the waiting core's cache,
-> it will lock up.
-> 
-> To mitigate some of this impact, this driver provides a simple polling
-> top level idle state, to try to avoid the cache flushing overhead when
-> the wait will only be short. The second level state is implemented 
-> with
-> the MIPS wait instruction.
-> 
-> This patch first found in the github repository of CI20, the original
-> author is Alex Smith. Because there is a chance to cause kernel hang
-> scenarios which can occur within hours or even within days, so this
-> patch was abandoned, but now it is determined that this is not the
-> problem caused by this patch, but caused by the cache driver. With
-> the new Ingenic specific cache driver, it has been working properly
-> on CI20 v1 for more than one week.
-> 
-> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Signed-off-by: Alex Smith <alex.smith@imgtec.com>
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
->  drivers/cpuidle/Kconfig.mips     |  8 +++++
->  drivers/cpuidle/Makefile         |  1 +
->  drivers/cpuidle/cpuidle-jz4780.c | 74 
-> ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 83 insertions(+)
->  create mode 100644 drivers/cpuidle/cpuidle-jz4780.c
-> 
-> diff --git a/drivers/cpuidle/Kconfig.mips 
-> b/drivers/cpuidle/Kconfig.mips
-> index c3c011a..4a55d24 100644
-> --- a/drivers/cpuidle/Kconfig.mips
-> +++ b/drivers/cpuidle/Kconfig.mips
-> @@ -16,3 +16,11 @@ config MIPS_CPS_CPUIDLE
->  	  Processing System (CPS) architecture. In order to make use of
->  	  the deepest idle states you will need to ensure that you are
->  	  also using the CONFIG_MIPS_CPS SMP implementation.
-> +
-> +config MIPS_JZ4780_CPUIDLE
-> +	bool "CPU Idle driver for Ingenic JZ4780"
-> +	depends on MACH_JZ4780 && SMP
-> +	default y
-> +	help
-> +	  Select this option to enable CPU idle state management through
-> +	  cpuidle for Ingenic JZ4780 platforms.
-> diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-> index 26bbc5e..1dd372f 100644
-> --- a/drivers/cpuidle/Makefile
-> +++ b/drivers/cpuidle/Makefile
-> @@ -29,6 +29,7 @@ obj-$(CONFIG_ARM_QCOM_SPM_CPUIDLE)	+= 
-> cpuidle-qcom-spm.o
->  
-> ###############################################################################
->  # MIPS drivers
->  obj-$(CONFIG_MIPS_CPS_CPUIDLE)		+= cpuidle-cps.o
-> +obj-$(CONFIG_MIPS_JZ4780_CPUIDLE)	+= cpuidle-jz4780.o
-> 
->  
-> ###############################################################################
->  # POWERPC drivers
-> diff --git a/drivers/cpuidle/cpuidle-jz4780.c 
-> b/drivers/cpuidle/cpuidle-jz4780.c
-> new file mode 100644
-> index 00000000..2025de4
-> --- /dev/null
-> +++ b/drivers/cpuidle/cpuidle-jz4780.c
-> @@ -0,0 +1,74 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * JZ4780 CPU idle driver
-> + * Copyright (C) 2015 Imagination Technologies
-> + * Author: Alex Smith <alex.smith@imgtec.com>
-> + * Copyright (c) 2020 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com>
-> + */
-> +
-> +#include <linux/cpuidle.h>
-> +#include <linux/init.h>
-> +#include <linux/sched.h>
-> +#include <linux/sched/idle.h>
-> +
-> +#include <asm/idle.h>
-> +#include <asm/mipsregs.h>
-> +
-> +/*
-> + * The JZ4780 has a high overhead to entering just the basic MIPS 
-> wait on SMP,
-> + * due to the requirement to flush out dirty lines from the dcache 
-> before
-> + * waiting. Therefore, we try to mitigate this overhead by using a 
-> simple
-> + * polling loop for short waits.
-> + */
-> +static int jz4780_cpuidle_poll_enter(struct cpuidle_device *dev,
-> +				     struct cpuidle_driver *drv, int index)
-> +{
-> +	if (!current_set_polling_and_test())
-> +		while (!need_resched() && !(read_c0_cause() & read_c0_status() & 
-> CAUSEF_IP))
-> +			cpu_relax();
-> +
-> +	current_clr_polling();
-> +	local_irq_enable();
-> +
-> +	return index;
-> +}
-> +
-> +static struct cpuidle_driver jz4780_cpuidle_driver = {
-> +	.name = "jz4780_cpuidle",
-> +	.owner = THIS_MODULE,
-> +	.states = {
-> +		{
-> +			.enter = jz4780_cpuidle_poll_enter,
-> +			.exit_latency = 1,
-> +			.target_residency = 1,
-> +			.power_usage = UINT_MAX,
-> +			.name = "poll",
-> +			.desc = "polling loop",
-> +		},
-> +		{
-> +			.enter = mips_cpuidle_wait_enter,
-> +			.exit_latency = 50,
-> +			.target_residency = 300,
-> +			.power_usage = UINT_MAX,
-> +			.name = "wait",
-> +			.desc = "MIPS wait",
-> +		},
-> +	},
-> +	.state_count = 2,
-> +};
-> +
-> +static int __init jz4780_cpuidle_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = cpuidle_register(&jz4780_cpuidle_driver, NULL);
+Just a note that only patch 2 changed from v1 to v2 of this series.
 
-You're missing something here - you never check that the kernel is 
-actually running on a JZ4780.
+This series contains some improvements that Daniel Vetter proposed following a discussion on a recent series:
+https://lore.kernel.org/lkml/20210712043508.11584-1-desmondcheongzx@gmail.com/
 
-Cheers,
--Paul
+While preparing these patches, I also noticed some unprotected uses of drm_master in the vmwgfx driver that can be addressed by new functions from the previous series.
 
-> +	if (ret) {
-> +		pr_err("Failed to register JZ4780 idle driver: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	pr_info("JZ4780 idle driver registered\n");
-> +
-> +	return 0;
-> +}
-> +device_initcall(jz4780_cpuidle_init);
-> --
-> 2.7.4
-> 
+This series is thus broken up into three patches:
 
+1. Switch from the outer drm_device.master_mutex to the inner drm_file.master_lookup_lock in drm_is_current_master.
+
+2. Update the kerneldoc for drm leases to clarify usage and lifetime/locking rules.
+
+3. Prevent potential use-after-free bugs by replacing calls to drm_master_get with drm_file_get_master in vmwgfx_surface.c.
+
+v1 -> v2:
+Changes to patch 2:
+- Clarified description of lease fields in drm_master with suggestions from Daniel Vetter.
+- Added an overview DOC: section for drm leases in drm-uapi.rst.
+- Cleaned up function documentation in drm_lease.c to use kernel-doc formatting.
+
+Best wishes,
+Desmond
+
+Desmond Cheong Zhi Xi (3):
+  drm: use the lookup lock in drm_is_current_master
+  drm: clarify usage of drm leases
+  drm/vmwgfx: fix potential UAF in vmwgfx_surface.c
+
+ Documentation/gpu/drm-uapi.rst          |  15 ++
+ drivers/gpu/drm/drm_auth.c              |   9 +-
+ drivers/gpu/drm/drm_lease.c             | 182 ++++++++++++++----------
+ drivers/gpu/drm/vmwgfx/vmwgfx_surface.c |   4 +-
+ include/drm/drm_auth.h                  |  67 +++++++--
+ 5 files changed, 187 insertions(+), 90 deletions(-)
+
+-- 
+2.25.1
 
