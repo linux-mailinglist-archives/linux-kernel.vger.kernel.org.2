@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9853D48BD
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A766D3D48BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhGXQ0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 12:26:02 -0400
-Received: from mout.gmx.net ([212.227.15.19]:37759 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229845AbhGXQ0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 12:26:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627146376;
-        bh=45e0H0Lk78ezpdCHaXHQi6m/MsRnxorf6VPy1DfA5rg=;
-        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
-         CC:From;
-        b=k6Tue3gwJ6yzegHJFgwwcNIfP5QpSB/PhMLA0dvuX0o7hOPPW9+Cohd0EgET33ADU
-         2t7ztArwdbcCPu/zFoesd0xTOgkw4m1eANnOwNgxBrhoiEz+WQLPfd3zi0XgCnoo5F
-         qWIGinmGQXH7hgDfXbg1K1fcTGUh0TeeJqrdY5mY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from frank-s9 ([217.61.144.209]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N5G9n-1l71if2i17-011BVY; Sat, 24
- Jul 2021 19:06:16 +0200
-Date:   Sat, 24 Jul 2021 19:06:11 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <dbe23d2a-cd29-0782-1b7d-bcb5c6683607@collabora.com>
-References: <20210710132431.265985-1-linux@fw-web.de> <456f0611-1fc7-75ac-ff45-9afd94190283@collabora.com> <trinity-02bc17fc-b458-4d17-baca-8afe30e4c92c-1626110171249@3c-app-gmx-bs28> <dbe23d2a-cd29-0782-1b7d-bcb5c6683607@collabora.com>
+        id S229925AbhGXQ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 12:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229738AbhGXQ1k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 12:27:40 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A170FC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 10:08:11 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id c16so1173870plh.7
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 10:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=8Ys5RSVFUxFSyqNmFnHZsPrB+xX/xgDDGrWU0AT548A=;
+        b=TaQIXCUr+InAjo8XPE/Q+gAIuo+G41Gui9wkLX+zr3b7z/2Zw8S+iD8KWVIph1lRHP
+         W3uI0l1tHEtFMq0Mq2PZMbm6+iqMMj14h8PC35EtT1bBbPp8kuFGknAaCzEw5nkod+4L
+         45ej7UHDra94ZFazIaQ2zjEv9NAVS/2wVIyKK5KQapG52WuTGQtZvbrB9CBXuDq4gj0s
+         UBlIGiNi/LSB6xcvEfwyKNk/5tJ2iSR4B3uJxleMejZJ+3N6MTNVlNW97SOAEQQNrnMx
+         4Pz9Mm8lqToIbEH7OsnDYseqcKpLOZVlqjA3wLVfuuBKKGDsA8nUzRt2oJOQotFHVq/k
+         cksw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8Ys5RSVFUxFSyqNmFnHZsPrB+xX/xgDDGrWU0AT548A=;
+        b=U4DZ2uM3yLPegwMOoA5b3FgApFuuKMAcJkEk30/Bka3iCsFeX/eO4gW9E+T5LZ0IGR
+         2jFQ/IYS1voYkcTNBjE+GBNGShqU79qaJIqB9jPMsghIrA50yP4Lb5YZch2da/PLWi54
+         wvCz4/vfTVv7ZN1nETAF1rrWGgu+Va8cGruyZ9aOpYID47MMJQSYnIWdKSr38PifAhua
+         0MkxfsEvleTzK05MZK+/zPSMufx/p6XT7QDgvmLP7qAshTY9FfbYTMfbDMv1CGBOq6ed
+         tBlmr61uKoDlQ7UEf5p0tGtk/o+jveQ/qqJJ23D+q0drGklhezSJ4oysjwbXv+nnf3Qw
+         RbrQ==
+X-Gm-Message-State: AOAM533lSdtqUxJ+xrx5ZfEU9y5kXNiMBcuvnK7/CVlqOkw8usehwHgg
+        pf8blh8uDNmqy0rGqHFIafZQfzvRqDZuWHnQ
+X-Google-Smtp-Source: ABdhPJzMs/rV8aEuR0MsWnOkFFbuu5FoDKSgnjChlMpMg4xu6KRJF83t/EPW64dkAERIo6tMapZgiw==
+X-Received: by 2002:a17:90a:ce02:: with SMTP id f2mr18739529pju.232.1627146491156;
+        Sat, 24 Jul 2021 10:08:11 -0700 (PDT)
+Received: from [192.168.1.187] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id t3sm13272720pfd.153.2021.07.24.10.08.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Jul 2021 10:08:10 -0700 (PDT)
+Subject: Re: 5.14-rc failure to resume
+From:   Jens Axboe <axboe@kernel.dk>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
+Message-ID: <7df62a0a-d739-57ef-be47-2d9734a1cf7e@kernel.dk>
+Date:   Sat, 24 Jul 2021 11:08:08 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: Aw: Re: [PATCH] soc: mediatek: mmsys: fix HDMI output on mt7623/bananapi-r2
-Reply-to: frank-w@public-files.de
-To:     linux-mediatek@lists.infradead.org,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Collabora Kernel ML <kernel@collabora.com>
-From:   Frank Wunderlich <frank-w@public-files.de>
-Message-ID: <6EF00182-1FF4-4061-BCE4-E2AD7275211B@public-files.de>
-X-Provags-ID: V03:K1:4FhZ1GklljU1021mGj9Ps5PKAoEI+UWnutXSedKAVhllFTdL6qE
- c1CqIwzfV3VC1imKUiJZBa2LZrDoeu81zvP/hOKF/nujp85aegg/n3/tKnl8R3s3l2J1dyP
- ReYdVoamgPbMSrCq/g8UplSje/TIqUUO/5sR0DGlVCrWrPhsj87eIuAB4Mq3bFvizVtlsle
- uABYORqkd1W6W50CWxbeg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gfZr4u6469E=:2UmEpvl+OhZS14QzOalCMU
- OnlmbM91s4cRo5JYTmRLFMiA75U6gBKCM8/x7i+F8saSi40jfUIs5yQkc77/xCJ9O2btbmNYP
- bt++S1a4YXn+SiE7RRku9fPX22xdFwDBD8gOJKeCUewH7XjfOKqQeYCAJBl+5s65unGPxEQLq
- B9Jfz4YDJGFWlYJZUB7uhLQg3US4e6ODoCIYS2vRBQEA8mdSGHLUfsLV8FnGG6+6MOxz4TRZx
- bbnN3XFeo2kMHTvuZkrK2q2jhEqaSWVVpqOQPYpBGEXIpjjC7VQjvcu/UX2+2wbhTRPt5gOFk
- t8KovDLE9Te+Zb7mnp51LCkUYXzQOnzXqySziomcstLH5tXRhaKxoEIbJSh5qY6p+L/NRt6xu
- r/hosbLzlTt0nXny/SpTq7+undBqHpzfIprTQbemnIUdU/Vua3joZ1RpNAk/CF5brqGcwWGjq
- yh3e0IMkhkdIVKthIvJLwJa75X6oyxpd5M0pK5Ir/jle2Dk0T1/ov63ieLdmHbI3amBt1YNmk
- ChPnVaiZC4mzlb6UdO8LHI+6j1OG/zgPjOyYVgoDKqOSYV424gti6dQAuXxBvbn8xhIjaXzGs
- qDrWD8ZGefvcf4uuBrQTtCuqgcOFWIPcYv9XroRd0O7j65wTToolV7JrJ6MWqQWQjt6QSR5Ak
- dDI7d6I1bLxF5JvghMtsQkjAzK26fFFYP61i1gqg+1L9YaVBA6VacEywmkIXFmjFXTXp+JoAf
- ft00rR92KDHkoYPU2zhxXrOT2N8N96O37TDIe2I5cqNbMOqVsZq/To6SOBuf3CLkuLcJHNncu
- 91tkrVFx3Sorg78DJpwuSHqOIvYIuzQW8PDvA2qtI7UoB+3HZMEG/WDIEh1Jmn5BnhGsVIuCk
- zeRedyIEAvcR8n8czXdhwQJGV7hxfcEfkwppwLWiSSsw5s+wZ3wfuTGLS4eJR+clRqjIcvcAw
- jNU7A54lY6mSFqkqEl8ObhSavXv28rlmG8ZG4UWetrDT6AXg4pFpCIrFPAFXJA1gFnPKEpIG4
- m0mwULvM6n4V9mL6WDS2VnGkpuobZuT4ZHz5g6QrO55nQAh/3G0DPraZsGbqezPGASY8SHVnZ
- ig0vxqstt0R1XOHTJ3IBFD7LHqHqkI4ZIamXs7dgC9tYm32UHoWMSm5hA==
+In-Reply-To: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 12=2E07=2E21 19:16, Frank Wunderlich wrote:
->> Hi,
->>=20
->> it turns out that problem is the read+or of the new value
->>=20
->> i reverted my patch and changed
->>=20
->> reg =3D readl_relaxed(mmsys->regs + routes[i]=2Eaddr) | routes[i]=2Eval=
-;
->> writel_relaxed(reg, mmsys->regs + routes[i]=2Eaddr);
->>=20
->> to
->>=20
->> writel_relaxed(routes[i]=2Eval, mmsys->regs + routes[i]=2Eaddr);
->>=20
->> and it works too, but maybe it breaks other platforms
+On 7/24/21 9:57 AM, Jens Axboe wrote:
+> Hi,
+> 
+> I ran into this when doing the last bit of testing on pending changes
+> for this release on the laptop. Outside of running testing on these
+> changes, I always build and boot current -git and my changes on my
+> laptop as well.
+> 
+> 5.14-rc1 + changes works fine, current -git and changes fail to resume
+> every single time. I just get a black screen. Tip of tree before merging
+> fixes is:
 
-A gentle ping=2E Amy further comments which of both ways is the right one =
-(restoring old output select function or write only without read+or)?
+Typo, 5.14-rc2 + changes. Hence the problematic change is sometime between
+-rc2 and current -git.
 
-regards Frank
+Running a bisect now but expecting it to take all day, will report
+what it uncovers.
+
+-- 
+Jens Axboe
+
