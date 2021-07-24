@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68AE3D4747
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 13:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA0BC3D474A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 13:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232726AbhGXKYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 06:24:06 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28627 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229884AbhGXKYB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 06:24:01 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-11-Wgv43lgyNsS-jERKh4_2vw-1; Sat, 24 Jul 2021 12:04:30 +0100
-X-MC-Unique: Wgv43lgyNsS-jERKh4_2vw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Sat, 24 Jul 2021 12:04:28 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Sat, 24 Jul 2021 12:04:28 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Fabio M. De Francesco'" <fmdefrancesco@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
+        id S231993AbhGXK32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 06:29:28 -0400
+Received: from mout.gmx.net ([212.227.15.15]:55457 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230094AbhGXK32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 06:29:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627124983;
+        bh=I7mxd5VcyCEIOuEVnYddEO8MCpGzXZD1UMUFjtjuZDw=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=a87pv1KwZL6O1bhqDmgpBjeZFyTyfTjqXM8aRp/s4LFJoaUpQiszVWRYKWmKOPl4o
+         r7FX3cQCbrgBFc/X5aFJ70sMqXKJIulLEAzVmL+vS/AznIeeiej/iCrai5y1AZN97K
+         9a5Droo2pr43ImFy3Itgp9JGdYRSqGHRS8hMQ+DI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([83.52.228.41]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpDJd-1lIkHo21S3-00qgNc; Sat, 24
+ Jul 2021 13:09:43 +0200
+Date:   Sat, 24 Jul 2021 13:09:31 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Len Baker <len.baker@gmx.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/2] staging: rtl8188eu: Replace a custom function with
- crc32_le()
-Thread-Topic: [PATCH v3 1/2] staging: rtl8188eu: Replace a custom function
- with crc32_le()
-Thread-Index: AQHXfiEvucvRPynR106nc+5J/iJ13qtPHROQgAGploCAASyokA==
-Date:   Sat, 24 Jul 2021 11:04:28 +0000
-Message-ID: <9385be072a3e4d29ad55bb1b27b7ae03@AcuMS.aculab.com>
-References: <20210721110052.26376-1-fmdefrancesco@gmail.com>
- <20210721110052.26376-2-fmdefrancesco@gmail.com>
- <f396ffee4a414ee092625ee486b871fe@AcuMS.aculab.com>
- <3650881.QlJdx9khu8@localhost.localdomain>
-In-Reply-To: <3650881.QlJdx9khu8@localhost.localdomain>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Phil Reid <preid@electromag.com.au>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] staging/fbtft: Remove all strcpy() uses
+Message-ID: <20210724110931.GA4709@titan>
+References: <20210718133920.15825-1-len.baker@gmx.com>
+ <CAHp75VeEA0=KFsfdjCnBm-b9+F+NnFWJ38nkh+qtb85XdXVWog@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeEA0=KFsfdjCnBm-b9+F+NnFWJ38nkh+qtb85XdXVWog@mail.gmail.com>
+X-Provags-ID: V03:K1:hAZjLwuqO94d/UpjOqeAOLypbiz0VuSzukPMHWa+XYX6Y+vnhZp
+ VxQvktFaDZ5Y8LK/xX7J6w8VyPP2Zdix8R3xZ28peruM6aLKmvK6Ee7+Dm9Z0AgGH/YDDD5
+ yTVfM0Qbb+awntKxxa4byQJa6oNbM7omU6bzjuW5sHUT7jx/y/3DTqfk+cLj42xHR8aKxAz
+ 2oc6SnIzFFvckxjGCRa0A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:McaxoLakj4E=:dHY9KJtjnMypOmGHVH52iL
+ fFYd/jF7e3htCiKPJjevmX5qZ03k6W0JU17BrdPxVSowh/ViXn1cPV5j0fL3szxvkUGqrlv+j
+ GTA8DqbQAkycOn1StzpSRKOSuwVvKv7cgcdvkFYTiJ+hkdGit6vu8c82Dk+UfOK3YuhXU5qUH
+ ByY0g8NSFjfn83w8Tn6m2eq+w618z8pFtDlQRICFXRkPnW/JCvvAJiL8i9mke7LtaOBLIMBHR
+ t9D250XG5APUeYor87wAUnmirqVC/lmAQzU4zPsUjXagawfNs9VT+1hA5C8RWR6r2HB3/tHto
+ ZGoMOn340F1ZqqxpqKHci8UyqFd2aANCkxcsdFB9nciq6cYBNpGSI/042vZ08kO29kK33GOy8
+ nGlpHwKh4TByWWBgxeeAzyBKdf5XF2M25RIuao9fKlR0GjCXKyGMUI/9KpLgXdwxiXnjs+xD4
+ C2xX0w/iFohQku5aDOf+wi0tmpfkbTEceFyyzjjDXX4W5cMk4TfwTIdawKNvnoA6WvyZfVY4s
+ niaOCHnfXDldeSLB1DiNQHW3mrpaEQwBfmjVYlotg7bLHAQ3cgZi9/KzAxQkrZBGWTdz9n646
+ sO1JXqTqWGFixwFaG/2DocAipSYb5IdQxndnxmvLYfMFySP746V/1zyCci30SEOoouVxv3qqB
+ bKFJepRUj1VdokfNdWIzxMC59dpJUMgAU8dc0GW90aKJqvfH1WWVIgoSMEJPo3zjiJDE+xDY6
+ i+ew8hNZSRkX0Ce0va1Oltrat2ps43XXAaxpMr72Wy22eG3U20eN8v1sxK1zrK0l5oJ7MlObZ
+ rPVMe0/Kv3Ssn9psy7fe+PH2C4XJuuD4uyZ0VALojaRZKtbeBzvI126vCb36HiV/ISAocxXA+
+ isc2KAItqIYtOKLEp8iaINq9rmt8sjjOHNPlXXZ9xUNa66LVoitoAVf1c26fZiyIqT9KYXmCa
+ o1ufsFC6XyD6OPl2E19syoyaDFXQco0t4UFgZ6nUM83rV0MntZU2JDNskFLRFwcygkM4Ru2Mk
+ GuDrHahYVbIafQ5rhh3SbvOe4bOgyv54G7YrOenxvl/8I3dcVUE47+fpiiTiLU27Vs2EkDZva
+ 4HFQP7ci2vtu3jQXJchNvZ3C/YmsRs79kun
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRmFiaW8gTS4gRGUgRnJhbmNlc2NvDQo+IFNlbnQ6IDIzIEp1bHkgMjAyMSAxODo0MQ0K
-PiANCj4gSGkgRGF2aWQsDQo+IA0KPiBUaGlzIGRyaXZlciBpcyBnb2luZyB0byBiZSByZXBsYWNl
-ZCBieSBhICJiZXR0ZXIiIHZlcnNpb24sIHNvIEknbSBub3Qgc3VyZQ0KPiB3aGV0aGVyIG9yIG5v
-dCB0aGlzIHBhdGNoIGlzIHN0aWxsIG5lZWRlZC4NCj4gDQo+IEhvd2V2ZXIsIEkgc2VlIHRoYXQg
-d2UgaGF2ZSBzaW1pbGFyIHByb2JsZW1zIGluIHJ0bDg3MjNicyBhbmQgcGVyaGFwcyBhbHNvIGlu
-DQo+IG90aGVyIGRyaXZlcnMuIFRoZXJlZm9yZSwgSSdkIGxpa2UgdG8gc29sdmUgdGhpcyBwcm9i
-bGVtLCB3aGF0ZXZlciB3aWxsIGhhcHBlbg0KPiB0byB0aGUgIndvcnNlIiBydGk4MTg4ZXUsIGFu
-ZCBjaGFuZ2UgdGhlIGNvZGUgd2hlcmUgZWxzZSBpdCBuZWVkcyB0byBiZQ0KPiBjaGFuZ2VkLg0K
-PiANCj4gTm93IEkgaGF2ZSBhIGZldyBxdWVzdGlvbnMuLi4NCg0KWW91ciBtYWlsZXIgbWFpbCBh
-IHJpZ2h0IHBpZ3MgYnJlYWtmYXN0IG9mIHRoaXMgcXVvdGVkIHRleHQuDQpFdmVuIG91dGxvb2sg
-KHdoaWNoIHdvcmsgbWFrZXMgbWUgdXNlKSBpc24ndCB0aGF0IGJhZA0KLSBpdCBpcyBwcmV0dHkg
-c2hpdHR5IHRob3VnaC4NCg0KLi4uDQo+ID4gQ2hhbmdlIGNyYyB0byBiZSBfX2xlMzIsIGtpbGwg
-dGhlIGNhc3RzIGFuZCBwYXNzICZjcmMgaW4gdGhlIGxhc3QgY2FsbC4NCj4gPg0KPiANCj4gSSBj
-b3VsZCBkbyBpdCwgYnV0IHRoZSBsYXN0IGNhbGwgKHRoYXQgdG8gYXJjZm91cl9lbmNyeXB0KCkg
-dGFrZXMgYSBwb2ludGVyIHRvDQo+IHU4IHR5cGUgYXMgdGhlIHRoaXJkIHBhcmFtZXRlci4gSG93
-IGNhbiBJIHVzZSBhIF9fbGUzMiBmb3IgdGhhdD8NCg0KVHJ5IGEgY2FzdCA6LSkNCmFyY2ZvdXJf
-ZW5jcnlwdCgpIHRha2VzIGEgJ2J1ZmZlcicgLSBzbyBpdCBzaG91bGQgYmUgJ2NvbnN0IHZvaWQg
-KicuDQpUaGF0IHdpbGwgbGV0IHRoZSBjYWxsIHBhc3Mgd2hhdCB0aGV5IHdhbnQuDQoNCi4uLg0K
-PiA+ID4gQEAgLTY4Miw3ICs2NjksNyBAQCB1MzIgcnR3X3RraXBfZGVjcnlwdChzdHJ1Y3QgYWRh
-cHRlciAqcGFkYXB0ZXIsIHN0cnVjdA0KPiByZWN2X2ZyYW1lDQo+ID4gPiAqcHJlY3ZmcmFtZSk+
-DQo+ID4gPiAgCQkJYXJjZm91cl9pbml0KCZteWNvbnRleHQsIHJjNGtleSwgMTYpOw0KPiA+ID4g
-IAkJCWFyY2ZvdXJfZW5jcnlwdCgmbXljb250ZXh0LCBwYXlsb2FkLA0KPiBwYXlsb2FkLCBsZW5n
-dGgpOw0KPiA+ID4NCj4gPiA+IC0JCQkqKChfX2xlMzIgKiljcmMpID0gZ2V0Y3JjMzIocGF5bG9h
-ZCwgbGVuZ3RoDQo+IC0gNCk7DQo+ID4gPiArCQkJKigoX19sZTMyICopY3JjKSA9IGNwdV90b19s
-ZTMyKH5jcmMzMl9sZSh+MCwNCj4gcGF5bG9hZCwgbGVuZ3RoIC0gNCkpOw0KPiA+ID4NCj4gPiA+
-ICAJCQlpZiAoY3JjWzNdICE9IHBheWxvYWRbbGVuZ3RoIC0gMV0gfHwNCj4gPiA+DQo+ID4gPiAg
-CQkJICAgIGNyY1syXSAhPSBwYXlsb2FkW2xlbmd0aCAtIDJdIHx8DQo+ID4NCj4gPiBZb3UgY291
-bGQgdG8gdGhlIHNhbWUgaGVyZSwgb3IgbWFrZSBjcmMgdTMyLCByZW1vdmUgdGhlIGNwdV90b19s
-ZTMyKCkNCj4gPiBhbmQgdXNlIGdldF91bmFsaWduZWRfdTMyKHBheWxvYWQgKyBsZW5ndGggLSA0
-KSAob3Igd2hhdGV2ZXIgaXQgaXMgY2FsbGVkKS4NCj4gPg0KPiANCj4gU29ycnksIEkgY2FuJ3Qg
-dW5kZXJzdGFuZCB0aGlzIGxpbmUuIENhbiB5b3UgcGxlYXNlIGVsYWJvcmF0ZSBpdCBhIGJpdCBt
-b3JlPw0KPiANCj4gPiBCdXQgaXQgaXMgbXVjaCBiZXR0ZXIgdG8gZG86DQo+ID4gCWNyYyA9IGNy
-YzMyX2xlKH4wLCBwYXlsb2FkLCBsZW5ndGgpOw0KPiA+IAlpZiAoY3JjICE9IFZBTElEX0NSQzMy
-KQ0KPiA+IAkJcmVzID0gX0ZBSUw7DQo+ID4NCj4gDQo+IFdoeSAiY3JjID0gY3JjMzJfbGUofjAs
-IHBheWxvYWQsIGxlbmd0aCk7Ij8gU2hvdWxkbid0IGl0IGJlICJjcmMgPQ0KPiBjcHVfdG9fbGUz
-Mih+Y3JjMzJfbGUofjAsIHBhdGxvYWQsIGxlbmd0aCk7Ij8NCj4gDQo+IFdoeSBkaWQgeW91IGRy
-b3AgYm90aCB0aGUgY3B1X3RvX2xlMzIoKSBjYWxsIGFuZCB0aGUgJ34nIG9wZXJhdG9yPw0KDQpC
-ZWNhdXNlIHRoZXkgYXJlbid0IG5lZWRlZC4NClRoaW5rIGFib3V0IHdoYXQgaGFwcGVucyB3aGVu
-IHRoZSBDUkMgaXMgcHJvY2Vzc2VkIGJpdCBieSBiaXQgd2l0aA0KYSBoYXJkd2FyZSBzaGlmdCBy
-ZWdpc3Rlci4NCldoZW4gJ2xlbmd0aCAtIDQnIGJ5dGVzIGhhdmUgYmVlbiBwcm9jZXNzZWQgdGhl
-IHJlY2VpdmVycyBDUkMgcmVnaXN0ZXINCm1hdGNoZXMgdGhhdCB0aGUgdHJhbnNtaXR0ZXIgaGFk
-IGF0IHRoZSBzYW1lIHBvaW50Lg0KVGhlIHRyYW5zbWl0dGVyIGludmVydHMgZWFjaCBjcmMgYml0
-IGJlZm9yZSBzZW5kaW5nIGl0Lg0KU28gd2hlbiB0aGUgcmVjZWl2ZXIgWE9SJ3MgYSByZWNlaXZl
-ZCBiaXQgd2l0aCBhIENSQyBiaXQgKHRvIGZlZWQgYmFjaw0KaW50byB0aGUgc2hpZnQgcmVnaXN0
-ZXIpIGl0IGFsd2F5cyBnZXRzIGEgJzEnIGJpdHMNCihlaXRoZXIgdGhlIGNyYyBiaXQgb3IgdGhl
-IGRhdGEgaXMgYSAxKS4NCk9uY2UgdGhlIHJlY2VpdmVyIGhhcyBwcm9jZXNzZWQgJ2xlbmd0aCcg
-Ynl0ZXMgdGhlIENSQyByZWdpc3RlciBhbHdheXMNCmNvbnRhaW5zIHRoZSBjcmMgb2YgZm91ciAw
-eGZmIGJ5dGVzIC0gcmVnYXJkbGVzcyBvZiB0aGUgaW5wdXQgZnJhbWUuDQoNCklmIHlvdSBkb24n
-dCBpbnZlcnQgdGhlIGNyYyBiZWZvcmUgc2VuZGluZyAoc29tZSBlYXJseSBmcmFtZSBmb3JtYXRz
-DQpkaWRuJ3QpIHRoZW4gdGhlIGxhc3QgZGF0YSBiaXRzIGFuZCBjcmMgYml0cyBjYW5jZWwgZWFj
-aCBvdGhlciBvdXQNCmFuZCB0aGUgY3JjIGlzIGFsd2F5cyAwIGZvciBhIGdvb2QgZnJhbWUuDQoN
-Ckl0IGlzIGFsc28gd29ydGggcmVhbGlzaW5nIHRoYXQgYSBjcmMgaXMgYSBsaW5lYXIgZnVuY3Rp
-b24uDQpUaGlzIG1lYW5zIHRoYXQgaWYgeW91ICdleGNsdXNpdmUgb3InIHR3byBmcmFtZXMgd2l0
-aCB2YWxpZCBDUkMNCnRoZSByZXN1bHRhbnQgYnVmZmVyIGFsc28gaGFzIGEgdmFsaWQgY3JjIChh
-bGlnbiB0aGUgZW5kcyBvZg0KdGhlIGZyYW1lcykuDQpJbml0aWFsaXNpbmcgdGhlIGNyYyB0byB+
-MCBoYXMgdGhlIGVmZmVjdCBvZiBpbmNsdWRpbmcgdGhlIGZyYW1lDQpsZW5ndGggaW4gdGhlIGNy
-YyAtIHBhcnRpY3VsYXJseSB1c2VmdWwgaWYgdGhlIGZyYW1lIHN0YXJ0cyB3aXRoDQp6ZXJvIGJ5
-dGVzLg0KDQpTaW5jZSB0aGUgY3JjIGFsZ29yaXRobSBpcyByZXZlcnNhYmxlLCBpZiB5b3UgZ2V0
-IGEgQ1JDIGVycm9yDQp5b3UgY2FuICd3aW5kIGJhY2snIHRoZSBlcnJvciBiaXRzIHVudGlsIG9u
-bHkgYSBzbWFsbCBudW1iZXINCm9mIGJpdHMgYXJlIGFmZmVjdGVkIC0gZmxpcCB0aGUgbWF0Y2hp
-bmcgYml0cyBvZiB0aGUgcmVjZWl2ZQ0KZGF0YSBhbmQgc28gY29ycmVjdCBhIHNpbmdsZSBzaG9y
-dCBlcnJvciBidXJzdCAodGhlIG1vc3QNCmxpa2VseSBlcnJvcnMpIHRvIGdldCB0aGUgb3JpZ2lu
-YWwgZGF0YS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
-bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
-cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi,
 
+On Sun, Jul 18, 2021 at 10:42:42PM +0300, Andy Shevchenko wrote:
+> On Sun, Jul 18, 2021 at 4:43 PM Len Baker <len.baker@gmx.com> wrote:
+> >
+> > strcpy() performs no bounds checking on the destination buffer. This
+> > could result in linear overflows beyond the end of the buffer, leading
+> > to all kinds of misbehaviors. The safe replacement is strscpy() but in
+> > this case it is simpler to add NULL to the first position since we wan=
+t
+> > to empty the string.
+>
+> > This is a previous step in the path to remove the strcpy() function.
+>
+> Any document behind this (something to read on the site(s) more or
+> less affiliated with what is going to happen in the kernel) to read
+> background?
+
+This is a task of the KSPP (kernel self protection project) [1]
+
+[1] https://github.com/KSPP/linux/issues/88
+
+>
+> ...
+>
+> >                 case -1:
+> >                         i++;
+> >                         /* make debug message */
+> > -                       strcpy(msg, "");
+> > +                       msg[0] =3D 0;
+>
+> Strictly speaking it should be '\0'.
+
+Ok, understood.
+
+>
+> >                         j =3D i + 1;
+> >                         while (par->init_sequence[j] >=3D 0) {
+> >                                 sprintf(str, "0x%02X ", par->init_sequ=
+ence[j]);
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+Thanks for the feedback,
+Len
