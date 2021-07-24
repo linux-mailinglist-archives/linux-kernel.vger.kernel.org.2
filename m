@@ -2,102 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5343D487B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742AC3D4883
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 18:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhGXPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 11:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGXPRM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 11:17:12 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0AAC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 08:57:43 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so13403347pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 08:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=AxDs9ExYjz7Pb1FuQd7u953/+qBm66B0ao4sjr0lTx4=;
-        b=FRVF76tgZDzdkOPRJnbfZJfK5LU344iDV2ymplQf5HeAkjmFTtZPvdK8ZeHGezVIaq
-         5UT+nF8ZdVyqWsuuZs1j6J3Gat64VCK7et682DKYuMbgrnEFApHIJWZ7Fac7BJXfYf8F
-         W5VbDT+LldPrwHMJICNzH4E7d2T+HiVfRrft3O8LpzfPqmZdXo2ZxjjIzAjDUKQpUPPb
-         svbU5nydS2aYEhMqtXkH3SWgmrhmmxcDS9/wq57Q+JZbB1ENuA6hk3VW9Eltg/cbQUuI
-         GFeCtVMS20xMXaRD4tdYPQAopHpxUNT1O+IR4l2NUCRo+DQQ0Kh6zCzC7zqWIYp6d/UU
-         D+7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=AxDs9ExYjz7Pb1FuQd7u953/+qBm66B0ao4sjr0lTx4=;
-        b=LC0V0EbyUTAIYyAd+MPROPIaImHP7UZtxPKfQL3jgEqSmqWlZOtTyDlbPg4PASRhY+
-         n30hirk1a8yqIsCCVoHJx4A+m34w6/BPzfZuVyDoJAKTBmuK5lekik5UOv/8stYVNnFb
-         VObiAmDTod18bsY1K7F/0+3sVTbtCVtLLTOaKviqVuMeSLDivnykE5R1B+1/lOvgcdo1
-         aVI9lctAWP3RoAQENQIxoqkxV3myhhvB5dTFTbdmiB9huVOFR7LCvwA039Rd1+e3K1ca
-         LvA46eSQUfXbXHrD936xS0bzZXf4abTRrFrq5AH69U3XcW6fwf2/0iqKJfK9Z/XtBgAk
-         kUbw==
-X-Gm-Message-State: AOAM533uJDLjcArd4HG4PHYY6P9qcmS4L55K3RK5hdlqreDu8UlsvC2Y
-        IVhl7fj3xy1DbNou2ROnV8vYx0oBOBWBD24t
-X-Google-Smtp-Source: ABdhPJyHEVhFBzt0GAdnqTsg9pIiE/4dLyI/1xKguiApFyt6uhZKtrtjqUBpcs/6nSk17eOqk2dFwQ==
-X-Received: by 2002:a63:d612:: with SMTP id q18mr10109835pgg.77.1627142263080;
-        Sat, 24 Jul 2021 08:57:43 -0700 (PDT)
-Received: from [192.168.1.187] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id d2sm38098630pfa.84.2021.07.24.08.57.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jul 2021 08:57:42 -0700 (PDT)
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: 5.14-rc failure to resume
-Message-ID: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
-Date:   Sat, 24 Jul 2021 09:57:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229655AbhGXPYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 11:24:18 -0400
+Received: from mout.gmx.net ([212.227.15.19]:56719 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhGXPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 11:24:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627142669;
+        bh=6kxx24+tNiTwiGUNlCYc0+udJ3yXQxBElRKKameUdnU=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=R5FpRZPbkKdGoKh2n+vPr4/m9cWtCOYSGhFzS82nJ5xdfjbwNs4MkQgGaStaD2DrD
+         +ZbHrcIjDX5WFd0sw2Z2kqfFhs5nYyENqw8zeyel8ZB39umdgVqdrLhcxQ1dO39tRj
+         ayjON7htm0vVuFmzQ+W8cxDY4ADwYJW7TQm6kmhg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MDQiS-1lxwU702L8-00AS7x; Sat, 24 Jul 2021 18:04:29 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Len Baker <len.baker@gmx.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Phil Reid <preid@electromag.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] staging/fbtft: Remove all strcpy() uses
+Date:   Sat, 24 Jul 2021 17:14:09 +0200
+Message-Id: <20210724151411.9531-2-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210724151411.9531-1-len.baker@gmx.com>
+References: <20210724151411.9531-1-len.baker@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:329MDQ8YYI419jtmxMfrFBjESTzOsFnksAGa5ruA+GfDttL7lWO
+ wte8/djM2LhNs6aEPzKc7JtdjaOdDdMoNv0o6C+eFtqCWikMKFXqUIciDbQgSo5yVwiDl6X
+ ZH/WD1FmYzPF1ja/WrdY5hztftD5klqmo8f6g8Ol4tUTKicTr8nD7tszuqCgpzW+TwDEApL
+ QuYGl5kqbhqENSGRWrAvQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TlzSNjjpZCc=:WL3ahatTWMY6d26wj6FmBM
+ feg2Cl66/zRO4QSieaqZMJmneHGcFh76xjVo7ovVPictW2u806BykZUnKxUPCocZztniypk3X
+ nF77c76931fexpNuPWQ2CDD2YK7k9mhpXvirYAUQ230vxEiWd1DvQ9Q6pdpTzCLySIXt73+5v
+ iubuY58rFsK6vZ4NeQQcB8sslt4xyrKFt6dHj4MB06R43PwyV5+vPDoqRSlNHvuYfkiXDVu4E
+ SNsJhb+MSAl3JkY+jkziYyTtEI5GopguWnXT8xP9tH1V1Xhh+azjhZdMZiuqjJV9dRCeXllac
+ oTHd5PPv8EDrYF50oiP/bfhdNR6VthWzecALMNPdXYbFK2bueG58tkexxFnj/yz2HPiAMYmM9
+ YqRAtqKGJFpa0xUNodwuSTt3f2wY3VJxrIwf1AraROCYDIAEpfRrDtczFauKjI8L11KFubuXw
+ KKi+39RRPA9JtZUuI6QlT/Gos8dAJvi4v5292TSnM07UNDiUMN30BT2Vynt7QKz3ijY1HZDfH
+ KL69SaknYSuQryW9QQiaOOFzqWoIi99et87BAyfEYzVsobPvpfFPzNYXzx0Ju/tvdjVAVnnQq
+ 2btdxJqc6G+FGoA7kN+/lSS+y8vgRPSRYLWt2Np16v/y1PLAM4S5bMCMLtErbfde+BJsRv60Z
+ uZbW95IL2WcLSu8hGmN3Ry8T4CQuSwXk53VCdGLJdUk89TWTJSuIldTRKxcFk3Z5bWBJ9XbYA
+ bM/IOxVOnE7E0U9YzisEUx8BEOEp9yz7DjGlKshpP+s2pKh0FFQihPmXjRHe8GCcmVJyFJrNG
+ Ymg2ntUbT9jWgnyRFkE3UJabppENEfQGI6YqmS1XQLyAUxIZ12feKHrVeayFtsZjkjL4ypFrX
+ ubUQqv/VY+4EdFB+gKv/8EgP8Lp2bbC4DlkSXLV31h9rS2ewwTdozl+XRsUVN3RvKWuGVVGkF
+ bK/ICNuLwdfozsoDj7b/EfkguzjAU+YoOGVxntFb9PnOdQ7cHj55/QVlz4W+WDd/Y6vDTPxZw
+ JwN/wrpYnQez/f4wlg7qXsouYPXJ0rMw9rxMxIAkpJww2eiIX2mu+NVsZAUGkrj1W3ATm7TV2
+ t5KEU48QHESBP4XdDI5zoR/xcGYY0676nUd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy() but in
+this case it is simpler to use the "%*ph" format specifier.
 
-I ran into this when doing the last bit of testing on pending changes
-for this release on the laptop. Outside of running testing on these
-changes, I always build and boot current -git and my changes on my
-laptop as well.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/staging/fbtft/fbtft-core.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
 
-5.14-rc1 + changes works fine, current -git and changes fail to resume
-every single time. I just get a black screen. Tip of tree before merging
-fixes is:
+diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fb=
+tft-core.c
+index 3723269890d5..be20da3c4a5c 100644
+=2D-- a/drivers/staging/fbtft/fbtft-core.c
++++ b/drivers/staging/fbtft/fbtft-core.c
+@@ -992,8 +992,6 @@ static int fbtft_init_display_from_property(struct fbt=
+ft_par *par)
+ int fbtft_init_display(struct fbtft_par *par)
+ {
+ 	int buf[64];
+-	char msg[128];
+-	char str[16];
+ 	int i =3D 0;
+ 	int j;
 
-commit 704f4cba43d4ed31ef4beb422313f1263d87bc55 (origin/master, origin/HEAD, master)
-Merge: 05daae0fb033 0077a5008272
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri Jul 23 11:30:12 2021 -0700
+@@ -1036,17 +1034,14 @@ int fbtft_init_display(struct fbtft_par *par)
+ 		switch (par->init_sequence[i]) {
+ 		case -1:
+ 			i++;
++
+ 			/* make debug message */
+-			strcpy(msg, "");
+-			j =3D i + 1;
+-			while (par->init_sequence[j] >=3D 0) {
+-				sprintf(str, "0x%02X ", par->init_sequence[j]);
+-				strcat(msg, str);
+-				j++;
+-			}
++			for (j =3D i + 1; par->init_sequence[j] >=3D 0; j++);
++
+ 			fbtft_par_dbg(DEBUG_INIT_DISPLAY, par,
+-				      "init: write(0x%02X) %s\n",
+-				      par->init_sequence[i], msg);
++				      "init: write(0x%02X) %*ph\n",
++				      par->init_sequence[i], j - i - 1,
++				      &par->init_sequence[i + 1]);
 
-    Merge tag 'ceph-for-5.14-rc3' of git://github.com/ceph/ceph-client
-
-Since bisection takes forever on the laptop (gen7 x1 carbon), I
-opportunistically reverted some of the most recent git pulls:
-
-- ec6badfbe1cde0eb2bec4a0b8f6e738171156b5b (acpi changes)
-- 1d597682d3e669ec7021aa33d088ed3d136a5149 (driver-core changes)
-- 74738c556db6c7f780a8b98340937e55b72c896a (usb changes)
-- e7562a00c1f54116f5a058e7e3ddd500188f60b2 (sound changes)
-- 8baef6386baaefb776bdd09b5c7630cf057c51c6 (drm changes)
-
-as they could potentially be involved, but even with all of those
-reverted it still won't resume.
-
-Sending this out in case someone has already reported this and I just
-couldn't find it. If this is a new/unknown issues, I'll go ahead and
-bisect it.
-
--- 
-Jens Axboe
+ 			/* Write */
+ 			j =3D 0;
+=2D-
+2.25.1
 
