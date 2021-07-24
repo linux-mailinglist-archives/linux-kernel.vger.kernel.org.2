@@ -2,166 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570D43D46F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 11:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E433B3D46FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 11:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbhGXJHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 05:07:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234867AbhGXJHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 05:07:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBD7C60E90;
-        Sat, 24 Jul 2021 09:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627120099;
-        bh=02mOMO2izxa1ZFn2U56YOuNLSWyPlG5ExV3Ei5AtcAk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DJIia4AoVWzaW0oOK9aPfEt+s27DI+7fhN1yqbfozNICvd+gP+gAH6K+WMWSjqf5R
-         M2udrmo+yl3nD7FYaBDMdy5A8dcSHx2TWD9cXP5LbGIbcmr20KRAJNWoZNxfbVZxxW
-         PVWkAC/Q4BMVDvzUrNKPEYZR/aqz4BG7E7y284ViY0qa4b6SiosOhGmV0FYl79hVAJ
-         83A6HJTzu4R9HoUGxCX1Ehe8ZggeO0h4DNLF65RuXlb8bBP9Mavcl5lRFS6/qVDbnQ
-         s4eh73c7vqCSSg47DLK5m7Re8jw8G4EzdrBV3EjUOjLok1kNkY5idtyYLA7abaJhpw
-         43hdCPopMheBg==
-Received: by pali.im (Postfix)
-        id 65867EDF; Sat, 24 Jul 2021 11:48:16 +0200 (CEST)
-Date:   Sat, 24 Jul 2021 11:48:16 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 2/5] serial: mvebu-uart: implement UART clock driver
- for configuring UART base clock
-Message-ID: <20210724094816.2y3peclaftx26kwj@pali>
-References: <20210624224909.6350-1-pali@kernel.org>
- <20210717123829.5201-1-pali@kernel.org>
- <20210717123829.5201-3-pali@kernel.org>
- <YPMS24faTg9tqreR@lunn.ch>
- <20210717180540.ersg5bslik6ivjie@pali>
+        id S235084AbhGXJOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 05:14:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56565 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234993AbhGXJOM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 05:14:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627120483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4c+xqVW7MfBsa5VDqyOX8qekDnp6U6DnRr3TNr1ss8g=;
+        b=UkkJC2dGm+uinTs8wJbqeGDvfj4+mWQBwFhbgb/IsUESZRbLogvY/GiTGrRhUAsv/J9axO
+        4XnNHbYOEmE5v2oBysRkUwAgoCPRdAW0Vy9qhRyxFJvmMSHYEOoFpBrHbYpcS0ei6izPky
+        6S2jKAPxT3b3+XFk8iAVEbwRnsIpJCI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-B49MbFDJPNiM_yRxqCBsbg-1; Sat, 24 Jul 2021 05:54:42 -0400
+X-MC-Unique: B49MbFDJPNiM_yRxqCBsbg-1
+Received: by mail-wm1-f70.google.com with SMTP id 132-20020a1c018a0000b029025005348905so146562wmb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 02:54:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4c+xqVW7MfBsa5VDqyOX8qekDnp6U6DnRr3TNr1ss8g=;
+        b=lUhRoB1gsSya5vbk32oIPySkzgr1Hu+ri6UstacqhtbbIckANYFv5B637YmbPPNHv0
+         Nc09uHFS7AEi2Jxh6/SiUsZ4L62mmo9Mn561a7GojTcT6/ZaAeqB7roq/RK/9USzFf2V
+         4erlCRASgNEqWiqs/QSYKaG/g9GAhwLTodCtjqurN+yqBNn8TpdiKOzKGCcppquMEPe4
+         CWjkZ74MM9yAM2HIFGaQmFiuUVrcdH45SDXp6WnxErPhMZFqjU4H+98PEqfqMajb78c6
+         Rbm5aUQ03IGlDcWppREP4FLHXCT4s9aUOsuP0AOVhhyR9ypAOyblHQUuZcdc4uo4Im69
+         rCHQ==
+X-Gm-Message-State: AOAM5337NY7QQLOrzpEfJfe0QsLsqs2UlXI2f07HismQyhuQeWvl0LtB
+        x7uy79dB9jFR5KOKxPjVsvky4FZGaRRlYHmHprhtTjX+XOUmgmZG+T1D0A9OBHXYV/2me/+/Sk4
+        fboxjNgl0l8JsFU1TEZV2+u8Rwi/ZZLQAjKgjB9f7
+X-Received: by 2002:adf:a148:: with SMTP id r8mr8978528wrr.415.1627120481322;
+        Sat, 24 Jul 2021 02:54:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwwwMalzdNDmZeupmmuzGaDQDj9isYPnXIp/RVrPJIn29iuFfmxbG0uKGKcUX72MK2H2D25PbjolghFSWdAD9M=
+X-Received: by 2002:adf:a148:: with SMTP id r8mr8978515wrr.415.1627120481145;
+ Sat, 24 Jul 2021 02:54:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210717180540.ersg5bslik6ivjie@pali>
-User-Agent: NeoMutt/20180716
+References: <20210723224617.3088886-1-kherbst@redhat.com> <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Sat, 24 Jul 2021 11:54:30 +0200
+Message-ID: <CACO55tuNWk6emjnnukgv9h-9jbpVP564Ogmi7TGbybc9n5v+ZQ@mail.gmail.com>
+Subject: Re: [PATCH] nouveau: make backlight support non optional
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ML nouveau <nouveau@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 17 July 2021 20:05:40 Pali Rohár wrote:
-> On Saturday 17 July 2021 19:26:51 Andrew Lunn wrote:
-> > On Sat, Jul 17, 2021 at 02:38:26PM +0200, Pali Rohár wrote:
-> > > @@ -445,6 +472,7 @@ static void mvebu_uart_shutdown(struct uart_port *port)
-> > >  static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
-> > >  {
-> > >  	unsigned int d_divisor, m_divisor;
-> > > +	unsigned long flags;
-> > >  	u32 brdv, osamp;
-> > >  
-> > >  	if (!port->uartclk)
-> > > @@ -463,10 +491,12 @@ static int mvebu_uart_baud_rate_set(struct uart_port *port, unsigned int baud)
-> > >  	m_divisor = OSAMP_DEFAULT_DIVISOR;
-> > >  	d_divisor = DIV_ROUND_CLOSEST(port->uartclk, baud * m_divisor);
-> > >  
-> > > +	spin_lock_irqsave(&mvebu_uart_lock, flags);
-> > 
-> > Hi Pali
-> > 
-> > You only need spin_lock_irqsave() if you plan on taking the spinlock
-> > in an interrupt handler. It seems unlikely the baud rate will be
-> > changed in interrupt context? Please check, and then swap to plain
-> > spin_lock().
-> 
-> Hello! Ok, I will check it.
+On Sat, Jul 24, 2021 at 8:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Sat, Jul 24, 2021 at 12:47 AM Karol Herbst <kherbst@redhat.com> wrote:
+> >
+> > In the past this only led to compilation issues. Also the small amount of
+> > extra .text shouldn't really matter compared to the entire nouveau driver
+> > anyway.
+> >
+>
+> >         select DRM_TTM_HELPER
+> > -       select BACKLIGHT_CLASS_DEVICE if DRM_NOUVEAU_BACKLIGHT
+> > -       select ACPI_VIDEO if ACPI && X86 && BACKLIGHT_CLASS_DEVICE && INPUT
+> > +       select BACKLIGHT_CLASS_DEVICE
+> > +       select ACPI_VIDEO if ACPI && X86 && INPUT
+> >         select X86_PLATFORM_DEVICES if ACPI && X86
+> >         select ACPI_WMI if ACPI && X86
+>
+> I think the logic needs to be the reverse: instead of 'select
+> BACKLIGHT_CLASS_DEVICE',
+> this should be 'depends on BACKLIGHT_CLASS_DEVICE', and the same for ACPI_VIDEO.
+>
+> We may want to add 'default DRM || FB' to BACKLIGHT_CLASS_DEVICE in the
+> process so we don't lose it for users doing 'make oldconfig' or 'make defconfig'
+>
 
-Well, driver is already using spin_lock_irqsave() in all other
-functions.
+yeah.. not sure. I tested it locally (config without backlight
+enabled) and olddefconfig just worked. I think the problem with
+"depends" is that the user needs to enable backlight support first
+before even seeing nouveau and I don't know if that makes sense. But
+maybe "default" is indeed helping here in this case.
 
-And in linux/clk-provider.h is documented that drivers can call
-clk_enable() from an interrupt, so it means that spin_lock_irqsave() is
-really needed for mvebu_uart_lock.
+> The rest of the patch looks good to me.
+>
+>        Arnd
+>
 
-> > >  	brdv = readl(port->membase + UART_BRDV);
-> > >  	brdv &= ~BRDV_BAUD_MASK;
-> > >  	brdv |= d_divisor;
-> > >  	writel(brdv, port->membase + UART_BRDV);
-> > > +	spin_unlock_irqrestore(&mvebu_uart_lock, flags);
-> > >  
-> > >  	osamp = readl(port->membase + UART_OSAMP);
-> > >  	osamp &= ~OSAMP_DIVISORS_MASK;
-> > 
-> > > +	/* Recalculate UART1 divisor so UART1 baudrate does not change */
-> > > +	if (prev_clock_rate) {
-> > > +		divisor = DIV_U64_ROUND_CLOSEST((u64)(val & BRDV_BAUD_MASK) *
-> > > +						parent_clock_rate * prev_d1d2,
-> > > +						prev_clock_rate * d1 * d2);
-> > > +		if (divisor < 1)
-> > > +			divisor = 1;
-> > > +		else if (divisor > BRDV_BAUD_MAX)
-> > > +			divisor = BRDV_BAUD_MAX;
-> > > +		val = (val & ~BRDV_BAUD_MASK) | divisor;
-> > > +	}
-> > 
-> > I don't see any range checks in the patch which verifies the requested
-> > baud rate is actually possible. With code like this, it seems like the
-> > baud rate change will be successful, but the actual baud rate will not
-> > be what is requested.
-> 
-> This code is in function which changes parent UART clock from one used
-> by bootloader to clock which will be used by kernel UART driver.
-> 
-> Yes, it is possible if you configure something unusual in bootloader
-> that that this code breaks it. But I think there is not so much what we
-> can done here.
-> 
-> In other patches is updated function mvebu_uart_set_termios() which
-> verifies that you can set particular baudrate.
-> 
-> > > +	/* Recalculate UART2 divisor so UART2 baudrate does not change */
-> > > +	if (prev_clock_rate) {
-> > > +		val = readl(uart_clock_base->reg2);
-> > > +		divisor = DIV_U64_ROUND_CLOSEST((u64)(val & BRDV_BAUD_MASK) *
-> > > +						parent_clock_rate * prev_d1d2,
-> > > +						prev_clock_rate * d1 * d2);
-> > > +		if (divisor < 1)
-> > > +			divisor = 1;
-> > > +		else if (divisor > BRDV_BAUD_MAX)
-> > > +			divisor = BRDV_BAUD_MAX;
-> > > +		val = (val & ~BRDV_BAUD_MASK) | divisor;
-> > > +		writel(val, uart_clock_base->reg2);
-> > 
-> > Here it looks like UART1 could request a baud rate change, which ends
-> > up setting the clocks so that UART2 is out of range? Could the change
-> > for UART1 be successful, but you end up breaking UART2? I'm thinking
-> > when you are at opposite ends of the scale. UART2 is running at
-> > 110baud and UART1 at 230400baud.
-> 
-> This code is also in function which just do one time change of UART
-> parent clock. Once clk driver is probed this parent clock (and its d1
-> and d2 divisors) are not changed anymore. Parent clock and divisors are
-> chosen in way that kernel can always configure minimal baudrate 9600 on
-> both UARTs.
-> 
-> You are right that some combinations are not possible. But with these
-> patches it is fixed what is supported at clk driver probe time.
-> 
-> In v3 patch 5/5 is described how to calculate final baudrate from parent
-> clock and divisors d1, d2, d, m1, m2, m3, m4. Note that parent clock and
-> divisors d1 and d2 are shared for both UARTs. Other parameters (d, m1,
-> m2, m3, m4) can be set differently both UART1 and UART2. Changing shared
-> values is not possible during usage of UART.
-> 
-> If you have any idea how to improve current implementation, please let
-> me know.
-> 
-> Also note that all A3720 boards have disabled UART2 in DTS. And I'm not
-> sure if there is somebody who uses UART2 or who uses both UARTs.
