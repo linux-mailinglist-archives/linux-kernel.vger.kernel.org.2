@@ -2,155 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523403D485F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAD23D4863
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhGXO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 10:58:03 -0400
-Received: from out29-1.mail.aliyun.com ([115.124.29.1]:45713 "EHLO
-        out29-1.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGXO6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 10:58:02 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07438685|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_regular_dialog|0.253308-0.00639627-0.740296;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.Kq2NXC2_1627141111;
-Received: from 192.168.88.130(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Kq2NXC2_1627141111)
-          by smtp.aliyun-inc.com(10.147.40.7);
-          Sat, 24 Jul 2021 23:38:32 +0800
-Subject: Re: [PATCH] clocksource: Ingenic: Improve the code.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
-        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
-References: <1627121407-131028-1-git-send-email-zhouyanjie@wanyeetech.com>
- <OQZQWQ.MUGEDOGBXJW12@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <ac16a2ef-2532-acb0-7599-7d6a4ac1b95f@wanyeetech.com>
-Date:   Sat, 24 Jul 2021 23:38:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S230040AbhGXPAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 11:00:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhGXO77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 10:59:59 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C2F7360EAF;
+        Sat, 24 Jul 2021 15:40:29 +0000 (UTC)
+Date:   Sat, 24 Jul 2021 16:43:01 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        denis.ciocca@st.com
+Subject: Re: [PATCH 1/4] iio: pressure: st_pressure: use
+ devm_iio_triggered_buffer_setup() for buffer
+Message-ID: <20210724164301.54008712@jic23-huawei>
+In-Reply-To: <20210720074642.223293-1-aardelean@deviqon.com>
+References: <20210720074642.223293-1-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <OQZQWQ.MUGEDOGBXJW12@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Tue, 20 Jul 2021 10:46:39 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
 
-On 2021/7/24 下午7:54, Paul Cercueil wrote:
-> Hi Zhou,
->
-> Thanks! I actually had a similar patch locally that I was eventually 
-> going to send.
->
->
-> Le sam., juil. 24 2021 at 18:10:07 +0800, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> Use "FIELD_GET()" and "FIELD_PREP()" to simplify the code.
->>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->>  drivers/clocksource/ingenic-sysost.c | 11 +++++------
->>  1 file changed, 5 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/clocksource/ingenic-sysost.c 
->> b/drivers/clocksource/ingenic-sysost.c
->> index a129840..1fbea59 100644
->> --- a/drivers/clocksource/ingenic-sysost.c
->> +++ b/drivers/clocksource/ingenic-sysost.c
->> @@ -4,6 +4,7 @@
->>   * Copyright (c) 2020 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->>   */
->>
->> +#include <linux/bitfield.h>
->>  #include <linux/bitops.h>
->>  #include <linux/clk.h>
->>  #include <linux/clk-provider.h>
->> @@ -34,8 +35,6 @@
->>  /* bits within the OSTCCR register */
->>  #define OSTCCR_PRESCALE1_MASK    0x3
->>  #define OSTCCR_PRESCALE2_MASK    0xc
->> -#define OSTCCR_PRESCALE1_LSB    0
->> -#define OSTCCR_PRESCALE2_LSB    2
->>
->>  /* bits within the OSTCR register */
->>  #define OSTCR_OST1CLR            BIT(0)
->> @@ -98,7 +97,7 @@ static unsigned long 
->> ingenic_ost_percpu_timer_recalc_rate(struct clk_hw *hw,
->>
->>      prescale = readl(ost_clk->ost->base + info->ostccr_reg);
->>
->> -    prescale = (prescale & OSTCCR_PRESCALE1_MASK) >> 
->> OSTCCR_PRESCALE1_LSB;
->> +    prescale = FIELD_GET(OSTCCR_PRESCALE1_MASK, prescale);
->>
->>      return parent_rate >> (prescale * 2);
->>  }
->> @@ -112,7 +111,7 @@ static unsigned long 
->> ingenic_ost_global_timer_recalc_rate(struct clk_hw *hw,
->>
->>      prescale = readl(ost_clk->ost->base + info->ostccr_reg);
->>
->> -    prescale = (prescale & OSTCCR_PRESCALE2_MASK) >> 
->> OSTCCR_PRESCALE2_LSB;
->> +    prescale = FIELD_GET(OSTCCR_PRESCALE2_MASK, prescale);
->>
->>      return parent_rate >> (prescale * 2);
->>  }
->> @@ -151,7 +150,7 @@ static int 
->> ingenic_ost_percpu_timer_set_rate(struct clk_hw *hw, unsigned long re
->>      int val;
->>
->>      val = readl(ost_clk->ost->base + info->ostccr_reg);
->> -    val = (val & ~OSTCCR_PRESCALE1_MASK) | (prescale << 
->> OSTCCR_PRESCALE1_LSB);
->> +    val = (val & ~OSTCCR_PRESCALE1_MASK) | 
->> FIELD_PREP(OSTCCR_PRESCALE1_MASK, prescale);
->
-> Just one nitpick, I'd prefer this:
->
-> val ~= &OSTCCR_PRESCALE1_MASK;
-> val |= FIELD_PREP(OSTCCR_PRESCALE1_MASK, prescale);
+> The st_press_allocate_ring() function calls iio_triggered_buffer_setup() to
+> allocate a triggered buffer.
+> 
+> But the same can be done with devm_iio_triggered_buffer_setup() and then
+> the st_press_common_remove() no longer needs to manually deallocate it.
+> 
+> We know that the parent of the IIO device is used to manage other instances
+> of the devm unwind, so it can be used in the st_press_allocate_ring() as
+> well.
+
+This raises an interesting point.  This driver mixes and matches between
+hanging devm off the parent and off the iio_dev->dev.
+
+That's probably not a good thing to do as it could lead to an odd unwind
+order.  I'm pretty sure the changes here are fine, but we should take
+a closer look...
+
+Series applied to the togreg branch of iio.git and pushed out as testing.
+
+You can do the same thing with the trigger with only slightly more complex
+patch, but I'd like to discuss whether there are races because of the current
+dev mix and match before that.
+
+Thanks,
+
+Jonathan
 
 
-Sure, I will change it in the next version.
+> 
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/iio/pressure/st_pressure.h        | 5 -----
+>  drivers/iio/pressure/st_pressure_buffer.c | 9 ++-------
+>  drivers/iio/pressure/st_pressure_core.c   | 6 +-----
+>  3 files changed, 3 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/iio/pressure/st_pressure.h b/drivers/iio/pressure/st_pressure.h
+> index 9417b3bd7513..156e6a72dc5c 100644
+> --- a/drivers/iio/pressure/st_pressure.h
+> +++ b/drivers/iio/pressure/st_pressure.h
+> @@ -43,7 +43,6 @@ static __maybe_unused const struct st_sensors_platform_data default_press_pdata
+>  
+>  #ifdef CONFIG_IIO_BUFFER
+>  int st_press_allocate_ring(struct iio_dev *indio_dev);
+> -void st_press_deallocate_ring(struct iio_dev *indio_dev);
+>  int st_press_trig_set_state(struct iio_trigger *trig, bool state);
+>  #define ST_PRESS_TRIGGER_SET_STATE (&st_press_trig_set_state)
+>  #else /* CONFIG_IIO_BUFFER */
+> @@ -51,10 +50,6 @@ static inline int st_press_allocate_ring(struct iio_dev *indio_dev)
+>  {
+>  	return 0;
+>  }
+> -
+> -static inline void st_press_deallocate_ring(struct iio_dev *indio_dev)
+> -{
+> -}
+>  #define ST_PRESS_TRIGGER_SET_STATE NULL
+>  #endif /* CONFIG_IIO_BUFFER */
+>  
+> diff --git a/drivers/iio/pressure/st_pressure_buffer.c b/drivers/iio/pressure/st_pressure_buffer.c
+> index b651e7c31e90..25dbd5476b26 100644
+> --- a/drivers/iio/pressure/st_pressure_buffer.c
+> +++ b/drivers/iio/pressure/st_pressure_buffer.c
+> @@ -41,13 +41,8 @@ static const struct iio_buffer_setup_ops st_press_buffer_setup_ops = {
+>  
+>  int st_press_allocate_ring(struct iio_dev *indio_dev)
+>  {
+> -	return iio_triggered_buffer_setup(indio_dev, NULL,
+> -		&st_sensors_trigger_handler, &st_press_buffer_setup_ops);
+> -}
+> -
+> -void st_press_deallocate_ring(struct iio_dev *indio_dev)
+> -{
+> -	iio_triggered_buffer_cleanup(indio_dev);
+> +	return devm_iio_triggered_buffer_setup(indio_dev->dev.parent, indio_dev,
+> +		NULL, &st_sensors_trigger_handler, &st_press_buffer_setup_ops);
+>  }
+>  
+>  MODULE_AUTHOR("Denis Ciocca <denis.ciocca@st.com>");
+> diff --git a/drivers/iio/pressure/st_pressure_core.c b/drivers/iio/pressure/st_pressure_core.c
+> index 4ff6d40e3670..ab1c17fac807 100644
+> --- a/drivers/iio/pressure/st_pressure_core.c
+> +++ b/drivers/iio/pressure/st_pressure_core.c
+> @@ -718,7 +718,7 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+>  		err = st_sensors_allocate_trigger(indio_dev,
+>  						  ST_PRESS_TRIGGER_OPS);
+>  		if (err < 0)
+> -			goto st_press_probe_trigger_error;
+> +			return err;
+>  	}
+>  
+>  	err = iio_device_register(indio_dev);
+> @@ -733,8 +733,6 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+>  st_press_device_register_error:
+>  	if (press_data->irq > 0)
+>  		st_sensors_deallocate_trigger(indio_dev);
+> -st_press_probe_trigger_error:
+> -	st_press_deallocate_ring(indio_dev);
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(st_press_common_probe);
+> @@ -746,8 +744,6 @@ void st_press_common_remove(struct iio_dev *indio_dev)
+>  	iio_device_unregister(indio_dev);
+>  	if (press_data->irq > 0)
+>  		st_sensors_deallocate_trigger(indio_dev);
+> -
+> -	st_press_deallocate_ring(indio_dev);
+>  }
+>  EXPORT_SYMBOL(st_press_common_remove);
+>  
 
-
->
->>      writel(val, ost_clk->ost->base + info->ostccr_reg);
->>
->>      return 0;
->> @@ -166,7 +165,7 @@ static int 
->> ingenic_ost_global_timer_set_rate(struct clk_hw *hw, unsigned long re
->>      int val;
->>
->>      val = readl(ost_clk->ost->base + info->ostccr_reg);
->> -    val = (val & ~OSTCCR_PRESCALE2_MASK) | (prescale << 
->> OSTCCR_PRESCALE2_LSB);
->> +    val = (val & ~OSTCCR_PRESCALE2_MASK) | 
->> FIELD_PREP(OSTCCR_PRESCALE2_MASK, prescale);
->
-> Same here.
-
-
-Sure.
-
-
-Thanks and  best regards!
-
-
->
-> Cheers,
-> -Paul
->
->>      writel(val, ost_clk->ost->base + info->ostccr_reg);
->>
->>      return 0;
->> -- 
->> 2.7.4
->>
->
