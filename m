@@ -2,125 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BA73D48F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09D83D48F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhGXRPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 13:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
+        id S229958AbhGXRQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 13:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhGXRPt (ORCPT
+        with ESMTP id S229461AbhGXRQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 13:15:49 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8DAC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 10:56:20 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id c11so6781630plg.11
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 10:56:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=DqxieV6OJOFS2uVnNCqn+ysVrWDOwFD1yyQ6KVvASGg=;
-        b=fASZ15piX4+nBUCyyojxI19I0Csii+leTzUjnLHMdhnaJ66bFUx0gwXE1Tn21mdxUy
-         Z9eRxFtwZRhjnaJk8fB4EPgpUWojI+nbDkk9zeuUfLvLZNxTcyTzKTo7pyZMKvntuNhN
-         e3P7vh+QV24iWefJk302K/LTVV0VWwBl9Md6N933loJ6uY++pmhtwwO7tRSmSLc0x2k1
-         o5ukmTCVTmf+niSM+Js54VfMx0oBxO8C1pIqOFu8CwQSBNEKGR4RETT8jcKiD0YSBhtN
-         e8IHUy8OxVwRh7AeTti3fD0zUPKF531IXPkMFMbotEuOIzmP2rS0kGGFNp8XFPV/YQhu
-         P3Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DqxieV6OJOFS2uVnNCqn+ysVrWDOwFD1yyQ6KVvASGg=;
-        b=R/Aj6RYhKR5g7j2+OqTogKeYMoxWBa9HzfN5iL7qX7wkNpqJ8VXQCIBg6kl6xfBRhc
-         AtrUEO/Dbdt4xuljCTneg27dUvBfz7Y96j2xH8xpAWy8Hnk5e1mx/CVuJjewdw3UsATv
-         eV8wFEb/5h0VzBxnCoNR7/u/e/J2BAS38zFcBaV6AhH4VmNZZqG/JPgYE7IEY0mEQ+yl
-         +rrhNoWyVSwSG5WQGBvBWwl9znXK0B8D1HcQ8bwn5TIU6P7wPm/XFEqmlLXEk8Qlsl3/
-         /aSt8rpoz3prkYwONHgBmwYreY+tyn3bjQjlGLvx32B/sqhFJRy3HRlrtxszu2w/YaYn
-         yi/w==
-X-Gm-Message-State: AOAM5330/ynmbUJvQ0a1jmIOL+eM3M51/Sa89hcsHH3vw4ry61+XBT4E
-        0RDH4tMpU6HXRI0ZdjtCXLRh0g==
-X-Google-Smtp-Source: ABdhPJzQn0GQgI54tiY3kqx+taWVTVtpti9aGlmuLME5a/aLc4uLzBoIweerigmBnLKJG8hx+GZxuw==
-X-Received: by 2002:a63:5963:: with SMTP id j35mr10391263pgm.341.1627149379483;
-        Sat, 24 Jul 2021 10:56:19 -0700 (PDT)
-Received: from [192.168.1.187] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id m24sm41624121pgv.24.2021.07.24.10.56.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jul 2021 10:56:19 -0700 (PDT)
-Subject: Re: 5.14-rc failure to resume
-From:   Jens Axboe <axboe@kernel.dk>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
-Message-ID: <a607c149-6bf6-0fd0-0e31-100378504da2@kernel.dk>
-Date:   Sat, 24 Jul 2021 11:56:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 24 Jul 2021 13:16:24 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DC6C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 10:56:56 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1m7LtC-0006BX-5X; Sat, 24 Jul 2021 19:56:42 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:41cc:c65c:f580:3bde])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 1B18D657090;
+        Sat, 24 Jul 2021 17:56:39 +0000 (UTC)
+Date:   Sat, 24 Jul 2021 19:56:37 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+Subject: Re: [PATCH v4 2/2] can: m_can: Add support for transceiver as phy
+Message-ID: <20210724175637.vcslc2iewcdqnvev@pengutronix.de>
+References: <20210510052541.14168-1-a-govindraju@ti.com>
+ <20210510052541.14168-3-a-govindraju@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aozsztylvh5w2ifj"
+Content-Disposition: inline
+In-Reply-To: <20210510052541.14168-3-a-govindraju@ti.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/21 9:57 AM, Jens Axboe wrote:
-> Hi,
-> 
-> I ran into this when doing the last bit of testing on pending changes
-> for this release on the laptop. Outside of running testing on these
-> changes, I always build and boot current -git and my changes on my
-> laptop as well.
-> 
-> 5.14-rc1 + changes works fine, current -git and changes fail to resume
-> every single time. I just get a black screen. Tip of tree before merging
-> fixes is:
-> 
-> commit 704f4cba43d4ed31ef4beb422313f1263d87bc55 (origin/master, origin/HEAD, master)
-> Merge: 05daae0fb033 0077a5008272
-> Author: Linus Torvalds <torvalds@linux-foundation.org>
-> Date:   Fri Jul 23 11:30:12 2021 -0700
-> 
->     Merge tag 'ceph-for-5.14-rc3' of git://github.com/ceph/ceph-client
-> 
-> Since bisection takes forever on the laptop (gen7 x1 carbon), I
-> opportunistically reverted some of the most recent git pulls:
-> 
-> - ec6badfbe1cde0eb2bec4a0b8f6e738171156b5b (acpi changes)
-> - 1d597682d3e669ec7021aa33d088ed3d136a5149 (driver-core changes)
-> - 74738c556db6c7f780a8b98340937e55b72c896a (usb changes)
-> - e7562a00c1f54116f5a058e7e3ddd500188f60b2 (sound changes)
-> - 8baef6386baaefb776bdd09b5c7630cf057c51c6 (drm changes)
-> 
-> as they could potentially be involved, but even with all of those
-> reverted it still won't resume.
-> 
-> Sending this out in case someone has already reported this and I just
-> couldn't find it. If this is a new/unknown issues, I'll go ahead and
-> bisect it.
 
-Ran a bisect, and it pinpoints:
+--aozsztylvh5w2ifj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-71f6428332844f38c7cb10461d9f29e9c9b983a0 is the first bad commit
-commit 71f6428332844f38c7cb10461d9f29e9c9b983a0
-Author: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon Jul 12 21:21:21 2021 +0300
+On 10.05.2021 10:55:41, Aswath Govindraju wrote:
+> From: Faiz Abbas <faiz_abbas@ti.com>
+>=20
+> Add support for implementing transceiver node as phy. The max_bitrate is
+> obtained by getting a phy attribute.
+>=20
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  drivers/net/can/m_can/m_can.c          | 11 +++++++++++
+>  drivers/net/can/m_can/m_can.h          |  2 ++
+>  drivers/net/can/m_can/m_can_platform.c | 13 +++++++++++++
+>  3 files changed, 26 insertions(+)
+>=20
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+> index 3cf6de21d19c..afbecc35d3b6 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/iopoll.h>
+>  #include <linux/can/dev.h>
+>  #include <linux/pinctrl/consumer.h>
+> +#include <linux/phy/phy.h>
+> =20
+>  #include "m_can.h"
+> =20
+> @@ -1514,6 +1515,7 @@ static void m_can_stop(struct net_device *dev)
+>  static int m_can_close(struct net_device *dev)
+>  {
+>  	struct m_can_classdev *cdev =3D netdev_priv(dev);
+> +	int err;
+> =20
+>  	netif_stop_queue(dev);
+> =20
+> @@ -1536,6 +1538,10 @@ static int m_can_close(struct net_device *dev)
+>  	close_candev(dev);
+>  	can_led_event(dev, CAN_LED_EVENT_STOP);
+> =20
+> +	err =3D phy_power_off(cdev->transceiver);
+> +	if (err)
+> +		return err;
 
-    ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
+No need to propagate errors in the close().
 
-which seems odd, as it worked for me with the acpi changes reverted. It
-could be that it _sometimes_ works with that commit, not sure. Adding
-relevant folks to the CC.
+> +
+>  	return 0;
+>  }
+> =20
+> @@ -1721,6 +1727,10 @@ static int m_can_open(struct net_device *dev)
+>  	struct m_can_classdev *cdev =3D netdev_priv(dev);
+>  	int err;
+> =20
+> +	err =3D phy_power_on(cdev->transceiver);
+> +	if (err)
+> +		return err;
+> +
+>  	err =3D m_can_clk_start(cdev);
+>  	if (err)
+>  		return err;
 
-I'm going to revert this on top of current master and run with that
-and see if it does 10 successful resumes.
+Here, don't handle the error properly.
 
--- 
-Jens Axboe
+> @@ -1781,6 +1791,7 @@ static int m_can_open(struct net_device *dev)
+>  	close_candev(dev);
+>  exit_disable_clks:
+>  	m_can_clk_stop(cdev);
+> +	phy_power_off(cdev->transceiver);
+>  	return err;
+>  }
+> =20
+> diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.h
+> index ace071c3e58c..38cad068abad 100644
+> --- a/drivers/net/can/m_can/m_can.h
+> +++ b/drivers/net/can/m_can/m_can.h
+> @@ -28,6 +28,7 @@
+>  #include <linux/iopoll.h>
+>  #include <linux/can/dev.h>
+>  #include <linux/pinctrl/consumer.h>
+> +#include <linux/phy/phy.h>
+> =20
+>  /* m_can lec values */
+>  enum m_can_lec_type {
+> @@ -82,6 +83,7 @@ struct m_can_classdev {
+>  	struct workqueue_struct *tx_wq;
+>  	struct work_struct tx_work;
+>  	struct sk_buff *tx_skb;
+> +	struct phy *transceiver;
+> =20
+>  	struct can_bittiming_const *bit_timing;
+>  	struct can_bittiming_const *data_timing;
+> diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_c=
+an/m_can_platform.c
+> index 599de0e08cd7..f102d532b7f0 100644
+> --- a/drivers/net/can/m_can/m_can_platform.c
+> +++ b/drivers/net/can/m_can/m_can_platform.c
+> @@ -6,6 +6,7 @@
+>  // Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.=
+com/
+> =20
+>  #include <linux/platform_device.h>
+> +#include <linux/phy/phy.h>
+> =20
+>  #include "m_can.h"
+> =20
+> @@ -67,6 +68,7 @@ static int m_can_plat_probe(struct platform_device *pde=
+v)
+>  	struct resource *res;
+>  	void __iomem *addr;
+>  	void __iomem *mram_addr;
+> +	struct phy *transceiver;
+>  	int irq, ret =3D 0;
+> =20
+>  	mcan_class =3D m_can_class_allocate_dev(&pdev->dev,
+> @@ -101,6 +103,16 @@ static int m_can_plat_probe(struct platform_device *=
+pdev)
+>  		goto probe_fail;
+>  	}
+> =20
+> +	transceiver =3D devm_phy_optional_get(&pdev->dev, NULL);
+> +	if (IS_ERR(transceiver)) {
+> +		ret =3D PTR_ERR(transceiver);
+> +		dev_err_probe(&pdev->dev, ret, "failed to get phy\n");
+> +		return ret;
 
+Here you leak the memory allocated by m_can_class_allocate_dev().
+
+> +	}
+> +
+> +	if (transceiver)
+> +		mcan_class->can.bitrate_max =3D transceiver->attrs.max_link_rate;
+> +
+>  	priv->base =3D addr;
+>  	priv->mram_base =3D mram_addr;
+> =20
+> @@ -108,6 +120,7 @@ static int m_can_plat_probe(struct platform_device *p=
+dev)
+>  	mcan_class->pm_clock_support =3D 1;
+>  	mcan_class->can.clock.freq =3D clk_get_rate(mcan_class->cclk);
+>  	mcan_class->dev =3D &pdev->dev;
+> +	mcan_class->transceiver =3D transceiver;
+> =20
+>  	mcan_class->ops =3D &m_can_plat_ops;
+> =20
+> --=20
+> 2.17.1
+>=20
+>
+
+I've send a v5 fixing these problems.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--aozsztylvh5w2ifj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD8VFMACgkQqclaivrt
+76lU3Af6A5JrBDeFGF/y9LtAa9s/HuuJtW5am23+tonZTKV2LwpFZlxSR18/e9of
+ZpdHaLJf+XBo33FxQKc32zvHg+4u+d2qgfkrAJrqaSadRx0V3nwm08Ab/QBc4LPM
+gO99CqSvRUGZkmhiFMQ51u5WQHQ1VDS4UszqAcyuyZ7JIlwUE2/tzDU0/Ovmu6kO
+yuRIOHZuhEO8bHP26u1/4iZOpOhRfC9xg70/HeXZvwGQmLXLLZzXQJVY1+mPEjkn
+us6tglOHQO/SWugT8xwSxGydys3NN92aB+xxsmsd97det544z0wEjjS4d6gJYSaN
+/psJgaQEDFCttcrHRUMT4XfxylnhxA==
+=uHbx
+-----END PGP SIGNATURE-----
+
+--aozsztylvh5w2ifj--
