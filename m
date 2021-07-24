@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E373D4A46
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A2D3D4A54
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhGXVJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 17:09:17 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:58614
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230282AbhGXVJN (ORCPT
+        id S230430AbhGXVJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 17:09:25 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:43982
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230282AbhGXVJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 17:09:13 -0400
+        Sat, 24 Jul 2021 17:09:20 -0400
 Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPS id 91C603F245
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:49:43 +0000 (UTC)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPS id 36A023F350
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627163383;
-        bh=8/lOVqtLlrSxrgAjgKwuhobiXfoOTrJXfIMYxVc5wEI=;
+        s=20210705; t=1627163391;
+        bh=ydfFaHKHi19ltLLH8d1w1IAXq4hz0eleT+vI32JJiWk=;
         h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
          MIME-Version;
-        b=s3LnT4fX07tFkyv7jJLo5bfZnH+XuIKT4JpKAlKh7hZ+8EmLtBbnkaYuvx5rSFfhL
-         aD6xK5CTqq+oyVb5rxisTJvIj/6+MArm5ls4b2OeE7IG3HuzMXOLaqAStUIgO+81g4
-         qOyu785RGyGFTBnStz5Bhv+fmIdfiH6w3btFln+a9oJAv80AB1eCxmwo///jdxTuhO
-         02eCNTxCC0n/Z7uAfcGF668ZnjPzWBItIrPZJwaIcOvp5EY1PPnv7ipu2z/mO9Fn1M
-         EuhoYFD2qt9LPObcjBiI8IOlt7/rVvqIQpZQ0axfs0dU8Q5D0Ry49IwQezS38O4cqr
-         pQpmmVMyOXDfQ==
-Received: by mail-ed1-f69.google.com with SMTP id j22-20020a50ed160000b02903ab03a06e86so2770254eds.14
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:49:43 -0700 (PDT)
+        b=leM0wxQ2r7FPy/IBWitd7f2svw6xPL/mONdJUG+skUR6tFlnPyj95r51X0Aw12xGa
+         jHWxXrcqLk5zstjOCt1nTb3dUHoT5F6M2IscayF9wT6028Wyr8c770efx5EmpJ2bpa
+         HS7pzFDKarHF+AOcBz5l/UzxwzZ8geVNgwSwPtnHNGg2ChZyNQRO2YKwDeLKmMIYG4
+         qV9/h/psR3ySyybUa9pBwiiJqU0EpATR8p+K9HaRccbs/Om+fwDoHfVkRbAib4foR+
+         MHFAS5mdbRnd6q1uoaJQsXZZEK5E5aZuAssP8zDtei12UFLPkWBJ2Cc+RsTeAiHRod
+         E5XgymLxayACA==
+Received: by mail-ed1-f69.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso2786282edh.6
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:49:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8/lOVqtLlrSxrgAjgKwuhobiXfoOTrJXfIMYxVc5wEI=;
-        b=DablRH0mYXOMwHotFV/2xfUJs27X9CfxZc44hloCv+SEgoqrMfCDwwGhgo86JbeaNN
-         fV44vvU828O9yiizKCVuBHKwx8oLrqhnNQznRLRhnMYDkrhTH8wY1N/HGAavfQZ1ueY9
-         deVBpKO46J3jmuxd39EVpf0/wAFnYy1Kb+uWEQLQ9pnVTFjrmDKEMC8bm+yZ3HZiTlBR
-         ITwuIvoJ875w8EzIoAqsSzes8hlwcwzQnKZJOQ9DAdAvDalYO2PPtOF2TcpSpX2fti9E
-         FbKRksB356MVeMLnZSmBprwIB17vn2QtHdf65gHKVmhbT0J4/9FXxQEmzaqBvJ0N8ovY
-         Hhrg==
-X-Gm-Message-State: AOAM531ZCyRvD7wzPnBtGsw3xrtzrEl882XU/gm6U/eyVZZvLR4PCfzE
-        gKQcNROgxd94xgfIkBz2ZzkLZAxpXLDAE0YH7JG4oSuewH+m+411esMBnLrJ157mbsK4hjP1+iC
-        jraez6LjGyUSJZwKMfCK/bMH4uqXpjb6S9kebgJazSw==
-X-Received: by 2002:a17:906:d8a7:: with SMTP id qc7mr3971695ejb.372.1627163383056;
-        Sat, 24 Jul 2021 14:49:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJya/AXEPictz92OXpo2PxX7m6G5Q6xQNJW0Zkvfy1aeBNxUMcplrM79QV8bZACZbD1hbJCwVw==
-X-Received: by 2002:a17:906:d8a7:: with SMTP id qc7mr3971683ejb.372.1627163382928;
-        Sat, 24 Jul 2021 14:49:42 -0700 (PDT)
+        bh=ydfFaHKHi19ltLLH8d1w1IAXq4hz0eleT+vI32JJiWk=;
+        b=kLdcdOqAUlmajJJfbcUJ4hRZ7eQZvU/u2QCEF/G4wTMdxPYSM/fTG7Jk9cnnGR6BLw
+         jBY8R6bh+Agan7gNPsFuVgYxDl49bP7Furg7IwCdavD2f1gBTZk59J7Vt+vvrqTNintz
+         gFjTcKa1v/s0Tsa30eg5FT+ESxztODZQl6hA/jaHXlUFZYk5sPHXKADzvAfl0jerqrFF
+         Dc76pW+p9sA44UQnU5cjRIxiVuBuJoyINsm3VXwGFHA6GWu+D9/zrOd0NZOMYMWQAEVf
+         rmHc/IJMFjcihQfglKoilZTIEVUtOsqFiyjUgwaD4rfJCaNxDEHbRNWEAnUuUReP9l6J
+         ShDA==
+X-Gm-Message-State: AOAM533UlCozGX/KmeiHszH6Mm7LPNzELAigKFKaSxRT0UdGMkjILAGa
+        tLFllzDTkzmUW1hSUXEprUsIyUCpl210rn3uckz8vbSjp/832J/jP8JHV5PybmsKW/5HV32zjlu
+        pUpLIe6bSmlK/ZWlhW492EepjaV4fyjZ9phL3EcgikQ==
+X-Received: by 2002:a05:6402:2319:: with SMTP id l25mr7064706eda.383.1627163390852;
+        Sat, 24 Jul 2021 14:49:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVmroArzmZZewaThv5NERtSr6DdqGjVj6PwhmXYk16ol5TEWO2j+oQ71hzjvO1anxFeNOqpw==
+X-Received: by 2002:a05:6402:2319:: with SMTP id l25mr7064689eda.383.1627163390689;
+        Sat, 24 Jul 2021 14:49:50 -0700 (PDT)
 Received: from localhost.localdomain ([86.32.47.9])
-        by smtp.gmail.com with ESMTPSA id s10sm12821908ejc.39.2021.07.24.14.49.41
+        by smtp.gmail.com with ESMTPSA id s10sm12821908ejc.39.2021.07.24.14.49.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 14:49:42 -0700 (PDT)
+        Sat, 24 Jul 2021 14:49:50 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Charles Gorand <charles.gorand@effinnov.com>,
@@ -64,9 +64,9 @@ To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Jakub Kicinski <kuba@kernel.org>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-wireless@vger.kernel.org
-Subject: [PATCH 07/12] nfc: constify pointer to nfc_vendor_cmd
-Date:   Sat, 24 Jul 2021 23:49:23 +0200
-Message-Id: <20210724214928.122096-2-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 08/12] nfc: constify nfc_hci_gate
+Date:   Sat, 24 Jul 2021 23:49:24 +0200
+Message-Id: <20210724214928.122096-3-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
 References: <20210724214743.121884-1-krzysztof.kozlowski@canonical.com>
@@ -77,106 +77,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Neither the core nor the drivers modify the passed pointer to struct
-nfc_vendor_cmd, so make it a pointer to const for correctness and
-safety.
+nfc_hci_gate, so make it a pointer to const for correctness and safety.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/nfc/st-nci/vendor_cmds.c   | 2 +-
- drivers/nfc/st21nfca/vendor_cmds.c | 2 +-
- include/net/nfc/hci.h              | 2 +-
- include/net/nfc/nci_core.h         | 2 +-
- include/net/nfc/nfc.h              | 4 ++--
- net/nfc/netlink.c                  | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/nfc/microread/microread.c | 2 +-
+ drivers/nfc/pn544/pn544.c         | 2 +-
+ drivers/nfc/st21nfca/core.c       | 2 +-
+ net/nfc/hci/core.c                | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/nfc/st-nci/vendor_cmds.c b/drivers/nfc/st-nci/vendor_cmds.c
-index 94b600029a2a..30d2912d1a05 100644
---- a/drivers/nfc/st-nci/vendor_cmds.c
-+++ b/drivers/nfc/st-nci/vendor_cmds.c
-@@ -371,7 +371,7 @@ static int st_nci_manufacturer_specific(struct nfc_dev *dev, void *data,
- 	return nfc_vendor_cmd_reply(msg);
+diff --git a/drivers/nfc/microread/microread.c b/drivers/nfc/microread/microread.c
+index a5d5c3ec65f9..151a0631ec72 100644
+--- a/drivers/nfc/microread/microread.c
++++ b/drivers/nfc/microread/microread.c
+@@ -131,7 +131,7 @@
+ #define MICROREAD_ELT_ID_SE2 0x04
+ #define MICROREAD_ELT_ID_SE3 0x05
+ 
+-static struct nfc_hci_gate microread_gates[] = {
++static const struct nfc_hci_gate microread_gates[] = {
+ 	{MICROREAD_GATE_ID_ADM, MICROREAD_PIPE_ID_ADMIN},
+ 	{MICROREAD_GATE_ID_LOOPBACK, MICROREAD_PIPE_ID_HDS_LOOPBACK},
+ 	{MICROREAD_GATE_ID_IDT, MICROREAD_PIPE_ID_HDS_IDT},
+diff --git a/drivers/nfc/pn544/pn544.c b/drivers/nfc/pn544/pn544.c
+index 23faa46bb486..f4d09ebba5c8 100644
+--- a/drivers/nfc/pn544/pn544.c
++++ b/drivers/nfc/pn544/pn544.c
+@@ -86,7 +86,7 @@ enum pn544_state {
+ #define PN544_HCI_CMD_ATTREQUEST		0x12
+ #define PN544_HCI_CMD_CONTINUE_ACTIVATION	0x13
+ 
+-static struct nfc_hci_gate pn544_gates[] = {
++static const struct nfc_hci_gate pn544_gates[] = {
+ 	{NFC_HCI_ADMIN_GATE, NFC_HCI_INVALID_PIPE},
+ 	{NFC_HCI_LOOPBACK_GATE, NFC_HCI_INVALID_PIPE},
+ 	{NFC_HCI_ID_MGMT_GATE, NFC_HCI_INVALID_PIPE},
+diff --git a/drivers/nfc/st21nfca/core.c b/drivers/nfc/st21nfca/core.c
+index 583c36d4ff67..675f8a342869 100644
+--- a/drivers/nfc/st21nfca/core.c
++++ b/drivers/nfc/st21nfca/core.c
+@@ -72,7 +72,7 @@
+ 
+ static DECLARE_BITMAP(dev_mask, ST21NFCA_NUM_DEVICES);
+ 
+-static struct nfc_hci_gate st21nfca_gates[] = {
++static const struct nfc_hci_gate st21nfca_gates[] = {
+ 	{NFC_HCI_ADMIN_GATE, NFC_HCI_ADMIN_PIPE},
+ 	{NFC_HCI_LINK_MGMT_GATE, NFC_HCI_LINK_MGMT_PIPE},
+ 	{ST21NFCA_DEVICE_MGNT_GATE, ST21NFCA_DEVICE_MGNT_PIPE},
+diff --git a/net/nfc/hci/core.c b/net/nfc/hci/core.c
+index 3481941be70b..e37d30302b06 100644
+--- a/net/nfc/hci/core.c
++++ b/net/nfc/hci/core.c
+@@ -447,7 +447,7 @@ static void nfc_hci_cmd_timeout(struct timer_list *t)
  }
  
--static struct nfc_vendor_cmd st_nci_vendor_cmds[] = {
-+static const struct nfc_vendor_cmd st_nci_vendor_cmds[] = {
- 	{
- 		.vendor_id = ST_NCI_VENDOR_OUI,
- 		.subcmd = FACTORY_MODE,
-diff --git a/drivers/nfc/st21nfca/vendor_cmds.c b/drivers/nfc/st21nfca/vendor_cmds.c
-index 62332ca91554..74882866dbaf 100644
---- a/drivers/nfc/st21nfca/vendor_cmds.c
-+++ b/drivers/nfc/st21nfca/vendor_cmds.c
-@@ -295,7 +295,7 @@ static int st21nfca_hci_loopback(struct nfc_dev *dev, void *data,
- 	return r;
- }
- 
--static struct nfc_vendor_cmd st21nfca_vendor_cmds[] = {
-+static const struct nfc_vendor_cmd st21nfca_vendor_cmds[] = {
- 	{
- 		.vendor_id = ST21NFCA_VENDOR_OUI,
- 		.subcmd = FACTORY_MODE,
-diff --git a/include/net/nfc/hci.h b/include/net/nfc/hci.h
-index b35f37a57686..2daec8036be9 100644
---- a/include/net/nfc/hci.h
-+++ b/include/net/nfc/hci.h
-@@ -168,7 +168,7 @@ void nfc_hci_set_clientdata(struct nfc_hci_dev *hdev, void *clientdata);
- void *nfc_hci_get_clientdata(struct nfc_hci_dev *hdev);
- 
- static inline int nfc_hci_set_vendor_cmds(struct nfc_hci_dev *hdev,
--					  struct nfc_vendor_cmd *cmds,
-+					  const struct nfc_vendor_cmd *cmds,
- 					  int n_cmds)
+ static int hci_dev_connect_gates(struct nfc_hci_dev *hdev, u8 gate_count,
+-				 struct nfc_hci_gate *gates)
++				 const struct nfc_hci_gate *gates)
  {
- 	return nfc_set_vendor_cmds(hdev->ndev, cmds, n_cmds);
-diff --git a/include/net/nfc/nci_core.h b/include/net/nfc/nci_core.h
-index e7118e0cc3b1..00f2c60971d7 100644
---- a/include/net/nfc/nci_core.h
-+++ b/include/net/nfc/nci_core.h
-@@ -343,7 +343,7 @@ static inline void *nci_get_drvdata(struct nci_dev *ndev)
- }
- 
- static inline int nci_set_vendor_cmds(struct nci_dev *ndev,
--				      struct nfc_vendor_cmd *cmds,
-+				      const struct nfc_vendor_cmd *cmds,
- 				      int n_cmds)
- {
- 	return nfc_set_vendor_cmds(ndev->nfc_dev, cmds, n_cmds);
-diff --git a/include/net/nfc/nfc.h b/include/net/nfc/nfc.h
-index 2cd3a261bcbc..31672021d071 100644
---- a/include/net/nfc/nfc.h
-+++ b/include/net/nfc/nfc.h
-@@ -188,7 +188,7 @@ struct nfc_dev {
- 
- 	struct rfkill *rfkill;
- 
--	struct nfc_vendor_cmd *vendor_cmds;
-+	const struct nfc_vendor_cmd *vendor_cmds;
- 	int n_vendor_cmds;
- 
- 	struct nfc_ops *ops;
-@@ -297,7 +297,7 @@ void nfc_send_to_raw_sock(struct nfc_dev *dev, struct sk_buff *skb,
- 			  u8 payload_type, u8 direction);
- 
- static inline int nfc_set_vendor_cmds(struct nfc_dev *dev,
--				      struct nfc_vendor_cmd *cmds,
-+				      const struct nfc_vendor_cmd *cmds,
- 				      int n_cmds)
- {
- 	if (dev->vendor_cmds || dev->n_vendor_cmds)
-diff --git a/net/nfc/netlink.c b/net/nfc/netlink.c
-index 722f7ef891e1..70467a82be8f 100644
---- a/net/nfc/netlink.c
-+++ b/net/nfc/netlink.c
-@@ -1531,7 +1531,7 @@ static int nfc_genl_vendor_cmd(struct sk_buff *skb,
- 			       struct genl_info *info)
- {
- 	struct nfc_dev *dev;
--	struct nfc_vendor_cmd *cmd;
-+	const struct nfc_vendor_cmd *cmd;
- 	u32 dev_idx, vid, subcmd;
- 	u8 *data;
- 	size_t data_len;
+ 	int r;
+ 	while (gate_count--) {
 -- 
 2.27.0
 
