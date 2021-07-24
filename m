@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFE63D49D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E61B3D49D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 22:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhGXToJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 15:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
+        id S229638AbhGXTpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 15:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGXToI (ORCPT
+        with ESMTP id S229508AbhGXTpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 15:44:08 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEFDC061575;
-        Sat, 24 Jul 2021 13:24:38 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id n2so6177627eda.10;
-        Sat, 24 Jul 2021 13:24:38 -0700 (PDT)
+        Sat, 24 Jul 2021 15:45:12 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483D5C061575;
+        Sat, 24 Jul 2021 13:25:44 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id g23-20020a17090a5797b02901765d605e14so8601608pji.5;
+        Sat, 24 Jul 2021 13:25:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=UJSgRDnKmcn38dme24vgWVlBH8IXwNvRexCHUMPGjgI=;
-        b=pJ9JEfxxRSkc3z5njHjSIElEWxpSPtFM/aE5KREQcbENKS8HZCQoMVVR3AL9h7cxge
-         eRAocvj51kRB9f79wZf5iYSMn3XYHqrDdqNviOvYYcGC8eHf/q2viO6QiHjGFTRyL1x/
-         kT8yg8UCCIo1U31DfRHfftOnkafgqGw3GM2qoyqnxiQtXBFD+zOr/C6GvYL1fMKQfA2X
-         wM4NSWdIXpWYUziMLK3Xy3C8/Bep5+8IbRt6cNz6Dg5n3NkSjsAjR5ZoRNtSTkOjlR4a
-         6UXfEznHjrtCFImTRZm9pHTS87DmV2EFvSIodsv6RH58wrVRcBCn3cuKX0xUjjuwWmcG
-         74lg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oX5fp2Nd3pjI/G9YdONxiLdBOXyu28WtsV/xr2FFBcM=;
+        b=MleA1nfsh6fJ0gs2dghL4xrngg8YiagMbY7B66ZlCMD2z5AztzMGSQPwrXyhZd8MkQ
+         L8oT1tz+xo/ioxQk/QOP6XONFYOZr7bosbTJXlqX2uDnQh4yLsqWnifbQ+BHLoaV9tKp
+         EFLASh3QItzEHlx+pq40+jRlGFM9dSKxNmcCVadldLbikD69tYE6f0xgwUMBWG4bCrl/
+         TTwXZOAz2c7G2aLRhX6hDMeuj9A87fLkG26utfBsREOVhnXkdWtTqrA7ga24EuM3R0jJ
+         q+4HpZIyf8Ihat9zxU0sJrAAd+OJUGnthorkRyUF+Yk1B9IqQ7iZrHylwmU1XgxyeRUP
+         SntA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=UJSgRDnKmcn38dme24vgWVlBH8IXwNvRexCHUMPGjgI=;
-        b=iWdeq3s42mszi12razJfaP9msGQ5sxnL+g4s5tWCWLaX5ua4+b9dZque6hyVdMmh6D
-         TXsGHBj9XBLE6l1DgVQbWywgLdRn2p2e2GdBwaCQv5akXURcdBhlhurWnaa4acBbZVW/
-         QFsPUIQudgTp52ucNRgosU/y/fGyl+y1OYW8pudo6NS8I2jbodyh6l56yRfQGgWKApyp
-         0uUNFXNQgZ1/zTljsXaDZVlh0fYSYxlXwl7AlIgxKzIulqKcRDcVPekv797MRMkeSqFr
-         qoIXCKh2MW/X+Q71yMFgSvblPQPNEfkZV88MaO8Z57LV0p8bupmR4iWSaMSTSVkqRBk1
-         mSEQ==
-X-Gm-Message-State: AOAM533w2xvZ3dZa6A14FACi5E42qNYuhdtpEfzUYogTKrrtvwhptv/V
-        EYIMmk5JGjV5CUUbDs/8X3I=
-X-Google-Smtp-Source: ABdhPJxXeCwGJ/SJ+OK886LLRORKTnsMYhMqEOWta6Q7pfX1zApFRiOliI1S17PKpTW2NkebhAHARA==
-X-Received: by 2002:a50:cb8b:: with SMTP id k11mr12823796edi.55.1627158277409;
-        Sat, 24 Jul 2021 13:24:37 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id d8sm2877055edy.83.2021.07.24.13.24.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 13:24:36 -0700 (PDT)
-Date:   Sat, 24 Jul 2021 21:24:34 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] hid-elo: update the reference count of the usb device
- structure
-Message-ID: <20210724202434.GA528986@pc>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oX5fp2Nd3pjI/G9YdONxiLdBOXyu28WtsV/xr2FFBcM=;
+        b=PcS06fYUA9R1NQfxFHJFidPPYhKqNi/vdaUIEArMDxUwRv4pIR2SigbAskAS92bRQ6
+         m8KJI2ABAim8unIsF05B6xX5NKZKn3Zlr2EX9ci8j2nZGtaBphE0fBeFWDdDU6rqgsRw
+         OaMwutVn/27pQEpbH+X0WMTqkQBlOZZjc4DSyjmmVwbAqePu9dzCo6FjnI5MYI++hjqP
+         EvrqfEqSKogm4e0/ZIQovCu9Yj/J9fjqC+TAKsKQVYdS5eiBB6vdcu2rSAfbcj/y5pvB
+         kMsLd4BM57Y5J18rOcAgtYRHzeswobJD1SSHkm8YH+ifcOo1tRjZ+POJ+Por0+0rll9v
+         i3lA==
+X-Gm-Message-State: AOAM533TnOcBer4TWC87C/usFagTX+mNX0Dw8uYl/+1S/D0knRN6jG6I
+        rH1K9/10laPoPXIRpwU8SjlHL7O2usSEy7+KyCY=
+X-Google-Smtp-Source: ABdhPJwUTRel3gjPkDQOX+a2yHZ/w3me8pjMINp3dKxourGyiImC63ckIod43RoF5q1yN0p8t9bUdUAmzFZPdlxmw7M=
+X-Received: by 2002:a17:90b:1194:: with SMTP id gk20mr19462244pjb.181.1627158343731;
+ Sat, 24 Jul 2021 13:25:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
+ <20210723202157.2425-2-michael.a.bottini@linux.intel.com> <CAHp75Ve2Ls9KVM0KZ2GMgbrQvc6wXvAXP1CqSLzQ4JWMTAcZ0A@mail.gmail.com>
+ <27751c8ff02d98cabd512472b29078b11f4bdf0e.camel@linux.intel.com>
+In-Reply-To: <27751c8ff02d98cabd512472b29078b11f4bdf0e.camel@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 24 Jul 2021 23:25:06 +0300
+Message-ID: <CAHp75VfbDXW5DTfmV1r+=Q+7m=qta1p3h0uRk8D1rctxG_kDvg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] platform/x86/intel/pmc: Add PSON residency counter
+To:     David Box <david.e.box@linux.intel.com>
+Cc:     Michael Bottini <michael.a.bottini@linux.intel.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "irenic.rajneesh@gmail.com" <irenic.rajneesh@gmail.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use usb_get_dev() and usb_put_dev() in order to update the reference
-count of the usb device structure.
+On Sat, Jul 24, 2021 at 10:49 PM David E. Box
+<david.e.box@linux.intel.com> wrote:
+> On Sat, 2021-07-24 at 11:29 +0300, Andy Shevchenko wrote:
+> > On Friday, July 23, 2021, Michael Bottini
+> > <michael.a.bottini@linux.intel.com> wrote:
+> > > Tiger Lake devices have the capability to track the duration
+> > > of time that their Power Supply Units (PSUs) are turned off during
+> > > S0ix.
+> > > This patch adds a debugfs file `pson_residency_usec` to provide
+> > > access to this counter.
+> > >
+> > > In order to determine whether the device is capable of PSON,
+> > > use acpi_init_properties() to reevaluate _DSD.
+> > >
+> > >
+> >
+> > It=E2=80=99s direct abuse of ACPI specification as I read it:
+> >
+> > =E2=80=9C_DSD must return the same data each time it is evaluated. Firm=
+ware
+> > should not expect it to be evaluated every time (in case it is
+> > implemented as a method).=E2=80=9D
+> >
+> >
+> > NAK to the series.
+>
+> Okay, we'll check with the BIOS folks. They are setting this property
+> from _STA. They may not expect OSPM to reevaluate _DSD.
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/hid/hid-elo.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Does it matter?
 
-diff --git a/drivers/hid/hid-elo.c b/drivers/hid/hid-elo.c
-index 0d22713a3874..383dfda8c12f 100644
---- a/drivers/hid/hid-elo.c
-+++ b/drivers/hid/hid-elo.c
-@@ -228,13 +228,15 @@ static int elo_probe(struct hid_device *hdev, const struct hid_device_id *id)
- {
- 	struct elo_priv *priv;
- 	int ret;
-+	struct usb_device *udev;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
- 
- 	INIT_DELAYED_WORK(&priv->work, elo_work);
--	priv->usbdev = interface_to_usbdev(to_usb_interface(hdev->dev.parent));
-+	udev = interface_to_usbdev(to_usb_interface(hdev->dev.parent));
-+	priv->usbdev = usb_get_dev(udev);
- 
- 	hid_set_drvdata(hdev, priv);
- 
-@@ -265,6 +267,8 @@ static void elo_remove(struct hid_device *hdev)
- {
- 	struct elo_priv *priv = hid_get_drvdata(hdev);
- 
-+	usb_put_dev(priv->usbdev);
-+
- 	hid_hw_stop(hdev);
- 	cancel_delayed_work_sync(&priv->work);
- 	kfree(priv);
--- 
-2.25.1
+> But they may
+> have expected that OSPM doesn't attempt to read _DSD until after _STA
+> is executed.
 
+They may study a bit of ACPI specification perhaps?
+Or if there is indeed an issue with the specification language (so
+native-speaking people misinterpret above) then ECR to ASWG should be
+submitted?
+
+--=20
+With Best Regards,
+Andy Shevchenko
