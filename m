@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 870923D4788
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 14:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E12E3D478B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 14:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhGXLai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 07:30:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25241 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231511AbhGXLag (ORCPT
+        id S234060AbhGXLbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 07:31:34 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21339 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231511AbhGXLbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 07:30:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627128667;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6AcUZFHd8G5i76Vd2O5qx5HOAivGVNtt24z6TdHQF1o=;
-        b=epNu0UjSa2Naa7AER7Zbs1JPjnA77O/hYw5Lf1a0C22rm/SOvU+fW9HVdjm7MfmS4a9FTJ
-        zNGvewInVYrtc/M8ZpMSI8FOEbvlFuMYzDCHRbAqSAP3zwVkLhudCzSBEfe6RNWLOtHQS7
-        b94DBLfx7hig+5M9VJiHMYyWwrVyhBM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-84-dNw8lvy3OVK0F4gs-7lfdg-1; Sat, 24 Jul 2021 08:11:06 -0400
-X-MC-Unique: dNw8lvy3OVK0F4gs-7lfdg-1
-Received: by mail-wr1-f72.google.com with SMTP id p2-20020a5d48c20000b0290150e4a5e7e0so2025756wrs.13
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 05:11:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6AcUZFHd8G5i76Vd2O5qx5HOAivGVNtt24z6TdHQF1o=;
-        b=Ro6V+J2qt3s7CP4sihFvDxvsUaHlMViRHuCnzDjDKp1DbK01Nz5cduRFDYhvrId6pU
-         dXeDBY9VgA79+56qycxAVPYWM2QmgJcTEPuLzpzZKR6GSfU2ZQioM5ji2HYEOkHjDxKf
-         QtxbxA1JMDk+fwc6T95k9lKDwYzgIKMIZEqxkLnndDX0ToBD/41EttAgPZkGq1iN+axA
-         V/dSpvAEOcoCfCghtZXzrK5mynnDKbW7L1SDieDR02qLBx9xEpc+otAIhyuCFtBIkV74
-         OVl5JdsbYeXTieONRgNeyEZPgQnSQjvrzDjMqEUcC7zf1j6vUP8OleF/Ih/ljk+7XLgi
-         scqg==
-X-Gm-Message-State: AOAM532bK/qhsU6ENOn67r9ZLvGiEUW2qfK7PeKtrJBtlymEvherHBMI
-        7wMw14AIrp5P+RLIFn2oVVPD35J15wKIQCKBxUgalnvAbzV6TflQ5f15c7KWTZ2GYnV/XCM2tO2
-        /4yOsLoEj31a+OOPAykJqbWcZP/Nl//KjcBt6snec
-X-Received: by 2002:a5d:6644:: with SMTP id f4mr9516228wrw.177.1627128665077;
-        Sat, 24 Jul 2021 05:11:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx1U/Pv5yVb884gxpjWlzIwo4rESJ/20Yl1+UEyfV86RbeZzOoyylb1wUn4yvDX+I0fEFDwDPAH06HqLqn5dkc=
-X-Received: by 2002:a5d:6644:: with SMTP id f4mr9516213wrw.177.1627128664906;
- Sat, 24 Jul 2021 05:11:04 -0700 (PDT)
+        Sat, 24 Jul 2021 07:31:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1627128719; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=kvLQRvEpQMElxZAbpLLTQwts/J8tNUM7zjxqSUnCWN3CB4NppZynu6IVjCzWovcZJ6h2liepY0ChUsZSFUm7/qEI9KCn2brCZyU9UieErewLyrHatbRm5Oztpnf1u8pyVpc5yd6BCcxlGjsDeZkE4QjVGJ4d9SMfviJB8ImwFnc=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1627128719; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=Gwqi7qz2xySqwvKyeGIDtfL3RZb4Fe+2154Q1TOO/FU=; 
+        b=AA7fbXmzdTjxAlvISZMl2kGyYlhjwHG5OOrxdoXwwJ5nUJ7qiwAna5FlFQC9/3BVJMobIJwlXFnLWPuCOHbnr70RBOo57AmypWIBeG6bF20JlJzfz/jglJK344GL9QhWfBiFlwnOgSZg8ycWE9vchPJ9Z3IsXz5eo3KkA1HogpM=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1627128719;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=Gwqi7qz2xySqwvKyeGIDtfL3RZb4Fe+2154Q1TOO/FU=;
+        b=yg7ZueEKxKRe3SgPS7bLtiDP+tq+2PwQr62WBFrTlZOIlPrN+/wNkBgzd3QpyViX
+        Z2r0Jh6gRqkVXTq7U29hQCCH03RsVUEFsFUxkUydJWrLFlOMt3bx/ccmk5oPCznANrS
+        ypePK8Sy6xZrCHY6WiGdXaEIkc9grUtDSSUR1X0Y=
+Received: from localhost.localdomain (106.51.107.3 [106.51.107.3]) by mx.zohomail.com
+        with SMTPS id 1627128715051669.0032074506994; Sat, 24 Jul 2021 05:11:55 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        skhan@linuxfoundation.org
+Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v7 0/2] firmware_loader: fix uaf in firmware_fallback_sysfs
+Date:   Sat, 24 Jul 2021 17:41:32 +0530
+Message-Id: <20210724121134.6364-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210723224617.3088886-1-kherbst@redhat.com> <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com>
- <CACO55tuNWk6emjnnukgv9h-9jbpVP564Ogmi7TGbybc9n5v+ZQ@mail.gmail.com> <CAK8P3a1BceSaiqkTf+9Pr4Br-G3kgqD4ztwiaS7fxNiUg9t7Dg@mail.gmail.com>
-In-Reply-To: <CAK8P3a1BceSaiqkTf+9Pr4Br-G3kgqD4ztwiaS7fxNiUg9t7Dg@mail.gmail.com>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Sat, 24 Jul 2021 14:10:53 +0200
-Message-ID: <CACO55tsoi2akTKvFdz3p48UHRjFXDW7dUnOM8qVePBFWet-3UQ@mail.gmail.com>
-Subject: Re: [PATCH] nouveau: make backlight support non optional
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        ML nouveau <nouveau@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 1:56 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Sat, Jul 24, 2021 at 11:55 AM Karol Herbst <kherbst@redhat.com> wrote:
-> >
-> > On Sat, Jul 24, 2021 at 8:55 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > On Sat, Jul 24, 2021 at 12:47 AM Karol Herbst <kherbst@redhat.com> wrote:
-> > > >
-> > > > In the past this only led to compilation issues. Also the small amount of
-> > > > extra .text shouldn't really matter compared to the entire nouveau driver
-> > > > anyway.
-> > > >
-> > >
-> > > >         select DRM_TTM_HELPER
-> > > > -       select BACKLIGHT_CLASS_DEVICE if DRM_NOUVEAU_BACKLIGHT
-> > > > -       select ACPI_VIDEO if ACPI && X86 && BACKLIGHT_CLASS_DEVICE && INPUT
-> > > > +       select BACKLIGHT_CLASS_DEVICE
-> > > > +       select ACPI_VIDEO if ACPI && X86 && INPUT
-> > > >         select X86_PLATFORM_DEVICES if ACPI && X86
-> > > >         select ACPI_WMI if ACPI && X86
-> > >
-> > > I think the logic needs to be the reverse: instead of 'select
-> > > BACKLIGHT_CLASS_DEVICE',
-> > > this should be 'depends on BACKLIGHT_CLASS_DEVICE', and the same for ACPI_VIDEO.
-> > >
-> > > We may want to add 'default DRM || FB' to BACKLIGHT_CLASS_DEVICE in the
-> > > process so we don't lose it for users doing 'make oldconfig' or 'make defconfig'
-> > >
-> >
-> > I think the problem with
-> > "depends" is that the user needs to enable backlight support first
-> > before even seeing nouveau and I don't know if that makes sense. But
-> > maybe "default" is indeed helping here in this case.
->
-> In general, no driver should ever 'select' a subsystem. Otherwise you end up
-> with two problems:
->
-> - enabling this one driver suddenly makes all other drivers that have
-> a dependency
->   on this visible, and some of those might have a 'default y', so you
-> end up with
->   a ton of stuff in the kernel that would otherwise not be there.
->
-> - It becomes impossible to turn it off as long as some driver has that 'select'.
->   This is the pretty much the same problem as the one you describe, just
->    the other side of it.
->
-> - You run into dependency loops that prevent a successful build when some
->    other driver has a 'depends on'. Preventing these loops was the main
->    reason I said we should do this change.
->
-> In theory we could change the other 85 drivers that use 'depends on' today,
-> and make BACKLIGHT_CLASS_DEVICE a hidden symbol that only ever
-> selected by the drivers that need it. This would avoid the third problem but
-> not the other one.
->
->       Arnd
->
+This series fixes the use after free in firmware_fallback_sysfs reported
+by syzbot at:
 
-I see. Yeah, I guess we can do it this way then. I just wasn't aware
-of the bigger picture here. Thanks for explaining.
+https://syzkaller.appspot.com/bug?extid=de271708674e2093097b
+
+The first patch gets rid of the -EAGAIN return since it doesn't make
+sense (see patch description for more info). The second patch goes on to
+actually fix the use after free issue.
+
+Changes in v7:
+1. Don't move the error handling code from fw_load_sysfs_fallback
+   to fw_sysfs_wait_timeout to simplify the patch. Also, the move
+   is unnecessary.
+
+2. Fix the commit log for the patch 1 as per Luis' suggestions.
+
+Changes in v6:
+1. v5 didn't actually remove -EAGAIN. So, fixed that.
+
+Changes in v5:
+1. Split the patch into two patches as discussed here:
+   https://lore.kernel.org/lkml/20210715232105.am4wsxfclj2ufjdw@garbanzo/
+
+Changes in v4:
+Documented the reasons behind the error codes returned from
+fw_sysfs_wait_timeout() as suggested by Luis Chamberlain.
+
+Changes in v3:
+Modified the patch to incorporate suggestions by Luis Chamberlain in
+order to fix the root cause instead of applying a "band-aid" kind of
+fix.
+https://lore.kernel.org/lkml/20210403013143.GV4332@42.do-not-panic.com/
+
+Changes in v2:
+1. Fixed 1 error and 1 warning (in the commit message) reported by
+checkpatch.pl. The error was regarding the format for referring to
+another commit "commit <sha> ("oneline")". The warning was for line
+longer than 75 chars.
+
+Anirudh Rayabharam (2):
+  firmware_loader: use -ETIMEDOUT instead of -EAGAIN in
+    fw_load_sysfs_fallback
+  firmware_loader: fix use-after-free in firmware_fallback_sysfs
+
+ drivers/base/firmware_loader/fallback.c | 12 +++++++-----
+ drivers/base/firmware_loader/firmware.h |  6 +++++-
+ drivers/base/firmware_loader/main.c     |  2 ++
+ 3 files changed, 14 insertions(+), 6 deletions(-)
+
+-- 
+2.26.2
 
