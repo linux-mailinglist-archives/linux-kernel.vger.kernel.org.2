@@ -2,203 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6AC3D471B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042C13D471D
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhGXJvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 05:51:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234333AbhGXJvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 05:51:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BEAC60E53;
-        Sat, 24 Jul 2021 10:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627122708;
-        bh=oweY6g0tMz3+2WXRwdOKI4rJeUgbxYuG9AEckBYmgaY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JRC9qCl1kk1PAsOhqoncvQhEgTG1UIYxVOrBYjUuLljy6dMlB9krZ8H/rtR2K1Lnm
-         TutnpwX1fBCgbG0E2svY3MgslTgmKw3iKSqJG+95NSlhZniOJBmR0UQx8FywkNc1pq
-         0oOBYuUkUIu4LcHLcf2dc/VxKs7TcaDYIQOI/8u9PxmCOuUnc+QEcHFW5XpSbqKqC+
-         VAJ/B8jb2TGdeOvBOz+xXodjM4SDQDtIt9Ww1UVaoOud14gq4dFRv4EU2RZTxJ0Zlr
-         23llm6UIjMLIYU1lInkpZ1kWzWnODRo6nJGkM1JBAWcwMSJNgLo+huXZQP489ccyFE
-         ZfqX3iWdkZ+AA==
-Date:   Sat, 24 Jul 2021 19:31:45 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
- for synthetic events
-Message-Id: <20210724193145.c63b44aa843e05ed9c0b4fdc@kernel.org>
-In-Reply-To: <20210722212438.5933e714@rorschach.local.home>
-References: <20210722142705.992001628@goodmis.org>
-        <20210722142837.458596338@goodmis.org>
-        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
-        <20210722123234.636d5363@oasis.local.home>
-        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
-        <20210722212438.5933e714@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235157AbhGXJxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 05:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234219AbhGXJxl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 05:53:41 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE93C061575;
+        Sat, 24 Jul 2021 03:34:12 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id r23so1659496lji.3;
+        Sat, 24 Jul 2021 03:34:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x6qKlfQqH4Pff1qY3yh2+h4mSC4bChkJmId4p4BeXQU=;
+        b=O6hvyvnQIiTssakclxodabsh84VNdDn9LRuunsV2DlxcfjfrE5a0C4XDVFjIOUQ2CV
+         eaB1icO6o4OMnXoQ8j8f+EQIFM2T8vf4S/f/0Sj966XKDC+fv8D315AcsWcblWaZbOwi
+         ZIRKKJJePG3/B/vSvOA1q2+idYwZxjqwxo1xfa4a/LPCERHcEg3jGQdIjTg7LNiSY1D3
+         a6xahXn2u6LTYwKzP3/2Luq5a69Osd1FojrSm01WqlWWxPkXrYlDYFxICAzdFkUApcUJ
+         N1S0WVoHxzx38vFAWUfFoFOsuCeHzEo8B/HnyyAIBvC7UuKWr7bwZSoW5XKd04dOm9ZT
+         O+Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x6qKlfQqH4Pff1qY3yh2+h4mSC4bChkJmId4p4BeXQU=;
+        b=o9LhecUhxtAyVlnIfzcpIEg7lcXBWo3laZBFURvyCi8cP09oC2+jJJ1WwRGN5cLI8M
+         /RJRTqHCD7wR+gvfSHna6K7rDtAVKyy0ORXYJ/EkH6O73AfjeXTQZ98f9CXoHjgYy+d3
+         EVHfHxmg92kkEfLVAaRFlV2B6jr3UDOaDY/chqxeoNi7M1qv0u4G1AnQ1vDPTFyWco8/
+         TfsBdlYhokSO15O9A7QkI+HOjlGXIKvmguF7EdCzDr7TIKjTrXMMxhhmIiqHgNoenWbm
+         J335VyRvXU4x4xr98XZLPGk+UkznbmYmZ5wZRK2+PpnjgYNlcwSWzh9JsjX41I6Vzvka
+         OlKw==
+X-Gm-Message-State: AOAM531ZPMjGrM2Vxx5ovW5lIPBFnQOkpv0Rp8dpQnzEarwVyULQ9f1R
+        /dAYoSiiwHI/wExmFRnGOHc=
+X-Google-Smtp-Source: ABdhPJw1DpZY1EfJig8d3cXTa8Tc9M+VIOgYNm4+S2hFK0uPqhzIBTOFv32HnDYsxMsZfB/QZql0TQ==
+X-Received: by 2002:a2e:8743:: with SMTP id q3mr1517461ljj.397.1627122850546;
+        Sat, 24 Jul 2021 03:34:10 -0700 (PDT)
+Received: from akaWolf-PC.. ([194.79.5.201])
+        by smtp.gmail.com with ESMTPSA id v22sm2158938lfi.270.2021.07.24.03.34.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 03:34:10 -0700 (PDT)
+From:   Artjom Vejsel <akawolf0@gmail.com>
+Cc:     thierry.reding@gmail.com, sam@ravnborg.org,
+        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        paul@crapouillou.net, akawolf0@gmail.com
+Subject: [PATCH v2 0/3] add Gopher 2b LCD panel
+Date:   Sat, 24 Jul 2021 13:33:55 +0300
+Message-Id: <20210724103358.1632020-1-akawolf0@gmail.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+The Gopher 2b LCD panel is used in Gopher 2b handhelds.
+It's simple panel with NewVision NV3047 driver,
+but SPI lines are not connected.
+It has no specific name, since it's unique to that handhelds.
+lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG
+NV3047 Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
 
-On Thu, 22 Jul 2021 21:24:38 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+In v2 removed .num_modes as noticed by Paul.
 
-> On Fri, 23 Jul 2021 10:11:33 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > I understand. As far as I can see the code, it looks a bit complicated.
-> > To simplify it, I need to understand the spec for "hist_field"
-> > for keys and for vars. And maybe need to split both case.
-> 
-> I'll give you a hint that took me a bit to figure out.
-> 
-> 1) The execname is saved at the start of the histogram and not by one
-> of the ->fn() functions.
-> 
-> It's saved by hist_trigger_elt_data_init() if the elt_data->comm is
-> allocated. That function is part of the "tracing_map_ops" which gets
-> assigned by tracing_map_create() (in tracing_map.c) as the "elt_init"
-> function, which is called when getting a new elt element by
-> get_free_elt().
-> 
-> 2) That elt_data->comm is only allocated if it finds a "hist_field"
-> that has HIST_FIELD_FL_EXECNAME flag set. It currently only looks for
-> that flag in the "keys" fields, which means that .execname is useless
-> for everything else. This patch changed it to search all hist_fields so
-> that it can find that flag if a variable has it set (which I added).
+Artjom Vejsel (3):
+  dt-bindings: Add QiShenglong vendor prefix
+  dt-bindings: Add DT bindings for QiShenglong Gopher 2b panel
+  drm/panel-simple: add Gopher 2b LCD panel
 
-Thanks for the hints, but actually, that part looks good to me.
+ .../bindings/display/panel/panel-simple.yaml  |  2 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
+ drivers/gpu/drm/panel/panel-simple.c          | 43 +++++++++++++++++++
+ 3 files changed, 47 insertions(+)
 
-So, what I pointed was the part of update_var_execname(). Below diff
-is what I intended.
-This moves HIST_FIELD_FL_EXECNAME setup in the create_hist_field()
-as same as other flags, and removed the add-hoc update_var_execname()
-fixup function.
-
-I confirmed it passed the ftracetest trigger testcases and your
-example code.
-
-Thank you,
-
----
- kernel/trace/trace_events_hist.c | 69 ++++++++++++++------------------
- 1 file changed, 31 insertions(+), 38 deletions(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 14b840de1326..2fab91a22628 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -492,6 +492,27 @@ struct snapshot_context {
- 	void			*key;
- };
- 
-+static const char *no_comm = "(no comm)";
-+
-+static u64 hist_field_execname(struct hist_field *hist_field,
-+			       struct tracing_map_elt *elt,
-+			       struct trace_buffer *buffer,
-+			       struct ring_buffer_event *rbe,
-+			       void *event)
-+{
-+	struct hist_elt_data *elt_data;
-+
-+	if (WARN_ON_ONCE(!elt))
-+		return (u64)(unsigned long)no_comm;
-+
-+	elt_data = elt->private_data;
-+
-+	if (WARN_ON_ONCE(!elt_data->comm))
-+		return (u64)(unsigned long)no_comm;
-+
-+	return (u64)(unsigned long)(elt_data->comm);
-+}
-+
- static void track_data_free(struct track_data *track_data)
- {
- 	struct hist_elt_data *elt_data;
-@@ -1682,6 +1703,16 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
- 		goto out;
- 	}
- 
-+	if ((flags & HIST_FIELD_FL_EXECNAME) && var_name) {
-+		flags |= HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR;
-+		hist_field->size = MAX_FILTER_STR_VAL;
-+		hist_field->is_signed = 0;
-+
-+		hist_field->type = "char[]";
-+		hist_field->fn = hist_field_execname;
-+		goto out;
-+	}
-+
- 	if (WARN_ON_ONCE(!field))
- 		goto out;
- 
-@@ -3703,41 +3734,6 @@ static int create_val_field(struct hist_trigger_data *hist_data,
- 	return __create_val_field(hist_data, val_idx, file, NULL, field_str, 0);
- }
- 
--static const char *no_comm = "(no comm)";
--
--static u64 hist_field_execname(struct hist_field *hist_field,
--			       struct tracing_map_elt *elt,
--			       struct trace_buffer *buffer,
--			       struct ring_buffer_event *rbe,
--			       void *event)
--{
--	struct hist_elt_data *elt_data;
--
--	if (WARN_ON_ONCE(!elt))
--		return (u64)(unsigned long)no_comm;
--
--	elt_data = elt->private_data;
--
--	if (WARN_ON_ONCE(!elt_data->comm))
--		return (u64)(unsigned long)no_comm;
--
--	return (u64)(unsigned long)(elt_data->comm);
--}
--
--/* Convert a var that points to common_pid.execname to a string */
--static void update_var_execname(struct hist_field *hist_field)
--{
--	hist_field->flags = HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR |
--		HIST_FIELD_FL_EXECNAME;
--	hist_field->size = MAX_FILTER_STR_VAL;
--	hist_field->is_signed = 0;
--
--	kfree_const(hist_field->type);
--	hist_field->type = "char[]";
--
--	hist_field->fn = hist_field_execname;
--}
--
- static int create_var_field(struct hist_trigger_data *hist_data,
- 			    unsigned int val_idx,
- 			    struct trace_event_file *file,
-@@ -3762,9 +3758,6 @@ static int create_var_field(struct hist_trigger_data *hist_data,
- 
- 	ret = __create_val_field(hist_data, val_idx, file, var_name, expr_str, flags);
- 
--	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_EXECNAME)
--		update_var_execname(hist_data->fields[val_idx]);
--
- 	if (!ret && hist_data->fields[val_idx]->flags & HIST_FIELD_FL_STRING)
- 		hist_data->fields[val_idx]->var_str_idx = hist_data->n_var_str++;
- 
--- 
-2.25.1
-
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+--
+2.32.0
