@@ -2,205 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B637A3D442E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 03:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880F33D4438
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 03:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233558AbhGXAjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 20:39:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233298AbhGXAjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 20:39:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62FDC60BD3;
-        Sat, 24 Jul 2021 01:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627089580;
-        bh=XuV5KnrUXo2aL81IJRXJlswdfQPfCVDznQiZ16njytg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QYZlAfs8Imf/WwWcREV2GuOkNRc1EaWGErOPIpnkvXdUzt2II7cnyKnXFBHDt9a7V
-         kw/3zailYAn6jYb/GE4RObeREspwBkXVmOGNFLlMLb6uHUr4a4nttMPxrPQlFg9nTD
-         xoosOepTzoOMMP84uqN8C80gE9HtiKuyLxQf4ClmOx1ivsAKmRaiBs6Y1B3YuKXC5C
-         qqRpsaLmnA/ncoQBIdmrdBvL7pNvGUFuOl1VvJJrD1bTWQlgjj6HmPujHCBiE3+5ca
-         gu7gg0X5qZwhbm3TfOKGKXL+lfS0NiLCUdmmjt4ufRLJqagj7qqnuDdAYbJ3kThxaH
-         1Ffquhf0mnaqQ==
-Date:   Fri, 23 Jul 2021 18:19:38 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [PATCH v3] f2fs: change fiemap way in printing compression chunk
-Message-ID: <YPtqqkocZPNoeiCu@google.com>
-References: <20210723074928.1659385-1-daeho43@gmail.com>
+        id S233558AbhGXAuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 20:50:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233398AbhGXAuN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 20:50:13 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF346C061757
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 18:30:45 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 68-20020a9d0f4a0000b02904b1f1d7c5f4so2860126ott.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 18:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=tjbmf6QXY2W+Nbmim38kusmymcjWfC+qA2fJ0iXz/KI=;
+        b=TvMAXp3spDk29OHAgsCRBMxgaNUv7OxrmCsvfJ+ETQoSwRwlR2ZUtSUKDs8vKW9/a5
+         eyNIiNN3DmeHQ4jAREQS5+IneCe1j9UcoRkzyJMkkH8llJVXTW25v4Gr7WcNIMEVPua5
+         CuUBpI0pgpUfrptIpyJFOpaTyh+mPcY7LqAXw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=tjbmf6QXY2W+Nbmim38kusmymcjWfC+qA2fJ0iXz/KI=;
+        b=MX8dPHYFApEDMKt4dWgAqBuAItf1hAHTacwWKMgOhUrU53a68IZEg38OuZE+s1B3OI
+         cIc6AIY1Ost88CvSMW7PVFmH9c/WC1AWn2pV1Hy1LAiCexueO876f3AZR3NmDVTrNGDD
+         hhu2zDsL1G1/vmulZpNNPRIF1G+8Bx7cfPr6/5ErhZoOwM8H8H+pPStfJbmQ/STWzQ0F
+         nipqqtiCbHsmCLIGkKH0A3g7QgCTm4s/0iAX96+7+sj1QS0TkzVeXxhlS6LJjrvAny4J
+         Wp34puXkqFnhVJZTn8/OCXeWGloG+xKA4z5PdY7wm6ILjw9I8vtxvvgysrnoNPgLB38M
+         sujA==
+X-Gm-Message-State: AOAM531Cg2v2QQfuAh0i7Tffs5c8S9XXHiWNb0recs+prh8NNZ+h9B6f
+        tERWGR3SNOMP2RPksuCaJIxbsZ45LmID83+xSygFjg==
+X-Google-Smtp-Source: ABdhPJyMMeaqCnCa3wyaRvlhO9ED0pMArlJie8NNlQ/fzjJggDf1wrB8rH/daTcBCqUMYrRcXJU5OfMQ5B84Q+o0PeM=
+X-Received: by 2002:a9d:8c7:: with SMTP id 65mr4898349otf.25.1627090244863;
+ Fri, 23 Jul 2021 18:30:44 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 23 Jul 2021 18:30:44 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723074928.1659385-1-daeho43@gmail.com>
+In-Reply-To: <1627039254-13083-1-git-send-email-akhilpo@codeaurora.org>
+References: <1627039254-13083-1-git-send-email-akhilpo@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 23 Jul 2021 18:30:44 -0700
+Message-ID: <CAE-0n51+165pgZ5tgxmw_+7i2uYLXxAazYYkCKce0UuhfSHxbQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add gpu support
+To:     Akhil P Oommen <akhilpo@codeaurora.org>,
+        bjorn.andersson@linaro.org, freedreno@lists.freedesktop.org,
+        georgi.djakov@linaro.org, robh+dt@kernel.org, robh@kernel.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jordan@cosmicpenguin.net,
+        mka@chromium.org, jonathan@marek.ca, robdclark@gmail.com,
+        dianders@chromium.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/23, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> When we print out a discontinuous compression chunk, it shows like a
-> continuous chunk now. To show it more correctly, I've changed the way of
-> printing fiemap info like below. Plus, eliminated NEW_ADDR(-1) in fiemap
-> info, since it is not in fiemap user api manual.
-> 
-> Let's assume 16KB compression cluster.
-> 
-> <before>
->    Logical          Physical         Length           Flags
-> 0:  0000000000000000 00000002c091f000 0000000000004000 1008
-> 1:  0000000000004000 00000002c0920000 0000000000004000 1008
->   ...
-> 9:  0000000000034000 0000000f8c623000 0000000000004000 1008
-> 10: 0000000000038000 000000101a6eb000 0000000000004000 1008
-> 
-> <after>
-> 0:  0000000000000000 00000002c091f000 0000000000004000 1008
-> 1:  0000000000004000 00000002c0920000 0000000000004000 1008
->   ...
-> 9:  0000000000034000 0000000f8c623000 0000000000001000 1008
-> 10: 0000000000035000 000000101a6ea000 0000000000003000 1008
-> 11: 0000000000038000 000000101a6eb000 0000000000002000 1008
-> 12: 000000000003a000 00000002c3544000 0000000000002000 1008
-> 
-> Flags
-> 0x1000 => FIEMAP_EXTENT_MERGED
-> 0x0008 => FIEMAP_EXTENT_ENCODED
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> 
+Quoting Akhil P Oommen (2021-07-23 04:20:54)
+> Add the necessary dt nodes for gpu support in sc7280.
+>
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
 > ---
-> v3: fix the missing last extent flag issue
-> v2: changed the print format
-> ---
->  fs/f2fs/data.c | 75 ++++++++++++++++++++++++++++----------------------
->  1 file changed, 42 insertions(+), 33 deletions(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index 3a01a1b50104..29b09a74cdc9 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -1843,8 +1843,9 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->  	u64 logical = 0, phys = 0, size = 0;
->  	u32 flags = 0;
->  	int ret = 0;
-> -	bool compr_cluster = false;
-> +	bool compr_cluster = false, compr_appended;
->  	unsigned int cluster_size = F2FS_I(inode)->i_cluster_size;
-> +	unsigned int count_in_cluster;
+> This patch has dependency on the GPUCC bindings patch here:
+> https://patchwork.kernel.org/project/linux-arm-msm/patch/1619519590-3019-4-git-send-email-tdas@codeaurora.org/
+>
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 107 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 107 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 029723a..beb313c 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -16,6 +16,8 @@
+>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/thermal/thermal.h>
+> +#include <dt-bindings/interconnect/qcom,sc7280.h>
+> +#include <dt-bindings/clock/qcom,gpucc-sc7280.h>
 
-Can we initialize to 0, as compiler complains?
+Please sort this alphabetically.
 
-	unsigned int count_in_cluster = 0;
+>
+>  / {
+>         interrupt-parent = <&intc>;
+> @@ -592,6 +594,111 @@
+>                         qcom,bcm-voters = <&apps_bcm_voter>;
+>                 };
+>
+> +               gpu: gpu@3d00000 {
 
->  	loff_t maxbytes;
->  
->  	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
-> @@ -1892,15 +1893,17 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->  	map.m_next_pgofs = &next_pgofs;
->  	map.m_seg_type = NO_CHECK_TYPE;
->  
-> -	if (compr_cluster)
-> -		map.m_len = cluster_size - 1;
-> +	if (compr_cluster) {
-> +		map.m_lblk += 1;
-> +		map.m_len = cluster_size - count_in_cluster;
-> +	}
->  
->  	ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
->  	if (ret)
->  		goto out;
->  
->  	/* HOLE */
-> -	if (!(map.m_flags & F2FS_MAP_FLAGS)) {
-> +	if (!compr_cluster && !(map.m_flags & F2FS_MAP_FLAGS)) {
->  		start_blk = next_pgofs;
->  
->  		if (blks_to_bytes(inode, start_blk) < blks_to_bytes(inode,
-> @@ -1910,6 +1913,14 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->  		flags |= FIEMAP_EXTENT_LAST;
->  	}
->  
-> +	compr_appended = false;
-> +	/* In a case of compressed cluster, append this to the last extent */
-> +	if (compr_cluster && ((map.m_flags & F2FS_MAP_UNWRITTEN) ||
-> +			!(map.m_flags & F2FS_MAP_FLAGS))) {
-> +		compr_appended = true;
-> +		goto skip_fill;
-> +	}
+Will this label be used? If not, please don't add it.
+
+> +                       compatible = "qcom,adreno-635.0", "qcom,adreno";
+> +                       #stream-id-cells = <16>;
+> +                       reg = <0 0x03d00000 0 0x40000>, <0 0x03d9e000 0 0x1000>,
+> +                               <0 0x03d61000 0 0x800>;
+> +                       reg-names = "kgsl_3d0_reg_memory", "cx_mem", "cx_dbgc";
+
+I'd prefer to see one reg and reg-names per line if the list is longer
+than one line.
+
+		reg = < >,
+		      < >,
+		      < >;
+		reg-names = " ",
+		            " ",
+			    " ";
+
+It makes is much easier to figure out which property lines up with which
+name.
+
+> +                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
+> +                       iommus = <&adreno_smmu 0 0x401>;
+> +                       operating-points-v2 = <&gpu_opp_table>;
+> +                       qcom,gmu = <&gmu>;
+> +                       interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
+> +                       interconnect-names = "gfx-mem";
 > +
->  	if (size) {
->  		flags |= FIEMAP_EXTENT_MERGED;
->  		if (IS_ENCRYPTED(inode))
-> @@ -1926,38 +1937,36 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->  	if (start_blk > last_blk)
->  		goto out;
->  
-> -	if (compr_cluster) {
-> -		compr_cluster = false;
-> -
-> -
-> -		logical = blks_to_bytes(inode, start_blk - 1);
-> -		phys = blks_to_bytes(inode, map.m_pblk);
-> -		size = blks_to_bytes(inode, cluster_size);
-> -
-> -		flags |= FIEMAP_EXTENT_ENCODED;
-> -
-> -		start_blk += cluster_size - 1;
-> -
-> -		if (start_blk > last_blk)
-> -			goto out;
-> -
-> -		goto prep_next;
-> -	}
-> -
-> +skip_fill:
->  	if (map.m_pblk == COMPRESS_ADDR) {
->  		compr_cluster = true;
-> -		start_blk++;
-> -		goto prep_next;
-> -	}
-> -
-> -	logical = blks_to_bytes(inode, start_blk);
-> -	phys = blks_to_bytes(inode, map.m_pblk);
-> -	size = blks_to_bytes(inode, map.m_len);
-> -	flags = 0;
-> -	if (map.m_flags & F2FS_MAP_UNWRITTEN)
-> -		flags = FIEMAP_EXTENT_UNWRITTEN;
-> +		count_in_cluster = 1;
-> +	} else if (compr_appended) {
-> +		unsigned int appended_blks = cluster_size -
-> +						count_in_cluster + 1;
-> +		size += blks_to_bytes(inode, appended_blks);
-> +		start_blk += appended_blks;
-> +		compr_cluster = false;
-> +	} else {
-> +		logical = blks_to_bytes(inode, start_blk);
-> +		phys = __is_valid_data_blkaddr(map.m_pblk) ?
-> +			blks_to_bytes(inode, map.m_pblk) : 0;
-> +		size = blks_to_bytes(inode, map.m_len);
-> +		flags = 0;
+> +                       gpu_opp_table: opp-table {
+> +                               compatible = "operating-points-v2";
 > +
-> +		if (compr_cluster) {
-> +			flags = FIEMAP_EXTENT_ENCODED;
-> +			count_in_cluster += map.m_len;
-> +			if (count_in_cluster == cluster_size) {
-> +				compr_cluster = false;
-> +				size += blks_to_bytes(inode, 1);
-> +			}
-> +		} else if (map.m_flags & F2FS_MAP_UNWRITTEN) {
-> +			flags = FIEMAP_EXTENT_UNWRITTEN;
-> +		}
->  
-> -	start_blk += bytes_to_blks(inode, size);
-> +		start_blk += bytes_to_blks(inode, size);
-> +	}
->  
->  prep_next:
->  	cond_resched();
-> -- 
-> 2.32.0.432.gabb21c7263-goog
+> +                               opp-550000000 {
+> +                                       opp-hz = /bits/ 64 <550000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
+> +                                       opp-peak-kBps = <6832000>;
+> +                               };
+> +
+> +                               opp-450000000 {
+> +                                       opp-hz = /bits/ 64 <450000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+> +                                       opp-peak-kBps = <4068000>;
+> +                               };
+> +
+> +                               opp-315000000 {
+> +                                       opp-hz = /bits/ 64 <315000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +                                       opp-peak-kBps = <1804000>;
+> +                               };
+> +                       };
+> +               };
+> +
+> +               adreno_smmu: iommu@3da0000 {
+
+3da0000 comes after 3d69000, please sort this by unit address.
+
+> +                       compatible = "qcom,sc7280-smmu-500", "qcom,adreno-smmu", "arm,mmu-500";
+> +                       reg = <0 0x03da0000 0 0x20000>;
+> +                       #iommu-cells = <2>;
+> +                       #global-interrupts = <2>;
+> +                       interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 675 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +                       clocks = <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
+> +                                       <&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
+> +                                       <&gpucc GPU_CC_AHB_CLK>,
+> +                                       <&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>,
+> +                                       <&gpucc GPU_CC_CX_GMU_CLK>,
+> +                                       <&gpucc GPU_CC_HUB_CX_INT_CLK>,
+> +                                       <&gpucc GPU_CC_HUB_AON_CLK>;
+> +                       clock-names = "gcc_gpu_memnoc_gfx_clk",
+> +                                       "gcc_gpu_snoc_dvm_gfx_clk",
+> +                                       "gpu_cc_ahb_clk",
+> +                                       "gpu_cc_hlos1_vote_gpu_smmu_clk",
+> +                                       "gpu_cc_cx_gmu_clk",
+> +                                       "gpu_cc_hub_cx_int_clk",
+> +                                       "gpu_cc_hub_aon_clk";
+> +
+> +                       power-domains = <&gpucc GPU_CC_CX_GDSC>;
+> +               };
+> +
+> +               gmu: gmu@3d69000 {
+> +                       compatible="qcom,adreno-gmu-635.0", "qcom,adreno-gmu";
+> +                       reg = <0 0x03d6a000 0 0x34000>,
+> +                               <0 0x3de0000 0 0x10000>,
+> +                               <0 0x0b290000 0 0x10000>;
+> +                       reg-names = "gmu", "rscc", "gmu_pdc";
+> +                       interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "hfi", "gmu";
+> +                       clocks = <&gpucc GPU_CC_CX_GMU_CLK>,
+> +                                       <&gpucc GPU_CC_CXO_CLK>,
+> +                                       <&gcc GCC_DDRSS_GPU_AXI_CLK>,
+> +                                       <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
+> +                                       <&gpucc GPU_CC_AHB_CLK>,
+> +                                       <&gpucc GPU_CC_HUB_CX_INT_CLK>,
+> +                                       <&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>;
+> +                       clock-names = "gmu", "cxo", "axi", "memnoc", "ahb",
+> +                                       "hub", "smmu_vote";
+
+Same comment about one line per clock for clock-names so we can easily
+match them up.
+
+> +                       power-domains = <&gpucc GPU_CC_CX_GDSC>, <&gpucc GPU_CC_GX_GDSC>;
+> +                       power-domain-names = "cx", "gx";
+> +                       iommus = <&adreno_smmu 5 0x400>;
+> +                       operating-points-v2 = <&gmu_opp_table>;
+> +
