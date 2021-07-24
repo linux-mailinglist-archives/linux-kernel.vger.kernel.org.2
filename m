@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065663D4934
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419233D4939
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhGXR6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 13:58:02 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:37976 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhGXR57 (ORCPT
+        id S230037AbhGXSFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 14:05:20 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:33137 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229530AbhGXSFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 13:57:59 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 16OIa5fW011807;
-        Sun, 25 Jul 2021 03:36:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 16OIa5fW011807
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627151766;
-        bh=adPHQfj4dkdvDSuI2P8Sk/NYpUO6MJy1Eba1ZmTwIqQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mwy+A+WoxA23v7DCIpvZqa01h//pg2w0vRfZRtk8hESAyrN042xstnK84DPzcoea0
-         Beda2yGgKgQ8ezrhrsTt1sXbPOJVN3u+19AnZEZNSpg+BoT1oOKRYZ24GdaREpBSCn
-         fD9NIOGpMZKN8TG7PKW0m/idNM80eGkYUAGzJa+tKDxXaQWP4Zzm9qib1DY3lLHfHW
-         GHHMdqyJ78F6lyNZaPnF16HDyOdcyDxrft1d5WodjnFot7HDAPGwEAIWBQ2c4IBBcU
-         OwFO3HimmyMXY2tYJBWOsoT2f9X+/B9V6bemsoVMOgCLlVzfQnqiuT3+B1bA7FQbAi
-         +/wU2T2agkHoA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-mips@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>,
-        Richard Weinberger <richard@nod.at>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH] kbuild: do not require sub-make for separate output tree builds
-Date:   Sun, 25 Jul 2021 03:35:56 +0900
-Message-Id: <20210724183556.76680-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 24 Jul 2021 14:05:19 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id AAA11320046F;
+        Sat, 24 Jul 2021 14:45:49 -0400 (EDT)
+Received: from imap35 ([10.202.2.85])
+  by compute3.internal (MEProxy); Sat, 24 Jul 2021 14:45:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=Aief0xddDIXfuN3qRjPsSQpvP84ygmw
+        jnmtZ4q09KoQ=; b=sywG3rI/c3Omv3ras4Z42nPsmaGcQVWZfy0wn7ug4cBrz2U
+        U8Qw/5HDcNeVAuGV9PQEjwUGyf6ZKhCZRDakEAxWifcU7K35RyCpirdbTLWsCiwj
+        dRiPrcCQ+EyBV6pDTKEVRtzrfm/w2yTZpiOrNigkKLlYWJa9GWEZBibXhNTi0oB+
+        RCOVXjisgh4okZiGK0IG50/B4lF5+3BcqK/G+bfG34+ho36RHSzkmOvWd0yTVsky
+        3eMgI5fXP4vHx2VCgS8nVfRae45yhOuOIOgXQj9N6fdmVbRS1zlTBC0a2z5HqGWM
+        RJwY6SvD0LhG6i5QW+2BIqiNA1pWOBmZZlv7Nsg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Aief0x
+        ddDIXfuN3qRjPsSQpvP84ygmwjnmtZ4q09KoQ=; b=KaieHYmCB0EdEhU2LBpdh6
+        CMOfffV16hB9kPFvyoQMf6UfQd+nFxvVTYObTZiZgTuVGNkLjHxNFOjoVZNq8TVI
+        9qC46P6BcAZNwJ9kSp3QyeGoaF7HxzaAJqYYAVhd3niXAtxrnN365TLnOT6yV4uj
+        jVIrddPqF5yuBmiobmq+GhL8SiG0uuwgkifwUndLC4wQweruGQVv9/py8KBNXVRu
+        9WRq5tCLoXLXU4IKW8woLZueGHXYTw3aBdpu4c/UMCHZmaoalH58a43bNv8spyF+
+        F2I37Pqz4fsF+9aIy8tBRQ+O57s/RPY8Tx8l5GS7eUX3W4YrZUJA7oiM2EFHJ0nw
+        ==
+X-ME-Sender: <xms:3F_8YEDAPs3b6W_IxhMCapCiUjGEB7tooAn3Ajqk9EqBLR6_BOeJoQ>
+    <xme:3F_8YGh3Z8cVjj2_4Y_jxB6z2Y77y8X-XJkGGElQ6cr1c-OwVq3oz3W5p9uAa4HZw
+    1H4WrqGZXCKYjXPpQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgedtgdduvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvshcuhfhrvghunhgufdcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecugg
+    ftrfgrthhtvghrnhepteegvddvffeghfejteevteevfeegffduudffgedtueejvdejlefg
+    veegudekfedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:3F_8YHmflRcF6UGAZVJ-cszwVavbSG_-X8rMbvGaj2j96Xbr3FRFyw>
+    <xmx:3F_8YKwIa67DANxqdTpOChqHMZfTLF0mjcQz3YmurrfL9Oyp2BxwwQ>
+    <xmx:3F_8YJT9MNBZyqAhx_tS9261JJSMrovlDqsHJXV-5DjESb9cVvZxsw>
+    <xmx:3V_8YKSrvX2S30bq7hjFx_Mv7Iwk6aiE162W6LNLYn3XEylkItzeWQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 2601D15A007C; Sat, 24 Jul 2021 14:45:48 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-540-g21c5be8f1e-fm-20210722.001-g21c5be8f
+Mime-Version: 1.0
+Message-Id: <17a9d8bf-cd52-4e6c-9b3e-2fbc1e4592d9@www.fastmail.com>
+In-Reply-To: <b12f95c9f817f05e91ecd1aec81316afa1da1e42.camel@HansenPartnership.com>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <YPxNkRYMuWmuRnA5@casper.infradead.org>
+ <1e48f7edcb6d9a67e8b78823660939007e14bae1.camel@HansenPartnership.com>
+ <YPxYdhEirWL0XExY@casper.infradead.org>
+ <b12f95c9f817f05e91ecd1aec81316afa1da1e42.camel@HansenPartnership.com>
+Date:   Sat, 24 Jul 2021 11:45:26 -0700
+From:   "Andres Freund" <andres@anarazel.de>
+To:     "James Bottomley" <James.Bottomley@HansenPartnership.com>,
+        "Matthew Wilcox" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        "Linus Torvalds" <torvalds@linux-foundation.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        "Christoph Hellwig" <hch@lst.de>,
+        "Michael Larabel" <Michael@michaellarabel.com>
+Subject: Re: Folios give an 80% performance win
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As explained in commit 3204a7fb98a3 ("kbuild: prefix $(srctree)/ to some
-included Makefiles"), I want to stop using --include-dir some day.
+Hi,
 
-I already fixed up the top Makefile, but some arch Makefiles (mips, um,
-x86) still include check-in Makefiles without $(srctree)/.
+On Sat, Jul 24, 2021, at 11:23, James Bottomley wrote:
+> On Sat, 2021-07-24 at 19:14 +0100, Matthew Wilcox wrote:
+> > On Sat, Jul 24, 2021 at 11:09:02AM -0700, James Bottomley wrote:
+> > > On Sat, 2021-07-24 at 18:27 +0100, Matthew Wilcox wrote:
+> > > > What blows me away is the 80% performance improvement for
+> > > > PostgreSQL. I know they use the page cache extensively, so it's
+> > > > plausibly real. I'm a bit surprised that it has such good
+> > > > locality, and the size of the win far exceeds my
+> > > > expectations.  We should probably dive into it and figure out
+> > > > exactly what's going on.
+> > > 
+> > > Since none of the other tested databases showed more than a 3%
+> > > improvement, this looks like an anomalous result specific to
+> > > something in postgres ... although the next biggest db: mariadb
+> > > wasn't part of the tests so I'm not sure that's
+> > > definitive.  Perhaps the next step should be to t
+> > > est mariadb?  Since they're fairly similar in domain (both full
+> > > SQL) if mariadb shows this type of improvement, you can
+> > > safely assume it's something in the way SQL databases handle paging
+> > > and if it doesn't, it's likely fixing a postgres inefficiency.
+> > 
+> > I think the thing that's specific to PostgreSQL is that it's a heavy
+> > user of the page cache.  My understanding is that most databases use
+> > direct IO and manage their own page cache, while PostgreSQL trusts
+> > the kernel to get it right.
+> 
+> That's testable with mariadb, at least for the innodb engine since the
+> flush_method is settable. 
+> 
+> > Regardless of whether postgres is "doing something wrong" or not,
+> > do you not think that an 80% performance win would exert a certain
+> > amount of pressure on distros to do the backport?
+> 
+> Well, I cut the previous question deliberately, but if you're going to
+> force me to answer, my experience with storage tells me that one test
+> being 10x different from all the others usually indicates a problem
+> with the benchmark test itself rather than a baseline improvement, so
+> I'd wait for more data.
 
-Fix them up so 'need-sub-make := 1' can go away for this case.
+I have a similar reaction - the large improvements are for a read/write pgbench benchmark at a scale that fits in memory. That's typically purely bound by the speed at which the WAL can be synced to disk. As far as I recall mariadb also uses buffered IO for WAL (but there was recent work in the area).
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Is there a reason fdatasync() of 16MB files to have got a lot faster? Or a chance that could be broken?
 
- Makefile           | 5 ++---
- arch/mips/Makefile | 2 +-
- arch/um/Makefile   | 6 +++---
- arch/x86/Makefile  | 2 +-
- 4 files changed, 7 insertions(+), 8 deletions(-)
+Some improvement for read-only wouldn't surprise me, particularly if the os/pg weren't configured for explicit huge pages. Pgbench has a uniform distribution so its *very* tlb miss heavy with 4k pages.
 
-diff --git a/Makefile b/Makefile
-index e4f5895badb5..bb10a93edf5c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -191,10 +191,9 @@ endif
- ifneq ($(abs_srctree),$(abs_objtree))
- # Look for make include files relative to root of kernel src
- #
--# This does not become effective immediately because MAKEFLAGS is re-parsed
--# once after the Makefile is read. We need to invoke sub-make.
-+# --included-dir is added for backward compatibility, but you should not rely on
-+# it. Please add $(srctree)/ prefix to include Makefiles in the source tree.
- MAKEFLAGS += --include-dir=$(abs_srctree)
--need-sub-make := 1
- endif
- 
- ifneq ($(filter 3.%,$(MAKE_VERSION)),)
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 4e942b7ef022..bc2e1857d8ce 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -254,7 +254,7 @@ endif
- #
- # Board-dependent options and extra files
- #
--include arch/mips/Kbuild.platforms
-+include $(srctree)/arch/mips/Kbuild.platforms
- 
- ifdef CONFIG_PHYSICAL_START
- load-y					= $(CONFIG_PHYSICAL_START)
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 12a7acef0357..f2fe63bfd819 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -41,8 +41,8 @@ endif
- 
- HOST_DIR := arch/$(HEADER_ARCH)
- 
--include $(ARCH_DIR)/Makefile-skas
--include $(HOST_DIR)/Makefile.um
-+include $(srctree)/$(ARCH_DIR)/Makefile-skas
-+include $(srctree)/$(HOST_DIR)/Makefile.um
- 
- core-y += $(HOST_DIR)/um/
- 
-@@ -76,7 +76,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
- 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
- 
- #This will adjust *FLAGS accordingly to the platform.
--include $(ARCH_DIR)/Makefile-os-$(OS)
-+include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
- 
- KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
- 		   -I$(srctree)/$(HOST_DIR)/include/uapi \
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 307fd0000a83..0fa7dc73b5d8 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -75,7 +75,7 @@ ifeq ($(CONFIG_X86_32),y)
-         KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
- 
-         # CPU-specific tuning. Anything which can be shared with UML should go here.
--        include arch/x86/Makefile_32.cpu
-+        include $(srctree)/arch/x86/Makefile_32.cpu
-         KBUILD_CFLAGS += $(cflags-y)
- 
-         # temporary until string.h is fixed
--- 
-2.27.0
-
+Regards,
+Andres
