@@ -2,131 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFF63D49A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 21:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5A533D49AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 21:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbhGXTD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 15:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhGXTD1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 15:03:27 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D9DC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 12:43:58 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id e10so7154924pls.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 12:43:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=i7U4eF8t9vBBB3goiXq5GssrwlXInMV9N0xmLVsG14s=;
-        b=DxO0Qm3NbDikMSodIrDH41mOt999KikZjf4ejaSvm/PcFdNtX4EVXprXjzZN/oK/sw
-         Q23jFiJwRz5Fphi+Yep+wfTi8jXz0gO0mwOOChCbXtY7tXPeffE33GOhMNda+EFlHsI4
-         Y4CWE/cg7fS76nLX8kYsZ+3Zwg3V3GJyD0MvvZGHflrqbKBD4aCZfnvHBPBNOCX+X6sq
-         qfLoVz4KWqD0awksll+s0HZ1TGux8isIZlXRQSPDfG4HOWMncDlXMplu1HXY2pRExgbC
-         1wSWUGdWqZP/PmPzROgc50NnUWMh+ZrmoyG31oLQPG+sIl51Zm9iFvPLYZpm7mP3HxSE
-         kWVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i7U4eF8t9vBBB3goiXq5GssrwlXInMV9N0xmLVsG14s=;
-        b=mYrv7ZhlqIQuTTBbniGvZ19KWt6tQITS7WOixDuu4SFBFE7UWGuE6jJAkmw45Kg4Qu
-         qz28zKv7YQcguVu51+i+8dMkIkDAxmpjUxpeP7i7rlPw97okQC9IRKolGsiLkuNhCvZA
-         PS/9XuM3rvT9KDayo+eu2rT9YsXbtmvAToWHzJwucihQ/REdNzLMPuRVXB2vuR8g/R8v
-         LfKv3bK6wT9AHgHXA2ntWHG8Dl4iixn+ZhpB3t+rnTT5en7hWgd/5QWNJ+Rwg6w3OG3x
-         V+oZMzQ+FaQHlNdYl9vmXTeC4JqQm0XiK3DZoBLfsl7ElWrR1syn8G08ugl2jlEqeMpj
-         u2oA==
-X-Gm-Message-State: AOAM532shm8Sx+9P5+KyNo2OyAldwMjyk1x+3E1Fn4zW3NBUlr2NISfn
-        kbApVUvH04jaLbNkK3/MXeT16w==
-X-Google-Smtp-Source: ABdhPJwvQ0ch3sQUfTNAc+j3beENgOIqylMzlxQ7WjCCSJfw/RR2bhhS9p1AjuP/fOSp0areGTe60A==
-X-Received: by 2002:a17:90a:4d04:: with SMTP id c4mr18767867pjg.148.1627155837658;
-        Sat, 24 Jul 2021 12:43:57 -0700 (PDT)
-Received: from [192.168.1.187] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id iy13sm9314168pjb.28.2021.07.24.12.43.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jul 2021 12:43:57 -0700 (PDT)
-Subject: Re: 5.14-rc failure to resume
-From:   Jens Axboe <axboe@kernel.dk>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
- <a607c149-6bf6-0fd0-0e31-100378504da2@kernel.dk>
-Message-ID: <99068691-01ea-d2b5-3dd3-1a2852fe5723@kernel.dk>
-Date:   Sat, 24 Jul 2021 13:43:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229601AbhGXTIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 15:08:32 -0400
+Received: from mga02.intel.com ([134.134.136.20]:1833 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229481AbhGXTIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 15:08:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10055"; a="199243023"
+X-IronPort-AV: E=Sophos;i="5.84,266,1620716400"; 
+   d="scan'208";a="199243023"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2021 12:49:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,266,1620716400"; 
+   d="scan'208";a="578703268"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Jul 2021 12:49:01 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.160])
+        by linux.intel.com (Postfix) with ESMTP id 9299F5805CB;
+        Sat, 24 Jul 2021 12:49:01 -0700 (PDT)
+Message-ID: <27751c8ff02d98cabd512472b29078b11f4bdf0e.camel@linux.intel.com>
+Subject: Re: [PATCH 2/2] platform/x86/intel/pmc: Add PSON residency counter
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Michael Bottini <michael.a.bottini@linux.intel.com>
+Cc:     "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "irenic.rajneesh@gmail.com" <irenic.rajneesh@gmail.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Date:   Sat, 24 Jul 2021 12:49:01 -0700
+In-Reply-To: <CAHp75Ve2Ls9KVM0KZ2GMgbrQvc6wXvAXP1CqSLzQ4JWMTAcZ0A@mail.gmail.com>
+References: <20210723202157.2425-1-michael.a.bottini@linux.intel.com>
+         <20210723202157.2425-2-michael.a.bottini@linux.intel.com>
+         <CAHp75Ve2Ls9KVM0KZ2GMgbrQvc6wXvAXP1CqSLzQ4JWMTAcZ0A@mail.gmail.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <a607c149-6bf6-0fd0-0e31-100378504da2@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/21 11:56 AM, Jens Axboe wrote:
-> On 7/24/21 9:57 AM, Jens Axboe wrote:
->> Hi,
->>
->> I ran into this when doing the last bit of testing on pending changes
->> for this release on the laptop. Outside of running testing on these
->> changes, I always build and boot current -git and my changes on my
->> laptop as well.
->>
->> 5.14-rc1 + changes works fine, current -git and changes fail to resume
->> every single time. I just get a black screen. Tip of tree before merging
->> fixes is:
->>
->> commit 704f4cba43d4ed31ef4beb422313f1263d87bc55 (origin/master, origin/HEAD, master)
->> Merge: 05daae0fb033 0077a5008272
->> Author: Linus Torvalds <torvalds@linux-foundation.org>
->> Date:   Fri Jul 23 11:30:12 2021 -0700
->>
->>     Merge tag 'ceph-for-5.14-rc3' of git://github.com/ceph/ceph-client
->>
->> Since bisection takes forever on the laptop (gen7 x1 carbon), I
->> opportunistically reverted some of the most recent git pulls:
->>
->> - ec6badfbe1cde0eb2bec4a0b8f6e738171156b5b (acpi changes)
->> - 1d597682d3e669ec7021aa33d088ed3d136a5149 (driver-core changes)
->> - 74738c556db6c7f780a8b98340937e55b72c896a (usb changes)
->> - e7562a00c1f54116f5a058e7e3ddd500188f60b2 (sound changes)
->> - 8baef6386baaefb776bdd09b5c7630cf057c51c6 (drm changes)
->>
->> as they could potentially be involved, but even with all of those
->> reverted it still won't resume.
->>
->> Sending this out in case someone has already reported this and I just
->> couldn't find it. If this is a new/unknown issues, I'll go ahead and
->> bisect it.
+On Sat, 2021-07-24 at 11:29 +0300, Andy Shevchenko wrote:
 > 
-> Ran a bisect, and it pinpoints:
 > 
-> 71f6428332844f38c7cb10461d9f29e9c9b983a0 is the first bad commit
-> commit 71f6428332844f38c7cb10461d9f29e9c9b983a0
-> Author: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Date:   Mon Jul 12 21:21:21 2021 +0300
+> On Friday, July 23, 2021, Michael Bottini
+> <michael.a.bottini@linux.intel.com> wrote:
+> > Tiger Lake devices have the capability to track the duration
+> > of time that their Power Supply Units (PSUs) are turned off during
+> > S0ix.
+> > This patch adds a debugfs file `pson_residency_usec` to provide
+> > access to this counter.
+> > 
+> > In order to determine whether the device is capable of PSON,
+> > use acpi_init_properties() to reevaluate _DSD.
+> > 
+> > 
 > 
->     ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
+> It’s direct abuse of ACPI specification as I read it:
 > 
-> which seems odd, as it worked for me with the acpi changes reverted. It
-> could be that it _sometimes_ works with that commit, not sure. Adding
-> relevant folks to the CC.
+> “_DSD must return the same data each time it is evaluated. Firmware
+> should not expect it to be evaluated every time (in case it is
+> implemented as a method).”
 > 
-> I'm going to revert this on top of current master and run with that
-> and see if it does 10 successful resumes.
+> 
+> NAK to the series.
 
-This does appear to be the culprit. With it reverted on top of current
-master (and with the block and io_uring changes pulled in too), the
-kernel survives many resumes without issue.
+Okay, we'll check with the BIOS folks. They are setting this property
+from _STA. They may not expect OSPM to reevaluate _DSD. But they may
+have expected that OSPM doesn't attempt to read _DSD until after _STA
+is executed.
 
--- 
-Jens Axboe
+David
+
+> 
+> 
+> 
+> 
+>  
+> > Signed-off-by: Michael Bottini <michael.a.bottini@linux.intel.com>
+> > ---
+> >  drivers/platform/x86/intel/pmc/core.c | 46
+> > +++++++++++++++++++++++++++
+> >  drivers/platform/x86/intel/pmc/core.h |  7 ++++
+> >  2 files changed, 53 insertions(+)
+> > 
+> > diff --git a/drivers/platform/x86/intel/pmc/core.c
+> > b/drivers/platform/x86/intel/pmc/core.c
+> > index 7c4bf7d22fd5..6cf06aecf368 100644
+> > --- a/drivers/platform/x86/intel/pmc/core.c
+> > +++ b/drivers/platform/x86/intel/pmc/core.c
+> > @@ -595,6 +595,8 @@ static const struct pmc_reg_map tgl_reg_map = {
+> >         .lpm_sts = tgl_lpm_maps,
+> >         .lpm_status_offset = TGL_LPM_STATUS_OFFSET,
+> >         .lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
+> > +       .pson_residency_offset = TGL_PSON_RESIDENCY_OFFSET,
+> > +       .pson_residency_counter_step = TGL_PSON_RES_COUNTER_STEP,
+> >         .etr3_offset = ETR3_OFFSET,
+> >  };
+> > 
+> > @@ -1084,6 +1086,20 @@ static int pmc_core_dev_state_get(void
+> > *data,
+> > u64 *val)
+> > 
+> >  DEFINE_DEBUGFS_ATTRIBUTE(pmc_core_dev_state,
+> > pmc_core_dev_state_get,
+> > NULL, "%llu\n");
+> > 
+> > +static int pmc_core_pson_residency_get(void *data, u64 *val)
+> > +{
+> > +       struct pmc_dev *pmcdev = data;
+> > +       const struct pmc_reg_map *map = pmcdev->map;
+> > +       u32 value;
+> > +
+> > +       value = pmc_core_reg_read(pmcdev, map-
+> > > pson_residency_offset);
+> > +       *val = (u64)value * pmcdev->map-
+> > >pson_residency_counter_step;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +DEFINE_DEBUGFS_ATTRIBUTE(pmc_core_pson_residency,
+> > pmc_core_pson_residency_get, NULL, "%llu\n");
+> > +
+> >  static int pmc_core_check_read_lock_bit(struct pmc_dev *pmcdev)
+> >  {
+> >         u32 value;
+> > @@ -1788,6 +1804,30 @@ static void
+> > pmc_core_get_low_power_modes(struct pmc_dev *pmcdev)
+> >         }
+> >  }
+> > 
+> > +static bool pmc_core_is_pson_residency_enabled(struct pmc_dev
+> > *pmcdev)
+> > +{
+> > +       struct platform_device *pdev = pmcdev->pdev;
+> > +       struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
+> > +       acpi_status status;
+> > +       u8 val;
+> > +
+> > +       if (!adev)
+> > +               return false;
+> > +
+> > +       acpi_init_properties(adev);
+> > +       status = acpi_evaluate_object(adev->handle, "PSOP", NULL,
+> > NULL);
+> > +
+> > +       if (ACPI_FAILURE(status))
+> > +               return false;
+> > +
+> > +       if (fwnode_property_read_u8(acpi_fwnode_handle(adev),
+> > +                                   "intel-cec-pson-switching-
+> > enabled-in-s0",
+> > +                                   &val))
+> > +               return false;
+> > +
+> > +       return val == 1;
+> > +}
+> > +
+> >  static void pmc_core_dbgfs_unregister(struct pmc_dev *pmcdev)
+> >  {
+> >         debugfs_remove_recursive(pmcdev->dbgfs_dir);
+> > @@ -1856,6 +1896,11 @@ static void pmc_core_dbgfs_register(struct
+> > pmc_dev *pmcdev)
+> >                                     pmcdev->dbgfs_dir, pmcdev,
+> >                                    
+> > &pmc_core_substate_req_regs_fops);
+> >         }
+> > +
+> > +       if (pmcdev->map->pson_residency_offset &&
+> > pmc_core_is_pson_residency_enabled(pmcdev)) {
+> > +               debugfs_create_file("pson_residency_usec", 0444,
+> > +                                   pmcdev->dbgfs_dir, pmcdev,
+> > &pmc_core_pson_residency);
+> > +       }
+> >  }
+> > 
+> >  static const struct x86_cpu_id intel_pmc_core_ids[] = {
+> > @@ -1944,6 +1989,7 @@ static int pmc_core_probe(struct
+> > platform_device *pdev)
+> >                 return -ENOMEM;
+> > 
+> >         platform_set_drvdata(pdev, pmcdev);
+> > +       pmcdev->pdev = pdev;
+> > 
+> >         cpu_id = x86_match_cpu(intel_pmc_core_ids);
+> >         if (!cpu_id)
+> > diff --git a/drivers/platform/x86/intel/pmc/core.h
+> > b/drivers/platform/x86/intel/pmc/core.h
+> > index 333e25981e8e..822d77f49861 100644
+> > --- a/drivers/platform/x86/intel/pmc/core.h
+> > +++ b/drivers/platform/x86/intel/pmc/core.h
+> > @@ -214,6 +214,10 @@ enum ppfear_regs {
+> >  #define TGL_LPM_PRI_OFFSET                     0x1C7C
+> >  #define TGL_LPM_NUM_MAPS                       6
+> > 
+> > +/* Tigerlake PSON residency register */
+> > +#define TGL_PSON_RESIDENCY_OFFSET              0x18f8
+> > +#define TGL_PSON_RES_COUNTER_STEP              0x7A
+> > +
+> >  /* Extended Test Mode Register 3 (CNL and later) */
+> >  #define ETR3_OFFSET                            0x1048
+> >  #define ETR3_CF9GR                             BIT(20)
+> > @@ -301,6 +305,8 @@ struct pmc_reg_map {
+> >         const u32 lpm_residency_offset;
+> >         const u32 lpm_status_offset;
+> >         const u32 lpm_live_status_offset;
+> > +       const u32 pson_residency_offset;
+> > +       const u32 pson_residency_counter_step;
+> >         const u32 etr3_offset;
+> >  };
+> > 
+> > @@ -337,6 +343,7 @@ struct pmc_dev {
+> >         int num_lpm_modes;
+> >         int lpm_en_modes[LPM_MAX_NUM_MODES];
+> >         u32 *lpm_req_regs;
+> > +       struct platform_device *pdev;
+> >  };
+> > 
+> >  #define pmc_for_each_mode(i, mode, pmcdev)             \
+> > -- 
+> > 2.25.1
+> > 
+> > 
+> 
+> 
+
 
