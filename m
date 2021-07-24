@@ -2,108 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8F13D48F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2173D48EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhGXRE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 13:04:26 -0400
-Received: from mout.gmx.net ([212.227.15.15]:59081 "EHLO mout.gmx.net"
+        id S229773AbhGXQ6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 12:58:02 -0400
+Received: from shark2.inbox.lv ([194.152.32.82]:55144 "EHLO shark2.inbox.lv"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229461AbhGXREY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 13:04:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627148677;
-        bh=NnnKncfAnaFeKpuZRfNKoEnQZQQS40lYryGaD8rwMk4=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=NFNUK8e1lGKlLsZ78wPfP5vHKXND1wmC2AI4RH71M5Ie9Y8wYdWHqJVuRDtIJ3wW3
-         VXs2CX4KUZKOYnpaq3xLdSs4YyW7qx6gNhO3e4eHKLo/QnqC/AzUNWViHh7ztLdfXa
-         a3TfKXl//kPVXrValL65VXLVmtUKycHLbFO8vyjI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1Ml6mE-1lMEif0gvs-00lTqs; Sat, 24 Jul 2021 19:44:37 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Phil Reid <preid@electromag.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] staging/fbtft: Fix braces coding style
-Date:   Sat, 24 Jul 2021 17:14:11 +0200
-Message-Id: <20210724151411.9531-4-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210724151411.9531-1-len.baker@gmx.com>
-References: <20210724151411.9531-1-len.baker@gmx.com>
+        id S229461AbhGXQ6B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 12:58:01 -0400
+X-Greylist: delayed 378 seconds by postgrey-1.27 at vger.kernel.org; Sat, 24 Jul 2021 12:58:01 EDT
+Received: from shark2.inbox.lv (localhost [127.0.0.1])
+        by shark2-out.inbox.lv (Postfix) with ESMTP id 3B457C012E;
+        Sat, 24 Jul 2021 20:32:14 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.lv; s=30062014;
+        t=1627147934; bh=gb4bG5oTJzx9VePKJzccG9FQrlxnmNsnsq0VHH6oyoA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To;
+        b=gXIRgf8khMRigt+mZ9XFp7fzHT/rPLcINwgj0iUDZ9EbWHzg5tVe504AhP959V928
+         jir01qe64SzHJrlhUcqIS5GoMU5CHkkwX05E0/AXw3wPum5+GYJo81MI1Bv0m06qW0
+         JNScucJ7/7X198jVb36S8qPG/GXDWFROxd6a+/jA=
+Received: from localhost (localhost [127.0.0.1])
+        by shark2-in.inbox.lv (Postfix) with ESMTP id 22668C010C;
+        Sat, 24 Jul 2021 20:32:14 +0300 (EEST)
+Received: from shark2.inbox.lv ([127.0.0.1])
+        by localhost (shark2.inbox.lv [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id c6U9VI91D12e; Sat, 24 Jul 2021 20:32:11 +0300 (EEST)
+Received: from mail.inbox.lv (pop1 [127.0.0.1])
+        by shark2-in.inbox.lv (Postfix) with ESMTP id A5496C00F3;
+        Sat, 24 Jul 2021 20:32:11 +0300 (EEST)
+Received: from mail.inbox.lv (unknown [79.105.117.119])
+        (Authenticated sender: hakavlad@inbox.lv)
+        by mail.inbox.lv (Postfix) with ESMTPA id A4C7C3E60195;
+        Sat, 24 Jul 2021 20:32:09 +0300 (EEST)
+Date:   Sun, 25 Jul 2021 02:32:01 +0900
+From:   Alexey Avramov <hakavlad@inbox.lv>
+To:     ndrw.xf@redhazel.co.uk
+Cc:     akpm@linux-foundation.org, aros@gmx.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@kernel.org, surenb@google.com, vbabka@suse.cz
+Subject: Re: Let's talk about the elephant in the room - the Linux kernel's
+ inability to gracefully handle low memory pressure
+Message-ID: <20210725023201.13f0d2f2@mail.inbox.lv>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+In-Reply-To: <806F5696-A8D6-481D-A82F-49DEC1F2B035@redhazel.co.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Lxq6kiLtjzFc7OrUMkOeAtgYvYuYKRc/giZKldt3BoFUT8h46VN
- Kg9FIPsCHHoEzU1Mpx9okxfyNGfBWPsPHYWimuPRdKM7YMgx2f/hyOp2LoOaeTQQ39tB119
- r00lutgbYittzltAdnF6QCZZMkyT5+zF0brw7VKPt3rZbRv5z9hwxA/m471V2iAF4Ivk4re
- fJ9snb6LaTghFsDzNuZKg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+WwuL9lnI14=:Lg8CcfCZ7rwXHqQl323hZy
- fGlFde99fZWlaom5py+XLvoegd+qdqmZEnaZcZfjaZXvCeQfq1VcgF/kPHuf3DX7+Dnc+fEYM
- GF5J3HJvxIuQB/LKFn2AYmrVe+k7eP8fdhESjiwle6j2jlpdvGJkY53L22oeIQ9pjNVzIssJR
- lTeRxVTZoFtv7PJXi4frv7WYleVjSsoS+aMSpp7psFbCVzS0eR36Fl61cRvfhokOfM3YVs71d
- TSUNWgcaTPd2gGx/iffDIqzBPfpZfSPZ57NqUjGggEfbgwrNQyh7zBArIEtgH6Qdl/hRT32PJ
- JXoI9p0V8gNiUjVGp1f1s9Uz/+ibpDt7QxC6XeQ+0bo1/uw6tqnO3lVGaVIHVWKq7VzeNY4+d
- 2OpnbFIPjtMG4G37mboGXULo2eh2u2o6A0XFu2pYtyK0J8GAyB5aIjgh7s9SVTV94dYXhLCBv
- 0miwN3QGGRxpnD5Kxw+0pfJfAJubKiXXXruRCsawp5sJ1aqNmI/GellC7vWzdjvW3M7JFhBxV
- D+LTiSfdu6TIqkaju1DEGsoHLejU9iO+jg2GOwpf4tsTVfz1rkaaYRT/YilFHbaxeuENaDVUZ
- KlfGAn9Q7eBgvNoXqYPJUM5Pt6dN/Eo6NbpkJs5P7okfSgpPdP2YqDk9OMZRSdn0kNciNMdl+
- MXvkoUTAtJe1fy93gvr7MVIvwmN5QCaxcMZI9NMCETYMV7S45tDl+wEZvFEdBP9aSuXC0ughK
- 9odmeqPINVGQWl1Vd5BMuvN1jf1ucvBSmD+b+XDCaA8oPJGqNg94oTA5jI2lbELcTe+UEUC4k
- 2VZZkSasNSfjuaS0Qw9UY62tOGme/eW2xzVXIUdkAfKzSdOYg5SspQsEp7tl/gKC640W26ivK
- +3GDojDJUFZNf5dAvtRwplJIKRuG3mo4RXhFXDekbKGom+ybJq+s19ZFJRtYW30q99dg66Oqn
- NVZ/95qRcpoIbhYb87SLwP2G1O9gMhadg3TgGQpfaJZstM6uK6dGjVuaN6h/ixb7IWFI5k/Nl
- 7wG2olAL5nGf7iJQ2NFtfHQ9f0MCh6jDVlSoiwy4qZmjA2XnlK5rUjsDTiI6vIPDskEW+/YdI
- DBKweJCMhiMW2bjwr0ar/okB4t5uJ6NbzgQ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: OK
+X-ESPOL: EZqEIBwB+w1Luca/KI1r7+Xnw8rRJVcqoV6aw7o593NZs63AstlrcW6cB/eRFELmMn8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add braces to the "for" loop and remove braces from the "if" statement.
-This way the kernel coding style is followed.
+> Would it be possible to reserve a fixed (configurable) amount of RAM 
+> for caches, and trigger OOM killer earlier, before most UI code is 
+> evicted from memory?
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/staging/fbtft/fbtft-core.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Yes! Try this patch: https://github.com/hakavlad/le9-patch
 
-diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fb=
-tft-core.c
-index cc2bee22f7ad..d87792649efe 100644
-=2D-- a/drivers/staging/fbtft/fbtft-core.c
-+++ b/drivers/staging/fbtft/fbtft-core.c
-@@ -1003,9 +1003,11 @@ int fbtft_init_display(struct fbtft_par *par)
- 	}
-
- 	/* make sure stop marker exists */
--	for (i =3D 0; i < FBTFT_MAX_INIT_SEQUENCE; i++)
-+	for (i =3D 0; i < FBTFT_MAX_INIT_SEQUENCE; i++) {
- 		if (par->init_sequence[i] =3D=3D -3)
- 			break;
-+	}
-+
- 	if (i =3D=3D FBTFT_MAX_INIT_SEQUENCE) {
- 		dev_err(par->info->device,
- 			"missing stop marker at end of init sequence\n");
-@@ -1016,10 +1018,9 @@ int fbtft_init_display(struct fbtft_par *par)
-
- 	i =3D 0;
- 	while (i < FBTFT_MAX_INIT_SEQUENCE) {
--		if (par->init_sequence[i] =3D=3D -3) {
--			/* done */
--			return 0;
--		}
-+		if (par->init_sequence[i] =3D=3D -3)
-+			return 0; /* done */
-+
- 		if (par->init_sequence[i] >=3D 0) {
- 			dev_err(par->info->device,
- 				"missing delimiter at position %d\n", i);
-=2D-
-2.25.1
-
+The patch provides sysctl knobs for protecting the specified amount of 
+clean file pages under memory pressure.
