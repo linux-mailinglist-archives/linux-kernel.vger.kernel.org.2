@@ -2,193 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354C63D45FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 068813D45FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:37:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234533AbhGXGzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 02:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        id S234570AbhGXG4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 02:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234287AbhGXGzr (ORCPT
+        with ESMTP id S234524AbhGXG4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 02:55:47 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9483AC061575;
-        Sat, 24 Jul 2021 00:36:18 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id j21so5248786ioo.6;
-        Sat, 24 Jul 2021 00:36:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hxof7NWhRTN6RxBAzvdBd/VZVFmS77YjkfQAkOZin+c=;
-        b=ErhKil24dTxaHLxEYUyIdguwf7HqrEFZ8NdTUrz15hWbzV5epVuZEqebuaR7GhOLfk
-         fA/7s02k1d9O8GByKIteqPuyV4vTr8Kqn0mHRslWgQgDRip45cK2nsEHDuRbXJrtK1TZ
-         Zrm1P9D13IvyTvOPFIqiWSJGwLLpenSocsyxo+cezJUB69EXTCmgHzZWygEbi1GLgZYS
-         bdedMt73BaDGFSVp5Y+bUko/UE+jv08VvYOZMqduVgoR/Ko2dIH7M9OSdOyLco1bpDTq
-         IvLVYk1G4KhlURnjk4lFbSmdck6aBsABrKpR/48PfojlGIT749nZAUk3SkbNJvGsPKEk
-         mrIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hxof7NWhRTN6RxBAzvdBd/VZVFmS77YjkfQAkOZin+c=;
-        b=ApGLCxEutV6BQgiq2y8u1RksE3PCioD/2b5iVqZ8FkZKhNaz56Ggngu1ytBLlYMvD0
-         g+hKa/QdyyPeub7AsnX8Dvrk9DunmsY9+PwMN/1jNVrPOsU25aHsP9rILyTh/4Dvyl9j
-         xCW/A6xWN9zZJpfQAjjDZIMDgA7dVy+4Cytsu13kbjnuRXi9zf53nqHF8wlr5RpEWrta
-         xPkkjoNLC8Rj3aC+pQpgg3y9Qxy+HJTicQumxsZWP2T4Vb5tGw27IVRaSTQQfZAsbKRP
-         DjENFU4ghQ61f6Q4hkNIoykk/a77Ku7XBJIi9+zR0mj/iF+R5MZ+DXqXdXYYUlb1U6B/
-         m7iw==
-X-Gm-Message-State: AOAM533kcKI1fsYeCkEguwWcYpC/QWsI/ckyqDefMdSJUbt46hTIOCf8
-        Vk6pqUiPzx0Sn5dJKS+Aby1Lgl20yqF4BjVStI8=
-X-Google-Smtp-Source: ABdhPJyapu/TNWx3CU+Ka6ZA4pTPfIkL60nya/pR6MA9SkE1j1f+iQx/mOoplEXB9BvAHiOHWNjcVXT/UlxHsTtKljY=
-X-Received: by 2002:a05:6602:3304:: with SMTP id b4mr6800288ioz.186.1627112177921;
- Sat, 24 Jul 2021 00:36:17 -0700 (PDT)
+        Sat, 24 Jul 2021 02:56:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E914C061575;
+        Sat, 24 Jul 2021 00:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FqhIgv8Rf1Zf62r3AOuw/s00sKaxHUe15ND2GKynq64=; b=vNajFkx6Jv5X4wPfPRaWpwo+np
+        1PcC/dhBP5n1scFWTkeTN3sxEekyaebs4tqMrK2kQK/+5IcXCc2TlRBQgrOFR7fnzhRN5bTpbRPll
+        HCGIuyuj6fUPJJtWhc+aTKW69C+kWKnIn7oDy//pzoNjZ9va7NREzp12daD5c2LJYDkJwzJnqsrls
+        ygMyZGIqlvsaQYNcMyk5Y/xeER+0iRHj3aQqXCyvKkTyIyxvAHDxmshOYjbl/uKB48Q/1ptJ3pRg0
+        YuRs6cgJ8+7b75UKnXL5FXp9e4Tj+s2Fhg0RLg7/HJSD7GzoEV9YAssT31rsdXaHo29BIyEzpOgbd
+        AjLw7i/A==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m7CDM-00C5kP-Oi; Sat, 24 Jul 2021 07:36:57 +0000
+Date:   Sat, 24 Jul 2021 08:36:52 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Satya Tangirala <satyaprateek2357@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v4 0/9] ensure bios aren't split in middle of crypto data
+ unit
+Message-ID: <YPvDFH7uAP+Jas/X@infradead.org>
+References: <20210707052943.3960-1-satyaprateek2357@gmail.com>
 MIME-Version: 1.0
-References: <737687ee-3449-aa3d-ee29-bd75ca0a18a9@canonical.com>
-In-Reply-To: <737687ee-3449-aa3d-ee29-bd75ca0a18a9@canonical.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Sat, 24 Jul 2021 10:36:05 +0300
-Message-ID: <CAOQ4uxgbqyyhQ+78j0L+GxkEJ8rOW43X9ann_kMs1098WkNe8Q@mail.gmail.com>
-Subject: Re: ovl: uninitialized pointer read in ovl_lookup_real_one
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210707052943.3960-1-satyaprateek2357@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 1:26 AM Colin Ian King <colin.king@canonical.com> wrote:
->
-> Hi,
->
-> Static analysis with Coverity has detected an uninitialized pointer read
-> in function ovl_lookup_real_one in fs/overlayfs/export.c
->
-> The issue was introduced with the following commit:
->
-> commit 3985b70a3e3f58109dc6ae347eafe6e8610be41e
-> Author: Amir Goldstein <amir73il@gmail.com>
-> Date:   Thu Dec 28 18:36:16 2017 +0200
->
->     ovl: decode connected upper dir file handles
->
-> The analysis is as follows:
->
-> 365static struct dentry *ovl_lookup_real_one(struct dentry *connected,
-> 366                                          struct dentry *real,
-> 367                                          const struct ovl_layer *layer)
-> 368{
-> 369        struct inode *dir = d_inode(connected);
-> 370        struct dentry *this, *parent = NULL;
->
->    1. var_decl: Declaring variable name without initializer.
->
-> 371        struct name_snapshot name;
-> 372        int err;
-> 373
-> 374        /*
-> 375         * Lookup child overlay dentry by real name. The dir mutex
-> protects us
-> 376         * from racing with overlay rename. If the overlay dentry
-> that is above
-> 377         * real has already been moved to a parent that is not under the
-> 378         * connected overlay dir, we return -ECHILD and restart the
-> lookup of
-> 379         * connected real path from the top.
-> 380         */
-> 381        inode_lock_nested(dir, I_MUTEX_PARENT);
-> 382        err = -ECHILD;
-> 383        parent = dget_parent(real);
->
->    2. Condition ovl_dentry_real_at(connected, layer->idx) != parent,
-> taking true branch.
->
-> 384        if (ovl_dentry_real_at(connected, layer->idx) != parent)
->
->    3. Jumping to label fail.
->
-> 385                goto fail;
-> 386
-> 387        /*
-> 388         * We also need to take a snapshot of real dentry name to
-> protect us
-> 389         * from racing with underlying layer rename. In this case, we
-> don't
-> 390         * care about returning ESTALE, only from dereferencing a
-> free name
-> 391         * pointer because we hold no lock on the real dentry.
-> 392         */
-> 393        take_dentry_name_snapshot(&name, real);
-> 394        this = lookup_one_len(name.name.name, connected, name.name.len);
-> 395        err = PTR_ERR(this);
-> 396        if (IS_ERR(this)) {
-> 397                goto fail;
-> 398        } else if (!this || !this->d_inode) {
-> 399                dput(this);
-> 400                err = -ENOENT;
-> 401                goto fail;
-> 402        } else if (ovl_dentry_real_at(this, layer->idx) != real) {
-> 403                dput(this);
-> 404                err = -ESTALE;
-> 405                goto fail;
-> 406        }
-> 407
-> 408out:
->
->    Uninitialized pointer read
->    6. uninit_use_in_call: Using uninitialized value name.name.name when
-> calling release_dentry_name_snapshot.
->
-> 409        release_dentry_name_snapshot(&name);
-> 410        dput(parent);
-> 411        inode_unlock(dir);
-> 412        return this;
-> 413
-> 414fail:
->
->    4. Condition ___ratelimit(&_rs, <anonymous>), taking false branch
-> .
-> 415        pr_warn_ratelimited("failed to lookup one by real (%pd2,
-> layer=%d, connected=%pd2, err=%i)\n",
-> 416                            real, layer->idx, connected, err);
-> 417        this = ERR_PTR(err);
->
->    5. Jumping to label out.
->
-> 418        goto out;
-> 419}
->
-> The error exit path on line 395 ends up with an uninitialized structure
-> name being passed to function release_dentry_name_snapshot() on line 409
-> and this accesses the pointer name.name.name, see /fs/dcache.c as follows:
->
-> 303void release_dentry_name_snapshot(struct name_snapshot *name)
-> 304{
->
->    1. read_value: Reading value name->name.name.
->    2. Condition !!(name->name.name != name->inline_name), taking true
-> branch.
->
-> 305        if (unlikely(name->name.name != name->inline_name)) {
-> 306                struct external_name *p;
->
->    3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
-> !__builtin_types_compatible_p()) */, taking false branch.
->
->
-> I suspect name should be initialized in line 371, e.g. name = { } and a
-> null name check should be performed on line 409 before calling
-> release_dentry_name_snapshot, but this seems a bit message as a fix.
->
+On Tue, Jul 06, 2021 at 10:29:34PM -0700, Satya Tangirala wrote:
+> When a bio has an encryption context, its size must be aligned to its
+> crypto data unit size. A bio must not be split in the middle of a data
+> unit. Currently, bios are split at logical block boundaries, but a crypto
+> data unit size might be larger than the logical block size - e.g. a machine
+> could be using fscrypt (which uses 4K crypto data units) with an eMMC block
+> device with inline encryption hardware that has a logical block size of 512
+> bytes.
+> 
+> Right now, the only user of blk-crypto is fscrypt (on ext4 and f2fs), which
+> (currently) only submits bios where the size of each segment is a multiple
+> of data_unit_size.  That happens to avoid most of the cases where bios
+> could be split in the middle of a data unit.  However, when support for
+> direct I/O on encrypted files is added, or when support for filesystem
+> metadata encryption is added, it will be possible for bios to have segment
+> lengths that are multiples of the logical block size, but not multiples of
+> the crypto data unit size.  So the block layer needs to start handling this
+> case appropriately.
 
-Thanks for the report.
-A simpler fix is to move take_dentry_name_snapshot() to top of the
-function before goto fail.
-
-Thanks,
-Amir.
-
-> Colin
+I'm still not sold on this case yet.  sector size aligned I/O is an
+optional feature, and I don't think it is worth this overhead.  And
+while file systems metadata can be smaller than the file system block
+size in a few cases (e.g. XFS log writes), that is usually an extra
+performance optimization and can be trivially disabled in mkfs.
