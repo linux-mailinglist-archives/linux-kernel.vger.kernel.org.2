@@ -2,134 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3F63D4623
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B093D4627
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbhGXHJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 03:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234264AbhGXHJH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 03:09:07 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D4FC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:49:38 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id he41so7110731ejc.6
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kKOb2jrXO2dSSh4hiHOP+OblsXWy/q1c93necTd5DSM=;
-        b=TCvpTa0V088KqkPjVtGqxQHYT4LYK+5E0jli9OhgQj6ep+Ucitvn8lhjnCbyDLYe8f
-         5YPpZYYIoWDWtpCitEYGFfFsesUJPCV59jVXRe/aTwrQIaa5Xe7HTxDbdu9JImVJNNHn
-         /Vy4uBE/LSkpdATNRhu07b7tUrmdQflaU00QEgQ6c8PePwUr9Uc/VEXFq+eK1/biQSEK
-         JVcN7ld9vaKL3b1HUzdrIrVr5NuGwrV1UycWazcrzVRpCFmnZKv+IBrKJvCSx9aaImy7
-         NOjn4nwv3Svfm3keJbeinOf1k3vzvHkKUxuvRqK6chEEEHFFAjGTocjGiT2PdSyOL8Sp
-         YnHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kKOb2jrXO2dSSh4hiHOP+OblsXWy/q1c93necTd5DSM=;
-        b=N33W5hLIsgAP/Qsfhlx9R6STv8QGVXZS9DpH600uP2JDvJ1AKoG/HFisMChN+oLdgm
-         EDPeR5roeuArc/9yEgMKldymbyCcDo7h1+BpHkBzAtgUtXwqAyR4Fy+87/NyoLSMsK7R
-         G+ciKUnxxxio3PtiuKpZabLHvJ475VhMads7HCeSiw05UGdhvS+Acc952QSX9P/YpWp/
-         onFuOmPYhi6EiRYdqrpemA+30wjgubq4M/J6QPKzWl49FLFaH/0ZtXZGUzd0rB1bKm4d
-         sC0K01CGXVlfgHb50DRKjwQhvYv/WtJsktJTbNqxs4W3augVfveki8XZJ5svUojJy2h6
-         ftaQ==
-X-Gm-Message-State: AOAM530v/LqG4PVX5ING8t46Onj3bjOfXxD9TARBdByVtz3BE6ZnMMwo
-        9pI+ps+h1RmMWyJPDEgYyGI=
-X-Google-Smtp-Source: ABdhPJyq4ltFWGCgeJEh3DTUfadFxw+fCk3pgDMUt2Ts/lEdMECVgyGUbwBoX/Ndjhx9+BDELZ2SXQ==
-X-Received: by 2002:a17:906:d977:: with SMTP id rp23mr8209607ejb.512.1627112977216;
-        Sat, 24 Jul 2021 00:49:37 -0700 (PDT)
-Received: from localhost.localdomain (host-79-26-32-124.retail.telecomitalia.it. [79.26.32.124])
-        by smtp.gmail.com with ESMTPSA id n13sm11237985eda.36.2021.07.24.00.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 00:49:36 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: android: Remove set but unused variable in ashmem.c
-Date:   Sat, 24 Jul 2021 09:49:35 +0200
-Message-ID: <13453441.4PhDYAFLLM@localhost.localdomain>
-In-Reply-To: <CAJuCfpF37KXw2SG37_XoRyhGWc+uueU0NaxcEfU1=FH-rRm+bQ@mail.gmail.com>
-References: <20210723200514.10139-1-fmdefrancesco@gmail.com> <CAJuCfpF37KXw2SG37_XoRyhGWc+uueU0NaxcEfU1=FH-rRm+bQ@mail.gmail.com>
+        id S234654AbhGXHJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 03:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234216AbhGXHJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 03:09:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C9D060E96;
+        Sat, 24 Jul 2021 07:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627113014;
+        bh=Mv1/eRYBc1I9fHOa8WKJt5bRfdu+6ed/06JZaNQIYQk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vPEwRgGF3bV/0durqSpg8K1A8aNhEFHln8YmJvdQdfNHa9HSG3islM4dJvx1TsltO
+         lWvwt0dCrvb71Kep06m5e4ub5MEAOjeh9+BSDiS9aLiHG1ufQxAfNTKB4XpnW+CPG+
+         Vd3ErK5k6Ssw3FvZTvdBDWueIP5BWEM0ynH0BLdE=
+Date:   Sat, 24 Jul 2021 09:50:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        John Stultz <john.stultz@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Amit Pundir <amit.pundir@linaro.org>
+Subject: Re: [PATCH 29/29] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+Message-ID: <YPvGMtuP/ZpwTKN2@kroah.com>
+References: <CALAqxLX_FNvFndEDWtGbFPjSzuAbfqxQE07diBJFZtftwEJX5A@mail.gmail.com>
+ <20210714124807.o22mottsrg3tv6nt@mobilestation>
+ <YPfPDqJhfzbvDLvB@kroah.com>
+ <20210721100220.ddfxwugivsndsedv@mobilestation>
+ <YPf29+ewbrYgHxRP@kroah.com>
+ <YPh/AS5svBk+gddY@yoga>
+ <YPp7Q4IofUYQlrqd@kroah.com>
+ <YPrTbC7fNOY3qCcJ@yoga>
+ <YPrmTYQJ33AIxcwP@kroah.com>
+ <YPsejtV31WrYJX7e@yoga>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YPsejtV31WrYJX7e@yoga>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, July 23, 2021 10:14:46 PM CEST Suren Baghdasaryan wrote:
-> On Fri, Jul 23, 2021 at 1:05 PM Fabio M. De Francesco
+On Fri, Jul 23, 2021 at 02:54:54PM -0500, Bjorn Andersson wrote:
+> On Fri 23 Jul 10:54 CDT 2021, Greg Kroah-Hartman wrote:
 > 
-> <fmdefrancesco@gmail.com> wrote:
-> > Remove variable 'inode' tnat is set but unused. Issue detected
-> > by building with warning option -Wunused-but-set-variable.
+> > On Fri, Jul 23, 2021 at 09:34:20AM -0500, Bjorn Andersson wrote:
+> > > On Fri 23 Jul 03:18 CDT 2021, Greg Kroah-Hartman wrote:
+> > > 
+> > > > On Wed, Jul 21, 2021 at 03:09:37PM -0500, Bjorn Andersson wrote:
+> > > > > Which tree did you revert this in? 5.13.stable?)
+> > > > 
+> > > > My usb-linus branch which will go to Linus later today.  Then we can
+> > > > backport the revert to older kernels as needed.
+> > > > 
+> > > 
+> > > I'm not worried about the backports, I'm worried about conflicts you're
+> > > causing because you're taking a non-usb patch through the usb tree.
+> > > 
+> > > I was about to push a revert (to this and the other Qualcomm platforms),
+> > > but as you're taking some set of reverts through the usb tree we're just
+> > > in for a bunch of merge conflicts.
 > > 
-> > [...]
+> > It shouldn't be a merge conflict as you can apply the same revert to
+> > your tree now and keep on merging.  When you pick up 5.14-rc3 from Linus
+> > it should merge "correctly", right?
 > > 
-> > -               inode = file_inode(vmfile);
-> > 
-> >                 lockdep_set_class(&inode->i_rwsem, 
-&backing_shmem_inode_class);
 > 
-> How about its usage in the above lockdep_set_class(&inode->i_rwsem,
-> ...) call? 
+> I typically don't merge back the -rcs into my -next branch, is that
+> common practice?
 
-I'm sorry. I didn't notice that 'inode' is used soon after assignment, just in 
-the line that follows it. I was also too confident that rebuilding the driver 
-would have triggered an error if it is used somewhere else. I was obviously 
-wrong.
+I do it when Linus takes patches from my -linus branch in order to
+ensure they end up in my -next branch for testing and merge issues.
 
-Furthermore, I usually automatically search with grep or other tools for other 
-occurrences of a symbol in the function and the file, but this time I must 
-have forgotten to do that.
+> But I still don't understand why you insist on driving this through your
+> tree. I've asked you several times to show me on the patch so I at least
+> can Ack it. I made a mistake, but why do you insist on keeping me - the
+> maintainer - out of the loop?
 
-> I'm guessing you are building with CONFIG_LOCKDEP=n.
+I had already done the revert, I wasn't trying to keep anyone out of the
+loop here, sorry if it came across that way.  I just wanted to ensure
+this got resolved quickly so I could move on to other issues.
 
-Actually my .config sets CONFIG_LOCKDEP_SUPPORT=y. Did you refer to this? 
-There is no CONFIG_LOCKDEP in the file.
- 
-I've just run "make clean && make C=2 -j8 drivers/staging/android/ W=1" one 
-more time and it still builds.  How is it possible that the code builds 
-correctly with my configuration? 
+This is now 1f958f3dff42 ("Revert "arm64: dts: qcom: Harmonize DWC USB3
+DT nodes name"") in Linus's tree if you wish to cherry-pick it into your
+tree to resolve merge issues, sorry for the confusion.
 
-This is the output (the last two lines) of 'make':
+thanks,
 
-CC      drivers/staging/android/ashmem.o
-AR      drivers/staging/android/built-in.
-
-There are no errors or warnings, even with that "lockdep_set_class(&inode-
->i_rwsem, &backing_shmem_inode_class);" left as-is after 'inode' removal. 
-
-I really can't understand what I'm missing.
-
-> Have you tried adding __maybe_unused in inode variable definition to
-> get rid of the warning?
-> 
-Actually, I didn't know that directive that you mention. I'll read the 
-documentation and, if and where suited, I'll use it.
-
-Thanks,
-
-Fabio
->
-> > [...]
-> > --
-> > 2.32.0
-
-
-
-
+greg k-h
