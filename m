@@ -2,149 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAD23D4863
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D8B3D4865
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhGXPAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 11:00:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhGXO77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 10:59:59 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2F7360EAF;
-        Sat, 24 Jul 2021 15:40:29 +0000 (UTC)
-Date:   Sat, 24 Jul 2021 16:43:01 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        denis.ciocca@st.com
-Subject: Re: [PATCH 1/4] iio: pressure: st_pressure: use
- devm_iio_triggered_buffer_setup() for buffer
-Message-ID: <20210724164301.54008712@jic23-huawei>
-In-Reply-To: <20210720074642.223293-1-aardelean@deviqon.com>
-References: <20210720074642.223293-1-aardelean@deviqon.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229982AbhGXPCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 11:02:54 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:43854 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhGXPCw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 11:02:52 -0400
+Received: by mail-wr1-f49.google.com with SMTP id y8so5548422wrt.10;
+        Sat, 24 Jul 2021 08:43:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v+XwUBU81RLKN4NEcpt+u5/wJc7NImqRbxoHg9MG7AQ=;
+        b=lRKtP2Wk+Q/bdjlJqCprk5L96EBNPCKJU2j6fI+GGRGDLc3kuAUst+sEb8T0OVRA5t
+         JHi4Rte5D176sEHE/tILHL45QZKMhH5gHdR/pA05AqscdRt9MWs2egJB57EaOveKLwOV
+         dO6NOFpw4m/jQECoyvR1NBnd+3BHyvp7SENb0pHTCmZAPcgVFrMAg9WbHlzm8F4sFT51
+         /bTeQNeNnrOc5OVQSWSp7g36D1KmeYJ5tosJhu0idYIErzD4Jt+jxhJjaTDuSIyuded9
+         Q54oEcOoCG+JuX9BVFyiLhOmcXNYS9IkJimPe9SVef94l+iMgKrPq9GATjItqmhm+aTp
+         8MEQ==
+X-Gm-Message-State: AOAM532iN1FgXnmtxw7kY91Ca/4hij0X9vOVXTm2coQ77a1B8peEbLME
+        +uTd+rwA15ddj3wsh2yWEhQ=
+X-Google-Smtp-Source: ABdhPJwdusdPl3V8JeOAX9njNPiPJ73/C6tD4zUtKI1WRTxa2fG1Lvxm7Qn80xZSoUz/eM/87m1sZQ==
+X-Received: by 2002:adf:f9c8:: with SMTP id w8mr10527540wrr.143.1627141402874;
+        Sat, 24 Jul 2021 08:43:22 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id w18sm38861848wrg.68.2021.07.24.08.43.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 08:43:22 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 15:43:20 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com,
+        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        nunodasneves@linux.microsoft.com
+Subject: Re: [PATCH v2] hyperv: root partition faults writing to VP ASSIST
+ MSR PAGE
+Message-ID: <20210724154320.apc7lm2pclfzig7n@liuwe-devbox-debian-v2>
+References: <20210721180302.18764-1-kumarpraveen@linux.microsoft.com>
+ <20210722102741.vl4fvv3abifru2ge@liuwe-devbox-debian-v2>
+ <bd019dc6-75e9-ac89-18fa-c09561000188@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd019dc6-75e9-ac89-18fa-c09561000188@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 10:46:39 +0300
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
-
-> The st_press_allocate_ring() function calls iio_triggered_buffer_setup() to
-> allocate a triggered buffer.
+On Thu, Jul 22, 2021 at 09:45:36PM +0530, Praveen Kumar wrote:
+> > 
+> > I think about this a bit more, the NULL check for *hvp in hv_cpu_init in
+> > the original code is perhaps due to the code has opted to not free the
+> > page when disabling the VP assist page. When the CPU is brought back
+> > online, it does not want to allocate another page, but to use the one
+> > that's already allocated.
+> > 
+> > So, since you listened to my suggestion to add a similar check, you need
+> > to reset hv_vp_assist_page to NULL here. Alternatively the check for
+> > *hvp can be dropped for the root path. Either way, the difference
+> > between root and non-root should be documented.
+> > 
 > 
-> But the same can be done with devm_iio_triggered_buffer_setup() and then
-> the st_press_common_remove() no longer needs to manually deallocate it.
-> 
-> We know that the parent of the IIO device is used to manage other instances
-> of the devm unwind, so it can be used in the st_press_allocate_ring() as
-> well.
+> I would make it as NULL post memunmap as you suggested, so that we
+> don't end up reusing the old/cached value. Before doing that, is there
+> any use-case where hypervisor can allocate or change the VP assist
+> page that can impact root kernel execution ?
 
-This raises an interesting point.  This driver mixes and matches between
-hanging devm off the parent and off the iio_dev->dev.
+I don't think a sane hypervisor will change the page in such a way.
 
-That's probably not a good thing to do as it could lead to an odd unwind
-order.  I'm pretty sure the changes here are fine, but we should take
-a closer look...
-
-Series applied to the togreg branch of iio.git and pushed out as testing.
-
-You can do the same thing with the trigger with only slightly more complex
-patch, but I'd like to discuss whether there are races because of the current
-dev mix and match before that.
-
-Thanks,
-
-Jonathan
-
-
-> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->  drivers/iio/pressure/st_pressure.h        | 5 -----
->  drivers/iio/pressure/st_pressure_buffer.c | 9 ++-------
->  drivers/iio/pressure/st_pressure_core.c   | 6 +-----
->  3 files changed, 3 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/iio/pressure/st_pressure.h b/drivers/iio/pressure/st_pressure.h
-> index 9417b3bd7513..156e6a72dc5c 100644
-> --- a/drivers/iio/pressure/st_pressure.h
-> +++ b/drivers/iio/pressure/st_pressure.h
-> @@ -43,7 +43,6 @@ static __maybe_unused const struct st_sensors_platform_data default_press_pdata
->  
->  #ifdef CONFIG_IIO_BUFFER
->  int st_press_allocate_ring(struct iio_dev *indio_dev);
-> -void st_press_deallocate_ring(struct iio_dev *indio_dev);
->  int st_press_trig_set_state(struct iio_trigger *trig, bool state);
->  #define ST_PRESS_TRIGGER_SET_STATE (&st_press_trig_set_state)
->  #else /* CONFIG_IIO_BUFFER */
-> @@ -51,10 +50,6 @@ static inline int st_press_allocate_ring(struct iio_dev *indio_dev)
->  {
->  	return 0;
->  }
-> -
-> -static inline void st_press_deallocate_ring(struct iio_dev *indio_dev)
-> -{
-> -}
->  #define ST_PRESS_TRIGGER_SET_STATE NULL
->  #endif /* CONFIG_IIO_BUFFER */
->  
-> diff --git a/drivers/iio/pressure/st_pressure_buffer.c b/drivers/iio/pressure/st_pressure_buffer.c
-> index b651e7c31e90..25dbd5476b26 100644
-> --- a/drivers/iio/pressure/st_pressure_buffer.c
-> +++ b/drivers/iio/pressure/st_pressure_buffer.c
-> @@ -41,13 +41,8 @@ static const struct iio_buffer_setup_ops st_press_buffer_setup_ops = {
->  
->  int st_press_allocate_ring(struct iio_dev *indio_dev)
->  {
-> -	return iio_triggered_buffer_setup(indio_dev, NULL,
-> -		&st_sensors_trigger_handler, &st_press_buffer_setup_ops);
-> -}
-> -
-> -void st_press_deallocate_ring(struct iio_dev *indio_dev)
-> -{
-> -	iio_triggered_buffer_cleanup(indio_dev);
-> +	return devm_iio_triggered_buffer_setup(indio_dev->dev.parent, indio_dev,
-> +		NULL, &st_sensors_trigger_handler, &st_press_buffer_setup_ops);
->  }
->  
->  MODULE_AUTHOR("Denis Ciocca <denis.ciocca@st.com>");
-> diff --git a/drivers/iio/pressure/st_pressure_core.c b/drivers/iio/pressure/st_pressure_core.c
-> index 4ff6d40e3670..ab1c17fac807 100644
-> --- a/drivers/iio/pressure/st_pressure_core.c
-> +++ b/drivers/iio/pressure/st_pressure_core.c
-> @@ -718,7 +718,7 @@ int st_press_common_probe(struct iio_dev *indio_dev)
->  		err = st_sensors_allocate_trigger(indio_dev,
->  						  ST_PRESS_TRIGGER_OPS);
->  		if (err < 0)
-> -			goto st_press_probe_trigger_error;
-> +			return err;
->  	}
->  
->  	err = iio_device_register(indio_dev);
-> @@ -733,8 +733,6 @@ int st_press_common_probe(struct iio_dev *indio_dev)
->  st_press_device_register_error:
->  	if (press_data->irq > 0)
->  		st_sensors_deallocate_trigger(indio_dev);
-> -st_press_probe_trigger_error:
-> -	st_press_deallocate_ring(indio_dev);
->  	return err;
->  }
->  EXPORT_SYMBOL(st_press_common_probe);
-> @@ -746,8 +744,6 @@ void st_press_common_remove(struct iio_dev *indio_dev)
->  	iio_device_unregister(indio_dev);
->  	if (press_data->irq > 0)
->  		st_sensors_deallocate_trigger(indio_dev);
-> -
-> -	st_press_deallocate_ring(indio_dev);
->  }
->  EXPORT_SYMBOL(st_press_common_remove);
->  
-
+Wei.
