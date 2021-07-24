@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042C13D471D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84953D4721
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235157AbhGXJxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 05:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S235243AbhGXJyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 05:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234219AbhGXJxl (ORCPT
+        with ESMTP id S234219AbhGXJyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 05:53:41 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE93C061575;
-        Sat, 24 Jul 2021 03:34:12 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id r23so1659496lji.3;
-        Sat, 24 Jul 2021 03:34:12 -0700 (PDT)
+        Sat, 24 Jul 2021 05:54:11 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F32DC061575;
+        Sat, 24 Jul 2021 03:34:43 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id f18so6283812lfu.10;
+        Sat, 24 Jul 2021 03:34:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x6qKlfQqH4Pff1qY3yh2+h4mSC4bChkJmId4p4BeXQU=;
-        b=O6hvyvnQIiTssakclxodabsh84VNdDn9LRuunsV2DlxcfjfrE5a0C4XDVFjIOUQ2CV
-         eaB1icO6o4OMnXoQ8j8f+EQIFM2T8vf4S/f/0Sj966XKDC+fv8D315AcsWcblWaZbOwi
-         ZIRKKJJePG3/B/vSvOA1q2+idYwZxjqwxo1xfa4a/LPCERHcEg3jGQdIjTg7LNiSY1D3
-         a6xahXn2u6LTYwKzP3/2Luq5a69Osd1FojrSm01WqlWWxPkXrYlDYFxICAzdFkUApcUJ
-         N1S0WVoHxzx38vFAWUfFoFOsuCeHzEo8B/HnyyAIBvC7UuKWr7bwZSoW5XKd04dOm9ZT
-         O+Gw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SOSmzvWDnV1n+6dhGf47+1g6nbwp/1OAUc7BCbVeW+M=;
+        b=f0fZ64mXzWaKU8WLVy2HL8QLKapOt8WTiMQmPAzqD0jZjYbGt3W7VTh5Fn/goLtdgc
+         +rD+SOt9fRLPaWG9RDWE0BA5uSJF4x2kcarNSvIm0/uUwPO/bYnpH3KkEZS8iPGgX13R
+         VuptsJmuOAtFzQ+A37QMKJ2fdA6L8ncPW5JdP2URCynZyucbYDMRCYI2SK2dSyUh3W7g
+         eVcBQFOfXJQ6HrGlX+sylVo8Ee25Gg6/ij6xPoHb+IoHbZkWcJKREzjQSj9wVRKQbQ4a
+         91GOElIfaTu1pe0GuGUmCZDrzeg/KfQsvLlJ5zECe0JB2xIq/yeLtsdxkoZPzZ+BYHTV
+         7WZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x6qKlfQqH4Pff1qY3yh2+h4mSC4bChkJmId4p4BeXQU=;
-        b=o9LhecUhxtAyVlnIfzcpIEg7lcXBWo3laZBFURvyCi8cP09oC2+jJJ1WwRGN5cLI8M
-         /RJRTqHCD7wR+gvfSHna6K7rDtAVKyy0ORXYJ/EkH6O73AfjeXTQZ98f9CXoHjgYy+d3
-         EVHfHxmg92kkEfLVAaRFlV2B6jr3UDOaDY/chqxeoNi7M1qv0u4G1AnQ1vDPTFyWco8/
-         TfsBdlYhokSO15O9A7QkI+HOjlGXIKvmguF7EdCzDr7TIKjTrXMMxhhmIiqHgNoenWbm
-         J335VyRvXU4x4xr98XZLPGk+UkznbmYmZ5wZRK2+PpnjgYNlcwSWzh9JsjX41I6Vzvka
-         OlKw==
-X-Gm-Message-State: AOAM531ZPMjGrM2Vxx5ovW5lIPBFnQOkpv0Rp8dpQnzEarwVyULQ9f1R
-        /dAYoSiiwHI/wExmFRnGOHc=
-X-Google-Smtp-Source: ABdhPJw1DpZY1EfJig8d3cXTa8Tc9M+VIOgYNm4+S2hFK0uPqhzIBTOFv32HnDYsxMsZfB/QZql0TQ==
-X-Received: by 2002:a2e:8743:: with SMTP id q3mr1517461ljj.397.1627122850546;
-        Sat, 24 Jul 2021 03:34:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SOSmzvWDnV1n+6dhGf47+1g6nbwp/1OAUc7BCbVeW+M=;
+        b=I0iEZ1aUQADED9s+i3xb2vw7eUTnmZIYCLD3DdRMsj7NVcZhCBnjv5n6DkVwz/KzX1
+         /lvhcj1ezybmbg7Wc5aIfuZtpvC6U+tPf8v/mKd572uNOPe5jf0eNDArXWOonzG98ptn
+         Pc/d+clvOMrENTiXn8sA3Hal2PCO8LMWo/8Motrr+2+OZHZc5IXsgsgilfA7Hm0YKDvN
+         vXnxsK7eQgAYUr8f3g7MPZwiN9sBUtu3D/zD2FlQB+68UsCGdDdu/DC6q9XM6vqwpCtC
+         WzAvRMFOq1yfj5Zl8KeID/ADB958KxkWApGN0iVhQtmZNmyyvLcqN4sllyAzSx+ef8ql
+         IJIA==
+X-Gm-Message-State: AOAM530RkTF0h+YVR3flfrboS6HMaD8HGeNoZHspePfpTcoCXqUX/zje
+        xo0iRsL+85OikJiH6fxadaY=
+X-Google-Smtp-Source: ABdhPJyOSNUue6kuYntJNTrZrm3PK3f0/nxLTEB1VQXAcRaseskQoNdMmWd1zqqnlnCx/nOprwcpew==
+X-Received: by 2002:a19:ab1a:: with SMTP id u26mr5691027lfe.457.1627122881606;
+        Sat, 24 Jul 2021 03:34:41 -0700 (PDT)
 Received: from akaWolf-PC.. ([194.79.5.201])
-        by smtp.gmail.com with ESMTPSA id v22sm2158938lfi.270.2021.07.24.03.34.07
+        by smtp.gmail.com with ESMTPSA id v22sm2158938lfi.270.2021.07.24.03.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 03:34:10 -0700 (PDT)
+        Sat, 24 Jul 2021 03:34:41 -0700 (PDT)
 From:   Artjom Vejsel <akawolf0@gmail.com>
 Cc:     thierry.reding@gmail.com, sam@ravnborg.org,
         dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         paul@crapouillou.net, akawolf0@gmail.com
-Subject: [PATCH v2 0/3] add Gopher 2b LCD panel
-Date:   Sat, 24 Jul 2021 13:33:55 +0300
-Message-Id: <20210724103358.1632020-1-akawolf0@gmail.com>
+Subject: [PATCH v2 1/3] dt-bindings: Add QiShenglong vendor prefix
+Date:   Sat, 24 Jul 2021 13:33:56 +0300
+Message-Id: <20210724103358.1632020-2-akawolf0@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210724103358.1632020-1-akawolf0@gmail.com>
+References: <20210724103358.1632020-1-akawolf0@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -64,24 +66,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Gopher 2b LCD panel is used in Gopher 2b handhelds.
-It's simple panel with NewVision NV3047 driver,
-but SPI lines are not connected.
-It has no specific name, since it's unique to that handhelds.
-lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG
-NV3047 Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
+Add vendor prefix for Shenzhen QiShenglong Industrialist Co., Ltd.
+QiShenglong is a Chinese manufacturer of handheld gaming consoles, most of
+which run (very old) versions of Linux.
+QiShenglong is known as Hamy.
 
-In v2 removed .num_modes as noticed by Paul.
+Signed-off-by: Artjom Vejsel <akawolf0@gmail.com>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Artjom Vejsel (3):
-  dt-bindings: Add QiShenglong vendor prefix
-  dt-bindings: Add DT bindings for QiShenglong Gopher 2b panel
-  drm/panel-simple: add Gopher 2b LCD panel
-
- .../bindings/display/panel/panel-simple.yaml  |  2 +
- .../devicetree/bindings/vendor-prefixes.yaml  |  2 +
- drivers/gpu/drm/panel/panel-simple.c          | 43 +++++++++++++++++++
- 3 files changed, 47 insertions(+)
-
---
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index b868cefc7c55..52996cbf2cc4 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -924,6 +924,8 @@ patternProperties:
+     description: Qi Hardware
+   "^qihua,.*":
+     description: Chengdu Kaixuan Information Technology Co., Ltd.
++  "^qishenglong,.*":
++    description: Shenzhen QiShenglong Industrialist Co., Ltd.
+   "^qiaodian,.*":
+     description: QiaoDian XianShi Corporation
+   "^qnap,.*":
+-- 
 2.32.0
+
