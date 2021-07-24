@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B420E3D456D
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 08:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7043D4571
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 08:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhGXGIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 02:08:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50160 "EHLO mail.kernel.org"
+        id S234113AbhGXGPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 02:15:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229926AbhGXGIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 02:08:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23D8F60EAF;
-        Sat, 24 Jul 2021 06:48:51 +0000 (UTC)
-Date:   Sat, 24 Jul 2021 08:48:48 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.or, rajatxjain@gmail.com
-Subject: Re: [PATCH v2] thunderbolt: For dev authorization changes, include
- the actual event in udev change notification
-Message-ID: <YPu30AL27UwnfOrI@kroah.com>
-References: <20210724004043.2075819-1-rajatja@google.com>
+        id S234060AbhGXGPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 02:15:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF70360EB0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 06:55:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627109748;
+        bh=B80hoZZe2OO2rx4q7PEXznNCfVJkARWnoc3HG9wphzQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TPKBM4kCRjp6Dl8ERLme76Rqlot6iiRhwW3z4TPWOVwJ2+9Fs7xi3Zn1wR65TDQzs
+         +ShXgwh64Rr4gLPIR4VuUZkIz0OY9RiIfMRMXzp7UfbQ4TYAxMB/6h+FkH5YixH7Mt
+         lrpas+gEwhRV+I2mWemvQGFGlFEwDMXGatnDxi6EAfXWE4PiZJCSn0skFbJHbX35Xl
+         /gaXVW99pnGOl9cTVxwf+iOWbIy6bs8vzvD3ASuwS+WbTB4SaclRIJXThFKv8svHYe
+         6WcRzdgCguxxYdkGK98bznKXi0tNj6T25JyB7YFOlFtiVg89XECJFR7br5nvLe+etP
+         MBb+1mV8DeOnQ==
+Received: by mail-wm1-f48.google.com with SMTP id j34-20020a05600c1c22b029024e75084404so1938214wms.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 23:55:48 -0700 (PDT)
+X-Gm-Message-State: AOAM533OqaQJUq4+hdtDODUPyl96AgRBpxIWN+ApOFjOHFl7XWLDuP4O
+        lB/oR/YWLhm44Sq4g+xFW2A12gnfWRNUqDYsO1w=
+X-Google-Smtp-Source: ABdhPJyR72GsEjxAav2mThfrkDdq7Q7rsOokZHAxvRhxua1hNtotzPz//554fpJOxQYtC+mHVkp1i/zd0EA29NRxVbU=
+X-Received: by 2002:a7b:c385:: with SMTP id s5mr7491845wmj.43.1627109747390;
+ Fri, 23 Jul 2021 23:55:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210724004043.2075819-1-rajatja@google.com>
+References: <20210723224617.3088886-1-kherbst@redhat.com>
+In-Reply-To: <20210723224617.3088886-1-kherbst@redhat.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 24 Jul 2021 08:55:31 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com>
+Message-ID: <CAK8P3a3u_jsxQW4dPXtsdKkw1mjKXL-h=qN1SGHytvUMPf3fPw@mail.gmail.com>
+Subject: Re: [PATCH] nouveau: make backlight support non optional
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lyude Paul <lyude@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        ML nouveau <nouveau@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 05:40:43PM -0700, Rajat Jain wrote:
-> For security, we would like to monitor and track when the thunderbolt
-> devices are authorized and deauthorized (i.e. when the thunderbolt sysfs
-> "authorized" attribute changes). Currently the userspace gets a udev
-> change notification when there is a change, but the state may have
-> changed (again) by the time we look at the authorized attribute in
-> sysfs. So an authorization event may go unnoticed. Thus make it easier
-> by informing the actual change (new value of authorized attribute) in
-> the udev change notification.
-> 
-> The change is included as a key value "authorized=<val>" where <val>
-> is the new value of sysfs attribute "authorized", and is described at
-> Documentation/ABI/testing/sysfs-bus-thunderbolt under
-> /sys/bus/thunderbolt/devices/.../authorized
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> ---
->  drivers/thunderbolt/switch.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+On Sat, Jul 24, 2021 at 12:47 AM Karol Herbst <kherbst@redhat.com> wrote:
+>
+> In the past this only led to compilation issues. Also the small amount of
+> extra .text shouldn't really matter compared to the entire nouveau driver
+> anyway.
+>
 
-Hi,
+>         select DRM_TTM_HELPER
+> -       select BACKLIGHT_CLASS_DEVICE if DRM_NOUVEAU_BACKLIGHT
+> -       select ACPI_VIDEO if ACPI && X86 && BACKLIGHT_CLASS_DEVICE && INPUT
+> +       select BACKLIGHT_CLASS_DEVICE
+> +       select ACPI_VIDEO if ACPI && X86 && INPUT
+>         select X86_PLATFORM_DEVICES if ACPI && X86
+>         select ACPI_WMI if ACPI && X86
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+I think the logic needs to be the reverse: instead of 'select
+BACKLIGHT_CLASS_DEVICE',
+this should be 'depends on BACKLIGHT_CLASS_DEVICE', and the same for ACPI_VIDEO.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+We may want to add 'default DRM || FB' to BACKLIGHT_CLASS_DEVICE in the
+process so we don't lose it for users doing 'make oldconfig' or 'make defconfig'
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
+The rest of the patch looks good to me.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+       Arnd
