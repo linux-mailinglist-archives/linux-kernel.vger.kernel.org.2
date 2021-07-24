@@ -2,300 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28FA3D4A85
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 00:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35203D4A8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 00:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhGXWI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 18:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S229866AbhGXWPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 18:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbhGXWI1 (ORCPT
+        with ESMTP id S229549AbhGXWPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 18:08:27 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDDCC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 15:48:57 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id 10so5054440ill.10
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 15:48:57 -0700 (PDT)
+        Sat, 24 Jul 2021 18:15:39 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662B4C061575;
+        Sat, 24 Jul 2021 15:56:10 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id ga41so9308652ejc.10;
+        Sat, 24 Jul 2021 15:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LCrrNcNUSHZs7eKX83SErrWSVU6f5qqYgMuHGf7P0Ok=;
-        b=r/pruy2u20940BeYmZ+Y+0Rjavpht9PiBL7dRNIxRJVjIq8DGpCJ7Hr2B2o7CbAe2s
-         Y9eoNWTkYAxGkiStyzIxBsHjSMlxepCHGOSPgRqDAngzjxf4FIUiPI1CNvHV8n/r74N2
-         y1QI9NHd7oupj/RVZ9wf8orHGeDRkzaQDSJN2vLT9qUgYRavj7PCv48tOyiDJuaRtqHt
-         F5udZen8vivSd1/alWOnqw7G3xfrJz5PPyn1Hawu6J96bQBj251IxEKFC2kcGSFncqxt
-         wJ+rhRVkKAD6P6g9Eyu9Gphz6Iakpie5zJNHZHZyJe/d9GsAq45jZIyw6Tjp2x9eDvs8
-         t/6g==
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=2YkOr/SOjc8e1D7v+UhUxdLCEbTLFclJesQWR+kwwU4=;
+        b=jPyeQ8mCSCGcS4f5mZtBfqomTp4MTHmxo9HWg11n//qazKN+3QvEBHKY5jHbvMIkDH
+         t/OsPKUdaBBm8Yu81QZdxzq62a2IIT0bKomf+wAvNjIK9grlcxUr4PxpwC5DkVFStrx2
+         4LkIl8ULRHMVq1g/ZkbpG/j/YYYp6Xn4v4zkTvheiCOPSpDATsSI/1K5G9oYnDuVBHVA
+         zZKJmPQ0umryo1fiGCIWxzmQMcnfMHWp3jXbFr4MOmyTIi7RM+OGcu94+d6fd9jH42KR
+         UM3r/wLiqkro4MR66T4YiqBO925oijtN5eMYrCqmuefI78j3YxKx76gWO/UIMmiFvxUB
+         i/jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LCrrNcNUSHZs7eKX83SErrWSVU6f5qqYgMuHGf7P0Ok=;
-        b=NtpbuIVjPSP7ks2zBqFywJnSC5Y4OJPSygggQAQZMz43lR56lrkFi5TpoUWmnQNC52
-         PCFXlOM1iev9C2OFP4l9AhialGc2aghpm29U2moymq1wu6xN4tj2RbHFvI5LD/gepTSp
-         b699KEDTiapoU4GyDxT0G0uYYrKwRFFi8xFTW0v0N9WmsCuvhwES0/FdPFI3y9oizCnU
-         gi4Iu6chWcMViRU5l4PvsTQoCac4H3rynom2/chyFbVfGrmjt0JQvuIxSVHRd8avi/jh
-         QGKr6ybtWRL28v5GizhpMfXoHSI+RXq7OLUhjTJf4WK1PeG1GwbjC0dAxth5ClRgGG52
-         yRFQ==
-X-Gm-Message-State: AOAM5325CJn+rg5dks00snhJWf5m2C1keav3tPeJ29kuUbic07xI1Wvj
-        C5rikitpYZDdWhF5yOnO3PHFXeJnC6QDAiZzxfUk9w==
-X-Google-Smtp-Source: ABdhPJzCClchEiYKv7C25OAe1yyT4wJKheEBmbUjsTWG2mVCYvvFLtuqAnh+dZ6VC9m+8Ln5szfPpJlP4geX3UKOPU4=
-X-Received: by 2002:a05:6e02:dcd:: with SMTP id l13mr7957651ilj.300.1627166936785;
- Sat, 24 Jul 2021 15:48:56 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2YkOr/SOjc8e1D7v+UhUxdLCEbTLFclJesQWR+kwwU4=;
+        b=q5BqcEZKHIIQwZrhHhHcOOYSl0S+5FiJonH5r0851MJKh55vcD2oiZyABYfCe6P711
+         IH48Z4UDZwsPMPKcHIQRgmtq9v1Etzr20Uu68m0hXti6CUXLazD6VcTpamHaD+UDk39o
+         lwcQPzDwD11iq5bth0aLfIb5hbr54IiRDfa8lEGPZDf9mNlTvqPjqQN4aoOu9r988J54
+         A0dtMA7J7rKe8hfoKbCweLSPdS+Jj85TXRj9S7rjxh5y0N6pe9vDdqG10cBshdpixPcb
+         EZdvMw+a5+mUIHR0vQ2NLC6uKsh/kKUfZ+c6HKhF9RWgZFwmVJOi25s7iAdQav1NpURx
+         6C+g==
+X-Gm-Message-State: AOAM531/uD2Mp4nZJ3AyQ5xx+n8hCuQ45BYKGnmS4Lx2MymtFijMFYhZ
+        OXX0F9vY7xch6Mvk21hK/Rw=
+X-Google-Smtp-Source: ABdhPJyF2fwAlFNkbLur3s36viBfsxpoawYSmYWz6s8vGu2O8tNtfqRcY5iKh/GkAR7FdIVbELP3jQ==
+X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr11064629ejz.235.1627167368957;
+        Sat, 24 Jul 2021 15:56:08 -0700 (PDT)
+Received: from ?IPv6:2001:981:6fec:1:7f54:b3a5:1f2:dfcf? ([2001:981:6fec:1:7f54:b3a5:1f2:dfcf])
+        by smtp.gmail.com with ESMTPSA id q8sm14442106edd.43.2021.07.24.15.56.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Jul 2021 15:56:08 -0700 (PDT)
+From:   Ferry Toth <fntoth@gmail.com>
+Subject: Re: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP
+ bursting
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, Jack Pham <jackp@codeaurora.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
+ <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
+ <ec8050c5-c013-4af6-b39e-69779c009a9c@codeaurora.org>
+ <f5ed0ee7-e333-681f-0f1a-d0227562204b@gmail.com>
+ <2e01c435-9ecc-4e3b-f55c-612a86667020@codeaurora.org>
+ <2ae9fa6a-3bb1-3742-0dd3-59678bdd8643@gmail.com>
+ <ebea75fe-5334-197b-f67a-cb6e1e30b39e@codeaurora.org>
+ <bafa93bb-11e3-c8a5-e14a-b0a6d5695055@gmail.com> <87v951ldlt.fsf@kernel.org>
+ <d9aef50c-4bd1-4957-13d8-0b6a14b9fcd0@gmail.com> <87pmv9l1dv.fsf@kernel.org>
+ <9dc6cd83-17b9-7075-0934-6b9d41b6875d@gmail.com>
+ <CAHp75Vc7HDvCiT9Fp2hRsPTzNpRmm0E5yRHSuhpyD1Gqkf2FfA@mail.gmail.com>
+Message-ID: <4955687e-1015-37d6-9905-2b68aa9a85a0@gmail.com>
+Date:   Sun, 25 Jul 2021 00:56:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210718203746.7159-1-theobf@usp.br> <CA+U=DspWmrWWsQDFPLycS2y-=8Q7TSn5NYMVgbQ42FccAy0=pw@mail.gmail.com>
- <CAD5vTa8gnQpZ8B4KQkA=-6Oo-YiN4J7pDp0HoUZgpHN99vJK_g@mail.gmail.com>
- <CA+U=DsrU5iPBRexdUK3fx-PG3CbSoKouGWENVLJ5+h8L5-y_Og@mail.gmail.com>
- <CAD5vTa_cR0da4qZ2JTB7G-QgZrSeZr3e8fp92S6WGMaCoUr15g@mail.gmail.com> <CA+U=Dspk0G+b-M3k1m7SCCPfAoFxksqzHxCSs8BWnsrSr_afOw@mail.gmail.com>
-In-Reply-To: <CA+U=Dspk0G+b-M3k1m7SCCPfAoFxksqzHxCSs8BWnsrSr_afOw@mail.gmail.com>
-From:   =?UTF-8?Q?Th=C3=A9o_Bor=C3=A9m_Fabris?= <theobf@usp.br>
-Date:   Sat, 24 Jul 2021 19:48:20 -0300
-Message-ID: <CAD5vTa-Cs9DA9icvU4AYPGTDCG2fQOJhM5TJ9h1nnk_9B17vNA@mail.gmail.com>
-Subject: Re: [PATCH] iio: dac: max5821: convert device register to device
- managed function
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>, Nuno.Sa@analog.com
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAHp75Vc7HDvCiT9Fp2hRsPTzNpRmm0E5yRHSuhpyD1Gqkf2FfA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you, Alexandru and Numo, for your help. I have submitted the
-second version.
+Hi
 
-Th=C3=A9o
+Op 24-07-2021 om 23:19 schreef Andy Shevchenko:
+> On Sat, Jul 24, 2021 at 11:59 PM Ferry Toth<fntoth@gmail.com>  wrote:
+>
+>> BTW there is a secondary problem not related to dwc3: the console is not
+>> working well and loosing chars. I can connect through wifi/ssh though.
+> You mean even on the kernel before any crash happened due to DWC3 stuff?
 
-Em qua., 21 de jul. de 2021 =C3=A0s 04:23, Alexandru Ardelean
-<ardeleanalex@gmail.com> escreveu:
->
-> On Wed, Jul 21, 2021 at 3:11 AM Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.b=
-r> wrote:
-> >
-> > Em ter., 20 de jul. de 2021 =C3=A0s 04:22, Alexandru Ardelean
-> > <ardeleanalex@gmail.com> escreveu:
-> > >
-> > > On Mon, Jul 19, 2021 at 6:25 PM Th=C3=A9o Bor=C3=A9m Fabris <theobf@u=
-sp.br> wrote:
-> > > >
-> > > > Hi, Alexandru.
-> > > >
-> > > > Em seg., 19 de jul. de 2021 =C3=A0s 04:33, Alexandru Ardelean
-> > > > <ardeleanalex@gmail.com> escreveu:
-> > > > >
-> > > > > On Sun, Jul 18, 2021 at 11:42 PM Th=C3=A9o Bor=C3=A9m Fabris <the=
-obf@usp.br> wrote:
-> > > > > >
-> > > > > > Add a device managed hook, via devm_add_action_or_reset() and
-> > > > > > max5821_regulator_disable(), to disable voltage regulator on de=
-vice
-> > > > > > detach.
-> > > > > > Replace iio_device_register() by devm_iio_device_register() and=
- remove
-> > > > > > the max5821_remove() function used to unregister the device and=
- disable the
-> > > > > > voltage regulator.
-> > > > > > Remove i2c_set_clientdata() from the probe function, since
-> > > > > > i2c_get_clientdata() is not used anymore.
-> > > > >
-> > > > > Looks good overall.
-> > > > > A few comments inline.
-> > > > >
-> > > > > >
-> > > > > > Signed-off-by: Th=C3=A9o Bor=C3=A9m Fabris <theobf@usp.br>
-> > > > > > ---
-> > > > > >  drivers/iio/dac/max5821.c | 30 ++++++++++++++++--------------
-> > > > > >  1 file changed, 16 insertions(+), 14 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/iio/dac/max5821.c b/drivers/iio/dac/max582=
-1.c
-> > > > > > index bd6e75699a63..44c04ae70b32 100644
-> > > > > > --- a/drivers/iio/dac/max5821.c
-> > > > > > +++ b/drivers/iio/dac/max5821.c
-> > > > > > @@ -294,6 +294,13 @@ static const struct iio_info max5821_info =
-=3D {
-> > > > > >         .write_raw =3D max5821_write_raw,
-> > > > > >  };
-> > > > > >
-> > > > > > +static void max5821_regulator_disable(void *data)
-> > > > > > +{
-> > > > > > +       struct regulator *rdata =3D data;
-> > > > > > +
-> > > > > > +       regulator_disable(rdata);
-> > > > >
-> > > > > This can be simplified a bit:
-> > > > >
-> > > > > static void max5821_regulator_disable(void *reg)
-> > > > > {
-> > > > >       regulator_disable(reg);
-> > > > > }
-> > > > >
-> > > > > I used to do explicit casting, but then I also figured that it's =
-not necessary.
-> > > > >
-> > > > Ok.
-> > > >
-> > > > > > +}
-> > > > > > +
-> > > > > >  static int max5821_probe(struct i2c_client *client,
-> > > > > >                         const struct i2c_device_id *id)
-> > > > > >  {
-> > > > > > @@ -306,7 +313,6 @@ static int max5821_probe(struct i2c_client =
-*client,
-> > > > > >         if (!indio_dev)
-> > > > > >                 return -ENOMEM;
-> > > > > >         data =3D iio_priv(indio_dev);
-> > > > > > -       i2c_set_clientdata(client, indio_dev);
-> > > > > >         data->client =3D client;
-> > > > > >         mutex_init(&data->lock);
-> > > > > >
-> > > > > > @@ -331,6 +337,14 @@ static int max5821_probe(struct i2c_client=
- *client,
-> > > > > >                 goto error_free_reg;
-> > > > > >         }
-> > > > > >
-> > > > > > +       ret =3D devm_add_action_or_reset(&client->dev, max5821_=
-regulator_disable,
-> > > > > > +                                      data->vref_reg);
-> > > > > > +       if (ret) {
-> > > > > > +               dev_err(&client->dev,
-> > > > > > +                       "Failed to add action to managed regula=
-tor: %d\n", ret);
-> > > > > > +               goto error_disable_reg;
-> > > > >
-> > > > > return ret;
-> > > > >
-> > > > > devm_add_action_or_reset() should call max5821_regulator_disable(=
-) in
-> > > > > case of error
-> > > > >
-> > > > Ok.
-> > > >
-> > > > > > +       }
-> > > > > > +
-> > > > > >         ret =3D regulator_get_voltage(data->vref_reg);
-> > > > > >         if (ret < 0) {
-> > > > > >                 dev_err(&client->dev,
-> > > > > > @@ -346,7 +360,7 @@ static int max5821_probe(struct i2c_client =
-*client,
-> > > > > >         indio_dev->modes =3D INDIO_DIRECT_MODE;
-> > > > > >         indio_dev->info =3D &max5821_info;
-> > > > > >
-> > > > > > -       return iio_device_register(indio_dev);
-> > > > > > +       return devm_iio_device_register(&client->dev, indio_dev=
-);
-> > > > > >
-> > > > > >  error_disable_reg:
-> > > > >
-> > > > > This entire goto block should be removed.
-> > > > > The idea of using only devm_ functions is to not have these goto =
-statements.
-> > > > >
-> > > > I thought the action added via devm_add_action (and devres_add) was=
- called only
-> > > > on driver detach, thus the error_disable_reg label would be necessa=
-ry
-> > > > to handle the
-> > >
-> > > devm_add_action() yes
-> > > this is devm_add_action_or_reset() which looks like this:
-> > >
-> > > static inline int devm_add_action_or_reset(struct device *dev,
-> > >                        void (*action)(void *), void *data)
-> > > {
-> > >     int ret;
-> > >
-> > >     ret =3D devm_add_action(dev, action, data);
-> > >     if (ret)
-> > >         action(data);
-> > >
-> > >     return ret;
-> > > }
-> > >
-> > > it can be found in "include/linux/device.h"
-> > >
-> > > > possible error on regulator_get_voltage. Could you please clarify f=
-or
-> > > > me when does
-> > > > a driver detach happen?
-> > >
-> > > a driver detach happens when:
-> > > * the kmod is unloaded (assuming the driver is running as a kmod)
-> > > * manually unbinding the driver from sysfs ;
-> > >    a quick article about this [it's for USB, but other interfaces use
-> > >    the same mechanism]:
-> > >    https://lwn.net/Articles/143397/
-> > >    there should be something under /sys/bus/spi/drivers/xxxx/unbind
-> > > * when the system powers down (reboots)
-> > > * maybe there is some other new method to do this [that I don't know =
-about]
-> > >
-> > Thank you so much.
-> >
-> > So, should this goto error_disable_reg be replaced by
-> > "regulator_disable(.); return ret;"?
-> > ret =3D regulator_get_voltage(data->vref_reg);
-> >     if (ret < 0) {
-> >         dev_err(&client->dev,
-> >              "Failed to get voltage on regulator: %d\n", ret);
-> >         goto error_disable_reg;
-> >     }
->
->
-> This is sufficient:
-> [ No extra regulator_disable() is required; regulator_disable() gets
-> called via max5821_regulator_disable() on the error path ]
->
->        ret =3D devm_add_action_or_reset(&client->dev, max5821_regulator_d=
-isable,
->                                       data->vref_reg);
->        if (ret) {
->                dev_err(&client->dev,
->                        "Failed to add action to managed regulator: %d\n",=
- ret);
->                return ret;
->        }
->
-> >
-> > > >
-> > > > Thanks for your reply,
-> > > > Th=C3=A9o
-> > > >
-> > > > > >         regulator_disable(data->vref_reg);
-> > > > > > @@ -356,17 +370,6 @@ static int max5821_probe(struct i2c_client=
- *client,
-> > > > > >         return ret;
-> > > > > >  }
-> > > > > >
-> > > > > > -static int max5821_remove(struct i2c_client *client)
-> > > > > > -{
-> > > > > > -       struct iio_dev *indio_dev =3D i2c_get_clientdata(client=
-);
-> > > > > > -       struct max5821_data *data =3D iio_priv(indio_dev);
-> > > > > > -
-> > > > > > -       iio_device_unregister(indio_dev);
-> > > > > > -       regulator_disable(data->vref_reg);
-> > > > > > -
-> > > > > > -       return 0;
-> > > > > > -}
-> > > > > > -
-> > > > > >  static const struct i2c_device_id max5821_id[] =3D {
-> > > > > >         { "max5821", ID_MAX5821 },
-> > > > > >         { }
-> > > > > > @@ -386,7 +389,6 @@ static struct i2c_driver max5821_driver =3D=
- {
-> > > > > >                 .pm     =3D &max5821_pm_ops,
-> > > > > >         },
-> > > > > >         .probe          =3D max5821_probe,
-> > > > > > -       .remove         =3D max5821_remove,
-> > > > > >         .id_table       =3D max5821_id,
-> > > > > >  };
-> > > > > >  module_i2c_driver(max5821_driver);
-> > > > > > --
-> > > > > > 2.20.1
-> > > > > >
+Exactly.
+
+And this was working fine with rc1.
+
+I do have patches (as you know) for improving dma for the hsu. But, for 
+the console afaik dma is disabled.
+
