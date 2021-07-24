@@ -2,198 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9693D461A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1E03D461C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 09:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234309AbhGXHGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 03:06:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49522 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234216AbhGXHGp (ORCPT
+        id S234531AbhGXHG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 03:06:58 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:36480 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234403AbhGXHG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 03:06:45 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16O7X3O7012869;
-        Sat, 24 Jul 2021 03:46:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : cc :
- subject : in-reply-to : in-reply-to : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=hWzL6bot/NgW+BrZOZpiIOorIhXeuebPKvrSguhEmU0=;
- b=FqSdlA0AaNdiG2IKejJXJXnPcH4eKd1Pw+y+/Z5e/vrA8RYEcQ4VdhrWQPskGukIWUzR
- i8O3OyTw1UnQoqEOCxURhnG/8wImOSLTMoeqJTH97L8cuoqP2V2K98eLi7RbrDBlLrCP
- rx+w6jMV4dfL2ngQU78FCrLmrdUZMiFohM4VTar2A6cBlkx/UBEMYsmZdC92j1reC5zd
- rcPmgJdNntMBus5AIh8ZhLleFK7W+mnyCXifEDf8VTMe5lob19INZ5Yd+K67csPMSi3F
- /4No8YGpUX2PjAfQJ5NMmomCII2CdGgjjC8HgW1DvNVcKo+Gb9LXAo9dcbqg+4lhV/Z0 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a0egwga1d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 24 Jul 2021 03:46:52 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16O7Xmq0014680;
-        Sat, 24 Jul 2021 03:46:52 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a0egwga10-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 24 Jul 2021 03:46:52 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16O7iaon020911;
-        Sat, 24 Jul 2021 07:46:50 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 3a0ag8r1nn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 24 Jul 2021 07:46:50 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16O7klCl24969544
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 24 Jul 2021 07:46:47 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75DDBA4054;
-        Sat, 24 Jul 2021 07:46:47 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 51951A4060;
-        Sat, 24 Jul 2021 07:46:47 +0000 (GMT)
-Received: from localhost (unknown [9.171.95.165])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 24 Jul 2021 07:46:47 +0000 (GMT)
-From:   Alexander Egorenkov <egorenar@linux.ibm.com>
-To:     linux@rasmusvillemoes.dk
-Cc:     akpm@linux-foundation.org, bp@alien8.de, corbet@lwn.net,
-        gregkh@linuxfoundation.org, jeyu@kernel.org,
-        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
-        ndesaulniers@google.com, torvalds@linux-foundation.org
-Subject: Re: [PATCH v3 1/2] init/initramfs.c: do unpacking asynchronously
-In-Reply-To: <20210313212528.2956377-2-linux@rasmusvillemoes.dk>
-In-Reply-To: 
-Date:   Sat, 24 Jul 2021 09:46:46 +0200
-Message-ID: <87sg04p315.fsf@oc8242746057.ibm.com>
+        Sat, 24 Jul 2021 03:06:57 -0400
+Received: by mail-io1-f70.google.com with SMTP id k20-20020a6b6f140000b029053817be16cdso3568296ioc.3
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 00:47:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=4XG3PYSleC8EliCRO9+aVPrJ5jiqCH3K7OK1Vx67Dpw=;
+        b=IRF54CuYzf3ApMYYPt97g0ej0t8X6dliX5wvynKvN/EpsuKx4dWd1Ab1+CPWl5RJ+A
+         SU7BUZG3U52x0upPXAJl848LHKqOwZLAqNJiBB90zl5MTPYb46QMzWLU8+0ew3m3bgdJ
+         YbCKcvw+u93F7jxNysFQF3qrcI5d9eC8uvXJ6HGLQtt4JAsWJiYTRMHYsFYHLPcsWMvQ
+         G/5jMymrtN5qtNnBNNwP1GDj5sWB6V1MYp6pR5KI7mz12UBeYugqI9Xyc7TpwbNEYC80
+         yUxGybZSWj0ZnguSEXRdiJXetL5fD+1gYD3bh5z54/semjc6dP7qbXe8lvPl7IPbieci
+         TcLw==
+X-Gm-Message-State: AOAM533Bo5n/k+L0Wi6y73uF7n4dOqQJHMJwpluCGjDBUKM+fuBaotMJ
+        UmGmFh2tBPvltI8Tqr1ONYoDWbruivNKpa9XP3Juy8Cqdbie
+X-Google-Smtp-Source: ABdhPJwt5vSsnNiOYajOEOhq70lFbdplj8PE/SqfAm3S8a9QfkRD3CwKgLlrlXRWjgy2JwqKF4cOzbO+9lP7NwH2HMgQx1tgBGcM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: s0dcDnq4s_Hpw55oA75qx1gDsbUkFrux
-X-Proofpoint-ORIG-GUID: 2XCI33HcQC5VpPNOsN2bj38KSDHKoVbu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-24_02:2021-07-23,2021-07-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 clxscore=1011 bulkscore=0 phishscore=0 spamscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2107240047
+X-Received: by 2002:a05:6602:2f09:: with SMTP id q9mr6846237iow.196.1627112849887;
+ Sat, 24 Jul 2021 00:47:29 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 00:47:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006d5cab05c7d9bb87@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in bpf_get_current_cgroup_id
+From:   syzbot <syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-since e7cb072eb988 ("init/initramfs.c: do unpacking asynchronously"), we
-started seeing the following problem on s390 arch regularly:
+syzbot found the following issue on:
 
-[    5.039734] wait_for_initramfs() called before rootfs_initcalls
-[    5.042003] cryptomgr_test (155) used greatest stack depth: 11952 bytes =
-left
-[    5.214115] raid6: vx128x8  gen() 21961 MB/s
-[    5.384073] raid6: vx128x8  xor() 14882 MB/s
-[    5.384090] raid6: using algorithm vx128x8 gen() 21961 MB/s
-[    5.384094] raid6: .... xor() 14882 MB/s, rmw enabled
-[    5.384098] raid6: using s390xc recovery algorithm
-[    5.386338] iommu: Default domain type: Translated=C2=B7
-[    5.387724] SCSI subsystem initialized
-[    5.393858] cio: Partition identifier 4.9
-[    6.361599] VFS: Disk quotas dquot_6.6.0
-[    6.361852] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 byte=
-s)
-[    6.374790] NET: Registered PF_INET protocol family
-[    6.375187] IP idents hash table entries: 262144 (order: 9, 2097152 byte=
-s, linear)
-[    6.381935] tcp_listen_portaddr_hash hash table entries: 8192 (order: 7,=
- 720896 bytes, linear)
-[    6.382234] TCP established hash table entries: 131072 (order: 8, 104857=
-6 bytes, linear)
-[    6.383133] TCP bind hash table entries: 65536 (order: 10, 5242880 bytes=
-, vmalloc)
-[    6.385373] TCP: Hash tables configured (established 131072 bind 65536)
-[    6.394770] MPTCP token hash table entries: 16384 (order: 8, 1572864 byt=
-es, linear)
-[    6.395586] UDP hash table entries: 8192 (order: 8, 1572864 bytes, linea=
-r)
-[    6.396531] UDP-Lite hash table entries: 8192 (order: 8, 1572864 bytes, =
-linear)
-[    6.405284] NET: Registered PF_UNIX/PF_LOCAL protocol family
-[    6.405821] Trying to unpack rootfs image as initramfs...
-[    6.407794] alg: No test for crc32be (crc32be-vx)
-[    6.436676] Initialise system trusted keyrings
-[    6.436980] workingset: timestamp_bits=3D45 max_order=3D22 bucket_order=
-=3D0
-[    6.500365] zbud: loaded
-[    6.516137] fuse: init (API version 7.34)
-[    6.517210] SGI XFS with ACLs, security attributes, realtime, quota, fat=
-al assert, debug enabled
-[    6.544339] xor: automatically using best checksumming function   xc=C2=
-=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7=C2=B7
-[    6.544363] Key type asymmetric registered
-[    6.544389] Asymmetric key parser 'x509' registered
-[    6.544448] Block layer SCSI generic (bsg) driver version 0.4 loaded (ma=
-jor 252)
-[    6.545893] io scheduler mq-deadline registered
-[    6.545927] io scheduler kyber registered
-[    6.545933] blkcg_policy_register: BLKCG_MAX_POLS too small
-[    6.599433] rootfs image is not initramfs (broken padding); looks like a=
-n initrd
-[    6.669373] Freeing initrd memory: 24828K
+HEAD commit:    d6371c76e20d bpf: Fix OOB read when printing XDP link fdinfo
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=146597f2300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6da37c7627210105
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ee5c2c09c284495371f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=126b7c40300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1616cf6a300000
 
-It is very hard to reproduce, i haven't managed to do it yet and working
-on it, but it occurs regularly, nearly every day once but only on a particu=
-lar
-test machine with our nightly s390 CI test runs.
+The issue was bisected to:
 
-Although the initramfs corruption is hard to reproduce,
-the message 'wait_for_initramfs() called before rootfs_initcalls'
-appears regularly on each boot at least since 2021-06-24 which we just
-noticed a couple of days ago.
+commit 79a7f8bdb159d9914b58740f3d31d602a6e4aca8
+Author: Alexei Starovoitov <ast@kernel.org>
+Date:   Fri May 14 00:36:03 2021 +0000
 
-Appending 'initramfs_async=3D0' to the kernel command-line doesn't seem to
-help with the 'wait_for_initramfs' message and i can still see it.
+    bpf: Introduce bpf_sys_bpf() helper and program type.
 
-[    0.890962] wait_for_initramfs() called before rootfs_initcalls
-[    1.060846] raid6: vx128x8  gen() 22394 MB/s
-[    1.230783] raid6: vx128x8  xor() 14998 MB/s
-[    1.230795] raid6: using algorithm vx128x8 gen() 22394 MB/s
-[    1.230797] raid6: .... xor() 14998 MB/s, rmw enabled
-[    1.230799] raid6: using s390xc recovery algorithm
-[    1.231122] iommu: Default domain type: Translated
-[    1.231331] SCSI subsystem initialized
-[    1.231804] cio: Partition identifier 3.4
-[    1.355331] PCI host bridge to bus 0000:00
-[    1.355340] pci_bus 0000:00: root bus resource [bus 00]
-[    1.355363] PCI host bridge to bus 0001:00
-[    1.355364] pci_bus 0001:00: root bus resource [bus 00]
-[    1.355490] pci 0000:00:00.0: [8086:0a54] type 00 class 0x010802
-[    1.355541] pci 0000:00:00.0: reg 0x10: [mem 0xffffc00000000000-0xffffc0=
-0000003fff 64bit]
-[    1.355611] pci 0000:00:00.0: reg 0x30: [mem 0x00000000-0x0000ffff pref]
-[    1.355625] pci 0000:00:00.0: enabling Extended Tags
-[    1.355921] pci 0000:00:00.0: Adding to iommu group 0
-[    1.632566] VFS: Disk quotas dquot_6.6.0
-[    1.632624] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 byte=
-s)
-[    1.634327] NET: Registered PF_INET protocol family
-[    1.634395] IP idents hash table entries: 65536 (order: 7, 524288 bytes,=
- linear)
-[    1.635112] tcp_listen_portaddr_hash hash table entries: 2048 (order: 3,=
- 32768 bytes, linear)
-[    1.635129] TCP established hash table entries: 32768 (order: 6, 262144 =
-bytes, linear)
-[    1.635296] TCP bind hash table entries: 32768 (order: 7, 524288 bytes, =
-linear)
-[    1.635498] TCP: Hash tables configured (established 32768 bind 32768)
-[    1.635834] MPTCP token hash table entries: 4096 (order: 4, 98304 bytes,=
- linear)
-[    1.635852] UDP hash table entries: 2048 (order: 4, 65536 bytes, linear)
-[    1.635882] UDP-Lite hash table entries: 2048 (order: 4, 65536 bytes, li=
-near)
-[    1.636249] NET: Registered PF_UNIX/PF_LOCAL protocol family
-[    1.636419] Trying to unpack rootfs image as initramfs...
-[    1.676907] Freeing initrd memory: 26056K
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14a73112300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16a73112300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a73112300000
 
-Regards
-Alex
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7ee5c2c09c284495371f@syzkaller.appspotmail.com
+Fixes: 79a7f8bdb159 ("bpf: Introduce bpf_sys_bpf() helper and program type.")
+
+=============================
+WARNING: suspicious RCU usage
+5.14.0-rc1-syzkaller #0 Not tainted
+-----------------------------
+include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+no locks held by syz-executor499/8468.
+
+stack backtrace:
+CPU: 1 PID: 8468 Comm: syz-executor499 Not tainted 5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ task_css_set include/linux/cgroup.h:481 [inline]
+ task_dfl_cgroup include/linux/cgroup.h:550 [inline]
+ ____bpf_get_current_cgroup_id kernel/bpf/helpers.c:356 [inline]
+ bpf_get_current_cgroup_id+0x1ce/0x210 kernel/bpf/helpers.c:354
+ bpf_prog_08c4887f705f20b8+0x10/0x824
+ bpf_dispatcher_nop_func include/linux/bpf.h:687 [inline]
+ bpf_prog_run_pin_on_cpu include/linux/filter.h:624 [inline]
+ bpf_prog_test_run_syscall+0x2cf/0x5f0 net/bpf/test_run.c:954
+ bpf_prog_test_run kernel/bpf/syscall.c:3207 [inline]
+ __sys_bpf+0x1993/0x53b0 kernel/bpf/syscall.c:4487
+ __do_sys_bpf kernel/bpf/syscall.c:4573 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4571 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4571
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x44d6a9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 01 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f32119dd318 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004cb3e8 RCX: 000000000044d6a9
+RDX: 0000000000000048 RSI: 0000000020000500 RDI: 000000000000000a
+RBP: 00000000004cb3e0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 656c6c616b7a7973
+R13: 00007ffeb7672e8f R14: 00007f32119dd400 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
