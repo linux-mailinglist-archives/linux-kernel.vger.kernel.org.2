@@ -2,142 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A0E3D4752
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 13:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C3A3D4754
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 13:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233896AbhGXKf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 06:35:28 -0400
-Received: from mout.gmx.net ([212.227.15.15]:59349 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232258AbhGXKfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 06:35:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627125335;
-        bh=EbwSnGgErGioLtZ9SjG8svALcdfgzH3xpEgvBjbS5U4=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=NW4WWrySmiU9reoo2b5sQCrdB5nwVs3zpBCe/qsUaK3AWxAJz1rAxYurXRIC3X10J
-         n2w0USAXFhr3W6/yl8vHNJmEOBksUKyIUu2v4OgB//w4YOWveyhw9PTU9dJKiKid1M
-         sxW5dG6Pklh2dI5LQKRwH1YMCO5h7PklHsRgAas0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from titan ([83.52.228.41]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MqJqD-1lJq7g0veV-00nQM3; Sat, 24
- Jul 2021 13:15:35 +0200
-Date:   Sat, 24 Jul 2021 13:15:32 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Phil Reid <preid@electromag.com.au>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging/fbtft: Remove all strcpy() uses
-Message-ID: <20210724111532.GB4709@titan>
-References: <20210718133920.15825-1-len.baker@gmx.com>
- <CAHp75VeEA0=KFsfdjCnBm-b9+F+NnFWJ38nkh+qtb85XdXVWog@mail.gmail.com>
- <CAMuHMdXnhzumSrr=MAkv5nwY2o8xCa4s5zKa9meJTuo0r9yABw@mail.gmail.com>
+        id S234064AbhGXKfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 06:35:44 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:53847 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232258AbhGXKfn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 06:35:43 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6770B5C00FB;
+        Sat, 24 Jul 2021 07:16:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sat, 24 Jul 2021 07:16:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=PFNFdy
+        fdU5X2vymOxPQd7rD3K0B37oj83GtG5AXVzFQ=; b=QVTxQDAHR2/76x7TARwXn0
+        ZK6CfO99KgcKHSxGSfAYqHyfyfIJ3np7lxJY+G6pbjix2KoLP82XYv8pZHeJa++3
+        lHdnV0zpD2/3C0QaiUMBZcwXH2sIbJEsheRO2A1SvLjhHp0RAiDs1Eu0AvAeKxkN
+        0IrX479HSRSzz4izAtJIZjZMMtlW9bUH5yluyvZTWh3FxXlI3SJkP8CZzkOkrXyv
+        czqIkPK0Su4k/yhqqjFpJ6BsEIHRPHhtPgn9b1j1DoKKP0XrLsPr4r1G3DMMzazf
+        QMYsoKMND0PXUFmKhDf2z50d/s7HpbhJbkAj5aNGvqhTpjSaCrRGAjyX/mVDR3Aw
+        ==
+X-ME-Sender: <xms:ffb7YGUysChcFQqBqqFJ1i_PJMPDdNM_IT8ZIxm5kVBPISu4tqDRYQ>
+    <xme:ffb7YClPXvNMjWBYW9xI5VdL2pFi4YrVg9CuAvfVss5xlrkupRZM4n_GocsjUe8l3
+    qzpz5Fv7BA43SeoiMs>
+X-ME-Received: <xmr:ffb7YKbictnQZrNb9I1nVItzL932DKxmw3-xHLvM23-X-wJtrRtDPMj2fFf3bs2gQ8hybA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgedtgdefjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffuvffkjghfofggtgesthdtredtredtvdenucfhrhhomhepnfhukhgvucfl
+    ohhnvghsuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgf
+    effedufffhgfeuheegffffgeegveeifeeutefhieejffetudfgueevteehtdetnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvsehljh
+    honhgvshdruggvvh
+X-ME-Proxy: <xmx:ffb7YNUQd_dMal7IQNa_4pOV8CrtTAxi0m11kyeWCIgTqP_SnWk5nQ>
+    <xmx:ffb7YAlNcc3sw3obDyhZCyw8yj01C3gCvKRJayfBgXoRaMZK8X2zhA>
+    <xmx:ffb7YCd_ppfjr5rdizvXxV0gNe8PeolHEDVIvb1hhugGnJndVI_ibg>
+    <xmx:fvb7YBCxdrPKy5HRSSopHz9UdPbzTb94FxAPHvoLSNE6diTDxR3lxQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 24 Jul 2021 07:16:06 -0400 (EDT)
+Date:   Sat, 24 Jul 2021 23:15:50 +1200
+From:   Luke Jones <luke@ljones.dev>
+Subject: Re: [PATCH 3/4] asus-wmi: Add egpu enable method
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     pobrn@protonmail.com, mgross@linux.intel.com,
+        corentin.chary@gmail.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, acpi4asus-user@lists.sourceforge.net
+Message-Id: <EYXQWQ.O2RLFGQXKOHO2@ljones.dev>
+In-Reply-To: <adb670de-e69a-6944-3d37-d2c0ef36d378@redhat.com>
+References: <20210717081323.7925-1-luke@ljones.dev>
+        <20210717081323.7925-3-luke@ljones.dev> <UXQDWQ.MHGH7K6W57R5@ljones.dev>
+        <65RDWQ.DNBXEUQTBV352@ljones.dev>
+        <adb670de-e69a-6944-3d37-d2c0ef36d378@redhat.com>
+X-Mailer: geary/40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXnhzumSrr=MAkv5nwY2o8xCa4s5zKa9meJTuo0r9yABw@mail.gmail.com>
-X-Provags-ID: V03:K1:LGbsxKMon4WHzLQ8n04LauX8j5z6/6dVSMiYxp1Prrj9P7mNSD7
- VvrTqTmzuJO+Bby1BsSsXEiUkIiMS2ODmTipcQb5SvDMgZ1WEiYZz0DkkSyHhLcmwNwd+S9
- ybp/bPhfpueGHvuTB+ab67+ucPZk6a8YBLrFJNWZUWrkn9ewhRyJzmU5+RGxR+Vm3VOVrZA
- Ofe1z9Jp8Frluwpu+X2XQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lXghBVD0FTw=:li5TEGASHZpBFfCNCMHSlm
- O3+bHd/z8R7A6x0kYE9MaMtMv/Hmtv5MgJyGngjyRFspkJJ9i8rzNyGHyq+yap2PMAjEqxL+N
- RnqCtQKzCr5GPXUDG3/edXtjPhokkxUgMgjvATOpmTdKS2urDAmbJN2etpP4C5mcwuDE/aCzi
- SNwWpPFkYugT/FAUrNpU06D7yazycNeYXLQDWijjLcHJ5YtLuyAigrCRk7knv6bpJ2+DhqjJq
- B+vkqDhpCgngmvsNM55n+9PNo3DfDZZ/Rwkwhh6BS/9Tmu38IKvh7A1biRFVZ/IQjMCEcyTfJ
- ecBzpFdXIyuUIDhIRdriXpmbYkHF2gsVh2g++hEzWcvzFVpMgn+FDJkAYC88TN9RpwD19XHtS
- pdE/BinX2+yte69evqy871zw+p3zrDxMpJbs6jWipxlGzRLjkDXDeM2GkAy7nhy5UnnfsBzJp
- dFd569WF3g8sTQaoyQkyp5BkZxu8RCvKhhfFll5cwnSt4ku2YwZ+xG0qDE1dMybiG1hhVC6gq
- 9kxmoVPEHY3tlr0MRQ7A6+aPCOzlndZFkjnHyoz1zTUnjVzWE8NwlVJfqyq6EU9tQNf1e5ZxQ
- aiDJVN3QUy09m2Wexd4b/s3pu6Otb3bymZ6nEWMvUAoqJretRhxFFmBp6D9EBdKxPPyvEc/eA
- vxbEjKo9e10EzFPlOQyddkFfJRUZDA08JtGos3UbFkSPYj/zIKV4dyTYCkwYEstt8wbL54Tpp
- VEn23pWF0xyYnfR6rlUSdRibPCw3KEFaLueKVYFQ0LsjOO92lVXHB66IGyFJRh8yH5fTw3HgQ
- oQI2qnCe2V1ho+23xChR5UL7T3bGxJxU2Pkrmm44x2iyoM1H3hlxzPfEbNJZAjhYJfY7oMXOf
- 1f8RYE27l5IYbUBlSVjHPXACVY1V2Egq2ZuHMfjEVMG+t9TLzmGKqcuMu6WOXzEeOzndhlmPv
- uKpTokgohCMEviVcbP75bnPHlu4Cu4BmP6ld0h5dKSWNPcAfmZ1KRMOkqm+L5WvyjSzf1ZU1p
- W5Gh5AsAOhwZY/8S6XNvap77VLaS2OkTtSKvk+abRN5Ev2X0sre0Cm+DGwSLGOD8srRFN5JVt
- KGCSqVwTh+ghso4Q+7F9fxlNabiB4laV7nj
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 09:53:29AM +0200, Geert Uytterhoeven wrote:
-> On Sun, Jul 18, 2021 at 9:43 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Sun, Jul 18, 2021 at 4:43 PM Len Baker <len.baker@gmx.com> wrote:
-> > > strcpy() performs no bounds checking on the destination buffer. This
-> > > could result in linear overflows beyond the end of the buffer, leadi=
-ng
-> > > to all kinds of misbehaviors. The safe replacement is strscpy() but =
-in
-> > > this case it is simpler to add NULL to the first position since we w=
-ant
->
-> "NULL" is a pointer value, "NUL" is the character with value zero.
+Oh I see, thanks. I was trying to do the "-v3" on send-email part.
 
-Ok, understood. Thanks.
+On Sat, Jul 17 2021 at 17:57:54 +0200, Hans de Goede 
+<hdegoede@redhat.com> wrote:
+> Hi Luke,
+> 
+> On 7/17/21 10:19 AM, Luke Jones wrote:
+>>  Damn. I thought `-v2` on `git send-email` would bump patch version 
+>> too. What is the correct way to do that for a full patch sequence?
+> 
+> You need to split the sending of patches into 2 steps, which 
+> generally is a good
+> idea anyways, since that will also allow you to easily add a 
+> cover-letter to the
+> series:
+> 
+> Lets say you are ready to send v3 and you have the 3 patches as the 
+> last 3
+> commits in your git tree's current HEAD, then you would do:
+> 
+> git format-patch --cover-letter -v3 HEAD~3
+> $EDITOR v3-0000*.patch
+> # Edit the cover letter, say something like:
+> # Hi All here is v3 of my ... series, which does foobar
+> # new in v3 is ...
+> # And don't forget to set the Subject
+> git send-email v3-00*.patch
+> 
+> And you're done. I hope this helps.
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> 
+> 
+> 
+>> 
+>>  On Sat, Jul 17 2021 at 20:15:30 +1200, Luke Jones <luke@ljones.dev> 
+>> wrote:
+>>>  Apologies, I forgot that the patches contain sequence. There is 
+>>> actually no 4th patch (the patch itself was already upstreamed).
+>>> 
+>>>  Sincere regards,
+>>>  Luke.
+>>> 
+>>>  On Sat, Jul 17 2021 at 20:13:23 +1200, Luke D. Jones 
+>>> <luke@ljones.dev> wrote:
+>>>>  The X13 Flow laptops can utilise an external GPU. This requires
+>>>>  toggling an ACPI method which will first disable the internal
+>>>>  dGPU, and then enable the eGPU.
+>>>> 
+>>>>  Signed-off-by: Luke D. Jones <luke@ljones.dev>
+>>>>  ---
+>>>>   drivers/platform/x86/asus-wmi.c            | 91 
+>>>> ++++++++++++++++++++++
+>>>>   include/linux/platform_data/x86/asus-wmi.h |  3 +
+>>>>   2 files changed, 94 insertions(+)
+>>>> 
+>>>>  diff --git a/drivers/platform/x86/asus-wmi.c 
+>>>> b/drivers/platform/x86/asus-wmi.c
+>>>>  index 02762a60d27a..ee5d8656641e 100644
+>>>>  --- a/drivers/platform/x86/asus-wmi.c
+>>>>  +++ b/drivers/platform/x86/asus-wmi.c
+>>>>  @@ -210,6 +210,9 @@ struct asus_wmi {
+>>>>       u8 fan_boost_mode_mask;
+>>>>       u8 fan_boost_mode;
+>>>> 
+>>>>  +    bool egpu_enable_available; // 0 = enable
+>>>>  +    bool egpu_enable;
+>>>>  +
+>>>>       bool dgpu_disable_available;
+>>>>       bool dgpu_disable;
+>>>> 
+>>>>  @@ -430,6 +433,86 @@ static void 
+>>>> lid_flip_tablet_mode_get_state(struct asus_wmi *asus)
+>>>>       }
+>>>>   }
+>>>> 
+>>>>  +/* eGPU 
+>>>> ********************************************************************/
+>>>>  +static int egpu_enable_check_present(struct asus_wmi *asus)
+>>>>  +{
+>>>>  +    u32 result;
+>>>>  +    int err;
+>>>>  +
+>>>>  +    asus->egpu_enable_available = false;
+>>>>  +
+>>>>  +    err = asus_wmi_get_devstate(asus, ASUS_WMI_DEVID_EGPU, 
+>>>> &result);
+>>>>  +    if (err) {
+>>>>  +        if (err == -ENODEV)
+>>>>  +            return 0;
+>>>>  +        return err;
+>>>>  +    }
+>>>>  +
+>>>>  +    if (result & ASUS_WMI_DSTS_PRESENCE_BIT) {
+>>>>  +        asus->egpu_enable_available = true;
+>>>>  +        asus->egpu_enable = result & ASUS_WMI_DSTS_STATUS_BIT;
+>>>>  +    }
+>>>>  +
+>>>>  +    return 0;
+>>>>  +}
+>>>>  +
+>>>>  +static int egpu_enable_write(struct asus_wmi *asus)
+>>>>  +{
+>>>>  +    int err;
+>>>>  +    u8 value;
+>>>>  +    u32 retval;
+>>>>  +
+>>>>  +    value = asus->egpu_enable;
+>>>>  +
+>>>>  +    err = asus_wmi_set_devstate(ASUS_WMI_DEVID_EGPU, value, 
+>>>> &retval);
+>>>>  +
+>>>>  +    if (err) {
+>>>>  +        pr_warn("Failed to set egpu disable: %d\n", err);
+>>>>  +        return err;
+>>>>  +    }
+>>>>  +
+>>>>  +    if (retval > 1 || retval < 0) {
+>>>>  +        pr_warn("Failed to set egpu disable (retval): 0x%x\n", 
+>>>> retval);
+>>>>  +        return -EIO;
+>>>>  +    }
+>>>>  +
+>>>>  +    sysfs_notify(&asus->platform_device->dev.kobj, NULL, 
+>>>> "egpu_enable");
+>>>>  +
+>>>>  +    return 0;
+>>>>  +}
+>>>>  +
+>>>>  +static ssize_t egpu_enable_show(struct device *dev,
+>>>>  +                   struct device_attribute *attr, char *buf)
+>>>>  +{
+>>>>  +    struct asus_wmi *asus = dev_get_drvdata(dev);
+>>>>  +    bool mode = asus->egpu_enable;
+>>>>  +
+>>>>  +    return sysfs_emit(buf, "%d\n", mode);
+>>>>  +}
+>>>>  +
+>>>>  +static ssize_t egpu_enable_store(struct device *dev,
+>>>>  +                    struct device_attribute *attr,
+>>>>  +                    const char *buf, size_t count)
+>>>>  +{
+>>>>  +    int result;
+>>>>  +    bool disable;
+>>>>  +    struct asus_wmi *asus = dev_get_drvdata(dev);
+>>>>  +
+>>>>  +    result = kstrtobool(buf, &disable);
+>>>>  +    if (result == -EINVAL)
+>>>>  +        return result;
+>>>>  +
+>>>>  +    asus->egpu_enable = disable;
+>>>>  +
+>>>>  +    result = egpu_enable_write(asus);
+>>>>  +    if (result != 0)
+>>>>  +        return result;
+>>>>  +
+>>>>  +    return count;
+>>>>  +}
+>>>>  +
+>>>>  +static DEVICE_ATTR_RW(egpu_enable);
+>>>>  +
+>>>>   /* dGPU 
+>>>> ********************************************************************/
+>>>>   static int dgpu_disable_check_present(struct asus_wmi *asus)
+>>>>   {
+>>>>  @@ -2502,6 +2585,7 @@ static struct attribute 
+>>>> *platform_attributes[] = {
+>>>>       &dev_attr_camera.attr,
+>>>>       &dev_attr_cardr.attr,
+>>>>       &dev_attr_touchpad.attr,
+>>>>  +    &dev_attr_egpu_enable.attr,
+>>>>       &dev_attr_dgpu_disable.attr,
+>>>>       &dev_attr_lid_resume.attr,
+>>>>       &dev_attr_als_enable.attr,
+>>>>  @@ -2529,6 +2613,8 @@ static umode_t asus_sysfs_is_visible(struct 
+>>>> kobject *kobj,
+>>>>           devid = ASUS_WMI_DEVID_LID_RESUME;
+>>>>       else if (attr == &dev_attr_als_enable.attr)
+>>>>           devid = ASUS_WMI_DEVID_ALS_ENABLE;
+>>>>  +    else if (attr == &dev_attr_egpu_enable.attr)
+>>>>  +        ok = asus->egpu_enable_available;
+>>>>       else if (attr == &dev_attr_dgpu_disable.attr)
+>>>>           ok = asus->dgpu_disable_available;
+>>>>       else if (attr == &dev_attr_fan_boost_mode.attr)
+>>>>  @@ -2792,6 +2878,10 @@ static int asus_wmi_add(struct 
+>>>> platform_device *pdev)
+>>>>       if (err)
+>>>>           goto fail_platform;
+>>>> 
+>>>>  +    err = egpu_enable_check_present(asus);
+>>>>  +    if (err)
+>>>>  +        goto fail_egpu_enable;
+>>>>  +
+>>>>       err = dgpu_disable_check_present(asus);
+>>>>       if (err)
+>>>>           goto fail_dgpu_disable;
+>>>>  @@ -2896,6 +2986,7 @@ static int asus_wmi_add(struct 
+>>>> platform_device *pdev)
+>>>>   fail_sysfs:
+>>>>   fail_throttle_thermal_policy:
+>>>>   fail_fan_boost_mode:
+>>>>  +fail_egpu_enable:
+>>>>   fail_dgpu_disable:
+>>>>   fail_platform:
+>>>>   fail_panel_od:
+>>>>  diff --git a/include/linux/platform_data/x86/asus-wmi.h 
+>>>> b/include/linux/platform_data/x86/asus-wmi.h
+>>>>  index a528f9d0e4b7..17dc5cb6f3f2 100644
+>>>>  --- a/include/linux/platform_data/x86/asus-wmi.h
+>>>>  +++ b/include/linux/platform_data/x86/asus-wmi.h
+>>>>  @@ -90,6 +90,9 @@
+>>>>   /* Keyboard dock */
+>>>>   #define ASUS_WMI_DEVID_KBD_DOCK        0x00120063
+>>>> 
+>>>>  +/* dgpu on/off */
+>>>>  +#define ASUS_WMI_DEVID_EGPU        0x00090019
+>>>>  +
+>>>>   /* dgpu on/off */
+>>>>   #define ASUS_WMI_DEVID_DGPU        0x00090020
+>>>> 
+>>>>  --
+>>>>  2.31.1
+>>>> 
+>>> 
+>> 
+>> 
+> 
 
->
-> > > to empty the string.
-> >
-> > > This is a previous step in the path to remove the strcpy() function.
-> >
-> > Any document behind this (something to read on the site(s) more or
-> > less affiliated with what is going to happen in the kernel) to read
-> > background?
-> >
-> > ...
-> >
-> > >                 case -1:
-> > >                         i++;
-> > >                         /* make debug message */
-> > > -                       strcpy(msg, "");
->
-> While this strcpy() is provably safe at compile-time, and will probably
-> be replaced by an assignment to zero by the compiler...
->
-> > > +                       msg[0] =3D 0;
-> >
-> > Strictly speaking it should be '\0'.
-> >
-> > >                         j =3D i + 1;
-> > >                         while (par->init_sequence[j] >=3D 0) {
-> > >                                 sprintf(str, "0x%02X ", par->init_se=
-quence[j]);
->
-> ... the real danger is the
->
->         strcat(msg, str);
->
-> on the next line.
-> Fortunately this whole debug printing block (including the strcpy)
-> can (and should) be rewritten to just use "%*ph".
 
-Ok, I will work on it and I will send a v2 for review. Thanks for the
-feedback.
-
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m=
-68k.org
->
-> In personal conversations with technical people, I call myself a hacker.=
- But
-> when I'm talking to journalists I just say "programmer" or something lik=
-e that.
->                                 -- Linus Torvalds
-
-Regards,
-Len
