@@ -2,86 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A0F3D4853
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523403D485F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 17:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhGXOoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 10:44:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhGXOon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 10:44:43 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C879A6056C;
-        Sat, 24 Jul 2021 15:25:10 +0000 (UTC)
-Date:   Sat, 24 Jul 2021 16:27:41 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        broonie@kernel.org, lgirdwood@gmail.com, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] iio: adc: fsl-imx25-gcq: Use the defined variable to
- clean code
-Message-ID: <20210724162741.15a8b8b6@jic23-huawei>
-In-Reply-To: <20210720125945.11548-1-tangbin@cmss.chinamobile.com>
-References: <20210720125945.11548-1-tangbin@cmss.chinamobile.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229952AbhGXO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 10:58:03 -0400
+Received: from out29-1.mail.aliyun.com ([115.124.29.1]:45713 "EHLO
+        out29-1.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhGXO6C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 10:58:02 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07438685|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_regular_dialog|0.253308-0.00639627-0.740296;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.Kq2NXC2_1627141111;
+Received: from 192.168.88.130(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Kq2NXC2_1627141111)
+          by smtp.aliyun-inc.com(10.147.40.7);
+          Sat, 24 Jul 2021 23:38:32 +0800
+Subject: Re: [PATCH] clocksource: Ingenic: Improve the code.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+References: <1627121407-131028-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <OQZQWQ.MUGEDOGBXJW12@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <ac16a2ef-2532-acb0-7599-7d6a4ac1b95f@wanyeetech.com>
+Date:   Sat, 24 Jul 2021 23:38:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <OQZQWQ.MUGEDOGBXJW12@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 20:59:45 +0800
-Tang Bin <tangbin@cmss.chinamobile.com> wrote:
+Hi Paul,
 
-> Use the defined variable "dev" to make the code cleaner.
-> 
-> Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+On 2021/7/24 下午7:54, Paul Cercueil wrote:
+> Hi Zhou,
+>
+> Thanks! I actually had a similar patch locally that I was eventually 
+> going to send.
+>
+>
+> Le sam., juil. 24 2021 at 18:10:07 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> Use "FIELD_GET()" and "FIELD_PREP()" to simplify the code.
+>>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> ---
+>>  drivers/clocksource/ingenic-sysost.c | 11 +++++------
+>>  1 file changed, 5 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/clocksource/ingenic-sysost.c 
+>> b/drivers/clocksource/ingenic-sysost.c
+>> index a129840..1fbea59 100644
+>> --- a/drivers/clocksource/ingenic-sysost.c
+>> +++ b/drivers/clocksource/ingenic-sysost.c
+>> @@ -4,6 +4,7 @@
+>>   * Copyright (c) 2020 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>>   */
+>>
+>> +#include <linux/bitfield.h>
+>>  #include <linux/bitops.h>
+>>  #include <linux/clk.h>
+>>  #include <linux/clk-provider.h>
+>> @@ -34,8 +35,6 @@
+>>  /* bits within the OSTCCR register */
+>>  #define OSTCCR_PRESCALE1_MASK    0x3
+>>  #define OSTCCR_PRESCALE2_MASK    0xc
+>> -#define OSTCCR_PRESCALE1_LSB    0
+>> -#define OSTCCR_PRESCALE2_LSB    2
+>>
+>>  /* bits within the OSTCR register */
+>>  #define OSTCR_OST1CLR            BIT(0)
+>> @@ -98,7 +97,7 @@ static unsigned long 
+>> ingenic_ost_percpu_timer_recalc_rate(struct clk_hw *hw,
+>>
+>>      prescale = readl(ost_clk->ost->base + info->ostccr_reg);
+>>
+>> -    prescale = (prescale & OSTCCR_PRESCALE1_MASK) >> 
+>> OSTCCR_PRESCALE1_LSB;
+>> +    prescale = FIELD_GET(OSTCCR_PRESCALE1_MASK, prescale);
+>>
+>>      return parent_rate >> (prescale * 2);
+>>  }
+>> @@ -112,7 +111,7 @@ static unsigned long 
+>> ingenic_ost_global_timer_recalc_rate(struct clk_hw *hw,
+>>
+>>      prescale = readl(ost_clk->ost->base + info->ostccr_reg);
+>>
+>> -    prescale = (prescale & OSTCCR_PRESCALE2_MASK) >> 
+>> OSTCCR_PRESCALE2_LSB;
+>> +    prescale = FIELD_GET(OSTCCR_PRESCALE2_MASK, prescale);
+>>
+>>      return parent_rate >> (prescale * 2);
+>>  }
+>> @@ -151,7 +150,7 @@ static int 
+>> ingenic_ost_percpu_timer_set_rate(struct clk_hw *hw, unsigned long re
+>>      int val;
+>>
+>>      val = readl(ost_clk->ost->base + info->ostccr_reg);
+>> -    val = (val & ~OSTCCR_PRESCALE1_MASK) | (prescale << 
+>> OSTCCR_PRESCALE1_LSB);
+>> +    val = (val & ~OSTCCR_PRESCALE1_MASK) | 
+>> FIELD_PREP(OSTCCR_PRESCALE1_MASK, prescale);
+>
+> Just one nitpick, I'd prefer this:
+>
+> val ~= &OSTCCR_PRESCALE1_MASK;
+> val |= FIELD_PREP(OSTCCR_PRESCALE1_MASK, prescale);
 
-Applied.
 
-Thanks,
+Sure, I will change it in the next version.
 
-Jonathan
 
-> ---
->  drivers/iio/adc/fsl-imx25-gcq.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
-> index d28976f21..01fe5b137 100644
-> --- a/drivers/iio/adc/fsl-imx25-gcq.c
-> +++ b/drivers/iio/adc/fsl-imx25-gcq.c
-> @@ -192,11 +192,11 @@ static int mx25_gcq_setup_cfgs(struct platform_device *pdev,
->  	 */
->  	priv->vref[MX25_ADC_REFP_INT] = NULL;
->  	priv->vref[MX25_ADC_REFP_EXT] =
-> -		devm_regulator_get_optional(&pdev->dev, "vref-ext");
-> +		devm_regulator_get_optional(dev, "vref-ext");
->  	priv->vref[MX25_ADC_REFP_XP] =
-> -		devm_regulator_get_optional(&pdev->dev, "vref-xp");
-> +		devm_regulator_get_optional(dev, "vref-xp");
->  	priv->vref[MX25_ADC_REFP_YP] =
-> -		devm_regulator_get_optional(&pdev->dev, "vref-yp");
-> +		devm_regulator_get_optional(dev, "vref-yp");
->  
->  	for_each_child_of_node(np, child) {
->  		u32 reg;
-> @@ -298,7 +298,7 @@ static int mx25_gcq_probe(struct platform_device *pdev)
->  	int ret;
->  	int i;
->  
-> -	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*priv));
-> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*priv));
->  	if (!indio_dev)
->  		return -ENOMEM;
->  
+>
+>>      writel(val, ost_clk->ost->base + info->ostccr_reg);
+>>
+>>      return 0;
+>> @@ -166,7 +165,7 @@ static int 
+>> ingenic_ost_global_timer_set_rate(struct clk_hw *hw, unsigned long re
+>>      int val;
+>>
+>>      val = readl(ost_clk->ost->base + info->ostccr_reg);
+>> -    val = (val & ~OSTCCR_PRESCALE2_MASK) | (prescale << 
+>> OSTCCR_PRESCALE2_LSB);
+>> +    val = (val & ~OSTCCR_PRESCALE2_MASK) | 
+>> FIELD_PREP(OSTCCR_PRESCALE2_MASK, prescale);
+>
+> Same here.
 
+
+Sure.
+
+
+Thanks and  best regards!
+
+
+>
+> Cheers,
+> -Paul
+>
+>>      writel(val, ost_clk->ost->base + info->ostccr_reg);
+>>
+>>      return 0;
+>> -- 
+>> 2.7.4
+>>
+>
