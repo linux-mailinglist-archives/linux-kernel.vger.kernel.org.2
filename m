@@ -2,101 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF553D47B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 14:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D4F3D47BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 15:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234325AbhGXMMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 08:12:25 -0400
-Received: from out29-173.mail.aliyun.com ([115.124.29.173]:35569 "EHLO
-        out29-173.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhGXMMX (ORCPT
+        id S234060AbhGXMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 08:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230513AbhGXMXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 08:12:23 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07889097|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_regular_dialog|0.0463647-0.00462302-0.949012;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.KpzR04K_1627131171;
-Received: from 192.168.88.130(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KpzR04K_1627131171)
-          by smtp.aliyun-inc.com(10.147.41.199);
-          Sat, 24 Jul 2021 20:52:52 +0800
-Subject: Re: [PATCH 1/2] dt-bindings: dwc2: Add bindings for new Ingenic SoCs.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
-        hminas@synopsys.com, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1627116521-124612-2-git-send-email-zhouyanjie@wanyeetech.com>
- <CLWQWQ.DBCX3I00Y95T2@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <ad64396d-d7ab-b8dd-4086-f565e91edb00@wanyeetech.com>
-Date:   Sat, 24 Jul 2021 20:52:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Sat, 24 Jul 2021 08:23:11 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3751C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 06:03:42 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id z26so5093549oih.10
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 06:03:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=YqoVNIBpesJ5c3DFGn3JxroSfQj+fkw9cGoJPsAm/yi9PMsi68yKERpBT8k1YKWIZC
+         JOfmOddU4e/KJH68yXImXtJrRXOp3BnbIW+BI4zc/wuV37KuAfGj2X3a4MbRZLMN/zgn
+         cmFejfM9WeWfqkCh18Ks6v0b2xMzPkbWSkhOwL0WQIRzjminXetmB6ztgMPYGXuC6L3T
+         zCX4w2VcrF+vxtl7TCAxCmmTK5oeCye5PD+OgPYZUhX/MsHiDFm+icKMIIUfmOpoRl+Q
+         SWScZEOtk4jHM2fY3Qk9iZ4PeXTar95JHX9Nlb93eIAFUDCfMfiTWcFPcltDXAND2XUZ
+         RSeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=E57tubdi4Kb+HoICFHf4HKGD0EgGpurJT1qek7rMtUQ=;
+        b=aaEMiEIUvfm/PW4g+EFLf4+hrO7CVaLKrlDb0jJEQtdEnsMYspqvHUTOmWMM8Jk8JY
+         x5/O9gopphAbEPEuoAoF0lRWK7FZfakxYW6S4dmDNB6LwRzLkv+uyh8BoNMjjuKPxSME
+         mw9ZAflT51DGkvAiX+IuhDdXeUp+v4tVqDm2PUBkVlX+wEYhd0xsSR2l/qECPlyjp/B5
+         XVLP3WeYkiVflIEgP64uh9tetA9PFfl8jUtkCafXLSYZCHWcnpEWOkWVR462U+nFPrQu
+         DTtZesbbRT+zMiqb8E6rFdFuK3z4s3KFC6JVC2mkH1mzegZy+BzBUPIRkeOY3bBDIlU/
+         WSUA==
+X-Gm-Message-State: AOAM533vR2lHYgG4ZcApM38OJb89beDM1VdhFqy7hDfuecf810k1tzl/
+        zZCk4NiHJHz5ShPGPwn60FBNDCjAFhX0JAT7LCg=
+X-Google-Smtp-Source: ABdhPJxkFyV4nRCboLEj/WWTbtWXK1qrBSSfyLJ9tlXcPK9uxDkzpedFG1OFoNrXetSh3AXJZ5BmpsoKkL4Qxhu8okg=
+X-Received: by 2002:aca:2418:: with SMTP id n24mr5963294oic.76.1627131822490;
+ Sat, 24 Jul 2021 06:03:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CLWQWQ.DBCX3I00Y95T2@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: by 2002:a8a:c93:0:0:0:0:0 with HTTP; Sat, 24 Jul 2021 06:03:42 -0700 (PDT)
+Reply-To: kaylamanthey022@gmail.com
+From:   Kayla Manthey <amarachimbah66@gmail.com>
+Date:   Sat, 24 Jul 2021 13:03:42 +0000
+Message-ID: <CAGofHatCd1ZHf7FBVJ8D=eaV7+0JOsJ5+-dVT1b0Awa=7u_dog@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
-
-On 2021/7/24 下午6:46, Paul Cercueil wrote:
-> Hi Zhou,
->
-> Le sam., juil. 24 2021 at 16:48:40 +0800, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> Add the dwc2 bindings for the JZ4775 SoC, the JZ4780 SoC, the X1000 SoC,
->> the X1600 SoC, the X1830 SoC, and the X2000 SoC from Ingenic.
->>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->>  Documentation/devicetree/bindings/usb/dwc2.yaml | 6 ++++++
->>  1 file changed, 6 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml 
->> b/Documentation/devicetree/bindings/usb/dwc2.yaml
->> index 10c7d9b..e779d33 100644
->> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
->> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
->> @@ -14,6 +14,12 @@ properties:
->>      oneOf:
->>        - const: brcm,bcm2835-usb
->>        - const: hisilicon,hi6220-usb
->> +      - const: ingenic,jz4775-otg
->> +      - const: ingenic,jz4780-otg
->> +      - const: ingenic,x1000-otg
->> +      - const: ingenic,x1600-otg
->> +      - const: ingenic,x1830-otg
->> +      - const: ingenic,x2000-otg
->
-> I don't know if all these IPs are the exact same, but if they are, 
-> they all should have "ingenic,jz4775-otg" as the fallback.
-
-
-I'm not too sure whether they are exactly the same, but comparing the 
-code in Ingenics SDK,
-
-the code of the USB part of jz4775, jz4780, and x1000 are the same, the 
-code of the USB part
-
-of x1600 and x1830 are the same, and the USB part code of X2000 are 
-different from all of them.
-
-
-Thanks and best regards!
-
-
->
-> -Paul
->
->>        - items:
->>            - const: rockchip,rk3066-usb
->>            - const: snps,dwc2
->> -- 
->> 2.7.4
->>
->
+Greetings, My name is Kayla Manthey, please reply me back?
