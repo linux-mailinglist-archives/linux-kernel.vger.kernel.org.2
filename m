@@ -2,157 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A9B3D4790
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 14:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F113D4795
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 14:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbhGXLep convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 24 Jul 2021 07:34:45 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:21284 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231993AbhGXLeo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 07:34:44 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-184-PbhWv6FXOqCKOHTvwAuzBw-1; Sat, 24 Jul 2021 13:15:13 +0100
-X-MC-Unique: PbhWv6FXOqCKOHTvwAuzBw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Sat, 24 Jul 2021 13:15:10 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Sat, 24 Jul 2021 13:15:10 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Luis Chamberlain' <mcgrof@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andriin@fb.com" <andriin@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "atenart@kernel.org" <atenart@kernel.org>,
-        "alobakin@pm.me" <alobakin@pm.me>,
-        "weiwan@google.com" <weiwan@google.com>,
-        "ap420073@gmail.com" <ap420073@gmail.com>
-CC:     "jeyu@kernel.org" <jeyu@kernel.org>,
-        "ngupta@vflare.org" <ngupta@vflare.org>,
-        "sergey.senozhatsky.work@gmail.com" 
-        <sergey.senozhatsky.work@gmail.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "mbenes@suse.com" <mbenes@suse.com>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jikos@kernel.org" <jikos@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] kernel/module: add documentation for try_module_get()
-Thread-Topic: [PATCH] kernel/module: add documentation for try_module_get()
-Thread-Index: AQHXf0eaxD6lEmY4bU6QViNa8xuU1KtSAuiA
-Date:   Sat, 24 Jul 2021 12:15:10 +0000
-Message-ID: <dbf27fa2f8864e1d91f7015249b1a5f1@AcuMS.aculab.com>
-References: <20210722221905.1718213-1-mcgrof@kernel.org>
-In-Reply-To: <20210722221905.1718213-1-mcgrof@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S234206AbhGXLlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 07:41:42 -0400
+Received: from mout.gmx.net ([212.227.17.22]:50909 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231993AbhGXLll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 07:41:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627129330;
+        bh=+TaYaR257ozdshQtS3WXdm4kpGQ/mYuT4adntj9dZDY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=bT9i9lP/InlqryozYGyHe4lmQHhXjUlvWRRMaUpGg4OCcUA/vFIiuNGdBq51WhQ5Z
+         1JgT4+bA4f5okfTR34YelgzLESEyeqcKiJEVXF61uIC09ndFU3edDy/JDtDHoHMbu+
+         QgCRddmwVNnoLrSS41sQECl2+BYGwJnNBv9CswlM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1M6DWi-1m0h5e0o1I-006gAx; Sat, 24 Jul 2021 14:22:10 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Kees Cook <keescook@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Len Baker <len.baker@gmx.com>, Adam Sampson <ats@offog.org>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2] drivers/bluetooth: Remove all strcpy() uses
+Date:   Sat, 24 Jul 2021 14:21:52 +0200
+Message-Id: <20210724122152.7133-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Hm/ltCsIDwdfostYMasJW+pVyd6MwCTeYo7M76GOcqZWmlJx65k
+ iJrCA36FnpXehauOo6MZUu593MJwh0Mc+gnHGGgOswqVsDcF1jFwH8UCeTM+kR6Q8JL4Agt
+ JPULsIfNDK5PyjfE+HcYLsGffN5NLI+6Au2eqW5Rl8i5h/7Bc1XyEUslK2jbBXGEHGyB4Ub
+ YPKJDZoS5Iv7t8RboZ0+w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:u08/bVCs2Ew=:V8u3M2AOPSIWZn0otgm7Tz
+ iKQMhvkF5FdURooAExnnfd4YL2eeocfZckFgPSmx79pjr9yqK0FWOPxP6JNYZpD7hFuArBAoU
+ GJ+tDAaPhGCRIEvBzTz5UlKILfKsJ5DSnjU19jcHPv0wrarpexPZTggx/cwrTqDCohSNRCPIE
+ 2csIoYpnPftArqUfK7CuTpMIy+w4MY0fIFNer2c58dUQweesjwzYULqWnluQGg4UbvUPXxbNd
+ JrswwG8n6BAZNm81+AmG9s2uRDnMTzaF8/XGIYWJiAwA1aKFN4F7E3QP8BQIvMPFs1pWR1rGW
+ cDhBiKidzKZX5TTk14Z5YRnCqtzVoXn2faaSam0LDSCgcSvJWMI0USPUEardujmIYn3uUc2Bs
+ AzFOA56kh5AHycnRQhIr+G0SAgQDME3y10M61vlB4glx5t/F9gAhvj7rJ4C+EBi5qNzhClr/S
+ auWtLdmKLb3PANr08rGfyaFBSiZq80uIlg6EmYkPrBWhXz0dO8PoS6E2JAB312B2+DQwz9j0l
+ 7YkTFqCOSdGlBaeAJGNgzBjWqv8EKr+VjIBVKdE4xd7RGo3jEkqnPfeJfGMakTZSG45vCHz2d
+ tdINvwfLa7plyVGITyWiVZB0ZcBqc3P6dYT69tZboCcvoYuDPp3ENjCriZqsZBi+sU4fvtts9
+ RgsUOLAPzfdtEqEwYPYguPGgd4qgbuHjuU1o1bF4D7YtwKnXLdqX0SWqT6gG5MiBVeevLUYMP
+ toJPAA15O68Nr/87/A8yyq8sw1mPkCkzfzNpZr379nCuIJCk/HJREhdL/olJATbnE8zT5TTCO
+ wKH9zn+Xvu7Cou62GP0C2amZ3BLsdbYe+XZfp+QdACPZZ+kNXbrjUSbE9uHuis4V846rIUuOa
+ zKRQlq0c3vO2GGgE5zDhaTVd/arG7I9VUmVQ8Y2TrmfcPgLakMb6gIE68JbZEZvYjNLMcAFZ7
+ /jBXmFTUZOrOupm74HBa5fDf3cwsdNrcE6OwEjNcQ11Qh8At1f4YkT1w4v/xXViGPkvC2bvgW
+ tNpw+QMHowQJ1mRw12y6ugTH0+ESdH2ioO7eyQYAH51yULMGd7a3ZPKEzt3khqI1MHpAUVtyk
+ 7tFEpWwOrA0l7XtoIqNVSVM88lxARD/gbQt
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain
-> Sent: 22 July 2021 23:19
-> 
-> There is quite a bit of tribal knowledge around proper use of
-> try_module_get() and that it must be used only in a context which
-> can ensure the module won't be gone during the operation. Document
-> this little bit of tribal knowledge.
-> 
-...
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy() but in
+this case it is better to use the scnprintf to simplify the arithmetic.
 
-Some typos.
+This is a previous step in the path to remove the strcpy() function
+entirely from the kernel.
 
-> +/**
-> + * try_module_get - yields to module removal and bumps reference count otherwise
-> + * @module: the module we should check for
-> + *
-> + * This can be used to check if userspace has requested to remove a module,
-                                                           a module be removed
-> + * and if so let the caller give up. Otherwise it takes a reference count to
-> + * ensure a request from userspace to remove the module cannot happen.
-> + *
-> + * Care must be taken to ensure the module cannot be removed during
-> + * try_module_get(). This can be done by having another entity other than the
-> + * module itself increment the module reference count, or through some other
-> + * means which gaurantees the module could not be removed during an operation.
-                  guarantees
-> + * An example of this later case is using this call in a sysfs file which the
-> + * module created. The sysfs store / read file operation is ensured to exist
-                                                            ^^^^^^^^^^^^^^^^^^^
-Not sure what that is supposed to mean.
-> + * and still be present by kernfs's active reference. If a sysfs file operation
-> + * is being run, the module which created it must still exist as the module is
-> + * in charge of removal of the sysfs file.
-> + *
-> + * The real value to try_module_get() is the module_is_live() check which
-> + * ensures this the caller of try_module_get() can yields to userspace module
-> + * removal requests and fail whatever it was about to process.
-> + */
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+Changelog v1 -> v2
+- Add spaces to the "plus" sign.
+- Use the correct size for the fw_dump_ptr buffer (Adam Sampson)
 
-But is the comment even right?
-I think you need to consider when try_module_get() can actually fail.
-I believe the following is right.
-The caller has to have valid module reference and module unload
-must actually be in progress - ie the ref count is zero and
-there are no active IO operations.
+ drivers/bluetooth/btmrvl_sdio.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
-The module's unload function must (eventually) invalidate the
-caller's module reference to stop try_module_get() being called
-with a (very) stale pointer.
+diff --git a/drivers/bluetooth/btmrvl_sdio.c b/drivers/bluetooth/btmrvl_sd=
+io.c
+index cddd350beba3..68378b42ea7f 100644
+=2D-- a/drivers/bluetooth/btmrvl_sdio.c
++++ b/drivers/bluetooth/btmrvl_sdio.c
+@@ -1350,6 +1350,7 @@ static void btmrvl_sdio_coredump(struct device *dev)
+ 	u8 *dbg_ptr, *end_ptr, *fw_dump_data, *fw_dump_ptr;
+ 	u8 dump_num =3D 0, idx, i, read_reg, doneflag =3D 0;
+ 	u32 memory_size, fw_dump_len =3D 0;
++	int size =3D 0;
 
-So there is a potentially horrid race:
-The module unload is going to do:
-	driver_data->module_ref = 0;
-and elsewhere there'll be:
-	ref = driver_data->module_ref;
-	if (!ref || !try_module_get(ref))
-		return -error;
+ 	card =3D sdio_get_drvdata(func);
+ 	priv =3D card->priv;
+@@ -1478,7 +1479,7 @@ static void btmrvl_sdio_coredump(struct device *dev)
+ 	if (fw_dump_len =3D=3D 0)
+ 		return;
 
-You have to have try_module_get() to allow the module unload
-function to sleep.
-But the above code still needs a driver lock to ensure the
-unload code doesn't race with the try_module_get() and the
-'ref' be invalidated before try_module_get() looks at it.
-(eg if an interrupt defers processing.)
+-	fw_dump_data =3D vzalloc(fw_dump_len+1);
++	fw_dump_data =3D vzalloc(fw_dump_len + 1);
+ 	if (!fw_dump_data) {
+ 		BT_ERR("Vzalloc fw_dump_data fail!");
+ 		return;
+@@ -1493,20 +1494,18 @@ static void btmrvl_sdio_coredump(struct device *de=
+v)
+ 		struct memory_type_mapping *entry =3D &mem_type_mapping_tbl[idx];
 
-So there can be no 'yielding'.
-
-I'm pretty much certain try_module_get(THIS_MODULE) is pretty
-much never going to fail.
-(It is mostly needed to give a worker thread a reference.)
-
-	David
-
+ 		if (entry->mem_ptr) {
+-			strcpy(fw_dump_ptr, "=3D=3D=3D=3D=3D=3D=3D=3DStart dump ");
+-			fw_dump_ptr +=3D strlen("=3D=3D=3D=3D=3D=3D=3D=3DStart dump ");
 -
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-			strcpy(fw_dump_ptr, entry->mem_name);
+-			fw_dump_ptr +=3D strlen(entry->mem_name);
+-
+-			strcpy(fw_dump_ptr, "=3D=3D=3D=3D=3D=3D=3D=3D\n");
+-			fw_dump_ptr +=3D strlen("=3D=3D=3D=3D=3D=3D=3D=3D\n");
+-
+-			memcpy(fw_dump_ptr, entry->mem_ptr, entry->mem_size);
+-			fw_dump_ptr +=3D entry->mem_size;
+-
+-			strcpy(fw_dump_ptr, "\n=3D=3D=3D=3D=3D=3D=3D=3DEnd dump=3D=3D=3D=3D=3D=
+=3D=3D=3D\n");
+-			fw_dump_ptr +=3D strlen("\n=3D=3D=3D=3D=3D=3D=3D=3DEnd dump=3D=3D=3D=
+=3D=3D=3D=3D=3D\n");
++			size +=3D scnprintf(fw_dump_ptr + size,
++					  fw_dump_len + 1 - size,
++					  "=3D=3D=3D=3D=3D=3D=3D=3DStart dump %s=3D=3D=3D=3D=3D=3D=3D=3D\n",
++					  entry->mem_name);
++
++			memcpy(fw_dump_ptr + size, entry->mem_ptr,
++			       entry->mem_size);
++			size +=3D entry->mem_size;
++
++			size +=3D scnprintf(fw_dump_ptr + size,
++					  fw_dump_len + 1 - size,
++					  "\n=3D=3D=3D=3D=3D=3D=3D=3DEnd dump=3D=3D=3D=3D=3D=3D=3D=3D\n");
+
+ 			vfree(mem_type_mapping_tbl[idx].mem_ptr);
+ 			mem_type_mapping_tbl[idx].mem_ptr =3D NULL;
+=2D-
+2.25.1
 
