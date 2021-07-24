@@ -2,160 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26E93D4A13
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908D03D4A16
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhGXUkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 16:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
+        id S229689AbhGXUqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 16:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhGXUkg (ORCPT
+        with ESMTP id S229535AbhGXUqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 16:40:36 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E896AC061575
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:21:07 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id w12so6190836wro.13
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rZFnDpTkyOcGtXAifOc4HEoukOCA6+5Q8Wz8eagFaaE=;
-        b=CopXkmYRD2otz5oiYl0hZf4/sIuLtyNAWfjf9+fiC1EXISz267JjWjuJgtUqozWyOR
-         Kkg1/yBvZsnBUp5e3SmNOsnm8ry99abjvrskLKId4xXUaGv80f9WGvspLR2P2OemB+ln
-         Twc1/HmLfzHRARvJtVifc/aZfcarNamR/4wwT/+7Lvcz7H36bQvZOwD+bA6hjivPnjn0
-         sk6tPNMPOqTUY89xDJscABZj7eKYEKnmlvn/09qp8TGlVRuydytVN+e+x0+w2Tvy9NZm
-         S7kOVw4Ty2KGbYrQBU0oneKzgCKeSidP0HAfzIlxVMd3yHzHM86qi54/+S/dhEs+IAmq
-         I//A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rZFnDpTkyOcGtXAifOc4HEoukOCA6+5Q8Wz8eagFaaE=;
-        b=TecHXZChODx1cT7KWGDPtWuYaokW+QMyHMDO+nTDcQHFU51B7UaH6E5jrS//2IqMvi
-         TtpEkJw2dDwIvYiK1ZpxVUnC7f0Rnl8bGt4/W5SC12NcK533lKJk0nTkdbCy6bjX44HJ
-         YigzbCiiKlKT7BSNKUD35JVSl+0uQjjXtHuF2HlxTXYQ68MCASPhQMGF3/ucrX49npd+
-         NWL8N5uxO/hdfIW5SZq9p6hhg2iuttcJEuBqhKRuhyrRcEz74MVWGn4xOaTi/j3ZToaH
-         0NfGEmDzf2CBUWhEIVH8rXseufgl3yTXVmYy8hwHQuLB7eQF4X+RgKbNg7AFBfphVhBZ
-         VZAw==
-X-Gm-Message-State: AOAM531enA2NK5GjN8VUCEQHd7TU/0Nn5CEwZZTAsthTfabODjCGZ5u/
-        IJswB67r3CJ4wGPMOFRpMXdczad3nVI=
-X-Google-Smtp-Source: ABdhPJyl9Fy+4w8FL+hvPvM4tiUGiAtigAKofJXUBPRl++vlCsEQ2oxy4xR037CDTqcPCDvI2DyGUg==
-X-Received: by 2002:a5d:4c87:: with SMTP id z7mr11409866wrs.405.1627161666519;
-        Sat, 24 Jul 2021 14:21:06 -0700 (PDT)
-Received: from [192.168.1.158] ([2.29.20.106])
-        by smtp.gmail.com with ESMTPSA id e15sm36317734wrp.29.2021.07.24.14.21.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jul 2021 14:21:05 -0700 (PDT)
-Subject: Re: 5.14-rc failure to resume
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-References: <eeab973d-f634-a182-6d76-f3912f8cf887@kernel.dk>
- <a607c149-6bf6-0fd0-0e31-100378504da2@kernel.dk>
- <99068691-01ea-d2b5-3dd3-1a2852fe5723@kernel.dk>
- <CAHp75Vc-RMBMO9eR3apX=zC30FA+22CgZeT4vee45XxFCqpjjg@mail.gmail.com>
- <8d6122f0-3ffc-d26a-0dd3-3e45843435a9@kernel.dk>
- <CAHp75VeJwuUmpn15iS4NgzO9Qh=O5ve9i62xCzQEJ=5Mm11N3g@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <85cd7b22-b437-2c47-d532-0a167339df48@gmail.com>
-Date:   Sat, 24 Jul 2021 22:21:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 24 Jul 2021 16:46:06 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75F6C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:26:37 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1m7PAC-0008Kz-54; Sat, 24 Jul 2021 23:26:28 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:41cc:c65c:f580:3bde])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id E5E5D6571A6;
+        Sat, 24 Jul 2021 21:26:23 +0000 (UTC)
+Date:   Sat, 24 Jul 2021 23:26:23 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Ziyang Xuan <william.xuanziyang@huawei.com>
+Cc:     socketcan@hartkopp.net, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2] can: raw: fix raw_rcv panic for sock UAF
+Message-ID: <20210724212623.65as5y2pbg4lnspr@pengutronix.de>
+References: <20210722070819.1048263-1-william.xuanziyang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeJwuUmpn15iS4NgzO9Qh=O5ve9i62xCzQEJ=5Mm11N3g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n7g5vkbmqkimt2k7"
+Content-Disposition: inline
+In-Reply-To: <20210722070819.1048263-1-william.xuanziyang@huawei.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--n7g5vkbmqkimt2k7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 24/07/2021 22:15, Andy Shevchenko wrote:
-> On Sat, Jul 24, 2021 at 11:26 PM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> On 7/24/21 2:05 PM, Andy Shevchenko wrote:
->>> On Sat, Jul 24, 2021 at 10:43 PM Jens Axboe <axboe@kernel.dk> wrote:
->>>> On 7/24/21 11:56 AM, Jens Axboe wrote:
->>>>> On 7/24/21 9:57 AM, Jens Axboe wrote:
->>>>>> Hi,
->>>>>>
->>>>>> I ran into this when doing the last bit of testing on pending changes
->>>>>> for this release on the laptop. Outside of running testing on these
->>>>>> changes, I always build and boot current -git and my changes on my
->>>>>> laptop as well.
->>>>>>
->>>>>> 5.14-rc1 + changes works fine, current -git and changes fail to resume
->>>>>> every single time. I just get a black screen. Tip of tree before merging
->>>>>> fixes is:
->>>>>>
->>>>>> commit 704f4cba43d4ed31ef4beb422313f1263d87bc55 (origin/master, origin/HEAD, master)
->>>>>> Merge: 05daae0fb033 0077a5008272
->>>>>> Author: Linus Torvalds <torvalds@linux-foundation.org>
->>>>>> Date:   Fri Jul 23 11:30:12 2021 -0700
->>>>>>
->>>>>>     Merge tag 'ceph-for-5.14-rc3' of git://github.com/ceph/ceph-client
->>>>>>
->>>>>> Since bisection takes forever on the laptop (gen7 x1 carbon), I
->>>>>> opportunistically reverted some of the most recent git pulls:
->>>>>>
->>>>>> - ec6badfbe1cde0eb2bec4a0b8f6e738171156b5b (acpi changes)
->>>>>> - 1d597682d3e669ec7021aa33d088ed3d136a5149 (driver-core changes)
->>>>>> - 74738c556db6c7f780a8b98340937e55b72c896a (usb changes)
->>>>>> - e7562a00c1f54116f5a058e7e3ddd500188f60b2 (sound changes)
->>>>>> - 8baef6386baaefb776bdd09b5c7630cf057c51c6 (drm changes)
->>>>>>
->>>>>> as they could potentially be involved, but even with all of those
->>>>>> reverted it still won't resume.
->>>>>>
->>>>>> Sending this out in case someone has already reported this and I just
->>>>>> couldn't find it. If this is a new/unknown issues, I'll go ahead and
->>>>>> bisect it.
->>>>>
->>>>> Ran a bisect, and it pinpoints:
->>>>>
->>>>> 71f6428332844f38c7cb10461d9f29e9c9b983a0 is the first bad commit
->>>>> commit 71f6428332844f38c7cb10461d9f29e9c9b983a0
->>>>> Author: Andy Shevchenko <andy.shevchenko@gmail.com>
->>>>> Date:   Mon Jul 12 21:21:21 2021 +0300
->>>>>
->>>>>     ACPI: utils: Fix reference counting in for_each_acpi_dev_match()
->>>>>
->>>>> which seems odd, as it worked for me with the acpi changes reverted. It
->>>>> could be that it _sometimes_ works with that commit, not sure. Adding
->>>>> relevant folks to the CC.
->>>>>
->>>>> I'm going to revert this on top of current master and run with that
->>>>> and see if it does 10 successful resumes.
->>>>
->>>> This does appear to be the culprit. With it reverted on top of current
->>>> master (and with the block and io_uring changes pulled in too), the
->>>> kernel survives many resumes without issue.
->>>
->>> If I read correctly it seems at one of the local rebase I might have
->>> missed something.
->>>
->>> Can you replace sensor->adev with adev here
->>>
->>> https://elixir.bootlin.com/linux/v5.14-rc2/source/drivers/media/pci/intel/ipu3/cio2-bridge.c#L231
->>>
->>> and retest?
->>
->> Tried that, doesn't work unfortunately. Hung on first resume, just like
->> current -git with that single line edit.
-> 
-> So, does it work along with the acpi_dev_put() converted to be
-> 
->   if (adev)
->     put_device(&adev->dev);
-> 
-> ?
+On 22.07.2021 15:08:19, Ziyang Xuan wrote:
+> We get a bug during ltp can_filter test as following.
 
-For me; yes. I replicated the issue, and adding the if (adev) guard and
-the previous change you mentioned clears it again.
+Applied to can/testing.
+
+Thnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--n7g5vkbmqkimt2k7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD8hXwACgkQqclaivrt
+76kpzwf+IvbX45gTtbq+bVmqxxagIwV7wAFjfT0TCVXPynz/NWoFp7pCk9yWUdyj
+o7P9B0S+ew4SanmD/CTjCBd9rcnj6VTeK64mGwZo7BX4HPXYUdPsC5C4n/C6ivji
+uNJPE1nlgJ21+HVQTttjgBltHVQ60bmQUIarDwkGZEQopArFvynGxwTkZU6m/y9q
+uTEcp97i3Sq2rXp+yY88mHwr3ApBaX33AHZY508jcMIo4hWTqs0ufzeAJYO6pa6W
+7NUowWOBYTqw6XMUO1I6hXJ95UB/bsaoCRE0lNw5TiEv8VuJPeZ1or36BZikgbqE
+97JqNendkCmvQIOGo78Ek3mi1887CA==
+=aSm0
+-----END PGP SIGNATURE-----
+
+--n7g5vkbmqkimt2k7--
