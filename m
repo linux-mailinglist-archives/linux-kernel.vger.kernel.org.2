@@ -2,111 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E156C3D4731
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2083D4733
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 12:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235189AbhGXJ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 05:58:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234219AbhGXJ6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 05:58:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 309E560E9C;
-        Sat, 24 Jul 2021 10:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627123146;
-        bh=rd3agneBNGlYwrmFkKik3XEga91vS8fwDX0YJVTXZLQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YHFF97OVw+Gsv6GlRKwBN2/c9Hm20zz1EjhbrHnJd/dEGiINf9tUAJJnKwQQ+UJcu
-         3EE4DbOm4UUcOZa3+DdDmO8CKxUAgc0gMycf1CJfEzk8e8MufRlFyRid3l+lTSOza/
-         fkcQgHMZVJRy8ibgton6IzU8xbYxnBfM+wQZDlTaquQWPckrEtOLl1D6pn9dsiH865
-         qFRsRUonOtMCqbvXNgY4U8uW/KAFtA3iJ+jO2OtANrT0NG2jsO4maiPdnCHsxqk+WK
-         SaEFYilH3Sbcyjfe5pdrZVvjUt7OI8ekQ8IEKXLkAhqHfpr+RudqPA01AGGv3vlaFa
-         94fCyW+j9zlfA==
-Date:   Sat, 24 Jul 2021 12:38:58 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PULL REQUEST] i2c for v5.14
-Message-ID: <YPvtwtk3wPtFnB8L@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
+        id S235151AbhGXKE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 06:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229966AbhGXKE0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 06:04:26 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDBDC061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 03:44:58 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id a20so6282728plm.0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 03:44:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZtgMasyH3/dYOIDYLvJAZLai7NTEDCKY0Q4jVq+9j+I=;
+        b=Elk0fdfM2HcilsHejfu6Gph/yKIr+tvcO+EJs4MuuOz5AvZntsUtNZOPEE1nx0F4ea
+         aHllIHhoe6vWqRMYFJjNXX48Feimdp8NYeOlYRUdQO9n3CVuyc1O4W3JMqkHRD1kOPJ5
+         KhXqkg/ATcSpYLT4XCYJmMl2DKU6HS+cMzk8bu6sqKJPXWJy2H9oZhKi/8mdQnenQFcB
+         IteMy3aJtLc6a3yHI5SlEe9L6wE0GI3NQRWu8nQ3EU374/8VQonkftGysdEZBdIwW6pE
+         uy2hidm+CHjZPAmJUuHabMj136ZIf3EcleaLWEZFbloCUfKUw+rblERr/dwKYPHfXL6O
+         TeTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZtgMasyH3/dYOIDYLvJAZLai7NTEDCKY0Q4jVq+9j+I=;
+        b=fmz1JVlf0Hk4p6IfTrR0fqhsHqW/DQRWEF1Jw9fdsRwpCu2QTAskzN3tNm4Qr2YWBJ
+         2JQTDDuLcEObNTjzwkgquuKWnk7v60HjOnttXt99i8n3CHyFpkfjrgLT4CLWro89LEeg
+         qoSfnlRncZ7hKrwtyjCDwwstSBTAS+INDR/NmY9v2KrbjEwxiErpmtCjwBwYnABC/3/1
+         08YkFxGYQ7QEQuBV5dmR7WNkHiA2rLOhBWNRYUs1ZJpSJ3xfofqFYuEF5pBGi1Va/AGK
+         BhguUNefxkgAwXOEmeBLkQpz1+K7AoSwhvgshXhTILDhHou6kIVJkuPheKq0o8Y2FfcF
+         I4fA==
+X-Gm-Message-State: AOAM531KbYHaAW9mJZEDV2tKb1w4JRtj8rLoTy7yEMoBcYSO1A96iq/n
+        UOe802w9jxWP7k4XiCmuEHE=
+X-Google-Smtp-Source: ABdhPJw8IRCFGjXrZ8IvIsTAxkGgO4IcBLcVqQXsIN48Kskn9pYa6VnM9ZSJY44EWkljUZz9k4EcEQ==
+X-Received: by 2002:a63:5619:: with SMTP id k25mr9175835pgb.92.1627123497745;
+        Sat, 24 Jul 2021 03:44:57 -0700 (PDT)
+Received: from ojas ([122.161.50.107])
+        by smtp.gmail.com with ESMTPSA id e13sm38213709pfd.11.2021.07.24.03.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 03:44:57 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 16:14:47 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     Stefan Wahren <stefan.wahren@i2se.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, nsaenz@kernel.org,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/5] vchiq: Patch to separate platform and cdev code
+Message-ID: <20210724104447.GA3435@ojas>
+References: <cover.1626882325.git.ojaswin98@gmail.com>
+ <YPqh0SHa8n3BugnB@kroah.com>
+ <20210723125900.GA279903@ojas>
+ <702bc38c-8ea2-eb30-84db-a647140585f6@i2se.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bZPzLBFILEwfatwp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <702bc38c-8ea2-eb30-84db-a647140585f6@i2se.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jul 23, 2021 at 03:31:58PM +0200, Stefan Wahren wrote:
+> Am 23.07.21 um 14:59 schrieb Ojaswin Mujoo:
+> > On Fri, Jul 23, 2021 at 01:02:41PM +0200, Greg KH wrote:
+> >> On Wed, Jul 21, 2021 at 09:50:48PM +0530, Ojaswin Mujoo wrote:
+> >>> Hello,
+> >>>
+> >>> This patchset adderesses the TODO item number 10 specified at:
+> >>>
+> >>>     drivers/staging/vc04-services/interface/TODO
+> >>>
+> >>> For reference, the task is:
+> >>>
+> >>>     10) Reorganize file structure: Move char driver to it's own file and join
+> >>>     both platform files
+> >>>
+> >>>     The cdev is defined alongside with the platform code in vchiq_arm.c. It
+> >>>     would be nice to completely decouple it from the actual core code. For
+> >>>     instance to be able to use bcm2835-audio without having /dev/vchiq created.
+> >>>     One could argue it's better for security reasons or general cleanliness. It
+> >>>     could even be interesting to create two different kernel modules, something
+> >>>     the likes of vchiq-core.ko and vchiq-dev.ko. This would also ease the
+> >>>     upstreaming process.
+> >>>
+> >>> A summary of the patches is as follows:
+> >>>
+> >>> - Patch 1: Move cdev init code into a function
+> >>> - Patch 2: Shift some devlarations from vchiq_arm.c to vchiq_arm.h for
+> >>>            sharing
+> >>> - Patch 3: Move vchiq cdev init code from vchiq_arm.c into vchiq_dev.c
+> >>> - Patch 4: Decouple cdev code by defining a Kconfig entry to allow
+> >>>            optional compilation of it.
+> >>> - Patch 5: Merge code in vchiq_2835_arm.c to vchiq_arm.c
+> >>>
+> >>> Changes since v3 [2]:
+> >>>
+> >>> * In Patch 5, replace forward declarations of some of the functions with
+> >>>   function definition 
+> >> You dropped the reviews of others, so now I need to wait for them again
+> >> :(
+> >>
+> > Hello Greg,
+> >
+> > Apologies for that, I was under the impression that a new version
+> > needed a separate review :(
+> No, just the patches which had functional changes.
+Ohh, noted.
+> > If its okay, I can alternately resubmit this (as v5?) with Stefan's
+> > Reviewed-By tags on unchanged commits intact. Let me know if that's okay
+> > or if its better to wait out.
+> 
+> No, please don't resubmit. I will do the review soon.
 
---bZPzLBFILEwfatwp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for the review and all the help, Stefan. It is much appreciated
+:)
 
-Linus,
-
-here are two bugfixes for the I2C subsystem.
-
-Please pull.
-
-Thanks,
-
-   Wolfram
-
-
-The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
-
-  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-curre=
-nt
-
-for you to fetch changes up to 4a8ac5e45cdaa88884b4ce05303e304cbabeb367:
-
-  i2c: mpc: Poll for MCF (2021-07-20 22:32:01 +0200)
-
-----------------------------------------------------------------
-Chris Packham (1):
-      i2c: mpc: Poll for MCF
-
-J=C3=A9r=C3=B4me Glisse (1):
-      misc: eeprom: at24: Always append device id even if label property is=
- set.
-
-Wolfram Sang (1):
-      Merge tag 'at24-fixes-for-v5.14' of git://git.kernel.org/pub/scm/linu=
-x/kernel/git/brgl/linux into i2c/for-current
-
- drivers/i2c/busses/i2c-mpc.c |  4 ++--
- drivers/misc/eeprom/at24.c   | 17 +++++++----------
- 2 files changed, 9 insertions(+), 12 deletions(-)
-
---bZPzLBFILEwfatwp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmD77b0ACgkQFA3kzBSg
-KbZq5Q/7BJNq+cSooAV8zeZqPBqYf0LpwF4+7cMs6f6bTvxUJBIrVKxZh7M8lpTC
-i8VSq+NWUWz/x5iuJtXlPFKdv5Bk7i2ozsfpkt86v/hmKgF0Uqf+RAIErYPrZTiy
-Ks6qrq6h5WDguPUd+wigmml2fcLA7MoIwNCACYs9XW54rdMg5PaxMwDTz0vUYEWe
-NKCXS+VPpqxM2M30/3HZkudRwE0jkR/QOtEVgEh2STCuh6FV0/foEC/dW7BiTtXK
-b4PcvluF4L4j+AhA8FuDYy9OJk6y2chwiB3Fg/UNryVpX8f+H20ClzWFp8mkwxlp
-xGDfGKnDkoK/pfih1i7dhZmYloQ2DKsUkovk6M0r06WIbHWy1Lci/IRA2fyXinPX
-kErAj2m7c8BXQUm3KRUB0PIJe6E68r56I0ndyH7WOPyB7amucaXL/Ph0L7nwrs0a
-IKMGHVzG3/2AVMVJ8dVvlnEau9ElBCIVoGJsoXobL5WerLh/OoDfmb38TU2DYwxV
-KOLUuAuC4d9k2FoO2PGYlCc2xQdepFTNXbj123trNocomky9PbigqmqMniP8luEy
-FMSkZxfPAouUCwfCEMMA4C/K2CYF10lbT865GwzACukpxVbNUoi7oNGVpz2jho0q
-Y2mmPMYCtUJuzzb6nnPdETpfcFD1X7bcaMGlIkq/VY4cXN8lQB4=
-=x9Bi
------END PGP SIGNATURE-----
-
---bZPzLBFILEwfatwp--
+Regards,
+Ojaswin
