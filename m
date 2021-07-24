@@ -2,76 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3929D3D48E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74C33D48E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 19:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhGXQrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 12:47:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhGXQri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 12:47:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D640C061575;
-        Sat, 24 Jul 2021 10:28:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R/q2OUFHGHnNOj2YWSRkzWiiQH0hVUMtLRqj4jzPJgI=; b=gky8adROBWilg+idqPXV+hW/r0
-        G/T/24vDtwXzirAYXoSMJL0OFgxbeHHb9dBijq4Hdx5aE6ruopVRBxiNXg2Ru35hosdK1HjAHxn/L
-        joFlAgkSTuo3tM9QI2DL+fMGt/rqtTCt10rMHmMv2Ze0SqKAqsm66VYhMw0/sCZmm7L6yObMp6Qfr
-        /GrFP39f5wcfT8XHXRgyZRasl1YekSlNMRiLjuKPKh23854ciMhfGFy+3C8SeaFYhPyWbChjaQMNY
-        SfiprTA4hFxIL3DoJyBPydDPdFdnOpj5u5AXMLIbMVm50LnUiwZe204L/IG6oW/40+uEkeuSnX2gr
-        rtbRNriA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m7LRB-00CQK6-H6; Sat, 24 Jul 2021 17:28:00 +0000
-Date:   Sat, 24 Jul 2021 18:27:45 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andres Freund <andres@anarazel.de>,
-        Michael Larabel <Michael@michaellarabel.com>
-Subject: Folios give an 80% performance win
-Message-ID: <YPxNkRYMuWmuRnA5@casper.infradead.org>
-References: <20210715033704.692967-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715033704.692967-1-willy@infradead.org>
+        id S229991AbhGXQtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 12:49:00 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45149 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229689AbhGXQs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 12:48:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627147770; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Ktj1i3AlaWGew5NfuLfcGEy2Chnk/dvK1HpNHbnFwgA=; b=QqauvPxG26UGdYgjjE5/QZ3SJSs/mteKQftaW84Hsm5rBgqJI3nMVN90htm7zMGrakOquIg7
+ SIz1lQx7Rwz92QgFOIk8X15OH4Irmff35OeVNKPNoARTkp3Ccxe13XGiecW/KepLg7EgdTJv
+ y1c+wQpigzHldOClacz3MbcQRfk=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60fc4df4e31d882d180b0096 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 24 Jul 2021 17:29:24
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 26A82C4323A; Sat, 24 Jul 2021 17:29:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld559.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A3176C433D3;
+        Sat, 24 Jul 2021 17:29:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A3176C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno <freedreno@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, linux-arm-msm@vger.kernel.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: qcom: sc7280: Add gpu support
+Date:   Sat, 24 Jul 2021 22:59:00 +0530
+Message-Id: <1627147740-11590-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:34:46AM +0100, Matthew Wilcox (Oracle) wrote:
-> Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
-> benefit from a larger "page size".  As an example, an earlier iteration
-> of this idea which used compound pages (and wasn't particularly tuned)
-> got a 7% performance boost when compiling the kernel.
+Add the necessary dt nodes for gpu support in sc7280.
 
-I want to thank Michael Larabel for his benchmarking effort:
-https://www.phoronix.com/scan.php?page=news_item&px=Folios-v14-Testing-AMD-Linux
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+This patch has dependency on the GPUCC bindings patch here:
+https://patchwork.kernel.org/project/linux-arm-msm/patch/1619519590-3019-4-git-send-email-tdas@codeaurora.org/
 
-I'm not too surprised by the lack of performance change on the majority
-of benchmarks.  This patch series is only going to change things for
-heavy users of the page cache (ie it'll do nothing for anon memory users),
-and it's only really a benefit for programs that have good locality.
+Changes in v2:
+- formatting update and removed a duplicate header (Stephan)
 
-What blows me away is the 80% performance improvement for PostgreSQL.
-I know they use the page cache extensively, so it's plausibly real.
-I'm a bit surprised that it has such good locality, and the size of the
-win far exceeds my expectations.  We should probably dive into it and
-figure out exactly what's going on.
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 116 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
 
-Should we accelerate inclusion of this patchset?  Right now, I have
-89 mm patches queued up for the 5.15 merge window.  My plan was to get
-the 17 iomap + block patches, plus another 18 page cache patches into
-5.16 and then get the 14 multi-page folio patches into 5.17.  But I'm
-mindful of the longterm release coming up "soon", and I'm not sure we're
-best served by multiple distros trying to backport the multi-page folio
-patches to either 5.15 or 5.16.
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 029723a..524a5e0 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <dt-bindings/clock/qcom,gcc-sc7280.h>
++#include <dt-bindings/clock/qcom,gpucc-sc7280.h>
+ #include <dt-bindings/clock/qcom,rpmh.h>
+ #include <dt-bindings/interconnect/qcom,sc7280.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+@@ -585,6 +586,121 @@
+ 			#clock-cells = <1>;
+ 		};
+ 
++		gpu@3d00000 {
++			compatible = "qcom,adreno-635.0", "qcom,adreno";
++			#stream-id-cells = <16>;
++			reg = <0 0x03d00000 0 0x40000>,
++			      <0 0x03d9e000 0 0x1000>,
++			      <0 0x03d61000 0 0x800>;
++			reg-names = "kgsl_3d0_reg_memory",
++				    "cx_mem",
++				    "cx_dbgc";
++			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
++			iommus = <&adreno_smmu 0 0x401>;
++			operating-points-v2 = <&gpu_opp_table>;
++			qcom,gmu = <&gmu>;
++			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
++			interconnect-names = "gfx-mem";
++
++			gpu_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-550000000 {
++					opp-hz = /bits/ 64 <550000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
++					opp-peak-kBps = <6832000>;
++				};
++
++				opp-450000000 {
++					opp-hz = /bits/ 64 <450000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
++					opp-peak-kBps = <4068000>;
++				};
++
++				opp-315000000 {
++					opp-hz = /bits/ 64 <315000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
++					opp-peak-kBps = <1804000>;
++				};
++			};
++		};
++
++		gmu: gmu@3d69000 {
++			compatible="qcom,adreno-gmu-635.0", "qcom,adreno-gmu";
++			reg = <0 0x03d6a000 0 0x34000>,
++				<0 0x3de0000 0 0x10000>,
++				<0 0x0b290000 0 0x10000>;
++			reg-names = "gmu", "rscc", "gmu_pdc";
++			interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "hfi", "gmu";
++			clocks = <&gpucc GPU_CC_CX_GMU_CLK>,
++					<&gpucc GPU_CC_CXO_CLK>,
++					<&gcc GCC_DDRSS_GPU_AXI_CLK>,
++					<&gcc GCC_GPU_MEMNOC_GFX_CLK>,
++					<&gpucc GPU_CC_AHB_CLK>,
++					<&gpucc GPU_CC_HUB_CX_INT_CLK>,
++					<&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>;
++			clock-names = "gmu",
++				      "cxo",
++				      "axi",
++				      "memnoc",
++				      "ahb",
++				      "hub",
++				      "smmu_vote";
++			power-domains = <&gpucc GPU_CC_CX_GDSC>,
++					<&gpucc GPU_CC_GX_GDSC>;
++			power-domain-names = "cx",
++					     "gx";
++			iommus = <&adreno_smmu 5 0x400>;
++			operating-points-v2 = <&gmu_opp_table>;
++
++			gmu_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-200000000 {
++					opp-hz = /bits/ 64 <200000000>;
++					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
++				};
++			};
++		};
++
++		adreno_smmu: iommu@3da0000 {
++			compatible = "qcom,sc7280-smmu-500", "qcom,adreno-smmu", "arm,mmu-500";
++			reg = <0 0x03da0000 0 0x20000>;
++			#iommu-cells = <2>;
++			#global-interrupts = <2>;
++			interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 675 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
++					<GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>;
++
++			clocks = <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
++					<&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
++					<&gpucc GPU_CC_AHB_CLK>,
++					<&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>,
++					<&gpucc GPU_CC_CX_GMU_CLK>,
++					<&gpucc GPU_CC_HUB_CX_INT_CLK>,
++					<&gpucc GPU_CC_HUB_AON_CLK>;
++			clock-names = "gcc_gpu_memnoc_gfx_clk",
++					"gcc_gpu_snoc_dvm_gfx_clk",
++					"gpu_cc_ahb_clk",
++					"gpu_cc_hlos1_vote_gpu_smmu_clk",
++					"gpu_cc_cx_gmu_clk",
++					"gpu_cc_hub_cx_int_clk",
++					"gpu_cc_hub_aon_clk";
++
++			power-domains = <&gpucc GPU_CC_CX_GDSC>;
++		};
++
+ 		lpass_ag_noc: interconnect@3c40000 {
+ 			reg = <0 0x03c40000 0 0xf080>;
+ 			compatible = "qcom,sc7280-lpass-ag-noc";
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation.
+
