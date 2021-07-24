@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627873D4A1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49F53D4A22
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhGXUzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 16:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhGXUzu (ORCPT
+        id S229931AbhGXU6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 16:58:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55720 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229549AbhGXU6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 16:55:50 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0694C061575;
-        Sat, 24 Jul 2021 14:36:21 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id r16so6336889edt.7;
-        Sat, 24 Jul 2021 14:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=tPf1PIZz12QDELKKGSLQrfITc/1OkYNKrPmPjikeM0U=;
-        b=JzgPFzRsg6759sgBZxYMy3jbIGht0S4m0+xImW+VqEaID5gMFAS3qWNwrvORvAT47b
-         c6o/3rfIImmYHeE3y3JEceQfoiQU3esGgHImIswM67N7w6Aiw4JPkrLQ+LiT8qxudhaT
-         R3ZLqEQvfqdPW/QCxRPXUpf5oS4IPSw/EHPlMSzl9LN+9awTjUUfPAL7dKaXzaEmBRIt
-         iZmp4f3W6P2kq9Cr+xdpiGMEYJG3LZAJ5fsI+rUPLIYw6wqQg35a4e9ojvvL/xaWjrQp
-         Rmnt/H+hKGYexBVXpeB0brxZWimHtW0Aw5UExC6uIMlLTZMvFmUl399se+YlAB9gSwWW
-         E6wg==
+        Sat, 24 Jul 2021 16:58:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627162714;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OQ9nYZF7TCv1Im5A1JNzguL1rttUs8MvyEizhk+cJ88=;
+        b=A0eZC9i93zZZTNeGY6Gh7nBtkoWuP+u+qiADG75sylFkWP5trLL8VcjNjWICFTcNoFEevG
+        VxddHrS/nsmyvhsKMBiHgut+oFOWU8E31qj0ArviF9hMItYnUc6nKYEmvvtRe2tcgNLbEv
+        clfWWsR7yLRJ33bVTjnsllUxynATHAY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-RloOE1wUNLOsPUI_d0EfsQ-1; Sat, 24 Jul 2021 17:38:33 -0400
+X-MC-Unique: RloOE1wUNLOsPUI_d0EfsQ-1
+Received: by mail-wr1-f69.google.com with SMTP id s8-20020a5d42480000b02901404c442853so2547065wrr.12
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:38:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=tPf1PIZz12QDELKKGSLQrfITc/1OkYNKrPmPjikeM0U=;
-        b=YKicQbOiBWbySuNZbl0qFGh1EVhCco24LW7l2YX4kTtJbt0VrnIQMuFpHPljw9HOgv
-         Y/Hy6YPFOjQbUdPLUL84v+Snw5QByFpZlq/Hv2HOCZUkc3L6QwmkW14q61v3pDqVc6nl
-         TdaIiDIDVT6lyldip2axSRdm2XEKdl6kVbVOP/VOQB84ktBFpoSpGAWhsWm1HNxAR2lo
-         S6J2vnSxE1ggAKUK7w+5fAakWDi+YkCeqLRFfKXszuu4VI71q8liwo1C17JICS2ENuE9
-         WSjG62tZJ08FyYrLGnSJz0su4Gs9wKwsgut6bO1gYKaNxvaPYb0B/+B0Cm50yQ9v3jAS
-         h/1A==
-X-Gm-Message-State: AOAM53299gOBRr7PQSz9GOYfFLx6iDAFwie2JV7y+gtGKNRDfPYkHBF7
-        VaKgJFZIUtaVkP+gOSvQQM4=
-X-Google-Smtp-Source: ABdhPJw/d9jb+6rh7zjFkNWDy7e6ranUmG7el4bjBF2NyMRER2mkc1klYcX8HcSXFic2jvSBgWWkJQ==
-X-Received: by 2002:a05:6402:22e1:: with SMTP id dn1mr13164174edb.8.1627162580240;
-        Sat, 24 Jul 2021 14:36:20 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id ch27sm17045324edb.57.2021.07.24.14.36.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 14:36:19 -0700 (PDT)
-Date:   Sat, 24 Jul 2021 22:36:17 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] input: joystick: pxrc: use usb_get_intf()
-Message-ID: <20210724213617.GA586795@pc>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OQ9nYZF7TCv1Im5A1JNzguL1rttUs8MvyEizhk+cJ88=;
+        b=sV7TUZgP/Hy1+hXpaTDIlMstjJNMV6XrX/nKX+CjlAyPCCWJ3aLe0/YpoND71zs6x3
+         sNSWegBx6UcUFaEwpiGK+Ta6uhSqaUL//N2IqjnkvynQQqO71DfnucBS9wKO+hyQxOa6
+         AcxpTTKpWlqR4Wt5S3BROHVD1OKBm+pDX4IyAG70TzrkPouy7OYftWrNadSJ6E7U1ZEU
+         JzrHq2Dj2dXg2xoCEVVZJEr903JwWjKp3xzyYZEolIhaRF/+GEt1o9ZuA3yocF6taew/
+         mtci8cw2QslHToQf+8erD4PETHHjXceXTInAF3ekTcc+rCJ1P14UdFIISD+/NofhLYxc
+         tMcg==
+X-Gm-Message-State: AOAM531ZLanPbc7MFhoRkeTRxCtnDqOPZz5JMym5Y5p3AQd45tuVlfZW
+        16lmJhjtjaxKg9QXc28wy4C19E2vXBmPS/5RI60qY4FCIcuk3qqn8MJk0VkwOYe1Zpoq3MwHoLp
+        1W90MzUy4D0A+ejIG2ikUUVQ50cCmSUibShjRxgzo
+X-Received: by 2002:adf:f6ca:: with SMTP id y10mr11408639wrp.211.1627162711891;
+        Sat, 24 Jul 2021 14:38:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx1Kv/M6qskCAa2iYidDcO94F9rO3w70hsI/xsveCv4ij53/4AEZQooofItTEg7clN8/LfjbNCETI0gEwwmduY=
+X-Received: by 2002:adf:f6ca:: with SMTP id y10mr11408629wrp.211.1627162711767;
+ Sat, 24 Jul 2021 14:38:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210724193449.361667-1-agruenba@redhat.com> <20210724193449.361667-2-agruenba@redhat.com>
+ <CAHk-=whodi=ZPhoJy_a47VD+-aFtz385B4_GHvQp8Bp9NdTKUg@mail.gmail.com> <YPx28cEvrVl6YrDk@zeniv-ca.linux.org.uk>
+In-Reply-To: <YPx28cEvrVl6YrDk@zeniv-ca.linux.org.uk>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Sat, 24 Jul 2021 23:38:20 +0200
+Message-ID: <CAHc6FU5nGRn1_oc-8rSOCPfkasWknH1Wb3FeeQYP29zb_5fFGQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/8] iov_iter: Introduce iov_iter_fault_in_writeable helper
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use usb_get_intf() in order to increment reference count of the usb
-interface structure.
+On Sat, Jul 24, 2021 at 10:24 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Sat, Jul 24, 2021 at 12:52:34PM -0700, Linus Torvalds wrote:
+> > ...
+> > > +                       if (fault_in_user_pages(start, len, true) != len)
+> > > +                               return -EFAULT;
+> >
+> > Looking at this once more, I think this is likely wrong.
+> >
+> > Why?
+> >
+> > Because any user can/should only care about at least *part* of the
+> > area being writable.
+> >
+> > Imagine that you're doing a large read. If the *first* page is
+> > writable, you should still return the partial read, not -EFAULT.
+>
+> Agreed.
+>
+> > So I think the code needs to return 0 if _any_ fault was successful.
+>
+> s/any/the first/...
+>
+> The same goes for fault-in for read, of course; I've a half-baked conversion
+> to such semantics (-EFAULT vs. 0; precise length is unreliable anyway,
+> especially if you have sub-page failure areas), need to finish and post
+> it...
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
----
- drivers/input/joystick/pxrc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hmm, how could we have sub-page failure areas when this is about if
+and how pages are mapped? If we return the number of bytes that are
+accessible, then users will know if they got nothing, something, or
+everything, and they can act accordingly.
 
-diff --git a/drivers/input/joystick/pxrc.c b/drivers/input/joystick/pxrc.c
-index ea2bf5951d67..59304352548b 100644
---- a/drivers/input/joystick/pxrc.c
-+++ b/drivers/input/joystick/pxrc.c
-@@ -143,7 +143,7 @@ static int pxrc_probe(struct usb_interface *intf,
- 		return -ENOMEM;
- 
- 	mutex_init(&pxrc->pm_mutex);
--	pxrc->intf = intf;
-+	pxrc->intf = usb_get_intf(intf);
- 
- 	usb_set_intfdata(pxrc->intf, pxrc);
- 
--- 
-2.25.1
+Thanks,
+Andreas
 
