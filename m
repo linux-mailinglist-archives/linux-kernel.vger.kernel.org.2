@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6013D4987
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 21:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC50D3D4989
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 21:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhGXSxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 14:53:53 -0400
-Received: from mga06.intel.com ([134.134.136.31]:20956 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229476AbhGXSxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 14:53:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10055"; a="273142219"
-X-IronPort-AV: E=Sophos;i="5.84,266,1620716400"; 
-   d="scan'208";a="273142219"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2021 12:34:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,266,1620716400"; 
-   d="scan'208";a="472798807"
-Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2021 12:34:19 -0700
-Received: from kbuild by d053b881505b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1m7NPf-0003jR-5g; Sat, 24 Jul 2021 19:34:19 +0000
-Date:   Sun, 25 Jul 2021 03:33:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Phillip Potter <phil@philpotter.co.uk>, gregkh@linuxfoundation.org
-Cc:     kbuild-all@lists.01.org, Larry.Finger@lwfinger.net,
-        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, fabioaiuto83@gmail.com
-Subject: Re: [PATCH v3 4/7] staging: r8188eu: introduce new os_dep dir for
- RTL8188eu driver
-Message-ID: <202107250343.7ZGG76Q3-lkp@intel.com>
-References: <20210724001055.1613840-5-phil@philpotter.co.uk>
+        id S229708AbhGXSyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 14:54:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46527 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229645AbhGXSyc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 14:54:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627155303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wcLLNDQSOBcbp/tt+rpcsxdrkB5OSjz/1oBaIfc7jQM=;
+        b=Q9RXdZC4BsbVY4i5POkUumAuilsMaK40nB6SZ6j1IZDkgXR3Pshx3wipEgSXX8vKhS6AuV
+        s1c669fWczIDSCrE9ajkNcrMKXVOmJwR4YqkzsG0A7gO4EzXIfF5kVwp2am7Elq7SDb9fH
+        cpWNr3zlvGD25pqjNkLxl974h8dLh2k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-_t-M8WgmNK62S0TI-r2TPw-1; Sat, 24 Jul 2021 15:35:00 -0400
+X-MC-Unique: _t-M8WgmNK62S0TI-r2TPw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 356758042E2;
+        Sat, 24 Jul 2021 19:34:58 +0000 (UTC)
+Received: from max.com (unknown [10.40.194.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BCE7418432;
+        Sat, 24 Jul 2021 19:34:51 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        cluster-devel@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH v4 0/8] gfs2: Fix mmap + page fault deadlocks
+Date:   Sat, 24 Jul 2021 21:34:41 +0200
+Message-Id: <20210724193449.361667-1-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210724001055.1613840-5-phil@philpotter.co.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Phillip,
+Hi Linus et al.,
 
-Thank you for the patch! Perhaps something to improve:
+here's another update of this patch queue:
 
-[auto build test WARNING on staging/staging-testing]
+ * Finally fix the typos Linus has pointed out twice already.
 
-url:    https://github.com/0day-ci/linux/commits/Phillip-Potter/staging-rtl8188eu-replace-driver-with-better-version/20210724-081451
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git f133717efc6f28052667daf682e99ffd4b3d7588
-compiler: gcc-10 (Ubuntu 10.3.0-1ubuntu1~20.04) 10.3.0
+ * Turn the previous fault_in_iov_iter helper that was used for reads
+   and writes into iov_iter_fault_in_writeable per Al's suggestion.
+   Use the existing iov_iter_fault_in_readable for writes.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+ * Add a done_before argument and an IOMAP_DIO_FAULT_RETRY flag to
+   iomap_dio_rw to allow iomap_dio_rw to return partial results and
+   resume with the rest of a request.  This allows iomap_dio_rw to be
+   used with page faults disabled without having to repeat any I/O.
 
+ * Adjust the gfs2 patches accordingly.
 
-includecheck warnings: (new ones prefixed by >>)
->> drivers/staging/r8188eu/os_dep/os_intfs.c: linux/version.h is included more than once.
+With that, the two iov_ter patches and the three iomap patches should
+hopefully be ready for mainline.
 
-Please review and possibly fold the followup patch.
+There's one remaining issue on the gfs2 side: during read requests, when
+a writer now comes in in the middle of a read request, the read request
+can currently return a result that never existed on disk.  So we need
+to ensure that we only resume read requests when we know that no writer
+got in the way, and retry the entire request otherwise.  It should be
+relatively easy to add a mechanism to detect when a glock is "lost";
+this won't affect the vfs or iomap patches.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks a lot,
+Andreas
+
+Andreas Gruenbacher (8):
+  iov_iter: Introduce iov_iter_fault_in_writeable helper
+  gfs2: Add wrapper for iomap_file_buffered_write
+  gfs2: Fix mmap + page fault deadlocks for buffered I/O
+  iomap: Fix iomap_dio_rw return value for user copies
+  iomap: Add done_before argument to iomap_dio_rw
+  iomap: Support restarting direct I/O requests after user copy failures
+  iov_iter: Introduce noio flag to disable page faults
+  gfs2: Fix mmap + page fault deadlocks for direct I/O
+
+ fs/btrfs/file.c       |  5 ++-
+ fs/ext4/file.c        |  5 ++-
+ fs/gfs2/file.c        | 95 +++++++++++++++++++++++++++++++++++++++----
+ fs/iomap/direct-io.c  | 29 ++++++++++---
+ fs/xfs/xfs_file.c     |  6 +--
+ fs/zonefs/super.c     |  4 +-
+ include/linux/iomap.h | 11 ++++-
+ include/linux/mm.h    |  3 ++
+ include/linux/uio.h   |  2 +
+ lib/iov_iter.c        | 60 ++++++++++++++++++++++++---
+ mm/gup.c              | 57 ++++++++++++++++++++++++++
+ 11 files changed, 246 insertions(+), 31 deletions(-)
+
+-- 
+2.26.3
+
