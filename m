@@ -2,86 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908D03D4A16
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9623D4A19
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 23:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhGXUqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 16:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
+        id S229873AbhGXUsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 16:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhGXUqG (ORCPT
+        with ESMTP id S229601AbhGXUsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 16:46:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75F6C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:26:37 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1m7PAC-0008Kz-54; Sat, 24 Jul 2021 23:26:28 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:41cc:c65c:f580:3bde])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id E5E5D6571A6;
-        Sat, 24 Jul 2021 21:26:23 +0000 (UTC)
-Date:   Sat, 24 Jul 2021 23:26:23 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     socketcan@hartkopp.net, davem@davemloft.net, kuba@kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] can: raw: fix raw_rcv panic for sock UAF
-Message-ID: <20210724212623.65as5y2pbg4lnspr@pengutronix.de>
-References: <20210722070819.1048263-1-william.xuanziyang@huawei.com>
+        Sat, 24 Jul 2021 16:48:07 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A45C061575
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:28:37 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id e2so6269870wrq.6
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 14:28:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=T9UuQwjHWzWGcYyCteF5pj3ITs8iH+zIJu2j9F2CpBc=;
+        b=rtkkjM22M0ZLiIqrd7EIM2RE0qjNgemCx5ScbAxR+P/e485T3SnHXTzXhwY7LfcrRb
+         9v/UYLsqEmGdjz05e5ZExJgkPuNLF2cQyHEq9aAyxotKFZkjyBVsxXryBh9Azf772vw+
+         D6wICd+lnOFqKEjwFxP+/ZSyZaoSwAIhqN+7j58jupMHxumEfIU89h4e3n9oHTsAb4a9
+         mN+aNmkezX+XkNDl6PP9qijlXbN2kHTDCy1DEeGDyv3SViZaHBufMjCKfbx4HhXlqQwm
+         Q1DDEsczmWnHkcFFWhgmi00uFjjKHaaN/YyzVDBp3OrHAzckViPPeBmz88GZdf2+wBUv
+         i4ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=T9UuQwjHWzWGcYyCteF5pj3ITs8iH+zIJu2j9F2CpBc=;
+        b=dzJg0uVO+RZHYvs2Sfb0ZbI26Lz/yxh5UKUvc5GoZXoWu7dy8BWwsdk+uzVMOQDx1e
+         v0Hk3hIl+xuo5AnEqTGzvZM21mYuThweSVx0o5O2Ec/ADBY3NQHOz4snLUShD836qPqg
+         OdNWEz5nL3go5t4lXGTxjdDnK8iAF7GPDHwNGHwdgdQTDQZEQwQdl+AbDpMgSG3GeP6Z
+         cdfy8Zi/SNQmNXJn9y8aw8WUZJIpQrUfML43j9Pu7+IHyeotHOHlAoQAVPjBGBPOLUlQ
+         cbiTvWgjpE13qujgPRxbEfNFjm0ZCrxsekWXwjy/cITCgjyvFWAfu6erRNcEpnN3B0sP
+         yo8A==
+X-Gm-Message-State: AOAM530ZKd5vZd1nvLnmrMGHg/omSXJKdbE/1to8pl5n/z4YvVdxYb4e
+        WT+PzgFCY/Zgc6K2y5fjw7jEmQkTYOQVyt9g8zE=
+X-Google-Smtp-Source: ABdhPJwSQmhnuwY6z1pcOyxHIJs2dagHEzu6hOTPXFK4Tv6Yrep2amuh/4/Is9GQr9V+Z+awOiY+lp+P9G6+wERabR4=
+X-Received: by 2002:a5d:528d:: with SMTP id c13mr11622291wrv.343.1627162116224;
+ Sat, 24 Jul 2021 14:28:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n7g5vkbmqkimt2k7"
-Content-Disposition: inline
-In-Reply-To: <20210722070819.1048263-1-william.xuanziyang@huawei.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Received: by 2002:a5d:6846:0:0:0:0:0 with HTTP; Sat, 24 Jul 2021 14:28:35
+ -0700 (PDT)
+Reply-To: mrs.bill_chantal66@europe.com
+From:   "Mrs.Bill.Chantal" <hawaouedraogo48@gmail.com>
+Date:   Sat, 24 Jul 2021 23:28:35 +0200
+Message-ID: <CAAhn=oC4u9h1Je2KOus8Ks9ATF9EP6xNazbgd-qnE1SOQONtJg@mail.gmail.com>
+Subject: Dear Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear Friend
 
---n7g5vkbmqkimt2k7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You have been compensated with the sum of 4 million dollars in this
+united nation the payment will be Issue into atm visa card and send to
 
-On 22.07.2021 15:08:19, Ziyang Xuan wrote:
-> We get a bug during ltp can_filter test as following.
+you from the Santander bank we need your address passport and
+yourwhatsapp number.
 
-Applied to can/testing.
-
-Thnx,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---n7g5vkbmqkimt2k7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD8hXwACgkQqclaivrt
-76kpzwf+IvbX45gTtbq+bVmqxxagIwV7wAFjfT0TCVXPynz/NWoFp7pCk9yWUdyj
-o7P9B0S+ew4SanmD/CTjCBd9rcnj6VTeK64mGwZo7BX4HPXYUdPsC5C4n/C6ivji
-uNJPE1nlgJ21+HVQTttjgBltHVQ60bmQUIarDwkGZEQopArFvynGxwTkZU6m/y9q
-uTEcp97i3Sq2rXp+yY88mHwr3ApBaX33AHZY508jcMIo4hWTqs0ufzeAJYO6pa6W
-7NUowWOBYTqw6XMUO1I6hXJ95UB/bsaoCRE0lNw5TiEv8VuJPeZ1or36BZikgbqE
-97JqNendkCmvQIOGo78Ek3mi1887CA==
-=aSm0
------END PGP SIGNATURE-----
-
---n7g5vkbmqkimt2k7--
+Thanks
+Mrs. bill Chantal
