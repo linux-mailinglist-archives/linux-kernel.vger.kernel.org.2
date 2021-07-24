@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7963D4932
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065663D4934
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 20:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhGXRye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 13:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhGXRyc (ORCPT
+        id S229813AbhGXR6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 13:58:02 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:37976 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhGXR57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 13:54:32 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A5FC061575;
-        Sat, 24 Jul 2021 11:35:02 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id hb6so8722796ejc.8;
-        Sat, 24 Jul 2021 11:35:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=OYA3ci3b6kMBnU+mtfcyeRkI+VLghBV/ejTMP2wgjbk=;
-        b=lcGU5AZkxJgvvkmM0gsKcktB8hiUjMto2PdDe19tqvCNmYH93UeMtcZr5VltvvEj7l
-         zMCYrcHLkEESBOmVTjVf4HOoFQMDWBAXJtUvoSrySLmrdrNcM8bKJXwtRaRrRemwdUSi
-         ImnXqK+YMRCyK3F7R8IMm7IgT8YZzOO6PsSA88TGcpg49lnGUTSESEtMBx8KFj+GnUb+
-         xUxmWDZNkTz0/jZlin29JCu3tzOJ7gwyYoI6eUDHmqRBeSmYdU06X9YMIoX4juug9e/2
-         Yt2B9HO1Toa7FEpQk2n/MHkbu7ljdDhhn8sgQ8HnYZTtzWmfM72SrwjycVBbq7vynkEn
-         iHVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=OYA3ci3b6kMBnU+mtfcyeRkI+VLghBV/ejTMP2wgjbk=;
-        b=pPfHzcPsdbSIryevSGDx5KrVtW8ZjkpM9fQAB0crf5X8HwBUeX5/aEJ8wbAhwCkaff
-         3FunuKN/WXbpqdVFcu3hYQgnXfFbwBGXoFenjgaE6XwDxLwOlo3w0L2CrpaTkAlg6WfD
-         Ngf+B+Bg5nlgGTErGc3ZfPf81BlDwvX54Tv/cQXnZoqMAjOPj0R6Vi8Z3M+/ay0zB6Qc
-         YJD+VQR5oN3WnRbRl8oDv7w/bCgsOZuWBZlvrP8w1Urk0Z7aCj+sukkESOzRduOToGWT
-         Lz7hAOcHegvC70YAORNDCO22+hSNc3c/ZYlReUheZvcKoNX3za+6OvQQpkLx01ybJ/zs
-         qrmQ==
-X-Gm-Message-State: AOAM5318OQaDxHSmWzOm4yF7EO0xCOoxeT0hh254b0/AfyUH9DD8GcbJ
-        v+UUpNrDZdLOgJg/YUiJa6w=
-X-Google-Smtp-Source: ABdhPJxJNtYQUouT8g3hMDfErIithvJFi3+MI5uRbKPPMW/dyyA18GQfSC8G4AUom+PQ3CACvDB8ag==
-X-Received: by 2002:a17:906:28c4:: with SMTP id p4mr10317176ejd.302.1627151701388;
-        Sat, 24 Jul 2021 11:35:01 -0700 (PDT)
-Received: from pc ([196.235.233.206])
-        by smtp.gmail.com with ESMTPSA id i14sm12609218eja.91.2021.07.24.11.34.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 11:35:00 -0700 (PDT)
-Date:   Sat, 24 Jul 2021 19:34:57 +0100
-From:   Salah Triki <salah.triki@gmail.com>
-To:     Herton Ronaldo Krzesinski <herton@canonical.com>,
-        Hin-Tak Leung <htl10@users.sourceforge.net>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, gregkh@linuxfoundation.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] wireless: rtl8187: replace udev with usb_get_dev()
-Message-ID: <20210724183457.GA470005@pc>
+        Sat, 24 Jul 2021 13:57:59 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 16OIa5fW011807;
+        Sun, 25 Jul 2021 03:36:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 16OIa5fW011807
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1627151766;
+        bh=adPHQfj4dkdvDSuI2P8Sk/NYpUO6MJy1Eba1ZmTwIqQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mwy+A+WoxA23v7DCIpvZqa01h//pg2w0vRfZRtk8hESAyrN042xstnK84DPzcoea0
+         Beda2yGgKgQ8ezrhrsTt1sXbPOJVN3u+19AnZEZNSpg+BoT1oOKRYZ24GdaREpBSCn
+         fD9NIOGpMZKN8TG7PKW0m/idNM80eGkYUAGzJa+tKDxXaQWP4Zzm9qib1DY3lLHfHW
+         GHHMdqyJ78F6lyNZaPnF16HDyOdcyDxrft1d5WodjnFot7HDAPGwEAIWBQ2c4IBBcU
+         OwFO3HimmyMXY2tYJBWOsoT2f9X+/B9V6bemsoVMOgCLlVzfQnqiuT3+B1bA7FQbAi
+         +/wU2T2agkHoA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>,
+        Richard Weinberger <richard@nod.at>,
+        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: [PATCH] kbuild: do not require sub-make for separate output tree builds
+Date:   Sun, 25 Jul 2021 03:35:56 +0900
+Message-Id: <20210724183556.76680-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace udev with usb_get_dev() in order to make code cleaner.
+As explained in commit 3204a7fb98a3 ("kbuild: prefix $(srctree)/ to some
+included Makefiles"), I want to stop using --include-dir some day.
 
-Signed-off-by: Salah Triki <salah.triki@gmail.com>
+I already fixed up the top Makefile, but some arch Makefiles (mips, um,
+x86) still include check-in Makefiles without $(srctree)/.
+
+Fix them up so 'need-sub-make := 1' can go away for this case.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
-index eb68b2d3caa1..30bb3c2b8407 100644
---- a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
-+++ b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
-@@ -1455,9 +1455,7 @@ static int rtl8187_probe(struct usb_interface *intf,
+ Makefile           | 5 ++---
+ arch/mips/Makefile | 2 +-
+ arch/um/Makefile   | 6 +++---
+ arch/x86/Makefile  | 2 +-
+ 4 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index e4f5895badb5..bb10a93edf5c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -191,10 +191,9 @@ endif
+ ifneq ($(abs_srctree),$(abs_objtree))
+ # Look for make include files relative to root of kernel src
+ #
+-# This does not become effective immediately because MAKEFLAGS is re-parsed
+-# once after the Makefile is read. We need to invoke sub-make.
++# --included-dir is added for backward compatibility, but you should not rely on
++# it. Please add $(srctree)/ prefix to include Makefiles in the source tree.
+ MAKEFLAGS += --include-dir=$(abs_srctree)
+-need-sub-make := 1
+ endif
  
- 	SET_IEEE80211_DEV(dev, &intf->dev);
- 	usb_set_intfdata(intf, dev);
--	priv->udev = udev;
--
--	usb_get_dev(udev);
-+	priv->udev = usb_get_dev(udev);
+ ifneq ($(filter 3.%,$(MAKE_VERSION)),)
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 4e942b7ef022..bc2e1857d8ce 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -254,7 +254,7 @@ endif
+ #
+ # Board-dependent options and extra files
+ #
+-include arch/mips/Kbuild.platforms
++include $(srctree)/arch/mips/Kbuild.platforms
  
- 	skb_queue_head_init(&priv->rx_queue);
+ ifdef CONFIG_PHYSICAL_START
+ load-y					= $(CONFIG_PHYSICAL_START)
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 12a7acef0357..f2fe63bfd819 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -41,8 +41,8 @@ endif
  
+ HOST_DIR := arch/$(HEADER_ARCH)
+ 
+-include $(ARCH_DIR)/Makefile-skas
+-include $(HOST_DIR)/Makefile.um
++include $(srctree)/$(ARCH_DIR)/Makefile-skas
++include $(srctree)/$(HOST_DIR)/Makefile.um
+ 
+ core-y += $(HOST_DIR)/um/
+ 
+@@ -76,7 +76,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
+ 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
+ 
+ #This will adjust *FLAGS accordingly to the platform.
+-include $(ARCH_DIR)/Makefile-os-$(OS)
++include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
+ 
+ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
+ 		   -I$(srctree)/$(HOST_DIR)/include/uapi \
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 307fd0000a83..0fa7dc73b5d8 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -75,7 +75,7 @@ ifeq ($(CONFIG_X86_32),y)
+         KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
+ 
+         # CPU-specific tuning. Anything which can be shared with UML should go here.
+-        include arch/x86/Makefile_32.cpu
++        include $(srctree)/arch/x86/Makefile_32.cpu
+         KBUILD_CFLAGS += $(cflags-y)
+ 
+         # temporary until string.h is fixed
 -- 
-2.25.1
+2.27.0
 
