@@ -2,160 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CAA3D43E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92F73D43E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Jul 2021 02:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233505AbhGWXci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Jul 2021 19:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43278 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233558AbhGWXcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Jul 2021 19:32:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECE6F60E8F;
-        Sat, 24 Jul 2021 00:12:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627085570;
-        bh=tZzsGQbCVxqev5G3k7WUFXUgpMB0JBN7B4ZZPYZRAZw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SR2vuI6t07CVs99l+aQJu9Hkz1PJkRZ7xUXT+DJl70ukAsfxdbwZ33dUqgBLzlEpk
-         /53ho9YnR/WKtmO+xlk8d2q2t7p6c8vf9zWRzc8IBchVLLXGFNNl8M9A49u8QsrBiF
-         yFoVnKzj7UCIKDZZxaR4LQ7Ykygx94NrIQo4u8yCovX/HLL7NzhDn8E4CcTtIG2RQN
-         Vve2EwSsDZTSeSX9LwKzBO6KFGnoN3vwt4AUcHrM5VK5vrlnSwwrXdF4GVkSV5Q/Io
-         SOvcwEtszVHEe7CExGm8rc+bQyskVbx9yIcgig7tXtrXWUTVFDQJUFGfn1hoLGiwLA
-         jwyss24F0Mw5A==
-Date:   Sat, 24 Jul 2021 02:12:44 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v7 06/10] dt-bindings: phy: Add bindings for HiKey 970
- PCIe PHY
-Message-ID: <20210724021244.780297ee@coco.lan>
-In-Reply-To: <20210723225059.GA2727093@robh.at.kernel.org>
-References: <cover.1626855713.git.mchehab+huawei@kernel.org>
-        <946f2426bc542638240980931eae924c57f2ba27.1626855713.git.mchehab+huawei@kernel.org>
-        <20210723225059.GA2727093@robh.at.kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233369AbhGWXhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Jul 2021 19:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232724AbhGWXhG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Jul 2021 19:37:06 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D24AC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:17:39 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id bm25-20020a05620a1999b02903a9c3f8b89fso2437296qkb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Jul 2021 17:17:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=HOlFjIupBaRC8Gj2HRr1sX5wQQLAab9xCES8dhta9ys=;
+        b=ILx4pqCqbGkzhWIJTLtu9nC1m+It4WUw0yZM1Q3U2n7JCxtIkWzPzay+m+X2RL7tLL
+         J43O8vOtq3f9YScoL53U0MNLyYvG9logrmR1gkRtiMzm3fF9a2MS76njxQjHiufgSfhS
+         9PoM70rrHjJQ/AN9bC3OXw1E1roXQOWEayQBornKkrCpw8HPrBf7u5308KE9UYa/js9L
+         tnTlhGUYOoLnW/bwjfi8xAzydX5n+psmkKUmG6y+0CtZbYGVqnZ+SQBCKS5La9aVd3WZ
+         Cswd3cO9DNbgszs/u/NiWPlAU6RLmO+5SiJ6Fh3ecGmFhlQzx3G8rc+dyzQ49az0QeAm
+         GgQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=HOlFjIupBaRC8Gj2HRr1sX5wQQLAab9xCES8dhta9ys=;
+        b=X4rtjDM31/SCxTfk+3MNYv7OA35oUYcENqvHKkD2xAu+9CkpLlAJO2pNQpXLyVwaBD
+         BZzJUTvcytxA4yoGJyVGlmpvKjcn1vOCnU36KrhwhYpSOvW0wdQZrBR9BKaY6iKBwaxm
+         9jnZTmYYT89d6JbUFBOK2CiBNsONmJEO8ZdhsaBFoBrAbQKFOPwHBCDathTzXEJ4K/Ro
+         AvJWALX5c5rG/jExvTjOFG+Npur+G+rjd+6mF8UHsC4oBdyYwxW7EHwb3mfpY+xT2piB
+         Wzy+wRWi5LwXOHpcIybkvGZ3LXeOpkQoKONvoS+Bsm0XQXaiditE5TbE37wHRFQ5UX1l
+         w/ag==
+X-Gm-Message-State: AOAM532jvsX3PNGxpNZVYXbUgOPfdzOl9zo1nB78mgc903xqqbvaYGda
+        S/DZ01E132yKJfwkYerxiY5+q0A9Qr1PxQ8SPA==
+X-Google-Smtp-Source: ABdhPJxXDydiKx4ZebBCkBSRRlKUeS0PpaZROv9k4Ocf+GWRrYX4ALpcUwlhCr6StwlF9ZqKEldZImucfpWS8KP+mA==
+X-Received: from michaelfsun.mtv.corp.google.com ([2620:15c:202:201:153b:286b:8047:586b])
+ (user=michaelfsun job=sendgmr) by 2002:a05:6214:cac:: with SMTP id
+ s12mr7031703qvs.29.1627085858563; Fri, 23 Jul 2021 17:17:38 -0700 (PDT)
+Date:   Fri, 23 Jul 2021 17:17:31 -0700
+Message-Id: <20210723171729.1.I98b1da8cdd72c1f355366f623cb34ddfc0fe40ae@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH] Bluetooth: btusb: Add valid le states quirk
+From:   Michael Sun <michaelfsun@google.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Michael Sun <michaelfsun@google.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 23 Jul 2021 16:50:59 -0600
-Rob Herring <robh@kernel.org> escreveu:
+Add the valid le states quirk for WCN6855 and GarfieldPeak controller
+so the 'central-peripheral' role is exposed in userspace.
 
-> On Wed, Jul 21, 2021 at 10:39:08AM +0200, Mauro Carvalho Chehab wrote:
-> > Document the bindings for HiKey 970 (hi3670) PCIe PHY
-> > interface, supported via the pcie-kirin driver.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  .../phy/hisilicon,phy-hi3670-pcie.yaml        | 95 +++++++++++++++++++
-> >  1 file changed, 95 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-> > new file mode 100644
-> > index 000000000000..a5ea13332cac
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/phy/hisilicon,phy-hi3670-pcie.yaml
-> > @@ -0,0 +1,95 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/phy/hisilicon,phy-hi3670-pcie.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: HiSilicon Kirin970 PCIe PHY
-> > +
-> > +maintainers:
-> > +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > +
-> > +description: |+
-> > +  Bindings for PCIe PHY on HiSilicon Kirin 970.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: hisilicon,hi970-pcie-phy
-> > +
-> > +  "#phy-cells":
-> > +    const: 0
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +    description: PHY Control registers
-> > +
-> > +  phy-supply:
-> > +    description: The PCIe PHY power supply
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: PCIe PHY clock
-> > +      - description: PCIe AUX clock
-> > +      - description: PCIe APB PHY clock
-> > +      - description: PCIe APB SYS clock
-> > +      - description: PCIe ACLK clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: phy_ref
-> > +      - const: aux
-> > +      - const: apb_phy
-> > +      - const: apb_sys
-> > +      - const: aclk
-> > +
-> > +  reset-gpios:
-> > +    description: PCI PERST reset GPIOs
-> > +    maxItems: 4
-> > +
-> > +  clkreq-gpios:
-> > +    description: Clock request GPIOs
-> > +    maxItems: 3  
-> 
-> Again, this will not work. 
+Signed-off-by: Michael Sun <michaelfsun@google.com>
+---
 
-Just to be sure: you're talking about the PERST# gpios (e. g. reset-gpios)
-here, right?
+ drivers/bluetooth/btusb.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> It boils down to this fails to describe how the GPIOs are connected 
-> which is the point of GPIOs in DT. This in no way captures the hierarchy 
-> of devices. While you may be lucky that you can just assert or 
-> deassert all the lines at one time, that's not likely to work in a 
-> more complicated case (such as having to power up/down each device).
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 7b69a97bd0e9..1876a960b3dc 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -297,7 +297,8 @@ static const struct usb_device_id blacklist_table[] = {
+ 
+ 	/* QCA WCN6855 chipset */
+ 	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
+-						     BTUSB_WIDEBAND_SPEECH },
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 
+ 	/* Broadcom BCM2035 */
+ 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
+@@ -371,7 +372,8 @@ static const struct usb_device_id blacklist_table[] = {
+ 	{ USB_DEVICE(0x8087, 0x0032), .driver_info = BTUSB_INTEL_NEWGEN |
+ 						     BTUSB_WIDEBAND_SPEECH},
+ 	{ USB_DEVICE(0x8087, 0x0033), .driver_info = BTUSB_INTEL_NEWGEN |
+-						     BTUSB_WIDEBAND_SPEECH},
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 	{ USB_DEVICE(0x8087, 0x07da), .driver_info = BTUSB_CSR },
+ 	{ USB_DEVICE(0x8087, 0x07dc), .driver_info = BTUSB_INTEL },
+ 	{ USB_DEVICE(0x8087, 0x0a2a), .driver_info = BTUSB_INTEL },
+-- 
+2.32.0.432.gabb21c7263-goog
 
-There's no way to power up/down each device, as they all share the
-same regulator line (LDO33). So, when this is powered on, all PCI
-devices are powered at the same time.
-
-The original DT had names for each reset-gpio, but this was just
-informative, as the only possible way for this hardware to work is
-to send the PERST# signal via all GPIOs at the same time.
-
-Ok, we might overdesign the DT, in order to consider a non-existent
-scenario where it would be possible to power on and reset the devices 
-in separate, but I can't think on a way to do that, except by maybe
-creating virtual phy (or pcie) DT nodes, one for each combination of
-regulator + PERST#, and have separate drivers for each one. Such kind
-of scenario only makes sense when each PCIe device can be powered on
-independently (which is not the case here).
-
-If you have a better idea, I'm all ears.
-
-> 
-> I realize the right solution is more complex, but that's the only way to 
-> handle this in a host bridge and board independent way.
-> 
-> If you want the simple solution, just configure all these GPIOs in 
-> firmware before Linux boots.
-
-This won't work. The PERST# signal should be sent after initializing
-the PCIe + PHY and powering up the PEX8606 PCIe bridge chipset
-(via LDO33). That happens when the PCIe driver is loaded.
-
-Thanks,
-Mauro
