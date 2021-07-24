@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35203D4A8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 00:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905EA3D4A90
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 01:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhGXWPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 18:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
+        id S229853AbhGXW1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 18:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhGXWPj (ORCPT
+        with ESMTP id S229573AbhGXW1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 18:15:39 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662B4C061575;
-        Sat, 24 Jul 2021 15:56:10 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id ga41so9308652ejc.10;
-        Sat, 24 Jul 2021 15:56:10 -0700 (PDT)
+        Sat, 24 Jul 2021 18:27:36 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89C7C061575;
+        Sat, 24 Jul 2021 16:08:06 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id i1so7323028plr.9;
+        Sat, 24 Jul 2021 16:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=2YkOr/SOjc8e1D7v+UhUxdLCEbTLFclJesQWR+kwwU4=;
-        b=jPyeQ8mCSCGcS4f5mZtBfqomTp4MTHmxo9HWg11n//qazKN+3QvEBHKY5jHbvMIkDH
-         t/OsPKUdaBBm8Yu81QZdxzq62a2IIT0bKomf+wAvNjIK9grlcxUr4PxpwC5DkVFStrx2
-         4LkIl8ULRHMVq1g/ZkbpG/j/YYYp6Xn4v4zkTvheiCOPSpDATsSI/1K5G9oYnDuVBHVA
-         zZKJmPQ0umryo1fiGCIWxzmQMcnfMHWp3jXbFr4MOmyTIi7RM+OGcu94+d6fd9jH42KR
-         UM3r/wLiqkro4MR66T4YiqBO925oijtN5eMYrCqmuefI78j3YxKx76gWO/UIMmiFvxUB
-         i/jg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WdebXrH85o+8zWEjcgZzEgIqVLFXxqV+JxAWcNA0IFA=;
+        b=X2WzRRoGIloEKx2dAvGcYkBsodA4wmgjDK2TXcd3kqwxEPXei5lZWZG9FH2dlfI0Cm
+         tw3N9wLT1uwc0IKoQfCoyRmd4d76Pj1HqNoOFoMtmHRkKwXaruzp8dC6ZvCVSaEgS+gh
+         pJhd4jXA4QqzVBeBl/AdGmBgL3pGdGv/KLVf5NoBqVyUxCiYr/N3oo0M3M2plAJtkd2u
+         72rA+TCVrTweL0rows6Dc/EcPWzLFuK7ujvAmoQJksXnEKQD/IvP7gHFyBUGrxMsj3bt
+         1Dg2ASPC+5EJ1RS9dW17jpAFgn2gJsOgYEnDaZjL2sMndYM/cYnrw3rWM6b1HjABgLEj
+         LJ5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2YkOr/SOjc8e1D7v+UhUxdLCEbTLFclJesQWR+kwwU4=;
-        b=q5BqcEZKHIIQwZrhHhHcOOYSl0S+5FiJonH5r0851MJKh55vcD2oiZyABYfCe6P711
-         IH48Z4UDZwsPMPKcHIQRgmtq9v1Etzr20Uu68m0hXti6CUXLazD6VcTpamHaD+UDk39o
-         lwcQPzDwD11iq5bth0aLfIb5hbr54IiRDfa8lEGPZDf9mNlTvqPjqQN4aoOu9r988J54
-         A0dtMA7J7rKe8hfoKbCweLSPdS+Jj85TXRj9S7rjxh5y0N6pe9vDdqG10cBshdpixPcb
-         EZdvMw+a5+mUIHR0vQ2NLC6uKsh/kKUfZ+c6HKhF9RWgZFwmVJOi25s7iAdQav1NpURx
-         6C+g==
-X-Gm-Message-State: AOAM531/uD2Mp4nZJ3AyQ5xx+n8hCuQ45BYKGnmS4Lx2MymtFijMFYhZ
-        OXX0F9vY7xch6Mvk21hK/Rw=
-X-Google-Smtp-Source: ABdhPJyF2fwAlFNkbLur3s36viBfsxpoawYSmYWz6s8vGu2O8tNtfqRcY5iKh/GkAR7FdIVbELP3jQ==
-X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr11064629ejz.235.1627167368957;
-        Sat, 24 Jul 2021 15:56:08 -0700 (PDT)
-Received: from ?IPv6:2001:981:6fec:1:7f54:b3a5:1f2:dfcf? ([2001:981:6fec:1:7f54:b3a5:1f2:dfcf])
-        by smtp.gmail.com with ESMTPSA id q8sm14442106edd.43.2021.07.24.15.56.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Jul 2021 15:56:08 -0700 (PDT)
-From:   Ferry Toth <fntoth@gmail.com>
-Subject: Re: [PATCH v10 0/6] Re-introduce TX FIFO resize for larger EP
- bursting
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <wcheng@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, Jack Pham <jackp@codeaurora.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-References: <1623923899-16759-1-git-send-email-wcheng@codeaurora.org>
- <cfb83fe4-369c-ec72-7887-3bcb0f20fe15@gmail.com>
- <ec8050c5-c013-4af6-b39e-69779c009a9c@codeaurora.org>
- <f5ed0ee7-e333-681f-0f1a-d0227562204b@gmail.com>
- <2e01c435-9ecc-4e3b-f55c-612a86667020@codeaurora.org>
- <2ae9fa6a-3bb1-3742-0dd3-59678bdd8643@gmail.com>
- <ebea75fe-5334-197b-f67a-cb6e1e30b39e@codeaurora.org>
- <bafa93bb-11e3-c8a5-e14a-b0a6d5695055@gmail.com> <87v951ldlt.fsf@kernel.org>
- <d9aef50c-4bd1-4957-13d8-0b6a14b9fcd0@gmail.com> <87pmv9l1dv.fsf@kernel.org>
- <9dc6cd83-17b9-7075-0934-6b9d41b6875d@gmail.com>
- <CAHp75Vc7HDvCiT9Fp2hRsPTzNpRmm0E5yRHSuhpyD1Gqkf2FfA@mail.gmail.com>
-Message-ID: <4955687e-1015-37d6-9905-2b68aa9a85a0@gmail.com>
-Date:   Sun, 25 Jul 2021 00:56:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WdebXrH85o+8zWEjcgZzEgIqVLFXxqV+JxAWcNA0IFA=;
+        b=b+aqgX2pSpXIMhYo8YAxFJl1hh2AWVCyOgSITc3IRskh0qqNa+8pkKg9YBbHly0EZk
+         UIbyDhOTq6JHbx14bJIBE3SMJLKV0T5kxqEvlCGs5nXi7G8agc2FlXfAKfvzh6WuFrv/
+         giDvtPQw4roLp6k3PqOD0IAF4sU1B+Ta8OhPqLFoKu4aQzp13pCzZ74DaV3eU8ZJmJdu
+         Rqx9Xx0sevX5F+Yu8/j4x4nv9WKoK1reM/Vaap2vzT/FcoRp8ToxJObDchVhyqRc5iHI
+         AhR+50BVufaQlF2Vxiwl9zCTY7EZP0MoR5ytQfPVuZplHtNiUUwR0cO54awx6R54Fclf
+         7sxg==
+X-Gm-Message-State: AOAM530tCr5TzM/fA35f0lDOpSC0v2KaSw7cbFaPDwoXBd46MN8qZgM1
+        8lDlk9iLDJOWIlFpVyfsYQw=
+X-Google-Smtp-Source: ABdhPJzUvQSELAk5zDs3g/KIUgrh9tMUA7tT0Dy2Z2jetONHobeXJ7Fv8fBiGid9YQjm1DMDu5vZOg==
+X-Received: by 2002:a17:902:9685:b029:ef:70fd:a5a2 with SMTP id n5-20020a1709029685b02900ef70fda5a2mr8870471plp.20.1627168086035;
+        Sat, 24 Jul 2021 16:08:06 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4140:52d7:8bcf:971d])
+        by smtp.gmail.com with ESMTPSA id m34sm43686809pgb.85.2021.07.24.16.08.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 16:08:04 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 16:08:02 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc: powermate: update the reference count of the usb
+ interface structure
+Message-ID: <YPydUp9vc5U7vGIw@google.com>
+References: <20210724212016.GA568154@pc>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vc7HDvCiT9Fp2hRsPTzNpRmm0E5yRHSuhpyD1Gqkf2FfA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210724212016.GA568154@pc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi,
 
-Op 24-07-2021 om 23:19 schreef Andy Shevchenko:
-> On Sat, Jul 24, 2021 at 11:59 PM Ferry Toth<fntoth@gmail.com>  wrote:
->
->> BTW there is a secondary problem not related to dwc3: the console is not
->> working well and loosing chars. I can connect through wifi/ssh though.
-> You mean even on the kernel before any crash happened due to DWC3 stuff?
+On Sat, Jul 24, 2021 at 10:20:16PM +0100, Salah Triki wrote:
+> Use usb_get_intf() and usb_put_intf() in order to update the reference
+> count of the usb interface structure.
 
-Exactly.
+This is quite pointless as the driver will be unbound from the interface
+before interface is deleted.
 
-And this was working fine with rc1.
+> 
+> Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> ---
+>  drivers/input/misc/powermate.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/misc/powermate.c b/drivers/input/misc/powermate.c
+> index c4e0e1886061..69dc3347478a 100644
+> --- a/drivers/input/misc/powermate.c
+> +++ b/drivers/input/misc/powermate.c
+> @@ -337,7 +337,7 @@ static int powermate_probe(struct usb_interface *intf, const struct usb_device_i
+>  		goto fail3;
+>  
+>  	pm->udev = udev;
+> -	pm->intf = intf;
+> +	pm->intf = usb_get_intf(intf);
+>  	pm->input = input_dev;
+>  
+>  	usb_make_path(udev, pm->phys, sizeof(pm->phys));
+> @@ -428,6 +428,7 @@ static void powermate_disconnect(struct usb_interface *intf)
+>  		usb_free_urb(pm->irq);
+>  		usb_free_urb(pm->config);
+>  		powermate_free_buffers(interface_to_usbdev(intf), pm);
+> +		usb_put_intf(pm->intf);
+>  
+>  		kfree(pm);
+>  	}
+> -- 
+> 2.25.1
+> 
 
-I do have patches (as you know) for improving dma for the hsu. But, for 
-the console afaik dma is disabled.
+Thanks.
 
+-- 
+Dmitry
