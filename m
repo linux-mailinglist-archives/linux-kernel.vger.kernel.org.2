@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880C13D4E2B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 16:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0593D4E36
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 17:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhGYOPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 10:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41186 "EHLO mail.kernel.org"
+        id S231255AbhGYO0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 10:26:37 -0400
+Received: from smtpbg604.qq.com ([59.36.128.82]:34422 "EHLO smtpbg604.qq.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231182AbhGYOPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 10:15:06 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D78A760E09;
-        Sun, 25 Jul 2021 14:55:34 +0000 (UTC)
-Date:   Sun, 25 Jul 2021 15:58:06 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-iio@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lars@metafoo.de
-Subject: Re: [PATCH 0/3] iio: adc: meson-saradc: Three small improvements
-Message-ID: <20210725155806.0d22449c@jic23-huawei>
-In-Reply-To: <20210717233718.332267-1-martin.blumenstingl@googlemail.com>
-References: <20210717233718.332267-1-martin.blumenstingl@googlemail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231208AbhGYO0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 10:26:36 -0400
+X-Greylist: delayed 336 seconds by postgrey-1.27 at vger.kernel.org; Sun, 25 Jul 2021 10:26:35 EDT
+X-QQ-mid: bizesmtp46t1627225276tfkrsdia
+Received: from localhost.localdomain (unknown [125.70.163.19])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Sun, 25 Jul 2021 23:01:15 +0800 (CST)
+X-QQ-SSF: 0100000000800090B000B00A0000000
+X-QQ-FEAT: aHJ2PTLZoXduDiSx0SWj5iWJ2RObJkhtK6JCKNqGe2C5FFUhuDMIRPxpDSsDP
+        lPG7J8d0bTcccUyCrJa4rcUa3tZoigHgPUYzXldQBbJb1zr4SoitsuhRIRCIC/1rNd5lHyC
+        bBIg9BoSz0M5Cv2ZILeQWN4As2uG9D7i1mgMj/3hspTF3XPBG1cRbuOiXXjaUW3dpiqMpru
+        E97CP9XI18S5NX53te9eKZy/SC4007pFTCuXC847JmcE0CIf7UQGKU6BBTHNp2w/pa6wNAW
+        561GL5vYORjDeRmV5hG9M+EZqDVw5WHtaBEAyFTZU6NKovKZD5y55Ue+EjmnYrTCFOMPqo1
+        c2KqO8PLJGb3HWL/NfhcgM9mqBezg==
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] powerpc/xmon: use ARRAY_SIZE
+Date:   Sun, 25 Jul 2021 23:01:07 +0800
+Message-Id: <20210725150107.27865-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 18 Jul 2021 01:37:15 +0200
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+The ARRAY_SIZE is the macro definition of sizeof(a)/sizeof(a[0]) and
+it is more compact and formal to get a array size.
 
-> Hello,
-> 
-> the first patch from this series saves a few CPU cycles on G12A, G12B
-> and SM1 SoCs. The other two patches are small whitespace cleanups.
-> 
-> In my opinion none of these patches are any real bugfix, which is why
-> I omitted the "Fixes" tag.
-> 
-Series applied to the togreg branch of iio.git and pushed out as testing
-to let 0-day poke at it in ways I can't be bothered to ;)
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ arch/powerpc/xmon/ppc-opc.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-Jonathan
-
-> 
-> Martin Blumenstingl (3):
->   iio: adc: meson-saradc: Disable BL30 integration on G12A and newer
->     SoCs
->   iio: adc: meson-saradc: Add missing space between if and parenthesis
->   iio: adc: meson-saradc: Fix indentation of arguments after a
->     line-break
-> 
->  drivers/iio/adc/meson_saradc.c | 20 ++++++++++++++------
->  1 file changed, 14 insertions(+), 6 deletions(-)
-> 
+diff --git a/arch/powerpc/xmon/ppc-opc.c b/arch/powerpc/xmon/ppc-opc.c
+index dfb80810b16c..6ca4cd26caef 100644
+--- a/arch/powerpc/xmon/ppc-opc.c
++++ b/arch/powerpc/xmon/ppc-opc.c
+@@ -954,8 +954,7 @@ const struct powerpc_operand powerpc_operands[] =
+   { 0xff, 11, NULL, NULL, PPC_OPERAND_SIGNOPT },
+ };
+ 
+-const unsigned int num_powerpc_operands = (sizeof (powerpc_operands)
+-					   / sizeof (powerpc_operands[0]));
++const unsigned int num_powerpc_operands = ARRAY_SIZE(powerpc_operands);
+ 
+ /* The functions used to insert and extract complicated operands.  */
+ 
+@@ -6968,8 +6967,7 @@ const struct powerpc_opcode powerpc_opcodes[] = {
+ {"fcfidu.",	XRC(63,974,1),	XRA_MASK, POWER7|PPCA2,	PPCVLE,		{FRT, FRB}},
+ };
+ 
+-const int powerpc_num_opcodes =
+-  sizeof (powerpc_opcodes) / sizeof (powerpc_opcodes[0]);
++const int powerpc_num_opcodes = ARRAY_SIZE(powerpc_opcodes);
+ 
+ /* The VLE opcode table.
+ 
+@@ -7207,8 +7205,7 @@ const struct powerpc_opcode vle_opcodes[] = {
+ {"se_bl",	BD8(58,0,1),	BD8_MASK,	PPCVLE,	0,		{B8}},
+ };
+ 
+-const int vle_num_opcodes =
+-  sizeof (vle_opcodes) / sizeof (vle_opcodes[0]);
++const int vle_num_opcodes = ARRAY_SIZE(vle_opcodes);
+ 
+ /* The macro table.  This is only used by the assembler.  */
+ 
+@@ -7276,5 +7273,4 @@ const struct powerpc_macro powerpc_macros[] = {
+ {"e_clrlslwi",4, PPCVLE, "e_rlwinm %0,%1,%3,(%2)-(%3),31-(%3)"},
+ };
+ 
+-const int powerpc_num_macros =
+-  sizeof (powerpc_macros) / sizeof (powerpc_macros[0]);
++const int powerpc_num_macros = ARRAY_SIZE(powerpc_macros);
+-- 
+2.32.0
 
