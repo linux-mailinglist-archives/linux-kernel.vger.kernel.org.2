@@ -2,128 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309EE3D4FB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 21:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CF13D4FBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 21:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhGYTGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 15:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhGYTGc (ORCPT
+        id S231467AbhGYTIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 15:08:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35848 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230116AbhGYTIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 15:06:32 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF429C061757;
-        Sun, 25 Jul 2021 12:47:00 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id z6-20020a9d24860000b02904d14e47202cso7869147ota.4;
-        Sun, 25 Jul 2021 12:47:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VeZWPhsf+UxEhhOjwlwIVeUOu2AI3fn4qRU/WSvFopQ=;
-        b=qFSeiaLrU2hQGry4BAWsunWWxW3JeMucElv2gemNGYWBDARmoVcrZylwDmpjWqCp9f
-         O/p7h80N2k7YsasIufiLCJFh77GVnZrlBm0eh59QRIy7rMOX0cK01UAm90OH7lnZKt/i
-         ruDtwgFAV34OeRVK/f00TEOUJrkGcYlstPjhIMeAP1riDhaj/OuWtGNRNl/oKOXqPNO9
-         29WyTDpMCHwEnumuXOGFgr4lvkUmXGVvoVhKu0isa+5Qy1XObzp77YRb+UvjRpsWHxPP
-         T8iOITAcuE7zq3LTSC9Tz+Nfta71/L7XCXMYTdT9YwjH9pX3zq/RdZMDk3StpCU77jl+
-         j42A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VeZWPhsf+UxEhhOjwlwIVeUOu2AI3fn4qRU/WSvFopQ=;
-        b=kIM/dCcIfSfWPDMhiWsps/ceZbGWlC5tdheBY4mnyZUFQUAUP/akvJLOFfCpY0BEkM
-         NN/KniY6EiLUoA67Me8if07WwqLPn3zckAqbOdkrAK2bFbRZ48tE5oppA4V6yAEP9yEb
-         m+Wu3Eu9Wv5E4WOd4QjWwDRe5lmFWOwRBUm7x5xJl1qLw0Bs9/Dqfn3fJtMvXdrRNMr6
-         29UavwLT6BTwN3Q8SZfOIt1hJS74ZnSqIHae9bISauoF2aN/7XgtpU4GiT4tM6nGWfhX
-         wShRNPkfSdmdSoEG/XR6xlxxQ9wbg3FJg3yTePMDuhYG9qJqbO+FBcmcvl29J8H9VYLl
-         TlOg==
-X-Gm-Message-State: AOAM531177q1ziKQOc7XVsQef7BBMnkGZfLmSn+jxv9LkN1duS+8i9On
-        bnymXAz+vqqNPkbY9+9EzbhH7gA1phE=
-X-Google-Smtp-Source: ABdhPJwwWW+Vr+4VCWALaqrlSdJB5raI2ZBVlZZzHg3aEJ/ZWKJNilDcx8dKKs7pRnf9DilSWLBNug==
-X-Received: by 2002:a9d:7982:: with SMTP id h2mr9036623otm.291.1627242419881;
-        Sun, 25 Jul 2021 12:46:59 -0700 (PDT)
-Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
-        by smtp.gmail.com with ESMTPSA id s8sm5751923oie.43.2021.07.25.12.46.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Jul 2021 12:46:59 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH] wireless: rtl8187: replace udev with usb_get_dev()
-To:     htl10@users.sourceforge.net,
-        Herton Ronaldo Krzesinski <herton@canonical.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, gregkh@linuxfoundation.org,
-        Salah Triki <salah.triki@gmail.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210724183457.GA470005@pc>
- <53895498.1259278.1627160074135@mail.yahoo.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <e761905b-0449-9463-c3ab-923aff36e4df@lwfinger.net>
-Date:   Sun, 25 Jul 2021 14:46:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sun, 25 Jul 2021 15:08:48 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627242557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tLUaa2kek2tqz2VvunMsn2pCNlPFhTozIDZBme0oKhw=;
+        b=4gOfKz4NsVSYYgOBQFhH4sgHl6ljb5yF2frHz0MWF5G1DPRwekpyRc03bQc54nzUMSQ6+R
+        qHiWw9toLjetdCwGDAhcyQTeUlmhah5dgZRrgLCgWpIpDIyJo9cvtvy/u0yYUbJH5LkNUN
+        ZnK0T/uqvwx9isqMVwrhMEqMA0y9LBZHpyfijWCIaHaPZVPhUtMydNGjezF4W2BM6KNMAl
+        4V3yU9aVg88cBLLXY7exSAFQESx8VJOrV8is1SzHJM0hBQ22gEyeA142tOuGtjSnGk6O6g
+        y38rY57+oxJaxnXPzIiLsu/+V160k9WVnxAi9nJd58I3QPSJ/px5GEFwPzGo3w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627242557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tLUaa2kek2tqz2VvunMsn2pCNlPFhTozIDZBme0oKhw=;
+        b=EoSIkCPx/j8YQ8ZoZThOLTDm6nTGS5pFMDcc2ufIS7o2hLBZvtL1bOqNkZ7e0lzXCjGlA7
+        ADz9ozdiymXLlLDw==
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [GIT pull] core/urgent for v5.14-rc3
+In-Reply-To: <CAHk-=wj5BnPvhmFkXuTJKHawi9kRQsFQDO44GQ4XzqJbwupSWw@mail.gmail.com>
+References: <162720492071.8837.4047241618315201209.tglx@nanos> <CAHk-=wj5BnPvhmFkXuTJKHawi9kRQsFQDO44GQ4XzqJbwupSWw@mail.gmail.com>
+Date:   Sun, 25 Jul 2021 21:49:16 +0200
+Message-ID: <878s1unphf.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <53895498.1259278.1627160074135@mail.yahoo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/21 3:54 PM, Hin-Tak Leung wrote:
-> 
-> 
-> On Saturday, 24 July 2021, 19:35:12 BST, Salah Triki <salah.triki@gmail.com> wrote:
-> 
-> 
->  > Replace udev with usb_get_dev() in order to make code cleaner.
-> 
->  > Signed-off-by: Salah Triki <salah.triki@gmail.com>
->  > ---
->  > drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c | 4 +---
->  > 1 file changed, 1 insertion(+), 3 deletions(-)
-> 
->  > diff --git a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c 
-> b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
->  > index eb68b2d3caa1..30bb3c2b8407 100644
->  > --- a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
->  > +++ b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
->  > @@ -1455,9 +1455,7 @@ static int rtl8187_probe(struct usb_interface *intf,
-> 
->  >     SET_IEEE80211_DEV(dev, &intf->dev);
->  >     usb_set_intfdata(intf, dev);
->  > -    priv->udev = udev;
->  > -
->  > -    usb_get_dev(udev);
->  > +    priv->udev = usb_get_dev(udev);
-> 
->  >     skb_queue_head_init(&priv->rx_queue);
-> 
->  > --
->  > 2.25.1
-> 
-> It is not cleaner - the change is not functionally equivalent. Before the 
-> change, the reference count is increased after the assignment; and after the 
-> change, before the assignment. So my question is, does the reference count 
-> increasing a little earlier matters? What can go wrong between very short time 
-> where the reference count increases, and priv->udev not yet assigned? I think 
-> there might be a race condition where the probbe function is called very shortly 
-> twice.
-> Especially if the time of running the reference count function is non-trivial.
-> 
-> Larry, what do you think?
+On Sun, Jul 25 2021 at 11:06, Linus Torvalds wrote:
+> On Sun, Jul 25, 2021 at 2:23 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> So that function definition _should_ have been
+>
+>     static __always_inline void idle_init(unsigned int cpu)
+>
+> instead.
+>
+> Oh well. I'll fix it up as a separate patch. I wish I had done the
+> clang build before pushing it out - and I wish the -tip tree started
+> tested clang as well at least in _some_ configuration.
 
-My belief was that probe routines were called in order, which was confirmed by 
-GregKH. As a result, there can be no race condition, and the order of setting 
-the reference count does not matter. On the other hand, the current code is not 
-misleading, nor unclear. Why should it be changed?
+Bah, obvious and I overlooked it when staring at the diff. Duly noted
+that clang will be part of the procedure soonish.
 
-NACK on the patch.
+Thanks,
 
-Larry
-
+        tglx
