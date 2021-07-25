@@ -2,228 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E283D4B80
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 06:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0CE3D4BC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 06:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhGYDpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 23:45:09 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:10849 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230010AbhGYDot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 23:44:49 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4GXVMy2jlHzwg;
-        Sun, 25 Jul 2021 06:25:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1627187118; bh=7aLr1DcvH9n5VyrTP2IaJJvojTP4sCPPtY6zdO/RZU4=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=r0gQ6/bSunpdszUfoQuNTcVee1+16h6NzOT8R42K8/M7tmbIW9SSYZdaoN6hK2Iul
-         ZzT4iWpFbi317/8LKsc4s/6pdoWne+aeleBHPc132bIgkRBg/9YkM1TQeQLsGf7Ikk
-         FDg6uEYLu4oKXaD/v47SMAu+7e8JN00b0GEsOP4JL7B2iAx9iUQ7d6eo07ZYRLZksF
-         Lj9eHf16vt7WbnanwuQvBBqfHZ18e2I4xBglZuT92xGie9rfidbdYGfIQUB6IuHXTl
-         KRkN1FnFAk1ZY111zi4iqDhAi/D7CY2DVtr/3z45SVE92xBmY0Pf2wpglNLsb2ryh6
-         MR+Frz3u98UNw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.2 at mail
-Date:   Sun, 25 Jul 2021 06:25:18 +0200
-Message-Id: <a1d220656a6851e05739ac5438bb86cb13cc6e3c.1627186831.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1627186831.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1627186831.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v3 5/5] mmc: sdhci: simplify v2/v3+ clock calculation
+        id S230229AbhGYDy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 23:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhGYDyx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 23:54:53 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546A4C061757;
+        Sat, 24 Jul 2021 21:35:23 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so9470524pjh.3;
+        Sat, 24 Jul 2021 21:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9QfMacwXqISlBYINZ+Q7r0c2eQyBEi5YgMNKFEGQmX8=;
+        b=N+CRmMyvROxELUJKesyZnb83IJ1ImqRLj6cgbgEmSBTBV5l2+6KlqjvkKIaaTCUBDY
+         yOdIkkltgzalnbsDz7VnRtdt1HNGdiwPMf8eAyEPg1KFU5VCjaattwaN1IRZ2H/dTEkj
+         vgnuEUQDL5Sve1k4k8mbqoD2gWRbn/IasuR5onrMe/hcGx91wQ8eoHWFLlLni5Dcj3DP
+         XFxCqaQVIa/F59ZhRyMQnQ5bOnRfgWjjEp1puhps1sfVGw6jhexaPVbzCY8m/SckUXGc
+         DZjbfKoNXmXctjaYKXeajSw3C8y2cxqletpNEdPs/g8wzhs28jQ29uxGe89kCJwjPCu6
+         /aLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9QfMacwXqISlBYINZ+Q7r0c2eQyBEi5YgMNKFEGQmX8=;
+        b=PfKiulk83+ePj3s/uuPmGqwkRBpBQnk8PMIpAfJla2Puah+F1hcAuHV1dhKWHUanvQ
+         q5Y2v4gzUc+cHQDiTMGIhduC4Li43x37pJTjjTZQkWC6cs5hfxwQ4yXkyOrmrOCV2ejN
+         VNpY5Hh+YjqCkrayDYSuAC98CynJXLoZHlvILzs9WNWE3ffKOkMnDSOHuYoACPWiaqPs
+         Izzlc3kPyPLkFRhMD+hBnwAHh+Mfcc0Ky0gtwJWOvsnGsOW8MBd10ghCnTkaTMdkyRoF
+         GBPWPWlQfi0lZllUgZKzNyDmaIueaBcGx97eFDExvmiGkrKkyB/23Hy/0jbB/rJn8a02
+         QRWg==
+X-Gm-Message-State: AOAM533rz2wapIirjfirJwo5kylk7kgzQ2E2ylrUJ6ghiGTShvRDKH05
+        Ik/GHFrJZOgDF64v1G+vIo0=
+X-Google-Smtp-Source: ABdhPJxKlsXuVnkebpj+s+ijZ/Q6qE+0mgB7sGB6ZoRNxPyJ3JtFiRyE+R0y1/34mORkQhqAp9f2Gg==
+X-Received: by 2002:a17:90a:4295:: with SMTP id p21mr11018285pjg.149.1627187722594;
+        Sat, 24 Jul 2021 21:35:22 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:47a8:ca26:9af3:7f64])
+        by smtp.gmail.com with ESMTPSA id a23sm39789696pfa.16.2021.07.24.21.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 21:35:21 -0700 (PDT)
+Date:   Sat, 24 Jul 2021 21:35:19 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Salah Triki <salah.triki@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] misc: powermate: update the reference count of the usb
+ interface structure
+Message-ID: <YPzqBxjMb7sVX7iw@google.com>
+References: <20210724212016.GA568154@pc>
+ <YPydUp9vc5U7vGIw@google.com>
+ <20210724235637.GA590874@pc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Kevin Liu <kliu5@marvell.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Chris Ball <cjb@laptop.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210724235637.GA590874@pc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For base clock setting, SDHCI V2 differs from V3+ only in allowed divisor
-values.  Remove the duplicate version of code and reduce indentation
-levels.  We can see now, that 'real_div' can't be zero, so the check is
-removed.  While at it, replace divisor search loops with divide-and-clamp
-to make the code even more readable.
+On Sun, Jul 25, 2021 at 12:56:37AM +0100, Salah Triki wrote:
+> Hi,
+> 
+> On Sat, Jul 24, 2021 at 04:08:02PM -0700, Dmitry Torokhov wrote:
+> > 
+> > On Sat, Jul 24, 2021 at 10:20:16PM +0100, Salah Triki wrote:
+> > > Use usb_get_intf() and usb_put_intf() in order to update the reference
+> > > count of the usb interface structure.
+> > 
+> > This is quite pointless as the driver will be unbound from the interface
+> > before interface is deleted.
+> 
+> From the documentation of usb_get_intf():
+> 
+> [quote]
+> 
+> Each live reference to a interface must be refcounted.
+> 
+> Drivers for USB interfaces should normally record such references in their 
+> probe() methods, when they bind to an interface, and release them by calling
+> usb_put_intf(), in their disconnect() methods.
+> 
+> [/quote]
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
-v3: squashed div-conversion and deduplication patches to avoid code churn
-v2: no changes
----
- drivers/mmc/host/sdhci.c | 124 ++++++++++++++++++---------------------
- drivers/mmc/host/sdhci.h |   4 +-
- 2 files changed, 58 insertions(+), 70 deletions(-)
+I see. In this case I recommend you submit a patch to the documentation
+clarifying this, as taking a reference when binding to an interface
+makes sense when dealing with a secondary interface, but not primary
+one. See for example drivers/usb/class/cdc-acm.c where it binds to the
+data interface, but also locates control interface and bumps up
+reference to that.
 
-diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index cfa314e659bc..90bda4150083 100644
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -1848,88 +1848,76 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
- u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
- 		   unsigned int *actual_clock)
- {
--	int div = 0; /* Initialized for compiler warning */
--	int real_div = div, clk_mul = 1;
-+	unsigned int div, real_div, clk_mul = 1;
- 	u16 clk = 0;
--	bool switch_base_clk = false;
- 
--	if (host->version >= SDHCI_SPEC_300) {
--		if (host->preset_enabled) {
--			u16 pre_val;
-+	if (clock == 0)
-+		return clk;
-+
-+	if (host->preset_enabled) {
-+		/* Only version 3.00+ can have preset_enabled */
-+		u16 pre_val;
-+
-+		pre_val = sdhci_get_preset_value(host);
-+		div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
-+		if (!(pre_val & SDHCI_PRESET_CLKGEN_SEL))
-+			goto base_div_set;
-+
-+		clk = SDHCI_PROG_CLOCK_MODE;
-+		real_div = div + 1;
-+		clk_mul = host->clk_mul;
-+		if (!clk_mul) {
-+			/* The clock frequency is unknown. Assume undivided base. */
-+			clk_mul = 1;
-+		}
-+
-+		goto clock_set;
-+	}
-+
-+	/*
-+	 * Check if the Host Controller supports Programmable Clock
-+	 * Mode.
-+	 */
-+	if (host->version >= SDHCI_SPEC_300 && host->clk_mul) {
-+		div = DIV_ROUND_UP(host->max_clk * host->clk_mul, clock);
-+		if (div <= SDHCI_MAX_DIV_SPEC_300 / 2 + 1) {
-+			/*
-+			 * Set Programmable Clock Mode in the Clock
-+			 * Control register.
-+			 */
-+			clk = SDHCI_PROG_CLOCK_MODE;
-+			clk_mul = host->clk_mul;
-+			real_div = div--;
- 
--			pre_val = sdhci_get_preset_value(host);
--			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
--			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
--				clk = SDHCI_PROG_CLOCK_MODE;
--				real_div = div + 1;
--				clk_mul = host->clk_mul;
--				if (!clk_mul) {
--					/* The clock frequency is unknown. Assume undivided base. */
--					clk_mul = 1;
--				}
--			} else {
--				real_div = max_t(int, 1, div << 1);
--			}
- 			goto clock_set;
- 		}
- 
- 		/*
--		 * Check if the Host Controller supports Programmable Clock
--		 * Mode.
-+		 * Divisor is too big for requested clock rate.
-+		 * Fall back to the base clock.
- 		 */
--		if (host->clk_mul) {
--			for (div = 1; div <= 1024; div++) {
--				if ((host->max_clk * host->clk_mul / div)
--					<= clock)
--					break;
--			}
--			if ((host->max_clk * host->clk_mul / div) <= clock) {
--				/*
--				 * Set Programmable Clock Mode in the Clock
--				 * Control register.
--				 */
--				clk = SDHCI_PROG_CLOCK_MODE;
--				real_div = div;
--				clk_mul = host->clk_mul;
--				div--;
--			} else {
--				/*
--				 * Divisor can be too small to reach clock
--				 * speed requirement. Then use the base clock.
--				 */
--				switch_base_clk = true;
--			}
--		}
-+	}
- 
--		if (!host->clk_mul || switch_base_clk) {
--			/* Version 3.00 divisors must be a multiple of 2. */
--			if (host->max_clk <= clock) {
--				div = 1;
--				if (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
--					div = 2;
--			} else {
--				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
--				     div += 2) {
--					if ((host->max_clk / div) <= clock)
--						break;
--				}
--			}
--			real_div = div;
--			div >>= 1;
--		}
-+	div = DIV_ROUND_UP(host->max_clk, clock);
-+
-+	if (div == 1 && (host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN))
-+		div = 2;
-+
-+	if (host->version >= SDHCI_SPEC_300) {
-+		/* Version 3.00 divisors must be a multiple of 2. */
-+		div = min(div, SDHCI_MAX_DIV_SPEC_300);
-+		div = DIV_ROUND_UP(div, 2);
- 	} else {
- 		/* Version 2.00 divisors must be a power of 2. */
--		for (div = 1; div < SDHCI_MAX_DIV_SPEC_200; div *= 2) {
--			if ((host->max_clk / div) <= clock)
--				break;
--		}
--		real_div = div;
--		div >>= 1;
-+		div = min(div, SDHCI_MAX_DIV_SPEC_200);
-+		div = roundup_pow_of_two(div) / 2;
- 	}
- 
-+base_div_set:
-+	real_div = div * 2 + !div;
-+
- clock_set:
--	if (real_div)
--		*actual_clock = (host->max_clk * clk_mul) / real_div;
-+	*actual_clock = (host->max_clk * clk_mul) / real_div;
- 	clk |= (div & SDHCI_DIV_MASK) << SDHCI_DIVIDER_SHIFT;
- 	clk |= ((div & SDHCI_DIV_HI_MASK) >> SDHCI_DIV_MASK_LEN)
- 		<< SDHCI_DIVIDER_HI_SHIFT;
-diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index 074dc182b184..a3fa70d91410 100644
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -284,8 +284,8 @@
-  * End of controller registers.
-  */
- 
--#define SDHCI_MAX_DIV_SPEC_200	256
--#define SDHCI_MAX_DIV_SPEC_300	2046
-+#define SDHCI_MAX_DIV_SPEC_200	256u
-+#define SDHCI_MAX_DIV_SPEC_300	2046u
- 
- /*
-  * Host SDMA buffer boundary. Valid values from 4K to 512K in powers of 2.
+As you may notice there is only a handful of drivers that use this API,
+and as I am looking at them most do not actually need to use it.
+
+Thanks.
+
 -- 
-2.30.2
-
+Dmitry
