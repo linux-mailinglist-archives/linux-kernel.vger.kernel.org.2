@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248D53D4AF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 04:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A95A3D4AFA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 04:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhGYBbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 21:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhGYBav (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 21:30:51 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C101C061757;
-        Sat, 24 Jul 2021 19:11:21 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id m1so7888387pjv.2;
-        Sat, 24 Jul 2021 19:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=b5jPra08N1jrGXye0AqIJzH6O9flfE0TslEKmsIUVKI=;
-        b=tel9YPzrvYPp1Kj0jNPjd7H1ga53aW03g4oasrfak9aCK6aAIeWf0ATkYJP8pKf9Po
-         0U+ElAcDv5Be7TwACzA3P/XQn4vL3oY9nCSoCjO4fqNnbRHC+57Ft1EcZL9Xn3t2FX6s
-         wUF8xeCLgeKC43YMuSbgtgtCCh/JCJqbb7Rb166107xAWZP18o4ElwO60LVrpe8ctASZ
-         Dz8Og8CYks0CEE0u29hMe2h65qHRbfn2KrizwoqQ/lf+UM2/HVKVlK84gnFVDdmd3MU+
-         qs5NaBdFwiq5hMqAHwoJYldWPPdjor/Vhq5m4O1V52l5VtJSsoBp06C7GZR5DGaDT0GE
-         lIjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=b5jPra08N1jrGXye0AqIJzH6O9flfE0TslEKmsIUVKI=;
-        b=dNOjlnWcTcMscDRYTtSiTnP2tg6OdQfg3WvzDmc2iB6IrnGQduaaa6kCw/dPAT5Uk2
-         f2Hl1gF6/slJZkfXtqeAq+OYEQZyHgtAal/dvr0x0noDmy8Nch0Way18U3skWSAU4Joz
-         Gk9qH/d1RB7U4dljNo2xormVdZJbGWc6h0I43950uV2rFnS9358gVTnxQ72Y/ni5b/3C
-         grq/nzA74sJlbXvSq4j4YUj/YSe9hXDyCBRB0ITKgv0ZUa91IIA5YeNrXn9QIVSs1k6y
-         yNUHf7LHqCqfy3BclPIVtppiBIv9P0uToxCVhRITIvHxEJ7jVWuSqO0IaZheXPoctZIO
-         Qtpw==
-X-Gm-Message-State: AOAM533wT0SuQP9cxZykZJCQAuqyRcFGwtc3uo04DKjVcIqEDbfS3b0l
-        DlN7x+uVf9ekxBa8DrcIJg==
-X-Google-Smtp-Source: ABdhPJyDCY4AM99VJ/986peBSGIuC2ol9sFa7fOWfXRXJ6vHYojLh6NK7TZvEeHvIGbWMskfxUzD4Q==
-X-Received: by 2002:a62:1bc7:0:b029:328:cbf5:b6b0 with SMTP id b190-20020a621bc70000b0290328cbf5b6b0mr11297361pfb.81.1627179081119;
-        Sat, 24 Jul 2021 19:11:21 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id y139sm12122341pfb.107.2021.07.24.19.11.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 24 Jul 2021 19:11:20 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     adaplas@gmail.com
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH 3/3] video: fbdev: asiliantfb: add a check against divide error
-Date:   Sun, 25 Jul 2021 02:10:54 +0000
-Message-Id: <1627179054-29903-4-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1627179054-29903-1-git-send-email-zheyuma97@gmail.com>
-References: <1627179054-29903-1-git-send-email-zheyuma97@gmail.com>
+        id S230010AbhGYBiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 21:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhGYBiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Jul 2021 21:38:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA9D06069E;
+        Sun, 25 Jul 2021 02:18:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627179512;
+        bh=hIfW1IzXB/tUQDC6Im2ycdKDhMMDxDiPL+5D+VbyHZ8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q3X00iScxuHd6Lyg4xuXM1//SU1pqjwvzbnoiBKqYr/DVAk2koFXpqZxiBmj0UIx1
+         J6lnxeMIf229iEmG45I5BJ92O0GvCcu7vj74ahksBIP8VVeqMKemu/BkHOIrWzSW6I
+         muZ2F8BFn+CIk+WjqYP1d7ITo4ATM7CmfC7+SvljE7sflqKT/idrY/emvjy9+y24Wa
+         3jjLT4HaGogN4JdXRDBTLxuAdxO5nS/aT4rM8cYuzbZvC7BY8GeUSpdULmw4XFbh8S
+         AeShIWSdogBPL586KRKTnP5XAKUbbxI0RnX0qagC+c6XNwkFrUxxHx0S52w5fuB+Ds
+         NG+ifcwCjzerw==
+Date:   Sun, 25 Jul 2021 11:18:30 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
+ for synthetic events
+Message-Id: <20210725111830.2f424ae3978443241b6d4a2d@kernel.org>
+In-Reply-To: <20210724193145.c63b44aa843e05ed9c0b4fdc@kernel.org>
+References: <20210722142705.992001628@goodmis.org>
+        <20210722142837.458596338@goodmis.org>
+        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
+        <20210722123234.636d5363@oasis.local.home>
+        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
+        <20210722212438.5933e714@rorschach.local.home>
+        <20210724193145.c63b44aa843e05ed9c0b4fdc@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of 'pixclock',
-it may cause divide error.
+Hi,
 
-Fix this by checking whether 'pixclock' is zero first.
+On Sat, 24 Jul 2021 19:31:45 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-The following log reveals it:
+> Hi Steve,
+> 
+> On Thu, 22 Jul 2021 21:24:38 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > On Fri, 23 Jul 2021 10:11:33 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > 
+> > > I understand. As far as I can see the code, it looks a bit complicated.
+> > > To simplify it, I need to understand the spec for "hist_field"
+> > > for keys and for vars. And maybe need to split both case.
+> > 
+> > I'll give you a hint that took me a bit to figure out.
+> > 
+> > 1) The execname is saved at the start of the histogram and not by one
+> > of the ->fn() functions.
+> > 
+> > It's saved by hist_trigger_elt_data_init() if the elt_data->comm is
+> > allocated. That function is part of the "tracing_map_ops" which gets
+> > assigned by tracing_map_create() (in tracing_map.c) as the "elt_init"
+> > function, which is called when getting a new elt element by
+> > get_free_elt().
+> > 
+> > 2) That elt_data->comm is only allocated if it finds a "hist_field"
+> > that has HIST_FIELD_FL_EXECNAME flag set. It currently only looks for
+> > that flag in the "keys" fields, which means that .execname is useless
+> > for everything else. This patch changed it to search all hist_fields so
+> > that it can find that flag if a variable has it set (which I added).
+> 
+> Thanks for the hints, but actually, that part looks good to me.
+> 
+> So, what I pointed was the part of update_var_execname(). Below diff
+> is what I intended.
+> This moves HIST_FIELD_FL_EXECNAME setup in the create_hist_field()
+> as same as other flags, and removed the add-hoc update_var_execname()
+> fixup function.
+> 
+> I confirmed it passed the ftracetest trigger testcases and your
+> example code.
+> 
+> Thank you,
+> 
 
-[   43.861711] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-[   43.861737] CPU: 2 PID: 11764 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #224
-[   43.861756] RIP: 0010:asiliantfb_check_var+0x4e/0x730
-[   43.861843] Call Trace:
-[   43.861848]  ? asiliantfb_remove+0x190/0x190
-[   43.861858]  fb_set_var+0x2e4/0xeb0
-[   43.861866]  ? fb_blank+0x1a0/0x1a0
-[   43.861873]  ? lock_acquire+0x1ef/0x530
-[   43.861884]  ? lock_release+0x810/0x810
-[   43.861892]  ? lock_is_held_type+0x100/0x140
-[   43.861903]  ? ___might_sleep+0x1ee/0x2d0
-[   43.861914]  ? __mutex_lock+0x620/0x1190
-[   43.861921]  ? do_fb_ioctl+0x313/0x700
-[   43.861929]  ? mutex_lock_io_nested+0xfa0/0xfa0
-[   43.861936]  ? __this_cpu_preempt_check+0x1d/0x30
-[   43.861944]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-[   43.861952]  ? lockdep_hardirqs_on+0x59/0x100
-[   43.861959]  ? _raw_spin_unlock_irqrestore+0x46/0x60
-[   43.861967]  ? trace_hardirqs_on+0x6a/0x1c0
-[   43.861978]  do_fb_ioctl+0x31e/0x700
+I found a bug in this change.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
- drivers/video/fbdev/asiliantfb.c | 3 +++
- 1 file changed, 3 insertions(+)
+[..]
+> @@ -1682,6 +1703,16 @@ static struct hist_field *create_hist_field(struct hist_trigger_data *hist_data,
+>  		goto out;
+>  	}
+>  
+> +	if ((flags & HIST_FIELD_FL_EXECNAME) && var_name) {
+> +		flags |= HIST_FIELD_FL_STRING | HIST_FIELD_FL_VAR;
 
-diff --git a/drivers/video/fbdev/asiliantfb.c b/drivers/video/fbdev/asiliantfb.c
-index 3e006da47752..84c56f525889 100644
---- a/drivers/video/fbdev/asiliantfb.c
-+++ b/drivers/video/fbdev/asiliantfb.c
-@@ -227,6 +227,9 @@ static int asiliantfb_check_var(struct fb_var_screeninfo *var,
- {
- 	unsigned long Ftarget, ratio, remainder;
- 
-+	if (!var->pixclock)
-+		return -EINVAL;
-+
- 	ratio = 1000000 / var->pixclock;
- 	remainder = 1000000 % var->pixclock;
- 	Ftarget = 1000000 * ratio + (1000000 * remainder) / var->pixclock;
+Here, we don't need to check 'var_name' and remove HIST_FIELD_FL_VAR, since it must be set in the flag.
+
+	if (flags & HIST_FIELD_FL_EXECNAME) {
+		flags |= HIST_FIELD_FL_STRING;
+
+
+> +		hist_field->size = MAX_FILTER_STR_VAL;
+> +		hist_field->is_signed = 0;
+> +
+> +		hist_field->type = "char[]";
+> +		hist_field->fn = hist_field_execname;
+> +		goto out;
+> +	}
+> +
+
+
+
+Thank you,
+
+
 -- 
-2.17.6
-
+Masami Hiramatsu <mhiramat@kernel.org>
