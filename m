@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463713D4CA0
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 10:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16B83D4CA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 10:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhGYHTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 03:19:30 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:14332 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230335AbhGYHT3 (ORCPT
+        id S230210AbhGYHh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 03:37:57 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:33725 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229853AbhGYHh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 03:19:29 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16P7qoID011513;
-        Sun, 25 Jul 2021 00:59:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=WvmPv3OklfztPa9MD9L/2jLpJK+Tl62is+AwAfjyRac=;
- b=WZeOQ6LNDRyPoSVx6vqRRaBTByOYj4e+oDEEHaf9x8YXEh84s91GS7OuYaS2q7o0g1SM
- L7al8dycBLggzRL6c8jEzBargnwjgr/G9hrOb5WE+fvbymevApAk1X2NXMHF2XaSsnkT
- UyPGI/ib3XfpdvPdPZr9F0ptV5sgXSC6U+6IjPXh9Yax3hg8kN5F3WYpJrt0V2YLcdqj
- W2i2C9zJF3iMyGlIvlOHPF0nRs84PUtiDrWv60mARXoRSesLmlmPBUIrkRbBBLkyn/Lg
- w3HVWT/3vfD/SdZQ42n0sRJutk+gbtOEZsTDA2EsDd5rBwexeRXhBK4JDK8ZRSOLIgxQ cA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3a0g7r25u3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 25 Jul 2021 00:59:43 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 25 Jul
- 2021 00:59:41 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
- Transport; Sun, 25 Jul 2021 00:59:41 -0700
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id CE4293F70A4;
-        Sun, 25 Jul 2021 00:59:38 -0700 (PDT)
-From:   Geetha sowjanya <gakula@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lcherian@marvell.com>, <tduszynski@marvell.com>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <hkelam@marvell.com>,
-        <sbhatta@marvell.com>, <gakula@marvell.com>, <sgoutham@marvell.com>
-Subject: [net PATCH] octeontx2-pf: Dont enable backpressure on LBK links
-Date:   Sun, 25 Jul 2021 13:29:37 +0530
-Message-ID: <20210725075937.6491-1-gakula@marvell.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 25 Jul 2021 03:37:56 -0400
+Received: by mail-il1-f199.google.com with SMTP id d6-20020a056e020506b0290208fe58bd16so3116618ils.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 01:18:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=U24W+LfChl+ScshcLF966qUWOmPFa41pDXZunhLFn7k=;
+        b=W9oEK+NJYMve7dkJ2n8cBG6VXLa6C962lLgyIBV6jwsqqmrUU/2a910UnHc5SMW7Uk
+         Bg9dKHQCx7xku9Zy1wCMYZJVfRSF1lS2fgiV1ujCbSOezR5gAGIgxmw+JG//w5QnoT6c
+         n2ywGMPfJTEFQsQJm6UKfKTIz6HVHYXoHQvrREpM2ziXUnevRiLMygwIegbcTXT7hal+
+         u588N6MrUAv8t+NA7V44U/IAGNJ1yoClnWtrPgEVsq8AF/UgMKn0gReLqzrtuWxKFhjz
+         Qc9Yxtmyy5gfv7cE+uJCzVBFna8WHTE3jAMHM8ebI8iEksnVnklN+komjPnbEam1d1eu
+         78fw==
+X-Gm-Message-State: AOAM532RmoKDmko79vrYBfIH49gmyKYNFHWWA0FvvcwVLDISIYIr45uj
+        oGXlrjyd0X1zLK4b9dK6ouVLLhzlFrA2d3g2NbinCnqOmyJm
+X-Google-Smtp-Source: ABdhPJwPh1rW6+9TDbNXJ+G3eA0T9qT0uLflBCJfoYcyJN+Ou2esZn5HyHslFLH2GQVvII0GqUH6LSnT8Qo9iKYDIfFfSiDkYQFY
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: lBauERlYiil5VX9Bd4U6sSCnJ-nTBM7X
-X-Proofpoint-ORIG-GUID: lBauERlYiil5VX9Bd4U6sSCnJ-nTBM7X
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-25_02:2021-07-23,2021-07-25 signatures=0
+X-Received: by 2002:a6b:e90b:: with SMTP id u11mr10297028iof.134.1627201107150;
+ Sun, 25 Jul 2021 01:18:27 -0700 (PDT)
+Date:   Sun, 25 Jul 2021 01:18:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f84cad05c7ee4778@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in folio_copy
+From:   syzbot <syzbot+bb4c69145b4a52b40b27@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hariprasad Kelam <hkelam@marvell.com>
+Hello,
 
-Avoid configure backpressure for LBK links as they
-don't support it and enable lmacs before configuration
-pause frames.
+syzbot found the following issue on:
 
-Fixes: 75f36270990c ("octeontx2-pf: Support to enable/disable pause frames via ethtool")
-Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+HEAD commit:    b1347210b01d Add linux-next specific files for 20210721
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1417aeca300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=86c6d14fadc3db60
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb4c69145b4a52b40b27
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1202e6ca300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12ca875a300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bb4c69145b4a52b40b27@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at mm/util.c:761
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1660, name: kcompactd0
+1 lock held by kcompactd0/1660:
+ #0: ffff8880111a4f70 (&mapping->private_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:359 [inline]
+ #0: ffff8880111a4f70 (&mapping->private_lock){+.+.}-{2:2}, at: __buffer_migrate_page+0x3a8/0xa80 mm/migrate.c:722
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 1660 Comm: kcompactd0 Not tainted 5.14.0-rc2-next-20210721-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ ___might_sleep.cold+0x1f3/0x239 kernel/sched/core.c:9182
+ folio_copy+0x10c/0x1a0 mm/util.c:761
+ folio_migrate_copy+0x19/0x30 mm/migrate.c:619
+ __buffer_migrate_page+0x820/0xa80 mm/migrate.c:757
+ move_to_new_page+0x339/0xf00 mm/migrate.c:904
+ __unmap_and_move mm/migrate.c:1069 [inline]
+ unmap_and_move mm/migrate.c:1210 [inline]
+ migrate_pages+0x2867/0x3890 mm/migrate.c:1487
+ compact_zone+0x1abb/0x3860 mm/compaction.c:2393
+ kcompactd_do_work+0x2c9/0x730 mm/compaction.c:2808
+ kcompactd+0x262/0xd10 mm/compaction.c:2903
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+BUG: sleeping function called from invalid context at mm/util.c:761
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 1660, name: kcompactd0
+1 lock held by kcompactd0/1660:
+ #0: ffff8880111a4f70 (&mapping->private_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:359 [inline]
+ #0: ffff8880111a4f70 (&mapping->private_lock){+.+.}-{2:2}, at: __buffer_migrate_page+0x3a8/0xa80 mm/migrate.c:722
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 0 PID: 1660 Comm: kcompactd0 Tainted: G        W         5.14.0-rc2-next-20210721-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ ___might_sleep.cold+0x1f3/0x239 kernel/sched/core.c:9182
+ folio_copy+0x10c/0x1a0 mm/util.c:761
+ folio_migrate_copy+0x19/0x30 mm/migrate.c:619
+ __buffer_migrate_page+0x820/0xa80 mm/migrate.c:757
+ move_to_new_page+0x339/0xf00 mm/migrate.c:904
+ __unmap_and_move mm/migrate.c:1069 [inline]
+ unmap_and_move mm/migrate.c:1210 [inline]
+ migrate_pages+0x2867/0x3890 mm/migrate.c:1487
+ compact_zone+0x1abb/0x3860 mm/compaction.c:2393
+ kcompactd_do_work+0x2c9/0x730 mm/compaction.c:2808
+ kcompactd+0x262/0xd10 mm/compaction.c:2903
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
 ---
- drivers/net/ethernet/marvell/octeontx2/af/cgx.c    |  2 +-
- .../ethernet/marvell/octeontx2/nic/otx2_common.c   | 14 ++++++++------
- 2 files changed, 9 insertions(+), 7 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-index 9169849881bf..544c96c8fe1d 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/cgx.c
-@@ -1504,8 +1504,8 @@ static int cgx_lmac_init(struct cgx *cgx)
- 
- 		/* Add reference */
- 		cgx->lmac_idmap[lmac->lmac_id] = lmac;
--		cgx->mac_ops->mac_pause_frm_config(cgx, lmac->lmac_id, true);
- 		set_bit(lmac->lmac_id, &cgx->lmac_bmap);
-+		cgx->mac_ops->mac_pause_frm_config(cgx, lmac->lmac_id, true);
- 	}
- 
- 	return cgx_lmac_verify_fwi_version(cgx);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 7cccd802c4ed..70fcc1fd962f 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -924,12 +924,14 @@ static int otx2_cq_init(struct otx2_nic *pfvf, u16 qidx)
- 		aq->cq.drop = RQ_DROP_LVL_CQ(pfvf->hw.rq_skid, cq->cqe_cnt);
- 		aq->cq.drop_ena = 1;
- 
--		/* Enable receive CQ backpressure */
--		aq->cq.bp_ena = 1;
--		aq->cq.bpid = pfvf->bpid[0];
-+		if (!is_otx2_lbkvf(pfvf->pdev)) {
-+			/* Enable receive CQ backpressure */
-+			aq->cq.bp_ena = 1;
-+			aq->cq.bpid = pfvf->bpid[0];
- 
--		/* Set backpressure level is same as cq pass level */
--		aq->cq.bp = RQ_PASS_LVL_CQ(pfvf->hw.rq_skid, qset->rqe_cnt);
-+			/* Set backpressure level is same as cq pass level */
-+			aq->cq.bp = RQ_PASS_LVL_CQ(pfvf->hw.rq_skid, qset->rqe_cnt);
-+		}
- 	}
- 
- 	/* Fill AQ info */
-@@ -1186,7 +1188,7 @@ static int otx2_aura_init(struct otx2_nic *pfvf, int aura_id,
- 	aq->aura.fc_hyst_bits = 0; /* Store count on all updates */
- 
- 	/* Enable backpressure for RQ aura */
--	if (aura_id < pfvf->hw.rqpool_cnt) {
-+	if (aura_id < pfvf->hw.rqpool_cnt && !is_otx2_lbkvf(pfvf->pdev)) {
- 		aq->aura.bp_ena = 0;
- 		aq->aura.nix0_bpid = pfvf->bpid[0];
- 		/* Set backpressure level for RQ's Aura */
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
