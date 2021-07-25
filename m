@@ -2,214 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1DB3D4E3F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 17:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDFF3D4E3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 17:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhGYOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 10:34:54 -0400
-Received: from mout.gmx.net ([212.227.15.15]:46677 "EHLO mout.gmx.net"
+        id S231290AbhGYOeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 10:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhGYOex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 10:34:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627226107;
-        bh=8rguv78XNwnmnWZK3SbaUw5nZ9dEi1oGx8ZELlZ4YLE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=AvmKGBobx1CkRcP6moen3zXq1DCm04NWODEmIDHmv196pkgWSygkfaNJ1zcELSnEB
-         QanE/Nkb+zqrDU4YMMg8YmcmtPt4ryivZrbwo+W5HtnQw7BBcDpmaW4410qrsEuyH5
-         V9ZCF7s0BmluGYXXG4W5j+noHSEwVUHeyqzek7KI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MN5eR-1locrG2XWH-00J59X; Sun, 25 Jul 2021 17:15:07 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, linux-hardening@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] drivers/soc: Remove all strcpy() uses in favor of strscpy()
-Date:   Sun, 25 Jul 2021 17:14:34 +0200
-Message-Id: <20210725151434.7122-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S231208AbhGYOeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 10:34:05 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0573060F3A;
+        Sun, 25 Jul 2021 15:14:31 +0000 (UTC)
+Date:   Sun, 25 Jul 2021 16:17:04 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "Berghe, Darius" <Darius.Berghe@analog.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/2] iio: accel: Add driver support for ADXL355
+Message-ID: <20210725161704.4aed26a2@jic23-huawei>
+In-Reply-To: <CANk7y0irgGbsEXG0jhduVycFSvbL7TkPh9+Z4RmM_XbMx=1rcA@mail.gmail.com>
+References: <20210722062155.32998-1-puranjay12@gmail.com>
+        <20210722062155.32998-3-puranjay12@gmail.com>
+        <20210723181022.000032bd@Huawei.com>
+        <CANk7y0irgGbsEXG0jhduVycFSvbL7TkPh9+Z4RmM_XbMx=1rcA@mail.gmail.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ojBDoB4/3HCiVyHlRM3rP0XP5p2z799QKBMKo5esN4lYQgrxh2N
- 8kiynr9TY4DeelH6RCY9+7pqaT5PWXSO9CuqxYwlObiIlKGjv4Pw3fhGY7pq/yJb1uTMWDw
- LRWNMwQfw68Vz+cdy3wQZCa5fXP4UXXaX4WQ7+/V7DZV25teXPxOt1/wsQ60LWNgwtCLvFI
- 4n06YcDX7/qvqjeXFVh/w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bOkTUy8AAeI=:Z+wr7svOa0J7Va1hBPETzj
- Gv5OdW8mwVcs6Qcp6rGRVmFtX3JE4zeA22RphXt0UpzkcQkxRlvOOq0C0L7i0u+szK8HQAW6i
- AtssA2OPw3vjNngYxFvMFbQXHqebxy9jU5qvLuTG/nGf3+f6aA8YQghfHMhFxX1bIZgEBIfyk
- X5vD6kUPpnDf6KXBk6v82S2H0b6ew0cHgnKkGOEwuuEsbx90QwEbSCSM3opcDTGUyd/7FXLRV
- zUQ2cg8DuyWipBj4xnp8AaMDsus8YKnMwk3DOQrxyJbAMG3mqXG63BWgU5+EFL476kx+s+5Z0
- 4JePOso8Tj/M3N8DWEDF2iRfShf4K1jBtJY0y9wqGMv4oheaZ4J4Mz9IL7cGJTghlRXTnMd7B
- 5bGgKeSGujdmb2Fae6XkEGWtx1MahWcyAH/Uo5Ywxb83wZ+DTnH5IisU4+ujCfOwhkBHnAvuV
- 1yREUiBxPnMNzDrX5soy2jf7sf6HSma7U0qdFWD4CKAEmkcRdfLo66K+8cxQxjXBckQtlwEgR
- fd/sZUJOz224a+K65TbSC/M8MdYmyTR216Gx/vXNCu/msDBNh5Kh0PXJIrXHN/ZvkYs1g5BCV
- 0tPGE/m3I1WoUGRgdzB89uoZqSGh8wVWS8sHtz/+qOzoN8xJtioEN3pqFpESBJZzFpOK+VSFw
- BXJyz/V2+IejaT7De04Zw1REB3WVdVNfAmAOxLaG7qwR7J9lpv9HBPqEo91eAKOkOi6l369Rf
- FxvcHPlBCsESFUadOJaQeT3rEj23aA6Brw0TgMhkonsKvaeMwVGkUrFz0g5+S5FN8auqDrrPO
- 4JIgYnzdtmqB5CFn0MSDY2vUEFHmLY2XJI8sfg0/MI9ds6xNlPPg1gBr4BtnpoA51mWu8EpIZ
- XMP5DA3Cf2mp+cVDXlNPTqckebPax3IGO1oEAqIcyWgYDVwV6unuB69Iq/UNM83s0sZxaiZBV
- Ng+uFSODJhF0YSwMQnAoUiPQ4tHhJeaxJGOcotAPVebk9i9Iwy7jVQxMc4jlZv6jrQFfTzIiT
- hPMj1+qhMhCCXC8XCXySi0qCzRxnyYSgqmxp8EJO45X9mlq+hkM2jTTf0TO1XAUSUZj+pc7lJ
- LKP6XntJoLv0X/Vh4eJWM52L60kGcxDfvWF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy().
+...
+> > > +
+> > > +static int adxl355_set_hpf_3db(struct adxl355_data *data,
+> > > +                            enum adxl355_hpf_3db hpf)
+> > > +{
+> > > +     int ret = 0;
+> > > +
+> > > +     mutex_lock(&data->lock);
+> > > +
+> > > +     if (data->hpf_3db == hpf)
+> > > +             goto out_unlock;
+> > > +
+> > > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > > +     if (ret < 0)
+> > > +             goto out_unlock;
+> > > +
+> > > +     ret = regmap_update_bits(data->regmap, ADXL355_FILTER,
+> > > +                              ADXL355_FILTER_HPF_MSK,
+> > > +                              ADXL355_FILTER_HPF_MODE(hpf));
+> > > +     if (!ret)
+> > > +             data->hpf_3db = hpf;
+> > > +
+> > > +out_unlock:
+> > > +     ret = adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
+> > > +     mutex_unlock(&data->lock);
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +static int adxl355_set_calibbias(struct adxl355_data *data,
+> > > +                              int scan_index, int calibbias)
+> > > +{
+> > > +     int ret = 0;
+> > > +     __be16 reg = cpu_to_be16(calibbias);  
+> >
+> > Hmm. I'm a bit in two minds on whether we can always rely on regmap
+> > now copying these buffers and hence avoiding the need for DMA safe buffers
+> > when used with SPI.  It seems like it now does but that's no documented
+> > and a fairly recent development. Anyhow, I went with just asking Mark
+> > Brown - see top of email.
+> >  
+> I will need to study this as I don't have knowledge about what you are saying.
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-This is a task of the KSPP [1]
+It's a really 'interesting' but fiddly corner.  Following discussion with Mark
+on the other branch of this thread the upshot is we should never use a buffer
+on the stack for multiple register accesses in regmap because the underlying
+bus driver (here SPI controller drivers are the ones that matters) may receive
+the buffer directly for use in a scatter gather DMA access.
 
-[1] https://github.com/KSPP/linux/issues/88
+The guarantees around coherency of access to the data buffer only apply at the
+size of a cacheline.  That means you can get evil things like..
 
- drivers/soc/qcom/pdr_interface.c    | 13 +++++++------
- drivers/soc/renesas/r8a779a0-sysc.c |  6 ++++--
- drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
- drivers/soc/ti/knav_dma.c           |  2 +-
- 4 files changed, 16 insertions(+), 11 deletions(-)
+1) DMA set up for the SPI transfer using this buffer.
+2) Whilst DMA is going on, some unrelated bit of the driver writes a flag.
+3) DMA completes and writes back the whole cacheline (some devices do this)
+   and neatly rewrites the flag to it's value from before DMA started.
+Having once encountered an SPI controller that could indeed do this I can tell
+you it is very tricky to debug... 
+https://www.youtube.com/watch?v=JDwaMClvV-s is a good presentation by Wolfram
+that goes into some of these issues and why they are really hard to solve
+in general (and hence why drivers still need to care!)
 
-diff --git a/drivers/soc/qcom/pdr_interface.c b/drivers/soc/qcom/pdr_inter=
-face.c
-index 915d5bc3d46e..cf119fde749d 100644
-=2D-- a/drivers/soc/qcom/pdr_interface.c
-+++ b/drivers/soc/qcom/pdr_interface.c
-@@ -131,7 +131,7 @@ static int pdr_register_listener(struct pdr_handle *pd=
-r,
- 		return ret;
+Anyhow, ensuring you don't share a cacheline that is used for DMA with 
+anything else guarantees everything will be fine.
+There would be ways of SPI controller drivers work around this, but reality
+is data moves around system interconnects in cacheline sized blocks so it
+fine in real systems.
 
- 	req.enable =3D enable;
--	strcpy(req.service_path, pds->service_path);
-+	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
+Two ways of getting such data.  A heap allocation is always big enough
+to ensure no sharing. IIO also has a trick given we hit this a lot.
+The iio_priv() structure is cacheline aligned and on the heap.  So
+if you put your buffer at the end of your driver structure that you
+access via iio_priv and mark it ____cacheline_aligned then it will
+start at the beginning of a new cacheline and that C requires structures
+to be padded to the value of maximum element alignment means you
+will be in a cacheline on your own.
 
- 	ret =3D qmi_send_request(&pdr->notifier_hdl, &pds->addr,
- 			       &txn, SERVREG_REGISTER_LISTENER_REQ,
-@@ -257,7 +257,7 @@ static int pdr_send_indack_msg(struct pdr_handle *pdr,=
- struct pdr_service *pds,
- 		return ret;
+A side note here is that is fine to share a cacheline for rx and tx
+buffers if that makes sense as we can assume an SPI controller won't
+trash it's own data.
 
- 	req.transaction_id =3D tid;
--	strcpy(req.service_path, pds->service_path);
-+	strscpy(req.service_path, pds->service_path, sizeof(req.service_path));
 
- 	ret =3D qmi_send_request(&pdr->notifier_hdl, &pds->addr,
- 			       &txn, SERVREG_SET_ACK_REQ,
-@@ -406,7 +406,7 @@ static int pdr_locate_service(struct pdr_handle *pdr, =
-struct pdr_service *pds)
- 		return -ENOMEM;
+> > > +
+> > > +     mutex_lock(&data->lock);
+> > > +
+> > > +     ret = adxl355_set_op_mode(data, ADXL355_STANDBY);
+> > > +     if (ret < 0)
+> > > +             goto out_unlock;
+> > > +
 
- 	/* Prepare req message */
--	strcpy(req.service_name, pds->service_name);
-+	strscpy(req.service_name, pds->service_name, sizeof(req.service_name));
- 	req.domain_offset_valid =3D true;
- 	req.domain_offset =3D 0;
+...
 
-@@ -531,8 +531,8 @@ struct pdr_service *pdr_add_lookup(struct pdr_handle *=
-pdr,
- 		return ERR_PTR(-ENOMEM);
+> >  
+> > > +
+> > > +static const struct iio_info adxl355_info = {
+> > > +     .read_raw       = adxl355_read_raw,
+> > > +     .write_raw      = adxl355_write_raw,
+> > > +     .read_avail     = &adxl355_read_avail
+> > > +};
+> > > +
+> > > +#define ADXL355_ACCEL_CHANNEL(index, reg, axis) {                    \
+> > > +     .type = IIO_ACCEL,                                              \
+> > > +     .address = reg,                                                 \
+> > > +     .modified = 1,                                                  \
+> > > +     .channel2 = IIO_MOD_##axis,                                     \
+> > > +     .info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |                  \
+> > > +                           BIT(IIO_CHAN_INFO_CALIBBIAS),             \
+> > > +     .info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE) |          \
+> > > +                                 BIT(IIO_CHAN_INFO_SAMP_FREQ) |      \
+> > > +             BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),      \
+> > > +     .info_mask_shared_by_type_available =                           \
+> > > +             BIT(IIO_CHAN_INFO_SAMP_FREQ) |                          \
+> > > +             BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),      \
+> > > +     .scan_index = index,                                            \  
+> >
+> > Only makes sense if you are supporting buffered mode as otherwise there
+> > isn't really any such thing as a 'scan'.  
+> 
+> I will be adding the support for buffered mode soon, is it fine if I
+> leave these here?
 
- 	pds->service =3D SERVREG_NOTIFIER_SERVICE;
--	strcpy(pds->service_name, service_name);
--	strcpy(pds->service_path, service_path);
-+	strscpy(pds->service_name, service_name, sizeof(pds->service_name));
-+	strscpy(pds->service_path, service_path, sizeof(pds->service_path));
- 	pds->need_locator_lookup =3D true;
+Sure, that's fine though even better to do it in that patch ;)
 
- 	mutex_lock(&pdr->list_lock);
-@@ -587,7 +587,8 @@ int pdr_restart_pd(struct pdr_handle *pdr, struct pdr_=
-service *pds)
- 			break;
-
- 		/* Prepare req message */
--		strcpy(req.service_path, pds->service_path);
-+		strscpy(req.service_path, pds->service_path,
-+			sizeof(req.service_path));
- 		addr =3D pds->addr;
- 		break;
- 	}
-diff --git a/drivers/soc/renesas/r8a779a0-sysc.c b/drivers/soc/renesas/r8a=
-779a0-sysc.c
-index d464ffa1be33..25f8164b96d0 100644
-=2D-- a/drivers/soc/renesas/r8a779a0-sysc.c
-+++ b/drivers/soc/renesas/r8a779a0-sysc.c
-@@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
- 	for (i =3D 0; i < info->num_areas; i++) {
- 		const struct r8a779a0_sysc_area *area =3D &info->areas[i];
- 		struct r8a779a0_sysc_pd *pd;
-+		size_t area_name_size;
-
- 		if (!area->name) {
- 			/* Skip NULLified area */
- 			continue;
- 		}
-
--		pd =3D kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
-+		area_name_size =3D strlen(area->name) + 1;
-+		pd =3D kzalloc(sizeof(*pd) + area_name_size, GFP_KERNEL);
- 		if (!pd) {
- 			error =3D -ENOMEM;
- 			goto out_put;
- 		}
-
--		strcpy(pd->name, area->name);
-+		strscpy(pd->name, area->name, area_name_size);
- 		pd->genpd.name =3D pd->name;
- 		pd->pdr =3D area->pdr;
- 		pd->flags =3D area->flags;
-diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rcar-sy=
-sc.c
-index 53387a72ca00..0eae5ce0eeb0 100644
-=2D-- a/drivers/soc/renesas/rcar-sysc.c
-+++ b/drivers/soc/renesas/rcar-sysc.c
-@@ -396,19 +396,21 @@ static int __init rcar_sysc_pd_init(void)
- 	for (i =3D 0; i < info->num_areas; i++) {
- 		const struct rcar_sysc_area *area =3D &info->areas[i];
- 		struct rcar_sysc_pd *pd;
-+		size_t area_name_size;
-
- 		if (!area->name) {
- 			/* Skip NULLified area */
- 			continue;
- 		}
-
--		pd =3D kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
-+		area_name_size =3D strlen(area->name) + 1;
-+		pd =3D kzalloc(sizeof(*pd) + area_name_size, GFP_KERNEL);
- 		if (!pd) {
- 			error =3D -ENOMEM;
- 			goto out_put;
- 		}
-
--		strcpy(pd->name, area->name);
-+		strscpy(pd->name, area->name, area_name_size);
- 		pd->genpd.name =3D pd->name;
- 		pd->ch.chan_offs =3D area->chan_offs;
- 		pd->ch.chan_bit =3D area->chan_bit;
-diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
-index 591d14ebcb11..5f9816d317a5 100644
-=2D-- a/drivers/soc/ti/knav_dma.c
-+++ b/drivers/soc/ti/knav_dma.c
-@@ -691,7 +691,7 @@ static int dma_init(struct device_node *cloud, struct =
-device_node *dma_node)
- 	dma->max_rx_flow =3D max_rx_flow;
- 	dma->max_tx_chan =3D min(max_tx_chan, max_tx_sched);
- 	atomic_set(&dma->ref_count, 0);
--	strcpy(dma->name, node->name);
-+	strscpy(dma->name, node->name, sizeof(dma->name));
- 	spin_lock_init(&dma->lock);
-
- 	for (i =3D 0; i < dma->max_tx_chan; i++) {
-=2D-
-2.25.1
+Jonathan
 
