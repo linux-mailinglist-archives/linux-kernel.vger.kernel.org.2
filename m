@@ -2,123 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D152F3D4F0A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 19:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625173D4F0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 19:21:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhGYQkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 12:40:05 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:46052 "EHLO
+        id S230449AbhGYQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 12:40:45 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:46054 "EHLO
         zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGYQkB (ORCPT
+        with ESMTP id S229545AbhGYQkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 12:40:01 -0400
+        Sun, 25 Jul 2021 12:40:43 -0400
 Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m7hlX-003rvn-Nr; Sun, 25 Jul 2021 17:18:15 +0000
-Date:   Sun, 25 Jul 2021 17:18:15 +0000
+        id 1m7hmH-003rwJ-09; Sun, 25 Jul 2021 17:19:01 +0000
+Date:   Sun, 25 Jul 2021 17:19:00 +0000
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     linux-m68k@lists.linux-m68k.org
 Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Ungerer <gerg@linux-m68k.org>,
         linux-kernel@vger.kernel.org
-Subject: [RFC][CFT] signal handling fixes
-Message-ID: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
+Subject: [PATCH 1/3] m68k: handle arrivals of multiple signals correctly
+Message-ID: <YP2dBIAPTaVvHiZ6@zeniv-ca.linux.org.uk>
+References: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <YP2c1xk9LJ0zE3KW@zeniv-ca.linux.org.uk>
 Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Back in 2012 or so I'd found a bunch of fun issues with multiple
-pending signals on a lot of architectures.  m68k looked scarier than
-usual (due to the combination of variable-sized exception frames with the
-way kernel stack pointer is handled by the hardware), but I'd convinced
-myself that it had been correct.
+When we have several pending signals, have entered with the kernel
+with large exception frame *and* have already built at least one
+sigframe, regs->stkadj is going to be non-zero and regs->format/sr/pc
+are going to be junk - the real values are in shifted exception stack
+frame we'd built when putting together the first sigframe.
 
-	Unfortunately, I was wrong - handling of multiple pending signals
-does *not* work correctly there.
+If that happens, subsequent sigframes are going to be garbage.
+Not hard to fix - just need to find the "adjusted" frame first
+and look for format/vector/sr/pc in it.
 
-	Some background: wrt exception stack frames m68k variants fall
-into 3 groups -
-	1) 68000 and near relatives (all non-MMU): push 32bit PC, then
-push 16bit SR.
-	2) everything later than that, except for coldfire: push a
-variable amount of auxillary data (used for insn restart, among other
-things), then 16bit value encoding the format (upper 4 bits) and vector
-(lower 12), then same as for (1) - 32bit PC and 16bit SR.  Size of
-variable part depends upon the frame type (upper 4 bits of frame/vector
-word).	Note that CPU32 falls into that group, even though it's non-MMU.
-	3) coldfire (both MMU and non-MMU): push 32bit PC, then 16bit SR,
-then 16bit word superficially similar to format/vector combination on (2).
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/m68k/kernel/signal.c | 88 ++++++++++++++++++++++-------------------------
+ 1 file changed, 42 insertions(+), 46 deletions(-)
 
-	Handling of (2) is complicated, since we need the right frame
-type when we go from kernel to userland.  In particular, we want format 0
-(8-byte) for entering a signal handler, no matter how did we enter the
-kernel when we caught the signal.  Conversely, when we return from signal
-handler, we have format 0 on kernel entry (sigreturn(2) is a syscall) and
-we need whatever frame we used to have back when we'd caught the signal.
+diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
+index 8f215e79e70e..cd11eb101eac 100644
+--- a/arch/m68k/kernel/signal.c
++++ b/arch/m68k/kernel/signal.c
+@@ -447,7 +447,7 @@ static inline void save_fpu_state(struct sigcontext *sc, struct pt_regs *regs)
+ 
+ 	if (CPU_IS_060 ? sc->sc_fpstate[2] : sc->sc_fpstate[0]) {
+ 		fpu_version = sc->sc_fpstate[0];
+-		if (CPU_IS_020_OR_030 &&
++		if (CPU_IS_020_OR_030 && !regs->stkadj &&
+ 		    regs->vector >= (VEC_FPBRUC * 4) &&
+ 		    regs->vector <= (VEC_FPNAN * 4)) {
+ 			/* Clear pending exception in 68882 idle frame */
+@@ -510,7 +510,7 @@ static inline int rt_save_fpu_state(struct ucontext __user *uc, struct pt_regs *
+ 		if (!(CPU_IS_060 || CPU_IS_COLDFIRE))
+ 			context_size = fpstate[1];
+ 		fpu_version = fpstate[0];
+-		if (CPU_IS_020_OR_030 &&
++		if (CPU_IS_020_OR_030 && !regs->stkadj &&
+ 		    regs->vector >= (VEC_FPBRUC * 4) &&
+ 		    regs->vector <= (VEC_FPNAN * 4)) {
+ 			/* Clear pending exception in 68882 idle frame */
+@@ -832,18 +832,24 @@ asmlinkage int do_rt_sigreturn(struct pt_regs *regs, struct switch_stack *sw)
+ 	return 0;
+ }
+ 
++static inline struct pt_regs *rte_regs(struct pt_regs *regs)
++{
++	return (void *)regs + regs->stkadj;
++}
++
+ static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
+ 			     unsigned long mask)
+ {
++	struct pt_regs *tregs = rte_regs(regs);
+ 	sc->sc_mask = mask;
+ 	sc->sc_usp = rdusp();
+ 	sc->sc_d0 = regs->d0;
+ 	sc->sc_d1 = regs->d1;
+ 	sc->sc_a0 = regs->a0;
+ 	sc->sc_a1 = regs->a1;
+-	sc->sc_sr = regs->sr;
+-	sc->sc_pc = regs->pc;
+-	sc->sc_formatvec = regs->format << 12 | regs->vector;
++	sc->sc_sr = tregs->sr;
++	sc->sc_pc = tregs->pc;
++	sc->sc_formatvec = tregs->format << 12 | tregs->vector;
+ 	save_a5_state(sc, regs);
+ 	save_fpu_state(sc, regs);
+ }
+@@ -851,6 +857,7 @@ static void setup_sigcontext(struct sigcontext *sc, struct pt_regs *regs,
+ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *regs)
+ {
+ 	struct switch_stack *sw = (struct switch_stack *)regs - 1;
++	struct pt_regs *tregs = rte_regs(regs);
+ 	greg_t __user *gregs = uc->uc_mcontext.gregs;
+ 	int err = 0;
+ 
+@@ -871,9 +878,9 @@ static inline int rt_setup_ucontext(struct ucontext __user *uc, struct pt_regs *
+ 	err |= __put_user(sw->a5, &gregs[13]);
+ 	err |= __put_user(sw->a6, &gregs[14]);
+ 	err |= __put_user(rdusp(), &gregs[15]);
+-	err |= __put_user(regs->pc, &gregs[16]);
+-	err |= __put_user(regs->sr, &gregs[17]);
+-	err |= __put_user((regs->format << 12) | regs->vector, &uc->uc_formatvec);
++	err |= __put_user(tregs->pc, &gregs[16]);
++	err |= __put_user(tregs->sr, &gregs[17]);
++	err |= __put_user((tregs->format << 12) | tregs->vector, &uc->uc_formatvec);
+ 	err |= rt_save_fpu_state(uc, regs);
+ 	return err;
+ }
+@@ -890,13 +897,14 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 			struct pt_regs *regs)
+ {
+ 	struct sigframe __user *frame;
+-	int fsize = frame_extra_sizes(regs->format);
++	struct pt_regs *tregs = rte_regs(regs);
++	int fsize = frame_extra_sizes(tregs->format);
+ 	struct sigcontext context;
+ 	int err = 0, sig = ksig->sig;
+ 
+ 	if (fsize < 0) {
+ 		pr_debug("setup_frame: Unknown frame format %#x\n",
+-			 regs->format);
++			 tregs->format);
+ 		return -EFAULT;
+ 	}
+ 
+@@ -907,7 +915,7 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 
+ 	err |= __put_user(sig, &frame->sig);
+ 
+-	err |= __put_user(regs->vector, &frame->code);
++	err |= __put_user(tregs->vector, &frame->code);
+ 	err |= __put_user(&frame->sc, &frame->psc);
+ 
+ 	if (_NSIG_WORDS > 1)
+@@ -934,33 +942,27 @@ static int setup_frame(struct ksignal *ksig, sigset_t *set,
+ 	push_cache ((unsigned long) &frame->retcode);
+ 
+ 	/*
+-	 * Set up registers for signal handler.  All the state we are about
+-	 * to destroy is successfully copied to sigframe.
+-	 */
+-	wrusp ((unsigned long) frame);
+-	regs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+-	adjustformat(regs);
+-
+-	/*
+ 	 * This is subtle; if we build more than one sigframe, all but the
+ 	 * first one will see frame format 0 and have fsize == 0, so we won't
+ 	 * screw stkadj.
+ 	 */
+-	if (fsize)
++	if (fsize) {
+ 		regs->stkadj = fsize;
+-
+-	/* Prepare to skip over the extra stuff in the exception frame.  */
+-	if (regs->stkadj) {
+-		struct pt_regs *tregs =
+-			(struct pt_regs *)((ulong)regs + regs->stkadj);
++		tregs = rte_regs(regs);
+ 		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
+-		/* This must be copied with decreasing addresses to
+-                   handle overlaps.  */
+ 		tregs->vector = 0;
+ 		tregs->format = 0;
+-		tregs->pc = regs->pc;
+ 		tregs->sr = regs->sr;
+ 	}
++
++	/*
++	 * Set up registers for signal handler.  All the state we are about
++	 * to destroy is successfully copied to sigframe.
++	 */
++	wrusp ((unsigned long) frame);
++	tregs->pc = (unsigned long) ksig->ka.sa.sa_handler;
++	adjustformat(regs);
++
+ 	return 0;
+ }
+ 
+@@ -968,7 +970,8 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 			   struct pt_regs *regs)
+ {
+ 	struct rt_sigframe __user *frame;
+-	int fsize = frame_extra_sizes(regs->format);
++	struct pt_regs *tregs = rte_regs(regs);
++	int fsize = frame_extra_sizes(tregs->format);
+ 	int err = 0, sig = ksig->sig;
+ 
+ 	if (fsize < 0) {
+@@ -1019,33 +1022,26 @@ static int setup_rt_frame(struct ksignal *ksig, sigset_t *set,
+ 	push_cache ((unsigned long) &frame->retcode);
+ 
+ 	/*
+-	 * Set up registers for signal handler.  All the state we are about
+-	 * to destroy is successfully copied to sigframe.
+-	 */
+-	wrusp ((unsigned long) frame);
+-	regs->pc = (unsigned long) ksig->ka.sa.sa_handler;
+-	adjustformat(regs);
+-
+-	/*
+ 	 * This is subtle; if we build more than one sigframe, all but the
+ 	 * first one will see frame format 0 and have fsize == 0, so we won't
+ 	 * screw stkadj.
+ 	 */
+-	if (fsize)
++	if (fsize) {
+ 		regs->stkadj = fsize;
+-
+-	/* Prepare to skip over the extra stuff in the exception frame.  */
+-	if (regs->stkadj) {
+-		struct pt_regs *tregs =
+-			(struct pt_regs *)((ulong)regs + regs->stkadj);
++		tregs = rte_regs(regs);
+ 		pr_debug("Performing stackadjust=%04lx\n", regs->stkadj);
+-		/* This must be copied with decreasing addresses to
+-                   handle overlaps.  */
+ 		tregs->vector = 0;
+ 		tregs->format = 0;
+-		tregs->pc = regs->pc;
+ 		tregs->sr = regs->sr;
+ 	}
++
++	/*
++	 * Set up registers for signal handler.  All the state we are about
++	 * to destroy is successfully copied to sigframe.
++	 */
++	wrusp ((unsigned long) frame);
++	tregs->pc = (unsigned long) ksig->ka.sa.sa_handler;
++	adjustformat(regs);
+ 	return 0;
+ }
+ 
+-- 
+2.11.0
 
-	The monumentally unpleasant part is that we *must* leave the
-kernel mode with the same value of kernel stack pointer we had on entry.
-Crossing from user to kernel mode does not set the kernel stack pointer
-to known value - its value is kept since the last time we'd left the
-kernel mode.
-
-	The sigreturn part is ugly as hell.  Signal delivery avoids
-quite that level of nastiness by the following trick: there's an int
-(stkadj, initially 0) between the exception frame and the rest of pt_regs.
-On the way back from exception we pop the registers, then add stkadj +
-4 to stack pointer before doing RTE.  Normally stkadj remains zero;
-if we need to shrink the exception stack frame, we put the minimal one
-over the aux data and store the offset into stkadj.  When on the way out
-we pop our way through the registers, we'll end up with stack pointer
-pointing to stkadj (4 bytes below the original exception stack frame)
-and once we add 4 + stkadj to stack pointer, we have the minimal exception
-stack frame on top of stack and RTE does the right thing.
-
-	The problem with that trick is that exception stack frame in
-pt_regs is no longer valid; in the best case regs->format will match
-the original exception stack frame format and in the worst case it'll
-be overwritten by bits 31..28 of signal handler address (if aux data
-used to be 4 bytes long).
-
-	ptrace get_regs()/set_regs() takes that effect into account when
-accessing PC and SR; unfortunately, setup_frame() and setup_rt_frame()
-do not.  That's not a problem for the first signal - ->stkadj is still
-0 at that point.  However, if we end up building multiple sigframes,
-we might get screwed.  Not hard to fix, thankfully...
-
-	Another bug is on the sigreturn side of things, and that one is
-my fault - in bd6f56a75bb2 ("m68k: Missing syscall_trace() on sigreturn")
-I'd missed the fact that we'd just relocated pt_regs, without having
-updated ->thread.esp0.
-
-	These two are, IMO, -stable fodder.  The third one isn't -
-it cleans sigreturn, hopefully making it less convoluted.  Instead of
-doing unnatural things to C stack frames, call chain, etc. we let the
-asm wrapper of {rt_,}sigreturn(2) do the following:
-	reserve a gap on stack, sufficiently large to hold any aux data
-	then call the C side of things, passing pt_regs and switch_stack
-pointers to it, same as we do now if C part decides to insert aux data,
-	it can simply use memmove
-to shift switch_stack + pt_regs and memcpy whatever's needed into the
-created gap.  Then we can return without any kind of magic - the C part
-of stack is intact.  Just return the new location of switch_stack +
-pt_regs to the (asm) caller, so it could set stack pointer to it.
-
-	The series is on top of 5.14-rc1; it lives in
-git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #untested.m68k
-Individual patches in followups...
-
-	_Very_ lightly tested on aranym; no real hardware to test it on.
-Any help with review and testing would be very welcome.
-
-PS:  FWIW, ifdefs in arch/m68k/kernel/signal.c are wrong - it's not !MMU
-vs. coldfire/MMU vs. classic/MMU.  It's actually 68000 vs. coldfire vs.
-everything else.  These days it's nearly correct, but only because on MMU
-variants of coldfire we never see exception stack frames with type other
-than 4 - it's controlled by alignment of kernel stack pointer on those,
-and it's under the kernel control, so it's always 32bit-aligned.  It used
-to be more serious back when we had 68360 support - that's !MMU and exception
-stack frames are like those on 68020, unless I'm misreading their manual...
