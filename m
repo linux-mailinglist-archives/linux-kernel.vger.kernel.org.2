@@ -2,125 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DED03D501D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3854A3D5022
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhGYUvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 16:51:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S229983AbhGYUyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 16:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhGYUvJ (ORCPT
+        with ESMTP id S229709AbhGYUx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 16:51:09 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3938EC061757;
-        Sun, 25 Jul 2021 14:31:38 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id gn26so7263871ejc.3;
-        Sun, 25 Jul 2021 14:31:38 -0700 (PDT)
+        Sun, 25 Jul 2021 16:53:59 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4C2C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 14:34:28 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id r26so11869172lfp.5
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 14:34:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZZflIiB2DoTKcobh1NO9JbdOskY9ZuUpO9VblSztVDU=;
-        b=Z6iHfurLI8vbWoI5+fWv/JIjleaRXpMhSoOhLrkFwTfGhwiF2D5jRkJOvQiJINqO/4
-         bKYLK0VWrURWAe2Pjpf3T54yhOEak0GcCrFed0YYZWTWsfBiIIkj687GRFVGTBDMCVgD
-         Nx+fcEO86EN9ToC3eCf8tMfmEuL8lH0u3ZcTMhuNXyUHVl0TegWdB5ETy48wJvF9QgOj
-         o2aX0XqMIRTTxoYFsOSs0PU0Cc45LwOb5E+egA5HgoRog0k97AlvWuDTMaAv6SizNgQc
-         eIP+TK5rWKBP/2yUzL/q86r76rpJ1FGldk1QbYOZMka477cp+VKfUy+OrNxxfN1bbTdx
-         m8rw==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=m38rqzWdCB9ASoXtganWd6kv7kmkcMjinzQv5fmIioY=;
+        b=T/lpqlkCEGSI+NDfO28XctH1ajysoLJ8grJyEdm/1NyRcXS3mq6ZPg6l/WCEvIlbrA
+         dJK5ezjQkwFUcI9zBh169DdZC2Hn3MMzr5luWosazJiOgLjXTaXDYePwHzZdWGWguReu
+         fjvXKL1uQ5yJr/+brXs+WVOkw8M5yymdWlPdIiP4A6HmWtK4rq7Cp9bpnSh4vqr94CjI
+         asLn5orgbw8zFQVH/MZtRwuxEitrJy44/d3t5kNVYBY9iq7+bL8vidiizAkqbWPtugkM
+         hMrM02qqyy33EQamCQU9X9aQYv3OwKmp7To5e5aIX2pV4eoA1AYarFYBgci7blLQqoLf
+         HtBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZZflIiB2DoTKcobh1NO9JbdOskY9ZuUpO9VblSztVDU=;
-        b=qBMHG6H9215mb0HNwdlhv0hzgapetW0g7WD3vuYActI0BCLNRltTQY/bqhK0I5wy8P
-         3MAUeP0DeU4Urm6aN1zs1c2wQMcV7ENaYef/OjZEe2nAjsl0TM57FWEGV2nB0TyoT+ll
-         dfulIDMAWgJotdiaV7j61gXdDhP7oprzh4Som+djziGkydMESTGk+DHOY/U0/7FOuFFh
-         Zu0AExFyRRRIop7DsSjwcF0/NUMLxdPYAfgnLJEsV7xywuaOZMUTPecvzMeWuIsYFqpz
-         F/IXopFLvJ5oUUWO+Lms6mKgUts11NlKIKQVFM4CiGWsB1eOPsiYbI2wWoXtQ9NGxSav
-         7MEg==
-X-Gm-Message-State: AOAM532DswKCJBvozGdK9IrKMMEvt1+o8A10iimh3UlMDfu9605iWCWR
-        eE/kJYZ+9OOPTC8lCxJJxsQ9dVW/Ly+lyRzIHbI=
-X-Google-Smtp-Source: ABdhPJyyO0Kzq2ppjxpKL8XAJr/CRcXz68N2oXu8vqQw3B23WZzCLDtsFOtzWNaF7w3djEsvXKTLbDm8b+dyd8c4HLw=
-X-Received: by 2002:a17:906:6686:: with SMTP id z6mr4153833ejo.539.1627248696694;
- Sun, 25 Jul 2021 14:31:36 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=m38rqzWdCB9ASoXtganWd6kv7kmkcMjinzQv5fmIioY=;
+        b=umUJIRfy5wieyrw4rcCCnG9AVAIqA6EZ2AA5hC5TNxhLxpHUeYZ1jwfdFZwZfyzPqF
+         HUPuBPowd8j6sLdu4GF/VAgc+EP4cqieJ+olEU32dEzDWGEdc2oInluWcRRkmsUcEVOL
+         cEx7Pe1B98tkcuxCUoJxZkyZWWxnd0PIH1LYYomEXu6wrkYGyxufbjEQwov4M9lARG12
+         7GyhZySdJRfIM/q5Pv6yUeKM20nDdGp4c7i7qvCi6Ej6nsme7lffGTk9C03rnW9n+7k4
+         0QZ6gG4Xa6sXnuK8S1SG79ZQBVYdJ0yGuzD1C+n0F+EHbw6edSc9LBE09v8GMVRliDAL
+         cagg==
+X-Gm-Message-State: AOAM5309L3wlOZcYsz1iJv0GEhjreQ/mV1OqZYD9+R60DhwQn8LuQYq5
+        3lEpxyolSLhkUYKkgYDPHQx3l2trdKGHutvvnIA=
+X-Google-Smtp-Source: ABdhPJzqZNZNTznqNRYhRLLkSWM8S6ODp20LGQjQTFRRYJSdcM0vmJIDbB81MmZ+6bmfsM7osA8QKxf4CoLW6JJp3eY=
+X-Received: by 2002:a19:c7c3:: with SMTP id x186mr10686920lff.219.1627248866917;
+ Sun, 25 Jul 2021 14:34:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
- <20210717204057.67495-3-martin.blumenstingl@googlemail.com> <2170471a1c144adb882d06e08f3c9d1a@realtek.com>
-In-Reply-To: <2170471a1c144adb882d06e08f3c9d1a@realtek.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sun, 25 Jul 2021 23:31:26 +0200
-Message-ID: <CAFBinCCqVpqC+CaJqTjhCj6-4rFcttQ-cFjOPwtKFbXbnop3XA@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 2/7] rtw88: Use rtw_iterate_vifs where the iterator
- reads or writes registers
-To:     Pkshih <pkshih@realtek.com>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Neo Jou <neojou@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
+Received: by 2002:a2e:b4a8:0:0:0:0:0 with HTTP; Sun, 25 Jul 2021 14:34:26
+ -0700 (PDT)
+Reply-To: david.djossa01@yahoo.com
+From:   "MR.DAVID DJOSSA" <walleady.colla1@gmail.com>
+Date:   Mon, 26 Jul 2021 00:34:26 +0300
+Message-ID: <CA+RujsDGO4hckweKRoFuWHitm-tXt0i8uqWMNPUNYRfUdM9BWw@mail.gmail.com>
+Subject: Give This Attention
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ping-Ke,
-
-On Mon, Jul 19, 2021 at 7:47 AM Pkshih <pkshih@realtek.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Martin Blumenstingl [mailto:martin.blumenstingl@googlemail.com]
-> > Sent: Sunday, July 18, 2021 4:41 AM
-> > To: linux-wireless@vger.kernel.org
-> > Cc: tony0620emma@gmail.com; kvalo@codeaurora.org; johannes@sipsolutions.net; netdev@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; Neo Jou; Jernej Skrabec; Martin Blumenstingl
-> > Subject: [PATCH RFC v1 2/7] rtw88: Use rtw_iterate_vifs where the iterator reads or writes registers
-> >
-> > Upcoming SDIO support may sleep in the read/write handlers. Switch
-> > all users of rtw_iterate_vifs_atomic() which are either reading or
-> > writing a register to rtw_iterate_vifs().
-> >
-> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> > ---
-> >  drivers/net/wireless/realtek/rtw88/main.c | 6 +++---
-> >  drivers/net/wireless/realtek/rtw88/ps.c   | 2 +-
-> >  2 files changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/net/wireless/realtek/rtw88/main.c b/drivers/net/wireless/realtek/rtw88/main.c
-> > index c6364837e83b..207161a8f5bd 100644
-> > --- a/drivers/net/wireless/realtek/rtw88/main.c
-> > +++ b/drivers/net/wireless/realtek/rtw88/main.c
-> > @@ -229,8 +229,8 @@ static void rtw_watch_dog_work(struct work_struct *work)
-> >       rtw_phy_dynamic_mechanism(rtwdev);
-> >
-> >       data.rtwdev = rtwdev;
-> > -     /* use atomic version to avoid taking local->iflist_mtx mutex */
-> > -     rtw_iterate_vifs_atomic(rtwdev, rtw_vif_watch_dog_iter, &data);
-> > +
-> > +     rtw_iterate_vifs(rtwdev, rtw_vif_watch_dog_iter, &data);
->
-> You revert the fix of [1].
-Thanks for bringing this to my attention!
-
-> I think we can move out rtw_chip_cfg_csi_rate() from rtw_dynamic_csi_rate(), and
-> add/set a field cfg_csi_rate to itera data. Then, we do rtw_chip_cfg_csi_rate()
-> outside iterate function. Therefore, we can keep the atomic version of iterate_vifs.
-just to make sure that I understand this correctly:
-rtw_iterate_vifs_atomic can be the iterator as it was before
-inside the iterator func I use something like:
-    iter_data->cfg_csi_rate = rtwvif->bfee.role == RTW_BFEE_SU ||
-rtwvif->bfee.role == RTW_BFEE_MU || iter_data->cfg_csi_rate;
-(the last iter_data->cfg_csi_rate may read a bit strange, but I think
-it's needed because there can be multiple interfaces and if any of
-them has cfg_csi_rate true then we need to remember that)
-then move the rtw_chip_cfg_csi_rate outside the iterator function,
-taking iter_data->cfg_csi_rate to decide whether it needs to be called
+Dear Recipient;
 
 
-Best regards,
-Martin
+Please for your information, this proposal is not a scam. Could you be
+so kind to collaborate with me to run a business deal that would be
+yielding USD5, 000.00 (per day) into your hands till March 2023? You
+will be earning =E2=80=9CUnited States Dollar=E2=80=9D (US$2500) daily as y=
+our own
+(personal share) till March 2023.It=E2=80=99s a cool business deal; therefo=
+re,
+if you are available and interested to know more about the business
+before to decide doing it, reply me URGENTLY for full details.
+
+
+
+P.S: You might receive this message in your inbox; spam or junk
+folders; depending on your web host or server network. I will be
+waiting for your respond, including your Mobile Phone Number:
+
+
++00____________________________for Short Message Service (SMS) or Text Mass=
+age.
+Yours Sincerely
+MR. DAVID DJOSSA
