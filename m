@@ -2,123 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A199A3D4EB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 18:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ECE73D4EBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 18:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhGYPrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 11:47:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45620 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhGYPrY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 11:47:24 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2107A21F09;
-        Sun, 25 Jul 2021 16:27:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627230473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gdVEO3E3GIUf8IVTTxVpGFWvViaWrosGZEQQV0SOYHE=;
-        b=2oDlP2LjD0+A4KweLjtLeJQiBCntpkEK/HkzIvcENbR7dNktCH6x7NpZRJrKXwVx0lT9fT
-        4Tm9b+tKWPYPgGCw9ztVVGDPKxAESeTte/M6aEXq3y4xKde8OCwuyUjW4PFPW0rNtNprIQ
-        +jMAyRLRNlpSJvfGfb/yiGSHlHLM8+c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627230473;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gdVEO3E3GIUf8IVTTxVpGFWvViaWrosGZEQQV0SOYHE=;
-        b=u/DbxoGu9W6NQT0fxlOdp0nbiQUXILcSaTiQBNODZGcsQz6Ehpc8lBY/AfeGZk531elHku
-        hVOlx9NrB6GCcMBw==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E13EF13277;
-        Sun, 25 Jul 2021 16:27:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id aWF3NQiR/WDUJAAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Sun, 25 Jul 2021 16:27:52 +0000
-Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-To:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
- <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
- <878s2fnv79.ffs@nanos.tec.linutronix.de>
- <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
- <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
- <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
- <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
- <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
- <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
- <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
- <5be1a703-9a0a-4115-1d69-634e5e8ecefd@suse.cz>
- <bd121f5db01404774dbecc70bd7155f8431d8046.camel@gmx.de>
- <76dedfc3-0497-1776-d006-486b9bfd88da@suse.cz>
- <72a045663bf8f091ae11dd328d5e085541d54fcd.camel@gmx.de>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <18ca0ce9-3407-61e1-31d6-5c48e80eb5bb@suse.cz>
-Date:   Sun, 25 Jul 2021 18:27:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230356AbhGYPuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 11:50:09 -0400
+Received: from mout.gmx.net ([212.227.17.20]:48835 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230193AbhGYPuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 11:50:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627230618;
+        bh=inD30o7fr9HcxF9taP8HiHZq0ZN5J2YqNni60Np4MPk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=Eej6Y8wgB1/kwWEMxjPGkX+PLv84lfkmiV5MyuWOVkf9W5Pub1aubjP3GzK02LX2q
+         r+3koRyGkS8wURWzD0tdYPSiKf5z2dXPv5pNiGUdbFLcMFilg2fSrG/lN56lf40/g7
+         HYbMXtrC89ckGfRZNHFN38S6IHMrA8LFSuvogYZc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1N3KPq-1l8c9Y1E70-010Ko9; Sun, 25 Jul 2021 18:30:18 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, linux-hardening@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/edac/edac_mc: Remove all strcpy() uses
+Date:   Sun, 25 Jul 2021 18:29:54 +0200
+Message-Id: <20210725162954.9861-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <72a045663bf8f091ae11dd328d5e085541d54fcd.camel@gmx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:RcDpyTs3tg4lp5vwmLff6QfXiml+Js3YwTcnzeFtCngo+zS60VM
+ C0Q6RF9CfEIDVAjFynbSn1ayQE7EB+tNnSah+pGB3LagJJEgljRNaFC1lviLtU/+7d14VLN
+ mVLpbFFDbtsQzLZccifhoFZIItJE8drCvK8etTIjCW3IjEa1Qh4No9Ctdzl6Hm2oAid+01n
+ NIMgn5a8fSafCYmaQjxtg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:TEVbalbuEK8=:WWWdk8KU1PPpfa/dhyH+0s
+ VwpLQOnOADnqnaPqyM4QaReAFkiHlgm+VrSQfepW22qf/+irs/qLsq3Il4B26JkHoPtoiQSrc
+ lqA+85+oSWQudWUz5DYoI0eO+uWzKLdCP2WoDlE/jpqh5y9edyPUlS8hG97MJ4j+5p8TCLCUx
+ wKbONbXJhVcX28zL5dR8mIibsxlwjLbEe1cI1tx2UNiVSLluh6WEDPOfNPhG9tVlqmVXwrxkb
+ mXo/cFK3tW972lprKDHNY66981vunPxvWGm8eKwsPbcwFjTPyy+Cc3hMgynaoabiU1jPbSt36
+ pMZPZaMrbZflcU17JI6NZF8qyj9NBVBPTD5V/hCfZoYBfQ6eU/NrpJVQzJHC+TBHj7HDlVVH5
+ cFrRCKZCv9PKervHuKulAtozPdNwuYcn4o7uNfoaBdIbhU5soALjtZkzj7TPXJQ9F6R7ez56l
+ lzKNhUqO41+9+rqd+VtTETQexY7Ho70hfs4CxCD/ccO6HRObck0jdvTxrmOLrWZ6g2sGMXSXy
+ heAuPZbOGBSqpJAjlZ336WjKb8hgoQ2/QAh72jJSs0mm+hjDIQrZl6+vIIkTo8iYbOHjppU15
+ 32/Jd0g/lWVGaEs0KN+uopLw0ztJR7qFMKk6oPXe59NuninYCpqh+P8tmRzjRTbXdp4waGKRv
+ 1HhkERPNV9ZgCRFofevVg256C2WMowRQfHr75Bq96iSUrA5HhV2TGLOxLwHy9vRfpZYxFhzVw
+ qBPRECIQKI7qffO7Tb5qnqd28oGBYfhnf8BJJR5nRURTp64QqLNnI05Wd/NNzmtdhe0RnXbSK
+ DPCGz9CSIKII7zhZDimJLrTZpbfzlylcxOU1ZssxluV3hdL0jGGxAuO9QcohSdKb081/IBmVO
+ iIuim2EzoV+gEslMbClNRUiujhRwxsHkO9MpCbPWmnkUw7rTwXl73zWj5FIEJHefAt1YAc5gF
+ 4tS79eUodpQQBzVuzdlofb3S2EfptlbDWlEOgYlB67y4vQ6xndS7DuRahTk0eUbcjzUC7Ny1x
+ 0PYDBlu9NkXp1wNSOPElNashjh5tJXUT/JXJVjXWcpZXoP91DkoeBNg5X8TRJM8YXd/qgLw+G
+ wq0BviEUyAKnznWCxN2CP2jpjlG8N5C21aW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/21 5:02 PM, Mike Galbraith wrote:
-> On Sun, 2021-07-25 at 16:16 +0200, Vlastimil Babka wrote:
->> On 7/25/21 4:09 PM, Mike Galbraith wrote:
->>> On Sat, 2021-07-24 at 00:39 +0200, Vlastimil Babka wrote:
->>>>
->>>> If not, then I would expect this to work (I don't think they ever nest
->>>> in the opposite order, also lockdep should tell us instead of
->>>> -ENOBOOT?), but might be missing something...
->>>
->>> Yeah, like #ifndef CONFIG_PREMPT_RT at the bottom of the loop that our
->>> useless damn eyeballs auto-correct instead of reporting :)
->>
->> Well doh, good catch.
-> 
-> I never did see it.  I got sick of saying "but but but", and did make
-> mm/slub.i, which made it glow.
+strcpy() performs no bounds checking on the destination buffer. This
+could result in linear overflows beyond the end of the buffer, leading
+to all kinds of misbehaviors. The safe replacement is strscpy().
 
-Glad you did.
+However, to add labels is better to use the scnprintf to simplify the
+arithmetic.
 
->> Hope fixing that helps then?
-> 
-> Yeah, though RT should perhaps be pinned across release/re-acquire?
+This is a previous step in the path to remove the strcpy() function
+entirely from the kernel.
 
-Probably not necessary, this_cpu_cmpxchg() will effectively recognize
-being moved to a different CPU.
-Might also move __unfreeze_partials() out of the whole loop to avoid the
-relock. Yeah that should be better.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+This is a task of the KSPP [1]
 
-> Actually, local locks should rediscover the recursion handling skills
-> they long had so such RT specific hole poking isn't necessary.  There
-> previously would have been no ifdef+typo there for eyeballs to miss and
-> miss and miss.
+[1] https://github.com/KSPP/linux/issues/88
 
-Hm, now I'm realizing that local_lock() on !RT is just
-preempt_disable(), i.e. equivalent to get_cpu_ptr(), so some of the
-ifdeffery could go away?
+ drivers/edac/edac_mc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-> 	-Mike
-> 
+diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
+index f6d462d0be2d..1286364f0e48 100644
+=2D-- a/drivers/edac/edac_mc.c
++++ b/drivers/edac/edac_mc.c
+@@ -1027,6 +1027,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ {
+ 	struct dimm_info *dimm;
+ 	char *p;
++	size_t p_size =3D 0;
+ 	int row =3D -1, chan =3D -1;
+ 	int pos[EDAC_MAX_LAYERS] =3D { top_layer, mid_layer, low_layer };
+ 	int i, n_labels =3D 0;
+@@ -1113,12 +1114,11 @@ void edac_mc_handle_error(const enum hw_event_mc_e=
+rr_type type,
+ 			p =3D e->label;
+ 			*p =3D '\0';
+ 		} else {
+-			if (p !=3D e->label) {
+-				strcpy(p, OTHER_LABEL);
+-				p +=3D strlen(OTHER_LABEL);
+-			}
+-			strcpy(p, dimm->label);
+-			p +=3D strlen(p);
++			const char *or =3D (p !=3D e->label) ? OTHER_LABEL : "";
++
++			p_size +=3D scnprintf(p + p_size,
++					    sizeof(e->label) - p_size,
++					    "%s%s", or, dimm->label);
+ 		}
+
+ 		/*
+@@ -1140,9 +1140,9 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
+_type type,
+ 	}
+
+ 	if (any_memory)
+-		strcpy(e->label, "any memory");
++		strscpy(e->label, "any memory", sizeof(e->label));
+ 	else if (!*e->label)
+-		strcpy(e->label, "unknown memory");
++		strscpy(e->label, "unknown memory", sizeof(e->label));
+
+ 	edac_inc_csrow(e, row, chan);
+
+=2D-
+2.25.1
 
