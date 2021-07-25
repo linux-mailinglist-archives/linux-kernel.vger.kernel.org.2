@@ -2,267 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E913D5063
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 00:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC293D5068
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 00:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhGYVgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 17:36:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229829AbhGYVgS (ORCPT
+        id S230479AbhGYVht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 17:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhGYVhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 17:36:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627251407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ihu2pnjGkxS62C8ME4R8VGgIAtcGREqgRpT3Z9wqgg=;
-        b=F4VUk5o2cjrz8nzqm/bfBCaFLl7XYQ3Y7A6kOwqmOejVrEKFxa35so4ay5RtlHcbtuDpMT
-        jnd6bN9jZCVOWBqhG+pvlC8YOsPO2XMpkzoKG7MCREIJ0XaMTvf7uGxZ+T7DBhLla/GXnk
-        /Uxn0c5K03WU8qC66ldjvKyXiX55LrA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-_sr7zHURPImymv7K2iP9vg-1; Sun, 25 Jul 2021 18:16:46 -0400
-X-MC-Unique: _sr7zHURPImymv7K2iP9vg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76CDA801A92;
-        Sun, 25 Jul 2021 22:16:44 +0000 (UTC)
-Received: from max.com (unknown [10.40.194.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DB64C19D7C;
-        Sun, 25 Jul 2021 22:16:41 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Date:   Mon, 26 Jul 2021 00:16:39 +0200
-Message-Id: <20210725221639.426565-1-agruenba@redhat.com>
-In-Reply-To: <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
-References: <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com> <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
+        Sun, 25 Jul 2021 17:37:47 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAA4C061757;
+        Sun, 25 Jul 2021 15:18:17 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id u20so8733705ljo.0;
+        Sun, 25 Jul 2021 15:18:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=dUhRXsVILafLbrcPB/Q67vmty0U4fF9veTlHlCnEtoE=;
+        b=VqTyDZKeiBNSF6NY6wJ0B3QVeonvwGYiWYwC/C+IuteaaqkDUxehCSd2G/mtnhHTzK
+         msMphgqw2cM+0qROxPr9ph2omWLOSammr3kv9gt6Pzne55jLwsy8F661PhND3T1ry3IR
+         fiEczxO0OAxsr0J86IZC8tDYg3kGw5091+yXSjCCd8qY+2oPTTSqwEgsIG036W1+nm1d
+         nvvicSsBF5LENUTy0jv61/AyHP5ZHVn89lxtg9cgZQFhNPqBqjqejjViGXATG+VmapkP
+         YAfPXk49SibWv8wMQZx3teBdNxz8TRBdOEpEBVu/nU7Ek9hcINlrpu70/2/zpkmvlPvT
+         0eqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=dUhRXsVILafLbrcPB/Q67vmty0U4fF9veTlHlCnEtoE=;
+        b=MjK2W99mWYGhUxUtHWyvqLW1oXDqF1wxAvR7so9nobsKo6iMtwPghAo7Lzu4xcRwX7
+         O/8BnWxouVGrYyhJUpAAFpc266GcpOqohUQ9UsVJH7wHSZrUoiT/TLDC0KfyZkIBVuhe
+         RqoibgPZ9ZwoKsbu+4KUEcN3G9qQaK4xzNQXqVNtpz72WR8Vtgot1y0Gz6/KlSei1Z8S
+         f3kHmPV+lhubIn/qsBH7YmctSOiBTTMaW1PpGgBh8FRV/h1V4z51szMwZ7f9/k283v2C
+         /NUnsJySxpUtOkVHs4/Iryomve/5/m8hne+oiUei423TqAxphIdXCIRp7oS925L2Km98
+         3jMg==
+X-Gm-Message-State: AOAM5326x/9M9lcb/ttBHNO2BvrlzxpckU5hNy8JCeVR/1Do1n/t2+Vp
+        irQMTCD51XNbPqfiduIK+7s=
+X-Google-Smtp-Source: ABdhPJy6QvaawejBf4U+EnmKUnrnqwaUPLrkiynHcuqhsBM2ozdPNtDPQ0xlDMFv7kw7Q1HxHuogjQ==
+X-Received: by 2002:a2e:8110:: with SMTP id d16mr10417607ljg.42.1627251495466;
+        Sun, 25 Jul 2021 15:18:15 -0700 (PDT)
+Received: from [192.168.1.6] ([194.79.5.201])
+        by smtp.gmail.com with ESMTPSA id 10sm2867285lfz.115.2021.07.25.15.18.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Jul 2021 15:18:15 -0700 (PDT)
+Subject: Re: [PATCH v2 3/3] drm/panel-simple: add Gopher 2b LCD panel
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, paul@crapouillou.net,
+        robh+dt@kernel.org, thierry.reding@gmail.com
+References: <20210724103358.1632020-1-akawolf0@gmail.com>
+ <20210724103358.1632020-4-akawolf0@gmail.com> <YP3IM4PbN68qd4ec@ravnborg.org>
+From:   Artjom Vejsel <akawolf0@gmail.com>
+Message-ID: <b588df49-2c85-f8c7-115e-6e86d0692daf@gmail.com>
+Date:   Mon, 26 Jul 2021 01:18:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <YP3IM4PbN68qd4ec@ravnborg.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's a fixed and cleaned up version that passes fstests on gfs2.
+Hi, Sam! Thanks for commentaries, I've sent v3.
 
-I see no reason why the combination of tail packing + writing should
-cause any issues, so in my opinion, the check that disables that
-combination in iomap_write_begin_inline should still be removed.
-
-It turns out that returning the number of bytes copied from
-iomap_read_inline_data is a bit irritating: the function is really used
-for filling the page, but that's not always the "progress" we're looking
-for.  In the iomap_readpage case, we actually need to advance by an
-antire page, but in the iomap_file_buffered_write case, we need to
-advance by the length parameter of iomap_write_actor or less.  So I've
-changed that back.
-
-I've also renamed iomap_inline_buf to iomap_inline_data and I've turned
-iomap_inline_data_size_valid into iomap_within_inline_data, which seems
-more useful to me.
-
-Thanks,
-Andreas
-
---
-
-Subject: [PATCH] iomap: Support tail packing
-
-The existing inline data support only works for cases where the entire
-file is stored as inline data.  For larger files, EROFS stores the
-initial blocks separately and then can pack a small tail adjacent to the
-inode.  Generalise inline data to allow for tail packing.  Tails may not
-cross a page boundary in memory.
-
-We currently have no filesystems that support tail packing and writing,
-so that case is currently disabled (see iomap_write_begin_inline).  I'm
-not aware of any reason why this code path shouldn't work, however.
-
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
- fs/iomap/buffered-io.c | 34 +++++++++++++++++++++++-----------
- fs/iomap/direct-io.c   | 11 ++++++-----
- include/linux/iomap.h  | 22 +++++++++++++++++++++-
- 3 files changed, 50 insertions(+), 17 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..334bf98fdd4a 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
--iomap_read_inline_data(struct inode *inode, struct page *page,
-+static int iomap_read_inline_data(struct inode *inode, struct page *page,
- 		struct iomap *iomap)
- {
--	size_t size = i_size_read(inode);
-+	size_t size = i_size_read(inode) - iomap->offset;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return 0;
- 
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline and tail-packed data must start page aligned in the file */
-+	if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(size > PAGE_SIZE - offset_in_page(iomap->inline_data)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(page_has_private(page)))
-+		return -EIO;
- 
- 	addr = kmap_atomic(page);
- 	memcpy(addr, iomap->inline_data, size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return 0;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -247,7 +251,6 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	sector_t sector;
- 
- 	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
- 		iomap_read_inline_data(inode, page, iomap);
- 		return PAGE_SIZE;
- 	}
-@@ -589,6 +592,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(srcmap->offset != 0))
-+		return -EIO;
-+	return iomap_read_inline_data(inode, page, srcmap);
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-@@ -671,11 +683,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
- 	void *addr;
- 
- 	WARN_ON_ONCE(!PageUptodate(page));
--	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	BUG_ON(!iomap_within_inline_data(iomap, pos + copied - 1));
- 
- 	flush_dcache_page(page);
- 	addr = kmap_atomic(page);
--	memcpy(iomap->inline_data + pos, addr + pos, copied);
-+	memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
- 	kunmap_atomic(addr);
- 
- 	mark_inode_dirty(inode);
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..c9424e58f613 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -380,21 +380,22 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 	struct iov_iter *iter = dio->submit.iter;
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	if (WARN_ON_ONCE(!iomap_within_inline_data(iomap, pos + length - 1)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
--		loff_t size = inode->i_size;
-+		loff_t size = iomap->offset + iomap->length;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_data(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(iomap_inline_data(iomap, pos), length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(iomap_inline_data(iomap, pos), length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e221..c1b57d34cb76 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -28,7 +28,7 @@ struct vm_fault;
- #define IOMAP_DELALLOC	1	/* delayed allocation blocks */
- #define IOMAP_MAPPED	2	/* blocks allocated at @addr */
- #define IOMAP_UNWRITTEN	3	/* blocks allocated at @addr in unwritten state */
--#define IOMAP_INLINE	4	/* data inline in the inode */
-+#define IOMAP_INLINE	4	/* inline or tail-packed data */
- 
- /*
-  * Flags reported by the file system from iomap_begin:
-@@ -97,6 +97,26 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+/*
-+ * Returns the inline data pointer for logical offset @pos.
-+ */
-+static void *iomap_inline_data(struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data + pos - iomap->offset;
-+}
-+
-+/*
-+ * Check if logical offset @pos is within the valid range for inline data.
-+ * This is used to guard against accessing data beyond the page inline_data
-+ * points at.
-+ */
-+static bool iomap_within_inline_data(struct iomap *iomap, loff_t pos)
-+{
-+	unsigned int size = PAGE_SIZE - offset_in_page(iomap->inline_data);
-+
-+	return pos - iomap->offset < size;
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
--- 
-2.26.3
-
+On 25/07/2021 23.23, Sam Ravnborg wrote:
+> On Sat, Jul 24, 2021 at 01:33:58PM +0300, Artjom Vejsel wrote:
+>> The Gopher 2b LCD panel is used in Gopher 2b handhelds.
+>> It's simple panel with NewVision NV3047 driver, but SPI lines are not connected.
+>> It has no specific name, since it's unique to that handhelds.
+>> lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG NV3047 Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
+>>
+>> Signed-off-by: Artjom Vejsel <akawolf0@gmail.com>
+>> ---
+>>   drivers/gpu/drm/panel/panel-simple.c | 43 ++++++++++++++++++++++++++++
+>>   1 file changed, 43 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+>> index 9b286bd4444f..9676e25accb3 100644
+>> --- a/drivers/gpu/drm/panel/panel-simple.c
+>> +++ b/drivers/gpu/drm/panel/panel-simple.c
+>> @@ -4306,6 +4306,46 @@ static const struct panel_desc yes_optoelectronics_ytc700tlag_05_201c = {
+>>   	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+>>   };
+>>   
+>> +static const struct drm_display_mode qishenglong_gopher2b_lcd_panel_modes[] = {
+>> +	{ /* 60 Hz */
+>> +		.clock = 10800,
+>> +		.hdisplay = 480,
+>> +		.hsync_start = 480 + 77,
+>> +		.hsync_end = 480 + 77 + 41,
+>> +		.htotal = 480 + 77 + 41 + 2,
+>> +		.vdisplay = 272,
+>> +		.vsync_start = 272 + 16,
+>> +		.vsync_end = 272 + 16 + 10,
+>> +		.vtotal = 272 + 16 + 10 + 2,
+>> +		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+>> +	},
+>> +	{ /* 50 Hz */
+>> +		.clock = 10800,
+>> +		.hdisplay = 480,
+>> +		.hsync_start = 480 + 17,
+>> +		.hsync_end = 480 + 17 + 41,
+>> +		.htotal = 480 + 17 + 41 + 2,
+>> +		.vdisplay = 272,
+>> +		.vsync_start = 272 + 116,
+>> +		.vsync_end = 272 + 116 + 10,
+>> +		.vtotal = 272 + 116 + 10 + 2,
+>> +		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
+>> +	},
+>> +};
+>> +
+>> +static const struct panel_desc qishenglong_gopher2b_lcd_panel = {
+>> +	.modes = qishenglong_gopher2b_lcd_panel_modes,
+>> +	.num_modes = ARRAY_SIZE(qishenglong_gopher2b_lcd_panel_modes),
+>> +	.bpc = 8,
+>> +	.size = {
+>> +		.width = 95,
+>> +		.height = 54,
+>> +	},
+>> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+>> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
+>> +	.connector_type = DRM_MODE_CONNECTOR_DPI,
+>> +};
+>> +
+>>   static const struct drm_display_mode arm_rtsm_mode[] = {
+>>   	{
+>>   		.clock = 65000,
+>> @@ -4753,6 +4793,9 @@ static const struct of_device_id platform_of_match[] = {
+>>   	}, {
+>>   		.compatible = "yes-optoelectronics,ytc700tlag-05-201c",
+>>   		.data = &yes_optoelectronics_ytc700tlag_05_201c,
+>> +	}, {
+>> +		.compatible = "qishenglong,gopher2b-lcd-panel",
+>> +		.data = &qishenglong_gopher2b_lcd_panel,
+>>   	}, {
+> This list shall also be sorted alphabetically, after the compatible.
+> Same goes for the definition of the variable &qishenglong_gopher2b_lcd_panel
+> that shall be listed in the same order as here.
+>
+> Sorry for the nit-picking - but if we do not ask to have it fixed then
+> we quickly have a mess.
+>
+> 	Sam
