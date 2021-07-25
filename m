@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A543D4CDF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 11:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E503D4CE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 11:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhGYIk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 04:40:26 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:54030 "EHLO rere.qmqm.pl"
+        id S230507AbhGYIkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 04:40:32 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:52160 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230310AbhGYIkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230370AbhGYIkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 25 Jul 2021 04:40:19 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4GXcww0VFmzQ4;
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4GXcww5HTSzWx;
         Sun, 25 Jul 2021 11:20:48 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1627204848; bh=3RQA0YY2zxTg+Xk+cZmLedNuKzlo21ajTA3ny9uoqwg=;
+        t=1627204848; bh=IH24EXX6OdJXULqDvBKGaD8RwGXSWBLh0ZaLSlSLM+s=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=JlRwUCBxOPs1wQ4kZ09ylNVEBwqIPSJv8NMyDUldc39/eUapyWDNN8RRH4GIPtWUl
-         kTbDscrcaki5bMe5llfarNT1223EZeQekzUu+5Q8Nb0ZrWjvHt4K3GwT39lbNfANpy
-         RmMOIh3HFzHLs2tVrnj9596Ik31NJ83dKpJ/wfff32R0o1zcqHOIQTwpIhG5WKF+3J
-         oiFPcN+lh3bMbehx+rBKmBBorg+QtQokNWwkWD4azrctgfQoFNKUqLBSL5wvAAD98d
-         JoMhivNbQXPOIQL5jp7SHocou8jx0/j/uDcqWYnVxibXCjdzHEK9F4DmMODyfc4L2Z
-         Wsmlz3liloXGg==
+        b=CKLXjffLCEyKXzOILmQ8Czz9JorYUMYcIwI9e0b1CoZ0RZtpbGA0BgOeiqabr7bXK
+         xdExE5969X0N77bxwTKLAoKClxlvMFRQzDDNlMU7jwV+a9dyaxgIF+Ns9IGFITvNh5
+         84IOoMsAUrrqstL2G62pNR1JUVFr4uA9ckF29yvz22zautjd8h5pK9qzUMU22ic/sS
+         0dR9PlV7xRpDsq9ge0fzGTpqP51dwsL27Zj6huKWcLSoKTQOmadhrbRoOlMiOgSZYV
+         1uwBLol5qfiQsZ3BqXdXKaLSjdjY4Mgh/CTNjPFrgFi6S5JZ6/S9XDcBB3s4Yan4Aq
+         7kXSTEiEkfyNw==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.103.2 at mail
-Date:   Sun, 25 Jul 2021 11:20:47 +0200
-Message-Id: <e65dc96eb24caf8baa5431a51fe694b969e2d51f.1627204633.git.mirq-linux@rere.qmqm.pl>
+Date:   Sun, 25 Jul 2021 11:20:48 +0200
+Message-Id: <b343556a93c2741b502723f63af189283235bc9a.1627204633.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1627204633.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v4 2/5] mmc: sdhci: always obey programmable clock config in
- preset value
+Subject: [PATCH v4 3/5] mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     Kevin Liu <kliu5@marvell.com>,
+To:     Suneel Garapati <suneel.garapati@xilinx.com>,
+        Kevin Liu <kliu5@marvell.com>,
         Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Al Cooper <alcooperx@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Al Cooper <alcooperx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When host controller uses programmable clock presets but doesn't
-advertise programmable clock support, we can only guess what frequency
-it generates. Let's at least return correct SDHCI_PROG_CLOCK_MODE bit
-value in this case.
+Fix returned clock rate for SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN case.
+This fixes real_div value that was calculated as 1 (meaning no division)
+instead of 2 with the quirk enabled.
 
-Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
+Cc: stable@kernel.vger.org
+Fixes: d1955c3a9a1d ("mmc: sdhci: add quirk SDHCI_QUIRK_CLOCK_DIV_ZERO_BROKEN")
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
 v4: no changes
-v3: added a comment for this case
+v3: updated commit message
 v2: no changes
 ---
- drivers/mmc/host/sdhci.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index c7438dd13e3e..3ab60e7f936b 100644
+index 3ab60e7f936b..0993f7d0ce8e 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
-@@ -1859,11 +1859,14 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+@@ -1903,9 +1903,12 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
  
- 			pre_val = sdhci_get_preset_value(host);
- 			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
--			if (host->clk_mul &&
--				(pre_val & SDHCI_PRESET_CLKGEN_SEL)) {
-+			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
- 				clk = SDHCI_PROG_CLOCK_MODE;
- 				real_div = div + 1;
- 				clk_mul = host->clk_mul;
-+				if (!clk_mul) {
-+					/* The clock frequency is unknown. Assume undivided base. */
-+					clk_mul = 1;
-+				}
- 			} else {
- 				real_div = max_t(int, 1, div << 1);
+ 		if (!host->clk_mul || switch_base_clk) {
+ 			/* Version 3.00 divisors must be a multiple of 2. */
+-			if (host->max_clk <= clock)
++			if (host->max_clk <= clock) {
+ 				div = 1;
+-			else {
++				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
++					&& host->max_clk <= 25000000)
++					div = 2;
++			} else {
+ 				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
+ 				     div += 2) {
+ 					if ((host->max_clk / div) <= clock)
+@@ -1914,9 +1917,6 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
  			}
+ 			real_div = div;
+ 			div >>= 1;
+-			if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
+-				&& !div && host->max_clk <= 25000000)
+-				div = 1;
+ 		}
+ 	} else {
+ 		/* Version 2.00 divisors must be a power of 2. */
 -- 
 2.30.2
 
