@@ -2,130 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECE73D4EBB
+	by mail.lfdr.de (Postfix) with ESMTP id D028F3D4EBD
 	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 18:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhGYPuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 11:50:09 -0400
-Received: from mout.gmx.net ([212.227.17.20]:48835 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhGYPuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 11:50:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627230618;
-        bh=inD30o7fr9HcxF9taP8HiHZq0ZN5J2YqNni60Np4MPk=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=Eej6Y8wgB1/kwWEMxjPGkX+PLv84lfkmiV5MyuWOVkf9W5Pub1aubjP3GzK02LX2q
-         r+3koRyGkS8wURWzD0tdYPSiKf5z2dXPv5pNiGUdbFLcMFilg2fSrG/lN56lf40/g7
-         HYbMXtrC89ckGfRZNHFN38S6IHMrA8LFSuvogYZc=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.228.41]) by mail.gmx.net
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1N3KPq-1l8c9Y1E70-010Ko9; Sun, 25 Jul 2021 18:30:18 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>, linux-hardening@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/edac/edac_mc: Remove all strcpy() uses
-Date:   Sun, 25 Jul 2021 18:29:54 +0200
-Message-Id: <20210725162954.9861-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S230411AbhGYPuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 11:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhGYPuO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 11:50:14 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407C9C061760
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 09:30:44 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1m7h1V-0007Ue-NA; Sun, 25 Jul 2021 18:30:41 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:4c93:5280:877:c958])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 4F3C2657694;
+        Sun, 25 Jul 2021 16:30:40 +0000 (UTC)
+Date:   Sun, 25 Jul 2021 18:30:39 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Yasushi SHOJI <yasushi.shoji@gmail.com>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, wg@grandegger.com,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Yasushi SHOJI <yashi@spacecubics.com>
+Subject: Re: [PATCH] net: can: add missing urb->transfer_dma initialization
+Message-ID: <20210725163039.kyugkdmyn5p3o5r2@pengutronix.de>
+References: <20210725094246.pkdpvl5aaaftur3a@pengutronix.de>
+ <20210725103630.23864-1-paskripkin@gmail.com>
+ <CAELBRWKfyOBanMBteO=LpL9R1QMp97zTYtKY689jeR2gDOa_Gw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RcDpyTs3tg4lp5vwmLff6QfXiml+Js3YwTcnzeFtCngo+zS60VM
- C0Q6RF9CfEIDVAjFynbSn1ayQE7EB+tNnSah+pGB3LagJJEgljRNaFC1lviLtU/+7d14VLN
- mVLpbFFDbtsQzLZccifhoFZIItJE8drCvK8etTIjCW3IjEa1Qh4No9Ctdzl6Hm2oAid+01n
- NIMgn5a8fSafCYmaQjxtg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TEVbalbuEK8=:WWWdk8KU1PPpfa/dhyH+0s
- VwpLQOnOADnqnaPqyM4QaReAFkiHlgm+VrSQfepW22qf/+irs/qLsq3Il4B26JkHoPtoiQSrc
- lqA+85+oSWQudWUz5DYoI0eO+uWzKLdCP2WoDlE/jpqh5y9edyPUlS8hG97MJ4j+5p8TCLCUx
- wKbONbXJhVcX28zL5dR8mIibsxlwjLbEe1cI1tx2UNiVSLluh6WEDPOfNPhG9tVlqmVXwrxkb
- mXo/cFK3tW972lprKDHNY66981vunPxvWGm8eKwsPbcwFjTPyy+Cc3hMgynaoabiU1jPbSt36
- pMZPZaMrbZflcU17JI6NZF8qyj9NBVBPTD5V/hCfZoYBfQ6eU/NrpJVQzJHC+TBHj7HDlVVH5
- cFrRCKZCv9PKervHuKulAtozPdNwuYcn4o7uNfoaBdIbhU5soALjtZkzj7TPXJQ9F6R7ez56l
- lzKNhUqO41+9+rqd+VtTETQexY7Ho70hfs4CxCD/ccO6HRObck0jdvTxrmOLrWZ6g2sGMXSXy
- heAuPZbOGBSqpJAjlZ336WjKb8hgoQ2/QAh72jJSs0mm+hjDIQrZl6+vIIkTo8iYbOHjppU15
- 32/Jd0g/lWVGaEs0KN+uopLw0ztJR7qFMKk6oPXe59NuninYCpqh+P8tmRzjRTbXdp4waGKRv
- 1HhkERPNV9ZgCRFofevVg256C2WMowRQfHr75Bq96iSUrA5HhV2TGLOxLwHy9vRfpZYxFhzVw
- qBPRECIQKI7qffO7Tb5qnqd28oGBYfhnf8BJJR5nRURTp64QqLNnI05Wd/NNzmtdhe0RnXbSK
- DPCGz9CSIKII7zhZDimJLrTZpbfzlylcxOU1ZssxluV3hdL0jGGxAuO9QcohSdKb081/IBmVO
- iIuim2EzoV+gEslMbClNRUiujhRwxsHkO9MpCbPWmnkUw7rTwXl73zWj5FIEJHefAt1YAc5gF
- 4tS79eUodpQQBzVuzdlofb3S2EfptlbDWlEOgYlB67y4vQ6xndS7DuRahTk0eUbcjzUC7Ny1x
- 0PYDBlu9NkXp1wNSOPElNashjh5tJXUT/JXJVjXWcpZXoP91DkoeBNg5X8TRJM8YXd/qgLw+G
- wq0BviEUyAKnznWCxN2CP2jpjlG8N5C21aW
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6c5tzy4pflvjriu6"
+Content-Disposition: inline
+In-Reply-To: <CAELBRWKfyOBanMBteO=LpL9R1QMp97zTYtKY689jeR2gDOa_Gw@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy().
 
-However, to add labels is better to use the scnprintf to simplify the
-arithmetic.
+--6c5tzy4pflvjriu6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is a previous step in the path to remove the strcpy() function
-entirely from the kernel.
+On 25.07.2021 22:27:37, Yasushi SHOJI wrote:
+> Hi Pavel,
+>=20
+> I've tested this patch on top of v5.14-rc2.  All good.
+>=20
+> Tested-by: Yasushi SHOJI <yashi@spacecubics.com>
+>=20
+> Some nitpicks.
+>=20
+> On Sun, Jul 25, 2021 at 7:36 PM Pavel Skripkin <paskripkin@gmail.com> wro=
+te:
+> >
+> > Yasushi reported, that his Microchip CAN Analyzer stopped working since
+> > commit 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb").
+> > The problem was in missing urb->transfer_dma initialization.
+> >
+> > In my previous patch to this driver I refactored mcba_usb_start() code =
+to
+> > avoid leaking usb coherent buffers. To achive it, I passed local stack
+>=20
+> achieve
+>=20
+> > variable to usb_alloc_coherent() and then saved it to private array to
+> > correctly free all coherent buffers on ->close() call. But I forgot to
+> > inialize urb->transfer_dma with variable passed to usb_alloc_coherent().
+>=20
+> initialize
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-This is a task of the KSPP [1]
+Fixed while applying.
 
-[1] https://github.com/KSPP/linux/issues/88
+Thanks,
+Marc
 
- drivers/edac/edac_mc.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
-index f6d462d0be2d..1286364f0e48 100644
-=2D-- a/drivers/edac/edac_mc.c
-+++ b/drivers/edac/edac_mc.c
-@@ -1027,6 +1027,7 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- {
- 	struct dimm_info *dimm;
- 	char *p;
-+	size_t p_size =3D 0;
- 	int row =3D -1, chan =3D -1;
- 	int pos[EDAC_MAX_LAYERS] =3D { top_layer, mid_layer, low_layer };
- 	int i, n_labels =3D 0;
-@@ -1113,12 +1114,11 @@ void edac_mc_handle_error(const enum hw_event_mc_e=
-rr_type type,
- 			p =3D e->label;
- 			*p =3D '\0';
- 		} else {
--			if (p !=3D e->label) {
--				strcpy(p, OTHER_LABEL);
--				p +=3D strlen(OTHER_LABEL);
--			}
--			strcpy(p, dimm->label);
--			p +=3D strlen(p);
-+			const char *or =3D (p !=3D e->label) ? OTHER_LABEL : "";
-+
-+			p_size +=3D scnprintf(p + p_size,
-+					    sizeof(e->label) - p_size,
-+					    "%s%s", or, dimm->label);
- 		}
+--6c5tzy4pflvjriu6
+Content-Type: application/pgp-signature; name="signature.asc"
 
- 		/*
-@@ -1140,9 +1140,9 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	}
+-----BEGIN PGP SIGNATURE-----
 
- 	if (any_memory)
--		strcpy(e->label, "any memory");
-+		strscpy(e->label, "any memory", sizeof(e->label));
- 	else if (!*e->label)
--		strcpy(e->label, "unknown memory");
-+		strscpy(e->label, "unknown memory", sizeof(e->label));
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD9ka0ACgkQqclaivrt
+76k0owf8D7/UgJq6FTxUfwa8X6GgsUGtuxduh6myuhV82vfV/Bq9YiGDoyIHp6ho
+asnWUi34JmPh3Qxfbmrb3If4GJmCjfENMbxdQCKXYpgPr/ED0b77VBKr/X+FkJN6
+VEVpfu/lndw+xtrZE+o7uBM/F1TzAlcyOd8j8zsHrND8aUhnSXc7apxGeFdyYiev
+3AjuwNZPn8LyArQVPptlB2uZPhQXzpajEYdxdmEwU5tKbg5td3RbR1iUECgQ8mg7
+VbFOTDa2ivDuVyl/zcqg87McltmxfzxsCTxC4oqeatFTjKVPYNWFc6X5adWwQ1+d
+noIrZtR34OORwPkE9HUeR5/s6RTpsA==
+=tmG8
+-----END PGP SIGNATURE-----
 
- 	edac_inc_csrow(e, row, chan);
-
-=2D-
-2.25.1
-
+--6c5tzy4pflvjriu6--
