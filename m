@@ -2,128 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368F83D4E5E
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 17:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27CC3D4E8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 18:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhGYPS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 11:18:57 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:55281 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhGYPSz (ORCPT
+        id S230371AbhGYPWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 11:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231317AbhGYPWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 11:18:55 -0400
-Received: by mail-io1-f70.google.com with SMTP id h70-20020a6bb7490000b02904f7957d92b5so6381806iof.21
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 08:59:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wzNrsxtn9JCSe5puGyPKBo5plRJ8+W+s12Wnu02BBeE=;
-        b=HAirdtPgqdj8blw4PyHtH6Pd7GxUr0sHugxwN7atRo4Rw2FUD+VUv3Cq+qFklDZ17h
-         LHcGQUNdKHzkr3eaX5xPS3s+04DWM7AoCoAB2Td6kBCojknbkkLyQBF8+SPEY8+bk+46
-         GcyiY03mHpVaN7yL7nxKhVPluoub+Ww3992Lt61orX1BbOaWdCJmFG8HQsPwOz9b/gwx
-         frLRxSw4zlOqzV7iMHM0DS4G+wM0oq9Nt0pqf0je8/SXVJmBlb5gK/kC8PbT/mgF9fbU
-         NrVQUeeXkVp2EYHZ9zk5TjvfC8uOFMqkk6Ie1ou6YqBjSIU/PXTPiJTO4l/JbWGuKepI
-         R4jA==
-X-Gm-Message-State: AOAM531ro0C5DZ5LehMNGCMpgd6Oo0SsMAfakknh7YQGyM6AocWyn2kj
-        i9dvsmN0clbAtIDHKGvI5VXxtm0kKjfgPancJxqOr7DR2GEF
-X-Google-Smtp-Source: ABdhPJwgfB5+7N9VIhxhwXZD2TncIf3jizRAN+7Qda+YQiQFwrqw3fxedyk1E8Div/9iF1hv1lEU27MxloWiHQmaS1PicDgVdg3I
+        Sun, 25 Jul 2021 11:22:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E255DC061765;
+        Sun, 25 Jul 2021 09:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=QP31E/sXq7t2KkleWi4kwdfFIuWaSTTxx1eHMbXw83k=; b=Etc9EI7KD/xNRvBEjHQUYguOwQ
+        AUQnm2uUIzb1ditOcgk/KLVg1I0Ryaucz99ZmW6w62WdVIqrhKgRnjVeBguHL6eWUyYKcNuBB93Uf
+        ZGuZqBgWxfNoFTIFTUmgLzZ+7dr2P5x7176kbxRWfOosZ1jVogk6U6SNyJ8hz0VuFmDVVNtKGq1PF
+        I//lm5jLPtWk5XuYU5/kqNLUcbEQcr45/BPeNzazDzyLJdpbY4vyQNdtLyhFSBCsTggC3Lff2m8ic
+        Jk3FAq2Ssxypgh/Tn9IMFueeQcV2Ywnq75kGtje1T04mp/RoUcdHraXv9BGK6rE4so+C6b7ffexla
+        MqbdlY2w==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m7gai-008oIU-O1; Sun, 25 Jul 2021 16:03:00 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH 0/3] mips: expunge kernel-doc warnings
+Date:   Sun, 25 Jul 2021 09:02:55 -0700
+Message-Id: <20210725160258.28950-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:9508:: with SMTP id y8mr12657702jah.28.1627228764967;
- Sun, 25 Jul 2021 08:59:24 -0700 (PDT)
-Date:   Sun, 25 Jul 2021 08:59:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000081183b05c7f4b8c5@google.com>
-Subject: [syzbot] bpf-next test error: BUG: sleeping function called from
- invalid context in stack_depot_save
-From:   syzbot <syzbot+f5087f6afc6f49d80566@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, ast@kernel.org, daniel@iogearbox.net,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Remove all kernel-doc warnings from arch/mips/ (as reported by the
+kernel test robot).
 
-syzbot found the following issue on:
+[PATCH 1/3] mips: clean up (remove) kernel-doc in cavium-octeon/executive/
+[PATCH 2/3] mips: clean up kernel-doc in cavium-octeon/*.c
+[PATCH 3/3] mips: clean up kernel-doc in mm/c-octeon.c
 
-HEAD commit:    807b8f0e24e6 Merge branch 'libbpf: btf typed data dumping ..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17ccd0d4300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=da140227e4f25b17
-dashboard link: https://syzkaller.appspot.com/bug?extid=f5087f6afc6f49d80566
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+Cc: Aditya Srivastava <yashsri421@gmail.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: kernel test robot <lkp@intel.com>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f5087f6afc6f49d80566@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context at mm/page_alloc.c:5167
-in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8437, name: syz-fuzzer
-INFO: lockdep is turned off.
-irq event stamp: 0
-hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-hardirqs last disabled at (0): [<ffffffff8143fb5d>] copy_process+0x1dcd/0x7510 kernel/fork.c:2061
-softirqs last  enabled at (0): [<ffffffff8143fb9e>] copy_process+0x1e0e/0x7510 kernel/fork.c:2065
-softirqs last disabled at (0): [<0000000000000000>] 0x0
-CPU: 1 PID: 8437 Comm: syz-fuzzer Tainted: G        W         5.14.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
- prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5167
- __alloc_pages+0x12f/0x500 mm/page_alloc.c:5363
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
- save_stack+0x15e/0x1e0 mm/page_owner.c:120
- __set_page_owner+0x50/0x290 mm/page_owner.c:181
- prep_new_page mm/page_alloc.c:2433 [inline]
- __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5301
- alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
- vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
- __vmalloc_area_node mm/vmalloc.c:2863 [inline]
- __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
- __vmalloc_node mm/vmalloc.c:3015 [inline]
- vzalloc+0x67/0x80 mm/vmalloc.c:3085
- n_tty_open+0x16/0x170 drivers/tty/n_tty.c:1848
- tty_ldisc_open+0x9b/0x110 drivers/tty/tty_ldisc.c:449
- tty_ldisc_setup+0x90/0x100 drivers/tty/tty_ldisc.c:776
- tty_init_dev.part.0+0x1f4/0x610 drivers/tty/tty_io.c:1453
- tty_init_dev+0x5b/0x80 drivers/tty/tty_io.c:1419
- ptmx_open drivers/tty/pty.c:834 [inline]
- ptmx_open+0x112/0x360 drivers/tty/pty.c:800
- chrdev_open+0x266/0x770 fs/char_dev.c:414
- do_dentry_open+0x4c8/0x11d0 fs/open.c:826
- do_open fs/namei.c:3374 [inline]
- path_openat+0x1c23/0x27f0 fs/namei.c:3507
- do_filp_open+0x1aa/0x400 fs/namei.c:3534
- do_sys_openat2+0x16d/0x420 fs/open.c:1204
- do_sys_open fs/open.c:1220 [inline]
- __do_sys_openat fs/open.c:1236 [inline]
- __se_sys_openat fs/open.c:1231 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1231
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4af20a
-Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
-RSP: 002b:000000c0002ff3f8 EFLAGS: 00000216 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
-RDX: 0000000000000000 RSI: 000000c0001a98d0 RDI: ffffffffffffff9c
-RBP: 000000c0002ff470 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000216 R12: 000000000000018e
-R13: 000000000000018d R14: 0000000000000200 R15: 000000c0002aa000
-can: request_module (can-proto-0) failed.
-can: request_module (can-proto-0) failed.
-can: request_module (can-proto-0) failed.
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ arch/mips/cavium-octeon/executive/cvmx-bootmem.c      |   10 +-
+ arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c    |   12 +-
+ arch/mips/cavium-octeon/executive/cvmx-helper-board.c |    8 -
+ arch/mips/cavium-octeon/executive/cvmx-helper-rgmii.c |   12 +-
+ arch/mips/cavium-octeon/executive/cvmx-helper-xaui.c  |    8 -
+ arch/mips/cavium-octeon/executive/cvmx-l2c.c          |    9 --
+ arch/mips/cavium-octeon/executive/cvmx-pko.c          |   22 ++---
+ arch/mips/cavium-octeon/executive/cvmx-spi.c          |   20 ++--
+ arch/mips/cavium-octeon/flash_setup.c                 |    2 
+ arch/mips/cavium-octeon/setup.c                       |   43 +++++-----
+ arch/mips/cavium-octeon/smp.c                         |   14 +--
+ arch/mips/mm/c-octeon.c                               |   29 +++---
+ 12 files changed, 93 insertions(+), 96 deletions(-)
