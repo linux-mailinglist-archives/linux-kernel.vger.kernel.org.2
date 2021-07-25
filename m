@@ -2,59 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A8B3D4F4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 19:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6E93D4F4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 19:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhGYRJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 13:09:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231317AbhGYRJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 13:09:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4123160F42;
-        Sun, 25 Jul 2021 17:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627235389;
-        bh=cTlcmYAnDbW6oCy4EAdNUEs9kQUevw2ti3r5ihDoB/Q=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=MpvME2e6T6ek5TmOw3QQO0DxwPXLPbs+OJ9hmBqth//hn4xg3T5iSohWtVIRKUYui
-         17RFSy7Y8TdOcTcSJZ5wXPzGQifr4rAbF5DoIgL0mbp5ALwvhMCBmUfIjnM0kKxaqQ
-         +MONFk7jDOVuLnjDXoVNfuSD8DtRc+2d74/r6kYeeabnsSdOh8nND/SjBqqYTELNYx
-         Xzd9SBvJ7xrzy2UZuXUuc0pn9GSHlSWvDqnRy1bGFIl1RmgoFORO1mpESc/MmMmTA9
-         /N1e1ZZVh3brKe9aYe0ZBY8dVKmRy7f+B+s7jdzh1Z5yJAbmj0uOxVYe6P97hV4YCg
-         8bg0ZxdrL0WAA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3954660A3A;
-        Sun, 25 Jul 2021 17:49:49 +0000 (UTC)
-Subject: Re: [GIT pull] locking/urgent for v5.14-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <162720492312.8837.12317399957006920016.tglx@nanos>
-References: <162720492071.8837.4047241618315201209.tglx@nanos> <162720492312.8837.12317399957006920016.tglx@nanos>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <162720492312.8837.12317399957006920016.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-07-25
-X-PR-Tracked-Commit-Id: e48a12e546ecbfb0718176037eae0ad60598a29a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d1b178254ca39a89b3c6407e29e87dd25734399e
-Message-Id: <162723538922.30584.18118658203544490898.pr-tracker-bot@kernel.org>
-Date:   Sun, 25 Jul 2021 17:49:49 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        id S231363AbhGYRLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 13:11:16 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:16860 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229545AbhGYRLP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 13:11:15 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16PHpQwn003121;
+        Sun, 25 Jul 2021 17:51:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=nV21xZup6BtFrcJ1Ko2nw+MYygfJSztbbPpLqwYpt/8=;
+ b=Tc1yqffAQQ9kV5p+Jo2D3ymJG31bX0K2Ay0m3bhB+R7T59iZKkTjxTVzccbP2alvw/rh
+ 5SlIsjvWhKC+rSrXdsRQUAd2Gklk9t8EApro+MzgU91Kuy+6rCdN9vFfHNvhC1cVN6BZ
+ pZKbTEDGmBFZGE4fN2TXYsWCRLYRT/yJuaLvS5hZ4anPveAPxjZQ96WvmK4eUsReHTv1
+ Ef6qdWumETNx/xuuK7wnD8LXvEWhaiaWqKZ3aTU+Y9DMKGxzmTIzapO2JYsbzQi0y4wu
+ PMXMls15LDs9zcfTr7okMxU2StKNWY8moUkKaV3AhqJUgAS1hgUdRBO8KzxOalNheKA0 rw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=nV21xZup6BtFrcJ1Ko2nw+MYygfJSztbbPpLqwYpt/8=;
+ b=hltvANxMJhwdY3wMyMMlkiUl6lofzy41ZVi+IuYVIK61T4EoFuLn3IwkRnY4z4p+dWVU
+ LAKSMgPoYdQqU6jfKJJITgqCK9Yyl6ZG7sn4IfBvKcOCdeqZb5M7aUP0pDEVZZYB8vI2
+ pG+1K1WMwg5H6SkFoHLvPvuvJ0U5ThSIerPyoUM1jw3gyE48XuzKsDc98fSI1T1Phey+
+ jhowZA4w1dd820O1gZf3rpCeluZW/yMo4Cjj0OrDtORZJjiPU3Bjmg0l5T7IuVAjlsJQ
+ PN0NEnF/hgVJdh5pPmfEZSzVVpZqQHARSaNmWOdnSNLiSrAjZT5/2wrCW62Pp93esSJp BA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a18nfr5h6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 25 Jul 2021 17:51:26 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16PHodrw178904;
+        Sun, 25 Jul 2021 17:51:13 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 3a0vmrhdau-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 25 Jul 2021 17:51:13 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 16PHpDqf185221;
+        Sun, 25 Jul 2021 17:51:13 GMT
+Received: from manjaro.in.oracle.com (dhcp-10-191-232-135.vpn.oracle.com [10.191.232.135])
+        by userp3020.oracle.com with ESMTP id 3a0vmrhd6m-1;
+        Sun, 25 Jul 2021 17:51:13 +0000
+From:   Harshvardhan Jha <harshvardhan.jha@oracle.com>
+To:     ericvh@gmail.com
+Cc:     lucho@ionkov.net, asmadeus@codewreck.org, davem@davemloft.net,
+        kuba@kernel.org, v9fs-developer@lists.sourceforge.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>
+Subject: [PATCH] 9p/xen: Fix end of loop tests for list_for_each_entry
+Date:   Sun, 25 Jul 2021 23:21:03 +0530
+Message-Id: <20210725175103.56731-1-harshvardhan.jha@oracle.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: NI4P3Z8C6NtXY8yKBG6bkZ9y6tr52wJg
+X-Proofpoint-ORIG-GUID: NI4P3Z8C6NtXY8yKBG6bkZ9y6tr52wJg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 25 Jul 2021 09:22:03 -0000:
+The list_for_each_entry() iterator, "priv" in this code, can never be
+NULL so the warning would never be printed.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-07-25
+Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+---
+From static analysis.  Not tested.
+---
+ net/9p/trans_xen.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d1b178254ca39a89b3c6407e29e87dd25734399e
-
-Thank you!
-
+diff --git a/net/9p/trans_xen.c b/net/9p/trans_xen.c
+index f4fea28e05da..3ec1a51a6944 100644
+--- a/net/9p/trans_xen.c
++++ b/net/9p/trans_xen.c
+@@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct xen_9pfs_dataring *ring, RING_IDX size)
+ 
+ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
+ {
+-	struct xen_9pfs_front_priv *priv = NULL;
++	struct xen_9pfs_front_priv *priv;
+ 	RING_IDX cons, prod, masked_cons, masked_prod;
+ 	unsigned long flags;
+ 	u32 size = p9_req->tc.size;
+@@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_client *client, struct p9_req_t *p9_req)
+ 			break;
+ 	}
+ 	read_unlock(&xen_9pfs_lock);
+-	if (!priv || priv->client != client)
++	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
+ 		return -EINVAL;
+ 
+ 	num = p9_req->tc.tag % priv->num_rings;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.32.0
+
