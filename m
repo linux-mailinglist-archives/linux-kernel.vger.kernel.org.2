@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EAE3D4E83
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 18:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368F83D4E5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 17:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhGYPUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 11:20:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbhGYPTQ (ORCPT
+        id S231349AbhGYPS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 11:18:57 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:55281 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231300AbhGYPSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 11:19:16 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EF9C061757;
-        Sun, 25 Jul 2021 08:59:45 -0700 (PDT)
-Received: from dslb-188-096-139-014.188.096.pools.vodafone-ip.de ([188.96.139.14] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1m7gXT-0000SM-1A; Sun, 25 Jul 2021 17:59:39 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 18/18] staging: rtl8188eu: remove unused IQKMatrixRegSetting array
-Date:   Sun, 25 Jul 2021 17:59:02 +0200
-Message-Id: <20210725155902.32433-18-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210725155902.32433-1-martin@kaiser.cx>
-References: <20210725155902.32433-1-martin@kaiser.cx>
+        Sun, 25 Jul 2021 11:18:55 -0400
+Received: by mail-io1-f70.google.com with SMTP id h70-20020a6bb7490000b02904f7957d92b5so6381806iof.21
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 08:59:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wzNrsxtn9JCSe5puGyPKBo5plRJ8+W+s12Wnu02BBeE=;
+        b=HAirdtPgqdj8blw4PyHtH6Pd7GxUr0sHugxwN7atRo4Rw2FUD+VUv3Cq+qFklDZ17h
+         LHcGQUNdKHzkr3eaX5xPS3s+04DWM7AoCoAB2Td6kBCojknbkkLyQBF8+SPEY8+bk+46
+         GcyiY03mHpVaN7yL7nxKhVPluoub+Ww3992Lt61orX1BbOaWdCJmFG8HQsPwOz9b/gwx
+         frLRxSw4zlOqzV7iMHM0DS4G+wM0oq9Nt0pqf0je8/SXVJmBlb5gK/kC8PbT/mgF9fbU
+         NrVQUeeXkVp2EYHZ9zk5TjvfC8uOFMqkk6Ie1ou6YqBjSIU/PXTPiJTO4l/JbWGuKepI
+         R4jA==
+X-Gm-Message-State: AOAM531ro0C5DZ5LehMNGCMpgd6Oo0SsMAfakknh7YQGyM6AocWyn2kj
+        i9dvsmN0clbAtIDHKGvI5VXxtm0kKjfgPancJxqOr7DR2GEF
+X-Google-Smtp-Source: ABdhPJwgfB5+7N9VIhxhwXZD2TncIf3jizRAN+7Qda+YQiQFwrqw3fxedyk1E8Div/9iF1hv1lEU27MxloWiHQmaS1PicDgVdg3I
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:9508:: with SMTP id y8mr12657702jah.28.1627228764967;
+ Sun, 25 Jul 2021 08:59:24 -0700 (PDT)
+Date:   Sun, 25 Jul 2021 08:59:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000081183b05c7f4b8c5@google.com>
+Subject: [syzbot] bpf-next test error: BUG: sleeping function called from
+ invalid context in stack_depot_save
+From:   syzbot <syzbot+f5087f6afc6f49d80566@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, ast@kernel.org, daniel@iogearbox.net,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IQKMatrixRegSetting array in struct odm_rf_cal is initialised
-but never used. Remove it.
+Hello,
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+syzbot found the following issue on:
+
+HEAD commit:    807b8f0e24e6 Merge branch 'libbpf: btf typed data dumping ..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17ccd0d4300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da140227e4f25b17
+dashboard link: https://syzkaller.appspot.com/bug?extid=f5087f6afc6f49d80566
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f5087f6afc6f49d80566@syzkaller.appspotmail.com
+
+BUG: sleeping function called from invalid context at mm/page_alloc.c:5167
+in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 8437, name: syz-fuzzer
+INFO: lockdep is turned off.
+irq event stamp: 0
+hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+hardirqs last disabled at (0): [<ffffffff8143fb5d>] copy_process+0x1dcd/0x7510 kernel/fork.c:2061
+softirqs last  enabled at (0): [<ffffffff8143fb9e>] copy_process+0x1e0e/0x7510 kernel/fork.c:2065
+softirqs last disabled at (0): [<0000000000000000>] 0x0
+CPU: 1 PID: 8437 Comm: syz-fuzzer Tainted: G        W         5.14.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:9154
+ prepare_alloc_pages+0x3da/0x580 mm/page_alloc.c:5167
+ __alloc_pages+0x12f/0x500 mm/page_alloc.c:5363
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
+ stack_depot_save+0x39d/0x4e0 lib/stackdepot.c:303
+ save_stack+0x15e/0x1e0 mm/page_owner.c:120
+ __set_page_owner+0x50/0x290 mm/page_owner.c:181
+ prep_new_page mm/page_alloc.c:2433 [inline]
+ __alloc_pages_bulk+0x8b9/0x1870 mm/page_alloc.c:5301
+ alloc_pages_bulk_array_node include/linux/gfp.h:557 [inline]
+ vm_area_alloc_pages mm/vmalloc.c:2793 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2863 [inline]
+ __vmalloc_node_range+0x39d/0x960 mm/vmalloc.c:2966
+ __vmalloc_node mm/vmalloc.c:3015 [inline]
+ vzalloc+0x67/0x80 mm/vmalloc.c:3085
+ n_tty_open+0x16/0x170 drivers/tty/n_tty.c:1848
+ tty_ldisc_open+0x9b/0x110 drivers/tty/tty_ldisc.c:449
+ tty_ldisc_setup+0x90/0x100 drivers/tty/tty_ldisc.c:776
+ tty_init_dev.part.0+0x1f4/0x610 drivers/tty/tty_io.c:1453
+ tty_init_dev+0x5b/0x80 drivers/tty/tty_io.c:1419
+ ptmx_open drivers/tty/pty.c:834 [inline]
+ ptmx_open+0x112/0x360 drivers/tty/pty.c:800
+ chrdev_open+0x266/0x770 fs/char_dev.c:414
+ do_dentry_open+0x4c8/0x11d0 fs/open.c:826
+ do_open fs/namei.c:3374 [inline]
+ path_openat+0x1c23/0x27f0 fs/namei.c:3507
+ do_filp_open+0x1aa/0x400 fs/namei.c:3534
+ do_sys_openat2+0x16d/0x420 fs/open.c:1204
+ do_sys_open fs/open.c:1220 [inline]
+ __do_sys_openat fs/open.c:1236 [inline]
+ __se_sys_openat fs/open.c:1231 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1231
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4af20a
+Code: e8 3b 82 fb ff 48 8b 7c 24 10 48 8b 74 24 18 48 8b 54 24 20 4c 8b 54 24 28 4c 8b 44 24 30 4c 8b 4c 24 38 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 20 48 c7 44 24 40 ff ff ff ff 48 c7 44 24 48
+RSP: 002b:000000c0002ff3f8 EFLAGS: 00000216 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 000000c00001e800 RCX: 00000000004af20a
+RDX: 0000000000000000 RSI: 000000c0001a98d0 RDI: ffffffffffffff9c
+RBP: 000000c0002ff470 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000216 R12: 000000000000018e
+R13: 000000000000018d R14: 0000000000000200 R15: 000000c0002aa000
+can: request_module (can-proto-0) failed.
+can: request_module (can-proto-0) failed.
+can: request_module (can-proto-0) failed.
+
+
 ---
- drivers/staging/rtl8188eu/hal/phy.c     | 6 ------
- drivers/staging/rtl8188eu/include/odm.h | 7 -------
- 2 files changed, 13 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/staging/rtl8188eu/hal/phy.c b/drivers/staging/rtl8188eu/hal/phy.c
-index 6c6404eb2f1e..4a4d4a23eda6 100644
---- a/drivers/staging/rtl8188eu/hal/phy.c
-+++ b/drivers/staging/rtl8188eu/hal/phy.c
-@@ -1091,12 +1091,6 @@ void rtl88eu_phy_iq_calibrate(struct adapter *adapt, bool recovery)
- 		patha_fill_iqk(adapt, pathaok, result, final,
- 			       (reg_ea4 == 0));
- 
--	if (final < 4) {
--		for (i = 0; i < IQK_Matrix_REG_NUM; i++)
--			dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[0].Value[0][i] = result[final][i];
--		dm_odm->RFCalibrateInfo.IQKMatrixRegSetting[0].bIQKDone = true;
--	}
--
- 	save_adda_registers(adapt, iqk_bb_reg_92c,
- 			    dm_odm->RFCalibrateInfo.IQK_BB_backup_recover, 9);
- }
-diff --git a/drivers/staging/rtl8188eu/include/odm.h b/drivers/staging/rtl8188eu/include/odm.h
-index 98402cfb1168..9cd612414ab9 100644
---- a/drivers/staging/rtl8188eu/include/odm.h
-+++ b/drivers/staging/rtl8188eu/include/odm.h
-@@ -241,7 +241,6 @@ struct odm_rate_adapt {
- #define HP_THERMAL_NUM		8
- 
- #define AVG_THERMAL_NUM		8
--#define IQK_Matrix_REG_NUM	8
- #define IQK_Matrix_Settings_NUM	(1 + 24 + 21)
- 
- #define	DM_Type_ByFWi		0
-@@ -565,11 +564,6 @@ struct odm_ra_info {
- 	u8 PTSmoothFactor;
- };
- 
--struct ijk_matrix_regs_set {
--	bool	bIQKDone;
--	s32	Value[1][IQK_Matrix_REG_NUM];
--};
--
- struct odm_rf_cal {
- 	/* for tx power tracking */
- 	u32	RegA24; /*  for TempCCK */
-@@ -613,7 +607,6 @@ struct odm_rf_cal {
- 
- 	u8	ThermalValue_HP[HP_THERMAL_NUM];
- 	u8	ThermalValue_HP_index;
--	struct ijk_matrix_regs_set IQKMatrixRegSetting[IQK_Matrix_Settings_NUM];
- 
- 	u8	Delta_IQK;
- 	u8	Delta_LCK;
--- 
-2.20.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
