@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7569D3D4CEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 11:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6083D4CFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 11:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhGYIna convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Jul 2021 04:43:30 -0400
-Received: from aposti.net ([89.234.176.197]:44386 "EHLO aposti.net"
+        id S230497AbhGYJJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 05:09:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhGYIn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 04:43:29 -0400
-Date:   Sun, 25 Jul 2021 10:23:50 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 5/5] dt-bindings: iio/adc: ingenic: add the JZ4760(B)
- socs to the sadc Documentation
-To:     Christophe Branchereau <cbranchereau@gmail.com>
-Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
-        contact@artur-rojek.eu
-Message-Id: <QFNSWQ.A2MDJFJLHT1F2@crapouillou.net>
-In-Reply-To: <20210724190449.221894-6-cbranchereau@gmail.com>
-References: <20210724190449.221894-1-cbranchereau@gmail.com>
-        <20210724190449.221894-6-cbranchereau@gmail.com>
+        id S230370AbhGYJJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 05:09:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8669A60F26;
+        Sun, 25 Jul 2021 09:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627206604;
+        bh=U9rECIpUm/XacYfhUYSayFYjKoTXF4eXWtqLVGy/kFc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=gIuHj6lRE6tOh8xTqc67m/iNokF5BLs8vMaujKRwQzbTLmhoMgrNJ5Ticvq2YL+Qe
+         5H4sQVNc6ZlzRp7fqQZUyglUxVRRGgOnBUR9UxCE15GxwuaccQdXtlA/XoOcuOBHhQ
+         f8iUDXRpDd5nzDxhKQxbPYjFCXNIPbUvVTk2liqkqhXDZVVru69LJbDHO/c7OQMV1L
+         glp1QzorkjPx+agOnsVFUDtmgEGqRshFqilOASeVR5nq6cFSk12N9AMKtuP+EvqJPF
+         3568hkhGgh+k4VV1LsNiUuUeOzcFfXjGhtYN7NIE4o9iwz6C842PLyxWSoFUvDdBjp
+         wZee9EtbHfHEQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A1D260A44;
+        Sun, 25 Jul 2021 09:50:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] mlx4: Fix missing error code in mlx4_load_one()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162720660449.12734.8611771205877417069.git-patchwork-notify@kernel.org>
+Date:   Sun, 25 Jul 2021 09:50:04 +0000
+References: <1627036569-71880-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1627036569-71880-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Hello:
 
-Le sam., juil. 24 2021 at 21:04:49 +0200, Christophe Branchereau 
-<cbranchereau@gmail.com> a écrit :
-> Add both the jz4760 and jz4760b, plus a property to use the internal
-> divider on the b variant and document it.
-> 
-> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Looks good.
+On Fri, 23 Jul 2021 18:36:09 +0800 you wrote:
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'err'.
+> 
+> Eliminate the follow smatch warning:
+> 
+> drivers/net/ethernet/mellanox/mlx4/main.c:3538 mlx4_load_one() warn:
+> missing error code 'err'.
+> 
+> [...]
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Here is the summary with links:
+  - mlx4: Fix missing error code in mlx4_load_one()
+    https://git.kernel.org/netdev/net/c/7e4960b3d66d
 
-> ---
->  .../bindings/iio/adc/ingenic,adc.yaml         | 19 
-> +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git 
-> a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml 
-> b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-> index 433a3fb55a2e..3eb7aa8822c3 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
-> @@ -23,6 +23,8 @@ properties:
->      enum:
->        - ingenic,jz4725b-adc
->        - ingenic,jz4740-adc
-> +      - ingenic,jz4760-adc
-> +      - ingenic,jz4760b-adc
->        - ingenic,jz4770-adc
-> 
->    '#io-channel-cells':
-> @@ -43,6 +45,23 @@ properties:
->    interrupts:
->      maxItems: 1
-> 
-> +  ingenic,use-internal-divider:
-> +    description:
-> +      If present, battery voltage is read from the VBAT_IR pin, 
-> which has an
-> +      internal 1/4 divider. If absent, it is read through the 
-> VBAT_ER pin,
-> +      which does not have such a divider.
-> +    type: boolean
-> +
-> +if:
-> +  not:
-> +    properties:
-> +      compatible:
-> +        contains:
-> +          const: ingenic,jz4760b-adc
-> +then:
-> +  properties:
-> +    ingenic,use-internal-divider: false
-> +
->  required:
->    - compatible
->    - '#io-channel-cells'
-> --
-> 2.30.2
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
