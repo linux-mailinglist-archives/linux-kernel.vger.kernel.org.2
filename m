@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C804F3D4E11
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 16:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3D33D4E17
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 16:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhGYNgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 09:36:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        id S231210AbhGYNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 09:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhGYNgj (ORCPT
+        with ESMTP id S230192AbhGYNk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 09:36:39 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25878C061757;
-        Sun, 25 Jul 2021 07:17:10 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Sun, 25 Jul 2021 09:40:26 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5DBC061757
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 07:20:56 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id EA5DC2B0;
-        Sun, 25 Jul 2021 14:17:08 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EA5DC2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1627222629; bh=vS9GL4cCyVYTFMVmKAM/z8rmv2039bjeF2pRxMYLfWA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=cs3bMLRE+sD6PDWff38D7XP7g0o/EwcoHbiBGye/mF+UzBF5wos/fSqT/gaotSFp0
-         OtHQ7iEyy6r+o4GVmA7w7bTemef6KoF5XioWkaAcTpnZHgVts8Lor7eS5g9scc2FSc
-         zNXtnKODEpBzDKJBVb+r88BWlQowY4DFH1NHUbMS6N0/cy0B2fVacm0ddsADHa1eiK
-         1HLra5+V/YdX7xmOPmuEa8SiVL09dMJGoBAIwRVvsGuQpNETAFcLoOz29qSjhkHMzD
-         DqcQ6pCKZj92yn1yWCvwM56QAz3fZOcSWIjjWZkhuV8BbmMGhtzqF/EYXvuOx2SLCi
-         SKDtDhdvd2wDA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Hu Haowen <src.res@email.cn>
-Cc:     panyunwang849@gmail.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] docs: add traditional Chinese translation for
- kernel Documentation
-In-Reply-To: <20210725141435.112074-1-src.res@email.cn>
-References: <20210721142537.29409-1-src.res@email.cn>
- <20210725141435.112074-1-src.res@email.cn>
-Date:   Sun, 25 Jul 2021 08:17:08 -0600
-Message-ID: <87eebmwk9n.fsf@meer.lwn.net>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GXlb91sN0z9sRN;
+        Mon, 26 Jul 2021 00:20:53 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1627222853;
+        bh=/PIHXybKA6vJ63al5SGR6/W9BDRk0RJD3OrmXJ+7964=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XbHFzeNWI7M52tk7Nb/6iy3e31x3yZDF7hgJ6BeyKMAm59i5OT/B+7eK89iOpGE78
+         uVHJebHDTR3smUxmmm4JGmjJO4lBpX1lexgI7RA/ytvPkv+JlaYJ0vrick0SGDCE17
+         A1MaJzWF9F0vf9W/X/E8Mca5/sncC1v/jAZE2KFuMQ3L+bzaGEL3XIF8CxtvHXnNNO
+         thWptjD450lV4hSd6CvcSLWUhLSJS8nja2erZ7jvmX7fqFgERj0ogvEUrQRW1dKG4y
+         b2uasQsteLaEmS4rYz7zAJscLl01WwVm25vjFSDi/b5QASY0VGBVvIj5XDDespbqn0
+         2n4U+Sar1TPRw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mikey@neuling.org, npiggin@gmail.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-3 tag
+Date:   Mon, 26 Jul 2021 00:20:47 +1000
+Message-ID: <87lf5u1nls.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hu Haowen <src.res@email.cn> writes:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-> Add traditional Chinese translation (zh_TW) for the Linux Kernel
-> documentation with a series of translated files.
->
-> Signed-off-by: Hu Haowen <src.res@email.cn>
-> Reviewed-by: Pan Yunwang <panyunwang849@gmail.com>
+Hi Linus,
 
-When you send a new version of a patch set, please include (after the
-"---" line) what changed.  Otherwise maintainers have no idea why you
-keep sending the patch out or whether it seems to be stabilizing.
+Please pull some more powerpc fixes for 5.14:
 
-Thanks,
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-jon
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-3
+
+for you to fetch changes up to d9c57d3ed52a92536f5fa59dc5ccdd58b4875076:
+
+  KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state (2021-07-23 16:19:38 +1000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.14 #3
+
+ - Fix guest to host memory corruption in H_RTAS due to missing nargs check.
+
+ - Fix guest triggerable host crashes due to bad handling of nested guest TM state.
+
+ - Fix possible crashes due to incorrect reference counting in kvm_arch_vcpu_ioctl().
+
+ - Two commits fixing some regressions in KVM transactional memory handling introduced by
+   the recent rework of the KVM code.
+
+Thanks to: Nicholas Piggin, Alexey Kardashevskiy, Michael Neuling.
+
+- ------------------------------------------------------------------
+Nicholas Piggin (5):
+      KVM: PPC: Book3S HV P9: Fix guest TM support
+      KVM: PPC: Book3S: Fix CONFIG_TRANSACTIONAL_MEM=n crash
+      KVM: PPC: Fix kvm_arch_vcpu_ioctl vcpu_load leak
+      KVM: PPC: Book3S: Fix H_RTAS rets buffer overflow
+      KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state
+
+
+ arch/powerpc/kvm/book3s_hv.c          |  2 ++
+ arch/powerpc/kvm/book3s_hv_nested.c   | 20 ++++++++++++++++
+ arch/powerpc/kvm/book3s_hv_p9_entry.c | 25 +++++++++++++++++---
+ arch/powerpc/kvm/book3s_rtas.c        | 25 +++++++++++++++++---
+ arch/powerpc/kvm/powerpc.c            |  4 ++--
+ 5 files changed, 68 insertions(+), 8 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmD9bJEACgkQUevqPMjh
+pYCFLBAAoD0a0fLmoh/LZBvvzD1LNDfoMcxtTF1mVPjv5zfLIDvj+M3+UsMHKBCV
+ajDYuz0nd3TBPPBxMBXmQG4r5eYgilgkQ968uXIpQu2wkyAWIFu4hxKzUapLdddy
+CN1TuSU9mWjviMsacjCU4zlEgmWpj7TtH+gBmhRKrQlAUMszmXlb5giRS+P6oAyN
+OI+3ODlMkj+2CNwhQy7uaPrM13FnarUV0pliItAez4ka+1oWtlkKjXG8DG4k5TZf
+7E/7qvxy7yOVXcULBeISJmLfBFttv3nUEAUjtxaA28d7YPZOUgfanSQUVhHl9nv5
+KMJlOPAxEjZCF0j6TIEYgqC+DP0eBGDnvvfmGsxoTkYfMI5ykGYxsIEnTUBMZW4+
+xi3OMx3cIlGhP0/3e1JFA9O4/zDzM7HxdONW/Wd9xDpLkjucNLZqvE5yP3ct/ATG
+W4JmimhXIPFtnNrN0pgfyiU3l9Vodw/UD25AVYAQuamQ9kRtoPh0PtTarttVlw3o
+JvZibyMwlds96n78PLThhpyC/SG030RO4oJAQBUpxt5PdAzyRTo4lCy10GQYN/kp
+EG7rS7eizU38C379LJT7tkQzrfCgI1aJJ3PsoxggeT78AdybKogN3fHANHbFgOdn
+k/SUo/6BF3lVO7C/SFdvPLuldltuYqjddDu24MHXHvtzhJ/pzQo=
+=R0jy
+-----END PGP SIGNATURE-----
