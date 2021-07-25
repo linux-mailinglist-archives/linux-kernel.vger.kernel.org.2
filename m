@@ -2,174 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EC53D5030
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77893D5034
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhGYVBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 17:01:00 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:16341 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhGYVA6 (ORCPT
+        id S230020AbhGYVCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 17:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhGYVCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 17:00:58 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210725214126epoutp04c0d5ed7e98ebf70f3690bce6a3808c55~VJprSqD4l2979029790epoutp04X
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:41:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210725214126epoutp04c0d5ed7e98ebf70f3690bce6a3808c55~VJprSqD4l2979029790epoutp04X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1627249286;
-        bh=j9ZevLtWhCUcjcrCJTcEbmH/pgFvB970zigRDFlgMqk=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=c0NDksmjOiFFrSSYA2he3dSrt2JmbA+990JTX2FjBkcCaGnL+XiIiQ3GT9dAQmja2
-         GGQleNdtHqAGwB6vaBZS7AFWMCFpsBtmmxvvKcy0JRei1RTBObnH5HCBSNmwDXG8TH
-         8y0xTQremVKaVjHuRBKi50y7ePWcETgygQJIsxIw=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20210725214126epcas1p385ffc74e65926644d14e6fca9e9c5b2d~VJpq_JcVu0927009270epcas1p3m;
-        Sun, 25 Jul 2021 21:41:26 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.152]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4GXxMS2ZYnz4x9Pp; Sun, 25 Jul
-        2021 21:41:24 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C7.46.09551.48ADDF06; Mon, 26 Jul 2021 06:41:24 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210725214123epcas1p1b350809ad349aadd21f73f7759cc3f6b~VJpolciyp2568425684epcas1p1J;
-        Sun, 25 Jul 2021 21:41:23 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210725214123epsmtrp2357392b8980455bc6515c35184af5629~VJpokyKgx2625426254epsmtrp2Z;
-        Sun, 25 Jul 2021 21:41:23 +0000 (GMT)
-X-AuditID: b6c32a36-2b3ff7000000254f-ef-60fdda844247
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9E.59.08394.38ADDF06; Mon, 26 Jul 2021 06:41:23 +0900 (KST)
-Received: from [10.113.113.235] (unknown [10.113.113.235]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210725214123epsmtip188ef1eeb9b0323904a50345d2498a8ed~VJpoWiymz2377623776epsmtip1w;
-        Sun, 25 Jul 2021 21:41:23 +0000 (GMT)
-Subject: Re: [PATCH] mmc: dw_mmc: Fix hang on data CRC error
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     kernel@axis.com, linux-mmc@vger.kernel.org,
+        Sun, 25 Jul 2021 17:02:03 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E14FC061757;
+        Sun, 25 Jul 2021 14:42:32 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id d3so4152192qvq.6;
+        Sun, 25 Jul 2021 14:42:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JCowzX/KinFiRxGX4xwbISr7bQW/xef+NRNkdAlMZ/o=;
+        b=QTvVvh4kLEOvSCIU6OvDlKAIWkUM9qd0FQwd2x12OcRIy/G/12Xfz77bRQQaqlcOy0
+         MWUzFwnXgi6+3+9MH6L6Wddo9KLx3JIrW2tbqU5gcNbmjsRDUEXI8H+Ck5QGHloEBwsG
+         s5AxNcqrzYB9Z4MMMZmju5D64qejXWsYGA56yRinTceNBc7IGbsL2nAkFY4surktN63X
+         lsq4EROb/JuI6h95MKIQ5r6mwL3zRC5J9yG5Z5hvwSb567xSAVux28/r48HcmB9Tp8VV
+         iCXkLQS/o6MhZ5YPn69rc5nsrh1msPLbAMR71RdnWpCnetaW/uajuIZHhbkXCu6qkBV8
+         Fewg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JCowzX/KinFiRxGX4xwbISr7bQW/xef+NRNkdAlMZ/o=;
+        b=YcndakTlLFmCJ6RZlShSkXg+AYgFbep93YahEktvJhduREUi96nMvsqnxhIIpjqjsj
+         mllawU2CMH5i9Q4KkP6m7sqYwYheUdcgAr1FmgsY1Cex5VsV2k6cm5D9DSaaIhW/JwV1
+         CVe+stBX2Vuv67CCyCVapw/CZf75DNo85seCNBWN5bkDbzoq8phyvqg3uzJ6Uh9N4KlG
+         g+obuwtfnDCbliXYogTp7a0rUjlxLuhy50ZhBF2FjGoVirgtxNRch1InWUO6ewzPi6HA
+         QYd26qtTaHWGvgs0hPNrCmblg7O/wt3JPk0fsFOCTdL5vtLnHSCLC9R8Pv8vyNOP0soC
+         sIGQ==
+X-Gm-Message-State: AOAM530auUeMF8IuODJsIYDHX5kfvKYzPn4LXWs+RIonb0Ldg5+4t98Y
+        ntqdX0aAg6EQFVzugNhp10aC5jno1m4=
+X-Google-Smtp-Source: ABdhPJyUvAV6cVkUuhXBGKbfJenNvupvnTfmaZ0Huh+gpkXO+JQPp9WJSUrz26MTVuoYBeQ150EBBg==
+X-Received: by 2002:a0c:c352:: with SMTP id j18mr15034038qvi.7.1627249351517;
+        Sun, 25 Jul 2021 14:42:31 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j2sm13784722qtn.46.2021.07.25.14.42.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 14:42:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 25 Jul 2021 14:42:29 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, kernel@pengutronix.de,
         linux-kernel@vger.kernel.org
-From:   Jaehoon Chung <jh80.chung@samsung.com>
-Message-ID: <9c1ae48f-f60a-0dd9-00f0-84ef60da68e5@samsung.com>
-Date:   Mon, 26 Jul 2021 06:42:16 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
-        Thunderbird/78.11.0
+Subject: Re: [PATCH v4 2/5] watchdog: f71808e_wdt: rename variant-independent
+ identifiers appropriately
+Message-ID: <20210725214229.GB3578169@roeck-us.net>
+References: <cover.c711be1db54f4e07c0153266dd1a831e92e3d49d.1626948810.git-series.a.fatoum@pengutronix.de>
+ <9ae6ae2ac53cd6f46d3eb32dec35d0c0a7c40ba5.1626948810.git-series.a.fatoum@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210630102232.16011-1-vincent.whitchurch@axis.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpkk+LIzCtJLcpLzFFi42LZdljTQLfl1t8Eg955AhafWlQtLu+aw2Zx
-        5H8/o8XxteEW57f5O7B6XF8X4HHn2h42j8+b5AKYo7JtMlITU1KLFFLzkvNTMvPSbZW8g+Od
-        403NDAx1DS0tzJUU8hJzU22VXHwCdN0yc4DWKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0ts
-        lVILUnIKLAv0ihNzi0vz0vWS83OtDA0MjEyBChOyMz633mUs6BequDFrHnsD41/eLkZODgkB
-        E4mO5bPZuhi5OIQEdjBKzOvcAeV8YpRYtWETM4TzjVHi8Zt3bDAt3zd0sEIk9jJKNLZtZYRw
-        3jNKfF5zjhmkSljARuLivStgHSICMRJPezaC2cwCPhJXpxxmBLHZBHQktn87zgRi8wrYSbzc
-        84wVxGYRUJV43L0IrEZUIFLi/O4FLBA1ghInZz4BszkFHCUmzNgGNVNc4taT+UwQtrzE9rdz
-        wM6WEHjELjGp7TjU2S4Si699Z4ewhSVeHd8CZUtJfH63F6qmWmJX8xmo5g5GiVvbmpggEsYS
-        +5dOBrI5gDZoSqzfpQ8RVpTY+XsuI8RiPol3X3tYQUokBHglOtqEIEpUJC69fskEs+ruk/+s
-        ELaHRMv97WwTGBVnIXltFpJ3ZiF5ZxbC4gWMLKsYxVILinPTU4sNC4yQo3sTIzgtapntYJz0
-        9oPeIUYmDsZDjBIczEoivA4rficI8aYkVlalFuXHF5XmpBYfYjQFBvZEZinR5HxgYs4riTc0
-        NTI2NrYwMTQzNTRUEuf9Fvs1QUggPbEkNTs1tSC1CKaPiYNTqoFp5kPHMNMrF5t3RSsvEboY
-        xif4WmF53J7ljzVMHsf/DV27sWTqXY9nece/671PkLIuPhTVxLxzgjrnxKefLz4PaGK8Hb7z
-        3uI/Uz8E2JdfC+z732Ec45wVrxxeXvxPSeF/7sSg++diHugt2Hy2y1LqusSZaztNL6h/PhUw
-        mYFPpFPGNuD5LtW7s75xmf2MLppqveOl3deYOZwRSy5kZc96EXA58+xH5sYrU/tvdF1r3/Wh
-        Wsc0T1va7dzLpy7Pbe7zipYcXfQ03TRNP+hnpbzcywcTpRd9umv4VeeSx/H+Ox0rmzVfbslm
-        +VR6kJFTw0ZG/+pMy0TtGgWdZyytte56ug8TH8wSnOf/prskMchYiaU4I9FQi7moOBEA3MSx
-        1RQEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLLMWRmVeSWpSXmKPExsWy7bCSnG7zrb8JBk3TdSw+tahaXN41h83i
-        yP9+Rovja8Mtzm/zd2D1uL4uwOPOtT1sHp83yQUwR3HZpKTmZJalFunbJXBlfG69y1jQL1Rx
-        Y9Y89gbGv7xdjJwcEgImEt83dLCC2EICuxklHkythYhLSXx+OpWti5EDyBaWOHy4uIuRC6jk
-        LaPE1ltrmUBqhAVsJC7eu8IGYosIxEjsfPUMzGYW8JG4OuUwI8TMKYwSB5eXgdhsAjoS278d
-        B+vlFbCTeLnnGdheFgFVicfdi8DqRQUiJT4veMUKUSMocXLmExYQm1PAUWLCjG1Q89Ul/sy7
-        xAxhi0vcejKfCcKWl9j+dg7zBEahWUjaZyFpmYWkZRaSlgWMLKsYJVMLinPTc4sNCwzzUsv1
-        ihNzi0vz0vWS83M3MYJjQEtzB+P2VR/0DjEycTAeYpTgYFYS4XVY8TtBiDclsbIqtSg/vqg0
-        J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6pBialLdfNt8l8unRK7EvSfmfn6fLP
-        XqpuPDfRWvdu/T/3INFtnX8dzC9EF0Yydn+80MORZz1JX6Pwf8ZOw6qnHSUhq/kOH1327cOZ
-        iHV8V1UDY0yy/0/TUymJfJdvri263uK4+kn2rsg9dRLsDgYJtziXvirXqzonLtL/KWylq8Z1
-        Ze7iHCEpmS+PFim9mbDce3Xqa7nyN+E3gvW3SM5OmR7QJ/780JUT76yvbfSZYs+wu3LD66CP
-        QjqONwrWv2oXnXp2Van96b7tc3n5Y7LV1zxeft484rdpQVBwN3Ogjs6O5tRphQ/z/WUrOCtn
-        JO9aXJT1+7ul9DK39TqyDYsvy56+4HXjmFZoxmK7IHYDMyWW4oxEQy3mouJEAJlxTNPwAgAA
-X-CMS-MailID: 20210725214123epcas1p1b350809ad349aadd21f73f7759cc3f6b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210630102239epcas1p1bf7a5b65c7e588bbdc908b18c00a0025
-References: <CGME20210630102239epcas1p1bf7a5b65c7e588bbdc908b18c00a0025@epcas1p1.samsung.com>
-        <20210630102232.16011-1-vincent.whitchurch@axis.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9ae6ae2ac53cd6f46d3eb32dec35d0c0a7c40ba5.1626948810.git-series.a.fatoum@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/30/21 7:22 PM, Vincent Whitchurch wrote:
-> When a Data CRC interrupt is received, the driver disables the DMA, then
-> sends the stop/abort command and then waits for Data Transfer Over.
+On Thu, Jul 22, 2021 at 12:14:41PM +0200, Ahmad Fatoum wrote:
+> Code for the common parts of the driver either uses watchdog_ as
+> prefix for the watchdog API or f71808e_ for everything else.
 > 
-> However, sometimes, when a data CRC error is received in the middle of a
-> multi-block write transfer, the Data Transfer Over interrupt is never
-> received, and the driver hangs and never completes the request.
+> The driver now supports 9 more variants besides the f71808e,
+> so let's rename the common parts to start with fintek_wdt_ instead.
 > 
-> The driver sets the BMOD.SWR bit (SDMMC_IDMAC_SWRESET) when stopping the
-> DMA, but according to the manual CMD.STOP_ABORT_CMD should be programmed
-> "before assertion of SWR".  Do these operations in the recommended
-> order.  With this change the Data Transfer Over is always received
-> correctly in my tests.
+> This makes code browsing easier, because it's readily apparent
+> that functions are not variant-specific. Some watchdog_-prefixed
+> functions remain, but these will be dropped altogether with the move
+> to the kernel watchdog API in a later commit.
 > 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
-
-Best Regards,
-Jaehoon Chung
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
 > ---
->  drivers/mmc/host/dw_mmc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/watchdog/f71808e_wdt.c | 66 +++++++++++++++++------------------
+>  1 file changed, 33 insertions(+), 33 deletions(-)
 > 
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index f85271f5c4fa..845b0745ea37 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -2083,8 +2083,8 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
->  					continue;
->  				}
+> diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
+> index f7d82d261913..597eaf6905f4 100644
+> --- a/drivers/watchdog/f71808e_wdt.c
+> +++ b/drivers/watchdog/f71808e_wdt.c
+> @@ -113,7 +113,7 @@ MODULE_PARM_DESC(start_withtimeout, "Start watchdog timer on module load with"
+>  enum chips { f71808fg, f71858fg, f71862fg, f71868, f71869, f71882fg, f71889fg,
+>  	     f81803, f81865, f81866};
 >  
-> -				dw_mci_stop_dma(host);
->  				send_stop_abort(host, data);
-> +				dw_mci_stop_dma(host);
->  				state = STATE_SENDING_STOP;
->  				break;
->  			}
-> @@ -2108,10 +2108,10 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
->  			 */
->  			if (test_and_clear_bit(EVENT_DATA_ERROR,
->  					       &host->pending_events)) {
-> -				dw_mci_stop_dma(host);
->  				if (!(host->data_status & (SDMMC_INT_DRTO |
->  							   SDMMC_INT_EBE)))
->  					send_stop_abort(host, data);
-> +				dw_mci_stop_dma(host);
->  				state = STATE_DATA_ERROR;
->  				break;
->  			}
-> @@ -2144,10 +2144,10 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
->  			 */
->  			if (test_and_clear_bit(EVENT_DATA_ERROR,
->  					       &host->pending_events)) {
-> -				dw_mci_stop_dma(host);
->  				if (!(host->data_status & (SDMMC_INT_DRTO |
->  							   SDMMC_INT_EBE)))
->  					send_stop_abort(host, data);
-> +				dw_mci_stop_dma(host);
->  				state = STATE_DATA_ERROR;
->  				break;
->  			}
-> 
-
+> -static const char *f71808e_names[] = {
+> +static const char *fintek_wdt_names[] = {
+>  	"f71808fg",
+>  	"f71858fg",
+>  	"f71862fg",
+> @@ -136,7 +136,7 @@ static inline int superio_enter(int base);
+>  static inline void superio_select(int base, int ld);
+>  static inline void superio_exit(int base);
+>  
+> -struct watchdog_data {
+> +struct fintek_wdt {
+>  	unsigned short	sioaddr;
+>  	enum chips	type;
+>  	unsigned long	opened;
+> @@ -152,7 +152,7 @@ struct watchdog_data {
+>  	char		caused_reboot;	/* last reboot was by the watchdog */
+>  };
+>  
+> -static struct watchdog_data watchdog = {
+> +static struct fintek_wdt watchdog = {
+>  	.lock = __MUTEX_INITIALIZER(watchdog.lock),
+>  };
+>  
+> @@ -218,7 +218,7 @@ static inline void superio_exit(int base)
+>  	release_region(base, 2);
+>  }
+>  
+> -static int watchdog_set_timeout(int timeout)
+> +static int fintek_wdt_set_timeout(int timeout)
+>  {
+>  	if (timeout <= 0
+>  	 || timeout >  max_timeout) {
+> @@ -244,7 +244,7 @@ static int watchdog_set_timeout(int timeout)
+>  	return 0;
+>  }
+>  
+> -static int watchdog_set_pulse_width(unsigned int pw)
+> +static int fintek_wdt_set_pulse_width(unsigned int pw)
+>  {
+>  	int err = 0;
+>  	unsigned int t1 = 25, t2 = 125, t3 = 5000;
+> @@ -278,7 +278,7 @@ static int watchdog_set_pulse_width(unsigned int pw)
+>  	return err;
+>  }
+>  
+> -static int watchdog_keepalive(void)
+> +static int fintek_wdt_keepalive(void)
+>  {
+>  	int err = 0;
+>  
+> @@ -308,13 +308,13 @@ static int watchdog_keepalive(void)
+>  	return err;
+>  }
+>  
+> -static int watchdog_start(void)
+> +static int fintek_wdt_start(void)
+>  {
+>  	int err;
+>  	u8 tmp;
+>  
+>  	/* Make sure we don't die as soon as the watchdog is enabled below */
+> -	err = watchdog_keepalive();
+> +	err = fintek_wdt_keepalive();
+>  	if (err)
+>  		return err;
+>  
+> @@ -435,7 +435,7 @@ static int watchdog_start(void)
+>  	return err;
+>  }
+>  
+> -static int watchdog_stop(void)
+> +static int fintek_wdt_stop(void)
+>  {
+>  	int err = 0;
+>  
+> @@ -467,7 +467,7 @@ static int watchdog_get_status(void)
+>  	return status;
+>  }
+>  
+> -static bool watchdog_is_running(void)
+> +static bool fintek_wdt_is_running(void)
+>  {
+>  	/*
+>  	 * if we fail to determine the watchdog's status assume it to be
+> @@ -501,7 +501,7 @@ static int watchdog_open(struct inode *inode, struct file *file)
+>  	if (test_and_set_bit(0, &watchdog.opened))
+>  		return -EBUSY;
+>  
+> -	err = watchdog_start();
+> +	err = fintek_wdt_start();
+>  	if (err) {
+>  		clear_bit(0, &watchdog.opened);
+>  		return err;
+> @@ -519,10 +519,10 @@ static int watchdog_release(struct inode *inode, struct file *file)
+>  	clear_bit(0, &watchdog.opened);
+>  
+>  	if (!watchdog.expect_close) {
+> -		watchdog_keepalive();
+> +		fintek_wdt_keepalive();
+>  		pr_crit("Unexpected close, not stopping watchdog!\n");
+>  	} else if (!nowayout) {
+> -		watchdog_stop();
+> +		fintek_wdt_stop();
+>  	}
+>  	return 0;
+>  }
+> @@ -563,7 +563,7 @@ static ssize_t watchdog_write(struct file *file, const char __user *buf,
+>  		}
+>  
+>  		/* someone wrote to us, we should restart timer */
+> -		watchdog_keepalive();
+> +		fintek_wdt_keepalive();
+>  	}
+>  	return count;
+>  }
+> @@ -610,24 +610,24 @@ static long watchdog_ioctl(struct file *file, unsigned int cmd,
+>  			return -EFAULT;
+>  
+>  		if (new_options & WDIOS_DISABLECARD)
+> -			watchdog_stop();
+> +			fintek_wdt_stop();
+>  
+>  		if (new_options & WDIOS_ENABLECARD)
+> -			return watchdog_start();
+> +			return fintek_wdt_start();
+>  		fallthrough;
+>  
+>  	case WDIOC_KEEPALIVE:
+> -		watchdog_keepalive();
+> +		fintek_wdt_keepalive();
+>  		return 0;
+>  
+>  	case WDIOC_SETTIMEOUT:
+>  		if (get_user(new_timeout, uarg.i))
+>  			return -EFAULT;
+>  
+> -		if (watchdog_set_timeout(new_timeout))
+> +		if (fintek_wdt_set_timeout(new_timeout))
+>  			return -EINVAL;
+>  
+> -		watchdog_keepalive();
+> +		fintek_wdt_keepalive();
+>  		fallthrough;
+>  
+>  	case WDIOC_GETTIMEOUT:
+> @@ -643,7 +643,7 @@ static int watchdog_notify_sys(struct notifier_block *this, unsigned long code,
+>  	void *unused)
+>  {
+>  	if (code == SYS_DOWN || code == SYS_HALT)
+> -		watchdog_stop();
+> +		fintek_wdt_stop();
+>  	return NOTIFY_DONE;
+>  }
+>  
+> @@ -681,7 +681,7 @@ static int __init watchdog_init(int sioaddr)
+>  
+>  	snprintf(watchdog.ident.identity,
+>  		sizeof(watchdog.ident.identity), "%s watchdog",
+> -		f71808e_names[watchdog.type]);
+> +		fintek_wdt_names[watchdog.type]);
+>  
+>  	err = superio_enter(sioaddr);
+>  	if (err)
+> @@ -700,10 +700,10 @@ static int __init watchdog_init(int sioaddr)
+>  
+>  	superio_exit(sioaddr);
+>  
+> -	err = watchdog_set_timeout(timeout);
+> +	err = fintek_wdt_set_timeout(timeout);
+>  	if (err)
+>  		return err;
+> -	err = watchdog_set_pulse_width(pulse_width);
+> +	err = fintek_wdt_set_pulse_width(pulse_width);
+>  	if (err)
+>  		return err;
+>  
+> @@ -726,7 +726,7 @@ static int __init watchdog_init(int sioaddr)
+>  			goto exit_miscdev;
+>  		}
+>  
+> -		err = watchdog_start();
+> +		err = fintek_wdt_start();
+>  		if (err) {
+>  			pr_err("cannot start watchdog timer\n");
+>  			goto exit_miscdev;
+> @@ -774,7 +774,7 @@ static int __init watchdog_init(int sioaddr)
+>  	return err;
+>  }
+>  
+> -static int __init f71808e_find(int sioaddr)
+> +static int __init fintek_wdt_find(int sioaddr)
+>  {
+>  	u16 devid;
+>  	int err = superio_enter(sioaddr);
+> @@ -830,14 +830,14 @@ static int __init f71808e_find(int sioaddr)
+>  	}
+>  
+>  	pr_info("Found %s watchdog chip, revision %d\n",
+> -		f71808e_names[watchdog.type],
+> +		fintek_wdt_names[watchdog.type],
+>  		(int)superio_inb(sioaddr, SIO_REG_DEVREV));
+>  exit:
+>  	superio_exit(sioaddr);
+>  	return err;
+>  }
+>  
+> -static int __init f71808e_init(void)
+> +static int __init fintek_wdt_init(void)
+>  {
+>  	static const unsigned short addrs[] = { 0x2e, 0x4e };
+>  	int err = -ENODEV;
+> @@ -849,7 +849,7 @@ static int __init f71808e_init(void)
+>  	}
+>  
+>  	for (i = 0; i < ARRAY_SIZE(addrs); i++) {
+> -		err = f71808e_find(addrs[i]);
+> +		err = fintek_wdt_find(addrs[i]);
+>  		if (err == 0)
+>  			break;
+>  	}
+> @@ -859,11 +859,11 @@ static int __init f71808e_init(void)
+>  	return watchdog_init(addrs[i]);
+>  }
+>  
+> -static void __exit f71808e_exit(void)
+> +static void __exit fintek_wdt_exit(void)
+>  {
+> -	if (watchdog_is_running()) {
+> +	if (fintek_wdt_is_running()) {
+>  		pr_warn("Watchdog timer still running, stopping it\n");
+> -		watchdog_stop();
+> +		fintek_wdt_stop();
+>  	}
+>  	misc_deregister(&watchdog_miscdev);
+>  	unregister_reboot_notifier(&watchdog_notifier);
+> @@ -873,5 +873,5 @@ MODULE_DESCRIPTION("F71808E Watchdog Driver");
+>  MODULE_AUTHOR("Giel van Schijndel <me@mortis.eu>");
+>  MODULE_LICENSE("GPL");
+>  
+> -module_init(f71808e_init);
+> -module_exit(f71808e_exit);
+> +module_init(fintek_wdt_init);
+> +module_exit(fintek_wdt_exit);
+> -- 
+> git-series 0.9.1
