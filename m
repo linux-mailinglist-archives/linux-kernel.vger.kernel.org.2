@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3E03D4D15
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 12:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9517F3D4D1A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 12:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhGYJmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 05:42:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37888 "EHLO mail.kernel.org"
+        id S230157AbhGYJvY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Jul 2021 05:51:24 -0400
+Received: from aposti.net ([89.234.176.197]:56838 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229538AbhGYJmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 05:42:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A470606A5;
-        Sun, 25 Jul 2021 10:22:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627208558;
-        bh=b9Q32uaI92A0JWOV2A5Hxm/bAl66EgVzXiqYx1br78g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pJnXAZhVKz4ukcc6om8a5MbzQAM5AkLIxmBYFmwz+7ZKOKh8g6+s3Dp9un4FvmaDX
-         7R45pQ2qstMTIJZKTLJNl+JugEOCYKuZGB81BXlLNUwgDnEX1jVDLLPB7qVqQSeozu
-         8U1mjwkYTA8zn5Lhc7VKtc4GMkFA3IfiX7xyzTfqUYUGtiH9uJci8NiEKOjL/dIElI
-         HafcMj5WJY+kYZeY13GrmRerbzWEks7OjrZTBIfyXxoNLN4N88VWpranYTfl+kEGiT
-         GwNyKQY7Wbti472hYBiLRFMDl9v5xGC1UZ26YVS64QAXEMsthZHbgOkJ9rj5j/JBOk
-         +Oxqg/SP8nIyw==
-Date:   Sun, 25 Jul 2021 13:22:34 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/irdma: Fix missing error code in
- irdma_modify_qp_roce()
-Message-ID: <YP07ahKMIJpqlAxP@unreal>
-References: <1627036373-69929-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S229538AbhGYJvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 05:51:23 -0400
+Date:   Sun, 25 Jul 2021 11:31:41 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/2] dt-bindings: dwc2: Add bindings for new Ingenic SoCs.
+To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        hminas@synopsys.com, devicetree@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Message-Id: <TKQSWQ.K11YHBO0B4FM2@crapouillou.net>
+In-Reply-To: <ad64396d-d7ab-b8dd-4086-f565e91edb00@wanyeetech.com>
+References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1627116521-124612-2-git-send-email-zhouyanjie@wanyeetech.com>
+        <CLWQWQ.DBCX3I00Y95T2@crapouillou.net>
+        <ad64396d-d7ab-b8dd-4086-f565e91edb00@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1627036373-69929-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 06:32:53PM +0800, Jiapeng Chong wrote:
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> 
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'ret'.
-> 
-> Eliminate the follow smatch warning:
-> 
-> drivers/infiniband/hw/irdma/verbs.c:1344 irdma_modify_qp_roce() warn:
-> missing error code 'ret'.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/infiniband/hw/irdma/verbs.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-> index 717147e..406c8b05 100644
-> --- a/drivers/infiniband/hw/irdma/verbs.c
-> +++ b/drivers/infiniband/hw/irdma/verbs.c
-> @@ -1341,6 +1341,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
->  			break;
->  		case IB_QPS_SQD:
->  			if (iwqp->iwarp_state == IRDMA_QP_STATE_SQD)
-> +				ret = -EINVAL;
->  				goto exit;
+Hi Zhou,
 
-You are missing brackets, it can't compile.
-
->  
->  			if (iwqp->iwarp_state != IRDMA_QP_STATE_RTS) {
-> -- 
-> 1.8.3.1
+Le sam., juil. 24 2021 at 20:52:30 +0800, Zhou Yanjie 
+<zhouyanjie@wanyeetech.com> a écrit :
+> Hi Paul,
 > 
+> On 2021/7/24 下午6:46, Paul Cercueil wrote:
+>> Hi Zhou,
+>> 
+>> Le sam., juil. 24 2021 at 16:48:40 +0800, 周琰杰 (Zhou Yanjie) 
+>> <zhouyanjie@wanyeetech.com> a écrit :
+>>> Add the dwc2 bindings for the JZ4775 SoC, the JZ4780 SoC, the X1000 
+>>> SoC,
+>>> the X1600 SoC, the X1830 SoC, and the X2000 SoC from Ingenic.
+>>> 
+>>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/usb/dwc2.yaml | 6 ++++++
+>>>  1 file changed, 6 insertions(+)
+>>> 
+>>> diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml 
+>>> b/Documentation/devicetree/bindings/usb/dwc2.yaml
+>>> index 10c7d9b..e779d33 100644
+>>> --- a/Documentation/devicetree/bindings/usb/dwc2.yaml
+>>> +++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
+>>> @@ -14,6 +14,12 @@ properties:
+>>>      oneOf:
+>>>        - const: brcm,bcm2835-usb
+>>>        - const: hisilicon,hi6220-usb
+>>> +      - const: ingenic,jz4775-otg
+>>> +      - const: ingenic,jz4780-otg
+>>> +      - const: ingenic,x1000-otg
+>>> +      - const: ingenic,x1600-otg
+>>> +      - const: ingenic,x1830-otg
+>>> +      - const: ingenic,x2000-otg
+>> 
+>> I don't know if all these IPs are the exact same, but if they are, 
+>> they all should have "ingenic,jz4775-otg" as the fallback.
+> 
+> 
+> I'm not too sure whether they are exactly the same, but comparing the 
+> code in Ingenics SDK,
+> 
+> the code of the USB part of jz4775, jz4780, and x1000 are the same, 
+> the code of the USB part
+> 
+> of x1600 and x1830 are the same, and the USB part code of X2000 are 
+> different from all of them.
+
+In doubt - it's better to keep separate compatible strings, so this is 
+OK.
+
+Cheers,
+-Paul
+
+
