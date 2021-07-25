@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24ECB3D4E06
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 16:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BD43D4E0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 16:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhGYNc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 09:32:56 -0400
-Received: from m32-153.88.com ([43.250.32.153]:17658 "EHLO email.cn"
+        id S231177AbhGYNeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 09:34:12 -0400
+Received: from m32-153.88.com ([43.250.32.153]:17762 "EHLO email.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230029AbhGYNcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 09:32:54 -0400
+        id S230029AbhGYNeK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 09:34:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
         s=dkim; h=From:To:Date; bh=fGztz+yo3eCFIrK5y6nM4162yPW+kltNIPfqG
-        HM56Ps=; b=QqfRwR8OPUu14+geeuqlnfKq+VtsbRtne2sp0qfcEeZTG5oMEbuk2
-        2d6Sn0gH2eExjWyo7uEJZPdvi9u4Y2OM0l9fghse/B9zJnXnZIBW/9Ss8OR6cE4K
-        4FXVh6OLQ1n9h8jkorzK1vGMVHUl0GgsydjnUJRGL4/P4LxuDqu8GU=
+        HM56Ps=; b=RlKQY+as3jguM7zhsRyIWjWA1u9qGQNYoUVnyNqQ5RkQXIN71j6ED
+        sCdEYT9LAr9zZtWAwJlMQU+dRPZ73vvX5xfvIhmK5As1Y1eoPyi5QkDmyoGd3j+b
+        5kkRNe1Ba3kkXf/kMHowXTd1YMnZBs6nlS+HL8PxQMYvGqv8BXkdWg=
 Received: from localhost.localdomain (unknown [113.251.13.19])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgAXlqZ3cf1ggzEHAA--.26629S2;
-        Sun, 25 Jul 2021 22:13:12 +0800 (CST)
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgDnZqfLcf1g5jEHAA--.26248S2;
+        Sun, 25 Jul 2021 22:14:35 +0800 (CST)
 From:   Hu Haowen <src.res@email.cn>
 To:     corbet@lwn.net
 Cc:     panyunwang849@gmail.com, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/2] docs: add traditional Chinese translation for kernel Documentation
-Date:   Sun, 25 Jul 2021 22:13:10 +0800
-Message-Id: <20210725141311.111971-1-src.res@email.cn>
+Subject: [PATCH v5 1/2] docs: add traditional Chinese translation for kernel Documentation
+Date:   Sun, 25 Jul 2021 22:14:34 +0800
+Message-Id: <20210725141435.112074-1-src.res@email.cn>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210721142537.29409-1-src.res@email.cn>
 References: <20210721142537.29409-1-src.res@email.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GiKnCgAXlqZ3cf1ggzEHAA--.26629S2
+X-CM-TRANSID: GiKnCgDnZqfLcf1g5jEHAA--.26248S2
 X-Coremail-Antispam: 1UD129KBjvAXoWkXw1xZw45Zw15XFy3Jw43ZFb_yoWkWry5Co
         WI9ay5C34kAF4aqFyrGa1UJFWxGw13CFs8uwsrKrn8Gr1UCFy5t3Wvq3y5KrWa93y5Wa1f
-        Ja4FvF1Sy3W5AFyDn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        Ja4FvF1Sy3W5AFyDn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
         AaLaJ3UjIYCTnIWjp_UUU577k0a2IF6w4kM7kC6x804xWl1xkIjI8I6I8E6xAIw20EY4v2
         0xvaj40_Wr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7
-        IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vE
+        IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vE
         x4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
         kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
         Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lc2xSY4AK67AK6ry5MxAIw28IcVCjz48v1sIEY2
