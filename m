@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F3D3D4B48
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 06:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA653D4B4D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 06:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhGYDWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 23:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S230239AbhGYDWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 23:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhGYDV4 (ORCPT
+        with ESMTP id S230077AbhGYDV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 23:21:56 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46ECC061765
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:02:26 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id q6so6839428oiw.7
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:02:26 -0700 (PDT)
+        Sat, 24 Jul 2021 23:21:57 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139ABC0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:02:28 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id o185so6790927oih.13
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fdmG3WG+Fl0BSnXJiqQEACHTkoffgPGp8XBicBQYpOo=;
-        b=bUyKH/yL3uKMbRoFBycdV+AfDTE8ss1Qs1/Iw/icuLQwu0o4EOMDP7GIRMNwKcr9kW
-         TI689VHRtv20TGBCCfe8QuPkiTDNYfaDpm4xbygf5xNYpF4L01c/QeVtBXhDpqxFeuiz
-         dgvdUIOW6fmhDCjZSPqduzmtRWmExefdakj4p3o0RbSUhQu+mGrk+nggXMFUOeb481cQ
-         JFPJdoh+CivVAFlrOF70psrME2PALWFTsqKG9GxYCzIGecNlisqhJvwRv7bTnnxyPael
-         w+GNjKNDJbfaDWklYcEOAZw5MxZSL1sGyQy8sZgkCeqLL2mU8A1UkbZJWmCzwHMyjVUP
-         3a7g==
+        bh=fJd/jugeN2YjgUvOBixRk7jqpX0of5iUQEXFzXCzPhs=;
+        b=B4QCSkS/3XujHlHjUdtVPxFCSmVQO8G5YjMdMPuRNTnWiMywbaU3uKskrYy2ZZrFsR
+         4VLbUak5CnlEiexnGvgxfBvfM/aZ4fFAFaIGIHRfWtvLkG8iaigdThd+pl8TJY9EWsdI
+         IaUt8tn6TapTa/CIs1Z/nJqdCl6HT0TKe5rfQBM1Fj4wF/CeDLeZIaIr+eYU/tJ2/PLV
+         BkaBPO5w5AbtZrjw/1xF62BCoc2oVwJsvAMXA259XrPkQssO9f5x3kztQ9xgI/F4/yRq
+         7Ugu9Vj7LBujNombnQN710uRx7It5DQcXy14705lK2gpLzn7gLyGvi8aWcF1KiozGhPI
+         HqpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fdmG3WG+Fl0BSnXJiqQEACHTkoffgPGp8XBicBQYpOo=;
-        b=tyAsEJOCVlbZTuWTdnmnorkFqY6pX0K0PpEMM4R0ky8krcuvnAgOdmOCYjoHlv/zND
-         SEgVZ4eW9bkin/N2/gOQXYeHJLHikVrDVlIfh7VjIM1w4kYc9MXYF6HnO+D6POkqU2GQ
-         yQHUvb+Wlnd0bo1JH51UXYmkdIgUlGGbwaE2l0GVg/W/al1bU0Rj/1qVFpAMQeRP/6n8
-         /vs9xXbkJb5rlVtVcPmG3n19boQKjB3Jmdz1wyIGhONbdQPCZxZdBpRWgFlwsyyIjTFo
-         jj6HD0h32GlvaM5Y1PAJ2lMskJ1EQHS4p2Q37wOOUlhp4h2ZOeLwdIZbJdVXrLZQpn2T
-         ySLw==
-X-Gm-Message-State: AOAM5306TkUVrkLhhqyCIDQa72b61YekRGmDfvH4/OdWBtZAuQy9ZW6Q
-        Ttrw0lzbpCoQGL6KmbXighnuLA==
-X-Google-Smtp-Source: ABdhPJxiSm3YKhhzQd0mf+xM5ydNpnne/06tpn6+NFdCOwlVcrOLgOqNnXz8RgxQYmcA67KpD7pjOQ==
-X-Received: by 2002:aca:4355:: with SMTP id q82mr13228367oia.165.1627185746154;
-        Sat, 24 Jul 2021 21:02:26 -0700 (PDT)
+        bh=fJd/jugeN2YjgUvOBixRk7jqpX0of5iUQEXFzXCzPhs=;
+        b=rsZhRYdNwKb8kzNBDMR72PSSo3z2oz7qcJcuclsvxADI1k8wfNuAdWKT93mpeY5x1K
+         ec3KTCcWVjMVrZYTFmU504MtMrbMgWPuahU3vN4iDuuflYeIgyXw9cs7ROqHIp7BTky5
+         XW/BcIHHpx/uqh24whxYEutie5BwPwFzITTnTI5mQmT2aBkx0uRVi/QfXyn+ai3xWyZE
+         5PGjtr05PX8vJUMucdfkt+n3qxj88gPy4OHa3lWmtvuFrQmqqg5Sjc7ZC606k/y6Dz70
+         OpUFCxKBUKX9Zjgtt8Rbv9aYYQIdaGzTLU7LsaXZypwqn+xmZQgqkFzjIGuLk4Ha2rbM
+         ZygQ==
+X-Gm-Message-State: AOAM530yuIl+KwQjJFjIV5S8T3CU79hCIsjgd3vKdCV94wosNxXgOy3B
+        lHUSLQctIMrA2IPvdsjyECCgwQ==
+X-Google-Smtp-Source: ABdhPJyJ5mXGrUKX4FgCbfR/6UxKLXQZuB9R36iswQ9T71dP85NJ4RP/gPM9CokS7jOKNtPPD08a/w==
+X-Received: by 2002:aca:5a04:: with SMTP id o4mr7357553oib.33.1627185747406;
+        Sat, 24 Jul 2021 21:02:27 -0700 (PDT)
 Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q20sm872910otv.50.2021.07.24.21.02.25
+        by smtp.gmail.com with ESMTPSA id q20sm872910otv.50.2021.07.24.21.02.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 21:02:25 -0700 (PDT)
+        Sat, 24 Jul 2021 21:02:26 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Bjorn Helgaas <bhelgaas@google.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -56,9 +56,9 @@ To:     Bjorn Helgaas <bhelgaas@google.com>,
         =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
 Cc:     linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] PCI: qcom: Introduce enable/disable resource ops
-Date:   Sat, 24 Jul 2021 21:00:36 -0700
-Message-Id: <20210725040038.3966348-2-bjorn.andersson@linaro.org>
+Subject: [PATCH 2/3] PCI: qcom: Split init and enable for 1.9.0 and 2.7.0
+Date:   Sat, 24 Jul 2021 21:00:37 -0700
+Message-Id: <20210725040038.3966348-3-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210725040038.3966348-1-bjorn.andersson@linaro.org>
 References: <20210725040038.3966348-1-bjorn.andersson@linaro.org>
@@ -68,126 +68,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current model of doing resource enablement and controller
-initialization in a single "init" function invoked after
-dw_pcie_host_init() is invoked might result in clocks not being enabled
-at the time the "msi" interrupt fires.
+On the sc8180x platform the "msi" interrupt often fires before init has
+a chance to enable the clocks that are necessary for the interrupt
+handler to access the hardware.
 
-One such case happens reliably on the SC8180x (8cx) Snapdragon laptops,
-where it's seems like the bootloader touches PCIe and leaves things in a
-state that the "msi" interrupt will fire before we have a change to
-enable the clocks, resulting in an access of unclocked hardware.
-
-Introduce a two new callbacks, allowing the individual resource handling
-functions to be split between enable/init and deinit/disable.
-
-Helper functions for enable, disable and deinit are introduced to handle
-the fact that these functions may now be left without implementation.
-init is given a wrapper for symmetry.
+Split out the resource enablement and disablement into the newly
+introduce enable/disable resource operations, to ensure that the
+necessary resources are enabled when needed.
 
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 ---
- drivers/pci/controller/dwc/pcie-qcom.c | 42 +++++++++++++++++++++++---
- 1 file changed, 38 insertions(+), 4 deletions(-)
+ drivers/pci/controller/dwc/pcie-qcom.c | 31 +++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 8a7a300163e5..8a64a126de2b 100644
+index 8a64a126de2b..8adcbb718832 100644
 --- a/drivers/pci/controller/dwc/pcie-qcom.c
 +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -181,9 +181,11 @@ struct qcom_pcie;
- 
- struct qcom_pcie_ops {
- 	int (*get_resources)(struct qcom_pcie *pcie);
-+	int (*enable_resources)(struct qcom_pcie *pcie);
- 	int (*init)(struct qcom_pcie *pcie);
- 	int (*post_init)(struct qcom_pcie *pcie);
- 	void (*deinit)(struct qcom_pcie *pcie);
-+	void (*disable_resources)(struct qcom_pcie *pcie);
- 	void (*post_deinit)(struct qcom_pcie *pcie);
- 	void (*ltssm_enable)(struct qcom_pcie *pcie);
- 	int (*config_sid)(struct qcom_pcie *pcie);
-@@ -1345,6 +1347,31 @@ static int qcom_pcie_config_sid_sm8250(struct qcom_pcie *pcie)
- 	return 0;
+@@ -1173,12 +1173,11 @@ static int qcom_pcie_get_resources_2_7_0(struct qcom_pcie *pcie)
+ 	return PTR_ERR_OR_ZERO(res->pipe_clk);
  }
  
-+static int qcom_pcie_enable_resources(struct qcom_pcie *pcie)
-+{
-+	if (pcie->ops->enable_resources)
-+		return pcie->ops->enable_resources(pcie);
-+
-+	return 0;
-+}
-+
-+static int qcom_pcie_init(struct qcom_pcie *pcie)
-+{
-+	return pcie->ops->init(pcie);
-+}
-+
-+static void qcom_pcie_deinit(struct qcom_pcie *pcie)
-+{
-+	if (pcie->ops->deinit)
-+		pcie->ops->deinit(pcie);
-+}
-+
-+static void qcom_pcie_disable_resources(struct qcom_pcie *pcie)
-+{
-+	if (pcie->ops->disable_resources)
-+		pcie->ops->disable_resources(pcie);
-+}
-+
- static int qcom_pcie_host_init(struct pcie_port *pp)
+-static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
++static int qcom_pcie_enable_2_7_0(struct qcom_pcie *pcie)
  {
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-@@ -1353,7 +1380,7 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
+ 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+ 	struct dw_pcie *pci = pcie->pci;
+ 	struct device *dev = pci->dev;
+-	u32 val;
+ 	int ret;
  
- 	qcom_ep_reset_assert(pcie);
- 
--	ret = pcie->ops->init(pcie);
-+	ret = qcom_pcie_init(pcie);
- 	if (ret)
- 		return ret;
- 
-@@ -1384,7 +1411,7 @@ static int qcom_pcie_host_init(struct pcie_port *pp)
- err_disable_phy:
- 	phy_power_off(pcie->phy);
- err_deinit:
--	pcie->ops->deinit(pcie);
-+	qcom_pcie_deinit(pcie);
- 
- 	return ret;
- }
-@@ -1520,10 +1547,14 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 
- 	pp->ops = &qcom_pcie_dw_ops;
- 
-+	ret = qcom_pcie_enable_resources(pcie);
-+	if (ret)
-+		goto err_pm_runtime_put;
-+
- 	ret = phy_init(pcie->phy);
- 	if (ret) {
- 		pm_runtime_disable(&pdev->dev);
--		goto err_pm_runtime_put;
-+		goto err_disable_resources;
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(res->supplies), res->supplies);
+@@ -1211,6 +1210,20 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+ 		goto err_disable_clocks;
  	}
  
- 	platform_set_drvdata(pdev, pcie);
-@@ -1532,11 +1563,14 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 	if (ret) {
- 		dev_err(dev, "cannot initialize host\n");
- 		pm_runtime_disable(&pdev->dev);
--		goto err_pm_runtime_put;
-+		goto err_disable_resources;
++	return 0;
++
++err_disable_clocks:
++	clk_bulk_disable_unprepare(res->num_clks, res->clks);
++err_disable_regulators:
++	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
++
++	return ret;
++}
++
++static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
++{
++	u32 val;
++
+ 	/* configure PCIe to RC mode */
+ 	writel(DEVICE_TYPE_RC, pcie->parf + PCIE20_PARF_DEVICE_TYPE);
+ 
+@@ -1238,15 +1251,9 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
  	}
  
  	return 0;
+-err_disable_clocks:
+-	clk_bulk_disable_unprepare(res->num_clks, res->clks);
+-err_disable_regulators:
+-	regulator_bulk_disable(ARRAY_SIZE(res->supplies), res->supplies);
+-
+-	return ret;
+ }
  
-+err_disable_resources:
-+	qcom_pcie_disable_resources(pcie);
-+
- err_pm_runtime_put:
- 	pm_runtime_put(dev);
- 	pm_runtime_disable(dev);
+-static void qcom_pcie_deinit_2_7_0(struct qcom_pcie *pcie)
++static void qcom_pcie_disable_2_7_0(struct qcom_pcie *pcie)
+ {
+ 	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+ 
+@@ -1465,8 +1472,9 @@ static const struct qcom_pcie_ops ops_2_3_3 = {
+ /* Qcom IP rev.: 2.7.0	Synopsys IP rev.: 4.30a */
+ static const struct qcom_pcie_ops ops_2_7_0 = {
+ 	.get_resources = qcom_pcie_get_resources_2_7_0,
++	.enable_resources = qcom_pcie_enable_2_7_0,
+ 	.init = qcom_pcie_init_2_7_0,
+-	.deinit = qcom_pcie_deinit_2_7_0,
++	.disable_resources = qcom_pcie_disable_2_7_0,
+ 	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
+ 	.post_init = qcom_pcie_post_init_2_7_0,
+ 	.post_deinit = qcom_pcie_post_deinit_2_7_0,
+@@ -1475,8 +1483,9 @@ static const struct qcom_pcie_ops ops_2_7_0 = {
+ /* Qcom IP rev.: 1.9.0 */
+ static const struct qcom_pcie_ops ops_1_9_0 = {
+ 	.get_resources = qcom_pcie_get_resources_2_7_0,
++	.enable_resources = qcom_pcie_enable_2_7_0,
+ 	.init = qcom_pcie_init_2_7_0,
+-	.deinit = qcom_pcie_deinit_2_7_0,
++	.disable_resources = qcom_pcie_disable_2_7_0,
+ 	.ltssm_enable = qcom_pcie_2_3_2_ltssm_enable,
+ 	.post_init = qcom_pcie_post_init_2_7_0,
+ 	.post_deinit = qcom_pcie_post_deinit_2_7_0,
 -- 
 2.29.2
 
