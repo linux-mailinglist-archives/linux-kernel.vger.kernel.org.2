@@ -2,111 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB1543D5032
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308923D502E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhGYVBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 17:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhGYVBC (ORCPT
+        id S230284AbhGYVAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 17:00:14 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:20873 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhGYVAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 17:01:02 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1979C061760;
-        Sun, 25 Jul 2021 14:41:32 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id b20so7092787qkj.3;
-        Sun, 25 Jul 2021 14:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QxOlTszS9lefFPg4lTNiOlnATXYl/0WWxviXpQoITfQ=;
-        b=XATwLMymbsZV4PttlajF382i8P33q7mjVRhHUwdZziBZ371iOVR6UMOxGRyNu6niD1
-         aqn/ehfG8TwvzFEfrksecuhftSl6sm20sfV1tjoHPc/w4eUhstJBqTdbcdbOt77DuW8A
-         Sn7/3WT5XAkHfPRGpa2gB9rTD1q6bWvZzG8kIFSQnm+cAk8iOpQyZeo0XW5DxOxhws0k
-         ZP4jD0Pae1cdtAS5X4E+FnDKRnvsbs+G6eUzXkWl4PKQrlnlrlziWsIzthovdIQPSDtr
-         q+vhgd20f5uWbiFSFKgEhuCl4syoiJNaK9/t+OWQqSpqQO66rNjBs42IYxHMJz2uv8l+
-         grVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=QxOlTszS9lefFPg4lTNiOlnATXYl/0WWxviXpQoITfQ=;
-        b=ZglPVHFepuHXBuXqLoodiMsjqNevGuH1n++GJdqPduvdOeTQY8+2MRW2zrJkKA5grG
-         hF22QOtGYBQ4/Yx/1TH78TRp4YHlWlgsjNU3V9lc7NzHF8J7k6QioSnBNYv16VZUqZoI
-         qzi8SiW8k/fRAJJ7xT9v/lJPUblhaW54qvVfDtTUk7OnYZ18JHgNyNofjApxOSinkuCY
-         A1E4nx7oZ0F3b0qvNCuF8A6I5rft34+mUcCDhgJrCpAU28tqkywhC4cPZR2b09XHUH/y
-         LEJReNuOBWTUfonJuNkRmISbNzSeeFY9mUoQaMS0geCXsqGKGmrPF0uT5DcijU/uFnWy
-         sCkA==
-X-Gm-Message-State: AOAM531ZVPASnK4Fg4vM5B3ElX4tsuuSk99diy9v6xb19Wd2Q2/h/Spb
-        mH685EcwVrMEnSYtIl+LmizkwETxezM=
-X-Google-Smtp-Source: ABdhPJwJC09YTmDe39x8u72YD0k3ayM8qwR9qmQHb4KYMJZffmAoCvE0f1XCJfr4hRfZ1Gejm15zpg==
-X-Received: by 2002:a37:af45:: with SMTP id y66mr15073588qke.466.1627249291476;
-        Sun, 25 Jul 2021 14:41:31 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c197sm17801136qke.33.2021.07.25.14.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 14:41:31 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 25 Jul 2021 14:41:29 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, kernel@pengutronix.de,
+        Sun, 25 Jul 2021 17:00:13 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210725214041epoutp0399e4e033c226679346c0493538339dc4~VJpBbReOT1477514775epoutp03i
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:40:41 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210725214041epoutp0399e4e033c226679346c0493538339dc4~VJpBbReOT1477514775epoutp03i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1627249241;
+        bh=iC0O+ZFAAxwkdjBKB6x04hKDYKrS8sbFbpHfsJp2jlU=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=pGk9yKUGuVAaCDPX5wzUgEgNX+BtMmLbNBFzYyi/qUZFVy4qmEcCGwOtHhriRX9CF
+         CFRlG91xfljwRrrNvX07CChP/K4Q2o/aNPuMlyTdvl1U98Q2RSX9mA6aBUEsKYLOwQ
+         ab8Ue4gihoCb8bggKOoyH5VzBkPBkcp9Niosb94Y=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20210725214041epcas1p404345218dc94f8acf1e9f71a27170a77~VJpAuC9pS2553125531epcas1p47;
+        Sun, 25 Jul 2021 21:40:41 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.157]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4GXxLZ2vDSz4x9Pr; Sun, 25 Jul
+        2021 21:40:38 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E5.17.10119.65ADDF06; Mon, 26 Jul 2021 06:40:38 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210725214037epcas1p181f506c66a4256685923ab915aba3084~VJo9sCAcc1520415204epcas1p1U;
+        Sun, 25 Jul 2021 21:40:37 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210725214037epsmtrp2cfcb90a2951eeefffc1e438788c27b46~VJo9rYfRD2625426254epsmtrp2Q;
+        Sun, 25 Jul 2021 21:40:37 +0000 (GMT)
+X-AuditID: b6c32a38-97bff70000002787-23-60fdda56288c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        77.EF.08289.55ADDF06; Mon, 26 Jul 2021 06:40:37 +0900 (KST)
+Received: from [10.113.113.235] (unknown [10.113.113.235]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210725214037epsmtip2caa84d71174be696f01cd8f3bae902e4~VJo9VyjXm3206832068epsmtip2m;
+        Sun, 25 Jul 2021 21:40:37 +0000 (GMT)
+Subject: Re: [PATCH v2] mmc: dw_mmc: Add data CRC error injection
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     kernel@axis.com, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] watchdog: f71808e_wdt: fix inaccurate report in
- WDIOC_GETTIMEOUT
-Message-ID: <20210725214129.GA3578169@roeck-us.net>
-References: <cover.c711be1db54f4e07c0153266dd1a831e92e3d49d.1626948810.git-series.a.fatoum@pengutronix.de>
- <7f2a07eaa7dbd7c3f8162a89d364c3eef45883ea.1626948810.git-series.a.fatoum@pengutronix.de>
+From:   Jaehoon Chung <jh80.chung@samsung.com>
+Message-ID: <06d89a02-708e-c096-5b96-165f1ce8724c@samsung.com>
+Date:   Mon, 26 Jul 2021 06:41:29 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7f2a07eaa7dbd7c3f8162a89d364c3eef45883ea.1626948810.git-series.a.fatoum@pengutronix.de>
+In-Reply-To: <20210701080534.23138-1-vincent.whitchurch@axis.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgk+LIzCtJLcpLzFFi42LZdlhTVzfs1t8Eg56bQhafWlQtLu+aw2Zx
+        5H8/o8XxteEW57f5O7B6XF8X4HHn2h42j8+b5AKYo7JtMlITU1KLFFLzkvNTMvPSbZW8g+Od
+        403NDAx1DS0tzJUU8hJzU22VXHwCdN0yc4DWKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0ts
+        lVILUnIKLAv0ihNzi0vz0vWS83OtDA0MjEyBChOyM05c7GcuuK9T8fV9D0sD41yVLkZODgkB
+        E4n3mz6xdTFycQgJ7GCU2D3vM5TziVHi+c5VrBDOZ0aJafNeMsG03L2zGyqxi1Hie8slJgjn
+        PaNEX89hsCphAUeJ7lv7wWwRgRiJpz0b2UBsZgEfiatTDjOC2GwCOhLbvx0Hq+EVsJNonv0T
+        LM4ioCrx4PseMFtUIFLi/O4FLBA1ghInZz4BszmB5j/f0csKMVNc4taT+UwQtrzE9rdzmCEu
+        fcQucfwG1KMuEi+WX2KBsIUlXh3fwg5hS0l8freXDcKultjVfIYZ5BkJgQ5GiVvbmqBeNpbY
+        v3QykM0BtEBTYv0ufYiwosTO33MZIfbySbz72sMKUiIhwCvR0SYEUaIicek1LOCkJO4++c8K
+        YXtInGv+wjqBUXEWks9mIflmFpJvZiEsXsDIsopRLLWgODc9tdiwwAQ5tjcxgpOilsUOxrlv
+        P+gdYmTiYDzEKMHBrCTC67Did4IQb0piZVVqUX58UWlOavEhRlNgWE9klhJNzgem5bySeENT
+        I2NjYwsTQzNTQ0Mlcd5vsV8ThATSE0tSs1NTC1KLYPqYODilGpgst22/6BLqZbv1U2qtzf7n
+        xi29Ap1pu945+RzvDtTbwDh1p+AD9xdB2y92BGoekH1h6CL6dUlj+kkGlTpjzzn++n8LuKN/
+        1W8TftD01DblktHrta5FiYtkCn/3Tt2w8ljXntnNoQ21hXfPNc4Xsf/jE6LUGnrv5cEXXKkJ
+        l+tUVgY9eVQcz8M0be6nM1tnbHWv/3Py48JlIR0c6v1Zr4857ZTW9yvxDZgtzOtg/FpqpdSN
+        CD61XjO7w89uH18SdyvOpiVNOUnihqCKcL3T7wViS5M0muS/p5RPSw8LuttodP1KTM3xnRyG
+        DHZ+T2//sN8a2XhkQ9yxH1vbXxtyck/xfV6ob8bkf25Hyi9BGyWW4oxEQy3mouJEAJxYPSYT
+        BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWy7bCSvG7orb8JBqf/a1h8alG1uLxrDpvF
+        kf/9jBbH14ZbnN/m78DqcX1dgMeda3vYPD5vkgtgjuKySUnNySxLLdK3S+DKOHGxn7ngvk7F
+        1/c9LA2Mc1W6GDk5JARMJO7e2c3axcjFISSwg1FiUudGNoiElMTnp1OBbA4gW1ji8OFiiJq3
+        jBLT981kBqkRFnCU6L61nwnEFhGIkdj56hlYL7OAj8TVKYcZIRqmMEpsPHIfrIhNQEdi+7fj
+        YDavgJ1E8+yfjCA2i4CqxIPve8BsUYFIic8LXrFC1AhKnJz5hAXE5gRa9nxHLyvEAnWJP/Mu
+        MUPY4hK3nsxngrDlJba/ncM8gVFoFpL2WUhaZiFpmYWkZQEjyypGydSC4tz03GLDAqO81HK9
+        4sTc4tK8dL3k/NxNjOA40NLawbhn1Qe9Q4xMHIyHGCU4mJVEeB1W/E4Q4k1JrKxKLcqPLyrN
+        SS0+xCjNwaIkznuh62S8kEB6YklqdmpqQWoRTJaJg1OqgcnVvv7q5p8/7Qz4Aq1lHfdPnjRx
+        smZ1wVa1QtOVu+YVNbd+mnz+W82D9hVu2/Stwni33738yOqzz1aOlU+/H+Zo979qxu1yUSv/
+        dJPSwoDCM7ceit7RO8QflZxZ0i/wK1219MOHN249Z6fbz7LK5Y2VFkru4rf6KLjGfL+Jvu2t
+        vDU7TNwkLhxXfd62lTHUJG1hy9vUbM9U23aO4v29enX3b80We/jNhfdp1JeewH02f7VS44U0
+        f+5bNrNMciLz+1+Bz4NOr2uS3xHR/TPjGqO16NaKNPe39dZ/lxa0KDumB9ZeY9vyQWLZr91P
+        3qZ4TrOLL1R+Wh88m2fL3RtX1qUdTf4guKZT1cxqgZZVtBJLcUaioRZzUXEiAFfrH1nyAgAA
+X-CMS-MailID: 20210725214037epcas1p181f506c66a4256685923ab915aba3084
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210701080542epcas1p1ba3235a77ae2ddccc1d1cb40df2e51de
+References: <CGME20210701080542epcas1p1ba3235a77ae2ddccc1d1cb40df2e51de@epcas1p1.samsung.com>
+        <20210701080534.23138-1-vincent.whitchurch@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 12:14:40PM +0200, Ahmad Fatoum wrote:
-> The fintek watchdog timer can configure timeouts of second granularity
-> only up to 255 seconds. Beyond that, the timeout needs to be configured
-> with minute granularity. WDIOC_GETTIMEOUT should report the actual
-> timeout configured, not just echo back the timeout configured by the
-> user. Do so.
+On 7/1/21 5:05 PM, Vincent Whitchurch wrote:
+> This driver has had problems when handling data errors.  Add fault
+> injection support so that the abort handling can be easily triggered and
+> regression-tested.  A hrtimer is used to indicate a data CRC error at
+> various points during the data transfer.
 > 
-> Fixes: 96cb4eb019ce ("watchdog: f71808e_wdt: new watchdog driver for Fintek F71808E and F71882FG")
-> Suggested-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> Note that for the recent problem with hangs in the case of some data CRC
+> errors, a udelay(10) inserted at the start of send_stop_abort() greatly
+> helped in triggering the error, but I've not included this as part of
+> the fault injection support since it seemed too specific.
+> 
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Jaehoon Chung <jh80.chung@samsung.com>
+
+Best Regards,
+Jaehoon Chung
 
 > ---
->  drivers/watchdog/f71808e_wdt.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
-> index f60beec1bbae..f7d82d261913 100644
-> --- a/drivers/watchdog/f71808e_wdt.c
-> +++ b/drivers/watchdog/f71808e_wdt.c
-> @@ -228,15 +228,17 @@ static int watchdog_set_timeout(int timeout)
+> Notes:
+>     v2: Add missing includes.
+> 
+>  drivers/mmc/host/dw_mmc.c | 73 +++++++++++++++++++++++++++++++++++++++
+>  drivers/mmc/host/dw_mmc.h |  7 ++++
+>  2 files changed, 80 insertions(+)
+> 
+> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
+> index d333130d1531..dbbb94e6ff4b 100644
+> --- a/drivers/mmc/host/dw_mmc.c
+> +++ b/drivers/mmc/host/dw_mmc.c
+> @@ -17,9 +17,11 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/ioport.h>
+> +#include <linux/ktime.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/prandom.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/slab.h>
+>  #include <linux/stat.h>
+> @@ -181,6 +183,9 @@ static void dw_mci_init_debugfs(struct dw_mci_slot *slot)
+>  			   &host->pending_events);
+>  	debugfs_create_xul("completed_events", S_IRUSR, root,
+>  			   &host->completed_events);
+> +#ifdef CONFIG_FAULT_INJECTION
+> +	fault_create_debugfs_attr("fail_data_crc", root, &host->fail_data_crc);
+> +#endif
+>  }
+>  #endif /* defined(CONFIG_DEBUG_FS) */
 >  
->  	mutex_lock(&watchdog.lock);
+> @@ -1788,6 +1793,68 @@ static const struct mmc_host_ops dw_mci_ops = {
+>  	.prepare_hs400_tuning	= dw_mci_prepare_hs400_tuning,
+>  };
 >  
-> -	watchdog.timeout = timeout;
->  	if (timeout > 0xff) {
->  		watchdog.timer_val = DIV_ROUND_UP(timeout, 60);
->  		watchdog.minutes_mode = true;
-> +		timeout = watchdog.timer_val * 60;
->  	} else {
->  		watchdog.timer_val = timeout;
->  		watchdog.minutes_mode = false;
->  	}
->  
-> +	watchdog.timeout = timeout;
+> +#ifdef CONFIG_FAULT_INJECTION
+> +static enum hrtimer_restart dw_mci_fault_timer(struct hrtimer *t)
+> +{
+> +	struct dw_mci *host = container_of(t, struct dw_mci, fault_timer);
+> +	unsigned long flags;
 > +
->  	mutex_unlock(&watchdog.lock);
+> +	spin_lock_irqsave(&host->irq_lock, flags);
+> +
+> +	if (!host->data_status)
+> +		host->data_status = SDMMC_INT_DCRC;
+> +	set_bit(EVENT_DATA_ERROR, &host->pending_events);
+> +	tasklet_schedule(&host->tasklet);
+> +
+> +	spin_unlock_irqrestore(&host->irq_lock, flags);
+> +
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+> +static void dw_mci_start_fault_timer(struct dw_mci *host)
+> +{
+> +	struct mmc_data *data = host->data;
+> +
+> +	if (!data || data->blocks <= 1)
+> +		return;
+> +
+> +	if (!should_fail(&host->fail_data_crc, 1))
+> +		return;
+> +
+> +	/*
+> +	 * Try to inject the error at random points during the data transfer.
+> +	 */
+> +	hrtimer_start(&host->fault_timer,
+> +		      ms_to_ktime(prandom_u32() % 25),
+> +		      HRTIMER_MODE_REL);
+> +}
+> +
+> +static void dw_mci_stop_fault_timer(struct dw_mci *host)
+> +{
+> +	hrtimer_cancel(&host->fault_timer);
+> +}
+> +
+> +static void dw_mci_init_fault(struct dw_mci *host)
+> +{
+> +	host->fail_data_crc = (struct fault_attr) FAULT_ATTR_INITIALIZER;
+> +
+> +	hrtimer_init(&host->fault_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +	host->fault_timer.function = dw_mci_fault_timer;
+> +}
+> +#else
+> +static void dw_mci_init_fault(struct dw_mci *host)
+> +{
+> +}
+> +
+> +static void dw_mci_start_fault_timer(struct dw_mci *host)
+> +{
+> +}
+> +
+> +static void dw_mci_stop_fault_timer(struct dw_mci *host)
+> +{
+> +}
+> +#endif
+> +
+>  static void dw_mci_request_end(struct dw_mci *host, struct mmc_request *mrq)
+>  	__releases(&host->lock)
+>  	__acquires(&host->lock)
+> @@ -2102,6 +2169,7 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+>  				break;
+>  			}
 >  
->  	return 0;
-> -- 
-> git-series 0.9.1
+> +			dw_mci_stop_fault_timer(host);
+>  			host->data = NULL;
+>  			set_bit(EVENT_DATA_COMPLETE, &host->completed_events);
+>  			err = dw_mci_data_complete(host, data);
+> @@ -2151,6 +2219,7 @@ static void dw_mci_tasklet_func(struct tasklet_struct *t)
+>  			if (mrq->cmd->error && mrq->data)
+>  				dw_mci_reset(host);
+>  
+> +			dw_mci_stop_fault_timer(host);
+>  			host->cmd = NULL;
+>  			host->data = NULL;
+>  
+> @@ -2600,6 +2669,8 @@ static void dw_mci_cmd_interrupt(struct dw_mci *host, u32 status)
+>  
+>  	set_bit(EVENT_CMD_COMPLETE, &host->pending_events);
+>  	tasklet_schedule(&host->tasklet);
+> +
+> +	dw_mci_start_fault_timer(host);
+>  }
+>  
+>  static void dw_mci_handle_cd(struct dw_mci *host)
+> @@ -3223,6 +3294,8 @@ int dw_mci_probe(struct dw_mci *host)
+>  	spin_lock_init(&host->irq_lock);
+>  	INIT_LIST_HEAD(&host->queue);
+>  
+> +	dw_mci_init_fault(host);
+> +
+>  	/*
+>  	 * Get the host data width - this assumes that HCON has been set with
+>  	 * the correct values.
+> diff --git a/drivers/mmc/host/dw_mmc.h b/drivers/mmc/host/dw_mmc.h
+> index da5923a92e60..ce05d81477d9 100644
+> --- a/drivers/mmc/host/dw_mmc.h
+> +++ b/drivers/mmc/host/dw_mmc.h
+> @@ -14,6 +14,8 @@
+>  #include <linux/mmc/core.h>
+>  #include <linux/dmaengine.h>
+>  #include <linux/reset.h>
+> +#include <linux/fault-inject.h>
+> +#include <linux/hrtimer.h>
+>  #include <linux/interrupt.h>
+>  
+>  enum dw_mci_state {
+> @@ -230,6 +232,11 @@ struct dw_mci {
+>  	struct timer_list       cmd11_timer;
+>  	struct timer_list       cto_timer;
+>  	struct timer_list       dto_timer;
+> +
+> +#ifdef CONFIG_FAULT_INJECTION
+> +	struct fault_attr	fail_data_crc;
+> +	struct hrtimer		fault_timer;
+> +#endif
+>  };
+>  
+>  /* DMA ops for Internal/External DMAC interface */
+> 
+
