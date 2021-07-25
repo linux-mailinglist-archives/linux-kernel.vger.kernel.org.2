@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F533D4DB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 15:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8B83D4DB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 15:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhGYMrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 08:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
+        id S230445AbhGYMsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 08:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhGYMrU (ORCPT
+        with ESMTP id S230075AbhGYMsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 08:47:20 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D23C061757;
-        Sun, 25 Jul 2021 06:27:49 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id nd39so11565720ejc.5;
-        Sun, 25 Jul 2021 06:27:49 -0700 (PDT)
+        Sun, 25 Jul 2021 08:48:33 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C73C061760;
+        Sun, 25 Jul 2021 06:29:03 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 9-20020a05600c26c9b02901e44e9caa2aso4521187wmv.4;
+        Sun, 25 Jul 2021 06:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ug8zSMnU2kdew7XA3SZRT3wjKRPWxWw7Hd9uOpR6CJA=;
-        b=gd2oUl8nbz84CXt9wnNFIsRdmnwQoogkMOycJdnORJdtf/u84hmFvhMAf/JyZ2KpLr
-         g1ST/icPVs2fMUeP4eHYJjcoQDEcgdQqSLwa0yVElQVyPEcyqRxGiXWoIxE7ZtkYu2Cw
-         SC9pE0qsJVHRkZAW7S1I4xicRIU4aVnriezrtG4ZPdGnQ+4qhsL9biTAr4R7c7cH9lel
-         pDL88NPGJ0AInK0kXjIq3PpXVVsWlkXwX3aCPaQFHrBA0WoruBJaviydIfY/LzNnb5Uu
-         7hGAMP4oW9VpbwjgKeEHAI7MGbNdx+mhxyTK++vs5tgRUetnvfHJYZ8AeXLBGh8lBv4Z
-         q22Q==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=v7cnCuDq5ZGSk7DH1MRlBzKJ5po3ZMRHzGSaZzKFHNw=;
+        b=ST9BdOPGw0sa/vFoWmxuFKmfHm+IKXQU/QOk1XJFzl8g4G9sDehR8fTpt8MF4Yxn54
+         9kKQxj4vjrowaFcx+3n54suI3yz6SCJUIubmDn7lq8UlXWwHF95BdiWhnh1IadNxc1jT
+         5HJYD6xcaMBvM2MZgNm8PG4rOTDeebEGophTxAseKlq6GoeJUYh30/IHeq8p7ZY0GGa1
+         AB6R+8DFb4bth6/SpqU5Ujj2ofacqmSypbgS12aQJVRMnrpNkl6ICWjfNJOYrxx5Mc05
+         2mX/h2FTSX4mXGtAJKUhzdlvVEB4D177kwxUYpQDRqXzqOOq8PyN25vU+XLIOAM9oHNL
+         s86w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ug8zSMnU2kdew7XA3SZRT3wjKRPWxWw7Hd9uOpR6CJA=;
-        b=MUkU4ojqnnvRHdcvWrKkTIQaJCNwfwtL7BDVtP9ptHVFmvKwWeEbwHQz7qgkhKxRS/
-         J3nuTRyozTxOP7x/8rsGXKNFyJbFh43zsQksCqAZFwHCyYVCaOSc/5DvdF547SCLI1dg
-         JR4iI+3KYLOrQJf6mv8C8dEKIBVx1aN4iTDjfUmrgvWIzlFiHVvawtAPbwbmWIrBGTy7
-         jacS9KaZE1/sL52lM18E9DeAIhPXl1LdDieJTAA6KBxcxQtrM43UWzh6Iimp4fiW710V
-         cFQd5tdqHYn+JHQJQITd2hUgH9yaPi8laSvyve+V3dqyo8qqb++uZO+BqZXxXMs5k9JM
-         xh5A==
-X-Gm-Message-State: AOAM530SoHeu1/Ya54DCXQraUAvuLXibzna8FA7RxtrMke59jx7YSLG5
-        6gTRX6Xjq7y5U8fKeaQvGE4UqLSNU+6lc6pSdRA=
-X-Google-Smtp-Source: ABdhPJyy5ZC9QKf9nblbrjmiCMuYBIj1PGsylZzS8j9ydD/aG3lgDrsVKxYxZmOTacQNVr33TTuypV4whMxeZ/1vTrY=
-X-Received: by 2002:aa7:cfcf:: with SMTP id r15mr16001396edy.161.1627219667975;
- Sun, 25 Jul 2021 06:27:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=v7cnCuDq5ZGSk7DH1MRlBzKJ5po3ZMRHzGSaZzKFHNw=;
+        b=I+GUNKHxH507UslChulcjf1hJDlocSKC8Il26JyDXlrma7V2ndNYSw17Cfp27wb2Ec
+         j9pF6iLimWn8LCIvEMimmUwU6ysf2IeFcMKDaFhYhwQrRGuCT923VhE7AryWArxnRiN+
+         mSoXRFY+kGvwUScSlQ4FJY0SwD4tzZoJp7l8FnD2DjdwVtJ9MGKTHpX3HqPmr5Jbq1L+
+         2k6Ps25cPgBcx37T5KL4dCRVt0D6Ngm25p2DJ1SpExozh9VrMIxr87VjybO/DGI7DwYR
+         uNb4YI49AFNEbS2atoV7icJBZFXp/Yyu8Vz0KmmT9bszo6GtPN+Tyugzq0G4zWSJqQW+
+         hYaw==
+X-Gm-Message-State: AOAM533DFxhNslUeH7dgBIe+ksOcq4P378UD15cFunJTL6kyhzKAKMxe
+        ztmJK5TIW8Ja2uaCIPPnOso=
+X-Google-Smtp-Source: ABdhPJzA+IGhEWdT+aE8IqiZIGsJX3lbPJmCeIo1NpXRUJmQvN7dqZr+rBmvc3mOuTwwFJrKdeJEeg==
+X-Received: by 2002:a05:600c:2942:: with SMTP id n2mr2230863wmd.152.1627219742578;
+        Sun, 25 Jul 2021 06:29:02 -0700 (PDT)
+Received: from pc ([196.235.233.206])
+        by smtp.gmail.com with ESMTPSA id q17sm4010433wre.3.2021.07.25.06.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 06:29:01 -0700 (PDT)
+Date:   Sun, 25 Jul 2021 14:28:58 +0100
+From:   Salah Triki <salah.triki@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] hid-elo: update the reference count of the usb device
+ structure
+Message-ID: <20210725132858.GA614754@pc>
 MIME-Version: 1.0
-References: <20210725094246.pkdpvl5aaaftur3a@pengutronix.de> <20210725103630.23864-1-paskripkin@gmail.com>
-In-Reply-To: <20210725103630.23864-1-paskripkin@gmail.com>
-From:   Yasushi SHOJI <yasushi.shoji@gmail.com>
-Date:   Sun, 25 Jul 2021 22:27:37 +0900
-Message-ID: <CAELBRWKfyOBanMBteO=LpL9R1QMp97zTYtKY689jeR2gDOa_Gw@mail.gmail.com>
-Subject: Re: [PATCH] net: can: add missing urb->transfer_dma initialization
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     mkl@pengutronix.de, wg@grandegger.com, linux-can@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Yasushi SHOJI <yashi@spacecubics.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Use usb_get_dev() to increment the reference count of the usb device
+structure in order to avoid releasing the structure while it is still in
+use. And use usb_put_dev() to decrement the reference count and thus,
+when it will be equal to 0 the structure will be released.
 
-I've tested this patch on top of v5.14-rc2.  All good.
+Signed-off-by: Salah Triki <salah.triki@gmail.com>
+---
+Change since v1:
+	Modification of the description
 
-Tested-by: Yasushi SHOJI <yashi@spacecubics.com>
+ drivers/hid/hid-elo.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Some nitpicks.
+diff --git a/drivers/hid/hid-elo.c b/drivers/hid/hid-elo.c
+index 0d22713a3874..383dfda8c12f 100644
+--- a/drivers/hid/hid-elo.c
++++ b/drivers/hid/hid-elo.c
+@@ -228,13 +228,15 @@ static int elo_probe(struct hid_device *hdev, const struct hid_device_id *id)
+ {
+ 	struct elo_priv *priv;
+ 	int ret;
++	struct usb_device *udev;
+ 
+ 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+ 	INIT_DELAYED_WORK(&priv->work, elo_work);
+-	priv->usbdev = interface_to_usbdev(to_usb_interface(hdev->dev.parent));
++	udev = interface_to_usbdev(to_usb_interface(hdev->dev.parent));
++	priv->usbdev = usb_get_dev(udev);
+ 
+ 	hid_set_drvdata(hdev, priv);
+ 
+@@ -265,6 +267,8 @@ static void elo_remove(struct hid_device *hdev)
+ {
+ 	struct elo_priv *priv = hid_get_drvdata(hdev);
+ 
++	usb_put_dev(priv->usbdev);
++
+ 	hid_hw_stop(hdev);
+ 	cancel_delayed_work_sync(&priv->work);
+ 	kfree(priv);
+-- 
+2.25.1
 
-On Sun, Jul 25, 2021 at 7:36 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> Yasushi reported, that his Microchip CAN Analyzer stopped working since
-> commit 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb").
-> The problem was in missing urb->transfer_dma initialization.
->
-> In my previous patch to this driver I refactored mcba_usb_start() code to
-> avoid leaking usb coherent buffers. To achive it, I passed local stack
-
-achieve
-
-> variable to usb_alloc_coherent() and then saved it to private array to
-> correctly free all coherent buffers on ->close() call. But I forgot to
-> inialize urb->transfer_dma with variable passed to usb_alloc_coherent().
-
-initialize
-
-> All of this was causing device to not work, since dma addr 0 is not valid
-> and following log can be found on bug report page, which points exactly to
-> problem described above.
->
-> [   33.862175] DMAR: [DMA Write] Request device [00:14.0] PASID ffffffff fault addr 0 [fault reason 05] PTE Write access is not set
->
-> Bug report: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=990850
->
-> Reported-by: Yasushi SHOJI <yasushi.shoji@gmail.com>
-> Fixes: 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  drivers/net/can/usb/mcba_usb.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-> index a45865bd7254..a1a154c08b7f 100644
-> --- a/drivers/net/can/usb/mcba_usb.c
-> +++ b/drivers/net/can/usb/mcba_usb.c
-> @@ -653,6 +653,8 @@ static int mcba_usb_start(struct mcba_priv *priv)
->                         break;
->                 }
->
-> +               urb->transfer_dma = buf_dma;
-> +
->                 usb_fill_bulk_urb(urb, priv->udev,
->                                   usb_rcvbulkpipe(priv->udev, MCBA_USB_EP_IN),
->                                   buf, MCBA_USB_RX_BUFF_SIZE,
-> --
-> 2.32.0
-
-Pavel, thanks again for your quick fix. :-)
-
-Best,
---
-               yashi
