@@ -2,390 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0FC3D4D71
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 14:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422CD3D4D75
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 14:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhGYL65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 07:58:57 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:56099 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhGYL64 (ORCPT
+        id S230350AbhGYMAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 08:00:44 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:35237 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230264AbhGYMAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 07:58:56 -0400
-Received: by mail-il1-f198.google.com with SMTP id x16-20020a9206100000b02902166568c213so3278004ilg.22
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 05:39:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ssP/jFlbxcppa+61oz3isSi1xq9UoOZXF7Brl1WHddA=;
-        b=WmC6EGbeW/OjwaCsocz5kE5ZUH6RwkMkQ14F4o6Lh+Z1KdMNaWSU0xLwq6s4KOaIXi
-         QoNh0Hd2eLgU4ahe3BLeLnA2h9ypWim8BZn1eYhkljooClqpIrrL3uFpTslDr0HaVX0v
-         H292Q9ZKj2zCFh05r5GHKN6uSkR8Sg/YojQWAccCGoDiO9X3q+bGwFVknbRET4Y2QC7a
-         kXi+HkHOTCAXbI1D0l1skIctrgK+6xbgfIuoTjgy6rSbeY/2xYWwoXn1Ba8aC5587I4d
-         zALx1+Fy1SYO44aIx71SO5mDr1j3jIdl7SFkP7EvOe5f0Ne/jiQqC+1cpC7OBEhmIvcE
-         NwYg==
-X-Gm-Message-State: AOAM533Nqy8yhHzRquTuJUpV9BsTaZjs98DiEWAHa6IF9RrMJfImxqE0
-        vMT4JVfcGcloClaPhnZcC6s5RK8W8P7JDCqvSSgJAOeTmZxZ
-X-Google-Smtp-Source: ABdhPJwFTiK7nrshnMGu3T23VN8McsgjPVvS1SLdSm2rDflgcIci9QBroqJGVaK1fAu9BzTnE4K/jviShJUqCENnuXnldTOhD2we
-MIME-Version: 1.0
-X-Received: by 2002:a92:cecf:: with SMTP id z15mr9039792ilq.225.1627216765804;
- Sun, 25 Jul 2021 05:39:25 -0700 (PDT)
-Date:   Sun, 25 Jul 2021 05:39:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004c664005c7f1ede0@google.com>
-Subject: [syzbot] possible deadlock in snd_timer_interrupt
-From:   syzbot <syzbot+17c16b868e6af41acdd4@syzkaller.appspotmail.com>
-To:     allen.lkml@gmail.com, alsa-devel@alsa-project.org,
-        boqun.feng@gmail.com, broonie@kernel.org, joe@perches.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, perex@perex.cz,
-        peterz@infradead.org, pierre-louis.bossart@linux.intel.com,
-        syzkaller-bugs@googlegroups.com, tiwai@suse.com, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 25 Jul 2021 08:00:43 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BF1F2580447;
+        Sun, 25 Jul 2021 08:41:13 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Sun, 25 Jul 2021 08:41:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=9Vxtwp0zDM7hmdE838Qhd0C2fpYY
+        IhzFdv/zN3orH/E=; b=ZBkKjtZ/p+iJv+ypBsDPVbWyt0K0Yv1PaIgL6zPdycJD
+        cyCkNSs+Mnqx0WtDPk0aQwYl9v+zvyRm24V0Em+jrInt8erb3gFpLG+we3turqTy
+        2in6I0qehD8yL74RP219VRGdiSwVfna/3UTFCP05bN/oZI4UgGDXhh21MVna6nFi
+        T6Fwvn0mo36lhhWEJsVIzCpE8btY5N4HQpds44qO6adeOAq0C7K1+ZQ062gS+ICR
+        bw6KmAEp25o8P92mFCaVPlFvySrXJQALcFz6R86CK2bamYDHPAF3vfFGT0cNdyG2
+        hvS4bS9UesGrY6jxh6i8Gu1BFA11j+Vjx0h8LaqOtA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=9Vxtwp
+        0zDM7hmdE838Qhd0C2fpYYIhzFdv/zN3orH/E=; b=Kgho/LE9ekfsCahxeIaC/N
+        gdmTg4LlM50NHCPBiE4xb/rZvY4nQeC9DG7paeFnSxj8jjqz3EPyG0QMlz7Guwm3
+        7sGGhQ8lGAHrBicULrVCQDZG3QMReQ1VnEJP1I+ptlttbcow3G0qyBpJbGHdJ0xT
+        abDT6YKFNV2gUSRCVQBqmSCmu/9CM6SheFiSeD3VUgq+2HY0PDVkC4EkGkGIaXOv
+        z4O4AwjqdRcAmG7p4qvxvUBJhEnB44QelM/047cYImvyf9aDSgANCBYhQ0GrFBqg
+        3sXUjBejTrEK+g3z+VZ0WJ5oiwnxvuID9hgAWCcKofxsAyZznIUDhonuytEi6YVg
+        ==
+X-ME-Sender: <xms:51v9YCGedN4lKPdI6MhqfqyNn0Wm8xf1WAViIeGBjDMXO_0hZEqdRg>
+    <xme:51v9YDUWGyohKo9IQcHXf2cZEbIjkgeS5uXI81FZlOw4ImQQva0xJwwglKaGJY5Ky
+    Fw7xlyVrvT_uNe75ro>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgedvgdehgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhvvghn
+    ucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrfgrth
+    htvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudehvdef
+    keffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsh
+    hvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:51v9YMJquKmqBO80PG3-9QLvQyJ-1TCvxUqGLrF5nchBqiNaKQmwGw>
+    <xmx:51v9YMEsK99YndIA_qhwX6vzCT3eoYQXLP37yFm0Q3AllIGXUXxUog>
+    <xmx:51v9YIU4x6vY3xaxkkc6QN6jXumNwW-HlsIzesZ2O85lZ9gxPKODJQ>
+    <xmx:6Vv9YJsHiGm437hPUOiTmwUKZvPLbcs4OEWCKidxWhgNJ78eflOmmQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C3DA651C0061; Sun, 25 Jul 2021 08:41:11 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-540-g21c5be8f1e-fm-20210722.001-g21c5be8f
+Mime-Version: 1.0
+Message-Id: <de9dcabd-a3c3-4f34-9f09-6e23deed3a98@www.fastmail.com>
+In-Reply-To: <69259ab4-0da9-ddc7-97b0-9ef1e33a39ec@arm.com>
+References: <20210627143405.77298-1-sven@svenpeter.dev>
+ <20210627143405.77298-4-sven@svenpeter.dev>
+ <f3574c75-db2d-47fc-bda5-0f0f627fb524@arm.com>
+ <30b00cf1-6366-4075-be8a-992fb1778306@www.fastmail.com>
+ <69259ab4-0da9-ddc7-97b0-9ef1e33a39ec@arm.com>
+Date:   Sun, 25 Jul 2021 14:40:51 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Robin Murphy" <robin.murphy@arm.com>
+Cc:     "Will Deacon" <will@kernel.org>, "Joerg Roedel" <joro@8bytes.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Rouven Czerwinski" <r.czerwinski@pengutronix.de>,
+        devicetree@vger.kernel.org, "Marc Zyngier" <maz@kernel.org>,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        "Petr Mladek via iommu" <iommu@lists.linux-foundation.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Alexander Graf" <graf@amazon.com>,
+        "Alyssa Rosenzweig" <alyssa.rosenzweig@collabora.com>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        linux-arm-kernel@lists.infradead.org,
+        "Stan Skowronek" <stan@corellium.com>
+Subject: Re: [PATCH v4 3/3] iommu: dart: Add DART iommu driver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    f0fddcec6b62 Merge tag 'for-5.14-rc2-tag' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13cbb70e300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5dc0e3202ae2f574
-dashboard link: https://syzkaller.appspot.com/bug?extid=17c16b868e6af41acdd4
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17667ecc300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179e0582300000
-
-The issue was bisected to:
-
-commit e918188611f073063415f40fae568fa4d86d9044
-Author: Boqun Feng <boqun.feng@gmail.com>
-Date:   Fri Aug 7 07:42:20 2020 +0000
-
-    locking: More accurate annotations for read_lock()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=109610b2300000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=129610b2300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=149610b2300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+17c16b868e6af41acdd4@syzkaller.appspotmail.com
-Fixes: e918188611f0 ("locking: More accurate annotations for read_lock()")
-
-========================================================
-WARNING: possible irq lock inversion dependency detected
-5.14.0-rc2-syzkaller #0 Not tainted
---------------------------------------------------------
-syz-executor065/8431 just changed the state of lock:
-ffff888027e94148 (&timer->lock){..-.}-{2:2}, at: snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
-but this lock took another, SOFTIRQ-READ-unsafe lock in the past:
- (&f->f_owner.lock){.+.+}-{2:2}
 
 
-and interrupts could create inverse lock ordering between them.
+On Mon, Jul 19, 2021, at 20:15, Robin Murphy wrote:
+> On 2021-07-15 17:41, Sven Peter via iommu wrote:
+> [...]
+> >>> +	u64 sw_bypass_cpu_start;
+> >>> +	u64 sw_bypass_dma_start;
+> >>> +	u64 sw_bypass_len;
+> >>> +
+> >>> +	struct list_head streams;
+> >>
+> >> I'm staring to think this could just be a bitmap, in a u16 even.
+> > 
+> > The problem is that these streams may come from two different
+> > DART instances. That is required for e.g. the dwc3 controller which
+> > has a weird quirk where DMA transactions go through two separate
+> > DARTs with no clear pattern (e.g. some xhci control structures use the
+> > first dart while other structures use the second one).
+> 
+> Ah right, I do remember discussing that situation, but I think I 
+> misinterpreted dart_domain->dart representing "the DART instance" here 
+> to mean we weren't trying to accommodate that just yet.
+> 
+> > Both of them need to point to the same pagetable.
+> > In the device tree the node will have an entry like this:
+> > 
+> > dwc3_0: usb@382280000{
+> >     ...
+> >     iommus = <&dwc3_0_dart_0 0>, <&dwc3_0_dart_1 1>;
+> > };
+> > 
+> > There's no need for a linked list though once I do this properly with
+> > groups. I can just use an array allocated when the first device is
+> > attached, which just contains apple_dart* and streamid values.
+> > 
+> > 
+> >>
+> >>> +
+> >>> +	spinlock_t lock;
+> >>> +
+> >>> +	struct iommu_domain domain;
+> >>> +};
+> >>> +
+> >>> +/*
+> >>> + * This structure is attached to devices with dev_iommu_priv_set() on of_xlate
+> >>> + * and contains a list of streams bound to this device as defined in the
+> >>> + * device tree. Multiple DART instances can be attached to a single device
+> >>> + * and each stream is identified by its stream id.
+> >>> + * It's usually reference by a pointer called *cfg.
+> >>> + *
+> >>> + * A dynamic array instead of a linked list is used here since in almost
+> >>> + * all cases a device will just be attached to a single stream and streams
+> >>> + * are never removed after they have been added.
+> >>> + *
+> >>> + * @num_streams: number of streams attached
+> >>> + * @streams: array of structs to identify attached streams and the device link
+> >>> + *           to the iommu
+> >>> + */
+> >>> +struct apple_dart_master_cfg {
+> >>> +	int num_streams;
+> >>> +	struct {
+> >>> +		struct apple_dart *dart;
+> >>> +		u32 sid;
+> >>
+> >> Can't you use the fwspec for this?
+> > 
+> > 
+> > I'd be happy to use the fwspec code if that's somehow possible.
+> > I'm not sure how though since I need to store both the reference to the DART
+> > _and_ to the stream id. As far as I can tell the fwspec code would only allow
+> > to store the stream ids.
+> > (see also the previous comment regarding the dwc3 node which requires stream
+> > ids from two separate DART instances)
+> 
+> Hmm, yes, as above I was overlooking that, although there are still 
+> various ideas that come to mind; the question becomes whether they're 
+> actually worthwhile or just too-clever-for-their-own-good hacks. The 
+> exact format of fwspec->ids is not fixed (other than the ACPI IORT code 
+> having a common understanding with the Arm SMMU drivers) so in principle 
+> you could munge some sort of DART instance index or indeed anything, but 
+> if it remains cleaner to manage your own data internally then by all 
+> means keep doing that.
+
+Yeah, I can think of some hacks as well (like storing a global id->apple_dart* map
+or stuffing the 64bit pointer into two ints) and I've tried a few of them in the past
+days but didn't like either of them.
+
+I do like the idea to just put two (struct apple_dart *dart, u16 sidmap)
+in there though which will be plenty for all current configurations.
+
+> 
+> >>> +		struct device_link *link;
+> >>
+> >> Is it necessary to use stateless links, or could you use
+> >> DL_FLAG_AUTOREMOVE_SUPPLIER and not have to keep track of them manually?
+> > 
+> > I'll just use DL_FLAG_AUTOREMOVE_SUPPLIER. No idea why I went for stateless links.
+> > 
+> >>
+> > [...]
+> >>> +	/* restore stream identity map */
+> >>> +	writel(0x03020100, dart->regs + DART_STREAM_REMAP);
+> >>> +	writel(0x07060504, dart->regs + DART_STREAM_REMAP + 4);
+> >>> +	writel(0x0b0a0908, dart->regs + DART_STREAM_REMAP + 8);
+> >>> +	writel(0x0f0e0d0c, dart->regs + DART_STREAM_REMAP + 12);
+> >>
+> >> Any hint of what the magic numbers mean?
+> > 
+> > Yes, it's just 0,1,2,3...,0xe,0xf but I can't do 8bit writes to the bus
+> > and 32 bit writes then require these slightly awkward "swapped" numbers.
+> > I'll add a comment since it's not obvious at first glance.
+> 
+> Sure, I guessed that much from "identity map" - it was more a question 
+> of why that means 0x03020100... rather than, say, 0x0c0d0e0f... or 
+> 0x76543210..., and perhaps the reason for "restoring" it in the first place.
+
+So what this feature does is to allow the DART to take an incoming DMA stream
+tagged with id i and pretend that it's actually been tagged with
+readb(dart->regs + 0x80 + i) instead. That's as much as I can figure out by
+poking the hardware. More details are probably only available to Apple.
+
+Now the reason I thought I needed this was that I assumed we are handed these DARTs
+in an unclean state because Apple makes use of this internally:
+In their device tree they have a sid-remap property which I believe is a hack to make
+their driver simpler. The dwc3 controller requires stream 0 of dartA and stream 1 of
+dartB to be configured the same way. They configure dartB to remap stream 1 to stream 0
+and then just mirror all MMIO writes from dartA to dartB and pretend that dwc3 only
+needs a single DART.
+
+As it actually turns out though, iBoot doesn't use the USB DARTs and we already get
+them in the sane state. I can just drop this code. (And if we actually need it
+for other DARTs I can also just restore those in our bootloader or add it in a
+follow up).
+
+> 
+> [...]
+> >>> +	/*
+> >>> +	 * we can't mix and match DARTs that support bypass mode with those who don't
+> >>> +	 * because the iova space in fake bypass mode generally has an offset
+> >>> +	 */
+> >>
+> >> Erm, something doesn't sound right there... IOMMU_DOMAIN_IDENTITY should
+> >> be exactly what it says, regardless of how it's implemented. If you
+> >> can't provide a true identity mapping then you're probably better off
+> >> not pretending to support them in the first place.
+> > 
+> > Some background: the PCIe DART only supports a 32bit VA space but RAM
+> > on these machines starts at 0x8_0000_0000. I have something like
+> >    dma-ranges = <0x42000000 0 0 0x8 0 0 0xffff0000>;
+> > in the pcie nodes to add that offset to dma addresses.
+> > 
+> > What I want to do here then is to setup an identity mapping with respect
+> > to the DMA layer understanding of addresses encoded in bus_dma_region.
+> > Now this will always just be a constant offset of 0x8_0000_0000 for
+> > all M1s but I didn't want to hardcode that.
+> > The code here is just there to guard against a situation where someone
+> > somehow manages to attach two devices with different offsets to the same
+> > domain.
+> 
+> Urgh, *now* I think I get it - the addressing limitation WRT the 
+> physical memory map layout had also slipped my mind. So you describe the 
+> RC *as if* it had a physical bus offset, rely on iommu-dma ignoring it 
+> when active (which is more by luck than design - we don't expect to ever 
+> see a device with a real hard-wired offset upstream of an IOMMU, 
+> although I did initially try to support it back in the very early days), 
+> and otherwise statically program a translation such that anyone else who 
+> *does* respect bus_dma_regions finds things work as expected.
+
+Yes, exactly. It's not very nice but it works...
+
+> 
+> That actually seems like an even stronger argument for having the 
+> fake-bypass table belong to the DART rather than the domain, and at that 
+> point you shouldn't even need the mismatch restriction, since as long as 
+> you haven't described the fake offset for any devices who *can* achieve 
+> real bypass, then "attach to an identity domain" simply comes down to 
+> doing the appropriate thing for each individual stream, regardless of 
+> whether it's the same nominal identity domain that another device is 
+> using or a distinct one (it's highly unlikely that two groups would ever 
+> get attached to one identity domain rather than simply having their own 
+> anyway, but it is technically possible).
+> 
+
+Agreed. That sounds a lot nicer actually.
 
 
-other info that might help us debug this:
-Chain exists of:
-  &timer->lock --> &new->fa_lock --> &f->f_owner.lock
+> > If that's not how the abstraction is supposed to work and/or too big of a hack
+> > I'll just remove the software bypass mode altogether.
+> > PCIe won't work on 4k kernels then but the only people using this so far
+> > build their own kernels with patches either way and won't complain.
+> > And by the time Linux will actually be useful for "normal" setups
+> > the dma-iommu layer can hopefully just handle a larger page granularity.
+> 
+> It's certainly... "creative", and TBH I don't hate it (in a "play the 
+> hand you've been given" kind of way), but the one significant downside 
+> is that if the DART driver isn't loaded for any reason, PCI DMA will 
+> look like it should be usable but then just silently (or not so 
+> silently) fail.
 
- Possible interrupt unsafe locking scenario:
+Good point!
 
-       CPU0                    CPU1
-       ----                    ----
-  lock(&f->f_owner.lock);
-                               local_irq_disable();
-                               lock(&timer->lock);
-                               lock(&new->fa_lock);
-  <Interrupt>
-    lock(&timer->lock);
+> 
+> FWIW if you do want to keep the option open, I'd be inclined to have the 
+> DT just give an "honest" description of just the 32-bit limitation, then 
+> have the DART driver's .probe_device sneakily modify the bus_dma_region 
+> to match the relevant fake-bypass table as appropriate. It's possible 
+> other folks might hate that even more though :D
 
- *** DEADLOCK ***
+I've given that one a try and I kinda like it so far :D
+I'll keep it for v5 and just drop it in case someone complains.
 
-4 locks held by syz-executor065/8431:
- #0: ffff888029390460 (sb_writers#5){.+.+}-{0:0}, at: mnt_want_write+0x3b/0x80 fs/namespace.c:375
- #1: ffff888039f60e80 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
- #1: ffff888039f60e80 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: filename_create+0x19f/0x700 fs/namei.c:3602
- #2: ffffffff8c7177c0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x5/0x30 include/linux/rcupdate.h:266
- #3: ffffc90000dc0be0 ((&priv->tlist)){+.-.}-{0:0}, at: lockdep_copy_map include/linux/lockdep.h:45 [inline]
- #3: ffffc90000dc0be0 ((&priv->tlist)){+.-.}-{0:0}, at: call_timer_fn+0xbd/0x210 kernel/time/timer.c:1407
+> 
+> >>> +	if (WARN_ON(domain->type == IOMMU_DOMAIN_IDENTITY &&
+> >>> +		    (domain->dart->supports_bypass != dart->supports_bypass)))
+> >>> +		return -EINVAL;
+> >>> +
+> >>> +	list_for_each_entry(stream, &domain->streams, stream_head) {
+> >>> +		if (stream->dart == dart && stream->sid == sid) {
+> >>> +			stream->num_devices++;
+> >>> +			return 0;
+> >>> +		}
+> >>> +	}
+> >>> +
+> >>> +	spin_lock_irqsave(&dart->lock, flags);
+> >>> +
+> >>> +	if (WARN_ON(dart->used_sids & BIT(sid))) {
+> >>> +		ret = -EINVAL;
+> >>> +		goto error;
+> >>> +	}
+> >>> +
+> >>> +	stream = kzalloc(sizeof(*stream), GFP_ATOMIC);
+> >>> +	if (!stream) {
+> >>> +		ret = -ENOMEM;
+> >>> +		goto error;
+> >>> +	}
+> >>
+> >> Couldn't you do this outside the lock? (If, calling back to other
+> >> comments, it can't get refactored out of existence anyway)
+> > 
+> > Probably, but I'll first see if I can just refactor it away.
+> 
+> Actually I missed that we're already under dart_domain->lock at this 
+> point anyway, so it's not going to make much difference, but it does 
+> mean that the spin_lock_irqsave() above could just be spin_lock(), 
+> unless it's possible to relax the domain locking a bit such that we 
+> don't have to do the whole domain init with IRQs masked.
 
-the shortest dependencies between 2nd lock and 1st lock:
-  -> (&f->f_owner.lock){.+.+}-{2:2} {
-     HARDIRQ-ON-R at:
-                        lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-                        _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
-                        f_getown_ex fs/fcntl.c:211 [inline]
-                        do_fcntl+0x150/0x1510 fs/fcntl.c:395
-                        __do_sys_fcntl fs/fcntl.c:471 [inline]
-                        __se_sys_fcntl+0xd8/0x1b0 fs/fcntl.c:456
-                        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                        do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-                        entry_SYSCALL_64_after_hwframe+0x44/0xae
-     SOFTIRQ-ON-R at:
-                        lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-                        _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
-                        f_getown_ex fs/fcntl.c:211 [inline]
-                        do_fcntl+0x150/0x1510 fs/fcntl.c:395
-                        __do_sys_fcntl fs/fcntl.c:471 [inline]
-                        __se_sys_fcntl+0xd8/0x1b0 fs/fcntl.c:456
-                        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                        do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-                        entry_SYSCALL_64_after_hwframe+0x44/0xae
-     INITIAL READ USE at:
-                            lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-                            __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
-                            _raw_read_lock_irqsave+0xbb/0x100 kernel/locking/spinlock.c:231
-                            send_sigio+0x2f/0x300 fs/fcntl.c:795
-                            kill_fasync_rcu fs/fcntl.c:1019 [inline]
-                            kill_fasync+0x1e3/0x430 fs/fcntl.c:1033
-                            snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
-                            snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
-                            snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
-                            snd_timer_start sound/core/timer.c:697 [inline]
-                            snd_timer_user_start sound/core/timer.c:1985 [inline]
-                            __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
-                            snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
-                            vfs_ioctl fs/ioctl.c:51 [inline]
-                            __do_sys_ioctl fs/ioctl.c:1069 [inline]
-                            __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
-                            do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                            do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-                            entry_SYSCALL_64_after_hwframe+0x44/0xae
-   }
-   ... key      at: [<ffffffff907d04a0>] __alloc_file.__key+0x0/0x10
-   ... acquired at:
-   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-   __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
-   _raw_read_lock_irqsave+0xbb/0x100 kernel/locking/spinlock.c:231
-   send_sigio+0x2f/0x300 fs/fcntl.c:795
-   kill_fasync_rcu fs/fcntl.c:1019 [inline]
-   kill_fasync+0x1e3/0x430 fs/fcntl.c:1033
-   snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
-   snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
-   snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
-   snd_timer_start sound/core/timer.c:697 [inline]
-   snd_timer_user_start sound/core/timer.c:1985 [inline]
-   __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
-   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
-   vfs_ioctl fs/ioctl.c:51 [inline]
-   __do_sys_ioctl fs/ioctl.c:1069 [inline]
-   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+I can relax the locking quite a bit.
+Right now, I only need a spinlock around the TLB flush MMIO writes
+and a mutex to protect domain initialization.
 
- -> (&new->fa_lock){....}-{2:2} {
-    INITIAL USE at:
-                     lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-                     __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
-                     _raw_write_lock_irq+0xae/0xf0 kernel/locking/spinlock.c:311
-                     fasync_remove_entry+0xff/0x1d0 fs/fcntl.c:890
-                     __fput+0x65b/0x7b0 fs/file_table.c:277
-                     task_work_run+0x146/0x1c0 kernel/task_work.c:164
-                     exit_task_work include/linux/task_work.h:32 [inline]
-                     do_exit+0x72b/0x2510 kernel/exit.c:825
-                     do_group_exit+0x168/0x2d0 kernel/exit.c:922
-                     get_signal+0x16b0/0x2080 kernel/signal.c:2808
-                     arch_do_signal_or_restart+0x8e/0x6d0 arch/x86/kernel/signal.c:865
-                     handle_signal_work kernel/entry/common.c:148 [inline]
-                     exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
-                     exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:209
-                     __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
-                     syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:302
-                     do_syscall_64+0x4c/0xb0 arch/x86/entry/common.c:86
-                     entry_SYSCALL_64_after_hwframe+0x44/0xae
-    INITIAL READ USE at:
-                          lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-                          _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
-                          kill_fasync_rcu fs/fcntl.c:1012 [inline]
-                          kill_fasync+0x13b/0x430 fs/fcntl.c:1033
-                          snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
-                          snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
-                          snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
-                          snd_timer_start sound/core/timer.c:697 [inline]
-                          snd_timer_user_start sound/core/timer.c:1985 [inline]
-                          __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
-                          snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
-                          vfs_ioctl fs/ioctl.c:51 [inline]
-                          __do_sys_ioctl fs/ioctl.c:1069 [inline]
-                          __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
-                          do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                          do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-                          entry_SYSCALL_64_after_hwframe+0x44/0xae
-  }
-  ... key      at: [<ffffffff907d1360>] fasync_insert_entry.__key+0x0/0x40
-  ... acquired at:
-   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-   _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
-   kill_fasync_rcu fs/fcntl.c:1012 [inline]
-   kill_fasync+0x13b/0x430 fs/fcntl.c:1033
-   snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
-   snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
-   snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
-   snd_timer_start sound/core/timer.c:697 [inline]
-   snd_timer_user_start sound/core/timer.c:1985 [inline]
-   __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
-   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
-   vfs_ioctl fs/ioctl.c:51 [inline]
-   __do_sys_ioctl fs/ioctl.c:1069 [inline]
-   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> [...]
+> >>> +static struct iommu_domain *apple_dart_domain_alloc(unsigned int type)
+> >>> +{
+> >>> +	struct apple_dart_domain *dart_domain;
+> >>> +
+> >>> +	if (type != IOMMU_DOMAIN_DMA && type != IOMMU_DOMAIN_UNMANAGED &&
+> >>> +	    type != IOMMU_DOMAIN_IDENTITY && type != IOMMU_DOMAIN_BLOCKED)
+> >>> +		return NULL;
+> >>
+> >> I want to say there's not much point in that, but then I realise I've
+> >> spent the last couple of days writing patches to add a new domain type :)
+> > 
+> > Hah! Just because I'm curious: What is that new domain type going to be? :)
+> 
+> Splitting IOMMU_DOMAIN_DMA into two to replace iommu_dma_strict being an 
+> orthogonal thing.
+> 
+> [...]
+> >>> +static int apple_dart_of_xlate(struct device *dev, struct of_phandle_args *args)
+> >>> +{
+> >>> +	struct platform_device *iommu_pdev = of_find_device_by_node(args->np);
+> >>> +	struct apple_dart_master_cfg *cfg = dev_iommu_priv_get(dev);
+> >>> +	unsigned int num_streams = cfg ? cfg->num_streams : 0;
+> >>> +	struct apple_dart_master_cfg *cfg_new;
+> >>> +	struct apple_dart *dart = platform_get_drvdata(iommu_pdev);
+> >>> +
+> >>> +	if (args->args_count != 1)
+> >>> +		return -EINVAL;
+> >>> +
+> >>> +	cfg_new = krealloc(cfg, struct_size(cfg, streams, num_streams + 1),
+> >>> +			   GFP_KERNEL);
+> >>> +	if (!cfg_new)
+> >>> +		return -ENOMEM;
+> >>> +
+> >>> +	cfg = cfg_new;
+> >>> +	dev_iommu_priv_set(dev, cfg);
+> >>> +
+> >>> +	cfg->num_streams = num_streams;
+> >>> +	cfg->streams[cfg->num_streams].dart = dart;
+> >>> +	cfg->streams[cfg->num_streams].sid = args->args[0];
+> >>> +	cfg->num_streams++;
+> >>
+> >> Yeah, this is way too reminiscent of the fwspec code for comfort. Even
+> >> if you can't use autoremove links for some reason, an array of 16
+> >> device_link pointers hung off apple_dart still wins over these little
+> >> pointer-heavy structures if you need more than a few of them.
+> > 
+> > I can get rid of the links, but I'll still need some way to store
+> > both the apple_dart and the sid here. Like mentioned above, I'll
+> > be happy to reuse the fwspec code but I don't see how yet.
+> 
+> As before, if you can fit in some kind of DART instance identifier which 
+> isn't impractical to unpack than it makes sense to use the fwspec since 
+> it's already there. However if you still need to allocate something 
+> per-device rather than just stashing an existing pointer in iommu_priv, 
+> then you may as well keep everything together there. If the worst known 
+> case could still fit in just two DART pointers and two 64-bit bitmaps, 
+> I'd be inclined to just have that as a fixed structure and save all the 
+> extra bother - you're not cross-architecture like the fwspec code, and 
+> arm64's minimum kmalloc granularity has just gone back up to 128 bytes 
+> (but even at 64 bytes you'd have had plenty of room).
 
--> (&timer->lock){..-.}-{2:2} {
-   IN-SOFTIRQ-W at:
-                    lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-                    __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                    _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
-                    snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
-                    call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
-                    expire_timers kernel/time/timer.c:1462 [inline]
-                    __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
-                    run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
-                    __do_softirq+0x372/0x783 kernel/softirq.c:558
-                    invoke_softirq kernel/softirq.c:432 [inline]
-                    __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
-                    irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
-                    sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
-                    asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-                    __preempt_count_add arch/x86/include/asm/preempt.h:80 [inline]
-                    rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1159
-                    rcu_read_lock include/linux/rcupdate.h:688 [inline]
-                    get_cached_acl+0x103/0x540 fs/posix_acl.c:44
-                    get_acl+0x20/0x2e0 fs/posix_acl.c:108
-                    posix_acl_create+0x119/0x560 fs/posix_acl.c:616
-                    ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
-                    __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
-                    ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
-                    vfs_mkdir+0x451/0x630 fs/namei.c:3823
-                    do_mkdirat+0x267/0x3e0 fs/namei.c:3848
-                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                    do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-                    entry_SYSCALL_64_after_hwframe+0x44/0xae
-   INITIAL USE at:
-                   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-                   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                   _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
-                   snd_timer_resolution sound/core/timer.c:489 [inline]
-                   snd_timer_user_params sound/core/timer.c:1852 [inline]
-                   __snd_timer_user_ioctl+0x1df7/0x5ed0 sound/core/timer.c:2101
-                   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
-                   vfs_ioctl fs/ioctl.c:51 [inline]
-                   __do_sys_ioctl fs/ioctl.c:1069 [inline]
-                   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
-                   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-                   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-                   entry_SYSCALL_64_after_hwframe+0x44/0xae
- }
- ... key      at: [<ffffffff90b60220>] snd_timer_new.__key+0x0/0x40
- ... acquired at:
-   mark_usage kernel/locking/lockdep.c:4488 [inline]
-   __lock_acquire+0xca1/0x6100 kernel/locking/lockdep.c:4969
-   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
-   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-   _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
-   snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
-   call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
-   expire_timers kernel/time/timer.c:1462 [inline]
-   __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
-   run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
-   __do_softirq+0x372/0x783 kernel/softirq.c:558
-   invoke_softirq kernel/softirq.c:432 [inline]
-   __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
-   irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
-   sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
-   asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-   __preempt_count_add arch/x86/include/asm/preempt.h:80 [inline]
-   rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1159
-   rcu_read_lock include/linux/rcupdate.h:688 [inline]
-   get_cached_acl+0x103/0x540 fs/posix_acl.c:44
-   get_acl+0x20/0x2e0 fs/posix_acl.c:108
-   posix_acl_create+0x119/0x560 fs/posix_acl.c:616
-   ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
-   __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
-   ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
-   vfs_mkdir+0x451/0x630 fs/namei.c:3823
-   do_mkdirat+0x267/0x3e0 fs/namei.c:3848
-   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+That's a very good point, I somehow tried to make this part as general
+as possible and didn't realize that this only has to work on essentially
+one SoC for now. I also don't expect Apple to require more than two
+DARTs for a single master in the future.
+
+I've tried the fixed structure now and I really like it so far.
+
+> 
+> [...]
+> >>> +static int apple_dart_remove(struct platform_device *pdev)
+> >>> +{
+> >>> +	struct apple_dart *dart = platform_get_drvdata(pdev);
+> >>> +
+> >>> +	devm_free_irq(dart->dev, dart->irq, dart);
+> >>> +
+> >>> +	iommu_device_unregister(&dart->iommu);
+> >>> +	iommu_device_sysfs_remove(&dart->iommu);
+> >>> +
+> >>> +	clk_bulk_disable(dart->num_clks, dart->clks);
+> >>> +	clk_bulk_unprepare(dart->num_clks, dart->clks);
+> >>
+> >> Ditto.
+> >>
+> >> And again the bus ops are still installed - that'll get really fun if
+> >> this is a module unload...
+> > 
+> > Ugh, yeah. I'll fix that as well. I'll have to see how to make this work
+> > correctly with multiple DART instances. I guess I should only remove the
+> > bus ops once the last one is removed. Now that I think about it, this
+> > could also get tricky in the cleanup paths of apple_dart_probe.
+> > 
+> > Maybe just add a module_init that sets up the bus ops when it finds at
+> > least one DART node and module_exit to tear them down again?
+> 
+> Actually by this point it was late and I wasn't thinking as clearly as I 
+> could have been, apologies ;)
+> 
+> I believe a module unload is in fact the *only* time you should expect 
+> to see .remove called - you want to set .suppress_bind_attrs in your 
+> driver data because there's basically no way to prevent manual unbinding 
+> from blowing up - so it should be fine to unconditionally clear the ops 
+> at this point (being removed means you must have successfully probed, so 
+> any ops must be yours).
+
+Makes sense, thanks!
+
+I'll let my current version simmer for a bit and wait until it's been
+tested by a few people and will send it in a week or so then!
 
 
-stack backtrace:
-CPU: 1 PID: 8431 Comm: syz-executor065 Not tainted 5.14.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
- print_irq_inversion_bug+0xa58/0xda0 kernel/locking/lockdep.c:4000
- check_usage_forwards kernel/locking/lockdep.c:2585 [inline]
- mark_lock_irq kernel/locking/lockdep.c:4163 [inline]
- mark_lock+0x1064/0x1eb0 kernel/locking/lockdep.c:4593
- mark_usage kernel/locking/lockdep.c:4488 [inline]
- __lock_acquire+0xca1/0x6100 kernel/locking/lockdep.c:4969
- lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
- snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
- call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
- expire_timers kernel/time/timer.c:1462 [inline]
- __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
- run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
- __do_softirq+0x372/0x783 kernel/softirq.c:558
- invoke_softirq kernel/softirq.c:432 [inline]
- __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
- sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:rcu_dynticks_curr_cpu_in_eqs kernel/rcu/tree.c:339 [inline]
-RIP: 0010:rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1160
-Code: 41 5e 41 5f 5d c3 e8 92 a8 6d 08 41 f7 c4 00 02 00 00 75 b6 eb b5 e8 62 a8 6d 08 66 90 41 57 41 56 53 65 83 05 4b e3 96 7e 01 <e8> 1e bb 6d 08 89 c3 83 f8 08 73 74 49 bf 00 00 00 00 00 fc ff df
-RSP: 0018:ffffc9000164f820 EFLAGS: 00000282
-RAX: 12a9aafecb760900 RBX: 1ffff920002c9f0c RCX: ffffffff816213c5
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc9000164f8e8 R08: dffffc0000000000 R09: fffffbfff1f5e1b1
-R10: fffffbfff1f5e1b1 R11: 0000000000000000 R12: 0000000000004000
-R13: dffffc0000000000 R14: 1ffff920002c9f10 R15: ffff888039f60d48
- rcu_read_lock include/linux/rcupdate.h:688 [inline]
- get_cached_acl+0x103/0x540 fs/posix_acl.c:44
- get_acl+0x20/0x2e0 fs/posix_acl.c:108
- posix_acl_create+0x119/0x560 fs/posix_acl.c:616
- ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
- __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
- ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
- vfs_mkdir+0x451/0x630 fs/namei.c:3823
- do_mkdirat+0x267/0x3e0 fs/namei.c:3848
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x445d87
-Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc332de6a8 EFLAGS: 00000202 ORIG_RAX: 0000000000000053
-RAX: ffffffffffffffda RBX: 000000000000e3bb RCX: 0000000000445d87
-RDX: 0000000000000000 RSI: 00000000000001ff RDI: 00007ffc332de740
-RBP: 0000000000002ebc R08: 0000000000000000 R09: 0000000000000005
-R10: 00007ffc332de445 R11: 0000000000000202 R12: 00007ffc332de6e4
-R13: 00007ffc332de740 R14: 00000000000000bd R15: 431bde82d7b634db
+Best,
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Sven
