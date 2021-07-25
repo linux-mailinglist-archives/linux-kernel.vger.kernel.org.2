@@ -2,165 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF2A3D4D53
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 14:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0FC3D4D71
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 14:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhGYLoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 07:44:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229538AbhGYLoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 07:44:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 373716056B;
-        Sun, 25 Jul 2021 12:24:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627215887;
-        bh=iyHBZBMQHrLtGg3F5twV/u7oxW4MK9dAHrwhgymmVm8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=U2tuasGNjWrEjvplmPvlWtlB2oi63MZWioRC+p1b0txyBlUNYqqh8R9RYOvLOk3Le
-         cfLH3tOJ6wsb8JmttnrIf4v8vba/5SNA8/D7/Lk0VQoAXiCCj97ByCs1WPFvnIn5u0
-         xCt2V8j3XEIiROhrql7GQ5fj0KrK1F7s13Hbdout+SNggOR/zUOdrFulaDE1Bi8Kz3
-         GGPRW3swRPryfkaRoS7faPiOv3HSYjhirpdrDPlMXT2aBT+xxq1s8sTZJuqduAZOyy
-         SLLoqYHU5fmMfQHcq6S1IcAJ1+2kzaefR7RR4jubwXUIlPjiUyVxVFRLIofwhPcU9F
-         Ffcf9ADyykRHw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Jiri Pirko <jiri@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next] devlink: Remove duplicated registration check
-Date:   Sun, 25 Jul 2021 15:24:41 +0300
-Message-Id: <ed7bbb1e4c51dd58e6035a058e93d16f883b09ce.1627215829.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S230260AbhGYL65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 07:58:57 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:56099 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhGYL64 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 07:58:56 -0400
+Received: by mail-il1-f198.google.com with SMTP id x16-20020a9206100000b02902166568c213so3278004ilg.22
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 05:39:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ssP/jFlbxcppa+61oz3isSi1xq9UoOZXF7Brl1WHddA=;
+        b=WmC6EGbeW/OjwaCsocz5kE5ZUH6RwkMkQ14F4o6Lh+Z1KdMNaWSU0xLwq6s4KOaIXi
+         QoNh0Hd2eLgU4ahe3BLeLnA2h9ypWim8BZn1eYhkljooClqpIrrL3uFpTslDr0HaVX0v
+         H292Q9ZKj2zCFh05r5GHKN6uSkR8Sg/YojQWAccCGoDiO9X3q+bGwFVknbRET4Y2QC7a
+         kXi+HkHOTCAXbI1D0l1skIctrgK+6xbgfIuoTjgy6rSbeY/2xYWwoXn1Ba8aC5587I4d
+         zALx1+Fy1SYO44aIx71SO5mDr1j3jIdl7SFkP7EvOe5f0Ne/jiQqC+1cpC7OBEhmIvcE
+         NwYg==
+X-Gm-Message-State: AOAM533Nqy8yhHzRquTuJUpV9BsTaZjs98DiEWAHa6IF9RrMJfImxqE0
+        vMT4JVfcGcloClaPhnZcC6s5RK8W8P7JDCqvSSgJAOeTmZxZ
+X-Google-Smtp-Source: ABdhPJwFTiK7nrshnMGu3T23VN8McsgjPVvS1SLdSm2rDflgcIci9QBroqJGVaK1fAu9BzTnE4K/jviShJUqCENnuXnldTOhD2we
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:cecf:: with SMTP id z15mr9039792ilq.225.1627216765804;
+ Sun, 25 Jul 2021 05:39:25 -0700 (PDT)
+Date:   Sun, 25 Jul 2021 05:39:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004c664005c7f1ede0@google.com>
+Subject: [syzbot] possible deadlock in snd_timer_interrupt
+From:   syzbot <syzbot+17c16b868e6af41acdd4@syzkaller.appspotmail.com>
+To:     allen.lkml@gmail.com, alsa-devel@alsa-project.org,
+        boqun.feng@gmail.com, broonie@kernel.org, joe@perches.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, perex@perex.cz,
+        peterz@infradead.org, pierre-louis.bossart@linux.intel.com,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hello,
 
-Both registered flag and devlink pointer are set at the same time
-and indicate the same thing - devlink/devlink_port are ready. Instead
-of checking ->registered use devlink pointer as an indication.
+syzbot found the following issue on:
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- include/net/devlink.h |  4 +---
- net/core/devlink.c    | 19 ++++++++++---------
- 2 files changed, 11 insertions(+), 12 deletions(-)
+HEAD commit:    f0fddcec6b62 Merge tag 'for-5.14-rc2-tag' of git://git.ker..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13cbb70e300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5dc0e3202ae2f574
+dashboard link: https://syzkaller.appspot.com/bug?extid=17c16b868e6af41acdd4
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17667ecc300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179e0582300000
 
-diff --git a/include/net/devlink.h b/include/net/devlink.h
-index 57b738b78073..e48a62320407 100644
---- a/include/net/devlink.h
-+++ b/include/net/devlink.h
-@@ -55,8 +55,7 @@ struct devlink {
- 			    * port, sb, dpipe, resource, params, region, traps and more.
- 			    */
- 	u8 reload_failed:1,
--	   reload_enabled:1,
--	   registered:1;
-+	   reload_enabled:1;
- 	char priv[0] __aligned(NETDEV_ALIGN);
- };
- 
-@@ -158,7 +157,6 @@ struct devlink_port {
- 	struct list_head region_list;
- 	struct devlink *devlink;
- 	unsigned int index;
--	bool registered;
- 	spinlock_t type_lock; /* Protects type and type_dev
- 			       * pointer consistency.
- 			       */
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 8fdd04f00fd7..b596a971b473 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -115,7 +115,7 @@ static void __devlink_net_set(struct devlink *devlink, struct net *net)
- 
- void devlink_net_set(struct devlink *devlink, struct net *net)
- {
--	if (WARN_ON(devlink->registered))
-+	if (WARN_ON(devlink->dev))
- 		return;
- 	__devlink_net_set(devlink, net);
+The issue was bisected to:
+
+commit e918188611f073063415f40fae568fa4d86d9044
+Author: Boqun Feng <boqun.feng@gmail.com>
+Date:   Fri Aug 7 07:42:20 2020 +0000
+
+    locking: More accurate annotations for read_lock()
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=109610b2300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=129610b2300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=149610b2300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+17c16b868e6af41acdd4@syzkaller.appspotmail.com
+Fixes: e918188611f0 ("locking: More accurate annotations for read_lock()")
+
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.14.0-rc2-syzkaller #0 Not tainted
+--------------------------------------------------------
+syz-executor065/8431 just changed the state of lock:
+ffff888027e94148 (&timer->lock){..-.}-{2:2}, at: snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+but this lock took another, SOFTIRQ-READ-unsafe lock in the past:
+ (&f->f_owner.lock){.+.+}-{2:2}
+
+
+and interrupts could create inverse lock ordering between them.
+
+
+other info that might help us debug this:
+Chain exists of:
+  &timer->lock --> &new->fa_lock --> &f->f_owner.lock
+
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&f->f_owner.lock);
+                               local_irq_disable();
+                               lock(&timer->lock);
+                               lock(&new->fa_lock);
+  <Interrupt>
+    lock(&timer->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor065/8431:
+ #0: ffff888029390460 (sb_writers#5){.+.+}-{0:0}, at: mnt_want_write+0x3b/0x80 fs/namespace.c:375
+ #1: ffff888039f60e80 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:809 [inline]
+ #1: ffff888039f60e80 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: filename_create+0x19f/0x700 fs/namei.c:3602
+ #2: ffffffff8c7177c0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x5/0x30 include/linux/rcupdate.h:266
+ #3: ffffc90000dc0be0 ((&priv->tlist)){+.-.}-{0:0}, at: lockdep_copy_map include/linux/lockdep.h:45 [inline]
+ #3: ffffc90000dc0be0 ((&priv->tlist)){+.-.}-{0:0}, at: call_timer_fn+0xbd/0x210 kernel/time/timer.c:1407
+
+the shortest dependencies between 2nd lock and 1st lock:
+  -> (&f->f_owner.lock){.+.+}-{2:2} {
+     HARDIRQ-ON-R at:
+                        lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                        _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+                        f_getown_ex fs/fcntl.c:211 [inline]
+                        do_fcntl+0x150/0x1510 fs/fcntl.c:395
+                        __do_sys_fcntl fs/fcntl.c:471 [inline]
+                        __se_sys_fcntl+0xd8/0x1b0 fs/fcntl.c:456
+                        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                        do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                        entry_SYSCALL_64_after_hwframe+0x44/0xae
+     SOFTIRQ-ON-R at:
+                        lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                        _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+                        f_getown_ex fs/fcntl.c:211 [inline]
+                        do_fcntl+0x150/0x1510 fs/fcntl.c:395
+                        __do_sys_fcntl fs/fcntl.c:471 [inline]
+                        __se_sys_fcntl+0xd8/0x1b0 fs/fcntl.c:456
+                        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                        do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                        entry_SYSCALL_64_after_hwframe+0x44/0xae
+     INITIAL READ USE at:
+                            lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                            __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
+                            _raw_read_lock_irqsave+0xbb/0x100 kernel/locking/spinlock.c:231
+                            send_sigio+0x2f/0x300 fs/fcntl.c:795
+                            kill_fasync_rcu fs/fcntl.c:1019 [inline]
+                            kill_fasync+0x1e3/0x430 fs/fcntl.c:1033
+                            snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+                            snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+                            snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+                            snd_timer_start sound/core/timer.c:697 [inline]
+                            snd_timer_user_start sound/core/timer.c:1985 [inline]
+                            __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+                            snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+                            vfs_ioctl fs/ioctl.c:51 [inline]
+                            __do_sys_ioctl fs/ioctl.c:1069 [inline]
+                            __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+                            do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                            do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                            entry_SYSCALL_64_after_hwframe+0x44/0xae
+   }
+   ... key      at: [<ffffffff907d04a0>] __alloc_file.__key+0x0/0x10
+   ... acquired at:
+   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+   __raw_read_lock_irqsave include/linux/rwlock_api_smp.h:159 [inline]
+   _raw_read_lock_irqsave+0xbb/0x100 kernel/locking/spinlock.c:231
+   send_sigio+0x2f/0x300 fs/fcntl.c:795
+   kill_fasync_rcu fs/fcntl.c:1019 [inline]
+   kill_fasync+0x1e3/0x430 fs/fcntl.c:1033
+   snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+   snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+   snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+   snd_timer_start sound/core/timer.c:697 [inline]
+   snd_timer_user_start sound/core/timer.c:1985 [inline]
+   __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+   vfs_ioctl fs/ioctl.c:51 [inline]
+   __do_sys_ioctl fs/ioctl.c:1069 [inline]
+   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+ -> (&new->fa_lock){....}-{2:2} {
+    INITIAL USE at:
+                     lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                     __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
+                     _raw_write_lock_irq+0xae/0xf0 kernel/locking/spinlock.c:311
+                     fasync_remove_entry+0xff/0x1d0 fs/fcntl.c:890
+                     __fput+0x65b/0x7b0 fs/file_table.c:277
+                     task_work_run+0x146/0x1c0 kernel/task_work.c:164
+                     exit_task_work include/linux/task_work.h:32 [inline]
+                     do_exit+0x72b/0x2510 kernel/exit.c:825
+                     do_group_exit+0x168/0x2d0 kernel/exit.c:922
+                     get_signal+0x16b0/0x2080 kernel/signal.c:2808
+                     arch_do_signal_or_restart+0x8e/0x6d0 arch/x86/kernel/signal.c:865
+                     handle_signal_work kernel/entry/common.c:148 [inline]
+                     exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+                     exit_to_user_mode_prepare+0x191/0x220 kernel/entry/common.c:209
+                     __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+                     syscall_exit_to_user_mode+0x26/0x60 kernel/entry/common.c:302
+                     do_syscall_64+0x4c/0xb0 arch/x86/entry/common.c:86
+                     entry_SYSCALL_64_after_hwframe+0x44/0xae
+    INITIAL READ USE at:
+                          lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+                          _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+                          kill_fasync_rcu fs/fcntl.c:1012 [inline]
+                          kill_fasync+0x13b/0x430 fs/fcntl.c:1033
+                          snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+                          snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+                          snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+                          snd_timer_start sound/core/timer.c:697 [inline]
+                          snd_timer_user_start sound/core/timer.c:1985 [inline]
+                          __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+                          snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+                          vfs_ioctl fs/ioctl.c:51 [inline]
+                          __do_sys_ioctl fs/ioctl.c:1069 [inline]
+                          __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+                          do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                          do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                          entry_SYSCALL_64_after_hwframe+0x44/0xae
+  }
+  ... key      at: [<ffffffff907d1360>] fasync_insert_entry.__key+0x0/0x40
+  ... acquired at:
+   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
+   _raw_read_lock+0x32/0x40 kernel/locking/spinlock.c:223
+   kill_fasync_rcu fs/fcntl.c:1012 [inline]
+   kill_fasync+0x13b/0x430 fs/fcntl.c:1033
+   snd_timer_user_ccallback+0x3ee/0x710 sound/core/timer.c:1387
+   snd_timer_notify1+0x19e/0x340 sound/core/timer.c:516
+   snd_timer_start1+0x53d/0x640 sound/core/timer.c:578
+   snd_timer_start sound/core/timer.c:697 [inline]
+   snd_timer_user_start sound/core/timer.c:1985 [inline]
+   __snd_timer_user_ioctl+0xe18/0x5ed0 sound/core/timer.c:2108
+   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+   vfs_ioctl fs/ioctl.c:51 [inline]
+   __do_sys_ioctl fs/ioctl.c:1069 [inline]
+   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> (&timer->lock){..-.}-{2:2} {
+   IN-SOFTIRQ-W at:
+                    lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                    __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                    _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+                    snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+                    call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
+                    expire_timers kernel/time/timer.c:1462 [inline]
+                    __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
+                    run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
+                    __do_softirq+0x372/0x783 kernel/softirq.c:558
+                    invoke_softirq kernel/softirq.c:432 [inline]
+                    __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+                    irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+                    sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
+                    asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+                    __preempt_count_add arch/x86/include/asm/preempt.h:80 [inline]
+                    rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1159
+                    rcu_read_lock include/linux/rcupdate.h:688 [inline]
+                    get_cached_acl+0x103/0x540 fs/posix_acl.c:44
+                    get_acl+0x20/0x2e0 fs/posix_acl.c:108
+                    posix_acl_create+0x119/0x560 fs/posix_acl.c:616
+                    ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
+                    __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
+                    ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
+                    vfs_mkdir+0x451/0x630 fs/namei.c:3823
+                    do_mkdirat+0x267/0x3e0 fs/namei.c:3848
+                    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                    do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                    entry_SYSCALL_64_after_hwframe+0x44/0xae
+   INITIAL USE at:
+                   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+                   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                   _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+                   snd_timer_resolution sound/core/timer.c:489 [inline]
+                   snd_timer_user_params sound/core/timer.c:1852 [inline]
+                   __snd_timer_user_ioctl+0x1df7/0x5ed0 sound/core/timer.c:2101
+                   snd_timer_user_ioctl+0x5d/0x80 sound/core/timer.c:2129
+                   vfs_ioctl fs/ioctl.c:51 [inline]
+                   __do_sys_ioctl fs/ioctl.c:1069 [inline]
+                   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:1055
+                   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+                   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+                   entry_SYSCALL_64_after_hwframe+0x44/0xae
  }
-@@ -1043,7 +1043,7 @@ static void devlink_port_notify(struct devlink_port *devlink_port,
- 	struct sk_buff *msg;
- 	int err;
- 
--	if (!devlink_port->registered)
-+	if (!devlink_port->devlink)
- 		return;
- 
- 	WARN_ON(cmd != DEVLINK_CMD_PORT_NEW && cmd != DEVLINK_CMD_PORT_DEL);
-@@ -8817,8 +8817,8 @@ EXPORT_SYMBOL_GPL(devlink_alloc);
-  */
- int devlink_register(struct devlink *devlink, struct device *dev)
- {
-+	WARN_ON(devlink->dev);
- 	devlink->dev = dev;
--	devlink->registered = true;
- 	mutex_lock(&devlink_mutex);
- 	list_add_tail(&devlink->list, &devlink_list);
- 	devlink_notify(devlink, DEVLINK_CMD_NEW);
-@@ -8960,9 +8960,10 @@ int devlink_port_register(struct devlink *devlink,
- 		mutex_unlock(&devlink->lock);
- 		return -EEXIST;
- 	}
-+
-+	WARN_ON(devlink_port->devlink);
- 	devlink_port->devlink = devlink;
- 	devlink_port->index = port_index;
--	devlink_port->registered = true;
- 	spin_lock_init(&devlink_port->type_lock);
- 	INIT_LIST_HEAD(&devlink_port->reporter_list);
- 	mutex_init(&devlink_port->reporters_lock);
-@@ -9001,7 +9002,7 @@ static void __devlink_port_type_set(struct devlink_port *devlink_port,
- 				    enum devlink_port_type type,
- 				    void *type_dev)
- {
--	if (WARN_ON(!devlink_port->registered))
-+	if (WARN_ON(!devlink_port->devlink))
- 		return;
- 	devlink_port_type_warn_cancel(devlink_port);
- 	spin_lock_bh(&devlink_port->type_lock);
-@@ -9121,7 +9122,7 @@ void devlink_port_attrs_set(struct devlink_port *devlink_port,
- {
- 	int ret;
- 
--	if (WARN_ON(devlink_port->registered))
-+	if (WARN_ON(devlink_port->devlink))
- 		return;
- 	devlink_port->attrs = *attrs;
- 	ret = __devlink_port_attrs_set(devlink_port, attrs->flavour);
-@@ -9145,7 +9146,7 @@ void devlink_port_attrs_pci_pf_set(struct devlink_port *devlink_port, u32 contro
- 	struct devlink_port_attrs *attrs = &devlink_port->attrs;
- 	int ret;
- 
--	if (WARN_ON(devlink_port->registered))
-+	if (WARN_ON(devlink_port->devlink))
- 		return;
- 	ret = __devlink_port_attrs_set(devlink_port,
- 				       DEVLINK_PORT_FLAVOUR_PCI_PF);
-@@ -9172,7 +9173,7 @@ void devlink_port_attrs_pci_vf_set(struct devlink_port *devlink_port, u32 contro
- 	struct devlink_port_attrs *attrs = &devlink_port->attrs;
- 	int ret;
- 
--	if (WARN_ON(devlink_port->registered))
-+	if (WARN_ON(devlink_port->devlink))
- 		return;
- 	ret = __devlink_port_attrs_set(devlink_port,
- 				       DEVLINK_PORT_FLAVOUR_PCI_VF);
-@@ -9200,7 +9201,7 @@ void devlink_port_attrs_pci_sf_set(struct devlink_port *devlink_port, u32 contro
- 	struct devlink_port_attrs *attrs = &devlink_port->attrs;
- 	int ret;
- 
--	if (WARN_ON(devlink_port->registered))
-+	if (WARN_ON(devlink_port->devlink))
- 		return;
- 	ret = __devlink_port_attrs_set(devlink_port,
- 				       DEVLINK_PORT_FLAVOUR_PCI_SF);
--- 
-2.31.1
+ ... key      at: [<ffffffff90b60220>] snd_timer_new.__key+0x0/0x40
+ ... acquired at:
+   mark_usage kernel/locking/lockdep.c:4488 [inline]
+   __lock_acquire+0xca1/0x6100 kernel/locking/lockdep.c:4969
+   lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+   _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+   snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+   call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
+   expire_timers kernel/time/timer.c:1462 [inline]
+   __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
+   run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
+   __do_softirq+0x372/0x783 kernel/softirq.c:558
+   invoke_softirq kernel/softirq.c:432 [inline]
+   __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+   irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+   sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
+   asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+   __preempt_count_add arch/x86/include/asm/preempt.h:80 [inline]
+   rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1159
+   rcu_read_lock include/linux/rcupdate.h:688 [inline]
+   get_cached_acl+0x103/0x540 fs/posix_acl.c:44
+   get_acl+0x20/0x2e0 fs/posix_acl.c:108
+   posix_acl_create+0x119/0x560 fs/posix_acl.c:616
+   ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
+   __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
+   ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
+   vfs_mkdir+0x451/0x630 fs/namei.c:3823
+   do_mkdirat+0x267/0x3e0 fs/namei.c:3848
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
 
+
+stack backtrace:
+CPU: 1 PID: 8431 Comm: syz-executor065 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1ae/0x29f lib/dump_stack.c:105
+ print_irq_inversion_bug+0xa58/0xda0 kernel/locking/lockdep.c:4000
+ check_usage_forwards kernel/locking/lockdep.c:2585 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4163 [inline]
+ mark_lock+0x1064/0x1eb0 kernel/locking/lockdep.c:4593
+ mark_usage kernel/locking/lockdep.c:4488 [inline]
+ __lock_acquire+0xca1/0x6100 kernel/locking/lockdep.c:4969
+ lock_acquire+0x182/0x4a0 kernel/locking/lockdep.c:5625
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0xb3/0x100 kernel/locking/spinlock.c:159
+ snd_timer_interrupt+0x210/0x1410 sound/core/timer.c:857
+ call_timer_fn+0xf6/0x210 kernel/time/timer.c:1417
+ expire_timers kernel/time/timer.c:1462 [inline]
+ __run_timers+0x6ff/0x910 kernel/time/timer.c:1731
+ run_timer_softirq+0x63/0xf0 kernel/time/timer.c:1744
+ __do_softirq+0x372/0x783 kernel/softirq.c:558
+ invoke_softirq kernel/softirq.c:432 [inline]
+ __irq_exit_rcu+0x21b/0x260 kernel/softirq.c:636
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:648
+ sysvec_apic_timer_interrupt+0x91/0xb0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:rcu_dynticks_curr_cpu_in_eqs kernel/rcu/tree.c:339 [inline]
+RIP: 0010:rcu_is_watching+0xd/0xb0 kernel/rcu/tree.c:1160
+Code: 41 5e 41 5f 5d c3 e8 92 a8 6d 08 41 f7 c4 00 02 00 00 75 b6 eb b5 e8 62 a8 6d 08 66 90 41 57 41 56 53 65 83 05 4b e3 96 7e 01 <e8> 1e bb 6d 08 89 c3 83 f8 08 73 74 49 bf 00 00 00 00 00 fc ff df
+RSP: 0018:ffffc9000164f820 EFLAGS: 00000282
+RAX: 12a9aafecb760900 RBX: 1ffff920002c9f0c RCX: ffffffff816213c5
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc9000164f8e8 R08: dffffc0000000000 R09: fffffbfff1f5e1b1
+R10: fffffbfff1f5e1b1 R11: 0000000000000000 R12: 0000000000004000
+R13: dffffc0000000000 R14: 1ffff920002c9f10 R15: ffff888039f60d48
+ rcu_read_lock include/linux/rcupdate.h:688 [inline]
+ get_cached_acl+0x103/0x540 fs/posix_acl.c:44
+ get_acl+0x20/0x2e0 fs/posix_acl.c:108
+ posix_acl_create+0x119/0x560 fs/posix_acl.c:616
+ ext4_init_acl+0xa6/0x3d0 fs/ext4/acl.c:282
+ __ext4_new_inode+0x44e7/0x5810 fs/ext4/ialloc.c:1316
+ ext4_mkdir+0x3fa/0xc10 fs/ext4/namei.c:2921
+ vfs_mkdir+0x451/0x630 fs/namei.c:3823
+ do_mkdirat+0x267/0x3e0 fs/namei.c:3848
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x445d87
+Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc332de6a8 EFLAGS: 00000202 ORIG_RAX: 0000000000000053
+RAX: ffffffffffffffda RBX: 000000000000e3bb RCX: 0000000000445d87
+RDX: 0000000000000000 RSI: 00000000000001ff RDI: 00007ffc332de740
+RBP: 0000000000002ebc R08: 0000000000000000 R09: 0000000000000005
+R10: 00007ffc332de445 R11: 0000000000000202 R12: 00007ffc332de6e4
+R13: 00007ffc332de740 R14: 00000000000000bd R15: 431bde82d7b634db
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
