@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3D33D4E17
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 16:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726FC3D4E1A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 16:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhGYNk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 09:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhGYNk0 (ORCPT
+        id S231220AbhGYNoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 09:44:22 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:46217 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231128AbhGYNoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 09:40:26 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C5DBC061757
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 07:20:56 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Sun, 25 Jul 2021 09:44:18 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4GXlgT4TlKz1sByw;
+        Sun, 25 Jul 2021 16:24:37 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4GXlgT36ssz1rmXy;
+        Sun, 25 Jul 2021 16:24:37 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id c2MbuW-tLki4; Sun, 25 Jul 2021 16:24:36 +0200 (CEST)
+X-Auth-Info: S2GRYpvJ6Ix5RcLIMInDsuaROFJPacPETA21g+GmTBpMaYzcOEO82V4CzZyl1ltH
+Received: from igel.home (ppp-46-244-170-80.dynamic.mnet-online.de [46.244.170.80])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4GXlb91sN0z9sRN;
-        Mon, 26 Jul 2021 00:20:53 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1627222853;
-        bh=/PIHXybKA6vJ63al5SGR6/W9BDRk0RJD3OrmXJ+7964=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XbHFzeNWI7M52tk7Nb/6iy3e31x3yZDF7hgJ6BeyKMAm59i5OT/B+7eK89iOpGE78
-         uVHJebHDTR3smUxmmm4JGmjJO4lBpX1lexgI7RA/ytvPkv+JlaYJ0vrick0SGDCE17
-         A1MaJzWF9F0vf9W/X/E8Mca5/sncC1v/jAZE2KFuMQ3L+bzaGEL3XIF8CxtvHXnNNO
-         thWptjD450lV4hSd6CvcSLWUhLSJS8nja2erZ7jvmX7fqFgERj0ogvEUrQRW1dKG4y
-         b2uasQsteLaEmS4rYz7zAJscLl01WwVm25vjFSDi/b5QASY0VGBVvIj5XDDespbqn0
-         2n4U+Sar1TPRw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mikey@neuling.org, npiggin@gmail.com
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.14-3 tag
-Date:   Mon, 26 Jul 2021 00:20:47 +1000
-Message-ID: <87lf5u1nls.fsf@mpe.ellerman.id.au>
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Sun, 25 Jul 2021 16:24:36 +0200 (CEST)
+Received: by igel.home (Postfix, from userid 1000)
+        id C05D52C2617; Sun, 25 Jul 2021 16:24:35 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Ungerer <gerg@uclinux.org>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k: Fix asm register constraints for atomic ops
+References: <20210725104618.365790-1-geert@linux-m68k.org>
+X-Yow:  Look!  A ladder!  Maybe it leads to heaven, or a sandwich!
+Date:   Sun, 25 Jul 2021 16:24:35 +0200
+In-Reply-To: <20210725104618.365790-1-geert@linux-m68k.org> (Geert
+        Uytterhoeven's message of "Sun, 25 Jul 2021 12:46:18 +0200")
+Message-ID: <87r1fm4gkc.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Jul 25 2021, Geert Uytterhoeven wrote:
 
-Hi Linus,
+> Depending on register assignment by the compiler:
+>
+>     {standard input}:3084: Error: operands mismatch -- statement `andl %a1,%d1' ignored
+>     {standard input}:3145: Error: operands mismatch -- statement `orl %a1,%d1' ignored
+>     {standard input}:3195: Error: operands mismatch -- statement `eorl %a1,%d1' ignored
+>
+> Indeed, the first operand must not be an address register.  Fix this by
+> adjusting the register constraint from "g" (general purpose register) to
+> "d" (data register).
 
-Please pull some more powerpc fixes for 5.14:
+You should also allow immediate ("i").
 
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+There is the ASM_DI macro for that, but since CONFIG_RMW_INSNS is never
+defined for CONFIG_COLDFIRE, it probably doesn't matter.
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+Andreas.
 
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.14-3
-
-for you to fetch changes up to d9c57d3ed52a92536f5fa59dc5ccdd58b4875076:
-
-  KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state (2021-07-23 16:19:38 +1000)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.14 #3
-
- - Fix guest to host memory corruption in H_RTAS due to missing nargs check.
-
- - Fix guest triggerable host crashes due to bad handling of nested guest TM state.
-
- - Fix possible crashes due to incorrect reference counting in kvm_arch_vcpu_ioctl().
-
- - Two commits fixing some regressions in KVM transactional memory handling introduced by
-   the recent rework of the KVM code.
-
-Thanks to: Nicholas Piggin, Alexey Kardashevskiy, Michael Neuling.
-
-- ------------------------------------------------------------------
-Nicholas Piggin (5):
-      KVM: PPC: Book3S HV P9: Fix guest TM support
-      KVM: PPC: Book3S: Fix CONFIG_TRANSACTIONAL_MEM=n crash
-      KVM: PPC: Fix kvm_arch_vcpu_ioctl vcpu_load leak
-      KVM: PPC: Book3S: Fix H_RTAS rets buffer overflow
-      KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state
-
-
- arch/powerpc/kvm/book3s_hv.c          |  2 ++
- arch/powerpc/kvm/book3s_hv_nested.c   | 20 ++++++++++++++++
- arch/powerpc/kvm/book3s_hv_p9_entry.c | 25 +++++++++++++++++---
- arch/powerpc/kvm/book3s_rtas.c        | 25 +++++++++++++++++---
- arch/powerpc/kvm/powerpc.c            |  4 ++--
- 5 files changed, 68 insertions(+), 8 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmD9bJEACgkQUevqPMjh
-pYCFLBAAoD0a0fLmoh/LZBvvzD1LNDfoMcxtTF1mVPjv5zfLIDvj+M3+UsMHKBCV
-ajDYuz0nd3TBPPBxMBXmQG4r5eYgilgkQ968uXIpQu2wkyAWIFu4hxKzUapLdddy
-CN1TuSU9mWjviMsacjCU4zlEgmWpj7TtH+gBmhRKrQlAUMszmXlb5giRS+P6oAyN
-OI+3ODlMkj+2CNwhQy7uaPrM13FnarUV0pliItAez4ka+1oWtlkKjXG8DG4k5TZf
-7E/7qvxy7yOVXcULBeISJmLfBFttv3nUEAUjtxaA28d7YPZOUgfanSQUVhHl9nv5
-KMJlOPAxEjZCF0j6TIEYgqC+DP0eBGDnvvfmGsxoTkYfMI5ykGYxsIEnTUBMZW4+
-xi3OMx3cIlGhP0/3e1JFA9O4/zDzM7HxdONW/Wd9xDpLkjucNLZqvE5yP3ct/ATG
-W4JmimhXIPFtnNrN0pgfyiU3l9Vodw/UD25AVYAQuamQ9kRtoPh0PtTarttVlw3o
-JvZibyMwlds96n78PLThhpyC/SG030RO4oJAQBUpxt5PdAzyRTo4lCy10GQYN/kp
-EG7rS7eizU38C379LJT7tkQzrfCgI1aJJ3PsoxggeT78AdybKogN3fHANHbFgOdn
-k/SUo/6BF3lVO7C/SFdvPLuldltuYqjddDu24MHXHvtzhJ/pzQo=
-=R0jy
------END PGP SIGNATURE-----
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
