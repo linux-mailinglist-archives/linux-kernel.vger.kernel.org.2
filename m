@@ -2,110 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BFE3D4C96
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 09:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D0A3D4C9B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 09:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhGYHM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 03:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhGYHMy (ORCPT
+        id S230310AbhGYHSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 03:18:06 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:64360 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230187AbhGYHSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 03:12:54 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21AAC061757
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 00:53:23 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id p5so1991842wro.7
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 00:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :to;
-        bh=rcFxyf9rygYnlVwvu5Lee09asJ+7L62CPIY//nSoy48=;
-        b=Sr6+l3mTEHnoSVtEcuIdQfNHnSLANThzCRCl7V2o0PvkmDRDgcS+Dwee1tugvqp1Wz
-         37+6YB6fRO/eaQZkHCGvr7G7s7KMKAmB7BS8zVVQQkQilIkiQV9ZZW1vbPOnfhKDKqT7
-         vm2wSNHFqOS2DLNAqv7W7R81gkjUb+zg0tEF4U64hCqZ2bJfZfe3Pg6SKqLGxwAECO6W
-         i7kLD+WzZ8AP8qWXEUiA9xREt/5xTKju9jNt2spA2fqDncx0XJh7x6VysuiThh6Aeerl
-         pbjZQRU3fuQ3cy1P1R3oeammKucgPoZ8wXsGLUJfNDZtT+Skms07ANOpxnNIRW/IJdaN
-         ezHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:to;
-        bh=rcFxyf9rygYnlVwvu5Lee09asJ+7L62CPIY//nSoy48=;
-        b=MsxKjqqKGL7PFiw/29Tg68olCMFAw1cxGzh1b44cNs/G10ceiX3KJae+poCklQ+IZl
-         o+gL4uJPQgahAGxhYw9u+pun4hpay+/CnY24ifF4V7pq+PaqjbJ9SjkMCCmr5Tb80G4u
-         7diwAD2DWyLMzWcSylFuLZEmVOoC+yjzwBDXQ/C43hGIjS+SuYReDFMWy25ahJa7xqxh
-         Sh/kZCSqboFayj6Fws8vsn6XschAtjff7UEstXX5MvLSBe/CbOHemG1RjMNP5yv6QCPA
-         E9GDXSw/AGKlGoz+Gz/MqEzd3mUZBAGZ7B9NLkVF2gszSDkdreKQpigOjZ7qezy91Hpx
-         o9uA==
-X-Gm-Message-State: AOAM530E8Jrz5CG+5O0RVy9RVSGVAAHj7c9nnTH9bgeh0UN88oUviei8
-        AuYSAXichA+O3fHDfJBcMsylztP9hHQ=
-X-Google-Smtp-Source: ABdhPJxW+exJuqCAA8TNP+aYGsrNSmy91Kx+usLyKErmiSV7t5OwpdL+Y6kZTD4NvIz4Dw5bubIN7w==
-X-Received: by 2002:a5d:4c88:: with SMTP id z8mr13256357wrs.187.1627199602357;
-        Sun, 25 Jul 2021 00:53:22 -0700 (PDT)
-Received: from [10.11.12.1] ([62.210.13.222])
-        by smtp.gmail.com with ESMTPSA id c10sm32157358wmb.40.2021.07.25.00.53.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Jul 2021 00:53:22 -0700 (PDT)
-From:   Adrien G <adrien.ml.list@gmail.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Kernel NULL pointer dereference (UAF) with kblockd
- blk_mq_timeout_work
-Message-Id: <4929185C-F2F9-41E5-95A1-9225AF36A6A2@gmail.com>
-Date:   Sun, 25 Jul 2021 09:53:19 +0200
-To:     linux-kernel@vger.kernel.org
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Sun, 25 Jul 2021 03:18:01 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16P7rwoc014665;
+        Sun, 25 Jul 2021 00:58:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=3GJLpFeQ46EDsvZkAlQBxzDQUQE952D0XwGT8Nz6lpo=;
+ b=fcvTrrn4gs7z+06ydKodF/JOjw/XhNUzO1tqya6NV6UZ9h8qH0paczggek/TacHifxSg
+ HAZoKvt9YUcNvW0D4eWgyiaH4MHR9a7satQbmb0QIjDULNyeJmxSJtwlgCnO+tPm6o6T
+ n9ZiJF3/surjen8CJ57wUaZmfFzC7kQzV+HnVlxiFWP8IZc9p6okrl3258Y7WteUqz2t
+ DIy6cVaR0cmM1LWB5ziq1PrfB1F/IvX+WUvMhSVhZOaryVaa0oYYBcrVtDLB1HreVqpZ
+ ij0HqfNnsCJHC/xJIvIK5oOz83lpuTfc1dFZ7ZgtqKjnHjJqzKpokryOJxDnBgGuLON+ rQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3a0g7r25rv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 25 Jul 2021 00:58:29 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sun, 25 Jul
+ 2021 00:58:28 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Sun, 25 Jul 2021 00:58:28 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 65FD93F70A4;
+        Sun, 25 Jul 2021 00:58:25 -0700 (PDT)
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <davem@davemloft.net>, <zyta@marvell.com>,
+        <richardcochran@gmail.com>, <kuba@kernel.org>,
+        <sbhatta@marvell.com>, <gakula@marvell.com>,
+        <lcherian@marvell.com>, <sgoutham@marvell.com>,
+        <jerinj@marvell.com>
+Subject: [net PATCH] octeontx2-af: Fix PKIND overlap between LBK and LMAC interfaces
+Date:   Sun, 25 Jul 2021 13:28:24 +0530
+Message-ID: <20210725075824.6378-1-gakula@marvell.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-GUID: NIfQU7zysuMWgZHTF8AFu6BSC3MVt0Jz
+X-Proofpoint-ORIG-GUID: NIfQU7zysuMWgZHTF8AFu6BSC3MVt0Jz
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-25_02:2021-07-23,2021-07-25 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Currently PKINDs are not assigned to LBK channels.
+The default value of LBK_CHX_PKIND (channel to PKIND mapping) register
+is zero, which is resulting in a overlap of pkind between LBK and CGX
+LMACs. When KPU1 parser config is modified when PTP timestamping is
+enabled on the CGX LMAC interface it is impacting traffic on LBK
+interfaces as well.
 
-I upgraded from 5.11.17 to 5.13.2 kernel few days ago.
-Today I got this bug:
+This patch fixes the issue by reserving the PKIND#0 for LBK devices.
+CGX mapped PF pkind starts from 1 and also fixes the max pkind available.
 
-```
-BUG: kernel NULL pointer dereference, address: 00000000000000d8
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 0 P4D 0
-Oops: 0000 [#1] SMP PTI
-CPU: 21 PID: 6427 Comm: kworker/21:1H Not tainted 5.13.2-stackhero #1
-Hardware name: Dell Inc. PowerEdge R720/0020HJ, BIOS 2.9.0 12/06/2019
-Workqueue: kblockd blk_mq_timeout_work
-RIP: 0010:blk_mq_put_rq_ref+0xd/0x4b
-Code: 44 24 07 48 8b 4c 24 08 65 48 2b 0c 25 28 00 00 00 74 05 e8 79 65 =
-9e 00 48 83 c4 10 c3 0f 1f 44 00 00 55 48 8b 47 10 48 89 fd <48> 8b 80 =
-d8 00 00 00 48 3b 78 40 75 0f 48 8b 87 00 01 00 00 31 f6
-RSP: 0018:ffffb1dd98b07d80 EFLAGS: 00010206
-RAX: 0000000000000000 RBX: ffffb1dd98b07e10 RCX: ffff89a55330adc0
-RDX: 0000000000000001 RSI: 0000000000000202 RDI: ffff89bcc1432400
-RBP: ffff89bcc1432400 R08: 0000000000000000 R09: 0000000000000000
-R10: 000000000000000b R11: fefefefefefefeff R12: 00000000000003e4
-R13: ffff89bcc1bbd000 R14: ffffb1dd98b07e00 R15: ffff89a54dea0118
-FS:  0000000000000000(0000) GS:ffff89d45fa80000(0000) =
-knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000000d8 CR3: 000000270be0c002 CR4: 00000000001726e0
-Call Trace:
- bt_iter+0x6a/0x76
- __sbitmap_for_each_set.constprop.0+0xa4/0xe2
- ? bt_tags_iter+0x8a/0x8a
-```
+Fixes: 421572175ba5 ("octeontx2-af: Support to enable/disable HW timestamping")
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/npc.h     |  3 +++
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c |  1 +
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 11 +++++++----
+ 3 files changed, 11 insertions(+), 4 deletions(-)
 
-Following this bug, the server disk activity stopped and I had to hard =
-reboot the server.
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+index 19bad9a59c8f..243cf8070e77 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+@@ -151,7 +151,10 @@ enum npc_kpu_lh_ltype {
+  * Software assigns pkind for each incoming port such as CGX
+  * Ethernet interfaces, LBK interfaces, etc.
+  */
++#define NPC_UNRESERVED_PKIND_COUNT NPC_RX_VLAN_EXDSA_PKIND
++
+ enum npc_pkind_type {
++	NPC_RX_LBK_PKIND = 0ULL,
+ 	NPC_RX_VLAN_EXDSA_PKIND = 56ULL,
+ 	NPC_RX_CHLEN24B_PKIND = 57ULL,
+ 	NPC_RX_CPT_HDR_PKIND,
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+index 0d2cd5169018..30067668eda7 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c
+@@ -298,6 +298,7 @@ static int nix_interface_init(struct rvu *rvu, u16 pcifunc, int type, int nixlf)
+ 					rvu_nix_chan_lbk(rvu, lbkid, vf + 1);
+ 		pfvf->rx_chan_cnt = 1;
+ 		pfvf->tx_chan_cnt = 1;
++		rvu_npc_set_pkind(rvu, NPC_RX_LBK_PKIND, pfvf);
+ 		rvu_npc_install_promisc_entry(rvu, pcifunc, nixlf,
+ 					      pfvf->rx_chan_base,
+ 					      pfvf->rx_chan_cnt);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+index 1097291aaa45..52b255426c22 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
+@@ -1721,7 +1721,6 @@ static void npc_parser_profile_init(struct rvu *rvu, int blkaddr)
+ {
+ 	struct rvu_hwinfo *hw = rvu->hw;
+ 	int num_pkinds, num_kpus, idx;
+-	struct npc_pkind *pkind;
+ 
+ 	/* Disable all KPUs and their entries */
+ 	for (idx = 0; idx < hw->npc_kpus; idx++) {
+@@ -1739,9 +1738,8 @@ static void npc_parser_profile_init(struct rvu *rvu, int blkaddr)
+ 	 * Check HW max count to avoid configuring junk or
+ 	 * writing to unsupported CSR addresses.
+ 	 */
+-	pkind = &hw->pkind;
+ 	num_pkinds = rvu->kpu.pkinds;
+-	num_pkinds = min_t(int, pkind->rsrc.max, num_pkinds);
++	num_pkinds = min_t(int, hw->npc_pkinds, num_pkinds);
+ 
+ 	for (idx = 0; idx < num_pkinds; idx++)
+ 		npc_config_kpuaction(rvu, blkaddr, &rvu->kpu.ikpu[idx], 0, idx, true);
+@@ -1891,7 +1889,8 @@ static void rvu_npc_hw_init(struct rvu *rvu, int blkaddr)
+ 	if (npc_const1 & BIT_ULL(63))
+ 		npc_const2 = rvu_read64(rvu, blkaddr, NPC_AF_CONST2);
+ 
+-	pkind->rsrc.max = (npc_const1 >> 12) & 0xFFULL;
++	pkind->rsrc.max = NPC_UNRESERVED_PKIND_COUNT;
++	hw->npc_pkinds = (npc_const1 >> 12) & 0xFFULL;
+ 	hw->npc_kpu_entries = npc_const1 & 0xFFFULL;
+ 	hw->npc_kpus = (npc_const >> 8) & 0x1FULL;
+ 	hw->npc_intfs = npc_const & 0xFULL;
+@@ -2002,6 +2001,10 @@ int rvu_npc_init(struct rvu *rvu)
+ 	err = rvu_alloc_bitmap(&pkind->rsrc);
+ 	if (err)
+ 		return err;
++	/* Reserve PKIND#0 for LBKs. Power reset value of LBK_CH_PKIND is '0',
++	 * no need to configure PKIND for all LBKs separately.
++	 */
++	rvu_alloc_rsrc(&pkind->rsrc);
+ 
+ 	/* Allocate mem for pkind to PF and channel mapping info */
+ 	pkind->pfchan_map = devm_kcalloc(rvu->dev, pkind->rsrc.max,
+-- 
+2.17.1
 
-I have found this patch, not published yet, that could be related but =
-not sure at all:
-=
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?i=
-d=3Db407bf68af325786b5f572a5e38d51206914f91b
-
-I have filled an issue here: =
-https://bugzilla.kernel.org/show_bug.cgi?id=3D213841=
