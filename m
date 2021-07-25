@@ -2,114 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544E83D4F92
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 20:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0B13D4F99
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 21:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhGYSL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 14:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        id S231380AbhGYS35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 14:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhGYSLZ (ORCPT
+        with ESMTP id S231215AbhGYS3z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 14:11:25 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE4BC061757;
-        Sun, 25 Jul 2021 11:51:54 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id k1so8907723plt.12;
-        Sun, 25 Jul 2021 11:51:54 -0700 (PDT)
+        Sun, 25 Jul 2021 14:29:55 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C71C061760
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 12:10:25 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so16625627pjb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 12:10:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qirs+iLZFGRKsz/ZopqRyNng3+a0VdaNoIeySOmoJBs=;
-        b=ryQJ486SrysdfwQYYY2pSFz6x9WPYf3me6zDgsy0m4p2aDx7AsvFubmhNxrWI+j4mv
-         nsvVtOQpACYSIKSnrUTMMMUUQdp3SgVsYl0TD7ExOXYMOl9F27ZE/bAU4iYLTFdlttbM
-         mgCsWVFzt5OIJaGyyWvVlaXnqOtUUQ3nC2OVhZV1MZ77YP7msKpmtmRPj9vV2BXO76Wu
-         DeRSI5ITm7mYKMjdHyrm4wxysMYOQwP9EkFdubOY8tc52aVAyjbKLgzmaoChdQBcBiij
-         VHm02K4+SLwTlRDCumkBT32LVccoGk37flJDSBLtEmBt5OrWlE4gDEz5t7dxqImxSUYj
-         ZVyg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=kX0eYY9YjEaivkZX4gZmRWQoX5AVWchp0HevtnDPnVw=;
+        b=Dur6eMDuTvAkBjxN5DFykUolJuJfOjcaoqcODAp46b1yil9KulA8uUGwZTDhk4nyFs
+         CP1D3UTft8rGs8rkJxLhdckRscpRLbyfMoAWegJaJsIV+cjW1vphzhF0eoXSzy+3t50f
+         HetlSuDMhM5u8/4GobkY72JHklydNFotcsZz8r2PhnhgTlQr1fISdiB+T0aY+vD67Nrl
+         h7ZhGL5VyRL4evggJPgg26P498goeg31GDx6+zj3VZODxq/CnHKUci8dsbHRF8iz2RoI
+         Y39ZFg0EhtjpJl30R0goupAxo9pG3/T69UAhYgh40xa5D7Em1/4QKOkJPC+fEDpVFafC
+         woLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qirs+iLZFGRKsz/ZopqRyNng3+a0VdaNoIeySOmoJBs=;
-        b=n4D0gmo2T5CESr+dmd2SLKtoxl6Cpccc6vYcxLJ6kUmq35t2RuKqpWYap3H9bzvnU6
-         71sz6xzkobxNR5bXrbQKfeNKSDW2mnr4T4fWt8G4OgLRGtNvZbxeTP5KwE7soywXgH0b
-         HCpXUWwO8mj0ZlYQ9UGm2kRruWG2xHC61fCxmeVPcne+RfHc6t0pYkf1JgnlHKVb7sI4
-         0d6WVyoLKv96MqAZobh5KvrY38RU8yuFd0E+huyJoeH0JRLOUg1Txypd+tmVS+YgVJxC
-         SQumXurNNeGjCNUVBcBvM/6OBFTcCy9BkcKnW7iVuieWN90df9POy89MjlfIb8AeOKsK
-         gZNg==
-X-Gm-Message-State: AOAM531vQWAqE9h2ICb46ZBFSnXEbNFN2FZ20h0mux08GDSAsyqX5MEN
-        FmhoJp2fMOQMtSFrj5u/6LflxZhZ8slz5De+1jY=
-X-Google-Smtp-Source: ABdhPJxHwipVJbJmzeHfWz64SwkxLZVfnnCGACfafL10iji3Cc/k3Num3SbdXCt9DRUt1CVwHIbCU+9rEVCNd+x0eNo=
-X-Received: by 2002:a63:d014:: with SMTP id z20mr14700708pgf.203.1627239114212;
- Sun, 25 Jul 2021 11:51:54 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kX0eYY9YjEaivkZX4gZmRWQoX5AVWchp0HevtnDPnVw=;
+        b=aV0wLtEvaewdNVdTpOl0KlKCQEBErVMtMbuar6Fzo81ZKCFVMIO+9gKJRSTvQJx1uW
+         xByd3Vuh35MT+AXIgHdpwpV8+Z+S048TDDUdDgyBxOeRNMnRBvTbJWbGRidbfFzSuqmf
+         YK2fkSPXzZXIjAjT9MsD91529Hglqa5TxJRr/daAoW4XKMaa9S6QBOFWbDXQXjZi98a6
+         SThRIuvFG7Alnt92L1OUy0bgFXRW8DGvOKqTEcaDfHh1wkjJPUE5nOWBTbzZHy6ju17c
+         jfJbt3FNwhdz0tI7eU5PEhymBGzGBdUb+ozdyQI/tJhYrVd8u0Ue8o8H0Qo9Qikr3BJE
+         NsKg==
+X-Gm-Message-State: AOAM533sVnrfGIQIgwGnrt57TTLAhifGUsGBwEFSxCJUlIbedBxETylW
+        d8ftmkVYVrp6sy/cYmXXfxJP8A==
+X-Google-Smtp-Source: ABdhPJzpbjlw6cp7Z+jqoYrInoZDHFwmkxNjruW9JkW/6NtbfsfsTb5QFdOTVYq3kgTWS5DYGWbmzA==
+X-Received: by 2002:a17:902:ec86:b029:129:ab4e:9ab2 with SMTP id x6-20020a170902ec86b0290129ab4e9ab2mr11638010plg.12.1627240224697;
+        Sun, 25 Jul 2021 12:10:24 -0700 (PDT)
+Received: from [192.168.1.187] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id o9sm42890179pfh.217.2021.07.25.12.10.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Jul 2021 12:10:24 -0700 (PDT)
+Subject: Re: [PATCH io_uring backport to 5.13.y] io_uring: Fix race condition
+ when sqp thread goes to sleep
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, gregkh@linuxfoundation.org
+References: <82a82077d8b02166482df754b1abb7c3fbc3c560.1627189961.git.olivier@trillion01.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ca9be2ad-711e-51a3-9c5d-9472a1fad625@kernel.dk>
+Date:   Sun, 25 Jul 2021 13:10:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210724151411.9531-1-len.baker@gmx.com> <20210724151411.9531-2-len.baker@gmx.com>
- <CAHp75Vd+ZM_yO6CU_6oJieePMt00Sp6oKEU2+QEyZxLDg5PN8A@mail.gmail.com> <20210725135844.GA1953@titan>
-In-Reply-To: <20210725135844.GA1953@titan>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 25 Jul 2021 21:51:18 +0300
-Message-ID: <CAHp75Vd=_qgnaLpAq+=Awf+ggUf9DEm0amNyTE0KkYThxtP=WQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] staging/fbtft: Remove all strcpy() uses
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Phil Reid <preid@electromag.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <82a82077d8b02166482df754b1abb7c3fbc3c560.1627189961.git.olivier@trillion01.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 4:59 PM Len Baker <len.baker@gmx.com> wrote:
-> On Sat, Jul 24, 2021 at 11:21:04PM +0300, Andy Shevchenko wrote:
-> > On Sat, Jul 24, 2021 at 7:05 PM Len Baker <len.baker@gmx.com> wrote:
+On 7/24/21 11:07 PM, Olivier Langlois wrote:
+> [ Upstream commit 997135017716 ("io_uring: Fix race condition when sqp thread goes to sleep") ]
+> 
+> If an asynchronous completion happens before the task is preparing
+> itself to wait and set its state to TASK_INTERRUPTIBLE, the completion
+> will not wake up the sqp thread.
 
-...
-
-> > > -       char msg[128];
-> >
-> > 128 / 4 = 32. So, this buffer is enough to debug print only up to 32
-> > bytes. Hence %*ph replacement won't cut output earlier than requested.
->
-> I'm sorry, but I don't understand what you are trying to explain. Moreover,
-> with the "0x%02X " in the sprintf followed by the strcat, the msg buffer can
-> print 128/5 values (25 hex values).
->
-> The %*ph replacement can print up to 64 bytes, so I don't see any problem
-> here.
-
-Right. That's what I am trying to say and the hint here is to combine
-this part into a phrase in the commit message in the next version of
-the patch.
-
-...
-
-> > > +                       for (j = i + 1; par->init_sequence[j] >= 0; j++);
-> >
-> > Why is i + 1 initial for the j? You may rather access the 'i + 1 +
-> > j'th element in the array...
-> >
-> > ...
-> >
-> > > +                                     par->init_sequence[i], j - i - 1,
-> >
-> > ...and get rid of the ' - i -1' part here.
->
-> Yes, it was the first idea but I prefer this method since we save aritmethic
-> operations. In other words, if I use what you suggest, the index for
-> par->init_sequence is calculated as a "sum" every iteration. But if the
-> performance is not an issue and you believe that the above is more clear, I
-> have no problem. What do you prefer?
-
-I prefer my variant and I believe the compilers nowadays are clever
-enough to understand this. Have you tried to compile and compare the
-real assembly?
+Looks good to me - Greg, would you mind queueing this one up?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Jens Axboe
+
