@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D373D4FF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 22:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C963D4FFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 22:46:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhGYUA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 16:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhGYUA5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 16:00:57 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BBAC061757;
-        Sun, 25 Jul 2021 13:41:27 -0700 (PDT)
+        id S230519AbhGYUFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 16:05:41 -0400
+Received: from ms.lwn.net ([45.79.88.28]:42034 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229518AbhGYUFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 16:05:40 -0400
 Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 110842E5;
-        Sun, 25 Jul 2021 20:41:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 110842E5
+        by ms.lwn.net (Postfix) with ESMTPSA id 539FA2E6;
+        Sun, 25 Jul 2021 20:46:10 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 539FA2E6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1627245687; bh=AuhhqkYY7OnGcrpg1OB2630RAaPyL1IJDNakrWhwTyw=;
+        t=1627245970; bh=TuTMn4o7PhW7u5FWUGN7SYgYL59tBjTBrcZFeu3oH+Y=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=VNEfJ+Y3NQOfpiWuZTYmdA0En+a40u9nyba6yNebonAmR5OvUelEff4fFCru/+ju7
-         RdzGnfsXx35zXDcnCVfpYM4gc2Ym/7RYFs7kQWyya6Vs7kPRaoWPmmP+FJKeOGKEHh
-         FWnqrdZqRuDXbhb/gUK4mNawiZjTN7HX+4trfo3UFkCnfH2CSisge+UamTHgAd+06i
-         b8yvvlYopPblBL7sity0qty0uduGAxxZCwdVuxF3CaT4BNWQcIMUydKrUtFhbf0MhC
-         nOTFohLULIkN3Al7Abp0ajrar4CEJjTARyxhf+p1uxpPndPtXZ0nRnJT5hCQv+wGuA
-         gNqP1qEdbTmiQ==
+        b=X1Gie8v8uWddy4GjZEb+CqONP79Wj5/xYC8D7ebX7LGL8MXs4KBEDeEGGuMurjiKR
+         4qQwsDnrRpZKkrxIu4PbsDBL2+E/2GEeeJ7ZQeAn1RY3xFQYTATvIpfkvv+58rW5Mb
+         NUK2iu5PPY7XaCG29fyIHzkYIo7gl/iobP85PrKyFdXl+TqhvO53ZHfhvpontXKfU3
+         B0Cynnq8q8xcsRnyj+03inf/xk/xtogVY1HWrDuruLFpc8D9+bXPY+hV4xVbEvUGZt
+         idbO7TRpsik2DAXIZE6eqdqPNteRNUyBVFN6Qy4hPEai39vKpUaVf8VTqzn9QuSevC
+         1BrJTNAl1WqeA==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Akira Yokosawa <akiyks@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>
-Cc:     Hu Haowen <src.res@email.cn>,
-        Shinwoo Lee <shinwoo.lee.us@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] docs: pdfdocs: Improve font choice in CJK
- translations
-In-Reply-To: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
-References: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
-Date:   Sun, 25 Jul 2021 14:41:26 -0600
-Message-ID: <875ywyunwp.fsf@meer.lwn.net>
+To:     Hannu Hartikainen <hannu@hrtk.in>, linux-doc@vger.kernel.org
+Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        Hannu Hartikainen <hannu@hrtk.in>
+Subject: Re: [PATCH] docs: submitting-patches: clarify the role of LKML
+In-Reply-To: <20210707133634.286840-1-hannu@hrtk.in>
+References: <20210707133634.286840-1-hannu@hrtk.in>
+Date:   Sun, 25 Jul 2021 14:46:09 -0600
+Message-ID: <87sg02t94e.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Akira Yokosawa <akiyks@gmail.com> writes:
+Hannu Hartikainen <hannu@hrtk.in> writes:
 
-> Hi all,
+> The documentation previously stated that LKML should be used as *last
+> resort*. However, scripts/get_maintainer.pl always suggests it and in a
+> discussion about changing that[0] it turned out that LKML should in fact
+> receive all patches.
 >
-> I'm calling this patch set "RFC PATCH v2", but the approach has changed
-> a lot since "RFC PATCH 0/3 docs: pdfdocs: Improve alignment of CJK
-> ascii-art" [1], hence the different title.
+> Update documentation to make it clear that all patches should be sent to
+> LKML by default, in addition to any subsystem-specific lists.
+>
+> [0]: https://lore.kernel.org/lkml/19a701a8d5837088aa7d8ba594c228c0e040e747.camel@perches.com/
+>
+> Signed-off-by: Hannu Hartikainen <hannu@hrtk.in>
+> ---
+>  Documentation/process/submitting-patches.rst | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-Given the RFC nature, I'm assuming you're not ready to have these
-applied yet.  Please do let me know when that changes...
-
-Thanks,
+Applied, thanks.
 
 jon
