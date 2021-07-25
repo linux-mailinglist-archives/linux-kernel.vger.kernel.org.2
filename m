@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC293D5068
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 00:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12E83D506C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 00:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhGYVht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 17:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhGYVhr (ORCPT
+        id S230477AbhGYVo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 17:44:58 -0400
+Received: from mail-il1-f176.google.com ([209.85.166.176]:46878 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhGYVo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 17:37:47 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAA4C061757;
-        Sun, 25 Jul 2021 15:18:17 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u20so8733705ljo.0;
-        Sun, 25 Jul 2021 15:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=dUhRXsVILafLbrcPB/Q67vmty0U4fF9veTlHlCnEtoE=;
-        b=VqTyDZKeiBNSF6NY6wJ0B3QVeonvwGYiWYwC/C+IuteaaqkDUxehCSd2G/mtnhHTzK
-         msMphgqw2cM+0qROxPr9ph2omWLOSammr3kv9gt6Pzne55jLwsy8F661PhND3T1ry3IR
-         fiEczxO0OAxsr0J86IZC8tDYg3kGw5091+yXSjCCd8qY+2oPTTSqwEgsIG036W1+nm1d
-         nvvicSsBF5LENUTy0jv61/AyHP5ZHVn89lxtg9cgZQFhNPqBqjqejjViGXATG+VmapkP
-         YAfPXk49SibWv8wMQZx3teBdNxz8TRBdOEpEBVu/nU7Ek9hcINlrpu70/2/zpkmvlPvT
-         0eqg==
+        Sun, 25 Jul 2021 17:44:58 -0400
+Received: by mail-il1-f176.google.com with SMTP id r5so7073099ilc.13;
+        Sun, 25 Jul 2021 15:25:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=dUhRXsVILafLbrcPB/Q67vmty0U4fF9veTlHlCnEtoE=;
-        b=MjK2W99mWYGhUxUtHWyvqLW1oXDqF1wxAvR7so9nobsKo6iMtwPghAo7Lzu4xcRwX7
-         O/8BnWxouVGrYyhJUpAAFpc266GcpOqohUQ9UsVJH7wHSZrUoiT/TLDC0KfyZkIBVuhe
-         RqoibgPZ9ZwoKsbu+4KUEcN3G9qQaK4xzNQXqVNtpz72WR8Vtgot1y0Gz6/KlSei1Z8S
-         f3kHmPV+lhubIn/qsBH7YmctSOiBTTMaW1PpGgBh8FRV/h1V4z51szMwZ7f9/k283v2C
-         /NUnsJySxpUtOkVHs4/Iryomve/5/m8hne+oiUei423TqAxphIdXCIRp7oS925L2Km98
-         3jMg==
-X-Gm-Message-State: AOAM5326x/9M9lcb/ttBHNO2BvrlzxpckU5hNy8JCeVR/1Do1n/t2+Vp
-        irQMTCD51XNbPqfiduIK+7s=
-X-Google-Smtp-Source: ABdhPJy6QvaawejBf4U+EnmKUnrnqwaUPLrkiynHcuqhsBM2ozdPNtDPQ0xlDMFv7kw7Q1HxHuogjQ==
-X-Received: by 2002:a2e:8110:: with SMTP id d16mr10417607ljg.42.1627251495466;
-        Sun, 25 Jul 2021 15:18:15 -0700 (PDT)
-Received: from [192.168.1.6] ([194.79.5.201])
-        by smtp.gmail.com with ESMTPSA id 10sm2867285lfz.115.2021.07.25.15.18.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Jul 2021 15:18:15 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] drm/panel-simple: add Gopher 2b LCD panel
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, paul@crapouillou.net,
-        robh+dt@kernel.org, thierry.reding@gmail.com
-References: <20210724103358.1632020-1-akawolf0@gmail.com>
- <20210724103358.1632020-4-akawolf0@gmail.com> <YP3IM4PbN68qd4ec@ravnborg.org>
-From:   Artjom Vejsel <akawolf0@gmail.com>
-Message-ID: <b588df49-2c85-f8c7-115e-6e86d0692daf@gmail.com>
-Date:   Mon, 26 Jul 2021 01:18:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YP3IM4PbN68qd4ec@ravnborg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=bfV54EGNX7QM/avi9Ym1d5XEwwIaFGu3hKWgMFw+twQ=;
+        b=gZe54hPqzph4r30Q0cIEo1vXzkOTWHC27EJWSZbgc+FGHjGTExbdEPljWOd6e/bjM0
+         JUC6wEVGd2/T/buvgeYty/J9YO+p34y8WrLRcDT5JwUvenMlIb7KrH8djT/dW1x4/VY5
+         QnzEcjDf/s5tkQtHKO0lEE9PBvMW0TP7laVYmd5yMCpBgAsI8yMcdg5xDVE8DE3lSUCD
+         KliTpGPpPQK304JdCZOymG/LNRfgNeH35v5/b5kxcjip1PTfnMYAkU1zEZH1oXgZ+A2u
+         ePFDANbD0vI9HsuNVYY1N+jslxEXm6V0aGp7zIX6fbOThfhi0Fd2h2Ve2A/FXNuIIrac
+         dUgQ==
+X-Gm-Message-State: AOAM532riRgOwvRllczRid51FGEvAOrQnBC3lxEggJCJtEkiCPLPR/AO
+        7bTI4v4qklJUD4ldWdqJYA==
+X-Google-Smtp-Source: ABdhPJz7sehIjKPVRRXQU9jNngs6H+dktG1OrVWvfczvtxRlLnL3r7Of8U6SBHj7BPK7/630fo8wCg==
+X-Received: by 2002:a92:d305:: with SMTP id x5mr11113322ila.150.1627251926708;
+        Sun, 25 Jul 2021 15:25:26 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id l12sm3532731ilg.2.2021.07.25.15.25.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 15:25:26 -0700 (PDT)
+Received: (nullmailer pid 2960747 invoked by uid 1000);
+        Sun, 25 Jul 2021 22:25:22 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     devicetree@vger.kernel.org, linux-can@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+In-Reply-To: <20210725160318.9312-2-dariobin@libero.it>
+References: <20210725160318.9312-1-dariobin@libero.it> <20210725160318.9312-2-dariobin@libero.it>
+Subject: Re: [PATCH 2/2] dt-bindings: net: can: c_can: convert to json-schema
+Date:   Sun, 25 Jul 2021 16:25:22 -0600
+Message-Id: <1627251922.224313.2960746.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Sam! Thanks for commentaries, I've sent v3.
+On Sun, 25 Jul 2021 18:03:18 +0200, Dario Binacchi wrote:
+> Convert the Bosch C_CAN/D_CAN controller device tree binding
+> documentation to json-schema.
+> 
+> Document missing properties.
+> Remove "ti,hwmods" as it is no longer used in TI dts.
+> Make "clocks" required as it is used in all dts.
+> Correct nodename in the example.
+> 
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> ---
+> 
+>  .../bindings/net/can/bosch,c_can.yaml         | 85 +++++++++++++++++++
+>  .../devicetree/bindings/net/can/c_can.txt     | 65 --------------
+>  2 files changed, 85 insertions(+), 65 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
+> 
 
-On 25/07/2021 23.23, Sam Ravnborg wrote:
-> On Sat, Jul 24, 2021 at 01:33:58PM +0300, Artjom Vejsel wrote:
->> The Gopher 2b LCD panel is used in Gopher 2b handhelds.
->> It's simple panel with NewVision NV3047 driver, but SPI lines are not connected.
->> It has no specific name, since it's unique to that handhelds.
->> lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG NV3047 Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
->>
->> Signed-off-by: Artjom Vejsel <akawolf0@gmail.com>
->> ---
->>   drivers/gpu/drm/panel/panel-simple.c | 43 ++++++++++++++++++++++++++++
->>   1 file changed, 43 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
->> index 9b286bd4444f..9676e25accb3 100644
->> --- a/drivers/gpu/drm/panel/panel-simple.c
->> +++ b/drivers/gpu/drm/panel/panel-simple.c
->> @@ -4306,6 +4306,46 @@ static const struct panel_desc yes_optoelectronics_ytc700tlag_05_201c = {
->>   	.connector_type = DRM_MODE_CONNECTOR_LVDS,
->>   };
->>   
->> +static const struct drm_display_mode qishenglong_gopher2b_lcd_panel_modes[] = {
->> +	{ /* 60 Hz */
->> +		.clock = 10800,
->> +		.hdisplay = 480,
->> +		.hsync_start = 480 + 77,
->> +		.hsync_end = 480 + 77 + 41,
->> +		.htotal = 480 + 77 + 41 + 2,
->> +		.vdisplay = 272,
->> +		.vsync_start = 272 + 16,
->> +		.vsync_end = 272 + 16 + 10,
->> +		.vtotal = 272 + 16 + 10 + 2,
->> +		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
->> +	},
->> +	{ /* 50 Hz */
->> +		.clock = 10800,
->> +		.hdisplay = 480,
->> +		.hsync_start = 480 + 17,
->> +		.hsync_end = 480 + 17 + 41,
->> +		.htotal = 480 + 17 + 41 + 2,
->> +		.vdisplay = 272,
->> +		.vsync_start = 272 + 116,
->> +		.vsync_end = 272 + 116 + 10,
->> +		.vtotal = 272 + 116 + 10 + 2,
->> +		.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
->> +	},
->> +};
->> +
->> +static const struct panel_desc qishenglong_gopher2b_lcd_panel = {
->> +	.modes = qishenglong_gopher2b_lcd_panel_modes,
->> +	.num_modes = ARRAY_SIZE(qishenglong_gopher2b_lcd_panel_modes),
->> +	.bpc = 8,
->> +	.size = {
->> +		.width = 95,
->> +		.height = 54,
->> +	},
->> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
->> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
->> +	.connector_type = DRM_MODE_CONNECTOR_DPI,
->> +};
->> +
->>   static const struct drm_display_mode arm_rtsm_mode[] = {
->>   	{
->>   		.clock = 65000,
->> @@ -4753,6 +4793,9 @@ static const struct of_device_id platform_of_match[] = {
->>   	}, {
->>   		.compatible = "yes-optoelectronics,ytc700tlag-05-201c",
->>   		.data = &yes_optoelectronics_ytc700tlag_05_201c,
->> +	}, {
->> +		.compatible = "qishenglong,gopher2b-lcd-panel",
->> +		.data = &qishenglong_gopher2b_lcd_panel,
->>   	}, {
-> This list shall also be sorted alphabetically, after the compatible.
-> Same goes for the definition of the variable &qishenglong_gopher2b_lcd_panel
-> that shall be listed in the same order as here.
->
-> Sorry for the nit-picking - but if we do not ask to have it fixed then
-> we quickly have a mess.
->
-> 	Sam
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+
+\ndoc reference errors (make refcheckdocs):
+Documentation/devicetree/bindings/net/can/bosch,c_can.yaml: Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
+Documentation/devicetree/bindings/net/can/bosch,c_can.yaml: Documentation/devicetree/bindings/clock/ti,sci-clk.txt
+
+See https://patchwork.ozlabs.org/patch/1509610
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
