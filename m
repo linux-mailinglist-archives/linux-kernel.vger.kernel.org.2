@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0593D4E36
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 17:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B623D4E33
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 17:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhGYO0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 10:26:37 -0400
-Received: from smtpbg604.qq.com ([59.36.128.82]:34422 "EHLO smtpbg604.qq.com"
+        id S231286AbhGYOWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 10:22:05 -0400
+Received: from mout.gmx.net ([212.227.15.18]:34423 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhGYO0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 10:26:36 -0400
-X-Greylist: delayed 336 seconds by postgrey-1.27 at vger.kernel.org; Sun, 25 Jul 2021 10:26:35 EDT
-X-QQ-mid: bizesmtp46t1627225276tfkrsdia
-Received: from localhost.localdomain (unknown [125.70.163.19])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Sun, 25 Jul 2021 23:01:15 +0800 (CST)
-X-QQ-SSF: 0100000000800090B000B00A0000000
-X-QQ-FEAT: aHJ2PTLZoXduDiSx0SWj5iWJ2RObJkhtK6JCKNqGe2C5FFUhuDMIRPxpDSsDP
-        lPG7J8d0bTcccUyCrJa4rcUa3tZoigHgPUYzXldQBbJb1zr4SoitsuhRIRCIC/1rNd5lHyC
-        bBIg9BoSz0M5Cv2ZILeQWN4As2uG9D7i1mgMj/3hspTF3XPBG1cRbuOiXXjaUW3dpiqMpru
-        E97CP9XI18S5NX53te9eKZy/SC4007pFTCuXC847JmcE0CIf7UQGKU6BBTHNp2w/pa6wNAW
-        561GL5vYORjDeRmV5hG9M+EZqDVw5WHtaBEAyFTZU6NKovKZD5y55Ue+EjmnYrTCFOMPqo1
-        c2KqO8PLJGb3HWL/NfhcgM9mqBezg==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] powerpc/xmon: use ARRAY_SIZE
-Date:   Sun, 25 Jul 2021 23:01:07 +0800
-Message-Id: <20210725150107.27865-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S231208AbhGYOWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 10:22:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1627225344;
+        bh=/ytJ1exakUcFtI+Zuz9UGunDJo0+/Jeh2/x6mYHvx2Y=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=H9+7F/T/F4c9xppuKqPAIXYOFRI80hh56pnZtFGBb5/8oIP71FUU0XZsfAd8hPMBW
+         n2He0NVbpfRPjrIZAyPvLqyJ79dg9Q2rXn2a7frG/RzWWFOJktiCxN6eDUFqT8aPMf
+         Tsn8tGl2UH16ehA8TiXIbYDZ4B8oJBvDEjmVccPU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.216.136]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MxlzI-1l9lSL3PVG-00zHKC; Sun, 25
+ Jul 2021 17:02:23 +0200
+Message-ID: <72a045663bf8f091ae11dd328d5e085541d54fcd.camel@gmx.de>
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Mike Galbraith <efault@gmx.de>
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date:   Sun, 25 Jul 2021 17:02:22 +0200
+In-Reply-To: <76dedfc3-0497-1776-d006-486b9bfd88da@suse.cz>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+         <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+         <878s2fnv79.ffs@nanos.tec.linutronix.de>
+         <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+         <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+         <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
+         <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
+         <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
+         <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
+         <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
+         <5be1a703-9a0a-4115-1d69-634e5e8ecefd@suse.cz>
+         <bd121f5db01404774dbecc70bd7155f8431d8046.camel@gmx.de>
+         <76dedfc3-0497-1776-d006-486b9bfd88da@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:3phcavwfqppgh3AowbO+lAimT5+vqqqpnEVkj1EdYHynb41+wBk
+ ACauVILDgziVPQDOTpbEE99n0zV1Ac6W2cX3HaxSvphN5W2IksJWPHzJmf+Zffo3vz3yK0y
+ DKn1Vq9ut60xj0XIBviUJ+tSk0f5u0lVcssXq1SkquBXNuBC8BNXf4p9paU+Z26zkD9VPEL
+ oL17/+xdOzjK7nxiYwZAw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:E39Zbhz0Nck=:9eh50UmaImvovEBdAhw8Bb
+ NgYql2lapW9y678VdBBHZQBVYu3/sEkvI8WYBfMwIBIAcdcoNsfWsjYVwKCx4rTQLw81dmiWG
+ FRzl5zYwG/2mFpbqq1OtG5LqQAOyz2x06VD/LYh3wcEzznoNmmilCqlGaZKPHr02KDsPb23fO
+ +HVAtENTFusyj2+FQCBpK2qIuS80YU7tE2tY16usqy6fmJ/kj4M3+Pe804M+cODwEqNVgdVoc
+ crm03Q/gE3p9uYa9Y10tzR+CkDn3xAsPzNU6vmvSUJHdL5HM3y1VWTbJLqWsxN+I54DAeNvM9
+ qGxxTFqtGgY3M80tthaYLyqZCMlkQURsx8eCvyC7s9LzPJPToZK8sSXzX+8p+ymIB7LUr3qez
+ 7ZCmtQITK/W/M9DKbK6U2lTMasxnkAPTEUFQIzaSzm7YwG5cewmNgICMgVPV7XL2TTAipixe1
+ jLn2o1N8J00f7/Kpi1Bt/SMQlCh1i/MP1nd6iZPxYvl4+v7Anae9HEKCXUOjJjVbCAvRhyQnd
+ 74DNR3Z3TqeqowQzt77ABIDsf2ZuaB0p3K59+1Uj5vE+ge2hx4aZsMwM+tq5V4FuQ4yBTjgfJ
+ wOT0qFR/EI3V071e+uOmbk/Rh7HLyx8vjOdZfvbNLAmYSsNQWJsUq2PKmS9z06rRa3u+2lvnK
+ hobyRjM4FPQn4TOY0chbG2a+B+PfFMyU5kmE++cqeOkcZK2JTA3Pn6mfN3MiS5QOHv7WrhYbW
+ 3Yrkty3ZYOKwkO+AOnVAD/5YJ+Wx5qSp6iT4eKkaKUjy7WCTtBOgXfVyGjgkTNOO06UNSHl6P
+ ysuDVlnQbMQMGZUazqBf8n2S75UiAOM2dgJgcWVheJxgtYZ2ZPsI5u7SNGfw0LqERsns4dQ+1
+ p/rdZEVrO0cUWaTfJMTEmQf0XnhO8Zug+CkzDwKUOzUK1Nnq2VZeyMnLAfe1JBqP7Bofo69gz
+ MbDUkt5JfYqA2y9cqiUY0JsmGxY2Nji9FA5lfiu0WV5EmEzmcm7WJMvyzhQ+zi72aHWnbeY4F
+ dbcMPLeyrEB79hMvzbvAuzvufMpDwS71tg/+LJyJSGJhXb/3UhvYvj733M10zDTAOw+zMklXS
+ gUBdIHFwrkmfZBGWTzionTKV86jWMO//Awa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ARRAY_SIZE is the macro definition of sizeof(a)/sizeof(a[0]) and
-it is more compact and formal to get a array size.
+On Sun, 2021-07-25 at 16:16 +0200, Vlastimil Babka wrote:
+> On 7/25/21 4:09 PM, Mike Galbraith wrote:
+> > On Sat, 2021-07-24 at 00:39 +0200, Vlastimil Babka wrote:
+> > >
+> > > If not, then I would expect this to work (I don't think they ever ne=
+st
+> > > in the opposite order, also lockdep should tell us instead of
+> > > -ENOBOOT?), but might be missing something...
+> >
+> > Yeah, like #ifndef CONFIG_PREMPT_RT at the bottom of the loop that our
+> > useless damn eyeballs auto-correct instead of reporting :)
+>
+> Well doh, good catch.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/powerpc/xmon/ppc-opc.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+I never did see it.  I got sick of saying "but but but", and did make
+mm/slub.i, which made it glow.
 
-diff --git a/arch/powerpc/xmon/ppc-opc.c b/arch/powerpc/xmon/ppc-opc.c
-index dfb80810b16c..6ca4cd26caef 100644
---- a/arch/powerpc/xmon/ppc-opc.c
-+++ b/arch/powerpc/xmon/ppc-opc.c
-@@ -954,8 +954,7 @@ const struct powerpc_operand powerpc_operands[] =
-   { 0xff, 11, NULL, NULL, PPC_OPERAND_SIGNOPT },
- };
- 
--const unsigned int num_powerpc_operands = (sizeof (powerpc_operands)
--					   / sizeof (powerpc_operands[0]));
-+const unsigned int num_powerpc_operands = ARRAY_SIZE(powerpc_operands);
- 
- /* The functions used to insert and extract complicated operands.  */
- 
-@@ -6968,8 +6967,7 @@ const struct powerpc_opcode powerpc_opcodes[] = {
- {"fcfidu.",	XRC(63,974,1),	XRA_MASK, POWER7|PPCA2,	PPCVLE,		{FRT, FRB}},
- };
- 
--const int powerpc_num_opcodes =
--  sizeof (powerpc_opcodes) / sizeof (powerpc_opcodes[0]);
-+const int powerpc_num_opcodes = ARRAY_SIZE(powerpc_opcodes);
- 
- /* The VLE opcode table.
- 
-@@ -7207,8 +7205,7 @@ const struct powerpc_opcode vle_opcodes[] = {
- {"se_bl",	BD8(58,0,1),	BD8_MASK,	PPCVLE,	0,		{B8}},
- };
- 
--const int vle_num_opcodes =
--  sizeof (vle_opcodes) / sizeof (vle_opcodes[0]);
-+const int vle_num_opcodes = ARRAY_SIZE(vle_opcodes);
- 
- /* The macro table.  This is only used by the assembler.  */
- 
-@@ -7276,5 +7273,4 @@ const struct powerpc_macro powerpc_macros[] = {
- {"e_clrlslwi",4, PPCVLE, "e_rlwinm %0,%1,%3,(%2)-(%3),31-(%3)"},
- };
- 
--const int powerpc_num_macros =
--  sizeof (powerpc_macros) / sizeof (powerpc_macros[0]);
-+const int powerpc_num_macros = ARRAY_SIZE(powerpc_macros);
--- 
-2.32.0
+> Hope fixing that helps then?
+
+Yeah, though RT should perhaps be pinned across release/re-acquire?
+
+Actually, local locks should rediscover the recursion handling skills
+they long had so such RT specific hole poking isn't necessary.  There
+previously would have been no ifdef+typo there for eyeballs to miss and
+miss and miss.
+
+	-Mike
 
