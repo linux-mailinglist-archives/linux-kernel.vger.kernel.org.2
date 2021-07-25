@@ -2,63 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6E53D4C65
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 08:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70263D4C68
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 08:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhGYFva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 01:51:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43260 "EHLO mail.kernel.org"
+        id S230256AbhGYFwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 01:52:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhGYFvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 01:51:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C3C9606A5;
-        Sun, 25 Jul 2021 06:31:50 +0000 (UTC)
+        id S229460AbhGYFwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 01:52:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1501760F13;
+        Sun, 25 Jul 2021 06:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627194711;
-        bh=z8A61fpG10Pxn3NAU3x0FR0SgdZ2yY3pLNSvKShSQfE=;
+        s=korg; t=1627194784;
+        bh=wlXW6USsZex8XdiwmwtjzhgxjC6oifv3Uj+wH6B39gM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ArE/gUCUU1jIeZ5Ohfz+FYcURtlnlCUl7hKyPYQEZo6miCsyYSw60jVGoSjjrRjGf
-         AbwWVZd214edmKIiiIh11jZC/1Kk1c6i0AlwIowra1MkkD+wlTr0wkHMzAL45FZDw/
-         bUs/O1/yOOHKs3dtgvC0URZrdDihdO28bZeE4AdI=
-Date:   Sun, 25 Jul 2021 08:31:47 +0200
+        b=lmT3R1OgC+HAe1MwvwkIeU+qo8cAgYd34TMKQfMqAngmhTXkemgZvp9jthyRHAYdW
+         goc+oAwqSYX3M5VX66MGJzFzocozaH6KO/0dBJ7/2rjefSU3adu+Vm3Wo0VY641aCI
+         I6CYsDKQ3UQBvxMpgqGTb0RDyncXKcwXZPbNJJnk=
+Date:   Sun, 25 Jul 2021 08:33:01 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Salah Triki <salah.triki@gmail.com>
-Cc:     Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] input: joystick: pxrc: use usb_get_intf()
-Message-ID: <YP0FU1jMuhcy6wLu@kroah.com>
-References: <20210724213617.GA586795@pc>
+To:     Hin-Tak Leung <htl10@users.sourceforge.net>
+Cc:     Herton Ronaldo Krzesinski <herton@canonical.com>,
+        Larry Finger <larry.finger@lwfinger.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] wireless: rtl8187: replace udev with usb_get_dev()
+Message-ID: <YP0FnUlHD4I7hWIi@kroah.com>
+References: <20210724183457.GA470005@pc>
+ <53895498.1259278.1627160074135@mail.yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210724213617.GA586795@pc>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <53895498.1259278.1627160074135@mail.yahoo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 10:36:17PM +0100, Salah Triki wrote:
-> Use usb_get_intf() in order to increment reference count of the usb
-> interface structure.
+On Sat, Jul 24, 2021 at 08:54:34PM +0000, Hin-Tak Leung wrote:
+>  
 > 
-> Signed-off-by: Salah Triki <salah.triki@gmail.com>
-> ---
->  drivers/input/joystick/pxrc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On Saturday, 24 July 2021, 19:35:12 BST, Salah Triki <salah.triki@gmail.com> wrote:
 > 
-> diff --git a/drivers/input/joystick/pxrc.c b/drivers/input/joystick/pxrc.c
-> index ea2bf5951d67..59304352548b 100644
-> --- a/drivers/input/joystick/pxrc.c
-> +++ b/drivers/input/joystick/pxrc.c
-> @@ -143,7 +143,7 @@ static int pxrc_probe(struct usb_interface *intf,
->  		return -ENOMEM;
->  
->  	mutex_init(&pxrc->pm_mutex);
-> -	pxrc->intf = intf;
-> +	pxrc->intf = usb_get_intf(intf);
->  
->  	usb_set_intfdata(pxrc->intf, pxrc);
->  
-> -- 
+> 
+> > Replace udev with usb_get_dev() in order to make code cleaner.
+> 
+> > Signed-off-by: Salah Triki <salah.triki@gmail.com>
+> > ---
+> > drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c | 4 +---
+> > 1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> > diff --git a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
+> > index eb68b2d3caa1..30bb3c2b8407 100644
+> > --- a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
+> > +++ b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
+> > @@ -1455,9 +1455,7 @@ static int rtl8187_probe(struct usb_interface *intf,
+> 
+> >     SET_IEEE80211_DEV(dev, &intf->dev);
+> >     usb_set_intfdata(intf, dev);
+> > -    priv->udev = udev;
+> > -
+> > -    usb_get_dev(udev);
+> > +    priv->udev = usb_get_dev(udev);
+> 
+> >     skb_queue_head_init(&priv->rx_queue);
+> 
+> > -- 
+> > 2.25.1
+> 
+> It is not cleaner - the change is not functionally equivalent. Before the change, the reference count is increased after the assignment; and after the change, before the assignment. So my question is, does the reference count increasing a little earlier matters? What can go wrong between very short time where the reference count increases, and priv->udev not yet assigned? I think there might be a race condition where the probbe function is called very shortly twice.
+> Especially if the time of running the reference count function is non-trivial.
 
-You can not add a reference and never drop it :(
+Probe functions are called in order, this should not be an issue.
+
+This patch changes nothing, I do not think it is needed at all.
+
+thanks,
+
+greg k-h
