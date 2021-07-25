@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1923D4DC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 15:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6724D3D4DCD
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 15:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhGYNEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 09:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhGYNEz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 09:04:55 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1CEC061757;
-        Sun, 25 Jul 2021 06:45:25 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id l19so9146850pjz.0;
-        Sun, 25 Jul 2021 06:45:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CPKcV5apB8857BwhvHUW6j9y3xBf0R05HIIXcW+LSY4=;
-        b=n2gJKKRkUbCzf5Hs2VPam4LEhvjmAxzvLF95EdZA9ZgJEQ1val0sheYNX2gLs3RvuE
-         /itKSQV4kUZan4uRGqQuBxSEXP1jV2Ok0NlRKpGs1CfUsp2oPfMz7kQFdfh1WkMrFK0j
-         x2GA6lvDzfz2s8F13cN+i74dA0wUrJfVacrEuGXFt4AQi9iBDbFbjf+8dPPFhJ7x7tfm
-         mKf9Ldz+9SyGhrm2e5R92NMWsctxHNOmaDL1sq+mQJ4LsL6dXgFUJPlwaK1pSB1bjHZe
-         SHaol54evRXm6Js1jLO253QORCJWZlyP2xJrV+ZTVjt50Vxb2yu3NSiw1kPDc11Frd6D
-         27JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CPKcV5apB8857BwhvHUW6j9y3xBf0R05HIIXcW+LSY4=;
-        b=U/EeWhq3i3920aD4CqbnTur5UFUjfWEUIaWiqt49gvgmIONk70fzm1wbt7lO3ZO13G
-         IPT5LeE9gfQgz7WAx5rabCVBQd1lIUotkSOSY5SlzNRIH1qMH39wAhbNCzy9n7g1HXsn
-         ixaPBPoBho4eXFEDQZP/uxAhGz1b0qBNpOPCbe0D4TXdElq6k8eoH3x6N4W8LmUwQ8rJ
-         cOCtAf+T5Z4vWL81DO+zNsusqs8I45H71sSJuWkcQhlLDLAezBG1y8GfH7PM3zVB12g0
-         sRILxjoELvcdZF1+CQs6tZCPKMnhp++fGerDWjAEAQViMwAd3nZLs0+1UfiQ4dzST30u
-         XRIg==
-X-Gm-Message-State: AOAM531PlLym676Ua8B71WJtOooMXRYEHyhWmoU9XcKPgCsdhNIOQ58F
-        tORtCwA2QMiV1XkCcvGwCf/j3NxJKBm36CCYNDI=
-X-Google-Smtp-Source: ABdhPJyTg2y+y0eDTyVJ0DnhpPnoW2D2ZfdaBaSqY4UW+mdvgWK5Tp0JwP6xSEfBkX3PNYweGHJZnQ==
-X-Received: by 2002:a17:902:c950:b029:12b:6dff:737e with SMTP id i16-20020a170902c950b029012b6dff737emr10850220pla.23.1627220724905;
-        Sun, 25 Jul 2021 06:45:24 -0700 (PDT)
-Received: from fanta-arch.tsinghua.edu.cn ([103.207.71.57])
-        by smtp.gmail.com with ESMTPSA id a13sm41608567pfl.92.2021.07.25.06.45.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 06:45:24 -0700 (PDT)
-From:   Letu Ren <fantasquex@gmail.com>
-To:     GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zheyuma97@gmail.com, Letu Ren <fantasquex@gmail.com>
-Subject: [PATCH] net/qla3xxx: fix schedule while atomic in ql_wait_for_drvr_lock and ql_adapter_reset
-Date:   Sun, 25 Jul 2021 21:45:12 +0800
-Message-Id: <20210725134512.42044-1-fantasquex@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S231147AbhGYNHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 09:07:10 -0400
+Received: from gofer.mess.org ([88.97.38.141]:55723 "EHLO gofer.mess.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230029AbhGYNHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 09:07:09 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id EB1D4C65B2; Sun, 25 Jul 2021 14:47:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1627220858; bh=pO9696ntfxuCB+qciCrqbjHKSDHinXHecTlQCtVMKeg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tFokr1bhf6S9DsgrnueRD3pzaXEWiexqO0FVOue2LRo6uuMX9ukgNuJJgs9PFptkY
+         AkyAePdgtOOBwWtnb9kWdNvKXbiaDIxAS09xslwLI02zjECbBQGGyWsr/SiwQ3q7zn
+         Cvfq5NilzM2rtePfY2IgcSuhfCmravKOEADecmQHYUp7MouHOIQCnWZ9gv788V2+rU
+         91dujfNK6qvqIO2nOc01hRVD97LztX71TCWWBKulV+RXK1mhI85C80qoT0oan7Ky14
+         U+jTqM3ZQoEDtzsrPe6rDItiOnhR/ckWqXTuTw3FlBSjVl6jVGzqNcnIU0k0Web/Jc
+         Lt6Ol8O+25rBA==
+Date:   Sun, 25 Jul 2021 14:47:37 +0100
+From:   Sean Young <sean@mess.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] media: dvb-usb: move kfree(d) to dvb_usb_device_exit
+Message-ID: <20210725134737.GA9696@gofer.mess.org>
+References: <20210621050729.3898275-1-mudongliangabcd@gmail.com>
+ <20210621050729.3898275-2-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621050729.3898275-2-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When calling the 'ql_wait_for_drvr_lock' and 'ql_adapter_reset', the driver
-has already acquired the spin lock, so the driver should not call 'ssleep'
-in atomic context.
+On Mon, Jun 21, 2021 at 01:07:27PM +0800, Dongliang Mu wrote:
+> As d is allocated in dvb_usb_device_init, so move to the deallocation of
+> d from dvb_usb_exit to dvb_usb_device_exit
 
-This bug can be fixed by using 'mdelay' instead of 'ssleep'.
+There is nothing wrong with this patch, however I'm not sure what this
+improves though. The code is just as good/messy as before, is it not?
 
-Reported-by: Letu Ren <fantasquex@gmail.com>
-Signed-off-by: Letu Ren <fantasquex@gmail.com>
----
- drivers/net/ethernet/qlogic/qla3xxx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Sean
 
-diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-index 2376b2729633..c00ad57575ea 100644
---- a/drivers/net/ethernet/qlogic/qla3xxx.c
-+++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-@@ -154,7 +154,7 @@ static int ql_wait_for_drvr_lock(struct ql3_adapter *qdev)
- 				      "driver lock acquired\n");
- 			return 1;
- 		}
--		ssleep(1);
-+		mdelay(1000);
- 	} while (++i < 10);
- 
- 	netdev_err(qdev->ndev, "Timed out waiting for driver lock...\n");
-@@ -3274,7 +3274,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
- 		if ((value & ISP_CONTROL_SR) == 0)
- 			break;
- 
--		ssleep(1);
-+		mdelay(1000);
- 	} while ((--max_wait_time));
- 
- 	/*
-@@ -3310,7 +3310,7 @@ static int ql_adapter_reset(struct ql3_adapter *qdev)
- 						   ispControlStatus);
- 			if ((value & ISP_CONTROL_FSR) == 0)
- 				break;
--			ssleep(1);
-+			mdelay(1000);
- 		} while ((--max_wait_time));
- 	}
- 	if (max_wait_time == 0)
--- 
-2.32.0
-
+> 
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  drivers/media/usb/dvb-usb/dvb-usb-init.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> index edc477cedaa9..21ad51be4820 100644
+> --- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> +++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+> @@ -147,7 +147,6 @@ static int dvb_usb_exit(struct dvb_usb_device *d)
+>  		d->props.priv_destroy(d);
+>  
+>  	kfree(d->priv);
+> -	kfree(d);
+>  	return 0;
+>  }
+>  
+> @@ -333,9 +332,10 @@ void dvb_usb_device_exit(struct usb_interface *intf)
+>  	char name[40];
+>  
+>  	usb_set_intfdata(intf, NULL);
+> -	if (d != NULL && d->desc != NULL) {
+> +	if (d && d->desc) {
+>  		strscpy(name, d->desc->name, sizeof(name));
+>  		dvb_usb_exit(d);
+> +		kfree(d);
+>  	} else {
+>  		strscpy(name, default_name, sizeof(name));
+>  	}
+> -- 
+> 2.25.1
