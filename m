@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38793D4FA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 21:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309EE3D4FB2
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 21:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhGYSyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 14:54:21 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:32804 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhGYSyS (ORCPT
+        id S231462AbhGYTGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 15:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230116AbhGYTGc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 14:54:18 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 033B91FE27;
-        Sun, 25 Jul 2021 19:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627241687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=58zEBXrPLD3qIcovdJf/tEHB4Pi7h5B4g5e9c0cpHBI=;
-        b=CSEXtQQNOtW5QAs5T9pdlvNg2Kj/xz79knkHk/KTqcX95cmJv7ZCXPRugEJVc/qU3JsbMZ
-        rTUc+Y3rWyxpuVg+wKl9wDvZLSDfyYGzOoF/A/pezjbhqJwcPZvRuK7bIWgktWJc+mZMr7
-        hHMuZ0PAaN5veRzLZisIwFxjmTHeHHg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627241687;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=58zEBXrPLD3qIcovdJf/tEHB4Pi7h5B4g5e9c0cpHBI=;
-        b=kByQjoG8+WONbaViiSEgnP5jxDOhHifNyIHuiknbHJzJ6UgyRo354wAe6Zbv/iOgVmQGiT
-        XQxmBJ8Gey4KqWAQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id C2CA71333A;
-        Sun, 25 Jul 2021 19:34:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 7j9PLta8/WDNOAAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Sun, 25 Jul 2021 19:34:46 +0000
-Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
- exclusion scope
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     linux-rt-users@vger.kernel.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
- <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
- <878s2fnv79.ffs@nanos.tec.linutronix.de>
- <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
- <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
- <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
- <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
- <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
- <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
- <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
- <5be1a703-9a0a-4115-1d69-634e5e8ecefd@suse.cz>
- <bd121f5db01404774dbecc70bd7155f8431d8046.camel@gmx.de>
- <76dedfc3-0497-1776-d006-486b9bfd88da@suse.cz>
- <72a045663bf8f091ae11dd328d5e085541d54fcd.camel@gmx.de>
- <18ca0ce9-3407-61e1-31d6-5c48e80eb5bb@suse.cz>
- <73f032c2-70f1-77b6-9fd2-9aca52fd5b4d@suse.cz>
-Message-ID: <b41fa4f2-8368-f33a-10c2-68554b16eb1e@suse.cz>
-Date:   Sun, 25 Jul 2021 21:34:14 +0200
+        Sun, 25 Jul 2021 15:06:32 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF429C061757;
+        Sun, 25 Jul 2021 12:47:00 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id z6-20020a9d24860000b02904d14e47202cso7869147ota.4;
+        Sun, 25 Jul 2021 12:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VeZWPhsf+UxEhhOjwlwIVeUOu2AI3fn4qRU/WSvFopQ=;
+        b=qFSeiaLrU2hQGry4BAWsunWWxW3JeMucElv2gemNGYWBDARmoVcrZylwDmpjWqCp9f
+         O/p7h80N2k7YsasIufiLCJFh77GVnZrlBm0eh59QRIy7rMOX0cK01UAm90OH7lnZKt/i
+         ruDtwgFAV34OeRVK/f00TEOUJrkGcYlstPjhIMeAP1riDhaj/OuWtGNRNl/oKOXqPNO9
+         29WyTDpMCHwEnumuXOGFgr4lvkUmXGVvoVhKu0isa+5Qy1XObzp77YRb+UvjRpsWHxPP
+         T8iOITAcuE7zq3LTSC9Tz+Nfta71/L7XCXMYTdT9YwjH9pX3zq/RdZMDk3StpCU77jl+
+         j42A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VeZWPhsf+UxEhhOjwlwIVeUOu2AI3fn4qRU/WSvFopQ=;
+        b=kIM/dCcIfSfWPDMhiWsps/ceZbGWlC5tdheBY4mnyZUFQUAUP/akvJLOFfCpY0BEkM
+         NN/KniY6EiLUoA67Me8if07WwqLPn3zckAqbOdkrAK2bFbRZ48tE5oppA4V6yAEP9yEb
+         m+Wu3Eu9Wv5E4WOd4QjWwDRe5lmFWOwRBUm7x5xJl1qLw0Bs9/Dqfn3fJtMvXdrRNMr6
+         29UavwLT6BTwN3Q8SZfOIt1hJS74ZnSqIHae9bISauoF2aN/7XgtpU4GiT4tM6nGWfhX
+         wShRNPkfSdmdSoEG/XR6xlxxQ9wbg3FJg3yTePMDuhYG9qJqbO+FBcmcvl29J8H9VYLl
+         TlOg==
+X-Gm-Message-State: AOAM531177q1ziKQOc7XVsQef7BBMnkGZfLmSn+jxv9LkN1duS+8i9On
+        bnymXAz+vqqNPkbY9+9EzbhH7gA1phE=
+X-Google-Smtp-Source: ABdhPJwwWW+Vr+4VCWALaqrlSdJB5raI2ZBVlZZzHg3aEJ/ZWKJNilDcx8dKKs7pRnf9DilSWLBNug==
+X-Received: by 2002:a9d:7982:: with SMTP id h2mr9036623otm.291.1627242419881;
+        Sun, 25 Jul 2021 12:46:59 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
+        by smtp.gmail.com with ESMTPSA id s8sm5751923oie.43.2021.07.25.12.46.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Jul 2021 12:46:59 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH] wireless: rtl8187: replace udev with usb_get_dev()
+To:     htl10@users.sourceforge.net,
+        Herton Ronaldo Krzesinski <herton@canonical.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, gregkh@linuxfoundation.org,
+        Salah Triki <salah.triki@gmail.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210724183457.GA470005@pc>
+ <53895498.1259278.1627160074135@mail.yahoo.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <e761905b-0449-9463-c3ab-923aff36e4df@lwfinger.net>
+Date:   Sun, 25 Jul 2021 14:46:57 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <73f032c2-70f1-77b6-9fd2-9aca52fd5b4d@suse.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <53895498.1259278.1627160074135@mail.yahoo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/21 9:12 PM, Vlastimil Babka wrote:
-> +	/*
-> +	 * On !RT we just want to disable preemption, on RT we need the lock
-> +	 * for real. This happens to match local_lock() semantics.
-> +	 */
-> +	local_lock(&s->cpu_slab->lock);
+On 7/24/21 3:54 PM, Hin-Tak Leung wrote:
+> 
+> 
+> On Saturday, 24 July 2021, 19:35:12 BST, Salah Triki <salah.triki@gmail.com> wrote:
+> 
+> 
+>  > Replace udev with usb_get_dev() in order to make code cleaner.
+> 
+>  > Signed-off-by: Salah Triki <salah.triki@gmail.com>
+>  > ---
+>  > drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c | 4 +---
+>  > 1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+>  > diff --git a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c 
+> b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
+>  > index eb68b2d3caa1..30bb3c2b8407 100644
+>  > --- a/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
+>  > +++ b/drivers/net/wireless/realtek/rtl818x/rtl8187/dev.c
+>  > @@ -1455,9 +1455,7 @@ static int rtl8187_probe(struct usb_interface *intf,
+> 
+>  >     SET_IEEE80211_DEV(dev, &intf->dev);
+>  >     usb_set_intfdata(intf, dev);
+>  > -    priv->udev = udev;
+>  > -
+>  > -    usb_get_dev(udev);
+>  > +    priv->udev = usb_get_dev(udev);
+> 
+>  >     skb_queue_head_init(&priv->rx_queue);
+> 
+>  > --
+>  > 2.25.1
+> 
+> It is not cleaner - the change is not functionally equivalent. Before the 
+> change, the reference count is increased after the assignment; and after the 
+> change, before the assignment. So my question is, does the reference count 
+> increasing a little earlier matters? What can go wrong between very short time 
+> where the reference count increases, and priv->udev not yet assigned? I think 
+> there might be a race condition where the probbe function is called very shortly 
+> twice.
+> Especially if the time of running the reference count function is non-trivial.
+> 
+> Larry, what do you think?
 
-OK I realized (and tglx confirmed) that this will blow up on !RT +
-lockdep if interrupted by ___slab_alloc() that will do
-local_lock_irqsave(). So back to #ifdefs it is. But should work as-is
-for RT testing.
+My belief was that probe routines were called in order, which was confirmed by 
+GregKH. As a result, there can be no race condition, and the order of setting 
+the reference count does not matter. On the other hand, the current code is not 
+misleading, nor unclear. Why should it be changed?
+
+NACK on the patch.
+
+Larry
+
