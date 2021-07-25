@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3854A3D5022
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3485A3D5024
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhGYUyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 16:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        id S230373AbhGYUz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 16:55:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhGYUx7 (ORCPT
+        with ESMTP id S229709AbhGYUzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 16:53:59 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4C2C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 14:34:28 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id r26so11869172lfp.5
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 14:34:28 -0700 (PDT)
+        Sun, 25 Jul 2021 16:55:55 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A0FC061757;
+        Sun, 25 Jul 2021 14:36:25 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id x14so3154772edr.12;
+        Sun, 25 Jul 2021 14:36:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=m38rqzWdCB9ASoXtganWd6kv7kmkcMjinzQv5fmIioY=;
-        b=T/lpqlkCEGSI+NDfO28XctH1ajysoLJ8grJyEdm/1NyRcXS3mq6ZPg6l/WCEvIlbrA
-         dJK5ezjQkwFUcI9zBh169DdZC2Hn3MMzr5luWosazJiOgLjXTaXDYePwHzZdWGWguReu
-         fjvXKL1uQ5yJr/+brXs+WVOkw8M5yymdWlPdIiP4A6HmWtK4rq7Cp9bpnSh4vqr94CjI
-         asLn5orgbw8zFQVH/MZtRwuxEitrJy44/d3t5kNVYBY9iq7+bL8vidiizAkqbWPtugkM
-         hMrM02qqyy33EQamCQU9X9aQYv3OwKmp7To5e5aIX2pV4eoA1AYarFYBgci7blLQqoLf
-         HtBA==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BaU+N0BfuToMVHnQxHJcdw1g5XT9u+x4MA4dw2dsg6w=;
+        b=L4HSFfOaxMtA+pdF7zh7PH4vjhZ0Mmw7PiMvF6TtxfVhWSipsc8KPw2YgUZKHcUeTl
+         7/nYv/1Qt9x5ezOKc7pF0rCgsw9MNAvHuBDucH8No1bYEj36u0JchxlLxLCKkM5mc0gW
+         ZnGVM0Jpylcn74QC2QbaiKtaZVon7z90pDZb2riWAXFURz3mQL3Te2x1WwmxDQWAel3r
+         dx+mUKI56CG6oCXYl1HeC+YIBqp6EeALW4wyxc4v8oLT1sbucVYBQhYc3lF22X0id4ZP
+         ybAMyrXAhMdJCBHUCuPS9mImPe4RMA0neyHHD5ZpXfqC7JQhf7rAa2plFnT1UU2A4cNJ
+         en6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=m38rqzWdCB9ASoXtganWd6kv7kmkcMjinzQv5fmIioY=;
-        b=umUJIRfy5wieyrw4rcCCnG9AVAIqA6EZ2AA5hC5TNxhLxpHUeYZ1jwfdFZwZfyzPqF
-         HUPuBPowd8j6sLdu4GF/VAgc+EP4cqieJ+olEU32dEzDWGEdc2oInluWcRRkmsUcEVOL
-         cEx7Pe1B98tkcuxCUoJxZkyZWWxnd0PIH1LYYomEXu6wrkYGyxufbjEQwov4M9lARG12
-         7GyhZySdJRfIM/q5Pv6yUeKM20nDdGp4c7i7qvCi6Ej6nsme7lffGTk9C03rnW9n+7k4
-         0QZ6gG4Xa6sXnuK8S1SG79ZQBVYdJ0yGuzD1C+n0F+EHbw6edSc9LBE09v8GMVRliDAL
-         cagg==
-X-Gm-Message-State: AOAM5309L3wlOZcYsz1iJv0GEhjreQ/mV1OqZYD9+R60DhwQn8LuQYq5
-        3lEpxyolSLhkUYKkgYDPHQx3l2trdKGHutvvnIA=
-X-Google-Smtp-Source: ABdhPJzqZNZNTznqNRYhRLLkSWM8S6ODp20LGQjQTFRRYJSdcM0vmJIDbB81MmZ+6bmfsM7osA8QKxf4CoLW6JJp3eY=
-X-Received: by 2002:a19:c7c3:: with SMTP id x186mr10686920lff.219.1627248866917;
- Sun, 25 Jul 2021 14:34:26 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BaU+N0BfuToMVHnQxHJcdw1g5XT9u+x4MA4dw2dsg6w=;
+        b=UtOMV00qaHBB5Uz65u8Z0+iJGiKkI+AGMtDVS9K0AHzbJRTXpvhiPHUi9u0mgP7fZ/
+         KL7LKLnp0T4D9eMxzDtyIYzz1aKrwtsJcGoICsN8Ndq5iFUNauilLlMOm4oktww6DaVR
+         mEpph6KtCU5O6pk45GvRPovRBXNl8d7PuleeETLYIpbbrXhj2F8FEDI/f0N3GMh9am6P
+         ZH1D1RR0BWotetPQMwj69TpNIubp3rBPB38pxGigRH7Sq6Zz3Sbfz3W41o4O2EFBIW3o
+         Nzp2ApIGZdxDwJwqKvLJ3Vx6gS9T4olVbQub9vjVxC/Oz4ReuOocmbwSpQf7v2afGH62
+         F4eA==
+X-Gm-Message-State: AOAM530XLeAZs/vZVy789/EL3m0gkFPIpHyNGDgNyjcHaUa4nJce4tpd
+        RueJgYasJA0aqeEi5K5xVZE4EnJla39uDyK8x9Q=
+X-Google-Smtp-Source: ABdhPJw8yetmtnh4PgMNKWMDRgBgW6N2HsYtGLPuEvOBbU1oj6RsHlMK0dcTs8o2FcBDKpuf+HxbqxyUlr2SO2mx5CQ=
+X-Received: by 2002:a50:fb04:: with SMTP id d4mr17730527edq.143.1627248983956;
+ Sun, 25 Jul 2021 14:36:23 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a2e:b4a8:0:0:0:0:0 with HTTP; Sun, 25 Jul 2021 14:34:26
- -0700 (PDT)
-Reply-To: david.djossa01@yahoo.com
-From:   "MR.DAVID DJOSSA" <walleady.colla1@gmail.com>
-Date:   Mon, 26 Jul 2021 00:34:26 +0300
-Message-ID: <CA+RujsDGO4hckweKRoFuWHitm-tXt0i8uqWMNPUNYRfUdM9BWw@mail.gmail.com>
-Subject: Give This Attention
-To:     undisclosed-recipients:;
+References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
+ <20210717204057.67495-6-martin.blumenstingl@googlemail.com> <1a299cd8c1be4fba8360780ef6f70f0f@realtek.com>
+In-Reply-To: <1a299cd8c1be4fba8360780ef6f70f0f@realtek.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 25 Jul 2021 23:36:13 +0200
+Message-ID: <CAFBinCAJNqbpoqSSFYYBJg818KHCKx5nFzsKZdR=D+sTXQj6dg@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 5/7] rtw88: Configure the registers from
+ rtw_bf_assoc() outside the RCU lock
+To:     Pkshih <pkshih@realtek.com>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Neo Jou <neojou@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Recipient;
+Hi Ping-Ke,
+
+On Mon, Jul 19, 2021 at 7:47 AM Pkshih <pkshih@realtek.com> wrote:
+[...]
+> The rcu_read_lock() in this function is used to access ieee80211_find_sta() and protect 'sta'.
+> A simple way is to shrink the critical section, like:
+>
+>         rcu_read_lock();
+>
+>         sta = ieee80211_find_sta(vif, bssid);
+>         if (!sta) {
+>                 rtw_warn(rtwdev, "failed to find station entry for bss %pM\n",
+>                          bssid);
+>                 rcu_read_unlock();
+>         }
+>
+>         vht_cap = &sta->vht_cap;
+>
+>         rcu_read_unlock();
+I agree that reducing the amount of code under the lock will help my
+use-case as well
+in your code-example I am wondering if we should change
+  struct ieee80211_sta_vht_cap *vht_cap;
+  vht_cap = &sta->vht_cap;
+to
+  struct ieee80211_sta_vht_cap vht_cap;
+  vht_cap = sta->vht_cap;
+
+My thinking is that ieee80211_sta may be freed in parallel to this code running.
+If that cannot happen then your code will be fine.
+
+So I am hoping that you can also share your thoughts on this one.
 
 
-Please for your information, this proposal is not a scam. Could you be
-so kind to collaborate with me to run a business deal that would be
-yielding USD5, 000.00 (per day) into your hands till March 2023? You
-will be earning =E2=80=9CUnited States Dollar=E2=80=9D (US$2500) daily as y=
-our own
-(personal share) till March 2023.It=E2=80=99s a cool business deal; therefo=
-re,
-if you are available and interested to know more about the business
-before to decide doing it, reply me URGENTLY for full details.
-
-
-
-P.S: You might receive this message in your inbox; spam or junk
-folders; depending on your web host or server network. I will be
-waiting for your respond, including your Mobile Phone Number:
-
-
-+00____________________________for Short Message Service (SMS) or Text Mass=
-age.
-Yours Sincerely
-MR. DAVID DJOSSA
+Thank you and best regards,
+Martin
