@@ -2,344 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEB53D503C
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBF43D503E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 23:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhGYVIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 17:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58372 "EHLO
+        id S230272AbhGYVKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 17:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhGYVID (ORCPT
+        with ESMTP id S229531AbhGYVKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 17:08:03 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B5BC061757;
-        Sun, 25 Jul 2021 14:48:32 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id c18so7108537qke.2;
-        Sun, 25 Jul 2021 14:48:32 -0700 (PDT)
+        Sun, 25 Jul 2021 17:10:52 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD499C061757;
+        Sun, 25 Jul 2021 14:51:21 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id hb6so13362606ejc.8;
+        Sun, 25 Jul 2021 14:51:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ABKMKevEHWFWKoPDDK5G2faUqIuEbxrXlBlb9zRYhEI=;
-        b=OnxF7kIKwDBDEIPjzLxaoJ3hh/GE8cxuXUA9gskp7bkMCSyGWBbIizq0szUSGOBbUV
-         A4sg7D2KbiaJbsc66m9ko6chFA/Zh9esqmnQT+NFf7ZEg5vlqDERfPAsZX0+D5xY9Mhf
-         BhkvBAeTMAxnp+xgR0Vpxr0NTLAbhRKU433DZQym1ZAEHtUcVor+8NmOR+0ORmiO0sFe
-         izyylihQJqPew4ic8tYoYz5wkMxhf5t0ZSmw/uF1w4li4qwEOzc8YGN7rCloL9Sv3Raq
-         XAcCyaiwOHKqjcgCCssv9IsAb0vKT4m8G9QFh9IjSdumDimBtlHeatykAQ5LkYDISEPr
-         ugDQ==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kFFpVV/YF+QL4JQFeELRHZFZz7qvosg04j6ZnFdvTeU=;
+        b=khzUHGhCGsGSD3KyIdvGqupNwkL50ImtEIJM1wX76Ngs0jiT2NDsCjiPD+DJ4n5Uxk
+         Vx1UFIaSN9xN7lrtvhdRuw4AoZqc9T3xqv+eQz1+KX9cLasxSqzpZtAcR9rhPVgPwPYd
+         i2FO9L4cYPy6dbhd8NQfeVHJeielBxcHFYTZAERBUH0KBBBmYHeN2TJ3qRiXR9yWBrmp
+         hgdvy44H9RdhB+GLRz87/xvmkVykIzob7wkbaA2JnSbrUCqyDBrrWlNWqeTKj3mzAx8b
+         FRJrNbwbQkpkkIucNsaLOLwQfLBVhcnrkGUVcLKyijTvWACcxJLax6JDvVk5ro/qOQz1
+         H27Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ABKMKevEHWFWKoPDDK5G2faUqIuEbxrXlBlb9zRYhEI=;
-        b=ib32kn7QYxDZBVcJvB7UeCsJEYyehKJ55fh1yaJmNJdotgVp/fcHbXzb1zs53l1p6l
-         tyb3u1mCv6em7bI+HrmL/Uyt0Y3okHHSsZHH400mhdM14fsYDen+2u0trlaq07AVmz8O
-         6jFyoCQmGMpqrEVgiQxFhxY/eZqnhGgAAwhnQTNDCHi2J0It5B4qaeZl5zJY3EDn153X
-         ZfRfnZO+V/VUEPRQicL4GRjRHo32JQ6JscBViGejB8E6fFCpgPdQlrJaW5pl2PgPj9ES
-         3hgYLUuGBtAe5rMSi+A9G4XxhxZT7wmDig2PkoToMrZ/iFjI9Iq6TpUMdEslMxTw2DeC
-         OWMw==
-X-Gm-Message-State: AOAM531dgH5yZjpbpTa5iQPRxQ7jlKHy8Dw2rI6uYW4nd+L0GKuiQznZ
-        f1NK7xJBtPX3WBgwVttez58=
-X-Google-Smtp-Source: ABdhPJwjKGqvJ4PNOwJimmO73TdEFCHFWA6rkY/G2rbwx4xQm5bh0tyLmw1x1BlZ+MsELsjvpv1SdQ==
-X-Received: by 2002:a37:38c:: with SMTP id 134mr15708374qkd.182.1627249711845;
-        Sun, 25 Jul 2021 14:48:31 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g10sm2712074qtp.67.2021.07.25.14.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 14:48:31 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 25 Jul 2021 14:48:30 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] watchdog: f71808e_wdt: rename variant-independent
- identifiers appropriately
-Message-ID: <20210725214830.GC3578169@roeck-us.net>
-References: <cover.c711be1db54f4e07c0153266dd1a831e92e3d49d.1626948810.git-series.a.fatoum@pengutronix.de>
- <9ae6ae2ac53cd6f46d3eb32dec35d0c0a7c40ba5.1626948810.git-series.a.fatoum@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kFFpVV/YF+QL4JQFeELRHZFZz7qvosg04j6ZnFdvTeU=;
+        b=g1u6Jl0TWBCljJPYTZC4zzKYZE11z75gjOpy+FJxvEWJX8LNKZoHWUcHzfcmT3Yrio
+         cHZnzst2xt2tLPotJBt3/nuE6yYC8FpvXxqc0GSVuSjn+B+bbzLIMn0kzEamNWWBpuuT
+         YP1WQSzHgBWdb9ivh14NO9zheiRGnMzPBTk4KVHq9vfccl5CzoBuTSBgrWuX0Hup1335
+         Vcw80qtoajHbFdDZkfJLEEG2NI/oevpU7U35kkFsvjVW5Zkyt1YSJ+oA0PfdCc1SiRUT
+         QsNiEpnmp7ZU5xVNOk2Iog/iskBm8NFzE66i0QybX7rMxcauwuuRA/6mCM3FDRgVkHEh
+         c3JQ==
+X-Gm-Message-State: AOAM531sJLcQkb/qpi0+VJOtVdnsJX41E8Z1AaQkGfz/pz98d2sL/ly1
+        ib+JGq2bZPS4mV/MJqrzbvvxieCUaQ5/V9/bm+o=
+X-Google-Smtp-Source: ABdhPJzvm01A0bsNE0cJ0/+LnHjhgn585tTLQpFf/N5biMmWi4+J0wwYuAhpycqE1rO8SyjY/8Mg/4xUJO8NWBhw6wo=
+X-Received: by 2002:a17:907:9719:: with SMTP id jg25mr14198373ejc.362.1627249880289;
+ Sun, 25 Jul 2021 14:51:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ae6ae2ac53cd6f46d3eb32dec35d0c0a7c40ba5.1626948810.git-series.a.fatoum@pengutronix.de>
+References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
+ <20210717204057.67495-4-martin.blumenstingl@googlemail.com> <27d8246ef3c9755b3e6e908188ca36f7b0fab3fc.camel@sipsolutions.net>
+In-Reply-To: <27d8246ef3c9755b3e6e908188ca36f7b0fab3fc.camel@sipsolutions.net>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 25 Jul 2021 23:51:09 +0200
+Message-ID: <CAFBinCAzoPmtvH1Wn9dY4pFsERQ5N+0xXRG=UB1eEGe_qTf+6w@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 3/7] rtw88: Use rtw_iterate_stas where the iterator
+ reads or writes registers
+To:     Johannes Berg <johannes@sipsolutions.net>, pkshih@realtek.com
+Cc:     linux-wireless@vger.kernel.org, tony0620emma@gmail.com,
+        kvalo@codeaurora.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Neo Jou <neojou@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Content-Type: multipart/mixed; boundary="00000000000013706305c7f9a3d5"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 12:14:41PM +0200, Ahmad Fatoum wrote:
-> Code for the common parts of the driver either uses watchdog_ as
-> prefix for the watchdog API or f71808e_ for everything else.
-> 
-> The driver now supports 9 more variants besides the f71808e,
-> so let's rename the common parts to start with fintek_wdt_ instead.
-> 
-> This makes code browsing easier, because it's readily apparent
-> that functions are not variant-specific. Some watchdog_-prefixed
-> functions remain, but these will be dropped altogether with the move
-> to the kernel watchdog API in a later commit.
-> 
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-> ---
->  drivers/watchdog/f71808e_wdt.c | 66 +++++++++++++++++------------------
->  1 file changed, 33 insertions(+), 33 deletions(-)
-> 
-> diff --git a/drivers/watchdog/f71808e_wdt.c b/drivers/watchdog/f71808e_wdt.c
-> index f7d82d261913..597eaf6905f4 100644
-> --- a/drivers/watchdog/f71808e_wdt.c
-> +++ b/drivers/watchdog/f71808e_wdt.c
-> @@ -113,7 +113,7 @@ MODULE_PARM_DESC(start_withtimeout, "Start watchdog timer on module load with"
->  enum chips { f71808fg, f71858fg, f71862fg, f71868, f71869, f71882fg, f71889fg,
->  	     f81803, f81865, f81866};
->  
-> -static const char *f71808e_names[] = {
-> +static const char *fintek_wdt_names[] = {
+--00000000000013706305c7f9a3d5
+Content-Type: text/plain; charset="UTF-8"
 
-Nit: checkpatch rightfully complains that this can be
+Hi Johannes, Hi Ping-Ke,
 
-static const char * const fintek_wdt_names[]
+On Mon, Jul 19, 2021 at 8:36 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Sat, 2021-07-17 at 22:40 +0200, Martin Blumenstingl wrote:
+> >
+> > --- a/drivers/net/wireless/realtek/rtw88/mac80211.c
+> > +++ b/drivers/net/wireless/realtek/rtw88/mac80211.c
+> > @@ -721,7 +721,7 @@ static void rtw_ra_mask_info_update(struct rtw_dev *rtwdev,
+> >       br_data.rtwdev = rtwdev;
+> >       br_data.vif = vif;
+> >       br_data.mask = mask;
+> > -     rtw_iterate_stas_atomic(rtwdev, rtw_ra_mask_info_update_iter, &br_data);
+> > +     rtw_iterate_stas(rtwdev, rtw_ra_mask_info_update_iter, &br_data);
+>
+> And then you pretty much immediately break that invariant here, namely
+> that you're calling this within the set_bitrate_mask() method called by
+> mac80211.
+you are right, I was not aware of this
 
->  	"f71808fg",
->  	"f71858fg",
->  	"f71862fg",
-> @@ -136,7 +136,7 @@ static inline int superio_enter(int base);
->  static inline void superio_select(int base, int ld);
->  static inline void superio_exit(int base);
->  
-> -struct watchdog_data {
-> +struct fintek_wdt {
->  	unsigned short	sioaddr;
->  	enum chips	type;
->  	unsigned long	opened;
-> @@ -152,7 +152,7 @@ struct watchdog_data {
->  	char		caused_reboot;	/* last reboot was by the watchdog */
->  };
->  
-> -static struct watchdog_data watchdog = {
-> +static struct fintek_wdt watchdog = {
->  	.lock = __MUTEX_INITIALIZER(watchdog.lock),
->  };
->  
-> @@ -218,7 +218,7 @@ static inline void superio_exit(int base)
->  	release_region(base, 2);
->  }
->  
-> -static int watchdog_set_timeout(int timeout)
-> +static int fintek_wdt_set_timeout(int timeout)
->  {
->  	if (timeout <= 0
->  	 || timeout >  max_timeout) {
-> @@ -244,7 +244,7 @@ static int watchdog_set_timeout(int timeout)
->  	return 0;
->  }
->  
-> -static int watchdog_set_pulse_width(unsigned int pw)
-> +static int fintek_wdt_set_pulse_width(unsigned int pw)
->  {
->  	int err = 0;
->  	unsigned int t1 = 25, t2 = 125, t3 = 5000;
-> @@ -278,7 +278,7 @@ static int watchdog_set_pulse_width(unsigned int pw)
->  	return err;
->  }
->  
-> -static int watchdog_keepalive(void)
-> +static int fintek_wdt_keepalive(void)
->  {
->  	int err = 0;
->  
-> @@ -308,13 +308,13 @@ static int watchdog_keepalive(void)
->  	return err;
->  }
->  
-> -static int watchdog_start(void)
-> +static int fintek_wdt_start(void)
->  {
->  	int err;
->  	u8 tmp;
->  
->  	/* Make sure we don't die as soon as the watchdog is enabled below */
-> -	err = watchdog_keepalive();
-> +	err = fintek_wdt_keepalive();
->  	if (err)
->  		return err;
->  
-> @@ -435,7 +435,7 @@ static int watchdog_start(void)
->  	return err;
->  }
->  
-> -static int watchdog_stop(void)
-> +static int fintek_wdt_stop(void)
->  {
->  	int err = 0;
->  
-> @@ -467,7 +467,7 @@ static int watchdog_get_status(void)
->  	return status;
->  }
->  
-> -static bool watchdog_is_running(void)
-> +static bool fintek_wdt_is_running(void)
->  {
->  	/*
->  	 * if we fail to determine the watchdog's status assume it to be
-> @@ -501,7 +501,7 @@ static int watchdog_open(struct inode *inode, struct file *file)
->  	if (test_and_set_bit(0, &watchdog.opened))
->  		return -EBUSY;
->  
-> -	err = watchdog_start();
-> +	err = fintek_wdt_start();
->  	if (err) {
->  		clear_bit(0, &watchdog.opened);
->  		return err;
-> @@ -519,10 +519,10 @@ static int watchdog_release(struct inode *inode, struct file *file)
->  	clear_bit(0, &watchdog.opened);
->  
->  	if (!watchdog.expect_close) {
-> -		watchdog_keepalive();
-> +		fintek_wdt_keepalive();
->  		pr_crit("Unexpected close, not stopping watchdog!\n");
->  	} else if (!nowayout) {
-> -		watchdog_stop();
-> +		fintek_wdt_stop();
->  	}
->  	return 0;
->  }
-> @@ -563,7 +563,7 @@ static ssize_t watchdog_write(struct file *file, const char __user *buf,
->  		}
->  
->  		/* someone wrote to us, we should restart timer */
-> -		watchdog_keepalive();
-> +		fintek_wdt_keepalive();
->  	}
->  	return count;
->  }
-> @@ -610,24 +610,24 @@ static long watchdog_ioctl(struct file *file, unsigned int cmd,
->  			return -EFAULT;
->  
->  		if (new_options & WDIOS_DISABLECARD)
-> -			watchdog_stop();
-> +			fintek_wdt_stop();
->  
->  		if (new_options & WDIOS_ENABLECARD)
-> -			return watchdog_start();
-> +			return fintek_wdt_start();
->  		fallthrough;
->  
->  	case WDIOC_KEEPALIVE:
-> -		watchdog_keepalive();
-> +		fintek_wdt_keepalive();
->  		return 0;
->  
->  	case WDIOC_SETTIMEOUT:
->  		if (get_user(new_timeout, uarg.i))
->  			return -EFAULT;
->  
-> -		if (watchdog_set_timeout(new_timeout))
-> +		if (fintek_wdt_set_timeout(new_timeout))
->  			return -EINVAL;
->  
-> -		watchdog_keepalive();
-> +		fintek_wdt_keepalive();
->  		fallthrough;
->  
->  	case WDIOC_GETTIMEOUT:
-> @@ -643,7 +643,7 @@ static int watchdog_notify_sys(struct notifier_block *this, unsigned long code,
->  	void *unused)
->  {
->  	if (code == SYS_DOWN || code == SYS_HALT)
-> -		watchdog_stop();
-> +		fintek_wdt_stop();
->  	return NOTIFY_DONE;
->  }
->  
-> @@ -681,7 +681,7 @@ static int __init watchdog_init(int sioaddr)
->  
->  	snprintf(watchdog.ident.identity,
->  		sizeof(watchdog.ident.identity), "%s watchdog",
-> -		f71808e_names[watchdog.type]);
-> +		fintek_wdt_names[watchdog.type]);
->  
->  	err = superio_enter(sioaddr);
->  	if (err)
-> @@ -700,10 +700,10 @@ static int __init watchdog_init(int sioaddr)
->  
->  	superio_exit(sioaddr);
->  
-> -	err = watchdog_set_timeout(timeout);
-> +	err = fintek_wdt_set_timeout(timeout);
->  	if (err)
->  		return err;
-> -	err = watchdog_set_pulse_width(pulse_width);
-> +	err = fintek_wdt_set_pulse_width(pulse_width);
->  	if (err)
->  		return err;
->  
-> @@ -726,7 +726,7 @@ static int __init watchdog_init(int sioaddr)
->  			goto exit_miscdev;
->  		}
->  
-> -		err = watchdog_start();
-> +		err = fintek_wdt_start();
->  		if (err) {
->  			pr_err("cannot start watchdog timer\n");
->  			goto exit_miscdev;
-> @@ -774,7 +774,7 @@ static int __init watchdog_init(int sioaddr)
->  	return err;
->  }
->  
-> -static int __init f71808e_find(int sioaddr)
-> +static int __init fintek_wdt_find(int sioaddr)
->  {
->  	u16 devid;
->  	int err = superio_enter(sioaddr);
-> @@ -830,14 +830,14 @@ static int __init f71808e_find(int sioaddr)
->  	}
->  
->  	pr_info("Found %s watchdog chip, revision %d\n",
-> -		f71808e_names[watchdog.type],
-> +		fintek_wdt_names[watchdog.type],
->  		(int)superio_inb(sioaddr, SIO_REG_DEVREV));
->  exit:
->  	superio_exit(sioaddr);
->  	return err;
->  }
->  
-> -static int __init f71808e_init(void)
-> +static int __init fintek_wdt_init(void)
->  {
->  	static const unsigned short addrs[] = { 0x2e, 0x4e };
->  	int err = -ENODEV;
-> @@ -849,7 +849,7 @@ static int __init f71808e_init(void)
->  	}
->  
->  	for (i = 0; i < ARRAY_SIZE(addrs); i++) {
-> -		err = f71808e_find(addrs[i]);
-> +		err = fintek_wdt_find(addrs[i]);
->  		if (err == 0)
->  			break;
->  	}
-> @@ -859,11 +859,11 @@ static int __init f71808e_init(void)
->  	return watchdog_init(addrs[i]);
->  }
->  
-> -static void __exit f71808e_exit(void)
-> +static void __exit fintek_wdt_exit(void)
->  {
-> -	if (watchdog_is_running()) {
-> +	if (fintek_wdt_is_running()) {
->  		pr_warn("Watchdog timer still running, stopping it\n");
-> -		watchdog_stop();
-> +		fintek_wdt_stop();
->  	}
->  	misc_deregister(&watchdog_miscdev);
->  	unregister_reboot_notifier(&watchdog_notifier);
-> @@ -873,5 +873,5 @@ MODULE_DESCRIPTION("F71808E Watchdog Driver");
->  MODULE_AUTHOR("Giel van Schijndel <me@mortis.eu>");
->  MODULE_LICENSE("GPL");
->  
-> -module_init(f71808e_init);
-> -module_exit(f71808e_exit);
-> +module_init(fintek_wdt_init);
-> +module_exit(fintek_wdt_exit);
-> -- 
-> git-series 0.9.1
+> That's not actually fundamentally broken today, but it does *severely*
+> restrict what we can do in mac80211 wrt. locking, and I really don't
+> want to keep the dozen or so locks forever, this needs simplification
+> because clearly we don't even know what should be under what lock.
+To me it's also not clear what the goal of the whole locking is.
+The lock in ieee80211_iterate_stations_atomic is obviously for the
+mac80211-internal state-machine
+But I *believe* that there's a second purpose (rtw88 specific) -
+here's my understanding of that part:
+- rtw_sta_info contains a "mac_id" which is an identifier for a
+specific station used by the rtw88 driver and is shared with the
+firmware
+- rtw_ops_sta_{add,remove} uses rtwdev->mutex to protect the rtw88
+side of this "mac_id" identifier
+- (for some reason rtw_update_sta_info doesn't use rtwdev->mutex)
+
+So now I am wondering if the ieee80211_iterate_stations_atomic lock is
+also used to protect any modifications to rtw_sta_info.
+Ping-Ke, I am wondering if the attached patch (untested - to better
+demonstrate what I want to say) would:
+- allow us to move the register write outside of
+ieee80211_iterate_stations_atomic
+- mean we can keep ieee80211_iterate_stations_atomic (instead of the
+non-atomic variant)
+- protect the code managing the "mac_id" with rtwdev->mutex consistently
+
+> The other cases look OK, it's being called from outside contexts
+> (wowlan, etc.)
+Thanks for reviewing this Johannes!
+
+
+Best regards,
+Martin
+
+--00000000000013706305c7f9a3d5
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="rtw_update_sta_info-outside-rtw_iterate_stas_atomic.patch"
+Content-Disposition: attachment; 
+	filename="rtw_update_sta_info-outside-rtw_iterate_stas_atomic.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_krjqed3y0>
+X-Attachment-Id: f_krjqed3y0
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgvbWFjODAyMTEu
+YyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgvbWFjODAyMTEuYwppbmRleCA3
+NjUwYTFjYTBlOWUuLmJlMzljNmQwZWUzMSAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxl
+c3MvcmVhbHRlay9ydHc4OC9tYWM4MDIxMS5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3Jl
+YWx0ZWsvcnR3ODgvbWFjODAyMTEuYwpAQCAtNjg5LDYgKzY4OSw4IEBAIHN0cnVjdCBydHdfaXRl
+cl9iaXRyYXRlX21hc2tfZGF0YSB7CiAJc3RydWN0IHJ0d19kZXYgKnJ0d2RldjsKIAlzdHJ1Y3Qg
+aWVlZTgwMjExX3ZpZiAqdmlmOwogCWNvbnN0IHN0cnVjdCBjZmc4MDIxMV9iaXRyYXRlX21hc2sg
+Km1hc2s7CisJdW5zaWduZWQgaW50IG51bV9zaTsKKwlzdHJ1Y3QgcnR3X3N0YV9pbmZvICpzaVtS
+VFdfTUFYX01BQ19JRF9OVU1dOwogfTsKIAogc3RhdGljIHZvaWQgcnR3X3JhX21hc2tfaW5mb191
+cGRhdGVfaXRlcih2b2lkICpkYXRhLCBzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqc3RhKQpAQCAtNzA5
+LDcgKzcxMSw4IEBAIHN0YXRpYyB2b2lkIHJ0d19yYV9tYXNrX2luZm9fdXBkYXRlX2l0ZXIodm9p
+ZCAqZGF0YSwgc3RydWN0IGllZWU4MDIxMV9zdGEgKnN0YSkKIAl9CiAKIAlzaS0+dXNlX2NmZ19t
+YXNrID0gdHJ1ZTsKLQlydHdfdXBkYXRlX3N0YV9pbmZvKGJyX2RhdGEtPnJ0d2Rldiwgc2kpOwor
+CisJYnJfZGF0YS0+c2lbYnJfZGF0YS0+bnVtX3NpKytdID0gc2k7CiB9CiAKIHN0YXRpYyB2b2lk
+IHJ0d19yYV9tYXNrX2luZm9fdXBkYXRlKHN0cnVjdCBydHdfZGV2ICpydHdkZXYsCkBAIC03MTcs
+MTEgKzcyMCwyMCBAQCBzdGF0aWMgdm9pZCBydHdfcmFfbWFza19pbmZvX3VwZGF0ZShzdHJ1Y3Qg
+cnR3X2RldiAqcnR3ZGV2LAogCQkJCSAgICBjb25zdCBzdHJ1Y3QgY2ZnODAyMTFfYml0cmF0ZV9t
+YXNrICptYXNrKQogewogCXN0cnVjdCBydHdfaXRlcl9iaXRyYXRlX21hc2tfZGF0YSBicl9kYXRh
+OworCXVuc2lnbmVkIGludCBpOworCisJbXV0ZXhfbG9jaygmcnR3ZGV2LT5tdXRleCk7CiAKIAli
+cl9kYXRhLnJ0d2RldiA9IHJ0d2RldjsKIAlicl9kYXRhLnZpZiA9IHZpZjsKIAlicl9kYXRhLm1h
+c2sgPSBtYXNrOwotCXJ0d19pdGVyYXRlX3N0YXMocnR3ZGV2LCBydHdfcmFfbWFza19pbmZvX3Vw
+ZGF0ZV9pdGVyLCAmYnJfZGF0YSk7CisJYnJfZGF0YS5udW1fc2kgPSAwOworCXJ0d19pdGVyYXRl
+X3N0YXNfYXRvbWljKHJ0d2RldiwgcnR3X3JhX21hc2tfaW5mb191cGRhdGVfaXRlciwgJmJyX2Rh
+dGEpOworCisJZm9yIChpID0gMDsgaSA8IGJyX2RhdGEubnVtX3NpOyBpKyspCisJCXJ0d191cGRh
+dGVfc3RhX2luZm8ocnR3ZGV2LCBicl9kYXRhLnNpW2ldKTsKKworCW11dGV4X3VubG9jaygmcnR3
+ZGV2LT5tdXRleCk7CiB9CiAKIHN0YXRpYyBpbnQgcnR3X29wc19zZXRfYml0cmF0ZV9tYXNrKHN0
+cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo=
+--00000000000013706305c7f9a3d5--
