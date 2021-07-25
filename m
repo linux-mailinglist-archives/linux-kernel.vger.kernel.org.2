@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBEA3D4B4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 06:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044CD3D4BA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 06:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhGYDWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Jul 2021 23:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
+        id S230337AbhGYDp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Jul 2021 23:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhGYDV7 (ORCPT
+        with ESMTP id S230210AbhGYDpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Jul 2021 23:21:59 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03719C061765
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:02:29 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 68-20020a9d0f4a0000b02904b1f1d7c5f4so5427590ott.9
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:02:28 -0700 (PDT)
+        Sat, 24 Jul 2021 23:45:54 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C409C06175F
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:26:24 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id q6so6872002oiw.7
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Jul 2021 21:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=orrTlR1e5ArvDErw47DwuFZ1ar2lNFZjVJ9JvZPgiW8=;
-        b=kopwAIC3KiN5sXTVUjiHSr0li0+n7LFh+IXMJE69HuHuEUlNZRM6gDyIFhbh7Y1wG1
-         Al4V5iAYMPmr8ocizfYqNh/9C9ylTr2QL0O2mf9Uq/AnwrgRrVCF6Jn5cE2acBw6rt2i
-         hwv94VNhy6HH2IJvPV3a31oztBcj26bnjTx7BIINt8XkXut3I304FlQ1rpXCuWytn2RU
-         +sDLI/CJjZNWZqB3t7U7JtnmU2E5W6qL7LThj45Ne/jlTqTouC6UbixdW0DA2SIJF/Oj
-         Pfo7MP1/fzg3Rgu9tMm2Bc7PzIuzwuEg/OePzj+N/Ep+9wpHnUiZolhYF99syQ+7mHqP
-         TD5A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BFd+X7oTHADuT288+EEd3xR940f0BDuWrDa2rxXiuIM=;
+        b=WKNvI24GiVvhCutDHa54Je6JZH578NP4Btg9cqRBa3J4lITuNpJzNQwz1xhmRtkZ9V
+         P4ZKQiby5aRxE5tSdlGDSOs6Xo5m8AeHvLP550X8DxvWs7pUKUxtb+aEJm5yGwMf2g9O
+         OLRsQjZjKVIgNWpUD95sOziexq3GfCbefyOrpHwEzHi4pea9OGn5qXLbN38OWdT407lP
+         97i/qUHb6VdFtQvj4SFcS9dJSe3VeeLdiu7PO0vJPZ6nT4JkYoDl5EiDqIRJwyLz5hmO
+         w2pR9fYiP8i5PeZGKs65aTTPGaAKwZtbij5LJ0eLFSZvI+SrjXeFIJZMjg+nUOhSDsY2
+         tsBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=orrTlR1e5ArvDErw47DwuFZ1ar2lNFZjVJ9JvZPgiW8=;
-        b=Idrv13m9UtyYMaBx19yiI1FbcskZzLafEepKiRzv8RgDTQiwcixlCOiOBGCBqGEiDf
-         g2H7JgtLFy3j0UUivg/IN3LJebHu8/6NrrR+ixzxC/lrFJ2O8mN26fIfXqCWR3SIRfGN
-         OzFm6SA8ig+51tNUB9f36ItVAzTL9Hj0IJCzaTmQRUWjZtQISWUbrTtySCHQZvRzdZFA
-         1cjh5SK3b7rOSn8Yy+d3If5iAHj93z5ehDg2PEFB4ValQovn2tXPMUfqCnL838B4MTLa
-         ilibgf79XxyW/k3rijzNjetvUqEyZkxLx71SDkWYpO89gaz6R1PViPUwy2bAt2i8LMOM
-         WTYA==
-X-Gm-Message-State: AOAM530siv1Vb7l0I3PeIxnTJQpkUJILt9fG17PAFNVHueIl8rdqw0Cl
-        AK0xIU/Idpqh4adMJFUPWtCuWg==
-X-Google-Smtp-Source: ABdhPJwqjFvCZTbT7aln3g5NxlKjHCP2fTz/s4KxT7O4V4+3AH2dGm+KOGUYA0tuEmp3a+bwQarPOg==
-X-Received: by 2002:a9d:6848:: with SMTP id c8mr7881086oto.364.1627185748341;
-        Sat, 24 Jul 2021 21:02:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BFd+X7oTHADuT288+EEd3xR940f0BDuWrDa2rxXiuIM=;
+        b=tv5BUOW5GhmIPZvyFq3Wv1alPKJpxTV69JIfINVbi6HgOzIvCgclMWIaOdDorls5Cl
+         tCed3DDg7UMBe4AH8Whf+A6DVxPfMwgqDl86ZXFzyrKva4qmzezB8QGgZh1CZQdZp6ib
+         PFMcJGeXl9My2719Vgk0+PD1heXlqfu0kKjZuZIGz/9nqnrf1lVM/qX+D/HpHvouF+sJ
+         hTBhW/i287YBN3nlXbZzDmi3rDF/pwackABlskxHCzjA5e7ZqiMxnKRGnkFOJhGo4evB
+         y7TYKOfV/S76Qst6Ivqz1YeN2hPoz9a4N9O8zRwpaBoOKGVJ2lHe55kHgoXzx/YPuQSy
+         u7Dw==
+X-Gm-Message-State: AOAM530CWPNHzH/gKom2Tae4BWU7bsNVg8uMecnREKlAKKpYKDzOwWDJ
+        kHbvK6DhIYDI9BReESr5vszQPQ==
+X-Google-Smtp-Source: ABdhPJxAnqWdynxTIU/ZSqayCOuWNeg4YGWeTecnM/cvLrNlSFSGgBV+4XbDkEV+jpfC8SJs1ndAyA==
+X-Received: by 2002:aca:4743:: with SMTP id u64mr13017033oia.52.1627187183742;
+        Sat, 24 Jul 2021 21:26:23 -0700 (PDT)
 Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q20sm872910otv.50.2021.07.24.21.02.27
+        by smtp.gmail.com with ESMTPSA id t144sm6986200oih.57.2021.07.24.21.26.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Jul 2021 21:02:27 -0700 (PDT)
+        Sat, 24 Jul 2021 21:26:23 -0700 (PDT)
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] PCI: qcom: Add sc8180x compatible
-Date:   Sat, 24 Jul 2021 21:00:38 -0700
-Message-Id: <20210725040038.3966348-4-bjorn.andersson@linaro.org>
+To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] drm/msm/dp: Support multiple DP instances and add sc8180x
+Date:   Sat, 24 Jul 2021 21:24:30 -0700
+Message-Id: <20210725042436.3967173-1-bjorn.andersson@linaro.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210725040038.3966348-1-bjorn.andersson@linaro.org>
-References: <20210725040038.3966348-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SC8180x platform comes with 4 PCIe controllers, typically used for
-things such as NVME storage or connecting a SDX55 5G modem. Add a
-compatible for this, that just reuses the 1.9.0 ops.
+The current implementation supports a single DP instance and the DPU code will
+only match it against INTF_DP instance 0. These patches extends this to allow
+multiple DP instances and support for matching against DP instances beyond 0.
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- Documentation/devicetree/bindings/pci/qcom,pcie.txt | 5 +++--
- drivers/pci/controller/dwc/pcie-qcom.c              | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+This is based on v4 of Dmitry's work on multiple DSI interfaces:
+https://lore.kernel.org/linux-arm-msm/20210717124016.316020-1-dmitry.baryshkov@linaro.org/
 
-diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.txt b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
-index 3f646875f8c2..a0ae024c2d0c 100644
---- a/Documentation/devicetree/bindings/pci/qcom,pcie.txt
-+++ b/Documentation/devicetree/bindings/pci/qcom,pcie.txt
-@@ -12,6 +12,7 @@
- 			- "qcom,pcie-ipq4019" for ipq4019
- 			- "qcom,pcie-ipq8074" for ipq8074
- 			- "qcom,pcie-qcs404" for qcs404
-+			- "qcom,pcie-sc8180x" for sc8180x
- 			- "qcom,pcie-sdm845" for sdm845
- 			- "qcom,pcie-sm8250" for sm8250
- 			- "qcom,pcie-ipq6018" for ipq6018
-@@ -156,7 +157,7 @@
- 			- "pipe"	PIPE clock
- 
- - clock-names:
--	Usage: required for sm8250
-+	Usage: required for sc8180x and sm8250
- 	Value type: <stringlist>
- 	Definition: Should contain the following entries
- 			- "aux"		Auxiliary clock
-@@ -245,7 +246,7 @@
- 			- "ahb"			AHB reset
- 
- - reset-names:
--	Usage: required for sdm845 and sm8250
-+	Usage: required for sc8180x, sdm845 and sm8250
- 	Value type: <stringlist>
- 	Definition: Should contain the following entries
- 			- "pci"			PCIe core reset
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 8adcbb718832..3906e975d6db 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -1597,6 +1597,7 @@ static const struct of_device_id qcom_pcie_match[] = {
- 	{ .compatible = "qcom,pcie-ipq4019", .data = &ops_2_4_0 },
- 	{ .compatible = "qcom,pcie-qcs404", .data = &ops_2_4_0 },
- 	{ .compatible = "qcom,pcie-sdm845", .data = &ops_2_7_0 },
-+	{ .compatible = "qcom,pcie-sc8180x", .data = &ops_1_9_0 },
- 	{ .compatible = "qcom,pcie-sm8250", .data = &ops_1_9_0 },
- 	{ }
- };
+With that in place add SC8180x DP and eDP controllers.
+
+Bjorn Andersson (5):
+  drm/msm/dp: Remove global g_dp_display variable
+  drm/msm/dp: Modify prototype of encoder based API
+  drm/msm/dp: Support up to 3 DP controllers
+  dt-bindings: msm/dp: Add SC8180x compatibles
+  drm/msm/dp: Add sc8180x DP controllers
+
+ .../bindings/display/msm/dp-controller.yaml   |   2 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   |  17 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c       |  60 +++---
+ .../gpu/drm/msm/disp/msm_disp_snapshot_util.c |   8 +-
+ drivers/gpu/drm/msm/dp/dp_display.c           | 183 +++++++++++++-----
+ drivers/gpu/drm/msm/msm_drv.h                 |  33 ++--
+ 6 files changed, 200 insertions(+), 103 deletions(-)
+
 -- 
 2.29.2
 
