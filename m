@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12E83D506C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 00:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1098C3D506F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 00:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhGYVo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 17:44:58 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:46878 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhGYVo6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 17:44:58 -0400
-Received: by mail-il1-f176.google.com with SMTP id r5so7073099ilc.13;
-        Sun, 25 Jul 2021 15:25:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=bfV54EGNX7QM/avi9Ym1d5XEwwIaFGu3hKWgMFw+twQ=;
-        b=gZe54hPqzph4r30Q0cIEo1vXzkOTWHC27EJWSZbgc+FGHjGTExbdEPljWOd6e/bjM0
-         JUC6wEVGd2/T/buvgeYty/J9YO+p34y8WrLRcDT5JwUvenMlIb7KrH8djT/dW1x4/VY5
-         QnzEcjDf/s5tkQtHKO0lEE9PBvMW0TP7laVYmd5yMCpBgAsI8yMcdg5xDVE8DE3lSUCD
-         KliTpGPpPQK304JdCZOymG/LNRfgNeH35v5/b5kxcjip1PTfnMYAkU1zEZH1oXgZ+A2u
-         ePFDANbD0vI9HsuNVYY1N+jslxEXm6V0aGp7zIX6fbOThfhi0Fd2h2Ve2A/FXNuIIrac
-         dUgQ==
-X-Gm-Message-State: AOAM532riRgOwvRllczRid51FGEvAOrQnBC3lxEggJCJtEkiCPLPR/AO
-        7bTI4v4qklJUD4ldWdqJYA==
-X-Google-Smtp-Source: ABdhPJz7sehIjKPVRRXQU9jNngs6H+dktG1OrVWvfczvtxRlLnL3r7Of8U6SBHj7BPK7/630fo8wCg==
-X-Received: by 2002:a92:d305:: with SMTP id x5mr11113322ila.150.1627251926708;
-        Sun, 25 Jul 2021 15:25:26 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id l12sm3532731ilg.2.2021.07.25.15.25.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 15:25:26 -0700 (PDT)
-Received: (nullmailer pid 2960747 invoked by uid 1000);
-        Sun, 25 Jul 2021 22:25:22 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-In-Reply-To: <20210725160318.9312-2-dariobin@libero.it>
-References: <20210725160318.9312-1-dariobin@libero.it> <20210725160318.9312-2-dariobin@libero.it>
-Subject: Re: [PATCH 2/2] dt-bindings: net: can: c_can: convert to json-schema
-Date:   Sun, 25 Jul 2021 16:25:22 -0600
-Message-Id: <1627251922.224313.2960746.nullmailer@robh.at.kernel.org>
+        id S230272AbhGYVs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 17:48:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229531AbhGYVsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 17:48:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94F8F60F43;
+        Sun, 25 Jul 2021 22:29:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627252165;
+        bh=LXdv3SNozGddEOtTXiweAPm33gFyubUEqk9QT+fHMHc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NBPZZmLXXECARRRpEYQnILLiWAelyx07J8u147xeLgLnvwVuOuCbSyWtEgjGZdGXZ
+         qczGtqvXBsxZc3Az2W3EwEoNOBBYlO16DwuPkJprDfNylmKUSeVQ3oCdothZgb2Bni
+         9rQiM6bwtcPjqV3EfCv8OvpNve5f6FFEM6tPO6mUf1oWARwt2aBLkvV4tYPGnS0ifn
+         reMmxDr85ZhAAxogPTTL8v3QrLWdyVkGkF5/MmZ6l9GlDyP2q3+tFQJpEqTHYN4Wqj
+         lSlGFU29w6nStaab2+shG0nR9K87pYEGuvSnGCORJ80K0d5pqHvRyeMrP6BLDerHKd
+         qZfasI1lM/seA==
+Received: by mail-ej1-f51.google.com with SMTP id o5so13601005ejy.2;
+        Sun, 25 Jul 2021 15:29:25 -0700 (PDT)
+X-Gm-Message-State: AOAM532JlAfb+maw244hpLVG1+kfIBa/6vW+pkTWe/54pZw7vG61U4NQ
+        ELpflc0AkmGRSJy1Ac+GQTG8pRf9AlqzkAMGTA==
+X-Google-Smtp-Source: ABdhPJwfSEK/zGq4H+iwJok9IKltb7Tkin7X2hIbv0FMn04qW6BMg5NfENWFO8APXBMeuB8xHMIhsh3UlasWyhyEfQE=
+X-Received: by 2002:a17:906:95ce:: with SMTP id n14mr5509121ejy.130.1627252164182;
+ Sun, 25 Jul 2021 15:29:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210723214031.3251801-1-atish.patra@wdc.com> <20210723214031.3251801-4-atish.patra@wdc.com>
+In-Reply-To: <20210723214031.3251801-4-atish.patra@wdc.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Sun, 25 Jul 2021 16:29:12 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKG9xkSAQGkBE8_BEE+O9S+z09M8C9+gWN-58aXEZWqgg@mail.gmail.com>
+Message-ID: <CAL_JsqKG9xkSAQGkBE8_BEE+O9S+z09M8C9+gWN-58aXEZWqgg@mail.gmail.com>
+Subject: Re: [RFC 3/5] dma-mapping: Enable global non-coherent pool support
+ for RISC-V
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christoph Hellwig <hch@lst.de>, devicetree@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tobias Klauser <tklauser@distanz.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Jul 2021 18:03:18 +0200, Dario Binacchi wrote:
-> Convert the Bosch C_CAN/D_CAN controller device tree binding
-> documentation to json-schema.
-> 
-> Document missing properties.
-> Remove "ti,hwmods" as it is no longer used in TI dts.
-> Make "clocks" required as it is used in all dts.
-> Correct nodename in the example.
-> 
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> ---
-> 
->  .../bindings/net/can/bosch,c_can.yaml         | 85 +++++++++++++++++++
->  .../devicetree/bindings/net/can/c_can.txt     | 65 --------------
->  2 files changed, 85 insertions(+), 65 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
-> 
+On Fri, Jul 23, 2021 at 3:40 PM Atish Patra <atish.patra@wdc.com> wrote:
+>
+> Currently, linux,dma-default is used to reserve a global non-coherent pool
+> to allocate memory for dma operations. This can be useful for RISC-V as
+> well as the ISA specification doesn't specify a method to modify PMA
+> attributes or page table entries to define non-cacheable area yet.
+> A non-cacheable memory window is an alternate options for vendors to
+> support non-coherent devices. "dma-ranges" must be used in conjunction with
+> "linux,dma-default" property to define one or more mappings between device
+> and cpu accesible memory regions.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+'dma-ranges' applies to buses. And, well, maybe devices when the bus
+is not well defined. It is not a reserved-memory property.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-
-\ndoc reference errors (make refcheckdocs):
-Documentation/devicetree/bindings/net/can/bosch,c_can.yaml: Documentation/devicetree/bindings/soc/ti/sci-pm-domain.txt
-Documentation/devicetree/bindings/net/can/bosch,c_can.yaml: Documentation/devicetree/bindings/clock/ti,sci-clk.txt
-
-See https://patchwork.ozlabs.org/patch/1509610
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Rob
