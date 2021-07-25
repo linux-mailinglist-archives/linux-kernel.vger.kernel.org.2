@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0B13D4F99
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 21:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A683D4F9B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Jul 2021 21:13:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhGYS35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 14:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhGYS3z (ORCPT
+        id S231404AbhGYScz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 14:32:55 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:57058 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231215AbhGYScx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 14:29:55 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C71C061760
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 12:10:25 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id pf12-20020a17090b1d8cb0290175c085e7a5so16625627pjb.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 12:10:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=kX0eYY9YjEaivkZX4gZmRWQoX5AVWchp0HevtnDPnVw=;
-        b=Dur6eMDuTvAkBjxN5DFykUolJuJfOjcaoqcODAp46b1yil9KulA8uUGwZTDhk4nyFs
-         CP1D3UTft8rGs8rkJxLhdckRscpRLbyfMoAWegJaJsIV+cjW1vphzhF0eoXSzy+3t50f
-         HetlSuDMhM5u8/4GobkY72JHklydNFotcsZz8r2PhnhgTlQr1fISdiB+T0aY+vD67Nrl
-         h7ZhGL5VyRL4evggJPgg26P498goeg31GDx6+zj3VZODxq/CnHKUci8dsbHRF8iz2RoI
-         Y39ZFg0EhtjpJl30R0goupAxo9pG3/T69UAhYgh40xa5D7Em1/4QKOkJPC+fEDpVFafC
-         woLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kX0eYY9YjEaivkZX4gZmRWQoX5AVWchp0HevtnDPnVw=;
-        b=aV0wLtEvaewdNVdTpOl0KlKCQEBErVMtMbuar6Fzo81ZKCFVMIO+9gKJRSTvQJx1uW
-         xByd3Vuh35MT+AXIgHdpwpV8+Z+S048TDDUdDgyBxOeRNMnRBvTbJWbGRidbfFzSuqmf
-         YK2fkSPXzZXIjAjT9MsD91529Hglqa5TxJRr/daAoW4XKMaa9S6QBOFWbDXQXjZi98a6
-         SThRIuvFG7Alnt92L1OUy0bgFXRW8DGvOKqTEcaDfHh1wkjJPUE5nOWBTbzZHy6ju17c
-         jfJbt3FNwhdz0tI7eU5PEhymBGzGBdUb+ozdyQI/tJhYrVd8u0Ue8o8H0Qo9Qikr3BJE
-         NsKg==
-X-Gm-Message-State: AOAM533sVnrfGIQIgwGnrt57TTLAhifGUsGBwEFSxCJUlIbedBxETylW
-        d8ftmkVYVrp6sy/cYmXXfxJP8A==
-X-Google-Smtp-Source: ABdhPJzpbjlw6cp7Z+jqoYrInoZDHFwmkxNjruW9JkW/6NtbfsfsTb5QFdOTVYq3kgTWS5DYGWbmzA==
-X-Received: by 2002:a17:902:ec86:b029:129:ab4e:9ab2 with SMTP id x6-20020a170902ec86b0290129ab4e9ab2mr11638010plg.12.1627240224697;
-        Sun, 25 Jul 2021 12:10:24 -0700 (PDT)
-Received: from [192.168.1.187] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id o9sm42890179pfh.217.2021.07.25.12.10.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Jul 2021 12:10:24 -0700 (PDT)
-Subject: Re: [PATCH io_uring backport to 5.13.y] io_uring: Fix race condition
- when sqp thread goes to sleep
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, gregkh@linuxfoundation.org
-References: <82a82077d8b02166482df754b1abb7c3fbc3c560.1627189961.git.olivier@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ca9be2ad-711e-51a3-9c5d-9472a1fad625@kernel.dk>
-Date:   Sun, 25 Jul 2021 13:10:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 25 Jul 2021 14:32:53 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4963521EF9;
+        Sun, 25 Jul 2021 19:13:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627240402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCzLE+ap2mKmrXNTbUV0BiILf9trfJCBHHM1JEd+uDE=;
+        b=vexRAjv4d7CgGQqib19vcceFhpEmaNw0VpYkuu3TUVvt5X5uk66XSGQboG3r6C6xMF3PKc
+        9y32lkpGOBb87MNLGa85OxtoawGenBUhp0Kw4qN/WfI+/igvJNg7ghUpe7Lo7et2YqYuyQ
+        RAPlEwBwwlqnWS4pnGcN4kj+yMpnkYE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627240402;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCzLE+ap2mKmrXNTbUV0BiILf9trfJCBHHM1JEd+uDE=;
+        b=W9++s5wXbcaazYIEp16a5PjUjX8i7jesnXsQq1zn6+0WyiU7kAprOYDlY4QYtVHhM35bPm
+        ob8jGWz25o7P6aBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 1CE4213277;
+        Sun, 25 Jul 2021 19:13:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id yFPGBdK3/WBqNgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Sun, 25 Jul 2021 19:13:22 +0000
+Subject: Re: [rfc/patch] mm/slub: restore/expand unfreeze_partials() local
+ exclusion scope
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     linux-rt-users@vger.kernel.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <87tul5p2fa.ffs@nanos.tec.linutronix.de>
+ <8c0e0c486056b5185b58998f2cce62619ed3f05c.camel@gmx.de>
+ <878s2fnv79.ffs@nanos.tec.linutronix.de>
+ <6c0e20dd84084036d5068e445746c3ed7e82ec4b.camel@gmx.de>
+ <7431ceb9761c566cf2d1f6f263247acd8d38c4b5.camel@gmx.de>
+ <f9935c4c-078c-4b52-5297-64ee22272664@suse.cz>
+ <f16b78bd3bb8fecf734017d40274e4c3294554ab.camel@gmx.de>
+ <240f104fc6757d8c38fa01342511eda931632d5a.camel@gmx.de>
+ <69da2ecd-a797-e264-fbfa-13108dc7a573@suse.cz>
+ <84a7bd02cf109c6a5a8c7cc2bfc2898cb98270aa.camel@gmx.de>
+ <5be1a703-9a0a-4115-1d69-634e5e8ecefd@suse.cz>
+ <bd121f5db01404774dbecc70bd7155f8431d8046.camel@gmx.de>
+ <76dedfc3-0497-1776-d006-486b9bfd88da@suse.cz>
+ <72a045663bf8f091ae11dd328d5e085541d54fcd.camel@gmx.de>
+ <18ca0ce9-3407-61e1-31d6-5c48e80eb5bb@suse.cz>
+Message-ID: <73f032c2-70f1-77b6-9fd2-9aca52fd5b4d@suse.cz>
+Date:   Sun, 25 Jul 2021 21:12:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <82a82077d8b02166482df754b1abb7c3fbc3c560.1627189961.git.olivier@trillion01.com>
+In-Reply-To: <18ca0ce9-3407-61e1-31d6-5c48e80eb5bb@suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,15 +83,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/21 11:07 PM, Olivier Langlois wrote:
-> [ Upstream commit 997135017716 ("io_uring: Fix race condition when sqp thread goes to sleep") ]
+On 7/25/21 6:27 PM, Vlastimil Babka wrote:
+>>> Hope fixing that helps then?
+>>
+>> Yeah, though RT should perhaps be pinned across release/re-acquire?
 > 
-> If an asynchronous completion happens before the task is preparing
-> itself to wait and set its state to TASK_INTERRUPTIBLE, the completion
-> will not wake up the sqp thread.
+> Probably not necessary, this_cpu_cmpxchg() will effectively recognize
+> being moved to a different CPU.
+> Might also move __unfreeze_partials() out of the whole loop to avoid the
+> relock. Yeah that should be better.
+> 
+>> Actually, local locks should rediscover the recursion handling skills
+>> they long had so such RT specific hole poking isn't necessary.  There
+>> previously would have been no ifdef+typo there for eyeballs to miss and
+>> miss and miss.
+> 
+> Hm, now I'm realizing that local_lock() on !RT is just
+> preempt_disable(), i.e. equivalent to get_cpu_ptr(), so some of the
+> ifdeffery could go away?
 
-Looks good to me - Greg, would you mind queueing this one up?
+How much will this explode? Thanks.
 
+----8<----
+From 99808b198bdf867951131bb9d1ca1bd1cd12b8c4 Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Fri, 23 Jul 2021 23:17:18 +0200
+Subject: [PATCH] PREEMPT_RT+SLUB_CPU_PARTIAL fix attempt
+
+---
+ mm/slub.c | 34 +++++++++++++++++++++++++++++++---
+ 1 file changed, 31 insertions(+), 3 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 581004a5aca9..d12a50b5ee6f 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -2437,13 +2437,19 @@ static void unfreeze_partials(struct kmem_cache *s)
+ {
+ 	struct page *partial_page;
+ 
++#ifndef CONFIG_PREEMPT_RT
+ 	do {
+ 		partial_page = this_cpu_read(s->cpu_slab->partial);
+ 
+ 	} while (partial_page &&
+ 		 this_cpu_cmpxchg(s->cpu_slab->partial, partial_page, NULL)
+ 				  != partial_page);
+-
++#else
++	local_lock(&s->cpu_slab->lock);
++	partial_page = this_cpu_read(s->cpu_slab->partial);
++	this_cpu_write(s->cpu_slab->partial, NULL);
++	local_unlock(&s->cpu_slab->lock);
++#endif
+ 	if (partial_page)
+ 		__unfreeze_partials(s, partial_page);
+ }
+@@ -2479,10 +2485,15 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
+ {
+ #ifdef CONFIG_SLUB_CPU_PARTIAL
+ 	struct page *oldpage;
++	struct page *page_to_unfreeze = NULL;
+ 	int pages;
+ 	int pobjects;
+ 
+-	slub_get_cpu_ptr(s->cpu_slab);
++	/*
++	 * On !RT we just want to disable preemption, on RT we need the lock
++	 * for real. This happens to match local_lock() semantics.
++	 */
++	local_lock(&s->cpu_slab->lock);
+ 	do {
+ 		pages = 0;
+ 		pobjects = 0;
+@@ -2496,7 +2507,16 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
+ 				 * partial array is full. Move the existing
+ 				 * set to the per node partial list.
+ 				 */
++#ifndef CONFIG_PREEMPT_RT
+ 				unfreeze_partials(s);
++#else
++				/*
++				 * Postpone unfreezing until we drop the local
++				 * lock to avoid relocking.
++				 */
++				page_to_unfreeze = oldpage;
++#endif
++
+ 				oldpage = NULL;
+ 				pobjects = 0;
+ 				pages = 0;
+@@ -2511,9 +2531,17 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
+ 		page->pobjects = pobjects;
+ 		page->next = oldpage;
+ 
++#ifndef CONFIG_PREEMPT_RT
+ 	} while (this_cpu_cmpxchg(s->cpu_slab->partial, oldpage, page)
+ 								!= oldpage);
+-	slub_put_cpu_ptr(s->cpu_slab);
++#else
++		this_cpu_write(s->cpu_slab->partial, page);
++	} while (false);
++#endif
++
++	local_unlock(&s->cpu_slab->lock);
++	if (page_to_unfreeze)
++		__unfreeze_partials(s, page_to_unfreeze);
+ #endif	/* CONFIG_SLUB_CPU_PARTIAL */
+ }
+ 
 -- 
-Jens Axboe
+2.32.0
 
