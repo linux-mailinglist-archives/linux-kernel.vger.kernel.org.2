@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656A03D62DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886BE3D6027
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237344AbhGZPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:40:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37524 "EHLO mail.kernel.org"
+        id S237105AbhGZPVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:21:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236311AbhGZPWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E2560E09;
-        Mon, 26 Jul 2021 16:03:11 +0000 (UTC)
+        id S236307AbhGZPLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:11:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7CC860F59;
+        Mon, 26 Jul 2021 15:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315392;
-        bh=Ml+v5mmUAfUMXtSAUxI4wpiAvp73LQMS1oak9jPsWXY=;
+        s=korg; t=1627314705;
+        bh=uBHGnnweV2Kr9KOe4qq44mmeWZOuKU4teDMHUGPBclc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EOV0I4BXJihIEAdefH9e/XUrrURB0F/mdNPO9DFugLlKpVq4s8qBR7zLxSwls58iW
-         V5V2QArlnBK+v8fIsM0iNuab3kiEpwC4ZX8m3nW5NAAIHekeK3yLVi8xatYes4ymKi
-         uWziyfsq+0NdbHzKY3nuJ+ANWXZG+eMOlkp3LcgU=
+        b=bA7nU5kHr12iV4xuJkK35z7YB3maJ7zKXgSdSmR3yIZCWT80l0VN9QwIkeUwtYmrH
+         l9iaIpbRgpLS+Iio94Qi2EZxkQsouN5MhajkXrWj+PpPT5pd/mmgu5iR5NqwgJJRMZ
+         VSIzXCIt1YhghgQTzuL803KmF//C7SvvXN/0+GJQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 079/167] bnxt_en: dont disable an already disabled PCI device
+Subject: [PATCH 4.19 060/120] igb: Fix position of assignment to *ring
 Date:   Mon, 26 Jul 2021 17:38:32 +0200
-Message-Id: <20210726153842.060021157@linuxfoundation.org>
+Message-Id: <20210726153834.310818370@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
 
-[ Upstream commit c81cfb6256d90ea5ba4a6fb280ea3b171be4e05c ]
+[ Upstream commit 382a7c20d9253bcd5715789b8179528d0f3de72c ]
 
-If device is already disabled in reset path and PCI io error is
-detected before the device could be enabled, driver could
-call pci_disable_device() for already disabled device. Fix this
-problem by calling pci_disable_device() only if the device is already
-enabled.
+Assignment to *ring should be done after correctness check of the
+argument queue.
 
-Fixes: 6316ea6db93d ("bnxt_en: Enable AER support.")
-Signed-off-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 91db364236c8 ("igb: Refactor igb_configure_cbs()")
+Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 3 ++-
+ drivers/net/ethernet/intel/igb/igb_main.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index db1b89f57079..f003f08de167 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -12901,7 +12901,8 @@ static pci_ers_result_t bnxt_io_error_detected(struct pci_dev *pdev,
- 	if (netif_running(netdev))
- 		bnxt_close(netdev);
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 243e304c35cd..6221dafc76b9 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -1692,14 +1692,15 @@ static bool is_any_txtime_enabled(struct igb_adapter *adapter)
+  **/
+ static void igb_config_tx_modes(struct igb_adapter *adapter, int queue)
+ {
+-	struct igb_ring *ring = adapter->tx_ring[queue];
+ 	struct net_device *netdev = adapter->netdev;
+ 	struct e1000_hw *hw = &adapter->hw;
++	struct igb_ring *ring;
+ 	u32 tqavcc, tqavctrl;
+ 	u16 value;
  
--	pci_disable_device(pdev);
-+	if (pci_is_enabled(pdev))
-+		pci_disable_device(pdev);
- 	bnxt_free_ctx_mem(bp);
- 	kfree(bp->ctx);
- 	bp->ctx = NULL;
+ 	WARN_ON(hw->mac.type != e1000_i210);
+ 	WARN_ON(queue < 0 || queue > 1);
++	ring = adapter->tx_ring[queue];
+ 
+ 	/* If any of the Qav features is enabled, configure queues as SR and
+ 	 * with HIGH PRIO. If none is, then configure them with LOW PRIO and
 -- 
 2.30.2
 
