@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461DC3D6301
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8A83D6218
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237835AbhGZPnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39348 "EHLO mail.kernel.org"
+        id S236127AbhGZPeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237799AbhGZPYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BEA560240;
-        Mon, 26 Jul 2021 16:04:39 +0000 (UTC)
+        id S236711AbhGZPTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:19:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C08260F8F;
+        Mon, 26 Jul 2021 15:59:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315480;
-        bh=/sIjH0jkwG4GR2cVYMRa2esngUBVJDJRKHCiV0B+sF0=;
+        s=korg; t=1627315181;
+        bh=K1ADPbmNrthRVbeq//bPPCUL+SkUW8YFVKW9/cweEkE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SnPtGlLaa2r/OmU/5QFUDrwG5VDNJiLThFHlMSZlir49ZGVKbQ8ZRY46b9NSR1QDG
-         xUjB72r/iaP0nWK17SzyxAjnSYtW+g6tlN7SqfDxNHInbv7h6sZ76Mt2a32c+tEf/f
-         rlVJhlteq4riI68qe+xZfutjs9h6rtaTEqo/c3QA=
+        b=djp8WabsyRK44QSpHDt8Qi+9OQbgUVG4nw0mIRb29ASdi0qY13mf07ofHKJ0pgSh1
+         KMV4s/Rz+Bct68LIOwNGIA8O+mIVYnSG8CXhD1QGxrGsp+/sycH0zgtV8lIQg6ZkCY
+         6ex0dmveIsa9WANaS7BSVNmHlmJCBCF/HksIwqZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Sujit Kautkar <sujitka@chromium.org>,
-        Zubin Mithra <zsm@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 106/167] mmc: core: Dont allocate IDA for OF aliases
-Date:   Mon, 26 Jul 2021 17:38:59 +0200
-Message-Id: <20210726153842.954553922@linuxfoundation.org>
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 059/108] ipv6: fix another slab-out-of-bounds in fib6_nh_flush_exceptions
+Date:   Mon, 26 Jul 2021 17:39:00 +0200
+Message-Id: <20210726153833.585864785@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,94 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Paolo Abeni <pabeni@redhat.com>
 
-commit 10252bae863d09b9648bed2e035572d207200ca1 upstream.
+[ Upstream commit 8fb4792f091e608a0a1d353dfdf07ef55a719db5 ]
 
-There's a chance that the IDA allocated in mmc_alloc_host() is not freed
-for some time because it's freed as part of a class' release function
-(see mmc_host_classdev_release() where the IDA is freed). If another
-thread is holding a reference to the class, then only once all balancing
-device_put() calls (in turn calling kobject_put()) have been made will
-the IDA be released and usable again.
+While running the self-tests on a KASAN enabled kernel, I observed a
+slab-out-of-bounds splat very similar to the one reported in
+commit 821bbf79fe46 ("ipv6: Fix KASAN: slab-out-of-bounds Read in
+ fib6_nh_flush_exceptions").
 
-Normally this isn't a problem because the kobject is released before
-anything else that may want to use the same number tries to again, but
-with CONFIG_DEBUG_KOBJECT_RELEASE=y and OF aliases it becomes pretty
-easy to try to allocate an alias from the IDA twice while the first time
-it was allocated is still pending a call to ida_simple_remove(). It's
-also possible to trigger it by using CONFIG_DEBUG_KOBJECT_RELEASE and
-probe defering a driver at boot that calls mmc_alloc_host() before
-trying to get resources that may defer likes clks or regulators.
+We additionally need to take care of fib6_metrics initialization
+failure when the caller provides an nh.
 
-Instead of allocating from the IDA in this scenario, let's just skip it
-if we know this is an OF alias. The number is already "claimed" and
-devices that aren't using OF aliases won't try to use the claimed
-numbers anyway (see mmc_first_nonreserved_index()). This should avoid
-any issues with mmc_alloc_host() returning failures from the
-ida_simple_get() in the case that we're using an OF alias.
+The fix is similar, explicitly free the route instead of calling
+fib6_info_release on a half-initialized object.
 
-Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Sujit Kautkar <sujitka@chromium.org>
-Reported-by: Zubin Mithra <zsm@chromium.org>
-Fixes: fa2d0aa96941 ("mmc: core: Allow setting slot index via device tree alias")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20210623075002.1746924-3-swboyd@chromium.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f88d8ea67fbdb ("ipv6: Plumb support for nexthop object in a fib6_info")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/core/host.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ net/ipv6/route.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mmc/core/host.c
-+++ b/drivers/mmc/core/host.c
-@@ -74,7 +74,8 @@ static void mmc_host_classdev_release(st
- {
- 	struct mmc_host *host = cls_dev_to_mmc_host(dev);
- 	wakeup_source_unregister(host->ws);
--	ida_simple_remove(&mmc_host_ida, host->index);
-+	if (of_alias_get_id(host->parent->of_node, "mmc") < 0)
-+		ida_simple_remove(&mmc_host_ida, host->index);
- 	kfree(host);
- }
- 
-@@ -436,7 +437,7 @@ static int mmc_first_nonreserved_index(v
-  */
- struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
- {
--	int err;
-+	int index;
- 	struct mmc_host *host;
- 	int alias_id, min_idx, max_idx;
- 
-@@ -449,20 +450,19 @@ struct mmc_host *mmc_alloc_host(int extr
- 
- 	alias_id = of_alias_get_id(dev->of_node, "mmc");
- 	if (alias_id >= 0) {
--		min_idx = alias_id;
--		max_idx = alias_id + 1;
-+		index = alias_id;
- 	} else {
- 		min_idx = mmc_first_nonreserved_index();
- 		max_idx = 0;
--	}
- 
--	err = ida_simple_get(&mmc_host_ida, min_idx, max_idx, GFP_KERNEL);
--	if (err < 0) {
--		kfree(host);
--		return NULL;
-+		index = ida_simple_get(&mmc_host_ida, min_idx, max_idx, GFP_KERNEL);
-+		if (index < 0) {
-+			kfree(host);
-+			return NULL;
-+		}
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index b903fe28ce50..d6fc22f7d7a6 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -3655,7 +3655,7 @@ static struct fib6_info *ip6_route_info_create(struct fib6_config *cfg,
+ 		err = PTR_ERR(rt->fib6_metrics);
+ 		/* Do not leave garbage there. */
+ 		rt->fib6_metrics = (struct dst_metrics *)&dst_default_metrics;
+-		goto out;
++		goto out_free;
  	}
  
--	host->index = err;
-+	host->index = index;
- 
- 	dev_set_name(&host->class_dev, "mmc%d", host->index);
- 	host->ws = wakeup_source_register(NULL, dev_name(&host->class_dev));
+ 	if (cfg->fc_flags & RTF_ADDRCONF)
+-- 
+2.30.2
+
 
 
