@@ -2,109 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AAB3D6934
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 746953D6930
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhGZVXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:23:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42262 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233380AbhGZVX3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:23:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627337035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WeoSATKCsUczJoZWnPn33Qg+mplhNYCcnwstKUtpHBs=;
-        b=iDC+E6JIpUXgLXUJMv0XOcWN+j5pUYTlfWKTNqIbvHGnS2BUioqYXt8ls/+z0eO8HvirLa
-        Oo5tgpknlBVoeCVUCWUEkZVuX9Eso4QvoX+umQ1zLRIFH9tbexlQVFo7MuJThStyvdEV/A
-        jF5J8egffPwwcIACDErkNDYahHVxKxg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-u7IkuenBMCqDZGY2-0Xbdw-1; Mon, 26 Jul 2021 18:02:48 -0400
-X-MC-Unique: u7IkuenBMCqDZGY2-0Xbdw-1
-Received: by mail-ej1-f69.google.com with SMTP id n9-20020a1709063789b02905854bda39fcso866683ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:02:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WeoSATKCsUczJoZWnPn33Qg+mplhNYCcnwstKUtpHBs=;
-        b=MeNtpSoAdLGYFhiOMcPrTV4jKvf53fNlAeUEHXvXdbczT5hhdk/xJm9pbJlTfZLcRI
-         Y8WIfAxoWIecVOyWWCl5QZ8Foz/omAhp7c7qqArUly1pwUnEDHCGjc6/M5Gmf1d4gc/v
-         b/wQjsQDLF3OoV5IOfEAspzVis09noPasQZ6ZIcDHXJKM0KelenZxnwEr+CszNCzDHsM
-         GMx7EMv7YhMvsLAsXaq8HURpTZByvKY3oUU7MFYbnweC2UVDvQiyC0a2ziI8hOiHFcQU
-         0lXGC/yPSSPPxY//Cux6j40qB/Kgi0geQWGWIOXXXXJtrKXT0JYKbBmO/tmcRRG5/qM9
-         AqxQ==
-X-Gm-Message-State: AOAM533t1D6SQfmCs0MTHmUJjz+ybe4bETC+kiyAzAujAFArFhKMyC8G
-        Z9CZwnmMwwmf0qyrvU8uHMOgVJTa2Gzi47ozJ5zYv0Mb3lYYS337kN/uU7tFXdv3soo/9LL2jQ7
-        3c8/H2Dv37jyoVVzFbfdtkqY/
-X-Received: by 2002:a17:906:c834:: with SMTP id dd20mr12151125ejb.371.1627336967604;
-        Mon, 26 Jul 2021 15:02:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvH/3aCqmYYflBf/gRwLdTFogim/fAaLvtF2xdQqxRPsK9uaxN0bsiIQHQ3PcBI8SRCAJd/g==
-X-Received: by 2002:a17:906:c834:: with SMTP id dd20mr12151108ejb.371.1627336967433;
-        Mon, 26 Jul 2021 15:02:47 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
-        by smtp.gmail.com with ESMTPSA id n13sm262249ejk.97.2021.07.26.15.02.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 15:02:46 -0700 (PDT)
-Subject: Re: [PATCH 4.19 111/120] KVM: do not assume PTE is writable after
- follow_pfn
-To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>,
-        David Stevens <stevensd@google.com>, 3pvd@google.com,
-        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-References: <20210726153832.339431936@linuxfoundation.org>
- <20210726153836.031515657@linuxfoundation.org>
- <CADVatmOcg_7eQno88nu4ijX9QOoA0h2QY=hoj3TZU+tNqj0TMg@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8cf86f5f-480a-7093-e890-467f290b0ed3@redhat.com>
-Date:   Tue, 27 Jul 2021 00:02:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233162AbhGZVWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:22:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231839AbhGZVWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 17:22:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC6A060F37;
+        Mon, 26 Jul 2021 22:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627336992;
+        bh=gZEtpD5ttAyQ52+nu82eAAbPdSUGMQ3iJJ5aYY960/c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=nnA/ezjPAOKv/UFOUMRwSMO3qufjx5+Wf9fN1clFcgLZb99yefbdce1x9WrUW79hS
+         48h1JibMF3fLPRR5e6zNxofoL6UWUgIT3RSaUw8Aq8fTyFV1q8gmWBnJL3s2jDGS29
+         oC/99jumoxT4n13QAEAM4pJmPvICFteMjEUnnQ2SCExpT1liu6NmtYvyB/ckeTA/wb
+         g5Xx2mASwoUR+YFu4TUMUsGhNKc/2ghEo8myS+FxNK//GTAo0X00SALHRrTljDPt5z
+         ip7RD4OLnjRitFtqnTwhjlf9dB6cZQyR7l2SBdIBbO1W2NBfbGa+UbQkyKFdkcf5wG
+         hSdUm+xbfG46Q==
+Date:   Mon, 26 Jul 2021 17:03:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Victor Ding <victording@google.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Subject: Re: [PATCH v2] PCI/ASPM: Disable ASPM when save/restore PCI state
+Message-ID: <20210726220307.GA647936@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <CADVatmOcg_7eQno88nu4ijX9QOoA0h2QY=hoj3TZU+tNqj0TMg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311173433.GA2071075@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/21 23:17, Sudip Mukherjee wrote:
-> Hi Greg,
+On Thu, Mar 11, 2021 at 11:34:33AM -0600, Bjorn Helgaas wrote:
+> On Thu, Jan 28, 2021 at 03:52:42PM +0000, Victor Ding wrote:
+> > Certain PCIe devices (e.g. GL9750) have high penalties (e.g. high Port
+> > T_POWER_ON) when exiting L1 but enter L1 aggressively. As a result,
+> > such devices enter and exit L1 frequently during pci_save_state and
+> > pci_restore_state; eventually causing poor suspend/resume performance.
+> > 
+> > Based on the observation that PCI accesses dominance pci_save_state/
+> > pci_restore_state plus these accesses are fairly close to each other, the
+> > actual time the device could stay in low power states is negligible.
+> > Therefore, the little power-saving benefit from ASPM during suspend/resume
+> > does not overweight the performance degradation caused by high L1 exit
+> > penalties.
+> > 
+> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211187
 > 
-> On Mon, Jul 26, 2021 at 4:58 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> From: Paolo Bonzini <pbonzini@redhat.com>
->>
->> commit bd2fae8da794b55bf2ac02632da3a151b10e664c upstream.
+> Thanks for this!
 > 
-> The build of mips malta_kvm_defconfig fails with the error:
-> In file included from arch/mips/kvm/../../../virt/kvm/kvm_main.c:21:
-> arch/mips/kvm/../../../virt/kvm/kvm_main.c: In function 'hva_to_pfn_remapped':
-> ./include/linux/kvm_host.h:70:33: error: conversion from 'long long
-> unsigned int' to 'long unsigned int' changes value from
-> '9218868437227405314' to '2' [-Werror=overflow]
->     70 | #define KVM_PFN_ERR_RO_FAULT    (KVM_PFN_ERR_MASK + 2)
->        |                                 ^
-> arch/mips/kvm/../../../virt/kvm/kvm_main.c:1530:23: note: in expansion
-> of macro 'KVM_PFN_ERR_RO_FAULT'
->   1530 |                 pfn = KVM_PFN_ERR_RO_FAULT;
+> This device can tolerate unlimited delay for L1 exit (DevCtl Endpoint
+> L1 Acceptable Latency is unlimited) and it makes no guarantees about
+> how fast it can exit L1 (LnkCap L1 Exit Latency is also unlimited), so
+> I think there's basically no restriction on when it can enter ASPM
+> L1.0.
 > 
-> It built fine after reverting this patch.
-> gcc version 11.1.1 20210723
+> I have a hard time interpreting the L1.2 entry conditions in PCIe
+> r5.0, sec 5.5.1, but I can believe it enters L1.2 aggressively since
+> the device says it can tolerate any latencies.
+> 
+> If L1.2 exit takes 3100us, it could do ~60 L1 exits in 200ms.  I guess
+> config accesses and code execution can account for some of that, but
+> still seems like a lot of L1 entries/exits during suspend.  I wouldn't
+> think we would touch the device that much and that intermittently.
+> 
+> > Signed-off-by: Victor Ding <victording@google.com>
+> > 
+> > ---
+> > 
+> > Changes in v2:
+> > - Updated commit message to remove unnecessary information
+> > - Fixed a bug reading wrong register in pcie_save_aspm_control
+> > - Updated to reuse existing pcie_config_aspm_dev where possible
+> > - Fixed goto label style
+> > 
+> >  drivers/pci/pci.c       | 18 +++++++++++++++---
+> >  drivers/pci/pci.h       |  6 ++++++
+> >  drivers/pci/pcie/aspm.c | 27 +++++++++++++++++++++++++++
+> >  include/linux/pci.h     |  1 +
+> >  4 files changed, 49 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 32011b7b4c04..9ea88953f90b 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -1542,6 +1542,10 @@ static void pci_restore_ltr_state(struct pci_dev *dev)
+> >  int pci_save_state(struct pci_dev *dev)
+> >  {
+> >  	int i;
+> > +
+> > +	pcie_save_aspm_control(dev);
+> > +	pcie_disable_aspm(dev);
+> 
+> If I understand this patch correctly, it basically does this:
+> 
+>     pci_save_state
+>   +   pcie_save_aspm_control
+>   +   pcie_disable_aspm
+>       <save state>
+>   +   pcie_restore_aspm_control
+> 
+> The <save state> part is just a bunch of config reads with very little
+> other code execution.  I'm really surprised that there's enough time
+> between config reads for the link to go to L1.  I guess you've
+> verified that this does speed up suspend significantly, but this just
+> doesn't make sense to me.
+> 
+> In the bugzilla you say the GL9750 can go to L1.2 after ~4us of
+> inactivity.  That's enough time for a lot of code execution.  We must
+> be missing something.  There's so much PCI traffic during save/restore
+> that it should be easy to match up the analyzer trace with the code.
+> Can you get any insight into what's going on that way?
 
-I'll resend a version that works tomorrow (including the second patch 
-too, which depends on this one for context).
+I'm dropping this for now, pending a better understanding of what's
+going on.
 
-Paolo
-
+> >  	/* XXX: 100% dword access ok here? */
+> >  	for (i = 0; i < 16; i++) {
+> >  		pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
+> > @@ -1552,18 +1556,22 @@ int pci_save_state(struct pci_dev *dev)
+> >  
+> >  	i = pci_save_pcie_state(dev);
+> >  	if (i != 0)
+> > -		return i;
+> > +		goto exit;
+> >  
+> >  	i = pci_save_pcix_state(dev);
+> >  	if (i != 0)
+> > -		return i;
+> > +		goto exit;
+> >  
+> >  	pci_save_ltr_state(dev);
+> >  	pci_save_aspm_l1ss_state(dev);
+> >  	pci_save_dpc_state(dev);
+> >  	pci_save_aer_state(dev);
+> >  	pci_save_ptm_state(dev);
+> > -	return pci_save_vc_state(dev);
+> > +	i = pci_save_vc_state(dev);
+> > +
+> > +exit:
+> > +	pcie_restore_aspm_control(dev);
+> > +	return i;
+> >  }
+> >  EXPORT_SYMBOL(pci_save_state);
+> >  
+> > @@ -1661,6 +1669,8 @@ void pci_restore_state(struct pci_dev *dev)
+> >  	if (!dev->state_saved)
+> >  		return;
+> >  
+> > +	pcie_disable_aspm(dev);
+> > +
+> >  	/*
+> >  	 * Restore max latencies (in the LTR capability) before enabling
+> >  	 * LTR itself (in the PCIe capability).
+> > @@ -1689,6 +1699,8 @@ void pci_restore_state(struct pci_dev *dev)
+> >  	pci_enable_acs(dev);
+> >  	pci_restore_iov_state(dev);
+> >  
+> > +	pcie_restore_aspm_control(dev);
+> > +
+> >  	dev->state_saved = false;
+> >  }
+> >  EXPORT_SYMBOL(pci_restore_state);
+> > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > index a81459159f6d..e074a0cbe73c 100644
+> > --- a/drivers/pci/pci.h
+> > +++ b/drivers/pci/pci.h
+> > @@ -584,6 +584,9 @@ void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+> >  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+> >  void pci_save_aspm_l1ss_state(struct pci_dev *dev);
+> >  void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
+> > +void pcie_save_aspm_control(struct pci_dev *dev);
+> > +void pcie_restore_aspm_control(struct pci_dev *dev);
+> > +void pcie_disable_aspm(struct pci_dev *pdev);
+> >  #else
+> >  static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+> >  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+> > @@ -591,6 +594,9 @@ static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+> >  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+> >  static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
+> >  static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
+> > +static inline void pcie_save_aspm_control(struct pci_dev *dev) { }
+> > +static inline void pcie_restore_aspm_control(struct pci_dev *dev) { }
+> > +static inline void pcie_disable_aspm(struct pci_dev *pdev) { }
+> >  #endif
+> >  
+> >  #ifdef CONFIG_PCIE_ECRC
+> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> > index a08e7d6dc248..e1e97db32e8b 100644
+> > --- a/drivers/pci/pcie/aspm.c
+> > +++ b/drivers/pci/pcie/aspm.c
+> > @@ -784,6 +784,33 @@ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+> >  					   PCI_EXP_LNKCTL_ASPMC, val);
+> >  }
+> >  
+> > +void pcie_disable_aspm(struct pci_dev *pdev)
+> > +{
+> > +	if (!pci_is_pcie(pdev))
+> > +		return;
+> > +
+> > +	pcie_config_aspm_dev(pdev, 0);
+> > +}
+> > +
+> > +void pcie_save_aspm_control(struct pci_dev *pdev)
+> > +{
+> > +	u16 lnkctl;
+> > +
+> > +	if (!pci_is_pcie(pdev))
+> > +		return;
+> > +
+> > +	pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &lnkctl);
+> > +	pdev->saved_aspm_ctl = lnkctl & PCI_EXP_LNKCTL_ASPMC;
+> > +}
+> > +
+> > +void pcie_restore_aspm_control(struct pci_dev *pdev)
+> > +{
+> > +	if (!pci_is_pcie(pdev))
+> > +		return;
+> > +
+> > +	pcie_config_aspm_dev(pdev, pdev->saved_aspm_ctl);
+> > +}
+> > +
+> >  static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
+> >  {
+> >  	u32 upstream = 0, dwstream = 0;
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index b32126d26997..a21bfd6e3f89 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -387,6 +387,7 @@ struct pci_dev {
+> >  	unsigned int	ltr_path:1;	/* Latency Tolerance Reporting
+> >  					   supported from root to here */
+> >  	u16		l1ss;		/* L1SS Capability pointer */
+> > +	u16		saved_aspm_ctl; /* ASPM Control saved at suspend time */
+> >  #endif
+> >  	unsigned int	eetlp_prefix_path:1;	/* End-to-End TLP Prefix */
+> >  
+> > -- 
+> > 2.30.0.280.ga3ce27912f-goog
+> > 
