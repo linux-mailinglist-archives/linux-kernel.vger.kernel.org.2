@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999C13D631E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583FC3D60BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238846AbhGZPob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
+        id S237709AbhGZPYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237765AbhGZPYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C4260F5A;
-        Mon, 26 Jul 2021 16:04:37 +0000 (UTC)
+        id S237428AbhGZPPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9600D61040;
+        Mon, 26 Jul 2021 15:55:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315478;
-        bh=rqdLP8v9JW5gP1K232CCcqSKiXV/Hhn8DC/DNiPw1AY=;
+        s=korg; t=1627314918;
+        bh=xoeTu/ciy1ZBjGG7vZFaW5uf4HESNU5jCY6YOJCYCMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u0I3qYncs8Inw4zvZjdiPVZcWlE9rIoeq7AMZQy3knsFh6HDzXg5fp0F1l2gKkt0X
-         FlAlqYl+BIcsGm+qkxu9Jl+5I9w4bAbaq2imKPjLqBqCwhDuLerb5WiZ0zEcx4DIDQ
-         DM5/g3k0xv4F2syo7RiCgDnDtZcNCsULZxsvQgAg=
+        b=aeQdAKhfE49HSUIvskgn31T/2AyGooYzGab0Ew7zekhTwZQRDOXXCDyJ31ua64Y8w
+         unuao/8xYBQJLuqyr6ypezeoARf5w5dJgd6/4ByVDA9qXWIyoQXOpTnSKHD4ZEcfNa
+         GYZrT97NIxU2lzm34ODohUMsdnsYtXxBfQkiG9ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Skakun <roman_skakun@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>,
+        stable@vger.kernel.org, Casey Chen <cachen@purestorage.com>,
+        Keith Busch <kbusch@kernel.org>,
         Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 067/167] dma-mapping: handle vmalloc addresses in dma_common_{mmap,get_sgtable}
+Subject: [PATCH 5.4 019/108] nvme-pci: do not call nvme_dev_remove_admin from nvme_remove
 Date:   Mon, 26 Jul 2021 17:38:20 +0200
-Message-Id: <20210726153841.638142955@linuxfoundation.org>
+Message-Id: <20210726153832.309371513@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,68 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roman Skakun <Roman_Skakun@epam.com>
+From: Casey Chen <cachen@purestorage.com>
 
-[ Upstream commit 40ac971eab89330d6153e7721e88acd2d98833f9 ]
+[ Upstream commit 251ef6f71be2adfd09546a26643426fe62585173 ]
 
-xen-swiotlb can use vmalloc backed addresses for dma coherent allocations
-and uses the common helpers.  Properly handle them to unbreak Xen on
-ARM platforms.
+nvme_dev_remove_admin could free dev->admin_q and the admin_tagset
+while they are being accessed by nvme_dev_disable(), which can be called
+by nvme_reset_work via nvme_remove_dead_ctrl.
 
-Fixes: 1b65c4e5a9af ("swiotlb-xen: use xen_alloc/free_coherent_pages")
-Signed-off-by: Roman Skakun <roman_skakun@epam.com>
-Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
-[hch: split the patch, renamed the helpers]
+Commit cb4bfda62afa ("nvme-pci: fix hot removal during error handling")
+intended to avoid requests being stuck on a removed controller by killing
+the admin queue. But the later fix c8e9e9b7646e ("nvme-pci: unquiesce
+admin queue on shutdown"), together with nvme_dev_disable(dev, true)
+right before nvme_dev_remove_admin() could help dispatch requests and
+fail them early, so we don't need nvme_dev_remove_admin() any more.
+
+Fixes: cb4bfda62afa ("nvme-pci: fix hot removal during error handling")
+Signed-off-by: Casey Chen <cachen@purestorage.com>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/dma/ops_helpers.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/nvme/host/pci.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-index 910ae69cae77..af4a6ef48ce0 100644
---- a/kernel/dma/ops_helpers.c
-+++ b/kernel/dma/ops_helpers.c
-@@ -5,6 +5,13 @@
-  */
- #include <linux/dma-map-ops.h>
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 2cb2ead7615b..f9dba1a3e655 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2954,7 +2954,6 @@ static void nvme_remove(struct pci_dev *pdev)
+ 	if (!pci_device_is_present(pdev)) {
+ 		nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DEAD);
+ 		nvme_dev_disable(dev, true);
+-		nvme_dev_remove_admin(dev);
+ 	}
  
-+static struct page *dma_common_vaddr_to_page(void *cpu_addr)
-+{
-+	if (is_vmalloc_addr(cpu_addr))
-+		return vmalloc_to_page(cpu_addr);
-+	return virt_to_page(cpu_addr);
-+}
-+
- /*
-  * Create scatter-list for the already allocated DMA buffer.
-  */
-@@ -12,7 +19,7 @@ int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
- 		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
- 		 unsigned long attrs)
- {
--	struct page *page = virt_to_page(cpu_addr);
-+	struct page *page = dma_common_vaddr_to_page(cpu_addr);
- 	int ret;
- 
- 	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-@@ -32,6 +39,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
- 	unsigned long user_count = vma_pages(vma);
- 	unsigned long count = PAGE_ALIGN(size) >> PAGE_SHIFT;
- 	unsigned long off = vma->vm_pgoff;
-+	struct page *page = dma_common_vaddr_to_page(cpu_addr);
- 	int ret = -ENXIO;
- 
- 	vma->vm_page_prot = dma_pgprot(dev, vma->vm_page_prot, attrs);
-@@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
- 		return -ENXIO;
- 
- 	return remap_pfn_range(vma, vma->vm_start,
--			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-+			page_to_pfn(page) + vma->vm_pgoff,
- 			user_count << PAGE_SHIFT, vma->vm_page_prot);
- #else
- 	return -ENXIO;
+ 	flush_work(&dev->ctrl.reset_work);
 -- 
 2.30.2
 
