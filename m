@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F303D653E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02EE3D653C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240132AbhGZQcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:32:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43220 "EHLO
+        id S240086AbhGZQcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:32:10 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:43232 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238426AbhGZQcB (ORCPT
+        with ESMTP id S238451AbhGZQcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 12:32:01 -0400
-Date:   Mon, 26 Jul 2021 17:12:27 -0000
+Date:   Mon, 26 Jul 2021 17:12:28 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627319548;
+        s=2020; t=1627319549;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fTU568eMFg95TCJD5/qloYKLPleA5Zv4nd251pwYRP4=;
-        b=V2/GazBgVcdibe69vN8J9AYtRfCSlNAReUx/elOuyc4TBLYesKmETsEsOpkZfPxhODeQFp
-        UAln8saLRRvMF7Kt+0FZ1HPm2ejm0xfu1ORgHPOMO7jaN11pjZEjDu4EIN3V7xTcavGJGc
-        l3mPKSQ2BRFJ4MCB4cAh1PhyQ0zRwbwXLTrI4rU6d79b3v7darh3Zf0vdjYsnufWOdAp6O
-        V6qgXxdrMHQD31FZsnEAl5SK1rfXUASphPB6GR+lX87qLKycAmQVxCC1XecRbXg/YSpdht
-        tTUMiB6SdL3PLWwacRiG3lAtktJazLPHVb51G4/XLRkxcwzXS5mFY/l8gpcSPw==
+        bh=jjwFOzEvCpnIYax6TwvZF4n+douLNj2+deJp0qAc48w=;
+        b=hOSlhHK86zUYLKVKJfR7tOK6nrRH/IPaN6FeUlcT/ireknTYrTqcqoOGh4KimnqZrdTsy6
+        61lc18VjRz6lL+2lhz+SuTr4YhaiaHkQTpTAAWx90CQUYZVUkDMFLOvmQB2GBy+W9X6lR8
+        8m1UrWzpwynMPf2QjpAc6UXqgG4gfBhQ/2Q0eVI27SogAtGic4xeCgrKMmhLbbJYsom+7k
+        SX+l5AXsUkeieKPwOEDfizYgSx+9XNDlpTVrkzIkQay921+ZTYB4LNYJFY7yz5t0rH82jb
+        fYvCUBSd9qzsMisXh6xKrOKqK9EWZ4x+82vnIrHczEJVEM65OewF6A/D1V5DYg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627319548;
+        s=2020e; t=1627319549;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fTU568eMFg95TCJD5/qloYKLPleA5Zv4nd251pwYRP4=;
-        b=K8mB+drmY9rSpOJDkzbldDt9oVZrb+zGQZtQk1vUizjQ36aRIXgqxBi0HSCVtfrlsQvYCo
-        kgQV/CpEQj2veZAg==
+        bh=jjwFOzEvCpnIYax6TwvZF4n+douLNj2+deJp0qAc48w=;
+        b=1NU7CoRseEOiyCvQsTUjPJlkYO4iVRVbHk+8vOs15cmUMX3LfCmUXY0eD6thw0Qu0ZbmvU
+        4BEPrk+4TnjXWUCg==
 From:   "irqchip-bot for Andy Shevchenko" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/mvebu-gicp: Switch to
- devm_bitmap_zalloc()
+Subject: [irqchip: irq/irqchip-next] irqchip/gic-v3: Switch to bitmap_zalloc()
 Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20210618151657.65305-6-andriy.shevchenko@linux.intel.com>
-References: <20210618151657.65305-6-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210618151657.65305-4-andriy.shevchenko@linux.intel.com>
+References: <20210618151657.65305-4-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <162731954761.395.6848819484423689827.tip-bot2@tip-bot2>
+Message-ID: <162731954862.395.11063210729777385233.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,37 +57,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     3db3969f5375fe0a43c03cb4b55ed643585b140d
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/3db3969f5375fe0a43c03cb4b55ed643585b140d
+Commit-ID:     ff5fe8867a5feaf90b1cb9b766f3de3a1caf9f33
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/ff5fe8867a5feaf90b1cb9b766f3de3a1caf9f33
 Author:        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-AuthorDate:    Fri, 18 Jun 2021 18:16:56 +03:00
+AuthorDate:    Fri, 18 Jun 2021 18:16:54 +03:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Mon, 26 Jul 2021 18:04:10 +01:00
+CommitterDate: Mon, 26 Jul 2021 18:04:01 +01:00
 
-irqchip/mvebu-gicp: Switch to devm_bitmap_zalloc()
+irqchip/gic-v3: Switch to bitmap_zalloc()
 
-Switch to devm_bitmap_zalloc() to show clearly what we are allocating.
+Switch to bitmap_zalloc() to show clearly what we are allocating.
 Besides that it returns pointer of bitmap type instead of opaque void *.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210618151657.65305-6-andriy.shevchenko@linux.intel.com
+Link: https://lore.kernel.org/r/20210618151657.65305-4-andriy.shevchenko@linux.intel.com
 ---
- drivers/irqchip/irq-mvebu-gicp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/irqchip/irq-gic-v3-its.c | 6 +++---
+ drivers/irqchip/irq-gic-v3-mbi.c | 5 ++---
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/irqchip/irq-mvebu-gicp.c b/drivers/irqchip/irq-mvebu-gicp.c
-index 3be5c5d..fe88a78 100644
---- a/drivers/irqchip/irq-mvebu-gicp.c
-+++ b/drivers/irqchip/irq-mvebu-gicp.c
-@@ -210,9 +210,7 @@ static int mvebu_gicp_probe(struct platform_device *pdev)
- 		gicp->spi_cnt += gicp->spi_ranges[i].count;
- 	}
+diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+index ba39668..7f40dca 100644
+--- a/drivers/irqchip/irq-gic-v3-its.c
++++ b/drivers/irqchip/irq-gic-v3-its.c
+@@ -2140,7 +2140,7 @@ static unsigned long *its_lpi_alloc(int nr_irqs, u32 *base, int *nr_ids)
+ 	if (err)
+ 		goto out;
  
--	gicp->spi_bitmap = devm_kcalloc(&pdev->dev,
--				BITS_TO_LONGS(gicp->spi_cnt), sizeof(long),
--				GFP_KERNEL);
-+	gicp->spi_bitmap = devm_bitmap_zalloc(&pdev->dev, gicp->spi_cnt, GFP_KERNEL);
- 	if (!gicp->spi_bitmap)
- 		return -ENOMEM;
+-	bitmap = kcalloc(BITS_TO_LONGS(nr_irqs), sizeof (long), GFP_ATOMIC);
++	bitmap = bitmap_zalloc(nr_irqs, GFP_ATOMIC);
+ 	if (!bitmap)
+ 		goto out;
+ 
+@@ -2156,7 +2156,7 @@ out:
+ static void its_lpi_free(unsigned long *bitmap, u32 base, u32 nr_ids)
+ {
+ 	WARN_ON(free_lpi_range(base, nr_ids));
+-	kfree(bitmap);
++	bitmap_free(bitmap);
+ }
+ 
+ static void gic_reset_prop_table(void *va)
+@@ -3387,7 +3387,7 @@ static struct its_device *its_create_device(struct its_node *its, u32 dev_id,
+ 	if (!dev || !itt ||  !col_map || (!lpi_map && alloc_lpis)) {
+ 		kfree(dev);
+ 		kfree(itt);
+-		kfree(lpi_map);
++		bitmap_free(lpi_map);
+ 		kfree(col_map);
+ 		return NULL;
+ 	}
+diff --git a/drivers/irqchip/irq-gic-v3-mbi.c b/drivers/irqchip/irq-gic-v3-mbi.c
+index e81e89a..b84c9c2 100644
+--- a/drivers/irqchip/irq-gic-v3-mbi.c
++++ b/drivers/irqchip/irq-gic-v3-mbi.c
+@@ -290,8 +290,7 @@ int __init mbi_init(struct fwnode_handle *fwnode, struct irq_domain *parent)
+ 		if (ret)
+ 			goto err_free_mbi;
+ 
+-		mbi_ranges[n].bm = kcalloc(BITS_TO_LONGS(mbi_ranges[n].nr_spis),
+-					   sizeof(long), GFP_KERNEL);
++		mbi_ranges[n].bm = bitmap_zalloc(mbi_ranges[n].nr_spis, GFP_KERNEL);
+ 		if (!mbi_ranges[n].bm) {
+ 			ret = -ENOMEM;
+ 			goto err_free_mbi;
+@@ -329,7 +328,7 @@ int __init mbi_init(struct fwnode_handle *fwnode, struct irq_domain *parent)
+ err_free_mbi:
+ 	if (mbi_ranges) {
+ 		for (n = 0; n < mbi_range_nr; n++)
+-			kfree(mbi_ranges[n].bm);
++			bitmap_free(mbi_ranges[n].bm);
+ 		kfree(mbi_ranges);
+ 	}
  
