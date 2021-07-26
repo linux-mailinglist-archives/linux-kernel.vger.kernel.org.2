@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58233D6533
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945DE3D65A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235958AbhGZQ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:28:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:47440 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240703AbhGZQWX (ORCPT
+        id S237364AbhGZQov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237716AbhGZQoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:22:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id B18C022025;
-        Mon, 26 Jul 2021 17:02:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627318970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FAwjGM+xVmGYEdHGyZqTvRWuEDVGbGLsmHWyTizXLgg=;
-        b=KMUhGR0hlInRskRLIj5AjMSJvlsUuU5HlzWO0Vq6usp28f2s72UvULjWbGSK39AHGdVNjc
-        ZrEiD7Sz83RNH9aSNvWxU/4j+Kh8XDnnfzrrAd/Vopm51zeMB7+85+pV/J/tiJ2tu45eP4
-        N/cbANT0fM5JxI25fHE7lr5qxeRvivs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627318970;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FAwjGM+xVmGYEdHGyZqTvRWuEDVGbGLsmHWyTizXLgg=;
-        b=Mqv4WKMaz0NjmCbEvD+unTy7KXQsBYFZShH+ZVhc20E7QercjFlOAg9EMWuXVCLsTEJ8Px
-        P1CT3FnjvyBeyzBw==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 9BD91A3B9F;
-        Mon, 26 Jul 2021 17:02:50 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 6EA851E3B13; Mon, 26 Jul 2021 19:02:50 +0200 (CEST)
-Date:   Mon, 26 Jul 2021 19:02:50 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v3 7/7] gfs2: Fix mmap + page fault deadlocks for direct
- I/O
-Message-ID: <20210726170250.GL20621@quack2.suse.cz>
-References: <20210723205840.299280-1-agruenba@redhat.com>
- <20210723205840.299280-8-agruenba@redhat.com>
+        Mon, 26 Jul 2021 12:44:39 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43541C08EA4A;
+        Mon, 26 Jul 2021 10:06:04 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id x192so16044271ybe.0;
+        Mon, 26 Jul 2021 10:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=W0uBidQDo1k3KgJjTsK5eifJjd4NTwvKhaZagQk8Cns=;
+        b=JWK2eKIhXJQSRNxf6JVQTk+juUwxRErssXxBbIjcA8IKqvFQDM/Z3foZDXYxxkjMDy
+         qh877fyC5q0MuvfRHZBIt6SemYTskypSuDmivskSSDI2UmpLBndGHxEhVJvKztG2CGqQ
+         7fWNMHvq/N1MheaPtfnKHzFlQJBoQ4NPFgzN1Asa+N2T82Pce+r+6fSYP2vewaFwMsjD
+         h5/FuxIvabLjOfX1P7KVp7XuFiKvSpSYnVq096grABOPE1QPFCFTBN8Fv8fgon6GX41C
+         cXjmJ2jMd2vtWnaoLZKllyzuI/MeUlAWClkxvo55mkme9A/5GRAI221T0sKjCOeGU8Tq
+         /o0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=W0uBidQDo1k3KgJjTsK5eifJjd4NTwvKhaZagQk8Cns=;
+        b=N8OefARsN/U5KGM6BK/s79RTZd/TMf45CrsX6rGI1jlyCWpNAJEqT+YBEADE4EmeiZ
+         WetarQdEBnQnhw6cl3yYNZ7OG12S2EKmgR2BN2Fm2pkp6MTzkUpr/ezTZvkr8o0bPRC9
+         wX+DTA8v1plO5qSAOvIBYZOC3t1warahml46Iv68ULRYttIx+FBKeM60ytsBrNyZi+OT
+         w15FauCoCKsuSy8MD2Y9xkjKMKTYw/HKWOZtFKKz4KssdUf0im5fhkjElN22UgzVBRHb
+         hHBdIWQeyFuc6dUKP6JN9WyNTiIJxZD5Vz8QY8qhXVLEyls69f01NGZ9/LTDP+dRm+3S
+         31Jg==
+X-Gm-Message-State: AOAM533vF00WC+6dZMU/L+N1paINWQ9j74/4f038JKbYFif4v+1AK2L+
+        00O7Mtq6s0CT9Q3iIETHMLEqtpAHMWO1kKEg+nk=
+X-Google-Smtp-Source: ABdhPJxrTFXd53TE3bMIC8WCAgmIrcouM/V6eoNsr9D3Wj0yPohsRZbPte/fnZR2oWciaCLOSGOVMY3/7AB1yLCI2sk=
+X-Received: by 2002:a25:250b:: with SMTP id l11mr4728034ybl.342.1627319163507;
+ Mon, 26 Jul 2021 10:06:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723205840.299280-8-agruenba@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210726153846.245305071@linuxfoundation.org> <99b34fe9-0f1f-c94f-58d5-cfb43de98d76@linaro.org>
+In-Reply-To: <99b34fe9-0f1f-c94f-58d5-cfb43de98d76@linaro.org>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Mon, 26 Jul 2021 18:05:27 +0100
+Message-ID: <CADVatmPpBKtaUtzU+APGvNE_1pqgcmXYovWOqrt8qJkRqLM25w@mail.gmail.com>
+Subject: Re: [PATCH 5.13 000/223] 5.13.6-rc1 review
+To:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Stable <stable@vger.kernel.org>, Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 23-07-21 22:58:40, Andreas Gruenbacher wrote:
-> Also disable page faults during direct I/O requests and implement the same kind
-> of retry logic as in the buffered I/O case.
-> 
-> Direct I/O requests differ from buffered I/O requests in that they use
-> bio_iov_iter_get_pages for grabbing page references and faulting in pages
-> instead of triggering real page faults.  Those manual page faults can be
-> disabled with the iocb->noio flag.
-> 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> ---
->  fs/gfs2/file.c | 34 +++++++++++++++++++++++++++++++++-
->  1 file changed, 33 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> index f66ac7f56f6d..7986f3be69d2 100644
-> --- a/fs/gfs2/file.c
-> +++ b/fs/gfs2/file.c
-> @@ -782,21 +782,41 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
->  	struct file *file = iocb->ki_filp;
->  	struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
->  	size_t count = iov_iter_count(to);
-> +	size_t written = 0;
->  	ssize_t ret;
->  
-> +	/*
-> +	 * In this function, we disable page faults when we're holding the
-> +	 * inode glock while doing I/O.  If a page fault occurs, we drop the
-> +	 * inode glock, fault in the pages manually, and then we retry.  Other
-> +	 * than in gfs2_file_read_iter, iomap_dio_rw can trigger implicit as
-> +	 * well as manual page faults, and we need to disable both kinds
-> +	 * separately.
-> +	 */
-> +
->  	if (!count)
->  		return 0; /* skip atime */
->  
->  	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-> +retry:
->  	ret = gfs2_glock_nq(gh);
->  	if (ret)
->  		goto out_uninit;
->  
-> +	pagefault_disable();
+On Mon, Jul 26, 2021 at 5:47 PM Daniel D=C3=ADaz <daniel.diaz@linaro.org> w=
+rote:
+>
+> Hello!
+>
+> On 7/26/21 10:36 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.13.6 release.
+> > There are 223 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.13.6-rc1.gz
+> > or in the git tree and branch at:
+> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.13.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> Build regressions detected across plenty of architectures and configurati=
+ons:
 
-Is there any use in pagefault_disable() here? iomap_dio_rw() should not
-trigger any page faults anyway, should it?
+I was going to report the same but just noticed that Greg has pushed out -r=
+c2.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+--=20
+Regards
+Sudip
