@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3670A3D621D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B033D6330
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237243AbhGZPed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32828 "EHLO mail.kernel.org"
+        id S239181AbhGZPpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236841AbhGZPTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 021A660F6E;
-        Mon, 26 Jul 2021 16:00:11 +0000 (UTC)
+        id S237825AbhGZPZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0596660EB2;
+        Mon, 26 Jul 2021 16:06:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315212;
-        bh=RsE2NI3sa5Azr3Ibritsf9OIwHrfBh7G+XJXY9zikck=;
+        s=korg; t=1627315578;
+        bh=ii+dbFGHyH1FdVC1uhxf2akDlFv0fY1zoL1UlIGssiQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YPtlrifRAIcWlJ06kXVBXQepzvB7OkmbrZvVbk8CPz6ttWlRuhjSszjhWQDxD3YT6
-         lxpZrCeESI2YDj7AYp47uaQoRWwZMKDdNWozftETwWM4HXVPd4TdPAjYvqrOuHNeSX
-         SCnrmgvES8hNsU6osbakTbAUMCGGpH6JBPQX1AVI=
+        b=HsKXPnyNjrSWnOhTXx7R2M0vA6kQ3/3EYG8TxARD5kR4lHEgs1J2ZwvIgTJugavb4
+         ilmMvy8aGnNMMOaS0Cn1X6rllJvSvOGhG00mdfu68i74DnvcMfAs8dJJR8Y8LkYFjV
+         rRs1kzZlnAT7y9CZBV+PkqKWNPzQRYLE54frD1M0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Robin Geuze <robin.geuze@nl.team.blue>
-Subject: [PATCH 5.4 097/108] rbd: dont hold lock_rwsem while running_list is being drained
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        syzbot+ac957324022b7132accf@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 145/167] io_uring: remove double poll entry on arm failure
 Date:   Mon, 26 Jul 2021 17:39:38 +0200
-Message-Id: <20210726153834.792089562@linuxfoundation.org>
+Message-Id: <20210726153844.274110997@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,75 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Dryomov <idryomov@gmail.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit ed9eb71085ecb7ded9a5118cec2ab70667cc7350 upstream.
+commit 46fee9ab02cb24979bbe07631fc3ae95ae08aa3e upstream.
 
-Currently rbd_quiesce_lock() holds lock_rwsem for read while blocking
-on releasing_wait completion.  On the I/O completion side, each image
-request also needs to take lock_rwsem for read.  Because rw_semaphore
-implementation doesn't allow new readers after a writer has indicated
-interest in the lock, this can result in a deadlock if something that
-needs to take lock_rwsem for write gets involved.  For example:
+__io_queue_proc() can enqueue both poll entries and still fail
+afterwards, so the callers trying to cancel it should also try to remove
+the second poll entry (if any).
 
-1. watch error occurs
-2. rbd_watch_errcb() takes lock_rwsem for write, clears owner_cid and
-   releases lock_rwsem
-3. after reestablishing the watch, rbd_reregister_watch() takes
-   lock_rwsem for write and calls rbd_reacquire_lock()
-4. rbd_quiesce_lock() downgrades lock_rwsem to for read and blocks on
-   releasing_wait until running_list becomes empty
-5. another watch error occurs
-6. rbd_watch_errcb() blocks trying to take lock_rwsem for write
-7. no in-flight image request can complete and delete itself from
-   running_list because lock_rwsem won't be granted anymore
+For example, it may leave the request alive referencing a io_uring
+context but not accessible for cancellation:
 
-A similar scenario can occur with "lock has been acquired" and "lock
-has been released" notification handers which also take lock_rwsem for
-write to update owner_cid.
+[  282.599913][ T1620] task:iou-sqp-23145   state:D stack:28720 pid:23155 ppid:  8844 flags:0x00004004
+[  282.609927][ T1620] Call Trace:
+[  282.613711][ T1620]  __schedule+0x93a/0x26f0
+[  282.634647][ T1620]  schedule+0xd3/0x270
+[  282.638874][ T1620]  io_uring_cancel_generic+0x54d/0x890
+[  282.660346][ T1620]  io_sq_thread+0xaac/0x1250
+[  282.696394][ T1620]  ret_from_fork+0x1f/0x30
 
-We don't actually get anything useful from sitting on lock_rwsem in
-rbd_quiesce_lock() -- owner_cid updates certainly don't need to be
-synchronized with.  In fact the whole owner_cid tracking logic could
-probably be removed from the kernel client because we don't support
-proxied maintenance operations.
-
-Cc: stable@vger.kernel.org # 5.3+
-URL: https://tracker.ceph.com/issues/42757
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Tested-by: Robin Geuze <robin.geuze@nl.team.blue>
+Cc: stable@vger.kernel.org
+Fixes: 18bceab101add ("io_uring: allow POLL_ADD with double poll_wait() users")
+Reported-and-tested-by: syzbot+ac957324022b7132accf@syzkaller.appspotmail.com
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/0ec1228fc5eda4cb524eeda857da8efdc43c331c.1626774457.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/rbd.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ fs/io_uring.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/block/rbd.c
-+++ b/drivers/block/rbd.c
-@@ -4239,8 +4239,6 @@ again:
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5219,6 +5219,8 @@ static __poll_t __io_arm_poll_handler(st
+ 		ipt->error = -EINVAL;
  
- static bool rbd_quiesce_lock(struct rbd_device *rbd_dev)
- {
--	bool need_wait;
--
- 	dout("%s rbd_dev %p\n", __func__, rbd_dev);
- 	lockdep_assert_held_write(&rbd_dev->lock_rwsem);
- 
-@@ -4252,11 +4250,11 @@ static bool rbd_quiesce_lock(struct rbd_
- 	 */
- 	rbd_dev->lock_state = RBD_LOCK_STATE_RELEASING;
- 	rbd_assert(!completion_done(&rbd_dev->releasing_wait));
--	need_wait = !list_empty(&rbd_dev->running_list);
--	downgrade_write(&rbd_dev->lock_rwsem);
--	if (need_wait)
--		wait_for_completion(&rbd_dev->releasing_wait);
--	up_read(&rbd_dev->lock_rwsem);
-+	if (list_empty(&rbd_dev->running_list))
-+		return true;
-+
-+	up_write(&rbd_dev->lock_rwsem);
-+	wait_for_completion(&rbd_dev->releasing_wait);
- 
- 	down_write(&rbd_dev->lock_rwsem);
- 	if (rbd_dev->lock_state != RBD_LOCK_STATE_RELEASING)
+ 	spin_lock_irq(&ctx->completion_lock);
++	if (ipt->error)
++		io_poll_remove_double(req);
+ 	if (likely(poll->head)) {
+ 		spin_lock(&poll->head->lock);
+ 		if (unlikely(list_empty(&poll->wait.entry))) {
 
 
