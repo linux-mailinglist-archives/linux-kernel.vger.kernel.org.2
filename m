@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640C63D5AA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23293D5AA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbhGZNDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        id S234214AbhGZNEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233970AbhGZNDg (ORCPT
+        with ESMTP id S233959AbhGZNE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:03:36 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5C1C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:44:03 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id m9so11321329ljp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:44:03 -0700 (PDT)
+        Mon, 26 Jul 2021 09:04:29 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1CEC061757;
+        Mon, 26 Jul 2021 06:44:57 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id c18so8820689qke.2;
+        Mon, 26 Jul 2021 06:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TLycPxviRjQS2vlWYgAqhStL9LKdE5LJjJtFS7Jae4Y=;
-        b=kM3ffQibqdlLWCaxU3irV+dXOOAiJRgpArqXCrZqUlURkhV3Uj7T8ux2Ir7Z9cReit
-         sl0WxaiR7gwq+eJ/XKMu6TRVKV1my3wGtPAGwJ2G3Qm+9koRzZtV+JdcqyUzr2EhIcfX
-         ufHWsMiRjGklH8iHGZD4IGM6CFSx+vFneLC8532Df/g/4zOZ5s5OuUE0gHkaWpz/aIH0
-         d5KATqF9cmZJGa/LlkElPYuMQubU9BvAUrDd7RNkVvdTbwypVi4BJheSfkGPEY7EHTTD
-         iqyA7t9AjMkRHoUSEBnmRaMdq0wJ7r9mri8PykgK+wl00Zw8d52GCbEaSjmhABtQmzWK
-         jg8A==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Qs7AmXeP0+kiZ5flnASci2QqNU9hj/b6onXpZ2CXaq0=;
+        b=QE9cmBKGEFzySSbGNkMyEBw1tL2GrGN9WBCDBUXZRTlK0qu0blInYBs5tgy2dz2q7+
+         WvyxQz7X5ueUjpsLMUanyad/uihJeNW/CAlg3uKx/pDQF4JUYmE+EjxD+Hi5EezJIMMP
+         hlxFVyzfN935PN+sWIBTqw2wqW6GMfh5O1YtLstMJYWRGZrtUf8lEulB0O+jf2gYIB97
+         w3IEaRWrBQEZY9pP2qKqRfgpZr+FV69SBuY2xTnsn7hZ2yGO1vw+ajWIUU1yeKnoG0Gu
+         D9b/lyBVLycRoWp73o092EHjWwFCZWXYRdPVd7LMqzjizs+Kl3AQetVjHbPO9B3tmz0X
+         cPXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TLycPxviRjQS2vlWYgAqhStL9LKdE5LJjJtFS7Jae4Y=;
-        b=XGvQaf4ucGu783bKd6yp9KqZiPYsu6d+AcEZoxVS3N47T+zGOt+cSXFjDcp2o6GHmB
-         mD/dY8RVrXE1oAmQ4xN8Ct2y1pgwixJGSOS3rjNseKWY/dQkxbluSTIC9HlskS1C9bQV
-         uWmuTCxVnsX6tBMuk3X38usxal5rWpaQ7lCGCwfXD/2lrLZ/9LfsSAVJKGUPTE/+mnKI
-         HMpJSJpYNUutSQEWJExjfNfrTdDCxwcNkO/KgMPwP0hSSVuFKHWyz5uu7rZXf376Y/7q
-         KE9FTUB/UCpkU2EK257dLBbVLZdYix6JREQsxI1uroaCfSvZJp2b64q9tPx0boX4GrbI
-         E6tQ==
-X-Gm-Message-State: AOAM531YFd628kJuRn62qo/b7RmkOD5FOuUwZTiZy6sWUr0az+VVjXxU
-        zGR+lrVuPm0sFB9ngA+1Qcqna2U9xDU9y8VBD6/rIg==
-X-Google-Smtp-Source: ABdhPJwAkFnDG7NuQtWLLexIiDYnWTWvIxBeII4m/0QIeM7dBhx7GXfH+UoikLc0g6EgogQ1N+7fjJ6zmkJsQ7tEbhE=
-X-Received: by 2002:a2e:85d7:: with SMTP id h23mr12408419ljj.279.1627307041973;
- Mon, 26 Jul 2021 06:44:01 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Qs7AmXeP0+kiZ5flnASci2QqNU9hj/b6onXpZ2CXaq0=;
+        b=eYS8mlkNpbzs5Os0e1+GzG+E/uOM93wdfQLLVlLJ+qjOi3beUH7uQlMOQZxk5rLcw8
+         a50xhKfyIoZpshwVLPhJBu92C/S6Zop5VgSOoWFWp0KQlfIuByLWreIdxh2ua+3uqU49
+         s8MOyZvnd+jz2KTKRUFeruWcT0/IHkiduD+Wk1As4Rg+ddcGkRbuMuaeE1bK2xhPWE1u
+         /BrMIJxnRV14WROg4M/IwrxhhTDP+fC0W70PSVbA0Fqwe8MG03wstdhpq8S6eexU9Cl3
+         opPzCR1GymY+pAptunTR5UixJLfsHLtUfM4egVLl0ZB6a4QiXms4tR5nfkTN04m/1jc4
+         PVjg==
+X-Gm-Message-State: AOAM531GitXac6+QsoZ3uxDkEXrmiM61h60fIAH20+U0yr2hjixfe5Yv
+        VQmNxiQICZr0ieY3DWsjD5U=
+X-Google-Smtp-Source: ABdhPJyOAAelqruyGbwa81isKM9xIOTL97U+vJVid9xXd31aDArZyyKUzvHLxmFRqv7nQ/F/zaZSKA==
+X-Received: by 2002:ae9:f501:: with SMTP id o1mr17753713qkg.348.1627307096738;
+        Mon, 26 Jul 2021 06:44:56 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m187sm18679032qkd.131.2021.07.26.06.44.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 06:44:56 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Storm <christian.storm@siemens.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>
+References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <429ceef9-d8eb-2884-0bae-95f190f75b22@roeck-us.net>
+Date:   Mon, 26 Jul 2021 06:44:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
- <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
- <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
- <YPqDnqULylkkzQG5@dhcp22.suse.cz> <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
- <CAJuCfpGmpwTv92joNuVPaEJg1PigtGQn2daywHaqF4TXjuiCWQ@mail.gmail.com>
- <CALvZod7Vb2MKgCcSYtsMd8F4sFb2K7jQk3AGSECYfKvd3MNqzQ@mail.gmail.com> <YP5jyLeYsN3JtdX8@dhcp22.suse.cz>
-In-Reply-To: <YP5jyLeYsN3JtdX8@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 26 Jul 2021 06:43:50 -0700
-Message-ID: <CALvZod4M6mF3VvAdade3n5fE1E0LQp+CeJHWLc+pHmZqqAhepg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Christoph Hellwig <hch@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 12:27 AM Michal Hocko <mhocko@suse.com> wrote:
->
-[...]
->
-> Is process_mrelease on all of them really necessary? I thought that the
-> primary reason for the call is to guarantee a forward progress in cases
-> where the userspace OOM victim cannot die on SIGKILL. That should be
-> more an exception than a normal case, no?
->
+On 7/26/21 4:46 AM, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+> 
+> Obviously, the test needs to run against the register content, not its
+> address.
+> 
+> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+> Reported-by: Mantas Mikulėnas <grawity@gmail.com>
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
 
-I am thinking of using this API in this way: On user-defined OOM
-condition, kill a job/cgroup and unconditionally reap all of its
-processes. Keep monitoring the situation and if it does not improve go
-for another kill and reap.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-I can add additional logic in between kill and reap to see if reap is
-necessary but unconditionally reaping is more simple.
+> ---
+>   drivers/watchdog/iTCO_wdt.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+> index b3f604669e2c..643c6c2d0b72 100644
+> --- a/drivers/watchdog/iTCO_wdt.c
+> +++ b/drivers/watchdog/iTCO_wdt.c
+> @@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
+>   	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+>   	 */
+>   	if (p->smi_res &&
+> -	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+> +	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+>   		tmrval /= 2;
+>   
+>   	/* from the specs: */
+> 
 
->
-> > An alternative would be to have a cgroup specific interface for
-> > reaping similar to cgroup.kill.
->
-> Could you elaborate?
->
-
-I mentioned this in [1] where I was thinking if it makes sense to
-overload cgroup.kill to also add the SIGKILLed processes in
-oom_reaper_list. The downside would be that there will be one thread
-doing the reaping and the syscall approach allows userspace to reap in
-multiple threads. I think for now, I would go with whatever Suren is
-proposing and we can always add more stuff if need arises.
-
-[1] https://lore.kernel.org/containers/CALvZod4jsb6bFzTOS4ZRAJGAzBru0oWanAhezToprjACfGm+ew@mail.gmail.com/
