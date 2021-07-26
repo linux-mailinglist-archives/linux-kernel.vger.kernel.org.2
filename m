@@ -2,81 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8873D521D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC903D5226
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhGZDWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 23:22:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35154 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231421AbhGZDWd (ORCPT
+        id S231207AbhGZDYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 23:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230321AbhGZDYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 23:22:33 -0400
-X-UUID: 76ec69579b424d7d853456f41aa59438-20210726
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=1qkMfTfeNRmsWMXbQc8lB+Iu1NAA2I+IZkOV+hmaRlY=;
-        b=n3LrDrR5TA/du10LfUrjJS6LRF2AbbmsDlYs6yci5avcTsMEzYuafFJYAkARVdtdD6nvU+xm4G23ivt6tnGjG2x4SRREcFGeKSEWYFiBc9i0tJiRJlcWL867wE82lSiCcibUnvRdBQ2tuvz2598mlmmf2j8e9rrb1xkPWYCyCKg=;
-X-UUID: 76ec69579b424d7d853456f41aa59438-20210726
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1229402346; Mon, 26 Jul 2021 12:02:58 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Jul 2021 12:02:57 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Jul 2021 12:02:57 +0800
-Message-ID: <1627272177.27642.1.camel@mtksdaap41>
-Subject: Re: [PATCH v3 2/2] dt-bindings: mediatek: add
- force_dsi_end_without_null for dsi
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Jitao Shi <jitao.shi@mediatek.com>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <stonea168@163.com>,
-        <huijuan.xie@mediatek.com>, <rex-bc.chen@mediatek.com>,
-        <shuijing.li@mediatek.com>, <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>
-Date:   Mon, 26 Jul 2021 12:02:57 +0800
-In-Reply-To: <20210726021104.80007-2-jitao.shi@mediatek.com>
-References: <20210726021104.80007-1-jitao.shi@mediatek.com>
-         <20210726021104.80007-2-jitao.shi@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sun, 25 Jul 2021 23:24:38 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB800C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:05:07 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id gs8so923296ejc.13
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IIvcSyU1E65bR7w1DDg8slGET/s8Q+m7sc5AZf8NFiE=;
+        b=hMUCP2c9a3KgKSQMGqbSls3L6icE6DQGge9ygXLIKD6TRuRMyExvyHjwxw0zKcC9T8
+         nIRCN687oSlbROKVwvlrRTnF5QE4Zqpr3ZHO7ugRFTWJW6BlSRMOnpyLdS61LYBkYHnM
+         N2/1CvH+wigM0xKkoQBTL0QsgmHN+4GbsEGNk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IIvcSyU1E65bR7w1DDg8slGET/s8Q+m7sc5AZf8NFiE=;
+        b=GRN2GIxolEho1g2uVXR0fEktgfpe+W2LWL2Hul++lw2UDdkxGMLGs+VsD5DyPSQa7H
+         v147298W5cB7AtQVsjeZbqgfFaR5LL2Owghrm97Zro+ubCLgfvE8V0Uofb7lwx2rGmF/
+         vewKnon/4o6PCic589wIOarkArsgb8JYHhdlVqBETVhm+4EMmFXgaKtekwqhDmGMFhtw
+         ZgXojyzCD4BP5BS1suK6rFk056ORRvs+OGWYD0pzw1q4bZWgYt5Mo2c2wanhP65cdrnU
+         mViFF3e/Wdu4wV6XJ037FUpmGznVekKobqjb0rVxzHg4RjFMwwuNfwf2PodS7skZKBxr
+         moIA==
+X-Gm-Message-State: AOAM530NrY78XXWh5IAzaErOGMXG4DDGZH3/FEuCQXgHUEBDVR9/yrWA
+        MyC46NQaWkk7ic/L5XGVDrc34Oa4Bd07vA==
+X-Google-Smtp-Source: ABdhPJwKhy81aWATaJU3lma7a8eikBadTHRna0v2W8FK6XX5vo6kr4vfW2Dm+Dbt9F9rHLWP9J/1tg==
+X-Received: by 2002:a17:906:718c:: with SMTP id h12mr14994415ejk.6.1627272306303;
+        Sun, 25 Jul 2021 21:05:06 -0700 (PDT)
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
+        by smtp.gmail.com with ESMTPSA id de19sm3821348edb.6.2021.07.25.21.05.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Jul 2021 21:05:05 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id n12so5853380wrr.2
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:05:05 -0700 (PDT)
+X-Received: by 2002:a5d:46cb:: with SMTP id g11mr16953638wrs.192.1627272305067;
+ Sun, 25 Jul 2021 21:05:05 -0700 (PDT)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210709092027.1050834-1-senozhatsky@chromium.org>
+ <20210709092027.1050834-9-senozhatsky@chromium.org> <3c80786a-7422-3736-7261-8605260eb99f@collabora.com>
+ <YP4zHRh+jHJGbNHz@google.com>
+In-Reply-To: <YP4zHRh+jHJGbNHz@google.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Mon, 26 Jul 2021 13:04:53 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5D6hSoLJaBMdV-fpzn43Y6qRULR4ckejrJp_89Qpe6Xnw@mail.gmail.com>
+Message-ID: <CAAFQd5D6hSoLJaBMdV-fpzn43Y6qRULR4ckejrJp_89Qpe6Xnw@mail.gmail.com>
+Subject: Re: [PATCHv3 8/8] videobuf2: handle non-contiguous DMA allocations
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEppdGFvOg0KDQpPbiBNb24sIDIwMjEtMDctMjYgYXQgMTA6MTEgKzA4MDAsIEppdGFvIFNo
-aSB3cm90ZToNCj4gU29tZSBicmlkZ2UgY2hpcCB3aWxsIHNoaWZ0IHNjcmVlbiB3aGVuIHRoZSBk
-c2kgZGF0YSBkb2VzJ3QgZW50IGF0DQo+IHRoZSBzYW1lIHRpbWUgaW4gbGluZS4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IEppdGFvIFNoaSA8aml0YW8uc2hpQG1lZGlhdGVrLmNvbT4NCj4gLS0tDQo+
-ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRzaS50
-eHQgICAgIHwgNCArKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspDQo+IA0K
-PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkv
-bWVkaWF0ZWsvbWVkaWF0ZWssZHNpLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRzaS50eHQNCj4gaW5kZXggODIzOGE4NjY4
-NmJlLi4xYzJmNTNmM2FjM2QgMTAwNjQ0DQo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy9kaXNwbGF5L21lZGlhdGVrL21lZGlhdGVrLGRzaS50eHQNCj4gKysrIGIvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWss
-ZHNpLnR4dA0KPiBAQCAtMTksNiArMTksMTAgQEAgUmVxdWlyZWQgcHJvcGVydGllczoNCj4gICAg
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2dyYXBoLnR4dC4gVGhpcyBwb3J0IHNo
-b3VsZCBiZSBjb25uZWN0ZWQNCj4gICAgdG8gdGhlIGlucHV0IHBvcnQgb2YgYW4gYXR0YWNoZWQg
-RFNJIHBhbmVsIG9yIERTSS10by1lRFAgZW5jb2RlciBjaGlwLg0KPiAgDQo+ICtPcHRpb25hbCBw
-cm9wZXJ0aWVzOg0KPiArLSBmb3JjZV9kc2lfZW5kX3dpdGhvdXRfbnVsbDogU29tZSBicmlkZ2Ug
-Y2hpcChleC4gQU5YNzYyNSkgcmVxdWlyZXMgdGhlDQo+ICsgIHBhY2tldHMgb24gbGFuZXMgYWxp
-Z25lZCBhdCB0aGUgZW5kLg0KPiArDQoNCkkgdGhpbmsgeW91IHNob3VsZCBhZGQgdGhpcyBwcm9w
-ZXJ0eSBpbiBbMV0gYmVjYXVzZSB0aGlzIGxpbWl0YXRpb24gaXMNCkFOWDc2MjUncyBsaW1pdGF0
-aW9uLg0KDQpbMV0NCkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kaXNwbGF5L2Jy
-aWRnZS9hbmFsb2dpeCxhbng3NjI1LnlhbWwNCg0KUmVnYXJkcywNCkNLDQoNCj4gIE1JUEkgVFgg
-Q29uZmlndXJhdGlvbiBNb2R1bGUNCj4gID09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4g
-IA0KDQo=
+On Mon, Jul 26, 2021 at 12:59 PM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> On (21/07/22 19:26), Dafna Hirschfeld wrote:
+> > Also, the 'cookie' cb returns buf->dma_addr which is not initialized for
+> > the noncontiguous api. So it is not clear how drivers should use the new api.
+> > Many drivers call vb2_dma_contig_plane_dma_addr which returns the cookie.
+>
+> Hmm, that's a good find. Is ->dma_addr the same as what we have in
+> sgt.sgl->dma_address for non-contig?
 
+Yes. As per [1]:
+
+"The return sg_table is guaranteed to have 1 single DMA mapped segment
+as indicated by sgt->nents, but it might have multiple CPU side
+segments as indicated by sgt->orig_nents."
+
+[1] https://www.kernel.org/doc/html/latest/core-api/dma-api.html#part-ii-non-coherent-dma-allocations
