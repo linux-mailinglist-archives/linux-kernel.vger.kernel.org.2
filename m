@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B98E3D5522
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B1E3D5527
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233038AbhGZHdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:33:09 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3482 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233092AbhGZHc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:32:59 -0400
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GYCBC66hNz6DHcW;
-        Mon, 26 Jul 2021 16:04:19 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 10:13:26 +0200
-Received: from [10.47.94.42] (10.47.94.42) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 26 Jul
- 2021 09:13:25 +0100
-Subject: Re: [PATCH 00/23] iommu: Refactor DMA domain strictness
-To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <will@kernel.org>
-CC:     <iommu@lists.linux-foundation.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <suravee.suthikulpanit@amd.com>,
-        <baolu.lu@linux.intel.com>, <dianders@chromium.org>
-References: <cover.1626888444.git.robin.murphy@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <8e9da41e-4e3a-7098-bece-7f6cba89a2aa@huawei.com>
-Date:   Mon, 26 Jul 2021 09:13:08 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S233132AbhGZHdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:33:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232876AbhGZHdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 03:33:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A73D60F50;
+        Mon, 26 Jul 2021 08:14:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627287242;
+        bh=5mjM1Ytfi5UgsmQfBbGqvUg9ri6hULEJaJw17eMMlrU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PRyl0o0QYjgZE2Zd2xnNkmNRrIhZzCYf+ftl+vgT1TbsZPPQhuHlmXYbJeaVwKV09
+         yPAqKFMGC8fJvg4jBg63eZlQ8w+h3IjO3GZgKUWEeNQANn/ODDTxk+V9S4PjdxLnqf
+         szqlv5gv3HStKG2aMMhVRhAYNq7gSAWVoVxzIeAjvDH87bSwZRKnc/S6W7nqj946AU
+         JIeqBw5d6lDBG6qceQf+AfeBGqRN63dbFUN1nm9iKLK52RoL5GEfqrZGy9DnQY9608
+         7cz+lK5gEB7BdioUvCuloZhbkDmlKr0Dt+c/R9DF5zpy8gdFVW/kwk2qaYf0+cQ4DL
+         0qelRX6l20KoA==
+Received: by mail-wr1-f54.google.com with SMTP id r2so10029067wrl.1;
+        Mon, 26 Jul 2021 01:14:02 -0700 (PDT)
+X-Gm-Message-State: AOAM533sjwx9AFqFzNUfn5QjPoGJ+Uq5pKcXHMMtYF8kad5nS8NIo2bG
+        fRRDszjnA+1YCGbNTOrsbQoxzkElUD0zELoehYQ=
+X-Google-Smtp-Source: ABdhPJyNYev5KC65NvMDPeSDIxa4em4yA71IxUWsUgKKdyCd+J+znxk2GeXMgj/FHnhisgchv8xKKXErQEqEI7NQRSI=
+X-Received: by 2002:adf:f446:: with SMTP id f6mr4981837wrp.361.1627287241223;
+ Mon, 26 Jul 2021 01:14:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1626888444.git.robin.murphy@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.94.42]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <cover.1627273794.git.viresh.kumar@linaro.org> <605b87ce93b9a528810a5857984bfe6b913d5e73.1627273794.git.viresh.kumar@linaro.org>
+In-Reply-To: <605b87ce93b9a528810a5857984bfe6b913d5e73.1627273794.git.viresh.kumar@linaro.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 26 Jul 2021 10:13:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1ze7+z=KQVtYZeGuA3Sjw=wWb44bjsbPpTaw_8m8U5ww@mail.gmail.com>
+Message-ID: <CAK8P3a1ze7+z=KQVtYZeGuA3Sjw=wWb44bjsbPpTaw_8m8U5ww@mail.gmail.com>
+Subject: Re: [PATCH V3 3/5] dt-bindings: gpio: Add bindings for gpio-virtio
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2021 19:20, Robin Murphy wrote:
-> Hi all,
-> 
-> First off, yes, this conflicts with just about everything else
-> currently in-flight. Sorry about that. If it stands up to initial review
-> then I'll start giving some thought to how to fit everything together
-> (particularly John's cleanup of strictness defaults, which I'd be
-> inclined to fold into a v2 of this series).
+On Mon, Jul 26, 2021 at 6:53 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> This patch adds binding for virtio GPIO controller, it is based on
+> virtio-device bindings.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-It seems to me that patch #20 is the only real conflict, and that is 
-just a different form of mine in that passthrough, strict, and lazy are 
-under a single choice, as opposed to passthrough being a separate config 
-(for mine). And on that point, I did assume that we would have a 
-different sysfs file for strict vs lazy in this series, and not a new 
-domain type. But I assume that there is a good reason for that.
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>, except
 
-Anyway, I'd really like to see my series just merged now.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: '^gpio-virtio(-[a-z0-9]+)?$'
+> +
+> +        gpio: gpio-virtio {
+> +            compatible = "virtio,29";
 
-Thanks,
-John
+The node name here does not appear to be mandated by the schema, but
+most others name it "gpio", so I would do the same here instead of
+"gpio-virtio".
 
-
-> 
-> Anyway, this is my take on promoting the strict vs. non-strict DMA
-> domain choice to distinct domain types, so that it can fit logically
-> into the existing sysfs and Kconfig controls. The first 13 patches are
-> effectively preparatory cleanup to reduce churn in the later changes,
-> but could be merged in their own right even if the rest is too
-> contentious. I ended up splitting patches #2-#11 by driver for ease of
-> review, since some of them are more than just trivial deletions, but
-> they could readily be squashed (even as far as with #1 and #12 too).
-> 
-> I'm slightly surprised at how straightforward it's turned out, but it
-> has survived some very basic smoke testing for arm-smmu using dmatest
-> on my Arm Juno board. Branch here for convenience:
-
+       Arnd
