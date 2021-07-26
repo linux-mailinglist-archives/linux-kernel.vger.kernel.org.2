@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FEB3D6733
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA2B3D6738
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhGZSVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 14:21:42 -0400
-Received: from relay.sw.ru ([185.231.240.75]:55516 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233510AbhGZSVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 14:21:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=QOm/SWMV/Asmk/Sj3wEkt1IsJkdhz+j421ZJ6yW2Ajw=; b=IvYBrKFsc8n6cSTBBlf
-        WEDW0dZk1gvP67pT3J+ySKTvyxzpKi9mqoKizqq9iXQzbEcOlDju7o3q8EKdGuXByrf+r8EXpv3l+
-        5GWiCL3yw1mCHuSM8A+JAjcFPPeXIJNEqo/DSHvUy7Y6GU0pGiQeBf+8Rft9GPj3fI00PefjF8E=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m85rP-005JXm-OR; Mon, 26 Jul 2021 22:01:55 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH v6 16/16] memcg: enable accounting for ldt_struct objects
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-References: <9bf9d9bd-03b1-2adb-17b4-5d59a86a9394@virtuozzo.com>
- <cover.1627321321.git.vvs@virtuozzo.com>
-Message-ID: <765aa723-34f3-2b30-323a-b281ad32d5e4@virtuozzo.com>
-Date:   Mon, 26 Jul 2021 22:01:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232547AbhGZSXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 14:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231990AbhGZSXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 14:23:16 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EB6C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 12:03:44 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id u3so17311486lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 12:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=14vdBBpljswALd6WKvqBt7tFyvQ5ydfoUw2eohntOGo=;
+        b=qr/oz3dOYzpxblqZamgqeUQV67KgrORlntTWUQXhSAVTTuudpwKAHkt0Njz8IWdCa5
+         tFmKUy6vgWUzhEWiYjj9VHpn218PYKvboIGwLPwgATII1NluyNvG3sLr8WqkOPUegSn8
+         1DLx7OTUwasmBowM8A3ZxfWCr7JyjT2BetV4TBOgULIR13lkYUqVU4YgzLt5kGrzrWc4
+         pbpZgQhfuQcPneenrAeRA9mjOx+sz5Xzj3nYbQaNkg9+ZpZKmfrsmVMqX8OG3YTksYjx
+         0FisoIpgnLvb/c2KKdLHUdYC318jJw3FlpsnDSD0niHtYIsyHRnPCZhQJ1joZYJ2AFFu
+         L52g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=14vdBBpljswALd6WKvqBt7tFyvQ5ydfoUw2eohntOGo=;
+        b=f6WVw0VP/zsl7/iYfTysjp20aGZUcFxUdBjTsogv9k4RA/xUCIk//S6LrhaP74GlOu
+         0UuMszN/MdOjD91jRpc9qmKg4i0sTMRXI7ubk06T0cpNGH5l8jjsoCvfJlQquKTWylE3
+         10qm7slT6rOZe5RjEC94wXu2EfkKWNkTtzFTbAbdkI6rDTv4BvGsYdYiHNpuKDrUWl0G
+         mkFGIihohNU8tySnpAq8+qkvc8R8n97G58XyVhoPloujzSkHDKzDPoqa0P6Y9VR13oWq
+         8oXSu+Z5lhCRElxU80MAZfROi+FcEUlLeaULNzL+o7WtybXIMy17kz/rE3Jv7+33f4RQ
+         uXZw==
+X-Gm-Message-State: AOAM531VG1zircZ8p6Hdfo7N7A0BowmmEsS6LoFdXTZj15b/nA2kDHhe
+        zBZyev0SrX0rTjvlja6iFYeFtnazhKnCYdFo8x2CrA==
+X-Google-Smtp-Source: ABdhPJxaH39aX5F+AW541px6IFsSJ4Z9AkqxaTvrVN21I+A8CZpuVp2u0lP5Jp+e5r6g4ryqUw8a/GHNku+u6Tk+ckI=
+X-Received: by 2002:ac2:4a66:: with SMTP id q6mr13551699lfp.204.1627326222269;
+ Mon, 26 Jul 2021 12:03:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1627321321.git.vvs@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210707180113.840741-1-robdclark@gmail.com>
+In-Reply-To: <20210707180113.840741-1-robdclark@gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 26 Jul 2021 12:03:30 -0700
+Message-ID: <CALAqxLVLV8cLVTOFPZmzKeDaG0qFoQ6H=+2a8LaAvgs+4EYMfw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Fix display fault handling
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each task can request own LDT and force the kernel to allocate up to
-64Kb memory per-mm.
+On Wed, Jul 7, 2021 at 10:57 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> It turns out that when the display is enabled by the bootloader, we can
+> get some transient iommu faults from the display.  Which doesn't go over
+> too well when we install a fault handler that is gpu specific.  To avoid
+> this, defer installing the fault handler until we get around to setting
+> up per-process pgtables (which is adreno_smmu specific).  The arm-smmu
+> fallback error reporting is sufficient for reporting display related
+> faults (and in fact was all we had prior to f8f934c180f629bb927a04fd90d)
+>
+> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Reported-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> Fixes: 2a574cc05d38 ("drm/msm: Improve the a6xx page fault handler")
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> Tested-by: John Stultz <john.stultz@linaro.org>
+> ---
 
-There are legitimate workloads with hundreds of processes and there
-can be hundreds of workloads running on large machines.
-The unaccounted memory can cause isolation issues between the workloads
-particularly on highly utilized machines.
+Hey folks!
+  Just wanted to follow up on this, as it's still missing from
+5.14-rc3 and is critical for resolving a boot regression on db845c. Is
+there anything keeping this from heading upstream?
 
-It makes sense to account for this objects to restrict the host's memory
-consumption from inside the memcg-limited container.
-
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/ldt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
-index aa15132..525876e 100644
---- a/arch/x86/kernel/ldt.c
-+++ b/arch/x86/kernel/ldt.c
-@@ -154,7 +154,7 @@ static struct ldt_struct *alloc_ldt_struct(unsigned int num_entries)
- 	if (num_entries > LDT_ENTRIES)
- 		return NULL;
- 
--	new_ldt = kmalloc(sizeof(struct ldt_struct), GFP_KERNEL);
-+	new_ldt = kmalloc(sizeof(struct ldt_struct), GFP_KERNEL_ACCOUNT);
- 	if (!new_ldt)
- 		return NULL;
- 
-@@ -168,9 +168,9 @@ static struct ldt_struct *alloc_ldt_struct(unsigned int num_entries)
- 	 * than PAGE_SIZE.
- 	 */
- 	if (alloc_size > PAGE_SIZE)
--		new_ldt->entries = vzalloc(alloc_size);
-+		new_ldt->entries = __vmalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- 	else
--		new_ldt->entries = (void *)get_zeroed_page(GFP_KERNEL);
-+		new_ldt->entries = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
- 
- 	if (!new_ldt->entries) {
- 		kfree(new_ldt);
--- 
-1.8.3.1
-
+thanks
+-john
