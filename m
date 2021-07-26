@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE1F3D64CC
+	by mail.lfdr.de (Postfix) with ESMTP id 88A0D3D64CD
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239798AbhGZQGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60448 "EHLO
+        id S239856AbhGZQGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:06:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240758AbhGZQE7 (ORCPT
+        with ESMTP id S240780AbhGZQFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:04:59 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8924C061372
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:43:13 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id z26so11566560oih.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:43:13 -0700 (PDT)
+        Mon, 26 Jul 2021 12:05:00 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C0EC0617A1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:44:41 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id m13so16566455lfg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:44:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NdX13LWnHVphbv5/jTkJzsPyEzi3c8U9xthXSsCMjvg=;
-        b=y6xm3YIQFNdcPVTtHQs6sRH1mS5p6uHRGBrDokpleG228vjJWcby6bIukbPKgXlKiQ
-         EYYG4ZlwZWMbXeb1tSobAV2bqhmzbh5ddydtp3sWNomVdIrluMqmYjOMUoLAVxOx+K1S
-         WRNDqVzuX8empufIK9fuduKvl611FD/78IMsH7LeaXJpGuw/NnaYfC0fU6uaEJMcvxoa
-         zy3xNao0YovPXg+NgyBkU+EmBBKOwE+c1RwxvmTd5CQdketSF2g1wzw4PBndIRy44Kjk
-         A7WP2uqgHBnSLC2Xze3z4uI+kdWhlywO7OVPLsThbRWQGfnbWqwEE9NjHIOnRMluGGqG
-         qbdg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DlqUXAYss0z4CwOkVfGtreR6OseE/eXEXPezp0fcD5Q=;
+        b=v/GwQOc/nfVoJOaP+06LI0uq/yjmmZ5T1xMXwDdNwHDrRxLXrNQwJP1e4uwRyy/xrp
+         IOsfYH+cdtu62lwlEx6yb2NTKwdzZFS458KkFOrWnizERkKOK6i0bQGNnwFSRZz/fWGp
+         IUKWriV5wMB6wC/h+yVzUQwFI1DpjFLSud5NrBDizwqsJstnZB+Xp9j+SsylMZ8dAMa0
+         c5vGk2HKgYounGCCH8vn5pJBitXuNwTgVHaH2TLqdTMi19u/hzVUfmrugGVmb0G267k4
+         qqIiLUiCwPOwDvDOINBK5Mr9CyRbvnH0wmr+ej6s4ON7UwpM6YzmX8c1kKl6VEmKwpnO
+         IOCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NdX13LWnHVphbv5/jTkJzsPyEzi3c8U9xthXSsCMjvg=;
-        b=cRpdISTohY1A/VMqXzucU5HLzHA7+DFj8EI5WvQ5XrkV0YkRihHEEX7zr9uK6weF+Q
-         jmY1WYHtvsMULdDL66Z+orvOJwfGzTA05o1UZlkIpo0nzu2o9YlGu2EZ1FJ/MFY9BBnF
-         cnn0hywZSozWNZwpMFMbq1YeSdZyGLUiD26Rtm7evsDvVjHnPlDoTCjPIse0fpUQyhoa
-         l5opFGzUJ2oFuRQ+5GJNduvNSrtZxn33k6OpcsBz5iWUwsKpvcsf4mF1M0F3LfUmarxc
-         U55h9RYUhihYU55NoS1uYIUFr2J/fKy4H+m3PzamSxMW3f/XLHevwtE4SsHoY7+2DmcI
-         n9zw==
-X-Gm-Message-State: AOAM533J1oDn9GGU6SHd+QE4A0VNaxOwmB3z41UPHbFO7rs51zxa+pLX
-        7o/Dlxc3YEIvRXLR96RaRqXdPDHCAaJJSXxU
-X-Google-Smtp-Source: ABdhPJzXvlrJNlzoPJvZhyXGM/tlohScunN/GKrL0BT+ZlR7j+n+iIH5/eDzlwu069YVC1qSDx8P0A==
-X-Received: by 2002:a05:6808:1494:: with SMTP id e20mr11606655oiw.111.1627317792575;
-        Mon, 26 Jul 2021 09:43:12 -0700 (PDT)
-Received: from [192.168.17.50] ([189.219.72.83])
-        by smtp.gmail.com with ESMTPSA id r1sm50986ooi.21.2021.07.26.09.43.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 09:43:12 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/223] 5.13.6-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        linux-kernel@vger.kernel.org
-References: <20210726153846.245305071@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <99b34fe9-0f1f-c94f-58d5-cfb43de98d76@linaro.org>
-Date:   Mon, 26 Jul 2021 11:43:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DlqUXAYss0z4CwOkVfGtreR6OseE/eXEXPezp0fcD5Q=;
+        b=cBDjrzRr6xaDda9CApehZmWc7wV2GTaILNmmlsFc4jKOr+d0ccPvpZv6fiidQbe802
+         hqowy2iH/K6XItRObVBWXuvR60JvDXo5NAsUoxZJTJahHnV6zPJGnT9ccfewbYLdz/ks
+         T2CZvwdLckFjGClRKOoGA57pwoebSIBpc08I8Pya7K4Cbjcg41AjpzYbE6ffQmL37fhW
+         Zj7LmglzBP7oVQFeM1yQgPSuhIs5uE39wmphf34rWHkJPf076LwtRi3utNhhre2cGllY
+         FffgEm6jQ4gokA4eG/cWl8tzFjb1tbZdQ962M+wKQcOef9H57oRlCV8i2fmlgc99gv+O
+         bRkQ==
+X-Gm-Message-State: AOAM530ijyTQdgodNt92h6oudZNdcb5aFW7pyx+Jotn1dVc+AQx9B5/P
+        uZULTOYyhr9wOC40e+CQaza/qKwOOu9e2/aPwsQhqQ==
+X-Google-Smtp-Source: ABdhPJxzBJ3xGLvlzG0KVYzemKw7irNCJbPzXu7HMAIWodwPYqtCqbkZVo0CNJWicFJd4Rc0zQnPhQrIet41JLV3XB0=
+X-Received: by 2002:a05:6512:3f8:: with SMTP id n24mr6547107lfq.125.1627317879269;
+ Mon, 26 Jul 2021 09:44:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210716184719.269033-5-posk@google.com> <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
+ <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
+ <c8ea4892-51e5-0dc2-86c6-b705e8a23cde@uwaterloo.ca> <CAFTs51XW0H1UJKv0t2tq+5VLfgPMtZmDcxQVUQ5HkgDe38jHpw@mail.gmail.com>
+ <5790661b-869c-68bd-86fa-62f580e84be1@uwaterloo.ca> <CAPNVh5ecidSmKFW2ck0ASw44GUnP20m7baSP1+KXnGfkM8FLLg@mail.gmail.com>
+ <e1403574-1151-8399-0ce9-bb80852ec56b@uwaterloo.ca>
+In-Reply-To: <e1403574-1151-8399-0ce9-bb80852ec56b@uwaterloo.ca>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Mon, 26 Jul 2021 09:44:27 -0700
+Message-ID: <CAPNVh5fug5cPu7gPoAR7ZiKzAZ5i8007=Hs9_MG+fCTL3XkLBQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     Peter Oskolkov <posk@posk.io>, Andrei Vagin <avagin@google.com>,
+        Ben Segall <bsegall@google.com>, Jann Horn <jannh@google.com>,
+        Jim Newsome <jnewsome@torproject.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        linux-api@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Buhr <pabuhr@uwaterloo.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Fri, Jul 23, 2021 at 12:06 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
+>
+>  > In my tests reclaimed nodes have their next pointers immediately set
+>  > to point to the list head. If the kernel gets a node with its @next
+>  > pointing to something else, then yes, things break down (the kernel
+>  > kills the process); this has happened occasionally when I had a bug in
+>  > the userspace code.
+>
+> I believe that approach is fine for production, but for testing it may
+> not detect some bugs. For example, it may not detect the race I detail
+> below.
 
-On 7/26/21 10:36 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.6 release.
-> There are 223 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.6-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+While I think I have the idle servers list working, I now believe that
+what peterz@ was suggesting is not much slower in the common case
+(many idle workers; few, if any, idle servers) than having a list of
+idle servers exposed to the kernel: I think having a single idle
+server at head, not a list, is enough: when a worker is added to idle
+workers list, a single idle server at head, if present, can be
+"popped" and woken; the userspace can maintain the list of idle
+servers itself; having the kernel wake only one is enough - it will
+pop all idle workers and decide whether any other servers are needed
+to process the newly available work.
 
-Build regressions detected across plenty of architectures and configurations:
+[...]
 
-   /builds/linux/net/core/dev.c: In function 'gro_list_prepare':
-   /builds/linux/net/core/dev.c:5988:72: error: 'TC_SKB_EXT' undeclared (first use in this function)
-    5988 |                         struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
-         |                                                                        ^~~~~~~~~~
-   /builds/linux/net/core/dev.c:5988:72: note: each undeclared identifier is reported only once for each function it appears in
-   /builds/linux/net/core/dev.c:5993:47: error: invalid use of undefined type 'struct tc_skb_ext'
-    5993 |                                 diffs |= p_ext->chain ^ skb_ext->chain;
-         |                                               ^~
-   /builds/linux/net/core/dev.c:5993:64: error: invalid use of undefined type 'struct tc_skb_ext'
-    5993 |                                 diffs |= p_ext->chain ^ skb_ext->chain;
-         |                                                                ^~
-   make[3]: *** [/builds/linux/scripts/Makefile.build:273: net/core/dev.o] Error 1
-   make[3]: Target '__build' not remade because of errors.
-   make[2]: *** [/builds/linux/scripts/Makefile.build:516: net/core] Error 2
-   make[2]: Target '__build' not remade because of errors.
-   make[1]: *** [/builds/linux/Makefile:1853: net] Error 2
-   make[1]: Target '__all' not remade because of errors.
-   make: *** [Makefile:220: __sub-make] Error 2
+>  > Workers are trickier, as they can be woken by signals and then block
+>  > again, but stray signals are so bad here that I'm thinking of actually
+>  > not letting sleeping workers wake on signals. Other than signals
+>  > waking queued/unqueued idle workers, are there any other potential
+>  > races here?
+>
+> Timeouts on blocked threads is virtually the same as a signal I think. I
+> can see that both could lead to attempts at waking workers that are not
+> blocked.
 
+I've got preemption working well enough to warrant a new RFC patchset
+(also have timeouts done, but these were easy). I'll clean things up,
+change the idle servers logic to only one idle server exposed to the
+kernel, not a list, add some additional documentation (state
+transitions, userspace code snippets, etc.) and will post v0.4 RFC
+patchset to LKML later this week.
 
-Here's a summary:
-* arc: 10 total, 4 passed, 6 failed
-* arm: 193 total, 18 passed, 175 failed
-* arm64: 27 total, 12 passed, 15 failed
-* dragonboard-410c: 1 total, 0 passed, 1 failed
-* hi6220-hikey: 1 total, 0 passed, 1 failed
-* i386: 26 total, 12 passed, 14 failed
-* mips: 45 total, 15 passed, 30 failed
-* parisc: 9 total, 6 passed, 3 failed
-* powerpc: 27 total, 6 passed, 21 failed
-* riscv: 21 total, 14 passed, 7 failed
-* s390: 18 total, 12 passed, 6 failed
-* sh: 18 total, 6 passed, 12 failed
-* sparc: 9 total, 6 passed, 3 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 0 passed, 1 failed
-* x86_64: 27 total, 12 passed, 15 failed
-
-All failed, except allnoconfig, tinyconfig, and a few others here and there.
-
-Same applies for 5.10.
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+[...]
