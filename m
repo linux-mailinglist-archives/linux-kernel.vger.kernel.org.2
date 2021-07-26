@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B9D3D6407
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BDBB3D640B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbhGZPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49376 "EHLO mail.kernel.org"
+        id S239680AbhGZPyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233904AbhGZPcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4385F60C40;
-        Mon, 26 Jul 2021 16:13:18 +0000 (UTC)
+        id S233502AbhGZPcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B491160F5A;
+        Mon, 26 Jul 2021 16:13:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315998;
-        bh=O/uDQGTfxzNPMnwcyEV2gPyHXtuUgPJo1AwHDEq+VTA=;
+        s=korg; t=1627316001;
+        bh=IlngdOsEWanOq4fBl57dDm4h4EjATcuLwhrl1u5Vq4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QA9bPIgCv99lTLGcU2SqFSAoYk02OeT2AtlS6vTIo9CwocEfzO8cXOR15abxeiu3V
-         vGjjT+Aud862Pnzl8a1r3w3nkwNqCMztbJpYMFabZoFHo7XTwWmm/PAt/LVWPybFE7
-         Z+G3MVzPUbGT534pfdbuXXfxYL84CZ+BNQh/7szo=
+        b=ihyJhINjiJuzYrS0BFyWAKuRTS95/k+CaKmwJivIcdwVpye90Eucsr3VzQgay8xHo
+         f9ttWoAqN8X3byNsOeXvXNw8jYfU0GloKwEpPF2buZBd8GxTxSmbGvfGlD07lpqQSf
+         FlNVzY9WN4mXtZnCYDQdgEjkw5FC4T0yUbS4nBPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chengwen Feng <fengchengwen@huawei.com>,
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
         Guangbin Huang <huangguangbin2@huawei.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 113/223] net: hns3: fix possible mismatches resp of mailbox
-Date:   Mon, 26 Jul 2021 17:38:25 +0200
-Message-Id: <20210726153849.970126374@linuxfoundation.org>
+Subject: [PATCH 5.13 114/223] net: hns3: fix rx VLAN offload state inconsistent issue
+Date:   Mon, 26 Jul 2021 17:38:26 +0200
+Message-Id: <20210726153850.000039240@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,84 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengwen Feng <fengchengwen@huawei.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-[ Upstream commit 1b713d14dc3c077ec45e65dab4ea01a8bc41b8c1 ]
+[ Upstream commit bbfd4506f962e7e6fff8f37f017154a3c3791264 ]
 
-Currently, the mailbox synchronous communication between VF and PF use
-the following fields to maintain communication:
-1. Origin_mbx_msg which was combined by message code and subcode, used
-to match request and response.
-2. Received_resp which means whether received response.
+Currently, VF doesn't enable rx VLAN offload when initializating,
+and PF does it for VFs. If user disable the rx VLAN offload for
+VF with ethtool -K, and reload the VF driver, it may cause the
+rx VLAN offload state being inconsistent between hardware and
+software.
 
-There may possible mismatches of the following situation:
-1. VF sends message A with code=1 subcode=1.
-2. PF was blocked about 500ms when processing the message A.
-3. VF will detect message A timeout because it can't get the response
-within 500ms.
-4. VF sends message B with code=1 subcode=1 which equal message A.
-5. PF processes the first message A and send the response message to
-VF.
-6. VF will identify the response matched the message B because the
-code/subcode is the same. This will lead to mismatch of request and
-response.
+Fixes it by enabling rx VLAN offload when VF initializing.
 
-To fix the above bug, we use the following scheme:
-1. The message sent from VF was labelled with match_id which was a
-unique 16-bit non-zero value.
-2. The response sent from PF will label with match_id which got from
-the request.
-3. The VF uses the match_id to match request and response message.
-
-As for PF driver, it only needs to copy the match_id from request to
-response.
-
-Fixes: dde1a86e93ca ("net: hns3: Add mailbox support to PF driver")
-Signed-off-by: Chengwen Feng <fengchengwen@huawei.com>
+Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
 Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h        | 6 ++++--
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 1 +
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ .../net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h b/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
-index a2c17af57fde..d283beec9f66 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
-@@ -135,7 +135,8 @@ struct hclge_mbx_vf_to_pf_cmd {
- 	u8 mbx_need_resp;
- 	u8 rsv1[1];
- 	u8 msg_len;
--	u8 rsv2[3];
-+	u8 rsv2;
-+	u16 match_id;
- 	struct hclge_vf_to_pf_msg msg;
- };
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index 0db51ef15ef6..fe03c8419890 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -2621,6 +2621,16 @@ static int hclgevf_rss_init_hw(struct hclgevf_dev *hdev)
  
-@@ -145,7 +146,8 @@ struct hclge_mbx_pf_to_vf_cmd {
- 	u8 dest_vfid;
- 	u8 rsv[3];
- 	u8 msg_len;
--	u8 rsv1[3];
-+	u8 rsv1;
-+	u16 match_id;
- 	struct hclge_pf_to_vf_msg msg;
- };
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-index f1c9f4ada348..38b601031db4 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
-@@ -47,6 +47,7 @@ static int hclge_gen_resp_to_vf(struct hclge_vport *vport,
- 
- 	resp_pf_to_vf->dest_vfid = vf_to_pf_req->mbx_src_vfid;
- 	resp_pf_to_vf->msg_len = vf_to_pf_req->msg_len;
-+	resp_pf_to_vf->match_id = vf_to_pf_req->match_id;
- 
- 	resp_pf_to_vf->msg.code = HCLGE_MBX_PF_VF_RESP;
- 	resp_pf_to_vf->msg.vf_mbx_msg_code = vf_to_pf_req->msg.code;
+ static int hclgevf_init_vlan_config(struct hclgevf_dev *hdev)
+ {
++	struct hnae3_handle *nic = &hdev->nic;
++	int ret;
++
++	ret = hclgevf_en_hw_strip_rxvtag(nic, true);
++	if (ret) {
++		dev_err(&hdev->pdev->dev,
++			"failed to enable rx vlan offload, ret = %d\n", ret);
++		return ret;
++	}
++
+ 	return hclgevf_set_vlan_filter(&hdev->nic, htons(ETH_P_8021Q), 0,
+ 				       false);
+ }
 -- 
 2.30.2
 
