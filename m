@@ -2,81 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 372403D55CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFC73D55BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhGZIBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 04:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54412 "EHLO mail.kernel.org"
+        id S232226AbhGZH6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:58:51 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:32828 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhGZIBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 04:01:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BF2960720;
-        Mon, 26 Jul 2021 08:41:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627288891;
-        bh=eIi3D0qYBSxKVqxpuYsQzma/OHI4Se5bOSS2/UNnPLk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sr8FVQkZVsLsxsAtQWpiCBOSjP1fcDX2jF40pRiF3lDP6qMM35ZTOqyiLaAvV23qB
-         g8kBBOecYaXA5xFOLesrj0oyUiUcKr42p/53RYbufbeN9vOtWryPmx/zxFgyYdjMXl
-         DSOOtuZQoBXjgf/dRC2PmP5E9rlLjM+TKKfw4LBA=
-Date:   Mon, 26 Jul 2021 10:37:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into
- r8152_main.c and r8152_fw.c
-Message-ID: <YP50SIgqAEyKWSpA@kroah.com>
-References: <1394712342-15778-368-Taiwan-albertk@realtek.com>
- <1394712342-15778-371-Taiwan-albertk@realtek.com>
- <1394712342-15778-373-Taiwan-albertk@realtek.com>
- <YP5mFKeJsGezjdve@kroah.com>
- <c6b44f93a5b14fbb98d4c6cb0ed2a77f@realtek.com>
+        id S231728AbhGZH6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 03:58:49 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1m7w8l-0001Fy-Ue; Mon, 26 Jul 2021 10:39:12 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Heiko Stuebner <heiko@sntech.de>, cl@rock-chips.com
+Cc:     linux-arm-kernel@lists.infradead.org, kever.yang@rock-chips.com,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: (subset) [PATCH 09/10] arm64: dts: rockchip: add pwm nodes for rk3568
+Date:   Mon, 26 Jul 2021 10:39:09 +0200
+Message-Id: <162728868604.1545568.2785277023871790332.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210622102907.99242-1-heiko@sntech.de>
+References: <20210622102907.99242-1-heiko@sntech.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c6b44f93a5b14fbb98d4c6cb0ed2a77f@realtek.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 08:26:00AM +0000, Hayes Wang wrote:
-> Greg KH <gregkh@linuxfoundation.org>
-> > Sent: Monday, July 26, 2021 3:37 PM
-> [...]
-> > That is a lot of different things all happening in one commit, why?
-> 
-> I plan to separate the file into two files. And
-> I find I need an additional header file for it, so
-> The patch includes adding that header file.
+On Tue, 22 Jun 2021 12:29:06 +0200, Heiko Stuebner wrote:
+> Add the pwm controller nodes to the core rk3568 dtsi.
 
-You also do other things, like renaming defines, which is not just
-moving code around, right?
+Applied, thanks!
 
-> > Please break this up into "one patch per change" and submit it that way.
-> > 
-> > But the real question is why break this file up in the first place?
-> > What is wrong with the way it is today?  What future changes require
-> > this file to be in smaller pieces?  If none, why make this?  If there
-> > are future changes, then please submit this change when you submit
-> > those, as that would show a real need.
-> 
-> The purpose is let me easy to maintain the driver.
-> The code is larger and larger. And I find that the
-> r8169.c has been separated into three files.
-> Therefore, I think maybe I could split the driver
-> into small parts like r8169. Then, the code wouldn't
-> be complex.
+[10/10] arm64: dts: rockchip: add watchdog to rk3568
+(->2/2) commit: 7ca30712c3a82ac7517d9fd65aeec4739a463e24
 
-I do not know, is it really easier to find things in 3 different files
-instead of one?  That's up to you, but you did not say why this change
-is needed.
+Watchdog binding got applied for 5.14, so adapted the patch
+for the new rk356x.dtsi and applied that one.
 
-thanks,
+PWM still seems to need time.
 
-greg k-h
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
