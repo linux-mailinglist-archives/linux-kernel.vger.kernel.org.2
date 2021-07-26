@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923A73D51F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 05:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D823D51FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 05:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhGZDQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 23:16:58 -0400
-Received: from out0.migadu.com ([94.23.1.103]:26221 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230321AbhGZDQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 23:16:55 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1627271839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=42/x3cunuNFrK5WXYNzv0PumgHH417h+iX4VfozjEqg=;
-        b=TTEDvxwLws0uMFv8PMZ4WRAA59G66FCBFtiLFTvnsFeltMxFuQk7l7cp4tACqzT9nHNY5g
-        M2zbbPyGukGSDcBtLh3VIHQ8lk+cSHfB5YjoJ9enWMDamCcWT0AnAWDS7+WhLFcSTcjQg0
-        5KGfiyhcz2rKOta51MylqUExs8RZlTY=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] netfilter: nf_conntrack_bridge: Fix not free when error
-Date:   Mon, 26 Jul 2021 11:57:02 +0800
-Message-Id: <20210726035702.11964-1-yajun.deng@linux.dev>
+        id S231640AbhGZDSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 23:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231603AbhGZDSi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 23:18:38 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC63C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 20:59:06 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id i1so10026227plr.9
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 20:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6b6G7xsuI/npQw8leSBd2R5w5X77r6uj+WW4obPWFsw=;
+        b=VQkpuFkYjvVU0ufuNZMY7yM/t2vY0VdkA1BnbAzxTtCkrT1U6fCjGg49ga7dSMJnQG
+         3uCpatpwAP5VkpnYnMsgudFgYvX9LiHzc2pjIpK6HoS68+OxPyxkYHEedEYS/CbS8IRt
+         bMPi/IFA4puY8eLwO9yy/M40y/Vv9cZRsNAmoI41KyCFuDbQQm11MET73wzTrlhhP1Wb
+         8IeUPeSJyS7wqJCNcWTWo7Izvlw1k9IHp1xrbqs+Vft5L20IDFMJk8xD5btpWkMiMwtm
+         VE2zCqS/DTyMIGuYOvDZ4feGrG4RFIFgP3HdNY87Hf458Lihrt6aSa58aFEPqP9XO2mB
+         /mJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6b6G7xsuI/npQw8leSBd2R5w5X77r6uj+WW4obPWFsw=;
+        b=I8ATsV7AkxCqXUXN39pQyoHcNF76SKbABM98/DRF2w8G2ejInDkQuY82pL5z0p7qje
+         jND1NTZgLNNmq7olQRKBut7Y2HBvjBSRiB2BuewUmudZxNA1G8IyNELlGBheJ/beHvjX
+         vzkkRW45fQAKlkm/0p1f0ZCAFise0/cZxvSehjING8+GKILPA5IiM7cmgPkRSVpN1w9r
+         itQZpJYL48cizkJKD0aG/SIh5z23erQWWjGnaCQ5yp//OyzT3MDvvm4PbGJicK58FELh
+         fZN8Yh5APsBtScAGVKm3CHgw0fj/0f3R+YzSgOdkRiyoTIwGv3tqvD6n3GpK3LzeOngt
+         ajFw==
+X-Gm-Message-State: AOAM530VjMMD9qODqylBxlQUeEFrRyu9/FUMQt9VgqgCCvTJO1q2E6H5
+        RvAw244xeTm5hZitWFVa/C+yQw==
+X-Google-Smtp-Source: ABdhPJzMUxri6/V8qt5gZUc8Gv7kxqmxbKkJVX/Y+NwcW2h5Cwsik9jvRxSWDPTTYYWKygEgWqvVVQ==
+X-Received: by 2002:a17:90a:f011:: with SMTP id bt17mr4259246pjb.105.1627271946201;
+        Sun, 25 Jul 2021 20:59:06 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id g18sm40050802pfi.199.2021.07.25.20.59.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 20:59:05 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 09:29:02 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        yu1.wang@intel.com, conghui.chen@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        jiedeng@alumni.sjtu.edu.cn
+Subject: Re: [PATCH v15] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210726035902.b6zo72r6mdlxyf7w@vireshk-i7>
+References: <bcf2fb9bbe965862213f27e05f87ffc91283c0c5.1627018061.git.jie.deng@intel.com>
+ <CAK8P3a1=TpKLGMzvoLafjxtmoBbDL+sBMb8ZiEmTjW91Yr-cYw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: yajun.deng@linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1=TpKLGMzvoLafjxtmoBbDL+sBMb8ZiEmTjW91Yr-cYw@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should be added kfree_skb_list() when err is not equal to zero
-in nf_br_ip_fragment().
+On 23-07-21, 11:03, Arnd Bergmann wrote:
+> > index 70a8057a..99aa27b 100644
+> > --- a/include/uapi/linux/virtio_ids.h
+> > +++ b/include/uapi/linux/virtio_ids.h
+> > @@ -55,6 +55,7 @@
+> >  #define VIRTIO_ID_FS                   26 /* virtio filesystem */
+> >  #define VIRTIO_ID_PMEM                 27 /* virtio pmem */
+> >  #define VIRTIO_ID_MAC80211_HWSIM       29 /* virtio mac80211-hwsim */
+> > +#define VIRTIO_ID_I2C_ADAPTER          34 /* virtio i2c adapter */
+> >  #define VIRTIO_ID_BT                   40 /* virtio bluetooth */
+> 
+> This will now conflict with Viresh's patch that adds all the other IDs.
+> Not sure if there is anything to be done about that.
 
-Fixes: 3c171f496ef5 ("netfilter: bridge: add connection tracking system")
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- net/bridge/netfilter/nf_conntrack_bridge.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+An easier way of avoiding all such conflicts can be:
 
-diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
-index 8d033a75a766..059f53903eda 100644
---- a/net/bridge/netfilter/nf_conntrack_bridge.c
-+++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-@@ -83,12 +83,16 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
- 
- 			skb->tstamp = tstamp;
- 			err = output(net, sk, data, skb);
--			if (err || !iter.frag)
--				break;
--
-+			if (err) {
-+				kfree_skb_list(iter.frag);
-+				return err;
-+			}
-+
-+			if (!iter.frag)
-+				return 0;
-+
- 			skb = ip_fraglist_next(&iter);
- 		}
--		return err;
- 	}
- slow_path:
- 	/* This is a linearized skbuff, the original geometry is lost for us.
+- Michael applies my first patch (which sync's the device id's from specs) for
+  5.14-rc4. Rest of the patches can go for 5.15.
+
+- And then Wolfram applies this series over rc4 instead of rc1.
+
+Or we can leave the conflict there for Linus to handle.
+
 -- 
-2.32.0
-
+viresh
