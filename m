@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28AEC3D63E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D35733D63E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239472AbhGZPwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47946 "EHLO mail.kernel.org"
+        id S233126AbhGZPwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:52:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233422AbhGZPcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18F7160F9C;
-        Mon, 26 Jul 2021 16:12:25 +0000 (UTC)
+        id S233387AbhGZPcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0E2860F9D;
+        Mon, 26 Jul 2021 16:12:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315946;
-        bh=Ii8LnCa5sN0LO9PTwHbCS+/OIokhAugVaiwqj/o/Utc=;
+        s=korg; t=1627315949;
+        bh=m38vBIcWTyamd9bePDedc976hEGXkZsA9Hb8ZNVDMKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=puDtQORjxR7Ap1mrnKY2tZug2RrrTrNc2jOaOR81EDMmwJxXoP8TMD281bbyH+fel
-         LXpebXX6vXvOFZiFUWo/rsXMI/YS1PT+2uyDbX15gTOTo1SjqqmleTPEaqh80dqncD
-         6o2GbLcZRH8Az8CVeVkBmOWRpx+xhhR4OftWwG9A=
+        b=JSSYddA9oPXaE0RkykC/wIAuoCkY3vH8J5U7mfFsihwcuz0lbUBS2PW+d/9+ccssU
+         EfJ3Xh8KGBC1mbFDo98e9RTkjs6Gjjz8TXXTBHepd61v3eJrRAhYEbXL1GU+vqfn02
+         mXfbF+nEXKJoih8BiJzb9hHtkolGt68KwKjmaHlw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sayanta Pattanayak <sayanta.pattanayak@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 128/223] r8169: Avoid duplicate sysfs entry creation error
-Date:   Mon, 26 Jul 2021 17:38:40 +0200
-Message-Id: <20210726153850.442834988@linuxfoundation.org>
+Subject: [PATCH 5.13 129/223] nvme: set the PRACT bit when using Write Zeroes with T10 PI
+Date:   Mon, 26 Jul 2021 17:38:41 +0200
+Message-Id: <20210726153850.475497420@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -43,53 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit e9a72f874d5b95cef0765bafc56005a50f72c5fe ]
+[ Upstream commit aaeb7bb061be545251606f4d9c82d710ca2a7c8e ]
 
-When registering the MDIO bus for a r8169 device, we use the PCI
-bus/device specifier as a (seemingly) unique device identifier.
-However the very same BDF number can be used on another PCI segment,
-which makes the driver fail probing:
+When using Write Zeroes on a namespace that has protection
+information enabled they behavior without the PRACT bit
+counter-intuitive and will generally lead to validation failures
+when reading the written blocks.  Fix this by always setting the
+PRACT bit that generates matching PI data on the fly.
 
-[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
-[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
-....
-[ 27.684858] libphy: mii_bus r8169-700 failed to register
-[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
-
-Add the segment number to the device name to make it more unique.
-
-This fixes operation on ARM N1SDP boards, with two boards connected
-together to form an SMP system, and all on-board devices showing up
-twice, just on different PCI segments. A similar issue would occur on
-large systems with many PCI slots and multiple RTL8169 NICs.
-
-Fixes: f1e911d5d0dfd ("r8169: add basic phylib support")
-Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-[Andre: expand commit message, use pci_domain_nr()]
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 6e02318eaea5 ("nvme: add support for the Write Zeroes command")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index a0d4e052a79e..b8eb1b2a8de3 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -5085,7 +5085,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
- 	new_bus->priv = tp;
- 	new_bus->parent = &pdev->dev;
- 	new_bus->irq[0] = PHY_MAC_INTERRUPT;
--	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
-+	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
-+		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 66973bb56305..148e756857a8 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -880,7 +880,10 @@ static inline blk_status_t nvme_setup_write_zeroes(struct nvme_ns *ns,
+ 		cpu_to_le64(nvme_sect_to_lba(ns, blk_rq_pos(req)));
+ 	cmnd->write_zeroes.length =
+ 		cpu_to_le16((blk_rq_bytes(req) >> ns->lba_shift) - 1);
+-	cmnd->write_zeroes.control = 0;
++	if (nvme_ns_has_pi(ns))
++		cmnd->write_zeroes.control = cpu_to_le16(NVME_RW_PRINFO_PRACT);
++	else
++		cmnd->write_zeroes.control = 0;
+ 	return BLK_STS_OK;
+ }
  
- 	new_bus->read = r8169_mdio_read_reg;
- 	new_bus->write = r8169_mdio_write_reg;
 -- 
 2.30.2
 
