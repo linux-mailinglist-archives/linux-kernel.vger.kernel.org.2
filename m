@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6333D67EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940D23D67F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhGZTbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
+        id S233455AbhGZTb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:31:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232719AbhGZTbO (ORCPT
+        with ESMTP id S232838AbhGZTbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:31:14 -0400
+        Mon, 26 Jul 2021 15:31:15 -0400
 Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA473C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:42 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id f11so13456843ioj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF705C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:43 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id u15so13369684iol.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=70xPSqNfg1+zmAwitXIzdSa5it5L29wIVFAOMsoUpsw=;
-        b=kmeELVZO1w1FfLVOV0oVQ0Y48DMhb3hXmNIWBBj5AI0X5tEtv632yCXjqcCN+HA7RG
-         mMOzzWca9GME13opR7/E/OZCi2PsVeUm07ISJC6WTCpyfGropvN6FudACSVrnYxR71SY
-         rZUQ2aELTnxvANKFwPF04hEaU3Ye38XI9CrQ1XN7UsIDx226nGcUqPuRcJEROLqEBcWc
-         lQZIp8eNyTY+10dUeVpkU6tuCk0IcbCZ4HTkPcuTZaC4CbuZUiJdZLSnHqCoVI51pOPy
-         QhjuYkNuUJEpPmklbl4mKzEgXzWoZrLxXMv5loeYeF5/KBCyQ6kSZP6sffBTn0rj9yiU
-         WUFg==
+        bh=CbkpeKrOfcqmDReVdepadZw98qDLwbHdY24550v6RHA=;
+        b=AQPJguyqnk15W1iKAm7vTy+8YvOzRvF4v3NbIy9lw//R6tq0F2Kdpk+IoriqiFhC3/
+         WFm9CmoCF7nqbO1cDRXEX9NdDHYiPorqP7I/VQamTaUfEbwLcFBXUVB628bnOr5FWdJU
+         2gjCVwzRfDBy5b4e/6C5/Yl4cf/Bw/4r2j9tq3ec+O+gmkDZRufEFMipV1n/yioUto6H
+         WJcHqSpf5swMnTb/q06zPQuYfIfb+ddiwOtvA8snSF3cZsIoCcRM0UmHJs8+XDAcyp25
+         q2XWvIgXc7gMo84uEVSte7cjQ/19IUs8xUVRmkDRASTzlI453mH1IRx7djVmTPueQP9f
+         L78w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=70xPSqNfg1+zmAwitXIzdSa5it5L29wIVFAOMsoUpsw=;
-        b=VxlCw1fdin4tdx3K5mJVV0ybBcJav3LoUl9pt4LXIIRFXsL8IkNoKw1exBHiqd5028
-         Td4LtndswBd/pbLZYj6EOekGUtEditjg2f+zY2Y1sKDsj2Yybyw9BKDQE5Ql1yQgzBl7
-         V/TBrM+rUQCjHSP0F5r2TByIGtjxYOm+Q0wudR3V98cz6FoP9mbRyZ0Dlmixc4IKwhr4
-         aXcVFZv6U8Kbn2N0vaeeS8TmO8/e0ZLh6jt7oBdB77R4JwJ/MWrvX4tmybzqvD9xkCTo
-         yzZN5JGcpYqGjZVwmqR6KhOf0j+mDBmvVaLw/6kEKEugouokH4SupPu/dLKR7C/qGIQy
-         qXOg==
-X-Gm-Message-State: AOAM531V6FJ46Xh2mfVdYpHAlLI2UtBhRx1Y9Z/KwsCL8AshkXKf/fP0
-        XBr/SJ2ceGXOgbG6bg7fYPJApw==
-X-Google-Smtp-Source: ABdhPJzpQWqrSk7V+p4rTuZviP8IeHDbkAlFqSNahzsFU1C+6CIhHEPMlhNc1NAE8FQqeyEJQP/p7w==
-X-Received: by 2002:a02:c8d0:: with SMTP id q16mr18184847jao.110.1627330302221;
-        Mon, 26 Jul 2021 13:11:42 -0700 (PDT)
+        bh=CbkpeKrOfcqmDReVdepadZw98qDLwbHdY24550v6RHA=;
+        b=orKhKKRBKTTlNn2cw4bBrd8KXMqTy8Uf6N3xHmOcFqpXCYYlggTLkgHjz7wa505jfq
+         ckU5l04CVdiZUq3CNsaDMJAdgZfJ7x58RPnP9gZX1xAGTB1grhNrfJKI0UlT9/2YKIVI
+         n9fnTvUh/NGeo3pKj+coXf8Jyyxmt3yZhRE2zCPq0LATf0p0s+qN96EalJhv8vPqnnI5
+         y7ZAMZt2Lz8XlXOWTrok/X8PkOeXsGs1D+eFp6S2R/sgWlUrVOVDFdJFlJhp+Lee5bnr
+         epQ4/uJIMSbzmF2NKYy5vON3FU3CL0tsA8zfJO+Y2zAqRxv0xPIFcFRh7N9RsrwMDnwp
+         YH5g==
+X-Gm-Message-State: AOAM533bD6SoDjSiIeD+vNGeeqXiOY62s54yd6/dVHQg98PUuqb0gbMc
+        +EkUl97RhWNqiJi9ChKOD6GGdg==
+X-Google-Smtp-Source: ABdhPJxPuACskKyOes5NbbtfW7fW2dSxGgq8kjSCkaOM6mf19nKeXziArrumMpH+lRYC5HPYT+h20A==
+X-Received: by 2002:a05:6602:2424:: with SMTP id g4mr16349955iob.189.1627330303103;
+        Mon, 26 Jul 2021 13:11:43 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id z10sm425964iln.8.2021.07.26.13.11.41
+        by smtp.gmail.com with ESMTPSA id z10sm425964iln.8.2021.07.26.13.11.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 13:11:41 -0700 (PDT)
+        Mon, 26 Jul 2021 13:11:42 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/5] net: ipa: set up IPA interrupts earlier
-Date:   Mon, 26 Jul 2021 15:11:34 -0500
-Message-Id: <20210726201136.502800-4-elder@linaro.org>
+Subject: [PATCH net-next 4/5] net: ipa: set up the microcontroller earlier
+Date:   Mon, 26 Jul 2021 15:11:35 -0500
+Message-Id: <20210726201136.502800-5-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210726201136.502800-1-elder@linaro.org>
 References: <20210726201136.502800-1-elder@linaro.org>
@@ -65,151 +65,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialization of the IPA driver has several phases:
-   - "init" phase can be done without any access to IPA hardware
-   - "config" phase requires the IPA hardware to be clocked
-   - "setup" phase requires the GSI layer to be functional
+Initializing up the IPA-resident microcontroller requires the IPA
+clock, and sets up two IPA interrupt handlers, but this does not
+require GSI access.  The interrupt handlers also require the clock
+to be enabled, and require the IPA memory regions to be configured,
+but neither requires GSI access.  As a result, the microcontroller
+can be initialized during the "config" rather than "setup" phase of
+IPA initialization.
 
-Currently, initialization for the IPA interrupt handling code occurs
-in the setup phase.  It requires access to the IPA hardware but does
-not need GSI, so it can be moved to the config phase instead.
-
-Call the interrupt configuration function early in ipa_config()
-rather than from ipa_setup().  Rename ipa_interrupt_setup() to be
-ipa_interrupt_config(), and ipa_interrupt_teardown() to be
-ipa_interupt_deconfig(), so their names properly indicate when
-they get called.
+Initialize the microcontroller in ipa_config() rather than
+ipa_setup(), and rename the called function ipa_uc_config().
+Do the inverse in ipa_deconfig() rather than ipa_teardown(),
+and rename the function for that case ipa_uc_deconfig().
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_interrupt.c |  8 ++++----
- drivers/net/ipa/ipa_interrupt.h |  8 ++++----
- drivers/net/ipa/ipa_main.c      | 24 ++++++++++++++----------
- 3 files changed, 22 insertions(+), 18 deletions(-)
+ drivers/net/ipa/ipa_main.c | 12 ++++++------
+ drivers/net/ipa/ipa_uc.c   |  8 ++++----
+ drivers/net/ipa/ipa_uc.h   |  8 ++++----
+ 3 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_interrupt.c b/drivers/net/ipa/ipa_interrupt.c
-index c46df0b7c4e50..46a983aeebc8b 100644
---- a/drivers/net/ipa/ipa_interrupt.c
-+++ b/drivers/net/ipa/ipa_interrupt.c
-@@ -231,8 +231,8 @@ ipa_interrupt_remove(struct ipa_interrupt *interrupt, enum ipa_irq_id ipa_irq)
- 	interrupt->handler[ipa_irq] = NULL;
- }
- 
--/* Set up the IPA interrupt framework */
--struct ipa_interrupt *ipa_interrupt_setup(struct ipa *ipa)
-+/* Configure the IPA interrupt framework */
-+struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa)
- {
- 	struct device *dev = &ipa->pdev->dev;
- 	struct ipa_interrupt *interrupt;
-@@ -281,8 +281,8 @@ struct ipa_interrupt *ipa_interrupt_setup(struct ipa *ipa)
- 	return ERR_PTR(ret);
- }
- 
--/* Tear down the IPA interrupt framework */
--void ipa_interrupt_teardown(struct ipa_interrupt *interrupt)
-+/* Inverse of ipa_interrupt_config() */
-+void ipa_interrupt_deconfig(struct ipa_interrupt *interrupt)
- {
- 	struct device *dev = &interrupt->ipa->pdev->dev;
- 	int ret;
-diff --git a/drivers/net/ipa/ipa_interrupt.h b/drivers/net/ipa/ipa_interrupt.h
-index d5c486a6800d9..231390cea52a2 100644
---- a/drivers/net/ipa/ipa_interrupt.h
-+++ b/drivers/net/ipa/ipa_interrupt.h
-@@ -86,17 +86,17 @@ void ipa_interrupt_suspend_clear_all(struct ipa_interrupt *interrupt);
- void ipa_interrupt_simulate_suspend(struct ipa_interrupt *interrupt);
- 
- /**
-- * ipa_interrupt_setup() - Set up the IPA interrupt framework
-+ * ipa_interrupt_config() - Configure the IPA interrupt framework
-  * @ipa:	IPA pointer
-  *
-  * Return:	Pointer to IPA SMP2P info, or a pointer-coded error
-  */
--struct ipa_interrupt *ipa_interrupt_setup(struct ipa *ipa);
-+struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa);
- 
- /**
-- * ipa_interrupt_teardown() - Tear down the IPA interrupt framework
-+ * ipa_interrupt_deconfig() - Inverse of ipa_interrupt_config()
-  * @interrupt:	IPA interrupt structure
-  */
--void ipa_interrupt_teardown(struct ipa_interrupt *interrupt);
-+void ipa_interrupt_deconfig(struct ipa_interrupt *interrupt);
- 
- #endif /* _IPA_INTERRUPT_H_ */
 diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 8768e52854d08..c26acd8b1cb91 100644
+index c26acd8b1cb91..d83322bf9e7e5 100644
 --- a/drivers/net/ipa/ipa_main.c
 +++ b/drivers/net/ipa/ipa_main.c
-@@ -124,11 +124,6 @@ int ipa_setup(struct ipa *ipa)
- 	if (ret)
- 		return ret;
- 
--	ipa->interrupt = ipa_interrupt_setup(ipa);
--	if (IS_ERR(ipa->interrupt)) {
--		ret = PTR_ERR(ipa->interrupt);
--		goto err_gsi_teardown;
--	}
+@@ -127,11 +127,9 @@ int ipa_setup(struct ipa *ipa)
  	ipa_interrupt_add(ipa->interrupt, IPA_IRQ_TX_SUSPEND,
  			  ipa_suspend_handler);
  
-@@ -188,8 +183,6 @@ int ipa_setup(struct ipa *ipa)
- err_uc_teardown:
- 	ipa_uc_teardown(ipa);
+-	ipa_uc_setup(ipa);
+-
+ 	ret = device_init_wakeup(dev, true);
+ 	if (ret)
+-		goto err_uc_teardown;
++		goto err_interrupt_remove;
+ 
+ 	ipa_endpoint_setup(ipa);
+ 
+@@ -180,8 +178,7 @@ int ipa_setup(struct ipa *ipa)
+ err_endpoint_teardown:
+ 	ipa_endpoint_teardown(ipa);
+ 	(void)device_init_wakeup(dev, false);
+-err_uc_teardown:
+-	ipa_uc_teardown(ipa);
++err_interrupt_remove:
  	ipa_interrupt_remove(ipa->interrupt, IPA_IRQ_TX_SUSPEND);
--	ipa_interrupt_teardown(ipa->interrupt);
--err_gsi_teardown:
  	gsi_teardown(&ipa->gsi);
  
- 	return ret;
-@@ -214,7 +207,6 @@ static void ipa_teardown(struct ipa *ipa)
+@@ -205,7 +202,6 @@ static void ipa_teardown(struct ipa *ipa)
+ 	ipa_endpoint_disable_one(command_endpoint);
+ 	ipa_endpoint_teardown(ipa);
  	(void)device_init_wakeup(&ipa->pdev->dev, false);
- 	ipa_uc_teardown(ipa);
+-	ipa_uc_teardown(ipa);
  	ipa_interrupt_remove(ipa->interrupt, IPA_IRQ_TX_SUSPEND);
--	ipa_interrupt_teardown(ipa->interrupt);
  	gsi_teardown(&ipa->gsi);
  }
- 
-@@ -475,9 +467,16 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
- 	if (ret)
- 		goto err_hardware_deconfig;
- 
--	ret = ipa_endpoint_config(ipa);
--	if (ret)
-+	ipa->interrupt = ipa_interrupt_config(ipa);
-+	if (IS_ERR(ipa->interrupt)) {
-+		ret = PTR_ERR(ipa->interrupt);
-+		ipa->interrupt = NULL;
+@@ -474,6 +470,8 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
  		goto err_mem_deconfig;
-+	}
+ 	}
+ 
++	ipa_uc_config(ipa);
 +
-+	ret = ipa_endpoint_config(ipa);
-+	if (ret)
-+		goto err_interrupt_deconfig;
- 
- 	ipa_table_config(ipa);		/* No deconfig required */
- 
-@@ -494,6 +493,9 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
- 
+ 	ret = ipa_endpoint_config(ipa);
+ 	if (ret)
+ 		goto err_interrupt_deconfig;
+@@ -494,6 +492,7 @@ static int ipa_config(struct ipa *ipa, const struct ipa_data *data)
  err_endpoint_deconfig:
  	ipa_endpoint_deconfig(ipa);
-+err_interrupt_deconfig:
-+	ipa_interrupt_deconfig(ipa->interrupt);
-+	ipa->interrupt = NULL;
+ err_interrupt_deconfig:
++	ipa_uc_deconfig(ipa);
+ 	ipa_interrupt_deconfig(ipa->interrupt);
+ 	ipa->interrupt = NULL;
  err_mem_deconfig:
- 	ipa_mem_deconfig(ipa);
- err_hardware_deconfig:
-@@ -511,6 +513,8 @@ static void ipa_deconfig(struct ipa *ipa)
+@@ -513,6 +512,7 @@ static void ipa_deconfig(struct ipa *ipa)
  {
  	ipa_modem_deconfig(ipa);
  	ipa_endpoint_deconfig(ipa);
-+	ipa_interrupt_deconfig(ipa->interrupt);
-+	ipa->interrupt = NULL;
++	ipa_uc_deconfig(ipa);
+ 	ipa_interrupt_deconfig(ipa->interrupt);
+ 	ipa->interrupt = NULL;
  	ipa_mem_deconfig(ipa);
- 	ipa_hardware_deconfig(ipa);
- 	ipa_clock_put(ipa);
+diff --git a/drivers/net/ipa/ipa_uc.c b/drivers/net/ipa/ipa_uc.c
+index fd9219863234c..8b5e75711b644 100644
+--- a/drivers/net/ipa/ipa_uc.c
++++ b/drivers/net/ipa/ipa_uc.c
+@@ -162,8 +162,8 @@ static void ipa_uc_response_hdlr(struct ipa *ipa, enum ipa_irq_id irq_id)
+ 	}
+ }
+ 
+-/* ipa_uc_setup() - Set up the microcontroller */
+-void ipa_uc_setup(struct ipa *ipa)
++/* Configure the IPA microcontroller subsystem */
++void ipa_uc_config(struct ipa *ipa)
+ {
+ 	/* The microcontroller needs the IPA clock running until it has
+ 	 * completed its initialization.  It signals this by sending an
+@@ -180,8 +180,8 @@ void ipa_uc_setup(struct ipa *ipa)
+ 	ipa_interrupt_add(ipa->interrupt, IPA_IRQ_UC_1, ipa_uc_response_hdlr);
+ }
+ 
+-/* Inverse of ipa_uc_setup() */
+-void ipa_uc_teardown(struct ipa *ipa)
++/* Inverse of ipa_uc_config() */
++void ipa_uc_deconfig(struct ipa *ipa)
+ {
+ 	ipa_interrupt_remove(ipa->interrupt, IPA_IRQ_UC_1);
+ 	ipa_interrupt_remove(ipa->interrupt, IPA_IRQ_UC_0);
+diff --git a/drivers/net/ipa/ipa_uc.h b/drivers/net/ipa/ipa_uc.h
+index e8510899a3f0a..cb0a224022f58 100644
+--- a/drivers/net/ipa/ipa_uc.h
++++ b/drivers/net/ipa/ipa_uc.h
+@@ -9,16 +9,16 @@
+ struct ipa;
+ 
+ /**
+- * ipa_uc_setup() - set up the IPA microcontroller subsystem
++ * ipa_uc_config() - Configure the IPA microcontroller subsystem
+  * @ipa:	IPA pointer
+  */
+-void ipa_uc_setup(struct ipa *ipa);
++void ipa_uc_config(struct ipa *ipa);
+ 
+ /**
+- * ipa_uc_teardown() - inverse of ipa_uc_setup()
++ * ipa_uc_deconfig() - Inverse of ipa_uc_config()
+  * @ipa:	IPA pointer
+  */
+-void ipa_uc_teardown(struct ipa *ipa);
++void ipa_uc_deconfig(struct ipa *ipa);
+ 
+ /**
+  * ipa_uc_panic_notifier()
 -- 
 2.27.0
 
