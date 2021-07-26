@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DFF3D62B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5DB3D6039
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235051AbhGZPho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:37:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35964 "EHLO mail.kernel.org"
+        id S237181AbhGZPV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:21:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237200AbhGZPVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 419FD60FDA;
-        Mon, 26 Jul 2021 16:02:08 +0000 (UTC)
+        id S236332AbhGZPLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:11:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF47E60F38;
+        Mon, 26 Jul 2021 15:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315328;
-        bh=ImyeHq6NaMFDLaiQm8ANwqV7fxPDjf6ocC/OjeKZQiQ=;
+        s=korg; t=1627314727;
+        bh=xISeChsXU7oujCsY+sJsyh9zA/XO7lNOGNh6ltcJzxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s1IE0oMLY6U/y1MsrNo7hFji5YZtBMTBWEVtWvHji3Dio/ibQmhqlIH5A3nOjlmcF
-         r3pVIwG/g8/S0tE5esASn1cDrJwADwXr0aYnD6SunvhkIRdZzHCNbf95MTjZnhYaCM
-         1rh953X2kIpCdDgrUbNT/aIOeuexnucv+PguzcnM=
+        b=cLd1gopHHmCZ9gdsjD4hL3JiDaWMO81quvW6eROcSCitSjxEttoHw4wgI2EiVaGaS
+         CA4RQUIa7+cJYHtTJHgTeaN0FxDd91hcH0nbV1N64Hi6EuKfKtmAyIui4qS4uKOhYC
+         RdEq61pGGgSktP1UGsP2EaGvofJRn1oOLgaoFlm4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Hess <peter.hess@ph-home.de>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 053/167] spi: mediatek: fix fifo rx mode
+        stable@vger.kernel.org, Nanyong Sun <sunnanyong@huawei.com>
+Subject: [PATCH 4.19 034/120] mm: slab: fix kmem_cache_create failed when sysfs node not destroyed
 Date:   Mon, 26 Jul 2021 17:38:06 +0200
-Message-Id: <20210726153841.193546192@linuxfoundation.org>
+Message-Id: <20210726153833.480800654@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +38,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Hess <peter.hess@ph-home.de>
+From: Nanyong Sun <sunnanyong@huawei.com>
 
-[ Upstream commit 3a70dd2d050331ee4cf5ad9d5c0a32d83ead9a43 ]
+The commit d38a2b7a9c93 ("mm: memcg/slab: fix memory leak at non-root
+kmem_cache destroy") introduced a problem: If one thread destroy a
+kmem_cache A and another thread concurrently create a kmem_cache B,
+which is mergeable with A and has same size with A, the B may fail to
+create due to the duplicate sysfs node.
+The scenario in detail:
+1) Thread 1 uses kmem_cache_destroy() to destroy kmem_cache A which is
+mergeable, it decreases A's refcount and if refcount is 0, then call
+memcg_set_kmem_cache_dying() which set A->memcg_params.dying = true,
+then unlock the slab_mutex and call flush_memcg_workqueue(), it may cost
+a while.
+Note: now the sysfs node(like '/kernel/slab/:0000248') of A is still
+present, it will be deleted in shutdown_cache() which will be called
+after flush_memcg_workqueue() is done and lock the slab_mutex again.
+2) Now if thread 2 is coming, it use kmem_cache_create() to create B, which
+is mergeable with A(their size is same), it gain the lock of slab_mutex,
+then call __kmem_cache_alias() trying to find a mergeable node, because
+of the below added code in commit d38a2b7a9c93 ("mm: memcg/slab: fix
+memory leak at non-root kmem_cache destroy"), B is not mergeable with
+A whose memcg_params.dying is true.
 
-In FIFO mode were two problems:
-- RX mode was never handled and
-- in this case the tx_buf pointer was NULL and caused an exception
+int slab_unmergeable(struct kmem_cache *s)
+ 	if (s->refcount < 0)
+ 		return 1;
 
-fix this by handling RX mode in mtk_spi_fifo_transfer
+	/*
+	 * Skip the dying kmem_cache.
+	 */
+	if (s->memcg_params.dying)
+		return 1;
 
-Fixes: a568231f4632 ("spi: mediatek: Add spi bus for Mediatek MT8173")
-Signed-off-by: Peter Hess <peter.hess@ph-home.de>
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Link: https://lore.kernel.org/r/20210706121609.680534-1-linux@fw-web.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+ 	return 0;
+ }
+
+So B has to create its own sysfs node by calling:
+ create_cache->
+	__kmem_cache_create->
+		sysfs_slab_add->
+			kobject_init_and_add
+Because B is mergeable itself, its filename of sysfs node is based on its size,
+like '/kernel/slab/:0000248', which is duplicate with A, and the sysfs
+node of A is still present now, so kobject_init_and_add() will return
+fail and result in kmem_cache_create() fail.
+
+Concurrently modprobe and rmmod the two modules below can reproduce the issue
+quickly: nf_conntrack_expect, se_sess_cache. See call trace in the end.
+
+LTS versions of v4.19.y and v5.4.y have this problem, whereas linux versions after
+v5.9 do not have this problem because the patchset: ("The new cgroup slab memory
+controller") almost refactored memcg slab.
+
+A potential solution(this patch belongs): Just let the dying kmem_cache be mergeable,
+the slab_mutex lock can prevent the race between alias kmem_cache creating thread
+and root kmem_cache destroying thread. In the destroying thread, after
+flush_memcg_workqueue() is done, judge the refcount again, if someone
+reference it again during un-lock time, we don't need to destroy the kmem_cache
+completely, we can reuse it.
+
+Another potential solution: revert the commit d38a2b7a9c93 ("mm: memcg/slab:
+fix memory leak at non-root kmem_cache destroy"), compare to the fail of
+kmem_cache_create, the memory leak in special scenario seems less harmful.
+
+Call trace:
+ sysfs: cannot create duplicate filename '/kernel/slab/:0000248'
+ Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
+ Call trace:
+  dump_backtrace+0x0/0x198
+  show_stack+0x24/0x30
+  dump_stack+0xb0/0x100
+  sysfs_warn_dup+0x6c/0x88
+  sysfs_create_dir_ns+0x104/0x120
+  kobject_add_internal+0xd0/0x378
+  kobject_init_and_add+0x90/0xd8
+  sysfs_slab_add+0x16c/0x2d0
+  __kmem_cache_create+0x16c/0x1d8
+  create_cache+0xbc/0x1f8
+  kmem_cache_create_usercopy+0x1a0/0x230
+  kmem_cache_create+0x50/0x68
+  init_se_kmem_caches+0x38/0x258 [target_core_mod]
+  target_core_init_configfs+0x8c/0x390 [target_core_mod]
+  do_one_initcall+0x54/0x230
+  do_init_module+0x64/0x1ec
+  load_module+0x150c/0x16f0
+  __se_sys_finit_module+0xf0/0x108
+  __arm64_sys_finit_module+0x24/0x30
+  el0_svc_common+0x80/0x1c0
+  el0_svc_handler+0x78/0xe0
+  el0_svc+0x10/0x260
+ kobject_add_internal failed for :0000248 with -EEXIST, don't try to register things with the same name in the same directory.
+ kmem_cache_create(se_sess_cache) failed with error -17
+ Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
+ Call trace:
+  dump_backtrace+0x0/0x198
+  show_stack+0x24/0x30
+  dump_stack+0xb0/0x100
+  kmem_cache_create_usercopy+0xa8/0x230
+  kmem_cache_create+0x50/0x68
+  init_se_kmem_caches+0x38/0x258 [target_core_mod]
+  target_core_init_configfs+0x8c/0x390 [target_core_mod]
+  do_one_initcall+0x54/0x230
+  do_init_module+0x64/0x1ec
+  load_module+0x150c/0x16f0
+  __se_sys_finit_module+0xf0/0x108
+  __arm64_sys_finit_module+0x24/0x30
+  el0_svc_common+0x80/0x1c0
+  el0_svc_handler+0x78/0xe0
+  el0_svc+0x10/0x260
+
+Fixes: d38a2b7a9c93 ("mm: memcg/slab: fix memory leak at non-root kmem_cache destroy")
+Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-mt65xx.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ mm/slab_common.c |   18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
-index 5d643051bf3d..8f2d112f0b5d 100644
---- a/drivers/spi/spi-mt65xx.c
-+++ b/drivers/spi/spi-mt65xx.c
-@@ -434,13 +434,23 @@ static int mtk_spi_fifo_transfer(struct spi_master *master,
- 	mtk_spi_setup_packet(master);
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -311,14 +311,6 @@ int slab_unmergeable(struct kmem_cache *
+ 	if (s->refcount < 0)
+ 		return 1;
  
- 	cnt = xfer->len / 4;
--	iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
-+	if (xfer->tx_buf)
-+		iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
+-#ifdef CONFIG_MEMCG_KMEM
+-	/*
+-	 * Skip the dying kmem_cache.
+-	 */
+-	if (s->memcg_params.dying)
+-		return 1;
+-#endif
+-
+ 	return 0;
+ }
+ 
+@@ -918,6 +910,16 @@ void kmem_cache_destroy(struct kmem_cach
+ 	get_online_mems();
+ 
+ 	mutex_lock(&slab_mutex);
 +
-+	if (xfer->rx_buf)
-+		ioread32_rep(mdata->base + SPI_RX_DATA_REG, xfer->rx_buf, cnt);
++	/*
++	 * Another thread referenced it again
++	 */
++	if (READ_ONCE(s->refcount)) {
++		spin_lock_irq(&memcg_kmem_wq_lock);
++		s->memcg_params.dying = false;
++		spin_unlock_irq(&memcg_kmem_wq_lock);
++		goto out_unlock;
++	}
+ #endif
  
- 	remainder = xfer->len % 4;
- 	if (remainder > 0) {
- 		reg_val = 0;
--		memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
--		writel(reg_val, mdata->base + SPI_TX_DATA_REG);
-+		if (xfer->tx_buf) {
-+			memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
-+			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
-+		}
-+		if (xfer->rx_buf) {
-+			reg_val = readl(mdata->base + SPI_RX_DATA_REG);
-+			memcpy(xfer->rx_buf + (cnt * 4), &reg_val, remainder);
-+		}
- 	}
- 
- 	mtk_spi_enable_transfer(master);
--- 
-2.30.2
-
+ 	err = shutdown_memcg_caches(s);
 
 
