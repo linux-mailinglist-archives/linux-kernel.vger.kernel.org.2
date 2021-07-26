@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651CE3D689F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AB43D68A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbhGZUqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 16:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S232361AbhGZUrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 16:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhGZUqc (ORCPT
+        with ESMTP id S231901AbhGZUrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 16:46:32 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D605C061765
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 14:27:00 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso11424285oth.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 14:27:00 -0700 (PDT)
+        Mon, 26 Jul 2021 16:47:03 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10243C061757;
+        Mon, 26 Jul 2021 14:27:31 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so1990514pjd.0;
+        Mon, 26 Jul 2021 14:27:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=Ll1nnihmkvO/gDgrcKX4fXvl2evxr2Vg6Gb68Gj0wG0=;
-        b=ihMWf0papZJ3e5ptypD11uSums4DQvLI6Rd5Kcf2TmQGc6oi67UKouIgPfMRuPlGYu
-         hnF3xY5Rs+YdaEeHPrOqHGrBGeBqL+Wpk+so4YJ89YyiYGPX47ekf/yaERpgoaEcNW5q
-         0QltfkjiF3QMrtIEEZies9VeWYO9XosMMbt3A=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JSRAHigjjv7jacJe2YWp7PNC+/ka4N08e26oEa0Aa9k=;
+        b=vO1nimpqJXQrBZ4leSkrJbZ3YGN9W/wrYuISF3NMXbsvyu5WBRTVBPLgzSDPtziFHY
+         65H0a01M7/XYZIgfxU4uK5mASWykWuPkZIBEVwxcNMsv33oYcbdpH3X/UEtBtxUBhHJ7
+         KCiab6cMLIKyWwQv0u2adMUb3CABoGTf+7ucPvDa/5XAuRNrmBYhU9+Mu8oLct4KPSz5
+         RyprRMzzHcB3avW1LFbxYoOEZPohajO1dR+/6UyfW4blYyGEKH41gU0Mcnuuv9TrlVDr
+         yBkxT/UlBlptW8ZUfLXkjm5GpEWbBRfR3OCKYfmlOZHD7KBhURnkzjlm1hGSlBALOSK2
+         mMxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=Ll1nnihmkvO/gDgrcKX4fXvl2evxr2Vg6Gb68Gj0wG0=;
-        b=CK9++feX/1yfrBxIN07XRYadwvGsP5I7yUDfo1udPkmsGQwPjD2htNWr7ec07DKXRg
-         mw8lOivwF9V/6qXnQi20FKPhhodXTkyOCwrirDd1IwbQOU/WNWnX9vmBA5GspQ4LFt4L
-         f3ZlvvL5Kr32wc0kgxkSkQL9E68cVwhXhHAkKCya7AL9ANENUtid12+f3mRKvL4rmoD5
-         WXj9a1SqNAWNKMRNmxQW1EYWfCJdvBL7kCBsR8xnX2o2BQRFwja+5DKtQJPtoRA9pdHu
-         Lig1c7jSoYsIMyDPKNAumb1A5bfDczH5YkORNFgribM+hAkTbIjmLLvXDsXnIFLG+s5t
-         55NQ==
-X-Gm-Message-State: AOAM533DtsH1QYgOeeEgN5VqfPiDNRz8hsxgLHYsippRXCY6HREYdtFE
-        bPzKLXYjwFpXwZoUuzKt0ZtATXC94mOkN7j0Rx6z4A==
-X-Google-Smtp-Source: ABdhPJyeVPc/zQaISTdfnsGJwNKl/FAcxTE6z02/xi9ZLUtj1ROscPre2KooDOK0yN0dsiG8qy8SZ8ZOkXzxCT1+1g8=
-X-Received: by 2002:a9d:650e:: with SMTP id i14mr13307303otl.233.1627334819551;
- Mon, 26 Jul 2021 14:26:59 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Jul 2021 17:26:59 -0400
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JSRAHigjjv7jacJe2YWp7PNC+/ka4N08e26oEa0Aa9k=;
+        b=n8BiHfj2IamvjznMJq2Yzq4bq2FAaz/Fd2CU1XP6BFruAlB/YJC9z9TRHKWhRruY8r
+         rWzLioZUPiMo+3QY+Xpj5GwcQ/VbHujc2Zx4CWHs9OzDB5XNFQpgxz4j4BGU3OR9ScSx
+         zJlZKoYjcd0GRher02bvTagbjGY1oZmxdgD0bwSYl4DVf1bnTfgJF7WiiA3B9IXZPA+Q
+         2y9E5/Up1+nEYFrdn3mf6rkZ2OsMQRE7eIxcyWxpUisdCkBlICGhoQgnU6YtotWOwbL9
+         QHT9VvS8w8Z1hx/AlA/qDjV1VLkbH8ILpUreWsAwtFQ15W2ZwBO+BBCdgrBM0mrchj8P
+         MlCg==
+X-Gm-Message-State: AOAM530wOFkSnAir6ucFzqPfoJKW83bLE+U2mmDWhK1P/jAIr+yilEj2
+        R0QA7RIpn3fa27ludEq8luk=
+X-Google-Smtp-Source: ABdhPJyYVRL0saVwooPRPxJ4K4uUBUPzrtudK8F0glLyyc10Uyz1vq14/BR8QtWIaixVxbLjh3dYBw==
+X-Received: by 2002:aa7:8148:0:b029:31b:10b4:f391 with SMTP id d8-20020aa781480000b029031b10b4f391mr19570569pfn.69.1627334850444;
+        Mon, 26 Jul 2021 14:27:30 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:428])
+        by smtp.gmail.com with ESMTPSA id a8sm776556pgd.50.2021.07.26.14.27.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 14:27:29 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 26 Jul 2021 11:27:25 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     viro@zeniv.linux.org.uk, lizefan.x@bytedance.com,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v2 1/3] misc_cgroup: add support for nofile limit
+Message-ID: <YP8ovYqISzKC43mt@mtj.duckdns.org>
+References: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <20210726120910.20335-3-srivasam@codeaurora.org>
-References: <20210726120910.20335-1-srivasam@codeaurora.org> <20210726120910.20335-3-srivasam@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 26 Jul 2021 17:26:59 -0400
-Message-ID: <CAE-0n52hziOfFo0JEoF8Xy1CvMChOqHxXmSw+c2=DahPRScR1w@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] arm64: dts: qcom: sc7180-trogdor: Add lpass dai
- link for HDMI
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, dianders@chromium.org,
-        judyhsiao@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3fd94563b4949ffbfe10e7d18ac1df3852b103a6.1626966339.git.brookxu@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivasa Rao Mandadapu (2021-07-26 05:09:10)
-> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->
-> Add dai link in sc7180-trogdor.dtsi for supporting audio over DP
->
-> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
+On Thu, Jul 22, 2021 at 11:20:17PM +0800, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
+> 
+> Since the global open files are limited, in order to avoid the
+> abnormal behavior of some containers from generating too many
+> files, causing other containers to be unavailable, we need to
+> limit the open files of some containers.
+> 
+> v2: fix compile error while CONFIG_CGROUP_MISC not set.
+> 
+> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> Reported-by: kernel test robot <lkp@intel.com>
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+This is different from pid in that there's no actual limit on how many open
+files there can be in the system other than the total amount of available
+memory. I don't see why this would need a separate limit outside of memory
+control. A couple machines I looked at all have file-max at LONG_MAX by
+default too.
+
+Thanks.
+
+-- 
+tejun
