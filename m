@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EB13D6312
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C5C3D61AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238637AbhGZPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40118 "EHLO mail.kernel.org"
+        id S233287AbhGZPch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:32:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238156AbhGZPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69D6D60EB2;
-        Mon, 26 Jul 2021 16:05:32 +0000 (UTC)
+        id S236441AbhGZPSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A601160FD8;
+        Mon, 26 Jul 2021 15:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315532;
-        bh=2XGxQspg0L4/+CvXHLTA4Lk8z0slxNMXInR5dr0DLHA=;
+        s=korg; t=1627315129;
+        bh=8u3p3adKE1jvx3fFGSIpHXNj3AnbKGy4Awh7LZfQCwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQKwVpHCt8JZD83NpoLNDTGjYbinoNsmORgRWNMNzWP0xK2re5Xin9jEdsTmklMr+
-         gf5t7kWgJ0RtFmiAeVw6469huRdKyKvT2qoqhmErbPH5cx3MQ8fe1kq2VvqTVzWvka
-         l15dclHH90FksQ1yWfTa/ZhmwjQOMKSG/5FX8LpM=
+        b=zAO0p4WEpXaVykLINgMhz+aKN7mWlMs8KiazocCn0/qnoNppDfAk17my95romP7OD
+         SzIKREDFRT1pEnjwEUeUu1DJ+BrKhLZYGXpG27iLXYIxuXWHc0+tOByZEpTQd8FfyI
+         61dJCMfjq0zsEMw2lekyOWIKfhbK6Xw65xtJC53M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.10 134/167] tracepoints: Update static_call before tp_funcs when adding a tracepoint
-Date:   Mon, 26 Jul 2021 17:39:27 +0200
-Message-Id: <20210726153843.889466819@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Subject: [PATCH 5.4 087/108] usb: dwc2: gadget: Fix sending zero length packet in DDMA mode.
+Date:   Mon, 26 Jul 2021 17:39:28 +0200
+Message-Id: <20210726153834.468412085@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,120 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 
-commit 352384d5c84ebe40fa77098cc234fe173247d8ef upstream.
+commit d53dc38857f6dbefabd9eecfcbf67b6eac9a1ef4 upstream.
 
-Because of the significant overhead that retpolines pose on indirect
-calls, the tracepoint code was updated to use the new "static_calls" that
-can modify the running code to directly call a function instead of using
-an indirect caller, and this function can be changed at runtime.
+Sending zero length packet in DDMA mode perform by DMA descriptor
+by setting SP (short packet) flag.
 
-In the tracepoint code that calls all the registered callbacks that are
-attached to a tracepoint, the following is done:
+For DDMA in function dwc2_hsotg_complete_in() does not need to send
+zlp.
 
-	it_func_ptr = rcu_dereference_raw((&__tracepoint_##name)->funcs);
-	if (it_func_ptr) {
-		__data = (it_func_ptr)->data;
-		static_call(tp_func_##name)(__data, args);
-	}
+Tested by USBCV MSC tests.
 
-If there's just a single callback, the static_call is updated to just call
-that callback directly. Once another handler is added, then the static
-caller is updated to call the iterator, that simply loops over all the
-funcs in the array and calls each of the callbacks like the old method
-using indirect calling.
-
-The issue was discovered with a race between updating the funcs array and
-updating the static_call. The funcs array was updated first and then the
-static_call was updated. This is not an issue as long as the first element
-in the old array is the same as the first element in the new array. But
-that assumption is incorrect, because callbacks also have a priority
-field, and if there's a callback added that has a higher priority than the
-callback on the old array, then it will become the first callback in the
-new array. This means that it is possible to call the old callback with
-the new callback data element, which can cause a kernel panic.
-
-	static_call = callback1()
-	funcs[] = {callback1,data1};
-	callback2 has higher priority than callback1
-
-	CPU 1				CPU 2
-	-----				-----
-
-   new_funcs = {callback2,data2},
-               {callback1,data1}
-
-   rcu_assign_pointer(tp->funcs, new_funcs);
-
-  /*
-   * Now tp->funcs has the new array
-   * but the static_call still calls callback1
-   */
-
-				it_func_ptr = tp->funcs [ new_funcs ]
-				data = it_func_ptr->data [ data2 ]
-				static_call(callback1, data);
-
-				/* Now callback1 is called with
-				 * callback2's data */
-
-				[ KERNEL PANIC ]
-
-   update_static_call(iterator);
-
-To prevent this from happening, always switch the static_call to the
-iterator before assigning the tp->funcs to the new array. The iterator will
-always properly match the callback with its data.
-
-To trigger this bug:
-
-  In one terminal:
-
-    while :; do hackbench 50; done
-
-  In another terminal
-
-    echo 1 > /sys/kernel/tracing/events/sched/sched_waking/enable
-    while :; do
-        echo 1 > /sys/kernel/tracing/set_event_pid;
-        sleep 0.5
-        echo 0 > /sys/kernel/tracing/set_event_pid;
-        sleep 0.5
-   done
-
-And it doesn't take long to crash. This is because the set_event_pid adds
-a callback to the sched_waking tracepoint with a high priority, which will
-be called before the sched_waking trace event callback is called.
-
-Note, the removal to a single callback updates the array first, before
-changing the static_call to single callback, which is the proper order as
-the first element in the array is the same as what the static_call is
-being changed to.
-
-Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
-
-Cc: stable@vger.kernel.org
-Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
-Reported-by: Stefan Metzmacher <metze@samba.org>
-tested-by: Stefan Metzmacher <metze@samba.org>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: f71b5e2533de ("usb: dwc2: gadget: fix zero length packet transfers")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Link: https://lore.kernel.org/r/967bad78c55dd2db1c19714eee3d0a17cf99d74a.1626777738.git.Minas.Harutyunyan@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/tracepoint.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc2/gadget.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -320,8 +320,8 @@ static int tracepoint_add_func(struct tr
- 	 * a pointer to it.  This array is referenced by __DO_TRACE from
- 	 * include/linux/tracepoint.h using rcu_dereference_sched().
- 	 */
--	rcu_assign_pointer(tp->funcs, tp_funcs);
- 	tracepoint_update_call(tp, tp_funcs, false);
-+	rcu_assign_pointer(tp->funcs, tp_funcs);
- 	static_key_enable(&tp->key);
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -2748,12 +2748,14 @@ static void dwc2_hsotg_complete_in(struc
+ 		return;
+ 	}
  
- 	release_probes(old);
+-	/* Zlp for all endpoints, for ep0 only in DATA IN stage */
++	/* Zlp for all endpoints in non DDMA, for ep0 only in DATA IN stage */
+ 	if (hs_ep->send_zlp) {
+-		dwc2_hsotg_program_zlp(hsotg, hs_ep);
+ 		hs_ep->send_zlp = 0;
+-		/* transfer will be completed on next complete interrupt */
+-		return;
++		if (!using_desc_dma(hsotg)) {
++			dwc2_hsotg_program_zlp(hsotg, hs_ep);
++			/* transfer will be completed on next complete interrupt */
++			return;
++		}
+ 	}
+ 
+ 	if (hs_ep->index == 0 && hsotg->ep0_state == DWC2_EP0_DATA_IN) {
 
 
