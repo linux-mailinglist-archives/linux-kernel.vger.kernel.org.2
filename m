@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD7F3D62EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA343D60CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238279AbhGZPlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:41:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38718 "EHLO mail.kernel.org"
+        id S238178AbhGZPZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:25:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237594AbhGZPXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BC260240;
-        Mon, 26 Jul 2021 16:04:01 +0000 (UTC)
+        id S237640AbhGZPQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ABD46056C;
+        Mon, 26 Jul 2021 15:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315442;
-        bh=7EoFKsfVQOJmFmNvmQTuVHQ2W3N/DNsssLIlJoOW6jE=;
+        s=korg; t=1627315002;
+        bh=Q/b3aZJnbfICg06m6OdYKeQhDpDWzClvx14Z/ESj50k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Df9Bv1rX4jOfkCP1pdel0AmEry5SjK5YB68cH5Ks5M6QgwOgItDRv4o8IJAydB7/R
-         VIhfm5xdd2qXsnsc5lhmx21sNwuqDSlZhUF0npSaszHfmyJOy+ag9JO9fwZ1lUOJ3B
-         Jg/f5aigRgiEcydx4XmQb8zOT11Se0ZEWJ7GyHx4=
+        b=ztFAJ71nuhlqmZ6W/BAXDWCsxK1ZXMlLACSzW1ZJFNj0sy6lJ/SfyrR+3tlOSxyL/
+         8/AXbcOf7/syoxzhw9awDZiSfdOMIgOhQQd14U+rijnReqRw2Bt6y6iaaDUS+Xemgz
+         GqIxiB89OFR210tWYP/YJG4PUYP1kfAbx5DbbRXY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
+        stable@vger.kernel.org, Dmitry Bogdanov <d.bogdanov@yadro.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 097/167] nvme: set the PRACT bit when using Write Zeroes with T10 PI
+Subject: [PATCH 5.4 049/108] scsi: target: Fix protect handling in WRITE SAME(32)
 Date:   Mon, 26 Jul 2021 17:38:50 +0200
-Message-Id: <20210726153842.655674187@linuxfoundation.org>
+Message-Id: <20210726153833.257654238@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +40,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Dmitry Bogdanov <d.bogdanov@yadro.com>
 
-[ Upstream commit aaeb7bb061be545251606f4d9c82d710ca2a7c8e ]
+[ Upstream commit 6d8e7e7c932162bccd06872362751b0e1d76f5af ]
 
-When using Write Zeroes on a namespace that has protection
-information enabled they behavior without the PRACT bit
-counter-intuitive and will generally lead to validation failures
-when reading the written blocks.  Fix this by always setting the
-PRACT bit that generates matching PI data on the fly.
+WRITE SAME(32) command handling reads WRPROTECT at the wrong offset in 1st
+byte instead of 10th byte.
 
-Fixes: 6e02318eaea5 ("nvme: add support for the Write Zeroes command")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20210702091655.22818-1-d.bogdanov@yadro.com
+Fixes: afd73f1b60fc ("target: Perform PROTECT sanity checks for WRITE_SAME")
+Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/target/target_core_sbc.c | 35 ++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index f520a71a361f..ff5a16b17133 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -751,7 +751,10 @@ static inline blk_status_t nvme_setup_write_zeroes(struct nvme_ns *ns,
- 		cpu_to_le64(nvme_sect_to_lba(ns, blk_rq_pos(req)));
- 	cmnd->write_zeroes.length =
- 		cpu_to_le16((blk_rq_bytes(req) >> ns->lba_shift) - 1);
--	cmnd->write_zeroes.control = 0;
-+	if (nvme_ns_has_pi(ns))
-+		cmnd->write_zeroes.control = cpu_to_le16(NVME_RW_PRINFO_PRACT);
-+	else
-+		cmnd->write_zeroes.control = 0;
- 	return BLK_STS_OK;
+diff --git a/drivers/target/target_core_sbc.c b/drivers/target/target_core_sbc.c
+index f1e81886122d..e63c163dba78 100644
+--- a/drivers/target/target_core_sbc.c
++++ b/drivers/target/target_core_sbc.c
+@@ -25,7 +25,7 @@
+ #include "target_core_alua.h"
+ 
+ static sense_reason_t
+-sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char *, u32, bool);
++sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char, u32, bool);
+ static sense_reason_t sbc_execute_unmap(struct se_cmd *cmd);
+ 
+ static sense_reason_t
+@@ -279,14 +279,14 @@ static inline unsigned long long transport_lba_64_ext(unsigned char *cdb)
  }
  
+ static sense_reason_t
+-sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *ops)
++sbc_setup_write_same(struct se_cmd *cmd, unsigned char flags, struct sbc_ops *ops)
+ {
+ 	struct se_device *dev = cmd->se_dev;
+ 	sector_t end_lba = dev->transport->get_blocks(dev) + 1;
+ 	unsigned int sectors = sbc_get_write_same_sectors(cmd);
+ 	sense_reason_t ret;
+ 
+-	if ((flags[0] & 0x04) || (flags[0] & 0x02)) {
++	if ((flags & 0x04) || (flags & 0x02)) {
+ 		pr_err("WRITE_SAME PBDATA and LBDATA"
+ 			" bits not supported for Block Discard"
+ 			" Emulation\n");
+@@ -308,7 +308,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
+ 	}
+ 
+ 	/* We always have ANC_SUP == 0 so setting ANCHOR is always an error */
+-	if (flags[0] & 0x10) {
++	if (flags & 0x10) {
+ 		pr_warn("WRITE SAME with ANCHOR not supported\n");
+ 		return TCM_INVALID_CDB_FIELD;
+ 	}
+@@ -316,7 +316,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
+ 	 * Special case for WRITE_SAME w/ UNMAP=1 that ends up getting
+ 	 * translated into block discard requests within backend code.
+ 	 */
+-	if (flags[0] & 0x08) {
++	if (flags & 0x08) {
+ 		if (!ops->execute_unmap)
+ 			return TCM_UNSUPPORTED_SCSI_OPCODE;
+ 
+@@ -331,7 +331,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
+ 	if (!ops->execute_write_same)
+ 		return TCM_UNSUPPORTED_SCSI_OPCODE;
+ 
+-	ret = sbc_check_prot(dev, cmd, &cmd->t_task_cdb[0], sectors, true);
++	ret = sbc_check_prot(dev, cmd, flags >> 5, sectors, true);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -686,10 +686,9 @@ sbc_set_prot_op_checks(u8 protect, bool fabric_prot, enum target_prot_type prot_
+ }
+ 
+ static sense_reason_t
+-sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
++sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char protect,
+ 	       u32 sectors, bool is_write)
+ {
+-	u8 protect = cdb[1] >> 5;
+ 	int sp_ops = cmd->se_sess->sup_prot_ops;
+ 	int pi_prot_type = dev->dev_attrib.pi_prot_type;
+ 	bool fabric_prot = false;
+@@ -737,7 +736,7 @@ sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
+ 		/* Fallthrough */
+ 	default:
+ 		pr_err("Unable to determine pi_prot_type for CDB: 0x%02x "
+-		       "PROTECT: 0x%02x\n", cdb[0], protect);
++		       "PROTECT: 0x%02x\n", cmd->t_task_cdb[0], protect);
+ 		return TCM_INVALID_CDB_FIELD;
+ 	}
+ 
+@@ -812,7 +811,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -826,7 +825,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -840,7 +839,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -861,7 +860,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -875,7 +874,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -890,7 +889,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -949,7 +948,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 			size = sbc_get_size(cmd, 1);
+ 			cmd->t_task_lba = get_unaligned_be64(&cdb[12]);
+ 
+-			ret = sbc_setup_write_same(cmd, &cdb[10], ops);
++			ret = sbc_setup_write_same(cmd, cdb[10], ops);
+ 			if (ret)
+ 				return ret;
+ 			break;
+@@ -1048,7 +1047,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		size = sbc_get_size(cmd, 1);
+ 		cmd->t_task_lba = get_unaligned_be64(&cdb[2]);
+ 
+-		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
++		ret = sbc_setup_write_same(cmd, cdb[1], ops);
+ 		if (ret)
+ 			return ret;
+ 		break;
+@@ -1066,7 +1065,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		 * Follow sbcr26 with WRITE_SAME (10) and check for the existence
+ 		 * of byte 1 bit 3 UNMAP instead of original reserved field
+ 		 */
+-		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
++		ret = sbc_setup_write_same(cmd, cdb[1], ops);
+ 		if (ret)
+ 			return ret;
+ 		break;
 -- 
 2.30.2
 
