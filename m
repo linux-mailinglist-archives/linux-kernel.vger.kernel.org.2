@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842363D5E0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F16DA3D5F01
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbhGZPFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:05:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
+        id S236923AbhGZPQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:16:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235182AbhGZPEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:04:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FD7560F22;
-        Mon, 26 Jul 2021 15:44:49 +0000 (UTC)
+        id S236432AbhGZPJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFA9560FC4;
+        Mon, 26 Jul 2021 15:49:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314290;
-        bh=f4mfrZjD23mN0xQWPX26uoGmS3hHf6AzGOfFjMd+GQQ=;
+        s=korg; t=1627314550;
+        bh=/sFtyA6/w0uviskIbCVCVYL51Y87bUoISfl9+aBWEOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fxNpfS5YEX1FwIOH3BOmsqzfAIT9TwXyy1aC9foa7M6IYQzht/sIhkWkGA/gyShE0
-         93ckXvZOygj5NPy0nDZQQehOvTockOktCWYzUbrPEJuSRurbhnrRrZIz+HAHBogBEB
-         YpDk3/ikMHTgXtDUVLNnHPWAmHmWCNQH1raZjAjQ=
+        b=kGdooMd4ehC+EQiNq9YDR/42+D4+eDs8QuEbuXpP4mx2kRcCis9dR8GDqqyy/xh3J
+         xpo4cCpB+uWIGF7dYzJDGT6qNBFJogq0r0lsmrgumxK9fmI8cKmA621rnqIByBBZyW
+         m5n3XGHW6Qtrlaiaysd29K4V+1O3BffTipnx//70=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marco De Marco <marco.demarco@posteo.net>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 52/60] USB: serial: option: add support for u-blox LARA-R6 family
-Date:   Mon, 26 Jul 2021 17:39:06 +0200
-Message-Id: <20210726153826.506496580@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 4.14 67/82] usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
+Date:   Mon, 26 Jul 2021 17:39:07 +0200
+Message-Id: <20210726153830.348588719@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco De Marco <marco.demarco@posteo.net>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit 94b619a07655805a1622484967754f5848640456 upstream.
+commit 5719df243e118fb343725e8b2afb1637e1af1373 upstream.
 
-The patch is meant to support LARA-R6 Cat 1 module family.
+This driver has a potential issue which this driver is possible to
+cause superfluous irqs after usb_pkt_pop() is called. So, after
+the commit 3af32605289e ("usb: renesas_usbhs: fix error return
+code of usbhsf_pkt_handler()") had been applied, we could observe
+the following error happened when we used g_audio.
 
-Module USB ID:
-Vendor  ID: 0x05c6
-Product ID: 0x90fA
+    renesas_usbhs e6590000.usb: irq_ready run_error 1 : -22
 
-Interface layout:
-If 0: Diagnostic
-If 1: AT parser
-If 2: AT parser
-If 3: QMI wwan (not available in all versions)
+To fix the issue, disable the tx or rx interrupt in usb_pkt_pop().
 
-Signed-off-by: Marco De Marco <marco.demarco@posteo.net>
-Link: https://lore.kernel.org/r/49260184.kfMIbaSn9k@mars
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 2743e7f90dc0 ("usb: renesas_usbhs: fix the usb_pkt_pop()")
+Cc: <stable@vger.kernel.org> # v4.4+
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/20210624122039.596528-1-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/renesas_usbhs/fifo.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -241,6 +241,7 @@ static void option_instat_callback(struc
- #define QUECTEL_PRODUCT_UC15			0x9090
- /* These u-blox products use Qualcomm's vendor ID */
- #define UBLOX_PRODUCT_R410M			0x90b2
-+#define UBLOX_PRODUCT_R6XX			0x90fa
- /* These Yuga products use Qualcomm's vendor ID */
- #define YUGA_PRODUCT_CLM920_NC5			0x9625
+--- a/drivers/usb/renesas_usbhs/fifo.c
++++ b/drivers/usb/renesas_usbhs/fifo.c
+@@ -112,6 +112,8 @@ static struct dma_chan *usbhsf_dma_chan_
+ #define usbhsf_dma_map(p)	__usbhsf_dma_map_ctrl(p, 1)
+ #define usbhsf_dma_unmap(p)	__usbhsf_dma_map_ctrl(p, 0)
+ static int __usbhsf_dma_map_ctrl(struct usbhs_pkt *pkt, int map);
++static void usbhsf_tx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
++static void usbhsf_rx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
+ struct usbhs_pkt *usbhs_pkt_pop(struct usbhs_pipe *pipe, struct usbhs_pkt *pkt)
+ {
+ 	struct usbhs_priv *priv = usbhs_pipe_to_priv(pipe);
+@@ -135,6 +137,11 @@ struct usbhs_pkt *usbhs_pkt_pop(struct u
+ 			dmaengine_terminate_all(chan);
+ 			usbhsf_fifo_clear(pipe, fifo);
+ 			usbhsf_dma_unmap(pkt);
++		} else {
++			if (usbhs_pipe_is_dir_in(pipe))
++				usbhsf_rx_irq_ctrl(pipe, 0);
++			else
++				usbhsf_tx_irq_ctrl(pipe, 0);
+ 		}
  
-@@ -1098,6 +1099,8 @@ static const struct usb_device_id option
- 	/* u-blox products using Qualcomm vendor ID */
- 	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R410M),
- 	  .driver_info = RSVD(1) | RSVD(3) },
-+	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R6XX),
-+	  .driver_info = RSVD(3) },
- 	/* Quectel products using Quectel vendor ID */
- 	{ USB_DEVICE(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC21),
- 	  .driver_info = RSVD(4) },
+ 		usbhs_pipe_running(pipe, 0);
 
 
