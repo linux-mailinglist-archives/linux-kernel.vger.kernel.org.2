@@ -2,71 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B853D692A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AAB3D6934
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbhGZVTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:19:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233349AbhGZVTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:19:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1180860F90;
-        Mon, 26 Jul 2021 22:00:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627336805;
-        bh=mR683BInAPIEhzlSDYxQJOwD8m9r5lIkSzgH9q5FLA4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CljxrMcLpN7tqVmkVcNDRVgNMO74GKvV7yv7CRH6aokk0SeO62yiNIs6r/HKQ6ziT
-         PzAcX7whPonuBPTk9fL/R0cMqLlzZyXI9IH3Nc7yvKfc7ZhmupVs0GWaIBw3m3iNRG
-         c4HSnQ4rxLFFRufUYopPSmxp0+n4gwtZWy5IwONByunL+hqKTDooc8Ob8ZZtacjEmC
-         5KqIxQQnFzO7hmYbSMawMmb2Mz054CycPCz6hJH/za3qx8qC6TlYxpf8mN2VBXg2n2
-         oe5dp+1twCGyJMT1yMMiLmymCU1JWmCJ3lU2ufDWg40ghiGYZIrtS88wkSI6m4CMI/
-         nuErtfkfV8zAA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 05FF060972;
-        Mon, 26 Jul 2021 22:00:05 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233473AbhGZVXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:23:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233380AbhGZVX3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 17:23:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627337035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WeoSATKCsUczJoZWnPn33Qg+mplhNYCcnwstKUtpHBs=;
+        b=iDC+E6JIpUXgLXUJMv0XOcWN+j5pUYTlfWKTNqIbvHGnS2BUioqYXt8ls/+z0eO8HvirLa
+        Oo5tgpknlBVoeCVUCWUEkZVuX9Eso4QvoX+umQ1zLRIFH9tbexlQVFo7MuJThStyvdEV/A
+        jF5J8egffPwwcIACDErkNDYahHVxKxg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-u7IkuenBMCqDZGY2-0Xbdw-1; Mon, 26 Jul 2021 18:02:48 -0400
+X-MC-Unique: u7IkuenBMCqDZGY2-0Xbdw-1
+Received: by mail-ej1-f69.google.com with SMTP id n9-20020a1709063789b02905854bda39fcso866683ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:02:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WeoSATKCsUczJoZWnPn33Qg+mplhNYCcnwstKUtpHBs=;
+        b=MeNtpSoAdLGYFhiOMcPrTV4jKvf53fNlAeUEHXvXdbczT5hhdk/xJm9pbJlTfZLcRI
+         Y8WIfAxoWIecVOyWWCl5QZ8Foz/omAhp7c7qqArUly1pwUnEDHCGjc6/M5Gmf1d4gc/v
+         b/wQjsQDLF3OoV5IOfEAspzVis09noPasQZ6ZIcDHXJKM0KelenZxnwEr+CszNCzDHsM
+         GMx7EMv7YhMvsLAsXaq8HURpTZByvKY3oUU7MFYbnweC2UVDvQiyC0a2ziI8hOiHFcQU
+         0lXGC/yPSSPPxY//Cux6j40qB/Kgi0geQWGWIOXXXXJtrKXT0JYKbBmO/tmcRRG5/qM9
+         AqxQ==
+X-Gm-Message-State: AOAM533t1D6SQfmCs0MTHmUJjz+ybe4bETC+kiyAzAujAFArFhKMyC8G
+        Z9CZwnmMwwmf0qyrvU8uHMOgVJTa2Gzi47ozJ5zYv0Mb3lYYS337kN/uU7tFXdv3soo/9LL2jQ7
+        3c8/H2Dv37jyoVVzFbfdtkqY/
+X-Received: by 2002:a17:906:c834:: with SMTP id dd20mr12151125ejb.371.1627336967604;
+        Mon, 26 Jul 2021 15:02:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvH/3aCqmYYflBf/gRwLdTFogim/fAaLvtF2xdQqxRPsK9uaxN0bsiIQHQ3PcBI8SRCAJd/g==
+X-Received: by 2002:a17:906:c834:: with SMTP id dd20mr12151108ejb.371.1627336967433;
+        Mon, 26 Jul 2021 15:02:47 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id n13sm262249ejk.97.2021.07.26.15.02.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 15:02:46 -0700 (PDT)
+Subject: Re: [PATCH 4.19 111/120] KVM: do not assume PTE is writable after
+ follow_pfn
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>,
+        David Stevens <stevensd@google.com>, 3pvd@google.com,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Ovidiu Panait <ovidiu.panait@windriver.com>
+References: <20210726153832.339431936@linuxfoundation.org>
+ <20210726153836.031515657@linuxfoundation.org>
+ <CADVatmOcg_7eQno88nu4ijX9QOoA0h2QY=hoj3TZU+tNqj0TMg@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8cf86f5f-480a-7093-e890-467f290b0ed3@redhat.com>
+Date:   Tue, 27 Jul 2021 00:02:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/1] net: ipa: enable inline checksum offload for IPA
- v4.5+
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162733680501.7201.5058653470686936386.git-patchwork-notify@kernel.org>
-Date:   Mon, 26 Jul 2021 22:00:05 +0000
-References: <20210726164504.323812-1-elder@linaro.org>
-In-Reply-To: <20210726164504.323812-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <CADVatmOcg_7eQno88nu4ijX9QOoA0h2QY=hoj3TZU+tNqj0TMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (refs/heads/master):
-
-On Mon, 26 Jul 2021 11:45:04 -0500 you wrote:
-> The RMNet and IPA drivers both support inline checksum offload now.
-> So enable it for the TX and RX modem endoints for IPA version 4.5+.
+On 26/07/21 23:17, Sudip Mukherjee wrote:
+> Hi Greg,
 > 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  drivers/net/ipa/ipa_data-v4.11.c | 2 ++
->  drivers/net/ipa/ipa_data-v4.5.c  | 2 ++
->  drivers/net/ipa/ipa_data-v4.9.c  | 2 ++
->  3 files changed, 6 insertions(+)
+> On Mon, Jul 26, 2021 at 4:58 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+>>
+>> From: Paolo Bonzini <pbonzini@redhat.com>
+>>
+>> commit bd2fae8da794b55bf2ac02632da3a151b10e664c upstream.
+> 
+> The build of mips malta_kvm_defconfig fails with the error:
+> In file included from arch/mips/kvm/../../../virt/kvm/kvm_main.c:21:
+> arch/mips/kvm/../../../virt/kvm/kvm_main.c: In function 'hva_to_pfn_remapped':
+> ./include/linux/kvm_host.h:70:33: error: conversion from 'long long
+> unsigned int' to 'long unsigned int' changes value from
+> '9218868437227405314' to '2' [-Werror=overflow]
+>     70 | #define KVM_PFN_ERR_RO_FAULT    (KVM_PFN_ERR_MASK + 2)
+>        |                                 ^
+> arch/mips/kvm/../../../virt/kvm/kvm_main.c:1530:23: note: in expansion
+> of macro 'KVM_PFN_ERR_RO_FAULT'
+>   1530 |                 pfn = KVM_PFN_ERR_RO_FAULT;
+> 
+> It built fine after reverting this patch.
+> gcc version 11.1.1 20210723
 
-Here is the summary with links:
-  - [net-next,1/1] net: ipa: enable inline checksum offload for IPA v4.5+
-    https://git.kernel.org/netdev/net-next/c/22171146f84b
+I'll resend a version that works tomorrow (including the second patch 
+too, which depends on this one for context).
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Paolo
 
