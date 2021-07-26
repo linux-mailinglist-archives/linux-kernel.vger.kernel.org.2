@@ -2,171 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E70E3D5A1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913763D5A29
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhGZMcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
+        id S233502AbhGZMgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232334AbhGZMcm (ORCPT
+        with ESMTP id S231874AbhGZMgS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:32:42 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6103C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:13:10 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id a80-20020a1c98530000b0290245467f26a4so6290933wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:13:10 -0700 (PDT)
+        Mon, 26 Jul 2021 08:36:18 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D635C061757;
+        Mon, 26 Jul 2021 06:16:47 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id e21so7046429pla.5;
+        Mon, 26 Jul 2021 06:16:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZtU7fvZEyyOLQgnySOlDvGY7f3ikYJEH6+mfO2JIeiw=;
-        b=YFyKwtLN1bSSFHloIhy0fW6Dhxolu5g2e/6SEkdyGH1aiDKhpgyhOGUJHd1xSooBXA
-         UpvvIqh+avoVzy3OYPWTNNy5ahUcREJDczLQ01VVwk3UKTyvHawERdAeLrXAEa0Jj+k+
-         adbZCEMgpl2zRM89TwupWHr68qDbMaFItJ+MTlezkUjQSwzdN1HIBhE2/bqOxmbv3wz7
-         Wi/T620Hs0l757Y8lVpPETU0D1YKKVdWNKKRcEeBGAUCnENLQ5LFdNONRT2I1Re/VAdB
-         xXsmlyhQtfVry/uGikW3+jSh0sfhWnOqAu/I7Wclztk+OLiUdmTEBfWCQXpB2xvd3ju9
-         GyDQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cHZOvvel+5d6b214Ne7sLHOgMbGoll5+GC93mwY54eA=;
+        b=VaQw2NuGT2IOg1ChHETPeKXdCjDi2OdDH2BSfYPXhvPayFcWiiU7HJkEUflo7xDjH1
+         aIAKNlN3V1d9aIS3K5SxU939fjofBoeV6CcPqMWqjNVOP97VgcZKTGR5TudVQr+5qWt7
+         0IoJrCLkaaVkYlEdu0jf6Rn93iwUTPE4Civl//lQVe6GU8Tu7Q5RobI8Cv56e4LMIqTg
+         WIr/nS9Hj11J9t/Bfx+usXBvjQQTLd+hpRkvQ87L+eSCU+agPIKp1GKIvTOFYT6gUWaL
+         CYqVb83eN4vWDR/HuRxQxREgFZaLa2HcAw8JVxqEYSk2Q/thtgPTLahqIfQF0tnobfVN
+         qjOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZtU7fvZEyyOLQgnySOlDvGY7f3ikYJEH6+mfO2JIeiw=;
-        b=GJQj4AAQX0ZCBa1us5RhiYdrAMs4DAgESQgVzgbkrOMO3a2q5FuB6rFvjoCm/eYosR
-         Jt4qy+HQjSY7mKQgY38G+4YQFxtRJHwcyqtNWQ9O5FHTe1Os5pl63+LeU05i29JmTOJc
-         rE0KwdyejAJATLzzUQ+CWy/OC4kLClZb43P5yxtgPgsA+enBXqSVEnB+3X1HAUQLPFCh
-         DaJk1LZV3ZIWZXTMfULiCvZT7bp8LGph12lef3hzX4iR+YXxKVNaSvv+ZIYXoPZt5MoY
-         AUa+g6ecDtGGlXBls+KxdVhFnltPCGY0jMwCtYfdPn5eqwqGzw7vFy9K5aTY1KtxLGif
-         MUEg==
-X-Gm-Message-State: AOAM533OQPesdgjtbEBO2LEp9EQW6cKFBkMWMP/IoyX4ufq33nu93gkc
-        oCZlu1fJ+V/nIH/7Jkp1NwEKUQ==
-X-Google-Smtp-Source: ABdhPJw3iV0iD0VNKcKvIFGEO/4SIbrCzeF0z8XajY3jrjx5HJnK1HWQwzfNfl/GjgZNs2EuDMsB/A==
-X-Received: by 2002:a1c:3886:: with SMTP id f128mr1889070wma.85.1627305189353;
-        Mon, 26 Jul 2021 06:13:09 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:c468:e033:fa2b:3a6])
-        by smtp.gmail.com with ESMTPSA id x8sm42479052wrt.93.2021.07.26.06.13.08
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cHZOvvel+5d6b214Ne7sLHOgMbGoll5+GC93mwY54eA=;
+        b=j71eFV1NM8jFmWDAC+vIyXxQkSOEzokA+IGtnmpph1uWSrGrOjSNLZLCpHrvfssHEH
+         MWnzuO28DePj/2oE906koLBCdMkrnXLUaklPPS8m9jVtmSGvg43M8j+lZqXmXuJr3ILF
+         1Tu64fk278h31xh6PIv7UhaUUvqr62SumUwM4BAMByUn5mOIzahI8vyRoRGebHLOJoKH
+         qa3VVSe0JYeJHpkF1EHfyUJUIJGEdmJvvxOlUxT7QjhxGHJqismoegnwsdC7uJZ1otlO
+         q0eOOdnD/FL63cDO1cL29Y1umGUPvvLp0w4pYOND1JMCa7VV2gw2UmFLgQKGZ6mYXaLH
+         gyFw==
+X-Gm-Message-State: AOAM530vidATBaVVRhLj2rm1CDynA6Sao33RNA+BsRZtfgsY25Oz+q4y
+        xQ7klNbwiYUgs7XtsRdyDzc=
+X-Google-Smtp-Source: ABdhPJxybNRXYFGSWmauvVve1P4RAIbSKAY80gbCOdbhRJjF5MDB1qYCYCeJxKQPTxqWdB9R78N+eQ==
+X-Received: by 2002:a63:c041:: with SMTP id z1mr18481840pgi.49.1627305406871;
+        Mon, 26 Jul 2021 06:16:46 -0700 (PDT)
+Received: from localhost.localdomain ([2402:e280:2130:198:9b25:1cfb:9ff3:2a8f])
+        by smtp.gmail.com with ESMTPSA id c12sm12070869pfl.56.2021.07.26.06.16.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 06:13:09 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 14:13:06 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
-Subject: Re: [PATCH v2 04/16] KVM: arm64: Optimize host memory aborts
-Message-ID: <YP604j6B1pkhAnT1@google.com>
-References: <20210726092905.2198501-1-qperret@google.com>
- <20210726092905.2198501-5-qperret@google.com>
- <87pmv5e529.wl-maz@kernel.org>
+        Mon, 26 Jul 2021 06:16:46 -0700 (PDT)
+From:   Benjamin Philip <benjamin.philip495@gmail.com>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Benjamin Philip <benjamin.philip495@gmail.com>
+Subject: [PATCH 0/2] *** staging: sm750fb: Rename maxH and maxW to max_h and max_w ***
+Date:   Mon, 26 Jul 2021 18:45:00 +0530
+Message-Id: <cover.1627304144.git.benjamin.philip495@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pmv5e529.wl-maz@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 26 Jul 2021 at 11:35:10 (+0100), Marc Zyngier wrote:
-> On Mon, 26 Jul 2021 10:28:53 +0100,
-> Quentin Perret <qperret@google.com> wrote:
-> > +static int host_stage2_find_range(u64 addr, struct kvm_mem_range *range)
-> 
-> nit: I find 'find_range' a bit odd. We already have found a
-> range. We're just trying to narrow it down to something that fits in a
-> single block mapping. How about 'host_stage2_adjust_range'?
+This patchset (as the subject implies) renames some struct members to follow the
+snake_case naming convention from CamelCase. By doing so, it also fixes 2
+checkpatch CHECKs.
 
-Ack.
+To test it, I have only checked if the module builds, which it does.
 
-> > +{
-> > +	u64 granule, start, end;
-> > +	kvm_pte_t pte;
-> > +	u32 level;
-> > +	int ret;
-> > +
-> > +	ret = kvm_pgtable_get_leaf(&host_kvm.pgt, addr, &pte, &level);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (kvm_pte_valid(pte))
-> > +		return -EAGAIN;
-> > +
-> > +	if (pte)
-> > +		return -EPERM;
-> > +
-> > +	do {
-> > +		granule = kvm_granule_size(level);
-> > +		start = ALIGN_DOWN(addr, granule);
-> > +		end = start + granule;
-> > +		level++;
-> > +	} while ((level < KVM_PGTABLE_MAX_LEVELS) &&
-> > +			(!kvm_level_supports_block_mapping(level) ||
-> > +			 start < range->start || range->end < end));
-> > +
-> 
-> This expression does my head in. You are trying to find the largest
-> block mapping that entirely fits in range, right? Can we just express
-> that directly (with a global negation for the purpose of the loop)?
-> 
-> 	do {
-> 		[...]
-> 	} while (level < KVM_PGTABLE_MAX_LEVELS &&
-> 		 !(kvm_level_supports_block_mapping(level) &&
-> 		   start >= range->start &&
-> 		   end <= range->end));
-> 
-> I personally find this much more readable, because it expresses the
-> condition we are looking for rather than a lot of conditions forcing
-> us to continue.
-> 
-> You could also use a kvm_mem_range for the iteration, and add a helper
-> that checks for the inclusion.
+Note: I am very new to the Linux Kernel. This is my first patch. I have done my best
+to ensure that my patch is upto the expected standard and to research on what it is
+expected by maintainers. Please forgive me if I have done something wrong.
 
-Something like this (untested)?
+Thanks,
+Benjamin Philip
 
-diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-index 75273166d2c5..07d228163090 100644
---- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
-@@ -234,9 +234,15 @@ static inline int __host_stage2_idmap(u64 start, u64 end,
-                __ret;                                                  \
-         })
+Benjamin Philip (2):
+  staging: sm750fb: Rename maxH to max_h in lynx_cursor
+  staging: sm750fb: Rename maxW to max_w in lynx_cursor
 
-+static inline bool range_included(struct kvm_mem_range *child,
-+                                 struct kvm_mem_range *parent)
-+{
-+       return parent->start <= child->start && child->end <= parent->end;
-+}
-+
- static int host_stage2_find_range(u64 addr, struct kvm_mem_range *range)
- {
--       u64 granule, start, end;
-+       struct kvm_mem_range cur;
-        kvm_pte_t pte;
-        u32 level;
-        int ret;
-@@ -252,16 +258,15 @@ static int host_stage2_find_range(u64 addr, struct kvm_mem_range *range)
-                return -EPERM;
+ drivers/staging/sm750fb/sm750.c        | 8 ++++----
+ drivers/staging/sm750fb/sm750.h        | 4 ++--
+ drivers/staging/sm750fb/sm750_cursor.c | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-        do {
--               granule = kvm_granule_size(level);
--               start = ALIGN_DOWN(addr, granule);
--               end = start + granule;
-+               u64 granule = kvm_granule_size(level);
-+               cur.start = ALIGN_DOWN(addr, granule);
-+               cur.end = cur.start + granule;
-                level++;
-        } while ((level < KVM_PGTABLE_MAX_LEVELS) &&
--                       (!kvm_level_supports_block_mapping(level) ||
--                        start < range->start || range->end < end));
-+                       !(kvm_level_supports_block_mapping(level) &&
-+                         range_included(&cur, parent)));
+-- 
+2.31.1
 
--       range->start = start;
--       range->end = end;
-+       *range = cur;
-
-        return 0;
- }
