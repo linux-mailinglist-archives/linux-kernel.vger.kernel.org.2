@@ -2,44 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18AB3D5D91
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689773D5EBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235707AbhGZPCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:02:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41482 "EHLO mail.kernel.org"
+        id S235899AbhGZPLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:11:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235712AbhGZPCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:02:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F60D60F38;
-        Mon, 26 Jul 2021 15:42:30 +0000 (UTC)
+        id S236325AbhGZPG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:06:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE2F60F59;
+        Mon, 26 Jul 2021 15:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314151;
-        bh=GJEsyEFWDRfuRJhaHzFCGf+JMrkruI0bSdRTpe+Yqqc=;
+        s=korg; t=1627314445;
+        bh=wPLt4gxhICw/KEnuyRMLGO7LpLZt+kTfhVZnYMBVttA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLK/NlglE4XKkHSb6dQ9g18b1DwWU815WfrM6odh2Dx/tQ/E/1z1Fmg4hFv8pqtT1
-         JVAuWhgE3LfJmWJpU3qNJHE0dnlimuiFte58d4BjWJDbkKLcfVT/MoGKvmmjNTCD0u
-         vHWjNTPHUEIPPN6bKJu1VH3eY0yGPBtNLTMli5TY=
+        b=ew6kufuhmIenhOUyHjdf49W+aNSHgCqgITTqMTsT3Z1YqppWIgRxUrkBSCWLI6fPy
+         IyhbuzInz7P7cN0Plopzx3dRk5qD1SSdKn9Bt5XIrO6Nsn2JPmiG9zHY5vpUa4j5Zu
+         DlcVsibyffRfYLjaMSYFR0IUsvFrBsLSEKSTnNrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Disseldorp <ddiss@suse.de>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michel Lespinasse <walken@google.com>,
-        Helge Deller <deller@gmx.de>, Oleg Nesterov <oleg@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 30/47] proc: Avoid mixing integer types in mem_rw()
-Date:   Mon, 26 Jul 2021 17:38:48 +0200
-Message-Id: <20210726153823.934940637@linuxfoundation.org>
+Subject: [PATCH 4.14 49/82] liquidio: Fix unintentional sign extension issue on left shift of u16
+Date:   Mon, 26 Jul 2021 17:38:49 +0200
+Message-Id: <20210726153829.773878286@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,50 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit d238692b4b9f2c36e35af4c6e6f6da36184aeb3e ]
+[ Upstream commit e7efc2ce3d0789cd7c21b70ff00cd7838d382639 ]
 
-Use size_t when capping the count argument received by mem_rw(). Since
-count is size_t, using min_t(int, ...) can lead to a negative value
-that will later be passed to access_remote_vm(), which can cause
-unexpected behavior.
+Shifting the u16 integer oct->pcie_port by CN23XX_PKT_INPUT_CTL_MAC_NUM_POS
+(29) bits will be promoted to a 32 bit signed int and then sign-extended
+to a u64. In the cases where oct->pcie_port where bit 2 is set (e.g. 3..7)
+the shifted value will be sign extended and the top 32 bits of the result
+will be set.
 
-Since we are capping the value to at maximum PAGE_SIZE, the conversion
-from size_t to int when passing it to access_remote_vm() as "len"
-shouldn't be a problem.
+Fix this by casting the u16 values to a u64 before the 29 bit left shift.
 
-Link: https://lkml.kernel.org/r/20210512125215.3348316-1-marcelo.cerri@canonical.com
-Reviewed-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Souza Cascardo <cascardo@canonical.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Addresses-Coverity: ("Unintended sign extension")
+
+Fixes: 3451b97cce2d ("liquidio: CN23XX register setup")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/base.c | 2 +-
+ drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index b1ff8eb61802..4d68f5a9e4aa 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -887,7 +887,7 @@ static ssize_t mem_rw(struct file *file, char __user *buf,
- 		flags |= FOLL_WRITE;
+diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
+index 30f0e54f658e..4248ba307b66 100644
+--- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
++++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
+@@ -420,7 +420,7 @@ static int cn23xx_pf_setup_global_input_regs(struct octeon_device *oct)
+ 	 * bits 32:47 indicate the PVF num.
+ 	 */
+ 	for (q_no = 0; q_no < ern; q_no++) {
+-		reg_val = oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
++		reg_val = (u64)oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
  
- 	while (count > 0) {
--		int this_len = min_t(int, count, PAGE_SIZE);
-+		size_t this_len = min_t(size_t, count, PAGE_SIZE);
- 
- 		if (write && copy_from_user(page, buf, this_len)) {
- 			copied = -EFAULT;
+ 		/* for VF assigned queues. */
+ 		if (q_no < oct->sriov_info.pf_srn) {
 -- 
 2.30.2
 
