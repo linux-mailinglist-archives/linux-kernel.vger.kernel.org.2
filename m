@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A483D632F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8A93D6334
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239162AbhGZPo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41598 "EHLO mail.kernel.org"
+        id S239251AbhGZPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237827AbhGZP0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:26:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51EC160F94;
-        Mon, 26 Jul 2021 16:06:31 +0000 (UTC)
+        id S229497AbhGZP1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:27:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B28960F9B;
+        Mon, 26 Jul 2021 16:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315591;
-        bh=fZKqr2rL8TM+9eV1GqzW/W27kCfPeWVYClz/ASEuFG4=;
+        s=korg; t=1627315594;
+        bh=62sg8gzkYJfpgtFpdlfjX/+qB5zFZ296LKl6faT3QFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yV5r4h9biV3Edm7CKKdOrPgx8Q510rYd7gcJkhAXzfOcNcyJwhP9l5z2Q4FDy+1rD
-         85d43r7uvFTq66KI8ZLcbeB++lMJdvJ3Csuxno9BzaD5izb7jOAbImDA2uvtK5NhMv
-         MarGxYv8nIbrDAdF4ABoc9fJq4l2AS19AQyt976o=
+        b=O2i/spXBVRBJT7apCda1S0RgcfNOu1ukQE92ggLqDvV4xfJ7zrimLhfNseQmSVI7n
+         DRAQ+84vqcVED2U0xjK72TmVU1B3V9JMLromYCX+VvHYZ3EHz1PaFFeyoekvllzoaf
+         6vqcAGtL9/eZRslxjEiz9pOkAh6IWCC8IahlPQrw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 158/167] net: dsa: mv88e6xxx: enable SerDes PCS register dump via ethtool -d on Topaz
-Date:   Mon, 26 Jul 2021 17:39:51 +0200
-Message-Id: <20210726153844.715233504@linuxfoundation.org>
+        stable@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 5.10 159/167] PCI: Mark AMD Navi14 GPU ATS as broken
+Date:   Mon, 26 Jul 2021 17:39:52 +0200
+Message-Id: <20210726153844.751766024@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -41,45 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Evan Quan <evan.quan@amd.com>
 
-commit 953b0dcbe2e3f7bee98cc3bca2ec82c8298e9c16 upstream.
+commit e8946a53e2a698c148b3b3ed732f43c7747fbeb6 upstream
 
-Commit bf3504cea7d7e ("net: dsa: mv88e6xxx: Add 6390 family PCS
-registers to ethtool -d") added support for dumping SerDes PCS registers
-via ethtool -d for Peridot.
+Observed unexpected GPU hang during runpm stress test on 0x7341 rev 0x00.
+Further debugging shows broken ATS is related.
 
-The same implementation is also valid for Topaz, but was not
-enabled at the time.
+Disable ATS on this part.  Similar issues on other devices:
 
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Fixes: bf3504cea7d7e ("net: dsa: mv88e6xxx: Add 6390 family PCS registers to ethtool -d")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  a2da5d8cc0b0 ("PCI: Mark AMD Raven iGPU ATS as broken in some platforms")
+  45beb31d3afb ("PCI: Mark AMD Navi10 GPU rev 0x00 ATS as broken")
+  5e89cd303e3a ("PCI: Mark AMD Navi14 GPU rev 0xc5 ATS as broken")
+
+Suggested-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20210602021255.939090-1-evan.quan@amd.com
+Signed-off-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+Cc: stable@vger.kernel.org
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pci/quirks.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3436,6 +3436,8 @@ static const struct mv88e6xxx_ops mv88e6
- 	.serdes_get_sset_count = mv88e6390_serdes_get_sset_count,
- 	.serdes_get_strings = mv88e6390_serdes_get_strings,
- 	.serdes_get_stats = mv88e6390_serdes_get_stats,
-+	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
-+	.serdes_get_regs = mv88e6390_serdes_get_regs,
- 	.phylink_validate = mv88e6341_phylink_validate,
- };
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -5264,7 +5264,8 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_SE
+ static void quirk_amd_harvest_no_ats(struct pci_dev *pdev)
+ {
+ 	if ((pdev->device == 0x7312 && pdev->revision != 0x00) ||
+-	    (pdev->device == 0x7340 && pdev->revision != 0xc5))
++	    (pdev->device == 0x7340 && pdev->revision != 0xc5) ||
++	    (pdev->device == 0x7341 && pdev->revision != 0x00))
+ 		return;
  
-@@ -4211,6 +4213,8 @@ static const struct mv88e6xxx_ops mv88e6
- 	.serdes_get_sset_count = mv88e6390_serdes_get_sset_count,
- 	.serdes_get_strings = mv88e6390_serdes_get_strings,
- 	.serdes_get_stats = mv88e6390_serdes_get_stats,
-+	.serdes_get_regs_len = mv88e6390_serdes_get_regs_len,
-+	.serdes_get_regs = mv88e6390_serdes_get_regs,
- 	.phylink_validate = mv88e6341_phylink_validate,
- };
+ 	pci_info(pdev, "disabling ATS\n");
+@@ -5279,6 +5280,7 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_AT
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7312, quirk_amd_harvest_no_ats);
+ /* AMD Navi14 dGPU */
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7340, quirk_amd_harvest_no_ats);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7341, quirk_amd_harvest_no_ats);
+ #endif /* CONFIG_PCI_ATS */
  
+ /* Freescale PCIe doesn't support MSI in RC mode */
 
 
