@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535133D62EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15883D60CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238235AbhGZPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38518 "EHLO mail.kernel.org"
+        id S238104AbhGZPYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237554AbhGZPXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ACF060F38;
-        Mon, 26 Jul 2021 16:03:53 +0000 (UTC)
+        id S237620AbhGZPQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96C0660F38;
+        Mon, 26 Jul 2021 15:56:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315434;
-        bh=mMAe26w76tR5qxry2h07cpXVrZUsUnnVUBvd2yIZbOQ=;
+        s=korg; t=1627314997;
+        bh=2tjdCL3aJ6Hw8vCvKplDi9yUOkQlbeIY10x3DZmK5Wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RK4nm25XHAXjQ61MbKLP1eNsUnQnHSXVQpSUEobozh8Ba+2uCo3d4HkBRq1IYwbsG
-         aj953+vdzKHS1t8ZyfIT2gKXIkFTcXkx/zZEx+3p73K32S3hpPShxtSPzkIQgrMDrR
-         k166yNAhISswIDi4OPHyWtzPzbpYmRHeaGn2nQZI=
+        b=SdbCK3R/oTAqR2rTPWTssgcjDmhEaw5CwgInYSmNHsoLSSq0D3Wrezt5FD+35/PXA
+         DMREfXOsAbotz7bA0V1euV37WaKpUiwDX0Z+xIjnosoEs2WoI0yV3sk+Z+BwQ5s+Oh
+         SXNaviYWQV/yc/tY4PtUQF/9VO4a9O+X0ylya3m0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Alexey Dobriyan (SK hynix)" <adobriyan@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-afs@lists.infradead.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 095/167] afs: Fix tracepoint string placement with built-in AFS
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 047/108] netrom: Decrease sock refcount when sock timers expire
 Date:   Mon, 26 Jul 2021 17:38:48 +0200
-Message-Id: <20210726153842.586517691@linuxfoundation.org>
+Message-Id: <20210726153833.195026335@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,282 +41,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit 6c881ca0b3040f3e724eae513117ba4ddef86057 ]
+[ Upstream commit 517a16b1a88bdb6b530f48d5d153478b2552d9a8 ]
 
-To quote Alexey[1]:
+Commit 63346650c1a9 ("netrom: switch to sock timer API") switched to use
+sock timer API. It replaces mod_timer() by sk_reset_timer(), and
+del_timer() by sk_stop_timer().
 
-    I was adding custom tracepoint to the kernel, grabbed full F34 kernel
-    .config, disabled modules and booted whole shebang as VM kernel.
+Function sk_reset_timer() will increase the refcount of sock if it is
+called on an inactive timer, hence, in case the timer expires, we need to
+decrease the refcount ourselves in the handler, otherwise, the sock
+refcount will be unbalanced and the sock will never be freed.
 
-    Then did
-
-	perf record -a -e ...
-
-    It crashed:
-
-	general protection fault, probably for non-canonical address 0x435f5346592e4243: 0000 [#1] SMP PTI
-	CPU: 1 PID: 842 Comm: cat Not tainted 5.12.6+ #26
-	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
-	RIP: 0010:t_show+0x22/0xd0
-
-    Then reproducer was narrowed to
-
-	# cat /sys/kernel/tracing/printk_formats
-
-    Original F34 kernel with modules didn't crash.
-
-    So I started to disable options and after disabling AFS everything
-    started working again.
-
-    The root cause is that AFS was placing char arrays content into a
-    section full of _pointers_ to strings with predictable consequences.
-
-    Non canonical address 435f5346592e4243 is "CB.YFS_" which came from
-    CM_NAME macro.
-
-    Steps to reproduce:
-
-	CONFIG_AFS=y
-	CONFIG_TRACING=y
-
-	# cat /sys/kernel/tracing/printk_formats
-
-Fix this by the following means:
-
- (1) Add enum->string translation tables in the event header with the AFS
-     and YFS cache/callback manager operations listed by RPC operation ID.
-
- (2) Modify the afs_cb_call tracepoint to print the string from the
-     translation table rather than using the string at the afs_call name
-     pointer.
-
- (3) Switch translation table depending on the service we're being accessed
-     as (AFS or YFS) in the tracepoint print clause.  Will this cause
-     problems to userspace utilities?
-
-     Note that the symbolic representation of the YFS service ID isn't
-     available to this header, so I've put it in as a number.  I'm not sure
-     if this is the best way to do this.
-
- (4) Remove the name wrangling (CM_NAME) macro and put the names directly
-     into the afs_call_type structs in cmservice.c.
-
-Fixes: 8e8d7f13b6d5a9 ("afs: Add some tracepoints")
-Reported-by: Alexey Dobriyan (SK hynix) <adobriyan@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Reviewed-by: Marc Dionne <marc.dionne@auristor.com>
-cc: Andrew Morton <akpm@linux-foundation.org>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/YLAXfvZ+rObEOdc%2F@localhost.localdomain/ [1]
-Link: https://lore.kernel.org/r/643721.1623754699@warthog.procyon.org.uk/
-Link: https://lore.kernel.org/r/162430903582.2896199.6098150063997983353.stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/162609463957.3133237.15916579353149746363.stgit@warthog.procyon.org.uk/ # v1 (repost)
-Link: https://lore.kernel.org/r/162610726860.3408253.445207609466288531.stgit@warthog.procyon.org.uk/ # v2
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com
+Fixes: 63346650c1a9 ("netrom: switch to sock timer API")
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/cmservice.c         | 25 ++++----------
- include/trace/events/afs.h | 67 +++++++++++++++++++++++++++++++++++---
- 2 files changed, 69 insertions(+), 23 deletions(-)
+ net/netrom/nr_timer.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/fs/afs/cmservice.c b/fs/afs/cmservice.c
-index a4e9e6e07e93..2a528b70478c 100644
---- a/fs/afs/cmservice.c
-+++ b/fs/afs/cmservice.c
-@@ -29,16 +29,11 @@ static void SRXAFSCB_TellMeAboutYourself(struct work_struct *);
+diff --git a/net/netrom/nr_timer.c b/net/netrom/nr_timer.c
+index 9115f8a7dd45..a8da88db7893 100644
+--- a/net/netrom/nr_timer.c
++++ b/net/netrom/nr_timer.c
+@@ -121,11 +121,9 @@ static void nr_heartbeat_expiry(struct timer_list *t)
+ 		   is accepted() it isn't 'dead' so doesn't get removed. */
+ 		if (sock_flag(sk, SOCK_DESTROY) ||
+ 		    (sk->sk_state == TCP_LISTEN && sock_flag(sk, SOCK_DEAD))) {
+-			sock_hold(sk);
+ 			bh_unlock_sock(sk);
+ 			nr_destroy_socket(sk);
+-			sock_put(sk);
+-			return;
++			goto out;
+ 		}
+ 		break;
  
- static int afs_deliver_yfs_cb_callback(struct afs_call *);
+@@ -146,6 +144,8 @@ static void nr_heartbeat_expiry(struct timer_list *t)
  
--#define CM_NAME(name) \
--	char afs_SRXCB##name##_name[] __tracepoint_string =	\
--		"CB." #name
--
- /*
-  * CB.CallBack operation type
-  */
--static CM_NAME(CallBack);
- static const struct afs_call_type afs_SRXCBCallBack = {
--	.name		= afs_SRXCBCallBack_name,
-+	.name		= "CB.CallBack",
- 	.deliver	= afs_deliver_cb_callback,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_CallBack,
-@@ -47,9 +42,8 @@ static const struct afs_call_type afs_SRXCBCallBack = {
- /*
-  * CB.InitCallBackState operation type
-  */
--static CM_NAME(InitCallBackState);
- static const struct afs_call_type afs_SRXCBInitCallBackState = {
--	.name		= afs_SRXCBInitCallBackState_name,
-+	.name		= "CB.InitCallBackState",
- 	.deliver	= afs_deliver_cb_init_call_back_state,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_InitCallBackState,
-@@ -58,9 +52,8 @@ static const struct afs_call_type afs_SRXCBInitCallBackState = {
- /*
-  * CB.InitCallBackState3 operation type
-  */
--static CM_NAME(InitCallBackState3);
- static const struct afs_call_type afs_SRXCBInitCallBackState3 = {
--	.name		= afs_SRXCBInitCallBackState3_name,
-+	.name		= "CB.InitCallBackState3",
- 	.deliver	= afs_deliver_cb_init_call_back_state3,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_InitCallBackState,
-@@ -69,9 +62,8 @@ static const struct afs_call_type afs_SRXCBInitCallBackState3 = {
- /*
-  * CB.Probe operation type
-  */
--static CM_NAME(Probe);
- static const struct afs_call_type afs_SRXCBProbe = {
--	.name		= afs_SRXCBProbe_name,
-+	.name		= "CB.Probe",
- 	.deliver	= afs_deliver_cb_probe,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_Probe,
-@@ -80,9 +72,8 @@ static const struct afs_call_type afs_SRXCBProbe = {
- /*
-  * CB.ProbeUuid operation type
-  */
--static CM_NAME(ProbeUuid);
- static const struct afs_call_type afs_SRXCBProbeUuid = {
--	.name		= afs_SRXCBProbeUuid_name,
-+	.name		= "CB.ProbeUuid",
- 	.deliver	= afs_deliver_cb_probe_uuid,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_ProbeUuid,
-@@ -91,9 +82,8 @@ static const struct afs_call_type afs_SRXCBProbeUuid = {
- /*
-  * CB.TellMeAboutYourself operation type
-  */
--static CM_NAME(TellMeAboutYourself);
- static const struct afs_call_type afs_SRXCBTellMeAboutYourself = {
--	.name		= afs_SRXCBTellMeAboutYourself_name,
-+	.name		= "CB.TellMeAboutYourself",
- 	.deliver	= afs_deliver_cb_tell_me_about_yourself,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_TellMeAboutYourself,
-@@ -102,9 +92,8 @@ static const struct afs_call_type afs_SRXCBTellMeAboutYourself = {
- /*
-  * YFS CB.CallBack operation type
-  */
--static CM_NAME(YFS_CallBack);
- static const struct afs_call_type afs_SRXYFSCB_CallBack = {
--	.name		= afs_SRXCBYFS_CallBack_name,
-+	.name		= "YFSCB.CallBack",
- 	.deliver	= afs_deliver_yfs_cb_callback,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_CallBack,
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 4eef374d4413..5deb9f490f6f 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -174,6 +174,34 @@ enum afs_vl_operation {
- 	afs_VL_GetCapabilities	= 65537,	/* AFS Get VL server capabilities */
- };
+ 	nr_start_heartbeat(sk);
+ 	bh_unlock_sock(sk);
++out:
++	sock_put(sk);
+ }
  
-+enum afs_cm_operation {
-+	afs_CB_CallBack			= 204,	/* AFS break callback promises */
-+	afs_CB_InitCallBackState	= 205,	/* AFS initialise callback state */
-+	afs_CB_Probe			= 206,	/* AFS probe client */
-+	afs_CB_GetLock			= 207,	/* AFS get contents of CM lock table */
-+	afs_CB_GetCE			= 208,	/* AFS get cache file description */
-+	afs_CB_GetXStatsVersion		= 209,	/* AFS get version of extended statistics */
-+	afs_CB_GetXStats		= 210,	/* AFS get contents of extended statistics data */
-+	afs_CB_InitCallBackState3	= 213,	/* AFS initialise callback state, version 3 */
-+	afs_CB_ProbeUuid		= 214,	/* AFS check the client hasn't rebooted */
-+};
-+
-+enum yfs_cm_operation {
-+	yfs_CB_Probe			= 206,	/* YFS probe client */
-+	yfs_CB_GetLock			= 207,	/* YFS get contents of CM lock table */
-+	yfs_CB_XStatsVersion		= 209,	/* YFS get version of extended statistics */
-+	yfs_CB_GetXStats		= 210,	/* YFS get contents of extended statistics data */
-+	yfs_CB_InitCallBackState3	= 213,	/* YFS initialise callback state, version 3 */
-+	yfs_CB_ProbeUuid		= 214,	/* YFS check the client hasn't rebooted */
-+	yfs_CB_GetServerPrefs		= 215,
-+	yfs_CB_GetCellServDV		= 216,
-+	yfs_CB_GetLocalCell		= 217,
-+	yfs_CB_GetCacheConfig		= 218,
-+	yfs_CB_GetCellByNum		= 65537,
-+	yfs_CB_TellMeAboutYourself	= 65538, /* get client capabilities */
-+	yfs_CB_CallBack			= 64204,
-+};
-+
- enum afs_edit_dir_op {
- 	afs_edit_dir_create,
- 	afs_edit_dir_create_error,
-@@ -435,6 +463,32 @@ enum afs_cb_break_reason {
- 	EM(afs_YFSVL_GetCellName,		"YFSVL.GetCellName") \
- 	E_(afs_VL_GetCapabilities,		"VL.GetCapabilities")
+ static void nr_t2timer_expiry(struct timer_list *t)
+@@ -159,6 +159,7 @@ static void nr_t2timer_expiry(struct timer_list *t)
+ 		nr_enquiry_response(sk);
+ 	}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
  
-+#define afs_cm_operations \
-+	EM(afs_CB_CallBack,			"CB.CallBack") \
-+	EM(afs_CB_InitCallBackState,		"CB.InitCallBackState") \
-+	EM(afs_CB_Probe,			"CB.Probe") \
-+	EM(afs_CB_GetLock,			"CB.GetLock") \
-+	EM(afs_CB_GetCE,			"CB.GetCE") \
-+	EM(afs_CB_GetXStatsVersion,		"CB.GetXStatsVersion") \
-+	EM(afs_CB_GetXStats,			"CB.GetXStats") \
-+	EM(afs_CB_InitCallBackState3,		"CB.InitCallBackState3") \
-+	E_(afs_CB_ProbeUuid,			"CB.ProbeUuid")
-+
-+#define yfs_cm_operations \
-+	EM(yfs_CB_Probe,			"YFSCB.Probe") \
-+	EM(yfs_CB_GetLock,			"YFSCB.GetLock") \
-+	EM(yfs_CB_XStatsVersion,		"YFSCB.XStatsVersion") \
-+	EM(yfs_CB_GetXStats,			"YFSCB.GetXStats") \
-+	EM(yfs_CB_InitCallBackState3,		"YFSCB.InitCallBackState3") \
-+	EM(yfs_CB_ProbeUuid,			"YFSCB.ProbeUuid") \
-+	EM(yfs_CB_GetServerPrefs,		"YFSCB.GetServerPrefs") \
-+	EM(yfs_CB_GetCellServDV,		"YFSCB.GetCellServDV") \
-+	EM(yfs_CB_GetLocalCell,			"YFSCB.GetLocalCell") \
-+	EM(yfs_CB_GetCacheConfig,		"YFSCB.GetCacheConfig") \
-+	EM(yfs_CB_GetCellByNum,			"YFSCB.GetCellByNum") \
-+	EM(yfs_CB_TellMeAboutYourself,		"YFSCB.TellMeAboutYourself") \
-+	E_(yfs_CB_CallBack,			"YFSCB.CallBack")
-+
- #define afs_edit_dir_ops				  \
- 	EM(afs_edit_dir_create,			"create") \
- 	EM(afs_edit_dir_create_error,		"c_fail") \
-@@ -567,6 +621,8 @@ afs_server_traces;
- afs_cell_traces;
- afs_fs_operations;
- afs_vl_operations;
-+afs_cm_operations;
-+yfs_cm_operations;
- afs_edit_dir_ops;
- afs_edit_dir_reasons;
- afs_eproto_causes;
-@@ -647,20 +703,21 @@ TRACE_EVENT(afs_cb_call,
+ static void nr_t4timer_expiry(struct timer_list *t)
+@@ -169,6 +170,7 @@ static void nr_t4timer_expiry(struct timer_list *t)
+ 	bh_lock_sock(sk);
+ 	nr_sk(sk)->condition &= ~NR_COND_PEER_RX_BUSY;
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
  
- 	    TP_STRUCT__entry(
- 		    __field(unsigned int,		call		)
--		    __field(const char *,		name		)
- 		    __field(u32,			op		)
-+		    __field(u16,			service_id	)
- 			     ),
+ static void nr_idletimer_expiry(struct timer_list *t)
+@@ -197,6 +199,7 @@ static void nr_idletimer_expiry(struct timer_list *t)
+ 		sock_set_flag(sk, SOCK_DEAD);
+ 	}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
  
- 	    TP_fast_assign(
- 		    __entry->call	= call->debug_id;
--		    __entry->name	= call->type->name;
- 		    __entry->op		= call->operation_ID;
-+		    __entry->service_id	= call->service_id;
- 			   ),
+ static void nr_t1timer_expiry(struct timer_list *t)
+@@ -209,8 +212,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_1:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_CONNREQ);
+@@ -220,8 +222,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_2:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_DISCREQ);
+@@ -231,8 +232,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_3:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_requeue_frames(sk);
+@@ -241,5 +241,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	}
  
--	    TP_printk("c=%08x %s o=%u",
-+	    TP_printk("c=%08x %s",
- 		      __entry->call,
--		      __entry->name,
--		      __entry->op)
-+		      __entry->service_id == 2501 ?
-+		      __print_symbolic(__entry->op, yfs_cm_operations) :
-+		      __print_symbolic(__entry->op, afs_cm_operations))
- 	    );
- 
- TRACE_EVENT(afs_call,
+ 	nr_start_t1timer(sk);
++out:
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
 -- 
 2.30.2
 
