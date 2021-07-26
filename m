@@ -2,100 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E436C3D5796
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA243D579C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbhGZJwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:52:50 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48419 "EHLO mout.gmx.net"
+        id S232410AbhGZJzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231612AbhGZJwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:52:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627295581;
-        bh=+VUL+QLDy3glb1Z4duCwJNXnE36cEk4VDEsuDj6mCnQ=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=D4haEr6H/SaIBPEo3SJ8CWQB4DeoSwc2UtLQllOAVQsGyKYm01eMGbsPhTzMQ7TXa
-         +Vpku6C6oeY4t8LkQSq2ylwij6Qn4zQ/odvh05cxoBq7D/y/1zO4Dl/ZIuMR7XCjhS
-         y6jNDaZkirM2el+zVw9/P5wa+Ufys5riG9RzI5Qg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [217.61.151.117] ([217.61.151.117]) by web-mail.gmx.net
- (3c-app-gmx-bs55.server.lan [172.19.170.139]) (via HTTP); Mon, 26 Jul 2021
- 12:33:01 +0200
-MIME-Version: 1.0
-Message-ID: <trinity-3fb57d4b-aa73-410c-9d9b-4ba3c8b0f674-1627295581632@3c-app-gmx-bs55>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Frank Wunderlich <linux@fw-web.de>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Aw: Re:  Re: [PATCH] soc: mediatek: mmsys: fix HDMI output on
- mt7623/bananapi-r2
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 26 Jul 2021 12:33:01 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <CAAOTY_-2vJE_v2vV=fJqK9--yx=++P9x53T-g3Cv4qKfHhqbLg@mail.gmail.com>
-References: <20210710132431.265985-1-linux@fw-web.de>
- <456f0611-1fc7-75ac-ff45-9afd94190283@collabora.com>
- <trinity-02bc17fc-b458-4d17-baca-8afe30e4c92c-1626110171249@3c-app-gmx-bs28>
- <dbe23d2a-cd29-0782-1b7d-bcb5c6683607@collabora.com>
- <6EF00182-1FF4-4061-BCE4-E2AD7275211B@public-files.de>
- <CAAOTY_-2vJE_v2vV=fJqK9--yx=++P9x53T-g3Cv4qKfHhqbLg@mail.gmail.com>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:iPn7TUoOCvn5EtAyQEAe4fH9u6GWCjG99MHdzRiuhNVgs2b7AjqMoxzf+RKZ1aSoarRpO
- 6di4hcveSpohkWPxcKqUEwsKney50YrmUADSL/bV4qeqUyR6rCMiTymQgeiIvA4v1XoQFKtCUX+H
- 5cEdAvXLupE2EomWYtTOY26eGRYJSwzGODgEmjhcHavXkvGpordBctuERaRmSvEB/i3I9U5azvfC
- KpeAb5OpCwYueskrexzltzsrroC5uPn7X2Pa5hfOEtf71Bj0dWqygfBU+8gwdDTYdlLk5ip0ouTh
- sY=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3D1zLxNwjgY=:WUxgCA+GhIthK0mPzonNLV
- Tz6F3VlfZSjLkuGSpaC/9Tysu0WFvu7ofQJNq6I9eNAYT7bd4RaZV421YMrQXpzNl8RIWcKrf
- 6V7g1DdfLtPp7Stjlkxopl7lHzJcYaWNJOYPYT7YapwJLHvHr2zrGGTiJ409YhjDNRUAq+O0f
- jkRMMCgJ9l8fOK4m94ShbZq3CWqJqPU5mNnGOu1WY/nWgcjj7sHIQuKjKrjepL31TU42LVwHe
- msQLZ96/zzoKY6CPOw8qVx8P93KTPG+WP3rtdtrCTzpEpOv09PB2VhsSv2FklwlOYjIM6Jczl
- uerSsDND6PouY7IineKf7Az3ZmPpqNzh5cD1nADyfieIrJoyV9dxLvg++V3n4escBGrplo3Bl
- b8LXnVZf/jDC6c3n325Gar8tus2x5vJCQFYdftGLRQYnNVB5XFbXatUGZiqZcRgMCvszB4+RF
- uVjwpEejJVycv/zgmXw/yEMA3EAlSZr6SwLfWkDMeDgHvajlpwYwCinHpGcZAumBxeu4N8G1i
- NZCUAhAsKxEG+1EOkxZRjX/+qgsSSfwebsC7UGOicSrVrmK6D7y7P+uHwUqsSkOYWy/B8/yB5
- 4uZiPI0inEtH7ex8to3REb9MGi544f2F1f38Zw9cGZYSDtfleOs2YB4JJcw1lUOYkMyqoIIdV
- FepBaKWROreMfTvQgzTqEV7mipD8v6wrjyzXvjdQSi4lcxK8BIxkheAlp8a0A/AXqCkXpnhHj
- +dxUDQUiyIX3Ox7ocy6HoaTnnzQ3czx5fBK/MnlJM+nXHeID668eQplEapkxdyy+cVlkTPbvq
- XAah5Xx+cjNooG+Tpr9DWj0W3+X8MUM+6d6/mqRpoJSJ9qD1Eo=
-Content-Transfer-Encoding: quoted-printable
+        id S231612AbhGZJyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 05:54:50 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AED8860F22;
+        Mon, 26 Jul 2021 10:35:12 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m7xx0-0010R4-OE; Mon, 26 Jul 2021 11:35:10 +0100
+Date:   Mon, 26 Jul 2021 11:35:10 +0100
+Message-ID: <87pmv5e529.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH v2 04/16] KVM: arm64: Optimize host memory aborts
+In-Reply-To: <20210726092905.2198501-5-qperret@google.com>
+References: <20210726092905.2198501-1-qperret@google.com>
+        <20210726092905.2198501-5-qperret@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: qperret@google.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com, tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-> Gesendet: Montag, 26. Juli 2021 um 02:27 Uhr
-> Von: "Chun-Kuang Hu" <chunkuang.hu@kernel.org>
-> As I've discussed in [1], SOUT has many bits and need to be cleared
-> before set new value. Of course, write only could do the clear, but
-> for MOUT, it clear the bits that should not be cleared. If you want to
-> use the table, you need to implement the 'mask'.
+On Mon, 26 Jul 2021 10:28:53 +0100,
+Quentin Perret <qperret@google.com> wrote:
+> 
+> The kvm_pgtable_stage2_find_range() function is used in the host memory
+> abort path to try and look for the largest block mapping that can be
+> used to map the faulting address. In order to do so, the function
+> currently walks the stage-2 page-table and looks for existing
+> incompatible mappings within the range of the largest possible block.
+> If incompatible mappings are found, it tries the same procedure again,
+> but using a smaller block range, and repeats until a matching range is
+> found (potentially up to page granularity). While this approach has
+> benefits (mostly in the fact that it proactively coalesces host stage-2
+> mappings), it can be slow if the ranges are fragmented, and it isn't
+> optimized to deal with CPUs faulting on the same IPA as all of them will
+> do all the work every time.
+> 
+> To avoid these issues, remove kvm_pgtable_stage2_find_range(), and walk
+> the page-table only once in the host_mem_abort() path to find the
+> closest leaf to the input address. With this, use the corresponding
+> range if it is invalid and not owned by another entity. If a valid leaf
+> is found, return -EAGAIN similar to what is done in the
+> kvm_pgtable_stage2_map() path to optimize concurrent faults.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h  | 30 -----------
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c | 39 +++++++++++++-
+>  arch/arm64/kvm/hyp/pgtable.c          | 74 ---------------------------
+>  3 files changed, 38 insertions(+), 105 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index 5a7a13bbd4a1..cec76a49f521 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -141,16 +141,6 @@ enum kvm_pgtable_prot {
+>  #define PAGE_HYP_RO		(KVM_PGTABLE_PROT_R)
+>  #define PAGE_HYP_DEVICE		(PAGE_HYP | KVM_PGTABLE_PROT_DEVICE)
+>  
+> -/**
+> - * struct kvm_mem_range - Range of Intermediate Physical Addresses
+> - * @start:	Start of the range.
+> - * @end:	End of the range.
+> - */
+> -struct kvm_mem_range {
+> -	u64 start;
+> -	u64 end;
+> -};
+> -
+>  /**
+>   * enum kvm_pgtable_walk_flags - Flags to control a depth-first page-table walk.
+>   * @KVM_PGTABLE_WALK_LEAF:		Visit leaf entries, including invalid
+> @@ -477,24 +467,4 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+>   */
+>  int kvm_pgtable_get_leaf(struct kvm_pgtable *pgt, u64 addr,
+>  			 kvm_pte_t *ptep, u32 *level);
+> -
+> -/**
+> - * kvm_pgtable_stage2_find_range() - Find a range of Intermediate Physical
+> - *				     Addresses with compatible permission
+> - *				     attributes.
+> - * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init*().
+> - * @addr:	Address that must be covered by the range.
+> - * @prot:	Protection attributes that the range must be compatible with.
+> - * @range:	Range structure used to limit the search space at call time and
+> - *		that will hold the result.
+> - *
+> - * The offset of @addr within a page is ignored. An IPA is compatible with @prot
+> - * iff its corresponding stage-2 page-table entry has default ownership and, if
+> - * valid, is mapped with protection attributes identical to @prot.
+> - *
+> - * Return: 0 on success, negative error code on failure.
+> - */
+> -int kvm_pgtable_stage2_find_range(struct kvm_pgtable *pgt, u64 addr,
+> -				  enum kvm_pgtable_prot prot,
+> -				  struct kvm_mem_range *range);
+>  #endif	/* __ARM64_KVM_PGTABLE_H__ */
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index 871149246f5f..01700a908bb7 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -159,6 +159,11 @@ static int host_stage2_unmap_dev_all(void)
+>  	return kvm_pgtable_stage2_unmap(pgt, addr, BIT(pgt->ia_bits) - addr);
+>  }
+>  
+> +struct kvm_mem_range {
+> +	u64 start;
+> +	u64 end;
+> +};
+> +
+>  static bool find_mem_range(phys_addr_t addr, struct kvm_mem_range *range)
+>  {
+>  	int cur, left = 0, right = hyp_memblock_nr;
+> @@ -227,6 +232,38 @@ static inline int __host_stage2_idmap(u64 start, u64 end,
+>  		__ret;							\
+>  	 })
 >
-> [1] https://patchwork.kernel.org/project/linux-mediatek/patch/trinity-93=
-7ebfa3-d123-42de-a289-3ad0dbc09782-1625830110576@3c-app-gmx-bap43/
+> +static int host_stage2_find_range(u64 addr, struct kvm_mem_range *range)
 
-I've added the mask like you did here [1] on my repo [2]
+nit: I find 'find_range' a bit odd. We already have found a
+range. We're just trying to narrow it down to something that fits in a
+single block mapping. How about 'host_stage2_adjust_range'?
 
-and it works too...should i use you as author as i only take your code whe=
-n posting?
+> +{
+> +	u64 granule, start, end;
+> +	kvm_pte_t pte;
+> +	u32 level;
+> +	int ret;
+> +
+> +	ret = kvm_pgtable_get_leaf(&host_kvm.pgt, addr, &pte, &level);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (kvm_pte_valid(pte))
+> +		return -EAGAIN;
+> +
+> +	if (pte)
+> +		return -EPERM;
+> +
+> +	do {
+> +		granule = kvm_granule_size(level);
+> +		start = ALIGN_DOWN(addr, granule);
+> +		end = start + granule;
+> +		level++;
+> +	} while ((level < KVM_PGTABLE_MAX_LEVELS) &&
+> +			(!kvm_level_supports_block_mapping(level) ||
+> +			 start < range->start || range->end < end));
+> +
 
-regards Frank
+This expression does my head in. You are trying to find the largest
+block mapping that entirely fits in range, right? Can we just express
+that directly (with a global negation for the purpose of the loop)?
 
-[1] https://chromium-review.googlesource.com/c/chromiumos/third_party/kern=
-el/+/2345186/5/drivers/soc/mediatek/mtk-mmsys.c#294
-[2] https://github.com/frank-w/BPI-R2-4.14/commits/5.14-mmsys
+	do {
+		[...]
+	} while (level < KVM_PGTABLE_MAX_LEVELS &&
+		 !(kvm_level_supports_block_mapping(level) &&
+		   start >= range->start &&
+		   end <= range->end));
+
+I personally find this much more readable, because it expresses the
+condition we are looking for rather than a lot of conditions forcing
+us to continue.
+
+You could also use a kvm_mem_range for the iteration, and add a helper
+that checks for the inclusion.
+
+> +	range->start = start;
+> +	range->end = end;
+> +
+> +	return 0;
+> +}
+> +
+>  static int host_stage2_idmap(u64 addr)
+>  {
+>  	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
+> @@ -238,7 +275,7 @@ static int host_stage2_idmap(u64 addr)
+>  		prot |= KVM_PGTABLE_PROT_X;
+>  
+>  	hyp_spin_lock(&host_kvm.lock);
+> -	ret = kvm_pgtable_stage2_find_range(&host_kvm.pgt, addr, prot, &range);
+> +	ret = host_stage2_find_range(addr, &range);
+>  	if (ret)
+>  		goto unlock;
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
