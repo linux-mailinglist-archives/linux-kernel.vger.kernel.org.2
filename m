@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E84F3D5D7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725AF3D5DDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235579AbhGZPBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:01:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40874 "EHLO mail.kernel.org"
+        id S235891AbhGZPEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:04:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235616AbhGZPBl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:01:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 868C260F92;
-        Mon, 26 Jul 2021 15:42:09 +0000 (UTC)
+        id S235806AbhGZPDO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:03:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D01B660F51;
+        Mon, 26 Jul 2021 15:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314130;
-        bh=I2P/HKSHOQzt+1zw+yMkiZZVIGw37oF+WlVyIzs8Gaw=;
+        s=korg; t=1627314223;
+        bh=TKhShooIC5HRkzk0OxMAXSMSzWc5fyBv9SAWpwhRCGo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DDxqjmuCK7SOv0s8A1nWZtIjYZ2rBRSCNKiaz6PxVJ1yxeEBozG5Nz5QVPn7fKAvG
-         nJjwcxgHtwXkDX8XJ/iRwYrbGLROs+sjX/tjMsgI9TeeUhHICcItuzfKDDcaJIlKiv
-         q6X8J5S3yK07N5eS/vGRvmcigKvM28T5vdVpuyQo=
+        b=J1JuiQj3RgN+oXm86AA0gr6xcHtrJ5sqdOeBpBoZj95/98Bh3R+ZrWQyMz0h6oEsA
+         9kJ1pg0J5f5QU1aj19flqlxkuJVdku590DWUFXi2Q/OqfSxN44au4Bc8DdobdkYADJ
+         0aS9rGk+TB6bn5F3o8unoWkB236Q2VNQCNZYhGF8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
-        syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 26/47] netrom: Decrease sock refcount when sock timers expire
+Subject: [PATCH 4.9 30/60] perf test session_topology: Delete session->evlist
 Date:   Mon, 26 Jul 2021 17:38:44 +0200
-Message-Id: <20210726153823.805526557@linuxfoundation.org>
+Message-Id: <20210726153825.817351684@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 517a16b1a88bdb6b530f48d5d153478b2552d9a8 ]
+[ Upstream commit 233f2dc1c284337286f9a64c0152236779a42f6c ]
 
-Commit 63346650c1a9 ("netrom: switch to sock timer API") switched to use
-sock timer API. It replaces mod_timer() by sk_reset_timer(), and
-del_timer() by sk_stop_timer().
+ASan reports a memory leak related to session->evlist while running:
 
-Function sk_reset_timer() will increase the refcount of sock if it is
-called on an inactive timer, hence, in case the timer expires, we need to
-decrease the refcount ourselves in the handler, otherwise, the sock
-refcount will be unbalanced and the sock will never be freed.
+  # perf test "41: Session topology".
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com
-Fixes: 63346650c1a9 ("netrom: switch to sock timer API")
-Signed-off-by: David S. Miller <davem@davemloft.net>
+When perf_data is in write mode, session->evlist is owned by the caller,
+which should also take care of deleting it.
+
+This patch adds the missing evlist__delete().
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: c84974ed9fb67293 ("perf test: Add entry to test cpu topology")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kan Liang <kan.liang@intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netrom/nr_timer.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ tools/perf/tests/topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/netrom/nr_timer.c b/net/netrom/nr_timer.c
-index f0ecaec1ff3d..d1a0b7056743 100644
---- a/net/netrom/nr_timer.c
-+++ b/net/netrom/nr_timer.c
-@@ -125,11 +125,9 @@ static void nr_heartbeat_expiry(unsigned long param)
- 		   is accepted() it isn't 'dead' so doesn't get removed. */
- 		if (sock_flag(sk, SOCK_DESTROY) ||
- 		    (sk->sk_state == TCP_LISTEN && sock_flag(sk, SOCK_DEAD))) {
--			sock_hold(sk);
- 			bh_unlock_sock(sk);
- 			nr_destroy_socket(sk);
--			sock_put(sk);
--			return;
-+			goto out;
- 		}
- 		break;
+diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+index 3e7cdefb0817..f06f00828ce7 100644
+--- a/tools/perf/tests/topology.c
++++ b/tools/perf/tests/topology.c
+@@ -49,6 +49,7 @@ static int session_write_header(char *path)
+ 	TEST_ASSERT_VAL("failed to write header",
+ 			!perf_session__write_header(session, session->evlist, file.fd, true));
  
-@@ -150,6 +148,8 @@ static void nr_heartbeat_expiry(unsigned long param)
++	evlist__delete(session->evlist);
+ 	perf_session__delete(session);
  
- 	nr_start_heartbeat(sk);
- 	bh_unlock_sock(sk);
-+out:
-+	sock_put(sk);
- }
- 
- static void nr_t2timer_expiry(unsigned long param)
-@@ -163,6 +163,7 @@ static void nr_t2timer_expiry(unsigned long param)
- 		nr_enquiry_response(sk);
- 	}
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
- 
- static void nr_t4timer_expiry(unsigned long param)
-@@ -172,6 +173,7 @@ static void nr_t4timer_expiry(unsigned long param)
- 	bh_lock_sock(sk);
- 	nr_sk(sk)->condition &= ~NR_COND_PEER_RX_BUSY;
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
- 
- static void nr_idletimer_expiry(unsigned long param)
-@@ -200,6 +202,7 @@ static void nr_idletimer_expiry(unsigned long param)
- 		sock_set_flag(sk, SOCK_DEAD);
- 	}
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
- 
- static void nr_t1timer_expiry(unsigned long param)
-@@ -212,8 +215,7 @@ static void nr_t1timer_expiry(unsigned long param)
- 	case NR_STATE_1:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_write_internal(sk, NR_CONNREQ);
-@@ -223,8 +225,7 @@ static void nr_t1timer_expiry(unsigned long param)
- 	case NR_STATE_2:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_write_internal(sk, NR_DISCREQ);
-@@ -234,8 +235,7 @@ static void nr_t1timer_expiry(unsigned long param)
- 	case NR_STATE_3:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_requeue_frames(sk);
-@@ -244,5 +244,7 @@ static void nr_t1timer_expiry(unsigned long param)
- 	}
- 
- 	nr_start_t1timer(sk);
-+out:
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
+ 	return 0;
 -- 
 2.30.2
 
