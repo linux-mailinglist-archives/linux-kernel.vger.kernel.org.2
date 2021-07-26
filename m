@@ -2,140 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B7E3D5CA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A6F3D5CAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbhGZO2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
+        id S234743AbhGZO30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:29:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234921AbhGZO22 (ORCPT
+        with ESMTP id S234550AbhGZO3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:28:28 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B344C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:08:57 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id j2so11456894wrx.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:08:57 -0700 (PDT)
+        Mon, 26 Jul 2021 10:29:25 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4DAC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:09:53 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 68-20020a9d0f4a0000b02904b1f1d7c5f4so9280005ott.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:09:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=e5UdpVMTyl73+A5rHVvGJWmZMwd2mW5mt6a1agF9/w0=;
-        b=ahvP1aV30Q5DhpiTfESrw/1uit6mE2eyQx0Dj3mgQtJZYv4p5GVf/lKCMJ+uD2ss+y
-         SXHM8sIUAu0PJhRKGMxHity57cFmp/Qf9k3UWaFUHT3+BZJj5IjFWnDmZgtw9KGPvC6b
-         mr/VcZS5JlhxhPa3RoqSdgRyEaqh6ygghNYNs=
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9y5LahECIAbm3f5+aXFvAJE77WeSPYzFpoV3JjO/OcA=;
+        b=abB+W/oYtV5GIKVFYivlzZtIQyVFozF4dr5iM0XT7dfDjsLzSqMFjViC7T7E28FMjc
+         HHX7uctGg1AerMKza/DiDRwYv0IYKGqepuhbLccSJrwmYd0dpLphglHM8xgt2NoXFWQo
+         jH/eZoVt+cJpjRHatY8kW2v2PdrjhJ+Sxx0fuhiz1V4pIgiQGnpoHPNXpkRf1icW8NSv
+         06b2V0xERM+VUsVmkazdJZI6F+nW+hEiwuAb250ifE9EMznxjhGzywKy8ec+khfWgDJ0
+         lu92ufvLUIwPjHSBgEmYblFTIaqBHVlDHv6tTywqRvgmsoZFgsMjXg0nHpf3g1wvy61b
+         QjaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=e5UdpVMTyl73+A5rHVvGJWmZMwd2mW5mt6a1agF9/w0=;
-        b=Q8L5JsGWzWsq1xq/oHc8RhSf94mPzj9jXbG/ULSwnS4GFtIGtYvIzhp+4kFXbd1awP
-         /Apk5xBOWI+LHRfbH9D/fYESEMzKDuVxVy8zpqz9spZefeVhntNnqVegAcflb1eJsqa1
-         LXvt46Uh4zcMaos4/k7eNe+9AsUbhGwQRvxachiMvFUZ41DOtC03rLi86pkYbmwl0fdT
-         Qz+Hiawfra1QZVTHDFYhJ7qf3q7oY1ztM2HwJ7XekWoGMD113V0BrfcQgqOPbvDGvucN
-         nNX/C5NomR9/EtR6X///xl4xSqoI8ZuV5X5tLql5A7BiYzY/sfo8VvCNG7mKUw/pDuX3
-         NTVw==
-X-Gm-Message-State: AOAM530IILZfaf+uMK81DTKpR5uuxjxNy98HJF1M2QMOvvugmCZuZpaW
-        E7NO03ocRALzu6zYmi3E+T659A==
-X-Google-Smtp-Source: ABdhPJxksYL0bB8V5EKs51meFD1O34Bc4KHxexLtI3fSHzTLqVk0ZZZ2SMBHun+uolI/AKaH5VQ3IQ==
-X-Received: by 2002:a5d:4951:: with SMTP id r17mr4063191wrs.208.1627312135650;
-        Mon, 26 Jul 2021 08:08:55 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:d571])
-        by smtp.gmail.com with ESMTPSA id f26sm71897wrd.41.2021.07.26.08.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 08:08:55 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 16:08:54 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: fix blocking rstat function called from
- atomic cgroup1 thresholding code
-Message-ID: <YP7QBuc+5gAlL4g7@chrisdown.name>
-References: <20210726150019.251820-1-hannes@cmpxchg.org>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9y5LahECIAbm3f5+aXFvAJE77WeSPYzFpoV3JjO/OcA=;
+        b=BP+Pa6JEgesybZOvFOGDbd1gR8Pu8QnhwRnykurIUo3WQEQB4xlyodiIfTIj2xVTEb
+         Cf5PLcEP8zdVbOPQMznLtAyLsc6HYb1/eKz9Lz14UnJu7tRrNhoma/29zBdoUlmR0IGY
+         9k9HOXh5UVWcYdhbvxIBzGDKLvCQYEYW0fJ3NQ+LNmFvwBBHkvcI0C4/T5AoAG4Grluw
+         X83UX5Fo8bnGyy/HX4Wyq7evOnj3pimsu39WmZPR6dhLHJ3naVVZgczagB5f0jXGcrbg
+         fMp+F61WZZaHIU3a+tyy7E/tcHyquh3pqx71OsYwa6iTi43jcoPYZjLd5ps5wTgVoenS
+         7iMw==
+X-Gm-Message-State: AOAM532D4sRB1OTW9rbP7ZgKiQDD0PvVMH6sJqMhJH3ZXZI5TRIL4iCQ
+        0rHenMs5TSdYrBZQT1zq3ZMV9msQZag=
+X-Google-Smtp-Source: ABdhPJwXJ1SBm7ggRywbdbC9XLBKlLOsXbwuORU/tF5+YW22/dp7Zb778l8T0L5poN8C/JKb13m7xQ==
+X-Received: by 2002:a9d:2782:: with SMTP id c2mr12152793otb.323.1627312192706;
+        Mon, 26 Jul 2021 08:09:52 -0700 (PDT)
+Received: from 2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com (2603-8090-2005-39b3-0000-0000-0000-100a.res6.spectrum.com. [2603:8090:2005:39b3::100a])
+        by smtp.gmail.com with ESMTPSA id m19sm34109otp.55.2021.07.26.08.09.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 08:09:52 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Subject: Re: [PATCH] staging: rtl8188eu: remove braces from single line if
+ blocks
+To:     Michael Straube <straube.linux@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210726092129.30334-1-straube.linux@gmail.com>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Message-ID: <a4eb0dea-a34b-8dd9-03c6-aa0d87e68986@lwfinger.net>
+Date:   Mon, 26 Jul 2021 10:09:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210726150019.251820-1-hannes@cmpxchg.org>
-User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
+In-Reply-To: <20210726092129.30334-1-straube.linux@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner writes:
->Dan Carpenter reports:
->
->    The patch 2d146aa3aa84: "mm: memcontrol: switch to rstat" from Apr
->    29, 2021, leads to the following static checker warning:
->
->	    kernel/cgroup/rstat.c:200 cgroup_rstat_flush()
->	    warn: sleeping in atomic context
->
->    mm/memcontrol.c
->      3572  static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
->      3573  {
->      3574          unsigned long val;
->      3575
->      3576          if (mem_cgroup_is_root(memcg)) {
->      3577                  cgroup_rstat_flush(memcg->css.cgroup);
->			    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
->    This is from static analysis and potentially a false positive.  The
->    problem is that mem_cgroup_usage() is called from __mem_cgroup_threshold()
->    which holds an rcu_read_lock().  And the cgroup_rstat_flush() function
->    can sleep.
->
->      3578                  val = memcg_page_state(memcg, NR_FILE_PAGES) +
->      3579                          memcg_page_state(memcg, NR_ANON_MAPPED);
->      3580                  if (swap)
->      3581                          val += memcg_page_state(memcg, MEMCG_SWAP);
->      3582          } else {
->      3583                  if (!swap)
->      3584                          val = page_counter_read(&memcg->memory);
->      3585                  else
->      3586                          val = page_counter_read(&memcg->memsw);
->      3587          }
->      3588          return val;
->      3589  }
->
->__mem_cgroup_threshold() indeed holds the rcu lock. In addition, the
->thresholding code is invoked during stat changes, and those contexts
->have irqs disabled as well. If the lock breaking occurs inside the
->flush function, it will result in a sleep from an atomic context.
->
->Use the irsafe flushing variant in mem_cgroup_usage() to fix this.
->
->Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
->Cc: <stable@vger.kernel.org>
->Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On 7/26/21 4:21 AM, Michael Straube wrote:
+> Remove braces from single line if blocks to clear checkpatch warnings.
+> WARNING: braces {} are not necessary for single statement blocks
+> 
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>   drivers/staging/rtl8188eu/core/rtw_cmd.c          | 3 +--
+>   drivers/staging/rtl8188eu/core/rtw_mlme.c         | 3 +--
+>   drivers/staging/rtl8188eu/core/rtw_xmit.c         | 3 +--
+>   drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c | 3 +--
+>   drivers/staging/rtl8188eu/hal/usb_halinit.c       | 6 ++----
+>   5 files changed, 6 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/core/rtw_cmd.c b/drivers/staging/rtl8188eu/core/rtw_cmd.c
+> index eb89a52aa4e3..56ece839c9ca 100644
+> --- a/drivers/staging/rtl8188eu/core/rtw_cmd.c
+> +++ b/drivers/staging/rtl8188eu/core/rtw_cmd.c
+> @@ -1159,9 +1159,8 @@ void rtw_createbss_cmd_callback(struct adapter *padapter, struct cmd_obj *pcmd)
+>   		psta = rtw_get_stainfo(&padapter->stapriv, pnetwork->MacAddress);
+>   		if (!psta) {
+>   			psta = rtw_alloc_stainfo(&padapter->stapriv, pnetwork->MacAddress);
+> -			if (!psta) {
+> +			if (!psta)
+>   				goto createbss_cmd_fail;
+> -			}
+>   		}
+>   
+>   		rtw_indicate_connect(padapter);
+> diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c b/drivers/staging/rtl8188eu/core/rtw_mlme.c
+> index 71d205f3d73d..0d334aba9a3f 100644
+> --- a/drivers/staging/rtl8188eu/core/rtw_mlme.c
+> +++ b/drivers/staging/rtl8188eu/core/rtw_mlme.c
+> @@ -953,9 +953,8 @@ void rtw_joinbss_event_prehandle(struct adapter *adapter, u8 *pbuf)
+>   			}
+>   
+>   			/* s4. indicate connect */
+> -			if (check_fwstate(pmlmepriv, WIFI_STATION_STATE)) {
+> +			if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
+>   				rtw_indicate_connect(adapter);
+> -			}
+>   
+>   			/* s5. Cancel assoc_timer */
+>   			del_timer_sync(&pmlmepriv->assoc_timer);
+> diff --git a/drivers/staging/rtl8188eu/core/rtw_xmit.c b/drivers/staging/rtl8188eu/core/rtw_xmit.c
+> index d5fc59417ec6..c77ebd18f40c 100644
+> --- a/drivers/staging/rtl8188eu/core/rtw_xmit.c
+> +++ b/drivers/staging/rtl8188eu/core/rtw_xmit.c
+> @@ -1124,9 +1124,8 @@ struct xmit_buf *rtw_alloc_xmitbuf(struct xmit_priv *pxmitpriv)
+>   		list_del_init(&pxmitbuf->list);
+>   		pxmitpriv->free_xmitbuf_cnt--;
+>   		pxmitbuf->priv_data = NULL;
+> -		if (pxmitbuf->sctx) {
+> +		if (pxmitbuf->sctx)
+>   			rtw_sctx_done_err(&pxmitbuf->sctx, RTW_SCTX_DONE_BUF_ALLOC);
+> -		}
+>   	}
+>   	spin_unlock_irqrestore(&pfree_xmitbuf_queue->lock, irql);
+>   
+> diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
+> index 6cf87312bc36..a67615708745 100644
+> --- a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
+> +++ b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
+> @@ -510,7 +510,6 @@ void Hal_ReadThermalMeter_88E(struct adapter *Adapter, u8 *PROMContent, bool Aut
+>   	else
+>   		pHalData->EEPROMThermalMeter = EEPROM_Default_ThermalMeter_88E;
+>   
+> -	if (pHalData->EEPROMThermalMeter == 0xff || AutoloadFail) {
+> +	if (pHalData->EEPROMThermalMeter == 0xff || AutoloadFail)
+>   		pHalData->EEPROMThermalMeter = EEPROM_Default_ThermalMeter_88E;
+> -	}
+>   }
+> diff --git a/drivers/staging/rtl8188eu/hal/usb_halinit.c b/drivers/staging/rtl8188eu/hal/usb_halinit.c
+> index 1d7d5037ce89..3e8f7315d377 100644
+> --- a/drivers/staging/rtl8188eu/hal/usb_halinit.c
+> +++ b/drivers/staging/rtl8188eu/hal/usb_halinit.c
+> @@ -641,9 +641,8 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
+>   	}
+>   
+>   	status = rtw_hal_power_on(Adapter);
+> -	if (status == _FAIL) {
+> +	if (status == _FAIL)
+>   		goto exit;
+> -	}
+>   
+>   	/*  Save target channel */
+>   	haldata->CurrentChannel = 6;/* default set to 6 */
+> @@ -696,9 +695,8 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
+>   	_InitTxBufferBoundary(Adapter, txpktbuf_bndy);
+>   
+>   	status =  InitLLTTable(Adapter, txpktbuf_bndy);
+> -	if (status == _FAIL) {
+> +	if (status == _FAIL)
+>   		goto exit;
+> -	}
+>   
+>   	/*  Get Rx PHY status in order to report RSSI and others. */
+>   	_InitDriverInfoSize(Adapter, DRVINFO_SZ);
+> 
 
-Thanks, looks good.
+Michael,
 
-Acked-by: Chris Down <chris@chrisdown.name>
+You might as well stop looking at drivers/staging/rtl8188eu. There is a pending 
+patch that blows away that directory and replaces it with a new version from the 
+GitHub repo. The new one will be in drivers/staging/r8188eu.
 
->---
-> mm/memcontrol.c | 3 ++-
-> 1 file changed, 2 insertions(+), 1 deletion(-)
->
->diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->index ae1f5d0cb581..eb8e87c4833f 100644
->--- a/mm/memcontrol.c
->+++ b/mm/memcontrol.c
->@@ -3574,7 +3574,8 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
-> 	unsigned long val;
->
-> 	if (mem_cgroup_is_root(memcg)) {
->-		cgroup_rstat_flush(memcg->css.cgroup);
->+		/* mem_cgroup_threshold() calls here from irqsafe context */
->+		cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
-> 		val = memcg_page_state(memcg, NR_FILE_PAGES) +
-> 			memcg_page_state(memcg, NR_ANON_MAPPED);
-> 		if (swap)
->-- 
->2.32.0
->
->
+NACKed by Larry.Finger <Larry.Finger@lwfinger.net>
+
+Larry
+
