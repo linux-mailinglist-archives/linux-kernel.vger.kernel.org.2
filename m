@@ -2,119 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08853D559B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1BC3D55A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhGZHpo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Jul 2021 03:45:44 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:55731 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhGZHpm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:45:42 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16Q8Q25q8028578, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16Q8Q25q8028578
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 26 Jul 2021 16:26:02 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 26 Jul 2021 16:26:01 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 26 Jul 2021 16:26:01 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
- RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
- 15.01.2106.013; Mon, 26 Jul 2021 16:26:00 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        nic_swsd <nic_swsd@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into r8152_main.c and r8152_fw.c
-Thread-Topic: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into
- r8152_main.c and r8152_fw.c
-Thread-Index: AQHXgdL4UhnFIS2opkGLRT1L0R8XUatUWD4AgACR1mA=
-Date:   Mon, 26 Jul 2021 08:26:00 +0000
-Message-ID: <c6b44f93a5b14fbb98d4c6cb0ed2a77f@realtek.com>
-References: <1394712342-15778-368-Taiwan-albertk@realtek.com>
- <1394712342-15778-371-Taiwan-albertk@realtek.com>
- <1394712342-15778-373-Taiwan-albertk@realtek.com>
- <YP5mFKeJsGezjdve@kroah.com>
-In-Reply-To: <YP5mFKeJsGezjdve@kroah.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.177.203]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/7/26_=3F=3F_06:00:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S231774AbhGZHqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:46:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:47450 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232818AbhGZHql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 03:46:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 787E3106F;
+        Mon, 26 Jul 2021 01:27:09 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 615CD3F66F;
+        Mon, 26 Jul 2021 01:27:07 -0700 (PDT)
+Subject: Re: [PATCH 18/23] iommu: Express DMA strictness via the domain type
+To:     Lu Baolu <baolu.lu@linux.intel.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, john.garry@huawei.com,
+        dianders@chromium.org
+References: <cover.1626888444.git.robin.murphy@arm.com>
+ <37708e21b55e17eb074ef145afc2157cd0192abe.1626888445.git.robin.murphy@arm.com>
+ <f5e902ce-54a2-af7b-b42e-f61f7f96c68e@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <77057c4b-479b-c5b8-4666-f16e294552d1@arm.com>
+Date:   Mon, 26 Jul 2021 09:27:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 08:11:54
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165233 [Jul 26 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 07/26/2021 08:15:00
+In-Reply-To: <f5e902ce-54a2-af7b-b42e-f61f7f96c68e@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg KH <gregkh@linuxfoundation.org>
-> Sent: Monday, July 26, 2021 3:37 PM
-[...]
-> That is a lot of different things all happening in one commit, why?
-
-I plan to separate the file into two files. And
-I find I need an additional header file for it, so
-The patch includes adding that header file.
-
-> Please break this up into "one patch per change" and submit it that way.
+On 2021-07-24 06:29, Lu Baolu wrote:
+> Hi Robin,
 > 
-> But the real question is why break this file up in the first place?
-> What is wrong with the way it is today?  What future changes require
-> this file to be in smaller pieces?  If none, why make this?  If there
-> are future changes, then please submit this change when you submit
-> those, as that would show a real need.
+> On 2021/7/22 2:20, Robin Murphy wrote:
+>> Eliminate the iommu_get_dma_strict() indirection and pipe the
+>> information through the domain type from the beginning. Besides
+>> the flow simplification this also has several nice side-effects:
+>>
+>>   - Automatically implies strict mode for untrusted devices by
+>>     virtue of their IOMMU_DOMAIN_DMA override.
+>>   - Ensures that we only ends up using flush queues for drivers
+>>     which are aware of them and can actually benefit.
+> 
+> Is this expressed by vendor iommu driver has ops->flush_iotlb_all?
 
-The purpose is let me easy to maintain the driver.
-The code is larger and larger. And I find that the
-r8169.c has been separated into three files.
-Therefore, I think maybe I could split the driver
-into small parts like r8169. Then, the code wouldn't
-be complex.
+No, it's literally whether ->domain_alloc accepts the DMA_DOMAIN_FQ type 
+or not.
 
-Should I abandon these patches?
+>>   - Allows us to handle flush queue init failure by falling back
+>>     to strict mode instead of leaving it to possibly blow up later.
+>>
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  2 +-
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c       |  2 +-
+>>   drivers/iommu/dma-iommu.c                   | 10 ++++++----
+>>   drivers/iommu/iommu.c                       | 14 ++++----------
+>>   include/linux/iommu.h                       |  1 -
+>>   5 files changed, 12 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c 
+>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index fa41026d272e..260b560d0075 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -2175,7 +2175,7 @@ static int arm_smmu_domain_finalise(struct 
+>> iommu_domain *domain,
+>>           .iommu_dev    = smmu->dev,
+>>       };
+>> -    if (!iommu_get_dma_strict(domain))
+>> +    if (domain->type == IOMMU_DOMAIN_DMA_FQ)
+>>           pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
+>>       pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index dbc14c265b15..2c717f3be056 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -765,7 +765,7 @@ static int arm_smmu_init_domain_context(struct 
+>> iommu_domain *domain,
+>>           .iommu_dev    = smmu->dev,
+>>       };
+>> -    if (!iommu_get_dma_strict(domain))
+>> +    if (domain->type == IOMMU_DOMAIN_DMA_FQ)
+>>           pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
+>>       if (smmu->impl && smmu->impl->init_context) {
+>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+>> index b1af1ff324c5..a114a7ad88ec 100644
+>> --- a/drivers/iommu/dma-iommu.c
+>> +++ b/drivers/iommu/dma-iommu.c
+>> @@ -363,13 +363,15 @@ static int iommu_dma_init_domain(struct 
+>> iommu_domain *domain, dma_addr_t base,
+>>       init_iova_domain(iovad, 1UL << order, base_pfn);
+>> -    if (!cookie->fq_domain && !dev_is_untrusted(dev) &&
+>> -        domain->ops->flush_iotlb_all && !iommu_get_dma_strict(domain)) {
+>> +    if (domain->type == IOMMU_DOMAIN_DMA_FQ && !cookie->fq_domain &&
+>> +        domain->ops->flush_iotlb_all) {
+>>           if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
+>> -                      iommu_dma_entry_dtor))
+>> +                      iommu_dma_entry_dtor)) {
+>>               pr_warn("iova flush queue initialization failed\n");
+>> -        else
+>> +            domain->type = IOMMU_DOMAIN_DMA;
+>> +        } else {
+>>               cookie->fq_domain = domain;
+>> +        }
+>>       }
+>>       return iova_reserve_iommu_regions(dev, domain);
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 8333c334891e..d7eaacae0944 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -135,6 +135,9 @@ static int __init iommu_subsys_init(void)
+>>           }
+>>       }
+>> +    if (!iommu_default_passthrough() && !iommu_dma_strict)
+>> +        iommu_def_domain_type = IOMMU_DOMAIN_DMA_FQ;
+>> +
+>>       pr_info("Default domain type: %s %s\n",
+>>           iommu_domain_type_str(iommu_def_domain_type),
+>>           (iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
+>> @@ -352,15 +355,6 @@ void iommu_set_dma_strict(bool strict)
+>>           iommu_dma_strict = strict;
+>>   }
+>> -bool iommu_get_dma_strict(struct iommu_domain *domain)
+>> -{
+>> -    /* only allow lazy flushing for DMA domains */
+>> -    if (domain->type == IOMMU_DOMAIN_DMA)
+>> -        return iommu_dma_strict;
+>> -    return true;
+>> -}
+>> -EXPORT_SYMBOL_GPL(iommu_get_dma_strict);
+>> -
+>>   static ssize_t iommu_group_attr_show(struct kobject *kobj,
+>>                        struct attribute *__attr, char *buf)
+>>   {
+>> @@ -764,7 +758,7 @@ static int 
+>> iommu_create_device_direct_mappings(struct iommu_group *group,
+>>       unsigned long pg_size;
+>>       int ret = 0;
+>> -    if (!domain || domain->type != IOMMU_DOMAIN_DMA)
+>> +    if (!domain || !(domain->type & __IOMMU_DOMAIN_DMA_API))
+> 
+> Nit: probably move above change to patch 14?
 
-Best Regards,
-Hayes
+Indeed I'm not sure why this one ended up here, good catch!
 
+Thanks,
+Robin.
+
+>>           return 0;
+>>       BUG_ON(!domain->pgsize_bitmap);
+>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> index 56519110d43f..557c4c12e2cf 100644
+>> --- a/include/linux/iommu.h
+>> +++ b/include/linux/iommu.h
+>> @@ -484,7 +484,6 @@ int iommu_set_pgtable_quirks(struct iommu_domain 
+>> *domain,
+>>           unsigned long quirks);
+>>   void iommu_set_dma_strict(bool val);
+>> -bool iommu_get_dma_strict(struct iommu_domain *domain);
+>>   extern int report_iommu_fault(struct iommu_domain *domain, struct 
+>> device *dev,
+>>                     unsigned long iova, int flags);
+>>
+> 
+> Best regards,
+> baolu
