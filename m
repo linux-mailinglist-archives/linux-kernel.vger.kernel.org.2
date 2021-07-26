@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA463D62E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358643D60C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238169AbhGZPkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:40:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38198 "EHLO mail.kernel.org"
+        id S237952AbhGZPY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237467AbhGZPXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB7FF60EB2;
-        Mon, 26 Jul 2021 16:03:39 +0000 (UTC)
+        id S236836AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B616460FE5;
+        Mon, 26 Jul 2021 15:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315420;
-        bh=1o2MyKCtsRusEYEXJMA1hrjflzIlkJ3fM5R5DHhhJZE=;
+        s=korg; t=1627314826;
+        bh=kiJLMJb6TMvjbcu+3tCKIjecydjJBcm0SCEY7cNc5wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BNpH1Cne+JyTQUMmaaf4yxD1SQEXpd319siI1WtEPuZk7pNwBin9UGRdxiBYn4AfU
-         TTDVKlQhrdGZexPrc8mPE/tbMhWpBqvAC8KZR3T0MfZbqeYvivuD0qYrXDwtCuruiz
-         FUdwyYDgKWWWzjBGb9jV2EynBJYt0vw0NC7GaAuE=
+        b=qlNh7Lu8VTdzBRSXraiWYriVONONfnV5+MAoKPHRGgxx52l/Z0JTpWnW9VLIG264Y
+         k8CsoNY/6wxpEDAVqc9Vl9DEG3nAgyN590wxukHJfxMjVa/FA21nL6uOWhLO95vM6W
+         SANEGOu04iyieRqXDDWV00JTtA2felWY5+j8/otY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 089/167] spi: spi-bcm2835: Fix deadlock
+Subject: [PATCH 4.19 070/120] perf probe-file: Delete namelist in del_events() on the error path
 Date:   Mon, 26 Jul 2021 17:38:42 +0200
-Message-Id: <20210726153842.388132310@linuxfoundation.org>
+Message-Id: <20210726153834.634560078@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,84 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit c45c1e82bba130db4f19d9dbc1deefcf4ea994ed ]
+[ Upstream commit e0fa7ab42232e742dcb3de9f3c1f6127b5adc019 ]
 
-The bcm2835_spi_transfer_one function can create a deadlock
-if it is called while another thread already has the
-CCF lock.
+ASan reports some memory leaks when running:
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
-Fixes: f8043872e796 ("spi: add driver for BCM2835")
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20210716210245.13240-2-alexandru.tachici@analog.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+  # perf test "42: BPF filter"
+
+This second leak is caused by a strlist not being dellocated on error
+inside probe_file__del_events.
+
+This patch adds a goto label before the deallocation and makes the error
+path jump to it.
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: e7895e422e4da63d ("perf probe: Split del_perf_probe_events()")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/174963c587ae77fa108af794669998e4ae558338.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm2835.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ tools/perf/util/probe-file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-index 29ee555a42f9..33c32e931767 100644
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -84,6 +84,7 @@ MODULE_PARM_DESC(polling_limit_us,
-  * struct bcm2835_spi - BCM2835 SPI controller
-  * @regs: base address of register map
-  * @clk: core clock, divided to calculate serial clock
-+ * @clk_hz: core clock cached speed
-  * @irq: interrupt, signals TX FIFO empty or RX FIFO ¾ full
-  * @tfr: SPI transfer currently processed
-  * @ctlr: SPI controller reverse lookup
-@@ -124,6 +125,7 @@ MODULE_PARM_DESC(polling_limit_us,
- struct bcm2835_spi {
- 	void __iomem *regs;
- 	struct clk *clk;
-+	unsigned long clk_hz;
- 	int irq;
- 	struct spi_transfer *tfr;
- 	struct spi_controller *ctlr;
-@@ -1082,19 +1084,18 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
- 				    struct spi_transfer *tfr)
- {
- 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
--	unsigned long spi_hz, clk_hz, cdiv;
-+	unsigned long spi_hz, cdiv;
- 	unsigned long hz_per_byte, byte_limit;
- 	u32 cs = bs->prepare_cs[spi->chip_select];
+diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+index 6a6548890d5a..b67ae3b8d996 100644
+--- a/tools/perf/util/probe-file.c
++++ b/tools/perf/util/probe-file.c
+@@ -342,11 +342,11 @@ int probe_file__del_events(int fd, struct strfilter *filter)
  
- 	/* set clock */
- 	spi_hz = tfr->speed_hz;
--	clk_hz = clk_get_rate(bs->clk);
+ 	ret = probe_file__get_events(fd, filter, namelist);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
  
--	if (spi_hz >= clk_hz / 2) {
-+	if (spi_hz >= bs->clk_hz / 2) {
- 		cdiv = 2; /* clk_hz/2 is the fastest we can go */
- 	} else if (spi_hz) {
- 		/* CDIV must be a multiple of two */
--		cdiv = DIV_ROUND_UP(clk_hz, spi_hz);
-+		cdiv = DIV_ROUND_UP(bs->clk_hz, spi_hz);
- 		cdiv += (cdiv % 2);
+ 	ret = probe_file__del_strlist(fd, namelist);
++out:
+ 	strlist__delete(namelist);
+-
+ 	return ret;
+ }
  
- 		if (cdiv >= 65536)
-@@ -1102,7 +1103,7 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
- 	} else {
- 		cdiv = 0; /* 0 is the slowest we can go */
- 	}
--	tfr->effective_speed_hz = cdiv ? (clk_hz / cdiv) : (clk_hz / 65536);
-+	tfr->effective_speed_hz = cdiv ? (bs->clk_hz / cdiv) : (bs->clk_hz / 65536);
- 	bcm2835_wr(bs, BCM2835_SPI_CLK, cdiv);
- 
- 	/* handle all the 3-wire mode */
-@@ -1318,6 +1319,7 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
- 		return bs->irq ? bs->irq : -ENODEV;
- 
- 	clk_prepare_enable(bs->clk);
-+	bs->clk_hz = clk_get_rate(bs->clk);
- 
- 	err = bcm2835_dma_init(ctlr, &pdev->dev, bs);
- 	if (err)
 -- 
 2.30.2
 
