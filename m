@@ -2,140 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42B53D5584
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23663D558A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbhGZHkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:40:37 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:49342 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbhGZHkX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:40:23 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 4A0F621F14;
-        Mon, 26 Jul 2021 08:20:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627287651; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YTJdefTSqpDX0dKDr3Y61JSstsmTOoq9vu6GdbYEihE=;
-        b=rHBhjlYRREwBeR3PAZu1f26XKkJsNUhYt6dimQJr6kzF57zRgArV5RZN0sfSPeX7lIA5FE
-        7/+JPHebFjf2RBs0wqdbqUV3+t0i/nY1kQ9R4lTA3KFmWGwZMuQBqw98vRUbXlGsPVc1aR
-        0ZVPvVKBcdHKPQd8V56b5unMbyCLJ4Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627287651;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YTJdefTSqpDX0dKDr3Y61JSstsmTOoq9vu6GdbYEihE=;
-        b=Q9Wf5Kr/cR19bOw30JlDYvnTf4Tm+vZJ8WPuWzMqy1fgYq4o9754JbA2+UacefyIOL2lBb
-        OZ3iwlh4Uw3ApoAQ==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 3671CA3B8E;
-        Mon, 26 Jul 2021 08:20:51 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EC5571E3B13; Mon, 26 Jul 2021 10:20:50 +0200 (CEST)
-Date:   Mon, 26 Jul 2021 10:20:50 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-Cc:     rkovhaev@gmail.com, jack@suse.cz, reiserfs-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com
-Subject: Re: [PATCH] reiserfs: check directry items on read from disk
-Message-ID: <20210726082050.GA20621@quack2.suse.cz>
-References: <20210709152929.766363-1-chouhan.shreyansh630@gmail.com>
- <YPZ7zUVAedCkx3IQ@fedora>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YPZ7zUVAedCkx3IQ@fedora>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S233380AbhGZHlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:41:37 -0400
+Received: from comms.puri.sm ([159.203.221.185]:36200 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232454AbhGZHlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 03:41:36 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 3E325DF782;
+        Mon, 26 Jul 2021 01:21:35 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id X7OlS0NrIxet; Mon, 26 Jul 2021 01:21:34 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     laurent.pinchart@ideasonboard.com, shawnguo@kernel.org
+Cc:     devicetree@vger.kernel.org, festevam@gmail.com,
+        kernel@pengutronix.de, kernel@puri.sm, krzk@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, m.felsch@pengutronix.de,
+        mchehab@kernel.org, phone-devel@vger.kernel.org, robh@kernel.org,
+        slongerbeam@gmail.com,
+        Martin Kepplinger <martin.kepplinger@puri.sm>
+Subject: [PATCH v9 0/3] media: imx: add support for imx8mq MIPI RX
+Date:   Mon, 26 Jul 2021 10:21:14 +0200
+Message-Id: <20210726082117.2423597-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+hi,
 
-On Tue 20-07-21 13:01:25, Shreyansh Chouhan wrote:
-> Just a ping for reviews/merge since there has been no activity on this patch.
+This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
 
-The patch is already in my tree and included in linux-next. I wanted to
-send it to Linus before going on vacation but somehow that slipped through.
-I'll send it to Linus this week with other fixes I have accumulated. I'm
-sorry for the delay.
+It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
+I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
+any feedback,
 
-								Honza
+                           martin
 
-> On Fri, Jul 09, 2021 at 08:59:29PM +0530, Shreyansh Chouhan wrote:
-> > 
-> > While verifying the leaf item that we read from the disk, reiserfs
-> > doesn't check the directory items, this could cause a crash when we
-> > read a directory item from the disk that has an invalid deh_location.
-> > 
-> > This patch adds a check to the directory items read from the disk that
-> > does a bounds check on deh_location for the directory entries. Any
-> > directory entry header with a directory entry offset greater than the
-> > item length is considered invalid.
-> > 
-> > Reported-by: syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com
-> > Signed-off-by: Shreyansh Chouhan <chouhan.shreyansh630@gmail.com>
-> > ---
-> >  fs/reiserfs/stree.c | 31 ++++++++++++++++++++++++++-----
-> >  1 file changed, 26 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/fs/reiserfs/stree.c b/fs/reiserfs/stree.c
-> > index 476a7ff49482..ef42729216d1 100644
-> > --- a/fs/reiserfs/stree.c
-> > +++ b/fs/reiserfs/stree.c
-> > @@ -387,6 +387,24 @@ void pathrelse(struct treepath *search_path)
-> >  	search_path->path_length = ILLEGAL_PATH_ELEMENT_OFFSET;
-> >  }
-> >  
-> > +static int has_valid_deh_location(struct buffer_head *bh, struct item_head *ih)
-> > +{
-> > +	struct reiserfs_de_head *deh;
-> > +	int i;
-> > +
-> > +	deh = B_I_DEH(bh, ih);
-> > +	for (i = 0; i < ih_entry_count(ih); i++) {
-> > +		if (deh_location(&deh[i]) > ih_item_len(ih)) {
-> > +			reiserfs_warning(NULL, "reiserfs-5094",
-> > +					 "directory entry location seems wrong %h",
-> > +					 &deh[i]);
-> > +			return 0;
-> > +		}
-> > +	}
-> > +
-> > +	return 1;
-> > +}
-> > +
-> >  static int is_leaf(char *buf, int blocksize, struct buffer_head *bh)
-> >  {
-> >  	struct block_head *blkh;
-> > @@ -454,11 +472,14 @@ static int is_leaf(char *buf, int blocksize, struct buffer_head *bh)
-> >  					 "(second one): %h", ih);
-> >  			return 0;
-> >  		}
-> > -		if (is_direntry_le_ih(ih) && (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE))) {
-> > -			reiserfs_warning(NULL, "reiserfs-5093",
-> > -					 "item entry count seems wrong %h",
-> > -					 ih);
-> > -			return 0;
-> > +		if (is_direntry_le_ih(ih)) {
-> > +			if (ih_item_len(ih) < (ih_entry_count(ih) * IH_SIZE)) {
-> > +				reiserfs_warning(NULL, "reiserfs-5093",
-> > +						 "item entry count seems wrong %h",
-> > +						 ih);
-> > +				return 0;
-> > +			}
-> > +			return has_valid_deh_location(bh, ih);
-> >  		}
-> >  		prev_location = ih_location(ih);
-> >  	}
-> > -- 
-> > 2.31.1
-> > 
+revision history
+----------------
+v9: (thank you Laurent)
+* improve getting the esc clock rate for hs_settle
+
+v8: (thank you Laurent)
+* calculate hs_settle for any clk rate and mode
+* add reviewed-by tag
+https://lore.kernel.org/linux-media/20210723101217.1954805-1-martin.kepplinger@puri.sm/T/
+
+v7: (thank you Laurent and Rob)
+* fix the binding example (include the reset driver)
+* use pm_runtime_resume_and_get()
+* fix some logic in init_cfg()
+* add some useful code comments and fix minor bits found by Laurent in v6
+https://lore.kernel.org/linux-media/20210716102244.581182-1-martin.kepplinger@puri.sm/T/#t
+
+v6: (thank you Laurent and Rob)
+* add reviewed-by tag to binding
+* statically allocate clk_bulk_data
+* fix how the hs_settle value is applied
+* remove s_power calls
+* remove the link_setup() callback implementation and make the link immutable
+* more cleanups according to Laurents' review from v5
+https://lore.kernel.org/linux-media/20210714111931.324485-1-martin.kepplinger@puri.sm/
+
+v5: (thank you Laurent)
+* fix reset usage by using the already supported reset controller driver
+* remove clko2 (totally unrelated clock / had been included by accident)
+* rename pxl clock to ui
+https://lore.kernel.org/linux-media/20210618095753.114557-1-martin.kepplinger@puri.sm/
+
+v4: (thank you Rob and Marco)
+* create fsl,mipi-phy-gpr custom dt property instead of confusing "phy"
+* add imx8mq-specific compatibile to imx8mq.dtsi for future use
+https://lore.kernel.org/linux-media/20210614121522.2944593-1-martin.kepplinger@puri.sm/
+
+v3: (thank you, Rob and Laurent)
+among minor other things according to v2 review, changes include:
+* better describe the clocks
+* rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
+https://lore.kernel.org/linux-media/20210608104128.1616028-1-martin.kepplinger@puri.sm/T/#t
+
+v2: (thank you, Dan and Guido)
+among fixes according to v1 reviews, changes include:
+* remove status property from dt-bindings example
+* define a few bits in order to have less magic values
+* use "imx8mq_mipi_csi_" as local function prefix
+* read DT properties only during probe()
+* remove dead code (log_status)
+* add imx8mq_mipi_csi_release_icc()
+* fix imx8mq_mipi_csi_init_icc()
+https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
+
+v1:
+https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
+
+
+Martin Kepplinger (3):
+  dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
+    controller
+  media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
+  arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
+
+ .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 174 ++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 104 ++
+ drivers/staging/media/imx/Makefile            |   1 +
+ drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 976 ++++++++++++++++++
+ 4 files changed, 1255 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
+ create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.30.2
+
