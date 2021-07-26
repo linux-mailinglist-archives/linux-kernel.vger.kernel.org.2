@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FEF3D63A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1AD3D63A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238677AbhGZPtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:49:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45722 "EHLO mail.kernel.org"
+        id S238822AbhGZPto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:49:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232318AbhGZPaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:30:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC7160240;
-        Mon, 26 Jul 2021 16:10:46 +0000 (UTC)
+        id S232434AbhGZPaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:30:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14FF460C41;
+        Mon, 26 Jul 2021 16:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315847;
-        bh=cmrJYhBCUI46U+cwR+izsNCqYWxffPLc0a0uRZx1n+o=;
+        s=korg; t=1627315849;
+        bh=cgH073LWw0eTXV3+ESWoNu9JY4+Ou+SLK4vjGfJL7Ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ws9vaVitKpvwCttUTUWGr/2ZnKw/hqBM6gG6IdrwxLf8BcfNykirVYKqLMF4Dhs7I
-         qAii0LgdGODuqQm6cgf1HgdlNOOIK3/1qAUnpDRJFvlhChRxie51UnwiZC9iQoQME8
-         Jx3HWXmqjEh7w67BNjt0IKUhaQy8GWhOMCBLOuTk=
+        b=gjjc9hzlm++bLNXP41y4SagBE3nqZNYEuS6D68d5Ru92rxFaHduR8j3+Jy2xvw8Vr
+         W37ssyLYmZmSMRZlbNYH/2dJEeWNQLrFkcy7J0LNhoG6UkahhyCQXRdVqKr38pDu0H
+         YHj1geOec5acW1JpenSgmqGE4Do6OQ+2KID8Ywbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Michal Suchanek <msuchanek@suse.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 090/223] ASoC: soc-pcm: add a flag to reverse the stop sequence
-Date:   Mon, 26 Jul 2021 17:38:02 +0200
-Message-Id: <20210726153849.195273853@linuxfoundation.org>
+Subject: [PATCH 5.13 091/223] efi/tpm: Differentiate missing and invalid final event log table.
+Date:   Mon, 26 Jul 2021 17:38:03 +0200
+Message-Id: <20210726153849.225419910@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,86 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijendar Mukunda <vijendar.mukunda@amd.com>
+From: Michal Suchanek <msuchanek@suse.de>
 
-[ Upstream commit 59dd33f82dc0975c55d3d46801e7ca45532d7673 ]
+[ Upstream commit 674a9f1f6815849bfb5bf385e7da8fc198aaaba9 ]
 
-On stream stop, currently CPU DAI stop sequence invoked first
-followed by DMA. For Few platforms, it is required to stop the
-DMA first before stopping CPU DAI.
+Missing TPM final event log table is not a firmware bug.
 
-Introduced new flag in dai_link structure for reordering stop sequence.
-Based on flag check, ASoC core will re-order the stop sequence.
+Clearly if providing event log in the old format makes the final event
+log invalid it should not be provided at least in that case.
 
-Fixes: 4378f1fbe92405 ("ASoC: soc-pcm: Use different sequence for start/stop trigger")
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Link: https://lore.kernel.org/r/20210716123015.15697-1-vijendar.mukunda@amd.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: b4f1874c6216 ("tpm: check event log version before reading final events")
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/soc.h |  6 ++++++
- sound/soc/soc-pcm.c | 22 ++++++++++++++++------
- 2 files changed, 22 insertions(+), 6 deletions(-)
+ drivers/firmware/efi/tpm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e746da996351..723eeb1c3f78 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -712,6 +712,12 @@ struct snd_soc_dai_link {
- 	/* Do not create a PCM for this DAI link (Backend link) */
- 	unsigned int ignore:1;
+diff --git a/drivers/firmware/efi/tpm.c b/drivers/firmware/efi/tpm.c
+index c1955d320fec..8f665678e9e3 100644
+--- a/drivers/firmware/efi/tpm.c
++++ b/drivers/firmware/efi/tpm.c
+@@ -62,9 +62,11 @@ int __init efi_tpm_eventlog_init(void)
+ 	tbl_size = sizeof(*log_tbl) + log_tbl->size;
+ 	memblock_reserve(efi.tpm_log, tbl_size);
  
-+	/* This flag will reorder stop sequence. By enabling this flag
-+	 * DMA controller stop sequence will be invoked first followed by
-+	 * CPU DAI driver stop sequence
-+	 */
-+	unsigned int stop_dma_first:1;
-+
- #ifdef CONFIG_SND_SOC_TOPOLOGY
- 	struct snd_soc_dobj dobj; /* For topology */
- #endif
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 46513bb97904..d1c570ca21ea 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1015,6 +1015,7 @@ out:
- 
- static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
-+	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
- 	int ret = -EINVAL, _ret = 0;
- 	int rollback = 0;
- 
-@@ -1055,14 +1056,23 @@ start_err:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
--		if (ret < 0)
--			break;
-+		if (rtd->dai_link->stop_dma_first) {
-+			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
- 
--		ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
--		if (ret < 0)
--			break;
-+			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
-+		} else {
-+			ret = snd_soc_pcm_dai_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
- 
-+			ret = snd_soc_pcm_component_trigger(substream, cmd, rollback);
-+			if (ret < 0)
-+				break;
-+		}
- 		ret = snd_soc_link_trigger(substream, cmd, rollback);
- 		break;
+-	if (efi.tpm_final_log == EFI_INVALID_TABLE_ADDR ||
+-	    log_tbl->version != EFI_TCG2_EVENT_LOG_FORMAT_TCG_2) {
+-		pr_warn(FW_BUG "TPM Final Events table missing or invalid\n");
++	if (efi.tpm_final_log == EFI_INVALID_TABLE_ADDR) {
++		pr_info("TPM Final Events table not present\n");
++		goto out;
++	} else if (log_tbl->version != EFI_TCG2_EVENT_LOG_FORMAT_TCG_2) {
++		pr_warn(FW_BUG "TPM Final Events table invalid\n");
+ 		goto out;
  	}
+ 
 -- 
 2.30.2
 
