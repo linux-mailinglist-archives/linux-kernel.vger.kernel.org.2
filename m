@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82A93D5E7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3980F3D5D4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbhGZPIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:08:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45650 "EHLO mail.kernel.org"
+        id S235283AbhGZPAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:00:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236117AbhGZPGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:06:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 287F260F02;
-        Mon, 26 Jul 2021 15:46:46 +0000 (UTC)
+        id S235297AbhGZPAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:00:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F84060E08;
+        Mon, 26 Jul 2021 15:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314407;
-        bh=rodOZJcreyOZWjjI0ivO1tCOZGubbXQBHtBgkzTc9tA=;
+        s=korg; t=1627314059;
+        bh=QaOb6QGPAp5pB/n9xejmk7h7FHULw8WJdFEaBXsv5Nw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tx783LNO7DNJwRYt1GaMOyhG5eXC60I+ORVbpc/TIdlV1uEpkEIndblbA43R0SSHo
-         dAmhjYYjrjiIcqw3js+wXIUB4kiPtp+b88QWE8kLO0VSdtSY3qruZ+/dT+qI43amUJ
-         wJcLeV7pVYNhCWqiQHTB34A0IFcCficHnUnP7suk=
+        b=j07CKjFs+UMeKKQkpinGYofdEn7y7z5k67I3rz201fZpX4RVHAEZr5SC0yB5Rkl+t
+         tozhkNZm6jzfZIhvXXICGpdG7gtRxMunTfW0ApVff1lVMiBeUokh7st982arJXvy4M
+         AI8niqq/NvbIZqZ2EmwLxCHpFVHAQEVUdynar8PU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Grzegorz Siwik <grzegorz.siwik@intel.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Slawomir Laba <slawomirx.laba@intel.com>,
+        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
+        Mateusz Palczewski <mateusz.placzewski@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 36/82] ixgbe: Fix an error handling path in ixgbe_probe()
-Date:   Mon, 26 Jul 2021 17:38:36 +0200
-Message-Id: <20210726153829.335593148@linuxfoundation.org>
+Subject: [PATCH 4.4 19/47] igb: Check if num of q_vectors is smaller than max before array access
+Date:   Mon, 26 Jul 2021 17:38:37 +0200
+Message-Id: <20210726153823.586319573@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +47,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 
-[ Upstream commit dd2aefcd5e37989ae5f90afdae44bbbf3a2990da ]
+[ Upstream commit 6c19d772618fea40d9681f259368f284a330fd90 ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+Ensure that the adapter->q_vector[MAX_Q_VECTORS] array isn't accessed
+beyond its size. It was fixed by using a local variable num_q_vectors
+as a limit for loop index, and ensure that num_q_vectors is not bigger
+than MAX_Q_VECTORS.
 
-Fixes: 6fabd715e6d8 ("ixgbe: Implement PCIe AER support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fixes: 047e0030f1e6 ("igb: add new data structure for handling interrupts and NAPI")
+Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Reviewed-by: Grzegorz Siwik <grzegorz.siwik@intel.com>
+Reviewed-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Reviewed-by: Slawomir Laba <slawomirx.laba@intel.com>
+Reviewed-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+Reviewed-by: Mateusz Palczewski <mateusz.placzewski@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/igb/igb_main.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index e9205c893531..daf94d5cbef1 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10572,6 +10572,7 @@ err_ioremap:
- 	disable_dev = !test_and_set_bit(__IXGBE_DISABLED, &adapter->state);
- 	free_netdev(netdev);
- err_alloc_etherdev:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_release_mem_regions(pdev);
- err_pci_reg:
- err_dma:
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 682f52760898..6ccbf21547d0 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -945,6 +945,7 @@ static void igb_configure_msix(struct igb_adapter *adapter)
+  **/
+ static int igb_request_msix(struct igb_adapter *adapter)
+ {
++	unsigned int num_q_vectors = adapter->num_q_vectors;
+ 	struct net_device *netdev = adapter->netdev;
+ 	int i, err = 0, vector = 0, free_vector = 0;
+ 
+@@ -953,7 +954,13 @@ static int igb_request_msix(struct igb_adapter *adapter)
+ 	if (err)
+ 		goto err_out;
+ 
+-	for (i = 0; i < adapter->num_q_vectors; i++) {
++	if (num_q_vectors > MAX_Q_VECTORS) {
++		num_q_vectors = MAX_Q_VECTORS;
++		dev_warn(&adapter->pdev->dev,
++			 "The number of queue vectors (%d) is higher than max allowed (%d)\n",
++			 adapter->num_q_vectors, MAX_Q_VECTORS);
++	}
++	for (i = 0; i < num_q_vectors; i++) {
+ 		struct igb_q_vector *q_vector = adapter->q_vector[i];
+ 
+ 		vector++;
 -- 
 2.30.2
 
