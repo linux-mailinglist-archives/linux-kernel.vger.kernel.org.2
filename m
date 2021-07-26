@@ -2,186 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95983D5254
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A153D525E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231529AbhGZDl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 23:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S231621AbhGZDn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 23:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhGZDl5 (ORCPT
+        with ESMTP id S231455AbhGZDn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 23:41:57 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C25C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:22:26 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id l6so6910967edc.5
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:22:26 -0700 (PDT)
+        Sun, 25 Jul 2021 23:43:57 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B35FC061760
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:24:25 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d1so2821009pll.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f9FY8RophWih5OIqv5j8Fma8dSng51kNBzCPNivtXdI=;
-        b=RJnDalBeqaUNKBcdd04AyASk/ivbR4qREnnraq1wTYbZAeKWH5Yh3hYkjxTsVHVQzI
-         XWPtP5gmwWHZAnHhcQbmwfCKYiW35gb7wjfEd2IDa5UfjHorWOUjTK3kq3+VMeFpnE/j
-         6ZU0jDYtZBEzBPtrHIPPenwV1ozxsz1Mm7GEk=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=78PJxn/L/No3mfXtKzF9xhDAGmfzmXdV4fCFIzVMd9s=;
+        b=tqsyhbkrTWMeQGkonawVFcZt6NSFfrnDG6N5Tf++zKo3L9t0EeN8mo6y4vHgxqOXQT
+         95JvJZ8vVgEehltZmXqq0VslqAZcAdh66WmmY4jw/DtjkwcCFGvqXa/soPaSbGzB2w/J
+         /SkMzFSgG4jnw67x2mXjIcWIwuJAwDdj0mKqchVFVLl6bYeavQtFn6jrogGVm4cVc8RB
+         lwUnjTenjaFfqJRM8S7gshbiXa+WeGMSUnC6EpkY3FH+vdqdmqAqNoweDcBq+U0wospm
+         ld43Ftm4zAOIzsAfOQRdtE9eq+69il6xIkX34AYphY6kzlQn/sDXYjoTpU8e36FXHg8e
+         KBVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f9FY8RophWih5OIqv5j8Fma8dSng51kNBzCPNivtXdI=;
-        b=g4ovfcCoSY9P9jkt/JlooJrq9ROkqyXPpPhOA/sUQYJ8IuUVpDUIIQMKS1stTolq2x
-         IaDOZOEhIZK/CNQLum3k9mVkgO5/iJpJg8z1+A9exDaxQZutKFXTfPBZ1lp5GzcGqEd4
-         nW5dmGOviEMZqdIczxBo2zDpvCdYfubar1580ncvVWpvhUk8WEiMS9ifa2qeFD52Fge+
-         ibwPpDJkkk7XS4GSkmuD9dSCUIER6XQEBPG4rCTJTXfBKFcBzwgEeV1mDP8xZ4Tzmiwh
-         eqfoVSgNeuN5d7/w/aCKTznCwFos8hFWTOP79LRvXXNakHbnMlVm/8TQjny9UnLraRhz
-         K+Iw==
-X-Gm-Message-State: AOAM532XMykF8v4uru7pCWsyvjMPljRJh0lrLaYYCf30jr3Wot5sVSlm
-        DYRsblkwvDkRiS0nubKbesjic1cEfDoCmg==
-X-Google-Smtp-Source: ABdhPJyfxvhJGaEdowGImx8DXR9hmV3BVhWzLZZsINhhDcreYmdSUuuBnpsNxuwu4x2uR0im0xwk2A==
-X-Received: by 2002:a05:6402:26c5:: with SMTP id x5mr19142501edd.237.1627273344595;
-        Sun, 25 Jul 2021 21:22:24 -0700 (PDT)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id r15sm2267141edw.46.2021.07.25.21.22.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Jul 2021 21:22:24 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id l4so9446610wrs.4
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:22:23 -0700 (PDT)
-X-Received: by 2002:a05:6000:548:: with SMTP id b8mr17286012wrf.159.1627273343336;
- Sun, 25 Jul 2021 21:22:23 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=78PJxn/L/No3mfXtKzF9xhDAGmfzmXdV4fCFIzVMd9s=;
+        b=fZtmx4OTLwIt1Slk2FVePyBnDpl4N7XLjtRHZEG7lPDDcYBSdZfjXY3OXCtwvmX/e5
+         CqBz7Q7g5NYQaLaJ7mRkV7feKPlvAJmHQWuh0wm4x4wfpQU5gnj8tyI9xx7sbEkTF1WI
+         dgp3gCJpmujB7CNx+RU/axgkBYhqP9yoGShJFJnNGYwZxGLLxtQySS5ZG7RN1FCmYGsq
+         afBXr2WuPTA+aKQr7MRY8V+oCgr5ORctwIpQyEx2Ml3Bs5YkLFHidp5Ts2uhawABM30z
+         P7N533kWiQYCtSSo9AXwXYRppdjAQQmiI/tej7fLR9g/YsviIyPKdR9tO5x44V67xWEz
+         /pCA==
+X-Gm-Message-State: AOAM533wbZnGSIQJxXjcpGms3UhdYYdrlt8Fzy4h6t+1Ps8UNKiuIhtG
+        KXtUguJw4fpTsHx9RP4OzWAWcg==
+X-Google-Smtp-Source: ABdhPJyG6IGj4mrsCVLKPobTp1wpDXQChxmvXE++0EtMdAbNN9tYtV933i2cNjnOqhkGLd1zLcjGdw==
+X-Received: by 2002:a05:6a00:cc1:b029:32b:8465:9b59 with SMTP id b1-20020a056a000cc1b029032b84659b59mr16076877pfv.66.1627273465000;
+        Sun, 25 Jul 2021 21:24:25 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id s5sm11668787pfk.114.2021.07.25.21.24.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 21:24:23 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 09:54:21 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: blacklist Qualcomm sc8180x in cpufreq-dt-platdev
+Message-ID: <20210726042421.ak3eau7lhx6pfeg4@vireshk-i7>
+References: <20210725030214.3942250-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-References: <20210709092027.1050834-1-senozhatsky@chromium.org>
- <20210709092027.1050834-8-senozhatsky@chromium.org> <0c89ef1e-8abb-8749-bbce-c7e5a2e2f304@collabora.com>
- <YP4Sfo0PjLokYi3B@google.com> <YP40paMcGjlfofi8@google.com> <YP439RUKhVeAm945@google.com>
-In-Reply-To: <YP439RUKhVeAm945@google.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 26 Jul 2021 13:22:12 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5D=7Ao_gaxLamf8rv_QWxdemh=KZKdGU-1HFfY7L8A3MQ@mail.gmail.com>
-Message-ID: <CAAFQd5D=7Ao_gaxLamf8rv_QWxdemh=KZKdGU-1HFfY7L8A3MQ@mail.gmail.com>
-Subject: Re: [PATCHv3 7/8] videobuf2: handle V4L2_MEMORY_FLAG_NON_COHERENT flag
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210725030214.3942250-1-bjorn.andersson@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 1:20 PM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
->
-> On (21/07/26 13:05), Sergey Senozhatsky wrote:
-> > On (21/07/26 10:40), Sergey Senozhatsky wrote:
-> > > On (21/07/22 19:33), Dafna Hirschfeld wrote:
-> > > [..]
-> > > > >   int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
-> > > > >   {
-> > > > >         int ret = vb2_verify_memory_type(q, req->memory, req->type);
-> > > > > +       u32 flags = req->flags;
-> > > > >         fill_buf_caps(q, &req->capabilities);
-> > > > > -       return ret ? ret : vb2_core_reqbufs(q, req->memory, 0, &req->count);
-> > > > > +       validate_memory_flags(q, req->memory, &flags);
-> > > > > +       req->flags = flags;
-> > > >
-> > > > you can do instead
-> > > >
-> > > > validate_memory_flags(q, req->memory, &req->flags);
-> > >
-> > > ->flags are u32 for create-bufs and u8 for reqi-bufs. So `*flags = <value>`
-> > > can write to ->reserved[] for req-bufs (if the value is huge enough).
-> >
-> > I guess ->flags can become u8 for both create-bufs and req-bufs.
-> > We had ->flags in both structs as u32, but then decided to leave
-> > some reserved[] space in req-bufs and switched to u8 there.
->
-> Something like this
->
+On 24-07-21, 20:02, Bjorn Andersson wrote:
+> The Qualcomm SC8180x platform uses the qcom-cpufreq-hw driver, so
+> it in the cpufreq-dt-platdev driver's blocklist.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> index a048a9f6b7b6..cf633b5a4919 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
-> @@ -112,13 +112,13 @@ than the number requested.
->         other changes, then set ``count`` to 0, ``memory`` to
->         ``V4L2_MEMORY_MMAP`` and ``format.type`` to the buffer type.
->
-> -    * - __u32
-> +    * - __u8
->        - ``flags``
->        - Specifies additional buffer management attributes.
->         See :ref:`memory-flags`.
->
-> -    * - __u32
-> -      - ``reserved``\ [6]
-> +    * - __u8
-> +      - ``reserved``\ [27]
->        - A place holder for future extensions. Drivers and applications
->         must set the array to zero.
->
-> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> index 6edf4508c636..2ae949ec0afa 100644
-> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
-> @@ -694,7 +694,7 @@ static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
->
->  static void validate_memory_flags(struct vb2_queue *q,
->                                   int memory,
-> -                                 u32 *flags)
-> +                                 u8 *flags)
->  {
->         if (!q->allow_cache_hints || memory != V4L2_MEMORY_MMAP) {
->                 /*
-> @@ -711,11 +711,9 @@ static void validate_memory_flags(struct vb2_queue *q,
->  int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
->  {
->         int ret = vb2_verify_memory_type(q, req->memory, req->type);
-> -       u32 flags = req->flags;
->
->         fill_buf_caps(q, &req->capabilities);
-> -       validate_memory_flags(q, req->memory, &flags);
-> -       req->flags = flags;
-> +       validate_memory_flags(q, req->memory, &req->flags);
->         return ret ? ret : vb2_core_reqbufs(q, req->memory,
->                                             req->flags, &req->count);
->  }
-> @@ -990,11 +988,9 @@ int vb2_ioctl_reqbufs(struct file *file, void *priv,
->  {
->         struct video_device *vdev = video_devdata(file);
->         int res = vb2_verify_memory_type(vdev->queue, p->memory, p->type);
-> -       u32 flags = p->flags;
->
->         fill_buf_caps(vdev->queue, &p->capabilities);
-> -       validate_memory_flags(vdev->queue, p->memory, &flags);
-> -       p->flags = flags;
-> +       validate_memory_flags(vdev->queue, p->memory, &p->flags);
->         if (res)
->                 return res;
->         if (vb2_queue_is_busy(vdev, file))
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index 7973aa0465d2..ad4f7cee53f2 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -2513,8 +2513,8 @@ struct v4l2_create_buffers {
->         __u32                   memory;
->         struct v4l2_format      format;
->         __u32                   capabilities;
-> -       __u32                   flags;
-> -       __u32                   reserved[6];
-> +       __u8                    flags;
-> +       __u8                    reserved[27];
->  };
->
->  /*
+>  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-I don't think we want this UABI churn anymore for a trivial
-simplification in the implementation.
+Applied. Thanks.
 
-Best regards,
-Tomasz
+-- 
+viresh
