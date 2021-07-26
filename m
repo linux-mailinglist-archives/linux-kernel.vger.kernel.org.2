@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C7C3D63C4
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA463D63C5
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239246AbhGZPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:51:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43048 "EHLO mail.kernel.org"
+        id S239257AbhGZPvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:51:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237879AbhGZP31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237877AbhGZP31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:29:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E0F6108D;
-        Mon, 26 Jul 2021 16:09:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10BF06109D;
+        Mon, 26 Jul 2021 16:09:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315762;
-        bh=ohL/9vnVlqBMwG3sxamtHqqALrt+Kx3qPdVqqpGQtdU=;
+        s=korg; t=1627315764;
+        bh=AEcizyHU+/c5oQ14TgiR8P1PpRbnAJdqQA5p4hEGReA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=On7a+FPIW1EFTauFKjUTGffVY1B+tdqu7ZyEGS3KVt4lXbfXlD7YSvhfhd7KibrKO
-         hBfGFvz8K934x57ExHZfaOm7F0zifTG1Z7yhoVIAbZ+0w7eVZH+/jgYSWoi7wXtFu5
-         olHOd6lRrH+VdiwEkGBmgS2L/LI0pVkB7Ifadcfg=
+        b=1igp/teFdMXg7LzSL5k32UJK0tZg2LGGIiXTVCfUM+111ZdCh2vBVLHB9Iv6080Ke
+         vYX5c4yoSe45DVfx7mrXM9MohsZiyfaukasxSXOE2BPENv5Va2sWw55t1O+IdpR3WV
+         iSE221gkEvpus8JQ0bdGqWFeqDkXjNKm/sch4ZBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 056/223] perf dso: Fix memory leak in dso__new_map()
-Date:   Mon, 26 Jul 2021 17:37:28 +0200
-Message-Id: <20210726153848.094541267@linuxfoundation.org>
+Subject: [PATCH 5.13 057/223] perf test maps__merge_in: Fix memory leak of maps
+Date:   Mon, 26 Jul 2021 17:37:29 +0200
+Message-Id: <20210726153848.126596349@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -46,49 +46,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 581e295a0f6b5c2931d280259fbbfff56959faa9 ]
+[ Upstream commit 244d1797c8c8e850b8de7992af713aa5c70d5650 ]
 
 ASan reports a memory leak when running:
 
-  # perf test "65: maps__merge_in".
+  # perf test "65: maps__merge_in"
 
-The causes of the leaks are two, this patch addresses only the first
-one, which is related to dso__new_map().
+This is the second and final patch addressing these memory leaks.
 
-The bug is that dso__new_map() creates a new dso but never decreases the
-refcount it gets from creating it.
+This time, the problem is simply that the maps object is never
+destructed.
 
-This patch adds the missing dso__put().
+This patch adds the missing maps__exit call.
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: d3a7c489c7fd2463 ("perf tools: Reference count struct dso")
+Fixes: 79b6bb73f888933c ("perf maps: Merge 'struct maps' with 'struct map_groups'")
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/60bfe0cd06e89e2ca33646eb8468d7f5de2ee597.1626343282.git.rickyman7@gmail.com
+Link: http://lore.kernel.org/lkml/a1a29b97a58738987d150e94d4ebfad0282fb038.1626343282.git.rickyman7@gmail.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/dso.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/tests/maps.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index d786cf6b0cfa..ee15db2be2f4 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -1154,8 +1154,10 @@ struct map *dso__new_map(const char *name)
- 	struct map *map = NULL;
- 	struct dso *dso = dso__new(name);
+diff --git a/tools/perf/tests/maps.c b/tools/perf/tests/maps.c
+index edcbc70ff9d6..1ac72919fa35 100644
+--- a/tools/perf/tests/maps.c
++++ b/tools/perf/tests/maps.c
+@@ -116,5 +116,7 @@ int test__maps__merge_in(struct test *t __maybe_unused, int subtest __maybe_unus
  
--	if (dso)
-+	if (dso) {
- 		map = map__new2(0, dso);
-+		dso__put(dso);
-+	}
- 
- 	return map;
+ 	ret = check_maps(merged3, ARRAY_SIZE(merged3), &maps);
+ 	TEST_ASSERT_VAL("merge check failed", !ret);
++
++	maps__exit(&maps);
+ 	return TEST_OK;
  }
 -- 
 2.30.2
