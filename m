@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D80B3D6036
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7EE3D62AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237138AbhGZPVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52418 "EHLO mail.kernel.org"
+        id S234890AbhGZPhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:37:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235945AbhGZPLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58F6560F38;
-        Mon, 26 Jul 2021 15:52:01 +0000 (UTC)
+        id S237193AbhGZPVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:21:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B406D60FEE;
+        Mon, 26 Jul 2021 16:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314722;
-        bh=QM9doDRXuRwyVHQ7uAsh1g3M7KaYkH4X3HI02WYK5NQ=;
+        s=korg; t=1627315323;
+        bh=Go1iKbPM/vtqA/2HqRpjLUeZFIYJ3ls5OtMWS70sE7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SpMU4FRBl1zeQ91d1JDjBVTl7ZU4m6+HsSoBgbd4o29XH2z/ynOzY+7wcutRaKGM6
-         Ag+kTxIsSU0BNjHZPdIY9Ro/4UZP/TA2tSnkx0HXqfupWuhnT8g3dRn1s+gk5Mu790
-         EtmB6Tprac7naRSPfMuOKoz++Hg7LqThzidRle2c=
+        b=a7M/M/XCJtFXQunUfF/idtpYqKM68ePbNEpMFuwcA+WME3nwqjScHDryLg7vf5CtS
+         tADiRjCExUrDGkQhJfss119Fme63Xa7Vmu+prEoPHhCQjBiKNNDQH3EWIw+4a8hDQ2
+         WBCchSoVZXpHJh48x3yBtU19FxYBBIs4PTgNCW0M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 032/120] scsi: libfc: Fix array index out of bound exception
+Subject: [PATCH 5.10 051/167] regulator: hi6421: Use correct variable type for regmap api val argument
 Date:   Mon, 26 Jul 2021 17:38:04 +0200
-Message-Id: <20210726153833.419101100@linuxfoundation.org>
+Message-Id: <20210726153841.115444027@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Javed Hasan <jhasan@marvell.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit b27c4577557045f1ab3cdfeabfc7f3cd24aca1fe ]
+[ Upstream commit ae60e6a9d24e89a74e2512204ad04de94921bdd2 ]
 
-Fix array index out of bound exception in fc_rport_prli_resp().
+Use unsigned int instead of u32 for regmap_read/regmap_update_bits val
+argument.
 
-Link: https://lore.kernel.org/r/20210615165939.24327-1-jhasan@marvell.com
-Signed-off-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210619124133.4096683-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_rport.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/regulator/hi6421-regulator.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/libfc/fc_rport.c b/drivers/scsi/libfc/fc_rport.c
-index 2b3239765c24..afe79d4415e8 100644
---- a/drivers/scsi/libfc/fc_rport.c
-+++ b/drivers/scsi/libfc/fc_rport.c
-@@ -1169,6 +1169,7 @@ static void fc_rport_prli_resp(struct fc_seq *sp, struct fc_frame *fp,
- 		resp_code = (pp->spp.spp_flags & FC_SPP_RESP_MASK);
- 		FC_RPORT_DBG(rdata, "PRLI spp_flags = 0x%x spp_type 0x%x\n",
- 			     pp->spp.spp_flags, pp->spp.spp_type);
-+
- 		rdata->spp_type = pp->spp.spp_type;
- 		if (resp_code != FC_SPP_RESP_ACK) {
- 			if (resp_code == FC_SPP_RESP_CONF)
-@@ -1189,11 +1190,13 @@ static void fc_rport_prli_resp(struct fc_seq *sp, struct fc_frame *fp,
- 		/*
- 		 * Call prli provider if we should act as a target
- 		 */
--		prov = fc_passive_prov[rdata->spp_type];
--		if (prov) {
--			memset(&temp_spp, 0, sizeof(temp_spp));
--			prov->prli(rdata, pp->prli.prli_spp_len,
--				   &pp->spp, &temp_spp);
-+		if (rdata->spp_type < FC_FC4_PROV_SIZE) {
-+			prov = fc_passive_prov[rdata->spp_type];
-+			if (prov) {
-+				memset(&temp_spp, 0, sizeof(temp_spp));
-+				prov->prli(rdata, pp->prli.prli_spp_len,
-+					   &pp->spp, &temp_spp);
-+			}
- 		}
- 		/*
- 		 * Check if the image pair could be established
+diff --git a/drivers/regulator/hi6421-regulator.c b/drivers/regulator/hi6421-regulator.c
+index dc631c1a46b4..bff8c515dcde 100644
+--- a/drivers/regulator/hi6421-regulator.c
++++ b/drivers/regulator/hi6421-regulator.c
+@@ -386,7 +386,7 @@ static int hi6421_regulator_enable(struct regulator_dev *rdev)
+ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 reg_val;
++	unsigned int reg_val;
+ 
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 	if (reg_val & info->mode_mask)
+@@ -398,7 +398,7 @@ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
+ static unsigned int hi6421_regulator_buck_get_mode(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 reg_val;
++	unsigned int reg_val;
+ 
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 	if (reg_val & info->mode_mask)
+@@ -411,7 +411,7 @@ static int hi6421_regulator_ldo_set_mode(struct regulator_dev *rdev,
+ 						unsigned int mode)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 new_mode;
++	unsigned int new_mode;
+ 
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
+@@ -435,7 +435,7 @@ static int hi6421_regulator_buck_set_mode(struct regulator_dev *rdev,
+ 						unsigned int mode)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 new_mode;
++	unsigned int new_mode;
+ 
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
 -- 
 2.30.2
 
