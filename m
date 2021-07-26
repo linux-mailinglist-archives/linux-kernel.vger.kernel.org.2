@@ -2,192 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0FD3D65E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8A03D65E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbhGZQ6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:58:52 -0400
-Received: from mail.efficios.com ([167.114.26.124]:48570 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232631AbhGZQ6v (ORCPT
+        id S231640AbhGZQ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231537AbhGZQ7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:58:51 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6C59F30803A;
-        Mon, 26 Jul 2021 13:39:19 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id q-9tp644Uuus; Mon, 26 Jul 2021 13:39:18 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D82A13384B6;
-        Mon, 26 Jul 2021 13:39:18 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D82A13384B6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627321158;
-        bh=gd9CjvBnkyrHwjvM+DTZ+r2zj0/ngHmCKr3D2UF0nIY=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=MDIgrcDCG4jL285bWF0y12/yu+sjl03ij4SHGf+FTqJD6+iiBSfNBLtkD54NHDvN2
-         /Tsm62rb8d+R/3vtAwlR3sSmT9cj8eYqcccKQUmghsO5mRL0sCE67cEM3R/1AJ/fj6
-         PTaj8ltrr3WLJp2QmJ7QrsC1VzD/Emqu6hkk9Cu9BnJVQ0wPpdZxWNFMi+4Yd/24Xl
-         M6Z0K8BFW7mwg/foHKCS7ZPmvtSxZD+1wMefxbpDhKLW8KWLiQMrcWoS6DdxHFVR2X
-         6PR5Vao70xWyLvn9f4aPM32CwyIjQs/DFOXZ40Nn8t8gsZUWIEOcF+yziEigD4TTDB
-         oOHQlJURcs92g==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gARNofEw88Ep; Mon, 26 Jul 2021 13:39:18 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id C6C233384B5;
-        Mon, 26 Jul 2021 13:39:18 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 13:39:18 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>
-Message-ID: <682927571.6760.1627321158652.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210726125604.55bb6655@oasis.local.home>
-References: <20210722223320.53900ddc@rorschach.local.home> <715282075.6481.1627314401745.JavaMail.zimbra@efficios.com> <20210726125604.55bb6655@oasis.local.home>
-Subject: Re: [PATCH] tracepoints: Update static_call before tp_funcs when
- adding a tracepoint
+        Mon, 26 Jul 2021 12:59:46 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6893EC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:40:14 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id l126so12865819ioa.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vibDd1ZtmcJJ8CZRfex6KJyuRRDjWadOPJekQLM4f94=;
+        b=iNFNKkkNtC/iB8qo6UJAAwmjVeGa7yMXuqaoLbNb3QbmLmDoY5Ktz3tGdBtn/368rZ
+         neWGXw1baU56lh8xfWzP71w38kZSIngKSaC1JFxc1UX2pxbllSN/79rsrpL72+1cXnCX
+         MCbJoCf4tREYGdU2l52GJixqei1yEivt9Z/pq2o9EYOa++64kCURxQj51UGqdFo9RhTs
+         s5Rp82QSqZ5o5aN9OmjVqbj5SQDatkcPwlUN+1woV2BbYKWj4ONULZ0AAKjvzWesN6Li
+         5lou1bFIE9Skmu/w51L3jUzoDQziROBXrgKzhfANjxq/RhY+2y5IAVIWMd2Zd9MBskri
+         qzew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vibDd1ZtmcJJ8CZRfex6KJyuRRDjWadOPJekQLM4f94=;
+        b=fjciB+8K6Po+NjS89tFznXvDkwC1dXtVAu2y4DRUqSzsILjbfeUJqX57iMc+wQWI5i
+         FagajjL9mgUh8qNST7PzxHAMM7c36wtTxwNf0ElxWGp3wbrjQZYSNaxslFV3KbbDB8d8
+         Fh/WNZBkqxPDGQ5C7JTz1JYDhUbBtLp+AvYBdMUb7KASMnJf3D62NoFGo2Kcj02/byac
+         5cfRVpLAprm8koNfVcOU1JMtZ3bk9rRU40vJ0zErW0UEyJcK2CPlo4oUmoOzAOW5Xgj0
+         BxqlqEXu71qo17fa+uAJwDD3vk5E6z4suKOLUX0ULbSvgBP/9ndJQv8mkhyhMJBPNj1w
+         4cOA==
+X-Gm-Message-State: AOAM531p9L2HicixmoqgFtWVdw6aHEeqMt/Xy+h32eA8eMpUGhzkXj0l
+        bTrmNGGTP6+UtFf/yk4luT6ZAQ==
+X-Google-Smtp-Source: ABdhPJymFm+GPWr6Pa/ZdLlskZYnKViV4V5iWZbBXr61SmCciFfAO47JZDFIAUt/InV7dAAiuiZpcw==
+X-Received: by 2002:a05:6638:264e:: with SMTP id n14mr17521329jat.71.1627321213817;
+        Mon, 26 Jul 2021 10:40:13 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id l4sm202721ilh.41.2021.07.26.10.40.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 10:40:13 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     leon@kernel.org, bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/4] net: ipa: kill IPA_VALIDATION
+Date:   Mon, 26 Jul 2021 12:40:06 -0500
+Message-Id: <20210726174010.396765-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: tracepoints: Update static_call before tp_funcs when adding a tracepoint
-Thread-Index: ZSqsplsYKjUcEmoRQTVLJV+sHGtb3Q==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 26, 2021, at 12:56 PM, rostedt rostedt@goodmis.org wrote:
+A few months ago I proposed cleaning up some code that validates
+certain things conditionally, arguing that doing so once is enough,
+thus doing so always should not be necessary.
+  https://lore.kernel.org/netdev/20210320141729.1956732-1-elder@linaro.org/
+Leon Romanovsky felt strongly that this was a mistake, and in the
+end I agreed to change my plans.
 
-> On Mon, 26 Jul 2021 11:46:41 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-[...]
-> 
->> 
->> My second conclusion is that it's odd that transition 1->0 leaves the
->> prior function call in place even after it's been removed. When we go
->> back to 0->1, that function call may still be called even though the
->> function is not there anymore. And there is no RCU synchronization on
->> these transitions, so those are all possible scenarios.
-> 
-> How so? When doing this transition we have:
-> 
->	tracepoint_update_call(tp, tp_funcs, false);
->	rcu_assign_pointer(tp->funcs, tp_funcs);
->	static_key_enable(&tp->key);
-> 
-> Where that tracepoint_update_call() will reinstall the iterator, and
-> that's a full memory barrier. It even sends IPIs to all other CPUs to
-> make sure all CPUs are synchronized before continuing.
-> 
-> By the time we get to static_key_enable(), there will not be any CPUs
-> that see the old function. And the process of updating a static_key
-> also does the same kind of synchronization.
+This series finally completes what I said I would do about this,
+ultimately eliminating the IPA_VALIDATION symbol and conditional
+code entirely.
 
-Actually, my explanation was inaccurate. The issue is that the _new_ callback
-may see the _old_ data.
+The first patch both extends and simplifies some validation done for
+IPA immediate commands, and performs those tests unconditionally.
 
-Considering __DO_TRACE_CALL:
+The second patch fixes a bug that wasn't normally exposed because of
+the conditional compilation (a reason Leon was right about this).
+It makes filter and routing table validation occur unconditionally.
 
-        do {                                                            \
-                struct tracepoint_func *it_func_ptr;                    \
-                void *__data;                                           \
-                it_func_ptr =                                           \
-                        rcu_dereference_raw((&__tracepoint_##name)->funcs); \
-                if (it_func_ptr) {                                      \
-                        __data = (it_func_ptr)->data;                   \
+The third eliminates the remaining conditionally-defined code and
+removes the line in the Makefile used to enable validation.
 
-----> [ delayed here on one CPU (e.g. vcpu preempted by the host) ]
+And the fourth removes all comments containing ipa_assert()
+statements, replacing most of them with WARN_ON() calls.
 
-                        static_call(tp_func_##name)(__data, args);      \
-                }                                                       \
-        } while (0)
+					-Alex
 
-It has loaded the tp->funcs of the old callback (so it will try to use the old
-data).
+Alex Elder (4):
+  net: ipa: fix ipa_cmd_table_valid()
+  net: ipa: always validate filter and route tables
+  net: ipa: kill the remaining conditional validation code
+  net: ipa: use WARN_ON() rather than assertions
 
-AFAIU, none of the synchronization mechanisms you refer to here (memory barrier,
-IPIs..) will change the fact that this CPU may still be delayed across the entire
-1->0->1 transition sequence, and may end up calling the new callback with the
-old data. Unless an explicit RCU-sync is done.
-
-> 
->> 
->> My third conclusion is that we'd need synchronize RCU whenever tp_funcs[0].data
->> changes for transitions 1->2, 2->1, and 1->2 because the priorities don't
->> guarantee
->> that the first callback stays in the first position, and we also need to rcu
->> sync
->> unconditionally on transition 1->0. We currently only have sync RCU on
->> transition
->> from 2->1 when tp_funcs[0].func changes, which is bogus in many ways.
-> 
-> Going from 1 to 2, there's no issue. We switch to the iterator, which
-> is the old method anyway. It looks directly at the array and matches
-> the data with the func for each element of that array, and the data
-> read initially (before calling the iterator) is ignored.
-
-This relies on ordering guarantees between RCU assign/dereference and static_call
-updates/call. It may well be the case, but I'm asking anyway.
-
-Are we guaranteed of the following ordering ?
-
-CPU A                             CPU B
-
-                                  static_call_update()
-y = rcu_dereference(x)            rcu_assign_pointer(x, ...)
-do_static_call(y)                 
-
-That load of "x" should never happen after the CPU fetches the new static call
-instruction.
-
-Also, I suspect that transition 2->1 needs an unconditional rcu-sync because you
-may have a sequence of 3->2->1 (or 1->2->1) where the element 0 data is unchanged
-between 2->1, but was changed from 3->2 (or from 1->2), which may be observed by the
-static call.
-
-Thanks,
-
-Mathieu
-
-> 
->> 
->> Basically, transitions from the iterator to a specific function should be
->> handled
->> with care (making sure the tp_funcs array is updated and rcu-sync is done),
->> except
->> in the specific case where the prior tp->funcs was NULL, which skips the
->> function
->> call. And unless there is a rcu-sync between the state transitions, we need to
->> consider
->> all prior states as additional original state as well. Therefore, in a 1->0->1
->> transition sequence, it's very much possible that the old function ends up
->> observing
->> the new callback's data unless we add some rcu sync in between.
-> 
-> I disagree with the last part, as I explained above.
-> 
-> But I do agree that comparing data is probably the better check.
-> 
-> -- Steve
-> 
->> 
->> Thoughts ?
->> 
->> Thanks,
->> 
->> Mathieu
+ drivers/net/ipa/Makefile        |  3 --
+ drivers/net/ipa/gsi.c           |  2 --
+ drivers/net/ipa/gsi_trans.c     | 34 +++++++++++-----------
+ drivers/net/ipa/ipa_cmd.c       | 51 +++++++++++++++++++--------------
+ drivers/net/ipa/ipa_cmd.h       | 22 +-------------
+ drivers/net/ipa/ipa_endpoint.c  | 26 ++++++++++-------
+ drivers/net/ipa/ipa_interrupt.c |  8 ++++--
+ drivers/net/ipa/ipa_main.c      |  7 +----
+ drivers/net/ipa/ipa_reg.h       | 12 ++++----
+ drivers/net/ipa/ipa_resource.c  |  3 +-
+ drivers/net/ipa/ipa_table.c     | 40 ++++++++++++--------------
+ drivers/net/ipa/ipa_table.h     | 16 -----------
+ 12 files changed, 96 insertions(+), 128 deletions(-)
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.27.0
+
