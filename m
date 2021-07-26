@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D87C3D5994
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B903D598E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:31:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhGZLvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:51:25 -0400
-Received: from smtp99.ord1c.emailsrvr.com ([108.166.43.99]:46334 "EHLO
-        smtp99.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234161AbhGZLvP (ORCPT
+        id S234102AbhGZLux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:50:53 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:37628 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234046AbhGZLus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:51:15 -0400
-X-Greylist: delayed 473 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Jul 2021 07:51:13 EDT
-X-Auth-ID: markh@compro.net
-Received: by smtp13.relay.ord1c.emailsrvr.com (Authenticated sender: markh-AT-compro.net) with ESMTPSA id C6730A0115;
-        Mon, 26 Jul 2021 08:23:48 -0400 (EDT)
-Reply-To: markh@compro.net
-Subject: Re: [BUG] FLOPPY DRIVER since 5.10.20
-To:     Denis Efremov <efremov@linux.com>, dmarkh@cfl.rr.com,
-        linux-block@vger.kernel.org,
-        Linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <de10cb47-34d1-5a88-7751-225ca380f735@compro.net>
- <e49603c2-ac36-12b0-57cf-ff5ab30115bc@linux.com>
- <f5501a7c-4387-259d-66d2-f10db0cf36ff@cfl.rr.com>
- <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
-From:   Mark Hounschell <markh@compro.net>
-Organization: Compro Computer Svcs.
-Message-ID: <1cf8e751-db77-441e-53b4-d6e979bbe046@compro.net>
-Date:   Mon, 26 Jul 2021 08:23:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 26 Jul 2021 07:50:48 -0400
+X-UUID: 92342404ecb9441fbd87c87ac267d95d-20210726
+X-UUID: 92342404ecb9441fbd87c87ac267d95d-20210726
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <christine.zhu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1286335394; Mon, 26 Jul 2021 20:31:15 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 26 Jul 2021 20:31:14 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 26 Jul 2021 20:31:14 +0800
+From:   Christine Zhu <Christine.Zhu@mediatek.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
+        Christine Zhu <Christine.Zhu@mediatek.com>
+Subject: [v7,2/3] dt-bindings: reset: mt8195: add toprgu reset-controller header file
+Date:   Mon, 26 Jul 2021 20:29:01 +0800
+Message-ID: <20210726122901.12195-3-Christine.Zhu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210726122901.12195-1-Christine.Zhu@mediatek.com>
+References: <20210726122901.12195-1-Christine.Zhu@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 0104ae61-b9b1-446d-a266-59dbbb31ebfc-1-1
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 7:37 AM, Denis Efremov wrote:
-> 
-> 
-> On 7/26/21 2:17 PM, Mark Hounschell wrote:
->> On 7/26/21 3:57 AM, Denis Efremov wrote:
->>> Hi,
->>>
->>> On 7/23/21 9:47 PM, Mark Hounschell wrote:
->>>>
->>>> These 2 incremental patches, patch-5.10.19-20 and patch-5.11.2-3 have broken the user land fd = open("/dev/fd0", (O_RDWR | O_NDELAY)); functionality.
->>>
->>> Thank you for the report, I'm looking into this.
->>>
->>>> Since FOREVER before the patch, when using O_NDELAY, one could open the floppy device with no media inserted or even with write protected media without error. "Read-only file system" status is returned only when we actually tried to write to it. We have software still in use today that relies on this functionality.
->>>
->>> If it's a project with open sources could you please give a link?
->>>
->>> Regards,
->>> Denis
->>>
->> This is immaterial but fdutils and libdsk both use rely on this flag. Who can know who else does. The point is it should NOT have been changed.
-> 
-> Yes, I asked this only to add utils and this behavior to the tests.
-> And be more specific about why we should preserve this behavior in
-> next commit messages.
-> 
+Add toprgu reset-controller header file for MT8195 platform.
 
-Well, first thing is now you can't open a floppy with a write protected 
-floppy installed. I don't think that was intended but that is now how it is.
+Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
+---
+ include/dt-bindings/reset/mt8195-resets.h | 29 +++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 include/dt-bindings/reset/mt8195-resets.h
 
-Next there are commands that can be sent to the floppy via "ioctl(fd, 
-FDRAWCMD,  &raw_cmd);" that do NOT require a floppy diskette to be 
-installed.
-
-All commands issued to the device that require a floppy diskette without 
-a diskette installed fail with the proper status letting you know the 
-device is not ready / no diskette installed. That goes for write 
-protected floppies too.
-
-There is no reason to force a user to only be able to operate on Linux 
-fdformat formatted floppies.
-
-Regards
-Mark
+diff --git a/include/dt-bindings/reset/mt8195-resets.h b/include/dt-bindings/reset/mt8195-resets.h
+new file mode 100644
+index 000000000000..2a7335d56c59
+--- /dev/null
++++ b/include/dt-bindings/reset/mt8195-resets.h
+@@ -0,0 +1,29 @@
++/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)*/
++/*
++ * Copyright (c) 2021 MediaTek Inc.
++ * Author: Christine Zhu <christine.zhu@mediatek.com>
++ */
++
++#ifndef _DT_BINDINGS_RESET_CONTROLLER_MT8195
++#define _DT_BINDINGS_RESET_CONTROLLER_MT8195
++
++#define MT8195_TOPRGU_CONN_MCU_SW_RST          0
++#define MT8195_TOPRGU_INFRA_GRST_SW_RST        1
++#define MT8195_TOPRGU_APU_SW_RST               2
++#define MT8195_TOPRGU_INFRA_AO_GRST_SW_RST     6
++#define MT8195_TOPRGU_MMSYS_SW_RST             7
++#define MT8195_TOPRGU_MFG_SW_RST               8
++#define MT8195_TOPRGU_VENC_SW_RST              9
++#define MT8195_TOPRGU_VDEC_SW_RST              10
++#define MT8195_TOPRGU_IMG_SW_RST               11
++#define MT8195_TOPRGU_APMIXEDSYS_SW_RST        13
++#define MT8195_TOPRGU_AUDIO_SW_RST             14
++#define MT8195_TOPRGU_CAMSYS_SW_RST            15
++#define MT8195_TOPRGU_EDPTX_SW_RST             16
++#define MT8195_TOPRGU_ADSPSYS_SW_RST           21
++#define MT8195_TOPRGU_DPTX_SW_RST              22
++#define MT8195_TOPRGU_SPMI_MST_SW_RST          23
++
++#define MT8195_TOPRGU_SW_RST_NUM               16
++
++#endif  /* _DT_BINDINGS_RESET_CONTROLLER_MT8195 */
+\ No newline at end of file
+-- 
+2.18.0
 
