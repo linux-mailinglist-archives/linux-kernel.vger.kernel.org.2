@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2963D611B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E7D3D6308
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhGZP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:28:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53066 "EHLO mail.kernel.org"
+        id S238560AbhGZPnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:43:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237412AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F36861008;
-        Mon, 26 Jul 2021 15:54:25 +0000 (UTC)
+        id S238067AbhGZPYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:24:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD7E60E09;
+        Mon, 26 Jul 2021 16:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314866;
-        bh=N1U/c1I+pjKairdtyFlww+y9FTKqflbcvRqukFUtCyc=;
+        s=korg; t=1627315505;
+        bh=Z8xvYOwArq6z6cOpGIaDz6plqC40jynkMy5CihLFma8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wFl5C2NK7O736wzYnjnPURkLpInTUGYIxs+XyLFTu1iTSywM9yucunatdKo9QXFWy
-         GPNkNGbyuj49ZuReVkAbvZ4MLoVv3dPaP1nD37BVD65U8auX2vToUzUdYzrqU1gpJE
-         OLDw9GnpjIpuR0/J4qqGxhWJ0wT47tQqKlmeSnRE=
+        b=xNvBFVRz0/oP2H5dhQ5nFkhyB/PvPjMmbdARbyywm77jvfisOtDzL08wFv5aV8R/F
+         7bYDK4WtZKY0kiYY6CEf8BCnAAkDQnlBh0rzu70eeF6d22d1b7oRYW6rNeabPaMP72
+         dtpTv1dU0siCMmaAzoJdoTZm4ZQWgI7Rjil8f7q0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Haoran Luo <www@aegistudio.net>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 105/120] tracing: Fix bug in rb_per_cpu_empty() that might cause deadloop.
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH 5.10 124/167] usb: max-3421: Prevent corruption of freed memory
 Date:   Mon, 26 Jul 2021 17:39:17 +0200
-Message-Id: <20210726153835.812833232@linuxfoundation.org>
+Message-Id: <20210726153843.564988264@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,102 +39,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haoran Luo <www@aegistudio.net>
+From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
-commit 67f0d6d9883c13174669f88adac4f0ee656cc16a upstream.
+commit b5fdf5c6e6bee35837e160c00ac89327bdad031b upstream.
 
-The "rb_per_cpu_empty()" misinterpret the condition (as not-empty) when
-"head_page" and "commit_page" of "struct ring_buffer_per_cpu" points to
-the same buffer page, whose "buffer_data_page" is empty and "read" field
-is non-zero.
+The MAX-3421 USB driver remembers the state of the USB toggles for a
+device/endpoint. To save SPI writes, this was only done when a new
+device/endpoint was being used. Unfortunately, if the old device was
+removed, this would cause writes to freed memory.
 
-An error scenario could be constructed as followed (kernel perspective):
+To fix this, a simpler scheme is used. The toggles are read from
+hardware when a URB is completed, and the toggles are always written to
+hardware when any URB transaction is started. This will cause a few more
+SPI transactions, but no causes kernel panics.
 
-1. All pages in the buffer has been accessed by reader(s) so that all of
-them will have non-zero "read" field.
-
-2. Read and clear all buffer pages so that "rb_num_of_entries()" will
-return 0 rendering there's no more data to read. It is also required
-that the "read_page", "commit_page" and "tail_page" points to the same
-page, while "head_page" is the next page of them.
-
-3. Invoke "ring_buffer_lock_reserve()" with large enough "length"
-so that it shot pass the end of current tail buffer page. Now the
-"head_page", "commit_page" and "tail_page" points to the same page.
-
-4. Discard current event with "ring_buffer_discard_commit()", so that
-"head_page", "commit_page" and "tail_page" points to a page whose buffer
-data page is now empty.
-
-When the error scenario has been constructed, "tracing_read_pipe" will
-be trapped inside a deadloop: "trace_empty()" returns 0 since
-"rb_per_cpu_empty()" returns 0 when it hits the CPU containing such
-constructed ring buffer. Then "trace_find_next_entry_inc()" always
-return NULL since "rb_num_of_entries()" reports there's no more entry
-to read. Finally "trace_seq_to_user()" returns "-EBUSY" spanking
-"tracing_read_pipe" back to the start of the "waitagain" loop.
-
-I've also written a proof-of-concept script to construct the scenario
-and trigger the bug automatically, you can use it to trace and validate
-my reasoning above:
-
-  https://github.com/aegistudio/RingBufferDetonator.git
-
-Tests has been carried out on linux kernel 5.14-rc2
-(2734d6c1b1a089fb593ef6a23d4b70903526fe0c), my fixed version
-of kernel (for testing whether my update fixes the bug) and
-some older kernels (for range of affected kernels). Test result is
-also attached to the proof-of-concept repository.
-
-Link: https://lore.kernel.org/linux-trace-devel/YPaNxsIlb2yjSi5Y@aegistudio/
-Link: https://lore.kernel.org/linux-trace-devel/YPgrN85WL9VyrZ55@aegistudio
-
-Cc: stable@vger.kernel.org
-Fixes: bf41a158cacba ("ring-buffer: make reentrant")
-Suggested-by: Linus Torvalds <torvalds@linuxfoundation.org>
-Signed-off-by: Haoran Luo <www@aegistudio.net>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 2d53139f3162 ("Add support for using a MAX3421E chip as a host driver.")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20210625031456.8632-1-mark.tomlinson@alliedtelesis.co.nz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/ring_buffer.c |   28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ drivers/usb/host/max3421-hcd.c |   44 +++++++++++++----------------------------
+ 1 file changed, 14 insertions(+), 30 deletions(-)
 
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3172,10 +3172,30 @@ static bool rb_per_cpu_empty(struct ring
- 	if (unlikely(!head))
- 		return true;
+--- a/drivers/usb/host/max3421-hcd.c
++++ b/drivers/usb/host/max3421-hcd.c
+@@ -153,8 +153,6 @@ struct max3421_hcd {
+ 	 */
+ 	struct urb *curr_urb;
+ 	enum scheduling_pass sched_pass;
+-	struct usb_device *loaded_dev;	/* dev that's loaded into the chip */
+-	int loaded_epnum;		/* epnum whose toggles are loaded */
+ 	int urb_done;			/* > 0 -> no errors, < 0: errno */
+ 	size_t curr_len;
+ 	u8 hien;
+@@ -492,39 +490,17 @@ max3421_set_speed(struct usb_hcd *hcd, s
+  * Caller must NOT hold HCD spinlock.
+  */
+ static void
+-max3421_set_address(struct usb_hcd *hcd, struct usb_device *dev, int epnum,
+-		    int force_toggles)
++max3421_set_address(struct usb_hcd *hcd, struct usb_device *dev, int epnum)
+ {
+-	struct max3421_hcd *max3421_hcd = hcd_to_max3421(hcd);
+-	int old_epnum, same_ep, rcvtog, sndtog;
+-	struct usb_device *old_dev;
++	int rcvtog, sndtog;
+ 	u8 hctl;
  
--	return reader->read == rb_page_commit(reader) &&
--		(commit == reader ||
--		 (commit == head &&
--		  head->read == rb_page_commit(commit)));
-+	/* Reader should exhaust content in reader page */
-+	if (reader->read != rb_page_commit(reader))
-+		return false;
-+
-+	/*
-+	 * If writers are committing on the reader page, knowing all
-+	 * committed content has been read, the ring buffer is empty.
-+	 */
-+	if (commit == reader)
-+		return true;
-+
-+	/*
-+	 * If writers are committing on a page other than reader page
-+	 * and head page, there should always be content to read.
-+	 */
-+	if (commit != head)
-+		return false;
-+
-+	/*
-+	 * Writers are committing on the head page, we just need
-+	 * to care about there're committed data, and the reader will
-+	 * swap reader page with head page when it is to read data.
-+	 */
-+	return rb_page_commit(commit) == 0;
+-	old_dev = max3421_hcd->loaded_dev;
+-	old_epnum = max3421_hcd->loaded_epnum;
+-
+-	same_ep = (dev == old_dev && epnum == old_epnum);
+-	if (same_ep && !force_toggles)
+-		return;
+-
+-	if (old_dev && !same_ep) {
+-		/* save the old end-points toggles: */
+-		u8 hrsl = spi_rd8(hcd, MAX3421_REG_HRSL);
+-
+-		rcvtog = (hrsl >> MAX3421_HRSL_RCVTOGRD_BIT) & 1;
+-		sndtog = (hrsl >> MAX3421_HRSL_SNDTOGRD_BIT) & 1;
+-
+-		/* no locking: HCD (i.e., we) own toggles, don't we? */
+-		usb_settoggle(old_dev, old_epnum, 0, rcvtog);
+-		usb_settoggle(old_dev, old_epnum, 1, sndtog);
+-	}
+ 	/* setup new endpoint's toggle bits: */
+ 	rcvtog = usb_gettoggle(dev, epnum, 0);
+ 	sndtog = usb_gettoggle(dev, epnum, 1);
+ 	hctl = (BIT(rcvtog + MAX3421_HCTL_RCVTOG0_BIT) |
+ 		BIT(sndtog + MAX3421_HCTL_SNDTOG0_BIT));
+ 
+-	max3421_hcd->loaded_epnum = epnum;
+ 	spi_wr8(hcd, MAX3421_REG_HCTL, hctl);
+ 
+ 	/*
+@@ -532,7 +508,6 @@ max3421_set_address(struct usb_hcd *hcd,
+ 	 * address-assignment so it's best to just always load the
+ 	 * address whenever the end-point changed/was forced.
+ 	 */
+-	max3421_hcd->loaded_dev = dev;
+ 	spi_wr8(hcd, MAX3421_REG_PERADDR, dev->devnum);
  }
  
- /**
+@@ -667,7 +642,7 @@ max3421_select_and_start_urb(struct usb_
+ 	struct max3421_hcd *max3421_hcd = hcd_to_max3421(hcd);
+ 	struct urb *urb, *curr_urb = NULL;
+ 	struct max3421_ep *max3421_ep;
+-	int epnum, force_toggles = 0;
++	int epnum;
+ 	struct usb_host_endpoint *ep;
+ 	struct list_head *pos;
+ 	unsigned long flags;
+@@ -777,7 +752,6 @@ done:
+ 			usb_settoggle(urb->dev, epnum, 0, 1);
+ 			usb_settoggle(urb->dev, epnum, 1, 1);
+ 			max3421_ep->pkt_state = PKT_STATE_SETUP;
+-			force_toggles = 1;
+ 		} else
+ 			max3421_ep->pkt_state = PKT_STATE_TRANSFER;
+ 	}
+@@ -785,7 +759,7 @@ done:
+ 	spin_unlock_irqrestore(&max3421_hcd->lock, flags);
+ 
+ 	max3421_ep->last_active = max3421_hcd->frame_number;
+-	max3421_set_address(hcd, urb->dev, epnum, force_toggles);
++	max3421_set_address(hcd, urb->dev, epnum);
+ 	max3421_set_speed(hcd, urb->dev);
+ 	max3421_next_transfer(hcd, 0);
+ 	return 1;
+@@ -1380,6 +1354,16 @@ max3421_urb_done(struct usb_hcd *hcd)
+ 		status = 0;
+ 	urb = max3421_hcd->curr_urb;
+ 	if (urb) {
++		/* save the old end-points toggles: */
++		u8 hrsl = spi_rd8(hcd, MAX3421_REG_HRSL);
++		int rcvtog = (hrsl >> MAX3421_HRSL_RCVTOGRD_BIT) & 1;
++		int sndtog = (hrsl >> MAX3421_HRSL_SNDTOGRD_BIT) & 1;
++		int epnum = usb_endpoint_num(&urb->ep->desc);
++
++		/* no locking: HCD (i.e., we) own toggles, don't we? */
++		usb_settoggle(urb->dev, epnum, 0, rcvtog);
++		usb_settoggle(urb->dev, epnum, 1, sndtog);
++
+ 		max3421_hcd->curr_urb = NULL;
+ 		spin_lock_irqsave(&max3421_hcd->lock, flags);
+ 		usb_hcd_unlink_urb_from_ep(hcd, urb);
 
 
