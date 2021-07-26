@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22B63D6012
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659AC3D62B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237051AbhGZPUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:20:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50916 "EHLO mail.kernel.org"
+        id S236736AbhGZPiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:38:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237065AbhGZPKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D820C60F9C;
-        Mon, 26 Jul 2021 15:50:41 +0000 (UTC)
+        id S237235AbhGZPVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:21:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B21FC60240;
+        Mon, 26 Jul 2021 16:02:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314642;
-        bh=LAYIWFN4Dlr4KrybvkxdoCCGnzcDD/G6iK6Ou3ujJrI=;
+        s=korg; t=1627315344;
+        bh=KQBIvWw5YEEKzswPulW/87FGiBPzOznHMPU68F6m9Ds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1h7l7QAmMyhgbVCojrgprr791qaL1t1cJRCN/2XoHVm+tdOL1p743QR+welVHbSCN
-         fNUOUwjgnUrFl4+1O3yo7TmkpHcpRZV86O6XMcBmPbPnDtOHoAMRIxays6STpBdUVJ
-         d5jGW+AMf3SFVlQzdEO/9ll/9gClm6Xoa+44HD2w=
+        b=ZLmeV3UBy4221i2ji2DahWzQAZmDaVmMBBzmBAiRD5W1HbUhFSexTZlI74hlIpWUP
+         SAUaCWTKJRCxgqtFWTkeVIBpbYTHBghQDvY0J/rIZr4vI7K7LQr2Uys5Eqy+rCbOnI
+         57dQ1bgyC2LtTItuqRzUZX+MLc+VVQUTqROp+D2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wolfgang Bumiller <w.bumiller@proxmox.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 040/120] net: bridge: sync fdb to new unicast-filtering ports
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 059/167] liquidio: Fix unintentional sign extension issue on left shift of u16
 Date:   Mon, 26 Jul 2021 17:38:12 +0200
-Message-Id: <20210726153833.681340708@linuxfoundation.org>
+Message-Id: <20210726153841.392261805@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,73 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfgang Bumiller <w.bumiller@proxmox.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit a019abd8022061b917da767cd1a66ed823724eab upstream.
+[ Upstream commit e7efc2ce3d0789cd7c21b70ff00cd7838d382639 ]
 
-Since commit 2796d0c648c9 ("bridge: Automatically manage
-port promiscuous mode.")
-bridges with `vlan_filtering 1` and only 1 auto-port don't
-set IFF_PROMISC for unicast-filtering-capable ports.
+Shifting the u16 integer oct->pcie_port by CN23XX_PKT_INPUT_CTL_MAC_NUM_POS
+(29) bits will be promoted to a 32 bit signed int and then sign-extended
+to a u64. In the cases where oct->pcie_port where bit 2 is set (e.g. 3..7)
+the shifted value will be sign extended and the top 32 bits of the result
+will be set.
 
-Normally on port changes `br_manage_promisc` is called to
-update the promisc flags and unicast filters if necessary,
-but it cannot distinguish between *new* ports and ones
-losing their promisc flag, and new ports end up not
-receiving the MAC address list.
+Fix this by casting the u16 values to a u64 before the 29 bit left shift.
 
-Fix this by calling `br_fdb_sync_static` in `br_add_if`
-after the port promisc flags are updated and the unicast
-filter was supposed to have been filled.
+Addresses-Coverity: ("Unintended sign extension")
 
-Fixes: 2796d0c648c9 ("bridge: Automatically manage port promiscuous mode.")
-Signed-off-by: Wolfgang Bumiller <w.bumiller@proxmox.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Fixes: 3451b97cce2d ("liquidio: CN23XX register setup")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_if.c |   17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bridge/br_if.c
-+++ b/net/bridge/br_if.c
-@@ -564,7 +564,7 @@ int br_add_if(struct net_bridge *br, str
- 	struct net_bridge_port *p;
- 	int err = 0;
- 	unsigned br_hr, dev_hr;
--	bool changed_addr;
-+	bool changed_addr, fdb_synced = false;
+diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
+index 4cddd628d41b..9ed3d1ab2ca5 100644
+--- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
++++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
+@@ -420,7 +420,7 @@ static int cn23xx_pf_setup_global_input_regs(struct octeon_device *oct)
+ 	 * bits 32:47 indicate the PVF num.
+ 	 */
+ 	for (q_no = 0; q_no < ern; q_no++) {
+-		reg_val = oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
++		reg_val = (u64)oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
  
- 	/* Don't allow bridging non-ethernet like devices, or DSA-enabled
- 	 * master network devices since the bridge layer rx_handler prevents
-@@ -640,6 +640,19 @@ int br_add_if(struct net_bridge *br, str
- 	list_add_rcu(&p->list, &br->port_list);
- 
- 	nbp_update_port_count(br);
-+	if (!br_promisc_port(p) && (p->dev->priv_flags & IFF_UNICAST_FLT)) {
-+		/* When updating the port count we also update all ports'
-+		 * promiscuous mode.
-+		 * A port leaving promiscuous mode normally gets the bridge's
-+		 * fdb synced to the unicast filter (if supported), however,
-+		 * `br_port_clear_promisc` does not distinguish between
-+		 * non-promiscuous ports and *new* ports, so we need to
-+		 * sync explicitly here.
-+		 */
-+		fdb_synced = br_fdb_sync_static(br, p) == 0;
-+		if (!fdb_synced)
-+			netdev_err(dev, "failed to sync bridge static fdb addresses to this port\n");
-+	}
- 
- 	netdev_update_features(br->dev);
- 
-@@ -680,6 +693,8 @@ int br_add_if(struct net_bridge *br, str
- 	return 0;
- 
- err7:
-+	if (fdb_synced)
-+		br_fdb_unsync_static(br, p);
- 	list_del_rcu(&p->list);
- 	br_fdb_delete_by_port(br, p, 0, 1);
- 	nbp_update_port_count(br);
+ 		/* for VF assigned queues. */
+ 		if (q_no < oct->sriov_info.pf_srn) {
+-- 
+2.30.2
+
 
 
