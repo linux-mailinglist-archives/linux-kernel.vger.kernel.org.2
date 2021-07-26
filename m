@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122063D63AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 696AD3D6430
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239122AbhGZPu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:50:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43124 "EHLO mail.kernel.org"
+        id S240314AbhGZPzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231787AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:28:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8786160F9F;
-        Mon, 26 Jul 2021 16:07:12 +0000 (UTC)
+        id S237721AbhGZPeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:34:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A19FE60C41;
+        Mon, 26 Jul 2021 16:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315633;
-        bh=AGq2x0t0KxaJNErco3NfpF3Q+7Djdn+ezKGvOUM6QRQ=;
+        s=korg; t=1627316113;
+        bh=bWNOLjCng2Wt19fispDzlz5zSpxCsVz2gM94InI66xU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kpo6G8JkTghVMW2n9WrSYVugUHi9tGmY+ex4YfRKzBj8kRScWlPMHgDDSX2YfFNJ9
-         pn+MT2Qaei7mOcnV4A5Cpo6Jq/SQrONF9neJ+2fhDVRVqODfXioqEBlxIV79B1aIjw
-         1e7TzKQTEUXdGXhMhnSwifPYf8mhJV47PN1QPqyk=
+        b=T0wITVofezQTMqjvN5s58w7d3302l0pd29vJ831zeOBk0W+2Apw2PbQrIVWK/bdQt
+         hicwGE7UEL1T/z7dXObsXiTEExzIBdpYp3AMhOUrmfceAYtjLfN00jqAIniF1Du8/F
+         crVOUDPGuWkt78N34duZ+A5b79Ebc+GTgJAbv/oI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Qiang Liu <cyruscyliu@gmail.com>,
-        iLifetruth <yixiaonn@gmail.com>
-Subject: [PATCH 5.10 152/167] nds32: fix up stack guard gap
-Date:   Mon, 26 Jul 2021 17:39:45 +0200
-Message-Id: <20210726153844.515692352@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 194/223] io_uring: fix early fdput() of file
+Date:   Mon, 26 Jul 2021 17:39:46 +0200
+Message-Id: <20210726153852.535858295@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
+References: <20210726153846.245305071@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit c453db6cd96418c79702eaf38259002755ab23ff upstream.
+commit 0cc936f74bcacb039b7533aeac0a887dfc896bf6 upstream.
 
-Commit 1be7107fbe18 ("mm: larger stack guard gap, between vmas") fixed
-up all architectures to deal with the stack guard gap.  But when nds32
-was added to the tree, it forgot to do the same thing.
+A previous commit shuffled some code around, and inadvertently used
+struct file after fdput() had been called on it. As we can't touch
+the file post fdput() dropping our reference, move the fdput() to
+after that has been done.
 
-Resolve this by properly fixing up the nsd32's version of
-arch_get_unmapped_area()
-
-Cc: Nick Hu <nickhu@andestech.com>
-Cc: Greentime Hu <green.hu@gmail.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Qiang Liu <cyruscyliu@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Reported-by: iLifetruth <yixiaonn@gmail.com>
-Acked-by: Hugh Dickins <hughd@google.com>
-Link: https://lore.kernel.org/r/20210629104024.2293615-1-gregkh@linuxfoundation.org
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/io-uring/YPnqM0fY3nM5RdRI@zeniv-ca.linux.org.uk/
+Fixes: f2a48dd09b8e ("io_uring: refactor io_sq_offload_create()")
+Reported-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nds32/mm/mmap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/nds32/mm/mmap.c
-+++ b/arch/nds32/mm/mmap.c
-@@ -59,7 +59,7 @@ arch_get_unmapped_area(struct file *filp
- 
- 		vma = find_vma(mm, addr);
- 		if (TASK_SIZE - len >= addr &&
--		    (!vma || addr + len <= vma->vm_start))
-+		    (!vma || addr + len <= vm_start_gap(vma)))
- 			return addr;
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -7953,9 +7953,11 @@ static int io_sq_offload_create(struct i
+ 		f = fdget(p->wq_fd);
+ 		if (!f.file)
+ 			return -ENXIO;
+-		fdput(f);
+-		if (f.file->f_op != &io_uring_fops)
++		if (f.file->f_op != &io_uring_fops) {
++			fdput(f);
+ 			return -EINVAL;
++		}
++		fdput(f);
  	}
- 
+ 	if (ctx->flags & IORING_SETUP_SQPOLL) {
+ 		struct task_struct *tsk;
 
 
