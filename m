@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106403D63DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB13E3D63DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233137AbhGZPw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47948 "EHLO mail.kernel.org"
+        id S239427AbhGZPwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233155AbhGZPcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D163660EB2;
-        Mon, 26 Jul 2021 16:11:57 +0000 (UTC)
+        id S233137AbhGZPcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2341460F5B;
+        Mon, 26 Jul 2021 16:11:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315918;
-        bh=lt7gDp/hN1IsxntOiOG0y7SZerHgnCH6tEfNFOCtDfU=;
+        s=korg; t=1627315920;
+        bh=9mAhG5e3hWoTLI5LKpV48Lm56dw07oYbu3rPbEM6QLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VDZiKhU+Fe3r1I0vB6B8cih5CSEk5yLyN44c6z6OuMWQM41ChUeMwP66jgS9EwwH/
-         iCyx3UZQHAy1GI9RKeezjiFtmRx5ZOjT4k+c1Zi0eYAldbIsbkGpNdQi0bTDSgZBsm
-         /6NbOTU5KIBah/TadPxYqQB52KVLyTbKE1gxG25A=
+        b=IJs7oZ08ZoVeytfyd9U+HmcNGUdDrcYsdZbwMopPRQWfLefR/7tsHoMIRffdafwlw
+         +RPVoMz8/LJz+Sn2191r1/GOiu/Vu4+9zF2iRk6bOfJFn/KRtZckYJ+4JeW1BzrCoW
+         2FwxF9ez6FumAN+lrIykjruLU74jFkE7kGBG4SPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Luis Henriques <lhenriques@suse.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 118/223] ipv6: fix another slab-out-of-bounds in fib6_nh_flush_exceptions
-Date:   Mon, 26 Jul 2021 17:38:30 +0200
-Message-Id: <20210726153850.128151992@linuxfoundation.org>
+Subject: [PATCH 5.13 119/223] ceph: dont WARN if were still opening a session to an MDS
+Date:   Mon, 26 Jul 2021 17:38:31 +0200
+Message-Id: <20210726153850.159502936@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,42 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Luis Henriques <lhenriques@suse.de>
 
-[ Upstream commit 8fb4792f091e608a0a1d353dfdf07ef55a719db5 ]
+[ Upstream commit cdb330f4b41ab55feb35487729e883c9e08b8a54 ]
 
-While running the self-tests on a KASAN enabled kernel, I observed a
-slab-out-of-bounds splat very similar to the one reported in
-commit 821bbf79fe46 ("ipv6: Fix KASAN: slab-out-of-bounds Read in
- fib6_nh_flush_exceptions").
+If MDSs aren't available while mounting a filesystem, the session state
+will transition from SESSION_OPENING to SESSION_CLOSING.  And in that
+scenario check_session_state() will be called from delayed_work() and
+trigger this WARN.
 
-We additionally need to take care of fib6_metrics initialization
-failure when the caller provides an nh.
+Avoid this by only WARNing after a session has already been established
+(i.e., the s_ttl will be different from 0).
 
-The fix is similar, explicitly free the route instead of calling
-fib6_info_release on a half-initialized object.
-
-Fixes: f88d8ea67fbdb ("ipv6: Plumb support for nexthop object in a fib6_info")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 62575e270f66 ("ceph: check session state after bumping session->s_seq")
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/route.c | 2 +-
+ fs/ceph/mds_client.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index d417e514bd52..09e84161b731 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -3642,7 +3642,7 @@ static struct fib6_info *ip6_route_info_create(struct fib6_config *cfg,
- 		err = PTR_ERR(rt->fib6_metrics);
- 		/* Do not leave garbage there. */
- 		rt->fib6_metrics = (struct dst_metrics *)&dst_default_metrics;
--		goto out;
-+		goto out_free;
- 	}
- 
- 	if (cfg->fc_flags & RTF_ADDRCONF)
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index e5af591d3bd4..86f09b1110a2 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -4468,7 +4468,7 @@ bool check_session_state(struct ceph_mds_session *s)
+ 		break;
+ 	case CEPH_MDS_SESSION_CLOSING:
+ 		/* Should never reach this when we're unmounting */
+-		WARN_ON_ONCE(true);
++		WARN_ON_ONCE(s->s_ttl);
+ 		fallthrough;
+ 	case CEPH_MDS_SESSION_NEW:
+ 	case CEPH_MDS_SESSION_RESTARTING:
 -- 
 2.30.2
 
