@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B06B3D6443
+	by mail.lfdr.de (Postfix) with ESMTP id CBB113D6444
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240619AbhGZPzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52544 "EHLO mail.kernel.org"
+        id S240627AbhGZPzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233534AbhGZPfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:35:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AF2360FD7;
-        Mon, 26 Jul 2021 16:15:37 +0000 (UTC)
+        id S233829AbhGZPfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:35:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8800360FDA;
+        Mon, 26 Jul 2021 16:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316138;
-        bh=s8ompZTZEUeJzSoDoH1NA8m5Av3ALM9MlNS/m9dsWD8=;
+        s=korg; t=1627316141;
+        bh=MEJHq/SKopmXcuLagfFWfaOFyUiAuIfkbUbDQ1LTcz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=syvpWdozXHn07wMb0zjv8pi03gGcYgPjD8mR/hmH1DbzyNvSAu1Ud6+yk8u1yfjFT
-         OSU9rwyYJtouUKC0mBhNLAPRMe83JEi5Blp+E/A0w0ceqN6MONKFam1huu1OfpUsfI
-         MdZNwxQhut0iGiyQrblQRLqPuplhjtMBC87P0PhE=
+        b=sXqmvq6s930t/tdSMBaZNQBIStYUlPo6yLttyKVvPud/FVdZDa1eQmW8Wh5Q3JSlJ
+         Y1SSwkzIPfbIoqdQtYYetGltJpZXULaz9IC3cZRjI4udZCcIiUNMYDkPWaShfhnjLS
+         x5qTtjDh3PCF3u07S1K3SGxfNU1aoVkM5PYOpTCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
         Robin Geuze <robin.geuze@nl.team.blue>
-Subject: [PATCH 5.13 203/223] rbd: dont hold lock_rwsem while running_list is being drained
-Date:   Mon, 26 Jul 2021 17:39:55 +0200
-Message-Id: <20210726153852.833420149@linuxfoundation.org>
+Subject: [PATCH 5.13 204/223] rbd: always kick acquire on "acquired" and "released" notifications
+Date:   Mon, 26 Jul 2021 17:39:56 +0200
+Message-Id: <20210726153852.865597181@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,73 +41,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ilya Dryomov <idryomov@gmail.com>
 
-commit ed9eb71085ecb7ded9a5118cec2ab70667cc7350 upstream.
+commit 8798d070d416d18a75770fc19787e96705073f43 upstream.
 
-Currently rbd_quiesce_lock() holds lock_rwsem for read while blocking
-on releasing_wait completion.  On the I/O completion side, each image
-request also needs to take lock_rwsem for read.  Because rw_semaphore
-implementation doesn't allow new readers after a writer has indicated
-interest in the lock, this can result in a deadlock if something that
-needs to take lock_rwsem for write gets involved.  For example:
+Skipping the "lock has been released" notification if the lock owner
+is not what we expect based on owner_cid can lead to I/O hangs.
+One example is our own notifications: because owner_cid is cleared
+in rbd_unlock(), when we get our own notification it is processed as
+unexpected/duplicate and maybe_kick_acquire() isn't called.  If a peer
+that requested the lock then doesn't go through with acquiring it,
+I/O requests that came in while the lock was being quiesced would
+be stalled until another I/O request is submitted and kicks acquire
+from rbd_img_exclusive_lock().
 
-1. watch error occurs
-2. rbd_watch_errcb() takes lock_rwsem for write, clears owner_cid and
-   releases lock_rwsem
-3. after reestablishing the watch, rbd_reregister_watch() takes
-   lock_rwsem for write and calls rbd_reacquire_lock()
-4. rbd_quiesce_lock() downgrades lock_rwsem to for read and blocks on
-   releasing_wait until running_list becomes empty
-5. another watch error occurs
-6. rbd_watch_errcb() blocks trying to take lock_rwsem for write
-7. no in-flight image request can complete and delete itself from
-   running_list because lock_rwsem won't be granted anymore
-
-A similar scenario can occur with "lock has been acquired" and "lock
-has been released" notification handers which also take lock_rwsem for
-write to update owner_cid.
-
-We don't actually get anything useful from sitting on lock_rwsem in
-rbd_quiesce_lock() -- owner_cid updates certainly don't need to be
-synchronized with.  In fact the whole owner_cid tracking logic could
-probably be removed from the kernel client because we don't support
-proxied maintenance operations.
+This makes the comment in rbd_release_lock() actually true: prior to
+this change the canceled work was being requeued in response to the
+"lock has been acquired" notification from rbd_handle_acquired_lock().
 
 Cc: stable@vger.kernel.org # 5.3+
-URL: https://tracker.ceph.com/issues/42757
 Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Tested-by: Robin Geuze <robin.geuze@nl.team.blue>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/rbd.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/block/rbd.c |   20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
 --- a/drivers/block/rbd.c
 +++ b/drivers/block/rbd.c
-@@ -4100,8 +4100,6 @@ again:
- 
- static bool rbd_quiesce_lock(struct rbd_device *rbd_dev)
- {
--	bool need_wait;
+@@ -4201,15 +4201,11 @@ static void rbd_handle_acquired_lock(str
+ 	if (!rbd_cid_equal(&cid, &rbd_empty_cid)) {
+ 		down_write(&rbd_dev->lock_rwsem);
+ 		if (rbd_cid_equal(&cid, &rbd_dev->owner_cid)) {
+-			/*
+-			 * we already know that the remote client is
+-			 * the owner
+-			 */
+-			up_write(&rbd_dev->lock_rwsem);
+-			return;
++			dout("%s rbd_dev %p cid %llu-%llu == owner_cid\n",
++			     __func__, rbd_dev, cid.gid, cid.handle);
++		} else {
++			rbd_set_owner_cid(rbd_dev, &cid);
+ 		}
 -
- 	dout("%s rbd_dev %p\n", __func__, rbd_dev);
- 	lockdep_assert_held_write(&rbd_dev->lock_rwsem);
- 
-@@ -4113,11 +4111,11 @@ static bool rbd_quiesce_lock(struct rbd_
- 	 */
- 	rbd_dev->lock_state = RBD_LOCK_STATE_RELEASING;
- 	rbd_assert(!completion_done(&rbd_dev->releasing_wait));
--	need_wait = !list_empty(&rbd_dev->running_list);
--	downgrade_write(&rbd_dev->lock_rwsem);
--	if (need_wait)
--		wait_for_completion(&rbd_dev->releasing_wait);
--	up_read(&rbd_dev->lock_rwsem);
-+	if (list_empty(&rbd_dev->running_list))
-+		return true;
-+
-+	up_write(&rbd_dev->lock_rwsem);
-+	wait_for_completion(&rbd_dev->releasing_wait);
- 
- 	down_write(&rbd_dev->lock_rwsem);
- 	if (rbd_dev->lock_state != RBD_LOCK_STATE_RELEASING)
+-		rbd_set_owner_cid(rbd_dev, &cid);
+ 		downgrade_write(&rbd_dev->lock_rwsem);
+ 	} else {
+ 		down_read(&rbd_dev->lock_rwsem);
+@@ -4234,14 +4230,12 @@ static void rbd_handle_released_lock(str
+ 	if (!rbd_cid_equal(&cid, &rbd_empty_cid)) {
+ 		down_write(&rbd_dev->lock_rwsem);
+ 		if (!rbd_cid_equal(&cid, &rbd_dev->owner_cid)) {
+-			dout("%s rbd_dev %p unexpected owner, cid %llu-%llu != owner_cid %llu-%llu\n",
++			dout("%s rbd_dev %p cid %llu-%llu != owner_cid %llu-%llu\n",
+ 			     __func__, rbd_dev, cid.gid, cid.handle,
+ 			     rbd_dev->owner_cid.gid, rbd_dev->owner_cid.handle);
+-			up_write(&rbd_dev->lock_rwsem);
+-			return;
++		} else {
++			rbd_set_owner_cid(rbd_dev, &rbd_empty_cid);
+ 		}
+-
+-		rbd_set_owner_cid(rbd_dev, &rbd_empty_cid);
+ 		downgrade_write(&rbd_dev->lock_rwsem);
+ 	} else {
+ 		down_read(&rbd_dev->lock_rwsem);
 
 
