@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACABC3D6394
+	by mail.lfdr.de (Postfix) with ESMTP id 19E253D6392
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238993AbhGZPsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:48:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45012 "EHLO mail.kernel.org"
+        id S238979AbhGZPsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238132AbhGZP3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0379B60C41;
-        Mon, 26 Jul 2021 16:10:15 +0000 (UTC)
+        id S238136AbhGZP3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 615AC60240;
+        Mon, 26 Jul 2021 16:10:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315816;
-        bh=3MUxDA/ipaemF8mrHDTU6gGRbdt2p2zGuhEsJYwkbLg=;
+        s=korg; t=1627315818;
+        bh=KQBIvWw5YEEKzswPulW/87FGiBPzOznHMPU68F6m9Ds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1SVooL+wLh/0ESDlsTlZX5MPlXpjGp9vjWb8n8hk2kjtja4eU865KlyiVT0GGCLbg
-         o1RGYtDNIos42cOOt6VMpJdYXvVWMSgV4tCqzqQZRJKuldEqmaCOQFsUjr9EBKvkHc
-         CDY9k9hxWoVWooWBGCo8fQrLnXrmWBBW3eSX4wro=
+        b=QsRkjCOOKbDIeVKE3ocO17DMFIIaPgEk46ToCQYMnpdCACVWajSu8QDqNmaUjkno9
+         M7wIgnApBmXwtOr+traeiJ6EZ58FisbxOIAAmUR4ADdrzGNdPf3JIEdjpMSfVXWtv/
+         YH0sRey9czqQP94Sj9AcVDTwp+n1XZfHA8UledpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 079/223] net: dsa: mv88e6xxx: NET_DSA_MV88E6XXX_PTP should depend on NET_DSA_MV88E6XXX
-Date:   Mon, 26 Jul 2021 17:37:51 +0200
-Message-Id: <20210726153848.835533236@linuxfoundation.org>
+Subject: [PATCH 5.13 080/223] liquidio: Fix unintentional sign extension issue on left shift of u16
+Date:   Mon, 26 Jul 2021 17:37:52 +0200
+Message-Id: <20210726153848.867295749@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -43,41 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 99bb2ebab953435852340cdb198c5abbf0bb5dd3 ]
+[ Upstream commit e7efc2ce3d0789cd7c21b70ff00cd7838d382639 ]
 
-Making global2 support mandatory removed the Kconfig symbol
-NET_DSA_MV88E6XXX_GLOBAL2.  This symbol also served as an intermediate
-symbol to make NET_DSA_MV88E6XXX_PTP depend on NET_DSA_MV88E6XXX.  With
-the symbol removed, the user is always asked about PTP support for
-Marvell 88E6xxx switches, even if the latter support is not enabled.
+Shifting the u16 integer oct->pcie_port by CN23XX_PKT_INPUT_CTL_MAC_NUM_POS
+(29) bits will be promoted to a 32 bit signed int and then sign-extended
+to a u64. In the cases where oct->pcie_port where bit 2 is set (e.g. 3..7)
+the shifted value will be sign extended and the top 32 bits of the result
+will be set.
 
-Fix this by reinstating the dependency.
+Fix this by casting the u16 values to a u64 before the 29 bit left shift.
 
-Fixes: 63368a7416df144b ("net: dsa: mv88e6xxx: Make global2 support mandatory")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Addresses-Coverity: ("Unintended sign extension")
+
+Fixes: 3451b97cce2d ("liquidio: CN23XX register setup")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/mv88e6xxx/Kconfig | 2 +-
+ drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/mv88e6xxx/Kconfig b/drivers/net/dsa/mv88e6xxx/Kconfig
-index 05af632b0f59..634a48e6616b 100644
---- a/drivers/net/dsa/mv88e6xxx/Kconfig
-+++ b/drivers/net/dsa/mv88e6xxx/Kconfig
-@@ -12,7 +12,7 @@ config NET_DSA_MV88E6XXX
- config NET_DSA_MV88E6XXX_PTP
- 	bool "PTP support for Marvell 88E6xxx"
- 	default n
--	depends on PTP_1588_CLOCK
-+	depends on NET_DSA_MV88E6XXX && PTP_1588_CLOCK
- 	help
- 	  Say Y to enable PTP hardware timestamping on Marvell 88E6xxx switch
- 	  chips that support it.
+diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
+index 4cddd628d41b..9ed3d1ab2ca5 100644
+--- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
++++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
+@@ -420,7 +420,7 @@ static int cn23xx_pf_setup_global_input_regs(struct octeon_device *oct)
+ 	 * bits 32:47 indicate the PVF num.
+ 	 */
+ 	for (q_no = 0; q_no < ern; q_no++) {
+-		reg_val = oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
++		reg_val = (u64)oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
+ 
+ 		/* for VF assigned queues. */
+ 		if (q_no < oct->sriov_info.pf_srn) {
 -- 
 2.30.2
 
