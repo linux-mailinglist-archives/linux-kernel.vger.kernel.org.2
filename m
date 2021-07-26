@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24DD3D620A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4C13D6300
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234862AbhGZPeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60054 "EHLO mail.kernel.org"
+        id S238504AbhGZPnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:43:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236609AbhGZPTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C942560F6E;
-        Mon, 26 Jul 2021 15:59:34 +0000 (UTC)
+        id S237835AbhGZPYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:24:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6873A60F38;
+        Mon, 26 Jul 2021 16:04:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315175;
-        bh=olJvFdMxbt3wMLmS/bfiTseS4BVIvIa66jJPgdVTTns=;
+        s=korg; t=1627315482;
+        bh=PotnVkL00huzlpfb7Bttwp0Mm9WjWG5f4iNsJZpXGoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=st/pNzG0NkIYcJRe1DJKN2LitLhHS9bkhemzrMDaLAz96Mxk1pmejbUIKmHj6jwwM
-         DXYn3NewMN6xll31aHH/8JfMEeH913sdgheuJEwKPgUfoTv+i+eDxg+giX/kLhbPL2
-         5SyP9uhAf3/RxunlS8ntfPiSaeP97DUjLsACHctI=
+        b=OHfPH8zXxE1CYmNM/w7kcVWM6mw6ohR0PPmtvNztVbR4QSBUc9msW65yQ0mrEgpf8
+         wxRXx+AybUXbcGbjQZ8wltGt8Wi9Q9ERdQX5eJ6T/kaqPDTYUSpGp8Qpbl1DaHARRm
+         akeacfxpoBZg7iRFOhpIvPsjqTJyJwYwv5UlHIKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/108] drm/panel: raspberrypi-touchscreen: Prevent double-free
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 115/167] ALSA: pcm: Fix mmap capability check
 Date:   Mon, 26 Jul 2021 17:39:08 +0200
-Message-Id: <20210726153833.844180608@linuxfoundation.org>
+Message-Id: <20210726153843.262460079@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +38,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 7bbcb919e32d776ca8ddce08abb391ab92eef6a9 ]
+commit c4824ae7db418aee6f50f308a20b832e58e997fd upstream.
 
-The mipi_dsi_device allocated by mipi_dsi_device_register_full() is
-already free'd on release.
+The hw_support_mmap() doesn't cover all memory allocation types and
+might use a wrong device pointer for checking the capability.
+Check the all memory allocation types more completely.
 
-Fixes: 2f733d6194bd ("drm/panel: Add support for the Raspberry Pi 7" Touchscreen.")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210720134525.563936-9-maxime@cerno.tech
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210720092640.12338-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/core/pcm_native.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-index 2aa89eaecf6f..bdb4d59c8127 100644
---- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-+++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-@@ -453,7 +453,6 @@ static int rpi_touchscreen_remove(struct i2c_client *i2c)
- 	drm_panel_remove(&ts->base);
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -246,12 +246,18 @@ static bool hw_support_mmap(struct snd_p
+ 	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
+ 		return false;
  
- 	mipi_dsi_device_unregister(ts->dsi);
--	kfree(ts->dsi);
+-	if (substream->ops->mmap ||
+-	    (substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV &&
+-	     substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV_UC))
++	if (substream->ops->mmap)
+ 		return true;
  
- 	return 0;
+-	return dma_can_mmap(substream->dma_buffer.dev.dev);
++	switch (substream->dma_buffer.dev.type) {
++	case SNDRV_DMA_TYPE_UNKNOWN:
++		return false;
++	case SNDRV_DMA_TYPE_CONTINUOUS:
++	case SNDRV_DMA_TYPE_VMALLOC:
++		return true;
++	default:
++		return dma_can_mmap(substream->dma_buffer.dev.dev);
++	}
  }
--- 
-2.30.2
-
+ 
+ static int constrain_mask_params(struct snd_pcm_substream *substream,
 
 
