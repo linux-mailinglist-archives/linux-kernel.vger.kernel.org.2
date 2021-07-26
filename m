@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC683D56A4
+	by mail.lfdr.de (Postfix) with ESMTP id E6A2F3D56A5
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbhGZItj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 04:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbhGZItS (ORCPT
+        id S233492AbhGZItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 04:49:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31305 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233196AbhGZItS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 04:49:18 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E48C061796
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:47 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id e19-20020ac84b530000b0290251f0b91196so4019218qts.14
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=4KB8zz71n+ckn7q+A5npd/SGGm4PNZq4hk1c6+NwEJY=;
-        b=kkbETL0dMsBo3aqN8t9V/kIx0Ztkf3eaIwZl0PzH5SGS9l2R07gZCo3SrYhlVi0Aq8
-         DYE6R8DSj9iT04q9VHzh6K+4SpsFIWhZ21iXDGINKGvc1prCFhcttOusRwxU37nyzoBJ
-         cGXebYm+WF+eQ3xmw+KAK1J3BjSZ3bPpSTpuIEjXY099wkk5S/7jGm6iLAJW4Ee1idbp
-         5Skr4vyXufnVr58Rb40+iWEREgGtIjuPt7Gzvmz14VSeW3GBhdK8I9sPFbIysDe099cl
-         VJTQxXrn2ZOjquQC+U5SzPZy1y6uov5YuZ6+JVs5ya29jcZkLE3TflfMn+pwghu4p+ZT
-         uC9A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627291787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VpxBo3UczXFpVeP5pHdpdgsu9E4RieUqE2581sjbAzU=;
+        b=Ctv4AXlMEtEs6Iy/manF1QdxNYJ3J26iZ30Db91LT199OuVFekGoB89Wbo0YAm5wl8qBYX
+        JXJVlO18G105FtlGoxQMMaDnNl+DbD7Xm54rEvW3Qxi9t6cGv7hLug8scybik7j7POxrsM
+        0uA6DkXDlb+GqRl8TXkeb3Jw/xwEB0Q=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-ZE9_BJJ_P7C8wBIx5qQlNA-1; Mon, 26 Jul 2021 05:29:46 -0400
+X-MC-Unique: ZE9_BJJ_P7C8wBIx5qQlNA-1
+Received: by mail-ed1-f72.google.com with SMTP id eg50-20020a05640228b2b02903a2e0d2acb7so3227668edb.16
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=4KB8zz71n+ckn7q+A5npd/SGGm4PNZq4hk1c6+NwEJY=;
-        b=gAgLsvsPE6+gPP3bhfuiro1ykzB4OyutSZMeKMTXXgwH1Fm9Go3tlatEei7GsVhcwu
-         kEo+hbA260LwppiGRTYmjA0WMuFpWIBYY8KsXY7R+OgLIAXiPpxTLUYSk4mJuK7tZazj
-         72d87Dm1aErxcjkNBXMNy1DmoknrRUF2ddHHqsYHi/aTBKFxDjIKDhkP9KvactA3yiY7
-         3rEUctcspAXIUwIIz9fFyTNM65lXFlvqse9gy7/4wprC982S7qKjBGgbMVGoEsJHyZmq
-         GJVvHShIEJoLLAwhYWv5f0Vaw6c93LI52klSeDhTC7qKq4jitx5d7MW6X/7TH/hrDO/8
-         gcDA==
-X-Gm-Message-State: AOAM530CeXrVloCtfrqazF+RYYxP/GvEKkQyvtn3Js54G1ji8Y+gWl8q
-        SkKjHQeAmohGqMfIygxBKKEhFLV3UcF6
-X-Google-Smtp-Source: ABdhPJw4rV2DFKIOrC4bodeI8pRwP94WRLnn2cUKstVXAH0e5UMS4sxvzAPdNEu8x+a/0hc9RNwJfIDJlSr6
-X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:23a0:2f14:433:e6cb])
- (user=qperret job=sendgmr) by 2002:a05:6214:2482:: with SMTP id
- gi2mr13928371qvb.51.1627291786850; Mon, 26 Jul 2021 02:29:46 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 10:29:05 +0100
-In-Reply-To: <20210726092905.2198501-1-qperret@google.com>
-Message-Id: <20210726092905.2198501-17-qperret@google.com>
-Mime-Version: 1.0
-References: <20210726092905.2198501-1-qperret@google.com>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v2 16/16] KVM: arm64: Make __pkvm_create_mappings static
-From:   Quentin Perret <qperret@google.com>
-To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
-        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
-        tabba@google.com, dbrazdil@google.com, kernel-team@android.com,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VpxBo3UczXFpVeP5pHdpdgsu9E4RieUqE2581sjbAzU=;
+        b=hmjMgdR88F/PlEfYQKTzgC6I3j2Ph+wiiXLDS2Hs2o/sC92PHmFdA95OJK+C4xMqWf
+         JbXtJ5aH4RkO5skH5LpWwzBW4NznRivgCJJF7WLEuIL2J+U1P02O64pexFUiJOjV5cct
+         qB1MB2EKijowvH0VD3FB9KeJV6h7lmLXoJj2rTB0h3X50fO6RRnu9kiUoF/QHGUKLRC8
+         AJ8N64UHOkMtvourgI1eStAhiUB2zovyBas+y6iFxrS9LE/xS2uupjoKEXMRhOGor2jB
+         j+ygL77+ihh2/SIsAlHcSY5F2YUm+CJhBgOiEG6MnvS96vUcBKvy4SYQKboX1M0TEdjw
+         UZ9w==
+X-Gm-Message-State: AOAM533fJXd7ZhgNnOmPNToFbzaaZxwTmf8k4HN1sdBOkNklNGTUDNp+
+        xLP21bTsLE2bDrSbbSiYWbCb0TFn0yBdIT2RznN0WYFQPZrKKBmh02L4ofVsCeAysYaxIs/Ir9f
+        5jMR8wn6MckwDvFOEaQiEDhbf
+X-Received: by 2002:a17:906:f84a:: with SMTP id ks10mr15772497ejb.537.1627291785056;
+        Mon, 26 Jul 2021 02:29:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyMEmdi8xJQjU6oStMXxQAZgGekDcKyG8uDyL0mkKdYpwEsm87S+Jh2cnw64hwZeitbYlDynQ==
+X-Received: by 2002:a17:906:f84a:: with SMTP id ks10mr15772483ejb.537.1627291784923;
+        Mon, 26 Jul 2021 02:29:44 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id d4sm13887040ejy.86.2021.07.26.02.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 02:29:44 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 11:29:42 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, dan.carpenter@oracle.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] vdpa: Add documentation for vdpa_alloc_device() macro
+Message-ID: <20210726092942.cyh4djfevy7vcgjc@steredhat>
+References: <20210715080026.242-1-xieyongji@bytedance.com>
+ <20210715080026.242-4-xieyongji@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210715080026.242-4-xieyongji@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __pkvm_create_mappings() function is no longer used outside of
-nvhe/mm.c, make it static.
+On Thu, Jul 15, 2021 at 04:00:26PM +0800, Xie Yongji wrote:
+>The return value of vdpa_alloc_device() macro is not very
+>clear, so that most of callers did the wrong check. Let's
+>add some comments to better document it.
+>
+>Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+>---
+> include/linux/vdpa.h | 11 +++++++++++
+> 1 file changed, 11 insertions(+)
+>
+>diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
+>index 3357ac98878d..8cfe49d201dd 100644
+>--- a/include/linux/vdpa.h
+>+++ b/include/linux/vdpa.h
+>@@ -277,6 +277,17 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
+> 					const struct vdpa_config_ops *config,
+> 					size_t size, const char *name);
+>
+>+/**
+>+ * vdpa_alloc_device - allocate and initilaize a vDPA device
+>+ *
+>+ * @dev_struct: the type of the parent structure
+>+ * @member: the name of struct vdpa_device within the @dev_struct
+>+ * @parent: the parent device
+>+ * @config: the bus operations that is supported by this device
+>+ * @name: name of the vdpa device
+>+ *
+>+ * Return allocated data structure or ERR_PTR upon error
+>+ */
+> #define vdpa_alloc_device(dev_struct, member, parent, config, name)   \
+> 			  container_of(__vdpa_alloc_device( \
+> 				       parent, config, \
+>-- 
+>2.11.0
+>
 
-Signed-off-by: Quentin Perret <qperret@google.com>
----
- arch/arm64/kvm/hyp/include/nvhe/mm.h | 2 --
- arch/arm64/kvm/hyp/nvhe/mm.c         | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/kvm/hyp/include/nvhe/mm.h b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-index c76d7136ed9b..c9a8f535212e 100644
---- a/arch/arm64/kvm/hyp/include/nvhe/mm.h
-+++ b/arch/arm64/kvm/hyp/include/nvhe/mm.h
-@@ -24,8 +24,6 @@ int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
- int pkvm_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
- int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
- int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot);
--int __pkvm_create_mappings(unsigned long start, unsigned long size,
--			   unsigned long phys, enum kvm_pgtable_prot prot);
- unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
- 					    enum kvm_pgtable_prot prot);
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/mm.c b/arch/arm64/kvm/hyp/nvhe/mm.c
-index 256cbe5c0dca..80303041f72f 100644
---- a/arch/arm64/kvm/hyp/nvhe/mm.c
-+++ b/arch/arm64/kvm/hyp/nvhe/mm.c
-@@ -23,8 +23,8 @@ u64 __io_map_base;
- struct memblock_region hyp_memory[HYP_MEMBLOCK_REGIONS];
- unsigned int hyp_memblock_nr;
- 
--int __pkvm_create_mappings(unsigned long start, unsigned long size,
--			  unsigned long phys, enum kvm_pgtable_prot prot)
-+static int __pkvm_create_mappings(unsigned long start, unsigned long size,
-+				  unsigned long phys, enum kvm_pgtable_prot prot)
- {
- 	int err;
- 
--- 
-2.32.0.432.gabb21c7263-goog
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
