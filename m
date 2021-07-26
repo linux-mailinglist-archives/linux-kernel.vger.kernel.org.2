@@ -2,121 +2,419 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7463F3D5B7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4613D5B87
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234037AbhGZNjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233206AbhGZNjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:39:47 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DBAC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 07:20:16 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t21so11637588plr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 07:20:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=gVyrKYsj+6kqYbVi1zLODep+RgARb5G26Sa4qpHWu50=;
-        b=RyXKNXrF+waXbrMIhUWUyUbRem2bS5ejjUlZdYf9xueJf0gSiUqzNegGW6rlrySwPg
-         1llaGVAq4TvC3iHfGIxRDv4NfMrWx0YQmXa3W/qd9vbik6uS/VbqgDF2T8e/TOFUdI19
-         xkwx6jJ32meUItrrz2s8GyOGSHeqi0IeauIqpDXKT2l6ogeRdVWIkexCZNlUgvTfG3Oa
-         tO1Q3g2lBcANnkXQvTtMH+19NE6rZark+tdVopfYYEnQcBzfVemlFR4lCSqovxBaNORY
-         dlhe7yAUQYax9ZwYtnsHv9OlHRR4pNn+xxasSJN3yCDV+kR3yBDtfPIJMcI2UaT7e3LR
-         xWXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=gVyrKYsj+6kqYbVi1zLODep+RgARb5G26Sa4qpHWu50=;
-        b=TYnYptqEprmyDnpGLXLxAFhDYxQe7oZn49Dhu4Z/4Y46knBmvV83i2FhWp2Uasmv4y
-         ZJUPxsPe58ixoH0J3Mu1/kZxiZ1yl5kfMYKBzejsOCoibIgJNM9uQQ1a+cyOzExUjCZb
-         1oEbSX/7AMq8HBmZ2Q5CCPToQUCDsDoCr8vXEilVVOwgQoyeyHnOOAb9U/+NHiKsuLyB
-         1NmM7Uw9EkTiBmKZ96S4s/vfQZjrMcF/FLcsGraXeWzE2wjtlfkVHOol7QmSh8LOJEaH
-         STvMADcdxHjQmPEiH2LiQdgxDb7+4DFJUQ77zmhzOmVn5+LQYt7vfacGKENBX6lLx7Qz
-         WpOw==
-X-Gm-Message-State: AOAM530loSjcu//qlvLoes9PmFLYzJsH0b7F1VTtTUSOLaTMKJDyF4K6
-        ltfUcmqDdrJ83+Ntz4+9i+rrYht6URZgVKO8Geo=
-X-Google-Smtp-Source: ABdhPJyASfh3vMWY0n1PUpUUepfAa5bIA+Kn81Uqo5yL6YnnGgQgnL6zred+eCy6I0Pp0x4Hv3spFxEmK1KigIx3w9g=
-X-Received: by 2002:a17:90a:b28a:: with SMTP id c10mr25725992pjr.59.1627309215099;
- Mon, 26 Jul 2021 07:20:15 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: soumailagho54@gmail.com
-Sender: dr.bashamaugustin@gmail.com
-Received: by 2002:a05:6a10:911b:0:0:0:0 with HTTP; Mon, 26 Jul 2021 07:20:13
- -0700 (PDT)
-From:   =?UTF-8?Q?Mr=2E_Souma=C3=AFla_Sorgho?= <soumailagho54@gmail.com>
-Date:   Mon, 26 Jul 2021 07:20:13 -0700
-X-Google-Sender-Auth: nizCNV6Ta5SxiqcyxE_-Eynh0k4
-Message-ID: <CAAkDsN7JVVuQ5bnT=j+2B6aFv35k2R8=4Rbso9VxVkL7tz=QQQ@mail.gmail.com>
-Subject: VERY VERY URGENT,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S234201AbhGZNpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:45:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233691AbhGZNpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 09:45:10 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E92360F55;
+        Mon, 26 Jul 2021 14:25:39 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m81Y1-0013q4-9q; Mon, 26 Jul 2021 15:25:37 +0100
+Date:   Mon, 26 Jul 2021 15:25:36 +0100
+Message-ID: <87k0lddue7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH v2 07/11] irqchip: Add ACLINT software interrupt driver
+In-Reply-To: <20210618123851.1344518-8-anup.patel@wdc.com>
+References: <20210618123851.1344518-1-anup.patel@wdc.com>
+        <20210618123851.1344518-8-anup.patel@wdc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anup.patel@wdc.com, palmer@dabbelt.com, palmerdabbelt@google.com, paul.walmsley@sifive.com, tglx@linutronix.de, daniel.lezcano@linaro.org, robh+dt@kernel.org, atish.patra@wdc.com, Alistair.Francis@wdc.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Fri, 18 Jun 2021 13:38:47 +0100,
+Anup Patel <anup.patel@wdc.com> wrote:
+> 
+> The RISC-V ACLINT provides MSWI and SSWI devices for M-mode and
+> S-mode software interrupts respectively. We add irqchip driver
+> which provide IPI operations based on ACLINT [M|S]SWI devices
+> to the Linux RISC-V kernel.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>  drivers/irqchip/Kconfig          |  11 ++
+>  drivers/irqchip/Makefile         |   1 +
+>  drivers/irqchip/irq-aclint-swi.c | 271 +++++++++++++++++++++++++++++++
+>  3 files changed, 283 insertions(+)
+>  create mode 100644 drivers/irqchip/irq-aclint-swi.c
+> 
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index 62543a4eccc0..2010d493b03b 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+> @@ -508,6 +508,17 @@ config RISCV_INTC
+>  
+>  	   If you don't know what to do here, say Y.
+>  
+> +config RISCV_ACLINT_SWI
+> +	bool "RISC-V Advanced Core Local Interruptor Software Interrupts"
+> +	depends on RISCV
+> +	help
+> +	   This enables support for software interrupts using the Advanced
+> +	   Core Local Interruptor (ACLINT) found in RISC-V systems.  The
+> +	   RISC-V ACLINT provides devices for inter-process interrupt and
+> +	   timer functionality.
+> +
+> +	   If you don't know what to do here, say Y.
 
-I Mr.Souma=C3=AFla Sorgho, With due respect, I have decided to contact you
-on a business transaction that will be beneficial to both of us.At the
-bank last account and  auditing evaluation, my staff came across an
-old account which was being maintained by a foreign client who we
-learned was among the deceased passengers of a motor accident on
-November.2003, the deceased was unable to run this account since his
-death. The Account has  remained dormant without the knowledge of his
-family since it was put in a  safe deposit account in the bank for
-future investment by the client.
+Let's face it, nobody knows what to say. So instead of asking the
+question, how about selecting it from the platform support config
+instead?
 
-Since his demise, even the members of his family haven't applied for
-claims over this fund and it has been in the safe deposit account
-until I discovered that it cannot be claimed since our client
-isaforeign national and we are sure that he has no next of kin here to
-file claims over the money. As the director of the department, this
-discovery was brought to my office so as to decide what is to be
-done.I decided to seek ways through which to transfer this money out
-of the bank and out of the country too.
+> +
+>  config SIFIVE_PLIC
+>  	bool "SiFive Platform-Level Interrupt Controller"
+>  	depends on RISCV
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index f88cbf36a9d2..a6edf6733c1d 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -97,6 +97,7 @@ obj-$(CONFIG_QCOM_PDC)			+= qcom-pdc.o
+>  obj-$(CONFIG_CSKY_MPINTC)		+= irq-csky-mpintc.o
+>  obj-$(CONFIG_CSKY_APB_INTC)		+= irq-csky-apb-intc.o
+>  obj-$(CONFIG_RISCV_INTC)		+= irq-riscv-intc.o
+> +obj-$(CONFIG_RISCV_ACLINT_SWI)		+= irq-aclint-swi.o
+>  obj-$(CONFIG_SIFIVE_PLIC)		+= irq-sifive-plic.o
+>  obj-$(CONFIG_IMX_IRQSTEER)		+= irq-imx-irqsteer.o
+>  obj-$(CONFIG_IMX_INTMUX)		+= irq-imx-intmux.o
+> diff --git a/drivers/irqchip/irq-aclint-swi.c b/drivers/irqchip/irq-aclint-swi.c
+> new file mode 100644
+> index 000000000000..a31a7fc504d1
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-aclint-swi.c
+> @@ -0,0 +1,271 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#define pr_fmt(fmt) "aclint-swi: " fmt
+> +#include <linux/cpu.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/io.h>
+> +#include <linux/init.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqchip.h>
+> +#include <linux/irqchip/chained_irq.h>
+> +#include <linux/irqdomain.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_irq.h>
+> +#include <linux/smp.h>
+> +
+> +struct aclint_swi {
+> +	void __iomem *sip_reg;
+> +	unsigned long bits;
+> +};
+> +
+> +static int aclint_swi_parent_irq __ro_after_init;
+> +static struct irq_domain *aclint_swi_domain __ro_after_init;
+> +static DEFINE_PER_CPU(struct aclint_swi, aclint_swis);
+> +
+> +static void aclint_swi_dummy_mask_unmask(struct irq_data *d)
+> +{
+> +}
+> +
+> +static void aclint_swi_send_mask(struct irq_data *d,
+> +				  const struct cpumask *mask)
+> +{
+> +	int cpu;
+> +	struct aclint_swi *swi;
+> +
+> +	/* Barrier before doing atomic bit update to IPI bits */
+> +	smp_mb__before_atomic();
+> +
+> +	for_each_cpu(cpu, mask) {
+> +		swi = per_cpu_ptr(&aclint_swis, cpu);
+> +		set_bit(d->hwirq, &swi->bits);
+> +		writel(1, swi->sip_reg);
+> +	}
+> +
+> +	/* Barrier after doing atomic bit update to IPI bits */
+> +	smp_mb__after_atomic();
+> +}
+> +
+> +static struct irq_chip aclint_swi_chip = {
+> +	.name = "RISC-V ACLINT SWI",
+> +	.irq_mask	= aclint_swi_dummy_mask_unmask,
 
-The total amount in the account is USD $18.6 million with my positions
-as staff of the bank,I am handicapped because I cannot operate foreign
-accounts and cannot lay a bonafide claim over this money. The client
-was a foreign  national and you will only be asked to act as his next
-of kin and I will supply you with all the necessary information and
-bank data to assist you in being able to transfer this money to any
-bank of your  choice where this money could be transferred into.The
-total sum will be shared as follows: 50% for me, 50% for you and
-expenses incidental occur  during the transfer will be incur by both
-of us. The transfer is risk free on both sides hence you are going to
-follow my instruction till the fund  transfer to your account. Since I
-work in this bank that is why you should  be confident in the success
-of this transaction because you will be updated with information as
-and when desired.
+Please call this function something that doesn't immediately
+contradict the callback it is assigned to.
 
-I will wish you to keep this transaction secret and confidential as I
-am hoping to retire with my share of this money at the end of the
-transaction  which will be when this money is safe in your account.I
-will then come over to your country for sharing according to the
-previously agreed percentages. You might even have to advise me on
-possibilities of investment in your country or elsewhere of our
-choice. May God help you to help me to a restive retirement,Amen,And
-You have to  contact me through my private e-mail
-at(soumailagho54@gmail.com)Please for further information and
-inquiries feel free to contact me back immediately for more
-explanation and better understanding I want you to assure me your
-capability of handling this  project with trust by providing me your
-following information details such as:
+> +	.irq_unmask	= aclint_swi_dummy_mask_unmask,
+> +	.ipi_send_mask	= aclint_swi_send_mask,
+> +};
+> +
+> +static int aclint_swi_domain_map(struct irq_domain *d, unsigned int irq,
+> +				 irq_hw_number_t hwirq)
+> +{
+> +	irq_set_percpu_devid(irq);
+> +	irq_domain_set_info(d, irq, hwirq, &aclint_swi_chip, d->host_data,
+> +			    handle_percpu_devid_irq, NULL, NULL);
+> +
+> +	return 0;
+> +}
+> +
+> +static int aclint_swi_domain_alloc(struct irq_domain *d, unsigned int virq,
+> +				   unsigned int nr_irqs, void *arg)
+> +{
+> +	int i, ret;
+> +	irq_hw_number_t hwirq;
+> +	unsigned int type = IRQ_TYPE_NONE;
+> +	struct irq_fwspec *fwspec = arg;
+> +
+> +	ret = irq_domain_translate_onecell(d, fwspec, &hwirq, &type);
+> +	if (ret)
+> +		return ret;
+> +
+> +	for (i = 0; i < nr_irqs; i++) {
+> +		ret = aclint_swi_domain_map(d, virq + i, hwirq + i);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct irq_domain_ops aclint_swi_domain_ops = {
+> +	.translate	= irq_domain_translate_onecell,
+> +	.alloc		= aclint_swi_domain_alloc,
+> +	.free		= irq_domain_free_irqs_top,
+> +};
+> +
+> +static void aclint_swi_handle_irq(struct irq_desc *desc)
+> +{
+> +	int irq;
+> +	unsigned long irqs;
+> +	irq_hw_number_t hwirq;
+> +	struct irq_chip *chip = irq_desc_get_chip(desc);
+> +	struct aclint_swi *swi = this_cpu_ptr(&aclint_swis);
+> +
+> +	chained_irq_enter(chip, desc);
+> +
+> +	writel(0, swi->sip_reg);
+> +
+> +	while (true) {
+> +		/* Order bit clearing and data access. */
+> +		mb();
+> +
+> +		irqs = xchg(&swi->bits, 0);
+> +		if (!irqs)
+> +			goto done;
+> +
+> +		for (hwirq = 0; hwirq < BITS_PER_LONG; hwirq++) {
+> +			if (!(BIT(hwirq) & irqs))
+> +				continue;
 
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:.....................
-(6)YOUR COUNTRY:.....................
+		for_each_set_bit(hwirq, &irqs, BITS_PER_LONG) {
 
-Yours sincerely,
-Mr.Souma=C3=AFla Sorgho
+> +
+> +			irq = irq_find_mapping(aclint_swi_domain, hwirq);
+> +			if (unlikely(irq <= 0))
+> +				pr_warn_ratelimited(
+> +					"can't find mapping for hwirq %lu\n",
+> +					hwirq);
+> +			else
+> +				generic_handle_irq(irq);
+
+You can now convert this over to generic_handle_domain_irq().
+
+> +		}
+> +	}
+
+So you can loop here and consume bits forever, but only ack the
+interrupt once? This feels sketchy.
+
+> +
+> +done:
+> +	chained_irq_exit(chip, desc);
+> +}
+> +
+> +static int aclint_swi_dying_cpu(unsigned int cpu)
+> +{
+> +	disable_percpu_irq(aclint_swi_parent_irq);
+> +	return 0;
+> +}
+> +
+> +static int aclint_swi_starting_cpu(unsigned int cpu)
+> +{
+> +	enable_percpu_irq(aclint_swi_parent_irq,
+> +			  irq_get_trigger_type(aclint_swi_parent_irq));
+> +	return 0;
+> +}
+> +
+> +static int __init aclint_swi_set_virq(void)
+> +{
+> +	int virq;
+> +	struct irq_fwspec ipi = {
+> +		.fwnode		= aclint_swi_domain->fwnode,
+> +		.param_count	= 1,
+> +		.param[0]	= 0,
+> +	};
+> +
+> +	virq = __irq_domain_alloc_irqs(aclint_swi_domain, -1, BITS_PER_LONG,
+> +				       NUMA_NO_NODE, &ipi,
+> +				       false, NULL);
+> +	if (virq <= 0) {
+> +		pr_err("unable to alloc IRQs from SBI IPI IRQ domain\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	riscv_ipi_set_virq_range(virq, BITS_PER_LONG, true);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __init aclint_swi_domain_init(struct device_node *node)
+> +{
+> +	/*
+> +	 * We can have multiple ACLINT SWI devices but we only need
+> +	 * one IRQ domain for providing per-HART (or per-CPU) IPIs.
+> +	 */
+> +	if (aclint_swi_domain)
+> +		return 0;
+> +
+> +	aclint_swi_domain = irq_domain_add_linear(node, BITS_PER_LONG,
+> +						&aclint_swi_domain_ops, NULL);
+> +	if (!aclint_swi_domain) {
+> +		pr_err("unable to add ACLINT SWI IRQ domain\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return aclint_swi_set_virq();
+> +}
+> +
+> +static int __init aclint_swi_init(struct device_node *node,
+> +				  struct device_node *parent)
+> +{
+> +	int rc;
+> +	void __iomem *base;
+> +	struct aclint_swi *swi;
+> +	u32 i, nr_irqs, nr_cpus = 0;
+> +
+> +	/* Map the registers */
+> +	base = of_iomap(node, 0);
+> +	if (!base) {
+> +		pr_err("%pOFP: could not map registers\n", node);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/* Iterarte over each target CPU connected with this ACLINT */
+> +	nr_irqs = of_irq_count(node);
+> +	for (i = 0; i < nr_irqs; i++) {
+> +		struct of_phandle_args parent;
+> +		int cpu, hartid;
+> +
+> +		if (of_irq_parse_one(node, i, &parent)) {
+> +			pr_err("%pOFP: failed to parse irq %d.\n",
+> +			       node, i);
+> +			continue;
+> +		}
+> +
+> +		if (parent.args[0] != RV_IRQ_SOFT) {
+> +			pr_err("%pOFP: invalid irq %d (hwirq %d)\n",
+> +			       node, i, parent.args[0]);
+> +			continue;
+> +		}
+> +
+> +		hartid = riscv_of_parent_hartid(parent.np);
+> +		if (hartid < 0) {
+> +			pr_warn("failed to parse hart ID for irq %d.\n", i);
+> +			continue;
+> +		}
+> +
+> +		cpu = riscv_hartid_to_cpuid(hartid);
+> +		if (cpu < 0) {
+> +			pr_warn("Invalid cpuid for irq %d\n", i);
+> +			continue;
+> +		}
+> +
+> +		/* Find parent domain and register chained handler */
+> +		if (!aclint_swi_parent_irq && irq_find_host(parent.np)) {
+> +			aclint_swi_parent_irq = irq_of_parse_and_map(node, i);
+> +			if (aclint_swi_parent_irq) {
+
+What is the point of describing all the interrupts for each and every
+CPU if you only need *one* to establish the routing on behalf of all
+CPUs?
+
+> +				irq_set_chained_handler(aclint_swi_parent_irq,
+> +							aclint_swi_handle_irq);
+> +				cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
+> +					"irqchip/riscv/aclint-swi:starting",
+> +					aclint_swi_starting_cpu,
+> +					aclint_swi_dying_cpu);
+> +			}
+> +		}
+
+else?
+
+> +
+> +		swi = per_cpu_ptr(&aclint_swis, cpu);
+> +		swi->sip_reg = base + i * sizeof(u32);
+> +		writel(0, swi->sip_reg);
+> +
+> +		nr_cpus++;
+> +	}
+> +
+> +	/* Create the IPI domain for ACLINT SWI device */
+> +	rc = aclint_swi_domain_init(node);
+> +	if (rc)
+> +		return rc;
+> +
+> +	/* Announce the ACLINT SWI device */
+> +	pr_info("%pOFP: providing IPIs for %d CPUs\n", node, nr_cpus);
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_RISCV_M_MODE
+> +IRQCHIP_DECLARE(riscv_aclint_swi, "riscv,clint0", aclint_swi_init);
+> +IRQCHIP_DECLARE(riscv_aclint_swi1, "sifive,clint0", aclint_swi_init);
+> +IRQCHIP_DECLARE(riscv_aclint_swi2, "riscv,aclint-mswi", aclint_swi_init);
+> +#else
+> +IRQCHIP_DECLARE(riscv_aclint_swi, "riscv,aclint-sswi", aclint_swi_init);
+> +#endif
+> -- 
+> 2.25.1
+> 
+> 
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
