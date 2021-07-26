@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC903D5226
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26513D5229
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhGZDYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 23:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhGZDYi (ORCPT
+        id S231538AbhGZDZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 23:25:18 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12307 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230321AbhGZDZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 23:24:38 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB800C061757
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:05:07 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id gs8so923296ejc.13
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:05:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IIvcSyU1E65bR7w1DDg8slGET/s8Q+m7sc5AZf8NFiE=;
-        b=hMUCP2c9a3KgKSQMGqbSls3L6icE6DQGge9ygXLIKD6TRuRMyExvyHjwxw0zKcC9T8
-         nIRCN687oSlbROKVwvlrRTnF5QE4Zqpr3ZHO7ugRFTWJW6BlSRMOnpyLdS61LYBkYHnM
-         N2/1CvH+wigM0xKkoQBTL0QsgmHN+4GbsEGNk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IIvcSyU1E65bR7w1DDg8slGET/s8Q+m7sc5AZf8NFiE=;
-        b=GRN2GIxolEho1g2uVXR0fEktgfpe+W2LWL2Hul++lw2UDdkxGMLGs+VsD5DyPSQa7H
-         v147298W5cB7AtQVsjeZbqgfFaR5LL2Owghrm97Zro+ubCLgfvE8V0Uofb7lwx2rGmF/
-         vewKnon/4o6PCic589wIOarkArsgb8JYHhdlVqBETVhm+4EMmFXgaKtekwqhDmGMFhtw
-         ZgXojyzCD4BP5BS1suK6rFk056ORRvs+OGWYD0pzw1q4bZWgYt5Mo2c2wanhP65cdrnU
-         mViFF3e/Wdu4wV6XJ037FUpmGznVekKobqjb0rVxzHg4RjFMwwuNfwf2PodS7skZKBxr
-         moIA==
-X-Gm-Message-State: AOAM530NrY78XXWh5IAzaErOGMXG4DDGZH3/FEuCQXgHUEBDVR9/yrWA
-        MyC46NQaWkk7ic/L5XGVDrc34Oa4Bd07vA==
-X-Google-Smtp-Source: ABdhPJwKhy81aWATaJU3lma7a8eikBadTHRna0v2W8FK6XX5vo6kr4vfW2Dm+Dbt9F9rHLWP9J/1tg==
-X-Received: by 2002:a17:906:718c:: with SMTP id h12mr14994415ejk.6.1627272306303;
-        Sun, 25 Jul 2021 21:05:06 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id de19sm3821348edb.6.2021.07.25.21.05.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Jul 2021 21:05:05 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id n12so5853380wrr.2
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:05:05 -0700 (PDT)
-X-Received: by 2002:a5d:46cb:: with SMTP id g11mr16953638wrs.192.1627272305067;
- Sun, 25 Jul 2021 21:05:05 -0700 (PDT)
+        Sun, 25 Jul 2021 23:25:17 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GY5nX0b6Sz7x8t;
+        Mon, 26 Jul 2021 12:01:04 +0800 (CST)
+Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 12:05:45 +0800
+Received: from [10.174.179.191] (10.174.179.191) by
+ dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 12:05:44 +0800
+Subject: Re: [PATCH] mm/vmalloc: add missing __GFP_HIGHMEM flag for vmalloc
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <wangkefeng.wang@huawei.com>,
+        <weiyongjun1@huawei.com>
+References: <20210726032333.3404164-1-chenwandun@huawei.com>
+ <YP4rM7qtSet+H+nG@casper.infradead.org>
+From:   Chen Wandun <chenwandun@huawei.com>
+Message-ID: <f064b046-8831-2aa9-2234-63e867e28dc1@huawei.com>
+Date:   Mon, 26 Jul 2021 12:05:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210709092027.1050834-1-senozhatsky@chromium.org>
- <20210709092027.1050834-9-senozhatsky@chromium.org> <3c80786a-7422-3736-7261-8605260eb99f@collabora.com>
- <YP4zHRh+jHJGbNHz@google.com>
-In-Reply-To: <YP4zHRh+jHJGbNHz@google.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 26 Jul 2021 13:04:53 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5D6hSoLJaBMdV-fpzn43Y6qRULR4ckejrJp_89Qpe6Xnw@mail.gmail.com>
-Message-ID: <CAAFQd5D6hSoLJaBMdV-fpzn43Y6qRULR4ckejrJp_89Qpe6Xnw@mail.gmail.com>
-Subject: Re: [PATCHv3 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YP4rM7qtSet+H+nG@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.191]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500002.china.huawei.com (7.185.36.229)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 12:59 PM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
+
+在 2021/7/26 11:25, Matthew Wilcox 写道:
+> On Mon, Jul 26, 2021 at 11:23:33AM +0800, Chen Wandun wrote:
+>> struct page array can also be allocated in highmem during vmalloc,
+>> that will ease the low memory stress in 32bit system.
+> Huh?  Where does it get kmapped in order to access it?
+
+The struct page array contain numbers of pointer of struct page, it is used to save
+
+pages that allocated for vmalloc mapping in vmap_pages_range, it does't need to kmap.
+
+
+The main idea of this patch is come from:
+
+https://lore.kernel.org/lkml/20170307141020.29107-1-mhocko@kernel.org/
+
 >
-> On (21/07/22 19:26), Dafna Hirschfeld wrote:
-> > Also, the 'cookie' cb returns buf->dma_addr which is not initialized for
-> > the noncontiguous api. So it is not clear how drivers should use the new api.
-> > Many drivers call vb2_dma_contig_plane_dma_addr which returns the cookie.
->
-> Hmm, that's a good find. Is ->dma_addr the same as what we have in
-> sgt.sgl->dma_address for non-contig?
-
-Yes. As per [1]:
-
-"The return sg_table is guaranteed to have 1 single DMA mapped segment
-as indicated by sgt->nents, but it might have multiple CPU side
-segments as indicated by sgt->orig_nents."
-
-[1] https://www.kernel.org/doc/html/latest/core-api/dma-api.html#part-ii-non-coherent-dma-allocations
+>> Fixes: f255935b9767 ("mm: cleanup the gfp_mask handling in __vmalloc_area_node")
+>> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+>> ---
+>>   mm/vmalloc.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+>> index 3824dc16ce1c..8d9b0b08a6dc 100644
+>> --- a/mm/vmalloc.c
+>> +++ b/mm/vmalloc.c
+>> @@ -2885,7 +2885,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>>   
+>>   	/* Please note that the recursion is strictly bounded. */
+>>   	if (array_size > PAGE_SIZE) {
+>> -		area->pages = __vmalloc_node(array_size, 1, nested_gfp, node,
+>> +		area->pages = __vmalloc_node(array_size, 1,
+>> +					nested_gfp | __GFP_HIGHMEM, node,
+>>   					area->caller);
+>>   	} else {
+>>   		area->pages = kmalloc_node(array_size, nested_gfp, node);
+>> -- 
+>> 2.25.1
+>>
+>>
+> .
