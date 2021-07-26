@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7997B3D6817
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 681563D6815
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbhGZTku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232981AbhGZTjH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:39:07 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3826DC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:19:36 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id h18-20020ac856920000b029025eb726dd9bso5136016qta.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=YZiRJCULAk0NgZWlw4NhyxwOUxRg8I5AfZi4pSeW7rI=;
-        b=oQk1seDxX4hy9rYxFNTS4Ro/4O8OjDW/nJG6LXNJQ4gEQfyB7E2Ki+yYYUKVihluxW
-         mhc4l38AX0jaJzO8qyMuIKSCGO54O2pLS1Nf0LTNJQOZKdhWC6DCxAfYbYTgGLyS84n1
-         fi8eBKB3R5lruvnoxW4nlI2YsNcVmcJsc1sn8RCxtMWbQ6kx3FotZF7Vu5DjrXyghHP0
-         bIHkLLUA+e4f5g5wqnjpLXfmnhNEpchc2rrGsHnBlshsQt8PWdpmPs/I6UkTQbBOELIS
-         Vh0UCpQNPD0OdL1XtUn4tS9qZBQb6yBwgiFyFx1Uqhgf5l1iDqaTr4xSIBGvtWcJCRQu
-         Npcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=YZiRJCULAk0NgZWlw4NhyxwOUxRg8I5AfZi4pSeW7rI=;
-        b=ZvGsKdLx3257oRKQfAsKshueTKHEDCusCAZZwCz7nAke5n3XzjEyRvwV3gE/alBtWX
-         6ESIIiHyciXJrh5KZohTyIgnON6MK7jMgFSXzko2aPR1xrEzB7DdzGnaDDxpfUxl/lt0
-         qTy5MXfEjNjX8GXe/1k0tA2dp8bhvDp6uYAn/BESboNjOnnq6ydMkwWUBCHk+uRm/Jdz
-         ZXmGthe3fi+GWe9Q4Bu/UoC1gdRCAOxMEb0ZTNQKel/YBgv8+k2Plvs1W5iNs/X7OJ2U
-         AJllz6dYpkGXhXJSYgsUkwnfjeR53mztrP2N8lsKJt4zYrm5x67tw2+bYuIPp46195Dk
-         AfZQ==
-X-Gm-Message-State: AOAM531dQoK2+bj6ANl310HP9b9Wamp/mti1McgxfoydVLtSnIJl2t8X
-        Thdu23FYY59oO+0RorOHkpsA/IczIZShGo5cHsWsQSQAjTrPE0n+MvDb0Jc6M2egWIZ5l4uZURB
-        JdhmtXxJfs/zufdIwogSGKvsKS2ErSoL04zizjkedSBH/1scmB3N1DmSihHTJ0yOR4A==
-X-Google-Smtp-Source: ABdhPJy3LTbBOQ7NzZ8565Lly5b5AVSH3LlZs2RZM9CPhqw6+vphE/8RaBXr21HOSoDuH7z/OqsDJOe0gw==
-X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:ccf7:db54:b9d7:814f])
- (user=morbo job=sendgmr) by 2002:a05:6214:10c8:: with SMTP id
- r8mr19696156qvs.28.1627330775317; Mon, 26 Jul 2021 13:19:35 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 13:19:24 -0700
-In-Reply-To: <20210726201924.3202278-1-morbo@google.com>
-Message-Id: <20210726201924.3202278-4-morbo@google.com>
-Mime-Version: 1.0
-References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v2 3/3] scsi: qla2xxx: remove unused variable 'status'
-From:   Bill Wendling <morbo@google.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     Bill Wendling <morbo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232250AbhGZTj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:39:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231650AbhGZTj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 15:39:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42CEA60F8F;
+        Mon, 26 Jul 2021 20:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627330826;
+        bh=vPJluLR+UyESGAnN0/1xKurOHbvHvNV/vQaSvtv7XZk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=lwm2qD0tnML6jfHA9ffIA5lSwU0q7SBuKU63vfFdSljE+v1foGG95mLcSmYVSm3qG
+         xmageAoK9V3Jp7BaCXqxzndIait+SuEsgoMqidOitPvSMLeFm01bjwd/UAH9D+GjPj
+         N6P08Ki5rAX4mFgMHzM/bF+vfQLYe9oIF+KegRKMHiplB61RfgtxRQnGQBWoy4jPrJ
+         mItjZFgVaf7Z5SqjKQcL2K+VPgDr41pEIwGRaIAsz9Csetxu0lnq6CnCHf2+GyRtV8
+         51hTr6slgEyyU+PZFsSgKQMCN/jyE17kFySj/crIfg3p5ZGEG0M7nk5DsA36LcSHtv
+         iHyO+c0KLLQMA==
+Subject: Re: [PATCH] x86/mm: use WARN_ONCE
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     dave.hansen@linux.intel.com, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org
+References: <20210726130829.93874-1-wangborong@cdjrlc.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <0038691f-b247-f3b2-ee25-ac7b0e7b9aeb@kernel.org>
+Date:   Mon, 26 Jul 2021 13:20:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210726130829.93874-1-wangborong@cdjrlc.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the clang build warning:
+On 7/26/21 6:08 AM, Jason Wang wrote:
+> printk + WARN_ON_ONCE can be just WARN_ONCE.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  arch/x86/mm/ioremap.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+> index 60ade7dd71bd..3e57035ef9e3 100644
+> --- a/arch/x86/mm/ioremap.c
+> +++ b/arch/x86/mm/ioremap.c
+> @@ -195,9 +195,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
+>  		return NULL;
+>  
+>  	if (!phys_addr_valid(phys_addr)) {
+> -		printk(KERN_WARNING "ioremap: invalid physical address %llx\n",
+> -		       (unsigned long long)phys_addr);
+> -		WARN_ON_ONCE(1);
+> +		WARN_ONCE(1, "ioremap: invalid physical address %llx\n",
+> +			  (unsigned long long)phys_addr);
+>  		return NULL;
+>  	}
+>  
+> 
 
-  drivers/scsi/qla2xxx/qla_nx.c:2209:6: error: variable 'status' set but not used [-Werror,-Wunused-but-set-variable]
-        int status = 0;
-
-Signed-off-by: Bill Wendling <morbo@google.com>
----
- drivers/scsi/qla2xxx/qla_nx.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
-index 615e44af1ca6..11aad97dfca8 100644
---- a/drivers/scsi/qla2xxx/qla_nx.c
-+++ b/drivers/scsi/qla2xxx/qla_nx.c
-@@ -2166,7 +2166,6 @@ qla82xx_poll(int irq, void *dev_id)
- 	struct qla_hw_data *ha;
- 	struct rsp_que *rsp;
- 	struct device_reg_82xx __iomem *reg;
--	int status = 0;
- 	uint32_t stat;
- 	uint32_t host_int = 0;
- 	uint16_t mb[8];
-@@ -2195,7 +2194,6 @@ qla82xx_poll(int irq, void *dev_id)
- 		case 0x10:
- 		case 0x11:
- 			qla82xx_mbx_completion(vha, MSW(stat));
--			status |= MBX_INTERRUPT;
- 			break;
- 		case 0x12:
- 			mb[0] = MSW(stat);
--- 
-2.32.0.432.gabb21c7263-goog
-
+This isn't a no-op change.  Before, it would KERN_WARNING once per event
+and dump a trace once.  Now it will only print anything at all once.
