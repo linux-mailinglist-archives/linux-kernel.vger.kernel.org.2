@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2113B3D5E51
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B573D5E5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236214AbhGZPHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:07:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45650 "EHLO mail.kernel.org"
+        id S236206AbhGZPHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:07:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235138AbhGZPFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:05:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85AE16056C;
-        Mon, 26 Jul 2021 15:46:12 +0000 (UTC)
+        id S235979AbhGZPFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:05:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 664D260F02;
+        Mon, 26 Jul 2021 15:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314373;
-        bh=1zrjGaD0tA5qmJtS3rK4BplhZ9V3lD5UNcoKqJj83Ts=;
+        s=korg; t=1627314376;
+        bh=qVR5cTcj82tY3+nCt+CucjDK6kDSVVx4WNl1E5lKETY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eoOFJ3GTZGH6JTI49G9WTlaByFU87e9fBtwBueJSxiCcsztJVXBD7FLGuMWXo1OXH
-         id6+hFle0b5uDL6xQ92F4wX2Fg14J0gHbui5kNfpMSM/oOETXntqVN+oTBvThgP7rG
-         Xq1ZFf5Zdkmw2SYlTOqzMG4OtyJY0jQpysbeffLU=
+        b=azEHBTzgKAIUvKcyAfeVWkKFhzU0f8ZBZq7GrlJIL/U7vWIx/BKcWLhSmSHkS0MZh
+         OCAWyRLENpUrpxvpCiWOLOfjOhH799IlIk6coTV7l5FfuU60o5aFifQDfIxGgSaiTB
+         vBs3xocLoVrXXcQdLtPjA8ZvzwojQ86YaHnYxWjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 06/82] arm64: dts: rockchip: Fix power-controller node names for rk3328
-Date:   Mon, 26 Jul 2021 17:38:06 +0200
-Message-Id: <20210726153828.357481543@linuxfoundation.org>
+Subject: [PATCH 4.14 07/82] reset: ti-syscon: fix to_ti_syscon_reset_data macro
+Date:   Mon, 26 Jul 2021 17:38:07 +0200
+Message-Id: <20210726153828.391019754@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
 References: <20210726153828.144714469@linuxfoundation.org>
@@ -42,44 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elaine Zhang <zhangqing@rock-chips.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
 
-[ Upstream commit 6e6a282b49c6db408d27231e3c709fbdf25e3c1b ]
+[ Upstream commit 05cf8fffcdeb47aef1203c08cbec5224fd3a0e1c ]
 
-Use more generic names (as recommended in the device tree specification
-or the binding documentation)
+The to_ti_syscon_reset_data macro currently only works if the
+parameter passed into it is called 'rcdev'.
 
-Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/20210417112952.8516-7-jbx6244@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes a checkpatch --strict issue:
+
+  CHECK: Macro argument reuse 'rcdev' - possible side-effects?
+  #53: FILE: drivers/reset/reset-ti-syscon.c:53:
+  +#define to_ti_syscon_reset_data(rcdev)	\
+  +	container_of(rcdev, struct ti_syscon_reset_data, rcdev)
+
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/reset/reset-ti-syscon.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index 6c3684885fac..a3fb072f20ba 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -289,13 +289,13 @@
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
+index 99520b0a1329..3d375747c4e6 100644
+--- a/drivers/reset/reset-ti-syscon.c
++++ b/drivers/reset/reset-ti-syscon.c
+@@ -58,8 +58,8 @@ struct ti_syscon_reset_data {
+ 	unsigned int nr_controls;
+ };
  
--			pd_hevc@RK3328_PD_HEVC {
-+			power-domain@RK3328_PD_HEVC {
- 				reg = <RK3328_PD_HEVC>;
- 			};
--			pd_video@RK3328_PD_VIDEO {
-+			power-domain@RK3328_PD_VIDEO {
- 				reg = <RK3328_PD_VIDEO>;
- 			};
--			pd_vpu@RK3328_PD_VPU {
-+			power-domain@RK3328_PD_VPU {
- 				reg = <RK3328_PD_VPU>;
- 			};
- 		};
+-#define to_ti_syscon_reset_data(rcdev)	\
+-	container_of(rcdev, struct ti_syscon_reset_data, rcdev)
++#define to_ti_syscon_reset_data(_rcdev)	\
++	container_of(_rcdev, struct ti_syscon_reset_data, rcdev)
+ 
+ /**
+  * ti_syscon_reset_assert() - assert device reset
 -- 
 2.30.2
 
