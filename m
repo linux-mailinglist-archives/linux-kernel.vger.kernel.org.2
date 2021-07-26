@@ -2,243 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E26F3D56E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3097E3D56E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhGZJMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:12:51 -0400
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:35660 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhGZJMt (ORCPT
+        id S232877AbhGZJPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232156AbhGZJPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:12:49 -0400
-Received: by mail-vs1-f54.google.com with SMTP id p13so4896517vsg.2;
-        Mon, 26 Jul 2021 02:53:17 -0700 (PDT)
+        Mon, 26 Jul 2021 05:15:35 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2357C061757;
+        Mon, 26 Jul 2021 02:56:03 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id gv20-20020a17090b11d4b0290173b9578f1cso12705668pjb.0;
+        Mon, 26 Jul 2021 02:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8hq1iwo5Hm1g8aqgoAxXS/EpDF9ENodl1JxcIEWdESM=;
+        b=Px3S4BKiazxPjW1E/yyznc3VnwcyyEkBrD1s0NbkzNsa/LlsIyxNSi/IfJUFzOwT+5
+         yCNPZdmz0z642AmSQ/YTdyMEGViAedy1Vg6KcM3OeIn7xZT9D4pN6hrA9//BgA4XY3Ma
+         LgXK1gXy3Q5pk7BO1oknmAC2kpXmLG27plvFchrn+dljf5CfyalatDyDGkEh8gzDtV7M
+         4oxMznO1xd78rIX+qdcHvm7S5IyQWASK5Sdfc+pbhXn+9RdERMIZBOgHSltbXIQ1TPle
+         XQDPiJbJUZfeeH0+CHDhs42LnYiC3jjUtvhNxQv96Ucoqcd+dThTCn/Z9VsmHoRy7s15
+         b3uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mo44UZHj7UyEbhGMPjthYrR+6cIV8nYK59wZuJbcwls=;
-        b=HgT7Zh+m8LxQ6fsspwMqyvmFuRyAEl+TNC3Lg+FIvfu/Bcm1mCZur3f9yNmpFAHaai
-         JucuO1ei6gPV8eCSRXAU+JiuwItK7V7yM2xVK5TkqF7DZczRMkSCjW1yjvhb/GBq9fIc
-         qF/QkVmliwHslLamKkA10AhHonKxbOED8LuFnGt1bYzpaR6sZIsOKeviPh+ekDgQEI7V
-         ji1nBtmjTuBr0GKyfBzvG3GTxEV3kbf0oWJcq9R9INY4BAONhfguIr15ehnzQW6OnjSF
-         padF1BCs0X0yptruDVDXiJriaul+5iBE3AmpM9ECOmVLU34THI5GGtevWJoNcvV1zSmi
-         vxlA==
-X-Gm-Message-State: AOAM532OmBMfE3vMjHkIRJICAIAMtSeplElCpP207jNA0dNdgDKmMYSt
-        VIrGp4YtPx5qFAQVT8aecKNXgJsW7NJ9ceCikdY=
-X-Google-Smtp-Source: ABdhPJyi2KG9djcxQLYJlEr3Qxzre7k9jFg6SE0AUxjF4rVlN643niJ5kjEhHf7i9K4wmXFRhnqB3+QlJisYrQ73KcU=
-X-Received: by 2002:a05:6102:2828:: with SMTP id ba8mr11359232vsb.18.1627293196190;
- Mon, 26 Jul 2021 02:53:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210721194951.30983-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210721194951.30983-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210721194951.30983-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 26 Jul 2021 11:53:04 +0200
-Message-ID: <CAMuHMdU0YkKb-_k00Zbr3aQGSHRD8639Ut207VwQ_ji0E+YL2g@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] can: rcar_canfd: Add support for RZ/G2L family
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8hq1iwo5Hm1g8aqgoAxXS/EpDF9ENodl1JxcIEWdESM=;
+        b=VPSoKwAknb7b5czz7Iz8TUt1ZhVJd90Rn9sKY4dPKChB4lBRPClIujO7MqvXsvsIR/
+         lH+QRYypbsAAkkbj5El3JCBjAJov4k1L+zP9cAbXVYXp9GK79GvH5KddJcYPZyHdnFHo
+         bNHIFL0u7E0xVgM7nnyo2hkKjbPHkeGvlJddIriUVMz377DkLmHbWk8vMa0kzCSh7Vdj
+         cTtZ+lVdDw276GfjJxEuFjGrTEPsjLMyMfNK+eafkpyPZ1eIiOY85KVhVm3YH0UicDQz
+         j9MgPAASQJ5BKPnAipYXIqczwpOSEX/x2mOSh9RnJNIeDpRnaydeG6pqA7GHzNNFh3U+
+         BMew==
+X-Gm-Message-State: AOAM533n6fTw13Jm2zgXb/X6riZoDuy0lQ0n3gyrTaVCWbc5qNzDg7ub
+        dqWPTeAKfbGP2jiv4QfcCsc=
+X-Google-Smtp-Source: ABdhPJzCKM9r4O0HketpP2tZvU8A7c4NgYZXDFv335Gdxhn9JWdsPxJ6xFTlZodmsTONsRKS13lm5A==
+X-Received: by 2002:a17:90b:212:: with SMTP id fy18mr5411891pjb.52.1627293363106;
+        Mon, 26 Jul 2021 02:56:03 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.171])
+        by smtp.gmail.com with ESMTPSA id r7sm10268304pga.44.2021.07.26.02.55.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 02:56:02 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-can@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] crypto: sun8i-ce: fix memory leak and return value of sun8i_ce_hash_run
+Date:   Mon, 26 Jul 2021 17:55:13 +0800
+Message-Id: <20210726095536.2251860-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+In sun8i_ce_hash_run, all the dma_mmap_sg/single will cause memory leak
+due to no corresponding unmap operation if errors happen.
 
-On Wed, Jul 21, 2021 at 9:50 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> CANFD block on RZ/G2L SoC is almost identical to one found on
-> R-Car Gen3 SoC's. On RZ/G2L SoC interrupt sources for each channel
-> are split into different sources and the IP doesn't divide (1/2)
-> CANFD clock within the IP.
->
-> This patch adds compatible string for RZ/G2L family and registers
-> the irq handlers required for CANFD operation. IRQ numbers are now
-> fetched based on names instead of indices. For backward compatibility
-> on non RZ/G2L SoC's we fallback reading based on indices.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Fix this by adding error handling part for all the dma_mmap_sg/single.
 
-Thanks for the update!
+Fixes: d9b45418a917 ("crypto: sun8i-ss - support hash algorithms")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+v1->v2: move crypto_finalize_hash_request to the end of function; move
+the memcpy after the dma_mmap_sg/single functions.
+v2->v3: remove some unrelated code changes; delete the fix of return value
+since there is no corresponding handling code 
+ drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-I think you misunderstood my comment on v1 about the interrupt
-handlers, cfr. below.
-
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
-
-> @@ -1577,6 +1586,53 @@ static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
->         priv->can.clock.freq = fcan_freq;
->         dev_info(&pdev->dev, "can_clk rate is %u\n", priv->can.clock.freq);
->
-> +       if (gpriv->chip_id == RENESAS_RZG2L) {
-> +               char *irq_name;
-> +               int err_irq;
-> +               int tx_irq;
-> +
-> +               err_irq = platform_get_irq_byname(pdev, ch == 0 ? "ch0_err" : "ch1_err");
-> +               if (err_irq < 0) {
-> +                       err = err_irq;
-> +                       goto fail;
-> +               }
-> +
-> +               tx_irq = platform_get_irq_byname(pdev, ch == 0 ? "ch0_trx" : "ch1_trx");
-> +               if (tx_irq < 0) {
-> +                       err = tx_irq;
-> +                       goto fail;
-> +               }
-> +
-> +               irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> +                                         "canfd.ch%d_err", ch);
-> +               if (!irq_name) {
-> +                       err = -ENOMEM;
-> +                       goto fail;
-> +               }
-> +               err = devm_request_irq(&pdev->dev, err_irq,
-> +                                      rcar_canfd_channel_interrupt, 0,
-
-This is the same interrupt handler...
-
-> +                                      irq_name, gpriv);
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq CH Err(%d) failed, error %d\n",
-> +                               err_irq, err);
-> +                       goto fail;
-> +               }
-> +               irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-> +                                         "canfd.ch%d_trx", ch);
-> +               if (!irq_name) {
-> +                       err = -ENOMEM;
-> +                       goto fail;
-> +               }
-> +               err = devm_request_irq(&pdev->dev, tx_irq,
-> +                                      rcar_canfd_channel_interrupt, 0,
-
-... as this one.
-
-> +                                      irq_name, gpriv);
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq Tx (%d) failed, error %d\n",
-> +                               tx_irq, err);
-> +                       goto fail;
-> +               }
-> +       }
-> +
->         if (gpriv->fdmode) {
->                 priv->can.bittiming_const = &rcar_canfd_nom_bittiming_const;
->                 priv->can.data_bittiming_const =
-
-> @@ -1711,20 +1798,51 @@ static int rcar_canfd_probe(struct platform_device *pdev)
->         gpriv->base = addr;
->
->         /* Request IRQ that's common for both channels */
-> -       err = devm_request_irq(&pdev->dev, ch_irq,
-> -                              rcar_canfd_channel_interrupt, 0,
-> -                              "canfd.chn", gpriv);
-> -       if (err) {
-> -               dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
-> -                       ch_irq, err);
-> -               goto fail_dev;
-> +       if (gpriv->chip_id == RENESAS_RCAR_GEN3) {
-> +               err = devm_request_irq(&pdev->dev, ch_irq,
-> +                                      rcar_canfd_channel_interrupt, 0,
-> +                                      "canfd.ch_int", gpriv);
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
-> +                               ch_irq, err);
-> +                       goto fail_dev;
-> +               }
-> +
-> +               err = devm_request_irq(&pdev->dev, g_irq,
-> +                                      rcar_canfd_global_interrupt, 0,
-> +                                      "canfd.g_int", gpriv);
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
-> +                               g_irq, err);
-> +                       goto fail_dev;
-> +               }
-> +       } else {
-> +               err = devm_request_irq(&pdev->dev, g_recc_irq,
-> +                                      rcar_canfd_global_interrupt, 0,
-
-This is the same interrupt handler...
-
-> +                                      "canfd.g_recc", gpriv);
-> +
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
-> +                               g_recc_irq, err);
-> +                       goto fail_dev;
-> +               }
-> +
-> +               err = devm_request_irq(&pdev->dev, g_err_irq,
-> +                                      rcar_canfd_global_interrupt, 0,
-
-... as this one.
-
-> +                                      "canfd.g_err", gpriv);
-> +               if (err) {
-> +                       dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
-> +                               g_err_irq, err);
-> +                       goto fail_dev;
-> +               }
->         }
-> -       err = devm_request_irq(&pdev->dev, g_irq,
-> -                              rcar_canfd_global_interrupt, 0,
-> -                              "canfd.gbl", gpriv);
-> +
-> +       err = reset_control_reset(gpriv->rstc1);
-> +       if (err)
-> +               goto fail_dev;
-> +       err = reset_control_reset(gpriv->rstc2);
->         if (err) {
-> -               dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
-> -                       g_irq, err);
-> +               reset_control_assert(gpriv->rstc1);
->                 goto fail_dev;
->         }
-
-I did not object to having fine-grained interrupt handlers on RZ/G2L.
-I did object to duplicating code in global and fine-grained interrupt
-handlers.
-
-The trick to have both is to let the global interrupt handlers call
-(conditionally) into the fine-grained handlers. In pseudo-code:
-
-    global_interrupt_handler()
-    {
-            if (...)
-                    fine_grained_handler1();
-
-            if (...)
-                    fine_grained_handler2();
-            ...
-    }
-
-On R-Car Gen3, you register the global interrupt handlers, as before.
-On RZ/G2L, you register the fine-grained interrupt handlers instead.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+index 3c073eb3db03..5448705e8ae1 100644
+--- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+@@ -368,14 +368,14 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
+ 		dev_err(ss->dev, "Invalid sg number %d\n", nr_sgs);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_result;
+ 	}
+ 
+ 	addr_res = dma_map_single(ss->dev, result, digestsize, DMA_FROM_DEVICE);
+ 	if (dma_mapping_error(ss->dev, addr_res)) {
+ 		dev_err(ss->dev, "DMA map dest\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_unmap_sg;
+ 	}
+ 
+ 	len = areq->nbytes;
+@@ -390,7 +390,7 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (len > 0) {
+ 		dev_err(ss->dev, "remaining len %d\n", len);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_addr_res;
+ 	}
+ 
+ 	byte_count = areq->nbytes;
+@@ -428,18 +428,19 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (dma_mapping_error(ss->dev, addr_pad)) {
+ 		dev_err(ss->dev, "DMA error on padding SG\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_addr_res;
+ 	}
+ 
+ 	err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
+ 
+ 	dma_unmap_single(ss->dev, addr_pad, j * 4, DMA_TO_DEVICE);
++err_addr_res:
++	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
++err_unmap_sg:
+ 	dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
+ 		     DMA_TO_DEVICE);
+-	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+-
+ 	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+-theend:
++err_result:
+ 	kfree(pad);
+ 	kfree(result);
+ 	crypto_finalize_hash_request(engine, breq, err);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
