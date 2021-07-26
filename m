@@ -2,76 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893F33D5B7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7463F3D5B7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234335AbhGZNjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:39:52 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46734 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233970AbhGZNjv (ORCPT
+        id S234037AbhGZNjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233206AbhGZNjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:39:51 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 16QEJBnQ002055
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Jul 2021 10:19:12 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 8E64C15C37CE; Mon, 26 Jul 2021 10:19:11 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 10:19:11 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Andres Freund <andres@anarazel.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Michael Larabel <Michael@michaellarabel.com>
-Subject: Re: Folios give an 80% performance win
-Message-ID: <YP7EX7w035AWASlg@mit.edu>
-References: <20210715033704.692967-1-willy@infradead.org>
- <YPxNkRYMuWmuRnA5@casper.infradead.org>
- <1e48f7edcb6d9a67e8b78823660939007e14bae1.camel@HansenPartnership.com>
- <YPxYdhEirWL0XExY@casper.infradead.org>
- <b12f95c9f817f05e91ecd1aec81316afa1da1e42.camel@HansenPartnership.com>
- <17a9d8bf-cd52-4e6c-9b3e-2fbc1e4592d9@www.fastmail.com>
- <YPxjbopzwFYJw9hV@casper.infradead.org>
- <4c634d08-c658-44cf-ac92-92097eeb8532@www.fastmail.com>
- <20210724214413.fqsbjxhhodfzchs6@alap3.anarazel.de>
+        Mon, 26 Jul 2021 09:39:47 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DBAC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 07:20:16 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t21so11637588plr.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 07:20:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=gVyrKYsj+6kqYbVi1zLODep+RgARb5G26Sa4qpHWu50=;
+        b=RyXKNXrF+waXbrMIhUWUyUbRem2bS5ejjUlZdYf9xueJf0gSiUqzNegGW6rlrySwPg
+         1llaGVAq4TvC3iHfGIxRDv4NfMrWx0YQmXa3W/qd9vbik6uS/VbqgDF2T8e/TOFUdI19
+         xkwx6jJ32meUItrrz2s8GyOGSHeqi0IeauIqpDXKT2l6ogeRdVWIkexCZNlUgvTfG3Oa
+         tO1Q3g2lBcANnkXQvTtMH+19NE6rZark+tdVopfYYEnQcBzfVemlFR4lCSqovxBaNORY
+         dlhe7yAUQYax9ZwYtnsHv9OlHRR4pNn+xxasSJN3yCDV+kR3yBDtfPIJMcI2UaT7e3LR
+         xWXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=gVyrKYsj+6kqYbVi1zLODep+RgARb5G26Sa4qpHWu50=;
+        b=TYnYptqEprmyDnpGLXLxAFhDYxQe7oZn49Dhu4Z/4Y46knBmvV83i2FhWp2Uasmv4y
+         ZJUPxsPe58ixoH0J3Mu1/kZxiZ1yl5kfMYKBzejsOCoibIgJNM9uQQ1a+cyOzExUjCZb
+         1oEbSX/7AMq8HBmZ2Q5CCPToQUCDsDoCr8vXEilVVOwgQoyeyHnOOAb9U/+NHiKsuLyB
+         1NmM7Uw9EkTiBmKZ96S4s/vfQZjrMcF/FLcsGraXeWzE2wjtlfkVHOol7QmSh8LOJEaH
+         STvMADcdxHjQmPEiH2LiQdgxDb7+4DFJUQ77zmhzOmVn5+LQYt7vfacGKENBX6lLx7Qz
+         WpOw==
+X-Gm-Message-State: AOAM530loSjcu//qlvLoes9PmFLYzJsH0b7F1VTtTUSOLaTMKJDyF4K6
+        ltfUcmqDdrJ83+Ntz4+9i+rrYht6URZgVKO8Geo=
+X-Google-Smtp-Source: ABdhPJyASfh3vMWY0n1PUpUUepfAa5bIA+Kn81Uqo5yL6YnnGgQgnL6zred+eCy6I0Pp0x4Hv3spFxEmK1KigIx3w9g=
+X-Received: by 2002:a17:90a:b28a:: with SMTP id c10mr25725992pjr.59.1627309215099;
+ Mon, 26 Jul 2021 07:20:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210724214413.fqsbjxhhodfzchs6@alap3.anarazel.de>
+Reply-To: soumailagho54@gmail.com
+Sender: dr.bashamaugustin@gmail.com
+Received: by 2002:a05:6a10:911b:0:0:0:0 with HTTP; Mon, 26 Jul 2021 07:20:13
+ -0700 (PDT)
+From:   =?UTF-8?Q?Mr=2E_Souma=C3=AFla_Sorgho?= <soumailagho54@gmail.com>
+Date:   Mon, 26 Jul 2021 07:20:13 -0700
+X-Google-Sender-Auth: nizCNV6Ta5SxiqcyxE_-Eynh0k4
+Message-ID: <CAAkDsN7JVVuQ5bnT=j+2B6aFv35k2R8=4Rbso9VxVkL7tz=QQQ@mail.gmail.com>
+Subject: VERY VERY URGENT,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 02:44:13PM -0700, Andres Freund wrote:
-> The phoronix test uses postgres with only one relevant setting adjusted
-> (increasing the max connection count). That will end up using a buffer pool of
-> 128MB, no huge pages, and importantly is configured to aim for not more than
-> 1GB for postgres' journal, which will lead to constant checkpointing. The test
-> also only runs for 15 seconds, which likely isn't even enough to "warm up"
-> (the creation of the data set here will take longer than the run).
-> 
-> Given that the dataset phoronix is using is about ~16GB of data (excluding
-> WAL), and uses 256 concurrent clients running full tilt, using that limited
-> postgres settings doesn't end up measuring something particularly interesting
-> in my opinion.
+Dear Friend,
 
-Hi Andreas,
+I Mr.Souma=C3=AFla Sorgho, With due respect, I have decided to contact you
+on a business transaction that will be beneficial to both of us.At the
+bank last account and  auditing evaluation, my staff came across an
+old account which was being maintained by a foreign client who we
+learned was among the deceased passengers of a motor accident on
+November.2003, the deceased was unable to run this account since his
+death. The Account has  remained dormant without the knowledge of his
+family since it was put in a  safe deposit account in the bank for
+future investment by the client.
 
-I tend to use the phoronix test suite for my performance runs when
-testing ext4 changes simply because it's convenient.  Can you suggest
-a better set configuration settings that I should perhaps use that
-might give more "real world" numbers that you would find more
-significant?
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until I discovered that it cannot be claimed since our client
+isaforeign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be
+done.I decided to seek ways through which to transfer this money out
+of the bank and out of the country too.
 
-Thanks,
+The total amount in the account is USD $18.6 million with my positions
+as staff of the bank,I am handicapped because I cannot operate foreign
+accounts and cannot lay a bonafide claim over this money. The client
+was a foreign  national and you will only be asked to act as his next
+of kin and I will supply you with all the necessary information and
+bank data to assist you in being able to transfer this money to any
+bank of your  choice where this money could be transferred into.The
+total sum will be shared as follows: 50% for me, 50% for you and
+expenses incidental occur  during the transfer will be incur by both
+of us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund  transfer to your account. Since I
+work in this bank that is why you should  be confident in the success
+of this transaction because you will be updated with information as
+and when desired.
 
-					- Ted
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of the
+transaction  which will be when this money is safe in your account.I
+will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May God help you to help me to a restive retirement,Amen,And
+You have to  contact me through my private e-mail
+at(soumailagho54@gmail.com)Please for further information and
+inquiries feel free to contact me back immediately for more
+explanation and better understanding I want you to assure me your
+capability of handling this  project with trust by providing me your
+following information details such as:
+
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:.....................
+(6)YOUR COUNTRY:.....................
+
+Yours sincerely,
+Mr.Souma=C3=AFla Sorgho
