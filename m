@@ -2,67 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659F73D6521
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58233D6533
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241091AbhGZQYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:24:06 -0400
-Received: from h4.fbrelay.privateemail.com ([131.153.2.45]:51368 "EHLO
-        h4.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240198AbhGZQVJ (ORCPT
+        id S235958AbhGZQ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:28:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:47440 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240703AbhGZQWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:21:09 -0400
-Received: from MTA-07-3.privateemail.com (mta-07-1.privateemail.com [198.54.122.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by h3.fbrelay.privateemail.com (Postfix) with ESMTPS id A69DE80AA7;
-        Mon, 26 Jul 2021 13:01:36 -0400 (EDT)
-Received: from mta-07.privateemail.com (localhost [127.0.0.1])
-        by mta-07.privateemail.com (Postfix) with ESMTP id EC71618000A9;
-        Mon, 26 Jul 2021 13:01:34 -0400 (EDT)
-Received: from localhost.localdomain (unknown [10.20.151.236])
-        by mta-07.privateemail.com (Postfix) with ESMTPA id 3DC9218000A7;
-        Mon, 26 Jul 2021 13:01:33 -0400 (EDT)
-From:   Jordy Zomer <jordy@pwning.systems>
-To:     netdev@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] crypto: ccm - avoid negative wrapping of integers 
-Date:   Mon, 26 Jul 2021 19:01:20 +0200
-Message-Id: <20210726170120.410705-1-jordy@pwning.systems>
-X-Mailer: git-send-email 2.27.0
+        Mon, 26 Jul 2021 12:22:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B18C022025;
+        Mon, 26 Jul 2021 17:02:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627318970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FAwjGM+xVmGYEdHGyZqTvRWuEDVGbGLsmHWyTizXLgg=;
+        b=KMUhGR0hlInRskRLIj5AjMSJvlsUuU5HlzWO0Vq6usp28f2s72UvULjWbGSK39AHGdVNjc
+        ZrEiD7Sz83RNH9aSNvWxU/4j+Kh8XDnnfzrrAd/Vopm51zeMB7+85+pV/J/tiJ2tu45eP4
+        N/cbANT0fM5JxI25fHE7lr5qxeRvivs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627318970;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FAwjGM+xVmGYEdHGyZqTvRWuEDVGbGLsmHWyTizXLgg=;
+        b=Mqv4WKMaz0NjmCbEvD+unTy7KXQsBYFZShH+ZVhc20E7QercjFlOAg9EMWuXVCLsTEJ8Px
+        P1CT3FnjvyBeyzBw==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 9BD91A3B9F;
+        Mon, 26 Jul 2021 17:02:50 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 6EA851E3B13; Mon, 26 Jul 2021 19:02:50 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 19:02:50 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v3 7/7] gfs2: Fix mmap + page fault deadlocks for direct
+ I/O
+Message-ID: <20210726170250.GL20621@quack2.suse.cz>
+References: <20210723205840.299280-1-agruenba@redhat.com>
+ <20210723205840.299280-8-agruenba@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723205840.299280-8-agruenba@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set csize to unsigned int to avoid it from wrapping as a negative number (since format input sends an unsigned integer to this function). This would also result in undefined behavior in the left shift when msg len is checked, potentially resulting in a buffer overflow in the memcpy call.
+On Fri 23-07-21 22:58:40, Andreas Gruenbacher wrote:
+> Also disable page faults during direct I/O requests and implement the same kind
+> of retry logic as in the buffered I/O case.
+> 
+> Direct I/O requests differ from buffered I/O requests in that they use
+> bio_iov_iter_get_pages for grabbing page references and faulting in pages
+> instead of triggering real page faults.  Those manual page faults can be
+> disabled with the iocb->noio flag.
+> 
+> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> ---
+>  fs/gfs2/file.c | 34 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
+> index f66ac7f56f6d..7986f3be69d2 100644
+> --- a/fs/gfs2/file.c
+> +++ b/fs/gfs2/file.c
+> @@ -782,21 +782,41 @@ static ssize_t gfs2_file_direct_read(struct kiocb *iocb, struct iov_iter *to,
+>  	struct file *file = iocb->ki_filp;
+>  	struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
+>  	size_t count = iov_iter_count(to);
+> +	size_t written = 0;
+>  	ssize_t ret;
+>  
+> +	/*
+> +	 * In this function, we disable page faults when we're holding the
+> +	 * inode glock while doing I/O.  If a page fault occurs, we drop the
+> +	 * inode glock, fault in the pages manually, and then we retry.  Other
+> +	 * than in gfs2_file_read_iter, iomap_dio_rw can trigger implicit as
+> +	 * well as manual page faults, and we need to disable both kinds
+> +	 * separately.
+> +	 */
+> +
+>  	if (!count)
+>  		return 0; /* skip atime */
+>  
+>  	gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
+> +retry:
+>  	ret = gfs2_glock_nq(gh);
+>  	if (ret)
+>  		goto out_uninit;
+>  
+> +	pagefault_disable();
 
-Signed-off-by: Jordy Zomer <jordy@pwning.systems>
----
-To address was corrected, and ccm was added to the topic to indicate that this is just for ccm.
+Is there any use in pagefault_disable() here? iomap_dio_rw() should not
+trigger any page faults anyway, should it?
 
- crypto/ccm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/crypto/ccm.c b/crypto/ccm.c
-index 6b815ece51c6..e14201edf9db 100644
---- a/crypto/ccm.c
-+++ b/crypto/ccm.c
-@@ -66,7 +66,7 @@ static inline struct crypto_ccm_req_priv_ctx *crypto_ccm_reqctx(
- 	return (void *)PTR_ALIGN((u8 *)aead_request_ctx(req), align + 1);
- }
- 
--static int set_msg_len(u8 *block, unsigned int msglen, int csize)
-+static int set_msg_len(u8 *block, unsigned int msglen, unsigned int csize)
- {
- 	__be32 data;
- 
+								Honza
 -- 
-2.27.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
