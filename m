@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B177F3D60D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEDE3D62FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238214AbhGZPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:25:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55822 "EHLO mail.kernel.org"
+        id S238453AbhGZPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237708AbhGZPQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 644F160F57;
-        Mon, 26 Jul 2021 15:56:47 +0000 (UTC)
+        id S237603AbhGZPX5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B83060240;
+        Mon, 26 Jul 2021 16:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315008;
-        bh=LDVjFVNKxPvG52HZem17m9EAaJJT38vADrvYMk3+CtQ=;
+        s=korg; t=1627315465;
+        bh=MwThTflVdON8+PjJgXphdsRoMD83rejvJwXVY2l3kuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iuhZ+cCpe3kXwvobYMhTeOtbYsFDmQMwc/SzU1TBqxKAodynOSYhJwD/RXKE5/46x
-         zcVxGjn6tfhB0ezOzgyRtcMw85Z2XbFfed4o/sA5i7LTdzGEZ6FieJsLEBR9DN0D8C
-         9KRTfkKp65t8OGW2OyPAhGhxHMXyzIPzciAeuEWM=
+        b=mF5lrnBOhiGE8cd3vUuJfhFrqUa4CxBdTgcsNcvaepEd01firDbcyv3gpP9Kf8/nr
+         zQffVX9ypktClJFsYiCS15/LBqKgbAmsMHhhNPleh7nVf/R9UY15ktBESDkpEmdGEl
+         0Xc0qZfXcAvYFeG6fwNM+4fnnLWeyJ/SZporw9Is=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 024/108] perf test event_update: Fix memory leak of evlist
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 072/167] net: sched: fix memory leak in tcindex_partial_destroy_work
 Date:   Mon, 26 Jul 2021 17:38:25 +0200
-Message-Id: <20210726153832.479714266@linuxfoundation.org>
+Message-Id: <20210726153841.812622560@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit fc56f54f6fcd5337634f4545af6459613129b432 ]
+[ Upstream commit f5051bcece50140abd1a11a2d36dc3ec5484fc32 ]
 
-ASan reports a memory leak when running:
+Syzbot reported memory leak in tcindex_set_parms(). The problem was in
+non-freed perfect hash in tcindex_partial_destroy_work().
 
-  # perf test "49: Synthesize attr update"
+In tcindex_set_parms() new tcindex_data is allocated and some fields from
+old one are copied to new one, but not the perfect hash. Since
+tcindex_partial_destroy_work() is the destroy function for old
+tcindex_data, we need to free perfect hash to avoid memory leak.
 
-Caused by evlist not being deleted.
-
-This patch adds the missing evlist__delete and removes the
-perf_cpu_map__put since it's already being deleted by evlist__delete.
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: a6e5281780d1da65 ("perf tools: Add event_update event unit type")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/f7994ad63d248f7645f901132d208fadf9f2b7e4.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Reported-and-tested-by: syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
+Fixes: 331b72922c5f ("net: sched: RCU cls_tcindex")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/event_update.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sched/cls_tcindex.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/event_update.c b/tools/perf/tests/event_update.c
-index c727379cf20e..195b29797acc 100644
---- a/tools/perf/tests/event_update.c
-+++ b/tools/perf/tests/event_update.c
-@@ -119,6 +119,6 @@ int test__event_update(struct test *test __maybe_unused, int subtest __maybe_unu
- 	TEST_ASSERT_VAL("failed to synthesize attr update cpus",
- 			!perf_event__synthesize_event_update_cpus(&tmp.tool, evsel, process_event_cpus));
+diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
+index 5b274534264c..e9a8a2c86bbd 100644
+--- a/net/sched/cls_tcindex.c
++++ b/net/sched/cls_tcindex.c
+@@ -278,6 +278,8 @@ static int tcindex_filter_result_init(struct tcindex_filter_result *r,
+ 			     TCA_TCINDEX_POLICE);
+ }
  
--	perf_cpu_map__put(evsel->core.own_cpus);
-+	evlist__delete(evlist);
- 	return 0;
++static void tcindex_free_perfect_hash(struct tcindex_data *cp);
++
+ static void tcindex_partial_destroy_work(struct work_struct *work)
+ {
+ 	struct tcindex_data *p = container_of(to_rcu_work(work),
+@@ -285,7 +287,8 @@ static void tcindex_partial_destroy_work(struct work_struct *work)
+ 					      rwork);
+ 
+ 	rtnl_lock();
+-	kfree(p->perfect);
++	if (p->perfect)
++		tcindex_free_perfect_hash(p);
+ 	kfree(p);
+ 	rtnl_unlock();
  }
 -- 
 2.30.2
