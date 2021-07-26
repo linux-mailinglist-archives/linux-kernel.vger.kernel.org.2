@@ -2,125 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624E03D6785
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3E73D6787
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhGZSwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 14:52:07 -0400
-Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:49127 "EHLO
-        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231646AbhGZSwG (ORCPT
+        id S232118AbhGZSxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 14:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231190AbhGZSxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 14:52:06 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id 0E926FAB9C
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:32:34 +0100 (IST)
-Received: (qmail 30353 invoked from network); 26 Jul 2021 19:32:33 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Jul 2021 19:32:33 -0000
-Date:   Mon, 26 Jul 2021 20:32:32 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     peterz@infradead.org, bristot@redhat.com, bsegall@google.com,
-        dietmar.eggemann@arm.com, joshdon@google.com,
-        juri.lelli@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
-        rostedt@goodmis.org, valentin.schneider@arm.com,
-        vincent.guittot@linaro.org
-Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
-Message-ID: <20210726193232.GZ3809@techsingularity.net>
-References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
- <20210707123402.13999-1-borntraeger@de.ibm.com>
- <20210707123402.13999-2-borntraeger@de.ibm.com>
- <20210723093523.GX3809@techsingularity.net>
- <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
- <20210723162137.GY3809@techsingularity.net>
- <1acd7520-bd4b-d43d-302a-8dcacf6defa5@de.ibm.com>
+        Mon, 26 Jul 2021 14:53:40 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB500C061757;
+        Mon, 26 Jul 2021 12:34:07 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id l24so7869000qtj.4;
+        Mon, 26 Jul 2021 12:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bIXwK5aZiKqtUTSBMf5q0dW8pTBaBYI5PkP0KdmZR5E=;
+        b=BiH2TyDnw+7t7ftmiqsv6XUjIodOqZe2S+3XjEn0lJ302dnSgO3kjIFpGN1rKoxkPG
+         ofnQModznT4mFV7KdxjDCm/Cazsh6U7O93/qRFZiyrmc3gYzm1IYFd2n4SDggvDTEQRo
+         PkJcE87x8gyKfxuWspWLOuBB1SlTf6IJZtURngxcadaW49FF+TBD33CejCVC0SAZChTl
+         dQjPiHW1O41R+3xx7Jbb42J6dQlZKUj0a2SCWe9j2YertyOF6yjJG8M0aKQpjUUBAE6d
+         cdiGXxEKP1r1MoooVacsjwQ+cxL9pI0nBfmwQv9Xsngc3+1JQn1eBxjSyL9h1ka2V/0r
+         euIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=bIXwK5aZiKqtUTSBMf5q0dW8pTBaBYI5PkP0KdmZR5E=;
+        b=XhfmIs5HaKx3PUVW0COvv3JO/LJQCgnPa5sxrbTiNrfCJqBhL2LOXVwPYAJPJHXAjz
+         kPXoH/oRHBN4fZOC1sq58mrIbhUEkE2+d8d5Mc2+S1ZWABbUUX1qh+x7q/acUYLF3eEt
+         OU8S75sQ5Gj1YgL6pFRN0mI9zzAt6R0XZe8xnHDtZ/F5iOg2NFfj9/bI/ZYVS1/TRCx4
+         dKIvzSkSNsneZEPiIUkDXOHrbGlCo1qJU/BdEsef1neALsfU/rH2Km/EPWlo4Oh9i8Ql
+         DWkPvZFYnFtMW6BObSjZ66cWmTCBiMbTXkU+BNqLCFI3kVlJ2FdVnsrkX4ZbgDJFPcgN
+         +sBg==
+X-Gm-Message-State: AOAM531SG/nOVpUXb5rFnIl2EF4aph1Zgi+6Nl4/AdKnDFLH+IWzrxX6
+        ZgSEQiecTgtY5VM/+waG9yY=
+X-Google-Smtp-Source: ABdhPJz90qCIzUYglnz2S1n9osy8wWxOPlJTZAKMuMD9DwwGtHAZyi/XSnoKKJqSFoIqyFHMjJC7oQ==
+X-Received: by 2002:aed:20c7:: with SMTP id 65mr7946165qtb.98.1627328046930;
+        Mon, 26 Jul 2021 12:34:06 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c11sm406347qth.29.2021.07.26.12.34.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 12:34:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 26 Jul 2021 12:34:04 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.14 00/82] 4.14.241-rc1 review
+Message-ID: <20210726193404.GA2686017@roeck-us.net>
+References: <20210726153828.144714469@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1acd7520-bd4b-d43d-302a-8dcacf6defa5@de.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 08:41:15PM +0200, Christian Borntraeger wrote:
-> > Potentially. The patch was a bit off because while it noticed that skip
-> > was not being obeyed, the fix was clumsy and isolated. The current flow is
-> > 
-> > 1. pick se == left as the candidate
-> > 2. try pick a different se if the "ideal" candidate is a skip candidate
-> > 3. Ignore the se update if next or last are set
-> > 
-> > Step 3 looks off because it ignores skip if next or last buddies are set
-> > and I don't think that was intended. Can you try this?
-> > 
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 44c452072a1b..d56f7772a607 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -4522,12 +4522,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
-> >   			se = second;
-> >   	}
-> > -	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
-> > +	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, se) < 1) {
-> >   		/*
-> >   		 * Someone really wants this to run. If it's not unfair, run it.
-> >   		 */
-> >   		se = cfs_rq->next;
-> > -	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
-> > +	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, se) < 1) {
-> >   		/*
-> >   		 * Prefer last buddy, try to return the CPU to a preempted task.
-> >   		 */
-> > 
+On Mon, Jul 26, 2021 at 05:38:00PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.241 release.  There
+> are 82 patches in this series, all will be posted as a response to this one.
+> If anyone has any issues with these being applied, please let me know.
 > 
-> This one alone does not seem to make a difference. Neither in ignored yield, nor
-> in performance.
-> 
-> Your first patch does really help in terms of ignored yields when
-> all threads are pinned to one host CPU.
-
-Ok, that tells us something. It implies, but does not prove, that the
-block above that handles skip is failing either the entity_before()
-test or the wakeup_preempt_entity() test. To what degree that should be
-relaxed when cfs_rq->next is !NULL is harder to determine.
-
-> After that we do have no ignored yield
-> it seems. But it does not affect the performance of my testcase.
-
-Ok, this is the first patch. The second patch is not improving ignored
-yields at all so the above paragraph still applies. It would be nice
-if you could instrument with trace_printk when cfs->rq_next is valid
-whether it's the entity_before() check that is preventing the skip or
-wakeup_preempt_entity. Would that be possible?
-
-I still think the second patch is right independent of it helping your
-test case because it makes no sense to me at all that the task after the
-skip candidate is ignored if there is a next or last buddy.
-
-> I did some more experiments and I removed the wakeup_preempt_entity checks in
-> pick_next_entity - assuming that this will result in source always being stopped
-> and target always being picked. But still, no performance difference.
-> As soon as I play with vruntime I do see a difference (but only without the cpu cgroup
-> controller). I will try to better understand the scheduler logic and do some more
-> testing. If you have anything that I should test, let me know.
+> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.  Anything
+> received after that time might be too late.
 > 
 
-The fact that vruntime tricks only makes a difference when cgroups are
-involved is interesting. Can you describe roughly what how the cgroup
-is configured? Similarly, does your config have CONFIG_SCHED_AUTOGROUP
-or CONFIG_FAIR_GROUP_SCHED set? I assume FAIR_GROUP_SCHED must be and
-I wonder if the impact of your patch is dropping groups of tasks in
-priority as opposed to individual tasks. I'm not that familiar with how
-groups are handled in terms of how they are prioritised unfortunately.
+perf fails to build:
 
-I'm still hesitant to consider the vruntime hammer in case it causes
-fairness problems when vruntime is no longer reflecting time spent on
-the CPU.
+tests/topology.c: In function ‘session_write_header’:
+tests/topology.c:53:2: error: implicit declaration of function ‘evlist__delete’; did you mean ‘perf_evlist__delete’?
+tests/topology.c:53:2: error: nested extern declaration of ‘evlist__delete’
 
--- 
-Mel Gorman
-SUSE Labs
+Guenter
