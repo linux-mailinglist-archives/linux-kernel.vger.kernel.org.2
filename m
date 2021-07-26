@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115EA3D6442
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5413D644E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240611AbhGZPzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52344 "EHLO mail.kernel.org"
+        id S233965AbhGZP4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:56:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236628AbhGZPfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:35:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45F0660C41;
-        Mon, 26 Jul 2021 16:15:35 +0000 (UTC)
+        id S236870AbhGZPfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:35:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9499960F5A;
+        Mon, 26 Jul 2021 16:16:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316135;
-        bh=Qckguicm4tdgc+gcKDi+bJtACbyOP/8zzJgdzgFNou0=;
+        s=korg; t=1627316162;
+        bh=GFJfpjeCaH1H7dygZftxr7fcI9EruZcOqtrO2cFt02E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bnHbhr/M9D8K0+H9q4sp1t6sSL6Y438W7RAv3m7IhCoe9xUcGRPk9+t0lkx6ahr9r
-         kiPS8C7rsJjURgPp7uSFGEWiavXRXdQWmB+SvIo6mSQbA9RUluBH41B+vS2lIGyHm6
-         MPUDfCbwPZ/g/U4IUyt3CbTQmiat/7LcilT/IbAw=
+        b=xWKGdC7fFHf3mPrCcGHk/AfWFBOndFcTVKyB5lswZlXbOwCGw5ne9roFVuhcQTsdg
+         G9azXoRy921zdyZ8F2CKum1xVHZtYYaaPuHTcQj+WmhUPtlOC0UCJ+Caj0V8gJCWI1
+         QIf2SqkDjr589rIqEtGmM2JlWxKM0lAFvemNRgN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Markus Boehme <markubo@amazon.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.13 185/223] ixgbe: Fix packet corruption due to missing DMA sync
-Date:   Mon, 26 Jul 2021 17:39:37 +0200
-Message-Id: <20210726153852.247314538@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Subject: [PATCH 5.13 186/223] driver core: auxiliary bus: Fix memory leak when driver_register() fail
+Date:   Mon, 26 Jul 2021 17:39:38 +0200
+Message-Id: <20210726153852.280096999@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,55 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Boehme <markubo@amazon.com>
+From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
 
-commit 09cfae9f13d51700b0fecf591dcd658fc5375428 upstream.
+commit 4afa0c22eed33cfe0c590742387f0d16f32412f3 upstream.
 
-When receiving a packet with multiple fragments, hardware may still
-touch the first fragment until the entire packet has been received. The
-driver therefore keeps the first fragment mapped for DMA until end of
-packet has been asserted, and delays its dma_sync call until then.
+If driver_register() returns with error we need to free the memory
+allocated for auxdrv->driver.name before returning from
+__auxiliary_driver_register()
 
-The driver tries to fit multiple receive buffers on one page. When using
-3K receive buffers (e.g. using Jumbo frames and legacy-rx is turned
-off/build_skb is being used) on an architecture with 4K pages, the
-driver allocates an order 1 compound page and uses one page per receive
-buffer. To determine the correct offset for a delayed DMA sync of the
-first fragment of a multi-fragment packet, the driver then cannot just
-use PAGE_MASK on the DMA address but has to construct a mask based on
-the actual size of the backing page.
-
-Using PAGE_MASK in the 3K RX buffer/4K page architecture configuration
-will always sync the first page of a compound page. With the SWIOTLB
-enabled this can lead to corrupted packets (zeroed out first fragment,
-re-used garbage from another packet) and various consequences, such as
-slow/stalling data transfers and connection resets. For example, testing
-on a link with MTU exceeding 3058 bytes on a host with SWIOTLB enabled
-(e.g. "iommu=soft swiotlb=262144,force") TCP transfers quickly fizzle
-out without this patch.
-
-Cc: stable@vger.kernel.org
-Fixes: 0c5661ecc5dd7 ("ixgbe: fix crash in build_skb Rx code path")
-Signed-off-by: Markus Boehme <markubo@amazon.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 7de3697e9cbd4 ("Add auxiliary bus support")
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Link: https://lore.kernel.org/r/20210713093438.3173-1-peter.ujfalusi@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/base/auxiliary.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -1825,7 +1825,8 @@ static void ixgbe_dma_sync_frag(struct i
- 				struct sk_buff *skb)
+--- a/drivers/base/auxiliary.c
++++ b/drivers/base/auxiliary.c
+@@ -231,6 +231,8 @@ EXPORT_SYMBOL_GPL(auxiliary_find_device)
+ int __auxiliary_driver_register(struct auxiliary_driver *auxdrv,
+ 				struct module *owner, const char *modname)
  {
- 	if (ring_uses_build_skb(rx_ring)) {
--		unsigned long offset = (unsigned long)(skb->data) & ~PAGE_MASK;
-+		unsigned long mask = (unsigned long)ixgbe_rx_pg_size(rx_ring) - 1;
-+		unsigned long offset = (unsigned long)(skb->data) & mask;
++	int ret;
++
+ 	if (WARN_ON(!auxdrv->probe) || WARN_ON(!auxdrv->id_table))
+ 		return -EINVAL;
  
- 		dma_sync_single_range_for_cpu(rx_ring->dev,
- 					      IXGBE_CB(skb)->dma,
+@@ -246,7 +248,11 @@ int __auxiliary_driver_register(struct a
+ 	auxdrv->driver.bus = &auxiliary_bus_type;
+ 	auxdrv->driver.mod_name = modname;
+ 
+-	return driver_register(&auxdrv->driver);
++	ret = driver_register(&auxdrv->driver);
++	if (ret)
++		kfree(auxdrv->driver.name);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(__auxiliary_driver_register);
+ 
 
 
