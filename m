@@ -2,161 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD533D59CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CF03D59D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234162AbhGZMKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:10:36 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:56602 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234031AbhGZMKf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:10:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uh2wpJ9_1627303860;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Uh2wpJ9_1627303860)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Jul 2021 20:51:01 +0800
-Date:   Mon, 26 Jul 2021 20:50:59 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Message-ID: <YP6vs180ThT1A2dO@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>, linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
- <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
- <20210725221639.426565-1-agruenba@redhat.com>
- <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
- <20210726110611.459173-1-agruenba@redhat.com>
- <20210726121702.GA528@lst.de>
- <CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com>
+        id S234100AbhGZMN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:13:28 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42160 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234039AbhGZMN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:13:27 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxP0BWsP5gvhUkAA--.23344S3;
+        Mon, 26 Jul 2021 20:53:42 +0800 (CST)
+Subject: Re: drivers/firmware/dmi_scan.c:151:9: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+To:     kernel test robot <lkp@intel.com>
+References: <202107242204.IbnaQfeL-lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jean Delvare <jdelvare@suse.com>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <81c31d99-82dc-feb6-1213-2b2fbae7c867@loongson.cn>
+Date:   Mon, 26 Jul 2021 20:53:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com>
+In-Reply-To: <202107242204.IbnaQfeL-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxP0BWsP5gvhUkAA--.23344S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3GFy5AF15AryUJF13Gw4fuFg_yoWfuFW5pF
+        y8GFWrtr1kJa1IyF93JF4ruayYqws2qa9xta48A3sava1UuryUtrnxWFW3Cr1jyryDt34a
+        vF13tw45KFsrKF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkI
+        ecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
+        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
+        xUyRBTDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andreas, Christoph,
-
-On Mon, Jul 26, 2021 at 02:27:12PM +0200, Andreas Grünbacher wrote:
-> Am Mo., 26. Juli 2021 um 14:17 Uhr schrieb Christoph Hellwig <hch@lst.de>:
-> >
-> > > Subject: iomap: Support tail packing
-> >
-> > I can't say I like this "tail packing" language here when we have the
-> > perfectly fine inline wording.  Same for various comments in the actual
-> > code.
-> >
-> > > +     /* inline and tail-packed data must start page aligned in the file */
-> > > +     if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
-> > > +             return -EIO;
-> > > +     if (WARN_ON_ONCE(size > PAGE_SIZE - offset_in_page(iomap->inline_data)))
-> > > +             return -EIO;
-> >
-> > Why can't we use iomap_inline_data_size_valid here?
-> 
-> We can now. Gao, can you change that?
-
-Thank you all taking so much time on this! much appreciated.
-
-I'm fine to update that.
-
-> 
-> > That is how can size be different from iomap->length?
-> 
-> Quoting from my previous reply,
-> 
-> "In the iomap_readpage case (iomap_begin with flags == 0),
-> iomap->length will be the amount of data up to the end of the inode.
-
-For tail-packing cases, iomap->length is just the length of tail-packing
-inline extent.
-
-> In the iomap_file_buffered_write case (iomap_begin with flags ==
-> IOMAP_WRITE), iomap->length will be the size of iomap->inline_data.
-> (For extending writes, we need to write beyond the current end of
-> inode.) So iomap->length isn't all that useful for
-> iomap_read_inline_data."
-
-Ok, now it seems I get your point. For the current gfs2 inline cases:
-  iomap_write_begin
-    iomap_write_begin_inline
-      iomap_read_inline_data
-
-here, gfs2 passes a buffer instead with "iomap->length", maybe it
-could be larger than i_size_read(inode) for gfs2. Is that correct?
-
-	loff_t max_size = gfs2_max_stuffed_size(ip);
-
-	iomap->length = max_size;
-
-If that is what gfs2 currently does, I think it makes sense to
-temporarily use as this, but IMO, iomap->inline_bufsize is not
-iomap->length. These are 2 different concepts.
-
-> 
-> > Shouldn't the offset_in_page also go into iomap_inline_data_size_valid,
-> > which should probably be called iomap_inline_data_valid then?
-> 
-> Hmm, not sure what you mean: iomap_inline_data_size_valid does take
-> offset_in_page(iomap->inline_data) into account.
-> 
-> > >       if (iomap->type == IOMAP_INLINE) {
-> > > +             int ret = iomap_read_inline_data(inode, page, iomap);
-> > > +             return ret ?: PAGE_SIZE;
+On 07/24/2021 10:31 PM, kernel test robot wrote:
+> Hi Stephen,
 >
-> > The ?: expression without the first leg is really confuing.  Especially
-> > if a good old if is much more readable here.
-> 
-> I'm sure Gao can change this.
-> 
-> >                 int ret = iomap_read_inline_data(inode, page, iomap);
-> >
-> >                 if (ret)
-> >                         return ret;
-> >                 return PAGE_SIZE;
+> First bad commit (maybe != root cause):
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f0fddcec6b6254b4b3611388786bbafb703ad257
+> commit: 1062fc45d1e93faefb93961f3be0a687f3f0e2e1 MIPS: Loongson64: Select SMP in Kconfig to avoid build error
+> date:   10 months ago
+> config: mips-randconfig-s031-20210724 (attached as .config)
+> compiler: mips64-linux-gcc (GCC) 10.3.0
+> reproduce:
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # apt-get install sparse
+>          # sparse version: v0.6.3-341-g8af24329-dirty
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1062fc45d1e93faefb93961f3be0a687f3f0e2e1
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout 1062fc45d1e93faefb93961f3be0a687f3f0e2e1
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=mips
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+>
+> sparse warnings: (new ones prefixed by >>)
+>     command-line: note: in included file:
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQUIRE redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_SEQ_CST redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQ_REL redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_RELEASE redefined
+>     builtin:0:0: sparse: this was the original definition
+>     drivers/firmware/dmi_scan.c:143:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [usertype] *buf @@     got void [noderef] __iomem * @@
+>     drivers/firmware/dmi_scan.c:143:13: sparse:     expected unsigned char [usertype] *buf
+>     drivers/firmware/dmi_scan.c:143:13: sparse:     got void [noderef] __iomem *
+>>> drivers/firmware/dmi_scan.c:151:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got unsigned char [usertype] *buf @@
+>     drivers/firmware/dmi_scan.c:151:9: sparse:     expected void const volatile [noderef] __iomem *addr
+>     drivers/firmware/dmi_scan.c:151:9: sparse:     got unsigned char [usertype] *buf
+>     drivers/firmware/dmi_scan.c:775:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [usertype] *dmi_table @@     got void [noderef] __iomem * @@
+>     drivers/firmware/dmi_scan.c:775:19: sparse:     expected unsigned char [usertype] *dmi_table
+>     drivers/firmware/dmi_scan.c:775:19: sparse:     got void [noderef] __iomem *
+>>> drivers/firmware/dmi_scan.c:794:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got unsigned char [usertype] *dmi_table @@
+>     drivers/firmware/dmi_scan.c:794:9: sparse:     expected void const volatile [noderef] __iomem *addr
+>     drivers/firmware/dmi_scan.c:794:9: sparse:     got unsigned char [usertype] *dmi_table
+>     drivers/firmware/dmi_scan.c:1108:13: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [usertype] *buf @@     got void [noderef] __iomem * @@
+>     drivers/firmware/dmi_scan.c:1108:13: sparse:     expected unsigned char [usertype] *buf
+>     drivers/firmware/dmi_scan.c:1108:13: sparse:     got void [noderef] __iomem *
+>     drivers/firmware/dmi_scan.c:1114:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile [noderef] __iomem *addr @@     got unsigned char [usertype] *buf @@
+>     drivers/firmware/dmi_scan.c:1114:9: sparse:     expected void const volatile [noderef] __iomem *addr
+>     drivers/firmware/dmi_scan.c:1114:9: sparse:     got unsigned char [usertype] *buf
+> --
+>     command-line: note: in included file:
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQUIRE redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_SEQ_CST redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQ_REL redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_RELEASE redefined
+>     builtin:0:0: sparse: this was the original definition
+>>> drivers/irqchip/irq-loongson-htpic.c:80:20: sparse: sparse: symbol 'htpic_syscore_ops' was not declared. Should it be static?
+>     drivers/irqchip/irq-loongson-htpic.c:84:12: sparse: sparse: symbol 'htpic_of_init' was not declared. Should it be static?
+> --
+>     command-line: note: in included file:
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQUIRE redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_SEQ_CST redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_ACQ_REL redefined
+>     builtin:0:0: sparse: this was the original definition
+>     builtin:1:9: sparse: sparse: preprocessor token __ATOMIC_RELEASE redefined
+>     builtin:0:0: sparse: this was the original definition
+>     drivers/pci/controller/pci-ftpci100.c:37:9: sparse: sparse: preprocessor token PCI_IOSIZE redefined
+>     drivers/pci/controller/pci-ftpci100.c: note: in included file (through arch/mips/include/asm/addrspace.h, arch/mips/include/asm/barrier.h, arch/mips/include/asm/bitops.h, ...):
+>>> arch/mips/include/asm/mach-loongson64/spaces.h:11:9: sparse: this was the original definition
+> vim +151 drivers/firmware/dmi_scan.c
+>
+> 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  136
+> e7a19c5624c66a drivers/firmware/dmi_scan.c Jean Delvare    2009-03-30  137  static int __init dmi_walk_early(void (*decode)(const struct dmi_header *,
+> e7a19c5624c66a drivers/firmware/dmi_scan.c Jean Delvare    2009-03-30  138  		void *))
+> 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  139  {
+> 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  140  	u8 *buf;
+> 6e0ad59e3d838a drivers/firmware/dmi_scan.c Jean Delvare    2015-06-25  141  	u32 orig_dmi_len = dmi_len;
+> 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  142
+> 6e0ad59e3d838a drivers/firmware/dmi_scan.c Jean Delvare    2015-06-25  143  	buf = dmi_early_remap(dmi_base, orig_dmi_len);
+> 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  144  	if (buf == NULL)
+> c926820085437a drivers/firmware/dmi_scan.c Andy Lutomirski 2017-06-15  145  		return -ENOMEM;
+> 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  146
+> eb4c5ea50e60aa drivers/firmware/dmi_scan.c Ivan Khoronzhuk 2015-06-25  147  	dmi_decode_table(buf, decode, NULL);
+> 7fce084a0b3e2b drivers/firmware/dmi_scan.c Jean Delvare    2007-11-03  148
+> d114a333874725 drivers/firmware/dmi_scan.c Tony Luck       2012-07-20  149  	add_device_randomness(buf, dmi_len);
+> d114a333874725 drivers/firmware/dmi_scan.c Tony Luck       2012-07-20  150
+> 6e0ad59e3d838a drivers/firmware/dmi_scan.c Jean Delvare    2015-06-25 @151  	dmi_early_unmap(buf, orig_dmi_len);
+> ^1da177e4c3f41 arch/i386/kernel/dmi_scan.c Linus Torvalds  2005-04-16  152  	return 0;
+> ^1da177e4c3f41 arch/i386/kernel/dmi_scan.c Linus Torvalds  2005-04-16  153  }
+> ^1da177e4c3f41 arch/i386/kernel/dmi_scan.c Linus Torvalds  2005-04-16  154
+>
+> :::::: The code at line 151 was first introduced by commit
+> :::::: 6e0ad59e3d838a2887e7aa657baee5896030d009 firmware: dmi_scan: Trim DMI table length before exporting it
+>
+> :::::: TO: Jean Delvare <jdelvare@suse.de>
+> :::::: CC: Jean Delvare <jdelvare@suse.de>
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-I'm fine to update it if no strong opinion.
+Hi,
 
-> >
-> > > +             copied = copy_from_iter(iomap_inline_data(iomap, pos), length, iter);
-> >
-> >
-> > > +             copied = copy_to_iter(iomap_inline_data(iomap, pos), length, iter);
-> >
-> > Pleae avoid the overly long lines.
-> 
-> I thought people were okay with 80 character long lines?
+It seems that there is no relation between my commit and the sparse warning
+"drivers/firmware/dmi_scan.c:151:9: sparse: sparse: incorrect type in 
+argument".
 
-Christoph mentioned before as below:
-https://lore.kernel.org/linux-fsdevel/YPVe41YqpfGLNsBS@infradead.org/
+I think the following change can make the above warning silent:
 
-We also need to take the offset into account for the write side.
-I guess it would be nice to have a local variable for the inline
-address to not duplicate that calculation multiple times.
+diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
+index f191a1f..9e254d9 100644
+--- a/drivers/firmware/dmi_scan.c
++++ b/drivers/firmware/dmi_scan.c
+@@ -148,7 +148,7 @@ static int __init dmi_walk_early(void 
+(*decode)(const struct dmi_header *,
+
+         add_device_randomness(buf, dmi_len);
+
+-       dmi_early_unmap(buf, orig_dmi_len);
++       dmi_early_unmap((u8 __iomem *)buf, orig_dmi_len);
+         return 0;
+  }
+
+If it is OK, I can send a patch later.
 
 Thanks,
-Gao Xiang
+Tiezhu
 
-> 
-> Thanks,
-> Andreas
