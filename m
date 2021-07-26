@@ -2,279 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257763D6470
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92AB3D6472
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239620AbhGZP6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239169AbhGZPu4 (ORCPT
+        id S239600AbhGZP6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:58:35 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:30779 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233056AbhGZPvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:50:56 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC36C061764
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:31:17 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so5836451ota.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=ELn3EZuGEDiUnXCf8ikGoXvGmOXoCSOD6xENG4y2dZc=;
-        b=mLFUP1duMTTy4DG4OMhqACwUxu+RIWClqRuK7xYBkcYtaLHr8EY4H1AonGIuzMNTEY
-         HpchzDZLCEvIGHzSj6Ak/m7yupq4yFJp4j4C/Sj6BLC9Iu2OgFt+lWSPs82auAVCodpn
-         VteFZOdc54EpKWkUrmmhkdwSeZr9DZPqLZgjnhShyv1hgFpk+S7bMZadaZMhn3h6rcCp
-         Ki0z8sL/3744fVDgGzUVUhKrZFlyjmctLJKnM6t+KuKxxJtkg8ZBHM19cZEVYTvn/VZp
-         N+hvPANPEO7yZucR9/UInv+o2ODStNYb/g7cRLtRFV//Vk7GIwxZTGadkD/FCiZacuXG
-         7XhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ELn3EZuGEDiUnXCf8ikGoXvGmOXoCSOD6xENG4y2dZc=;
-        b=KXDlVBF1O9mWSUCuMf37kECWfnaOSvCpCGyyAoV9tDnGSh4N9T865AIeMxGuc3y5Q0
-         seUx2DAmW+3/kb9/A5vWUE4rF65DjWqLer8rr2FRiYbCj9i4pcMC8yNrRhATBo1Zst1j
-         MtDnwar3x+bgWxb9JUv+SfcD/qVwx0dEicj/zFh5xBnm1JifxkbIAUu5skKmyoBVjPW1
-         wGrFnb6BzeHSC9h0knU2tssWMvS3r2pagAdZMpfDNqtzC0oot5zqJeFIU8pEwYaHbNuC
-         c9PQaFQbYXJfrU+0y8XGJQncQbI/sLtVnYeY/EBTfQ52mmkl4jFKTKUkj5vFmrN98MDw
-         dLJA==
-X-Gm-Message-State: AOAM530K1HYH1A0dWlCeDX8mJWcPDppE7ZIKVR7C06Km1sxXbNP3XdeB
-        WbeOx5vZCiGox+SDCHH6+4Pyu4DPd9TUMQ==
-X-Google-Smtp-Source: ABdhPJy83AcBPucMpzQYRsSrydOAihpe1OB7cUkgFC7TGoS4sBFvRhxCloB9X/H8DDp4bA1tDkK6oA==
-X-Received: by 2002:a9d:3608:: with SMTP id w8mr12747099otb.371.1627317075990;
-        Mon, 26 Jul 2021 09:31:15 -0700 (PDT)
-Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id bc42sm45162oob.39.2021.07.26.09.31.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 09:31:15 -0700 (PDT)
-Subject: Re: [PATCH] interconnect: qcom: osm-l3: Use driver-specific naming
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210725031414.3961227-1-bjorn.andersson@linaro.org>
-From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <5148d281-d5d9-7731-f30a-090af8cd2ea2@kali.org>
-Date:   Mon, 26 Jul 2021 11:31:14 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        Mon, 26 Jul 2021 11:51:55 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id D670F76F1F;
+        Mon, 26 Jul 2021 19:32:20 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1627317140;
+        bh=1nfwqB6HCexuAjnK/ArPrVqt48gRoNbKKsoOEwcBINA=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=nMmqMhOVMFL1WdvJzV6oVhOiCgjjprAfuF8CImjhSJRTdQpc7l/JlZa2/UxrJxEIA
+         CKVsjKMnhnQUfHvIhBKT6LKZlsjUP/k+IWB1ZJQl54B5a+XFRLF0Jc7OsGRx9t0BzD
+         3wi8ADdWLSim6A+5slCDQNPeHpuxAld3Q/R2k70w7oqb8WQFZHDNue7G/C4a/tnMbF
+         vUQYTVqsVNrMB7x2rZdAY7iFa7oY1Dn6juzMU7K+4z0LtuxYWj7AxCuzyTWLq2jpyt
+         PowyLCYGs9WW2FrLBqUDB+Tq2DCQGanCPWaqu22X6iZHJrpgBRhVOQaHOaadijce5y
+         DY7KJTn+Wokmw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id CC34376F3D;
+        Mon, 26 Jul 2021 19:32:19 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 26
+ Jul 2021 19:32:19 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [RFC PATCH v1 0/7] virtio/vsock: introduce MSG_EOR flag for SEQPACKET
+Date:   Mon, 26 Jul 2021 19:31:33 +0300
+Message-ID: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210725031414.3961227-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 16:13:33
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165254 [Jul 26 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/26/2021 16:15:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 26.07.2021 14:57:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/26 14:52:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/26 14:01:00 #16958312
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+	This patchset implements support of MSG_EOR bit for SEQPACKET
+AF_VSOCK sockets over virtio transport.
+	Idea is to distinguish concepts of 'messages' and 'records'.
+Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
+etc. It has fixed maximum length, and it bounds are visible using
+return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
+Current implementation based on message definition above.
+	Record has unlimited length, it consists of multiple message,
+and bounds of record are visible via MSG_EOR flag returned from
+'recvmsg()' call. Sender passes MSG_EOR to sending system call and
+receiver will see MSG_EOR when corresponding message will be processed.
+	To support MSG_EOR new bit was added along with existing
+'VIRTIO_VSOCK_SEQ_EOR': 'VIRTIO_VSOCK_SEQ_EOM'(end-of-message) - now it
+works in the same way as 'VIRTIO_VSOCK_SEQ_EOR'. But 'VIRTIO_VSOCK_SEQ_EOR'
+is used to mark 'MSG_EOR' bit passed from userspace.
+	This patchset includes simple test for MSG_EOR.
+ 	Also i've added new vsock test for '-EAGAIN' receive result.
 
-On 7/24/21 10:14 PM, Bjorn Andersson wrote:
-> In situations were the developer screws up by e.g. not giving the OSM
-> nodes unique identifiers the interconnect framework might mix up nodes
-> between the OSM L3 provider and e.g. the RPMh provider.
->
-> The resulting callstack containts "qcom_icc_set", which is not unique to
-> the OSM L3 provider driver. Once the faulting qcom_icc_set() is
-> identified it's further confusing that "qcom_icc_node" is different
-> between the different drivers.
->
-> To avoid this confusion, rename the node struct and the setter in the
-> OSM L3 driver to include "osm_l3" in their names.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->
-> This was written after the sc8180x patch and as such applies ontop of:
-> https://lore.kernel.org/linux-arm-msm/20210725025834.3941777-2-bjorn.andersson@linaro.org/
->
->  drivers/interconnect/qcom/osm-l3.c | 46 +++++++++++++++---------------
->  1 file changed, 23 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/interconnect/qcom/osm-l3.c b/drivers/interconnect/qcom/osm-l3.c
-> index 13e41b932567..c7af143980de 100644
-> --- a/drivers/interconnect/qcom/osm-l3.c
-> +++ b/drivers/interconnect/qcom/osm-l3.c
-> @@ -38,7 +38,7 @@
->  
->  #define OSM_L3_MAX_LINKS		1
->  
-> -#define to_qcom_provider(_provider) \
-> +#define to_osm_l3_provider(_provider) \
->  	container_of(_provider, struct qcom_osm_l3_icc_provider, provider)
->  
->  struct qcom_osm_l3_icc_provider {
-> @@ -50,14 +50,14 @@ struct qcom_osm_l3_icc_provider {
->  };
->  
->  /**
-> - * struct qcom_icc_node - Qualcomm specific interconnect nodes
-> + * struct qcom_osm_l3_node - Qualcomm specific interconnect nodes
->   * @name: the node name used in debugfs
->   * @links: an array of nodes where we can go next while traversing
->   * @id: a unique node identifier
->   * @num_links: the total number of @links
->   * @buswidth: width of the interconnect between a node and the bus
->   */
-> -struct qcom_icc_node {
-> +struct qcom_osm_l3_node {
->  	const char *name;
->  	u16 links[OSM_L3_MAX_LINKS];
->  	u16 id;
-> @@ -65,8 +65,8 @@ struct qcom_icc_node {
->  	u16 buswidth;
->  };
->  
-> -struct qcom_icc_desc {
-> -	const struct qcom_icc_node **nodes;
-> +struct qcom_osm_l3_desc {
-> +	const struct qcom_osm_l3_node **nodes;
->  	size_t num_nodes;
->  	unsigned int lut_row_size;
->  	unsigned int reg_freq_lut;
-> @@ -74,7 +74,7 @@ struct qcom_icc_desc {
->  };
->  
->  #define DEFINE_QNODE(_name, _id, _buswidth, ...)			\
-> -	static const struct qcom_icc_node _name = {			\
-> +	static const struct qcom_osm_l3_node _name = {			\
->  		.name = #_name,						\
->  		.id = _id,						\
->  		.buswidth = _buswidth,					\
-> @@ -85,12 +85,12 @@ struct qcom_icc_desc {
->  DEFINE_QNODE(sdm845_osm_apps_l3, SDM845_MASTER_OSM_L3_APPS, 16, SDM845_SLAVE_OSM_L3);
->  DEFINE_QNODE(sdm845_osm_l3, SDM845_SLAVE_OSM_L3, 16);
->  
-> -static const struct qcom_icc_node *sdm845_osm_l3_nodes[] = {
-> +static const struct qcom_osm_l3_node *sdm845_osm_l3_nodes[] = {
->  	[MASTER_OSM_L3_APPS] = &sdm845_osm_apps_l3,
->  	[SLAVE_OSM_L3] = &sdm845_osm_l3,
->  };
->  
-> -static const struct qcom_icc_desc sdm845_icc_osm_l3 = {
-> +static const struct qcom_osm_l3_desc sdm845_icc_osm_l3 = {
->  	.nodes = sdm845_osm_l3_nodes,
->  	.num_nodes = ARRAY_SIZE(sdm845_osm_l3_nodes),
->  	.lut_row_size = OSM_LUT_ROW_SIZE,
-> @@ -101,12 +101,12 @@ static const struct qcom_icc_desc sdm845_icc_osm_l3 = {
->  DEFINE_QNODE(sc7180_osm_apps_l3, SC7180_MASTER_OSM_L3_APPS, 16, SC7180_SLAVE_OSM_L3);
->  DEFINE_QNODE(sc7180_osm_l3, SC7180_SLAVE_OSM_L3, 16);
->  
-> -static const struct qcom_icc_node *sc7180_osm_l3_nodes[] = {
-> +static const struct qcom_osm_l3_node *sc7180_osm_l3_nodes[] = {
->  	[MASTER_OSM_L3_APPS] = &sc7180_osm_apps_l3,
->  	[SLAVE_OSM_L3] = &sc7180_osm_l3,
->  };
->  
-> -static const struct qcom_icc_desc sc7180_icc_osm_l3 = {
-> +static const struct qcom_osm_l3_desc sc7180_icc_osm_l3 = {
->  	.nodes = sc7180_osm_l3_nodes,
->  	.num_nodes = ARRAY_SIZE(sc7180_osm_l3_nodes),
->  	.lut_row_size = OSM_LUT_ROW_SIZE,
-> @@ -117,12 +117,12 @@ static const struct qcom_icc_desc sc7180_icc_osm_l3 = {
->  DEFINE_QNODE(sc8180x_osm_apps_l3, SC8180X_MASTER_OSM_L3_APPS, 32, SC8180X_SLAVE_OSM_L3);
->  DEFINE_QNODE(sc8180x_osm_l3, SC8180X_SLAVE_OSM_L3, 32);
->  
-> -static const struct qcom_icc_node *sc8180x_osm_l3_nodes[] = {
-> +static const struct qcom_osm_l3_node *sc8180x_osm_l3_nodes[] = {
->  	[MASTER_OSM_L3_APPS] = &sc8180x_osm_apps_l3,
->  	[SLAVE_OSM_L3] = &sc8180x_osm_l3,
->  };
->  
-> -static const struct qcom_icc_desc sc8180x_icc_osm_l3 = {
-> +static const struct qcom_osm_l3_desc sc8180x_icc_osm_l3 = {
->  	.nodes = sc8180x_osm_l3_nodes,
->  	.num_nodes = ARRAY_SIZE(sc8180x_osm_l3_nodes),
->  	.lut_row_size = OSM_LUT_ROW_SIZE,
-> @@ -133,12 +133,12 @@ static const struct qcom_icc_desc sc8180x_icc_osm_l3 = {
->  DEFINE_QNODE(sm8150_osm_apps_l3, SM8150_MASTER_OSM_L3_APPS, 32, SM8150_SLAVE_OSM_L3);
->  DEFINE_QNODE(sm8150_osm_l3, SM8150_SLAVE_OSM_L3, 32);
->  
-> -static const struct qcom_icc_node *sm8150_osm_l3_nodes[] = {
-> +static const struct qcom_osm_l3_node *sm8150_osm_l3_nodes[] = {
->  	[MASTER_OSM_L3_APPS] = &sm8150_osm_apps_l3,
->  	[SLAVE_OSM_L3] = &sm8150_osm_l3,
->  };
->  
-> -static const struct qcom_icc_desc sm8150_icc_osm_l3 = {
-> +static const struct qcom_osm_l3_desc sm8150_icc_osm_l3 = {
->  	.nodes = sm8150_osm_l3_nodes,
->  	.num_nodes = ARRAY_SIZE(sm8150_osm_l3_nodes),
->  	.lut_row_size = OSM_LUT_ROW_SIZE,
-> @@ -149,12 +149,12 @@ static const struct qcom_icc_desc sm8150_icc_osm_l3 = {
->  DEFINE_QNODE(sm8250_epss_apps_l3, SM8250_MASTER_EPSS_L3_APPS, 32, SM8250_SLAVE_EPSS_L3);
->  DEFINE_QNODE(sm8250_epss_l3, SM8250_SLAVE_EPSS_L3, 32);
->  
-> -static const struct qcom_icc_node *sm8250_epss_l3_nodes[] = {
-> +static const struct qcom_osm_l3_node *sm8250_epss_l3_nodes[] = {
->  	[MASTER_EPSS_L3_APPS] = &sm8250_epss_apps_l3,
->  	[SLAVE_EPSS_L3_SHARED] = &sm8250_epss_l3,
->  };
->  
-> -static const struct qcom_icc_desc sm8250_icc_epss_l3 = {
-> +static const struct qcom_osm_l3_desc sm8250_icc_epss_l3 = {
->  	.nodes = sm8250_epss_l3_nodes,
->  	.num_nodes = ARRAY_SIZE(sm8250_epss_l3_nodes),
->  	.lut_row_size = EPSS_LUT_ROW_SIZE,
-> @@ -162,11 +162,11 @@ static const struct qcom_icc_desc sm8250_icc_epss_l3 = {
->  	.reg_perf_state = EPSS_REG_PERF_STATE,
->  };
->  
-> -static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
-> +static int qcom_osm_l3_set(struct icc_node *src, struct icc_node *dst)
->  {
->  	struct qcom_osm_l3_icc_provider *qp;
->  	struct icc_provider *provider;
-> -	const struct qcom_icc_node *qn;
-> +	const struct qcom_osm_l3_node *qn;
->  	struct icc_node *n;
->  	unsigned int index;
->  	u32 agg_peak = 0;
-> @@ -175,7 +175,7 @@ static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
->  
->  	qn = src->data;
->  	provider = src->provider;
-> -	qp = to_qcom_provider(provider);
-> +	qp = to_osm_l3_provider(provider);
->  
->  	list_for_each_entry(n, &provider->nodes, node_list)
->  		provider->aggregate(n, 0, n->avg_bw, n->peak_bw,
-> @@ -208,10 +208,10 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->  	u32 info, src, lval, i, prev_freq = 0, freq;
->  	static unsigned long hw_rate, xo_rate;
->  	struct qcom_osm_l3_icc_provider *qp;
-> -	const struct qcom_icc_desc *desc;
-> +	const struct qcom_osm_l3_desc *desc;
->  	struct icc_onecell_data *data;
->  	struct icc_provider *provider;
-> -	const struct qcom_icc_node **qnodes;
-> +	const struct qcom_osm_l3_node **qnodes;
->  	struct icc_node *node;
->  	size_t num_nodes;
->  	struct clk *clk;
-> @@ -281,7 +281,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->  
->  	provider = &qp->provider;
->  	provider->dev = &pdev->dev;
-> -	provider->set = qcom_icc_set;
-> +	provider->set = qcom_osm_l3_set;
->  	provider->aggregate = icc_std_aggregate;
->  	provider->xlate = of_icc_xlate_onecell;
->  	INIT_LIST_HEAD(&provider->nodes);
-> @@ -303,7 +303,7 @@ static int qcom_osm_l3_probe(struct platform_device *pdev)
->  		}
->  
->  		node->name = qnodes[i]->name;
-> -		/* Cast away const and add it back in qcom_icc_set() */
-> +		/* Cast away const and add it back in qcom_osm_l3_set() */
->  		node->data = (void *)qnodes[i];
->  		icc_node_add(node, provider);
->  
+ Arseny Krasnov(7):
+  virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOM' bit
+  vsock: rename implementation from 'record' to 'message'
+  vhost/vsock: support MSG_EOR bit processing
+  virito/vsock: support MSG_EOR bit processing
+  af_vsock: rename variables in receive loop
+  vsock_test: update message bounds test for MSG_EOR
+  vsock_test: 'SO_RCVTIMEO' test for SEQPACKET
 
-Hi Bjorn,
+ drivers/vhost/vsock.c                   | 28 +++++++----
+ include/uapi/linux/virtio_vsock.h       |  1 +
+ net/vmw_vsock/af_vsock.c                | 10 ++--
+ net/vmw_vsock/virtio_transport_common.c | 23 +++++----
+ tools/testing/vsock/vsock_test.c        | 57 ++++++++++++++++++++++-
+ 5 files changed, 96 insertions(+), 23 deletions(-)
 
-Tested on both C630 and Flex 5G
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 
+-- 
+2.25.1
 
-Tested-by: Steev Klimaszewski <steev@kali.org>
