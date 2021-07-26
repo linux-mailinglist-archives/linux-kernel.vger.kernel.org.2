@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876653D645B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738963D63AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239417AbhGZP5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:57:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54078 "EHLO mail.kernel.org"
+        id S239107AbhGZPuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:50:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237707AbhGZPgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:36:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB20F60FC1;
-        Mon, 26 Jul 2021 16:16:27 +0000 (UTC)
+        id S231674AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:28:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FC8A60FD7;
+        Mon, 26 Jul 2021 16:07:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316188;
-        bh=NU/UYTw5csGX16z4Y0aEdc2v5/xMTL/7VmbglNmRjFI=;
+        s=korg; t=1627315625;
+        bh=Vd/X1vc8VcfRMAmh0C+ZoQXOmp81scgTnTXft9foiX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GzG0+gZ0fjKWYgAwNUlXlgSvg7HUmnAzn9DjwCzC3KEtLAp+IVqpCHRpGdLWx4cW9
-         KMVovhThVsNjGH/KXawiUbZA0RWB4AK5pPTAt3mbt/uRW4FX0eqZC3r4SoS6FqoBK/
-         12c04VSPhpicyYc+/1vKkdSJ15HeL3RK6xCnEP5g=
+        b=NjUpRWLLrOZn52cBHLSi8KzR3Rc+Rd2ueFKIWyvoSP4ti+WbkdG6aHrYVm5cSqnQ+
+         qH52yfNR9z/dj3Mqk3Gt3W4fdJzYVFdtKToTvrcuby4GQo8KYRYnsjWbQOb3Wt85wz
+         PGEcCJq4E9Aye4Lkj2lL3H2gxyiWMhwFIE16sjo4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hemant kumar <hemantk@codeaurora.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 5.13 189/223] bus: mhi: pci_generic: Fix inbound IPCR channel
-Date:   Mon, 26 Jul 2021 17:39:41 +0200
-Message-Id: <20210726153852.383489674@linuxfoundation.org>
+        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Robin Geuze <robin.geuze@nl.team.blue>
+Subject: [PATCH 5.10 149/167] rbd: dont hold lock_rwsem while running_list is being drained
+Date:   Mon, 26 Jul 2021 17:39:42 +0200
+Message-Id: <20210726153844.421709292@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-References: <20210726153846.245305071@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,63 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Ilya Dryomov <idryomov@gmail.com>
 
-commit b8a97f2a65388394f433bf0730293a94f7d49046 upstream.
+commit ed9eb71085ecb7ded9a5118cec2ab70667cc7350 upstream.
 
-The qrtr-mhi client driver assumes that inbound buffers are
-automatically allocated and queued by the MHI core, but this
-doesn't happen for mhi pci devices since IPCR inbound channel is
-not flagged with auto_queue, causing unusable IPCR (qrtr)
-feature. Fix that.
+Currently rbd_quiesce_lock() holds lock_rwsem for read while blocking
+on releasing_wait completion.  On the I/O completion side, each image
+request also needs to take lock_rwsem for read.  Because rw_semaphore
+implementation doesn't allow new readers after a writer has indicated
+interest in the lock, this can result in a deadlock if something that
+needs to take lock_rwsem for write gets involved.  For example:
 
-Link: https://lore.kernel.org/r/1625736749-24947-1-git-send-email-loic.poulain@linaro.org
-[mani: fixed a spelling mistake in commit description]
-Fixes: 855a70c12021 ("bus: mhi: Add MHI PCI support for WWAN modems")
-Cc: stable@vger.kernel.org #5.10
-Reviewed-by: Hemant kumar <hemantk@codeaurora.org>
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20210716075106.49938-4-manivannan.sadhasivam@linaro.org
+1. watch error occurs
+2. rbd_watch_errcb() takes lock_rwsem for write, clears owner_cid and
+   releases lock_rwsem
+3. after reestablishing the watch, rbd_reregister_watch() takes
+   lock_rwsem for write and calls rbd_reacquire_lock()
+4. rbd_quiesce_lock() downgrades lock_rwsem to for read and blocks on
+   releasing_wait until running_list becomes empty
+5. another watch error occurs
+6. rbd_watch_errcb() blocks trying to take lock_rwsem for write
+7. no in-flight image request can complete and delete itself from
+   running_list because lock_rwsem won't be granted anymore
+
+A similar scenario can occur with "lock has been acquired" and "lock
+has been released" notification handers which also take lock_rwsem for
+write to update owner_cid.
+
+We don't actually get anything useful from sitting on lock_rwsem in
+rbd_quiesce_lock() -- owner_cid updates certainly don't need to be
+synchronized with.  In fact the whole owner_cid tracking logic could
+probably be removed from the kernel client because we don't support
+proxied maintenance operations.
+
+Cc: stable@vger.kernel.org # 5.3+
+URL: https://tracker.ceph.com/issues/42757
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Tested-by: Robin Geuze <robin.geuze@nl.team.blue>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/bus/mhi/pci_generic.c |   18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+ drivers/block/rbd.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -75,6 +75,22 @@ struct mhi_pci_dev_info {
- 		.doorbell_mode_switch = false,		\
- 	}
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -4147,8 +4147,6 @@ again:
  
-+#define MHI_CHANNEL_CONFIG_DL_AUTOQUEUE(ch_num, ch_name, el_count, ev_ring) \
-+	{						\
-+		.num = ch_num,				\
-+		.name = ch_name,			\
-+		.num_elements = el_count,		\
-+		.event_ring = ev_ring,			\
-+		.dir = DMA_FROM_DEVICE,			\
-+		.ee_mask = BIT(MHI_EE_AMSS),		\
-+		.pollcfg = 0,				\
-+		.doorbell = MHI_DB_BRST_DISABLE,	\
-+		.lpm_notify = false,			\
-+		.offload_channel = false,		\
-+		.doorbell_mode_switch = false,		\
-+		.auto_queue = true,			\
-+	}
+ static bool rbd_quiesce_lock(struct rbd_device *rbd_dev)
+ {
+-	bool need_wait;
+-
+ 	dout("%s rbd_dev %p\n", __func__, rbd_dev);
+ 	lockdep_assert_held_write(&rbd_dev->lock_rwsem);
+ 
+@@ -4160,11 +4158,11 @@ static bool rbd_quiesce_lock(struct rbd_
+ 	 */
+ 	rbd_dev->lock_state = RBD_LOCK_STATE_RELEASING;
+ 	rbd_assert(!completion_done(&rbd_dev->releasing_wait));
+-	need_wait = !list_empty(&rbd_dev->running_list);
+-	downgrade_write(&rbd_dev->lock_rwsem);
+-	if (need_wait)
+-		wait_for_completion(&rbd_dev->releasing_wait);
+-	up_read(&rbd_dev->lock_rwsem);
++	if (list_empty(&rbd_dev->running_list))
++		return true;
 +
- #define MHI_EVENT_CONFIG_CTRL(ev_ring, el_count) \
- 	{					\
- 		.num_elements = el_count,	\
-@@ -213,7 +229,7 @@ static const struct mhi_channel_config m
- 	MHI_CHANNEL_CONFIG_UL(14, "QMI", 4, 0),
- 	MHI_CHANNEL_CONFIG_DL(15, "QMI", 4, 0),
- 	MHI_CHANNEL_CONFIG_UL(20, "IPCR", 8, 0),
--	MHI_CHANNEL_CONFIG_DL(21, "IPCR", 8, 0),
-+	MHI_CHANNEL_CONFIG_DL_AUTOQUEUE(21, "IPCR", 8, 0),
- 	MHI_CHANNEL_CONFIG_UL_FP(34, "FIREHOSE", 32, 0),
- 	MHI_CHANNEL_CONFIG_DL_FP(35, "FIREHOSE", 32, 0),
- 	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0", 128, 2),
++	up_write(&rbd_dev->lock_rwsem);
++	wait_for_completion(&rbd_dev->releasing_wait);
+ 
+ 	down_write(&rbd_dev->lock_rwsem);
+ 	if (rbd_dev->lock_state != RBD_LOCK_STATE_RELEASING)
 
 
