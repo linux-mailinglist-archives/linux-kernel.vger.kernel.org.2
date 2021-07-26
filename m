@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C633D6011
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AB63D62B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhGZPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
+        id S237193AbhGZPiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:38:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237086AbhGZPKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E365C60525;
-        Mon, 26 Jul 2021 15:50:43 +0000 (UTC)
+        id S237259AbhGZPWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8457060EB2;
+        Mon, 26 Jul 2021 16:02:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314644;
-        bh=kChHS3GrECWdIt/goVYb4sYF3rSa23XtbZfCPoLIaq8=;
+        s=korg; t=1627315349;
+        bh=czYXse3oMFtGw0mtmQntsuGW4opeK9xpofAjjkYT92Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IA+O7P7lQW1hljEiNOcfkxvdnRH16dZ78rtyvj9UPs7FU6rRBkzNeSS4ln6EJdKO9
-         d/lhsaMCvmRfyfBqgTTgBafwIYSZ6lJH1V+8zfuS84qjhfso4ITb1OtaWafQDFFyA7
-         aH4OXxFVyybxHR0Q+4xKBCTaDchbUFkUS6ksgqP8=
+        b=fricy6w0eST3i1BnajK8qN/4ZbUFv7Z2uZpLWaZKa31VTjlbVxdDYqZXfonoOf7n1
+         GZhEbu40ogolPEWU6F7RvWqhF0DVfPFKkDHq4SwrMy526i4Ukzjzmk2XrzbIqUE8J0
+         h5abzwFUAOwGoNWzi/omVzYuhOhK7wpfhYxaVyUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 041/120] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 060/167] s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
 Date:   Mon, 26 Jul 2021 17:38:13 +0200
-Message-Id: <20210726153833.712675350@linuxfoundation.org>
+Message-Id: <20210726153841.422272414@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 2b452550a203d88112eaf0ba9fc4b750a000b496 upstream.
+[ Upstream commit 91091656252f5d6d8c476e0c92776ce9fae7b445 ]
 
-Make sure that we disable each of the TX and RX queues in the TDMA and
-RDMA control registers. This is a correctness change to be symmetrical
-with the code that enables the TX and RX queues.
+Currently array jit->seen_reg[r1] is being accessed before the range
+checking of index r1. The range changing on r1 should be performed
+first since it will avoid any potential out-of-range accesses on the
+array seen_reg[] and also it is more optimal to perform checks on r1
+before fetching data from the array. Fix this by swapping the order
+of the checks before the array access.
 
-Tested-by: Maxime Ripard <maxime@cerno.tech>
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Link: https://lore.kernel.org/bpf/20210715125712.24690-1-colin.king@canonical.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/s390/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -2790,15 +2790,21 @@ static void bcmgenet_set_hw_addr(struct
- /* Returns a reusable dma control register value */
- static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 0a4182792876..fc44dce59536 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -112,7 +112,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
  {
-+	unsigned int i;
- 	u32 reg;
- 	u32 dma_ctrl;
+ 	u32 r1 = reg2hex[b1];
  
- 	/* disable DMA */
- 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->tx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
+-	if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
++	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
+ 		jit->seen_reg[r1] = 1;
+ }
  
-+	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->rx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
+-- 
+2.30.2
+
 
 
