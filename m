@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045023D63DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106403D63DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239414AbhGZPwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47564 "EHLO mail.kernel.org"
+        id S233137AbhGZPw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:52:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232816AbhGZPb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:31:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5115760C41;
-        Mon, 26 Jul 2021 16:11:55 +0000 (UTC)
+        id S233155AbhGZPcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D163660EB2;
+        Mon, 26 Jul 2021 16:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315915;
-        bh=BFNhlEZO6+UPnX1sDeZdmiBIyaFaT4PvZeZa4mtd29M=;
+        s=korg; t=1627315918;
+        bh=lt7gDp/hN1IsxntOiOG0y7SZerHgnCH6tEfNFOCtDfU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l3VdWYD0eaftofYGDonDLrtoru0boErTyWAQeaRHduvRTHcOpOMspkqTJuFDgj4Dc
-         5tPSDipkF74TRCArBmIeGyzIT6/B3qTsypihZ/wukU6xtpOMAMHm0oJutK2NSjWtaO
-         qxX+vY98hKcC5oK1NPGK6kTyo/Xt98er537TttcQ=
+        b=VDZiKhU+Fe3r1I0vB6B8cih5CSEk5yLyN44c6z6OuMWQM41ChUeMwP66jgS9EwwH/
+         iCyx3UZQHAy1GI9RKeezjiFtmRx5ZOjT4k+c1Zi0eYAldbIsbkGpNdQi0bTDSgZBsm
+         /6NbOTU5KIBah/TadPxYqQB52KVLyTbKE1gxG25A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 117/223] net/sched: act_skbmod: Skip non-Ethernet packets
-Date:   Mon, 26 Jul 2021 17:38:29 +0200
-Message-Id: <20210726153850.097054897@linuxfoundation.org>
+Subject: [PATCH 5.13 118/223] ipv6: fix another slab-out-of-bounds in fib6_nh_flush_exceptions
+Date:   Mon, 26 Jul 2021 17:38:30 +0200
+Message-Id: <20210726153850.128151992@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,68 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <peilin.ye@bytedance.com>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit 727d6a8b7ef3d25080fad228b2c4a1d4da5999c6 ]
+[ Upstream commit 8fb4792f091e608a0a1d353dfdf07ef55a719db5 ]
 
-Currently tcf_skbmod_act() assumes that packets use Ethernet as their L2
-protocol, which is not always the case.  As an example, for CAN devices:
+While running the self-tests on a KASAN enabled kernel, I observed a
+slab-out-of-bounds splat very similar to the one reported in
+commit 821bbf79fe46 ("ipv6: Fix KASAN: slab-out-of-bounds Read in
+ fib6_nh_flush_exceptions").
 
-	$ ip link add dev vcan0 type vcan
-	$ ip link set up vcan0
-	$ tc qdisc add dev vcan0 root handle 1: htb
-	$ tc filter add dev vcan0 parent 1: protocol ip prio 10 \
-		matchall action skbmod swap mac
+We additionally need to take care of fib6_metrics initialization
+failure when the caller provides an nh.
 
-Doing the above silently corrupts all the packets.  Do not perform skbmod
-actions for non-Ethernet packets.
+The fix is similar, explicitly free the route instead of calling
+fib6_info_release on a half-initialized object.
 
-Fixes: 86da71b57383 ("net_sched: Introduce skbmod action")
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
+Fixes: f88d8ea67fbdb ("ipv6: Plumb support for nexthop object in a fib6_info")
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/act_skbmod.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ net/ipv6/route.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
-index 81a1c67335be..8d17a543cc9f 100644
---- a/net/sched/act_skbmod.c
-+++ b/net/sched/act_skbmod.c
-@@ -6,6 +6,7 @@
- */
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index d417e514bd52..09e84161b731 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -3642,7 +3642,7 @@ static struct fib6_info *ip6_route_info_create(struct fib6_config *cfg,
+ 		err = PTR_ERR(rt->fib6_metrics);
+ 		/* Do not leave garbage there. */
+ 		rt->fib6_metrics = (struct dst_metrics *)&dst_default_metrics;
+-		goto out;
++		goto out_free;
+ 	}
  
- #include <linux/module.h>
-+#include <linux/if_arp.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/skbuff.h>
-@@ -33,6 +34,13 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 	tcf_lastuse_update(&d->tcf_tm);
- 	bstats_cpu_update(this_cpu_ptr(d->common.cpu_bstats), skb);
- 
-+	action = READ_ONCE(d->tcf_action);
-+	if (unlikely(action == TC_ACT_SHOT))
-+		goto drop;
-+
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER)
-+		return action;
-+
- 	/* XXX: if you are going to edit more fields beyond ethernet header
- 	 * (example when you add IP header replacement or vlan swap)
- 	 * then MAX_EDIT_LEN needs to change appropriately
-@@ -41,10 +49,6 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 	if (unlikely(err)) /* best policy is to drop on the floor */
- 		goto drop;
- 
--	action = READ_ONCE(d->tcf_action);
--	if (unlikely(action == TC_ACT_SHOT))
--		goto drop;
--
- 	p = rcu_dereference_bh(d->skbmod_p);
- 	flags = p->flags;
- 	if (flags & SKBMOD_F_DMAC)
+ 	if (cfg->fc_flags & RTF_ADDRCONF)
 -- 
 2.30.2
 
