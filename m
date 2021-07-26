@@ -2,93 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D0D3D65B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF2D3D658D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241424AbhGZQrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237394AbhGZQqz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:46:55 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD013C09B12B
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:15:51 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id f12so12205024ljn.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9nCFSPU1gol0E4rDrQO0oADKpQ2235snVgYBEAYRF9Y=;
-        b=FxPJdanONOHHlkh8d+J5uVuVxTrNApcx9MiCzLB+nhd8tO35LqWJyHr+nxkh4eWigS
-         ZNzz6/AWWNqMLc+6W91Fb7ndI1UZV6LZf2IS1/3v1vXYt+73u2Zxzb6gTHcdLl3xf0YV
-         A1H174iotHYgi5TQ4Xu9vzheCPDn7kIx+3FPg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9nCFSPU1gol0E4rDrQO0oADKpQ2235snVgYBEAYRF9Y=;
-        b=k7MSTC/ghLHJJky3lxKhAgLouC2vqx1KVP3GpPK1hFQMiPrJzZkjZemEanskG+bmss
-         wtp1gcXS87DRAxpDHgeGtv+6Lr1M28+hU8BxFlee1qdGHO5PhoCeollTE4tRetyBzFLK
-         MCPkAGCJ7ez39IDfbp0QR4p+k2t1HUB0IAdhrR1a3s2QPbR2VzDSbMbRznsceGbXFj1b
-         cToK0gph+3UaQ64muumwBod8oHflzcTO2SX1MsvCOk3jRtrULU5pVecWKz3rx92ZRWam
-         xhC+1hMKnB4YkzErTwiqNVenV2U7Vb36buRFmjcdxxsBQ5686DZS+Rwwtqg/8lq33FW2
-         NDAA==
-X-Gm-Message-State: AOAM530tf4U2qB3FPgjdA1HfmX+02ROJ0vU7X9v7WGEr1BSjEXKRUtxT
-        H2p7C93CpnGx2aHXzymKKm1eAaWnaT3YJB+b
-X-Google-Smtp-Source: ABdhPJyXIw9IUDxiREo9SalblWzS14f+l05i849bkbt/VqNJSTwXsqXdiz0HgWzqSLcsKecxP3iA6A==
-X-Received: by 2002:a2e:b522:: with SMTP id z2mr13026074ljm.278.1627319749847;
-        Mon, 26 Jul 2021 10:15:49 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id j2sm21048ljc.49.2021.07.26.10.15.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 10:15:48 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id m9so12151465ljp.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:15:47 -0700 (PDT)
-X-Received: by 2002:a2e:3212:: with SMTP id y18mr12834084ljy.220.1627319747365;
- Mon, 26 Jul 2021 10:15:47 -0700 (PDT)
+        id S237160AbhGZQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:37:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:56832 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240553AbhGZQgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:36:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60EC36D;
+        Mon, 26 Jul 2021 10:17:20 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 499353F66F;
+        Mon, 26 Jul 2021 10:17:18 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 18:17:16 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Xuewen Yan <xuewen.yan94@gmail.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        mcgrof@kernel.org, Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Paul Turner <pjt@google.com>,
+        Quentin Perret <qperret@google.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] sched/uclamp: Introduce a method to transform UCLAMP_MIN
+ into BOOST
+Message-ID: <20210726171716.jow6qfbxx6xr5q3t@e107158-lin.cambridge.arm.com>
+References: <20210721075751.542-1-xuewen.yan94@gmail.com>
+ <d8e14c3c-0eab-2d4d-693e-fb647c7f7c8c@arm.com>
+ <CAB8ipk9rO7majqxo0eTnPf5Xs-c4iF8TPQqonCjv6sCd2J6ONA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210723205840.299280-1-agruenba@redhat.com> <20210723205840.299280-2-agruenba@redhat.com>
- <20210726163326.GK20621@quack2.suse.cz>
-In-Reply-To: <20210726163326.GK20621@quack2.suse.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 26 Jul 2021 10:15:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgqOZmRT_gmAS+K9sA7EYCKM9BYzvJMhy1_P6JaaVGvfA@mail.gmail.com>
-Message-ID: <CAHk-=wgqOZmRT_gmAS+K9sA7EYCKM9BYzvJMhy1_P6JaaVGvfA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/7] iov_iter: Introduce fault_in_iov_iter helper
-To:     Jan Kara <jack@suse.cz>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAB8ipk9rO7majqxo0eTnPf5Xs-c4iF8TPQqonCjv6sCd2J6ONA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 9:33 AM Jan Kara <jack@suse.cz> wrote:
->
-> On Fri 23-07-21 22:58:34, Andreas Gruenbacher wrote:
-> > +     gup_flags = FOLL_TOUCH | FOLL_POPULATE;
->
-> I don't think FOLL_POPULATE makes sense here. It makes sense only with
-> FOLL_MLOCK and determines whether mlock(2) should fault in missing pages or
-> not.
+Hi Xuewen
 
-Yeah, it won't hurt, but FOLL_POPULATE doesn't actually do anything
-unless FOLL_MLOCK is set. It is, as you say, a magic flag just for
-mlock.
+On 07/24/21 10:03, Xuewen Yan wrote:
+> On Fri, Jul 23, 2021 at 11:19 PM Dietmar Eggemann
+> <dietmar.eggemann@arm.com> wrote:
+> >
+> > On 21/07/2021 09:57, Xuewen Yan wrote:
+> > > From: Xuewen Yan <xuewen.yan@unisoc.com>
+> > >
+> > > The uclamp can clamp the util within uclamp_min and uclamp_max,
+> > > it is benifit to some tasks with small util, but for those tasks
+> > > with middle util, it is useless.
 
-The only ones that should matter are FOLL_WRITE (for obvious reasons)
-and FOLL_TOUCH (to set the accessed and dirty bits, rather than just
-th protection bits)
+It's not really useless, it works as it's designed ;-)
 
-                   Linus
+As Dietmar highlighted, you need to pick a higher boost value that gives you
+the best perf/watt for your use case.
+
+> > >
+> > > To speed up those tasks, convert UCLAMP_MIN to BOOST,
+> > > the BOOST as schedtune does:
+> >
+> > Maybe it's important to note here that schedtune is the `out-of-tree`
+> > predecessor of uclamp used in some Android versions.
+> 
+> Yes, and the patch is indeed used on Android which kernel version is 5.4+.
+
+I assume that this is a patch in your own Android 5.4 kernel, right? I'm not
+aware of any such patch in Android Common Kernel. If it's there, do you mind
+pointing me to the gerrit change that introduced it?
+
+> Because the kernel used in Android do not have the schedtune, and the
+> uclamp can not
+> boost all the util, and this is the reason for the design of the patch.
+
+Do you have a specific workload in mind here that is failing? It would help if
+you can explain in detail the mode of failure you're seeing to help us
+understand the problem better.
+
+> 
+> >
+> > > boot = uclamp_min / SCHED_CAPACITY_SCALE;
+> > > margin = boost * (uclamp_max - util)
+> > > boost_util = util + margin;
+> >
+> > This is essentially the functionality from schedtune_margin() in
+> > Android, right?
+> 
+> YES!
+> 
+> >
+> > So in your implementation, the margin (i.e. what is added to the task
+> > util) not only depends on uclamp_min, but also on `uclamp_max`?
+> 
+> Yes, because we do not want to convert completely the uclamp to schedtune,
+> we also want user can limit some tasks, so the UCLAMP_MAX's meaning
+> has not been changed，
+> meanwhile, the UCLAMP_MAX also can affect the margin.
+> 
+> >
+> > > Scenario:
+> > > if the task_util = 200, {uclamp_min, uclamp_max} = {100, 1024}
+> > >
+> > > without patch:
+> > > clamp_util = 200;
+> > >
+> > > with patch:
+> > > clamp_util = 200 + (100 / 1024) * (1024 - 200) = 280;
+
+If a task util was 200, how long does it take for it to reach 280? Why do you
+need to have this immediate boost value applied and can't wait for this time to
+lapse? I'm not sure, but ramping up by 80 points shouldn't take *that* long,
+but don't quote me on this :-)
+
+> >
+> > The same could be achieved by using {uclamp_min, uclamp_max} = {280, 1024}?
+> 
+> Yes, for per-task, that is no problem, but for per-cgroup, most times,
+> we can not always only put the special task into the cgroup.
+> For example, in Android , there is a cgroup named "top-app", often all
+> the threads of a app would be put into it.
+> But, not all threads of this app need to be boosted, if we set the
+> uclamp_min too big, the all the small task would be clamped to
+> uclamp_min,
+> the power consumption would be increased, howerever, if setting the
+> uclamp_min smaller, the performance may be increased.
+> Such as:
+> a task's util is 50,  {uclamp_min, uclamp_max} = {100, 1024}
+> the boost_util =  50 + (100 / 1024) * (1024 - 50) = 145;
+> but if we set {uclamp_min, uclamp_max} = {280, 1024}, without patch:
+> the clamp_util = 280.
+
+I assume {uclamp_min, uclamp_max} = {145, 1024} is not good enough because you
+want this 200 task to be boosted to 280. One can argue that not all tasks at
+200 need to be boosted to 280 too. So the question is, like above, what type
+of tasks that are failing here and how do you observe this failure? It seems
+there's a class of performance critical tasks that need this fast boosting.
+Can't you identify them and boost them individually?
+
+There's nothing that prevents you to change the uclamp_min of the cgroup
+dynamically by the way. Like for instance when an app launches you can choose
+a high boost value then lower it once it started up. Or if you know the top-app
+is a game and you want to guarantee a good minimum performance for it; you
+can choose to increase the top-app uclamp_min value too in a special gaming
+mode or something.
+
+For best perf/watt, using the per-task API is the best way forward. But
+I understand it'll take time for apps/android framework to learn how to use the
+per-task API most effectively. But it is what we should be aiming for.
+
+Cheers
+
+--
+Qais Yousef
+
+> 
+> >
+> > Uclamp_min is meant to be the final `boost( = util + margin)`
+> > information. You just have to set it appropriately to the task (via
+> > per-task and/or per-cgroup interface).
+> 
+> As said above, it is difficult to set the per-cgroup's uclamp_min for
+> all tasks in Android sometimes.
+> 
+> >
+> > Uclamp_min is for `boosting`, Uclamp max is for `capping` CPU frequency.
+> 
+> Yes!
+> 
+> >
+> 
+> Thanks!
+> xuewen
