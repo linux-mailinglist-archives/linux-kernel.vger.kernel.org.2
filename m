@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D01B3D602B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC8B3D62DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237121AbhGZPVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52030 "EHLO mail.kernel.org"
+        id S237685AbhGZPkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:40:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236563AbhGZPLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BBA160F5B;
-        Mon, 26 Jul 2021 15:51:47 +0000 (UTC)
+        id S237396AbhGZPWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6B4660EB2;
+        Mon, 26 Jul 2021 16:03:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314707;
-        bh=BodNKQBivTpSayoZMw7qWtVSOamDOsTcfAu9LdcKFHs=;
+        s=korg; t=1627315394;
+        bh=6If3F0eghDjTz18J2gn5939lQ3Tw+UTGUv95AWcWagk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=luaTdS7GLIyF1l2Y6uOvc5Ob+29OmZeV6Q1pOLVrbi47QXW7Ei0cjk5TcxdRKboQe
-         0ikRCKumml9bXckj1HZEU2d9tTZ18FjOQ0Zn07sLyffyz0ZysxwHJBL/zPnO32qZ/N
-         8fJ9fu19CyFNix1ptP1vn08oy9Jxu79ZR30N8x5c=
+        b=Mi5U3ZSI5DrLl6kmS+8Jl7YsdYB7+6cTTBd/nsJekTPxW9z4pws0N1Iy735N+sAu9
+         bZ+N3FfpL+Hf/69olnX9VTXjU9mHckZl9tE6KuL+Q1K4AfF63wXqIIj7cXP2PA/bnA
+         /A1d4kyadJCoTMdPHLA8xnHVcUgNjC1ETbC+3vH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        stable@vger.kernel.org, Somnath Kotur <somnath.kotur@broadcom.com>,
+        Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 061/120] ipv6: fix disable_policy for fwd packets
+Subject: [PATCH 5.10 080/167] bnxt_en: Refresh RoCE capabilities in bnxt_ulp_probe()
 Date:   Mon, 26 Jul 2021 17:38:33 +0200
-Message-Id: <20210726153834.340216674@linuxfoundation.org>
+Message-Id: <20210726153842.096527097@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit ccd27f05ae7b8ebc40af5b004e94517a919aa862 ]
+[ Upstream commit 2c9f046bc377efd1f5e26e74817d5f96e9506c86 ]
 
-The goal of commit df789fe75206 ("ipv6: Provide ipv6 version of
-"disable_policy" sysctl") was to have the disable_policy from ipv4
-available on ipv6.
-However, it's not exactly the same mechanism. On IPv4, all packets coming
-from an interface, which has disable_policy set, bypass the policy check.
-For ipv6, this is done only for local packets, ie for packets destinated to
-an address configured on the incoming interface.
+The capabilities can change after firmware upgrade/downgrade, so we
+should get the up-to-date RoCE capabilities everytime bnxt_ulp_probe()
+is called.
 
-Let's align ipv6 with ipv4 so that the 'disable_policy' sysctl has the same
-effect for both protocols.
-
-My first approach was to create a new kind of route cache entries, to be
-able to set DST_NOPOLICY without modifying routes. This would have added a
-lot of code. Because the local delivery path is already handled, I choose
-to focus on the forwarding path to minimize code churn.
-
-Fixes: df789fe75206 ("ipv6: Provide ipv6 version of "disable_policy" sysctl")
-Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Fixes: 2151fe0830fd ("bnxt_en: Handle RESET_NOTIFY async event from firmware.")
+Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ip6_output.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index aa8f19f852cc..fc36f3b0dceb 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -459,7 +459,9 @@ int ip6_forward(struct sk_buff *skb)
- 	if (skb_warn_if_lro(skb))
- 		goto drop;
- 
--	if (!xfrm6_policy_check(NULL, XFRM_POLICY_FWD, skb)) {
-+	if (!net->ipv6.devconf_all->disable_policy &&
-+	    !idev->cnf.disable_policy &&
-+	    !xfrm6_policy_check(NULL, XFRM_POLICY_FWD, skb)) {
- 		__IP6_INC_STATS(net, idev, IPSTATS_MIB_INDISCARDS);
- 		goto drop;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+index 64dbbb04b043..abf169001bf3 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
+@@ -479,15 +479,16 @@ struct bnxt_en_dev *bnxt_ulp_probe(struct net_device *dev)
+ 		if (!edev)
+ 			return ERR_PTR(-ENOMEM);
+ 		edev->en_ops = &bnxt_en_ops_tbl;
+-		if (bp->flags & BNXT_FLAG_ROCEV1_CAP)
+-			edev->flags |= BNXT_EN_FLAG_ROCEV1_CAP;
+-		if (bp->flags & BNXT_FLAG_ROCEV2_CAP)
+-			edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
+ 		edev->net = dev;
+ 		edev->pdev = bp->pdev;
+ 		edev->l2_db_size = bp->db_size;
+ 		edev->l2_db_size_nc = bp->db_size;
+ 		bp->edev = edev;
  	}
++	edev->flags &= ~BNXT_EN_FLAG_ROCE_CAP;
++	if (bp->flags & BNXT_FLAG_ROCEV1_CAP)
++		edev->flags |= BNXT_EN_FLAG_ROCEV1_CAP;
++	if (bp->flags & BNXT_FLAG_ROCEV2_CAP)
++		edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
+ 	return bp->edev;
+ }
 -- 
 2.30.2
 
