@@ -2,125 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112313D5649
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8A73D564D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbhGZIfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 04:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
+        id S232376AbhGZIhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 04:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhGZIfF (ORCPT
+        with ESMTP id S231728AbhGZIhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 04:35:05 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94097C061757;
-        Mon, 26 Jul 2021 02:15:34 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso10354697pjq.2;
-        Mon, 26 Jul 2021 02:15:34 -0700 (PDT)
+        Mon, 26 Jul 2021 04:37:12 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FFFC061757;
+        Mon, 26 Jul 2021 02:17:40 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q3so10270512wrx.0;
+        Mon, 26 Jul 2021 02:17:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zs6AH0K1yxcjVhQIJzgvDOlFx1BtJHEutjltuHXdrIM=;
-        b=E/1N2grUDWvVzyvF3S3mM97tdfIpp+QMwHwk/MAvarDWJpYX+LiufbNxO3DWU3BLOn
-         LWYFVr73XIwRadqNzhsQM1awGDBK3kPtwDTKo1T44rXIBqWIj/xeQ6aRWtfmwvbG9Z7u
-         HSCRo5250gXWasbBznBnrABmS6M5FI9TyE6owD2czrWML/bBibZAu8BfkDhsGKWD4ivN
-         WA6Vs68YeUCKFPv+52aHO3/j04uvDCM3k82ZAQtspUxPFpdNDPjpvTQi8Oc/B00pJJkc
-         LRYOxvcKBmSHb4A2VMzuTdZ/wOYUWDl6cXS8tTCZ2eqMUp47c+TrmYnSSLaAcQhNnst9
-         e1dA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8XPlENDnBF1HPtE4GsW4S/+wx4zo9TdSRDpla7XW8r8=;
+        b=O/USm/7o6jxe61SJt1Jj+D3Il60b2yUGgSju8iepLIokQccUtYTGLaKrsqF/3mvBYP
+         m0wgvGNo87Kw2SgP901qgj67XqJ4WWd4hUSdgn06SWMyTcR47c7muHSACQsI0AUVJ2Yf
+         9My9qalcH54FDRo9EgBEylVd+5kj6LV3aMalozcrfOW1oRjEO6q2mCDCpnoGW4rHgnBE
+         3YElc1fu7q+U939tT8calANJXgra85NFoapme0SITVE3iDiIFr/VxG/GBPeyJN6S5YF2
+         OITpMcMBCN9N35IkPJlhZ5qhFvew9qsxzF/hWZjiHHGSszYbxaPnlvPCQyIuEAULZdAZ
+         dgww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zs6AH0K1yxcjVhQIJzgvDOlFx1BtJHEutjltuHXdrIM=;
-        b=R/J5nyhZpm52d7DRd8kFy9SeNpcqEIX5hEaof2S3/cJ6dW8dg9Devkt+Mgi7w3m7+N
-         Wx0lpuJg+HC6XM8EvU6LcTvLt584dtSWCsc7ms4/q1N4mEOXKBzeYmXr4p/V6mWWUETj
-         75txdgd21LVWJ5nQdRypIQzdY0401gpPq2+vdYYFsS1E4VFTgRiQ4i8JvJDRyGuMps+e
-         BNmn/13zVQDsefLZ5xfn0st2RXK/ysNSP23JZBcy6qjJ1nNStG4uhs6isA6gy3E/E0wK
-         veXukRaN+41M/ql9YAi1IeFaazDUraPmdrET7ibD1Km3KwEOIz/36f/1VrH9cSlikPAU
-         ol3g==
-X-Gm-Message-State: AOAM531mtD2Qu6OHQf5r3bAUVDjykmYjaVhXfktZRJXd88ufHUUKfQM+
-        BfVQjcl/11wW6La6Co3sb3SQNkQ/0Zc=
-X-Google-Smtp-Source: ABdhPJxfbL1x424R86tpM29aDBYfR96D8eT96rowFyR9X3Oqp8ohYJKCMZmn6QHfoAY3jfL23Bp1jg==
-X-Received: by 2002:a63:1110:: with SMTP id g16mr16886929pgl.111.1627290934080;
-        Mon, 26 Jul 2021 02:15:34 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id c7sm45572966pgq.22.2021.07.26.02.15.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 02:15:33 -0700 (PDT)
-Subject: Re: [RFC PATCH v2 0/7] docs: pdfdocs: Improve font choice in CJK
- translations
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Wu X.C." <bobwxc@email.cn>, SeongJae Park <sj38.park@gmail.com>
-Cc:     Hu Haowen <src.res@email.cn>,
-        Shinwoo Lee <shinwoo.lee.us@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20ff8a65-6a5c-c062-fe1a-0f5c5ddc813c@gmail.com>
- <875ywyunwp.fsf@meer.lwn.net>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <5bd79349-3103-7680-e6dd-e9c510d278e9@gmail.com>
-Date:   Mon, 26 Jul 2021 18:15:30 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=8XPlENDnBF1HPtE4GsW4S/+wx4zo9TdSRDpla7XW8r8=;
+        b=Mae1r2n5N6TIuoE2zN+nteUHijC6fTpkPzE54ArbUiWLt2XTg4zeCDSr8n6jE5PCYH
+         wo+GLttgVFJoGl/hmJRggd0uHE/C9jc61m/nVqd3JVrZR1LJuml0wfbFnTTtNda5xUDH
+         g2WyD3LXP/jjC415iMGbJa1BZmbrCjUkO+YH8S8HIlHu+UwAhY2WmocCBnAScgzMLu4k
+         U2UwLtA5YCL5DSeAus2ul+aKwyFjzuOS3VcfxGs/+CaIaryrsUH2kFBoKaWAMgM7cg/m
+         HEJ0qcLLpZV0KnirUOG96j/qiy0m9B3EuvDshn17DVKuc6A5H1LbJioBZFDu3wB0Es+2
+         9zOw==
+X-Gm-Message-State: AOAM530RQkqhstESQ0Hs8zqwhkZUcCeog82xCr+Pqjk85eRwugLwUWl+
+        PM4fT04rimKUw048FS7eKwlQ+pU54Sj+jbQF
+X-Google-Smtp-Source: ABdhPJyrHFbUIeEFpjOxyZs18Py0sXKzIfv0f4PEmnVjDj8WPC9OIeGKoO7z87G3I4t5FJpCNDJ8lg==
+X-Received: by 2002:adf:efc4:: with SMTP id i4mr9822975wrp.53.1627291058984;
+        Mon, 26 Jul 2021 02:17:38 -0700 (PDT)
+Received: from localhost.localdomain ([94.73.35.151])
+        by smtp.gmail.com with ESMTPSA id g3sm41805869wru.95.2021.07.26.02.17.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 02:17:38 -0700 (PDT)
+From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, rydberg@bitmath.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+Subject: [PATCH -next 1/2] HID: magicmouse: fix code style errors
+Date:   Mon, 26 Jul 2021 11:17:18 +0200
+Message-Id: <20210726091719.47886-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <875ywyunwp.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Jul 2021 14:41:26 -0600, Jonathan Corbet wrote:
-> Akira Yokosawa <akiyks@gmail.com> writes:
-> 
->> Hi all,
->>
->> I'm calling this patch set "RFC PATCH v2", but the approach has changed
->> a lot since "RFC PATCH 0/3 docs: pdfdocs: Improve alignment of CJK
->> ascii-art" [1], hence the different title.
-> 
-> Given the RFC nature, I'm assuming you're not ready to have these
-> applied yet.  Please do let me know when that changes...
+Fix errors reported by checkpatch in hid-magicmouse.c:
 
-Will do.
+hid-magicmouse.c:35:  ERROR: open brace '{' following function
+                      definitions go on the next line
 
-As mentioned in the cover letter:
+hid-magicmouse.c:46:  ERROR: do not initialise statics to false
 
-> As for the to-be-merged zh_TW translations, the same approach should
-> work by choosing "Noto xxxx CJK TC" fonts.
+hid-magicmouse.c:79:  ERROR: Macros with complex values should be
+                      enclosed in parentheses
 
-, I'll wait until the zh_TW translations are merged (hopefully in v6)
-and update this patch set so that it can cover all of zh_CN, zh_TW,
-ko_KR, and ja_JP translations.
+hid-magicmouse.c:83:  ERROR: Macros with complex values should be
+                      enclosed in parentheses
 
-My expectation was to collect a few "Tested-by:" and "Reviewed-by"
-tags, but failed so far.
+hid-magicmouse.c:88:  ERROR: Macros with complex values should be
+                      enclosed in parentheses
 
-Especially, I think 6/7 and 7/7 need explicit acks.
-In the cover-letter, I said:
+hid-magicmouse.c:93:  ERROR: Macros with complex values should be
+                      enclosed in parentheses
 
-> Mauro, isn't the header comment in conf.py added in Patch 6/7 good enough?
-> I don't think those nice-to-have fonts are pre-reqs that should be
-> taken care of by the sphinx-pre-install script.
-> 
-> On the other hand, as having heard of nothing from SeongJae, who is
-> the maintainer of Korean memory-barrier.txt, there might be nobody
-> who cares the Korean chapter in translations.pdf.
-> Patches 6/7 and 7/7 need explicit Acks of someone who reads it, I guess.
+hid-magicmouse.c:99:  ERROR: Macros with complex values should be
+                      enclosed in parentheses
 
-Also, I'm thinking of splitting 2/7 into smaller chunks.
-It (1) introduces LaTeX macros for each CJK language, (2) changes CJKmainfont
-to Serif, (3) adds translations specific conf.py to localize monospace
-font choice for Latin letters, and (4) restores inter-phrase spaces in
-Korean translations.
+hid-magicmouse.c:104: ERROR: Macros with complex values should be
+                      enclosed in parentheses
 
-        Thanks, Akira
+hid-magicmouse.c:185: ERROR: do not use assignment in if condition
 
-> 
-> Thanks,
-> 
-> jon
-> 
+Signed-off-by: José Expósito <jose.exposito89@gmail.com>
+---
+ drivers/hid/hid-magicmouse.c | 37 ++++++++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/hid/hid-magicmouse.c b/drivers/hid/hid-magicmouse.c
+index 686788ebf3e1..3c911c97fe57 100644
+--- a/drivers/hid/hid-magicmouse.c
++++ b/drivers/hid/hid-magicmouse.c
+@@ -33,7 +33,8 @@ MODULE_PARM_DESC(emulate_scroll_wheel, "Emulate a scroll wheel");
+ 
+ static unsigned int scroll_speed = 32;
+ static int param_set_scroll_speed(const char *val,
+-				  const struct kernel_param *kp) {
++				  const struct kernel_param *kp)
++{
+ 	unsigned long speed;
+ 	if (!val || kstrtoul(val, 0, &speed) || speed > 63)
+ 		return -EINVAL;
+@@ -43,7 +44,7 @@ static int param_set_scroll_speed(const char *val,
+ module_param_call(scroll_speed, param_set_scroll_speed, param_get_uint, &scroll_speed, 0644);
+ MODULE_PARM_DESC(scroll_speed, "Scroll speed, value from 0 (slow) to 63 (fast)");
+ 
+-static bool scroll_acceleration = false;
++static bool scroll_acceleration;
+ module_param(scroll_acceleration, bool, 0644);
+ MODULE_PARM_DESC(scroll_acceleration, "Accelerate sequential scroll events");
+ 
+@@ -76,32 +77,32 @@ MODULE_PARM_DESC(report_undeciphered, "Report undeciphered multi-touch state fie
+ 
+ /* Touch surface information. Dimension is in hundredths of a mm, min and max
+  * are in units. */
+-#define MOUSE_DIMENSION_X (float)9056
++#define MOUSE_DIMENSION_X ((float)9056)
+ #define MOUSE_MIN_X -1100
+ #define MOUSE_MAX_X 1258
+ #define MOUSE_RES_X ((MOUSE_MAX_X - MOUSE_MIN_X) / (MOUSE_DIMENSION_X / 100))
+-#define MOUSE_DIMENSION_Y (float)5152
++#define MOUSE_DIMENSION_Y ((float)5152)
+ #define MOUSE_MIN_Y -1589
+ #define MOUSE_MAX_Y 2047
+ #define MOUSE_RES_Y ((MOUSE_MAX_Y - MOUSE_MIN_Y) / (MOUSE_DIMENSION_Y / 100))
+ 
+-#define TRACKPAD_DIMENSION_X (float)13000
++#define TRACKPAD_DIMENSION_X ((float)13000)
+ #define TRACKPAD_MIN_X -2909
+ #define TRACKPAD_MAX_X 3167
+ #define TRACKPAD_RES_X \
+ 	((TRACKPAD_MAX_X - TRACKPAD_MIN_X) / (TRACKPAD_DIMENSION_X / 100))
+-#define TRACKPAD_DIMENSION_Y (float)11000
++#define TRACKPAD_DIMENSION_Y ((float)11000)
+ #define TRACKPAD_MIN_Y -2456
+ #define TRACKPAD_MAX_Y 2565
+ #define TRACKPAD_RES_Y \
+ 	((TRACKPAD_MAX_Y - TRACKPAD_MIN_Y) / (TRACKPAD_DIMENSION_Y / 100))
+ 
+-#define TRACKPAD2_DIMENSION_X (float)16000
++#define TRACKPAD2_DIMENSION_X ((float)16000)
+ #define TRACKPAD2_MIN_X -3678
+ #define TRACKPAD2_MAX_X 3934
+ #define TRACKPAD2_RES_X \
+ 	((TRACKPAD2_MAX_X - TRACKPAD2_MIN_X) / (TRACKPAD2_DIMENSION_X / 100))
+-#define TRACKPAD2_DIMENSION_Y (float)11490
++#define TRACKPAD2_DIMENSION_Y ((float)11490)
+ #define TRACKPAD2_MIN_Y -2478
+ #define TRACKPAD2_MAX_Y 2587
+ #define TRACKPAD2_RES_Y \
+@@ -182,14 +183,18 @@ static void magicmouse_emit_buttons(struct magicmouse_sc *msc, int state)
+ 			/* The button was released. */
+ 		} else if (last_state != 0) {
+ 			state = last_state;
+-		} else if ((id = magicmouse_firm_touch(msc)) >= 0) {
+-			int x = msc->touches[id].x;
+-			if (x < middle_button_start)
+-				state = 1;
+-			else if (x > middle_button_stop)
+-				state = 2;
+-			else
+-				state = 4;
++		} else {
++			id = magicmouse_firm_touch(msc);
++			if (id >= 0) {
++				int x = msc->touches[id].x;
++
++				if (x < middle_button_start)
++					state = 1;
++				else if (x > middle_button_stop)
++					state = 2;
++				else
++					state = 4;
++			}
+ 		} /* else: we keep the mouse's guess */
+ 
+ 		input_report_key(msc->input, BTN_MIDDLE, state & 4);
+-- 
+2.25.1
+
