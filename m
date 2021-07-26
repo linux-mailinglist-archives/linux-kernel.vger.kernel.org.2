@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3956D3D62FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E61F3D6126
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238471AbhGZPnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38916 "EHLO mail.kernel.org"
+        id S237418AbhGZP3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:29:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237699AbhGZPX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B40BC60F38;
-        Mon, 26 Jul 2021 16:04:27 +0000 (UTC)
+        id S236421AbhGZPQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDFDA6056C;
+        Mon, 26 Jul 2021 15:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315468;
-        bh=YivcaPsQI6HankPicUPjChr6cFmEqlsylh88FIfEJFI=;
+        s=korg; t=1627315033;
+        bh=eRUNZYO70NbrzZ0scGXxW1b2KNydt1l9KIMLaLws9Rw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AWUdhyn6I701Yqex0tVCkgFm/Ifl39sm7+QLJeqmR42zGnWp/rmf2wkFoQSOpkfN3
-         5z8ChJmHIA3fYZQOCBuWYiuq169t2vi7HXp/Kmvlfaugx3hE+5WuNyKme0lH96lov1
-         g8zqMRaUQuXhwbyfLhmTISiI9mVobSw2TqvTQA6U=
+        b=heB3/Ccx3xnOhz/HSr5RFHgy2F1rXibv5I0Zg7CJQ/HGJRF84dCIg85p7ApmJU2I/
+         O1NF8LmZYOYdO+1v1VWfVdOaUAIBSpdHKZ/+wtHJku/sqt100+xTQhiZZY20r76uo+
+         UbZH/huQDx5n82tnC/H/Ug3GiSfKyx2HLzTe7yME=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 073/167] sctp: trim optlen when its a huge value in sctp_setsockopt
+Subject: [PATCH 5.4 025/108] perf dso: Fix memory leak in dso__new_map()
 Date:   Mon, 26 Jul 2021 17:38:26 +0200
-Message-Id: <20210726153841.842563570@linuxfoundation.org>
+Message-Id: <20210726153832.511817937@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 2f3fdd8d4805015fa964807e1c7f3d88f31bd389 ]
+[ Upstream commit 581e295a0f6b5c2931d280259fbbfff56959faa9 ]
 
-After commit ca84bd058dae ("sctp: copy the optval from user space in
-sctp_setsockopt"), it does memory allocation in sctp_setsockopt with
-the optlen, and it would fail the allocation and return error if the
-optlen from user space is a huge value.
+ASan reports a memory leak when running:
 
-This breaks some sockopts, like SCTP_HMAC_IDENT, SCTP_RESET_STREAMS and
-SCTP_AUTH_KEY, as when processing these sockopts before, optlen would
-be trimmed to a biggest value it needs when optlen is a huge value,
-instead of failing the allocation and returning error.
+  # perf test "65: maps__merge_in".
 
-This patch is to fix the allocation failure when it's a huge optlen from
-user space by trimming it to the biggest size sctp sockopt may need when
-necessary, and this biggest size is from sctp_setsockopt_reset_streams()
-for SCTP_RESET_STREAMS, which is bigger than those for SCTP_HMAC_IDENT
-and SCTP_AUTH_KEY.
+The causes of the leaks are two, this patch addresses only the first
+one, which is related to dso__new_map().
 
-Fixes: ca84bd058dae ("sctp: copy the optval from user space in sctp_setsockopt")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The bug is that dso__new_map() creates a new dso but never decreases the
+refcount it gets from creating it.
+
+This patch adds the missing dso__put().
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: d3a7c489c7fd2463 ("perf tools: Reference count struct dso")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/60bfe0cd06e89e2ca33646eb8468d7f5de2ee597.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/socket.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/perf/util/dso.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/sctp/socket.c b/net/sctp/socket.c
-index 3ac6b21ecf2c..e872bc50bbe6 100644
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -4471,6 +4471,10 @@ static int sctp_setsockopt(struct sock *sk, int level, int optname,
- 	}
+diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
+index ab2e130dc07a..7f07a5dc555f 100644
+--- a/tools/perf/util/dso.c
++++ b/tools/perf/util/dso.c
+@@ -1086,8 +1086,10 @@ struct map *dso__new_map(const char *name)
+ 	struct map *map = NULL;
+ 	struct dso *dso = dso__new(name);
  
- 	if (optlen > 0) {
-+		/* Trim it to the biggest size sctp sockopt may need if necessary */
-+		optlen = min_t(unsigned int, optlen,
-+			       PAGE_ALIGN(USHRT_MAX +
-+					  sizeof(__u16) * sizeof(struct sctp_reset_streams)));
- 		kopt = memdup_sockptr(optval, optlen);
- 		if (IS_ERR(kopt))
- 			return PTR_ERR(kopt);
+-	if (dso)
++	if (dso) {
+ 		map = map__new2(0, dso);
++		dso__put(dso);
++	}
+ 
+ 	return map;
+ }
 -- 
 2.30.2
 
