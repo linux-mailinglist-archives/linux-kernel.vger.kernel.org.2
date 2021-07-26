@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFEF3D638F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523B93D63C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238961AbhGZPsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:48:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
+        id S239229AbhGZPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:51:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238017AbhGZP3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CA060240;
-        Mon, 26 Jul 2021 16:10:08 +0000 (UTC)
+        id S237890AbhGZP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA773610A0;
+        Mon, 26 Jul 2021 16:09:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315809;
-        bh=KNFYws57n4zXku7Nd/PLxb09tfrH2i/PZaiswKkAZgU=;
+        s=korg; t=1627315769;
+        bh=B/W8a58DraerEqWvfxB4VTt7LN+Yqi+LHuu3f9dsR+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PlOl05APnwCSC99iaHX0XOubkMIQcO8BPvPPRBksiY0VANKrh2XcRTPziWqqHOayq
-         NP23Gr/J8iuvY7FWgQHQ657P5vT1D5Ng1vGsg4jlLJcVjLWfH2a8uzPTPmGNIPGAG3
-         JcJ+a8gICWxZ8a5dL6Xm8YymD2zySup/p9Dmvfe4=
+        b=Azh08xLYDvLHmx/yi2n11I5BVucJvBMCdLG4q6aqxpcXpgtjv60gFZ/e/4kLsu9zm
+         DN3um8uCbMWkKqmU7w0PcOrF5Vm6vNcnBAqGB7B/b2YUhzGRcuo4U8wy9y4g2Mb/88
+         jeet63z4M4Vrwbi+C2tfeylk2au5DznzvYLVE1Jo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
-        Martin Krastev <krastevm@vmware.com>,
+        stable@vger.kernel.org, Jianguo Wu <wujianguo@chinatelecom.cn>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 029/223] drm/vmwgfx: Fix a bad merge in otable batch takedown
-Date:   Mon, 26 Jul 2021 17:37:01 +0200
-Message-Id: <20210726153847.203796851@linuxfoundation.org>
+Subject: [PATCH 5.13 032/223] mptcp: fix syncookie process if mptcp can not_accept new subflow
+Date:   Mon, 26 Jul 2021 17:37:04 +0200
+Message-Id: <20210726153847.305206867@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,39 +41,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zack Rusin <zackr@vmware.com>
+From: Jianguo Wu <wujianguo@chinatelecom.cn>
 
-[ Upstream commit 34bd46bcf3de72cbffcdc42d3fa67e543d1c869b ]
+[ Upstream commit 8547ea5f52dd8ef19b69c25c41b1415481b3503b ]
 
-Change
-2ef4fb92363c ("drm/vmwgfx: Make sure bo's are unpinned before putting them back")
-caused a conflict in one of the drm trees and the merge commit
-68a32ba14177 ("Merge tag 'drm-next-2021-04-28' of git://anongit.freedesktop.org/drm/drm")
-accidently re-added code that the original change was removing.
-Fixed by removing the incorrect buffer unpin - it has already been unpinned
-two lines above.
+Lots of "TCP: tcp_fin: Impossible, sk->sk_state=7" in client side
+when doing stress testing using wrk and webfsd.
 
-Fixes: 68a32ba14177 ("Merge tag 'drm-next-2021-04-28' of git://anongit.freedesktop.org/drm/drm")
-Signed-off-by: Zack Rusin <zackr@vmware.com>
-Reviewed-by: Martin Krastev <krastevm@vmware.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210615182336.995192-4-zackr@vmware.com
+There are at least two cases may trigger this warning:
+1.mptcp is in syncookie, and server recv MP_JOIN SYN request,
+  in subflow_check_req(), the mptcp_can_accept_new_subflow()
+  return false, so subflow_init_req_cookie_join_save() isn't
+  called, i.e. not store the data present in the MP_JOIN syn
+  request and the random nonce in hash table - join_entries[],
+  but still send synack. When recv 3rd-ack,
+  mptcp_token_join_cookie_init_state() will return false, and
+  3rd-ack is dropped, then if mptcp conn is closed by client,
+  client will send a DATA_FIN and a MPTCP FIN, the DATA_FIN
+  doesn't have MP_CAPABLE or MP_JOIN,
+  so mptcp_subflow_init_cookie_req() will return 0, and pass
+  the cookie check, MP_JOIN request is fallback to normal TCP.
+  Server will send a TCP FIN if closed, in client side,
+  when process TCP FIN, it will do reset, the code path is:
+    tcp_data_queue()->mptcp_incoming_options()
+      ->check_fully_established()->mptcp_subflow_reset().
+  mptcp_subflow_reset() will set sock state to TCP_CLOSE,
+  so tcp_fin will hit TCP_CLOSE, and print the warning.
+
+2.mptcp is in syncookie, and server recv 3rd-ack, in
+  mptcp_subflow_init_cookie_req(), mptcp_can_accept_new_subflow()
+  return false, and subflow_req->mp_join is not set to 1,
+  so in subflow_syn_recv_sock() will not reset the MP_JOIN
+  subflow, but fallback to normal TCP, and then the same thing
+  happens when server will send a TCP FIN if closed.
+
+For case1, subflow_check_req() return -EPERM,
+then tcp_conn_request() will drop MP_JOIN SYN.
+
+For case2, let subflow_syn_recv_sock() call
+mptcp_can_accept_new_subflow(), and do fatal fallback, send reset.
+
+Fixes: 9466a1ccebbe ("mptcp: enable JOIN requests even if cookies are in use")
+Signed-off-by: Jianguo Wu <wujianguo@chinatelecom.cn>
+Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vmwgfx/vmwgfx_mob.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/mptcp/subflow.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c b/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c
-index 5648664f71bc..f2d625415458 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c
-@@ -354,7 +354,6 @@ static void vmw_otable_batch_takedown(struct vmw_private *dev_priv,
- 	ttm_bo_unpin(bo);
- 	ttm_bo_unreserve(bo);
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index 5493c851ca6c..5221cfce5390 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -223,6 +223,8 @@ again:
+ 		if (unlikely(req->syncookie)) {
+ 			if (mptcp_can_accept_new_subflow(subflow_req->msk))
+ 				subflow_init_req_cookie_join_save(subflow_req, skb);
++			else
++				return -EPERM;
+ 		}
  
--	ttm_bo_unpin(batch->otable_bo);
- 	ttm_bo_put(batch->otable_bo);
- 	batch->otable_bo = NULL;
- }
+ 		pr_debug("token=%u, remote_nonce=%u msk=%p", subflow_req->token,
+@@ -262,9 +264,7 @@ int mptcp_subflow_init_cookie_req(struct request_sock *req,
+ 		if (!mptcp_token_join_cookie_init_state(subflow_req, skb))
+ 			return -EINVAL;
+ 
+-		if (mptcp_can_accept_new_subflow(subflow_req->msk))
+-			subflow_req->mp_join = 1;
+-
++		subflow_req->mp_join = 1;
+ 		subflow_req->ssn_offset = TCP_SKB_CB(skb)->seq - 1;
+ 	}
+ 
 -- 
 2.30.2
 
