@@ -2,194 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7543D5984
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D87C3D5994
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbhGZLtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:49:35 -0400
-Received: from mga09.intel.com ([134.134.136.24]:65467 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233995AbhGZLte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:49:34 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10056"; a="212214843"
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="212214843"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 05:30:02 -0700
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="504880031"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.214.209]) ([10.254.214.209])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 05:30:00 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, john.garry@huawei.com,
-        dianders@chromium.org
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        will@kernel.org
-References: <cover.1626888444.git.robin.murphy@arm.com>
- <37708e21b55e17eb074ef145afc2157cd0192abe.1626888445.git.robin.murphy@arm.com>
- <f5e902ce-54a2-af7b-b42e-f61f7f96c68e@linux.intel.com>
- <77057c4b-479b-c5b8-4666-f16e294552d1@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 18/23] iommu: Express DMA strictness via the domain type
-Message-ID: <29443387-c088-480c-3d91-17b6d1cc8188@linux.intel.com>
-Date:   Mon, 26 Jul 2021 20:29:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234100AbhGZLvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:51:25 -0400
+Received: from smtp99.ord1c.emailsrvr.com ([108.166.43.99]:46334 "EHLO
+        smtp99.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234161AbhGZLvP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:51:15 -0400
+X-Greylist: delayed 473 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Jul 2021 07:51:13 EDT
+X-Auth-ID: markh@compro.net
+Received: by smtp13.relay.ord1c.emailsrvr.com (Authenticated sender: markh-AT-compro.net) with ESMTPSA id C6730A0115;
+        Mon, 26 Jul 2021 08:23:48 -0400 (EDT)
+Reply-To: markh@compro.net
+Subject: Re: [BUG] FLOPPY DRIVER since 5.10.20
+To:     Denis Efremov <efremov@linux.com>, dmarkh@cfl.rr.com,
+        linux-block@vger.kernel.org,
+        Linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <de10cb47-34d1-5a88-7751-225ca380f735@compro.net>
+ <e49603c2-ac36-12b0-57cf-ff5ab30115bc@linux.com>
+ <f5501a7c-4387-259d-66d2-f10db0cf36ff@cfl.rr.com>
+ <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
+From:   Mark Hounschell <markh@compro.net>
+Organization: Compro Computer Svcs.
+Message-ID: <1cf8e751-db77-441e-53b4-d6e979bbe046@compro.net>
+Date:   Mon, 26 Jul 2021 08:23:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <77057c4b-479b-c5b8-4666-f16e294552d1@arm.com>
+In-Reply-To: <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 0104ae61-b9b1-446d-a266-59dbbb31ebfc-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/26 16:27, Robin Murphy wrote:
-> On 2021-07-24 06:29, Lu Baolu wrote:
->> Hi Robin,
->>
->> On 2021/7/22 2:20, Robin Murphy wrote:
->>> Eliminate the iommu_get_dma_strict() indirection and pipe the
->>> information through the domain type from the beginning. Besides
->>> the flow simplification this also has several nice side-effects:
->>>
->>>   - Automatically implies strict mode for untrusted devices by
->>>     virtue of their IOMMU_DOMAIN_DMA override.
->>>   - Ensures that we only ends up using flush queues for drivers
->>>     which are aware of them and can actually benefit.
->>
->> Is this expressed by vendor iommu driver has ops->flush_iotlb_all?
+On 7/26/21 7:37 AM, Denis Efremov wrote:
 > 
-> No, it's literally whether ->domain_alloc accepts the DMA_DOMAIN_FQ type 
-> or not.
 > 
->>>   - Allows us to handle flush queue init failure by falling back
->>>     to strict mode instead of leaving it to possibly blow up later.
+> On 7/26/21 2:17 PM, Mark Hounschell wrote:
+>> On 7/26/21 3:57 AM, Denis Efremov wrote:
+>>> Hi,
 >>>
->>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->>> ---
->>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  2 +-
->>>   drivers/iommu/arm/arm-smmu/arm-smmu.c       |  2 +-
->>>   drivers/iommu/dma-iommu.c                   | 10 ++++++----
->>>   drivers/iommu/iommu.c                       | 14 ++++----------
->>>   include/linux/iommu.h                       |  1 -
->>>   5 files changed, 12 insertions(+), 17 deletions(-)
+>>> On 7/23/21 9:47 PM, Mark Hounschell wrote:
+>>>>
+>>>> These 2 incremental patches, patch-5.10.19-20 and patch-5.11.2-3 have broken the user land fd = open("/dev/fd0", (O_RDWR | O_NDELAY)); functionality.
 >>>
->>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c 
->>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> index fa41026d272e..260b560d0075 100644
->>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->>> @@ -2175,7 +2175,7 @@ static int arm_smmu_domain_finalise(struct 
->>> iommu_domain *domain,
->>>           .iommu_dev    = smmu->dev,
->>>       };
->>> -    if (!iommu_get_dma_strict(domain))
->>> +    if (domain->type == IOMMU_DOMAIN_DMA_FQ)
->>>           pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
->>>       pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
->>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
->>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> index dbc14c265b15..2c717f3be056 100644
->>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->>> @@ -765,7 +765,7 @@ static int arm_smmu_init_domain_context(struct 
->>> iommu_domain *domain,
->>>           .iommu_dev    = smmu->dev,
->>>       };
->>> -    if (!iommu_get_dma_strict(domain))
->>> +    if (domain->type == IOMMU_DOMAIN_DMA_FQ)
->>>           pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;
->>>       if (smmu->impl && smmu->impl->init_context) {
->>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
->>> index b1af1ff324c5..a114a7ad88ec 100644
->>> --- a/drivers/iommu/dma-iommu.c
->>> +++ b/drivers/iommu/dma-iommu.c
->>> @@ -363,13 +363,15 @@ static int iommu_dma_init_domain(struct 
->>> iommu_domain *domain, dma_addr_t base,
->>>       init_iova_domain(iovad, 1UL << order, base_pfn);
->>> -    if (!cookie->fq_domain && !dev_is_untrusted(dev) &&
->>> -        domain->ops->flush_iotlb_all && 
->>> !iommu_get_dma_strict(domain)) {
->>> +    if (domain->type == IOMMU_DOMAIN_DMA_FQ && !cookie->fq_domain &&
->>> +        domain->ops->flush_iotlb_all) {
+>>> Thank you for the report, I'm looking into this.
+>>>
+>>>> Since FOREVER before the patch, when using O_NDELAY, one could open the floppy device with no media inserted or even with write protected media without error. "Read-only file system" status is returned only when we actually tried to write to it. We have software still in use today that relies on this functionality.
+>>>
+>>> If it's a project with open sources could you please give a link?
+>>>
+>>> Regards,
+>>> Denis
+>>>
+>> This is immaterial but fdutils and libdsk both use rely on this flag. Who can know who else does. The point is it should NOT have been changed.
+> 
+> Yes, I asked this only to add utils and this behavior to the tests.
+> And be more specific about why we should preserve this behavior in
+> next commit messages.
+> 
 
-Perhaps we can remove the ops->flush_iotlb_all check with the
-assumption that any vendor iommu driver with DMA_FQ domain support
-should always provides this callback?
+Well, first thing is now you can't open a floppy with a write protected 
+floppy installed. I don't think that was intended but that is now how it is.
 
-Best regards,
-baolu
+Next there are commands that can be sent to the floppy via "ioctl(fd, 
+FDRAWCMD,  &raw_cmd);" that do NOT require a floppy diskette to be 
+installed.
 
->>>           if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
->>> -                      iommu_dma_entry_dtor))
->>> +                      iommu_dma_entry_dtor)) {
->>>               pr_warn("iova flush queue initialization failed\n");
->>> -        else
->>> +            domain->type = IOMMU_DOMAIN_DMA;
->>> +        } else {
->>>               cookie->fq_domain = domain;
->>> +        }
->>>       }
->>>       return iova_reserve_iommu_regions(dev, domain);
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>> index 8333c334891e..d7eaacae0944 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -135,6 +135,9 @@ static int __init iommu_subsys_init(void)
->>>           }
->>>       }
->>> +    if (!iommu_default_passthrough() && !iommu_dma_strict)
->>> +        iommu_def_domain_type = IOMMU_DOMAIN_DMA_FQ;
->>> +
->>>       pr_info("Default domain type: %s %s\n",
->>>           iommu_domain_type_str(iommu_def_domain_type),
->>>           (iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
->>> @@ -352,15 +355,6 @@ void iommu_set_dma_strict(bool strict)
->>>           iommu_dma_strict = strict;
->>>   }
->>> -bool iommu_get_dma_strict(struct iommu_domain *domain)
->>> -{
->>> -    /* only allow lazy flushing for DMA domains */
->>> -    if (domain->type == IOMMU_DOMAIN_DMA)
->>> -        return iommu_dma_strict;
->>> -    return true;
->>> -}
->>> -EXPORT_SYMBOL_GPL(iommu_get_dma_strict);
->>> -
->>>   static ssize_t iommu_group_attr_show(struct kobject *kobj,
->>>                        struct attribute *__attr, char *buf)
->>>   {
->>> @@ -764,7 +758,7 @@ static int 
->>> iommu_create_device_direct_mappings(struct iommu_group *group,
->>>       unsigned long pg_size;
->>>       int ret = 0;
->>> -    if (!domain || domain->type != IOMMU_DOMAIN_DMA)
->>> +    if (!domain || !(domain->type & __IOMMU_DOMAIN_DMA_API))
->>
->> Nit: probably move above change to patch 14?
-> 
-> Indeed I'm not sure why this one ended up here, good catch!
-> 
-> Thanks,
-> Robin.
-> 
->>>           return 0;
->>>       BUG_ON(!domain->pgsize_bitmap);
->>> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->>> index 56519110d43f..557c4c12e2cf 100644
->>> --- a/include/linux/iommu.h
->>> +++ b/include/linux/iommu.h
->>> @@ -484,7 +484,6 @@ int iommu_set_pgtable_quirks(struct iommu_domain 
->>> *domain,
->>>           unsigned long quirks);
->>>   void iommu_set_dma_strict(bool val);
->>> -bool iommu_get_dma_strict(struct iommu_domain *domain);
->>>   extern int report_iommu_fault(struct iommu_domain *domain, struct 
->>> device *dev,
->>>                     unsigned long iova, int flags);
->>>
->>
->> Best regards,
->> baolu
+All commands issued to the device that require a floppy diskette without 
+a diskette installed fail with the proper status letting you know the 
+device is not ready / no diskette installed. That goes for write 
+protected floppies too.
+
+There is no reason to force a user to only be able to operate on Linux 
+fdformat formatted floppies.
+
+Regards
+Mark
+
