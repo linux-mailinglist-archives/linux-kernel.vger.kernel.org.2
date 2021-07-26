@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF283D590D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D51D3D590F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbhGZLUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:20:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:53150 "EHLO mga02.intel.com"
+        id S233911AbhGZLU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:20:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233719AbhGZLUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:20:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10056"; a="199406459"
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="199406459"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 05:00:32 -0700
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="417032105"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 05:00:30 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with ESMTP id AB859205CF;
-        Mon, 26 Jul 2021 15:00:27 +0300 (EEST)
-Date:   Mon, 26 Jul 2021 15:00:27 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Subject: Re: [PATCH 2/3] docs: firmware-guide: acpi: dsd: graph.rst: replace
- some characters
-Message-ID: <20210726120027.GC3@paasikivi.fi.intel.com>
-References: <cover.1626947264.git.mchehab+huawei@kernel.org>
- <a65b04a5cf341cff02d4b514dd4889b4fa4f94b8.1626947264.git.mchehab+huawei@kernel.org>
+        id S233763AbhGZLUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:20:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4153F600D1;
+        Mon, 26 Jul 2021 12:01:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627300877;
+        bh=mfA9twdoBH7ucE/S/FL/eMhfGa6oul+5cO3xSBOIXp0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CKIU6zqLCOagCdDtEEDpR1F3q8Fy1YVhPq0xaPdhiD9vdwc4CgGKCDjpAnw9TITSL
+         l0il+VRzwcg1sONxWSKxUUme8UZRqcAfFsabf4prwihg/D1WqsrK2Hpb2LLPAyaPXZ
+         K6S0rXHKzNakJbEasgLjZDrKp7rZrbRFfKbBfPIpjnJwh5clU4PSjDSc7+G2G0fb89
+         Ofj6zo6clXV3Im2eTMMQLeczHdje3pPZUyIGpaI902QHEEQsK6yyQ+XcMgYaoqHOA/
+         iTx1zIpBeA4LEeH9YvHBMuIj6jnNCwaU9VNNvMTjBMB10mPx6clnpsCwlGTEZz+nrR
+         fDdugHMFV6bOQ==
+Date:   Mon, 26 Jul 2021 13:01:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/8] spi: spi-ep93xx: Prepare clock before using it
+Message-ID: <20210726120108.GG4670@sirena.org.uk>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+ <20210726115058.23729-3-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HB4mHL4PVvkpZAgW"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a65b04a5cf341cff02d4b514dd4889b4fa4f94b8.1626947264.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210726115058.23729-3-nikita.shubin@maquefel.me>
+X-Cookie: Vini, vidi, Linux!
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
 
-On Thu, Jul 22, 2021 at 11:50:02AM +0200, Mauro Carvalho Chehab wrote:
-> The conversion tools used during DocBook/LaTeX/html/Markdown->ReST
-> conversion and some cut-and-pasted text contain some characters that
-> aren't easily reachable on standard keyboards and/or could cause
-> troubles when parsed by the documentation build system.
-> 
-> Replace the occurences of the following characters:
-> 
-> 	- U+00a0 (' '): NO-BREAK SPACE
-> 	  as it can cause lines being truncated on PDF output
-> 
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+--HB4mHL4PVvkpZAgW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jul 26, 2021 at 02:50:46PM +0300, Nikita Shubin wrote:
+> spi_master spi0: failed to prepare transfer hardware: -108
+>=20
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 > ---
->  Documentation/firmware-guide/acpi/dsd/graph.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/firmware-guide/acpi/dsd/graph.rst b/Documentation/firmware-guide/acpi/dsd/graph.rst
-> index 4341299aa937..0ced07cb1be3 100644
-> --- a/Documentation/firmware-guide/acpi/dsd/graph.rst
-> +++ b/Documentation/firmware-guide/acpi/dsd/graph.rst
-> @@ -159,7 +159,7 @@ References
->  
->  [2] Devicetree. https://www.devicetree.org, referenced 2016-10-03.
->  
-> -[3] Documentation/devicetree/bindings/graph.txt
-> +[3] Documentation/devicetree/bindings/graph.txt
+>  drivers/spi/spi-ep93xx.c | 4 ++--
 
-I probably wrote this as a non-break space is produced by space + mod5,
-preceded by opening bracket which also requires mod5.
+You've not provided a Signed-off-by for this so I can't do anything with
+it, please see Documentation/process/submitting-patches.rst for details
+on what this is and why it's important.
 
-The file is there but the file has moved to DT schema repository. I believe
-the correct reference is:
+--HB4mHL4PVvkpZAgW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-https://github.com/devicetree-org/dt-schema/blob/master/schemas/graph.yaml
+-----BEGIN PGP SIGNATURE-----
 
->  
->  [4] Device Properties UUID For _DSD.
->      https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf,
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD+pAQACgkQJNaLcl1U
+h9Ds0Af/YqBqi8mEdjKXQOnAEbj8+eYJTBOZhq1614yibGpSMSVzXvFx7PMrn3WS
+emIZUz4bPaMd2k3sbuHLfz4kOGR9lsf+q92HIfHdMscLYpxfQLjIieUO+dy59LlD
+X4A746ImqKqe/r+0gelxqr3ZYP6q8bElYZMSTh2GQ1X21PlXHJetZ+XQShpwlcqx
+jlCZ1vsCeyeaorEzzgdT8rfgLyMYs5pcKSNqD7oAWJLZmDrGakVWihe9fWzUVuO8
+mDNZAbZZJOpbQVmZUNIwRvS5PN9TzdgFBzgz6XJ5wgTZC2Os/wFNlH1AhXR1g5qP
+4plqDUZ+65iDg2zrB1e4KFx8zk38DQ==
+=Arp6
+-----END PGP SIGNATURE-----
 
--- 
-Kind regards,
-
-Sakari Ailus
+--HB4mHL4PVvkpZAgW--
