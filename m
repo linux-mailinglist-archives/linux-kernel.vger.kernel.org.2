@@ -2,90 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AEE3D56D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6918F3D56DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhGZJJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:09:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232861AbhGZJJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:09:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9DDA60F49;
-        Mon, 26 Jul 2021 09:50:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627293021;
-        bh=LJY0gZ5dzl0O4oIYvQ90kyHhKvNigjB2wcn+SOScISs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mDuEeHuyQTZyn5GAA033iSbYnw4N9lPTCoGbv5k20OtAUsIyyswNZ4S2jYTpun2qL
-         cfSWnNjkvGRHrXvyjRoIEdr0V1gSMhjiPRDydKULOHxlHZxePKNWQcjTPoEx90O6rj
-         XRErUJEuuC96rUsIWrdLIQrE5lRa24pk5qQKJ4AlkKsfmtvahR8mtgJM08eRvyaPer
-         BAVU1kDB/Wg4pozRR1Ab5F1QfNtaLu9XdKOMXK9m/yZXAjewZyqP1RzUKXPgP33xqd
-         5SbazlIR8wHT4Qdk85iGhbSxClSTh2PgyWF4nXaR/61ZRRC6ZzeX1sPMfYz/L6vBuS
-         Bq4huQrvMwUlw==
-Date:   Mon, 26 Jul 2021 11:50:16 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Wei Xu <xuwei5@hisilicon.com>
-Cc:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] dts: hisilicon: add support for USB3 on Hikey 970
-Message-ID: <20210726115016.46a1cc60@coco.lan>
-In-Reply-To: <60FE25A4.4040905@hisilicon.com>
-References: <cover.1627116285.git.mchehab+huawei@kernel.org>
- <ec30515cad1247280356943d5f93157330eaa73f.1627116285.git.mchehab+huawei@kernel.org>
- <60FE25A4.4040905@hisilicon.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S233101AbhGZJMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232861AbhGZJMi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 05:12:38 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 891B8C061757;
+        Mon, 26 Jul 2021 02:53:06 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id e21so6409062pla.5;
+        Mon, 26 Jul 2021 02:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=J11jCx264fDkYB4Ey5+F/K1O59ZJzQ0+bvigKGl9vLw=;
+        b=C5VW49QstETO2+nuSLBxPYmWT5UFG2d/DKZGk6G0dcyb9Sqw4lenOzvlZ2r3hw57W9
+         xiHEJuhlXYAvbBDr/48DS+PgQu3WoEdrKEkxAaKWojCGTTPQB3Z+cfG/Lsp0m7J9SIaE
+         t4ByfnivIBylnuZYOWpEsiwmqjREBX+DdpcWvaP16OujRGFnVMnjGXrzq0571LSzPXHh
+         XtvE0oJ8yb0nTDNYGjYRojSDcDh8+cZsO2pz0+brbSO2JMCML5/9lALcQB4Vr8Fw2EYI
+         7he4EPa/V2gcoi89RG3Kh8E/TtNrrVuW8O9w2A5q6qujRae2MXBrqAQDwKt2Hw/UDERV
+         Cegw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=J11jCx264fDkYB4Ey5+F/K1O59ZJzQ0+bvigKGl9vLw=;
+        b=JSflZndkBukGECewBB1symzTn++pC5DR1L+9BPWhSrlJzN/kE9vYxh9bnT7q9XNayT
+         GdN8K+cvf5VflGGY3hQt46zUyrw7jLwsZuFddeh21gBWBRiE6T+el8iakAR+kGM6N0Lq
+         VhAxUeKr58nz0Lo3qcmOtBfIJwkDo6UgKZcGxOQRdObQ0HDERlLjTIbM5c25unXJ7GTY
+         Zk7FroWleUxNa/MNGzedk65JX1VP8i7ANzojzPQIWjtXRchJ3dWXmkXr4BJ/H2WtkY3m
+         t4eyMgZojSZCRSB/9ZghIFhST6ILvqxBHFFR/Sv/3wmv5tBNb6u8aop6/vd/vPJHNl/p
+         1MpA==
+X-Gm-Message-State: AOAM532mHcOakdBVA9OC+jcIBCGSHfSIRXe5BzW8sAZxb9OvQKn5mS9F
+        HUdFFT0Xi8CBvD5/dXmEk0T8tKZOmgGm6iJ25wk=
+X-Google-Smtp-Source: ABdhPJyrleBpLvLSD6dget3tB6MIaHE3pdYrzLelP+QIQO/diqAZwSWk0ozlkYeOVamNBz/HZ52KPSJJUEEKdjIN/b0=
+X-Received: by 2002:a17:90b:1194:: with SMTP id gk20mr25831664pjb.181.1627293186051;
+ Mon, 26 Jul 2021 02:53:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210510174142.986250-1-u.kleine-koenig@pengutronix.de>
+ <20210609202123.u5rmw7al4x3rrvun@pengutronix.de> <20210625171434.3xusxpxjprcdqa47@pengutronix.de>
+ <20210705080144.zfbzkm7l3gmnh6st@pengutronix.de> <20210722060654.nudpdtemosi64nlb@pengutronix.de>
+ <YPkg0wtYIoHKpTUW@kunai> <20210722081817.2tsjzof4gvldq6ka@pengutronix.de>
+ <YPlfcbkxiBmB+vw1@kunai> <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
+ <20210723091331.wl33wtcvvnejuhau@pengutronix.de> <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+In-Reply-To: <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 26 Jul 2021 12:52:26 +0300
+Message-ID: <CAHp75VeFXJ-0ak7=a0QCtKNdFpu98W6iJ2YuR4MpNx+U4rHe2A@mail.gmail.com>
+Subject: Re: [PULL] Add variants of devm_clk_get for prepared and enabled
+ clocks enabled clocks
+To:     Claudiu.Beznea@microchip.com
+Cc:     u.kleine-koenig@pengutronix.de, wsa@kernel.org, sboyd@kernel.org,
+        linux-rtc@vger.kernel.org, linux-pwm@vger.kernel.org,
+        alexandre.belloni@bootlin.com, a.zummo@towertech.it,
+        mturquette@baylibre.com, Nicolas.Ferre@microchip.com,
+        linux-spi@vger.kernel.org, o.rempel@pengutronix.de,
+        Ludovic.Desroches@microchip.com, broonie@kernel.org,
+        thierry.reding@gmail.com, aardelean@deviqon.com,
+        kernel@pengutronix.de, Jonathan.Cameron@huawei.com,
+        akpm@linux-foundation.org, lee.jones@linaro.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 26 Jul 2021 11:01:56 +0800
-Wei Xu <xuwei5@hisilicon.com> escreveu:
+On Mon, Jul 26, 2021 at 12:18 PM <Claudiu.Beznea@microchip.com> wrote:
+> On 23.07.2021 12:13, Uwe Kleine-K=C3=B6nig wrote:
+> > From:
+> > Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> > Date:
+> > 23.07.2021, 12:13
+> > On Wed, Jun 09, 2021 at 10:21:23PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> >> given that I don't succeed in getting any feedback for my patch set, I=
+'m
+> >> trying with a pull request today.
+> > This is for a series that is currently in v7 and didn't get any feedbac=
+k
+> > at all yet. The history is:
+> >
+> > v1: 2020-10-13, https://lore.kernel.org/linux-clk/20201013082132.661993=
+-1-u.kleine-koenig@pengutronix.de
+> >     no feedback at all
+> >
+> > v2: 2021-03-01, https://lore.kernel.org/linux-clk/20210301110821.144575=
+6-1-uwe@kleine-koenig.org
+> >     kernel test robot identified some issues
+> >
+> > v3: 2021-03-01, https://lore.kernel.org/linux-clk/20210301135053.146216=
+8-1-u.kleine-koenig@pengutronix.de
+> >     I added a few driver patches to show the benefit. (However in a way
+> >     that the autobuilders don't understand, so there were some false
+> >     positive build failure reports.)
+> >
+> > v4: 2021-03-30, https://lore.kernel.org/linux-clk/20210330181755.204339=
+-1-u.kleine-koenig@pengutronix.de
+> >     Got some feedback for the converted drivers by the respective
+> >     maintainers. Some were indifferent, some found it good
+> >
+> > v5: 2021-04-22, https://lore.kernel.org/linux-clk/20210422065726.164674=
+2-1-u.kleine-koenig@pengutronix.de
+> >     Fixed a problem in one of the driver changes (i2c-imx), no feedback
+> >     apart from pointing out a few typos, silence from the clk
+> >     maintainers
+> >
+> > v6: 2021-04-26, https://lore.kernel.org/linux-clk/20210426141730.282683=
+2-1-u.kleine-koenig@pengutronix.de
+> >     Just the typos fixed, no feedback
+> >
+> > v6 resend: 2021-05-10, https://lore.kernel.org/linux-clk/20210510061724=
+.940447-1-u.kleine-koenig@pengutronix.de
+> >     no changes in code. Got some feedback from Jonathan Cameron
+> >
+> > v7: 2021-05-10, https://lore.kernel.org/linux-clk/20210510174142.986250=
+-1-u.kleine-koenig@pengutronix.de
+> >     Adress Jonathan's feedback, recieved some more acks from non-clk
+> >     people
+> >
+> > pull request: 2021-07-09, https://lore.kernel.org/linux-clk/20210609202=
+123.u5rmw7al4x3rrvun@pengutronix.de
+> >
+> > On Fri, Jul 23, 2021 at 11:26:58AM +0300, Andy Shevchenko wrote:
+> >> On Thursday, July 22, 2021, Wolfram Sang <wsa@kernel.org> wrote:
+> >>
+> >>>>> What about adding gkh to the list explaining the situation to him?
+> >>>> Greg doesn't like devm_ stuff.
+> >>>>
+> >>>> I already asked Arnd who doesn't want to interfere and akpm who didn=
+'t
+> >>>> react either up to now.
+> >>> Wow, okay, that is frustrating.
+> >> The situation simply shows the process gap and One Maintainer nowadays=
+ is
+> >> far from enough to satisfy demands.
+> > Technically there are two maintainers for drivers/clk, Michael Turquett=
+e
+> > and Stephen Boyd. It seems Michael is MIA and Stephen doesn't have the
+> > capacity to address all requests.
+> >
+> >> What I think about is that we need to escalate this to Linus and
+> >> others and elaborate the mechanisms how to squeeze a new (additional)
+> >> maintainer when the original one is not responsive. Let=E2=80=99s say =
+some
+> >> procedural steps. Otherwise we doomed because of human factor.
+> > Assuming there was some process for this, is there someone who is
+> > willing to take responsibility here?
+>
+> Hi,
+>
+> In the last year I worked on AT91 clock drivers and I would be available
+> for taking responsibility beyond AT91 clocks (if everyone's OK with this)=
+,
+> in whatever form the current maintainers and people in the audience would
+> agree, if any (co-maintainer or other forms that could be useful). The id=
+ea
+> is to help things progress as I also have patches waiting for feedback on
+> clock mailing list for almost 6 months.
+>
+> Let me know if I can be helpful.
 
-> Hi Mauro,
-> 
-> On 2021/7/24 16:55, Mauro Carvalho Chehab wrote:
-> > Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> 
-> Fine to me and I can merge this patch once the binding for the 
-> "kirin970_hikey_usbhub" and "hi3670-dwc3" are ready.
+I think so. Many subsystems relatively recently (in the last couple of
+years or so) enforced that new drivers have to have official
+maintainers. Besides that it's warmly welcome to register existing
+drivers in the MAINTAINERS database. I would tell you go ahead and
+become a maintainer of AT91 clocks and it will definitely reduce the
+burden on Stephan's shoulders.
 
-The compatible:
-	"hisilicon,hi3670-dwc3"
+The idea is that you will send a PR to CCF maintainers instead of
+patches, although it's expected that patches appear in the mailing
+list beforehand anyway.
 
-was already merged upstream on this patch:
-
-commit b68d9251561f33661e53dd618f1cafe7ec9ec3c2
-Author:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-AuthorDate: Tue Sep 8 11:58:23 2020 +0200
-Commit:     Felipe Balbi <balbi@kernel.org>
-CommitDate: Thu Sep 24 11:56:01 2020 +0300
-
-    usb: dwc3: simple: add support for Hikey 970
-    
-    This binding driver is needed for Hikey 970 to work,
-    as otherwise a Serror is produced:
-
-It follows the DWC3 schema, e. g.:
-
-	Documentation/devicetree/bindings/usb/snps,dwc3.yaml
-
-While double checking for "kirin970_hikey_usbhub", it sounds that
-the dt-binding patch was not merged yet, and require further
-discussions.
-
-I'll re-start the upstream thread where this was discussed in
-the past. I'll re-submit this patch once we finish such
-discussions.
-
-Thanks,
-Mauro
+--=20
+With Best Regards,
+Andy Shevchenko
