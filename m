@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC713D62BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414FE3D611F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237303AbhGZPir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:38:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36646 "EHLO mail.kernel.org"
+        id S232561AbhGZP2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:28:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237269AbhGZPWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 665AE60F5A;
-        Mon, 26 Jul 2021 16:02:36 +0000 (UTC)
+        id S237409AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E2F560F90;
+        Mon, 26 Jul 2021 15:55:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315357;
-        bh=DZtjGGNtt29N0t0MOvqpwQD/LJPMtuoT1jY/0WVijak=;
+        s=korg; t=1627314907;
+        bh=y8gmZqop9BmTiw9GOQqxvDT1B86BHadDU+FgFb9RLPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vrUcH9ZIR9j+LwUao2Yj+ZM34HSC7tsij77CFBdDEPrFyEY3a+XvK0FDhrWUnhidL
-         mFy49GJ/4fJURd+CVTo1FNxlsWPbkmZ/3+S4igkkT2OQK/vxCZM/AbE5opSaInqgTn
-         oERh7S9RgfiBsxADcFC+3+qxMlSuPS1ykaTY7EBg=
+        b=RanR7y1AF/Q30p5knNaj7Gvu5qLQnraQpX7PjG0jwRsSkqyPjktzog5ILPuJ2g64e
+         PRExwmnkLXdu1Q3nN4WUyt2Cp2UmQuIyJ2sOBeaDkRhqjsiZsraSQXOj0OwdzFy6DL
+         0FRsxDgITZwkAK/7J+sB9ejponsXwMCt34BNULxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 063/167] bpf, sockmap, udp: sk_prot needs inuse_idx set for proc stats
+Subject: [PATCH 5.4 015/108] selftests: icmp_redirect: remove from checking for IPv6 route get
 Date:   Mon, 26 Jul 2021 17:38:16 +0200
-Message-Id: <20210726153841.512988993@linuxfoundation.org>
+Message-Id: <20210726153832.185013193@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Sitnicki <jakub@cloudflare.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 54ea2f49fd9400dd698c25450be3352b5613b3b4 ]
+[ Upstream commit 24b671aad4eae423e1abf5b7f08d9a5235458b8d ]
 
-The proc socket stats use sk_prot->inuse_idx value to record inuse sock
-stats. We currently do not set this correctly from sockmap side. The
-result is reading sock stats '/proc/net/sockstat' gives incorrect values.
-The socket counter is incremented correctly, but because we don't set the
-counter correctly when we replace sk_prot we may omit the decrement.
+If the kernel doesn't enable option CONFIG_IPV6_SUBTREES, the RTA_SRC
+info will not be exported to userspace in rt6_fill_node(). And ip cmd will
+not print "from ::" to the route output. So remove this check.
 
-To get the correct inuse_idx value move the core_initcall that initializes
-the UDP proto handlers to late_initcall. This way it is initialized after
-UDP has the chance to assign the inuse_idx value from the register protocol
-handler.
-
-Fixes: edc6741cc660 ("bpf: Add sockmap hooks for UDP sockets")
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20210714154750.528206-1-jakub@cloudflare.com
+Fixes: ec8105352869 ("selftests: Add redirect tests")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/udp_bpf.c | 2 +-
+ tools/testing/selftests/net/icmp_redirect.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
-index 7a94791efc1a..69c9663f9ee7 100644
---- a/net/ipv4/udp_bpf.c
-+++ b/net/ipv4/udp_bpf.c
-@@ -39,7 +39,7 @@ static int __init udp_bpf_v4_build_proto(void)
- 	udp_bpf_rebuild_protos(&udp_bpf_prots[UDP_BPF_IPV4], &udp_prot);
- 	return 0;
- }
--core_initcall(udp_bpf_v4_build_proto);
-+late_initcall(udp_bpf_v4_build_proto);
+diff --git a/tools/testing/selftests/net/icmp_redirect.sh b/tools/testing/selftests/net/icmp_redirect.sh
+index bf361f30d6ef..bfcabee50155 100755
+--- a/tools/testing/selftests/net/icmp_redirect.sh
++++ b/tools/testing/selftests/net/icmp_redirect.sh
+@@ -311,7 +311,7 @@ check_exception()
  
- struct proto *udp_bpf_get_proto(struct sock *sk, struct sk_psock *psock)
- {
+ 	if [ "$with_redirect" = "yes" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+-		grep -q "${H2_N2_IP6} from :: via ${R2_LLADDR} dev br0.*${mtu}"
++		grep -q "${H2_N2_IP6} .*via ${R2_LLADDR} dev br0.*${mtu}"
+ 	elif [ -n "${mtu}" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+ 		grep -q "${mtu}"
 -- 
 2.30.2
 
