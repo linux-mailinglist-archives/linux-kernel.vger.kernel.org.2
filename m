@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6653D6326
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2CD3D6200
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239001AbhGZPoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
+        id S232932AbhGZPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237629AbhGZPZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FA7B60F9B;
-        Mon, 26 Jul 2021 16:06:05 +0000 (UTC)
+        id S236209AbhGZPS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A557D60F70;
+        Mon, 26 Jul 2021 15:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315565;
-        bh=UDqDBBM7L8wBvV1Uv2np8RExwmYpEa2pmfRTiy/N2hY=;
+        s=korg; t=1627315163;
+        bh=quEZOqIUPAtFc8NFjSlE/1IWpSUdUQaJ5I2+r4lDNb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wblINW8EPYXYDb/ZS203ehB84g3BxXIDlkr8QTIR71z15vf2Cjb2WAvjyX/MoKrk4
-         /YaRP52ksx8Ls9KTXAFBRBckACN7OgYUjjqM7VW0QtALcdzjB11ReeiUNZbiiaXeut
-         JYcOMilL0CHCJZSkA+7nSMaoOLP3LJ6lDlsZZ4wo=
+        b=gqjmQGPnn0ajiLiXezREWlaB9C92piZIpmgJU5SvSb9qplH5xSohqJThRiHPMkOX8
+         rJ0V8pNM6zyVGNmfbb1bBVe6ktKYiT843t076r2+opqmYshpfokH/ZczUoz8PO+S+C
+         /BMfVe4WlFOKyLVL4tiXrZJZ8wGRVlwmDM3qEjxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 111/167] ALSA: sb: Fix potential ABBA deadlock in CSP driver
+        stable@vger.kernel.org,
+        Sayanta Pattanayak <sayanta.pattanayak@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 063/108] r8169: Avoid duplicate sysfs entry creation error
 Date:   Mon, 26 Jul 2021 17:39:04 +0200
-Message-Id: <20210726153843.134234146@linuxfoundation.org>
+Message-Id: <20210726153833.711599071@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,75 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
 
-commit 1c2b9519159b470ef24b2638f4794e86e2952ab7 upstream.
+[ Upstream commit e9a72f874d5b95cef0765bafc56005a50f72c5fe ]
 
-SB16 CSP driver may hit potentially a typical ABBA deadlock in two
-code paths:
+When registering the MDIO bus for a r8169 device, we use the PCI
+bus/device specifier as a (seemingly) unique device identifier.
+However the very same BDF number can be used on another PCI segment,
+which makes the driver fail probing:
 
- In snd_sb_csp_stop():
-     spin_lock_irqsave(&p->chip->mixer_lock, flags);
-     spin_lock(&p->chip->reg_lock);
+[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
+[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
+....
+[ 27.684858] libphy: mii_bus r8169-700 failed to register
+[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
 
- In snd_sb_csp_load():
-     spin_lock_irqsave(&p->chip->reg_lock, flags);
-     spin_lock(&p->chip->mixer_lock);
+Add the segment number to the device name to make it more unique.
 
-Also the similar pattern is seen in snd_sb_csp_start().
+This fixes operation on ARM N1SDP boards, with two boards connected
+together to form an SMP system, and all on-board devices showing up
+twice, just on different PCI segments. A similar issue would occur on
+large systems with many PCI slots and multiple RTL8169 NICs.
 
-Although the practical impact is very small (those states aren't
-triggered in the same running state and this happens only on a real
-hardware, decades old ISA sound boards -- which must be very difficult
-to find nowadays), it's a real scenario and has to be fixed.
-
-This patch addresses those deadlocks by splitting the locks in
-snd_sb_csp_start() and snd_sb_csp_stop() for avoiding the nested
-locks.
-
-Reported-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com
-Link: https://lore.kernel.org/r/20210716132723.13216-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f1e911d5d0dfd ("r8169: add basic phylib support")
+Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+[Andre: expand commit message, use pci_domain_nr()]
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb16_csp.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -814,6 +814,7 @@ static int snd_sb_csp_start(struct snd_s
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 5969f64169e5..fb51548c57e9 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -6850,7 +6850,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
+ 	new_bus->priv = tp;
+ 	new_bus->parent = &pdev->dev;
+ 	new_bus->irq[0] = PHY_IGNORE_INTERRUPT;
+-	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
++	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
++		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
  
- 	spin_lock(&p->chip->reg_lock);
- 	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
-@@ -853,6 +854,7 @@ static int snd_sb_csp_start(struct snd_s
- 	spin_unlock(&p->chip->reg_lock);
- 
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
-@@ -878,6 +880,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
- 
- 	spin_lock(&p->chip->reg_lock);
- 	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
-@@ -892,6 +895,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	spin_unlock(&p->chip->reg_lock);
- 
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+ 	new_bus->read = r8169_mdio_read_reg;
+ 	new_bus->write = r8169_mdio_write_reg;
+-- 
+2.30.2
+
 
 
