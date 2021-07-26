@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1D73D6345
+	by mail.lfdr.de (Postfix) with ESMTP id A541B3D6344
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237708AbhGZPph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41074 "EHLO mail.kernel.org"
+        id S232621AbhGZPpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236836AbhGZP3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B927360F9E;
-        Mon, 26 Jul 2021 16:07:30 +0000 (UTC)
+        id S237271AbhGZP3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8712160F5B;
+        Mon, 26 Jul 2021 16:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315652;
-        bh=WkaubtbPtEetxmQvUruRP8MixvFZXXe9LSCGK+KHfCo=;
+        s=korg; t=1627315657;
+        bh=ZuvLrbl9+q3AhrYX1NL01Ptc7NzkNldscm5S8HPliPQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/WbJu0ArOUAwpFTaAi9WILjCLAio0lOV4+H/j91hY81MvsejEVfN2y7OACfay1a8
-         343ZRrK7PZIHc2BN6UWO30UD7fNW6NMsYZc3+5aCtsWbhaez3JLNaNLKWPJ+4koSEH
-         aPDNTe550aKI2eU3O043FOJR9D6Wx27IvXOu00Ls=
+        b=TK9N4zSZlRuBU31/EEVav288LmG258Kf5ywj7MLYAj2w0A+ve7nZVVl75TOr90QBw
+         92/V1PzraoJp2siPnPyjF6HXNEQkf1OLcMjQkntBrafa5EnKgyopW4n6ISEmqY1B5k
+         RKw3Kk7yTkBfkxKpesB1FkPQLc/K7GNbi9ft6HzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Catherine Sullivan <csully@google.com>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 013/223] gve: Fix an error handling path in gve_probe()
-Date:   Mon, 26 Jul 2021 17:36:45 +0200
-Message-Id: <20210726153846.696256243@linuxfoundation.org>
+Subject: [PATCH 5.13 015/223] bonding: fix suspicious RCU usage in bond_ipsec_add_sa()
+Date:   Mon, 26 Jul 2021 17:36:47 +0200
+Message-Id: <20210726153846.759341503@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -42,48 +40,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit 2342ae10d1272d411a468a85a67647dd115b344f ]
+[ Upstream commit b648eba4c69e5819880b4907e7fcb2bb576069ab ]
 
-If the 'register_netdev() call fails, we must release the resources
-allocated by the previous 'gve_init_priv()' call, as already done in the
-remove function.
+To dereference bond->curr_active_slave, it uses rcu_dereference().
+But it and the caller doesn't acquire RCU so a warning occurs.
+So add rcu_read_lock().
 
-Add a new label and the missing 'gve_teardown_priv_resources()' in the
-error handling path.
+Test commands:
+    ip link add dummy0 type dummy
+    ip link add bond0 type bond
+    ip link set dummy0 master bond0
+    ip link set dummy0 up
+    ip link set bond0 up
+    ip x s add proto esp dst 14.1.1.1 src 15.1.1.1 spi 0x07 \
+	    mode transport \
+	    reqid 0x07 replay-window 32 aead 'rfc4106(gcm(aes))' \
+	    0x44434241343332312423222114131211f4f3f2f1 128 sel \
+	    src 14.0.0.52/24 dst 14.0.0.70/24 proto tcp offload \
+	    dev bond0 dir in
 
-Fixes: 893ce44df565 ("gve: Add basic driver framework for Compute Engine Virtual NIC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Catherine Sullivan <csully@google.com>
+Splat looks like:
+=============================
+WARNING: suspicious RCU usage
+5.13.0-rc3+ #1168 Not tainted
+-----------------------------
+drivers/net/bonding/bond_main.c:411 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by ip/684:
+ #0: ffffffff9a2757c0 (&net->xfrm.xfrm_cfg_mutex){+.+.}-{3:3},
+at: xfrm_netlink_rcv+0x59/0x80 [xfrm_user]
+   55.191733][  T684] stack backtrace:
+CPU: 0 PID: 684 Comm: ip Not tainted 5.13.0-rc3+ #1168
+Call Trace:
+ dump_stack+0xa4/0xe5
+ bond_ipsec_add_sa+0x18c/0x1f0 [bonding]
+ xfrm_dev_state_add+0x2a9/0x770
+ ? memcpy+0x38/0x60
+ xfrm_add_sa+0x2278/0x3b10 [xfrm_user]
+ ? xfrm_get_policy+0xaa0/0xaa0 [xfrm_user]
+ ? register_lock_class+0x1750/0x1750
+ xfrm_user_rcv_msg+0x331/0x660 [xfrm_user]
+ ? rcu_read_lock_sched_held+0x91/0xc0
+ ? xfrm_user_state_lookup.constprop.39+0x320/0x320 [xfrm_user]
+ ? find_held_lock+0x3a/0x1c0
+ ? mutex_lock_io_nested+0x1210/0x1210
+ ? sched_clock_cpu+0x18/0x170
+ netlink_rcv_skb+0x121/0x350
+ ? xfrm_user_state_lookup.constprop.39+0x320/0x320 [xfrm_user]
+ ? netlink_ack+0x9d0/0x9d0
+ ? netlink_deliver_tap+0x17c/0xa50
+ xfrm_netlink_rcv+0x68/0x80 [xfrm_user]
+ netlink_unicast+0x41c/0x610
+ ? netlink_attachskb+0x710/0x710
+ netlink_sendmsg+0x6b9/0xb70
+[ ... ]
+
+Fixes: 18cb261afd7b ("bonding: support hardware encryption offload to slaves")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/bonding/bond_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index 79cefe85a799..b43c6ff07614 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -1349,13 +1349,16 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+index c5a646d06102..026f4511bf7b 100644
+--- a/drivers/net/bonding/bond_main.c
++++ b/drivers/net/bonding/bond_main.c
+@@ -403,10 +403,12 @@ static int bond_ipsec_add_sa(struct xfrm_state *xs)
+ 	struct net_device *bond_dev = xs->xso.dev;
+ 	struct bonding *bond;
+ 	struct slave *slave;
++	int err;
  
- 	err = register_netdev(dev);
- 	if (err)
--		goto abort_with_wq;
-+		goto abort_with_gve_init;
+ 	if (!bond_dev)
+ 		return -EINVAL;
  
- 	dev_info(&pdev->dev, "GVE version %s\n", gve_version_str);
- 	gve_clear_probe_in_progress(priv);
- 	queue_work(priv->gve_wq, &priv->service_task);
- 	return 0;
++	rcu_read_lock();
+ 	bond = netdev_priv(bond_dev);
+ 	slave = rcu_dereference(bond->curr_active_slave);
+ 	xs->xso.real_dev = slave->dev;
+@@ -415,10 +417,13 @@ static int bond_ipsec_add_sa(struct xfrm_state *xs)
+ 	if (!(slave->dev->xfrmdev_ops
+ 	      && slave->dev->xfrmdev_ops->xdo_dev_state_add)) {
+ 		slave_warn(bond_dev, slave->dev, "Slave does not support ipsec offload\n");
++		rcu_read_unlock();
+ 		return -EINVAL;
+ 	}
  
-+abort_with_gve_init:
-+	gve_teardown_priv_resources(priv);
-+
- abort_with_wq:
- 	destroy_workqueue(priv->gve_wq);
+-	return slave->dev->xfrmdev_ops->xdo_dev_state_add(xs);
++	err = slave->dev->xfrmdev_ops->xdo_dev_state_add(xs);
++	rcu_read_unlock();
++	return err;
+ }
  
+ /**
 -- 
 2.30.2
 
