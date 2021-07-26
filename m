@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3793D5DE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350F53D5E6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235919AbhGZPEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:04:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43112 "EHLO mail.kernel.org"
+        id S236151AbhGZPHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:07:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235791AbhGZPDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:03:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A3460F51;
-        Mon, 26 Jul 2021 15:43:59 +0000 (UTC)
+        id S235963AbhGZPGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:06:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 279A860F5C;
+        Mon, 26 Jul 2021 15:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314240;
-        bh=gnaN2Ub9EzGOL1zPEVKyWQ1iOE1AQvX/lIrt0mcBagg=;
+        s=korg; t=1627314394;
+        bh=BoVwyVQ+MuSUkynD9RBY4q9czESC9lgarjfwUB6K5RU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SIMRFV2VevVC7ieoXLDV+LjoJzPC+MXTBh1oqpW/RCzLpahEIwKYynkMJrQPj/cia
-         3hFjD6N0lRp3zJIGoYoDHjlp9qWZEGmKviuDLQIR/WHvdqhnke6AVYReq9uJrRqlrZ
-         lS1czevHYTkv7LgbdusCbhr6GsSLXpe6KpNh4XcE=
+        b=wmP8pdMbAzjryeT5vSERDmuSaI+KhQXESGO8pG5QFWGPTCIoLCKekAgawER1wS2SP
+         /G8sK2qn1JbNfoBk6aWp+zHzZrkJoaB8PokeUldyJwu6anSNc7+RrUVuvw6ZC4O1Wd
+         18q/Y3B8OejMBSoIlNwvqqzPtY4Sr8X/RghBQMe8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 18/60] net: moxa: fix UAF in moxart_mac_probe
+        stable@vger.kernel.org, Jason Ekstrand <jason@jlekstrand.net>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gustavo Padovan <gustavo.padovan@collabora.co.uk>
+Subject: [PATCH 4.14 32/82] dma-buf/sync_file: Dont leak fences on merge failure
 Date:   Mon, 26 Jul 2021 17:38:32 +0200
-Message-Id: <20210726153825.444458357@linuxfoundation.org>
+Message-Id: <20210726153829.208360458@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Jason Ekstrand <jason@jlekstrand.net>
 
-commit c78eaeebe855fd93f2e77142ffd0404a54070d84 upstream.
+commit ffe000217c5068c5da07ccb1c0f8cce7ad767435 upstream.
 
-In case of netdev registration failure the code path will
-jump to init_fail label:
+Each add_fence() call does a dma_fence_get() on the relevant fence.  In
+the error path, we weren't calling dma_fence_put() so all those fences
+got leaked.  Also, in the krealloc_array failure case, we weren't
+freeing the fences array.  Instead, ensure that i and fences are always
+zero-initialized and dma_fence_put() all the fences and kfree(fences) on
+every error path.
 
-init_fail:
-	netdev_err(ndev, "init failed\n");
-	moxart_mac_free_memory(ndev);
-irq_map_fail:
-	free_netdev(ndev);
-	return ret;
-
-So, there is no need to call free_netdev() before jumping
-to error handling path, since it can cause UAF or double-free
-bug.
-
-Fixes: 6c821bd9edc9 ("net: Add MOXA ART SoCs ethernet driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jason Ekstrand <jason@jlekstrand.net>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Fixes: a02b9dc90d84 ("dma-buf/sync_file: refactor fence storage in struct sync_file")
+Cc: Gustavo Padovan <gustavo.padovan@collabora.co.uk>
+Cc: Christian König <christian.koenig@amd.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210624174732.1754546-1-jason@jlekstrand.net
+Signed-off-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/moxa/moxart_ether.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/dma-buf/sync_file.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -548,10 +548,8 @@ static int moxart_mac_probe(struct platf
- 	SET_NETDEV_DEV(ndev, &pdev->dev);
+--- a/drivers/dma-buf/sync_file.c
++++ b/drivers/dma-buf/sync_file.c
+@@ -220,8 +220,8 @@ static struct sync_file *sync_file_merge
+ 					 struct sync_file *b)
+ {
+ 	struct sync_file *sync_file;
+-	struct dma_fence **fences, **nfences, **a_fences, **b_fences;
+-	int i, i_a, i_b, num_fences, a_num_fences, b_num_fences;
++	struct dma_fence **fences = NULL, **nfences, **a_fences, **b_fences;
++	int i = 0, i_a, i_b, num_fences, a_num_fences, b_num_fences;
  
- 	ret = register_netdev(ndev);
--	if (ret) {
--		free_netdev(ndev);
-+	if (ret)
- 		goto init_fail;
+ 	sync_file = sync_file_alloc();
+ 	if (!sync_file)
+@@ -245,7 +245,7 @@ static struct sync_file *sync_file_merge
+ 	 * If a sync_file can only be created with sync_file_merge
+ 	 * and sync_file_create, this is a reasonable assumption.
+ 	 */
+-	for (i = i_a = i_b = 0; i_a < a_num_fences && i_b < b_num_fences; ) {
++	for (i_a = i_b = 0; i_a < a_num_fences && i_b < b_num_fences; ) {
+ 		struct dma_fence *pt_a = a_fences[i_a];
+ 		struct dma_fence *pt_b = b_fences[i_b];
+ 
+@@ -286,15 +286,16 @@ static struct sync_file *sync_file_merge
+ 		fences = nfences;
+ 	}
+ 
+-	if (sync_file_set_fence(sync_file, fences, i) < 0) {
+-		kfree(fences);
++	if (sync_file_set_fence(sync_file, fences, i) < 0)
+ 		goto err;
 -	}
  
- 	netdev_dbg(ndev, "%s: IRQ=%d address=%pM\n",
- 		   __func__, ndev->irq, ndev->dev_addr);
+ 	strlcpy(sync_file->user_name, name, sizeof(sync_file->user_name));
+ 	return sync_file;
+ 
+ err:
++	while (i)
++		dma_fence_put(fences[--i]);
++	kfree(fences);
+ 	fput(sync_file->file);
+ 	return NULL;
+ 
 
 
