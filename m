@@ -2,96 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86FB3D684D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A0E3D6850
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232932AbhGZUMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 16:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbhGZUMU (ORCPT
+        id S232977AbhGZUQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 16:16:22 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:27441 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232597AbhGZUQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 16:12:20 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49676C061757;
-        Mon, 26 Jul 2021 13:52:48 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c16so7587362plh.7;
-        Mon, 26 Jul 2021 13:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Sc951ASfu1oxq/560DhQUbxoK+Q3x0g+kN6389VJpvk=;
-        b=X543/zH07v/0ssv16vK/oSEYZ8inVOgEM+phljgxuXMEgvNO1ZyZIzng11w9b+WZ7+
-         9KPPSz7594g+D1bgRuJGy0DIxgasGoB1lRvfpVponWTECkwVRqNY/NJhDSduJQu7kZdr
-         238AyfZspdcQq0ufUbJHIGI9qI8n+OzXXCGSpVpqQ6Pz3ulgR3JMjS2WGPxCzrQSUJM0
-         Xxgdpv6x1y1AR7VcrvdnzshGocWLXUurhSvULUXyuyhxbJeQn1ofK1vWdY62RYZ8U8o2
-         hYMtmf5E5TkgSpwKOYWaQrS51Wt9iBvRUJw8mft6XXxb4Nb8bHEDXuKpk7/ZJlSK9vlv
-         pT8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sc951ASfu1oxq/560DhQUbxoK+Q3x0g+kN6389VJpvk=;
-        b=Nsrj5zhsvb18PNzhuTJXpIh0i1Emb0LJTKDwPePN30LTfSSvgf8+f3Wu6oMkq+pX4g
-         o+yewAhJCH/57wDqNtVOzFyq0PlTAxAL5k+64DDlNzFJ+MWxE/MsZ5awFnio3m5Yx0y/
-         OPZ4ibSGMUR0s9HhmPhGDQ6fHo/qBr0rLS/v9l/9dr8QARePvNdX5a8GR6fmEuJgzkfi
-         U71JJ8wxAQRZwKrWoUTDXR0ZWzFrsAdEwsE6Su+Vm/JlqUHdvgBuck9i2e5zkz5bs5rh
-         RSq0jC+EOeijhUSMw3AKidJifY3xWnFyq0fnZqTxaWM/riNAiBaXQ8qXFfscx5dQX64m
-         c68Q==
-X-Gm-Message-State: AOAM533b+3KHs2HCtOb5jwxRQu7hRE19bZwTzsiN2XxzACsyexi6aoQA
-        kOsoYvrju3WWrORUPiJHsPvNLdM08g8=
-X-Google-Smtp-Source: ABdhPJylABnDgnNYPWC/m9X+LqMZ1ejiMY+mBL6yIdoMLGVHhs+BUujNvC5jOrsEQl6RUXs0cg24wg==
-X-Received: by 2002:a17:902:830b:b029:12a:dd1b:74bf with SMTP id bd11-20020a170902830bb029012add1b74bfmr15886309plb.44.1627332767335;
-        Mon, 26 Jul 2021 13:52:47 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id k1sm750465pga.70.2021.07.26.13.52.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 13:52:46 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/60] 4.9.277-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210726153824.868160836@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <849f5079-9f9e-6413-39da-4cfccddd66bc@gmail.com>
-Date:   Mon, 26 Jul 2021 13:52:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Mon, 26 Jul 2021 16:16:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1627333009; x=1658869009;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=MBzzh+VDetRwP7MsYla8sy4iPCZFUAACM3mTYrjZQ70=;
+  b=jpfFSa/4usKi7oJB3qFXXWXMXIEyI2WYUcQDkOEOldLarlh8UimBoTrP
+   +R+uU8QDKqQBhiQuFYJwCtjWGf456qWm3BrE235l+zLFpNFEhpiznnWBh
+   NUt24vTbT8R/8pctWnM02CwmukFQPL9EdhhnwMNRqnFQg1pNpJOAYfyfH
+   4=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 26 Jul 2021 13:56:49 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Jul 2021 13:56:49 -0700
+Received: from [10.111.169.79] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Mon, 26 Jul
+ 2021 13:56:47 -0700
+Subject: Re: [PATCH v5] arm pl011 serial: support multi-irq request
+To:     Robin Murphy <robin.murphy@arm.com>, Bing Fan <hptsfb@gmail.com>,
+        <gregkh@linuxfoundation.org>, Bing Fan <tombinfan@tencent.com>
+CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <1625103512-30182-1-git-send-email-hptsfb@gmail.com>
+ <60f007b3-bb01-dd0a-b1a2-a6da62a486e5@quicinc.com>
+ <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
+ <a1843494-5c8e-1ec8-5b98-df318db40922@quicinc.com>
+ <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
+Date:   Mon, 26 Jul 2021 16:56:46 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03c.na.qualcomm.com (10.85.0.106) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 8:38 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.277 release.
-> There are 60 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.277-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+On 7/26/2021 4:36 PM, Robin Murphy wrote:
+> The important point you're missing, but which the KASAN dump does hint at, is
+> that that is a machine with SBSA generic UARTs booting via ACPI - I know it
+> doesn't do DT at all because I have one too. What matters there is that pl011
+> binds as a platform driver, *not* an amba driver.
+
+Thanks for pointing out, Robin. I just yet to see an ARM server booting from DT
+those days.
