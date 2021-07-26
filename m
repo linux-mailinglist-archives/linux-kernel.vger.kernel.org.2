@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAF73D5A96
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD4D3D5A99
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhGZNC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233903AbhGZNBd (ORCPT
+        id S233968AbhGZNCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:02:36 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:1859 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234330AbhGZNBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:01:33 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B919C061757;
-        Mon, 26 Jul 2021 06:41:26 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso2598pjf.4;
-        Mon, 26 Jul 2021 06:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=86rnBHji9Xk7NcgifSarZEp/toeYNcQuiSn6nVGy4jI=;
-        b=BsfxXeWHHatzRFSCVSXTdXPDLk1Ots3pqTmqFAI115TTo+Zo2p2z1f5yHtCVyZJO3v
-         6iJnkeWyUvFXtOKQxzzPndHgbgAT+zETR8dI0mkcLG2Z9YiuxGXDXC4XT0DfnAIqXJ95
-         u5VDpb932B7swQ9r1WXwYxgIPst2b8FjOOcW4tPmuiuWVlBAsixtD38sTrAqHwsaXSOR
-         efBqNPeH/DvtTplRKtJ/c+AOuM7hCeiNw5Vt+MM+8ZWcg1i/kU0HaCujVVujz2jsCMhf
-         QqLiha147kf3nz9m5naLWB795yp1aD/rSsGvt20utJ5HhPyiL3t/dt+mhgEejkLFUJGF
-         Pmvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=86rnBHji9Xk7NcgifSarZEp/toeYNcQuiSn6nVGy4jI=;
-        b=jnnMQAp80B0mtySDjhwHuxMVc8pn2wLabJjwSR77VuTWNCSWIKfwNJNgjp6fdamsHe
-         Cv1tDmXbNBSo3ITjSDgyxpg8rMlqFcc/QFu7xZXvKXsOD4uDcS6SwpAwen7aKkV0Pt05
-         Gexn9Uj4D8/lOfn5BMyaqb7kKqzz7exhehrfU/N5X2GLrOzeKr6AyoKbu2HLswWcrGcR
-         qenqBlHz5DDCPJgoKWDj+lfmiqjEEBy2rh01izaHBRUuxatCd5rFxg3F0aL7/MFZvB98
-         lziG/RpFKYjFBw5G+pgy6wvRd3WgbxvXROtJNj+/GShk8LWiv8/0WHrwAivfLH2lh2vS
-         Tovw==
-X-Gm-Message-State: AOAM531RzDz4+FNK03wF4606gBLTRy0nwcIJpHGRr8LuZmD9nqW3P/p3
-        yawTrizH7Ysr6Swufk/MxX0kQV8gFtD5GuUaVrE=
-X-Google-Smtp-Source: ABdhPJzEXc2js49a534TAA/L9dTGjfTDfJsyWqiSyFNh72SEYXOKzinkpjCDr6CdAxWVGoCoEt7XWoCfyYPuOSk+Dbc=
-X-Received: by 2002:a63:5a5b:: with SMTP id k27mr18348648pgm.74.1627306885943;
- Mon, 26 Jul 2021 06:41:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
- <CAHp75VfCydLguFX=MSoAQ_gayra5ovuwLxcY7m_pHiafvB7b5w@mail.gmail.com> <c1c15112-b102-570b-1432-568ca219ccf9@siemens.com>
-In-Reply-To: <c1c15112-b102-570b-1432-568ca219ccf9@siemens.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 26 Jul 2021 16:40:46 +0300
-Message-ID: <CAHp75VdYUUqVi6rd6C-W+1aTXCPs7ehSLDcRfo4RVe7XU+6c+A@mail.gmail.com>
-Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Storm <christian.storm@siemens.com>,
-        =?UTF-8?Q?Mantas_Mikul=C4=97nas?= <grawity@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 26 Jul 2021 09:01:41 -0400
+Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
+  by alexa-out.qualcomm.com with ESMTP; 26 Jul 2021 06:42:09 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Jul 2021 06:42:07 -0700
+X-QCInternal: smtphost
+Received: from rajpat-linux.qualcomm.com ([10.206.21.0])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 26 Jul 2021 19:11:39 +0530
+Received: by rajpat-linux.qualcomm.com (Postfix, from userid 2344945)
+        id CD9D021255; Mon, 26 Jul 2021 19:11:38 +0530 (IST)
+From:   Rajesh Patil <rajpat@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Rajesh Patil <rajpat@codeaurora.org>
+Subject: [PATCH V4 3/4] arm64: dts: sc7280: Update QUPv3 Debug UART DT node
+Date:   Mon, 26 Jul 2021 19:10:46 +0530
+Message-Id: <1627306847-25308-4-git-send-email-rajpat@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 3:04 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
->
-> On 26.07.21 14:01, Andy Shevchenko wrote:
-> > On Mon, Jul 26, 2021 at 2:46 PM Jan Kiszka <jan.kiszka@siemens.com> wro=
-te:
-> >>
-> >> From: Jan Kiszka <jan.kiszka@siemens.com>
-> >>
-> >> Obviously, the test needs to run against the register content, not its
-> >> address.
-> >>
-> >> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on sec=
-ond timeout")
-> >> Reported-by: Mantas Mikul=C4=97nas <grawity@gmail.com>
-> >
-> >> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> >
-> > Missed SoB of the submitter (hint: configure your Git to make sure
-> > that submitter and author are the same in terms of name-email).
->
-> The signed off is there. Not sure what you are referring to.
+From: Roja Rani Yarubandi <rojay@codeaurora.org>
 
-Nope. It's not. The sign of that is the From: line in the body of the
-email. It happens when the submitter !=3D author. And SoB of the former
-one is absent. But what is strange is that reading them here I haven't
-found the difference. Maybe one is in UTF-8 while the other is not and
-a unicode character degraded to Latin-1 or so?
+Update QUPv3 Debug UART DT node with the interconnect names and
+functions for SC7280 SoC.
 
---=20
-With Best Regards,
-Andy Shevchenko
+Split the Debug UART pin control functions.
+
+Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+---
+Changes in V4:
+ - As per Bjorn's comment, posting this debug-uart node update
+   as seperate patch
+
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts | 18 +++++++-----------
+ arch/arm64/boot/dts/qcom/sc7280.dtsi    | 28 ++++++++++++++++++++++++----
+ 2 files changed, 31 insertions(+), 15 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+index f63cf51..a50c9e5 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+@@ -383,18 +383,14 @@
+ 	bias-pull-up;
+ };
+ 
+-&qup_uart5_default {
+-	tx {
+-		pins = "gpio46";
+-		drive-strength = <2>;
+-		bias-disable;
+-	};
++&qup_uart5_tx {
++	drive-strength = <2>;
++	bias-disable;
++};
+ 
+-	rx {
+-		pins = "gpio47";
+-		drive-strength = <2>;
+-		bias-pull-up;
+-	};
++&qup_uart5_rx {
++	drive-strength = <2>;
++	bias-pull-up;
+ };
+ 
+ &sdc1_on {
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 455e58f..951818f 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -853,8 +853,13 @@
+ 				clock-names = "se";
+ 				clocks = <&gcc GCC_QUPV3_WRAP0_S5_CLK>;
+ 				pinctrl-names = "default";
+-				pinctrl-0 = <&qup_uart5_default>;
++				pinctrl-0 = <&qup_uart5_cts>, <&qup_uart5_rts>, <&qup_uart5_tx>, <&qup_uart5_rx>;
+ 				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
++				power-domains = <&rpmhpd SC7280_CX>;
++				operating-points-v2 = <&qup_opp_table>;
++				interconnects = <&clk_virt MASTER_QUP_CORE_0 0 &clk_virt SLAVE_QUP_CORE_0 0>,
++						<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_QUP_0 0>;
++				interconnect-names = "qup-core", "qup-config";
+ 				status = "disabled";
+ 			};
+ 
+@@ -2234,9 +2239,24 @@
+ 				function = "qup04";
+ 			};
+ 
+-			qup_uart5_default: qup-uart5-default {
+-				pins = "gpio46", "gpio47";
+-				function = "qup13";
++			qup_uart5_cts: qup-uart5-cts {
++				pins = "gpio20";
++				function = "qup05";
++			};
++
++			qup_uart5_rts: qup-uart5-rts {
++				pins = "gpio21";
++				function = "qup05";
++			};
++
++			qup_uart5_tx: qup-uart5-tx {
++				pins = "gpio22";
++				function = "qup05";
++			};
++
++			qup_uart5_rx: qup-uart5-rx {
++				pins = "gpio23";
++				function = "qup05";
+ 			};
+ 
+ 			qup_uart6_cts: qup-uart6-cts {
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+of Code Aurora Forum, hosted by The Linux Foundation
+
