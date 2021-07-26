@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB2F3D63F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7493D63EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239546AbhGZPx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:53:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47948 "EHLO mail.kernel.org"
+        id S239501AbhGZPxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233644AbhGZPc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84ABE60EB2;
-        Mon, 26 Jul 2021 16:12:55 +0000 (UTC)
+        id S233709AbhGZPca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B44260C40;
+        Mon, 26 Jul 2021 16:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315976;
-        bh=iSwOT2IT+TSQ1I5FcDSRN5RdQNVGYfJh0K9Qw2Q7QZQ=;
+        s=korg; t=1627315978;
+        bh=UsJYPCPZQLfe7l2y4KyHT7GmHNFhTrk+m/Ll3+7jyjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kz+fPzbwRHALn9qKQ2dZ/DtNcmO282Ldy+E8OHgFnZfp+LORwCyNeZjg+eJXX+eAW
-         vzaX4FJUn1vadFhnhD46gCwPBaMQ4bI8kB6CQOu5GPn1oBknR35M80wdrDW9aLpCXr
-         +h3Vpyz48s7Voue+ZYeUN0osL+HCa1JolfyOqE1o=
+        b=pg2TnxB/hC9jzsK19n9f5QZz5h16LkIRIBJ+jqHT3ioFH/PdjZVI4pI6cc20Vn/NA
+         NVE0meDRWEHsv7U/MPkXI7pDGElVrEIhMkzn2j+8sNHO4WCfye2IliwUAzKJv8pJ2R
+         /9eB0nqfjG9Ni92yj5za7w5wav7J6qmvL69zDMTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 138/223] drm/panel: raspberrypi-touchscreen: Prevent double-free
-Date:   Mon, 26 Jul 2021 17:38:50 +0200
-Message-Id: <20210726153850.755787437@linuxfoundation.org>
+Subject: [PATCH 5.13 139/223] dpaa2-switch: seed the buffer pool after allocating the swp
+Date:   Mon, 26 Jul 2021 17:38:51 +0200
+Message-Id: <20210726153850.786429482@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,34 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-[ Upstream commit 7bbcb919e32d776ca8ddce08abb391ab92eef6a9 ]
+[ Upstream commit 7aaa0f311e2df2704fa8ddb8ed681a3b5841d0bf ]
 
-The mipi_dsi_device allocated by mipi_dsi_device_register_full() is
-already free'd on release.
+Any interraction with the buffer pool (seeding a buffer, acquire one) is
+made through a software portal (SWP, a DPIO object).
+There are circumstances where the dpaa2-switch driver probes on a DPSW
+before any DPIO devices have been probed. In this case, seeding of the
+buffer pool will lead to a panic since no SWPs are initialized.
 
-Fixes: 2f733d6194bd ("drm/panel: Add support for the Raspberry Pi 7" Touchscreen.")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210720134525.563936-9-maxime@cerno.tech
+To fix this, seed the buffer pool after making sure that the software
+portals have been probed and are ready to be used.
+
+Fixes: 0b1b71370458 ("staging: dpaa2-switch: handle Rx path on control interface")
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 1 -
- 1 file changed, 1 deletion(-)
+ .../net/ethernet/freescale/dpaa2/dpaa2-switch.c  | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-index 5e9ccefb88f6..bbdd086be7f5 100644
---- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-+++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-@@ -447,7 +447,6 @@ static int rpi_touchscreen_remove(struct i2c_client *i2c)
- 	drm_panel_remove(&ts->base);
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
+index 05de37c3b64c..87321b7239cf 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-switch.c
+@@ -2770,32 +2770,32 @@ static int dpaa2_switch_ctrl_if_setup(struct ethsw_core *ethsw)
+ 	if (err)
+ 		return err;
  
- 	mipi_dsi_device_unregister(ts->dsi);
--	kfree(ts->dsi);
+-	err = dpaa2_switch_seed_bp(ethsw);
+-	if (err)
+-		goto err_free_dpbp;
+-
+ 	err = dpaa2_switch_alloc_rings(ethsw);
+ 	if (err)
+-		goto err_drain_dpbp;
++		goto err_free_dpbp;
+ 
+ 	err = dpaa2_switch_setup_dpio(ethsw);
+ 	if (err)
+ 		goto err_destroy_rings;
+ 
++	err = dpaa2_switch_seed_bp(ethsw);
++	if (err)
++		goto err_deregister_dpio;
++
+ 	err = dpsw_ctrl_if_enable(ethsw->mc_io, 0, ethsw->dpsw_handle);
+ 	if (err) {
+ 		dev_err(ethsw->dev, "dpsw_ctrl_if_enable err %d\n", err);
+-		goto err_deregister_dpio;
++		goto err_drain_dpbp;
+ 	}
  
  	return 0;
- }
+ 
++err_drain_dpbp:
++	dpaa2_switch_drain_bp(ethsw);
+ err_deregister_dpio:
+ 	dpaa2_switch_free_dpio(ethsw);
+ err_destroy_rings:
+ 	dpaa2_switch_destroy_rings(ethsw);
+-err_drain_dpbp:
+-	dpaa2_switch_drain_bp(ethsw);
+ err_free_dpbp:
+ 	dpaa2_switch_free_dpbp(ethsw);
+ 
 -- 
 2.30.2
 
