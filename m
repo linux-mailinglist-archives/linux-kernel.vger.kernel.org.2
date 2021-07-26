@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC623D5466
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E133D546F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232808AbhGZGzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:55:04 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:56448 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbhGZGyz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:54:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1627284920; x=1629876920;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zqdg7cPQM0a0PwYnHpAj5YucP/jlhWnUNr7bDHErP8M=;
-        b=Vjwd6zwr7fv+eZf91o+cdstlZecigHYecI6MYh7xKWCf9bh4oAwzGklvsYl+IXzV
-        zjGIH4+wMluMG5QY9leeE/oPGLD6NgmQID0zs9HXh9OEfNT67dKNplcaVVFyqqkl
-        qoo5nmsh3KqJCZlOFxVwNf2YOwmHadFVxPQC4G5xgcI=;
-X-AuditID: c39127d2-1e4f970000001daf-af-60fe65b85094
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 96.82.07599.8B56EF06; Mon, 26 Jul 2021 09:35:20 +0200 (CEST)
-Received: from augenblix2.phytec.de ([172.16.0.56])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2021072609351980-1233319 ;
-          Mon, 26 Jul 2021 09:35:19 +0200 
-From:   Stefan Riedmueller <s.riedmueller@phytec.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Rob Herring <robh@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 6/6] media: dt-bindings: mt9p031: Add missing required properties
-Date:   Mon, 26 Jul 2021 09:35:18 +0200
-Message-Id: <20210726073518.2167398-7-s.riedmueller@phytec.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210726073518.2167398-1-s.riedmueller@phytec.de>
-References: <20210726073518.2167398-1-s.riedmueller@phytec.de>
-MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 26.07.2021 09:35:19,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 26.07.2021 09:35:19
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHLMWRmVeSWpSXmKPExsWyRoCBS3dH6r8Eg/uLGC3mHznHatE5cQm7
-        xeVdc9gsejZsZbVYtukPk0Xr3iPsFv/37GC3+LTlG5MDh8fsjpmsHptWdbJ5zDsZ6PF5k1wA
-        SxSXTUpqTmZZapG+XQJXRuPqBSwFu3grTh7yaWCcztXFyMEhIWAi8f5pVhcjF4eQwDZGiWfv
-        9zNBOBcYJaZPb2PsYuTkYBMwklgwrREsISLQxiix40gzE0iCWeAyo8S3rz4gtrBAiMTHzT+Z
-        QWwWAVWJCd8Ws4HYvAJ2Es/vfgGzJQTkJWZe+s4OYnMK2EvcevoezBYCqmnt3MgOUS8ocXLm
-        ExaQZRICVxglDhzdyATRLCRxevFZZojF2hLLFr5mnsAoMAtJzywkqQWMTKsYhXIzk7NTizKz
-        9QoyKktSk/VSUjcxAsP48ET1SzsY++Z4HGJk4mA8xCjBwawkwuuw4neCEG9KYmVValF+fFFp
-        TmrxIUZpDhYlcd4NvCVhQgLpiSWp2ampBalFMFkmDk6pBsaK+abRk0umzy8PO/30xOe2k6pm
-        6S2s5SeesXSX3BEROsG9TIxj7x+5XTe97e7dl31Tzf2I6/felQHrM8/mbenwEVvy1ODKnqy7
-        i7/4m52J3JKx5V/qE7/zrjP0LUJ/v5wQ9Ysx+OhMz+pk1+fHLq52+Lo/dGGI2f3jmRc7r+Ut
-        OFLC9XzXljVvlFiKMxINtZiLihMBxtG8dFECAAA=
+        id S232568AbhGZG5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:57:01 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:64579 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232215AbhGZG5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 02:57:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1627285049; x=1658821049;
+  h=from:to:cc:subject:date:message-id;
+  bh=Lh2f00DCc0ETiBTHPeQX7NKdVsdgCnvj5dVGpBGcjVU=;
+  b=XiL5aUr7t7Z4zd+r2TRAoNPvQyI1fo+zxoXRjafcjF+LlsY6D7UFYDQ0
+   MqwRYPPL7TKgUbTW6A2t2whGVPanQBM0E8FKLiA25QcJTWHdh5JNgd4OG
+   lNni82ZzBhJlSAfznS/q4w1I3+oCHyUcs0IAytv0UFDMxI0OskbWq5i9B
+   K7zc/OiY0fqXu/EODxAfslH/yV8ByC0ocdncoZSK+7YBl6S1NM/bxiJMg
+   DTJvJdgO98AITKIed2aPOs8cJLm8ZMxupGAK6wuFfnwyWYl4xmrGRcipw
+   rag56GxDIzPVltipzoMGXscGEihHNDm0GQHjNYBhn5W6SrZ88YXgEKUQP
+   w==;
+X-IronPort-AV: E=Sophos;i="5.84,270,1620684000"; 
+   d="scan'208";a="18631660"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 26 Jul 2021 09:37:28 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Mon, 26 Jul 2021 09:37:28 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Mon, 26 Jul 2021 09:37:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1627285048; x=1658821048;
+  h=from:to:cc:subject:date:message-id;
+  bh=Lh2f00DCc0ETiBTHPeQX7NKdVsdgCnvj5dVGpBGcjVU=;
+  b=KSEDPBK1x5qZlk4SBr4Re9qZsohG9L9ksXoXFp2N/ERqMSPOLyza5P05
+   7NjGfUAxK+10PEFdOhrD9DSi1hHf/oXRVSyAefGK+F4zmrcS2dzhVZMnL
+   mHrEVp4yEDTZ35d1A7dK+HUgpAsjskMvRh4SIuSphU927jOLEfhQw3nKl
+   FYUC6UTbWLEDVVtBl7YDrOMHseDDiELOyTUGQEEVECJ81kijh3tpo6VTW
+   t459InA0t3ayDqIWgoytCEPZ5wbAxtHUbyPuhMTvAJj7AlW8gSFhKrsAf
+   qfCW2GXV0skBrHmPfOvWCPSYHJXN4La0XIurIR9sQndtqV9tDLIQ5CLvo
+   g==;
+X-IronPort-AV: E=Sophos;i="5.84,270,1620684000"; 
+   d="scan'208";a="18631659"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 26 Jul 2021 09:37:28 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 0BDE1280070;
+        Mon, 26 Jul 2021 09:37:28 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     David Lechner <david@lechnology.com>, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH] regmap: do not call regmap_debugfs_init() from regmap_attach_dev()
+Date:   Mon, 26 Jul 2021 09:36:27 +0200
+Message-Id: <20210726073627.31589-1-matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing required clocks and supply regulator properties for the
-sensor input clock and vdd, vdd=5Fio and vaa supply regulators.
+regmap_debugfs_init() should never be called twice for the same regmap,
+as it initializes various fields of the regmap struct, including list
+heads and mutices. A visible symptom are messages like:
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Reviewed-by: Rob Herring <robh@kernel.org>
+    debugfs: Directory 'dummy-iomuxc-gpr@20e4000' with parent 'regmap'
+    already present!
+
+This happened whenever regmap_attach_dev() was called for an existing
+regmap. Remove the call from regmap_attach_dev() and change
+__regmap_init() so that regmap_debugfs_init() is called exactly once.
+
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Fixes: 9b947a13e7f6 ("regmap: use debugfs even when no device")
 ---
- .../bindings/media/i2c/aptina,mt9p031.yaml    | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/base/regmap/regmap.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yam=
-l b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-index bc0e8e5194e8..c2ba78116dbb 100644
---- a/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
-@@ -24,6 +24,18 @@ properties:
-     description: I2C device address
-     maxItems: 1
-=20
-+  clocks:
-+    maxItems: 1
+
+As mentioned in my previous mail [1], I believe that the duplicate call to
+regmap_debugfs_init() is not the only issue with regmap_attach_dev().
+
+Every single user of regmap_attach_dev() outside of __regmap_init() is
+using it to attach a device to a syscon regmap obtained using one of the
+syscon_*() functions. AIUI, syscon regmaps do not belong to a single
+device, so calling regmap_attach_dev() seems wrong to me. My (possibly
+lacking) understanding of the semantics aside, the fact that
+regmap_attach_dev() is setting fields on the shared regmap without any
+kind of locking is at least suspicious.
+
+Maybe regmap_attach_dev() shouldn't be exported from the regmap code at
+all, removing all calls to the functions from drivers?
+
+
+[1] https://lkml.org/lkml/2021/7/19/500
+
+
+diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+index fe3e38dd5324..27625a1330ac 100644
+--- a/drivers/base/regmap/regmap.c
++++ b/drivers/base/regmap/regmap.c
+@@ -630,8 +630,6 @@ int regmap_attach_dev(struct device *dev, struct regmap *map,
+ 	if (ret)
+ 		return ret;
+ 
+-	regmap_debugfs_init(map);
+-
+ 	/* Add a devres resource for dev_get_regmap() */
+ 	m = devres_alloc(dev_get_regmap_release, sizeof(*m), GFP_KERNEL);
+ 	if (!m) {
+@@ -1192,10 +1190,10 @@ struct regmap *__regmap_init(struct device *dev,
+ 		ret = regmap_attach_dev(dev, map, config);
+ 		if (ret != 0)
+ 			goto err_regcache;
+-	} else {
+-		regmap_debugfs_init(map);
+ 	}
+ 
++	regmap_debugfs_init(map);
 +
-+  vdd-supply:
-+    description: Digital supply voltage, 1.8 V
-+
-+  vdd=5Fio-supply:
-+    description: I/O supply voltage, 1.8 or 2.8 V
-+
-+  vaa-supply:
-+    description: Analog supply voltage, 2.8 V
-+
-   reset-gpios:
-     maxItems: 1
-     description: Chip reset GPIO
-@@ -59,6 +71,10 @@ properties:
- required:
-   - compatible
-   - reg
-+  - clocks
-+  - vdd-supply
-+  - vdd=5Fio-supply
-+  - vaa-supply
-   - port
-=20
- additionalProperties: false
-@@ -74,6 +90,12 @@ examples:
-             reg =3D <0x5d>;
-             reset-gpios =3D <&gpio=5Fsensor 0 0>;
-=20
-+            clocks =3D <&sensor=5Fclk>;
-+
-+            vdd-supply =3D <&reg=5Fvdd>;
-+            vdd=5Fio-supply =3D <&reg=5Fvdd=5Fio>;
-+            vaa-supply =3D <&reg=5Fvaa>;
-+
-             port {
-                 mt9p031=5F1: endpoint {
-                     input-clock-frequency =3D <6000000>;
---=20
-2.25.1
+ 	return map;
+ 
+ err_regcache:
+-- 
+2.17.1
 
