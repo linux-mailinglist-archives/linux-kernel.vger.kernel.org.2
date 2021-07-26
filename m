@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B503D3D580C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB243D580D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhGZKSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:18:01 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:34692 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233395AbhGZKRp (ORCPT
+        id S233538AbhGZKSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 06:18:02 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:34992 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233464AbhGZKRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:17:45 -0400
-X-UUID: ecbd0b87956745d7abad27f3ff451f52-20210726
-X-UUID: ecbd0b87956745d7abad27f3ff451f52-20210726
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        Mon, 26 Jul 2021 06:17:46 -0400
+X-UUID: 6a4289bd34be4a7480fd920835d8a711-20210726
+X-UUID: 6a4289bd34be4a7480fd920835d8a711-20210726
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
         (envelope-from <chun-jie.chen@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1585713098; Mon, 26 Jul 2021 18:58:10 +0800
+        with ESMTP id 521437528; Mon, 26 Jul 2021 18:58:12 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Jul 2021 18:58:08 +0800
+ 15.0.1497.2; Mon, 26 Jul 2021 18:58:11 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Jul 2021 18:58:08 +0800
+ Transport; Mon, 26 Jul 2021 18:58:10 +0800
 From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -36,9 +36,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Weiyi Lu <weiyi.lu@mediatek.com>,
         Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Subject: [v14 11/21] clk: mediatek: Add MT8192 camsys clock support
-Date:   Mon, 26 Jul 2021 18:57:09 +0800
-Message-ID: <20210726105719.15793-12-chun-jie.chen@mediatek.com>
+Subject: [v14 12/21] clk: mediatek: Add MT8192 imgsys clock support
+Date:   Mon, 26 Jul 2021 18:57:10 +0800
+Message-ID: <20210726105719.15793-13-chun-jie.chen@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210726105719.15793-1-chun-jie.chen@mediatek.com>
 References: <20210726105719.15793-1-chun-jie.chen@mediatek.com>
@@ -49,51 +49,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8192 camsys and camsys raw clock providers
+Add MT8192 imgsys and imgsys2 clock providers
 
 Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 ---
- drivers/clk/mediatek/Kconfig          |   6 ++
- drivers/clk/mediatek/Makefile         |   1 +
- drivers/clk/mediatek/clk-mt8192-cam.c | 107 ++++++++++++++++++++++++++
- 3 files changed, 114 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt8192-cam.c
+ drivers/clk/mediatek/Kconfig          |  6 +++
+ drivers/clk/mediatek/Makefile         |  1 +
+ drivers/clk/mediatek/clk-mt8192-img.c | 70 +++++++++++++++++++++++++++
+ 3 files changed, 77 insertions(+)
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-img.c
 
 diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index 909f423d7c4c..a39a4c201c9e 100644
+index a39a4c201c9e..38011dccfe47 100644
 --- a/drivers/clk/mediatek/Kconfig
 +++ b/drivers/clk/mediatek/Kconfig
-@@ -514,6 +514,12 @@ config COMMON_CLK_MT8192_AUDSYS
+@@ -520,6 +520,12 @@ config COMMON_CLK_MT8192_CAMSYS
  	help
- 	  This driver supports MediaTek MT8192 audsys clocks.
+ 	  This driver supports MediaTek MT8192 camsys and camsys_raw clocks.
  
-+config COMMON_CLK_MT8192_CAMSYS
-+	bool "Clock driver for MediaTek MT8192 camsys"
++config COMMON_CLK_MT8192_IMGSYS
++	bool "Clock driver for MediaTek MT8192 imgsys"
 +	depends on COMMON_CLK_MT8192
 +	help
-+	  This driver supports MediaTek MT8192 camsys and camsys_raw clocks.
++	  This driver supports MediaTek MT8192 imgsys and imgsys2 clocks.
 +
  config COMMON_CLK_MT8516
  	bool "Clock driver for MediaTek MT8516"
  	depends on ARCH_MEDIATEK || COMPILE_TEST
 diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index 1d0f2e8e9661..94bf7a03fd88 100644
+index 94bf7a03fd88..91392cb333fd 100644
 --- a/drivers/clk/mediatek/Makefile
 +++ b/drivers/clk/mediatek/Makefile
-@@ -69,5 +69,6 @@ obj-$(CONFIG_COMMON_CLK_MT8183_VDECSYS) += clk-mt8183-vdec.o
- obj-$(CONFIG_COMMON_CLK_MT8183_VENCSYS) += clk-mt8183-venc.o
+@@ -70,5 +70,6 @@ obj-$(CONFIG_COMMON_CLK_MT8183_VENCSYS) += clk-mt8183-venc.o
  obj-$(CONFIG_COMMON_CLK_MT8192) += clk-mt8192.o
  obj-$(CONFIG_COMMON_CLK_MT8192_AUDSYS) += clk-mt8192-aud.o
-+obj-$(CONFIG_COMMON_CLK_MT8192_CAMSYS) += clk-mt8192-cam.o
+ obj-$(CONFIG_COMMON_CLK_MT8192_CAMSYS) += clk-mt8192-cam.o
++obj-$(CONFIG_COMMON_CLK_MT8192_IMGSYS) += clk-mt8192-img.o
  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8192-cam.c b/drivers/clk/mediatek/clk-mt8192-cam.c
+diff --git a/drivers/clk/mediatek/clk-mt8192-img.c b/drivers/clk/mediatek/clk-mt8192-img.c
 new file mode 100644
-index 000000000000..fc74cd80b4b0
+index 000000000000..7ce3abe42577
 --- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8192-cam.c
-@@ -0,0 +1,107 @@
++++ b/drivers/clk/mediatek/clk-mt8192-img.c
+@@ -0,0 +1,70 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
 +// Copyright (c) 2021 MediaTek Inc.
@@ -108,99 +108,62 @@ index 000000000000..fc74cd80b4b0
 +
 +#include <dt-bindings/clock/mt8192-clk.h>
 +
-+static const struct mtk_gate_regs cam_cg_regs = {
++static const struct mtk_gate_regs img_cg_regs = {
 +	.set_ofs = 0x4,
 +	.clr_ofs = 0x8,
 +	.sta_ofs = 0x0,
 +};
 +
-+#define GATE_CAM(_id, _name, _parent, _shift)	\
-+	GATE_MTK(_id, _name, _parent, &cam_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
++#define GATE_IMG(_id, _name, _parent, _shift)	\
++	GATE_MTK(_id, _name, _parent, &img_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
 +
-+static const struct mtk_gate cam_clks[] = {
-+	GATE_CAM(CLK_CAM_LARB13, "cam_larb13", "cam_sel", 0),
-+	GATE_CAM(CLK_CAM_DFP_VAD, "cam_dfp_vad", "cam_sel", 1),
-+	GATE_CAM(CLK_CAM_LARB14, "cam_larb14", "cam_sel", 2),
-+	GATE_CAM(CLK_CAM_CAM, "cam_cam", "cam_sel", 6),
-+	GATE_CAM(CLK_CAM_CAMTG, "cam_camtg", "cam_sel", 7),
-+	GATE_CAM(CLK_CAM_SENINF, "cam_seninf", "cam_sel", 8),
-+	GATE_CAM(CLK_CAM_CAMSV0, "cam_camsv0", "cam_sel", 9),
-+	GATE_CAM(CLK_CAM_CAMSV1, "cam_camsv1", "cam_sel", 10),
-+	GATE_CAM(CLK_CAM_CAMSV2, "cam_camsv2", "cam_sel", 11),
-+	GATE_CAM(CLK_CAM_CAMSV3, "cam_camsv3", "cam_sel", 12),
-+	GATE_CAM(CLK_CAM_CCU0, "cam_ccu0", "cam_sel", 13),
-+	GATE_CAM(CLK_CAM_CCU1, "cam_ccu1", "cam_sel", 14),
-+	GATE_CAM(CLK_CAM_MRAW0, "cam_mraw0", "cam_sel", 15),
-+	GATE_CAM(CLK_CAM_FAKE_ENG, "cam_fake_eng", "cam_sel", 17),
-+	GATE_CAM(CLK_CAM_CCU_GALS, "cam_ccu_gals", "cam_sel", 18),
-+	GATE_CAM(CLK_CAM_CAM2MM_GALS, "cam2mm_gals", "cam_sel", 19),
++static const struct mtk_gate img_clks[] = {
++	GATE_IMG(CLK_IMG_LARB9, "img_larb9", "img1_sel", 0),
++	GATE_IMG(CLK_IMG_LARB10, "img_larb10", "img1_sel", 1),
++	GATE_IMG(CLK_IMG_DIP, "img_dip", "img1_sel", 2),
++	GATE_IMG(CLK_IMG_GALS, "img_gals", "img1_sel", 12),
 +};
 +
-+static const struct mtk_gate cam_rawa_clks[] = {
-+	GATE_CAM(CLK_CAM_RAWA_LARBX, "cam_rawa_larbx", "cam_sel", 0),
-+	GATE_CAM(CLK_CAM_RAWA_CAM, "cam_rawa_cam", "cam_sel", 1),
-+	GATE_CAM(CLK_CAM_RAWA_CAMTG, "cam_rawa_camtg", "cam_sel", 2),
++static const struct mtk_gate img2_clks[] = {
++	GATE_IMG(CLK_IMG2_LARB11, "img2_larb11", "img1_sel", 0),
++	GATE_IMG(CLK_IMG2_LARB12, "img2_larb12", "img1_sel", 1),
++	GATE_IMG(CLK_IMG2_MFB, "img2_mfb", "img1_sel", 6),
++	GATE_IMG(CLK_IMG2_WPE, "img2_wpe", "img1_sel", 7),
++	GATE_IMG(CLK_IMG2_MSS, "img2_mss", "img1_sel", 8),
++	GATE_IMG(CLK_IMG2_GALS, "img2_gals", "img1_sel", 12),
 +};
 +
-+static const struct mtk_gate cam_rawb_clks[] = {
-+	GATE_CAM(CLK_CAM_RAWB_LARBX, "cam_rawb_larbx", "cam_sel", 0),
-+	GATE_CAM(CLK_CAM_RAWB_CAM, "cam_rawb_cam", "cam_sel", 1),
-+	GATE_CAM(CLK_CAM_RAWB_CAMTG, "cam_rawb_camtg", "cam_sel", 2),
++static const struct mtk_clk_desc img_desc = {
++	.clks = img_clks,
++	.num_clks = ARRAY_SIZE(img_clks),
 +};
 +
-+static const struct mtk_gate cam_rawc_clks[] = {
-+	GATE_CAM(CLK_CAM_RAWC_LARBX, "cam_rawc_larbx", "cam_sel", 0),
-+	GATE_CAM(CLK_CAM_RAWC_CAM, "cam_rawc_cam", "cam_sel", 1),
-+	GATE_CAM(CLK_CAM_RAWC_CAMTG, "cam_rawc_camtg", "cam_sel", 2),
++static const struct mtk_clk_desc img2_desc = {
++	.clks = img2_clks,
++	.num_clks = ARRAY_SIZE(img2_clks),
 +};
 +
-+static const struct mtk_clk_desc cam_desc = {
-+	.clks = cam_clks,
-+	.num_clks = ARRAY_SIZE(cam_clks),
-+};
-+
-+static const struct mtk_clk_desc cam_rawa_desc = {
-+	.clks = cam_rawa_clks,
-+	.num_clks = ARRAY_SIZE(cam_rawa_clks),
-+};
-+
-+static const struct mtk_clk_desc cam_rawb_desc = {
-+	.clks = cam_rawb_clks,
-+	.num_clks = ARRAY_SIZE(cam_rawb_clks),
-+};
-+
-+static const struct mtk_clk_desc cam_rawc_desc = {
-+	.clks = cam_rawc_clks,
-+	.num_clks = ARRAY_SIZE(cam_rawc_clks),
-+};
-+
-+static const struct of_device_id of_match_clk_mt8192_cam[] = {
++static const struct of_device_id of_match_clk_mt8192_img[] = {
 +	{
-+		.compatible = "mediatek,mt8192-camsys",
-+		.data = &cam_desc,
++		.compatible = "mediatek,mt8192-imgsys",
++		.data = &img_desc,
 +	}, {
-+		.compatible = "mediatek,mt8192-camsys_rawa",
-+		.data = &cam_rawa_desc,
-+	}, {
-+		.compatible = "mediatek,mt8192-camsys_rawb",
-+		.data = &cam_rawb_desc,
-+	}, {
-+		.compatible = "mediatek,mt8192-camsys_rawc",
-+		.data = &cam_rawc_desc,
++		.compatible = "mediatek,mt8192-imgsys2",
++		.data = &img2_desc,
 +	}, {
 +		/* sentinel */
 +	}
 +};
 +
-+static struct platform_driver clk_mt8192_cam_drv = {
++static struct platform_driver clk_mt8192_img_drv = {
 +	.probe = mtk_clk_simple_probe,
 +	.driver = {
-+		.name = "clk-mt8192-cam",
-+		.of_match_table = of_match_clk_mt8192_cam,
++		.name = "clk-mt8192-img",
++		.of_match_table = of_match_clk_mt8192_img,
 +	},
 +};
 +
-+builtin_platform_driver(clk_mt8192_cam_drv);
++builtin_platform_driver(clk_mt8192_img_drv);
 -- 
 2.18.0
 
