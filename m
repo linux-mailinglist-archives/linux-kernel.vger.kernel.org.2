@@ -2,193 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1140B3D62C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C523D62BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237903AbhGZPjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
+        id S237398AbhGZPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236558AbhGZPWW (ORCPT
+        with ESMTP id S236570AbhGZPWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:22 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB4DC061760;
-        Mon, 26 Jul 2021 09:02:49 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id z18so15625889ybg.8;
-        Mon, 26 Jul 2021 09:02:49 -0700 (PDT)
+        Mon, 26 Jul 2021 11:22:09 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AFDC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:02:36 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id c11so12105206plg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:02:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/vdCwKqpYs5uKHu1FuyczQq7cYQsTzNkCH7uKUuocFI=;
-        b=Ccwppfqdag4Y2Dt+znmPsPo/79r7J8pR7XbyuJVbv1BOJacE/wy3mijdcYafdP9pUb
-         /c0AA2xeuqCilvKD9mpEmCCjjmCtCAsCh/Up20j/E2x4Qa0BbGNylOUw1uIeLkrhOG6O
-         aA8P+35pFNosgQSzwfaW5RLoK8VdXdD+wDC+8s/eXxMY38Wt4u+oj6Jq0+MrfHI5W8B1
-         sF+RIwR4Ug4eK1C0x4UhwZuYXAIJc4VWC83bWYG106bXV+cjrmmMImIQ8hg3PMFp9Xll
-         ohz8SVUkb1aUI3jBRi0+uLFCoKHE97Kb2AeAZHQGxIKt3ZvyMxN22QdbI6Hojv/rlC/m
-         AyiQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6QXVZQXbkdfF3znCoEbHDGEQ9aqAeJksuuR7qjhWdCA=;
+        b=gSxwx5LsTE3muUYVy9dNqCEpXXRE0vVlovoYoFEE2XxDqzIBXALE0dC1REOgl2RFwW
+         472XGGDt3N7qKuXUIQg5jYxUnkAFP8XfMVaDIAETENQzwRSAsGoRwHmANOQtN8aNPCPx
+         DtLei+dLdYzjanqmjOuOejfwOJ5iUZY7YUL4I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/vdCwKqpYs5uKHu1FuyczQq7cYQsTzNkCH7uKUuocFI=;
-        b=Vfj58xHndOP6eq9dRXYDGhZV8E2NW8au1bwJ57Uo+F3b71aTdTryMQgMWwa/7SNYiw
-         kjo/J/9S2tcN0YLdtaPlyI02cIuL7Y6DOUkknoKVXtxcub3DvwHMBW88B/ByNFWDAK2b
-         NTFV1/fW7LnP+H48Zh9tP2/qSn5cNPRyY+VfFE78FW0iPqlxZFdZO4CnivAxoChhOQaq
-         2LLDLSEK7cWMadXNqySe5Glguz8soBaX+VaxrEEFaHD+KelZxdbRY9IrDRn/i9A9yvXE
-         WUOo3egzNk6bVqeu40siLFhiRldbntCAs6qDH1y7ZJp42eWecHuB6OTDF1hlvrHhXUyW
-         UrGA==
-X-Gm-Message-State: AOAM533EGi8S9sgv9lIEjGR8blFfuaDhbMIN9JvjTGnBfuhBRLPSVeX4
-        lM9bKgTuKCUXiwT4av/b8nGLe3SnmeiiSOOwM98=
-X-Google-Smtp-Source: ABdhPJysmaJMplTVwB1scGNstcAWZRe4sNDtyS++LO5nZ2c5Sb5uZWE7wJb4nytjMk2b5fLBqNqGTTqezIozOSTzZsw=
-X-Received: by 2002:a5b:403:: with SMTP id m3mr25971799ybp.62.1627315369061;
- Mon, 26 Jul 2021 09:02:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210721191558.22484-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210721191558.22484-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdWD+p7w2_KSsM-sYoZfK-7z4BM7yXAOf+5amxkmq4xvPg@mail.gmail.com>
-In-Reply-To: <CAMuHMdWD+p7w2_KSsM-sYoZfK-7z4BM7yXAOf+5amxkmq4xvPg@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 26 Jul 2021 17:02:22 +0100
-Message-ID: <CA+V-a8tb+F_CfbzUYoQBka0c2WptA+GpirxWSSoGYMgR6KpTMA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] pinctrl: renesas: Add RZ/G2L pin and gpio
- controller driver
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6QXVZQXbkdfF3znCoEbHDGEQ9aqAeJksuuR7qjhWdCA=;
+        b=k1z6IGtPv23yIT5AXtzq9edOjThGTGEmppYTZFvFRfqd0rWzFaAhWlSXW8LLL4RsUF
+         smgHy5/P2CxNWVYtsAL+VSYO3vGT3t0akmVVar8tzd5XSaGeTDUD4zOks+DTCAW8ccjY
+         sRqkZDKRZb4KNinxeFMXR0IIqHHWiFBi6vGXFbKqr0++zRCXPl7IKRST46NW/Py3mgff
+         5oXH+YYs1VzlDIrH0rsJncW671yropK5cYHXx1anM6H3YAfkajwKEC9El2Tu30BavgDo
+         x+rPnB8BEWQesO+jZWSUIRSdOeB026cqq+jdWuQxkazGKM3gBTr3qm9TooA8nXMzAdBL
+         dU4Q==
+X-Gm-Message-State: AOAM530udbd/7KhHasOpvkygCkCFzHH8yhhih+rmPbPmqYzRhoOGbP6b
+        dHd1pDGIAsLSnDHHv5C/CHnSPQ==
+X-Google-Smtp-Source: ABdhPJzzpw26/zIq9tVL2Z8GX3fcQaDxJkwE5cA977PbOEx922S0BZ76DbIlE2Elo5vFRr8sKLyO2g==
+X-Received: by 2002:a63:fd43:: with SMTP id m3mr18824516pgj.210.1627315356018;
+        Mon, 26 Jul 2021 09:02:36 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:f794:2436:8d25:f451])
+        by smtp.gmail.com with UTF8SMTPSA id f7sm423786pfc.111.2021.07.26.09.02.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 09:02:35 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 09:02:34 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V4 2/4] arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
+Message-ID: <YP7cmkayoajJ+1yj@google.com>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+ <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1627306847-25308-3-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Mon, Jul 26, 2021 at 07:10:45PM +0530, Rajesh Patil wrote:
+> From: Roja Rani Yarubandi <rojay@codeaurora.org>
+> 
+> Add QUPv3 wrapper_0 DT nodes for SC7280 SoC.
+> 
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> ---
+> Changes in V4:
+>  - As per Bjorn's comment, added QUP Wrapper_0 nodes
+>    other than debug-uart node
+>  - Dropped interconnect votes for wrapper_0 node
+> 
+> Changes in V3:
+>  - Broken the huge V2 patch into 3 smaller patches.
+>    1. QSPI DT nodes
+>    2. QUP wrapper_0 DT nodes
+>    3. QUP wrapper_1 DT nodes
+> 
+> Changes in V2:
+>  - As per Doug's comments removed pinmux/pinconf subnodes.
+>  - As per Doug's comments split of SPI, UART nodes has been done.
+>  - Moved QSPI node before aps_smmu as per the order.
+> 
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  84 ++++
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 720 ++++++++++++++++++++++++++++++++
+>  2 files changed, 804 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index b0bfd8e..f63cf51 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -358,6 +358,16 @@
+>  	vdda18-supply = <&vreg_l1c_1p8>;
+>  };
+>  
+> +&uart7 {
+> +	status = "okay";
+> +
+> +	/delete-property/interrupts;
+> +	interrupts-extended = <&intc GIC_SPI 608 IRQ_TYPE_LEVEL_HIGH>,
+> +				<&tlmm 31 IRQ_TYPE_EDGE_FALLING>;
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-1 = <&qup_uart7_sleep_cts>, <&qup_uart7_sleep_rts>, <&qup_uart7_sleep_tx>, <&qup_uart7_sleep_rx>;
+> +};
+> +
+>  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
+>  
+>  &qspi_cs0 {
+> @@ -428,3 +438,77 @@
+>  		bias-pull-up;
+>  	};
+>  };
+> +&qup_uart7_cts {
+> +	/*
+> +	 * Configure a pull-down on CTS to match the pull of
+> +	 * the Bluetooth module.
+> +	 */
+> +	bias-pull-down;
+> +};
+> +
+> +&qup_uart7_rts {
+> +	/* We'll drive RTS, so no pull */
+> +	drive-strength = <2>;
+> +	bias-disable;
+> +};
+> +
+> +&qup_uart7_tx {
+> +	/* We'll drive TX, so no pull */
+> +	drive-strength = <2>;
+> +	bias-disable;
+> +};
+> +
+> +&qup_uart7_rx {
+> +	/*
+> +	 * Configure a pull-up on RX. This is needed to avoid
+> +	 * garbage data when the TX pin of the Bluetooth module is
+> +	 * in tri-state (module powered off or not driving the
+> +	 * signal yet).
+> +	 */
+> +	bias-pull-up;
+> +};
+> +
+> +&tlmm {
+> +	qup_uart7_sleep_cts: qup-uart7-sleep-cts {
+> +		pins = "gpio28";
+> +		function = "gpio";
+> +		/*
+> +		 * Configure a pull-down on CTS to match the pull of
+> +		 * the Bluetooth module.
+> +		 */
+> +		bias-pull-down;
+> +	};
+> +
+> +	qup_uart7_sleep_rts: qup-uart7-sleep-rts {
+> +		pins = "gpio29";
+> +		function = "gpio";
+> +		/*
+> +		 * Configure pull-down on RTS. As RTS is active low
+> +		 * signal, pull it low to indicate the BT SoC that it
+> +		 * can wakeup the system anytime from suspend state by
+> +		 * pulling RX low (by sending wakeup bytes).
+> +		 */
+> +		bias-pull-down;
+> +	};
+> +
+> +	qup_uart7_sleep_tx: qup-uart7-sleep-tx {
+> +		pins = "gpio30";
+> +		function = "gpio";
+> +		/*
+> +		 * Configure pull-up on TX when it isn't actively driven
+> +		 * to prevent BT SoC from receiving garbage during sleep.
+> +		 */
+> +		bias-pull-up;
+> +	};
+> +
+> +	qup_uart7_sleep_rx: qup-uart7-sleep-rx {
+> +		pins = "gpio31";
+> +		function = "gpio";
+> +		/*
+> +		 * Configure a pull-up on RX. This is needed to avoid
+> +		 * garbage data when the TX pin of the Bluetooth module
+> +		 * is floating which may cause spurious wakeups.
+> +		 */
+> +		bias-pull-up;
+> +	};
+> +};
 
-Thank you for the review.
+How the patches of this series are split strikes me as a bit odd. Supposedly
+this patch adds the QUPv3 wrapper_0 DT nodes for the SC7280, however the
+above is the pin configuration for the Bluetooth UART of the SC7280 IDP board.
+I don't see a good reason why that should be part of this patch. It should be
+a separate change whose subject indicates that it configures the Bluetooth UART
+of the SC7280 IDP.
 
-On Mon, Jul 26, 2021 at 2:25 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Wed, Jul 21, 2021 at 9:16 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add support for pin and gpio controller driver for RZ/G2L SoC.
-> >
-> > Based on a patch in the BSP by Hien Huynh <hien.huynh.px@renesas.com>.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Thanks for the update!
->
-> > --- /dev/null
-> > +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
->
-> > +#define RZG2L_MPXED_PIN_FUNCS          (PIN_CFG_IOLH | \
-> > +                                        PIN_CFG_SR | \
-> > +                                        PIN_CFG_PUPD | \
-> > +                                        PIN_CFG_FILONOFF | \
-> > +                                        PIN_CFG_FILNUM | \
-> > +                                        PIN_CFG_FILCLKSEL)
-> > +
-> > +#define RZG2L_MPXED_ETH_PIN_FUNCS(x)   ((x) | \
-> > +                                        PIN_CFG_FILONOFF | \
-> > +                                        PIN_CFG_FILNUM | \
-> > +                                        PIN_CFG_FILCLKSEL)
->
-> I thought you were going for MULTI? ;-)
->
-I renamed it to _MULTI but it didn't sound good so renamed it to the
-other suggested alternative "MPXED".
-
-> > +
-> > +/*
-> > + * n indicates number of pins in the port, a is the register index
-> > + * and f is pin configuration capabilities supported.
-> > + */
-> > +#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) << 28) | ((a) << 20) | (f))
-> > +#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (((x) >> 28) & 0x7)
-> > +#define RZG2L_GPIO_PORT_GET_INDEX(x)   ((((x) & GENMASK(27, 20)) >> 20) & 0x7f)
->
-> Actually the "& 0x7f" can be removed, too, if you adjust the mask:
->
->     (((x) & GENMASK(26, 20)) >> 20)
->
-Agreed.
-
-> > +#define RZG2L_GPIO_PORT_GET_CFGS(x)    ((x) & GENMASK(19, 0))
-> > +
-> > +/*
-> > + * BIT(31) indicates dedicated pin, p is the register index while
-> > + * referencing to SR/IEN/IOLH/FILxx registers, b is the register bits
-> > + * (b * 8) and f is the pin configuration capabilities supported.
-> > + */
-> > +#define RZG2L_SINGLE_PIN               BIT(31)
-> > +#define RZG2L_SINGLE_PIN_PACK(p, b, f) (RZG2L_SINGLE_PIN | \
-> > +                                        ((p) << 24) | ((b) << 20) | (f))
-> > +#define RZG2L_SINGLE_PIN_GET_PORT(x)   (((x) >> 24) & 0x7f)
-> > +#define RZG2L_SINGLE_PIN_GET_BIT(x)    ((((x) & GENMASK(23, 20)) >> 20) & 0x7)
->
-> Likewise:
->
->     (((x) & GENMASK(22, 20)) >> 20)
->
-Agreed.
-
-> > +#define RZG2L_SINGLE_PIN_GET_CFGS(x)   ((x) & GENMASK(19, 0))
->
-> > +       struct rzg2l_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-> > +       struct function_desc *func;
-> > +       unsigned int i, *psel_val;
-> > +       struct group_desc *group;
-> > +       unsigned long data;
-> > +       int *pins;
-> > +
-> > +       func = pinmux_generic_get_function(pctldev, func_selector);
-> > +       if (!func)
-> > +               return -EINVAL;
-> > +       group = pinctrl_generic_get_group(pctldev, group_selector);
-> > +       if (!group)
-> > +               return -EINVAL;
-> > +
-> > +       psel_val = func->data;
-> > +       pins = group->pins;
-> > +       data = (unsigned long)group->data;
->
-> Lkp reports data is unused.
-> Which matches with passing NULL as the last parameter of
-> pinctrl_generic_add_group().
->
-Will drop this variable.
-
-Cheers,
-Prabhakar
-> > +
-> > +       for (i = 0; i < group->num_pins; i++) {
-> > +               dev_dbg(pctrl->dev, "port:%u pin: %u PSEL:%u\n",
-> > +                       RZG2L_PIN_ID_TO_PORT(pins[i]), RZG2L_PIN_ID_TO_PIN(pins[i]),
-> > +                       psel_val[i]);
-> > +               rzg2l_pinctrl_set_pfc_mode(pctrl, RZG2L_PIN_ID_TO_PORT(pins[i]),
-> > +                                          RZG2L_PIN_ID_TO_PIN(pins[i]), psel_val[i]);
-> > +       }
-> > +
-> > +       return 0;
-> > +};
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Without this conflation of SoC and board DT it would seem perfectly reasonable
+to squash this patch and '[4/4] arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes'
+into a single one, they are essentially doing the same thing, I see no need to
+have different patches for the wrapper 0 and 1 nodes.
