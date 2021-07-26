@@ -2,104 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129F33D5C9F
+	by mail.lfdr.de (Postfix) with ESMTP id 80EB83D5CA0
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234851AbhGZO1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:27:38 -0400
-Received: from dvalin.narfation.org ([213.160.73.56]:36718 "EHLO
-        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234922AbhGZOZU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:25:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-        s=20121; t=1627311889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FB7N7rq21xp/nnAQByo9qJVUIV2tvc1AOLArJeuzsQM=;
-        b=pMy5HgEpcsSJE9jhYzbwLizffyYK1r9q5HCoR92MN3gzyYMO1dSjRbQUrj77/MYsOSdrd6
-        8DKGKpWG7m+3lrFIaRp0GW87sZnsVPEzvVizWufEcaHclzCM2VrhuNA/Fk+mPIJY/iKpV6
-        rf7JxhYJ1cgT8pWLS2CzyCOULzOsqYg=
-From:   Sven Eckelmann <sven@narfation.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, b.a.t.m.a.n@lists.open-mesh.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] asm-generic: avoid sparse {get,put}_unaligned warning
-Date:   Mon, 26 Jul 2021 17:04:46 +0200
-Message-ID: <3234493.RMHOAZ7QyG@ripper>
-In-Reply-To: <CAK8P3a2MVQMFFBUzudy+yrcp4Md8mm=NcvX7YzGVz4C8W61sgQ@mail.gmail.com>
-References: <20210724162429.394792-1-sven@narfation.org> <YPxHYW/HPI/LLMXx@zeniv-ca.linux.org.uk> <CAK8P3a2MVQMFFBUzudy+yrcp4Md8mm=NcvX7YzGVz4C8W61sgQ@mail.gmail.com>
+        id S234935AbhGZO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:27:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234925AbhGZOZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 10:25:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8C7160F5A;
+        Mon, 26 Jul 2021 15:06:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627311977;
+        bh=R7MPYQnCJsG4fwhF0u+zeh0a/cBUeZfS0iP3V5ZDZHs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=b1Vix8NWuhvx4Q3pmG2tfftmmJzpSqffx+Ena5rVF6w+9YlJ2LHqt3MI4fprMvysm
+         Hw//UXufJgfEuEQRisRQeWNM4WwAf3YrdYsh7W16QoRLV/GOWwswTvrY0KSHFGeb3x
+         X2/wmeBcfc5nWsbKaBSxEf4ZMFe90GwdUNjdPcXcoewd3pxp998jQ1cnwnOm/Vw30q
+         Yw5g09PZb3chZKrDWBaIHTdnaFtFc4eYsO5D82gh6wapPk5OB0jzWwYCmjt2d97rnj
+         4Au90QFhzTJlWYf1DDSLED8mhW4trOCaw3Xk9ZQnAgjAulv5ELq/+/TcwzotC5o07l
+         6BICNVOv+eACA==
+Received: by mail-ej1-f48.google.com with SMTP id nb11so16957976ejc.4;
+        Mon, 26 Jul 2021 08:06:17 -0700 (PDT)
+X-Gm-Message-State: AOAM533wxIfwkyR4EoZUhwnL7Z/cW6P3PlgZae2J6W3ASF9nDMM02UoC
+        4j7q0JCmJwE03feERLSCubbygi4/Jwl0YNeNEw==
+X-Google-Smtp-Source: ABdhPJwwWICG++z75Hxvtq0N/g+sjBEODxNxt0nefCKbjiFba0jZlqxerC/yhL1o1fRHzDPTuM0kWe53k7yKt0DMP1A=
+X-Received: by 2002:a17:906:b750:: with SMTP id fx16mr10994131ejb.108.1627311976354;
+ Mon, 26 Jul 2021 08:06:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart14162632.04HtDE0LN9"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+References: <cover.1627273794.git.viresh.kumar@linaro.org> <4182aff2d1437b30025f3d17d11e5fdc21845239.1627273794.git.viresh.kumar@linaro.org>
+In-Reply-To: <4182aff2d1437b30025f3d17d11e5fdc21845239.1627273794.git.viresh.kumar@linaro.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 26 Jul 2021 09:06:04 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKz6fNCrKium0EMW0Y8_1_fymr6BMnuBS1NnV_7PO236A@mail.gmail.com>
+Message-ID: <CAL_JsqKz6fNCrKium0EMW0Y8_1_fymr6BMnuBS1NnV_7PO236A@mail.gmail.com>
+Subject: Re: [PATCH V3 2/5] dt-bindings: i2c: Add bindings for i2c-virtio
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Linux I2C <linux-i2c@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart14162632.04HtDE0LN9
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, b.a.t.m.a.n@lists.open-mesh.org, linux-arch <linux-arch@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] asm-generic: avoid sparse {get,put}_unaligned warning
-Date: Mon, 26 Jul 2021 17:04:46 +0200
-Message-ID: <3234493.RMHOAZ7QyG@ripper>
-In-Reply-To: <CAK8P3a2MVQMFFBUzudy+yrcp4Md8mm=NcvX7YzGVz4C8W61sgQ@mail.gmail.com>
-References: <20210724162429.394792-1-sven@narfation.org> <YPxHYW/HPI/LLMXx@zeniv-ca.linux.org.uk> <CAK8P3a2MVQMFFBUzudy+yrcp4Md8mm=NcvX7YzGVz4C8W61sgQ@mail.gmail.com>
+On Sun, Jul 25, 2021 at 10:52 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> This patch adds binding for virtio I2C device, it is based on
+> virtio-device bindings.
+>
+> Acked-by: Wolfram Sang <wsa@kernel.org>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  .../devicetree/bindings/i2c/i2c-virtio.yaml   | 51 +++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-virtio.yaml b/Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
+> new file mode 100644
+> index 000000000000..0381d9065287
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
+> @@ -0,0 +1,51 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/i2c/i2c-virtio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Virtio I2C Adapter
+> +
+> +maintainers:
+> +  - Viresh Kumar <viresh.kumar@linaro.org>
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +  - $ref: /schemas/virtio/virtio-device.yaml#
+> +
+> +description:
+> +  Virtio I2C device, see /schemas/virtio/virtio-device.yaml for more details.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: '^i2c-virtio(-[a-z0-9]+)?$'
 
-On Monday, 26 July 2021 14:57:31 CEST Arnd Bergmann wrote:
-> >
-> > > The special attribute force must be used in such statements when the cast
-> > > is known to be safe to avoid these warnings.
-> 
-> I can see why this would warn, but I'm having trouble reproducing the
-> warning on linux-next.
+i2c-controller.yaml already defines the node name. In this case
+though, it can be restricted a bit more to be just 'i2c' as there's
+only a single instance.
 
-I have sparse 0.6.3 on an Debian bullseye amd64 system. Sources are from 
-linux-next next-20210723
-
-    make allnoconfig
-    cat >> .config << "EOF"
-    CONFIG_NET=y
-    CONFIG_INET=y
-    CONFIG_BATMAN_ADV=y
-    CONFIG_BATMAN_ADV_DAT=y
-    EOF
-    make olddefconfig
-    make CHECK="sparse -Wbitwise-pointer" C=1
-
-I should maybe have made this clearer in the last sentence of the first 
-paragraph: "This is also true for pointers to variables with this type when
--Wbitwise-pointer is activated."
-
-Kind regards,
-	Sven
-
---nextPart14162632.04HtDE0LN9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmD+zw8ACgkQXYcKB8Em
-e0aOSRAAloaA/kixLrh1I6C0K83aQTfaTxmxPCTKk6X9ohZmXNCc7wcIRM97zONy
-D3/QFzdFBoCLJRyluykO/M+50/SXAgSu538aA/wjzkosb6aYliz0wNybS/F05XsO
-3GxmwuZknqUmiQT6yEbfCBGFx44MqSF29FBCmbib0TN4w0h8fUGR4aExdmM9Mihd
-PSQ07dP+icQC0tpG4FPH9Sd6tulSlCdA89nrnF+uHq3qQeraa17caBjIwSSMCXnO
-L80OX+cHT8KPWII+eHRS9s5QjmY/gvmCuIhkJpPw2Aqz0xjYhSK8eMOb64dfXptK
-WZR7bBgQzI709Cunf75GCMy3pfkXUgbm+ogXUpydfOqzmadAw7g1xnN8vfobs4D0
-rNkPa+A5qe5OxVgtlZZ3QR2LNo1W535AuOsNBoTW50TLTSiKo6bYVKwQYge0I+q5
-FyAzNOe+UxF75XTx+Wzac/RwOL7345HXfHFYPEc8Gc16PQ/gNij+5tC2JMkm1U9H
-PFJ+SYwNeT5axt9teMjmzASBv/3W6I3/d/EbB6RN46CPiGXVbhcik/o/rxyuDVvM
-M44jzl9QyO/3Xsh+yKJdDbWUTPDc4V53YxFLqvyJvDz/ONm+GVhPU9d5iCbgsb0D
-3Z3akAfv1iJlILU4Jufo7j2C6piAXbr1Fzxrx5F/XyQ/f91290g=
-=6aMm
------END PGP SIGNATURE-----
-
---nextPart14162632.04HtDE0LN9--
-
-
-
+> +
+> +  compatible:
+> +    const: virtio,22
+> +
+> +required:
+> +  - compatible
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    virtio@3000 {
+> +        compatible = "virtio,mmio";
+> +        reg = <0x3000 0x100>;
+> +        interrupts = <41>;
+> +
+> +        i2c-virtio {
+> +            compatible = "virtio,22";
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            light-sensor@1c {
+> +                compatible = "dynaimage,al3320a";
+> +                reg = <0x20>;
+> +            };
+> +        };
+> +    };
+> +
+> +...
+> --
+> 2.31.1.272.g89b43f80a514
+>
