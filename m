@@ -2,69 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775D3D5A4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C8A3D5A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhGZMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:47:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56374 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233194AbhGZMrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:47:52 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6E0E060E09;
-        Mon, 26 Jul 2021 13:28:20 +0000 (UTC)
-Date:   Mon, 26 Jul 2021 09:28:18 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
- for synthetic events
-Message-ID: <20210726092818.7d94027d@oasis.local.home>
-In-Reply-To: <20210725124502.54fa65251b5cd5b76fdf5f19@kernel.org>
-References: <20210722142705.992001628@goodmis.org>
-        <20210722142837.458596338@goodmis.org>
-        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
-        <20210722123234.636d5363@oasis.local.home>
-        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
-        <20210722212438.5933e714@rorschach.local.home>
-        <20210724193145.c63b44aa843e05ed9c0b4fdc@kernel.org>
-        <20210725111830.2f424ae3978443241b6d4a2d@kernel.org>
-        <20210725124502.54fa65251b5cd5b76fdf5f19@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233657AbhGZMtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233194AbhGZMtB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:49:01 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAABC061757;
+        Mon, 26 Jul 2021 06:29:29 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso19779488pjb.1;
+        Mon, 26 Jul 2021 06:29:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=T2M2m5EQciujNLUuC+pkqW7V+FPllhwGArTVEJKAIkM=;
+        b=Z0wXUWdWTq+VvX8G1114JtKpwtaesv1bz8fgCrItkOuDJybb+hXQATg6BwXn9KLNEk
+         GFPGnqcCBqN4iBZYuz99W5JiDaSkmKZmLj8+x+5G387GBkmMVCJhwpSYxaOtWhsE62jz
+         AIExYtBRaosAhAF3OgpnnoRfj4z+GUbu3aOk4OXpM8Qo2PABg0pbgTbnlkaKs5Q1zXy8
+         gWJZBbsqsaLXdujE//Cub1OYl/c2avOQH85ZbjDndYZ+chWgr7noE7jgXIjkJ52+VZG5
+         AFMcv36Wz7jclvBGEk6JHewt71FMd3+R8gVkDFZm1a8lWFSJmysrmVYKN2TVxWtO6dyP
+         oIhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=T2M2m5EQciujNLUuC+pkqW7V+FPllhwGArTVEJKAIkM=;
+        b=oDHcJsmdQFg9PairoKsqJ5YAv7z0mPb/YCoikH42T3+Obj/0qwKltAH1tgApUxJsrp
+         3c1LSDsUYXyNmjQdPcWmnaliuXCs318iQ9h1Si5HJGFa6q0AoLuOEXyTuvHPDwYc713X
+         1/FaWgXccXoVbnXZjrQppATRt74ZxKJZ+83UNPSL/J/9oRst0wT/9gbZn+OhWKUT0ywh
+         xyJfDYBWOTMVJeB2JfAcpWWsS/TdEmUQwyxyu8OTJmc4Wl+R6zWPSszZQw6p4tfwkwwf
+         I42t1nvNm4EYutxlxZODZYnaKukQsr8iTHYIKHBqqCKoGGBAMsG3Vlk7ImSW1IAiqNYq
+         lfNA==
+X-Gm-Message-State: AOAM5306+2PD3wemnxpEPd02a6GLIgtTR97oOZsT3HaFZb6SSWDBovcl
+        h3UqGCLnFjK6C5MI6h/3FSctnPHOd3UK7zlqZOg=
+X-Google-Smtp-Source: ABdhPJzhCeds9WV8564AJ6rlbVBLPbpaceRA7H8UZXRoRpjFu1G0dJrj1++YaMdxdpSrImDnVS1390rLEdYoZpvHDgs=
+X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr17323968pjb.228.1627306169156;
+ Mon, 26 Jul 2021 06:29:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210625171434.3xusxpxjprcdqa47@pengutronix.de>
+ <20210705080144.zfbzkm7l3gmnh6st@pengutronix.de> <20210722060654.nudpdtemosi64nlb@pengutronix.de>
+ <YPkg0wtYIoHKpTUW@kunai> <20210722081817.2tsjzof4gvldq6ka@pengutronix.de>
+ <YPlfcbkxiBmB+vw1@kunai> <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
+ <20210723091331.wl33wtcvvnejuhau@pengutronix.de> <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+ <CAHp75VeFXJ-0ak7=a0QCtKNdFpu98W6iJ2YuR4MpNx+U4rHe2A@mail.gmail.com> <YP6rdmi31FFrBMzE@ninjato>
+In-Reply-To: <YP6rdmi31FFrBMzE@ninjato>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 26 Jul 2021 16:28:49 +0300
+Message-ID: <CAHp75VeT-EX6U3+Y7dxoWWRZ7NqAEiNgPGW8YGVmWTuZKB4j+Q@mail.gmail.com>
+Subject: Re: [PULL] Add variants of devm_clk_get for prepared and enabled
+ clocks enabled clocks
+To:     Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Stephen Boyd <sboyd@kernel.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>, linux-pwm@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Ludovic Desroches <Ludovic.Desroches@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Jul 2021 12:45:02 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Jul 26, 2021 at 3:33 PM Wolfram Sang <wsa@kernel.org> wrote:
+>
+>
+> > The idea is that you will send a PR to CCF maintainers instead of
+> > patches, although it's expected that patches appear in the mailing
+> > list beforehand anyway.
+>
+> Depends a little. For me, a Rev-by from the driver maintainer is enough,
+> and I'll pick them. That lowers the burden on the drivers maintainer
+> side. May not work for high volumes of patches, but for I2C this works
+> enough.
 
-> And with this change, hist trigger can correctly detect a string type in
-> the operand in the expression and rejects it.
-> 
-> Thank you,
-> 
-> >From 5280d1efe4415a621cf69a1dc4861ab928b0ff1c Mon Sep 17 00:00:00 2001  
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> Date: Sun, 25 Jul 2021 12:34:00 +0900
-> Subject: [PATCH] tracing: Reject string operand in the histogram expression
-> 
-> Since the string type can not be the target of the addition / subtraction
-> operation, it must be rejected. Without this fix, the string type silently
-> converted to digits.
+AFAICT in practice it's a mandatory requirement in I=C2=B2C subsys (in the
+past you hadn't accepted a patch from us without a tag from the
+maintainer) which makes it equal to sending PR by a maintainer. PR
+makes less burden since subsys maintainer don't need to run many tools
+or a tool many times to get the pile of patches.
 
-Masami, can you send this as a normal patch. My scripts do not work
-(nor do I plan on having them ever do so) with patches embedded in
-threads or non-patch emails.
-
-Thanks,
-
--- Steve
+--=20
+With Best Regards,
+Andy Shevchenko
