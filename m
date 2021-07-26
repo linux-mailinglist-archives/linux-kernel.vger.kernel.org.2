@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF5A3D636B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E123D624D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238915AbhGZPry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:47:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43124 "EHLO mail.kernel.org"
+        id S236449AbhGZPf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:35:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237899AbhGZP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EBDC60F93;
-        Mon, 26 Jul 2021 16:09:46 +0000 (UTC)
+        id S237036AbhGZPU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:20:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20F2C60187;
+        Mon, 26 Jul 2021 16:00:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315786;
-        bh=/y6+zIWmUOIMT2fxBb6hB3Vp0NLgQ+8WY/+0mW3qHMo=;
+        s=korg; t=1627315257;
+        bh=y8gmZqop9BmTiw9GOQqxvDT1B86BHadDU+FgFb9RLPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gVA4fta3RgcEw14F8L7CYqQn2rJOugo73aVZoOFzs58JGRlN0uhtZzcngU2hTADc7
-         Caqul5MakEtmRl39fXYu1kiBJIwLWD6ynAcGSW/ykxItDCZYjMihb+6TkPIxQ6BOSj
-         jNg/4gBYOsLHzrl/2Uu2lIeijDiwSMS2DqBMbxF8=
+        b=gAiwlesGvlJ/kyNzayLI6r9c7ps5A84zKeaHLAsZYtfCqMbYIpxlbWYh/YzRWEa61
+         4h2P4N1hHtqFTfQHRhNL+e36evZtMmwIRLadLa6eNL/yT/86xt5L1vGcuFZ2Qt8wQ7
+         Cgm90yU9MYIAJqpsKn358sPOMGzY9NefWEHC4ZUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Jihong <yangjihong1@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 065/223] perf sched: Fix record failure when CONFIG_SCHEDSTATS is not set
-Date:   Mon, 26 Jul 2021 17:37:37 +0200
-Message-Id: <20210726153848.387694272@linuxfoundation.org>
+Subject: [PATCH 5.10 025/167] selftests: icmp_redirect: remove from checking for IPv6 route get
+Date:   Mon, 26 Jul 2021 17:37:38 +0200
+Message-Id: <20210726153840.203968010@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-References: <20210726153846.245305071@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,133 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Jihong <yangjihong1@huawei.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit b0f008551f0bf4d5f6db9b5f0e071b02790d6a2e ]
+[ Upstream commit 24b671aad4eae423e1abf5b7f08d9a5235458b8d ]
 
-The tracepoints trace_sched_stat_{wait, sleep, iowait} are not exposed to user
-if CONFIG_SCHEDSTATS is not set, "perf sched record" records the three events.
-As a result, the command fails.
+If the kernel doesn't enable option CONFIG_IPV6_SUBTREES, the RTA_SRC
+info will not be exported to userspace in rt6_fill_node(). And ip cmd will
+not print "from ::" to the route output. So remove this check.
 
-Before:
-
-  #perf sched record sleep 1
-  event syntax error: 'sched:sched_stat_wait'
-                       \___ unknown tracepoint
-
-  Error:  File /sys/kernel/tracing/events/sched/sched_stat_wait not found.
-  Hint:   Perhaps this kernel misses some CONFIG_ setting to enable this feature?.
-
-  Run 'perf list' for a list of valid events
-
-   Usage: perf record [<options>] [<command>]
-      or: perf record [<options>] -- <command> [<options>]
-
-      -e, --event <event>   event selector. use 'perf list' to list available events
-
-Solution:
-  Check whether schedstat tracepoints are exposed. If no, these events are not recorded.
-
-After:
-  # perf sched record sleep 1
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.163 MB perf.data (1091 samples) ]
-  # perf sched report
-  run measurement overhead: 4736 nsecs
-  sleep measurement overhead: 9059979 nsecs
-  the run test took 999854 nsecs
-  the sleep test took 8945271 nsecs
-  nr_run_events:        716
-  nr_sleep_events:      785
-  nr_wakeup_events:     0
-  ...
-  ------------------------------------------------------------
-
-Fixes: 2a09b5de235a6 ("sched/fair: do not expose some tracepoints to user if CONFIG_SCHEDSTATS is not set")
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Yafang Shao <laoar.shao@gmail.com>
-Link: http://lore.kernel.org/lkml/20210713112358.194693-1-yangjihong1@huawei.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: ec8105352869 ("selftests: Add redirect tests")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-sched.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+ tools/testing/selftests/net/icmp_redirect.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index 954ce2f594e9..3e5b7faf0c16 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -3335,6 +3335,16 @@ static void setup_sorting(struct perf_sched *sched, const struct option *options
- 	sort_dimension__add("pid", &sched->cmp_pid);
- }
+diff --git a/tools/testing/selftests/net/icmp_redirect.sh b/tools/testing/selftests/net/icmp_redirect.sh
+index bf361f30d6ef..bfcabee50155 100755
+--- a/tools/testing/selftests/net/icmp_redirect.sh
++++ b/tools/testing/selftests/net/icmp_redirect.sh
+@@ -311,7 +311,7 @@ check_exception()
  
-+static bool schedstat_events_exposed(void)
-+{
-+	/*
-+	 * Select "sched:sched_stat_wait" event to check
-+	 * whether schedstat tracepoints are exposed.
-+	 */
-+	return IS_ERR(trace_event__tp_format("sched", "sched_stat_wait")) ?
-+		false : true;
-+}
-+
- static int __cmd_record(int argc, const char **argv)
- {
- 	unsigned int rec_argc, i, j;
-@@ -3346,21 +3356,33 @@ static int __cmd_record(int argc, const char **argv)
- 		"-m", "1024",
- 		"-c", "1",
- 		"-e", "sched:sched_switch",
--		"-e", "sched:sched_stat_wait",
--		"-e", "sched:sched_stat_sleep",
--		"-e", "sched:sched_stat_iowait",
- 		"-e", "sched:sched_stat_runtime",
- 		"-e", "sched:sched_process_fork",
- 		"-e", "sched:sched_wakeup_new",
- 		"-e", "sched:sched_migrate_task",
- 	};
-+
-+	/*
-+	 * The tracepoints trace_sched_stat_{wait, sleep, iowait}
-+	 * are not exposed to user if CONFIG_SCHEDSTATS is not set,
-+	 * to prevent "perf sched record" execution failure, determine
-+	 * whether to record schedstat events according to actual situation.
-+	 */
-+	const char * const schedstat_args[] = {
-+		"-e", "sched:sched_stat_wait",
-+		"-e", "sched:sched_stat_sleep",
-+		"-e", "sched:sched_stat_iowait",
-+	};
-+	unsigned int schedstat_argc = schedstat_events_exposed() ?
-+		ARRAY_SIZE(schedstat_args) : 0;
-+
- 	struct tep_event *waking_event;
- 
- 	/*
- 	 * +2 for either "-e", "sched:sched_wakeup" or
- 	 * "-e", "sched:sched_waking"
- 	 */
--	rec_argc = ARRAY_SIZE(record_args) + 2 + argc - 1;
-+	rec_argc = ARRAY_SIZE(record_args) + 2 + schedstat_argc + argc - 1;
- 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
- 
- 	if (rec_argv == NULL)
-@@ -3376,6 +3398,9 @@ static int __cmd_record(int argc, const char **argv)
- 	else
- 		rec_argv[i++] = strdup("sched:sched_wakeup");
- 
-+	for (j = 0; j < schedstat_argc; j++)
-+		rec_argv[i++] = strdup(schedstat_args[j]);
-+
- 	for (j = 1; j < (unsigned int)argc; j++, i++)
- 		rec_argv[i] = argv[j];
- 
+ 	if [ "$with_redirect" = "yes" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+-		grep -q "${H2_N2_IP6} from :: via ${R2_LLADDR} dev br0.*${mtu}"
++		grep -q "${H2_N2_IP6} .*via ${R2_LLADDR} dev br0.*${mtu}"
+ 	elif [ -n "${mtu}" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+ 		grep -q "${mtu}"
 -- 
 2.30.2
 
