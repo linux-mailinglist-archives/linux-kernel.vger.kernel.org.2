@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933E93D64DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 301483D64E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240059AbhGZQLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:11:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35688 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235687AbhGZQJi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:09:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627318205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=avwuTKw/R829e7k0vzWCG0fx07vpyZttwZixO5lwurs=;
-        b=AoQ+4c/1dSqCHRTKGEpzu8b9saBosTQiyOcagiXjEI0YowkfAQQCjr0iN6liz1EbVNYb3B
-        nbktDUUl4J0utR5UVpn6B5HpZTP4MC29ISdndtO9aoUKWAVGclBeOdK3rGpcy0RpN8YSKc
-        /02G2a+uEf80In5QT9orYLqmU3KC7oc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-XApmllMIMRWRAuyo1dG2jw-1; Mon, 26 Jul 2021 12:50:01 -0400
-X-MC-Unique: XApmllMIMRWRAuyo1dG2jw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 70BAF8070ED;
-        Mon, 26 Jul 2021 16:50:00 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 101D26E6E2;
-        Mon, 26 Jul 2021 16:50:00 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>
-Subject: [PATCH] KVM: SVM: delay svm_vcpu_init_msrpm after svm->vmcb is initialized
-Date:   Mon, 26 Jul 2021 12:49:59 -0400
-Message-Id: <20210726164959.1436607-1-pbonzini@redhat.com>
+        id S235868AbhGZQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:12:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235294AbhGZQKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:10:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9C8C6056B;
+        Mon, 26 Jul 2021 16:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627318274;
+        bh=rtjZmAIsiO+xusbSMqln3gdu7hyuZHUnli/ersUfVzs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bvQGd1zdDYrwQQyASqLkoQgjYo7DwYQtN36rY7c8u25N442ry1IFwHXQI7sOcTKZx
+         AWk7v0QOPHnT5QI61+CHjVpuDDZBVpYtgvSSG4o5oHXSnnO/ND9qnfNHedYl6/oyF0
+         VGWnH7n/rqwBaLW9RL6WasTBF9mqvo5ac5xCSR+nET8GBs/f1uwIbz4PIPzwxqQDqv
+         r0Slq7AYDpeh/Br6NsIQsEM13vU9zm3PJN4W3UQ+D1AFWvz5G/cSTn9hx790SaCtcm
+         c1r6BohxVbbNgVEqLwwKlAP2NI+3fPPjwPemOeRsviVMAZ/3nMJk3YON3yAEBfYtmn
+         h3pyPxDJiVZLg==
+Date:   Mon, 26 Jul 2021 17:51:05 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/8] spi: spi-ep93xx: Prepare clock before using it
+Message-ID: <20210726165105.GI4670@sirena.org.uk>
+References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-1-nikita.shubin@maquefel.me>
+ <20210726140001.24820-3-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0XMZdl/q8hSSmFeD"
+Content-Disposition: inline
+In-Reply-To: <20210726140001.24820-3-nikita.shubin@maquefel.me>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, svm_hv_vmcb_dirty_nested_enlightenments has an incorrect
-dereference of vmcb->control.reserved_sw before the vmcb is checked
-for being non-NULL.  The compiler is usually sinking the dereference
-after the check; instead of doing this ourselves in the source,
-ensure that svm_hv_vmcb_dirty_nested_enlightenments is only called
-with a non-NULL VMCB.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Vineeth Pillai <viremana@linux.microsoft.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[Untested for now due to issues with my AMD machine. - Paolo]
----
- arch/x86/kvm/svm/svm.c          | 4 ++--
- arch/x86/kvm/svm/svm_onhyperv.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+--0XMZdl/q8hSSmFeD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 9a6987549e1b..4bcb95bb8ed7 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1406,8 +1406,6 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- 		goto error_free_vmsa_page;
- 	}
- 
--	svm_vcpu_init_msrpm(vcpu, svm->msrpm);
--
- 	svm->vmcb01.ptr = page_address(vmcb01_page);
- 	svm->vmcb01.pa = __sme_set(page_to_pfn(vmcb01_page) << PAGE_SHIFT);
- 
-@@ -1419,6 +1417,8 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
- 	svm_switch_vmcb(svm, &svm->vmcb01);
- 	init_vmcb(vcpu);
- 
-+	svm_vcpu_init_msrpm(vcpu, svm->msrpm);
-+
- 	svm_init_osvw(vcpu);
- 	vcpu->arch.microcode_version = 0x01000065;
- 
-diff --git a/arch/x86/kvm/svm/svm_onhyperv.h b/arch/x86/kvm/svm/svm_onhyperv.h
-index 9b9a55abc29f..c53b8bf8d013 100644
---- a/arch/x86/kvm/svm/svm_onhyperv.h
-+++ b/arch/x86/kvm/svm/svm_onhyperv.h
-@@ -89,7 +89,7 @@ static inline void svm_hv_vmcb_dirty_nested_enlightenments(
- 	 * as we mark it dirty unconditionally towards end of vcpu
- 	 * init phase.
- 	 */
--	if (vmcb && vmcb_is_clean(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS) &&
-+	if (vmcb_is_clean(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS) &&
- 	    hve->hv_enlightenments_control.msr_bitmap)
- 		vmcb_mark_dirty(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS);
- }
--- 
-2.27.0
+On Mon, Jul 26, 2021 at 04:59:50PM +0300, Nikita Shubin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+>=20
+> Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> to Common Clock Framework, otherwise the following is visible:
 
+Acked-by: Mark Brown <broonie@kernel.org>
+
+>=20
+> WARNING: CPU: 0 PID: 1 at drivers/clk/clk.c:1011 clk_core_enable+0x9c/0xbc
+> Enabling unprepared ep93xx-spi.0
+> ...
+> Hardware name: Cirrus Logic EDB9302 Evaluation Board
+> ...
+> clk_core_enable
+> clk_core_enable_lock
+> ep93xx_spi_prepare_hardware
+
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative (it often is
+for search engines if nothing else) then it's usually better to pull out
+the relevant sections.
+
+--0XMZdl/q8hSSmFeD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD+5/gACgkQJNaLcl1U
+h9CLkgf+PCrxrgszMSg8zSGETrG5R+2/GTI9H+kiyWWwN/Z5dnK79YEIhNHb/reU
+Uk0SBYAxpkyaTAxkLQc2tGjJG/WuMrBw2XrM9ZEzfeqJIJsHLictGL28SEfSx9hz
+G3fdg2WUEwq+tN1TX3uPoJB1imJLh56yXKDp5xh/nKLqLSN6LtaQmQo+/EYAAn7V
+fFK8De6o5C2Uchn4BCd2QkTSsWlE2CH4GtDXatb/TvUCDcZ13B8WiT3gSZPAO21/
+7T+D5C7Lf7Db1WSv/9ZGUpGwDd+g1qG+Y72Ky/7JmUs4am8nw3G8+j0bX08f61dZ
+rGvUeRUvJK7xn21RoTNqofUOb9MrJg==
+=37Fd
+-----END PGP SIGNATURE-----
+
+--0XMZdl/q8hSSmFeD--
