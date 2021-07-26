@@ -2,389 +2,340 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B97F3D6469
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045A23D646A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239781AbhGZP6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:58:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33917 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238484AbhGZPnJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:43:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627316617;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Nj+h4/4VsJBw8NoOPDhsktaJ3nLgphpInIGG3Nj7Jo=;
-        b=c/BCdBImwKUqJVeSNIvmCFXWn0dlAUdFU+IiG7mECg9bwmh4DyCIinVdaZNUO/76+kJs3j
-        5bZoBkzD/Ax46CA+l8Hl2OIiXqcf1IMXFIwLXP8r2CwHC8VjpgbBBRcNthk/oN4vKYe31X
-        qVMTBQimk11nUSi7IuRr96+TneRvowg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-ZQ_Oyt4yMPyiMCgLBheOCA-1; Mon, 26 Jul 2021 12:23:36 -0400
-X-MC-Unique: ZQ_Oyt4yMPyiMCgLBheOCA-1
-Received: by mail-ej1-f69.google.com with SMTP id qf6-20020a1709077f06b029057e66b6665aso1278596ejc.18
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:23:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9Nj+h4/4VsJBw8NoOPDhsktaJ3nLgphpInIGG3Nj7Jo=;
-        b=nDQaaAWzG0lzzDcSYJCN8wSkUu6t4av8rFYMTK/N5Id9Jge/o9haQIM3ZyTiOj9nL+
-         RUwXCq0ldQ2Dy35C5uNT0JWhfB0OaZzfjc+R+4gfq0VTjdxEkHI+YpGeuUlvjgZW7hPu
-         AteR8HIuKB7TJLXQZ2ZRN+IKVf1S9WBIeuUA95JKKIWLchAuYcRqwAlrI+xraFWacbyK
-         UKXH4Qp0yqvhQDr1VWov+RLJ9KH0jYM3n/IbMwHpyKrN4fh2gBU/wPGPs82M5mswoYQR
-         lKqSo/X8BHQiBGLCssP+fUl2bFg8TEAfGUXdHdZVvN2SUr/SLqG0aWMANxzRoHI9mTYb
-         55aw==
-X-Gm-Message-State: AOAM533VJTaUBqcu7nvmILXZ/9wfwMtThsrrgidRBlyt8FpH2IZ5jhdA
-        uhGPg5FMdrKpHMWuYvdk18Z9GloIBUzOtkS2FHLRG3lFcuJtez+7tbDwDofOV3qd8rcmQJnjuKn
-        lTY/wId0Ar+zkJ3275I8W0LYH
-X-Received: by 2002:aa7:c804:: with SMTP id a4mr22440526edt.294.1627316613432;
-        Mon, 26 Jul 2021 09:23:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzGHy5wxn/lgfV+65o0go+l6MLROW3yl2BxKDRa0/k6Z/lp5J3xhzAGjqYkm5ziouG1YVEHUg==
-X-Received: by 2002:aa7:c804:: with SMTP id a4mr22440487edt.294.1627316613147;
-        Mon, 26 Jul 2021 09:23:33 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id qo26sm53375ejb.65.2021.07.26.09.23.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 09:23:32 -0700 (PDT)
-Subject: Re: [PATCH] KVM: const-ify all relevant uses of struct
- kvm_memory_slot
-To:     Hamza Mahfooz <someguy@effective-light.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <20210713023338.57108-1-someguy@effective-light.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3678a043-9a77-ccee-04f9-6cf4627c450d@redhat.com>
-Date:   Mon, 26 Jul 2021 18:23:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S239789AbhGZP6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:58:08 -0400
+Received: from mga04.intel.com ([192.55.52.120]:22656 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238843AbhGZPob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:44:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="210380895"
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
+   d="scan'208";a="210380895"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 09:24:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
+   d="scan'208";a="505088815"
+Received: from linux.intel.com ([10.54.29.200])
+  by FMSMGA003.fm.intel.com with ESMTP; 26 Jul 2021 09:24:59 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.160])
+        by linux.intel.com (Postfix) with ESMTP id 6D64F580808;
+        Mon, 26 Jul 2021 09:24:59 -0700 (PDT)
+Message-ID: <1ea838bf7cc1fd50622ef1bac83b07c9d4aa15fd.camel@linux.intel.com>
+Subject: Re: [PATCH] platform/x86/intel: Move Intel PMT drivers to new
+ subfolder
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     hdegoede@redhat.com, mgross@linux.intel.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Date:   Mon, 26 Jul 2021 09:24:59 -0700
+In-Reply-To: <YP6CkOQlqCVFz54N@smile.fi.intel.com>
+References: <20210724025132.2726164-1-david.e.box@linux.intel.com>
+         <YP6CkOQlqCVFz54N@smile.fi.intel.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210713023338.57108-1-someguy@effective-light.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/21 04:33, Hamza Mahfooz wrote:
-> As alluded to in commit f36f3f2846b5 ("KVM: add "new" argument to
-> kvm_arch_commit_memory_region"), a bunch of other places where struct
-> kvm_memory_slot is used, needs to be refactored to preserve the
-> "const"ness of struct kvm_memory_slot across-the-board.
+On Mon, 2021-07-26 at 12:38 +0300, Andy Shevchenko wrote:
+> On Fri, Jul 23, 2021 at 07:51:32PM -0700, David E. Box wrote:
+> > Move all Intel Platform Monitoring Technology drivers to
+> > drivers/platform/x86/intel/pmt.
 > 
-> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+> Not sure we need the pmt part in the file names (dup with a folder
+> name). If
+> you have module parameters just keep the module / driver name to be
+> the same.
 
-Queued, thanks.
+No parameters. I'll send out a V2 with the prefix removed. Thanks.
 
-Paolo
+David
 
-> ---
->   arch/x86/include/asm/kvm_host.h |  4 +--
->   arch/x86/kvm/mmu/mmu.c          | 58 ++++++++++++++++++---------------
->   arch/x86/kvm/mmu/mmu_internal.h |  4 +--
->   arch/x86/kvm/mmu/tdp_mmu.c      |  7 ++--
->   arch/x86/kvm/mmu/tdp_mmu.h      |  6 ++--
->   arch/x86/kvm/x86.c              |  7 ++--
->   6 files changed, 44 insertions(+), 42 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 974cbfb1eefe..a195e1c32018 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1536,12 +1536,12 @@ void kvm_mmu_uninit_vm(struct kvm *kvm);
->   void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu);
->   void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
->   void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
-> -				      struct kvm_memory_slot *memslot,
-> +				      const struct kvm_memory_slot *memslot,
->   				      int start_level);
->   void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
->   				   const struct kvm_memory_slot *memslot);
->   void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
-> -				   struct kvm_memory_slot *memslot);
-> +				   const struct kvm_memory_slot *memslot);
->   void kvm_mmu_zap_all(struct kvm *kvm);
->   void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen);
->   unsigned long kvm_mmu_calculate_default_mmu_pages(struct kvm *kvm);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 845d114ae075..39ee8df5cc1f 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -784,7 +784,7 @@ static struct kvm_lpage_info *lpage_info_slot(gfn_t gfn,
->   	return &slot->arch.lpage_info[level - 2][idx];
->   }
->   
-> -static void update_gfn_disallow_lpage_count(struct kvm_memory_slot *slot,
-> +static void update_gfn_disallow_lpage_count(const struct kvm_memory_slot *slot,
->   					    gfn_t gfn, int count)
->   {
->   	struct kvm_lpage_info *linfo;
-> @@ -797,12 +797,12 @@ static void update_gfn_disallow_lpage_count(struct kvm_memory_slot *slot,
->   	}
->   }
->   
-> -void kvm_mmu_gfn_disallow_lpage(struct kvm_memory_slot *slot, gfn_t gfn)
-> +void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn)
->   {
->   	update_gfn_disallow_lpage_count(slot, gfn, 1);
->   }
->   
-> -void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn)
-> +void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn)
->   {
->   	update_gfn_disallow_lpage_count(slot, gfn, -1);
->   }
-> @@ -989,7 +989,7 @@ static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
->   }
->   
->   static struct kvm_rmap_head *__gfn_to_rmap(gfn_t gfn, int level,
-> -					   struct kvm_memory_slot *slot)
-> +					   const struct kvm_memory_slot *slot)
->   {
->   	unsigned long idx;
->   
-> @@ -1216,7 +1216,7 @@ static bool spte_wrprot_for_clear_dirty(u64 *sptep)
->    * Returns true iff any D or W bits were cleared.
->    */
->   static bool __rmap_clear_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> -			       struct kvm_memory_slot *slot)
-> +			       const struct kvm_memory_slot *slot)
->   {
->   	u64 *sptep;
->   	struct rmap_iterator iter;
-> @@ -1375,7 +1375,7 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
->   }
->   
->   static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> -			  struct kvm_memory_slot *slot)
-> +			  const struct kvm_memory_slot *slot)
->   {
->   	u64 *sptep;
->   	struct rmap_iterator iter;
-> @@ -1440,7 +1440,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->   
->   struct slot_rmap_walk_iterator {
->   	/* input fields. */
-> -	struct kvm_memory_slot *slot;
-> +	const struct kvm_memory_slot *slot;
->   	gfn_t start_gfn;
->   	gfn_t end_gfn;
->   	int start_level;
-> @@ -1467,16 +1467,20 @@ rmap_walk_init_level(struct slot_rmap_walk_iterator *iterator, int level)
->   
->   static void
->   slot_rmap_walk_init(struct slot_rmap_walk_iterator *iterator,
-> -		    struct kvm_memory_slot *slot, int start_level,
-> +		    const struct kvm_memory_slot *slot, int start_level,
->   		    int end_level, gfn_t start_gfn, gfn_t end_gfn)
->   {
-> -	iterator->slot = slot;
-> -	iterator->start_level = start_level;
-> -	iterator->end_level = end_level;
-> -	iterator->start_gfn = start_gfn;
-> -	iterator->end_gfn = end_gfn;
-> +	struct slot_rmap_walk_iterator iter = {
-> +		.slot = slot,
-> +		.start_gfn = start_gfn,
-> +		.end_gfn = end_gfn,
-> +		.start_level = start_level,
-> +		.end_level = end_level,
-> +	};
-> +
-> +	rmap_walk_init_level(&iter, iterator->start_level);
->   
-> -	rmap_walk_init_level(iterator, iterator->start_level);
-> +	memcpy(iterator, &iter, sizeof(struct slot_rmap_walk_iterator));
->   }
->   
->   static bool slot_rmap_walk_okay(struct slot_rmap_walk_iterator *iterator)
-> @@ -5274,12 +5278,13 @@ void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
->   EXPORT_SYMBOL_GPL(kvm_configure_mmu);
->   
->   /* The return value indicates if tlb flush on all vcpus is needed. */
-> -typedef bool (*slot_level_handler) (struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> -				    struct kvm_memory_slot *slot);
-> +typedef bool (*slot_level_handler) (struct kvm *kvm,
-> +				    struct kvm_rmap_head *rmap_head,
-> +				    const struct kvm_memory_slot *slot);
->   
->   /* The caller should hold mmu-lock before calling this function. */
->   static __always_inline bool
-> -slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
-> +slot_handle_level_range(struct kvm *kvm, const struct kvm_memory_slot *memslot,
->   			slot_level_handler fn, int start_level, int end_level,
->   			gfn_t start_gfn, gfn_t end_gfn, bool flush_on_yield,
->   			bool flush)
-> @@ -5306,7 +5311,7 @@ slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
->   }
->   
->   static __always_inline bool
-> -slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
-> +slot_handle_level(struct kvm *kvm, const struct kvm_memory_slot *memslot,
->   		  slot_level_handler fn, int start_level, int end_level,
->   		  bool flush_on_yield)
->   {
-> @@ -5317,7 +5322,7 @@ slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
->   }
->   
->   static __always_inline bool
-> -slot_handle_leaf(struct kvm *kvm, struct kvm_memory_slot *memslot,
-> +slot_handle_leaf(struct kvm *kvm, const struct kvm_memory_slot *memslot,
->   		 slot_level_handler fn, bool flush_on_yield)
->   {
->   	return slot_handle_level(kvm, memslot, fn, PG_LEVEL_4K,
-> @@ -5576,7 +5581,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->   				if (start >= end)
->   					continue;
->   
-> -				flush = slot_handle_level_range(kvm, memslot,
-> +				flush = slot_handle_level_range(kvm,
-> +						(const struct kvm_memory_slot *) memslot,
->   						kvm_zap_rmapp, PG_LEVEL_4K,
->   						KVM_MAX_HUGEPAGE_LEVEL, start,
->   						end - 1, true, flush);
-> @@ -5604,13 +5610,13 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
->   
->   static bool slot_rmap_write_protect(struct kvm *kvm,
->   				    struct kvm_rmap_head *rmap_head,
-> -				    struct kvm_memory_slot *slot)
-> +				    const struct kvm_memory_slot *slot)
->   {
->   	return __rmap_write_protect(kvm, rmap_head, false);
->   }
->   
->   void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
-> -				      struct kvm_memory_slot *memslot,
-> +				      const struct kvm_memory_slot *memslot,
->   				      int start_level)
->   {
->   	bool flush = false;
-> @@ -5646,7 +5652,7 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
->   
->   static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->   					 struct kvm_rmap_head *rmap_head,
-> -					 struct kvm_memory_slot *slot)
-> +					 const struct kvm_memory_slot *slot)
->   {
->   	u64 *sptep;
->   	struct rmap_iterator iter;
-> @@ -5685,10 +5691,8 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->   }
->   
->   void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> -				   const struct kvm_memory_slot *memslot)
-> +				   const struct kvm_memory_slot *slot)
->   {
-> -	/* FIXME: const-ify all uses of struct kvm_memory_slot.  */
-> -	struct kvm_memory_slot *slot = (struct kvm_memory_slot *)memslot;
->   	bool flush = false;
->   
->   	if (kvm_memslots_have_rmaps(kvm)) {
-> @@ -5724,7 +5728,7 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
->   }
->   
->   void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
-> -				   struct kvm_memory_slot *memslot)
-> +				   const struct kvm_memory_slot *memslot)
->   {
->   	bool flush = false;
->   
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 35567293c1fd..ee4ad9c99219 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -124,8 +124,8 @@ static inline bool is_nx_huge_page_enabled(void)
->   
->   int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync);
->   
-> -void kvm_mmu_gfn_disallow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
-> -void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
-> +void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
-> +void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
->   bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
->   				    struct kvm_memory_slot *slot, u64 gfn,
->   				    int min_level);
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 0853370bd811..5d8d69d56a81 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1242,8 +1242,8 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->    * only affect leaf SPTEs down to min_level.
->    * Returns true if an SPTE has been changed and the TLBs need to be flushed.
->    */
-> -bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
-> -			     int min_level)
-> +bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
-> +			     const struct kvm_memory_slot *slot, int min_level)
->   {
->   	struct kvm_mmu_page *root;
->   	bool spte_set = false;
-> @@ -1313,7 +1313,8 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
->    * each SPTE. Returns true if an SPTE has been changed and the TLBs need to
->    * be flushed.
->    */
-> -bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
-> +bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
-> +				  const struct kvm_memory_slot *slot)
->   {
->   	struct kvm_mmu_page *root;
->   	bool spte_set = false;
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index 1cae4485b3bc..49437dbb4804 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -61,10 +61,10 @@ bool kvm_tdp_mmu_age_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
->   bool kvm_tdp_mmu_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
->   bool kvm_tdp_mmu_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
->   
-> -bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
-> -			     int min_level);
-> +bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
-> +			     const struct kvm_memory_slot *slot, int min_level);
->   bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
-> -				  struct kvm_memory_slot *slot);
-> +				  const struct kvm_memory_slot *slot);
->   void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
->   				       struct kvm_memory_slot *slot,
->   				       gfn_t gfn, unsigned long mask,
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c6dc1b445231..970e95110175 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11473,7 +11473,7 @@ static void kvm_mmu_update_cpu_dirty_logging(struct kvm *kvm, bool enable)
->   
->   static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
->   				     struct kvm_memory_slot *old,
-> -				     struct kvm_memory_slot *new,
-> +				     const struct kvm_memory_slot *new,
->   				     enum kvm_mr_change change)
->   {
->   	bool log_dirty_pages = new->flags & KVM_MEM_LOG_DIRTY_PAGES;
-> @@ -11553,10 +11553,7 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
->   		kvm_mmu_change_mmu_pages(kvm,
->   				kvm_mmu_calculate_default_mmu_pages(kvm));
->   
-> -	/*
-> -	 * FIXME: const-ify all uses of struct kvm_memory_slot.
-> -	 */
-> -	kvm_mmu_slot_apply_flags(kvm, old, (struct kvm_memory_slot *) new, change);
-> +	kvm_mmu_slot_apply_flags(kvm, old, new, change);
->   
->   	/* Free the arrays associated with the old memslot. */
->   	if (change == KVM_MR_MOVE)
+> Either way up to Hans, I'm fine with this
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > ---
+> >  MAINTAINERS                                   |  2 +-
+> >  drivers/platform/x86/Kconfig                  | 36 ---------------
+> > --
+> >  drivers/platform/x86/Makefile                 |  3 --
+> >  drivers/platform/x86/intel/Kconfig            |  1 +
+> >  drivers/platform/x86/intel/Makefile           |  1 +
+> >  drivers/platform/x86/intel/pmt/Kconfig        | 40
+> > +++++++++++++++++++
+> >  drivers/platform/x86/intel/pmt/Makefile       |  9 +++++
+> >  .../pmt/pmt_class.c}                          |  2 +-
+> >  .../pmt/pmt_class.h}                          |  0
+> >  .../pmt/pmt_crashlog.c}                       |  2 +-
+> >  .../pmt/pmt_telemetry.c}                      |  2 +-
+> >  11 files changed, 55 insertions(+), 43 deletions(-)
+> >  create mode 100644 drivers/platform/x86/intel/pmt/Kconfig
+> >  create mode 100644 drivers/platform/x86/intel/pmt/Makefile
+> >  rename drivers/platform/x86/{intel_pmt_class.c =>
+> > intel/pmt/pmt_class.c} (99%)
+> >  rename drivers/platform/x86/{intel_pmt_class.h =>
+> > intel/pmt/pmt_class.h} (100%)
+> >  rename drivers/platform/x86/{intel_pmt_crashlog.c =>
+> > intel/pmt/pmt_crashlog.c} (99%)
+> >  rename drivers/platform/x86/{intel_pmt_telemetry.c =>
+> > intel/pmt/pmt_telemetry.c} (99%)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index ffed30dc86b0..ffd741306dcf 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9494,7 +9494,7 @@ INTEL PMT DRIVER
+> >  M:     "David E. Box" <david.e.box@linux.intel.com>
+> >  S:     Maintained
+> >  F:     drivers/mfd/intel_pmt.c
+> > -F:     drivers/platform/x86/intel_pmt_*
+> > +F:     drivers/platform/x86/intel/pmt/pmt_*
+> >  
+> >  INTEL PRO/WIRELESS 2100, 2200BG, 2915ABG NETWORK CONNECTION
+> > SUPPORT
+> >  M:     Stanislav Yakovlev <stas.yakovlev@gmail.com>
+> > diff --git a/drivers/platform/x86/Kconfig
+> > b/drivers/platform/x86/Kconfig
+> > index cae72922f448..f06ccd00f6c4 100644
+> > --- a/drivers/platform/x86/Kconfig
+> > +++ b/drivers/platform/x86/Kconfig
+> > @@ -1184,42 +1184,6 @@ config INTEL_MRFLD_PWRBTN
+> >           To compile this driver as a module, choose M here: the
+> > module
+> >           will be called intel_mrfld_pwrbtn.
+> >  
+> > -config INTEL_PMT_CLASS
+> > -       tristate
+> > -       help
+> > -         The Intel Platform Monitoring Technology (PMT) class
+> > driver provides
+> > -         the basic sysfs interface and file hierarchy used by PMT
+> > devices.
+> > -
+> > -         For more information, see:
+> > -         <file:Documentation/ABI/testing/sysfs-class-intel_pmt>
+> > -
+> > -         To compile this driver as a module, choose M here: the
+> > module
+> > -         will be called intel_pmt_class.
+> > -
+> > -config INTEL_PMT_TELEMETRY
+> > -       tristate "Intel Platform Monitoring Technology (PMT)
+> > Telemetry driver"
+> > -       depends on MFD_INTEL_PMT
+> > -       select INTEL_PMT_CLASS
+> > -       help
+> > -         The Intel Platform Monitory Technology (PMT) Telemetry
+> > driver provides
+> > -         access to hardware telemetry metrics on devices that
+> > support the
+> > -         feature.
+> > -
+> > -         To compile this driver as a module, choose M here: the
+> > module
+> > -         will be called intel_pmt_telemetry.
+> > -
+> > -config INTEL_PMT_CRASHLOG
+> > -       tristate "Intel Platform Monitoring Technology (PMT)
+> > Crashlog driver"
+> > -       depends on MFD_INTEL_PMT
+> > -       select INTEL_PMT_CLASS
+> > -       help
+> > -         The Intel Platform Monitoring Technology (PMT) crashlog
+> > driver provides
+> > -         access to hardware crashlog capabilities on devices that
+> > support the
+> > -         feature.
+> > -
+> > -         To compile this driver as a module, choose M here: the
+> > module
+> > -         will be called intel_pmt_crashlog.
+> > -
+> >  config INTEL_PUNIT_IPC
+> >         tristate "Intel P-Unit IPC Driver"
+> >         help
+> > diff --git a/drivers/platform/x86/Makefile
+> > b/drivers/platform/x86/Makefile
+> > index 43d36f8c36f1..d517d5cbc9ca 100644
+> > --- a/drivers/platform/x86/Makefile
+> > +++ b/drivers/platform/x86/Makefile
+> > @@ -128,9 +128,6 @@ obj-
+> > $(CONFIG_INTEL_UNCORE_FREQ_CONTROL)             += intel-uncore-
+> > frequency.o
+> >  obj-$(CONFIG_INTEL_BXTWC_PMIC_TMU)     += intel_bxtwc_tmu.o
+> >  obj-$(CONFIG_INTEL_CHTDC_TI_PWRBTN)    += intel_chtdc_ti_pwrbtn.o
+> >  obj-$(CONFIG_INTEL_MRFLD_PWRBTN)       += intel_mrfld_pwrbtn.o
+> > -obj-$(CONFIG_INTEL_PMT_CLASS)          += intel_pmt_class.o
+> > -obj-$(CONFIG_INTEL_PMT_TELEMETRY)      += intel_pmt_telemetry.o
+> > -obj-$(CONFIG_INTEL_PMT_CRASHLOG)       += intel_pmt_crashlog.o
+> >  obj-$(CONFIG_INTEL_PUNIT_IPC)          += intel_punit_ipc.o
+> >  obj-$(CONFIG_INTEL_SCU_IPC)            += intel_scu_ipc.o
+> >  obj-$(CONFIG_INTEL_SCU_PCI)            += intel_scu_pcidrv.o
+> > diff --git a/drivers/platform/x86/intel/Kconfig
+> > b/drivers/platform/x86/intel/Kconfig
+> > index 8ca021785f67..0b238026c082 100644
+> > --- a/drivers/platform/x86/intel/Kconfig
+> > +++ b/drivers/platform/x86/intel/Kconfig
+> > @@ -19,5 +19,6 @@ if X86_PLATFORM_DRIVERS_INTEL
+> >  source "drivers/platform/x86/intel/int33fe/Kconfig"
+> >  source "drivers/platform/x86/intel/int3472/Kconfig"
+> >  source "drivers/platform/x86/intel/pmc/Kconfig"
+> > +source "drivers/platform/x86/intel/pmt/Kconfig"
+> >  
+> >  endif # X86_PLATFORM_DRIVERS_INTEL
+> > diff --git a/drivers/platform/x86/intel/Makefile
+> > b/drivers/platform/x86/intel/Makefile
+> > index 49962f4dfdec..93026884ae03 100644
+> > --- a/drivers/platform/x86/intel/Makefile
+> > +++ b/drivers/platform/x86/intel/Makefile
+> > @@ -7,3 +7,4 @@
+> >  obj-$(CONFIG_INTEL_CHT_INT33FE)                += int33fe/
+> >  obj-$(CONFIG_INTEL_SKL_INT3472)                += int3472/
+> >  obj-$(CONFIG_INTEL_PMC_CORE)           += pmc/
+> > +obj-y                                  += pmt/
+> > diff --git a/drivers/platform/x86/intel/pmt/Kconfig
+> > b/drivers/platform/x86/intel/pmt/Kconfig
+> > new file mode 100644
+> > index 000000000000..d630f883a717
+> > --- /dev/null
+> > +++ b/drivers/platform/x86/intel/pmt/Kconfig
+> > @@ -0,0 +1,40 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +#
+> > +# Intel Platform Monitoring Technology drivers
+> > +#
+> > +
+> > +config INTEL_PMT_CLASS
+> > +       tristate
+> > +       help
+> > +         The Intel Platform Monitoring Technology (PMT) class
+> > driver provides
+> > +         the basic sysfs interface and file hierarchy used by PMT
+> > devices.
+> > +
+> > +         For more information, see:
+> > +         <file:Documentation/ABI/testing/sysfs-class-intel_pmt>
+> > +
+> > +         To compile this driver as a module, choose M here: the
+> > module
+> > +         will be called intel_pmt_class.
+> > +
+> > +config INTEL_PMT_TELEMETRY
+> > +       tristate "Intel Platform Monitoring Technology (PMT)
+> > Telemetry driver"
+> > +       depends on MFD_INTEL_PMT
+> > +       select INTEL_PMT_CLASS
+> > +       help
+> > +         The Intel Platform Monitory Technology (PMT) Telemetry
+> > driver provides
+> > +         access to hardware telemetry metrics on devices that
+> > support the
+> > +         feature.
+> > +
+> > +         To compile this driver as a module, choose M here: the
+> > module
+> > +         will be called intel_pmt_telemetry.
+> > +
+> > +config INTEL_PMT_CRASHLOG
+> > +       tristate "Intel Platform Monitoring Technology (PMT)
+> > Crashlog driver"
+> > +       depends on MFD_INTEL_PMT
+> > +       select INTEL_PMT_CLASS
+> > +       help
+> > +         The Intel Platform Monitoring Technology (PMT) crashlog
+> > driver provides
+> > +         access to hardware crashlog capabilities on devices that
+> > support the
+> > +         feature.
+> > +
+> > +         To compile this driver as a module, choose M here: the
+> > module
+> > +         will be called intel_pmt_crashlog.
+> > diff --git a/drivers/platform/x86/intel/pmt/Makefile
+> > b/drivers/platform/x86/intel/pmt/Makefile
+> > new file mode 100644
+> > index 000000000000..5c95cdbb57b1
+> > --- /dev/null
+> > +++ b/drivers/platform/x86/intel/pmt/Makefile
+> > @@ -0,0 +1,9 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +#
+> > +# Makefile for linux/drivers/platform/x86/intel/pmt
+> > +# Intel Platform Monitoring Technology Drivers
+> > +#
+> > +
+> > +obj-$(CONFIG_INTEL_PMT_CLASS)          += pmt_class.o
+> > +obj-$(CONFIG_INTEL_PMT_TELEMETRY)      += pmt_telemetry.o
+> > +obj-$(CONFIG_INTEL_PMT_CRASHLOG)       += pmt_crashlog.o
+> > diff --git a/drivers/platform/x86/intel_pmt_class.c
+> > b/drivers/platform/x86/intel/pmt/pmt_class.c
+> > similarity index 99%
+> > rename from drivers/platform/x86/intel_pmt_class.c
+> > rename to drivers/platform/x86/intel/pmt/pmt_class.c
+> > index c86ff15b1ed5..05c16a812e00 100644
+> > --- a/drivers/platform/x86/intel_pmt_class.c
+> > +++ b/drivers/platform/x86/intel/pmt/pmt_class.c
+> > @@ -13,7 +13,7 @@
+> >  #include <linux/mm.h>
+> >  #include <linux/pci.h>
+> >  
+> > -#include "intel_pmt_class.h"
+> > +#include "pmt_class.h"
+> >  
+> >  #define PMT_XA_START           0
+> >  #define PMT_XA_MAX             INT_MAX
+> > diff --git a/drivers/platform/x86/intel_pmt_class.h
+> > b/drivers/platform/x86/intel/pmt/pmt_class.h
+> > similarity index 100%
+> > rename from drivers/platform/x86/intel_pmt_class.h
+> > rename to drivers/platform/x86/intel/pmt/pmt_class.h
+> > diff --git a/drivers/platform/x86/intel_pmt_crashlog.c
+> > b/drivers/platform/x86/intel/pmt/pmt_crashlog.c
+> > similarity index 99%
+> > rename from drivers/platform/x86/intel_pmt_crashlog.c
+> > rename to drivers/platform/x86/intel/pmt/pmt_crashlog.c
+> > index 56963ceb6345..e869dfcdce31 100644
+> > --- a/drivers/platform/x86/intel_pmt_crashlog.c
+> > +++ b/drivers/platform/x86/intel/pmt/pmt_crashlog.c
+> > @@ -15,7 +15,7 @@
+> >  #include <linux/uaccess.h>
+> >  #include <linux/overflow.h>
+> >  
+> > -#include "intel_pmt_class.h"
+> > +#include "pmt_class.h"
+> >  
+> >  #define DRV_NAME               "pmt_crashlog"
+> >  
+> > diff --git a/drivers/platform/x86/intel_pmt_telemetry.c
+> > b/drivers/platform/x86/intel/pmt/pmt_telemetry.c
+> > similarity index 99%
+> > rename from drivers/platform/x86/intel_pmt_telemetry.c
+> > rename to drivers/platform/x86/intel/pmt/pmt_telemetry.c
+> > index 9b95ef050457..b90ae25caba5 100644
+> > --- a/drivers/platform/x86/intel_pmt_telemetry.c
+> > +++ b/drivers/platform/x86/intel/pmt/pmt_telemetry.c
+> > @@ -15,7 +15,7 @@
+> >  #include <linux/uaccess.h>
+> >  #include <linux/overflow.h>
+> >  
+> > -#include "intel_pmt_class.h"
+> > +#include "pmt_class.h"
+> >  
+> >  #define TELEM_DEV_NAME         "pmt_telemetry"
+> >  
+> > -- 
+> > 2.25.1
+> > 
+> 
+
 
