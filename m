@@ -2,156 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDF03D6780
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624E03D6785
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbhGZSvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 14:51:15 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:40092 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhGZSvP (ORCPT
+        id S232069AbhGZSwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 14:52:07 -0400
+Received: from outbound-smtp47.blacknight.com ([46.22.136.64]:49127 "EHLO
+        outbound-smtp47.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231646AbhGZSwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 14:51:15 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m86KE-004I5V-Rg; Mon, 26 Jul 2021 13:31:42 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:41882 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1m86KD-001MOi-TC; Mon, 26 Jul 2021 13:31:42 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <legion@kernel.org>
-Cc:     Sven Schnelle <svens@linux.ibm.com>, linux-kernel@vger.kernel.org
-In-Reply-To: <20210726190619.kcks2gst562blvr4@example.org> (Alexey Gladkov's
-        message of "Mon, 26 Jul 2021 21:06:19 +0200")
-References: <20210721125233.1041429-1-svens@linux.ibm.com>
-        <20210726190619.kcks2gst562blvr4@example.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-Date:   Mon, 26 Jul 2021 14:31:35 -0500
-Message-ID: <87mtq8kh2g.fsf@disp2133>
+        Mon, 26 Jul 2021 14:52:06 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp47.blacknight.com (Postfix) with ESMTPS id 0E926FAB9C
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:32:34 +0100 (IST)
+Received: (qmail 30353 invoked from network); 26 Jul 2021 19:32:33 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 Jul 2021 19:32:33 -0000
+Date:   Mon, 26 Jul 2021 20:32:32 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     peterz@infradead.org, bristot@redhat.com, bsegall@google.com,
+        dietmar.eggemann@arm.com, joshdon@google.com,
+        juri.lelli@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        rostedt@goodmis.org, valentin.schneider@arm.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
+Message-ID: <20210726193232.GZ3809@techsingularity.net>
+References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
+ <20210707123402.13999-1-borntraeger@de.ibm.com>
+ <20210707123402.13999-2-borntraeger@de.ibm.com>
+ <20210723093523.GX3809@techsingularity.net>
+ <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
+ <20210723162137.GY3809@techsingularity.net>
+ <1acd7520-bd4b-d43d-302a-8dcacf6defa5@de.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1m86KD-001MOi-TC;;;mid=<87mtq8kh2g.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+2xVkXWy/PLvuACN9xPhSjvwgZXCYTDOE=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4282]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexey Gladkov <legion@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 355 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 13 (3.6%), b_tie_ro: 11 (3.1%), parse: 0.97
-        (0.3%), extract_message_metadata: 4.1 (1.2%), get_uri_detail_list:
-        1.80 (0.5%), tests_pri_-1000: 4.0 (1.1%), tests_pri_-950: 1.74 (0.5%),
-        tests_pri_-900: 1.15 (0.3%), tests_pri_-90: 63 (17.8%), check_bayes:
-        61 (17.1%), b_tokenize: 11 (3.1%), b_tok_get_all: 6 (1.8%),
-        b_comp_prob: 2.0 (0.6%), b_tok_touch_all: 36 (10.3%), b_finish: 1.32
-        (0.4%), tests_pri_0: 248 (69.9%), check_dkim_signature: 0.50 (0.1%),
-        check_dkim_adsp: 3.1 (0.9%), poll_dns_idle: 1.20 (0.3%), tests_pri_10:
-        2.1 (0.6%), tests_pri_500: 8 (2.2%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v2] ucounts: add missing data type changes
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <1acd7520-bd4b-d43d-302a-8dcacf6defa5@de.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey Gladkov <legion@kernel.org> writes:
+On Mon, Jul 26, 2021 at 08:41:15PM +0200, Christian Borntraeger wrote:
+> > Potentially. The patch was a bit off because while it noticed that skip
+> > was not being obeyed, the fix was clumsy and isolated. The current flow is
+> > 
+> > 1. pick se == left as the candidate
+> > 2. try pick a different se if the "ideal" candidate is a skip candidate
+> > 3. Ignore the se update if next or last are set
+> > 
+> > Step 3 looks off because it ignores skip if next or last buddies are set
+> > and I don't think that was intended. Can you try this?
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 44c452072a1b..d56f7772a607 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -4522,12 +4522,12 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+> >   			se = second;
+> >   	}
+> > -	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, left) < 1) {
+> > +	if (cfs_rq->next && wakeup_preempt_entity(cfs_rq->next, se) < 1) {
+> >   		/*
+> >   		 * Someone really wants this to run. If it's not unfair, run it.
+> >   		 */
+> >   		se = cfs_rq->next;
+> > -	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, left) < 1) {
+> > +	} else if (cfs_rq->last && wakeup_preempt_entity(cfs_rq->last, se) < 1) {
+> >   		/*
+> >   		 * Prefer last buddy, try to return the CPU to a preempted task.
+> >   		 */
+> > 
+> 
+> This one alone does not seem to make a difference. Neither in ignored yield, nor
+> in performance.
+> 
+> Your first patch does really help in terms of ignored yields when
+> all threads are pinned to one host CPU.
 
-> On Wed, Jul 21, 2021 at 02:52:33PM +0200, Sven Schnelle wrote:
->> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
->> changed the data type of ucounts/ucounts_max to long, but missed to
->> adjust a few other places. This is noticeable on big endian platforms
->> from user space because the /proc/sys/user/max_*_names files all
->> contain 0.
->> 
->> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
->> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
->
-> Acked-by: Alexey Gladkov <legion@kernel.org>
->
-> Eric, what do you think ?
+Ok, that tells us something. It implies, but does not prove, that the
+block above that handles skip is failing either the entity_before()
+test or the wakeup_preempt_entity() test. To what degree that should be
+relaxed when cfs_rq->next is !NULL is harder to determine.
 
-At a quick skim it looks good.  I was to swamped last week to pick it
-up, but I plan on picking this up and getting it to Linus before
-the next -rc release.
+> After that we do have no ignored yield
+> it seems. But it does not affect the performance of my testcase.
 
-Eric
+Ok, this is the first patch. The second patch is not improving ignored
+yields at all so the above paragraph still applies. It would be nice
+if you could instrument with trace_printk when cfs->rq_next is valid
+whether it's the entity_before() check that is preventing the skip or
+wakeup_preempt_entity. Would that be possible?
 
->> ---
->>  fs/notify/fanotify/fanotify_user.c | 10 ++++++----
->>  kernel/ucount.c                    | 16 ++++++++--------
->>  2 files changed, 14 insertions(+), 12 deletions(-)
->> 
->> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
->> index 64864fb40b40..6576657a1a25 100644
->> --- a/fs/notify/fanotify/fanotify_user.c
->> +++ b/fs/notify/fanotify/fanotify_user.c
->> @@ -58,18 +58,20 @@ struct ctl_table fanotify_table[] = {
->>  	{
->>  		.procname	= "max_user_groups",
->>  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
->> -		.maxlen		= sizeof(int),
->> +		.maxlen		= sizeof(long),
->>  		.mode		= 0644,
->> -		.proc_handler	= proc_dointvec_minmax,
->> +		.proc_handler	= proc_doulongvec_minmax,
->>  		.extra1		= SYSCTL_ZERO,
->> +		.extra2		= SYSCTL_INT_MAX,
->>  	},
->>  	{
->>  		.procname	= "max_user_marks",
->>  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
->> -		.maxlen		= sizeof(int),
->> +		.maxlen		= sizeof(long),
->>  		.mode		= 0644,
->> -		.proc_handler	= proc_dointvec_minmax,
->> +		.proc_handler	= proc_doulongvec_minmax,
->>  		.extra1		= SYSCTL_ZERO,
->> +		.extra2		= SYSCTL_INT_MAX,
->>  	},
->>  	{
->>  		.procname	= "max_queued_events",
->> diff --git a/kernel/ucount.c b/kernel/ucount.c
->> index 87799e2379bd..f852591e395c 100644
->> --- a/kernel/ucount.c
->> +++ b/kernel/ucount.c
->> @@ -58,14 +58,14 @@ static struct ctl_table_root set_root = {
->>  	.permissions = set_permissions,
->>  };
->>  
->> -#define UCOUNT_ENTRY(name)				\
->> -	{						\
->> -		.procname	= name,			\
->> -		.maxlen		= sizeof(int),		\
->> -		.mode		= 0644,			\
->> -		.proc_handler	= proc_dointvec_minmax,	\
->> -		.extra1		= SYSCTL_ZERO,		\
->> -		.extra2		= SYSCTL_INT_MAX,	\
->> +#define UCOUNT_ENTRY(name)					\
->> +	{							\
->> +		.procname	= name,				\
->> +		.maxlen		= sizeof(long),			\
->> +		.mode		= 0644,				\
->> +		.proc_handler	= proc_doulongvec_minmax,	\
->> +		.extra1		= SYSCTL_ZERO,			\
->> +		.extra2		= SYSCTL_INT_MAX,		\
->>  	}
->>  static struct ctl_table user_table[] = {
->>  	UCOUNT_ENTRY("max_user_namespaces"),
->> -- 
->> 2.25.1
->> 
+I still think the second patch is right independent of it helping your
+test case because it makes no sense to me at all that the task after the
+skip candidate is ignored if there is a next or last buddy.
+
+> I did some more experiments and I removed the wakeup_preempt_entity checks in
+> pick_next_entity - assuming that this will result in source always being stopped
+> and target always being picked. But still, no performance difference.
+> As soon as I play with vruntime I do see a difference (but only without the cpu cgroup
+> controller). I will try to better understand the scheduler logic and do some more
+> testing. If you have anything that I should test, let me know.
+> 
+
+The fact that vruntime tricks only makes a difference when cgroups are
+involved is interesting. Can you describe roughly what how the cgroup
+is configured? Similarly, does your config have CONFIG_SCHED_AUTOGROUP
+or CONFIG_FAIR_GROUP_SCHED set? I assume FAIR_GROUP_SCHED must be and
+I wonder if the impact of your patch is dropping groups of tasks in
+priority as opposed to individual tasks. I'm not that familiar with how
+groups are handled in terms of how they are prioritised unfortunately.
+
+I'm still hesitant to consider the vruntime hammer in case it causes
+fairness problems when vruntime is no longer reflecting time spent on
+the CPU.
+
+-- 
+Mel Gorman
+SUSE Labs
