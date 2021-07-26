@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81FA3D606E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F283D611D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237297AbhGZPWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:22:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
+        id S232779AbhGZP2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:28:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237402AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237420AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B5E61038;
-        Mon, 26 Jul 2021 15:55:00 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF27960F42;
+        Mon, 26 Jul 2021 15:55:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314901;
-        bh=XPnrX+f/6E7NSm+/PmkJUA07/2AB7rk1T6Ys75osYWU=;
+        s=korg; t=1627314904;
+        bh=2VirUSuHXhtRbzEzHIzsnzktd/8NmrZ0EKQX5pKx70o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UBc1vaNb8C5onxff0hWQxt3vkCZ5IhQ9njQHSTJRrVgeqY0opT8qIUk934UbHNq5j
-         aa/H5qQPCactzivQepTsX1ZlMGvozV3G6fvaU4UctnJ73PuegrKW0BVyFT7p615n2O
-         UMzt5y9fHrN8YZSyGA8Mnea1QmO+5ioOnQgvlpJI=
+        b=lccdUhN7WBCnmvsx2xhw74B3GhdZQJvnRvkPuvfXz+4EbkAmUucqnsPu7+hr4sLEZ
+         EOnEI2N91XRceDmjeLzoongVz8tpDE9R/LOTMz8OcDDWhy+GS4ajwsbTd6hq1zPagl
+         bRCXYFh3qTioEfJFhv7Po1nzzJbKeRF4Rw3krA/A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Catherine Sullivan <csully@google.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 013/108] gve: Fix an error handling path in gve_probe()
-Date:   Mon, 26 Jul 2021 17:38:14 +0200
-Message-Id: <20210726153832.125824796@linuxfoundation.org>
+Subject: [PATCH 5.4 014/108] ipv6: fix disable_policy for fwd packets
+Date:   Mon, 26 Jul 2021 17:38:15 +0200
+Message-Id: <20210726153832.154879941@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 References: <20210726153831.696295003@linuxfoundation.org>
@@ -42,48 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 
-[ Upstream commit 2342ae10d1272d411a468a85a67647dd115b344f ]
+[ Upstream commit ccd27f05ae7b8ebc40af5b004e94517a919aa862 ]
 
-If the 'register_netdev() call fails, we must release the resources
-allocated by the previous 'gve_init_priv()' call, as already done in the
-remove function.
+The goal of commit df789fe75206 ("ipv6: Provide ipv6 version of
+"disable_policy" sysctl") was to have the disable_policy from ipv4
+available on ipv6.
+However, it's not exactly the same mechanism. On IPv4, all packets coming
+from an interface, which has disable_policy set, bypass the policy check.
+For ipv6, this is done only for local packets, ie for packets destinated to
+an address configured on the incoming interface.
 
-Add a new label and the missing 'gve_teardown_priv_resources()' in the
-error handling path.
+Let's align ipv6 with ipv4 so that the 'disable_policy' sysctl has the same
+effect for both protocols.
 
-Fixes: 893ce44df565 ("gve: Add basic driver framework for Compute Engine Virtual NIC")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Catherine Sullivan <csully@google.com>
+My first approach was to create a new kind of route cache entries, to be
+able to set DST_NOPOLICY without modifying routes. This would have added a
+lot of code. Because the local delivery path is already handled, I choose
+to focus on the forwarding path to minimize code churn.
+
+Fixes: df789fe75206 ("ipv6: Provide ipv6 version of "disable_policy" sysctl")
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/ipv6/ip6_output.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
-index 1c4b35b1b359..f8dfa7501f65 100644
---- a/drivers/net/ethernet/google/gve/gve_main.c
-+++ b/drivers/net/ethernet/google/gve/gve_main.c
-@@ -1170,13 +1170,16 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 4dcbb1ccab25..33444d985681 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -477,7 +477,9 @@ int ip6_forward(struct sk_buff *skb)
+ 	if (skb_warn_if_lro(skb))
+ 		goto drop;
  
- 	err = register_netdev(dev);
- 	if (err)
--		goto abort_with_wq;
-+		goto abort_with_gve_init;
- 
- 	dev_info(&pdev->dev, "GVE version %s\n", gve_version_str);
- 	gve_clear_probe_in_progress(priv);
- 	queue_work(priv->gve_wq, &priv->service_task);
- 	return 0;
- 
-+abort_with_gve_init:
-+	gve_teardown_priv_resources(priv);
-+
- abort_with_wq:
- 	destroy_workqueue(priv->gve_wq);
- 
+-	if (!xfrm6_policy_check(NULL, XFRM_POLICY_FWD, skb)) {
++	if (!net->ipv6.devconf_all->disable_policy &&
++	    !idev->cnf.disable_policy &&
++	    !xfrm6_policy_check(NULL, XFRM_POLICY_FWD, skb)) {
+ 		__IP6_INC_STATS(net, idev, IPSTATS_MIB_INDISCARDS);
+ 		goto drop;
+ 	}
 -- 
 2.30.2
 
