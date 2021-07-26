@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D8F3D62FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6FC3D6157
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238488AbhGZPnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39526 "EHLO mail.kernel.org"
+        id S237556AbhGZP3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:29:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237414AbhGZPYB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11E4460F6B;
-        Mon, 26 Jul 2021 16:04:29 +0000 (UTC)
+        id S236449AbhGZPQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C400660F38;
+        Mon, 26 Jul 2021 15:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315470;
-        bh=2tjdCL3aJ6Hw8vCvKplDi9yUOkQlbeIY10x3DZmK5Wo=;
+        s=korg; t=1627315036;
+        bh=DYJU4jqX5WEXFYWKhHqfdXoZ8elYo2C9RlYka+qwH24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WgTnVE9hsoPzV35KKooby9hu8f1hFAqOor1rrrWRCSyr/D/IKgZjJBM59jY5lxCLK
-         ylPAKoiPnpfGHqwCOgDi61RyiVGPREkCKpwmZ4jwQRbxz7u0g7BEy7mow/QqROUQZB
-         WadQRmM9izv/6PUxfCEOoelBY7UEbRPzaRnZqWP4=
+        b=kNUn4KmvvwoVZyg1VKw1T9t+M26dsDPDq3G3QN8HjZqZttvYkUvtXFN/S6qMWNsF5
+         FVhum6JCXOwk0aN1MN8tpiHgPZ9m/HSc2IrIPW2oYzMcMCxOZhl+zRhRB1VN5cuVak
+         ly7mSu8gokwvHh14qckcSv7MxWHMV7ApeHUwxCqA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
-        syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 074/167] netrom: Decrease sock refcount when sock timers expire
+Subject: [PATCH 5.4 026/108] perf script: Fix memory threads and cpus leaks on exit
 Date:   Mon, 26 Jul 2021 17:38:27 +0200
-Message-Id: <20210726153841.872623999@linuxfoundation.org>
+Message-Id: <20210726153832.540872281@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 517a16b1a88bdb6b530f48d5d153478b2552d9a8 ]
+[ Upstream commit faf3ac305d61341c74e5cdd9e41daecce7f67bfe ]
 
-Commit 63346650c1a9 ("netrom: switch to sock timer API") switched to use
-sock timer API. It replaces mod_timer() by sk_reset_timer(), and
-del_timer() by sk_stop_timer().
+ASan reports several memory leaks while running:
 
-Function sk_reset_timer() will increase the refcount of sock if it is
-called on an inactive timer, hence, in case the timer expires, we need to
-decrease the refcount ourselves in the handler, otherwise, the sock
-refcount will be unbalanced and the sock will never be freed.
+  # perf test "82: Use vfs_getname probe to get syscall args filenames"
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com
-Fixes: 63346650c1a9 ("netrom: switch to sock timer API")
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Two of these are caused by some refcounts not being decreased on
+perf-script exit, namely script.threads and script.cpus.
+
+This patch adds the missing __put calls in a new perf_script__exit
+function, which is called at the end of cmd_script.
+
+This patch concludes the fixes of all remaining memory leaks in perf
+test "82: Use vfs_getname probe to get syscall args filenames".
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: cfc8874a48599249 ("perf script: Process cpu/threads maps")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/5ee73b19791c6fa9d24c4d57f4ac1a23609400d7.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netrom/nr_timer.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ tools/perf/builtin-script.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/net/netrom/nr_timer.c b/net/netrom/nr_timer.c
-index 9115f8a7dd45..a8da88db7893 100644
---- a/net/netrom/nr_timer.c
-+++ b/net/netrom/nr_timer.c
-@@ -121,11 +121,9 @@ static void nr_heartbeat_expiry(struct timer_list *t)
- 		   is accepted() it isn't 'dead' so doesn't get removed. */
- 		if (sock_flag(sk, SOCK_DESTROY) ||
- 		    (sk->sk_state == TCP_LISTEN && sock_flag(sk, SOCK_DEAD))) {
--			sock_hold(sk);
- 			bh_unlock_sock(sk);
- 			nr_destroy_socket(sk);
--			sock_put(sk);
--			return;
-+			goto out;
- 		}
- 		break;
- 
-@@ -146,6 +144,8 @@ static void nr_heartbeat_expiry(struct timer_list *t)
- 
- 	nr_start_heartbeat(sk);
- 	bh_unlock_sock(sk);
-+out:
-+	sock_put(sk);
- }
- 
- static void nr_t2timer_expiry(struct timer_list *t)
-@@ -159,6 +159,7 @@ static void nr_t2timer_expiry(struct timer_list *t)
- 		nr_enquiry_response(sk);
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index da016f398aa8..f3ff825d9dd3 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2474,6 +2474,12 @@ static void perf_script__exit_per_event_dump_stats(struct perf_script *script)
  	}
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
  }
  
- static void nr_t4timer_expiry(struct timer_list *t)
-@@ -169,6 +170,7 @@ static void nr_t4timer_expiry(struct timer_list *t)
- 	bh_lock_sock(sk);
- 	nr_sk(sk)->condition &= ~NR_COND_PEER_RX_BUSY;
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
++static void perf_script__exit(struct perf_script *script)
++{
++	perf_thread_map__put(script->threads);
++	perf_cpu_map__put(script->cpus);
++}
++
+ static int __cmd_script(struct perf_script *script)
+ {
+ 	int ret;
+@@ -3893,6 +3899,7 @@ out_delete:
  
- static void nr_idletimer_expiry(struct timer_list *t)
-@@ -197,6 +199,7 @@ static void nr_idletimer_expiry(struct timer_list *t)
- 		sock_set_flag(sk, SOCK_DEAD);
- 	}
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
+ 	perf_evlist__free_stats(session->evlist);
+ 	perf_session__delete(session);
++	perf_script__exit(&script);
  
- static void nr_t1timer_expiry(struct timer_list *t)
-@@ -209,8 +212,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	case NR_STATE_1:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_write_internal(sk, NR_CONNREQ);
-@@ -220,8 +222,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	case NR_STATE_2:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_write_internal(sk, NR_DISCREQ);
-@@ -231,8 +232,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	case NR_STATE_3:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_requeue_frames(sk);
-@@ -241,5 +241,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	}
- 
- 	nr_start_t1timer(sk);
-+out:
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
+ 	if (script_started)
+ 		cleanup_scripting();
 -- 
 2.30.2
 
