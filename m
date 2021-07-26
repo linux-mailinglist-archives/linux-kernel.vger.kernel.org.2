@@ -2,156 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BC23D572A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57FC33D5739
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbhGZJa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:30:29 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45116 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhGZJaT (ORCPT
+        id S233080AbhGZJeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232902AbhGZJe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:30:19 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 16QAAgGR098201;
-        Mon, 26 Jul 2021 05:10:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1627294242;
-        bh=nSReDoJdEa0mCVGktwadISxm7fjJ1D1lNz27HlMWe44=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=OzajzZXuTulXnOBZ0mdyNkRI19OBBDF5RyR0JppGZWH5ZMDpvXjd4gaZWxYm7dnQ6
-         NWsYgvUYKolS+s+i89ptXc1+r5OvdXJjxorkHqJSf+FHUx0Wxa9uVo0e86oE1akjth
-         GZjKSz44/KbrANxPzDse9nwnyZVOYw/BxmXvwflo=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 16QAAgng116196
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 26 Jul 2021 05:10:42 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 26
- Jul 2021 05:10:42 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 26 Jul 2021 05:10:42 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 16QAACRj067730;
-        Mon, 26 Jul 2021 05:10:38 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH v2 6/6] arm64: dts: ti: k3-am642-evm/sk: Add support for main domain mcan nodes in EVM and disable them on SK
-Date:   Mon, 26 Jul 2021 15:40:12 +0530
-Message-ID: <20210726101012.26983-7-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210726101012.26983-1-a-govindraju@ti.com>
-References: <20210726101012.26983-1-a-govindraju@ti.com>
+        Mon, 26 Jul 2021 05:34:29 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AEBC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 03:14:57 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id e14so11005548plh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 03:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6cNmNVuZ2BFsOuXfbpUCz3MMqhnpAF9Cx6jU51cYVSc=;
+        b=iS8JuFmAyRhk2OXIxVLoTABTcrtYVlLLYlc5yayhHOjjC4scqJ44arnzWJs0djA6WT
+         dcOq8G9yWeMvmiFKETVhPMDfXwtmDHq5z2Fw64kHbvSG1VxaexSCFNhrdWqdyFKcltxF
+         iI6sT0SeGMVhw4L80z/0sbZE77iX38IZGU+9I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6cNmNVuZ2BFsOuXfbpUCz3MMqhnpAF9Cx6jU51cYVSc=;
+        b=L63NVbsmH8+00IpTEU+neD4uJFLVNyBcNHfvtVMS/okJMSkCMDz9h0/l7N/PyRNH5C
+         Rv+dY1n8wBuFgnST70S8t+s44Qqh3tCIkygTOAYjNWwwsI1mqkZZxC+Yy1s9OpGSH+bB
+         HYLp4jfiuFo18ES+j4iAbdoV+M+vmzn4kf7U+g8k1t+q0EY58haCaM4V44dQGDWMlYIK
+         Ok+b8qRiyv+4WuBRasQkBHF/lkzYSkDY9OqY/qIV5Lpi8ODhBAaDTS2RmIG0SF8HL5RR
+         aYqg/m7UDjLN+DBdcy/QwDY/SrdnR6cMvRd+ZdJtpk2W44Q5+uQeJXtN6v3ExIRsgxx4
+         C9vg==
+X-Gm-Message-State: AOAM533BcAyV7q4BsGz7txvlm2FcVUR0vXSRLwBUn5OmvM+V9ibzetB8
+        FQi7MHU4kIk23ClvhNTtTj3pvw==
+X-Google-Smtp-Source: ABdhPJwtbzs9Py71e1eLFU81oGgxRo1XzTbjigdfghgMbb6gBQkjM9Zc8+T1twmwN0Dq1lmRa8I5jw==
+X-Received: by 2002:a62:154f:0:b029:331:b0d6:9adc with SMTP id 76-20020a62154f0000b0290331b0d69adcmr17505047pfv.73.1627294497090;
+        Mon, 26 Jul 2021 03:14:57 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:24d6:d449:2832:1652])
+        by smtp.gmail.com with ESMTPSA id az15sm7289913pjb.57.2021.07.26.03.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 03:14:56 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        eizan@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: mt8173: elm: Use aliases to mmc nodes
+Date:   Mon, 26 Jul 2021 18:14:51 +0800
+Message-Id: <20210726101451.2118076-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM642 EVM has two CAN connecters brought out from the two MCAN instances in
-the main domain through transceivers. Add device tree nodes for
-transceivers and set the required properties in the mcan device tree nodes,
-in EVM device tree file.
+Use aliases to mmc nodes so the partition name for eMMC and SD card will
+be consistent across boots.
 
-On AM642 SK there are no connectors brought out for CAN. Therefore, disable
-the mcan device tree nodes in the SK device tree file.
-
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 ---
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 40 +++++++++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am642-sk.dts  |  8 +++++
- 2 files changed, 48 insertions(+)
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 030712221188..1c26ca41e6a5 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -184,6 +184,20 @@
- 			};
- 		};
- 	};
-+
-+	transceiver1: can-phy0 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		standby-gpios = <&exp1 8 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	transceiver2: can-phy1 {
-+		compatible = "ti,tcan1042";
-+		#phy-cells = <0>;
-+		max-bitrate = <5000000>;
-+		standby-gpios = <&exp1 9 GPIO_ACTIVE_HIGH>;
-+	};
- };
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+index 21452c51a20a8..be21740d682d0 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+@@ -10,6 +10,13 @@
+ #include "mt8173.dtsi"
  
- &main_pmx0 {
-@@ -288,6 +302,20 @@
- 			AM64X_IOPAD(0x0008, PIN_INPUT, 0) /* (N19) OSPI0_DQS */
- 		>;
- 	};
-+
-+	main_mcan0_pins_default: main-mcan0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0254, PIN_INPUT, 0) /* (B17) MCAN0_RX */
-+			AM64X_IOPAD(0x0250, PIN_OUTPUT, 0) /* (A17) MCAN0_TX */
-+		>;
+ / {
++	aliases {
++		mmc0 = &mmc0;
++		mmc1 = &mmc1;
++		mmc2 = &mmc2;
++		mmc3 = &mmc3;
 +	};
 +
-+	main_mcan1_pins_default: main-mcan1-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x025c, PIN_INPUT, 0) /* (D17) MCAN1_RX */
-+			AM64X_IOPAD(0x0258, PIN_OUTPUT, 0) /* (C17) MCAN1_TX */
-+		>;
-+	};
- };
- 
- &main_uart0 {
-@@ -574,3 +602,15 @@
- 	num-lanes = <1>;
- 	status = "disabled";
- };
-+
-+&main_mcan0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan0_pins_default>;
-+	phys = <&transceiver1>;
-+};
-+
-+&main_mcan1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_mcan1_pins_default>;
-+	phys = <&transceiver2>;
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index d3aa2901e6fd..15cde862f62c 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -453,3 +453,11 @@
- &pcie0_ep {
- 	status = "disabled";
- };
-+
-+&main_mcan0 {
-+	status = "disabled";
-+};
-+
-+&main_mcan1 {
-+	status = "disabled";
-+};
+ 	memory@40000000 {
+ 		device_type = "memory";
+ 		reg = <0 0x40000000 0 0x80000000>;
 -- 
-2.17.1
+2.32.0.432.gabb21c7263-goog
 
