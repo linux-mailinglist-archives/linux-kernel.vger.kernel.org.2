@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377C93D60D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D3C3D61A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238307AbhGZPZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:25:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
+        id S233635AbhGZPc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:32:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236868AbhGZPPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BAD660FF0;
-        Mon, 26 Jul 2021 15:54:04 +0000 (UTC)
+        id S235310AbhGZPSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 237AB60F38;
+        Mon, 26 Jul 2021 15:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314844;
-        bh=BCTXLDeUvyyCcEUR3/NKry8+6RtdlpL/f3TI8hB/Aic=;
+        s=korg; t=1627315121;
+        bh=MhuSh+hGIm0iv964cFkJCoDhLfzTxleeVvMgNXQo5y0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NtfFxAquOHX4tPoyXDofUzMZqGAz3w8nFg42qMtzKwngyKsXxaiUZmsPGRh9rrZtl
-         7wz+ETIeK45VKRnUPAVQAgmhK1Zc1zC4s16WVzERdnGHyvaHyYIieMUzk7mbhbeTyB
-         Paxzi4zSGPluSIdzLTRYdxEyj1g/jnKssx+0QSUg=
+        b=i6gPiG1S9Uk447vRuZixgx8+WuqSzpRM2lHelMC9kxw5IWjqQviiJAbQfY4cWy3G6
+         3cXdSFSggYbfEu8/ZlymTegbO99GlNvyjgHhDl+QtNfVZJpuDRU41RUMw/YpXrvuNu
+         5ZNCbEvijBbStmBXUyGyKrvNNE/XV8JGfzNo/UQM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 113/120] net: dsa: mv88e6xxx: use correct .stats_set_histogram() on Topaz
+        stable@vger.kernel.org, Marco De Marco <marco.demarco@posteo.net>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 084/108] USB: serial: option: add support for u-blox LARA-R6 family
 Date:   Mon, 26 Jul 2021 17:39:25 +0200
-Message-Id: <20210726153836.097375572@linuxfoundation.org>
+Message-Id: <20210726153834.373677462@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Marco De Marco <marco.demarco@posteo.net>
 
-commit 11527f3c4725640e6c40a2b7654e303f45e82a6c upstream.
+commit 94b619a07655805a1622484967754f5848640456 upstream.
 
-Commit 40cff8fca9e3 ("net: dsa: mv88e6xxx: Fix stats histogram mode")
-introduced wrong .stats_set_histogram() method for Topaz family.
+The patch is meant to support LARA-R6 Cat 1 module family.
 
-The Peridot method should be used instead.
+Module USB ID:
+Vendor  ID: 0x05c6
+Product ID: 0x90fA
 
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Fixes: 40cff8fca9e3 ("net: dsa: mv88e6xxx: Fix stats histogram mode")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Interface layout:
+If 0: Diagnostic
+If 1: AT parser
+If 2: AT parser
+If 3: QMI wwan (not available in all versions)
+
+Signed-off-by: Marco De Marco <marco.demarco@posteo.net>
+Link: https://lore.kernel.org/r/49260184.kfMIbaSn9k@mars
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/mv88e6xxx/chip.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/option.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3051,7 +3051,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.port_link_state = mv88e6352_port_link_state,
- 	.port_get_cmode = mv88e6352_port_get_cmode,
- 	.stats_snapshot = mv88e6390_g1_stats_snapshot,
--	.stats_set_histogram = mv88e6095_g1_stats_set_histogram,
-+	.stats_set_histogram = mv88e6390_g1_stats_set_histogram,
- 	.stats_get_sset_count = mv88e6320_stats_get_sset_count,
- 	.stats_get_strings = mv88e6320_stats_get_strings,
- 	.stats_get_stats = mv88e6390_stats_get_stats,
-@@ -3672,7 +3672,7 @@ static const struct mv88e6xxx_ops mv88e6
- 	.port_link_state = mv88e6352_port_link_state,
- 	.port_get_cmode = mv88e6352_port_get_cmode,
- 	.stats_snapshot = mv88e6390_g1_stats_snapshot,
--	.stats_set_histogram = mv88e6095_g1_stats_set_histogram,
-+	.stats_set_histogram = mv88e6390_g1_stats_set_histogram,
- 	.stats_get_sset_count = mv88e6320_stats_get_sset_count,
- 	.stats_get_strings = mv88e6320_stats_get_strings,
- 	.stats_get_stats = mv88e6390_stats_get_stats,
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -238,6 +238,7 @@ static void option_instat_callback(struc
+ #define QUECTEL_PRODUCT_UC15			0x9090
+ /* These u-blox products use Qualcomm's vendor ID */
+ #define UBLOX_PRODUCT_R410M			0x90b2
++#define UBLOX_PRODUCT_R6XX			0x90fa
+ /* These Yuga products use Qualcomm's vendor ID */
+ #define YUGA_PRODUCT_CLM920_NC5			0x9625
+ 
+@@ -1101,6 +1102,8 @@ static const struct usb_device_id option
+ 	/* u-blox products using Qualcomm vendor ID */
+ 	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R410M),
+ 	  .driver_info = RSVD(1) | RSVD(3) },
++	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R6XX),
++	  .driver_info = RSVD(3) },
+ 	/* Quectel products using Quectel vendor ID */
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC21, 0xff, 0xff, 0xff),
+ 	  .driver_info = NUMEP2 },
 
 
