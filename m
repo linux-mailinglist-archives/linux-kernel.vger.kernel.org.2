@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA6D3D6124
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01EA3D62CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbhGZP3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:29:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56140 "EHLO mail.kernel.org"
+        id S238191AbhGZPjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235942AbhGZPQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 172F56056C;
-        Mon, 26 Jul 2021 15:57:01 +0000 (UTC)
+        id S237288AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55A7C60F6B;
+        Mon, 26 Jul 2021 15:52:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315022;
-        bh=gdm/LVcApSe7GDq+qCyDj3dgA/XNkKLCL/3++fFySXY=;
+        s=korg; t=1627314763;
+        bh=luWfWVTOWEoM9ow+4WXzl2Q+7UeNAqDpefQ+22ES61A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AT6tBvIrSfgU1wk2WEyWnYG7MbD0roDk7S4BPrOYHBsHu4/83IDTCTaX2F7zPeHyL
-         V19M3ual+MUPz6nrBBW9uv3gt/9F9WQa3k67RspcJOFffxqmFqdtlXMUTAvMXZ8RjB
-         QI2ebF/PVUIcYlph+VR13WTGUv2bSiDqHIXB2gdw=
+        b=VJuGwmY5SjjmVP4CtjpiO+uFHD8un8PfsxtScSXQiqfX8bUcnFBR1ZpjvjnHyZFXv
+         fqqRotxp01JtvGUBebJfPCKUD4WKtVVJEbxrm3U3GxWlK485xHvJwX7A9MOiv5u7Dv
+         It+exIT5xSPsnxSenWng0PZUp98IcYiXS5AY+6Gc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Jiangfeng Xiao <xiaojiangfeng@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/108] net: hisilicon: rename CACHE_LINE_MASK to avoid redefinition
+Subject: [PATCH 4.19 084/120] nvme-pci: dont WARN_ON in nvme_reset_work if ctrl.state is not RESETTING
 Date:   Mon, 26 Jul 2021 17:38:56 +0200
-Message-Id: <20210726153833.445127418@linuxfoundation.org>
+Message-Id: <20210726153835.077673166@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit b16f3299ae1aa3c327e1fb742d0379ae4d6e86f2 ]
+[ Upstream commit 7764656b108cd308c39e9a8554353b8f9ca232a3 ]
 
-Building on ARCH=arc causes a "redefined" warning, so rename this
-driver's CACHE_LINE_MASK to avoid the warning.
+Followling process:
+nvme_probe
+  nvme_reset_ctrl
+    nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING)
+    queue_work(nvme_reset_wq, &ctrl->reset_work)
 
-../drivers/net/ethernet/hisilicon/hip04_eth.c:134: warning: "CACHE_LINE_MASK" redefined
-  134 | #define CACHE_LINE_MASK   0x3F
-In file included from ../include/linux/cache.h:6,
-                 from ../include/linux/printk.h:9,
-                 from ../include/linux/kernel.h:19,
-                 from ../include/linux/list.h:9,
-                 from ../include/linux/module.h:12,
-                 from ../drivers/net/ethernet/hisilicon/hip04_eth.c:7:
-../arch/arc/include/asm/cache.h:17: note: this is the location of the previous definition
-   17 | #define CACHE_LINE_MASK  (~(L1_CACHE_BYTES - 1))
+-------------->	nvme_remove
+		  nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DELETING)
+worker_thread
+  process_one_work
+    nvme_reset_work
+    WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)
 
-Fixes: d413779cdd93 ("net: hisilicon: Add an tx_desc to adapt HI13X1_GMAC")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Vineet Gupta <vgupta@synopsys.com>
-Cc: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+, which will trigger WARN_ON in nvme_reset_work():
+[  127.534298] WARNING: CPU: 0 PID: 139 at drivers/nvme/host/pci.c:2594
+[  127.536161] CPU: 0 PID: 139 Comm: kworker/u8:7 Not tainted 5.13.0
+[  127.552518] Call Trace:
+[  127.552840]  ? kvm_sched_clock_read+0x25/0x40
+[  127.553936]  ? native_send_call_func_single_ipi+0x1c/0x30
+[  127.555117]  ? send_call_function_single_ipi+0x9b/0x130
+[  127.556263]  ? __smp_call_single_queue+0x48/0x60
+[  127.557278]  ? ttwu_queue_wakelist+0xfa/0x1c0
+[  127.558231]  ? try_to_wake_up+0x265/0x9d0
+[  127.559120]  ? ext4_end_io_rsv_work+0x160/0x290
+[  127.560118]  process_one_work+0x28c/0x640
+[  127.561002]  worker_thread+0x39a/0x700
+[  127.561833]  ? rescuer_thread+0x580/0x580
+[  127.562714]  kthread+0x18c/0x1e0
+[  127.563444]  ? set_kthread_struct+0x70/0x70
+[  127.564347]  ret_from_fork+0x1f/0x30
+
+The preceding problem can be easily reproduced by executing following
+script (based on blktests suite):
+test() {
+  pdev="$(_get_pci_dev_from_blkdev)"
+  sysfs="/sys/bus/pci/devices/${pdev}"
+  for ((i = 0; i < 10; i++)); do
+    echo 1 > "$sysfs/remove"
+    echo 1 > /sys/bus/pci/rescan
+  done
+}
+
+Since the device ctrl could be updated as an non-RESETTING state by
+repeating probe/remove in userspace (which is a normal situation), we
+can replace stack dumping WARN_ON with a warnning message.
+
+Fixes: 82b057caefaff ("nvme-pci: fix multiple ctrl removal schedulin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hip04_eth.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/nvme/host/pci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/hisilicon/hip04_eth.c b/drivers/net/ethernet/hisilicon/hip04_eth.c
-index 2ffe035e96d6..b5eae06dd870 100644
---- a/drivers/net/ethernet/hisilicon/hip04_eth.c
-+++ b/drivers/net/ethernet/hisilicon/hip04_eth.c
-@@ -131,7 +131,7 @@
- /* buf unit size is cache_line_size, which is 64, so the shift is 6 */
- #define PPE_BUF_SIZE_SHIFT		6
- #define PPE_TX_BUF_HOLD			BIT(31)
--#define CACHE_LINE_MASK			0x3F
-+#define SOC_CACHE_LINE_MASK		0x3F
- #else
- #define PPE_CFG_QOS_VMID_GRP_SHIFT	8
- #define PPE_CFG_RX_CTRL_ALIGN_SHIFT	11
-@@ -531,8 +531,8 @@ hip04_mac_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- #if defined(CONFIG_HI13X1_GMAC)
- 	desc->cfg = (__force u32)cpu_to_be32(TX_CLEAR_WB | TX_FINISH_CACHE_INV
- 		| TX_RELEASE_TO_PPE | priv->port << TX_POOL_SHIFT);
--	desc->data_offset = (__force u32)cpu_to_be32(phys & CACHE_LINE_MASK);
--	desc->send_addr =  (__force u32)cpu_to_be32(phys & ~CACHE_LINE_MASK);
-+	desc->data_offset = (__force u32)cpu_to_be32(phys & SOC_CACHE_LINE_MASK);
-+	desc->send_addr =  (__force u32)cpu_to_be32(phys & ~SOC_CACHE_LINE_MASK);
- #else
- 	desc->cfg = (__force u32)cpu_to_be32(TX_CLEAR_WB | TX_FINISH_CACHE_INV);
- 	desc->send_addr = (__force u32)cpu_to_be32(phys);
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 8f1f10fa0dd6..d7cf3202cdd3 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2273,7 +2273,9 @@ static void nvme_reset_work(struct work_struct *work)
+ 	int result;
+ 	enum nvme_ctrl_state new_state = NVME_CTRL_LIVE;
+ 
+-	if (WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)) {
++	if (dev->ctrl.state != NVME_CTRL_RESETTING) {
++		dev_warn(dev->ctrl.device, "ctrl state %d is not RESETTING\n",
++			 dev->ctrl.state);
+ 		result = -ENODEV;
+ 		goto out;
+ 	}
 -- 
 2.30.2
 
