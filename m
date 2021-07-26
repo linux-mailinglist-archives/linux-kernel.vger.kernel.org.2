@@ -2,221 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE4C3D52D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FA43D52D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhGZEjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 00:39:55 -0400
-Received: from fallback15.mail.ru ([94.100.179.50]:44836 "EHLO
-        fallback15.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhGZEjy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 00:39:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=t1Uh5KTwLCMvfNZqiWZTCHU59a6VhHwc3c34OkzXXK0=;
-        t=1627276823;x=1627882223; 
-        b=QBdXlb2GV5/DBH4ndSTnUFneqi/GUQ3RSxIkTZ19PKwE8YG4fntmytIWqolfWbgUl2mmhxARlfJFYbIU8YkbBukFR9daMONgAS3QBSXTrhFLdKpb6Wi5zmEzv4Tmj5WIUIABYz9NNMX9uUUy2B4USZKvdCOzZN4m6o+k6cJ1+ms=;
-Received: from [10.161.64.51] (port=52486 helo=smtp43.i.mail.ru)
-        by fallback15.m.smailru.net with esmtp (envelope-from <fido_max@inbox.ru>)
-        id 1m7t2L-0000hP-Cc; Mon, 26 Jul 2021 08:20:21 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=t1Uh5KTwLCMvfNZqiWZTCHU59a6VhHwc3c34OkzXXK0=;
-        t=1627276821;x=1627882221; 
-        b=HFsG8wpL/yfnCULCtowXdU/lai1vO/kyqsNcq8D+wVkP4RIZ1aFT6zu3Sj8SQk8rMOxVRil4j1toTa2JlJmzafFDcc8WTKEgKHMQyLMrFoLYBjfC/Tlvi3IRxswaNyOZ1G+7d7UiMjd8Ndb9fftyTSUhqkSxnBr41xadI7dWJ8k=;
-Received: by smtp43.i.mail.ru with esmtpa (envelope-from <fido_max@inbox.ru>)
-        id 1m7t2B-0005FX-OU; Mon, 26 Jul 2021 08:20:12 +0300
-From:   Maxim Kochetkov <fido_max@inbox.ru>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        saravanak@google.com, leoyang.li@nxp.com, qiang.zhao@nxp.com,
-        gregkh@linuxfoundation.org, Maxim Kochetkov <fido_max@inbox.ru>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH v3] soc: fsl: qe: convert QE interrupt controller to platform_device
-Date:   Mon, 26 Jul 2021 08:22:17 +0300
-Message-Id: <20210726052217.13558-1-fido_max@inbox.ru>
-X-Mailer: git-send-email 2.31.1
+        id S231582AbhGZEp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 00:45:59 -0400
+Received: from mail-dm6nam11on2081.outbound.protection.outlook.com ([40.107.223.81]:60801
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231280AbhGZEp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 00:45:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ixOb9tgo5CUgd0EuDmVIOBhxiZ+UhYaRahCYMJcOWTSR3MtF7oncd8bxWBE/IH9YQ7Un2N1esVmjL1dPkiXzR6FBNB3q/pm3k3sySwmoYsPn9Y/YTX1I1SZa2bDHPfkjQBIFZGI7iyj/Runh5yt/9d3ojIMXn+e9MdA/wcXR/TtYTBp356Ln8QIU0dB51728GhZsOuNwogMOBt5YfNvu86S6tGlIgxrZDjdNZkY+ksLyXaUEWkzPOxBqHKQS9/MOZpXwVQ+1FtetXknYerSDNX0ZdWXllCFlhGYTCb3emGItHv8+BXiM/EmK8oSlLMraHUSytmjCBXyGfnhd9Lp1oQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JaDihEXB9rSOXXlQpKEICc6NrP4QH48gMkRYDxzBg6o=;
+ b=O1ULeCuJeh2wOdppNPUoFYNC8MOe0R8smHG6kmwgygGkGFBvm6WILO6wr0ilMovJqSqeULelSesbCyS/ZDMDJhFGITCsLyw2DzGQnW5qVf6fJqRvMdP43yeZwefKctSL6Ff9XqJ7vZO/980aLei5kfOZ/ZRclkXl94eX6vBPJVlb8BPFvKPHdUeWm4Odxb1OU3TB3+eNbc03F5OJ/xkZe/J7NLTcSVkPwZVwb0604tfkEXboNXmIvmMlJOA4iczSNRy/Hq21yjDLVDyYLDe1PHkUoMi84P5MIeQcf64K4IEnvCq5UHgiulP74bzc0TIS7nIfyiY37VQiLQ7qEiDlpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JaDihEXB9rSOXXlQpKEICc6NrP4QH48gMkRYDxzBg6o=;
+ b=JzpDcxH8v1GXfTg0ZsCC4TiLpjbDMXrTke45sMBQesFr577sS/cZGReFmb+igEtvC0/IjnvnfkIWqSjk8OTjbZwL+FPEQQH5gulwqk2W2ltitqBT10f2xKcS2g46gjgj5RpV9tSxJ6CZeaPSf2n+6mqThB79LwwYgU3YkOsmd2w=
+Received: from SN6PR02MB4093.namprd02.prod.outlook.com (2603:10b6:805:31::31)
+ by SN4PR0201MB3438.namprd02.prod.outlook.com (2603:10b6:803:48::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.28; Mon, 26 Jul
+ 2021 05:26:23 +0000
+Received: from SN6PR02MB4093.namprd02.prod.outlook.com
+ ([fe80::c10a:fa45:9f2d:7601]) by SN6PR02MB4093.namprd02.prod.outlook.com
+ ([fe80::c10a:fa45:9f2d:7601%6]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
+ 05:26:22 +0000
+From:   Raviteja Narayanam <rna@xilinx.com>
+To:     Marek Vasut <marex@denx.de>, Michal Simek <michals@xilinx.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git <git@xilinx.com>, "joe@perches.com" <joe@perches.com>
+Subject: RE: [PATCH v2 00/10] i2c: xiic: Add features, bug fixes.
+Thread-Topic: [PATCH v2 00/10] i2c: xiic: Add features, bug fixes.
+Thread-Index: AQHXanX+JNOMVW+1VkKFPhgte5uemqspB/+AgBzauQCABE5f4IAAidyAgADKNnCAAQaWAIAD8YkA
+Date:   Mon, 26 Jul 2021 05:26:22 +0000
+Message-ID: <SN6PR02MB4093E219E0BCE2C3CBCE472CCAE89@SN6PR02MB4093.namprd02.prod.outlook.com>
+References: <20210626102806.15402-1-raviteja.narayanam@xilinx.com>
+ <95162fd0-10e6-2bc6-4079-899ac26f66ce@xilinx.com>
+ <0c51785f-9763-aebc-a9ea-04337ad1accc@denx.de>
+ <SN6PR02MB40933E99A241952502B69F41CAE19@SN6PR02MB4093.namprd02.prod.outlook.com>
+ <45aa8d2b-a077-32a2-0608-8f20a5b807a8@denx.de>
+ <SN6PR02MB4093C7F2EB59D854D8753A01CAE29@SN6PR02MB4093.namprd02.prod.outlook.com>
+ <328f6c4e-ff0b-c88f-d246-75b493b67a9a@denx.de>
+In-Reply-To: <328f6c4e-ff0b-c88f-d246-75b493b67a9a@denx.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: denx.de; dkim=none (message not signed)
+ header.d=none;denx.de; dmarc=none action=none header.from=xilinx.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 938660d2-bf65-45f3-947e-08d94ff5e81a
+x-ms-traffictypediagnostic: SN4PR0201MB3438:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN4PR0201MB3438DD5B72C391BC80124DC8CAE89@SN4PR0201MB3438.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: i9wHvAIcuHz+G4bDvnnVHywzfcve2dINgQ2tzzkuKMbTn/iEOhHvTtgEmkZJtTz3myUc8MNfDbYRMADSf+/cFuL9DMY3t3M2g2INGsDX/5Tk4XrS/JDxJdC0zKL09XA7bCAWjRbhXqFTyuXTtMAt1+knNNOFThfEJYYLrl9Vwe1S/q9FAfbwtLVlmw019cCo9ap4H7K4kwxRMsb+4sJGbUIry4adIswV6jlLbcB6vs7tUVs78n1/EN9UZ96gmKv+cv/55bcPl0+Px1vNHaq3zJF8XJttGvwi1SgzXqct2BKJSdoYhNT+V1W/eTiZfii5fsy6nC9DAvoC8ZzGcCg2MkGpwoXEpBTqj+ON2BiOn6f0ykAekH0QVVj91ZHjt7O9+NN/7pYSpdzHJJzallXr5WKTRsz2vYzNrRDrMIT3Aq4sogW5kG8B9aE0afTqnPAUizkMIxPnBFFA83Iez5BwSTnp2/DOaX014XNRXTRy1RiF2H1WrE471cSzwuVMHBAtv7yYQAWHOmzm8caRp9BtUAzwY5GSeunKyun6/FBYWivb9POdmfW3q4Y0XY08MjKrOfRMyP/7rHn+oM239k8yjDhXC/NmzPrk/4KhNiSD8kI4mvYxyS0Va/1HcelW8ZVjslg1kyr5j3Ndrsn8PPVtVECeWaBpgLbsSaO+jexLUX8XUSq+E+e0Y5q4PP7XwhXvYZa6L9gV521HjtGiI/srRw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4093.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(376002)(136003)(396003)(366004)(38100700002)(55016002)(71200400001)(478600001)(86362001)(316002)(66446008)(8676002)(7696005)(33656002)(6506007)(53546011)(66556008)(8936002)(83380400001)(122000001)(26005)(54906003)(110136005)(76116006)(66476007)(66946007)(9686003)(2906002)(186003)(52536014)(5660300002)(4326008)(64756008)(38070700004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RU5PYmRWNGMvT216bUpuOEdNNGhRVExWYkEwV2x1MHVFb3dWZGRnSWs3MSty?=
+ =?utf-8?B?MG9KenYxeWpJY0ErdzRqZ3ZlY3NZdElBVEJFSU94SEhQKzJZc0VGNGp1ZGR0?=
+ =?utf-8?B?VG5NZlE0M0FieWp5ZnhLZHFwN2ttRTcwSEt3OTZDTmFSZ1l6bGowby9FYkxQ?=
+ =?utf-8?B?bVhOT09McFR2MkZGNTVHQlVpV1pYWDB1NzE5TkJpYXdBQ3o3bDNZbVpYbHg2?=
+ =?utf-8?B?N2ZhTitDR0tGWTFqZDg3TWowd2d3Vi92YWc0OWd3TDR1Vmt5NFNIbXA0WFhO?=
+ =?utf-8?B?Mm41ZWJMMjZrbS9TRllNUmdTTG14ODcrQ3dHZlRDU3ErcUU1TU5HYlU5L3Ry?=
+ =?utf-8?B?Q2RnWHlGMmZrT2xSalNkZUJzVHliTklkRlNsSmtuK0J4UHJmMWt0Vk5jdlVJ?=
+ =?utf-8?B?d3YwbDN0TVhKd2hyMU53QVZ0VnZsWGlZQnQzWG83R1RCOUpCVTYvSWV4RjFx?=
+ =?utf-8?B?Mm9Bb1BwM2V6Rkczc0VlWE50cGRxR3hqdzB6NkRuMlcvVVVvSitzWjJ0TThi?=
+ =?utf-8?B?bjYxR21ZUlZoaXdnS3BtVDdhemFRMHZieU16QWRkTU8zOHYxTkFwa2xISHox?=
+ =?utf-8?B?Si9US21BSlVQVENGbFFrS2cvc2VMTElWSUVPcnpZSUNvSjNuZjRORUJzZ3hO?=
+ =?utf-8?B?QmgzZkNpVHQ1aHBBNThrNmFNSytiVTZtLzZXVjg4cW1FZ0ZpZmNZSXlZY1la?=
+ =?utf-8?B?RXlaQ2xIYWZ2bnB3ZDhwUnNWY3I1UlhWNklwTWdieWdpQ2R2T2x1ZlRuaHBv?=
+ =?utf-8?B?Z2xvbEFZbUt5V3kxdm1CV245c29TaXExcjlnTTBQcmE4bFRLVlN5aVlGYm51?=
+ =?utf-8?B?bDZ2R3RsQkJCbWRwa1BLS2xBd1ZRbmkrYjZhN0ZoL1RGK2liS04xeWZ5b2kw?=
+ =?utf-8?B?L2xFUi9NVklUeUFPeVhaMzIwL2F1REhXdGU3a1dzTFBQbk5BZDZxRm1keG5Z?=
+ =?utf-8?B?dm9FQ2N5NG1OUVVOUjE0NmdqallBS0VGMjR0TEViLzFPTXNJSkhGL3hhN1lQ?=
+ =?utf-8?B?bTdvYUVlUldrN09yZWg3Z2FnVFA4TTRCNTFxQWpZanlzdDFDWlBaQUl5QzdP?=
+ =?utf-8?B?dkdKSzZRM0VrZEhyYWR1aU90Nkl6ZzlCb0lGSFJ6UW1LYWM5cnRxc2xxZnFJ?=
+ =?utf-8?B?azNlQkJzanZjZnA4U1ltSW9lZEoxMUVoNDYvWFQzZzJuUmFXV2t0ejUrcS9m?=
+ =?utf-8?B?blF3QktOWTdwWk5Ed3pPT1JXUko3aDdqVk9VREpaNVA0Y0poMVhGUVVCMHph?=
+ =?utf-8?B?dzBFUUpFSjZnaFNMc3ZRdDJHR0U0N2orYzFTckFEdVFzRGdTNDVGV0tlaFVH?=
+ =?utf-8?B?RHZiRFRTSmJDUDBmTGZwTnVGSmdaNXFkckFwUWd5WTk1aE9SRzJXRlFPb1Bj?=
+ =?utf-8?B?L2lGZ285WER6UDJsMlE0L2R6LytCNDlBSmpwbk95NGpnbUwwbitmTmdmdVJK?=
+ =?utf-8?B?T3M4bVNGd1lPQWt6dlEwWFV2WmRRSG1odzVNcmtlaHBoaW9qSy9neHVPdDdh?=
+ =?utf-8?B?aXFHY0o1VXlUNFBWclJQSDVnbk9WdEFkWFN4RU11YXdiUmtLYW0xSXVHSjBr?=
+ =?utf-8?B?TFpWZDlJcVk5RGFOY1VYazRJaDhCWjcyTEV1bm10eXQrcjByMXhPMzgzUUNq?=
+ =?utf-8?B?dGRwQWhQdzB0VXdpeVNQazF2U2F5Q2swYlFvZE56UldXeURPVVFBRUQxU3kr?=
+ =?utf-8?B?NjJiTEpHcHh6eHN3d0JEMmF3Uko2U0J0UGRveFgwNjVwNkFxY2tpWHBaWFNu?=
+ =?utf-8?Q?B77u0yGKkcvFFlrK/wPVyO+82+S7bnOJ4yc67FQ?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 4F1203BC0FB41BD941C43E597735A9C3D3726AD0AC8C7907896201F0AD2BBAE8182A05F5380850409D28132A2A740F627A359249B08D8940F9DEA757F337415BC037DA5BA24F7E8A
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE75263010198C72082EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F790063732727FD5A4355FD18638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D886EBC48F350539DBA23B9703778B5A996F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE7A29E2F051442AF778941B15DA834481FA18204E546F3947C1E44367C8E80A7B4F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637BA2F0AEB80054583389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F79006376B150EEEA420D0FBD81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636D81D268191BDAD3D78DA827A17800CE7F8413B35385CE433EC76A7562686271EEC990983EF5C03292E808ACE2090B5E14AD6D5ED66289B5259CC434672EE63711DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C361DD96311B40C2D435872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C7941123239F7850421C1E794AB7149D6CD8E38C4B36944A89C2B6934AE262D3EE7EAB7254005DCED1C8AEA1E975C27AC1E0A4E2319210D9B64D260DF9561598F01A9E91200F654B03031C89702B531498E8E86DC7131B365E7726E8460B7C23C
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D342833AC5E8E9ACF1C3ABECC5E186177B3E36FFADD1680F45A81D3DC0E074A8F2DC01EDAC4EB81FB9E1D7E09C32AA3244C5ED05D3279869C37F426C3C0ED5C82E4408A6A02710B7304ED98077840A144B9
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojBHzp66hWLW2MmQ0+nR2bnA==
-X-Mailru-Sender: 11C2EC085EDE56FA9C10FA2967F5AB24CC4E7603B3CCE21D85B7A77D3600FEFAED25AD0588FA7D16EE9242D420CFEBFD3DDE9B364B0DF2891A624F84B2C74EDA4239CF2AF0A6D4F80DA7A0AF5A3A8387
-X-Mras: Ok
-X-7564579A: B8F34718100C35BD
-X-77F55803: 6242723A09DB00B4DE24245422D83CE6F6EF26CB7A2DAAF275B90700DCC5904E049FFFDB7839CE9E790A577F25633BAC67FF5625DE986C47671D1F33D48B04C16C06AFB9415F9DAB
-X-7FA49CB5: 0D63561A33F958A53A8332BA8FC104A37DDD5463A4D6D3C10E8979EBC08A0069CACD7DF95DA8FC8BD5E8D9A59859A8B60417BEADF48D1460CC7F00164DA146DAFE8445B8C89999728AA50765F7900637E9F91455EEDB1B70389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8188B2BFCDC338A02F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C1DAA61796BF5227B302FCEF25BFAB3454AD6D5ED66289B52698AB9A7B718F8C442539A7722CA490CD5E8D9A59859A8B608F55DA9FB1C18C0089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C7941123239F785042FC38361DF28E973E5FBA43393BAB56E9C2B6934AE262D3EE7EAB7254005DCED1C8AEA1E975C27AC699F904B3F4130E343918A1A30D5E7FCCB5012B2E24CD356
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojBHzp66hWLW2e5HZ12CN1GA==
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C900579012F43D24554B08AB642A06AF0B9C7F1EFB9C2FF11262D398300F31D255910C099ADC76E806A99D50E20E2BC48EF5A30D242760C51EA9CEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4093.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 938660d2-bf65-45f3-947e-08d94ff5e81a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2021 05:26:22.7464
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XPUSoiJHcD2WvgQDLiZaqpoaluM374GoMfo+92LsNC3n3VOClmeyZifpmu4WSoz7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR0201MB3438
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 5.13 QE's ucc nodes can't get interrupts from devicetree:
-
-	ucc@2000 {
-		cell-index = <1>;
-		reg = <0x2000 0x200>;
-		interrupts = <32>;
-		interrupt-parent = <&qeic>;
-	};
-
-Now fw_devlink expects driver to create and probe a struct device
-for interrupt controller.
-
-So lets convert this driver to simple platform_device with probe().
-Also use platform_get_ and devm_ family function to get/allocate
-resources and drop unused .compatible = "qeic".
-
-[1] - https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com
-Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=on by default""")
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Changes in v3:
- - use .compatible = "qeic" again (Li Yang <leoyang.li@nxp.com> asks to keep it)
- 
-Changes in v2:
- - use devm_ family functions to allocate mem/resources
- - use platform_get_ family functions to get resources/irqs
- - drop unused .compatible = "qeic"
-
- drivers/soc/fsl/qe/qe_ic.c | 75 ++++++++++++++++++++++----------------
- 1 file changed, 44 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/soc/fsl/qe/qe_ic.c b/drivers/soc/fsl/qe/qe_ic.c
-index 3f711c1a0996..54cabd2605dd 100644
---- a/drivers/soc/fsl/qe/qe_ic.c
-+++ b/drivers/soc/fsl/qe/qe_ic.c
-@@ -23,6 +23,7 @@
- #include <linux/signal.h>
- #include <linux/device.h>
- #include <linux/spinlock.h>
-+#include <linux/platform_device.h>
- #include <asm/irq.h>
- #include <asm/io.h>
- #include <soc/fsl/qe/qe.h>
-@@ -404,41 +405,40 @@ static void qe_ic_cascade_muxed_mpic(struct irq_desc *desc)
- 	chip->irq_eoi(&desc->irq_data);
- }
- 
--static void __init qe_ic_init(struct device_node *node)
-+static int qe_ic_init(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
- 	void (*low_handler)(struct irq_desc *desc);
- 	void (*high_handler)(struct irq_desc *desc);
- 	struct qe_ic *qe_ic;
--	struct resource res;
--	u32 ret;
-+	struct resource *res;
-+	struct device_node *node = pdev->dev.of_node;
- 
--	ret = of_address_to_resource(node, 0, &res);
--	if (ret)
--		return;
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (res == NULL) {
-+		dev_err(dev, "no memory resource defined\n");
-+		return -ENODEV;
-+	}
- 
--	qe_ic = kzalloc(sizeof(*qe_ic), GFP_KERNEL);
-+	qe_ic = devm_kzalloc(dev, sizeof(*qe_ic), GFP_KERNEL);
- 	if (qe_ic == NULL)
--		return;
-+		return -ENOMEM;
- 
--	qe_ic->irqhost = irq_domain_add_linear(node, NR_QE_IC_INTS,
--					       &qe_ic_host_ops, qe_ic);
--	if (qe_ic->irqhost == NULL) {
--		kfree(qe_ic);
--		return;
-+	qe_ic->regs = devm_ioremap(dev, res->start, resource_size(res));
-+	if (qe_ic->regs == NULL) {
-+		dev_err(dev, "failed to ioremap() registers\n");
-+		return -ENODEV;
- 	}
- 
--	qe_ic->regs = ioremap(res.start, resource_size(&res));
--
- 	qe_ic->hc_irq = qe_ic_irq_chip;
- 
--	qe_ic->virq_high = irq_of_parse_and_map(node, 0);
--	qe_ic->virq_low = irq_of_parse_and_map(node, 1);
-+	qe_ic->virq_high = platform_get_irq(pdev, 0);
-+	qe_ic->virq_low = platform_get_irq(pdev, 1);
- 
--	if (!qe_ic->virq_low) {
--		printk(KERN_ERR "Failed to map QE_IC low IRQ\n");
--		kfree(qe_ic);
--		return;
-+	if (qe_ic->virq_low < 0) {
-+		return -ENODEV;
- 	}
-+
- 	if (qe_ic->virq_high != qe_ic->virq_low) {
- 		low_handler = qe_ic_cascade_low;
- 		high_handler = qe_ic_cascade_high;
-@@ -447,6 +447,13 @@ static void __init qe_ic_init(struct device_node *node)
- 		high_handler = NULL;
- 	}
- 
-+	qe_ic->irqhost = irq_domain_add_linear(node, NR_QE_IC_INTS,
-+					       &qe_ic_host_ops, qe_ic);
-+	if (qe_ic->irqhost == NULL) {
-+		dev_err(dev, "failed to add irq domain\n");
-+		return -ENODEV;
-+	}
-+
- 	qe_ic_write(qe_ic->regs, QEIC_CICR, 0);
- 
- 	irq_set_handler_data(qe_ic->virq_low, qe_ic);
-@@ -456,20 +463,26 @@ static void __init qe_ic_init(struct device_node *node)
- 		irq_set_handler_data(qe_ic->virq_high, qe_ic);
- 		irq_set_chained_handler(qe_ic->virq_high, high_handler);
- 	}
-+	return 0;
- }
-+static const struct of_device_id qe_ic_ids[] = {
-+	{ .compatible = "fsl,qe-ic"},
-+	{ .compatible = "qeic"},
-+	{},
-+};
- 
--static int __init qe_ic_of_init(void)
-+static struct platform_driver qe_ic_driver =
- {
--	struct device_node *np;
-+	.driver	= {
-+		.name		= "qe-ic",
-+		.of_match_table	= qe_ic_ids,
-+	},
-+	.probe	= qe_ic_init,
-+};
- 
--	np = of_find_compatible_node(NULL, NULL, "fsl,qe-ic");
--	if (!np) {
--		np = of_find_node_by_type(NULL, "qeic");
--		if (!np)
--			return -ENODEV;
--	}
--	qe_ic_init(np);
--	of_node_put(np);
-+static int __init qe_ic_of_init(void)
-+{
-+	platform_driver_register(&qe_ic_driver);
- 	return 0;
- }
- subsys_initcall(qe_ic_of_init);
--- 
-2.31.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWFyZWsgVmFzdXQgPG1h
+cmV4QGRlbnguZGU+DQo+IFNlbnQ6IFdlZG5lc2RheSwgSnVseSAyMSwgMjAyMSAzOjE0IEFNDQo+
+IFRvOiBSYXZpdGVqYSBOYXJheWFuYW0gPHJuYUB4aWxpbnguY29tPjsgTWljaGFsIFNpbWVrDQo+
+IDxtaWNoYWxzQHhpbGlueC5jb20+OyBsaW51eC1pMmNAdmdlci5rZXJuZWwub3JnDQo+IENjOiBs
+aW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
+cm5lbC5vcmc7IGdpdA0KPiA8Z2l0QHhpbGlueC5jb20+OyBqb2VAcGVyY2hlcy5jb20NCj4gU3Vi
+amVjdDogUmU6IFtQQVRDSCB2MiAwMC8xMF0gaTJjOiB4aWljOiBBZGQgZmVhdHVyZXMsIGJ1ZyBm
+aXhlcy4NCj4gDQo+IE9uIDcvMjAvMjEgNDoxOSBQTSwgUmF2aXRlamEgTmFyYXlhbmFtIHdyb3Rl
+Og0KPiANCj4gSGksDQo+IA0KPiBbLi4uXQ0KPiANCj4gPj4+IEkgaGF2ZSB0ZXN0ZWQgdGhpcyBh
+Z2FpbiBvbiBvdXIgYm9hcmRzIHdpdGggZWVwcm9tIGFuZCBvdGhlcg0KPiA+Pj4gc2Vuc29ycywg
+dGhpcw0KPiA+PiBpcyB3b3JraW5nIGZpbmUgZm9yIHVzLg0KPiA+Pg0KPiA+PiBDYW4geW91IHNo
+YXJlIGRldGFpbHMgb2YgaG93IHRob3NlIHRlc3RzIHdlcmUgcGVyZm9ybWVkID8NCj4gPg0KPiA+
+IFN0cmVzcyB0ZXN0IC0gMToNCj4gPiBIZWF2eSBldGhlcm5ldCB0cmFmZmljIHJ1bm5pbmcgaW4g
+dGhlIGJhY2tncm91bmQuDQo+ID4gSTJjIGNvbW1hbmRzIHNjcmlwdCAobGlrZSBiZWxvdykgcnVu
+bmluZy4gV2UgY2FuIHNlZSB2aXNpYmxlIHN0dXR0ZXIgaW4gdGhlDQo+IG91dHB1dCBhcyBleHBl
+Y3RlZCwgYnV0IG5vdGhpbmcgZmFpbGVkLg0KPiA+DQo+ID4gaT0wDQo+ID4gd2hpbGUgWyAxIF0N
+Cj4gPiBkbw0KPiA+IAkJaTJjdHJhbnNmZXIgLXkgLWYgMiB3MUAwWDU0IDBYMDAgcjMxQDBYNTQN
+Cj4gPiAJCWkyY3RyYW5zZmVyIC15IC1mIDIgdzFAMFg1NCAwWDAwIHIzMkAwWDU0DQo+ID4gCQlp
+MmN0cmFuc2ZlciAteSAtZiAyIHcxQDBYNTQgMFgwMCByMjU1QDBYNTQNCj4gPiAJCWkyY3RyYW5z
+ZmVyIC15IC1mIDIgdzFAMFg1NCAwWDAwIHIyNzNAMFg1NA0KPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIGkyY3RyYW5zZmVyIC15IC1mIDIgdzFAMFg1NCAwWDAwIHIxQDBYNTQNCj4g
+DQo+IENvdWxkIGl0IGJlIHRoYXQgeW91IG5ldmVyIHNlZSB0aGUgcHJvYmxlbSBiZWNhdXNlIHlv
+dSBhbHdheXMgdGFsayB0byBvbmUNCj4gc2luZ2xlIGRldmljZSA/DQoNClRoZXJlIGFyZSB0cmFu
+c2ZlcnMgdG8gb3RoZXIgZGV2aWNlcyBhcyB3ZWxsLiANCk91ciBib2FyZCBoYXMgbXVsdGlwbGUg
+cG93ZXIgbW9uaXRvcnMsIGVlcHJvbSBhbmQgb3RoZXIgbWlzYyBkZXZpY2VzIHRoYXQNCmFyZSBh
+Y2Nlc3NlZCB0aHJvdWdoIHRoZSBzYW1lIGRyaXZlciBhbmQgYXJlIHdvcmtpbmcgZmluZS4NCg0K
+PiANCj4gRG8geW91IGFsc28gdGVzdCB3cml0ZXMgd2hpY2ggYXJlIG5vdCAxIGJ5dGUgbG9uZyA/
+DQo+DQoNClllcywgbGlrZSBmb3IgZWVwcm9tIDEgcGFnZSAoMTYgYnl0ZXMpICBpcyB3cml0dGVu
+Lg0KIA0KPiA+ICAgICAgICAgIGk9JChleHByICRpICsgMSkNCj4gPiAgICAgICAgICBlY2hvICIk
+aSINCj4gPiBkb25lDQo+ID4NCj4gPiBTdHJlc3MgdGVzdCAtIDI6DQo+ID4gVHdvIGkyYyBzY3Jp
+cHRzIHJ1bm5pbmcgaW4gcGFyYWxsZWwgd2l0aCBjb21tYW5kcyBhcyBzaG93biBhYm92ZSB3aXRo
+DQo+IGRpZmZlcmVudCBidXMgbnVtYmVycyAoYXMgYSByZXN1bHQgb2YgbXV4KSwgYnV0IGdvaW5n
+IGludG8gc2FtZSBYSUlDIGFkYXB0ZXIuDQo+ID4gVGhpcyBpcyBhbHNvIHdvcmtpbmcgZmluZS4N
+Cj4gDQo+IENvdWxkIGl0IGJlIHRoZSBpMmMtZGV2IHNlcmlhbGl6ZXMgZWFjaCBvZiB0aG9zZSB0
+cmFuc2ZlcnMgLCBzbyBubyByYWNlIGNhbiBiZQ0KPiB0cmlnZ2VyZWQgPw0KPiANCg0KWWVzLCB0
+aGF0IGlzIHRydWUgYmVjYXVzZSBhbGwgb3VyIHRlc3RzIGFyZSBnb2luZyB0aHJvdWdoIHRoZSBp
+MmMtY29yZSBvbmx5DQphbmQgdGhlcmUgaXMgYSBsb2NrIGF0IGFkYXB0ZXIgbGV2ZWwgaW4gdGhl
+IGNvcmUuDQpJdCBoYXMgdG8gYmUgcmVwcm9kdWNpYmxlIHRocm91Z2ggdGhlIGkyYyBzdGFuZGFy
+ZCBpbnRlcmZhY2UsIHdoaWNoIGlzIG5vdA0KaGFwcGVuaW5nIGF0IG91ciBzZXR1cC4NCg0KSSBj
+YW4gdGFrZSB5b3VyIHBhdGNoZXMgdGhhdCBhcmUgdGFyZ2V0ZWQgZm9yIHRoaXMgaXNzdWUsIHJl
+YmFzZSwgdGVzdA0KYW5kIHNlbmQgdGhlbS4NCg0KUmVnYXJkcywNClJhdml0ZWphIE4NCg0KDQo=
