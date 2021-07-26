@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5383D621B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914F93D633C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236874AbhGZPeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60752 "EHLO mail.kernel.org"
+        id S239323AbhGZPpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236607AbhGZPTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78ECB60F70;
-        Mon, 26 Jul 2021 16:00:01 +0000 (UTC)
+        id S231766AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:28:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BA2260FDA;
+        Mon, 26 Jul 2021 16:07:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315202;
-        bh=ImrBO32MS2qKCVDbOawfWgCzi5qP45Uis/tZnRBB4Oo=;
+        s=korg; t=1627315630;
+        bh=t1qrw3qqvDhAbr7/DTs8zeVeYBvUPo8sBxMfTjxJw+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xDFW9IQxKQe1tFcloo7taszIYBmulY8iu1yX9fdTDbVfVIc89XoChWWVco3JkQgLd
-         3CcM/+10KZ3jlXhbWqHQ8MfvyuD/6jZphodfG7tU0MIXi6dGp3i+KjNlBE0LtSwj9/
-         Da6Tg+OTj9Iwls4BXcI81m7tUMMJ3auiFPzmu+Fw=
+        b=lewoqgrdagzvBYWboaez52XM4fFW8Plp2t/LVoKBVX978QXroRmyxV0r2lZqG0OV2
+         Sa7tmkXmOwjMYeFJkDfkq9xao9fiCLqxt9Qqi8o8SXuPnP0GOj5JbnriQXFiT5hP9c
+         dKvU+K7nwOz3HKFFtaaWitlR1oWyhAK3a5CEhsSw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>,
-        Oleksandr Kravchenko <o.v.kravchenko@globallogic.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 103/108] iio: accel: bma180: Use explicit member assignment
+        stable@vger.kernel.org, Alexander Fomichev <fomichev.ru@gmail.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.10 151/167] misc: eeprom: at24: Always append device id even if label property is set.
 Date:   Mon, 26 Jul 2021 17:39:44 +0200
-Message-Id: <20210726153834.981310767@linuxfoundation.org>
+Message-Id: <20210726153844.486686562@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,102 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Jérôme Glisse <jglisse@redhat.com>
 
-commit 9436abc40139503a7cea22a96437697d048f31c0 upstream
+commit c36748ac545421d94a5091c754414c0f3664bf10 upstream.
 
-This uses the C99 explicit .member assignment for the
-variant data in struct bma180_part_info. This makes it
-easier to understand and add new variants.
+We need to append device id even if eeprom have a label property set as some
+platform can have multiple eeproms with same label and we can not register
+each of those with same label. Failing to register those eeproms trigger
+cascade failures on such platform (system is no longer working).
 
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
-Cc: Oleksandr Kravchenko <o.v.kravchenko@globallogic.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+This fix regression on such platform introduced with 4e302c3b568e
+
+Reported-by: Alexander Fomichev <fomichev.ru@gmail.com>
+Fixes: 4e302c3b568e ("misc: eeprom: at24: fix NVMEM name with custom AT24 device name")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jérôme Glisse <jglisse@redhat.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/accel/bma180.c |   68 +++++++++++++++++++++++++++++----------------
- 1 file changed, 44 insertions(+), 24 deletions(-)
+ drivers/misc/eeprom/at24.c |   17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
---- a/drivers/iio/accel/bma180.c
-+++ b/drivers/iio/accel/bma180.c
-@@ -633,32 +633,52 @@ static const struct iio_chan_spec bma250
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -714,23 +714,20 @@ static int at24_probe(struct i2c_client
+ 	}
  
- static const struct bma180_part_info bma180_part_info[] = {
- 	[BMA180] = {
--		bma180_channels, ARRAY_SIZE(bma180_channels),
--		bma180_scale_table, ARRAY_SIZE(bma180_scale_table),
--		bma180_bw_table, ARRAY_SIZE(bma180_bw_table),
--		BMA180_CTRL_REG0, BMA180_RESET_INT,
--		BMA180_CTRL_REG0, BMA180_SLEEP,
--		BMA180_BW_TCS, BMA180_BW,
--		BMA180_OFFSET_LSB1, BMA180_RANGE,
--		BMA180_TCO_Z, BMA180_MODE_CONFIG, BMA180_LOW_POWER,
--		BMA180_CTRL_REG3, BMA180_NEW_DATA_INT,
--		BMA180_RESET,
--		bma180_chip_config,
--		bma180_chip_disable,
-+		.channels = bma180_channels,
-+		.num_channels = ARRAY_SIZE(bma180_channels),
-+		.scale_table = bma180_scale_table,
-+		.num_scales = ARRAY_SIZE(bma180_scale_table),
-+		.bw_table = bma180_bw_table,
-+		.num_bw = ARRAY_SIZE(bma180_bw_table),
-+		.int_reset_reg = BMA180_CTRL_REG0,
-+		.int_reset_mask = BMA180_RESET_INT,
-+		.sleep_reg = BMA180_CTRL_REG0,
-+		.sleep_mask = BMA180_SLEEP,
-+		.bw_reg = BMA180_BW_TCS,
-+		.bw_mask = BMA180_BW,
-+		.scale_reg = BMA180_OFFSET_LSB1,
-+		.scale_mask = BMA180_RANGE,
-+		.power_reg = BMA180_TCO_Z,
-+		.power_mask = BMA180_MODE_CONFIG,
-+		.lowpower_val = BMA180_LOW_POWER,
-+		.int_enable_reg = BMA180_CTRL_REG3,
-+		.int_enable_mask = BMA180_NEW_DATA_INT,
-+		.softreset_reg = BMA180_RESET,
-+		.chip_config = bma180_chip_config,
-+		.chip_disable = bma180_chip_disable,
- 	},
- 	[BMA250] = {
--		bma250_channels, ARRAY_SIZE(bma250_channels),
--		bma250_scale_table, ARRAY_SIZE(bma250_scale_table),
--		bma250_bw_table, ARRAY_SIZE(bma250_bw_table),
--		BMA250_INT_RESET_REG, BMA250_INT_RESET_MASK,
--		BMA250_POWER_REG, BMA250_SUSPEND_MASK,
--		BMA250_BW_REG, BMA250_BW_MASK,
--		BMA250_RANGE_REG, BMA250_RANGE_MASK,
--		BMA250_POWER_REG, BMA250_LOWPOWER_MASK, 1,
--		BMA250_INT_ENABLE_REG, BMA250_DATA_INTEN_MASK,
--		BMA250_RESET_REG,
--		bma250_chip_config,
--		bma250_chip_disable,
-+		.channels = bma250_channels,
-+		.num_channels = ARRAY_SIZE(bma250_channels),
-+		.scale_table = bma250_scale_table,
-+		.num_scales = ARRAY_SIZE(bma250_scale_table),
-+		.bw_table = bma250_bw_table,
-+		.num_bw = ARRAY_SIZE(bma250_bw_table),
-+		.int_reset_reg = BMA250_INT_RESET_REG,
-+		.int_reset_mask = BMA250_INT_RESET_MASK,
-+		.sleep_reg = BMA250_POWER_REG,
-+		.sleep_mask = BMA250_SUSPEND_MASK,
-+		.bw_reg = BMA250_BW_REG,
-+		.bw_mask = BMA250_BW_MASK,
-+		.scale_reg = BMA250_RANGE_REG,
-+		.scale_mask = BMA250_RANGE_MASK,
-+		.power_reg = BMA250_POWER_REG,
-+		.power_mask = BMA250_LOWPOWER_MASK,
-+		.lowpower_val = 1,
-+		.int_enable_reg = BMA250_INT_ENABLE_REG,
-+		.int_enable_mask = BMA250_DATA_INTEN_MASK,
-+		.softreset_reg = BMA250_RESET_REG,
-+		.chip_config = bma250_chip_config,
-+		.chip_disable = bma250_chip_disable,
- 	},
- };
+ 	/*
+-	 * If the 'label' property is not present for the AT24 EEPROM,
+-	 * then nvmem_config.id is initialised to NVMEM_DEVID_AUTO,
+-	 * and this will append the 'devid' to the name of the NVMEM
+-	 * device. This is purely legacy and the AT24 driver has always
+-	 * defaulted to this. However, if the 'label' property is
+-	 * present then this means that the name is specified by the
+-	 * firmware and this name should be used verbatim and so it is
+-	 * not necessary to append the 'devid'.
++	 * We initialize nvmem_config.id to NVMEM_DEVID_AUTO even if the
++	 * label property is set as some platform can have multiple eeproms
++	 * with same label and we can not register each of those with same
++	 * label. Failing to register those eeproms trigger cascade failure
++	 * on such platform.
+ 	 */
++	nvmem_config.id = NVMEM_DEVID_AUTO;
++
+ 	if (device_property_present(dev, "label")) {
+-		nvmem_config.id = NVMEM_DEVID_NONE;
+ 		err = device_property_read_string(dev, "label",
+ 						  &nvmem_config.name);
+ 		if (err)
+ 			return err;
+ 	} else {
+-		nvmem_config.id = NVMEM_DEVID_AUTO;
+ 		nvmem_config.name = dev_name(dev);
+ 	}
  
 
 
