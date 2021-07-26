@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4933D65E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948343D65ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhGZQ7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
+        id S232274AbhGZRAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:00:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhGZQ7r (ORCPT
+        with ESMTP id S231707AbhGZQ7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:59:47 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BC0C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:40:15 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id 185so12863909iou.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:40:15 -0700 (PDT)
+        Mon, 26 Jul 2021 12:59:49 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE52BC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:40:16 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id h18so9740242ilc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:40:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RhapsKA6J25kD25lmyi6/Yv9x0InAtnL2pbV2Xb9qwU=;
-        b=EgeRPtba7JmXRFpCb8FHFkqy26AmvA+X5gH4ja6s47tmBi07ies/bKg+QIpedEfGnt
-         mVWdIky5xLde1ZvHr6eg6JlgIUDcmAJ0upfIAo6kaz42joyY8cRNU5xzx9ZSzr/yq5ef
-         AK4muCJVTIpkbnpDark9BNW398xyLVilfvTETNoiJmfbEWtgYvI6gWf0cu8dPYO4uGfx
-         mZPgq8UVbTcEK65nrbN/+AECMrmvC3MczDPGy/tnUqFM2ROaf57QpJtJ70uuxYncRxh2
-         3OSiENmJjmcxu7i9J4GcMk52Wn+Bk3Ib310OzcH/ZbamQtRd8n5wFE8sDPl/+rRryRQu
-         VxlA==
+        bh=igk/eHhWUPu9afoObyctlRd1/zpW6sRE3pcaziGyfBE=;
+        b=SXEYKbo2WkONf7MIIa6qH5ZvPXdhBAWA2/mKCH/HBoyc9OoapZk4hDdOvNmXSh5crZ
+         UkgzMAKZOQOqzxd1si3opZW91wJ+NvZ9AZtaW7ynQH57CC8JL8Bibt7Ps9MeN2NCsQVP
+         aPBRun/tCJf8/2VqBF3PM4hc1ZUeXiSE/lzzwu5Xpp9/mX8qyhiboVihM/R/BYKV/By7
+         5PDe6OQAvxWtsGaaPC/DASkAoSwO0f5nH7Dc3MJvLQrb+lc7gL8rkA5fPFuRUazSpcpZ
+         Vs6K7saq/eC5i5BYC8biezs1HpueLDurDkPHxCGjXl8/cYgaKazOeQw/bCrWe835fssp
+         04Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RhapsKA6J25kD25lmyi6/Yv9x0InAtnL2pbV2Xb9qwU=;
-        b=Y+f2yvMnU/ObSLM07jNoyJKBHrEYA0Br6gzfqQhm5hYQeK/seD4Z90SvcbeAs8Nnzm
-         T8+boC3fmHJUCLBaizVxN4e4EOaX/7e/6a1GTbqwXineOEpaWGeIX06jkNknXzwkYfxq
-         0KPx6v1djnSK6LKNJQZsw9XMgw+pkJFFNWRyIBNZRNRwB66FrGu5qkOj/OSM+nYRJLDb
-         6vJ8Q8LGFt0zaXWaphM32yU7x/ZaQz1m7eBxEgi6kQBKTMSR0BLcD7KvPjedM6lOztc4
-         p/WP/u/oX9LjfBPIL/ufn0RhUdr7F6q6ztYRxlSOdLch3RNK+nYfUb0LXtp1w+Po7Wz3
-         zzMg==
-X-Gm-Message-State: AOAM532DDgp0XYI0w4N8+Tx3DFDtq29BbRcxh6CcC26eWWkXIbz+c4wb
-        9P2yN1x0Vxko5fZNWyz/KZOfnQ==
-X-Google-Smtp-Source: ABdhPJzNTzH8TAa3FXHtMoMQSHtJ4Bt6ACJgbxs9EQoSZIU5vvzPeoIvhruLSjPLb345LwHR/MQuKg==
-X-Received: by 2002:a02:93a7:: with SMTP id z36mr17237528jah.112.1627321215463;
-        Mon, 26 Jul 2021 10:40:15 -0700 (PDT)
+        bh=igk/eHhWUPu9afoObyctlRd1/zpW6sRE3pcaziGyfBE=;
+        b=Eq0FgWs913zm/XKaAsAWmvCn72KkAvATxcB+vJwFf5xDeDmf2z4QGYnqg6EfrbzfKD
+         J/3wCUSM2/TI42UjGMoSDVoVF/yaxE4PPby6qcJeoOiXhhT5k4YzhwH64t4DNpiw/e18
+         puow7cw5+KxKUJiprbTvMpfrpy7081vS0tcdiiBJ3yBcnpa/wkiGJBY+XBml3iU2qmGL
+         RHZxkY6ASJhUeudqOJPFL567TiKDPWwcHRhVEi+X/e3NmOj3xHvQVMf9NEzWhnaOZDwE
+         gS6Gdyv3X6kDuoypACar10qdA2+56HrLUdQz7TaZH70WJX55eB/pWK8U/lT7jSH03q5P
+         CYPg==
+X-Gm-Message-State: AOAM530qo6Nl+RIXJ7n6jSVaFNPH+IOY1SnQDhgdy8sobVXOyi9R7Gga
+        eR/5+PRHXi6FlFHB6VFz12JpIIqgyKyURw==
+X-Google-Smtp-Source: ABdhPJxKEVsUew/wG5ET94CSEdMVHiZaS+T7m9vgbnQ2XspBBvMnfyLWPhEcrfw963U7Heapz9Rljw==
+X-Received: by 2002:a05:6e02:13e2:: with SMTP id w2mr13952711ilj.308.1627321216302;
+        Mon, 26 Jul 2021 10:40:16 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id l4sm202721ilh.41.2021.07.26.10.40.14
+        by smtp.gmail.com with ESMTPSA id l4sm202721ilh.41.2021.07.26.10.40.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 10:40:15 -0700 (PDT)
+        Mon, 26 Jul 2021 10:40:16 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     leon@kernel.org, bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/4] net: ipa: always validate filter and route tables
-Date:   Mon, 26 Jul 2021 12:40:08 -0500
-Message-Id: <20210726174010.396765-3-elder@linaro.org>
+Subject: [PATCH net-next 3/4] net: ipa: kill the remaining conditional validation code
+Date:   Mon, 26 Jul 2021 12:40:09 -0500
+Message-Id: <20210726174010.396765-4-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210726174010.396765-1-elder@linaro.org>
 References: <20210726174010.396765-1-elder@linaro.org>
@@ -65,116 +65,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All checks in ipa_table_validate_build() are computed at build time,
-so build that unconditionally.
+There are only a few remaining spots that validate IPA code
+conditional on whether a symbol is defined at compile time.
+The checks are not expensive, so just build them always.
 
-In ipa_table_valid() calls to ipa_table_valid_one() are missing the
-IPA pointer parameter is missing in (a bug that shows up only when
-IPA_VALIDATE is defined).  Don't bother checking whether hashed
-table memory regions are valid if hashed tables are not supported.
-
-With those things fixed, have these table validation functions built
-unconditionally (not dependent on IPA_VALIDATE).
+This completes the removal of all CONFIG_VALIDATE/CONFIG_VALIDATION
+IPA code.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_table.c | 36 +++++++++++++++++-------------------
- drivers/net/ipa/ipa_table.h | 16 ----------------
- 2 files changed, 17 insertions(+), 35 deletions(-)
+ drivers/net/ipa/Makefile       |  3 ---
+ drivers/net/ipa/gsi.c          |  2 --
+ drivers/net/ipa/gsi_trans.c    |  4 ----
+ drivers/net/ipa/ipa_cmd.c      |  3 ---
+ drivers/net/ipa/ipa_cmd.h      | 11 -----------
+ drivers/net/ipa/ipa_main.c     |  2 --
+ drivers/net/ipa/ipa_resource.c |  3 +--
+ 7 files changed, 1 insertion(+), 27 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
-index 4f5b6749f6aae..c607ebec74567 100644
---- a/drivers/net/ipa/ipa_table.c
-+++ b/drivers/net/ipa/ipa_table.c
-@@ -120,8 +120,6 @@
-  */
- #define IPA_ZERO_RULE_SIZE		(2 * sizeof(__le32))
+diff --git a/drivers/net/ipa/Makefile b/drivers/net/ipa/Makefile
+index 506f8d5cd4eeb..75435d40b9200 100644
+--- a/drivers/net/ipa/Makefile
++++ b/drivers/net/ipa/Makefile
+@@ -1,6 +1,3 @@
+-# Un-comment the next line if you want to validate configuration data
+-#ccflags-y		+=	-DIPA_VALIDATE
+-
+ obj-$(CONFIG_QCOM_IPA)	+=	ipa.o
+ 
+ ipa-y			:=	ipa_main.o ipa_clock.o ipa_reg.o ipa_mem.o \
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 427c68b2ad8f3..3de67ba066a68 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -1964,7 +1964,6 @@ static void gsi_evt_ring_init(struct gsi *gsi)
+ static bool gsi_channel_data_valid(struct gsi *gsi,
+ 				   const struct ipa_gsi_endpoint_data *data)
+ {
+-#ifdef IPA_VALIDATION
+ 	u32 channel_id = data->channel_id;
+ 	struct device *dev = gsi->dev;
+ 
+@@ -2010,7 +2009,6 @@ static bool gsi_channel_data_valid(struct gsi *gsi,
+ 			channel_id, data->channel.event_count);
+ 		return false;
+ 	}
+-#endif /* IPA_VALIDATION */
+ 
+ 	return true;
+ }
+diff --git a/drivers/net/ipa/gsi_trans.c b/drivers/net/ipa/gsi_trans.c
+index 8c795a6a85986..6127370facee5 100644
+--- a/drivers/net/ipa/gsi_trans.c
++++ b/drivers/net/ipa/gsi_trans.c
+@@ -90,14 +90,12 @@ int gsi_trans_pool_init(struct gsi_trans_pool *pool, size_t size, u32 count,
+ {
+ 	void *virt;
  
 -#ifdef IPA_VALIDATE
--
- /* Check things that can be validated at build time. */
- static void ipa_table_validate_build(void)
- {
-@@ -169,7 +167,7 @@ ipa_table_valid_one(struct ipa *ipa, enum ipa_mem_id mem_id, bool route)
- 		return true;
+ 	if (!size)
+ 		return -EINVAL;
+ 	if (count < max_alloc)
+ 		return -EINVAL;
+ 	if (!max_alloc)
+ 		return -EINVAL;
+-#endif /* IPA_VALIDATE */
  
- 	/* Hashed table regions can be zero size if hashing is not supported */
--	if (hashed && !mem->size)
-+	if (ipa_table_hash_support(ipa) && !mem->size)
- 		return true;
+ 	/* By allocating a few extra entries in our pool (one less
+ 	 * than the maximum number that will be requested in a
+@@ -140,14 +138,12 @@ int gsi_trans_pool_init_dma(struct device *dev, struct gsi_trans_pool *pool,
+ 	dma_addr_t addr;
+ 	void *virt;
  
- 	dev_err(dev, "%s table region %u size 0x%02x, expected 0x%02x\n",
-@@ -183,14 +181,22 @@ bool ipa_table_valid(struct ipa *ipa)
- {
- 	bool valid;
+-#ifdef IPA_VALIDATE
+ 	if (!size)
+ 		return -EINVAL;
+ 	if (count < max_alloc)
+ 		return -EINVAL;
+ 	if (!max_alloc)
+ 		return -EINVAL;
+-#endif /* IPA_VALIDATE */
  
--	valid = ipa_table_valid_one(IPA_MEM_V4_FILTER, false);
--	valid = valid && ipa_table_valid_one(IPA_MEM_V4_FILTER_HASHED, false);
--	valid = valid && ipa_table_valid_one(IPA_MEM_V6_FILTER, false);
--	valid = valid && ipa_table_valid_one(IPA_MEM_V6_FILTER_HASHED, false);
--	valid = valid && ipa_table_valid_one(IPA_MEM_V4_ROUTE, true);
--	valid = valid && ipa_table_valid_one(IPA_MEM_V4_ROUTE_HASHED, true);
--	valid = valid && ipa_table_valid_one(IPA_MEM_V6_ROUTE, true);
--	valid = valid && ipa_table_valid_one(IPA_MEM_V6_ROUTE_HASHED, true);
-+	valid = ipa_table_valid_one(ipa, IPA_MEM_V4_FILTER, false);
-+	valid = valid && ipa_table_valid_one(ipa, IPA_MEM_V6_FILTER, false);
-+	valid = valid && ipa_table_valid_one(ipa, IPA_MEM_V4_ROUTE, true);
-+	valid = valid && ipa_table_valid_one(ipa, IPA_MEM_V6_ROUTE, true);
-+
-+	if (!ipa_table_hash_support(ipa))
-+		return valid;
-+
-+	valid = valid && ipa_table_valid_one(ipa, IPA_MEM_V4_FILTER_HASHED,
-+					     false);
-+	valid = valid && ipa_table_valid_one(ipa, IPA_MEM_V6_FILTER_HASHED,
-+					     false);
-+	valid = valid && ipa_table_valid_one(ipa, IPA_MEM_V4_ROUTE_HASHED,
-+					     true);
-+	valid = valid && ipa_table_valid_one(ipa, IPA_MEM_V6_ROUTE_HASHED,
-+					     true);
- 
- 	return valid;
- }
-@@ -217,14 +223,6 @@ bool ipa_filter_map_valid(struct ipa *ipa, u32 filter_map)
+ 	/* Don't let allocations cross a power-of-two boundary */
+ 	size = __roundup_pow_of_two(size);
+diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
+index bda8677eae88d..8900f91509fee 100644
+--- a/drivers/net/ipa/ipa_cmd.c
++++ b/drivers/net/ipa/ipa_cmd.c
+@@ -207,8 +207,6 @@ bool ipa_cmd_table_valid(struct ipa *ipa, const struct ipa_mem *mem, bool route)
  	return true;
  }
  
--#else /* !IPA_VALIDATE */
--static void ipa_table_validate_build(void)
+-#ifdef IPA_VALIDATE
 -
--{
--}
--
--#endif /* !IPA_VALIDATE */
--
- /* Zero entry count means no table, so just return a 0 address */
- static dma_addr_t ipa_table_addr(struct ipa *ipa, bool filter_mask, u16 count)
+ /* Validate the memory region that holds headers */
+ static bool ipa_cmd_header_valid(struct ipa *ipa)
  {
-diff --git a/drivers/net/ipa/ipa_table.h b/drivers/net/ipa/ipa_table.h
-index 1e2be9fce2f81..b6a9a0d79d68e 100644
---- a/drivers/net/ipa/ipa_table.h
-+++ b/drivers/net/ipa/ipa_table.h
-@@ -16,8 +16,6 @@ struct ipa;
- /* The maximum number of route table entries (IPv4, IPv6; hashed or not) */
- #define IPA_ROUTE_COUNT_MAX	15
+@@ -343,7 +341,6 @@ bool ipa_cmd_data_valid(struct ipa *ipa)
+ 	return true;
+ }
+ 
+-#endif /* IPA_VALIDATE */
+ 
+ int ipa_cmd_pool_init(struct gsi_channel *channel, u32 tre_max)
+ {
+diff --git a/drivers/net/ipa/ipa_cmd.h b/drivers/net/ipa/ipa_cmd.h
+index ea723419c826b..69cd085d427db 100644
+--- a/drivers/net/ipa/ipa_cmd.h
++++ b/drivers/net/ipa/ipa_cmd.h
+@@ -68,8 +68,6 @@ struct ipa_cmd_info {
+ bool ipa_cmd_table_valid(struct ipa *ipa, const struct ipa_mem *mem,
+ 			    bool route);
  
 -#ifdef IPA_VALIDATE
 -
  /**
-  * ipa_table_valid() - Validate route and filter table memory regions
-  * @ipa:	IPA pointer
-@@ -35,20 +33,6 @@ bool ipa_table_valid(struct ipa *ipa);
+  * ipa_cmd_data_valid() - Validate command-realted configuration is valid
+  * @ipa:	- IPA pointer
+@@ -78,15 +76,6 @@ bool ipa_cmd_table_valid(struct ipa *ipa, const struct ipa_mem *mem,
   */
- bool ipa_filter_map_valid(struct ipa *ipa, u32 filter_mask);
+ bool ipa_cmd_data_valid(struct ipa *ipa);
  
 -#else /* !IPA_VALIDATE */
 -
--static inline bool ipa_table_valid(struct ipa *ipa)
--{
--	return true;
--}
--
--static inline bool ipa_filter_map_valid(struct ipa *ipa, u32 filter_mask)
+-static inline bool ipa_cmd_data_valid(struct ipa *ipa)
 -{
 -	return true;
 -}
@@ -182,8 +196,49 @@ index 1e2be9fce2f81..b6a9a0d79d68e 100644
 -#endif /* !IPA_VALIDATE */
 -
  /**
-  * ipa_table_hash_support() - Return true if hashed tables are supported
-  * @ipa:	IPA pointer
+  * ipa_cmd_pool_init() - initialize command channel pools
+  * @channel:	AP->IPA command TX GSI channel pointer
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 9810c61a03202..ff5f3fab640d6 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -612,7 +612,6 @@ MODULE_DEVICE_TABLE(of, ipa_match);
+  * */
+ static void ipa_validate_build(void)
+ {
+-#ifdef IPA_VALIDATE
+ 	/* At one time we assumed a 64-bit build, allowing some do_div()
+ 	 * calls to be replaced by simple division or modulo operations.
+ 	 * We currently only perform divide and modulo operations on u32,
+@@ -646,7 +645,6 @@ static void ipa_validate_build(void)
+ 	BUILD_BUG_ON(!ipa_aggr_granularity_val(IPA_AGGR_GRANULARITY));
+ 	BUILD_BUG_ON(ipa_aggr_granularity_val(IPA_AGGR_GRANULARITY) >
+ 			field_max(AGGR_GRANULARITY_FMASK));
+-#endif /* IPA_VALIDATE */
+ }
+ 
+ static bool ipa_version_valid(enum ipa_version version)
+diff --git a/drivers/net/ipa/ipa_resource.c b/drivers/net/ipa/ipa_resource.c
+index 3b2dc216d3a68..e3da95d694099 100644
+--- a/drivers/net/ipa/ipa_resource.c
++++ b/drivers/net/ipa/ipa_resource.c
+@@ -29,7 +29,6 @@
+ static bool ipa_resource_limits_valid(struct ipa *ipa,
+ 				      const struct ipa_resource_data *data)
+ {
+-#ifdef IPA_VALIDATION
+ 	u32 group_count;
+ 	u32 i;
+ 	u32 j;
+@@ -65,7 +64,7 @@ static bool ipa_resource_limits_valid(struct ipa *ipa,
+ 			if (resource->limits[j].min || resource->limits[j].max)
+ 				return false;
+ 	}
+-#endif /* !IPA_VALIDATION */
++
+ 	return true;
+ }
+ 
 -- 
 2.27.0
 
