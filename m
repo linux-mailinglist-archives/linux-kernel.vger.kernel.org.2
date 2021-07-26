@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB04C3D62C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072DB3D6202
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238122AbhGZPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
+        id S232938AbhGZPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:33:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237316AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C16E360FC0;
-        Mon, 26 Jul 2021 15:53:10 +0000 (UTC)
+        id S236415AbhGZPS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F30660F92;
+        Mon, 26 Jul 2021 15:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314791;
-        bh=Pz5znl3oCRXX/Ot8HGsKGVlif7ze/TLXcSlFz9LJoDk=;
+        s=korg; t=1627315166;
+        bh=MnABV6DVcXmESIDHX0jSy5XVW7hAzG1Wu0KVHUTJxJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k3qSTK2sVECCexjtW+K4F3Wsee1+44O/ea5F2jtbx/xkXIPCu/07w4MrVxsG+nWql
-         KzoNEW1nmosrEiM9ncewD8uRNzOkRm3o6vNB5/hjdKvAqUHv3+FgVlbBdkHPCb+XJ7
-         PD1Ad2FZkF2VTm3OqIP2LvaiaZRV34C7tv3vD1Hk=
+        b=p6DCIMNYFXLrRL2vFRs/ZXOzbbEPkMdRilwI7+NnANTbFvoEklPAoX1KY6VBXCe/y
+         aYKxdiEp/RYw/5CA44pXR2kW8D+Egirk6Xse2kEJYwt3rImDgOO3gWtNG+A9b2PVge
+         0O690EAhC0vucv7/WIDhppSkGMjc/gA2Y0y2T1QI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 093/120] ALSA: sb: Fix potential ABBA deadlock in CSP driver
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 064/108] nvme: set the PRACT bit when using Write Zeroes with T10 PI
 Date:   Mon, 26 Jul 2021 17:39:05 +0200
-Message-Id: <20210726153835.380618346@linuxfoundation.org>
+Message-Id: <20210726153833.745272830@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,75 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Christoph Hellwig <hch@lst.de>
 
-commit 1c2b9519159b470ef24b2638f4794e86e2952ab7 upstream.
+[ Upstream commit aaeb7bb061be545251606f4d9c82d710ca2a7c8e ]
 
-SB16 CSP driver may hit potentially a typical ABBA deadlock in two
-code paths:
+When using Write Zeroes on a namespace that has protection
+information enabled they behavior without the PRACT bit
+counter-intuitive and will generally lead to validation failures
+when reading the written blocks.  Fix this by always setting the
+PRACT bit that generates matching PI data on the fly.
 
- In snd_sb_csp_stop():
-     spin_lock_irqsave(&p->chip->mixer_lock, flags);
-     spin_lock(&p->chip->reg_lock);
-
- In snd_sb_csp_load():
-     spin_lock_irqsave(&p->chip->reg_lock, flags);
-     spin_lock(&p->chip->mixer_lock);
-
-Also the similar pattern is seen in snd_sb_csp_start().
-
-Although the practical impact is very small (those states aren't
-triggered in the same running state and this happens only on a real
-hardware, decades old ISA sound boards -- which must be very difficult
-to find nowadays), it's a real scenario and has to be fixed.
-
-This patch addresses those deadlocks by splitting the locks in
-snd_sb_csp_start() and snd_sb_csp_stop() for avoiding the nested
-locks.
-
-Reported-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com
-Link: https://lore.kernel.org/r/20210716132723.13216-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 6e02318eaea5 ("nvme: add support for the Write Zeroes command")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb16_csp.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/nvme/host/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -828,6 +828,7 @@ static int snd_sb_csp_start(struct snd_s
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 710ab45eb679..a5b5a2305791 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -694,7 +694,10 @@ static inline blk_status_t nvme_setup_write_zeroes(struct nvme_ns *ns,
+ 		cpu_to_le64(nvme_sect_to_lba(ns, blk_rq_pos(req)));
+ 	cmnd->write_zeroes.length =
+ 		cpu_to_le16((blk_rq_bytes(req) >> ns->lba_shift) - 1);
+-	cmnd->write_zeroes.control = 0;
++	if (nvme_ns_has_pi(ns))
++		cmnd->write_zeroes.control = cpu_to_le16(NVME_RW_PRINFO_PRACT);
++	else
++		cmnd->write_zeroes.control = 0;
+ 	return BLK_STS_OK;
+ }
  
- 	spin_lock(&p->chip->reg_lock);
- 	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
-@@ -867,6 +868,7 @@ static int snd_sb_csp_start(struct snd_s
- 	spin_unlock(&p->chip->reg_lock);
- 
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
-@@ -892,6 +894,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
- 
- 	spin_lock(&p->chip->reg_lock);
- 	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
-@@ -906,6 +909,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	spin_unlock(&p->chip->reg_lock);
- 
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+-- 
+2.30.2
+
 
 
