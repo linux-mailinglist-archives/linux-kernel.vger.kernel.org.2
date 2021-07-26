@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600BA3D5DB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56D93D5D63
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhGZPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:03:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41968 "EHLO mail.kernel.org"
+        id S235477AbhGZPBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235582AbhGZPC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:02:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92CA960F37;
-        Mon, 26 Jul 2021 15:42:56 +0000 (UTC)
+        id S235367AbhGZPBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:01:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39116604DC;
+        Mon, 26 Jul 2021 15:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314177;
-        bh=EOn9u7CR6/zKn+iKpJ5wP4mwdhdoEP+PkurRyOi8y00=;
+        s=korg; t=1627314095;
+        bh=Mxcu6ZoSFLi/nLaZ8Wrf0RDQDHnxD3Pp8+kBXYmDzxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qESf6IxEla2hd4jBFo+PL0W3U/BqAT6Ggx7qXatOP6zb7IS2lU387Nj0Vr7lA3e/B
-         cRRpQm2frLH0fGBAfHQZx/5PMLdJcGYIwuMOPNNZoPBs6HHmKBatVf7+mUTeobz1Ty
-         Vt+cCLLa7FPbyK6+Mus73YDsU6CPG3fd+aw/9HJc=
+        b=Oy+gkKtJKh5FSdU5IG59jsL9YrnXKl5F35dULyfkG4MvJj8DjhOfniH5iUTOdjIQP
+         bVs6XGynBDzlwBAvQAE2jEKB/StMAigpnyw9fBzNwBu4GgrBtvM+nVZQFWRXQO1aK8
+         6tdyKa779OdQH7ssJdRlosp0hlailaXn+flZE2W0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 13/60] scsi: aic7xxx: Fix unintentional sign extension issue on left shift of u8
+Subject: [PATCH 4.4 09/47] Revert "memory: fsl_ifc: fix leak of IO mapping on probe failure"
 Date:   Mon, 26 Jul 2021 17:38:27 +0200
-Message-Id: <20210726153825.285737873@linuxfoundation.org>
+Message-Id: <20210726153823.276462469@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 332a9dd1d86f1e7203fc7f0fd7e82f0b304200fe ]
+This reverts commit b7a2bcb4a3731d68f938207f75ed3e1d41774510 which is
+commit 3b132ab67fc7a358fff35e808fa65d4bea452521 upstream.
 
-The shifting of the u8 integer returned fom ahc_inb(ahc, port+3) by 24 bits
-to the left will be promoted to a 32 bit signed int and then sign-extended
-to a u64. In the event that the top bit of the u8 is set then all then all
-the upper 32 bits of the u64 end up as also being set because of the
-sign-extension. Fix this by casting the u8 values to a u64 before the 24
-bit left shift.
+As reported, it breaks the build, the 'gregs' field is not in the 4.4.y
+kernel tree.
 
-[ This dates back to 2002, I found the offending commit from the git
-history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
-commit f58eb66c0b0a ("Update aic7xxx driver to 6.2.10...") ]
-
-Link: https://lore.kernel.org/r/20210621151727.20667-1-colin.king@canonical.com
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Addresses-Coverity: ("Unintended sign extension")
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210721144845.GA3445926@roeck-us.net
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/aic7xxx/aic7xxx_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/fsl_ifc.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/aic7xxx/aic7xxx_core.c b/drivers/scsi/aic7xxx/aic7xxx_core.c
-index def3208dd290..9b5832b46dec 100644
---- a/drivers/scsi/aic7xxx/aic7xxx_core.c
-+++ b/drivers/scsi/aic7xxx/aic7xxx_core.c
-@@ -500,7 +500,7 @@ ahc_inq(struct ahc_softc *ahc, u_int port)
- 	return ((ahc_inb(ahc, port))
- 	      | (ahc_inb(ahc, port+1) << 8)
- 	      | (ahc_inb(ahc, port+2) << 16)
--	      | (ahc_inb(ahc, port+3) << 24)
-+	      | (((uint64_t)ahc_inb(ahc, port+3)) << 24)
- 	      | (((uint64_t)ahc_inb(ahc, port+4)) << 32)
- 	      | (((uint64_t)ahc_inb(ahc, port+5)) << 40)
- 	      | (((uint64_t)ahc_inb(ahc, port+6)) << 48)
--- 
-2.30.2
-
+--- a/drivers/memory/fsl_ifc.c
++++ b/drivers/memory/fsl_ifc.c
+@@ -228,7 +228,8 @@ static int fsl_ifc_ctrl_probe(struct pla
+ 	fsl_ifc_ctrl_dev->regs = of_iomap(dev->dev.of_node, 0);
+ 	if (!fsl_ifc_ctrl_dev->regs) {
+ 		dev_err(&dev->dev, "failed to get memory region\n");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto err;
+ 	}
+ 
+ 	version = ifc_in32(&fsl_ifc_ctrl_dev->regs->ifc_rev) &
+@@ -305,7 +306,6 @@ err_irq:
+ 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
+ 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
+ err:
+-	iounmap(fsl_ifc_ctrl_dev->gregs);
+ 	return ret;
+ }
+ 
 
 
