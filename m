@@ -2,94 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076DD3D699D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008133D69A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233809AbhGZV5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233829AbhGZV5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:57:22 -0400
+Received: from mail-il1-f174.google.com ([209.85.166.174]:36686 "EHLO
+        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233775AbhGZV5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 17:57:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233660AbhGZV5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:57:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D882B6023B;
-        Mon, 26 Jul 2021 22:37:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627339067;
-        bh=Yg7eSshipIVYnhSHZdJfXu8FRZJlv508EUoxtizeAQY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=clXK4L4anzF7XWNSq0schNI3oPf+oeZUtWlitJIZka61QSrWdhX5P3P37bYPiP4Ub
-         QR1GMArds0uJsB+2XT0YdTqhgH0LAj1fC2Of5KivKXvo/26U7lDaXmdeeLDZYvSoOc
-         9gtPxtMrA8H1z79ZJCnLTE9oBOWgP1TNh19re2+mFBiGmhs88RZv7d+pr2VH675W9m
-         qLQPOaBPvcUH/AJ8wo7oltUDilkTIkBN8grIAlRJ6gbl2su5LuEuAVUkoSj6xRPtki
-         nCuPWcE6+xXqDJmI/RZ15ydfnRDUKCIminOpbIQVk9QVOjTpB1+mccnXpR2MoBOkQw
-         k1MkPgv50x6Jg==
-Date:   Mon, 26 Jul 2021 23:37:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Subject: Re: [PATCH v3 2/2] hwrng: Add Arm SMCCC TRNG based driver
-Message-ID: <20210726223738.GM4670@sirena.org.uk>
-References: <20210726175610.3311-1-andre.przywara@arm.com>
- <20210726175610.3311-3-andre.przywara@arm.com>
+Received: by mail-il1-f174.google.com with SMTP id c3so10473061ilh.3;
+        Mon, 26 Jul 2021 15:37:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jhQiogE/zeQBOwAh8kG8uDNGFLp4MbNyTgySdYg4ow4=;
+        b=TocQWa9ip9/xoSreBpRxxoKomP3QfbnPknY5MelMcBwGvOPTH7zDa6WeDf0xelKt26
+         5cZEAk0LlewQEit8X97JIA8j0cdAFHV1JgrdbagKluGhSsBdCxtss1fIzbK3bHBaDLme
+         uRuL58fEowFWnbpKD0QAoRwdv1v4o3wP62ylREjQbQhHlonFP0VKhvY+kVlQ8XBdeirM
+         x7HbRCF6xaTQ3BIfmGZtzd6MeR9bMeCJhwjeu+h4dVgu1rU8jbKTCWOLiRwUicqsr42A
+         pJ5SvAURqiCs0rlvnFw2geeAWidDFJrH/Q9DCVI0iIlZGdE8KbZ/zbF6uSAfqXDrvOxd
+         GAbw==
+X-Gm-Message-State: AOAM531s8TCeFYOlAdfIlXMv8hTeGSZvauQDM5GAVIZZ8iXUNKLqnRoF
+        ANlqmpAYi/hYCZLfJXPlAXjV2Rkk3Q==
+X-Google-Smtp-Source: ABdhPJyVtrHqYPjIilDfqErTtViORlAkmWMthFR2B1uXTchtbhmi29nCNdMxW6IA+JC7hKaJdxzPUg==
+X-Received: by 2002:a92:c60c:: with SMTP id p12mr14394951ilm.7.1627339067336;
+        Mon, 26 Jul 2021 15:37:47 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id v18sm607434iln.49.2021.07.26.15.37.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 15:37:46 -0700 (PDT)
+Received: (nullmailer pid 1002097 invoked by uid 1000);
+        Mon, 26 Jul 2021 22:37:42 -0000
+Date:   Mon, 26 Jul 2021 16:37:42 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     rishabhb@codeaurora.org, devicetree@vger.kernel.org,
+        dianders@chromium.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, mathieu.poirier@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        sidgup@codeaurora.org, ohad@wizery.com, swboyd@chromium.org,
+        bjorn.andersson@linaro.org, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, rjw@rjwysocki.net, mka@chromium.org
+Subject: Re: [PATCH v4 01/13] dt-bindings: soc: qcom: aoss: Drop the load
+ state power-domain
+Message-ID: <20210726223742.GA1002063@robh.at.kernel.org>
+References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
+ <1626755807-11865-2-git-send-email-sibis@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Z1Z8UV8BNhgCynIS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726175610.3311-3-andre.przywara@arm.com>
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1626755807-11865-2-git-send-email-sibis@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 20 Jul 2021 10:06:35 +0530, Sibi Sankar wrote:
+> The power-domains exposed by AOSS QMP node are used to notify the Always
+> on Subsystem (AOSS) that a particular co-processor is up/down. These
+> co-processors enter low-power modes independent to that of the application
+> processor and their states are expected to remain unaltered across system
+> suspend/resume cycles. To achieve this behavior let's drop the load
+> power-domain and replace them with generic qmp_send interface instead.
+> 
+> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> ---
+> 
+> v4:
+>  * Rebase patch due to the recent aoss-qmp yaml conversion (Dropping Rb).
+> 
+>  Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.yaml | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
+> 
 
---Z1Z8UV8BNhgCynIS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 26, 2021 at 06:56:10PM +0100, Andre Przywara wrote:
-
-> +static int smccc_trng_init(struct hwrng *rng)
-> +{
-> +	return 0;
-> +}
-
-If this can be empty (looking at the core it seems like it can) then
-best just remove it.
-
-> +	platform_set_drvdata(pdev, trng);
-> +	ret = devm_hwrng_register(&pdev->dev, trng);
-> +	if (!ret)
-> +		dev_info(&pdev->dev,
-> +			 "ARM SMCCC TRNG firmware random number generator\n");
-
-Is the log message needed given that we're not announcing any version
-information here or anything?  A brief sampling of other drivers
-suggests it's not a standard thing for the subsystem.
-
---Z1Z8UV8BNhgCynIS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD/OTEACgkQJNaLcl1U
-h9DF7wf9GqmHJLZkYahxYPpoXwvLcvsZt6nYbntvEyaggYXeftDozXfAGzJUwtVA
-j43FX18gocM2pF69qk3kpzyt36ESGVWBnENrKlpBmonaZBd+OjEtf0Of3cfwXvfe
-TrzFuo5BBcPdBhA2ijXjTZK3eiVhiwqbw/OO6xf6u0ZgZAJDtAOC0+cVmFC/pE6Q
-8cVSY5v4izXNENx9COp3o6Irq1KvV3d5qsfMbU26N046nEbwtkUE5QLrNRk11hOg
-7F1jg0P4Lny1jVNXkrtjrAZY9wlL/XOAUjQawf1kU29xLUn8BJHTqsz7uyu3Zd6k
-tkl1X6LuTHtJ9rGRj+S3NaJ539HsYg==
-=QpYI
------END PGP SIGNATURE-----
-
---Z1Z8UV8BNhgCynIS--
+Acked-by: Rob Herring <robh@kernel.org>
