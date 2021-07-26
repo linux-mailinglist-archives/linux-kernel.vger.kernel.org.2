@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369493D69E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6286F3D69EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233804AbhGZWVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 18:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        id S233809AbhGZW0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 18:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233644AbhGZWVj (ORCPT
+        with ESMTP id S233644AbhGZW0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 18:21:39 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DBBC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:02:06 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id c2-20020a0568303482b029048bcf4c6bd9so10243320otu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:02:06 -0700 (PDT)
+        Mon, 26 Jul 2021 18:26:07 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9E0C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:06:35 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id j2so12874509wrx.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=YQOUs6IHKvgmEEaJoamgZLDtUOOWcnZjqqyzNqPHtgA=;
-        b=X7ukQguYL+MKBPkBFhO7H5nfKnc70OCDuiDFR7YSf6QZLoLc4ReLFF6oY/7WEAPpeS
-         PFJCBGADy/cvzKcTOc1MuVUHe+mO9raKPlB3JjjxQuitmjuPBprCfWobERLCeG8YR46C
-         HBZgujM21DWWX2fFg3Zb81ftslEqmBez79Y5o=
+        d=gmail.com; s=20161025;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=2eagcR6JSuej/wtB12EqbRnqzgS/WIgL264nb+1Bs+A=;
+        b=eEmUcf9T2wmpVPv48Pgf8M8rX4THjVTmFBjP7iuxURaqL4LNLd1cl+U+lv8xH27mby
+         V/ZaLiAPOuJ5yYCwBjBXzS9waLRdxxDJNRtjUYZZASSmtDaE6Cf5o4iMJMkA6uOORtUO
+         wNN9C/6aMxnuxTM0juEiJGfKo3hk0YG9Fc5cGe3Vyr8Y8oiaRyib8buZkOtAPEmSxl65
+         zTWqC1xTc3OtB6U7Ufb0UBXa4LjsbUKefrLSFaKdBWEmWQjNPNG3sdknCvXnpL3NL6c4
+         SwnfnLpjxYMn6zO+PWDc84bjxP8y7NzCVg+hQroyEqGMTnnEROUrEGreKsohATWQPKwT
+         XlPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=YQOUs6IHKvgmEEaJoamgZLDtUOOWcnZjqqyzNqPHtgA=;
-        b=TJbFqN70DFo64p6pNJ6UNT+HpJ01zFei7RBeJPnPiFkfs++DQGTUW1XXtwsPNFU1o8
-         7vtmogzlA38+pIGnmVr9okZGDu4WgM4tRMQ+NaPu73gSMKt+mclIs9i9MKw9oLg4WX+K
-         eCcrFkA3HVXkzpxYYIGWWpz1rus1cDr3Qy6iJv3MT0Ccw1VuZlHt8iNOyNNuIy3yZtx8
-         GycrpJYIyTw4sU/k+lKX7iWAcXDs00vylDpmfw2CdjucwGLPV55b+kggPU3Rj3P9TeFK
-         KZfc4vQX2FNaappH3ws5SlTHEbCobJx/Pq/TvtRYK/Rd9diq7Y1gfi8yyredylwlPwG5
-         S6LQ==
-X-Gm-Message-State: AOAM531e4aXxcv4LIgpTJE1gTcwZI99zdn5AGZh4Vcln2zI0PdaZP/qm
-        4Vl45NuaNtLCQ7m6ji8PT3DB1yz7eF4HQfQwgCmTaQ==
-X-Google-Smtp-Source: ABdhPJz5jt91J7s64KRcgC3G/srUYZuXPZrU0BBg8ga7AFXoIHLQ4iQUzviPocNr4D2zmNt8R5pRz0hfblCs9cIwm10=
-X-Received: by 2002:a9d:1b6e:: with SMTP id l101mr13153554otl.34.1627340525819;
- Mon, 26 Jul 2021 16:02:05 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Jul 2021 19:02:05 -0400
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=2eagcR6JSuej/wtB12EqbRnqzgS/WIgL264nb+1Bs+A=;
+        b=hysqnVYbTzrjPDNi59a+9kkgkknouRKhtOf+wnbzJ8Rw2q9BQ/noL0DgxL1J+QQ+tR
+         0BOjOu1VuIhFhvZ3eDmNN4f7qQkMfagu9ivg75hVC9rVCqvPhNCY8elwYuhmaflejqOC
+         uxiJdonb/bNd/NdZgCIFX4nplb+XMi40fIS41mPsKKoioMx/BtUpV04b5JMleVB8hOl6
+         dzy92VBkBN5UcnZO2M//Q8jrSth8C9S7b34am7vbc+mmWDntnxJgZqR55Tqd5Pigsd+Z
+         grKh04a4FngHF8KVOqaJFvBLuZ8M01Y7z45f3VSvOJCAevP9/lvWlzwYkxR8WEZhewcq
+         lAtw==
+X-Gm-Message-State: AOAM532b8L+nB/LN7uPNBnskJUOIhrVFyB4G+fslHtTJ0tSJrqHnKHjQ
+        SHihxjwabn5jAxFURRP4I7o=
+X-Google-Smtp-Source: ABdhPJxqeqli3WJizq9yqTBjdHDqNkFYNvzgmbbyUtBTZp5jzR/5o7u0apFHZa1HUth0i4x4jQmZNQ==
+X-Received: by 2002:a5d:6804:: with SMTP id w4mr21147343wru.417.1627340794533;
+        Mon, 26 Jul 2021 16:06:34 -0700 (PDT)
+Received: from [192.168.43.185] ([197.210.64.139])
+        by smtp.gmail.com with ESMTPSA id e11sm1427788wrt.0.2021.07.26.16.06.16
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Mon, 26 Jul 2021 16:06:34 -0700 (PDT)
+Message-ID: <60ff3ffa.1c69fb81.8fc7d.7bd6@mx.google.com>
+From:   CAUSANILLE ROVIRA <harshad7300@gmail.com>
+X-Google-Original-From: "CAUSANILLE ROVIRA" <laurajerr620@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20210725031414.3961227-1-bjorn.andersson@linaro.org>
-References: <20210725031414.3961227-1-bjorn.andersson@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 26 Jul 2021 19:02:05 -0400
-Message-ID: <CAE-0n51vBEUY4A0ed+sBDd1tWX2oBqW9PeeAttLordaBw174rg@mail.gmail.com>
-Subject: Re: [PATCH] interconnect: qcom: osm-l3: Use driver-specific naming
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Georgi Djakov <djakov@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Greetings to you
+To:     "laurajerr620@gmail.com" <laurajerr620@gmail.com>
+Date:   Tue, 27 Jul 2021 00:06:02 +0100
+Reply-To: laurajerr620@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bjorn Andersson (2021-07-24 20:14:14)
-> In situations were the developer screws up by e.g. not giving the OSM
-> nodes unique identifiers the interconnect framework might mix up nodes
-> between the OSM L3 provider and e.g. the RPMh provider.
->
-> The resulting callstack containts "qcom_icc_set", which is not unique to
-> the OSM L3 provider driver. Once the faulting qcom_icc_set() is
-> identified it's further confusing that "qcom_icc_node" is different
-> between the different drivers.
->
-> To avoid this confusion, rename the node struct and the setter in the
-> OSM L3 driver to include "osm_l3" in their names.
->
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
+Dear Friend,
+I have been trying to contact your email
+Please reply this message, if you get it.
 
-Thanks
-
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Regards
+laura jane
