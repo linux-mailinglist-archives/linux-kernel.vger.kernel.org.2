@@ -2,133 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746453D6900
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9C33D6903
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhGZVL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:11:59 -0400
-Received: from mail-pl1-f181.google.com ([209.85.214.181]:34420 "EHLO
-        mail-pl1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231839AbhGZVLy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:11:54 -0400
-Received: by mail-pl1-f181.google.com with SMTP id d1so6078369pll.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 14:52:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J0YK4Y3cWlHfKVhgQwxQc7f0nm0USIOuPPvy4joujts=;
-        b=HGUCf1vn2sPR4W7jA5BwXqguoAJOY0mQrlNoJRAtyMy+p/xVQg67AdKCuMsvCNLmmf
-         hfijOi17efOa/LwOZtBOzb7e88xtiyvgZIT5BpGXjmfvRUe31AMn0I4b44LxpbsuCOxb
-         LMUKh9P2HcfV/zSV+j+QjDjtV7iLR8iMXQIWoefgYc54+7sPZqr2Z3JAeHVeSOPrY/xN
-         kpu7smoT3+5v9Awir7A/+2iPv8bol9eSTr+evbZF2DyFXZ6lykkxmJFQbwG6mY4ZvyJg
-         Nc09APwnBJp7cYf29sFdRcr3pGs2KDsCrKF9WmPh+iA/ADv360yQ96wYm4HAg5YXGBTP
-         39eQ==
-X-Gm-Message-State: AOAM5320+04PN55+zrWi6JaqX4UjoLWJGkyIH482Ih3uojEXHEWk2U14
-        8HlUx6osSVd9B8OvZV7O7Wc=
-X-Google-Smtp-Source: ABdhPJzPlScepa+9HlcT7xYaL51XosgMAy0kuR0+u06S7/BaR/IUXgvYRBwGonVS6tEKVQ3j49zqpg==
-X-Received: by 2002:a62:a507:0:b029:30d:82e1:ce14 with SMTP id v7-20020a62a5070000b029030d82e1ce14mr19880298pfm.29.1627336341704;
-        Mon, 26 Jul 2021 14:52:21 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:6048:349e:fe7d:d8c7])
-        by smtp.gmail.com with ESMTPSA id 22sm1037562pfo.80.2021.07.26.14.52.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 14:52:21 -0700 (PDT)
-Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
-To:     Bodo Stroesser <bostroesser@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20210723212353.896343-1-bvanassche@acm.org>
- <20210723212353.896343-3-bvanassche@acm.org>
- <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
- <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
- <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
-Date:   Mon, 26 Jul 2021 14:52:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233455AbhGZVMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233199AbhGZVMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 17:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E529F60F9C;
+        Mon, 26 Jul 2021 21:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627336348;
+        bh=BEzZP8gGjBIu+6KD+Bs3r2uEa+gu7HyTWWSvGZ54z1k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KM/askmKDdiB1K7oMV6g6m0+6nuy3gJL1oPNHhEFOrZZndBIAWniouYKk5NeSFMIt
+         GEVWWLqoJU695mo+eY2F5kXQ0htjPt+dNhvz/1u6wIieg1VNx1zMou4GU0dvcFfzOV
+         CqI/cFevOfEijK1LdJhlwTQJDBRcVRud4JgO9904bVz95NMCSEOKu49a1YGMO5dLTZ
+         yBZhsFsIzwopUkkoRqI3qsW+WLubFpwWPtuQgVQrK8U8VKx2Gyq7tzrb3h1FQ+P7Ul
+         a+81twauGeEYAr/ExWrTAW4KFD0ATRjPmwBIgdrWXO6dt00JSq3Exd8ie73fWrz3Zh
+         K/JgFPEWZZceQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DF65960972;
+        Mon, 26 Jul 2021 21:52:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/4] net: ipa: kill IPA_VALIDATION
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162733634890.1437.18333636505547989263.git-patchwork-notify@kernel.org>
+Date:   Mon, 26 Jul 2021 21:52:28 +0000
+References: <20210726174010.396765-1-elder@linaro.org>
+In-Reply-To: <20210726174010.396765-1-elder@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, leon@kernel.org,
+        bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 2:13 PM, Bodo Stroesser wrote:
-> On 26.07.21 18:26, Bart Van Assche wrote:
->> On 7/26/21 7:58 AM, Bodo Stroesser wrote:
->>> On 23.07.21 23:23, Bart Van Assche wrote:
->>> Let's say user writes 5 times to configfs file while keeping it open.
->>> On every write() call it writes 1 character only, e.g. first "A", 
->>> then "B", ...
->>>
->>> The original code before the changes 5 times called 
->>> flush_write_buffer for the
->>> strings "A\0", "B\0", ... (with the '\0' not included in the count 
->>> parameter,
->>> so count is 1 always, which is the length of the last write).
->>
->> Isn't that behavior a severe violation of how POSIX specifies that the 
->> write() system call should be implemented?
+Hello:
+
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Mon, 26 Jul 2021 12:40:06 -0500 you wrote:
+> A few months ago I proposed cleaning up some code that validates
+> certain things conditionally, arguing that doing so once is enough,
+> thus doing so always should not be necessary.
+>   https://lore.kernel.org/netdev/20210320141729.1956732-1-elder@linaro.org/
+> Leon Romanovsky felt strongly that this was a mistake, and in the
+> end I agreed to change my plans.
 > 
-> Hmm. I'm not sure which detail should violate POSIX spec? Is there any
-> definition how data should be flushed from buffer internally? (I'm by
-> far not a POSIX expert!)
-> 
-> I would rather say the new behavior, to call flush_write_buffer during the
-> first write() for the data of that write, and then on the second write to
-> call flush_write_buffer for the concatenated data of the first and the
-> second write, could be a violation of POSIX, because the one times written
-> data of the first write is flushed twice.
-> 
-> I don't like the idea of breaking the "one write, one flush" principle that
-> was implemented before. The old comment:
-> "There is no easy way for us to know if userspace is only doing a partial
-> write, so we don't support them. We expect the entire buffer to come on the
-> first write."
-> as I interpret it, makes clear that configfs code has to work according to
-> that principle. (Or even block all but the first write, but that would even
-> more break compatibility to old implementation.)
+> [...]
 
-Hi Bodo,
+Here is the summary with links:
+  - [net-next,1/4] net: ipa: fix ipa_cmd_table_valid()
+    https://git.kernel.org/netdev/net-next/c/f2c1dac0abcf
+  - [net-next,2/4] net: ipa: always validate filter and route tables
+    https://git.kernel.org/netdev/net-next/c/546948bf3625
+  - [net-next,3/4] net: ipa: kill the remaining conditional validation code
+    https://git.kernel.org/netdev/net-next/c/442d68ebf092
+  - [net-next,4/4] net: ipa: use WARN_ON() rather than assertions
+    https://git.kernel.org/netdev/net-next/c/5bc5588466a1
 
-The private email that you sent me made it clear that you would like to 
-keep the behavior from kernel 5.13. That means passing "A\0", "B\0", ... 
-to the configfs store callback function if "AB..." is witten one byte at 
-a time. What is not clear to me is how a store callback with argument 
-"B\0" can know at which offset that write happened? From 
-<linux/configfs.h> (I have added argument names):
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-	ssize_t (*store)(struct config_item *item, const char *page,
-                          size_t count);
 
-My understanding of the POSIX specification [1] is that writes should 
-happen at the proper offset. If user space software writes "A" at offset 
-0 and "B" at offset 1 then the string "AB" should be passed to the 
-configfs store callback.
-
-Regarding the "action" attribute from your tcmu patch, how about 
-checking the last character of the string written into that attribute 
-instead of the first character? Would that be sufficient to write twice 
-into that attribute without having to call close() and open() between 
-the two write actions?
-
-To me the following comment: "There is no easy way for us to know if 
-userspace is only doing a partial write, so we don't support them. We 
-expect the entire buffer to come on the first write." means that writing 
-"ABCD" by first writing "AB" and next "CD" will trigger two 
-item->store() calls. Triggering a single item->store() call for partial 
-writes is not supported.
-
-Thanks,
-
-Bart.
-
-[1] https://pubs.opengroup.org/onlinepubs/9699919799/
