@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFEE3D60C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED383D60C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237891AbhGZPYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:24:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
+        id S237970AbhGZPY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236865AbhGZPPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7C1C60FEE;
-        Mon, 26 Jul 2021 15:53:53 +0000 (UTC)
+        id S237551AbhGZPQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3765D60F38;
+        Mon, 26 Jul 2021 15:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314834;
-        bh=kiCwj/eaP/By5s5uuKuSufARKwNtWr/QwUGAT1BSjy4=;
+        s=korg; t=1627314991;
+        bh=jvlDRvrFYO9o1nbOHn+1dyMx1vlNWOYC0nLIisXIH6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DeFZqRmwsccgGmoZ/lhqef2YCPify6eFn6UscTvEoWQDwpMpkCxyfxBqhhCzmLMH9
-         qWiiZGamaQoUmkGwmhlyt4bnI0Lv+UOfOJpabkIUZC6EZTwgmUAN908GmLNgHT9Dg2
-         Rb84+ih54NNmjfWgpjHbhgRMzDVyo9X1DoCSvc8E=
+        b=sSv5K3ga9LcpNcNvlpEafVYTjJJwGAo87dIqZG4CC2+ek44/uzgnLrwxA+GSIC22g
+         PZCOi2NFBB60NJiqx8LtXQxMmY1QZRB0Yzr/lEZW1xxzcMUG3hD3kRz+EWeghKmzoR
+         2DqYYB66rQGhgRgPWCrOutNd+RkFoZgPGTNxIr+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 073/120] s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
-Date:   Mon, 26 Jul 2021 17:38:45 +0200
-Message-Id: <20210726153834.728280682@linuxfoundation.org>
+Subject: [PATCH 5.4 045/108] KVM: PPC: Fix kvm_arch_vcpu_ioctl vcpu_load leak
+Date:   Mon, 26 Jul 2021 17:38:46 +0200
+Message-Id: <20210726153833.134160580@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 91091656252f5d6d8c476e0c92776ce9fae7b445 ]
+[ Upstream commit bc4188a2f56e821ea057aca6bf444e138d06c252 ]
 
-Currently array jit->seen_reg[r1] is being accessed before the range
-checking of index r1. The range changing on r1 should be performed
-first since it will avoid any potential out-of-range accesses on the
-array seen_reg[] and also it is more optimal to perform checks on r1
-before fetching data from the array. Fix this by swapping the order
-of the checks before the array access.
+vcpu_put is not called if the user copy fails. This can result in preempt
+notifier corruption and crashes, among other issues.
 
-Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Link: https://lore.kernel.org/bpf/20210715125712.24690-1-colin.king@canonical.com
+Fixes: b3cebfe8c1ca ("KVM: PPC: Move vcpu_load/vcpu_put down to each ioctl case in kvm_arch_vcpu_ioctl")
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210716024310.164448-2-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kvm/powerpc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 2617e426c792..e42354b15e0b 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -113,7 +113,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- {
- 	u32 r1 = reg2hex[b1];
- 
--	if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
-+	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
- 		jit->seen_reg[r1] = 1;
- }
- 
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index e03c06471678..8dd4d2b83677 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -2035,9 +2035,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	{
+ 		struct kvm_enable_cap cap;
+ 		r = -EFAULT;
+-		vcpu_load(vcpu);
+ 		if (copy_from_user(&cap, argp, sizeof(cap)))
+ 			goto out;
++		vcpu_load(vcpu);
+ 		r = kvm_vcpu_ioctl_enable_cap(vcpu, &cap);
+ 		vcpu_put(vcpu);
+ 		break;
+@@ -2061,9 +2061,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	case KVM_DIRTY_TLB: {
+ 		struct kvm_dirty_tlb dirty;
+ 		r = -EFAULT;
+-		vcpu_load(vcpu);
+ 		if (copy_from_user(&dirty, argp, sizeof(dirty)))
+ 			goto out;
++		vcpu_load(vcpu);
+ 		r = kvm_vcpu_ioctl_dirty_tlb(vcpu, &dirty);
+ 		vcpu_put(vcpu);
+ 		break;
 -- 
 2.30.2
 
