@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE6C3D62CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9562C3D62CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238225AbhGZPj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
+        id S238326AbhGZPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237319AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C6E60E09;
-        Mon, 26 Jul 2021 16:02:51 +0000 (UTC)
+        id S237335AbhGZPWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B44A60F5A;
+        Mon, 26 Jul 2021 16:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315372;
-        bh=cVGMIjXiW9ylHd/dFnWgStv+fD3pZiwnVCRzOXd5xK8=;
+        s=korg; t=1627315374;
+        bh=dOyU/jTonwnSLfo73VTuw12SSwAoLPTF2ThdAbPs2q8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VCqzEZR0iDvk3qqvTpQTEgCssD6bZuTjEZ1xVP0UvdmCkSejg9IkmsVRVVurP7sOZ
-         kGYhLikzulIf16aAmKeo+7CYOf+hAVm0+uC3APVPXF8egqveJTMsV0MaxrslpnbVNg
-         oI0Ct9ZcOMoaJOzYDiW1i32+scRbES75PlDGXoo4=
+        b=pwnQK+Wm1/p+gtp6DeTs6HZGRwFL67elrbECbWKgxv/E39F/O4W2/fWVn3xZDCNpO
+         L95+BkYRSq4zBhtOrbqX8SVITcd8l5LMWTOXEPXk3ojXLh+hWxhJ9KjU1XPpt3z1sw
+         mk4sIvCiAuFshjECuS6Il9JhUGsaSoP+sIMi5bvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
         Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 036/167] perf env: Fix sibling_dies memory leak
-Date:   Mon, 26 Jul 2021 17:37:49 +0200
-Message-Id: <20210726153840.593524943@linuxfoundation.org>
+Subject: [PATCH 5.10 037/167] perf test session_topology: Delete session->evlist
+Date:   Mon, 26 Jul 2021 17:37:50 +0200
+Message-Id: <20210726153840.631599092@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -46,42 +47,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 42db3d9ded555f7148b5695109a7dc8d66f0dde4 ]
+[ Upstream commit 233f2dc1c284337286f9a64c0152236779a42f6c ]
 
-ASan reports a memory leak in perf_env while running:
+ASan reports a memory leak related to session->evlist while running:
 
-  # perf test "41: Session topology"
+  # perf test "41: Session topology".
 
-Caused by sibling_dies not being freed.
+When perf_data is in write mode, session->evlist is owned by the caller,
+which should also take care of deleting it.
 
-This patch adds the required free.
+This patch adds the missing evlist__delete().
 
-Fixes: acae8b36cded0ee6 ("perf header: Add die information in CPU topology")
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: c84974ed9fb67293 ("perf test: Add entry to test cpu topology")
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kan Liang <kan.liang@intel.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/2140d0b57656e4eb9021ca9772250c24c032924b.1626343282.git.rickyman7@gmail.com
+Link: http://lore.kernel.org/lkml/822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/env.c | 1 +
+ tools/perf/tests/topology.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index fadc59708ece..744e51c4a6bd 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -178,6 +178,7 @@ void perf_env__exit(struct perf_env *env)
- 	zfree(&env->cpuid);
- 	zfree(&env->cmdline);
- 	zfree(&env->cmdline_argv);
-+	zfree(&env->sibling_dies);
- 	zfree(&env->sibling_cores);
- 	zfree(&env->sibling_threads);
- 	zfree(&env->pmu_mappings);
+diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+index 22daf2bdf5fa..f4a2c0df0954 100644
+--- a/tools/perf/tests/topology.c
++++ b/tools/perf/tests/topology.c
+@@ -52,6 +52,7 @@ static int session_write_header(char *path)
+ 	TEST_ASSERT_VAL("failed to write header",
+ 			!perf_session__write_header(session, session->evlist, data.file.fd, true));
+ 
++	evlist__delete(session->evlist);
+ 	perf_session__delete(session);
+ 
+ 	return 0;
 -- 
 2.30.2
 
