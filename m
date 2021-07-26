@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE6463D6321
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB2D3D5FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238900AbhGZPof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40056 "EHLO mail.kernel.org"
+        id S236968AbhGZPUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238179AbhGZPZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B72ED60F38;
-        Mon, 26 Jul 2021 16:05:34 +0000 (UTC)
+        id S236385AbhGZPIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:08:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C775A60F6B;
+        Mon, 26 Jul 2021 15:48:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315535;
-        bh=UUSnv+YBR56PLXtQOE914sFblrvfbpijYigJ4zwetgw=;
+        s=korg; t=1627314523;
+        bh=Pz5znl3oCRXX/Ot8HGsKGVlif7ze/TLXcSlFz9LJoDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oRR8U/W3UskRYjTilFQkhm2+E5cKfTAmwa8Q+ljd1j0oEN+Z9wK8ofjgYqnyIdt+c
-         8nHHoFEWggQpkm3I17tBiH3kSyfFHrCnskuKftKybCwxIHAN9Qq+86qwKvYOciqJAV
-         onayVJx4cuQmPpmM4L7qqe5R5b1rPFtohKjIEKLM=
+        b=tmK7OXeAhWRA70gpMl7U976uiA5+4Fy8lqvyNHHaFOgK4zoiz30Ul6BllG+Vx01dL
+         U69NsJO7msiDNx1eiMJWiD3QYwFgloJE8iiWIJ8rOBBP++JNf41gjzykNRlSD6GP4G
+         W09xk9VulgeQ6C9cuCQ6KmBEkQvhR4j+8R3lcyGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.10 108/167] s390/boot: fix use of expolines in the DMA code
+        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 61/82] ALSA: sb: Fix potential ABBA deadlock in CSP driver
 Date:   Mon, 26 Jul 2021 17:39:01 +0200
-Message-Id: <20210726153843.015826258@linuxfoundation.org>
+Message-Id: <20210726153830.156174967@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 463f36c76fa4ec015c640ff63ccf52e7527abee0 upstream.
+commit 1c2b9519159b470ef24b2638f4794e86e2952ab7 upstream.
 
-The DMA code section of the decompressor must be compiled with expolines
-if Spectre V2 mitigation has been enabled for the decompressed kernel.
-This is required because although the decompressor's image contains
-the DMA code section, it is handed over to the decompressed kernel for use.
+SB16 CSP driver may hit potentially a typical ABBA deadlock in two
+code paths:
 
-Because the DMA code is already slow w/o expolines, use expolines always
-regardless whether the decompressed kernel is using them or not. This
-simplifies the DMA code by dropping the conditional compilation of
-expolines.
+ In snd_sb_csp_stop():
+     spin_lock_irqsave(&p->chip->mixer_lock, flags);
+     spin_lock(&p->chip->reg_lock);
 
-Fixes: bf72630130c2 ("s390: use proper expoline sections for .dma code")
-Cc: <stable@vger.kernel.org> # 5.2
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+ In snd_sb_csp_load():
+     spin_lock_irqsave(&p->chip->reg_lock, flags);
+     spin_lock(&p->chip->mixer_lock);
+
+Also the similar pattern is seen in snd_sb_csp_start().
+
+Although the practical impact is very small (those states aren't
+triggered in the same running state and this happens only on a real
+hardware, decades old ISA sound boards -- which must be very difficult
+to find nowadays), it's a real scenario and has to be fixed.
+
+This patch addresses those deadlocks by splitting the locks in
+snd_sb_csp_start() and snd_sb_csp_stop() for avoiding the nested
+locks.
+
+Reported-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com
+Link: https://lore.kernel.org/r/20210716132723.13216-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/boot/text_dma.S |   19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ sound/isa/sb/sb16_csp.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/s390/boot/text_dma.S
-+++ b/arch/s390/boot/text_dma.S
-@@ -9,16 +9,6 @@
- #include <asm/errno.h>
- #include <asm/sigp.h>
+--- a/sound/isa/sb/sb16_csp.c
++++ b/sound/isa/sb/sb16_csp.c
+@@ -828,6 +828,7 @@ static int snd_sb_csp_start(struct snd_s
+ 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
++	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
  
--#ifdef CC_USING_EXPOLINE
--	.pushsection .dma.text.__s390_indirect_jump_r14,"axG"
--__dma__s390_indirect_jump_r14:
--	larl	%r1,0f
--	ex	0,0(%r1)
--	j	.
--0:	br	%r14
--	.popsection
--#endif
--
- 	.section .dma.text,"ax"
- /*
-  * Simplified version of expoline thunk. The normal thunks can not be used here,
-@@ -27,11 +17,10 @@ __dma__s390_indirect_jump_r14:
-  * affects a few functions that are not performance-relevant.
-  */
- 	.macro BR_EX_DMA_r14
--#ifdef CC_USING_EXPOLINE
--	jg	__dma__s390_indirect_jump_r14
--#else
--	br	%r14
--#endif
-+	larl	%r1,0f
-+	ex	0,0(%r1)
-+	j	.
-+0:	br	%r14
- 	.endm
+ 	spin_lock(&p->chip->reg_lock);
+ 	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
+@@ -867,6 +868,7 @@ static int snd_sb_csp_start(struct snd_s
+ 	spin_unlock(&p->chip->reg_lock);
  
- /*
+ 	/* restore PCM volume */
++	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+ 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+@@ -892,6 +894,7 @@ static int snd_sb_csp_stop(struct snd_sb
+ 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
++	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+ 
+ 	spin_lock(&p->chip->reg_lock);
+ 	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
+@@ -906,6 +909,7 @@ static int snd_sb_csp_stop(struct snd_sb
+ 	spin_unlock(&p->chip->reg_lock);
+ 
+ 	/* restore PCM volume */
++	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+ 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
 
 
