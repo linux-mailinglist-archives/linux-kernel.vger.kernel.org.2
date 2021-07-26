@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C68D3D6328
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A653D62D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239039AbhGZPor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
+        id S238401AbhGZPji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237708AbhGZPZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1637F60240;
-        Mon, 26 Jul 2021 16:06:07 +0000 (UTC)
+        id S237306AbhGZPWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 393FE60FC1;
+        Mon, 26 Jul 2021 15:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315568;
-        bh=TlBxr3mfyc9BYIEoiifxHJDRYJcs8+7LxpcsIorXfjY=;
+        s=korg; t=1627314794;
+        bh=pFRmd8W6+hjGyqUC5oxfJjWvm3EV5UDATuoMU4vyr/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zmSOaU3vcX5gJlku8W/8AHqyb2sK1/OTmvBQOjJhhLuKUt62ObXhM4KfbWegX9i1u
-         AJATZkxnqpiV9K9jgOsByjFf02IvsV3IWhoqu7qOa2CJUYRsMTFrlcdh4g2jur9NBF
-         kYHcZC8x0OAfROUfVQQHX0F6HKOckcZW9he3/q38=
+        b=Yd4qKYCUPWrMehDUGBuU1E5244yrRa3ktHvxMhsUFUMBazjnt575ubTCDAo0NXav9
+         rsfLKaSkoAPSGJ5rYbRUC8GsKUfW6eYVst7+7CqHqoWe0Ol8sh0hQkn+LqnCa1WFrO
+         GT2ypO1mTGG/V48E/3mak7RuSsrh8ulXHvfmQMXA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 112/167] ALSA: hda/realtek: Fix pop noise and 2 Front Mic issues on a machine
-Date:   Mon, 26 Jul 2021 17:39:05 +0200
-Message-Id: <20210726153843.164850463@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.19 094/120] xhci: Fix lost USB 2 remote wake
+Date:   Mon, 26 Jul 2021 17:39:06 +0200
+Message-Id: <20210726153835.420053236@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit e4efa82660e6d80338c554e45e903714e1b2c27b upstream.
+commit 72f68bf5c756f5ce1139b31daae2684501383ad5 upstream.
 
-This is a Lenovo ThinkStation machine which uses the codec alc623.
-There are 2 issues on this machine, the 1st one is the pop noise in
-the lineout, the 2nd one is there are 2 Front Mics and pulseaudio
-can't handle them, After applying the fixup of
-ALC623_FIXUP_LENOVO_THINKSTATION_P340 to this machine, the 2 issues
-are fixed.
+There's a small window where a USB 2 remote wake may be left unhandled
+due to a race between hub thread and xhci port event interrupt handler.
+
+When the resume event is detected in the xhci interrupt handler it kicks
+the hub timer, which should move the port from resume to U0 once resume
+has been signalled for long enough.
+
+To keep the hub "thread" running we set a bus_state->resuming_ports flag.
+This flag makes sure hub timer function kicks itself.
+
+checking this flag was not properly protected by the spinlock. Flag was
+copied to a local variable before lock was taken. The local variable was
+then checked later with spinlock held.
+
+If interrupt is handled right after copying the flag to the local variable
+we end up stopping the hub thread before it can handle the USB 2 resume.
+
+CPU0					CPU1
+(hub thread)				(xhci event handler)
+
+xhci_hub_status_data()
+status = bus_state->resuming_ports;
+					<Interrupt>
+					handle_port_status()
+					spin_lock()
+					bus_state->resuming_ports = 1
+					set_flag(HCD_FLAG_POLL_RH)
+					spin_unlock()
+spin_lock()
+if (!status)
+  clear_flag(HCD_FLAG_POLL_RH)
+spin_unlock()
+
+Fix this by taking the lock a bit earlier so that it covers
+the resuming_ports flag copy in the hub thread
 
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210719030231.6870-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210715150651.1996099-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/host/xhci-hub.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8550,6 +8550,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x17aa, 0x3151, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3176, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3178, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x17aa, 0x31af, "ThinkCentre Station", ALC623_FIXUP_LENOVO_THINKSTATION_P340),
- 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
- 	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -1458,11 +1458,12 @@ int xhci_hub_status_data(struct usb_hcd
+ 	 * Inform the usbcore about resume-in-progress by returning
+ 	 * a non-zero value even if there are no status changes.
+ 	 */
++	spin_lock_irqsave(&xhci->lock, flags);
++
+ 	status = bus_state->resuming_ports;
+ 
+ 	mask = PORT_CSC | PORT_PEC | PORT_OCC | PORT_PLC | PORT_WRC | PORT_CEC;
+ 
+-	spin_lock_irqsave(&xhci->lock, flags);
+ 	/* For each port, did anything change?  If so, set that bit in buf. */
+ 	for (i = 0; i < max_ports; i++) {
+ 		temp = readl(ports[i]->addr);
 
 
