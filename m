@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1970F3D5EF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AC13D5DAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237544AbhGZPQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:16:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46876 "EHLO mail.kernel.org"
+        id S235197AbhGZPDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:03:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236266AbhGZPH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:07:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C201760525;
-        Mon, 26 Jul 2021 15:47:56 +0000 (UTC)
+        id S235533AbhGZPCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC7160F51;
+        Mon, 26 Jul 2021 15:42:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314477;
-        bh=CLY0hXy/DdlikbgWX4r60MdhZxVXUbvMNdgmPaBxZu4=;
+        s=korg; t=1627314171;
+        bh=i06fPrBmFPd4Vw53yWquMo8pgHRq2PQGWRELFLr2wsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rk8hoiBr2hHhumcKIl+WEtg8um6fntZn8rkyNBY3Pn2u/Sh5qqhtTRAHr1A5TCNz3
-         bLMjCShcqKgmgLQW+C3SG2U+ckwQ2Zgq6OGDTdl8QmdlqqgKieC81SngWGV0gvzhs6
-         /XnYYOeDvZOAPKPofeS6bgs+R8M44d1bo45ixK08=
+        b=iqwBLy4BNCKKQS48ADsStr/GiCCOJLwTM/qqypgiigPsXePtdYjMFdawEW/Pha8Vu
+         5NCfv6Ulj+XO9X98+zVfVsyyHAxSSz/Hzs8iyelJtPO8yqmWbPjKFHwLPY4cjTQbcK
+         BYB9O6YsRs2U5ZXjvblDiJyeMkQMSAMBnDAniZKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wolfgang Bumiller <w.bumiller@proxmox.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 25/82] net: bridge: sync fdb to new unicast-filtering ports
+        stable@vger.kernel.org, Matthias Maennich <maennich@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 11/60] kbuild: mkcompile_h: consider timestamp if KBUILD_BUILD_TIMESTAMP is set
 Date:   Mon, 26 Jul 2021 17:38:25 +0200
-Message-Id: <20210726153828.980870703@linuxfoundation.org>
+Message-Id: <20210726153825.226435319@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,73 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfgang Bumiller <w.bumiller@proxmox.com>
+From: Matthias Maennich <maennich@google.com>
 
-commit a019abd8022061b917da767cd1a66ed823724eab upstream.
+[ Upstream commit a979522a1a88556e42a22ce61bccc58e304cb361 ]
 
-Since commit 2796d0c648c9 ("bridge: Automatically manage
-port promiscuous mode.")
-bridges with `vlan_filtering 1` and only 1 auto-port don't
-set IFF_PROMISC for unicast-filtering-capable ports.
+To avoid unnecessary recompilations, mkcompile_h does not regenerate
+compile.h if just the timestamp changed.
+Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
+build was requested, in which case we should not ignore it.
 
-Normally on port changes `br_manage_promisc` is called to
-update the promisc flags and unicast filters if necessary,
-but it cannot distinguish between *new* ports and ones
-losing their promisc flag, and new ports end up not
-receiving the MAC address list.
+If a user follows the documentation for reproducible builds [1] and
+defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
+build will have the correct timestamp. A subsequent cherry-pick (or
+amend) changes the commit timestamp and if an incremental build is done
+with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
+into consideration. But it should for reproducibility.
 
-Fix this by calling `br_fdb_sync_static` in `br_add_if`
-after the port promisc flags are updated and the unicast
-filter was supposed to have been filled.
+Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
+UTS_VERSION when making a decision about whether the regenerated version
+of compile.h should be moved into place.
 
-Fixes: 2796d0c648c9 ("bridge: Automatically manage port promiscuous mode.")
-Signed-off-by: Wolfgang Bumiller <w.bumiller@proxmox.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
+
+Signed-off-by: Matthias Maennich <maennich@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_if.c |   17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ scripts/mkcompile_h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
---- a/net/bridge/br_if.c
-+++ b/net/bridge/br_if.c
-@@ -485,7 +485,7 @@ int br_add_if(struct net_bridge *br, str
- 	struct net_bridge_port *p;
- 	int err = 0;
- 	unsigned br_hr, dev_hr;
--	bool changed_addr;
-+	bool changed_addr, fdb_synced = false;
+diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
+index 6fdc97ef6023..cb73747002ed 100755
+--- a/scripts/mkcompile_h
++++ b/scripts/mkcompile_h
+@@ -82,15 +82,23 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
+ # Only replace the real compile.h if the new one is different,
+ # in order to preserve the timestamp and avoid unnecessary
+ # recompilations.
+-# We don't consider the file changed if only the date/time changed.
++# We don't consider the file changed if only the date/time changed,
++# unless KBUILD_BUILD_TIMESTAMP was explicitly set (e.g. for
++# reproducible builds with that value referring to a commit timestamp).
+ # A kernel config change will increase the generation number, thus
+ # causing compile.h to be updated (including date/time) due to the
+ # changed comment in the
+ # first line.
  
- 	/* Don't allow bridging non-ethernet like devices, or DSA-enabled
- 	 * master network devices since the bridge layer rx_handler prevents
-@@ -555,6 +555,19 @@ int br_add_if(struct net_bridge *br, str
- 	list_add_rcu(&p->list, &br->port_list);
- 
- 	nbp_update_port_count(br);
-+	if (!br_promisc_port(p) && (p->dev->priv_flags & IFF_UNICAST_FLT)) {
-+		/* When updating the port count we also update all ports'
-+		 * promiscuous mode.
-+		 * A port leaving promiscuous mode normally gets the bridge's
-+		 * fdb synced to the unicast filter (if supported), however,
-+		 * `br_port_clear_promisc` does not distinguish between
-+		 * non-promiscuous ports and *new* ports, so we need to
-+		 * sync explicitly here.
-+		 */
-+		fdb_synced = br_fdb_sync_static(br, p) == 0;
-+		if (!fdb_synced)
-+			netdev_err(dev, "failed to sync bridge static fdb addresses to this port\n");
-+	}
- 
- 	netdev_update_features(br->dev);
- 
-@@ -595,6 +608,8 @@ int br_add_if(struct net_bridge *br, str
- 	return 0;
- 
- err7:
-+	if (fdb_synced)
-+		br_fdb_unsync_static(br, p);
- 	list_del_rcu(&p->list);
- 	br_fdb_delete_by_port(br, p, 0, 1);
- 	nbp_update_port_count(br);
++if [ -z "$KBUILD_BUILD_TIMESTAMP" ]; then
++   IGNORE_PATTERN="UTS_VERSION"
++else
++   IGNORE_PATTERN="NOT_A_PATTERN_TO_BE_MATCHED"
++fi
++
+ if [ -r $TARGET ] && \
+-      grep -v 'UTS_VERSION' $TARGET > .tmpver.1 && \
+-      grep -v 'UTS_VERSION' .tmpcompile > .tmpver.2 && \
++      grep -v $IGNORE_PATTERN $TARGET > .tmpver.1 && \
++      grep -v $IGNORE_PATTERN .tmpcompile > .tmpver.2 && \
+       cmp -s .tmpver.1 .tmpver.2; then
+    rm -f .tmpcompile
+ else
+-- 
+2.30.2
+
 
 
