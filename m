@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2F13D5FD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600BA3D5DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236751AbhGZPTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:19:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48898 "EHLO mail.kernel.org"
+        id S235691AbhGZPDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:03:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236259AbhGZPHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:07:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F73560F38;
-        Mon, 26 Jul 2021 15:48:02 +0000 (UTC)
+        id S235582AbhGZPC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92CA960F37;
+        Mon, 26 Jul 2021 15:42:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314482;
-        bh=y8PqjIkQNShzXhJ3wznCX353YdFhgkczSiqZ6JlyCOY=;
+        s=korg; t=1627314177;
+        bh=EOn9u7CR6/zKn+iKpJ5wP4mwdhdoEP+PkurRyOi8y00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W5+88TSEnRfFNW0QhIHzXd8QdjDtIZf+nFbOUc0BlA30f8FMnmPizLaPq/joLXpg5
-         c9gOHcnJzyzf40I9z9fm447eLWLrVXYTug3JMENxo5CJu9UiQprmzL0lxMnLPqHY7e
-         CJQT7TuRwFyI3MNwe7PAKhadZsUxOwEGaXgMQqZE=
+        b=qESf6IxEla2hd4jBFo+PL0W3U/BqAT6Ggx7qXatOP6zb7IS2lU387Nj0Vr7lA3e/B
+         cRRpQm2frLH0fGBAfHQZx/5PMLdJcGYIwuMOPNNZoPBs6HHmKBatVf7+mUTeobz1Ty
+         Vt+cCLLa7FPbyK6+Mus73YDsU6CPG3fd+aw/9HJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 27/82] net: moxa: fix UAF in moxart_mac_probe
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 13/60] scsi: aic7xxx: Fix unintentional sign extension issue on left shift of u8
 Date:   Mon, 26 Jul 2021 17:38:27 +0200
-Message-Id: <20210726153829.044773409@linuxfoundation.org>
+Message-Id: <20210726153825.285737873@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit c78eaeebe855fd93f2e77142ffd0404a54070d84 upstream.
+[ Upstream commit 332a9dd1d86f1e7203fc7f0fd7e82f0b304200fe ]
 
-In case of netdev registration failure the code path will
-jump to init_fail label:
+The shifting of the u8 integer returned fom ahc_inb(ahc, port+3) by 24 bits
+to the left will be promoted to a 32 bit signed int and then sign-extended
+to a u64. In the event that the top bit of the u8 is set then all then all
+the upper 32 bits of the u64 end up as also being set because of the
+sign-extension. Fix this by casting the u8 values to a u64 before the 24
+bit left shift.
 
-init_fail:
-	netdev_err(ndev, "init failed\n");
-	moxart_mac_free_memory(ndev);
-irq_map_fail:
-	free_netdev(ndev);
-	return ret;
+[ This dates back to 2002, I found the offending commit from the git
+history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
+commit f58eb66c0b0a ("Update aic7xxx driver to 6.2.10...") ]
 
-So, there is no need to call free_netdev() before jumping
-to error handling path, since it can cause UAF or double-free
-bug.
-
-Fixes: 6c821bd9edc9 ("net: Add MOXA ART SoCs ethernet driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210621151727.20667-1-colin.king@canonical.com
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Addresses-Coverity: ("Unintended sign extension")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/moxa/moxart_ether.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/scsi/aic7xxx/aic7xxx_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/moxa/moxart_ether.c
-+++ b/drivers/net/ethernet/moxa/moxart_ether.c
-@@ -538,10 +538,8 @@ static int moxart_mac_probe(struct platf
- 	SET_NETDEV_DEV(ndev, &pdev->dev);
- 
- 	ret = register_netdev(ndev);
--	if (ret) {
--		free_netdev(ndev);
-+	if (ret)
- 		goto init_fail;
--	}
- 
- 	netdev_dbg(ndev, "%s: IRQ=%d address=%pM\n",
- 		   __func__, ndev->irq, ndev->dev_addr);
+diff --git a/drivers/scsi/aic7xxx/aic7xxx_core.c b/drivers/scsi/aic7xxx/aic7xxx_core.c
+index def3208dd290..9b5832b46dec 100644
+--- a/drivers/scsi/aic7xxx/aic7xxx_core.c
++++ b/drivers/scsi/aic7xxx/aic7xxx_core.c
+@@ -500,7 +500,7 @@ ahc_inq(struct ahc_softc *ahc, u_int port)
+ 	return ((ahc_inb(ahc, port))
+ 	      | (ahc_inb(ahc, port+1) << 8)
+ 	      | (ahc_inb(ahc, port+2) << 16)
+-	      | (ahc_inb(ahc, port+3) << 24)
++	      | (((uint64_t)ahc_inb(ahc, port+3)) << 24)
+ 	      | (((uint64_t)ahc_inb(ahc, port+4)) << 32)
+ 	      | (((uint64_t)ahc_inb(ahc, port+5)) << 40)
+ 	      | (((uint64_t)ahc_inb(ahc, port+6)) << 48)
+-- 
+2.30.2
+
 
 
