@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EB93D5A0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB6E3D5A14
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhGZM2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:28:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:51660 "EHLO foss.arm.com"
+        id S233435AbhGZM3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:29:32 -0400
+Received: from ms.lwn.net ([45.79.88.28]:58238 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232572AbhGZM2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:28:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9D9811B3;
-        Mon, 26 Jul 2021 06:09:07 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27C2E3F70D;
-        Mon, 26 Jul 2021 06:09:06 -0700 (PDT)
-Subject: Re: [PATCH 16/23] iommu/arm-smmu: Prepare for multiple DMA domain
- types
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org
-References: <cover.1626888444.git.robin.murphy@arm.com>
- <04220b3420c2c513490450f37de109182364f235.1626888445.git.robin.murphy@arm.com>
- <YP6ukfewNVjgS/bt@8bytes.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a0689d30-2214-c92e-8387-8f1d3b22909b@arm.com>
-Date:   Mon, 26 Jul 2021 14:09:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232572AbhGZM3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:29:31 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 88769221;
+        Mon, 26 Jul 2021 13:09:59 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 88769221
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1627304999; bh=YZy8cXLHkI0qJXaQSj8Qj3Db4h+IONtrKMhuPakS2Hc=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XYsYCuba71EUWtWxaby68szrqy91oYNBppFKxEjBByWV6QMxtztD72btP7+78YIQh
+         FwXQExObNDcxLTzguqxEz+u1BhgsHKUCqTP6xRuGKhDCEKO9GnOTTb92cHLaqc3mGk
+         Nlk+JAh/lAvrkYTbZ7AUWi20qh//6Z6UcWrG2aEfmZhyXnJcW8RiuPNJ3XLqKYJIID
+         kcK+uLvr4WCMTjnIFAfowI/ev3xkvNGDwzhgYwgppO62HqtO3vPMEVI/VhoHKFdl9v
+         lckYow7LT8KFM9OKhcnl2s+pUNAhQqd8RLLQaX3ekWemXPDaDn9XlK/Gv6ZC7+deVD
+         EMbQoKT9KJh5w==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     cgel.zte@gmail.com, siyanteng@loongson.cn, sterlingteng@gmail.com
+Cc:     alexs@kernel.org, yang.yang29@zte.com.cn,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3] docs/zh_CN: Add zh_CN/accounting/psi.rst
+In-Reply-To: <20210726030909.508645-1-yang.yang29@zte.com.cn>
+References: <20210726030909.508645-1-yang.yang29@zte.com.cn>
+Date:   Mon, 26 Jul 2021 07:09:59 -0600
+Message-ID: <87fsw1te54.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <YP6ukfewNVjgS/bt@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-26 13:46, Joerg Roedel wrote:
-> On Wed, Jul 21, 2021 at 07:20:27PM +0100, Robin Murphy wrote:
->> -	if (type == IOMMU_DOMAIN_DMA && using_legacy_binding)
->> +	if ((type & __IOMMU_DOMAIN_DMA_API) && using_legacy_binding)
-> 
-> Hmm, I wonder whether it is time to introduce helpers for these checks?
-> 
-> Something like iommu_domain_is_dma() is more readable.
+cgel.zte@gmail.com writes:
 
-Ha, I had exactly that at one point, except I think in the order of 
-iommu_is_dma_domain() :)
+> From: Yang Yang <yang.yang29@zte.com.cn>
+>
+> Add translation zh_CN/accounting/psi.rst and zh_CN/accounting/index.rst.
+>
+> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+> Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
+> Reviewed-by: Jonathan Corbet <corbet@lwn.net>
 
-The end result didn't seem to give enough extra clarity to justify the 
-header churn for me, but I'm happy to be wrong about that if you prefer.
+I have not reviewed this patch or offered that tag, why have you put it
+there?  Never add a Reviewed-by that has not been explicitly given by
+the reviewer.
 
-Cheers,
-Robin.
+jon
+
