@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94553D642B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E9C63D642C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240229AbhGZPzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51652 "EHLO mail.kernel.org"
+        id S240246AbhGZPzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237239AbhGZPed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:34:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3540160F5A;
-        Mon, 26 Jul 2021 16:15:00 +0000 (UTC)
+        id S237298AbhGZPee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:34:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA115604AC;
+        Mon, 26 Jul 2021 16:15:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316100;
-        bh=3BuFv/ls4B2ldkV9/p4Hg0KsRTj2PIeZ0TQMVvQ9DRw=;
+        s=korg; t=1627316103;
+        bh=R6/d5A36/DNukdPu6REyqDvN0M2H9oNjfgQPBn04uDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ByEnlKUJcSGH6bh1rja/Qu4GZyDbJmisrE7d4dBTUBdD/kWaLNOgoTC4WDI6Uzd7o
-         BGMMTwfYO4pMIj5Z6lNFXO0tzTTESaRiWO6J8usFOb3sylRnQDqNcjFx9wzlGTdpAN
-         2YCoF1KtndWM2qPBNOU7wEbX6Ii3OtzFey4gTdqY=
+        b=k/p3PPygBcJKpc0syIq/2Vlm5s/Wpg0Z0VE+srykH5dYy1yYRShf5LYkCnOy0NeMR
+         xW+Pcv52ju92msrddODA+h9vauU62KP8W5Qy3HOORSwvz0Is+M935XLQmON9jc0Dsn
+         DOUjizTcMUUBchaPJUq4TRQp2EZ8tzPhK1asYyG8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damjan Georgievski <gdamjan@gmail.com>,
+        stable@vger.kernel.org, Alan Young <consult.awy@gmail.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 152/223] ALSA: hdmi: Expose all pins on MSI MS-7C94 board
-Date:   Mon, 26 Jul 2021 17:39:04 +0200
-Message-Id: <20210726153851.201454657@linuxfoundation.org>
+Subject: [PATCH 5.13 153/223] ALSA: pcm: Call substream ack() method upon compat mmap commit
+Date:   Mon, 26 Jul 2021 17:39:05 +0200
+Message-Id: <20210726153851.231543942@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -39,35 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Alan Young <consult.awy@gmail.com>
 
-commit 33f735f137c6539e3ceceb515cd1e2a644005b49 upstream.
+commit 2e2832562c877e6530b8480982d99a4ff90c6777 upstream.
 
-The BIOS on MSI Mortar B550m WiFi (MS-7C94) board with AMDGPU seems
-disabling the other pins than HDMI although it has more outputs
-including DP.
+If a 32-bit application is being used with a 64-bit kernel and is using
+the mmap mechanism to write data, then the SNDRV_PCM_IOCTL_SYNC_PTR
+ioctl results in calling snd_pcm_ioctl_sync_ptr_compat(). Make this use
+pcm_lib_apply_appl_ptr() so that the substream's ack() method, if
+defined, is called.
 
-This patch adds the board to the allow list for enabling all pins.
+The snd_pcm_sync_ptr() function, used in the 64-bit ioctl case, already
+uses snd_pcm_ioctl_sync_ptr_compat().
 
-Reported-by: Damjan Georgievski <gdamjan@gmail.com>
+Fixes: 9027c4639ef1 ("ALSA: pcm: Call ack() whenever appl_ptr is updated")
+Signed-off-by: Alan Young <consult.awy@gmail.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/CAEk1YH4Jd0a8vfZxORVu7qg+Zsc-K+pR187ezNq8QhJBPW4gpw@mail.gmail.com
-Link: https://lore.kernel.org/r/20210716135600.24176-1-tiwai@suse.de
+Link: https://lore.kernel.org/r/c441f18c-eb2a-3bdd-299a-696ccca2de9c@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_hdmi.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/core/pcm_native.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1940,6 +1940,7 @@ static int hdmi_add_cvt(struct hda_codec
- static const struct snd_pci_quirk force_connect_list[] = {
- 	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
- 	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
-+	SND_PCI_QUIRK(0x1462, 0xec94, "MS-7C94", 1),
- 	{}
- };
- 
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3057,9 +3057,14 @@ static int snd_pcm_ioctl_sync_ptr_compat
+ 		boundary = 0x7fffffff;
+ 	snd_pcm_stream_lock_irq(substream);
+ 	/* FIXME: we should consider the boundary for the sync from app */
+-	if (!(sflags & SNDRV_PCM_SYNC_PTR_APPL))
+-		control->appl_ptr = scontrol.appl_ptr;
+-	else
++	if (!(sflags & SNDRV_PCM_SYNC_PTR_APPL)) {
++		err = pcm_lib_apply_appl_ptr(substream,
++				scontrol.appl_ptr);
++		if (err < 0) {
++			snd_pcm_stream_unlock_irq(substream);
++			return err;
++		}
++	} else
+ 		scontrol.appl_ptr = control->appl_ptr % boundary;
+ 	if (!(sflags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN))
+ 		control->avail_min = scontrol.avail_min;
 
 
