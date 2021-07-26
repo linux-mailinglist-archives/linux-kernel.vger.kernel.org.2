@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7846D3D5F39
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CC53D5F2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236554AbhGZPRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
+        id S236511AbhGZPRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:17:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236509AbhGZPJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:09:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DDD460F94;
-        Mon, 26 Jul 2021 15:49:35 +0000 (UTC)
+        id S236499AbhGZPJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25B2560F51;
+        Mon, 26 Jul 2021 15:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314576;
-        bh=8jmhCFByj6sYsf96g0KxpNVco82unC/dzMGdYFGAo5E=;
+        s=korg; t=1627314581;
+        bh=qvM0yYNL8q3J19oHR2x8OxnAyfO7cTAeFwbNUv4zl3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kdrOgRrx015YS0uS+S2WWRu9oprAF1XSWjlbaegj6OlGPrM3yhXV/o1pzQamICOv+
-         6N39elnfazkFEKzvQdv5CyAVPANDIm6pAERClNzWYNFXdUl+A1EsV8e3mjltBIbN0Z
-         Hr/Mnf7fPwQm8teEqAxhKvriDvJmQKAVXfBmrC10=
+        b=j/sNV4DReCLjAg2P1AhV35nre7nDANEEZgz63826ztonOX0TJdWyEGKJJiMuHxPIx
+         +66QaBk+LNYX0ke6PwmpCaZtg0d2v2F/ve1L0OF+B86FujPkMc2jX8RCdIdn6E+B/E
+         /9qfWzTgN49utOgFg8WvaKhCchfN2/8ZUoMddIr0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Primoz Fiser <primoz.fiser@norik.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 015/120] ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
-Date:   Mon, 26 Jul 2021 17:37:47 +0200
-Message-Id: <20210726153832.854489391@linuxfoundation.org>
+Subject: [PATCH 4.19 017/120] rtc: mxc_v2: add missing MODULE_DEVICE_TABLE
+Date:   Mon, 26 Jul 2021 17:37:49 +0200
+Message-Id: <20210726153832.915435548@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
 References: <20210726153832.339431936@linuxfoundation.org>
@@ -40,47 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Primoz Fiser <primoz.fiser@norik.com>
+From: Bixuan Cui <cuibixuan@huawei.com>
 
-[ Upstream commit 14cdc1f243d79e0b46be150502b7dba9c5a6bdfd ]
+[ Upstream commit 206e04ec7539e7bfdde9aa79a7cde656c9eb308e ]
 
-Serial interface uart3 on phyFLEX board is capable of 5-wire connection
-including signals RTS and CTS for hardware flow control.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-Fix signals UART3_CTS_B and UART3_RTS_B padmux assignments and add
-missing property "uart-has-rtscts" to allow serial interface to be
-configured and used with the hardware flow control.
-
-Signed-off-by: Primoz Fiser <primoz.fiser@norik.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210508031509.53735-1-cuibixuan@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/rtc/rtc-mxc_v2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-index 9499d113b139..25462f778994 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-@@ -306,8 +306,8 @@
- 			fsl,pins = <
- 				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1
- 				MX6QDL_PAD_EIM_D25__UART3_RX_DATA	0x1b0b1
--				MX6QDL_PAD_EIM_D30__UART3_RTS_B		0x1b0b1
--				MX6QDL_PAD_EIM_D31__UART3_CTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D31__UART3_RTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D30__UART3_CTS_B		0x1b0b1
- 			>;
- 		};
- 
-@@ -394,6 +394,7 @@
- &uart3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart3>;
-+	uart-has-rtscts;
- 	status = "disabled";
+diff --git a/drivers/rtc/rtc-mxc_v2.c b/drivers/rtc/rtc-mxc_v2.c
+index 007879a5042d..45c7366b7286 100644
+--- a/drivers/rtc/rtc-mxc_v2.c
++++ b/drivers/rtc/rtc-mxc_v2.c
+@@ -395,6 +395,7 @@ static const struct of_device_id mxc_ids[] = {
+ 	{ .compatible = "fsl,imx53-rtc", },
+ 	{}
  };
++MODULE_DEVICE_TABLE(of, mxc_ids);
  
+ static struct platform_driver mxc_rtc_driver = {
+ 	.driver = {
 -- 
 2.30.2
 
