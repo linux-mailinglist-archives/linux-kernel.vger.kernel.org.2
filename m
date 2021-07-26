@@ -2,124 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936333D5704
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8842B3D56FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhGZJYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233092AbhGZJXt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:23:49 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479C2C061757;
-        Mon, 26 Jul 2021 03:04:18 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so13483434pjh.3;
-        Mon, 26 Jul 2021 03:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=9IV7gdTl+TfYT0PA9yJ8ntrjPmJt3GKsWmRDc9gqVXc=;
-        b=DphfsOPWeNPpqpuqCnT6AFEIilapAjNXbyoL6qdfUF7KUgyQoq+A3ldM46/yvNFkU9
-         KvoYMsWgCJr/jfSwrRJGpA2sgabZeo6PkOJlqsuD/As2iwWXX545RmmDB59nEJAMRMNE
-         1lLPLxojQL/9oSU14Z6nobb5IdnKckle5mTFMLY6lX2ABoAOwmRR6kuhFgJddeR7Wuib
-         nIOzJDSudKR84yLf0i6hcG9eQRnZloksNTE1/iE2ejQC7yRC/wLK7JFL9N6Mt10wQ4Y4
-         X67b6JewXNdUdTPmJpCfdjuxtKu7nIG8FlvuWkDrC+zsD+0CEoe512gm421ebaAB23og
-         jk2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=9IV7gdTl+TfYT0PA9yJ8ntrjPmJt3GKsWmRDc9gqVXc=;
-        b=MIq3jscIPk23hGhBURFm7ANFfcNjW+nAKBSg6bf8eet5sGO+XpuBjHTjCi2L+HCfGb
-         6rPNEVRq5mfQk0ClQ4pHNLMVBbtHVUS23Qr603PRzGD+s2yUB96Way4nFmQFgKWUXz+f
-         OffmRLC9cCAmKJCtyPgTzOE7PTLLjtxLXxy+WzZ20iOef2ycpBmA7KzUPSD2RbBFCRc2
-         pV8SAxh46kpBdXnQfN7Zl5SD/B81CwCIG5JzRIWW832HF4wObupuYOSrsftCqj923b1c
-         G0YT5DkYp5ugywIu5qz0A0TXSvZ2XYG0NiJ8iL+vVFHE6oZx7GNsZErpU3xZ9VrjH/1k
-         rZRA==
-X-Gm-Message-State: AOAM533luZ56JOaxuOLwh7dOMh0M2xT3T+4iRH4ImtPHx7jOTnTozT+j
-        L4DrhWRYn6YaXV/Ur+raKA==
-X-Google-Smtp-Source: ABdhPJwA75VRTvFn2qh0CwQPNB8OAKEm3Ei7pqR0b8eUNPChgWH21i/4Mw30bXr6ohf/Q9czqni94A==
-X-Received: by 2002:a17:902:968a:b029:11d:6448:1352 with SMTP id n10-20020a170902968ab029011d64481352mr13952026plp.59.1627293857866;
-        Mon, 26 Jul 2021 03:04:17 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id ft7sm13504530pjb.32.2021.07.26.03.04.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Jul 2021 03:04:17 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     adaplas@gmail.com
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH v2 3/3] video: fbdev: riva: Error out if 'pixclock' equals zero
-Date:   Mon, 26 Jul 2021 10:03:55 +0000
-Message-Id: <1627293835-17441-4-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1627293835-17441-1-git-send-email-zheyuma97@gmail.com>
-References: <1627293835-17441-1-git-send-email-zheyuma97@gmail.com>
+        id S233101AbhGZJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:23:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:49216 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232617AbhGZJXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 05:23:42 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22441106F;
+        Mon, 26 Jul 2021 03:04:11 -0700 (PDT)
+Received: from [10.57.36.95] (unknown [10.57.36.95])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCDFC3F70D;
+        Mon, 26 Jul 2021 03:04:07 -0700 (PDT)
+Subject: Re: [PATCH] perf env: Normalize aarch64.* to arm64 in
+ normalize_arch()
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Li Huafei <lihuafei1@huawei.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mark.rutland@arm.com,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, mliska@suse.cz, irogers@google.com,
+        dzhu@wavecomp.com, rickyman7@gmail.com, yao.jin@linux.intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangjinhao2@huawei.com
+References: <20210723014944.214887-1-lihuafei1@huawei.com>
+ <YPsXSRi+8z5ozc/U@kernel.org>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <d4db6cdd-1cb5-5ce9-47b3-41f438f379af@arm.com>
+Date:   Mon, 26 Jul 2021 11:04:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <YPsXSRi+8z5ozc/U@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The userspace program could pass any values to the driver through
-ioctl() interface. If the driver doesn't check the value of 'pixclock',
-it may cause divide error.
 
-Fix this by checking whether 'pixclock' is zero first.
 
-The following log reveals it:
+On 23/07/2021 20:23, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Jul 23, 2021 at 09:49:44AM +0800, Li Huafei escreveu:
+>> On my aarch64 big endian machine, the perf annotate does not work.
+>>
+>>  # perf annotate
+>>   Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (253 samples, percent: local period)
+>>  --------------------------------------------------------------------------------------------------------------
+>>   Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (1 samples, percent: local period)
+>>  ------------------------------------------------------------------------------------------------------------
+>>   Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (47 samples, percent: local period)
+>>  -------------------------------------------------------------------------------------------------------------
+>>  ...
+>>
+>> This is because the arch_find() function uses the normalized architecture
+>> name provided by normalize_arch(), and my machine's architecture name
+>> aarch64_be is not normalized to arm64.  Like other architectures such as
+>> arm and powerpc, we can fuzzy match the architecture names associated with
+>> aarch64.* and normalize them.
+> 
+> This looks ok modulo fixing the problem and adding that extra pr_err()
+> in a single patch, please split this into two.
+> 
+> Also I fail to see why c34df25b40c2 introduced this problem :-\
 
-[   33.396850] divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-[   33.396864] CPU: 5 PID: 11754 Comm: i740 Not tainted 5.14.0-rc2-00513-gac532c9bbcfb-dirty #222
-[   33.396883] RIP: 0010:riva_load_video_mode+0x417/0xf70
-[   33.396969] Call Trace:
-[   33.396973]  ? debug_smp_processor_id+0x1c/0x20
-[   33.396984]  ? tick_nohz_tick_stopped+0x1a/0x90
-[   33.396996]  ? rivafb_copyarea+0x3c0/0x3c0
-[   33.397003]  ? wake_up_klogd.part.0+0x99/0xd0
-[   33.397014]  ? vprintk_emit+0x110/0x4b0
-[   33.397024]  ? vprintk_default+0x26/0x30
-[   33.397033]  ? vprintk+0x9c/0x1f0
-[   33.397041]  ? printk+0xba/0xed
-[   33.397054]  ? record_print_text.cold+0x16/0x16
-[   33.397063]  ? __kasan_check_read+0x11/0x20
-[   33.397074]  ? profile_tick+0xc0/0x100
-[   33.397084]  ? __sanitizer_cov_trace_const_cmp4+0x24/0x80
-[   33.397094]  ? riva_set_rop_solid+0x2a0/0x2a0
-[   33.397102]  rivafb_set_par+0xbe/0x610
-[   33.397111]  ? riva_set_rop_solid+0x2a0/0x2a0
-[   33.397119]  fb_set_var+0x5bf/0xeb0
-[   33.397127]  ? fb_blank+0x1a0/0x1a0
-[   33.397134]  ? lock_acquire+0x1ef/0x530
-[   33.397143]  ? lock_release+0x810/0x810
-[   33.397151]  ? lock_is_held_type+0x100/0x140
-[   33.397159]  ? ___might_sleep+0x1ee/0x2d0
-[   33.397170]  ? __mutex_lock+0x620/0x1190
-[   33.397180]  ? trace_hardirqs_on+0x6a/0x1c0
-[   33.397190]  do_fb_ioctl+0x31e/0x700
+I checked the parent commit of c34df25b40c2 and set the architecture to "aarch64_be"
+but it doesn't work either, so I also don't see any regressions.
 
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
----
-Changes in v2:
-    - Make commit log more descriptive
----
- drivers/video/fbdev/riva/fbdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+> 
+> Can some ARM person ack/review this, please?
+> 
+> - Arnaldo
+>  
+>> Fixes: c34df25b40c2 ("perf annotate: Add symbol__annotate function")
+>> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+>> ---
+>>  tools/perf/util/annotate.c | 4 +++-
+>>  tools/perf/util/env.c      | 2 +-
+>>  2 files changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+>> index aa04a3655236..cb280de3369f 100644
+>> --- a/tools/perf/util/annotate.c
+>> +++ b/tools/perf/util/annotate.c
+>> @@ -2192,8 +2192,10 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
+>>  		return errno;
+>>  
+>>  	args.arch = arch = arch__find(arch_name);
+>> -	if (arch == NULL)
+>> +	if (arch == NULL) {
+>> +		pr_err("%s: unsupported arch %s\n", __func__, arch_name);
+>>  		return ENOTSUP;
+>> +	}
+>>  
+>>  	if (parch)
+>>  		*parch = arch;
+>> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+>> index cec2e6cad8aa..a91da1e9b201 100644
+>> --- a/tools/perf/util/env.c
+>> +++ b/tools/perf/util/env.c
+>> @@ -349,7 +349,7 @@ static const char *normalize_arch(char *arch)
+>>  		return "x86";
+>>  	if (!strcmp(arch, "sun4u") || !strncmp(arch, "sparc", 5))
+>>  		return "sparc";
+>> -	if (!strcmp(arch, "aarch64") || !strcmp(arch, "arm64"))
+>> +	if (!strncmp(arch, "aarch64", 7) || !strcmp(arch, "arm64"))
 
-diff --git a/drivers/video/fbdev/riva/fbdev.c b/drivers/video/fbdev/riva/fbdev.c
-index 55554b0433cb..84d5e23ad7d3 100644
---- a/drivers/video/fbdev/riva/fbdev.c
-+++ b/drivers/video/fbdev/riva/fbdev.c
-@@ -1084,6 +1084,9 @@ static int rivafb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
- 	int mode_valid = 0;
- 	
- 	NVTRACE_ENTER();
-+	if (!var->pixclock)
-+		return -EINVAL;
-+
- 	switch (var->bits_per_pixel) {
- 	case 1 ... 8:
- 		var->red.offset = var->green.offset = var->blue.offset = 0;
--- 
-2.17.6
+This seems ok to me, but a quick google shows some references to "arm64_be".
+I don't know if this could ever get into perf, but most of the other ones
+search for prefixes, so it probably doesn't hurt to do strcmp(arch, "arm64", 5)
+as well.
 
+Thanks
+James
+
+>>  		return "arm64";
+>>  	if (!strncmp(arch, "arm", 3) || !strcmp(arch, "sa110"))
+>>  		return "arm";
+>> -- 
+>> 2.17.1
+>>
+> 
