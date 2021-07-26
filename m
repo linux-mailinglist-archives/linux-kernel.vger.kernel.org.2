@@ -2,188 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4933D52B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 172E33D52C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhGZELv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 00:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
+        id S231421AbhGZEfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 00:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhGZELs (ORCPT
+        with ESMTP id S229683AbhGZEfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 00:11:48 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C8FC061760
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:52:17 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d1so2880778pll.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:52:17 -0700 (PDT)
+        Mon, 26 Jul 2021 00:35:51 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE9FC061757
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 22:16:20 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id t66so7799062qkb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 22:16:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/etw2x/IOV61XRm5aQ4SVHdlMT8behp6226Zn4BBbvI=;
-        b=zuRFX0GsaWbTMCQA/Ng8TO6XyGJferSVQ0pAR0GxmcQn7+Kzm77KAn2t5e4HF2W9uF
-         FMEIR74TtOxn5m6zy27FZBynywpPlZcsMfoq89vx7yljF/e+K98SPrmyPYRc8YhfF7c7
-         P213mVoA1mMTBDcd8QWJTLv9MPuZcn7fvQ1ZSmq8h/9RB5ELESMVb5AdoIHbBLvmrrbr
-         01gn8WRioJm45UWG1fwg/UqyWFqFgi4BFpshTukJxa7vWqKfZCf5xv9DOnBXiLtIuceT
-         +uQ2Yx/KFTVSligZUmlPiOVxl6pXLyWWPzc9+QeeIvvlrmwzi/UqDfYw19ItXSYPOKlN
-         Mg3A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XygC5wCkMDbFQQ9ce88kjiV4VAshB5QTsAEs+cXfzBo=;
+        b=V8MXuFFKyGipObIamnLlOLefvbGxx8fkYXPtJXfQaR6zPfL/sGcnUox+MUW6t3kNhX
+         BJw+rGDeH1JGkQSSG5zJynhThfUINGX2dPi+NCPN48fkRyFn+aFXi/AcO/7cJJDAM5DF
+         AL6dsSpy2Ahm28uUQTYOAWlKSxNTTN0m+9KeJCuV4LpaNH9lEDGYei1zpZngRnyIGv16
+         jXfdiwJK+om/0/+qnATixilPqLd6igKtGOdGYMjTe62l4xcIMK/4sYegrpvGoyHBq7pP
+         l5uhhjp/yZ3Xus6oGwGx6pPMBDxHUpsiKqatKgzcknjU0EAzy2OyVNe2zzIyeK0md5Bl
+         6+Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/etw2x/IOV61XRm5aQ4SVHdlMT8behp6226Zn4BBbvI=;
-        b=l6RsQUKG5IeikDsAqK9ZcCoIKV46OIbRMbDzxhc3PmDNrRVzo6GRwuSasIbvESuWgi
-         J8st1EotoELQ0eKRN5MH9Thl/UH3cdtwZf1JAKO0+pxgKdIzuBpQOE2Xf797ZhlHTiOn
-         A2dhxf7TjK9rc0c+S6MVjBJ1ABStF5z3v5DqEJV0C4L2HKvljBxoxLngI+0heqiqwj3f
-         nfi1EkA/ySrEdO9BwRfLH/CpBgfAqwX1xfPUyIo5/Xg9wDVNjEeeUfjsjFqxucQQsOaD
-         8ytead3lgSL92n8WxQhZbXzA8E2+bVl3LdBjKFLbQPfKnoyZzIbcx077LH+FQe8SZIOA
-         M2tg==
-X-Gm-Message-State: AOAM530gmcYGozNL5F+o0pE5itCLR5iHW8ilAm1GAFG0sp5KNkjqarfh
-        kmVPTbsewyYOLhXwNGg2JTHZOQ==
-X-Google-Smtp-Source: ABdhPJyr8wbdIszb+A/hmmA5994NGNnh9M1G2XZiayIibgeTjTIa3VkrXBI39bw6Y6b6tUCfsOEbkg==
-X-Received: by 2002:a05:6a00:2306:b029:331:ebe8:a4b4 with SMTP id h6-20020a056a002306b0290331ebe8a4b4mr15787418pfh.15.1627275136900;
-        Sun, 25 Jul 2021 21:52:16 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id b2sm46529295pgh.9.2021.07.25.21.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 21:52:14 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH V3 5/5] virtio: Bind virtio device to device-tree node
-Date:   Mon, 26 Jul 2021 10:21:45 +0530
-Message-Id: <454a58f998b0d16847d72a97b32192829fab2c8c.1627273794.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <cover.1627273794.git.viresh.kumar@linaro.org>
-References: <cover.1627273794.git.viresh.kumar@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XygC5wCkMDbFQQ9ce88kjiV4VAshB5QTsAEs+cXfzBo=;
+        b=G4YywF0logpbd1xvNXRVX2B4cyBAr/kH1EuvFzOqELYJdy3L2FkMot5pqNcQ3phhhN
+         LRo77TWjc9nXbW5OZDBIW7bD4l1i2t/CmZNhGd2M7bvxXE6t7hjelcVxEcHhabx18/Pu
+         sGpefThqfOhae9xykuSeQDzEzyJ8HLlETRdeHFWwpq8X51f0B6UsJAvSzfHoBEolx926
+         QrNGoeO7Vbqeu+EPShce8VVBz3s63C2PkVmdBaKZp4xOdJ2/DraM6tJdj53uyw4fo4DJ
+         YQgiiuq4VrhztwpcVTAfo6ojpah2QQdfWVISjuLFAkKf1uzg+tRo3SHpQo301Vg8a7Ov
+         Xj5Q==
+X-Gm-Message-State: AOAM533dDaVqyz6nFtzoZ9SidHtZya9uU/qTWzE9tLz/HBGHnB9NHFh/
+        w8WtgTM07H2gdkw4l1CjrqJ5emOLGXW2vs7Rv2I=
+X-Google-Smtp-Source: ABdhPJxvuO0i1cOxHKEIeKjGh7PuOqW1BCoICcn1IG0kXrcAMZC5H6irn+d1FLDu5WKxOfVJpitbnWiFrFfoLek0xww=
+X-Received: by 2002:a05:620a:1278:: with SMTP id b24mr15914369qkl.250.1627276579628;
+ Sun, 25 Jul 2021 22:16:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1627100621-19225-1-git-send-email-chihhao.chen@mediatek.com>
+ <s5h7dhgi1e2.wl-tiwai@suse.de> <CAEsQvcs3P+TqQFzQetPfRycpo66eJFwnzwhk2JyCXFaCLFHmFg@mail.gmail.com>
+ <s5hwnpehm7y.wl-tiwai@suse.de>
+In-Reply-To: <s5hwnpehm7y.wl-tiwai@suse.de>
+From:   Geraldo Nascimento <geraldogabriel@gmail.com>
+Date:   Mon, 26 Jul 2021 02:16:11 +0000
+Message-ID: <CAEsQvcumEDOKgUB6h2-im5QabhPfaSaU63RF8pegPt5ZCPx+Pw@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: usb-audio: fix incorrect clock source setting
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     chihhao.chen@mediatek.com, alsa-devel@alsa-project.org,
+        wsd_upstream@mediatek.com, damien@zamaudio.com, tiwai@suse.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bind the virtio devices with their of_node. This will help users of the
-virtio devices to mention their dependencies on the device in the DT
-itself. Like GPIO pin users can use the phandle of the device node, or
-the node may contain more subnodes to add i2c or spi eeproms and other
-users.
+On Sun, Jul 25, 2021 at 7:44 AM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Sat, 24 Jul 2021 17:04:13 +0200,
+> Geraldo Nascimento wrote:
+> >
+> > On Sat, Jul 24, 2021 at 8:05 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > This looks like a regression introduced by the recent commit
+> > > d2e8f641257d ("ALSA: usb-audio: Explicitly set up the clock
+> > > selector"), which is a fix for certain devices.  Too bad that the
+> > > behavior really depends on the device...
+> >
+> > Dr. Iwai, perhaps we could restrict the generalized fix for the
+> > Behringer UFX1604 / UFX1204 with some simple logic to devices that
+> > only have *one* clock source.
+> >
+> > In that case the clock selector must be set to the only clock source.
+> >
+> > This way we keep the generalization without breaking devices with more
+> > than one clock source.
+> >
+> > Just an idea.
+>
+> I don't think it's easy to generalize.  All those bugs are more or
+> less BIOS bugs, and a logic doesn't apply always, just because it's a
+> bug :)  For example, setting the clock selector itself should be a
+> valid operation from the specification POV, while this leads to
+> breakage on some devices.  So, even if we add a more generic
+> workaround, we need to see which side effect is more commonly seen at
+> first.
+>
+>
+> Takashi
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/virtio/virtio.c | 57 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 54 insertions(+), 3 deletions(-)
+Hello,
 
-diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-index 4b15c00c0a0a..d001e84a5b23 100644
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -4,6 +4,7 @@
- #include <linux/virtio_config.h>
- #include <linux/module.h>
- #include <linux/idr.h>
-+#include <linux/of.h>
- #include <uapi/linux/virtio_ids.h>
- 
- /* Unique numbering for virtio devices. */
-@@ -292,6 +293,9 @@ static int virtio_dev_remove(struct device *_d)
- 
- 	/* Acknowledge the device's existence again. */
- 	virtio_add_status(dev, VIRTIO_CONFIG_S_ACKNOWLEDGE);
-+
-+	of_node_put(dev->dev.of_node);
-+
- 	return 0;
- }
- 
-@@ -319,6 +323,43 @@ void unregister_virtio_driver(struct virtio_driver *driver)
- }
- EXPORT_SYMBOL_GPL(unregister_virtio_driver);
- 
-+static int virtio_device_of_init(struct virtio_device *dev)
-+{
-+	struct device_node *np, *pnode = dev_of_node(dev->dev.parent);
-+	char compat[] = "virtio,XXXXXXXX"; /* Reserve enough space 32-bit id */
-+	int ret, count;
-+
-+	if (!pnode)
-+		return 0;
-+
-+	count = of_get_available_child_count(pnode);
-+	if (!count)
-+		return 0;
-+
-+	/* There can be only 1 child node */
-+	if (WARN_ON(count > 1))
-+		return -EINVAL;
-+
-+	np = of_get_next_available_child(pnode, NULL);
-+	if (WARN_ON(!np))
-+		return -ENODEV;
-+
-+	BUG_ON(snprintf(compat, sizeof(compat), "virtio,%x", dev->id.device) >=
-+	       sizeof(compat));
-+
-+	if (!of_device_is_compatible(np, compat)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	dev->dev.of_node = np;
-+	return 0;
-+
-+out:
-+	of_node_put(np);
-+	return ret;
-+}
-+
- /**
-  * register_virtio_device - register virtio device
-  * @dev        : virtio device to be registered
-@@ -343,6 +384,10 @@ int register_virtio_device(struct virtio_device *dev)
- 	dev->index = err;
- 	dev_set_name(&dev->dev, "virtio%u", dev->index);
- 
-+	err = virtio_device_of_init(dev);
-+	if (err)
-+		goto out_ida_remove;
-+
- 	spin_lock_init(&dev->config_lock);
- 	dev->config_enabled = false;
- 	dev->config_change_pending = false;
-@@ -362,10 +407,16 @@ int register_virtio_device(struct virtio_device *dev)
- 	 */
- 	err = device_add(&dev->dev);
- 	if (err)
--		ida_simple_remove(&virtio_index_ida, dev->index);
-+		goto out_of_node_put;
-+
-+	return 0;
-+
-+out_of_node_put:
-+	of_node_put(dev->dev.of_node);
-+out_ida_remove:
-+	ida_simple_remove(&virtio_index_ida, dev->index);
- out:
--	if (err)
--		virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
-+	virtio_add_status(dev, VIRTIO_CONFIG_S_FAILED);
- 	return err;
- }
- EXPORT_SYMBOL_GPL(register_virtio_device);
--- 
-2.31.1.272.g89b43f80a514
+Like I said in one of the other emails in this thread, it's hard to
+pinpoint a cause for the breakage of Samsung USBC Headset (AKG) with
+VID/PID (0x04e8/0xa051) without the lsusb -v of the device in
+question.
 
+But from the description Chihhao Chen gave in the original message,
+I'm *guessing* the Clock Source for the Samsung USB Headset (AKG) runs
+at 48000hz and that we'd see a 2x Clock Multiplier in the lsusb -v
+
+This is all a wild guess, without the lsusb -v it's impossible to be
+sure, but if I'm right then the valid setting for the Microphone's
+Clock Selector is the Clock Multiplier, not the Clock Source, which,
+remember, runs at half the clock, hence why Chihhao Chen sees half the
+data rate for USB IN.
+
+Unfortunately our kernel code presently *does* always set the Clock
+Selector to the Clock Source, which is a bad assumption to make in my
+humble opinion.
+
+The only valid case for setting the Clock Selector to the Clock Source
+is when there's precisely one Clock Selector, precisely one Clock
+Source and no Clock Multipliers.
+
+In that special case we may be able to touch the setting of the only
+Clock Selector to match the only Clock Source.
+
+And, frankly, the only reason we're forced to do that explicitly is
+because some Behringer gear (Archwave AG DACs) gets confused and seems
+to somehow keep the old rate on the Clock Selector upon sample rate
+change.
+
+Thank you,
+Geraldo Nascimento
