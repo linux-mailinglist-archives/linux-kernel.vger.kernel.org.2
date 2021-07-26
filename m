@@ -2,484 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A45423D6524
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19843D6527
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237030AbhGZQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S236918AbhGZQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:28:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242480AbhGZQ0j (ORCPT
+        with ESMTP id S243460AbhGZQ17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:26:39 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1E8C028BEA
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:49:33 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso895199pjo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:49:33 -0700 (PDT)
+        Mon, 26 Jul 2021 12:27:59 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FB8C04E19F
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:52:10 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id y18so11650716oiv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:52:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=NnEjP7Ik7bQGMycNJ0vsy90jG+AhXDOHMG03jRaFJts=;
-        b=JyZHKJddjuj5wor59Jm3iA2BGgK+XSB+kGIlQtSIettnlxpq3i7RKgV6RidcVKBniZ
-         9mpWTWl6SIPLBqsrlZZfDRn0hUvGAwspeAubmFGdWiMv4bJFWQR5OGrWSLLVq1pdnLi4
-         lAo5MHSgKcYMV2ctI/c7CNFwIiCWzqHUxvS/Xw+r4DFKsmrjCJrw/dXUpAfR506TYoup
-         9kkwA4BxiiXygmTN1GZpO5nBBgkjkrvwP3Lfab/xlJVv6AYrdJej8xFStP60IEeo/CzU
-         8ihAqQbSK0V9qKygSJsrGZPysNAjDgYMmvitB+O6aRWZoYZ9J3aaK5IWAnXxMlrJIQ2D
-         UvWw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=He3coKcw9GzSTcMc1/bucGcJlXbu6D86uDxA4sIXTEc=;
+        b=Aga2CfgcrsI2ptK5p+3lzsmok8uc/2D1LU+v+37wTg2APCXg80MMRwJXs48eomAKXg
+         klVOfsV70Big9+NM0nsnOzf5xj1dI52bR40zkaH8iJ+Hvs5mErxmzTBdedpqxE2b4q74
+         DYnDykU92rP1GWt+SKYUzRoZo+lMg4Pu+GOJeBVkoB4P83TgOYsqiCjCCskwnDquWQrQ
+         k2uK1woyQCQZ+OdSThqOyqyKdCsin3lf+bdWIqotN70/QgzYOjg0QD5xTcZc6UxJWtvI
+         ZMUfcVHo1KVatBJILvMQNmisMY8kxN+QkibVMp11Fg7ZTW4cAnWw/m0+y1txyiKjHS4a
+         jMtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=NnEjP7Ik7bQGMycNJ0vsy90jG+AhXDOHMG03jRaFJts=;
-        b=oRrW7+eSumh/Wipegmhqk0sbxXmD76LdUvJsx3sCm7KFFBxIdhVCkctaeSioG41kAY
-         AOFKDnu9oDuGjLRTPrMqZeDa5WJNKxh1B+oollD3e5mxqIVla8n7o7YMXKyA6xqCAey9
-         FYzn3k4RbAfGkHBM+tmjGhEkNUaWMr/wQxoztAF8LRcx/K7cT5hwhLgVd0mzRkqWFvrf
-         BMHiUfuhloE4qfQGWdTSUJfg2DnVUuR/jy1EvbNYjSk2kQ7M25qTde/5GooYSYeRj9bd
-         C0bNCtIaCAWplrzQg+h7pIB9XrSjpXviYn0HmFL8TubLUz+iqIfIABYcT18/dHCUee28
-         CNPg==
-X-Gm-Message-State: AOAM532TfOZM00sjedbqr73TlytVczIsRyMLIM8vVUzQmiQftTtbjVzj
-        yUVngxfE3kiQK7lwa/cU27IJew==
-X-Google-Smtp-Source: ABdhPJzIbfu8sjUnI60C+11jluUja6WYGs9fuxQnBbaOslVDKBv5iaiq9jvG+jXGty37iplG1L67Cw==
-X-Received: by 2002:a17:90a:4404:: with SMTP id s4mr27430264pjg.218.1627318173021;
-        Mon, 26 Jul 2021 09:49:33 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 20sm589884pfh.15.2021.07.26.09.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 09:49:28 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 10:49:26 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Branislav Rankov <branislav.rankov@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v8 00/10] CoreSight configuration management; ETM strobing
-Message-ID: <20210726164926.GA2646102@p14s>
-References: <20210707133003.5414-1-mike.leach@linaro.org>
- <20210712164413.GA1777012@p14s>
- <a80b9a03-01ba-3752-9e6e-ee2d194ba2a1@arm.com>
- <CAJ9a7ViieBazkBckF+2Bb0eeQyp14EpUAJ0j_GmU_Kibj9OBMg@mail.gmail.com>
- <20210721174417.GB2377909@p14s>
- <CAJ9a7Vi9v=tk8YRj13k6pSxuMs1cKk2JgwtffE1ubqTjexLkhg@mail.gmail.com>
- <20210722161736.GA2443981@p14s>
- <CAJ9a7VgN5T73bNyaQs9_g+GyCxQdpB=4r0WKmqEXs8eEFP310g@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=He3coKcw9GzSTcMc1/bucGcJlXbu6D86uDxA4sIXTEc=;
+        b=EBNV2OPrzEFklxmLn/0zyiJJCBDVWayzlX8dJlLVOfNU1YNL4jPm/ioAGRhRtux+wz
+         BZMfNufcbYKnWnX9Sz9DzKvXvRTBmqieB8oaJ0Rcr19Bu5bx4vRBWH7VMtGDKdIuuzfa
+         HTqi7crsM+PjKDzUlkmxSFuY3VBhmCEUNFJ6iZlMyleNT/STyQgxmkahfosTfS3uaKEV
+         aSx4RoMQ0A2QuPo44G3HHlF3yBnWMCSDOtxxidaRIwqB4aztnLIOM5lzjY0kOPKCHSkp
+         t7RrKkH6gn0jBKDyussir4/15J8UUEiiL2ZpgHCSiaKjAaNIVwbc826Gqo7UV2UeGQIz
+         NpJw==
+X-Gm-Message-State: AOAM530P32FZyiTRHSTBa4BWRoqa82Z0xFxOVg6UTjWIj9fp8fF1mtlH
+        2GDZCXtvbRGs6C4tPts0I219GR+ornuKUS03rq0=
+X-Google-Smtp-Source: ABdhPJyHVd1rwMfCft9myOBIWxxgq/TxveHPsluE/X2xIO39doksbipLA2KpmNOphgmIh7vb1CnvdQ==
+X-Received: by 2002:aca:31d8:: with SMTP id x207mr17423875oix.144.1627318329449;
+        Mon, 26 Jul 2021 09:52:09 -0700 (PDT)
+Received: from [192.168.17.50] ([189.219.72.83])
+        by smtp.gmail.com with ESMTPSA id m2sm82120otr.46.2021.07.26.09.52.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 09:52:08 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/167] 5.10.54-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210726153839.371771838@linuxfoundation.org>
+From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
+Message-ID: <19e027f2-c751-9bc6-52f4-e0c560c1a909@linaro.org>
+Date:   Mon, 26 Jul 2021 11:52:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ9a7VgN5T73bNyaQs9_g+GyCxQdpB=4r0WKmqEXs8eEFP310g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 03:43:52PM +0100, Mike Leach wrote:
-> HI Mathieu,
-> 
-> On Thu, 22 Jul 2021 at 17:17, Mathieu Poirier
-> <mathieu.poirier@linaro.org> wrote:
-> >
-> > On Wed, Jul 21, 2021 at 10:35:00PM +0100, Mike Leach wrote:
-> > > HI Mathieu,
-> > >
-> > > On Wed, 21 Jul 2021 at 18:44, Mathieu Poirier
-> > > <mathieu.poirier@linaro.org> wrote:
-> > > >
-> > > > On Fri, Jul 16, 2021 at 11:25:47AM +0100, Mike Leach wrote:
-> > > > > HI Mathieu,
-> > > > >
-> > > > > Below my change notes for the patches changed between v7 and v8 in this set.
-> > > > >
-> > > > > Regards
-> > > > >
-> > > > > Mike
-> > > > >
-> > > > > 0001, 0003, 0004, 0006, 0007, 0008, 0010 - no change
-> > > > >
-> > > > > 0002 -
-> > > > > coresight-syscfg.c
-> > > > >     top of file - mutex declaration removed.
-> > > > >     cscfg_add_csdev_cfg()
-> > > > >         Spinlock replaces mutex
-> > > > >     cscfg_load_feat_csdev()
-> > > > >         Spinlock replaces mutex
-> > > > >     cscsg_list_add_csdev()
-> > > > >         Init spinlock
-> > > > > coresight.h
-> > > > >     struct coresight_device {}
-> > > > >         Add spinlock cscfg_csdev_lock alongside the csdev feature and
-> > > > > config lists that it protects.
-> > > > >
-> > > > > 0005 -
-> > > > > coresight-syscfg.c
-> > > > >     cscfg_csdev_reset_feats()
-> > > > >             Spinlock replaces mutex.
-> > > > >
-> > > > >     cscfg_csdev_enable_active_config()
-> > > > >             Spinlock replaces mutex. In enable flag to avoid race with disable.
-> > > > >     cscfg_csdev_disable_active_config()
-> > > > >             Spinlock replaces mutex. In enable flag to avoid race with enable.
-> > > > >
-> > > >
-> > > > I'm good with the changes made to the above two patches.
-> > > >
-> > > > >
-> > > > > coresight.h
-> > > > >     struct coresight_device {}
-> > > > >         In enable flag introduced to control possible race between
-> > > > > enable and disable. E.g. if we are enabling a config, but a power
-> > > > > event tries to shut down the CPU/ETM causing a disable call. We don’t
-> > > > > want to hold the cscfg_csdev_lock spinlock throughout the entire
-> > > > > enable process - especially as the programming call will claim the
-> > > > > internal driver spinlock when writing internal driver data, but we
-> > > > > need to ensure that if there is a condition that permits a disable
-> > > > > call out of normal sequence then we are able to see it and handle it.
-> > > > >
-> > > >
-> > > > Here I'm assuming the enable and disable calls you are referring to are
-> > > > cscfg_csdev_enable_active_config() and cscfg_csdev_disable_active_config().
-> > > >
-> > >
-> > > Yes.
-> > >
-> > > > From the above paragraph I understand that a call to cscfg_csdev_enable_config()
-> > > > can be interrupted at any time when the CPU is shutting down, which can only
-> > > > happen when operating from sysfs.
-> > > >
-> > >
-> > > I was concerned about possible power management issues too - though
-> > > thinking about it we shouldn't be powering down a PE if we are about
-> > > to start tracing on it!
-> >
-> > You are correct if we are operating from the perf interface.  In sysfs you get
-> > no guarantees, anything can happen.
-> >
-> > >
-> > > Truth is, I split the spinlock claims in
-> > > cscfg_csdev_enable_active_config() to follow the general kernel
-> > > guidance to hold them for the minimum amount of time needed, and then
-> > > could not convince myself that it was impossible for
-> > > cscfg_csdev_disable_active_config() to be called part way through.
-> > >
-> > > > With the above in mind and looking at the implementation in patch 05, if the
-> > > > code gets interrupted right after cscfg_csdev_enable_config(), function
-> > > > cscfg_csdev_disable_config() in cscfg_csdev_disable_active_config() won't be
-> > > > called.
-> > > >
-> > > > In function cscfg_csdev_enable_active_config(), could it be possible to set
-> > > > csdev->active_cscfg_ctxt instead of csdev->cscfg_in_enable?  If
-> > > > cscfg_csdev_enable_config() gets interrupted then function
-> > > > cscfg_csdev_disable_config() can be called.  At that point disabling a feature
-> > > > that hasn't been enabled shouldn't do anything.
-> > > >
-> > >
-> > > The concern is that the disable functionality is responsible for
-> > > copying back values that might have changed during the operation of
-> > > the config - e.g. counters in strobing are restarted at the value they
-> > > last had if the routine is restarted on the same ETM at a later time
-> > > in the perf session. So if the enable never occurred / errored - we
-> > > want to avoid copying what would be an unknown value back. So the
-> > > safest way is to only copy back if we succeeded in setting in the
-> > > first place - even ETM was never actually started.
-> > >
-> > > Currently we only set csdev->active_cscfg_ctxt after the call to do
-> > > the actual register programming (call to cscfg_csdev_enable_config())
-> > > has succeeded, which was fine using the mutex, but gives us the
-> > > problem with the split spinlocks.
-> > > So csdev->cscfg_in_enable prevents disable path from copying back an
-> > > potentially invalid value.
-> >
-> > I see the problem about potentially copying back invalid alues.  I suggest to:
-> >
-> > 1) use spin_lock_irqsave() in cscfg_set_on_enable() and cscfg_save_on_disable(),
-> > that way the critical section in there is never preempted.
-> >
-> 
-> Agreed.
-> 
-> 
-> > 2) introduce cscfg_feature_csdev::enabled to keep track of which feature has
-> > been enabled, and set that flag when the lock is held in cscfg_set_on_enable().
-> >
-> 
-> This does no solve the key issue which is that the configuration -
-> which can consist of multiple features - must be all programmed to be
-> correctly enabled. Having per feature enables complicates matters more
-> than is needed.
+Hello!
 
-Knowing which feature has been enabled would allow us to set active_cscfg_ctxt
-while the lock is held in cscfg_csdev_enable_active_config() and unwind
-everything in cscfg_csdev_disable_active_config() without fear of copying
-uninitialised values.
+On 7/26/21 10:37 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.54 release.
+> There are 167 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.54-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> There is currently an enable flag on cscfg_config_csdev - which can be
-> brought into the scope of the cscfg_csdev_enable_active_config() /
-> cscfg_csdev_disable_active_config() spinlocks
-> to do what is needed.
-> 
-> I've dropped the In_enable flag, and use cscfg_config_csdev::enabled &
-> csdev->active_cscfg_ctxt to ensure the ordering is handled correctly.
->
+Build regressions detected across plenty of architectures and configurations:
 
-Ok, I'll take a look.
+   /builds/linux/net/core/dev.c:5877:51: error: use of undeclared identifier 'TC_SKB_EXT'
+                           struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
+                                                                          ^
+   /builds/linux/net/core/dev.c:5878:47: error: use of undeclared identifier 'TC_SKB_EXT'
+                           struct tc_skb_ext *p_ext = skb_ext_find(p, TC_SKB_EXT);
+                                                                      ^
+   /builds/linux/net/core/dev.c:5882:19: error: incomplete definition of type 'struct tc_skb_ext'
+                                   diffs |= p_ext->chain ^ skb_ext->chain;
+                                            ~~~~~^
+   /builds/linux/net/core/dev.c:5877:11: note: forward declaration of 'struct tc_skb_ext'
+                           struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
+                                  ^
+   /builds/linux/net/core/dev.c:5882:36: error: incomplete definition of type 'struct tc_skb_ext'
+                                   diffs |= p_ext->chain ^ skb_ext->chain;
+                                                           ~~~~~~~^
+   /builds/linux/net/core/dev.c:5877:11: note: forward declaration of 'struct tc_skb_ext'
+                           struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
+                                  ^
+   4 errors generated.
+   make[3]: *** [/builds/linux/scripts/Makefile.build:280: net/core/dev.o] Error 1
+   make[3]: Target '__build' not remade because of errors.
+   make[2]: *** [/builds/linux/scripts/Makefile.build:497: net/core] Error 2
 
-> Regards
-> 
-> Mike
-> 
-> > Hopefully that will work.  A generous helping of comments will also go a long
-> > way.
-> >
-> > >
-> > > Regards
-> > >
-> > > Mike
-> > >
-> > >
-> > > > Thanks,
-> > > > Mathieu
-> > > >
-> > > > > 0009 -
-> > > > >     KConfig
-> > > > >     add in dependency on CONFIGFS_FS to eliminate problem highlighted
-> > > > > by the kernel bot tests. This had configured coresight as Y, but
-> > > > > configfs as M - meaning link issues for configfs code introduced in
-> > > > > this set.
-> > > > >
-> > > > > On Tue, 13 Jul 2021 at 10:43, Branislav Rankov <branislav.rankov@arm.com> wrote:
-> > > > > >
-> > > > > > Hi Mathieu,
-> > > > > >
-> > > > > > On 7/12/21 5:44 PM, Mathieu Poirier wrote:
-> > > > > > > Good morning Mike,
-> > > > > > >
-> > > > > > > On Wed, Jul 07, 2021 at 02:29:53PM +0100, Mike Leach wrote:
-> > > > > > >> This patchset introduces initial concepts in CoreSight system
-> > > > > > >> configuration management support. to allow more detailed and complex
-> > > > > > >> programming to be applied to CoreSight systems during trace capture.
-> > > > > > >>
-> > > > > > >> Configurations consist of 2 elements:-
-> > > > > > >> 1) Features - programming combinations for devices, applied to a class of
-> > > > > > >> device on the system (all ETMv4), or individual devices.
-> > > > > > >> 2) Configurations - a set of programmed features used when the named
-> > > > > > >> configuration is selected.
-> > > > > > >>
-> > > > > > >> Features and configurations are declared as a data table, a set of register,
-> > > > > > >> resource and parameter requirements. Features and configurations are loaded
-> > > > > > >> into the system by the virtual cs_syscfg device. This then matches features
-> > > > > > >> to any registered devices and loads the feature into them.
-> > > > > > >>
-> > > > > > >> Individual device classes that support feature and configuration register
-> > > > > > >> with cs_syscfg.
-> > > > > > >>
-> > > > > > >> Once loaded a configuration can be enabled for a specific trace run.
-> > > > > > >> Configurations are registered with the perf cs_etm event as entries in
-> > > > > > >> cs_etm/events. These can be selected on the perf command line as follows:-
-> > > > > > >>
-> > > > > > >> perf record -e cs_etm/<config_name>/ ...
-> > > > > > >>
-> > > > > > >> This patch set has one pre-loaded configuration and feature.
-> > > > > > >> A named "strobing" feature is provided for ETMv4.
-> > > > > > >> A named "autofdo" configuration is provided. This configuration enables
-> > > > > > >> strobing on any ETM in used.
-> > > > > > >>
-> > > > > > >> Thus the command:
-> > > > > > >> perf record -e cs_etm/autofdo/ ...
-> > > > > > >>
-> > > > > > >> will trace the supplied application while enabling the "autofdo" configuation
-> > > > > > >> on each ETM as it is enabled by perf. This in turn will enable strobing for
-> > > > > > >> the ETM - with default parameters. Parameters can be adjusted using configfs.
-> > > > > > >>
-> > > > > > >> The sink used in the trace run will be automatically selected.
-> > > > > > >>
-> > > > > > >> A configuration can supply up to 15 of preset parameter values, which will
-> > > > > > >> subsitute in parameter values for any feature used in the configuration.
-> > > > > > >>
-> > > > > > >> Selection of preset values as follows
-> > > > > > >> perf record -e cs_etm/autofdo,preset=1/ ...
-> > > > > > >>
-> > > > > > >> (valid presets 1-N, where N is the number supplied in the configuration, not
-> > > > > > >> exceeding 15. preset=0 is the same as not selecting a preset.)
-> > > > > > >>
-> > > > > > >> Applies to & tested against coresight/next (5.13-rc6 base)
-> > > > > > >>
-> > > > > > >> Changes since v7:
-> > > > > > >>
-> > > > > > >> Fixed kernel test robot issue - config with CORESIGHT=y & CONFIGFS_FS=m causes
-> > > > > > >> build error. Altered CORESIGHT config to select CONFIGFS_FS.
-> > > > > > >> Reported-by: kernel test robot <lkp@intel.com>
-> > > > > > >>
-> > > > > > >> Replaced mutex use to protect loaded config lists in coresight devices with per
-> > > > > > >> device spinlock to remove issue when disable called in interrupt context.
-> > > > > > >> Reported-by: Branislav Rankov <branislav.rankov@arm.com>
-> > > > > > >>
-> > > > > > >
-> > > > > > > Can you indicate which patches have changed so I don't have to review the whole
-> > > > > > > thing again?   It is also common practice to remove the RB tag when patches
-> > > > > > > have changed enough to mandate another review.  In this case all patches still
-> > > > > > > bare my RB tags.
-> > > > > > >
-> > > > > > > Branislav reported the problem but he is not a recipient.  I would like to have
-> > > > > > > a confirmation from him that this set fixes the problem he observed before I
-> > > > > > > start looking at it.
-> > > > > >
-> > > > > > I have tested this series and the issue I reported is fixed.
-> > > > > > >
-> > > > > > > Thanks,
-> > > > > > > Mathieu
-> > > > > > >
-> > > > > > >>
-> > > > > > >> Changes since v6:
-> > > > > > >> Fixed kernel test robot issues-
-> > > > > > >> Reported-by: kernel test robot <lkp@intel.com>
-> > > > > > >>
-> > > > > > >> Changes since v5:
-> > > > > > >>
-> > > > > > >> 1) Fix code style issues from auto-build reports, as
-> > > > > > >> Reported-by: kernel test robot <lkp@intel.com>
-> > > > > > >> 2) Update comments to get consistent docs for API functions.
-> > > > > > >> 3) remove unused #define from autofdo example.
-> > > > > > >> 4) fix perf code style issues from patch 4 (Mathieu)
-> > > > > > >> 5) fix configfs code style issues from patch 9. (Mathieu)
-> > > > > > >>
-> > > > > > >> Changes since v4: (based on comments from Matthieu and Suzuki).
-> > > > > > >> No large functional changes - primarily code improvements and naming schema.
-> > > > > > >> 1) Updated entire set to ensure a consistent naming scheme was used for
-> > > > > > >> variables and struct members that refer to the key objects in the system.
-> > > > > > >> Suffixes _desc used for all references to feature and configuraion descriptors,
-> > > > > > >> suffix _csdev used for all references to load feature and configs in the csdev
-> > > > > > >> instances. (Mathieu & Suzuki).
-> > > > > > >> 2) Dropped the 'configurations' sub dir in cs_etm perf directories as superfluous
-> > > > > > >> with the configfs containing the same information. (Mathieu).
-> > > > > > >> 3) Simplified perf handling code (suzuki)
-> > > > > > >> 4) Multiple simplifications and improvements for code readability (Matthieu
-> > > > > > >> and Suzuki)
-> > > > > > >>
-> > > > > > >> Changes since v3: (Primarily based on comments from Matthieu)
-> > > > > > >> 1) Locking mechanisms simplified.
-> > > > > > >> 2) Removed the possibility to enable features independently from
-> > > > > > >> configurations.Only configurations can be enabled now. Simplifies programming
-> > > > > > >> logic.
-> > > > > > >> 3) Configuration now uses an activate->enable mechanism. This means that perf
-> > > > > > >> will activate a selected configuration at the start of a session (during
-> > > > > > >> setup_aux), and disable at the end of a session (around free_aux)
-> > > > > > >> The active configuration and associated features will be programmed into the
-> > > > > > >> CoreSight device instances when they are enabled. This locks the configuration
-> > > > > > >> into the system while in use. Parameters cannot be altered while this is
-> > > > > > >> in place. This mechanism will be extended in future for dynamic load / unload
-> > > > > > >> of configurations to prevent removal while in use.
-> > > > > > >> 4) Removed the custom bus / driver as un-necessary. A single device is
-> > > > > > >> registered to own perf fs elements and configfs.
-> > > > > > >> 5) Various other minor issues addressed.
-> > > > > > >>
-> > > > > > >> Changes since v2:
-> > > > > > >> 1) Added documentation file.
-> > > > > > >> 2) Altered cs_syscfg driver to no longer be coresight_device based, and moved
-> > > > > > >> to its own custom bus to remove it from the main coresight bus. (Mathieu)
-> > > > > > >> 3) Added configfs support to inspect and control loaded configurations and
-> > > > > > >> features. Allows listing of preset values (Yabin Cui)
-> > > > > > >> 4) Dropped sysfs support for adjusting feature parameters on the per device
-> > > > > > >> basis, in favour of a single point adjustment in configfs that is pushed to all
-> > > > > > >> device instances.
-> > > > > > >> 5) Altered how the config and preset command line options are handled in perf
-> > > > > > >> and the drivers. (Mathieu and Suzuki).
-> > > > > > >> 6) Fixes for various issues and technical points (Mathieu, Yabin)
-> > > > > > >>
-> > > > > > >> Changes since v1:
-> > > > > > >> 1) Moved preloaded configurations and features out of individual drivers.
-> > > > > > >> 2) Added cs_syscfg driver to manage configurations and features. Individual
-> > > > > > >> drivers register with cs_syscfg indicating support for config, and provide
-> > > > > > >> matching information that the system uses to load features into the drivers.
-> > > > > > >> This allows individual drivers to be updated on an as needed basis - and
-> > > > > > >> removes the need to consider devices that cannot benefit from configuration -
-> > > > > > >> static replicators, funnels, tpiu.
-> > > > > > >> 3) Added perf selection of configuarations.
-> > > > > > >> 4) Rebased onto the coresight module loading set.
-> > > > > > >>
-> > > > > > >> To follow in future revisions / sets:-
-> > > > > > >> a) load of additional config and features by loadable module.
-> > > > > > >> b) load of additional config and features by configfs
-> > > > > > >> c) enhanced resource management for ETMv4 and checking features have sufficient
-> > > > > > >> resources to be enabled.
-> > > > > > >> d) ECT and CTI support for configuration and features.
-> > > > > > >>
-> > > > > > >> Mike Leach (10):
-> > > > > > >>   coresight: syscfg: Initial coresight system configuration
-> > > > > > >>   coresight: syscfg: Add registration and feature loading for cs devices
-> > > > > > >>   coresight: config: Add configuration and feature generic functions
-> > > > > > >>   coresight: etm-perf: update to handle configuration selection
-> > > > > > >>   coresight: syscfg: Add API to activate and enable configurations
-> > > > > > >>   coresight: etm-perf: Update to activate selected configuration
-> > > > > > >>   coresight: etm4x: Add complex configuration handlers to etmv4
-> > > > > > >>   coresight: config: Add preloaded configurations
-> > > > > > >>   coresight: syscfg: Add initial configfs support
-> > > > > > >>   Documentation: coresight: Add documentation for CoreSight config
-> > > > > > >>
-> > > > > > >>  .../trace/coresight/coresight-config.rst      | 244 ++++++
-> > > > > > >>  Documentation/trace/coresight/coresight.rst   |  16 +
-> > > > > > >>  drivers/hwtracing/coresight/Kconfig           |   1 +
-> > > > > > >>  drivers/hwtracing/coresight/Makefile          |   7 +-
-> > > > > > >>  .../hwtracing/coresight/coresight-cfg-afdo.c  | 153 ++++
-> > > > > > >>  .../coresight/coresight-cfg-preload.c         |  31 +
-> > > > > > >>  .../coresight/coresight-cfg-preload.h         |  13 +
-> > > > > > >>  .../hwtracing/coresight/coresight-config.c    | 275 ++++++
-> > > > > > >>  .../hwtracing/coresight/coresight-config.h    | 253 ++++++
-> > > > > > >>  drivers/hwtracing/coresight/coresight-core.c  |  12 +-
-> > > > > > >>  .../hwtracing/coresight/coresight-etm-perf.c  | 150 +++-
-> > > > > > >>  .../hwtracing/coresight/coresight-etm-perf.h  |  12 +-
-> > > > > > >>  .../hwtracing/coresight/coresight-etm4x-cfg.c | 182 ++++
-> > > > > > >>  .../hwtracing/coresight/coresight-etm4x-cfg.h |  30 +
-> > > > > > >>  .../coresight/coresight-etm4x-core.c          |  38 +-
-> > > > > > >>  .../coresight/coresight-etm4x-sysfs.c         |   3 +
-> > > > > > >>  .../coresight/coresight-syscfg-configfs.c     | 396 +++++++++
-> > > > > > >>  .../coresight/coresight-syscfg-configfs.h     |  45 +
-> > > > > > >>  .../hwtracing/coresight/coresight-syscfg.c    | 829 ++++++++++++++++++
-> > > > > > >>  .../hwtracing/coresight/coresight-syscfg.h    |  81 ++
-> > > > > > >>  include/linux/coresight.h                     |  11 +
-> > > > > > >>  21 files changed, 2746 insertions(+), 36 deletions(-)
-> > > > > > >>  create mode 100644 Documentation/trace/coresight/coresight-config.rst
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-afdo.c
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.c
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-cfg-preload.h
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-config.c
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-config.h
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.c
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-etm4x-cfg.h
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.c
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg-configfs.h
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.c
-> > > > > > >>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.h
-> > > > > > >>
-> > > > > > >> --
-> > > > > > >> 2.17.1
-> > > > > > >>
-> > > > > > > _______________________________________________
-> > > > > > > CoreSight mailing list
-> > > > > > > CoreSight@lists.linaro.org
-> > > > > > > https://lists.linaro.org/mailman/listinfo/coresight
-> > > > > > >
-> > > > >
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Mike Leach
-> > > > > Principal Engineer, ARM Ltd.
-> > > > > Manchester Design Centre. UK
-> > >
-> > >
-> > >
-> > > --
-> > > Mike Leach
-> > > Principal Engineer, ARM Ltd.
-> > > Manchester Design Centre. UK
-> 
-> 
-> 
-> -- 
-> Mike Leach
-> Principal Engineer, ARM Ltd.
-> Manchester Design Centre. UK
+As with 5.13, it failed everywhere for the same reason. Fails on defconfig and bunch others, with GCC/Clang, and across many architectures.
+
+Greetings!
+
+Daniel Díaz
+daniel.diaz@linaro.org
