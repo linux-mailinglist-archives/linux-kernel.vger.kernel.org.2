@@ -2,90 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6054F3D5991
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268BB3D598B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbhGZLvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:51:11 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:37790 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234110AbhGZLuz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:50:55 -0400
-X-UUID: 119136e097104ddcb3445739bbcef377-20210726
-X-UUID: 119136e097104ddcb3445739bbcef377-20210726
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <christine.zhu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 412292837; Mon, 26 Jul 2021 20:31:18 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Jul 2021 20:31:17 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Jul 2021 20:31:16 +0800
-From:   Christine Zhu <Christine.Zhu@mediatek.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
-        Christine Zhu <Christine.Zhu@mediatek.com>
-Subject: [v7,3/3] watchdog: mediatek: mt8195: add wdt support
-Date:   Mon, 26 Jul 2021 20:29:02 +0800
-Message-ID: <20210726122901.12195-4-Christine.Zhu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210726122901.12195-1-Christine.Zhu@mediatek.com>
-References: <20210726122901.12195-1-Christine.Zhu@mediatek.com>
+        id S234047AbhGZLur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:50:47 -0400
+Received: from 8bytes.org ([81.169.241.247]:47170 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233742AbhGZLup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:50:45 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 66EEB2B0; Mon, 26 Jul 2021 14:31:13 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 14:31:12 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Nadav Amit <nadav.amit@gmail.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc:     John Garry <john.garry@huawei.com>, Nadav Amit <namit@vmware.com>,
+        Will Deacon <will@kernel.org>,
+        Jiajun Cao <caojiajun@vmware.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/7] iommu/amd: Enable page-selective flushes
+Message-ID: <YP6rEOy5ti0SHuns@8bytes.org>
+References: <20210723093209.714328-1-namit@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723093209.714328-1-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support MT8195 watchdog device.
+[ Adding Suravee, reviewer for AMD IOMMU ]
 
-Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
----
- drivers/watchdog/mtk_wdt.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Fri, Jul 23, 2021 at 02:32:02AM -0700, Nadav Amit wrote:
+> Nadav Amit (6):
+>   iommu/amd: Selective flush on unmap
+>   iommu/amd: Do not use flush-queue when NpCache is on
+>   iommu: Factor iommu_iotlb_gather_is_disjoint() out
+>   iommu/amd: Tailored gather logic for AMD
+>   iommu/amd: Sync once for scatter-gather operations
+>   iommu/amd: Use only natural aligned flushes in a VM
+> 
+> Robin Murphy (1):
+>   iommu: Improve iommu_iotlb_gather helpers
 
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 97ca993bd009..3c3f8adc45ac 100644
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -12,6 +12,7 @@
- #include <dt-bindings/reset-controller/mt2712-resets.h>
- #include <dt-bindings/reset-controller/mt8183-resets.h>
- #include <dt-bindings/reset-controller/mt8192-resets.h>
-+#include <dt-bindings/reset/mt8195-resets.h>
- #include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/init.h>
-@@ -81,6 +82,10 @@ static const struct mtk_wdt_data mt8192_data = {
- 	.toprgu_sw_rst_num = MT8192_TOPRGU_SW_RST_NUM,
- };
- 
-+static const struct mtk_wdt_data mt8195_data = {
-+	.toprgu_sw_rst_num = MT8195_TOPRGU_SW_RST_NUM,
-+};
-+
- static int toprgu_reset_update(struct reset_controller_dev *rcdev,
- 			       unsigned long id, bool assert)
- {
-@@ -341,6 +346,7 @@ static const struct of_device_id mtk_wdt_dt_ids[] = {
- 	{ .compatible = "mediatek,mt6589-wdt" },
- 	{ .compatible = "mediatek,mt8183-wdt", .data = &mt8183_data },
- 	{ .compatible = "mediatek,mt8192-wdt", .data = &mt8192_data },
-+	{ .compatible = "mediatek,mt8195-wdt", .data = &mt8195_data },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, mtk_wdt_dt_ids);
--- 
-2.18.0
+Thanks for your work on this, Nadav. If there are no further objections
+I am going to apply the patches later this week.
 
+Regards,
+
+	Joerg
