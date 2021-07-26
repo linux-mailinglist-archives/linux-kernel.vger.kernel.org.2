@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD173D62A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413773D62A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbhGZPgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:36:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35226 "EHLO mail.kernel.org"
+        id S234570AbhGZPg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:36:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237135AbhGZPVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6C5E60E09;
-        Mon, 26 Jul 2021 16:01:39 +0000 (UTC)
+        id S237139AbhGZPVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:21:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA8060F5A;
+        Mon, 26 Jul 2021 16:01:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315300;
-        bh=TvVsHlZq1ZRCpVFuf7yyidr2Jm3eg1B1/yVpqe41r7o=;
+        s=korg; t=1627315302;
+        bh=jnwL9oSy03Knv9wzFjNz98XWr/TQv4RU3bqPVP0kbDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1qLsk2Imp22DAQ8hoMvt06OZ28pfS9ERQUyICk0gpwgFxdr/ERZArHjO0rDyDeASn
-         50vuyTjS1TbT5PjYy3GAfBlBThJbR87ZE4gqRRIQ/zM/H3N2mH2hxv81RmVEnUwKs0
-         f/UBZ1agLvhCGW7Z72/1j2yeroBYteBkvv0T907U=
+        b=F4L535jzI+TymcVxFe/kgf9689Pz2/SReOfOYH9c6QXQIyU7PD7pcIO6tTVXrgd0X
+         s9lEhGNBDFsc6MLwPOAEfkb1f2RvafKOv37pibPa552LTBxGzH8xSzYbN6mWDagXQu
+         whSuc2EObDn+07GEq0Be/f6aivMuGMWS0D0FER80=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 043/167] perf script: Fix memory threads and cpus leaks on exit
-Date:   Mon, 26 Jul 2021 17:37:56 +0200
-Message-Id: <20210726153840.841353924@linuxfoundation.org>
+Subject: [PATCH 5.10 044/167] perf lzma: Close lzma stream on exit
+Date:   Mon, 26 Jul 2021 17:37:57 +0200
+Message-Id: <20210726153840.870236735@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -46,60 +46,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit faf3ac305d61341c74e5cdd9e41daecce7f67bfe ]
+[ Upstream commit f8cbb0f926ae1e1fb5f9e51614e5437560ed4039 ]
 
-ASan reports several memory leaks while running:
+ASan reports memory leaks when running:
 
-  # perf test "82: Use vfs_getname probe to get syscall args filenames"
+  # perf test "88: Check open filename arg using perf trace + vfs_getname"
 
-Two of these are caused by some refcounts not being decreased on
-perf-script exit, namely script.threads and script.cpus.
+One of these is caused by the lzma stream never being closed inside
+lzma_decompress_to_file().
 
-This patch adds the missing __put calls in a new perf_script__exit
-function, which is called at the end of cmd_script.
-
-This patch concludes the fixes of all remaining memory leaks in perf
-test "82: Use vfs_getname probe to get syscall args filenames".
+This patch adds the missing lzma_end().
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: cfc8874a48599249 ("perf script: Process cpu/threads maps")
+Fixes: 80a32e5b498a7547 ("perf tools: Add lzma decompression support for kernel module")
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/5ee73b19791c6fa9d24c4d57f4ac1a23609400d7.1626343282.git.rickyman7@gmail.com
+Link: http://lore.kernel.org/lkml/aaf50bdce7afe996cfc06e1bbb36e4a2a9b9db93.1626343282.git.rickyman7@gmail.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-script.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tools/perf/util/lzma.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 48588ccf902e..2bb159c10503 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2483,6 +2483,12 @@ static void perf_script__exit_per_event_dump_stats(struct perf_script *script)
+diff --git a/tools/perf/util/lzma.c b/tools/perf/util/lzma.c
+index 39062df02629..51424cdc3b68 100644
+--- a/tools/perf/util/lzma.c
++++ b/tools/perf/util/lzma.c
+@@ -69,7 +69,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 
+ 			if (ferror(infile)) {
+ 				pr_err("lzma: read error: %s\n", strerror(errno));
+-				goto err_fclose;
++				goto err_lzma_end;
+ 			}
+ 
+ 			if (feof(infile))
+@@ -83,7 +83,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 
+ 			if (writen(output_fd, buf_out, write_size) != write_size) {
+ 				pr_err("lzma: write error: %s\n", strerror(errno));
+-				goto err_fclose;
++				goto err_lzma_end;
+ 			}
+ 
+ 			strm.next_out  = buf_out;
+@@ -95,11 +95,13 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 				break;
+ 
+ 			pr_err("lzma: failed %s\n", lzma_strerror(ret));
+-			goto err_fclose;
++			goto err_lzma_end;
+ 		}
  	}
- }
  
-+static void perf_script__exit(struct perf_script *script)
-+{
-+	perf_thread_map__put(script->threads);
-+	perf_cpu_map__put(script->cpus);
-+}
-+
- static int __cmd_script(struct perf_script *script)
- {
- 	int ret;
-@@ -3937,6 +3943,7 @@ out_delete:
- 
- 	perf_evlist__free_stats(session->evlist);
- 	perf_session__delete(session);
-+	perf_script__exit(&script);
- 
- 	if (script_started)
- 		cleanup_scripting();
+ 	err = 0;
++err_lzma_end:
++	lzma_end(&strm);
+ err_fclose:
+ 	fclose(infile);
+ 	return err;
 -- 
 2.30.2
 
