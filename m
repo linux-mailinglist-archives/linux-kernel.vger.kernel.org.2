@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15883D60CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D16283D62ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238104AbhGZPYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:24:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
+        id S238258AbhGZPlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:41:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237620AbhGZPQJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96C0660F38;
-        Mon, 26 Jul 2021 15:56:36 +0000 (UTC)
+        id S237571AbhGZPX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9425E60E09;
+        Mon, 26 Jul 2021 16:03:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314997;
-        bh=2tjdCL3aJ6Hw8vCvKplDi9yUOkQlbeIY10x3DZmK5Wo=;
+        s=korg; t=1627315437;
+        bh=TpvVav4zzZvT52gwAdJt1Q1NI72Xr13IM/POb5Eyl6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SdbCK3R/oTAqR2rTPWTssgcjDmhEaw5CwgInYSmNHsoLSSq0D3Wrezt5FD+35/PXA
-         DMREfXOsAbotz7bA0V1euV37WaKpUiwDX0Z+xIjnosoEs2WoI0yV3sk+Z+BwQ5s+Oh
-         SXNaviYWQV/yc/tY4PtUQF/9VO4a9O+X0ylya3m0=
+        b=nMsinvm8/qU93AMAtoqU+QPdZOm+aKWFkhjOV2BtDlarualghMn4ZpNGa7iNmChSj
+         mg1FPyi2drNv5Os3inN7h5jwdjoOpY+7CxEWxvvyByRk2f6QXYbFFrs+0/wPpUohMP
+         x693BL8dGrwby5oW6NQs+dzLs0XzYwG6QbrytlSQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
-        syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com,
+        stable@vger.kernel.org,
+        Sayanta Pattanayak <sayanta.pattanayak@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 047/108] netrom: Decrease sock refcount when sock timers expire
-Date:   Mon, 26 Jul 2021 17:38:48 +0200
-Message-Id: <20210726153833.195026335@linuxfoundation.org>
+Subject: [PATCH 5.10 096/167] r8169: Avoid duplicate sysfs entry creation error
+Date:   Mon, 26 Jul 2021 17:38:49 +0200
+Message-Id: <20210726153842.622499392@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,116 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
 
-[ Upstream commit 517a16b1a88bdb6b530f48d5d153478b2552d9a8 ]
+[ Upstream commit e9a72f874d5b95cef0765bafc56005a50f72c5fe ]
 
-Commit 63346650c1a9 ("netrom: switch to sock timer API") switched to use
-sock timer API. It replaces mod_timer() by sk_reset_timer(), and
-del_timer() by sk_stop_timer().
+When registering the MDIO bus for a r8169 device, we use the PCI
+bus/device specifier as a (seemingly) unique device identifier.
+However the very same BDF number can be used on another PCI segment,
+which makes the driver fail probing:
 
-Function sk_reset_timer() will increase the refcount of sock if it is
-called on an inactive timer, hence, in case the timer expires, we need to
-decrease the refcount ourselves in the handler, otherwise, the sock
-refcount will be unbalanced and the sock will never be freed.
+[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
+[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
+....
+[ 27.684858] libphy: mii_bus r8169-700 failed to register
+[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com
-Fixes: 63346650c1a9 ("netrom: switch to sock timer API")
+Add the segment number to the device name to make it more unique.
+
+This fixes operation on ARM N1SDP boards, with two boards connected
+together to form an SMP system, and all on-board devices showing up
+twice, just on different PCI segments. A similar issue would occur on
+large systems with many PCI slots and multiple RTL8169 NICs.
+
+Fixes: f1e911d5d0dfd ("r8169: add basic phylib support")
+Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+[Andre: expand commit message, use pci_domain_nr()]
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/netrom/nr_timer.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/netrom/nr_timer.c b/net/netrom/nr_timer.c
-index 9115f8a7dd45..a8da88db7893 100644
---- a/net/netrom/nr_timer.c
-+++ b/net/netrom/nr_timer.c
-@@ -121,11 +121,9 @@ static void nr_heartbeat_expiry(struct timer_list *t)
- 		   is accepted() it isn't 'dead' so doesn't get removed. */
- 		if (sock_flag(sk, SOCK_DESTROY) ||
- 		    (sk->sk_state == TCP_LISTEN && sock_flag(sk, SOCK_DEAD))) {
--			sock_hold(sk);
- 			bh_unlock_sock(sk);
- 			nr_destroy_socket(sk);
--			sock_put(sk);
--			return;
-+			goto out;
- 		}
- 		break;
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 9010aabd9782..e690a1b09e98 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -5160,7 +5160,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
+ 	new_bus->priv = tp;
+ 	new_bus->parent = &pdev->dev;
+ 	new_bus->irq[0] = PHY_IGNORE_INTERRUPT;
+-	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
++	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
++		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
  
-@@ -146,6 +144,8 @@ static void nr_heartbeat_expiry(struct timer_list *t)
- 
- 	nr_start_heartbeat(sk);
- 	bh_unlock_sock(sk);
-+out:
-+	sock_put(sk);
- }
- 
- static void nr_t2timer_expiry(struct timer_list *t)
-@@ -159,6 +159,7 @@ static void nr_t2timer_expiry(struct timer_list *t)
- 		nr_enquiry_response(sk);
- 	}
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
- 
- static void nr_t4timer_expiry(struct timer_list *t)
-@@ -169,6 +170,7 @@ static void nr_t4timer_expiry(struct timer_list *t)
- 	bh_lock_sock(sk);
- 	nr_sk(sk)->condition &= ~NR_COND_PEER_RX_BUSY;
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
- 
- static void nr_idletimer_expiry(struct timer_list *t)
-@@ -197,6 +199,7 @@ static void nr_idletimer_expiry(struct timer_list *t)
- 		sock_set_flag(sk, SOCK_DEAD);
- 	}
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
- 
- static void nr_t1timer_expiry(struct timer_list *t)
-@@ -209,8 +212,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	case NR_STATE_1:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_write_internal(sk, NR_CONNREQ);
-@@ -220,8 +222,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	case NR_STATE_2:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_write_internal(sk, NR_DISCREQ);
-@@ -231,8 +232,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	case NR_STATE_3:
- 		if (nr->n2count == nr->n2) {
- 			nr_disconnect(sk, ETIMEDOUT);
--			bh_unlock_sock(sk);
--			return;
-+			goto out;
- 		} else {
- 			nr->n2count++;
- 			nr_requeue_frames(sk);
-@@ -241,5 +241,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
- 	}
- 
- 	nr_start_t1timer(sk);
-+out:
- 	bh_unlock_sock(sk);
-+	sock_put(sk);
- }
+ 	new_bus->read = r8169_mdio_read_reg;
+ 	new_bus->write = r8169_mdio_write_reg;
 -- 
 2.30.2
 
