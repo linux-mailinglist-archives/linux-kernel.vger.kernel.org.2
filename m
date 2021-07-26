@@ -2,127 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785D23D57D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84A63D57DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbhGZKOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:14:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:50110 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231792AbhGZKOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:14:33 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B49911B3;
-        Mon, 26 Jul 2021 03:55:02 -0700 (PDT)
-Received: from bogus (unknown [10.57.64.156])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 161663F70D;
-        Mon, 26 Jul 2021 03:54:59 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 11:54:00 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        sughosh.ganu@linaro.org
-Subject: Re: [PATCH v3 0/5] Add FF-A support in OP-TEE driver
-Message-ID: <20210726105400.2li4fj223u3vajly@bogus>
-References: <20210722121757.1944658-1-jens.wiklander@linaro.org>
- <CAFA6WYMgWizZoJmk7U0g8zP7Jf_SHLXi3ydMCg2iH5HEQmF=zw@mail.gmail.com>
+        id S232813AbhGZKQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 06:16:18 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:57330
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231792AbhGZKQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 06:16:15 -0400
+Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 858E73F342;
+        Mon, 26 Jul 2021 10:56:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1627297003;
+        bh=E8Bl7iWZmRi4QYo4RVKeJYrZa1hIqawSMitAIqqPS4k=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=FI5rCvpfr6YTlZdQedosfpBaL27ZxWPeTr8BwlAJAXi0KxqXAqp+c6Frkstg6ZiMb
+         8hb+bAccpPc+s5gTJDunt9esZuGXnPNpKjWcNfAxEf5NHXv8nu/ECaOnTcS4wHACkL
+         NrIowWZLkIWjpxY/MmuKm5OtVnlLl0sHoL6O363fgKhMMSY2S/qlNYv3VCoKN1FpoX
+         kbUN9j3n0tPuxlrdVAW7PzUSVbUBButMsLSLyYgchu8ZeFk/VliCFEfKqka85u8XXJ
+         fO+rqPXv1cgUhMEb08naQED90J7qQNd8lDWz4MpQJ5rpRkXPlE7556cdAmHoiIAfiN
+         bPggbCtU57IJQ==
+Subject: Re: [PATCH] security: keys: trusted: Fix memory leaks on allocated
+ blob
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210723172121.156687-1-colin.king@canonical.com>
+ <20210726085051.GG1931@kadam>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <4f200a4d-75ee-99c8-dc16-3626df7e6ff3@canonical.com>
+Date:   Mon, 26 Jul 2021 11:56:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYMgWizZoJmk7U0g8zP7Jf_SHLXi3ydMCg2iH5HEQmF=zw@mail.gmail.com>
+In-Reply-To: <20210726085051.GG1931@kadam>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 03:59:36PM +0530, Sumit Garg wrote:
-> Hi Jens,
+On 26/07/2021 09:50, Dan Carpenter wrote:
+> On Fri, Jul 23, 2021 at 06:21:21PM +0100, Colin King wrote:
+>> @@ -441,6 +449,10 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
+>>  		rc = -EPERM;
+>>  
+>>  	return rc;
+>> +
+>> +err:
+>> +	kfree(blob);
 > 
-> On Thu, 22 Jul 2021 at 17:48, Jens Wiklander <jens.wiklander@linaro.org> wrote:
-> >
-> > Hi all,
-> >
-> > This adds supports for the OP-TEE driver to communicate with secure world
-> > using FF-A [1] as transport.
-> >
-> > There is one change to the TEE subsystem with "tee: add sec_world_id to
-> > struct tee_shm" to add support for holding globally unique handle assigned
-> > by the FF-A. This is a field that I believe could useful for the AMDTEE
-> > driver too.
-> >
-> > For communication the OP-TEE message protocol is still used, but with a new
-> > type of memory reference, struct optee_msg_param_fmem, to carry the
-> > information needed by FF-A. The OP-TEE driver is refactored internally with
-> > to sets of callbacks, one for the old SMC based communication and another
-> > set with FF-A as transport. The functions relating to the SMC based ABI
-> > are moved to smc_abi.c while the FF-A based ABI is added in a ffa_abi.c.
-> >
-> > There is also a difference in how the drivers are instantiated. With the
-> > SMC based transport we have a platform driver, module_platform_driver(),
-> > today which we're keeping as is for this configuration. In a FF-A system we
-> > have a FF-A driver, module_ffa_driver(), instead.
-> >
-> > The OP-TEE driver can be compiled for both targets at the same time and
-> > it's up to runtime configuration (device tree or ACPI) to decide how it's
-> > initialized. Note that it's only the old SMC based driver instance that
-> > need device tree or ACPI to initialize. The FF-A based driver relies on the
-> > FF-A bus instead.
-> >
-> > This can be tested QEMU
-> > The repo for SPMC at S-EL1 retrieved by
-> > repo init -u https://github.com/jenswi-linaro/manifest.git -m
-> > qemu_v8.xml -b ffav4_spmc
-> > repo sync
-> > # Then checkout the branch optee_ffa_v3 from
-> > # git://git.linaro.org/people/jens.wiklander/linux-tee.git
-> > # in the linux directory
-> >
-> > To build do:
-> > cd build
-> > make toolchains
-> > make all
-> >
-> > To boot:
-> > make run-only
-> >
-> > Test with xtest, perhaps only with the command "xtest 1004" in case you're
-> > not interested in too many tests.
+> This needs to be:
 > 
-> Thanks Jens for sharing instructions to test this feature. So I tried
-> to reproduce using following repo versions:
->
-> linux-tee, branch: optee_ffa_v3
-> trusted-firmware-a, branch: ffav4_sel1_spmc
-> build, branch: ffav4_spmc
->
-> and rest of the repos synced to the latest version as per upstream
-> qemu_v8.xml [1] but I don't see OP-TEE driver being probed during boot
-> [2]. Am I missing something?
->
-> [1] https://github.com/OP-TEE/manifest/blob/master/qemu_v8.xml
-> [2]
-> Welcome to Buildroot, type root or test to login
-> buildroot login: root
-> # dmesg | grep optee
->
+> 	if (blob != payload->blob)
+> 		kfree(blob);
 
-Do you see ARM FF-A driver initialised successfully ?
-You must see "ARM FF-A Version 1.0 found" or something similar based on
-the actual version supported.
+Good spot! Thanks Dan.
 
-If so, can you check if the partitions are correctly populated by
-the driver using the discover API.
+> 
+> Otherwise it leads to a use after free.
+> 
+>> +	return rc;
+>>  }
+> 
+> How this is allocated is pretty scary looking!
 
-$ grep "" /sys/bus/arm_ffa/devices/*/uuid
+it is kinda mind bending.
 
-If uuid reads zeros, then the devices are populated, just the matching
-driver is not found(due to the workaround for v1.0 spec)
+Colin
 
---
-Regards,
-Sudeep
+> 
+> security/keys/trusted-keys/trusted_tpm2.c
+>     96  static int tpm2_key_decode(struct trusted_key_payload *payload,
+>     97                             struct trusted_key_options *options,
+>     98                             u8 **buf)
+>     99  {
+>    100          int ret;
+>    101          struct tpm2_key_context ctx;
+>    102          u8 *blob;
+>    103  
+>    104          memset(&ctx, 0, sizeof(ctx));
+>    105  
+>    106          ret = asn1_ber_decoder(&tpm2key_decoder, &ctx, payload->blob,
+>    107                                 payload->blob_len);
+>    108          if (ret < 0)
+>    109                  return ret;
+> 
+> Old form?
+> 
+>    110  
+>    111          if (ctx.priv_len + ctx.pub_len > MAX_BLOB_SIZE)
+>    112                  return -EINVAL;
+> 
+> It's really scary to me that if the lengths are too large for kmalloc()
+> then we just use "payload->blob".
+> 
+>    113  
+>    114          blob = kmalloc(ctx.priv_len + ctx.pub_len + 4, GFP_KERNEL);
+> 
+> blob is allocated here.
+> 
+>    115          if (!blob)
+>    116                  return -ENOMEM;
+>    117  
+>    118          *buf = blob;
+>    119          options->keyhandle = ctx.parent;
+>    120  
+>    121          memcpy(blob, ctx.priv, ctx.priv_len);
+>    122          blob += ctx.priv_len;
+>    123  
+>    124          memcpy(blob, ctx.pub, ctx.pub_len);
+>    125  
+>    126          return 0;
+>    127  }
+> 
+> [ snip ]
+> 
+>    371          u32 attrs;
+>    372  
+>    373          rc = tpm2_key_decode(payload, options, &blob);
+>    374          if (rc) {
+>    375                  /* old form */
+>    376                  blob = payload->blob;
+>                         ^^^^^^^^^^^^^^^^^^^^
+> 
+>    377                  payload->old_format = 1;
+>    378          }
+>    379  
+> 
+> regards,
+> dan carpenter
+> 
+
