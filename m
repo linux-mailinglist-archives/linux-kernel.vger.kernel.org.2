@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2483D59FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3C03D59FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhGZMUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:20:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51670 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234072AbhGZMUD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:20:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E24260EB2;
-        Mon, 26 Jul 2021 13:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627304431;
-        bh=Gx/Vu6b5lzcfCCty2qy4h00ua5IDYhArV6JrOmQxNS8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o9aDp1ctvx10cMjlC0OosTWfFezUbdRDRuQu1+MFYpb8tIhL5aOmRbXZBg1ZeHtO3
-         riGsjq9UYMhSgJdfLhE0CFvjViQRi2xUL9a42dzMsO6zenIWRF2FDoTmRCZbKhcVZd
-         qnUoC54u7kjQi2h8T2RlDDwYjiy1q4xjHpU81Nng=
-Date:   Mon, 26 Jul 2021 15:00:28 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?dGNzX2tlcm5lbCjohb7orq/kupHlhoXmoLjlvIDlj5HogIUp?= 
-        <tcs_kernel@tencent.com>
-Cc:     "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
-        "yepeilin.cs@gmail.com" <yepeilin.cs@gmail.com>,
-        "penguin-kernel@I-love.SAKURA.ne.jp" 
-        <penguin-kernel@i-love.sakura.ne.jp>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "george.kennedy@oracle.com" <george.kennedy@oracle.com>,
-        "ducheng2@gmail.com" <ducheng2@gmail.com>,
-        "sam@ravnborg.org" <sam@ravnborg.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fbcon: Out-Of-Bounds write in sys_imageblit, add range
- check
-Message-ID: <YP6x7C1OJg2mVHAd@kroah.com>
-References: <D5DF8A1C-5FA2-426B-AAB4-3199AEA0A02E@tencent.com>
+        id S232572AbhGZMVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:21:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231874AbhGZMVw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:21:52 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A98C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:02:21 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id B79822B0; Mon, 26 Jul 2021 15:02:18 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 15:02:14 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        john.garry@huawei.com, dianders@chromium.org
+Subject: Re: [PATCH 00/23] iommu: Refactor DMA domain strictness
+Message-ID: <YP6yVtDcCRpp7UWa@8bytes.org>
+References: <cover.1626888444.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D5DF8A1C-5FA2-426B-AAB4-3199AEA0A02E@tencent.com>
+In-Reply-To: <cover.1626888444.git.robin.murphy@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 11:32:37AM +0000, tcs_kernel(腾讯云内核开发者) wrote:
-> yres and vyres can be controlled by user mode paramaters, and cause p->vrows to become a negative value. While this value be passed to real_y function, the ypos will be out of screen range.
-> This is an out-of-bounds write bug.
-> 
-> 
-> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-> index 22bb3892f6bd..0970de46782f 100644
-> --- a/drivers/video/fbdev/core/fbcon.c
-> +++ b/drivers/video/fbdev/core/fbcon.c
-> @@ -1956,11 +1956,12 @@ static void updatescrollmode(struct fbcon_display *p,
->         int yres = FBCON_SWAP(ops->rotate, info->var.yres, info->var.xres);
->         int vyres = FBCON_SWAP(ops->rotate, info->var.yres_virtual,
->                                    info->var.xres_virtual);
-> +       int rows = vc->vc_rows;
->  
->         p->vrows = vyres/fh;
-> -       if (yres > (fh * (vc->vc_rows + 1)))
-> -               p->vrows -= (yres - (fh * vc->vc_rows)) / fh;
-> -       if ((yres % fh) && (vyres % fh < yres % fh))
-> +       if ((yres > (fh * (rows + 1))) && (vyres >= (yres - (fh * rows))) && p->vrows)
-> +               p->vrows -= (yres - (fh * rows)) / fh;
-> +       if ((yres % fh) && (vyres % fh < yres % fh) && p->vrows)
->                 p->vrows--;
->  }
-> 
+Hi Robin,
 
-Hi,
+On Wed, Jul 21, 2021 at 07:20:11PM +0100, Robin Murphy wrote:
+> Robin Murphy (23):
+>   iommu: Pull IOVA cookie management into the core
+>   iommu/amd: Drop IOVA cookie management
+>   iommu/arm-smmu: Drop IOVA cookie management
+>   iommu/vt-d: Drop IOVA cookie management
+>   iommu/exynos: Drop IOVA cookie management
+>   iommu/ipmmu-vmsa: Drop IOVA cookie management
+>   iommu/mtk: Drop IOVA cookie management
+>   iommu/rockchip: Drop IOVA cookie management
+>   iommu/sprd: Drop IOVA cookie management
+>   iommu/sun50i: Drop IOVA cookie management
+>   iommu/virtio: Drop IOVA cookie management
+>   iommu/dma: Unexport IOVA cookie management
+>   iommu/dma: Remove redundant "!dev" checks
+>   iommu: Introduce explicit type for non-strict DMA domains
+>   iommu/amd: Prepare for multiple DMA domain types
+>   iommu/arm-smmu: Prepare for multiple DMA domain types
+>   iommu/vt-d: Prepare for multiple DMA domain types
+>   iommu: Express DMA strictness via the domain type
+>   iommu: Expose DMA domain strictness via sysfs
+>   iommu: Allow choosing DMA strictness at build time
+>   iommu/dma: Factor out flush queue init
+>   iommu: Allow enabling non-strict mode dynamically
+>   iommu/arm-smmu: Allow non-strict in pgtable_quirks interface
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+I really like this patch-set. It is a nice cleanup and the
+implementation is straightforward. Given no other major objections and
+reviews I think this is material for 5.15.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Thanks,
 
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
-
-- Your patch does not have a Signed-off-by: line.  Please read the
-  kernel file, Documentation/SubmittingPatches and resend it after
-  adding that line.  Note, the line needs to be in the body of the
-  email, before the patch, not at the bottom of the patch or in the
-  email signature.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+	Joerg
