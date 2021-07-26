@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB69C3D62E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C39943D6097
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237929AbhGZPkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:40:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
+        id S237502AbhGZPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:23:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237457AbhGZPXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97BAF60E09;
-        Mon, 26 Jul 2021 16:03:29 +0000 (UTC)
+        id S237461AbhGZPPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43E0F60FA0;
+        Mon, 26 Jul 2021 15:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315410;
-        bh=Tn4kNRivwd3RJsQBSRjCaHiGwFs1/kvZSyA+RyKawfc=;
+        s=korg; t=1627314972;
+        bh=ykBmaihdzcKrVAtunhV0Q2SmtFMw9ytREoNZZNF6fMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NPzKQ7b4cCOSLlA6bsutlzij4x7NEN8audBz0JexemC71FdbvmPXBZffHYHhjy8+7
-         ULbUEFkyYOy5kZEe1srA4Jq+QNU/b04hHIVzj9FsvtbLDrsPRNMz0Qrngp61OnbHZx
-         3o9MA8En6MIIlPygMszPA1eFHAGBZ7svCBLFIMOU=
+        b=NeeCdo4EUtZMrduE7xL3JvnQe3Non06TfOKDh8nQ8e8sZ+68Jbzrf8117gXYeVphj
+         jlPOxjcT3F3bQmUFC7Y9VYlZpM4ik4c2AR9Eb79jHenXlyLOzYdU2Z+FEW1jBaiqXc
+         niL/X6LPotmJrGD9W8rbAHGIDyICOdgRka37x5oI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 086/167] ALSA: hda: intel-dsp-cfg: add missing ElkhartLake PCI ID
-Date:   Mon, 26 Jul 2021 17:38:39 +0200
-Message-Id: <20210726153842.294831078@linuxfoundation.org>
+        stable@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 039/108] bpf, sockmap, tcp: sk_prot needs inuse_idx set for proc stats
+Date:   Mon, 26 Jul 2021 17:38:40 +0200
+Message-Id: <20210726153832.944650532@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: John Fastabend <john.fastabend@gmail.com>
 
-[ Upstream commit 114613f62f42e7cbc1242c4e82076a0153043761 ]
+[ Upstream commit 228a4a7ba8e99bb9ef980b62f71e3be33f4aae69 ]
 
-We missed the fact that ElkhartLake platforms have two different PCI
-IDs. We only added one so the SOF driver is never selected by the
-autodetection logic for the missing configuration.
+The proc socket stats use sk_prot->inuse_idx value to record inuse sock
+stats. We currently do not set this correctly from sockmap side. The
+result is reading sock stats '/proc/net/sockstat' gives incorrect values.
+The socket counter is incremented correctly, but because we don't set the
+counter correctly when we replace sk_prot we may omit the decrement.
 
-BugLink: https://github.com/thesofproject/linux/issues/2990
-Fixes: cc8f81c7e625 ('ALSA: hda: fix intel DSP config')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210719231746.557325-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+To get the correct inuse_idx value move the core_initcall that initializes
+the TCP proto handlers to late_initcall. This way it is initialized after
+TCP has the chance to assign the inuse_idx value from the register protocol
+handler.
+
+Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
+Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+Link: https://lore.kernel.org/bpf/20210712195546.423990-3-john.fastabend@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/intel-dsp-config.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/ipv4/tcp_bpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index fe49e9a97f0e..61e1de6d7be0 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -318,6 +318,10 @@ static const struct config_entry config_table[] = {
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
- 		.device = 0x4b55,
- 	},
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-+		.device = 0x4b58,
-+	},
- #endif
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 819255ee4e42..6a0c4326d9cf 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -636,7 +636,7 @@ static int __init tcp_bpf_v4_build_proto(void)
+ 	tcp_bpf_rebuild_protos(tcp_bpf_prots[TCP_BPF_IPV4], &tcp_prot);
+ 	return 0;
+ }
+-core_initcall(tcp_bpf_v4_build_proto);
++late_initcall(tcp_bpf_v4_build_proto);
  
- };
+ static void tcp_bpf_update_sk_prot(struct sock *sk, struct sk_psock *psock)
+ {
 -- 
 2.30.2
 
