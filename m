@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517983D610A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BE03D62FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238186AbhGZP1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:27:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
+        id S238443AbhGZPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:43:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237469AbhGZPPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 277F360F02;
-        Mon, 26 Jul 2021 15:56:17 +0000 (UTC)
+        id S237552AbhGZPXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BFF760F5B;
+        Mon, 26 Jul 2021 16:04:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314977;
-        bh=dOyU/jTonwnSLfo73VTuw12SSwAoLPTF2ThdAbPs2q8=;
+        s=korg; t=1627315462;
+        bh=ZA+CXvK/os7wFu3ZdUkdH6+y724OSWlmvqIhKcTXMFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRWIvG0p43+cXyjECGNr41MgvMu5q8wMWo/IIZBG6ftLXwTfek1pQurk4APz33bmf
-         9VALQR3GBEU30C1lMzs93UtO8AjSUp2ZI7KbUq5B5i71nhjZbGjgPYORags1q2HEAu
-         /xwNY3oheTIqxj70bki0Zdng3QfKVyYVSW223P5A=
+        b=g4yEHjx0KejB7vaPNRaOveIKrIca0q1eF6pge00POXou1SsG5S/1nUYlnBKpN27NI
+         zxxDxYPXRFAL64JYpQWvTOsa2zNLWhJAYr9RPi7z31PfG92Dy+ULAydohMKssRz0bX
+         1UxIW3YSbA8zLk3lJ3y9QGxlWJncYF25OppRgqsc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 023/108] perf test session_topology: Delete session->evlist
+Subject: [PATCH 5.10 071/167] KVM: PPC: Fix kvm_arch_vcpu_ioctl vcpu_load leak
 Date:   Mon, 26 Jul 2021 17:38:24 +0200
-Message-Id: <20210726153832.440848493@linuxfoundation.org>
+Message-Id: <20210726153841.781414902@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 233f2dc1c284337286f9a64c0152236779a42f6c ]
+[ Upstream commit bc4188a2f56e821ea057aca6bf444e138d06c252 ]
 
-ASan reports a memory leak related to session->evlist while running:
+vcpu_put is not called if the user copy fails. This can result in preempt
+notifier corruption and crashes, among other issues.
 
-  # perf test "41: Session topology".
-
-When perf_data is in write mode, session->evlist is owned by the caller,
-which should also take care of deleting it.
-
-This patch adds the missing evlist__delete().
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: c84974ed9fb67293 ("perf test: Add entry to test cpu topology")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: b3cebfe8c1ca ("KVM: PPC: Move vcpu_load/vcpu_put down to each ioctl case in kvm_arch_vcpu_ioctl")
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210716024310.164448-2-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/topology.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/kvm/powerpc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-index 22daf2bdf5fa..f4a2c0df0954 100644
---- a/tools/perf/tests/topology.c
-+++ b/tools/perf/tests/topology.c
-@@ -52,6 +52,7 @@ static int session_write_header(char *path)
- 	TEST_ASSERT_VAL("failed to write header",
- 			!perf_session__write_header(session, session->evlist, data.file.fd, true));
- 
-+	evlist__delete(session->evlist);
- 	perf_session__delete(session);
- 
- 	return 0;
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index 32fa0fa3d4ff..543db9157f3b 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -2041,9 +2041,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	{
+ 		struct kvm_enable_cap cap;
+ 		r = -EFAULT;
+-		vcpu_load(vcpu);
+ 		if (copy_from_user(&cap, argp, sizeof(cap)))
+ 			goto out;
++		vcpu_load(vcpu);
+ 		r = kvm_vcpu_ioctl_enable_cap(vcpu, &cap);
+ 		vcpu_put(vcpu);
+ 		break;
+@@ -2067,9 +2067,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	case KVM_DIRTY_TLB: {
+ 		struct kvm_dirty_tlb dirty;
+ 		r = -EFAULT;
+-		vcpu_load(vcpu);
+ 		if (copy_from_user(&dirty, argp, sizeof(dirty)))
+ 			goto out;
++		vcpu_load(vcpu);
+ 		r = kvm_vcpu_ioctl_dirty_tlb(vcpu, &dirty);
+ 		vcpu_put(vcpu);
+ 		break;
 -- 
 2.30.2
 
