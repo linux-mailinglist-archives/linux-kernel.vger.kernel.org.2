@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573613D6311
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629BF3D6066
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238620AbhGZPoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40020 "EHLO mail.kernel.org"
+        id S237277AbhGZPWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:22:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238130AbhGZPYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47C3960F38;
-        Mon, 26 Jul 2021 16:05:19 +0000 (UTC)
+        id S236906AbhGZPPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A5C6101E;
+        Mon, 26 Jul 2021 15:54:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315519;
-        bh=vvAWL2niHHsaplu5TbnbZMJ6g2rH5FdEuq84pbscXhE=;
+        s=korg; t=1627314880;
+        bh=J0TFvrvPXgzTM3EvxtMcT/I8V9rN3rAA41WRPDYEV0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zam2JaK9i4FfZsWrsdl1LBVFIr67IyFfaC2U3F9gqcszOq3p+4hfyfSh5Jrhf/5nF
-         BKuwuXvXxN9Wj4PXre1Tu93VddR4iOeKNS+f1LH5viz3JgS1DqRDm59CC37A4rvxpA
-         IFWz/re/a9zKJREKH3RG0KrofMIIlgm+mdkHung8=
+        b=F8iR3gXt33IF5Cp1+WOG0akgX/hy7AexA0ZgTFIvb30R1IIKUYyz+YwI5FJb7q71r
+         9T3LdhOB1Zruw2y7ZJeFsDnUNr9D1ZgnjQIR6TCfZH7b7TWsG2HKs6n+Gm3ly+HrAk
+         HGXnpibe3qMibT7Lp3fFtiDutClBYrY5rCZJp4Fk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>
-Subject: [PATCH 5.10 129/167] usb: gadget: Fix Unbalanced pm_runtime_enable in tegra_xudc_probe
+        stable@vger.kernel.org, Charles Baylis <cb-kernel@fishzet.co.uk>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 4.19 110/120] drm: Return -ENOTTY for non-drm ioctls
 Date:   Mon, 26 Jul 2021 17:39:22 +0200
-Message-Id: <20210726153843.728815549@linuxfoundation.org>
+Message-Id: <20210726153835.996019832@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,32 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Charles Baylis <cb-kernel@fishzet.co.uk>
 
-commit 5b01248156bd75303e66985c351dee648c149979 upstream.
+commit 3abab27c322e0f2acf981595aa8040c9164dc9fb upstream.
 
-Add missing pm_runtime_disable() when probe error out. It could
-avoid pm_runtime implementation complains when removing and probing
-again the driver.
+drm: Return -ENOTTY for non-drm ioctls
 
-Fixes: 49db427232fe ("usb: gadget: Add UDC driver for tegra XUSB device mode controller")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20210618141441.107817-1-zhangqilong3@huawei.com
+Return -ENOTTY from drm_ioctl() when userspace passes in a cmd number
+which doesn't relate to the drm subsystem.
+
+Glibc uses the TCGETS ioctl to implement isatty(), and without this
+change isatty() returns it incorrectly returns true for drm devices.
+
+To test run this command:
+$ if [ -t 0 ]; then echo is a tty; fi < /dev/dri/card0
+which shows "is a tty" without this patch.
+
+This may also modify memory which the userspace application is not
+expecting.
+
+Signed-off-by: Charles Baylis <cb-kernel@fishzet.co.uk>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/YPG3IBlzaMhfPqCr@stando.fishzet.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/udc/tegra-xudc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/drm_ioctl.c |    3 +++
+ include/drm/drm_ioctl.h     |    1 +
+ 2 files changed, 4 insertions(+)
 
---- a/drivers/usb/gadget/udc/tegra-xudc.c
-+++ b/drivers/usb/gadget/udc/tegra-xudc.c
-@@ -3861,6 +3861,7 @@ static int tegra_xudc_probe(struct platf
- 	return 0;
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -797,6 +797,9 @@ long drm_ioctl(struct file *filp,
+ 	if (drm_dev_is_unplugged(dev))
+ 		return -ENODEV;
  
- free_eps:
-+	pm_runtime_disable(&pdev->dev);
- 	tegra_xudc_free_eps(xudc);
- free_event_ring:
- 	tegra_xudc_free_event_ring(xudc);
++       if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
++               return -ENOTTY;
++
+ 	is_driver_ioctl = nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END;
+ 
+ 	if (is_driver_ioctl) {
+--- a/include/drm/drm_ioctl.h
++++ b/include/drm/drm_ioctl.h
+@@ -68,6 +68,7 @@ typedef int drm_ioctl_compat_t(struct fi
+ 			       unsigned long arg);
+ 
+ #define DRM_IOCTL_NR(n)                _IOC_NR(n)
++#define DRM_IOCTL_TYPE(n)              _IOC_TYPE(n)
+ #define DRM_MAJOR       226
+ 
+ /**
 
 
