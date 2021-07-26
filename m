@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DA83D6435
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0216B3D6437
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240401AbhGZPzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51986 "EHLO mail.kernel.org"
+        id S240436AbhGZPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237962AbhGZPe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:34:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32F2A604AC;
-        Mon, 26 Jul 2021 16:15:25 +0000 (UTC)
+        id S237993AbhGZPfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:35:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE65260FDA;
+        Mon, 26 Jul 2021 16:15:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316125;
-        bh=lSGfLFfWgF/AD7oUv4vpls8y7X7HBlublpm/Vgi1tBo=;
+        s=korg; t=1627316128;
+        bh=jbATMcblxcmZ+wilrEF6yrnKHQyOb6/yV9opwv+3hSg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JPhwoe42Mmtjdf+vft7vnIjgcP/ll14pIlqzbzTM5uftGDX/XfR/mdUhpyCQg1eqe
-         tIbydRw3CIXe/IIcmdfnFM8OXlDcjfsghzIAIOeQfp9fVREAI0ZGjiY94RR18JHb/y
-         +updK6bFX63zYTx7iiHoWC1rRnJ3SUFysWmBYoEQ=
+        b=U5xsAYeqhll7TrSIYqJTZBIUugeue0ADCNjq9IKeT5A6bRbHaqt9du5Vn0XUcTjeq
+         7ErnzMWRSLE2A2R4ZGGW3bASphydrjE2scdEuNAnR4hqZWguZwPNqHHAwiLSEBighg
+         PpJZ08FsaH0lnZAQRG390WB420GnUSyIOvXLVY7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mikhail Morfikov <mmorfikov@gmail.com>, bowsingbetee@pm.me,
-        bowsingbetee@protonmail.com, David Hildenbrand <david@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        stable@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Greg Kurz <groug@kaod.org>,
+        David Hildenbrand <david@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.13 199/223] mm: page_alloc: fix page_poison=1 / INIT_ON_ALLOC_DEFAULT_ON interaction
-Date:   Mon, 26 Jul 2021 17:39:51 +0200
-Message-Id: <20210726153852.709551804@linuxfoundation.org>
+Subject: [PATCH 5.13 200/223] memblock: make for_each_mem_range() traverse MEMBLOCK_HOTPLUG regions
+Date:   Mon, 26 Jul 2021 17:39:52 +0200
+Message-Id: <20210726153852.741196807@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -46,113 +42,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-commit 69e5d322a2fb86173fde8bad26e8eb38cad1b1e9 upstream.
+commit 79e482e9c3ae86e849c701c846592e72baddda5a upstream.
 
-To reproduce the failure we need the following system:
+Commit b10d6bca8720 ("arch, drivers: replace for_each_membock() with
+for_each_mem_range()") didn't take into account that when there is
+movable_node parameter in the kernel command line, for_each_mem_range()
+would skip ranges marked with MEMBLOCK_HOTPLUG.
 
- - kernel command: page_poison=1 init_on_free=0 init_on_alloc=0
+The page table setup code in POWER uses for_each_mem_range() to create
+the linear mapping of the physical memory and since the regions marked
+as MEMORY_HOTPLUG are skipped, they never make it to the linear map.
 
- - kernel config:
-    * CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
-    * CONFIG_INIT_ON_FREE_DEFAULT_ON=y
-    * CONFIG_PAGE_POISONING=y
+A later access to the memory in those ranges will fail:
 
-Resulting in:
+  BUG: Unable to handle kernel data access on write at 0xc000000400000000
+  Faulting instruction address: 0xc00000000008a3c0
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
+  Modules linked in:
+  CPU: 0 PID: 53 Comm: kworker/u2:0 Not tainted 5.13.0 #7
+  NIP:  c00000000008a3c0 LR: c0000000003c1ed8 CTR: 0000000000000040
+  REGS: c000000008a57770 TRAP: 0300   Not tainted  (5.13.0)
+  MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 84222202  XER: 20040000
+  CFAR: c0000000003c1ed4 DAR: c000000400000000 DSISR: 42000000 IRQMASK: 0
+  GPR00: c0000000003c1ed8 c000000008a57a10 c0000000019da700 c000000400000000
+  GPR04: 0000000000000280 0000000000000180 0000000000000400 0000000000000200
+  GPR08: 0000000000000100 0000000000000080 0000000000000040 0000000000000300
+  GPR12: 0000000000000380 c000000001bc0000 c0000000001660c8 c000000006337e00
+  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+  GPR20: 0000000040000000 0000000020000000 c000000001a81990 c000000008c30000
+  GPR24: c000000008c20000 c000000001a81998 000fffffffff0000 c000000001a819a0
+  GPR28: c000000001a81908 c00c000001000000 c000000008c40000 c000000008a64680
+  NIP clear_user_page+0x50/0x80
+  LR __handle_mm_fault+0xc88/0x1910
+  Call Trace:
+    __handle_mm_fault+0xc44/0x1910 (unreliable)
+    handle_mm_fault+0x130/0x2a0
+    __get_user_pages+0x248/0x610
+    __get_user_pages_remote+0x12c/0x3e0
+    get_arg_page+0x54/0xf0
+    copy_string_kernel+0x11c/0x210
+    kernel_execve+0x16c/0x220
+    call_usermodehelper_exec_async+0x1b0/0x2f0
+    ret_from_kernel_thread+0x5c/0x70
+  Instruction dump:
+  79280fa4 79271764 79261f24 794ae8e2 7ca94214 7d683a14 7c893a14 7d893050
+  7d4903a6 60000000 60000000 60000000 <7c001fec> 7c091fec 7c081fec 7c051fec
+  ---[ end trace 490b8c67e6075e09 ]---
 
-    0000000085629bdd: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    0000000022861832: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00000000c597f5b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    CPU: 11 PID: 15195 Comm: bash Kdump: loaded Tainted: G     U     O      5.13.1-gentoo-x86_64 #1
-    Hardware name: System manufacturer System Product Name/PRIME Z370-A, BIOS 2801 01/13/2021
-    Call Trace:
-     dump_stack+0x64/0x7c
-     __kernel_unpoison_pages.cold+0x48/0x84
-     post_alloc_hook+0x60/0xa0
-     get_page_from_freelist+0xdb8/0x1000
-     __alloc_pages+0x163/0x2b0
-     __get_free_pages+0xc/0x30
-     pgd_alloc+0x2e/0x1a0
-     mm_init+0x185/0x270
-     dup_mm+0x6b/0x4f0
-     copy_process+0x190d/0x1b10
-     kernel_clone+0xba/0x3b0
-     __do_sys_clone+0x8f/0xb0
-     do_syscall_64+0x68/0x80
-     entry_SYSCALL_64_after_hwframe+0x44/0xae
+Making for_each_mem_range() include MEMBLOCK_HOTPLUG regions in the
+traversal fixes this issue.
 
-Before commit 51cba1ebc60d ("init_on_alloc: Optimize static branches")
-init_on_alloc never enabled static branch by default.  It could only be
-enabed explicitly by init_mem_debugging_and_hardening().
-
-But after commit 51cba1ebc60d, a static branch could already be enabled
-by default.  There was no code to ever disable it.  That caused
-page_poison=1 / init_on_free=1 conflict.
-
-This change extends init_mem_debugging_and_hardening() to also disable
-static branch disabling.
-
-Link: https://lkml.kernel.org/r/20210714031935.4094114-1-keescook@chromium.org
-Link: https://lore.kernel.org/r/20210712215816.1512739-1-slyfox@gentoo.org
-Fixes: 51cba1ebc60d ("init_on_alloc: Optimize static branches")
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Reported-by: Mikhail Morfikov <mmorfikov@gmail.com>
-Reported-by: <bowsingbetee@pm.me>
-Tested-by: <bowsingbetee@protonmail.com>
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1976100
+Link: https://lkml.kernel.org/r/20210712071132.20902-1-rppt@kernel.org
+Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Tested-by: Greg Kurz <groug@kaod.org>
 Reviewed-by: David Hildenbrand <david@redhat.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: <stable@vger.kernel.org>
+Cc: <stable@vger.kernel.org>	[5.10+]
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/page_alloc.c |   29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+ include/linux/memblock.h |    4 ++--
+ mm/memblock.c            |    3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -801,21 +801,24 @@ void init_mem_debugging_and_hardening(vo
- 	}
- #endif
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -207,7 +207,7 @@ static inline void __next_physmem_range(
+  */
+ #define for_each_mem_range(i, p_start, p_end) \
+ 	__for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,	\
+-			     MEMBLOCK_NONE, p_start, p_end, NULL)
++			     MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
  
--	if (_init_on_alloc_enabled_early) {
--		if (page_poisoning_requested)
--			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
--				"will take precedence over init_on_alloc\n");
--		else
--			static_branch_enable(&init_on_alloc);
--	}
--	if (_init_on_free_enabled_early) {
--		if (page_poisoning_requested)
--			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
--				"will take precedence over init_on_free\n");
--		else
--			static_branch_enable(&init_on_free);
-+	if ((_init_on_alloc_enabled_early || _init_on_free_enabled_early) &&
-+	    page_poisoning_requested) {
-+		pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
-+			"will take precedence over init_on_alloc and init_on_free\n");
-+		_init_on_alloc_enabled_early = false;
-+		_init_on_free_enabled_early = false;
- 	}
+ /**
+  * for_each_mem_range_rev - reverse iterate through memblock areas from
+@@ -218,7 +218,7 @@ static inline void __next_physmem_range(
+  */
+ #define for_each_mem_range_rev(i, p_start, p_end)			\
+ 	__for_each_mem_range_rev(i, &memblock.memory, NULL, NUMA_NO_NODE, \
+-				 MEMBLOCK_NONE, p_start, p_end, NULL)
++				 MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
  
-+	if (_init_on_alloc_enabled_early)
-+		static_branch_enable(&init_on_alloc);
-+	else
-+		static_branch_disable(&init_on_alloc);
-+
-+	if (_init_on_free_enabled_early)
-+		static_branch_enable(&init_on_free);
-+	else
-+		static_branch_disable(&init_on_free);
-+
- #ifdef CONFIG_DEBUG_PAGEALLOC
- 	if (!debug_pagealloc_enabled())
- 		return;
+ /**
+  * for_each_reserved_mem_range - iterate over all reserved memblock areas
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -940,7 +940,8 @@ static bool should_skip_region(struct me
+ 		return true;
+ 
+ 	/* skip hotpluggable memory regions if needed */
+-	if (movable_node_is_enabled() && memblock_is_hotpluggable(m))
++	if (movable_node_is_enabled() && memblock_is_hotpluggable(m) &&
++	    !(flags & MEMBLOCK_HOTPLUG))
+ 		return true;
+ 
+ 	/* if we want mirror memory skip non-mirror memory regions */
 
 
