@@ -2,209 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB8C3D538C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895AC3D538F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhGZGZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39710 "EHLO
+        id S231962AbhGZGZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbhGZGZF (ORCPT
+        with ESMTP id S231895AbhGZGZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:25:05 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B371C061757;
-        Mon, 26 Jul 2021 00:05:34 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id o5so14982957ejy.2;
-        Mon, 26 Jul 2021 00:05:34 -0700 (PDT)
+        Mon, 26 Jul 2021 02:25:18 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CAEC061757;
+        Mon, 26 Jul 2021 00:05:48 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id k4-20020a17090a5144b02901731c776526so18356328pjm.4;
+        Mon, 26 Jul 2021 00:05:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QzFrnn4/EByGWqfuBWRVUIBP6//KrlgR4YFAj4ObM4o=;
-        b=VkPMZsULx4/+6BKCp2u6FhxPWCEMPD9uhYGBOMxqg+3Z8RFu7AyixOitCZnhKRAIzx
-         WGl4uM0Bh/EhOf381B18dyPdz6t1nyeHV7H5bx+uvG3rdCgGOZ0z0xYEA0/P6thT92AG
-         olkRLeqQbfpCnhhAckDSqwstoxtj/rcVdjHOqZJ3hLzK4zQ8Bj63J5HmLt7+65UFceI3
-         gb42S4AGsS1y6hQKENXR5Zna4g9F03GDVaYBWvFl1AVMtuz06hUhmwLZ3KRwkVrGmmym
-         v+7Ov68FXiglTGzylWUOPP0XwkMupaIXsej26jIV46tU8ERZpTGectfVTif0+R71njvt
-         Uw3A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FfJvyftSw8I9bvycaoSgqvRdK17Vot8rl+gl1vH68gE=;
+        b=jpJwmFQCd566vpEbfTNRHFbGKs60vnCoZ/F8VJ0GMl9ZZ8M96F891vYNww0FkPTVUh
+         yDwTFGtUR6Ejp0feGCmbxwrQVcePLG+AuRE/pYHmVQ7NcHvk589WHrQNmR4UOOiNoYrZ
+         k+ySbVpkK/rrvit/0GfpYlQKcs+D/9r47C9NmdV6cNetxr1P1SE2zcJXcEaGC8mZmxsu
+         5vCNPGSh1NeqXEBpPgtPHvd5a+1AsGiFkd9e2eie4ffk/v1WUe+YyCEgSJnb6/OLWFAZ
+         4TRhtXadX8h53ae5wS9ZLBpTY3gPq0rtiv+xuz3AKkwSl5Kwq6xppd3GZD7HZSq4kMrV
+         YbiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QzFrnn4/EByGWqfuBWRVUIBP6//KrlgR4YFAj4ObM4o=;
-        b=ia60aHM6wFMtqo79j91ti3/0rf6LJsPbK4KjGGyf/lMeAJ1hfbiHHSHpLSy8hIxI/R
-         M9PfpESx0VEUi5Y6VTstBYH6oK3ZayCcl3Ek1SrVZARvgNFMNMTfVnZ45QHcVkiYC5Jz
-         cJKIrAIfroK8PmoEcCy0r36OK13yUSDUf4b1RSq23ISwTzavQdVjTJvjurS4v5pFtTys
-         3tk7qQZjSwbrbH9lSdjGFjdJd/SnahQrI1jSSzmladW5h/vgiLPbryOznbs7WcT+0sZ7
-         lPCz2aPKMCWvJHLiI834vXEPLrjCzOtZ5nAt/ym9XBVcSmq0Tpny1DyHyfE15oswXxLo
-         pBsQ==
-X-Gm-Message-State: AOAM532j2CazXlEb0r6stimNipytIwJXMyDb6CKQ1guBLy6zjAgLfdQN
-        rq0M+42WuKyN5e0Ed6iQ4N6R6xpnBAkgrsN6AH4=
-X-Google-Smtp-Source: ABdhPJxxFbtn8wZEe7zkDx4UOP1R20r53d6SHo5S6ATGj4BY70Ot6+z1YN7H9ysPwtXEfBpsXZxzjr0zZjCD+mF32FI=
-X-Received: by 2002:a17:906:3006:: with SMTP id 6mr16252428ejz.73.1627283132598;
- Mon, 26 Jul 2021 00:05:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FfJvyftSw8I9bvycaoSgqvRdK17Vot8rl+gl1vH68gE=;
+        b=X/fIydds64abhykZ7Xj0GOYuXC2U0GIimubsrDsGnBCaFQFnw8Vro+CB3zhr+QRxkL
+         SyAGPQ3EmujaHaJCma6vdLWc5YavzxFCssvgy0wgBfvU4/G7pIBz2oFxB9LbusVVj0Lp
+         O+CCLBpMAba5L8DPc1G7qCjvPw3EOV4fHzCOKi+Ynk5RLNgSI9kF27Nhl4KmuqwA9BgD
+         VIkw5Z0kVtBN+CXfPmDe3DMupE2BL0r4k8dMATb/9vr9omMYkcNyeZ97Gzk4G5JQTVoZ
+         IIy/pmDl1LHzjdR5IdhrZPrWdQiEKJvelKriagJTYYsorj9CNjclJaSKPUqwDDDeIbj7
+         H3gg==
+X-Gm-Message-State: AOAM533aESdzEeYmZagIthb8U4MxQEzIe7rfh5TJ6veLgP+kuGoz9T87
+        H6JOYxe8kTCIotXQK+dujEMLqLGlsF/mnw==
+X-Google-Smtp-Source: ABdhPJztI0qApV0cz6QRYMk88fwO0nzkihx3dX3V+oo5XvBmlvmTjTLJLjq55QeMfjR/yDCU6SmHsA==
+X-Received: by 2002:a63:fb16:: with SMTP id o22mr9091557pgh.309.1627283147616;
+        Mon, 26 Jul 2021 00:05:47 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([154.223.168.30])
+        by smtp.gmail.com with ESMTPSA id c24sm41829730pfn.86.2021.07.26.00.05.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 00:05:47 -0700 (PDT)
+Subject: Re: [PATCH V3 5/5] ext4: make fallocate retry when err is ENOSPC
+To:     Guoqing Jiang <guoqing.jiang@linux.dev>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca
+References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
+ <20210724074124.25731-6-jianchao.wan9@gmail.com>
+ <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Message-ID: <2888807f-2822-a73d-4c01-f073f8fffae2@gmail.com>
+Date:   Mon, 26 Jul 2021 15:05:41 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210726062801.2078117-1-mudongliangabcd@gmail.com> <YP5aqtmAXS4xNtv/@Red>
-In-Reply-To: <YP5aqtmAXS4xNtv/@Red>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 26 Jul 2021 15:05:06 +0800
-Message-ID: <CAD-N9QUaNX=qYM9qKDcqOC85sF1UaxHN=TMmg0XmmBPcOEa+fA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: sun8i-ce: fix memory leak and return value of sun8i_ce_hash_run
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 2:48 PM Corentin Labbe
-<clabbe.montjoie@gmail.com> wrote:
->
-> Le Mon, Jul 26, 2021 at 02:27:50PM +0800, Dongliang Mu a =C3=A9crit :
-> > This patch fixes some memory leak caused by dma_mmap_sg/single
-> > in the error handling code. In addition, it fixes the return value
-> > when errors related with dma_mmap_sg/single occur.
-> >
-> > Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > Fixes: 732b764099f65 ("crypto: sun8i-ce - fix two error path's memory l=
-eak")
-> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > ---
-> >  .../crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 37 ++++++++++---------
-> >  1 file changed, 20 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/driver=
-s/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-> > index 3c073eb3db03..7c4ed19f5466 100644
-> > --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-> > +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-> > @@ -324,11 +324,11 @@ int sun8i_ss_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> >       struct sun8i_ss_alg_template *algt;
-> >       struct sun8i_ss_dev *ss;
-> >       struct scatterlist *sg;
-> > -     int nr_sgs, err, digestsize;
-> > +     int j, i, todo, nr_sgs, tmp_err, digestsize;
-> > +     int err =3D 0;
-> >       unsigned int len;
-> >       u64 fill, min_fill, byte_count;
-> >       void *pad, *result;
-> > -     int j, i, todo;
-> >       __be64 *bebits;
-> >       __le64 *lebits;
-> >       dma_addr_t addr_res, addr_pad;
-> > @@ -368,14 +368,14 @@ int sun8i_ss_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> >       if (nr_sgs <=3D 0 || nr_sgs > MAX_SG) {
-> >               dev_err(ss->dev, "Invalid sg number %d\n", nr_sgs);
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_result;
-> >       }
-> >
-> >       addr_res =3D dma_map_single(ss->dev, result, digestsize, DMA_FROM=
-_DEVICE);
-> >       if (dma_mapping_error(ss->dev, addr_res)) {
-> >               dev_err(ss->dev, "DMA map dest\n");
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_unmap_sg;
-> >       }
-> >
-> >       len =3D areq->nbytes;
-> > @@ -390,7 +390,7 @@ int sun8i_ss_hash_run(struct crypto_engine *engine,=
- void *breq)
-> >       if (len > 0) {
-> >               dev_err(ss->dev, "remaining len %d\n", len);
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_addr_res;
-> >       }
-> >
-> >       byte_count =3D areq->nbytes;
-> > @@ -421,27 +421,30 @@ int sun8i_ss_hash_run(struct crypto_engine *engin=
-e, void *breq)
-> >       }
-> >
-> >       addr_pad =3D dma_map_single(ss->dev, pad, j * 4, DMA_TO_DEVICE);
-> > -     rctx->t_src[i].addr =3D addr_pad;
-> > -     rctx->t_src[i].len =3D j;
-> > -     rctx->t_dst[i].addr =3D addr_res;
-> > -     rctx->t_dst[i].len =3D digestsize / 4;
-> >       if (dma_mapping_error(ss->dev, addr_pad)) {
-> >               dev_err(ss->dev, "DMA error on padding SG\n");
-> >               err =3D -EINVAL;
-> > -             goto theend;
-> > +             goto err_addr_res;
-> >       }
-> > +     rctx->t_src[i].addr =3D addr_pad;
-> > +     rctx->t_src[i].len =3D j;
-> > +     rctx->t_dst[i].addr =3D addr_res;
-> > +     rctx->t_dst[i].len =3D digestsize / 4;
-> >
-> > -     err =3D sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq=
-->base.tfm));
-> > +     tmp_err =3D sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(=
-areq->base.tfm));
-> > +
-> > +     memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
-> > +
-> > +     crypto_finalize_hash_request(engine, breq, tmp_err);
-> >
-> >       dma_unmap_single(ss->dev, addr_pad, j * 4, DMA_TO_DEVICE);
-> > +err_addr_res:
-> > +     dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
-> > +err_unmap_sg:
-> >       dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
-> >                    DMA_TO_DEVICE);
-> > -     dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
-> > -
-> > -     memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
-> > -theend:
-> > +err_result:
-> >       kfree(pad);
-> >       kfree(result);
-> > -     crypto_finalize_hash_request(engine, breq, err);
-> > -     return 0;
-> > +     return err;
-> >  }
->
-> Hello
->
-> This is wrong, you need to always call crypto_finalize_hash_request()
->
-> Do you have tested your changes ? Copying results before dma_unmap() is a=
-lso very wrong, this will lead to random cache fail.
 
-I am sorry I don't test my changes due to no PoC or input at hand. If
-you know any PoC for me to test, please let me know. Thanks in
-advance.
 
-I am not familiar with this code. All my intention is to fix the leak
-caused by the incorrect error handling code.
+On 2021/7/26 11:40 AM, Guoqing Jiang wrote:
+> Hi,
+> 
+> On 7/24/21 3:41 PM, Wang Jianchao wrote:
+>> From: Wang Jianchao <wangjianchao@kuaishou.com>
+>>
+>> The blocks may be waiting for journal commit to be freed back to
+>> mb buddy. Let fallocate wait and retry in that case.
+>>
+>> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
+>> ---
+>>   fs/ext4/extents.c | 6 +++++-
+>>   1 file changed, 5 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+>> index 92ad64b89d9b..ad0b874d3448 100644
+>> --- a/fs/ext4/extents.c
+>> +++ b/fs/ext4/extents.c
+>> @@ -4635,7 +4635,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>>       struct inode *inode = file_inode(file);
+>>       loff_t new_size = 0;
+>>       unsigned int max_blocks;
+>> -    int ret = 0;
+>> +    int ret = 0, retries = 0;
+>>       int flags;
+>>       ext4_lblk_t lblk;
+>>       unsigned int blkbits = inode->i_blkbits;
+>> @@ -4656,6 +4656,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>>                FALLOC_FL_INSERT_RANGE))
+>>           return -EOPNOTSUPP;
+>>   +retry:
+>>       ext4_fc_start_update(inode);
+>>         if (mode & FALLOC_FL_PUNCH_HOLE) {
+>> @@ -4722,6 +4723,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>>       trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
+>>   exit:
+>>       ext4_fc_stop_update(inode);
+>> +    if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
+>> +        goto retry;
+>> +
+> 
+> Not sure if it is necessary since ext4_alloc_file_blocks already retries allocate.
 
-Your reply indicated two pieces of information:
+Yes, this patch should be get rid of.
+But it is indeed helpful to fix the xfstest generic/371 which does concurrently write/rm
+and fallocate/rm. I'll figure out some other way to improve that
 
-1. crypto_finalize_hash_request must be executed and placed at the end
-2. memcpy must be executed after dma_unmap_*() functions.
+Thanks
+Jianchao
 
-Any other information I missed? I can address those issues and send a v2 pa=
-tch.
-
->
-> Regards
+> 
+> Thanks,
+> Guoqing
