@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40AA3D6363
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350663D6003
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238790AbhGZPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:47:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41598 "EHLO mail.kernel.org"
+        id S236996AbhGZPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237896AbhGZP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5447160F92;
-        Mon, 26 Jul 2021 16:09:41 +0000 (UTC)
+        id S236663AbhGZPJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A244F60525;
+        Mon, 26 Jul 2021 15:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315781;
-        bh=1/SqaE4eDei7KFRnBV7204TY+WYY4kxgSfQTiG6S3hc=;
+        s=korg; t=1627314611;
+        bh=+Dto8ujEXQ6EagFF5rOlmXBqKr/yfvzw3zDcf3QYBY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JqpQnCH9onB01FQdZoR/qmmiXfRVOkdWlKOF4uljrmfla/WsKR6+TsmKP9fIHRTBp
-         5H5+PFHUqV/zd41hTWoh0QR8spi4GHa7WYMpliSvR9boyT2NplLHbnGWanmu/q5B1P
-         gOkidwllHmhp2QElZKpptsvZ8gWgvdgfy9jz+3Ds=
+        b=ZQ7lFt9gijGtk+UYM3wi0QLTGE4wqSnavR8kjKlAfYkWugnr0p5PmZUvWga7dmJIb
+         uNjps20Jtb7/+hNRflb1FEdbDMm0+rBb8ZclQBLGEedyGl/FxRdZ2GLT87YE/DZjVf
+         SvZwQCdd9Ieb/6gUl2u1OCo6Xdx61pmb8oQ57iHE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 063/223] perf probe-file: Delete namelist in del_events() on the error path
+Subject: [PATCH 4.19 003/120] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
 Date:   Mon, 26 Jul 2021 17:37:35 +0200
-Message-Id: <20210726153848.325155553@linuxfoundation.org>
+Message-Id: <20210726153832.454632907@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-References: <20210726153846.245305071@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Johan Jonker <jbx6244@gmail.com>
 
-[ Upstream commit e0fa7ab42232e742dcb3de9f3c1f6127b5adc019 ]
+[ Upstream commit dfbfb86a43f9a5bbd166d88bca9e07ee4e1bff31 ]
 
-ASan reports some memory leaks when running:
+A test with the command below aimed at powerpc generates
+notifications in the Rockchip ARM tree.
 
-  # perf test "42: BPF filter"
+Fix pinctrl "sleep" nodename by renaming it to "suspend"
+for rk3036-kylin and rk3288
 
-This second leak is caused by a strlist not being dellocated on error
-inside probe_file__del_events.
+make ARCH=arm dtbs_check
+DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
 
-This patch adds a goto label before the deallocation and makes the error
-path jump to it.
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: e7895e422e4da63d ("perf probe: Split del_perf_probe_events()")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/174963c587ae77fa108af794669998e4ae558338.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210126110221.10815-1-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/probe-file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/rk3036-kylin.dts | 2 +-
+ arch/arm/boot/dts/rk3288.dtsi      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-index 52273542e6ef..3f6de459ac2b 100644
---- a/tools/perf/util/probe-file.c
-+++ b/tools/perf/util/probe-file.c
-@@ -342,11 +342,11 @@ int probe_file__del_events(int fd, struct strfilter *filter)
+diff --git a/arch/arm/boot/dts/rk3036-kylin.dts b/arch/arm/boot/dts/rk3036-kylin.dts
+index 0fd19f9723df..cd109aebb783 100644
+--- a/arch/arm/boot/dts/rk3036-kylin.dts
++++ b/arch/arm/boot/dts/rk3036-kylin.dts
+@@ -391,7 +391,7 @@
+ 		};
+ 	};
  
- 	ret = probe_file__get_events(fd, filter, namelist);
- 	if (ret < 0)
--		return ret;
-+		goto out;
+-	sleep {
++	suspend {
+ 		global_pwroff: global-pwroff {
+ 			rockchip,pins = <2 7 RK_FUNC_1 &pcfg_pull_none>;
+ 		};
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 440d6783faca..545f991924fe 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -1541,7 +1541,7 @@
+ 			drive-strength = <12>;
+ 		};
  
- 	ret = probe_file__del_strlist(fd, namelist);
-+out:
- 	strlist__delete(namelist);
--
- 	return ret;
- }
- 
+-		sleep {
++		suspend {
+ 			global_pwroff: global-pwroff {
+ 				rockchip,pins = <0 0 RK_FUNC_1 &pcfg_pull_none>;
+ 			};
 -- 
 2.30.2
 
