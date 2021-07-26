@@ -2,146 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3097E3D56E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6FBF3D56E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhGZJPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhGZJPf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232792AbhGZJPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Jul 2021 05:15:35 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2357C061757;
-        Mon, 26 Jul 2021 02:56:03 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id gv20-20020a17090b11d4b0290173b9578f1cso12705668pjb.0;
-        Mon, 26 Jul 2021 02:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8hq1iwo5Hm1g8aqgoAxXS/EpDF9ENodl1JxcIEWdESM=;
-        b=Px3S4BKiazxPjW1E/yyznc3VnwcyyEkBrD1s0NbkzNsa/LlsIyxNSi/IfJUFzOwT+5
-         yCNPZdmz0z642AmSQ/YTdyMEGViAedy1Vg6KcM3OeIn7xZT9D4pN6hrA9//BgA4XY3Ma
-         LgXK1gXy3Q5pk7BO1oknmAC2kpXmLG27plvFchrn+dljf5CfyalatDyDGkEh8gzDtV7M
-         4oxMznO1xd78rIX+qdcHvm7S5IyQWASK5Sdfc+pbhXn+9RdERMIZBOgHSltbXIQ1TPle
-         XQDPiJbJUZfeeH0+CHDhs42LnYiC3jjUtvhNxQv96Ucoqcd+dThTCn/Z9VsmHoRy7s15
-         b3uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8hq1iwo5Hm1g8aqgoAxXS/EpDF9ENodl1JxcIEWdESM=;
-        b=VPSoKwAknb7b5czz7Iz8TUt1ZhVJd90Rn9sKY4dPKChB4lBRPClIujO7MqvXsvsIR/
-         lH+QRYypbsAAkkbj5El3JCBjAJov4k1L+zP9cAbXVYXp9GK79GvH5KddJcYPZyHdnFHo
-         bNHIFL0u7E0xVgM7nnyo2hkKjbPHkeGvlJddIriUVMz377DkLmHbWk8vMa0kzCSh7Vdj
-         cTtZ+lVdDw276GfjJxEuFjGrTEPsjLMyMfNK+eafkpyPZ1eIiOY85KVhVm3YH0UicDQz
-         j9MgPAASQJ5BKPnAipYXIqczwpOSEX/x2mOSh9RnJNIeDpRnaydeG6pqA7GHzNNFh3U+
-         BMew==
-X-Gm-Message-State: AOAM533n6fTw13Jm2zgXb/X6riZoDuy0lQ0n3gyrTaVCWbc5qNzDg7ub
-        dqWPTeAKfbGP2jiv4QfcCsc=
-X-Google-Smtp-Source: ABdhPJzCKM9r4O0HketpP2tZvU8A7c4NgYZXDFv335Gdxhn9JWdsPxJ6xFTlZodmsTONsRKS13lm5A==
-X-Received: by 2002:a17:90b:212:: with SMTP id fy18mr5411891pjb.52.1627293363106;
-        Mon, 26 Jul 2021 02:56:03 -0700 (PDT)
-Received: from localhost.localdomain ([154.16.166.171])
-        by smtp.gmail.com with ESMTPSA id r7sm10268304pga.44.2021.07.26.02.55.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 02:56:02 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Dongliang Mu <mudongliangabcd@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] crypto: sun8i-ce: fix memory leak and return value of sun8i_ce_hash_run
-Date:   Mon, 26 Jul 2021 17:55:13 +0800
-Message-Id: <20210726095536.2251860-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10988 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232156AbhGZJPe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 05:15:34 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16Q9prAE015362;
+        Mon, 26 Jul 2021 11:55:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=selector1; bh=giOM4HnaEqC2qcIT64URAdWvI8eeLWVeP5WNigHDj+4=;
+ b=dSdmwFVs84e6GxHJeBNTvVS7ETgvRQw8DrKUPur4dm0nZHPY4gYTCDyxmO6Eo/RNcwHP
+ 8hVgCORnJYPtPCyKs2OWmvR8pByM4fi2jBIWdeAqWwfzaEo8+d5TfAp0sis7N2oAo9YB
+ 6MDt6uAMJ+PisQSa2LCmrdP3KqiD/y+p+3XAKZNSYqCtCn0eSgUkF0fILnEwyU6NeE5y
+ TdbwXdJzhuyzsIMozagigFS2zztNaRJ6pt08iXDeqTm5ZmZWN95qn93OFsym7AxpIVDk
+ FS0G40gghTNLJwhqQlCMeNJy1csf6rY3ogqlNWxm74jw440tUErMOL5rzuW/3ETCzsj7 /w== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3a1swgrbqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Jul 2021 11:55:43 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AB6A310002A;
+        Mon, 26 Jul 2021 11:55:40 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9599F21B539;
+        Mon, 26 Jul 2021 11:55:40 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 26 Jul
+ 2021 11:55:40 +0200
+Date:   Mon, 26 Jul 2021 11:55:32 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     <kbuild-all@lists.01.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] spi: stm32: fix excluded_middle.cocci warnings
+Message-ID: <20210726095532.GA11839@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: kernel test robot <lkp@intel.com>,
+        kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-spi@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <202107140345.xyOobAtH-lkp@intel.com>
+ <20210713191004.GA14729@5eb5c2cbef84>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210713191004.GA14729@5eb5c2cbef84>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-26_05:2021-07-26,2021-07-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In sun8i_ce_hash_run, all the dma_mmap_sg/single will cause memory leak
-due to no corresponding unmap operation if errors happen.
+Thanks.
 
-Fix this by adding error handling part for all the dma_mmap_sg/single.
+Reviewed-by: Alain Volmat <alain.volmat@foss.st.com>
 
-Fixes: d9b45418a917 ("crypto: sun8i-ss - support hash algorithms")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
-v1->v2: move crypto_finalize_hash_request to the end of function; move
-the memcpy after the dma_mmap_sg/single functions.
-v2->v3: remove some unrelated code changes; delete the fix of return value
-since there is no corresponding handling code 
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-index 3c073eb3db03..5448705e8ae1 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-@@ -368,14 +368,14 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
- 	if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
- 		dev_err(ss->dev, "Invalid sg number %d\n", nr_sgs);
- 		err = -EINVAL;
--		goto theend;
-+		goto err_result;
- 	}
- 
- 	addr_res = dma_map_single(ss->dev, result, digestsize, DMA_FROM_DEVICE);
- 	if (dma_mapping_error(ss->dev, addr_res)) {
- 		dev_err(ss->dev, "DMA map dest\n");
- 		err = -EINVAL;
--		goto theend;
-+		goto err_unmap_sg;
- 	}
- 
- 	len = areq->nbytes;
-@@ -390,7 +390,7 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
- 	if (len > 0) {
- 		dev_err(ss->dev, "remaining len %d\n", len);
- 		err = -EINVAL;
--		goto theend;
-+		goto err_addr_res;
- 	}
- 
- 	byte_count = areq->nbytes;
-@@ -428,18 +428,19 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
- 	if (dma_mapping_error(ss->dev, addr_pad)) {
- 		dev_err(ss->dev, "DMA error on padding SG\n");
- 		err = -EINVAL;
--		goto theend;
-+		goto err_addr_res;
- 	}
- 
- 	err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
- 
- 	dma_unmap_single(ss->dev, addr_pad, j * 4, DMA_TO_DEVICE);
-+err_addr_res:
-+	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
-+err_unmap_sg:
- 	dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
- 		     DMA_TO_DEVICE);
--	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
--
- 	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
--theend:
-+err_result:
- 	kfree(pad);
- 	kfree(result);
- 	crypto_finalize_hash_request(engine, breq, err);
--- 
-2.25.1
-
+On Wed, Jul 14, 2021 at 03:10:04AM +0800, kernel test robot wrote:
+> From: kernel test robot <lkp@intel.com>
+> 
+> drivers/spi/spi-stm32.c:915:23-25: WARNING !A || A && B is equivalent to !A || B
+> 
+> 
+>  Condition !A || A && B is equivalent to !A || B.
+> 
+> Generated by: scripts/coccinelle/misc/excluded_middle.cocci
+> 
+> Fixes: 7ceb0b8a3ced ("spi: stm32: finalize message either on dma callback or EOT")
+> CC: Alain Volmat <alain.volmat@foss.st.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
+> ---
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> head:   8f0df15bafc1e1c92b6d96bf8ef24dd8be3aec7b
+> commit: 7ceb0b8a3ceddc36ae4ef1cba6c25a0e28ed65fc [1012/1340] spi: stm32: finalize message either on dma callback or EOT
+> :::::: branch date: 11 hours ago
+> :::::: commit date: 2 days ago
+> 
+>  spi-stm32.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> --- a/drivers/spi/spi-stm32.c
+> +++ b/drivers/spi/spi-stm32.c
+> @@ -912,8 +912,7 @@ static irqreturn_t stm32h7_spi_irq_threa
+>  		if (!spi->cur_usedma && (spi->rx_buf && (spi->rx_len > 0)))
+>  			stm32h7_spi_read_rxfifo(spi);
+>  		if (!spi->cur_usedma ||
+> -		    (spi->cur_usedma && (spi->cur_comm == SPI_SIMPLEX_TX ||
+> -		     spi->cur_comm == SPI_3WIRE_TX)))
+> +		    (spi->cur_comm == SPI_SIMPLEX_TX || spi->cur_comm == SPI_3WIRE_TX))
+>  			end = true;
+>  	}
+>  
