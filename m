@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414E73D63D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC963D63D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239374AbhGZPvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:51:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47186 "EHLO mail.kernel.org"
+        id S239396AbhGZPwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:52:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233056AbhGZPbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:31:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 335C060F5E;
-        Mon, 26 Jul 2021 16:11:34 +0000 (UTC)
+        id S231502AbhGZPbJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:31:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B04D60F6F;
+        Mon, 26 Jul 2021 16:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315894;
-        bh=RmzMUfvawyD9hFaQoDvOLOrXZ+Zsngrw7JpIBYdQsL0=;
+        s=korg; t=1627315897;
+        bh=jl+bJWfu9W+5Tlxagle6vY70YacAfD/KUnku19Ktwqc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K6qEs2kju7z2213wTw1+cvHUad5UZLBkN2Fn5CrpewMT6sr478K8XTcDCXSbExvPG
-         pDIhVBmn4pSf6uo5S5IpzILoaEUgnwd6I7Ds957I1OlIbYvCdZ36EWyNLB6dvGMQUB
-         +fKv7Geh5BE+4FmgFr2p7J7LFFZtT7/pRCak8FVU=
+        b=FB6dmPQQv0Mhm3cUwM4wM4FvVBv8WVNJqN26RdzRZ03CZN6H0BghiuUZHisK3vQyx
+         rhAYtwbsdUwKMp48gucWv4X669XFh2V25rUIpl17WkDdfrjCA8IAdYB3XgvHft/lXT
+         QnRM6zI7TEFShqJp2PuRxluoMiFc9RVAkSabNMuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 073/223] bpf, test: fix NULL pointer dereference on invalid expected_attach_type
-Date:   Mon, 26 Jul 2021 17:37:45 +0200
-Message-Id: <20210726153848.644595281@linuxfoundation.org>
+Subject: [PATCH 5.13 074/223] bpf: Fix tail_call_reachable rejection for interpreter when jit failed
+Date:   Mon, 26 Jul 2021 17:37:46 +0200
+Message-Id: <20210726153848.677341124@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -45,107 +42,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit 5e21bb4e812566aef86fbb77c96a4ec0782286e4 ]
+[ Upstream commit 5dd0a6b8582ffbfa88351949d50eccd5b6694ade ]
 
-These two types of XDP progs (BPF_XDP_DEVMAP, BPF_XDP_CPUMAP) will not be
-executed directly in the driver, therefore we should also not directly
-run them from here. To run in these two situations, there must be further
-preparations done, otherwise these may cause a kernel panic.
+During testing of f263a81451c1 ("bpf: Track subprog poke descriptors correctly
+and fix use-after-free") under various failure conditions, for example, when
+jit_subprogs() fails and tries to clean up the program to be run under the
+interpreter, we ran into the following freeze:
 
-For more details, see also dev_xdp_attach().
+  [...]
+  #127/8 tailcall_bpf2bpf_3:FAIL
+  [...]
+  [   92.041251] BUG: KASAN: slab-out-of-bounds in ___bpf_prog_run+0x1b9d/0x2e20
+  [   92.042408] Read of size 8 at addr ffff88800da67f68 by task test_progs/682
+  [   92.043707]
+  [   92.044030] CPU: 1 PID: 682 Comm: test_progs Tainted: G   O   5.13.0-53301-ge6c08cb33a30-dirty #87
+  [   92.045542] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+  [   92.046785] Call Trace:
+  [   92.047171]  ? __bpf_prog_run_args64+0xc0/0xc0
+  [   92.047773]  ? __bpf_prog_run_args32+0x8b/0xb0
+  [   92.048389]  ? __bpf_prog_run_args64+0xc0/0xc0
+  [   92.049019]  ? ktime_get+0x117/0x130
+  [...] // few hundred [similar] lines more
+  [   92.659025]  ? ktime_get+0x117/0x130
+  [   92.659845]  ? __bpf_prog_run_args64+0xc0/0xc0
+  [   92.660738]  ? __bpf_prog_run_args32+0x8b/0xb0
+  [   92.661528]  ? __bpf_prog_run_args64+0xc0/0xc0
+  [   92.662378]  ? print_usage_bug+0x50/0x50
+  [   92.663221]  ? print_usage_bug+0x50/0x50
+  [   92.664077]  ? bpf_ksym_find+0x9c/0xe0
+  [   92.664887]  ? ktime_get+0x117/0x130
+  [   92.665624]  ? kernel_text_address+0xf5/0x100
+  [   92.666529]  ? __kernel_text_address+0xe/0x30
+  [   92.667725]  ? unwind_get_return_address+0x2f/0x50
+  [   92.668854]  ? ___bpf_prog_run+0x15d4/0x2e20
+  [   92.670185]  ? ktime_get+0x117/0x130
+  [   92.671130]  ? __bpf_prog_run_args64+0xc0/0xc0
+  [   92.672020]  ? __bpf_prog_run_args32+0x8b/0xb0
+  [   92.672860]  ? __bpf_prog_run_args64+0xc0/0xc0
+  [   92.675159]  ? ktime_get+0x117/0x130
+  [   92.677074]  ? lock_is_held_type+0xd5/0x130
+  [   92.678662]  ? ___bpf_prog_run+0x15d4/0x2e20
+  [   92.680046]  ? ktime_get+0x117/0x130
+  [   92.681285]  ? __bpf_prog_run32+0x6b/0x90
+  [   92.682601]  ? __bpf_prog_run64+0x90/0x90
+  [   92.683636]  ? lock_downgrade+0x370/0x370
+  [   92.684647]  ? mark_held_locks+0x44/0x90
+  [   92.685652]  ? ktime_get+0x117/0x130
+  [   92.686752]  ? lockdep_hardirqs_on+0x79/0x100
+  [   92.688004]  ? ktime_get+0x117/0x130
+  [   92.688573]  ? __cant_migrate+0x2b/0x80
+  [   92.689192]  ? bpf_test_run+0x2f4/0x510
+  [   92.689869]  ? bpf_test_timer_continue+0x1c0/0x1c0
+  [   92.690856]  ? rcu_read_lock_bh_held+0x90/0x90
+  [   92.691506]  ? __kasan_slab_alloc+0x61/0x80
+  [   92.692128]  ? eth_type_trans+0x128/0x240
+  [   92.692737]  ? __build_skb+0x46/0x50
+  [   92.693252]  ? bpf_prog_test_run_skb+0x65e/0xc50
+  [   92.693954]  ? bpf_prog_test_run_raw_tp+0x2d0/0x2d0
+  [   92.694639]  ? __fget_light+0xa1/0x100
+  [   92.695162]  ? bpf_prog_inc+0x23/0x30
+  [   92.695685]  ? __sys_bpf+0xb40/0x2c80
+  [   92.696324]  ? bpf_link_get_from_fd+0x90/0x90
+  [   92.697150]  ? mark_held_locks+0x24/0x90
+  [   92.698007]  ? lockdep_hardirqs_on_prepare+0x124/0x220
+  [   92.699045]  ? finish_task_switch+0xe6/0x370
+  [   92.700072]  ? lockdep_hardirqs_on+0x79/0x100
+  [   92.701233]  ? finish_task_switch+0x11d/0x370
+  [   92.702264]  ? __switch_to+0x2c0/0x740
+  [   92.703148]  ? mark_held_locks+0x24/0x90
+  [   92.704155]  ? __x64_sys_bpf+0x45/0x50
+  [   92.705146]  ? do_syscall_64+0x35/0x80
+  [   92.706953]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+  [...]
 
-  [   46.982479] BUG: kernel NULL pointer dereference, address: 0000000000000000
-  [   46.984295] #PF: supervisor read access in kernel mode
-  [   46.985777] #PF: error_code(0x0000) - not-present page
-  [   46.987227] PGD 800000010dca4067 P4D 800000010dca4067 PUD 10dca6067 PMD 0
-  [   46.989201] Oops: 0000 [#1] SMP PTI
-  [   46.990304] CPU: 7 PID: 562 Comm: a.out Not tainted 5.13.0+ #44
-  [   46.992001] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/24
-  [   46.995113] RIP: 0010:___bpf_prog_run+0x17b/0x1710
-  [   46.996586] Code: 49 03 14 cc e8 76 f6 fe ff e9 ad fe ff ff 0f b6 43 01 48 0f bf 4b 02 48 83 c3 08 89 c2 83 e0 0f c0 ea 04 02
-  [   47.001562] RSP: 0018:ffffc900005afc58 EFLAGS: 00010246
-  [   47.003115] RAX: 0000000000000000 RBX: ffffc9000023f068 RCX: 0000000000000000
-  [   47.005163] RDX: 0000000000000000 RSI: 0000000000000079 RDI: ffffc900005afc98
-  [   47.007135] RBP: 0000000000000000 R08: ffffc9000023f048 R09: c0000000ffffdfff
-  [   47.009171] R10: 0000000000000001 R11: ffffc900005afb40 R12: ffffc900005afc98
-  [   47.011172] R13: 0000000000000001 R14: 0000000000000001 R15: ffffffff825258a8
-  [   47.013244] FS:  00007f04a5207580(0000) GS:ffff88842fdc0000(0000) knlGS:0000000000000000
-  [   47.015705] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   47.017475] CR2: 0000000000000000 CR3: 0000000100182005 CR4: 0000000000770ee0
-  [   47.019558] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [   47.021595] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [   47.023574] PKRU: 55555554
-  [   47.024571] Call Trace:
-  [   47.025424]  __bpf_prog_run32+0x32/0x50
-  [   47.026296]  ? printk+0x53/0x6a
-  [   47.027066]  ? ktime_get+0x39/0x90
-  [   47.027895]  bpf_test_run.cold.28+0x23/0x123
-  [   47.028866]  ? printk+0x53/0x6a
-  [   47.029630]  bpf_prog_test_run_xdp+0x149/0x1d0
-  [   47.030649]  __sys_bpf+0x1305/0x23d0
-  [   47.031482]  __x64_sys_bpf+0x17/0x20
-  [   47.032316]  do_syscall_64+0x3a/0x80
-  [   47.033165]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [   47.034254] RIP: 0033:0x7f04a51364dd
-  [   47.035133] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 48
-  [   47.038768] RSP: 002b:00007fff8f9fc518 EFLAGS: 00000213 ORIG_RAX: 0000000000000141
-  [   47.040344] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f04a51364dd
-  [   47.041749] RDX: 0000000000000048 RSI: 0000000020002a80 RDI: 000000000000000a
-  [   47.043171] RBP: 00007fff8f9fc530 R08: 0000000002049300 R09: 0000000020000100
-  [   47.044626] R10: 0000000000000004 R11: 0000000000000213 R12: 0000000000401070
-  [   47.046088] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-  [   47.047579] Modules linked in:
-  [   47.048318] CR2: 0000000000000000
-  [   47.049120] ---[ end trace 7ad34443d5be719a ]---
-  [   47.050273] RIP: 0010:___bpf_prog_run+0x17b/0x1710
-  [   47.051343] Code: 49 03 14 cc e8 76 f6 fe ff e9 ad fe ff ff 0f b6 43 01 48 0f bf 4b 02 48 83 c3 08 89 c2 83 e0 0f c0 ea 04 02
-  [   47.054943] RSP: 0018:ffffc900005afc58 EFLAGS: 00010246
-  [   47.056068] RAX: 0000000000000000 RBX: ffffc9000023f068 RCX: 0000000000000000
-  [   47.057522] RDX: 0000000000000000 RSI: 0000000000000079 RDI: ffffc900005afc98
-  [   47.058961] RBP: 0000000000000000 R08: ffffc9000023f048 R09: c0000000ffffdfff
-  [   47.060390] R10: 0000000000000001 R11: ffffc900005afb40 R12: ffffc900005afc98
-  [   47.061803] R13: 0000000000000001 R14: 0000000000000001 R15: ffffffff825258a8
-  [   47.063249] FS:  00007f04a5207580(0000) GS:ffff88842fdc0000(0000) knlGS:0000000000000000
-  [   47.065070] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   47.066307] CR2: 0000000000000000 CR3: 0000000100182005 CR4: 0000000000770ee0
-  [   47.067747] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [   47.069217] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [   47.070652] PKRU: 55555554
-  [   47.071318] Kernel panic - not syncing: Fatal exception
-  [   47.072854] Kernel Offset: disabled
-  [   47.073683] ---[ end Kernel panic - not syncing: Fatal exception ]---
+Turns out that the program rejection from e411901c0b77 ("bpf: allow for tailcalls
+in BPF subprograms for x64 JIT") is buggy since env->prog->aux->tail_call_reachable
+is never true. Commit ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall
+handling in JIT") added a tracker into check_max_stack_depth() which propagates
+the tail_call_reachable condition throughout the subprograms. This info is then
+assigned to the subprogram's func[i]->aux->tail_call_reachable. However, in the
+case of the rejection check upon JIT failure, env->prog->aux->tail_call_reachable
+is used. func[0]->aux->tail_call_reachable which represents the main program's
+information did not propagate this to the outer env->prog->aux, though. Add this
+propagation into check_max_stack_depth() where it needs to belong so that the
+check can be done reliably.
 
-Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
-Fixes: fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
+Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64 JIT")
+Co-developed-by: John Fastabend <john.fastabend@gmail.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: David Ahern <dsahern@kernel.org>
-Acked-by: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/bpf/20210708080409.73525-1-xuanzhuo@linux.alibaba.com
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Link: https://lore.kernel.org/bpf/618c34e3163ad1a36b1e82377576a6081e182f25.1626123173.git.daniel@iogearbox.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bpf/test_run.c | 3 +++
- 1 file changed, 3 insertions(+)
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index a5d72c48fb66..28ac3c96fa88 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -701,6 +701,9 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	void *data;
- 	int ret;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d8a6fcd28e39..e6db39a00de2 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3675,6 +3675,8 @@ continue_func:
+ 	if (tail_call_reachable)
+ 		for (j = 0; j < frame; j++)
+ 			subprog[ret_prog[j]].tail_call_reachable = true;
++	if (subprog[0].tail_call_reachable)
++		env->prog->aux->tail_call_reachable = true;
  
-+	if (prog->expected_attach_type == BPF_XDP_DEVMAP ||
-+	    prog->expected_attach_type == BPF_XDP_CPUMAP)
-+		return -EINVAL;
- 	if (kattr->test.ctx_in || kattr->test.ctx_out)
- 		return -EINVAL;
- 
+ 	/* end of for() loop means the last insn of the 'subprog'
+ 	 * was reached. Doesn't matter whether it was JA or EXIT
 -- 
 2.30.2
 
