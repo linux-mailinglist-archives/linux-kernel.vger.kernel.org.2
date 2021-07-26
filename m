@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA53F3D6034
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01DDC3D62B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237175AbhGZPVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52502 "EHLO mail.kernel.org"
+        id S235012AbhGZPhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236325AbhGZPLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21ADD60F44;
-        Mon, 26 Jul 2021 15:52:03 +0000 (UTC)
+        id S237199AbhGZPVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:21:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59CA660F5A;
+        Mon, 26 Jul 2021 16:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314724;
-        bh=jDS7IXQJsUst7BMjrXXRW1SQSWudHHYImxsFPI+rY8E=;
+        s=korg; t=1627315326;
+        bh=u+nrYs8kgIxkE78GC04cHDkkMC7HisEe6KV2i+EgDj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xRiTjfDUK4eanYFsPTjLK9bXX9WmvYauTB+YpxybYxaSFI5HiqNkMUxWIMEG8Eghx
-         nbBkxp6Lyf3CCXHYl0UAwM76RGfz4+lMnEIej7QtFkjV8lu8TRLCXRdPX9etlJG3B5
-         FMIyKTGwsYyn6hCDoHPxmpZcTVcOxOBvCmD3g3mk=
+        b=SBMEt+QXcAz+ScQDhG+ed5D/gHBUEPhex5jAoXESPX5QKHevF508jsxVLhkONDHGn
+         K1sXgq1hmhSnN947uBoEcUa8+EZ/kj+Bevvut3Jg8xl+qEdBm5NiIj3nmYPLY1vHQy
+         GTNZGbJKPmSdL0XhbnAQ45JiGwz92G0H1adzop5c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ben Segall <bsegall@google.com>,
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 033/120] sched/fair: Fix CFS bandwidth hrtimer expiry type
+Subject: [PATCH 5.10 052/167] regulator: hi6421: Fix getting wrong drvdata
 Date:   Mon, 26 Jul 2021 17:38:05 +0200
-Message-Id: <20210726153833.450345602@linuxfoundation.org>
+Message-Id: <20210726153841.147371984@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +40,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit 72d0ad7cb5bad265adb2014dbe46c4ccb11afaba ]
+[ Upstream commit 1c73daee4bf30ccdff5e86dc400daa6f74735da5 ]
 
-The time remaining until expiry of the refresh_timer can be negative.
-Casting the type to an unsigned 64-bit value will cause integer
-underflow, making the runtime_refresh_within return false instead of
-true. These situations are rare, but they do happen.
+Since config.dev = pdev->dev.parent in current code, so
+dev_get_drvdata(rdev->dev.parent) call in hi6421_regulator_enable
+returns the drvdata of the mfd device rather than the regulator. Fix it.
 
-This does not cause user-facing issues or errors; other than
-possibly unthrottling cfs_rq's using runtime from the previous period(s),
-making the CFS bandwidth enforcement less strict in those (special)
-situations.
+This was broken while converting to use simplified DT parsing because the
+config.dev changed from pdev->dev to pdev->dev.parent for parsing the
+parent's of_node.
 
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Ben Segall <bsegall@google.com>
-Link: https://lore.kernel.org/r/20210629121452.18429-1-odin@uged.al
+Fixes: 29dc269a85ef ("regulator: hi6421: Convert to use simplified DT parsing")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210630095959.2411543-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/regulator/hi6421-regulator.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9cdbc07bb70f..84e7efda98da 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4714,7 +4714,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
- static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
+diff --git a/drivers/regulator/hi6421-regulator.c b/drivers/regulator/hi6421-regulator.c
+index bff8c515dcde..d144a4bdb76d 100644
+--- a/drivers/regulator/hi6421-regulator.c
++++ b/drivers/regulator/hi6421-regulator.c
+@@ -366,9 +366,8 @@ static struct hi6421_regulator_info
+ 
+ static int hi6421_regulator_enable(struct regulator_dev *rdev)
  {
- 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
--	u64 remaining;
-+	s64 remaining;
+-	struct hi6421_regulator_pdata *pdata;
++	struct hi6421_regulator_pdata *pdata = rdev_get_drvdata(rdev);
  
- 	/* if the call-back is running a quota refresh is already occurring */
- 	if (hrtimer_callback_running(refresh_timer))
-@@ -4722,7 +4722,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
+-	pdata = dev_get_drvdata(rdev->dev.parent);
+ 	/* hi6421 spec requires regulator enablement must be serialized:
+ 	 *  - Because when BUCK, LDO switching from off to on, it will have
+ 	 *    a huge instantaneous current; so you can not turn on two or
+@@ -385,9 +384,10 @@ static int hi6421_regulator_enable(struct regulator_dev *rdev)
  
- 	/* is a quota refresh about to occur? */
- 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
--	if (remaining < min_expire)
-+	if (remaining < (s64)min_expire)
- 		return 1;
+ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
+ {
+-	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
++	struct hi6421_regulator_info *info;
+ 	unsigned int reg_val;
  
- 	return 0;
++	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 	if (reg_val & info->mode_mask)
+ 		return REGULATOR_MODE_IDLE;
+@@ -397,9 +397,10 @@ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
+ 
+ static unsigned int hi6421_regulator_buck_get_mode(struct regulator_dev *rdev)
+ {
+-	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
++	struct hi6421_regulator_info *info;
+ 	unsigned int reg_val;
+ 
++	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 	if (reg_val & info->mode_mask)
+ 		return REGULATOR_MODE_STANDBY;
+@@ -410,9 +411,10 @@ static unsigned int hi6421_regulator_buck_get_mode(struct regulator_dev *rdev)
+ static int hi6421_regulator_ldo_set_mode(struct regulator_dev *rdev,
+ 						unsigned int mode)
+ {
+-	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
++	struct hi6421_regulator_info *info;
+ 	unsigned int new_mode;
+ 
++	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
+ 		new_mode = 0;
+@@ -434,9 +436,10 @@ static int hi6421_regulator_ldo_set_mode(struct regulator_dev *rdev,
+ static int hi6421_regulator_buck_set_mode(struct regulator_dev *rdev,
+ 						unsigned int mode)
+ {
+-	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
++	struct hi6421_regulator_info *info;
+ 	unsigned int new_mode;
+ 
++	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
+ 		new_mode = 0;
+@@ -459,7 +462,9 @@ static unsigned int
+ hi6421_regulator_ldo_get_optimum_mode(struct regulator_dev *rdev,
+ 			int input_uV, int output_uV, int load_uA)
+ {
+-	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
++	struct hi6421_regulator_info *info;
++
++	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
+ 
+ 	if (load_uA > info->eco_microamp)
+ 		return REGULATOR_MODE_NORMAL;
+@@ -543,14 +548,13 @@ static int hi6421_regulator_probe(struct platform_device *pdev)
+ 	if (!pdata)
+ 		return -ENOMEM;
+ 	mutex_init(&pdata->lock);
+-	platform_set_drvdata(pdev, pdata);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(hi6421_regulator_info); i++) {
+ 		/* assign per-regulator data */
+ 		info = &hi6421_regulator_info[i];
+ 
+ 		config.dev = pdev->dev.parent;
+-		config.driver_data = info;
++		config.driver_data = pdata;
+ 		config.regmap = pmic->regmap;
+ 
+ 		rdev = devm_regulator_register(&pdev->dev, &info->desc,
 -- 
 2.30.2
 
