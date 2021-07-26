@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C1B3D5E1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4243D5D53
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbhGZPFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:05:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
+        id S235353AbhGZPAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:00:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235871AbhGZPEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:04:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 667A260FD8;
-        Mon, 26 Jul 2021 15:45:07 +0000 (UTC)
+        id S235344AbhGZPAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:00:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58C3A604DC;
+        Mon, 26 Jul 2021 15:41:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314308;
-        bh=FxfbMUKll3T40U36/zRLh5jDZFzW+wMrMIIo5DOULOQ=;
+        s=korg; t=1627314070;
+        bh=11FnOorofVK4+RLV/OXlVZKoTBVYtWhggRSEBJ0NI8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ud5qyvzgRlRlDAjQo71QIMYea5Yn2P6T/XEcQILxCg9xeKCE1QE/1HM01ujot6fRr
-         jBf67W6J05bsN964VFPeu//k4BUpgpRdUX8jTgK2v5SQ9S9Z+LMquxLuLGQKobEBcV
-         u94tfo3OSpkr/Wp2IYHxG3WVWcIzS+enwSMJSaRg=
+        b=O3GavcsyG3kPOPlQ3+xM0iadj/OfrryKfPflUDWmQensWmV8AH4pl/E1pcb3hqVCu
+         SPDnMqoAVmiZ64vU6ILhK+lh8q2fd6wr1rpp4gbVvzx+TVV1JTp4gnStOUmXhBsxEr
+         vU0ic/fHpP2k1VmIMAzLb0wQEAwyEznQHpbBk6D8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 25/60] igb: Fix an error handling path in igb_probe()
-Date:   Mon, 26 Jul 2021 17:38:39 +0200
-Message-Id: <20210726153825.661043396@linuxfoundation.org>
+Subject: [PATCH 4.4 22/47] perf probe-file: Delete namelist in del_events() on the error path
+Date:   Mon, 26 Jul 2021 17:38:40 +0200
+Message-Id: <20210726153823.678373275@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit fea03b1cebd653cd095f2e9a58cfe1c85661c363 ]
+[ Upstream commit e0fa7ab42232e742dcb3de9f3c1f6127b5adc019 ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+ASan reports some memory leaks when running:
 
-Fixes: 40a914fa72ab ("igb: Add support for pci-e Advanced Error Reporting")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+  # perf test "42: BPF filter"
+
+This second leak is caused by a strlist not being dellocated on error
+inside probe_file__del_events.
+
+This patch adds a goto label before the deallocation and makes the error
+path jump to it.
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: e7895e422e4da63d ("perf probe: Split del_perf_probe_events()")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/174963c587ae77fa108af794669998e4ae558338.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/util/probe-file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 9b7ef62ed8fb..38865e9bf934 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -2767,6 +2767,7 @@ err_sw_init:
- err_ioremap:
- 	free_netdev(netdev);
- err_alloc_etherdev:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_release_mem_regions(pdev);
- err_pci_reg:
- err_dma:
+diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+index e3b3b92e4458..7476757680ed 100644
+--- a/tools/perf/util/probe-file.c
++++ b/tools/perf/util/probe-file.c
+@@ -318,10 +318,10 @@ int probe_file__del_events(int fd, struct strfilter *filter)
+ 
+ 	ret = probe_file__get_events(fd, filter, namelist);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
+ 
+ 	ret = probe_file__del_strlist(fd, namelist);
++out:
+ 	strlist__delete(namelist);
+-
+ 	return ret;
+ }
 -- 
 2.30.2
 
