@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B573D5E5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79003D5E5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236206AbhGZPHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:07:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46512 "EHLO mail.kernel.org"
+        id S236337AbhGZPHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:07:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235979AbhGZPFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:05:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 664D260F02;
-        Mon, 26 Jul 2021 15:46:15 +0000 (UTC)
+        id S236134AbhGZPFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D43E60F59;
+        Mon, 26 Jul 2021 15:46:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314376;
-        bh=qVR5cTcj82tY3+nCt+CucjDK6kDSVVx4WNl1E5lKETY=;
+        s=korg; t=1627314378;
+        bh=+F5o9owLoJUSu6KXPmwFr7y/Vb1Hgk7va1k/jeuhDCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=azEHBTzgKAIUvKcyAfeVWkKFhzU0f8ZBZq7GrlJIL/U7vWIx/BKcWLhSmSHkS0MZh
-         OCAWyRLENpUrpxvpCiWOLOfjOhH799IlIk6coTV7l5FfuU60o5aFifQDfIxGgSaiTB
-         vBs3xocLoVrXXcQdLtPjA8ZvzwojQ86YaHnYxWjg=
+        b=Pionr0hrn+HYZbUHPFCgbEzvDhqnHCu0dpwE7m3oYDK31kAyc7oFNrR+tQWS39e4Y
+         IUInxgAgd7Utt9joke6JuxEUuDYtUFSPOsZFEOWmyAflteqmMp2UN/m7MQ6I4vjsFy
+         N8OtLomtv1PCZ628b1Y4GlSOxcs9vjUk4uiqdD6M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 07/82] reset: ti-syscon: fix to_ti_syscon_reset_data macro
-Date:   Mon, 26 Jul 2021 17:38:07 +0200
-Message-Id: <20210726153828.391019754@linuxfoundation.org>
+Subject: [PATCH 4.14 08/82] ARM: brcmstb: dts: fix NAND nodes names
+Date:   Mon, 26 Jul 2021 17:38:08 +0200
+Message-Id: <20210726153828.424415586@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
 References: <20210726153828.144714469@linuxfoundation.org>
@@ -39,41 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 05cf8fffcdeb47aef1203c08cbec5224fd3a0e1c ]
+[ Upstream commit 9a800ce1aada6e0f56b78e4713f4858c8990c1f7 ]
 
-The to_ti_syscon_reset_data macro currently only works if the
-parameter passed into it is called 'rcdev'.
+This matches nand-controller.yaml requirements.
 
-Fixes a checkpatch --strict issue:
-
-  CHECK: Macro argument reuse 'rcdev' - possible side-effects?
-  #53: FILE: drivers/reset/reset-ti-syscon.c:53:
-  +#define to_ti_syscon_reset_data(rcdev)	\
-  +	container_of(rcdev, struct ti_syscon_reset_data, rcdev)
-
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-ti-syscon.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/bcm7445-bcm97445svmb.dts | 4 ++--
+ arch/arm/boot/dts/bcm7445.dtsi             | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/reset/reset-ti-syscon.c b/drivers/reset/reset-ti-syscon.c
-index 99520b0a1329..3d375747c4e6 100644
---- a/drivers/reset/reset-ti-syscon.c
-+++ b/drivers/reset/reset-ti-syscon.c
-@@ -58,8 +58,8 @@ struct ti_syscon_reset_data {
- 	unsigned int nr_controls;
+diff --git a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
+index 8006c69a3fdf..5931c0288283 100644
+--- a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
++++ b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
+@@ -14,10 +14,10 @@
+ 	};
  };
  
--#define to_ti_syscon_reset_data(rcdev)	\
--	container_of(rcdev, struct ti_syscon_reset_data, rcdev)
-+#define to_ti_syscon_reset_data(_rcdev)	\
-+	container_of(_rcdev, struct ti_syscon_reset_data, rcdev)
+-&nand {
++&nand_controller {
+ 	status = "okay";
  
- /**
-  * ti_syscon_reset_assert() - assert device reset
+-	nandcs@1 {
++	nand@1 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <1>;
+ 		nand-ecc-step-size = <512>;
+diff --git a/arch/arm/boot/dts/bcm7445.dtsi b/arch/arm/boot/dts/bcm7445.dtsi
+index c859aa6f358c..b06845e92acd 100644
+--- a/arch/arm/boot/dts/bcm7445.dtsi
++++ b/arch/arm/boot/dts/bcm7445.dtsi
+@@ -150,7 +150,7 @@
+ 			reg-names = "aon-ctrl", "aon-sram";
+ 		};
+ 
+-		nand: nand@3e2800 {
++		nand_controller: nand-controller@3e2800 {
+ 			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
 -- 
 2.30.2
 
