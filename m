@@ -2,125 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EC13D612C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0913D61D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhGZPaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
+        id S232069AbhGZPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235893AbhGZPRG (ORCPT
+        with ESMTP id S235788AbhGZPSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:17:06 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31EFC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:57:33 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id t4so5354171qvj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:57:33 -0700 (PDT)
+        Mon, 26 Jul 2021 11:18:37 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104CEC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:59:06 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id u15so12379705iol.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:59:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=No1idDzjoDsMmvN3xuwWOow2oVTtEvU8MGBu5PU6/sM=;
-        b=ssT65GvNumoWqL6ydnEmW5Lcm8Zg8hEIXfManz/C9Atw1meiX/2aaUaNlU6EQhHE4W
-         /WhjABLzVj9ld0JjUq+XnLGJ+OueQFMRKxl3IRDGxikC5jPgsKPszOPDMqOhumZFESMe
-         fHpvENQmaGQlOBGsJmSFsqO9lkQJ+EmVvlIRrG4TnDaeiXhiWk0DlnayBwCwH/gFQqrp
-         cgXzpRT+pyhTVowbS6CIkNwuojsq2Gg/Hmiytvggd6Wn6eWeYhqinewDjLlttfECXT4O
-         fZKcGg6mOviwvxBtB985ox7LCzyU1EzuMtJVhhIWWwNi01P/zy9dNgcPe71j/d96ALaX
-         +q5Q==
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2oqVdc+Bwmni6M3nVJzlpNG4FMWWLNOhFE43b4PtG5Q=;
+        b=cKI0ApA8ngPZMooBLOh7lfAS1DsT2EHd2K3e68CR4zgtntvO2LDikDqPfrKKxfL+HZ
+         KjDxlBy4CqosymqCj4oljmWfEhXMB9Ljoaq1uG3SCr3OXux7uJbEVNvDlCSaSSudh+4q
+         gFlnjYV+fYFBzX+CxkZIODAe3Vek39iWL6hvI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=No1idDzjoDsMmvN3xuwWOow2oVTtEvU8MGBu5PU6/sM=;
-        b=SyPIre7oLgIwmEkV0L7VzOO0dGpfFkPk9CLeHEgsaGXfk2KkOg8YnbH6fz3acPwyeD
-         tR1cry+oGK/rjYEjnvtocsuK4GGM0VNHbnLxO+0PdJx84iJRD/hu0TLxJsSJ67FJ7vu5
-         tn0QGzclWDuEiL5Rp3cGSed8SZfHtvGRgcW2JLuuUZdb89VbnsyE6tgIvKpRF6zsabwT
-         yeQ8M2+fnA+s0QtyEUNNmWS7a64Ru3crda3MYx1W0bAx5M55lHykGE9kK3zN23AaOK3o
-         Ef4aMu53dIbMerPMHAdHe7ajzd56w73qFVlUkQ0CRPbBq0bXpvEJ99bSqCmWgKhPXh8y
-         d6Rg==
-X-Gm-Message-State: AOAM532ZdljCjjliqWcwJodJSCfW3BC0QrBZvxj6pqTqIFFQM5oI3qbO
-        vPGWbPiecU9qlRkiA/kyAoN9fulFX0yMiuFgD252aA==
-X-Google-Smtp-Source: ABdhPJw6uFTdt9Q6d69+oxxRgZenuF9SRtyMwB9oNBD1/2H1OclxjYSTBFaYzAiNV+iibs75SaZ6BLSB7154joJYymo=
-X-Received: by 2002:a05:6214:c29:: with SMTP id a9mr18649044qvd.0.1627315052531;
- Mon, 26 Jul 2021 08:57:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2oqVdc+Bwmni6M3nVJzlpNG4FMWWLNOhFE43b4PtG5Q=;
+        b=WG/Ve4hmxkcvESY8PFkpwPLgR20Iu1YVBb/rB+UUee17LEXkiyMQOxGPBLTUZnZSxs
+         ++UjddCltJzfyYn2BzuzJleQ+fiJ2774VxxNBWoFOQK+azf584KulQ6zWplMp0DxTcCL
+         Uq2OBVrurQmXWyx3R4tAid3p1IqHp7e2qLkdER+blsrgoOoPxnw3iW0tdg8KGhgwC1Tf
+         UqYBiQxOd8y1D9l2hek9ASuKWeSF9bXtb1l5uTJKIv+AUpt+3SnqSmJLwx6mATU6WNYt
+         LhjcTCDLXtvpZHqGAKM155nailOvNsWoxnHJUwtM929pJa8Bmm5XseU0yilAWd53BiTh
+         /oEQ==
+X-Gm-Message-State: AOAM532C11Wc3YESwu5c9Ll73scc1PE1vC2ULWTGawBkeRgWthVt6Px0
+        IPBPQsqF5GnkLtelmLd1MucRMHmjNSevqDu9
+X-Google-Smtp-Source: ABdhPJzcoLCiWULduAJ6beoqhxsv3ChnwQVAVpBm3E4lg/mBvDeOOmGaoHxC4yOFi27MB7GKWKBa+Q==
+X-Received: by 2002:a5e:c109:: with SMTP id v9mr15382903iol.76.1627315145241;
+        Mon, 26 Jul 2021 08:59:05 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id h24sm169070ioj.32.2021.07.26.08.59.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 08:59:04 -0700 (PDT)
+Subject: Re: [PATCH net-next 1/3] dt-bindings: net: qcom,ipa: make imem
+ interconnect optional
+To:     Rob Herring <robh@kernel.org>, Alex Elder <elder@linaro.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210719212456.3176086-1-elder@linaro.org>
+ <20210719212456.3176086-2-elder@linaro.org>
+ <20210723205252.GA2550230@robh.at.kernel.org>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <6c1779aa-c90c-2160-f8b9-497fb8c32dc5@ieee.org>
+Date:   Mon, 26 Jul 2021 10:59:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <PH0PR11MB51748333769D9002912FF63C84E89@PH0PR11MB5174.namprd11.prod.outlook.com>
-In-Reply-To: <PH0PR11MB51748333769D9002912FF63C84E89@PH0PR11MB5174.namprd11.prod.outlook.com>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Mon, 26 Jul 2021 11:57:21 -0400
-Message-ID: <CAJWu+oq98Yh4kknze7u6SOYZNw6hR5aFkj61aXbTV3JPq=7RNg@mail.gmail.com>
-Subject: Re: Core Scheduling - Concurrent VMs
-To:     "Rajendran, Jaishankar" <jaishankar.rajendran@intel.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Vineeth Pillai <vineethrp@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Mallikarjun Chegaraddi, Raju" 
-        <raju.mallikarjun.chegaraddi@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210723205252.GA2550230@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-+Dario Faggioli and +Vineeth Pillai as well.
+On 7/23/21 3:52 PM, Rob Herring wrote:
+> On Mon, Jul 19, 2021 at 04:24:54PM -0500, Alex Elder wrote:
+>> On some newer SoCs, the interconnect between IPA and SoC internal
+>> memory (imem) is not used.  Reflect this in the binding by moving
+>> the definition of the "imem" interconnect to the end and defining
+>> minItems to be 2 for both the interconnects and interconnect-names
+>> properties.
+>>
+>> Signed-off-by: Alex Elder <elder@linaro.org>
+>> ---
+>>   .../devicetree/bindings/net/qcom,ipa.yaml      | 18 ++++++++++--------
+>>   1 file changed, 10 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+>> index ed88ba4b94df5..4853ab7017bd9 100644
+>> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+>> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+>> @@ -87,16 +87,18 @@ properties:
+>>         - const: ipa-setup-ready
+>>   
+>>     interconnects:
+>> +    minItems: 2
+>>       items:
+>> -      - description: Interconnect path between IPA and main memory
+>> -      - description: Interconnect path between IPA and internal memory
+>> -      - description: Interconnect path between IPA and the AP subsystem
+>> +      - description: Path leading to system memory
+>> +      - description: Path between the AP and IPA config space
+>> +      - description: Path leading to internal memory
+>>   
+>>     interconnect-names:
+>> +    minItems: 2
+>>       items:
+>>         - const: memory
+>> -      - const: imem
+>>         - const: config
+>> +      - const: imem
+> 
+> What about existing users? This will generate warnings. Doing this for
+> the 2nd item would avoid the need for .dts updates:
+> 
+> - enum: [ imem, config ]
 
-On Mon, Jul 26, 2021 at 1:41 AM Rajendran, Jaishankar
-<jaishankar.rajendran@intel.com> wrote:
->
-> Refer to the below experiments performed using Core Scheduling for Concurrent VMs and we found the benchmark scores executed in different VMs are
-> degrading after enablement of Core Scheduling. Both the host and guest are enabled with Core Scheduler
+If I understand correctly, the effect of this would be that
+the second item can either be "imem" or "config", and the third
+(if present) could only be "imem"?
 
-Why are you running core scheduling within the guest? Only the host
-needs it and you tag vCPU threads in the host. Within the guest you
-don't need it (and it probably doesn't make sense unless you pin the
-vCPU threads to individual physical hardware threads).
+And you're saying that otherwise, existing users (the only
+one it applies to at the moment is "sdm845.dtsi") would
+produce warnings, because the interconnects are listed
+in an order different from what the binding specifies.
 
->
-> Environment:
-> ++++++++++
-> Platform - CML-NUC - i5-10600 @ 3.3 Ghz
-> Core Assignment for Host OS : No .of Cores     : 4   No .of Threads : 4 ( i.e. 8 Logical Cores)
-> Host OS - Ubuntu 20.1 with Chromium Kernel 5.4
-> Guest OS - Android OS running as VM using qemu/kvm with Chromium Kernel 5.4
-> VM's are assigned with 4 cores and 4 Threads (i.e. 8 Logical Cores)
->
-> Kernel Config:
-> +++++++++++
-> Host and Guest OS Kernel is enabled with CONFIG_SCHED_CORE=y
->
-> CGROUP Mapping:
-> ++++++++++++++++
-> We did follow the CGroup approach for Core Scheduling based on the below document
-> https://lkml.org/lkml/2021/1/22/1469
->  and configured the CGroup. But not able to find cpu.core_tag file in CGroups?
->
-> VM1 (Android OS running using qemu/KVM) is executed and its default cgroup is changed to caas1
-> VM2 (Android OS running using qemu/KVM) is executed and its default cgroup is changed to caas2
+Is that correct?
 
-It is not clear to me how the individual vCPU threads are tagged so it
-is hard to say much.
+If so, what you propose suggests "imem" could be listed twice.
+It doesn't make sense, and maybe it's precluded in other ways
+so that's OK.  But I'd be happy to update "sdm845.dtsi" to
+address your concern.  (Maybe that's something you would rather
+avoid?)
 
-> The changes are validated using htop command.
->
-> WorkLoad:
-> +++++++++
-> GeekBench 5.3.1 - Multi core Test executed on both the VMs
->
-> Observations:
-> ++++++++++++
-> As per core CORE_SCHEDULER documentation, (vCPU) Threads of VM1 & VM2 (belonging to two different cgroups ) should not be scheduled on the same core at a given time.
-> But we observe that vCPU Threads of different VMs are scheduled in the same core ( Used HTOP and ps commands)
+Also, I need to make a separate update to "sm8350.dtsi" because
+that was defined before I understood what I do now about the 
+interconnects.  It uses the wrong names, and should combine
+its first two interconnects into just one.
 
-I don't think these commands can really tell you that core scheduler
-is working or not. They are too coarse grained. You would need to look
-at it through ftrace scheduling events. Core scheduling will still
-allow differently tagged threads to use a core, it is just that it
-wont allow it simultaneously.
+					-Alex
 
-Also just to note, in ChromeOS, we are working on some changes to tag
-the whole Android VM with same tag (all vCPU threads in a single VM
-can share a core) which should improve performance. Previously we were
-putting different tags for each vCPU thread of the Android VM which
-seemed overkill.
+> 
+> Rob
+> 
+
