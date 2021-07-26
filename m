@@ -2,137 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1FC3D514F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 04:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3AE93D5153
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 04:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhGZBzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 21:55:40 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:59531 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231280AbhGZBzj (ORCPT
+        id S231462AbhGZCAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 22:00:24 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:15998 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231205AbhGZCAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 21:55:39 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UgvfLav_1627266964;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UgvfLav_1627266964)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Jul 2021 10:36:05 +0800
-Date:   Mon, 26 Jul 2021 10:36:03 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Message-ID: <YP4fk75mr/mIotDy@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
- <20210725221639.426565-1-agruenba@redhat.com>
+        Sun, 25 Jul 2021 22:00:22 -0400
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GY3wz5dMXzZrtD;
+        Mon, 26 Jul 2021 10:37:23 +0800 (CST)
+Received: from [10.40.166.221] (10.40.166.221) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 10:40:50 +0800
+Message-ID: <60FE20AC.3050400@hisilicon.com>
+Date:   Mon, 26 Jul 2021 10:40:44 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210725221639.426565-1-agruenba@redhat.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, "xuwei (O)" <xuwei5@huawei.com>
+Subject: Re: [PATCH 1/2] dts: hisilicon: add support for the PMIC found on
+ Hikey 970
+References: <cover.1627116285.git.mchehab+huawei@kernel.org> <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>
+In-Reply-To: <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.166.221]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 12:16:39AM +0200, Andreas Gruenbacher wrote:
-> Here's a fixed and cleaned up version that passes fstests on gfs2.
-> 
-> I see no reason why the combination of tail packing + writing should
-> cause any issues, so in my opinion, the check that disables that
-> combination in iomap_write_begin_inline should still be removed.
+Hi Mauro,
 
-Since there is no such fs for tail-packing write, I just do a wild
-guess, for example,
- 1) the tail-end block was not inlined, so iomap_write_end() dirtied
-    the whole page (or buffer) for the page writeback;
- 2) then it was truncated into a tail-packing inline block so the last
-    extent(page) became INLINE but dirty instead;
- 3) during the late page writeback for dirty pages,
-    if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
-    would be triggered in iomap_writepage_map() for such dirty page.
-
-As Matthew pointed out before,
-https://lore.kernel.org/r/YPrms0fWPwEZGNAL@casper.infradead.org/
-currently tail-packing inline won't interact with page writeback, but
-I'm afraid a supported tail-packing write fs needs to reconsider the
-whole stuff how page, inode writeback works and what the pattern is
-with the tail-packing.
-
+On 2021/7/24 16:55, Mauro Carvalho Chehab wrote:
+> Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
+> on HiKey970 board.
 > 
-> It turns out that returning the number of bytes copied from
-> iomap_read_inline_data is a bit irritating: the function is really used
-> for filling the page, but that's not always the "progress" we're looking
-> for.  In the iomap_readpage case, we actually need to advance by an
-> antire page, but in the iomap_file_buffered_write case, we need to
-> advance by the length parameter of iomap_write_actor or less.  So I've
-> changed that back.
+> As we now have support for it, change the fixed regulators
+> used by the SD I/O to use the proper LDO supplies.
 > 
-> I've also renamed iomap_inline_buf to iomap_inline_data and I've turned
-> iomap_inline_data_size_valid into iomap_within_inline_data, which seems
-> more useful to me.
-> 
-> Thanks,
-> Andreas
-> 
-> --
-> 
-> Subject: [PATCH] iomap: Support tail packing
-> 
-> The existing inline data support only works for cases where the entire
-> file is stored as inline data.  For larger files, EROFS stores the
-> initial blocks separately and then can pack a small tail adjacent to the
-> inode.  Generalise inline data to allow for tail packing.  Tails may not
-> cross a page boundary in memory.
-> 
-> We currently have no filesystems that support tail packing and writing,
-> so that case is currently disabled (see iomap_write_begin_inline).  I'm
-> not aware of any reason why this code path shouldn't work, however.
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Darrick J. Wong <djwong@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-> Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  fs/iomap/buffered-io.c | 34 +++++++++++++++++++++++-----------
->  fs/iomap/direct-io.c   | 11 ++++++-----
->  include/linux/iomap.h  | 22 +++++++++++++++++++++-
->  3 files changed, 50 insertions(+), 17 deletions(-)
+>  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
+>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 86 +++++++++++++++++++
+>  2 files changed, 89 insertions(+), 19 deletions(-)
+>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438bec..334bf98fdd4a 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
->  	struct readahead_control *rac;
+> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> index d8abf442ee7e..7c32f5fd5cc5 100644
+> --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> @@ -12,6 +12,7 @@
+>  
+>  #include "hi3670.dtsi"
+>  #include "hikey970-pinctrl.dtsi"
+> +#include "hikey970-pmic.dtsi"
+>  
+>  / {
+>  	model = "HiKey970";
+> @@ -39,23 +40,6 @@ memory@0 {
+>  		reg = <0x0 0x0 0x0 0x0>;
+>  	};
+>  
+> -	sd_1v8: regulator-1v8 {
+> -		compatible = "regulator-fixed";
+> -		regulator-name = "fixed-1.8V";
+> -		regulator-min-microvolt = <1800000>;
+> -		regulator-max-microvolt = <1800000>;
+> -		regulator-always-on;
+> -	};
+> -
+> -	sd_3v3: regulator-3v3 {
+> -		compatible = "regulator-fixed";
+> -		regulator-name = "fixed-3.3V";
+> -		regulator-min-microvolt = <3300000>;
+> -		regulator-max-microvolt = <3300000>;
+> -		regulator-boot-on;
+> -		regulator-always-on;
+> -	};
+> -
+>  	wlan_en: wlan-en-1-8v {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "wlan-en-regulator";
+> @@ -402,8 +386,8 @@ &dwmmc1 {
+>  	pinctrl-0 = <&sd_pmx_func
+>  		     &sd_clk_cfg_func
+>  		     &sd_cfg_func>;
+> -	vmmc-supply = <&sd_3v3>;
+> -	vqmmc-supply = <&sd_1v8>;
+> +	vmmc-supply = <&ldo16>;
+> +	vqmmc-supply = <&ldo9>;
+>  	status = "okay";
 >  };
 >  
-> -static void
-> -iomap_read_inline_data(struct inode *inode, struct page *page,
-> +static int iomap_read_inline_data(struct inode *inode, struct page *page,
->  		struct iomap *iomap)
->  {
-> -	size_t size = i_size_read(inode);
-> +	size_t size = i_size_read(inode) - iomap->offset;
+> diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> new file mode 100644
+> index 000000000000..970047f2dabd
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
+> + *
+> + * Copyright (C) 2020, Huawei Tech. Co., Ltd.
+> + */
+> +
+> +#include <dt-bindings/spmi/spmi.h>
+> +
+> +/ {
+> +	spmi: spmi@fff24000 {
+> +		compatible = "hisilicon,kirin970-spmi-controller";
+> +		#address-cells = <2>;
+> +		#size-cells = <0>;
+> +		status = "okay";
+> +		reg = <0x0 0xfff24000 0x0 0x1000>;
+> +		hisilicon,spmi-channel = <2>;
+> +
+> +		pmic: pmic@0 {
+> +			compatible = "hisilicon,hi6421-spmi";
 
-I wonder why you use i_size / iomap->offset here, and why you completely
-ignoring iomap->length field returning by fs.
+Should this be "hisilicon,hi6421-pmic" which is already in the binding document "mfd/hi6421.txt"?
+Others are OK to me.
+Thanks!
 
-Using i_size here instead of iomap->length seems coupling to me in the
-beginning (even currently in practice there is some limitation.)
-
-Thanks,
-Gao Xiang
+Best Regards,
+Wei
