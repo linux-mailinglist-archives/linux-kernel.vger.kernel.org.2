@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A759F3D62EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C89AD3D60C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238226AbhGZPlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38490 "EHLO mail.kernel.org"
+        id S237988AbhGZPYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237461AbhGZPXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9116160E09;
-        Mon, 26 Jul 2021 16:03:51 +0000 (UTC)
+        id S237573AbhGZPQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 308F360F02;
+        Mon, 26 Jul 2021 15:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315432;
-        bh=93/ygrkXGPdvffaLbMHMCEDDSXAGJSn/guApQwYNnvk=;
+        s=korg; t=1627314994;
+        bh=eZZBQ0hQLixfIx0ngE++QqALKOgwIbU6lo/WcK+LRA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WNBI2VwBYsJGQotuSaLAfy6oCSRNeEI3U56kKMkSmMjD8JB1+8uK/aAN7q6FDzvj6
-         kuRQfzb88Q5kEcvb4ul2z6Naj45MLGsgXgQ6h+Fs0ix0OQPYR8hgbf0hG4GrPGDjuW
-         ucgdWxRIexlsnZVq+n0PeShksK8HfzQmy2z4KXdw=
+        b=A4HNKYTMqyCF0goRdKtPCNnE55blj0JacBeTz9DxMc4ZZ+dpOOFN+/YZvp03fOo4X
+         F4IxS1SD24SsT/87WSOb2yqJ7zxo79XfpqKmToXRxpuLU5idfHHsD59aM4wM+R4XzG
+         ey4Wg2xPz0T3GYLTnh/BGQSxXOVhFboihQXRn9aY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 094/167] Revert "USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem"
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 046/108] net: sched: fix memory leak in tcindex_partial_destroy_work
 Date:   Mon, 26 Jul 2021 17:38:47 +0200
-Message-Id: <20210726153842.547054974@linuxfoundation.org>
+Message-Id: <20210726153833.165007842@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Palatin <vpalatin@chromium.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit f3a1a937f7b240be623d989c8553a6d01465d04f ]
+[ Upstream commit f5051bcece50140abd1a11a2d36dc3ec5484fc32 ]
 
-This reverts commit 0bd860493f81eb2a46173f6f5e44cc38331c8dbd.
+Syzbot reported memory leak in tcindex_set_parms(). The problem was in
+non-freed perfect hash in tcindex_partial_destroy_work().
 
-While the patch was working as stated,ie preventing the L850-GL LTE modem
-from crashing on some U3 wake-ups due to a race condition between the
-host wake-up and the modem-side wake-up, when using the MBIM interface,
-this would force disabling the USB runtime PM on the device.
+In tcindex_set_parms() new tcindex_data is allocated and some fields from
+old one are copied to new one, but not the perfect hash. Since
+tcindex_partial_destroy_work() is the destroy function for old
+tcindex_data, we need to free perfect hash to avoid memory leak.
 
-The increased power consumption is significant for LTE laptops,
-and given that with decently recent modem firmwares, when the modem hits
-the bug, it automatically recovers (ie it drops from the bus, but
-automatically re-enumerates after less than half a second, rather than being
-stuck until a power cycle as it was doing with ancient firmware), for
-most people, the trade-off now seems in favor of re-enabling it by
-default.
-
-For people with access to the platform code, the bug can also be worked-around
-successfully by changing the USB3 LFPM polling off-time for the XHCI
-controller in the BIOS code.
-
-Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
-Link: https://lore.kernel.org/r/20210721092516.2775971-1-vpalatin@chromium.org
-Fixes: 0bd860493f81 ("USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem")
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-and-tested-by: syzbot+f0bbb2287b8993d4fa74@syzkaller.appspotmail.com
+Fixes: 331b72922c5f ("net: sched: RCU cls_tcindex")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/quirks.c | 4 ----
- 1 file changed, 4 deletions(-)
+ net/sched/cls_tcindex.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 21e7522655ac..a54a735b6384 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -502,10 +502,6 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	/* DJI CineSSD */
- 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
+diff --git a/net/sched/cls_tcindex.c b/net/sched/cls_tcindex.c
+index 3e81f87d0c89..684187a1fdb9 100644
+--- a/net/sched/cls_tcindex.c
++++ b/net/sched/cls_tcindex.c
+@@ -278,6 +278,8 @@ static int tcindex_filter_result_init(struct tcindex_filter_result *r,
+ 			     TCA_TCINDEX_POLICE);
+ }
  
--	/* Fibocom L850-GL LTE Modem */
--	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
--			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
--
- 	/* INTEL VALUE SSD */
- 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
++static void tcindex_free_perfect_hash(struct tcindex_data *cp);
++
+ static void tcindex_partial_destroy_work(struct work_struct *work)
+ {
+ 	struct tcindex_data *p = container_of(to_rcu_work(work),
+@@ -285,7 +287,8 @@ static void tcindex_partial_destroy_work(struct work_struct *work)
+ 					      rwork);
  
+ 	rtnl_lock();
+-	kfree(p->perfect);
++	if (p->perfect)
++		tcindex_free_perfect_hash(p);
+ 	kfree(p);
+ 	rtnl_unlock();
+ }
 -- 
 2.30.2
 
