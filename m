@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3223D5987
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7A43D597F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234070AbhGZLtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:49:50 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36184 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233995AbhGZLtt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:49:49 -0400
-X-UUID: c6bdd2e5954943319e01f964410c6c68-20210726
-X-UUID: c6bdd2e5954943319e01f964410c6c68-20210726
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <christine.zhu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 910698119; Mon, 26 Jul 2021 20:30:13 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Jul 2021 20:30:12 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Jul 2021 20:30:11 +0800
-From:   Christine Zhu <Christine.Zhu@mediatek.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
-CC:     <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>,
-        Christine Zhu <Christine.Zhu@mediatek.com>
-Subject: [v7,1/3] dt-bindings: mediatek: mt8195: update mtk-wdt document
-Date:   Mon, 26 Jul 2021 20:29:00 +0800
-Message-ID: <20210726122901.12195-2-Christine.Zhu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210726122901.12195-1-Christine.Zhu@mediatek.com>
-References: <20210726122901.12195-1-Christine.Zhu@mediatek.com>
+        id S233982AbhGZLtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:49:17 -0400
+Received: from smtpbg126.qq.com ([106.55.201.22]:37830 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233859AbhGZLtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:49:16 -0400
+X-QQ-mid: bizesmtp32t1627302550tjpsdmuf
+Received: from ficus.lan (unknown [171.223.99.141])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 26 Jul 2021 20:29:08 +0800 (CST)
+X-QQ-SSF: 0100000000200090B000000A0000000
+X-QQ-FEAT: TU3YmX8YeZlr3Nmz/xxSsEKHOejKyWDkJFJmwM5Trfiyymw1SMHScRFOXMKBQ
+        Gfq1R7I14kJO8I7iPovmgcIVlIfLldZC+CuAk+JP67xMHmGpALRjKzcarJg46WYwfQQnjmG
+        qLsxUeYM+t4J4akxpuvPfHcAOvibueH6yXui+ECC5BmBSTQ6OxWdDDQpWwaL/p319rjt2er
+        u0oBzWuTqrRNp/+LLeLF5wV7tNiD6x40m1Hnb/jjxamM0D1YD+v+eGaTAQjQXmz/FdnDrUI
+        4vEe2Y4jIUQbLe3UFOJKeNVYPrUl6OqFUuPWLCVpy5drSfQlbOku3R63i39fqVzLOrdzBDW
+        7ple6fK4vFveBjKE98HH7G0IddlHg==
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     catalin.marinas@arm.com
+Cc:     will@kernel.org, jthierry@redhat.com, amit.kachhap@arm.com,
+        dave.martin@arm.com, mark.rutland@arm.com, tabba@google.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] arm64: use __func__ to get function name in pr_err
+Date:   Mon, 26 Jul 2021 20:29:07 +0800
+Message-Id: <20210726122907.51529-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update mtk-wdt document for MT8195 platform.
+Prefer using '"%s...", __func__' to get current function's name in
+a debug message.
 
-Signed-off-by: Christine Zhu <Christine.Zhu@mediatek.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/lib/insn.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-index e36ba60de829..ca9b67ab7c44 100644
---- a/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-+++ b/Documentation/devicetree/bindings/watchdog/mtk-wdt.txt
-@@ -13,6 +13,7 @@ Required properties:
- 	"mediatek,mt8183-wdt": for MT8183
- 	"mediatek,mt8516-wdt", "mediatek,mt6589-wdt": for MT8516
- 	"mediatek,mt8192-wdt": for MT8192
-+	"mediatek,mt8195-wdt": for MT8195
- 
- - reg : Specifies base physical address and size of the registers.
- 
+diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
+index b506a4b1e38c..fccfe363e567 100644
+--- a/arch/arm64/lib/insn.c
++++ b/arch/arm64/lib/insn.c
+@@ -185,7 +185,7 @@ u64 aarch64_insn_decode_immediate(enum aarch64_insn_imm_type type, u32 insn)
+ 		break;
+ 	default:
+ 		if (aarch64_get_imm_shift_mask(type, &mask, &shift) < 0) {
+-			pr_err("aarch64_insn_decode_immediate: unknown immediate encoding %d\n",
++			pr_err("%s: unknown immediate encoding %d\n", __func__,
+ 			       type);
+ 			return 0;
+ 		}
+@@ -215,7 +215,7 @@ u32 __kprobes aarch64_insn_encode_immediate(enum aarch64_insn_imm_type type,
+ 		break;
+ 	default:
+ 		if (aarch64_get_imm_shift_mask(type, &mask, &shift) < 0) {
+-			pr_err("aarch64_insn_encode_immediate: unknown immediate encoding %d\n",
++			pr_err("%s: unknown immediate encoding %d\n", __func__,
+ 			       type);
+ 			return AARCH64_BREAK_FAULT;
+ 		}
 -- 
-2.18.0
+2.32.0
 
