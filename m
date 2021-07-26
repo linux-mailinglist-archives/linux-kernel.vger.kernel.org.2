@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C793D6698
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22F53D6694
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhGZRiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:38:24 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:65462 "EHLO
+        id S232594AbhGZRiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:38:11 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:61524 "EHLO
         mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232481AbhGZRiA (ORCPT
+        by vger.kernel.org with ESMTP id S231207AbhGZRh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:38:00 -0400
+        Mon, 26 Jul 2021 13:37:59 -0400
 Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q9Xco1002242;
-        Mon, 26 Jul 2021 13:18:16 -0500
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q9Xco2002242;
+        Mon, 26 Jul 2021 13:18:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=PODMain02222019;
- bh=0rNnW8Z4b8XiJwqarrmg5DJkatkHbA93go00Slu2yVM=;
- b=aSlVQfB+x8s6Ow9laZ9l/PsFoMBdj8/5AmVdGBLAAaU1H+JlZyDE5KrXswP919VYMQne
- 2wXbvC++I6KByqwvu9eVbboXB4FN56/7o7BnUv4NHLWrCzpsreNyG+myOzKCNmYjz8N8
- LGwjMSZR3M9SH265AWc9h1VOXZcQMgyJ3ijQXe59UDDOItuHrPYTkpkkehdI7z6Xy1fj
- eTVJ6C5fJam1wVciHc/WiOv6yqh3UlL/H3EacwnM6e2c38tPm0oAzMv8E5u2gwQ1xq4v
- 3qb5MQxdGFeXe9idUb3yUu/ZZovQFDxxweT8RK6KPtIQqhDUkrKexk5gIySruJoTiO/J NQ== 
+ bh=jT3ehfJJFnaJFHyQnG+nRsZPrz0bW1wv94KleEgeMRg=;
+ b=Ys87cflz9VXPuKeuzgJ2wnmIWDslH9KuMm8+LGQuaeF3fzPQPXrBWauwYxt2Sw0+o9XQ
+ aD8gluNwKq8PgrdROaqORVi7Vlr0c5xN/ri4sv4XqRUglsm55MTy4KXctbo9nYlHwaTz
+ peXgGNLmafs8pPymTXO8SQQ4fTE/kd8bDMu2a/udBRgVq4WC1WJsP/IuuqkO8KHcaIsR
+ 1qkRjygrsfjNc8O8/saGyODLEBVyib3EgnbUWhhcD9eALkUxSitDBRWGo3wZEGSvdMWL
+ UhOpMveVZnUYIZamn2VlPav9zKW/luLRZNF6KCQbIgBtXFepUj+GRbWlVMzTCgts+1bL Ig== 
 Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3a1th2rhbh-2
+        by mx0b-001ae601.pphosted.com with ESMTP id 3a1th2rhbh-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 26 Jul 2021 13:18:16 -0500
+        Mon, 26 Jul 2021 13:18:17 -0500
 Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
  (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Jul
@@ -36,24 +36,24 @@ Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
  (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
  Transport; Mon, 26 Jul 2021 18:47:10 +0100
 Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AA7D345D;
-        Mon, 26 Jul 2021 17:47:09 +0000 (UTC)
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1F2732BA;
+        Mon, 26 Jul 2021 17:47:10 +0000 (UTC)
 From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
         <linux-kernel@vger.kernel.org>,
         Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH 19/27] ALSA: hda/cs8409: Support multiple sub_codecs for Suspend/Resume/Unsol events
-Date:   Mon, 26 Jul 2021 18:46:32 +0100
-Message-ID: <20210726174640.6390-20-vitalyr@opensource.cirrus.com>
+Subject: [PATCH 20/27] ALSA: hda/cs8409: Add Support to disable jack type detection for CS42L42
+Date:   Mon, 26 Jul 2021 18:46:33 +0100
+Message-ID: <20210726174640.6390-21-vitalyr@opensource.cirrus.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
 References: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: TG9mJv4bwLZneN--VwlB1znxOlcxk3qX
-X-Proofpoint-GUID: TG9mJv4bwLZneN--VwlB1znxOlcxk3qX
+X-Proofpoint-ORIG-GUID: fnplYm_4CbTmei6B9kx9oQhAaX68XPPW
+X-Proofpoint-GUID: fnplYm_4CbTmei6B9kx9oQhAaX68XPPW
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
  suspectscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
  spamscore=0 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
@@ -65,112 +65,142 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stefan Binding <sbinding@opensource.cirrus.com>
 
+Some hardware configurations do not support jack type detection.
+Instead, for those configurations, only tip detection is supported.
+
 Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
 Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
- sound/pci/hda/patch_cs8409.c | 41 ++++++++++++++++++++++++------------
- 1 file changed, 28 insertions(+), 13 deletions(-)
+ sound/pci/hda/patch_cs8409-tables.c |  1 +
+ sound/pci/hda/patch_cs8409.c        | 72 ++++++++++++++++-------------
+ sound/pci/hda/patch_cs8409.h        |  1 +
+ 3 files changed, 43 insertions(+), 31 deletions(-)
 
+diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
+index 117c70536ff0..be9feb84aaa2 100644
+--- a/sound/pci/hda/patch_cs8409-tables.c
++++ b/sound/pci/hda/patch_cs8409-tables.c
+@@ -246,6 +246,7 @@ struct sub_codec cs8409_cs42l42_codec = {
+ 	.mic_jack_in = 0,
+ 	.paged = 1,
+ 	.suspended = 1,
++	.no_type_dect = 0,
+ };
+ 
+ /******************************************************************************
 diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index df65a5908201..8f02724621bd 100644
+index 8f02724621bd..081e348b16ef 100644
 --- a/sound/pci/hda/patch_cs8409.c
 +++ b/sound/pci/hda/patch_cs8409.c
-@@ -364,16 +364,21 @@ static int cs8409_build_controls(struct hda_codec *codec)
- 	return 0;
+@@ -535,6 +535,39 @@ static void cs42l42_run_jack_detect(struct sub_codec *cs42l42)
+ 	usleep_range(10000, 25000);
  }
  
--/* Enable/Disable Unsolicited Response for gpio(s) 3,4 */
-+/* Enable/Disable Unsolicited Response */
- static void cs8409_enable_ur(struct hda_codec *codec, int flag)
++static int cs42l42_handle_tip_sense(struct sub_codec *cs42l42, unsigned int reg_ts_status)
++{
++	int status_changed = 0;
++
++	/* TIP_SENSE INSERT/REMOVE */
++	switch (reg_ts_status) {
++	case CS42L42_JACK_INSERTED:
++		if (!cs42l42->hp_jack_in) {
++			if (cs42l42->no_type_dect) {
++				status_changed = 1;
++				cs42l42->hp_jack_in = 1;
++				cs42l42->mic_jack_in = 0;
++			} else {
++				cs42l42_run_jack_detect(cs42l42);
++			}
++		}
++		break;
++
++	case CS42L42_JACK_REMOVED:
++		if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
++			status_changed = 1;
++			cs42l42->hp_jack_in = 0;
++			cs42l42->mic_jack_in = 0;
++		}
++		break;
++	default:
++		/* jack in transition */
++		break;
++	}
++
++	return status_changed;
++}
++
+ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
  {
--	/* GPIO4 INT# and GPIO3 WAKE# */
-+	struct cs8409_spec *spec = codec->spec;
-+	unsigned int ur_gpios = 0;
-+	int i;
-+
-+	for (i = 0; i < spec->num_scodecs; i++)
-+		ur_gpios |= spec->scodecs[i]->irq_mask;
-+
- 	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_UNSOLICITED_RSP_MASK,
--			    flag ? CS8409_CS42L42_INT : 0);
-+			    flag ? ur_gpios : 0);
+ 	int status_changed = 0;
+@@ -559,10 +592,13 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
+ 		cs8409_i2c_write(cs42l42, 0x131b, 0xFF);
  
- 	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_UNSOLICITED_ENABLE,
- 			    flag ? AC_UNSOL_ENABLED : 0);
+ 		type = ((reg_hs_status & CS42L42_HSTYPE_MASK) + 1);
+-		/* CS42L42 reports optical jack as type 4
+-		 * We don't handle optical jack
+-		 */
+-		if (type != 4) {
++
++		if (cs42l42->no_type_dect) {
++			status_changed = cs42l42_handle_tip_sense(cs42l42, reg_ts_status);
++		} else if (type == 4) {
++			/* Type 4 not supported	*/
++			status_changed = cs42l42_handle_tip_sense(cs42l42, CS42L42_JACK_REMOVED);
++		} else {
+ 			if (!cs42l42->hp_jack_in) {
+ 				status_changed = 1;
+ 				cs42l42->hp_jack_in = 1;
+@@ -572,37 +608,11 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
+ 				status_changed = 1;
+ 				cs42l42->mic_jack_in = 1;
+ 			}
+-		} else {
+-			if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
+-				status_changed = 1;
+-				cs42l42->hp_jack_in = 0;
+-				cs42l42->mic_jack_in = 0;
+-			}
+ 		}
 -
- }
- 
- static void cs8409_fix_caps(struct hda_codec *codec, unsigned int nid)
-@@ -605,6 +610,8 @@ static int cs42l42_jack_unsol_event(struct sub_codec *cs42l42)
- 
- static void cs42l42_resume(struct sub_codec *cs42l42)
- {
-+	struct hda_codec *codec = cs42l42->codec;
-+	unsigned int gpio_data;
- 	struct cs8409_i2c_param irq_regs[] = {
- 		{ 0x1308, 0x00 },
- 		{ 0x1309, 0x00 },
-@@ -612,6 +619,12 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
- 		{ 0x130F, 0x00 },
- 	};
- 
-+	/* Bring CS42L42 out of Reset */
-+	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
-+	gpio_data |= cs42l42->reset_gpio;
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, gpio_data);
-+	usleep_range(10000, 15000);
-+
- 	cs42l42->suspended = 0;
- 
- 	/* Initialize CS42L42 companion codec */
-@@ -637,10 +650,18 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
- #ifdef CONFIG_PM
- static void cs42l42_suspend(struct sub_codec *cs42l42)
- {
-+	struct hda_codec *codec = cs42l42->codec;
-+	unsigned int gpio_data;
-+
- 	/* Power down CS42L42 ASP/EQ/MIX/HP */
- 	cs8409_i2c_write(cs42l42, 0x1101, 0xfe);
- 	cs42l42->suspended = 1;
- 	cs42l42->last_page = 0;
-+
-+	/* Put CS42L42 into Reset */
-+	gpio_data = snd_hda_codec_read(codec, CS8409_PIN_AFG, 0, AC_VERB_GET_GPIO_DATA, 0);
-+	gpio_data &= ~cs42l42->reset_gpio;
-+	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, gpio_data);
- }
- #endif
- 
-@@ -691,13 +712,12 @@ static void cs8409_cs42l42_jack_unsol_event(struct hda_codec *codec, unsigned in
- static int cs8409_cs42l42_suspend(struct hda_codec *codec)
- {
- 	struct cs8409_spec *spec = codec->spec;
-+	int i;
- 
- 	cs8409_enable_ur(codec, 0);
- 
--	cs42l42_suspend(spec->scodecs[CS8409_CODEC0]);
+ 		/* Re-Enable Tip Sense Interrupt */
+ 		cs8409_i2c_write(cs42l42, 0x1320, 0xF3);
 -
--	/* Assert CS42L42 RTS# line */
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, 0);
-+	for (i = 0; i < spec->num_scodecs; i++)
-+		cs42l42_suspend(spec->scodecs[i]);
- 
- 	snd_hda_shutup_pins(codec);
- 
-@@ -736,11 +756,6 @@ static void cs8409_cs42l42_hw_init(struct hda_codec *codec)
- 	if (codec->fixup_id == CS8409_WARLOCK || codec->fixup_id == CS8409_CYBORG)
- 		cs8409_vendor_coef_set(codec, 0x09, 0x0003);
- 
--	/* Release RTS# line */
--	snd_hda_codec_write(codec, CS8409_PIN_AFG, 0, AC_VERB_SET_GPIO_DATA, CS8409_CS42L42_RESET);
--	/* wait ~10ms */
--	usleep_range(10000, 15000);
+ 	} else {
+-		/* TIP_SENSE INSERT/REMOVE */
+-		switch (reg_ts_status) {
+-		case CS42L42_JACK_INSERTED:
+-			cs42l42_run_jack_detect(cs42l42);
+-			break;
 -
- 	cs42l42_resume(cs42l42);
+-		case CS42L42_JACK_REMOVED:
+-			if (cs42l42->hp_jack_in || cs42l42->mic_jack_in) {
+-				status_changed = 1;
+-				cs42l42->hp_jack_in = 0;
+-				cs42l42->mic_jack_in = 0;
+-			}
+-			break;
+-
+-		default:
+-			/* jack in transition */
+-			status_changed = 0;
+-			break;
+-		}
++		status_changed = cs42l42_handle_tip_sense(cs42l42, reg_ts_status);
+ 	}
  
- 	/* Enable Unsolicited Response */
+ 	return status_changed;
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 817df295d594..a105c3c9023d 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -285,6 +285,7 @@ struct sub_codec {
+ 	unsigned int last_page;
+ 	unsigned int hsbias_hiz;
+ 	unsigned int full_scale_vol:1;
++	unsigned int no_type_dect:1;
+ 
+ 	s8 vol[CS42L42_VOLUMES];
+ };
 -- 
 2.25.1
 
