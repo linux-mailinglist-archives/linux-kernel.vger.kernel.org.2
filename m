@@ -2,44 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3B73D62C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C756D3D6324
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238004AbhGZPjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36974 "EHLO mail.kernel.org"
+        id S238964AbhGZPol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237305AbhGZPWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F27360F9F;
-        Mon, 26 Jul 2021 15:52:59 +0000 (UTC)
+        id S236885AbhGZPZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A946660F5B;
+        Mon, 26 Jul 2021 16:05:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314780;
-        bh=qNmkme/hzZvwmHvPudxMoe5eybR65lEqWdfOdiF6VZ8=;
+        s=korg; t=1627315560;
+        bh=2y2ViINwvaGBM9RBMV8CAqe3gdoJej9Jud5Trp+2Iks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oF0rnO3WU5FfgeOw0KZTd0lkX46/8KvQCtHV1aZ1KUyCsK3KePqS3H7dvnopbqpK2
-         6HmYQwDRHvfBeQ129yeQhXOwDqRXMm0IBQedPgUjgIxct8ZyqEgxtvsCAEGiFHShaQ
-         mOV8oyyi/Ed6pG45jSw3lLbzuB4msjolJWq1zvOo=
+        b=vJa9ckr6Ki/Br1D7fLPCIARIkx/nuJIhdCr6LA50LlcJPyaw02Z9aJP5TwjhqFHJy
+         I2aQBfVKksGObp31vzzONpqvzSPNs4PjXF//pi+OXAJ6tx51xq4aWI5/gS27PdhgsE
+         FN1g83diPUN/wmKnTTHWneb+KvgZPOUOPGPaMx3o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Disseldorp <ddiss@suse.de>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michel Lespinasse <walken@google.com>,
-        Helge Deller <deller@gmx.de>, Oleg Nesterov <oleg@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 089/120] proc: Avoid mixing integer types in mem_rw()
-Date:   Mon, 26 Jul 2021 17:39:01 +0200
-Message-Id: <20210726153835.241319440@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 109/167] ALSA: usb-audio: Add missing proc text entry for BESPOKEN type
+Date:   Mon, 26 Jul 2021 17:39:02 +0200
+Message-Id: <20210726153843.052761147@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,52 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit d238692b4b9f2c36e35af4c6e6f6da36184aeb3e ]
+commit 64752a95b702817602d72f109ceaf5ec0780e283 upstream.
 
-Use size_t when capping the count argument received by mem_rw(). Since
-count is size_t, using min_t(int, ...) can lead to a negative value
-that will later be passed to access_remote_vm(), which can cause
-unexpected behavior.
+Recently we've added a new usb_mixer element type, USB_MIXER_BESPOKEN,
+but it wasn't added in the table in snd_usb_mixer_dump_cval().  This
+is no big problem since each bespoken type should have its own dump
+method, but it still isn't disallowed to use the standard one, so we
+should cover it as well.  Along with it, define the table with the
+explicit array initializer for avoiding other pitfalls.
 
-Since we are capping the value to at maximum PAGE_SIZE, the conversion
-from size_t to int when passing it to access_remote_vm() as "len"
-shouldn't be a problem.
-
-Link: https://lkml.kernel.org/r/20210512125215.3348316-1-marcelo.cerri@canonical.com
-Reviewed-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Souza Cascardo <cascardo@canonical.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 785b6f29a795 ("ALSA: usb-audio: scarlett2: Fix wrong resume call")
+Reported-by: Pavel Machek <pavel@denx.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210714084836.1977-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/proc/base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/mixer.c |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 317a0762fc5f..e3f10c110b74 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -835,7 +835,7 @@ static ssize_t mem_rw(struct file *file, char __user *buf,
- 	flags = FOLL_FORCE | (write ? FOLL_WRITE : 0);
- 
- 	while (count > 0) {
--		int this_len = min_t(int, count, PAGE_SIZE);
-+		size_t this_len = min_t(size_t, count, PAGE_SIZE);
- 
- 		if (write && copy_from_user(page, buf, this_len)) {
- 			copied = -EFAULT;
--- 
-2.30.2
-
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -3274,7 +3274,15 @@ static void snd_usb_mixer_dump_cval(stru
+ {
+ 	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
+ 	static const char * const val_types[] = {
+-		"BOOLEAN", "INV_BOOLEAN", "S8", "U8", "S16", "U16", "S32", "U32",
++		[USB_MIXER_BOOLEAN] = "BOOLEAN",
++		[USB_MIXER_INV_BOOLEAN] = "INV_BOOLEAN",
++		[USB_MIXER_S8] = "S8",
++		[USB_MIXER_U8] = "U8",
++		[USB_MIXER_S16] = "S16",
++		[USB_MIXER_U16] = "U16",
++		[USB_MIXER_S32] = "S32",
++		[USB_MIXER_U32] = "U32",
++		[USB_MIXER_BESPOKEN] = "BESPOKEN",
+ 	};
+ 	snd_iprintf(buffer, "    Info: id=%i, control=%i, cmask=0x%x, "
+ 			    "channels=%i, type=\"%s\"\n", cval->head.id,
 
 
