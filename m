@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF6D3D69E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369493D69E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbhGZWTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 18:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        id S233804AbhGZWVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 18:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhGZWTc (ORCPT
+        with ESMTP id S233644AbhGZWVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 18:19:32 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF180C061757;
-        Mon, 26 Jul 2021 15:59:59 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id i10so10422413pla.3;
-        Mon, 26 Jul 2021 15:59:59 -0700 (PDT)
+        Mon, 26 Jul 2021 18:21:39 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DBBC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:02:06 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id c2-20020a0568303482b029048bcf4c6bd9so10243320otu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:02:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IgP1YWplDp3/09cvQQ0d2eAW1JPxMRhx9Jd4cef5V3E=;
-        b=eQAl1RXPI6I/QPb5dmHK3sSJfrW/33/Xd+Kq+ZHhRC+jWg/KgNZOApZ/JQhK/b4tcM
-         f1qBS4uW84HHhnxyahQnwsnOk6TeV1HVmF0yO6oZ898KgpEahR5N+sdrg+X1+VfFCl0K
-         qwC+oGx/hc4Ck8IVbvOMLHUMwUeIXgYaFT+Oj+zLZblC7w0Y6qY1rgcMgZq4uzSLRKTW
-         +awoE5DdCCWXlu137dLx92EfC9UDM3iU0vEUXbRGBxKjwCmO1pt/lsISLS2SSKvf5sYx
-         0I3neM8nIcFOXM3f1BOqwuSINJnC+K0ue18tjWWsOWYzDdX7vRJXkfsSFZ4ZrwcVQgCb
-         1iwQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=YQOUs6IHKvgmEEaJoamgZLDtUOOWcnZjqqyzNqPHtgA=;
+        b=X7ukQguYL+MKBPkBFhO7H5nfKnc70OCDuiDFR7YSf6QZLoLc4ReLFF6oY/7WEAPpeS
+         PFJCBGADy/cvzKcTOc1MuVUHe+mO9raKPlB3JjjxQuitmjuPBprCfWobERLCeG8YR46C
+         HBZgujM21DWWX2fFg3Zb81ftslEqmBez79Y5o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=IgP1YWplDp3/09cvQQ0d2eAW1JPxMRhx9Jd4cef5V3E=;
-        b=Qgh963A+bS1UjCsI6OktP/9yPMPEQTDLyiqjkU3hmHeqLiBzX/iEaLluk5N8vAaHDl
-         9ZVlKqpOz5NHC/wu7ojSVHq1YCweO2weqWbLU/taavDeYIixl/yFAJhmYb/8MSv6ZEeJ
-         7sZOiq19tGDQiCxZ1fqhdsobV2sHbncILU3YT1kk/w70RQRneHFKWN4vACd1mrmMxpun
-         TSR32q0iF5x68z6ctuAvsSkpwkZV/EpvgJ2671MeDRPwxLz90bC9e1I1L7nwU112LoG2
-         4a5IzzAkaFf/RfRgcMq73WWZSPr15SCnwEWT8U2JdYTXwHrtjjUz36jiBBfhQrvmcSR2
-         AisQ==
-X-Gm-Message-State: AOAM532WB6vNHxrDaXTK5QwKndkwxyGcU3Nw04lrnYs6EmkO3DFfnpms
-        uVFkU6cFC888IRLbr1pO590=
-X-Google-Smtp-Source: ABdhPJwW8ATQZ6+Bf0S14txqUH98V65/ygNpd2J5d3lf04ZO1JKEUx+F6lWKfQhfzUPrM3K3PBl2Ug==
-X-Received: by 2002:a63:1755:: with SMTP id 21mr20445764pgx.435.1627340399214;
-        Mon, 26 Jul 2021 15:59:59 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:428])
-        by smtp.gmail.com with ESMTPSA id a22sm1046354pfv.113.2021.07.26.15.59.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 15:59:58 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 26 Jul 2021 12:59:54 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: Re: [PATCH v3 2/9] cgroup/cpuset: Fix a partition bug with hotplug
-Message-ID: <YP8+ajTnvrha+0O6@mtj.duckdns.org>
-References: <20210720141834.10624-1-longman@redhat.com>
- <20210720141834.10624-3-longman@redhat.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=YQOUs6IHKvgmEEaJoamgZLDtUOOWcnZjqqyzNqPHtgA=;
+        b=TJbFqN70DFo64p6pNJ6UNT+HpJ01zFei7RBeJPnPiFkfs++DQGTUW1XXtwsPNFU1o8
+         7vtmogzlA38+pIGnmVr9okZGDu4WgM4tRMQ+NaPu73gSMKt+mclIs9i9MKw9oLg4WX+K
+         eCcrFkA3HVXkzpxYYIGWWpz1rus1cDr3Qy6iJv3MT0Ccw1VuZlHt8iNOyNNuIy3yZtx8
+         GycrpJYIyTw4sU/k+lKX7iWAcXDs00vylDpmfw2CdjucwGLPV55b+kggPU3Rj3P9TeFK
+         KZfc4vQX2FNaappH3ws5SlTHEbCobJx/Pq/TvtRYK/Rd9diq7Y1gfi8yyredylwlPwG5
+         S6LQ==
+X-Gm-Message-State: AOAM531e4aXxcv4LIgpTJE1gTcwZI99zdn5AGZh4Vcln2zI0PdaZP/qm
+        4Vl45NuaNtLCQ7m6ji8PT3DB1yz7eF4HQfQwgCmTaQ==
+X-Google-Smtp-Source: ABdhPJz5jt91J7s64KRcgC3G/srUYZuXPZrU0BBg8ga7AFXoIHLQ4iQUzviPocNr4D2zmNt8R5pRz0hfblCs9cIwm10=
+X-Received: by 2002:a9d:1b6e:: with SMTP id l101mr13153554otl.34.1627340525819;
+ Mon, 26 Jul 2021 16:02:05 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 26 Jul 2021 19:02:05 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720141834.10624-3-longman@redhat.com>
+In-Reply-To: <20210725031414.3961227-1-bjorn.andersson@linaro.org>
+References: <20210725031414.3961227-1-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 26 Jul 2021 19:02:05 -0400
+Message-ID: <CAE-0n51vBEUY4A0ed+sBDd1tWX2oBqW9PeeAttLordaBw174rg@mail.gmail.com>
+Subject: Re: [PATCH] interconnect: qcom: osm-l3: Use driver-specific naming
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Georgi Djakov <djakov@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 10:18:27AM -0400, Waiman Long wrote:
-> In cpuset_hotplug_workfn(), the detection of whether the cpu list
-> has been changed is done by comparing the effective cpus of the top
-> cpuset with the cpu_active_mask. However, in the rare case that just
-> all the CPUs in the subparts_cpus are offlined, the detection fails
-> and the partition states are not updated correctly. Fix it by forcing
-> the cpus_updated flag to true in this particular case.
-> 
-> Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition")
-> Signed-off-by: Waiman Long <longman@redhat.com>
+Quoting Bjorn Andersson (2021-07-24 20:14:14)
+> In situations were the developer screws up by e.g. not giving the OSM
+> nodes unique identifiers the interconnect framework might mix up nodes
+> between the OSM L3 provider and e.g. the RPMh provider.
+>
+> The resulting callstack containts "qcom_icc_set", which is not unique to
+> the OSM L3 provider driver. Once the faulting qcom_icc_set() is
+> identified it's further confusing that "qcom_icc_node" is different
+> between the different drivers.
+>
+> To avoid this confusion, rename the node struct and the setter in the
+> OSM L3 driver to include "osm_l3" in their names.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 
-Applied to cgroup/for-5.15 w/ a minor update to the comment (I dropped
-"just" before "all". It read weird to me.)
+Thanks
 
-Thanks.
-
--- 
-tejun
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
