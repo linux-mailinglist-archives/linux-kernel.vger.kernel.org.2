@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080B73D63FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1513D63F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239594AbhGZPxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48254 "EHLO mail.kernel.org"
+        id S239572AbhGZPxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233188AbhGZPcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FDF960F6B;
-        Mon, 26 Jul 2021 16:12:18 +0000 (UTC)
+        id S233455AbhGZPcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56AC561037;
+        Mon, 26 Jul 2021 16:12:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315938;
-        bh=W1bGz6A82bEqY/+wCZCf5+pdrKBaUCUwYowAFAan5c4=;
+        s=korg; t=1627315967;
+        bh=5lSxiK+hGUEirWAqQ+wJVLRjPB2jkunTjeVLjkNdWeQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L+ZVvKkYRyHsgdPRtdhlFtEXBN8qXeL+SLXEuURJ1mDnrJaejohVmenG46csLTbLL
-         Bod653PCGfdNwfVXWql1mcFszvpBMMdBS4JfiuevjAXAkjP/cRotL7pl5CtO+L8CPq
-         z/elegm5KXH2+mEt31/9iRpKE0/JHmW6CzDUZXGU=
+        b=qgSDRuklGXyREqLAjNTJF7peTQwZjEd68gQOWAprWg/ZUjkK2xRd7VKirX1LO7mzL
+         D/eo6zAZvvuwaZOsqmODOgkxEbq9k4uX/Kw9dM3rJonFcA4DZpKxmE4AFcauSlBNfV
+         QGhR1uxEbwJSa1FkcVxcf7+eUQ4H/RYVLUJLifUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 108/223] bnxt_en: Validate vlan protocol ID on RX packets
-Date:   Mon, 26 Jul 2021 17:38:20 +0200
-Message-Id: <20210726153849.812349524@linuxfoundation.org>
+Subject: [PATCH 5.13 109/223] bnxt_en: Check abort error state in bnxt_half_open_nic()
+Date:   Mon, 26 Jul 2021 17:38:21 +0200
+Message-Id: <20210726153849.843505188@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,67 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Somnath Kotur <somnath.kotur@broadcom.com>
 
-[ Upstream commit 96bdd4b9ea7ef9a12db8fdd0ce90e37dffbd3703 ]
+[ Upstream commit 11a39259ff79b74bc99f8b7c44075a2d6d5e7ab1 ]
 
-Only pass supported VLAN protocol IDs for stripped VLAN tags to the
-stack.  The stack will hit WARN() if the protocol ID is unsupported.
+bnxt_half_open_nic() is called during during ethtool self test and is
+protected by rtnl_lock.  Firmware reset can be happening at the same
+time.  Only critical portions of the entire firmware reset sequence
+are protected by the rtnl_lock.  It is possible that bnxt_half_open_nic()
+can be called when the firmware reset sequence is aborting.  In that
+case, bnxt_half_open_nic() needs to check if the ABORT_ERR flag is set
+and abort if it is.  The ethtool self test will fail but the NIC will be
+brought to a consistent IF_DOWN state.
 
-Existing firmware sets up the chip to strip 0x8100, 0x88a8, 0x9100.
-Only the 1st two protocols are supported by the kernel.
+Without this patch, if bnxt_half_open_nic() were to continue in this
+error state, it may crash like this:
 
-Fixes: a196e96bb68f ("bnxt_en: clean up VLAN feature bit handling")
-Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
+  bnxt_en 0000:82:00.1 enp130s0f1np1: FW reset in progress during close, FW reset will be aborted
+  Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+  ...
+  Process ethtool (pid: 333327, stack limit = 0x0000000046476577)
+  Call trace:
+  bnxt_alloc_mem+0x444/0xef0 [bnxt_en]
+  bnxt_half_open_nic+0x24/0xb8 [bnxt_en]
+  bnxt_self_test+0x2dc/0x390 [bnxt_en]
+  ethtool_self_test+0xe0/0x1f8
+  dev_ethtool+0x1744/0x22d0
+  dev_ioctl+0x190/0x3e0
+  sock_ioctl+0x238/0x480
+  do_vfs_ioctl+0xc4/0x758
+  ksys_ioctl+0x84/0xb8
+  __arm64_sys_ioctl+0x28/0x38
+  el0_svc_handler+0xb0/0x180
+  el0_svc+0x8/0xc
+
+Fixes: a1301f08c5ac ("bnxt_en: Check abort error state in bnxt_open_nic().")
+Signed-off-by: Somnath Kotur <somnath.kotur@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 49aca3289c00..be36dee65f90 100644
+index be36dee65f90..3c3aa9467310 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -1640,11 +1640,16 @@ static inline struct sk_buff *bnxt_tpa_end(struct bnxt *bp,
+@@ -10104,6 +10104,12 @@ int bnxt_half_open_nic(struct bnxt *bp)
+ {
+ 	int rc = 0;
  
- 	if ((tpa_info->flags2 & RX_CMP_FLAGS2_META_FORMAT_VLAN) &&
- 	    (skb->dev->features & BNXT_HW_FEATURE_VLAN_ALL_RX)) {
--		u16 vlan_proto = tpa_info->metadata >>
--			RX_CMP_FLAGS2_METADATA_TPID_SFT;
-+		__be16 vlan_proto = htons(tpa_info->metadata >>
-+					  RX_CMP_FLAGS2_METADATA_TPID_SFT);
- 		u16 vtag = tpa_info->metadata & RX_CMP_FLAGS2_METADATA_TCI_MASK;
- 
--		__vlan_hwaccel_put_tag(skb, htons(vlan_proto), vtag);
-+		if (eth_type_vlan(vlan_proto)) {
-+			__vlan_hwaccel_put_tag(skb, vlan_proto, vtag);
-+		} else {
-+			dev_kfree_skb(skb);
-+			return NULL;
-+		}
- 	}
- 
- 	skb_checksum_none_assert(skb);
-@@ -1865,9 +1870,15 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
- 	    (skb->dev->features & BNXT_HW_FEATURE_VLAN_ALL_RX)) {
- 		u32 meta_data = le32_to_cpu(rxcmp1->rx_cmp_meta_data);
- 		u16 vtag = meta_data & RX_CMP_FLAGS2_METADATA_TCI_MASK;
--		u16 vlan_proto = meta_data >> RX_CMP_FLAGS2_METADATA_TPID_SFT;
-+		__be16 vlan_proto = htons(meta_data >>
-+					  RX_CMP_FLAGS2_METADATA_TPID_SFT);
- 
--		__vlan_hwaccel_put_tag(skb, htons(vlan_proto), vtag);
-+		if (eth_type_vlan(vlan_proto)) {
-+			__vlan_hwaccel_put_tag(skb, vlan_proto, vtag);
-+		} else {
-+			dev_kfree_skb(skb);
-+			goto next_rx;
-+		}
- 	}
- 
- 	skb_checksum_none_assert(skb);
++	if (test_bit(BNXT_STATE_ABORT_ERR, &bp->state)) {
++		netdev_err(bp->dev, "A previous firmware reset has not completed, aborting half open\n");
++		rc = -ENODEV;
++		goto half_open_err;
++	}
++
+ 	rc = bnxt_alloc_mem(bp, false);
+ 	if (rc) {
+ 		netdev_err(bp->dev, "bnxt_alloc_mem err: %x\n", rc);
 -- 
 2.30.2
 
