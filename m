@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24F53D6212
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751523D6216
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235236AbhGZPeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
+        id S235468AbhGZPeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:34:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236734AbhGZPTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBCCF60FC2;
-        Mon, 26 Jul 2021 15:59:43 +0000 (UTC)
+        id S236660AbhGZPTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:19:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4782A60F70;
+        Mon, 26 Jul 2021 15:59:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315185;
-        bh=5GptvVDqDGk2+T5bVRm8Bb5a7W4M/jiq32URHTDy1Ik=;
+        s=korg; t=1627315191;
+        bh=AGq2x0t0KxaJNErco3NfpF3Q+7Djdn+ezKGvOUM6QRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NuoFTP6kavaSA1ftSLfKyRTMk39pb90okNYKAZe8N4nw+gGKILsYq+/wjR5NFuoEJ
-         Bmowe448ItQaK9IOpJFT0DJBFVwzyOXC7d36z7HpMAITejc/LPMT5H8xdt+mMk7XE3
-         uMn4HKU742TNg17deXdO9eoezpBVZl1RMvGbX7P8=
+        b=OjpQSD0+UhSVQ1v50xrtdBvr25eL87s8IvKT4cwCPl+aSRCJfB2w2VPaCMaOW3krB
+         OH7aaOLVFe5RHCTXQA2L4vKi4g89A30Sa78JL6DURJ8Y8QIvXgFRRKsU6CR0Q9iFV/
+         mdtrb3ZuGFWQqc85/VRxgqMCtjTFUyARnpzv2qbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
-        Robin Geuze <robin.geuze@nl.team.blue>
-Subject: [PATCH 5.4 098/108] rbd: always kick acquire on "acquired" and "released" notifications
-Date:   Mon, 26 Jul 2021 17:39:39 +0200
-Message-Id: <20210726153834.824288652@linuxfoundation.org>
+        stable@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Qiang Liu <cyruscyliu@gmail.com>,
+        iLifetruth <yixiaonn@gmail.com>
+Subject: [PATCH 5.4 099/108] nds32: fix up stack guard gap
+Date:   Mon, 26 Jul 2021 17:39:40 +0200
+Message-Id: <20210726153834.856134642@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 References: <20210726153831.696295003@linuxfoundation.org>
@@ -39,71 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Dryomov <idryomov@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 8798d070d416d18a75770fc19787e96705073f43 upstream.
+commit c453db6cd96418c79702eaf38259002755ab23ff upstream.
 
-Skipping the "lock has been released" notification if the lock owner
-is not what we expect based on owner_cid can lead to I/O hangs.
-One example is our own notifications: because owner_cid is cleared
-in rbd_unlock(), when we get our own notification it is processed as
-unexpected/duplicate and maybe_kick_acquire() isn't called.  If a peer
-that requested the lock then doesn't go through with acquiring it,
-I/O requests that came in while the lock was being quiesced would
-be stalled until another I/O request is submitted and kicks acquire
-from rbd_img_exclusive_lock().
+Commit 1be7107fbe18 ("mm: larger stack guard gap, between vmas") fixed
+up all architectures to deal with the stack guard gap.  But when nds32
+was added to the tree, it forgot to do the same thing.
 
-This makes the comment in rbd_release_lock() actually true: prior to
-this change the canceled work was being requeued in response to the
-"lock has been acquired" notification from rbd_handle_acquired_lock().
+Resolve this by properly fixing up the nsd32's version of
+arch_get_unmapped_area()
 
-Cc: stable@vger.kernel.org # 5.3+
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Tested-by: Robin Geuze <robin.geuze@nl.team.blue>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Vincent Chen <deanbo422@gmail.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Qiang Liu <cyruscyliu@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Reported-by: iLifetruth <yixiaonn@gmail.com>
+Acked-by: Hugh Dickins <hughd@google.com>
+Link: https://lore.kernel.org/r/20210629104024.2293615-1-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/rbd.c |   20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+ arch/nds32/mm/mmap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/block/rbd.c
-+++ b/drivers/block/rbd.c
-@@ -4340,15 +4340,11 @@ static void rbd_handle_acquired_lock(str
- 	if (!rbd_cid_equal(&cid, &rbd_empty_cid)) {
- 		down_write(&rbd_dev->lock_rwsem);
- 		if (rbd_cid_equal(&cid, &rbd_dev->owner_cid)) {
--			/*
--			 * we already know that the remote client is
--			 * the owner
--			 */
--			up_write(&rbd_dev->lock_rwsem);
--			return;
-+			dout("%s rbd_dev %p cid %llu-%llu == owner_cid\n",
-+			     __func__, rbd_dev, cid.gid, cid.handle);
-+		} else {
-+			rbd_set_owner_cid(rbd_dev, &cid);
- 		}
--
--		rbd_set_owner_cid(rbd_dev, &cid);
- 		downgrade_write(&rbd_dev->lock_rwsem);
- 	} else {
- 		down_read(&rbd_dev->lock_rwsem);
-@@ -4373,14 +4369,12 @@ static void rbd_handle_released_lock(str
- 	if (!rbd_cid_equal(&cid, &rbd_empty_cid)) {
- 		down_write(&rbd_dev->lock_rwsem);
- 		if (!rbd_cid_equal(&cid, &rbd_dev->owner_cid)) {
--			dout("%s rbd_dev %p unexpected owner, cid %llu-%llu != owner_cid %llu-%llu\n",
-+			dout("%s rbd_dev %p cid %llu-%llu != owner_cid %llu-%llu\n",
- 			     __func__, rbd_dev, cid.gid, cid.handle,
- 			     rbd_dev->owner_cid.gid, rbd_dev->owner_cid.handle);
--			up_write(&rbd_dev->lock_rwsem);
--			return;
-+		} else {
-+			rbd_set_owner_cid(rbd_dev, &rbd_empty_cid);
- 		}
--
--		rbd_set_owner_cid(rbd_dev, &rbd_empty_cid);
- 		downgrade_write(&rbd_dev->lock_rwsem);
- 	} else {
- 		down_read(&rbd_dev->lock_rwsem);
+--- a/arch/nds32/mm/mmap.c
++++ b/arch/nds32/mm/mmap.c
+@@ -59,7 +59,7 @@ arch_get_unmapped_area(struct file *filp
+ 
+ 		vma = find_vma(mm, addr);
+ 		if (TASK_SIZE - len >= addr &&
+-		    (!vma || addr + len <= vma->vm_start))
++		    (!vma || addr + len <= vm_start_gap(vma)))
+ 			return addr;
+ 	}
+ 
 
 
