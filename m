@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7551F3D59E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA073D59E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhGZMO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:14:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50538 "EHLO mail.kernel.org"
+        id S234307AbhGZMPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:15:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234072AbhGZMO6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:14:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C8B660560;
-        Mon, 26 Jul 2021 12:55:25 +0000 (UTC)
+        id S234179AbhGZMPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:15:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9168D60F57;
+        Mon, 26 Jul 2021 12:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627304127;
-        bh=SvHETjbCjm62MjuEzBsd3mDcLj9X307g2brRkgRpJsQ=;
+        s=k20201202; t=1627304129;
+        bh=xtJus25PbSxnqcNCERKn5vxKOyVzPZzDAWtGW0CsVjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bNRpq/gqLaNo7koqE0E6QboXlSycaO31X9MHHXUM1mr8BR2RXLP212lH0L44CX4Tg
-         g65yzwPMTeAwtufZnW3SnOEs2RNQfSjirQ6ZwFsIOEY2Z2dYBxxIKzT5Ap+rY+HW3L
-         X6BJtFniLQ2yOYRIneZqHE4RM9fZACLUzMt7jFtDiAN1hMg17A8zgcK9qzY3uP1l/+
-         SSTlRCj+dsxZd3fqli3QUfyvaoHYPJ1kdilfY41P/eWcdkJTef95BOaoMd3aCm+iVy
-         Jhr/fKz+DB5Zhn2uzvfpR6POTHEu16aH9a5kdK8vf1zGt/1D/X4g0RfmVXjykiUUGk
-         l3DHMUtRhtSyg==
+        b=iGuJFNYWwSMth3CbcjVFECYvhMbCIx7pMJ/BHno9tGzJ/eUoIPjdYRQksduhRgHTx
+         lUix23vMCK+foniV/ofv5ch2tkD599tTNFpd1gY06P61iTxpKMC1hBAfHSPlWaxjz6
+         wRY15ZK9Hr8hlFoVmg3S90ricnx9gR2NV58+8CTMdVGVAoKoO+yo47C2KzMp/UIfPy
+         1OJwrY7OuNjjdU5widKL8XkQwTP495mtw8rLl+eLxKGULq3zYUm9IexrPaeyokaDry
+         P6YLC5lRy6FtVdQw8/Sgr1/MWMyP5V4de4o6Nwn5zziPrkECUHby+rO2XMe3DU9cOv
+         Qdzdie5j3yI/g==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>
@@ -31,9 +31,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         "Eric W . Biederman" <ebiederm@xmission.com>,
         Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH 1/6] posix-cpu-timers: Assert task sighand is locked while starting cputime counter
-Date:   Mon, 26 Jul 2021 14:55:08 +0200
-Message-Id: <20210726125513.271824-2-frederic@kernel.org>
+Subject: [PATCH 2/6] posix-cpu-timers: Force next_expiration recalc after timer deletion
+Date:   Mon, 26 Jul 2021 14:55:09 +0200
+Message-Id: <20210726125513.271824-3-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210726125513.271824-1-frederic@kernel.org>
 References: <20210726125513.271824-1-frederic@kernel.org>
@@ -43,15 +43,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting the process wide cputime counter needs to be done in the same
-sighand locking sequence than actually arming the related timer
-otherwise we risk races against concurrent timers setting/expiring
-in the same threadgroup.
+A timer deletion only dequeues the timer but it doesn't shutdown
+the related costly process wide cputimer counter and the tick dependency.
 
-Detecting that we start the cputime counter without holding the sighand
-lock is a first step toward debugging such situations.
+The following code snippet keeps this overhead around for one week after
+the timer deletion:
 
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+	void trigger_process_counter(void)
+	{
+		timer_t id;
+		struct itimerspec val = { };
+
+		val.it_value.tv_sec = 604800;
+		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
+		timer_settime(id, 0, &val, NULL);
+		timer_delete(id);
+	}
+
+Make sure the next target's tick recalculates the nearest expiration and
+clears the process wide counter and tick dependency if necessary.
+
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Cc: Oleg Nesterov <oleg@redhat.com>
@@ -59,67 +70,81 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Eric W. Biederman <ebiederm@xmission.com>
 ---
- include/linux/sched/signal.h   |  6 ++++++
- kernel/signal.c                | 15 +++++++++++++++
- kernel/time/posix-cpu-timers.c |  2 ++
- 3 files changed, 23 insertions(+)
+ include/linux/posix-timers.h   |  4 +++-
+ kernel/time/posix-cpu-timers.c | 33 ++++++++++++++++++++++++++++++++-
+ 2 files changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index b9126fe06c3f..0310a5add9ab 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -714,6 +714,12 @@ static inline void unlock_task_sighand(struct task_struct *task,
- 	spin_unlock_irqrestore(&task->sighand->siglock, *flags);
+diff --git a/include/linux/posix-timers.h b/include/linux/posix-timers.h
+index 896c16d2c5fb..4cf1fbe8d1bc 100644
+--- a/include/linux/posix-timers.h
++++ b/include/linux/posix-timers.h
+@@ -82,12 +82,14 @@ static inline bool cpu_timer_enqueue(struct timerqueue_head *head,
+ 	return timerqueue_add(head, &ctmr->node);
  }
  
-+#ifdef CONFIG_LOCKDEP
-+extern void lockdep_assert_task_sighand_held(struct task_struct *task);
-+#else
-+static inline void lockdep_assert_task_sighand_held(struct task_struct *task) { }
-+#endif
-+
- static inline unsigned long task_rlimit(const struct task_struct *task,
- 		unsigned int limit)
+-static inline void cpu_timer_dequeue(struct cpu_timer *ctmr)
++static inline bool cpu_timer_dequeue(struct cpu_timer *ctmr)
  {
-diff --git a/kernel/signal.c b/kernel/signal.c
-index a3229add4455..52b6abec0ff8 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1413,6 +1413,21 @@ struct sighand_struct *__lock_task_sighand(struct task_struct *tsk,
- 	return sighand;
+ 	if (ctmr->head) {
+ 		timerqueue_del(ctmr->head, &ctmr->node);
+ 		ctmr->head = NULL;
++		return true;
+ 	}
++	return false;
  }
  
-+#ifdef CONFIG_LOCKDEP
-+void lockdep_assert_task_sighand_held(struct task_struct *task)
-+{
-+	struct sighand_struct *sighand;
-+
-+	rcu_read_lock();
-+	sighand = rcu_dereference(task->sighand);
-+	if (sighand)
-+		lockdep_assert_held(&sighand->siglock);
-+	else
-+		WARN_ON_ONCE(1);
-+	rcu_read_unlock();
-+}
-+#endif
-+
- /*
-  * send signal info to all the members of a group
-  */
+ static inline u64 cpu_timer_getexpires(struct cpu_timer *ctmr)
 diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index 517be7fd175e..4693d3c71e7e 100644
+index 4693d3c71e7e..61c78b62fe6a 100644
 --- a/kernel/time/posix-cpu-timers.c
 +++ b/kernel/time/posix-cpu-timers.c
-@@ -291,6 +291,8 @@ static void thread_group_start_cputime(struct task_struct *tsk, u64 *samples)
- 	struct thread_group_cputimer *cputimer = &tsk->signal->cputimer;
- 	struct posix_cputimers *pct = &tsk->signal->posix_cputimers;
+@@ -407,6 +407,37 @@ static int posix_cpu_timer_create(struct k_itimer *new_timer)
+ 	return 0;
+ }
  
-+	lockdep_assert_task_sighand_held(tsk);
++/*
++ * Dequeue the timer and reset the base if it was its earliest expiration.
++ * It makes sure the next tick recalculates the base next expiration so we
++ * don't keep the costly process wide cputime counter around for a random
++ * amount of time, along with the tick dependency.
++ *
++ * If another timer gets queued between this and the next tick, its
++ * expiration will update the base next event if necessary on the next
++ * tick.
++ */
++static void disarm_timer(struct k_itimer *timer, struct task_struct *p)
++{
++	struct cpu_timer *ctmr = &timer->it.cpu;
++	struct posix_cputimer_base *base;
++	int clkidx;
 +
- 	/* Check if cputimer isn't running. This is accessed without locking. */
- 	if (!READ_ONCE(pct->timers_active)) {
- 		struct task_cputime sum;
++	if (!cpu_timer_dequeue(ctmr))
++		return;
++
++	clkidx = CPUCLOCK_WHICH(timer->it_clock);
++
++	if (CPUCLOCK_PERTHREAD(timer->it_clock))
++		base = p->posix_cputimers.bases + clkidx;
++	else
++		base = p->signal->posix_cputimers.bases + clkidx;
++
++	if (cpu_timer_getexpires(ctmr) == base->nextevt)
++		base->nextevt = 0;
++}
++
++
+ /*
+  * Clean up a CPU-clock timer that is about to be destroyed.
+  * This is called from timer deletion with the timer already locked.
+@@ -441,7 +472,7 @@ static int posix_cpu_timer_del(struct k_itimer *timer)
+ 		if (timer->it.cpu.firing)
+ 			ret = TIMER_RETRY;
+ 		else
+-			cpu_timer_dequeue(ctmr);
++			disarm_timer(timer, p);
+ 
+ 		unlock_task_sighand(p, &flags);
+ 	}
 -- 
 2.25.1
 
