@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56D93D5D63
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B883D5DBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbhGZPBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39992 "EHLO mail.kernel.org"
+        id S235770AbhGZPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235367AbhGZPBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:01:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39116604DC;
-        Mon, 26 Jul 2021 15:41:34 +0000 (UTC)
+        id S235284AbhGZPCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3622960F38;
+        Mon, 26 Jul 2021 15:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314095;
-        bh=Mxcu6ZoSFLi/nLaZ8Wrf0RDQDHnxD3Pp8+kBXYmDzxU=;
+        s=korg; t=1627314179;
+        bh=Ptn/D3BKAPwThCszw8ZpXF1NedydCCKuyQP5zXLUWnw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oy+gkKtJKh5FSdU5IG59jsL9YrnXKl5F35dULyfkG4MvJj8DjhOfniH5iUTOdjIQP
-         bVs6XGynBDzlwBAvQAE2jEKB/StMAigpnyw9fBzNwBu4GgrBtvM+nVZQFWRXQO1aK8
-         6tdyKa779OdQH7ssJdRlosp0hlailaXn+flZE2W0=
+        b=ERgmLugc6AmCfVn0otxMi5fdQUcgx0RCMy6K4r01sdRACBWy2TThhAsmChJsu15nZ
+         o6cJxWfThyJ3iM2XYkPA3U9hvJHiRzISrt1vO/zSDg5i4m5iAL78Kz26gUTnAGppAL
+         WHyW1gA9P+piocnAZotA25Ih/qQzFaDgXk2BbhhU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ben Segall <bsegall@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 09/47] Revert "memory: fsl_ifc: fix leak of IO mapping on probe failure"
-Date:   Mon, 26 Jul 2021 17:38:27 +0200
-Message-Id: <20210726153823.276462469@linuxfoundation.org>
+Subject: [PATCH 4.9 14/60] sched/fair: Fix CFS bandwidth hrtimer expiry type
+Date:   Mon, 26 Jul 2021 17:38:28 +0200
+Message-Id: <20210726153825.317513769@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Odin Ugedal <odin@uged.al>
 
-This reverts commit b7a2bcb4a3731d68f938207f75ed3e1d41774510 which is
-commit 3b132ab67fc7a358fff35e808fa65d4bea452521 upstream.
+[ Upstream commit 72d0ad7cb5bad265adb2014dbe46c4ccb11afaba ]
 
-As reported, it breaks the build, the 'gregs' field is not in the 4.4.y
-kernel tree.
+The time remaining until expiry of the refresh_timer can be negative.
+Casting the type to an unsigned 64-bit value will cause integer
+underflow, making the runtime_refresh_within return false instead of
+true. These situations are rare, but they do happen.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210721144845.GA3445926@roeck-us.net
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This does not cause user-facing issues or errors; other than
+possibly unthrottling cfs_rq's using runtime from the previous period(s),
+making the CFS bandwidth enforcement less strict in those (special)
+situations.
+
+Signed-off-by: Odin Ugedal <odin@uged.al>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Ben Segall <bsegall@google.com>
+Link: https://lore.kernel.org/r/20210629121452.18429-1-odin@uged.al
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/fsl_ifc.c |    4 ++--
+ kernel/sched/fair.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/memory/fsl_ifc.c
-+++ b/drivers/memory/fsl_ifc.c
-@@ -228,7 +228,8 @@ static int fsl_ifc_ctrl_probe(struct pla
- 	fsl_ifc_ctrl_dev->regs = of_iomap(dev->dev.of_node, 0);
- 	if (!fsl_ifc_ctrl_dev->regs) {
- 		dev_err(&dev->dev, "failed to get memory region\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err;
- 	}
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 5a349fcb634e..39b59248d9c3 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4196,7 +4196,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
+ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
+ {
+ 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
+-	u64 remaining;
++	s64 remaining;
  
- 	version = ifc_in32(&fsl_ifc_ctrl_dev->regs->ifc_rev) &
-@@ -305,7 +306,6 @@ err_irq:
- 	free_irq(fsl_ifc_ctrl_dev->irq, fsl_ifc_ctrl_dev);
- 	irq_dispose_mapping(fsl_ifc_ctrl_dev->irq);
- err:
--	iounmap(fsl_ifc_ctrl_dev->gregs);
- 	return ret;
- }
+ 	/* if the call-back is running a quota refresh is already occurring */
+ 	if (hrtimer_callback_running(refresh_timer))
+@@ -4204,7 +4204,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
  
+ 	/* is a quota refresh about to occur? */
+ 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
+-	if (remaining < min_expire)
++	if (remaining < (s64)min_expire)
+ 		return 1;
+ 
+ 	return 0;
+-- 
+2.30.2
+
 
 
