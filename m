@@ -2,178 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD853D54D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988B93D54D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhGZHWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232435AbhGZHWK (ORCPT
+        id S232917AbhGZHXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:23:04 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:38487 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232684AbhGZHXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:22:10 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738A8C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 01:02:23 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id b21so10238305ljo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 01:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nBC+AAdhNSp6Y9PCeNESZDrAjbJvLVNma/9NfsdXY8Q=;
-        b=AXP8voMcitYr0FtY19uK6rPp9WgozJUcA/Z+cX/hXU4xDU77JzIPu0wMKOeI15djiG
-         HisdjAnSIvZLpxqpCQaCCCkN6xPnuESllQ4+5pvuNQqMPqi2xMzBefZqP5qYLW143+bl
-         J4xthycSsZ19yOHBcO/Gq9BD/nTkSzXWhnXMc=
+        Mon, 26 Jul 2021 03:23:02 -0400
+Received: by mail-vs1-f53.google.com with SMTP id x21so4768195vsx.5;
+        Mon, 26 Jul 2021 01:03:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nBC+AAdhNSp6Y9PCeNESZDrAjbJvLVNma/9NfsdXY8Q=;
-        b=B1Sx8zr3ql2LyYMF6iCCmQNzPGenIj5ld7QayfGdqIDDf9wRbLFxJUI9Ne83aGuZwx
-         dQqYP3AKVCmNtYwuPAK4bU+2C05zzMTqhSnoe9HkmAVukL7VO6QnrmB/dm4VhckFFXjg
-         N9UBe7oUIO8fAt9qZ4BfjPCitYqZ3XyMdzZX95ScvD9R00ATFidC9g9cCI6i4/4EKbuf
-         +FOyvpqry2WFcm0+65gTmFzV/CMC48dIEfUFI//UaQQ2S5LNBkp4u1Bu3Rp5re2wqIFG
-         GK/EagYox40pOIHQ6OrPldJRufjf+h874pY6UMKQ8TjM0o2nRAGIumf00AEwsPiZvpac
-         5ljg==
-X-Gm-Message-State: AOAM532yOdXAOsuXNCVA4HkcbchrDZ48fImVim/5aVoOtMA1vi19DtYz
-        cycUhGYKatoRqlxQOR643Gi2pQCsOJ1Cbvv02lZFC1I4W5sulCNX
-X-Google-Smtp-Source: ABdhPJwYvdNT594j5uoh7LhyYxtS6ye0Z/3uprl22Skc07KrFd35T1KpwcWE3PdCoIKu/2m3rCsleSWx5M/7mH2uzx8=
-X-Received: by 2002:a2e:760d:: with SMTP id r13mr11728695ljc.437.1627286540610;
- Mon, 26 Jul 2021 01:02:20 -0700 (PDT)
+        bh=/noyZVTkaQHv6vOLUtBghVzxTPdSaltUw4+X2m/ShNY=;
+        b=celWk8qjEwrLbUP2WGsqMakjwfggMHGp8XXZun+4hgKfAFXPVIM7aDjwWDCirzecfz
+         55KhmHyZAh8/GFNV7iiaD3TPy2xn3LTsvBaO4T1nsF2iveFq0osFJNZXNLyqxj6w18Cx
+         /NGObxKW4GQkARMVLG1TeD001WGwNivWyBgl5lmiquRd1I9tThXm++IIPf3zCwe/J85B
+         6E4h2/uyBZYTfXnBpgPj0V/7mMJjDi3MwjPU7C4Z2RzqDxiA0kIVoOxRMhVok0XJjQkC
+         oeWRhQulDMgYI6RinUAotZXWqMGNbMj9exwE0aLKb+K63Ons9MugZHj7D5IBk74RYjLb
+         yTnA==
+X-Gm-Message-State: AOAM5309qKR53cWCXVWHiUQUt1ROw3bxkHGqvLf9Trm2leePORcEpS/5
+        cachTVuampAYtkUhOVy6K3NUPJpvodpxVemMFz4=
+X-Google-Smtp-Source: ABdhPJzf+Z6S4cuujdybUhVIxuK2plpAsbI4m9JBxyuIUXfPLjSJnu6lZhHstcUseJO/BJfLNFr8+CQuFiThWHDaX5M=
+X-Received: by 2002:a67:7789:: with SMTP id s131mr8212743vsc.40.1627286609931;
+ Mon, 26 Jul 2021 01:03:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210710081722.1828-1-zhiyong.tao@mediatek.com>
- <20210710081722.1828-2-zhiyong.tao@mediatek.com> <CAGXv+5GXg0RuOQkh4vaRmcLpehZiXnEUXBvEaObiatAa1sXvaA@mail.gmail.com>
- <1626940470.29611.9.camel@mhfsdcap03>
-In-Reply-To: <1626940470.29611.9.camel@mhfsdcap03>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 26 Jul 2021 16:02:09 +0800
-Message-ID: <CAGXv+5F_-W4aNt0WVSDBGLo_t8orNUq59GMKk_4xVr+hMb9Ctg@mail.gmail.com>
-Subject: Re: [PATCH v10 1/2] dt-bindings: pinctrl: mt8195: add rsel define
-To:     zhiyong tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>, mark.rutland@arm.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com, Eddie Huang <eddie.huang@mediatek.com>,
-        light.hsieh@mediatek.com, biao.huang@mediatek.com,
-        hongzhou.yang@mediatek.com, sean.wang@mediatek.com,
-        seiya.wang@mediatek.com, devicetree@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org
+References: <20210725151434.7122-1-len.baker@gmx.com>
+In-Reply-To: <20210725151434.7122-1-len.baker@gmx.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 26 Jul 2021 10:03:18 +0200
+Message-ID: <CAMuHMdUdmv+YmdtjGJV2Lp_Rvar4kN4uSgSTYqXX9CtCJ+qoRw@mail.gmail.com>
+Subject: Re: [PATCH] drivers/soc: Remove all strcpy() uses in favor of strscpy()
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Kees Cook <keescook@chromium.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        linux-hardening@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 22, 2021 at 3:54 PM zhiyong tao <zhiyong.tao@mediatek.com> wrote:
+Hi Len,
+
+On Sun, Jul 25, 2021 at 5:15 PM Len Baker <len.baker@gmx.com> wrote:
+> strcpy() performs no bounds checking on the destination buffer. This
+> could result in linear overflows beyond the end of the buffer, leading
+> to all kinds of misbehaviors. The safe replacement is strscpy().
 >
-> On Tue, 2021-07-13 at 15:17 +0800, Chen-Yu Tsai wrote:
-> > Hi,
-> >
-> > On Sat, Jul 10, 2021 at 4:17 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
-> > >
-> > > This patch adds rsel define for mt8195.
-> > >
-> > > Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
-> > > ---
-> > >  include/dt-bindings/pinctrl/mt65xx.h | 9 +++++++++
-> > >  1 file changed, 9 insertions(+)
-> > >
-> > > diff --git a/include/dt-bindings/pinctrl/mt65xx.h b/include/dt-bindings/pinctrl/mt65xx.h
-> > > index 7e16e58fe1f7..f5934abcd1bd 100644
-> > > --- a/include/dt-bindings/pinctrl/mt65xx.h
-> > > +++ b/include/dt-bindings/pinctrl/mt65xx.h
-> > > @@ -16,6 +16,15 @@
-> > >  #define MTK_PUPD_SET_R1R0_10 102
-> > >  #define MTK_PUPD_SET_R1R0_11 103
-> > >
-> > > +#define MTK_PULL_SET_RSEL_000  200
-> > > +#define MTK_PULL_SET_RSEL_001  201
-> > > +#define MTK_PULL_SET_RSEL_010  202
-> > > +#define MTK_PULL_SET_RSEL_011  203
-> > > +#define MTK_PULL_SET_RSEL_100  204
-> > > +#define MTK_PULL_SET_RSEL_101  205
-> > > +#define MTK_PULL_SET_RSEL_110  206
-> > > +#define MTK_PULL_SET_RSEL_111  207
-> > > +
-> >
-> > Instead of all the obscure macros and the new custom "rsel" property,
-> > which BTW is not in the bindings, can't we just list the actual bias
-> > resistance of each setting? We could also migrate away from R1R0.
-> >
-> ==>Hi Chenyu,
-> The rsel actual bias resistance of each setting:
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+
+Thanks for your patch!
+
+> ---
+> This is a task of the KSPP [1]
 >
-> MTK_PULL_SET_RSEL_000:75K in PU, 75k in PD;
-> MTK_PULL_SET_RSEL_001:10k in PU, 5k in PD;
-> MTK_PULL_SET_RSEL_010:5k in PU, 75k in PD;
-> MTK_PULL_SET_RSEL_011:4k in PU, 5K in PD;
-> MTK_PULL_SET_RSEL_100:3k in PU, 75k in PD;
-> MTK_PULL_SET_RSEL_101:2k in PU, 5K in PD;
-> MTK_PULL_SET_RSEL_110:1.5k in PU, 75k in PD;
-> MTK_PULL_SET_RSEL_111:1k in PU, 5k in PD.
+> [1] https://github.com/KSPP/linux/issues/88
+
+Any chance the almost one year old question in that ticket can be
+answered?
+
+>  drivers/soc/renesas/rcar-sysc.c     |  6 ++++--
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+But please see my comments below...
+
+> --- a/drivers/soc/renesas/r8a779a0-sysc.c
+> +++ b/drivers/soc/renesas/r8a779a0-sysc.c
+> @@ -404,19 +404,21 @@ static int __init r8a779a0_sysc_pd_init(void)
+>         for (i = 0; i < info->num_areas; i++) {
+>                 const struct r8a779a0_sysc_area *area = &info->areas[i];
+>                 struct r8a779a0_sysc_pd *pd;
+> +               size_t area_name_size;
+
+I wouldn't mind a shorter name, like "n".
+
 >
-> The rsel actual bias resistance is different between PU and PD.
-
-Thanks. Somehow I missed this when looking through the datasheet. This
-encoding is interesting. Since it doesn't make sense to have both
-pull-up and pull-down, even though the hardware seems capable of doing
-so, I suppose the intent is to support 75k or 5k for pull-down, and
-(75k, 10k, 5k, 4k, 3k, 2k, 1.5k, 1k) for pull-up?
-
-We could add these values to the binding so we could check for misuse.
-
-The range of values seems to also cover those supported by the
-alternative R0/R1 settings. The values for kprow[01] and kpcol[01]
-seem to be different though.
-
-We should get rid of the MTK_PUPD_SET_R1R0_* macros at the same time.
-They seem to be some magic values used with bias-pull-*, which is not
-how the properties should be used. At the same time, they overlap with
-mediatek,pull-* properties.
-
-It would be great if we could standardize on the generic pinconf
-properties, and also use real values that fit the requirements of the
-properties, i.e. using real resistance values. I'm not sure if it
-would make sense to enumerate which pins support which configurations
-though.
-
-
-Thanks
-ChenYu
-
-
-> > Then we can specify the setting with the standard bias-pull-up/down
-> > properties [1].
-> >
-> > Also, please ask internally if Mediatek could relicense all the header
-> > files that Mediatek has contributed under include/dt-bindings/pinctrl/ [2]
-> > to GPL-2.0 and BSD dual license. These files are part of the DT bindings
-> > and we really want them to be dual licensed as well, and not just the
-> > YAML files.
-> >
+>                 if (!area->name) {
+>                         /* Skip NULLified area */
+>                         continue;
+>                 }
 >
-> ==> We will confirm it internally and reply it later.
+> -               pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
+> +               area_name_size = strlen(area->name) + 1;
+> +               pd = kzalloc(sizeof(*pd) + area_name_size, GFP_KERNEL);
+>                 if (!pd) {
+>                         error = -ENOMEM;
+>                         goto out_put;
+>                 }
 >
-> Thanks.
-> >
-> > Regards
-> > ChenYu
-> >
-> >
-> > [1] https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml#L37
-> > [2] Note that a few files were contributed by other people
-> >
-> > >  #define MTK_DRIVE_2mA  2
-> > >  #define MTK_DRIVE_4mA  4
-> > >  #define MTK_DRIVE_6mA  6
-> > > --
-> > > 2.18.0
-> > > _______________________________________________
-> > > Linux-mediatek mailing list
-> > > Linux-mediatek@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> -               strcpy(pd->name, area->name);
+> +               strscpy(pd->name, area->name, area_name_size);
+>                 pd->genpd.name = pd->name;
+>                 pd->pdr = area->pdr;
+>                 pd->flags = area->flags;
+> diff --git a/drivers/soc/renesas/rcar-sysc.c b/drivers/soc/renesas/rcar-sysc.c
+> index 53387a72ca00..0eae5ce0eeb0 100644
+> --- a/drivers/soc/renesas/rcar-sysc.c
+> +++ b/drivers/soc/renesas/rcar-sysc.c
+> @@ -396,19 +396,21 @@ static int __init rcar_sysc_pd_init(void)
+>         for (i = 0; i < info->num_areas; i++) {
+>                 const struct rcar_sysc_area *area = &info->areas[i];
+>                 struct rcar_sysc_pd *pd;
+> +               size_t area_name_size;
+
+Likewise.
+
 >
+>                 if (!area->name) {
+>                         /* Skip NULLified area */
+>                         continue;
+>                 }
+>
+> -               pd = kzalloc(sizeof(*pd) + strlen(area->name) + 1, GFP_KERNEL);
+> +               area_name_size = strlen(area->name) + 1;
+> +               pd = kzalloc(sizeof(*pd) + area_name_size, GFP_KERNEL);
+>                 if (!pd) {
+>                         error = -ENOMEM;
+>                         goto out_put;
+>                 }
+>
+> -               strcpy(pd->name, area->name);
+> +               strscpy(pd->name, area->name, area_name_size);
+>                 pd->genpd.name = pd->name;
+>                 pd->ch.chan_offs = area->chan_offs;
+>                 pd->ch.chan_bit = area->chan_bit;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
