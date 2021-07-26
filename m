@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0622F3D539E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FC93D53AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhGZGbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:31:45 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52727 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231902AbhGZGbn (ORCPT
+        id S232064AbhGZGdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231707AbhGZGdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:31:43 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 24C255C00FE;
-        Mon, 26 Jul 2021 03:12:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 26 Jul 2021 03:12:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=FOM45Nbgqhzqji4kt3Q5tWngXrQ
-        9l5jHcneF1DYAQzw=; b=IcNhuMHflISdKzo2bgPOe/huj05/aa+FGpUaWkNife0
-        j5jQFKhTGf0F8A7uUoMiuxHfun2BzrQPVgHPN+mdxhS9GFKe2k1IZBfKFUK3RtxF
-        b+UDMGNMrxYqGzpDL339SMR8hUP3jAybcbmZivOtDIFWqwnc+dULEKN4pGCt7MLO
-        L6h+3aUmf+ByMFgxYFY9OqCLsm2J8hOZYCJ4QYiFwmNovMsQoqSidn74sXIU0WId
-        NBRHtR+znkBRmrvOMnuv7VzgYsefYM/Qs0mOmLFJnoeHUNdDx9FS0bq9cJGhGcwP
-        Y0/QuDx7rcdkuzJaKyDxS2pZiq1VasEBLw7V4r8WCbA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FOM45N
-        bgqhzqji4kt3Q5tWngXrQ9l5jHcneF1DYAQzw=; b=wlUZrY4NL55L65s2Zz4+oK
-        WkAUNO/AOre3Ip+hWRv0iGZ9ZVAaS0uDngkEPPuicRjYziHh60PaeAK2AQxUW8gO
-        VD/5sqHxen90ItU7TY9XoHfrJS4F1KzSZdGhm8CSal4ghKKZbZAfY6QY+b23CDwn
-        awIswNW3JkrHLZGr/WKnlZ3MTdfKDrz5BvYMkgyRPQpuBgfXPGDcWBqueYkjs+OZ
-        EmnfB7xAzJ5O6yB59mfvjQfTOhLSWngvKGKcX5IgXUpHUMC/lJTZbIsp38wHklzx
-        8wp1AsrRyipiCXni1winvMF9t7BYFvUqMj+0Rcfql4fhXqwi+8tugpaOh6dsr4gw
-        ==
-X-ME-Sender: <xms:SmD-YMsm4xMycChClaeceUEMSDG08Q65ZHUmTn9wKMeYbhWhNKx4DA>
-    <xme:SmD-YJcCrKH9yD3qDb9bwtY7CoGGiZDdYWuxb1FZ627AdbGvtWOJp0Q-ar1K2BKwq
-    nqSSVQibkESdzr0Mh0>
-X-ME-Received: <xmr:SmD-YHwcJa31PtAoJfY6m3WJgL0fpWTzUrfREslvuIgN6DLj2HNzJTX7N-r1xRlrbPeNYOcfa69pSDQKt_k10u5GJ7SgUmXoeLhJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeeggdduuddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:SmD-YPP0lx9Q8WPV3_hDyucRcg3_UobIqr03OI1xIl7iSJ-VLIqj7g>
-    <xmx:SmD-YM9hDcAFJ5r1Mmg8dA2RpEneCFvpn9bg6rjl_2KKJ2s38tYPeA>
-    <xmx:SmD-YHU7Tfkb7mNJRKoHw97fcBE1S9FU8BVTo7V1vS6k4w-OEyUlfQ>
-    <xmx:TGD-YLnD2jl0karjRyCwkgUklnj7JmrPCOIK6CBGHj0IySzGt7D6qw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 Jul 2021 03:12:09 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 09:12:08 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] arm64: dts: allwinner: h6: tanix-tx6: Enable eMMC
-Message-ID: <20210726071208.zobi2adk4eqeb3gw@gilmour>
-References: <20210722161220.51181-1-jernej.skrabec@gmail.com>
+        Mon, 26 Jul 2021 02:33:40 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28206C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:14:09 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id go31so1172917ejc.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1+qLKSiIn7HNMf6/bTQMR2K4OTHRd9f7CQlxNuufkvY=;
+        b=OCatUbQgWGAWcsrCHABpdl78tzlAWqGos/HhsOUNhWsGIWWuPdY6tZ9Jv0UivBtUO5
+         fqPXGHHWhIP/FjmaaXrL8CuBK9vQ8yEMzzRHy1NjilHWOmPYS8gvceB2Dx3PwT/3VoXH
+         zKRVPsy1hkrBxsyu2BxaZVPZXpwqooHTUSi8lVnmgS76V4zfbXzT4YsQxmiHKc8lHC4x
+         zKDczljKTbshKSNYFC2iNXAs9qzfz9k4SQy1C8x5qHOVRSKMCWZm217ceMVTpCV9dlfz
+         nxVxNYg12flYjwbe+uv5ikU0E7vhTMERkJOSHvSdHvT5cFOhpIT0EFSh2H96Pw670kta
+         p83Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1+qLKSiIn7HNMf6/bTQMR2K4OTHRd9f7CQlxNuufkvY=;
+        b=RyMe7It8FBBHfVBA0BQ4RcAecSFLb3QHYTedU3R5vNrS9OguhTU+7ohXyyIEzEeum1
+         yrOiqZP0C4re64NBPEIp6EdsywXAL/18PLce8FDfDo/Z4DZ++pJVEZAaavis0AmrtddQ
+         8gvTfco4djRVlnhkvWP6gSyTn39lJoVi7rNJYutZtBfC1ngCJruyGgyM2Rk8UwJ/V/fu
+         3We+ZeACAqPFdYT2q75LfqZ4N5JoYBiPUJ+SX+mJy1DHLe8LVRfJ4KmbTS9tQqiaqM+D
+         Cd9yt04RCClZr/14W3zi15RncxkGQqIp+8/KWCEskZ04dtnVhUC0E6biX2druIjJhKWr
+         WE9w==
+X-Gm-Message-State: AOAM533Icap6l+lD+9hVpK9CZ7ldnTc1Pwh8xWs5F68v51D4I1tLN9bQ
+        qPSebYTWvkI6/KSp8vsfdevJ4w==
+X-Google-Smtp-Source: ABdhPJyBVOGyomVCr8mSL5bNCaaf6WTJVa8QAaQ6XmuOwO5GCeSNXDXC2544TgU3Ddk3IA+DxKrsKg==
+X-Received: by 2002:a17:906:4f01:: with SMTP id t1mr7438109eju.388.1627283647775;
+        Mon, 26 Jul 2021 00:14:07 -0700 (PDT)
+Received: from neptune.. ([5.2.193.191])
+        by smtp.gmail.com with ESMTPSA id v13sm13863772ejh.62.2021.07.26.00.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 00:14:07 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     denis.ciocca@st.com, jic23@kernel.org,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH 0/4] iio: st_sensors: convert probe functions to full devm
+Date:   Mon, 26 Jul 2021 10:14:00 +0300
+Message-Id: <20210726071404.14529-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fx474fpnmwxuuu2u"
-Content-Disposition: inline
-In-Reply-To: <20210722161220.51181-1-jernej.skrabec@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Continuing from series:
+  https://lore.kernel.org/linux-iio/20210720074642.223293-1-aardelean@deviqon.com/
 
---fx474fpnmwxuuu2u
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This goes a little further and converts all ST drivers using the st_common
+bits to devm functions.
+As mentioned by Jonathan, the devm unwind is often attached to
+iio_dev->dev.parent, and something it's attached to some other pointer
+which references the same device object.
 
-On Thu, Jul 22, 2021 at 06:12:17PM +0200, Jernej Skrabec wrote:
-> Tanix TX6 box has a 32 GB eMMC module. With changes in this series, I
-> get following figures with hdparm -tT:
->=20
-> /dev/mmcblk2:
->  Timing cached reads:   1638 MB in  2.00 seconds =3D 818.44 MB/sec
->  Timing buffered disk reads: 376 MB in  3.01 seconds =3D 124.74 MB/sec
->=20
-> First patch fixes regulator node names. Second patch sets proper power
-> supplies to GPIO banks and third adds eMMC support.
->=20
-> Please take a look.
+In the last patch, that point is removed, to eliminate doubt about this
+mix-n-match.
+An alternative would be an assert/check somewhere to ensure that
+'iio_dev->dev.parent == adata->dev'. But I [personally] don't like it that
+much.
 
-Applied all three, thanks
+As mentioned previously, I was also thinking of sending this set with the
+previous one. But I am usually reserved to send large sets; also, because I
+don't really like to review large sets [when I'm reviewing other people's
+code].
 
-Maxime
+Alexandru Ardelean (4):
+  iio: st_sensors: remove st_sensors_deallocate_trigger() function
+  iio: st_sensors: remove st_sensors_power_disable() function
+  iio: st_sensors: remove all driver remove functions
+  iio: st_sensors: remove reference to parent device object on
+    st_sensor_data
 
---fx474fpnmwxuuu2u
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/iio/accel/st_accel_core.c             | 32 +++--------
+ drivers/iio/accel/st_accel_i2c.c              | 23 +-------
+ drivers/iio/accel/st_accel_spi.c              | 23 +-------
+ .../iio/common/st_sensors/st_sensors_core.c   | 34 ++++++------
+ .../iio/common/st_sensors/st_sensors_i2c.c    |  1 -
+ .../iio/common/st_sensors/st_sensors_spi.c    |  1 -
+ .../common/st_sensors/st_sensors_trigger.c    | 53 +++++++------------
+ drivers/iio/gyro/st_gyro_core.c               | 27 ++--------
+ drivers/iio/gyro/st_gyro_i2c.c                | 23 +-------
+ drivers/iio/gyro/st_gyro_spi.c                | 23 +-------
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0.h       |  1 -
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c  | 17 +-----
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_i2c.c   |  6 ---
+ drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_spi.c   |  6 ---
+ drivers/iio/magnetometer/st_magn_core.c       | 29 ++--------
+ drivers/iio/magnetometer/st_magn_i2c.c        | 23 +-------
+ drivers/iio/magnetometer/st_magn_spi.c        | 23 +-------
+ drivers/iio/pressure/st_pressure_core.c       | 27 ++--------
+ drivers/iio/pressure/st_pressure_i2c.c        | 23 +-------
+ drivers/iio/pressure/st_pressure_spi.c        | 23 +-------
+ include/linux/iio/common/st_sensors.h         | 13 -----
+ 21 files changed, 60 insertions(+), 371 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.31.1
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYP5gSAAKCRDj7w1vZxhR
-xQoIAP9tJ13mJPkGx1jSuFkL5vq/ISxHl8BzdOfBSRzO0rfOQQD+NjzOrxL8IB3e
-NyT78ppbHtBmawjTJRh7aGOc6GeUOw0=
-=lXOd
------END PGP SIGNATURE-----
-
---fx474fpnmwxuuu2u--
