@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873F73D62F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5743D62CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238395AbhGZPmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:42:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
+        id S238280AbhGZPj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237683AbhGZPXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7B4960F5A;
-        Mon, 26 Jul 2021 16:04:16 +0000 (UTC)
+        id S237285AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A8660F93;
+        Mon, 26 Jul 2021 15:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315457;
-        bh=3qaK4EwthAdOfpuaMjCBic6CN6+MFH5YR8Vzj3h6Bn4=;
+        s=korg; t=1627314768;
+        bh=MNJU0L+q1hKxulz/tW3QH2Fq+OigmEg6BfIJcrXGKtg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TXyoeVi2ZI+v1TbtqrAzYOJlUH3fG3GcswrkI5LomeNbKdOL86Cfl4VEt0+JuMJxs
-         1t82Na/FEuc2qhnIgNAPXqwQcFKujHkiZOdB/5+/A0MFsvDWuZlNvDJrH2A6S/Bzb+
-         nu4rVNQJLdFmpYumExg0uGtgZC+afVvLVqqPa0CE=
+        b=R50T2jgNr90r9F9BsbOOYiZ6sphnpHl2YtJUJuXXQO92dapLswTSk/zQvj/R+cfYq
+         dxaV1i+57ESQc8CwD6xr42RHeSk58i9fFqzJrGTVN1LEj9/TQ6oegTibc/bQMeTqpi
+         zCi0fgCzykcogL9G7K/dArfZzLSzBWs+6Da6VSYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 103/167] cifs: only write 64kb at a time when fallocating a small region of a file
-Date:   Mon, 26 Jul 2021 17:38:56 +0200
-Message-Id: <20210726153842.851690981@linuxfoundation.org>
+Subject: [PATCH 4.19 085/120] Revert "USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem"
+Date:   Mon, 26 Jul 2021 17:38:57 +0200
+Message-Id: <20210726153835.107426588@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Vincent Palatin <vpalatin@chromium.org>
 
-[ Upstream commit 2485bd7557a7edb4520b4072af464f0a08c8efe0 ]
+[ Upstream commit f3a1a937f7b240be623d989c8553a6d01465d04f ]
 
-We only allow sending single credit writes through the SMB2_write() synchronous
-api so split this into smaller chunks.
+This reverts commit 0bd860493f81eb2a46173f6f5e44cc38331c8dbd.
 
-Fixes: 966a3cb7c7db ("cifs: improve fallocate emulation")
+While the patch was working as stated,ie preventing the L850-GL LTE modem
+from crashing on some U3 wake-ups due to a race condition between the
+host wake-up and the modem-side wake-up, when using the MBIM interface,
+this would force disabling the USB runtime PM on the device.
 
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reported-by: Namjae Jeon <namjae.jeon@samsung.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+The increased power consumption is significant for LTE laptops,
+and given that with decently recent modem firmwares, when the modem hits
+the bug, it automatically recovers (ie it drops from the bus, but
+automatically re-enumerates after less than half a second, rather than being
+stuck until a power cycle as it was doing with ancient firmware), for
+most people, the trade-off now seems in favor of re-enabling it by
+default.
+
+For people with access to the platform code, the bug can also be worked-around
+successfully by changing the USB3 LFPM polling off-time for the XHCI
+controller in the BIOS code.
+
+Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
+Link: https://lore.kernel.org/r/20210721092516.2775971-1-vpalatin@chromium.org
+Fixes: 0bd860493f81 ("USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem")
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2ops.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ drivers/usb/core/quirks.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index f6ceb79a995d..442bf422aa01 100644
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -3466,7 +3466,7 @@ static int smb3_simple_fallocate_write_range(unsigned int xid,
- 					     char *buf)
- {
- 	struct cifs_io_parms io_parms = {0};
--	int nbytes;
-+	int rc, nbytes;
- 	struct kvec iov[2];
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index f6a6c54cba35..d97544fd339b 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -502,10 +502,6 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
  
- 	io_parms.netfid = cfile->fid.netfid;
-@@ -3474,13 +3474,25 @@ static int smb3_simple_fallocate_write_range(unsigned int xid,
- 	io_parms.tcon = tcon;
- 	io_parms.persistent_fid = cfile->fid.persistent_fid;
- 	io_parms.volatile_fid = cfile->fid.volatile_fid;
--	io_parms.offset = off;
--	io_parms.length = len;
+-	/* Fibocom L850-GL LTE Modem */
+-	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
+-			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
+-
+ 	/* INTEL VALUE SSD */
+ 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
  
--	/* iov[0] is reserved for smb header */
--	iov[1].iov_base = buf;
--	iov[1].iov_len = io_parms.length;
--	return SMB2_write(xid, &io_parms, &nbytes, iov, 1);
-+	while (len) {
-+		io_parms.offset = off;
-+		io_parms.length = len;
-+		if (io_parms.length > SMB2_MAX_BUFFER_SIZE)
-+			io_parms.length = SMB2_MAX_BUFFER_SIZE;
-+		/* iov[0] is reserved for smb header */
-+		iov[1].iov_base = buf;
-+		iov[1].iov_len = io_parms.length;
-+		rc = SMB2_write(xid, &io_parms, &nbytes, iov, 1);
-+		if (rc)
-+			break;
-+		if (nbytes > len)
-+			return -EINVAL;
-+		buf += nbytes;
-+		off += nbytes;
-+		len -= nbytes;
-+	}
-+	return rc;
- }
- 
- static int smb3_simple_fallocate_range(unsigned int xid,
 -- 
 2.30.2
 
