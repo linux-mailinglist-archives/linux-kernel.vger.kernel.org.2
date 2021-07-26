@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA4D3D599F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDE33D5999
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhGZLxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233859AbhGZLxa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:53:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F37C061757;
-        Mon, 26 Jul 2021 05:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YFWxpaZqxwm3Uisf1S7eCNCfuP9P6MiIsZcWVQjD5es=; b=Vlj0nRZFoBgGJTCAFYX0pf7n2P
-        W8mf3X1EyUXZhAE5Y8PIPqS4MMsbASu7L47QPuwZmMpS0WTL8AoJlDHGvnMtd6i++65JesPWjxMTi
-        W9RehTFzP2FLZxioPe7wc+H8kWbGybSMYUUzdN6sSdWjLjpcUmmmaoIbaFk9AfR395/V19O7o7UF4
-        9BrUdDQJCqpEuqL59qyfSihmj+6/RxDu49yyWb9poGx6HYoDNIOh8GABKQM0lm80UZZlACMYHwC1y
-        W5Pc2AFdMeGGOfVKsxpS4B+xYEyMYAC1asGQ1YCWieY9c7m+oDeNmLxypOpYZGcaLnxE/Eh0GBAsB
-        dCpNlshQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m7zmI-00Dwuk-Lo; Mon, 26 Jul 2021 12:32:34 +0000
-Date:   Mon, 26 Jul 2021 13:32:14 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Message-ID: <YP6rTi/I3Vd+pbeT@casper.infradead.org>
-References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
- <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
- <20210725221639.426565-1-agruenba@redhat.com>
- <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
- <20210726110611.459173-1-agruenba@redhat.com>
+        id S234043AbhGZLwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:52:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233859AbhGZLwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:52:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F896044F;
+        Mon, 26 Jul 2021 12:33:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627302782;
+        bh=9ybwuRlPn1rSduQGUcjvmmV/5LFG8tIFb468xFHdIDk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L2ZAyCYR8V3kOK88nTio3CyW/06XL1WxI5vbjnBhhBATlHkIBjeitOp07Kbkl0hwU
+         RB1hG0ovaLC1oKNnhPnmNpAAPMmCMcTjTWv4p0inJZULecxC85x1566mdVypNca0dS
+         4gqzhL5vYnoLMEAsYsEbaCCu5u+mtKLPhPZfQ2uvgW76nEUYJhaWJCvQ4Wf3LPGMUe
+         KBMRuIbZtc2N4WHM2x8DxH1T64yG6jgNRErEit/IVurxz1whAHyVHk8VK5X2Qg675n
+         kUAtu87BQx+xa7MlU9xiLdRUaTWLxqmB809xlkcFNAJZMpxi7bPmQKpY/Rz5zOk7IR
+         WC67S71TFKD0Q==
+Date:   Mon, 26 Jul 2021 14:32:54 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Claudiu.Beznea@microchip.com, u.kleine-koenig@pengutronix.de,
+        sboyd@kernel.org, linux-rtc@vger.kernel.org,
+        linux-pwm@vger.kernel.org, alexandre.belloni@bootlin.com,
+        a.zummo@towertech.it, mturquette@baylibre.com,
+        Nicolas.Ferre@microchip.com, linux-spi@vger.kernel.org,
+        o.rempel@pengutronix.de, Ludovic.Desroches@microchip.com,
+        broonie@kernel.org, thierry.reding@gmail.com,
+        aardelean@deviqon.com, kernel@pengutronix.de,
+        Jonathan.Cameron@huawei.com, akpm@linux-foundation.org,
+        lee.jones@linaro.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PULL] Add variants of devm_clk_get for prepared and enabled
+ clocks enabled clocks
+Message-ID: <YP6rdmi31FFrBMzE@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Claudiu.Beznea@microchip.com, u.kleine-koenig@pengutronix.de,
+        sboyd@kernel.org, linux-rtc@vger.kernel.org,
+        linux-pwm@vger.kernel.org, alexandre.belloni@bootlin.com,
+        a.zummo@towertech.it, mturquette@baylibre.com,
+        Nicolas.Ferre@microchip.com, linux-spi@vger.kernel.org,
+        o.rempel@pengutronix.de, Ludovic.Desroches@microchip.com,
+        broonie@kernel.org, thierry.reding@gmail.com, aardelean@deviqon.com,
+        kernel@pengutronix.de, Jonathan.Cameron@huawei.com,
+        akpm@linux-foundation.org, lee.jones@linaro.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210625171434.3xusxpxjprcdqa47@pengutronix.de>
+ <20210705080144.zfbzkm7l3gmnh6st@pengutronix.de>
+ <20210722060654.nudpdtemosi64nlb@pengutronix.de>
+ <YPkg0wtYIoHKpTUW@kunai>
+ <20210722081817.2tsjzof4gvldq6ka@pengutronix.de>
+ <YPlfcbkxiBmB+vw1@kunai>
+ <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
+ <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
+ <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
+ <CAHp75VeFXJ-0ak7=a0QCtKNdFpu98W6iJ2YuR4MpNx+U4rHe2A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/bp6B8CbZ5wGttYd"
 Content-Disposition: inline
-In-Reply-To: <20210726110611.459173-1-agruenba@redhat.com>
+In-Reply-To: <CAHp75VeFXJ-0ak7=a0QCtKNdFpu98W6iJ2YuR4MpNx+U4rHe2A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 01:06:11PM +0200, Andreas Gruenbacher wrote:
-> @@ -671,11 +683,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
->  	void *addr;
->  
->  	WARN_ON_ONCE(!PageUptodate(page));
-> -	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +	BUG_ON(!iomap_inline_data_size_valid(iomap));
->  
->  	flush_dcache_page(page);
->  	addr = kmap_atomic(page);
-> -	memcpy(iomap->inline_data + pos, addr + pos, copied);
-> +	memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
->  	kunmap_atomic(addr);
->  
->  	mark_inode_dirty(inode);
 
-Only tangentially related ... why do we memcpy the data into the tail
-at write_end() time instead of at writepage() time?  I see there's a
-workaround for that in gfs2's page_mkwrite():
+--/bp6B8CbZ5wGttYd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-        if (gfs2_is_stuffed(ip)) {
-                err = gfs2_unstuff_dinode(ip);
 
-(an mmap store cannot change the size of the file, so this would be
-unnecessary)
+> The idea is that you will send a PR to CCF maintainers instead of
+> patches, although it's expected that patches appear in the mailing
+> list beforehand anyway.
 
-Something like this ...
+Depends a little. For me, a Rev-by from the driver maintainer is enough,
+and I'll pick them. That lowers the burden on the drivers maintainer
+side. May not work for high volumes of patches, but for I2C this works
+enough.
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..3aeebe899fc5 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -665,9 +665,10 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
- 	return copied;
- }
- 
--static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
--		struct iomap *iomap, loff_t pos, size_t copied)
-+static int iomap_write_inline_data(struct inode *inode, struct page *page,
-+		struct iomap *iomap)
- {
-+	size_t size = i_size_read(inode) - page_offset(page);
- 	void *addr;
- 
- 	WARN_ON_ONCE(!PageUptodate(page));
-@@ -675,11 +676,10 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
- 
- 	flush_dcache_page(page);
- 	addr = kmap_atomic(page);
--	memcpy(iomap->inline_data + pos, addr + pos, copied);
-+	memcpy(iomap->inline_data, addr, size);
- 	kunmap_atomic(addr);
- 
--	mark_inode_dirty(inode);
--	return copied;
-+	return 0;
- }
- 
- /* Returns the number of bytes copied.  May be 0.  Cannot be an errno. */
-@@ -691,9 +691,7 @@ static size_t iomap_write_end(struct inode *inode, loff_t pos, size_t len,
- 	loff_t old_size = inode->i_size;
- 	size_t ret;
- 
--	if (srcmap->type == IOMAP_INLINE) {
--		ret = iomap_write_end_inline(inode, page, iomap, pos, copied);
--	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
-+	if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
- 		ret = block_write_end(NULL, inode->i_mapping, pos, len, copied,
- 				page, NULL);
- 	} else {
-@@ -1314,6 +1312,9 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 
- 	WARN_ON_ONCE(iop && atomic_read(&iop->write_bytes_pending) != 0);
- 
-+	if (wpc->iomap.type == IOMAP_INLINE)
-+		return iomap_write_inline_data(inode, page, iomap);
-+
- 	/*
- 	 * Walk through the page to find areas to write back. If we run off the
- 	 * end of the current map or find the current map invalid, grab a new
-@@ -1328,8 +1329,6 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 		error = wpc->ops->map_blocks(wpc, inode, file_offset);
- 		if (error)
- 			break;
--		if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
--			continue;
- 		if (wpc->iomap.type == IOMAP_HOLE)
- 			continue;
- 		iomap_add_to_ioend(inode, file_offset, page, iop, wpc, wbc,
+
+--/bp6B8CbZ5wGttYd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmD+q3IACgkQFA3kzBSg
+Kbb/ZhAAiFi9EIRSinoG65uZhxKpv126w9aNu62btbmlWsIMvWGILnoEBHEH55Y2
+WVY4s43F+YQFcjvi//5ycN7sOaPjG5hMHFhwKlNId6Z3dFnnTpzaVQbSkHOsqp8X
+woXPKORhDvG5WKwBkvAeqMjvOk6wQKllAwEflk1XAE0S9f+CuxZMJOf+VD8nFg0G
+VMOmds6KpGTCHKSXYd2uaTqgVUOPJlziSfcgpqKxzPpYn0iXhOC6APeRZesaS5G6
+flGQ+qa6L8VInhxf8pYqiSyqrrs7ney5TA51Uz4q9byoRhJRV2+MaUQI3vsr4BSF
+2OTbrGPvWhGyMgl6OttVe8Zcoyf0Z0GlFCP/8bHLs9Qg0kxGEvbDe+H3U6RcJRWZ
+Yp3fpiRwkCwbrZBjr95xbeS0NLxvaKqqzrXY2JAtCopr52ruG1wtDmmnTLhjXsJY
+LtUMvogfzaNXWGaL4khLFVggxB9tYvydxh5nrFyMpszfCL+gPiLL+/RW6EPQWYmB
+O6/esDPfAJdgqp90sovnwTGOmKfKJgy7J83XVEmiD2UzHBftwsEtNDVqlTx4dnFv
+7/V5Vvd78pJ7n/LxSUJNGYmmDfSgklfpNk1x5tYgvYLTzX/xffeTzyAJz0PKcAGz
+KK8LeXGvUZ/uowpYEm+pnnzMAHhCzvFBZJU04xQ3gLhPOaTvtYU=
+=4M9n
+-----END PGP SIGNATURE-----
+
+--/bp6B8CbZ5wGttYd--
