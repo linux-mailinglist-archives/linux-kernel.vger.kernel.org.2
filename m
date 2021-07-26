@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96F63D6335
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4383D6339
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239267AbhGZPpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
+        id S239299AbhGZPpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238209AbhGZP1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:27:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C0C860FBF;
-        Mon, 26 Jul 2021 16:06:44 +0000 (UTC)
+        id S231362AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:28:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9419E60FE3;
+        Mon, 26 Jul 2021 16:06:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315604;
-        bh=Fdqk3ztbbE/vk3sq2pTpdUpwhKruJ93bgYarkWirXhA=;
+        s=korg; t=1627315610;
+        bh=J4AhUA7x+vqG2sywfhNOO/+6xAQSl/Bi+CKhBLBFGoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7pztsJhZa2rhwoqCsXrEv5pR54c1akwcDy7+MYR0U5UqzHIjlFkUJsi0JWjqiZXl
-         +s7WPmzy/MR4GaTtoWJRPXi65fuhhERt9AGL99/1YqJuoN0XBAZczjZjKrpMjzcMrM
-         brN8QYSycvB4ZEMUho1OMimUGO7fypZtwVsw8ZKE=
+        b=ubd/LJ+bNkAOlPV0b8cj6uCdvq0E+1xZhG331VvPV2Aiq68d5c/kav2O5b0Nl+bzS
+         wBiJtsdklOJ/zYOd6FyBQJ09x3ME2oINV9BVkySPvsfHzPqLRs8wepQjngZJQ5SyBp
+         Dod4HxVU+fCpsuivcb2P7U3uDt2nbqFDnGEabDOg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.10 163/167] perf inject: Close inject.output on exit
-Date:   Mon, 26 Jul 2021 17:39:56 +0200
-Message-Id: <20210726153844.875747472@linuxfoundation.org>
+        stable@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        David Jeffery <djeffery@redhat.com>
+Subject: [PATCH 5.10 164/167] usb: ehci: Prevent missed ehci interrupts with edge-triggered MSI
+Date:   Mon, 26 Jul 2021 17:39:57 +0200
+Message-Id: <20210726153844.911987832@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -44,57 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: David Jeffery <djeffery@redhat.com>
 
-commit 02e6246f5364d5260a6ea6f92ab6f409058b162f upstream.
+commit 0b60557230adfdeb8164e0b342ac9cd469a75759 upstream.
 
-ASan reports a memory leak when running:
+When MSI is used by the ehci-hcd driver, it can cause lost interrupts which
+results in EHCI only continuing to work due to a polling fallback. But the
+reliance of polling drastically reduces performance of any I/O through EHCI.
 
-  # perf test "83: Zstd perf.data compression/decompression"
+Interrupts are lost as the EHCI interrupt handler does not safely handle
+edge-triggered interrupts. It fails to ensure all interrupt status bits are
+cleared, which works with level-triggered interrupts but not the
+edge-triggered interrupts typical from using MSI.
 
-which happens inside 'perf inject'.
+To fix this problem, check if the driver may have raced with the hardware
+setting additional interrupt status bits and clear status until it is in a
+stable state.
 
-The bug is caused by inject.output never being closed.
-
-This patch adds the missing perf_data__close().
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: 6ef81c55a2b6584c ("perf session: Return error code for perf_session__new() function on failure")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/c06f682afa964687367cf6e92a64ceb49aec76a5.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
+Tested-by: Laurence Oberman <loberman@redhat.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: David Jeffery <djeffery@redhat.com>
+Link: https://lore.kernel.org/r/20210715213744.GA44506@redhat
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/builtin-inject.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/usb/host/ehci-hcd.c |   18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -906,8 +906,10 @@ int cmd_inject(int argc, const char **ar
+--- a/drivers/usb/host/ehci-hcd.c
++++ b/drivers/usb/host/ehci-hcd.c
+@@ -703,7 +703,8 @@ EXPORT_SYMBOL_GPL(ehci_setup);
+ static irqreturn_t ehci_irq (struct usb_hcd *hcd)
+ {
+ 	struct ehci_hcd		*ehci = hcd_to_ehci (hcd);
+-	u32			status, masked_status, pcd_status = 0, cmd;
++	u32			status, current_status, masked_status, pcd_status = 0;
++	u32			cmd;
+ 	int			bh;
+ 	unsigned long		flags;
  
- 	data.path = inject.input_name;
- 	inject.session = perf_session__new(&data, inject.output.is_pipe, &inject.tool);
--	if (IS_ERR(inject.session))
--		return PTR_ERR(inject.session);
-+	if (IS_ERR(inject.session)) {
-+		ret = PTR_ERR(inject.session);
-+		goto out_close_output;
-+	}
+@@ -715,19 +716,22 @@ static irqreturn_t ehci_irq (struct usb_
+ 	 */
+ 	spin_lock_irqsave(&ehci->lock, flags);
  
- 	if (zstd_init(&(inject.session->zstd_data), 0) < 0)
- 		pr_warning("Decompression initialization failed.\n");
-@@ -949,5 +951,7 @@ int cmd_inject(int argc, const char **ar
- out_delete:
- 	zstd_fini(&(inject.session->zstd_data));
- 	perf_session__delete(inject.session);
-+out_close_output:
-+	perf_data__close(&inject.output);
- 	return ret;
- }
+-	status = ehci_readl(ehci, &ehci->regs->status);
++	status = 0;
++	current_status = ehci_readl(ehci, &ehci->regs->status);
++restart:
+ 
+ 	/* e.g. cardbus physical eject */
+-	if (status == ~(u32) 0) {
++	if (current_status == ~(u32) 0) {
+ 		ehci_dbg (ehci, "device removed\n");
+ 		goto dead;
+ 	}
++	status |= current_status;
+ 
+ 	/*
+ 	 * We don't use STS_FLR, but some controllers don't like it to
+ 	 * remain on, so mask it out along with the other status bits.
+ 	 */
+-	masked_status = status & (INTR_MASK | STS_FLR);
++	masked_status = current_status & (INTR_MASK | STS_FLR);
+ 
+ 	/* Shared IRQ? */
+ 	if (!masked_status || unlikely(ehci->rh_state == EHCI_RH_HALTED)) {
+@@ -737,6 +741,12 @@ static irqreturn_t ehci_irq (struct usb_
+ 
+ 	/* clear (just) interrupts */
+ 	ehci_writel(ehci, masked_status, &ehci->regs->status);
++
++	/* For edge interrupts, don't race with an interrupt bit being raised */
++	current_status = ehci_readl(ehci, &ehci->regs->status);
++	if (current_status & INTR_MASK)
++		goto restart;
++
+ 	cmd = ehci_readl(ehci, &ehci->regs->command);
+ 	bh = 0;
+ 
 
 
