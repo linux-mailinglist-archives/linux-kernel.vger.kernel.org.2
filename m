@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9C63D642C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6E73D640F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240246AbhGZPzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51722 "EHLO mail.kernel.org"
+        id S239751AbhGZPyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237298AbhGZPee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:34:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA115604AC;
-        Mon, 26 Jul 2021 16:15:02 +0000 (UTC)
+        id S233817AbhGZPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:33:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E9C60C41;
+        Mon, 26 Jul 2021 16:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316103;
-        bh=R6/d5A36/DNukdPu6REyqDvN0M2H9oNjfgQPBn04uDo=;
+        s=korg; t=1627316012;
+        bh=PotnVkL00huzlpfb7Bttwp0Mm9WjWG5f4iNsJZpXGoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k/p3PPygBcJKpc0syIq/2Vlm5s/Wpg0Z0VE+srykH5dYy1yYRShf5LYkCnOy0NeMR
-         xW+Pcv52ju92msrddODA+h9vauU62KP8W5Qy3HOORSwvz0Is+M935XLQmON9jc0Dsn
-         DOUjizTcMUUBchaPJUq4TRQp2EZ8tzPhK1asYyG8=
+        b=Cna3C5NnOoRC2UtpxEUFXZ0PzXiQMLhnH7piJPt71MlDSHq0GqY7iEQy3dkTHJsnL
+         O6NdoA3SS++orewMwW91o6fnLxgb8CarbGUlAdifyWVAoKX727hNM9g4j+JPu/wopp
+         jrvcVoWsqPkRuH4xADvsDKefOorc7dWyDh6ZLK2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Young <consult.awy@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 153/223] ALSA: pcm: Call substream ack() method upon compat mmap commit
-Date:   Mon, 26 Jul 2021 17:39:05 +0200
-Message-Id: <20210726153851.231543942@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.13 154/223] ALSA: pcm: Fix mmap capability check
+Date:   Mon, 26 Jul 2021 17:39:06 +0200
+Message-Id: <20210726153851.261625287@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -39,48 +38,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Young <consult.awy@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 2e2832562c877e6530b8480982d99a4ff90c6777 upstream.
+commit c4824ae7db418aee6f50f308a20b832e58e997fd upstream.
 
-If a 32-bit application is being used with a 64-bit kernel and is using
-the mmap mechanism to write data, then the SNDRV_PCM_IOCTL_SYNC_PTR
-ioctl results in calling snd_pcm_ioctl_sync_ptr_compat(). Make this use
-pcm_lib_apply_appl_ptr() so that the substream's ack() method, if
-defined, is called.
+The hw_support_mmap() doesn't cover all memory allocation types and
+might use a wrong device pointer for checking the capability.
+Check the all memory allocation types more completely.
 
-The snd_pcm_sync_ptr() function, used in the 64-bit ioctl case, already
-uses snd_pcm_ioctl_sync_ptr_compat().
-
-Fixes: 9027c4639ef1 ("ALSA: pcm: Call ack() whenever appl_ptr is updated")
-Signed-off-by: Alan Young <consult.awy@gmail.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/c441f18c-eb2a-3bdd-299a-696ccca2de9c@gmail.com
+Link: https://lore.kernel.org/r/20210720092640.12338-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/pcm_native.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ sound/core/pcm_native.c |   14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -3057,9 +3057,14 @@ static int snd_pcm_ioctl_sync_ptr_compat
- 		boundary = 0x7fffffff;
- 	snd_pcm_stream_lock_irq(substream);
- 	/* FIXME: we should consider the boundary for the sync from app */
--	if (!(sflags & SNDRV_PCM_SYNC_PTR_APPL))
--		control->appl_ptr = scontrol.appl_ptr;
--	else
-+	if (!(sflags & SNDRV_PCM_SYNC_PTR_APPL)) {
-+		err = pcm_lib_apply_appl_ptr(substream,
-+				scontrol.appl_ptr);
-+		if (err < 0) {
-+			snd_pcm_stream_unlock_irq(substream);
-+			return err;
-+		}
-+	} else
- 		scontrol.appl_ptr = control->appl_ptr % boundary;
- 	if (!(sflags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN))
- 		control->avail_min = scontrol.avail_min;
+@@ -246,12 +246,18 @@ static bool hw_support_mmap(struct snd_p
+ 	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
+ 		return false;
+ 
+-	if (substream->ops->mmap ||
+-	    (substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV &&
+-	     substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV_UC))
++	if (substream->ops->mmap)
+ 		return true;
+ 
+-	return dma_can_mmap(substream->dma_buffer.dev.dev);
++	switch (substream->dma_buffer.dev.type) {
++	case SNDRV_DMA_TYPE_UNKNOWN:
++		return false;
++	case SNDRV_DMA_TYPE_CONTINUOUS:
++	case SNDRV_DMA_TYPE_VMALLOC:
++		return true;
++	default:
++		return dma_can_mmap(substream->dma_buffer.dev.dev);
++	}
+ }
+ 
+ static int constrain_mask_params(struct snd_pcm_substream *substream,
 
 
