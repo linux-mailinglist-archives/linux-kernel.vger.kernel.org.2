@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173603D5D6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C773D5EEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbhGZPBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
+        id S237430AbhGZPPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235507AbhGZPBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:01:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7102660F22;
-        Mon, 26 Jul 2021 15:41:44 +0000 (UTC)
+        id S236098AbhGZPHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:07:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EB8560F5C;
+        Mon, 26 Jul 2021 15:47:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314105;
-        bh=isF4QB8C5bHRW9154NwUZ+beRoilDf5jzQhWxpbDkbo=;
+        s=korg; t=1627314458;
+        bh=I2P/HKSHOQzt+1zw+yMkiZZVIGw37oF+WlVyIzs8Gaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z5XHNlY+2F9btWTSfPWgQKkukzsW1HhdCWuF1OPcwKdznql6GeROmucANpzALEw1C
-         B1C/M6OA01uomk72m0bHvi6vjmburfl2r5Rlo/Rvb/U9tBpQrMGT76evkHdvWw+yYb
-         MCrh9pke5uUwCwNLG7vyDT3sKOQzsU0SL8btuYr4=
+        b=Q3alOyw8W0LdvWycV3jU/7d5MhdKrV18LygQEXkbBx5rirbKaNVrPHQsbk+cT5LXc
+         WZIst9Wo7ftPpkWYC6esFsrDDhok7tyGO/nptWvkAEcIGZRA6wTNm7Q3F8VgdxHBnn
+         kQ8XuKKBB0nAnLvJMPwmOpELiuIpF4yhaZ5ePbe0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 4.4 35/47] usb: hub: Disable USB 3 device initiated lpm if exit latency is too high
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 53/82] netrom: Decrease sock refcount when sock timers expire
 Date:   Mon, 26 Jul 2021 17:38:53 +0200
-Message-Id: <20210726153824.088485130@linuxfoundation.org>
+Message-Id: <20210726153829.903936474@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,119 +41,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-commit 1b7f56fbc7a1b66967b6114d1b5f5a257c3abae6 upstream.
+[ Upstream commit 517a16b1a88bdb6b530f48d5d153478b2552d9a8 ]
 
-The device initiated link power management U1/U2 states should not be
-enabled in case the system exit latency plus one bus interval (125us) is
-greater than the shortest service interval of any periodic endpoint.
+Commit 63346650c1a9 ("netrom: switch to sock timer API") switched to use
+sock timer API. It replaces mod_timer() by sk_reset_timer(), and
+del_timer() by sk_stop_timer().
 
-This is the case for both U1 and U2 sytstem exit latencies and link states.
+Function sk_reset_timer() will increase the refcount of sock if it is
+called on an inactive timer, hence, in case the timer expires, we need to
+decrease the refcount ourselves in the handler, otherwise, the sock
+refcount will be unbalanced and the sock will never be freed.
 
-See USB 3.2 section 9.4.9 "Set Feature" for more details
-
-Note, before this patch the host and device initiated U1/U2 lpm states
-were both enabled with lpm. After this patch it's possible to end up with
-only host inititated U1/U2 lpm in case the exit latencies won't allow
-device initiated lpm.
-
-If this case we still want to set the udev->usb3_lpm_ux_enabled flag so
-that sysfs users can see the link may go to U1/U2.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210715150122.1995966-2-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com
+Fixes: 63346650c1a9 ("netrom: switch to sock timer API")
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/core/hub.c |   68 ++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 56 insertions(+), 12 deletions(-)
+ net/netrom/nr_timer.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -3837,6 +3837,47 @@ static int usb_set_lpm_timeout(struct us
+diff --git a/net/netrom/nr_timer.c b/net/netrom/nr_timer.c
+index f0ecaec1ff3d..d1a0b7056743 100644
+--- a/net/netrom/nr_timer.c
++++ b/net/netrom/nr_timer.c
+@@ -125,11 +125,9 @@ static void nr_heartbeat_expiry(unsigned long param)
+ 		   is accepted() it isn't 'dead' so doesn't get removed. */
+ 		if (sock_flag(sk, SOCK_DESTROY) ||
+ 		    (sk->sk_state == TCP_LISTEN && sock_flag(sk, SOCK_DEAD))) {
+-			sock_hold(sk);
+ 			bh_unlock_sock(sk);
+ 			nr_destroy_socket(sk);
+-			sock_put(sk);
+-			return;
++			goto out;
+ 		}
+ 		break;
+ 
+@@ -150,6 +148,8 @@ static void nr_heartbeat_expiry(unsigned long param)
+ 
+ 	nr_start_heartbeat(sk);
+ 	bh_unlock_sock(sk);
++out:
++	sock_put(sk);
  }
  
- /*
-+ * Don't allow device intiated U1/U2 if the system exit latency + one bus
-+ * interval is greater than the minimum service interval of any active
-+ * periodic endpoint. See USB 3.2 section 9.4.9
-+ */
-+static bool usb_device_may_initiate_lpm(struct usb_device *udev,
-+					enum usb3_link_state state)
-+{
-+	unsigned int sel;		/* us */
-+	int i, j;
-+
-+	if (state == USB3_LPM_U1)
-+		sel = DIV_ROUND_UP(udev->u1_params.sel, 1000);
-+	else if (state == USB3_LPM_U2)
-+		sel = DIV_ROUND_UP(udev->u2_params.sel, 1000);
-+	else
-+		return false;
-+
-+	for (i = 0; i < udev->actconfig->desc.bNumInterfaces; i++) {
-+		struct usb_interface *intf;
-+		struct usb_endpoint_descriptor *desc;
-+		unsigned int interval;
-+
-+		intf = udev->actconfig->interface[i];
-+		if (!intf)
-+			continue;
-+
-+		for (j = 0; j < intf->cur_altsetting->desc.bNumEndpoints; j++) {
-+			desc = &intf->cur_altsetting->endpoint[j].desc;
-+
-+			if (usb_endpoint_xfer_int(desc) ||
-+			    usb_endpoint_xfer_isoc(desc)) {
-+				interval = (1 << (desc->bInterval - 1)) * 125;
-+				if (sel + 125 > interval)
-+					return false;
-+			}
-+		}
-+	}
-+	return true;
-+}
-+
-+/*
-  * Enable the hub-initiated U1/U2 idle timeouts, and enable device-initiated
-  * U1/U2 entry.
-  *
-@@ -3908,20 +3949,23 @@ static void usb_enable_link_state(struct
- 	 * U1/U2_ENABLE
- 	 */
- 	if (udev->actconfig &&
--	    usb_set_device_initiated_lpm(udev, state, true) == 0) {
--		if (state == USB3_LPM_U1)
--			udev->usb3_lpm_u1_enabled = 1;
--		else if (state == USB3_LPM_U2)
--			udev->usb3_lpm_u2_enabled = 1;
--	} else {
--		/* Don't request U1/U2 entry if the device
--		 * cannot transition to U1/U2.
--		 */
--		usb_set_lpm_timeout(udev, state, 0);
--		hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
-+	    usb_device_may_initiate_lpm(udev, state)) {
-+		if (usb_set_device_initiated_lpm(udev, state, true)) {
-+			/*
-+			 * Request to enable device initiated U1/U2 failed,
-+			 * better to turn off lpm in this case.
-+			 */
-+			usb_set_lpm_timeout(udev, state, 0);
-+			hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
-+			return;
-+		}
+ static void nr_t2timer_expiry(unsigned long param)
+@@ -163,6 +163,7 @@ static void nr_t2timer_expiry(unsigned long param)
+ 		nr_enquiry_response(sk);
  	}
--}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
  
-+	if (state == USB3_LPM_U1)
-+		udev->usb3_lpm_u1_enabled = 1;
-+	else if (state == USB3_LPM_U2)
-+		udev->usb3_lpm_u2_enabled = 1;
-+}
- /*
-  * Disable the hub-initiated U1/U2 idle timeouts, and disable device-initiated
-  * U1/U2 entry.
+ static void nr_t4timer_expiry(unsigned long param)
+@@ -172,6 +173,7 @@ static void nr_t4timer_expiry(unsigned long param)
+ 	bh_lock_sock(sk);
+ 	nr_sk(sk)->condition &= ~NR_COND_PEER_RX_BUSY;
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_idletimer_expiry(unsigned long param)
+@@ -200,6 +202,7 @@ static void nr_idletimer_expiry(unsigned long param)
+ 		sock_set_flag(sk, SOCK_DEAD);
+ 	}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_t1timer_expiry(unsigned long param)
+@@ -212,8 +215,7 @@ static void nr_t1timer_expiry(unsigned long param)
+ 	case NR_STATE_1:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_CONNREQ);
+@@ -223,8 +225,7 @@ static void nr_t1timer_expiry(unsigned long param)
+ 	case NR_STATE_2:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_DISCREQ);
+@@ -234,8 +235,7 @@ static void nr_t1timer_expiry(unsigned long param)
+ 	case NR_STATE_3:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_requeue_frames(sk);
+@@ -244,5 +244,7 @@ static void nr_t1timer_expiry(unsigned long param)
+ 	}
+ 
+ 	nr_start_t1timer(sk);
++out:
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+-- 
+2.30.2
+
 
 
