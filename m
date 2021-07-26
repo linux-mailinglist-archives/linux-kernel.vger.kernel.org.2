@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4243D5D53
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B366C3D5E84
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhGZPAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:00:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39332 "EHLO mail.kernel.org"
+        id S236312AbhGZPKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235344AbhGZPAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:00:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58C3A604DC;
-        Mon, 26 Jul 2021 15:41:10 +0000 (UTC)
+        id S236251AbhGZPGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:06:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F065260F5B;
+        Mon, 26 Jul 2021 15:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314070;
-        bh=11FnOorofVK4+RLV/OXlVZKoTBVYtWhggRSEBJ0NI8Q=;
+        s=korg; t=1627314421;
+        bh=/hUlaEaZjx2SqcZNoN3Hmh/fmF/7dkSti2+zfVpzUuM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O3GavcsyG3kPOPlQ3+xM0iadj/OfrryKfPflUDWmQensWmV8AH4pl/E1pcb3hqVCu
-         SPDnMqoAVmiZ64vU6ILhK+lh8q2fd6wr1rpp4gbVvzx+TVV1JTp4gnStOUmXhBsxEr
-         vU0ic/fHpP2k1VmIMAzLb0wQEAwyEznQHpbBk6D8=
+        b=vdQQpZpObFyh64rnxUNn9rX0RusBBe9T4+VVMLF7aP4syq+b1TbTL5/0Jp7JMlu0F
+         WA0aJhX9puP16vQKR1kVUVpQ7QOQUWH8MePXTD+DqhirhfR8XVgDRLF9blFBxemMtt
+         t0PFpaVBmQxClLQOrMo2O7KoOeMe0OJOZsAntFgo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 22/47] perf probe-file: Delete namelist in del_events() on the error path
+Subject: [PATCH 4.14 40/82] iavf: Fix an error handling path in iavf_probe()
 Date:   Mon, 26 Jul 2021 17:38:40 +0200
-Message-Id: <20210726153823.678373275@linuxfoundation.org>
+Message-Id: <20210726153829.473155008@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,51 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit e0fa7ab42232e742dcb3de9f3c1f6127b5adc019 ]
+[ Upstream commit af30cbd2f4d6d66a9b6094e0aa32420bc8b20e08 ]
 
-ASan reports some memory leaks when running:
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call, as already done in the remove function.
 
-  # perf test "42: BPF filter"
-
-This second leak is caused by a strlist not being dellocated on error
-inside probe_file__del_events.
-
-This patch adds a goto label before the deallocation and makes the error
-path jump to it.
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: e7895e422e4da63d ("perf probe: Split del_perf_probe_events()")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/174963c587ae77fa108af794669998e4ae558338.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 5eae00c57f5e ("i40evf: main driver core")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/probe-file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-index e3b3b92e4458..7476757680ed 100644
---- a/tools/perf/util/probe-file.c
-+++ b/tools/perf/util/probe-file.c
-@@ -318,10 +318,10 @@ int probe_file__del_events(int fd, struct strfilter *filter)
- 
- 	ret = probe_file__get_events(fd, filter, namelist);
- 	if (ret < 0)
--		return ret;
-+		goto out;
- 
- 	ret = probe_file__del_strlist(fd, namelist);
-+out:
- 	strlist__delete(namelist);
--
- 	return ret;
- }
+diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+index 1b5d204c57c1..ad2dd5b747b2 100644
+--- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
++++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+@@ -2924,6 +2924,7 @@ static int i40evf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ err_ioremap:
+ 	free_netdev(netdev);
+ err_alloc_etherdev:
++	pci_disable_pcie_error_reporting(pdev);
+ 	pci_release_regions(pdev);
+ err_pci_reg:
+ err_dma:
 -- 
 2.30.2
 
