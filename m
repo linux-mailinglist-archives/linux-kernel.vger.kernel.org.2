@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3093D643B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9697B3D6439
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240506AbhGZPzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
+        id S240471AbhGZPzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234739AbhGZPd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:33:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51EE960F5B;
-        Mon, 26 Jul 2021 16:14:06 +0000 (UTC)
+        id S234170AbhGZPdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:33:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADCAF60F5D;
+        Mon, 26 Jul 2021 16:14:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316046;
-        bh=5qO4vs4g/BiBLmde5e9k9Pt3KztD8MN2JFIEk52PMNU=;
+        s=korg; t=1627316049;
+        bh=Sk9ESvFqQXzqMJEwSDYDELk/U/zXa6XKevWibCeGais=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m5+VsCmSpM/Ai0/qNvqN/E8NhlDlvIC9vayeYURzMX8Evl+Mueyqa0heOy7lzgIxT
-         h5nrY8gXL6dKZgglyb8BnjhkFjSR77yb5JhSf9SHs1ra/O5+4QyrMp6FooqA1jFcjW
-         szwAlMyS3ixLYN05cDzLXGy3t13LevvffpHSg4gQ=
+        b=RS9uoXavAiYogsiEbcLVoC2WP3APmPdn18t5DSOvErN7YNemKn71fjVMP03mpuXYR
+         TsrtrBdY9daAseyt7YPTkOGSR9ZwFBCkMcKChbp7QQi+ESpVC8kjtHI6J2NOUGxyBG
+         RDMt8PW7IOE8i+y+pWCn750p+FgkjeBft/1xJoGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Ray <ian.ray@ge.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, John Keeping <john@metanate.com>,
         Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.13 167/223] USB: serial: cp210x: fix comments for GE CS1000
-Date:   Mon, 26 Jul 2021 17:39:19 +0200
-Message-Id: <20210726153851.671735317@linuxfoundation.org>
+Subject: [PATCH 5.13 168/223] USB: serial: cp210x: add ID for CEL EM3588 USB ZigBee stick
+Date:   Mon, 26 Jul 2021 17:39:20 +0200
+Message-Id: <20210726153851.703398421@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,34 +39,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Ray <ian.ray@ge.com>
+From: John Keeping <john@metanate.com>
 
-commit e9db418d4b828dd049caaf5ed65dc86f93bb1a0c upstream.
+commit d6a206e60124a9759dd7f6dfb86b0e1d3b1df82e upstream.
 
-Fix comments for GE CS1000 CP210x USB ID assignments.
+Add the USB serial device ID for the CEL ZigBee EM3588 radio stick.
 
-Fixes: 42213a0190b5 ("USB: serial: cp210x: add some more GE USB IDs")
-Signed-off-by: Ian Ray <ian.ray@ge.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: John Keeping <john@metanate.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/drivers/usb/serial/cp210x.c
 +++ b/drivers/usb/serial/cp210x.c
-@@ -202,8 +202,8 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
- 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
- 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
--	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
--	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
-+	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 M.2 Key E serial interface */
-+	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 Display serial interface */
- 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
- 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
- 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
+@@ -155,6 +155,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x10C4, 0x89A4) }, /* CESINEL FTBC Flexible Thyristor Bridge Controller */
+ 	{ USB_DEVICE(0x10C4, 0x89FB) }, /* Qivicon ZigBee USB Radio Stick */
+ 	{ USB_DEVICE(0x10C4, 0x8A2A) }, /* HubZ dual ZigBee and Z-Wave dongle */
++	{ USB_DEVICE(0x10C4, 0x8A5B) }, /* CEL EM3588 ZigBee USB Stick */
+ 	{ USB_DEVICE(0x10C4, 0x8A5E) }, /* CEL EM3588 ZigBee USB Stick Long Range */
+ 	{ USB_DEVICE(0x10C4, 0x8B34) }, /* Qivicon ZigBee USB Radio Stick */
+ 	{ USB_DEVICE(0x10C4, 0xEA60) }, /* Silicon Labs factory default */
 
 
