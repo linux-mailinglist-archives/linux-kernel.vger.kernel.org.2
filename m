@@ -2,262 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6865D3D576D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA223D575F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhGZJoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:44:08 -0400
-Received: from outbound-smtp48.blacknight.com ([46.22.136.219]:50221 "EHLO
-        outbound-smtp48.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233080AbhGZJoF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:44:05 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp48.blacknight.com (Postfix) with ESMTPS id D0161FA8D3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:24:30 +0100 (IST)
-Received: (qmail 24802 invoked from network); 26 Jul 2021 10:24:30 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPA; 26 Jul 2021 10:24:30 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 9/9] sched/core: Delete SIS_PROP and rely on the idle cpu mask
-Date:   Mon, 26 Jul 2021 11:22:47 +0100
-Message-Id: <20210726102247.21437-10-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210726102247.21437-1-mgorman@techsingularity.net>
-References: <20210726102247.21437-1-mgorman@techsingularity.net>
+        id S232410AbhGZJm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:42:57 -0400
+Received: from relay.sw.ru ([185.231.240.75]:53124 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232450AbhGZJmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 05:42:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=LeiBgMdLdAKoG5QoVqntV3PGe2GjN3JZXuy4s2QzASE=; b=NsVv1g7zmwRc0wDYF
+        6w5B9v1wRacnAXFL1RjML0me3vGK20qWYKR5lDfma0Ca7IoqXgBOJI5X9sOZYtc3HDAjwbkeLmPWf
+        9uFmU+GVXjeVrPqrJCt47Gs1DocySVgdsCRCh5TyuKre81uWeIKuJG22z5aqqSe7WSJyzEOGHBuiI
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m7xlV-005FNh-By; Mon, 26 Jul 2021 13:23:17 +0300
+Subject: Re: [PATCH v5 02/16] memcg: enable accounting for IP address and
+ routing-related objects
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
+ <cover.1626688654.git.vvs@virtuozzo.com>
+ <9123bca3-23bb-1361-c48f-e468c81ad4f6@virtuozzo.com>
+ <CALvZod4HCRHpPJtGE=8tU1Yj=WsWHpocP0q0JU3r4F2fMmAw5w@mail.gmail.com>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <08151b5b-f84a-aa32-82a6-0b6e94e63338@virtuozzo.com>
+Date:   Mon, 26 Jul 2021 13:23:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALvZod4HCRHpPJtGE=8tU1Yj=WsWHpocP0q0JU3r4F2fMmAw5w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that there is an idle CPU mask that is approximately up to date, the
-proportional scan depth can be removed and the scan depth is limited by
-the estimated number of idle CPUs instead.
+On 7/20/21 10:26 PM, Shakeel Butt wrote:
+> On Mon, Jul 19, 2021 at 3:44 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+>>
+>> An netadmin inside container can use 'ip a a' and 'ip r a'
+>> to assign a large number of ipv4/ipv6 addresses and routing entries
+>> and force kernel to allocate megabytes of unaccounted memory
+>> for long-lived per-netdevice related kernel objects:
+>> 'struct in_ifaddr', 'struct inet6_ifaddr', 'struct fib6_node',
+>> 'struct rt6_info', 'struct fib_rules' and ip_fib caches.
+>>
+>> These objects can be manually removed, though usually they lives
+>> in memory till destroy of its net namespace.
+>>
+>> It makes sense to account for them to restrict the host's memory
+>> consumption from inside the memcg-limited container.
+>>
+>> One of such objects is the 'struct fib6_node' mostly allocated in
+>> net/ipv6/route.c::__ip6_ins_rt() inside the lock_bh()/unlock_bh() section:
+>>
+>>  write_lock_bh(&table->tb6_lock);
+>>  err = fib6_add(&table->tb6_root, rt, info, mxc);
+>>  write_unlock_bh(&table->tb6_lock);
+>>
+>> In this case it is not enough to simply add SLAB_ACCOUNT to corresponding
+>> kmem cache. The proper memory cgroup still cannot be found due to the
+>> incorrect 'in_interrupt()' check used in memcg_kmem_bypass().
+>>
+>> Obsoleted in_interrupt() does not describe real execution context properly.
+>> From include/linux/preempt.h:
+>>
+>>  The following macros are deprecated and should not be used in new code:
+>>  in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
+>>
+>> To verify the current execution context new macro should be used instead:
+>>  in_task()      - We're in task context
+>>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>>  mm/memcontrol.c      | 2 +-
+>>  net/core/fib_rules.c | 4 ++--
+>>  net/ipv4/devinet.c   | 2 +-
+>>  net/ipv4/fib_trie.c  | 4 ++--
+>>  net/ipv6/addrconf.c  | 2 +-
+>>  net/ipv6/ip6_fib.c   | 4 ++--
+>>  net/ipv6/route.c     | 2 +-
+>>  7 files changed, 10 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index ae1f5d0..1bbf239 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -968,7 +968,7 @@ static __always_inline bool memcg_kmem_bypass(void)
+>>                 return false;
+>>
+>>         /* Memcg to charge can't be determined. */
+>> -       if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
+>> +       if (!in_task() || !current->mm || (current->flags & PF_KTHREAD))
+>>                 return true;
+>>
+>>         return false;
+> 
+> Can you please also change in_interrupt() in active_memcg() as well?
+> There are other unrelated in_interrupt() in that file but the one in
+> active_memcg() should be coupled with this change.
 
-The plus side of this patch is that the time accounting overhead is gone.
-The downside is that in some circumstances, this will scan more than
-proportional scanning depending on whether an idle core is being scanned
-or the accuracy of the idle CPU mask.
+Could you please elaborate?
+From my point of view active_memcg is paired with set_active_memcg() and is not related to this case.
+active_memcg uses memcg that was set by set_active_memcg(), either from int_active_memcg per-cpu pointer
+or from current->active_memcg pointer.
+I'm agree, it in case of disabled BH it is incorrect to use int_active_memcg, 
+we still can use current->active_memcg. However it isn't a problem, 
+memcg will be properly provided in both cases.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/core.c     | 22 ++++----------
- kernel/sched/fair.c     | 65 ++---------------------------------------
- kernel/sched/features.h |  5 ----
- kernel/sched/sched.h    |  5 ----
- 4 files changed, 8 insertions(+), 89 deletions(-)
+I think it's better to fix set_active_memcg/active_memcg by separate patch.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2751614ce0cb..9fcf9d1ae21c 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3333,9 +3333,6 @@ static void ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags,
- 		if (rq->avg_idle > max)
- 			rq->avg_idle = max;
- 
--		rq->wake_stamp = jiffies;
--		rq->wake_avg_idle = rq->avg_idle / 2;
--
- 		rq->idle_stamp = 0;
- 	}
- #endif
-@@ -8648,18 +8645,11 @@ int sched_cpu_activate(unsigned int cpu)
- 	balance_push_set(cpu, false);
- 
- #ifdef CONFIG_SCHED_SMT
--	do {
--		int weight = cpumask_weight(cpu_smt_mask(cpu));
--
--		if (weight > sched_smt_weight)
--			sched_smt_weight = weight;
--
--		/*
--		 * When going up, increment the number of cores with SMT present.
--		 */
--		if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
--			static_branch_inc_cpuslocked(&sched_smt_present);
--	} while (0);
-+	/*
-+	 * When going up, increment the number of cores with SMT present.
-+	 */
-+	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
-+		static_branch_inc_cpuslocked(&sched_smt_present);
- #endif
- 	set_cpu_active(cpu, true);
- 
-@@ -9029,8 +9019,6 @@ void __init sched_init(void)
- 		rq->online = 0;
- 		rq->idle_stamp = 0;
- 		rq->avg_idle = 2*sysctl_sched_migration_cost;
--		rq->wake_stamp = jiffies;
--		rq->wake_avg_idle = rq->avg_idle;
- 		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
- 		rq->last_idle_state = 1;
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index fe87af2ccc80..70b6d840426a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6076,8 +6076,6 @@ static inline int __select_idle_cpu(int cpu, struct task_struct *p)
- DEFINE_STATIC_KEY_FALSE(sched_smt_present);
- EXPORT_SYMBOL_GPL(sched_smt_present);
- 
--int __read_mostly sched_smt_weight = 1;
--
- static inline void set_idle_cores(int cpu, int val)
- {
- 	struct sched_domain_shared *sds;
-@@ -6196,8 +6194,6 @@ static inline bool test_idle_cores(int cpu, bool def)
- 	return def;
- }
- 
--#define sched_smt_weight 1
--
- static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
- 	return __select_idle_cpu(core, p);
-@@ -6210,8 +6206,6 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
- 
- #endif /* CONFIG_SCHED_SMT */
- 
--#define sis_min_cores	2
--
- /*
-  * Scan the LLC domain for idle CPUs; this is dynamically regulated by
-  * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
-@@ -6220,12 +6214,8 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
- static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool has_idle_core, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
--	int i, cpu, idle_cpu = -1, nr = INT_MAX;
--	struct rq *this_rq = this_rq();
--	int this = smp_processor_id();
-+	int i, cpu, idle_cpu = -1;
- 	struct sched_domain *this_sd;
--	u64 time = 0;
--
- 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
- 	if (!this_sd)
- 		return -1;
-@@ -6237,69 +6227,20 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
- 	 */
- 	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
- 
--	if (sched_feat(SIS_PROP)) {
--		u64 avg_cost, avg_idle, span_avg;
--		unsigned long now = jiffies;
--
--		/*
--		 * If we're busy, the assumption that the last idle period
--		 * predicts the future is flawed; age away the remaining
--		 * predicted idle time.
--		 */
--		if (unlikely(this_rq->wake_stamp < now)) {
--			while (this_rq->wake_stamp < now && this_rq->wake_avg_idle) {
--				this_rq->wake_stamp++;
--				this_rq->wake_avg_idle >>= 1;
--			}
--		}
--
--		avg_idle = this_rq->wake_avg_idle;
--		avg_cost = this_sd->avg_scan_cost + 1;
--
--		span_avg = sd->span_weight * avg_idle;
--		if (span_avg > sis_min_cores * avg_cost)
--			nr = div_u64(span_avg, avg_cost);
--		else
--			nr = sis_min_cores;
--
--		nr *= sched_smt_weight;
--		time = cpu_clock(this);
--	}
--
- 	for_each_cpu_wrap(cpu, cpus, target + 1) {
- 		if (has_idle_core) {
- 			i = select_idle_core(p, cpu, cpus, &idle_cpu);
- 			if ((unsigned int)i < nr_cpumask_bits)
- 				break;
--
--			nr -= sched_smt_weight;
- 		} else {
- 			idle_cpu = __select_idle_cpu(cpu, p);
- 			if ((unsigned int)idle_cpu < nr_cpumask_bits)
- 				break;
--			nr--;
- 		}
--
--		if (nr < 0)
--			break;
- 	}
- 
--	if ((unsigned int)idle_cpu < nr_cpumask_bits) {
--		if (has_idle_core)
--			set_idle_cores(target, false);
--
--		if (sched_feat(SIS_PROP)) {
--			time = cpu_clock(this) - time;
--
--			/*
--			 * Account for the scan cost of wakeups against the average
--			 * idle time.
--			 */
--			this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
--
--			update_avg(&this_sd->avg_scan_cost, time);
--		}
--	}
-+	if ((unsigned int)idle_cpu < nr_cpumask_bits && has_idle_core)
-+		set_idle_cores(target, false);
- 
- 	return idle_cpu;
- }
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 7f8dace0964c..4bb29c830b9d 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -52,11 +52,6 @@ SCHED_FEAT(NONTASK_CAPACITY, true)
-  */
- SCHED_FEAT(TTWU_QUEUE, true)
- 
--/*
-- * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
-- */
--SCHED_FEAT(SIS_PROP, true)
--
- /*
-  * Issue a WARN when we do multiple update_rq_clock() calls
-  * in a single rq->lock section. Default disabled because the
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2d6456fa15cb..35a0b591a2de 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1024,9 +1024,6 @@ struct rq {
- 	u64			idle_stamp;
- 	u64			avg_idle;
- 
--	unsigned long		wake_stamp;
--	u64			wake_avg_idle;
--
- 	/* This is used to determine avg_idle's max value */
- 	u64			max_idle_balance_cost;
- 
-@@ -1352,8 +1349,6 @@ do {						\
- #ifdef CONFIG_SCHED_SMT
- extern void __update_idle_core(struct rq *rq);
- 
--extern int sched_smt_weight;
--
- static inline void update_idle_core(struct rq *rq)
- {
- 	if (static_branch_unlikely(&sched_smt_present))
--- 
-2.26.2
+Am I missed something perhaps?
 
+Thank you,
+	Vasily Averin
