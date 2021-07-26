@@ -2,270 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7783D6111
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EC13D612C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbhGZP2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:28:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237459AbhGZPPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C890A6108B;
-        Mon, 26 Jul 2021 15:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627314945;
-        bh=llO7j+UYXFsFMGBP2Lr/phtn9B//6nPGyDgjSbRlY04=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BPTCKa8I0cjzgvmONZeN6PppfX+OowPyjg4RadHLiH+yFgnEge5sjLCoWkJlwEHPC
-         Fe/Hj93b68vv0V5PRbPCsdQ1Cs5Xsws5EWoBald+Qx69bNw9YRlfq05K/LFzwxWR2C
-         +D8XY/7YCmczRW7+avKsrggGDPLZ3lJToHGcglC3b0aSjh67M12nqSPqNfco8/a5Vz
-         2jdOLeMN9JyVt3b5P42RvHrqVBdLaFgRr0CUkmjl8q5k8NObN/vAhYkzYfJAytF6TX
-         QZ6Akd8pGTgYGjiWnqysaifPhEF9learIDKmz7m+1MmOta9wdgPQQqtPvQk1+EmadC
-         7RWsJh8uQV+Nw==
-Received: by mail-oi1-f180.google.com with SMTP id t128so11440230oig.1;
-        Mon, 26 Jul 2021 08:55:45 -0700 (PDT)
-X-Gm-Message-State: AOAM530cUuxkoiW96k5t3F4eSztXM4UCWCvgMXgZKIxXLQDY0HKNhbDB
-        ap1HJR0nrIcnYhZWV0awOv632TLCvrckAWvbkqQ=
-X-Google-Smtp-Source: ABdhPJzsnZRK2dUpbW/8bb75AEj5Bo85v5fsReYlqOBZKeEw6dZnYT0cB96unuFOEhR4KREO34Mdu1Pb20xk9W0547s=
-X-Received: by 2002:aca:4c49:: with SMTP id z70mr11433310oia.174.1627314945217;
- Mon, 26 Jul 2021 08:55:45 -0700 (PDT)
+        id S231874AbhGZPaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235893AbhGZPRG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:06 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31EFC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:57:33 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id t4so5354171qvj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=No1idDzjoDsMmvN3xuwWOow2oVTtEvU8MGBu5PU6/sM=;
+        b=ssT65GvNumoWqL6ydnEmW5Lcm8Zg8hEIXfManz/C9Atw1meiX/2aaUaNlU6EQhHE4W
+         /WhjABLzVj9ld0JjUq+XnLGJ+OueQFMRKxl3IRDGxikC5jPgsKPszOPDMqOhumZFESMe
+         fHpvENQmaGQlOBGsJmSFsqO9lkQJ+EmVvlIRrG4TnDaeiXhiWk0DlnayBwCwH/gFQqrp
+         cgXzpRT+pyhTVowbS6CIkNwuojsq2Gg/Hmiytvggd6Wn6eWeYhqinewDjLlttfECXT4O
+         fZKcGg6mOviwvxBtB985ox7LCzyU1EzuMtJVhhIWWwNi01P/zy9dNgcPe71j/d96ALaX
+         +q5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=No1idDzjoDsMmvN3xuwWOow2oVTtEvU8MGBu5PU6/sM=;
+        b=SyPIre7oLgIwmEkV0L7VzOO0dGpfFkPk9CLeHEgsaGXfk2KkOg8YnbH6fz3acPwyeD
+         tR1cry+oGK/rjYEjnvtocsuK4GGM0VNHbnLxO+0PdJx84iJRD/hu0TLxJsSJ67FJ7vu5
+         tn0QGzclWDuEiL5Rp3cGSed8SZfHtvGRgcW2JLuuUZdb89VbnsyE6tgIvKpRF6zsabwT
+         yeQ8M2+fnA+s0QtyEUNNmWS7a64Ru3crda3MYx1W0bAx5M55lHykGE9kK3zN23AaOK3o
+         Ef4aMu53dIbMerPMHAdHe7ajzd56w73qFVlUkQ0CRPbBq0bXpvEJ99bSqCmWgKhPXh8y
+         d6Rg==
+X-Gm-Message-State: AOAM532ZdljCjjliqWcwJodJSCfW3BC0QrBZvxj6pqTqIFFQM5oI3qbO
+        vPGWbPiecU9qlRkiA/kyAoN9fulFX0yMiuFgD252aA==
+X-Google-Smtp-Source: ABdhPJw6uFTdt9Q6d69+oxxRgZenuF9SRtyMwB9oNBD1/2H1OclxjYSTBFaYzAiNV+iibs75SaZ6BLSB7154joJYymo=
+X-Received: by 2002:a05:6214:c29:: with SMTP id a9mr18649044qvd.0.1627315052531;
+ Mon, 26 Jul 2021 08:57:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
-In-Reply-To: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 26 Jul 2021 17:55:33 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEyjBxu_7mV2DNU=Maqx6JqTTWp3ZuHkJz3js0qRsJSHw@mail.gmail.com>
-Message-ID: <CAMj1kXEyjBxu_7mV2DNU=Maqx6JqTTWp3ZuHkJz3js0qRsJSHw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: Add memory semantics to acpi_os_map_memory()
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Veronika kabatova <vkabatov@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
+References: <PH0PR11MB51748333769D9002912FF63C84E89@PH0PR11MB5174.namprd11.prod.outlook.com>
+In-Reply-To: <PH0PR11MB51748333769D9002912FF63C84E89@PH0PR11MB5174.namprd11.prod.outlook.com>
+From:   Joel Fernandes <joelaf@google.com>
+Date:   Mon, 26 Jul 2021 11:57:21 -0400
+Message-ID: <CAJWu+oq98Yh4kknze7u6SOYZNw6hR5aFkj61aXbTV3JPq=7RNg@mail.gmail.com>
+Subject: Re: Core Scheduling - Concurrent VMs
+To:     "Rajendran, Jaishankar" <jaishankar.rajendran@intel.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Vineeth Pillai <vineethrp@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Mallikarjun Chegaraddi, Raju" 
+        <raju.mallikarjun.chegaraddi@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 at 12:00, Lorenzo Pieralisi
-<lorenzo.pieralisi@arm.com> wrote:
->
-> The memory attributes attached to memory regions depend on architecture
-> specific mappings.
->
-> For some memory regions, the attributes specified by firmware (eg
-> uncached) are not sufficient to determine how a memory region should be
-> mapped by an OS (for instance a region that is define as uncached in
-> firmware can be mapped as Normal or Device memory on arm64) and
-> therefore the OS must be given control on how to map the region to match
-> the expected mapping behaviour (eg if a mapping is requested with memory
-> semantics, it must allow unaligned accesses).
->
-> Rework acpi_os_map_memory() and acpi_os_ioremap() back-end to split
-> them into two separate code paths:
->
-> acpi_os_memmap() -> memory semantics
-> acpi_os_ioremap() -> MMIO semantics
->
-> The split allows the architectural implementation back-ends to detect
-> the default memory attributes required by the mapping in question
-> (ie the mapping API defines the semantics memory vs MMIO) and map the
-> memory accordingly.
->
-> Link: https://lore.kernel.org/linux-arm-kernel/31ffe8fc-f5ee-2858-26c5-0fd8bdd68702@arm.com
-> Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Hanjun Guo <guohanjun@huawei.com>
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Hi,
++Dario Faggioli and +Vineeth Pillai as well.
 
-For the patch in general
+On Mon, Jul 26, 2021 at 1:41 AM Rajendran, Jaishankar
+<jaishankar.rajendran@intel.com> wrote:
+>
+> Refer to the below experiments performed using Core Scheduling for Concurrent VMs and we found the benchmark scores executed in different VMs are
+> degrading after enablement of Core Scheduling. Both the host and guest are enabled with Core Scheduler
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Why are you running core scheduling within the guest? Only the host
+needs it and you tag vCPU threads in the host. Within the guest you
+don't need it (and it probably doesn't make sense unless you pin the
+vCPU threads to individual physical hardware threads).
 
-Couple of nits/questions below
+>
+> Environment:
+> ++++++++++
+> Platform - CML-NUC - i5-10600 @ 3.3 Ghz
+> Core Assignment for Host OS : No .of Cores     : 4   No .of Threads : 4 ( i.e. 8 Logical Cores)
+> Host OS - Ubuntu 20.1 with Chromium Kernel 5.4
+> Guest OS - Android OS running as VM using qemu/kvm with Chromium Kernel 5.4
+> VM's are assigned with 4 cores and 4 Threads (i.e. 8 Logical Cores)
+>
+> Kernel Config:
+> +++++++++++
+> Host and Guest OS Kernel is enabled with CONFIG_SCHED_CORE=y
+>
+> CGROUP Mapping:
+> ++++++++++++++++
+> We did follow the CGroup approach for Core Scheduling based on the below document
+> https://lkml.org/lkml/2021/1/22/1469
+>  and configured the CGroup. But not able to find cpu.core_tag file in CGroups?
+>
+> VM1 (Android OS running using qemu/KVM) is executed and its default cgroup is changed to caas1
+> VM2 (Android OS running using qemu/KVM) is executed and its default cgroup is changed to caas2
 
-> ---
->  arch/arm64/include/asm/acpi.h |  3 +++
->  arch/arm64/kernel/acpi.c      | 19 ++++++++++++++++---
->  drivers/acpi/osl.c            | 23 ++++++++++++++++-------
->  include/acpi/acpi_io.h        |  8 ++++++++
->  4 files changed, 43 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index bd68e1b7f29f..7535dc7cc5aa 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -50,6 +50,9 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
->  void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size);
->  #define acpi_os_ioremap acpi_os_ioremap
->
-> +void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size);
-> +#define acpi_os_memmap acpi_os_memmap
-> +
->  typedef u64 phys_cpuid_t;
->  #define PHYS_CPUID_INVALID INVALID_HWID
->
-> diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
-> index f3851724fe35..1c9c2f7a1c04 100644
-> --- a/arch/arm64/kernel/acpi.c
-> +++ b/arch/arm64/kernel/acpi.c
-> @@ -273,7 +273,8 @@ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr)
->         return __pgprot(PROT_DEVICE_nGnRnE);
->  }
->
-> -void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-> +static void __iomem *__acpi_os_ioremap(acpi_physical_address phys,
-> +                                      acpi_size size, bool memory)
->  {
->         efi_memory_desc_t *md, *region = NULL;
->         pgprot_t prot;
-> @@ -299,9 +300,11 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
->          * It is fine for AML to remap regions that are not represented in the
->          * EFI memory map at all, as it only describes normal memory, and MMIO
->          * regions that require a virtual mapping to make them accessible to
-> -        * the EFI runtime services.
-> +        * the EFI runtime services. Determine the region default
-> +        * attributes by checking the requested memory semantics.
->          */
-> -       prot = __pgprot(PROT_DEVICE_nGnRnE);
-> +       prot = memory ? __pgprot(PROT_NORMAL_NC) :
-> +                       __pgprot(PROT_DEVICE_nGnRnE);
->         if (region) {
->                 switch (region->type) {
->                 case EFI_LOADER_CODE:
-> @@ -361,6 +364,16 @@ void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
->         return __ioremap(phys, size, prot);
->  }
->
-> +void __iomem *acpi_os_ioremap(acpi_physical_address phys, acpi_size size)
-> +{
-> +       return __acpi_os_ioremap(phys, size, false);
-> +}
-> +
-> +void __iomem *acpi_os_memmap(acpi_physical_address phys, acpi_size size)
-> +{
-> +       return __acpi_os_ioremap(phys, size, true);
-> +}
-> +
->  /*
->   * Claim Synchronous External Aborts as a firmware first notification.
->   *
-> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-> index 45c5c0e45e33..6db62f3a390e 100644
-> --- a/drivers/acpi/osl.c
-> +++ b/drivers/acpi/osl.c
-> @@ -284,7 +284,8 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
->  #define should_use_kmap(pfn)   page_is_ram(pfn)
->  #endif
->
-> -static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
-> +static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz,
-> +                             bool memory)
->  {
->         unsigned long pfn;
->
-> @@ -294,7 +295,8 @@ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
->                         return NULL;
->                 return (void __iomem __force *)kmap(pfn_to_page(pfn));
->         } else
-> -               return acpi_os_ioremap(pg_off, pg_sz);
-> +               return memory ? acpi_os_memmap(pg_off, pg_sz) :
-> +                               acpi_os_ioremap(pg_off, pg_sz);
->  }
->
->  static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
-> @@ -309,9 +311,10 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
->  }
->
->  /**
-> - * acpi_os_map_iomem - Get a virtual address for a given physical address range.
-> + * __acpi_os_map_iomem - Get a virtual address for a given physical address range.
->   * @phys: Start of the physical address range to map.
->   * @size: Size of the physical address range to map.
-> + * @memory: true if remapping memory, false if IO
->   *
->   * Look up the given physical address range in the list of existing ACPI memory
->   * mappings.  If found, get a reference to it and return a pointer to it (its
-> @@ -321,8 +324,8 @@ static void acpi_unmap(acpi_physical_address pg_off, void __iomem *vaddr)
->   * During early init (when acpi_permanent_mmap has not been set yet) this
->   * routine simply calls __acpi_map_table() to get the job done.
->   */
-> -void __iomem __ref
-> -*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
-> +static void __iomem __ref
-> +*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
->  {
->         struct acpi_ioremap *map;
->         void __iomem *virt;
-> @@ -353,7 +356,7 @@ void __iomem __ref
->
->         pg_off = round_down(phys, PAGE_SIZE);
->         pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
-> -       virt = acpi_map(phys, size);
-> +       virt = acpi_map(phys, size, memory);
->         if (!virt) {
->                 mutex_unlock(&acpi_ioremap_lock);
->                 kfree(map);
-> @@ -372,11 +375,17 @@ void __iomem __ref
->         mutex_unlock(&acpi_ioremap_lock);
->         return map->virt + (phys - map->phys);
->  }
-> +
-> +void __iomem __ref
-> +*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+It is not clear to me how the individual vCPU threads are tagged so it
+is hard to say much.
 
-I am aware that this just duplicated the prototype above, but I think
-this should be
-
-void __iomem *__ref
-
-given that the __ref comes after the * in the prototype below.
-
-> +{
-> +       return __acpi_os_map_iomem(phys, size, false);
-> +}
->  EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+> The changes are validated using htop command.
 >
->  void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
->  {
-> -       return (void *)acpi_os_map_iomem(phys, size);
-> +       return (void *)__acpi_os_map_iomem(phys, size, true);
+> WorkLoad:
+> +++++++++
+> GeekBench 5.3.1 - Multi core Test executed on both the VMs
+>
+> Observations:
+> ++++++++++++
+> As per core CORE_SCHEDULER documentation, (vCPU) Threads of VM1 & VM2 (belonging to two different cgroups ) should not be scheduled on the same core at a given time.
+> But we observe that vCPU Threads of different VMs are scheduled in the same core ( Used HTOP and ps commands)
 
-I think this should be (__force void *) to shut up sparse address
-space warnings.
+I don't think these commands can really tell you that core scheduler
+is working or not. They are too coarse grained. You would need to look
+at it through ftrace scheduling events. Core scheduling will still
+allow differently tagged threads to use a core, it is just that it
+wont allow it simultaneously.
 
->  }
->  EXPORT_SYMBOL_GPL(acpi_os_map_memory);
->
-> diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
-> index 027faa8883aa..a0212e67d6f4 100644
-> --- a/include/acpi/acpi_io.h
-> +++ b/include/acpi/acpi_io.h
-> @@ -14,6 +14,14 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
->  }
->  #endif
->
-> +#ifndef acpi_os_memmap
-> +static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
-> +                                           acpi_size size)
-> +{
-> +       return ioremap_cache(phys, size);
-> +}
-> +#endif
-> +
->  extern bool acpi_permanent_mmap;
->
->  void __iomem __ref
-> --
-> 2.31.0
->
+Also just to note, in ChromeOS, we are working on some changes to tag
+the whole Android VM with same tag (all vCPU threads in a single VM
+can share a core) which should improve performance. Previously we were
+putting different tags for each vCPU thread of the Android VM which
+seemed overkill.
