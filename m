@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9562C3D62CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3F03D62D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238326AbhGZPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37026 "EHLO mail.kernel.org"
+        id S238416AbhGZPjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237335AbhGZPWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B44A60F5A;
-        Mon, 26 Jul 2021 16:02:53 +0000 (UTC)
+        id S237329AbhGZPW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A14D60E09;
+        Mon, 26 Jul 2021 16:02:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315374;
-        bh=dOyU/jTonwnSLfo73VTuw12SSwAoLPTF2ThdAbPs2q8=;
+        s=korg; t=1627315377;
+        bh=/yzQmVErl1HY6Ct8foV+D5Df/ghR0Ctmt50hyioTeLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pwnQK+Wm1/p+gtp6DeTs6HZGRwFL67elrbECbWKgxv/E39F/O4W2/fWVn3xZDCNpO
-         L95+BkYRSq4zBhtOrbqX8SVITcd8l5LMWTOXEPXk3ojXLh+hWxhJ9KjU1XPpt3z1sw
-         mk4sIvCiAuFshjECuS6Il9JhUGsaSoP+sIMi5bvY=
+        b=1Qr+q3B62iHHrZDq/84tiQcWnhJUc4eWZH56/zoA/YCrfNoTknhZ69fDejOhAVKtc
+         uaowEX5LP1Rz8H8hHdaA/ljmYmskTfG5vvhixUf8R+H52MaEorcmIGJVB7GgEpjMCs
+         nsGb2vwxYZUPAU6045/8MsUFK9nwP/Hhm5sYAtxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
         Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 037/167] perf test session_topology: Delete session->evlist
-Date:   Mon, 26 Jul 2021 17:37:50 +0200
-Message-Id: <20210726153840.631599092@linuxfoundation.org>
+Subject: [PATCH 5.10 038/167] perf test event_update: Fix memory leak of evlist
+Date:   Mon, 26 Jul 2021 17:37:51 +0200
+Message-Id: <20210726153840.666182126@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -47,44 +46,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 233f2dc1c284337286f9a64c0152236779a42f6c ]
+[ Upstream commit fc56f54f6fcd5337634f4545af6459613129b432 ]
 
-ASan reports a memory leak related to session->evlist while running:
+ASan reports a memory leak when running:
 
-  # perf test "41: Session topology".
+  # perf test "49: Synthesize attr update"
 
-When perf_data is in write mode, session->evlist is owned by the caller,
-which should also take care of deleting it.
+Caused by evlist not being deleted.
 
-This patch adds the missing evlist__delete().
+This patch adds the missing evlist__delete and removes the
+perf_cpu_map__put since it's already being deleted by evlist__delete.
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: c84974ed9fb67293 ("perf test: Add entry to test cpu topology")
+Fixes: a6e5281780d1da65 ("perf tools: Add event_update event unit type")
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@intel.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com
+Link: http://lore.kernel.org/lkml/f7994ad63d248f7645f901132d208fadf9f2b7e4.1626343282.git.rickyman7@gmail.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/topology.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/tests/event_update.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-index 22daf2bdf5fa..f4a2c0df0954 100644
---- a/tools/perf/tests/topology.c
-+++ b/tools/perf/tests/topology.c
-@@ -52,6 +52,7 @@ static int session_write_header(char *path)
- 	TEST_ASSERT_VAL("failed to write header",
- 			!perf_session__write_header(session, session->evlist, data.file.fd, true));
+diff --git a/tools/perf/tests/event_update.c b/tools/perf/tests/event_update.c
+index bdcf032f8516..1c9a6138fba1 100644
+--- a/tools/perf/tests/event_update.c
++++ b/tools/perf/tests/event_update.c
+@@ -119,6 +119,6 @@ int test__event_update(struct test *test __maybe_unused, int subtest __maybe_unu
+ 	TEST_ASSERT_VAL("failed to synthesize attr update cpus",
+ 			!perf_event__synthesize_event_update_cpus(&tmp.tool, evsel, process_event_cpus));
  
-+	evlist__delete(session->evlist);
- 	perf_session__delete(session);
- 
+-	perf_cpu_map__put(evsel->core.own_cpus);
++	evlist__delete(evlist);
  	return 0;
+ }
 -- 
 2.30.2
 
