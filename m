@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979203D55C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372403D55CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhGZH7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:59:30 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:36811 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231805AbhGZH72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:59:28 -0400
-Received: from copland.sibelius.xs4all.nl ([83.163.83.176])
-        by smtp-cloud9.xs4all.net with ESMTP
-        id 7w2DmOzH54Jsb7w2WmW9Om; Mon, 26 Jul 2021 10:32:44 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1627288364; bh=PKbQ1TmUx1VxAzGEjtXpNW/Qb53gi7gmApBAe4okEsI=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:From:Subject;
-        b=g3+Imej37aAQx9NE+ANp2i/Y1eNwT3P9EcgAYxRnZb8nDPnUe9vMhzUtMoIN6Kr+i
-         rPEmlime5AEk1KYXWYzhtRTMbonjSixyosJA7NGglJ/6NTQdel1KDDts4cNYzFmPZb
-         LZW1zlpxh4/2u9AugpXFn/XTHteZwwH1Fl4wNii5pJnpp50y1KwdOoiUAOV6hudzRh
-         fFG9/3s6Tez/oHcySaLY21ma/tQsTuXEv11+KQ5fhGST0QzdzHM2Tx1mVdNDi617fG
-         MwI4a/wmVIsCyaIftnxwbFl2673ofg2pySspq/pWJOBGFNpR2twJEukUlMpI0/sGX6
-         UGWXx+JYIz3qQ==
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     devicetree@vger.kernel.org
-Cc:     maz@kernel.org, robin.murphy@arm.com, sven@svenpeter.dev,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Hector Martin <marcan@marcan.st>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] arm64: apple: Add PCIe node
-Date:   Mon, 26 Jul 2021 10:32:01 +0200
-Message-Id: <20210726083204.93196-3-mark.kettenis@xs4all.nl>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
-References: <20210726083204.93196-1-mark.kettenis@xs4all.nl>
+        id S232349AbhGZIBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 04:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231916AbhGZIBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 04:01:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BF2960720;
+        Mon, 26 Jul 2021 08:41:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627288891;
+        bh=eIi3D0qYBSxKVqxpuYsQzma/OHI4Se5bOSS2/UNnPLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sr8FVQkZVsLsxsAtQWpiCBOSjP1fcDX2jF40pRiF3lDP6qMM35ZTOqyiLaAvV23qB
+         g8kBBOecYaXA5xFOLesrj0oyUiUcKr42p/53RYbufbeN9vOtWryPmx/zxFgyYdjMXl
+         DSOOtuZQoBXjgf/dRC2PmP5E9rlLjM+TKKfw4LBA=
+Date:   Mon, 26 Jul 2021 10:37:28 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into
+ r8152_main.c and r8152_fw.c
+Message-ID: <YP50SIgqAEyKWSpA@kroah.com>
+References: <1394712342-15778-368-Taiwan-albertk@realtek.com>
+ <1394712342-15778-371-Taiwan-albertk@realtek.com>
+ <1394712342-15778-373-Taiwan-albertk@realtek.com>
+ <YP5mFKeJsGezjdve@kroah.com>
+ <c6b44f93a5b14fbb98d4c6cb0ed2a77f@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfNgmQNzELbD+zU3VM/bNjyFjHaUQPd84PWVoDiNStFaEhlF1Z0Ouoq97lo+jRhfg0zzWNzfCbCozTMRLkRE55hGOxB5YxqwGJU6LwEOaLRzD3SkRLatU
- A8r2W4Yw5lPbLSINkh/DpOTEWjOwBJ1laUXWqsWs/hBOPR9agv2j2IsQEtiTc1Ux1N95Mi0mgV53EGQYKZv3lrHFs8XIieYWT7gVvCZJGnpyysulvfSmPXoi
- iGkMhPMYz9OJvO0nrXXaiqwfOGafGgo8Negn9ggqlrXg5aAYjil58+zvYJ/671NlOpwa/JI8IBtkbuwF7VGjK+i5/X8UwslsT9Ru/HGtoRWkyc6fwzrL1Uyj
- iXDRfdZgjZqWOV0CMCOHjL0fKdSXRyWjEAmhzZcvEW91e1tyHiZb8No/NQhhhFYLXqtqK1ghvTQ7Ml6R3IaunE3kiU4Qlr2mp/vBA09aSdXGsqyA+04YVBfO
- gjUQoB7wJy/Ru2XodQYXxk5VeIAZMUsPmD3AbzbUsIDMH6WSQI4yiM6ZcoSUfaUpJciKg+vXZkrMVlaDcZXWrKQfOHc5QOeelrdp+w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6b44f93a5b14fbb98d4c6cb0ed2a77f@realtek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Kettenis <kettenis@openbsd.org>
+On Mon, Jul 26, 2021 at 08:26:00AM +0000, Hayes Wang wrote:
+> Greg KH <gregkh@linuxfoundation.org>
+> > Sent: Monday, July 26, 2021 3:37 PM
+> [...]
+> > That is a lot of different things all happening in one commit, why?
+> 
+> I plan to separate the file into two files. And
+> I find I need an additional header file for it, so
+> The patch includes adding that header file.
 
-Add node corresponding to the apcie,t8103 node in the
-Apple device tree for the Mac mini (M1, 2020).
+You also do other things, like renaming defines, which is not just
+moving code around, right?
 
-Clock references and DART (IOMMU) references are left out at the
-moment and will be added once the appropriate bindings have been
-settled upon.
+> > Please break this up into "one patch per change" and submit it that way.
+> > 
+> > But the real question is why break this file up in the first place?
+> > What is wrong with the way it is today?  What future changes require
+> > this file to be in smaller pieces?  If none, why make this?  If there
+> > are future changes, then please submit this change when you submit
+> > those, as that would show a real need.
+> 
+> The purpose is let me easy to maintain the driver.
+> The code is larger and larger. And I find that the
+> r8169.c has been separated into three files.
+> Therefore, I think maybe I could split the driver
+> into small parts like r8169. Then, the code wouldn't
+> be complex.
 
-Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
----
- arch/arm64/boot/dts/apple/t8103.dtsi | 63 ++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+I do not know, is it really easier to find things in 3 different files
+instead of one?  That's up to you, but you did not say why this change
+is needed.
 
-diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-index 503a76fc30e6..cd3ebb940e86 100644
---- a/arch/arm64/boot/dts/apple/t8103.dtsi
-+++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-@@ -214,5 +214,68 @@ pinctrl_smc: pinctrl@23e820000 {
- 				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
- 				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
- 		};
-+
-+		pcie0: pcie@690000000 {
-+			compatible = "apple,t8103-pcie", "apple,pcie";
-+			device_type = "pci";
-+
-+			reg = <0x6 0x90000000 0x0 0x1000000>,
-+			      <0x6 0x80000000 0x0 0x4000>,
-+			      <0x6 0x81000000 0x0 0x8000>,
-+			      <0x6 0x82000000 0x0 0x8000>,
-+			      <0x6 0x83000000 0x0 0x8000>;
-+			reg-names = "config", "rc", "port0", "port1", "port2";
-+
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			msi-controller;
-+			msi-parent = <&pcie0>;
-+			msi-ranges = <704 32>;
-+
-+			bus-range = <0 3>;
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
-+				 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
-+
-+			pinctrl-0 = <&pcie_pins>;
-+			pinctrl-names = "default";
-+
-+			pci@0,0 {
-+				device_type = "pci";
-+				reg = <0x0 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 152 0>;
-+				max-link-speed = <2>;
-+
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+
-+			pci@1,0 {
-+				device_type = "pci";
-+				reg = <0x800 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 153 0>;
-+				max-link-speed = <2>;
-+
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+
-+			pci@2,0 {
-+				device_type = "pci";
-+				reg = <0x1000 0x0 0x0 0x0 0x0>;
-+				reset-gpios = <&pinctrl_ap 33 0>;
-+				max-link-speed = <1>;
-+
-+				#address-cells = <3>;
-+				#size-cells = <2>;
-+				ranges;
-+			};
-+		};
- 	};
- };
--- 
-2.32.0
+thanks,
 
+greg k-h
