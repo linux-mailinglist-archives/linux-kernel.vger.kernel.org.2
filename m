@@ -2,111 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F91D3D5BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8013D5BB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhGZNuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234585AbhGZNt6 (ORCPT
+        id S234528AbhGZNvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:51:02 -0400
+Received: from pv50p00im-hyfv10021501.me.com ([17.58.6.48]:56786 "EHLO
+        pv50p00im-hyfv10021501.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234201AbhGZNvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:49:58 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1FDC061799;
-        Mon, 26 Jul 2021 07:30:24 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k14-20020a05600c1c8eb02901f13dd1672aso117435wms.0;
-        Mon, 26 Jul 2021 07:30:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=zmEnUninoDDVw6qOk4K+IxgHAla5sREvr231jQJ9B0I=;
-        b=eHpAfXjWNyt5wEuObsyvgqyo/sdjJa66t3ti+AkrFWIxkSqIOEMwfGuVpXZDY9cATW
-         dyO3SC117JeiNXe8V1JmHvD6YRUCjvOQi5Bj/SO8Pip4dOBDbnIXyPxUBSfbSNR2icAL
-         Rd3my0wKQGeea6Lii1vlOCt6hEVW5KLLBwn8MVJ4TX2B6L5djN1TqvtFdMz0rlhGV5Zw
-         jAXftFC16bxD3PkwqkoPIV5oo/LnE/JYLVbqqWynSJLa2bfjXmqoghwDfoagdSDEaHtx
-         UYHs4A6e1uJmYHMlKk7rfx0xfa85CqoWh0Eutpz+Tk7044iTdZuYYCXvfJwz1ogICVii
-         4epA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=zmEnUninoDDVw6qOk4K+IxgHAla5sREvr231jQJ9B0I=;
-        b=Qo0vN02g5l4qFc1wz6FKsFMU6xnBid2aS3s5DEOdzEKcVYXZCWVsfQyhp3HGc4cWh1
-         niO191YFUwYqp5RUaijRSVVNCqyaTI7gbTBAN9PuMzkaGPcbKNnfh6ADjbiLq3sRj5tv
-         L+OltZQsw78D/NYSl3dV8yNiqdPcdTBurZiE83lrXR2Ag3D//mL0MMZRIt6yHNvZAuAx
-         OrvCcs6wSQ/gYEfz8y8f9WpGsExlyGABxHk3RKPmbwlbcFeaooYCknWV2XIw2RIOzaK7
-         pGblClTqcZthYsRJv0sKDSv/dx8jp1/wjt7I4w9kUCdRsWJz0PCKW00w90SDBPORBlqu
-         YUFQ==
-X-Gm-Message-State: AOAM5310aeEYmx3Txj4FTJishruUOVgy7runG2W0OZRIjWiFF8umfqLQ
-        kRO0V9/8zaQQ4yh4rOUqxl8=
-X-Google-Smtp-Source: ABdhPJxGTJM0zz6F/vsL6XdmIWYJioSRVoob3A+gGjhpcQv21j1pkZcYYWtPDuJAutBRZVkAVPv+mg==
-X-Received: by 2002:a1c:3505:: with SMTP id c5mr26528052wma.53.1627309821219;
-        Mon, 26 Jul 2021 07:30:21 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d1a:1100:c32:37a3:94e9:cfea])
-        by smtp.gmail.com with ESMTPSA id o17sm9176609wmp.31.2021.07.26.07.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 07:30:20 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Yu Chen <chenyu56@huawei.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Naga Sureshkumar Relli <nagasure@xilinx.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Deepak Saxena <dsaxena@plexity.net>,
-        Mirela Rabulea <mirela.rabulea@nxp.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v3 8/8] MAINTAINERS: rectify entry for FREESCALE IMX / MXC FEC DRIVER
-Date:   Mon, 26 Jul 2021 16:29:43 +0200
-Message-Id: <20210726142943.27008-9-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210726142943.27008-1-lukas.bulwahn@gmail.com>
-References: <20210726142943.27008-1-lukas.bulwahn@gmail.com>
+        Mon, 26 Jul 2021 09:51:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1627309890; bh=BFckRY2ZB+u/6XP4etNMmpqRWkq7WwCBzEFO1iXPI5U=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=Kp8OTnqJn3pDMdmdqmeZsD0CvbL30+CsNeOhRb8FidfRZk+E8qsvz9C7r9oJlIR54
+         1LhPwgvylmJKnI406dIm6L5SsbP/ApGcdr2jjOuigNoaTw5Qr0avDv5lKO2PXgOsPX
+         sC8JQvh8qtP2ZAQw2WKWOsx+ImwV/co/+na6Mz7EmbqAnNJiCmgWHStvAIzQuY1Gjm
+         9WWyiCIo9PUniUFZAZe2sB9h2Kaa0yeHCmlb2qzl8AQOnxEA3uJeh2QEefY3eOIzWf
+         1KzhRO44aQ9fXpHGcVyLgq6Dil+MLkyB9Z1oynNmRDzMP6RvY7g/rp8kP79l51GALa
+         STOVSfpNXmFmw==
+Received: from xiongwei.. (unknown [120.245.2.8])
+        by pv50p00im-hyfv10021501.me.com (Postfix) with ESMTPSA id A051DB4037A;
+        Mon, 26 Jul 2021 14:31:24 +0000 (UTC)
+From:   sxwjean@me.com
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     oleg@redhat.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, ravi.bangoria@linux.ibm.com,
+        christophe.leroy@csgroup.eu, npiggin@gmail.com,
+        aneesh.kumar@linux.ibm.com, sandipan@linux.ibm.com,
+        efremov@linux.com, peterx@redhat.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Subject: [RFC PATCH 1/4] powerpc: Optimize register usage for esr register
+Date:   Mon, 26 Jul 2021 22:30:50 +0800
+Message-Id: <20210726143053.532839-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-26_06:2021-07-26,2021-07-26 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=710 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2107260082
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 96e4781b3d93 ("dt-bindings: net: fec: convert fsl,*fec bindings to
-yaml") converts fsl-fec.txt to fsl,fec.yaml,  but missed to adjust its
-reference in MAINTAINERS.
+From: Xiongwei Song <sxwjean@gmail.com>
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about
-a broken reference.
+Create an anonymous union for dsisr and esr regsiters, we can reference
+esr to get the exception detail when CONFIG_4xx=y or CONFIG_BOOKE=y.
+Otherwise, reference dsisr. This makes code more clear.
 
-Repair this file reference in FREESCALE IMX / MXC FEC DRIVER.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
 ---
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/ptrace.h          |  5 ++++-
+ arch/powerpc/include/uapi/asm/ptrace.h     |  5 ++++-
+ arch/powerpc/kernel/process.c              |  2 +-
+ arch/powerpc/kernel/ptrace/ptrace.c        |  2 ++
+ arch/powerpc/kernel/traps.c                |  2 +-
+ arch/powerpc/mm/fault.c                    | 16 ++++++++++++++--
+ arch/powerpc/platforms/44x/machine_check.c |  4 ++--
+ arch/powerpc/platforms/4xx/machine_check.c |  2 +-
+ 8 files changed, 29 insertions(+), 9 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0fe43695b58c..187c76bb42d4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7365,7 +7365,7 @@ FREESCALE IMX / MXC FEC DRIVER
- M:	Joakim Zhang <qiangqing.zhang@nxp.com>
- L:	netdev@vger.kernel.org
- S:	Maintained
--F:	Documentation/devicetree/bindings/net/fsl-fec.txt
-+F:	Documentation/devicetree/bindings/net/fsl,fec.yaml
- F:	drivers/net/ethernet/freescale/fec.h
- F:	drivers/net/ethernet/freescale/fec_main.c
- F:	drivers/net/ethernet/freescale/fec_ptp.c
+diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+index 3e5d470a6155..c252d04b1206 100644
+--- a/arch/powerpc/include/asm/ptrace.h
++++ b/arch/powerpc/include/asm/ptrace.h
+@@ -44,7 +44,10 @@ struct pt_regs
+ #endif
+ 			unsigned long trap;
+ 			unsigned long dar;
+-			unsigned long dsisr;
++			union {
++				unsigned long dsisr;
++				unsigned long esr;
++			};
+ 			unsigned long result;
+ 		};
+ 	};
+diff --git a/arch/powerpc/include/uapi/asm/ptrace.h b/arch/powerpc/include/uapi/asm/ptrace.h
+index 7004cfea3f5f..e357288b5f34 100644
+--- a/arch/powerpc/include/uapi/asm/ptrace.h
++++ b/arch/powerpc/include/uapi/asm/ptrace.h
+@@ -53,7 +53,10 @@ struct pt_regs
+ 	/* N.B. for critical exceptions on 4xx, the dar and dsisr
+ 	   fields are overloaded to hold srr0 and srr1. */
+ 	unsigned long dar;		/* Fault registers */
+-	unsigned long dsisr;		/* on 4xx/Book-E used for ESR */
++	union {
++		unsigned long dsisr;		/* on Book-S used for DSISR */
++		unsigned long esr;		/* on 4xx/Book-E used for ESR */
++	};
+ 	unsigned long result;		/* Result of a system call */
+ };
+ 
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 185beb290580..f74af8f9133c 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1499,7 +1499,7 @@ static void __show_regs(struct pt_regs *regs)
+ 	    trap == INTERRUPT_DATA_STORAGE ||
+ 	    trap == INTERRUPT_ALIGNMENT) {
+ 		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+-			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
++			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->esr);
+ 		else
+ 			pr_cont("DAR: "REG" DSISR: %08lx ", regs->dar, regs->dsisr);
+ 	}
+diff --git a/arch/powerpc/kernel/ptrace/ptrace.c b/arch/powerpc/kernel/ptrace/ptrace.c
+index 0a0a33eb0d28..00789ad2c4a3 100644
+--- a/arch/powerpc/kernel/ptrace/ptrace.c
++++ b/arch/powerpc/kernel/ptrace/ptrace.c
+@@ -375,6 +375,8 @@ void __init pt_regs_check(void)
+ 		     offsetof(struct user_pt_regs, dar));
+ 	BUILD_BUG_ON(offsetof(struct pt_regs, dsisr) !=
+ 		     offsetof(struct user_pt_regs, dsisr));
++	BUILD_BUG_ON(offsetof(struct pt_regs, esr) !=
++		     offsetof(struct user_pt_regs, esr));
+ 	BUILD_BUG_ON(offsetof(struct pt_regs, result) !=
+ 		     offsetof(struct user_pt_regs, result));
+ 
+diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
+index dfbce527c98e..2164f5705a0b 100644
+--- a/arch/powerpc/kernel/traps.c
++++ b/arch/powerpc/kernel/traps.c
+@@ -562,7 +562,7 @@ static inline int check_io_access(struct pt_regs *regs)
+ #ifdef CONFIG_PPC_ADV_DEBUG_REGS
+ /* On 4xx, the reason for the machine check or program exception
+    is in the ESR. */
+-#define get_reason(regs)	((regs)->dsisr)
++#define get_reason(regs)	((regs)->esr)
+ #define REASON_FP		ESR_FP
+ #define REASON_ILLEGAL		(ESR_PIL | ESR_PUO)
+ #define REASON_PRIVILEGED	ESR_PPR
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index a8d0ce85d39a..62953d4e7c93 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -541,7 +541,11 @@ static __always_inline void __do_page_fault(struct pt_regs *regs)
+ {
+ 	long err;
+ 
+-	err = ___do_page_fault(regs, regs->dar, regs->dsisr);
++	if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
++		err = ___do_page_fault(regs, regs->dar, regs->esr);
++	else
++		err = ___do_page_fault(regs, regs->dar, regs->dsisr);
++
+ 	if (unlikely(err))
+ 		bad_page_fault(regs, err);
+ }
+@@ -567,7 +571,15 @@ NOKPROBE_SYMBOL(hash__do_page_fault);
+  */
+ static void __bad_page_fault(struct pt_regs *regs, int sig)
+ {
+-	int is_write = page_fault_is_write(regs->dsisr);
++	unsigned long err_reg;
++	int is_write;
++
++	if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
++		err_reg = regs->esr;
++	else
++		err_reg = regs->dsisr;
++
++	is_write = page_fault_is_write(err_reg);
+ 
+ 	/* kernel has accessed a bad area */
+ 
+diff --git a/arch/powerpc/platforms/44x/machine_check.c b/arch/powerpc/platforms/44x/machine_check.c
+index a5c898bb9bab..5d19daacd78a 100644
+--- a/arch/powerpc/platforms/44x/machine_check.c
++++ b/arch/powerpc/platforms/44x/machine_check.c
+@@ -11,7 +11,7 @@
+ 
+ int machine_check_440A(struct pt_regs *regs)
+ {
+-	unsigned long reason = regs->dsisr;
++	unsigned long reason = regs->esr;
+ 
+ 	printk("Machine check in kernel mode.\n");
+ 	if (reason & ESR_IMCP){
+@@ -48,7 +48,7 @@ int machine_check_440A(struct pt_regs *regs)
+ #ifdef CONFIG_PPC_47x
+ int machine_check_47x(struct pt_regs *regs)
+ {
+-	unsigned long reason = regs->dsisr;
++	unsigned long reason = regs->esr;
+ 	u32 mcsr;
+ 
+ 	printk(KERN_ERR "Machine check in kernel mode.\n");
+diff --git a/arch/powerpc/platforms/4xx/machine_check.c b/arch/powerpc/platforms/4xx/machine_check.c
+index a71c29892a91..a905da1d6f41 100644
+--- a/arch/powerpc/platforms/4xx/machine_check.c
++++ b/arch/powerpc/platforms/4xx/machine_check.c
+@@ -10,7 +10,7 @@
+ 
+ int machine_check_4xx(struct pt_regs *regs)
+ {
+-	unsigned long reason = regs->dsisr;
++	unsigned long reason = regs->esr;
+ 
+ 	if (reason & ESR_IMCP) {
+ 		printk("Instruction");
 -- 
-2.17.1
+2.30.2
 
