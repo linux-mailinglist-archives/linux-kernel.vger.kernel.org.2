@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9078F3D6025
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2673D62D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237096AbhGZPVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51828 "EHLO mail.kernel.org"
+        id S237313AbhGZPjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236274AbhGZPLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97FF260F5B;
-        Mon, 26 Jul 2021 15:51:39 +0000 (UTC)
+        id S237395AbhGZPWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C7F360EB2;
+        Mon, 26 Jul 2021 16:03:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314700;
-        bh=muEQAooWcc9Tjx270IZW7fMTAV6ZaQiaQ/q74fBH2hE=;
+        s=korg; t=1627315390;
+        bh=6zjvGesrqqih2bmgSj78nVec1w2WkC82+VvLKUOBEw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=edDJW+p5ZXszHaTB4oC96EIUrMlYDNZH/8NrRi02YmJP89OzdiGxkq2BzOzXnD/CJ
-         Y0Ks7bXGCZ5aJIyLHtDSC8gN308yT8KP0CB9YgFBe7upi4vHcRyMSYzmDC5cUzS4pI
-         q9H4lMCX7Dfx47/uJ6nG67sRjLGE6WyWFofrSt/0=
+        b=XtPW9CkMJ7PKG1vY8n2bIwH1UT+fFp/k3NkMXPCw4Bw4nHiGskFDg4RuzHpJQ+wu/
+         KKXYrzZS0L0smIaiHPmPwGW8eErLzjq7l44aSso4SP+1wkwA8Jvsjn5nsQ+Am5Ztgj
+         mxxu1mHgo0qCW732See2xKXKJIxIcrHQtgiFsSe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Robert Richter <rrichter@amd.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 058/120] iavf: Fix an error handling path in iavf_probe()
-Date:   Mon, 26 Jul 2021 17:38:30 +0200
-Message-Id: <20210726153834.241210947@linuxfoundation.org>
+Subject: [PATCH 5.10 078/167] ACPI: Kconfig: Fix table override from built-in initrd
+Date:   Mon, 26 Jul 2021 17:38:31 +0200
+Message-Id: <20210726153842.024682725@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Robert Richter <rrichter@amd.com>
 
-[ Upstream commit af30cbd2f4d6d66a9b6094e0aa32420bc8b20e08 ]
+[ Upstream commit d2cbbf1fe503c07e466c62f83aa1926d74d15821 ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+During a rework of initramfs code the INITRAMFS_COMPRESSION config
+option was removed in commit 65e00e04e5ae. A leftover as a dependency
+broke the config option ACPI_TABLE_OVERRIDE_VIA_ BUILTIN_INITRD that
+is used to enable the overriding of ACPI tables from built-in initrd.
+Fixing the dependency.
 
-Fixes: 5eae00c57f5e ("i40evf: main driver core")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 65e00e04e5ae ("initramfs: refactor the initramfs build rules")
+Signed-off-by: Robert Richter <rrichter@amd.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40evf/i40evf_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
-index f50c19b83368..ac5709624c7a 100644
---- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
-+++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
-@@ -3735,6 +3735,7 @@ static int i40evf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- err_ioremap:
- 	free_netdev(netdev);
- err_alloc_etherdev:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_release_regions(pdev);
- err_pci_reg:
- err_dma:
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index edf1558c1105..b5ea34c340cc 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -359,7 +359,7 @@ config ACPI_TABLE_UPGRADE
+ config ACPI_TABLE_OVERRIDE_VIA_BUILTIN_INITRD
+ 	bool "Override ACPI tables from built-in initrd"
+ 	depends on ACPI_TABLE_UPGRADE
+-	depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION=""
++	depends on INITRAMFS_SOURCE!="" && INITRAMFS_COMPRESSION_NONE
+ 	help
+ 	  This option provides functionality to override arbitrary ACPI tables
+ 	  from built-in uncompressed initrd.
 -- 
 2.30.2
 
