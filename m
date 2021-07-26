@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C4F3D63EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D888A3D63F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239527AbhGZPxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:53:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48230 "EHLO mail.kernel.org"
+        id S239311AbhGZPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232019AbhGZPcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0193060240;
-        Mon, 26 Jul 2021 16:13:05 +0000 (UTC)
+        id S233770AbhGZPck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80256604AC;
+        Mon, 26 Jul 2021 16:13:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315985;
-        bh=RMtGlFnj4oF+Us2wHau0SdbRjQC1N1xLYZlthvxer/w=;
+        s=korg; t=1627315988;
+        bh=gRO08aN6NLVwr78x0am/cMJ/XPtjSjttuudzOiZyBAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IAswrMLADmfKsa3MEPTNvR/WI43J22k2E1cDgH6uvmaOHis5Wjnpe04fc6Y1MtCxc
-         79GRHz5PwO+MqynYmj6vAKlaSVZ4FnvyjR3FJpOOOuAb/7cQ9OP0PQTZXvvW+zc886
-         0T7ynVFRkY7cEm2M+3vkfZs+thfTnV86chYxevS0=
+        b=TKUQRx7pDAa3r9c12bk7o78+WUH82gFalpnl2peolwA4bwhpnfO6uj1RywkbCtm3h
+         b3pVSd4gKwqXh8IDue/yjoMHUAFCh4eCaTBj9AiaIzju8XS42b/tFd2uuP024hAWvh
+         skDWlz2oSnf4TMGaAufXslMRsu4vwASjPUsBgOko=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Disseldorp <ddiss@suse.de>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michel Lespinasse <walken@google.com>,
-        Helge Deller <deller@gmx.de>, Oleg Nesterov <oleg@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 142/223] proc: Avoid mixing integer types in mem_rw()
-Date:   Mon, 26 Jul 2021 17:38:54 +0200
-Message-Id: <20210726153850.880812722@linuxfoundation.org>
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.13 143/223] ACPI: fix NULL pointer dereference
+Date:   Mon, 26 Jul 2021 17:38:55 +0200
+Message-Id: <20210726153850.912570677@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -48,52 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit d238692b4b9f2c36e35af4c6e6f6da36184aeb3e ]
+commit fc68f42aa737dc15e7665a4101d4168aadb8e4c4 upstream.
 
-Use size_t when capping the count argument received by mem_rw(). Since
-count is size_t, using min_t(int, ...) can lead to a negative value
-that will later be passed to access_remote_vm(), which can cause
-unexpected behavior.
+Commit 71f642833284 ("ACPI: utils: Fix reference counting in
+for_each_acpi_dev_match()") started doing "acpi_dev_put()" on a pointer
+that was possibly NULL.  That fails miserably, because that helper
+inline function is not set up to handle that case.
 
-Since we are capping the value to at maximum PAGE_SIZE, the conversion
-from size_t to int when passing it to access_remote_vm() as "len"
-shouldn't be a problem.
+Just make acpi_dev_put() silently accept a NULL pointer, rather than
+calling down to put_device() with an invalid offset off that NULL
+pointer.
 
-Link: https://lkml.kernel.org/r/20210512125215.3348316-1-marcelo.cerri@canonical.com
-Reviewed-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Souza Cascardo <cascardo@canonical.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Link: https://lore.kernel.org/lkml/a607c149-6bf6-0fd0-0e31-100378504da2@kernel.dk/
+Reported-and-tested-by: Jens Axboe <axboe@kernel.dk>
+Tested-by: Daniel Scally <djrscally@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/proc/base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/acpi/acpi_bus.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 9cbd915025ad..a0a2fc1c9da2 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -854,7 +854,7 @@ static ssize_t mem_rw(struct file *file, char __user *buf,
- 	flags = FOLL_FORCE | (write ? FOLL_WRITE : 0);
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -711,7 +711,8 @@ static inline struct acpi_device *acpi_d
  
- 	while (count > 0) {
--		int this_len = min_t(int, count, PAGE_SIZE);
-+		size_t this_len = min_t(size_t, count, PAGE_SIZE);
+ static inline void acpi_dev_put(struct acpi_device *adev)
+ {
+-	put_device(&adev->dev);
++	if (adev)
++		put_device(&adev->dev);
+ }
+ #else	/* CONFIG_ACPI */
  
- 		if (write && copy_from_user(page, buf, this_len)) {
- 			copied = -EFAULT;
--- 
-2.30.2
-
 
 
