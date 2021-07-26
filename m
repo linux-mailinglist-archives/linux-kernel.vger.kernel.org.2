@@ -2,353 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D769A3D669B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D953D661A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbhGZRio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:38:44 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:17948 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232547AbhGZRiC (ORCPT
+        id S232068AbhGZROt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:14:49 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51920 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229680AbhGZROs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:38:02 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q9Xco7002242;
-        Mon, 26 Jul 2021 13:18:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=wy7vok7J1Kek+5idc2ReO3CRHCtNhko7ldod5Rkm/sE=;
- b=bmrj+/X0Y9jM2iPDu6FG6l6d5AphflLNtgg5ezS8BayRUTVTalzLozzvJ6drbacZyOxR
- 1lJf2Z7eT+hg7B13+8e3bSLNu1+gP5Vcpr9ZCk/F8K70iWaj5k1T8dKqdfGL/MFs6Z6P
- C+FjjDTRftupY7mlkp1iI91AgWgm9gSnQWiihiSv1dk1MxDnjKU8Gkq0Am7CQrUKr0v6
- lTygCpPiNogHzyKF82pV69bNjvDgRCngJQlS4YOBVNXrEOhglYSSjx4whwhfEkofeXDS
- EM3vGxzsm52DrAbLacwtuwzo9CNrmsa+qy26tDYsV+mL+DV51Fv2XS5gerSrK1KOkaNd 0Q== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3a1th2rhbh-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 26 Jul 2021 13:18:20 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Jul
- 2021 18:47:13 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Mon, 26 Jul 2021 18:47:13 +0100
-Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B81ED45D;
-        Mon, 26 Jul 2021 17:47:12 +0000 (UTC)
-From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Subject: [PATCH 27/27] ALSA: hda/cs8409: Unmute/Mute codec when stream starts/stops
-Date:   Mon, 26 Jul 2021 18:46:40 +0100
-Message-ID: <20210726174640.6390-28-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
-References: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
+        Mon, 26 Jul 2021 13:14:48 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8D8321FD4C;
+        Mon, 26 Jul 2021 17:55:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627322115;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GiAUuRCIK8YoHaDGXQL+7hFDjT5BNNPCMjip4/yKDHw=;
+        b=sOgUfw8xnMVv/32/CFW2kROW4WK9xlfoYGPWNwCqTPxXXUh3uucpOmvJuxE3Sf0a/N7rSJ
+        FLtax77vXBNdhugO/csP1xDYm+lfeFtigRB0mchxvqU02Y+uX1zwFKoWnNN9LPrncHc+KW
+        g1U3FrEwZ3/85roSQ8+p4Lc+xajpd8E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627322115;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GiAUuRCIK8YoHaDGXQL+7hFDjT5BNNPCMjip4/yKDHw=;
+        b=Phjh5UoVcKgi6aKj85Yqhl9TdyQIGVD6RR/CJoC847SyW+lXy+fwfDznO0Asz8W4DfXMx7
+        vtQhpmpWymPtNGAQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 7A1F7A3B89;
+        Mon, 26 Jul 2021 17:55:15 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 92B6FDA8D8; Mon, 26 Jul 2021 19:52:31 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 19:52:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+Subject: Re: [PATCH] btrfs: fix rw device counting in
+ __btrfs_free_extra_devids
+Message-ID: <20210726175230.GH5047@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, anand.jain@oracle.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
+References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
+ <20210721175938.GP19710@twin.jikos.cz>
+ <9119934f-fb61-3b55-655c-9a7552e0b30b@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: eimKT_9zCi_K34H_AXpR8GjaXGit9bpY
-X-Proofpoint-GUID: eimKT_9zCi_K34H_AXpR8GjaXGit9bpY
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
- suspectscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
- spamscore=0 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107260105
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9119934f-fb61-3b55-655c-9a7552e0b30b@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Binding <sbinding@opensource.cirrus.com>
+On Sun, Jul 25, 2021 at 02:19:52PM +0800, Desmond Cheong Zhi Xi wrote:
+> On 22/7/21 1:59 am, David Sterba wrote:
+> > On Thu, Jul 15, 2021 at 06:34:03PM +0800, Desmond Cheong Zhi Xi wrote:
+> >> Syzbot reports a warning in close_fs_devices that happens because
+> >> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
+> >> on each device.
+> >>
+> >> This happens when a writeable device is removed in
+> >> __btrfs_free_extra_devids, but the rw device count is not decremented
+> >> accordingly. So when close_fs_devices is called, the removed device is
+> >> still counted and we get an off by 1 error.
+> >>
+> >> Here is one call trace that was observed:
+> >>    btrfs_mount_root():
+> >>      btrfs_scan_one_device():
+> >>        device_list_add();   <---------------- device added
+> >>      btrfs_open_devices():
+> >>        open_fs_devices():
+> >>          btrfs_open_one_device();   <-------- rw device count ++
+> >>      btrfs_fill_super():
+> >>        open_ctree():
+> >>          btrfs_free_extra_devids():
+> >> 	  __btrfs_free_extra_devids();  <--- device removed
+> >> 	  fail_tree_roots:
+> >> 	    btrfs_close_devices():
+> >> 	      close_fs_devices();   <------- rw device count off by 1
+> >>
+> >> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
+> > 
+> > What this patch did in the last hunk was the rw_devices decrement, but
+> > conditional:
+> > 
+> > @@ -1080,9 +1071,6 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+> >                  if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+> >                          list_del_init(&device->dev_alloc_list);
+> >                          clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+> > -                       if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+> > -                                     &device->dev_state))
+> > -                               fs_devices->rw_devices--;
+> >                  }
+> >                  list_del_init(&device->dev_list);
+> >                  fs_devices->num_devices--;
+> > ---
+> > 
+> > 
+> >> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
+> >>   		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
+> >>   			list_del_init(&device->dev_alloc_list);
+> >>   			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+> >> +			fs_devices->rw_devices--;
+> >>   		}
+> >>   		list_del_init(&device->dev_list);
+> >>   		fs_devices->num_devices--;
+> > 
+> > So should it be reinstated in the original form? The rest of
+> > cf89af146b7e handles unexpected device replace item during mount.
+> > 
+> > Adding the decrement is correct, but right now I'm not sure about the
+> > corner case when teh devcie has the BTRFS_DEV_STATE_REPLACE_TGT bit set.
+> > The state machine of the device bits and counters is not trivial so
+> > fixing it one way or the other could lead to further syzbot reports if
+> > we don't understand the issue.
+> > 
+> 
+> Hi David,
+> 
+> Thanks for raising this issue. I took a closer look and I think we don't 
+> have to reinstate the original form because it's a historical artifact.
+> 
+> The short version of the story is that going by the intention of 
+> __btrfs_free_extra_devids, we skip removing the replace target device. 
+> Hence, by the time we've reached the decrement in question, the device 
+> is not the replace target device and the BTRFS_DEV_STATE_REPLACE_TGT bit 
+> should not be set.
+> 
+> But we should also try to understand the original intention of the code. 
+> The check in question was first introduced in commit 8dabb7420f01 
+> ("Btrfs: change core code of btrfs to support the device replace 
+> operations"):
+> > @@ -536,7 +553,8 @@ void btrfs_close_extra_devices(struct btrfs_fs_devices *fs_devices)
+> >                 if (device->writeable) {
+> >                         list_del_init(&device->dev_alloc_list);
+> >                         device->writeable = 0;
+> > -                       fs_devices->rw_devices--;
+> > +                       if (!device->is_tgtdev_for_dev_replace)
+> > +                               fs_devices->rw_devices--;
+> >                 }
+> >                 list_del_init(&device->dev_list);
+> >                 fs_devices->num_devices--;
+> 
+> If we take a trip back in time to this commit we see that 
+> btrfs_dev_replace_finishing added the target device to the alloc list 
+> without incrementing the rw_devices count. So this check was likely 
+> originally meant to prevent under-counting of rw_devices.
+> 
+> However, the situation has changed, following various fixes to 
+> rw_devices counting. Commit 63dd86fa79db ("btrfs: fix rw_devices miss 
+> match after seed replace") added an increment to rw_devices when 
+> replacing a seed device with a writable one in btrfs_dev_replace_finishing:
+> > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> > index eea26e1b2fda..fb0a7fa2f70c 100644
+> > --- a/fs/btrfs/dev-replace.c
+> > +++ b/fs/btrfs/dev-replace.c
+> > @@ -562,6 +562,8 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+> >         if (fs_info->fs_devices->latest_bdev == src_device->bdev)
+> >                 fs_info->fs_devices->latest_bdev = tgt_device->bdev;
+> >         list_add(&tgt_device->dev_alloc_list, &fs_info->fs_devices->alloc_list);
+> > +       if (src_device->fs_devices->seeding)
+> > +               fs_info->fs_devices->rw_devices++;
+> >  
+> >         /* replace the sysfs entry */
+> >         btrfs_kobj_rm_device(fs_info, src_device);
+> 
+> This was later simplified in commit 82372bc816d7 ("Btrfs: make the logic 
+> of source device removing more clear") that simply decremented 
+> rw_devices in btrfs_rm_dev_replace_srcdev if the replaced device was 
+> writable. This meant that the rw_devices count could be incremented in 
+> btrfs_dev_replace_finishing without any checks:
+> > diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+> > index e9cbbdb72978..6f662b34ba0e 100644
+> > --- a/fs/btrfs/dev-replace.c
+> > +++ b/fs/btrfs/dev-replace.c
+> > @@ -569,8 +569,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+> >         if (fs_info->fs_devices->latest_bdev == src_device->bdev)
+> >                 fs_info->fs_devices->latest_bdev = tgt_device->bdev;
+> >         list_add(&tgt_device->dev_alloc_list, &fs_info->fs_devices->alloc_list);
+> > -       if (src_device->fs_devices->seeding)
+> > -               fs_info->fs_devices->rw_devices++;
+> > +       fs_info->fs_devices->rw_devices++;
+> >  
+> >         /* replace the sysfs entry */
+> >         btrfs_kobj_rm_device(fs_info, src_device);
+> 
+> Thus, given the current state of the code base, the original check is 
+> now incorrect, because we want to decrement rw_devices as long as the 
+> device is being removed from the alloc list.
+> 
+> To further convince ourselves of this, we can take a closer look at the 
+> relation between the device with devid BTRFS_DEV_REPLACE_DEVID and the 
+> BTRFS_DEV_STATE_REPLACE_TGT bit for devices.
+> 
+> BTRFS_DEV_STATE_REPLACE_TGT is set in two places:
+> - btrfs_init_dev_replace_tgtdev
+> - btrfs_init_dev_replace
+> 
+> In btrfs_init_dev_replace_tgtdev, the BTRFS_DEV_STATE_REPLACE_TGT bit is 
+> set for a device allocated with devid BTRFS_DEV_REPLACE_DEVID.
+> 
+> In btrfs_init_dev_replace, the BTRFS_DEV_STATE_REPLACE_TGT bit is set 
+> for the target device found with devid BTRFS_DEV_REPLACE_DEVID.
+> 
+>  From both cases, we see that the BTRFS_DEV_STATE_REPLACE_TGT bit is set 
+> only for the device with devid BTRFS_DEV_REPLACE_DEVID.
+> 
+> It follows that if a device does not have devid BTRFS_DEV_REPLACE_DEVID, 
+> then the BTRFS_DEV_STATE_REPLACE_TGT bit will not be set.
+> 
+> With commit cf89af146b7e ("btrfs: dev-replace: fail mount if we don't 
+> have replace item with target device"), we skip removing the device in 
+> __btrfs_free_extra_devids as long as the devid is BTRFS_DEV_REPLACE_DEVID:
+> > -               if (device->devid == BTRFS_DEV_REPLACE_DEVID) {
+> > -                       /*
+> > -                        * In the first step, keep the device which has
+> > -                        * the correct fsid and the devid that is used
+> > -                        * for the dev_replace procedure.
+> > -                        * In the second step, the dev_replace state is
+> > -                        * read from the device tree and it is known
+> > -                        * whether the procedure is really active or
+> > -                        * not, which means whether this device is
+> > -                        * used or whether it should be removed.
+> > -                        */
+> > -                       if (step == 0 || test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
+> > -                                                 &device->dev_state)) {
+> > -                               continue;
+> > -                       }
+> > -               }
+> > +               /*
+> > +                * We have already validated the presence of BTRFS_DEV_REPLACE_DEVID,
+> > +                * in btrfs_init_dev_replace() so just continue.
+> > +                */
+> > +               if (device->devid == BTRFS_DEV_REPLACE_DEVID)
+> > +                       continue;
+> 
+> Given the discussion above, after we fail the check for device->devid == 
+> BTRFS_DEV_REPLACE_DEVID, all devices from that point are not the replace 
+> target device, and do not have the BTRFS_DEV_STATE_REPLACE_TGT bit set.
+> 
+> So the original check for the BTRFS_DEV_STATE_REPLACE_TGT bit before 
+> incrementing rw_devices is not just incorrect at this point, it's also 
+> redundant.
 
-Codec is muted on init, and then unmuted when the stream starts.
-
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
----
- sound/pci/hda/patch_cs8409-tables.c |  20 ++---
- sound/pci/hda/patch_cs8409.c        | 123 +++++++++++++++++++++++-----
- sound/pci/hda/patch_cs8409.h        |   7 ++
- 3 files changed, 120 insertions(+), 30 deletions(-)
-
-diff --git a/sound/pci/hda/patch_cs8409-tables.c b/sound/pci/hda/patch_cs8409-tables.c
-index a9a0b8e3b2a9..0fb0a428428b 100644
---- a/sound/pci/hda/patch_cs8409-tables.c
-+++ b/sound/pci/hda/patch_cs8409-tables.c
-@@ -81,7 +81,7 @@ static const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
- 	{ 0x1010, 0xB0 },
- 	{ 0x1D01, 0x00 },
- 	{ 0x1D02, 0x06 },
--	{ 0x1D03, 0x00 },
-+	{ 0x1D03, 0x9F },
- 	{ 0x1107, 0x01 },
- 	{ 0x1009, 0x02 },
- 	{ 0x1007, 0x03 },
-@@ -111,8 +111,8 @@ static const struct cs8409_i2c_param cs42l42_init_reg_seq[] = {
- 	{ 0x2901, 0x01 },
- 	{ 0x1101, 0x0A },
- 	{ 0x1102, 0x84 },
--	{ 0x2301, 0x00 },
--	{ 0x2303, 0x00 },
-+	{ 0x2301, 0x3F },
-+	{ 0x2303, 0x3F },
- 	{ 0x2302, 0x3f },
- 	{ 0x2001, 0x03 },
- 	{ 0x1B75, 0xB6 },
-@@ -284,7 +284,7 @@ static const struct cs8409_i2c_param dolphin_c0_init_reg_seq[] = {
- 	{ 0x1010, 0xB0 },
- 	{ 0x1D01, 0x00 },
- 	{ 0x1D02, 0x06 },
--	{ 0x1D03, 0x00 },
-+	{ 0x1D03, 0x9F },
- 	{ 0x1107, 0x01 },
- 	{ 0x1009, 0x02 },
- 	{ 0x1007, 0x03 },
-@@ -309,8 +309,8 @@ static const struct cs8409_i2c_param dolphin_c0_init_reg_seq[] = {
- 	{ 0x1101, 0x0A },
- 	{ 0x1102, 0x84 },
- 	{ 0x2001, 0x03 },
--	{ 0x2301, 0x00 },
--	{ 0x2303, 0x00 },
-+	{ 0x2301, 0x3F },
-+	{ 0x2303, 0x3F },
- 	{ 0x2302, 0x3f },
- 	{ 0x1B75, 0xB6 },
- 	{ 0x1B73, 0xC2 },
-@@ -340,7 +340,7 @@ static const struct cs8409_i2c_param dolphin_c1_init_reg_seq[] = {
- 	{ 0x1010, 0xB0 },
- 	{ 0x1D01, 0x00 },
- 	{ 0x1D02, 0x06 },
--	{ 0x1D03, 0x00 },
-+	{ 0x1D03, 0x9F },
- 	{ 0x1107, 0x01 },
- 	{ 0x1009, 0x02 },
- 	{ 0x1007, 0x03 },
-@@ -365,8 +365,8 @@ static const struct cs8409_i2c_param dolphin_c1_init_reg_seq[] = {
- 	{ 0x1101, 0x0E },
- 	{ 0x1102, 0x84 },
- 	{ 0x2001, 0x01 },
--	{ 0x2301, 0x00 },
--	{ 0x2303, 0x00 },
-+	{ 0x2301, 0x3F },
-+	{ 0x2303, 0x3F },
- 	{ 0x2302, 0x3f },
- 	{ 0x1B75, 0xB6 },
- 	{ 0x1B73, 0xC2 },
-@@ -377,7 +377,7 @@ static const struct cs8409_i2c_param dolphin_c1_init_reg_seq[] = {
- 	{ 0x1112, 0x00 },
- 	{ 0x1113, 0x80 },
- 	{ 0x1C03, 0xC0 },
--	{ 0x1101, 0x02 },
-+	{ 0x1101, 0x06 },
- 	{ 0x1316, 0xff },
- 	{ 0x1317, 0xff },
- 	{ 0x1318, 0xff },
-diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
-index 64e3e0884e28..1dbdcd41baf5 100644
---- a/sound/pci/hda/patch_cs8409.c
-+++ b/sound/pci/hda/patch_cs8409.c
-@@ -451,6 +451,38 @@ int cs42l42_volume_get(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uc
- 	return 0;
- }
- 
-+static void cs42l42_mute(struct sub_codec *cs42l42, int vol_type,
-+	unsigned int chs, bool mute)
-+{
-+	if (mute) {
-+		if (vol_type == CS42L42_VOL_DAC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA, 0x3f);
-+			if (chs & BIT(1))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB, 0x3f);
-+		} else if (vol_type == CS42L42_VOL_ADC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL, 0x9f);
-+		}
-+	} else {
-+		if (vol_type == CS42L42_VOL_DAC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA,
-+					-(cs42l42->vol[CS42L42_DAC_CH0_VOL_OFFSET])
-+					& CS42L42_REG_HS_VOL_MASK);
-+			if (chs & BIT(1))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB,
-+					-(cs42l42->vol[CS42L42_DAC_CH1_VOL_OFFSET])
-+					& CS42L42_REG_HS_VOL_MASK);
-+		} else if (vol_type == CS42L42_VOL_ADC) {
-+			if (chs & BIT(0))
-+				cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL,
-+					cs42l42->vol[CS42L42_ADC_VOL_OFFSET]
-+					& CS42L42_REG_AMIC_VOL_MASK);
-+		}
-+	}
-+}
-+
- int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uctrl)
- {
- 	struct hda_codec *codec = snd_kcontrol_chip(kctrl);
-@@ -462,25 +494,20 @@ int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uc
- 
- 	switch (ofs) {
- 	case CS42L42_VOL_DAC:
--		if (chs & BIT(0)) {
-+		if (chs & BIT(0))
- 			cs42l42->vol[ofs] = *valp;
--			cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA,
--					 -(cs42l42->vol[ofs]) & CS42L42_REG_HS_VOL_MASK);
--		}
- 		if (chs & BIT(1)) {
--			ofs++;
- 			valp++;
--			cs42l42->vol[ofs] = *valp;
--			cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB,
--					 -(cs42l42->vol[ofs]) & CS42L42_REG_HS_VOL_MASK);
-+			cs42l42->vol[ofs + 1] = *valp;
- 		}
-+		if (spec->playback_started)
-+			cs42l42_mute(cs42l42, CS42L42_VOL_DAC, chs, false);
- 		break;
- 	case CS42L42_VOL_ADC:
--		if (chs & BIT(0)) {
-+		if (chs & BIT(0))
- 			cs42l42->vol[ofs] = *valp;
--			cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL,
--					 cs42l42->vol[ofs] & CS42L42_REG_AMIC_VOL_MASK);
--		}
-+		if (spec->capture_started)
-+			cs42l42_mute(cs42l42, CS42L42_VOL_ADC, chs, false);
- 		break;
- 	default:
- 		break;
-@@ -489,6 +516,64 @@ int cs42l42_volume_put(struct snd_kcontrol *kctrl, struct snd_ctl_elem_value *uc
- 	return 0;
- }
- 
-+static void cs42l42_playback_pcm_hook(struct hda_pcm_stream *hinfo,
-+				   struct hda_codec *codec,
-+				   struct snd_pcm_substream *substream,
-+				   int action)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	struct sub_codec *cs42l42;
-+	int i;
-+	bool mute;
-+
-+	switch (action) {
-+	case HDA_GEN_PCM_ACT_PREPARE:
-+		mute = false;
-+		spec->playback_started = 1;
-+		break;
-+	case HDA_GEN_PCM_ACT_CLEANUP:
-+		mute = true;
-+		spec->playback_started = 0;
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	for (i = 0; i < spec->num_scodecs; i++) {
-+		cs42l42 = spec->scodecs[i];
-+		cs42l42_mute(cs42l42, CS42L42_VOL_DAC, 0x3, mute);
-+	}
-+}
-+
-+static void cs42l42_capture_pcm_hook(struct hda_pcm_stream *hinfo,
-+				   struct hda_codec *codec,
-+				   struct snd_pcm_substream *substream,
-+				   int action)
-+{
-+	struct cs8409_spec *spec = codec->spec;
-+	struct sub_codec *cs42l42;
-+	int i;
-+	bool mute;
-+
-+	switch (action) {
-+	case HDA_GEN_PCM_ACT_PREPARE:
-+		mute = false;
-+		spec->capture_started = 1;
-+		break;
-+	case HDA_GEN_PCM_ACT_CLEANUP:
-+		mute = true;
-+		spec->capture_started = 0;
-+		break;
-+	default:
-+		return;
-+	}
-+
-+	for (i = 0; i < spec->num_scodecs; i++) {
-+		cs42l42 = spec->scodecs[i];
-+		cs42l42_mute(cs42l42, CS42L42_VOL_ADC, 0x3, mute);
-+	}
-+}
-+
- /* Configure CS42L42 slave codec for jack autodetect */
- static void cs42l42_enable_jack_detect(struct sub_codec *cs42l42)
- {
-@@ -634,14 +719,6 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
- 	/* Clear interrupts, by reading interrupt status registers */
- 	cs8409_i2c_bulk_read(cs42l42, irq_regs, ARRAY_SIZE(irq_regs));
- 
--	/* Restore Volumes after Resume */
--	cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHA,
--			 -(cs42l42->vol[1]) & CS42L42_REG_HS_VOL_MASK);
--	cs8409_i2c_write(cs42l42, CS42L42_REG_HS_VOL_CHB,
--			 -(cs42l42->vol[2]) & CS42L42_REG_HS_VOL_MASK);
--	cs8409_i2c_write(cs42l42, CS42L42_REG_AMIC_VOL,
--			 cs42l42->vol[0] & CS42L42_REG_AMIC_VOL_MASK);
--
- 	if (cs42l42->full_scale_vol)
- 		cs8409_i2c_write(cs42l42, 0x2001, 0x01);
- 
-@@ -886,6 +963,9 @@ void cs8409_cs42l42_fixups(struct hda_codec *codec, const struct hda_fixup *fix,
- 		/* Fix Sample Rate to 48kHz */
- 		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
- 		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
-+		/* add hooks */
-+		spec->gen.pcm_playback_hook = cs42l42_playback_pcm_hook;
-+		spec->gen.pcm_capture_hook = cs42l42_capture_pcm_hook;
- 		/* Set initial DMIC volume to -26 dB */
- 		snd_hda_codec_amp_init_stereo(codec, CS8409_CS42L42_DMIC_ADC_PIN_NID,
- 					      HDA_INPUT, 0, 0xff, 0x19);
-@@ -1081,6 +1161,9 @@ void dolphin_fixups(struct hda_codec *codec, const struct hda_fixup *fix, int ac
- 		/* Fix Sample Rate to 48kHz */
- 		spec->gen.stream_analog_playback = &cs42l42_48k_pcm_analog_playback;
- 		spec->gen.stream_analog_capture = &cs42l42_48k_pcm_analog_capture;
-+		/* add hooks */
-+		spec->gen.pcm_playback_hook = cs42l42_playback_pcm_hook;
-+		spec->gen.pcm_capture_hook = cs42l42_capture_pcm_hook;
- 		snd_hda_gen_add_kctl(&spec->gen, "Headphone Playback Volume",
- 				     &cs42l42_dac_volume_mixer);
- 		snd_hda_gen_add_kctl(&spec->gen, "Mic Capture Volume", &cs42l42_adc_volume_mixer);
-diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
-index 09987daa9cbf..207315ad5bf6 100644
---- a/sound/pci/hda/patch_cs8409.h
-+++ b/sound/pci/hda/patch_cs8409.h
-@@ -280,6 +280,10 @@ enum {
- 	CS42L42_VOL_DAC,
- };
- 
-+#define CS42L42_ADC_VOL_OFFSET			(CS42L42_VOL_ADC)
-+#define CS42L42_DAC_CH0_VOL_OFFSET		(CS42L42_VOL_DAC)
-+#define CS42L42_DAC_CH1_VOL_OFFSET		(CS42L42_VOL_DAC + 1)
-+
- struct cs8409_i2c_param {
- 	unsigned int addr;
- 	unsigned int value;
-@@ -327,6 +331,9 @@ struct cs8409_spec {
- 	unsigned int dev_addr;
- 	struct delayed_work i2c_clk_work;
- 
-+	unsigned int playback_started:1;
-+	unsigned int capture_started:1;
-+
- 	/* verb exec op override */
- 	int (*exec_verb)(struct hdac_device *dev, unsigned int cmd, unsigned int flags,
- 			 unsigned int *res);
--- 
-2.25.1
-
+Could you please write some condensed version of the above and resend?
+The original changelog says what happends and how, the analysis here
+is the actual explanation and I'd like to have that recorded. Thanks.
