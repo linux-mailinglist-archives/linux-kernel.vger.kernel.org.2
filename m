@@ -2,210 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EE03D5F0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AFF3D5DA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236310AbhGZPQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:16:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236180AbhGZPJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:09:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 992E260FA0;
-        Mon, 26 Jul 2021 15:48:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314534;
-        bh=5GLnUEDwsafm+R3Yj769smm66nObHIA6+h6XuMUrziE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yez9akwUH2p3dJCGnLMU2ACr0qkFQMO5d64KqD5PM8L3lDgoebBsOG8RikJwUfWXo
-         CFjS4JEMb7HLBoXakQ1dk1YTY70+Uk8Ct9QMCXOHgRGpu40cGFuYMt9f/pASv4Y4rL
-         gvmcZA8OE7li8MfsEL2Grhg1EZTmsc1R8kAjYdKg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Carsten Schmid <carsten_schmid@mentor.com>
-Subject: [PATCH 4.14 82/82] xhci: add xhci_get_virt_ep() helper
-Date:   Mon, 26 Jul 2021 17:39:22 +0200
-Message-Id: <20210726153830.844177432@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S235348AbhGZPCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235742AbhGZPCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:12 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14B8C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:42:41 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id c16so6504504plh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EHunyQVdmyIsCyTs6jyTk2mOp7kQ6TFaQgSnOQTR9xM=;
+        b=Nd9B/Ey3g6J47c+7GhXc4H80ghOZzQwDZlzwUnDv8cJfrD7xm7g7l04ftT4rut7ukp
+         QsUFVBVDDhTUTIvqde3Er83b9b0Eud7hP4sS/21EeAzKwDVx6hHVMKcvDXa6bVTJWDpT
+         7WkW2fk1lFPc5TvkRyLHS7oRgkey5Z1LBUobk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EHunyQVdmyIsCyTs6jyTk2mOp7kQ6TFaQgSnOQTR9xM=;
+        b=Ab75J43pbJjnfhzTgP2C+phaReR5MuyH3Uw3+kfPTk8kU+CGa1Dmqf3DoKY9i1aECm
+         n7QDJu06eE3SOkOpOmLSMeCoPQsP83x0/cAOQThoI2SuQuZqQ5vlaXA7Wuc/sDHPMxHM
+         trGQq7IMQhAK8aJImGmxBzUkbEVNwCA0hCDc/8T/f/Rgi26cGpjtul2pPhyI84pJQPzk
+         NA/uy8tntl8oZgV7oTut7AzZ7pg67129Whdq1ZBnVNy10GJ/WBS661thib96Y+NOJh1u
+         OZYX6e7q2GYV/3FdGNaxrkBQL2y1uGmflLqkthqqVumdiXQBz5ibVwwpzwMqd5QMSetI
+         gmww==
+X-Gm-Message-State: AOAM533RohULcy2YcSnzvvZO8Wd9h4ENH6/HbJJ9gW4d339+gkPxsSBF
+        Qe0Ml+GFiMOKuc+Y9nc5Rem/dWrpf/KOkA==
+X-Google-Smtp-Source: ABdhPJy8Zr2JjcRLKwUHLJkgieVtTgbg79KYS2EFnbjMjPkoV7xF8YD65tKiul/99s5pud4A687Hhw==
+X-Received: by 2002:a05:6a00:1503:b029:395:f05c:e073 with SMTP id q3-20020a056a001503b0290395f05ce073mr7117267pfu.80.1627314161175;
+        Mon, 26 Jul 2021 08:42:41 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:f794:2436:8d25:f451])
+        by smtp.gmail.com with UTF8SMTPSA id h30sm363032pfr.191.2021.07.26.08.42.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 08:42:40 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 08:42:38 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V4 3/4] arm64: dts: sc7280: Update QUPv3 Debug UART DT
+ node
+Message-ID: <YP7X7kjH9wd818Xg@google.com>
+References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+ <1627306847-25308-4-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1627306847-25308-4-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
-
-[commit b1adc42d440df3233255e313a45ab7e9b2b74096 upstream]
-
-In several event handlers we need to find the right endpoint
-structure from slot_id and ep_index in the event.
-
-Add a helper for this, check that slot_id and ep_index are valid.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210129130044.206855-6-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Carsten Schmid <carsten_schmid@mentor.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/host/xhci-ring.c |   58 +++++++++++++++++++++++++++++++++----------
- drivers/usb/host/xhci.h      |    3 +-
- 2 files changed, 47 insertions(+), 14 deletions(-)
-
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -444,6 +444,26 @@ static void ring_doorbell_for_active_rin
- 	}
- }
- 
-+static struct xhci_virt_ep *xhci_get_virt_ep(struct xhci_hcd *xhci,
-+					     unsigned int slot_id,
-+					     unsigned int ep_index)
-+{
-+	if (slot_id == 0 || slot_id >= MAX_HC_SLOTS) {
-+		xhci_warn(xhci, "Invalid slot_id %u\n", slot_id);
-+		return NULL;
-+	}
-+	if (ep_index >= EP_CTX_PER_DEV) {
-+		xhci_warn(xhci, "Invalid endpoint index %u\n", ep_index);
-+		return NULL;
-+	}
-+	if (!xhci->devs[slot_id]) {
-+		xhci_warn(xhci, "No xhci virt device for slot_id %u\n", slot_id);
-+		return NULL;
-+	}
-+
-+	return &xhci->devs[slot_id]->eps[ep_index];
-+}
-+
- /* Get the right ring for the given slot_id, ep_index and stream_id.
-  * If the endpoint supports streams, boundary check the URB's stream ID.
-  * If the endpoint doesn't support streams, return the singular endpoint ring.
-@@ -454,7 +474,10 @@ struct xhci_ring *xhci_triad_to_transfer
- {
- 	struct xhci_virt_ep *ep;
- 
--	ep = &xhci->devs[slot_id]->eps[ep_index];
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return NULL;
-+
- 	/* Common case: no streams */
- 	if (!(ep->ep_state & EP_HAS_STREAMS))
- 		return ep->ring;
-@@ -729,11 +752,14 @@ static void xhci_handle_cmd_stop_ep(stru
- 	memset(&deq_state, 0, sizeof(deq_state));
- 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
- 
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return;
-+
- 	vdev = xhci->devs[slot_id];
- 	ep_ctx = xhci_get_ep_ctx(xhci, vdev->out_ctx, ep_index);
- 	trace_xhci_handle_cmd_stop_ep(ep_ctx);
- 
--	ep = &xhci->devs[slot_id]->eps[ep_index];
- 	last_unlinked_td = list_last_entry(&ep->cancelled_td_list,
- 			struct xhci_td, cancelled_td_list);
- 
-@@ -1057,9 +1083,11 @@ static void xhci_handle_cmd_set_deq(stru
- 
- 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
- 	stream_id = TRB_TO_STREAM_ID(le32_to_cpu(trb->generic.field[2]));
--	dev = xhci->devs[slot_id];
--	ep = &dev->eps[ep_index];
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return;
- 
-+	dev = xhci->devs[slot_id];
- 	ep_ring = xhci_stream_id_to_ring(dev, ep_index, stream_id);
- 	if (!ep_ring) {
- 		xhci_warn(xhci, "WARN Set TR deq ptr command for freed stream ID %u\n",
-@@ -1132,9 +1160,9 @@ static void xhci_handle_cmd_set_deq(stru
- 	}
- 
- cleanup:
--	dev->eps[ep_index].ep_state &= ~SET_DEQ_PENDING;
--	dev->eps[ep_index].queued_deq_seg = NULL;
--	dev->eps[ep_index].queued_deq_ptr = NULL;
-+	ep->ep_state &= ~SET_DEQ_PENDING;
-+	ep->queued_deq_seg = NULL;
-+	ep->queued_deq_ptr = NULL;
- 	/* Restart any rings with pending URBs */
- 	ring_doorbell_for_active_rings(xhci, slot_id, ep_index);
- }
-@@ -1143,10 +1171,15 @@ static void xhci_handle_cmd_reset_ep(str
- 		union xhci_trb *trb, u32 cmd_comp_code)
- {
- 	struct xhci_virt_device *vdev;
-+	struct xhci_virt_ep *ep;
- 	struct xhci_ep_ctx *ep_ctx;
- 	unsigned int ep_index;
- 
- 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return;
-+
- 	vdev = xhci->devs[slot_id];
- 	ep_ctx = xhci_get_ep_ctx(xhci, vdev->out_ctx, ep_index);
- 	trace_xhci_handle_cmd_reset_ep(ep_ctx);
-@@ -1176,7 +1209,7 @@ static void xhci_handle_cmd_reset_ep(str
- 		xhci_ring_cmd_db(xhci);
- 	} else {
- 		/* Clear our internal halted state */
--		xhci->devs[slot_id]->eps[ep_index].ep_state &= ~EP_HALTED;
-+		ep->ep_state &= ~EP_HALTED;
- 	}
- }
- 
-@@ -2352,14 +2385,13 @@ static int handle_tx_event(struct xhci_h
- 	trb_comp_code = GET_COMP_CODE(le32_to_cpu(event->transfer_len));
- 	ep_trb_dma = le64_to_cpu(event->buffer);
- 
--	xdev = xhci->devs[slot_id];
--	if (!xdev) {
--		xhci_err(xhci, "ERROR Transfer event pointed to bad slot %u\n",
--			 slot_id);
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep) {
-+		xhci_err(xhci, "ERROR Invalid Transfer event\n");
- 		goto err_out;
- 	}
- 
--	ep = &xdev->eps[ep_index];
-+	xdev = xhci->devs[slot_id];
- 	ep_ring = xhci_dma_to_transfer_ring(ep, ep_trb_dma);
- 	ep_ctx = xhci_get_ep_ctx(xhci, xdev->out_ctx, ep_index);
- 
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -991,6 +991,7 @@ struct xhci_interval_bw_table {
- 	unsigned int		ss_bw_out;
- };
- 
-+#define EP_CTX_PER_DEV		31
- 
- struct xhci_virt_device {
- 	struct usb_device		*udev;
-@@ -1005,7 +1006,7 @@ struct xhci_virt_device {
- 	struct xhci_container_ctx       *out_ctx;
- 	/* Used for addressing devices and configuration changes */
- 	struct xhci_container_ctx       *in_ctx;
--	struct xhci_virt_ep		eps[31];
-+	struct xhci_virt_ep		eps[EP_CTX_PER_DEV];
- 	u8				fake_port;
- 	u8				real_port;
- 	struct xhci_interval_bw_table	*bw_table;
+On Mon, Jul 26, 2021 at 07:10:46PM +0530, Rajesh Patil wrote:
+> From: Roja Rani Yarubandi <rojay@codeaurora.org>
+> 
+> Update QUPv3 Debug UART DT node with the interconnect names and
+> functions for SC7280 SoC.
+> 
+> Split the Debug UART pin control functions.
+> 
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
+> ---
+> Changes in V4:
+>  - As per Bjorn's comment, posting this debug-uart node update
+>    as seperate patch
+> 
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 18 +++++++-----------
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 28 ++++++++++++++++++++++++----
+>  2 files changed, 31 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> index f63cf51..a50c9e5 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
+> @@ -383,18 +383,14 @@
+>  	bias-pull-up;
+>  };
+>  
+> -&qup_uart5_default {
+> -	tx {
+> -		pins = "gpio46";
+> -		drive-strength = <2>;
+> -		bias-disable;
+> -	};
+> +&qup_uart5_tx {
+> +	drive-strength = <2>;
+> +	bias-disable;
+> +};
+>  
+> -	rx {
+> -		pins = "gpio47";
+> -		drive-strength = <2>;
+> -		bias-pull-up;
+> -	};
+> +&qup_uart5_rx {
+> +	drive-strength = <2>;
+> +	bias-pull-up;
+>  };
+>  
+>  &sdc1_on {
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 455e58f..951818f 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -853,8 +853,13 @@
+>  				clock-names = "se";
+>  				clocks = <&gcc GCC_QUPV3_WRAP0_S5_CLK>;
+>  				pinctrl-names = "default";
+> -				pinctrl-0 = <&qup_uart5_default>;
+> +				pinctrl-0 = <&qup_uart5_cts>, <&qup_uart5_rts>, <&qup_uart5_tx>, <&qup_uart5_rx>;
+>  				interrupts = <GIC_SPI 606 IRQ_TYPE_LEVEL_HIGH>;
+> +				power-domains = <&rpmhpd SC7280_CX>;
+> +				operating-points-v2 = <&qup_opp_table>;
+> +				interconnects = <&clk_virt MASTER_QUP_CORE_0 0 &clk_virt SLAVE_QUP_CORE_0 0>,
+> +						<&gem_noc MASTER_APPSS_PROC 0 &cnoc2 SLAVE_QUP_0 0>;
+> +				interconnect-names = "qup-core", "qup-config";
 
 
+Most of the above should be added by patch '[2/4] arm64: dts: sc7280: Add QUPv3
+wrapper_0 nodes'.
+
+I have to say I dislike that the SoC DT file dictates which UART to use for
+the serial console. Technically it could be any of them, right? uart5 is
+used because that's what the IDP does, and the rest of the world is expected
+to follow. Why not configure uart5 as "qcom,geni-uart" by default and
+overwrite the compatible string and pinctrl in the board file? You could even
+add 'qup-uartN-all' (or similar) pinconfigs to sc7280.dtsi, which would make
+the changes in the board file trivial.
