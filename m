@@ -2,244 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0693D5A9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640C63D5AA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233995AbhGZNDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:03:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233970AbhGZNDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:03:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3191160E08;
-        Mon, 26 Jul 2021 13:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627307016;
-        bh=Z7luSsBKo+vKZ+wNEkeorNXjVJpdTMQxsxikgpRhDy8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dd8PtS14ZH3SvAZEhLRnGcRhbaLuxMg353rqMEWty7/CFKK/4FAcqXdzDf5UBLDOv
-         jruEnuUZHJYRY6Lw2PR7VZ8ZpYwkxMFEnGvXSrOO8thvEoAg2nTEWwhDrdlHBbvhHw
-         Ei/dLgQ96I2JbG691i4ttQQIvlSSVfq0MgkI/xnk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-serial@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jordy Zomer <jordy@pwning.systems>
-Subject: [PATCH 2/2] vt: keyboard.c: make console an unsigned int
-Date:   Mon, 26 Jul 2021 15:43:22 +0200
-Message-Id: <20210726134322.2274919-2-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726134322.2274919-1-gregkh@linuxfoundation.org>
-References: <20210726134322.2274919-1-gregkh@linuxfoundation.org>
+        id S234227AbhGZNDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233970AbhGZNDg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 09:03:36 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5C1C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:44:03 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id m9so11321329ljp.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TLycPxviRjQS2vlWYgAqhStL9LKdE5LJjJtFS7Jae4Y=;
+        b=kM3ffQibqdlLWCaxU3irV+dXOOAiJRgpArqXCrZqUlURkhV3Uj7T8ux2Ir7Z9cReit
+         sl0WxaiR7gwq+eJ/XKMu6TRVKV1my3wGtPAGwJ2G3Qm+9koRzZtV+JdcqyUzr2EhIcfX
+         ufHWsMiRjGklH8iHGZD4IGM6CFSx+vFneLC8532Df/g/4zOZ5s5OuUE0gHkaWpz/aIH0
+         d5KATqF9cmZJGa/LlkElPYuMQubU9BvAUrDd7RNkVvdTbwypVi4BJheSfkGPEY7EHTTD
+         iqyA7t9AjMkRHoUSEBnmRaMdq0wJ7r9mri8PykgK+wl00Zw8d52GCbEaSjmhABtQmzWK
+         jg8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TLycPxviRjQS2vlWYgAqhStL9LKdE5LJjJtFS7Jae4Y=;
+        b=XGvQaf4ucGu783bKd6yp9KqZiPYsu6d+AcEZoxVS3N47T+zGOt+cSXFjDcp2o6GHmB
+         mD/dY8RVrXE1oAmQ4xN8Ct2y1pgwixJGSOS3rjNseKWY/dQkxbluSTIC9HlskS1C9bQV
+         uWmuTCxVnsX6tBMuk3X38usxal5rWpaQ7lCGCwfXD/2lrLZ/9LfsSAVJKGUPTE/+mnKI
+         HMpJSJpYNUutSQEWJExjfNfrTdDCxwcNkO/KgMPwP0hSSVuFKHWyz5uu7rZXf376Y/7q
+         KE9FTUB/UCpkU2EK257dLBbVLZdYix6JREQsxI1uroaCfSvZJp2b64q9tPx0boX4GrbI
+         E6tQ==
+X-Gm-Message-State: AOAM531YFd628kJuRn62qo/b7RmkOD5FOuUwZTiZy6sWUr0az+VVjXxU
+        zGR+lrVuPm0sFB9ngA+1Qcqna2U9xDU9y8VBD6/rIg==
+X-Google-Smtp-Source: ABdhPJwAkFnDG7NuQtWLLexIiDYnWTWvIxBeII4m/0QIeM7dBhx7GXfH+UoikLc0g6EgogQ1N+7fjJ6zmkJsQ7tEbhE=
+X-Received: by 2002:a2e:85d7:: with SMTP id h23mr12408419ljj.279.1627307041973;
+ Mon, 26 Jul 2021 06:44:01 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7926; h=from:subject; bh=Z7luSsBKo+vKZ+wNEkeorNXjVJpdTMQxsxikgpRhDy8=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/dv/8zOlaP0H+2pl1D4VzC8svmpa1OoZza/L0zbP6UCt2 iFeuI5aFQZCJQVZMkeXLNp6j+ysOKXoZ2p6GmcPKBDKEgYtTACZiuJFhnmmAjYdWys4lWocOe78tz6 mMCD/0gWHBDofbHBH/bWe9ijvpkmY1beX/PMsKAA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+References: <20210723011436.60960-1-surenb@google.com> <CALvZod7ehaHoWRD-Pzvet5c1LQ6DYDHjs=xbJWZYEdMsgTpRgA@mail.gmail.com>
+ <CAJuCfpFZeQez77CB7odfaSpi3JcLQ_Nz0WvDTsra1VPoA-j7sg@mail.gmail.com>
+ <YPpfo2z8feq0vTlE@dhcp22.suse.cz> <CAJuCfpGSZwVgZ=FxhCV-uC_mzC7O-v-3k3tm-F6kOB7WM9t9tw@mail.gmail.com>
+ <YPqDnqULylkkzQG5@dhcp22.suse.cz> <CALvZod4=9aEd9tUdku293uhVQ4mqsfYckCOKzqxXVTDYsmaVtQ@mail.gmail.com>
+ <CAJuCfpGmpwTv92joNuVPaEJg1PigtGQn2daywHaqF4TXjuiCWQ@mail.gmail.com>
+ <CALvZod7Vb2MKgCcSYtsMd8F4sFb2K7jQk3AGSECYfKvd3MNqzQ@mail.gmail.com> <YP5jyLeYsN3JtdX8@dhcp22.suse.cz>
+In-Reply-To: <YP5jyLeYsN3JtdX8@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 26 Jul 2021 06:43:50 -0700
+Message-ID: <CALvZod4M6mF3VvAdade3n5fE1E0LQp+CeJHWLc+pHmZqqAhepg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] mm: introduce process_mrelease system call
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Christoph Hellwig <hch@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The console variable is used everywhere in some fun pointer path and
-array indexes and for some reason isn't always declared as unsigned.
-This plays havoc with some static analysis tools so mark the variable as
-unsigned so we "know" we can not wrap the arrays backwards here.
+On Mon, Jul 26, 2021 at 12:27 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+[...]
+>
+> Is process_mrelease on all of them really necessary? I thought that the
+> primary reason for the call is to guarantee a forward progress in cases
+> where the userspace OOM victim cannot die on SIGKILL. That should be
+> more an exception than a normal case, no?
+>
 
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reported-by: Jordy Zomer <jordy@pwning.systems>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/tty/vt/keyboard.c | 30 +++++++++++++++---------------
- include/linux/vt_kern.h   | 30 +++++++++++++++---------------
- 2 files changed, 30 insertions(+), 30 deletions(-)
+I am thinking of using this API in this way: On user-defined OOM
+condition, kill a job/cgroup and unconditionally reap all of its
+processes. Keep monitoring the situation and if it does not improve go
+for another kill and reap.
 
-diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-index e81c940a2ea1..c7fbbcdcc346 100644
---- a/drivers/tty/vt/keyboard.c
-+++ b/drivers/tty/vt/keyboard.c
-@@ -1171,7 +1171,7 @@ static inline unsigned char getleds(void)
-  *
-  *	Check the status of a keyboard led flag and report it back
-  */
--int vt_get_leds(int console, int flag)
-+int vt_get_leds(unsigned int console, int flag)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	int ret;
-@@ -1193,7 +1193,7 @@ EXPORT_SYMBOL_GPL(vt_get_leds);
-  *	Set the LEDs on a console. This is a wrapper for the VT layer
-  *	so that we can keep kbd knowledge internal
-  */
--void vt_set_led_state(int console, int leds)
-+void vt_set_led_state(unsigned int console, int leds)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	setledstate(kb, leds);
-@@ -1212,7 +1212,7 @@ void vt_set_led_state(int console, int leds)
-  *	don't hold the lock. We probably need to split out an LED lock
-  *	but not during an -rc release!
-  */
--void vt_kbd_con_start(int console)
-+void vt_kbd_con_start(unsigned int console)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	unsigned long flags;
-@@ -1229,7 +1229,7 @@ void vt_kbd_con_start(int console)
-  *	Handle console stop. This is a wrapper for the VT layer
-  *	so that we can keep kbd knowledge internal
-  */
--void vt_kbd_con_stop(int console)
-+void vt_kbd_con_stop(unsigned int console)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	unsigned long flags;
-@@ -1825,7 +1825,7 @@ int vt_do_diacrit(unsigned int cmd, void __user *udp, int perm)
-  *	Update the keyboard mode bits while holding the correct locks.
-  *	Return 0 for success or an error code.
-  */
--int vt_do_kdskbmode(int console, unsigned int arg)
-+int vt_do_kdskbmode(unsigned int console, unsigned int arg)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	int ret = 0;
-@@ -1865,7 +1865,7 @@ int vt_do_kdskbmode(int console, unsigned int arg)
-  *	Update the keyboard meta bits while holding the correct locks.
-  *	Return 0 for success or an error code.
-  */
--int vt_do_kdskbmeta(int console, unsigned int arg)
-+int vt_do_kdskbmeta(unsigned int console, unsigned int arg)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	int ret = 0;
-@@ -2008,7 +2008,7 @@ static int vt_kdskbent(unsigned char kbdmode, unsigned char idx,
- }
- 
- int vt_do_kdsk_ioctl(int cmd, struct kbentry __user *user_kbe, int perm,
--						int console)
-+						unsigned int console)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	struct kbentry kbe;
-@@ -2097,7 +2097,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
- 	return ret;
- }
- 
--int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm)
-+int vt_do_kdskled(unsigned int console, int cmd, unsigned long arg, int perm)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
-         unsigned long flags;
-@@ -2139,7 +2139,7 @@ int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm)
-         return -ENOIOCTLCMD;
- }
- 
--int vt_do_kdgkbmode(int console)
-+int vt_do_kdgkbmode(unsigned int console)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	/* This is a spot read so needs no locking */
-@@ -2163,7 +2163,7 @@ int vt_do_kdgkbmode(int console)
-  *
-  *	Report the meta flag status of this console
-  */
--int vt_do_kdgkbmeta(int console)
-+int vt_do_kdgkbmeta(unsigned int console)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
-         /* Again a spot read so no locking */
-@@ -2176,7 +2176,7 @@ int vt_do_kdgkbmeta(int console)
-  *
-  *	Restore the unicode console state to its default
-  */
--void vt_reset_unicode(int console)
-+void vt_reset_unicode(unsigned int console)
- {
- 	unsigned long flags;
- 
-@@ -2204,7 +2204,7 @@ int vt_get_shift_state(void)
-  *	Reset the keyboard bits for a console as part of a general console
-  *	reset event
-  */
--void vt_reset_keyboard(int console)
-+void vt_reset_keyboard(unsigned int console)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	unsigned long flags;
-@@ -2234,7 +2234,7 @@ void vt_reset_keyboard(int console)
-  *	caller must be sure that there are no synchronization needs
-  */
- 
--int vt_get_kbd_mode_bit(int console, int bit)
-+int vt_get_kbd_mode_bit(unsigned int console, int bit)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	return vc_kbd_mode(kb, bit);
-@@ -2249,7 +2249,7 @@ int vt_get_kbd_mode_bit(int console, int bit)
-  *	caller must be sure that there are no synchronization needs
-  */
- 
--void vt_set_kbd_mode_bit(int console, int bit)
-+void vt_set_kbd_mode_bit(unsigned int console, int bit)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	unsigned long flags;
-@@ -2268,7 +2268,7 @@ void vt_set_kbd_mode_bit(int console, int bit)
-  *	caller must be sure that there are no synchronization needs
-  */
- 
--void vt_clr_kbd_mode_bit(int console, int bit)
-+void vt_clr_kbd_mode_bit(unsigned int console, int bit)
- {
- 	struct kbd_struct *kb = &kbd_table[console];
- 	unsigned long flags;
-diff --git a/include/linux/vt_kern.h b/include/linux/vt_kern.h
-index 0da94a6dee15..b5ab452fca5b 100644
---- a/include/linux/vt_kern.h
-+++ b/include/linux/vt_kern.h
-@@ -148,26 +148,26 @@ void hide_boot_cursor(bool hide);
- 
- /* keyboard  provided interfaces */
- int vt_do_diacrit(unsigned int cmd, void __user *up, int eperm);
--int vt_do_kdskbmode(int console, unsigned int arg);
--int vt_do_kdskbmeta(int console, unsigned int arg);
-+int vt_do_kdskbmode(unsigned int console, unsigned int arg);
-+int vt_do_kdskbmeta(unsigned int console, unsigned int arg);
- int vt_do_kbkeycode_ioctl(int cmd, struct kbkeycode __user *user_kbkc,
- 			  int perm);
- int vt_do_kdsk_ioctl(int cmd, struct kbentry __user *user_kbe, int perm,
--		     int console);
-+		     unsigned int console);
- int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm);
--int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm);
--int vt_do_kdgkbmode(int console);
--int vt_do_kdgkbmeta(int console);
--void vt_reset_unicode(int console);
-+int vt_do_kdskled(unsigned int console, int cmd, unsigned long arg, int perm);
-+int vt_do_kdgkbmode(unsigned int console);
-+int vt_do_kdgkbmeta(unsigned int console);
-+void vt_reset_unicode(unsigned int console);
- int vt_get_shift_state(void);
--void vt_reset_keyboard(int console);
--int vt_get_leds(int console, int flag);
--int vt_get_kbd_mode_bit(int console, int bit);
--void vt_set_kbd_mode_bit(int console, int bit);
--void vt_clr_kbd_mode_bit(int console, int bit);
--void vt_set_led_state(int console, int leds);
--void vt_kbd_con_start(int console);
--void vt_kbd_con_stop(int console);
-+void vt_reset_keyboard(unsigned int console);
-+int vt_get_leds(unsigned int console, int flag);
-+int vt_get_kbd_mode_bit(unsigned int console, int bit);
-+void vt_set_kbd_mode_bit(unsigned int console, int bit);
-+void vt_clr_kbd_mode_bit(unsigned int console, int bit);
-+void vt_set_led_state(unsigned int console, int leds);
-+void vt_kbd_con_start(unsigned int console);
-+void vt_kbd_con_stop(unsigned int console);
- 
- void vc_scrolldelta_helper(struct vc_data *c, int lines,
- 		unsigned int rolled_over, void *_base, unsigned int size);
--- 
-2.32.0
+I can add additional logic in between kill and reap to see if reap is
+necessary but unconditionally reaping is more simple.
 
+>
+> > An alternative would be to have a cgroup specific interface for
+> > reaping similar to cgroup.kill.
+>
+> Could you elaborate?
+>
+
+I mentioned this in [1] where I was thinking if it makes sense to
+overload cgroup.kill to also add the SIGKILLed processes in
+oom_reaper_list. The downside would be that there will be one thread
+doing the reaping and the syscall approach allows userspace to reap in
+multiple threads. I think for now, I would go with whatever Suren is
+proposing and we can always add more stuff if need arises.
+
+[1] https://lore.kernel.org/containers/CALvZod4jsb6bFzTOS4ZRAJGAzBru0oWanAhezToprjACfGm+ew@mail.gmail.com/
