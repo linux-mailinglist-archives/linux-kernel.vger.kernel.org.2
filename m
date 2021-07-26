@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B65063D62AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC673D6087
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234876AbhGZPh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:37:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35766 "EHLO mail.kernel.org"
+        id S236315AbhGZPW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236599AbhGZPVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3DB460E09;
-        Mon, 26 Jul 2021 16:01:59 +0000 (UTC)
+        id S237436AbhGZPPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A26E56104F;
+        Mon, 26 Jul 2021 15:55:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315320;
-        bh=uOX4OaURtWMQzPsBzVLUPfZ+2s99oQaxC0K7nUTWB5o=;
+        s=korg; t=1627314926;
+        bh=qomkJXXkb15tBCd3qCUIScd324EyJQo2c8wzHMUPzQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=skHuA5jNdte9dhUpCbsqxyZd7TmQBeBML+4E0EdDbnKswqItJmtue1Fqd2sbx0FCS
-         91cfaj+x2mcaXv+CLNBGQex5RG3fe6Z/MBvGqTTFW6HHCDV7rAU/g6Zdsca5zX3ZHU
-         C5n/2I8pFfiRNA3XMcNDJJB51eYxX7XY5UghZW20=
+        b=nlkR90xN2+a961cSpz9XXoLhWAJ3SXu8Bs0VwlzEtcuB6wOtXHDumr8v1RF5yW2a6
+         CU5f8PzxZWDq4tRvN03fwRm0I7xq/3NhraVgfXw7UuOw0VLyxNH4ahZOs+Jrrs7yK1
+         1s2zXqdedWc+BrFTwARIBBComnOUbBMbMRgZyvBo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 050/167] spi: stm32: fixes pm_runtime calls in probe/remove
-Date:   Mon, 26 Jul 2021 17:38:03 +0200
-Message-Id: <20210726153841.075969290@linuxfoundation.org>
+Subject: [PATCH 5.4 003/108] igc: change default return of igc_read_phy_reg()
+Date:   Mon, 26 Jul 2021 17:38:04 +0200
+Message-Id: <20210726153831.806755020@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 7999d2555c9f879d006ea8469d74db9cdb038af0 ]
+[ Upstream commit 05682a0a61b6cbecd97a0f37f743b2cbfd516977 ]
 
-Add pm_runtime calls in probe/probe error path and remove
-in order to be consistent in all places in ordering and
-ensure that pm_runtime is disabled prior to resources used
-by the SPI controller.
+Static analysis reports this problem
 
-This patch also fixes the 2 following warnings on driver remove:
-WARNING: CPU: 0 PID: 743 at drivers/clk/clk.c:594 clk_core_disable_lock+0x18/0x24
-WARNING: CPU: 0 PID: 743 at drivers/clk/clk.c:476 clk_unprepare+0x24/0x2c
+igc_main.c:4944:20: warning: The left operand of '&'
+  is a garbage value
+    if (!(phy_data & SR_1000T_REMOTE_RX_STATUS) &&
+          ~~~~~~~~ ^
 
-Fixes: 038ac869c9d2 ("spi: stm32: add runtime PM support")
+phy_data is set by the call to igc_read_phy_reg() only if
+there is a read_reg() op, else it is unset and a 0 is
+returned.  Change the return to -EOPNOTSUPP.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1625646426-5826-2-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 208983f099d9 ("igc: Add watchdog")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igc/igc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 0318f02d6212..8f91f8705eee 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -1946,6 +1946,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
- 		master->can_dma = stm32_spi_can_dma;
+diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
+index 7e16345d836e..aec998c82b69 100644
+--- a/drivers/net/ethernet/intel/igc/igc.h
++++ b/drivers/net/ethernet/intel/igc/igc.h
+@@ -504,7 +504,7 @@ static inline s32 igc_read_phy_reg(struct igc_hw *hw, u32 offset, u16 *data)
+ 	if (hw->phy.ops.read_reg)
+ 		return hw->phy.ops.read_reg(hw, offset, data);
  
- 	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_get_noresume(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
+-	return 0;
++	return -EOPNOTSUPP;
+ }
  
- 	ret = spi_register_master(master);
-@@ -1967,6 +1968,8 @@ static int stm32_spi_probe(struct platform_device *pdev)
- 
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- err_dma_release:
- 	if (spi->dma_tx)
- 		dma_release_channel(spi->dma_tx);
-@@ -1983,9 +1986,14 @@ static int stm32_spi_remove(struct platform_device *pdev)
- 	struct spi_master *master = platform_get_drvdata(pdev);
- 	struct stm32_spi *spi = spi_master_get_devdata(master);
- 
-+	pm_runtime_get_sync(&pdev->dev);
-+
- 	spi_unregister_master(master);
- 	spi->cfg->disable(spi);
- 
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- 	if (master->dma_tx)
- 		dma_release_channel(master->dma_tx);
- 	if (master->dma_rx)
-@@ -1993,7 +2001,6 @@ static int stm32_spi_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(spi->clk);
- 
--	pm_runtime_disable(&pdev->dev);
- 
- 	pinctrl_pm_select_sleep_state(&pdev->dev);
- 
+ /* forward declaration */
 -- 
 2.30.2
 
