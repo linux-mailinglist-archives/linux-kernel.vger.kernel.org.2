@@ -2,210 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405823D633B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA8D3D60E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239315AbhGZPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
+        id S237620AbhGZPZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:25:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231575AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:28:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B3A460FEA;
-        Mon, 26 Jul 2021 16:06:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315618;
-        bh=LThMCVmjyGnMXIiAlgGSBfTMcQBMbwOiWV4OqVS0TNM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QS/FOTn5OkUpXp4HeYqFLL8C2y6Nez/LAMySy4one10YPrWPaaHJzN2KYWqG+B/3r
-         v5yXJ0h6z0FLoZdGm4oPekQmsrehn5mSMKO2G2+VHZYpX+kBDtnR/97zYtNC/a+L3j
-         3WgU5mXBu9j61jhk/O0MkciEVWva7OvKeE/TOGUI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Carsten Schmid <carsten_schmid@mentor.com>
-Subject: [PATCH 5.10 167/167] xhci: add xhci_get_virt_ep() helper
-Date:   Mon, 26 Jul 2021 17:40:00 +0200
-Message-Id: <20210726153845.014643770@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236874AbhGZPPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9FAB61006;
+        Mon, 26 Jul 2021 15:54:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627314854;
+        bh=1UURlyqsMlhFBDtKQ5OkWxpvTCr15igrtOB2uhsDtAc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Xt1JS69WcRfNBf10BC7klLwJue00soMk56I/Q+DlLUvc5LkeKjY1ofkI8F4j4Me31
+         TRFQ93psHdxQCL6INC7viuaNcM+2iQUQskILhHDF9f16ExrthpUcp+MRrwKBl0bUn0
+         qCXGfKB2ZyW0ihAixyLU+TH88o1pIEwFyOD9CH7g+2rlpWDe2Q+/RH0kKaoK2xjo6H
+         buSKSSULzJ8+4Sy14cdWiUCK5kH/StVNqQKnKaBxxgi6GLmx4QKm+69RzwXd6dgYoO
+         wRFsynUbO/NGmLfC9JJ6+Rf7FztKCFIueAxYcCqfvkmgLzTmJ20rwgD6lQzx9mmy09
+         a+pdAOLBc6INw==
+Received: by mail-wm1-f52.google.com with SMTP id h24-20020a1ccc180000b029022e0571d1a0so297907wmb.5;
+        Mon, 26 Jul 2021 08:54:14 -0700 (PDT)
+X-Gm-Message-State: AOAM531K/U3wY7GpDPqetnTEMN8YQQ0ZzMuDjqfkRdX/2fksQepf9L+0
+        Drk3g/UkUtTYHIHEMXyJl6bpthqWriDnYsVUJBA=
+X-Google-Smtp-Source: ABdhPJyfayTexfKmJXMNn4XX3QQ4A+JhJZPnrMjFG+lYbcQXFXTNeBfZSy5NHj6FNZWGchEzxA364vxfUetwDeI2AkY=
+X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr27585853wmk.84.1627314853538;
+ Mon, 26 Jul 2021 08:54:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <cover.1627273794.git.viresh.kumar@linaro.org> <fced2f2b9dcf3f32f16866d7d104f46171316396.1627273794.git.viresh.kumar@linaro.org>
+ <CAL_Jsq+XXhe2g0Rmda1v_Ws4-E_-UE6X5HUsSk-GcAETqQZiCQ@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+XXhe2g0Rmda1v_Ws4-E_-UE6X5HUsSk-GcAETqQZiCQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 26 Jul 2021 17:53:56 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3bCk+iA+YziQrQFg6xH_d9cyySdTN_1j94D9CA8a_Sjw@mail.gmail.com>
+Message-ID: <CAK8P3a3bCk+iA+YziQrQFg6xH_d9cyySdTN_1j94D9CA8a_Sjw@mail.gmail.com>
+Subject: Re: [PATCH V3 1/5] dt-bindings: virtio: Add binding for virtio devices
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+On Mon, Jul 26, 2021 at 4:57 PM Rob Herring <robh+dt@kernel.org> wrote:
+> On Sun, Jul 25, 2021 at 10:52 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > +    description: |
+> > +      Exactly one node describing the virtio device. The name of the node isn't
+> > +      significant but its phandle can be used to by a user of the virtio device.
+> > +
+> > +  compatible:
+> > +    pattern: "^virtio,[0-9a-f]+$"
+>
+> DID is only 4 chars? If so, "^virtio,[0-9a-f]{1,4}$"
 
-[commit b1adc42d440df3233255e313a45ab7e9b2b74096 upstream]
+Any opinion on whether this should have any namespace prefix (or infix, I guess)
+after "virtio,"?
 
-In several event handlers we need to find the right endpoint
-structure from slot_id and ep_index in the event.
+I previously suggested making it "virtio,device[0-9a-f]{1,4}$", which would
+make it clearer that the following digits are the device ID rather
+than something
+else we might define in the future. Viresh picked this version because it's
+somewhat more consistent with other subsystems.
 
-Add a helper for this, check that slot_id and ep_index are valid.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20210129130044.206855-6-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Carsten Schmid <carsten_schmid@mentor.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/host/xhci-ring.c |   58 +++++++++++++++++++++++++++++++++----------
- drivers/usb/host/xhci.h      |    3 +-
- 2 files changed, 47 insertions(+), 14 deletions(-)
-
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -446,6 +446,26 @@ void xhci_ring_doorbell_for_active_rings
- 	ring_doorbell_for_active_rings(xhci, slot_id, ep_index);
- }
- 
-+static struct xhci_virt_ep *xhci_get_virt_ep(struct xhci_hcd *xhci,
-+					     unsigned int slot_id,
-+					     unsigned int ep_index)
-+{
-+	if (slot_id == 0 || slot_id >= MAX_HC_SLOTS) {
-+		xhci_warn(xhci, "Invalid slot_id %u\n", slot_id);
-+		return NULL;
-+	}
-+	if (ep_index >= EP_CTX_PER_DEV) {
-+		xhci_warn(xhci, "Invalid endpoint index %u\n", ep_index);
-+		return NULL;
-+	}
-+	if (!xhci->devs[slot_id]) {
-+		xhci_warn(xhci, "No xhci virt device for slot_id %u\n", slot_id);
-+		return NULL;
-+	}
-+
-+	return &xhci->devs[slot_id]->eps[ep_index];
-+}
-+
- /* Get the right ring for the given slot_id, ep_index and stream_id.
-  * If the endpoint supports streams, boundary check the URB's stream ID.
-  * If the endpoint doesn't support streams, return the singular endpoint ring.
-@@ -456,7 +476,10 @@ struct xhci_ring *xhci_triad_to_transfer
- {
- 	struct xhci_virt_ep *ep;
- 
--	ep = &xhci->devs[slot_id]->eps[ep_index];
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return NULL;
-+
- 	/* Common case: no streams */
- 	if (!(ep->ep_state & EP_HAS_STREAMS))
- 		return ep->ring;
-@@ -747,11 +770,14 @@ static void xhci_handle_cmd_stop_ep(stru
- 	memset(&deq_state, 0, sizeof(deq_state));
- 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
- 
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return;
-+
- 	vdev = xhci->devs[slot_id];
- 	ep_ctx = xhci_get_ep_ctx(xhci, vdev->out_ctx, ep_index);
- 	trace_xhci_handle_cmd_stop_ep(ep_ctx);
- 
--	ep = &xhci->devs[slot_id]->eps[ep_index];
- 	last_unlinked_td = list_last_entry(&ep->cancelled_td_list,
- 			struct xhci_td, cancelled_td_list);
- 
-@@ -1076,9 +1102,11 @@ static void xhci_handle_cmd_set_deq(stru
- 
- 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
- 	stream_id = TRB_TO_STREAM_ID(le32_to_cpu(trb->generic.field[2]));
--	dev = xhci->devs[slot_id];
--	ep = &dev->eps[ep_index];
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return;
- 
-+	dev = xhci->devs[slot_id];
- 	ep_ring = xhci_stream_id_to_ring(dev, ep_index, stream_id);
- 	if (!ep_ring) {
- 		xhci_warn(xhci, "WARN Set TR deq ptr command for freed stream ID %u\n",
-@@ -1151,9 +1179,9 @@ static void xhci_handle_cmd_set_deq(stru
- 	}
- 
- cleanup:
--	dev->eps[ep_index].ep_state &= ~SET_DEQ_PENDING;
--	dev->eps[ep_index].queued_deq_seg = NULL;
--	dev->eps[ep_index].queued_deq_ptr = NULL;
-+	ep->ep_state &= ~SET_DEQ_PENDING;
-+	ep->queued_deq_seg = NULL;
-+	ep->queued_deq_ptr = NULL;
- 	/* Restart any rings with pending URBs */
- 	ring_doorbell_for_active_rings(xhci, slot_id, ep_index);
- }
-@@ -1162,10 +1190,15 @@ static void xhci_handle_cmd_reset_ep(str
- 		union xhci_trb *trb, u32 cmd_comp_code)
- {
- 	struct xhci_virt_device *vdev;
-+	struct xhci_virt_ep *ep;
- 	struct xhci_ep_ctx *ep_ctx;
- 	unsigned int ep_index;
- 
- 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep)
-+		return;
-+
- 	vdev = xhci->devs[slot_id];
- 	ep_ctx = xhci_get_ep_ctx(xhci, vdev->out_ctx, ep_index);
- 	trace_xhci_handle_cmd_reset_ep(ep_ctx);
-@@ -1195,7 +1228,7 @@ static void xhci_handle_cmd_reset_ep(str
- 		xhci_ring_cmd_db(xhci);
- 	} else {
- 		/* Clear our internal halted state */
--		xhci->devs[slot_id]->eps[ep_index].ep_state &= ~EP_HALTED;
-+		ep->ep_state &= ~EP_HALTED;
- 	}
- 
- 	/* if this was a soft reset, then restart */
-@@ -2364,14 +2397,13 @@ static int handle_tx_event(struct xhci_h
- 	trb_comp_code = GET_COMP_CODE(le32_to_cpu(event->transfer_len));
- 	ep_trb_dma = le64_to_cpu(event->buffer);
- 
--	xdev = xhci->devs[slot_id];
--	if (!xdev) {
--		xhci_err(xhci, "ERROR Transfer event pointed to bad slot %u\n",
--			 slot_id);
-+	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
-+	if (!ep) {
-+		xhci_err(xhci, "ERROR Invalid Transfer event\n");
- 		goto err_out;
- 	}
- 
--	ep = &xdev->eps[ep_index];
-+	xdev = xhci->devs[slot_id];
- 	ep_ring = xhci_dma_to_transfer_ring(ep, ep_trb_dma);
- 	ep_ctx = xhci_get_ep_ctx(xhci, xdev->out_ctx, ep_index);
- 
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -993,6 +993,7 @@ struct xhci_interval_bw_table {
- 	unsigned int		ss_bw_out;
- };
- 
-+#define EP_CTX_PER_DEV		31
- 
- struct xhci_virt_device {
- 	struct usb_device		*udev;
-@@ -1007,7 +1008,7 @@ struct xhci_virt_device {
- 	struct xhci_container_ctx       *out_ctx;
- 	/* Used for addressing devices and configuration changes */
- 	struct xhci_container_ctx       *in_ctx;
--	struct xhci_virt_ep		eps[31];
-+	struct xhci_virt_ep		eps[EP_CTX_PER_DEV];
- 	u8				fake_port;
- 	u8				real_port;
- 	struct xhci_interval_bw_table	*bw_table;
-
-
+       Arnd
