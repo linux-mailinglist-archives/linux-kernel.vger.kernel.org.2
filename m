@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A063D6445
+	by mail.lfdr.de (Postfix) with ESMTP id 945893D6446
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240635AbhGZPzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52722 "EHLO mail.kernel.org"
+        id S240642AbhGZPzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234865AbhGZPfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:35:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA77560F5A;
-        Mon, 26 Jul 2021 16:15:42 +0000 (UTC)
+        id S235217AbhGZPfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:35:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28493604AC;
+        Mon, 26 Jul 2021 16:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316143;
-        bh=t1qrw3qqvDhAbr7/DTs8zeVeYBvUPo8sBxMfTjxJw+8=;
+        s=korg; t=1627316145;
+        bh=AGq2x0t0KxaJNErco3NfpF3Q+7Djdn+ezKGvOUM6QRQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QXoC/sS44RkfDnZiG5NaBbQeFNIVjpQWb/zQGGX3bPR45/l2RblhIKSDgs2+hP36i
-         lCJwgos6WfjhIhlADUDzCAg5/oDZ3s+MFhIyU36fbquHkDDNovfwgW2sAXbTcQcGLg
-         lzp3ACW4H1ZkUcFo+mxBjMtjdCD1OyrD5/6F/lGA=
+        b=kWy+dRK7HHP0Ze9TwVn7I1PWJ992seXt8KU3iV+I8Hju2OulfUj0CSS1HXUv+0+VI
+         qh6KEomEZZYmOdcM4is5ByE1pPZ8kwTz85by/UsIBzBxRzNwOkAeHYik9i05BP6Evv
+         SCY96xvvXvgV5Kxc76kOHjOK+IcYqoZ4mlsjGT8o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Fomichev <fomichev.ru@gmail.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 5.13 205/223] misc: eeprom: at24: Always append device id even if label property is set.
-Date:   Mon, 26 Jul 2021 17:39:57 +0200
-Message-Id: <20210726153852.896480175@linuxfoundation.org>
+        stable@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Hugh Dickins <hughd@google.com>,
+        Qiang Liu <cyruscyliu@gmail.com>,
+        iLifetruth <yixiaonn@gmail.com>
+Subject: [PATCH 5.13 206/223] nds32: fix up stack guard gap
+Date:   Mon, 26 Jul 2021 17:39:58 +0200
+Message-Id: <20210726153852.935567536@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,58 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Glisse <jglisse@redhat.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit c36748ac545421d94a5091c754414c0f3664bf10 upstream.
+commit c453db6cd96418c79702eaf38259002755ab23ff upstream.
 
-We need to append device id even if eeprom have a label property set as some
-platform can have multiple eeproms with same label and we can not register
-each of those with same label. Failing to register those eeproms trigger
-cascade failures on such platform (system is no longer working).
+Commit 1be7107fbe18 ("mm: larger stack guard gap, between vmas") fixed
+up all architectures to deal with the stack guard gap.  But when nds32
+was added to the tree, it forgot to do the same thing.
 
-This fix regression on such platform introduced with 4e302c3b568e
+Resolve this by properly fixing up the nsd32's version of
+arch_get_unmapped_area()
 
-Reported-by: Alexander Fomichev <fomichev.ru@gmail.com>
-Fixes: 4e302c3b568e ("misc: eeprom: at24: fix NVMEM name with custom AT24 device name")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jérôme Glisse <jglisse@redhat.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Nick Hu <nickhu@andestech.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+Cc: Vincent Chen <deanbo422@gmail.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Qiang Liu <cyruscyliu@gmail.com>
+Cc: stable <stable@vger.kernel.org>
+Reported-by: iLifetruth <yixiaonn@gmail.com>
+Acked-by: Hugh Dickins <hughd@google.com>
+Link: https://lore.kernel.org/r/20210629104024.2293615-1-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/misc/eeprom/at24.c |   17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ arch/nds32/mm/mmap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -714,23 +714,20 @@ static int at24_probe(struct i2c_client
- 	}
+--- a/arch/nds32/mm/mmap.c
++++ b/arch/nds32/mm/mmap.c
+@@ -59,7 +59,7 @@ arch_get_unmapped_area(struct file *filp
  
- 	/*
--	 * If the 'label' property is not present for the AT24 EEPROM,
--	 * then nvmem_config.id is initialised to NVMEM_DEVID_AUTO,
--	 * and this will append the 'devid' to the name of the NVMEM
--	 * device. This is purely legacy and the AT24 driver has always
--	 * defaulted to this. However, if the 'label' property is
--	 * present then this means that the name is specified by the
--	 * firmware and this name should be used verbatim and so it is
--	 * not necessary to append the 'devid'.
-+	 * We initialize nvmem_config.id to NVMEM_DEVID_AUTO even if the
-+	 * label property is set as some platform can have multiple eeproms
-+	 * with same label and we can not register each of those with same
-+	 * label. Failing to register those eeproms trigger cascade failure
-+	 * on such platform.
- 	 */
-+	nvmem_config.id = NVMEM_DEVID_AUTO;
-+
- 	if (device_property_present(dev, "label")) {
--		nvmem_config.id = NVMEM_DEVID_NONE;
- 		err = device_property_read_string(dev, "label",
- 						  &nvmem_config.name);
- 		if (err)
- 			return err;
- 	} else {
--		nvmem_config.id = NVMEM_DEVID_AUTO;
- 		nvmem_config.name = dev_name(dev);
+ 		vma = find_vma(mm, addr);
+ 		if (TASK_SIZE - len >= addr &&
+-		    (!vma || addr + len <= vma->vm_start))
++		    (!vma || addr + len <= vm_start_gap(vma)))
+ 			return addr;
  	}
  
 
