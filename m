@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F54C3D685F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9A63D6861
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhGZUVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 16:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        id S233173AbhGZUWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 16:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhGZUVa (ORCPT
+        with ESMTP id S232772AbhGZUWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 16:21:30 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376B7C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 14:01:58 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id t14so12589598oiw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 14:01:58 -0700 (PDT)
+        Mon, 26 Jul 2021 16:22:12 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6C2C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 14:02:40 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id j21so13609826ioo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 14:02:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=qmP+nvFdiGyxe0rj0aQYB75xMol5kzYi2IuKWY30b+E=;
-        b=HcCfoB6PsDvFiCdKkUBvoH+mjMQf2ALTf9fhKLE/VjZ40hTKVuYuqbLnGBDUxHfxAT
-         RHM5WJnd2hxeq1PTA0sGFMwF/UaO8yBbNY4WMZ7M4XFoki+iBfoUq6vM1TyoEawMx/bW
-         eI0cTwTUN6xfERJ60Y4fIMo5CzpKfr9eewgqQ=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6IT8x9lzIx6n/BJ/OVx0lxvbExZ5qOlfUXixHe0bbys=;
+        b=pDMgqn4vHsn0oX7XfuvhKNIaiMD0p27Xd/46lgidJzEQgnLDi7rh4obI6GXlO5KNhz
+         uW3JEdP8KUx77Bp+uaLK6lESAfW/bwcJVgwXCB4UjsN2H6PJwSA1anMG35GDUNATQzLZ
+         LSqba8zm3DJLWHBQJH7HYrodbAkYRb3of4F6lEM1vXdb/HuhkUciAscbG3BRrgwCbVkF
+         nqQFVxtqErHql/RTTVnYqZqBslRYsMuaY6pLWoPMpSnsW3X6kl3kVmzB8bq77HzJr3tJ
+         xBvSG3fYigdlMKXD4uaGugG3yTbJAgn3ilGhJG4hyNCksDNZLDJ7XvqWVqNKDGQ73KIn
+         U7Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=qmP+nvFdiGyxe0rj0aQYB75xMol5kzYi2IuKWY30b+E=;
-        b=RL9biz+XizrxpDjMEKS94YJqQH26D9PyZ26RnX03vNBWVUal2y4vqE38fwcYFlRpOg
-         wkwt/nFOYzwWM/MpnqKf1xMAJeDJUnU4HXnFCdUBpvmpV6AN+OIVTH9K9VtmsuQb2EF6
-         XJaGkGGJcsnzVu/VWmpsgPrnBUTT8sg9gLRUtAb1LrN+c0q4BlPgN4oUIpLgF1JSyqpx
-         hK9QwHCclVBGAYVUU6rjtE37WO/dxD748rGjN0M2gncZ583quqf0LyCVQDzMnZORMdGW
-         sz2gWNGlm96esFnNsYAu4Sd3btNlaOjkhgTlPD82kThMYvZTyb2rwbAJIA5OXkxZzMLn
-         6U4w==
-X-Gm-Message-State: AOAM5304XTN/CUr3t716OWiAPZOsHE7lJH1EjUX9Fb5Paob+0yy6eo5z
-        eaxT7avKcLYJyDn6YxgQR7dndXdZrZZwU07mCRgAjg==
-X-Google-Smtp-Source: ABdhPJy+zOV5H5QT2ONLq6/MZa4bLjvvPnTfl/f+51Qfcb8grTupNAQqi5h8GLKoIRhK4zyX3pBhEOFnFHlKvFHlnMU=
-X-Received: by 2002:aca:afd7:: with SMTP id y206mr139164oie.1.1627333317558;
- Mon, 26 Jul 2021 14:01:57 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Jul 2021 17:01:57 -0400
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6IT8x9lzIx6n/BJ/OVx0lxvbExZ5qOlfUXixHe0bbys=;
+        b=reY7LSbKZKU7wxPnu1umeahwSE0IUNBKycMdlRTKLyGpx67uRCtPaNo+5ibz5Ij27e
+         Ba4hgz/EONzch2NaXcDS4k4zwFj5EJs1Cyn3acm6ltkHSCHdRBraALxosyaRmYGtILAW
+         vIzl8n1K+5l5zo2wWo2GhMoPQ2lWKbeiBJ62Ld9h8tSOPm6zlFq9JrQ8GeErNx9k9f+X
+         shmcOdJoIK9qqu/FZu/MO+6ma+xevrDCimHYg9sORottJKfMTsgkK/nWE8QMnFxNB1RD
+         JWR0yYtbcKLQUPHq47T+hZb4nniDm9zCGkVIBAL2OfVhTGC+DoHeAe9bTpG4FuAfR2/6
+         LCgg==
+X-Gm-Message-State: AOAM530auUleLqpBGJ4BQM9axtUFUuPswK5xorDSni7jUXKpNycUEHrj
+        xf3kz7F40k3I8FcoDC0xUTLg0aYonhdvAlUvzDznKg==
+X-Google-Smtp-Source: ABdhPJyhGOvmp7xt5phBoDKVbyUJAWhk7mWImU5UN9SLg1JqYvVSLQ0kO7HYjwjDv0jwPBBN3364p2rxepSoPqthNCc=
+X-Received: by 2002:a6b:2bd4:: with SMTP id r203mr11606325ior.157.1627333360050;
+ Mon, 26 Jul 2021 14:02:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1627059339-12142-1-git-send-email-khsieh@codeaurora.org>
-References: <1627059339-12142-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 26 Jul 2021 17:01:57 -0400
-Message-ID: <CAE-0n51HF8E7x71Ru4EXoyYePoBNcrngwUE6H7b=tpgXuHdxHQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dp: signal audio plugged change at dp_pm_resume
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210726175357.1572951-1-mizhang@google.com> <20210726175357.1572951-3-mizhang@google.com>
+In-Reply-To: <20210726175357.1572951-3-mizhang@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 26 Jul 2021 14:02:27 -0700
+Message-ID: <CANgfPd95-FSeouU9Aa-6E4UYUy8St+-4Wswbo1dF2AWZo5BoQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] KVM: x86/mmu: Avoid collision with !PRESENT SPTEs
+ in TDP MMU lpage stats
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jing Zhang <jingzhangos@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-07-23 09:55:39)
-> There is a scenario that dp cable is unplugged from DUT during system
-> suspended  will cause audio option state does not match real connection
-> state. Fix this problem by Signaling audio plugged change with realtime
-> connection status at dp_pm_resume() so that audio option will be in
-> correct state after system resumed.
+On Mon, Jul 26, 2021 at 10:54 AM Mingwei Zhang <mizhang@google.com> wrote:
 >
-> Changes in V2:
-> -- correct Fixes tag commit id.
+> Factor in whether or not the old/new SPTEs are shadow-present when
+> adjusting the large page stats in the TDP MMU. A modified MMIO SPTE can
+> toggle the page size bit, as bit 7 is used to store the MMIO generation,
+> i.e. is_large_pte() can get a false positive when called on a MMIO SPTE.
+> Ditto for nuking SPTEs with REMOVED_SPTE, which sets bit 7 in its magic
+> value.
 >
-> Fixes: f591dbb5fb8c ("drm/msm/dp: power off DP phy at suspend")
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Opportunistically move the logic below the check to verify at least one
+> of the old/new SPTEs is shadow present.
+>
+> Use is/was_leaf even though is/was_present would suffice.  The code
+> generation is roughly equivalent since all flags need to be computed
+> prior to the code in question, and using the *_leaf flags will minimize
+> the diff in a future enhancement to account all pages, i.e. will change
+> the check to "is_leaf != was_leaf".
+>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+
+Reviewed-by: Ben Gardon <bgardon@google.com>
+
 > ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  arch/x86/kvm/mmu/tdp_mmu.c | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 78c5301..2b660e9 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1339,6 +1339,10 @@ static int dp_pm_resume(struct device *dev)
->         else
->                 dp->dp_display.is_connected = false;
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index caac4ddb46df..cba2ab5db2a0 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -413,6 +413,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>         bool was_leaf = was_present && is_last_spte(old_spte, level);
+>         bool is_leaf = is_present && is_last_spte(new_spte, level);
+>         bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
+> +       bool was_large, is_large;
 >
-> +       dp_display_handle_plugged_change(g_dp_display,
-
-Can this be dp_display instead of g_dp_display?
-
-> +                               dp->dp_display.is_connected);
-> +
-> +
->         mutex_unlock(&dp->event_mutex);
+>         WARN_ON(level > PT64_ROOT_MAX_LEVEL);
+>         WARN_ON(level < PG_LEVEL_4K);
+> @@ -446,13 +447,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
 >
->         return 0;
+>         trace_kvm_tdp_mmu_spte_changed(as_id, gfn, level, old_spte, new_spte);
+>
+> -       if (is_large_pte(old_spte) != is_large_pte(new_spte)) {
+> -               if (is_large_pte(old_spte))
+> -                       atomic64_sub(1, (atomic64_t*)&kvm->stat.lpages);
+> -               else
+> -                       atomic64_add(1, (atomic64_t*)&kvm->stat.lpages);
+> -       }
+> -
+>         /*
+>          * The only times a SPTE should be changed from a non-present to
+>          * non-present state is when an MMIO entry is installed/modified/
+> @@ -478,6 +472,18 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+>                 return;
+>         }
+>
+> +       /*
+> +        * Update large page stats if a large page is being zapped, created, or
+> +        * is replacing an existing shadow page.
+> +        */
+> +       was_large = was_leaf && is_large_pte(old_spte);
+> +       is_large = is_leaf && is_large_pte(new_spte);
+> +       if (was_large != is_large) {
+> +               if (was_large)
+> +                       atomic64_sub(1, (atomic64_t *)&kvm->stat.lpages);
+> +               else
+> +                       atomic64_add(1, (atomic64_t *)&kvm->stat.lpages);
+> +       }
+>
+>         if (was_leaf && is_dirty_spte(old_spte) &&
+>             (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
+> --
+> 2.32.0.432.gabb21c7263-goog
+>
