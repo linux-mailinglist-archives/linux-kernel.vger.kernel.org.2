@@ -2,137 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E7F3D64CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933E93D64DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239908AbhGZQGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240791AbhGZQFB (ORCPT
+        id S240059AbhGZQLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:11:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35688 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235687AbhGZQJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:05:01 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CA9C0617A4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:45:10 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id o7so8358383ilh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:45:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xP0AMO1smf3f/g3BuMgB5g/Gkz29iY6fkAqpW8hERkA=;
-        b=egVAZIreI5f9s+TkdRONsI3WnQBUt2mz0nhMRS0iJcXZnAYB3332Ek9VWkLT2ZadT3
-         7E5TLTJCho8DPheOztM3wXbyPfekBkyn8aBPqqInFBjGpuBMHPWCjscp+DAg7mFnGFF0
-         u44mbVZFYAv6yfVZsu0/OuB4lvcOgr2qdO7HO3rVA2WXzR7+6RT8G9ikNz4t2w2vQuzO
-         KNRlgaJQ2COgbYdmzrWjjAoAX88N7wlnROVUMAyOSKRrrQWjvj1pH5fyFYRQdyri5Emd
-         xFAgyTjlzdpSI3OmBkvKgJqsl377Wnw2QsUZOs1jYfPPopr6l6Pp6JuihnyxcmD9jq8j
-         XD5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xP0AMO1smf3f/g3BuMgB5g/Gkz29iY6fkAqpW8hERkA=;
-        b=G6d2IQaxxJVHmRKxINnrA7mft7dTeHJfCLRS1Ati8iLn9kO9XrAN/i93UAfEeaqJio
-         QW5GG5Lc3rMJ8nOhjFzmfKKiZPK1oPqlX+k+88S0vRSRh6IxSRtRtkG0M+dDW8NSI8El
-         kMVt036xFVLexaV/GzgL1zzch1wouHv4oCLforNvJ5u+h/JLfLgdR8bsJIAOb2VDgcWv
-         huLwLtsLEHJPsdMty4g1OsmCHLOL6IFQN4f9XVRYBE9MQ7ohmoJX0orRt0mIox+Jgryg
-         wFYhIwD7lLfsryhhuZcsN7vNTNVHwgC4j1x5amNVBljz7kwEBcS2Vh29wmpmI0hEVHHC
-         azOA==
-X-Gm-Message-State: AOAM530lBj4DSnml+lnDLZPmw5pNZRs2MezSQAr5wW2rYWTiXe3IDKIC
-        77MML5SLDqV0lYbPHZI2oSPI8g==
-X-Google-Smtp-Source: ABdhPJxDyHV4a/N6+0t2Oul4H1NPiCaWGYJheRhNWVPSquOqjLGkOlwMaZ9vUWQvp0VoOiyZaqUACg==
-X-Received: by 2002:a92:8712:: with SMTP id m18mr13025054ild.132.1627317909970;
-        Mon, 26 Jul 2021 09:45:09 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id r198sm244436ior.7.2021.07.26.09.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 09:45:09 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/1] net: ipa: enable inline checksum offload for IPA v4.5+
-Date:   Mon, 26 Jul 2021 11:45:04 -0500
-Message-Id: <20210726164504.323812-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        Mon, 26 Jul 2021 12:09:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627318205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=avwuTKw/R829e7k0vzWCG0fx07vpyZttwZixO5lwurs=;
+        b=AoQ+4c/1dSqCHRTKGEpzu8b9saBosTQiyOcagiXjEI0YowkfAQQCjr0iN6liz1EbVNYb3B
+        nbktDUUl4J0utR5UVpn6B5HpZTP4MC29ISdndtO9aoUKWAVGclBeOdK3rGpcy0RpN8YSKc
+        /02G2a+uEf80In5QT9orYLqmU3KC7oc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-XApmllMIMRWRAuyo1dG2jw-1; Mon, 26 Jul 2021 12:50:01 -0400
+X-MC-Unique: XApmllMIMRWRAuyo1dG2jw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 70BAF8070ED;
+        Mon, 26 Jul 2021 16:50:00 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 101D26E6E2;
+        Mon, 26 Jul 2021 16:50:00 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>
+Subject: [PATCH] KVM: SVM: delay svm_vcpu_init_msrpm after svm->vmcb is initialized
+Date:   Mon, 26 Jul 2021 12:49:59 -0400
+Message-Id: <20210726164959.1436607-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RMNet and IPA drivers both support inline checksum offload now.
-So enable it for the TX and RX modem endoints for IPA version 4.5+.
+Right now, svm_hv_vmcb_dirty_nested_enlightenments has an incorrect
+dereference of vmcb->control.reserved_sw before the vmcb is checked
+for being non-NULL.  The compiler is usually sinking the dereference
+after the check; instead of doing this ourselves in the source,
+ensure that svm_hv_vmcb_dirty_nested_enlightenments is only called
+with a non-NULL VMCB.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Vineeth Pillai <viremana@linux.microsoft.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[Untested for now due to issues with my AMD machine. - Paolo]
 ---
- drivers/net/ipa/ipa_data-v4.11.c | 2 ++
- drivers/net/ipa/ipa_data-v4.5.c  | 2 ++
- drivers/net/ipa/ipa_data-v4.9.c  | 2 ++
- 3 files changed, 6 insertions(+)
+ arch/x86/kvm/svm/svm.c          | 4 ++--
+ arch/x86/kvm/svm/svm_onhyperv.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_data-v4.11.c b/drivers/net/ipa/ipa_data-v4.11.c
-index 598b410cd7ab4..782f67e3e079f 100644
---- a/drivers/net/ipa/ipa_data-v4.11.c
-+++ b/drivers/net/ipa/ipa_data-v4.11.c
-@@ -105,6 +105,7 @@ static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 			.filter_support	= true,
- 			.config = {
- 				.resource_group	= IPA_RSRC_GROUP_SRC_UL_DL,
-+				.checksum       = true,
- 				.qmap		= true,
- 				.status_enable	= true,
- 				.tx = {
-@@ -128,6 +129,7 @@ static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 		.endpoint = {
- 			.config = {
- 				.resource_group	= IPA_RSRC_GROUP_DST_UL_DL_DPL,
-+				.checksum       = true,
- 				.qmap		= true,
- 				.aggregation	= true,
- 				.rx = {
-diff --git a/drivers/net/ipa/ipa_data-v4.5.c b/drivers/net/ipa/ipa_data-v4.5.c
-index a99b6478fa3a5..db6fda2fe43da 100644
---- a/drivers/net/ipa/ipa_data-v4.5.c
-+++ b/drivers/net/ipa/ipa_data-v4.5.c
-@@ -114,6 +114,7 @@ static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 			.filter_support	= true,
- 			.config = {
- 				.resource_group	= IPA_RSRC_GROUP_SRC_UL_DL,
-+				.checksum       = true,
- 				.qmap		= true,
- 				.status_enable	= true,
- 				.tx = {
-@@ -137,6 +138,7 @@ static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 		.endpoint = {
- 			.config = {
- 				.resource_group	= IPA_RSRC_GROUP_DST_UL_DL_DPL,
-+				.checksum       = true,
- 				.qmap		= true,
- 				.aggregation	= true,
- 				.rx = {
-diff --git a/drivers/net/ipa/ipa_data-v4.9.c b/drivers/net/ipa/ipa_data-v4.9.c
-index 798d43e1eb133..6ab928266b5c1 100644
---- a/drivers/net/ipa/ipa_data-v4.9.c
-+++ b/drivers/net/ipa/ipa_data-v4.9.c
-@@ -106,6 +106,7 @@ static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 			.filter_support	= true,
- 			.config = {
- 				.resource_group	= IPA_RSRC_GROUP_SRC_UL_DL,
-+				.checksum       = true,
- 				.qmap		= true,
- 				.status_enable	= true,
- 				.tx = {
-@@ -129,6 +130,7 @@ static const struct ipa_gsi_endpoint_data ipa_gsi_endpoint_data[] = {
- 		.endpoint = {
- 			.config = {
- 				.resource_group	= IPA_RSRC_GROUP_DST_UL_DL_DPL,
-+				.checksum       = true,
- 				.qmap		= true,
- 				.aggregation	= true,
- 				.rx = {
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 9a6987549e1b..4bcb95bb8ed7 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1406,8 +1406,6 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+ 		goto error_free_vmsa_page;
+ 	}
+ 
+-	svm_vcpu_init_msrpm(vcpu, svm->msrpm);
+-
+ 	svm->vmcb01.ptr = page_address(vmcb01_page);
+ 	svm->vmcb01.pa = __sme_set(page_to_pfn(vmcb01_page) << PAGE_SHIFT);
+ 
+@@ -1419,6 +1417,8 @@ static int svm_create_vcpu(struct kvm_vcpu *vcpu)
+ 	svm_switch_vmcb(svm, &svm->vmcb01);
+ 	init_vmcb(vcpu);
+ 
++	svm_vcpu_init_msrpm(vcpu, svm->msrpm);
++
+ 	svm_init_osvw(vcpu);
+ 	vcpu->arch.microcode_version = 0x01000065;
+ 
+diff --git a/arch/x86/kvm/svm/svm_onhyperv.h b/arch/x86/kvm/svm/svm_onhyperv.h
+index 9b9a55abc29f..c53b8bf8d013 100644
+--- a/arch/x86/kvm/svm/svm_onhyperv.h
++++ b/arch/x86/kvm/svm/svm_onhyperv.h
+@@ -89,7 +89,7 @@ static inline void svm_hv_vmcb_dirty_nested_enlightenments(
+ 	 * as we mark it dirty unconditionally towards end of vcpu
+ 	 * init phase.
+ 	 */
+-	if (vmcb && vmcb_is_clean(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS) &&
++	if (vmcb_is_clean(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS) &&
+ 	    hve->hv_enlightenments_control.msr_bitmap)
+ 		vmcb_mark_dirty(vmcb, VMCB_HV_NESTED_ENLIGHTENMENTS);
+ }
 -- 
 2.27.0
 
