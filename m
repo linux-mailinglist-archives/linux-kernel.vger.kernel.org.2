@@ -2,34 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1333D6411
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CC83D6410
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239786AbhGZPyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49434 "EHLO mail.kernel.org"
+        id S239768AbhGZPyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232524AbhGZPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:33:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5BA860240;
-        Mon, 26 Jul 2021 16:13:33 +0000 (UTC)
+        id S233473AbhGZPdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:33:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE96B60C40;
+        Mon, 26 Jul 2021 16:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316014;
-        bh=L/CAnG7f3XEnt95H3+76U4BERVOkxSaQKBqDXEoJLes=;
+        s=korg; t=1627316017;
+        bh=Pbmmhl+SwCyA5a0AenO4yVayqqeIWk0Bb6ZsKHmPnUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1FeYk1ZRL6Fx1hPzbAyIqQGPq4A7oJUr76OZEzDPQ7ylMaECS6UFxFfD/3bhJGN1e
-         f/keEsmBttGJ4KkwHNyneQXJdcAIEDZ/Tdh/fZ1Tkz6XNPSXdGchxs2Qj46p9Na8TV
-         614uEgnFHknGaUPb+uN1qsyFpNudcZPTH/GrBvog=
+        b=MzLLzhEIDPxmPegD0PM9JLi9By4xQ4c4SG64+BOybi5/fwVoJSSckCyihHWWD0p/1
+         CEHRWyoVrFNvq58n8zhzyBLVp7x/iTpMBIV6WmTQJIvo+Nu2QVrgaxKt0zorM4Tc6u
+         11aT8jpxRiTjwT+6/swOwO1NC4PaiyiIECr8DIoA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH 5.13 155/223] Revert "usb: renesas-xhci: Fix handling of unknown ROM state"
-Date:   Mon, 26 Jul 2021 17:39:07 +0200
-Message-Id: <20210726153851.295171967@linuxfoundation.org>
+        stable@vger.kernel.org, Greg Thelen <gthelen@google.com>
+Subject: [PATCH 5.13 156/223] usb: xhci: avoid renesas_usb_fw.mem when its unusable
+Date:   Mon, 26 Jul 2021 17:39:08 +0200
+Message-Id: <20210726153851.324980843@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,65 +38,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moritz Fischer <mdf@kernel.org>
+From: Greg Thelen <gthelen@google.com>
 
-commit 44cf53602f5a0db80d53c8fff6cdbcae59650a42 upstream.
+commit 0665e387318607d8269bfdea60723c627c8bae43 upstream.
 
-This reverts commit d143825baf15f204dac60acdf95e428182aa3374.
+Commit a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with
+memory") added renesas_usb_fw.mem firmware reference to xhci-pci.  Thus
+modinfo indicates xhci-pci.ko has "firmware: renesas_usb_fw.mem".  But
+the firmware is only actually used with CONFIG_USB_XHCI_PCI_RENESAS.  An
+unusable firmware reference can trigger safety checkers which look for
+drivers with unmet firmware dependencies.
 
-Justin reports some of his systems now fail as result of this commit:
+Avoid referring to renesas_usb_fw.mem in circumstances when it cannot be
+loaded (when CONFIG_USB_XHCI_PCI_RENESAS isn't set).
 
- xhci_hcd 0000:04:00.0: Direct firmware load for renesas_usb_fw.mem failed with error -2
- xhci_hcd 0000:04:00.0: request_firmware failed: -2
- xhci_hcd: probe of 0000:04:00.0 failed with error -2
-
-The revert brings back the original issue the commit tried to solve but
-at least unbreaks existing systems relying on previous behavior.
-
-Cc: stable@vger.kernel.org
-Cc: Mathias Nyman <mathias.nyman@intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Justin Forbes <jmforbes@linuxtx.org>
-Reported-by: Justin Forbes <jmforbes@linuxtx.org>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
-Fixes: d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
-Link: https://lore.kernel.org/r/20210719070519.41114-1-mdf@kernel.org
+Fixes: a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with memory")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Thelen <gthelen@google.com>
+Link: https://lore.kernel.org/r/20210702071224.3673568-1-gthelen@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-pci-renesas.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/usb/host/xhci-pci.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/host/xhci-pci-renesas.c
-+++ b/drivers/usb/host/xhci-pci-renesas.c
-@@ -207,8 +207,7 @@ static int renesas_check_rom_state(struc
- 			return 0;
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -636,7 +636,14 @@ static const struct pci_device_id pci_id
+ 	{ /* end: all zeroes */ }
+ };
+ MODULE_DEVICE_TABLE(pci, pci_ids);
++
++/*
++ * Without CONFIG_USB_XHCI_PCI_RENESAS renesas_xhci_check_request_fw() won't
++ * load firmware, so don't encumber the xhci-pci driver with it.
++ */
++#if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
+ MODULE_FIRMWARE("renesas_usb_fw.mem");
++#endif
  
- 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
--			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
--			break;
-+			return 0;
- 
- 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
- 		default: /* All other states are marked as "Reserved states" */
-@@ -225,12 +224,13 @@ static int renesas_fw_check_running(stru
- 	u8 fw_state;
- 	int err;
- 
--	/*
--	 * Only if device has ROM and loaded FW we can skip loading and
--	 * return success. Otherwise (even unknown state), attempt to load FW.
--	 */
--	if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
--		return 0;
-+	/* Check if device has ROM and loaded, if so skip everything */
-+	err = renesas_check_rom(pdev);
-+	if (err) { /* we have rom */
-+		err = renesas_check_rom_state(pdev);
-+		if (!err)
-+			return err;
-+	}
- 
- 	/*
- 	 * Test if the device is actually needing the firmware. As most
+ /* pci driver glue; this is a "new style" PCI driver module */
+ static struct pci_driver xhci_pci_driver = {
 
 
