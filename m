@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98D43D6251
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A8B3D6005
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhGZPf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:35:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34098 "EHLO mail.kernel.org"
+        id S237004AbhGZPUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237040AbhGZPUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:20:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D30066023D;
-        Mon, 26 Jul 2021 16:01:01 +0000 (UTC)
+        id S236818AbhGZPJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1E0A60F38;
+        Mon, 26 Jul 2021 15:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315262;
-        bh=7s5Io78B8qEB4Mf4qIYhGmMivr56dVf84PgmMUN0MJ8=;
+        s=korg; t=1627314623;
+        bh=O+dQbiqnMdRu5h1yVMNv/3teYbbpAK3qV5Lc0vOOITc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YFICQCwABOIswDDre9NspCRrYqE4VMjPoGMB12pR81ILyKXN1tZFN0TxaEsTojWfV
-         jUSCNslZTOoi98XSd33hKsCkbbZk1jp3hibtFA3jhqMDcesEzkukG69jIe/5BZSMbJ
-         RuFkbi2sAAc3oUpE922XhBmDRZTMmVPJbVNB0yd8=
+        b=VJJ4CEhWePTuk/86AcX6leHyYsPOa/axGZPOZ9SjDtphISJrnkD5rboL4K1FNNJfh
+         VWeXnA/7PCbdIaV480UBFJJ2OSrFopmaxFzjgpcU54Zf+jHI/CxO+mIB1p9OD6OJGp
+         /9Ui2kmhhsctS1rqowPGskoGhMp65Iqx0+3CTzlg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 027/167] pwm: sprd: Ensure configuring period and duty_cycle isnt wrongly skipped
+Subject: [PATCH 4.19 008/120] arm64: dts: rockchip: Fix power-controller node names for rk3328
 Date:   Mon, 26 Jul 2021 17:37:40 +0200
-Message-Id: <20210726153840.279592560@linuxfoundation.org>
+Message-Id: <20210726153832.626707057@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Elaine Zhang <zhangqing@rock-chips.com>
 
-[ Upstream commit 65e2e6c1c20104ed19060a38f4edbf14e9f9a9a5 ]
+[ Upstream commit 6e6a282b49c6db408d27231e3c709fbdf25e3c1b ]
 
-As the last call to sprd_pwm_apply() might have exited early if
-state->enabled was false, the values for period and duty_cycle stored in
-pwm->state might not have been written to hardware and it must be
-ensured that they are configured before enabling the PWM.
+Use more generic names (as recommended in the device tree specification
+or the binding documentation)
 
-Fixes: 8aae4b02e8a6 ("pwm: sprd: Add Spreadtrum PWM support")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210417112952.8516-7-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-sprd.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pwm/pwm-sprd.c b/drivers/pwm/pwm-sprd.c
-index 5123d948efd6..9eeb59cb81b6 100644
---- a/drivers/pwm/pwm-sprd.c
-+++ b/drivers/pwm/pwm-sprd.c
-@@ -180,13 +180,10 @@ static int sprd_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 			}
- 		}
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 6be7c67584ba..05fa0dcb4c69 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -255,13 +255,13 @@
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
  
--		if (state->period != cstate->period ||
--		    state->duty_cycle != cstate->duty_cycle) {
--			ret = sprd_pwm_config(spc, pwm, state->duty_cycle,
--					      state->period);
--			if (ret)
--				return ret;
--		}
-+		ret = sprd_pwm_config(spc, pwm, state->duty_cycle,
-+				      state->period);
-+		if (ret)
-+			return ret;
- 
- 		sprd_pwm_write(spc, pwm->hwpwm, SPRD_PWM_ENABLE, 1);
- 	} else if (cstate->enabled) {
+-			pd_hevc@RK3328_PD_HEVC {
++			power-domain@RK3328_PD_HEVC {
+ 				reg = <RK3328_PD_HEVC>;
+ 			};
+-			pd_video@RK3328_PD_VIDEO {
++			power-domain@RK3328_PD_VIDEO {
+ 				reg = <RK3328_PD_VIDEO>;
+ 			};
+-			pd_vpu@RK3328_PD_VPU {
++			power-domain@RK3328_PD_VPU {
+ 				reg = <RK3328_PD_VPU>;
+ 			};
+ 		};
 -- 
 2.30.2
 
