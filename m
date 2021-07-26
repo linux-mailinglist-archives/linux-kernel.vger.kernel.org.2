@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497903D62C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964DE3D5FF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237795AbhGZPjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36920 "EHLO mail.kernel.org"
+        id S236886AbhGZPTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:19:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237300AbhGZPWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C91AD60240;
-        Mon, 26 Jul 2021 16:02:48 +0000 (UTC)
+        id S236501AbhGZPJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B301160F38;
+        Mon, 26 Jul 2021 15:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315369;
-        bh=LRN5zCfRcPNBv6WsJuJv03hzjI1RrsFRaLqLYm1Rq1I=;
+        s=korg; t=1627314579;
+        bh=LBXD4Wz1qxz5k3KFOfls2JXbaV7WDf+oET1woDyQzbA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jH3/5w89SypRr1MRnPMrzqQAI+SAzfUpR1pYhofYt1q3yD8kqkhZrnG0YAn9ZjUxV
-         h69L7odnV3FH4a7nXsbDglbh4j/zEd1I2g6ZqCpkwAlfm9kPEwQXzuhghUtsQ1xyS4
-         HSLoOjfjcERl6HnGpSi4ZnBKVGjmWDoJoU9AtH7Q=
+        b=NqQhd/JbiKpHWFQ9fpWXdl9VWlrBbsFOP9D1aLMGi+VhXVp7zexD4ctiv5q6IoHqW
+         Lbfp3rI2gCdFJqgbtMYhqsIi55lt3A4gZqUrCHtoxSFG7eoUNES2sasfMWDAR6MOGY
+         9A2xWpi7VB0KbzUfPCjG79TTYr3yCeXlYXcWBK3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Krister Johansen <kjlx@templeofstupid.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 035/167] perf probe: Fix dso->nsinfo refcounting
+Subject: [PATCH 4.19 016/120] ARM: imx: pm-imx5: Fix references to imx5_cpu_suspend_info
 Date:   Mon, 26 Jul 2021 17:37:48 +0200
-Message-Id: <20210726153840.561083285@linuxfoundation.org>
+Message-Id: <20210726153832.884241745@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,52 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-[ Upstream commit dedeb4be203b382ba7245d13079bc3b0f6d40c65 ]
+[ Upstream commit 89b759469d525f4d5f9c29cd3b1f490311c67f85 ]
 
-ASan reports a memory leak of nsinfo during the execution of:
+The name of the struct, as defined in arch/arm/mach-imx/pm-imx5.c,
+is imx5_cpu_suspend_info.
 
- # perf test "31: Lookup mmap thread".
-
-The leak is caused by a refcounted variable being replaced without
-dropping the refcount.
-
-This patch makes sure that the refcnt of nsinfo is decreased whenever
-a refcounted variable is replaced with a new value.
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: 544abd44c7064c8a ("perf probe: Allow placing uprobes in alternate namespaces.")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Krister Johansen <kjlx@templeofstupid.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com
-[ Split from a larger patch ]
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/probe-event.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/mach-imx/suspend-imx53.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
-index 8eae2afff71a..07db6cfad65b 100644
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -180,8 +180,10 @@ struct map *get_target_map(const char *target, struct nsinfo *nsi, bool user)
- 		struct map *map;
+diff --git a/arch/arm/mach-imx/suspend-imx53.S b/arch/arm/mach-imx/suspend-imx53.S
+index 5ed078ad110a..f12d24104075 100644
+--- a/arch/arm/mach-imx/suspend-imx53.S
++++ b/arch/arm/mach-imx/suspend-imx53.S
+@@ -33,11 +33,11 @@
+  *                              ^
+  *                              ^
+  *                      imx53_suspend code
+- *              PM_INFO structure(imx53_suspend_info)
++ *              PM_INFO structure(imx5_cpu_suspend_info)
+  * ======================== low address =======================
+  */
  
- 		map = dso__new_map(target);
--		if (map && map->dso)
-+		if (map && map->dso) {
-+			nsinfo__put(map->dso->nsinfo);
- 			map->dso->nsinfo = nsinfo__get(nsi);
-+		}
- 		return map;
- 	} else {
- 		return kernel_get_module_map(target);
+-/* Offsets of members of struct imx53_suspend_info */
++/* Offsets of members of struct imx5_cpu_suspend_info */
+ #define SUSPEND_INFO_MX53_M4IF_V_OFFSET		0x0
+ #define SUSPEND_INFO_MX53_IOMUXC_V_OFFSET	0x4
+ #define SUSPEND_INFO_MX53_IO_COUNT_OFFSET	0x8
 -- 
 2.30.2
 
