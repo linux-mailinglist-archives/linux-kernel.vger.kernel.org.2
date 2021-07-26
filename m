@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821F73D57C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9163D57C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhGZKGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:06:03 -0400
-Received: from ni.piap.pl ([195.187.100.5]:41428 "EHLO ni.piap.pl"
+        id S232375AbhGZKJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 06:09:04 -0400
+Received: from ni.piap.pl ([195.187.100.5]:41642 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231421AbhGZKGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:06:01 -0400
+        id S231421AbhGZKJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 06:09:02 -0400
 Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id B5FB0C3EEAF4;
-        Mon, 26 Jul 2021 12:46:28 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl B5FB0C3EEAF4
+        by ni.piap.pl (Postfix) with ESMTPSA id 75A61C3EEAF4;
+        Mon, 26 Jul 2021 12:49:30 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 75A61C3EEAF4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1627296388; bh=ZkJrXiDbEUSVRRGepR3fY2i121HkkHGkjcgykLuX9uQ=;
+        t=1627296570; bh=GTarvyqu7ZvaJL88fT5UyAQY4UmaZSd8sN27BIQVu3E=;
         h=From:To:Cc:Subject:Date:From;
-        b=OK/NdLdtyhoyrRzWruroNcHNz+ofVswrgHvgqfXw9PeyR5sYMU2hc2w1cMqh+pZYk
-         BMIeJZUlznNFeTgx6LmPMAMKqJZ65lhZbAjIJPrWn2qpPS5CLJgnuYeWTUGooH5sQa
-         Ga6MkcmOg2NyD/YQdgIfpVThvtZZRSCHz8zrd/cg=
+        b=jhEuwqshTHLg9/alptBFFh4INXpybGoqeuVujCaojAThUnguFm0NTXBZZdZKVrO3N
+         2Jd4MLA5ww3Nc/YqLjSxjyWO/cme2BjvOfzGuETBnru7wjZe//SRtEqDCyJnArR7Ey
+         Bv+sbz1/kzNpwvfVtZFjVkBcHUy9O8LI9gVfjcIo=
 From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
 To:     Tim Harvey <tharvey@gateworks.com>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] TDA1997x: fix tda1997x_query_dv_timings() return value
+Subject: [PATCH] TDA1997x: report -ENOLINK after disconnecting HDMI source
 Sender: khalasa@piap.pl
-Date:   Mon, 26 Jul 2021 12:46:28 +0200
-Message-ID: <m31r7lcpyz.fsf@t19.piap.pl>
+Date:   Mon, 26 Jul 2021 12:49:30 +0200
+Message-ID: <m3wnpdbb9h.fsf@t19.piap.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -51,28 +51,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The TD1997x chip retains vper, hper and hsper register values when the
+HDMI source is disconnected. Use a different means of checking if the
+link is still valid.
+
 Signed-off-by: Krzysztof Ha=C5=82asa <khalasa@piap.pl>
 
 diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index 043cc8275d00..cbfe58e413e9 100644
+index 0b516a45a135..36a7b89afb08 100644
 --- a/drivers/media/i2c/tda1997x.c
 +++ b/drivers/media/i2c/tda1997x.c
-@@ -1695,14 +1695,15 @@ static int tda1997x_query_dv_timings(struct v4l2_su=
-bdev *sd,
- 				     struct v4l2_dv_timings *timings)
- {
- 	struct tda1997x_state *state =3D to_state(sd);
-+	int ret;
+@@ -1107,7 +1107,8 @@ tda1997x_detect_std(struct tda1997x_state *state,
+ 	hper =3D io_read16(sd, REG_H_PER) & MASK_HPER;
+ 	hsper =3D io_read16(sd, REG_HS_WIDTH) & MASK_HSWIDTH;
+ 	v4l2_dbg(1, debug, sd, "Signal Timings: %u/%u/%u\n", vper, hper, hsper);
+-	if (!vper || !hper || !hsper)
++
++	if (!state->input_detect[0] && !state->input_detect[1])
+ 		return -ENOLINK;
 =20
- 	v4l_dbg(1, debug, state->client, "%s\n", __func__);
- 	memset(timings, 0, sizeof(struct v4l2_dv_timings));
- 	mutex_lock(&state->lock);
--	tda1997x_detect_std(state, timings);
-+	ret =3D tda1997x_detect_std(state, timings);
- 	mutex_unlock(&state->lock);
-=20
--	return 0;
-+	return ret;
- }
-=20
- static const struct v4l2_subdev_video_ops tda1997x_video_ops =3D {
+ 	for (i =3D 0; v4l2_dv_timings_presets[i].bt.width; i++) {
