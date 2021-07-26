@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2624B3D5E8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 499B33D5D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237354AbhGZPK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:10:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47542 "EHLO mail.kernel.org"
+        id S235406AbhGZPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:00:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236163AbhGZPGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:06:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 576F060F59;
-        Mon, 26 Jul 2021 15:46:58 +0000 (UTC)
+        id S235305AbhGZPAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:00:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAB95604DC;
+        Mon, 26 Jul 2021 15:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314418;
-        bh=6Y9W5CE7mr7KW6UlyBi2buo11m/O+O5p28a1c+IyMfk=;
+        s=korg; t=1627314079;
+        bh=LBXD4Wz1qxz5k3KFOfls2JXbaV7WDf+oET1woDyQzbA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nwQRiqDMlaVhSblKbhCqqunFtgfVAje8QjT2wMrhKV7fuPYSltGDi7aDJ7TWEUry2
-         hzjYmD7qBnkWJ1pt6ujXskj+B7vUubuQwWTzeoRhpr2Mwsqe9xtZMPi0MlR0vpU3zl
-         01i8QyCJ25mkve2QduNSxkek3FKndHg7NW1e0EYo=
+        b=iF4WLmxgvwFAfawQ18k9taQfEgi47miF+J1RcxB7LHnwP69P5RZuKsI3uswXKsjfd
+         KHDEnV+aCII1nU/5C9MdbTesNlBB+YYUwxAi+ciM2qE4hUHChUzBrnPb4yiEJWmO9k
+         dAj+DbIJB+vYWAn1R/f27W3YpS2IUC6/z3blNiCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ben Segall <bsegall@google.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 22/82] sched/fair: Fix CFS bandwidth hrtimer expiry type
+Subject: [PATCH 4.4 04/47] ARM: imx: pm-imx5: Fix references to imx5_cpu_suspend_info
 Date:   Mon, 26 Jul 2021 17:38:22 +0200
-Message-Id: <20210726153828.884613765@linuxfoundation.org>
+Message-Id: <20210726153823.121249446@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Odin Ugedal <odin@uged.al>
+From: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-[ Upstream commit 72d0ad7cb5bad265adb2014dbe46c4ccb11afaba ]
+[ Upstream commit 89b759469d525f4d5f9c29cd3b1f490311c67f85 ]
 
-The time remaining until expiry of the refresh_timer can be negative.
-Casting the type to an unsigned 64-bit value will cause integer
-underflow, making the runtime_refresh_within return false instead of
-true. These situations are rare, but they do happen.
+The name of the struct, as defined in arch/arm/mach-imx/pm-imx5.c,
+is imx5_cpu_suspend_info.
 
-This does not cause user-facing issues or errors; other than
-possibly unthrottling cfs_rq's using runtime from the previous period(s),
-making the CFS bandwidth enforcement less strict in those (special)
-situations.
-
-Signed-off-by: Odin Ugedal <odin@uged.al>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Ben Segall <bsegall@google.com>
-Link: https://lore.kernel.org/r/20210629121452.18429-1-odin@uged.al
+Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 4 ++--
+ arch/arm/mach-imx/suspend-imx53.S | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 37ac76dce908..3ff60230710c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -4464,7 +4464,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
- static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
- {
- 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
--	u64 remaining;
-+	s64 remaining;
+diff --git a/arch/arm/mach-imx/suspend-imx53.S b/arch/arm/mach-imx/suspend-imx53.S
+index 5ed078ad110a..f12d24104075 100644
+--- a/arch/arm/mach-imx/suspend-imx53.S
++++ b/arch/arm/mach-imx/suspend-imx53.S
+@@ -33,11 +33,11 @@
+  *                              ^
+  *                              ^
+  *                      imx53_suspend code
+- *              PM_INFO structure(imx53_suspend_info)
++ *              PM_INFO structure(imx5_cpu_suspend_info)
+  * ======================== low address =======================
+  */
  
- 	/* if the call-back is running a quota refresh is already occurring */
- 	if (hrtimer_callback_running(refresh_timer))
-@@ -4472,7 +4472,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
- 
- 	/* is a quota refresh about to occur? */
- 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
--	if (remaining < min_expire)
-+	if (remaining < (s64)min_expire)
- 		return 1;
- 
- 	return 0;
+-/* Offsets of members of struct imx53_suspend_info */
++/* Offsets of members of struct imx5_cpu_suspend_info */
+ #define SUSPEND_INFO_MX53_M4IF_V_OFFSET		0x0
+ #define SUSPEND_INFO_MX53_IOMUXC_V_OFFSET	0x4
+ #define SUSPEND_INFO_MX53_IO_COUNT_OFFSET	0x8
 -- 
 2.30.2
 
