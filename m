@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7153D606B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F83E3D6315
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237295AbhGZPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:22:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
+        id S238687AbhGZPoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236896AbhGZPPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C62346056C;
-        Mon, 26 Jul 2021 15:54:44 +0000 (UTC)
+        id S238140AbhGZPY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:24:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D1860F6B;
+        Mon, 26 Jul 2021 16:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314885;
-        bh=+g91EDqtZGLLsoig7Mbbmnh2dGAiLGprv6mcMqVJhVw=;
+        s=korg; t=1627315525;
+        bh=euXaBl3Soy6w/GSZsgYYP0G1nCVgFl0J0F0NJ5sHROU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jzqttzc1KFlAmYBSAvsco5m6t75cbteuULEoG2tDgsUqrN4DNYrAx68ZEtIXy9yx+
-         Zb3mJskbjVhVBIyuCmNd7fUuYrpnLkLABmMCPx7cYxJPkDPiKKKNRSYY8o0qrKcP/j
-         obmYCAzO7bogdlQymW8E8KED3qOQEGxJm7WMlQkk=
+        b=EzOaS0ntmcLYZv0NfAWvgUrorai5pyCWnz9LkiXY0X+dsv2lRJTetqJooOYcGCpYz
+         kZYG1J/or3msmcFt3J9RHd7b6i+rHKtUwcD0nZir8//WOLYt3PVbFIOkgthU8VU8MH
+         h/DEcFtl4LHticD0FWwmfZVMmu+U1zRlpyQS1y+o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ovidiu Panait <ovidiu.panait@windriver.com>
-Subject: [PATCH 4.19 112/120] KVM: do not allow mapping valid but non-reference-counted pages
+        stable@vger.kernel.org,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Subject: [PATCH 5.10 131/167] usb: dwc2: gadget: Fix sending zero length packet in DDMA mode.
 Date:   Mon, 26 Jul 2021 17:39:24 +0200
-Message-Id: <20210726153836.067876550@linuxfoundation.org>
+Message-Id: <20210726153843.790637904@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 
-commit f8be156be163a052a067306417cd0ff679068c97 upstream.
+commit d53dc38857f6dbefabd9eecfcbf67b6eac9a1ef4 upstream.
 
-It's possible to create a region which maps valid but non-refcounted
-pages (e.g., tail pages of non-compound higher order allocations). These
-host pages can then be returned by gfn_to_page, gfn_to_pfn, etc., family
-of APIs, which take a reference to the page, which takes it from 0 to 1.
-When the reference is dropped, this will free the page incorrectly.
+Sending zero length packet in DDMA mode perform by DMA descriptor
+by setting SP (short packet) flag.
 
-Fix this by only taking a reference on valid pages if it was non-zero,
-which indicates it is participating in normal refcounting (and can be
-released with put_page).
+For DDMA in function dwc2_hsotg_complete_in() does not need to send
+zlp.
 
-This addresses CVE-2021-22543.
+Tested by USBCV MSC tests.
 
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Tested-by: Paolo Bonzini <pbonzini@redhat.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
+Fixes: f71b5e2533de ("usb: dwc2: gadget: fix zero length packet transfers")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Link: https://lore.kernel.org/r/967bad78c55dd2db1c19714eee3d0a17cf99d74a.1626777738.git.Minas.Harutyunyan@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- virt/kvm/kvm_main.c |   19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ drivers/usb/dwc2/gadget.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1489,6 +1489,13 @@ static bool vma_is_valid(struct vm_area_
- 	return true;
- }
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -2749,12 +2749,14 @@ static void dwc2_hsotg_complete_in(struc
+ 		return;
+ 	}
  
-+static int kvm_try_get_pfn(kvm_pfn_t pfn)
-+{
-+	if (kvm_is_reserved_pfn(pfn))
-+		return 1;
-+	return get_page_unless_zero(pfn_to_page(pfn));
-+}
-+
- static int hva_to_pfn_remapped(struct vm_area_struct *vma,
- 			       unsigned long addr, bool *async,
- 			       bool write_fault, bool *writable,
-@@ -1538,13 +1545,21 @@ static int hva_to_pfn_remapped(struct vm
- 	 * Whoever called remap_pfn_range is also going to call e.g.
- 	 * unmap_mapping_range before the underlying pages are freed,
- 	 * causing a call to our MMU notifier.
-+	 *
-+	 * Certain IO or PFNMAP mappings can be backed with valid
-+	 * struct pages, but be allocated without refcounting e.g.,
-+	 * tail pages of non-compound higher order allocations, which
-+	 * would then underflow the refcount when the caller does the
-+	 * required put_page. Don't allow those pages here.
- 	 */ 
--	kvm_get_pfn(pfn);
-+	if (!kvm_try_get_pfn(pfn))
-+		r = -EFAULT;
+-	/* Zlp for all endpoints, for ep0 only in DATA IN stage */
++	/* Zlp for all endpoints in non DDMA, for ep0 only in DATA IN stage */
+ 	if (hs_ep->send_zlp) {
+-		dwc2_hsotg_program_zlp(hsotg, hs_ep);
+ 		hs_ep->send_zlp = 0;
+-		/* transfer will be completed on next complete interrupt */
+-		return;
++		if (!using_desc_dma(hsotg)) {
++			dwc2_hsotg_program_zlp(hsotg, hs_ep);
++			/* transfer will be completed on next complete interrupt */
++			return;
++		}
+ 	}
  
- out:
- 	pte_unmap_unlock(ptep, ptl);
- 	*p_pfn = pfn;
--	return 0;
-+
-+	return r;
- }
- 
- /*
+ 	if (hs_ep->index == 0 && hsotg->ep0_state == DWC2_EP0_DATA_IN) {
 
 
