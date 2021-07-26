@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632B03D67CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A173D67D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232274AbhGZTWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhGZTWA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:22:00 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70451C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:02:27 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1m86ns-0001co-NK; Mon, 26 Jul 2021 22:02:20 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:bb61:39f9:30bb:99fb])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 8838E658759;
-        Mon, 26 Jul 2021 20:02:16 +0000 (UTC)
-Date:   Mon, 26 Jul 2021 22:02:15 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     wg@grandegger.com, davem@davemloft.net, socketcan@hartkopp.net,
-        mailhol.vincent@wanadoo.fr, b.krumboeck@gmail.com,
-        haas@ems-wuensche.com, Stefan.Maetje@esd.eu, matthias.fuchs@esd.eu,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] can: fix same memory leaks in can drivers
-Message-ID: <20210726200215.wnfwj27v2x2vyyup@pengutronix.de>
-References: <cover.1627311383.git.paskripkin@gmail.com>
- <20210726202916.5945e3d9@gmail.com>
+        id S232571AbhGZTX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230032AbhGZTX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 15:23:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA84E60F6E;
+        Mon, 26 Jul 2021 20:03:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627329836;
+        bh=Wz9/1UR+NNm1PWmlemY6+S+vta0TSAKrTaG4D9BMtVU=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=ItiA4mf5ZlUSB7NEffLS/Ciydpncc8l8pOdGbITmrzKgIJkUUPs7R7WnKNHCWStGr
+         UMVpaQdvW8JE+VQFNBHDaQsB8mcFjo+olM/SYE0Nw3dBEBTSoPiE/kuP+51PJDAHbc
+         9LyxycyrPeKTiTHLQZXVMrTpXqm2vuSnU74u++9SnVjKnGi1ovv/O4P1G3bNRLhGZN
+         xo9loHiTbvMdHtlivPsvwg5TqAsSJDlabH6OVICoR3gNqsT8O9DuLsOB+BvkpnwtBK
+         1uYAZioNvM3X2whk38QJIYZ8yKznb03/U39coBfHVAAtVt3g5neSe41arfYpzXCh+q
+         3xQ0VIy+aUH4g==
+Date:   Mon, 26 Jul 2021 13:03:55 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        rm.skakun@gmail.com
+Subject: Re: [GIT PULL] dma-mapping fix for Linux 5.14
+In-Reply-To: <957943ce-c50e-1560-6f1b-aea0a1c9a114@oracle.com>
+Message-ID: <alpine.DEB.2.21.2107261212500.10122@sstabellini-ThinkPad-T480s>
+References: <YPz+qQ6dbZVDbMwu@infradead.org> <CAHk-=wi2OMmUkZFdQ0=uYmGeC3sv3eYw-p1=d51pJS-XVKaM2A@mail.gmail.com> <957943ce-c50e-1560-6f1b-aea0a1c9a114@oracle.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="63zbmxht67o6x4ka"
-Content-Disposition: inline
-In-Reply-To: <20210726202916.5945e3d9@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 26 Jul 2021, Boris Ostrovsky wrote:
+> On 7/25/21 12:50 PM, Linus Torvalds wrote:
+> > On Sat, Jul 24, 2021 at 11:03 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> >>   - handle vmalloc addresses in dma_common_{mmap,get_sgtable}
+> >>     (Roman Skakun)
+> > I've pulled this, but my reaction is that we've tried to avoid this in
+> > the past. Why is Xen using vmalloc'ed addresses and passing those in
+> > to the dma mapping routines?
+> >
+> > It *smells* to me like a Xen-swiotlb bug, and it would have been
+> > better to try to fix it there. Was that just too painful?
+> 
+> 
+> Stefano will probably know better but this appears to have something to do with how Pi (and possibly more ARM systems?) manage DMA memory: https://lore.kernel.org/xen-devel/CADz_WD5Ln7Pe1WAFp73d2Mz9wxspzTE3WgAJusp5S8LX4=83Bw@mail.gmail.com/.
 
---63zbmxht67o6x4ka
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The original issue was found on the Raspberry Pi 4, and the fix was in
+swiotlb-xen.c, commit 8b1e868f6. More recently, Roman realized that
+dma_common_mmap might also end up calling virt_to_page on a vmalloc
+address. This is the fix for that.
 
-On 26.07.2021 20:29:16, Pavel Skripkin wrote:
-> On Mon, 26 Jul 2021 18:29:38 +0300
-> Pavel Skripkin <paskripkin@gmail.com> wrote:
->=20
-> > Hi, Marc and can drivers maintainers/reviewers!
-> >=20
->=20
-> I reread this I found out, that I missed logic here.
->=20
-> I mean:
->=20
-> > A long time ago syzbot reported memory leak in mcba_usb can
-> > driver[1]. It was using strange pattern for allocating coherent
-> > buffers, which was leading to memory leaks.
->=20
-> I fixed this wrong pattern in mcba_usb driver and
 
-Thanks for your patches! Please resend them with an updated description
-and the fixed patch 3.
+Why is Xen using vmalloc'ed addresses with dma routines at all?
 
-Marc
+Xen is actually just calling the regular dma_direct_alloc to allocate
+pages (xen_swiotlb_alloc_coherent -> xen_alloc_coherent_pages ->
+dma_direct_alloc). dma_direct_alloc is the generic implementation. Back
+when the original issue was found, dma_direct_alloc returned a vmalloc
+address on RPi4.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+The original analysis was "xen_alloc_coherent_pages() eventually calls
+arch_dma_alloc() in remap.c which successfully allocates pages from
+atomic pool." See https://marc.info/?l=xen-devel&m=158878173207775.
 
---63zbmxht67o6x4ka
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+I don't know on which platform Roman Skakun (CC'ed) found the problem.
+But if we look at arch/arm/mm/dma-mapping.c:__dma_alloc, one of the
+possible options is the "remap_allocator", which calls
+__alloc_remap_buffer, which calls dma_common_contiguous_remap, which
+calls vmap.
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD/FMQACgkQqclaivrt
-76nrjQf/TTofghGBF24758Ocv4jTf+JAbhnZVQumdEB0CIG1gpEQdvfcHN0DOc+v
-e3Ex/uwhAZur2owZghqVFvM8LAbHEJOfZCcXSXMYWW5AdxeH5D2ML+RYlIpL5MP6
-PcXETRwW5LBGMCp8zAVsn17HDRusciQ1llAY8yDzvaCaO5+7slIcKz8A+aOpItso
-zbLWgs1gtdkDUoJ3rIMhq+PLen2fQnDeSGVHa8TgdVs0eNR2TWCu0dOlyVPIk45V
-JST5J/gT6ME1AgjEO69bSoAx1DxDkYDdi6GC/BeomPk9nZS9+/VNOOlnxlQkZpaf
-A0tLby0E9O3bmB2zLYgZ9CYmk9t6Xw==
-=mdMZ
------END PGP SIGNATURE-----
-
---63zbmxht67o6x4ka--
+So unfortunately it seems that on certain arch/platforms
+dma_alloc_coherent can return a vmap'ed address. So I would imagine this
+issue could also happen on native (without Xen), at least in theory.
