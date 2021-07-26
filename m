@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945DE3D65A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE25F3D6522
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237364AbhGZQov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237716AbhGZQoj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:44:39 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43541C08EA4A;
-        Mon, 26 Jul 2021 10:06:04 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id x192so16044271ybe.0;
-        Mon, 26 Jul 2021 10:06:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=W0uBidQDo1k3KgJjTsK5eifJjd4NTwvKhaZagQk8Cns=;
-        b=JWK2eKIhXJQSRNxf6JVQTk+juUwxRErssXxBbIjcA8IKqvFQDM/Z3foZDXYxxkjMDy
-         qh877fyC5q0MuvfRHZBIt6SemYTskypSuDmivskSSDI2UmpLBndGHxEhVJvKztG2CGqQ
-         7fWNMHvq/N1MheaPtfnKHzFlQJBoQ4NPFgzN1Asa+N2T82Pce+r+6fSYP2vewaFwMsjD
-         h5/FuxIvabLjOfX1P7KVp7XuFiKvSpSYnVq096grABOPE1QPFCFTBN8Fv8fgon6GX41C
-         cXjmJ2jMd2vtWnaoLZKllyzuI/MeUlAWClkxvo55mkme9A/5GRAI221T0sKjCOeGU8Tq
-         /o0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W0uBidQDo1k3KgJjTsK5eifJjd4NTwvKhaZagQk8Cns=;
-        b=N8OefARsN/U5KGM6BK/s79RTZd/TMf45CrsX6rGI1jlyCWpNAJEqT+YBEADE4EmeiZ
-         WetarQdEBnQnhw6cl3yYNZ7OG12S2EKmgR2BN2Fm2pkp6MTzkUpr/ezTZvkr8o0bPRC9
-         wX+DTA8v1plO5qSAOvIBYZOC3t1warahml46Iv68ULRYttIx+FBKeM60ytsBrNyZi+OT
-         w15FauCoCKsuSy8MD2Y9xkjKMKTYw/HKWOZtFKKz4KssdUf0im5fhkjElN22UgzVBRHb
-         hHBdIWQeyFuc6dUKP6JN9WyNTiIJxZD5Vz8QY8qhXVLEyls69f01NGZ9/LTDP+dRm+3S
-         31Jg==
-X-Gm-Message-State: AOAM533vF00WC+6dZMU/L+N1paINWQ9j74/4f038JKbYFif4v+1AK2L+
-        00O7Mtq6s0CT9Q3iIETHMLEqtpAHMWO1kKEg+nk=
-X-Google-Smtp-Source: ABdhPJxrTFXd53TE3bMIC8WCAgmIrcouM/V6eoNsr9D3Wj0yPohsRZbPte/fnZR2oWciaCLOSGOVMY3/7AB1yLCI2sk=
-X-Received: by 2002:a25:250b:: with SMTP id l11mr4728034ybl.342.1627319163507;
- Mon, 26 Jul 2021 10:06:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210726153846.245305071@linuxfoundation.org> <99b34fe9-0f1f-c94f-58d5-cfb43de98d76@linaro.org>
-In-Reply-To: <99b34fe9-0f1f-c94f-58d5-cfb43de98d76@linaro.org>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Mon, 26 Jul 2021 18:05:27 +0100
-Message-ID: <CADVatmPpBKtaUtzU+APGvNE_1pqgcmXYovWOqrt8qJkRqLM25w@mail.gmail.com>
-Subject: Re: [PATCH 5.13 000/223] 5.13.6-rc1 review
-To:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stable <stable@vger.kernel.org>, Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S234727AbhGZQ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:28:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241418AbhGZQZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:25:21 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E1AE60F37;
+        Mon, 26 Jul 2021 17:05:50 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m8432-0018Fq-7c; Mon, 26 Jul 2021 18:05:48 +0100
+Date:   Mon, 26 Jul 2021 18:05:47 +0100
+Message-ID: <87h7ghdmz8.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH v1 4/7] irqchip/gic-v3: Switch to bitmap_zalloc()
+In-Reply-To: <20210618151657.65305-4-andriy.shevchenko@linux.intel.com>
+References: <20210618151657.65305-1-andriy.shevchenko@linux.intel.com>
+        <20210618151657.65305-4-andriy.shevchenko@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: andriy.shevchenko@linux.intel.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, tsahee@annapurnalabs.com, atenart@kernel.org, tglx@linutronix.de, andrew@lunn.ch, gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 5:47 PM Daniel D=C3=ADaz <daniel.diaz@linaro.org> w=
-rote:
->
-> Hello!
->
-> On 7/26/21 10:36 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.13.6 release.
-> > There are 223 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.13.6-rc1.gz
-> > or in the git tree and branch at:
-> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.13.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
->
-> Build regressions detected across plenty of architectures and configurati=
-ons:
+On Fri, 18 Jun 2021 16:16:54 +0100,
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-I was going to report the same but just noticed that Greg has pushed out -r=
-c2.
+> @@ -3376,8 +3376,7 @@ static struct its_device *its_create_device(struct its_node *its, u32 dev_id,
+>  	if (alloc_lpis) {
+>  		lpi_map = its_lpi_alloc(nvecs, &lpi_base, &nr_lpis);
+>  		if (lpi_map)
+> -			col_map = kcalloc(nr_lpis, sizeof(*col_map),
+> -					  GFP_KERNEL);
+> +			col_map = kcalloc(nr_lpis, sizeof(*col_map), GFP_KERNEL);
 
+This looks like an unrelated/spurious change. I've reverted it locally.
 
---=20
-Regards
-Sudip
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
