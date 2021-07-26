@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D027C3D62A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 293D03D62A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234452AbhGZPgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:36:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35084 "EHLO mail.kernel.org"
+        id S234077AbhGZPgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:36:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237120AbhGZPVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 776F260E09;
-        Mon, 26 Jul 2021 16:01:34 +0000 (UTC)
+        id S237119AbhGZPVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:21:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16D8060F38;
+        Mon, 26 Jul 2021 16:01:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315295;
-        bh=kANN+UO/GvHzlAxWd7HjBi8v0Xy8YuHGs6VCqfx/xJA=;
+        s=korg; t=1627315297;
+        bh=AhXDNqkMw3K285oXKu6YHtYGonA6D+q/TkooyMl8qVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xiH9CpMCK/LaU1q9td3gWJV6TXI5Rg2SWXkvDIDWr1RlNmQFDRMV4UqC6T3jvBL2D
-         ODSqyMWJjxZalBtH5Is/CslW13EFrIJG1B/d8J/ds4j8vqlbV6I6Rxi41hNVx7pX2H
-         UQdRI6/7H94t9CpRT2f4x1XlEtoQaZQOau8xhfSU=
+        b=edIzf2LSZD3fiN3QOE5qBjsI1WdyZ+tInUgevwRBT5dIglqNmNxYKFcCPvsvL54vr
+         9t5bDvJXyez1zffp5UvBdmpV3EceeIts8qwhmhUznipCt23/ecEkTRlyMgEichgIAd
+         //jNufNRUvdEmmRYG6KtUjZtlfnKddAYJzmnJxh0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
         Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 041/167] perf env: Fix memory leak of cpu_pmu_caps
-Date:   Mon, 26 Jul 2021 17:37:54 +0200
-Message-Id: <20210726153840.770461878@linuxfoundation.org>
+Subject: [PATCH 5.10 042/167] perf report: Free generated help strings for sort option
+Date:   Mon, 26 Jul 2021 17:37:55 +0200
+Message-Id: <20210726153840.808487257@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -47,43 +47,154 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit da6b7c6c0626901428245f65712385805e42eba6 ]
+[ Upstream commit a37338aad8c4d8676173ead14e881d2ec308155c ]
 
-ASan reports memory leaks while running:
+ASan reports the memory leak of the strings allocated by sort_help() when
+running perf report.
 
- # perf test "83: Zstd perf.data compression/decompression"
-
-The first of the leaks is caused by env->cpu_pmu_caps not being freed.
-
-This patch adds the missing (z)free inside perf_env__exit.
+This patch changes the returned pointer to char* (instead of const
+char*), saves it in a temporary variable, and finally deallocates it at
+function exit.
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: 6f91ea283a1ed23e ("perf header: Support CPU PMU capabilities")
+Fixes: 702fb9b415e7c99b ("perf report: Show all sort keys in help output")
+Cc: Andi Kleen <ak@linux.intel.com>
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/6ba036a8220156ec1f3d6be3e5d25920f6145028.1626343282.git.rickyman7@gmail.com
+Link: http://lore.kernel.org/lkml/a38b13f02812a8a6759200b9063c6191337f44d4.1626343282.git.rickyman7@gmail.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/env.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/builtin-report.c | 33 ++++++++++++++++++++++-----------
+ tools/perf/util/sort.c      |  2 +-
+ tools/perf/util/sort.h      |  2 +-
+ 3 files changed, 24 insertions(+), 13 deletions(-)
 
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 744e51c4a6bd..03bc843b1cf8 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -183,6 +183,7 @@ void perf_env__exit(struct perf_env *env)
- 	zfree(&env->sibling_threads);
- 	zfree(&env->pmu_mappings);
- 	zfree(&env->cpu);
-+	zfree(&env->cpu_pmu_caps);
- 	zfree(&env->numa_map);
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 3c74c9c0f3c3..5824aa24acfc 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -1143,6 +1143,8 @@ int cmd_report(int argc, const char **argv)
+ 		.socket_filter		 = -1,
+ 		.annotation_opts	 = annotation__default_options,
+ 	};
++	char *sort_order_help = sort_help("sort by key(s):");
++	char *field_order_help = sort_help("output field(s): overhead period sample ");
+ 	const struct option options[] = {
+ 	OPT_STRING('i', "input", &input_name, "file",
+ 		    "input file name"),
+@@ -1177,9 +1179,9 @@ int cmd_report(int argc, const char **argv)
+ 	OPT_BOOLEAN(0, "header-only", &report.header_only,
+ 		    "Show only data header."),
+ 	OPT_STRING('s', "sort", &sort_order, "key[,key2...]",
+-		   sort_help("sort by key(s):")),
++		   sort_order_help),
+ 	OPT_STRING('F', "fields", &field_order, "key[,keys...]",
+-		   sort_help("output field(s): overhead period sample ")),
++		   field_order_help),
+ 	OPT_BOOLEAN(0, "show-cpu-utilization", &symbol_conf.show_cpu_utilization,
+ 		    "Show sample percentage for different cpu modes"),
+ 	OPT_BOOLEAN_FLAG(0, "showcpuutilization", &symbol_conf.show_cpu_utilization,
+@@ -1308,11 +1310,11 @@ int cmd_report(int argc, const char **argv)
+ 	char sort_tmp[128];
  
- 	for (i = 0; i < env->nr_numa_nodes; i++)
+ 	if (ret < 0)
+-		return ret;
++		goto exit;
+ 
+ 	ret = perf_config(report__config, &report);
+ 	if (ret)
+-		return ret;
++		goto exit;
+ 
+ 	argc = parse_options(argc, argv, options, report_usage, 0);
+ 	if (argc) {
+@@ -1326,8 +1328,10 @@ int cmd_report(int argc, const char **argv)
+ 		report.symbol_filter_str = argv[0];
+ 	}
+ 
+-	if (annotate_check_args(&report.annotation_opts) < 0)
+-		return -EINVAL;
++	if (annotate_check_args(&report.annotation_opts) < 0) {
++		ret = -EINVAL;
++		goto exit;
++	}
+ 
+ 	if (report.mmaps_mode)
+ 		report.tasks_mode = true;
+@@ -1341,12 +1345,14 @@ int cmd_report(int argc, const char **argv)
+ 	if (symbol_conf.vmlinux_name &&
+ 	    access(symbol_conf.vmlinux_name, R_OK)) {
+ 		pr_err("Invalid file: %s\n", symbol_conf.vmlinux_name);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto exit;
+ 	}
+ 	if (symbol_conf.kallsyms_name &&
+ 	    access(symbol_conf.kallsyms_name, R_OK)) {
+ 		pr_err("Invalid file: %s\n", symbol_conf.kallsyms_name);
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto exit;
+ 	}
+ 
+ 	if (report.inverted_callchain)
+@@ -1370,12 +1376,14 @@ int cmd_report(int argc, const char **argv)
+ 
+ repeat:
+ 	session = perf_session__new(&data, false, &report.tool);
+-	if (IS_ERR(session))
+-		return PTR_ERR(session);
++	if (IS_ERR(session)) {
++		ret = PTR_ERR(session);
++		goto exit;
++	}
+ 
+ 	ret = evswitch__init(&report.evswitch, session->evlist, stderr);
+ 	if (ret)
+-		return ret;
++		goto exit;
+ 
+ 	if (zstd_init(&(session->zstd_data), 0) < 0)
+ 		pr_warning("Decompression initialization failed. Reported data may be incomplete.\n");
+@@ -1603,5 +1611,8 @@ error:
+ 
+ 	zstd_fini(&(session->zstd_data));
+ 	perf_session__delete(session);
++exit:
++	free(sort_order_help);
++	free(field_order_help);
+ 	return ret;
+ }
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index 8a3b7d5a4737..5e9e96452b9e 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -3177,7 +3177,7 @@ static void add_hpp_sort_string(struct strbuf *sb, struct hpp_dimension *s, int
+ 		add_key(sb, s[i].name, llen);
+ }
+ 
+-const char *sort_help(const char *prefix)
++char *sort_help(const char *prefix)
+ {
+ 	struct strbuf sb;
+ 	char *s;
+diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
+index 66d39c4cfe2b..fc94dcd67abc 100644
+--- a/tools/perf/util/sort.h
++++ b/tools/perf/util/sort.h
+@@ -293,7 +293,7 @@ void reset_output_field(void);
+ void sort__setup_elide(FILE *fp);
+ void perf_hpp__set_elide(int idx, bool elide);
+ 
+-const char *sort_help(const char *prefix);
++char *sort_help(const char *prefix);
+ 
+ int report_parse_ignore_callees_opt(const struct option *opt, const char *arg, int unset);
+ 
 -- 
 2.30.2
 
