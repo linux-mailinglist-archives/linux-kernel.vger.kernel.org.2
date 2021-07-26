@@ -2,153 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45CE3D647C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7205F3D647D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239960AbhGZP7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:59:02 -0400
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:31430 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239613AbhGZPxw (ORCPT
+        id S239991AbhGZP7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:59:05 -0400
+Received: from mail-lf1-f42.google.com ([209.85.167.42]:37747 "EHLO
+        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239272AbhGZPxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:53:52 -0400
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 503F176F79;
-        Mon, 26 Jul 2021 19:34:16 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1627317256;
-        bh=ryDfW+J/VW9hKhGCsjMSOFxd88HMnpxcIzleRIVZO2g=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=A75G3d7B5/Q0jvkijsglzttpRMdDr8BtyJECfmqyfPLy/hgg0Xqpr88v8ZBSXiOfx
-         8/fC1N6OSuVMCtxPhom9765YU3E++dW//w7nkt4tvHnUe45Or7YoEpRDqp6sS30Rs/
-         1oDnzc/yzVCFHnWgvyL65yRKTEmjWRK3Vu4lYZEnuCff2sgpy+0HJ4juKJWOv4ArkH
-         ziw8I9Z7LMZpgpOSKYW2wBEH4XFhva/DnJV39hbsFbuXOyB5Pu9NO/+fx0NSP9Irmn
-         sSSHSnrWcYB2LZ+7uMpoNsovdTRf8TvPRa1beAIJwv0C77DhDLt0EGPn/Sao7eweTN
-         pvrXch8o/JsTQ==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 1973676E7D;
-        Mon, 26 Jul 2021 19:34:16 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 26
- Jul 2021 19:34:15 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <oxffffaa@gmail.com>
-Subject: [RFC PATCH v1 5/7] af_vsock: rename variables in receive loop
-Date:   Mon, 26 Jul 2021 19:34:06 +0300
-Message-ID: <20210726163409.2589994-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
-References: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
+Received: by mail-lf1-f42.google.com with SMTP id h2so16598757lfu.4;
+        Mon, 26 Jul 2021 09:34:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LnHiHae/DOkmV8+shvtr034F1Gbgd/npIOdTggk1G2k=;
+        b=JMjmrwD3DJMmOsiEyhSpYKcs0UESc2w/APak4e/8biojxvv0Dabfp1HGslMAKVhkbM
+         j+61PB7GIck0rdaZGhNe2ll0tUJpgpghei3kPgQvyke6QIkCvbfSDZsj84p4MfvxwuuO
+         A702/pa2z34GNCv9UexWFJUe3utjxxbas7Kogv4nxvHAEplE1vucLiunBy57wuyngBWK
+         H6pzT1ccpZ0/QBttAJFY2O0kixX4pG0Jan6EY9GeZa0urHVnfOKT5vvdf2lqcHorDnUG
+         XGNv2H4rJ4KaEq96//dB0KdgL7m93siw7KKcX0MVK+k2osCrarnj5QJ2n4MLpM3FlteK
+         zEKA==
+X-Gm-Message-State: AOAM5331+0wDKbikHwEoo/z+7FOrAhkjyLXe0Ajnz/qhk40CxmQ4ouOJ
+        QSACNV0ANCS7CAvFMn2KjF0=
+X-Google-Smtp-Source: ABdhPJwWjYAKA6TRQMqAk7sVTaveeg6wZ4JAkWWWHSTmWBkloEWSw+e5VL/dJ8w6tqdhHhqVCYsWEw==
+X-Received: by 2002:a05:6512:211:: with SMTP id a17mr10105723lfo.485.1627317258417;
+        Mon, 26 Jul 2021 09:34:18 -0700 (PDT)
+Received: from [192.168.140.89] ([46.175.31.194])
+        by smtp.gmail.com with ESMTPSA id y28sm49265lfk.140.2021.07.26.09.34.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 09:34:17 -0700 (PDT)
+Subject: Re: [BUG] FLOPPY DRIVER since 5.10.20
+To:     markh@compro.net, dmarkh@cfl.rr.com, linux-block@vger.kernel.org,
+        Linux-kernel <linux-kernel@vger.kernel.org>,
+        Wim Osterholt <wim@djo.tudelft.nl>,
+        Jiri Kosina <jkosina@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <de10cb47-34d1-5a88-7751-225ca380f735@compro.net>
+ <e49603c2-ac36-12b0-57cf-ff5ab30115bc@linux.com>
+ <f5501a7c-4387-259d-66d2-f10db0cf36ff@cfl.rr.com>
+ <f1277dcb-6bf8-b149-ad4e-68a4109d4e67@linux.com>
+ <1cf8e751-db77-441e-53b4-d6e979bbe046@compro.net>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <751150dd-251f-bc68-0cd0-4a10b70ab79a@linux.com>
+Date:   Mon, 26 Jul 2021 19:34:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <1cf8e751-db77-441e-53b4-d6e979bbe046@compro.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 16:13:33
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165254 [Jul 26 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 07/26/2021 16:15:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 26.07.2021 14:57:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/07/26 14:52:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/26 14:01:00 #16958312
-X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Record is supported via MSG_EOR flag, while current logic operates
-with message, so rename variables from 'record' to 'message'.
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
----
- net/vmw_vsock/af_vsock.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index 3e02cc3b24f8..e2c0cfb334d2 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -2014,7 +2014,7 @@ static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
- {
- 	const struct vsock_transport *transport;
- 	struct vsock_sock *vsk;
--	ssize_t record_len;
-+	ssize_t msg_len;
- 	long timeout;
- 	int err = 0;
- 	DEFINE_WAIT(wait);
-@@ -2028,9 +2028,9 @@ static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
- 	if (err <= 0)
- 		goto out;
- 
--	record_len = transport->seqpacket_dequeue(vsk, msg, flags);
-+	msg_len = transport->seqpacket_dequeue(vsk, msg, flags);
- 
--	if (record_len < 0) {
-+	if (msg_len < 0) {
- 		err = -ENOMEM;
- 		goto out;
- 	}
-@@ -2044,14 +2044,14 @@ static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
- 		 * packet.
- 		 */
- 		if (flags & MSG_TRUNC)
--			err = record_len;
-+			err = msg_len;
- 		else
- 			err = len - msg_data_left(msg);
- 
- 		/* Always set MSG_TRUNC if real length of packet is
- 		 * bigger than user's buffer.
- 		 */
--		if (record_len > len)
-+		if (msg_len > len)
- 			msg->msg_flags |= MSG_TRUNC;
- 	}
- 
--- 
-2.25.1
+On 7/26/21 3:23 PM, Mark Hounschell wrote:
+> On 7/26/21 7:37 AM, Denis Efremov wrote:
+>>
+>>
+>> On 7/26/21 2:17 PM, Mark Hounschell wrote:
+>>> On 7/26/21 3:57 AM, Denis Efremov wrote:
+>>>> Hi,
+>>>>
+>>>> On 7/23/21 9:47 PM, Mark Hounschell wrote:
+>>>>>
+>>>>> These 2 incremental patches, patch-5.10.19-20 and patch-5.11.2-3 have broken the user land fd = open("/dev/fd0", (O_RDWR | O_NDELAY)); functionality.
+>>>>
+>>>> Thank you for the report, I'm looking into this.
+>>>>
+>>>>> Since FOREVER before the patch, when using O_NDELAY, one could open the floppy device with no media inserted or even with write protected media without error. "Read-only file system" status is returned only when we actually tried to write to it. We have software still in use today that relies on this functionality.
+>>>>
+>>>> If it's a project with open sources could you please give a link?
+>>>>
+>>>> Regards,
+>>>> Denis
+>>>>
+>>> This is immaterial but fdutils and libdsk both use rely on this flag. Who can know who else does. The point is it should NOT have been changed.
+>>
+>> Yes, I asked this only to add utils and this behavior to the tests.
+>> And be more specific about why we should preserve this behavior in
+>> next commit messages.
+>>
+> 
+> Well, first thing is now you can't open a floppy with a write protected floppy installed. I don't think that was intended but that is now how it is.
+> 
+> Next there are commands that can be sent to the floppy via "ioctl(fd, FDRAWCMD,  &raw_cmd);" that do NOT require a floppy diskette to be installed.
+> 
+> All commands issued to the device that require a floppy diskette without a diskette installed fail with the proper status letting you know the device is not ready / no diskette installed. That goes for write protected floppies too.
+> 
+> There is no reason to force a user to only be able to operate on Linux fdformat formatted floppies.
+> 
+
+It appears that the story behind the issue is long enough.
+I'll try to sum up the things:
+[1] 09954bad4487 floppy: refactor open() flags handling
+[2] ff06db1efb2a floppy: fix open(O_ACCMODE) for ioctl-only open
+[3] 468c298ad3ed Revert "floppy: fix open(O_ACCMODE) for ioctl-only open"
+[4] f2791e7eadf4 Revert "floppy: refactor open() flags handling"
+[5] 8a0c014cd205 floppy: reintroduce O_NDELAY fix
+
+In [1] we tried to fix O_NDELAY behavior because it's hard to define
+proper non-blocking behavior for floppies. We also added
+"!(mode & (FMODE_READ|FMODE_WRITE))" sanity check for open in that patch.
+Motivation for the changes was that it's easy to livelock the system with
+floppy's O_NDELAY and syzkaller spotted it. Just for the record, /dev/fd0
+is only accessible by the root user in recent distros. 
+
+Patch [1] broke ioctl-only opens in fdutils because:
+$ grep -nre open ./setfdprm.c 
+60:     if ((fd = open(argv[0],3)) < 0) { /* 3 == no access at all */
+Patch [2] reverted "!(mode & (FMODE_READ|FMODE_WRITE))" to fix ioctls.
+I guess [2] was not enough and Jens completely reverted [1] with [3] [4].
+
+The last [5] patch restores the open function to the [2] state (it's possible
+to use ioctl with open O_ACCMODE). [5] was added because libblkid use O_NONBLOCK
+for probing devices, and floppy driver prints many I/O errors to the kernel log.
+There are also problems with mounts after. I'm afraid simple revert for [5] is
+not enough, otherwise we will face libblkid issues once again.I'll try to test the things and find a more elegant solution.
+
+Denis
 
