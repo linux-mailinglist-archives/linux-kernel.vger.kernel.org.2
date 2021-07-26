@@ -2,68 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 742F03D5A12
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EB93D5A0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbhGZM2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:28:50 -0400
-Received: from smtpbg604.qq.com ([59.36.128.82]:39803 "EHLO smtpbg604.qq.com"
+        id S233206AbhGZM2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:28:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:51660 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233451AbhGZM2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:28:47 -0400
-X-QQ-mid: bizesmtp50t1627304912td4fiflc
-Received: from ficus.lan (unknown [171.223.99.141])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 26 Jul 2021 21:08:31 +0800 (CST)
-X-QQ-SSF: 0100000000200090B000B00A0000000
-X-QQ-FEAT: xmzaef4TE3cVRb65WjfMQVhCwJomBGy4tSSxu6xpzOizAslHiaolJZzC7pMIq
-        Sp/04xAaWOccIP+F4sWJFIhMcsgzqXebPiS9j0ZE+GBG4SHUZoOZ2FOih9Vx4+9TW79AeE0
-        YejL5fKsXCNbnvlKZJERr1BujW2M4Tf6ZN7Iu8STdiPohyE0Wl/iXdNXSre7Y6F82x5AKHE
-        gcGO9lTbxjrNoS1ccTZWwYBunDpwpfSRuktdsxQKCQRcUtPmgCi+fCb2LSnT4BcLqSF0sgw
-        beVv1C5gSXxVKUe1O7Tw4iQ2x04G+IA6j1pEOd0lfePSfkq1534qD+lFiljEQCJGmLCicWt
-        Ks5sms7bMaRn5vPz5SBeSbvagejvA==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     luto@kernel.org
-Cc:     dave.hansen@linux.intel.com, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] x86/mm: use WARN_ONCE
-Date:   Mon, 26 Jul 2021 21:08:29 +0800
-Message-Id: <20210726130829.93874-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S232572AbhGZM2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:28:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9D9811B3;
+        Mon, 26 Jul 2021 06:09:07 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 27C2E3F70D;
+        Mon, 26 Jul 2021 06:09:06 -0700 (PDT)
+Subject: Re: [PATCH 16/23] iommu/arm-smmu: Prepare for multiple DMA domain
+ types
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        john.garry@huawei.com, dianders@chromium.org
+References: <cover.1626888444.git.robin.murphy@arm.com>
+ <04220b3420c2c513490450f37de109182364f235.1626888445.git.robin.murphy@arm.com>
+ <YP6ukfewNVjgS/bt@8bytes.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a0689d30-2214-c92e-8387-8f1d3b22909b@arm.com>
+Date:   Mon, 26 Jul 2021 14:09:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam4
+In-Reply-To: <YP6ukfewNVjgS/bt@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-printk + WARN_ON_ONCE can be just WARN_ONCE.
+On 2021-07-26 13:46, Joerg Roedel wrote:
+> On Wed, Jul 21, 2021 at 07:20:27PM +0100, Robin Murphy wrote:
+>> -	if (type == IOMMU_DOMAIN_DMA && using_legacy_binding)
+>> +	if ((type & __IOMMU_DOMAIN_DMA_API) && using_legacy_binding)
+> 
+> Hmm, I wonder whether it is time to introduce helpers for these checks?
+> 
+> Something like iommu_domain_is_dma() is more readable.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/x86/mm/ioremap.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Ha, I had exactly that at one point, except I think in the order of 
+iommu_is_dma_domain() :)
 
-diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
-index 60ade7dd71bd..3e57035ef9e3 100644
---- a/arch/x86/mm/ioremap.c
-+++ b/arch/x86/mm/ioremap.c
-@@ -195,9 +195,8 @@ __ioremap_caller(resource_size_t phys_addr, unsigned long size,
- 		return NULL;
- 
- 	if (!phys_addr_valid(phys_addr)) {
--		printk(KERN_WARNING "ioremap: invalid physical address %llx\n",
--		       (unsigned long long)phys_addr);
--		WARN_ON_ONCE(1);
-+		WARN_ONCE(1, "ioremap: invalid physical address %llx\n",
-+			  (unsigned long long)phys_addr);
- 		return NULL;
- 	}
- 
--- 
-2.32.0
+The end result didn't seem to give enough extra clarity to justify the 
+header churn for me, but I'm happy to be wrong about that if you prefer.
 
+Cheers,
+Robin.
