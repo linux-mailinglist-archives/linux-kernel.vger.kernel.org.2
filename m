@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E783D6118
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3383D6102
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbhGZP22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
+        id S237814AbhGZP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:26:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237447AbhGZPPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 824B761055;
-        Mon, 26 Jul 2021 15:55:34 +0000 (UTC)
+        id S237463AbhGZPPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F3CF6105A;
+        Mon, 26 Jul 2021 15:55:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314935;
-        bh=+ZFnFNbTDxZttgrBK2QxYKJ6Q27AZetSXwT1gq8MNTw=;
+        s=korg; t=1627314938;
+        bh=MOm3AgzAI7/P5ODj9+sNPbd8LeN2zpGn/isStTBTWoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AM5TJxxI6saBhsSbLjUEEd5Yt1YcH0CnZVfQ1LyYqPg0a6yzcLf5/QvlLIMRno9Qq
-         sXPfNAUHPrCDJ7dNInXuIm3C1fuZiCSVvnfc1vrud93TOsNiLCadzi1ylVvekL1mPO
-         t9ivAzyxHubsigJDmrsn0gvKWPRTmaXkEO9kg+IY=
+        b=YPFViBG19sjAs+g4rYJZSkTnHx21zNjITdwPFfTgGs1JbqqIdqBdQknzaKORuBVFk
+         cbayobEbIsJU/tUZ7DQYBUwY6URd1a0WFINPGJCwMx18wMd3g97q0yP12FoY71D3jg
+         9cWNYN+Yp0pMno4yJOzRN/WOSgxAgki0TqIWP7Ho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Sasha Neftin <sasha.neftin@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 006/108] igc: Fix an error handling path in igc_probe()
-Date:   Mon, 26 Jul 2021 17:38:07 +0200
-Message-Id: <20210726153831.899462929@linuxfoundation.org>
+Subject: [PATCH 5.4 007/108] igb: Fix an error handling path in igb_probe()
+Date:   Mon, 26 Jul 2021 17:38:08 +0200
+Message-Id: <20210726153831.936011295@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 References: <20210726153831.696295003@linuxfoundation.org>
@@ -45,27 +44,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit c6bc9e5ce5d37cb3e6b552f41b92a193db1806ab ]
+[ Upstream commit fea03b1cebd653cd095f2e9a58cfe1c85661c363 ]
 
 If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
 must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
 call, as already done in the remove function.
 
-Fixes: c9a11c23ceb6 ("igc: Add netdev")
+Fixes: 40a914fa72ab ("igb: Add support for pci-e Advanced Error Reporting")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 1 +
+ drivers/net/ethernet/intel/igb/igb_main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index 606c1abafa7d..084cf4a4114a 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -4312,6 +4312,7 @@ err_sw_init:
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 09f2338084e7..bf8da4869c0f 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -3469,6 +3469,7 @@ err_sw_init:
  err_ioremap:
  	free_netdev(netdev);
  err_alloc_etherdev:
