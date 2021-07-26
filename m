@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AF33D5DE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4863D5ED4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235924AbhGZPEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:04:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43208 "EHLO mail.kernel.org"
+        id S236580AbhGZPLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:11:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235833AbhGZPDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:03:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B32D60F38;
-        Mon, 26 Jul 2021 15:44:02 +0000 (UTC)
+        id S236210AbhGZPHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:07:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 986B060F6F;
+        Mon, 26 Jul 2021 15:47:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314243;
-        bh=C7tZVp2J6EKyYKLvd+BPYTtLLJ+W2ga+MUprg1apgpI=;
+        s=korg; t=1627314453;
+        bh=hrzEr+2+EibsbRMcXGRF7SGni11POzswZuIbNQumFfI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZNTXRGE5ORaOpFnXbj/lJeX2Z02Zim2wHTQX6zEAqTvjrEFoz7X9gC/Z94xRHbVAt
-         a/zrCR+kJVtB4uJkPBR3o9DYULdICazT9ODwguyA7q+OFLeY/PzdHxX5I4+Y7Ty/1q
-         4MZbZ+Ym+NNKQ78sh7e7x+5qbIN/ycbdybuOtZ9A=
+        b=TceyVOyNv8S7e0CzDk0gWgCczWvmAHuo9QqIBGalf78otPX/Mi8pg6xbCygT2Q+Ty
+         D0AVQRyMDtf6CPu9pOC1tUWWbtwPeoymDczJUjetCrKLZPt8QsAhYM34Nhes2IuHWp
+         svK2iZuZ3O8n27M9uS8cWv0rZIml52mSw0E/LTJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ziyang Xuan <william.xuanziyang@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 36/60] net: fix uninit-value in caif_seqpkt_sendmsg
-Date:   Mon, 26 Jul 2021 17:38:50 +0200
-Message-Id: <20210726153826.004093666@linuxfoundation.org>
+Subject: [PATCH 4.14 51/82] net: fix uninit-value in caif_seqpkt_sendmsg
+Date:   Mon, 26 Jul 2021 17:38:51 +0200
+Message-Id: <20210726153829.838639420@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -78,7 +78,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/net/caif/caif_socket.c b/net/caif/caif_socket.c
-index 92cbbd2afddb..9367f260afeb 100644
+index df936d2f58bd..c44ade1b1833 100644
 --- a/net/caif/caif_socket.c
 +++ b/net/caif/caif_socket.c
 @@ -539,7 +539,8 @@ static int caif_seqpkt_sendmsg(struct socket *sock, struct msghdr *msg,
