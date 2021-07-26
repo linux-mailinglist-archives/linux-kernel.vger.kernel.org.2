@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2671E3D64A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86ED43D64C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239899AbhGZQAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239785AbhGZP6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:58:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80EAE60EB2;
-        Mon, 26 Jul 2021 16:38:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627317517;
-        bh=T5gtnG56UyEdqLhML5SDWuzR5PbDuAxCfdJhsOmPVLM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QYyePFs2iFNe9oEF6vt+NZWww3yixpMeY2poxxc25XMmRSjbC3Y7NHdESTrCiUQe3
-         BJwAUeiF/Im+GvXihQfOWCFTzIXGJbNAxzQVm8RO3zPl18ZzQFKzCNLrFCICkXbg1h
-         +5CG7EIJIyuiccyHxek8+1gZi0H1pJqZeOh0wdsOIn96EnEFpNPNh+aycoezwHT20X
-         iGCBKJT6J+kVzdza6hhGDA5j7SjJ+mb2/knM93sPhcwIVwhhXMrLkNEPhm3J5qn7a+
-         u1D1V/0ZJrd5BQ81AZHIANdKFBbnUcKa5HqjyyDgwrRWU4pnFXq9cWgzxvMUMF8Ivm
-         DsVOrXIh+fi4w==
-From:   Mark Brown <broonie@kernel.org>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        John Stultz <john.stultz@linaro.org>
-Subject: linux-next: manual merge of the drm tree with the qcom/for-next tree
-Date:   Mon, 26 Jul 2021 17:38:14 +0100
-Message-Id: <20210726163814.6483-1-broonie@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S239520AbhGZQBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:01:07 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:57324 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239919AbhGZP66 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:58:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1627317566; x=1658853566;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=88VXrV0v8tlO1oZ2PaNtmPhAb3w578s7ohtI0w7+fs8=;
+  b=J7kNuFpz9lj4onrUmYjzQrOqNVS771YNQ/qodnzaOZjazgZxjZrThI0c
+   A3YLXfNPA+Rq95kaD4xG+e83Mq9IbY1bKdmvoWcv122NsrnUPglruQZP6
+   0v/mtnPxC8OINdjmgMiYHrqSXIBSEL07HIFAsNB4ceb9BtJ/P2EO4Z/Si
+   8=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 26 Jul 2021 09:39:26 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Jul 2021 09:39:26 -0700
+Received: from [10.111.169.79] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Mon, 26 Jul
+ 2021 09:39:25 -0700
+Subject: Re: [PATCH v5] arm pl011 serial: support multi-irq request
+To:     Bing Fan <hptsfb@gmail.com>, <gregkh@linuxfoundation.org>,
+        Bing Fan <tombinfan@tencent.com>
+CC:     <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <1625103512-30182-1-git-send-email-hptsfb@gmail.com>
+ <60f007b3-bb01-dd0a-b1a2-a6da62a486e5@quicinc.com>
+ <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
+From:   Qian Cai <quic_qiancai@quicinc.com>
+Message-ID: <a1843494-5c8e-1ec8-5b98-df318db40922@quicinc.com>
+Date:   Mon, 26 Jul 2021 12:39:24 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03c.na.qualcomm.com (10.85.0.106) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
 
-Today's linux-next merge of the drm tree got a conflict in:
 
-  drivers/firmware/Makefile
+On 7/26/2021 3:17 AM, Bing Fan wrote:
+> Hello,
+> 
+> I tried to reproduce, but unfortunately, it didn't, and the dmesg log as
+> attachment.
+> 
+> I had enabled CONFIG_KASAN and CONFIG_SLUB_DEBUG_ON configs.
+> 
+> Can you describe the flow of your operation?
+> 
+Nothing fancy. Just boot a baremetal ARM server on linux-next could trigger it.
+The .config is here.
 
-between commit:
-
-  b42000e4b874 ("firmware: qcom_scm: Allow qcom_scm driver to be loadable as a permenent module")
-
-from the qcom/for-next tree and commits:
-
-  8633ef82f101 ("drivers/firmware: consolidate EFI framebuffer setup for all arches")
-  d391c5827107 ("drivers/firmware: move x86 Generic System Framebuffers support")
-
-from the drm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-index 3c2af2e98def..5ced0673d94b 100644
---- a/drivers/firmware/Makefile
-+++ b/drivers/firmware/Makefile
-@@ -19,6 +19,8 @@ obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
- obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
- obj-$(CONFIG_QCOM_SCM)		+= qcom-scm.o
- qcom-scm-objs += qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-+obj-$(CONFIG_SYSFB)		+= sysfb.o
-+obj-$(CONFIG_SYSFB_SIMPLEFB)	+= sysfb_simplefb.o
- obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
- obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
- obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
+https://www.lsbug.org/tmp/arm64.conf
