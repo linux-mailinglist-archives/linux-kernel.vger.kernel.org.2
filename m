@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9485D3D5EE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173603D5D6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236720AbhGZPOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:14:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46984 "EHLO mail.kernel.org"
+        id S235529AbhGZPBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235741AbhGZPHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:07:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FC7860F5B;
-        Mon, 26 Jul 2021 15:47:35 +0000 (UTC)
+        id S235507AbhGZPBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:01:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7102660F22;
+        Mon, 26 Jul 2021 15:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314456;
-        bh=8W3MQEXv5ja46UKhd9Owgo9FOe8CvUjdBtShLR7GG/U=;
+        s=korg; t=1627314105;
+        bh=isF4QB8C5bHRW9154NwUZ+beRoilDf5jzQhWxpbDkbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C2aZK8oEqrGsEKBD6zzaeHTZ6cPgpdV+KoYOZZPvflrsaMtWEFr2NOppFid+4BM0q
-         dx/iMpy8o0bpmUgJqv7nJerx1pC0uMZ/cIhwJDwxoQBhopvIKq6VWcnz0K2HEv/J3I
-         F6nO/JMopepc2gvPUNW+stRyzBIudeibXMcTSdhY=
+        b=z5XHNlY+2F9btWTSfPWgQKkukzsW1HhdCWuF1OPcwKdznql6GeROmucANpzALEw1C
+         B1C/M6OA01uomk72m0bHvi6vjmburfl2r5Rlo/Rvb/U9tBpQrMGT76evkHdvWw+yYb
+         MCrh9pke5uUwCwNLG7vyDT3sKOQzsU0SL8btuYr4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 52/82] net: decnet: Fix sleeping inside in af_decnet
-Date:   Mon, 26 Jul 2021 17:38:52 +0200
-Message-Id: <20210726153829.871541052@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.4 35/47] usb: hub: Disable USB 3 device initiated lpm if exit latency is too high
+Date:   Mon, 26 Jul 2021 17:38:53 +0200
+Message-Id: <20210726153824.088485130@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,126 +39,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yajun Deng <yajun.deng@linux.dev>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 5f119ba1d5771bbf46d57cff7417dcd84d3084ba ]
+commit 1b7f56fbc7a1b66967b6114d1b5f5a257c3abae6 upstream.
 
-The release_sock() is blocking function, it would change the state
-after sleeping. use wait_woken() instead.
+The device initiated link power management U1/U2 states should not be
+enabled in case the system exit latency plus one bus interval (125us) is
+greater than the shortest service interval of any periodic endpoint.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This is the case for both U1 and U2 sytstem exit latencies and link states.
+
+See USB 3.2 section 9.4.9 "Set Feature" for more details
+
+Note, before this patch the host and device initiated U1/U2 lpm states
+were both enabled with lpm. After this patch it's possible to end up with
+only host inititated U1/U2 lpm in case the exit latencies won't allow
+device initiated lpm.
+
+If this case we still want to set the udev->usb3_lpm_ux_enabled flag so
+that sysfs users can see the link may go to U1/U2.
+
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210715150122.1995966-2-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/decnet/af_decnet.c | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ drivers/usb/core/hub.c |   68 ++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 56 insertions(+), 12 deletions(-)
 
-diff --git a/net/decnet/af_decnet.c b/net/decnet/af_decnet.c
-index 8dbfcd388633..9c7b8ff4556a 100644
---- a/net/decnet/af_decnet.c
-+++ b/net/decnet/af_decnet.c
-@@ -824,7 +824,7 @@ static int dn_auto_bind(struct socket *sock)
- static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
- {
- 	struct dn_scp *scp = DN_SK(sk);
--	DEFINE_WAIT(wait);
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int err;
- 
- 	if (scp->state != DN_CR)
-@@ -834,11 +834,11 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
- 	scp->segsize_loc = dst_metric_advmss(__sk_dst_get(sk));
- 	dn_send_conn_conf(sk, allocation);
- 
--	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
-+	add_wait_queue(sk_sleep(sk), &wait);
- 	for(;;) {
- 		release_sock(sk);
- 		if (scp->state == DN_CC)
--			*timeo = schedule_timeout(*timeo);
-+			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
- 		lock_sock(sk);
- 		err = 0;
- 		if (scp->state == DN_RUN)
-@@ -852,9 +852,8 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
- 		err = -EAGAIN;
- 		if (!*timeo)
- 			break;
--		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
- 	}
--	finish_wait(sk_sleep(sk), &wait);
-+	remove_wait_queue(sk_sleep(sk), &wait);
- 	if (err == 0) {
- 		sk->sk_socket->state = SS_CONNECTED;
- 	} else if (scp->state != DN_CC) {
-@@ -866,7 +865,7 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
- static int dn_wait_run(struct sock *sk, long *timeo)
- {
- 	struct dn_scp *scp = DN_SK(sk);
--	DEFINE_WAIT(wait);
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int err = 0;
- 
- 	if (scp->state == DN_RUN)
-@@ -875,11 +874,11 @@ static int dn_wait_run(struct sock *sk, long *timeo)
- 	if (!*timeo)
- 		return -EALREADY;
- 
--	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
-+	add_wait_queue(sk_sleep(sk), &wait);
- 	for(;;) {
- 		release_sock(sk);
- 		if (scp->state == DN_CI || scp->state == DN_CC)
--			*timeo = schedule_timeout(*timeo);
-+			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
- 		lock_sock(sk);
- 		err = 0;
- 		if (scp->state == DN_RUN)
-@@ -893,9 +892,8 @@ static int dn_wait_run(struct sock *sk, long *timeo)
- 		err = -ETIMEDOUT;
- 		if (!*timeo)
- 			break;
--		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
- 	}
--	finish_wait(sk_sleep(sk), &wait);
-+	remove_wait_queue(sk_sleep(sk), &wait);
- out:
- 	if (err == 0) {
- 		sk->sk_socket->state = SS_CONNECTED;
-@@ -1040,16 +1038,16 @@ static void dn_user_copy(struct sk_buff *skb, struct optdata_dn *opt)
- 
- static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
- {
--	DEFINE_WAIT(wait);
-+	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	struct sk_buff *skb = NULL;
- 	int err = 0;
- 
--	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
-+	add_wait_queue(sk_sleep(sk), &wait);
- 	for(;;) {
- 		release_sock(sk);
- 		skb = skb_dequeue(&sk->sk_receive_queue);
- 		if (skb == NULL) {
--			*timeo = schedule_timeout(*timeo);
-+			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
- 			skb = skb_dequeue(&sk->sk_receive_queue);
- 		}
- 		lock_sock(sk);
-@@ -1064,9 +1062,8 @@ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
- 		err = -EAGAIN;
- 		if (!*timeo)
- 			break;
--		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
- 	}
--	finish_wait(sk_sleep(sk), &wait);
-+	remove_wait_queue(sk_sleep(sk), &wait);
- 
- 	return skb == NULL ? ERR_PTR(err) : skb;
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -3837,6 +3837,47 @@ static int usb_set_lpm_timeout(struct us
  }
--- 
-2.30.2
-
+ 
+ /*
++ * Don't allow device intiated U1/U2 if the system exit latency + one bus
++ * interval is greater than the minimum service interval of any active
++ * periodic endpoint. See USB 3.2 section 9.4.9
++ */
++static bool usb_device_may_initiate_lpm(struct usb_device *udev,
++					enum usb3_link_state state)
++{
++	unsigned int sel;		/* us */
++	int i, j;
++
++	if (state == USB3_LPM_U1)
++		sel = DIV_ROUND_UP(udev->u1_params.sel, 1000);
++	else if (state == USB3_LPM_U2)
++		sel = DIV_ROUND_UP(udev->u2_params.sel, 1000);
++	else
++		return false;
++
++	for (i = 0; i < udev->actconfig->desc.bNumInterfaces; i++) {
++		struct usb_interface *intf;
++		struct usb_endpoint_descriptor *desc;
++		unsigned int interval;
++
++		intf = udev->actconfig->interface[i];
++		if (!intf)
++			continue;
++
++		for (j = 0; j < intf->cur_altsetting->desc.bNumEndpoints; j++) {
++			desc = &intf->cur_altsetting->endpoint[j].desc;
++
++			if (usb_endpoint_xfer_int(desc) ||
++			    usb_endpoint_xfer_isoc(desc)) {
++				interval = (1 << (desc->bInterval - 1)) * 125;
++				if (sel + 125 > interval)
++					return false;
++			}
++		}
++	}
++	return true;
++}
++
++/*
+  * Enable the hub-initiated U1/U2 idle timeouts, and enable device-initiated
+  * U1/U2 entry.
+  *
+@@ -3908,20 +3949,23 @@ static void usb_enable_link_state(struct
+ 	 * U1/U2_ENABLE
+ 	 */
+ 	if (udev->actconfig &&
+-	    usb_set_device_initiated_lpm(udev, state, true) == 0) {
+-		if (state == USB3_LPM_U1)
+-			udev->usb3_lpm_u1_enabled = 1;
+-		else if (state == USB3_LPM_U2)
+-			udev->usb3_lpm_u2_enabled = 1;
+-	} else {
+-		/* Don't request U1/U2 entry if the device
+-		 * cannot transition to U1/U2.
+-		 */
+-		usb_set_lpm_timeout(udev, state, 0);
+-		hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
++	    usb_device_may_initiate_lpm(udev, state)) {
++		if (usb_set_device_initiated_lpm(udev, state, true)) {
++			/*
++			 * Request to enable device initiated U1/U2 failed,
++			 * better to turn off lpm in this case.
++			 */
++			usb_set_lpm_timeout(udev, state, 0);
++			hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
++			return;
++		}
+ 	}
+-}
+ 
++	if (state == USB3_LPM_U1)
++		udev->usb3_lpm_u1_enabled = 1;
++	else if (state == USB3_LPM_U2)
++		udev->usb3_lpm_u2_enabled = 1;
++}
+ /*
+  * Disable the hub-initiated U1/U2 idle timeouts, and disable device-initiated
+  * U1/U2 entry.
 
 
