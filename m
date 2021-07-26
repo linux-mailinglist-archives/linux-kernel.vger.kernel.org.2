@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC673D6087
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D80B3D6036
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236315AbhGZPW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:22:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52972 "EHLO mail.kernel.org"
+        id S237138AbhGZPVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:21:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237436AbhGZPPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A26E56104F;
-        Mon, 26 Jul 2021 15:55:25 +0000 (UTC)
+        id S235945AbhGZPLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:11:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58F6560F38;
+        Mon, 26 Jul 2021 15:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314926;
-        bh=qomkJXXkb15tBCd3qCUIScd324EyJQo2c8wzHMUPzQo=;
+        s=korg; t=1627314722;
+        bh=QM9doDRXuRwyVHQ7uAsh1g3M7KaYkH4X3HI02WYK5NQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nlkR90xN2+a961cSpz9XXoLhWAJ3SXu8Bs0VwlzEtcuB6wOtXHDumr8v1RF5yW2a6
-         CU5f8PzxZWDq4tRvN03fwRm0I7xq/3NhraVgfXw7UuOw0VLyxNH4ahZOs+Jrrs7yK1
-         1s2zXqdedWc+BrFTwARIBBComnOUbBMbMRgZyvBo=
+        b=SpMU4FRBl1zeQ91d1JDjBVTl7ZU4m6+HsSoBgbd4o29XH2z/ynOzY+7wcutRaKGM6
+         Ag+kTxIsSU0BNjHZPdIY9Ro/4UZP/TA2tSnkx0HXqfupWuhnT8g3dRn1s+gk5Mu790
+         EtmB6Tprac7naRSPfMuOKoz++Hg7LqThzidRle2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 003/108] igc: change default return of igc_read_phy_reg()
+Subject: [PATCH 4.19 032/120] scsi: libfc: Fix array index out of bound exception
 Date:   Mon, 26 Jul 2021 17:38:04 +0200
-Message-Id: <20210726153831.806755020@linuxfoundation.org>
+Message-Id: <20210726153833.419101100@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit 05682a0a61b6cbecd97a0f37f743b2cbfd516977 ]
+[ Upstream commit b27c4577557045f1ab3cdfeabfc7f3cd24aca1fe ]
 
-Static analysis reports this problem
+Fix array index out of bound exception in fc_rport_prli_resp().
 
-igc_main.c:4944:20: warning: The left operand of '&'
-  is a garbage value
-    if (!(phy_data & SR_1000T_REMOTE_RX_STATUS) &&
-          ~~~~~~~~ ^
-
-phy_data is set by the call to igc_read_phy_reg() only if
-there is a read_reg() op, else it is unset and a 0 is
-returned.  Change the return to -EOPNOTSUPP.
-
-Fixes: 208983f099d9 ("igc: Add watchdog")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Link: https://lore.kernel.org/r/20210615165939.24327-1-jhasan@marvell.com
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/libfc/fc_rport.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index 7e16345d836e..aec998c82b69 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -504,7 +504,7 @@ static inline s32 igc_read_phy_reg(struct igc_hw *hw, u32 offset, u16 *data)
- 	if (hw->phy.ops.read_reg)
- 		return hw->phy.ops.read_reg(hw, offset, data);
- 
--	return 0;
-+	return -EOPNOTSUPP;
- }
- 
- /* forward declaration */
+diff --git a/drivers/scsi/libfc/fc_rport.c b/drivers/scsi/libfc/fc_rport.c
+index 2b3239765c24..afe79d4415e8 100644
+--- a/drivers/scsi/libfc/fc_rport.c
++++ b/drivers/scsi/libfc/fc_rport.c
+@@ -1169,6 +1169,7 @@ static void fc_rport_prli_resp(struct fc_seq *sp, struct fc_frame *fp,
+ 		resp_code = (pp->spp.spp_flags & FC_SPP_RESP_MASK);
+ 		FC_RPORT_DBG(rdata, "PRLI spp_flags = 0x%x spp_type 0x%x\n",
+ 			     pp->spp.spp_flags, pp->spp.spp_type);
++
+ 		rdata->spp_type = pp->spp.spp_type;
+ 		if (resp_code != FC_SPP_RESP_ACK) {
+ 			if (resp_code == FC_SPP_RESP_CONF)
+@@ -1189,11 +1190,13 @@ static void fc_rport_prli_resp(struct fc_seq *sp, struct fc_frame *fp,
+ 		/*
+ 		 * Call prli provider if we should act as a target
+ 		 */
+-		prov = fc_passive_prov[rdata->spp_type];
+-		if (prov) {
+-			memset(&temp_spp, 0, sizeof(temp_spp));
+-			prov->prli(rdata, pp->prli.prli_spp_len,
+-				   &pp->spp, &temp_spp);
++		if (rdata->spp_type < FC_FC4_PROV_SIZE) {
++			prov = fc_passive_prov[rdata->spp_type];
++			if (prov) {
++				memset(&temp_spp, 0, sizeof(temp_spp));
++				prov->prli(rdata, pp->prli.prli_spp_len,
++					   &pp->spp, &temp_spp);
++			}
+ 		}
+ 		/*
+ 		 * Check if the image pair could be established
 -- 
 2.30.2
 
