@@ -2,31 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6E73D640F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1333D6411
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239751AbhGZPyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49816 "EHLO mail.kernel.org"
+        id S239786AbhGZPyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233817AbhGZPdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:33:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75E9C60C41;
-        Mon, 26 Jul 2021 16:13:31 +0000 (UTC)
+        id S232524AbhGZPdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:33:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5BA860240;
+        Mon, 26 Jul 2021 16:13:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316012;
-        bh=PotnVkL00huzlpfb7Bttwp0Mm9WjWG5f4iNsJZpXGoM=;
+        s=korg; t=1627316014;
+        bh=L/CAnG7f3XEnt95H3+76U4BERVOkxSaQKBqDXEoJLes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cna3C5NnOoRC2UtpxEUFXZ0PzXiQMLhnH7piJPt71MlDSHq0GqY7iEQy3dkTHJsnL
-         O6NdoA3SS++orewMwW91o6fnLxgb8CarbGUlAdifyWVAoKX727hNM9g4j+JPu/wopp
-         jrvcVoWsqPkRuH4xADvsDKefOorc7dWyDh6ZLK2k=
+        b=1FeYk1ZRL6Fx1hPzbAyIqQGPq4A7oJUr76OZEzDPQ7ylMaECS6UFxFfD/3bhJGN1e
+         f/keEsmBttGJ4KkwHNyneQXJdcAIEDZ/Tdh/fZ1Tkz6XNPSXdGchxs2Qj46p9Na8TV
+         614uEgnFHknGaUPb+uN1qsyFpNudcZPTH/GrBvog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 154/223] ALSA: pcm: Fix mmap capability check
-Date:   Mon, 26 Jul 2021 17:39:06 +0200
-Message-Id: <20210726153851.261625287@linuxfoundation.org>
+        stable@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 5.13 155/223] Revert "usb: renesas-xhci: Fix handling of unknown ROM state"
+Date:   Mon, 26 Jul 2021 17:39:07 +0200
+Message-Id: <20210726153851.295171967@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -38,46 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Moritz Fischer <mdf@kernel.org>
 
-commit c4824ae7db418aee6f50f308a20b832e58e997fd upstream.
+commit 44cf53602f5a0db80d53c8fff6cdbcae59650a42 upstream.
 
-The hw_support_mmap() doesn't cover all memory allocation types and
-might use a wrong device pointer for checking the capability.
-Check the all memory allocation types more completely.
+This reverts commit d143825baf15f204dac60acdf95e428182aa3374.
 
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210720092640.12338-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Justin reports some of his systems now fail as result of this commit:
+
+ xhci_hcd 0000:04:00.0: Direct firmware load for renesas_usb_fw.mem failed with error -2
+ xhci_hcd 0000:04:00.0: request_firmware failed: -2
+ xhci_hcd: probe of 0000:04:00.0 failed with error -2
+
+The revert brings back the original issue the commit tried to solve but
+at least unbreaks existing systems relying on previous behavior.
+
+Cc: stable@vger.kernel.org
+Cc: Mathias Nyman <mathias.nyman@intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Justin Forbes <jmforbes@linuxtx.org>
+Reported-by: Justin Forbes <jmforbes@linuxtx.org>
+Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Fixes: d143825baf15 ("usb: renesas-xhci: Fix handling of unknown ROM state")
+Link: https://lore.kernel.org/r/20210719070519.41114-1-mdf@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/core/pcm_native.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/usb/host/xhci-pci-renesas.c |   16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -246,12 +246,18 @@ static bool hw_support_mmap(struct snd_p
- 	if (!(substream->runtime->hw.info & SNDRV_PCM_INFO_MMAP))
- 		return false;
+--- a/drivers/usb/host/xhci-pci-renesas.c
++++ b/drivers/usb/host/xhci-pci-renesas.c
+@@ -207,8 +207,7 @@ static int renesas_check_rom_state(struc
+ 			return 0;
  
--	if (substream->ops->mmap ||
--	    (substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV &&
--	     substream->dma_buffer.dev.type != SNDRV_DMA_TYPE_DEV_UC))
-+	if (substream->ops->mmap)
- 		return true;
+ 		case RENESAS_ROM_STATUS_NO_RESULT: /* No result yet */
+-			dev_dbg(&pdev->dev, "Unknown ROM status ...\n");
+-			break;
++			return 0;
  
--	return dma_can_mmap(substream->dma_buffer.dev.dev);
-+	switch (substream->dma_buffer.dev.type) {
-+	case SNDRV_DMA_TYPE_UNKNOWN:
-+		return false;
-+	case SNDRV_DMA_TYPE_CONTINUOUS:
-+	case SNDRV_DMA_TYPE_VMALLOC:
-+		return true;
-+	default:
-+		return dma_can_mmap(substream->dma_buffer.dev.dev);
+ 		case RENESAS_ROM_STATUS_ERROR: /* Error State */
+ 		default: /* All other states are marked as "Reserved states" */
+@@ -225,12 +224,13 @@ static int renesas_fw_check_running(stru
+ 	u8 fw_state;
+ 	int err;
+ 
+-	/*
+-	 * Only if device has ROM and loaded FW we can skip loading and
+-	 * return success. Otherwise (even unknown state), attempt to load FW.
+-	 */
+-	if (renesas_check_rom(pdev) && !renesas_check_rom_state(pdev))
+-		return 0;
++	/* Check if device has ROM and loaded, if so skip everything */
++	err = renesas_check_rom(pdev);
++	if (err) { /* we have rom */
++		err = renesas_check_rom_state(pdev);
++		if (!err)
++			return err;
 +	}
- }
  
- static int constrain_mask_params(struct snd_pcm_substream *substream,
+ 	/*
+ 	 * Test if the device is actually needing the firmware. As most
 
 
