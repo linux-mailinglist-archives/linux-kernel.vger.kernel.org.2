@@ -2,275 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369693D69F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0E83D69F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbhGZW1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 18:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233952AbhGZW1I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 18:27:08 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1001C061764;
-        Mon, 26 Jul 2021 16:07:35 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id k1so13423981plt.12;
-        Mon, 26 Jul 2021 16:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=AwUvxXZHVPsyjIzRGNqW1mOJYEUo+Lp4e2HNQ223/bA=;
-        b=A19W7RcVR2+BXMVRobALqb2deqUdwsNvTKi98r3pJE+//k1t+Z3Kf0kqW5A7CUFyzp
-         rV2gNqM0nUXkvrXILnHN8Z+vZCg9uYVgZIEUMeHhPS0LpxpfXhY3a1zb6xdX5kVh3w02
-         2aLf+AAzVXKwbAt5WaJvuXzzdU+P0vhhgJsLRZEF2pYPLdgHDkWMp1wqIk4AjKuqQpAo
-         jKQedlS88RLoqAj6W2qlpCDBcE134Qgt9nIb32584nn06liSFz55Zaq/5K3uIMl6W7QJ
-         UC9s3HxHfKSc+K/xDguB0N8iSBdNTZL9uQlF86M1/FuAHdFgk9FvO+wKLhxZx5I1tX1A
-         iJGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AwUvxXZHVPsyjIzRGNqW1mOJYEUo+Lp4e2HNQ223/bA=;
-        b=GeTneduuxUu/sym0EgRI9zV3eo93tmoTjdTVtLtzYultzJhInMK7FNn72GRpI3Kg3L
-         mBrYU8fJdsW/MC0ZVQNYp/LMVvt0jVnzonBvFrSHt+YariCaYCcL2gA1f4k67U4YpQdv
-         9HHft0QT6QbuFjQtMujvAaLKQswCSol6UAdwMOkZAMV5BGpWuiPSwtakD8zqsmhfY0l+
-         k6svSnUVG3hy8poqHgLPwmvJQm1zMiuBrv86pd8kAHLhTKkzVYCKfDvRllwIv26Quw9r
-         kBJBq6g/lakMtinolSDb2q3gB3ncIcGSFTm2iTl4uFsGHxlkOuE9APvJY++aHXt/8Oob
-         5kQw==
-X-Gm-Message-State: AOAM530gvM2+IUj6gK1etJmVtPskoSwXSsCcjv3o0vG9gG6smb9yAWGj
-        jjQlCZpSbqax8DJkl4hM3iw=
-X-Google-Smtp-Source: ABdhPJwoZxPJExUlpSho1Z/Kk7xcNz6HMwYGoiNrQuLkw2CGJrUSAY8aA/TCEpL1riTV5EczLXq38w==
-X-Received: by 2002:a17:90a:4417:: with SMTP id s23mr1255250pjg.228.1627340855282;
-        Mon, 26 Jul 2021 16:07:35 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id r13sm913715pgi.78.2021.07.26.16.07.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 16:07:34 -0700 (PDT)
-Subject: Re: [PATCH] btrfs: fix rw device counting in
- __btrfs_free_extra_devids
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, anand.jain@oracle.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+a70e2ad0879f160b9217@syzkaller.appspotmail.com
-References: <20210715103403.176695-1-desmondcheongzx@gmail.com>
- <20210721175938.GP19710@twin.jikos.cz>
- <9119934f-fb61-3b55-655c-9a7552e0b30b@gmail.com>
- <20210726175230.GH5047@twin.jikos.cz>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <39398f63-9220-c5ab-04a9-6e5186e1c0da@gmail.com>
-Date:   Tue, 27 Jul 2021 07:07:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233735AbhGZW2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 18:28:47 -0400
+Received: from mail-bn8nam11on2063.outbound.protection.outlook.com ([40.107.236.63]:8416
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233693AbhGZW2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 18:28:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AzJy412bcFOvVVcQfzBW/kytc9+HBoJgtWkL8NFZxNxPA8brMYCztIeZsIp/l0JyIgacoSYNKLJUxmN8Z7g5EUnDLfPH8wKmFdXs2mTsvmDRJXoDYUGntJ6HhXfRXdU/vlj3R5ftyf+4/yJjaQVxzRs/+lKqkktuoEWyMLBSU95jACBEtWmqM+8/ehf3LyONNPGTO9FJzgl0MGWitMjitzw+vaEE/af6FBqhO0jehMrSmWZPpvmGameW2V3WKf4/4WuC9jYYfgIISUN7Z8yrzttqMeuvaTpMoys1FhmsuwXDc7/Vw7q1zgsccGWQPV+RT7RRVHE2ZkoYSFZB6Lj+VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LEhpT5bttducPbwnf+WUCLYAEoPpXXsPHKraBkoD5Ic=;
+ b=SzBjGUtOHJtdBaqtK6FoO4oFyLvYxSqfpx/L4guF4DgI3a8UiLBNvL1u/EyC1Gsh5sgW/lGMIWWM2kSmgnz78Dvu7i3xLxo+Q4yABf+lxyrG9mv72cz80EbCKPD3dE98gMh9GqS+lbjMqACFU2GUTJ+aiPgMUT7WTCcB3hYNDzSOIlLh/Ki+qef3L3ZioxpfR1/CBVLy3KWG6x0PYL/Yry8dBIfaXIk9gvBJjeeoYj+6d6tNOlMLASlJEwRap72Ctkz/lgr/g3ssAsqxpSf2JRKMtM089PEFUUq1VzGF2MFPy8pkEhrCAXXaKMjgrZm69MTh46ki5I/nBFVmkaRs8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LEhpT5bttducPbwnf+WUCLYAEoPpXXsPHKraBkoD5Ic=;
+ b=Bn7Z1dHY4cxvPErGoZS6Y5Z6dXDcQPkwWBjKQnI1bWL3sn34b3Q9e6J49kr5FEC8cUGV1s4GW4twnLT5Wk473r/ZzuX8kF9aCEOHBRhrcxnioJbhqrT2vmth4sZVt5Y45Y+F5yCf8Eiawmx7U1UgIhKQx73choDdkzJv1rdANZDiKJXJHO6ay9aPVChK4mIJpFNlPo99NS3M7gZCEDsT51o4TBTnyo/o5xW5/TBMWT0n7tkU1k9AwQS1/q5WsKMXSzJHYTqR603c5JT5zsBp88PDTTgjB3hwc64oLpH8PoJB5Vs7H3TsirGr5JMZ15m10hwm4h/8YS2RqxJl6xNh3g==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5349.namprd12.prod.outlook.com (2603:10b6:208:31f::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Mon, 26 Jul
+ 2021 23:09:07 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%4]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
+ 23:09:07 +0000
+Date:   Mon, 26 Jul 2021 20:09:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] vfio/mdev: don't warn if ->request is not set
+Message-ID: <20210726230906.GD1721383@nvidia.com>
+References: <20210726143524.155779-1-hch@lst.de>
+ <20210726143524.155779-3-hch@lst.de>
+ <87zgu93sxz.fsf@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zgu93sxz.fsf@redhat.com>
+X-ClientProxiedBy: BL1PR13CA0279.namprd13.prod.outlook.com
+ (2603:10b6:208:2bc::14) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <20210726175230.GH5047@twin.jikos.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0279.namprd13.prod.outlook.com (2603:10b6:208:2bc::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.9 via Frontend Transport; Mon, 26 Jul 2021 23:09:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m89ic-008qf9-BN; Mon, 26 Jul 2021 20:09:06 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2b63a366-8e41-418b-fcee-08d9508a5e9c
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5349:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5349368ED1A3BFA44A6C5BD1C2E89@BL1PR12MB5349.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JjEdP1exn2QjnKBel2D4ADbGTyJcI/IC5lFOjBfrJ/4Ga434RttC9y1JefsNA2MtKKhBIh3DqHxedojWQ1tXlJH/axcHzuYuGtK3aeup6x63H9lP7AJsNVk2/i82d2tDSBbUDq63wOCKyopP1lNgUUxf/Gz21/d4QFVCIUYuOvvDVlJxzwYhL/CElPMsihO4Y3UB0a1/r7QJKBTw8XwLyj7ZWtdQNjq6Ll218mfbNPExzwM1VUlCdqFv5jXutB1/PJKdD+HG3hPkSFaV9YNXVjeSZWm62Un7IMx+fHUkDxugQhuq4KRho+hHm7JosJrA4A4ITTZ7nf0FXflq0ySFSQw/radZKvGhTSl6P+XUh5Fa85QaMrEB82jrvcYzOnc27TXF+E3hUeD+4vrv7EVeyzRXgJhPu7B3MHBncvy/fPXxDf+6hwKkYFFYglWLOA6ZfoUWoKvpZjSBYjGRI5CzRb2JVc3Hc/T6zhUdokMvfzq63RcFMwhQan6WrlBbHdH3DAj3f+xxu+aAYh4U408KmkPzBqUoMdN6lMGDFdherBCUCVKcD5aAQopu4BlNvQW3XuibUB3FdDhXZlH8GaTR1JwwhM5SbFKwFo1MTBXDhfz1Z/HpFJW+YB6YwRZxtq54GgQfMpFyOlIEJPCuYEaagA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(366004)(136003)(36756003)(86362001)(186003)(8676002)(33656002)(4326008)(38100700002)(8936002)(26005)(5660300002)(478600001)(2906002)(9746002)(66556008)(66476007)(66946007)(9786002)(6916009)(4744005)(2616005)(426003)(54906003)(1076003)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?k4NGluKdc36yVLyODa/yF/cpf4tk3gI3LS04mle3OWQtNAFgxat42osyXZa+?=
+ =?us-ascii?Q?SQ4GgxlompxxSFKqVNOLufriYlTJ/G4zdFnrweR7hw8aamrVkyTawkREyH++?=
+ =?us-ascii?Q?elKSajOvrL47inwKLj9NBKWu/kraGOQazXbvdJnJnNFy/6dn1PliXAprq2It?=
+ =?us-ascii?Q?CnVMpDXCKomlzKsRTgkmLZYQ4CQzi1n8Q+ageyo1cpopYtoUdG1KOLJRBBYn?=
+ =?us-ascii?Q?cUB7Yc/s7AKGxypAxrq9OkfbhO94SQXtXYLheXBU6etAAvyyQxQsmhmukTOJ?=
+ =?us-ascii?Q?jdLI82fHCZC4Td4KbgT+q+UALJyWc/O0fa+tQrnw0s0EkGdLQYTx0ON6akXb?=
+ =?us-ascii?Q?3ZmgzBe6yYwJDGeqpOh/TCrTVd+qB39CstrEZEq03XwLb/e9RAgxuW0+RlzP?=
+ =?us-ascii?Q?Qj8aN75ZO02Sep2IPcAOutu6PDLYRFPO9s8rVxvy7EjT8LWQfNanBMwDqXLU?=
+ =?us-ascii?Q?/6I6znrjtYZgrq7jqcu50R4D8bfj/nQ1qK6KMMsEyHNiLgFBPbEnRiLRFAjg?=
+ =?us-ascii?Q?KeS8TSPOXDOwyjM4vkx/oaYUL5JKymX2JUbgXciXkHTaSoYCK74I/kG/VzPa?=
+ =?us-ascii?Q?pu7R/OAln40rHN9Bf1f8Zgx1xz3dxezzcYPpx92WMH9cvIKdtv32gX9RnKuW?=
+ =?us-ascii?Q?ofZcKzr5WwGAiiVJi8gUKmh2OOxy6GpHbDTJgkFnd4c/NwyrAw8i2MxdTZBY?=
+ =?us-ascii?Q?tBys/h2u/9Lz+f8xu6Vnz/Z3ZTZvZV6JodhPmpphk0zhiE/0/Cfwm+lkG9Yv?=
+ =?us-ascii?Q?wFceERarNTE9oJKAUzlfMp54az2juWajQ8PWn38bJ3LeSrVyVcT+WV8tqYav?=
+ =?us-ascii?Q?kIiauUmeIt6UMOgdpzwCDF9Avohcv+fJQlgEiVskPQbDwL2LbbmxNpLsWcug?=
+ =?us-ascii?Q?MiG5+vbKP4iSip4IEwUibUeckyVmjVaMNlvtQSO9d4o/cv0f0TpjLw3tQHQ1?=
+ =?us-ascii?Q?gQwCCi3ywOevOLXJI6KwBkQ2dD6j23QwL9MkCIKHZPPbTXYkB+hB86PJjmpH?=
+ =?us-ascii?Q?UowvT/wqQZgkMJ+Z0fdDCErGrKEnj+PiYPSBkarmFxGGfLyP2zFMPb7Pn5fg?=
+ =?us-ascii?Q?0uzgfzLGtogE7GZdqqHc/mqjCQ2OP1XJZKgrqG1sNS+AKVeR/F24bgpr2l1b?=
+ =?us-ascii?Q?vdQmSWz3Xim/0gtNdI8GNalTyArbiTW7GUk66PjZ9OGifhdHDb0OsvwSnOsw?=
+ =?us-ascii?Q?zHryk0Tanxtzz46SSgPfI6YmgEenc1qLz/gvAApTrNCxfUViOTkFS4g8XWht?=
+ =?us-ascii?Q?iWDRz6v9XiOMc6lHpbtHjTUWDqEi2NYffLTCszsYIW+D6tdfg49OxVnaIAI6?=
+ =?us-ascii?Q?eqOC0q+ciLOuek5v/gmxq1NO?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b63a366-8e41-418b-fcee-08d9508a5e9c
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2021 23:09:07.3985
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TRfF10E3+/VjNb9QL8aDU8gpxfkaWUnResPg5gJRPHLeMYZW8p7kf5q1WHfv+vS2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5349
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/7/21 1:52 am, David Sterba wrote:
-> On Sun, Jul 25, 2021 at 02:19:52PM +0800, Desmond Cheong Zhi Xi wrote:
->> On 22/7/21 1:59 am, David Sterba wrote:
->>> On Thu, Jul 15, 2021 at 06:34:03PM +0800, Desmond Cheong Zhi Xi wrote:
->>>> Syzbot reports a warning in close_fs_devices that happens because
->>>> fs_devices->rw_devices is not 0 after calling btrfs_close_one_device
->>>> on each device.
->>>>
->>>> This happens when a writeable device is removed in
->>>> __btrfs_free_extra_devids, but the rw device count is not decremented
->>>> accordingly. So when close_fs_devices is called, the removed device is
->>>> still counted and we get an off by 1 error.
->>>>
->>>> Here is one call trace that was observed:
->>>>     btrfs_mount_root():
->>>>       btrfs_scan_one_device():
->>>>         device_list_add();   <---------------- device added
->>>>       btrfs_open_devices():
->>>>         open_fs_devices():
->>>>           btrfs_open_one_device();   <-------- rw device count ++
->>>>       btrfs_fill_super():
->>>>         open_ctree():
->>>>           btrfs_free_extra_devids():
->>>> 	  __btrfs_free_extra_devids();  <--- device removed
->>>> 	  fail_tree_roots:
->>>> 	    btrfs_close_devices():
->>>> 	      close_fs_devices();   <------- rw device count off by 1
->>>>
->>>> Fixes: cf89af146b7e ("btrfs: dev-replace: fail mount if we don't have replace item with target device")
->>>
->>> What this patch did in the last hunk was the rw_devices decrement, but
->>> conditional:
->>>
->>> @@ -1080,9 +1071,6 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
->>>                   if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
->>>                           list_del_init(&device->dev_alloc_list);
->>>                           clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
->>> -                       if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
->>> -                                     &device->dev_state))
->>> -                               fs_devices->rw_devices--;
->>>                   }
->>>                   list_del_init(&device->dev_list);
->>>                   fs_devices->num_devices--;
->>> ---
->>>
->>>
->>>> @@ -1078,6 +1078,7 @@ static void __btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices,
->>>>    		if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
->>>>    			list_del_init(&device->dev_alloc_list);
->>>>    			clear_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
->>>> +			fs_devices->rw_devices--;
->>>>    		}
->>>>    		list_del_init(&device->dev_list);
->>>>    		fs_devices->num_devices--;
->>>
->>> So should it be reinstated in the original form? The rest of
->>> cf89af146b7e handles unexpected device replace item during mount.
->>>
->>> Adding the decrement is correct, but right now I'm not sure about the
->>> corner case when teh devcie has the BTRFS_DEV_STATE_REPLACE_TGT bit set.
->>> The state machine of the device bits and counters is not trivial so
->>> fixing it one way or the other could lead to further syzbot reports if
->>> we don't understand the issue.
->>>
->>
->> Hi David,
->>
->> Thanks for raising this issue. I took a closer look and I think we don't
->> have to reinstate the original form because it's a historical artifact.
->>
->> The short version of the story is that going by the intention of
->> __btrfs_free_extra_devids, we skip removing the replace target device.
->> Hence, by the time we've reached the decrement in question, the device
->> is not the replace target device and the BTRFS_DEV_STATE_REPLACE_TGT bit
->> should not be set.
->>
->> But we should also try to understand the original intention of the code.
->> The check in question was first introduced in commit 8dabb7420f01
->> ("Btrfs: change core code of btrfs to support the device replace
->> operations"):
->>> @@ -536,7 +553,8 @@ void btrfs_close_extra_devices(struct btrfs_fs_devices *fs_devices)
->>>                  if (device->writeable) {
->>>                          list_del_init(&device->dev_alloc_list);
->>>                          device->writeable = 0;
->>> -                       fs_devices->rw_devices--;
->>> +                       if (!device->is_tgtdev_for_dev_replace)
->>> +                               fs_devices->rw_devices--;
->>>                  }
->>>                  list_del_init(&device->dev_list);
->>>                  fs_devices->num_devices--;
->>
->> If we take a trip back in time to this commit we see that
->> btrfs_dev_replace_finishing added the target device to the alloc list
->> without incrementing the rw_devices count. So this check was likely
->> originally meant to prevent under-counting of rw_devices.
->>
->> However, the situation has changed, following various fixes to
->> rw_devices counting. Commit 63dd86fa79db ("btrfs: fix rw_devices miss
->> match after seed replace") added an increment to rw_devices when
->> replacing a seed device with a writable one in btrfs_dev_replace_finishing:
->>> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
->>> index eea26e1b2fda..fb0a7fa2f70c 100644
->>> --- a/fs/btrfs/dev-replace.c
->>> +++ b/fs/btrfs/dev-replace.c
->>> @@ -562,6 +562,8 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
->>>          if (fs_info->fs_devices->latest_bdev == src_device->bdev)
->>>                  fs_info->fs_devices->latest_bdev = tgt_device->bdev;
->>>          list_add(&tgt_device->dev_alloc_list, &fs_info->fs_devices->alloc_list);
->>> +       if (src_device->fs_devices->seeding)
->>> +               fs_info->fs_devices->rw_devices++;
->>>   
->>>          /* replace the sysfs entry */
->>>          btrfs_kobj_rm_device(fs_info, src_device);
->>
->> This was later simplified in commit 82372bc816d7 ("Btrfs: make the logic
->> of source device removing more clear") that simply decremented
->> rw_devices in btrfs_rm_dev_replace_srcdev if the replaced device was
->> writable. This meant that the rw_devices count could be incremented in
->> btrfs_dev_replace_finishing without any checks:
->>> diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
->>> index e9cbbdb72978..6f662b34ba0e 100644
->>> --- a/fs/btrfs/dev-replace.c
->>> +++ b/fs/btrfs/dev-replace.c
->>> @@ -569,8 +569,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
->>>          if (fs_info->fs_devices->latest_bdev == src_device->bdev)
->>>                  fs_info->fs_devices->latest_bdev = tgt_device->bdev;
->>>          list_add(&tgt_device->dev_alloc_list, &fs_info->fs_devices->alloc_list);
->>> -       if (src_device->fs_devices->seeding)
->>> -               fs_info->fs_devices->rw_devices++;
->>> +       fs_info->fs_devices->rw_devices++;
->>>   
->>>          /* replace the sysfs entry */
->>>          btrfs_kobj_rm_device(fs_info, src_device);
->>
->> Thus, given the current state of the code base, the original check is
->> now incorrect, because we want to decrement rw_devices as long as the
->> device is being removed from the alloc list.
->>
->> To further convince ourselves of this, we can take a closer look at the
->> relation between the device with devid BTRFS_DEV_REPLACE_DEVID and the
->> BTRFS_DEV_STATE_REPLACE_TGT bit for devices.
->>
->> BTRFS_DEV_STATE_REPLACE_TGT is set in two places:
->> - btrfs_init_dev_replace_tgtdev
->> - btrfs_init_dev_replace
->>
->> In btrfs_init_dev_replace_tgtdev, the BTRFS_DEV_STATE_REPLACE_TGT bit is
->> set for a device allocated with devid BTRFS_DEV_REPLACE_DEVID.
->>
->> In btrfs_init_dev_replace, the BTRFS_DEV_STATE_REPLACE_TGT bit is set
->> for the target device found with devid BTRFS_DEV_REPLACE_DEVID.
->>
->>   From both cases, we see that the BTRFS_DEV_STATE_REPLACE_TGT bit is set
->> only for the device with devid BTRFS_DEV_REPLACE_DEVID.
->>
->> It follows that if a device does not have devid BTRFS_DEV_REPLACE_DEVID,
->> then the BTRFS_DEV_STATE_REPLACE_TGT bit will not be set.
->>
->> With commit cf89af146b7e ("btrfs: dev-replace: fail mount if we don't
->> have replace item with target device"), we skip removing the device in
->> __btrfs_free_extra_devids as long as the devid is BTRFS_DEV_REPLACE_DEVID:
->>> -               if (device->devid == BTRFS_DEV_REPLACE_DEVID) {
->>> -                       /*
->>> -                        * In the first step, keep the device which has
->>> -                        * the correct fsid and the devid that is used
->>> -                        * for the dev_replace procedure.
->>> -                        * In the second step, the dev_replace state is
->>> -                        * read from the device tree and it is known
->>> -                        * whether the procedure is really active or
->>> -                        * not, which means whether this device is
->>> -                        * used or whether it should be removed.
->>> -                        */
->>> -                       if (step == 0 || test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
->>> -                                                 &device->dev_state)) {
->>> -                               continue;
->>> -                       }
->>> -               }
->>> +               /*
->>> +                * We have already validated the presence of BTRFS_DEV_REPLACE_DEVID,
->>> +                * in btrfs_init_dev_replace() so just continue.
->>> +                */
->>> +               if (device->devid == BTRFS_DEV_REPLACE_DEVID)
->>> +                       continue;
->>
->> Given the discussion above, after we fail the check for device->devid ==
->> BTRFS_DEV_REPLACE_DEVID, all devices from that point are not the replace
->> target device, and do not have the BTRFS_DEV_STATE_REPLACE_TGT bit set.
->>
->> So the original check for the BTRFS_DEV_STATE_REPLACE_TGT bit before
->> incrementing rw_devices is not just incorrect at this point, it's also
->> redundant.
-> 
-> Could you please write some condensed version of the above and resend?
-> The original changelog says what happends and how, the analysis here
-> is the actual explanation and I'd like to have that recorded. Thanks.
-> 
+On Mon, Jul 26, 2021 at 07:07:04PM +0200, Cornelia Huck wrote:
 
-Sure thing, I'll prepare a v2 with an updated commit message. Thanks for 
-the feedback, David.
+> But I wonder why nobody else implements this? Lack of surprise removal?
+
+The only implementation triggers an eventfd that seems to be the same
+eventfd as the interrupt..
+
+Do you know how this works in userspace? I'm surprised that the
+interrupt eventfd can trigger an observation that the kernel driver
+wants to be unplugged?
+
+Jason 
