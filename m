@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27C13D60D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4EB13D6312
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238288AbhGZPZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:25:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54392 "EHLO mail.kernel.org"
+        id S238637AbhGZPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236871AbhGZPPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A14261001;
-        Mon, 26 Jul 2021 15:54:09 +0000 (UTC)
+        id S238156AbhGZPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69D6D60EB2;
+        Mon, 26 Jul 2021 16:05:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314850;
-        bh=dENVCS3Y3KQhQSG+QKV4p2dyPQEV4LoEQltka3j1BbU=;
+        s=korg; t=1627315532;
+        bh=2XGxQspg0L4/+CvXHLTA4Lk8z0slxNMXInR5dr0DLHA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=by78+G86CCnNU+Zqp+WD5aI9E7FRH1I4C7vIEFp7FpKwI+R+wEU6g/swMoOEzfe8c
-         8wCTcq1s1gIh7pZtMsHyF7aVhnAy2i7SIhn4cwPjEddbFQnJz8PnSvjeLEH5p/JqOq
-         xOsbtH7xaIT3h2LEvEUz82LT71y0i8HodRXJbFHo=
+        b=DQKwVpHCt8JZD83NpoLNDTGjYbinoNsmORgRWNMNzWP0xK2re5Xin9jEdsTmklMr+
+         gf5t7kWgJ0RtFmiAeVw6469huRdKyKvT2qoqhmErbPH5cx3MQ8fe1kq2VvqTVzWvka
+         l15dclHH90FksQ1yWfTa/ZhmwjQOMKSG/5FX8LpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>,
-        Oleksandr Kravchenko <o.v.kravchenko@globallogic.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 115/120] iio: accel: bma180: Use explicit member assignment
+        stable@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.10 134/167] tracepoints: Update static_call before tp_funcs when adding a tracepoint
 Date:   Mon, 26 Jul 2021 17:39:27 +0200
-Message-Id: <20210726153836.168422592@linuxfoundation.org>
+Message-Id: <20210726153843.889466819@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,102 +39,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 9436abc40139503a7cea22a96437697d048f31c0 upstream
+commit 352384d5c84ebe40fa77098cc234fe173247d8ef upstream.
 
-This uses the C99 explicit .member assignment for the
-variant data in struct bma180_part_info. This makes it
-easier to understand and add new variants.
+Because of the significant overhead that retpolines pose on indirect
+calls, the tracepoint code was updated to use the new "static_calls" that
+can modify the running code to directly call a function instead of using
+an indirect caller, and this function can be changed at runtime.
 
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
-Cc: Oleksandr Kravchenko <o.v.kravchenko@globallogic.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+In the tracepoint code that calls all the registered callbacks that are
+attached to a tracepoint, the following is done:
+
+	it_func_ptr = rcu_dereference_raw((&__tracepoint_##name)->funcs);
+	if (it_func_ptr) {
+		__data = (it_func_ptr)->data;
+		static_call(tp_func_##name)(__data, args);
+	}
+
+If there's just a single callback, the static_call is updated to just call
+that callback directly. Once another handler is added, then the static
+caller is updated to call the iterator, that simply loops over all the
+funcs in the array and calls each of the callbacks like the old method
+using indirect calling.
+
+The issue was discovered with a race between updating the funcs array and
+updating the static_call. The funcs array was updated first and then the
+static_call was updated. This is not an issue as long as the first element
+in the old array is the same as the first element in the new array. But
+that assumption is incorrect, because callbacks also have a priority
+field, and if there's a callback added that has a higher priority than the
+callback on the old array, then it will become the first callback in the
+new array. This means that it is possible to call the old callback with
+the new callback data element, which can cause a kernel panic.
+
+	static_call = callback1()
+	funcs[] = {callback1,data1};
+	callback2 has higher priority than callback1
+
+	CPU 1				CPU 2
+	-----				-----
+
+   new_funcs = {callback2,data2},
+               {callback1,data1}
+
+   rcu_assign_pointer(tp->funcs, new_funcs);
+
+  /*
+   * Now tp->funcs has the new array
+   * but the static_call still calls callback1
+   */
+
+				it_func_ptr = tp->funcs [ new_funcs ]
+				data = it_func_ptr->data [ data2 ]
+				static_call(callback1, data);
+
+				/* Now callback1 is called with
+				 * callback2's data */
+
+				[ KERNEL PANIC ]
+
+   update_static_call(iterator);
+
+To prevent this from happening, always switch the static_call to the
+iterator before assigning the tp->funcs to the new array. The iterator will
+always properly match the callback with its data.
+
+To trigger this bug:
+
+  In one terminal:
+
+    while :; do hackbench 50; done
+
+  In another terminal
+
+    echo 1 > /sys/kernel/tracing/events/sched/sched_waking/enable
+    while :; do
+        echo 1 > /sys/kernel/tracing/set_event_pid;
+        sleep 0.5
+        echo 0 > /sys/kernel/tracing/set_event_pid;
+        sleep 0.5
+   done
+
+And it doesn't take long to crash. This is because the set_event_pid adds
+a callback to the sched_waking tracepoint with a high priority, which will
+be called before the sched_waking trace event callback is called.
+
+Note, the removal to a single callback updates the array first, before
+changing the static_call to single callback, which is the proper order as
+the first element in the array is the same as what the static_call is
+being changed to.
+
+Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
+
+Cc: stable@vger.kernel.org
+Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
+Reported-by: Stefan Metzmacher <metze@samba.org>
+tested-by: Stefan Metzmacher <metze@samba.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/accel/bma180.c |   68 +++++++++++++++++++++++++++++----------------
- 1 file changed, 44 insertions(+), 24 deletions(-)
+ kernel/tracepoint.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/accel/bma180.c
-+++ b/drivers/iio/accel/bma180.c
-@@ -625,32 +625,52 @@ static const struct iio_chan_spec bma250
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -320,8 +320,8 @@ static int tracepoint_add_func(struct tr
+ 	 * a pointer to it.  This array is referenced by __DO_TRACE from
+ 	 * include/linux/tracepoint.h using rcu_dereference_sched().
+ 	 */
+-	rcu_assign_pointer(tp->funcs, tp_funcs);
+ 	tracepoint_update_call(tp, tp_funcs, false);
++	rcu_assign_pointer(tp->funcs, tp_funcs);
+ 	static_key_enable(&tp->key);
  
- static const struct bma180_part_info bma180_part_info[] = {
- 	[BMA180] = {
--		bma180_channels, ARRAY_SIZE(bma180_channels),
--		bma180_scale_table, ARRAY_SIZE(bma180_scale_table),
--		bma180_bw_table, ARRAY_SIZE(bma180_bw_table),
--		BMA180_CTRL_REG0, BMA180_RESET_INT,
--		BMA180_CTRL_REG0, BMA180_SLEEP,
--		BMA180_BW_TCS, BMA180_BW,
--		BMA180_OFFSET_LSB1, BMA180_RANGE,
--		BMA180_TCO_Z, BMA180_MODE_CONFIG, BMA180_LOW_POWER,
--		BMA180_CTRL_REG3, BMA180_NEW_DATA_INT,
--		BMA180_RESET,
--		bma180_chip_config,
--		bma180_chip_disable,
-+		.channels = bma180_channels,
-+		.num_channels = ARRAY_SIZE(bma180_channels),
-+		.scale_table = bma180_scale_table,
-+		.num_scales = ARRAY_SIZE(bma180_scale_table),
-+		.bw_table = bma180_bw_table,
-+		.num_bw = ARRAY_SIZE(bma180_bw_table),
-+		.int_reset_reg = BMA180_CTRL_REG0,
-+		.int_reset_mask = BMA180_RESET_INT,
-+		.sleep_reg = BMA180_CTRL_REG0,
-+		.sleep_mask = BMA180_SLEEP,
-+		.bw_reg = BMA180_BW_TCS,
-+		.bw_mask = BMA180_BW,
-+		.scale_reg = BMA180_OFFSET_LSB1,
-+		.scale_mask = BMA180_RANGE,
-+		.power_reg = BMA180_TCO_Z,
-+		.power_mask = BMA180_MODE_CONFIG,
-+		.lowpower_val = BMA180_LOW_POWER,
-+		.int_enable_reg = BMA180_CTRL_REG3,
-+		.int_enable_mask = BMA180_NEW_DATA_INT,
-+		.softreset_reg = BMA180_RESET,
-+		.chip_config = bma180_chip_config,
-+		.chip_disable = bma180_chip_disable,
- 	},
- 	[BMA250] = {
--		bma250_channels, ARRAY_SIZE(bma250_channels),
--		bma250_scale_table, ARRAY_SIZE(bma250_scale_table),
--		bma250_bw_table, ARRAY_SIZE(bma250_bw_table),
--		BMA250_INT_RESET_REG, BMA250_INT_RESET_MASK,
--		BMA250_POWER_REG, BMA250_SUSPEND_MASK,
--		BMA250_BW_REG, BMA250_BW_MASK,
--		BMA250_RANGE_REG, BMA250_RANGE_MASK,
--		BMA250_POWER_REG, BMA250_LOWPOWER_MASK, 1,
--		BMA250_INT_ENABLE_REG, BMA250_DATA_INTEN_MASK,
--		BMA250_RESET_REG,
--		bma250_chip_config,
--		bma250_chip_disable,
-+		.channels = bma250_channels,
-+		.num_channels = ARRAY_SIZE(bma250_channels),
-+		.scale_table = bma250_scale_table,
-+		.num_scales = ARRAY_SIZE(bma250_scale_table),
-+		.bw_table = bma250_bw_table,
-+		.num_bw = ARRAY_SIZE(bma250_bw_table),
-+		.int_reset_reg = BMA250_INT_RESET_REG,
-+		.int_reset_mask = BMA250_INT_RESET_MASK,
-+		.sleep_reg = BMA250_POWER_REG,
-+		.sleep_mask = BMA250_SUSPEND_MASK,
-+		.bw_reg = BMA250_BW_REG,
-+		.bw_mask = BMA250_BW_MASK,
-+		.scale_reg = BMA250_RANGE_REG,
-+		.scale_mask = BMA250_RANGE_MASK,
-+		.power_reg = BMA250_POWER_REG,
-+		.power_mask = BMA250_LOWPOWER_MASK,
-+		.lowpower_val = 1,
-+		.int_enable_reg = BMA250_INT_ENABLE_REG,
-+		.int_enable_mask = BMA250_DATA_INTEN_MASK,
-+		.softreset_reg = BMA250_RESET_REG,
-+		.chip_config = bma250_chip_config,
-+		.chip_disable = bma250_chip_disable,
- 	},
- };
- 
+ 	release_probes(old);
 
 
