@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFE63D576B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6865D3D576D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhGZJny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:43:54 -0400
-Received: from outbound-smtp50.blacknight.com ([46.22.136.234]:56065 "EHLO
-        outbound-smtp50.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232619AbhGZJnx (ORCPT
+        id S232375AbhGZJoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:44:08 -0400
+Received: from outbound-smtp48.blacknight.com ([46.22.136.219]:50221 "EHLO
+        outbound-smtp48.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233080AbhGZJoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:43:53 -0400
+        Mon, 26 Jul 2021 05:44:05 -0400
 Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp50.blacknight.com (Postfix) with ESMTPS id A9D39FA8E9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:24:20 +0100 (IST)
-Received: (qmail 24428 invoked from network); 26 Jul 2021 10:24:20 -0000
+        by outbound-smtp48.blacknight.com (Postfix) with ESMTPS id D0161FA8D3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:24:30 +0100 (IST)
+Received: (qmail 24802 invoked from network); 26 Jul 2021 10:24:30 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPA; 26 Jul 2021 10:24:20 -0000
+  by 81.17.254.9 with ESMTPA; 26 Jul 2021 10:24:30 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Ingo Molnar <mingo@kernel.org>,
@@ -26,9 +26,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         Aubrey Li <aubrey.li@linux.intel.com>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 8/9] sched/fair: select idle cpu from idle cpumask for task wakeup
-Date:   Mon, 26 Jul 2021 11:22:46 +0100
-Message-Id: <20210726102247.21437-9-mgorman@techsingularity.net>
+Subject: [PATCH 9/9] sched/core: Delete SIS_PROP and rely on the idle cpu mask
+Date:   Mon, 26 Jul 2021 11:22:47 +0100
+Message-Id: <20210726102247.21437-10-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210726102247.21437-1-mgorman@techsingularity.net>
 References: <20210726102247.21437-1-mgorman@techsingularity.net>
@@ -38,255 +38,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aubrey Li <aubrey.li@linux.intel.com>
+Now that there is an idle CPU mask that is approximately up to date, the
+proportional scan depth can be removed and the scan depth is limited by
+the estimated number of idle CPUs instead.
 
-Add idle cpumask to track idle cpus in sched domain. Every time
-a CPU enters idle, the CPU is set in idle cpumask to be a wakeup
-target. And if the CPU is not in idle, the CPU is cleared in idle
-cpumask during scheduler tick to ratelimit idle cpumask update.
+The plus side of this patch is that the time accounting overhead is gone.
+The downside is that in some circumstances, this will scan more than
+proportional scanning depending on whether an idle core is being scanned
+or the accuracy of the idle CPU mask.
 
-When a task wakes up to select an idle cpu, scanning idle cpumask
-has lower cost than scanning all the cpus in last level cache domain,
-especially when the system is heavily loaded.
-
-v10-v11:
-- Forward port to 5.13-rc5 based kernel
-
-v9->v10:
-- Update scan cost only when the idle cpumask is scanned, i.e, the
-  idle cpumask is not empty
-
-v8->v9:
-- rebase on top of tip/sched/core, no code change
-
-v7->v8:
-- refine update_idle_cpumask, no functionality change
-- fix a suspicious RCU usage warning with CONFIG_PROVE_RCU=y
-
-v6->v7:
-- place the whole idle cpumask mechanism under CONFIG_SMP
-
-v5->v6:
-- decouple idle cpumask update from stop_tick signal, set idle CPU
-  in idle cpumask every time the CPU enters idle
-
-v4->v5:
-- add update_idle_cpumask for s2idle case
-- keep the same ordering of tick_nohz_idle_stop_tick() and update_
-  idle_cpumask() everywhere
-
-v3->v4:
-- change setting idle cpumask from every idle entry to tickless idle
-  if cpu driver is available
-- move clearing idle cpumask to scheduler_tick to decouple nohz mode
-
-v2->v3:
-- change setting idle cpumask to every idle entry, otherwise schbench
-  has a regression of 99th percentile latency
-- change clearing idle cpumask to nohz_balancer_kick(), so updating
-  idle cpumask is ratelimited in the idle exiting path
-- set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target
-
-v1->v2:
-- idle cpumask is updated in the nohz routines, by initializing idle
-  cpumask with sched_domain_span(sd), nohz=off case remains the original
-  behavior
-
-[mgorman@techsingularity.net: RCU protection in update_idle_cpumask]
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Qais Yousef <qais.yousef@arm.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Jiang Biao <benbjiang@gmail.com>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- include/linux/sched/topology.h | 13 ++++++++++
- kernel/sched/core.c            |  2 ++
- kernel/sched/fair.c            | 46 +++++++++++++++++++++++++++++++++-
- kernel/sched/idle.c            |  5 ++++
- kernel/sched/sched.h           |  4 +++
- kernel/sched/topology.c        |  3 ++-
- 6 files changed, 71 insertions(+), 2 deletions(-)
+ kernel/sched/core.c     | 22 ++++----------
+ kernel/sched/fair.c     | 65 ++---------------------------------------
+ kernel/sched/features.h |  5 ----
+ kernel/sched/sched.h    |  5 ----
+ 4 files changed, 8 insertions(+), 89 deletions(-)
 
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 8f0f778b7c91..905e382ece1a 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -74,8 +74,21 @@ struct sched_domain_shared {
- 	atomic_t	ref;
- 	atomic_t	nr_busy_cpus;
- 	int		has_idle_cores;
-+	/*
-+	 * Span of all idle CPUs in this domain.
-+	 *
-+	 * NOTE: this field is variable length. (Allocated dynamically
-+	 * by attaching extra space to the end of the structure,
-+	 * depending on how many CPUs the kernel has booted up with)
-+	 */
-+	unsigned long	idle_cpus_span[];
- };
- 
-+static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
-+{
-+	return to_cpumask(sds->idle_cpus_span);
-+}
-+
- struct sched_domain {
- 	/* These fields must be setup */
- 	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7c073b67f1ea..2751614ce0cb 100644
+index 2751614ce0cb..9fcf9d1ae21c 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4965,6 +4965,7 @@ void scheduler_tick(void)
+@@ -3333,9 +3333,6 @@ static void ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags,
+ 		if (rq->avg_idle > max)
+ 			rq->avg_idle = max;
  
- #ifdef CONFIG_SMP
- 	rq->idle_balance = idle_cpu(cpu);
-+	update_idle_cpumask(cpu, rq->idle_balance);
- 	trigger_load_balance(rq);
+-		rq->wake_stamp = jiffies;
+-		rq->wake_avg_idle = rq->avg_idle / 2;
+-
+ 		rq->idle_stamp = 0;
+ 	}
  #endif
- }
-@@ -9031,6 +9032,7 @@ void __init sched_init(void)
- 		rq->wake_stamp = jiffies;
- 		rq->wake_avg_idle = rq->avg_idle;
- 		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
-+		rq->last_idle_state = 1;
+@@ -8648,18 +8645,11 @@ int sched_cpu_activate(unsigned int cpu)
+ 	balance_push_set(cpu, false);
  
- 		INIT_LIST_HEAD(&rq->cfs_tasks);
+ #ifdef CONFIG_SCHED_SMT
+-	do {
+-		int weight = cpumask_weight(cpu_smt_mask(cpu));
+-
+-		if (weight > sched_smt_weight)
+-			sched_smt_weight = weight;
+-
+-		/*
+-		 * When going up, increment the number of cores with SMT present.
+-		 */
+-		if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+-			static_branch_inc_cpuslocked(&sched_smt_present);
+-	} while (0);
++	/*
++	 * When going up, increment the number of cores with SMT present.
++	 */
++	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
++		static_branch_inc_cpuslocked(&sched_smt_present);
+ #endif
+ 	set_cpu_active(cpu, true);
+ 
+@@ -9029,8 +9019,6 @@ void __init sched_init(void)
+ 		rq->online = 0;
+ 		rq->idle_stamp = 0;
+ 		rq->avg_idle = 2*sysctl_sched_migration_cost;
+-		rq->wake_stamp = jiffies;
+-		rq->wake_avg_idle = rq->avg_idle;
+ 		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
+ 		rq->last_idle_state = 1;
  
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index b180205e6b25..fe87af2ccc80 100644
+index fe87af2ccc80..70b6d840426a 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -6230,7 +6230,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+@@ -6076,8 +6076,6 @@ static inline int __select_idle_cpu(int cpu, struct task_struct *p)
+ DEFINE_STATIC_KEY_FALSE(sched_smt_present);
+ EXPORT_SYMBOL_GPL(sched_smt_present);
+ 
+-int __read_mostly sched_smt_weight = 1;
+-
+ static inline void set_idle_cores(int cpu, int val)
+ {
+ 	struct sched_domain_shared *sds;
+@@ -6196,8 +6194,6 @@ static inline bool test_idle_cores(int cpu, bool def)
+ 	return def;
+ }
+ 
+-#define sched_smt_weight 1
+-
+ static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
+ {
+ 	return __select_idle_cpu(core, p);
+@@ -6210,8 +6206,6 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
+ 
+ #endif /* CONFIG_SCHED_SMT */
+ 
+-#define sis_min_cores	2
+-
+ /*
+  * Scan the LLC domain for idle CPUs; this is dynamically regulated by
+  * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
+@@ -6220,12 +6214,8 @@ static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd
+ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool has_idle_core, int target)
+ {
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+-	int i, cpu, idle_cpu = -1, nr = INT_MAX;
+-	struct rq *this_rq = this_rq();
+-	int this = smp_processor_id();
++	int i, cpu, idle_cpu = -1;
+ 	struct sched_domain *this_sd;
+-	u64 time = 0;
+-
+ 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
  	if (!this_sd)
  		return -1;
+@@ -6237,69 +6227,20 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+ 	 */
+ 	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
  
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+	/*
-+	 * sched_domain_shared is set only at shared cache level,
-+	 * this works only because select_idle_cpu is called with
-+	 * sd_llc.
-+	 */
-+	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
- 
- 	if (sched_feat(SIS_PROP)) {
- 		u64 avg_cost, avg_idle, span_avg;
-@@ -7018,6 +7023,45 @@ balance_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
- 
- 	return newidle_balance(rq, rf) != 0;
- }
-+
-+/*
-+ * Update cpu idle state and record this information
-+ * in sd_llc_shared->idle_cpus_span.
-+ *
-+ * This function is called with interrupts disabled.
-+ */
-+void update_idle_cpumask(int cpu, bool idle)
-+{
-+	struct sched_domain *sd;
-+	struct rq *rq = cpu_rq(cpu);
-+	int idle_state;
-+
-+	/*
-+	 * Also set SCHED_IDLE cpu in idle cpumask to
-+	 * allow SCHED_IDLE cpu as a wakeup target.
-+	 */
-+	idle_state = idle || sched_idle_cpu(cpu);
-+	/*
-+	 * No need to update idle cpumask if the state
-+	 * does not change.
-+	 */
-+	if (rq->last_idle_state == idle_state)
-+		return;
-+
-+	rcu_read_lock();
-+	sd = per_cpu(sd_llc, cpu);
-+	if (unlikely(!sd))
-+		goto unlock;
-+
-+	if (idle_state)
-+		cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-+	else
-+		cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
-+
-+	rq->last_idle_state = idle_state;
-+unlock:
-+	rcu_read_unlock();
-+}
- #endif /* CONFIG_SMP */
- 
- static unsigned long wakeup_gran(struct sched_entity *se)
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 912b47aa99d8..86bfe81cc280 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -289,6 +289,11 @@ static void do_idle(void)
- 			cpuhp_report_idle_dead();
- 			arch_cpu_idle_dead();
+-	if (sched_feat(SIS_PROP)) {
+-		u64 avg_cost, avg_idle, span_avg;
+-		unsigned long now = jiffies;
+-
+-		/*
+-		 * If we're busy, the assumption that the last idle period
+-		 * predicts the future is flawed; age away the remaining
+-		 * predicted idle time.
+-		 */
+-		if (unlikely(this_rq->wake_stamp < now)) {
+-			while (this_rq->wake_stamp < now && this_rq->wake_avg_idle) {
+-				this_rq->wake_stamp++;
+-				this_rq->wake_avg_idle >>= 1;
+-			}
+-		}
+-
+-		avg_idle = this_rq->wake_avg_idle;
+-		avg_cost = this_sd->avg_scan_cost + 1;
+-
+-		span_avg = sd->span_weight * avg_idle;
+-		if (span_avg > sis_min_cores * avg_cost)
+-			nr = div_u64(span_avg, avg_cost);
+-		else
+-			nr = sis_min_cores;
+-
+-		nr *= sched_smt_weight;
+-		time = cpu_clock(this);
+-	}
+-
+ 	for_each_cpu_wrap(cpu, cpus, target + 1) {
+ 		if (has_idle_core) {
+ 			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+ 			if ((unsigned int)i < nr_cpumask_bits)
+ 				break;
+-
+-			nr -= sched_smt_weight;
+ 		} else {
+ 			idle_cpu = __select_idle_cpu(cpu, p);
+ 			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+ 				break;
+-			nr--;
  		}
-+		/*
-+		 * The CPU is about to go idle, set it in idle cpumask
-+		 * to be a wake up target.
-+		 */
-+		update_idle_cpumask(cpu, true);
- 
- 		arch_cpu_idle_enter();
- 		rcu_nocb_flush_deferred_wakeup();
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 4d47a0969710..2d6456fa15cb 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -998,6 +998,7 @@ struct rq {
- 
- 	unsigned char		nohz_idle_balance;
- 	unsigned char		idle_balance;
-+	unsigned char		last_idle_state;
- 
- 	unsigned long		misfit_task_load;
- 
-@@ -1846,6 +1847,8 @@ static inline unsigned int group_first_cpu(struct sched_group *group)
- 
- extern int group_balance_cpu(struct sched_group *sg);
- 
-+void update_idle_cpumask(int cpu, bool idle);
-+
- #ifdef CONFIG_SCHED_DEBUG
- void update_sched_domain_debugfs(void);
- void dirty_sched_domain_sysctl(int cpu);
-@@ -1864,6 +1867,7 @@ extern void flush_smp_call_function_from_idle(void);
- 
- #else /* !CONFIG_SMP: */
- static inline void flush_smp_call_function_from_idle(void) { }
-+static inline void update_idle_cpumask(int cpu, bool idle) { }
- #endif
- 
- #include "stats.h"
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index b77ad49dc14f..2075bc417b90 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1611,6 +1611,7 @@ sd_init(struct sched_domain_topology_level *tl,
- 		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
- 		atomic_inc(&sd->shared->ref);
- 		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
-+		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
+-
+-		if (nr < 0)
+-			break;
  	}
  
- 	sd->private = sdd;
-@@ -1970,7 +1971,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
+-	if ((unsigned int)idle_cpu < nr_cpumask_bits) {
+-		if (has_idle_core)
+-			set_idle_cores(target, false);
+-
+-		if (sched_feat(SIS_PROP)) {
+-			time = cpu_clock(this) - time;
+-
+-			/*
+-			 * Account for the scan cost of wakeups against the average
+-			 * idle time.
+-			 */
+-			this_rq->wake_avg_idle -= min(this_rq->wake_avg_idle, time);
+-
+-			update_avg(&this_sd->avg_scan_cost, time);
+-		}
+-	}
++	if ((unsigned int)idle_cpu < nr_cpumask_bits && has_idle_core)
++		set_idle_cores(target, false);
  
- 			*per_cpu_ptr(sdd->sd, j) = sd;
+ 	return idle_cpu;
+ }
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index 7f8dace0964c..4bb29c830b9d 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -52,11 +52,6 @@ SCHED_FEAT(NONTASK_CAPACITY, true)
+  */
+ SCHED_FEAT(TTWU_QUEUE, true)
  
--			sds = kzalloc_node(sizeof(struct sched_domain_shared),
-+			sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
- 					GFP_KERNEL, cpu_to_node(j));
- 			if (!sds)
- 				return -ENOMEM;
+-/*
+- * When doing wakeups, attempt to limit superfluous scans of the LLC domain.
+- */
+-SCHED_FEAT(SIS_PROP, true)
+-
+ /*
+  * Issue a WARN when we do multiple update_rq_clock() calls
+  * in a single rq->lock section. Default disabled because the
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 2d6456fa15cb..35a0b591a2de 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1024,9 +1024,6 @@ struct rq {
+ 	u64			idle_stamp;
+ 	u64			avg_idle;
+ 
+-	unsigned long		wake_stamp;
+-	u64			wake_avg_idle;
+-
+ 	/* This is used to determine avg_idle's max value */
+ 	u64			max_idle_balance_cost;
+ 
+@@ -1352,8 +1349,6 @@ do {						\
+ #ifdef CONFIG_SCHED_SMT
+ extern void __update_idle_core(struct rq *rq);
+ 
+-extern int sched_smt_weight;
+-
+ static inline void update_idle_core(struct rq *rq)
+ {
+ 	if (static_branch_unlikely(&sched_smt_present))
 -- 
 2.26.2
 
