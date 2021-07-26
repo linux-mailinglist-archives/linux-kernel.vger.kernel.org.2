@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBF93D6057
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC933D62F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237009AbhGZPVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
+        id S238330AbhGZPlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:41:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236687AbhGZPMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:12:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39B2560F90;
-        Mon, 26 Jul 2021 15:52:33 +0000 (UTC)
+        id S237621AbhGZPXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2688260E09;
+        Mon, 26 Jul 2021 16:04:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314753;
-        bh=CQmi24Cuju+ajpeWGtZiUrfTndbCa2q0sd6aVrkM8RU=;
+        s=korg; t=1627315447;
+        bh=LOLFp2Jxe/nZf0/qwm3GMI4JtoZ1I5Bkwn4WyZWr6zs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hmCixpqXbCPdsYAMp3bMmZ8iNu0UR/NQcL4Bv9cqknqo5BfecSAuk9pCFuAnKYmkZ
-         jYO/XAMV2B+K1/Z4+XoVFxbQ43BvLScwQvKwhBwKMwdzxX69QJb33nsc6kzcTo/lOR
-         SLg0HnXZZzKrMj40kft4+BB/P75kW4+W1Cwg/6MM=
+        b=gkdShWL3c2ndj9Dp3tLsSbVRP8yEhQ4p9OvR6HrTCQm2JjlXCjSgo7dW/o0kT4AmA
+         8/PMer2fYFhae9HNpR9R5Zy4PtfsilLxvMomZxoTDyaFnGf5bYqa0k/X5q0yGy0/3h
+         h6hENy0koaDa0tdRnHRMpJk/Yp2KDtLosxdvu9cE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Bogdanov <d.bogdanov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Wei Wang <weiwan@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 080/120] scsi: target: Fix protect handling in WRITE SAME(32)
+Subject: [PATCH 5.10 099/167] tcp: disable TFO blackhole logic by default
 Date:   Mon, 26 Jul 2021 17:38:52 +0200
-Message-Id: <20210726153834.955957798@linuxfoundation.org>
+Message-Id: <20210726153842.719316961@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,181 +44,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Wei Wang <weiwan@google.com>
 
-[ Upstream commit 6d8e7e7c932162bccd06872362751b0e1d76f5af ]
+[ Upstream commit 213ad73d06073b197a02476db3a4998e219ddb06 ]
 
-WRITE SAME(32) command handling reads WRPROTECT at the wrong offset in 1st
-byte instead of 10th byte.
+Multiple complaints have been raised from the TFO users on the internet
+stating that the TFO blackhole logic is too aggressive and gets falsely
+triggered too often.
+(e.g. https://blog.apnic.net/2021/07/05/tcp-fast-open-not-so-fast/)
+Considering that most middleboxes no longer drop TFO packets, we decide
+to disable the blackhole logic by setting
+/proc/sys/net/ipv4/tcp_fastopen_blackhole_timeout_set to 0 by default.
 
-Link: https://lore.kernel.org/r/20210702091655.22818-1-d.bogdanov@yadro.com
-Fixes: afd73f1b60fc ("target: Perform PROTECT sanity checks for WRITE_SAME")
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: cf1ef3f0719b4 ("net/tcp_fastopen: Disable active side TFO in certain scenarios")
+Signed-off-by: Wei Wang <weiwan@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Acked-by: Neal Cardwell <ncardwell@google.com>
+Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
+Acked-by: Yuchung Cheng <ycheng@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_sbc.c | 35 ++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ Documentation/networking/ip-sysctl.rst | 2 +-
+ net/ipv4/tcp_fastopen.c                | 9 ++++++++-
+ net/ipv4/tcp_ipv4.c                    | 2 +-
+ 3 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/target/target_core_sbc.c b/drivers/target/target_core_sbc.c
-index ebac2b49b9c6..af9b038da3ba 100644
---- a/drivers/target/target_core_sbc.c
-+++ b/drivers/target/target_core_sbc.c
-@@ -38,7 +38,7 @@
- #include "target_core_alua.h"
+diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
+index 4abcfff15e38..4822a058a81d 100644
+--- a/Documentation/networking/ip-sysctl.rst
++++ b/Documentation/networking/ip-sysctl.rst
+@@ -751,7 +751,7 @@ tcp_fastopen_blackhole_timeout_sec - INTEGER
+ 	initial value when the blackhole issue goes away.
+ 	0 to disable the blackhole detection.
  
- static sense_reason_t
--sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char *, u32, bool);
-+sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char, u32, bool);
- static sense_reason_t sbc_execute_unmap(struct se_cmd *cmd);
+-	By default, it is set to 1hr.
++	By default, it is set to 0 (feature is disabled).
  
- static sense_reason_t
-@@ -292,14 +292,14 @@ static inline unsigned long long transport_lba_64_ext(unsigned char *cdb)
- }
- 
- static sense_reason_t
--sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *ops)
-+sbc_setup_write_same(struct se_cmd *cmd, unsigned char flags, struct sbc_ops *ops)
+ tcp_fastopen_key - list of comma separated 32-digit hexadecimal INTEGERs
+ 	The list consists of a primary key and an optional backup key. The
+diff --git a/net/ipv4/tcp_fastopen.c b/net/ipv4/tcp_fastopen.c
+index 08548ff23d83..d49709ba8e16 100644
+--- a/net/ipv4/tcp_fastopen.c
++++ b/net/ipv4/tcp_fastopen.c
+@@ -507,6 +507,9 @@ void tcp_fastopen_active_disable(struct sock *sk)
  {
- 	struct se_device *dev = cmd->se_dev;
- 	sector_t end_lba = dev->transport->get_blocks(dev) + 1;
- 	unsigned int sectors = sbc_get_write_same_sectors(cmd);
- 	sense_reason_t ret;
+ 	struct net *net = sock_net(sk);
  
--	if ((flags[0] & 0x04) || (flags[0] & 0x02)) {
-+	if ((flags & 0x04) || (flags & 0x02)) {
- 		pr_err("WRITE_SAME PBDATA and LBDATA"
- 			" bits not supported for Block Discard"
- 			" Emulation\n");
-@@ -321,7 +321,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
- 	}
++	if (!sock_net(sk)->ipv4.sysctl_tcp_fastopen_blackhole_timeout)
++		return;
++
+ 	/* Paired with READ_ONCE() in tcp_fastopen_active_should_disable() */
+ 	WRITE_ONCE(net->ipv4.tfo_active_disable_stamp, jiffies);
  
- 	/* We always have ANC_SUP == 0 so setting ANCHOR is always an error */
--	if (flags[0] & 0x10) {
-+	if (flags & 0x10) {
- 		pr_warn("WRITE SAME with ANCHOR not supported\n");
- 		return TCM_INVALID_CDB_FIELD;
- 	}
-@@ -329,7 +329,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
- 	 * Special case for WRITE_SAME w/ UNMAP=1 that ends up getting
- 	 * translated into block discard requests within backend code.
- 	 */
--	if (flags[0] & 0x08) {
-+	if (flags & 0x08) {
- 		if (!ops->execute_unmap)
- 			return TCM_UNSUPPORTED_SCSI_OPCODE;
- 
-@@ -344,7 +344,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
- 	if (!ops->execute_write_same)
- 		return TCM_UNSUPPORTED_SCSI_OPCODE;
- 
--	ret = sbc_check_prot(dev, cmd, &cmd->t_task_cdb[0], sectors, true);
-+	ret = sbc_check_prot(dev, cmd, flags >> 5, sectors, true);
- 	if (ret)
- 		return ret;
- 
-@@ -702,10 +702,9 @@ sbc_set_prot_op_checks(u8 protect, bool fabric_prot, enum target_prot_type prot_
- }
- 
- static sense_reason_t
--sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
-+sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char protect,
- 	       u32 sectors, bool is_write)
+@@ -526,10 +529,14 @@ void tcp_fastopen_active_disable(struct sock *sk)
+ bool tcp_fastopen_active_should_disable(struct sock *sk)
  {
--	u8 protect = cdb[1] >> 5;
- 	int sp_ops = cmd->se_sess->sup_prot_ops;
- 	int pi_prot_type = dev->dev_attrib.pi_prot_type;
- 	bool fabric_prot = false;
-@@ -753,7 +752,7 @@ sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
- 		/* Fallthrough */
- 	default:
- 		pr_err("Unable to determine pi_prot_type for CDB: 0x%02x "
--		       "PROTECT: 0x%02x\n", cdb[0], protect);
-+		       "PROTECT: 0x%02x\n", cmd->t_task_cdb[0], protect);
- 		return TCM_INVALID_CDB_FIELD;
- 	}
+ 	unsigned int tfo_bh_timeout = sock_net(sk)->ipv4.sysctl_tcp_fastopen_blackhole_timeout;
+-	int tfo_da_times = atomic_read(&sock_net(sk)->ipv4.tfo_active_disable_times);
+ 	unsigned long timeout;
++	int tfo_da_times;
+ 	int multiplier;
  
-@@ -828,7 +827,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
++	if (!tfo_bh_timeout)
++		return false;
++
++	tfo_da_times = atomic_read(&sock_net(sk)->ipv4.tfo_active_disable_times);
+ 	if (!tfo_da_times)
+ 		return false;
  
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
- 		if (ret)
- 			return ret;
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 5212db9ea157..04e259a04443 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -2913,7 +2913,7 @@ static int __net_init tcp_sk_init(struct net *net)
+ 	net->ipv4.sysctl_tcp_comp_sack_nr = 44;
+ 	net->ipv4.sysctl_tcp_fastopen = TFO_CLIENT_ENABLE;
+ 	spin_lock_init(&net->ipv4.tcp_fastopen_ctx_lock);
+-	net->ipv4.sysctl_tcp_fastopen_blackhole_timeout = 60 * 60;
++	net->ipv4.sysctl_tcp_fastopen_blackhole_timeout = 0;
+ 	atomic_set(&net->ipv4.tfo_active_disable_times, 0);
  
-@@ -842,7 +841,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
- 		if (ret)
- 			return ret;
- 
-@@ -856,7 +855,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
- 		if (ret)
- 			return ret;
- 
-@@ -877,7 +876,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
- 		if (ret)
- 			return ret;
- 
-@@ -891,7 +890,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
- 		if (ret)
- 			return ret;
- 
-@@ -906,7 +905,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
- 		if (ret)
- 			return ret;
- 
-@@ -965,7 +964,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 			size = sbc_get_size(cmd, 1);
- 			cmd->t_task_lba = get_unaligned_be64(&cdb[12]);
- 
--			ret = sbc_setup_write_same(cmd, &cdb[10], ops);
-+			ret = sbc_setup_write_same(cmd, cdb[10], ops);
- 			if (ret)
- 				return ret;
- 			break;
-@@ -1064,7 +1063,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		size = sbc_get_size(cmd, 1);
- 		cmd->t_task_lba = get_unaligned_be64(&cdb[2]);
- 
--		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
-+		ret = sbc_setup_write_same(cmd, cdb[1], ops);
- 		if (ret)
- 			return ret;
- 		break;
-@@ -1082,7 +1081,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		 * Follow sbcr26 with WRITE_SAME (10) and check for the existence
- 		 * of byte 1 bit 3 UNMAP instead of original reserved field
- 		 */
--		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
-+		ret = sbc_setup_write_same(cmd, cdb[1], ops);
- 		if (ret)
- 			return ret;
- 		break;
+ 	/* Reno is always built in */
 -- 
 2.30.2
 
