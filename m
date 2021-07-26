@@ -2,239 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133953D5A25
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFBF3D5A26
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhGZMfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:35:11 -0400
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:39123 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233362AbhGZMfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:35:09 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([79.45.45.231])
-        by smtp-34.iol.local with ESMTPA
-        id 80S8mb4Z4LCum80SHmrOfa; Mon, 26 Jul 2021 15:15:37 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1627305337; bh=TwXY0wWEIjCoEyIDcLLonShwStlhhTEg8+KADKL1xoc=;
-        h=From;
-        b=TnwuGt4s1+i+ma/PQVKUWcJZ9JZfxKIiiHrq10MCB+koP6pRiaZVrhQ4OtBDH01fz
-         vR9M5uCbBbDFPOBI6eTnqh8g8xEBWQFpcPGVjezCTi51EykcK+djXkfP4GXdZdUFhM
-         fKCJQcUnQs0T//f5NkQCPyt9G1Kju8hH5jWPNYrfNSAQ8InzZH9OH0RBagVaNlVa08
-         qB+952H5zNugUCopo+edd7XsLtBjiKlREzkYzCNpgvW9fqEp1TC2ZBceuRCMJTnzHT
-         R42pW1erdBRZRctmCbNPZHQ7mnyhn8c1iTA6Nd+iq3CwVfrwv2uAvlm6gCsBznt7dx
-         2o1GF3XEn36bw==
-X-CNFS-Analysis: v=2.4 cv=a8D1SWeF c=1 sm=1 tr=0 ts=60feb579 cx=a_exe
- a=TX8r+oJM0yLPAmPh5WrBoQ==:117 a=TX8r+oJM0yLPAmPh5WrBoQ==:17 a=gEfo2CItAAAA:8
- a=faqJUPsDrVUeZvGr8DYA:9 a=EZF1DJdq9kaO9wn_:21 a=AsuNPSxbIB0PVpCX:21
- a=sptkURWiP4Gy88Gu7hUp:22
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        devicetree@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: net: can: c_can: convert to json-schema
-Date:   Mon, 26 Jul 2021 15:15:26 +0200
-Message-Id: <20210726131526.17542-2-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210726131526.17542-1-dariobin@libero.it>
-References: <20210726131526.17542-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfCjld3f9P9Dc32M8sJ+iOTqcyhmDUr06dk2NrsDeDtqqBwIcy1gSNXoxMC3322PLdOG4OzQJqJAVcNW3bZC2Ea56tFCpyjiAaDq9DL9+ut8YbFOEuUAk
- 8kMpd6cKBJVrRoTNX+PNsuJPm30z5Zg9OKnqci0tqHm+IeiD6eDxIVVimHfIAccDz88xHOtoGBwC+36Ks9+1sLbPJF86AF1VjR71//h1NlJ3fry70tXb+673
- /sw2xtsudsDgzjbyj/dUXQT4QSLLfIXxxwAl8IPU8Y8oHEi9Az0m/PH9MGd4f8ZOr2udg3LoZRCftboa5G0V3yEfdm4cDW9h3+HrxTRwDvnEaviRoWfdn5jI
- uiZUfpU+st5c1JZtfvqhvuYsZZasTRtXwK1jzlCH+30tdwu9JdCaV3nwNFzjNFtmL97G2BRYWFYYWe8u0NclL0uKbGLnQN0KJk2dUWnhDBsm0u0pzVKW8kPD
- f7rc5EPcDDBhQXRndZN0lYWboTAJted7W8DH0Bypj1RPS7SQnW4OazDe3hs=
+        id S233320AbhGZMfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:35:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48641 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233362AbhGZMfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:35:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627305350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3BckGZrpnYgzo6JT4RVHB96+71K0n/cul1nqRDu5Z6o=;
+        b=dQl6VQ14WTKAJmJLi+k5S6eRv92iKkHf8dxd7SYYZS0cMw6LH6IqAJppx1ydAbXf0iOGMB
+        x57aqNp07UbCNxhW4nG5bAo/0jNZOtIw6d8J8OvSknGd7QiGEg3Z0m0/2YLhu5o4x2b47I
+        ODyib0ZxQLEwhFgQIELFi80c5YDXgio=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-ta0YKTvoPnesETgODTCIPg-1; Mon, 26 Jul 2021 09:15:49 -0400
+X-MC-Unique: ta0YKTvoPnesETgODTCIPg-1
+Received: by mail-wm1-f72.google.com with SMTP id k4-20020a05600c1c84b0290210c73f067aso666933wms.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:15:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3BckGZrpnYgzo6JT4RVHB96+71K0n/cul1nqRDu5Z6o=;
+        b=VCvBlGduWtJ7rtWbVqqc4+7X9rFypNe5yQXeJRXe6Zg31jwTXCCED9/ytw5AsWvzj0
+         C7mDsmPFnbAftlyh/PD3w0+8RlMSP+4W9osmaawotrKtVcxNPLKziSnW52X4eE820r9c
+         JNFjHnOVr6jQJr2EDFCCBIJTPfPCnbCJkk8Q30MBP6BKVcYiIC+J+gyVCf+WjfriHIcc
+         DKDbbWtcV6BMzuMcBqpH7FMjqCM1FYm2t6Wyz3xDzU32kYOJhgtZmTfjC7Ndgj6fxs62
+         lcOeE/v4TIu2EwGYtsYruiL//z1hR5xhVt+swyiExrVbVI4l/czcZXuiFwQZljf5UhoC
+         Fd0w==
+X-Gm-Message-State: AOAM531+b7xgVo+kJ9eg/8yJPtiMsZ032LSxQXcmWx2DZFSPNiRNdn7u
+        PL9U7GEqJzCm41uIiMJCrRkG0c4N8mwJyfCqpewpdxJKuWWb58SAcJWFoXQxdiMW9QhS4XxDmnZ
+        6FjlKWYcZ/oTaShkT0GOSQDnV
+X-Received: by 2002:a5d:4251:: with SMTP id s17mr4097208wrr.154.1627305347664;
+        Mon, 26 Jul 2021 06:15:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrecVIR24oOyszJQyrZMvu9wQHp84x89yy+ssvfhf36fjb4l6w2vRBicG5C2NWmk68TqOBiQ==
+X-Received: by 2002:a5d:4251:: with SMTP id s17mr4097167wrr.154.1627305347395;
+        Mon, 26 Jul 2021 06:15:47 -0700 (PDT)
+Received: from krava ([83.240.61.166])
+        by smtp.gmail.com with ESMTPSA id 129sm36451944wmz.26.2021.07.26.06.15.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 06:15:46 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 15:15:44 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: Re: [PATCH v2 2/2] perf record: Add --synth option
+Message-ID: <YP61gJD91GwvfzwT@krava>
+References: <20210724040129.2268452-1-namhyung@kernel.org>
+ <20210724040129.2268452-2-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210724040129.2268452-2-namhyung@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Bosch C_CAN/D_CAN controller device tree binding
-documentation to json-schema.
+On Fri, Jul 23, 2021 at 09:01:29PM -0700, Namhyung Kim wrote:
+> Add an option to control synthesize behavior.
+> 
+>     --synth <no|all|task|mmap|cgroup>
+>                       Fine-tune event synthesis: default=all
+> 
+> This can be useful when we know it doesn't need some synthesis like
+> in a specific usecase and/or when using pipe:
+> 
+>   $ perf record -a --all-cgroups --synth cgroup -o- sleep 1 | \
+>   > perf report -i- -s cgroup
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/Documentation/perf-record.txt |  9 +++++
+>  tools/perf/builtin-record.c              | 48 +++++++++++++++++++-----
+>  tools/perf/util/record.h                 |  1 +
+>  tools/perf/util/synthetic-events.c       | 28 ++++++++++++++
+>  tools/perf/util/synthetic-events.h       | 12 ++++++
+>  5 files changed, 89 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> index d71bac847936..03a41bec0583 100644
+> --- a/tools/perf/Documentation/perf-record.txt
+> +++ b/tools/perf/Documentation/perf-record.txt
+> @@ -596,6 +596,15 @@ options.
+>  'perf record --dry-run -e' can act as a BPF script compiler if llvm.dump-obj
+>  in config file is set to true.
+>  
+> +--synth=TYPE::
+> +Collect and synthesize given type of events (comma separated).
+> +Available types are:
+> +  'task'    - synthesize FORK and COMM events for each task
+> +  'mmap'    - synthesize MMAP events for each process (implies 'task')
+> +  'cgroup'  - synthesize CGROUP events for each cgroup
+> +  'all'     - synthesize all events (default)
+> +  'no'      - do not synthesize any of the above events
 
-Document missing properties.
-Remove "ti,hwmods" as it is no longer used in TI dts.
-Make "clocks" required as it is used in all dts.
-Correct nodename in the example.
+this only affects events we take from proc right?
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+should we perhaps mention it, because you'll get mmap
+events from kernel even if you specify --synth=task
 
----
+jirka
 
-Changes in v2:
- - Drop Documentation references
 
- .../bindings/net/can/bosch,c_can.yaml         | 83 +++++++++++++++++++
- .../devicetree/bindings/net/can/c_can.txt     | 65 ---------------
- 2 files changed, 83 insertions(+), 65 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/c_can.txt
-
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
-new file mode 100644
-index 000000000000..f937c37e9199
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/bosch,c_can.yaml
-@@ -0,0 +1,83 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/bosch,c_can.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Bosch C_CAN/D_CAN controller Device Tree Bindings
-+
-+description: Bosch C_CAN/D_CAN controller for CAN bus
-+
-+maintainers:
-+  - Dario Binacchi <dariobin@libero.it>
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - bosch,c_can
-+          - bosch,d_can
-+          - ti,dra7-d_can
-+          - ti,am3352-d_can
-+      - items:
-+          - enum:
-+              - ti,am4372-d_can
-+          - const: ti,am3352-d_can
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  power-domains:
-+    description: |
-+      Should contain a phandle to a PM domain provider node and an args
-+      specifier containing the DCAN device id value. It's mandatory for
-+      Keystone 2 66AK2G SoCs only.
-+    maxItems: 1
-+
-+  clocks:
-+    description: |
-+      CAN functional clock phandle.
-+    maxItems: 1
-+
-+  clock-names:
-+    maxItems: 1
-+
-+  syscon-raminit:
-+    description: |
-+      Handle to system control region that contains the RAMINIT register,
-+      register offset to the RAMINIT register and the CAN instance number (0
-+      offset).
-+
-+required:
-+ - compatible
-+ - reg
-+ - interrupts
-+ - clocks
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    can@481d0000 {
-+        compatible = "bosch,d_can";
-+        reg = <0x481d0000 0x2000>;
-+        interrupts = <55>;
-+        interrupt-parent = <&intc>;
-+        status = "disabled";
-+    };
-+  - |
-+    can@0 {
-+        compatible = "ti,am3352-d_can";
-+        reg = <0x0 0x2000>;
-+        clocks = <&dcan1_fck>;
-+        clock-names = "fck";
-+        syscon-raminit = <&scm_conf 0x644 1>;
-+        interrupts = <55>;
-+        status = "disabled";
-+    };
-diff --git a/Documentation/devicetree/bindings/net/can/c_can.txt b/Documentation/devicetree/bindings/net/can/c_can.txt
-deleted file mode 100644
-index 366479806acb..000000000000
---- a/Documentation/devicetree/bindings/net/can/c_can.txt
-+++ /dev/null
-@@ -1,65 +0,0 @@
--Bosch C_CAN/D_CAN controller Device Tree Bindings
---------------------------------------------------
--
--Required properties:
--- compatible		: Should be "bosch,c_can" for C_CAN controllers and
--			  "bosch,d_can" for D_CAN controllers.
--			  Can be "ti,dra7-d_can", "ti,am3352-d_can" or
--			  "ti,am4372-d_can".
--- reg			: physical base address and size of the C_CAN/D_CAN
--			  registers map
--- interrupts		: property with a value describing the interrupt
--			  number
--
--The following are mandatory properties for DRA7x, AM33xx and AM43xx SoCs only:
--- ti,hwmods		: Must be "d_can<n>" or "c_can<n>", n being the
--			  instance number
--
--The following are mandatory properties for Keystone 2 66AK2G SoCs only:
--- power-domains		: Should contain a phandle to a PM domain provider node
--			  and an args specifier containing the DCAN device id
--			  value. This property is as per the binding,
--			  Documentation/devicetree/bindings/soc/ti/sci-pm-domain.yaml
--- clocks		: CAN functional clock phandle. This property is as per the
--			  binding,
--			  Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
--
--Optional properties:
--- syscon-raminit	: Handle to system control region that contains the
--			  RAMINIT register, register offset to the RAMINIT
--			  register and the CAN instance number (0 offset).
--
--Note: "ti,hwmods" field is used to fetch the base address and irq
--resources from TI, omap hwmod data base during device registration.
--Future plan is to migrate hwmod data base contents into device tree
--blob so that, all the required data will be used from device tree dts
--file.
--
--Example:
--
--Step1: SoC common .dtsi file
--
--	dcan1: d_can@481d0000 {
--		compatible = "bosch,d_can";
--		reg = <0x481d0000 0x2000>;
--		interrupts = <55>;
--		interrupt-parent = <&intc>;
--		status = "disabled";
--	};
--
--(or)
--
--	dcan1: d_can@481d0000 {
--		compatible = "bosch,d_can";
--		ti,hwmods = "d_can1";
--		reg = <0x481d0000 0x2000>;
--		interrupts = <55>;
--		interrupt-parent = <&intc>;
--		status = "disabled";
--	};
--
--Step 2: board specific .dts file
--
--	&dcan1 {
--		status = "okay";
--	};
--- 
-2.17.1
+> +
+>  --tail-synthesize::
+>  Instead of collecting non-sample events (for example, fork, comm, mmap) at
+>  the beginning of record, collect them during finalizing an output file.
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 535da4dfd8d3..caaada3594ce 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -1254,6 +1254,7 @@ static int record__synthesize_workload(struct record *rec, bool tail)
+>  {
+>  	int err;
+>  	struct perf_thread_map *thread_map;
+> +	bool needs_mmap = rec->opts.synth & PERF_SYNTH_MMAP;
+>  
+>  	if (rec->opts.tail_synthesize != tail)
+>  		return 0;
+> @@ -1265,7 +1266,7 @@ static int record__synthesize_workload(struct record *rec, bool tail)
+>  	err = perf_event__synthesize_thread_map(&rec->tool, thread_map,
+>  						 process_synthesized_event,
+>  						 &rec->session->machines.host,
+> -						 true,
+> +						 needs_mmap,
+>  						 rec->opts.sample_address);
+>  	perf_thread_map__put(thread_map);
+>  	return err;
+> @@ -1500,20 +1501,26 @@ static int record__synthesize(struct record *rec, bool tail)
+>  	if (err < 0)
+>  		pr_warning("Couldn't synthesize bpf events.\n");
+>  
+> -	err = perf_event__synthesize_cgroups(tool, process_synthesized_event,
+> -					     machine);
+> -	if (err < 0)
+> -		pr_warning("Couldn't synthesize cgroup events.\n");
+> +	if (rec->opts.synth & PERF_SYNTH_CGROUP) {
+> +		err = perf_event__synthesize_cgroups(tool, process_synthesized_event,
+> +						     machine);
+> +		if (err < 0)
+> +			pr_warning("Couldn't synthesize cgroup events.\n");
+> +	}
+>  
+>  	if (rec->opts.nr_threads_synthesize > 1) {
+>  		perf_set_multithreaded();
+>  		f = process_locked_synthesized_event;
+>  	}
+>  
+> -	err = __machine__synthesize_threads(machine, tool, &opts->target,
+> -					    rec->evlist->core.threads,
+> -					    f, true, opts->sample_address,
+> -					    rec->opts.nr_threads_synthesize);
+> +	if (rec->opts.synth & PERF_SYNTH_TASK) {
+> +		bool needs_mmap = rec->opts.synth & PERF_SYNTH_MMAP;
+> +
+> +		err = __machine__synthesize_threads(machine, tool, &opts->target,
+> +						    rec->evlist->core.threads,
+> +						    f, needs_mmap, opts->sample_address,
+> +						    rec->opts.nr_threads_synthesize);
+> +	}
+>  
+>  	if (rec->opts.nr_threads_synthesize > 1)
+>  		perf_set_singlethreaded();
+> @@ -2422,6 +2429,26 @@ static int process_timestamp_boundary(struct perf_tool *tool,
+>  	return 0;
+>  }
+>  
+> +static int parse_record_synth_option(const struct option *opt,
+> +				     const char *str,
+> +				     int unset __maybe_unused)
+> +{
+> +	struct record_opts *opts = opt->value;
+> +	char *p = strdup(str);
+> +
+> +	if (p == NULL)
+> +		return -1;
+> +
+> +	opts->synth = parse_synth_opt(p);
+> +	free(p);
+> +
+> +	if (opts->synth < 0) {
+> +		pr_err("Invalid synth option: %s\n", str);
+> +		return -1;
+> +	}
+> +	return 0;
+> +}
+> +
+>  /*
+>   * XXX Ideally would be local to cmd_record() and passed to a record__new
+>   * because we need to have access to it in record__exit, that is called
+> @@ -2447,6 +2474,7 @@ static struct record record = {
+>  		.nr_threads_synthesize = 1,
+>  		.ctl_fd              = -1,
+>  		.ctl_fd_ack          = -1,
+> +		.synth               = PERF_SYNTH_ALL,
+>  	},
+>  	.tool = {
+>  		.sample		= process_sample_event,
+> @@ -2662,6 +2690,8 @@ static struct option __record_options[] = {
+>  		     "\t\t\t  Optionally send control command completion ('ack\\n') to ack-fd descriptor.\n"
+>  		     "\t\t\t  Alternatively, ctl-fifo / ack-fifo will be opened and used as ctl-fd / ack-fd.",
+>  		      parse_control_option),
+> +	OPT_CALLBACK(0, "synth", &record.opts, "no|all|task|mmap|cgroup",
+> +		     "Fine-tune event synthesis: default=all", parse_record_synth_option),
+>  	OPT_END()
+>  };
+>  
+> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+> index 68f471d9a88b..ef6c2715fdd9 100644
+> --- a/tools/perf/util/record.h
+> +++ b/tools/perf/util/record.h
+> @@ -77,6 +77,7 @@ struct record_opts {
+>  	int	      ctl_fd;
+>  	int	      ctl_fd_ack;
+>  	bool	      ctl_fd_close;
+> +	int	      synth;
+>  };
+>  
+>  extern const char * const *record_usage;
+> diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
+> index 566e0859fcfb..9485d0532b9c 100644
+> --- a/tools/perf/util/synthetic-events.c
+> +++ b/tools/perf/util/synthetic-events.c
+> @@ -2186,3 +2186,31 @@ int perf_event__synthesize_features(struct perf_tool *tool, struct perf_session
+>  	free(ff.buf);
+>  	return ret;
+>  }
+> +
+> +int parse_synth_opt(char *synth)
+> +{
+> +	char *p, *q;
+> +	int ret = 0;
+> +
+> +	if (synth == NULL)
+> +		return -1;
+> +
+> +	for (q = synth; (p = strsep(&q, ",")); p = q) {
+> +		if (!strcasecmp(p, "no") || !strcasecmp(p, "none"))
+> +			return 0;
+> +
+> +		if (!strcasecmp(p, "all"))
+> +			return PERF_SYNTH_ALL;
+> +
+> +		if (!strcasecmp(p, "task"))
+> +			ret |= PERF_SYNTH_TASK;
+> +		else if (!strcasecmp(p, "mmap"))
+> +			ret |= PERF_SYNTH_TASK | PERF_SYNTH_MMAP;
+> +		else if (!strcasecmp(p, "cgroup"))
+> +			ret |= PERF_SYNTH_CGROUP;
+> +		else
+> +			return -1;
+> +	}
+> +
+> +	return ret;
+> +}
+> diff --git a/tools/perf/util/synthetic-events.h b/tools/perf/util/synthetic-events.h
+> index 61bbdb3b64df..913803506345 100644
+> --- a/tools/perf/util/synthetic-events.h
+> +++ b/tools/perf/util/synthetic-events.h
+> @@ -26,6 +26,18 @@ struct target;
+>  
+>  union perf_event;
+>  
+> +enum perf_record_synth {
+> +	PERF_SYNTH_TASK		= 1 << 0,
+> +	PERF_SYNTH_MMAP		= 1 << 1,
+> +	PERF_SYNTH_CGROUP	= 1 << 2,
+> +
+> +	/* last element */
+> +	PERF_SYNTH_MAX		= 1 << 3,
+> +};
+> +#define PERF_SYNTH_ALL  (PERF_SYNTH_MAX - 1)
+> +
+> +int parse_synth_opt(char *str);
+> +
+>  typedef int (*perf_event__handler_t)(struct perf_tool *tool, union perf_event *event,
+>  				     struct perf_sample *sample, struct machine *machine);
+>  
+> -- 
+> 2.32.0.432.gabb21c7263-goog
+> 
 
