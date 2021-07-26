@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2243D605F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C933D6320
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237258AbhGZPWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54390 "EHLO mail.kernel.org"
+        id S238882AbhGZPoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236832AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D657760FD7;
-        Mon, 26 Jul 2021 15:53:28 +0000 (UTC)
+        id S237869AbhGZPYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:24:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D16A60240;
+        Mon, 26 Jul 2021 16:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314809;
-        bh=PhZhRfJRPe3LexCSI2vN0G6CEGAKLiy1QknDRae4hDU=;
+        s=korg; t=1627315488;
+        bh=a4/I185hfQSbkUJOO/kBX0KuBzM0koq0qFt4U4ncbmI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uu4MZILUfqnvIhKtC4zbBucaMKE6zxZgcbVWY5rHal1JQ53rXb6nH6kB3KdFOuCCp
-         LOkQvCgJVadcClrV4YuPRBMvnZOP2Ru2IwhlQj/QVT/ZHbDwz9UjTRVHPoLzMH8eiU
-         RSM5cT2ufDIwrTBOMYf66CgfpPviuWnNkJ/p9RFg=
+        b=ukei4sP6cGG+n7ydG8wzeuM/X3XO6oc+5o74+cTbdRkCoIk7Uaoc1tGdBKS3EwzmS
+         5cGILgx6201fXffO5ha5gA+hMJ4FiJ/f0tULxWMeO0ABzPgtKRHKHZMQNnykyhzyZ2
+         iwl9snCF35ZC4SauUZNyJ+sUXgH91BgQLdARE3Ko=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Sikorski <belegdol+github@gmail.com>
-Subject: [PATCH 4.19 098/120] USB: usb-storage: Add LaCie Rugged USB3-FW to IGNORE_UAS
+        stable@vger.kernel.org, Greg Thelen <gthelen@google.com>
+Subject: [PATCH 5.10 117/167] usb: xhci: avoid renesas_usb_fw.mem when its unusable
 Date:   Mon, 26 Jul 2021 17:39:10 +0200
-Message-Id: <20210726153835.553176839@linuxfoundation.org>
+Message-Id: <20210726153843.331170795@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,42 +38,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Sikorski <belegdol@gmail.com>
+From: Greg Thelen <gthelen@google.com>
 
-commit 6abf2fe6b4bf6e5256b80c5817908151d2d33e9f upstream.
+commit 0665e387318607d8269bfdea60723c627c8bae43 upstream.
 
-LaCie Rugged USB3-FW appears to be incompatible with UAS. It generates
-errors like:
-[ 1151.582598] sd 14:0:0:0: tag#16 uas_eh_abort_handler 0 uas-tag 1 inflight: IN
-[ 1151.582602] sd 14:0:0:0: tag#16 CDB: Report supported operation codes a3 0c 01 12 00 00 00 00 02 00 00 00
-[ 1151.588594] scsi host14: uas_eh_device_reset_handler start
-[ 1151.710482] usb 2-4: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
-[ 1151.741398] scsi host14: uas_eh_device_reset_handler success
-[ 1181.785534] scsi host14: uas_eh_device_reset_handler start
+Commit a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with
+memory") added renesas_usb_fw.mem firmware reference to xhci-pci.  Thus
+modinfo indicates xhci-pci.ko has "firmware: renesas_usb_fw.mem".  But
+the firmware is only actually used with CONFIG_USB_XHCI_PCI_RENESAS.  An
+unusable firmware reference can trigger safety checkers which look for
+drivers with unmet firmware dependencies.
 
-Signed-off-by: Julian Sikorski <belegdol+github@gmail.com>
+Avoid referring to renesas_usb_fw.mem in circumstances when it cannot be
+loaded (when CONFIG_USB_XHCI_PCI_RENESAS isn't set).
+
+Fixes: a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with memory")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210720171910.36497-1-belegdol+github@gmail.com
+Signed-off-by: Greg Thelen <gthelen@google.com>
+Link: https://lore.kernel.org/r/20210702071224.3673568-1-gthelen@google.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
+ drivers/usb/host/xhci-pci.c |    7 +++++++
  1 file changed, 7 insertions(+)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -45,6 +45,13 @@ UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x99
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
- 		US_FL_NO_REPORT_OPCODES | US_FL_NO_SAME),
- 
-+/* Reported-by: Julian Sikorski <belegdol@gmail.com> */
-+UNUSUAL_DEV(0x059f, 0x1061, 0x0000, 0x9999,
-+		"LaCie",
-+		"Rugged USB3-FW",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_IGNORE_UAS),
+--- a/drivers/usb/host/xhci-pci.c
++++ b/drivers/usb/host/xhci-pci.c
+@@ -631,7 +631,14 @@ static const struct pci_device_id pci_id
+ 	{ /* end: all zeroes */ }
+ };
+ MODULE_DEVICE_TABLE(pci, pci_ids);
 +
- /*
-  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
-  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
++/*
++ * Without CONFIG_USB_XHCI_PCI_RENESAS renesas_xhci_check_request_fw() won't
++ * load firmware, so don't encumber the xhci-pci driver with it.
++ */
++#if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
+ MODULE_FIRMWARE("renesas_usb_fw.mem");
++#endif
+ 
+ /* pci driver glue; this is a "new style" PCI driver module */
+ static struct pci_driver xhci_pci_driver = {
 
 
