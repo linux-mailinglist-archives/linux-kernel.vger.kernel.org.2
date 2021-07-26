@@ -2,293 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403F33D53B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02B13D53B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhGZGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhGZGdo (ORCPT
+        id S232207AbhGZGeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:34:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52655 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232182AbhGZGeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:33:44 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB96C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:14:12 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id f13so6508944edq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:14:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zwk2b+4K3DnEu81t0h2sa/3UYWtNHb7/ckQIg7vKAGA=;
-        b=nkmoaBh/nnGFhp/DFLRjErMsTGIvMcLZ2S2MpTVcCqjhFlqxPKbA/WwKiIGb+HEtue
-         5AfesAXwhj5DyDo6Mq0Ir9PNgAL682P2o6MD08IebMg2xznjCAnoGbsQuZygMetcduJG
-         m8yo9fFuBf5TNt7+5/qiSdpoq1GEkvgjpIpKUErIp4uIIew28fLluSdployRByADM+Jj
-         QsjusGYI1L6HENUcR6jSBd7ygUwKATN4B8tdVLQDcuihP+OotKSXwyPtHcxffJ7bx8gO
-         ldLu+Nx8t0bs7QMZQoeBN/skYiQ9WF/xZPBF3LEIDITYQgz23FqnyuU6bpAnc5ULj/6T
-         Zgww==
+        Mon, 26 Jul 2021 02:34:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627283670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=um4df6F+Tcs1NedbhaEs9ICFL4JEkb2ohkfDmaRpXVs=;
+        b=UVNLO4qZoV+KdEa+HALsYM9tc/LQlIYyOtHj+0NxPzuRUvX9RD7LArv4mqWT2EF5YaKPp4
+        ZwWvcxpP7AGJWLmDy3zS/KQkmgRqcJEyTC/Z1+Ew0CsqSRAouGGrAVHWVI/5KgZnBTpxmv
+        hdDDYfuhUskmB/7EXKXcIafs8MnfK8g=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-135-GRfmmmzjO6ie0eckAlsISg-1; Mon, 26 Jul 2021 03:14:28 -0400
+X-MC-Unique: GRfmmmzjO6ie0eckAlsISg-1
+Received: by mail-wr1-f72.google.com with SMTP id o11-20020a5d474b0000b02901533f8ed22cso2870940wrs.22
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:14:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zwk2b+4K3DnEu81t0h2sa/3UYWtNHb7/ckQIg7vKAGA=;
-        b=ShVfS8U5v/73nBGW+9nenQ2wlEiyINH54XQQrkJSbxi32R+aWsovi3sjPyj4NXKSOc
-         atRnzvywWIR+UUo8YVo6qXr1jL3T3NHxYmqQqyKG//JODRzih3chQe5/B3uI0I7twa5+
-         Qp7rJ+usDScv5z4pDnKemf3P5Bm97SXqcrQy1mIAEnDSx0e+qlGgO+lXwiNz/PJIwXwA
-         KF0HodbHkq2xdpqqEQ4EBz0FX29GDooOK6OgbRD1TQNiDU0ME4EQcnZPcjG2Fl3Ce4Ac
-         VC2TgnnMIg3sO+pZ2VyXf9g0ECYMQ0OQDbUQwRbQRekBMW3uMin+WklsxcTBsXmh2mmt
-         sPCw==
-X-Gm-Message-State: AOAM532dmXRazdeGeP2z9m8mF+o9hhk4u1ommx0/j5znrIF5wjBvBSdv
-        eKktx19TF0Si1Nrnlu4JGcGbrA==
-X-Google-Smtp-Source: ABdhPJzoMTcKoT7QudZyKjhXOFbetXetJaPNnq23PTkbqn8pDQHlA+KcEnX+yMlYeLd926NK0dNqEg==
-X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr19596435edd.368.1627283651194;
-        Mon, 26 Jul 2021 00:14:11 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id v13sm13863772ejh.62.2021.07.26.00.14.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 00:14:10 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     denis.ciocca@st.com, jic23@kernel.org,
-        Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH 4/4] iio: st_sensors: remove reference to parent device object on st_sensor_data
-Date:   Mon, 26 Jul 2021 10:14:04 +0300
-Message-Id: <20210726071404.14529-5-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210726071404.14529-1-aardelean@deviqon.com>
-References: <20210726071404.14529-1-aardelean@deviqon.com>
+        h=x-gm-message-state:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=um4df6F+Tcs1NedbhaEs9ICFL4JEkb2ohkfDmaRpXVs=;
+        b=uYJNPply7fDF3jYoA9N7X6aJUmYpr0awOfGmz3pk2A3u8NHXryu/owIlck4+w+2ZMn
+         jfjB/rmpjkfy2JKAXcTO/aKUeeX2l1yYPmhb+0C0zV0CFv3LFvALKJa6UwDvFPb6aNC5
+         kYWaucAQkapPGqF8DT53EWS24UKVv02RX5zfiY/VR5UYg+DqP1xfrIdhtC1ndhcvqPHS
+         g+WHvyiJQaFZkNvG+1lKPOOMIi4KuW6DwHcw7AWFS7iHfudIHOcwQMOjPGYL9Kufx8+O
+         hWH+/muuqvixn7QrI7FsHXSMfrq6k/efs5LusWKb+6IYodovghUOU0J6fpjWpLkYPrfD
+         XBQg==
+X-Gm-Message-State: AOAM530ypm7fEYS6KGAuPC8eq+JSK1YixH1jKpnqkH2WRidA6R3wEaUJ
+        tGk/PUuTq1w2qPlPZJqKTBpm+mJkPIfPSSp7XPBVTDYQEPh29XY6DGDBPv7LzfCSHpvPHOCoKet
+        EvpuxdhTmA9lvnyX98OiEInT0
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr11306682wmp.52.1627283667217;
+        Mon, 26 Jul 2021 00:14:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrJ5ioNqCfkDgUWTA7YxeWf82kzHlJSCsGt9E8hJ1xGP6IhEO9RD5CtVqgDVl+ePM/lAAEqw==
+X-Received: by 2002:a05:600c:a08:: with SMTP id z8mr11306664wmp.52.1627283667006;
+        Mon, 26 Jul 2021 00:14:27 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23b33.dip0.t-ipconnect.de. [79.242.59.51])
+        by smtp.gmail.com with ESMTPSA id d203sm7830431wmd.38.2021.07.26.00.14.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 00:14:26 -0700 (PDT)
+Subject: Re: mmotm 2021-07-23-15-03 uploaded (mm/memory_hotplug.c)
+To:     Randy Dunlap <rdunlap@infradead.org>, akpm@linux-foundation.org,
+        broonie@kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
+References: <20210723220400.w5iKInKaC%akpm@linux-foundation.org>
+ <5966f6a2-bdba-3a54-c6cb-d21aaeb8f534@infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <5394da5e-29f0-ff7d-e614-e2805400a8bb@redhat.com>
+Date:   Mon, 26 Jul 2021 09:14:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <5966f6a2-bdba-3a54-c6cb-d21aaeb8f534@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not completely sure whether this change makes much sense.
-The idea behind it, is that all devm_ calls in ST sensors are bound to the
-parent device object.
+On 24.07.21 20:49, Randy Dunlap wrote:
+> On 7/23/21 3:04 PM, akpm@linux-foundation.org wrote:
+>> The mm-of-the-moment snapshot 2021-07-23-15-03 has been uploaded to
+>>
+>>     https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> mmotm-readme.txt says
+>>
+>> README for mm-of-the-moment:
+>>
+>> https://www.ozlabs.org/~akpm/mmotm/
+>>
+>> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+>> more than once a week.
+>>
+>> You will need quilt to apply these patches to the latest Linus release (5.x
+>> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
+>> https://ozlabs.org/~akpm/mmotm/series
+>>
+>> The file broken-out.tar.gz contains two datestamp files: .DATE and
+>> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
+>> followed by the base kernel version against which this patch series is to
+>> be applied.
+>>
+> 
+> on x86_64:
+> # CONFIG_CMA is not set
+> 
+> mm-memory_hotplug-memory-group-aware-auto-movable-online-policy.patch
+> 
+> 
+> 
+> ../mm/memory_hotplug.c: In function ‘auto_movable_stats_account_zone’:
+> ../mm/memory_hotplug.c:748:33: error: ‘struct zone’ has no member named ‘cma_pages’; did you mean ‘managed_pages’?
+>     stats->movable_pages += zone->cma_pages;
+>                                   ^~~~~~~~~
+>                                   managed_pages
+> ../mm/memory_hotplug.c:750:38: error: ‘struct zone’ has no member named ‘cma_pages’; did you mean ‘managed_pages’?
+>     stats->kernel_early_pages -= zone->cma_pages;
+>                                        ^~~~~~~~~
+>                                        managed_pages
+> 
+> 
 
-However, the reference to that object is kept on both the st_sensor_data
-struct and the IIO object parent (indio_dev->dev.parent).
+Thanks Randy, the following on top should make it fly:
 
-This change only adds a bit consistency and uses the reference stored on
-indio_dev->dev.parent, to enforce the assumption that all ST sensors' devm_
-calls are bound to the same reference as the one store on st_sensor_data.
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index bfdaa28eb86f..fa1a0afd32ba 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -741,13 +741,15 @@ static void auto_movable_stats_account_zone(struct auto_movable_stats *stats,
+         if (zone_idx(zone) == ZONE_MOVABLE) {
+                 stats->movable_pages += zone->present_pages;
+         } else {
++               stats->kernel_early_pages += zone->present_early_pages;
++#ifdef CONFIG_CMA
+                 /*
+                  * CMA pages (never on hotplugged memory) behave like
+                  * ZONE_MOVABLE.
+                  */
+                 stats->movable_pages += zone->cma_pages;
+-               stats->kernel_early_pages += zone->present_early_pages;
+                 stats->kernel_early_pages -= zone->cma_pages;
++#endif /* CONFIG_CMA */
+         }
+  }
+  struct auto_movable_group_stats {
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/accel/st_accel_core.c                  | 7 ++++---
- drivers/iio/common/st_sensors/st_sensors_i2c.c     | 1 -
- drivers/iio/common/st_sensors/st_sensors_spi.c     | 1 -
- drivers/iio/common/st_sensors/st_sensors_trigger.c | 8 +++++---
- drivers/iio/gyro/st_gyro_core.c                    | 2 +-
- drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c       | 2 --
- drivers/iio/magnetometer/st_magn_core.c            | 4 ++--
- drivers/iio/pressure/st_pressure_core.c            | 2 +-
- include/linux/iio/common/st_sensors.h              | 2 --
- 9 files changed, 13 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/iio/accel/st_accel_core.c b/drivers/iio/accel/st_accel_core.c
-index 01695abd9d2f..c2d2cbe0fa3b 100644
---- a/drivers/iio/accel/st_accel_core.c
-+++ b/drivers/iio/accel/st_accel_core.c
-@@ -1186,6 +1186,7 @@ static const struct iio_trigger_ops st_accel_trigger_ops = {
-  */
- static int apply_acpi_orientation(struct iio_dev *indio_dev)
- {
-+	struct device *parent = indio_dev->dev.parent;
- 	struct st_sensor_data *adata = iio_priv(indio_dev);
- 	struct acpi_buffer buffer = {ACPI_ALLOCATE_BUFFER, NULL};
- 	struct acpi_device *adev;
-@@ -1210,7 +1211,7 @@ static int apply_acpi_orientation(struct iio_dev *indio_dev)
- 	};
- 
- 
--	adev = ACPI_COMPANION(adata->dev);
-+	adev = ACPI_COMPANION(parent);
- 	if (!adev)
- 		return 0;
- 
-@@ -1334,8 +1335,8 @@ EXPORT_SYMBOL(st_accel_get_settings);
- int st_accel_common_probe(struct iio_dev *indio_dev)
- {
- 	struct st_sensor_data *adata = iio_priv(indio_dev);
--	struct st_sensors_platform_data *pdata = dev_get_platdata(adata->dev);
- 	struct device *parent = indio_dev->dev.parent;
-+	struct st_sensors_platform_data *pdata = dev_get_platdata(parent);
- 	int err;
- 
- 	indio_dev->modes = INDIO_DIRECT_MODE;
-@@ -1355,7 +1356,7 @@ int st_accel_common_probe(struct iio_dev *indio_dev)
- 	 */
- 	err = apply_acpi_orientation(indio_dev);
- 	if (err) {
--		err = iio_read_mount_matrix(adata->dev, &adata->mount_matrix);
-+		err = iio_read_mount_matrix(parent, &adata->mount_matrix);
- 		if (err)
- 			return err;
- 	}
-diff --git a/drivers/iio/common/st_sensors/st_sensors_i2c.c b/drivers/iio/common/st_sensors/st_sensors_i2c.c
-index b3ff88700866..18bd3c3d99bc 100644
---- a/drivers/iio/common/st_sensors/st_sensors_i2c.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_i2c.c
-@@ -57,7 +57,6 @@ int st_sensors_i2c_configure(struct iio_dev *indio_dev,
- 
- 	indio_dev->name = client->name;
- 
--	sdata->dev = &client->dev;
- 	sdata->irq = client->irq;
- 
- 	return 0;
-diff --git a/drivers/iio/common/st_sensors/st_sensors_spi.c b/drivers/iio/common/st_sensors/st_sensors_spi.c
-index 0d1d66c77cd8..7c60050e90dc 100644
---- a/drivers/iio/common/st_sensors/st_sensors_spi.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_spi.c
-@@ -109,7 +109,6 @@ int st_sensors_spi_configure(struct iio_dev *indio_dev,
- 
- 	indio_dev->name = spi->modalias;
- 
--	sdata->dev = &spi->dev;
- 	sdata->irq = spi->irq;
- 
- 	return 0;
-diff --git a/drivers/iio/common/st_sensors/st_sensors_trigger.c b/drivers/iio/common/st_sensors/st_sensors_trigger.c
-index d022157b66a2..bb687d1bcbef 100644
---- a/drivers/iio/common/st_sensors/st_sensors_trigger.c
-+++ b/drivers/iio/common/st_sensors/st_sensors_trigger.c
-@@ -28,6 +28,7 @@
- static bool st_sensors_new_samples_available(struct iio_dev *indio_dev,
- 					     struct st_sensor_data *sdata)
- {
-+	struct device *parent = indio_dev->dev.parent;
- 	int ret, status;
- 
- 	/* How would I know if I can't check it? */
-@@ -42,7 +43,7 @@ static bool st_sensors_new_samples_available(struct iio_dev *indio_dev,
- 			  sdata->sensor_settings->drdy_irq.stat_drdy.addr,
- 			  &status);
- 	if (ret < 0) {
--		dev_err(sdata->dev, "error checking samples available\n");
-+		dev_err(parent, "error checking samples available\n");
- 		return false;
- 	}
- 
-@@ -75,6 +76,7 @@ static irqreturn_t st_sensors_irq_thread(int irq, void *p)
- 	struct iio_trigger *trig = p;
- 	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
- 	struct st_sensor_data *sdata = iio_priv(indio_dev);
-+	struct device *parent = indio_dev->dev.parent;
- 
- 	/*
- 	 * If this trigger is backed by a hardware interrupt and we have a
-@@ -87,7 +89,7 @@ static irqreturn_t st_sensors_irq_thread(int irq, void *p)
- 	    st_sensors_new_samples_available(indio_dev, sdata)) {
- 		iio_trigger_poll_chained(p);
- 	} else {
--		dev_dbg(sdata->dev, "spurious IRQ\n");
-+		dev_dbg(parent, "spurious IRQ\n");
- 		return IRQ_NONE;
- 	}
- 
-@@ -107,7 +109,7 @@ static irqreturn_t st_sensors_irq_thread(int irq, void *p)
- 	 */
- 	while (sdata->hw_irq_trigger &&
- 	       st_sensors_new_samples_available(indio_dev, sdata)) {
--		dev_dbg(sdata->dev, "more samples came in during polling\n");
-+		dev_dbg(parent, "more samples came in during polling\n");
- 		sdata->hw_timestamp = iio_get_time_ns(indio_dev);
- 		iio_trigger_poll_chained(p);
- 	}
-diff --git a/drivers/iio/gyro/st_gyro_core.c b/drivers/iio/gyro/st_gyro_core.c
-index 3609082a6778..201050b76fe5 100644
---- a/drivers/iio/gyro/st_gyro_core.c
-+++ b/drivers/iio/gyro/st_gyro_core.c
-@@ -492,7 +492,7 @@ int st_gyro_common_probe(struct iio_dev *indio_dev)
- 	indio_dev->channels = gdata->sensor_settings->ch;
- 	indio_dev->num_channels = ST_SENSORS_NUMBER_ALL_CHANNELS;
- 
--	err = iio_read_mount_matrix(gdata->dev, &gdata->mount_matrix);
-+	err = iio_read_mount_matrix(parent, &gdata->mount_matrix);
- 	if (err)
- 		return err;
- 
-diff --git a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-index d276f663fe57..b3a43a3b04ff 100644
---- a/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-+++ b/drivers/iio/imu/st_lsm9ds0/st_lsm9ds0_core.c
-@@ -90,7 +90,6 @@ static int st_lsm9ds0_probe_accel(struct st_lsm9ds0 *lsm9ds0, struct regmap *reg
- 
- 	data = iio_priv(lsm9ds0->accel);
- 	data->sensor_settings = (struct st_sensor_settings *)settings;
--	data->dev = dev;
- 	data->irq = lsm9ds0->irq;
- 	data->regmap = regmap;
- 	data->vdd = lsm9ds0->vdd;
-@@ -119,7 +118,6 @@ static int st_lsm9ds0_probe_magn(struct st_lsm9ds0 *lsm9ds0, struct regmap *regm
- 
- 	data = iio_priv(lsm9ds0->magn);
- 	data->sensor_settings = (struct st_sensor_settings *)settings;
--	data->dev = dev;
- 	data->irq = lsm9ds0->irq;
- 	data->regmap = regmap;
- 	data->vdd = lsm9ds0->vdd;
-diff --git a/drivers/iio/magnetometer/st_magn_core.c b/drivers/iio/magnetometer/st_magn_core.c
-index 1458906a3765..0806a1e65ce4 100644
---- a/drivers/iio/magnetometer/st_magn_core.c
-+++ b/drivers/iio/magnetometer/st_magn_core.c
-@@ -611,8 +611,8 @@ EXPORT_SYMBOL(st_magn_get_settings);
- int st_magn_common_probe(struct iio_dev *indio_dev)
- {
- 	struct st_sensor_data *mdata = iio_priv(indio_dev);
--	struct st_sensors_platform_data *pdata = dev_get_platdata(mdata->dev);
- 	struct device *parent = indio_dev->dev.parent;
-+	struct st_sensors_platform_data *pdata = dev_get_platdata(parent);
- 	int err;
- 
- 	indio_dev->modes = INDIO_DIRECT_MODE;
-@@ -626,7 +626,7 @@ int st_magn_common_probe(struct iio_dev *indio_dev)
- 	indio_dev->channels = mdata->sensor_settings->ch;
- 	indio_dev->num_channels = ST_SENSORS_NUMBER_ALL_CHANNELS;
- 
--	err = iio_read_mount_matrix(mdata->dev, &mdata->mount_matrix);
-+	err = iio_read_mount_matrix(parent, &mdata->mount_matrix);
- 	if (err)
- 		return err;
- 
-diff --git a/drivers/iio/pressure/st_pressure_core.c b/drivers/iio/pressure/st_pressure_core.c
-index cebcc1d93d0b..26a1ee43d56e 100644
---- a/drivers/iio/pressure/st_pressure_core.c
-+++ b/drivers/iio/pressure/st_pressure_core.c
-@@ -677,8 +677,8 @@ EXPORT_SYMBOL(st_press_get_settings);
- int st_press_common_probe(struct iio_dev *indio_dev)
- {
- 	struct st_sensor_data *press_data = iio_priv(indio_dev);
--	struct st_sensors_platform_data *pdata = dev_get_platdata(press_data->dev);
- 	struct device *parent = indio_dev->dev.parent;
-+	struct st_sensors_platform_data *pdata = dev_get_platdata(parent);
- 	int err;
- 
- 	indio_dev->modes = INDIO_DIRECT_MODE;
-diff --git a/include/linux/iio/common/st_sensors.h b/include/linux/iio/common/st_sensors.h
-index d17ae1e5ca19..22f67845cdd3 100644
---- a/include/linux/iio/common/st_sensors.h
-+++ b/include/linux/iio/common/st_sensors.h
-@@ -220,7 +220,6 @@ struct st_sensor_settings {
- 
- /**
-  * struct st_sensor_data - ST sensor device status
-- * @dev: Pointer to instance of struct device (I2C or SPI).
-  * @trig: The trigger in use by the core driver.
-  * @mount_matrix: The mounting matrix of the sensor.
-  * @sensor_settings: Pointer to the specific sensor settings in use.
-@@ -240,7 +239,6 @@ struct st_sensor_settings {
-  * @buffer_data: Data used by buffer part.
-  */
- struct st_sensor_data {
--	struct device *dev;
- 	struct iio_trigger *trig;
- 	struct iio_mount_matrix mount_matrix;
- 	struct st_sensor_settings *sensor_settings;
 -- 
-2.31.1
+Thanks,
+
+David / dhildenb
 
