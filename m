@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BCC23D630A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004483D6172
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238572AbhGZPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39930 "EHLO mail.kernel.org"
+        id S232917AbhGZPb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:31:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238120AbhGZPYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51ADC60240;
-        Mon, 26 Jul 2021 16:05:09 +0000 (UTC)
+        id S236884AbhGZPRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 178DF60F57;
+        Mon, 26 Jul 2021 15:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315509;
-        bh=0B0/m9AQhwYNUWaUVtkh/2N7DpmLSjh5El2w8Mt36ZY=;
+        s=korg; t=1627315095;
+        bh=r2/TrHRwbUkzfY+OedYR+SYDR417kD429k5/wptAKoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x126/9Z0digZyjZEj+kyL8UQTkOnatOrJbjyHzmKueIR1GwKR1P68l480fpW/UsWU
-         SOKbBsu7UlmDMygE48XlOfIntmww7TqSv4NGhoJjJEXeDp/cRXQPF19ypoRjWEun4H
-         96bZFzrCxY8p0ytuq6amWxifJlN0kQN3hZ4/czBs=
+        b=NmZXRUmUT45rCEb286mYRrszlxoWIqPubWDynXzd0Q4zZJ3z/DGIrTgA/WxtjI4wM
+         fl/jsorYuXg17ChYhlhRRnNVQZUigmWiSyRgTbXp0ql4ILfZIa9zo+D2L5l9zP7XAS
+         KjvLnumv/c9lMmVJUFZdNf3dfYcpqrV/OZuCrqmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH 5.10 125/167] usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
-Date:   Mon, 26 Jul 2021 17:39:18 +0200
-Message-Id: <20210726153843.595214163@linuxfoundation.org>
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Neuling <mikey@neuling.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 078/108] KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state
+Date:   Mon, 26 Jul 2021 17:39:19 +0200
+Message-Id: <20210726153834.179563394@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 5719df243e118fb343725e8b2afb1637e1af1373 upstream.
+commit d9c57d3ed52a92536f5fa59dc5ccdd58b4875076 upstream.
 
-This driver has a potential issue which this driver is possible to
-cause superfluous irqs after usb_pkt_pop() is called. So, after
-the commit 3af32605289e ("usb: renesas_usbhs: fix error return
-code of usbhsf_pkt_handler()") had been applied, we could observe
-the following error happened when we used g_audio.
+The H_ENTER_NESTED hypercall is handled by the L0, and it is a request
+by the L1 to switch the context of the vCPU over to that of its L2
+guest, and return with an interrupt indication. The L1 is responsible
+for switching some registers to guest context, and the L0 switches
+others (including all the hypervisor privileged state).
 
-    renesas_usbhs e6590000.usb: irq_ready run_error 1 : -22
+If the L2 MSR has TM active, then the L1 is responsible for
+recheckpointing the L2 TM state. Then the L1 exits to L0 via the
+H_ENTER_NESTED hcall, and the L0 saves the TM state as part of the exit,
+and then it recheckpoints the TM state as part of the nested entry and
+finally HRFIDs into the L2 with TM active MSR. Not efficient, but about
+the simplest approach for something that's horrendously complicated.
 
-To fix the issue, disable the tx or rx interrupt in usb_pkt_pop().
+Problems arise if the L1 exits to the L0 with a TM state which does not
+match the L2 TM state being requested. For example if the L1 is
+transactional but the L2 MSR is non-transactional, or vice versa. The
+L0's HRFID can take a TM Bad Thing interrupt and crash.
 
-Fixes: 2743e7f90dc0 ("usb: renesas_usbhs: fix the usb_pkt_pop()")
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/20210624122039.596528-1-yoshihiro.shimoda.uh@renesas.com
+Fix this by disallowing H_ENTER_NESTED in TM[T] state entirely, and then
+ensuring that if the L1 is suspended then the L2 must have TM active,
+and if the L1 is not suspended then the L2 must not have TM active.
+
+Fixes: 360cae313702 ("KVM: PPC: Book3S HV: Nested guest entry via hypercall")
+Cc: stable@vger.kernel.org # v4.20+
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Acked-by: Michael Neuling <mikey@neuling.org>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/renesas_usbhs/fifo.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/powerpc/kvm/book3s_hv_nested.c |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
---- a/drivers/usb/renesas_usbhs/fifo.c
-+++ b/drivers/usb/renesas_usbhs/fifo.c
-@@ -101,6 +101,8 @@ static struct dma_chan *usbhsf_dma_chan_
- #define usbhsf_dma_map(p)	__usbhsf_dma_map_ctrl(p, 1)
- #define usbhsf_dma_unmap(p)	__usbhsf_dma_map_ctrl(p, 0)
- static int __usbhsf_dma_map_ctrl(struct usbhs_pkt *pkt, int map);
-+static void usbhsf_tx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
-+static void usbhsf_rx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
- struct usbhs_pkt *usbhs_pkt_pop(struct usbhs_pipe *pipe, struct usbhs_pkt *pkt)
- {
- 	struct usbhs_priv *priv = usbhs_pipe_to_priv(pipe);
-@@ -123,6 +125,11 @@ struct usbhs_pkt *usbhs_pkt_pop(struct u
- 		if (chan) {
- 			dmaengine_terminate_all(chan);
- 			usbhsf_dma_unmap(pkt);
-+		} else {
-+			if (usbhs_pipe_is_dir_in(pipe))
-+				usbhsf_rx_irq_ctrl(pipe, 0);
-+			else
-+				usbhsf_tx_irq_ctrl(pipe, 0);
- 		}
+--- a/arch/powerpc/kvm/book3s_hv_nested.c
++++ b/arch/powerpc/kvm/book3s_hv_nested.c
+@@ -232,6 +232,9 @@ long kvmhv_enter_nested_guest(struct kvm
+ 	if (vcpu->kvm->arch.l1_ptcr == 0)
+ 		return H_NOT_AVAILABLE;
  
- 		usbhs_pipe_clear_without_sequence(pipe, 0, 0);
++	if (MSR_TM_TRANSACTIONAL(vcpu->arch.shregs.msr))
++		return H_BAD_MODE;
++
+ 	/* copy parameters in */
+ 	hv_ptr = kvmppc_get_gpr(vcpu, 4);
+ 	err = kvm_vcpu_read_guest(vcpu, hv_ptr, &l2_hv,
+@@ -253,6 +256,23 @@ long kvmhv_enter_nested_guest(struct kvm
+ 	if (l2_hv.vcpu_token >= NR_CPUS)
+ 		return H_PARAMETER;
+ 
++	/*
++	 * L1 must have set up a suspended state to enter the L2 in a
++	 * transactional state, and only in that case. These have to be
++	 * filtered out here to prevent causing a TM Bad Thing in the
++	 * host HRFID. We could synthesize a TM Bad Thing back to the L1
++	 * here but there doesn't seem like much point.
++	 */
++	if (MSR_TM_SUSPENDED(vcpu->arch.shregs.msr)) {
++		if (!MSR_TM_ACTIVE(l2_regs.msr))
++			return H_BAD_MODE;
++	} else {
++		if (l2_regs.msr & MSR_TS_MASK)
++			return H_BAD_MODE;
++		if (WARN_ON_ONCE(vcpu->arch.shregs.msr & MSR_TS_MASK))
++			return H_BAD_MODE;
++	}
++
+ 	/* translate lpid */
+ 	l2 = kvmhv_get_nested(vcpu->kvm, l2_hv.lpid, true);
+ 	if (!l2)
 
 
