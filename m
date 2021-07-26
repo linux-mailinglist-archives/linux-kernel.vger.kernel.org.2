@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004483D6172
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9AD3D6079
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbhGZPb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:31:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58086 "EHLO mail.kernel.org"
+        id S237345AbhGZPW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:22:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236884AbhGZPRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:17:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 178DF60F57;
-        Mon, 26 Jul 2021 15:58:14 +0000 (UTC)
+        id S237408AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C0CB6101C;
+        Mon, 26 Jul 2021 15:54:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315095;
-        bh=r2/TrHRwbUkzfY+OedYR+SYDR417kD429k5/wptAKoE=;
+        s=korg; t=1627314872;
+        bh=O3bklign98ABGAFKWn6e8vbnjb9JvA5CRHH5nI+k1Bg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NmZXRUmUT45rCEb286mYRrszlxoWIqPubWDynXzd0Q4zZJ3z/DGIrTgA/WxtjI4wM
-         fl/jsorYuXg17ChYhlhRRnNVQZUigmWiSyRgTbXp0ql4ILfZIa9zo+D2L5l9zP7XAS
-         KjvLnumv/c9lMmVJUFZdNf3dfYcpqrV/OZuCrqmk=
+        b=IvY3uqKs0wVwOrBKP2bezyuPjEjCmxygPGc400tol9wNB9V2IKGNz157m6q7y2uRt
+         pTe3ZOqZ367lCURyQb0Ac672s9X9wIWD/SXHlmHgSSHjk2m1XDB32D77ndjXi1x6Fd
+         5Z8QpjbohdIUmJdS0ekFgdfZy9I90X14x7VYES1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 078/108] KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state
+        stable@vger.kernel.org, Markus Boehme <markubo@amazon.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 107/120] ixgbe: Fix packet corruption due to missing DMA sync
 Date:   Mon, 26 Jul 2021 17:39:19 +0200
-Message-Id: <20210726153834.179563394@linuxfoundation.org>
+Message-Id: <20210726153835.885170431@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Markus Boehme <markubo@amazon.com>
 
-commit d9c57d3ed52a92536f5fa59dc5ccdd58b4875076 upstream.
+commit 09cfae9f13d51700b0fecf591dcd658fc5375428 upstream.
 
-The H_ENTER_NESTED hypercall is handled by the L0, and it is a request
-by the L1 to switch the context of the vCPU over to that of its L2
-guest, and return with an interrupt indication. The L1 is responsible
-for switching some registers to guest context, and the L0 switches
-others (including all the hypervisor privileged state).
+When receiving a packet with multiple fragments, hardware may still
+touch the first fragment until the entire packet has been received. The
+driver therefore keeps the first fragment mapped for DMA until end of
+packet has been asserted, and delays its dma_sync call until then.
 
-If the L2 MSR has TM active, then the L1 is responsible for
-recheckpointing the L2 TM state. Then the L1 exits to L0 via the
-H_ENTER_NESTED hcall, and the L0 saves the TM state as part of the exit,
-and then it recheckpoints the TM state as part of the nested entry and
-finally HRFIDs into the L2 with TM active MSR. Not efficient, but about
-the simplest approach for something that's horrendously complicated.
+The driver tries to fit multiple receive buffers on one page. When using
+3K receive buffers (e.g. using Jumbo frames and legacy-rx is turned
+off/build_skb is being used) on an architecture with 4K pages, the
+driver allocates an order 1 compound page and uses one page per receive
+buffer. To determine the correct offset for a delayed DMA sync of the
+first fragment of a multi-fragment packet, the driver then cannot just
+use PAGE_MASK on the DMA address but has to construct a mask based on
+the actual size of the backing page.
 
-Problems arise if the L1 exits to the L0 with a TM state which does not
-match the L2 TM state being requested. For example if the L1 is
-transactional but the L2 MSR is non-transactional, or vice versa. The
-L0's HRFID can take a TM Bad Thing interrupt and crash.
+Using PAGE_MASK in the 3K RX buffer/4K page architecture configuration
+will always sync the first page of a compound page. With the SWIOTLB
+enabled this can lead to corrupted packets (zeroed out first fragment,
+re-used garbage from another packet) and various consequences, such as
+slow/stalling data transfers and connection resets. For example, testing
+on a link with MTU exceeding 3058 bytes on a host with SWIOTLB enabled
+(e.g. "iommu=soft swiotlb=262144,force") TCP transfers quickly fizzle
+out without this patch.
 
-Fix this by disallowing H_ENTER_NESTED in TM[T] state entirely, and then
-ensuring that if the L1 is suspended then the L2 must have TM active,
-and if the L1 is not suspended then the L2 must not have TM active.
-
-Fixes: 360cae313702 ("KVM: PPC: Book3S HV: Nested guest entry via hypercall")
-Cc: stable@vger.kernel.org # v4.20+
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Acked-by: Michael Neuling <mikey@neuling.org>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Cc: stable@vger.kernel.org
+Fixes: 0c5661ecc5dd7 ("ixgbe: fix crash in build_skb Rx code path")
+Signed-off-by: Markus Boehme <markubo@amazon.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kvm/book3s_hv_nested.c |   20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kvm/book3s_hv_nested.c
-+++ b/arch/powerpc/kvm/book3s_hv_nested.c
-@@ -232,6 +232,9 @@ long kvmhv_enter_nested_guest(struct kvm
- 	if (vcpu->kvm->arch.l1_ptcr == 0)
- 		return H_NOT_AVAILABLE;
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -1823,7 +1823,8 @@ static void ixgbe_dma_sync_frag(struct i
+ 				struct sk_buff *skb)
+ {
+ 	if (ring_uses_build_skb(rx_ring)) {
+-		unsigned long offset = (unsigned long)(skb->data) & ~PAGE_MASK;
++		unsigned long mask = (unsigned long)ixgbe_rx_pg_size(rx_ring) - 1;
++		unsigned long offset = (unsigned long)(skb->data) & mask;
  
-+	if (MSR_TM_TRANSACTIONAL(vcpu->arch.shregs.msr))
-+		return H_BAD_MODE;
-+
- 	/* copy parameters in */
- 	hv_ptr = kvmppc_get_gpr(vcpu, 4);
- 	err = kvm_vcpu_read_guest(vcpu, hv_ptr, &l2_hv,
-@@ -253,6 +256,23 @@ long kvmhv_enter_nested_guest(struct kvm
- 	if (l2_hv.vcpu_token >= NR_CPUS)
- 		return H_PARAMETER;
- 
-+	/*
-+	 * L1 must have set up a suspended state to enter the L2 in a
-+	 * transactional state, and only in that case. These have to be
-+	 * filtered out here to prevent causing a TM Bad Thing in the
-+	 * host HRFID. We could synthesize a TM Bad Thing back to the L1
-+	 * here but there doesn't seem like much point.
-+	 */
-+	if (MSR_TM_SUSPENDED(vcpu->arch.shregs.msr)) {
-+		if (!MSR_TM_ACTIVE(l2_regs.msr))
-+			return H_BAD_MODE;
-+	} else {
-+		if (l2_regs.msr & MSR_TS_MASK)
-+			return H_BAD_MODE;
-+		if (WARN_ON_ONCE(vcpu->arch.shregs.msr & MSR_TS_MASK))
-+			return H_BAD_MODE;
-+	}
-+
- 	/* translate lpid */
- 	l2 = kvmhv_get_nested(vcpu->kvm, l2_hv.lpid, true);
- 	if (!l2)
+ 		dma_sync_single_range_for_cpu(rx_ring->dev,
+ 					      IXGBE_CB(skb)->dma,
 
 
