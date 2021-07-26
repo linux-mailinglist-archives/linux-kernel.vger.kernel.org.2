@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D49363D60C8
+	by mail.lfdr.de (Postfix) with ESMTP id 8B12C3D60C7
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238044AbhGZPYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:24:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
+        id S238023AbhGZPYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236655AbhGZPMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236662AbhGZPMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:12:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 275AE60F44;
-        Mon, 26 Jul 2021 15:52:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A450C60F70;
+        Mon, 26 Jul 2021 15:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314745;
-        bh=CE5gWQ4pc9cN4I+gpmiNt6+jqpf3ayHuXU0UHSTuHYg=;
+        s=korg; t=1627314748;
+        bh=2kahH2aTxnsqqtA5KrBCR2n8QnRwcIn/KQ7IdXkAS/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2II5meeOSshpAwLph5bgP8ICcHXtBf9B94ESv9HZPoPctLgjuxQbSfgvxnHmmJlxG
-         5wATOxOUmnKUGSw0h1KJXMww6cXQaErxg+sl8D+7mYFnWRnJCyS58Nldf80IjycnZg
-         tOR2pTpdnqYIEknfiZudIvgGUU8KV/k7W0Hm8SoU=
+        b=iauOsQhyDei8/OU3squloMtYYQW1xXi/b8w27rBM1j96fnaAYgL6aAvag2Dn9JcW+
+         utnY6QQG8OzyPGfYNtQYndLvWeacCbL7iSajzCS8RlAfo0aLxqNUXMADjY5KAmXp5g
+         YSKfPKjm9HDSQgn1BOr2deEeus58FK3C0aTgBPrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 077/120] KVM: PPC: Fix kvm_arch_vcpu_ioctl vcpu_load leak
-Date:   Mon, 26 Jul 2021 17:38:49 +0200
-Message-Id: <20210726153834.864225743@linuxfoundation.org>
+Subject: [PATCH 4.19 078/120] netrom: Decrease sock refcount when sock timers expire
+Date:   Mon, 26 Jul 2021 17:38:50 +0200
+Message-Id: <20210726153834.894510264@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
 References: <20210726153832.339431936@linuxfoundation.org>
@@ -41,49 +41,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit bc4188a2f56e821ea057aca6bf444e138d06c252 ]
+[ Upstream commit 517a16b1a88bdb6b530f48d5d153478b2552d9a8 ]
 
-vcpu_put is not called if the user copy fails. This can result in preempt
-notifier corruption and crashes, among other issues.
+Commit 63346650c1a9 ("netrom: switch to sock timer API") switched to use
+sock timer API. It replaces mod_timer() by sk_reset_timer(), and
+del_timer() by sk_stop_timer().
 
-Fixes: b3cebfe8c1ca ("KVM: PPC: Move vcpu_load/vcpu_put down to each ioctl case in kvm_arch_vcpu_ioctl")
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210716024310.164448-2-npiggin@gmail.com
+Function sk_reset_timer() will increase the refcount of sock if it is
+called on an inactive timer, hence, in case the timer expires, we need to
+decrease the refcount ourselves in the handler, otherwise, the sock
+refcount will be unbalanced and the sock will never be freed.
+
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com
+Fixes: 63346650c1a9 ("netrom: switch to sock timer API")
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/powerpc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/netrom/nr_timer.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 7c8354dfe80e..ad5a871a6cbf 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -1995,9 +1995,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	{
- 		struct kvm_enable_cap cap;
- 		r = -EFAULT;
--		vcpu_load(vcpu);
- 		if (copy_from_user(&cap, argp, sizeof(cap)))
- 			goto out;
-+		vcpu_load(vcpu);
- 		r = kvm_vcpu_ioctl_enable_cap(vcpu, &cap);
- 		vcpu_put(vcpu);
+diff --git a/net/netrom/nr_timer.c b/net/netrom/nr_timer.c
+index 908e53ab47a4..426d49609524 100644
+--- a/net/netrom/nr_timer.c
++++ b/net/netrom/nr_timer.c
+@@ -124,11 +124,9 @@ static void nr_heartbeat_expiry(struct timer_list *t)
+ 		   is accepted() it isn't 'dead' so doesn't get removed. */
+ 		if (sock_flag(sk, SOCK_DESTROY) ||
+ 		    (sk->sk_state == TCP_LISTEN && sock_flag(sk, SOCK_DEAD))) {
+-			sock_hold(sk);
+ 			bh_unlock_sock(sk);
+ 			nr_destroy_socket(sk);
+-			sock_put(sk);
+-			return;
++			goto out;
+ 		}
  		break;
-@@ -2021,9 +2021,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	case KVM_DIRTY_TLB: {
- 		struct kvm_dirty_tlb dirty;
- 		r = -EFAULT;
--		vcpu_load(vcpu);
- 		if (copy_from_user(&dirty, argp, sizeof(dirty)))
- 			goto out;
-+		vcpu_load(vcpu);
- 		r = kvm_vcpu_ioctl_dirty_tlb(vcpu, &dirty);
- 		vcpu_put(vcpu);
- 		break;
+ 
+@@ -149,6 +147,8 @@ static void nr_heartbeat_expiry(struct timer_list *t)
+ 
+ 	nr_start_heartbeat(sk);
+ 	bh_unlock_sock(sk);
++out:
++	sock_put(sk);
+ }
+ 
+ static void nr_t2timer_expiry(struct timer_list *t)
+@@ -162,6 +162,7 @@ static void nr_t2timer_expiry(struct timer_list *t)
+ 		nr_enquiry_response(sk);
+ 	}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_t4timer_expiry(struct timer_list *t)
+@@ -172,6 +173,7 @@ static void nr_t4timer_expiry(struct timer_list *t)
+ 	bh_lock_sock(sk);
+ 	nr_sk(sk)->condition &= ~NR_COND_PEER_RX_BUSY;
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_idletimer_expiry(struct timer_list *t)
+@@ -200,6 +202,7 @@ static void nr_idletimer_expiry(struct timer_list *t)
+ 		sock_set_flag(sk, SOCK_DEAD);
+ 	}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_t1timer_expiry(struct timer_list *t)
+@@ -212,8 +215,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_1:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_CONNREQ);
+@@ -223,8 +225,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_2:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_DISCREQ);
+@@ -234,8 +235,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_3:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_requeue_frames(sk);
+@@ -244,5 +244,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	}
+ 
+ 	nr_start_t1timer(sk);
++out:
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
 -- 
 2.30.2
 
