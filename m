@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D389E3D60B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6441A3D61A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237645AbhGZPX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:23:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
+        id S233733AbhGZPcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:32:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237415AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2103C60FF3;
-        Mon, 26 Jul 2021 15:54:06 +0000 (UTC)
+        id S235652AbhGZPSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2BAA6056C;
+        Mon, 26 Jul 2021 15:58:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314847;
-        bh=zlTczvXNNvbkXi8PSx+qc0oRnnyP+lG/tYOCyZwBILA=;
+        s=korg; t=1627315126;
+        bh=YLNZB377ktFeBYTb72ch6L7rP2Y20JGHcVn7G5uyNms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t739qTjdPIlAWQ0bKviR49u5w+QkBmUUe5ELHmSTBuDVYkRIr9q2Qbr5hsHOj0rwK
-         L9saMG9o8yuNsOlMlxsM6Uauvq9B53uSWeO7ompm8w4c1XDpl5RMz7CfLbJJnwPk7j
-         3D3EXAK6W89C/B8hYHIApjHaSE6z+fFOXhae7Dgk=
+        b=fOUgbLhQ5kdXctQDRAyFYoBIxZKGjHM6cpI1wlDx6rSlZ+jZsMqtV8D9FB9wNmCbW
+         481EuE6JzLiMwFmfiqWlFcHGcBV2vKZeqc8DraGSIkdZBepLFfiGY1OyDMHM+w5MwZ
+         U5749JCtEnWfjE7IkyKTCZfxbeRdsR9XUiP3Z7xQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 114/120] net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
-Date:   Mon, 26 Jul 2021 17:39:26 +0200
-Message-Id: <20210726153836.135197574@linuxfoundation.org>
+        stable@vger.kernel.org, John Keeping <john@metanate.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 086/108] USB: serial: cp210x: add ID for CEL EM3588 USB ZigBee stick
+Date:   Mon, 26 Jul 2021 17:39:27 +0200
+Message-Id: <20210726153834.436477054@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,91 +39,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
+From: John Keeping <john@metanate.com>
 
-commit 5a3c680aa2c12c90c44af383fe6882a39875ab81 upstream.
+commit d6a206e60124a9759dd7f6dfb86b0e1d3b1df82e upstream.
 
-Setting the EXT_ENERGY_DET_MASK bit allows the port energy detection
-logic of the internal PHY to prevent the system from sleeping. Some
-internal PHYs will report that energy is detected when the network
-interface is closed which can prevent the system from going to sleep
-if WoL is enabled when the interface is brought down.
+Add the USB serial device ID for the CEL ZigBee EM3588 radio stick.
 
-Since the driver does not support waking the system on this logic,
-this commit clears the bit whenever the internal PHY is powered up
-and the other logic for manipulating the bit is removed since it
-serves no useful function.
-
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: John Keeping <john@metanate.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c     |   16 ++--------------
- drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c |    6 ------
- 2 files changed, 2 insertions(+), 20 deletions(-)
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -1189,7 +1189,8 @@ static void bcmgenet_power_up(struct bcm
- 
- 	switch (mode) {
- 	case GENET_POWER_PASSIVE:
--		reg &= ~(EXT_PWR_DOWN_DLL | EXT_PWR_DOWN_BIAS);
-+		reg &= ~(EXT_PWR_DOWN_DLL | EXT_PWR_DOWN_BIAS |
-+			 EXT_ENERGY_DET_MASK);
- 		if (GENET_IS_V5(priv)) {
- 			reg &= ~(EXT_PWR_DOWN_PHY_EN |
- 				 EXT_PWR_DOWN_PHY_RD |
-@@ -2908,12 +2909,6 @@ static int bcmgenet_open(struct net_devi
- 
- 	bcmgenet_set_hw_addr(priv, dev->dev_addr);
- 
--	if (priv->internal_phy) {
--		reg = bcmgenet_ext_readl(priv, EXT_EXT_PWR_MGMT);
--		reg |= EXT_ENERGY_DET_MASK;
--		bcmgenet_ext_writel(priv, reg, EXT_EXT_PWR_MGMT);
--	}
--
- 	/* Disable RX/TX DMA and flush TX queues */
- 	dma_ctrl = bcmgenet_dma_disable(priv);
- 
-@@ -3632,7 +3627,6 @@ static int bcmgenet_resume(struct device
- 	struct bcmgenet_priv *priv = netdev_priv(dev);
- 	unsigned long dma_ctrl;
- 	int ret;
--	u32 reg;
- 
- 	if (!netif_running(dev))
- 		return 0;
-@@ -3664,12 +3658,6 @@ static int bcmgenet_resume(struct device
- 
- 	bcmgenet_set_hw_addr(priv, dev->dev_addr);
- 
--	if (priv->internal_phy) {
--		reg = bcmgenet_ext_readl(priv, EXT_EXT_PWR_MGMT);
--		reg |= EXT_ENERGY_DET_MASK;
--		bcmgenet_ext_writel(priv, reg, EXT_EXT_PWR_MGMT);
--	}
--
- 	if (priv->wolopts)
- 		bcmgenet_power_up(priv, GENET_POWER_WOL_MAGIC);
- 
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c
-@@ -166,12 +166,6 @@ int bcmgenet_wol_power_down_cfg(struct b
- 	reg |= CMD_RX_EN;
- 	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
- 
--	if (priv->hw_params->flags & GENET_HAS_EXT) {
--		reg = bcmgenet_ext_readl(priv, EXT_EXT_PWR_MGMT);
--		reg &= ~EXT_ENERGY_DET_MASK;
--		bcmgenet_ext_writel(priv, reg, EXT_EXT_PWR_MGMT);
--	}
--
- 	return 0;
- }
- 
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -156,6 +156,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x10C4, 0x89A4) }, /* CESINEL FTBC Flexible Thyristor Bridge Controller */
+ 	{ USB_DEVICE(0x10C4, 0x89FB) }, /* Qivicon ZigBee USB Radio Stick */
+ 	{ USB_DEVICE(0x10C4, 0x8A2A) }, /* HubZ dual ZigBee and Z-Wave dongle */
++	{ USB_DEVICE(0x10C4, 0x8A5B) }, /* CEL EM3588 ZigBee USB Stick */
+ 	{ USB_DEVICE(0x10C4, 0x8A5E) }, /* CEL EM3588 ZigBee USB Stick Long Range */
+ 	{ USB_DEVICE(0x10C4, 0x8B34) }, /* Qivicon ZigBee USB Radio Stick */
+ 	{ USB_DEVICE(0x10C4, 0xEA60) }, /* Silicon Labs factory default */
 
 
