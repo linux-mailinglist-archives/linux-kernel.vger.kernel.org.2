@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CB93D63EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB2F3D63F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239513AbhGZPw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48734 "EHLO mail.kernel.org"
+        id S239546AbhGZPx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233230AbhGZPcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C271060C41;
-        Mon, 26 Jul 2021 16:12:52 +0000 (UTC)
+        id S233644AbhGZPc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84ABE60EB2;
+        Mon, 26 Jul 2021 16:12:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315973;
-        bh=cTiZX3Bsc9lAdn5MRcKI3K8W0yW5PUbhgrqWXP5yf/k=;
+        s=korg; t=1627315976;
+        bh=iSwOT2IT+TSQ1I5FcDSRN5RdQNVGYfJh0K9Qw2Q7QZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VU06khTnfyv3iZPO0cW/uUVnK2I5ipa/4kdkqQp7IbrFTwe46Dwz9DW0Qj7XtzCjf
-         VC1xgkHATrmChbjsFf/SzPr8aXQf00R1Q7vlSjpG9ypGFtvcSQfUqtxmVFwFSj1gFv
-         /cbThynSCUq6JfyxVV4EtjtAog3r+0Xs+JOTWvjw=
+        b=kz+fPzbwRHALn9qKQ2dZ/DtNcmO282Ldy+E8OHgFnZfp+LORwCyNeZjg+eJXX+eAW
+         vzaX4FJUn1vadFhnhD46gCwPBaMQ4bI8kB6CQOu5GPn1oBknR35M80wdrDW9aLpCXr
+         +h3Vpyz48s7Voue+ZYeUN0osL+HCa1JolfyOqE1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 137/223] net: sched: cls_api: Fix the the wrong parameter
-Date:   Mon, 26 Jul 2021 17:38:49 +0200
-Message-Id: <20210726153850.725482282@linuxfoundation.org>
+Subject: [PATCH 5.13 138/223] drm/panel: raspberrypi-touchscreen: Prevent double-free
+Date:   Mon, 26 Jul 2021 17:38:50 +0200
+Message-Id: <20210726153850.755787437@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,34 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yajun Deng <yajun.deng@linux.dev>
+From: Maxime Ripard <maxime@cerno.tech>
 
-[ Upstream commit 9d85a6f44bd5585761947f40f7821c9cd78a1bbe ]
+[ Upstream commit 7bbcb919e32d776ca8ddce08abb391ab92eef6a9 ]
 
-The 4th parameter in tc_chain_notify() should be flags rather than seq.
-Let's change it back correctly.
+The mipi_dsi_device allocated by mipi_dsi_device_register_full() is
+already free'd on release.
 
-Fixes: 32a4f5ecd738 ("net: sched: introduce chain object to uapi")
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2f733d6194bd ("drm/panel: Add support for the Raspberry Pi 7" Touchscreen.")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210720134525.563936-9-maxime@cerno.tech
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/cls_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index d73b5c5514a9..e3e79e9bd706 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -2904,7 +2904,7 @@ replay:
- 		break;
- 	case RTM_GETCHAIN:
- 		err = tc_chain_notify(chain, skb, n->nlmsg_seq,
--				      n->nlmsg_seq, n->nlmsg_type, true);
-+				      n->nlmsg_flags, n->nlmsg_type, true);
- 		if (err < 0)
- 			NL_SET_ERR_MSG(extack, "Failed to send chain notify message");
- 		break;
+diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
+index 5e9ccefb88f6..bbdd086be7f5 100644
+--- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
++++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
+@@ -447,7 +447,6 @@ static int rpi_touchscreen_remove(struct i2c_client *i2c)
+ 	drm_panel_remove(&ts->base);
+ 
+ 	mipi_dsi_device_unregister(ts->dsi);
+-	kfree(ts->dsi);
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
