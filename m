@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B903D62D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEEF3D62F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238366AbhGZPjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36998 "EHLO mail.kernel.org"
+        id S238415AbhGZPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:42:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237309AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAEDC60F91;
-        Mon, 26 Jul 2021 15:52:38 +0000 (UTC)
+        id S237665AbhGZPXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8043D60240;
+        Mon, 26 Jul 2021 16:04:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314759;
-        bh=n4HENStembwB5aGCkrcK9PIac0J6gEm/Fg3ufO4PN6s=;
+        s=korg; t=1627315455;
+        bh=iSwOT2IT+TSQ1I5FcDSRN5RdQNVGYfJh0K9Qw2Q7QZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=clkC6d6dmdlKu0RQtZVZ/H6d+NCjWM1RVK9Elzz1bZKojOe3cPt3ZDGvQ1QFOOSQr
-         XMRK3rcy9PWUjjYf4+ttppCpud0mNzVdHEMp+yIxgQvaa/lTkZa4R9ngS09kfxCgkm
-         kkWP6mTMBNXnVvsm5yQWko+z25mRWgl+JqFOXx2M=
+        b=z7+n1GyqzVCyZfKxOXLAXGh1PSrTrruLTRuC3LA7hPSFp/e35bpIY72PtXMLA/9wl
+         uIxM5RhfGetUhecXQLqGC/0rHIPIweyluBi7M170ywvzOU3NjyhDEbPU2f/YS3A6iQ
+         DCL6MWI7Nt/uOdyUuzTnLdw54xQwns0l2CzDo1BI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 082/120] net/tcp_fastopen: fix data races around tfo_active_disable_stamp
-Date:   Mon, 26 Jul 2021 17:38:54 +0200
-Message-Id: <20210726153835.018403531@linuxfoundation.org>
+Subject: [PATCH 5.10 102/167] drm/panel: raspberrypi-touchscreen: Prevent double-free
+Date:   Mon, 26 Jul 2021 17:38:55 +0200
+Message-Id: <20210726153842.816196979@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,70 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Maxime Ripard <maxime@cerno.tech>
 
-[ Upstream commit 6f20c8adb1813467ea52c1296d52c4e95978cb2f ]
+[ Upstream commit 7bbcb919e32d776ca8ddce08abb391ab92eef6a9 ]
 
-tfo_active_disable_stamp is read and written locklessly.
-We need to annotate these accesses appropriately.
+The mipi_dsi_device allocated by mipi_dsi_device_register_full() is
+already free'd on release.
 
-Then, we need to perform the atomic_inc(tfo_active_disable_times)
-after the timestamp has been updated, and thus add barriers
-to make sure tcp_fastopen_active_should_disable() wont read
-a stale timestamp.
-
-Fixes: cf1ef3f0719b ("net/tcp_fastopen: Disable active side TFO in certain scenarios")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: Wei Wang <weiwan@google.com>
-Cc: Yuchung Cheng <ycheng@google.com>
-Cc: Neal Cardwell <ncardwell@google.com>
-Acked-by: Wei Wang <weiwan@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2f733d6194bd ("drm/panel: Add support for the Raspberry Pi 7" Touchscreen.")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210720134525.563936-9-maxime@cerno.tech
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_fastopen.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/ipv4/tcp_fastopen.c b/net/ipv4/tcp_fastopen.c
-index 018a48477355..2ab371f55525 100644
---- a/net/ipv4/tcp_fastopen.c
-+++ b/net/ipv4/tcp_fastopen.c
-@@ -454,8 +454,15 @@ void tcp_fastopen_active_disable(struct sock *sk)
- {
- 	struct net *net = sock_net(sk);
+diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
+index 5e9ccefb88f6..bbdd086be7f5 100644
+--- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
++++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
+@@ -447,7 +447,6 @@ static int rpi_touchscreen_remove(struct i2c_client *i2c)
+ 	drm_panel_remove(&ts->base);
  
-+	/* Paired with READ_ONCE() in tcp_fastopen_active_should_disable() */
-+	WRITE_ONCE(net->ipv4.tfo_active_disable_stamp, jiffies);
-+
-+	/* Paired with smp_rmb() in tcp_fastopen_active_should_disable().
-+	 * We want net->ipv4.tfo_active_disable_stamp to be updated first.
-+	 */
-+	smp_mb__before_atomic();
- 	atomic_inc(&net->ipv4.tfo_active_disable_times);
--	net->ipv4.tfo_active_disable_stamp = jiffies;
-+
- 	NET_INC_STATS(net, LINUX_MIB_TCPFASTOPENBLACKHOLE);
+ 	mipi_dsi_device_unregister(ts->dsi);
+-	kfree(ts->dsi);
+ 
+ 	return 0;
  }
- 
-@@ -473,10 +480,16 @@ bool tcp_fastopen_active_should_disable(struct sock *sk)
- 	if (!tfo_da_times)
- 		return false;
- 
-+	/* Paired with smp_mb__before_atomic() in tcp_fastopen_active_disable() */
-+	smp_rmb();
-+
- 	/* Limit timout to max: 2^6 * initial timeout */
- 	multiplier = 1 << min(tfo_da_times - 1, 6);
--	timeout = multiplier * tfo_bh_timeout * HZ;
--	if (time_before(jiffies, sock_net(sk)->ipv4.tfo_active_disable_stamp + timeout))
-+
-+	/* Paired with the WRITE_ONCE() in tcp_fastopen_active_disable(). */
-+	timeout = READ_ONCE(sock_net(sk)->ipv4.tfo_active_disable_stamp) +
-+		  multiplier * tfo_bh_timeout * HZ;
-+	if (time_before(jiffies, timeout))
- 		return true;
- 
- 	/* Mark check bit so we can check for successful active TFO
 -- 
 2.30.2
 
