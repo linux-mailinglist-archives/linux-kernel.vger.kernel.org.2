@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C103D62E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85283D611C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238105AbhGZPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:40:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38364 "EHLO mail.kernel.org"
+        id S232354AbhGZP2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:28:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237529AbhGZPXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D60B360EB2;
-        Mon, 26 Jul 2021 16:03:46 +0000 (UTC)
+        id S237533AbhGZPQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE53D6056C;
+        Mon, 26 Jul 2021 15:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315427;
-        bh=EbI8xoAF1Uc9GQwcULMt9iXYokM+w/UwDs8a6JaKhQE=;
+        s=korg; t=1627314989;
+        bh=tiFFVu6cjKJ+hbq+PXJmlBpBZ4swHxEAWrxiHdbUY5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G2wzVuzeWX/NwyZ16G/8dLiCW66Q6VkTxl2NaQpOZsldiaFcscMPDZN7POkhPFk3c
-         //VvCQ18ZhLtbX4xQzQH3Bqsg/V60yTk0ZwbnIAAOSGRiiMku8eOvtV9SFZu/BYrDJ
-         07edQZQ22CJM7iLqobJZCxrdlcw5MkkINx+SeTHU=
+        b=we3brTP4DGNtT0HEC+WA1ZFzDYwUtmDCIa1/wnX3OfLlx1mns2NzOXQxq+51PqYGx
+         vG7fTwNh/asEcDSfEhjPTa0BGzAd5pAVkfvSL0djy6IlTggF/A9N70cX94fkAEi2HH
+         4elefsgVxvTC6lgcD9QAQPxtqa/1Ry99Qg6fL9fA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luis Henriques <lhenriques@suse.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 092/167] ceph: dont WARN if were still opening a session to an MDS
+Subject: [PATCH 5.4 044/108] KVM: PPC: Book3S: Fix CONFIG_TRANSACTIONAL_MEM=n crash
 Date:   Mon, 26 Jul 2021 17:38:45 +0200
-Message-Id: <20210726153842.485284159@linuxfoundation.org>
+Message-Id: <20210726153833.101099140@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Henriques <lhenriques@suse.de>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit cdb330f4b41ab55feb35487729e883c9e08b8a54 ]
+[ Upstream commit bd31ecf44b8e18ccb1e5f6b50f85de6922a60de3 ]
 
-If MDSs aren't available while mounting a filesystem, the session state
-will transition from SESSION_OPENING to SESSION_CLOSING.  And in that
-scenario check_session_state() will be called from delayed_work() and
-trigger this WARN.
+When running CPU_FTR_P9_TM_HV_ASSIST, HFSCR[TM] is set for the guest
+even if the host has CONFIG_TRANSACTIONAL_MEM=n, which causes it to be
+unprepared to handle guest exits while transactional.
 
-Avoid this by only WARNing after a session has already been established
-(i.e., the s_ttl will be different from 0).
+Normal guests don't have a problem because the HTM capability will not
+be advertised, but a rogue or buggy one could crash the host.
 
-Fixes: 62575e270f66 ("ceph: check session state after bumping session->s_seq")
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Fixes: 4bb3c7a0208f ("KVM: PPC: Book3S HV: Work around transactional memory bugs in POWER9")
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210716024310.164448-1-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/mds_client.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kvm/book3s_hv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
-index d560752b764d..6b00f1d7c8e7 100644
---- a/fs/ceph/mds_client.c
-+++ b/fs/ceph/mds_client.c
-@@ -4401,7 +4401,7 @@ bool check_session_state(struct ceph_mds_session *s)
- 		break;
- 	case CEPH_MDS_SESSION_CLOSING:
- 		/* Should never reach this when we're unmounting */
--		WARN_ON_ONCE(true);
-+		WARN_ON_ONCE(s->s_ttl);
- 		fallthrough;
- 	case CEPH_MDS_SESSION_NEW:
- 	case CEPH_MDS_SESSION_RESTARTING:
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 9011857c0434..bba358f13471 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -2306,8 +2306,10 @@ static struct kvm_vcpu *kvmppc_core_vcpu_create_hv(struct kvm *kvm,
+ 		HFSCR_DSCR | HFSCR_VECVSX | HFSCR_FP;
+ 	if (cpu_has_feature(CPU_FTR_HVMODE)) {
+ 		vcpu->arch.hfscr &= mfspr(SPRN_HFSCR);
++#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+ 		if (cpu_has_feature(CPU_FTR_P9_TM_HV_ASSIST))
+ 			vcpu->arch.hfscr |= HFSCR_TM;
++#endif
+ 	}
+ 	if (cpu_has_feature(CPU_FTR_TM_COMP))
+ 		vcpu->arch.hfscr |= HFSCR_TM;
 -- 
 2.30.2
 
