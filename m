@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD663D5DEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7F63D5DEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235952AbhGZPEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:04:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43498 "EHLO mail.kernel.org"
+        id S235513AbhGZPEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:04:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235851AbhGZPDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:03:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D361C60F38;
-        Mon, 26 Jul 2021 15:44:13 +0000 (UTC)
+        id S235759AbhGZPDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:03:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA2560F22;
+        Mon, 26 Jul 2021 15:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314254;
-        bh=ipIp75H2TpDu39wOLDo4FJymCoV9Vg/9A3KlaPi/94g=;
+        s=korg; t=1627314257;
+        bh=X7710NCHpz6oUxDg0kBLlkL9tSb+vJeb/1o2FpZRwpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E+iv8DGEHgtrIB+6q4qQd2+fYwAaSuYzop7++/m6xod2H52jdpv4wn9pxZ/nf4Y+S
-         lpCr2Fnv+WQfVCE7I8maKJvt2J1kS4DrK+0SDhpxJxFS2dok4e0vGO4HAo2VwpIhkc
-         CvSg/4/gNRLeSZCScNErY2k1594is4H61YO5dYNc=
+        b=pRlroexHwnkBNspGPS39UdFhEnbW8MQIKYX8n4AInptXuYq00uRBMUQPbEGu9rWDO
+         l/wcoi8mOoXza1ktvy3kKXphSNBeQ5cKeU1doDS9O/T5Ii7yvRYxSHH1FGWLrTfhaL
+         uBwYFJsRFVKq+Zg90VIiILxzE+nbsXFhDOxTxg5M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Bogdanov <d.bogdanov@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 40/60] scsi: target: Fix protect handling in WRITE SAME(32)
-Date:   Mon, 26 Jul 2021 17:38:54 +0200
-Message-Id: <20210726153826.128220396@linuxfoundation.org>
+Subject: [PATCH 4.9 41/60] Revert "USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem"
+Date:   Mon, 26 Jul 2021 17:38:55 +0200
+Message-Id: <20210726153826.159063792@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
 References: <20210726153824.868160836@linuxfoundation.org>
@@ -40,181 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Bogdanov <d.bogdanov@yadro.com>
+From: Vincent Palatin <vpalatin@chromium.org>
 
-[ Upstream commit 6d8e7e7c932162bccd06872362751b0e1d76f5af ]
+[ Upstream commit f3a1a937f7b240be623d989c8553a6d01465d04f ]
 
-WRITE SAME(32) command handling reads WRPROTECT at the wrong offset in 1st
-byte instead of 10th byte.
+This reverts commit 0bd860493f81eb2a46173f6f5e44cc38331c8dbd.
 
-Link: https://lore.kernel.org/r/20210702091655.22818-1-d.bogdanov@yadro.com
-Fixes: afd73f1b60fc ("target: Perform PROTECT sanity checks for WRITE_SAME")
-Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+While the patch was working as stated,ie preventing the L850-GL LTE modem
+from crashing on some U3 wake-ups due to a race condition between the
+host wake-up and the modem-side wake-up, when using the MBIM interface,
+this would force disabling the USB runtime PM on the device.
+
+The increased power consumption is significant for LTE laptops,
+and given that with decently recent modem firmwares, when the modem hits
+the bug, it automatically recovers (ie it drops from the bus, but
+automatically re-enumerates after less than half a second, rather than being
+stuck until a power cycle as it was doing with ancient firmware), for
+most people, the trade-off now seems in favor of re-enabling it by
+default.
+
+For people with access to the platform code, the bug can also be worked-around
+successfully by changing the USB3 LFPM polling off-time for the XHCI
+controller in the BIOS code.
+
+Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
+Link: https://lore.kernel.org/r/20210721092516.2775971-1-vpalatin@chromium.org
+Fixes: 0bd860493f81 ("USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem")
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/target/target_core_sbc.c | 35 ++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+ drivers/usb/core/quirks.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/target/target_core_sbc.c b/drivers/target/target_core_sbc.c
-index b3b1461ec60d..6a5a089fd13e 100644
---- a/drivers/target/target_core_sbc.c
-+++ b/drivers/target/target_core_sbc.c
-@@ -37,7 +37,7 @@
- #include "target_core_alua.h"
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 3dfd584a1ef3..2ca6ed207e26 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -325,10 +325,6 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
  
- static sense_reason_t
--sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char *, u32, bool);
-+sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char, u32, bool);
- static sense_reason_t sbc_execute_unmap(struct se_cmd *cmd);
+-	/* Fibocom L850-GL LTE Modem */
+-	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
+-			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
+-
+ 	/* INTEL VALUE SSD */
+ 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
  
- static sense_reason_t
-@@ -319,14 +319,14 @@ static inline unsigned long long transport_lba_64_ext(unsigned char *cdb)
- }
- 
- static sense_reason_t
--sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *ops)
-+sbc_setup_write_same(struct se_cmd *cmd, unsigned char flags, struct sbc_ops *ops)
- {
- 	struct se_device *dev = cmd->se_dev;
- 	sector_t end_lba = dev->transport->get_blocks(dev) + 1;
- 	unsigned int sectors = sbc_get_write_same_sectors(cmd);
- 	sense_reason_t ret;
- 
--	if ((flags[0] & 0x04) || (flags[0] & 0x02)) {
-+	if ((flags & 0x04) || (flags & 0x02)) {
- 		pr_err("WRITE_SAME PBDATA and LBDATA"
- 			" bits not supported for Block Discard"
- 			" Emulation\n");
-@@ -348,7 +348,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
- 	}
- 
- 	/* We always have ANC_SUP == 0 so setting ANCHOR is always an error */
--	if (flags[0] & 0x10) {
-+	if (flags & 0x10) {
- 		pr_warn("WRITE SAME with ANCHOR not supported\n");
- 		return TCM_INVALID_CDB_FIELD;
- 	}
-@@ -356,7 +356,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
- 	 * Special case for WRITE_SAME w/ UNMAP=1 that ends up getting
- 	 * translated into block discard requests within backend code.
- 	 */
--	if (flags[0] & 0x08) {
-+	if (flags & 0x08) {
- 		if (!ops->execute_unmap)
- 			return TCM_UNSUPPORTED_SCSI_OPCODE;
- 
-@@ -371,7 +371,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
- 	if (!ops->execute_write_same)
- 		return TCM_UNSUPPORTED_SCSI_OPCODE;
- 
--	ret = sbc_check_prot(dev, cmd, &cmd->t_task_cdb[0], sectors, true);
-+	ret = sbc_check_prot(dev, cmd, flags >> 5, sectors, true);
- 	if (ret)
- 		return ret;
- 
-@@ -729,10 +729,9 @@ sbc_set_prot_op_checks(u8 protect, bool fabric_prot, enum target_prot_type prot_
- }
- 
- static sense_reason_t
--sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
-+sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char protect,
- 	       u32 sectors, bool is_write)
- {
--	u8 protect = cdb[1] >> 5;
- 	int sp_ops = cmd->se_sess->sup_prot_ops;
- 	int pi_prot_type = dev->dev_attrib.pi_prot_type;
- 	bool fabric_prot = false;
-@@ -780,7 +779,7 @@ sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
- 		/* Fallthrough */
- 	default:
- 		pr_err("Unable to determine pi_prot_type for CDB: 0x%02x "
--		       "PROTECT: 0x%02x\n", cdb[0], protect);
-+		       "PROTECT: 0x%02x\n", cmd->t_task_cdb[0], protect);
- 		return TCM_INVALID_CDB_FIELD;
- 	}
- 
-@@ -855,7 +854,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
- 		if (ret)
- 			return ret;
- 
-@@ -869,7 +868,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
- 		if (ret)
- 			return ret;
- 
-@@ -883,7 +882,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
- 		if (ret)
- 			return ret;
- 
-@@ -904,7 +903,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
- 		if (ret)
- 			return ret;
- 
-@@ -918,7 +917,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
- 		if (ret)
- 			return ret;
- 
-@@ -932,7 +931,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		if (sbc_check_dpofua(dev, cmd, cdb))
- 			return TCM_INVALID_CDB_FIELD;
- 
--		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
-+		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
- 		if (ret)
- 			return ret;
- 
-@@ -991,7 +990,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 			size = sbc_get_size(cmd, 1);
- 			cmd->t_task_lba = get_unaligned_be64(&cdb[12]);
- 
--			ret = sbc_setup_write_same(cmd, &cdb[10], ops);
-+			ret = sbc_setup_write_same(cmd, cdb[10], ops);
- 			if (ret)
- 				return ret;
- 			break;
-@@ -1084,7 +1083,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		size = sbc_get_size(cmd, 1);
- 		cmd->t_task_lba = get_unaligned_be64(&cdb[2]);
- 
--		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
-+		ret = sbc_setup_write_same(cmd, cdb[1], ops);
- 		if (ret)
- 			return ret;
- 		break;
-@@ -1102,7 +1101,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
- 		 * Follow sbcr26 with WRITE_SAME (10) and check for the existence
- 		 * of byte 1 bit 3 UNMAP instead of original reserved field
- 		 */
--		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
-+		ret = sbc_setup_write_same(cmd, cdb[1], ops);
- 		if (ret)
- 			return ret;
- 		break;
 -- 
 2.30.2
 
