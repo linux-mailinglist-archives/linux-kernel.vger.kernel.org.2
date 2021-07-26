@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA3E3D5F5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9983D5F54
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236730AbhGZPRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:17:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47774 "EHLO mail.kernel.org"
+        id S236745AbhGZPRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:17:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236386AbhGZPIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:08:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0997360F9F;
-        Mon, 26 Jul 2021 15:48:39 +0000 (UTC)
+        id S236167AbhGZPIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:08:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DB3E60F92;
+        Mon, 26 Jul 2021 15:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314520;
-        bh=YH+VDSWyxvMW7UBNTSI85qMRrwWMIYiZtz6Avz72yGQ=;
+        s=korg; t=1627314525;
+        bh=SU9q9HvLR8orcW+YTjIQqk7eC8XYn+EfAtUwZeb0GVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N7uYeVBM+UPXSfubAFMysOVHU+2yQK0Pb7sLPFUT44pksjbIdWXf3T3k22qLQ5XWj
-         LXN+lDCaoR48xWtrhBsS4AV0SKN2x1bx/sfWbkzL6m9GtvIY2GojV9TzeqVnyM6wVD
-         dw3yqerDbGQRzUt0jbJBVABuQvpO2/oguXGjvTGU=
+        b=TxJovM8PE3j/uiI6X+xlsXKb4U15cOyTB0X7pVTzMEbZKdOMA0QcwUg2B8gWRe65t
+         5ubiJU1ilBnnAiYaSnAz5h3QC2iVRpv1naYUeQPq21dqome1rte8rh59ZssgEc2OGQ
+         TG+Ol4r667ph7JQuuXFAih5h+E452v45WmcJGjB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>,
-        Oleksandr Kravchenko <o.v.kravchenko@globallogic.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
         Linus Walleij <linus.walleij@linaro.org>,
+        Stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 78/82] iio: accel: bma180: Use explicit member assignment
-Date:   Mon, 26 Jul 2021 17:39:18 +0200
-Message-Id: <20210726153830.714268205@linuxfoundation.org>
+Subject: [PATCH 4.14 79/82] iio: accel: bma180: Fix BMA25x bandwidth register values
+Date:   Mon, 26 Jul 2021 17:39:19 +0200
+Message-Id: <20210726153830.745109839@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
 References: <20210726153828.144714469@linuxfoundation.org>
@@ -42,102 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-commit 9436abc40139503a7cea22a96437697d048f31c0 upstream
+commit 8090d67421ddab0ae932abab5a60200598bf0bbb upstream
 
-This uses the C99 explicit .member assignment for the
-variant data in struct bma180_part_info. This makes it
-easier to understand and add new variants.
+According to the BMA253 datasheet [1] and BMA250 datasheet [2] the
+bandwidth value for BMA25x should be set as 01xxx:
+
+  "Settings 00xxx result in a bandwidth of 7.81 Hz; [...]
+   It is recommended [...] to use the range from ´01000b´ to ´01111b´
+   only in order to be compatible with future products."
+
+However, at the moment the drivers sets bandwidth values from 0 to 6,
+which is not recommended and always results into 7.81 Hz bandwidth
+according to the datasheet.
+
+Fix this by introducing a bw_offset = 8 = 01000b for BMA25x,
+so the additional bit is always set for BMA25x.
+
+[1]: https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bma253-ds000.pdf
+[2]: https://datasheet.octopart.com/BMA250-Bosch-datasheet-15540103.pdf
 
 Cc: Peter Meerwald <pmeerw@pmeerw.net>
-Cc: Oleksandr Kravchenko <o.v.kravchenko@globallogic.com>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Fixes: 2017cff24cc0 ("iio:bma180: Add BMA250 chip support")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210526094408.34298-2-stephan@gerhold.net
+Cc: <Stable@vger.kernel.org>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+[sudip: adjust context]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/accel/bma180.c |   68 +++++++++++++++++++++++++++++----------------
- 1 file changed, 44 insertions(+), 24 deletions(-)
+ drivers/iio/accel/bma180.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
 --- a/drivers/iio/accel/bma180.c
 +++ b/drivers/iio/accel/bma180.c
-@@ -626,32 +626,52 @@ static const struct iio_chan_spec bma250
+@@ -50,7 +50,7 @@ struct bma180_part_info {
  
- static const struct bma180_part_info bma180_part_info[] = {
- 	[BMA180] = {
--		bma180_channels, ARRAY_SIZE(bma180_channels),
--		bma180_scale_table, ARRAY_SIZE(bma180_scale_table),
--		bma180_bw_table, ARRAY_SIZE(bma180_bw_table),
--		BMA180_CTRL_REG0, BMA180_RESET_INT,
--		BMA180_CTRL_REG0, BMA180_SLEEP,
--		BMA180_BW_TCS, BMA180_BW,
--		BMA180_OFFSET_LSB1, BMA180_RANGE,
--		BMA180_TCO_Z, BMA180_MODE_CONFIG, BMA180_LOW_POWER,
--		BMA180_CTRL_REG3, BMA180_NEW_DATA_INT,
--		BMA180_RESET,
--		bma180_chip_config,
--		bma180_chip_disable,
-+		.channels = bma180_channels,
-+		.num_channels = ARRAY_SIZE(bma180_channels),
-+		.scale_table = bma180_scale_table,
-+		.num_scales = ARRAY_SIZE(bma180_scale_table),
-+		.bw_table = bma180_bw_table,
-+		.num_bw = ARRAY_SIZE(bma180_bw_table),
-+		.int_reset_reg = BMA180_CTRL_REG0,
-+		.int_reset_mask = BMA180_RESET_INT,
-+		.sleep_reg = BMA180_CTRL_REG0,
-+		.sleep_mask = BMA180_SLEEP,
-+		.bw_reg = BMA180_BW_TCS,
-+		.bw_mask = BMA180_BW,
-+		.scale_reg = BMA180_OFFSET_LSB1,
-+		.scale_mask = BMA180_RANGE,
-+		.power_reg = BMA180_TCO_Z,
-+		.power_mask = BMA180_MODE_CONFIG,
-+		.lowpower_val = BMA180_LOW_POWER,
-+		.int_enable_reg = BMA180_CTRL_REG3,
-+		.int_enable_mask = BMA180_NEW_DATA_INT,
-+		.softreset_reg = BMA180_RESET,
-+		.chip_config = bma180_chip_config,
-+		.chip_disable = bma180_chip_disable,
- 	},
- 	[BMA250] = {
--		bma250_channels, ARRAY_SIZE(bma250_channels),
--		bma250_scale_table, ARRAY_SIZE(bma250_scale_table),
--		bma250_bw_table, ARRAY_SIZE(bma250_bw_table),
--		BMA250_INT_RESET_REG, BMA250_INT_RESET_MASK,
--		BMA250_POWER_REG, BMA250_SUSPEND_MASK,
--		BMA250_BW_REG, BMA250_BW_MASK,
--		BMA250_RANGE_REG, BMA250_RANGE_MASK,
--		BMA250_POWER_REG, BMA250_LOWPOWER_MASK, 1,
--		BMA250_INT_ENABLE_REG, BMA250_DATA_INTEN_MASK,
--		BMA250_RESET_REG,
--		bma250_chip_config,
--		bma250_chip_disable,
-+		.channels = bma250_channels,
-+		.num_channels = ARRAY_SIZE(bma250_channels),
-+		.scale_table = bma250_scale_table,
-+		.num_scales = ARRAY_SIZE(bma250_scale_table),
-+		.bw_table = bma250_bw_table,
-+		.num_bw = ARRAY_SIZE(bma250_bw_table),
-+		.int_reset_reg = BMA250_INT_RESET_REG,
-+		.int_reset_mask = BMA250_INT_RESET_MASK,
-+		.sleep_reg = BMA250_POWER_REG,
-+		.sleep_mask = BMA250_SUSPEND_MASK,
-+		.bw_reg = BMA250_BW_REG,
-+		.bw_mask = BMA250_BW_MASK,
-+		.scale_reg = BMA250_RANGE_REG,
-+		.scale_mask = BMA250_RANGE_MASK,
-+		.power_reg = BMA250_POWER_REG,
-+		.power_mask = BMA250_LOWPOWER_MASK,
-+		.lowpower_val = 1,
-+		.int_enable_reg = BMA250_INT_ENABLE_REG,
-+		.int_enable_mask = BMA250_DATA_INTEN_MASK,
-+		.softreset_reg = BMA250_RESET_REG,
-+		.chip_config = bma250_chip_config,
-+		.chip_disable = bma250_chip_disable,
- 	},
- };
+ 	u8 int_reset_reg, int_reset_mask;
+ 	u8 sleep_reg, sleep_mask;
+-	u8 bw_reg, bw_mask;
++	u8 bw_reg, bw_mask, bw_offset;
+ 	u8 scale_reg, scale_mask;
+ 	u8 power_reg, power_mask, lowpower_val;
+ 	u8 int_enable_reg, int_enable_mask;
+@@ -106,6 +106,7 @@ struct bma180_part_info {
  
+ #define BMA250_RANGE_MASK	GENMASK(3, 0) /* Range of accel values */
+ #define BMA250_BW_MASK		GENMASK(4, 0) /* Accel bandwidth */
++#define BMA250_BW_OFFSET	8
+ #define BMA250_SUSPEND_MASK	BIT(7) /* chip will sleep */
+ #define BMA250_LOWPOWER_MASK	BIT(6)
+ #define BMA250_DATA_INTEN_MASK	BIT(4)
+@@ -243,7 +244,8 @@ static int bma180_set_bw(struct bma180_d
+ 	for (i = 0; i < data->part_info->num_bw; ++i) {
+ 		if (data->part_info->bw_table[i] == val) {
+ 			ret = bma180_set_bits(data, data->part_info->bw_reg,
+-				data->part_info->bw_mask, i);
++				data->part_info->bw_mask,
++				i + data->part_info->bw_offset);
+ 			if (ret) {
+ 				dev_err(&data->client->dev,
+ 					"failed to set bandwidth\n");
+@@ -662,6 +664,7 @@ static const struct bma180_part_info bma
+ 		.sleep_mask = BMA250_SUSPEND_MASK,
+ 		.bw_reg = BMA250_BW_REG,
+ 		.bw_mask = BMA250_BW_MASK,
++		.bw_offset = BMA250_BW_OFFSET,
+ 		.scale_reg = BMA250_RANGE_REG,
+ 		.scale_mask = BMA250_RANGE_MASK,
+ 		.power_reg = BMA250_POWER_REG,
 
 
