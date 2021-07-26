@@ -2,164 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C36E3D5316
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 08:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85743D5323
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 08:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbhGZFim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 01:38:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231263AbhGZFil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 01:38:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 255FD60E09;
-        Mon, 26 Jul 2021 06:19:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627280350;
-        bh=xF8lgHoYB4TvhYMo5h7NMc8pDB8PIcibAKK3NzNZmhs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kJ2O4aX3nWetnqsBOgGQ4oe174GfGCvBQ6CJksw7aL9+LQI33a8xFPIwRwzkan7k3
-         eEj+XJ4tfOoXyIx/ZW48cOZ0cM98EW3S8VCMVlR0kBy7HlzMQGZolMzMEwkkzIAveK
-         /nm8K3CMEniZz2PIY34EqZYenWr5Y04uwspZXVJ5BKa9kKKU9gPolQhw9x6H841gjM
-         Zv9Pxu8pGlB8UblBOdgiH1NA+dYDe3vk29803JHZa7G/8Ch1mOtr+G20x+KHiXzE0C
-         R1QINqcWVI9Rm9q08veUejzr29KIXNv6uYJAfhCDSLAg46IiWBU1cmUauBPlpurwQE
-         y8oHDO3h+T+og==
-Date:   Mon, 26 Jul 2021 08:19:03 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Wei Xu <xuwei5@hisilicon.com>
-Cc:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "xuwei (O)" <xuwei5@huawei.com>
-Subject: Re: [PATCH 1/2] dts: hisilicon: add support for the PMIC found on
- Hikey 970
-Message-ID: <20210726081812.54431189@coco.lan>
-In-Reply-To: <60FE20AC.3050400@hisilicon.com>
-References: <cover.1627116285.git.mchehab+huawei@kernel.org>
-        <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>
-        <60FE20AC.3050400@hisilicon.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S231752AbhGZFsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 01:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229658AbhGZFrx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 01:47:53 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54CEC061757;
+        Sun, 25 Jul 2021 23:28:22 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso18279484pjb.1;
+        Sun, 25 Jul 2021 23:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fJtZ1Lge7ch9gY6HxQCqLZ3+7A2ZCl+Ej1e0SFj7GW4=;
+        b=UdWjKO+LBekJG2YJTComW+9j6yGUTpqqkY21ZZ/fdzX6poSUAItOZDdq5l+7yt7egq
+         kclO4AjkRKmmS32JhDD8/iENz4Uce8y5b95yD5hI4OiW7J34vwufDJOi0KVtQvssI7lp
+         xCBMLBgtQtiYz97unMlw+4i+PGWF06sYybX1h1fHm291/iTDcXDWoJ417rP4lEV+JKKy
+         FZZuhQsGyrzZuUkvnMxMv8ZpNHVBbv3QaFWRIl5cYOGf5xsn9mqS8NPjuEMgqHJ8nDLd
+         WauHF7rZwn4SdGQ3OIiatqYHfWsh9J/zSeQqxyzXkWGFXZNrgQr2rHFOVodxbWoKshmD
+         crTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fJtZ1Lge7ch9gY6HxQCqLZ3+7A2ZCl+Ej1e0SFj7GW4=;
+        b=n+hC6IZNmOLTy5tgbHB8mUcd0PD1Upvfu/kUtCL6TUbqEHFtilnSqZ+rp+i+OGhnLJ
+         pdrhoPvqdPyhuXjdKtJW1DBR/xXyP2u5i3Zk7vRUjUGSXQ4xFqZ0NOmqxoZTc1HSIh13
+         8nr0d3hr/T4AnDl6rFCcdg1VptJtxyrcY4WCkMx+nn79DtFLU9aGuN4nkETN6ybNBywV
+         pEf7K9Fjp5oA9drPW+mB9Gvbs1CSAlPGMb0RHkkU9IFQnuq7qB3cCitNQOwjc1JCj72b
+         jzYkDvkVeERdGGVH11W2umoENdTBnm/O6A33xm0bdiDfBXzoK1vnDuwxtqAUzGlzHXTJ
+         mv7w==
+X-Gm-Message-State: AOAM531BUhffJJrqKP0T0jqkEmUf3r3yfNj7YDrboqNe6PKhDpmfB33P
+        afjcRw5r2LlDxU+XIMN6ZFEcJapIHfT/YpLC
+X-Google-Smtp-Source: ABdhPJydxRF0jWm3UmMPuPpO+Clvc8XaF4cFhSLLWu1nFOvN5MOJf1A0EifKXWs21u3+WNN6hzukoA==
+X-Received: by 2002:a63:3741:: with SMTP id g1mr17137811pgn.134.1627280902185;
+        Sun, 25 Jul 2021 23:28:22 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.171])
+        by smtp.gmail.com with ESMTPSA id w2sm12325363pjd.35.2021.07.25.23.28.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 23:28:21 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>
+Cc:     dan.carpenter@oracle.com, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: sun8i-ce: fix memory leak and return value of sun8i_ce_hash_run
+Date:   Mon, 26 Jul 2021 14:27:50 +0800
+Message-Id: <20210726062801.2078117-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 26 Jul 2021 10:40:44 +0800
-Wei Xu <xuwei5@hisilicon.com> escreveu:
+This patch fixes some memory leak caused by dma_mmap_sg/single
+in the error handling code. In addition, it fixes the return value
+when errors related with dma_mmap_sg/single occur.
 
-> Hi Mauro,
-> 
-> On 2021/7/24 16:55, Mauro Carvalho Chehab wrote:
-> > Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
-> > on HiKey970 board.
-> > 
-> > As we now have support for it, change the fixed regulators
-> > used by the SD I/O to use the proper LDO supplies.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
-> >  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 86 +++++++++++++++++++
-> >  2 files changed, 89 insertions(+), 19 deletions(-)
-> >  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-> > 
-> > diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-> > index d8abf442ee7e..7c32f5fd5cc5 100644
-> > --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-> > +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-> > @@ -12,6 +12,7 @@
-> >  
-> >  #include "hi3670.dtsi"
-> >  #include "hikey970-pinctrl.dtsi"
-> > +#include "hikey970-pmic.dtsi"
-> >  
-> >  / {
-> >  	model = "HiKey970";
-> > @@ -39,23 +40,6 @@ memory@0 {
-> >  		reg = <0x0 0x0 0x0 0x0>;
-> >  	};
-> >  
-> > -	sd_1v8: regulator-1v8 {
-> > -		compatible = "regulator-fixed";
-> > -		regulator-name = "fixed-1.8V";
-> > -		regulator-min-microvolt = <1800000>;
-> > -		regulator-max-microvolt = <1800000>;
-> > -		regulator-always-on;
-> > -	};
-> > -
-> > -	sd_3v3: regulator-3v3 {
-> > -		compatible = "regulator-fixed";
-> > -		regulator-name = "fixed-3.3V";
-> > -		regulator-min-microvolt = <3300000>;
-> > -		regulator-max-microvolt = <3300000>;
-> > -		regulator-boot-on;
-> > -		regulator-always-on;
-> > -	};
-> > -
-> >  	wlan_en: wlan-en-1-8v {
-> >  		compatible = "regulator-fixed";
-> >  		regulator-name = "wlan-en-regulator";
-> > @@ -402,8 +386,8 @@ &dwmmc1 {
-> >  	pinctrl-0 = <&sd_pmx_func
-> >  		     &sd_clk_cfg_func  
-> >  		     &sd_cfg_func>;  
-> > -	vmmc-supply = <&sd_3v3>;
-> > -	vqmmc-supply = <&sd_1v8>;
-> > +	vmmc-supply = <&ldo16>;
-> > +	vqmmc-supply = <&ldo9>;
-> >  	status = "okay";
-> >  };
-> >  
-> > diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-> > new file mode 100644
-> > index 000000000000..970047f2dabd
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-> > @@ -0,0 +1,86 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
-> > + *
-> > + * Copyright (C) 2020, Huawei Tech. Co., Ltd.
-> > + */
-> > +
-> > +#include <dt-bindings/spmi/spmi.h>
-> > +
-> > +/ {
-> > +	spmi: spmi@fff24000 {
-> > +		compatible = "hisilicon,kirin970-spmi-controller";
-> > +		#address-cells = <2>;
-> > +		#size-cells = <0>;
-> > +		status = "okay";
-> > +		reg = <0x0 0xfff24000 0x0 0x1000>;
-> > +		hisilicon,spmi-channel = <2>;
-> > +
-> > +		pmic: pmic@0 {
-> > +			compatible = "hisilicon,hi6421-spmi";  
-> 
-> Should this be "hisilicon,hi6421-pmic" which is already in the binding document "mfd/hi6421.txt"?
-> Others are OK to me.
+Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Fixes: 732b764099f65 ("crypto: sun8i-ce - fix two error path's memory leak")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ .../crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 37 ++++++++++---------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
-No. 
+diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+index 3c073eb3db03..7c4ed19f5466 100644
+--- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+@@ -324,11 +324,11 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	struct sun8i_ss_alg_template *algt;
+ 	struct sun8i_ss_dev *ss;
+ 	struct scatterlist *sg;
+-	int nr_sgs, err, digestsize;
++	int j, i, todo, nr_sgs, tmp_err, digestsize;
++	int err = 0;
+ 	unsigned int len;
+ 	u64 fill, min_fill, byte_count;
+ 	void *pad, *result;
+-	int j, i, todo;
+ 	__be64 *bebits;
+ 	__le64 *lebits;
+ 	dma_addr_t addr_res, addr_pad;
+@@ -368,14 +368,14 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
+ 		dev_err(ss->dev, "Invalid sg number %d\n", nr_sgs);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_result;
+ 	}
+ 
+ 	addr_res = dma_map_single(ss->dev, result, digestsize, DMA_FROM_DEVICE);
+ 	if (dma_mapping_error(ss->dev, addr_res)) {
+ 		dev_err(ss->dev, "DMA map dest\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_unmap_sg;
+ 	}
+ 
+ 	len = areq->nbytes;
+@@ -390,7 +390,7 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (len > 0) {
+ 		dev_err(ss->dev, "remaining len %d\n", len);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_addr_res;
+ 	}
+ 
+ 	byte_count = areq->nbytes;
+@@ -421,27 +421,30 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+ 	}
+ 
+ 	addr_pad = dma_map_single(ss->dev, pad, j * 4, DMA_TO_DEVICE);
+-	rctx->t_src[i].addr = addr_pad;
+-	rctx->t_src[i].len = j;
+-	rctx->t_dst[i].addr = addr_res;
+-	rctx->t_dst[i].len = digestsize / 4;
+ 	if (dma_mapping_error(ss->dev, addr_pad)) {
+ 		dev_err(ss->dev, "DMA error on padding SG\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_addr_res;
+ 	}
++	rctx->t_src[i].addr = addr_pad;
++	rctx->t_src[i].len = j;
++	rctx->t_dst[i].addr = addr_res;
++	rctx->t_dst[i].len = digestsize / 4;
+ 
+-	err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
++	tmp_err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
++
++	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
++
++	crypto_finalize_hash_request(engine, breq, tmp_err);
+ 
+ 	dma_unmap_single(ss->dev, addr_pad, j * 4, DMA_TO_DEVICE);
++err_addr_res:
++	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
++err_unmap_sg:
+ 	dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
+ 		     DMA_TO_DEVICE);
+-	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+-
+-	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+-theend:
++err_result:
+ 	kfree(pad);
+ 	kfree(result);
+-	crypto_finalize_hash_request(engine, breq, err);
+-	return 0;
++	return err;
+ }
+-- 
+2.25.1
 
-hisilicon,hi6421-pmic is used by this driver
-	drivers/mfd/hi6421-pmic-core.c
-
-which provides support for the Hi6421 variants that don't use a MIPI
-SPMI bus.
-
-The "hisilicon,hi6421-spmi" compatible is for the new driver:
-	drivers/mfd/hi6421-spmi-pmic.c
-
-And it is defined at:
-	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
-
-Both DT bindings and the driver were promoted from staging on this patch:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-next&id=9bd9e0de1cf5b89c4854be505ac0a418ddcc01bf
-
-Regards,
-Mauro
