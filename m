@@ -2,199 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3869C3D677A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505D53D677D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhGZSqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 14:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
+        id S231962AbhGZSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 14:47:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhGZSqf (ORCPT
+        with ESMTP id S231540AbhGZSrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 14:46:35 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134F8C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 12:27:04 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d17so12866083plh.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 12:27:04 -0700 (PDT)
+        Mon, 26 Jul 2021 14:47:32 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EF9C061757;
+        Mon, 26 Jul 2021 12:27:59 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id k1so12801587plt.12;
+        Mon, 26 Jul 2021 12:27:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hoMlUsxgOOMGyLP12ayUGrpST+sHWMEehNbEOHJGoRk=;
-        b=ddbNF3f4TElNBsVQqChP50/s0j6AMvocnzqu/pOjrladH5tctXf84jU1JXLONMhhHM
-         DDaFTH0/VyAUvD2dxdLKsjInLVqQvQiDonyje1Zmo2WyogzYSSYH4BFwP1lp6U/2m6OZ
-         wqK4s1kD8T7b1+flKvlcDsNDXfG7l+NL/+L8Q=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=1UdDzrra23dH9YokfKPvE1AeA2jAHVIroGq1SNBQhuw=;
+        b=MXRrw0ZZsitiE9Skwj7bh0DNNijMrePYVHp7uEChWsp7D77WbfAThhYYBC2WO+q2wf
+         NboTspa5DGdHXqIcnd8mFfLYOI+5FKdyVzKeHFEYpiZ0KpdsrD7qErPAsgJvkbZfdXpL
+         la1FgQ12OZkU6yz5Tobg/8FZL5+0L+yUMurqUlJZCZEw+AzrF1oRA+NEu1U49iYb/cPZ
+         3wbOSkSn4YCqbJf+Brle4G9lbtySBXa0iOpQIAUnf5qhL+VAFwQJhC3quNE2oRApgrxA
+         61BPag9gmZc5yd6sUq1sefi4+KZP7K0OytFa6obcpZBOBS6SWBKbNGXnFxAdbI8UOF/J
+         fAfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hoMlUsxgOOMGyLP12ayUGrpST+sHWMEehNbEOHJGoRk=;
-        b=ePCH87CMCsMwo++81EkRhQYILITksf48050FhyyI1Z7TUT0TXcbhLzAEN1mU9ibsc8
-         EJMWdS1jECnnaSs/rv+sgSvk9JSXIEgjRXpNF4bsc+xmAqOSnvGBQ87Cy2sD/+MWMimr
-         BWKn1jeDmX495smwmPKXuRLTk9LZCd9c1SZmH/gwCIWaJVGoj8cNdNNfNyESDqE+S82A
-         ijKiTU00HdEtgRDJ7eIalL0PIyjC1MmxbtYIEe2fbPqDj2yaiN3SOe39Eb0JBUr232rg
-         tJ6Ohq02ZF6iIeWumEaW/vjDaEGrTBDJaOyBTvKeSlIe8d073On5aOqMrvxWVn2EDfC5
-         V15Q==
-X-Gm-Message-State: AOAM53315QS/Ef2Z1k45EtSTlHqBrS0iu91f+YD8ITn9HuNdxYy+0chv
-        gPsP1c483nV5n+gRhgK+5jEqqg==
-X-Google-Smtp-Source: ABdhPJywrEtEv4h4Eh+iM8aL7EAjhtx6Xn/lXC18vPIDXhD87eVvoQlRbvHZKQPJXa+pZqw1iI0wEg==
-X-Received: by 2002:aa7:980a:0:b029:358:adf9:c37b with SMTP id e10-20020aa7980a0000b0290358adf9c37bmr19394081pfl.12.1627327623361;
-        Mon, 26 Jul 2021 12:27:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q14sm851027pfn.73.2021.07.26.12.27.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=1UdDzrra23dH9YokfKPvE1AeA2jAHVIroGq1SNBQhuw=;
+        b=RzjXrkGT0EzxCdWhcQulPFZpwf2VwDZTYgpdLpP2lsKlhJ3eVY/nhWJkQabtb50Noh
+         XYjj9RUyIuV2uCb/2SdcrFYLuAtBdzNyAImWgRy2NKhDj4X6O8gMSqCRE+TAEOxnBPyM
+         licLF446PNtOelf7cIaC+FeT2Fi+ZqDK7reV3r53gdJhV4pzpvRjlkSGU+9O73VdV67C
+         Mn/PzuJakTWm/vOVE4i5NaHHnbdiTExLFNaSohwHzhVA3QYSxP6Jbp2jg4A37lmDrNkX
+         1GBX5woC0ccaFcA6PABXEBfeDs9smpIPF0w/dy27pzfevgTghqf2Pz3Kdw+Ej38jeCXf
+         /+hA==
+X-Gm-Message-State: AOAM530+ZUIMfKeOh1yPLVkjkCF2wzhJduJ1VCsxtuMYzI7IoljdQNgD
+        Ar7i0aLh9mxD/BYgB2LygZd9fymv8NTxQw==
+X-Google-Smtp-Source: ABdhPJyKIa2tBdwRxa14RYdzaKZvi7hz0ilJLanTVJ8nLbjcw7fODHKHN0rhx5KhPD9MpwdXxNO31Q==
+X-Received: by 2002:a17:90a:d250:: with SMTP id o16mr9430341pjw.181.1627327679240;
+        Mon, 26 Jul 2021 12:27:59 -0700 (PDT)
+Received: from localhost ([108.161.26.224])
+        by smtp.gmail.com with ESMTPSA id 26sm413610pjj.27.2021.07.26.12.27.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 12:27:02 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 12:27:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH net] af_unix: fix garbage collect vs. MSG_PEEK
-Message-ID: <202107261049.DC0C9178@keescook>
-References: <20210726153621.2658658-1-gregkh@linuxfoundation.org>
+        Mon, 26 Jul 2021 12:27:53 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 12:27:50 -0700
+From:   Matt Turner <mattst88@gmail.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     Michael Cree <mcree@orcon.net.nz>, linux-mm@kvack.org,
+        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Regression bisected to fa3354e4ea39 (mm: free_area_init: use maximal
+ zone PFNs rather than zone sizes)
+Message-ID: <20210726192311.uffqnanxw3ac5wwi@ivybridge>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210726153621.2658658-1-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 05:36:21PM +0200, Greg Kroah-Hartman wrote:
-> From: Miklos Szeredi <mszeredi@redhat.com>
-> 
-> Gc assumes that in-flight sockets that don't have an external ref can't
+Reply-To:
 
-I think this commit log could be expanded. I had to really study things
-to even beging to understand what was going on. I assume "Gc" here means
-specifically unix_gc()?
+Hi Mike!
 
-> gain one while unix_gc_lock is held.  That is true because
-> unix_notinflight() will be called before detaching fds, which takes
-> unix_gc_lock.
+Since commit fa3354e4ea39 (mm: free_area_init: use maximal zone PFNs rather
+than zone sizes), I get the following BUG on Alpha (an AlphaServer ES47 Marvel)
+and loading userspace leads to a segfault:
 
-In reading the code, I *think* what is being protected by unix_gc_lock is
-user->unix_inflight, u->inflight, unix_tot_inflight, and gc_inflight_list?
+(I didn't notice this for a long time because of other unrelated regressions,
+the pandemic, changing jobs, ...)
 
-I note that unix_tot_inflight isn't an atomic but is read outside of
-locking by unix_release_sock() and wait_for_unix_gc(), which seems wrong
-(or at least inefficient).
+BUG: Bad page state in process swapper  pfn:2ffc53
+page:fffffc000ecf14c0 refcount:0 mapcount:1 mapping:0000000000000000 index:0x0
+flags: 0x0()
+raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+page dumped because: nonzero mapcount  
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-03841-gfa3354e4ea39-dirty #26
+        fffffc0001b5bd68 fffffc0001b5be80 fffffc00011cd148 fffffc000ecf14c0
+        fffffc00019803df fffffc0001b5be80 fffffc00011ce340 fffffc000ecf14c0
+        0000000000000000 fffffc0001b5be80 fffffc0001b482c0 fffffc00027d6618
+        fffffc00027da7d0 00000000002ff97a 0000000000000000 fffffc0001b5be80
+        fffffc00011d1abc fffffc000ecf14c0 fffffc0002d00000 fffffc0001b5be80
+        fffffc0001b2350c 0000000000300000 fffffc0001b48298 fffffc0001b482c0
+Trace:
+[<fffffc00011cd148>] bad_page+0x168/0x1b0
+[<fffffc00011ce340>] free_pcp_prepare+0x1e0/0x290
+[<fffffc00011d1abc>] free_unref_page+0x2c/0xa0
+[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
+[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
+[<fffffc000101001c>] _stext+0x1c/0x20
 
-But regardless, are the "external references" the f_count (i.e. get_file()
-of u->sk.sk_socket->file) being changed by scm_fp_dup() and read by
-unix_gc() (i.e. file_count())? It seems the test in unix_gc() is for
-the making sure f_count isn't out of sync with u->inflight (is this the
-corresponding "internal" reference?):
+I haven't tried reproducing this on other machines or QEMU, but I'd be glad to
+if that helps.
 
-                total_refs = file_count(u->sk.sk_socket->file);
-                inflight_refs = atomic_long_read(&u->inflight);
+Any ideas?
 
-                BUG_ON(inflight_refs < 1);
-                BUG_ON(total_refs < inflight_refs);
-                if (total_refs == inflight_refs) {
-
-> Only MSG_PEEK was somehow overlooked.  That one also clones the fds, also
-> keeping them in the skb.  But through MSG_PEEK an external reference can
-> definitely be gained without ever touching unix_gc_lock.
-
-The idea appears to be that all scm_fp_dup() callers need to refresh the
-u->inflight counts which is what unix_attach_fds() and unix_detach_fds()
-do. Why is lock/unlock sufficient for unix_peek_fds()?
-
-I assume the rationale is because MSG_PEEK uses a temporary scm, which
-only gets fput() clean-up on destroy ("inflight" is neither incremented
-nor decremented at any point in the scm lifetime).
-
-But I don't see why any of this helps.
-
-unix_attach_fds():
-	fget(), spin_lock(), inflight++, spin_unlock()
-unix_detach_fds():
-	spin_lock(), inflight--, spin_unlock(), fput()
-unix_peek_fds():
-	fget(), spin_lock(), spin_unlock()
-unix_gx():
-	spin_lock(), "total_refs == inflight_refs" to hitlist,
-	spin_unlock(), free hitlist skbs
-
-Doesn't this mean total_refs and inflight_refs can still get out of
-sync? What keeps an skb from being "visible" to unix_peek_fds() between
-the unix_gx() spin_unlock() and the unix_peek_fds() fget()?
-
-A: unix_gx():
-	spin_lock()
-	find "total_refs == inflight_refs", add to hitlist
-	spin_unlock()
-B: unix_peek_fds():
-	fget()
-A: unix_gc():
-	walk hitlist and free(skb)
-B: unix_peek_fds():
-	*use freed skb*
-
-I feel like I must be missing something since the above race would
-appear to exist even for unix_attach_fds()/unix_detach_fds():
-
-A: unix_gx():
-	spin_lock()
-	find "total_refs == inflight_refs", add to hitlist
-	spin_unlock()
-B: unix_attach_fds():
-	fget()
-A: unix_gc():
-	walk hitlist and free(skb)
-B: unix_attach_fds():
-	*use freed skb*
-
-I'm assuming I'm missing a top-level usage count on skb that is held by
-callers, which means the skb isn't actually freed by unix_gc(). But I
-return to not understanding why adding the lock/unlock helps.
-
-What are the expected locking semantics here?
-
--Kees
-
-> 
-> Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  net/unix/af_unix.c | 16 ++++++++++++++--
->  1 file changed, 14 insertions(+), 2 deletions(-)
-> 
-> Note, this is a resend of this old submission that somehow fell through
-> the cracks:
-> 	https://lore.kernel.org/netdev/CAOssrKcfncAYsQWkfLGFgoOxAQJVT2hYVWdBA6Cw7hhO8RJ_wQ@mail.gmail.com/
-> and was never submitted "properly" and this issue never seemed to get
-> resolved properly.
-> 
-> I've cleaned it up and made the change much smaller and localized to
-> only one file.  I kept Miklos's authorship as he did the hard work on
-> this, I just removed lines and fixed a formatting issue :)
-> 
-> 
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 23c92ad15c61..cdea997aa5bf 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -1526,6 +1526,18 @@ static int unix_getname(struct socket *sock, struct sockaddr *uaddr, int peer)
->  	return err;
->  }
->  
-> +static void unix_peek_fds(struct scm_cookie *scm, struct sk_buff *skb)
-> +{
-> +	scm->fp = scm_fp_dup(UNIXCB(skb).fp);
-> +
-> +	/* During garbage collection it is assumed that in-flight sockets don't
-> +	 * get a new external reference.  So we need to wait until current run
-> +	 * finishes.
-> +	 */
-> +	spin_lock(&unix_gc_lock);
-> +	spin_unlock(&unix_gc_lock);
-> +}
-
-
--- 
-Kees Cook
+Thanks,
+Matt
