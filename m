@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0216B3D6437
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6413D6436
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240436AbhGZPz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52082 "EHLO mail.kernel.org"
+        id S240420AbhGZPz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237993AbhGZPfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:35:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE65260FDA;
-        Mon, 26 Jul 2021 16:15:27 +0000 (UTC)
+        id S237992AbhGZPfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:35:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A1FC60C41;
+        Mon, 26 Jul 2021 16:15:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316128;
-        bh=jbATMcblxcmZ+wilrEF6yrnKHQyOb6/yV9opwv+3hSg=;
+        s=korg; t=1627316130;
+        bh=ckGD72CU9sbeewItEuUmBzjDqvy8xBmCYHBfVBb/GT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U5xsAYeqhll7TrSIYqJTZBIUugeue0ADCNjq9IKeT5A6bRbHaqt9du5Vn0XUcTjeq
-         7ErnzMWRSLE2A2R4ZGGW3bASphydrjE2scdEuNAnR4hqZWguZwPNqHHAwiLSEBighg
-         PpJZ08FsaH0lnZAQRG390WB420GnUSyIOvXLVY7s=
+        b=WqHECnZ+h3EOVoDxnIKn3mo4XSm9kPDYoeifo7HcnSzBpMlr4wyrWUd2NWuImCqa0
+         LDxMAZN7dD9X+abAKVh3CdIpwFNfJIr3biguj0nudTTRG3eM7oVGoGXx3vOi4wZ+cI
+         Jspy/WQ1X6rQWKswHm7ddYjioiY0vaPCeKtSS5yY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        Greg Kurz <groug@kaod.org>,
-        David Hildenbrand <david@redhat.com>,
+        stable@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.13 200/223] memblock: make for_each_mem_range() traverse MEMBLOCK_HOTPLUG regions
-Date:   Mon, 26 Jul 2021 17:39:52 +0200
-Message-Id: <20210726153852.741196807@linuxfoundation.org>
+Subject: [PATCH 5.13 201/223] mm: fix the deadlock in finish_fault()
+Date:   Mon, 26 Jul 2021 17:39:53 +0200
+Message-Id: <20210726153852.773329088@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -42,105 +46,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-commit 79e482e9c3ae86e849c701c846592e72baddda5a upstream.
+commit e4dc3489143f84f7ed30be58b886bb6772f229b9 upstream.
 
-Commit b10d6bca8720 ("arch, drivers: replace for_each_membock() with
-for_each_mem_range()") didn't take into account that when there is
-movable_node parameter in the kernel command line, for_each_mem_range()
-would skip ranges marked with MEMBLOCK_HOTPLUG.
+Commit 63f3655f9501 ("mm, memcg: fix reclaim deadlock with writeback")
+fix the following ABBA deadlock by pre-allocating the pte page table
+without holding the page lock.
 
-The page table setup code in POWER uses for_each_mem_range() to create
-the linear mapping of the physical memory and since the regions marked
-as MEMORY_HOTPLUG are skipped, they never make it to the linear map.
+	                                lock_page(A)
+                                        SetPageWriteback(A)
+                                        unlock_page(A)
+  lock_page(B)
+                                        lock_page(B)
+  pte_alloc_one
+    shrink_page_list
+      wait_on_page_writeback(A)
+                                        SetPageWriteback(B)
+                                        unlock_page(B)
 
-A later access to the memory in those ranges will fail:
+                                        # flush A, B to clear the writeback
 
-  BUG: Unable to handle kernel data access on write at 0xc000000400000000
-  Faulting instruction address: 0xc00000000008a3c0
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA pSeries
-  Modules linked in:
-  CPU: 0 PID: 53 Comm: kworker/u2:0 Not tainted 5.13.0 #7
-  NIP:  c00000000008a3c0 LR: c0000000003c1ed8 CTR: 0000000000000040
-  REGS: c000000008a57770 TRAP: 0300   Not tainted  (5.13.0)
-  MSR:  8000000002009033 <SF,VEC,EE,ME,IR,DR,RI,LE>  CR: 84222202  XER: 20040000
-  CFAR: c0000000003c1ed4 DAR: c000000400000000 DSISR: 42000000 IRQMASK: 0
-  GPR00: c0000000003c1ed8 c000000008a57a10 c0000000019da700 c000000400000000
-  GPR04: 0000000000000280 0000000000000180 0000000000000400 0000000000000200
-  GPR08: 0000000000000100 0000000000000080 0000000000000040 0000000000000300
-  GPR12: 0000000000000380 c000000001bc0000 c0000000001660c8 c000000006337e00
-  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-  GPR20: 0000000040000000 0000000020000000 c000000001a81990 c000000008c30000
-  GPR24: c000000008c20000 c000000001a81998 000fffffffff0000 c000000001a819a0
-  GPR28: c000000001a81908 c00c000001000000 c000000008c40000 c000000008a64680
-  NIP clear_user_page+0x50/0x80
-  LR __handle_mm_fault+0xc88/0x1910
-  Call Trace:
-    __handle_mm_fault+0xc44/0x1910 (unreliable)
-    handle_mm_fault+0x130/0x2a0
-    __get_user_pages+0x248/0x610
-    __get_user_pages_remote+0x12c/0x3e0
-    get_arg_page+0x54/0xf0
-    copy_string_kernel+0x11c/0x210
-    kernel_execve+0x16c/0x220
-    call_usermodehelper_exec_async+0x1b0/0x2f0
-    ret_from_kernel_thread+0x5c/0x70
-  Instruction dump:
-  79280fa4 79271764 79261f24 794ae8e2 7ca94214 7d683a14 7c893a14 7d893050
-  7d4903a6 60000000 60000000 60000000 <7c001fec> 7c091fec 7c081fec 7c051fec
-  ---[ end trace 490b8c67e6075e09 ]---
+Commit f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault()
+codepaths") reworked the relevant code but ignored this race.  This will
+cause the deadlock above to appear again, so fix it.
 
-Making for_each_mem_range() include MEMBLOCK_HOTPLUG regions in the
-traversal fixes this issue.
-
-Link: https://bugzilla.redhat.com/show_bug.cgi?id=1976100
-Link: https://lkml.kernel.org/r/20210712071132.20902-1-rppt@kernel.org
-Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Tested-by: Greg Kurz <groug@kaod.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Cc: <stable@vger.kernel.org>	[5.10+]
+Link: https://lkml.kernel.org/r/20210721074849.57004-1-zhengqi.arch@bytedance.com
+Fixes: f9ce0be71d1f ("mm: Cleanup faultaround and finish_fault() codepaths")
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/memblock.h |    4 ++--
- mm/memblock.c            |    3 ++-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ mm/memory.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -207,7 +207,7 @@ static inline void __next_physmem_range(
-  */
- #define for_each_mem_range(i, p_start, p_end) \
- 	__for_each_mem_range(i, &memblock.memory, NULL, NUMA_NO_NODE,	\
--			     MEMBLOCK_NONE, p_start, p_end, NULL)
-+			     MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3891,8 +3891,17 @@ vm_fault_t finish_fault(struct vm_fault
+ 				return ret;
+ 		}
  
- /**
-  * for_each_mem_range_rev - reverse iterate through memblock areas from
-@@ -218,7 +218,7 @@ static inline void __next_physmem_range(
-  */
- #define for_each_mem_range_rev(i, p_start, p_end)			\
- 	__for_each_mem_range_rev(i, &memblock.memory, NULL, NUMA_NO_NODE, \
--				 MEMBLOCK_NONE, p_start, p_end, NULL)
-+				 MEMBLOCK_HOTPLUG, p_start, p_end, NULL)
+-		if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd)))
++		if (vmf->prealloc_pte) {
++			vmf->ptl = pmd_lock(vma->vm_mm, vmf->pmd);
++			if (likely(pmd_none(*vmf->pmd))) {
++				mm_inc_nr_ptes(vma->vm_mm);
++				pmd_populate(vma->vm_mm, vmf->pmd, vmf->prealloc_pte);
++				vmf->prealloc_pte = NULL;
++			}
++			spin_unlock(vmf->ptl);
++		} else if (unlikely(pte_alloc(vma->vm_mm, vmf->pmd))) {
+ 			return VM_FAULT_OOM;
++		}
+ 	}
  
- /**
-  * for_each_reserved_mem_range - iterate over all reserved memblock areas
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -940,7 +940,8 @@ static bool should_skip_region(struct me
- 		return true;
- 
- 	/* skip hotpluggable memory regions if needed */
--	if (movable_node_is_enabled() && memblock_is_hotpluggable(m))
-+	if (movable_node_is_enabled() && memblock_is_hotpluggable(m) &&
-+	    !(flags & MEMBLOCK_HOTPLUG))
- 		return true;
- 
- 	/* if we want mirror memory skip non-mirror memory regions */
+ 	/* See comment in handle_pte_fault() */
 
 
