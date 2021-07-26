@@ -2,143 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F5B3D5CAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5505A3D5CC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbhGZOar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:30:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234423AbhGZOap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:30:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D54760249;
-        Mon, 26 Jul 2021 15:11:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627312274;
-        bh=m0IBU7F0RMvEHKFdn1xCumVtd6nSvGkByp5q73T7LeQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=D71+s960RDIL4onn7IlNz1/S9zSILriwTupltVwOU/VjAk9Ak3ImttKxWTB66Pa88
-         xKumtgyZGhJVUM3L1FuMFa/lzsdxOOg6R5OFHIr3Mu2EJAE5KpoJz43NhRqnYCyu1e
-         OdDIKiChAJ8jMkls3XDOfJxdUDG/FjE92k1bxRH0OXlp9N4ND/1GI7wb9lsAgo2KAJ
-         x0lBEAxgkAlM/GySJpI0FjbEUQ7k3GB7z/+HdMAZkUlwuyXvcy9ng1tqzWrSfaDStR
-         weXEkHs0ZcrAGl6Ei+ObVukHAxMHlKmoxRVB4ss1amrJOYVg1tObFVs5cqoay8g47Q
-         XByMjjrWc3NdQ==
-Received: by mail-ej1-f46.google.com with SMTP id gt31so16779495ejc.12;
-        Mon, 26 Jul 2021 08:11:14 -0700 (PDT)
-X-Gm-Message-State: AOAM531s7AvJ5oHeZ24wiXad8FivIAPyAZ+6M5rkeBNAZvEoT6rbqq4e
-        2UoOj5hxeko0L2mnuxPkqTfDWza25ENImzDS2g==
-X-Google-Smtp-Source: ABdhPJw040a5khoi+ktio5Acuzg5hfGThWYX1n2PYs6nq9crOr67MIKoPy+W3zT0TLDNlUN4taup1B0vvMXjcA6KByA=
-X-Received: by 2002:a17:906:d287:: with SMTP id ay7mr1112894ejb.360.1627312273160;
- Mon, 26 Jul 2021 08:11:13 -0700 (PDT)
+        id S234925AbhGZOgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:36:06 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54389 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234892AbhGZOfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 10:35:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uh4K0r._1627312535;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Uh4K0r._1627312535)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 26 Jul 2021 23:15:37 +0800
+Date:   Mon, 26 Jul 2021 23:15:35 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: Re: [PATCH v8] iomap: make inline data support more flexible
+Message-ID: <YP7Rlwhd4yBXhANY@B-P7TQMD6M-0146.local>
+Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+References: <20210726145734.214295-1-hsiangkao@linux.alibaba.com>
+ <YP7Ph55kV0M8M1gW@casper.infradead.org>
 MIME-Version: 1.0
-References: <cover.1627273794.git.viresh.kumar@linaro.org> <605b87ce93b9a528810a5857984bfe6b913d5e73.1627273794.git.viresh.kumar@linaro.org>
-In-Reply-To: <605b87ce93b9a528810a5857984bfe6b913d5e73.1627273794.git.viresh.kumar@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 26 Jul 2021 09:11:01 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKbk+Y-QiyzRpeCVAQvSWMOn7j51t4uUMkEw61XX3-muQ@mail.gmail.com>
-Message-ID: <CAL_JsqKbk+Y-QiyzRpeCVAQvSWMOn7j51t4uUMkEw61XX3-muQ@mail.gmail.com>
-Subject: Re: [PATCH V3 3/5] dt-bindings: gpio: Add bindings for gpio-virtio
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YP7Ph55kV0M8M1gW@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 10:52 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> This patch adds binding for virtio GPIO controller, it is based on
-> virtio-device bindings.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  .../devicetree/bindings/gpio/gpio-virtio.yaml | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
->
-> diff --git a/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml b/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
-> new file mode 100644
-> index 000000000000..96108cfb7a08
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
-> @@ -0,0 +1,60 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/gpio-virtio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Virtio GPIO controller
-> +
-> +maintainers:
-> +  - Viresh Kumar <viresh.kumar@linaro.org>
-> +
-> +allOf:
-> +  - $ref: /schemas/gpio/gpio.yaml#
+Hi Matthew,
 
-You don't need to include this.
+On Mon, Jul 26, 2021 at 04:06:47PM +0100, Matthew Wilcox wrote:
+> 
+> Please make the Subject: 'iomap: Support file tail packing' as there
+> are clearly a number of ways to make the inline data support more
+> flexible ;-)
 
-> +  - $ref: /schemas/virtio/virtio-device.yaml#
-> +
-> +description:
-> +  Virtio GPIO controller, see /schemas/virtio/virtio-device.yaml for more
-> +  details.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: '^gpio-virtio(-[a-z0-9]+)?$'
-> +
-> +  compatible:
-> +    const: virtio,29
-> +
-> +  gpio-controller: true
-> +
-> +  "#gpio-cells":
-> +    const: 2
-> +
-> +  interrupt-controller: true
-> +
-> +  "#interrupt-cells":
-> +    const: 2
-> +
-> +required:
-> +  - compatible
-> +  - gpio-controller
-> +  - "#gpio-cells"
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    virtio@3000 {
-> +        compatible = "virtio,mmio";
-> +        reg = <0x3000 0x100>;
-> +        interrupts = <41>;
-> +
-> +        gpio: gpio-virtio {
-> +            compatible = "virtio,29";
-> +            gpio-controller;
-> +            #gpio-cells = <2>;
-> +            interrupt-controller;
-> +            #interrupt-cells = <2>;
-> +        };
-> +    };
-> +
-> +...
-> --
-> 2.31.1.272.g89b43f80a514
->
+Many thank all folks for the time and the review!
+
+If Darrick is happy too, maybe leave him to update :-) 
+(...I'm fear of screwing up anything now...)
+
+> 
+> Other than that:
+> 
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+
+Thanks,
+Gao Xiang
+
