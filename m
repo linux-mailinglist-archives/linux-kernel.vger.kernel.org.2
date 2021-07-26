@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399A73D63AF
+	by mail.lfdr.de (Postfix) with ESMTP id F07D03D63B1
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239103AbhGZPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:50:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41598 "EHLO mail.kernel.org"
+        id S239133AbhGZPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:50:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232101AbhGZP2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:28:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2FEC60FF1;
-        Mon, 26 Jul 2021 16:07:19 +0000 (UTC)
+        id S236685AbhGZP3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1801461003;
+        Mon, 26 Jul 2021 16:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315640;
-        bh=QqK1Pb3D/lwJqSwlrtH72Tr7sWuFQDAziP6ldQygEP8=;
+        s=korg; t=1627315645;
+        bh=1g9MTTK+h5OIQISiYdvsw0QZ22Zm9H6iWdBYJgKa3mI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vNg3UBElqqEx45aJxs5ktz7VTOF3GSHleY7Kt0dELOW0TK8dQQWGUZ3Nx36/ILpJC
-         c1otfo4w1RRefQqD8a701QA4EQNg0OSo4fx3P7LHYjXoN4T30HlQWD76ZefRax8iMH
-         VS7dA0EqZ9E/3SmCp/Q5VnDdXpTLALkuCGoUJtoo=
+        b=i3CB93NvkxM/8XyUCjBzHnT58cJQPSmSI5Tyh66qkWFks3RRWFnflQ9R0VLVN3z+j
+         UImFFwjjwHAJEUzx4o3YVmA8vuWTVvdtegA6rwjf7YSQD9WDPiEgcCyVhiU79rcPaU
+         7WGo+aFRe+1NE+TvJl+zTY4rpoZrF11Voz7GvWlA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Erez Geva <erez.geva.ext@siemens.com>,
+        stable@vger.kernel.org,
+        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
         Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 001/223] igc: Fix use-after-free error during reset
-Date:   Mon, 26 Jul 2021 17:36:33 +0200
-Message-Id: <20210726153846.296722979@linuxfoundation.org>
+Subject: [PATCH 5.13 011/223] igb: Fix position of assignment to *ring
+Date:   Mon, 26 Jul 2021 17:36:43 +0200
+Message-Id: <20210726153846.623025076@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -44,91 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
 
-[ Upstream commit 56ea7ed103b46970e171eb1c95916f393d64eeff ]
+[ Upstream commit 382a7c20d9253bcd5715789b8179528d0f3de72c ]
 
-Cleans the next descriptor to watch (next_to_watch) when cleaning the
-TX ring.
+Assignment to *ring should be done after correctness check of the
+argument queue.
 
-Failure to do so can cause invalid memory accesses. If igc_poll() runs
-while the controller is being reset this can lead to the driver try to
-free a skb that was already freed.
-
-Log message:
-
- [  101.525242] refcount_t: underflow; use-after-free.
- [  101.525251] WARNING: CPU: 1 PID: 646 at lib/refcount.c:28 refcount_warn_saturate+0xab/0xf0
- [  101.525259] Modules linked in: sch_etf(E) sch_mqprio(E) rfkill(E) intel_rapl_msr(E) intel_rapl_common(E)
- x86_pkg_temp_thermal(E) intel_powerclamp(E) coretemp(E) binfmt_misc(E) kvm_intel(E) kvm(E) irqbypass(E) crc32_pclmul(E)
- ghash_clmulni_intel(E) aesni_intel(E) mei_wdt(E) libaes(E) crypto_simd(E) cryptd(E) glue_helper(E) snd_hda_codec_hdmi(E)
- rapl(E) intel_cstate(E) snd_hda_intel(E) snd_intel_dspcfg(E) sg(E) soundwire_intel(E) intel_uncore(E) at24(E)
- soundwire_generic_allocation(E) iTCO_wdt(E) soundwire_cadence(E) intel_pmc_bxt(E) serio_raw(E) snd_hda_codec(E)
- iTCO_vendor_support(E) watchdog(E) snd_hda_core(E) snd_hwdep(E) snd_soc_core(E) snd_compress(E) snd_pcsp(E)
- soundwire_bus(E) snd_pcm(E) evdev(E) snd_timer(E) mei_me(E) snd(E) soundcore(E) mei(E) configfs(E) ip_tables(E) x_tables(E)
- autofs4(E) ext4(E) crc32c_generic(E) crc16(E) mbcache(E) jbd2(E) sd_mod(E) t10_pi(E) crc_t10dif(E) crct10dif_generic(E)
- i915(E) ahci(E) libahci(E) ehci_pci(E) igb(E) xhci_pci(E) ehci_hcd(E)
- [  101.525303]  drm_kms_helper(E) dca(E) xhci_hcd(E) libata(E) crct10dif_pclmul(E) cec(E) crct10dif_common(E) tsn(E) igc(E)
- e1000e(E) ptp(E) i2c_i801(E) crc32c_intel(E) psmouse(E) i2c_algo_bit(E) i2c_smbus(E) scsi_mod(E) lpc_ich(E) pps_core(E)
- usbcore(E) drm(E) button(E) video(E)
- [  101.525318] CPU: 1 PID: 646 Comm: irq/37-enp7s0-T Tainted: G            E     5.10.30-rt37-tsn1-rt-ipipe #ipipe
- [  101.525320] Hardware name: SIEMENS AG SIMATIC IPC427D/A5E31233588, BIOS V17.02.09 03/31/2017
- [  101.525322] RIP: 0010:refcount_warn_saturate+0xab/0xf0
- [  101.525325] Code: 05 31 48 44 01 01 e8 f0 c6 42 00 0f 0b c3 80 3d 1f 48 44 01 00 75 90 48 c7 c7 78 a8 f3 a6 c6 05 0f 48
- 44 01 01 e8 d1 c6 42 00 <0f> 0b c3 80 3d fe 47 44 01 00 0f 85 6d ff ff ff 48 c7 c7 d0 a8 f3
- [  101.525327] RSP: 0018:ffffbdedc0917cb8 EFLAGS: 00010286
- [  101.525329] RAX: 0000000000000000 RBX: ffff98fd6becbf40 RCX: 0000000000000001
- [  101.525330] RDX: 0000000000000001 RSI: ffffffffa6f2700c RDI: 00000000ffffffff
- [  101.525332] RBP: ffff98fd6becc14c R08: ffffffffa7463d00 R09: ffffbdedc0917c50
- [  101.525333] R10: ffffffffa74c3578 R11: 0000000000000034 R12: 00000000ffffff00
- [  101.525335] R13: ffff98fd6b0b1000 R14: 0000000000000039 R15: ffff98fd6be35c40
- [  101.525337] FS:  0000000000000000(0000) GS:ffff98fd6e240000(0000) knlGS:0000000000000000
- [  101.525339] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- [  101.525341] CR2: 00007f34135a3a70 CR3: 0000000150210003 CR4: 00000000001706e0
- [  101.525343] Call Trace:
- [  101.525346]  sock_wfree+0x9c/0xa0
- [  101.525353]  unix_destruct_scm+0x7b/0xa0
- [  101.525358]  skb_release_head_state+0x40/0x90
- [  101.525362]  skb_release_all+0xe/0x30
- [  101.525364]  napi_consume_skb+0x57/0x160
- [  101.525367]  igc_poll+0xb7/0xc80 [igc]
- [  101.525376]  ? sched_clock+0x5/0x10
- [  101.525381]  ? sched_clock_cpu+0xe/0x100
- [  101.525385]  net_rx_action+0x14c/0x410
- [  101.525388]  __do_softirq+0xe9/0x2f4
- [  101.525391]  __local_bh_enable_ip+0xe3/0x110
- [  101.525395]  ? irq_finalize_oneshot.part.47+0xe0/0xe0
- [  101.525398]  irq_forced_thread_fn+0x6a/0x80
- [  101.525401]  irq_thread+0xe8/0x180
- [  101.525403]  ? wake_threads_waitq+0x30/0x30
- [  101.525406]  ? irq_thread_check_affinity+0xd0/0xd0
- [  101.525408]  kthread+0x183/0x1a0
- [  101.525412]  ? kthread_park+0x80/0x80
- [  101.525415]  ret_from_fork+0x22/0x30
-
-Fixes: 13b5b7fd6a4a ("igc: Add support for Tx/Rx rings")
-Reported-by: Erez Geva <erez.geva.ext@siemens.com>
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Fixes: 91db364236c8 ("igb: Refactor igb_configure_cbs()")
+Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/intel/igb/igb_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index f1adf154ec4a..9cac1e74a2ba 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -217,6 +217,8 @@ static void igc_clean_tx_ring(struct igc_ring *tx_ring)
- 					       DMA_TO_DEVICE);
- 		}
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 9f83ff55394c..b0e900d1eae2 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -1685,14 +1685,15 @@ static bool is_any_txtime_enabled(struct igb_adapter *adapter)
+  **/
+ static void igb_config_tx_modes(struct igb_adapter *adapter, int queue)
+ {
+-	struct igb_ring *ring = adapter->tx_ring[queue];
+ 	struct net_device *netdev = adapter->netdev;
+ 	struct e1000_hw *hw = &adapter->hw;
++	struct igb_ring *ring;
+ 	u32 tqavcc, tqavctrl;
+ 	u16 value;
  
-+		tx_buffer->next_to_watch = NULL;
-+
- 		/* move us one more past the eop_desc for start of next pkt */
- 		tx_buffer++;
- 		i++;
+ 	WARN_ON(hw->mac.type != e1000_i210);
+ 	WARN_ON(queue < 0 || queue > 1);
++	ring = adapter->tx_ring[queue];
+ 
+ 	/* If any of the Qav features is enabled, configure queues as SR and
+ 	 * with HIGH PRIO. If none is, then configure them with LOW PRIO and
 -- 
 2.30.2
 
