@@ -2,194 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B4D3D5853
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CCA3D5855
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhGZKaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbhGZKaw (ORCPT
+        id S233278AbhGZKa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 06:30:58 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:53894 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233195AbhGZKa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:30:52 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAFBC061757;
-        Mon, 26 Jul 2021 04:11:20 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id h14so14729842lfv.7;
-        Mon, 26 Jul 2021 04:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=5EyBo1JuUMfBD46+7a7QLvUvToo/Z3sQEl1J9W/36Qs=;
-        b=Ke0QaHseaLGk+DQ5sqBNgN57yTTsc8onasdkMho0NkbrcvTFUEcS/ka8kjnkoKAcqG
-         MrLE69v+ucLwzMCJrJOyYthBE3vM60wqOi1tIcewqPhawx9Ux9WOaC/adaoRAH2KvRiZ
-         UOaE61HXZYYr5J3Wqh8jYLOKh9BKkrNsAtPjtO8yvwXIKPPtcqCRSdidYIuANFGfcYPE
-         WscoWaxJTd8lqF/lQa9OSMeRSOjAQj8xqN0mmaXg8OTKizjy9GaI8tkParYs6790EpAa
-         eR2P0FNmzw3e9kVbJyoCtYyOn1g/+4pJHzSjuH75darBYGWNy8Gv41b2cQFMrQUgW/Gp
-         Ctmw==
+        Mon, 26 Jul 2021 06:30:57 -0400
+Received: by mail-il1-f198.google.com with SMTP id l14-20020a056e0205ceb02901f2f7ba704aso4624582ils.20
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 04:11:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5EyBo1JuUMfBD46+7a7QLvUvToo/Z3sQEl1J9W/36Qs=;
-        b=lVGpe9eNGezfiyTSTQ1T4MTjjBqkWNt4LNuCTi+QvhKQOs7Y/K0sQN4B5J6C5xSyXw
-         siawZNig4OWRXDVvzaPNl48winZCwUn6gSd6b0VpCYqU/Vcr9qzCZJWOC+Xppm19iQ/j
-         eQUgwpGgcYvwMvyExbNfmUXDSGM8MDzwg1eMRqQ1+WFwn5Y3BgHl7vu27qDK1G4B8adz
-         GIM1JYmc3hRZA49dB4M1D9RRFJMNvT1EqreUQQZzEyQRn/OEVoeO6W76zKew5hTdlYFB
-         hM1DHatiKfR4f5hQ/QTcrIIGLsUGPhGEq9Vlc7P96+i8bYucE9k5nb8ysGsRH2X6xi6z
-         j+OA==
-X-Gm-Message-State: AOAM532ftmO2uNQQrCb63fxoMFlFvYhMypUfokrWuUSfK0bCApE2dPTy
-        sA1l57DvooLlTqwFnIyrvGLxuCF9ivh+hQ==
-X-Google-Smtp-Source: ABdhPJxgQDCct9Cq37qPqzYVuA4PfWDgCw5DRcNcCusL3g7e+O9reyRSlQy0DcNU+WHszPAykbZWFw==
-X-Received: by 2002:a19:790f:: with SMTP id u15mr12486087lfc.267.1627297878326;
-        Mon, 26 Jul 2021 04:11:18 -0700 (PDT)
-Received: from [192.168.43.35] ([5.141.101.155])
-        by smtp.gmail.com with ESMTPSA id r11sm2850336ljp.135.2021.07.26.04.11.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 04:11:17 -0700 (PDT)
-Subject: Re: [PATCH v3 3/3] drm/panel-simple: add Gopher 2b LCD panel
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     thierry.reding@gmail.com, sam@ravnborg.org,
-        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210725221527.1771892-1-akawolf0@gmail.com>
- <20210725221527.1771892-4-akawolf0@gmail.com>
- <K3HUWQ.S5LBW8E092T01@crapouillou.net>
-From:   Artjom Vejsel <akawolf0@gmail.com>
-Message-ID: <54910ba4-4680-868e-94fc-88a11f9abfd9@gmail.com>
-Date:   Mon, 26 Jul 2021 14:11:11 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=DBgSQulEimYK54fL+ksLZGwR2PD3Tq44nHtHlrBZwi0=;
+        b=PQAQiACUjvYU3ha4z2E+JmuztPIkz3vtxGrwF7MluTLcM/6sPPVNQeaDmmJVIYiyUT
+         VLcf5xBxF517zCz8fWiCJJyu24CGyXmAl0+IZ96tSR9gvKawSsZjgkbvcpNT+/fTFBWj
+         JpjMAQzV3TVU1bI1FQZIYpQTBtqNJVnrKJlInkiUK8IZfhxVBWquDTMQwoqXev6JW1N/
+         zbJ5PvnlB1b8Rh//hUvyBVcVC5fq+pe8wkp/IKunUNs2W+//ukefjdRBMc6Qh5H5wc6t
+         c7PAvaptG3XDjT3hrjp0AtlJfLmiY/FqFXk17X79lR82j1dCu34EZbyy0bgbUhbusRZD
+         Yymg==
+X-Gm-Message-State: AOAM533gRDkSouzlpNTFpUY3xyBXNUZS+sTXZBRCE7NT2tyeh8eeNM+N
+        hS8fiD9YB4dYUse083pvcYOMAw5N6u1F0K4X8zx6Ekev8S+v
+X-Google-Smtp-Source: ABdhPJyqMx0kZ4orxnK8tGZg/c9ZIiAwIlzGvpCuhGVoYal09omcrPvOmesOl5wA1zY/D+svIu1oxv2K1uKu3I8HDwnCi3/o5muK
 MIME-Version: 1.0
-In-Reply-To: <K3HUWQ.S5LBW8E092T01@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Received: by 2002:a02:cd0a:: with SMTP id g10mr15941097jaq.18.1627297885992;
+ Mon, 26 Jul 2021 04:11:25 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 04:11:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000703c0f05c804d095@google.com>
+Subject: [syzbot] INFO: rcu detected stall in batadv_tt_purge (2)
+From:   syzbot <syzbot+08504d998fc4589919ac@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, fweisbec@gmail.com, jhs@mojatatu.com,
+        jiri@resnulli.us, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mingo@kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vinicius.gomes@intel.com, xiyou.wangcong@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Paul!
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    7b6ae471e541 Merge tag 'spi-fix-v5.14-rc2' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17849f74300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7dfeb6dfc05ea19
+dashboard link: https://syzkaller.appspot.com/bug?extid=08504d998fc4589919ac
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12fc675a300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1566d2ea300000
+
+The issue was bisected to:
+
+commit b5b73b26b3ca34574124ed7ae9c5ba8391a7f176
+Author: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Date:   Thu Sep 10 00:03:11 2020 +0000
+
+    taprio: Fix allowing too small intervals
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1468a696300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1668a696300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1268a696300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+08504d998fc4589919ac@syzkaller.appspotmail.com
+Fixes: b5b73b26b3ca ("taprio: Fix allowing too small intervals")
+
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	0-...!: (2 ticks this GP) idle=4de/1/0x4000000000000000 softirq=11238/11238 fqs=0 
+	(t=13326 jiffies g=13217 q=742)
+rcu: rcu_preempt kthread timer wakeup didn't happen for 13325 jiffies! g13217 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
+rcu: 	Possible timer handling issue on cpu=0 timer-softirq=29073
+rcu: rcu_preempt kthread starved for 13326 jiffies! g13217 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0
+rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
+rcu: RCU grace-period kthread stack dump:
+task:rcu_preempt     state:I stack:29096 pid:   14 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
+ schedule+0xd3/0x270 kernel/sched/core.c:6019
+ schedule_timeout+0x14a/0x2a0 kernel/time/timer.c:1878
+ rcu_gp_fqs_loop kernel/rcu/tree.c:1996 [inline]
+ rcu_gp_kthread+0xd34/0x1980 kernel/rcu/tree.c:2169
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+rcu: Stack dump where RCU GP kthread last ran:
+NMI backtrace for cpu 0
+CPU: 0 PID: 10 Comm: kworker/u4:1 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bat_events batadv_tt_purge
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_check_gp_kthread_starvation.cold+0x1d1/0x1d6 kernel/rcu/tree_stall.h:479
+ print_cpu_stall kernel/rcu/tree_stall.h:623 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:700 [inline]
+ rcu_pending kernel/rcu/tree.c:3922 [inline]
+ rcu_sched_clock_irq.cold+0x9a/0x747 kernel/rcu/tree.c:2641
+ update_process_times+0x16d/0x200 kernel/time/timer.c:1782
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
+ tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1421
+ __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
+ __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1601
+ hrtimer_interrupt+0x330/0xa00 kernel/time/hrtimer.c:1663
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1106
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:__local_bh_enable_ip+0xa8/0x120 kernel/softirq.c:390
+Code: 1d ad 91 bc 7e 65 8b 05 a6 91 bc 7e a9 00 ff ff 00 74 45 bf 01 00 00 00 e8 15 2a 09 00 e8 50 84 35 00 fb 65 8b 05 88 91 bc 7e <85> c0 74 58 5b 5d c3 65 8b 05 d6 98 bc 7e 85 c0 75 a2 0f 0b eb 9e
+RSP: 0018:ffffc90000f0fc10 EFLAGS: 00000206
+RAX: 0000000080000000 RBX: 00000000fffffe00 RCX: 1ffffffff1fa584a
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff88ca93e5 R08: 0000000000000001 R09: ffffffff8fcd7987
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90000f0fdb0
+R13: ffff888042de12f8 R14: 0000000000000082 R15: dffffc0000000000
+ spin_unlock_bh include/linux/spinlock.h:399 [inline]
+ batadv_tt_local_purge+0x285/0x370 net/batman-adv/translation-table.c:1369
+ batadv_tt_purge+0x2c/0xaf0 net/batman-adv/translation-table.c:3591
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+NMI backtrace for cpu 0
+CPU: 0 PID: 10 Comm: kworker/u4:1 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: bat_events batadv_tt_purge
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_dump_cpu_stacks+0x25e/0x3f0 kernel/rcu/tree_stall.h:342
+ print_cpu_stall kernel/rcu/tree_stall.h:625 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:700 [inline]
+ rcu_pending kernel/rcu/tree.c:3922 [inline]
+ rcu_sched_clock_irq.cold+0x9f/0x747 kernel/rcu/tree.c:2641
+ update_process_times+0x16d/0x200 kernel/time/timer.c:1782
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
+ tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1421
+ __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
+ __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1601
+ hrtimer_interrupt+0x330/0xa00 kernel/time/hrtimer.c:1663
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1106
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:__local_bh_enable_ip+0xa8/0x120 kernel/softirq.c:390
+Code: 1d ad 91 bc 7e 65 8b 05 a6 91 bc 7e a9 00 ff ff 00 74 45 bf 01 00 00 00 e8 15 2a 09 00 e8 50 84 35 00 fb 65 8b 05 88 91 bc 7e <85> c0 74 58 5b 5d c3 65 8b 05 d6 98 bc 7e 85 c0 75 a2 0f 0b eb 9e
+RSP: 0018:ffffc90000f0fc10 EFLAGS: 00000206
+RAX: 0000000080000000 RBX: 00000000fffffe00 RCX: 1ffffffff1fa584a
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffffff88ca93e5 R08: 0000000000000001 R09: ffffffff8fcd7987
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90000f0fdb0
+R13: ffff888042de12f8 R14: 0000000000000082 R15: dffffc0000000000
+ spin_unlock_bh include/linux/spinlock.h:399 [inline]
+ batadv_tt_local_purge+0x285/0x370 net/batman-adv/translation-table.c:1369
+ batadv_tt_purge+0x2c/0xaf0 net/batman-adv/translation-table.c:3591
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 9018 Comm: kworker/u4:2 Not tainted 5.14.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound toggle_allocation_gate
+RIP: 0010:__sanitizer_cov_trace_const_cmp4+0xc/0x70 kernel/kcov.c:283
+Code: 00 00 00 48 89 7c 30 e8 48 89 4c 30 f0 4c 89 54 d8 20 48 89 10 5b c3 0f 1f 80 00 00 00 00 41 89 f8 bf 03 00 00 00 4c 8b 14 24 <89> f1 65 48 8b 34 25 00 f0 01 00 e8 e4 ee ff ff 84 c0 74 4b 48 8b
+RSP: 0018:ffffc90000fd8df8 EFLAGS: 00000046
+RAX: 0000000000010002 RBX: ffff8880b9d424c0 RCX: 0000000000000000
+RDX: ffff88802e756280 RSI: 0000000000000001 RDI: 0000000000000003
+RBP: ffff88802539bb40 R08: 0000000000000007 R09: ffffffff904c64ab
+R10: ffffffff816467fb R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff8880b9d423c0 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000600 CR3: 000000000b68e000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ cpu_max_bits_warn include/linux/cpumask.h:108 [inline]
+ cpumask_check include/linux/cpumask.h:115 [inline]
+ cpumask_test_cpu include/linux/cpumask.h:344 [inline]
+ cpu_online include/linux/cpumask.h:895 [inline]
+ trace_hrtimer_start include/trace/events/timer.h:195 [inline]
+ debug_activate kernel/time/hrtimer.c:476 [inline]
+ enqueue_hrtimer+0x4b/0x3e0 kernel/time/hrtimer.c:982
+ __run_hrtimer kernel/time/hrtimer.c:1554 [inline]
+ __hrtimer_run_queues+0xb02/0xe50 kernel/time/hrtimer.c:1601
+ hrtimer_interrupt+0x330/0xa00 kernel/time/hrtimer.c:1663
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1106
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:csd_lock_wait kernel/smp.c:440 [inline]
+RIP: 0010:smp_call_function_many_cond+0x452/0xc20 kernel/smp.c:967
+Code: 0b 00 85 ed 74 4d 48 b8 00 00 00 00 00 fc ff df 4d 89 f4 4c 89 f5 49 c1 ec 03 83 e5 07 49 01 c4 83 c5 03 e8 c0 48 0b 00 f3 90 <41> 0f b6 04 24 40 38 c5 7c 08 84 c0 0f 85 33 06 00 00 8b 43 08 31
+RSP: 0018:ffffc900037b7a00 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: ffff8880b9c55de0 RCX: 0000000000000000
+RDX: ffff88802e756280 RSI: ffffffff816975f0 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff81697616 R11: 0000000000000000 R12: ffffed101738abbd
+R13: 0000000000000000 R14: ffff8880b9c55de8 R15: 0000000000000001
+ on_each_cpu_cond_mask+0x56/0xa0 kernel/smp.c:1133
+ on_each_cpu include/linux/smp.h:71 [inline]
+ text_poke_sync arch/x86/kernel/alternative.c:929 [inline]
+ text_poke_bp_batch+0x1b3/0x560 arch/x86/kernel/alternative.c:1114
+ text_poke_flush arch/x86/kernel/alternative.c:1268 [inline]
+ text_poke_flush arch/x86/kernel/alternative.c:1265 [inline]
+ text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1275
+ arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:145
+ jump_label_update+0x1d5/0x430 kernel/jump_label.c:830
+ static_key_disable_cpuslocked+0x152/0x1b0 kernel/jump_label.c:207
+ static_key_disable+0x16/0x20 kernel/jump_label.c:215
+ toggle_allocation_gate mm/kfence/core.c:637 [inline]
+ toggle_allocation_gate+0x185/0x390 mm/kfence/core.c:615
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 
 
-Thanks for your investigation.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-But while this two panels are compatible with the timing set in the 
-driver, their timing ranges are different ([1], [2]) and therefore 
-should have different compatible strings.
-
-
-[1]: https://wendangmao.net/doc/753b5635102de2bd960588e2-51.html
-
-[2]: https://www.newhavendisplay.com/appnotes/datasheets/LCDs/ST7282.pdf
-
-
-Artjom.
-
-On 26/07/2021 12.02, Paul Cercueil wrote:
-> Hi Artjom,
->
-> Le lun., juil. 26 2021 at 01:15:27 +0300, Artjom Vejsel 
-> <akawolf0@gmail.com> a écrit :
->> The Gopher 2b LCD panel is used in Gopher 2b handhelds.
->> It's simple panel with NewVision NV3047 driver, but SPI lines are not 
->> connected.
->> It has no specific name, since it's unique to that handhelds.
->> lot name at AliExpress: 4.3 inch 40PIN TFT LCD Screen COG NV3047 
->> Drive IC 480(RGB)*272 No Touch 24Bit RGB Interface
->
-> From what I gathered the Gopher2's LCD panel is the exact same that is 
-> inside the RS-07 handheld. According to the teardown (in [1]), the 
-> RS-07 panel is a Amelin AML043056B0-40 (see [2]).
->
-> Could you verify that? According to the photos, the product code is 
-> written on the flexible connector.
->
-> If that's the case, instead of using the 
-> "qishenglong,gopher2b-lcd-panel" compatible string, could you use 
-> "amelin,aml043056b0-40"?
->
-> Cheers,
-> -Paul
->
-> [1]: https://steward-fu.github.io/website/handheld/rs07/teardown.htm
-> [2]: http://www.amelin.com.cn/en/h-pd-355.html
->
->>
->> Signed-off-by: Artjom Vejsel <akawolf0@gmail.com>
->> ---
->>  drivers/gpu/drm/panel/panel-simple.c | 43 ++++++++++++++++++++++++++++
->>  1 file changed, 43 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/panel/panel-simple.c 
->> b/drivers/gpu/drm/panel/panel-simple.c
->> index 9b286bd4444f..6b69c0c70814 100644
->> --- a/drivers/gpu/drm/panel/panel-simple.c
->> +++ b/drivers/gpu/drm/panel/panel-simple.c
->> @@ -3563,6 +3563,46 @@ static const struct panel_desc qd43003c0_40 = {
->>      .bus_format = MEDIA_BUS_FMT_RGB888_1X24,
->>  };
->>
->> +static const struct drm_display_mode 
->> qishenglong_gopher2b_lcd_panel_modes[] = {
->> +    { /* 60 Hz */
->> +        .clock = 10800,
->> +        .hdisplay = 480,
->> +        .hsync_start = 480 + 77,
->> +        .hsync_end = 480 + 77 + 41,
->> +        .htotal = 480 + 77 + 41 + 2,
->> +        .vdisplay = 272,
->> +        .vsync_start = 272 + 16,
->> +        .vsync_end = 272 + 16 + 10,
->> +        .vtotal = 272 + 16 + 10 + 2,
->> +        .flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
->> +    },
->> +    { /* 50 Hz */
->> +        .clock = 10800,
->> +        .hdisplay = 480,
->> +        .hsync_start = 480 + 17,
->> +        .hsync_end = 480 + 17 + 41,
->> +        .htotal = 480 + 17 + 41 + 2,
->> +        .vdisplay = 272,
->> +        .vsync_start = 272 + 116,
->> +        .vsync_end = 272 + 116 + 10,
->> +        .vtotal = 272 + 116 + 10 + 2,
->> +        .flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
->> +    },
->> +};
->> +
->> +static const struct panel_desc qishenglong_gopher2b_lcd_panel = {
->> +    .modes = qishenglong_gopher2b_lcd_panel_modes,
->> +    .num_modes = ARRAY_SIZE(qishenglong_gopher2b_lcd_panel_modes),
->> +    .bpc = 8,
->> +    .size = {
->> +        .width = 95,
->> +        .height = 54,
->> +    },
->> +    .bus_format = MEDIA_BUS_FMT_RGB888_1X24,
->> +    .bus_flags = DRM_BUS_FLAG_DE_HIGH | 
->> DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
->> +    .connector_type = DRM_MODE_CONNECTOR_DPI,
->> +};
->> +
->>  static const struct display_timing rocktech_rk070er9427_timing = {
->>      .pixelclock = { 26400000, 33300000, 46800000 },
->>      .hactive = { 800, 800, 800 },
->> @@ -4651,6 +4691,9 @@ static const struct of_device_id 
->> platform_of_match[] = {
->>      }, {
->>          .compatible = "qiaodian,qd43003c0-40",
->>          .data = &qd43003c0_40,
->> +    }, {
->> +        .compatible = "qishenglong,gopher2b-lcd-panel",
->> +        .data = &qishenglong_gopher2b_lcd_panel,
->>      }, {
->>          .compatible = "rocktech,rk070er9427",
->>          .data = &rocktech_rk070er9427,
->> -- 
->> 2.32.0
->>
->
->
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
