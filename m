@@ -2,109 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8473D697B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB863D6980
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbhGZVpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55290 "EHLO
+        id S233715AbhGZVpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbhGZVpt (ORCPT
+        with ESMTP id S233693AbhGZVpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:45:49 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59738C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:26:16 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 21so12792713oin.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:26:16 -0700 (PDT)
+        Mon, 26 Jul 2021 17:45:53 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F1FC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:26:21 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso1156255pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=xSput0mTBokah6l9L7iDEvqfAkDOlqRBcOYWvnWkg8w=;
-        b=LfwtnFUQXnxD511/yo8ZxT7kqVeQ5iq8HSIl5m20gkTW6T0Qkdl6/YKYSfh6Wg+jJ6
-         BVHEyEqVeaKC3wAxxgnAvLe5smnz+HzTy3YReyXEx5tFaLqXnSBKEfdVNnXdD8cqo04P
-         CRJIj4l0Hvrlxs+2DmNC+Wff1vR7xeJGqcAA8=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/+BJHwQCEyZHcaZdbprSZPe+y/dzPxjT0mqjzI4mft8=;
+        b=XOJ4As13Ddv1Zv4Si7aLITV2FNguggs9creN7NCAOdJd2JF1ie5suTQ4egOzyTjaIa
+         Hl03gr+MUKSixpTDfESt41Oa3w7ZSO8SE1bBV5CEJDM9XXjwljH1ju+CukWQI2QA+Szp
+         0QMWPQfGn4fOJmzugVf6Q+dDjuIuqolyhzxS37dqEhZsAYP9qCoX2VTwT3U6bbV8dghG
+         EYr4ojU2daMUKvsrk+/UqV2Pl+kEr97qTAubdYzr2+WOKVxn1hGHlcrAvY53oJi3DKz+
+         E6qODtV39JkV9ddgkitlEIWvlby+eNxoMft+bxN0OGC7YUwNi9UnWmIn+ZTeLNJK0vuz
+         mq5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=xSput0mTBokah6l9L7iDEvqfAkDOlqRBcOYWvnWkg8w=;
-        b=ZvAMi/UwzBX/epNddenv9q1B9CcIhsaLsam2L4wxvQkNpiczdyMCvz4fs2HIxLl09m
-         hKafcCYKz8dREF2E6PdN8UNLV22DbJ4XP7C5EGFCfZ5DDM11xrcMO3mNTKsmbGoLNJ+3
-         KC5OQGA5dnQCr7BK5jJAJiFoxtexe2KgsIAKGPfO/OfnRDaLWh2UNpW2VMv51giR6DE+
-         RijZ/CH2k+VH1dRX3GRacUqO/fLLCaCToig7AQVb93Tfw8AsjUpUf3igWcyx3R/sHSdm
-         Cl48nkkQSeeiO0u5fdWsSvSpZccOPaE2S/pJH4nHk1cXnoon/Ho/4lx1QbM0PqHi2N9u
-         reGQ==
-X-Gm-Message-State: AOAM531HWGtRRjrhpVOv6cIO75kdOflG7wrtr5RZPHTABoJcW0NsdLkJ
-        fk9WV1DpAEcm/uhoWTho+qGzE2wL7TNwwsvJB5y4Lg==
-X-Google-Smtp-Source: ABdhPJxAPKNqUePhUnMW58bIZi6hbUqGSsjTwese7bc2NMQxiVuWSTHpmEV0RaR2jSgi+QJ8pzhBS+gPZyxSMbVyqtk=
-X-Received: by 2002:aca:4dc6:: with SMTP id a189mr917454oib.166.1627338375634;
- Mon, 26 Jul 2021 15:26:15 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Jul 2021 18:26:15 -0400
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/+BJHwQCEyZHcaZdbprSZPe+y/dzPxjT0mqjzI4mft8=;
+        b=rB62hsJh21Pp9c7UTn9y9omUEM3BxPtPT9mRL56MRUS7ncgh915LiXb4TtEO72mktj
+         ACrPzEIIdZXvcfuWItf/PEsX4r1iucpvAv6D9rEb3KrxTSIYoFKWQl641kzTH+C9YGbo
+         U4wQld9G/lkBzeaGNrjN7gRxAD66RPOEMj9XsAJqJyi52hK2L06gpGkVT1Y7JSnbgL9g
+         2yBBwPQ1a5SvnlnR0THLmJiw15ZcYsE6mHgNZQ2RdenXP8SxtMyqdC7zM7zeFVY+4iAC
+         yCe3uXNGRT9hqyCPbM/HzR4UeK4RQtPkYfHBvIB6tnljDcZDIvV3TJNVG02oAUEmi4/a
+         iqIg==
+X-Gm-Message-State: AOAM530A+zpDhjbKeOngu4t8QNSlbGgPp/X9FF7x38iWjWxDXdBLoARC
+        lfjrh/52O+W6R8g5LIv6+px4WQ==
+X-Google-Smtp-Source: ABdhPJw/Gh8+1NKDnRtUWhULZWuiVZb6OyXZ9UngoYoN+DX3SJ++9aiaqB5a3wtleH0WP6vP5l1VFQ==
+X-Received: by 2002:aa7:9e5c:0:b029:32b:4e2a:e549 with SMTP id z28-20020aa79e5c0000b029032b4e2ae549mr20136064pfq.68.1627338380586;
+        Mon, 26 Jul 2021 15:26:20 -0700 (PDT)
+Received: from google.com (254.80.82.34.bc.googleusercontent.com. [34.82.80.254])
+        by smtp.gmail.com with ESMTPSA id h9sm597057pjk.56.2021.07.26.15.26.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 15:26:19 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 22:26:16 +0000
+From:   David Matlack <dmatlack@google.com>
+To:     Erdem Aktas <erdemaktas@google.com>
+Cc:     linux-kselftest@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Gonda <pgonda@google.com>, Marc Orr <marcorr@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Zhenzhong Duan <zhenzhong.duan@intel.com>,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/4] KVM: selftests: Add support for creating
+ non-default type VMs
+Message-ID: <YP82iIe3vM/+fRAh@google.com>
+References: <20210726183816.1343022-1-erdemaktas@google.com>
+ <20210726183816.1343022-2-erdemaktas@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1627059339-12142-1-git-send-email-khsieh@codeaurora.org>
-References: <1627059339-12142-1-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 26 Jul 2021 18:26:15 -0400
-Message-ID: <CAE-0n50TV8j24x02VqVd0c6+zEr5Q++GN5xq_urQW3PiJ16QHQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/msm/dp: signal audio plugged change at dp_pm_resume
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726183816.1343022-2-erdemaktas@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-07-23 09:55:39)
-> There is a scenario that dp cable is unplugged from DUT during system
-> suspended  will cause audio option state does not match real connection
-> state. Fix this problem by Signaling audio plugged change with realtime
-> connection status at dp_pm_resume() so that audio option will be in
-> correct state after system resumed.
->
-> Changes in V2:
-> -- correct Fixes tag commit id.
->
-> Fixes: f591dbb5fb8c ("drm/msm/dp: power off DP phy at suspend")
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On Mon, Jul 26, 2021 at 11:37:54AM -0700, Erdem Aktas wrote:
+> Currently vm_create function only creates KVM_X86_LEGACY_VM type VMs.
+> Changing the vm_create function to accept type parameter to create
+> new VM types.
+> 
+> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
+> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Peter Gonda <pgonda@google.com>
+> Reviewed-by: Marc Orr <marcorr@google.com>
+> Reviewed-by: Sagi Shahar <sagis@google.com>
+
+Reviewed-by: David Matlack <dmatlack@google.com>
+
+(aside from the nit below)
+
 > ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  .../testing/selftests/kvm/include/kvm_util.h  |  1 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 29 +++++++++++++++++--
+>  2 files changed, 27 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index d53bfadd2..c63df42d6 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -88,6 +88,7 @@ int vcpu_enable_cap(struct kvm_vm *vm, uint32_t vcpu_id,
+>  void vm_enable_dirty_ring(struct kvm_vm *vm, uint32_t ring_size);
+>  
+>  struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
+> +struct kvm_vm *__vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm, int type);
 
-I noticed that with or without this patch I still have a problem with an
-apple dongle where if I leave the dongle connected but unplug the HDMI
-cable during suspend the audio device is still there when I resume. The
-display looks to be connected in that case too, according to modetest. I
-don't know if you want to roll that into this patch or make another
-follow-up patch to fix it, but it seems like the sink count isn't
-updated on resume? Did commit f591dbb5fb8c break a bunch of logic in
-here because now the link is powered down properly and so sink_count
-isn't updated properly?
+nit: Consider using a more readable function name such as
+vm_create_with_type().
 
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 78c5301..2b660e9 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1339,6 +1339,10 @@ static int dp_pm_resume(struct device *dev)
->         else
->                 dp->dp_display.is_connected = false;
->
-> +       dp_display_handle_plugged_change(g_dp_display,
-> +                               dp->dp_display.is_connected);
+>  void kvm_vm_free(struct kvm_vm *vmp);
+>  void kvm_vm_restart(struct kvm_vm *vmp, int perm);
+>  void kvm_vm_release(struct kvm_vm *vmp);
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index e5fbf16f7..70caa3882 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -180,13 +180,36 @@ _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params)
+>   * Return:
+>   *   Pointer to opaque structure that describes the created VM.
+>   *
+> - * Creates a VM with the mode specified by mode (e.g. VM_MODE_P52V48_4K).
+> + * Wrapper VM Create function to create a VM with default type (0).
+> + */
+> +struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+> +{
+> +	return __vm_create(mode, phy_pages, perm, 0);
+> +}
 > +
-> +
-
-There's also a double newline here that we should probably remove.
-
->         mutex_unlock(&dp->event_mutex);
->
->         return 0;
+> +/*
+> + * VM Create with a custom type
+> + *
+> + * Input Args:
+> + *   mode - VM Mode (e.g. VM_MODE_P52V48_4K)
+> + *   phy_pages - Physical memory pages
+> + *   perm - permission
+> + *   type - VM type
+> + *
+> + * Output Args: None
+> + *
+> + * Return:
+> + *   Pointer to opaque structure that describes the created VM.
+> + *
+> + * Creates a VM with the mode specified by mode (e.g. VM_MODE_P52V48_4K) and the
+> + * type specified in type (e.g. KVM_X86_LEGACY_VM, KVM_X86_TDX_VM ...).
+>   * When phy_pages is non-zero, a memory region of phy_pages physical pages
+>   * is created and mapped starting at guest physical address 0.  The file
+>   * descriptor to control the created VM is created with the permissions
+>   * given by perm (e.g. O_RDWR).
+>   */
+> -struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+> +struct kvm_vm *__vm_create(enum vm_guest_mode mode, uint64_t phy_pages,
+> +			    int perm, int type)
+>  {
+>  	struct kvm_vm *vm;
+>  
+> @@ -200,7 +223,7 @@ struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+>  	INIT_LIST_HEAD(&vm->userspace_mem_regions);
+>  
+>  	vm->mode = mode;
+> -	vm->type = 0;
+> +	vm->type = type;
+>  
+>  	vm->pa_bits = vm_guest_mode_params[mode].pa_bits;
+>  	vm->va_bits = vm_guest_mode_params[mode].va_bits;
+> -- 
+> 2.32.0.432.gabb21c7263-goog
+> 
