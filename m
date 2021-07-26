@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5B53D5D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F823D5E0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhGZPB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:01:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41148 "EHLO mail.kernel.org"
+        id S235824AbhGZPFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:05:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235666AbhGZPBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:01:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2A4760F42;
-        Mon, 26 Jul 2021 15:42:19 +0000 (UTC)
+        id S235943AbhGZPES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:04:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68CFD60F38;
+        Mon, 26 Jul 2021 15:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314140;
-        bh=iDqe+YqHANkXWXYqqQYcozsSGPuDUT7Mv1NOc64he0g=;
+        s=korg; t=1627314287;
+        bh=GbOe5nLAvF/9W+HikZFDgRh0jNiyC0ZMZ7uVQnd7KUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zWASkK41P5hWRya5BMTaaNcEpGBG2ck2Em85kN18xbeuex50PBcb0HFiCkRaUMgjM
-         2zoj76rjqLSfriK+7R/RlqlV9oo4oGC376ruEoNoLTUM4Rs3VD1Zw6VijHLjHAUsw+
-         6Chb3iCJ7RUri3LtAJLk6oyn3PcaiEAyOhEjxiIE=
+        b=sKg6GzHA8HrQGlEl8JeEIpn/+1cSgbcA8zI5+XtFEtwnjs14Y48WuOWPrSKWUhbUL
+         ih6hwcj45oHt3C4geBcd4PQo6HoJDD5sjfEol5+2uChQuwdT8GZ5VyuyOwtWbqSq2x
+         7p0mfn/oC5C0jzNe/DkDk1jTgKZqB2MaLprtHVKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 47/47] btrfs: compression: dont try to compress if we dont have enough pages
+        stable@vger.kernel.org,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH 4.9 51/60] usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
 Date:   Mon, 26 Jul 2021 17:39:05 +0200
-Message-Id: <20210726153824.455518827@linuxfoundation.org>
+Message-Id: <20210726153826.473898767@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-commit f2165627319ffd33a6217275e5690b1ab5c45763 upstream
+commit 5719df243e118fb343725e8b2afb1637e1af1373 upstream.
 
-The early check if we should attempt compression does not take into
-account the number of input pages. It can happen that there's only one
-page, eg. a tail page after some ranges of the BTRFS_MAX_UNCOMPRESSED
-have been processed, or an isolated page that won't be converted to an
-inline extent.
+This driver has a potential issue which this driver is possible to
+cause superfluous irqs after usb_pkt_pop() is called. So, after
+the commit 3af32605289e ("usb: renesas_usbhs: fix error return
+code of usbhsf_pkt_handler()") had been applied, we could observe
+the following error happened when we used g_audio.
 
-The single page would be compressed but a later check would drop it
-again because the result size must be at least one block shorter than
-the input. That can never work with just one page.
+    renesas_usbhs e6590000.usb: irq_ready run_error 1 : -22
 
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To fix the issue, disable the tx or rx interrupt in usb_pkt_pop().
+
+Fixes: 2743e7f90dc0 ("usb: renesas_usbhs: fix the usb_pkt_pop()")
+Cc: <stable@vger.kernel.org> # v4.4+
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Link: https://lore.kernel.org/r/20210624122039.596528-1-yoshihiro.shimoda.uh@renesas.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/renesas_usbhs/fifo.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -476,7 +476,7 @@ again:
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
- 	 */
--	if (inode_need_compress(inode)) {
-+	if (nr_pages > 1 && inode_need_compress(inode)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
+--- a/drivers/usb/renesas_usbhs/fifo.c
++++ b/drivers/usb/renesas_usbhs/fifo.c
+@@ -115,6 +115,8 @@ static struct dma_chan *usbhsf_dma_chan_
+ #define usbhsf_dma_map(p)	__usbhsf_dma_map_ctrl(p, 1)
+ #define usbhsf_dma_unmap(p)	__usbhsf_dma_map_ctrl(p, 0)
+ static int __usbhsf_dma_map_ctrl(struct usbhs_pkt *pkt, int map);
++static void usbhsf_tx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
++static void usbhsf_rx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
+ struct usbhs_pkt *usbhs_pkt_pop(struct usbhs_pipe *pipe, struct usbhs_pkt *pkt)
+ {
+ 	struct usbhs_priv *priv = usbhs_pipe_to_priv(pipe);
+@@ -138,6 +140,11 @@ struct usbhs_pkt *usbhs_pkt_pop(struct u
+ 			dmaengine_terminate_all(chan);
+ 			usbhsf_fifo_clear(pipe, fifo);
+ 			usbhsf_dma_unmap(pkt);
++		} else {
++			if (usbhs_pipe_is_dir_in(pipe))
++				usbhsf_rx_irq_ctrl(pipe, 0);
++			else
++				usbhsf_tx_irq_ctrl(pipe, 0);
+ 		}
+ 
+ 		usbhs_pipe_running(pipe, 0);
 
 
