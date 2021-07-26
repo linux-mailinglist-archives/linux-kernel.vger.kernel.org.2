@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26513D5229
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096713D522B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 06:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhGZDZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 23:25:18 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12307 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhGZDZR (ORCPT
+        id S231691AbhGZDZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 23:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231603AbhGZDZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 23:25:17 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GY5nX0b6Sz7x8t;
-        Mon, 26 Jul 2021 12:01:04 +0800 (CST)
-Received: from dggpemm500002.china.huawei.com (7.185.36.229) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 12:05:45 +0800
-Received: from [10.174.179.191] (10.174.179.191) by
- dggpemm500002.china.huawei.com (7.185.36.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 12:05:44 +0800
-Subject: Re: [PATCH] mm/vmalloc: add missing __GFP_HIGHMEM flag for vmalloc
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <wangkefeng.wang@huawei.com>,
-        <weiyongjun1@huawei.com>
-References: <20210726032333.3404164-1-chenwandun@huawei.com>
- <YP4rM7qtSet+H+nG@casper.infradead.org>
-From:   Chen Wandun <chenwandun@huawei.com>
-Message-ID: <f064b046-8831-2aa9-2234-63e867e28dc1@huawei.com>
-Date:   Mon, 26 Jul 2021 12:05:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 25 Jul 2021 23:25:34 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48934C061760
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:06:03 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id l19so11246335pjz.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 21:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xiWitXT290UcByDjy4CV0WmRGLnUtUIPDLLBbCJ8IDc=;
+        b=fUs5u9A2a5DivlQK6Sg0JrGLgJXIPYe7pwxwekbQfczrOF7C0jTUI5nUklETv0tNu6
+         s/9XO2ZgJPne3GLw52Jt8SKdnjFuSu5J2oH8fdnurwdaDQhs/RCRNSv4p5+4h5IVvzDs
+         9qu7clubgpT93TMnvfLV00Z4mqHgSOhzsimDA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xiWitXT290UcByDjy4CV0WmRGLnUtUIPDLLBbCJ8IDc=;
+        b=a1159wizhf/mxZ8BjXzBql2ap+/YVtUjoM8D3bMyuCMqT6NDSoANcCwuoVvvgrraxx
+         a7iiJKuvdq2fvVnp8TjEHYNmNvDplyKik9ldw94I6kP9P8dPzal4JiZJaMNTNup4OgOm
+         0U87zouGADBC3A5jyItIC8hwmNKhXs6C4QT8pXZonOmvpLDO37bxiEGqmgpWQpe/yFIa
+         4QwO8CDp61XghS4IE0WgRBqkE1+3DrXqtwb2l7KZWZcVy6LJ9Irx0F0P/BfUWU71/UQp
+         VzMm/NX06hbFWFp4j2cjsrI/Xnfkk8A31qqjwGSADDKJEQhOgfQBNxmO6c83XYDrd6ja
+         AeDw==
+X-Gm-Message-State: AOAM531EQKa/kqRVvZGt0r0yo9m4MA5wqLvUHh92z8QaTSscVh70/dy1
+        6mNSPxNA1iOSFGD7t8xU3nXPvw==
+X-Google-Smtp-Source: ABdhPJxPpkDCVPhmtEpwxjcoHVvEIwaGFP4/ubAgNHcqzQYT+OQ4R0Q0rmcmuOVO4cs1HYPlIHNkiw==
+X-Received: by 2002:a63:1621:: with SMTP id w33mr16182815pgl.291.1627272362829;
+        Sun, 25 Jul 2021 21:06:02 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:d699:4331:827:4150])
+        by smtp.gmail.com with ESMTPSA id r18sm2448184pgk.54.2021.07.25.21.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 21:06:02 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 13:05:57 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCHv3 7/8] videobuf2: handle V4L2_MEMORY_FLAG_NON_COHERENT
+ flag
+Message-ID: <YP40paMcGjlfofi8@google.com>
+References: <20210709092027.1050834-1-senozhatsky@chromium.org>
+ <20210709092027.1050834-8-senozhatsky@chromium.org>
+ <0c89ef1e-8abb-8749-bbce-c7e5a2e2f304@collabora.com>
+ <YP4Sfo0PjLokYi3B@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YP4rM7qtSet+H+nG@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.191]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500002.china.huawei.com (7.185.36.229)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YP4Sfo0PjLokYi3B@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (21/07/26 10:40), Sergey Senozhatsky wrote:
+> On (21/07/22 19:33), Dafna Hirschfeld wrote:
+> [..]
+> > >   int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
+> > >   {
+> > >   	int ret = vb2_verify_memory_type(q, req->memory, req->type);
+> > > +	u32 flags = req->flags;
+> > >   	fill_buf_caps(q, &req->capabilities);
+> > > -	return ret ? ret : vb2_core_reqbufs(q, req->memory, 0, &req->count);
+> > > +	validate_memory_flags(q, req->memory, &flags);
+> > > +	req->flags = flags;
+> > 
+> > you can do instead
+> > 
+> > validate_memory_flags(q, req->memory, &req->flags);
+> 
+> ->flags are u32 for create-bufs and u8 for reqi-bufs. So `*flags = <value>`
+> can write to ->reserved[] for req-bufs (if the value is huge enough).
 
-在 2021/7/26 11:25, Matthew Wilcox 写道:
-> On Mon, Jul 26, 2021 at 11:23:33AM +0800, Chen Wandun wrote:
->> struct page array can also be allocated in highmem during vmalloc,
->> that will ease the low memory stress in 32bit system.
-> Huh?  Where does it get kmapped in order to access it?
-
-The struct page array contain numbers of pointer of struct page, it is used to save
-
-pages that allocated for vmalloc mapping in vmap_pages_range, it does't need to kmap.
-
-
-The main idea of this patch is come from:
-
-https://lore.kernel.org/lkml/20170307141020.29107-1-mhocko@kernel.org/
-
->
->> Fixes: f255935b9767 ("mm: cleanup the gfp_mask handling in __vmalloc_area_node")
->> Signed-off-by: Chen Wandun <chenwandun@huawei.com>
->> ---
->>   mm/vmalloc.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
->> index 3824dc16ce1c..8d9b0b08a6dc 100644
->> --- a/mm/vmalloc.c
->> +++ b/mm/vmalloc.c
->> @@ -2885,7 +2885,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
->>   
->>   	/* Please note that the recursion is strictly bounded. */
->>   	if (array_size > PAGE_SIZE) {
->> -		area->pages = __vmalloc_node(array_size, 1, nested_gfp, node,
->> +		area->pages = __vmalloc_node(array_size, 1,
->> +					nested_gfp | __GFP_HIGHMEM, node,
->>   					area->caller);
->>   	} else {
->>   		area->pages = kmalloc_node(array_size, nested_gfp, node);
->> -- 
->> 2.25.1
->>
->>
-> .
+I guess ->flags can become u8 for both create-bufs and req-bufs.
+We had ->flags in both structs as u32, but then decided to leave
+some reserved[] space in req-bufs and switched to u8 there.
