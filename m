@@ -2,251 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD953D5839
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5813D584D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbhGZKZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:25:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39826 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232240AbhGZKZy (ORCPT
+        id S233143AbhGZK2y convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Jul 2021 06:28:54 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:40035 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232263AbhGZK2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:25:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627297583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ad2ryKrfK6sJyTkUWOpK6mUvcD3y5ZEk3RAUKPbVjNc=;
-        b=eNbCNckax98adyYaE+ZBoJ/Ch7l5ZUBY0E+b9HnHMJUExMmPPx2gaWGCOziNT5J9zj8SZh
-        oXD/25FFqNcli/lxZvCIrsB7peErIn1pxzoujBqJU0vf1vxW9MayAgczUl0vRZpNEFNHH1
-        cKdlD1eimzqGb0wbi837Ja6mZlLSyMY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-w0pUUMoZMBaG1V_MtCOAzw-1; Mon, 26 Jul 2021 07:06:19 -0400
-X-MC-Unique: w0pUUMoZMBaG1V_MtCOAzw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDB848799F6;
-        Mon, 26 Jul 2021 11:06:17 +0000 (UTC)
-Received: from max.com (unknown [10.40.194.164])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 277C810016F8;
-        Mon, 26 Jul 2021 11:06:14 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Date:   Mon, 26 Jul 2021 13:06:11 +0200
-Message-Id: <20210726110611.459173-1-agruenba@redhat.com>
-In-Reply-To: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
-References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com> <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com> <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com> <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
+        Mon, 26 Jul 2021 06:28:49 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16QB97Bj8004450, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16QB97Bj8004450
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Jul 2021 19:09:07 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 19:09:07 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 19:09:06 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
+ RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
+ 15.01.2106.013; Mon, 26 Jul 2021 19:09:06 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into r8152_main.c and r8152_fw.c
+Thread-Topic: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into
+ r8152_main.c and r8152_fw.c
+Thread-Index: AQHXgdL4UhnFIS2opkGLRT1L0R8XUatUWD4AgACR1mD//38YAIAAqNrw
+Date:   Mon, 26 Jul 2021 11:09:06 +0000
+Message-ID: <47801164b7b3406b895be1542e0ce4a2@realtek.com>
+References: <1394712342-15778-368-Taiwan-albertk@realtek.com>
+ <1394712342-15778-371-Taiwan-albertk@realtek.com>
+ <1394712342-15778-373-Taiwan-albertk@realtek.com>
+ <YP5mFKeJsGezjdve@kroah.com> <c6b44f93a5b14fbb98d4c6cb0ed2a77f@realtek.com>
+ <YP50SIgqAEyKWSpA@kroah.com>
+In-Reply-To: <YP50SIgqAEyKWSpA@kroah.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.177.203]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/7/26_=3F=3F_10:24:00?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 10:49:04
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165241 [Jul 26 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/26/2021 10:51:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's the promised update.  Passes fstests on gfs2.
+Greg KH <gregkh@linuxfoundation.org>
+> Sent: Monday, July 26, 2021 4:37 PM
+[...]
+> You also do other things, like renaming defines, which is not just
+> moving code around, right?
 
-Thanks,
-Andreas
+Yes. You are right.
 
---
+[...]
+> I do not know, is it really easier to find things in 3 different files
+> instead of one?  That's up to you, but you did not say why this change
+> is needed.
 
-Subject: iomap: Support tail packing
+We support a new chip or feature with a test driver.
+The test driver is similar with the upstream driver, except
+the method of the firmware. After we confirm that the
+test driver work fine, we compare the differences with
+the upstream driver and submit patches. And the code
+about firmware takes us more time to find out the
+differences. Therefore, I wish to move the part of
+the firmware out.
 
-The existing inline data support only works for cases where the entire
-file is stored as inline data.  For larger files, EROFS stores the
-initial blocks separately and then can pack a small tail adjacent to the
-inode.  Generalise inline data to allow for tail packing.  Tails may not
-cross a page boundary in memory.
+I don't sure if it is acceptable for such patches.
+If it is unacceptable, I would abandon these patches.
 
-We currently have no filesystems that support tail packing and writing,
-so that case is currently disabled (see iomap_write_begin_inline).  I'm
-not aware of any reason why this code path shouldn't work, however.
+Best Regards,
+Hayes
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
----
- fs/iomap/buffered-io.c | 38 +++++++++++++++++++++++++-------------
- fs/iomap/direct-io.c   |  9 +++++----
- include/linux/iomap.h  | 20 +++++++++++++++++++-
- 3 files changed, 49 insertions(+), 18 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..dee6b0952ef8 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
--iomap_read_inline_data(struct inode *inode, struct page *page,
-+static int iomap_read_inline_data(struct inode *inode, struct page *page,
- 		struct iomap *iomap)
- {
--	size_t size = i_size_read(inode);
-+	size_t size = i_size_read(inode) - iomap->offset;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return 0;
- 
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline and tail-packed data must start page aligned in the file */
-+	if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(size > PAGE_SIZE - offset_in_page(iomap->inline_data)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(page_has_private(page)))
-+		return -EIO;
- 
- 	addr = kmap_atomic(page);
- 	memcpy(addr, iomap->inline_data, size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return 0;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -247,9 +251,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	sector_t sector;
- 
- 	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
--		return PAGE_SIZE;
-+		int ret = iomap_read_inline_data(inode, page, iomap);
-+		return ret ?: PAGE_SIZE;
- 	}
- 
- 	/* zero post-eof blocks as the page may be mapped */
-@@ -589,6 +592,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(srcmap->offset != 0))
-+		return -EIO;
-+	return iomap_read_inline_data(inode, page, srcmap);
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-@@ -671,11 +683,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
- 	void *addr;
- 
- 	WARN_ON_ONCE(!PageUptodate(page));
--	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	BUG_ON(!iomap_inline_data_size_valid(iomap));
- 
- 	flush_dcache_page(page);
- 	addr = kmap_atomic(page);
--	memcpy(iomap->inline_data + pos, addr + pos, copied);
-+	memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
- 	kunmap_atomic(addr);
- 
- 	mark_inode_dirty(inode);
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..6fdae86d0f1d 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -380,21 +380,22 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 	struct iov_iter *iter = dio->submit.iter;
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_data(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(iomap_inline_data(iomap, pos), length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(iomap_inline_data(iomap, pos), length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e221..c6af1ef608c6 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -28,7 +28,7 @@ struct vm_fault;
- #define IOMAP_DELALLOC	1	/* delayed allocation blocks */
- #define IOMAP_MAPPED	2	/* blocks allocated at @addr */
- #define IOMAP_UNWRITTEN	3	/* blocks allocated at @addr in unwritten state */
--#define IOMAP_INLINE	4	/* data inline in the inode */
-+#define IOMAP_INLINE	4	/* inline or tail-packed data */
- 
- /*
-  * Flags reported by the file system from iomap_begin:
-@@ -97,6 +97,24 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+/*
-+ * Returns the inline data pointer for logical offset @pos.
-+ */
-+static inline void *iomap_inline_data(struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data + pos - iomap->offset;
-+}
-+
-+/*
-+ * Check if the mapping's length is within the valid range for inline data.
-+ * This is used to guard against accessing data beyond the page inline_data
-+ * points at.
-+ */
-+static inline bool iomap_inline_data_size_valid(struct iomap *iomap)
-+{
-+	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
--- 
-2.26.3
 
