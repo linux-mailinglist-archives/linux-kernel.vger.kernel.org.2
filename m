@@ -2,108 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79973D68E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51E73D68F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232876AbhGZVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:07:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229489AbhGZVHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:07:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56F9560F91;
-        Mon, 26 Jul 2021 21:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627336049;
-        bh=zgyLNyyiYQ6t66updPfgvxGxtDD4JlKzRMJiCuCkQzk=;
-        h=Date:From:To:Subject:From;
-        b=OQGx89jLp1aK0do77RwEIFH03wSOAGTIpxY14FYHigQ0GP0GrirYoIydQCH0fkgMC
-         Guzyd/ne97Bo1OQuHy8w1+KW9YUH27raheOzvMfrHL/0sL+cMMVrLweffaOr5vEJcH
-         5l7MGKjEyiBXwUJTvYzHMQXq+oCxwJFCN+runXC9LmCPOxgbK8kn/Jm9VK73k5WrwF
-         ls/VvRUETTuG2NIsRlv4m9GTLcH7Bi2dRJCceJVAIBSgYfBdFMIGDhKHqVxXIPLw1v
-         zSux1WohWJoyGFRf0zc7U7kJrW3myoTbJxF2Bnbb/sYPR/dOc4wfe2BnJAubAJysjV
-         xcXbB2d2170lg==
-Date:   Mon, 26 Jul 2021 22:47:20 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Jul 26
-Message-ID: <20210726214720.GL4670@sirena.org.uk>
+        id S232596AbhGZVKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:10:46 -0400
+Received: from mail-io1-f48.google.com ([209.85.166.48]:35581 "EHLO
+        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231839AbhGZVKo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 17:10:44 -0400
+Received: by mail-io1-f48.google.com with SMTP id y9so13765404iox.2;
+        Mon, 26 Jul 2021 14:51:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EucOrNEax0yc+wNW+WGv1rmiqY2SuufXjZhn/+o2D9w=;
+        b=AfAcihn9XMFAy5YV1jCnDqzPE/91RazyTcFKDBt9uuYFIX6Qkk+s1C7hhdve0DPITE
+         4iVOZZVvh22J1GZr5p+50YL17pGxZuNPJmj5+tXFO5ku3ORnJRkz9L9GMw14LhA1XEJw
+         VMRwiZrmjwdYkFx2ArA4CX4/xFXhtm94A0sdgLc7OEjyhROYZnRYD/zzhLP513jWOnCj
+         vVX6THQepW75HXjMwAr1vKPrjovO+l+d/e7fpAyXeiWzPKZCSLImuamhPr1BT5qeTzK5
+         /XxdqMH9Xy45g9Xbo3SZc37CZQE1LWAQQt0O3xBAC6lzfp/GaCBx0MzEABNnz17yIfOM
+         jLXQ==
+X-Gm-Message-State: AOAM531xkdIoykuDNgSEHYhnb5Frfwzm+ZYee8aGdUC41Br1EAhIxHBA
+        QafzVgxZ0MXaC6yzoT3g5Q==
+X-Google-Smtp-Source: ABdhPJxjQmNcsiQ+vbyzjT7CNQ3QbQcK8wgqmem+laWCgmu/NxrKtst14fw9izfWNfxHe2X63O8plA==
+X-Received: by 2002:a5d:84d2:: with SMTP id z18mr16613279ior.130.1627336272466;
+        Mon, 26 Jul 2021 14:51:12 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id v14sm643591ioh.11.2021.07.26.14.51.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 14:51:11 -0700 (PDT)
+Received: (nullmailer pid 927730 invoked by uid 1000);
+        Mon, 26 Jul 2021 21:51:08 -0000
+Date:   Mon, 26 Jul 2021 15:51:08 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Michael.Hennerich@analog.com, alexandru.ardelean@analog.com,
+        jic23@kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Dragos.Bogdan@analog.com, Darius.Berghe@analog.com
+Subject: Re: [PATCH v3 1/2] dt-bindings: iio: accel: Add DT binding doc for
+ ADXL355
+Message-ID: <20210726215108.GA925542@robh.at.kernel.org>
+References: <20210726184917.301070-1-puranjay12@gmail.com>
+ <20210726184917.301070-2-puranjay12@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KIbT1ud6duwZIwNL"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210726184917.301070-2-puranjay12@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 27, 2021 at 12:19:16AM +0530, Puranjay Mohan wrote:
+> Add devicetree binding document for ADXL355, a 3-Axis MEMS Accelerometer.
+> 
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>  .../bindings/iio/accel/adi,adxl355.yaml       | 75 +++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> new file mode 100644
+> index 000000000..e40899fe8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
+> @@ -0,0 +1,75 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
---KIbT1ud6duwZIwNL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For new bindings:
 
-Hi all,
+GPL-2.0-only OR BSD-2-Clause
 
-Changes since 20210723:
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/accel/adi,adxl355.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer
+> +
+> +maintainers:
+> +  - Puranjay Mohan <puranjay12@gmail.com>
+> +
+> +description: |
+> +  Analog Devices ADXL355 3-Axis, Low noise MEMS Accelerometer that supports
+> +  both I2C & SPI interfaces
+> +    https://www.analog.com/en/products/adxl355.html
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,adxl355
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    items:
+> +      - description: DRDY PIN
+> +      - description: INT1 PIN
+> +      - description: INT2 PIN
+> +
+> +  vdd-supply:
+> +    description: Regulator that provides power to the sensor
+> +
+> +  vddio-supply:
+> +    description: Regulator that provides power to the bus
+> +
+> +  spi-max-frequency: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/gpio/gpio.h>
+> +        #include <dt-bindings/interrupt-controller/irq.h>
+> +        i2c0 {
 
-The drm tree gained a conflict with the qcom tree.
+i2c {
 
-There is a build failure in an arm64 allnoconfig on the finished tree
-due to a drm tree change.
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                /* Example for a I2C device node */
+> +                accelerometer@1D {
 
-Non-merge commits (relative to Linus' tree): 2938
- 3037 files changed, 173726 insertions(+), 51477 deletions(-)
+lowercase hex.
 
-----------------------------------------------------------------------------
+> +                        compatible = "adi,adxl355";
+> +                        reg = <0x1D>;
+> +                        interrupt-parent = <&gpio>;
+> +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
+> +                };
+> +        };
+> +  - |
+> +        #include <dt-bindings/gpio/gpio.h>
+> +        #include <dt-bindings/interrupt-controller/irq.h>
+> +        spi0 {
 
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches will be at http://www.kernel.org/pub/linux/kernel/next/ if/when
-I get kup working).  If you are tracking the linux-next tree using git,
-you should not use "git pull" to do so as that will try to merge the new
-linux-next release with the old one.  You should use "git fetch" and
-checkout or reset to the new master.
+spi {
 
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There are also quilt-import.log and merge.log
-files in the Next directory.  Between each merge, the tree was built
-with an arm64 defconfig, an allmodconfig for x86_64, a
-multi_v7_defconfig for arm and a native build of tools/perf. After
-the final fixups (if any), I do an x86_64 modules_install followed by
-builds for x86_64 allnoconfig, arm64 allnoconfig, and htmldocs.
-
-Below is a summary of the state of the merge.
-
-I am currently merging 333 trees (counting Linus' and 90 trees of bug
-fix patches pending for the current merge release).
-=20
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to
-add more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
-
---KIbT1ud6duwZIwNL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD/LWgACgkQJNaLcl1U
-h9C7+wf+Now4Ux9uUQ5ZSy5JIxrboZPMvliS7vPADiVFFy4zCMvfKj0nFU+Kzcyc
-ecEqbyOQ65AL5brTVsoRjk+w1uFSKaJLCTjYCEGJPXZ0Ml5zM9uzuL9ZIR0GFkVq
-MblL/PA0G0Fgl6QDe46gZ1l2xZaDZ2CDvPxIBM5Z27TvRsl3gmI39Mt49PW2O+Ik
-YdWxCsVxZBLnzD1Ae025WefubNkr8ALeCOSABzEP+B0LPggL2hr5P9DnNw5Bjz5A
-S0amG0p4suq26JUKpEp3KmNcl9fdWtg9DnvntEhYv7KamQj+DPaIybRsaXugU09b
-t7DvgSXM2ySXrZ8QQCvK0YDSay4QPQ==
-=Libr
------END PGP SIGNATURE-----
-
---KIbT1ud6duwZIwNL--
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +
+> +                accelerometer@0 {
+> +                        compatible = "adi,adxl355";
+> +                        reg = <0>;
+> +                        spi-max-frequency = <1000000>;
+> +                        interrupt-parent = <&gpio>;
+> +                        interrupts = <25 IRQ_TYPE_EDGE_RISING>;
+> +                };
+> +        };
+> -- 
+> 2.30.1
+> 
+> 
