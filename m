@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535093D6304
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973673D60C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbhGZPnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39822 "EHLO mail.kernel.org"
+        id S237915AbhGZPYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237948AbhGZPY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BAE160E09;
-        Mon, 26 Jul 2021 16:04:55 +0000 (UTC)
+        id S236863AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA9260FE3;
+        Mon, 26 Jul 2021 15:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315495;
-        bh=CiyjggJLEm02OcpWPb83n/7Z396qwl7jU7KikMNpZS0=;
+        s=korg; t=1627314818;
+        bh=MhuSh+hGIm0iv964cFkJCoDhLfzTxleeVvMgNXQo5y0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QwNSUfSaXW+VqOT/bbPzHIpIOkQjvGUdE5PdXcCe13tH/cE1l2rmwmW8Zj/iBPExl
-         0MAsxPeifKpvq1fp0Fb43UQgK0SA+yaZ/GzYln8faiOeMGIdxP1vcuK7iCbbUmRPJj
-         J5P+pI35FnljgU+T5RFK2GstHJ3G165fPioXgqII=
+        b=BobLjnuO5ibZYc2ticMfB9cNoOQBiUiZN0zZLfJMk+pvtf9FvU292db7IcRTlZBMG
+         PMD6TVwji03mWocVvTCspzHkPeVJI15jqX5FgXuqXQK8cyVcSD5R9mv9h1bTxIZ5Re
+         A1unFl6r06Xw86h9pgKrbJKgcVaVNfUNe6zl8WFk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Neuling <mikey@neuling.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 120/167] KVM: PPC: Book3S HV Nested: Sanitise H_ENTER_NESTED TM state
+        stable@vger.kernel.org, Marco De Marco <marco.demarco@posteo.net>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 101/120] USB: serial: option: add support for u-blox LARA-R6 family
 Date:   Mon, 26 Jul 2021 17:39:13 +0200
-Message-Id: <20210726153843.429351440@linuxfoundation.org>
+Message-Id: <20210726153835.669404842@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Marco De Marco <marco.demarco@posteo.net>
 
-commit d9c57d3ed52a92536f5fa59dc5ccdd58b4875076 upstream.
+commit 94b619a07655805a1622484967754f5848640456 upstream.
 
-The H_ENTER_NESTED hypercall is handled by the L0, and it is a request
-by the L1 to switch the context of the vCPU over to that of its L2
-guest, and return with an interrupt indication. The L1 is responsible
-for switching some registers to guest context, and the L0 switches
-others (including all the hypervisor privileged state).
+The patch is meant to support LARA-R6 Cat 1 module family.
 
-If the L2 MSR has TM active, then the L1 is responsible for
-recheckpointing the L2 TM state. Then the L1 exits to L0 via the
-H_ENTER_NESTED hcall, and the L0 saves the TM state as part of the exit,
-and then it recheckpoints the TM state as part of the nested entry and
-finally HRFIDs into the L2 with TM active MSR. Not efficient, but about
-the simplest approach for something that's horrendously complicated.
+Module USB ID:
+Vendor  ID: 0x05c6
+Product ID: 0x90fA
 
-Problems arise if the L1 exits to the L0 with a TM state which does not
-match the L2 TM state being requested. For example if the L1 is
-transactional but the L2 MSR is non-transactional, or vice versa. The
-L0's HRFID can take a TM Bad Thing interrupt and crash.
+Interface layout:
+If 0: Diagnostic
+If 1: AT parser
+If 2: AT parser
+If 3: QMI wwan (not available in all versions)
 
-Fix this by disallowing H_ENTER_NESTED in TM[T] state entirely, and then
-ensuring that if the L1 is suspended then the L2 must have TM active,
-and if the L1 is not suspended then the L2 must not have TM active.
-
-Fixes: 360cae313702 ("KVM: PPC: Book3S HV: Nested guest entry via hypercall")
-Cc: stable@vger.kernel.org # v4.20+
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Acked-by: Michael Neuling <mikey@neuling.org>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Signed-off-by: Marco De Marco <marco.demarco@posteo.net>
+Link: https://lore.kernel.org/r/49260184.kfMIbaSn9k@mars
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kvm/book3s_hv_nested.c |   20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/usb/serial/option.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/arch/powerpc/kvm/book3s_hv_nested.c
-+++ b/arch/powerpc/kvm/book3s_hv_nested.c
-@@ -232,6 +232,9 @@ long kvmhv_enter_nested_guest(struct kvm
- 	if (vcpu->kvm->arch.l1_ptcr == 0)
- 		return H_NOT_AVAILABLE;
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -238,6 +238,7 @@ static void option_instat_callback(struc
+ #define QUECTEL_PRODUCT_UC15			0x9090
+ /* These u-blox products use Qualcomm's vendor ID */
+ #define UBLOX_PRODUCT_R410M			0x90b2
++#define UBLOX_PRODUCT_R6XX			0x90fa
+ /* These Yuga products use Qualcomm's vendor ID */
+ #define YUGA_PRODUCT_CLM920_NC5			0x9625
  
-+	if (MSR_TM_TRANSACTIONAL(vcpu->arch.shregs.msr))
-+		return H_BAD_MODE;
-+
- 	/* copy parameters in */
- 	hv_ptr = kvmppc_get_gpr(vcpu, 4);
- 	regs_ptr = kvmppc_get_gpr(vcpu, 5);
-@@ -254,6 +257,23 @@ long kvmhv_enter_nested_guest(struct kvm
- 	if (l2_hv.vcpu_token >= NR_CPUS)
- 		return H_PARAMETER;
- 
-+	/*
-+	 * L1 must have set up a suspended state to enter the L2 in a
-+	 * transactional state, and only in that case. These have to be
-+	 * filtered out here to prevent causing a TM Bad Thing in the
-+	 * host HRFID. We could synthesize a TM Bad Thing back to the L1
-+	 * here but there doesn't seem like much point.
-+	 */
-+	if (MSR_TM_SUSPENDED(vcpu->arch.shregs.msr)) {
-+		if (!MSR_TM_ACTIVE(l2_regs.msr))
-+			return H_BAD_MODE;
-+	} else {
-+		if (l2_regs.msr & MSR_TS_MASK)
-+			return H_BAD_MODE;
-+		if (WARN_ON_ONCE(vcpu->arch.shregs.msr & MSR_TS_MASK))
-+			return H_BAD_MODE;
-+	}
-+
- 	/* translate lpid */
- 	l2 = kvmhv_get_nested(vcpu->kvm, l2_hv.lpid, true);
- 	if (!l2)
+@@ -1101,6 +1102,8 @@ static const struct usb_device_id option
+ 	/* u-blox products using Qualcomm vendor ID */
+ 	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R410M),
+ 	  .driver_info = RSVD(1) | RSVD(3) },
++	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R6XX),
++	  .driver_info = RSVD(3) },
+ 	/* Quectel products using Quectel vendor ID */
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC21, 0xff, 0xff, 0xff),
+ 	  .driver_info = NUMEP2 },
 
 
