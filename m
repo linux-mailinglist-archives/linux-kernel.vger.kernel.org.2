@@ -2,152 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897E83D6526
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9693D6536
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbhGZQ23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:28:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47774 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243335AbhGZQ1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:27:51 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16QH3nxF161959;
-        Mon, 26 Jul 2021 13:08:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=PPHIk19j2zkNcxZZlTJxjLDQCtLPXdvL9yQEAb3r99w=;
- b=DF5zbsEl2zweSYSxviPiIHu96bLgGCbx8EjHXo3RZj02fVHMvTFq1OqXDwZT3yg9a88d
- nLQkTvAmmQ1ke/f1pUNM9gwRpzmONnQBuJIJHRoBBN62LmEJcT5nT/E2o5N6yROhfuYB
- KdWHu/XHccHOgoe3xoTFcNktUo0slgO5zayHMguj9gXfTiyz29FbnZkwtPUdBfnNW/mT
- U4rdbDTW9KrC0X588SmQj4yVDOBwEA+8PG83HccoJBS5EZsVUm/CAJz/0DBShEb03Uni
- Z6xYioxWr4PmKzZJXdY42Z/DXYcwsyTFYdKZhRI5mxgB1z0awlprORCE2YeapvynWe7W fw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a20e1sn97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Jul 2021 13:08:06 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16QH3slJ164567;
-        Mon, 26 Jul 2021 13:08:06 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a20e1sn8f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Jul 2021 13:08:06 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16QH5vEl004392;
-        Mon, 26 Jul 2021 17:08:04 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma01fra.de.ibm.com with ESMTP id 3a0ag8rstx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Jul 2021 17:08:04 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16QH81SK28705262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Jul 2021 17:08:02 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC98A4C052;
-        Mon, 26 Jul 2021 17:08:01 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F0D04C044;
-        Mon, 26 Jul 2021 17:07:59 +0000 (GMT)
-Received: from pratiks-thinkpad.ibmuc.com (unknown [9.199.55.176])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 26 Jul 2021 17:07:58 +0000 (GMT)
-From:   "Pratik R. Sampat" <psampat@linux.ibm.com>
-To:     mpe@ellerman.id.au, rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, psampat@linux.ibm.com,
-        pratik.r.sampat@gmail.com
-Subject: [PATCH] cpufreq:powernv: Fix init_chip_info initialization in numa=off
-Date:   Mon, 26 Jul 2021 22:37:57 +0530
-Message-Id: <20210726170758.61041-1-psampat@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
+        id S237370AbhGZQaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:30:23 -0400
+Received: from david.siemens.de ([192.35.17.14]:60810 "EHLO david.siemens.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235177AbhGZQaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:30:15 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 16QHAQW9024999
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Jul 2021 19:10:26 +0200
+Received: from [167.87.33.191] ([167.87.33.191])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 16QHAPq7008761;
+        Mon, 26 Jul 2021 19:10:25 +0200
+Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Storm <christian.storm@siemens.com>,
+        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>
+References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+ <CAHp75VfCydLguFX=MSoAQ_gayra5ovuwLxcY7m_pHiafvB7b5w@mail.gmail.com>
+ <c1c15112-b102-570b-1432-568ca219ccf9@siemens.com>
+ <CAHp75VdYUUqVi6rd6C-W+1aTXCPs7ehSLDcRfo4RVe7XU+6c+A@mail.gmail.com>
+ <521d14ad-8952-7ef9-3575-b48cefeb8241@roeck-us.net>
+ <84665dcf-f036-f059-61a4-cea5087ace2d@siemens.com>
+ <CAHp75VdqS5QUwq=25RGKOiPRfcNzNxG9kNMtP-2-=z4EAnUi8w@mail.gmail.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <175ca7d9-254b-ca35-359c-a077b284c9fa@siemens.com>
+Date:   Mon, 26 Jul 2021 19:10:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
+In-Reply-To: <CAHp75VdqS5QUwq=25RGKOiPRfcNzNxG9kNMtP-2-=z4EAnUi8w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DPbsWMXae3DWyGROJPGnTZNKQDsvKhsx
-X-Proofpoint-GUID: 8RmMpLKmoHjvsq9AyLbV2F8ZZtX5rtie
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-26_10:2021-07-26,2021-07-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 phishscore=0 clxscore=1011 mlxlogscore=999 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107260099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the numa=off kernel command-line configuration init_chip_info() loops
-around the number of chips and attempts to copy the cpumask of that node
-which is NULL for all iterations after the first chip.
+On 26.07.21 16:51, Andy Shevchenko wrote:
+> On Mon, Jul 26, 2021 at 5:05 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
+>>
+>> On 26.07.21 15:59, Guenter Roeck wrote:
+>>> On 7/26/21 6:40 AM, Andy Shevchenko wrote:
+>>>> On Mon, Jul 26, 2021 at 3:04 PM Jan Kiszka <jan.kiszka@siemens.com>
+>>>> wrote:
+>>>>>
+>>>>> On 26.07.21 14:01, Andy Shevchenko wrote:
+>>>>>> On Mon, Jul 26, 2021 at 2:46 PM Jan Kiszka <jan.kiszka@siemens.com>
+>>>>>> wrote:
+>>>>>>>
+>>>>>>> From: Jan Kiszka <jan.kiszka@siemens.com>
+>>>>>>>
+>>>>>>> Obviously, the test needs to run against the register content, not its
+>>>>>>> address.
+>>>>>>>
+>>>>>>> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on
+>>>>>>> second timeout")
+>>>>>>> Reported-by: Mantas Mikulėnas <grawity@gmail.com>
+>>>>>>
+>>>>>>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+>>>>>>
+>>>>>> Missed SoB of the submitter (hint: configure your Git to make sure
+>>>>>> that submitter and author are the same in terms of name-email).
+>>>>>
+>>>>> The signed off is there. Not sure what you are referring to.
+>>>>
+>>>> Nope. It's not. The sign of that is the From: line in the body of the
+>>>> email. It happens when the submitter != author. And SoB of the former
+>>>> one is absent. But what is strange is that reading them here I haven't
+>>>> found the difference. Maybe one is in UTF-8 while the other is not and
+>>>> a unicode character degraded to Latin-1 or so?
+>>>>
+>>>
+>>> I have no idea why there is an additional From:, but both From:
+>>> tags in the e-mail source are exact matches, and both match the
+>>> name and e-mail address in Signed-off-by:. I agree with Jan,
+>>> the SoB is there.
+>>
+>> There is one unknown in this equation, and that is the anti-email system
+>> operated by a our IT and some company in Redmond.
+> 
+> Hmm... The From: in the body is the result of the `git format-patch` I believe.
+> So, two (or more?) possibilities here:
+>  1) your configuration enforces it to always put From: (something new to me);
 
-Hence, store the cpu mask for each chip instead of derving cpumask from
-node while populating the "chips" struct array and copy that to the
-chips[i].mask
+Yes, it does, as I explained in my other reply. That's a safety net
+because you never have full control over what some mail servers do to
+the first From.
 
-Cc: stable@vger.kernel.org
-Fixes: 053819e0bf84 ("cpufreq: powernv: Handle throttling due to Pmax capping at chip level")
-Signed-off-by: Pratik R. Sampat <psampat@linux.ibm.com>
-Reported-by: Shirisha Ganta <shirisha.ganta1@ibm.com>
----
- drivers/cpufreq/powernv-cpufreq.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+>  2) the submitter and author are not the same (see also:
+> https://github.com/git/git/commit/a90804752f6ab2b911882d47fafb6c2b78f447c3);
+>  3) ...anything else...?
+> 
+>> But I haven't received
+>> any complaints that my outgoing emails are negatively affected by it
+>> (incoming are, but that's a different story...). If you received
+>> something mangled, Andy, please share the source of that email. I'm
+>> happy to escalate internally - and externally.
+> 
+> I believe I see it in the same way as lore, i.e.
+> https://lore.kernel.org/linux-watchdog/d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com/raw
 
-diff --git a/drivers/cpufreq/powernv-cpufreq.c b/drivers/cpufreq/powernv-cpufreq.c
-index 005600cef273..8ec10d9aed8f 100644
---- a/drivers/cpufreq/powernv-cpufreq.c
-+++ b/drivers/cpufreq/powernv-cpufreq.c
-@@ -1046,12 +1046,20 @@ static int init_chip_info(void)
- 	unsigned int *chip;
- 	unsigned int cpu, i;
- 	unsigned int prev_chip_id = UINT_MAX;
-+	cpumask_t *chip_cpu_mask;
- 	int ret = 0;
- 
- 	chip = kcalloc(num_possible_cpus(), sizeof(*chip), GFP_KERNEL);
- 	if (!chip)
- 		return -ENOMEM;
- 
-+	/* Allocate a chip cpu mask large enough to fit mask for all chips */
-+	chip_cpu_mask = kcalloc(32, sizeof(cpumask_t), GFP_KERNEL);
-+	if (!chip_cpu_mask) {
-+		ret = -ENOMEM;
-+		goto free_and_return;
-+	}
-+
- 	for_each_possible_cpu(cpu) {
- 		unsigned int id = cpu_to_chip_id(cpu);
- 
-@@ -1059,22 +1067,25 @@ static int init_chip_info(void)
- 			prev_chip_id = id;
- 			chip[nr_chips++] = id;
- 		}
-+		cpumask_set_cpu(cpu, &chip_cpu_mask[nr_chips-1]);
- 	}
- 
- 	chips = kcalloc(nr_chips, sizeof(struct chip), GFP_KERNEL);
- 	if (!chips) {
- 		ret = -ENOMEM;
--		goto free_and_return;
-+		goto out_chip_cpu_mask;
- 	}
- 
- 	for (i = 0; i < nr_chips; i++) {
- 		chips[i].id = chip[i];
--		cpumask_copy(&chips[i].mask, cpumask_of_node(chip[i]));
-+		cpumask_copy(&chips[i].mask, &chip_cpu_mask[i]);
- 		INIT_WORK(&chips[i].throttle, powernv_cpufreq_work_fn);
- 		for_each_cpu(cpu, &chips[i].mask)
- 			per_cpu(chip_info, cpu) =  &chips[i];
- 	}
- 
-+out_chip_cpu_mask:
-+	kfree(chip_cpu_mask);
- free_and_return:
- 	kfree(chip);
- 	return ret;
+Perfect, then all is fine as it should be (and no time for O365 bashing,
+today).
+
+Jan
+
 -- 
-2.31.1
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
