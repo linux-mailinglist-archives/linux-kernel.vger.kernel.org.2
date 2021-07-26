@@ -2,115 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77B73D64E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F833D64E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236756AbhGZQNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:13:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48418 "EHLO mail.kernel.org"
+        id S235514AbhGZQRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:17:22 -0400
+Received: from relay.sw.ru ([185.231.240.75]:41084 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239756AbhGZQLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:11:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4100E60462;
-        Mon, 26 Jul 2021 16:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627318288;
-        bh=jenQ/CVQ01VrBAqQU+YZZlOof19gHyOisvFtVCrzQCc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jw1WQDqrzvzKtTs7IUmttyA9+5G/lxW5fE82JB/A+l3xnTw2xeEz2chs7GNFqFIcX
-         +VnZ/0I/H+zkjmEtJucm52XIXwqI7o8YkLEIzRgCe5AheLIASlVY/HRlN2wFOeeEE7
-         dinf8pF7hCi4dltdkz/iyLQhLrqeNeDOLBYpVUYQ=
-Date:   Mon, 26 Jul 2021 18:51:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     shuah@kernel.org, f.fainelli@gmail.com, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.13 000/223] 5.13.6-rc1 review
-Message-ID: <YP7oDvwaAuwoek1h@kroah.com>
-References: <20210726153846.245305071@linuxfoundation.org>
- <99b34fe9-0f1f-c94f-58d5-cfb43de98d76@linaro.org>
+        id S237383AbhGZQNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:13:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=p/l/Qj5INqHXINcKY/nrenLT6M8MZaYS0obzKpoLW2A=; b=a8+z8C6hzM4rexpHmG6
+        4BApTO6gkg2j2EmkhoqjO6W1Ih6f8q0ba4BjL2d5wigrNGI1y8wPDgijzGMZ0zqQa4+9yQHeU+1bM
+        FMk4BtIrgEhv14RPa/EdrJbjZdm1udMqbhzHsqOOHVh0uc8u1DXTEBAw7IbpvzLw/YFM1i40ZI8=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1m83rE-005IPH-OE; Mon, 26 Jul 2021 19:53:36 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH] memcg: replace in_interrupt() by !in_task() in active_memcg()
+To:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <CALvZod5-XtaeawPtEgnp9xwouy0KfuDbpykB6Z3b+8YJyCrLVA@mail.gmail.com>
+Message-ID: <ed4448b0-4970-616f-7368-ef9dd3cb628d@virtuozzo.com>
+Date:   Mon, 26 Jul 2021 19:53:36 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <99b34fe9-0f1f-c94f-58d5-cfb43de98d76@linaro.org>
+In-Reply-To: <CALvZod5-XtaeawPtEgnp9xwouy0KfuDbpykB6Z3b+8YJyCrLVA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 11:43:10AM -0500, Daniel Díaz wrote:
-> Hello!
-> 
-> On 7/26/21 10:36 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.13.6 release.
-> > There are 223 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.6-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> Build regressions detected across plenty of architectures and configurations:
-> 
->   /builds/linux/net/core/dev.c: In function 'gro_list_prepare':
->   /builds/linux/net/core/dev.c:5988:72: error: 'TC_SKB_EXT' undeclared (first use in this function)
->    5988 |                         struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
->         |                                                                        ^~~~~~~~~~
->   /builds/linux/net/core/dev.c:5988:72: note: each undeclared identifier is reported only once for each function it appears in
->   /builds/linux/net/core/dev.c:5993:47: error: invalid use of undefined type 'struct tc_skb_ext'
->    5993 |                                 diffs |= p_ext->chain ^ skb_ext->chain;
->         |                                               ^~
->   /builds/linux/net/core/dev.c:5993:64: error: invalid use of undefined type 'struct tc_skb_ext'
->    5993 |                                 diffs |= p_ext->chain ^ skb_ext->chain;
->         |                                                                ^~
->   make[3]: *** [/builds/linux/scripts/Makefile.build:273: net/core/dev.o] Error 1
->   make[3]: Target '__build' not remade because of errors.
->   make[2]: *** [/builds/linux/scripts/Makefile.build:516: net/core] Error 2
->   make[2]: Target '__build' not remade because of errors.
->   make[1]: *** [/builds/linux/Makefile:1853: net] Error 2
->   make[1]: Target '__all' not remade because of errors.
->   make: *** [Makefile:220: __sub-make] Error 2
-> 
-> 
-> Here's a summary:
-> * arc: 10 total, 4 passed, 6 failed
-> * arm: 193 total, 18 passed, 175 failed
-> * arm64: 27 total, 12 passed, 15 failed
-> * dragonboard-410c: 1 total, 0 passed, 1 failed
-> * hi6220-hikey: 1 total, 0 passed, 1 failed
-> * i386: 26 total, 12 passed, 14 failed
-> * mips: 45 total, 15 passed, 30 failed
-> * parisc: 9 total, 6 passed, 3 failed
-> * powerpc: 27 total, 6 passed, 21 failed
-> * riscv: 21 total, 14 passed, 7 failed
-> * s390: 18 total, 12 passed, 6 failed
-> * sh: 18 total, 6 passed, 12 failed
-> * sparc: 9 total, 6 passed, 3 failed
-> * x15: 1 total, 0 passed, 1 failed
-> * x86: 1 total, 0 passed, 1 failed
-> * x86_64: 27 total, 12 passed, 15 failed
-> 
-> All failed, except allnoconfig, tinyconfig, and a few others here and there.
-> 
-> Same applies for 5.10.
+set_active_memcg() uses in_interrupt() check to select proper storage for
+cgroup: pointer on task struct or per-cpu pointer.
 
-Ah, I missed:
-	9615fe36b31d ("skbuff: Fix build with SKB extensions disabled")
-will fix that and push out a 5.13.y and 5.10.y update now...
+It isn't fully correct: obsoleted in_interrupt() includes tasks with disabled BH.
+It's better to use '!in_task()' instead.
 
-thanks,
+Link: https://lkml.org/lkml/2021/7/26/487
+Fixes: 37d5985c003d ("mm: kmem: prepare remote memcg charging infra for interrupt contexts")
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ include/linux/sched/mm.h | 2 +-
+ mm/memcontrol.c          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-greg k-h
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index e24b1fe348e3..9dd071f78dba 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -306,7 +306,7 @@ set_active_memcg(struct mem_cgroup *memcg)
+ {
+ 	struct mem_cgroup *old;
+ 
+-	if (in_interrupt()) {
++	if (!in_task()) {
+ 		old = this_cpu_read(int_active_memcg);
+ 		this_cpu_write(int_active_memcg, memcg);
+ 	} else {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ae1f5d0cb581..3ebf792ef2c0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -905,7 +905,7 @@ EXPORT_SYMBOL(mem_cgroup_from_task);
+ 
+ static __always_inline struct mem_cgroup *active_memcg(void)
+ {
+-	if (in_interrupt())
++	if (!in_task())
+ 		return this_cpu_read(int_active_memcg);
+ 	else
+ 		return current->active_memcg;
+-- 
+2.25.1
+
