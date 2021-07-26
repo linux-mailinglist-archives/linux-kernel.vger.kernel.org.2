@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CF33D5FFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BB53D6161
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbhGZPUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:20:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49410 "EHLO mail.kernel.org"
+        id S232958AbhGZPaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236358AbhGZPIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:08:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E1CE60F6F;
-        Mon, 26 Jul 2021 15:48:33 +0000 (UTC)
+        id S236788AbhGZPRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 260D660F57;
+        Mon, 26 Jul 2021 15:58:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314514;
-        bh=ljzrG5jH5FZP3Y4XEtZ2izH0BmV7qh9/Hb6E2wfUkX0=;
+        s=korg; t=1627315085;
+        bh=ULQpoHHZ0rWuQmre15rCQU9sr+WhvrSQTUxYxsjAKrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yEzgK2d1p6jwj+DeD59zr6vGhC+cuUl1XRbRPOZOYrjCduseO2F+7qYz9g8Xn1eJ0
-         j/kQ9NMcRulGImE29bVUxRgLDrLui68qSXlOW1V8346hs4VPfNIvX98/l+P3BOGnaH
-         DcbmTrbhnP/j6ys451C5t1n6ds5IZhqb8owoeYxQ=
+        b=wl8JNGuZrpf4l1vp1eXmtqKYBcAIa829p+iSQLRMI98fNedhdrbGH9BywZlDmJe42
+         OU5aW7K35tHw3xg07RK0lZY0oTg8VEWp1iA7XJurD7Nt/9QX+eWr5Fs0tUXlp4EPbp
+         X4IyL0apNKcPRSaQTka85OSxS/kW46LHLcy5LlhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Charles Baylis <cb-kernel@fishzet.co.uk>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.14 76/82] drm: Return -ENOTTY for non-drm ioctls
+        stable@vger.kernel.org, Damjan Georgievski <gdamjan@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 075/108] ALSA: hdmi: Expose all pins on MSI MS-7C94 board
 Date:   Mon, 26 Jul 2021 17:39:16 +0200
-Message-Id: <20210726153830.643862629@linuxfoundation.org>
+Message-Id: <20210726153834.088374597@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,56 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charles Baylis <cb-kernel@fishzet.co.uk>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 3abab27c322e0f2acf981595aa8040c9164dc9fb upstream.
+commit 33f735f137c6539e3ceceb515cd1e2a644005b49 upstream.
 
-drm: Return -ENOTTY for non-drm ioctls
+The BIOS on MSI Mortar B550m WiFi (MS-7C94) board with AMDGPU seems
+disabling the other pins than HDMI although it has more outputs
+including DP.
 
-Return -ENOTTY from drm_ioctl() when userspace passes in a cmd number
-which doesn't relate to the drm subsystem.
+This patch adds the board to the allow list for enabling all pins.
 
-Glibc uses the TCGETS ioctl to implement isatty(), and without this
-change isatty() returns it incorrectly returns true for drm devices.
-
-To test run this command:
-$ if [ -t 0 ]; then echo is a tty; fi < /dev/dri/card0
-which shows "is a tty" without this patch.
-
-This may also modify memory which the userspace application is not
-expecting.
-
-Signed-off-by: Charles Baylis <cb-kernel@fishzet.co.uk>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/YPG3IBlzaMhfPqCr@stando.fishzet.co.uk
+Reported-by: Damjan Georgievski <gdamjan@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/CAEk1YH4Jd0a8vfZxORVu7qg+Zsc-K+pR187ezNq8QhJBPW4gpw@mail.gmail.com
+Link: https://lore.kernel.org/r/20210716135600.24176-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_ioctl.c |    3 +++
- include/drm/drm_ioctl.h     |    1 +
- 2 files changed, 4 insertions(+)
+ sound/pci/hda/patch_hdmi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -776,6 +776,9 @@ long drm_ioctl(struct file *filp,
- 	if (drm_dev_is_unplugged(dev))
- 		return -ENODEV;
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1820,6 +1820,7 @@ static int hdmi_add_cvt(struct hda_codec
+ static const struct snd_pci_quirk force_connect_list[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
+ 	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
++	SND_PCI_QUIRK(0x1462, 0xec94, "MS-7C94", 1),
+ 	{}
+ };
  
-+       if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
-+               return -ENOTTY;
-+
- 	is_driver_ioctl = nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END;
- 
- 	if (is_driver_ioctl) {
---- a/include/drm/drm_ioctl.h
-+++ b/include/drm/drm_ioctl.h
-@@ -68,6 +68,7 @@ typedef int drm_ioctl_compat_t(struct fi
- 			       unsigned long arg);
- 
- #define DRM_IOCTL_NR(n)                _IOC_NR(n)
-+#define DRM_IOCTL_TYPE(n)              _IOC_TYPE(n)
- #define DRM_MAJOR       226
- 
- /**
 
 
