@@ -2,40 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CF43D6322
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D64E3D61E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238921AbhGZPoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
+        id S234308AbhGZPdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:33:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238345AbhGZPZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0531560F6B;
-        Mon, 26 Jul 2021 16:05:54 +0000 (UTC)
+        id S236323AbhGZPSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CE9460F8F;
+        Mon, 26 Jul 2021 15:59:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315555;
-        bh=VGjDmFS/VCFvf6MWF09yXAnp+giMB7GjGJ677XJ/ZV4=;
+        s=korg; t=1627315153;
+        bh=VnKLxJo20R+SaPZ2BgBSqyVGFQnYbkIdqtBRS2/obLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xQv5kJfpLZpINkSeAfxR8AZ66WQSJDJgCByWBjS7+x/1RMjLTIolRR+n1AvhoQVlg
-         fqfHkubTRQLr7+YpgnIUBjUiCDT/EbzKU09VTDavQzRkI6P5pLmxqBoI6J/88pb91t
-         fJruGNfJZKpv73zbLIpuCsiUK1cKXGLZCHvL7jVs=
+        b=aX+P/iGQUMNX9B6xW+tnH1nEiYHdkdZ5HxTqeHuwxJASDu+YiUsSSCOrPSNCKy6IX
+         DrExRseRETa+GLAk5uyOSz7Jw1pympy7k5B15O3tsqiv/8GhDjiQpBRr9eQJFnm05e
+         iE+TYu2r/aqWcj2rpszEv/am9WtdgmNgPDOXFhzo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.10 142/167] posix-cpu-timers: Fix rearm racing against process tick
+        stable@vger.kernel.org, Lokesh Gidra <lokeshgidra@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alistair Delva <adelva@google.com>,
+        William McVicker <willmcvicker@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Mitch Phillips <mitchp@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 094/108] selftest: use mmap instead of posix_memalign to allocate memory
 Date:   Mon, 26 Jul 2021 17:39:35 +0200
-Message-Id: <20210726153844.172089019@linuxfoundation.org>
+Message-Id: <20210726153834.696464801@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +51,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Peter Collingbourne <pcc@google.com>
 
-commit 1a3402d93c73bf6bb4df6d7c2aac35abfc3c50e2 upstream.
+commit 0db282ba2c12c1515d490d14a1ff696643ab0f1b upstream.
 
-Since the process wide cputime counter is started locklessly from
-posix_cpu_timer_rearm(), it can be concurrently stopped by operations
-on other timers from the same thread group, such as in the following
-unlucky scenario:
+This test passes pointers obtained from anon_allocate_area to the
+userfaultfd and mremap APIs.  This causes a problem if the system
+allocator returns tagged pointers because with the tagged address ABI
+the kernel rejects tagged addresses passed to these APIs, which would
+end up causing the test to fail.  To make this test compatible with such
+system allocators, stop using the system allocator to allocate memory in
+anon_allocate_area, and instead just use mmap.
 
-         CPU 0                                CPU 1
-         -----                                -----
-                                           timer_settime(TIMER B)
-   posix_cpu_timer_rearm(TIMER A)
-       cpu_clock_sample_group()
-           (pct->timers_active already true)
-
-                                           handle_posix_cpu_timers()
-                                               check_process_timers()
-                                                   stop_process_timers()
-                                                       pct->timers_active = false
-       arm_timer(TIMER A)
-
-   tick -> run_posix_cpu_timers()
-       // sees !pct->timers_active, ignore
-       // our TIMER A
-
-Fix this with simply locking process wide cputime counting start and
-timer arm in the same block.
-
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Fixes: 60f2ceaa8111 ("posix-cpu-timers: Remove unnecessary locking around cpu_clock_sample_group")
-Cc: stable@vger.kernel.org
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
+Link: https://lkml.kernel.org/r/20210714195437.118982-3-pcc@google.com
+Link: https://linux-review.googlesource.com/id/Icac91064fcd923f77a83e8e133f8631c5b8fc241
+Fixes: c47174fc362a ("userfaultfd: selftest")
+Co-developed-by: Lokesh Gidra <lokeshgidra@google.com>
+Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Dave Martin <Dave.Martin@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Alistair Delva <adelva@google.com>
+Cc: William McVicker <willmcvicker@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Mitch Phillips <mitchp@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: <stable@vger.kernel.org>	[5.4]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/time/posix-cpu-timers.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/vm/userfaultfd.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -991,6 +991,11 @@ static void posix_cpu_timer_rearm(struct
- 	if (!p)
- 		goto out;
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -139,8 +139,10 @@ static int anon_release_pages(char *rel_
  
-+	/* Protect timer list r/w in arm_timer() */
-+	sighand = lock_task_sighand(p, &flags);
-+	if (unlikely(sighand == NULL))
-+		goto out;
-+
- 	/*
- 	 * Fetch the current sample and update the timer's expiry time.
- 	 */
-@@ -1001,11 +1006,6 @@ static void posix_cpu_timer_rearm(struct
- 
- 	bump_cpu_timer(timer, now);
- 
--	/* Protect timer list r/w in arm_timer() */
--	sighand = lock_task_sighand(p, &flags);
--	if (unlikely(sighand == NULL))
--		goto out;
--
- 	/*
- 	 * Now re-arm for the new expiry time.
- 	 */
+ static void anon_allocate_area(void **alloc_area)
+ {
+-	if (posix_memalign(alloc_area, page_size, nr_pages * page_size)) {
+-		fprintf(stderr, "out of memory\n");
++	*alloc_area = mmap(NULL, nr_pages * page_size, PROT_READ | PROT_WRITE,
++			   MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
++	if (*alloc_area == MAP_FAILED)
++		fprintf(stderr, "mmap of anonymous memory failed");
+ 		*alloc_area = NULL;
+ 	}
+ }
 
 
