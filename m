@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF1C3D62D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4BE3D6158
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238483AbhGZPjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37426 "EHLO mail.kernel.org"
+        id S237667AbhGZP3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:29:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236941AbhGZPWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F53B60240;
-        Mon, 26 Jul 2021 16:03:07 +0000 (UTC)
+        id S236473AbhGZPQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C945860F6E;
+        Mon, 26 Jul 2021 15:57:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315387;
-        bh=nu9HSbVDtzUnXxN8axmqDqNWOmNMTz0F8iLHUC/jB3w=;
+        s=korg; t=1627315045;
+        bh=uILrd27LuKCR1EmJTAObJYkM+IjVDvGFMgyZD1RLD2c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UXUfVLhcFHd42PNCNXp/xvv9l/gfpi4gsGkUVSBwlySaa4xzwx/rNXkl9yh8yJE1y
-         R3U5gKCSr1QuxNZCMsYqE0404KFr65An3B3Lgy87a6Z48SUuHKN8AEv5Uzm3LOZMJ4
-         PFRob1M03aiizeYDo1xb8XuV3XXuU/eotEvJJw24=
+        b=0rpqOGvSePHZpxyLQ1UBXF0avX2HJJBNV0+z4Nf0fNvtL7lGq3KbtCTC2s5tGEGyO
+         XUkOno/pHBbMO1HnWZP8O8UfxSDHnWrLRbCxOk5FHYLWtDM/mHvZb0u4sc1kbHdCTb
+         v7GgVAzInsAyXTeXpI3Hd3DiMXCkiIsLuvR74ZTU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 077/167] spi: cadence: Correct initialisation of runtime PM again
+Subject: [PATCH 5.4 029/108] perf data: Close all files in close_dir()
 Date:   Mon, 26 Jul 2021 17:38:30 +0200
-Message-Id: <20210726153841.988981253@linuxfoundation.org>
+Message-Id: <20210726153832.631447432@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,72 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 56912da7a68c8356df6a6740476237441b0b792a ]
+[ Upstream commit d4b3eedce151e63932ce4a00f1d0baa340a8b907 ]
 
-The original implementation of RPM handling in probe() was mostly
-correct, except it failed to call pm_runtime_get_*() to activate the
-hardware. The subsequent fix, 734882a8bf98 ("spi: cadence: Correct
-initialisation of runtime PM"), breaks the implementation further,
-to the point where the system using this hard IP on ZynqMP hangs on
-boot, because it accesses hardware which is gated off.
+When using 'perf report' in directory mode, the first file is not closed
+on exit, causing a memory leak.
 
-Undo 734882a8bf98 ("spi: cadence: Correct initialisation of runtime
-PM") and instead add missing pm_runtime_get_noresume() and move the
-RPM disabling all the way to the end of probe(). That makes ZynqMP
-not hang on boot yet again.
+The problem is caused by the iterating variable never reaching 0.
 
-Fixes: 734882a8bf98 ("spi: cadence: Correct initialisation of runtime PM")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210716182133.218640-1-marex@denx.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 145520631130bd64 ("perf data: Add perf_data__(create_dir|close_dir) functions")
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Zhen Lei <thunder.leizhen@huawei.com>
+Link: http://lore.kernel.org/lkml/20210716141122.858082-1-rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-cadence.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ tools/perf/util/data.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-cadence.c b/drivers/spi/spi-cadence.c
-index a3afd1b9ac56..ceb16e70d235 100644
---- a/drivers/spi/spi-cadence.c
-+++ b/drivers/spi/spi-cadence.c
-@@ -517,6 +517,12 @@ static int cdns_spi_probe(struct platform_device *pdev)
- 		goto clk_dis_apb;
+diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+index 7534455ffc6a..a3f912615690 100644
+--- a/tools/perf/util/data.c
++++ b/tools/perf/util/data.c
+@@ -20,7 +20,7 @@
+ 
+ static void close_dir(struct perf_data_file *files, int nr)
+ {
+-	while (--nr >= 1) {
++	while (--nr >= 0) {
+ 		close(files[nr].fd);
+ 		zfree(&files[nr].path);
  	}
- 
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
-+	pm_runtime_get_noresume(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+
- 	ret = of_property_read_u32(pdev->dev.of_node, "num-cs", &num_cs);
- 	if (ret < 0)
- 		master->num_chipselect = CDNS_SPI_DEFAULT_NUM_CS;
-@@ -531,11 +537,6 @@ static int cdns_spi_probe(struct platform_device *pdev)
- 	/* SPI controller initializations */
- 	cdns_spi_init_hw(xspi);
- 
--	pm_runtime_set_active(&pdev->dev);
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_use_autosuspend(&pdev->dev);
--	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
--
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq <= 0) {
- 		ret = -ENXIO;
-@@ -566,6 +567,9 @@ static int cdns_spi_probe(struct platform_device *pdev)
- 
- 	master->bits_per_word_mask = SPI_BPW_MASK(8);
- 
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
- 	ret = spi_register_master(master);
- 	if (ret) {
- 		dev_err(&pdev->dev, "spi_register_master failed\n");
 -- 
 2.30.2
 
