@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A773D641D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFF83D641B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240004AbhGZPyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
+        id S239968AbhGZPyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235038AbhGZPeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:34:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB45260C41;
-        Mon, 26 Jul 2021 16:14:31 +0000 (UTC)
+        id S235255AbhGZPeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:34:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88E58604AC;
+        Mon, 26 Jul 2021 16:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316072;
-        bh=DwyVYqiMRT2XLPZyNrzr6ANXv+Xakn1sUDBI6YVzpXQ=;
+        s=korg; t=1627316075;
+        bh=+fFt4JsLeQNfMSkHX0CdEAWddMq+P3LrEnqNfBlo64o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=txfTI6xJy+XrjUZClvGDJTDz0kCKY4dgI4XSvvHCNmE5oTLdIaVbmIvy8tkNSd8Tv
-         7XVAuM1azyds9CT3PhqrBTBSQtLQF95Yjkj2Ex+RKB/Vkm/WwSJ3sBdENQp0okoyGN
-         4TSACyZSJIUXco5vSf4nwVW4e9f83xZ9OsBs9BA0=
+        b=GmclFV0biZcvQHctLIf5j0b7n7jIBBzZh7BlsCN24hxV1bvi5b8MLbM5Oh5W8HWkV
+         IN6daXZRGWF7Aftpz53lFBpJRLhn2lY7hMQaK5APGKkI492c9U/itJOCQG7w2aSBsp
+         iaABo6lqB+1sHap2Lt/LtELaSW5zPTkXoySjQysw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moritz Fischer <mdf@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.13 176/223] firmware/efi: Tell memblock about EFI iomem reservations
-Date:   Mon, 26 Jul 2021 17:39:28 +0200
-Message-Id: <20210726153851.956064385@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Metzmacher <metze@samba.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.13 177/223] tracepoints: Update static_call before tp_funcs when adding a tracepoint
+Date:   Mon, 26 Jul 2021 17:39:29 +0200
+Message-Id: <20210726153851.990838783@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -43,66 +39,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 2bab693a608bdf614b9fcd44083c5100f34b9f77 upstream.
+commit 352384d5c84ebe40fa77098cc234fe173247d8ef upstream.
 
-kexec_load_file() relies on the memblock infrastructure to avoid
-stamping over regions of memory that are essential to the survival
-of the system.
+Because of the significant overhead that retpolines pose on indirect
+calls, the tracepoint code was updated to use the new "static_calls" that
+can modify the running code to directly call a function instead of using
+an indirect caller, and this function can be changed at runtime.
 
-However, nobody seems to agree how to flag these regions as reserved,
-and (for example) EFI only publishes its reservations in /proc/iomem
-for the benefit of the traditional, userspace based kexec tool.
+In the tracepoint code that calls all the registered callbacks that are
+attached to a tracepoint, the following is done:
 
-On arm64 platforms with GICv3, this can result in the payload being
-placed at the location of the LPI tables. Shock, horror!
+	it_func_ptr = rcu_dereference_raw((&__tracepoint_##name)->funcs);
+	if (it_func_ptr) {
+		__data = (it_func_ptr)->data;
+		static_call(tp_func_##name)(__data, args);
+	}
 
-Let's augment the EFI reservation code with a memblock_reserve() call,
-protecting our dear tables from the secondary kernel invasion.
+If there's just a single callback, the static_call is updated to just call
+that callback directly. Once another handler is added, then the static
+caller is updated to call the iterator, that simply loops over all the
+funcs in the array and calls each of the callbacks like the old method
+using indirect calling.
 
-Reported-by: Moritz Fischer <mdf@kernel.org>
-Tested-by: Moritz Fischer <mdf@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+The issue was discovered with a race between updating the funcs array and
+updating the static_call. The funcs array was updated first and then the
+static_call was updated. This is not an issue as long as the first element
+in the old array is the same as the first element in the new array. But
+that assumption is incorrect, because callbacks also have a priority
+field, and if there's a callback added that has a higher priority than the
+callback on the old array, then it will become the first callback in the
+new array. This means that it is possible to call the old callback with
+the new callback data element, which can cause a kernel panic.
+
+	static_call = callback1()
+	funcs[] = {callback1,data1};
+	callback2 has higher priority than callback1
+
+	CPU 1				CPU 2
+	-----				-----
+
+   new_funcs = {callback2,data2},
+               {callback1,data1}
+
+   rcu_assign_pointer(tp->funcs, new_funcs);
+
+  /*
+   * Now tp->funcs has the new array
+   * but the static_call still calls callback1
+   */
+
+				it_func_ptr = tp->funcs [ new_funcs ]
+				data = it_func_ptr->data [ data2 ]
+				static_call(callback1, data);
+
+				/* Now callback1 is called with
+				 * callback2's data */
+
+				[ KERNEL PANIC ]
+
+   update_static_call(iterator);
+
+To prevent this from happening, always switch the static_call to the
+iterator before assigning the tp->funcs to the new array. The iterator will
+always properly match the callback with its data.
+
+To trigger this bug:
+
+  In one terminal:
+
+    while :; do hackbench 50; done
+
+  In another terminal
+
+    echo 1 > /sys/kernel/tracing/events/sched/sched_waking/enable
+    while :; do
+        echo 1 > /sys/kernel/tracing/set_event_pid;
+        sleep 0.5
+        echo 0 > /sys/kernel/tracing/set_event_pid;
+        sleep 0.5
+   done
+
+And it doesn't take long to crash. This is because the set_event_pid adds
+a callback to the sched_waking tracepoint with a high priority, which will
+be called before the sched_waking trace event callback is called.
+
+Note, the removal to a single callback updates the array first, before
+changing the static_call to single callback, which is the proper order as
+the first element in the array is the same as what the static_call is
+being changed to.
+
+Link: https://lore.kernel.org/io-uring/4ebea8f0-58c9-e571-fd30-0ce4f6f09c70@samba.org/
+
 Cc: stable@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
+Reported-by: Stefan Metzmacher <metze@samba.org>
+tested-by: Stefan Metzmacher <metze@samba.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/efi.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ kernel/tracepoint.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -896,6 +896,7 @@ static int __init efi_memreserve_map_roo
- static int efi_mem_reserve_iomem(phys_addr_t addr, u64 size)
- {
- 	struct resource *res, *parent;
-+	int ret;
+--- a/kernel/tracepoint.c
++++ b/kernel/tracepoint.c
+@@ -299,8 +299,8 @@ static int tracepoint_add_func(struct tr
+ 	 * a pointer to it.  This array is referenced by __DO_TRACE from
+ 	 * include/linux/tracepoint.h using rcu_dereference_sched().
+ 	 */
+-	rcu_assign_pointer(tp->funcs, tp_funcs);
+ 	tracepoint_update_call(tp, tp_funcs, false);
++	rcu_assign_pointer(tp->funcs, tp_funcs);
+ 	static_key_enable(&tp->key);
  
- 	res = kzalloc(sizeof(struct resource), GFP_ATOMIC);
- 	if (!res)
-@@ -908,7 +909,17 @@ static int efi_mem_reserve_iomem(phys_ad
- 
- 	/* we expect a conflict with a 'System RAM' region */
- 	parent = request_resource_conflict(&iomem_resource, res);
--	return parent ? request_resource(parent, res) : 0;
-+	ret = parent ? request_resource(parent, res) : 0;
-+
-+	/*
-+	 * Given that efi_mem_reserve_iomem() can be called at any
-+	 * time, only call memblock_reserve() if the architecture
-+	 * keeps the infrastructure around.
-+	 */
-+	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK) && !ret)
-+		memblock_reserve(addr, size);
-+
-+	return ret;
- }
- 
- int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
+ 	release_probes(old);
 
 
