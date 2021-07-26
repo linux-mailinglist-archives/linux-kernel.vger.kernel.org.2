@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C013D5886
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064863D58A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbhGZKvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:51:09 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16342 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233450AbhGZKvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:51:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10056"; a="211931777"
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="211931777"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 04:31:35 -0700
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="504862219"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.214.209]) ([10.254.214.209])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 04:31:33 -0700
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, john.garry@huawei.com,
-        dianders@chromium.org
-Subject: Re: [PATCH 18/23] iommu: Express DMA strictness via the domain type
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        will@kernel.org
-References: <cover.1626888444.git.robin.murphy@arm.com>
- <37708e21b55e17eb074ef145afc2157cd0192abe.1626888445.git.robin.murphy@arm.com>
- <f5e902ce-54a2-af7b-b42e-f61f7f96c68e@linux.intel.com>
- <77057c4b-479b-c5b8-4666-f16e294552d1@arm.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <832b7db0-4eb2-9151-c2b3-db709aee3230@linux.intel.com>
-Date:   Mon, 26 Jul 2021 19:31:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233605AbhGZLB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:01:26 -0400
+Received: from mail12.tencent.com ([61.241.47.121]:49195 "EHLO
+        mail4.tencent.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233534AbhGZLBX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:01:23 -0400
+X-Greylist: delayed 552 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Jul 2021 07:01:22 EDT
+Received: from EX-SZ021.tencent.com (unknown [10.28.6.73])
+        by mail4.tencent.com (Postfix) with ESMTP id 8A41E64112;
+        Mon, 26 Jul 2021 19:32:37 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tencent.com;
+        s=s202002; t=1627299157;
+        bh=evDPUslxUaLukH5pVeeVe4ET0nWliHTCs40Ts/OkTRs=;
+        h=From:To:CC:Subject:Date;
+        b=jGzGwnIiKN7HjDJ+AtlLPh5vXGE6W+42s2exAzhNRpBA6oVd1kvPgBNyLchZdBOSZ
+         CYdS1uzgt6r8Sde4KZouTKIMmOTWXPru5KQ/B9se3BIodg7Ib+3cT5nF4fSbHXoZcQ
+         +jfg4ay2BH9CS5wHhACTJiwbMdTUAGbfxi5oypgw=
+Received: from EX-SZ037.tencent.com (10.28.6.119) by EX-SZ021.tencent.com
+ (10.28.6.73) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Jul
+ 2021 19:32:37 +0800
+Received: from EX-SZ030.tencent.com (10.28.6.105) by EX-SZ037.tencent.com
+ (10.28.6.119) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Jul
+ 2021 19:32:37 +0800
+Received: from EX-SZ030.tencent.com ([fe80::cd97:7a16:11e6:d0c8]) by
+ EX-SZ030.tencent.com ([fe80::cd97:7a16:11e6:d0c8%5]) with mapi id
+ 15.01.2242.008; Mon, 26 Jul 2021 19:32:37 +0800
+From:   =?utf-8?B?dGNzX2tlcm5lbCjohb7orq/kupHlhoXmoLjlvIDlj5HogIUp?= 
+        <tcs_kernel@tencent.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
+        "yepeilin.cs@gmail.com" <yepeilin.cs@gmail.com>,
+        "penguin-kernel@I-love.SAKURA.ne.jp" 
+        <penguin-kernel@I-love.SAKURA.ne.jp>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "george.kennedy@oracle.com" <george.kennedy@oracle.com>,
+        "ducheng2@gmail.com" <ducheng2@gmail.com>,
+        "sam@ravnborg.org" <sam@ravnborg.org>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] fbcon: Out-Of-Bounds write in sys_imageblit, add range check
+Thread-Topic: [PATCH] fbcon: Out-Of-Bounds write in sys_imageblit, add range
+ check
+Thread-Index: AQHXghHvrDWkYfnua06MBXDuWeAYaw==
+Date:   Mon, 26 Jul 2021 11:32:37 +0000
+Message-ID: <D5DF8A1C-5FA2-426B-AAB4-3199AEA0A02E@tencent.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.28.2.15]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F26A0D29A1DFB646BB35537219DFF289@tencent.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <77057c4b-479b-c5b8-4666-f16e294552d1@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/26 16:27, Robin Murphy wrote:
-> On 2021-07-24 06:29, Lu Baolu wrote:
->> Hi Robin,
->>
->> On 2021/7/22 2:20, Robin Murphy wrote:
->>> Eliminate the iommu_get_dma_strict() indirection and pipe the
->>> information through the domain type from the beginning. Besides
->>> the flow simplification this also has several nice side-effects:
->>>
->>>   - Automatically implies strict mode for untrusted devices by
->>>     virtue of their IOMMU_DOMAIN_DMA override.
->>>   - Ensures that we only ends up using flush queues for drivers
->>>     which are aware of them and can actually benefit.
->>
->> Is this expressed by vendor iommu driver has ops->flush_iotlb_all?
-> 
-> No, it's literally whether ->domain_alloc accepts the DMA_DOMAIN_FQ type 
-> or not.
-
-Get it. Thank you!
-
-Best regards,
-baolu
+eXJlcyBhbmQgdnlyZXMgY2FuIGJlIGNvbnRyb2xsZWQgYnkgdXNlciBtb2RlIHBhcmFtYXRlcnMs
+IGFuZCBjYXVzZSBwLT52cm93cyB0byBiZWNvbWUgYSBuZWdhdGl2ZSB2YWx1ZS4gV2hpbGUgdGhp
+cyB2YWx1ZSBiZSBwYXNzZWQgdG8gcmVhbF95IGZ1bmN0aW9uLCB0aGUgeXBvcyB3aWxsIGJlIG91
+dCBvZiBzY3JlZW4gcmFuZ2UuDQpUaGlzIGlzIGFuIG91dC1vZi1ib3VuZHMgd3JpdGUgYnVnLg0K
+DQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvZmJjb24uYyBiL2RyaXZl
+cnMvdmlkZW8vZmJkZXYvY29yZS9mYmNvbi5jDQppbmRleCAyMmJiMzg5MmY2YmQuLjA5NzBkZTQ2
+NzgyZiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvdmlkZW8vZmJkZXYvY29yZS9mYmNvbi5jDQorKysg
+Yi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L2NvcmUvZmJjb24uYw0KQEAgLTE5NTYsMTEgKzE5NTYsMTIg
+QEAgc3RhdGljIHZvaWQgdXBkYXRlc2Nyb2xsbW9kZShzdHJ1Y3QgZmJjb25fZGlzcGxheSAqcCwN
+CiAgICAgICAgaW50IHlyZXMgPSBGQkNPTl9TV0FQKG9wcy0+cm90YXRlLCBpbmZvLT52YXIueXJl
+cywgaW5mby0+dmFyLnhyZXMpOw0KICAgICAgICBpbnQgdnlyZXMgPSBGQkNPTl9TV0FQKG9wcy0+
+cm90YXRlLCBpbmZvLT52YXIueXJlc192aXJ0dWFsLA0KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBpbmZvLT52YXIueHJlc192aXJ0dWFsKTsNCisgICAgICAgaW50IHJvd3MgPSB2
+Yy0+dmNfcm93czsNCiANCiAgICAgICAgcC0+dnJvd3MgPSB2eXJlcy9maDsNCi0gICAgICAgaWYg
+KHlyZXMgPiAoZmggKiAodmMtPnZjX3Jvd3MgKyAxKSkpDQotICAgICAgICAgICAgICAgcC0+dnJv
+d3MgLT0gKHlyZXMgLSAoZmggKiB2Yy0+dmNfcm93cykpIC8gZmg7DQotICAgICAgIGlmICgoeXJl
+cyAlIGZoKSAmJiAodnlyZXMgJSBmaCA8IHlyZXMgJSBmaCkpDQorICAgICAgIGlmICgoeXJlcyA+
+IChmaCAqIChyb3dzICsgMSkpKSAmJiAodnlyZXMgPj0gKHlyZXMgLSAoZmggKiByb3dzKSkpICYm
+IHAtPnZyb3dzKQ0KKyAgICAgICAgICAgICAgIHAtPnZyb3dzIC09ICh5cmVzIC0gKGZoICogcm93
+cykpIC8gZmg7DQorICAgICAgIGlmICgoeXJlcyAlIGZoKSAmJiAodnlyZXMgJSBmaCA8IHlyZXMg
+JSBmaCkgJiYgcC0+dnJvd3MpDQogICAgICAgICAgICAgICAgcC0+dnJvd3MtLTsNCiB9DQoNCg==
