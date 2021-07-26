@@ -2,242 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AD03D6624
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D283D662D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhGZRQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:16:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:57174 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232241AbhGZRQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:16:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 538141042;
-        Mon, 26 Jul 2021 10:56:57 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B3953F66F;
-        Mon, 26 Jul 2021 10:56:55 -0700 (PDT)
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>, Will Deacon <will@kernel.org>,
-        Ali Saidi <alisaidi@amazon.com>,
-        Jon Nettleton <jon@solid-run.com>
-Subject: [PATCH v3 2/2] hwrng: Add Arm SMCCC TRNG based driver
-Date:   Mon, 26 Jul 2021 18:56:10 +0100
-Message-Id: <20210726175610.3311-3-andre.przywara@arm.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20210726175610.3311-1-andre.przywara@arm.com>
-References: <20210726175610.3311-1-andre.przywara@arm.com>
+        id S231839AbhGZRTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:19:16 -0400
+Received: from mail-pj1-f45.google.com ([209.85.216.45]:36502 "EHLO
+        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbhGZRTP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 13:19:15 -0400
+Received: by mail-pj1-f45.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso86843pjb.1;
+        Mon, 26 Jul 2021 10:59:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3Cku6Rze8FYvo3mRLiCQNQ614ck9Z1LgtQwmHqzhZnQ=;
+        b=Oyh9YQRUeDmPzj5Mahvl5C4l0NDUBm/YL3ccY4lIUfuoF1/sxJFX8E7smDL9x1oIHy
+         gD0uYYFLvAO8c/GVug7hRohErDia17IijOf8sdS5Nit9I52E4i43cIExHVVkJb1GGSFY
+         AfpeyR/F5MA3wmMy+7SO0oJo+aKmFE1Zr/dKGhi2wz23hu1hFLlI/g/NuxK1pgxxctds
+         zQIrPikFwNjwJ7w9W8r8XPXOoJqKPtzWxchG03WrOaM4tDGhPuNNuZkaLbJ8XTfpGXx/
+         AIfmJkMJSj2DFFHgoG5QrSGCSIbFqSU2nNJA+EPgWujtcr9NDNAkT4G0sF/LX5hqM1UJ
+         tl1w==
+X-Gm-Message-State: AOAM531Cu0Pltpu8KYYovU7B+/F555svcDG3oGrE8Nisj9jhGItGxG7F
+        1E6Vptk4mdx79otrEjkMiI+Ub/Ef0xJTmS8q
+X-Google-Smtp-Source: ABdhPJyqqdSMxLUKWTrIpCwWEiv2aqujjYIwSwGKXgw8gZKdcN1sIWvgYSJj/i0IHVYwbMPLp9jRgA==
+X-Received: by 2002:a17:90a:f296:: with SMTP id fs22mr172129pjb.155.1627322383125;
+        Mon, 26 Jul 2021 10:59:43 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:1:6048:349e:fe7d:d8c7])
+        by smtp.gmail.com with ESMTPSA id a13sm362007pgt.58.2021.07.26.10.59.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 10:59:42 -0700 (PDT)
+Subject: Re: [PATCH -next] scsi: ufs: fix build warning without CONFIG_PM
+To:     YueHaibing <yuehaibing@huawei.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210611130601.34336-1-yuehaibing@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <99c99d97-5849-cf40-709b-aebe53b80ce3@acm.org>
+Date:   Mon, 26 Jul 2021 10:59:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <20210611130601.34336-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "Arm True Random Number Generator Firmware Interface"[1] provides
-an SMCCC based interface to a true hardware random number generator.
-So far we are using that in arch_get_random_seed(), but it might be
-useful to expose the entropy through the /dev/hwrng device as well. This
-allows to assess the quality of the implementation, by using "rngtest"
-from the rng-tools package, for example.
+On 6/11/21 6:06 AM, YueHaibing wrote:
+> drivers/scsi/ufs/ufshcd.c:9770:12: warning: ‘ufshcd_rpmb_resume’ defined but not used [-Wunused-function]
+>   static int ufshcd_rpmb_resume(struct device *dev)
+>              ^~~~~~~~~~~~~~~~~~
+> drivers/scsi/ufs/ufshcd.c:9037:12: warning: ‘ufshcd_wl_runtime_resume’ defined but not used [-Wunused-function]
+>   static int ufshcd_wl_runtime_resume(struct device *dev)
+>              ^~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/scsi/ufs/ufshcd.c:9017:12: warning: ‘ufshcd_wl_runtime_suspend’ defined but not used [-Wunused-function]
+>   static int ufshcd_wl_runtime_suspend(struct device *dev)
+>              ^~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Move it into #ifdef block to fix this.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>   drivers/scsi/ufs/ufshcd.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index b87ff68aa9aa..0c54589e186a 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -8926,6 +8926,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>   	return ret;
+>   }
+>   
+> +#ifdef CONFIG_PM_SLEEP
+>   static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>   {
+>   	int ret;
+> @@ -9053,7 +9054,6 @@ static int ufshcd_wl_runtime_resume(struct device *dev)
+>   	return ret;
+>   }
+>   
+> -#ifdef CONFIG_PM_SLEEP
+>   static int ufshcd_wl_suspend(struct device *dev)
+>   {
+>   	struct scsi_device *sdev = to_scsi_device(dev);
+> @@ -9766,6 +9766,7 @@ static inline int ufshcd_clear_rpmb_uac(struct ufs_hba *hba)
+>   	return ret;
+>   }
+>   
+> +#ifdef CONFIG_PM_SLEEP
+>   static int ufshcd_rpmb_resume(struct device *dev)
+>   {
+>   	struct ufs_hba *hba = wlun_dev_to_hba(dev);
+> @@ -9774,6 +9775,7 @@ static int ufshcd_rpmb_resume(struct device *dev)
+>   		ufshcd_clear_rpmb_uac(hba);
+>   	return 0;
+>   }
+> +#endif
+>   
+>   static const struct dev_pm_ops ufs_rpmb_pm_ops = {
+>   	SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_resume, NULL)
 
-Add a simple platform driver implementing the hw_random interface.
-The corresponding platform device is created by the SMCCC core code,
-we just match it here by name and provide a module alias.
+Hi YueHaibing,
 
-Since the firmware takes care about serialisation, this can happily
-coexist with the arch_get_random_seed() bits.
+Can you take a look at 
+https://lore.kernel.org/linux-scsi/20210722033439.26550-1-bvanassche@acm.org/T/#m6e7a02fc79634b5b77cfb77849253ac41d021389? 
+I let the kernel robot verify that patch before I posted it on the 
+linux-scsi mailing list.
 
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Thanks,
 
-[1] https://developer.arm.com/documentation/den0098/latest/
----
- drivers/char/hw_random/Kconfig          |  14 +++
- drivers/char/hw_random/Makefile         |   1 +
- drivers/char/hw_random/arm_smccc_trng.c | 134 ++++++++++++++++++++++++
- 3 files changed, 149 insertions(+)
- create mode 100644 drivers/char/hw_random/arm_smccc_trng.c
-
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 3f166c8a4099..239eca4d6805 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -524,6 +524,20 @@ config HW_RANDOM_XIPHERA
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called xiphera-trng.
- 
-+config HW_RANDOM_ARM_SMCCC_TRNG
-+	tristate "Arm SMCCC TRNG firmware interface support"
-+	depends on HAVE_ARM_SMCCC_DISCOVERY
-+	default HW_RANDOM
-+	help
-+	  Say 'Y' to enable the True Random Number Generator driver using
-+	  the Arm SMCCC TRNG firmware interface. This reads entropy from
-+	  higher exception levels (firmware, hypervisor). Uses SMCCC for
-+	  communicating with the firmware:
-+	  https://developer.arm.com/documentation/den0098/latest/
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called arm_smccc_trng.
-+
- endif # HW_RANDOM
- 
- config UML_RANDOM
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 8933fada74f2..a5a1c765a394 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -45,3 +45,4 @@ obj-$(CONFIG_HW_RANDOM_OPTEE) += optee-rng.o
- obj-$(CONFIG_HW_RANDOM_NPCM) += npcm-rng.o
- obj-$(CONFIG_HW_RANDOM_CCTRNG) += cctrng.o
- obj-$(CONFIG_HW_RANDOM_XIPHERA) += xiphera-trng.o
-+obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
-diff --git a/drivers/char/hw_random/arm_smccc_trng.c b/drivers/char/hw_random/arm_smccc_trng.c
-new file mode 100644
-index 000000000000..a04f9f9db1fe
---- /dev/null
-+++ b/drivers/char/hw_random/arm_smccc_trng.c
-@@ -0,0 +1,134 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Randomness driver for the ARM SMCCC TRNG Firmware Interface
-+ * https://developer.arm.com/documentation/den0098/latest/
-+ *
-+ *  Copyright (C) 2020 Arm Ltd.
-+ *
-+ * The ARM TRNG firmware interface specifies a protocol to read entropy
-+ * from a higher exception level, to abstract from any machine specific
-+ * implemenations and allow easier use in hypervisors.
-+ *
-+ * The firmware interface is realised using the SMCCC specification.
-+ */
-+
-+#include <linux/bits.h>
-+#include <linux/device.h>
-+#include <linux/hw_random.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/arm-smccc.h>
-+
-+#ifdef CONFIG_ARM64
-+#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND64
-+#define MAX_BITS_PER_CALL	(3 * 64UL)
-+#else
-+#define ARM_SMCCC_TRNG_RND	ARM_SMCCC_TRNG_RND32
-+#define MAX_BITS_PER_CALL	(3 * 32UL)
-+#endif
-+
-+/* We don't want to allow the firmware to stall us forever. */
-+#define SMCCC_TRNG_MAX_TRIES	20
-+
-+#define SMCCC_RET_TRNG_INVALID_PARAMETER	-2
-+#define SMCCC_RET_TRNG_NO_ENTROPY		-3
-+
-+static int smccc_trng_init(struct hwrng *rng)
-+{
-+	return 0;
-+}
-+
-+static int copy_from_registers(char *buf, struct arm_smccc_res *res,
-+			       size_t bytes)
-+{
-+	unsigned int chunk, copied;
-+
-+	if (bytes == 0)
-+		return 0;
-+
-+	chunk = min(bytes, sizeof(long));
-+	memcpy(buf, &res->a3, chunk);
-+	copied = chunk;
-+	if (copied >= bytes)
-+		return copied;
-+
-+	chunk = min((bytes - copied), sizeof(long));
-+	memcpy(&buf[copied], &res->a2, chunk);
-+	copied += chunk;
-+	if (copied >= bytes)
-+		return copied;
-+
-+	chunk = min((bytes - copied), sizeof(long));
-+	memcpy(&buf[copied], &res->a1, chunk);
-+
-+	return copied + chunk;
-+}
-+
-+static int smccc_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-+{
-+	struct arm_smccc_res res;
-+	u8 *buf = data;
-+	unsigned int copied = 0;
-+	int tries = 0;
-+
-+	while (copied < max) {
-+		size_t bits = min_t(size_t, (max - copied) * BITS_PER_BYTE,
-+				  MAX_BITS_PER_CALL);
-+
-+		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND, bits, &res);
-+		if ((int)res.a0 < 0)
-+			return (int)res.a0;
-+
-+		switch ((int)res.a0) {
-+		case SMCCC_RET_SUCCESS:
-+			copied += copy_from_registers(buf + copied, &res,
-+						      bits / BITS_PER_BYTE);
-+			tries = 0;
-+			break;
-+		case SMCCC_RET_TRNG_NO_ENTROPY:
-+			if (!wait)
-+				return copied;
-+			tries++;
-+			if (tries >= SMCCC_TRNG_MAX_TRIES)
-+				return copied;
-+			cond_resched();
-+			break;
-+		}
-+	}
-+
-+	return copied;
-+}
-+
-+static int smccc_trng_probe(struct platform_device *pdev)
-+{
-+	struct hwrng *trng;
-+	int ret;
-+
-+	trng = devm_kzalloc(&pdev->dev, sizeof(*trng), GFP_KERNEL);
-+	if (!trng)
-+		return -ENOMEM;
-+
-+	trng->name = "smccc_trng";
-+	trng->init = smccc_trng_init;
-+	trng->read = smccc_trng_read;
-+
-+	platform_set_drvdata(pdev, trng);
-+	ret = devm_hwrng_register(&pdev->dev, trng);
-+	if (!ret)
-+		dev_info(&pdev->dev,
-+			 "ARM SMCCC TRNG firmware random number generator\n");
-+
-+	return ret;
-+}
-+
-+static struct platform_driver smccc_trng_driver = {
-+	.driver = {
-+		.name		= "smccc_trng",
-+	},
-+	.probe		= smccc_trng_probe,
-+};
-+module_platform_driver(smccc_trng_driver);
-+
-+MODULE_ALIAS("platform:smccc_trng");
-+MODULE_AUTHOR("Andre Przywara");
-+MODULE_LICENSE("GPL");
--- 
-2.17.6
-
+Bart.
