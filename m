@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B272B3D6355
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C433D6365
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238808AbhGZPql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:46:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43054 "EHLO mail.kernel.org"
+        id S238852AbhGZPrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:47:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237865AbhGZP30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BFB661057;
-        Mon, 26 Jul 2021 16:09:01 +0000 (UTC)
+        id S237909AbhGZP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A08B460240;
+        Mon, 26 Jul 2021 16:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315741;
-        bh=20ZTeeWqgrfn6J4cK//oJ7/YD3FgITpyfR4ejpfZ5zU=;
+        s=korg; t=1627315794;
+        bh=Yy4NuGhbsuWYqLeODGNhOd6LtDcj7EnPdIgwa/uZeIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EtM3YB6+rkUTttA6DGVfsTOVh9S/2oG/GkQbzi1EyPqblAGJcawcwPlSAKqXyevl4
-         PNFVOzizDRbRKfip2qaQDTORXaHRIUjRtVnEeUcVwWQwvLDNc7Ga5MYfSE4X9pSgzw
-         lXNKphqPipvi6vZL+H0s3OanlEBvX1LqGh+io080=
+        b=cD/hXZSGOi4lkz+VwZvNJW3d+5DBzHUngC1KfhoTdcMPbY/50O0hm+5xmhB30ZWg+
+         bKNGeT8QIqAxFB1gDFQQmF3JRSESc7ajaxEtitjfWvAAsh98UILZrpOVxEz3W1hDBB
+         X1NbdCqgPreH8SzQUyPgGrIxRMro/naTMK9l2LIc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianguo Wu <wujianguo@chinatelecom.cn>,
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Geliang Tang <geliangtang@gmail.com>,
         Mat Martineau <mathew.j.martineau@linux.intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 031/223] mptcp: remove redundant req destruct in subflow_check_req()
-Date:   Mon, 26 Jul 2021 17:37:03 +0200
-Message-Id: <20210726153847.264818513@linuxfoundation.org>
+Subject: [PATCH 5.13 033/223] mptcp: add sk parameter for mptcp_get_options
+Date:   Mon, 26 Jul 2021 17:37:05 +0200
+Message-Id: <20210726153847.335223194@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,47 +42,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianguo Wu <wujianguo@chinatelecom.cn>
+From: Geliang Tang <geliangtang@gmail.com>
 
-[ Upstream commit 030d37bd1cd2443a1f21db47eb301899bfa45a2a ]
+[ Upstream commit c863225b79426459feca2ef5b0cc2f07e8e68771 ]
 
-In subflow_check_req(), if subflow sport is mismatch, will put msk,
-destroy token, and destruct req, then return -EPERM, which can be
-done by subflow_req_destructor() via:
+This patch added a new parameter name sk in mptcp_get_options().
 
-  tcp_conn_request()
-    |--__reqsk_free()
-      |--subflow_req_destructor()
-
-So we should remove these redundant code, otherwise will call
-tcp_v4_reqsk_destructor() twice, and may double free
-inet_rsk(req)->ireq_opt.
-
-Fixes: 5bc56388c74f ("mptcp: add port number check for MP_JOIN")
-Signed-off-by: Jianguo Wu <wujianguo@chinatelecom.cn>
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Geliang Tang <geliangtang@gmail.com>
 Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mptcp/subflow.c | 5 -----
- 1 file changed, 5 deletions(-)
+ net/mptcp/options.c  |  5 +++--
+ net/mptcp/protocol.h |  3 ++-
+ net/mptcp/subflow.c  | 10 +++++-----
+ 3 files changed, 10 insertions(+), 8 deletions(-)
 
+diff --git a/net/mptcp/options.c b/net/mptcp/options.c
+index b87e46f515fb..72b1067d5aa2 100644
+--- a/net/mptcp/options.c
++++ b/net/mptcp/options.c
+@@ -323,7 +323,8 @@ static void mptcp_parse_option(const struct sk_buff *skb,
+ 	}
+ }
+ 
+-void mptcp_get_options(const struct sk_buff *skb,
++void mptcp_get_options(const struct sock *sk,
++		       const struct sk_buff *skb,
+ 		       struct mptcp_options_received *mp_opt)
+ {
+ 	const struct tcphdr *th = tcp_hdr(skb);
+@@ -1010,7 +1011,7 @@ void mptcp_incoming_options(struct sock *sk, struct sk_buff *skb)
+ 		return;
+ 	}
+ 
+-	mptcp_get_options(skb, &mp_opt);
++	mptcp_get_options(sk, skb, &mp_opt);
+ 	if (!check_fully_established(msk, sk, subflow, skb, &mp_opt))
+ 		return;
+ 
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index 7b634568f49c..f74258377c05 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -576,7 +576,8 @@ int __init mptcp_proto_v6_init(void);
+ struct sock *mptcp_sk_clone(const struct sock *sk,
+ 			    const struct mptcp_options_received *mp_opt,
+ 			    struct request_sock *req);
+-void mptcp_get_options(const struct sk_buff *skb,
++void mptcp_get_options(const struct sock *sk,
++		       const struct sk_buff *skb,
+ 		       struct mptcp_options_received *mp_opt);
+ 
+ void mptcp_finish_connect(struct sock *sk);
 diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index cbc452d0901e..5493c851ca6c 100644
+index 5221cfce5390..78e787ef8fff 100644
 --- a/net/mptcp/subflow.c
 +++ b/net/mptcp/subflow.c
-@@ -212,11 +212,6 @@ again:
- 				 ntohs(inet_sk(sk_listener)->inet_sport),
- 				 ntohs(inet_sk((struct sock *)subflow_req->msk)->inet_sport));
- 			if (!mptcp_pm_sport_in_anno_list(subflow_req->msk, sk_listener)) {
--				sock_put((struct sock *)subflow_req->msk);
--				mptcp_token_destroy_request(req);
--				tcp_request_sock_ops.destructor(req);
--				subflow_req->msk = NULL;
--				subflow_req->mp_join = 0;
- 				SUBFLOW_REQ_INC_STATS(req, MPTCP_MIB_MISMATCHPORTSYNRX);
- 				return -EPERM;
- 			}
+@@ -150,7 +150,7 @@ static int subflow_check_req(struct request_sock *req,
+ 		return -EINVAL;
+ #endif
+ 
+-	mptcp_get_options(skb, &mp_opt);
++	mptcp_get_options(sk_listener, skb, &mp_opt);
+ 
+ 	if (mp_opt.mp_capable) {
+ 		SUBFLOW_REQ_INC_STATS(req, MPTCP_MIB_MPCAPABLEPASSIVE);
+@@ -244,7 +244,7 @@ int mptcp_subflow_init_cookie_req(struct request_sock *req,
+ 	int err;
+ 
+ 	subflow_init_req(req, sk_listener);
+-	mptcp_get_options(skb, &mp_opt);
++	mptcp_get_options(sk_listener, skb, &mp_opt);
+ 
+ 	if (mp_opt.mp_capable && mp_opt.mp_join)
+ 		return -EINVAL;
+@@ -403,7 +403,7 @@ static void subflow_finish_connect(struct sock *sk, const struct sk_buff *skb)
+ 	subflow->ssn_offset = TCP_SKB_CB(skb)->seq;
+ 	pr_debug("subflow=%p synack seq=%x", subflow, subflow->ssn_offset);
+ 
+-	mptcp_get_options(skb, &mp_opt);
++	mptcp_get_options(sk, skb, &mp_opt);
+ 	if (subflow->request_mptcp) {
+ 		if (!mp_opt.mp_capable) {
+ 			MPTCP_INC_STATS(sock_net(sk),
+@@ -650,7 +650,7 @@ static struct sock *subflow_syn_recv_sock(const struct sock *sk,
+ 		 * reordered MPC will cause fallback, but we don't have other
+ 		 * options.
+ 		 */
+-		mptcp_get_options(skb, &mp_opt);
++		mptcp_get_options(sk, skb, &mp_opt);
+ 		if (!mp_opt.mp_capable) {
+ 			fallback = true;
+ 			goto create_child;
+@@ -660,7 +660,7 @@ static struct sock *subflow_syn_recv_sock(const struct sock *sk,
+ 		if (!new_msk)
+ 			fallback = true;
+ 	} else if (subflow_req->mp_join) {
+-		mptcp_get_options(skb, &mp_opt);
++		mptcp_get_options(sk, skb, &mp_opt);
+ 		if (!mp_opt.mp_join || !subflow_hmac_valid(req, &mp_opt) ||
+ 		    !mptcp_can_accept_new_subflow(subflow_req->msk)) {
+ 			SUBFLOW_REQ_INC_STATS(req, MPTCP_MIB_JOINACKMAC);
 -- 
 2.30.2
 
