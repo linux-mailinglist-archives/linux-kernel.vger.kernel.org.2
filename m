@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B693D6366
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4603D6247
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237753AbhGZPrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:47:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43470 "EHLO mail.kernel.org"
+        id S235885AbhGZPfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:35:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237900AbhGZP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E34960F9C;
-        Mon, 26 Jul 2021 16:09:43 +0000 (UTC)
+        id S237032AbhGZPU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:20:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A613460F6E;
+        Mon, 26 Jul 2021 16:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315784;
-        bh=L7JTVkEdQIYlNs6VVT99tMf5FeimLX1yzbm9MRlaZI8=;
+        s=korg; t=1627315255;
+        bh=ficlE3bySRIK+At82NMxpFsU7S9QRyOWETvSEAkAnU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=odRvICjogZ7H0Aw/HW3If5iMWMq1Dw0LPsc4f2tar/d2+TKgioj7z3W6EqsHvfqoI
-         3vXHLfARQYKt48RP57CAdC4b7GYJddYbdnfM9lZ36rZgVmZ7xC/ict2p4XN04z0pvC
-         DtuJPEMU+5tSpsSJ0ebBW4S4iNWVZpqrR1BgWwWM=
+        b=1tsluXFoI8g9qAdj4/sf+l79iq7cj20OO7kGpz0nMNhEBhoc2EBfvVJ8cnPwcCITd
+         MFdOCrXcyqRLNdZYUYCY78J3l72qTHlxDQvA9w4P6uqq3ODRuKZZJykPdoaQTJFTEG
+         vGNZ0edyFZn0796Cb0pR9WoVNYdYty4wwuUtJEI8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 064/223] perf data: Close all files in close_dir()
-Date:   Mon, 26 Jul 2021 17:37:36 +0200
-Message-Id: <20210726153848.356257789@linuxfoundation.org>
+Subject: [PATCH 5.10 024/167] stmmac: platform: Fix signedness bug in stmmac_probe_config_dt()
+Date:   Mon, 26 Jul 2021 17:37:37 +0200
+Message-Id: <20210726153840.173231051@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-References: <20210726153846.245305071@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,44 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-[ Upstream commit d4b3eedce151e63932ce4a00f1d0baa340a8b907 ]
+[ Upstream commit eca81f09145d765c21dd8fb1ba5d874ca255c32c ]
 
-When using 'perf report' in directory mode, the first file is not closed
-on exit, causing a memory leak.
+The "plat->phy_interface" variable is an enum and in this context GCC
+will treat it as an unsigned int so the error handling is never
+triggered.
 
-The problem is caused by the iterating variable never reaching 0.
-
-Fixes: 145520631130bd64 ("perf data: Add perf_data__(create_dir|close_dir) functions")
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Zhen Lei <thunder.leizhen@huawei.com>
-Link: http://lore.kernel.org/lkml/20210716141122.858082-1-rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: b9f0b2f634c0 ("net: stmmac: platform: fix probe for ACPI devices")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-index 8fca4779ae6a..70b91ce35178 100644
---- a/tools/perf/util/data.c
-+++ b/tools/perf/util/data.c
-@@ -20,7 +20,7 @@
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index ff95400594fc..53be8fc1d125 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -399,6 +399,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct plat_stmmacenet_data *plat;
+ 	struct stmmac_dma_cfg *dma_cfg;
++	int phy_mode;
+ 	int rc;
  
- static void close_dir(struct perf_data_file *files, int nr)
- {
--	while (--nr >= 1) {
-+	while (--nr >= 0) {
- 		close(files[nr].fd);
- 		zfree(&files[nr].path);
+ 	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
+@@ -413,10 +414,11 @@ stmmac_probe_config_dt(struct platform_device *pdev, const char **mac)
+ 		*mac = NULL;
  	}
+ 
+-	plat->phy_interface = device_get_phy_mode(&pdev->dev);
+-	if (plat->phy_interface < 0)
+-		return ERR_PTR(plat->phy_interface);
++	phy_mode = device_get_phy_mode(&pdev->dev);
++	if (phy_mode < 0)
++		return ERR_PTR(phy_mode);
+ 
++	plat->phy_interface = phy_mode;
+ 	plat->interface = stmmac_of_get_mac_mode(np);
+ 	if (plat->interface < 0)
+ 		plat->interface = plat->phy_interface;
 -- 
 2.30.2
 
