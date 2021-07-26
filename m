@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7F53D5D4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E943D5FAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235327AbhGZPAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:00:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39092 "EHLO mail.kernel.org"
+        id S236515AbhGZPSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:18:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235145AbhGZPAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:00:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 450E760F42;
-        Mon, 26 Jul 2021 15:41:02 +0000 (UTC)
+        id S237281AbhGZPKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C7306056C;
+        Mon, 26 Jul 2021 15:51:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314062;
-        bh=8vhQ4Oehg8coiqqrLXBMOpx8iQQ+NwAJ2/JIzmLJku4=;
+        s=korg; t=1627314665;
+        bh=4JCct7C/X4rt9JgP6yr8rtQaW1eLFKBgvSzA6UenINY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GUQ8RY06d8KshiX5uNbN+9It5QeUdyhG5SBsmTN8L2zr8/JiLm5Y/PK0BCLEvL9iW
-         AgmlXMG4qmskH9Zsxo4+us4XtvSHBULtDHi/+vsL7GuDgFQzxIhFWjSFR78qJdvpIr
-         l6ThX/VEIum43j9PyyV4Zd9jA+ygxKFKc0K9pxag=
+        b=fxIjwwAax0Q5dUONxywXFhKzZ6mnYaM92lbUv4WhlB/Y+3tgYeHGXVtET13Juaiu7
+         3zvXI0GFvEvz6RXcZSkHwOXgygZk3kG1Xcc8Cnn5luCF4zyzO2WLMAV1ytR1kKCG88
+         MzEqEO+2fazmD9Tgsz8qARYTCRYbRbyKmP43m+o0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 02/47] ARM: dts: BCM63xx: Fix NAND nodes names
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 048/120] tcp: annotate data races around tp->mtu_info
 Date:   Mon, 26 Jul 2021 17:38:20 +0200
-Message-Id: <20210726153823.060775842@linuxfoundation.org>
+Message-Id: <20210726153833.931168421@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 75e2f012f6e34b93124d1d86eaa8f27df48e9ea0 ]
+commit 561022acb1ce62e50f7a8258687a21b84282a4cb upstream.
 
-This matches nand-controller.yaml requirements.
+While tp->mtu_info is read while socket is owned, the write
+sides happen from err handlers (tcp_v[46]_mtu_reduced)
+which only own the socket spinlock.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 563d34d05786 ("tcp: dont drop MTU reduction indications")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/bcm63138.dtsi    | 2 +-
- arch/arm/boot/dts/bcm963138dvt.dts | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ net/ipv4/tcp_ipv4.c |    4 ++--
+ net/ipv6/tcp_ipv6.c |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm63138.dtsi b/arch/arm/boot/dts/bcm63138.dtsi
-index 34cd64051250..84efc3d16f58 100644
---- a/arch/arm/boot/dts/bcm63138.dtsi
-+++ b/arch/arm/boot/dts/bcm63138.dtsi
-@@ -152,7 +152,7 @@
- 			status = "disabled";
- 		};
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -348,7 +348,7 @@ void tcp_v4_mtu_reduced(struct sock *sk)
  
--		nand: nand@2000 {
-+		nand_controller: nand-controller@2000 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.0", "brcm,brcmnand";
-diff --git a/arch/arm/boot/dts/bcm963138dvt.dts b/arch/arm/boot/dts/bcm963138dvt.dts
-index 370aa2cfddf2..439cff69e948 100644
---- a/arch/arm/boot/dts/bcm963138dvt.dts
-+++ b/arch/arm/boot/dts/bcm963138dvt.dts
-@@ -29,10 +29,10 @@
- 	status = "okay";
- };
+ 	if ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))
+ 		return;
+-	mtu = tcp_sk(sk)->mtu_info;
++	mtu = READ_ONCE(tcp_sk(sk)->mtu_info);
+ 	dst = inet_csk_update_pmtu(sk, mtu);
+ 	if (!dst)
+ 		return;
+@@ -516,7 +516,7 @@ void tcp_v4_err(struct sk_buff *icmp_skb
+ 			if (sk->sk_state == TCP_LISTEN)
+ 				goto out;
  
--&nand {
-+&nand_controller {
- 	status = "okay";
+-			tp->mtu_info = info;
++			WRITE_ONCE(tp->mtu_info, info);
+ 			if (!sock_owned_by_user(sk)) {
+ 				tcp_v4_mtu_reduced(sk);
+ 			} else {
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -340,7 +340,7 @@ static void tcp_v6_mtu_reduced(struct so
+ 	if ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))
+ 		return;
  
--	nandcs@0 {
-+	nand@0 {
- 		compatible = "brcm,nandcs";
- 		reg = <0>;
- 		nand-ecc-strength = <4>;
--- 
-2.30.2
-
+-	dst = inet6_csk_update_pmtu(sk, tcp_sk(sk)->mtu_info);
++	dst = inet6_csk_update_pmtu(sk, READ_ONCE(tcp_sk(sk)->mtu_info));
+ 	if (!dst)
+ 		return;
+ 
+@@ -429,7 +429,7 @@ static void tcp_v6_err(struct sk_buff *s
+ 		if (!ip6_sk_accept_pmtu(sk))
+ 			goto out;
+ 
+-		tp->mtu_info = ntohl(info);
++		WRITE_ONCE(tp->mtu_info, ntohl(info));
+ 		if (!sock_owned_by_user(sk))
+ 			tcp_v6_mtu_reduced(sk);
+ 		else if (!test_and_set_bit(TCP_MTU_REDUCED_DEFERRED,
 
 
