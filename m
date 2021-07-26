@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C953D61ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8186B3D633E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234350AbhGZPd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:33:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59706 "EHLO mail.kernel.org"
+        id S239341AbhGZPpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236514AbhGZPSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:18:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2052E60FA0;
-        Mon, 26 Jul 2021 15:59:18 +0000 (UTC)
+        id S231718AbhGZP2M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:28:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB4F60FE7;
+        Mon, 26 Jul 2021 16:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315160;
-        bh=6tdVmc8+k5o5n29AgJThLPgZtvTBGjpXIogXodbu0IA=;
+        s=korg; t=1627315637;
+        bh=nLaMHd5ZIveVsMInaOvIXwaHzShiRPZOrYHqcUJqKQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b1Tu9SvC1z2Zq7AHek2u3EAnNrPEFXSGRbhBidqxQ4EGYuQAWrs5+CHUblfHFQwck
-         tyogpx3wqUCgAUnhFD4bXGkVQ43kZx+kvPOLLD/3S5NagIf63K+q8Zb8TpVvo0jvvD
-         waJj772t2azUeG98I38uy+IUkvqTbulKJpO/46hA=
+        b=XqvzeWXOOJBoIUOqPj7E8rb5N8Z/b5zQEMJ3O7Qb35+ay+RqeybdhUoDIcbnol37e
+         XufKpwXfyqTqbo0WYqSTjXn6KCNRDlGI3WTU0ymsuB4P2+QvHUu0boPYHZCSR1Udkz
+         wuVq6AQqEU9vN6QtKUwFFJoqMvbrdSrkiJYlX77k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
-        Dennis Camera <bugs+kernel.org@dtnr.ch>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 096/108] hugetlbfs: fix mount mode command line processing
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 144/167] io_uring: explicitly count entries for poll reqs
 Date:   Mon, 26 Jul 2021 17:39:37 +0200
-Message-Id: <20210726153834.762076100@linuxfoundation.org>
+Message-Id: <20210726153844.243024000@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,43 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-commit e0f7e2b2f7e7864238a4eea05cc77ae1be2bf784 upstream.
+commit 68b11e8b1562986c134764433af64e97d30c9fc0 upstream.
 
-In commit 32021982a324 ("hugetlbfs: Convert to fs_context") processing
-of the mount mode string was changed from match_octal() to fsparam_u32.
+If __io_queue_proc() fails to add a second poll entry, e.g. kmalloc()
+failed, but it goes on with a third waitqueue, it may succeed and
+overwrite the error status. Count the number of poll entries we added,
+so we can set pt->error to zero at the beginning and find out when the
+mentioned scenario happens.
 
-This changed existing behavior as match_octal does not require octal
-values to have a '0' prefix, but fsparam_u32 does.
-
-Use fsparam_u32oct which provides the same behavior as match_octal.
-
-Link: https://lkml.kernel.org/r/20210721183326.102716-1-mike.kravetz@oracle.com
-Fixes: 32021982a324 ("hugetlbfs: Convert to fs_context")
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reported-by: Dennis Camera <bugs+kernel.org@dtnr.ch>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Fixes: 18bceab101add ("io_uring: allow POLL_ADD with double poll_wait() users")
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/9d6b9e561f88bcc0163623b74a76c39f712151c3.1626774457.git.asml.silence@gmail.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/hugetlbfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c |   16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -76,7 +76,7 @@ enum hugetlb_param {
- static const struct fs_parameter_spec hugetlb_param_specs[] = {
- 	fsparam_u32   ("gid",		Opt_gid),
- 	fsparam_string("min_size",	Opt_min_size),
--	fsparam_u32   ("mode",		Opt_mode),
-+	fsparam_u32oct("mode",		Opt_mode),
- 	fsparam_string("nr_inodes",	Opt_nr_inodes),
- 	fsparam_string("pagesize",	Opt_pagesize),
- 	fsparam_string("size",		Opt_size),
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4916,6 +4916,7 @@ static int io_connect(struct io_kiocb *r
+ struct io_poll_table {
+ 	struct poll_table_struct pt;
+ 	struct io_kiocb *req;
++	int nr_entries;
+ 	int error;
+ };
+ 
+@@ -5098,11 +5099,11 @@ static void __io_queue_proc(struct io_po
+ 	struct io_kiocb *req = pt->req;
+ 
+ 	/*
+-	 * If poll->head is already set, it's because the file being polled
+-	 * uses multiple waitqueues for poll handling (eg one for read, one
+-	 * for write). Setup a separate io_poll_iocb if this happens.
++	 * The file being polled uses multiple waitqueues for poll handling
++	 * (e.g. one for read, one for write). Setup a separate io_poll_iocb
++	 * if this happens.
+ 	 */
+-	if (unlikely(poll->head)) {
++	if (unlikely(pt->nr_entries)) {
+ 		struct io_poll_iocb *poll_one = poll;
+ 
+ 		/* already have a 2nd entry, fail a third attempt */
+@@ -5124,7 +5125,7 @@ static void __io_queue_proc(struct io_po
+ 		*poll_ptr = poll;
+ 	}
+ 
+-	pt->error = 0;
++	pt->nr_entries++;
+ 	poll->head = head;
+ 
+ 	if (poll->events & EPOLLEXCLUSIVE)
+@@ -5210,9 +5211,12 @@ static __poll_t __io_arm_poll_handler(st
+ 
+ 	ipt->pt._key = mask;
+ 	ipt->req = req;
+-	ipt->error = -EINVAL;
++	ipt->error = 0;
++	ipt->nr_entries = 0;
+ 
+ 	mask = vfs_poll(req->file, &ipt->pt) & poll->events;
++	if (unlikely(!ipt->nr_entries) && !ipt->error)
++		ipt->error = -EINVAL;
+ 
+ 	spin_lock_irq(&ctx->completion_lock);
+ 	if (likely(poll->head)) {
 
 
