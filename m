@@ -2,123 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853233D65C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A6E3D65D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235988AbhGZQtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235110AbhGZQtK (ORCPT
+        id S234853AbhGZQup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:50:45 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:26286 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233952AbhGZQuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:49:10 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299E4C061798;
-        Mon, 26 Jul 2021 10:29:21 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id r17so16847690lfe.2;
-        Mon, 26 Jul 2021 10:29:21 -0700 (PDT)
+        Mon, 26 Jul 2021 12:50:44 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16QHFvjw020261;
+        Mon, 26 Jul 2021 17:30:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
+ b=nlj4dqI0+nxj0VSm3H+C6PuDAD3UbrEzVDA9DUYUROZ5O8VD5DZAN4QDajyqnSyTfyTF
+ wqsjzZavEvKyGE+9NU0u9mkIlapVK+FWUGIs6mW9oCf4UhHGZxpjz2g3pU5ShLlfzwV+
+ NxvVf7q7AnMkGxZsQ8cKHNoHoDo/CSOo4iOzFH00APPLPdQo5S5ooVk5Xo1Yp1aH69yF
+ gMo8YdM06tNMSIK/mVPreAlUlRe7ygVHNtcHx6fnFL+QG3ll73TX1O2NqSfdxf5Ge03J
+ voLSKyIcPyRYVIuOwpSwgjRc/L/SNSFjgLwZwKVLGNBa3KbXhZ434iKYlE5yRWRB50/Q Rw== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
+ b=RE6d+L7zpxC4xizLqp4EWWZ6JA+AMAwT/Hjs+LHFUPXXY8LWcJy+abAZlaqq5uK4Am5q
+ xHixtJIfQaY3ir0Cim4fJ0JX+hSOl2HpSIZfN7rDE9RWIyu9pcERGAtrFwHdcDLYvv3u
+ +pQzt0zvxd8agfoPk+Z7+ePt08X9qNGsfZV38powSvB7pLTEktYrxs4udVZZ3Z/TaPFk
+ 0ndw6y8eNwexW84oZRE9OWzbpLMmqupcFxy4vykXdFqq0iHBHOnb2MGMNAf5GuRvTaXM
+ sf42SpxFLf1P525GAosXvP3uQJ7+uR0z/VlMN1GZutZBwt/nhWkrQ7dNi0J/eYog46kQ oA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a1qkqsmqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Jul 2021 17:30:47 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16QHFS9w176799;
+        Mon, 26 Jul 2021 17:30:46 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
+        by aserp3020.oracle.com with ESMTP id 3a0n2gdkps-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Jul 2021 17:30:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L/LtSXL0XVysq2WcUVBgbaN0HLDvSjc9C4wqxN8Y8s3Gpl4XS9VhTjYyctTajsj0y4Fpt35bQGhbOtpDV0fmC37sUrnlIdAYY6rVXYCwLCoA5MIdKMHmQjrIOaaRG2hryE48U6k3WHTVT5fuND2WyhZPrOBeOL0VJCyE21Qr8mZSGqARjR6MzPODR9qDoZOxfW+fZxi/fJbq12OILrSHk08JDc8tIH6W9ouh5eHRk5LDGd2Ew4qnjemIVeg3D1HpOeYgjI+qwRTNOImXj7g6wBA9j9SkohHSgbHVIrflRWaUEORbz2nipQympGa+MOpnUdyMJ0DamhdRFq1rtcMYYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
+ b=YSaAO753OVo1aEqwgWRbLrLugdh+poRPNTw7NhvNHikaHkILvD7jW1sPN30/xxCx/rseVFluYQeEiqH/Yw5Ah3bS1vt2vd/6L6Y7RpttDBDWyGdX/gmVFirzIefLkGITbHvhYCx7u5zYWIPylZn8N4eSJnMGnDaw+ZdKejAeZiUFN0l7K4At/JDkBQEPwDIK6/qi8Z28KMr2f3RP9islgjAujn1FEpsEFoBDiPARYYQZpiqlef+y5ocEfJl9MsLA0hVVnm85f/Kechn9jB0kjeFvuBYu1qDCKXcTuH4WkS0OrzgMdKws5xK2uBI7EjrPILsuPNxJaDcs7KAvphlXVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ndKq+LGDON/UckbBHbtSzNl8tCW9FVvB6He4yfXkxNE=;
-        b=YsxgKSTD9vroLSiRzpOsnVo3wM9+Mx0r4LrK++z5i3tX+lM7nSsj5Z3vsu6lZxUvv/
-         q+xT9GVTvJ8qnaUaHTHR9g1R1eLE+a/ZnPG68w4HACOceDhJWSbe6IQxsKcW32DGipNR
-         r4BcKujtBuXwYE1dxVHwghud5C0WMHrRWbcXegseNXHbq8bknb3PQjmrKn/rx9CjeBEw
-         5hBtqmAmvHy5NlRd7QLMdKGvtxm0f4jWLqdqlKKC1r/l30/CKU7m6T8ocVftlySQCOPE
-         LpU2SDZZTXzSyC5ZFssi5kS6O+ay9760WSMW+PxjlQr76QXacRdl9/fjb8pkNe+FJbsr
-         FhvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ndKq+LGDON/UckbBHbtSzNl8tCW9FVvB6He4yfXkxNE=;
-        b=V7PA48pEjicKKMDDcKBhfsz0SlHsOv7OhSBphF5z4iMnt6uY5w6ciDScAB/O2mF5wf
-         TV5nz/qVVOYRFcty6oR4V9YbMsmyD7/RZSvOKG6uaJjLEd4YzsJC021aWrYRxp7/38LP
-         DyYUHoBJlLfm/lgwOhJ0JhL9IsVlIPY0nL6c7cSF+jWKShLfsIVELytdn5fwnMnS66z6
-         +RBGguWvrg15hfrCTyZjr9dioSMaajKDFZAnbndvgc+MKLcTDmHTZBvFHEA8CKt0kyTC
-         ZWlp4hsCgBV8TqMfbAthkMENKbR3jV7NNb7OrZRDhHKp3GkrQw1auNVRLBDQYP6CC8MK
-         IvAw==
-X-Gm-Message-State: AOAM533CR6RkTlTH41JpjtdNXS4pHRPOYUaJp42sp7/Q+4puTI5RnJoy
-        Sc6rjiF4btVljLkOACkT08M=
-X-Google-Smtp-Source: ABdhPJynhVi5xWfz4QxD21z+iK+btrTFhGSenshuxDRY6e4XjYz3lHMpwXa17bNhLBrSf8tCpQkqbg==
-X-Received: by 2002:ac2:4c97:: with SMTP id d23mr13427935lfl.249.1627320559562;
-        Mon, 26 Jul 2021 10:29:19 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.94])
-        by smtp.gmail.com with ESMTPSA id d8sm57071lfq.138.2021.07.26.10.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 10:29:19 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 20:29:16 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        socketcan@hartkopp.net, mailhol.vincent@wanadoo.fr,
-        b.krumboeck@gmail.com, haas@ems-wuensche.com, Stefan.Maetje@esd.eu,
-        matthias.fuchs@esd.eu
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] can: fix same memory leaks in can drivers
-Message-ID: <20210726202916.5945e3d9@gmail.com>
-In-Reply-To: <cover.1627311383.git.paskripkin@gmail.com>
-References: <cover.1627311383.git.paskripkin@gmail.com>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
+ b=zhrRWNKBzimkFbx41QahA1tjgtSy9+LFii9JmAjG2oqa36JHWD3X49luhm3SSFVOfeXmlzi9D1EaLT8mr6opDcttXo/Mcf4OAGSP/vj2J6aWdPM/cBwTZY3a00O4mklrNx+6nmkEynw+ckR/28CEYbkPxoG10kTMtbP5+j+mZbo=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
+ by BLAPR10MB5011.namprd10.prod.outlook.com (2603:10b6:208:333::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Mon, 26 Jul
+ 2021 17:30:44 +0000
+Received: from BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f10d:29d2:cb38:ed0]) by BLAPR10MB5009.namprd10.prod.outlook.com
+ ([fe80::f10d:29d2:cb38:ed0%7]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
+ 17:30:44 +0000
+Subject: Re: [GIT PULL] dma-mapping fix for Linux 5.14
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <YPz+qQ6dbZVDbMwu@infradead.org>
+ <CAHk-=wi2OMmUkZFdQ0=uYmGeC3sv3eYw-p1=d51pJS-XVKaM2A@mail.gmail.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Message-ID: <957943ce-c50e-1560-6f1b-aea0a1c9a114@oracle.com>
+Date:   Mon, 26 Jul 2021 13:30:36 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
+In-Reply-To: <CAHk-=wi2OMmUkZFdQ0=uYmGeC3sv3eYw-p1=d51pJS-XVKaM2A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SJ0PR13CA0036.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::11) To BLAPR10MB5009.namprd10.prod.outlook.com
+ (2603:10b6:208:321::10)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.97.124] (160.34.89.124) by SJ0PR13CA0036.namprd13.prod.outlook.com (2603:10b6:a03:2c2::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.14 via Frontend Transport; Mon, 26 Jul 2021 17:30:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: dd4825b9-6e2c-4662-9ef6-08d9505b191a
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5011:
+X-Microsoft-Antispam-PRVS: <BLAPR10MB5011BB367E81B1ABA0A777778AE89@BLAPR10MB5011.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fo+vrdDXpBBhEBHZuqjA6kPje4O/bHC8BrD43WoFYwyj2tYFEifDaMhzkYsiCwmEoOI9DFvG3/h/+EBjp52fhyaardGoNETh8k5c1DZxnm9/hQSj1LFJyngwyxUsBedFkcffp9uDff9gYPYcQ2ZLin7ecSMLU6PLYtq22icff/gUWIZ6e3JYBW0Ja28eVTPNRku+nfAMz+pmzEe6fOZ/wjl49uxr4QZO5PSiTUEg93HsOPjViO9MKjKcX7WimyImJ7wPvVOwK98++ZcQS/mlzpeBttfJ1cKDyt/v1cFJnErAvkEP3MMydLBSw5zmw66XCsWPs+QovuSiRszOOcI67V/2hPCwGOMslatap4tMR+ymsDr8ctbWcK5HljLhl7HJAqTPb3Y5yfYCuPUyPYWBUkc3AXD4ne4k7QgbmrmalXUrCtnJ1etvaVKdLiddiIOW3BFiyaF4jC9EsC/fbCj/IyJc68meNTHn+Ztx1XD+0iqrw84TYRsJNI8p/GlI1ZFImLuhHI2wQFLbzDc6/jITwvkTRbZDHNea/OisbCcsNtuCBYgipQYsaO3qIvR8ITz1A2/FOKFbB+ecjzcLLab/5Ff7l0hnT+qAdFJRfzkD3lKPV+TSURWXfHQ/v8GrAsGolHOcIX+TJWaWC+UOVIRUtBq57C9t3l65C/vpg37RrWSpWfMnZaKmWcrbXoMFpNVKbzHsz29M3NhW30VTrNnsf+HPBvUhRNge71NhGbWMELH9fGrao/VKJ3BeQ5DgkvTnqva/WfiTezgo/l0tnbTsPf80c4NmOoc+04HJEzaRakDn6lrKZVefgdhbETFOUQR1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(110136005)(44832011)(4744005)(38100700002)(16576012)(6666004)(6486002)(966005)(8936002)(5660300002)(956004)(53546011)(186003)(66476007)(316002)(2616005)(54906003)(66946007)(66556008)(8676002)(86362001)(26005)(508600001)(31686004)(36756003)(2906002)(31696002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MmhuL0FXdk1wSEE1K0NBUG5Hb3E3d2VtMFN3SjJDeTBsVWZvQXE1ejZmT084?=
+ =?utf-8?B?VGhZZmxHRUZpV0gzVytiais1VW5Pa3huTlQrdjlhZ0lxTHZXZytpQWxaRWtV?=
+ =?utf-8?B?TzRBekhNdDVBa2tJMVBaVGhRa21VbXNEVmdVY08vOHZSUjRpVjVhL0RCOERj?=
+ =?utf-8?B?MGZEYUFSQk9tS2haNUxreUxPTFNrNlJOZFY4NEVXMW8wbExscnN3SHdjUm9m?=
+ =?utf-8?B?VkptcU1aNDR3WFVaUDJWc0I3cWY2bWk5WWIyMXl1cUpHTkxIdmo1REFGandv?=
+ =?utf-8?B?clYzVEpMc2lvTmdwN2ZYRXA5UXFCcjN4bXRrQ3ZjbmNnbm1PbzZVSXBra1R6?=
+ =?utf-8?B?b1ZOOFNQUW1CTWdka3dxMVhiYUgrcnJlcm5GVWs4SldubkZJNlRiSnRibW1a?=
+ =?utf-8?B?SXA2L0V6TFZDZEJCVi9mZVBUM1hxQ3VwZ1krMGVwZzlTdzlWR1cyd2ZBeDd2?=
+ =?utf-8?B?U0hSZlVHNGMxRlRSWEJSenNKaTl4ZzI3Tk8zWEQvZnkxMVBZaDNxaEo4Qmdo?=
+ =?utf-8?B?OHQ1bkRGekRCTkFSR1FsMkIzUG85NFNoTjkreklaM1FYVjc0aUVMS0NhNnVP?=
+ =?utf-8?B?SFVrTDMwY1VvNTFwZ2Z1VnBkeW4rRlBWZG1leVJreUdPNWxQQkpmcEQyTEl2?=
+ =?utf-8?B?TFk0ejVITFhYZEVaU1BLSEF0UkpwVHVoVVBvbEhtYytLTnN6cVNUUm1OL3B2?=
+ =?utf-8?B?cURYMEkybTgrRk9NYm03UUJOc0piUWNSNmJzTmsrUWZGWjNnaFl1d3lUNmo1?=
+ =?utf-8?B?bEtLR3c5OWRMWmM2STlrWFlBK0JKbW5CM09HelkxOHZ0QmRmTE1VbFhiSTZF?=
+ =?utf-8?B?eE12WXVKbXlQVkNJWUNDY0xjM3N0aEp1aUFBUmpnMVRvK1dOdmpnU3NxMWN2?=
+ =?utf-8?B?d0p3Njc3dlExb0sxWDFsRjRiZzczQS9WNnlTb0thbjdnSVIzeHpCZ0RRaHVK?=
+ =?utf-8?B?c0VJTFp6RS9WU1c5VlAwbnlWRmU1Um1lNHVpNDR3bURwbGVXcHdwQzFIY1g3?=
+ =?utf-8?B?SHNEVkJPSUhPbGNMT1g2NDVibi9mV2pHd21MRmVnWnVoQ2h1anRLSyt2U2Z1?=
+ =?utf-8?B?WDRaSFZRN3JiaUNTOW1JUnJVSG1iVythSzV4Q3ZMTEhOYXRKcHN0UzB1MElM?=
+ =?utf-8?B?SEJYeXJIdW85YWFQbEhheUk5dlBwODBReTFkNmpzbXRqb0Ntc1pMRFRENUto?=
+ =?utf-8?B?anhhbHhETnJPOS9CRFhiY3IrbjQzayt2N2h3bmpKNW9PbE1RblJTaGpCclhi?=
+ =?utf-8?B?bGpCVStzcndydWZpeTM5K01OT0Vya2NuMW5XdlF3OW52OTA5SmFmdytSM0J1?=
+ =?utf-8?B?QzRUUkxwRjJoQVE5WDRyOVBpQU8zNTVqZWdoWlV5eW9DNzA0cDF3Mnd4K3ZZ?=
+ =?utf-8?B?d1RuL1hoTkRsdER1QVIzYVFvSzVQRUZGd2NOcE8xTTc2TzF6WmNSR0x4UTZF?=
+ =?utf-8?B?UkkxaDJ4MzNBTjYwUmc4TGhoY25nRlhkWndZN1ZqNWVYZVp4ajRsT29ldmVz?=
+ =?utf-8?B?aHE3QlpnWEYxV0xtNzc1ZDM0S2pZUy84SDl3azdQdGRUb3oxM055d0VwaUI2?=
+ =?utf-8?B?bUVaSlFJTjgyRmpOMXZoZlM5YUtmTHNmRG5QSzNLdU9GS2JhKzN1cmVIUWVl?=
+ =?utf-8?B?UEZFRk12OHZ6OE1ZTTJXZDltRmM3bnNsUGNsQTZ3RldUR3VobVpGWWdwaE5k?=
+ =?utf-8?B?VE54VW1IbzIrZjl2T1d6MXZrd1VJNWZ6aVd0MTNyODFNQitqK2ZaaEpVQWF6?=
+ =?utf-8?Q?vxLlnxpI7QZRODkRCYdaCmOiBmEYmdhRXynWMNA?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd4825b9-6e2c-4662-9ef6-08d9505b191a
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2021 17:30:44.3843
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xFMnLhCQZriXxcyWR1G+6/Z7feQkigk4xcuVgR9XABuN7TRKRvnqptltXhguteEYv4B9WC7qBKuMXBQDx2OKo7//hF3qPtxB3SyO13zMIUg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5011
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10057 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 adultscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107260101
+X-Proofpoint-GUID: tn5FoM9xMTTCjY-fvcxlyaHnee_3D7ws
+X-Proofpoint-ORIG-GUID: tn5FoM9xMTTCjY-fvcxlyaHnee_3D7ws
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 18:29:38 +0300
-Pavel Skripkin <paskripkin@gmail.com> wrote:
 
-> Hi, Marc and can drivers maintainers/reviewers!
-> 
+On 7/25/21 12:50 PM, Linus Torvalds wrote:
+> On Sat, Jul 24, 2021 at 11:03 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+>>   - handle vmalloc addresses in dma_common_{mmap,get_sgtable}
+>>     (Roman Skakun)
+> I've pulled this, but my reaction is that we've tried to avoid this in
+> the past. Why is Xen using vmalloc'ed addresses and passing those in
+> to the dma mapping routines?
+>
+> It *smells* to me like a Xen-swiotlb bug, and it would have been
+> better to try to fix it there. Was that just too painful?
 
-I reread this I found out, that I missed logic here.
 
-I mean:
-
-> A long time ago syzbot reported memory leak in mcba_usb can
-> driver[1]. It was using strange pattern for allocating coherent
-> buffers, which was leading to memory leaks.
-
-I fixed this wrong pattern in mcba_usb driver and 
-
-> Yesterday I got a report,
-> that mcba_usb stopped working since my commit. I came up with quick
-> fix and all started working well.
-> 
-> There are at least 3 more drivers with this pattern, I decided to fix
-> leaks in them too, since code is actually the same (I guess, driver
-> authors just copy pasted code parts). Each of following patches is
-> combination of 91c02557174b ("can: mcba_usb: fix memory leak in
-> mcba_usb") and my yesterday fix [2].
-> 
-> 
-> Dear maintainers/reviewers, if You have one of these hardware pieces,
-> please, test these patches and report any errors you will find.
-> 
-> [1]
-> https://syzkaller.appspot.com/bug?id=c94c1c23e829d5ac97995d51219f0c5a0cd1fa54
-> [2]
-> https://lore.kernel.org/netdev/20210725103630.23864-1-paskripkin@gmail.com/
-> 
-> 
-> With regards,
-> Pavel Skripkin
-> 
-> Pavel Skripkin (3):
->   can: usb_8dev: fix memory leak
->   can: ems_usb: fix memory leak
->   can: esd_usb2: fix memory leak
-> 
->  drivers/net/can/usb/ems_usb.c  | 14 +++++++++++++-
->  drivers/net/can/usb/esd_usb2.c | 16 +++++++++++++++-
->  drivers/net/can/usb/usb_8dev.c | 15 +++++++++++++--
->  3 files changed, 41 insertions(+), 4 deletions(-)
-> 
+Stefano will probably know better but this appears to have something to do with how Pi (and possibly more ARM systems?) manage DMA memory: https://lore.kernel.org/xen-devel/CADz_WD5Ln7Pe1WAFp73d2Mz9wxspzTE3WgAJusp5S8LX4=83Bw@mail.gmail.com/.
 
 
 
-With regards,
-Pavel Skripkin
+
+-boris
+
+
+
