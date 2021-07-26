@@ -2,74 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655B23D5BD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC533D5BC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbhGZN5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
+        id S234530AbhGZN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233939AbhGZN5Y (ORCPT
+        with ESMTP id S234494AbhGZN4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:57:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0DEC061757;
-        Mon, 26 Jul 2021 07:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=kjP8XL3gAAQmLIUQhlu9GWo9RK6RrkKJjMyFl/c4u5E=; b=oigzRQ4uCRljWEwC0f1Bbt6rtY
-        k+rE676s5UiKLt1KJfMy+YjKS01RfM9Kd4BjiaEeFtz+HYd9WL7VEeLf9t7QErqUG+V5s3TP7OlJF
-        HQQhZDGigigMhVSThuxVel5Rag8s9taG+on9Gzf53LaJIOC1aQi7RFq0e5msbi1uitWwhSOKsg+5p
-        bdFVoeLuPM331GQ3ew/fq16bPd6evK5Abrx8xGwFbLa1Vqq1rXw27iu+KBTQbvmrZ7gaSZnhWWLcI
-        gpb08EQSQiiTcjqtuRSRYm9KxwVCoxEDcLU1mdAQBRtp1QqC29tpIdNRjOGC6MGZVqKcBDnUXqbvi
-        6FlcVRgA==;
-Received: from [2001:4bb8:184:87c5:ee29:e765:f641:52d7] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m81ib-00E2d9-6k; Mon, 26 Jul 2021 14:36:54 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Kirti Wankhede <kwankhede@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] vfio/mdev: don't warn if ->request is not set
-Date:   Mon, 26 Jul 2021 16:35:24 +0200
-Message-Id: <20210726143524.155779-3-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210726143524.155779-1-hch@lst.de>
-References: <20210726143524.155779-1-hch@lst.de>
+        Mon, 26 Jul 2021 09:56:33 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD915C061757;
+        Mon, 26 Jul 2021 07:37:01 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id b1-20020a17090a8001b029017700de3903so127753pjn.1;
+        Mon, 26 Jul 2021 07:37:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=mqmbUYgq5LcNs7/1sZ2TSj7vj+M/0feWm6C3LofmbEY=;
+        b=VOJRIBHCVhv2xRu8nSkP5HNhh1qjzEQTo8VGTJMIdARYUU4RpWNt4UhhjoJBOQJKL5
+         h44u+Mq45fQjk4ZilNRJjTNnPz+5f65lkw0dBnnN/yxh/TyxRryeL96HFsW190v26tFR
+         CuJUtLZsa+lfeyefE44qZp8IcE034PMV3Q86f7k49fYerhhSnTupMzT7dZNJcD++W3rK
+         FOPjWMJh1L9hVCCwyGa+IypsXBatfrilMHY6HlPnYKXAt2oEwmhF8wlqfBG9ZacHJMwB
+         ItMaWF/WECl8qEEEj/KnWopbaPJ4N1N6t9m9F3pGFCBG4ZM/UhgRf6NfigOLP37n1ism
+         cblw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=mqmbUYgq5LcNs7/1sZ2TSj7vj+M/0feWm6C3LofmbEY=;
+        b=RpbuUB8TO7uHC5qIwZtR/Tons2LCbrkWmCtzdtK1WJ+XvcdZ9K2XllRAJzxvmzGHwy
+         DJnF+k4lnLzZzkxrutsQtvpdoAqjP1Ihbfcgx7RKqGqxwgqvCPi0NGRXaiiR1C4mTzw7
+         i7tODZnL0/cRbS/cid9enjGbbTRB5zNijFASzjqrZ5uCYHwHyv7CcmcSRUsxQbN7cEA1
+         Rj/hwBAtMF4yhGqLKObo6BAho3lvdESoIAAkPtG5lmgOWKdKaRIRjlno/FJx8BApoSrr
+         tEJh2dIHdbi43R92Jp1BAsZaai+0jIGKfdGMybUbT/zsBFN4USogsbXyIJgFG+P6c4vJ
+         LyZg==
+X-Gm-Message-State: AOAM530k/vXnuGG9ysiMf5AxwEQPez7t+XfxllhN2RobvfeJdisfxbf+
+        rSXCg+IwWZVxbiLytBUJvFh9t+ECmELKMWUCahg=
+X-Google-Smtp-Source: ABdhPJxdl6BzQzJ7nxYmCaaugamghmySa3zitoUwQT6DRQr9u3IP5ZtwU6YDsag6n21rzkl/PaQinorsV7obdNcNMSY=
+X-Received: by 2002:aa7:8284:0:b029:312:1c62:cc0f with SMTP id
+ s4-20020aa782840000b02903121c62cc0fmr18670937pfm.75.1627310221366; Mon, 26
+ Jul 2021 07:37:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210715141742.15072-1-andrea.merello@gmail.com>
+ <20210715141742.15072-3-andrea.merello@gmail.com> <20210717163236.1553fbfa@jic23-huawei>
+ <CAN8YU5NctVMPfNZn7ya-Jw7yE=NQDBq1aweWn0fX0Rp1p1P=aw@mail.gmail.com> <20210724180823.692b203f@jic23-huawei>
+In-Reply-To: <20210724180823.692b203f@jic23-huawei>
+Reply-To: andrea.merello@gmail.com
+From:   Andrea Merello <andrea.merello@gmail.com>
+Date:   Mon, 26 Jul 2021 16:36:49 +0200
+Message-ID: <CAN8YU5PcrR-xM5A=3jd50=UaY9wWDJZGBqajmvM8Te1Ly14Hew@mail.gmail.com>
+Subject: Re: [PATCH 2/4] iio: imu: add Bosch Sensortec BNO055 core driver
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Andrea Merello <andrea.merello@iit.it>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only a single driver actually sets the ->request method, so don't print
-a scary warning if it isn't.
+just a few of in-line comment below; OK for all the rest of your
+comment, thanks!
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/vfio/mdev/mdev_core.c | 4 ----
- 1 file changed, 4 deletions(-)
+> > > > +static int bno055_reg_write(struct bno055_priv *priv,
+> > > > +                         unsigned int reg, unsigned int val)
+> > > > +{
+> > > > +     int res = regmap_write(priv->regmap, reg, val);
+> > > > +
+> > > > +     if (res && res != -ERESTARTSYS) {
+> > >
+> > > I think Andy asked about these, so I won't repeat...
+> > > Nice to get rid of those and just be able to make the regmap calls inline though...
+> >
+> > Ok for inline. I've just answered in another mail to Andy's comments
+> > for the rest.
 
-diff --git a/drivers/vfio/mdev/mdev_core.c b/drivers/vfio/mdev/mdev_core.c
-index b16606ebafa1..b314101237fe 100644
---- a/drivers/vfio/mdev/mdev_core.c
-+++ b/drivers/vfio/mdev/mdev_core.c
-@@ -138,10 +138,6 @@ int mdev_register_device(struct device *dev, const struct mdev_parent_ops *ops)
- 	if (!dev)
- 		return -EINVAL;
- 
--	/* Not mandatory, but its absence could be a problem */
--	if (!ops->request)
--		dev_info(dev, "Driver cannot be asked to release device\n");
--
- 	mutex_lock(&parent_list_lock);
- 
- 	/* Check for duplicate */
--- 
-2.30.2
+Indeed, so far I couldn't understand what do you really mean. Should I
+move those check+dev_err() inside the regmap core layer ?
 
+> > > > +     /*
+> > > > +      * Start in fusion mode (all data available), but with magnetometer auto
+> > > > +      * calibration switched off, in order not to overwrite magnetometer
+> > > > +      * calibration data in case one want to keep it untouched.
+> > >
+> > > Why might you? good to have a default that is what people most commonly want...
+> > > If there is a usecase for this then it may be better to have a 'disable autocalibration
+> > > and manually reload a fixed calibration' path.
+> >
+> > I'm not sure whether disabling autocalibration for magnetometer is
+> > just a matter of saving some power, or whether this has the purpose of
+> > carefully doing the calibration far from magnetic disturbances,
+> > avoiding screwing the calibration every time you briefly pass by a
+> > piece of iron. I think I found some clues for this second
+> > interpretation poking on the internet, but I don't know whether they
+> > were right.
+>
+> It's possible if the calibration routines have much faster response than
+> you'd normally expect.
+
+This HW function is called "Fast Magnetometer Calibration".. But I
+don't know how fast is it..
+
+
+> > > > +     &iio_dev_attr_in_accel_filter_low_pass_3db_frequency_available.dev_attr.attr,
+> > > > +     &iio_dev_attr_in_anglvel_range_available.dev_attr.attr,
+> > >
+> > > Hmm. Range typically maps to something else (normally scale, but these smart
+> > > sensors can do weird things)
+> >
+> > Here the scaling doesn't change, just the range. I *think* that by
+> > changing range you also get better or worse precision.
+>
+> oh goody.  Make sure the default is maximum range + when you document this
+> we will have to be careful to make it clear we don't want this to be used in
+> drivers where scale is an option.  Perhaps we just put it in a device
+> specific ABI file.
+>
+
+The default is to run the IMU with fusion mode enabled; in this mode
+those parameters are locked by the HW to a given value (which is not
+the maximum e.g. in case of accelerometer range).
+
+If the user disables the fusion mode, then those parameters become
+tweakable, but shouldn't they just remain at their previous values
+(the one set by fusion mode), unless the user change also them?
+
+I.o.w the only chance we have for assigning them a "default" value is
+when the fusion is switched off, but this would mean that switching
+off fusion mode also has a side effect on those values (which I'm
+unsure if we really want to happen).
+
+Andrea
