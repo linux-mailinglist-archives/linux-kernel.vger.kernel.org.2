@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0003D62BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81FA3D606E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237242AbhGZPik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:38:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36492 "EHLO mail.kernel.org"
+        id S237297AbhGZPWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:22:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236832AbhGZPWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 31B6060E09;
-        Mon, 26 Jul 2021 16:02:30 +0000 (UTC)
+        id S237402AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B5E61038;
+        Mon, 26 Jul 2021 15:55:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315351;
-        bh=VRE5bSpf18f+dHUFqZrYTKAhh4tgXuEPHpXLDJDLOco=;
+        s=korg; t=1627314901;
+        bh=XPnrX+f/6E7NSm+/PmkJUA07/2AB7rk1T6Ys75osYWU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rNWmg7Yebe2DN4g88BeldGVamgUAmoTj7LSz40W0ax+qY7qoaemTWHVkXlh5r8wIr
-         N3p3ze+LdV1SKTZbeLb+naHDEVZjyffXEqo4T0r7iYEBEWBsF/1aIVYPaHyJkYaALp
-         zqmKIPDrlQLLunF4GgtWQx7Yyvr2EX1SUGgcyZ14=
+        b=UBc1vaNb8C5onxff0hWQxt3vkCZ5IhQ9njQHSTJRrVgeqY0opT8qIUk934UbHNq5j
+         aa/H5qQPCactzivQepTsX1ZlMGvozV3G6fvaU4UctnJ73PuegrKW0BVyFT7p615n2O
+         UMzt5y9fHrN8YZSyGA8Mnea1QmO+5ioOnQgvlpJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Cong Wang <cong.wang@bytedance.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Catherine Sullivan <csully@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 061/167] bpf, sockmap: Fix potential memory leak on unlikely error case
+Subject: [PATCH 5.4 013/108] gve: Fix an error handling path in gve_probe()
 Date:   Mon, 26 Jul 2021 17:38:14 +0200
-Message-Id: <20210726153841.453111153@linuxfoundation.org>
+Message-Id: <20210726153832.125824796@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 7e6b27a69167f97c56b5437871d29e9722c3e470 ]
+[ Upstream commit 2342ae10d1272d411a468a85a67647dd115b344f ]
 
-If skb_linearize is needed and fails we could leak a msg on the error
-handling. To fix ensure we kfree the msg block before returning error.
-Found during code review.
+If the 'register_netdev() call fails, we must release the resources
+allocated by the previous 'gve_init_priv()' call, as already done in the
+remove function.
 
-Fixes: 4363023d2668e ("bpf, sockmap: Avoid failures from skb_to_sgvec when skb has frag_list")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Link: https://lore.kernel.org/bpf/20210712195546.423990-2-john.fastabend@gmail.com
+Add a new label and the missing 'gve_teardown_priv_resources()' in the
+error handling path.
+
+Fixes: 893ce44df565 ("gve: Add basic driver framework for Compute Engine Virtual NIC")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Catherine Sullivan <csully@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/skmsg.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/google/gve/gve_main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 923a1d0f84ca..c4c224a5b9de 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -433,10 +433,8 @@ static int sk_psock_skb_ingress_enqueue(struct sk_buff *skb,
- 	if (skb_linearize(skb))
- 		return -EAGAIN;
- 	num_sge = skb_to_sgvec(skb, msg->sg.data, 0, skb->len);
--	if (unlikely(num_sge < 0)) {
--		kfree(msg);
-+	if (unlikely(num_sge < 0))
- 		return num_sge;
--	}
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index 1c4b35b1b359..f8dfa7501f65 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -1170,13 +1170,16 @@ static int gve_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
  
- 	copied = skb->len;
- 	msg->sg.start = 0;
-@@ -455,6 +453,7 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
- {
- 	struct sock *sk = psock->sk;
- 	struct sk_msg *msg;
-+	int err;
+ 	err = register_netdev(dev);
+ 	if (err)
+-		goto abort_with_wq;
++		goto abort_with_gve_init;
  
- 	/* If we are receiving on the same sock skb->sk is already assigned,
- 	 * skip memory accounting and owner transition seeing it already set
-@@ -473,7 +472,10 @@ static int sk_psock_skb_ingress(struct sk_psock *psock, struct sk_buff *skb)
- 	 * into user buffers.
- 	 */
- 	skb_set_owner_r(skb, sk);
--	return sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
-+	err = sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
-+	if (err < 0)
-+		kfree(msg);
-+	return err;
- }
+ 	dev_info(&pdev->dev, "GVE version %s\n", gve_version_str);
+ 	gve_clear_probe_in_progress(priv);
+ 	queue_work(priv->gve_wq, &priv->service_task);
+ 	return 0;
  
- /* Puts an skb on the ingress queue of the socket already assigned to the
-@@ -484,12 +486,16 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
- {
- 	struct sk_msg *msg = kzalloc(sizeof(*msg), __GFP_NOWARN | GFP_ATOMIC);
- 	struct sock *sk = psock->sk;
-+	int err;
++abort_with_gve_init:
++	gve_teardown_priv_resources(priv);
++
+ abort_with_wq:
+ 	destroy_workqueue(priv->gve_wq);
  
- 	if (unlikely(!msg))
- 		return -EAGAIN;
- 	sk_msg_init(msg);
- 	skb_set_owner_r(skb, sk);
--	return sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
-+	err = sk_psock_skb_ingress_enqueue(skb, psock, sk, msg);
-+	if (err < 0)
-+		kfree(msg);
-+	return err;
- }
- 
- static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
 -- 
 2.30.2
 
