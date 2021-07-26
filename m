@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE753D63F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8D13D63F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239523AbhGZPxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:53:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48992 "EHLO mail.kernel.org"
+        id S239545AbhGZPxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233729AbhGZPcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5016960F5B;
-        Mon, 26 Jul 2021 16:13:00 +0000 (UTC)
+        id S233604AbhGZPcf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 951D860F5A;
+        Mon, 26 Jul 2021 16:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315980;
-        bh=2P89fFdx1V14WzPrSpB0gkcu8Roho3sJZjYhuF89D8I=;
+        s=korg; t=1627315983;
+        bh=Z2Flz7LytWBwNdWFlecWBcQ52VDib5t2STC4uyvgY9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VjBDsKvAj6Xw7W4DLhcNDCnJ92DlObD5LhD3pp605ir15PmHQjuonFUXVXGw+ogb4
-         aasVpF4z7vxa/VGDqqspPAIcFUPzEQO6ICq10GbTkinjj7xTRfFrtQVUKUepi8IgMG
-         KDoB+t06frb7PdUH4iTzzuUE8aODUTVrCi7JALs0=
+        b=WlxT6wkd5WhUgr2As0cStPM/Mux4R6lNYxNDPGfqexYi2xOOLF9TkvKZfUcvDGVkl
+         tmwJekWncO/cRZeKlcXt89AObFumSb/PtsLjr0w6BsG+zNUmcAjW60uOw31du8gvmO
+         0VbfqU8OfPJbKlyDA7pxOM+VCaZnOktnwbIQOmOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>,
         Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 140/223] cifs: only write 64kb at a time when fallocating a small region of a file
-Date:   Mon, 26 Jul 2021 17:38:52 +0200
-Message-Id: <20210726153850.817887055@linuxfoundation.org>
+Subject: [PATCH 5.13 141/223] cifs: fix fallocate when trying to allocate a hole.
+Date:   Mon, 26 Jul 2021 17:38:53 +0200
+Message-Id: <20210726153850.850564047@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -43,66 +42,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 2485bd7557a7edb4520b4072af464f0a08c8efe0 ]
+[ Upstream commit 488968a8945c119859d91bb6a8dc13bf50002f15 ]
 
-We only allow sending single credit writes through the SMB2_write() synchronous
-api so split this into smaller chunks.
+Remove the conditional checking for out_data_len and skipping the fallocate
+if it is 0. This is wrong will actually change any legitimate the fallocate
+where the entire region is unallocated into a no-op.
+
+Additionally, before allocating the range, if FALLOC_FL_KEEP_SIZE is set then
+we need to clamp the length of the fallocate region as to not extend the size of the file.
 
 Fixes: 966a3cb7c7db ("cifs: improve fallocate emulation")
-
 Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reported-by: Namjae Jeon <namjae.jeon@samsung.com>
 Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2ops.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+ fs/cifs/smb2ops.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
 diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
-index 903de7449aa3..cc253bbff696 100644
+index cc253bbff696..64cad843ce72 100644
 --- a/fs/cifs/smb2ops.c
 +++ b/fs/cifs/smb2ops.c
-@@ -3613,7 +3613,7 @@ static int smb3_simple_fallocate_write_range(unsigned int xid,
- 					     char *buf)
- {
- 	struct cifs_io_parms io_parms = {0};
--	int nbytes;
-+	int rc, nbytes;
- 	struct kvec iov[2];
+@@ -3663,11 +3663,6 @@ static int smb3_simple_fallocate_range(unsigned int xid,
+ 			(char **)&out_data, &out_data_len);
+ 	if (rc)
+ 		goto out;
+-	/*
+-	 * It is already all allocated
+-	 */
+-	if (out_data_len == 0)
+-		goto out;
  
- 	io_parms.netfid = cfile->fid.netfid;
-@@ -3621,13 +3621,25 @@ static int smb3_simple_fallocate_write_range(unsigned int xid,
- 	io_parms.tcon = tcon;
- 	io_parms.persistent_fid = cfile->fid.persistent_fid;
- 	io_parms.volatile_fid = cfile->fid.volatile_fid;
--	io_parms.offset = off;
--	io_parms.length = len;
+ 	buf = kzalloc(1024 * 1024, GFP_KERNEL);
+ 	if (buf == NULL) {
+@@ -3790,6 +3785,24 @@ static long smb3_simple_falloc(struct file *file, struct cifs_tcon *tcon,
+ 		goto out;
+ 	}
  
--	/* iov[0] is reserved for smb header */
--	iov[1].iov_base = buf;
--	iov[1].iov_len = io_parms.length;
--	return SMB2_write(xid, &io_parms, &nbytes, iov, 1);
-+	while (len) {
-+		io_parms.offset = off;
-+		io_parms.length = len;
-+		if (io_parms.length > SMB2_MAX_BUFFER_SIZE)
-+			io_parms.length = SMB2_MAX_BUFFER_SIZE;
-+		/* iov[0] is reserved for smb header */
-+		iov[1].iov_base = buf;
-+		iov[1].iov_len = io_parms.length;
-+		rc = SMB2_write(xid, &io_parms, &nbytes, iov, 1);
-+		if (rc)
-+			break;
-+		if (nbytes > len)
-+			return -EINVAL;
-+		buf += nbytes;
-+		off += nbytes;
-+		len -= nbytes;
++	if (keep_size == true) {
++		/*
++		 * We can not preallocate pages beyond the end of the file
++		 * in SMB2
++		 */
++		if (off >= i_size_read(inode)) {
++			rc = 0;
++			goto out;
++		}
++		/*
++		 * For fallocates that are partially beyond the end of file,
++		 * clamp len so we only fallocate up to the end of file.
++		 */
++		if (off + len > i_size_read(inode)) {
++			len = i_size_read(inode) - off;
++		}
 +	}
-+	return rc;
- }
- 
- static int smb3_simple_fallocate_range(unsigned int xid,
++
+ 	if ((keep_size == true) || (i_size_read(inode) >= off + len)) {
+ 		/*
+ 		 * At this point, we are trying to fallocate an internal
 -- 
 2.30.2
 
