@@ -2,142 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AE93D5153
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 04:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8959B3D5158
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 04:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhGZCAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 22:00:24 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15998 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhGZCAW (ORCPT
+        id S231579AbhGZCB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 22:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231491AbhGZCB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 22:00:22 -0400
-Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GY3wz5dMXzZrtD;
-        Mon, 26 Jul 2021 10:37:23 +0800 (CST)
-Received: from [10.40.166.221] (10.40.166.221) by
- dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 26 Jul 2021 10:40:50 +0800
-Message-ID: <60FE20AC.3050400@hisilicon.com>
-Date:   Mon, 26 Jul 2021 10:40:44 +0800
-From:   Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Sun, 25 Jul 2021 22:01:57 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18755C061757;
+        Sun, 25 Jul 2021 19:42:27 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id o185so9276190oih.13;
+        Sun, 25 Jul 2021 19:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ztv+vaeNFDWFSj27feVlmDxlPGi8rjcvHx09kepNWQs=;
+        b=WX1kg+xop5RCpBXFHd/MVWMNkNc+JntZGtx7xxx3BuRz+d/ZonJmvNi9ee9zyoNTbh
+         5B0KmFuoTXUs8bEptPWWgX1XV+YQJKj3MSAzmC4blje54QNe5jekUzFCXiCg9eG3vLpP
+         5VzoOnhTQva9WZsM2qbi5NBmAF/zBUcT35aT+aBuaxbLy0cPzFTH0JMJhSto2UtrU/Kf
+         YHy2jowYkjnTfU00IfyiB/0X2t/D1cbrh3ym/bLs0YUpTHZgh9puiyGW6SwpA2sDMFhG
+         FS1mUyY7l9bMBSB9Br+ssqoE4G++o3TxOV7eUqN2/gPStPAg42tr3oHmPkM/MpK0TzLl
+         sOhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ztv+vaeNFDWFSj27feVlmDxlPGi8rjcvHx09kepNWQs=;
+        b=hcyRf5AqZGWgLT6oRyg+Q1RttJe6M8KE2UJYrl+/HKOpDqw22IjHWgCZ8QV4yYmQlC
+         jEbdPxSA8nbfKCsIgOO3yG2vr+aSm8zjYRieeq8kjF7uKyCpAEnJB2EluOEqem1OYlb4
+         0jy+cbUesmrxKULKIdhllaBCX73EHCmI0w8LCihhyR3+xbt0onURDxazXTrCYPXw2SiC
+         n1Ava0bLq8pwkvQczssF4tmtMbnDV5AzpWbKDNmfF8FS1ovcpgjWe6hwAZC6hzDjT+M5
+         suivUVv/YaOVMUOIIqzaRNF/ugtDEmNrO/yGwbgNzNVkukHHc5Fefmja4WqOeUc8VYCb
+         yX5g==
+X-Gm-Message-State: AOAM532InHZJu/FAG7z04VW3DTMV3dDBd2oP0pEkwmP5z1QjWCcmFguu
+        DqZyB00RrfdH0h4uOrlNpeJbUByJ+Y1FqARkpmQ=
+X-Google-Smtp-Source: ABdhPJx3Uz5w/BUgxXpHkxpDqtXzcSycOHCp0aEZKLiuQYVgvi8noh6Sprs5LzJYrgAJAlHZsku6YdvzSBwZZul3yRE=
+X-Received: by 2002:aca:da02:: with SMTP id r2mr9376423oig.141.1627267346487;
+ Sun, 25 Jul 2021 19:42:26 -0700 (PDT)
 MIME-Version: 1.0
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "xuwei (O)" <xuwei5@huawei.com>
-Subject: Re: [PATCH 1/2] dts: hisilicon: add support for the PMIC found on
- Hikey 970
-References: <cover.1627116285.git.mchehab+huawei@kernel.org> <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>
-In-Reply-To: <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.166.221]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme755-chm.china.huawei.com (10.3.19.101)
-X-CFilter-Loop: Reflected
+References: <20210707094133.24597-1-kerneljasonxing@gmail.com>
+ <CAL+tcoCc+r96Bv8aDXTwY5h_OYTz8sHxdpPW7OuNfdDz+ssYYg@mail.gmail.com>
+ <03b846e9906d27ef7a6e84196a0840fdd54ca13d.camel@intel.com> <CAL+tcoAtFTmFtKR2QLY_UdQWkc9Avyw3ZtaA_cD_4cXAGXRBDQ@mail.gmail.com>
+In-Reply-To: <CAL+tcoAtFTmFtKR2QLY_UdQWkc9Avyw3ZtaA_cD_4cXAGXRBDQ@mail.gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Mon, 26 Jul 2021 10:41:50 +0800
+Message-ID: <CAL+tcoBk=s_QZv08wetLG8jeUCX-ECddOWeOgeLnPB_X41juvw@mail.gmail.com>
+Subject: Re: [PATCH net] i40e: introduce pseudo number of cpus for compatibility
+To:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "kafai@fb.com" <kafai@fb.com>, "hawk@kernel.org" <hawk@kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "xingwanli@kuaishou.com" <xingwanli@kuaishou.com>,
+        "lishujin@kuaishou.com" <lishujin@kuaishou.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+Hi Anthony L,
 
-On 2021/7/24 16:55, Mauro Carvalho Chehab wrote:
-> Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
-> on HiKey970 board.
-> 
-> As we now have support for it, change the fixed regulators
-> used by the SD I/O to use the proper LDO supplies.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
->  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 86 +++++++++++++++++++
->  2 files changed, 89 insertions(+), 19 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-> 
-> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-> index d8abf442ee7e..7c32f5fd5cc5 100644
-> --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-> +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-> @@ -12,6 +12,7 @@
->  
->  #include "hi3670.dtsi"
->  #include "hikey970-pinctrl.dtsi"
-> +#include "hikey970-pmic.dtsi"
->  
->  / {
->  	model = "HiKey970";
-> @@ -39,23 +40,6 @@ memory@0 {
->  		reg = <0x0 0x0 0x0 0x0>;
->  	};
->  
-> -	sd_1v8: regulator-1v8 {
-> -		compatible = "regulator-fixed";
-> -		regulator-name = "fixed-1.8V";
-> -		regulator-min-microvolt = <1800000>;
-> -		regulator-max-microvolt = <1800000>;
-> -		regulator-always-on;
-> -	};
-> -
-> -	sd_3v3: regulator-3v3 {
-> -		compatible = "regulator-fixed";
-> -		regulator-name = "fixed-3.3V";
-> -		regulator-min-microvolt = <3300000>;
-> -		regulator-max-microvolt = <3300000>;
-> -		regulator-boot-on;
-> -		regulator-always-on;
-> -	};
-> -
->  	wlan_en: wlan-en-1-8v {
->  		compatible = "regulator-fixed";
->  		regulator-name = "wlan-en-regulator";
-> @@ -402,8 +386,8 @@ &dwmmc1 {
->  	pinctrl-0 = <&sd_pmx_func
->  		     &sd_clk_cfg_func
->  		     &sd_cfg_func>;
-> -	vmmc-supply = <&sd_3v3>;
-> -	vqmmc-supply = <&sd_1v8>;
-> +	vmmc-supply = <&ldo16>;
-> +	vqmmc-supply = <&ldo9>;
->  	status = "okay";
->  };
->  
-> diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-> new file mode 100644
-> index 000000000000..970047f2dabd
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
-> @@ -0,0 +1,86 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
-> + *
-> + * Copyright (C) 2020, Huawei Tech. Co., Ltd.
-> + */
-> +
-> +#include <dt-bindings/spmi/spmi.h>
-> +
-> +/ {
-> +	spmi: spmi@fff24000 {
-> +		compatible = "hisilicon,kirin970-spmi-controller";
-> +		#address-cells = <2>;
-> +		#size-cells = <0>;
-> +		status = "okay";
-> +		reg = <0x0 0xfff24000 0x0 0x1000>;
-> +		hisilicon,spmi-channel = <2>;
-> +
-> +		pmic: pmic@0 {
-> +			compatible = "hisilicon,hi6421-spmi";
+Do you have any progress or any idea on the final patch? Or you could
+point out some more detailed method to rework the calculation of the
+queue pile.
 
-Should this be "hisilicon,hi6421-pmic" which is already in the binding document "mfd/hi6421.txt"?
-Others are OK to me.
-Thanks!
+I think it's critical and has an impact on all the old nics, which
+means thousands of machines would crash if xdp-drv program is loaded.
 
-Best Regards,
-Wei
+Thanks,
+Jason
+
+On Thu, Jul 15, 2021 at 10:33 AM Jason Xing <kerneljasonxing@gmail.com> wrote:
+>
+> On Thu, Jul 15, 2021 at 4:52 AM Nguyen, Anthony L
+> <anthony.l.nguyen@intel.com> wrote:
+> >
+> > On Fri, 2021-07-09 at 15:13 +0800, Jason Xing wrote:
+> > > Oh, one more thing I missed in the last email is that all the
+> > > failures
+> > > are happening on the combination of X722 10GbE and 1GbE. So the value
+> > > of @num_tx_qp  the driver fetches is 384 while the value is 768
+> > > without x722 1GbE.
+> > >
+> > > I get that information back here:
+> > > $ lspci | grep -i ether
+> > > 5a:00.0 Ethernet controller: Intel Corporation Ethernet Connection
+> > > X722 for 10GbE SFP+ (rev 09)
+> > > 5a:00.1 Ethernet controller: Intel Corporation Ethernet Connection
+> > > X722 for 10GbE SFP+ (rev 09)
+> > > 5a:00.2 Ethernet controller: Intel Corporation Ethernet Connection
+> > > X722 for 1GbE (rev 09)
+> > > 5a:00.3 Ethernet controller: Intel Corporation Ethernet Connection
+> > > X722 for 1GbE (rev 09)
+> > >
+> > > I know it's really stupid to control the number of online cpus, but
+> > > finding a good way only to limit the @alloc_queue_pairs is not easy
+> > > to
+> > > go. So could someone point out a better way to fix this issue and
+> > > take
+> > > care of some relatively old nics with the number of cpus increasing?
+> >
+> > Hi Jason,
+> >
+> > Sorry for the slow response; I was trying to talk to the i40e team
+> > about this.
+>
+> Thanks for your kind help really. It indeed has a big impact on thousands
+> of machines.
+>
+> >
+> > I agree, the limiting of number of online CPUs doesn't seem like a
+> > solution we want to pursue. The team is working on a patch that deals
+>
+> As I said above, if the machine is equipped with only 10GbE nic, the maximum
+> online cpus would be 256 and so on. For now, it depends on the num of cpus.
+>
+> > with the same, or similiar, issue; it is reworking the allocations of
+> > the queue pile. I'll make sure that they add you on the patch when it
+>
+> It's not easy to cover all kinds of cases. But I still believe it's
+> the only proper
+> way to fix the issue. Looking forward to your patch :)
+>
+> > is sent so that you can try this and see if it resolves your issue.
+> >
+>
+> Yeah, sure, I will double-check and then see if it's really fixed.
+>
+> Thanks,
+> Jason
+>
+> > Thanks,
+> > Tony
+> >
