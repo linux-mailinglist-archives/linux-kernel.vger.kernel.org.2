@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06083D60C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBAB3D6305
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237933AbhGZPYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:24:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54394 "EHLO mail.kernel.org"
+        id S238541AbhGZPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:43:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236860AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DD1060FE7;
-        Mon, 26 Jul 2021 15:53:40 +0000 (UTC)
+        id S237984AbhGZPYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:24:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B50CB60240;
+        Mon, 26 Jul 2021 16:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314820;
-        bh=/KF3dQWL13Gi/ZNEQMzF/mHt5mJRTOk5WiSPi3CVCpg=;
+        s=korg; t=1627315498;
+        bh=mnj6/nMHSkzSa5oVj/k2KRf5LjmK7tEvyMJxrO3dIGA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PbYI5HW9DwPpdg1OKNUjIgrngYTGlImAM8OV27T0yr+6kmov1l1R4fJR/rVyMTbIx
-         /pptZ9vzj/t10rsJ5tqPalFiTLMDw/p2wxIzN7IHXBI5qKUCJfE0zZuvKPm/1Qm40m
-         /yfYq6zVyId6Jp8c5Jz+Imx5/NfeK/VhBIon7Izk=
+        b=jJTRhJP4/Xel/xpnhVcndGK12xwip5o9fXHzRdGyIJ+zlHozQ6YCik/zxkNe8ni8G
+         JbIRGsorR8pOGPuFSfZY+5eX6sL6qbA4AKcLN+CQT1Erq/T+tZuc24U9Am77uO6r6i
+         hfSBte1QkhFiRqU9O2/0bVqnlFwla+DkmcAFp2MY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ian Ray <ian.ray@ge.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 102/120] USB: serial: cp210x: fix comments for GE CS1000
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.10 121/167] usb: hub: Disable USB 3 device initiated lpm if exit latency is too high
 Date:   Mon, 26 Jul 2021 17:39:14 +0200
-Message-Id: <20210726153835.706236846@linuxfoundation.org>
+Message-Id: <20210726153843.467430768@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Ray <ian.ray@ge.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit e9db418d4b828dd049caaf5ed65dc86f93bb1a0c upstream.
+commit 1b7f56fbc7a1b66967b6114d1b5f5a257c3abae6 upstream.
 
-Fix comments for GE CS1000 CP210x USB ID assignments.
+The device initiated link power management U1/U2 states should not be
+enabled in case the system exit latency plus one bus interval (125us) is
+greater than the shortest service interval of any periodic endpoint.
 
-Fixes: 42213a0190b5 ("USB: serial: cp210x: add some more GE USB IDs")
-Signed-off-by: Ian Ray <ian.ray@ge.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+This is the case for both U1 and U2 sytstem exit latencies and link states.
+
+See USB 3.2 section 9.4.9 "Set Feature" for more details
+
+Note, before this patch the host and device initiated U1/U2 lpm states
+were both enabled with lpm. After this patch it's possible to end up with
+only host inititated U1/U2 lpm in case the exit latencies won't allow
+device initiated lpm.
+
+If this case we still want to set the udev->usb3_lpm_ux_enabled flag so
+that sysfs users can see the link may go to U1/U2.
+
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210715150122.1995966-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/cp210x.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/core/hub.c |   68 ++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 56 insertions(+), 12 deletions(-)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -203,8 +203,8 @@ static const struct usb_device_id id_tab
- 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
- 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
- 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
--	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
--	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
-+	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 M.2 Key E serial interface */
-+	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 Display serial interface */
- 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
- 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
- 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -4041,6 +4041,47 @@ static int usb_set_lpm_timeout(struct us
+ }
+ 
+ /*
++ * Don't allow device intiated U1/U2 if the system exit latency + one bus
++ * interval is greater than the minimum service interval of any active
++ * periodic endpoint. See USB 3.2 section 9.4.9
++ */
++static bool usb_device_may_initiate_lpm(struct usb_device *udev,
++					enum usb3_link_state state)
++{
++	unsigned int sel;		/* us */
++	int i, j;
++
++	if (state == USB3_LPM_U1)
++		sel = DIV_ROUND_UP(udev->u1_params.sel, 1000);
++	else if (state == USB3_LPM_U2)
++		sel = DIV_ROUND_UP(udev->u2_params.sel, 1000);
++	else
++		return false;
++
++	for (i = 0; i < udev->actconfig->desc.bNumInterfaces; i++) {
++		struct usb_interface *intf;
++		struct usb_endpoint_descriptor *desc;
++		unsigned int interval;
++
++		intf = udev->actconfig->interface[i];
++		if (!intf)
++			continue;
++
++		for (j = 0; j < intf->cur_altsetting->desc.bNumEndpoints; j++) {
++			desc = &intf->cur_altsetting->endpoint[j].desc;
++
++			if (usb_endpoint_xfer_int(desc) ||
++			    usb_endpoint_xfer_isoc(desc)) {
++				interval = (1 << (desc->bInterval - 1)) * 125;
++				if (sel + 125 > interval)
++					return false;
++			}
++		}
++	}
++	return true;
++}
++
++/*
+  * Enable the hub-initiated U1/U2 idle timeouts, and enable device-initiated
+  * U1/U2 entry.
+  *
+@@ -4112,20 +4153,23 @@ static void usb_enable_link_state(struct
+ 	 * U1/U2_ENABLE
+ 	 */
+ 	if (udev->actconfig &&
+-	    usb_set_device_initiated_lpm(udev, state, true) == 0) {
+-		if (state == USB3_LPM_U1)
+-			udev->usb3_lpm_u1_enabled = 1;
+-		else if (state == USB3_LPM_U2)
+-			udev->usb3_lpm_u2_enabled = 1;
+-	} else {
+-		/* Don't request U1/U2 entry if the device
+-		 * cannot transition to U1/U2.
+-		 */
+-		usb_set_lpm_timeout(udev, state, 0);
+-		hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
++	    usb_device_may_initiate_lpm(udev, state)) {
++		if (usb_set_device_initiated_lpm(udev, state, true)) {
++			/*
++			 * Request to enable device initiated U1/U2 failed,
++			 * better to turn off lpm in this case.
++			 */
++			usb_set_lpm_timeout(udev, state, 0);
++			hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
++			return;
++		}
+ 	}
+-}
+ 
++	if (state == USB3_LPM_U1)
++		udev->usb3_lpm_u1_enabled = 1;
++	else if (state == USB3_LPM_U2)
++		udev->usb3_lpm_u2_enabled = 1;
++}
+ /*
+  * Disable the hub-initiated U1/U2 idle timeouts, and disable device-initiated
+  * U1/U2 entry.
 
 
