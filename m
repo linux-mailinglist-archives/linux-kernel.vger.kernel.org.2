@@ -2,191 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026E73D667D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADC33D6682
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbhGZR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233185AbhGZR1o (ORCPT
+        id S232955AbhGZR2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:28:23 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:53146 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231844AbhGZR2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:27:44 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B44C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:08:13 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id h14so4188115wrx.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:08:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Tsf0a3AvWRqDTexWqFdji1NJV723gxbeeO4aZ8esbCY=;
-        b=RTUIlaJd4QwYbQl4SR4G4iWzZaARC/TbgYp2m3JhQtmYj+XpArOCEAPcvyzDO1ureA
-         gL1lVGk5nKiDBmEgTla7ZWYJXKFyzuze3ywPj2vHg32PAEtBndmi8gC+2Ylpw/vaGA4U
-         QOGnE3lpyx1J1Pv/TYbMno0MADcbcQexm7BFYZhtD6KQpcbUuq06MOIEPGPNJp/1RMWa
-         igIfEgdjeI6uPDMdP7OSV6ygPjSjtE3U0ek06NlBsk72FR8hNf0KdQh99aYjF1dIvpz/
-         yHZEaOzeZSXnaWzDr3zDt3GbInARcgrIyRnEP8ue6etRxwhc6ku6RReP7BvVbscDvBF3
-         D5qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Tsf0a3AvWRqDTexWqFdji1NJV723gxbeeO4aZ8esbCY=;
-        b=JFORoyXCPuI4B8Jdco8T+C1TF56LAEgkwv4ad6nZw6umS5kmL0RwkrSgE1I5x+ogex
-         Gp5RGgc5lnBH91ldjfKJUNrVR9Kiu7YVg4OXFlsW8Qtcg3hKKLaiwYsE1l2edvbJBfTA
-         Xsg4srvEYl6tpCPVkw8Bw1b7lIZ9mFFUI9CKIfRoyOe5CsmSgPygl8q2Nwne9JfIt2xp
-         UG+1sg5O02FpYEH9gZ1lv/sEYvWIHPkL3NllpHEcU8cy0stOHTIHpIs/nODnzAVm5NbL
-         RnDZIu13a167bTOC+Pe7TaZG8I6SYXPh2BqGDrQt/78q4kNFqvb1MGyrzWBdhpD5U/Fe
-         cz+Q==
-X-Gm-Message-State: AOAM532hKYDyJOAoxFtstzdgl3e9uZH/t4IUJdq0UKZysqszQMAPALuh
-        QPNloY4QPun/3BqWTzLUer6PP0BpCxw=
-X-Google-Smtp-Source: ABdhPJyh+hmqf/cFlwAMkqo7SDzKRv7gg6h/QOz8vezaua9C5i70oMg91SwQLqwHIelxvhtGTstIew==
-X-Received: by 2002:a5d:4d07:: with SMTP id z7mr21810782wrt.244.1627322891718;
-        Mon, 26 Jul 2021 11:08:11 -0700 (PDT)
-Received: from ?IPv6:2a02:8108:96c0:3b88::4bf9? ([2a02:8108:96c0:3b88::4bf9])
-        by smtp.gmail.com with ESMTPSA id p3sm211943wmp.25.2021.07.26.11.08.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 11:08:11 -0700 (PDT)
-Subject: Re: [PATCH] staging: rtl8188eu: remove braces from single line if
- blocks
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210726092129.30334-1-straube.linux@gmail.com>
- <a4eb0dea-a34b-8dd9-03c6-aa0d87e68986@lwfinger.net>
-From:   Michael Straube <straube.linux@gmail.com>
-Message-ID: <4c9c29c0-1cc8-d1fe-0057-3fcc28a9922b@gmail.com>
-Date:   Mon, 26 Jul 2021 20:07:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 26 Jul 2021 13:28:22 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 8688121F57;
+        Mon, 26 Jul 2021 18:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627322929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ooMmTsOY2gNSdfmmjqC+o292JgqAW44JXDUL2PUxUU=;
+        b=Y/f1xVuJXbK+9SbvAGZ9W03R/HJAPEpd1VRFTpT5+CHNgW8bhEugDtXKp722ApYTdOoUoD
+        f4BmZIsTGUTDII1LMuhWV4gy6dtwGggrYn7RWY2gs+zpbE5rWE9nXaNIK2eWsT8Z8tSVJS
+        Lwv+13u68aZExOA69dKOyEKm4FgY6Rs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627322929;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ooMmTsOY2gNSdfmmjqC+o292JgqAW44JXDUL2PUxUU=;
+        b=2y/yLCZEFwo052F8+K2ZLEK3WpSezqABSEfhXpne5+nh1n/pe5VI2TaPIsZ0EisAZZ0Tk4
+        YJ/Ug4L7m9+TIADA==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id 2EF7DA3B81;
+        Mon, 26 Jul 2021 18:08:49 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 064B31E3B13; Mon, 26 Jul 2021 20:08:48 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 20:08:48 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Andreas Gruenbacher <agruenba@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com
+Subject: Re: [PATCH v3 5/7] iomap: Support restarting direct I/O requests
+ after user copy failures
+Message-ID: <20210726180847.GO20621@quack2.suse.cz>
+References: <20210723205840.299280-1-agruenba@redhat.com>
+ <20210723205840.299280-6-agruenba@redhat.com>
+ <20210726171940.GM20621@quack2.suse.cz>
+ <CAHpGcMLtQ1=WOT1mTUS4=iWBwHLQ-EBzY=+XuSGJfu4gVPYTLw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a4eb0dea-a34b-8dd9-03c6-aa0d87e68986@lwfinger.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcMLtQ1=WOT1mTUS4=iWBwHLQ-EBzY=+XuSGJfu4gVPYTLw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 26-07-21 19:45:22, Andreas Gr�nbacher wrote:
+> Jan Kara <jack@suse.cz> schrieb am Mo., 26. Juli 2021, 19:21:
+> 
+> > On Fri 23-07-21 22:58:38, Andreas Gruenbacher wrote:
+> > > In __iomap_dio_rw, when iomap_apply returns an -EFAULT error, complete
+> > the
+> > > request synchronously and reset the iterator to the start position.  This
+> > > allows callers to deal with the failure and retry the operation.
+> > >
+> > > In gfs2, we need to disable page faults while we're holding glocks to
+> > prevent
+> > > deadlocks.  This patch is the minimum solution I could find to make
+> > > iomap_dio_rw work with page faults disabled.  It's still expensive
+> > because any
+> > > I/O that was carried out before hitting -EFAULT needs to be retried.
+> > >
+> > > A possible improvement would be to add an IOMAP_DIO_FAULT_RETRY or
+> > similar flag
+> > > that would allow iomap_dio_rw to return a short result when hitting
+> > -EFAULT.
+> > > Callers could then retry only the rest of the request after dealing with
+> > the
+> > > page fault.
+> > >
+> > > Asynchronous requests turn into synchronous requests up to the point of
+> > the
+> > > page fault in any case, but they could be retried asynchronously after
+> > dealing
+> > > with the page fault.  To make that work, the completion notification
+> > would have
+> > > to include the bytes read or written before the page fault(s) as well,
+> > and we'd
+> > > need an additional iomap_dio_rw argument for that.
+> > >
+> > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+> > > ---
+> > >  fs/iomap/direct-io.c | 9 +++++++++
+> > >  1 file changed, 9 insertions(+)
+> > >
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index cc0b4bc8861b..b0a494211bb4 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -561,6 +561,15 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter
+> > *iter,
+> > >               ret = iomap_apply(inode, pos, count, iomap_flags, ops, dio,
+> > >                               iomap_dio_actor);
+> > >               if (ret <= 0) {
+> > > +                     if (ret == -EFAULT) {
+> > > +                             /*
+> > > +                              * To allow retrying the request, fail
+> > > +                              * synchronously and reset the iterator.
+> > > +                              */
+> > > +                             wait_for_completion = true;
+> > > +                             iov_iter_revert(dio->submit.iter,
+> > dio->size);
+> > > +                     }
+> > > +
+> >
+> > Hum, OK, but this means that if userspace submits large enough write, GFS2
+> > will livelock trying to complete it? While other filesystems can just
+> > submit multiple smaller bios constructed in iomap_apply() (paging in
+> > different parts of the buffer) and thus complete the write?
+> >
+> 
+> No. First, this affects reads but not writes. We cannot just blindly repeat
+> writes; when a page fault occurs in the middle of a write, the result will
+> be a short write. For reads, the plan is to ads a flag to allow
+> iomap_dio_rw to return a partial result when a page fault occurs.
+> (Currently, it fails the entire request.) Then we can handle the page fault
+> and complete the rest of the request.
+> 
+> The changes needed for that are simple on the iomap side, but we need to go
+> through some gymnastics for handling the page fault without giving up the
+> glock in the non-contended case. There will still be the potential for
+> losing the lock and having to re-acquire it, in which case we'll actually
+> have to repeat the entire read.
 
+I've missed you've already sent out v4 (I'm catching up after vacation so
+my mailbox is a bit of a mess). What's in there addresses my objection.
+I'm sorry for the noise.
 
-Am 26.07.21 um 17:09 schrieb Larry Finger:
-> On 7/26/21 4:21 AM, Michael Straube wrote:
->> Remove braces from single line if blocks to clear checkpatch warnings.
->> WARNING: braces {} are not necessary for single statement blocks
->>
->> Signed-off-by: Michael Straube <straube.linux@gmail.com>
->> ---
->>   drivers/staging/rtl8188eu/core/rtw_cmd.c          | 3 +--
->>   drivers/staging/rtl8188eu/core/rtw_mlme.c         | 3 +--
->>   drivers/staging/rtl8188eu/core/rtw_xmit.c         | 3 +--
->>   drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c | 3 +--
->>   drivers/staging/rtl8188eu/hal/usb_halinit.c       | 6 ++----
->>   5 files changed, 6 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/staging/rtl8188eu/core/rtw_cmd.c 
->> b/drivers/staging/rtl8188eu/core/rtw_cmd.c
->> index eb89a52aa4e3..56ece839c9ca 100644
->> --- a/drivers/staging/rtl8188eu/core/rtw_cmd.c
->> +++ b/drivers/staging/rtl8188eu/core/rtw_cmd.c
->> @@ -1159,9 +1159,8 @@ void rtw_createbss_cmd_callback(struct adapter 
->> *padapter, struct cmd_obj *pcmd)
->>           psta = rtw_get_stainfo(&padapter->stapriv, 
->> pnetwork->MacAddress);
->>           if (!psta) {
->>               psta = rtw_alloc_stainfo(&padapter->stapriv, 
->> pnetwork->MacAddress);
->> -            if (!psta) {
->> +            if (!psta)
->>                   goto createbss_cmd_fail;
->> -            }
->>           }
->>           rtw_indicate_connect(padapter);
->> diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c 
->> b/drivers/staging/rtl8188eu/core/rtw_mlme.c
->> index 71d205f3d73d..0d334aba9a3f 100644
->> --- a/drivers/staging/rtl8188eu/core/rtw_mlme.c
->> +++ b/drivers/staging/rtl8188eu/core/rtw_mlme.c
->> @@ -953,9 +953,8 @@ void rtw_joinbss_event_prehandle(struct adapter 
->> *adapter, u8 *pbuf)
->>               }
->>               /* s4. indicate connect */
->> -            if (check_fwstate(pmlmepriv, WIFI_STATION_STATE)) {
->> +            if (check_fwstate(pmlmepriv, WIFI_STATION_STATE))
->>                   rtw_indicate_connect(adapter);
->> -            }
->>               /* s5. Cancel assoc_timer */
->>               del_timer_sync(&pmlmepriv->assoc_timer);
->> diff --git a/drivers/staging/rtl8188eu/core/rtw_xmit.c 
->> b/drivers/staging/rtl8188eu/core/rtw_xmit.c
->> index d5fc59417ec6..c77ebd18f40c 100644
->> --- a/drivers/staging/rtl8188eu/core/rtw_xmit.c
->> +++ b/drivers/staging/rtl8188eu/core/rtw_xmit.c
->> @@ -1124,9 +1124,8 @@ struct xmit_buf *rtw_alloc_xmitbuf(struct 
->> xmit_priv *pxmitpriv)
->>           list_del_init(&pxmitbuf->list);
->>           pxmitpriv->free_xmitbuf_cnt--;
->>           pxmitbuf->priv_data = NULL;
->> -        if (pxmitbuf->sctx) {
->> +        if (pxmitbuf->sctx)
->>               rtw_sctx_done_err(&pxmitbuf->sctx, 
->> RTW_SCTX_DONE_BUF_ALLOC);
->> -        }
->>       }
->>       spin_unlock_irqrestore(&pfree_xmitbuf_queue->lock, irql);
->> diff --git a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c 
->> b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
->> index 6cf87312bc36..a67615708745 100644
->> --- a/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
->> +++ b/drivers/staging/rtl8188eu/hal/rtl8188e_hal_init.c
->> @@ -510,7 +510,6 @@ void Hal_ReadThermalMeter_88E(struct adapter 
->> *Adapter, u8 *PROMContent, bool Aut
->>       else
->>           pHalData->EEPROMThermalMeter = EEPROM_Default_ThermalMeter_88E;
->> -    if (pHalData->EEPROMThermalMeter == 0xff || AutoloadFail) {
->> +    if (pHalData->EEPROMThermalMeter == 0xff || AutoloadFail)
->>           pHalData->EEPROMThermalMeter = EEPROM_Default_ThermalMeter_88E;
->> -    }
->>   }
->> diff --git a/drivers/staging/rtl8188eu/hal/usb_halinit.c 
->> b/drivers/staging/rtl8188eu/hal/usb_halinit.c
->> index 1d7d5037ce89..3e8f7315d377 100644
->> --- a/drivers/staging/rtl8188eu/hal/usb_halinit.c
->> +++ b/drivers/staging/rtl8188eu/hal/usb_halinit.c
->> @@ -641,9 +641,8 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
->>       }
->>       status = rtw_hal_power_on(Adapter);
->> -    if (status == _FAIL) {
->> +    if (status == _FAIL)
->>           goto exit;
->> -    }
->>       /*  Save target channel */
->>       haldata->CurrentChannel = 6;/* default set to 6 */
->> @@ -696,9 +695,8 @@ u32 rtl8188eu_hal_init(struct adapter *Adapter)
->>       _InitTxBufferBoundary(Adapter, txpktbuf_bndy);
->>       status =  InitLLTTable(Adapter, txpktbuf_bndy);
->> -    if (status == _FAIL) {
->> +    if (status == _FAIL)
->>           goto exit;
->> -    }
->>       /*  Get Rx PHY status in order to report RSSI and others. */
->>       _InitDriverInfoSize(Adapter, DRVINFO_SZ);
->>
-> 
-> Michael,
-> 
-> You might as well stop looking at drivers/staging/rtl8188eu. There is a 
-> pending patch that blows away that directory and replaces it with a new 
-> version from the GitHub repo. The new one will be in 
-> drivers/staging/r8188eu.
-> 
-> NACKed by Larry.Finger <Larry.Finger@lwfinger.net>
-> 
-> Larry
-> 
-
-Ah ok, thank you for the information.
-
-Michael
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
