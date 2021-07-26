@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751523D6216
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDF03D6338
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235468AbhGZPeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
+        id S239292AbhGZPpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236660AbhGZPTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4782A60F70;
-        Mon, 26 Jul 2021 15:59:51 +0000 (UTC)
+        id S231640AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:28:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC5160FEE;
+        Mon, 26 Jul 2021 16:07:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315191;
-        bh=AGq2x0t0KxaJNErco3NfpF3Q+7Djdn+ezKGvOUM6QRQ=;
+        s=korg; t=1627315623;
+        bh=PhzJGdhL7Hu80EXFKI9ArmLHQ6kkVInTkBciICfisWM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OjpQSD0+UhSVQ1v50xrtdBvr25eL87s8IvKT4cwCPl+aSRCJfB2w2VPaCMaOW3krB
-         OH7aaOLVFe5RHCTXQA2L4vKi4g89A30Sa78JL6DURJ8Y8QIvXgFRRKsU6CR0Q9iFV/
-         mdtrb3ZuGFWQqc85/VRxgqMCtjTFUyARnpzv2qbs=
+        b=BlHex9ybGTW+fixCFklcbDs6BhfAx0OJpjJVyPkvl525ZLPpY3ulFp64F+9x+SCAf
+         U0rdFzou0aZIidp0Pfxe4MjUY9UrT5dGn94arPPJm/Qlrj5+zyupvId6HDOZHlbHUG
+         d1ORh5kHaSydsMzW6EH+T2VvRvdkJgWdli9jDdJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Qiang Liu <cyruscyliu@gmail.com>,
-        iLifetruth <yixiaonn@gmail.com>
-Subject: [PATCH 5.4 099/108] nds32: fix up stack guard gap
-Date:   Mon, 26 Jul 2021 17:39:40 +0200
-Message-Id: <20210726153834.856134642@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Dennis Camera <bugs+kernel.org@dtnr.ch>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 148/167] hugetlbfs: fix mount mode command line processing
+Date:   Mon, 26 Jul 2021 17:39:41 +0200
+Message-Id: <20210726153844.390421605@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-commit c453db6cd96418c79702eaf38259002755ab23ff upstream.
+commit e0f7e2b2f7e7864238a4eea05cc77ae1be2bf784 upstream.
 
-Commit 1be7107fbe18 ("mm: larger stack guard gap, between vmas") fixed
-up all architectures to deal with the stack guard gap.  But when nds32
-was added to the tree, it forgot to do the same thing.
+In commit 32021982a324 ("hugetlbfs: Convert to fs_context") processing
+of the mount mode string was changed from match_octal() to fsparam_u32.
 
-Resolve this by properly fixing up the nsd32's version of
-arch_get_unmapped_area()
+This changed existing behavior as match_octal does not require octal
+values to have a '0' prefix, but fsparam_u32 does.
 
-Cc: Nick Hu <nickhu@andestech.com>
-Cc: Greentime Hu <green.hu@gmail.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Qiang Liu <cyruscyliu@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Reported-by: iLifetruth <yixiaonn@gmail.com>
-Acked-by: Hugh Dickins <hughd@google.com>
-Link: https://lore.kernel.org/r/20210629104024.2293615-1-gregkh@linuxfoundation.org
+Use fsparam_u32oct which provides the same behavior as match_octal.
+
+Link: https://lkml.kernel.org/r/20210721183326.102716-1-mike.kravetz@oracle.com
+Fixes: 32021982a324 ("hugetlbfs: Convert to fs_context")
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reported-by: Dennis Camera <bugs+kernel.org@dtnr.ch>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nds32/mm/mmap.c |    2 +-
+ fs/hugetlbfs/inode.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/nds32/mm/mmap.c
-+++ b/arch/nds32/mm/mmap.c
-@@ -59,7 +59,7 @@ arch_get_unmapped_area(struct file *filp
- 
- 		vma = find_vma(mm, addr);
- 		if (TASK_SIZE - len >= addr &&
--		    (!vma || addr + len <= vma->vm_start))
-+		    (!vma || addr + len <= vm_start_gap(vma)))
- 			return addr;
- 	}
- 
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -77,7 +77,7 @@ enum hugetlb_param {
+ static const struct fs_parameter_spec hugetlb_fs_parameters[] = {
+ 	fsparam_u32   ("gid",		Opt_gid),
+ 	fsparam_string("min_size",	Opt_min_size),
+-	fsparam_u32   ("mode",		Opt_mode),
++	fsparam_u32oct("mode",		Opt_mode),
+ 	fsparam_string("nr_inodes",	Opt_nr_inodes),
+ 	fsparam_string("pagesize",	Opt_pagesize),
+ 	fsparam_string("size",		Opt_size),
 
 
