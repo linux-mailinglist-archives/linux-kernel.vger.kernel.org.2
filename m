@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07D03D63B1
+	by mail.lfdr.de (Postfix) with ESMTP id 82F5B3D63B0
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239133AbhGZPuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:50:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
+        id S239100AbhGZPue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:50:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236685AbhGZP3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236791AbhGZP3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:29:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1801461003;
-        Mon, 26 Jul 2021 16:07:24 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 183CE60FF3;
+        Mon, 26 Jul 2021 16:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315645;
-        bh=1g9MTTK+h5OIQISiYdvsw0QZ22Zm9H6iWdBYJgKa3mI=;
+        s=korg; t=1627315654;
+        bh=VGyoVYkRzIp27UeMvuqYUiTyiwLx8aO8kbggpO6HfO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i3CB93NvkxM/8XyUCjBzHnT58cJQPSmSI5Tyh66qkWFks3RRWFnflQ9R0VLVN3z+j
-         UImFFwjjwHAJEUzx4o3YVmA8vuWTVvdtegA6rwjf7YSQD9WDPiEgcCyVhiU79rcPaU
-         7WGo+aFRe+1NE+TvJl+zTY4rpoZrF11Voz7GvWlA=
+        b=vm0sqDM8aPZeOqP0CTijW9DVd1CUVKalWJBreT6nQI+vJvseJO4+tZYGbu/m+jguF
+         kmvF+kMivyV1C7sDD0UtH8vK4fMr9n+9GbrZF/xX+7P1Xqeg+XVqRVeakmFKz5cdOZ
+         H7qvUU8bfyjYnYKJd9vxGmJzVD+Id2WZ4jisul4A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Wang Hai <wanghai38@huawei.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 011/223] igb: Fix position of assignment to *ring
-Date:   Mon, 26 Jul 2021 17:36:43 +0200
-Message-Id: <20210726153846.623025076@linuxfoundation.org>
+Subject: [PATCH 5.13 014/223] bpf, samples: Fix xdpsock with -M parameter missing unload process
+Date:   Mon, 26 Jul 2021 17:36:46 +0200
+Message-Id: <20210726153846.727497218@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -43,44 +42,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 382a7c20d9253bcd5715789b8179528d0f3de72c ]
+[ Upstream commit 2620e92ae6ed83260eb46d214554cd308ee35d92 ]
 
-Assignment to *ring should be done after correctness check of the
-argument queue.
+Execute the following command and exit, then execute it again, the following
+error will be reported:
 
-Fixes: 91db364236c8 ("igb: Refactor igb_configure_cbs()")
-Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
-Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+  $ sudo ./samples/bpf/xdpsock -i ens4f2 -M
+  ^C
+  $ sudo ./samples/bpf/xdpsock -i ens4f2 -M
+  libbpf: elf: skipping unrecognized data section(16) .eh_frame
+  libbpf: elf: skipping relo section(17) .rel.eh_frame for section(16) .eh_frame
+  libbpf: Kernel error message: XDP program already attached
+  ERROR: link set xdp fd failed
+
+Commit c9d27c9e8dc7 ("samples: bpf: Do not unload prog within xdpsock") removed
+the unloading prog code because of the presence of bpf_link. This is fine if
+XDP_SHARED_UMEM is disabled, but if it is enabled, unloading the prog is still
+needed.
+
+Fixes: c9d27c9e8dc7 ("samples: bpf: Do not unload prog within xdpsock")
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Link: https://lore.kernel.org/bpf/20210628091815.2373487-1-wanghai38@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ samples/bpf/xdpsock_user.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 9f83ff55394c..b0e900d1eae2 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -1685,14 +1685,15 @@ static bool is_any_txtime_enabled(struct igb_adapter *adapter)
-  **/
- static void igb_config_tx_modes(struct igb_adapter *adapter, int queue)
+diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+index 53e300f860bb..33d0bdebbed8 100644
+--- a/samples/bpf/xdpsock_user.c
++++ b/samples/bpf/xdpsock_user.c
+@@ -96,6 +96,7 @@ static int opt_xsk_frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE;
+ static int opt_timeout = 1000;
+ static bool opt_need_wakeup = true;
+ static u32 opt_num_xsks = 1;
++static u32 prog_id;
+ static bool opt_busy_poll;
+ static bool opt_reduced_cap;
+ 
+@@ -461,6 +462,23 @@ static void *poller(void *arg)
+ 	return NULL;
+ }
+ 
++static void remove_xdp_program(void)
++{
++	u32 curr_prog_id = 0;
++
++	if (bpf_get_link_xdp_id(opt_ifindex, &curr_prog_id, opt_xdp_flags)) {
++		printf("bpf_get_link_xdp_id failed\n");
++		exit(EXIT_FAILURE);
++	}
++
++	if (prog_id == curr_prog_id)
++		bpf_set_link_xdp_fd(opt_ifindex, -1, opt_xdp_flags);
++	else if (!curr_prog_id)
++		printf("couldn't find a prog id on a given interface\n");
++	else
++		printf("program on interface changed, not removing\n");
++}
++
+ static void int_exit(int sig)
  {
--	struct igb_ring *ring = adapter->tx_ring[queue];
- 	struct net_device *netdev = adapter->netdev;
- 	struct e1000_hw *hw = &adapter->hw;
-+	struct igb_ring *ring;
- 	u32 tqavcc, tqavctrl;
- 	u16 value;
+ 	benchmark_done = true;
+@@ -471,6 +489,9 @@ static void __exit_with_error(int error, const char *file, const char *func,
+ {
+ 	fprintf(stderr, "%s:%s:%i: errno: %d/\"%s\"\n", file, func,
+ 		line, error, strerror(error));
++
++	if (opt_num_xsks > 1)
++		remove_xdp_program();
+ 	exit(EXIT_FAILURE);
+ }
  
- 	WARN_ON(hw->mac.type != e1000_i210);
- 	WARN_ON(queue < 0 || queue > 1);
-+	ring = adapter->tx_ring[queue];
+@@ -490,6 +511,9 @@ static void xdpsock_cleanup(void)
+ 		if (write(sock, &cmd, sizeof(int)) < 0)
+ 			exit_with_error(errno);
+ 	}
++
++	if (opt_num_xsks > 1)
++		remove_xdp_program();
+ }
  
- 	/* If any of the Qav features is enabled, configure queues as SR and
- 	 * with HIGH PRIO. If none is, then configure them with LOW PRIO and
+ static void swap_mac_addresses(void *data)
+@@ -857,6 +881,10 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem,
+ 	if (ret)
+ 		exit_with_error(-ret);
+ 
++	ret = bpf_get_link_xdp_id(opt_ifindex, &prog_id, opt_xdp_flags);
++	if (ret)
++		exit_with_error(-ret);
++
+ 	xsk->app_stats.rx_empty_polls = 0;
+ 	xsk->app_stats.fill_fail_polls = 0;
+ 	xsk->app_stats.copy_tx_sendtos = 0;
 -- 
 2.30.2
 
