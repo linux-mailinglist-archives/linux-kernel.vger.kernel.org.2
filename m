@@ -2,151 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA3F3D59DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8F03D59E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234202AbhGZMNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:13:49 -0400
-Received: from mga03.intel.com ([134.134.136.65]:11476 "EHLO mga03.intel.com"
+        id S234253AbhGZMOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:14:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234067AbhGZMNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:13:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10056"; a="212266438"
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="212266438"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 05:54:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="455760202"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 26 Jul 2021 05:54:13 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id A02D2173; Mon, 26 Jul 2021 15:54:41 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Cc:     Hoan Tran <hoan@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v1 4/4] gpio: dwapb: Get rid of legacy platform data
-Date:   Mon, 26 Jul 2021 15:54:36 +0300
-Message-Id: <20210726125436.58685-4-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
-References: <20210726125436.58685-1-andriy.shevchenko@linux.intel.com>
+        id S234072AbhGZMOu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:14:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC70B60F45;
+        Mon, 26 Jul 2021 12:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627304119;
+        bh=dF3bcYVZjrToiiFeynXBJaQUeLiCWZ2ycIVhBM/7cL4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h+GTM4yIgwK7NwN1rE9GFXzg5B63lX7ZvCdKFiw4ub1TGEwwiLNeqGtGV2tnQ7KkM
+         xWEXnsGhhvzbmFGi6mOiAeFjX7EYyo4jm9G4SzuOwtIH/8W64JDg4edfHxbUv8as5N
+         nUSBVAn2na5FuRFE9Iucu5R0JGbSq42bnECdBKyiCAA+TkIWG09OiarCd7CX0YaEcY
+         iW/xkwnGTXLWTSA2WKnMJT3bsJXRE9ifh+59xXlvzp1QiQU3kOcwqS8Kkp+9SV3gf9
+         5sO92cumcM3pg3bZa7JGLCYPIaGW1ckQ4xRWkt0NWVc6OOr3HJKhrsDZkKbE3OInFD
+         4RLQk7rjTRR8A==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [GIT PULL] posix-cpu-timers leftover overhead fixes
+Date:   Mon, 26 Jul 2021 14:55:07 +0200
+Message-Id: <20210726125513.271824-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Platform data is a legacy interface to supply device properties
-to the driver. In this case we don't have anymore in-kernel users
-for it. Just remove it for good.
+Thomas, Ingo,
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Please pull the timers/core branch that can be found at:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	timers/core
+
+HEAD: 63a17eea7d5516f9e927fdc52b45f1d040fdcf35
+
 ---
- drivers/gpio/gpio-dwapb.c                | 28 +++++++++++++++---------
- include/linux/platform_data/gpio-dwapb.h | 24 --------------------
- 2 files changed, 18 insertions(+), 34 deletions(-)
- delete mode 100644 include/linux/platform_data/gpio-dwapb.h
 
-diff --git a/drivers/gpio/gpio-dwapb.c b/drivers/gpio/gpio-dwapb.c
-index e3011d4e17b0..b9dd0ba812dc 100644
---- a/drivers/gpio/gpio-dwapb.c
-+++ b/drivers/gpio/gpio-dwapb.c
-@@ -16,7 +16,6 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/platform_data/gpio-dwapb.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
- #include <linux/reset.h>
-@@ -48,6 +47,7 @@
- 
- #define DWAPB_DRIVER_NAME	"gpio-dwapb"
- #define DWAPB_MAX_PORTS		4
-+#define DWAPB_MAX_GPIOS		32
- 
- #define GPIO_EXT_PORT_STRIDE	0x04 /* register stride 32 bits */
- #define GPIO_SWPORT_DR_STRIDE	0x0c /* register stride 3*32 bits */
-@@ -63,6 +63,19 @@
- 
- #define DWAPB_NR_CLOCKS		2
- 
-+struct dwapb_port_property {
-+	struct fwnode_handle *fwnode;
-+	unsigned int idx;
-+	unsigned int ngpio;
-+	unsigned int gpio_base;
-+	int irq[DWAPB_MAX_GPIOS];
-+};
-+
-+struct dwapb_platform_data {
-+	struct dwapb_port_property *properties;
-+	unsigned int nports;
-+};
-+
- struct dwapb_gpio;
- 
- #ifdef CONFIG_PM_SLEEP
-@@ -670,17 +683,12 @@ static int dwapb_gpio_probe(struct platform_device *pdev)
- 	unsigned int i;
- 	struct dwapb_gpio *gpio;
- 	int err;
-+	struct dwapb_platform_data *pdata;
- 	struct device *dev = &pdev->dev;
--	struct dwapb_platform_data *pdata = dev_get_platdata(dev);
--
--	if (!pdata) {
--		pdata = dwapb_gpio_get_pdata(dev);
--		if (IS_ERR(pdata))
--			return PTR_ERR(pdata);
--	}
- 
--	if (!pdata->nports)
--		return -ENODEV;
-+	pdata = dwapb_gpio_get_pdata(dev);
-+	if (IS_ERR(pdata))
-+		return PTR_ERR(pdata);
- 
- 	gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
- 	if (!gpio)
-diff --git a/include/linux/platform_data/gpio-dwapb.h b/include/linux/platform_data/gpio-dwapb.h
-deleted file mode 100644
-index 535e5ed549d9..000000000000
---- a/include/linux/platform_data/gpio-dwapb.h
-+++ /dev/null
-@@ -1,24 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- * Copyright(c) 2014 Intel Corporation.
-- */
--
--#ifndef GPIO_DW_APB_H
--#define GPIO_DW_APB_H
--
--#define DWAPB_MAX_GPIOS		32
--
--struct dwapb_port_property {
--	struct fwnode_handle *fwnode;
--	unsigned int	idx;
--	unsigned int	ngpio;
--	unsigned int	gpio_base;
--	int		irq[DWAPB_MAX_GPIOS];
--};
--
--struct dwapb_platform_data {
--	struct dwapb_port_property *properties;
--	unsigned int nports;
--};
--
--#endif
--- 
-2.30.2
+Those are not regression fixes since these bugs precede the git-era,
+therefore they are not carrying a stable tag.
 
+Several posix cpu timers events (setting, deletion, expiration) may end
+up leaving needless elapsing overhead after a timer has stopped or
+even after it has been deleted. Those overhead are:
+
+1) Costly process wide cputime accounting that rely on concurrent atomic
+addition during tick or even more frequent scheduler internal stat updates.
+
+2) Retained tick dependency on NOHZ_FULL configurations.
+
+Hopefully this series gets rid of all the possible culprits.
+
+Thanks,
+	Frederic
+---
+
+Frederic Weisbecker (6):
+      posix-cpu-timers: Assert task sighand is locked while starting cputime counter
+      posix-cpu-timers: Force next_expiration recalc after timer deletion
+      posix-cpu-timers: Force next expiration recalc after itimer reset
+      posix-cpu-timers: Remove confusing error code override
+      posix-cpu-timers: Consolidate timer base accessor
+      posix-cpu-timers: Recalc next expiration when timer_settime() ends up not queueing
+
+
+ include/linux/posix-timers.h   | 11 +++++-
+ include/linux/sched/signal.h   |  6 +++
+ kernel/signal.c                | 15 +++++++
+ kernel/time/posix-cpu-timers.c | 90 ++++++++++++++++++++++++++++++++++--------
+ 4 files changed, 103 insertions(+), 19 deletions(-)
