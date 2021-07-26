@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84F83D6234
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5003D6238
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhGZPfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:35:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33540 "EHLO mail.kernel.org"
+        id S232862AbhGZPfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:35:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236736AbhGZPUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:20:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A8B660F70;
-        Mon, 26 Jul 2021 16:00:44 +0000 (UTC)
+        id S237008AbhGZPUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:20:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB38760F6E;
+        Mon, 26 Jul 2021 16:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315244;
-        bh=n26fpZfp9ybgyEhQp5XoEfL8M4rYojvy2C9Df/O472I=;
+        s=korg; t=1627315247;
+        bh=M7uSeC+ZAIRAMcpCB2e08wR+uC2UeqVYLHBwEpY6vj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h4o8+V9ch/LxQ7eiChcOk0BdKZRURl47Hb23RX0OusR1cT6iV7FFl7LItt7lx1XcH
-         OZtfFCqb4GLZcj/W930c0IYZG79FPgjrXfxhp7E1TuB9UNcN2Uxnb0N2CxbfRXYZIB
-         oisbvtCCtipsGaG4udG/HITT3aZF/3PX5UGXxm/c=
+        b=LZPeVnLTec06T6wvLZA++cIhCyyZWSGwTr7HPTE5wtGSRlCv/kAgwIXt67ZpHz2ad
+         EnWTI/4LXB9xNbkki6jr5T4aUwYwn5Fd3euyfTsOFOoSmAJgTGpR9hfykvhCds6JGh
+         844bBWiPg9jSe7eXK426KeMzLelTrvUggAQRQ7P8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 020/167] bonding: Add struct bond_ipesc to manage SA
-Date:   Mon, 26 Jul 2021 17:37:33 +0200
-Message-Id: <20210726153840.045301852@linuxfoundation.org>
+Subject: [PATCH 5.10 021/167] bonding: fix suspicious RCU usage in bond_ipsec_offload_ok()
+Date:   Mon, 26 Jul 2021 17:37:34 +0200
+Message-Id: <20210726153840.081638074@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -42,296 +42,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Taehee Yoo <ap420073@gmail.com>
 
-[ Upstream commit 9a5605505d9c7dbfdb89cc29a8f5fc5cf9fd2334 ]
+[ Upstream commit 955b785ec6b3b2f9b91914d6eeac8ee66ee29239 ]
 
-bonding has been supporting ipsec offload.
-When SA is added, bonding just passes SA to its own active real interface.
-But it doesn't manage SA.
-So, when events(add/del real interface, active real interface change, etc)
-occur, bonding can't handle that well because It doesn't manage SA.
-So some problems(panic, UAF, refcnt leak)occur.
+To dereference bond->curr_active_slave, it uses rcu_dereference().
+But it and the caller doesn't acquire RCU so a warning occurs.
+So add rcu_read_lock().
 
-In order to make it stable, it should manage SA.
-That's the reason why struct bond_ipsec is added.
-When a new SA is added to bonding interface, it is stored in the
-bond_ipsec list. And the SA is passed to a current active real interface.
-If events occur, it uses bond_ipsec data to handle these events.
-bond->ipsec_list is protected by bond->ipsec_lock.
+Splat looks like:
+WARNING: suspicious RCU usage
+5.13.0-rc6+ #1179 Not tainted
+drivers/net/bonding/bond_main.c:571 suspicious
+rcu_dereference_check() usage!
 
-If a current active real interface is changed, the following logic works.
-1. delete all SAs from old active real interface
-2. Add all SAs to the new active real interface.
-3. If a new active real interface doesn't support ipsec offload or SA's
-option, it sets real_dev to NULL.
+other info that might help us debug this:
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by ping/974:
+ #0: ffff888109e7db70 (sk_lock-AF_INET){+.+.}-{0:0},
+at: raw_sendmsg+0x1303/0x2cb0
+
+stack backtrace:
+CPU: 2 PID: 974 Comm: ping Not tainted 5.13.0-rc6+ #1179
+Call Trace:
+ dump_stack+0xa4/0xe5
+ bond_ipsec_offload_ok+0x1f4/0x260 [bonding]
+ xfrm_output+0x179/0x890
+ xfrm4_output+0xfa/0x410
+ ? __xfrm4_output+0x4b0/0x4b0
+ ? __ip_make_skb+0xecc/0x2030
+ ? xfrm4_udp_encap_rcv+0x800/0x800
+ ? ip_local_out+0x21/0x3a0
+ ip_send_skb+0x37/0xa0
+ raw_sendmsg+0x1bfd/0x2cb0
 
 Fixes: 18cb261afd7b ("bonding: support hardware encryption offload to slaves")
 Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 139 +++++++++++++++++++++++++++-----
- include/net/bonding.h           |   9 ++-
- 2 files changed, 127 insertions(+), 21 deletions(-)
+ drivers/net/bonding/bond_main.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 3555798879f2..484784757073 100644
+index 484784757073..9aa2d79aa942 100644
 --- a/drivers/net/bonding/bond_main.c
 +++ b/drivers/net/bonding/bond_main.c
-@@ -385,6 +385,7 @@ static int bond_vlan_rx_kill_vid(struct net_device *bond_dev,
- static int bond_ipsec_add_sa(struct xfrm_state *xs)
- {
- 	struct net_device *bond_dev = xs->xso.dev;
-+	struct bond_ipsec *ipsec;
+@@ -557,24 +557,34 @@ static bool bond_ipsec_offload_ok(struct sk_buff *skb, struct xfrm_state *xs)
+ 	struct net_device *real_dev;
+ 	struct slave *curr_active;
  	struct bonding *bond;
- 	struct slave *slave;
- 	int err;
-@@ -400,9 +401,6 @@ static int bond_ipsec_add_sa(struct xfrm_state *xs)
- 		return -ENODEV;
- 	}
++	int err;
  
--	xs->xso.real_dev = slave->dev;
--	bond->xs = xs;
--
- 	if (!slave->dev->xfrmdev_ops ||
- 	    !slave->dev->xfrmdev_ops->xdo_dev_state_add ||
- 	    netif_is_bond_master(slave->dev)) {
-@@ -411,11 +409,63 @@ static int bond_ipsec_add_sa(struct xfrm_state *xs)
- 		return -EINVAL;
- 	}
- 
-+	ipsec = kmalloc(sizeof(*ipsec), GFP_ATOMIC);
-+	if (!ipsec) {
-+		rcu_read_unlock();
-+		return -ENOMEM;
-+	}
-+	xs->xso.real_dev = slave->dev;
-+
- 	err = slave->dev->xfrmdev_ops->xdo_dev_state_add(xs);
-+	if (!err) {
-+		ipsec->xs = xs;
-+		INIT_LIST_HEAD(&ipsec->list);
-+		spin_lock_bh(&bond->ipsec_lock);
-+		list_add(&ipsec->list, &bond->ipsec_list);
-+		spin_unlock_bh(&bond->ipsec_lock);
-+	} else {
-+		kfree(ipsec);
-+	}
- 	rcu_read_unlock();
- 	return err;
- }
- 
-+static void bond_ipsec_add_sa_all(struct bonding *bond)
-+{
-+	struct net_device *bond_dev = bond->dev;
-+	struct bond_ipsec *ipsec;
-+	struct slave *slave;
-+
+ 	bond = netdev_priv(bond_dev);
 +	rcu_read_lock();
-+	slave = rcu_dereference(bond->curr_active_slave);
-+	if (!slave)
-+		goto out;
-+
-+	if (!slave->dev->xfrmdev_ops ||
-+	    !slave->dev->xfrmdev_ops->xdo_dev_state_add ||
-+	    netif_is_bond_master(slave->dev)) {
-+		spin_lock_bh(&bond->ipsec_lock);
-+		if (!list_empty(&bond->ipsec_list))
-+			slave_warn(bond_dev, slave->dev,
-+				   "%s: no slave xdo_dev_state_add\n",
-+				   __func__);
-+		spin_unlock_bh(&bond->ipsec_lock);
+ 	curr_active = rcu_dereference(bond->curr_active_slave);
+ 	real_dev = curr_active->dev;
+ 
+-	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP)
+-		return true;
++	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP) {
++		err = true;
 +		goto out;
 +	}
-+
-+	spin_lock_bh(&bond->ipsec_lock);
-+	list_for_each_entry(ipsec, &bond->ipsec_list, list) {
-+		ipsec->xs->xso.real_dev = slave->dev;
-+		if (slave->dev->xfrmdev_ops->xdo_dev_state_add(ipsec->xs)) {
-+			slave_warn(bond_dev, slave->dev, "%s: failed to add SA\n", __func__);
-+			ipsec->xs->xso.real_dev = NULL;
-+		}
+ 
+-	if (!xs->xso.real_dev)
+-		return false;
++	if (!xs->xso.real_dev) {
++		err = false;
++		goto out;
 +	}
-+	spin_unlock_bh(&bond->ipsec_lock);
+ 
+ 	if (!real_dev->xfrmdev_ops ||
+ 	    !real_dev->xfrmdev_ops->xdo_dev_offload_ok ||
+ 	    netif_is_bond_master(real_dev)) {
+-		return false;
++		err = false;
++		goto out;
+ 	}
+ 
+-	return real_dev->xfrmdev_ops->xdo_dev_offload_ok(skb, xs);
++	err = real_dev->xfrmdev_ops->xdo_dev_offload_ok(skb, xs);
 +out:
 +	rcu_read_unlock();
-+}
-+
- /**
-  * bond_ipsec_del_sa - clear out this specific SA
-  * @xs: pointer to transformer state struct
-@@ -423,6 +473,7 @@ static int bond_ipsec_add_sa(struct xfrm_state *xs)
- static void bond_ipsec_del_sa(struct xfrm_state *xs)
- {
- 	struct net_device *bond_dev = xs->xso.dev;
-+	struct bond_ipsec *ipsec;
- 	struct bonding *bond;
- 	struct slave *slave;
- 
-@@ -436,7 +487,10 @@ static void bond_ipsec_del_sa(struct xfrm_state *xs)
- 	if (!slave)
- 		goto out;
- 
--	xs->xso.real_dev = slave->dev;
-+	if (!xs->xso.real_dev)
-+		goto out;
-+
-+	WARN_ON(xs->xso.real_dev != slave->dev);
- 
- 	if (!slave->dev->xfrmdev_ops ||
- 	    !slave->dev->xfrmdev_ops->xdo_dev_state_delete ||
-@@ -447,6 +501,48 @@ static void bond_ipsec_del_sa(struct xfrm_state *xs)
- 
- 	slave->dev->xfrmdev_ops->xdo_dev_state_delete(xs);
- out:
-+	spin_lock_bh(&bond->ipsec_lock);
-+	list_for_each_entry(ipsec, &bond->ipsec_list, list) {
-+		if (ipsec->xs == xs) {
-+			list_del(&ipsec->list);
-+			kfree(ipsec);
-+			break;
-+		}
-+	}
-+	spin_unlock_bh(&bond->ipsec_lock);
-+	rcu_read_unlock();
-+}
-+
-+static void bond_ipsec_del_sa_all(struct bonding *bond)
-+{
-+	struct net_device *bond_dev = bond->dev;
-+	struct bond_ipsec *ipsec;
-+	struct slave *slave;
-+
-+	rcu_read_lock();
-+	slave = rcu_dereference(bond->curr_active_slave);
-+	if (!slave) {
-+		rcu_read_unlock();
-+		return;
-+	}
-+
-+	spin_lock_bh(&bond->ipsec_lock);
-+	list_for_each_entry(ipsec, &bond->ipsec_list, list) {
-+		if (!ipsec->xs->xso.real_dev)
-+			continue;
-+
-+		if (!slave->dev->xfrmdev_ops ||
-+		    !slave->dev->xfrmdev_ops->xdo_dev_state_delete ||
-+		    netif_is_bond_master(slave->dev)) {
-+			slave_warn(bond_dev, slave->dev,
-+				   "%s: no slave xdo_dev_state_delete\n",
-+				   __func__);
-+		} else {
-+			slave->dev->xfrmdev_ops->xdo_dev_state_delete(ipsec->xs);
-+		}
-+		ipsec->xs->xso.real_dev = NULL;
-+	}
-+	spin_unlock_bh(&bond->ipsec_lock);
- 	rcu_read_unlock();
- }
- 
-@@ -458,22 +554,27 @@ out:
- static bool bond_ipsec_offload_ok(struct sk_buff *skb, struct xfrm_state *xs)
- {
- 	struct net_device *bond_dev = xs->xso.dev;
--	struct bonding *bond = netdev_priv(bond_dev);
--	struct slave *curr_active = rcu_dereference(bond->curr_active_slave);
--	struct net_device *slave_dev = curr_active->dev;
-+	struct net_device *real_dev;
-+	struct slave *curr_active;
-+	struct bonding *bond;
-+
-+	bond = netdev_priv(bond_dev);
-+	curr_active = rcu_dereference(bond->curr_active_slave);
-+	real_dev = curr_active->dev;
- 
- 	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP)
- 		return true;
- 
--	if (!slave_dev->xfrmdev_ops ||
--	    !slave_dev->xfrmdev_ops->xdo_dev_offload_ok ||
--	    netif_is_bond_master(slave_dev)) {
--		slave_warn(bond_dev, slave_dev, "%s: no slave xdo_dev_offload_ok\n", __func__);
-+	if (!xs->xso.real_dev)
-+		return false;
-+
-+	if (!real_dev->xfrmdev_ops ||
-+	    !real_dev->xfrmdev_ops->xdo_dev_offload_ok ||
-+	    netif_is_bond_master(real_dev)) {
- 		return false;
- 	}
- 
--	xs->xso.real_dev = slave_dev;
--	return slave_dev->xfrmdev_ops->xdo_dev_offload_ok(skb, xs);
-+	return real_dev->xfrmdev_ops->xdo_dev_offload_ok(skb, xs);
++	return err;
  }
  
  static const struct xfrmdev_ops bond_xfrmdev_ops = {
-@@ -990,8 +1091,7 @@ void bond_change_active_slave(struct bonding *bond, struct slave *new_active)
- 		return;
- 
- #ifdef CONFIG_XFRM_OFFLOAD
--	if (old_active && bond->xs)
--		bond_ipsec_del_sa(bond->xs);
-+	bond_ipsec_del_sa_all(bond);
- #endif /* CONFIG_XFRM_OFFLOAD */
- 
- 	if (new_active) {
-@@ -1067,10 +1167,7 @@ void bond_change_active_slave(struct bonding *bond, struct slave *new_active)
- 	}
- 
- #ifdef CONFIG_XFRM_OFFLOAD
--	if (new_active && bond->xs) {
--		xfrm_dev_state_flush(dev_net(bond->dev), bond->dev, true);
--		bond_ipsec_add_sa(bond->xs);
--	}
-+	bond_ipsec_add_sa_all(bond);
- #endif /* CONFIG_XFRM_OFFLOAD */
- 
- 	/* resend IGMP joins since active slave has changed or
-@@ -3309,6 +3406,7 @@ static int bond_master_netdev_event(unsigned long event,
- 		return bond_event_changename(event_bond);
- 	case NETDEV_UNREGISTER:
- 		bond_remove_proc_entry(event_bond);
-+		xfrm_dev_state_flush(dev_net(bond_dev), bond_dev, true);
- 		break;
- 	case NETDEV_REGISTER:
- 		bond_create_proc_entry(event_bond);
-@@ -4742,7 +4840,8 @@ void bond_setup(struct net_device *bond_dev)
- #ifdef CONFIG_XFRM_OFFLOAD
- 	/* set up xfrm device ops (only supported in active-backup right now) */
- 	bond_dev->xfrmdev_ops = &bond_xfrmdev_ops;
--	bond->xs = NULL;
-+	INIT_LIST_HEAD(&bond->ipsec_list);
-+	spin_lock_init(&bond->ipsec_lock);
- #endif /* CONFIG_XFRM_OFFLOAD */
- 
- 	/* don't acquire bond device's netif_tx_lock when transmitting */
-diff --git a/include/net/bonding.h b/include/net/bonding.h
-index adc3da776970..67d676059aa0 100644
---- a/include/net/bonding.h
-+++ b/include/net/bonding.h
-@@ -199,6 +199,11 @@ struct bond_up_slave {
-  */
- #define BOND_LINK_NOCHANGE -1
- 
-+struct bond_ipsec {
-+	struct list_head list;
-+	struct xfrm_state *xs;
-+};
-+
- /*
-  * Here are the locking policies for the two bonding locks:
-  * Get rcu_read_lock when reading or RTNL when writing slave list.
-@@ -247,7 +252,9 @@ struct bonding {
- #endif /* CONFIG_DEBUG_FS */
- 	struct rtnl_link_stats64 bond_stats;
- #ifdef CONFIG_XFRM_OFFLOAD
--	struct xfrm_state *xs;
-+	struct list_head ipsec_list;
-+	/* protecting ipsec_list */
-+	spinlock_t ipsec_lock;
- #endif /* CONFIG_XFRM_OFFLOAD */
- };
- 
 -- 
 2.30.2
 
