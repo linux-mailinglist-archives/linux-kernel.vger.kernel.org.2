@@ -2,178 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05CBC3D676D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34533D6774
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhGZSbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 14:31:36 -0400
-Received: from mail.efficios.com ([167.114.26.124]:53726 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbhGZSbg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 14:31:36 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id ED6F1338DCA;
-        Mon, 26 Jul 2021 15:12:03 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 0mQWDciyMZQ5; Mon, 26 Jul 2021 15:12:03 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4F763338B71;
-        Mon, 26 Jul 2021 15:12:03 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 4F763338B71
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627326723;
-        bh=+vzX220i5r7HS2zk0OpiF2RimMTFpUgBj6G7unT7ZaM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=WKNKRiolc/bgzYmLmu0fyirPDvLK66lTIw9fOFYdy82eSjESOSZ5DitAUPiLC3NTu
-         i3aGuy2UdtzCn9JdpuoHUypoe05s0LJnFyelYf7VRQsWHEFsK7bdUTmxxE1jobh1+j
-         3qj4+JaDl0vEJI/ACmdSxJpRAIisK1tH5bsIE/aPrOwxseWe6q/tP8kdGh5051hs18
-         f3A2RPoG3tEyNZRAkipuBqxpGktfHfVo/yxGZOxVQkk64bMadjvOrnVCcNzu6+KiNd
-         zMxzv4egMJu/H+8T6NpF7ej31AcC1oQudQz4ZF4J7orLycoce/tXh+o1OfV2QkGJKW
-         xvJKGdKlnEUAQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mAK1OlDEdnAX; Mon, 26 Jul 2021 15:12:03 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 3D01833901C;
-        Mon, 26 Jul 2021 15:12:03 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 15:12:03 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>
-Message-ID: <788674472.6819.1627326723120.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210726144903.7736b9ad@oasis.local.home>
-References: <20210722223320.53900ddc@rorschach.local.home> <715282075.6481.1627314401745.JavaMail.zimbra@efficios.com> <20210726125604.55bb6655@oasis.local.home> <682927571.6760.1627321158652.JavaMail.zimbra@efficios.com> <20210726144903.7736b9ad@oasis.local.home>
-Subject: Re: [PATCH] tracepoints: Update static_call before tp_funcs when
- adding a tracepoint
+        id S231707AbhGZSmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 14:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33268 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229593AbhGZSmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 14:42:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF3B660F6D;
+        Mon, 26 Jul 2021 19:22:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627327364;
+        bh=GPp3eOsZSKAJOPnpQxw6ScV5mylXbFIUk8/qVauEq04=;
+        h=Date:From:To:Cc:Subject:From;
+        b=sRQJKN5+ZZ7b4hR/K333Ba3M6ic9UDQDg2eQV5d6mQmKk3gmhDUR16tZJsYcpchyz
+         DEgFHNgFgrItMv6oJm6fa9yciQEgJwxL7/5z9lu75g9YgazCTu8oUp5oVfM1KIcxxd
+         WV1ortnk1ktp03LG9/503rtEoFKkLSQHIcZXt8pHbuVwuNtIrMCJ42L49yTFbp2nPY
+         JVKlhRvnTlBjDiZrHQ3NZgPzcOH7U3v6E1TXu7lCZ04s3Xw+NEss/RTPjrWPQ4BnSd
+         8iM4bHKaKx6ZkWf36Sz0vHEYfP2k45BRtEROXDy5F7WPuccgJormqbmwIUF7S1C9OL
+         uuDB4feGyFw+g==
+Date:   Mon, 26 Jul 2021 14:25:11 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] flow_dissector: Fix out-of-bounds warnings
+Message-ID: <20210726192511.GA23259@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: tracepoints: Update static_call before tp_funcs when adding a tracepoint
-Thread-Index: YPOTsHRFOYtQ43hidRc8zxkcwL/jEA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 26, 2021, at 2:49 PM, rostedt rostedt@goodmis.org wrote:
+Fix the following out-of-bounds warnings:
 
-> On Mon, 26 Jul 2021 13:39:18 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> ----- On Jul 26, 2021, at 12:56 PM, rostedt rostedt@goodmis.org wrote:
->> 
->> > On Mon, 26 Jul 2021 11:46:41 -0400 (EDT)
->> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
->> [...]
->> >   
+    net/core/flow_dissector.c: In function '__skb_flow_dissect':
+>> net/core/flow_dissector.c:1104:4: warning: 'memcpy' offset [24, 39] from the object at '<unknown>' is out of the bounds of referenced subobject 'saddr' with type 'struct in6_addr' at offset 8 [-Warray-bounds]
+     1104 |    memcpy(&key_addrs->v6addrs, &iph->saddr,
+          |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     1105 |           sizeof(key_addrs->v6addrs));
+          |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    In file included from include/linux/ipv6.h:5,
+                     from net/core/flow_dissector.c:6:
+    include/uapi/linux/ipv6.h:133:18: note: subobject 'saddr' declared here
+      133 |  struct in6_addr saddr;
+          |                  ^~~~~
+>> net/core/flow_dissector.c:1059:4: warning: 'memcpy' offset [16, 19] from the object at '<unknown>' is out of the bounds of referenced subobject 'saddr' with type 'unsigned int' at offset 12 [-Warray-bounds]
+     1059 |    memcpy(&key_addrs->v4addrs, &iph->saddr,
+          |    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     1060 |           sizeof(key_addrs->v4addrs));
+          |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    In file included from include/linux/ip.h:17,
+                     from net/core/flow_dissector.c:5:
+    include/uapi/linux/ip.h:103:9: note: subobject 'saddr' declared here
+      103 |  __be32 saddr;
+          |         ^~~~~
 
-[...]
+The problem is that the original code is trying to copy data into a
+couple of struct members adjacent to each other in a single call to
+memcpy().  So, the compiler legitimately complains about it. As these
+are just a couple of members, fix this by copying each one of them in
+separate calls to memcpy().
 
->> 
->> AFAIU, none of the synchronization mechanisms you refer to here (memory barrier,
->> IPIs..) will change the fact that this CPU may still be delayed across the
->> entire
->> 1->0->1 transition sequence, and may end up calling the new callback with the
->> old data. Unless an explicit RCU-sync is done.
-> 
-> OK. I see the issue you are saying. And this came from my assumption
-> that the tracepoint code did a synchronization when unregistering the
-> last callback. But of course it wont because that would make a lot of
-> back to back synchronizations of a large number of tracepoints being
-> unregistered at once.
-> 
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
 
-Something along the lines of the work approach you propose should work.
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/d5ae2e65-1f18-2577-246f-bada7eee6ccd@intel.com/
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ net/core/flow_dissector.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
->> 
->> >   
->> >> 
->> >> My third conclusion is that we'd need synchronize RCU whenever tp_funcs[0].data
->> >> changes for transitions 1->2, 2->1, and 1->2 because the priorities don't
->> >> guarantee
->> >> that the first callback stays in the first position, and we also need to rcu
->> >> sync
->> >> unconditionally on transition 1->0. We currently only have sync RCU on
->> >> transition
->> >> from 2->1 when tp_funcs[0].func changes, which is bogus in many ways.
->> > 
->> > Going from 1 to 2, there's no issue. We switch to the iterator, which
->> > is the old method anyway. It looks directly at the array and matches
->> > the data with the func for each element of that array, and the data
->> > read initially (before calling the iterator) is ignored.
->> 
->> This relies on ordering guarantees between RCU assign/dereference and
->> static_call
->> updates/call. It may well be the case, but I'm asking anyway.
->> 
->> Are we guaranteed of the following ordering ?
->> 
->> CPU A                             CPU B
->> 
->>                                   static_call_update()
-> 
-> The static_call_update() triggers an IPI on all CPUs that perform a full memory
-> barrier.
-> 
-> That is, nothing on any CPU will cross the static_call_update().
-> 
->> y = rcu_dereference(x)            rcu_assign_pointer(x, ...)
->> do_static_call(y)
->> 
->> That load of "x" should never happen after the CPU fetches the new static call
->> instruction.
-> 
-> The 'y' will always be the new static call (which is the iterator in
-> this case), and it doesn't matter which x it read, because the iterator
-> will read the array just like it was done without static calls.
-
-Here by "y" I mean the pointer loaded by rcu_dereference, which is then passed to the
-call. I do not mean the call per se.
-
-I suspect there is something like a control dependency between loading "x" through
-rcu_dereference and passing the loaded pointer as argument to the static call (and
-the instruction fetch of the static call). But I don't recall reading any documentation
-of this specific ordering.
-
-> 
->> 
->> Also, I suspect that transition 2->1 needs an unconditional rcu-sync because you
->> may have a sequence of 3->2->1 (or 1->2->1) where the element 0 data is
->> unchanged
->> between 2->1, but was changed from 3->2 (or from 1->2), which may be observed by
->> the
->> static call.
-> 
-> 
-> I'll agree that we need to add synchronization between 1->0->1, but you
-> have not convinced me on this second part.
-
-In addition to 1->0->1, there are actually 2 other scenarios here:
-
-Transition 1->2 to which the ordering question between RCU and static call is
-related.
-
-Transition 2->1 would need an unconditional rcu-sync, because of transitions
-3->2->1 and 1->2->1 which can lead the static call to observe wrong data if the
-rcu_dereference happens when there are e.g. 3 callbacks registered, and then the
-static call to the function (single callback) is called on the 3-callbacks array.
-
-Thanks,
-
-Mathieu
-
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 2aadbfc5193b..39d7be03e568 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -1056,8 +1056,10 @@ bool __skb_flow_dissect(const struct net *net,
+ 							      FLOW_DISSECTOR_KEY_IPV4_ADDRS,
+ 							      target_container);
+ 
+-			memcpy(&key_addrs->v4addrs, &iph->saddr,
+-			       sizeof(key_addrs->v4addrs));
++			memcpy(&key_addrs->v4addrs.src, &iph->saddr,
++			       sizeof(key_addrs->v4addrs.src));
++			memcpy(&key_addrs->v4addrs.dst, &iph->daddr,
++			       sizeof(key_addrs->v4addrs.dst));
+ 			key_control->addr_type = FLOW_DISSECTOR_KEY_IPV4_ADDRS;
+ 		}
+ 
+@@ -1101,8 +1103,10 @@ bool __skb_flow_dissect(const struct net *net,
+ 							      FLOW_DISSECTOR_KEY_IPV6_ADDRS,
+ 							      target_container);
+ 
+-			memcpy(&key_addrs->v6addrs, &iph->saddr,
+-			       sizeof(key_addrs->v6addrs));
++			memcpy(&key_addrs->v6addrs.src, &iph->saddr,
++			       sizeof(key_addrs->v6addrs.src));
++			memcpy(&key_addrs->v6addrs.dst, &iph->daddr,
++			       sizeof(key_addrs->v6addrs.dst));
+ 			key_control->addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
+ 		}
+ 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.27.0
+
