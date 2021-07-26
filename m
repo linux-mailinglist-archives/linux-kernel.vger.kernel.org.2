@@ -2,156 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457C73D5D08
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4C93D5E74
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235148AbhGZOui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234766AbhGZOuh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:50:37 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF15BC061764;
-        Mon, 26 Jul 2021 08:31:05 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id l4so11769082ljq.4;
-        Mon, 26 Jul 2021 08:31:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=O/A0BOjIm3z4R6uvHm/L/KPzVr+aE6zy1njqB67lKvI=;
-        b=matyVmWB9x6rQG2ibSGAIqTE9ZYLQxC9cofwJ/WSe5eMlOYJwApNSHUmN7ob/QmYzZ
-         Zf4L+DLxYLSi9IP1/fTFN4Fvq9Dj3oA+q0TtLk/nLV0AvbVnB+mAGIy+OHxU54Slrx+5
-         4ZYOazlPl8hjBfZssrtpKqBcCapV1xll7BQc1wop35z2WespNpYdz9TluRWJJjWzotWa
-         NGIj6PaQmywdRyZjC+FlH/VG49fqnXPxXBbRCqH01kHT06NBAA/wjodIybcv8agXZ1ZM
-         O0y9Nk6YQFO7ZlALrVxDcq5jw/mpNKc0h+VJCrVEMf6uPp4Piex61RFZDLuNp9x/EZGI
-         6T7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=O/A0BOjIm3z4R6uvHm/L/KPzVr+aE6zy1njqB67lKvI=;
-        b=RzY4rOqShocaHMvYtEVKBgL7k+B6EgODFGYHQetzfBnT3FxXXn6fNNDCSl3cP1TCGn
-         S+n6ygPrt9LP2myW6ehVBFlmiWVWdCMBgsBPQ4yLscuC4KPfYDrQsw4lgSYlS69xohRP
-         8i9tJbZpIOdmgaNi+Vii4AhLx98MqS0KAc4o3jKGPm3kxCPwkVKHjS5/joJd9iDc6Zcd
-         mv/EaIzta3AHXuGOxhRCyI8Bvc0jFfqdM4MbOIUFliAYAMwt/GTkBpgWf51hhZeIiL9R
-         GrdeD8S3Ew0oO3o2FAbMOH+gK+67KXTdYupLjzGvl454DYxkytfG7JIoXHwQZ1ngYKhC
-         PXHg==
-X-Gm-Message-State: AOAM5326vR7PTbyHVnbswpTvF7I65qJEbICIcZCm80pqsRB6WMqlmBf6
-        Orn5ZizhakEoNhtcGYBY93c=
-X-Google-Smtp-Source: ABdhPJwda2EQ55vKJ2lD86vBnBC1lEUgq1+UiH+MLlPORmQWoyKNNldrmwI2osCgdCO8uvMd8rCIGQ==
-X-Received: by 2002:a2e:a90b:: with SMTP id j11mr12663613ljq.338.1627313464111;
-        Mon, 26 Jul 2021 08:31:04 -0700 (PDT)
-Received: from localhost.localdomain ([46.61.204.59])
-        by smtp.gmail.com with ESMTPSA id m11sm2623lji.8.2021.07.26.08.31.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 08:31:03 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        socketcan@hartkopp.net, mailhol.vincent@wanadoo.fr,
-        Stefan.Maetje@esd.eu, matthias.fuchs@esd.eu
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 3/3] can: esd_usb2: fix memory leak
-Date:   Mon, 26 Jul 2021 18:31:01 +0300
-Message-Id: <a6ccf6adbcfeaad8c4ed24e94c50b2dd3db57c15.1627311383.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1627311383.git.paskripkin@gmail.com>
-References: <cover.1627311383.git.paskripkin@gmail.com>
+        id S236349AbhGZPH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:07:56 -0400
+Received: from mga11.intel.com ([192.55.52.93]:44731 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236179AbhGZPGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:06:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="209151258"
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
+   d="scan'208";a="209151258"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 08:46:05 -0700
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
+   d="scan'208";a="455807917"
+Received: from jwconner-mobl1.amr.corp.intel.com (HELO [10.209.169.36]) ([10.209.169.36])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 08:46:03 -0700
+Subject: Re: [PATCH] ASoC: Intel: sof_da7219_mx98360a: fail to initialize
+ soundcard
+To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
+Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        Zou Wei <zou_wei@huawei.com>,
+        Rander Wang <rander.wang@intel.com>
+References: <20210726094525.5748-1-brent.lu@intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <c878f42c-5f44-0e54-785b-36988cc2fe22@linux.intel.com>
+Date:   Mon, 26 Jul 2021 09:08:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210726094525.5748-1-brent.lu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In esd_usb2_setup_rx_urbs() MAX_RX_URBS coherent buffers are
-allocated and there is nothing, that frees them:
 
-1) In callback function the urb is resubmitted and that's all
-2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
-   is not set (see esd_usb2_setup_rx_urbs) and this flag cannot be used
-   with coherent buffers.
 
-So, all allocated buffers should be freed with usb_free_coherent()
-explicitly.
+On 7/26/21 4:45 AM, Brent Lu wrote:
+> The default codec for speaker amp's DAI Link is max98373 and will be
+> overwritten in probe function if the board id is sof_da7219_mx98360a.
+> However, the probe function does not do it because the board id is
+> changed in earlier commit.
+> 
+> Fixes: 1cc04d195dc2 ("ASoC: Intel: sof_da7219_max98373: shrink platform_id below 20 characters")
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
 
-Side note: This code looks like a copy-paste of other can drivers.
-The same patch was applied to mcba_usb driver and it works nice
-with real hardware. There is no change in functionality, only clean-up
-code for coherent buffers
+Nice catch indeed.
 
-Fixes: 96d8e90382dc ("can: Add driver for esd CAN-USB/2 device")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/can/usb/esd_usb2.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-diff --git a/drivers/net/can/usb/esd_usb2.c b/drivers/net/can/usb/esd_usb2.c
-index 65b58f8fc328..303560abe2b0 100644
---- a/drivers/net/can/usb/esd_usb2.c
-+++ b/drivers/net/can/usb/esd_usb2.c
-@@ -195,6 +195,8 @@ struct esd_usb2 {
- 	int net_count;
- 	u32 version;
- 	int rxinitdone;
-+	void *rxbuf[MAX_RX_URBS];
-+	dma_addr_t rxbuf_dma[MAX_RX_URBS];
- };
- 
- struct esd_usb2_net_priv {
-@@ -545,6 +547,7 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
- 	for (i = 0; i < MAX_RX_URBS; i++) {
- 		struct urb *urb = NULL;
- 		u8 *buf = NULL;
-+		dma_addr_t buf_dma;
- 
- 		/* create a URB, and a buffer for it */
- 		urb = usb_alloc_urb(0, GFP_KERNEL);
-@@ -554,7 +557,7 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
- 		}
- 
- 		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
--					 &urb->transfer_dma);
-+					 &buf_dma);
- 		if (!buf) {
- 			dev_warn(dev->udev->dev.parent,
- 				 "No memory left for USB buffer\n");
-@@ -562,6 +565,8 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
- 			goto freeurb;
- 		}
- 
-+		urb->transfer_dma = buf_dma;
-+
- 		usb_fill_bulk_urb(urb, dev->udev,
- 				  usb_rcvbulkpipe(dev->udev, 1),
- 				  buf, RX_BUFFER_SIZE,
-@@ -574,8 +579,12 @@ static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
- 			usb_unanchor_urb(urb);
- 			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
- 					  urb->transfer_dma);
-+			goto freeusrb;
- 		}
- 
-+		dev->rxbuf[i] = buf;
-+		dev->rxbuf_dma[i] = buf_dma;
-+
- freeurb:
- 		/* Drop reference, USB core will take care of freeing it */
- 		usb_free_urb(urb);
-@@ -663,6 +672,11 @@ static void unlink_all_urbs(struct esd_usb2 *dev)
- 	int i, j;
- 
- 	usb_kill_anchored_urbs(&dev->rx_submitted);
-+
-+	for (i = 0; i < MAX_RX_URBS; ++i)
-+		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
-+				  dev->rxbuf[i], dev->rxbuf_dma[i]);
-+
- 	for (i = 0; i < dev->net_count; i++) {
- 		priv = dev->nets[i];
- 		if (priv) {
--- 
-2.32.0
-
+> ---
+>  sound/soc/intel/boards/sof_da7219_max98373.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
+> index 896251d742fe..b7b3b0bf994a 100644
+> --- a/sound/soc/intel/boards/sof_da7219_max98373.c
+> +++ b/sound/soc/intel/boards/sof_da7219_max98373.c
+> @@ -404,7 +404,7 @@ static int audio_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	/* By default dais[0] is configured for max98373 */
+> -	if (!strcmp(pdev->name, "sof_da7219_max98360a")) {
+> +	if (!strcmp(pdev->name, "sof_da7219_mx98360a")) {
+>  		dais[0] = (struct snd_soc_dai_link) {
+>  			.name = "SSP1-Codec",
+>  			.id = 0,
+> 
