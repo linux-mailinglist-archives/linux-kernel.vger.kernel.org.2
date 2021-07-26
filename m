@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2FE3D5F98
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB51A3D5DBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:44:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236075AbhGZPSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:18:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50982 "EHLO mail.kernel.org"
+        id S235553AbhGZPDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:03:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237108AbhGZPKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C89660F02;
-        Mon, 26 Jul 2021 15:50:49 +0000 (UTC)
+        id S235609AbhGZPCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C131760F38;
+        Mon, 26 Jul 2021 15:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314649;
-        bh=FctX7H7VqWKNSlxW9WhcSNyuayIZlEeSsd7gU/5of8g=;
+        s=korg; t=1627314185;
+        bh=iQS24E18hZinfgHG3dTAD3LHs9N7SvoFr1ocBqQI4Js=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OM/YcgB1mdxlvsxLW/pbPJ8Ao5quw2daNjYE7FPqCC1vKCFkNlfr+9xlt8x5Df35r
-         El8EDcFlcSDvOEZU6kbI0vF633s8XZ5YGkqOkMNIPSKRqPjWdLKwkmQUtUqt0HUT8w
-         zVFHfpiBWtmwG1al2xfljbrVpLBlmNpZhtkQxOCc=
+        b=cq0aRasBQJ61hJ7FkkOtyY387jHK4TaucYC544N521+8ZMl3i/wmQ11hBhAW2YTuL
+         XsdMSm54iBQluTHYmKDfazMLdHjxY0YPOqPYje0KnQadlDIOBbagr9V5Bz5PdC6ZTA
+         UoX/3yWzCt0l21LNeL4QvkykXMNVAv7NLnNmNwXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 043/120] net: qcom/emac: fix UAF in emac_remove
-Date:   Mon, 26 Jul 2021 17:38:15 +0200
-Message-Id: <20210726153833.776321471@linuxfoundation.org>
+        stable@vger.kernel.org, Elaine Zhang <zhangqing@rock-chips.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 02/60] ARM: dts: rockchip: Fix power-controller node names for rk3288
+Date:   Mon, 26 Jul 2021 17:38:16 +0200
+Message-Id: <20210726153824.948930306@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +42,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Elaine Zhang <zhangqing@rock-chips.com>
 
-commit ad297cd2db8953e2202970e9504cab247b6c7cb4 upstream.
+[ Upstream commit 970cdc53cb1afa73602028c103dbfb6a230080be ]
 
-adpt is netdev private data and it cannot be
-used after free_netdev() call. Using adpt after free_netdev()
-can cause UAF bug. Fix it by moving free_netdev() at the end of the
-function.
+Use more generic names (as recommended in the device tree specification
+or the binding documentation)
 
-Fixes: 54e19bc74f33 ("net: qcom/emac: do not use devm on internal phy pdev")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Link: https://lore.kernel.org/r/20210417112952.8516-4-jbx6244@gmail.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qualcomm/emac/emac.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/rk3288.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/qualcomm/emac/emac.c
-+++ b/drivers/net/ethernet/qualcomm/emac/emac.c
-@@ -759,12 +759,13 @@ static int emac_remove(struct platform_d
- 
- 	put_device(&adpt->phydev->mdio.dev);
- 	mdiobus_unregister(adpt->mii_bus);
--	free_netdev(netdev);
- 
- 	if (adpt->phy.digital)
- 		iounmap(adpt->phy.digital);
- 	iounmap(adpt->phy.base);
- 
-+	free_netdev(netdev);
-+
- 	return 0;
- }
- 
+diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
+index 09e7898ffb6b..7b727d738b69 100644
+--- a/arch/arm/boot/dts/rk3288.dtsi
++++ b/arch/arm/boot/dts/rk3288.dtsi
+@@ -735,7 +735,7 @@
+ 			 *	*_HDMI		HDMI
+ 			 *	*_MIPI_*	MIPI
+ 			 */
+-			pd_vio@RK3288_PD_VIO {
++			power-domain@RK3288_PD_VIO {
+ 				reg = <RK3288_PD_VIO>;
+ 				clocks = <&cru ACLK_IEP>,
+ 					 <&cru ACLK_ISP>,
+@@ -768,7 +768,7 @@
+ 			 * Note: The following 3 are HEVC(H.265) clocks,
+ 			 * and on the ACLK_HEVC_NIU (NOC).
+ 			 */
+-			pd_hevc@RK3288_PD_HEVC {
++			power-domain@RK3288_PD_HEVC {
+ 				reg = <RK3288_PD_HEVC>;
+ 				clocks = <&cru ACLK_HEVC>,
+ 					 <&cru SCLK_HEVC_CABAC>,
+@@ -780,7 +780,7 @@
+ 			 * (video endecoder & decoder) clocks that on the
+ 			 * ACLK_VCODEC_NIU and HCLK_VCODEC_NIU (NOC).
+ 			 */
+-			pd_video@RK3288_PD_VIDEO {
++			power-domain@RK3288_PD_VIDEO {
+ 				reg = <RK3288_PD_VIDEO>;
+ 				clocks = <&cru ACLK_VCODEC>,
+ 					 <&cru HCLK_VCODEC>;
+@@ -790,7 +790,7 @@
+ 			 * Note: ACLK_GPU is the GPU clock,
+ 			 * and on the ACLK_GPU_NIU (NOC).
+ 			 */
+-			pd_gpu@RK3288_PD_GPU {
++			power-domain@RK3288_PD_GPU {
+ 				reg = <RK3288_PD_GPU>;
+ 				clocks = <&cru ACLK_GPU>;
+ 			};
+-- 
+2.30.2
+
 
 
