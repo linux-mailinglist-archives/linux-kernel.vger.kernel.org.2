@@ -2,141 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1F23D65F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1CE3D6638
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhGZRA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:00:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229646AbhGZRA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:00:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E71F660F6C;
-        Mon, 26 Jul 2021 17:40:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627321254;
-        bh=r4zehfT85ltEor5F3Dr98zoMp3ICL3Y2HydcZKQboLk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uTLvus1ceKZtOlE+govp/T6+S9F8lO7yoRwSpZ1JnxIJr/C5XxRvZa+Aa5a8vBEMY
-         ALlTvi7y/pyGO7FGkTYEtcRtmcVHXXppkq5TPAW6GC93uSv17e0CVS2uKxICNv7/Pb
-         ATQHy5O5MPtDfquDdje85rmcGU6bBJTq4t1NKeooNt6ooWynRK2FUMsPApSLRGMKMy
-         0YaNQy0cCsWK+rcOazZHb3ndqLDrYO7L06puZML/pzuU+biNQf9T782/CQQHE44Pvr
-         dtSdVscpabIPfUeh44Uz+lcQop+9/zb5+uqsqY6NAdp7+Ny8CNfN/n1a/EGLpcZ3zA
-         Iff3vU4eI7iGA==
-Date:   Mon, 26 Jul 2021 19:40:47 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Stephen Boyd <sboyd@kernel.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>, linux-pwm@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Ludovic Desroches <Ludovic.Desroches@microchip.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PULL] Add variants of devm_clk_get for prepared and enabled
- clocks enabled clocks
-Message-ID: <YP7zn8n8wpSW4Gek@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" <linux-rtc@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Nicolas Ferre <Nicolas.Ferre@microchip.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Ludovic Desroches <Ludovic.Desroches@microchip.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210722060654.nudpdtemosi64nlb@pengutronix.de>
- <YPkg0wtYIoHKpTUW@kunai>
- <20210722081817.2tsjzof4gvldq6ka@pengutronix.de>
- <YPlfcbkxiBmB+vw1@kunai>
- <CAHp75VfC=s12Unw3+Cn0ag71mM5i90=Jbwj4nYwB5cPKiUTRSA@mail.gmail.com>
- <20210723091331.wl33wtcvvnejuhau@pengutronix.de>
- <06e799be-b7c0-5b93-8586-678a449d2239@microchip.com>
- <CAHp75VeFXJ-0ak7=a0QCtKNdFpu98W6iJ2YuR4MpNx+U4rHe2A@mail.gmail.com>
- <YP6rdmi31FFrBMzE@ninjato>
- <CAHp75VeT-EX6U3+Y7dxoWWRZ7NqAEiNgPGW8YGVmWTuZKB4j+Q@mail.gmail.com>
+        id S231978AbhGZRVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:21:52 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:13741 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229658AbhGZRVu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 13:21:50 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q9XBFC001064;
+        Mon, 26 Jul 2021 13:02:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=KFhMj4zInmP23rRrrQYzay5UeaPGV8+kCYH0f0Qe5bY=;
+ b=edbAeJQMx+jQiZnOAOAy47jEZ21vkJAlQu9p4pZZrR0GWrcPFQJsxngxoyu8i2HCkMuK
+ suKjsRV7wX8Igv2LA4HPhD75MiSVYd0W3NoEBeINGOqxuhmtyJt+3Qa78Aay4noomWz4
+ c25qRu7LLzJHrNPv6LIUEk5oOsE/57gfeTX0V54hpKC33QSy6USgayaVjv+MhSpCFHCc
+ YuBLwyEyHVGx7HzLoMrMc104Q9j+SyEIUt2Moeued/Ih9DW45oJnkEOfQx/c0gVM489h
+ FtpsUFEQYb+GzdmYBjl0cfFwYBF52kDuFnmELdRxNQv5c7wvvPQ5tKdpeoXczCTmjH2a RQ== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 3a1th2rgpq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Jul 2021 13:02:01 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 26 Jul
+ 2021 18:46:58 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Mon, 26 Jul 2021 18:46:58 +0100
+Received: from vitaly-Inspiron-5415.ad.cirrus.com (unknown [198.90.238.32])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CEE7A45D;
+        Mon, 26 Jul 2021 17:46:57 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 00/27] ALSA: hda/cirrus: Split generic cirrus HDA codecs and CS8490 bridge into separate modules.
+Date:   Mon, 26 Jul 2021 18:46:13 +0100
+Message-ID: <20210726174640.6390-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/Ub7HcA0kcaU5RAp"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeT-EX6U3+Y7dxoWWRZ7NqAEiNgPGW8YGVmWTuZKB4j+Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 9QikoGclDdf5ouUEFOR8S_37rzz_57LQ
+X-Proofpoint-GUID: 9QikoGclDdf5ouUEFOR8S_37rzz_57LQ
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
+ suspectscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ spamscore=0 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107260105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series of patches splits generic cirrus HDA codecs and CS8490 bridge
+into separate modules, adds support for multiple companion codecs connected to
+CS8409, and also adds support for new DELL HW platform.
 
---/Ub7HcA0kcaU5RAp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+CS8409 part is not really a HDA codec, it is a HDA bridge where companion codecs
+(up to 16) can be attached. With growing number of supported configurations and 
+platforms, patch_cirrus is getting less and less transparent and maintainable.
+So, the logical step is to separate generic Cirrus HDA codecs support 
+and Cirrus HDA bridge support.
 
+Lots of improvements to existing functionality, code clean-up and refactoring,
+remove duplicated/redundant code, improve I2C functions etc.
 
-> AFAICT in practice it's a mandatory requirement in I=C2=B2C subsys (in the
-> past you hadn't accepted a patch from us without a tag from the
-> maintainer) which makes it equal to sending PR by a maintainer. PR
+Add support for new DELL HW platform with 2 CS42L42 codecs for front and rear jacks.
 
-Right. I require a tag from the driver maintainer.
+Lucas Tanure (12):
+  ALSA: hda/cirrus: Move CS8409 HDA bridge to separate module
+  ALSA: hda/cs8409: Move arrays of configuration to a new file
+  ALSA: hda/cs8409: Disable unsolicited response for the first boot
+  ALSA: hda/cs8409: Prevent I2C access during suspend time
+  ALSA: hda/cs8409: Generalize volume controls
+  ALSA: hda/cs8409: Dont disable I2C clock between consecutive accesses
+  ALSA: hda/cs8409: Avoid setting the same I2C address for every access
+  ALSA: hda/cs8409: Avoid re-setting the same page as the last access
+  ALSA: hda/cs8409: Support i2c bulk read/write functions
+  ALSA: hda/cs8409: Separate CS8409, CS42L42 and project functions
+  ALSA: hda/cs8409: Move codec properties to its own struct
+  ALSA: hda/cs8409: Add support for dolphin
 
-> makes less burden since subsys maintainer don't need to run many tools
-> or a tool many times to get the pile of patches.
+Stefan Binding (15):
+  ALSA: hda/cs8409: Use enums for register names and coefficients
+  ALSA: hda/cs8409: Mask all CS42L42 interrupts on initialization
+  ALSA: hda/cs8409: Reduce HS pops/clicks for Cyborg
+  ALSA: hda/cs8409: Disable unnecessary Ring Sense for
+    Cyborg/Warlock/Bullseye
+  ALSA: hda/cs8409: Disable unsolicited responses during suspend
+  ALSA: hda/cs8409: Mask CS42L42 wake events
+  ALSA: hda/cs8409: Simplify CS42L42 jack detect.
+  ALSA: hda/cs8409: Support multiple sub_codecs for Suspend/Resume/Unsol
+    events
+  ALSA: hda/cs8409: Add Support to disable jack type detection for
+    CS42L42
+  ALSA: hda/cs8409: Enable Full Scale Volume for Line Out Codec on
+    Dolphin
+  ALSA: hda/cs8409: Set fixed sample rate of 48kHz for CS42L42
+  ALSA: hda/cs8409: Use timeout rather than retries for I2C transaction
+    waits
+  ALSA: hda/cs8409: Remove unnecessary delays
+  ALSA: hda/cs8409: Follow correct CS42L42 power down sequence for
+    suspend
+  ALSA: hda/cs8409: Unmute/Mute codec when stream starts/stops
 
-I had driver maintainers who found it difficult to have a public tree to
-pull from or forgot how to send properly prepared pull requests. They
-were happy to send Rev-by, though. And I am happy with that, too. At
-least in I2C, picking up patches is small work compared to the actual
-review.
+ sound/pci/hda/Kconfig               |   11 +
+ sound/pci/hda/Makefile              |    2 +
+ sound/pci/hda/patch_cirrus.c        | 1074 -----------------------
+ sound/pci/hda/patch_cs8409-tables.c |  560 ++++++++++++
+ sound/pci/hda/patch_cs8409.c        | 1234 +++++++++++++++++++++++++++
+ sound/pci/hda/patch_cs8409.h        |  369 ++++++++
+ 6 files changed, 2176 insertions(+), 1074 deletions(-)
+ create mode 100644 sound/pci/hda/patch_cs8409-tables.c
+ create mode 100644 sound/pci/hda/patch_cs8409.c
+ create mode 100644 sound/pci/hda/patch_cs8409.h
 
+-- 
+2.25.1
 
---/Ub7HcA0kcaU5RAp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmD+85sACgkQFA3kzBSg
-KbYMFRAAoWozaOVEHjIi+cCiXLD3YtgYnrrT8mNSlpf11k8gAkfEERXC9nIXKJyG
-uAv36d98/mKGGJemeqDXKuPii7VOqx3FeIgsmpa41N++qUEvXrjKXwCnq85+x/B/
-eZxsJv82F0sxidnvujOrMDhitRMZNKQzZCmPaqhmnGRIWvaAwePF2ioMCEi+QxbN
-HqJTNL+7G48hoGZq9WG8EW73gMkn2SDqiJJdwGSQbPMJ0Jqt4oAclkWfeqLP4Rou
-StO5Pe1OSowMkIZJEOZAQvJwpcI3qruOxp9P2QYsm/7pYJrqMqGZCv/UD7uFb0UO
-G8M6t8RNXfDOqGCwkCHeskTDixT/74pcvzIPB5C17n4xAgt3P5XuwH0+Sg+D3fqW
-4Z2ig1HHc7dlTUYkTnRwECAkv1r7o98hpk3U0OT3FHJjsDpOuo0HUnH93HHI6spU
-KgwVO4EaGIhExfl25ryyzKnanlchfN1s5nzEIxSj1YwrWbgZqtUEeXuS17zQebQ/
-WA7uyvtGMkatdsFsYNdXT/U6aNbSSwz8Rnj8Ipz+FwpAqrr8rrLPcHD8hwEDnvtv
-/LpAc5ANbmxmlHZb/WAdjxf1LlJiamhr0lnnSfYVqnw2jWpxFy4hdaJP6/HG1N80
-e+jQNCQdbUPYUU2q53ZBj5SjHjAgTetpC3znuCYAAS7lY1Kk6iM=
-=42tk
------END PGP SIGNATURE-----
-
---/Ub7HcA0kcaU5RAp--
