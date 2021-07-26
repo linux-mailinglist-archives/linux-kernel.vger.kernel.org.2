@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA223D575F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9273D576F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhGZJm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 05:42:57 -0400
-Received: from relay.sw.ru ([185.231.240.75]:53124 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232450AbhGZJmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 05:42:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=LeiBgMdLdAKoG5QoVqntV3PGe2GjN3JZXuy4s2QzASE=; b=NsVv1g7zmwRc0wDYF
-        6w5B9v1wRacnAXFL1RjML0me3vGK20qWYKR5lDfma0Ca7IoqXgBOJI5X9sOZYtc3HDAjwbkeLmPWf
-        9uFmU+GVXjeVrPqrJCt47Gs1DocySVgdsCRCh5TyuKre81uWeIKuJG22z5aqqSe7WSJyzEOGHBuiI
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m7xlV-005FNh-By; Mon, 26 Jul 2021 13:23:17 +0300
-Subject: Re: [PATCH v5 02/16] memcg: enable accounting for IP address and
- routing-related objects
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CALvZod66KF-8xKB1dyY2twizDE=svE8iXT_nqvsrfWg1a92f4A@mail.gmail.com>
- <cover.1626688654.git.vvs@virtuozzo.com>
- <9123bca3-23bb-1361-c48f-e468c81ad4f6@virtuozzo.com>
- <CALvZod4HCRHpPJtGE=8tU1Yj=WsWHpocP0q0JU3r4F2fMmAw5w@mail.gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <08151b5b-f84a-aa32-82a6-0b6e94e63338@virtuozzo.com>
-Date:   Mon, 26 Jul 2021 13:23:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233101AbhGZJoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 05:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232900AbhGZJoT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 05:44:19 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3ECCC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 03:24:47 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j1so12244647pjv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 03:24:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pW0eGkvQ6eOZmaZcz9mU5uP8ebeBjXUC4Tbu5TtON8I=;
+        b=Pf/oHHWsyMOfHwINIhvXpjEhEwOeE9PeRie/VkzNGnEHP/KkrFliliN125xUn7Eyxf
+         fyL3spoGDZaJT1UU4bqal9TEsW5j/iEToyQqoiBm1SM/cIHbZxiwnG5kKoSivqkP3hbA
+         Kkqmey7iSxTWiVftZ89sZoYc3i4DRwUR+Qw9c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pW0eGkvQ6eOZmaZcz9mU5uP8ebeBjXUC4Tbu5TtON8I=;
+        b=LO+LptNnK0ahJqOifDKZ1ugrMb0ldPZAAyE83nF6fCxsTjPvwsp5+prSXuvzc8b4qR
+         z4abnaDWrFq4cxI+kNW/MNrjzlreQnrOTlXJbl6cj6T5xkA0+u1gaUlzx/B5/ubuSSUF
+         qUKQYVwrYF6eGOatMgIoPM2ZDpXWrK8YsjsREYp6vwT9Sako4w5ULboGbamptw3ejVtH
+         HK25hsZE0dGJM6WKhVMnJHVOAV71Y+gkCs6dkwyBgwe9FvOkS5IkdvzTBE6AhS6uQya8
+         uPJkaFlyulnvSbEa/w5M6kGOh5SEIMDC6myz7Q/4DB3wYekLp0TAorDKW2g/clt8jupb
+         hPyQ==
+X-Gm-Message-State: AOAM5319Cqt7KaEcYMULh5ouSjaxe2e2Ef66F3vropgmWIJirf/qZgWc
+        Zzy/y8Cx5NetAKofUdiOSmk+pA==
+X-Google-Smtp-Source: ABdhPJxIOaGVeR+yfNUna6akEQLE7MrP5EeQC6pHrJ4jPJeZoRuVEcOBBRAUmwhUFQUABa/w1ZkkOA==
+X-Received: by 2002:a17:90a:5141:: with SMTP id k1mr24638415pjm.185.1627295087208;
+        Mon, 26 Jul 2021 03:24:47 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:24d6:d449:2832:1652])
+        by smtp.gmail.com with ESMTPSA id z124sm3113262pgb.6.2021.07.26.03.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 03:24:46 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        eizan@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: mt8173: elm: Use aliases to mmc nodes
+Date:   Mon, 26 Jul 2021 18:24:42 +0800
+Message-Id: <20210726102442.2119877-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
 MIME-Version: 1.0
-In-Reply-To: <CALvZod4HCRHpPJtGE=8tU1Yj=WsWHpocP0q0JU3r4F2fMmAw5w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/20/21 10:26 PM, Shakeel Butt wrote:
-> On Mon, Jul 19, 2021 at 3:44 AM Vasily Averin <vvs@virtuozzo.com> wrote:
->>
->> An netadmin inside container can use 'ip a a' and 'ip r a'
->> to assign a large number of ipv4/ipv6 addresses and routing entries
->> and force kernel to allocate megabytes of unaccounted memory
->> for long-lived per-netdevice related kernel objects:
->> 'struct in_ifaddr', 'struct inet6_ifaddr', 'struct fib6_node',
->> 'struct rt6_info', 'struct fib_rules' and ip_fib caches.
->>
->> These objects can be manually removed, though usually they lives
->> in memory till destroy of its net namespace.
->>
->> It makes sense to account for them to restrict the host's memory
->> consumption from inside the memcg-limited container.
->>
->> One of such objects is the 'struct fib6_node' mostly allocated in
->> net/ipv6/route.c::__ip6_ins_rt() inside the lock_bh()/unlock_bh() section:
->>
->>  write_lock_bh(&table->tb6_lock);
->>  err = fib6_add(&table->tb6_root, rt, info, mxc);
->>  write_unlock_bh(&table->tb6_lock);
->>
->> In this case it is not enough to simply add SLAB_ACCOUNT to corresponding
->> kmem cache. The proper memory cgroup still cannot be found due to the
->> incorrect 'in_interrupt()' check used in memcg_kmem_bypass().
->>
->> Obsoleted in_interrupt() does not describe real execution context properly.
->> From include/linux/preempt.h:
->>
->>  The following macros are deprecated and should not be used in new code:
->>  in_interrupt() - We're in NMI,IRQ,SoftIRQ context or have BH disabled
->>
->> To verify the current execution context new macro should be used instead:
->>  in_task()      - We're in task context
->>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->> ---
->>  mm/memcontrol.c      | 2 +-
->>  net/core/fib_rules.c | 4 ++--
->>  net/ipv4/devinet.c   | 2 +-
->>  net/ipv4/fib_trie.c  | 4 ++--
->>  net/ipv6/addrconf.c  | 2 +-
->>  net/ipv6/ip6_fib.c   | 4 ++--
->>  net/ipv6/route.c     | 2 +-
->>  7 files changed, 10 insertions(+), 10 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index ae1f5d0..1bbf239 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -968,7 +968,7 @@ static __always_inline bool memcg_kmem_bypass(void)
->>                 return false;
->>
->>         /* Memcg to charge can't be determined. */
->> -       if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
->> +       if (!in_task() || !current->mm || (current->flags & PF_KTHREAD))
->>                 return true;
->>
->>         return false;
-> 
-> Can you please also change in_interrupt() in active_memcg() as well?
-> There are other unrelated in_interrupt() in that file but the one in
-> active_memcg() should be coupled with this change.
+Use aliases to mmc nodes so the partition name for eMMC and SD card will
+be consistent across boots.
 
-Could you please elaborate?
-From my point of view active_memcg is paired with set_active_memcg() and is not related to this case.
-active_memcg uses memcg that was set by set_active_memcg(), either from int_active_memcg per-cpu pointer
-or from current->active_memcg pointer.
-I'm agree, it in case of disabled BH it is incorrect to use int_active_memcg, 
-we still can use current->active_memcg. However it isn't a problem, 
-memcg will be properly provided in both cases.
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+v1->v2: skip unused mmc2.
+---
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-I think it's better to fix set_active_memcg/active_memcg by separate patch.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+index 21452c51a20a8..d5a2cad39c9c7 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi
+@@ -10,6 +10,12 @@
+ #include "mt8173.dtsi"
+ 
+ / {
++	aliases {
++		mmc0 = &mmc0;
++		mmc1 = &mmc1;
++		mmc2 = &mmc3;
++	};
++
+ 	memory@40000000 {
+ 		device_type = "memory";
+ 		reg = <0 0x40000000 0 0x80000000>;
+-- 
+2.32.0.432.gabb21c7263-goog
 
-Am I missed something perhaps?
-
-Thank you,
-	Vasily Averin
