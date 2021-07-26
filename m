@@ -2,256 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746953D6930
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BA93D6932
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhGZVWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:22:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231839AbhGZVWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:22:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC6A060F37;
-        Mon, 26 Jul 2021 22:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627336992;
-        bh=gZEtpD5ttAyQ52+nu82eAAbPdSUGMQ3iJJ5aYY960/c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=nnA/ezjPAOKv/UFOUMRwSMO3qufjx5+Wf9fN1clFcgLZb99yefbdce1x9WrUW79hS
-         48h1JibMF3fLPRR5e6zNxofoL6UWUgIT3RSaUw8Aq8fTyFV1q8gmWBnJL3s2jDGS29
-         oC/99jumoxT4n13QAEAM4pJmPvICFteMjEUnnQ2SCExpT1liu6NmtYvyB/ckeTA/wb
-         g5Xx2mASwoUR+YFu4TUMUsGhNKc/2ghEo8myS+FxNK//GTAo0X00SALHRrTljDPt5z
-         ip7RD4OLnjRitFtqnTwhjlf9dB6cZQyR7l2SBdIBbO1W2NBfbGa+UbQkyKFdkcf5wG
-         hSdUm+xbfG46Q==
-Date:   Mon, 26 Jul 2021 17:03:07 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Victor Ding <victording@google.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Subject: Re: [PATCH v2] PCI/ASPM: Disable ASPM when save/restore PCI state
-Message-ID: <20210726220307.GA647936@bjorn-Precision-5520>
-MIME-Version: 1.0
+        id S233348AbhGZVXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:23:05 -0400
+Received: from mail-sn1anam02on2058.outbound.protection.outlook.com ([40.107.96.58]:28142
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233365AbhGZVWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 17:22:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oAMLb4IZxZM3a0zl+KmwPbcyfpMpA+GkkJ7QdqcmZD6I6sV4a050Ql7GK6/cIU5jLaVGf7h+CYjlvIyUfFT8KvdefE2z679Y8koKghnlmOIsl7Hjo6FYpofJrSFNtTUg2gbdGocjRk6KsltGlWAVjEMc3zxI0AmEhwDSrjNzWtvwORIsx5qW4Xr7DEtZLjmGZh4Umjd+iEErX5kMc+lJ8vVGxscWWkbFDRzOdy2wFotX9r/bKkr6DYj+wiKN2LQi5VlR0JyYnNwsP7Nz//JerXxH1aphcszEkO3V50i8KzdOV3baXcd40YapSGygLT+RTpA3oXZDtX36RQlcMAqqwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DD/2Az1GE+ThOm42UMXZQvEq4ET56GIB4lAp2ZCtT2g=;
+ b=EJdkVdo2DzZvC7K2n+fW4STnOemS7Bum5RTUCUo7/tj7l++pcXdrUrmNFXWqw07jRaDGEsAaemEiLltVYhRioVO5xGeP3Z2lsFymGOc6MBNcKqCEq/Vjn8prNJbePAiplrCGo2NFHVUWjbEfbTgTmaM97ftSsJyqz7dcs0pcE/SG5jvXrsdmx2e2VR6T9kRtgJi/HUvCUWOpkE50vAQ2oTQuVx41zE2kOT0vzjBgLGUHUNyDGl3xCiais05IeDFSI0dQAmoPkMyOjLAhj/x1CvWobNiwC6HTFeumLnHNmXdHfGey+ACMKFehbwbbUzQaI9Q+8sa/5iBFZfa0Z3B82A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DD/2Az1GE+ThOm42UMXZQvEq4ET56GIB4lAp2ZCtT2g=;
+ b=pLtABB3za+xlT7Y2PDfF3tqbvzpRsV9ojNxubrFunJeFkLwjQa6ldalBCd1Ieygb0okMxtkUKquGrSs5C/9DhFFjfUDZ4vmSdtMbknFXdTq1Xf+gGdOkL1SJzntS1cBTJ5Lp/cTZvXydckgfzWdecx3C2LXnAS23UeNraD444ClUKlgGWknT/cZquWeoCJbNN6yW5j44IuAYHrDAMY+CY/oyS5Yi3TZ5ZhK2JsZCKXuKWTy1LMCamyqpj3O5myoG8q7hQGmCqmXNAkNiTPRUOGNKfFUFfmm1ZrDa60vMypa8DiHz2Adtm8PYDkzgEbG5ccjZvHFHV4W8VmFVvDJA0g==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5047.namprd12.prod.outlook.com (2603:10b6:208:31a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29; Mon, 26 Jul
+ 2021 22:03:20 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%4]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
+ 22:03:20 +0000
+Date:   Mon, 26 Jul 2021 19:03:17 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com
+Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
+ VFIO_GROUP_NOTIFY_SET_KVM notification
+Message-ID: <20210726220317.GA1721383@nvidia.com>
+References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
+ <20210719193503.793910-3-akrowiak@linux.ibm.com>
+ <20210721164550.5402fe1c.pasic@linux.ibm.com>
+ <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
+ <20210723162625.59cead27.pasic@linux.ibm.com>
+ <5380652f-e68f-bbd0-10c0-c7d541065843@linux.ibm.com>
+ <20210726223628.4d7759bf.pasic@linux.ibm.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311173433.GA2071075@bjorn-Precision-5520>
+In-Reply-To: <20210726223628.4d7759bf.pasic@linux.ibm.com>
+X-ClientProxiedBy: MN2PR15CA0062.namprd15.prod.outlook.com
+ (2603:10b6:208:237::31) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR15CA0062.namprd15.prod.outlook.com (2603:10b6:208:237::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Mon, 26 Jul 2021 22:03:18 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m88gv-008pgE-B0; Mon, 26 Jul 2021 19:03:17 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7c34db67-a77c-4d6c-2026-08d950812d28
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5047:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB50472C6AFB3C119505A0D07BC2E89@BL1PR12MB5047.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7y+hYUdvgGBc4XvSu5Y1E0x7QYoFCzA9LU1LqkX5GPdkyKw8eq6bi7vCESBRjcRJjrm8Fu9aYu+cJKtEbq56rGqlDght09iR9urodVFvlLSXWDTrAUWRCEh4MR3k256BRtMfZczAmTeSa3PaDZGz7PKo0ZHZNHP33XzRWvGAdBEp/M7lXO6x/9RGbtJtXwfh52borcTk1aRE6vudlFPwKxb55QxJy1q5D4x8Qm3ltjhsPVnEflxZxP3JHDd8SSyO1pgPKp6tlS3FxnjQrGegw9hoGHF+bgGqGwTbGL00MSbhPy59bCsQGTpLTfQ8KW5tYzuwPxE0lFuBrLfqjkmMLb3oxciQoDi32GcWhhFZw6cqu2LPqROvJTFhxg89w6BjPbLKj+3YDStYNDMcof9Fz8HPih1dlA3iffiKtHVAG0iwHJLmSdrijtveal3VTNLuO0cqfMmyN1PeWdBI31qY5/qkFZKAyAMmL2jS8SxJUdQDU0mRF8lWf1y/o+lux1bCG1p5q/zFvY5AtqaxTlX9XK2ifdMyomAe0+9BUNhRdLHnL652cVbZLq6xl0LTH/1+I9uClRsrcGwHodjXjPOnTP/RyXu4ga4QS4BlJCoRzhaG8DL60M7u4g2xf0Mqg65GS7YLWvIfDLRFksjAmTHo8w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(366004)(39860400002)(4744005)(4326008)(2616005)(7416002)(478600001)(8676002)(8936002)(5660300002)(86362001)(316002)(9746002)(1076003)(426003)(38100700002)(83380400001)(66476007)(66556008)(9786002)(66946007)(2906002)(26005)(6916009)(33656002)(186003)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?P8yD8bbFhqNIwmUE/db9j+yqye2Ht07RHV8icixVYhpWy7wnPyp4tb3dIUO7?=
+ =?us-ascii?Q?xREbSaif5GXq7wzpauRmZ0q7/uYgstu41LKJ/NtCg73wLwq55Hpz99PAuKAr?=
+ =?us-ascii?Q?hMaz/2wMUH/pYShyE8BH/yg4ZeLjM1l+cwm5lwT8+wrFxeKzQYRK4aXrkYnb?=
+ =?us-ascii?Q?ZZoWBCPvWljev5Vvkt7YXoM5ltz2QKYrIU83XAcQaClGJ0nJO75PkEkMc4EV?=
+ =?us-ascii?Q?nlgWZGFBQCHgYs9VYhTtb6GLnd4ZY1baW5Heooa0fVpxVK1rSDDSAqeYTfoh?=
+ =?us-ascii?Q?NrgiV++8CtHuxcMq7RBg4wJT1ELqxWs6yD3T1KwgYQgqgrxIbtwwZsInCH+h?=
+ =?us-ascii?Q?pTcuDZlx7uxP1Ta3KV7XLrfFMvrBR76+DXWvMydzLjxwse5jYQM0+dHq3fLI?=
+ =?us-ascii?Q?Soyr5jBjxDC7AewIjsFeU0HS3SNje+buYHGHysFiisGTNGHN4RQ/5pwodzyX?=
+ =?us-ascii?Q?ogF/Ql3Cyq8Zw/TrWrirtlwPr1kQE5UJuLdMLLUfptgpz0QLQHrzBEO4qE+f?=
+ =?us-ascii?Q?/1fdl83WdurgyHl5egJvx7PSOSNhDklTjyqc5gWKQN+ZU5CdBZ7otSqNwF9C?=
+ =?us-ascii?Q?qKMxad/zXUy/s/ZTB02S/he83JREYjTp7+o1wUzEhmErsqbz6Ut1sy6JTDxb?=
+ =?us-ascii?Q?wObIeaXLvnAhnaBRw1gHpTuhE5tGBrYiz4C4C036hhO6Y3fIbwWnB3QgfKz5?=
+ =?us-ascii?Q?ZrfpCTNiXWlNDJJEvj4U2m6yKDoKIUtK9tfisRUSeo/V1DxiyY56b4AmDfM3?=
+ =?us-ascii?Q?1uG/+1v7w/BR3oDdhaAm7faUPKecZG/eKLk2LbYI00LASrPSCbsn/1GmDl1R?=
+ =?us-ascii?Q?FdWwIZMS5SGDM1r1tCl/44skAQI6a8LqkRycuGzwFFl0/is6lyStyTUj5QXu?=
+ =?us-ascii?Q?WhKuN4ragnpkO4S6FuWgplzN0nE37weDSBe03IlZXORGzO33xqV1nM1w7EBC?=
+ =?us-ascii?Q?HmfCExrLCbtAvBVsfdnGq9SlIYsb200Gtlr6ZABr83ereGW6QRW55QYcAHQT?=
+ =?us-ascii?Q?v6srIZKnwcWIit/wdYiaRNuSKNAKqiFj4sHHNJDf1FDSaSVD3QleaWCo7zGZ?=
+ =?us-ascii?Q?ZhYokqqvliAUXwlnnnXj1RDBnhq5eGow03/wbdEXLSOrrhhqU4LnDsoNhNns?=
+ =?us-ascii?Q?BB/b4SBJ6Tl+sFOfJoEvO4+FmBFxLKqP93RmJfWTJ4SAZpzRw4rkfDV1wkC/?=
+ =?us-ascii?Q?Bt75UfSaf007jhLKYHYY3FEMwEkejxjh7kVGmUPwDNyl3I4Uc5CGD82NDtqb?=
+ =?us-ascii?Q?aJroSYAfVqHE9WAXU7YM/raO5H/KoihNC0s+I4YlpOWCyWrlYrKJ6JBpBiAl?=
+ =?us-ascii?Q?gu/UmLpc23NZAtSIqkXX2PjF?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c34db67-a77c-4d6c-2026-08d950812d28
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2021 22:03:19.1519
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JRNbGH3oDa1anxGHtv9tSYWlITlMdPv7xMQfy8LNJGNKvY+x1rOr8ejJAWPIPHbR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 11:34:33AM -0600, Bjorn Helgaas wrote:
-> On Thu, Jan 28, 2021 at 03:52:42PM +0000, Victor Ding wrote:
-> > Certain PCIe devices (e.g. GL9750) have high penalties (e.g. high Port
-> > T_POWER_ON) when exiting L1 but enter L1 aggressively. As a result,
-> > such devices enter and exit L1 frequently during pci_save_state and
-> > pci_restore_state; eventually causing poor suspend/resume performance.
-> > 
-> > Based on the observation that PCI accesses dominance pci_save_state/
-> > pci_restore_state plus these accesses are fairly close to each other, the
-> > actual time the device could stay in low power states is negligible.
-> > Therefore, the little power-saving benefit from ASPM during suspend/resume
-> > does not overweight the performance degradation caused by high L1 exit
-> > penalties.
-> > 
-> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211187
-> 
-> Thanks for this!
-> 
-> This device can tolerate unlimited delay for L1 exit (DevCtl Endpoint
-> L1 Acceptable Latency is unlimited) and it makes no guarantees about
-> how fast it can exit L1 (LnkCap L1 Exit Latency is also unlimited), so
-> I think there's basically no restriction on when it can enter ASPM
-> L1.0.
-> 
-> I have a hard time interpreting the L1.2 entry conditions in PCIe
-> r5.0, sec 5.5.1, but I can believe it enters L1.2 aggressively since
-> the device says it can tolerate any latencies.
-> 
-> If L1.2 exit takes 3100us, it could do ~60 L1 exits in 200ms.  I guess
-> config accesses and code execution can account for some of that, but
-> still seems like a lot of L1 entries/exits during suspend.  I wouldn't
-> think we would touch the device that much and that intermittently.
-> 
-> > Signed-off-by: Victor Ding <victording@google.com>
-> > 
-> > ---
-> > 
-> > Changes in v2:
-> > - Updated commit message to remove unnecessary information
-> > - Fixed a bug reading wrong register in pcie_save_aspm_control
-> > - Updated to reuse existing pcie_config_aspm_dev where possible
-> > - Fixed goto label style
-> > 
-> >  drivers/pci/pci.c       | 18 +++++++++++++++---
-> >  drivers/pci/pci.h       |  6 ++++++
-> >  drivers/pci/pcie/aspm.c | 27 +++++++++++++++++++++++++++
-> >  include/linux/pci.h     |  1 +
-> >  4 files changed, 49 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index 32011b7b4c04..9ea88953f90b 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -1542,6 +1542,10 @@ static void pci_restore_ltr_state(struct pci_dev *dev)
-> >  int pci_save_state(struct pci_dev *dev)
-> >  {
-> >  	int i;
-> > +
-> > +	pcie_save_aspm_control(dev);
-> > +	pcie_disable_aspm(dev);
-> 
-> If I understand this patch correctly, it basically does this:
-> 
->     pci_save_state
->   +   pcie_save_aspm_control
->   +   pcie_disable_aspm
->       <save state>
->   +   pcie_restore_aspm_control
-> 
-> The <save state> part is just a bunch of config reads with very little
-> other code execution.  I'm really surprised that there's enough time
-> between config reads for the link to go to L1.  I guess you've
-> verified that this does speed up suspend significantly, but this just
-> doesn't make sense to me.
-> 
-> In the bugzilla you say the GL9750 can go to L1.2 after ~4us of
-> inactivity.  That's enough time for a lot of code execution.  We must
-> be missing something.  There's so much PCI traffic during save/restore
-> that it should be easy to match up the analyzer trace with the code.
-> Can you get any insight into what's going on that way?
+On Mon, Jul 26, 2021 at 10:36:28PM +0200, Halil Pasic wrote:
 
-I'm dropping this for now, pending a better understanding of what's
-going on.
+> You may end up with open and close running interleaved. What I'
+> trying to say is, to my best knowledge, normally there is no
+> you have to close it before you open it again rule for files.
 
-> >  	/* XXX: 100% dword access ok here? */
-> >  	for (i = 0; i < 16; i++) {
-> >  		pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
-> > @@ -1552,18 +1556,22 @@ int pci_save_state(struct pci_dev *dev)
-> >  
-> >  	i = pci_save_pcie_state(dev);
-> >  	if (i != 0)
-> > -		return i;
-> > +		goto exit;
-> >  
-> >  	i = pci_save_pcix_state(dev);
-> >  	if (i != 0)
-> > -		return i;
-> > +		goto exit;
-> >  
-> >  	pci_save_ltr_state(dev);
-> >  	pci_save_aspm_l1ss_state(dev);
-> >  	pci_save_dpc_state(dev);
-> >  	pci_save_aer_state(dev);
-> >  	pci_save_ptm_state(dev);
-> > -	return pci_save_vc_state(dev);
-> > +	i = pci_save_vc_state(dev);
-> > +
-> > +exit:
-> > +	pcie_restore_aspm_control(dev);
-> > +	return i;
-> >  }
-> >  EXPORT_SYMBOL(pci_save_state);
-> >  
-> > @@ -1661,6 +1669,8 @@ void pci_restore_state(struct pci_dev *dev)
-> >  	if (!dev->state_saved)
-> >  		return;
-> >  
-> > +	pcie_disable_aspm(dev);
-> > +
-> >  	/*
-> >  	 * Restore max latencies (in the LTR capability) before enabling
-> >  	 * LTR itself (in the PCIe capability).
-> > @@ -1689,6 +1699,8 @@ void pci_restore_state(struct pci_dev *dev)
-> >  	pci_enable_acs(dev);
-> >  	pci_restore_iov_state(dev);
-> >  
-> > +	pcie_restore_aspm_control(dev);
-> > +
-> >  	dev->state_saved = false;
-> >  }
-> >  EXPORT_SYMBOL(pci_restore_state);
-> > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> > index a81459159f6d..e074a0cbe73c 100644
-> > --- a/drivers/pci/pci.h
-> > +++ b/drivers/pci/pci.h
-> > @@ -584,6 +584,9 @@ void pcie_aspm_pm_state_change(struct pci_dev *pdev);
-> >  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
-> >  void pci_save_aspm_l1ss_state(struct pci_dev *dev);
-> >  void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
-> > +void pcie_save_aspm_control(struct pci_dev *dev);
-> > +void pcie_restore_aspm_control(struct pci_dev *dev);
-> > +void pcie_disable_aspm(struct pci_dev *pdev);
-> >  #else
-> >  static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
-> >  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
-> > @@ -591,6 +594,9 @@ static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
-> >  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
-> >  static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
-> >  static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
-> > +static inline void pcie_save_aspm_control(struct pci_dev *dev) { }
-> > +static inline void pcie_restore_aspm_control(struct pci_dev *dev) { }
-> > +static inline void pcie_disable_aspm(struct pci_dev *pdev) { }
-> >  #endif
-> >  
-> >  #ifdef CONFIG_PCIE_ECRC
-> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > index a08e7d6dc248..e1e97db32e8b 100644
-> > --- a/drivers/pci/pcie/aspm.c
-> > +++ b/drivers/pci/pcie/aspm.c
-> > @@ -784,6 +784,33 @@ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
-> >  					   PCI_EXP_LNKCTL_ASPMC, val);
-> >  }
-> >  
-> > +void pcie_disable_aspm(struct pci_dev *pdev)
-> > +{
-> > +	if (!pci_is_pcie(pdev))
-> > +		return;
-> > +
-> > +	pcie_config_aspm_dev(pdev, 0);
-> > +}
-> > +
-> > +void pcie_save_aspm_control(struct pci_dev *pdev)
-> > +{
-> > +	u16 lnkctl;
-> > +
-> > +	if (!pci_is_pcie(pdev))
-> > +		return;
-> > +
-> > +	pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &lnkctl);
-> > +	pdev->saved_aspm_ctl = lnkctl & PCI_EXP_LNKCTL_ASPMC;
-> > +}
-> > +
-> > +void pcie_restore_aspm_control(struct pci_dev *pdev)
-> > +{
-> > +	if (!pci_is_pcie(pdev))
-> > +		return;
-> > +
-> > +	pcie_config_aspm_dev(pdev, pdev->saved_aspm_ctl);
-> > +}
-> > +
-> >  static void pcie_config_aspm_link(struct pcie_link_state *link, u32 state)
-> >  {
-> >  	u32 upstream = 0, dwstream = 0;
-> > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > index b32126d26997..a21bfd6e3f89 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -387,6 +387,7 @@ struct pci_dev {
-> >  	unsigned int	ltr_path:1;	/* Latency Tolerance Reporting
-> >  					   supported from root to here */
-> >  	u16		l1ss;		/* L1SS Capability pointer */
-> > +	u16		saved_aspm_ctl; /* ASPM Control saved at suspend time */
-> >  #endif
-> >  	unsigned int	eetlp_prefix_path:1;	/* End-to-End TLP Prefix */
-> >  
-> > -- 
-> > 2.30.0.280.ga3ce27912f-goog
-> > 
+This is an existing bug in this driver, I've fixed in the reflck series.
+
+open_device/close_device will not run concurrently, or out of order,
+afer it is fixed.
+
+Jason
