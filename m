@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A4F3D63D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73473D6390
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238833AbhGZPwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47496 "EHLO mail.kernel.org"
+        id S238755AbhGZPse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:48:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232742AbhGZPbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:31:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 219726056B;
-        Mon, 26 Jul 2021 16:11:46 +0000 (UTC)
+        id S238076AbhGZP3n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1727E60C41;
+        Mon, 26 Jul 2021 16:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315907;
-        bh=DiaRoLbULKS/bfjVOt/hKMY+dIrfow0OK77vWZpdoI8=;
+        s=korg; t=1627315811;
+        bh=Go1iKbPM/vtqA/2HqRpjLUeZFIYJ3ls5OtMWS70sE7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MZhTxtI8Psfqx3PSf4UIouWJ8opCr12rXc1zEkiQjG1rrst9d4pQZC1BFcpsiXb3Y
-         Z64PJZBArEUwKHdKJ+fQFVrMUucoFr4Eqy5C5vzYqi4FQ1iw6lndTt8X5lflhsr2A3
-         9MGOZ29yS5sHjm5B86UO4t2gxs0dOTiE4vlSxI/4=
+        b=b5J75fKB9DX+fOoblEY4fYjU8PeNSmJTtn9KFqmUP7xPsdVfkQxZS3SS9qiipsne4
+         vYjodVKQhipFto/I5N+f00SZj1fba9f+4dhcy7rOPcSFAhtItSslwNwS7q1S3jAiny
+         TeOC/ydyKuH6YHumpDjVFGHAbEePr/y8vTGX96XQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 068/223] spi: stm32: fixes pm_runtime calls in probe/remove
-Date:   Mon, 26 Jul 2021 17:37:40 +0200
-Message-Id: <20210726153848.482338637@linuxfoundation.org>
+Subject: [PATCH 5.13 069/223] regulator: hi6421: Use correct variable type for regmap api val argument
+Date:   Mon, 26 Jul 2021 17:37:41 +0200
+Message-Id: <20210726153848.514995028@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -42,74 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit 7999d2555c9f879d006ea8469d74db9cdb038af0 ]
+[ Upstream commit ae60e6a9d24e89a74e2512204ad04de94921bdd2 ]
 
-Add pm_runtime calls in probe/probe error path and remove
-in order to be consistent in all places in ordering and
-ensure that pm_runtime is disabled prior to resources used
-by the SPI controller.
+Use unsigned int instead of u32 for regmap_read/regmap_update_bits val
+argument.
 
-This patch also fixes the 2 following warnings on driver remove:
-WARNING: CPU: 0 PID: 743 at drivers/clk/clk.c:594 clk_core_disable_lock+0x18/0x24
-WARNING: CPU: 0 PID: 743 at drivers/clk/clk.c:476 clk_unprepare+0x24/0x2c
-
-Fixes: 038ac869c9d2 ("spi: stm32: add runtime PM support")
-
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1625646426-5826-2-git-send-email-alain.volmat@foss.st.com
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210619124133.4096683-1-axel.lin@ingics.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/regulator/hi6421-regulator.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 8ffcffbb8157..a92a28933edb 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -1925,6 +1925,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
- 		master->can_dma = stm32_spi_can_dma;
+diff --git a/drivers/regulator/hi6421-regulator.c b/drivers/regulator/hi6421-regulator.c
+index dc631c1a46b4..bff8c515dcde 100644
+--- a/drivers/regulator/hi6421-regulator.c
++++ b/drivers/regulator/hi6421-regulator.c
+@@ -386,7 +386,7 @@ static int hi6421_regulator_enable(struct regulator_dev *rdev)
+ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 reg_val;
++	unsigned int reg_val;
  
- 	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_get_noresume(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 	if (reg_val & info->mode_mask)
+@@ -398,7 +398,7 @@ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
+ static unsigned int hi6421_regulator_buck_get_mode(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 reg_val;
++	unsigned int reg_val;
  
- 	ret = spi_register_master(master);
-@@ -1940,6 +1941,8 @@ static int stm32_spi_probe(struct platform_device *pdev)
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 	if (reg_val & info->mode_mask)
+@@ -411,7 +411,7 @@ static int hi6421_regulator_ldo_set_mode(struct regulator_dev *rdev,
+ 						unsigned int mode)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 new_mode;
++	unsigned int new_mode;
  
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- err_dma_release:
- 	if (spi->dma_tx)
- 		dma_release_channel(spi->dma_tx);
-@@ -1956,9 +1959,14 @@ static int stm32_spi_remove(struct platform_device *pdev)
- 	struct spi_master *master = platform_get_drvdata(pdev);
- 	struct stm32_spi *spi = spi_master_get_devdata(master);
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
+@@ -435,7 +435,7 @@ static int hi6421_regulator_buck_set_mode(struct regulator_dev *rdev,
+ 						unsigned int mode)
+ {
+ 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
+-	u32 new_mode;
++	unsigned int new_mode;
  
-+	pm_runtime_get_sync(&pdev->dev);
-+
- 	spi_unregister_master(master);
- 	spi->cfg->disable(spi);
- 
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- 	if (master->dma_tx)
- 		dma_release_channel(master->dma_tx);
- 	if (master->dma_rx)
-@@ -1966,7 +1974,6 @@ static int stm32_spi_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(spi->clk);
- 
--	pm_runtime_disable(&pdev->dev);
- 
- 	pinctrl_pm_select_sleep_state(&pdev->dev);
- 
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
 -- 
 2.30.2
 
