@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32BD3D632A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E7F3D6125
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239074AbhGZPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41244 "EHLO mail.kernel.org"
+        id S236463AbhGZP3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:29:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237820AbhGZPZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8396F60C41;
-        Mon, 26 Jul 2021 16:06:15 +0000 (UTC)
+        id S236361AbhGZPQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6329860F38;
+        Mon, 26 Jul 2021 15:57:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315576;
-        bh=wf1OluGBlGsXEEba9/0Ca9aRMkh363c7DOZPWAQGin0=;
+        s=korg; t=1627315027;
+        bh=o+Hl5PxnNN66nfBYS6wwfVNpuDJJjn/wYQjy4g+risI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NoBAxQaZKiKJbWg62hm0cyIjsjItPDGAman8lQmZ3qJi61Ic32TpxdeAe65xWzhC+
-         D4qmOYDVR5MSwcsiL7TZA0LWIWpq+IfR+Jn5zyxPh663J9zbAYU80alx51dIyvmbiS
-         2cK2Jn+YkU66ggybQTo96MY6cFFP+PCQMgdBEymA=
+        b=pLZzy/W6RjDei+PnhOrmRvTflBs8LXFmK5yncPNMrcd7ArV9S4PnhvPjOevBoOWuR
+         mdLVHjgTKJioB8UmkvmOUjQgr+DopACe3iufYrK5dAGtJ/6KR8fxsLjYB2GHOxDc2m
+         cRpJnrIEabligeNDXYVXIun9aEfKS+ovyMaYqPTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Disseldorp <ddiss@suse.de>,
-        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michel Lespinasse <walken@google.com>,
-        Helge Deller <deller@gmx.de>, Oleg Nesterov <oleg@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 105/167] proc: Avoid mixing integer types in mem_rw()
+Subject: [PATCH 5.4 057/108] net: hns3: fix rx VLAN offload state inconsistent issue
 Date:   Mon, 26 Jul 2021 17:38:58 +0200
-Message-Id: <20210726153842.924190553@linuxfoundation.org>
+Message-Id: <20210726153833.508400110@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,50 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-[ Upstream commit d238692b4b9f2c36e35af4c6e6f6da36184aeb3e ]
+[ Upstream commit bbfd4506f962e7e6fff8f37f017154a3c3791264 ]
 
-Use size_t when capping the count argument received by mem_rw(). Since
-count is size_t, using min_t(int, ...) can lead to a negative value
-that will later be passed to access_remote_vm(), which can cause
-unexpected behavior.
+Currently, VF doesn't enable rx VLAN offload when initializating,
+and PF does it for VFs. If user disable the rx VLAN offload for
+VF with ethtool -K, and reload the VF driver, it may cause the
+rx VLAN offload state being inconsistent between hardware and
+software.
 
-Since we are capping the value to at maximum PAGE_SIZE, the conversion
-from size_t to int when passing it to access_remote_vm() as "len"
-shouldn't be a problem.
+Fixes it by enabling rx VLAN offload when VF initializing.
 
-Link: https://lkml.kernel.org/r/20210512125215.3348316-1-marcelo.cerri@canonical.com
-Reviewed-by: David Disseldorp <ddiss@suse.de>
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Signed-off-by: Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Souza Cascardo <cascardo@canonical.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Michel Lespinasse <walken@google.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Lorenzo Stoakes <lstoakes@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index df9b17dd92cb..5d52aea8d7e7 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -855,7 +855,7 @@ static ssize_t mem_rw(struct file *file, char __user *buf,
- 	flags = FOLL_FORCE | (write ? FOLL_WRITE : 0);
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index fc275d4f484c..ea348ebbbf2e 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -2119,6 +2119,16 @@ static int hclgevf_rss_init_hw(struct hclgevf_dev *hdev)
  
- 	while (count > 0) {
--		int this_len = min_t(int, count, PAGE_SIZE);
-+		size_t this_len = min_t(size_t, count, PAGE_SIZE);
- 
- 		if (write && copy_from_user(page, buf, this_len)) {
- 			copied = -EFAULT;
+ static int hclgevf_init_vlan_config(struct hclgevf_dev *hdev)
+ {
++	struct hnae3_handle *nic = &hdev->nic;
++	int ret;
++
++	ret = hclgevf_en_hw_strip_rxvtag(nic, true);
++	if (ret) {
++		dev_err(&hdev->pdev->dev,
++			"failed to enable rx vlan offload, ret = %d\n", ret);
++		return ret;
++	}
++
+ 	return hclgevf_set_vlan_filter(&hdev->nic, htons(ETH_P_8021Q), 0,
+ 				       false);
+ }
 -- 
 2.30.2
 
