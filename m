@@ -2,201 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F5C53D5509
+	by mail.lfdr.de (Postfix) with ESMTP id 876783D550A
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbhGZH3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:29:41 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16001 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbhGZH3g (ORCPT
+        id S232918AbhGZHaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232927AbhGZHaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:29:36 -0400
-Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYCDs0lYvzZsrC;
-        Mon, 26 Jul 2021 16:06:37 +0800 (CST)
-Received: from [10.40.166.221] (10.40.166.221) by
- dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 26 Jul 2021 16:10:03 +0800
-Message-ID: <60FE6DDA.8080904@hisilicon.com>
-Date:   Mon, 26 Jul 2021 16:10:02 +0800
-From:   Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Mon, 26 Jul 2021 03:30:14 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF46EC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 01:10:42 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id m13so13892232lfg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 01:10:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=uhBYFS3kcrFSzUp+99m4qpuPqHmdy7DA1vxoHG2YpBo=;
+        b=NMqlYTqW/lndtqqHyPiFLM6rKPoHHYZHYwW7+jnlb6T8g26zSGu5wBdOgmvlgttoD9
+         ubbH32dNkwfzgC+9alfK8agoc5+COrbTU16cAPLPc333Mldr2cuGOuezk7zKUQO3kGum
+         TJbTAPv4dtvb2SGwq2VENVB9H7UNNgi3tTd1qvmbPAWgURCGGrNAeAs728bElIhjRDps
+         CRqGXwAF5zVT3SWVH68uW9QD5hMaS/Q8opTCkca7GuJIU1QrNYZyrX9L7Akzi8CJva+C
+         6zl9IGO84AdkjSfN70jgi5fo1Ra+6yy+jIvL2cb2kwAL1LSaLnzmt1iXfDN1tb/vKTi+
+         7+fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=uhBYFS3kcrFSzUp+99m4qpuPqHmdy7DA1vxoHG2YpBo=;
+        b=M3HndImgLPItvRyKGVr779eHgpSSNBxy8uBtclh1iQdjE1xhR5ZaH1ekduk49GhKvs
+         K+KhrzuBfAWja15TrAwJSHFiQNEtUBfxZjDJ8xkmFjDoqi5KHhUDK6owcpiy2ahqW97x
+         QC6sda3zQ6IHaoKZDfYFHUN25G4yfrotJOs8xbFvwHmeKlKkwn/pkTRSUu1U/F2CkTpt
+         kcsqfsCiFjK8U/I/+eIzYgIgQNzBm9Y+U4GdK+odd7h2GrqlO8X4EmksLPH6GXVNNf10
+         +fDZot1Y2gsvH2ML+DLZfwevzLCmI0DBJLCE34xX6ClI6p/KciRvDbg8r5FJWjIkfx49
+         KtuA==
+X-Gm-Message-State: AOAM531YUh3KkaVfh0pLWyhj/QNGqJ1107CChZl6z18cip/ZOb/1s/ar
+        EJt3jRnGHcXVxoTTW7EvNII17w==
+X-Google-Smtp-Source: ABdhPJzr0Z5y4Twf5n/G2SkMcR8Be0DIW4CEwE7lwxefCBKqF7n4oehjLY7Ar8Nd/ya3HmLfUYdS9w==
+X-Received: by 2002:ac2:4e09:: with SMTP id e9mr12539781lfr.431.1627287041314;
+        Mon, 26 Jul 2021 01:10:41 -0700 (PDT)
+Received: from jade (h-94-254-48-165.A175.priv.bahnhof.se. [94.254.48.165])
+        by smtp.gmail.com with ESMTPSA id t7sm2973379lfc.103.2021.07.26.01.10.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 01:10:41 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 10:10:39 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>
+Subject: [GIT PULL] TEE kexec fixes for v5.14
+Message-ID: <20210726081039.GA2482361@jade>
 MIME-Version: 1.0
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, "xuwei (O)" <xuwei5@huawei.com>
-Subject: Re: [PATCH 1/2] dts: hisilicon: add support for the PMIC found on
- Hikey 970
-References: <cover.1627116285.git.mchehab+huawei@kernel.org>    <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>     <60FE20AC.3050400@hisilicon.com>        <20210726081812.54431189@coco.lan>      <60FE57B5.2010603@hisilicon.com> <20210726094344.0a415bd0@coco.lan>
-In-Reply-To: <20210726094344.0a415bd0@coco.lan>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.166.221]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggeme758-chm.china.huawei.com (10.3.19.104)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+Hello arm-soc maintainers,
 
-On 2021/7/26 15:43, Mauro Carvalho Chehab wrote:
-> Em Mon, 26 Jul 2021 14:35:33 +0800
-> Wei Xu <xuwei5@hisilicon.com> escreveu:
-> 
->> Hi Mauro,
->>
->> On 2021/7/26 14:19, Mauro Carvalho Chehab wrote:
->>> Em Mon, 26 Jul 2021 10:40:44 +0800
->>> Wei Xu <xuwei5@hisilicon.com> escreveu:
->>>   
->>>> Hi Mauro,
->>>>
->>>> On 2021/7/24 16:55, Mauro Carvalho Chehab wrote:  
->>>>> Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
->>>>> on HiKey970 board.
->>>>>
->>>>> As we now have support for it, change the fixed regulators
->>>>> used by the SD I/O to use the proper LDO supplies.
->>>>>
->>>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->>>>> ---
->>>>>  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
->>>>>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 86 +++++++++++++++++++
->>>>>  2 files changed, 89 insertions(+), 19 deletions(-)
->>>>>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
->>>>> index d8abf442ee7e..7c32f5fd5cc5 100644
->>>>> --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
->>>>> +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
->>>>> @@ -12,6 +12,7 @@
->>>>>  
->>>>>  #include "hi3670.dtsi"
->>>>>  #include "hikey970-pinctrl.dtsi"
->>>>> +#include "hikey970-pmic.dtsi"
->>>>>  
->>>>>  / {
->>>>>  	model = "HiKey970";
->>>>> @@ -39,23 +40,6 @@ memory@0 {
->>>>>  		reg = <0x0 0x0 0x0 0x0>;
->>>>>  	};
->>>>>  
->>>>> -	sd_1v8: regulator-1v8 {
->>>>> -		compatible = "regulator-fixed";
->>>>> -		regulator-name = "fixed-1.8V";
->>>>> -		regulator-min-microvolt = <1800000>;
->>>>> -		regulator-max-microvolt = <1800000>;
->>>>> -		regulator-always-on;
->>>>> -	};
->>>>> -
->>>>> -	sd_3v3: regulator-3v3 {
->>>>> -		compatible = "regulator-fixed";
->>>>> -		regulator-name = "fixed-3.3V";
->>>>> -		regulator-min-microvolt = <3300000>;
->>>>> -		regulator-max-microvolt = <3300000>;
->>>>> -		regulator-boot-on;
->>>>> -		regulator-always-on;
->>>>> -	};
->>>>> -
->>>>>  	wlan_en: wlan-en-1-8v {
->>>>>  		compatible = "regulator-fixed";
->>>>>  		regulator-name = "wlan-en-regulator";
->>>>> @@ -402,8 +386,8 @@ &dwmmc1 {
->>>>>  	pinctrl-0 = <&sd_pmx_func
->>>>>  		     &sd_clk_cfg_func    
->>>>>  		     &sd_cfg_func>;    
->>>>> -	vmmc-supply = <&sd_3v3>;
->>>>> -	vqmmc-supply = <&sd_1v8>;
->>>>> +	vmmc-supply = <&ldo16>;
->>>>> +	vqmmc-supply = <&ldo9>;
->>>>>  	status = "okay";
->>>>>  };
->>>>>  
->>>>> diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
->>>>> new file mode 100644
->>>>> index 000000000000..970047f2dabd
->>>>> --- /dev/null
->>>>> +++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
->>>>> @@ -0,0 +1,86 @@
->>>>> +// SPDX-License-Identifier: GPL-2.0
->>>>> +/*
->>>>> + * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
->>>>> + *
->>>>> + * Copyright (C) 2020, Huawei Tech. Co., Ltd.
->>>>> + */
->>>>> +
->>>>> +#include <dt-bindings/spmi/spmi.h>
->>>>> +
->>>>> +/ {
->>>>> +	spmi: spmi@fff24000 {
->>>>> +		compatible = "hisilicon,kirin970-spmi-controller";
->>>>> +		#address-cells = <2>;
->>>>> +		#size-cells = <0>;
->>>>> +		status = "okay";
->>>>> +		reg = <0x0 0xfff24000 0x0 0x1000>;
->>>>> +		hisilicon,spmi-channel = <2>;
->>>>> +
->>>>> +		pmic: pmic@0 {
->>>>> +			compatible = "hisilicon,hi6421-spmi";    
->>>>
->>>> Should this be "hisilicon,hi6421-pmic" which is already in the binding document "mfd/hi6421.txt"?
->>>> Others are OK to me.  
->>>
->>> No. 
->>>
->>> hisilicon,hi6421-pmic is used by this driver
->>> 	drivers/mfd/hi6421-pmic-core.c
->>>
->>> which provides support for the Hi6421 variants that don't use a MIPI
->>> SPMI bus.
->>>
->>> The "hisilicon,hi6421-spmi" compatible is for the new driver:
->>> 	drivers/mfd/hi6421-spmi-pmic.c
->>>
->>> And it is defined at:
->>> 	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
->>>
->>> Both DT bindings and the driver were promoted from staging on this patch:
->>>
->>> 	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-next&id=9bd9e0de1cf5b89c4854be505ac0a418ddcc01bf  
->>
->> Got it. Thanks for your kind explanation!
->> So I am fine with this patch.
->> Do you need my ack now or later I can merge it once it is out of staging.
-> 
-> Whatever works best for you and Greg.
-> 
-> It should be noticed that the driver should be out of staging for v5.15-rc1
-> (as the patch moving it out of staging was already merged at Greg's tree).
-> This patch is needed by the PCI driver patchset I'm currently working,
-> so the best would be if this patch could also be merged for v5.15-rc1
-> (either via HiSilicon tree or via staging tree).
-> 
-> I suspect that having your ack and merging this via staging would work
-> best, as this would ensure that both changes will be merged upstream
-> at the same time.
-> 
-> But, as I said, it is up to you both ;-)
+Please pull these fixes relating to OP-TEE, ftpm (firmware TPM), and
+tee_bnxt_fw (Broadcom BNXT firmware manager) drivers in kexec and kdump
+(emergency kexec) based workflows.
 
-Got it.
-To avoid dependency, I think it is better to be merged by Greg's tree.
-So for this patch,
+The two patches "firmware: tee_bnxt: Release TEE shm, session, and context
+during kexec" and "tpm_ftpm_tee: Free and unregister TEE shared memory
+during kexec" are acked by their respective maintainers.
 
-Reviewed-by: Wei Xu <xuwei5@hisilicon.com>
+For more details please see the description of the last patch set
+https://lore.kernel.org/lkml/20210614223317.999867-1-tyhicks@linux.microsoft.com/
 
-Best Regards,
-Wei
+Thanks,
+Jens
 
-> 
-> Thanks,
-> Mauro
-> .
-> 
+The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
+
+  Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
+
+are available in the Git repository at:
+
+  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/tee-kexec-fixes-for-v5.14
+
+for you to fetch changes up to 914ab19e471d8fb535ed50dff108b0a615f3c2d8:
+
+  firmware: tee_bnxt: Release TEE shm, session, and context during kexec (2021-07-21 07:55:50 +0200)
+
+----------------------------------------------------------------
+tee: Improve support for kexec and kdump
+
+This fixes several bugs uncovered while exercising the OP-TEE, ftpm
+(firmware TPM), and tee_bnxt_fw (Broadcom BNXT firmware manager) drivers
+with kexec and kdump (emergency kexec) based workflows.
+
+----------------------------------------------------------------
+Allen Pais (2):
+      optee: fix tee out of memory failure seen during kexec reboot
+      firmware: tee_bnxt: Release TEE shm, session, and context during kexec
+
+Jens Wiklander (1):
+      tee: add tee_shm_alloc_kernel_buf()
+
+Sumit Garg (1):
+      tee: Correct inappropriate usage of TEE_SHM_DMA_BUF flag
+
+Tyler Hicks (4):
+      optee: Fix memory leak when failing to register shm pages
+      optee: Refuse to load the driver under the kdump kernel
+      optee: Clear stale cache entries during initialization
+      tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
+
+ drivers/char/tpm/tpm_ftpm_tee.c         |  8 +++---
+ drivers/firmware/broadcom/tee_bnxt_fw.c | 14 ++++++++---
+ drivers/tee/optee/call.c                | 38 ++++++++++++++++++++++++++---
+ drivers/tee/optee/core.c                | 43 ++++++++++++++++++++++++++++++++-
+ drivers/tee/optee/optee_private.h       |  1 +
+ drivers/tee/optee/rpc.c                 |  5 ++--
+ drivers/tee/optee/shm_pool.c            | 20 ++++++++++++---
+ drivers/tee/tee_shm.c                   | 20 ++++++++++++++-
+ include/linux/tee_drv.h                 |  2 ++
+ 9 files changed, 132 insertions(+), 19 deletions(-)
