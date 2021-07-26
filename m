@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A180B3D5ED9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CA93D5D96
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236604AbhGZPLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
+        id S235750AbhGZPCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:02:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235957AbhGZPHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:07:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCAF860F5A;
-        Mon, 26 Jul 2021 15:47:29 +0000 (UTC)
+        id S235717AbhGZPCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C7460F37;
+        Mon, 26 Jul 2021 15:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314450;
-        bh=EoWxg77Ae9NxaT3VCRBGRP4UDqD8wbO2Jbz+ZNU8h7o=;
+        s=korg; t=1627314157;
+        bh=Pz5znl3oCRXX/Ot8HGsKGVlif7ze/TLXcSlFz9LJoDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YSuXZueaU0fxlny5Osudts4jGN7GjDjwc4w3hFYJzftVZGxlb48+7/vvH0iWIQWBX
-         kSwwi6RFouLLIP3XxrHE0x/7G1j2uj1FM8zRLtaqjnxTSHGpOm7Igbo7oQqVlfmu3s
-         sMF/ROyqXTT/7KsswZJUHIJepjDx1P0vEHu0iElA=
+        b=VOnVkF4He4W+iWmlh4KozEhgnwUIDVwiTs7QOP9L2uoTWq73itZIEbL1CXHVPLfpC
+         u1l7FeAcIPCVdB+qfRTJ2+EvmEBRMVY8BHG/Z9nWfHbfYIJJVlVYR8ieJfdWiHiTap
+         I/jtjo3j78+4HFD0PdkkT4llaMtUn5Rn1eSbdywk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 50/82] s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
+        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 32/47] ALSA: sb: Fix potential ABBA deadlock in CSP driver
 Date:   Mon, 26 Jul 2021 17:38:50 +0200
-Message-Id: <20210726153829.805908718@linuxfoundation.org>
+Message-Id: <20210726153823.997155649@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 91091656252f5d6d8c476e0c92776ce9fae7b445 ]
+commit 1c2b9519159b470ef24b2638f4794e86e2952ab7 upstream.
 
-Currently array jit->seen_reg[r1] is being accessed before the range
-checking of index r1. The range changing on r1 should be performed
-first since it will avoid any potential out-of-range accesses on the
-array seen_reg[] and also it is more optimal to perform checks on r1
-before fetching data from the array. Fix this by swapping the order
-of the checks before the array access.
+SB16 CSP driver may hit potentially a typical ABBA deadlock in two
+code paths:
 
-Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Link: https://lore.kernel.org/bpf/20210715125712.24690-1-colin.king@canonical.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+ In snd_sb_csp_stop():
+     spin_lock_irqsave(&p->chip->mixer_lock, flags);
+     spin_lock(&p->chip->reg_lock);
+
+ In snd_sb_csp_load():
+     spin_lock_irqsave(&p->chip->reg_lock, flags);
+     spin_lock(&p->chip->mixer_lock);
+
+Also the similar pattern is seen in snd_sb_csp_start().
+
+Although the practical impact is very small (those states aren't
+triggered in the same running state and this happens only on a real
+hardware, decades old ISA sound boards -- which must be very difficult
+to find nowadays), it's a real scenario and has to be fixed.
+
+This patch addresses those deadlocks by splitting the locks in
+snd_sb_csp_start() and snd_sb_csp_stop() for avoiding the nested
+locks.
+
+Reported-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com
+Link: https://lore.kernel.org/r/20210716132723.13216-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/isa/sb/sb16_csp.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index b8bd84104843..bb3710e7ad9c 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -117,7 +117,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- {
- 	u32 r1 = reg2hex[b1];
+--- a/sound/isa/sb/sb16_csp.c
++++ b/sound/isa/sb/sb16_csp.c
+@@ -828,6 +828,7 @@ static int snd_sb_csp_start(struct snd_s
+ 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
++	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
  
--	if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
-+	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
- 		jit->seen_reg[r1] = 1;
- }
+ 	spin_lock(&p->chip->reg_lock);
+ 	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
+@@ -867,6 +868,7 @@ static int snd_sb_csp_start(struct snd_s
+ 	spin_unlock(&p->chip->reg_lock);
  
--- 
-2.30.2
-
+ 	/* restore PCM volume */
++	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+ 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+@@ -892,6 +894,7 @@ static int snd_sb_csp_stop(struct snd_sb
+ 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
++	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+ 
+ 	spin_lock(&p->chip->reg_lock);
+ 	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
+@@ -906,6 +909,7 @@ static int snd_sb_csp_stop(struct snd_sb
+ 	spin_unlock(&p->chip->reg_lock);
+ 
+ 	/* restore PCM volume */
++	spin_lock_irqsave(&p->chip->mixer_lock, flags);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
+ 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
+ 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
 
 
