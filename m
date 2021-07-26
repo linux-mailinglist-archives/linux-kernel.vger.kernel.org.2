@@ -2,124 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697B13D5A73
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99EF3D5A77
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233738AbhGZM5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233502AbhGZM5X (ORCPT
+        id S233841AbhGZNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:00:02 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:41966 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233502AbhGZM6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:57:23 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68250C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:37:52 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id z7so11070292wrn.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:37:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ChBDWJjgJliQvBWPa96cZKBrj8qouHAqBK1Xkip7XyQ=;
-        b=Kpph3QTxJGtxEgvnKlHAaQ/WsUeHxHPdjzAF4MZN4FUTuW/wN3TzsWNtgfv9r36uAs
-         p/XdjuDkHkVAhxVEO8NvW1gV6FPHZglG3b1bLvJm6kOWsptNRGswfm/l9xyJBChP1Ivc
-         QNXSF5C3ygUKmQU7+srxJWak4TlFEOT6JJ08pX2kU2IFdzDgKGSHaemQMndcPQMAYne4
-         eDDZme+g9qxB9UGXk59oRxGlFeqpT6DyLa0nKAexTm60olLq3WQnE9syXC9EdmU5oyX+
-         pQiStIXSWD40M+NTPHXqP+iCs1EMfZrML8oZb0C8B1jDUJc2ryP4jW9qeHZE7A0ubrSz
-         OMcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ChBDWJjgJliQvBWPa96cZKBrj8qouHAqBK1Xkip7XyQ=;
-        b=tbcIOG6slY2IVQ76utN1odmyp8dJY6Iy9eoATrlg2PBxIACXRrJ5I5+DpJOwlt3RVi
-         AgBfmfuVv60IptC+oxnuq4F5Zq0rhetmr00AQfo07bxPiUkI+LXq6OvzuRbPxdy4m7oE
-         s/iF0srXxtn7vy1okZjL4kQBi2ilno9eeWacW2qvcusoAC2F4koACmAdxV10b+77iEZg
-         SA2jfHPz8yLW4llJSYWxjC8Y0Qx1fN3lxNYN5832r8bQs6gxR1LEQeLbqnW1OUfRTR4V
-         Ns17BUjlPF9uZUtjWv99PAOghba0l0Xcus+CTBUI9YSMxvQ2FniEIvrcWZNPFQ3cksGe
-         XKsg==
-X-Gm-Message-State: AOAM532ctHXEfgRw1isRiA3L0KXr5xmFlWcDPbfNJXBs5hqY55qeKaaZ
-        5Sfij+GeSPtr5d/hqWfdcr0T2A==
-X-Google-Smtp-Source: ABdhPJx/S+M5qDheZPdw44GN/Qi+qjgIvoYVvbvT6GyIaSazSaRaxer+sSo819fP+1LI+6sHddQEpg==
-X-Received: by 2002:a5d:5102:: with SMTP id s2mr19332590wrt.214.1627306670979;
-        Mon, 26 Jul 2021 06:37:50 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id y3sm42654841wrh.16.2021.07.26.06.37.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 06:37:50 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] printk: Add printk.console_verbose boot parameter
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20210713011511.215808-1-dima@arista.com>
- <20210713011511.215808-3-dima@arista.com>
- <20210721144621.ddvxouzxpp6sn4ec@pathway.suse.cz>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <031380c9-2b18-d984-c058-d0733c5d3328@arista.com>
-Date:   Mon, 26 Jul 2021 14:37:49 +0100
+        Mon, 26 Jul 2021 08:58:39 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 06ECF1FE94;
+        Mon, 26 Jul 2021 13:38:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627306735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6YlLhaB/isQMil/Mxrn5CPmlxIJWQ/6zmnTM2otfS7c=;
+        b=DDDY4MofL2lNDmmKxdRg5610RILHcP7jHd2Jl2VEU3bPcXlg1aMmIsr08gwoNSp3cba4Ro
+        s5ZkOh7/KfESHPODv5d2TcMQS41FGrcTsnCp7XQ3ON1/gINol7o9fwJpCEmmHE7D+GoXZM
+        d11fIAUwi/9XbJJnZ66DHdc0R66a4rE=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id AFEB213A96;
+        Mon, 26 Jul 2021 13:38:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id Vg/AKe66/mA8AgAAGKfGzw
+        (envelope-from <jgross@suse.com>); Mon, 26 Jul 2021 13:38:54 +0000
+Subject: Re: [PATCH 4/6] x86/kvm: introduce per cpu vcpu masks
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210701154105.23215-1-jgross@suse.com>
+ <20210701154105.23215-5-jgross@suse.com>
+ <98cb06ed-acd2-a954-9c85-3c9847631106@redhat.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <24b616c4-bbab-a1c8-1be2-a912a2c672d3@suse.com>
+Date:   Mon, 26 Jul 2021 15:38:54 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210721144621.ddvxouzxpp6sn4ec@pathway.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <98cb06ed-acd2-a954-9c85-3c9847631106@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="WoNYRQQhyV0z59oyrRXdoCbOHu7cc9XpB"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/21 3:46 PM, Petr Mladek wrote:
-[..]
->> +	printk.console_verbose=
->> +			Raise console loglevel to highest on oops, panic or
->> +			lockdep-detected issues (only if lock debug is on).
->> +			With an exception to setups with low baudrate on
->> +			serial console, keeping this enabled is a good choice
->> +			in order to provide more debug information.
->> +			Format: <bool>  (1/Y/y=enable, 0/N/n=disable)
->> +			default: enabled
-> 
-> Hmm, the name suggests that the console should always be verbose.
-> It looks like a counterpart to the "quiet" option.
-> 
-> It actually is a counter part to the existing "quiet" option
-> except that it triggers in some situations only.
-> 
-> Hence, I would call it "no_auto_verbose":
-> 
->    + "verbose" follows the simple naming scheme of the existing
->      "quiet" option (no "printk" and no "console" in the name)
-> 
->    + "no_auto" suggests that it disables some auto-verbose behavior
->      which is exactly what it does.
-> 
-> Any better idea?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--WoNYRQQhyV0z59oyrRXdoCbOHu7cc9XpB
+Content-Type: multipart/mixed; boundary="0bwJsygxOOIO7iDMil1cccpk1YtVxWLzk";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, kvm@vger.kernel.org
+Cc: Sean Christopherson <seanjc@google.com>,
+ Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
+ Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <24b616c4-bbab-a1c8-1be2-a912a2c672d3@suse.com>
+Subject: Re: [PATCH 4/6] x86/kvm: introduce per cpu vcpu masks
+References: <20210701154105.23215-1-jgross@suse.com>
+ <20210701154105.23215-5-jgross@suse.com>
+ <98cb06ed-acd2-a954-9c85-3c9847631106@redhat.com>
+In-Reply-To: <98cb06ed-acd2-a954-9c85-3c9847631106@redhat.com>
 
-Yeah, ok. I've tried to avoid negative as a parameter as it sometimes
-may be confusing. But I see you have this naming in mind and no hard
-feelings from my side - I'll call it "no_auto_verbose" in v3.
+--0bwJsygxOOIO7iDMil1cccpk1YtVxWLzk
+Content-Type: multipart/mixed;
+ boundary="------------262649A256EB5C0E4EB399EE"
+Content-Language: en-US
 
-[..]
->> @@ -2404,6 +2404,12 @@ module_param_named(console_suspend, console_suspend_enabled,
->>  MODULE_PARM_DESC(console_suspend, "suspend console during suspend"
->>  	" and hibernate operations");
->>  
->> +bool printk_console_verbose = true;
-> 
-> I would call it "console_auto_verbose".
-> 
->> +EXPORT_SYMBOL(printk_console_verbose);
-> 
-> I would prefer to move console_verbose() into printk.c
-> and export the function instead of this variable.
+This is a multi-part message in MIME format.
+--------------262649A256EB5C0E4EB399EE
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Makes sense, will do in v3.
+On 26.07.21 15:32, Paolo Bonzini wrote:
+> On 01/07/21 17:41, Juergen Gross wrote:
+>> In order to support high vcpu numbers per guest don't use on stack
+>> vcpu bitmasks. As all those currently used bitmasks are not used in
+>> functions subject to recursion it is fairly easy to replace them with
+>> percpu bitmasks.
+>>
+>> Disable preemption while such a bitmask is being used in order to
+>> avoid double usage in case we'd switch cpus.
+>>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>=20
+> Please use a local_lock instead of disabling preemption.
 
-Thanks,
-          Dmitry
+Okay.
+
+
+Juergen
+
+--------------262649A256EB5C0E4EB399EE
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------262649A256EB5C0E4EB399EE--
+
+--0bwJsygxOOIO7iDMil1cccpk1YtVxWLzk--
+
+--WoNYRQQhyV0z59oyrRXdoCbOHu7cc9XpB
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmD+uu4FAwAAAAAACgkQsN6d1ii/Ey/3
+Bgf9Gu8Ty758S6rtsWty77HC88hUmLzZSm23bGu5TKOFJpuMu3RroQG1/BU0ksY7kA1daqND1GMz
+h/Q2cJVBIPWFWG40nX2CkvumgLdxbroL/szR+EbfAbUBbBjde5X+QGWVa7HcTSIaEOLSFtoA+TqT
+5ZE6lQklweSQKc7iSAO+vSh5bEZPfSbRZH1YK9cM4MOumfZ1WyUzlkjXQMSEw294Jn/dD+ckyb5b
+gPJ5L1g2/iM93wixg3+mNMfh91Mt2oxGeKMlS2fyF/4CociVSlewINFQpAVwmIpYzlqUxfTVy7Lb
+5LjpCdKX2yOcLm2l4POoStyxnZ8L2vkuzmZtWy+new==
+=0YPk
+-----END PGP SIGNATURE-----
+
+--WoNYRQQhyV0z59oyrRXdoCbOHu7cc9XpB--
