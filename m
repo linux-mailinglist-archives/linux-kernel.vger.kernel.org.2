@@ -2,176 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0613D67C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632B03D67CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbhGZTRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:17:41 -0400
-Received: from relay.sw.ru ([185.231.240.75]:33134 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229646AbhGZTRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:17:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=tv98G035lh2G/ipIGk9DWaPwErr9DdmX0FfG30VCqLY=; b=G3iiKhr3Yr3vEkX2a
-        UQ8cCtq5ZpJ8MEZqD7NvK3bB1N8hUeqGfthNBucZosDiFwX96HGYcqoYWlpp5zDKSKGZSZHQMgOXT
-        nlLzLHrP+RM/NFWuluO4rEQIL8gB1DeBiq87FXjLB8hDaH3zh5vONrMfR+rD99xsbAttPVxadph1g
-        =;
-Received: from [192.168.15.199]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1m86jk-005Jkf-He; Mon, 26 Jul 2021 22:58:04 +0300
-Subject: Re: [PATCH v6 11/16] memcg: enable accounting for new namesapces and
- struct nsproxy
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org
-References: <9bf9d9bd-03b1-2adb-17b4-5d59a86a9394@virtuozzo.com>
- <cover.1627321321.git.vvs@virtuozzo.com>
- <86c99f5a-d717-9d4e-91db-e68ccc93cade@virtuozzo.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <6c72e9c3-7ce3-0bd9-fb18-60d0a3f86254@virtuozzo.com>
-Date:   Mon, 26 Jul 2021 22:58:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232274AbhGZTWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhGZTWA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 15:22:00 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70451C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:02:27 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1m86ns-0001co-NK; Mon, 26 Jul 2021 22:02:20 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:bb61:39f9:30bb:99fb])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 8838E658759;
+        Mon, 26 Jul 2021 20:02:16 +0000 (UTC)
+Date:   Mon, 26 Jul 2021 22:02:15 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, socketcan@hartkopp.net,
+        mailhol.vincent@wanadoo.fr, b.krumboeck@gmail.com,
+        haas@ems-wuensche.com, Stefan.Maetje@esd.eu, matthias.fuchs@esd.eu,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] can: fix same memory leaks in can drivers
+Message-ID: <20210726200215.wnfwj27v2x2vyyup@pengutronix.de>
+References: <cover.1627311383.git.paskripkin@gmail.com>
+ <20210726202916.5945e3d9@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <86c99f5a-d717-9d4e-91db-e68ccc93cade@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="63zbmxht67o6x4ka"
+Content-Disposition: inline
+In-Reply-To: <20210726202916.5945e3d9@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.07.2021 22:01, Vasily Averin wrote:
-> Container admin can create new namespaces and force kernel to allocate
-> up to several pages of memory for the namespaces and its associated
-> structures.
-> Net and uts namespaces have enabled accounting for such allocations.
-> It makes sense to account for rest ones to restrict the host's memory
-> consumption from inside the memcg-limited container.
-> 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> Acked-by: Serge Hallyn <serge@hallyn.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+--63zbmxht67o6x4ka
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  fs/namespace.c            | 2 +-
->  ipc/namespace.c           | 2 +-
->  kernel/cgroup/namespace.c | 2 +-
->  kernel/nsproxy.c          | 2 +-
->  kernel/pid_namespace.c    | 2 +-
->  kernel/time/namespace.c   | 4 ++--
->  kernel/user_namespace.c   | 2 +-
->  7 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index c6a74e5..e443ee6 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -3289,7 +3289,7 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns, bool a
->  	if (!ucounts)
->  		return ERR_PTR(-ENOSPC);
->  
-> -	new_ns = kzalloc(sizeof(struct mnt_namespace), GFP_KERNEL);
-> +	new_ns = kzalloc(sizeof(struct mnt_namespace), GFP_KERNEL_ACCOUNT);
->  	if (!new_ns) {
->  		dec_mnt_namespaces(ucounts);
->  		return ERR_PTR(-ENOMEM);
-> diff --git a/ipc/namespace.c b/ipc/namespace.c
-> index 7bd0766..ae83f0f 100644
-> --- a/ipc/namespace.c
-> +++ b/ipc/namespace.c
-> @@ -42,7 +42,7 @@ static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
->  		goto fail;
->  
->  	err = -ENOMEM;
-> -	ns = kzalloc(sizeof(struct ipc_namespace), GFP_KERNEL);
-> +	ns = kzalloc(sizeof(struct ipc_namespace), GFP_KERNEL_ACCOUNT);
->  	if (ns == NULL)
->  		goto fail_dec;
->  
-> diff --git a/kernel/cgroup/namespace.c b/kernel/cgroup/namespace.c
-> index f5e8828..0d5c298 100644
-> --- a/kernel/cgroup/namespace.c
-> +++ b/kernel/cgroup/namespace.c
-> @@ -24,7 +24,7 @@ static struct cgroup_namespace *alloc_cgroup_ns(void)
->  	struct cgroup_namespace *new_ns;
->  	int ret;
->  
-> -	new_ns = kzalloc(sizeof(struct cgroup_namespace), GFP_KERNEL);
-> +	new_ns = kzalloc(sizeof(struct cgroup_namespace), GFP_KERNEL_ACCOUNT);
->  	if (!new_ns)
->  		return ERR_PTR(-ENOMEM);
->  	ret = ns_alloc_inum(&new_ns->ns);
-> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
-> index abc01fc..eec72ca 100644
-> --- a/kernel/nsproxy.c
-> +++ b/kernel/nsproxy.c
-> @@ -568,6 +568,6 @@ static void commit_nsset(struct nsset *nsset)
->  
->  int __init nsproxy_cache_init(void)
->  {
-> -	nsproxy_cachep = KMEM_CACHE(nsproxy, SLAB_PANIC);
-> +	nsproxy_cachep = KMEM_CACHE(nsproxy, SLAB_PANIC|SLAB_ACCOUNT);
->  	return 0;
->  }
-> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
-> index ca43239..6cd6715 100644
-> --- a/kernel/pid_namespace.c
-> +++ b/kernel/pid_namespace.c
-> @@ -449,7 +449,7 @@ static struct user_namespace *pidns_owner(struct ns_common *ns)
->  
->  static __init int pid_namespaces_init(void)
->  {
-> -	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC);
-> +	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC | SLAB_ACCOUNT);
->  
->  #ifdef CONFIG_CHECKPOINT_RESTORE
->  	register_sysctl_paths(kern_path, pid_ns_ctl_table);
-> diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
-> index 12eab0d..aec8328 100644
-> --- a/kernel/time/namespace.c
-> +++ b/kernel/time/namespace.c
-> @@ -88,13 +88,13 @@ static struct time_namespace *clone_time_ns(struct user_namespace *user_ns,
->  		goto fail;
->  
->  	err = -ENOMEM;
-> -	ns = kmalloc(sizeof(*ns), GFP_KERNEL);
-> +	ns = kmalloc(sizeof(*ns), GFP_KERNEL_ACCOUNT);
->  	if (!ns)
->  		goto fail_dec;
->  
->  	refcount_set(&ns->ns.count, 1);
->  
-> -	ns->vvar_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-> +	ns->vvar_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
->  	if (!ns->vvar_page)
->  		goto fail_free;
->  
-> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> index ef82d40..6b2e3ca 100644
-> --- a/kernel/user_namespace.c
-> +++ b/kernel/user_namespace.c
-> @@ -1385,7 +1385,7 @@ static struct user_namespace *userns_owner(struct ns_common *ns)
->  
->  static __init int user_namespaces_init(void)
->  {
-> -	user_ns_cachep = KMEM_CACHE(user_namespace, SLAB_PANIC);
-> +	user_ns_cachep = KMEM_CACHE(user_namespace, SLAB_PANIC | SLAB_ACCOUNT);
->  	return 0;
->  }
->  subsys_initcall(user_namespaces_init);
-> 
+On 26.07.2021 20:29:16, Pavel Skripkin wrote:
+> On Mon, 26 Jul 2021 18:29:38 +0300
+> Pavel Skripkin <paskripkin@gmail.com> wrote:
+>=20
+> > Hi, Marc and can drivers maintainers/reviewers!
+> >=20
+>=20
+> I reread this I found out, that I missed logic here.
+>=20
+> I mean:
+>=20
+> > A long time ago syzbot reported memory leak in mcba_usb can
+> > driver[1]. It was using strange pattern for allocating coherent
+> > buffers, which was leading to memory leaks.
+>=20
+> I fixed this wrong pattern in mcba_usb driver and
 
+Thanks for your patches! Please resend them with an updated description
+and the fixed patch 3.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--63zbmxht67o6x4ka
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmD/FMQACgkQqclaivrt
+76nrjQf/TTofghGBF24758Ocv4jTf+JAbhnZVQumdEB0CIG1gpEQdvfcHN0DOc+v
+e3Ex/uwhAZur2owZghqVFvM8LAbHEJOfZCcXSXMYWW5AdxeH5D2ML+RYlIpL5MP6
+PcXETRwW5LBGMCp8zAVsn17HDRusciQ1llAY8yDzvaCaO5+7slIcKz8A+aOpItso
+zbLWgs1gtdkDUoJ3rIMhq+PLen2fQnDeSGVHa8TgdVs0eNR2TWCu0dOlyVPIk45V
+JST5J/gT6ME1AgjEO69bSoAx1DxDkYDdi6GC/BeomPk9nZS9+/VNOOlnxlQkZpaf
+A0tLby0E9O3bmB2zLYgZ9CYmk9t6Xw==
+=mdMZ
+-----END PGP SIGNATURE-----
+
+--63zbmxht67o6x4ka--
