@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23843D6145
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8883D6303
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhGZPaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:30:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
+        id S238525AbhGZPnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:43:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236468AbhGZPRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:17:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E3160F57;
-        Mon, 26 Jul 2021 15:57:51 +0000 (UTC)
+        id S237926AbhGZPYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:24:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CACF360240;
+        Mon, 26 Jul 2021 16:04:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315072;
-        bh=UUSnv+YBR56PLXtQOE914sFblrvfbpijYigJ4zwetgw=;
+        s=korg; t=1627315493;
+        bh=JD7GtbckkQ883GLNGJ4pCOHmtJklLbCXoblQ/IaLTlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GTup+f6nQ3893uIojFkfzmiaGKdTU6vbaSAYzfF171YgL7nIrgPkoVA/DZcfj/tGr
-         +iVMvKHQbd7amfY/8vz6QTuZ1WRG4M1SpN9A1+P5ge1lUfU17Xn+JPXaj7DJsO7TEK
-         2gXdi0lvHJu+D0pF+LO01i5jD1g9ke7PNwD+e9ug=
+        b=dQFcsBukKJp+S0vEwKClwS9T+rOYUNmkGeRJu5DAl5JZCzEtMs2i23uJWHA1OjPHs
+         xBbleLwngMW+fzjWm4JEMaLk3eVWaBWQpqq0ZVXXgCtRfnHexvgDvwuxXjYjxKMJW+
+         RtrbQKd4hJL9vRyhvNjKOl3attOPjWvNAfhEpMcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.4 071/108] s390/boot: fix use of expolines in the DMA code
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 119/167] KVM: PPC: Book3S: Fix H_RTAS rets buffer overflow
 Date:   Mon, 26 Jul 2021 17:39:12 +0200
-Message-Id: <20210726153833.963804851@linuxfoundation.org>
+Message-Id: <20210726153843.393628770@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Egorenkov <egorenar@linux.ibm.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 463f36c76fa4ec015c640ff63ccf52e7527abee0 upstream.
+commit f62f3c20647ebd5fb6ecb8f0b477b9281c44c10a upstream.
 
-The DMA code section of the decompressor must be compiled with expolines
-if Spectre V2 mitigation has been enabled for the decompressed kernel.
-This is required because although the decompressor's image contains
-the DMA code section, it is handed over to the decompressed kernel for use.
+The kvmppc_rtas_hcall() sets the host rtas_args.rets pointer based on
+the rtas_args.nargs that was provided by the guest. That guest nargs
+value is not range checked, so the guest can cause the host rets pointer
+to be pointed outside the args array. The individual rtas function
+handlers check the nargs and nrets values to ensure they are correct,
+but if they are not, the handlers store a -3 (0xfffffffd) failure
+indication in rets[0] which corrupts host memory.
 
-Because the DMA code is already slow w/o expolines, use expolines always
-regardless whether the decompressed kernel is using them or not. This
-simplifies the DMA code by dropping the conditional compilation of
-expolines.
+Fix this by testing up front whether the guest supplied nargs and nret
+would exceed the array size, and fail the hcall directly without storing
+a failure indication to rets[0].
 
-Fixes: bf72630130c2 ("s390: use proper expoline sections for .dma code")
-Cc: <stable@vger.kernel.org> # 5.2
-Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Also expand on a comment about why we kill the guest and try not to
+return errors directly if we have a valid rets[0] pointer.
+
+Fixes: 8e591cb72047 ("KVM: PPC: Book3S: Add infrastructure to implement kernel-side RTAS calls")
+Cc: stable@vger.kernel.org # v3.10+
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/boot/text_dma.S |   19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ arch/powerpc/kvm/book3s_rtas.c |   25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
---- a/arch/s390/boot/text_dma.S
-+++ b/arch/s390/boot/text_dma.S
-@@ -9,16 +9,6 @@
- #include <asm/errno.h>
- #include <asm/sigp.h>
+--- a/arch/powerpc/kvm/book3s_rtas.c
++++ b/arch/powerpc/kvm/book3s_rtas.c
+@@ -242,6 +242,17 @@ int kvmppc_rtas_hcall(struct kvm_vcpu *v
+ 	 * value so we can restore it on the way out.
+ 	 */
+ 	orig_rets = args.rets;
++	if (be32_to_cpu(args.nargs) >= ARRAY_SIZE(args.args)) {
++		/*
++		 * Don't overflow our args array: ensure there is room for
++		 * at least rets[0] (even if the call specifies 0 nret).
++		 *
++		 * Each handler must then check for the correct nargs and nret
++		 * values, but they may always return failure in rets[0].
++		 */
++		rc = -EINVAL;
++		goto fail;
++	}
+ 	args.rets = &args.args[be32_to_cpu(args.nargs)];
  
--#ifdef CC_USING_EXPOLINE
--	.pushsection .dma.text.__s390_indirect_jump_r14,"axG"
--__dma__s390_indirect_jump_r14:
--	larl	%r1,0f
--	ex	0,0(%r1)
--	j	.
--0:	br	%r14
--	.popsection
--#endif
--
- 	.section .dma.text,"ax"
- /*
-  * Simplified version of expoline thunk. The normal thunks can not be used here,
-@@ -27,11 +17,10 @@ __dma__s390_indirect_jump_r14:
-  * affects a few functions that are not performance-relevant.
-  */
- 	.macro BR_EX_DMA_r14
--#ifdef CC_USING_EXPOLINE
--	jg	__dma__s390_indirect_jump_r14
--#else
--	br	%r14
--#endif
-+	larl	%r1,0f
-+	ex	0,0(%r1)
-+	j	.
-+0:	br	%r14
- 	.endm
- 
- /*
+ 	mutex_lock(&vcpu->kvm->arch.rtas_token_lock);
+@@ -269,9 +280,17 @@ int kvmppc_rtas_hcall(struct kvm_vcpu *v
+ fail:
+ 	/*
+ 	 * We only get here if the guest has called RTAS with a bogus
+-	 * args pointer. That means we can't get to the args, and so we
+-	 * can't fail the RTAS call. So fail right out to userspace,
+-	 * which should kill the guest.
++	 * args pointer or nargs/nret values that would overflow the
++	 * array. That means we can't get to the args, and so we can't
++	 * fail the RTAS call. So fail right out to userspace, which
++	 * should kill the guest.
++	 *
++	 * SLOF should actually pass the hcall return value from the
++	 * rtas handler call in r3, so enter_rtas could be modified to
++	 * return a failure indication in r3 and we could return such
++	 * errors to the guest rather than failing to host userspace.
++	 * However old guests that don't test for failure could then
++	 * continue silently after errors, so for now we won't do this.
+ 	 */
+ 	return rc;
+ }
 
 
