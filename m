@@ -2,89 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7413D52D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F343D52DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:35:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhGZEu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 00:50:59 -0400
-Received: from mga04.intel.com ([192.55.52.120]:64123 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhGZEu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 00:50:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10056"; a="210272248"
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="210272248"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2021 22:31:27 -0700
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="504644556"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.175.15]) ([10.249.175.15])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2021 22:31:23 -0700
-Subject: Re: [RFC PATCH v2 65/69] KVM: X86: Introduce initial_tsc_khz in
- struct kvm_arch
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "erdemaktas@google.com" <erdemaktas@google.com>,
-        Connor Kuehl <ckuehl@redhat.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
-References: <cover.1625186503.git.isaku.yamahata@intel.com>
- <5f87f0b888555b52041a0fe32280adee0d563e63.1625186503.git.isaku.yamahata@intel.com>
- <792040b0-4463-d805-d14e-ba264a3f8bbf@redhat.com>
- <YO3YDXLV7RQzMmXX@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <2705e8a4-6783-cfb7-e24d-0ffcffbefd6a@intel.com>
-Date:   Mon, 26 Jul 2021 13:31:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.12.0
+        id S229683AbhGZEw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 00:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231190AbhGZEwz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 00:52:55 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838ECC061764
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 22:33:23 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id u3so13321073lff.9
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 22:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PRU68iKUPw5S0tl4mVxd5yJKI+6qFQ7X97+eA0nBCAE=;
+        b=p6sLAgt5tOdHwc0wNad/P+hdEygwdLuthLS5kmbCb6gazGK8X1ASirlTkcieZGF86K
+         sYjq6RB/lXQ46mN1HDPlF93oERNTXG6b3WkN3YEc5DDKl5rDFu8PGo8+8cmXMIUUpx+D
+         4LW+OWCkmkHeKYwwOpOrPkh0D1+f727nFn0jSDTSHmNZov17Ih9kE1wcCVxA8iKxVnv6
+         3nwWTv90vVtw0hqXi4WuQACKsK4UELXPezda6iEZcs2ibfjqvXb9Ye1KgYbqUmQuJ4QX
+         YUtEkV80FAugV7VEK4wz4I32PPJZAtUGa5CYp52ovSzdnXwtEt9xm7KG5cPWNFM74FXx
+         5BrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PRU68iKUPw5S0tl4mVxd5yJKI+6qFQ7X97+eA0nBCAE=;
+        b=qmZYmtwtOqVfxSEJDmUDdql2bx7eZLmbk3m60Kq8bmNM4nfVe/X1cYWmOAn/eYm0m3
+         IhlZDGlwnnM/fd4XXEjGsvExlW6MbyaxTQraMFOE0qIvRrxlkDR0G2hggy1wQJzXZ4sg
+         fBzvsWTNcBkptVTWRq/xYjDOdDr1YdksOQDNBkMCNV2AN7n8dgeBhxWlrWP1qV8wUrJu
+         CfWvk2Zi0OrzlxG+TdGcdu7f40Fqp2+d9QvIuf+0uYUJcN5UrKZceHrtGvVk0E6A3s51
+         m6DCtxYksJNjASVLcVDPujJkbrmymmGVImgd0kaYbZpqhR5n7Dr4LVeGxTWVkp3f+rzF
+         Pyzg==
+X-Gm-Message-State: AOAM530q/JdbzIu1OAwxnUO0F6rjLoGNfHJvV4U5+WG1c5pGFNdMVT4c
+        t48HbboMNiaFRIqdYQUxUs0MPthA0Y3PDmyW3oUBbQ==
+X-Google-Smtp-Source: ABdhPJySjGAMkvYVAYkYNpAfNDgDRSCahZbm8y1hFRqwSZ3PmVRMxfjoqqrcouvYItmqWhyW1BiT/rzUxlkL0kC3RcE=
+X-Received: by 2002:a19:c757:: with SMTP id x84mr11736748lff.302.1627277601795;
+ Sun, 25 Jul 2021 22:33:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YO3YDXLV7RQzMmXX@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210723172121.156687-1-colin.king@canonical.com>
+In-Reply-To: <20210723172121.156687-1-colin.king@canonical.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 26 Jul 2021 11:03:10 +0530
+Message-ID: <CAFA6WYOugaWGj-RoHzikk8L_-vHY6XX8NOKoJL08--Oh4WeM6w@mail.gmail.com>
+Subject: Re: [PATCH] security: keys: trusted: Fix memory leaks on allocated blob
+To:     Colin King <colin.king@canonical.com>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/2021 2:14 AM, Sean Christopherson wrote:
-> On Tue, Jul 06, 2021, Paolo Bonzini wrote:
->> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
->>> From: Xiaoyao Li <xiaoyao.li@intel.com>
->>>
->>> Introduce a per-vm variable initial_tsc_khz to hold the default tsc_khz
->>> for kvm_arch_vcpu_create().
->>>
->>> This field is going to be used by TDX since TSC frequency for TD guest
->>> is configured at TD VM initialization phase.
->>>
->>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
->>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->>> ---
->>>    arch/x86/include/asm/kvm_host.h | 1 +
->>>    arch/x86/kvm/x86.c              | 3 ++-
->>>    2 files changed, 3 insertions(+), 1 deletion(-)
->>
->> So this means disabling TSC frequency scaling on TDX.  
+Hi Colin,
 
-No. It still supports TSC frequency scaling on TDX. Only that we need to 
-configure TSC frequency for TD guest at VM level, not vcpu level.
+On Fri, 23 Jul 2021 at 22:51, Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There are several error return paths that don't kfree the allocated
+> blob, leading to memory leaks. Ensure blob is initialized to null as
+> some of the error return paths in function tpm2_key_decode do not
+> change blob. Add an error return path to kfree blob and use this on
+> the current leaky returns.
+>
 
->> Would it make sense
->> to delay VM creation to a separate ioctl, similar to KVM_ARM_VCPU_FINALIZE
->> (KVM_VM_FINALIZE)?
-> 
-> There's an equivalent of that in the next mega-patch, the KVM_TDX_INIT_VM sub-ioctl
-> of KVM_MEMORY_ENCRYPT_OP.  The TSC frequency for the guest gets provided at that
-> time.
-> 
+It looks like there are still leaky return paths left such as
+tpm_buf_init() failure etc. which needs to be fixed as well.
 
+With that addressed, feel free to add:
+
+Acked-by: Sumit Garg <sumit.garg@linaro.org>
+
+-Sumit
+
+> Addresses-Coverity: ("Resource leak")
+> Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  security/keys/trusted-keys/trusted_tpm2.c | 30 ++++++++++++++++-------
+>  1 file changed, 21 insertions(+), 9 deletions(-)
+>
+> diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
+> index 0165da386289..930c67f98611 100644
+> --- a/security/keys/trusted-keys/trusted_tpm2.c
+> +++ b/security/keys/trusted-keys/trusted_tpm2.c
+> @@ -366,7 +366,7 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
+>         unsigned int private_len;
+>         unsigned int public_len;
+>         unsigned int blob_len;
+> -       u8 *blob, *pub;
+> +       u8 *blob = NULL, *pub;
+>         int rc;
+>         u32 attrs;
+>
+> @@ -378,22 +378,30 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
+>         }
+>
+>         /* new format carries keyhandle but old format doesn't */
+> -       if (!options->keyhandle)
+> -               return -EINVAL;
+> +       if (!options->keyhandle) {
+> +               rc = -EINVAL;
+> +               goto err;
+> +       }
+>
+>         /* must be big enough for at least the two be16 size counts */
+> -       if (payload->blob_len < 4)
+> -               return -EINVAL;
+> +       if (payload->blob_len < 4) {
+> +               rc = -EINVAL;
+> +               goto err;
+> +       }
+>
+>         private_len = get_unaligned_be16(blob);
+>
+>         /* must be big enough for following public_len */
+> -       if (private_len + 2 + 2 > (payload->blob_len))
+> -               return -E2BIG;
+> +       if (private_len + 2 + 2 > (payload->blob_len)) {
+> +               rc = -E2BIG;
+> +               goto err;
+> +       }
+>
+>         public_len = get_unaligned_be16(blob + 2 + private_len);
+> -       if (private_len + 2 + public_len + 2 > payload->blob_len)
+> -               return -E2BIG;
+> +       if (private_len + 2 + public_len + 2 > payload->blob_len) {
+> +               rc = -E2BIG;
+> +               goto err;
+> +       }
+>
+>         pub = blob + 2 + private_len + 2;
+>         /* key attributes are always at offset 4 */
+> @@ -441,6 +449,10 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
+>                 rc = -EPERM;
+>
+>         return rc;
+> +
+> +err:
+> +       kfree(blob);
+> +       return rc;
+>  }
+>
+>  /**
+> --
+> 2.31.1
+>
