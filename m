@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7A63D5EF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDB53D5D61
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbhGZPQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:16:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
+        id S235455AbhGZPBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:01:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236078AbhGZPHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:07:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88E6A60F94;
-        Mon, 26 Jul 2021 15:47:59 +0000 (UTC)
+        id S235447AbhGZPBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:01:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C009A60F42;
+        Mon, 26 Jul 2021 15:41:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314480;
-        bh=lC4C1AP+WqzdL5jA7ViecfA8X6+auc1/xFYADA5MTXk=;
+        s=korg; t=1627314091;
+        bh=Csn/RnxPMPaL5qmyamdW+7ODVbUXiffXGy8X59WJJRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vsfpRyjTs08saILth2EAI/j+733YekAMVtNrUVsBpOJkiP7yJUFBjX5wQuEqC9wH+
-         EtuEz8YArU4b1Kx3VsllyGzvKEncRVZFhdYa5L97Fhe0pkTrYiID9kGZgErgZMkZ0c
-         NEcFs0PnbgCT2fZrdBfs4/gQRmqR2slLz2CZXdnA=
+        b=XhZS0TZN7uHQHzcDc8zTdDRAWD+9PFxi/BxGxMaBO3mJjXkgovXC2e2odsoMiEwFq
+         QztwkUVX3FzIF4anhbeB5tYpCjxDS+Tur+/qvdm4pgl7WRGUHdUBv0YJZVRPa3KuE5
+         JPrEGzYOuRYhMuEbTuI2KtNs5Mt0vimaVnnGHUao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 26/82] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+        stable@vger.kernel.org, Odin Ugedal <odin@uged.al>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ben Segall <bsegall@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 08/47] sched/fair: Fix CFS bandwidth hrtimer expiry type
 Date:   Mon, 26 Jul 2021 17:38:26 +0200
-Message-Id: <20210726153829.013060816@linuxfoundation.org>
+Message-Id: <20210726153823.244958763@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Odin Ugedal <odin@uged.al>
 
-commit 2b452550a203d88112eaf0ba9fc4b750a000b496 upstream.
+[ Upstream commit 72d0ad7cb5bad265adb2014dbe46c4ccb11afaba ]
 
-Make sure that we disable each of the TX and RX queues in the TDMA and
-RDMA control registers. This is a correctness change to be symmetrical
-with the code that enables the TX and RX queues.
+The time remaining until expiry of the refresh_timer can be negative.
+Casting the type to an unsigned 64-bit value will cause integer
+underflow, making the runtime_refresh_within return false instead of
+true. These situations are rare, but they do happen.
 
-Tested-by: Maxime Ripard <maxime@cerno.tech>
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This does not cause user-facing issues or errors; other than
+possibly unthrottling cfs_rq's using runtime from the previous period(s),
+making the CFS bandwidth enforcement less strict in those (special)
+situations.
+
+Signed-off-by: Odin Ugedal <odin@uged.al>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Ben Segall <bsegall@google.com>
+Link: https://lore.kernel.org/r/20210629121452.18429-1-odin@uged.al
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ kernel/sched/fair.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -2789,15 +2789,21 @@ static void bcmgenet_set_hw_addr(struct
- /* Returns a reusable dma control register value */
- static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 15952d0e340b..e00f17070cb2 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3852,7 +3852,7 @@ static const u64 cfs_bandwidth_slack_period = 5 * NSEC_PER_MSEC;
+ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
  {
-+	unsigned int i;
- 	u32 reg;
- 	u32 dma_ctrl;
+ 	struct hrtimer *refresh_timer = &cfs_b->period_timer;
+-	u64 remaining;
++	s64 remaining;
  
- 	/* disable DMA */
- 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->tx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
+ 	/* if the call-back is running a quota refresh is already occurring */
+ 	if (hrtimer_callback_running(refresh_timer))
+@@ -3860,7 +3860,7 @@ static int runtime_refresh_within(struct cfs_bandwidth *cfs_b, u64 min_expire)
  
-+	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->rx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
+ 	/* is a quota refresh about to occur? */
+ 	remaining = ktime_to_ns(hrtimer_expires_remaining(refresh_timer));
+-	if (remaining < min_expire)
++	if (remaining < (s64)min_expire)
+ 		return 1;
+ 
+ 	return 0;
+-- 
+2.30.2
+
 
 
