@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB0B3D634A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DB33D6346
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238605AbhGZPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43124 "EHLO mail.kernel.org"
+        id S237827AbhGZPpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237482AbhGZP3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237442AbhGZP3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:29:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E90660C40;
-        Mon, 26 Jul 2021 16:08:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E16B16103A;
+        Mon, 26 Jul 2021 16:08:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315681;
-        bh=Tl8kfP7Snlqt4eC1Y/lP9/jTsY7IYPwK2Y3EradGK+k=;
+        s=korg; t=1627315686;
+        bh=vDLIhy+N5aPbnzzu9n74JD7Wlx3WnNTbPANWOz/MYX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nA/AJ/Xo487DX7/0bqJE5349AU62Z1egZGlTEsccL7vX4Iq7ZAMlk940caMi3IUwZ
-         x3F0+0qRn5Ry8UiQFCVGcrkgVqNuGWxtDSV7n7O9ep8p2wsgyCxQj1wJiRQG1PjxoB
-         esUfAEDT7ThJhPtbnTBSRTqQdRKOxW0z7JrKm4Fg=
+        b=l/p6mM3YEs1fckCVEoR4rrUjWbxPzQYs5qbdb6MFeUGuqEwIDcW6gw2nz5/WC8ssM
+         NvID1YO8lkMD69yhATVvt6Tr5nwPahFaLRlkuUmmSKlE9uveTITE3XOgYZUFXjfcwi
+         DDahHNIlffl0OVTSnE4kBuG/Cgl5v5VVEJ7Nx4io=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 024/223] stmmac: platform: Fix signedness bug in stmmac_probe_config_dt()
-Date:   Mon, 26 Jul 2021 17:36:56 +0200
-Message-Id: <20210726153847.038645348@linuxfoundation.org>
+Subject: [PATCH 5.13 026/223] selftests: icmp_redirect: IPv6 PMTU info should be cleared after redirect
+Date:   Mon, 26 Jul 2021 17:36:58 +0200
+Message-Id: <20210726153847.101750697@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,49 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YueHaibing <yuehaibing@huawei.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit eca81f09145d765c21dd8fb1ba5d874ca255c32c ]
+[ Upstream commit 0e02bf5de46ae30074a2e1a8194a422a84482a1a ]
 
-The "plat->phy_interface" variable is an enum and in this context GCC
-will treat it as an unsigned int so the error handling is never
-triggered.
+After redirecting, it's already a new path. So the old PMTU info should
+be cleared. The IPv6 test "mtu exception plus redirect" should only
+has redirect info without old PMTU.
 
-Fixes: b9f0b2f634c0 ("net: stmmac: platform: fix probe for ACPI devices")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+The IPv4 test can not be changed because of legacy.
+
+Fixes: ec8105352869 ("selftests: Add redirect tests")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Reviewed-by: David Ahern <dsahern@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ tools/testing/selftests/net/icmp_redirect.sh | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index a696ada013eb..cad9e466353f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -399,6 +399,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
- 	struct device_node *np = pdev->dev.of_node;
- 	struct plat_stmmacenet_data *plat;
- 	struct stmmac_dma_cfg *dma_cfg;
-+	int phy_mode;
- 	void *ret;
- 	int rc;
+diff --git a/tools/testing/selftests/net/icmp_redirect.sh b/tools/testing/selftests/net/icmp_redirect.sh
+index bfcabee50155..104a7a5f13b1 100755
+--- a/tools/testing/selftests/net/icmp_redirect.sh
++++ b/tools/testing/selftests/net/icmp_redirect.sh
+@@ -309,9 +309,10 @@ check_exception()
+ 	fi
+ 	log_test $? 0 "IPv4: ${desc}"
  
-@@ -414,10 +415,11 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
- 		eth_zero_addr(mac);
- 	}
- 
--	plat->phy_interface = device_get_phy_mode(&pdev->dev);
--	if (plat->phy_interface < 0)
--		return ERR_PTR(plat->phy_interface);
-+	phy_mode = device_get_phy_mode(&pdev->dev);
-+	if (phy_mode < 0)
-+		return ERR_PTR(phy_mode);
- 
-+	plat->phy_interface = phy_mode;
- 	plat->interface = stmmac_of_get_mac_mode(np);
- 	if (plat->interface < 0)
- 		plat->interface = plat->phy_interface;
+-	if [ "$with_redirect" = "yes" ]; then
++	# No PMTU info for test "redirect" and "mtu exception plus redirect"
++	if [ "$with_redirect" = "yes" ] && [ "$desc" != "redirect exception plus mtu" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+-		grep -q "${H2_N2_IP6} .*via ${R2_LLADDR} dev br0.*${mtu}"
++		grep -v "mtu" | grep -q "${H2_N2_IP6} .*via ${R2_LLADDR} dev br0"
+ 	elif [ -n "${mtu}" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+ 		grep -q "${mtu}"
 -- 
 2.30.2
 
