@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B091B3D5D37
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B203D5DC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235170AbhGZPAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:00:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38408 "EHLO mail.kernel.org"
+        id S235518AbhGZPDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:03:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234828AbhGZPAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:00:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A37360E08;
-        Mon, 26 Jul 2021 15:40:33 +0000 (UTC)
+        id S235729AbhGZPCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB1A60F37;
+        Mon, 26 Jul 2021 15:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314034;
-        bh=4sbGRXc4eo0oyeIfZXjX8+PY5BgsYFlbgVeD38D2N9I=;
+        s=korg; t=1627314193;
+        bh=PP7emg3R96vM45QcvloT7IHz1px/K67vO41LxLVoiiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nIIaj/vitDgWK+OxRH2XssCeei89pKgZSmkym6ZMuOFZIlsOX3Ba0xOHzKZ0wKzpb
-         RgrWHi+6JCXVJ2SJ1hqBPRINX6iUYhUwFL8xYdoy845Vqn/Yu6jWiFasDEDTA1WZSC
-         ptC/U+Diq08XLbKkAKTV6DDfbTxa02bYADQqZLNM=
+        b=O8S9ESgD0ib9xy+Sk++ryIOK/3h6iif4ZVNsVg9Jwi/RpdDCIBIyMsEAb6136DjAt
+         KYRigUW8GTMkGe8T5ctpgW3qeik90S/fm8dHSt+8x4ns1hODvAS57rGm5QNNHwI+nq
+         Pxxnvt2ASKzNJDZV1a6FCptSacI6dRlFXFqRI0Ao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,15 +27,13 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 01/47] ARM: brcmstb: dts: fix NAND nodes names
+Subject: [PATCH 4.9 05/60] ARM: dts: BCM63xx: Fix NAND nodes names
 Date:   Mon, 26 Jul 2021 17:38:19 +0200
-Message-Id: <20210726153823.030841804@linuxfoundation.org>
+Message-Id: <20210726153825.040787515@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,7 +43,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 9a800ce1aada6e0f56b78e4713f4858c8990c1f7 ]
+[ Upstream commit 75e2f012f6e34b93124d1d86eaa8f27df48e9ea0 ]
 
 This matches nand-controller.yaml requirements.
 
@@ -53,40 +51,40 @@ Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/bcm7445-bcm97445svmb.dts | 4 ++--
- arch/arm/boot/dts/bcm7445.dtsi             | 2 +-
+ arch/arm/boot/dts/bcm63138.dtsi    | 2 +-
+ arch/arm/boot/dts/bcm963138dvt.dts | 4 ++--
  2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
-index 0bb8d17e4c2d..e51c9b079432 100644
---- a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
-+++ b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
-@@ -13,10 +13,10 @@
- 	};
+diff --git a/arch/arm/boot/dts/bcm63138.dtsi b/arch/arm/boot/dts/bcm63138.dtsi
+index 547369c69e96..aedbea888684 100644
+--- a/arch/arm/boot/dts/bcm63138.dtsi
++++ b/arch/arm/boot/dts/bcm63138.dtsi
+@@ -174,7 +174,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		nand: nand@2000 {
++		nand_controller: nand-controller@2000 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+ 			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.0", "brcm,brcmnand";
+diff --git a/arch/arm/boot/dts/bcm963138dvt.dts b/arch/arm/boot/dts/bcm963138dvt.dts
+index 370aa2cfddf2..439cff69e948 100644
+--- a/arch/arm/boot/dts/bcm963138dvt.dts
++++ b/arch/arm/boot/dts/bcm963138dvt.dts
+@@ -29,10 +29,10 @@
+ 	status = "okay";
  };
  
 -&nand {
 +&nand_controller {
  	status = "okay";
  
--	nandcs@1 {
-+	nand@1 {
+-	nandcs@0 {
++	nand@0 {
  		compatible = "brcm,nandcs";
- 		reg = <1>;
- 		nand-ecc-step-size = <512>;
-diff --git a/arch/arm/boot/dts/bcm7445.dtsi b/arch/arm/boot/dts/bcm7445.dtsi
-index 4791321969b3..3f002f2047f1 100644
---- a/arch/arm/boot/dts/bcm7445.dtsi
-+++ b/arch/arm/boot/dts/bcm7445.dtsi
-@@ -149,7 +149,7 @@
- 			reg-names = "aon-ctrl", "aon-sram";
- 		};
- 
--		nand: nand@3e2800 {
-+		nand_controller: nand-controller@3e2800 {
- 			status = "disabled";
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+ 		reg = <0>;
+ 		nand-ecc-strength = <4>;
 -- 
 2.30.2
 
