@@ -2,226 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20AA3D5505
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5C53D5509
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhGZH3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:29:05 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:51187 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232120AbhGZH3C (ORCPT
+        id S232888AbhGZH3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:29:41 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16001 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233018AbhGZH3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:29:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UgzYoDR_1627286901;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0UgzYoDR_1627286901)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Jul 2021 16:08:22 +0800
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>,
-        Huang Jianan <huangjianan@oppo.com>
-References: <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <5a377153-85c0-4514-11f2-e8b0707e5acf@linux.alibaba.com>
-Date:   Mon, 26 Jul 2021 16:08:21 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        Mon, 26 Jul 2021 03:29:36 -0400
+Received: from dggeme758-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYCDs0lYvzZsrC;
+        Mon, 26 Jul 2021 16:06:37 +0800 (CST)
+Received: from [10.40.166.221] (10.40.166.221) by
+ dggeme758-chm.china.huawei.com (10.3.19.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 16:10:03 +0800
+Message-ID: <60FE6DDA.8080904@hisilicon.com>
+Date:   Mon, 26 Jul 2021 16:10:02 +0800
+From:   Wei Xu <xuwei5@hisilicon.com>
+User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
 MIME-Version: 1.0
-In-Reply-To: <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, "xuwei (O)" <xuwei5@huawei.com>
+Subject: Re: [PATCH 1/2] dts: hisilicon: add support for the PMIC found on
+ Hikey 970
+References: <cover.1627116285.git.mchehab+huawei@kernel.org>    <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>     <60FE20AC.3050400@hisilicon.com>        <20210726081812.54431189@coco.lan>      <60FE57B5.2010603@hisilicon.com> <20210726094344.0a415bd0@coco.lan>
+In-Reply-To: <20210726094344.0a415bd0@coco.lan>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.166.221]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeme758-chm.china.huawei.com (10.3.19.104)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mauro,
 
+On 2021/7/26 15:43, Mauro Carvalho Chehab wrote:
+> Em Mon, 26 Jul 2021 14:35:33 +0800
+> Wei Xu <xuwei5@hisilicon.com> escreveu:
+> 
+>> Hi Mauro,
+>>
+>> On 2021/7/26 14:19, Mauro Carvalho Chehab wrote:
+>>> Em Mon, 26 Jul 2021 10:40:44 +0800
+>>> Wei Xu <xuwei5@hisilicon.com> escreveu:
+>>>   
+>>>> Hi Mauro,
+>>>>
+>>>> On 2021/7/24 16:55, Mauro Carvalho Chehab wrote:  
+>>>>> Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
+>>>>> on HiKey970 board.
+>>>>>
+>>>>> As we now have support for it, change the fixed regulators
+>>>>> used by the SD I/O to use the proper LDO supplies.
+>>>>>
+>>>>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+>>>>> ---
+>>>>>  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
+>>>>>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 86 +++++++++++++++++++
+>>>>>  2 files changed, 89 insertions(+), 19 deletions(-)
+>>>>>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+>>>>>
+>>>>> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+>>>>> index d8abf442ee7e..7c32f5fd5cc5 100644
+>>>>> --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+>>>>> +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+>>>>> @@ -12,6 +12,7 @@
+>>>>>  
+>>>>>  #include "hi3670.dtsi"
+>>>>>  #include "hikey970-pinctrl.dtsi"
+>>>>> +#include "hikey970-pmic.dtsi"
+>>>>>  
+>>>>>  / {
+>>>>>  	model = "HiKey970";
+>>>>> @@ -39,23 +40,6 @@ memory@0 {
+>>>>>  		reg = <0x0 0x0 0x0 0x0>;
+>>>>>  	};
+>>>>>  
+>>>>> -	sd_1v8: regulator-1v8 {
+>>>>> -		compatible = "regulator-fixed";
+>>>>> -		regulator-name = "fixed-1.8V";
+>>>>> -		regulator-min-microvolt = <1800000>;
+>>>>> -		regulator-max-microvolt = <1800000>;
+>>>>> -		regulator-always-on;
+>>>>> -	};
+>>>>> -
+>>>>> -	sd_3v3: regulator-3v3 {
+>>>>> -		compatible = "regulator-fixed";
+>>>>> -		regulator-name = "fixed-3.3V";
+>>>>> -		regulator-min-microvolt = <3300000>;
+>>>>> -		regulator-max-microvolt = <3300000>;
+>>>>> -		regulator-boot-on;
+>>>>> -		regulator-always-on;
+>>>>> -	};
+>>>>> -
+>>>>>  	wlan_en: wlan-en-1-8v {
+>>>>>  		compatible = "regulator-fixed";
+>>>>>  		regulator-name = "wlan-en-regulator";
+>>>>> @@ -402,8 +386,8 @@ &dwmmc1 {
+>>>>>  	pinctrl-0 = <&sd_pmx_func
+>>>>>  		     &sd_clk_cfg_func    
+>>>>>  		     &sd_cfg_func>;    
+>>>>> -	vmmc-supply = <&sd_3v3>;
+>>>>> -	vqmmc-supply = <&sd_1v8>;
+>>>>> +	vmmc-supply = <&ldo16>;
+>>>>> +	vqmmc-supply = <&ldo9>;
+>>>>>  	status = "okay";
+>>>>>  };
+>>>>>  
+>>>>> diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+>>>>> new file mode 100644
+>>>>> index 000000000000..970047f2dabd
+>>>>> --- /dev/null
+>>>>> +++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+>>>>> @@ -0,0 +1,86 @@
+>>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>>> +/*
+>>>>> + * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
+>>>>> + *
+>>>>> + * Copyright (C) 2020, Huawei Tech. Co., Ltd.
+>>>>> + */
+>>>>> +
+>>>>> +#include <dt-bindings/spmi/spmi.h>
+>>>>> +
+>>>>> +/ {
+>>>>> +	spmi: spmi@fff24000 {
+>>>>> +		compatible = "hisilicon,kirin970-spmi-controller";
+>>>>> +		#address-cells = <2>;
+>>>>> +		#size-cells = <0>;
+>>>>> +		status = "okay";
+>>>>> +		reg = <0x0 0xfff24000 0x0 0x1000>;
+>>>>> +		hisilicon,spmi-channel = <2>;
+>>>>> +
+>>>>> +		pmic: pmic@0 {
+>>>>> +			compatible = "hisilicon,hi6421-spmi";    
+>>>>
+>>>> Should this be "hisilicon,hi6421-pmic" which is already in the binding document "mfd/hi6421.txt"?
+>>>> Others are OK to me.  
+>>>
+>>> No. 
+>>>
+>>> hisilicon,hi6421-pmic is used by this driver
+>>> 	drivers/mfd/hi6421-pmic-core.c
+>>>
+>>> which provides support for the Hi6421 variants that don't use a MIPI
+>>> SPMI bus.
+>>>
+>>> The "hisilicon,hi6421-spmi" compatible is for the new driver:
+>>> 	drivers/mfd/hi6421-spmi-pmic.c
+>>>
+>>> And it is defined at:
+>>> 	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+>>>
+>>> Both DT bindings and the driver were promoted from staging on this patch:
+>>>
+>>> 	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-next&id=9bd9e0de1cf5b89c4854be505ac0a418ddcc01bf  
+>>
+>> Got it. Thanks for your kind explanation!
+>> So I am fine with this patch.
+>> Do you need my ack now or later I can merge it once it is out of staging.
+> 
+> Whatever works best for you and Greg.
+> 
+> It should be noticed that the driver should be out of staging for v5.15-rc1
+> (as the patch moving it out of staging was already merged at Greg's tree).
+> This patch is needed by the PCI driver patchset I'm currently working,
+> so the best would be if this patch could also be merged for v5.15-rc1
+> (either via HiSilicon tree or via staging tree).
+> 
+> I suspect that having your ack and merging this via staging would work
+> best, as this would ensure that both changes will be merged upstream
+> at the same time.
+> 
+> But, as I said, it is up to you both ;-)
 
-On 7/24/21 1:41 AM, Gao Xiang wrote:
-> Add support for reading inline data content into the page cache from
-> nonzero page-aligned file offsets.  This enables the EROFS tailpacking
-> mode where the last few bytes of the file are stored right after the
-> inode.
-> 
-> The buffered write path remains untouched since EROFS cannot be used
-> for testing. It'd be better to be implemented if upcoming real users
-> care and provide a real pattern rather than leave untested dead code
-> around.
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Darrick J. Wong <djwong@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-> Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Got it.
+To avoid dependency, I think it is better to be merged by Greg's tree.
+So for this patch,
 
-Looks good to me.
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Reviewed-by: Wei Xu <xuwei5@hisilicon.com>
 
-> ---
-> v6: https://lore.kernel.org/r/20210722031729.51628-1-hsiangkao@linux.alibaba.com
-> changes since v6:
->  - based on Christoph's reply;
->  - update commit message suggested by Darrick;
->  - disable buffered write path until some real fs users.
+Best Regards,
+Wei
+
 > 
->  fs/iomap/buffered-io.c | 42 ++++++++++++++++++++++++++----------------
->  fs/iomap/direct-io.c   | 10 ++++++----
->  include/linux/iomap.h  | 14 ++++++++++++++
->  3 files changed, 46 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438bec..f351e1f9e3f6 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
->  	struct readahead_control *rac;
->  };
->  
-> -static void
-> -iomap_read_inline_data(struct inode *inode, struct page *page,
-> -		struct iomap *iomap)
-> +static int iomap_read_inline_data(struct inode *inode, struct page *page,
-> +		struct iomap *iomap, loff_t pos)
->  {
-> -	size_t size = i_size_read(inode);
-> +	size_t size = iomap->length + iomap->offset - pos;
->  	void *addr;
->  
->  	if (PageUptodate(page))
-> -		return;
-> +		return PAGE_SIZE;
->  
-> -	BUG_ON(page_has_private(page));
-> -	BUG_ON(page->index);
-> -	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +	/* inline data must start page aligned in the file */
-> +	if (WARN_ON_ONCE(offset_in_page(pos)))
-> +		return -EIO;
-> +	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-> +		return -EIO;
-> +	if (WARN_ON_ONCE(page_has_private(page)))
-> +		return -EIO;
->  
->  	addr = kmap_atomic(page);
-> -	memcpy(addr, iomap->inline_data, size);
-> +	memcpy(addr, iomap_inline_buf(iomap, pos), size);
->  	memset(addr + size, 0, PAGE_SIZE - size);
->  	kunmap_atomic(addr);
->  	SetPageUptodate(page);
-> +	return PAGE_SIZE;
->  }
->  
->  static inline bool iomap_block_needs_zeroing(struct inode *inode,
-> @@ -246,11 +250,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
->  	unsigned poff, plen;
->  	sector_t sector;
->  
-> -	if (iomap->type == IOMAP_INLINE) {
-> -		WARN_ON_ONCE(pos);
-> -		iomap_read_inline_data(inode, page, iomap);
-> -		return PAGE_SIZE;
-> -	}
-> +	if (iomap->type == IOMAP_INLINE)
-> +		return iomap_read_inline_data(inode, page, iomap, pos);
->  
->  	/* zero post-eof blocks as the page may be mapped */
->  	iop = iomap_page_create(inode, page);
-> @@ -589,6 +590,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
->  	return 0;
->  }
->  
-> +static int iomap_write_begin_inline(struct inode *inode,
-> +		struct page *page, struct iomap *srcmap)
-> +{
-> +	/* needs more work for the tailpacking case, disable for now */
-> +	if (WARN_ON_ONCE(srcmap->offset != 0))
-> +		return -EIO;
-> +	return iomap_read_inline_data(inode, page, srcmap, 0);
-> +}
-> +
->  static int
->  iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->  		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-> @@ -618,14 +628,14 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
->  	}
->  
->  	if (srcmap->type == IOMAP_INLINE)
-> -		iomap_read_inline_data(inode, page, srcmap);
-> +		status = iomap_write_begin_inline(inode, page, srcmap);
->  	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
->  		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
->  	else
->  		status = __iomap_write_begin(inode, pos, len, flags, page,
->  				srcmap);
->  
-> -	if (unlikely(status))
-> +	if (unlikely(status < 0))
->  		goto out_unlock;
->  
->  	*pagep = page;
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 9398b8c31323..a6aaea2764a5 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
->  		struct iomap_dio *dio, struct iomap *iomap)
->  {
->  	struct iov_iter *iter = dio->submit.iter;
-> +	void *dst = iomap_inline_buf(iomap, pos);
->  	size_t copied;
->  
-> -	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> +	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
-> +		return -EIO;
->  
->  	if (dio->flags & IOMAP_DIO_WRITE) {
->  		loff_t size = inode->i_size;
->  
->  		if (pos > size)
-> -			memset(iomap->inline_data + size, 0, pos - size);
-> -		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-> +			memset(iomap_inline_buf(iomap, size), 0, pos - size);
-> +		copied = copy_from_iter(dst, length, iter);
->  		if (copied) {
->  			if (pos + copied > size)
->  				i_size_write(inode, pos + copied);
->  			mark_inode_dirty(inode);
->  		}
->  	} else {
-> -		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-> +		copied = copy_to_iter(dst, length, iter);
->  	}
->  	dio->size += copied;
->  	return copied;
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 479c1da3e221..56b118c6d05c 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -97,6 +97,20 @@ iomap_sector(struct iomap *iomap, loff_t pos)
->  	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
->  }
->  
-> +static inline void *iomap_inline_buf(const struct iomap *iomap, loff_t pos)
-> +{
-> +	return iomap->inline_data - iomap->offset + pos;
-> +}
-> +
-> +/*
-> + * iomap->inline_data is a potentially kmapped page, ensure it never crosses a
-> + * page boundary.
-> + */
-> +static inline bool iomap_inline_data_size_valid(const struct iomap *iomap)
-> +{
-> +	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-> +}
-> +
->  /*
->   * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
->   * and page_done will be called for each page written to.  This only applies to
+> Thanks,
+> Mauro
+> .
 > 
