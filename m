@@ -2,65 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367823D6424
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36F33D6467
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240124AbhGZPy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234726AbhGZPdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:33:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50D5F604AC;
-        Mon, 26 Jul 2021 16:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627316043;
-        bh=tv3iEgitgc75A0bg23isqSqMFGNrby9uKXpFxgZ/wQ0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=utJLbSCklriQ95YuJeTxtNPqCtLoCJ6D1KUkkDK2z45T4Sy/65l8Zl6aPQvwueHJd
-         J2jKif7/gwuCrkXdZe2z4y1p+8FyQp/rYJRuy/ucaKIWgmiirjMwkQz3UgUm7xHmEC
-         vFml30psnBaWCZ2xQpdxoIr3WCoB2vvHM4YDZZ3rPeELWygJxkdjWzOagbiclQzYd5
-         hWQVvLiZYePNVb/5qO5gEsCn0GTIbkPcDN93Srd+juawUkUSvmJ/suBYcKzviN4AdO
-         E007aB+rODfQkt8mWpkUO7AbjDkYzi4N4OmkP38qo3NElg5brrFw9rrHmPx+3o3UlS
-         SbwRVAsVvmBog==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: do not submit NEW_ADDR to read node block
-Date:   Mon, 26 Jul 2021 09:13:57 -0700
-Message-Id: <20210726161357.105332-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+        id S233829AbhGZP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:57:59 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:57273 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237511AbhGZPmA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:42:00 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1N9MlI-1l2jt831jY-015EtT; Mon, 26 Jul 2021 18:22:18 +0200
+Received: by mail-wr1-f50.google.com with SMTP id p5so6681919wro.7;
+        Mon, 26 Jul 2021 09:22:18 -0700 (PDT)
+X-Gm-Message-State: AOAM533VQV99cc+dxxLIjJxZGXNngbz3hCJjNiuXNSOrkmHkz5bTC4gJ
+        4DCqCyJ5F6ho0TLxzQQUzh3DNN+3SGrtNWwSFK0=
+X-Google-Smtp-Source: ABdhPJye/ed6/FsM5yNUWTWtPJo/Xm2xrm3gGSltDPBIF+Kg8Q/ZjELHmN1WQSWO+r1dLUQThBaEPvfiDXicJHijpKc=
+X-Received: by 2002:adf:e107:: with SMTP id t7mr20157064wrz.165.1627316538300;
+ Mon, 26 Jul 2021 09:22:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210724162429.394792-1-sven@narfation.org> <YPxHYW/HPI/LLMXx@zeniv-ca.linux.org.uk>
+ <CAK8P3a2MVQMFFBUzudy+yrcp4Md8mm=NcvX7YzGVz4C8W61sgQ@mail.gmail.com> <3234493.RMHOAZ7QyG@ripper>
+In-Reply-To: <3234493.RMHOAZ7QyG@ripper>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 26 Jul 2021 18:22:02 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a35PNhsMQNU11RCaKm-o3-oG8pOXG836aoubxQMpTyVNQ@mail.gmail.com>
+Message-ID: <CAK8P3a35PNhsMQNU11RCaKm-o3-oG8pOXG836aoubxQMpTyVNQ@mail.gmail.com>
+Subject: Re: [PATCH] asm-generic: avoid sparse {get,put}_unaligned warning
+To:     Sven Eckelmann <sven@narfation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+        b.a.t.m.a.n@lists.open-mesh.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:VvZ46d4HcbQ9Yh9Wr5KJMJAA4QGmLQUzmw70t+kcPBYI7iDts0y
+ JcuvTpoimJpWvw1X2jgnk/cJlJnK/oj8KBFj/fEohjsDbmt7BBFPFuK9K0D+3Hs47W4f9Ut
+ 1goQ3FsZhIEbYaicnKjucgcLS/Z5yvmluJP6Yz44n+1pylkq151u36+7Wojy4ekcS+6ein2
+ N4hg6Maf5n3XQbkC6pqQg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UKpcsJUq4AU=:euwYip+Am0oMSvCjo6DqXU
+ Igr9R25Zgk7EqGMu/+p7xf/Q29Ks7ZAthvrJhLt9uQ3Rt76Gt6IPRE/3YbptYeP5+vkaAYkVH
+ nhAD6fKFUQ/vuxZZhXw2OHC3y2aQaEgTigXUzoPm5whAtNe57pMwT1BYF6DsPi/+82osTklkM
+ oaLIg7fG2U70nv7c3cSWYi2pAKlkEWmGQp0x+/hv9tIkt7hqr0XL8lTgrGbrMJfkXPIhlk6sy
+ C3OSMxx2QwohU7hEnTb+mfAXGoXDZ/cjrKplAg5JBf0m/UzAoaKg1QdwDITnNjcPnI9bhS4HY
+ KP5i+uE3E0jL0mpFKZD/tT1FvfhMdb3RQ13mbqwU6NRtQ6R5ohotwnN8UWx/o/Zv3yNCU4QV4
+ s7CnjkO3b/P3SOCXczn1hV2/fgiXneN3JO1CRgroA+xKkQhQ31HsOcH1viqeS4y6j1jqdLdHy
+ 1qJ0Z4Me+a4M97/t+wtRnGkCvMneeuIwABAz9l+/zPbLlyK3GpUdZMvGlL+Y1IuHWds9NpPnP
+ oFDfJNdKxL40ew1O0AIV5/RkIgGY4ayjLoCfzL4Hn/Z/fGfhL7nKSgc2zFcwuOvwjBKsBsnk0
+ A08lCrlKWGemysbqWTPBSOt+CLFJgUIQXrlqAgHTrrRWTplTPoHKUsfo2xV5HfTMkvYKKTDEO
+ Vm+boK7/E5jODDubIqGst1IpgUEiF3NZSjTGEciYo3kE8WV2WFYFzMvmmPeIIrKwvD9PlWAVp
+ utyFjS5YSBGYWjYNppy3bdRfhDpNekJu7aF1MKZPyBtTx/Y2d76cnN5DsmAdI8G46cKU2D8f7
+ mWiFg3o92haUB+8oaiYYynAk6jqH834cjO3sldD0PmEd3jjM/OV/txfDCv0batLOejDIFZz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the below patch, give cp is errored, we drop dirty node pages. This
-can give NEW_ADDR to read node pages. Don't do WARN_ON() which gives
-generic/475 failure.
+On Mon, Jul 26, 2021 at 5:04 PM Sven Eckelmann <sven@narfation.org> wrote:
+>
+> On Monday, 26 July 2021 14:57:31 CEST Arnd Bergmann wrote:
+> > >
+> > > > The special attribute force must be used in such statements when the cast
+> > > > is known to be safe to avoid these warnings.
+> >
+> > I can see why this would warn, but I'm having trouble reproducing the
+> > warning on linux-next.
+>
+> I have sparse 0.6.3 on an Debian bullseye amd64 system. Sources are from
+> linux-next next-20210723
+>
+>     make allnoconfig
+>     cat >> .config << "EOF"
+>     CONFIG_NET=y
+>     CONFIG_INET=y
+>     CONFIG_BATMAN_ADV=y
+>     CONFIG_BATMAN_ADV_DAT=y
+>     EOF
+>     make olddefconfig
+>     make CHECK="sparse -Wbitwise-pointer" C=1
+>
+> I should maybe have made this clearer in the last sentence of the first
+> paragraph: "This is also true for pointers to variables with this type when
+> -Wbitwise-pointer is activated."
 
-Fixes: 28607bf3aa6f ("f2fs: drop dirty node pages when cp is in error status")
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/node.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Ok, got it. I assumed this would be turned on by an 'allmodconfig' build.
 
-diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
-index c945a9730f3c..5840b82ce311 100644
---- a/fs/f2fs/node.c
-+++ b/fs/f2fs/node.c
-@@ -1330,7 +1330,8 @@ static int read_node_page(struct page *page, int op_flags)
- 	if (err)
- 		return err;
- 
--	if (unlikely(ni.blk_addr == NULL_ADDR) ||
-+	/* NEW_ADDR can be seen, after cp_error drops some dirty node pages */
-+	if (unlikely(ni.blk_addr == NULL_ADDR || ni.blk_addr == NEW_ADDR) ||
- 			is_sbi_flag_set(sbi, SBI_IS_SHUTDOWN)) {
- 		ClearPageUptodate(page);
- 		return -ENOENT;
--- 
-2.32.0.432.gabb21c7263-goog
+> > If both work equally well, I'd prefer Sven's patch since that only
+> > expands 'type' once, while container_of() expands it three more times
 
+Not sure what I was thinking here, as it's not 'type' that gets expanded
+here but 'ptr'. We could do Al's suggestion to avoid the __force without
+multiple expansions, using
+
+diff --git a/include/asm-generic/unaligned.h b/include/asm-generic/unaligned.h
+index 1c4242416c9f..d138dc5fd8e3 100644
+--- a/include/asm-generic/unaligned.h
++++ b/include/asm-generic/unaligned.h
+@@ -10,17 +10,25 @@
+ #include <asm/byteorder.h>
+
+ #define __get_unaligned_t(type, ptr) ({
+                 \
+-       const struct { type x; } __packed *__pptr =
+(typeof(__pptr))(ptr);      \
++       const struct { type x; } __packed *__pptr =
+         \
++                               container_of(ptr, typeof(*__pptr), x);
+         \
+        __pptr->x;
+         \
+ })
+
+ #define __put_unaligned_t(type, val, ptr) do {
+         \
+-       struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);
+         \
++       struct { type x; } __packed *__pptr =
+         \
++                               container_of(ptr, typeof(*__pptr), x);
+         \
+        __pptr->x = (val);
+         \
+ } while (0)
+
+-#define get_unaligned(ptr)     __get_unaligned_t(typeof(*(ptr)), (ptr))
+-#define put_unaligned(val, ptr) __put_unaligned_t(typeof(*(ptr)), (val), (ptr))
++#define get_unaligned(ptr)     ({
+         \
++       __auto_type _ptr = (ptr);
+         \
++       __get_unaligned_t(typeof(*(_ptr)), (_ptr));
+         \
++})
++#define put_unaligned(val, ptr)        ({
+                 \
++       __auto_type _ptr = (ptr);
+         \
++       __put_unaligned_t(typeof(*(_ptr)), (val), (_ptr));
+         \
++})
+
+ static inline u16 get_unaligned_le16(const void *p)
+ {
+
+Not sure if this is any better.
+
+        Arnd
