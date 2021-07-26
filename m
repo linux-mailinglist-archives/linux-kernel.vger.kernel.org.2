@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B033D6330
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24F53D6212
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239181AbhGZPpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
+        id S235236AbhGZPeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:34:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237825AbhGZPZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0596660EB2;
-        Mon, 26 Jul 2021 16:06:17 +0000 (UTC)
+        id S236734AbhGZPTS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:19:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBCCF60FC2;
+        Mon, 26 Jul 2021 15:59:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315578;
-        bh=ii+dbFGHyH1FdVC1uhxf2akDlFv0fY1zoL1UlIGssiQ=;
+        s=korg; t=1627315185;
+        bh=5GptvVDqDGk2+T5bVRm8Bb5a7W4M/jiq32URHTDy1Ik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HsKXPnyNjrSWnOhTXx7R2M0vA6kQ3/3EYG8TxARD5kR4lHEgs1J2ZwvIgTJugavb4
-         ilmMvy8aGnNMMOaS0Cn1X6rllJvSvOGhG00mdfu68i74DnvcMfAs8dJJR8Y8LkYFjV
-         rRs1kzZlnAT7y9CZBV+PkqKWNPzQRYLE54frD1M0=
+        b=NuoFTP6kavaSA1ftSLfKyRTMk39pb90okNYKAZe8N4nw+gGKILsYq+/wjR5NFuoEJ
+         Bmowe448ItQaK9IOpJFT0DJBFVwzyOXC7d36z7HpMAITejc/LPMT5H8xdt+mMk7XE3
+         uMn4HKU742TNg17deXdO9eoezpBVZl1RMvGbX7P8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        syzbot+ac957324022b7132accf@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 145/167] io_uring: remove double poll entry on arm failure
-Date:   Mon, 26 Jul 2021 17:39:38 +0200
-Message-Id: <20210726153844.274110997@linuxfoundation.org>
+        stable@vger.kernel.org, Ilya Dryomov <idryomov@gmail.com>,
+        Robin Geuze <robin.geuze@nl.team.blue>
+Subject: [PATCH 5.4 098/108] rbd: always kick acquire on "acquired" and "released" notifications
+Date:   Mon, 26 Jul 2021 17:39:39 +0200
+Message-Id: <20210726153834.824288652@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Ilya Dryomov <idryomov@gmail.com>
 
-commit 46fee9ab02cb24979bbe07631fc3ae95ae08aa3e upstream.
+commit 8798d070d416d18a75770fc19787e96705073f43 upstream.
 
-__io_queue_proc() can enqueue both poll entries and still fail
-afterwards, so the callers trying to cancel it should also try to remove
-the second poll entry (if any).
+Skipping the "lock has been released" notification if the lock owner
+is not what we expect based on owner_cid can lead to I/O hangs.
+One example is our own notifications: because owner_cid is cleared
+in rbd_unlock(), when we get our own notification it is processed as
+unexpected/duplicate and maybe_kick_acquire() isn't called.  If a peer
+that requested the lock then doesn't go through with acquiring it,
+I/O requests that came in while the lock was being quiesced would
+be stalled until another I/O request is submitted and kicks acquire
+from rbd_img_exclusive_lock().
 
-For example, it may leave the request alive referencing a io_uring
-context but not accessible for cancellation:
+This makes the comment in rbd_release_lock() actually true: prior to
+this change the canceled work was being requeued in response to the
+"lock has been acquired" notification from rbd_handle_acquired_lock().
 
-[  282.599913][ T1620] task:iou-sqp-23145   state:D stack:28720 pid:23155 ppid:  8844 flags:0x00004004
-[  282.609927][ T1620] Call Trace:
-[  282.613711][ T1620]  __schedule+0x93a/0x26f0
-[  282.634647][ T1620]  schedule+0xd3/0x270
-[  282.638874][ T1620]  io_uring_cancel_generic+0x54d/0x890
-[  282.660346][ T1620]  io_sq_thread+0xaac/0x1250
-[  282.696394][ T1620]  ret_from_fork+0x1f/0x30
-
-Cc: stable@vger.kernel.org
-Fixes: 18bceab101add ("io_uring: allow POLL_ADD with double poll_wait() users")
-Reported-and-tested-by: syzbot+ac957324022b7132accf@syzkaller.appspotmail.com
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Link: https://lore.kernel.org/r/0ec1228fc5eda4cb524eeda857da8efdc43c331c.1626774457.git.asml.silence@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: stable@vger.kernel.org # 5.3+
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Tested-by: Robin Geuze <robin.geuze@nl.team.blue>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/block/rbd.c |   20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5219,6 +5219,8 @@ static __poll_t __io_arm_poll_handler(st
- 		ipt->error = -EINVAL;
- 
- 	spin_lock_irq(&ctx->completion_lock);
-+	if (ipt->error)
-+		io_poll_remove_double(req);
- 	if (likely(poll->head)) {
- 		spin_lock(&poll->head->lock);
- 		if (unlikely(list_empty(&poll->wait.entry))) {
+--- a/drivers/block/rbd.c
++++ b/drivers/block/rbd.c
+@@ -4340,15 +4340,11 @@ static void rbd_handle_acquired_lock(str
+ 	if (!rbd_cid_equal(&cid, &rbd_empty_cid)) {
+ 		down_write(&rbd_dev->lock_rwsem);
+ 		if (rbd_cid_equal(&cid, &rbd_dev->owner_cid)) {
+-			/*
+-			 * we already know that the remote client is
+-			 * the owner
+-			 */
+-			up_write(&rbd_dev->lock_rwsem);
+-			return;
++			dout("%s rbd_dev %p cid %llu-%llu == owner_cid\n",
++			     __func__, rbd_dev, cid.gid, cid.handle);
++		} else {
++			rbd_set_owner_cid(rbd_dev, &cid);
+ 		}
+-
+-		rbd_set_owner_cid(rbd_dev, &cid);
+ 		downgrade_write(&rbd_dev->lock_rwsem);
+ 	} else {
+ 		down_read(&rbd_dev->lock_rwsem);
+@@ -4373,14 +4369,12 @@ static void rbd_handle_released_lock(str
+ 	if (!rbd_cid_equal(&cid, &rbd_empty_cid)) {
+ 		down_write(&rbd_dev->lock_rwsem);
+ 		if (!rbd_cid_equal(&cid, &rbd_dev->owner_cid)) {
+-			dout("%s rbd_dev %p unexpected owner, cid %llu-%llu != owner_cid %llu-%llu\n",
++			dout("%s rbd_dev %p cid %llu-%llu != owner_cid %llu-%llu\n",
+ 			     __func__, rbd_dev, cid.gid, cid.handle,
+ 			     rbd_dev->owner_cid.gid, rbd_dev->owner_cid.handle);
+-			up_write(&rbd_dev->lock_rwsem);
+-			return;
++		} else {
++			rbd_set_owner_cid(rbd_dev, &rbd_empty_cid);
+ 		}
+-
+-		rbd_set_owner_cid(rbd_dev, &rbd_empty_cid);
+ 		downgrade_write(&rbd_dev->lock_rwsem);
+ 	} else {
+ 		down_read(&rbd_dev->lock_rwsem);
 
 
