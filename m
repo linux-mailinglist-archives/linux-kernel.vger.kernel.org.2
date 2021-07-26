@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DDEF3D5FBF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7E33D5DCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236376AbhGZPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51168 "EHLO mail.kernel.org"
+        id S235847AbhGZPDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:03:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237295AbhGZPKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:10:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 263FC6056C;
-        Mon, 26 Jul 2021 15:51:10 +0000 (UTC)
+        id S235739AbhGZPCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:02:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A98960F37;
+        Mon, 26 Jul 2021 15:43:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314671;
-        bh=+Q0kmk20efq6otsEGua0Kwje4GuuD0Js5L3tlTrET+0=;
+        s=korg; t=1627314204;
+        bh=Nr1G0W5p6zEJhcj5E9bSLGHr39tsPKl1YyfPzA4mG+0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RWLV5DQl9y4qegyQvzj8I9+sFiPQo+lshZDY1gCpv9DTAAxDl6+SsTaNMitBCiP+o
-         OXVYLlWnXUg5bRZrLWFeKLeVbrrtiowizMmLVSL6X0Rm4c+XW7QwcRHBo9qrC97lOD
-         Dz63gLGwyvJJb0lKIO+Hnx8UJfigfij0Cvr7czdw=
+        b=X6iXdmU6414CQiKM0as+o5/0uuhGLGWXR5GFMYuITkxK/VTJl2rK/QqwrnT33bZZN
+         zx7W5Q0rPvcPfjRa1DXb4g9j6mD1cmRuIJhFxMoL0/FQro85Pdn063KzTGvKanF2jX
+         IFDlRyR1kureZUnqmTelzhwPiRQCO4l79jpKnpFU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gu Shengxian <gushengxian@yulong.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: [PATCH 4.19 050/120] bpftool: Properly close va_list ap by va_end() on error
-Date:   Mon, 26 Jul 2021 17:38:22 +0200
-Message-Id: <20210726153833.991668817@linuxfoundation.org>
+        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 09/60] arm64: dts: juno: Update SCPI nodes as per the YAML schema
+Date:   Mon, 26 Jul 2021 17:38:23 +0200
+Message-Id: <20210726153825.164776568@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gu Shengxian <gushengxian@yulong.com>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-commit bc832065b60f973771ff3e657214bb21b559833c upstream.
+[ Upstream commit 70010556b158a0fefe43415fb0c58347dcce7da0 ]
 
-va_list 'ap' was opened but not closed by va_end() in error case. It should
-be closed by va_end() before the return.
+The SCPI YAML schema expects standard node names for clocks and
+power domain controllers. Fix those as per the schema for Juno
+platforms.
 
-Fixes: aa52bcbe0e72 ("tools: bpftool: Fix json dump crash on powerpc")
-Signed-off-by: Gu Shengxian <gushengxian@yulong.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Link: https://lore.kernel.org/bpf/20210706013543.671114-1-gushengxian507419@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210608145133.2088631-1-sudeep.holla@arm.com
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/jit_disasm.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/arm/juno-base.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/tools/bpf/bpftool/jit_disasm.c
-+++ b/tools/bpf/bpftool/jit_disasm.c
-@@ -51,11 +51,13 @@ static int fprintf_json(void *out, const
- {
- 	va_list ap;
- 	char *s;
-+	int err;
+diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
+index 7d3a2acc6a55..2aa01eaa0cd1 100644
+--- a/arch/arm64/boot/dts/arm/juno-base.dtsi
++++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
+@@ -414,13 +414,13 @@
+ 		clocks {
+ 			compatible = "arm,scpi-clocks";
  
- 	va_start(ap, fmt);
--	if (vasprintf(&s, fmt, ap) < 0)
--		return -1;
-+	err = vasprintf(&s, fmt, ap);
- 	va_end(ap);
-+	if (err < 0)
-+		return -1;
+-			scpi_dvfs: scpi-dvfs {
++			scpi_dvfs: clocks-0 {
+ 				compatible = "arm,scpi-dvfs-clocks";
+ 				#clock-cells = <1>;
+ 				clock-indices = <0>, <1>, <2>;
+ 				clock-output-names = "atlclk", "aplclk","gpuclk";
+ 			};
+-			scpi_clk: scpi-clk {
++			scpi_clk: clocks-1 {
+ 				compatible = "arm,scpi-variable-clocks";
+ 				#clock-cells = <1>;
+ 				clock-indices = <3>;
+@@ -428,7 +428,7 @@
+ 			};
+ 		};
  
- 	if (!oper_count) {
- 		int i;
+-		scpi_devpd: scpi-power-domains {
++		scpi_devpd: power-controller {
+ 			compatible = "arm,scpi-power-domains";
+ 			num-domains = <2>;
+ 			#power-domain-cells = <1>;
+-- 
+2.30.2
+
 
 
