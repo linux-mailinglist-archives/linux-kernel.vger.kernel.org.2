@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D3C3D61A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F893D6314
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbhGZPc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:32:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58728 "EHLO mail.kernel.org"
+        id S238672AbhGZPoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235310AbhGZPSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:18:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 237AB60F38;
-        Mon, 26 Jul 2021 15:58:41 +0000 (UTC)
+        id S238146AbhGZPZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 834CE60F6E;
+        Mon, 26 Jul 2021 16:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315121;
-        bh=MhuSh+hGIm0iv964cFkJCoDhLfzTxleeVvMgNXQo5y0=;
+        s=korg; t=1627315528;
+        bh=MIRtdigQjRd10/NGJnkLyqs1dc1KSlw2sbuL0WPp5i0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i6gPiG1S9Uk447vRuZixgx8+WuqSzpRM2lHelMC9kxw5IWjqQviiJAbQfY4cWy3G6
-         3cXdSFSggYbfEu8/ZlymTegbO99GlNvyjgHhDl+QtNfVZJpuDRU41RUMw/YpXrvuNu
-         5ZNCbEvijBbStmBXUyGyKrvNNE/XV8JGfzNo/UQM=
+        b=tdk4+arZQOeEqO1Rchn5KxrCRMoTnaAgVr0tTZ9TGEf/pOiNxoL9OQqGHz8dhvvXt
+         /a8ewronKUNxSpvo1Z1Mr5/wj9J9/pSguqrt60H7Je+SaJpb8Q6vMa4Bce7NVWPRwJ
+         mCdsukFrnp2yfXXsUQZfxyVczQ8T8xu/O83J74Rs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marco De Marco <marco.demarco@posteo.net>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 084/108] USB: serial: option: add support for u-blox LARA-R6 family
+        stable@vger.kernel.org,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>
+Subject: [PATCH 5.10 132/167] usb: typec: stusb160x: register role switch before interrupt registration
 Date:   Mon, 26 Jul 2021 17:39:25 +0200
-Message-Id: <20210726153834.373677462@linuxfoundation.org>
+Message-Id: <20210726153843.822224441@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +39,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco De Marco <marco.demarco@posteo.net>
+From: Amelie Delaunay <amelie.delaunay@foss.st.com>
 
-commit 94b619a07655805a1622484967754f5848640456 upstream.
+commit 86762ad4abcc549deb7a155c8e5e961b9755bcf0 upstream.
 
-The patch is meant to support LARA-R6 Cat 1 module family.
+During interrupt registration, attach state is checked. If attached,
+then the Type-C state is updated with typec_set_xxx functions and role
+switch is set with usb_role_switch_set_role().
 
-Module USB ID:
-Vendor  ID: 0x05c6
-Product ID: 0x90fA
+If the usb_role_switch parameter is error or null, the function simply
+returns 0.
 
-Interface layout:
-If 0: Diagnostic
-If 1: AT parser
-If 2: AT parser
-If 3: QMI wwan (not available in all versions)
+So, to update usb_role_switch role if a device is attached before the
+irq is registered, usb_role_switch must be registered before irq
+registration.
 
-Signed-off-by: Marco De Marco <marco.demarco@posteo.net>
-Link: https://lore.kernel.org/r/49260184.kfMIbaSn9k@mars
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+Link: https://lore.kernel.org/r/20210716120718.20398-2-amelie.delaunay@foss.st.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/option.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/typec/stusb160x.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -238,6 +238,7 @@ static void option_instat_callback(struc
- #define QUECTEL_PRODUCT_UC15			0x9090
- /* These u-blox products use Qualcomm's vendor ID */
- #define UBLOX_PRODUCT_R410M			0x90b2
-+#define UBLOX_PRODUCT_R6XX			0x90fa
- /* These Yuga products use Qualcomm's vendor ID */
- #define YUGA_PRODUCT_CLM920_NC5			0x9625
+--- a/drivers/usb/typec/stusb160x.c
++++ b/drivers/usb/typec/stusb160x.c
+@@ -739,10 +739,6 @@ static int stusb160x_probe(struct i2c_cl
+ 	typec_set_pwr_opmode(chip->port, chip->pwr_opmode);
  
-@@ -1101,6 +1102,8 @@ static const struct usb_device_id option
- 	/* u-blox products using Qualcomm vendor ID */
- 	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R410M),
- 	  .driver_info = RSVD(1) | RSVD(3) },
-+	{ USB_DEVICE(QUALCOMM_VENDOR_ID, UBLOX_PRODUCT_R6XX),
-+	  .driver_info = RSVD(3) },
- 	/* Quectel products using Quectel vendor ID */
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EC21, 0xff, 0xff, 0xff),
- 	  .driver_info = NUMEP2 },
+ 	if (client->irq) {
+-		ret = stusb160x_irq_init(chip, client->irq);
+-		if (ret)
+-			goto port_unregister;
+-
+ 		chip->role_sw = fwnode_usb_role_switch_get(fwnode);
+ 		if (IS_ERR(chip->role_sw)) {
+ 			ret = PTR_ERR(chip->role_sw);
+@@ -752,6 +748,10 @@ static int stusb160x_probe(struct i2c_cl
+ 					ret);
+ 			goto port_unregister;
+ 		}
++
++		ret = stusb160x_irq_init(chip, client->irq);
++		if (ret)
++			goto role_sw_put;
+ 	} else {
+ 		/*
+ 		 * If Source or Dual power role, need to enable VDD supply
+@@ -775,6 +775,9 @@ static int stusb160x_probe(struct i2c_cl
+ 
+ 	return 0;
+ 
++role_sw_put:
++	if (chip->role_sw)
++		usb_role_switch_put(chip->role_sw);
+ port_unregister:
+ 	typec_unregister_port(chip->port);
+ all_reg_disable:
 
 
