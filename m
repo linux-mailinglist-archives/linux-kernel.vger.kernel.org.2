@@ -2,90 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70C63D69B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113E63D69BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbhGZWDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 18:03:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231502AbhGZWDv (ORCPT
+        id S233644AbhGZWFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 18:05:11 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:34412 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhGZWFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 18:03:51 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B8BCC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:44:19 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id ca5so2657417pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:44:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=vtVNL33R8d7qtky+KI0bgK32lin5Li2gSRggnf2yzDM=;
-        b=uBqMld5v1g9hLq8D47Lj7kMlua6t2vOPyCGdR8ebLz3bj5kAUFYkY834nBufsHun+f
-         pTCyCH1UGaaYPcXhrgRNJGIKo0KFUK3Sap4xKtIJGdXUznKAV5B90QLiz1p/wtidOGPo
-         kkf2ENB38kaX5SdU+ea09h/aTcLhIzLmYcOncUVQaC/ustyr/6orZN+CKKBoDpLV3V/q
-         WbZY4t9aspdv7FUKykuGnsBhQTwkZ9f+cPvU01guWKMjrB9AhaXsAB+Q4zG4olPD624o
-         IrkTK4a6Flchy+AIGmtT11BQsxmL5GNT4/QarB48cDSdkR3Z9LyJKUq69hrafjOTARs6
-         AjWg==
+        Mon, 26 Jul 2021 18:05:10 -0400
+Received: by mail-io1-f54.google.com with SMTP id y200so13932506iof.1;
+        Mon, 26 Jul 2021 15:45:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=vtVNL33R8d7qtky+KI0bgK32lin5Li2gSRggnf2yzDM=;
-        b=oEkecCSFvT1af4vRe5ZDlwEe5d0daT7haMb5b/GFsFv+znUSKyge3NeQCkC1VQoP73
-         aGAbUxJ+0MbsU95n3cuMvuh5T4HEahFTGFI6RstiNS744pQHIpwN9Z6FOaF5Zgme81/H
-         tucytAXaUJHoaQAqm0X9zOt89jj7FAqpxa3vaOw4ROGiQXvJLRQ1B/D6YtryACje4pCg
-         j40SG1tYK+Ac3bIY1yOg6RIdZkNKlea1r9X7aHGAfimw03RpU/go2gfSEiG0IN9FIhZp
-         fOFRApuNHFtBdykq91qtOV8TJPDRoVcG+bW7is/4L5ybTaVt0W75roSCKb/s5RYXcdh/
-         Gp2g==
-X-Gm-Message-State: AOAM533NGr6jlw5SR6KXAfGDMPzHv/JhooRNNBURcnk6MHUwhZy7wmSZ
-        W/N3YpKX77zD6WMzwj6c7mc=
-X-Google-Smtp-Source: ABdhPJwSKx1nQ7rpFaRuxmDZBKheSe7zGzmdQ3B01BW2oIUJz4EiftcVgB5SLESaFYItiAzrOGhw5g==
-X-Received: by 2002:a17:90b:4d0b:: with SMTP id mw11mr1222426pjb.122.1627339458473;
-        Mon, 26 Jul 2021 15:44:18 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:428])
-        by smtp.gmail.com with ESMTPSA id k11sm977562pgc.30.2021.07.26.15.44.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JJi5/NipfYexXfhOBVu2EGHhfRXUbMtu0cckqDFhtN0=;
+        b=G0OR7GZS1UP7KQl+h+kHf1CCu33AqXTr1mSAdrqACOzz8sC/WP0yFEC+VXB3FNNVD2
+         JKOASIhgjIsy6rd1fGTNYML97Y38IA7WUjD64w3vA5nuA7L6lYITB1GtSxN+WUNpXrsm
+         NP+StMrxKSN72zCkOKSkyz3gPL60xUJg1RKG1xf/Pq5Oh44b5XKdMMiu8ksDjScBUxBA
+         ab+VKNh4x83EK7921Nmgon69mFYnmzACSHE2aeaGzjpHcewc0WDUb/03fjrGXMUgJzDv
+         gSonFBwMgjj55iG0gmtHBXizJJosPqze2x+TCRcCtkIUmxxTQar4DR5zC41zvWjt6y4j
+         8bBQ==
+X-Gm-Message-State: AOAM531Lrt+vn2VpqlDI03evSblmw/ypLPVGTlLV5g7mpf5NtBfGBf/5
+        hUWo8JJT1akDs28cJuI/Aw==
+X-Google-Smtp-Source: ABdhPJy39IzTna8jPg2pqRO6jCjYdkoweHSDDyHg9mHz2ShVWHZRTv0XHk5Mnj1YeSPt0pgM8FWR8A==
+X-Received: by 2002:a6b:3e8b:: with SMTP id l133mr16345712ioa.137.1627339537187;
+        Mon, 26 Jul 2021 15:45:37 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id z13sm767248iop.18.2021.07.26.15.45.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 15:44:17 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 26 Jul 2021 12:44:14 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] workqueue fixes for v5.14-rc4
-Message-ID: <YP86vmYY0n64hGRe@mtj.duckdns.org>
+        Mon, 26 Jul 2021 15:45:36 -0700 (PDT)
+Received: (nullmailer pid 1014418 invoked by uid 1000);
+        Mon, 26 Jul 2021 22:45:34 -0000
+Date:   Mon, 26 Jul 2021 16:45:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [RFC v3] dt-binding: media: document ON Semi AR0521 sensor
+ bindings
+Message-ID: <20210726224534.GB1009398@robh.at.kernel.org>
+References: <m37dhkdrat.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m37dhkdrat.fsf@t19.piap.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Linus.
+On Wed, Jul 21, 2021 at 10:06:34AM +0200, Krzysztof Hałasa wrote:
+> This file documents DT bindings for the AR0521 camera sensor driver.
+> 
+> Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+> ---
+> Changes from v2:
+> - changed "xclk" to "extclk"
+> - power regulator names etc.
+> - video output port properties
+> - cosmetics
+> - UTF-8 experiments :-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+> new file mode 100644
+> index 000000000000..785bae61bb5e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+> @@ -0,0 +1,108 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/onnn,ar0521.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ON Semiconductor AR0521 MIPI CSI-2 sensor
+> +
+> +maintainers:
+> +  - Krzysztof Hałasa <khalasa@piap.pl>
+> +
+> +description: |-
+> +  The AR0521 is a raw CMOS image sensor with MIPI CSI-2 and
+> +  I2C-compatible control interface.
+> +
+> +properties:
+> +  compatible:
+> +    const: onnn,ar0521
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: extclk
+> +
+> +  vaa-supply:
+> +    description:
+> +      Definition of the regulator used as analog (2.7 V) voltage supply.
+> +
+> +  vdd-supply:
+> +    description:
+> +      Definition of the regulator used as digital core (1.2 V) voltage supply.
+> +
+> +  vdd_io-supply:
+> +    description:
+> +      Definition of the regulator used as digital I/O (1.8 V) voltage supply.
+> +
+> +  reset-gpios:
+> +    description: reset GPIO, usually active low
+> +    maxItems: 1
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
 
-One commit to fix use-after-free in allocation failure handling path.
+$ref: /schemas/graph.yaml#/$defs/port-base
+unevaluatedProperties: false
 
-Thanks.
 
-The following changes since commit 8cae8cd89f05f6de223d63e6d15e31c8ba9cf53b:
+> +    description: |
+> +      Video output port.
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: /schemas/media/video-interfaces.yaml#
 
-  seq_file: disallow extremely large seq buffer allocations (2021-07-19 17:18:48 -0700)
+           unevaluatedProperties: false
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-5.14-fixes
-
-for you to fetch changes up to b42b0bddcbc87b4c66f6497f66fc72d52b712aa7:
-
-  workqueue: fix UAF in pwq_unbound_release_workfn() (2021-07-21 06:42:31 -1000)
-
-----------------------------------------------------------------
-Yang Yingliang (1):
-      workqueue: fix UAF in pwq_unbound_release_workfn()
-
- kernel/workqueue.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
--- 
-tejun
+> +
+> +        properties:
+> +          data-lanes:
+> +            anyOf:
+> +              - items:
+> +                  - const: 1
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +                  - const: 3
+> +                  - const: 4
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - vaa-supply
+> +  - vdd-supply
+> +  - vdd_io-supply
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/clock/imx6qdl-clock.h>
+> +
+> +    i2c {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            ar0521: camera-sensor@36 {
+> +                    compatible = "onnn,ar0521";
+> +                    reg = <0x36>;
+> +                    pinctrl-names = "default";
+> +                    pinctrl-0 = <&pinctrl_mipi_camera>;
+> +                    clocks = <&clks IMX6QDL_CLK_CKO>;
+> +                    clock-names = "extclk";
+> +                    reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
+> +                    vaa-supply = <&reg_2p7v>;
+> +                    vdd-supply = <&reg_1p2v>;
+> +                    vdd_io-supply = <&reg_1p8v>;
+> +
+> +                    port {
+> +                           mipi_camera_to_mipi_csi2: endpoint {
+> +                                    remote-endpoint = <&mipi_csi2_in>;
+> +                                    data-lanes = <1 2 3 4>;
+> +                            };
+> +                    };
+> +            };
+> +    };
+> 
+> -- 
+> Krzysztof "Chris" Hałasa
+> 
+> Sieć Badawcza Łukasiewicz
+> Przemysłowy Instytut Automatyki i Pomiarów PIAP
+> Al. Jerozolimskie 202, 02-486 Warszawa
+> 
