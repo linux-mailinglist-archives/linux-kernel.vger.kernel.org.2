@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945893D6446
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 337303D6448
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240642AbhGZPzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52792 "EHLO mail.kernel.org"
+        id S240658AbhGZPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235217AbhGZPfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:35:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28493604AC;
-        Mon, 26 Jul 2021 16:15:45 +0000 (UTC)
+        id S234720AbhGZPfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:35:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E3536056B;
+        Mon, 26 Jul 2021 16:15:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316145;
-        bh=AGq2x0t0KxaJNErco3NfpF3Q+7Djdn+ezKGvOUM6QRQ=;
+        s=korg; t=1627316147;
+        bh=3aSEW+S0XqNh8mM/N4YUszUy9gQZjUjYD+LB/FdNBHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kWy+dRK7HHP0Ze9TwVn7I1PWJ992seXt8KU3iV+I8Hju2OulfUj0CSS1HXUv+0+VI
-         qh6KEomEZZYmOdcM4is5ByE1pPZ8kwTz85by/UsIBzBxRzNwOkAeHYik9i05BP6Evv
-         SCY96xvvXvgV5Kxc76kOHjOK+IcYqoZ4mlsjGT8o=
+        b=UIW9lOQz3NReQmITEMxVnAYp65eQjB/TE68HaQ0gDiOd6MU9ngrqMSOmkZZx6BoCX
+         z+XfnTAR8nEUQgjf4ciKm0GVAyu2DCtZ7MznHVL2dRpQUtNznvodsnsXdB28RGkfTB
+         8hja6foo7SSaRbWiOzTINlEUZs8kMEIQMPFii3k4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Hugh Dickins <hughd@google.com>,
-        Qiang Liu <cyruscyliu@gmail.com>,
-        iLifetruth <yixiaonn@gmail.com>
-Subject: [PATCH 5.13 206/223] nds32: fix up stack guard gap
-Date:   Mon, 26 Jul 2021 17:39:58 +0200
-Message-Id: <20210726153852.935567536@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH 5.13 207/223] driver core: Prevent warning when removing a device link from unregistered consumer
+Date:   Mon, 26 Jul 2021 17:39:59 +0200
+Message-Id: <20210726153852.965175842@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -44,42 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit c453db6cd96418c79702eaf38259002755ab23ff upstream.
+commit e64daad660a0c9ace3acdc57099fffe5ed83f977 upstream.
 
-Commit 1be7107fbe18 ("mm: larger stack guard gap, between vmas") fixed
-up all architectures to deal with the stack guard gap.  But when nds32
-was added to the tree, it forgot to do the same thing.
+sysfs_remove_link() causes a warning if the parent directory does not
+exist. That can happen if the device link consumer has not been registered.
+So do not attempt sysfs_remove_link() in that case.
 
-Resolve this by properly fixing up the nsd32's version of
-arch_get_unmapped_area()
-
-Cc: Nick Hu <nickhu@andestech.com>
-Cc: Greentime Hu <green.hu@gmail.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Qiang Liu <cyruscyliu@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Reported-by: iLifetruth <yixiaonn@gmail.com>
-Acked-by: Hugh Dickins <hughd@google.com>
-Link: https://lore.kernel.org/r/20210629104024.2293615-1-gregkh@linuxfoundation.org
+Fixes: 287905e68dd29 ("driver core: Expose device link details in sysfs")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org # 5.9+
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+Link: https://lore.kernel.org/r/20210716114408.17320-2-adrian.hunter@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nds32/mm/mmap.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/core.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/nds32/mm/mmap.c
-+++ b/arch/nds32/mm/mmap.c
-@@ -59,7 +59,7 @@ arch_get_unmapped_area(struct file *filp
- 
- 		vma = find_vma(mm, addr);
- 		if (TASK_SIZE - len >= addr &&
--		    (!vma || addr + len <= vma->vm_start))
-+		    (!vma || addr + len <= vm_start_gap(vma)))
- 			return addr;
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -574,8 +574,10 @@ static void devlink_remove_symlinks(stru
+ 		return;
  	}
  
+-	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+-	sysfs_remove_link(&con->kobj, buf);
++	if (device_is_registered(con)) {
++		snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
++		sysfs_remove_link(&con->kobj, buf);
++	}
+ 	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
+ 	sysfs_remove_link(&sup->kobj, buf);
+ 	kfree(buf);
 
 
