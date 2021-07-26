@@ -2,87 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C13C3D5A9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4563D5A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbhGZNCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:02:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45168 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234356AbhGZNCC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:02:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627306950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbUVtvqYLIV2IExPgkbfEc3dRpkF1ai0qjs2lZ3kNnE=;
-        b=XxT+eThnIsT2vAcPTRRP3rwn2IXdcRneeMwKwbJEnMhLeDQ6QFd7bQGKK5dIW05cQVXEVj
-        XJ7k4NWTjs80+ninQped+T2zfIl4y8HWlNEnn9oyLEm2GJvweWDls+6qgtaThvY36mDSKW
-        TRHjgnMYdcVODCzoWEZx2uh35vZR1t8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-203-TOmbLaokMOSH8uwoBq0E4g-1; Mon, 26 Jul 2021 09:42:27 -0400
-X-MC-Unique: TOmbLaokMOSH8uwoBq0E4g-1
-Received: by mail-ed1-f71.google.com with SMTP id h16-20020aa7de100000b02903a6620f87feso4758532edv.18
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:42:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DbUVtvqYLIV2IExPgkbfEc3dRpkF1ai0qjs2lZ3kNnE=;
-        b=FcANrjfilmOUtuxeuNUB2f1+a6Yc5ZCgfG9KB16TfgtP9yEzaAwwnidAlBQloMVIc6
-         +KWcN8y4w5xhLG4Nhsd3qeMp/P78DzSmrQKBTYW2LOOrA2+6OknRBytIiFfOuSzMNKHA
-         03jKuzJzfY+SuGWDJb8hTiUDG6+gY72iouQJ6I3fJrYu/uaPJaRuUz3BoI9W3w6IDoar
-         dL1l00UaYG+bIxdO42hJXC9o0AJiB23EJSreeZmD5wiyPsXbTJukukh4aOMLJ+iSjaaD
-         DRU6tEWpB8rJJW+FQB2qG2G+euO3E/6xyuYEevIrKFhA0j1qU658vbU+Tq/AI7EheAEf
-         tz+w==
-X-Gm-Message-State: AOAM530e8Jb5ceH99L5+AMYto4PvXiqqJ7P1+FyWudXGXTllMRdZMeMq
-        0pTNOH4LZXP7ha4X9kHvvHFkVbIchY1lV9MktW96E4FmczoYBFDfw5DK8aq8UqZVDZ2gVDaZAnq
-        h3XWEzQxh0aymre0KL3DrGIye
-X-Received: by 2002:a05:6402:31a4:: with SMTP id dj4mr10088526edb.350.1627306946112;
-        Mon, 26 Jul 2021 06:42:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzaPhxnXEkX5ZgOuE+meod+XZ3vfb4y3Q1rF5NA9yq0QtYo6bz/rfrexS5Pw1vje0rYXFomiQ==
-X-Received: by 2002:a05:6402:31a4:: with SMTP id dj4mr10088510edb.350.1627306945972;
-        Mon, 26 Jul 2021 06:42:25 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k21sm18837408edo.41.2021.07.26.06.42.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 06:42:25 -0700 (PDT)
-Subject: Re: [PATCH v2 2/9] KVM: Introduce kvm_get_kvm_safe()
-To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210625153214.43106-1-peterx@redhat.com>
- <20210625153214.43106-3-peterx@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <35d133ab-5f21-7693-51ae-1a6ae81e76f4@redhat.com>
-Date:   Mon, 26 Jul 2021 15:42:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234217AbhGZNDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:03:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233995AbhGZNDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 09:03:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFD5E60241;
+        Mon, 26 Jul 2021 13:43:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627307008;
+        bh=lAkNhK7vnVmWhNzKdij1ndDYQjyQ4JLboA/lr0q5Sko=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lX0BeR4/pdox0YJVm+4DDjZBp2e3sRHnxlFsu5KOq8umCGqejXRkarOb3+ff6r06P
+         YvWkuoy++37mgYXtzKFPZ2ILiTRC76e5yFQ6dNDdTC3XZekMa2S6HVgJJGv3bnXu0F
+         H9xXuWOAAjHGHHjOUix+kXlnW80HGxVTooxy5g+g=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-serial@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jordy Zomer <jordy@pwning.systems>
+Subject: [PATCH 1/2] vt: keyboard: treat kbd_table as an array all the time.
+Date:   Mon, 26 Jul 2021 15:43:21 +0200
+Message-Id: <20210726134322.2274919-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210625153214.43106-3-peterx@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5445; h=from:subject; bh=lAkNhK7vnVmWhNzKdij1ndDYQjyQ4JLboA/lr0q5Sko=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/dn9NL/rcfap7svNN7//BWkWnU7m++E2wsjA0z2T71/yz 5OG0jlgWBkEmBlkxRZYv23iO7q84pOhlaHsaZg4rE8gQBi5OAZjIqRsM86yvJzvoXOUPZbfREfdcfF fh0J+50xnm57a5GG+/td24rWHzteWsmj31BbFHAA==
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/06/21 17:32, Peter Xu wrote:
-> -	/* The debugfs files are a reference to the kvm struct which
-> -	 * is still valid when kvm_destroy_vm is called.
-> -	 * To avoid the race between open and the removal of the debugfs
-> -	 * directory we test against the users count.
-> -	 */
-> -	if (!refcount_inc_not_zero(&stat_data->kvm
+The keyboard.c code seems to like to treat the kbd_table as both an
+array, and as a base to do some pointer math off of.  As they really are
+the same thing, and compilers are smart enough not to make a difference
+anymore, just be explicit and always use this as an array to make the
+code more obvious for all to read.
 
-Better keep the comment here (but nothing to do on your part).
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jordy Zomer <jordy@pwning.systems>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/tty/vt/keyboard.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-Paolo
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 4b0d69042ceb..e81c940a2ea1 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -1173,7 +1173,7 @@ static inline unsigned char getleds(void)
+  */
+ int vt_get_leds(int console, int flag)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	int ret;
+ 	unsigned long flags;
+ 
+@@ -1195,7 +1195,7 @@ EXPORT_SYMBOL_GPL(vt_get_leds);
+  */
+ void vt_set_led_state(int console, int leds)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	setledstate(kb, leds);
+ }
+ 
+@@ -1214,7 +1214,7 @@ void vt_set_led_state(int console, int leds)
+  */
+ void vt_kbd_con_start(int console)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	unsigned long flags;
+ 	spin_lock_irqsave(&led_lock, flags);
+ 	clr_vc_kbd_led(kb, VC_SCROLLOCK);
+@@ -1231,7 +1231,7 @@ void vt_kbd_con_start(int console)
+  */
+ void vt_kbd_con_stop(int console)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	unsigned long flags;
+ 	spin_lock_irqsave(&led_lock, flags);
+ 	set_vc_kbd_led(kb, VC_SCROLLOCK);
+@@ -1377,7 +1377,7 @@ static void kbd_rawcode(unsigned char data)
+ {
+ 	struct vc_data *vc = vc_cons[fg_console].d;
+ 
+-	kbd = kbd_table + vc->vc_num;
++	kbd = &kbd_table[vc->vc_num];
+ 	if (kbd->kbdmode == VC_RAW)
+ 		put_queue(vc, data);
+ }
+@@ -1400,7 +1400,7 @@ static void kbd_keycode(unsigned int keycode, int down, bool hw_raw)
+ 		tty->driver_data = vc;
+ 	}
+ 
+-	kbd = kbd_table + vc->vc_num;
++	kbd = &kbd_table[vc->vc_num];
+ 
+ #ifdef CONFIG_SPARC
+ 	if (keycode == KEY_STOP)
+@@ -1827,7 +1827,7 @@ int vt_do_diacrit(unsigned int cmd, void __user *udp, int perm)
+  */
+ int vt_do_kdskbmode(int console, unsigned int arg)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	int ret = 0;
+ 	unsigned long flags;
+ 
+@@ -1867,7 +1867,7 @@ int vt_do_kdskbmode(int console, unsigned int arg)
+  */
+ int vt_do_kdskbmeta(int console, unsigned int arg)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	int ret = 0;
+ 	unsigned long flags;
+ 
+@@ -2010,7 +2010,7 @@ static int vt_kdskbent(unsigned char kbdmode, unsigned char idx,
+ int vt_do_kdsk_ioctl(int cmd, struct kbentry __user *user_kbe, int perm,
+ 						int console)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	struct kbentry kbe;
+ 
+ 	if (copy_from_user(&kbe, user_kbe, sizeof(struct kbentry)))
+@@ -2099,7 +2099,7 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
+ 
+ int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+         unsigned long flags;
+ 	unsigned char ucval;
+ 
+@@ -2141,7 +2141,7 @@ int vt_do_kdskled(int console, int cmd, unsigned long arg, int perm)
+ 
+ int vt_do_kdgkbmode(int console)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	/* This is a spot read so needs no locking */
+ 	switch (kb->kbdmode) {
+ 	case VC_RAW:
+@@ -2165,7 +2165,7 @@ int vt_do_kdgkbmode(int console)
+  */
+ int vt_do_kdgkbmeta(int console)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+         /* Again a spot read so no locking */
+ 	return vc_kbd_mode(kb, VC_META) ? K_ESCPREFIX : K_METABIT;
+ }
+@@ -2206,7 +2206,7 @@ int vt_get_shift_state(void)
+  */
+ void vt_reset_keyboard(int console)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&kbd_event_lock, flags);
+@@ -2236,7 +2236,7 @@ void vt_reset_keyboard(int console)
+ 
+ int vt_get_kbd_mode_bit(int console, int bit)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	return vc_kbd_mode(kb, bit);
+ }
+ 
+@@ -2251,7 +2251,7 @@ int vt_get_kbd_mode_bit(int console, int bit)
+ 
+ void vt_set_kbd_mode_bit(int console, int bit)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&kbd_event_lock, flags);
+@@ -2270,7 +2270,7 @@ void vt_set_kbd_mode_bit(int console, int bit)
+ 
+ void vt_clr_kbd_mode_bit(int console, int bit)
+ {
+-	struct kbd_struct *kb = kbd_table + console;
++	struct kbd_struct *kb = &kbd_table[console];
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&kbd_event_lock, flags);
+-- 
+2.32.0
 
