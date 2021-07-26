@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AF23D6084
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0023D62EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237397AbhGZPWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:22:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54614 "EHLO mail.kernel.org"
+        id S238151AbhGZPlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237413AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5110D60FED;
-        Mon, 26 Jul 2021 15:53:56 +0000 (UTC)
+        id S237539AbhGZPXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2068F60240;
+        Mon, 26 Jul 2021 16:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314836;
-        bh=8PUFWCwIFACyJkXYGlu+2hFKuSyoFNQfdVjch8m4P8M=;
+        s=korg; t=1627315429;
+        bh=tLNelaY5OO26pA7MsbTtNpHfSLxFzeY+E9m5ccJVEEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qCTyG4yILegwxxV8Me588vspLKDRyOpn5E+LmEwygpqNz8pyLNyNvLRozxFcS3EKe
-         QQlTGfVkLX0aUmLR1jJ0D8Z2/BWaGGYWaH7sqFZY8rqHxz7/rMfHbTHnCXuUR3wdth
-         9YqRkyn0ZRYEjnQie1QehYEQ6oLRwDxzV/0wbXrE=
+        b=Npqck5xnHCuocsfI7Gg7nPzllxpxDTLqZpykA8maFVyKcxpOYvjXRi+yK3qRC1SnN
+         05oNDuMLXxRzTJcP8j0LhgC+zd7kdvX9ApfK+iQ4Ov7SsAeJU2rbOlXW2dvd2WGUgb
+         7NahcV7mpCQWfLEKqL27UwNTzvh2APY4fa/uz2aE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Roman Gushchin <guro@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 074/120] bpftool: Check malloc return value in mount_bpffs_for_pin
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 093/167] nvme-pci: dont WARN_ON in nvme_reset_work if ctrl.state is not RESETTING
 Date:   Mon, 26 Jul 2021 17:38:46 +0200
-Message-Id: <20210726153834.757935564@linuxfoundation.org>
+Message-Id: <20210726153842.516034407@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tobias Klauser <tklauser@distanz.ch>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit d444b06e40855219ef38b5e9286db16d435f06dc ]
+[ Upstream commit 7764656b108cd308c39e9a8554353b8f9ca232a3 ]
 
-Fix and add a missing NULL check for the prior malloc() call.
+Followling process:
+nvme_probe
+  nvme_reset_ctrl
+    nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING)
+    queue_work(nvme_reset_wq, &ctrl->reset_work)
 
-Fixes: 49a086c201a9 ("bpftool: implement prog load command")
-Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Link: https://lore.kernel.org/bpf/20210715110609.29364-1-tklauser@distanz.ch
+-------------->	nvme_remove
+		  nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DELETING)
+worker_thread
+  process_one_work
+    nvme_reset_work
+    WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)
+
+, which will trigger WARN_ON in nvme_reset_work():
+[  127.534298] WARNING: CPU: 0 PID: 139 at drivers/nvme/host/pci.c:2594
+[  127.536161] CPU: 0 PID: 139 Comm: kworker/u8:7 Not tainted 5.13.0
+[  127.552518] Call Trace:
+[  127.552840]  ? kvm_sched_clock_read+0x25/0x40
+[  127.553936]  ? native_send_call_func_single_ipi+0x1c/0x30
+[  127.555117]  ? send_call_function_single_ipi+0x9b/0x130
+[  127.556263]  ? __smp_call_single_queue+0x48/0x60
+[  127.557278]  ? ttwu_queue_wakelist+0xfa/0x1c0
+[  127.558231]  ? try_to_wake_up+0x265/0x9d0
+[  127.559120]  ? ext4_end_io_rsv_work+0x160/0x290
+[  127.560118]  process_one_work+0x28c/0x640
+[  127.561002]  worker_thread+0x39a/0x700
+[  127.561833]  ? rescuer_thread+0x580/0x580
+[  127.562714]  kthread+0x18c/0x1e0
+[  127.563444]  ? set_kthread_struct+0x70/0x70
+[  127.564347]  ret_from_fork+0x1f/0x30
+
+The preceding problem can be easily reproduced by executing following
+script (based on blktests suite):
+test() {
+  pdev="$(_get_pci_dev_from_blkdev)"
+  sysfs="/sys/bus/pci/devices/${pdev}"
+  for ((i = 0; i < 10; i++)); do
+    echo 1 > "$sysfs/remove"
+    echo 1 > /sys/bus/pci/rescan
+  done
+}
+
+Since the device ctrl could be updated as an non-RESETTING state by
+repeating probe/remove in userspace (which is a normal situation), we
+can replace stack dumping WARN_ON with a warnning message.
+
+Fixes: 82b057caefaff ("nvme-pci: fix multiple ctrl removal schedulin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/common.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/nvme/host/pci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-index 158469f57461..7faf24ef3c80 100644
---- a/tools/bpf/bpftool/common.c
-+++ b/tools/bpf/bpftool/common.c
-@@ -182,6 +182,11 @@ int do_pin_fd(int fd, const char *name)
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 80e1d45b0668..fb48a88d1acb 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2596,7 +2596,9 @@ static void nvme_reset_work(struct work_struct *work)
+ 	bool was_suspend = !!(dev->ctrl.ctrl_config & NVME_CC_SHN_NORMAL);
+ 	int result;
+ 
+-	if (WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)) {
++	if (dev->ctrl.state != NVME_CTRL_RESETTING) {
++		dev_warn(dev->ctrl.device, "ctrl state %d is not RESETTING\n",
++			 dev->ctrl.state);
+ 		result = -ENODEV;
  		goto out;
- 
- 	file = malloc(strlen(name) + 1);
-+	if (!file) {
-+		p_err("mem alloc failed");
-+		return -1;
-+	}
-+
- 	strcpy(file, name);
- 	dir = dirname(file);
- 
+ 	}
 -- 
 2.30.2
 
