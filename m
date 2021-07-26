@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63AB3D62EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC2C3D6091
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238299AbhGZPlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:41:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
+        id S237479AbhGZPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:23:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237586AbhGZPXd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E06E60EB2;
-        Mon, 26 Jul 2021 16:03:59 +0000 (UTC)
+        id S237448AbhGZPPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FD8161078;
+        Mon, 26 Jul 2021 15:55:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315439;
-        bh=1POvb3q8sXkM5MUEqr3DtHZxdsmMcT+D4Rk9QP51dZA=;
+        s=korg; t=1627314947;
+        bh=mLYfk4xy2wIZmbtXymCaqFUhwA/CAGmnWse1UowfJpQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eOymTWMiJNNU9CyXBgeRPXcey8d3aEKmHL905W20DUl3gsTcHbvOuQxWVVBqEdwTy
-         90kMJ0MWeb+m3g4+OJ41nk1QYst5+rGrVhKt0fD4nbY4vwpApnUGuOqw9eVGuRC9Cv
-         lToflRQend8NuCFI3i5XHjLhe1a2qHXijtENs2GA=
+        b=pvjHV+8f0C0Sx4z7Cxoc8eem2tc/F673Q9mUFtnh2dwaiMJWoS3LXNKc5JnCD+ldF
+         1SROJvXioPwdU2H8y18ikSQxmI4Gx13WFfOfS5nVE1ym09uy54UXpJNo5PTL6lgFUz
+         zC1yR6sQdvdEA4FUgpyDk1f3t8bfewNPfppRnRcw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 070/167] KVM: PPC: Book3S: Fix CONFIG_TRANSACTIONAL_MEM=n crash
+Subject: [PATCH 5.4 022/108] perf env: Fix sibling_dies memory leak
 Date:   Mon, 26 Jul 2021 17:38:23 +0200
-Message-Id: <20210726153841.750285864@linuxfoundation.org>
+Message-Id: <20210726153832.404684507@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit bd31ecf44b8e18ccb1e5f6b50f85de6922a60de3 ]
+[ Upstream commit 42db3d9ded555f7148b5695109a7dc8d66f0dde4 ]
 
-When running CPU_FTR_P9_TM_HV_ASSIST, HFSCR[TM] is set for the guest
-even if the host has CONFIG_TRANSACTIONAL_MEM=n, which causes it to be
-unprepared to handle guest exits while transactional.
+ASan reports a memory leak in perf_env while running:
 
-Normal guests don't have a problem because the HTM capability will not
-be advertised, but a rogue or buggy one could crash the host.
+  # perf test "41: Session topology"
 
-Fixes: 4bb3c7a0208f ("KVM: PPC: Book3S HV: Work around transactional memory bugs in POWER9")
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210716024310.164448-1-npiggin@gmail.com
+Caused by sibling_dies not being freed.
+
+This patch adds the required free.
+
+Fixes: acae8b36cded0ee6 ("perf header: Add die information in CPU topology")
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/2140d0b57656e4eb9021ca9772250c24c032924b.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/util/env.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 2325b7a6e95f..bd7350a608d4 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -2366,8 +2366,10 @@ static int kvmppc_core_vcpu_create_hv(struct kvm_vcpu *vcpu)
- 		HFSCR_DSCR | HFSCR_VECVSX | HFSCR_FP | HFSCR_PREFIX;
- 	if (cpu_has_feature(CPU_FTR_HVMODE)) {
- 		vcpu->arch.hfscr &= mfspr(SPRN_HFSCR);
-+#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 		if (cpu_has_feature(CPU_FTR_P9_TM_HV_ASSIST))
- 			vcpu->arch.hfscr |= HFSCR_TM;
-+#endif
- 	}
- 	if (cpu_has_feature(CPU_FTR_TM_COMP))
- 		vcpu->arch.hfscr |= HFSCR_TM;
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index 018ecf7b6da9..0fafcf264d23 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -175,6 +175,7 @@ void perf_env__exit(struct perf_env *env)
+ 	zfree(&env->cpuid);
+ 	zfree(&env->cmdline);
+ 	zfree(&env->cmdline_argv);
++	zfree(&env->sibling_dies);
+ 	zfree(&env->sibling_cores);
+ 	zfree(&env->sibling_threads);
+ 	zfree(&env->pmu_mappings);
 -- 
 2.30.2
 
