@@ -2,178 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3B23D59FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88643D5A01
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233115AbhGZMXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:23:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38903 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232702AbhGZMXA (ORCPT
+        id S233258AbhGZMYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:24:07 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12265 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232702AbhGZMYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:23:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627304608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IGNIpIsmHVsxBMU4UuRo09+EWFGkpjab3tHKGtaAqJI=;
-        b=VETI/bNIjI+DY1843n+Kr23O9DWk3dNS4wpWIecmIs8A7sIQzUYIj9nKFnNJEqMlaPQbUJ
-        SG5Inj38NkYlUJIOIuxhfjoX4xlOelTd+8xyn/WgOLEadm8qgh20NmTkYboN5nl6SArAU9
-        lZvf8dvx7bI+316+SAUAqAfiaqR+GKo=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-0jIP-PS5NHKlL3Nqyz4Cdg-1; Mon, 26 Jul 2021 09:03:26 -0400
-X-MC-Unique: 0jIP-PS5NHKlL3Nqyz4Cdg-1
-Received: by mail-wr1-f70.google.com with SMTP id o11-20020a5d474b0000b02901533f8ed22cso3242819wrs.22
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:03:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IGNIpIsmHVsxBMU4UuRo09+EWFGkpjab3tHKGtaAqJI=;
-        b=tjEY9D0FBlLbsJyYP1XNwavo7iYErjPG31SrMyWpUt0mx3ADeO7lvHOLd1mFqphapA
-         vUxHorRqgMoWBUwUZVEqbFIEs7xtMHRFoO1llfUDUGz1SZLT7yNhMdbZfkHjkEe4Q1VS
-         yyl1/5nAt0ZJq6xQL+GL4X9t+Pfny/zux9NhqcUO++FRLVdVOZTineOvaZMibh4g1N+8
-         qk16vtDF1UUYRDNsocdPVjtAHOuvDxevMbIehbWMSMp3bk0xaM9BM3nd4LzkUtEtD36z
-         b8atYKSAlH3EfxHrMy8jjWrSlelL0+KzpGubGlUoLybATJ/xhJaEU+PaxO3p4h+QRb6y
-         JLUA==
-X-Gm-Message-State: AOAM5302MxEtd0/q2CoEb3jteX+Em/yLFLWMiMqAL3cDcoL4SK/2bkIy
-        620JzcjR797gKPqMPIYJT9VKJk46OHJBbuxkgzG1bo+zVWnQg6SuO1FI7vrSILPj2eiHt8BgvVS
-        AKhi7v1nYsmDXjdnmHTWVJls8uZEtvVHqYziL54ia
-X-Received: by 2002:a1c:2282:: with SMTP id i124mr17049204wmi.166.1627304605647;
-        Mon, 26 Jul 2021 06:03:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzez+Dg/KjFXB2/t8rmE8mp4VEy7yq4UcgU/E1xnbCT/hQKvCXLclyMSKPeyOlhURK+emV0LZWpNj9vRYVNLFM=
-X-Received: by 2002:a1c:2282:: with SMTP id i124mr17049182wmi.166.1627304605390;
- Mon, 26 Jul 2021 06:03:25 -0700 (PDT)
+        Mon, 26 Jul 2021 08:24:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GYKjl5cF6z1CNvV;
+        Mon, 26 Jul 2021 20:58:35 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 21:04:29 +0800
+Received: from [10.67.110.237] (10.67.110.237) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 21:04:28 +0800
+Subject: Re: [PATCH] perf env: Normalize aarch64.* to arm64 in
+ normalize_arch()
+To:     James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     <jolsa@kernel.org>, <peterz@infradead.org>, <mark.rutland@arm.com>,
+        <mingo@redhat.com>, <alexander.shishkin@linux.intel.com>,
+        <namhyung@kernel.org>, <mliska@suse.cz>, <irogers@google.com>,
+        <dzhu@wavecomp.com>, <rickyman7@gmail.com>,
+        <yao.jin@linux.intel.com>, <linux-perf-users@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <zhangjinhao2@huawei.com>
+References: <20210723014944.214887-1-lihuafei1@huawei.com>
+ <YPsXSRi+8z5ozc/U@kernel.org> <d4db6cdd-1cb5-5ce9-47b3-41f438f379af@arm.com>
+From:   Li Huafei <lihuafei1@huawei.com>
+Message-ID: <80131b44-ca47-b5ee-48e4-fed4bb2b66fa@huawei.com>
+Date:   Mon, 26 Jul 2021 21:04:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
- <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com>
- <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local> <20210726110611.459173-1-agruenba@redhat.com>
- <YP6rTi/I3Vd+pbeT@casper.infradead.org>
-In-Reply-To: <YP6rTi/I3Vd+pbeT@casper.infradead.org>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 26 Jul 2021 15:03:14 +0200
-Message-ID: <CAHc6FU6RhzfRSaX3qB6i6F+ELPZ=Q0q-xA0Tfu_MuDzo77d7zQ@mail.gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d4db6cdd-1cb5-5ce9-47b3-41f438f379af@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.110.237]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 2:33 PM Matthew Wilcox <willy@infradead.org> wrote:
-> On Mon, Jul 26, 2021 at 01:06:11PM +0200, Andreas Gruenbacher wrote:
-> > @@ -671,11 +683,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
-> >       void *addr;
-> >
-> >       WARN_ON_ONCE(!PageUptodate(page));
-> > -     BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-> > +     BUG_ON(!iomap_inline_data_size_valid(iomap));
-> >
-> >       flush_dcache_page(page);
-> >       addr = kmap_atomic(page);
-> > -     memcpy(iomap->inline_data + pos, addr + pos, copied);
-> > +     memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
-> >       kunmap_atomic(addr);
-> >
-> >       mark_inode_dirty(inode);
->
-> Only tangentially related ... why do we memcpy the data into the tail
-> at write_end() time instead of at writepage() time?  I see there's a
-> workaround for that in gfs2's page_mkwrite():
->
->         if (gfs2_is_stuffed(ip)) {
->                 err = gfs2_unstuff_dinode(ip);
->
-> (an mmap store cannot change the size of the file, so this would be
-> unnecessary)
 
-Not sure if an additional __set_page_dirty_nobuffers is needed in that
-case, but doing the writeback at writepage time should work just as
-well. It's just that gfs2 did it at write time historically. The
-un-inlining in gfs2_page_mkwrite() could probably also be removed.
 
-I can give this a try, but I'll unfortunately be AFK for the next
-couple of days.
+On 2021/7/26 18:04, James Clark wrote:
+> 
+> 
+> On 23/07/2021 20:23, Arnaldo Carvalho de Melo wrote:
+>> Em Fri, Jul 23, 2021 at 09:49:44AM +0800, Li Huafei escreveu:
+>>> On my aarch64 big endian machine, the perf annotate does not work.
+>>>
+>>>   # perf annotate
+>>>    Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (253 samples, percent: local period)
+>>>   --------------------------------------------------------------------------------------------------------------
+>>>    Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (1 samples, percent: local period)
+>>>   ------------------------------------------------------------------------------------------------------------
+>>>    Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (47 samples, percent: local period)
+>>>   -------------------------------------------------------------------------------------------------------------
+>>>   ...
+>>>
+>>> This is because the arch_find() function uses the normalized architecture
+>>> name provided by normalize_arch(), and my machine's architecture name
+>>> aarch64_be is not normalized to arm64.  Like other architectures such as
+>>> arm and powerpc, we can fuzzy match the architecture names associated with
+>>> aarch64.* and normalize them.
+>>
+>> This looks ok modulo fixing the problem and adding that extra pr_err()
+>> in a single patch, please split this into two.
 
-> Something like this ...
->
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 87ccb3438bec..3aeebe899fc5 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -665,9 +665,10 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
->         return copied;
->  }
->
-> -static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
-> -               struct iomap *iomap, loff_t pos, size_t copied)
-> +static int iomap_write_inline_data(struct inode *inode, struct page *page,
-> +               struct iomap *iomap)
->  {
-> +       size_t size = i_size_read(inode) - page_offset(page);
+OK, I've sent the patch set for v2, which puts pr_err() in a single patch:
+https://lore.kernel.org/patchwork/patch/1467154/
 
-You surely mean inode->i_size - iomap->offset.
+>>
+>> Also I fail to see why c34df25b40c2 introduced this problem :-\
+> 
+> I checked the parent commit of c34df25b40c2 and set the architecture to "aarch64_be"
+> but it doesn't work either, so I also don't see any regressions.
+> 
 
->         void *addr;
->
->         WARN_ON_ONCE(!PageUptodate(page));
-> @@ -675,11 +676,10 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
->
->         flush_dcache_page(page);
->         addr = kmap_atomic(page);
-> -       memcpy(iomap->inline_data + pos, addr + pos, copied);
-> +       memcpy(iomap->inline_data, addr, size);
->         kunmap_atomic(addr);
->
-> -       mark_inode_dirty(inode);
-> -       return copied;
-> +       return 0;
->  }
->
->  /* Returns the number of bytes copied.  May be 0.  Cannot be an errno. */
-> @@ -691,9 +691,7 @@ static size_t iomap_write_end(struct inode *inode, loff_t pos, size_t len,
->         loff_t old_size = inode->i_size;
->         size_t ret;
->
-> -       if (srcmap->type == IOMAP_INLINE) {
-> -               ret = iomap_write_end_inline(inode, page, iomap, pos, copied);
-> -       } else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
-> +       if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
->                 ret = block_write_end(NULL, inode->i_mapping, pos, len, copied,
->                                 page, NULL);
->         } else {
-> @@ -1314,6 +1312,9 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
->
->         WARN_ON_ONCE(iop && atomic_read(&iop->write_bytes_pending) != 0);
->
-> +       if (wpc->iomap.type == IOMAP_INLINE)
-> +               return iomap_write_inline_data(inode, page, iomap);
-> +
->         /*
->          * Walk through the page to find areas to write back. If we run off the
->          * end of the current map or find the current map invalid, grab a new
-> @@ -1328,8 +1329,6 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
->                 error = wpc->ops->map_blocks(wpc, inode, file_offset);
->                 if (error)
->                         break;
-> -               if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
-> -                       continue;
->                 if (wpc->iomap.type == IOMAP_HOLE)
->                         continue;
->                 iomap_add_to_ioend(inode, file_offset, page, iop, wpc, wbc,
->
+Sorry, this may be my mistake. It should be that perf annotate adds 
+support for aarch64_be, not that there is a bug in the existing code. In 
+v2, I've removed the "Fixes" tag.
 
-Thanks,
-Andreas
+>>
+>> Can some ARM person ack/review this, please?
+>>
+>> - Arnaldo
+>>   
+>>> Fixes: c34df25b40c2 ("perf annotate: Add symbol__annotate function")
+>>> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+>>> ---
+>>>   tools/perf/util/annotate.c | 4 +++-
+>>>   tools/perf/util/env.c      | 2 +-
+>>>   2 files changed, 4 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+>>> index aa04a3655236..cb280de3369f 100644
+>>> --- a/tools/perf/util/annotate.c
+>>> +++ b/tools/perf/util/annotate.c
+>>> @@ -2192,8 +2192,10 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
+>>>   		return errno;
+>>>   
+>>>   	args.arch = arch = arch__find(arch_name);
+>>> -	if (arch == NULL)
+>>> +	if (arch == NULL) {
+>>> +		pr_err("%s: unsupported arch %s\n", __func__, arch_name);
+>>>   		return ENOTSUP;
+>>> +	}
+>>>   
+>>>   	if (parch)
+>>>   		*parch = arch;
+>>> diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+>>> index cec2e6cad8aa..a91da1e9b201 100644
+>>> --- a/tools/perf/util/env.c
+>>> +++ b/tools/perf/util/env.c
+>>> @@ -349,7 +349,7 @@ static const char *normalize_arch(char *arch)
+>>>   		return "x86";
+>>>   	if (!strcmp(arch, "sun4u") || !strncmp(arch, "sparc", 5))
+>>>   		return "sparc";
+>>> -	if (!strcmp(arch, "aarch64") || !strcmp(arch, "arm64"))
+>>> +	if (!strncmp(arch, "aarch64", 7) || !strcmp(arch, "arm64"))
+> 
+> This seems ok to me, but a quick google shows some references to "arm64_be".
+> I don't know if this could ever get into perf, but most of the other ones
+> search for prefixes, so it probably doesn't hurt to do strcmp(arch, "arm64", 5)
+> as well.
 
+In v2, I also added a normalization of "arm64_be". After this patch, 
+perf annotate seems to work fine on my aarch64_be machine. And I checked 
+other source files using perf_env__arch():
+
+  - arch/common.c
+  - builtin-trace.c
+  - util/sample-raw.c
+  - util/thread-stack.c
+  - util/unwind-libunwind.c
+
+Looks like it's OK.
+
+Thank you Arnaldo and James for the review.
+
+Huafei
+> 
+> Thanks
+> James
+> 
+>>>   		return "arm64";
+>>>   	if (!strncmp(arch, "arm", 3) || !strcmp(arch, "sa110"))
+>>>   		return "arm";
+>>> -- 
+>>> 2.17.1
+>>>
+>>
+> .
+> 
