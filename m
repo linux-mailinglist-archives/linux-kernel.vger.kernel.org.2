@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D813D5D73
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5E53D5EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbhGZPBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:01:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40428 "EHLO mail.kernel.org"
+        id S237507AbhGZPP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:15:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235376AbhGZPBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:01:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1321060F37;
-        Mon, 26 Jul 2021 15:41:52 +0000 (UTC)
+        id S235942AbhGZPHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:07:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6051F60F92;
+        Mon, 26 Jul 2021 15:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314113;
-        bh=GbOe5nLAvF/9W+HikZFDgRh0jNiyC0ZMZ7uVQnd7KUI=;
+        s=korg; t=1627314469;
+        bh=X7710NCHpz6oUxDg0kBLlkL9tSb+vJeb/1o2FpZRwpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zLL1Yr83nuCETqbNu2Cm2tm1hDbqupfx2vnawO4q6gnqQCD/RXvJeX6JfrPfcSNDg
-         JuXWZrFy7jNiFaHA0SmT93nF2NEHcVCEYKXVTy1HX8hSmIfgZBwBpT6499zaPf0vqS
-         vMEob8/o/fs6OkztjQiFS0CbctomC0RA+sv/svig=
+        b=tArY0jGMsvRWpuRvif3tGCJ+8sac4+Iqpdy9a2RZdQGA182ZLStZvFEtfFtMSUC5a
+         CYCwdZbPIx5eKxooGoSWhdBjVsu31XvWtICKWqEb3dbQFAn92wLKrZJ2h6cmJ3WLDi
+         YaJ/PtgvyKaat7Q5QNDkT5dF1+n5ytYg406w7WGA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH 4.4 38/47] usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
-Date:   Mon, 26 Jul 2021 17:38:56 +0200
-Message-Id: <20210726153824.179064630@linuxfoundation.org>
+        stable@vger.kernel.org, Vincent Palatin <vpalatin@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 57/82] Revert "USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem"
+Date:   Mon, 26 Jul 2021 17:38:57 +0200
+Message-Id: <20210726153830.027791559@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +39,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Vincent Palatin <vpalatin@chromium.org>
 
-commit 5719df243e118fb343725e8b2afb1637e1af1373 upstream.
+[ Upstream commit f3a1a937f7b240be623d989c8553a6d01465d04f ]
 
-This driver has a potential issue which this driver is possible to
-cause superfluous irqs after usb_pkt_pop() is called. So, after
-the commit 3af32605289e ("usb: renesas_usbhs: fix error return
-code of usbhsf_pkt_handler()") had been applied, we could observe
-the following error happened when we used g_audio.
+This reverts commit 0bd860493f81eb2a46173f6f5e44cc38331c8dbd.
 
-    renesas_usbhs e6590000.usb: irq_ready run_error 1 : -22
+While the patch was working as stated,ie preventing the L850-GL LTE modem
+from crashing on some U3 wake-ups due to a race condition between the
+host wake-up and the modem-side wake-up, when using the MBIM interface,
+this would force disabling the USB runtime PM on the device.
 
-To fix the issue, disable the tx or rx interrupt in usb_pkt_pop().
+The increased power consumption is significant for LTE laptops,
+and given that with decently recent modem firmwares, when the modem hits
+the bug, it automatically recovers (ie it drops from the bus, but
+automatically re-enumerates after less than half a second, rather than being
+stuck until a power cycle as it was doing with ancient firmware), for
+most people, the trade-off now seems in favor of re-enabling it by
+default.
 
-Fixes: 2743e7f90dc0 ("usb: renesas_usbhs: fix the usb_pkt_pop()")
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/20210624122039.596528-1-yoshihiro.shimoda.uh@renesas.com
+For people with access to the platform code, the bug can also be worked-around
+successfully by changing the USB3 LFPM polling off-time for the XHCI
+controller in the BIOS code.
+
+Signed-off-by: Vincent Palatin <vpalatin@chromium.org>
+Link: https://lore.kernel.org/r/20210721092516.2775971-1-vpalatin@chromium.org
+Fixes: 0bd860493f81 ("USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem")
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/renesas_usbhs/fifo.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/core/quirks.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/drivers/usb/renesas_usbhs/fifo.c
-+++ b/drivers/usb/renesas_usbhs/fifo.c
-@@ -115,6 +115,8 @@ static struct dma_chan *usbhsf_dma_chan_
- #define usbhsf_dma_map(p)	__usbhsf_dma_map_ctrl(p, 1)
- #define usbhsf_dma_unmap(p)	__usbhsf_dma_map_ctrl(p, 0)
- static int __usbhsf_dma_map_ctrl(struct usbhs_pkt *pkt, int map);
-+static void usbhsf_tx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
-+static void usbhsf_rx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
- struct usbhs_pkt *usbhs_pkt_pop(struct usbhs_pipe *pipe, struct usbhs_pkt *pkt)
- {
- 	struct usbhs_priv *priv = usbhs_pipe_to_priv(pipe);
-@@ -138,6 +140,11 @@ struct usbhs_pkt *usbhs_pkt_pop(struct u
- 			dmaengine_terminate_all(chan);
- 			usbhsf_fifo_clear(pipe, fifo);
- 			usbhsf_dma_unmap(pkt);
-+		} else {
-+			if (usbhs_pipe_is_dir_in(pipe))
-+				usbhsf_rx_irq_ctrl(pipe, 0);
-+			else
-+				usbhsf_tx_irq_ctrl(pipe, 0);
- 		}
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 3dfd584a1ef3..2ca6ed207e26 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -325,10 +325,6 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	/* DJI CineSSD */
+ 	{ USB_DEVICE(0x2ca3, 0x0031), .driver_info = USB_QUIRK_NO_LPM },
  
- 		usbhs_pipe_running(pipe, 0);
+-	/* Fibocom L850-GL LTE Modem */
+-	{ USB_DEVICE(0x2cb7, 0x0007), .driver_info =
+-			USB_QUIRK_IGNORE_REMOTE_WAKEUP },
+-
+ 	/* INTEL VALUE SSD */
+ 	{ USB_DEVICE(0x8086, 0xf1a5), .driver_info = USB_QUIRK_RESET_RESUME },
+ 
+-- 
+2.30.2
+
 
 
