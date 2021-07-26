@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58613D63B7
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1F43D63B6
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239174AbhGZPu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41342 "EHLO mail.kernel.org"
+        id S239164AbhGZPuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:50:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237420AbhGZP3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 396C360240;
-        Mon, 26 Jul 2021 16:07:56 +0000 (UTC)
+        id S237441AbhGZP3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC49A60FC1;
+        Mon, 26 Jul 2021 16:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315676;
-        bh=eAoqM55ckQeZR/2dXYiO+LWKlYqamkI+rEH1wmoVhwI=;
+        s=korg; t=1627315684;
+        bh=y8gmZqop9BmTiw9GOQqxvDT1B86BHadDU+FgFb9RLPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IDY+UeFbO8Je16kjZSunp7q/w7lKNKcWjh9QBFtftnWdgwXiytGKSIE37nac1+nfJ
-         7Ti2ibYr/nC6uGA9pO2Bh1YutJynXAC9CwyQevrvqOYlI7jDIeCBGkl/EsREtLsMO8
-         cR6j660ddLtlvlBDDu6F8fqmhcc507v5ZOEUDSo0=
+        b=ygR8LpBli+iDSx9GMPYBdJM6JFNbtEUCbV+GSWFaxEvOprdd2409kd8/+eT5nfcMo
+         4HE6vS5X7RuN1m6yHboH0rgAyKQUyAUscsdsmoxnHwYp2h9oDW3T9u4Re5h5MvjTBP
+         NJzVsXj8vCNP4zP9X9xCYyOiPueqOSEYPpjI31uc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 022/223] bonding: fix incorrect return value of bond_ipsec_offload_ok()
-Date:   Mon, 26 Jul 2021 17:36:54 +0200
-Message-Id: <20210726153846.974692718@linuxfoundation.org>
+Subject: [PATCH 5.13 025/223] selftests: icmp_redirect: remove from checking for IPv6 route get
+Date:   Mon, 26 Jul 2021 17:36:57 +0200
+Message-Id: <20210726153847.069319084@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,37 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 168e696a36792a4a3b2525a06249e7472ef90186 ]
+[ Upstream commit 24b671aad4eae423e1abf5b7f08d9a5235458b8d ]
 
-bond_ipsec_offload_ok() is called to check whether the interface supports
-ipsec offload or not.
-bonding interface support ipsec offload only in active-backup mode.
-So, if a bond interface is not in active-backup mode, it should return
-false but it returns true.
+If the kernel doesn't enable option CONFIG_IPV6_SUBTREES, the RTA_SRC
+info will not be exported to userspace in rt6_fill_node(). And ip cmd will
+not print "from ::" to the route output. So remove this check.
 
-Fixes: a3b658cfb664 ("bonding: allow xfrm offload setup post-module-load")
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
+Fixes: ec8105352869 ("selftests: Add redirect tests")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Reviewed-by: David Ahern <dsahern@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/bonding/bond_main.c | 2 +-
+ tools/testing/selftests/net/icmp_redirect.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index d267791a06c0..bf8ade982940 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -581,7 +581,7 @@ static bool bond_ipsec_offload_ok(struct sk_buff *skb, struct xfrm_state *xs)
- 	real_dev = curr_active->dev;
+diff --git a/tools/testing/selftests/net/icmp_redirect.sh b/tools/testing/selftests/net/icmp_redirect.sh
+index bf361f30d6ef..bfcabee50155 100755
+--- a/tools/testing/selftests/net/icmp_redirect.sh
++++ b/tools/testing/selftests/net/icmp_redirect.sh
+@@ -311,7 +311,7 @@ check_exception()
  
- 	if (BOND_MODE(bond) != BOND_MODE_ACTIVEBACKUP) {
--		err = true;
-+		err = false;
- 		goto out;
- 	}
- 
+ 	if [ "$with_redirect" = "yes" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+-		grep -q "${H2_N2_IP6} from :: via ${R2_LLADDR} dev br0.*${mtu}"
++		grep -q "${H2_N2_IP6} .*via ${R2_LLADDR} dev br0.*${mtu}"
+ 	elif [ -n "${mtu}" ]; then
+ 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
+ 		grep -q "${mtu}"
 -- 
 2.30.2
 
