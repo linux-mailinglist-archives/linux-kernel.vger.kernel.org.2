@@ -2,71 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3C03D59FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3B23D59FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232572AbhGZMVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231874AbhGZMVw (ORCPT
+        id S233115AbhGZMXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:23:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38903 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232702AbhGZMXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:21:52 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A98C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:02:21 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id B79822B0; Mon, 26 Jul 2021 15:02:18 +0200 (CEST)
-Date:   Mon, 26 Jul 2021 15:02:14 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     will@kernel.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
-        john.garry@huawei.com, dianders@chromium.org
-Subject: Re: [PATCH 00/23] iommu: Refactor DMA domain strictness
-Message-ID: <YP6yVtDcCRpp7UWa@8bytes.org>
-References: <cover.1626888444.git.robin.murphy@arm.com>
+        Mon, 26 Jul 2021 08:23:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627304608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IGNIpIsmHVsxBMU4UuRo09+EWFGkpjab3tHKGtaAqJI=;
+        b=VETI/bNIjI+DY1843n+Kr23O9DWk3dNS4wpWIecmIs8A7sIQzUYIj9nKFnNJEqMlaPQbUJ
+        SG5Inj38NkYlUJIOIuxhfjoX4xlOelTd+8xyn/WgOLEadm8qgh20NmTkYboN5nl6SArAU9
+        lZvf8dvx7bI+316+SAUAqAfiaqR+GKo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-0jIP-PS5NHKlL3Nqyz4Cdg-1; Mon, 26 Jul 2021 09:03:26 -0400
+X-MC-Unique: 0jIP-PS5NHKlL3Nqyz4Cdg-1
+Received: by mail-wr1-f70.google.com with SMTP id o11-20020a5d474b0000b02901533f8ed22cso3242819wrs.22
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:03:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IGNIpIsmHVsxBMU4UuRo09+EWFGkpjab3tHKGtaAqJI=;
+        b=tjEY9D0FBlLbsJyYP1XNwavo7iYErjPG31SrMyWpUt0mx3ADeO7lvHOLd1mFqphapA
+         vUxHorRqgMoWBUwUZVEqbFIEs7xtMHRFoO1llfUDUGz1SZLT7yNhMdbZfkHjkEe4Q1VS
+         yyl1/5nAt0ZJq6xQL+GL4X9t+Pfny/zux9NhqcUO++FRLVdVOZTineOvaZMibh4g1N+8
+         qk16vtDF1UUYRDNsocdPVjtAHOuvDxevMbIehbWMSMp3bk0xaM9BM3nd4LzkUtEtD36z
+         b8atYKSAlH3EfxHrMy8jjWrSlelL0+KzpGubGlUoLybATJ/xhJaEU+PaxO3p4h+QRb6y
+         JLUA==
+X-Gm-Message-State: AOAM5302MxEtd0/q2CoEb3jteX+Em/yLFLWMiMqAL3cDcoL4SK/2bkIy
+        620JzcjR797gKPqMPIYJT9VKJk46OHJBbuxkgzG1bo+zVWnQg6SuO1FI7vrSILPj2eiHt8BgvVS
+        AKhi7v1nYsmDXjdnmHTWVJls8uZEtvVHqYziL54ia
+X-Received: by 2002:a1c:2282:: with SMTP id i124mr17049204wmi.166.1627304605647;
+        Mon, 26 Jul 2021 06:03:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzez+Dg/KjFXB2/t8rmE8mp4VEy7yq4UcgU/E1xnbCT/hQKvCXLclyMSKPeyOlhURK+emV0LZWpNj9vRYVNLFM=
+X-Received: by 2002:a1c:2282:: with SMTP id i124mr17049182wmi.166.1627304605390;
+ Mon, 26 Jul 2021 06:03:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1626888444.git.robin.murphy@arm.com>
+References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
+ <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
+ <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com>
+ <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local> <20210726110611.459173-1-agruenba@redhat.com>
+ <YP6rTi/I3Vd+pbeT@casper.infradead.org>
+In-Reply-To: <YP6rTi/I3Vd+pbeT@casper.infradead.org>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 26 Jul 2021 15:03:14 +0200
+Message-ID: <CAHc6FU6RhzfRSaX3qB6i6F+ELPZ=Q0q-xA0Tfu_MuDzo77d7zQ@mail.gmail.com>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        linux-erofs@lists.ozlabs.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On Mon, Jul 26, 2021 at 2:33 PM Matthew Wilcox <willy@infradead.org> wrote:
+> On Mon, Jul 26, 2021 at 01:06:11PM +0200, Andreas Gruenbacher wrote:
+> > @@ -671,11 +683,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+> >       void *addr;
+> >
+> >       WARN_ON_ONCE(!PageUptodate(page));
+> > -     BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
+> > +     BUG_ON(!iomap_inline_data_size_valid(iomap));
+> >
+> >       flush_dcache_page(page);
+> >       addr = kmap_atomic(page);
+> > -     memcpy(iomap->inline_data + pos, addr + pos, copied);
+> > +     memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
+> >       kunmap_atomic(addr);
+> >
+> >       mark_inode_dirty(inode);
+>
+> Only tangentially related ... why do we memcpy the data into the tail
+> at write_end() time instead of at writepage() time?  I see there's a
+> workaround for that in gfs2's page_mkwrite():
+>
+>         if (gfs2_is_stuffed(ip)) {
+>                 err = gfs2_unstuff_dinode(ip);
+>
+> (an mmap store cannot change the size of the file, so this would be
+> unnecessary)
 
-On Wed, Jul 21, 2021 at 07:20:11PM +0100, Robin Murphy wrote:
-> Robin Murphy (23):
->   iommu: Pull IOVA cookie management into the core
->   iommu/amd: Drop IOVA cookie management
->   iommu/arm-smmu: Drop IOVA cookie management
->   iommu/vt-d: Drop IOVA cookie management
->   iommu/exynos: Drop IOVA cookie management
->   iommu/ipmmu-vmsa: Drop IOVA cookie management
->   iommu/mtk: Drop IOVA cookie management
->   iommu/rockchip: Drop IOVA cookie management
->   iommu/sprd: Drop IOVA cookie management
->   iommu/sun50i: Drop IOVA cookie management
->   iommu/virtio: Drop IOVA cookie management
->   iommu/dma: Unexport IOVA cookie management
->   iommu/dma: Remove redundant "!dev" checks
->   iommu: Introduce explicit type for non-strict DMA domains
->   iommu/amd: Prepare for multiple DMA domain types
->   iommu/arm-smmu: Prepare for multiple DMA domain types
->   iommu/vt-d: Prepare for multiple DMA domain types
->   iommu: Express DMA strictness via the domain type
->   iommu: Expose DMA domain strictness via sysfs
->   iommu: Allow choosing DMA strictness at build time
->   iommu/dma: Factor out flush queue init
->   iommu: Allow enabling non-strict mode dynamically
->   iommu/arm-smmu: Allow non-strict in pgtable_quirks interface
+Not sure if an additional __set_page_dirty_nobuffers is needed in that
+case, but doing the writeback at writepage time should work just as
+well. It's just that gfs2 did it at write time historically. The
+un-inlining in gfs2_page_mkwrite() could probably also be removed.
 
-I really like this patch-set. It is a nice cleanup and the
-implementation is straightforward. Given no other major objections and
-reviews I think this is material for 5.15.
+I can give this a try, but I'll unfortunately be AFK for the next
+couple of days.
+
+> Something like this ...
+>
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 87ccb3438bec..3aeebe899fc5 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -665,9 +665,10 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
+>         return copied;
+>  }
+>
+> -static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+> -               struct iomap *iomap, loff_t pos, size_t copied)
+> +static int iomap_write_inline_data(struct inode *inode, struct page *page,
+> +               struct iomap *iomap)
+>  {
+> +       size_t size = i_size_read(inode) - page_offset(page);
+
+You surely mean inode->i_size - iomap->offset.
+
+>         void *addr;
+>
+>         WARN_ON_ONCE(!PageUptodate(page));
+> @@ -675,11 +676,10 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+>
+>         flush_dcache_page(page);
+>         addr = kmap_atomic(page);
+> -       memcpy(iomap->inline_data + pos, addr + pos, copied);
+> +       memcpy(iomap->inline_data, addr, size);
+>         kunmap_atomic(addr);
+>
+> -       mark_inode_dirty(inode);
+> -       return copied;
+> +       return 0;
+>  }
+>
+>  /* Returns the number of bytes copied.  May be 0.  Cannot be an errno. */
+> @@ -691,9 +691,7 @@ static size_t iomap_write_end(struct inode *inode, loff_t pos, size_t len,
+>         loff_t old_size = inode->i_size;
+>         size_t ret;
+>
+> -       if (srcmap->type == IOMAP_INLINE) {
+> -               ret = iomap_write_end_inline(inode, page, iomap, pos, copied);
+> -       } else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+> +       if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+>                 ret = block_write_end(NULL, inode->i_mapping, pos, len, copied,
+>                                 page, NULL);
+>         } else {
+> @@ -1314,6 +1312,9 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>
+>         WARN_ON_ONCE(iop && atomic_read(&iop->write_bytes_pending) != 0);
+>
+> +       if (wpc->iomap.type == IOMAP_INLINE)
+> +               return iomap_write_inline_data(inode, page, iomap);
+> +
+>         /*
+>          * Walk through the page to find areas to write back. If we run off the
+>          * end of the current map or find the current map invalid, grab a new
+> @@ -1328,8 +1329,6 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
+>                 error = wpc->ops->map_blocks(wpc, inode, file_offset);
+>                 if (error)
+>                         break;
+> -               if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
+> -                       continue;
+>                 if (wpc->iomap.type == IOMAP_HOLE)
+>                         continue;
+>                 iomap_add_to_ioend(inode, file_offset, page, iop, wpc, wbc,
+>
 
 Thanks,
+Andreas
 
-	Joerg
