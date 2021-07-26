@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 414FE3D611F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B333D6015
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232561AbhGZP2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:28:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
+        id S236267AbhGZPUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237409AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E2F560F90;
-        Mon, 26 Jul 2021 15:55:06 +0000 (UTC)
+        id S237143AbhGZPKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF33860525;
+        Mon, 26 Jul 2021 15:50:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314907;
-        bh=y8gmZqop9BmTiw9GOQqxvDT1B86BHadDU+FgFb9RLPE=;
+        s=korg; t=1627314652;
+        bh=AVG/V3mE47Kbx4CCekMm8Z+YoAvRZy+Gk5vndcJj/SY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RanR7y1AF/Q30p5knNaj7Gvu5qLQnraQpX7PjG0jwRsSkqyPjktzog5ILPuJ2g64e
-         PRExwmnkLXdu1Q3nN4WUyt2Cp2UmQuIyJ2sOBeaDkRhqjsiZsraSQXOj0OwdzFy6DL
-         0FRsxDgITZwkAK/7J+sB9ejponsXwMCt34BNULxY=
+        b=arkJGd0FZ4TK9Xeay37j5UFDbByyThnsY73vfEs0U65oJnfMPxNd8W9xeK1ODE33L
+         AD1cYUPK3vPY4IBSGitpjuRTz9h06nmq7C66PcxcX6r95vWZ7D5R7A28pKJhkG4Pq0
+         RZfvtvjTucEguzwIYkheUxSM7sQ88i2jWl5iyJY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 015/108] selftests: icmp_redirect: remove from checking for IPv6 route get
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 044/120] net: ti: fix UAF in tlan_remove_one
 Date:   Mon, 26 Jul 2021 17:38:16 +0200
-Message-Id: <20210726153832.185013193@linuxfoundation.org>
+Message-Id: <20210726153833.807597062@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 24b671aad4eae423e1abf5b7f08d9a5235458b8d ]
+commit 0336f8ffece62f882ab3012820965a786a983f70 upstream.
 
-If the kernel doesn't enable option CONFIG_IPV6_SUBTREES, the RTA_SRC
-info will not be exported to userspace in rt6_fill_node(). And ip cmd will
-not print "from ::" to the route output. So remove this check.
+priv is netdev private data and it cannot be
+used after free_netdev() call. Using priv after free_netdev()
+can cause UAF bug. Fix it by moving free_netdev() at the end of the
+function.
 
-Fixes: ec8105352869 ("selftests: Add redirect tests")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Fixes: 1e0a8b13d355 ("tlan: cancel work at remove path")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/testing/selftests/net/icmp_redirect.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/ti/tlan.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/net/icmp_redirect.sh b/tools/testing/selftests/net/icmp_redirect.sh
-index bf361f30d6ef..bfcabee50155 100755
---- a/tools/testing/selftests/net/icmp_redirect.sh
-+++ b/tools/testing/selftests/net/icmp_redirect.sh
-@@ -311,7 +311,7 @@ check_exception()
+--- a/drivers/net/ethernet/ti/tlan.c
++++ b/drivers/net/ethernet/ti/tlan.c
+@@ -312,9 +312,8 @@ static void tlan_remove_one(struct pci_d
+ 	pci_release_regions(pdev);
+ #endif
  
- 	if [ "$with_redirect" = "yes" ]; then
- 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
--		grep -q "${H2_N2_IP6} from :: via ${R2_LLADDR} dev br0.*${mtu}"
-+		grep -q "${H2_N2_IP6} .*via ${R2_LLADDR} dev br0.*${mtu}"
- 	elif [ -n "${mtu}" ]; then
- 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
- 		grep -q "${mtu}"
--- 
-2.30.2
-
+-	free_netdev(dev);
+-
+ 	cancel_work_sync(&priv->tlan_tqueue);
++	free_netdev(dev);
+ }
+ 
+ static void tlan_start(struct net_device *dev)
 
 
