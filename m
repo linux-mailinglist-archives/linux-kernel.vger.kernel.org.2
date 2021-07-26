@@ -2,62 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57BE3D679A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729FB3D67AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbhGZTB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:01:26 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51742 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229882AbhGZTBZ (ORCPT
+        id S231895AbhGZTJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbhGZTJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:01:25 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 49F911C0B76; Mon, 26 Jul 2021 21:41:52 +0200 (CEST)
-Date:   Mon, 26 Jul 2021 21:41:46 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     shiva.linuxworks@gmail.com
-Cc:     rjw@rjwysocki.net, len.brown@intel.com, linux-pm@vger.kernel.org,
-        kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shivamurthy Shastri <sshivamurthy@micron.com>,
-        Keith Busch <kbush@kernel.org>
-Subject: Re: [PATCH v2 1/2] PM: enable support for imminent power loss
-Message-ID: <20210726194146.GA3986@localhost>
-References: <20210726132223.1661-1-sshivamurthy@micron.com>
- <20210726132223.1661-2-sshivamurthy@micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726132223.1661-2-sshivamurthy@micron.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 26 Jul 2021 15:09:53 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A23C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 12:50:21 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 1-20020a17090a1a41b0290176eb6a7a2dso332851pjl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 12:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=stBYlnl0prGrJgTrhDLoW6+eKRnCayRzpy3Yob11L/M=;
+        b=ChimdB2fLyoqnmZVX7sJFdNUOC+HhTMpVmSt6LMSTbZ+nWbIqPOZhj7aqVxqmdzR+V
+         GTE7w7WKktOkyU1V83bBg/f/Rdw4K3nWJSGg+sBpNOZnR5qIvrY5/+BnvtrRfH0+OB67
+         8rPZ8D0Eqvc9ews/yVcm0Xdyhg2bGoS2uRfrzT0rwy+if0x9Xk5F8diPGLTomf2ioD3g
+         Zg0d/+G0OJfJ2GNVrFyhp7woJny1IpB4uUdVOADZ4ajE0+yOku90ZJsfdbJaGRaoOzo8
+         g/JzphPZ9cl5TEdE4yZv0RtOJvWISslJ3SLHKBn6cy32RAGZxwqZXRsUkT6vojJPm45W
+         PrZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=stBYlnl0prGrJgTrhDLoW6+eKRnCayRzpy3Yob11L/M=;
+        b=gZInOBdZ7+VXjtXASlp4vKyYN9LWKGQ8wUDhncIAqIsVh7PHj7SOEwarDQzsS1PX5Y
+         MWlohbO0qcx9McTfnGAXST4mMZYEoeLl8qsHSJTy+BLBaIq1ws8PFqBpH4njIK1Obv6P
+         768nVgFSpFKhb1Lnas+H99G8+OJE7SpghhCgpLKc3Y8koQoaN7tqGGyOc8401HOsPE6v
+         rMmStDU0ej7MXmZfKl1vf/mqe9zBY2eMKjiUEJ8Dp1WBH+9cOQl7UnbKZ7v+vC0W22+H
+         l8jZfU+J3swZT2URmikdBNnSYB8qc6kcMTgkjPhooYHDc8NVmT1cPlYFbXCK3s5VGO7A
+         1sHg==
+X-Gm-Message-State: AOAM533ocb+BEfdciXjFpxgghOLAilmYgNTYBjm3RdOGv6G3js/H0ZKf
+        fN2gbaYRYSkMR0GjizNsdNskJSaEW6Q=
+X-Google-Smtp-Source: ABdhPJxlgvQpw77mLA9t1UYeqQbSKYbh2M+3zz6aX/OEh9eABjPzrMxhDp6LjW695qdW9fhqGu+MkYiG1Hg=
+X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:f4a:330f:115:e2d4])
+ (user=pgonda job=sendgmr) by 2002:a17:90a:c8b:: with SMTP id
+ v11mr588912pja.114.1627329020912; Mon, 26 Jul 2021 12:50:20 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 12:50:12 -0700
+Message-Id: <20210726195015.2106033-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [PATCH 0/3 V3] Add AMD SEV and SEV-ES intra host migration support
+From:   Peter Gonda <pgonda@google.com>
+To:     kvm@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Intra host migration provides a low-cost mechanism for userspace VMM upgrades.
+It is an alternative to traditional (i.e., remote) live migration. Whereas
+remote migration handles move a guest to a new host, intra host migration only
+handles moving a guest to a new userspace VMM within a host.  This can be
+used to update, rollback, change flags of the VMM, etc. The lower cost
+compared to live migration comes from the fact that the guest's memory does
+not need to be copied between processes. A handle to the guest memory
+simply gets passed to the new VMM, this could be done via using /dev/shm
+with share=on or similar feature.
 
-> If the shutdown is pwerformed when the platform is running on the
-> limited backup power supply, some of the devices might not have enough
-> power to perform a clean shutdown.
-> 
-> It is necessary to inform the driver about the limited backup power
-> supply, to allow the driver to decide to perform the minimal required
-> operation for a fast and clean shutdown.
+The guest state can be transferred from an old VMM to a new VMM as follows:
+1. Export guest state from KVM to the old user-space VMM via a getter
+user-space/kernel API 2. Transfer guest state from old VMM to new VMM via
+IPC communication 3. Import guest state into KVM from the new user-space
+VMM via a setter user-space/kernel API VMMs by exporting from KVM using
+getters, sending that data to the new VMM, then setting it again in KVM.
 
-If you can do shutdown that is fast & clean, why not do it always?
+In the common case for intra host migration, we can rely on the normal ioctls
+for passing data from one VMM to the next. SEV, SEV-ES, and other
+confidential compute environments make most of this information opaque, and
+render KVM ioctls such as "KVM_GET_REGS" irrelevant.  As a result, we need
+the ability to pass this opaque metadata from one VMM to the next. The
+easiest way to do this is to leave this data in the kernel, and transfer
+ownership of the metadata from one KVM VM (or vCPU) to the next. For
+example, we need to move the SEV enabled ASID, VMSAs, and GHCB metadata
+from one VMM to the next.  In general, we need to be able to hand off any
+data that would be unsafe/impossible for the kernel to hand directly to
+userspace (and cannot be reproduced using data that can be handed safely to
+userspace).
 
-How fast is normal shutdown vs. fast shutdown?
+During the intra host send operation the SEV required metadata, the guest's
+ASID is loaded into a kvm wide hashmap keyed by a value given by
+userspace. This allows the userspace VMM to pass the key to the target
+VMM. Then on intra host receive the target VMM can be loaded with the
+metadata from the hashmap.
 
-> +#define PM_SUSPEND_FLAG_POWER_LOSS_IMMINENT	BIT(3)
+v3:
+ * Fix memory leak found by dan.carpenter@
 
-I believe we should be more concrete here. Like explaining use (did
-UPS say battery is low? Or does it mean 10 seconds remaining? Or...?)
+v2:
+ * Added marcorr@ reviewed by tag
+ * Renamed function introduced in 1/3
+ * Edited with seanjc@'s review comments
+ ** Cleaned up WARN usage
+ ** Userspace makes random token now
+ * Edited with brijesh.singh@'s review comments
+ ** Checks for different LAUNCH_* states in send function
 
-Plus, who sets this flag? Userland?
+v1: https://lore.kernel.org/kvm/20210621163118.1040170-1-pgonda@google.com/
 
-Best regards,
-								Pavel
+Peter Gonda (3):
+  KVM, SEV: Refactor out function for unregistering encrypted regions
+  KVM, SEV: Add support for SEV intra host migration
+  KVM, SEV: Add support for SEV-ES intra host migration
 
+ .../virt/kvm/amd-memory-encryption.rst        |  43 ++
+ arch/x86/kvm/svm/sev.c                        | 396 +++++++++++++++++-
+ arch/x86/kvm/svm/svm.h                        |   1 +
+ include/uapi/linux/kvm.h                      |  12 +
+ 4 files changed, 433 insertions(+), 19 deletions(-)
+
+base-commit: 7caa04b36f20
+
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc: Wanpeng Li <wanpengli@tencent.com>
+Cc: Jim Mattson <jmattson@google.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
 -- 
+2.32.0.93.g670b81a890-goog
+
