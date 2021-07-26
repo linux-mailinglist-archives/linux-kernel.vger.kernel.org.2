@@ -2,103 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505D53D677D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDF03D6780
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhGZSrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 14:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhGZSrc (ORCPT
+        id S231540AbhGZSvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 14:51:15 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:40092 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhGZSvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 14:47:32 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8EF9C061757;
-        Mon, 26 Jul 2021 12:27:59 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id k1so12801587plt.12;
-        Mon, 26 Jul 2021 12:27:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=1UdDzrra23dH9YokfKPvE1AeA2jAHVIroGq1SNBQhuw=;
-        b=MXRrw0ZZsitiE9Skwj7bh0DNNijMrePYVHp7uEChWsp7D77WbfAThhYYBC2WO+q2wf
-         NboTspa5DGdHXqIcnd8mFfLYOI+5FKdyVzKeHFEYpiZ0KpdsrD7qErPAsgJvkbZfdXpL
-         la1FgQ12OZkU6yz5Tobg/8FZL5+0L+yUMurqUlJZCZEw+AzrF1oRA+NEu1U49iYb/cPZ
-         3wbOSkSn4YCqbJf+Brle4G9lbtySBXa0iOpQIAUnf5qhL+VAFwQJhC3quNE2oRApgrxA
-         61BPag9gmZc5yd6sUq1sefi4+KZP7K0OytFa6obcpZBOBS6SWBKbNGXnFxAdbI8UOF/J
-         fAfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=1UdDzrra23dH9YokfKPvE1AeA2jAHVIroGq1SNBQhuw=;
-        b=RzjXrkGT0EzxCdWhcQulPFZpwf2VwDZTYgpdLpP2lsKlhJ3eVY/nhWJkQabtb50Noh
-         XYjj9RUyIuV2uCb/2SdcrFYLuAtBdzNyAImWgRy2NKhDj4X6O8gMSqCRE+TAEOxnBPyM
-         licLF446PNtOelf7cIaC+FeT2Fi+ZqDK7reV3r53gdJhV4pzpvRjlkSGU+9O73VdV67C
-         Mn/PzuJakTWm/vOVE4i5NaHHnbdiTExLFNaSohwHzhVA3QYSxP6Jbp2jg4A37lmDrNkX
-         1GBX5woC0ccaFcA6PABXEBfeDs9smpIPF0w/dy27pzfevgTghqf2Pz3Kdw+Ej38jeCXf
-         /+hA==
-X-Gm-Message-State: AOAM530+ZUIMfKeOh1yPLVkjkCF2wzhJduJ1VCsxtuMYzI7IoljdQNgD
-        Ar7i0aLh9mxD/BYgB2LygZd9fymv8NTxQw==
-X-Google-Smtp-Source: ABdhPJyKIa2tBdwRxa14RYdzaKZvi7hz0ilJLanTVJ8nLbjcw7fODHKHN0rhx5KhPD9MpwdXxNO31Q==
-X-Received: by 2002:a17:90a:d250:: with SMTP id o16mr9430341pjw.181.1627327679240;
-        Mon, 26 Jul 2021 12:27:59 -0700 (PDT)
-Received: from localhost ([108.161.26.224])
-        by smtp.gmail.com with ESMTPSA id 26sm413610pjj.27.2021.07.26.12.27.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 12:27:53 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 12:27:50 -0700
-From:   Matt Turner <mattst88@gmail.com>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Michael Cree <mcree@orcon.net.nz>, linux-mm@kvack.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Regression bisected to fa3354e4ea39 (mm: free_area_init: use maximal
- zone PFNs rather than zone sizes)
-Message-ID: <20210726192311.uffqnanxw3ac5wwi@ivybridge>
+        Mon, 26 Jul 2021 14:51:15 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m86KE-004I5V-Rg; Mon, 26 Jul 2021 13:31:42 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:41882 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1m86KD-001MOi-TC; Mon, 26 Jul 2021 13:31:42 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <legion@kernel.org>
+Cc:     Sven Schnelle <svens@linux.ibm.com>, linux-kernel@vger.kernel.org
+In-Reply-To: <20210726190619.kcks2gst562blvr4@example.org> (Alexey Gladkov's
+        message of "Mon, 26 Jul 2021 21:06:19 +0200")
+References: <20210721125233.1041429-1-svens@linux.ibm.com>
+        <20210726190619.kcks2gst562blvr4@example.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Mon, 26 Jul 2021 14:31:35 -0500
+Message-ID: <87mtq8kh2g.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+Content-Type: text/plain
+X-XM-SPF: eid=1m86KD-001MOi-TC;;;mid=<87mtq8kh2g.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+2xVkXWy/PLvuACN9xPhSjvwgZXCYTDOE=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4282]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Gladkov <legion@kernel.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 355 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 13 (3.6%), b_tie_ro: 11 (3.1%), parse: 0.97
+        (0.3%), extract_message_metadata: 4.1 (1.2%), get_uri_detail_list:
+        1.80 (0.5%), tests_pri_-1000: 4.0 (1.1%), tests_pri_-950: 1.74 (0.5%),
+        tests_pri_-900: 1.15 (0.3%), tests_pri_-90: 63 (17.8%), check_bayes:
+        61 (17.1%), b_tokenize: 11 (3.1%), b_tok_get_all: 6 (1.8%),
+        b_comp_prob: 2.0 (0.6%), b_tok_touch_all: 36 (10.3%), b_finish: 1.32
+        (0.4%), tests_pri_0: 248 (69.9%), check_dkim_signature: 0.50 (0.1%),
+        check_dkim_adsp: 3.1 (0.9%), poll_dns_idle: 1.20 (0.3%), tests_pri_10:
+        2.1 (0.6%), tests_pri_500: 8 (2.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2] ucounts: add missing data type changes
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reply-To:
+Alexey Gladkov <legion@kernel.org> writes:
 
-Hi Mike!
+> On Wed, Jul 21, 2021 at 02:52:33PM +0200, Sven Schnelle wrote:
+>> commit f9c82a4ea89c3 ("Increase size of ucounts to atomic_long_t")
+>> changed the data type of ucounts/ucounts_max to long, but missed to
+>> adjust a few other places. This is noticeable on big endian platforms
+>> from user space because the /proc/sys/user/max_*_names files all
+>> contain 0.
+>> 
+>> Fixes: f9c82a4ea89c ("Increase size of ucounts to atomic_long_t")
+>> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
+>
+> Acked-by: Alexey Gladkov <legion@kernel.org>
+>
+> Eric, what do you think ?
 
-Since commit fa3354e4ea39 (mm: free_area_init: use maximal zone PFNs rather
-than zone sizes), I get the following BUG on Alpha (an AlphaServer ES47 Marvel)
-and loading userspace leads to a segfault:
+At a quick skim it looks good.  I was to swamped last week to pick it
+up, but I plan on picking this up and getting it to Linus before
+the next -rc release.
 
-(I didn't notice this for a long time because of other unrelated regressions,
-the pandemic, changing jobs, ...)
+Eric
 
-BUG: Bad page state in process swapper  pfn:2ffc53
-page:fffffc000ecf14c0 refcount:0 mapcount:1 mapping:0000000000000000 index:0x0
-flags: 0x0()
-raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-page dumped because: nonzero mapcount  
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-03841-gfa3354e4ea39-dirty #26
-        fffffc0001b5bd68 fffffc0001b5be80 fffffc00011cd148 fffffc000ecf14c0
-        fffffc00019803df fffffc0001b5be80 fffffc00011ce340 fffffc000ecf14c0
-        0000000000000000 fffffc0001b5be80 fffffc0001b482c0 fffffc00027d6618
-        fffffc00027da7d0 00000000002ff97a 0000000000000000 fffffc0001b5be80
-        fffffc00011d1abc fffffc000ecf14c0 fffffc0002d00000 fffffc0001b5be80
-        fffffc0001b2350c 0000000000300000 fffffc0001b48298 fffffc0001b482c0
-Trace:
-[<fffffc00011cd148>] bad_page+0x168/0x1b0
-[<fffffc00011ce340>] free_pcp_prepare+0x1e0/0x290
-[<fffffc00011d1abc>] free_unref_page+0x2c/0xa0
-[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-[<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-[<fffffc000101001c>] _stext+0x1c/0x20
-
-I haven't tried reproducing this on other machines or QEMU, but I'd be glad to
-if that helps.
-
-Any ideas?
-
-Thanks,
-Matt
+>> ---
+>>  fs/notify/fanotify/fanotify_user.c | 10 ++++++----
+>>  kernel/ucount.c                    | 16 ++++++++--------
+>>  2 files changed, 14 insertions(+), 12 deletions(-)
+>> 
+>> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+>> index 64864fb40b40..6576657a1a25 100644
+>> --- a/fs/notify/fanotify/fanotify_user.c
+>> +++ b/fs/notify/fanotify/fanotify_user.c
+>> @@ -58,18 +58,20 @@ struct ctl_table fanotify_table[] = {
+>>  	{
+>>  		.procname	= "max_user_groups",
+>>  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_GROUPS],
+>> -		.maxlen		= sizeof(int),
+>> +		.maxlen		= sizeof(long),
+>>  		.mode		= 0644,
+>> -		.proc_handler	= proc_dointvec_minmax,
+>> +		.proc_handler	= proc_doulongvec_minmax,
+>>  		.extra1		= SYSCTL_ZERO,
+>> +		.extra2		= SYSCTL_INT_MAX,
+>>  	},
+>>  	{
+>>  		.procname	= "max_user_marks",
+>>  		.data	= &init_user_ns.ucount_max[UCOUNT_FANOTIFY_MARKS],
+>> -		.maxlen		= sizeof(int),
+>> +		.maxlen		= sizeof(long),
+>>  		.mode		= 0644,
+>> -		.proc_handler	= proc_dointvec_minmax,
+>> +		.proc_handler	= proc_doulongvec_minmax,
+>>  		.extra1		= SYSCTL_ZERO,
+>> +		.extra2		= SYSCTL_INT_MAX,
+>>  	},
+>>  	{
+>>  		.procname	= "max_queued_events",
+>> diff --git a/kernel/ucount.c b/kernel/ucount.c
+>> index 87799e2379bd..f852591e395c 100644
+>> --- a/kernel/ucount.c
+>> +++ b/kernel/ucount.c
+>> @@ -58,14 +58,14 @@ static struct ctl_table_root set_root = {
+>>  	.permissions = set_permissions,
+>>  };
+>>  
+>> -#define UCOUNT_ENTRY(name)				\
+>> -	{						\
+>> -		.procname	= name,			\
+>> -		.maxlen		= sizeof(int),		\
+>> -		.mode		= 0644,			\
+>> -		.proc_handler	= proc_dointvec_minmax,	\
+>> -		.extra1		= SYSCTL_ZERO,		\
+>> -		.extra2		= SYSCTL_INT_MAX,	\
+>> +#define UCOUNT_ENTRY(name)					\
+>> +	{							\
+>> +		.procname	= name,				\
+>> +		.maxlen		= sizeof(long),			\
+>> +		.mode		= 0644,				\
+>> +		.proc_handler	= proc_doulongvec_minmax,	\
+>> +		.extra1		= SYSCTL_ZERO,			\
+>> +		.extra2		= SYSCTL_INT_MAX,		\
+>>  	}
+>>  static struct ctl_table user_table[] = {
+>>  	UCOUNT_ENTRY("max_user_namespaces"),
+>> -- 
+>> 2.25.1
+>> 
