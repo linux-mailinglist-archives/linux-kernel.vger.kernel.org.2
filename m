@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF443D62B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8873D600B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhGZPhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:37:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36064 "EHLO mail.kernel.org"
+        id S237020AbhGZPU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237202AbhGZPVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EE9960E09;
-        Mon, 26 Jul 2021 16:02:13 +0000 (UTC)
+        id S236974AbhGZPKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0672560F38;
+        Mon, 26 Jul 2021 15:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315333;
-        bh=djUK8kf4HoiFXpKYSTmy1Io6DUCrH+YKlLlwNnnvvBk=;
+        s=korg; t=1627314634;
+        bh=klJ2lU+IDJ9KGZX2a3IZwY2e3V1HVbvgl65cPzfHv9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eda2tC54P7mcYCmh8dg2yoV7O+nzIC4UiO7QxkTTNTt7p5v61+o2wTquz2++uOJiL
-         fdiFXZVOUArKQstht3kLXx3+JQ209EQUvhI0f7m82EePZ+2vkLexfVQq2EATpdz6vF
-         dggFxGTxVu7vHz0EsULXezGIXvVi0yAC6/BllDBI=
+        b=Enb3i/+nefDpQBKg1BckWJTdauWpab8otENYVJF13UqpZnjV0mCB0Kk26jEUnSLN4
+         3oflxIiaUI4YACzCYQw+uA8VPra/h7nqIHY7eLuIV+Qa/OBUHtl2mPEMSp7lek6PLp
+         iBiDx9bHWSvfZfL78WqAZ4w+p06JXN3jpj/Y8T7E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 055/167] bpf, test: fix NULL pointer dereference on invalid expected_attach_type
-Date:   Mon, 26 Jul 2021 17:38:08 +0200
-Message-Id: <20210726153841.261636670@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 037/120] net: dsa: mv88e6xxx: enable .rmu_disable() on Topaz
+Date:   Mon, 26 Jul 2021 17:38:09 +0200
+Message-Id: <20210726153833.584329526@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,109 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit 5e21bb4e812566aef86fbb77c96a4ec0782286e4 ]
+commit 3709488790022c85720f991bff50d48ed5a36e6a upstream.
 
-These two types of XDP progs (BPF_XDP_DEVMAP, BPF_XDP_CPUMAP) will not be
-executed directly in the driver, therefore we should also not directly
-run them from here. To run in these two situations, there must be further
-preparations done, otherwise these may cause a kernel panic.
+Commit 9e5baf9b36367 ("net: dsa: mv88e6xxx: add RMU disable op")
+introduced .rmu_disable() method with implementation for several models,
+but forgot to add Topaz, which can use the Peridot implementation.
 
-For more details, see also dev_xdp_attach().
+Use the Peridot implementation of .rmu_disable() on Topaz.
 
-  [   46.982479] BUG: kernel NULL pointer dereference, address: 0000000000000000
-  [   46.984295] #PF: supervisor read access in kernel mode
-  [   46.985777] #PF: error_code(0x0000) - not-present page
-  [   46.987227] PGD 800000010dca4067 P4D 800000010dca4067 PUD 10dca6067 PMD 0
-  [   46.989201] Oops: 0000 [#1] SMP PTI
-  [   46.990304] CPU: 7 PID: 562 Comm: a.out Not tainted 5.13.0+ #44
-  [   46.992001] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/24
-  [   46.995113] RIP: 0010:___bpf_prog_run+0x17b/0x1710
-  [   46.996586] Code: 49 03 14 cc e8 76 f6 fe ff e9 ad fe ff ff 0f b6 43 01 48 0f bf 4b 02 48 83 c3 08 89 c2 83 e0 0f c0 ea 04 02
-  [   47.001562] RSP: 0018:ffffc900005afc58 EFLAGS: 00010246
-  [   47.003115] RAX: 0000000000000000 RBX: ffffc9000023f068 RCX: 0000000000000000
-  [   47.005163] RDX: 0000000000000000 RSI: 0000000000000079 RDI: ffffc900005afc98
-  [   47.007135] RBP: 0000000000000000 R08: ffffc9000023f048 R09: c0000000ffffdfff
-  [   47.009171] R10: 0000000000000001 R11: ffffc900005afb40 R12: ffffc900005afc98
-  [   47.011172] R13: 0000000000000001 R14: 0000000000000001 R15: ffffffff825258a8
-  [   47.013244] FS:  00007f04a5207580(0000) GS:ffff88842fdc0000(0000) knlGS:0000000000000000
-  [   47.015705] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   47.017475] CR2: 0000000000000000 CR3: 0000000100182005 CR4: 0000000000770ee0
-  [   47.019558] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [   47.021595] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [   47.023574] PKRU: 55555554
-  [   47.024571] Call Trace:
-  [   47.025424]  __bpf_prog_run32+0x32/0x50
-  [   47.026296]  ? printk+0x53/0x6a
-  [   47.027066]  ? ktime_get+0x39/0x90
-  [   47.027895]  bpf_test_run.cold.28+0x23/0x123
-  [   47.028866]  ? printk+0x53/0x6a
-  [   47.029630]  bpf_prog_test_run_xdp+0x149/0x1d0
-  [   47.030649]  __sys_bpf+0x1305/0x23d0
-  [   47.031482]  __x64_sys_bpf+0x17/0x20
-  [   47.032316]  do_syscall_64+0x3a/0x80
-  [   47.033165]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [   47.034254] RIP: 0033:0x7f04a51364dd
-  [   47.035133] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 48
-  [   47.038768] RSP: 002b:00007fff8f9fc518 EFLAGS: 00000213 ORIG_RAX: 0000000000000141
-  [   47.040344] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f04a51364dd
-  [   47.041749] RDX: 0000000000000048 RSI: 0000000020002a80 RDI: 000000000000000a
-  [   47.043171] RBP: 00007fff8f9fc530 R08: 0000000002049300 R09: 0000000020000100
-  [   47.044626] R10: 0000000000000004 R11: 0000000000000213 R12: 0000000000401070
-  [   47.046088] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-  [   47.047579] Modules linked in:
-  [   47.048318] CR2: 0000000000000000
-  [   47.049120] ---[ end trace 7ad34443d5be719a ]---
-  [   47.050273] RIP: 0010:___bpf_prog_run+0x17b/0x1710
-  [   47.051343] Code: 49 03 14 cc e8 76 f6 fe ff e9 ad fe ff ff 0f b6 43 01 48 0f bf 4b 02 48 83 c3 08 89 c2 83 e0 0f c0 ea 04 02
-  [   47.054943] RSP: 0018:ffffc900005afc58 EFLAGS: 00010246
-  [   47.056068] RAX: 0000000000000000 RBX: ffffc9000023f068 RCX: 0000000000000000
-  [   47.057522] RDX: 0000000000000000 RSI: 0000000000000079 RDI: ffffc900005afc98
-  [   47.058961] RBP: 0000000000000000 R08: ffffc9000023f048 R09: c0000000ffffdfff
-  [   47.060390] R10: 0000000000000001 R11: ffffc900005afb40 R12: ffffc900005afc98
-  [   47.061803] R13: 0000000000000001 R14: 0000000000000001 R15: ffffffff825258a8
-  [   47.063249] FS:  00007f04a5207580(0000) GS:ffff88842fdc0000(0000) knlGS:0000000000000000
-  [   47.065070] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   47.066307] CR2: 0000000000000000 CR3: 0000000100182005 CR4: 0000000000770ee0
-  [   47.067747] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [   47.069217] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [   47.070652] PKRU: 55555554
-  [   47.071318] Kernel panic - not syncing: Fatal exception
-  [   47.072854] Kernel Offset: disabled
-  [   47.073683] ---[ end Kernel panic - not syncing: Fatal exception ]---
-
-Fixes: 9216477449f3 ("bpf: cpumap: Add the possibility to attach an eBPF program to cpumap")
-Fixes: fbee97feed9b ("bpf: Add support to attach bpf program to a devmap entry")
-Reported-by: Abaci <abaci@linux.alibaba.com>
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: David Ahern <dsahern@kernel.org>
-Acked-by: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/bpf/20210708080409.73525-1-xuanzhuo@linux.alibaba.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Fixes: 9e5baf9b36367 ("net: dsa: mv88e6xxx: add RMU disable op")
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bpf/test_run.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/dsa/mv88e6xxx/chip.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 8b796c499cbb..e7cbd1b4a5e5 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -627,6 +627,9 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	void *data;
- 	int ret;
- 
-+	if (prog->expected_attach_type == BPF_XDP_DEVMAP ||
-+	    prog->expected_attach_type == BPF_XDP_CPUMAP)
-+		return -EINVAL;
- 	if (kattr->test.ctx_in || kattr->test.ctx_out)
- 		return -EINVAL;
- 
--- 
-2.30.2
-
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -3682,6 +3682,7 @@ static const struct mv88e6xxx_ops mv88e6
+ 	.mgmt_rsvd2cpu =  mv88e6390_g1_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
+ 	.reset = mv88e6352_g1_reset,
++	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
+ 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
+ 	.serdes_power = mv88e6341_serdes_power,
+@@ -3764,6 +3765,7 @@ static const struct mv88e6xxx_ops mv88e6
+ 	.mgmt_rsvd2cpu = mv88e6352_g2_mgmt_rsvd2cpu,
+ 	.pot_clear = mv88e6xxx_g2_pot_clear,
+ 	.reset = mv88e6352_g1_reset,
++	.rmu_disable = mv88e6390_g1_rmu_disable,
+ 	.vtu_getnext = mv88e6352_g1_vtu_getnext,
+ 	.vtu_loadpurge = mv88e6352_g1_vtu_loadpurge,
+ 	.avb_ops = &mv88e6352_avb_ops,
 
 
