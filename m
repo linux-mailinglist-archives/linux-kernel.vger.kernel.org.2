@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ED73D60D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C103D62E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238325AbhGZPZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:25:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53050 "EHLO mail.kernel.org"
+        id S238105AbhGZPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236719AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1907460FEA;
-        Mon, 26 Jul 2021 15:53:50 +0000 (UTC)
+        id S237529AbhGZPXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D60B360EB2;
+        Mon, 26 Jul 2021 16:03:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314831;
-        bh=e5MnrLQcPlS8Dt2d1w2cYDGLFhlYG1t7XWPSZaQpFvo=;
+        s=korg; t=1627315427;
+        bh=EbI8xoAF1Uc9GQwcULMt9iXYokM+w/UwDs8a6JaKhQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sCvzxoUJkMUI4/4gZTx9u0YDO1wp80cSQFaTVoKtEljAQgw0aaK7s65TMHMYQAY+k
-         Ih8Y9Uo9vThMBarUBTpBlQ7Gl+FRvyQI24iRNo9bRE1eeR15MQNSZctM5p7KVcDPEB
-         c2hmtDv0jfsxBNX+kRewGdZL48GkL04ebOxotny0=
+        b=G2wzVuzeWX/NwyZ16G/8dLiCW66Q6VkTxl2NaQpOZsldiaFcscMPDZN7POkhPFk3c
+         //VvCQ18ZhLtbX4xQzQH3Bqsg/V60yTk0ZwbnIAAOSGRiiMku8eOvtV9SFZu/BYrDJ
+         07edQZQ22CJM7iLqobJZCxrdlcw5MkkINx+SeTHU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Luis Henriques <lhenriques@suse.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 072/120] liquidio: Fix unintentional sign extension issue on left shift of u16
-Date:   Mon, 26 Jul 2021 17:38:44 +0200
-Message-Id: <20210726153834.698431329@linuxfoundation.org>
+Subject: [PATCH 5.10 092/167] ceph: dont WARN if were still opening a session to an MDS
+Date:   Mon, 26 Jul 2021 17:38:45 +0200
+Message-Id: <20210726153842.485284159@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Luis Henriques <lhenriques@suse.de>
 
-[ Upstream commit e7efc2ce3d0789cd7c21b70ff00cd7838d382639 ]
+[ Upstream commit cdb330f4b41ab55feb35487729e883c9e08b8a54 ]
 
-Shifting the u16 integer oct->pcie_port by CN23XX_PKT_INPUT_CTL_MAC_NUM_POS
-(29) bits will be promoted to a 32 bit signed int and then sign-extended
-to a u64. In the cases where oct->pcie_port where bit 2 is set (e.g. 3..7)
-the shifted value will be sign extended and the top 32 bits of the result
-will be set.
+If MDSs aren't available while mounting a filesystem, the session state
+will transition from SESSION_OPENING to SESSION_CLOSING.  And in that
+scenario check_session_state() will be called from delayed_work() and
+trigger this WARN.
 
-Fix this by casting the u16 values to a u64 before the 29 bit left shift.
+Avoid this by only WARNing after a session has already been established
+(i.e., the s_ttl will be different from 0).
 
-Addresses-Coverity: ("Unintended sign extension")
-
-Fixes: 3451b97cce2d ("liquidio: CN23XX register setup")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 62575e270f66 ("ceph: check session state after bumping session->s_seq")
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c | 2 +-
+ fs/ceph/mds_client.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-index 55fe80ca10d3..9e447983d0aa 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-@@ -420,7 +420,7 @@ static int cn23xx_pf_setup_global_input_regs(struct octeon_device *oct)
- 	 * bits 32:47 indicate the PVF num.
- 	 */
- 	for (q_no = 0; q_no < ern; q_no++) {
--		reg_val = oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
-+		reg_val = (u64)oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
- 
- 		/* for VF assigned queues. */
- 		if (q_no < oct->sriov_info.pf_srn) {
+diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+index d560752b764d..6b00f1d7c8e7 100644
+--- a/fs/ceph/mds_client.c
++++ b/fs/ceph/mds_client.c
+@@ -4401,7 +4401,7 @@ bool check_session_state(struct ceph_mds_session *s)
+ 		break;
+ 	case CEPH_MDS_SESSION_CLOSING:
+ 		/* Should never reach this when we're unmounting */
+-		WARN_ON_ONCE(true);
++		WARN_ON_ONCE(s->s_ttl);
+ 		fallthrough;
+ 	case CEPH_MDS_SESSION_NEW:
+ 	case CEPH_MDS_SESSION_RESTARTING:
 -- 
 2.30.2
 
