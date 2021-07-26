@@ -2,67 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6003D687B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035F73D687D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhGZUdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 16:33:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:59196 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232922AbhGZUdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 16:33:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A693631B;
-        Mon, 26 Jul 2021 14:14:11 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 930203F70D;
-        Mon, 26 Jul 2021 14:14:10 -0700 (PDT)
-Subject: Re: [PATCH v5] arm pl011 serial: support multi-irq request
-To:     Qian Cai <quic_qiancai@quicinc.com>, Bing Fan <hptsfb@gmail.com>,
-        gregkh@linuxfoundation.org, Bing Fan <tombinfan@tencent.com>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <1625103512-30182-1-git-send-email-hptsfb@gmail.com>
- <60f007b3-bb01-dd0a-b1a2-a6da62a486e5@quicinc.com>
- <3b60d054-4e22-62fa-c31b-29b146495a65@gmail.com>
- <a1843494-5c8e-1ec8-5b98-df318db40922@quicinc.com>
- <7535ae2f-6a12-8203-0498-8ac85ab0d9a7@arm.com>
- <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e98962f3-9232-4abf-ec27-a7524a9e786d@arm.com>
-Date:   Mon, 26 Jul 2021 22:14:04 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S233289AbhGZUex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 16:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232788AbhGZUew (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 16:34:52 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4B3C061757;
+        Mon, 26 Jul 2021 14:15:19 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso1883146pjf.4;
+        Mon, 26 Jul 2021 14:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G/SSn0rBK6tqFNd7EDq6PH3Wo7WqYbfOcGRc3C+nqRM=;
+        b=Wr6yb53gJ39rdM2lt+ku6pRSughO+Ggp6k0ZkTwlYKo4mYSL1fpG3poxNDfPWL+Msd
+         uDSlQBtDv24K886t2NX7/0YAZbO1O7og3bGxNDEq9H5aBw+AevsP7Dr2+wc3ORYH4JOG
+         2LmXF7jzF4NpDAIOHdThCfZ02JU9EJ0sQMSBBMRQAI8H//tmAVQiZHYUjoybIM+0myLE
+         4mVsIRAwSdVGToJRwshVFC4qch2aKaKzD3w5Ia4vnzy0EDUUMJwscSdHOaFoqIGU6TFT
+         JrGUP1UVdDL5YuCD6CztMMaaDpm3tz6HdRZFd8CuWfhvqj6V6nObMxeALdaOPde1wM4o
+         sX5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G/SSn0rBK6tqFNd7EDq6PH3Wo7WqYbfOcGRc3C+nqRM=;
+        b=REd7tfNUNUzGhdsbIVkUJczWDMTqclCUt4jDvLE9KZGLyMmhB6yHbp0SNrN8WAQvAm
+         QqHg0P0wP/021aodE6WVOUhth5CalwW2gUa8s6iNj5MJeweYNEIvwNX4vQ9qhYOvuOBx
+         auwcT+ApK1j1opd0Iu76wZtvCIokm8rju2aXoIV1ch6QEG+yqj7K2wfzA5Z65b7h23Ch
+         dZt6Z8tlpD32n1hfTARhySfsDuKgyIAFzUB7O2MX/oWjTxxgEKVOzA+ula5HSuGCN/z7
+         DZOvshTHO8sBfOqgqyB37axOsbqaZS94qtVB1qZm/uVZbZhcuOA3dRy/OIP4DW7HWlpH
+         gaBw==
+X-Gm-Message-State: AOAM531bPWEwvs4uv6L/WSlNVDG+o0B+yx9NPHUFI3wfmUqFSK8NSxIS
+        aL4XbiwVmdi8d3QwWMOR6cEhbbklOLE=
+X-Google-Smtp-Source: ABdhPJy6I2BXFTq4eF/PwEewgLO1IuoswuXhS6h378YsIqulDdwnxtEleiVuTKcM2fxg8QRU0qzDTg==
+X-Received: by 2002:aa7:921a:0:b029:2cf:b55b:9d52 with SMTP id 26-20020aa7921a0000b02902cfb55b9d52mr19353451pfo.35.1627334118996;
+        Mon, 26 Jul 2021 14:15:18 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id f18sm987242pfe.25.2021.07.26.14.15.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 14:15:18 -0700 (PDT)
+Subject: Re: [PATCH 5.4 000/108] 5.4.136-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210726153831.696295003@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <37de3c1e-38e2-1b19-4802-e2e778bda711@gmail.com>
+Date:   Mon, 26 Jul 2021 14:15:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <290c01ec-173f-755f-788e-2a33a69586e8@quicinc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-26 21:56, Qian Cai wrote:
+On 7/26/21 8:38 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.136 release.
+> There are 108 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
+> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> Anything received after that time might be too late.
 > 
-> On 7/26/2021 4:36 PM, Robin Murphy wrote:
->> The important point you're missing, but which the KASAN dump does hint at, is
->> that that is a machine with SBSA generic UARTs booting via ACPI - I know it
->> doesn't do DT at all because I have one too. What matters there is that pl011
->> binds as a platform driver, *not* an amba driver.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.136-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
 > 
-> Thanks for pointing out, Robin. I just yet to see an ARM server booting from DT
-> those days.
+> thanks,
+> 
+> greg k-h
 
-Unlikely in production datacentre/cloud environments, indeed, although 
-some of the mid-range kit like LX2160 does start to blur the line of 
-what might be considered "server", and that's one example which *does* 
-have full-featured DT support (even if it also aspires to ACPI...)
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-What I thought was worth clarifying for the general audience is that the 
-relevant aspects of "server" here should in fact still be possible to 
-reproduce on something like a Raspberry Pi or a tiny QEMU VM, if one can 
-figure out the ACPI runes :)
-
-Thanks,
-Robin.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
