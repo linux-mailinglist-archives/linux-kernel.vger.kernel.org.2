@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3659E3D60CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB133D62E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238137AbhGZPY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:24:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52856 "EHLO mail.kernel.org"
+        id S238024AbhGZPkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:40:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235973AbhGZPLt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1765060F02;
-        Mon, 26 Jul 2021 15:52:16 +0000 (UTC)
+        id S237444AbhGZPW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF07560F5A;
+        Mon, 26 Jul 2021 16:03:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314737;
-        bh=YGiG1zbaN7s78JlYIjIGgKaE478aok+ueis9z47kSZc=;
+        s=korg; t=1627315407;
+        bh=6UZPrlVew1vjSX2qIq1Eea5jnQsUb/Gvdqafg42Ky5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=buHkBR0MxFJKtlveS6EbgBLs+cEmJpL+VndPp4nMgvJlrVy98STfhRSAQlZvKoXhf
-         eRZCel+/E6ifi4oAjyN49MhGa0ssxzPsdvcJMJ4kn/SnaABZMD4/yXqW52Yirju3RA
-         69k2G1Xbz6uq9qyif5M9t1lOVAUSohG9DnFIQUIA=
+        b=qruqE2RjUSjfE8P4+EWOIhQ45m8PmNha9vNm1cdu0wNh2vOBcI2Ev4wnZteXKXoby
+         M8nS6kedps4U5/EtVufIuOxd8J7jERReCeW313q4cIsDi2CKbW0WMgd8TiwdfzL3Qx
+         +Oy1sf8PBB5YF/I6+lUa1OV5n72zw8p9tCQyuWqo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 066/120] perf dso: Fix memory leak in dso__new_map()
+Subject: [PATCH 5.10 085/167] net/tcp_fastopen: fix data races around tfo_active_disable_stamp
 Date:   Mon, 26 Jul 2021 17:38:38 +0200
-Message-Id: <20210726153834.495395001@linuxfoundation.org>
+Message-Id: <20210726153842.259429516@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 581e295a0f6b5c2931d280259fbbfff56959faa9 ]
+[ Upstream commit 6f20c8adb1813467ea52c1296d52c4e95978cb2f ]
 
-ASan reports a memory leak when running:
+tfo_active_disable_stamp is read and written locklessly.
+We need to annotate these accesses appropriately.
 
-  # perf test "65: maps__merge_in".
+Then, we need to perform the atomic_inc(tfo_active_disable_times)
+after the timestamp has been updated, and thus add barriers
+to make sure tcp_fastopen_active_should_disable() wont read
+a stale timestamp.
 
-The causes of the leaks are two, this patch addresses only the first
-one, which is related to dso__new_map().
-
-The bug is that dso__new_map() creates a new dso but never decreases the
-refcount it gets from creating it.
-
-This patch adds the missing dso__put().
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: d3a7c489c7fd2463 ("perf tools: Reference count struct dso")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/60bfe0cd06e89e2ca33646eb8468d7f5de2ee597.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: cf1ef3f0719b ("net/tcp_fastopen: Disable active side TFO in certain scenarios")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Wei Wang <weiwan@google.com>
+Cc: Yuchung Cheng <ycheng@google.com>
+Cc: Neal Cardwell <ncardwell@google.com>
+Acked-by: Wei Wang <weiwan@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/dso.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/ipv4/tcp_fastopen.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index 56f86317694d..1231f3181041 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -1025,8 +1025,10 @@ struct map *dso__new_map(const char *name)
- 	struct map *map = NULL;
- 	struct dso *dso = dso__new(name);
+diff --git a/net/ipv4/tcp_fastopen.c b/net/ipv4/tcp_fastopen.c
+index af2814c9342a..08548ff23d83 100644
+--- a/net/ipv4/tcp_fastopen.c
++++ b/net/ipv4/tcp_fastopen.c
+@@ -507,8 +507,15 @@ void tcp_fastopen_active_disable(struct sock *sk)
+ {
+ 	struct net *net = sock_net(sk);
  
--	if (dso)
-+	if (dso) {
- 		map = map__new2(0, dso);
-+		dso__put(dso);
-+	}
- 
- 	return map;
++	/* Paired with READ_ONCE() in tcp_fastopen_active_should_disable() */
++	WRITE_ONCE(net->ipv4.tfo_active_disable_stamp, jiffies);
++
++	/* Paired with smp_rmb() in tcp_fastopen_active_should_disable().
++	 * We want net->ipv4.tfo_active_disable_stamp to be updated first.
++	 */
++	smp_mb__before_atomic();
+ 	atomic_inc(&net->ipv4.tfo_active_disable_times);
+-	net->ipv4.tfo_active_disable_stamp = jiffies;
++
+ 	NET_INC_STATS(net, LINUX_MIB_TCPFASTOPENBLACKHOLE);
  }
+ 
+@@ -526,10 +533,16 @@ bool tcp_fastopen_active_should_disable(struct sock *sk)
+ 	if (!tfo_da_times)
+ 		return false;
+ 
++	/* Paired with smp_mb__before_atomic() in tcp_fastopen_active_disable() */
++	smp_rmb();
++
+ 	/* Limit timout to max: 2^6 * initial timeout */
+ 	multiplier = 1 << min(tfo_da_times - 1, 6);
+-	timeout = multiplier * tfo_bh_timeout * HZ;
+-	if (time_before(jiffies, sock_net(sk)->ipv4.tfo_active_disable_stamp + timeout))
++
++	/* Paired with the WRITE_ONCE() in tcp_fastopen_active_disable(). */
++	timeout = READ_ONCE(sock_net(sk)->ipv4.tfo_active_disable_stamp) +
++		  multiplier * tfo_bh_timeout * HZ;
++	if (time_before(jiffies, timeout))
+ 		return true;
+ 
+ 	/* Mark check bit so we can check for successful active TFO
 -- 
 2.30.2
 
