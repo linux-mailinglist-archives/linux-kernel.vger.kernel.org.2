@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FECC3D639C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CB73D63D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239037AbhGZPtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:49:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45420 "EHLO mail.kernel.org"
+        id S239389AbhGZPwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhGZPaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:30:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DB1C60F5E;
-        Mon, 26 Jul 2021 16:10:39 +0000 (UTC)
+        id S232734AbhGZPaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:30:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF08A604AC;
+        Mon, 26 Jul 2021 16:11:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315839;
-        bh=u+nrYs8kgIxkE78GC04cHDkkMC7HisEe6KV2i+EgDj0=;
+        s=korg; t=1627315868;
+        bh=Wx4TZWZ0r3DyLbZiybcvfF6PUqsP1pg/w2BFEdexEZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TtJlFcPjoKYNtz0yLGZ1TqzUO7STcUwiklu8laJbIFPa07sq9r3sCrhLCMhhpIIXk
-         hEXfMTFQiiplolaKEY3DwAHMt5QocBOdsj293Mphi8vWfW0D+it/XCMEoALF1wWxXv
-         RuKU9N7A5L/hVLznOXmYJvMEaeBh4K0Wl32IU5lo=
+        b=D06tfuUbR45w1nTTxtjXaJZo1yCH2PzDXTdVImppkDuYm3H0YjnylXYRYgXLFlVli
+         GNsposDZdJ+hY+LXm4jAU/dzi4QLKFg2uYZdLg460Pg8PZ+uJVxHil8MuiJdL8s9uv
+         dn31fi+/mDfqZzeA5d36K2rZ95+5F7IgTzaXC3HM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        stable@vger.kernel.org, Peter Hess <peter.hess@ph-home.de>,
+        Frank Wunderlich <frank-w@public-files.de>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 070/223] regulator: hi6421: Fix getting wrong drvdata
-Date:   Mon, 26 Jul 2021 17:37:42 +0200
-Message-Id: <20210726153848.545127465@linuxfoundation.org>
+Subject: [PATCH 5.13 071/223] spi: mediatek: fix fifo rx mode
+Date:   Mon, 26 Jul 2021 17:37:43 +0200
+Message-Id: <20210726153848.574039034@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,117 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: Peter Hess <peter.hess@ph-home.de>
 
-[ Upstream commit 1c73daee4bf30ccdff5e86dc400daa6f74735da5 ]
+[ Upstream commit 3a70dd2d050331ee4cf5ad9d5c0a32d83ead9a43 ]
 
-Since config.dev = pdev->dev.parent in current code, so
-dev_get_drvdata(rdev->dev.parent) call in hi6421_regulator_enable
-returns the drvdata of the mfd device rather than the regulator. Fix it.
+In FIFO mode were two problems:
+- RX mode was never handled and
+- in this case the tx_buf pointer was NULL and caused an exception
 
-This was broken while converting to use simplified DT parsing because the
-config.dev changed from pdev->dev to pdev->dev.parent for parsing the
-parent's of_node.
+fix this by handling RX mode in mtk_spi_fifo_transfer
 
-Fixes: 29dc269a85ef ("regulator: hi6421: Convert to use simplified DT parsing")
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210630095959.2411543-1-axel.lin@ingics.com
+Fixes: a568231f4632 ("spi: mediatek: Add spi bus for Mediatek MT8173")
+Signed-off-by: Peter Hess <peter.hess@ph-home.de>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Link: https://lore.kernel.org/r/20210706121609.680534-1-linux@fw-web.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/hi6421-regulator.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/spi/spi-mt65xx.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/regulator/hi6421-regulator.c b/drivers/regulator/hi6421-regulator.c
-index bff8c515dcde..d144a4bdb76d 100644
---- a/drivers/regulator/hi6421-regulator.c
-+++ b/drivers/regulator/hi6421-regulator.c
-@@ -366,9 +366,8 @@ static struct hi6421_regulator_info
+diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
+index 976f73b9e299..8d5fa7f1e506 100644
+--- a/drivers/spi/spi-mt65xx.c
++++ b/drivers/spi/spi-mt65xx.c
+@@ -427,13 +427,23 @@ static int mtk_spi_fifo_transfer(struct spi_master *master,
+ 	mtk_spi_setup_packet(master);
  
- static int hi6421_regulator_enable(struct regulator_dev *rdev)
- {
--	struct hi6421_regulator_pdata *pdata;
-+	struct hi6421_regulator_pdata *pdata = rdev_get_drvdata(rdev);
- 
--	pdata = dev_get_drvdata(rdev->dev.parent);
- 	/* hi6421 spec requires regulator enablement must be serialized:
- 	 *  - Because when BUCK, LDO switching from off to on, it will have
- 	 *    a huge instantaneous current; so you can not turn on two or
-@@ -385,9 +384,10 @@ static int hi6421_regulator_enable(struct regulator_dev *rdev)
- 
- static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
- {
--	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
-+	struct hi6421_regulator_info *info;
- 	unsigned int reg_val;
- 
-+	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
- 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
- 	if (reg_val & info->mode_mask)
- 		return REGULATOR_MODE_IDLE;
-@@ -397,9 +397,10 @@ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
- 
- static unsigned int hi6421_regulator_buck_get_mode(struct regulator_dev *rdev)
- {
--	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
-+	struct hi6421_regulator_info *info;
- 	unsigned int reg_val;
- 
-+	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
- 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
- 	if (reg_val & info->mode_mask)
- 		return REGULATOR_MODE_STANDBY;
-@@ -410,9 +411,10 @@ static unsigned int hi6421_regulator_buck_get_mode(struct regulator_dev *rdev)
- static int hi6421_regulator_ldo_set_mode(struct regulator_dev *rdev,
- 						unsigned int mode)
- {
--	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
-+	struct hi6421_regulator_info *info;
- 	unsigned int new_mode;
- 
-+	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
- 	switch (mode) {
- 	case REGULATOR_MODE_NORMAL:
- 		new_mode = 0;
-@@ -434,9 +436,10 @@ static int hi6421_regulator_ldo_set_mode(struct regulator_dev *rdev,
- static int hi6421_regulator_buck_set_mode(struct regulator_dev *rdev,
- 						unsigned int mode)
- {
--	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
-+	struct hi6421_regulator_info *info;
- 	unsigned int new_mode;
- 
-+	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
- 	switch (mode) {
- 	case REGULATOR_MODE_NORMAL:
- 		new_mode = 0;
-@@ -459,7 +462,9 @@ static unsigned int
- hi6421_regulator_ldo_get_optimum_mode(struct regulator_dev *rdev,
- 			int input_uV, int output_uV, int load_uA)
- {
--	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
-+	struct hi6421_regulator_info *info;
+ 	cnt = xfer->len / 4;
+-	iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
++	if (xfer->tx_buf)
++		iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
 +
-+	info = container_of(rdev->desc, struct hi6421_regulator_info, desc);
++	if (xfer->rx_buf)
++		ioread32_rep(mdata->base + SPI_RX_DATA_REG, xfer->rx_buf, cnt);
  
- 	if (load_uA > info->eco_microamp)
- 		return REGULATOR_MODE_NORMAL;
-@@ -543,14 +548,13 @@ static int hi6421_regulator_probe(struct platform_device *pdev)
- 	if (!pdata)
- 		return -ENOMEM;
- 	mutex_init(&pdata->lock);
--	platform_set_drvdata(pdev, pdata);
+ 	remainder = xfer->len % 4;
+ 	if (remainder > 0) {
+ 		reg_val = 0;
+-		memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
+-		writel(reg_val, mdata->base + SPI_TX_DATA_REG);
++		if (xfer->tx_buf) {
++			memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
++			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
++		}
++		if (xfer->rx_buf) {
++			reg_val = readl(mdata->base + SPI_RX_DATA_REG);
++			memcpy(xfer->rx_buf + (cnt * 4), &reg_val, remainder);
++		}
+ 	}
  
- 	for (i = 0; i < ARRAY_SIZE(hi6421_regulator_info); i++) {
- 		/* assign per-regulator data */
- 		info = &hi6421_regulator_info[i];
- 
- 		config.dev = pdev->dev.parent;
--		config.driver_data = info;
-+		config.driver_data = pdata;
- 		config.regmap = pmic->regmap;
- 
- 		rdev = devm_regulator_register(&pdev->dev, &info->desc,
+ 	mtk_spi_enable_transfer(master);
 -- 
 2.30.2
 
