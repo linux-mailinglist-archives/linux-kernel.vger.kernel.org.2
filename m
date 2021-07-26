@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF9E3D5E42
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B091B3D5D37
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236227AbhGZPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45650 "EHLO mail.kernel.org"
+        id S235170AbhGZPAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:00:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235974AbhGZPF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:05:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FF386056C;
-        Mon, 26 Jul 2021 15:45:55 +0000 (UTC)
+        id S234828AbhGZPAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:00:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A37360E08;
+        Mon, 26 Jul 2021 15:40:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314356;
-        bh=iW3+8FrBSNcMwp6wf21zNU4q6SBh7OzuKFjuDmBZ5rg=;
+        s=korg; t=1627314034;
+        bh=4sbGRXc4eo0oyeIfZXjX8+PY5BgsYFlbgVeD38D2N9I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=okf1jj/8f6AzwaAdTlCcmcb6/IuT7j6WECKUgIJDJjJlPn/eCSqpoCrkGlBQ6gcjq
-         voeHBzCUHw6xaRjMnBcODAA1nOgt/cFSynh8i660LQ7bPr8z2nS8kHt/Fn1fYMmtC0
-         5djU9VBObA3XE5oA4K2Bs3n0/84U5QCt6o/Wxq/Y=
+        b=nIIaj/vitDgWK+OxRH2XssCeei89pKgZSmkym6ZMuOFZIlsOX3Ba0xOHzKZ0wKzpb
+         RgrWHi+6JCXVJ2SJ1hqBPRINX6iUYhUwFL8xYdoy845Vqn/Yu6jWiFasDEDTA1WZSC
+         ptC/U+Diq08XLbKkAKTV6DDfbTxa02bYADQqZLNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matthias Maennich <maennich@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 18/82] kbuild: mkcompile_h: consider timestamp if KBUILD_BUILD_TIMESTAMP is set
-Date:   Mon, 26 Jul 2021 17:38:18 +0200
-Message-Id: <20210726153828.751616687@linuxfoundation.org>
+Subject: [PATCH 4.4 01/47] ARM: brcmstb: dts: fix NAND nodes names
+Date:   Mon, 26 Jul 2021 17:38:19 +0200
+Message-Id: <20210726153823.030841804@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,66 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Maennich <maennich@google.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit a979522a1a88556e42a22ce61bccc58e304cb361 ]
+[ Upstream commit 9a800ce1aada6e0f56b78e4713f4858c8990c1f7 ]
 
-To avoid unnecessary recompilations, mkcompile_h does not regenerate
-compile.h if just the timestamp changed.
-Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
-build was requested, in which case we should not ignore it.
+This matches nand-controller.yaml requirements.
 
-If a user follows the documentation for reproducible builds [1] and
-defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
-build will have the correct timestamp. A subsequent cherry-pick (or
-amend) changes the commit timestamp and if an incremental build is done
-with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
-into consideration. But it should for reproducibility.
-
-Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
-UTS_VERSION when making a decision about whether the regenerated version
-of compile.h should be moved into place.
-
-[1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
-
-Signed-off-by: Matthias Maennich <maennich@google.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/mkcompile_h | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/bcm7445-bcm97445svmb.dts | 4 ++--
+ arch/arm/boot/dts/bcm7445.dtsi             | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
-index 959199c3147e..49f92fffa098 100755
---- a/scripts/mkcompile_h
-+++ b/scripts/mkcompile_h
-@@ -83,15 +83,23 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
- # Only replace the real compile.h if the new one is different,
- # in order to preserve the timestamp and avoid unnecessary
- # recompilations.
--# We don't consider the file changed if only the date/time changed.
-+# We don't consider the file changed if only the date/time changed,
-+# unless KBUILD_BUILD_TIMESTAMP was explicitly set (e.g. for
-+# reproducible builds with that value referring to a commit timestamp).
- # A kernel config change will increase the generation number, thus
- # causing compile.h to be updated (including date/time) due to the
- # changed comment in the
- # first line.
+diff --git a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
+index 0bb8d17e4c2d..e51c9b079432 100644
+--- a/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
++++ b/arch/arm/boot/dts/bcm7445-bcm97445svmb.dts
+@@ -13,10 +13,10 @@
+ 	};
+ };
  
-+if [ -z "$KBUILD_BUILD_TIMESTAMP" ]; then
-+   IGNORE_PATTERN="UTS_VERSION"
-+else
-+   IGNORE_PATTERN="NOT_A_PATTERN_TO_BE_MATCHED"
-+fi
-+
- if [ -r $TARGET ] && \
--      grep -v 'UTS_VERSION' $TARGET > .tmpver.1 && \
--      grep -v 'UTS_VERSION' .tmpcompile > .tmpver.2 && \
-+      grep -v $IGNORE_PATTERN $TARGET > .tmpver.1 && \
-+      grep -v $IGNORE_PATTERN .tmpcompile > .tmpver.2 && \
-       cmp -s .tmpver.1 .tmpver.2; then
-    rm -f .tmpcompile
- else
+-&nand {
++&nand_controller {
+ 	status = "okay";
+ 
+-	nandcs@1 {
++	nand@1 {
+ 		compatible = "brcm,nandcs";
+ 		reg = <1>;
+ 		nand-ecc-step-size = <512>;
+diff --git a/arch/arm/boot/dts/bcm7445.dtsi b/arch/arm/boot/dts/bcm7445.dtsi
+index 4791321969b3..3f002f2047f1 100644
+--- a/arch/arm/boot/dts/bcm7445.dtsi
++++ b/arch/arm/boot/dts/bcm7445.dtsi
+@@ -149,7 +149,7 @@
+ 			reg-names = "aon-ctrl", "aon-sram";
+ 		};
+ 
+-		nand: nand@3e2800 {
++		nand_controller: nand-controller@3e2800 {
+ 			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
 -- 
 2.30.2
 
