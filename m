@@ -2,111 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2CC3D5D2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AE33D5D29
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbhGZO6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:58:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234828AbhGZO57 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:57:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A83660E08;
-        Mon, 26 Jul 2021 15:38:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627313907;
-        bh=01/JO6usR+VPk1oBGw6nYtyQUuT9bYjtw/c5SW8nOK4=;
+        id S235137AbhGZO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234931AbhGZO4Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 10:56:25 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DB5C061757;
+        Mon, 26 Jul 2021 08:36:52 -0700 (PDT)
+From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1627313810;
+        bh=26Zd+8lA9bOblLF+2LIWJa9JvAIge3toksOP1nJO840=;
         h=From:To:Cc:Subject:Date:From;
-        b=PFAUZxnu/BSpW1blskUPPm10wnLnVLm5oFycXdoYiCumvF+Wa7C9IYuzIILk6t+f1
-         fbW29/B+MB6XR6cL60TmpuIRUg3JTpYjDKu6xb11MwEmbBKNTAF/AK0BQgUYiIvitu
-         5226mZb3LEPQ81IyObgs52WCoGh+YLm7tM0q9m3M=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        Miklos Szeredi <mszeredi@redhat.com>, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH net] af_unix: fix garbage collect vs. MSG_PEEK
-Date:   Mon, 26 Jul 2021 17:36:21 +0200
-Message-Id: <20210726153621.2658658-1-gregkh@linuxfoundation.org>
+        b=ZOrvd27lc9j0fQb+bgQotDpNA+Pih0+/GL2mxB5KmwA9VVR9pbX/PmZEc/7G51K5T
+         GH7X8jwwvkNytKTJWXI8Y60BCrQ+zmp5ebxpiyAzxbDjGRfYNg1ZBNWJiNRoU0gXTj
+         So1BAdtHogur5Rlio0iR1ryXT06alxgPfWfv3d4U=
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: [PATCH] platform/x86: gigabyte-wmi: add support for B550 Aorus Elite V2
+Date:   Mon, 26 Jul 2021 17:36:30 +0200
+Message-Id: <20210726153630.65213-1-linux@weissschuh.net>
 X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2514; i=gregkh@linuxfoundation.org; h=from:subject; bh=bz3syxy3B1km/gtEPYOzOd3gBFTVjESC3kq691QUQek=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/rmXbKGUkriuZuN5O4OM5KU6hg2/F2msydtkl5xxbO++y j7lgRywLgyATg6yYIsuXbTxH91ccUvQytD0NM4eVCWQIAxenAExE7wfDHM5lZwSZnUx376y9IBnCwS 18UbjgPMOC+f8ZPtkdPCn4YsV/174ZVztnCHf0AQA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+Reported as working here:
+https://github.com/t-8ch/linux-gigabyte-wmi-driver/issues/1#issuecomment-879398883
 
-Gc assumes that in-flight sockets that don't have an external ref can't
-gain one while unix_gc_lock is held.  That is true because
-unix_notinflight() will be called before detaching fds, which takes
-unix_gc_lock.
-
-Only MSG_PEEK was somehow overlooked.  That one also clones the fds, also
-keeping them in the skb.  But through MSG_PEEK an external reference can
-definitely be gained without ever touching unix_gc_lock.
-
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- net/unix/af_unix.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/platform/x86/gigabyte-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Note, this is a resend of this old submission that somehow fell through
-the cracks:
-	https://lore.kernel.org/netdev/CAOssrKcfncAYsQWkfLGFgoOxAQJVT2hYVWdBA6Cw7hhO8RJ_wQ@mail.gmail.com/
-and was never submitted "properly" and this issue never seemed to get
-resolved properly.
+diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+index 5529d7b0abea..fbb224a82e34 100644
+--- a/drivers/platform/x86/gigabyte-wmi.c
++++ b/drivers/platform/x86/gigabyte-wmi.c
+@@ -141,6 +141,7 @@ static u8 gigabyte_wmi_detect_sensor_usability(struct wmi_device *wdev)
+ 
+ static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
+ 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE"),
++	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE V2"),
+ 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 GAMING X V2"),
+ 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M AORUS PRO-P"),
+ 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M DS3H"),
 
-I've cleaned it up and made the change much smaller and localized to
-only one file.  I kept Miklos's authorship as he did the hard work on
-this, I just removed lines and fixed a formatting issue :)
-
-
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index 23c92ad15c61..cdea997aa5bf 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -1526,6 +1526,18 @@ static int unix_getname(struct socket *sock, struct sockaddr *uaddr, int peer)
- 	return err;
- }
- 
-+static void unix_peek_fds(struct scm_cookie *scm, struct sk_buff *skb)
-+{
-+	scm->fp = scm_fp_dup(UNIXCB(skb).fp);
-+
-+	/* During garbage collection it is assumed that in-flight sockets don't
-+	 * get a new external reference.  So we need to wait until current run
-+	 * finishes.
-+	 */
-+	spin_lock(&unix_gc_lock);
-+	spin_unlock(&unix_gc_lock);
-+}
-+
- static int unix_scm_to_skb(struct scm_cookie *scm, struct sk_buff *skb, bool send_fds)
- {
- 	int err = 0;
-@@ -2175,7 +2187,7 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
- 		sk_peek_offset_fwd(sk, size);
- 
- 		if (UNIXCB(skb).fp)
--			scm.fp = scm_fp_dup(UNIXCB(skb).fp);
-+			unix_peek_fds(&scm, skb);
- 	}
- 	err = (flags & MSG_TRUNC) ? skb->len - skip : size;
- 
-@@ -2418,7 +2430,7 @@ static int unix_stream_read_generic(struct unix_stream_read_state *state,
- 			/* It is questionable, see note in unix_dgram_recvmsg.
- 			 */
- 			if (UNIXCB(skb).fp)
--				scm.fp = scm_fp_dup(UNIXCB(skb).fp);
-+				unix_peek_fds(&scm, skb);
- 
- 			sk_peek_offset_fwd(sk, chunk);
- 
+base-commit: ff1176468d368232b684f75e82563369208bc371
 -- 
 2.32.0
 
