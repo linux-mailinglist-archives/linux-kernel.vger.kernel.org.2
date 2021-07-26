@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1267A3D61E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CF43D6322
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbhGZPdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:33:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59530 "EHLO mail.kernel.org"
+        id S238921AbhGZPoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236212AbhGZPSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:18:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78E2E60F90;
-        Mon, 26 Jul 2021 15:59:10 +0000 (UTC)
+        id S238345AbhGZPZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0531560F6B;
+        Mon, 26 Jul 2021 16:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315151;
-        bh=5It0TIh4acb63RvBXTlGJuxmxqPEwl8XIrykQv9lt+4=;
+        s=korg; t=1627315555;
+        bh=VGjDmFS/VCFvf6MWF09yXAnp+giMB7GjGJ677XJ/ZV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=njDRyEnXJTC03WXvkeuLOtTAl0fhcXTm2JWk8iCNPt2uAo1/2EwohKdGh1/k3GGHR
-         QySpmgEU+vQdT2qEBCaSZf2dITZVeWDplIIIc0xh0/lVOU3hnYSIwnHpm8qrt+3865
-         K8IQ33c9cL2l6qF+/NtLpr6VjAhnTcMXcPbpyV/8=
+        b=xQv5kJfpLZpINkSeAfxR8AZ66WQSJDJgCByWBjS7+x/1RMjLTIolRR+n1AvhoQVlg
+         fqfHkubTRQLr7+YpgnIUBjUiCDT/EbzKU09VTDavQzRkI6P5pLmxqBoI6J/88pb91t
+         fJruGNfJZKpv73zbLIpuCsiUK1cKXGLZCHvL7jVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Markus Boehme <markubo@amazon.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 093/108] ixgbe: Fix packet corruption due to missing DMA sync
-Date:   Mon, 26 Jul 2021 17:39:34 +0200
-Message-Id: <20210726153834.665192420@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Subject: [PATCH 5.10 142/167] posix-cpu-timers: Fix rearm racing against process tick
+Date:   Mon, 26 Jul 2021 17:39:35 +0200
+Message-Id: <20210726153844.172089019@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Boehme <markubo@amazon.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-commit 09cfae9f13d51700b0fecf591dcd658fc5375428 upstream.
+commit 1a3402d93c73bf6bb4df6d7c2aac35abfc3c50e2 upstream.
 
-When receiving a packet with multiple fragments, hardware may still
-touch the first fragment until the entire packet has been received. The
-driver therefore keeps the first fragment mapped for DMA until end of
-packet has been asserted, and delays its dma_sync call until then.
+Since the process wide cputime counter is started locklessly from
+posix_cpu_timer_rearm(), it can be concurrently stopped by operations
+on other timers from the same thread group, such as in the following
+unlucky scenario:
 
-The driver tries to fit multiple receive buffers on one page. When using
-3K receive buffers (e.g. using Jumbo frames and legacy-rx is turned
-off/build_skb is being used) on an architecture with 4K pages, the
-driver allocates an order 1 compound page and uses one page per receive
-buffer. To determine the correct offset for a delayed DMA sync of the
-first fragment of a multi-fragment packet, the driver then cannot just
-use PAGE_MASK on the DMA address but has to construct a mask based on
-the actual size of the backing page.
+         CPU 0                                CPU 1
+         -----                                -----
+                                           timer_settime(TIMER B)
+   posix_cpu_timer_rearm(TIMER A)
+       cpu_clock_sample_group()
+           (pct->timers_active already true)
 
-Using PAGE_MASK in the 3K RX buffer/4K page architecture configuration
-will always sync the first page of a compound page. With the SWIOTLB
-enabled this can lead to corrupted packets (zeroed out first fragment,
-re-used garbage from another packet) and various consequences, such as
-slow/stalling data transfers and connection resets. For example, testing
-on a link with MTU exceeding 3058 bytes on a host with SWIOTLB enabled
-(e.g. "iommu=soft swiotlb=262144,force") TCP transfers quickly fizzle
-out without this patch.
+                                           handle_posix_cpu_timers()
+                                               check_process_timers()
+                                                   stop_process_timers()
+                                                       pct->timers_active = false
+       arm_timer(TIMER A)
 
+   tick -> run_posix_cpu_timers()
+       // sees !pct->timers_active, ignore
+       // our TIMER A
+
+Fix this with simply locking process wide cputime counting start and
+timer arm in the same block.
+
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Fixes: 60f2ceaa8111 ("posix-cpu-timers: Remove unnecessary locking around cpu_clock_sample_group")
 Cc: stable@vger.kernel.org
-Fixes: 0c5661ecc5dd7 ("ixgbe: fix crash in build_skb Rx code path")
-Signed-off-by: Markus Boehme <markubo@amazon.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/time/posix-cpu-timers.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -1827,7 +1827,8 @@ static void ixgbe_dma_sync_frag(struct i
- 				struct sk_buff *skb)
- {
- 	if (ring_uses_build_skb(rx_ring)) {
--		unsigned long offset = (unsigned long)(skb->data) & ~PAGE_MASK;
-+		unsigned long mask = (unsigned long)ixgbe_rx_pg_size(rx_ring) - 1;
-+		unsigned long offset = (unsigned long)(skb->data) & mask;
+--- a/kernel/time/posix-cpu-timers.c
++++ b/kernel/time/posix-cpu-timers.c
+@@ -991,6 +991,11 @@ static void posix_cpu_timer_rearm(struct
+ 	if (!p)
+ 		goto out;
  
- 		dma_sync_single_range_for_cpu(rx_ring->dev,
- 					      IXGBE_CB(skb)->dma,
++	/* Protect timer list r/w in arm_timer() */
++	sighand = lock_task_sighand(p, &flags);
++	if (unlikely(sighand == NULL))
++		goto out;
++
+ 	/*
+ 	 * Fetch the current sample and update the timer's expiry time.
+ 	 */
+@@ -1001,11 +1006,6 @@ static void posix_cpu_timer_rearm(struct
+ 
+ 	bump_cpu_timer(timer, now);
+ 
+-	/* Protect timer list r/w in arm_timer() */
+-	sighand = lock_task_sighand(p, &flags);
+-	if (unlikely(sighand == NULL))
+-		goto out;
+-
+ 	/*
+ 	 * Now re-arm for the new expiry time.
+ 	 */
 
 
