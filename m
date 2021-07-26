@@ -2,122 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840A93D5834
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD953D5839
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhGZKWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:22:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56826 "EHLO
+        id S232955AbhGZKZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 06:25:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39826 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232240AbhGZKWv (ORCPT
+        by vger.kernel.org with ESMTP id S232240AbhGZKZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:22:51 -0400
+        Mon, 26 Jul 2021 06:25:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627297400;
+        s=mimecast20190719; t=1627297583;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dE+0oMPPF9l/Qntuesol5uWcf6whbHVja/WjOyULUPM=;
-        b=EqrvCmmzOVSccqQiAsRNud4I8SJGtBDUNv2qjaLgI/qupcWPRfquuv8WVmOXH4mlqUlbWE
-        BxTqY96WUSCAH10sLUKx1rPV4x8zoSJ4zh/47ofqWVUHSAF0OGk4qohjodsa9/HBC8p0hZ
-        qZVek/rcVcjGN/y3yyKXlej0ChnyQwI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-136-c12TITXMPaGYoR7e05w19Q-1; Mon, 26 Jul 2021 07:03:18 -0400
-X-MC-Unique: c12TITXMPaGYoR7e05w19Q-1
-Received: by mail-ed1-f70.google.com with SMTP id f24-20020a0564021618b02903954c05c938so4558450edv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 04:03:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dE+0oMPPF9l/Qntuesol5uWcf6whbHVja/WjOyULUPM=;
-        b=LTI4gmpgiab5nxD27KfhqoVHmJQjjkCW8mFd9SkyhCCJOthdBgJq3NdmhxWmeAnq/b
-         s2gG5l7FGmXDL8sZ+ODHwLx1Oqc62MbClScbyuY+cSzFlXfcoZPBUZ4udD1kn7tKDZP6
-         ocxo4KRXn3X1D/IEPWkR+8c8zyYMPFHkGEQCnn7q/FUTDAh5MxK+hdAwOkIuytMoZxlQ
-         Bwns3STYoQZ9jcmrvxoTvbL9Ha77ckph3GBBlayIXeCjsxAOVdqGnxdHxTM2ezZCT/jq
-         V8azTQILAQLVg+DdIWTufyfYbqbHa3Ipj8+a+N05JAezInuSX/kYdtsEf0/NXLbEJRq3
-         Hgmw==
-X-Gm-Message-State: AOAM532voFhCaL3rY6b3RPDlXolIounmLjJ3WY8qQkbv/Eckj/CC+gSc
-        fqa1OUJPgwMKVzvnnSq0yFwNj4uFEqOuD6wabPTlnCnYPKj4kbTjWCeLbAfEYX8V/QRnI/W6e0J
-        VQ+jVJ0p89ozgNEmagCJrxjkM
-X-Received: by 2002:a17:907:76f0:: with SMTP id kg16mr16195795ejc.309.1627297397524;
-        Mon, 26 Jul 2021 04:03:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyGU1YrC+pfA8EImPDOQUpBZdKwA00F5EP2vakSJV50T5fm+6nu7jmEom+URblqhrICMrMs+Q==
-X-Received: by 2002:a17:907:76f0:: with SMTP id kg16mr16195780ejc.309.1627297397313;
-        Mon, 26 Jul 2021 04:03:17 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id e7sm14027593edk.3.2021.07.26.04.03.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 04:03:16 -0700 (PDT)
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-References: <df278db6-1fc0-3d42-9c0e-f5a085c6351e@redhat.com>
- <8dfc0ee9-b97a-8ca8-d057-31c8cad3f5b6@redhat.com>
- <f0254740-944d-201b-9a66-9db1fe480ca6@redhat.com>
- <475f84e2-78ee-1a24-ef57-b16c1f2651ed@redhat.com>
- <20210715102249.2205-1-hdanton@sina.com>
- <20210716020611.2288-1-hdanton@sina.com>
- <20210716075539.2376-1-hdanton@sina.com>
- <20210716093725.2438-1-hdanton@sina.com>
- <20210718124219.1521-1-hdanton@sina.com>
- <20210721070452.1008-1-hdanton@sina.com>
- <20210721101119.1103-1-hdanton@sina.com>
- <20210723022356.1301-1-hdanton@sina.com>
- <20210723094830.1375-1-hdanton@sina.com>
- <20210724043320.1654-1-hdanton@sina.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: 5.13-rt1 + KVM = WARNING: at fs/eventfd.c:74 eventfd_signal()
-Message-ID: <d76f08d4-a653-1eb6-bf4f-050f6068753d@redhat.com>
-Date:   Mon, 26 Jul 2021 13:03:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=Ad2ryKrfK6sJyTkUWOpK6mUvcD3y5ZEk3RAUKPbVjNc=;
+        b=eNbCNckax98adyYaE+ZBoJ/Ch7l5ZUBY0E+b9HnHMJUExMmPPx2gaWGCOziNT5J9zj8SZh
+        oXD/25FFqNcli/lxZvCIrsB7peErIn1pxzoujBqJU0vf1vxW9MayAgczUl0vRZpNEFNHH1
+        cKdlD1eimzqGb0wbi837Ja6mZlLSyMY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-23-w0pUUMoZMBaG1V_MtCOAzw-1; Mon, 26 Jul 2021 07:06:19 -0400
+X-MC-Unique: w0pUUMoZMBaG1V_MtCOAzw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDB848799F6;
+        Mon, 26 Jul 2021 11:06:17 +0000 (UTC)
+Received: from max.com (unknown [10.40.194.164])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 277C810016F8;
+        Mon, 26 Jul 2021 11:06:14 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+Date:   Mon, 26 Jul 2021 13:06:11 +0200
+Message-Id: <20210726110611.459173-1-agruenba@redhat.com>
+In-Reply-To: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
+References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com> <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com> <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com> <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
 MIME-Version: 1.0
-In-Reply-To: <20210724043320.1654-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/21 06:33, Hillf Danton wrote:
-> 		lock WQ
-> 		count += n
-> 		no waiter
-> 		unlock WQ
+Here's the promised update.  Passes fstests on gfs2.
 
-Ok, this is a write.
+Thanks,
+Andreas
 
-> 
-> 				lock WQ
-> 				add waiter for EPOLLIN
-> 				unlock WQ
+--
 
-This is eventfd_poll().  It hasn't yet returned EPOLLIN.
+Subject: iomap: Support tail packing
 
-> 						lock WQ
-> 						count = 0
-> 						wakeup EPOLLOUT
-> 						unlock WQ
+The existing inline data support only works for cases where the entire
+file is stored as inline data.  For larger files, EROFS stores the
+initial blocks separately and then can pack a small tail adjacent to the
+inode.  Generalise inline data to allow for tail packing.  Tails may not
+cross a page boundary in memory.
 
-This is a read().
+We currently have no filesystems that support tail packing and writing,
+so that case is currently disabled (see iomap_write_begin_inline).  I'm
+not aware of any reason why this code path shouldn't work, however.
 
-> lock WQ
-> count += n
-> no waiter
-> unlock WQ
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Darrick J. Wong <djwong@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+---
+ fs/iomap/buffered-io.c | 38 +++++++++++++++++++++++++-------------
+ fs/iomap/direct-io.c   |  9 +++++----
+ include/linux/iomap.h  | 20 +++++++++++++++++++-
+ 3 files changed, 49 insertions(+), 18 deletions(-)
 
-This is wrong; after "unlock WQ" in CPU3 there *is* a waiter, no one has 
-waked it up yet.
-
-Paolo
-
-> ------------------------------- c1 = count
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 87ccb3438bec..dee6b0952ef8 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
+ 	struct readahead_control *rac;
+ };
+ 
+-static void
+-iomap_read_inline_data(struct inode *inode, struct page *page,
++static int iomap_read_inline_data(struct inode *inode, struct page *page,
+ 		struct iomap *iomap)
+ {
+-	size_t size = i_size_read(inode);
++	size_t size = i_size_read(inode) - iomap->offset;
+ 	void *addr;
+ 
+ 	if (PageUptodate(page))
+-		return;
++		return 0;
+ 
+-	BUG_ON(page_has_private(page));
+-	BUG_ON(page->index);
+-	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
++	/* inline and tail-packed data must start page aligned in the file */
++	if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
++		return -EIO;
++	if (WARN_ON_ONCE(size > PAGE_SIZE - offset_in_page(iomap->inline_data)))
++		return -EIO;
++	if (WARN_ON_ONCE(page_has_private(page)))
++		return -EIO;
+ 
+ 	addr = kmap_atomic(page);
+ 	memcpy(addr, iomap->inline_data, size);
+ 	memset(addr + size, 0, PAGE_SIZE - size);
+ 	kunmap_atomic(addr);
+ 	SetPageUptodate(page);
++	return 0;
+ }
+ 
+ static inline bool iomap_block_needs_zeroing(struct inode *inode,
+@@ -247,9 +251,8 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+ 	sector_t sector;
+ 
+ 	if (iomap->type == IOMAP_INLINE) {
+-		WARN_ON_ONCE(pos);
+-		iomap_read_inline_data(inode, page, iomap);
+-		return PAGE_SIZE;
++		int ret = iomap_read_inline_data(inode, page, iomap);
++		return ret ?: PAGE_SIZE;
+ 	}
+ 
+ 	/* zero post-eof blocks as the page may be mapped */
+@@ -589,6 +592,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
+ 	return 0;
+ }
+ 
++static int iomap_write_begin_inline(struct inode *inode,
++		struct page *page, struct iomap *srcmap)
++{
++	/* needs more work for the tailpacking case, disable for now */
++	if (WARN_ON_ONCE(srcmap->offset != 0))
++		return -EIO;
++	return iomap_read_inline_data(inode, page, srcmap);
++}
++
+ static int
+ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+ 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
+@@ -618,7 +630,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
+ 	}
+ 
+ 	if (srcmap->type == IOMAP_INLINE)
+-		iomap_read_inline_data(inode, page, srcmap);
++		status = iomap_write_begin_inline(inode, page, srcmap);
+ 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
+ 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
+ 	else
+@@ -671,11 +683,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
+ 	void *addr;
+ 
+ 	WARN_ON_ONCE(!PageUptodate(page));
+-	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
++	BUG_ON(!iomap_inline_data_size_valid(iomap));
+ 
+ 	flush_dcache_page(page);
+ 	addr = kmap_atomic(page);
+-	memcpy(iomap->inline_data + pos, addr + pos, copied);
++	memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
+ 	kunmap_atomic(addr);
+ 
+ 	mark_inode_dirty(inode);
+diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+index 9398b8c31323..6fdae86d0f1d 100644
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@ -380,21 +380,22 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+ 	struct iov_iter *iter = dio->submit.iter;
+ 	size_t copied;
+ 
+-	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
++	if (WARN_ON_ONCE(!iomap_inline_data_size_valid(iomap)))
++		return -EIO;
+ 
+ 	if (dio->flags & IOMAP_DIO_WRITE) {
+ 		loff_t size = inode->i_size;
+ 
+ 		if (pos > size)
+-			memset(iomap->inline_data + size, 0, pos - size);
+-		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
++			memset(iomap_inline_data(iomap, size), 0, pos - size);
++		copied = copy_from_iter(iomap_inline_data(iomap, pos), length, iter);
+ 		if (copied) {
+ 			if (pos + copied > size)
+ 				i_size_write(inode, pos + copied);
+ 			mark_inode_dirty(inode);
+ 		}
+ 	} else {
+-		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
++		copied = copy_to_iter(iomap_inline_data(iomap, pos), length, iter);
+ 	}
+ 	dio->size += copied;
+ 	return copied;
+diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+index 479c1da3e221..c6af1ef608c6 100644
+--- a/include/linux/iomap.h
++++ b/include/linux/iomap.h
+@@ -28,7 +28,7 @@ struct vm_fault;
+ #define IOMAP_DELALLOC	1	/* delayed allocation blocks */
+ #define IOMAP_MAPPED	2	/* blocks allocated at @addr */
+ #define IOMAP_UNWRITTEN	3	/* blocks allocated at @addr in unwritten state */
+-#define IOMAP_INLINE	4	/* data inline in the inode */
++#define IOMAP_INLINE	4	/* inline or tail-packed data */
+ 
+ /*
+  * Flags reported by the file system from iomap_begin:
+@@ -97,6 +97,24 @@ iomap_sector(struct iomap *iomap, loff_t pos)
+ 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
+ }
+ 
++/*
++ * Returns the inline data pointer for logical offset @pos.
++ */
++static inline void *iomap_inline_data(struct iomap *iomap, loff_t pos)
++{
++	return iomap->inline_data + pos - iomap->offset;
++}
++
++/*
++ * Check if the mapping's length is within the valid range for inline data.
++ * This is used to guard against accessing data beyond the page inline_data
++ * points at.
++ */
++static inline bool iomap_inline_data_size_valid(struct iomap *iomap)
++{
++	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
++}
++
+ /*
+  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
+  * and page_done will be called for each page written to.  This only applies to
+-- 
+2.26.3
 
