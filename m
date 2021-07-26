@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523B93D63C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3D93D638E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239229AbhGZPvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:51:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
+        id S238958AbhGZPsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:48:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237890AbhGZP32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA773610A0;
-        Mon, 26 Jul 2021 16:09:28 +0000 (UTC)
+        id S237965AbhGZP3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01CCE60C40;
+        Mon, 26 Jul 2021 16:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315769;
-        bh=B/W8a58DraerEqWvfxB4VTt7LN+Yqi+LHuu3f9dsR+E=;
+        s=korg; t=1627315806;
+        bh=mU2SRVSw8pEKkAOT12ft4/nrudjXzw+yZ0lIPaS9tFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Azh08xLYDvLHmx/yi2n11I5BVucJvBMCdLG4q6aqxpcXpgtjv60gFZ/e/4kLsu9zm
-         DN3um8uCbMWkKqmU7w0PcOrF5Vm6vNcnBAqGB7B/b2YUhzGRcuo4U8wy9y4g2Mb/88
-         jeet63z4M4Vrwbi+C2tfeylk2au5DznzvYLVE1Jo=
+        b=XfwThaK883BWb7s3TAwEaaJLqdb/GloZg1BeI/rbm7djD1TgGRpQIkxDKLX3CMeBZ
+         /55TjvzYvlAyRNBKZgafKc/whTj1kPucRx1ODG7iPIt+MZRkkhqmhycCLcRZ+wmmEe
+         c15mjqF1X2QeCRMKScgXQBZlal3Rj4slovzhwkl8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianguo Wu <wujianguo@chinatelecom.cn>,
+        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
         Mat Martineau <mathew.j.martineau@linux.intel.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 032/223] mptcp: fix syncookie process if mptcp can not_accept new subflow
-Date:   Mon, 26 Jul 2021 17:37:04 +0200
-Message-Id: <20210726153847.305206867@linuxfoundation.org>
+Subject: [PATCH 5.13 038/223] mptcp: properly account bulk freed memory
+Date:   Mon, 26 Jul 2021 17:37:10 +0200
+Message-Id: <20210726153847.495428484@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,79 +41,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianguo Wu <wujianguo@chinatelecom.cn>
+From: Paolo Abeni <pabeni@redhat.com>
 
-[ Upstream commit 8547ea5f52dd8ef19b69c25c41b1415481b3503b ]
+[ Upstream commit ce599c516386f09ca30848a1a4eb93d3fffbe187 ]
 
-Lots of "TCP: tcp_fin: Impossible, sk->sk_state=7" in client side
-when doing stress testing using wrk and webfsd.
+After commit 879526030c8b ("mptcp: protect the rx path with
+the msk socket spinlock") the rmem currently used by a given
+msk is really sk_rmem_alloc - rmem_released.
 
-There are at least two cases may trigger this warning:
-1.mptcp is in syncookie, and server recv MP_JOIN SYN request,
-  in subflow_check_req(), the mptcp_can_accept_new_subflow()
-  return false, so subflow_init_req_cookie_join_save() isn't
-  called, i.e. not store the data present in the MP_JOIN syn
-  request and the random nonce in hash table - join_entries[],
-  but still send synack. When recv 3rd-ack,
-  mptcp_token_join_cookie_init_state() will return false, and
-  3rd-ack is dropped, then if mptcp conn is closed by client,
-  client will send a DATA_FIN and a MPTCP FIN, the DATA_FIN
-  doesn't have MP_CAPABLE or MP_JOIN,
-  so mptcp_subflow_init_cookie_req() will return 0, and pass
-  the cookie check, MP_JOIN request is fallback to normal TCP.
-  Server will send a TCP FIN if closed, in client side,
-  when process TCP FIN, it will do reset, the code path is:
-    tcp_data_queue()->mptcp_incoming_options()
-      ->check_fully_established()->mptcp_subflow_reset().
-  mptcp_subflow_reset() will set sock state to TCP_CLOSE,
-  so tcp_fin will hit TCP_CLOSE, and print the warning.
+The safety check in mptcp_data_ready() does not take the above
+in due account, as a result legit incoming data is kept in
+subflow receive queue with no reason, delaying or blocking
+MPTCP-level ack generation.
 
-2.mptcp is in syncookie, and server recv 3rd-ack, in
-  mptcp_subflow_init_cookie_req(), mptcp_can_accept_new_subflow()
-  return false, and subflow_req->mp_join is not set to 1,
-  so in subflow_syn_recv_sock() will not reset the MP_JOIN
-  subflow, but fallback to normal TCP, and then the same thing
-  happens when server will send a TCP FIN if closed.
+This change addresses the issue introducing a new helper to fetch
+the rmem memory and using it as needed. Additionally add a MIB
+counter for the exceptional event described above - the peer is
+misbehaving.
 
-For case1, subflow_check_req() return -EPERM,
-then tcp_conn_request() will drop MP_JOIN SYN.
+Finally, introduce the required annotation when rmem_released is
+updated.
 
-For case2, let subflow_syn_recv_sock() call
-mptcp_can_accept_new_subflow(), and do fatal fallback, send reset.
-
-Fixes: 9466a1ccebbe ("mptcp: enable JOIN requests even if cookies are in use")
-Signed-off-by: Jianguo Wu <wujianguo@chinatelecom.cn>
+Fixes: 879526030c8b ("mptcp: protect the rx path with the msk socket spinlock")
+Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/211
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mptcp/subflow.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/mptcp/mib.c      |  1 +
+ net/mptcp/mib.h      |  1 +
+ net/mptcp/protocol.c | 12 +++++++-----
+ net/mptcp/protocol.h | 10 +++++++++-
+ 4 files changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
-index 5493c851ca6c..5221cfce5390 100644
---- a/net/mptcp/subflow.c
-+++ b/net/mptcp/subflow.c
-@@ -223,6 +223,8 @@ again:
- 		if (unlikely(req->syncookie)) {
- 			if (mptcp_can_accept_new_subflow(subflow_req->msk))
- 				subflow_init_req_cookie_join_save(subflow_req, skb);
-+			else
-+				return -EPERM;
+diff --git a/net/mptcp/mib.c b/net/mptcp/mib.c
+index eb2dc6dbe212..c8f4823cd79f 100644
+--- a/net/mptcp/mib.c
++++ b/net/mptcp/mib.c
+@@ -42,6 +42,7 @@ static const struct snmp_mib mptcp_snmp_list[] = {
+ 	SNMP_MIB_ITEM("RmSubflow", MPTCP_MIB_RMSUBFLOW),
+ 	SNMP_MIB_ITEM("MPPrioTx", MPTCP_MIB_MPPRIOTX),
+ 	SNMP_MIB_ITEM("MPPrioRx", MPTCP_MIB_MPPRIORX),
++	SNMP_MIB_ITEM("RcvPruned", MPTCP_MIB_RCVPRUNED),
+ 	SNMP_MIB_SENTINEL
+ };
+ 
+diff --git a/net/mptcp/mib.h b/net/mptcp/mib.h
+index f0da4f060fe1..93fa7c95e206 100644
+--- a/net/mptcp/mib.h
++++ b/net/mptcp/mib.h
+@@ -35,6 +35,7 @@ enum linux_mptcp_mib_field {
+ 	MPTCP_MIB_RMSUBFLOW,		/* Remove a subflow */
+ 	MPTCP_MIB_MPPRIOTX,		/* Transmit a MP_PRIO */
+ 	MPTCP_MIB_MPPRIORX,		/* Received a MP_PRIO */
++	MPTCP_MIB_RCVPRUNED,		/* Incoming packet dropped due to memory limit */
+ 	__MPTCP_MIB_MAX
+ };
+ 
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 18f152bdb66f..94b707a39bc3 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -465,7 +465,7 @@ static void mptcp_cleanup_rbuf(struct mptcp_sock *msk)
+ 	bool cleanup, rx_empty;
+ 
+ 	cleanup = (space > 0) && (space >= (old_space << 1));
+-	rx_empty = !atomic_read(&sk->sk_rmem_alloc);
++	rx_empty = !__mptcp_rmem(sk);
+ 
+ 	mptcp_for_each_subflow(msk, subflow) {
+ 		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
+@@ -714,8 +714,10 @@ void mptcp_data_ready(struct sock *sk, struct sock *ssk)
+ 		sk_rbuf = ssk_rbuf;
+ 
+ 	/* over limit? can't append more skbs to msk, Also, no need to wake-up*/
+-	if (atomic_read(&sk->sk_rmem_alloc) > sk_rbuf)
++	if (__mptcp_rmem(sk) > sk_rbuf) {
++		MPTCP_INC_STATS(sock_net(sk), MPTCP_MIB_RCVPRUNED);
+ 		return;
++	}
+ 
+ 	/* Wake-up the reader only for in-sequence data */
+ 	mptcp_data_lock(sk);
+@@ -1799,7 +1801,7 @@ static int __mptcp_recvmsg_mskq(struct mptcp_sock *msk,
+ 		if (!(flags & MSG_PEEK)) {
+ 			/* we will bulk release the skb memory later */
+ 			skb->destructor = NULL;
+-			msk->rmem_released += skb->truesize;
++			WRITE_ONCE(msk->rmem_released, msk->rmem_released + skb->truesize);
+ 			__skb_unlink(skb, &msk->receive_queue);
+ 			__kfree_skb(skb);
  		}
+@@ -1918,7 +1920,7 @@ static void __mptcp_update_rmem(struct sock *sk)
  
- 		pr_debug("token=%u, remote_nonce=%u msk=%p", subflow_req->token,
-@@ -262,9 +264,7 @@ int mptcp_subflow_init_cookie_req(struct request_sock *req,
- 		if (!mptcp_token_join_cookie_init_state(subflow_req, skb))
- 			return -EINVAL;
+ 	atomic_sub(msk->rmem_released, &sk->sk_rmem_alloc);
+ 	sk_mem_uncharge(sk, msk->rmem_released);
+-	msk->rmem_released = 0;
++	WRITE_ONCE(msk->rmem_released, 0);
+ }
  
--		if (mptcp_can_accept_new_subflow(subflow_req->msk))
--			subflow_req->mp_join = 1;
--
-+		subflow_req->mp_join = 1;
- 		subflow_req->ssn_offset = TCP_SKB_CB(skb)->seq - 1;
- 	}
+ static void __mptcp_splice_receive_queue(struct sock *sk)
+@@ -2420,7 +2422,7 @@ static int __mptcp_init_sock(struct sock *sk)
+ 	msk->out_of_order_queue = RB_ROOT;
+ 	msk->first_pending = NULL;
+ 	msk->wmem_reserved = 0;
+-	msk->rmem_released = 0;
++	WRITE_ONCE(msk->rmem_released, 0);
+ 	msk->tx_pending_data = 0;
+ 	msk->size_goal_cache = TCP_BASE_MSS;
  
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index f842c832f6b0..dc5b71de0a9a 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -290,9 +290,17 @@ static inline struct mptcp_sock *mptcp_sk(const struct sock *sk)
+ 	return (struct mptcp_sock *)sk;
+ }
+ 
++/* the msk socket don't use the backlog, also account for the bulk
++ * free memory
++ */
++static inline int __mptcp_rmem(const struct sock *sk)
++{
++	return atomic_read(&sk->sk_rmem_alloc) - READ_ONCE(mptcp_sk(sk)->rmem_released);
++}
++
+ static inline int __mptcp_space(const struct sock *sk)
+ {
+-	return tcp_space(sk) + READ_ONCE(mptcp_sk(sk)->rmem_released);
++	return tcp_win_from_space(sk, READ_ONCE(sk->sk_rcvbuf) - __mptcp_rmem(sk));
+ }
+ 
+ static inline struct mptcp_data_frag *mptcp_send_head(const struct sock *sk)
 -- 
 2.30.2
 
