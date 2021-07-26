@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9E43D5DC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892353D5E61
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235810AbhGZPDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:03:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42248 "EHLO mail.kernel.org"
+        id S235888AbhGZPHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:07:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235775AbhGZPCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:02:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACFF860F42;
-        Mon, 26 Jul 2021 15:43:15 +0000 (UTC)
+        id S235673AbhGZPF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:05:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4475660525;
+        Mon, 26 Jul 2021 15:46:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314196;
-        bh=fNE7mNQXc+CVvPJggT3ty8bj4wzRszfd94WaIsLWJrc=;
+        s=korg; t=1627314386;
+        bh=+OfU/LJ9KZPWgq3uZIEVOwwSPfgU91jbdLpo/Sf86zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FJNEb1cSeZAobihv+ZRAUidzDaR3+bhArBkoxvoXBvwevvzI/ZQs+BYUWY5EuUgtV
-         3pLz1jMw9eIr0OEYzh8J7iIqrg2ZxeGDCaI9cARUdGhvJe32dd8PHc2jMoz/437opV
-         QK8Sa5/5uofY915BpsquEEsIgVM/HUIDORfOLQiQ=
+        b=B3GlYi5zwSWBgsQX6IPr3rJuhy0OsPwFYAphftJcEAd+IsoDxBPjo6bP1AtA/OPfS
+         aSsvqafsvVDIMrPM2ThjlUl5ExlZEOtRtl4GnCCzgozkOdxhtRWmMHX0C8p4p0O4+3
+         G8Ca5kWXaZkWIrZjmNZGOp+IHUGLIa0tUbVesu+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Primoz Fiser <primoz.fiser@norik.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Javed Hasan <jhasan@marvell.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 06/60] ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
-Date:   Mon, 26 Jul 2021 17:38:20 +0200
-Message-Id: <20210726153825.070826043@linuxfoundation.org>
+Subject: [PATCH 4.14 21/82] scsi: libfc: Fix array index out of bound exception
+Date:   Mon, 26 Jul 2021 17:38:21 +0200
+Message-Id: <20210726153828.844993000@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Primoz Fiser <primoz.fiser@norik.com>
+From: Javed Hasan <jhasan@marvell.com>
 
-[ Upstream commit 14cdc1f243d79e0b46be150502b7dba9c5a6bdfd ]
+[ Upstream commit b27c4577557045f1ab3cdfeabfc7f3cd24aca1fe ]
 
-Serial interface uart3 on phyFLEX board is capable of 5-wire connection
-including signals RTS and CTS for hardware flow control.
+Fix array index out of bound exception in fc_rport_prli_resp().
 
-Fix signals UART3_CTS_B and UART3_RTS_B padmux assignments and add
-missing property "uart-has-rtscts" to allow serial interface to be
-configured and used with the hardware flow control.
-
-Signed-off-by: Primoz Fiser <primoz.fiser@norik.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Link: https://lore.kernel.org/r/20210615165939.24327-1-jhasan@marvell.com
+Signed-off-by: Javed Hasan <jhasan@marvell.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/libfc/fc_rport.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-index fed72a5f3ffa..4dede1fbfadb 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-@@ -307,8 +307,8 @@
- 			fsl,pins = <
- 				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1
- 				MX6QDL_PAD_EIM_D25__UART3_RX_DATA	0x1b0b1
--				MX6QDL_PAD_EIM_D30__UART3_RTS_B		0x1b0b1
--				MX6QDL_PAD_EIM_D31__UART3_CTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D31__UART3_RTS_B		0x1b0b1
-+				MX6QDL_PAD_EIM_D30__UART3_CTS_B		0x1b0b1
- 			>;
- 		};
- 
-@@ -395,6 +395,7 @@
- &uart3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart3>;
-+	uart-has-rtscts;
- 	status = "disabled";
- };
- 
+diff --git a/drivers/scsi/libfc/fc_rport.c b/drivers/scsi/libfc/fc_rport.c
+index 669cf3553a77..ef2fa6b10a9c 100644
+--- a/drivers/scsi/libfc/fc_rport.c
++++ b/drivers/scsi/libfc/fc_rport.c
+@@ -1174,6 +1174,7 @@ static void fc_rport_prli_resp(struct fc_seq *sp, struct fc_frame *fp,
+ 		resp_code = (pp->spp.spp_flags & FC_SPP_RESP_MASK);
+ 		FC_RPORT_DBG(rdata, "PRLI spp_flags = 0x%x spp_type 0x%x\n",
+ 			     pp->spp.spp_flags, pp->spp.spp_type);
++
+ 		rdata->spp_type = pp->spp.spp_type;
+ 		if (resp_code != FC_SPP_RESP_ACK) {
+ 			if (resp_code == FC_SPP_RESP_CONF)
+@@ -1194,11 +1195,13 @@ static void fc_rport_prli_resp(struct fc_seq *sp, struct fc_frame *fp,
+ 		/*
+ 		 * Call prli provider if we should act as a target
+ 		 */
+-		prov = fc_passive_prov[rdata->spp_type];
+-		if (prov) {
+-			memset(&temp_spp, 0, sizeof(temp_spp));
+-			prov->prli(rdata, pp->prli.prli_spp_len,
+-				   &pp->spp, &temp_spp);
++		if (rdata->spp_type < FC_FC4_PROV_SIZE) {
++			prov = fc_passive_prov[rdata->spp_type];
++			if (prov) {
++				memset(&temp_spp, 0, sizeof(temp_spp));
++				prov->prli(rdata, pp->prli.prli_spp_len,
++					   &pp->spp, &temp_spp);
++			}
+ 		}
+ 		/*
+ 		 * Check if the image pair could be established
 -- 
 2.30.2
 
