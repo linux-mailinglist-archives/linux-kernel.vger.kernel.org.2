@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8EB3D62D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416893D5FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238349AbhGZPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37002 "EHLO mail.kernel.org"
+        id S236846AbhGZPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:19:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237311AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD3D760F6F;
-        Mon, 26 Jul 2021 15:52:53 +0000 (UTC)
+        id S236431AbhGZPJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E13460FD7;
+        Mon, 26 Jul 2021 15:49:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314774;
-        bh=AulFh4I2Hm8Bs9NgA0mwj5X+FjZOIoMOYIf1DoMM9Mg=;
+        s=korg; t=1627314556;
+        bh=YEHp7ZrqZ9KoefIsiiCf+iPvjdNGEFxLvlxy/k2R/uA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bss6J83mNlMtRAG9MDgBNfU2/QMWv3paGujeBq5gl5vxBHWHXHC2knv3PMlj8PvIu
-         mi7mPYGbaw0pAMC4BCE1Mjuu4px1qscaAEiygZurDtVWwuWQeJbHTGuTOE1NqqjASg
-         ybIltx7APP2RSR+s3JxUj0rxF4UvP65Uu3SLpZRM=
+        b=THwapuJ1+inCxp2wPCx8BLZcpWBIzqawMM1Xy8qk9EsA32XZfJ37ik8O7YLpCvQzf
+         JQeeVwkOaANG4nl+tHYwrE6k6lj1aUhDhDNsPLdeG8hqrhkvFlM4QhPKGptBXI1NAR
+         WqkodMPy8CNGCxr/vKbURM6P0n5Vk3sE/vYUGD8g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 087/120] net: sched: cls_api: Fix the the wrong parameter
+        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>
+Subject: [PATCH 4.14 59/82] [PATCH] Revert "MIPS: add PMD table accounting into MIPSpmd_alloc_one"
 Date:   Mon, 26 Jul 2021 17:38:59 +0200
-Message-Id: <20210726153835.178302180@linuxfoundation.org>
+Message-Id: <20210726153830.090386424@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yajun Deng <yajun.deng@linux.dev>
+From: Huang Pei <huangpei@loongson.cn>
 
-[ Upstream commit 9d85a6f44bd5585761947f40f7821c9cd78a1bbe ]
+This reverts commit 920a42d8b854b1f112aef97a21f0549918889442 which is
+commit commit ed914d48b6a1040d1039d371b56273d422c0081e upstream.
 
-The 4th parameter in tc_chain_notify() should be flags rather than seq.
-Let's change it back correctly.
+Commit b2b29d6d011944 (mm: account PMD tables like PTE tables) is
+introduced between v5.9 and v5.10, so this fix (commit 002d8b395fa1)
+should NOT apply to any pre-5.10 branch.
 
-Fixes: 32a4f5ecd738 ("net: sched: introduce chain object to uapi")
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/cls_api.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/pgalloc.h |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index 184c20b86393..4413aa8d4e82 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -1918,7 +1918,7 @@ replay:
- 		break;
- 	case RTM_GETCHAIN:
- 		err = tc_chain_notify(chain, skb, n->nlmsg_seq,
--				      n->nlmsg_seq, n->nlmsg_type, true);
-+				      n->nlmsg_flags, n->nlmsg_type, true);
- 		if (err < 0)
- 			NL_SET_ERR_MSG(extack, "Failed to send chain notify message");
- 		break;
--- 
-2.30.2
-
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -93,15 +93,11 @@ do {							\
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd = NULL;
+-	struct page *pg;
++	pmd_t *pmd;
+ 
+-	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
+-	if (pg) {
+-		pgtable_pmd_page_ctor(pg);
+-		pmd = (pmd_t *)page_address(pg);
++	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
++	if (pmd)
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
+-	}
+ 	return pmd;
+ }
+ 
 
 
