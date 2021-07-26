@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895AC3D538F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B44B3D539A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhGZGZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
+        id S231820AbhGZGbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhGZGZS (ORCPT
+        with ESMTP id S231582AbhGZGbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:25:18 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CAEC061757;
-        Mon, 26 Jul 2021 00:05:48 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id k4-20020a17090a5144b02901731c776526so18356328pjm.4;
-        Mon, 26 Jul 2021 00:05:48 -0700 (PDT)
+        Mon, 26 Jul 2021 02:31:00 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F69C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:11:28 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso5624395pjo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:11:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FfJvyftSw8I9bvycaoSgqvRdK17Vot8rl+gl1vH68gE=;
-        b=jpJwmFQCd566vpEbfTNRHFbGKs60vnCoZ/F8VJ0GMl9ZZ8M96F891vYNww0FkPTVUh
-         yDwTFGtUR6Ejp0feGCmbxwrQVcePLG+AuRE/pYHmVQ7NcHvk589WHrQNmR4UOOiNoYrZ
-         k+ySbVpkK/rrvit/0GfpYlQKcs+D/9r47C9NmdV6cNetxr1P1SE2zcJXcEaGC8mZmxsu
-         5vCNPGSh1NeqXEBpPgtPHvd5a+1AsGiFkd9e2eie4ffk/v1WUe+YyCEgSJnb6/OLWFAZ
-         4TRhtXadX8h53ae5wS9ZLBpTY3gPq0rtiv+xuz3AKkwSl5Kwq6xppd3GZD7HZSq4kMrV
-         YbiQ==
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+5p8Aei7IrZs3alqaJKEyL3k4NRbSzzZGcPcbzf/ZKM=;
+        b=nsFEEqxuhHH0w55xR+qWi6/8JTZFD+CjXaMMEmRxPwhw2+t/dxlIOoeHh6BpICM3mq
+         gNT4qD6yRd/mY6jEACPu0YsvzhLNNFAflHc0uWnAC/j7XT9FAhDDBCx7p9j2vtIs0vCd
+         y111+bounbY/WPKSDg7zqY0suEQPOzJntP/Vsa+De7Dkj5L32jI5icyEcWzyEnJAzCq7
+         aA3xdsgUDt0CbErUbVFasdkp2E1dn6c8e9+j7u0uDTyc57FJVgyU+uLeZDcPrd8Ti2RV
+         /XdKYIyowWMIT/h8pOCMmIrI//hpZnh5WqTho6WOgON21kM/nrs6WNASFxgJQAX9f9zF
+         DaYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FfJvyftSw8I9bvycaoSgqvRdK17Vot8rl+gl1vH68gE=;
-        b=X/fIydds64abhykZ7Xj0GOYuXC2U0GIimubsrDsGnBCaFQFnw8Vro+CB3zhr+QRxkL
-         SyAGPQ3EmujaHaJCma6vdLWc5YavzxFCssvgy0wgBfvU4/G7pIBz2oFxB9LbusVVj0Lp
-         O+CCLBpMAba5L8DPc1G7qCjvPw3EOV4fHzCOKi+Ynk5RLNgSI9kF27Nhl4KmuqwA9BgD
-         VIkw5Z0kVtBN+CXfPmDe3DMupE2BL0r4k8dMATb/9vr9omMYkcNyeZ97Gzk4G5JQTVoZ
-         IIy/pmDl1LHzjdR5IdhrZPrWdQiEKJvelKriagJTYYsorj9CNjclJaSKPUqwDDDeIbj7
-         H3gg==
-X-Gm-Message-State: AOAM533aESdzEeYmZagIthb8U4MxQEzIe7rfh5TJ6veLgP+kuGoz9T87
-        H6JOYxe8kTCIotXQK+dujEMLqLGlsF/mnw==
-X-Google-Smtp-Source: ABdhPJztI0qApV0cz6QRYMk88fwO0nzkihx3dX3V+oo5XvBmlvmTjTLJLjq55QeMfjR/yDCU6SmHsA==
-X-Received: by 2002:a63:fb16:: with SMTP id o22mr9091557pgh.309.1627283147616;
-        Mon, 26 Jul 2021 00:05:47 -0700 (PDT)
-Received: from jianchwadeMacBook-Pro.local ([154.223.168.30])
-        by smtp.gmail.com with ESMTPSA id c24sm41829730pfn.86.2021.07.26.00.05.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 00:05:47 -0700 (PDT)
-Subject: Re: [PATCH V3 5/5] ext4: make fallocate retry when err is ENOSPC
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca
-References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
- <20210724074124.25731-6-jianchao.wan9@gmail.com>
- <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
-From:   Wang Jianchao <jianchao.wan9@gmail.com>
-Message-ID: <2888807f-2822-a73d-4c01-f073f8fffae2@gmail.com>
-Date:   Mon, 26 Jul 2021 15:05:41 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+5p8Aei7IrZs3alqaJKEyL3k4NRbSzzZGcPcbzf/ZKM=;
+        b=fVckV6gU8X+bt9w7rnmbZvT9hFlBdQPKWCRDCUxWXL5qn2o9jg8V22lZnyL/mZAD0Z
+         bXnhXIb+h80v5NNR5ao3KEfdz/88gKok4E1y/9O9RpALT6iscq8ys7PbtYzrHMq43H3c
+         O2X+SKLVI1gi2h9LYys9SSBCS0kCQ9EoC7i/eEkDjDkLAMDRotEaCS0npzj8kGTgFeBP
+         YxXWI6ycsJYKbf7WdfHVJkJtceiYF9YAG9jbWBWDUiO7OEZ4YjGcKwu16ZAaUDbH3Wf3
+         AzCNDMNEcZgVgDm9tAaEu+2dFswENuIRljoxYo1+6GKK+hkwFYMDw7Pf7cDJ7NVHcHV5
+         ip9w==
+X-Gm-Message-State: AOAM532t/JXIThVXlk8jI2GjBJQZWvyRpl8ShtTea5MjduIfTtYO+xIj
+        xFEeX7pMck/XWDs7MSZQDhhAOQ==
+X-Google-Smtp-Source: ABdhPJz/DGTo2HlVZORTFeTFS3UbYQ8fKSzvDp+CtRgvg+g+iWcVQ+dYYlu8pI/PRW+yWU/1lhgXHg==
+X-Received: by 2002:a17:90a:6482:: with SMTP id h2mr24182383pjj.24.1627283486888;
+        Mon, 26 Jul 2021 00:11:26 -0700 (PDT)
+Received: from x1 ([174.127.163.79])
+        by smtp.gmail.com with ESMTPSA id o134sm43060098pfg.62.2021.07.26.00.11.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 00:11:26 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 00:11:24 -0700
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Michael Walle <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Zhu <michael.zhu@starfivetech.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Fu Wei <tekkamanninja@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Huan Feng <huan.feng@starfivetech.com>
+Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
+ driver
+Message-ID: <20210726071124.GA9184@x1>
+References: <20210701002037.912625-1-drew@beagleboard.org>
+ <20210701002037.912625-3-drew@beagleboard.org>
+ <8c59105d32a9936f8806501ecd20e044@walle.cc>
+ <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/7/26 11:40 AM, Guoqing Jiang wrote:
-> Hi,
+On Fri, Jul 23, 2021 at 11:04:41PM +0200, Linus Walleij wrote:
+> On Thu, Jul 1, 2021 at 8:39 AM Michael Walle <michael@walle.cc> wrote:
+> > Am 2021-07-01 02:20, schrieb Drew Fustini:
+> > > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
+> > > BeagleV Starlight JH7100 board [2].
+> > >
+> > > [1] https://github.com/starfive-tech/beaglev_doc/
+> > > [2] https://github.com/beagleboard/beaglev-starlight
+> > >
+> > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+> > > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
+> > > Signed-off-by: Drew Fustini <drew@beagleboard.org>
+> >
+> > Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
+> > drivers/gpio/gpio-sl28cpld.c for an example.
 > 
-> On 7/24/21 3:41 PM, Wang Jianchao wrote:
->> From: Wang Jianchao <wangjianchao@kuaishou.com>
->>
->> The blocks may be waiting for journal commit to be freed back to
->> mb buddy. Let fallocate wait and retry in that case.
->>
->> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
->> ---
->>   fs/ext4/extents.c | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index 92ad64b89d9b..ad0b874d3448 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -4635,7 +4635,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->>       struct inode *inode = file_inode(file);
->>       loff_t new_size = 0;
->>       unsigned int max_blocks;
->> -    int ret = 0;
->> +    int ret = 0, retries = 0;
->>       int flags;
->>       ext4_lblk_t lblk;
->>       unsigned int blkbits = inode->i_blkbits;
->> @@ -4656,6 +4656,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->>                FALLOC_FL_INSERT_RANGE))
->>           return -EOPNOTSUPP;
->>   +retry:
->>       ext4_fc_start_update(inode);
->>         if (mode & FALLOC_FL_PUNCH_HOLE) {
->> @@ -4722,6 +4723,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->>       trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
->>   exit:
->>       ext4_fc_stop_update(inode);
->> +    if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
->> +        goto retry;
->> +
+> To me it looks just memory-mapped?
 > 
-> Not sure if it is necessary since ext4_alloc_file_blocks already retries allocate.
-
-Yes, this patch should be get rid of.
-But it is indeed helpful to fix the xfstest generic/371 which does concurrently write/rm
-and fallocate/rm. I'll figure out some other way to improve that
-
-Thanks
-Jianchao
-
+> Good old gpio-mmio.c (select GPIO_GENERIC) should
+> suffice I think.
 > 
-> Thanks,
-> Guoqing
+> Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
+> of GPIO_GENERIC calling bgpio_init() in probe().
+
+Thank you for the suggestion. However, I am not sure that will work for
+this SoC.
+
+The GPIO registers are described in section 12 of JH7100 datasheet [1]
+and I don't think they fit the expectation of gpio-mmio.c because there
+is a seperate register for each GPIO line for output data value and
+output enable.
+
+There are 64 output data config registers which are 4 bytes wide. There
+are 64 output enable config registers which are 4 bytes wide too. Output
+data and output enable registers for a given GPIO pad are contiguous.
+GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
+is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
+effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
+Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
+
+However, GPIO input data does use just one bit for each line. GPIODIN_0
+at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
+
+Thus the input could work with gpio-mmio but I am not sure how to
+reconcile the register-per-gpio for the output value and output enable.
+
+Is there way a way to adapt gpio-mmio for this situation?
+
+Thanks,
+Drew
+
+[1] https://github.com/starfive-tech/beaglev_doc
