@@ -2,176 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7C23D67BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0613D67C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 21:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbhGZTNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhGZTNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:13:40 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715CFC061757;
-        Mon, 26 Jul 2021 12:54:08 -0700 (PDT)
-Received: from dslb-188-096-151-017.188.096.pools.vodafone-ip.de ([188.96.151.17] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1m86fs-00078e-1U; Mon, 26 Jul 2021 21:54:04 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2 14/18] staging: rtl8188eu: simplify rtl88eu_phy_iq_calibrate
-Date:   Mon, 26 Jul 2021 21:53:54 +0200
-Message-Id: <20210726195354.28548-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210725155902.32433-14-martin@kaiser.cx>
-References: <20210725155902.32433-14-martin@kaiser.cx>
+        id S232069AbhGZTRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:17:41 -0400
+Received: from relay.sw.ru ([185.231.240.75]:33134 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229646AbhGZTRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 15:17:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=tv98G035lh2G/ipIGk9DWaPwErr9DdmX0FfG30VCqLY=; b=G3iiKhr3Yr3vEkX2a
+        UQ8cCtq5ZpJ8MEZqD7NvK3bB1N8hUeqGfthNBucZosDiFwX96HGYcqoYWlpp5zDKSKGZSZHQMgOXT
+        nlLzLHrP+RM/NFWuluO4rEQIL8gB1DeBiq87FXjLB8hDaH3zh5vONrMfR+rD99xsbAttPVxadph1g
+        =;
+Received: from [192.168.15.199]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1m86jk-005Jkf-He; Mon, 26 Jul 2021 22:58:04 +0300
+Subject: Re: [PATCH v6 11/16] memcg: enable accounting for new namesapces and
+ struct nsproxy
+To:     Vasily Averin <vvs@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Serge Hallyn <serge@hallyn.com>,
+        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org
+References: <9bf9d9bd-03b1-2adb-17b4-5d59a86a9394@virtuozzo.com>
+ <cover.1627321321.git.vvs@virtuozzo.com>
+ <86c99f5a-d717-9d4e-91db-e68ccc93cade@virtuozzo.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <6c72e9c3-7ce3-0bd9-fb18-60d0a3f86254@virtuozzo.com>
+Date:   Mon, 26 Jul 2021 22:58:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <86c99f5a-d717-9d4e-91db-e68ccc93cade@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The boolean is2t variable in rtl88eu_phy_iq_calibrate is always false.
-Remove some code that's unused in this case.
+On 26.07.2021 22:01, Vasily Averin wrote:
+> Container admin can create new namespaces and force kernel to allocate
+> up to several pages of memory for the namespaces and its associated
+> structures.
+> Net and uts namespaces have enabled accounting for such allocations.
+> It makes sense to account for rest ones to restrict the host's memory
+> consumption from inside the memcg-limited container.
+> 
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Acked-by: Serge Hallyn <serge@hallyn.com>
+> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-v2:
- - fixed two -Wunused-but-set-variable warnings
-   reported by kernel test robot <lkp@intel.com>
+Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
 
- drivers/staging/rtl8188eu/hal/phy.c | 65 ++---------------------------
- 1 file changed, 3 insertions(+), 62 deletions(-)
-
-diff --git a/drivers/staging/rtl8188eu/hal/phy.c b/drivers/staging/rtl8188eu/hal/phy.c
-index 256f87b9d630..fcac885b6581 100644
---- a/drivers/staging/rtl8188eu/hal/phy.c
-+++ b/drivers/staging/rtl8188eu/hal/phy.c
-@@ -703,53 +703,6 @@ static void patha_fill_iqk(struct adapter *adapt, bool iqkok, s32 result[][8],
- 	}
- }
- 
--static void pathb_fill_iqk(struct adapter *adapt, bool iqkok, s32 result[][8],
--			   u8 final_candidate, bool txonly)
--{
--	u32 oldval_1, x, tx1_a, reg;
--	s32 y, tx1_c;
--
--	if (final_candidate == 0xFF) {
--		return;
--	} else if (iqkok) {
--		oldval_1 = (phy_query_bb_reg(adapt, rOFDM0_XBTxIQImbalance, bMaskDWord) >> 22) & 0x3FF;
--
--		x = result[final_candidate][4];
--		if ((x & 0x00000200) != 0)
--			x = x | 0xFFFFFC00;
--		tx1_a = (x * oldval_1) >> 8;
--		phy_set_bb_reg(adapt, rOFDM0_XBTxIQImbalance, 0x3FF, tx1_a);
--
--		phy_set_bb_reg(adapt, rOFDM0_ECCAThreshold, BIT(27),
--			       ((x * oldval_1 >> 7) & 0x1));
--
--		y = result[final_candidate][5];
--		if ((y & 0x00000200) != 0)
--			y = y | 0xFFFFFC00;
--
--		tx1_c = (y * oldval_1) >> 8;
--
--		phy_set_bb_reg(adapt, rOFDM0_XDTxAFE, 0xF0000000,
--			       ((tx1_c & 0x3C0) >> 6));
--		phy_set_bb_reg(adapt, rOFDM0_XBTxIQImbalance, 0x003F0000,
--			       (tx1_c & 0x3F));
--		phy_set_bb_reg(adapt, rOFDM0_ECCAThreshold, BIT(25),
--			       ((y * oldval_1 >> 7) & 0x1));
--
--		if (txonly)
--			return;
--
--		reg = result[final_candidate][6];
--		phy_set_bb_reg(adapt, rOFDM0_XBRxIQImbalance, 0x3FF, reg);
--
--		reg = result[final_candidate][7] & 0x3F;
--		phy_set_bb_reg(adapt, rOFDM0_XBRxIQImbalance, 0xFC00, reg);
--
--		reg = (result[final_candidate][7] >> 6) & 0xF;
--		phy_set_bb_reg(adapt, rOFDM0_AGCRSSITable, 0x0000F000, reg);
--	}
--}
--
- static void save_adda_registers(struct adapter *adapt, const u32 *addareg,
- 				u32 *backup, u32 register_num)
- {
-@@ -1150,8 +1103,8 @@ void rtl88eu_phy_iq_calibrate(struct adapter *adapt, bool recovery)
- 	struct odm_dm_struct *dm_odm = &adapt->HalData->odmpriv;
- 	s32 result[4][8];
- 	u8 i, final;
--	bool pathaok, pathbok;
--	s32 reg_e94, reg_e9c, reg_ea4, reg_eb4, reg_ebc, reg_ec4;
-+	bool pathaok;
-+	s32 reg_e94, reg_e9c, reg_ea4, reg_eb4, reg_ebc;
- 	bool is12simular, is13simular, is23simular;
- 	u32 iqk_bb_reg_92c[IQK_BB_REG_NUM] = {
- 		rOFDM0_XARxIQImbalance, rOFDM0_XBRxIQImbalance,
-@@ -1159,9 +1112,6 @@ void rtl88eu_phy_iq_calibrate(struct adapter *adapt, bool recovery)
- 		rOFDM0_XATxIQImbalance, rOFDM0_XBTxIQImbalance,
- 		rOFDM0_XCTxAFE, rOFDM0_XDTxAFE,
- 		rOFDM0_RxIQExtAnta};
--	bool is2t;
--
--	is2t = false;
- 
- 	if (!(dm_odm->SupportAbility & ODM_RF_CALIBRATION))
- 		return;
-@@ -1178,13 +1128,12 @@ void rtl88eu_phy_iq_calibrate(struct adapter *adapt, bool recovery)
- 
- 	final = 0xff;
- 	pathaok = false;
--	pathbok = false;
- 	is12simular = false;
- 	is23simular = false;
- 	is13simular = false;
- 
- 	for (i = 0; i < 3; i++) {
--		phy_iq_calibrate(adapt, result, i, is2t);
-+		phy_iq_calibrate(adapt, result, i, false);
- 
- 		if (i == 1) {
- 			is12simular = simularity_compare(adapt, result, 0, 1);
-@@ -1214,7 +1163,6 @@ void rtl88eu_phy_iq_calibrate(struct adapter *adapt, bool recovery)
- 		reg_ea4 = result[i][2];
- 		reg_eb4 = result[i][4];
- 		reg_ebc = result[i][5];
--		reg_ec4 = result[i][6];
- 	}
- 
- 	if (final != 0xff) {
-@@ -1227,9 +1175,7 @@ void rtl88eu_phy_iq_calibrate(struct adapter *adapt, bool recovery)
- 		dm_odm->RFCalibrateInfo.RegE9C = reg_e9c;
- 		dm_odm->RFCalibrateInfo.RegEB4 = reg_eb4;
- 		dm_odm->RFCalibrateInfo.RegEBC = reg_ebc;
--		reg_ec4 = result[final][6];
- 		pathaok = true;
--		pathbok = true;
- 	} else {
- 		dm_odm->RFCalibrateInfo.RegE94 = 0x100;
- 		dm_odm->RFCalibrateInfo.RegEB4 = 0x100;
-@@ -1239,11 +1185,6 @@ void rtl88eu_phy_iq_calibrate(struct adapter *adapt, bool recovery)
- 	if (reg_e94 != 0)
- 		patha_fill_iqk(adapt, pathaok, result, final,
- 			       (reg_ea4 == 0));
--	if (is2t) {
--		if (reg_eb4 != 0)
--			pathb_fill_iqk(adapt, pathbok, result, final,
--				       (reg_ec4 == 0));
--	}
- 
- 	if (final < 4) {
- 		for (i = 0; i < IQK_Matrix_REG_NUM; i++)
--- 
-2.20.1
+> ---
+>  fs/namespace.c            | 2 +-
+>  ipc/namespace.c           | 2 +-
+>  kernel/cgroup/namespace.c | 2 +-
+>  kernel/nsproxy.c          | 2 +-
+>  kernel/pid_namespace.c    | 2 +-
+>  kernel/time/namespace.c   | 4 ++--
+>  kernel/user_namespace.c   | 2 +-
+>  7 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/namespace.c b/fs/namespace.c
+> index c6a74e5..e443ee6 100644
+> --- a/fs/namespace.c
+> +++ b/fs/namespace.c
+> @@ -3289,7 +3289,7 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns, bool a
+>  	if (!ucounts)
+>  		return ERR_PTR(-ENOSPC);
+>  
+> -	new_ns = kzalloc(sizeof(struct mnt_namespace), GFP_KERNEL);
+> +	new_ns = kzalloc(sizeof(struct mnt_namespace), GFP_KERNEL_ACCOUNT);
+>  	if (!new_ns) {
+>  		dec_mnt_namespaces(ucounts);
+>  		return ERR_PTR(-ENOMEM);
+> diff --git a/ipc/namespace.c b/ipc/namespace.c
+> index 7bd0766..ae83f0f 100644
+> --- a/ipc/namespace.c
+> +++ b/ipc/namespace.c
+> @@ -42,7 +42,7 @@ static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
+>  		goto fail;
+>  
+>  	err = -ENOMEM;
+> -	ns = kzalloc(sizeof(struct ipc_namespace), GFP_KERNEL);
+> +	ns = kzalloc(sizeof(struct ipc_namespace), GFP_KERNEL_ACCOUNT);
+>  	if (ns == NULL)
+>  		goto fail_dec;
+>  
+> diff --git a/kernel/cgroup/namespace.c b/kernel/cgroup/namespace.c
+> index f5e8828..0d5c298 100644
+> --- a/kernel/cgroup/namespace.c
+> +++ b/kernel/cgroup/namespace.c
+> @@ -24,7 +24,7 @@ static struct cgroup_namespace *alloc_cgroup_ns(void)
+>  	struct cgroup_namespace *new_ns;
+>  	int ret;
+>  
+> -	new_ns = kzalloc(sizeof(struct cgroup_namespace), GFP_KERNEL);
+> +	new_ns = kzalloc(sizeof(struct cgroup_namespace), GFP_KERNEL_ACCOUNT);
+>  	if (!new_ns)
+>  		return ERR_PTR(-ENOMEM);
+>  	ret = ns_alloc_inum(&new_ns->ns);
+> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+> index abc01fc..eec72ca 100644
+> --- a/kernel/nsproxy.c
+> +++ b/kernel/nsproxy.c
+> @@ -568,6 +568,6 @@ static void commit_nsset(struct nsset *nsset)
+>  
+>  int __init nsproxy_cache_init(void)
+>  {
+> -	nsproxy_cachep = KMEM_CACHE(nsproxy, SLAB_PANIC);
+> +	nsproxy_cachep = KMEM_CACHE(nsproxy, SLAB_PANIC|SLAB_ACCOUNT);
+>  	return 0;
+>  }
+> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+> index ca43239..6cd6715 100644
+> --- a/kernel/pid_namespace.c
+> +++ b/kernel/pid_namespace.c
+> @@ -449,7 +449,7 @@ static struct user_namespace *pidns_owner(struct ns_common *ns)
+>  
+>  static __init int pid_namespaces_init(void)
+>  {
+> -	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC);
+> +	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC | SLAB_ACCOUNT);
+>  
+>  #ifdef CONFIG_CHECKPOINT_RESTORE
+>  	register_sysctl_paths(kern_path, pid_ns_ctl_table);
+> diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
+> index 12eab0d..aec8328 100644
+> --- a/kernel/time/namespace.c
+> +++ b/kernel/time/namespace.c
+> @@ -88,13 +88,13 @@ static struct time_namespace *clone_time_ns(struct user_namespace *user_ns,
+>  		goto fail;
+>  
+>  	err = -ENOMEM;
+> -	ns = kmalloc(sizeof(*ns), GFP_KERNEL);
+> +	ns = kmalloc(sizeof(*ns), GFP_KERNEL_ACCOUNT);
+>  	if (!ns)
+>  		goto fail_dec;
+>  
+>  	refcount_set(&ns->ns.count, 1);
+>  
+> -	ns->vvar_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
+> +	ns->vvar_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+>  	if (!ns->vvar_page)
+>  		goto fail_free;
+>  
+> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> index ef82d40..6b2e3ca 100644
+> --- a/kernel/user_namespace.c
+> +++ b/kernel/user_namespace.c
+> @@ -1385,7 +1385,7 @@ static struct user_namespace *userns_owner(struct ns_common *ns)
+>  
+>  static __init int user_namespaces_init(void)
+>  {
+> -	user_ns_cachep = KMEM_CACHE(user_namespace, SLAB_PANIC);
+> +	user_ns_cachep = KMEM_CACHE(user_namespace, SLAB_PANIC | SLAB_ACCOUNT);
+>  	return 0;
+>  }
+>  subsys_initcall(user_namespaces_init);
+> 
 
