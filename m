@@ -2,85 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F7C3D65B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 853233D65C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235112AbhGZQqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:46:43 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49432 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237394AbhGZQqh (ORCPT
+        id S235988AbhGZQtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235110AbhGZQtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:46:37 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 055E61FEC6;
-        Mon, 26 Jul 2021 17:27:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627320425; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=drwSswYjaqXt+R8keQ8tn2ECB9MnkEVK6sFZPPriypY=;
-        b=V+H5wEJ9xp39BB8KJSgKpbiilfRE9vbZKJFAynQScSnhOClyh13HxfZi97GV0sFmyDW1Yf
-        scMxBp/DW8X5ES/7/u7oPkvB7PJGnd/IlqjL2+i6NhZZRm+z/uD6WvKVP8e6jcWlmaiTvP
-        55tBOHx4DTBONm1NlXidkVTTL/WZdZE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627320425;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=drwSswYjaqXt+R8keQ8tn2ECB9MnkEVK6sFZPPriypY=;
-        b=mN9vfW5upwlrhKcpzEtNBxpcESJP1Bqb3Ri1ba1WR6O0MMUzF/o5WOzvuCbmQ5vpwobJXP
-        Ff4EmnrQJj9O6rBg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id E3E5D13A96;
-        Mon, 26 Jul 2021 17:27:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id tAA/N2jw/mC2RAAAGKfGzw
-        (envelope-from <dwagner@suse.de>); Mon, 26 Jul 2021 17:27:04 +0000
-Date:   Mon, 26 Jul 2021 19:27:04 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Smart <james.smart@broadcom.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3 0/6] Handle update hardware queues and queue freeze
- more carefully
-Message-ID: <20210726172704.j6cbv2qmox2cl2dz@beryllium.lan>
-References: <20210720124353.127959-1-dwagner@suse.de>
- <20210720124800.i2lo3hal7kjfc7rk@beryllium.lan>
+        Mon, 26 Jul 2021 12:49:10 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299E4C061798;
+        Mon, 26 Jul 2021 10:29:21 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id r17so16847690lfe.2;
+        Mon, 26 Jul 2021 10:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ndKq+LGDON/UckbBHbtSzNl8tCW9FVvB6He4yfXkxNE=;
+        b=YsxgKSTD9vroLSiRzpOsnVo3wM9+Mx0r4LrK++z5i3tX+lM7nSsj5Z3vsu6lZxUvv/
+         q+xT9GVTvJ8qnaUaHTHR9g1R1eLE+a/ZnPG68w4HACOceDhJWSbe6IQxsKcW32DGipNR
+         r4BcKujtBuXwYE1dxVHwghud5C0WMHrRWbcXegseNXHbq8bknb3PQjmrKn/rx9CjeBEw
+         5hBtqmAmvHy5NlRd7QLMdKGvtxm0f4jWLqdqlKKC1r/l30/CKU7m6T8ocVftlySQCOPE
+         LpU2SDZZTXzSyC5ZFssi5kS6O+ay9760WSMW+PxjlQr76QXacRdl9/fjb8pkNe+FJbsr
+         FhvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ndKq+LGDON/UckbBHbtSzNl8tCW9FVvB6He4yfXkxNE=;
+        b=V7PA48pEjicKKMDDcKBhfsz0SlHsOv7OhSBphF5z4iMnt6uY5w6ciDScAB/O2mF5wf
+         TV5nz/qVVOYRFcty6oR4V9YbMsmyD7/RZSvOKG6uaJjLEd4YzsJC021aWrYRxp7/38LP
+         DyYUHoBJlLfm/lgwOhJ0JhL9IsVlIPY0nL6c7cSF+jWKShLfsIVELytdn5fwnMnS66z6
+         +RBGguWvrg15hfrCTyZjr9dioSMaajKDFZAnbndvgc+MKLcTDmHTZBvFHEA8CKt0kyTC
+         ZWlp4hsCgBV8TqMfbAthkMENKbR3jV7NNb7OrZRDhHKp3GkrQw1auNVRLBDQYP6CC8MK
+         IvAw==
+X-Gm-Message-State: AOAM533CR6RkTlTH41JpjtdNXS4pHRPOYUaJp42sp7/Q+4puTI5RnJoy
+        Sc6rjiF4btVljLkOACkT08M=
+X-Google-Smtp-Source: ABdhPJynhVi5xWfz4QxD21z+iK+btrTFhGSenshuxDRY6e4XjYz3lHMpwXa17bNhLBrSf8tCpQkqbg==
+X-Received: by 2002:ac2:4c97:: with SMTP id d23mr13427935lfl.249.1627320559562;
+        Mon, 26 Jul 2021 10:29:19 -0700 (PDT)
+Received: from localhost.localdomain ([185.215.60.94])
+        by smtp.gmail.com with ESMTPSA id d8sm57071lfq.138.2021.07.26.10.29.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 10:29:19 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 20:29:16 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        socketcan@hartkopp.net, mailhol.vincent@wanadoo.fr,
+        b.krumboeck@gmail.com, haas@ems-wuensche.com, Stefan.Maetje@esd.eu,
+        matthias.fuchs@esd.eu
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] can: fix same memory leaks in can drivers
+Message-ID: <20210726202916.5945e3d9@gmail.com>
+In-Reply-To: <cover.1627311383.git.paskripkin@gmail.com>
+References: <cover.1627311383.git.paskripkin@gmail.com>
+X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210720124800.i2lo3hal7kjfc7rk@beryllium.lan>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 02:48:00PM +0200, Daniel Wagner wrote:
-> On Tue, Jul 20, 2021 at 02:43:47PM +0200, Daniel Wagner wrote:
-> > v1:
-> >  - https://lore.kernel.org/linux-nvme/20210625101649.49296-1-dwagner@suse.de/
-> > v2:
-> >  - https://lore.kernel.org/linux-nvme/20210708092755.15660-1-dwagner@suse.de/
-> >  - reviewed tags collected
-> >  - added 'update hardware queues' for all transport
-> >  - added fix for fc hanger in nvme_wait_freeze_timeout
-> > v3:
-> >  - dropped 'nvme-fc: Freeze queues before destroying them'
-> >  - added James' two patches
-> 
-> Forgot to add Hannes' reviewed tag. Sorry!
+On Mon, 26 Jul 2021 18:29:38 +0300
+Pavel Skripkin <paskripkin@gmail.com> wrote:
 
-FTR, I've tested the 'prior_ioq_cnt != nr_io_queues' case. In this
-scenario the series works. Though in the case of 'prior_ioq_cnt ==
-nr_io_queues' I see hanging I/Os.
+> Hi, Marc and can drivers maintainers/reviewers!
+> 
+
+I reread this I found out, that I missed logic here.
+
+I mean:
+
+> A long time ago syzbot reported memory leak in mcba_usb can
+> driver[1]. It was using strange pattern for allocating coherent
+> buffers, which was leading to memory leaks.
+
+I fixed this wrong pattern in mcba_usb driver and 
+
+> Yesterday I got a report,
+> that mcba_usb stopped working since my commit. I came up with quick
+> fix and all started working well.
+> 
+> There are at least 3 more drivers with this pattern, I decided to fix
+> leaks in them too, since code is actually the same (I guess, driver
+> authors just copy pasted code parts). Each of following patches is
+> combination of 91c02557174b ("can: mcba_usb: fix memory leak in
+> mcba_usb") and my yesterday fix [2].
+> 
+> 
+> Dear maintainers/reviewers, if You have one of these hardware pieces,
+> please, test these patches and report any errors you will find.
+> 
+> [1]
+> https://syzkaller.appspot.com/bug?id=c94c1c23e829d5ac97995d51219f0c5a0cd1fa54
+> [2]
+> https://lore.kernel.org/netdev/20210725103630.23864-1-paskripkin@gmail.com/
+> 
+> 
+> With regards,
+> Pavel Skripkin
+> 
+> Pavel Skripkin (3):
+>   can: usb_8dev: fix memory leak
+>   can: ems_usb: fix memory leak
+>   can: esd_usb2: fix memory leak
+> 
+>  drivers/net/can/usb/ems_usb.c  | 14 +++++++++++++-
+>  drivers/net/can/usb/esd_usb2.c | 16 +++++++++++++++-
+>  drivers/net/can/usb/usb_8dev.c | 15 +++++++++++++--
+>  3 files changed, 41 insertions(+), 4 deletions(-)
+> 
+
+
+
+With regards,
+Pavel Skripkin
