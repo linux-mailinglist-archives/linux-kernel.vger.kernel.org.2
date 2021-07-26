@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890173D609D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA463D62E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237518AbhGZPX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:23:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55526 "EHLO mail.kernel.org"
+        id S238169AbhGZPkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:40:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237492AbhGZPPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42E7860F42;
-        Mon, 26 Jul 2021 15:56:19 +0000 (UTC)
+        id S237467AbhGZPXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB7FF60EB2;
+        Mon, 26 Jul 2021 16:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314981;
-        bh=WiCRf5DJ73hqLGq5e37eaQKkkD1kuiAjVY7yrmfLq+s=;
+        s=korg; t=1627315420;
+        bh=1o2MyKCtsRusEYEXJMA1hrjflzIlkJ3fM5R5DHhhJZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r17esQGXB9F37OWH+QFFe+X+vfXQloAhBQtJnkFjsGGQW+nOaRFlB/5ahzMWinrLT
-         Euk2qQsiw1rwV4afZFIfmJ8brm61WiAbtGGT7/eaeNO/DO+k41GGY+80+u45O+X31j
-         BFrxwI1T6gNFahB/wkkTkeP/uDn0icoIvjT7h2Cc=
+        b=BNpH1Cne+JyTQUMmaaf4yxD1SQEXpd319siI1WtEPuZk7pNwBin9UGRdxiBYn4AfU
+         TTDVKlQhrdGZexPrc8mPE/tbMhWpBqvAC8KZR3T0MfZbqeYvivuD0qYrXDwtCuruiz
+         FUdwyYDgKWWWzjBGb9jV2EynBJYt0vw0NC7GaAuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 041/108] net: fix uninit-value in caif_seqpkt_sendmsg
+Subject: [PATCH 5.10 089/167] spi: spi-bcm2835: Fix deadlock
 Date:   Mon, 26 Jul 2021 17:38:42 +0200
-Message-Id: <20210726153833.009641473@linuxfoundation.org>
+Message-Id: <20210726153842.388132310@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +42,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-[ Upstream commit 991e634360f2622a683b48dfe44fe6d9cb765a09 ]
+[ Upstream commit c45c1e82bba130db4f19d9dbc1deefcf4ea994ed ]
 
-When nr_segs equal to zero in iovec_from_user, the object
-msg->msg_iter.iov is uninit stack memory in caif_seqpkt_sendmsg
-which is defined in ___sys_sendmsg. So we cann't just judge
-msg->msg_iter.iov->base directlly. We can use nr_segs to judge
-msg in caif_seqpkt_sendmsg whether has data buffers.
+The bcm2835_spi_transfer_one function can create a deadlock
+if it is called while another thread already has the
+CCF lock.
 
-=====================================================
-BUG: KMSAN: uninit-value in caif_seqpkt_sendmsg+0x693/0xf60 net/caif/caif_socket.c:542
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1c9/0x220 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- caif_seqpkt_sendmsg+0x693/0xf60 net/caif/caif_socket.c:542
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2343
- ___sys_sendmsg net/socket.c:2397 [inline]
- __sys_sendmmsg+0x808/0xc90 net/socket.c:2480
- __compat_sys_sendmmsg net/compat.c:656 [inline]
-
-Reported-by: syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=1ace85e8fc9b0d5a45c08c2656c3e91762daa9b8
-Fixes: bece7b2398d0 ("caif: Rewritten socket implementation")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
+Fixes: f8043872e796 ("spi: add driver for BCM2835")
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20210716210245.13240-2-alexandru.tachici@analog.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/caif/caif_socket.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/spi/spi-bcm2835.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/net/caif/caif_socket.c b/net/caif/caif_socket.c
-index ef14da50a981..8fa98c62c4fc 100644
---- a/net/caif/caif_socket.c
-+++ b/net/caif/caif_socket.c
-@@ -539,7 +539,8 @@ static int caif_seqpkt_sendmsg(struct socket *sock, struct msghdr *msg,
- 		goto err;
+diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
+index 29ee555a42f9..33c32e931767 100644
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -84,6 +84,7 @@ MODULE_PARM_DESC(polling_limit_us,
+  * struct bcm2835_spi - BCM2835 SPI controller
+  * @regs: base address of register map
+  * @clk: core clock, divided to calculate serial clock
++ * @clk_hz: core clock cached speed
+  * @irq: interrupt, signals TX FIFO empty or RX FIFO ¾ full
+  * @tfr: SPI transfer currently processed
+  * @ctlr: SPI controller reverse lookup
+@@ -124,6 +125,7 @@ MODULE_PARM_DESC(polling_limit_us,
+ struct bcm2835_spi {
+ 	void __iomem *regs;
+ 	struct clk *clk;
++	unsigned long clk_hz;
+ 	int irq;
+ 	struct spi_transfer *tfr;
+ 	struct spi_controller *ctlr;
+@@ -1082,19 +1084,18 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
+ 				    struct spi_transfer *tfr)
+ {
+ 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
+-	unsigned long spi_hz, clk_hz, cdiv;
++	unsigned long spi_hz, cdiv;
+ 	unsigned long hz_per_byte, byte_limit;
+ 	u32 cs = bs->prepare_cs[spi->chip_select];
  
- 	ret = -EINVAL;
--	if (unlikely(msg->msg_iter.iov->iov_base == NULL))
-+	if (unlikely(msg->msg_iter.nr_segs == 0) ||
-+	    unlikely(msg->msg_iter.iov->iov_base == NULL))
- 		goto err;
- 	noblock = msg->msg_flags & MSG_DONTWAIT;
+ 	/* set clock */
+ 	spi_hz = tfr->speed_hz;
+-	clk_hz = clk_get_rate(bs->clk);
  
+-	if (spi_hz >= clk_hz / 2) {
++	if (spi_hz >= bs->clk_hz / 2) {
+ 		cdiv = 2; /* clk_hz/2 is the fastest we can go */
+ 	} else if (spi_hz) {
+ 		/* CDIV must be a multiple of two */
+-		cdiv = DIV_ROUND_UP(clk_hz, spi_hz);
++		cdiv = DIV_ROUND_UP(bs->clk_hz, spi_hz);
+ 		cdiv += (cdiv % 2);
+ 
+ 		if (cdiv >= 65536)
+@@ -1102,7 +1103,7 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
+ 	} else {
+ 		cdiv = 0; /* 0 is the slowest we can go */
+ 	}
+-	tfr->effective_speed_hz = cdiv ? (clk_hz / cdiv) : (clk_hz / 65536);
++	tfr->effective_speed_hz = cdiv ? (bs->clk_hz / cdiv) : (bs->clk_hz / 65536);
+ 	bcm2835_wr(bs, BCM2835_SPI_CLK, cdiv);
+ 
+ 	/* handle all the 3-wire mode */
+@@ -1318,6 +1319,7 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
+ 		return bs->irq ? bs->irq : -ENODEV;
+ 
+ 	clk_prepare_enable(bs->clk);
++	bs->clk_hz = clk_get_rate(bs->clk);
+ 
+ 	err = bcm2835_dma_init(ctlr, &pdev->dev, bs);
+ 	if (err)
 -- 
 2.30.2
 
