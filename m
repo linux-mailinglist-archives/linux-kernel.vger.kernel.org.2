@@ -2,108 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BD03D659B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14B63D659A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242375AbhGZQnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
+        id S240407AbhGZQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232941AbhGZQnX (ORCPT
+        with ESMTP id S238032AbhGZQnW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:43:23 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC213C0619E0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:56:55 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id t128so11686220oig.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:56:55 -0700 (PDT)
+        Mon, 26 Jul 2021 12:43:22 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41E4C0619E1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:57:28 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id u3so16654521lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ug9Slp+aolg7bj7KGTexduQ8AvEecT+aSkkQAF+jKqE=;
-        b=gbdhJhRaCXa0Lic9E5X3tAblAG9tIGlEP8VOLug+LYsyOZ9R/2pCDzEDel8sCwicjZ
-         YocxR3Y69pWXQaFgTxoYez9P1bAlUrl2V3Hj/vJPUF4rBg/3vjaI6d1fZ8XzxXl4GvD+
-         pGv0dNhrpePgC8OVleXgNuiRdzIGW3AFXbBao=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4CjU2RsYvZ9x+m1FosmYIR8QGbXd8bRq67CFAxCYneo=;
+        b=KE/UnX3ML3Xw/5e0wwlWbS/xgPSyv+N4V3ynbBhw+BEqgokKCdDHOAQhI2EC4em4FI
+         cF66Zk05KBdsDmPSV049y02ENoBdBIMLG4JuUL2hXcmObOgnJ+De8vRbYqHytF8iNP4t
+         sc/n9LmbTDHqiyzZI4oM96x5N3DbQsNV71w1NIcbajXRmFKqfDUx/qyexNcykqgooXDb
+         VWGTrDPpa96AfCN0BPcHQo1ZHj7ILA7C8IZgGhGDMDPa/PAjuJIAAzwEwgYZDhJmYbQf
+         QrZsjEpOLvAXRhLTggf9OOBrPFb+jgt+OJKMdnoh81XeQppUTCOTYevElzQAK8t3lWnx
+         MeXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ug9Slp+aolg7bj7KGTexduQ8AvEecT+aSkkQAF+jKqE=;
-        b=KfCH9FZFRZn1n4Zxa838mKtJc8AuMJhQpkoKSZ/nNH1X/AgInUNJY+5gJpR28+7fCo
-         rQzJnj3U2vr6P7SHoa7ShNKox4IO9N35Jtg8agNWUzJ/1vxXVf4s3fzxEbRiq04SS0Hm
-         iHRypKcXwDAnO3qDla+AMnpBpUmhMW52wrFDYIYfNBstMXuxxGJ1K1nrk9yGHyS3NopT
-         DJGXRVPjKPTJGVcAMAj5a40yEfb/qVC3xGMh3Ff7tbj2EyVluSENoD+ROuQuOozh5e4J
-         DsNDbU3/iL9GKLp90v6Qn+K85gUjXT0FFWslTMjTqfFokC1V4cnbND/IfCSYkIQ6NhmU
-         Z6Bg==
-X-Gm-Message-State: AOAM533HtmtuhKKwZh97by/ZwkBAHVp6OXNwXe3kh6nExciUAkmA/vAQ
-        tx6JPusDcKfMT0ZSL5SxaDSoow==
-X-Google-Smtp-Source: ABdhPJzCRRlIfJ6V/rG85JvFFYFRB0C6qZQ4VwVMB4X0WLPrxFy6OvIcOiP9Pmmvecga7/8gNwpNCA==
-X-Received: by 2002:aca:1719:: with SMTP id j25mr17529366oii.36.1627318615164;
-        Mon, 26 Jul 2021 09:56:55 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c64sm81996oif.30.2021.07.26.09.56.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 09:56:54 -0700 (PDT)
-Subject: Re: [PATCH v7 1/2] firmware_loader: use -ETIMEDOUT instead of -EAGAIN
- in fw_load_sysfs_fallback
-To:     Anirudh Rayabharam <mail@anirudhrb.com>, mcgrof@kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210724121134.6364-1-mail@anirudhrb.com>
- <20210724121134.6364-2-mail@anirudhrb.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7f325bb2-c18c-38e1-e6e3-8f6a89ea17dc@linuxfoundation.org>
-Date:   Mon, 26 Jul 2021 10:56:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4CjU2RsYvZ9x+m1FosmYIR8QGbXd8bRq67CFAxCYneo=;
+        b=kssacnRG+f5LLQQRVhJesll3Re69OTwetNUrkl2MV4WQIsbeBwGuSwszntf3nGs6XU
+         AitN75qqttz1X5CQkumDbOIHd2iKWnR+EFEloCDEmtliBevDTdA1xsTPlmV1Cs5ScocF
+         xcqdLyj7dCk+By5AJvyVnCi+2GGMJsHof1P7YmDkzn7ChxbN2HYHgt8vR1cj6jiN1eV6
+         R6eh1jNoLIb00kHRBjB7vAZUYfYP0d3MXA3tT5//Tvgcfj6Z1/bhZDt6vitjiZ5eFT8f
+         rEOZS0dEAmj6qB0A06wVUQoK2HcxhTk1JsOZGnPqTqJ+c2+99pRytRmK1FwJXlxjGHN/
+         BC4w==
+X-Gm-Message-State: AOAM5316Gk8i9lNRNL6G+g953aVj/Za6sWodyXlo8hLO+JkECgNgCE15
+        6PisixMwjqgP/bmY1PqXVCOSSGX749OETt7/J9rYoQ==
+X-Google-Smtp-Source: ABdhPJx+xXmD0VZj3AsK/ylqlmnDPoW3CElhkDtGeuoJOlJPgXEiMsg3GLTgBT867f0FFvwX6DilkeMJQOIR9Ca4ngc=
+X-Received: by 2002:a19:771c:: with SMTP id s28mr13309197lfc.358.1627318646800;
+ Mon, 26 Jul 2021 09:57:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210724121134.6364-2-mail@anirudhrb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CALvZod5-XtaeawPtEgnp9xwouy0KfuDbpykB6Z3b+8YJyCrLVA@mail.gmail.com>
+ <ed4448b0-4970-616f-7368-ef9dd3cb628d@virtuozzo.com>
+In-Reply-To: <ed4448b0-4970-616f-7368-ef9dd3cb628d@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 26 Jul 2021 09:57:15 -0700
+Message-ID: <CALvZod5Vj-_S2gRYpGgwhiCysXuA8z1WEV2ttP0t3Tdy2MU7KQ@mail.gmail.com>
+Subject: Re: [PATCH] memcg: replace in_interrupt() by !in_task() in active_memcg()
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/21 6:11 AM, Anirudh Rayabharam wrote:
-> The only motivation for using -EAGAIN in commit 0542ad88fbdd81bb
-> ("firmware loader: Fix _request_firmware_load() return val for fw load
-> abort") was to distinguish the error from -ENOMEM, and so there is no
-> real reason in keeping it. -EAGAIN is typically used to tell the
-> userspace to try something again and in this case re-using the sysfs
-> loading interface cannot be retried when a timeout happens, so the
-> return value is also bogus.
-> 
-> -ETIMEDOUT is received when the wait times out and returning that
-> is much more telling of what the reason for the failure was. So, just
-> propagate that instead of returning -EAGAIN.
-> 
-> Suggested-by: Luis Chamberlain <mcgrof@kernel.org>
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->   drivers/base/firmware_loader/fallback.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-> index 91899d185e31..1a48be0a030e 100644
-> --- a/drivers/base/firmware_loader/fallback.c
-> +++ b/drivers/base/firmware_loader/fallback.c
-> @@ -535,8 +535,6 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
->   	if (fw_state_is_aborted(fw_priv)) {
->   		if (retval == -ERESTARTSYS)
->   			retval = -EINTR;
-> -		else
-> -			retval = -EAGAIN;
->   	} else if (fw_priv->is_paged_buf && !fw_priv->data)
->   		retval = -ENOMEM;
->   
-> 
+On Mon, Jul 26, 2021 at 9:53 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+>
+> set_active_memcg() uses in_interrupt() check to select proper storage for
+> cgroup: pointer on task struct or per-cpu pointer.
+>
+> It isn't fully correct: obsoleted in_interrupt() includes tasks with disabled BH.
+> It's better to use '!in_task()' instead.
+>
+> Link: https://lkml.org/lkml/2021/7/26/487
+> Fixes: 37d5985c003d ("mm: kmem: prepare remote memcg charging infra for interrupt contexts")
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
+Thanks.
 
-thanks,
--- Shuah
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
