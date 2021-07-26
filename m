@@ -2,108 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F074E3D66C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB05C3D66CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232390AbhGZRu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:50:56 -0400
-Received: from relmlor2.renesas.com ([210.160.252.172]:15692 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232176AbhGZRuw (ORCPT
+        id S231646AbhGZSAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 14:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhGZSAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:50:52 -0400
-X-IronPort-AV: E=Sophos;i="5.84,270,1620658800"; 
-   d="scan'208";a="88770566"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 27 Jul 2021 03:31:20 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 8373740062BD;
-        Tue, 27 Jul 2021 03:31:17 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v3 3/3] arm64: dts: renesas: r9a07g044: Add ADC node
-Date:   Mon, 26 Jul 2021 19:28:50 +0100
-Message-Id: <20210726182850.14328-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Mon, 26 Jul 2021 14:00:53 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306F7C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:41:22 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id o13-20020a17090a9f8db0290176ab79fd33so146600pjp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=iEmiK8Z2pf1Smw+rofDrwaZXK2WpNJEBwftoW1LRiJo=;
+        b=FYQIip9d4viByvDmbXAF3NaBRNWa3pbSBKRHDqmiOKEXS/NX2SxDWrm/ptdtS4h7UG
+         79WMEe1q7yHzPmMz/hHisngDjdF3IOjk68nffGqGyVRopv3NykusOYdU+mq1HZ4XHuQ/
+         K49l6ZRa/kISjgt0DiwDu6SYaomjmzzXiOc+ZVRJuLb3dRZlPSsu4V9PSYNlID+50g1R
+         a1fJq0D8DUhXAn1vaGxI4OgqrJqbsuibpsKgk+vPfA5dcMiYKNV5e2VWTue4a1Pqo/Gp
+         Dm/bWehxUQ6vQwYPpvqJ5qJHloPNGZ6qFhIZvQezoQ2z9JpDak6SZgLYcm4GszUk5bmB
+         RKCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=iEmiK8Z2pf1Smw+rofDrwaZXK2WpNJEBwftoW1LRiJo=;
+        b=fpLRcnN5DYEsDKrXiWMVi2eS5sJ7m5JF3ki7Jl8fTPz+ekVl/h0xr6rEE0/1dG/CoZ
+         zSRkeZdp1ztYh0nd6L54UeJFfX3YNTzOwpuMoms2giw+4kf3U6PeULzHfS9xq3aazCBE
+         FsXO+dPv6yjVaUwwv59Cm/yiVjWHMbUIlVq3YR+d1eQPH+SluFy5nLayVFY0GFhGEQUj
+         GbfWAOIvpWu9jlFCFVbLtCKUefw/nhLZzqykoM+kRhDBfKLxldft3t52CReo4vkxWuds
+         tUqvR9rUex7bRaFlXkbidvyNXccxbgi7bk4kET8fNAUm0NUmLD5d590Y9GTXHkfL/vGc
+         nf2Q==
+X-Gm-Message-State: AOAM532QYTi7NtndjlaeC2qOSNeUWeam0TMTeX2jeiLIukkDtF5UaUDy
+        n8qmuCyFTsswnRG9+iToOyUelgCkcvONvJuJ
+X-Google-Smtp-Source: ABdhPJwhyw2nDMfdUBXFrDmSb5jH2sLfPxtEUlcwhkFsZvtG0pnBJ5f7eIcUAw0aasQ0PV8e/dbbCXMyJSv055Nd
+X-Received: from nehir.kir.corp.google.com ([2620:15c:29:204:e222:115f:790c:cd0f])
+ (user=erdemaktas job=sendgmr) by 2002:a17:90a:7789:: with SMTP id
+ v9mr19208144pjk.159.1627324881416; Mon, 26 Jul 2021 11:41:21 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 11:37:53 -0700
+Message-Id: <20210726183816.1343022-1-erdemaktas@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
+Subject: [RFC PATCH 0/4] TDX KVM selftests
+From:   Erdem Aktas <erdemaktas@google.com>
+To:     linux-kselftest@vger.kernel.org
+Cc:     erdemaktas@google.com, Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Zhenzhong Duan <zhenzhong.duan@intel.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Yanan Wang <wangyanan55@huawei.com>,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        David Matlack <dmatlack@google.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ADC node to R9A07G044 (RZ/G2L) SoC DTSI.
+TDX stands for Trust Domain Extensions which isolates VMs from the
+virtual-machine manager (VMM)/hypervisor and any other software on the
+platform.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- arch/arm64/boot/dts/renesas/r9a07g044.dtsi | 42 ++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+Intel has recently submitted a set of RFC patches for KVM support for
+TDX and more information can be found on the latest TDX Support 
+Patches: https://lkml.org/lkml/2021/7/2/558
 
-diff --git a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-index 9a7489dc70d1..28aafa34d583 100644
---- a/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r9a07g044.dtsi
-@@ -169,6 +169,48 @@
- 			status = "disabled";
- 		};
- 
-+		adc: adc@10059000 {
-+			compatible = "renesas,r9a07g044-adc", "renesas,rzg2l-adc";
-+			reg = <0 0x10059000 0 0x400>;
-+			interrupts = <GIC_SPI 347  IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&cpg CPG_MOD R9A07G044_ADC_ADCLK>,
-+				 <&cpg CPG_MOD R9A07G044_ADC_PCLK>;
-+			clock-names = "adclk", "pclk";
-+			resets = <&cpg R9A07G044_ADC_PRESETN>,
-+				 <&cpg R9A07G044_ADC_ADRST_N>;
-+			reset-names = "presetn", "adrst-n";
-+			power-domains = <&cpg>;
-+			status = "disabled";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			channel@0 {
-+				reg = <0>;
-+			};
-+			channel@1 {
-+				reg = <1>;
-+			};
-+			channel@2 {
-+				reg = <2>;
-+			};
-+			channel@3 {
-+				reg = <3>;
-+			};
-+			channel@4 {
-+				reg = <4>;
-+			};
-+			channel@5 {
-+				reg = <5>;
-+			};
-+			channel@6 {
-+				reg = <6>;
-+			};
-+			channel@7 {
-+				reg = <7>;
-+			};
-+		};
-+
- 		cpg: clock-controller@11010000 {
- 			compatible = "renesas,r9a07g044-cpg";
- 			reg = <0 0x11010000 0 0x10000>;
+Due to the nature of the confidential computing environment that TDX
+provides, it is very difficult to verify/test the KVM support. TDX
+requires UEFI and the guest kernel to be enlightened which are all under
+development.
+
+We are working on a set of selftests to close this gap and be able to
+verify the KVM functionality to support TDX lifecycle and GHCI [1]
+interface.
+
+We are looking for any feedback on:
+- Patch series itself
+- Any suggestion on how we should approach testing TDX functionality.
+Does selftests seems reasonable or should we switch to using KVM
+unit tests. I would be happy to get some perspective on how KVM unit
+tests can help us more.
+- Any test case or scenario that we should add.
+- Anything else I have not thought of yet.
+
+Current patch series provide the following capabilities:
+
+- Provide helper functions to create a TD (Trusted Domain) using the KVM
+  ioctls
+- Provide helper functions to create a guest image that can include any
+  testing code
+- Provide helper functions and wrapper functions to write testing code
+  using GHCI interface
+- Add a test case that verifies TDX life cycle 
+- Add a test case that verifies TDX GHCI port IO 
+
+TODOs:
+- Use existing function to create page tables dynamically 
+  (ie __virt_pg_map())
+- Remove arbitrary defined magic numbers for data structure offsets
+- Add TDVMCALL for error reporting
+- Add additional test cases as some listed below
+- Add #VE handlers to help testing more complicated test cases
+
+Other test cases that we are planning to add:
+(with credit to sagis@google.com)
+
+VM call interface        Input                        Output                Result
+GetTdVmCallInfo          R12=0                        None                VMCALL_SUCCESS
+MapGPA                   Map private page (GPA.S=0)                       VMCALL_SUCCESS
+MapGPA                   Map shared page (GPA.S=1)                        VMCALL_SUCCESS
+MapGPA                   Map already private page as private              VMCALL_INVALID_OPERAND
+MapGPA                   Map already shared page as shared                VMCALL_INVALID_OPERAND
+GetQuote                        
+ReportFatalError                        
+SetupEventNotifyInterrupt   Valid interrupt value (32:255)                 VMCALL_SUCCESS
+SetupEventNotifyInterrupt   Invalid value (>255)                          VMCALL_INVALID_OPERAND
+Instruction.CPUID        R12(EAX)=1, R13(ECX)=0       EBX[8:15]=0x8        
+                                                      EBX[16:23]=X        
+                                                      EBX[24:31]=vcpu_id        
+                                                      ECX[0]=1        
+                                                      ECX[12]=Y        
+Instruction.CPUID       R12(EAX)=1, R13(ECX)=4                            VMCALL_INVALID_OPERAND
+VE.RequestMMIO                        
+Instruction.HLT                                                           VMCALL_SUCCESS
+Instruction.IO          Read/Write 1/2/4 bytes                            VMCALL_SUCCESS
+Instruction.IO          Read/Write 3 bytes                                VMCALL_INVALID_OPERAND
+Instruction.RDMSR       Accessible register           R11=msr_value       VMCALL_SUCCESS
+                        Inaccessible register                             VMCALL_INVALID_OPERAND
+Instruction.RDMSR       Accessible register                               VMCALL_SUCCESS
+                        Inaccessible register                             VMCALL_INVALID_OPERAND
+INSTRUCTION.PCONFIG                        
+
+[1] Intel TDX Guest-Hypervisor Communication Interface
+    https://software.intel.com/content/dam/develop/external/us/en/documents/intel-tdx-guest-hypervisor-communication-interface.pdf
+
+
+Erdem Aktas (4):
+  KVM: selftests: Add support for creating non-default type VMs
+  KVM: selftest: Add helper functions to create TDX VMs
+  KVM: selftest: Adding TDX life cycle test.
+  KVM: selftest: Adding test case for TDX port IO
+
+ tools/testing/selftests/kvm/Makefile          |   6 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |   1 +
+ .../selftests/kvm/include/x86_64/processor.h  |   5 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  29 +-
+ .../selftests/kvm/lib/x86_64/processor.c      |  23 ++
+ tools/testing/selftests/kvm/lib/x86_64/tdx.h  | 220 ++++++++++++
+ .../selftests/kvm/lib/x86_64/tdx_lib.c        | 314 ++++++++++++++++++
+ .../selftests/kvm/x86_64/tdx_vm_tests.c       | 209 ++++++++++++
+ 8 files changed, 800 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx.h
+ create mode 100644 tools/testing/selftests/kvm/lib/x86_64/tdx_lib.c
+ create mode 100644 tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
+
 -- 
-2.17.1
+2.32.0.432.gabb21c7263-goog
 
