@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EF33D640E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A63F3D6419
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239733AbhGZPyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49710 "EHLO mail.kernel.org"
+        id S239927AbhGZPyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233598AbhGZPdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:33:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0ACC60EB2;
-        Mon, 26 Jul 2021 16:13:28 +0000 (UTC)
+        id S234347AbhGZPd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:33:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4CA860C40;
+        Mon, 26 Jul 2021 16:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316009;
-        bh=a2wVEmY0/pxz5FjO1F1qiBH1w4EM2D+bJSTs8C5JDCQ=;
+        s=korg; t=1627316037;
+        bh=f82bDlEeIUSABEV8kktg9vUHqX/gf7OJUHxJHqcjZTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eITzjgOtq3mLMX3rKvCwhfYfBkseJQZ6IDdyGUU+x7QyME4XCp5kp93DsDyj0/JEU
-         AS+x4sH+oS2l4nerdsgbSUOllFQN5uvZUau0y3VwAvTfn4BC+3tTv8s226pbZJHtt6
-         hFrNhaCnbWytiYrEiYnelnVwORM+mt28nwYukq8g=
+        b=xY9H6w/lXijkRSJ46FUF14PB+PGVTB1BvyeepcBmU3f9MDTdDz7DR8Lb0fag31ssB
+         uQsTdrJQWWBCo32K5dLlp0wq/Xe+oclpHiOpitboyKXGmiG2vjeBzVqqZQFBDssJpm
+         frYRFt5UG+9V6V/QUZMOMjifJJGOG8Hg5tP4r108=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Sujit Kautkar <sujitka@chromium.org>,
-        Zubin Mithra <zsm@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.13 145/223] mmc: core: Dont allocate IDA for OF aliases
-Date:   Mon, 26 Jul 2021 17:38:57 +0200
-Message-Id: <20210726153850.974961745@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.13 146/223] s390/ftrace: fix ftrace_update_ftrace_func implementation
+Date:   Mon, 26 Jul 2021 17:38:58 +0200
+Message-Id: <20210726153851.008894193@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -43,94 +39,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Boyd <swboyd@chromium.org>
+From: Vasily Gorbik <gor@linux.ibm.com>
 
-commit 10252bae863d09b9648bed2e035572d207200ca1 upstream.
+commit f8c2602733c953ed7a16e060640b8e96f9d94b9b upstream.
 
-There's a chance that the IDA allocated in mmc_alloc_host() is not freed
-for some time because it's freed as part of a class' release function
-(see mmc_host_classdev_release() where the IDA is freed). If another
-thread is holding a reference to the class, then only once all balancing
-device_put() calls (in turn calling kobject_put()) have been made will
-the IDA be released and usable again.
+s390 enforces DYNAMIC_FTRACE if FUNCTION_TRACER is selected.
+At the same time implementation of ftrace_caller is not compliant with
+HAVE_DYNAMIC_FTRACE since it doesn't provide implementation of
+ftrace_update_ftrace_func() and calls ftrace_trace_function() directly.
 
-Normally this isn't a problem because the kobject is released before
-anything else that may want to use the same number tries to again, but
-with CONFIG_DEBUG_KOBJECT_RELEASE=y and OF aliases it becomes pretty
-easy to try to allocate an alias from the IDA twice while the first time
-it was allocated is still pending a call to ida_simple_remove(). It's
-also possible to trigger it by using CONFIG_DEBUG_KOBJECT_RELEASE and
-probe defering a driver at boot that calls mmc_alloc_host() before
-trying to get resources that may defer likes clks or regulators.
+The subtle difference is that during ftrace code patching ftrace
+replaces function tracer via ftrace_update_ftrace_func() and activates
+it back afterwards. Unexpected direct calls to ftrace_trace_function()
+during ftrace code patching leads to nullptr-dereferences when tracing
+is activated for one of functions which are used during code patching.
+Those function currently are:
+copy_from_kernel_nofault()
+copy_from_kernel_nofault_allowed()
+preempt_count_sub() [with debug_defconfig]
+preempt_count_add() [with debug_defconfig]
 
-Instead of allocating from the IDA in this scenario, let's just skip it
-if we know this is an OF alias. The number is already "claimed" and
-devices that aren't using OF aliases won't try to use the claimed
-numbers anyway (see mmc_first_nonreserved_index()). This should avoid
-any issues with mmc_alloc_host() returning failures from the
-ida_simple_get() in the case that we're using an OF alias.
+Corresponding KASAN report:
+ BUG: KASAN: nullptr-dereference in function_trace_call+0x316/0x3b0
+ Read of size 4 at addr 0000000000001e08 by task migration/0/15
 
-Cc: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Cc: Sujit Kautkar <sujitka@chromium.org>
-Reported-by: Zubin Mithra <zsm@chromium.org>
-Fixes: fa2d0aa96941 ("mmc: core: Allow setting slot index via device tree alias")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Link: https://lore.kernel.org/r/20210623075002.1746924-3-swboyd@chromium.org
+ CPU: 0 PID: 15 Comm: migration/0 Tainted: G B 5.13.0-41423-g08316af3644d
+ Hardware name: IBM 3906 M04 704 (LPAR)
+ Stopper: multi_cpu_stop+0x0/0x3e0 <- stop_machine_cpuslocked+0x1e4/0x218
+ Call Trace:
+  [<0000000001f77caa>] show_stack+0x16a/0x1d0
+  [<0000000001f8de42>] dump_stack+0x15a/0x1b0
+  [<0000000001f81d56>] print_address_description.constprop.0+0x66/0x2e0
+  [<000000000082b0ca>] kasan_report+0x152/0x1c0
+  [<00000000004cfd8e>] function_trace_call+0x316/0x3b0
+  [<0000000001fb7082>] ftrace_caller+0x7a/0x7e
+  [<00000000006bb3e6>] copy_from_kernel_nofault_allowed+0x6/0x10
+  [<00000000006bb42e>] copy_from_kernel_nofault+0x3e/0xd0
+  [<000000000014605c>] ftrace_make_call+0xb4/0x1f8
+  [<000000000047a1b4>] ftrace_replace_code+0x134/0x1d8
+  [<000000000047a6e0>] ftrace_modify_all_code+0x120/0x1d0
+  [<000000000047a7ec>] __ftrace_modify_code+0x5c/0x78
+  [<000000000042395c>] multi_cpu_stop+0x224/0x3e0
+  [<0000000000423212>] cpu_stopper_thread+0x33a/0x5a0
+  [<0000000000243ff2>] smpboot_thread_fn+0x302/0x708
+  [<00000000002329ea>] kthread+0x342/0x408
+  [<00000000001066b2>] __ret_from_fork+0x92/0xf0
+  [<0000000001fb57fa>] ret_from_fork+0xa/0x30
+
+ The buggy address belongs to the page:
+ page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1
+ flags: 0x1ffff00000001000(reserved|node=0|zone=0|lastcpupid=0x1ffff)
+ raw: 1ffff00000001000 0000040000000048 0000040000000048 0000000000000000
+ raw: 0000000000000000 0000000000000000 ffffffff00000001 0000000000000000
+ page dumped because: kasan: bad access detected
+
+ Memory state around the buggy address:
+  0000000000001d00: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
+  0000000000001d80: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
+ >0000000000001e00: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
+                       ^
+  0000000000001e80: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
+  0000000000001f00: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
+ ==================================================================
+
+To fix that introduce ftrace_func callback to be called from
+ftrace_caller and update it in ftrace_update_ftrace_func().
+
+Fixes: 4cc9bed034d1 ("[S390] cleanup ftrace backend functions")
 Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/core/host.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ arch/s390/include/asm/ftrace.h |    1 +
+ arch/s390/kernel/ftrace.c      |    2 ++
+ arch/s390/kernel/mcount.S      |    4 ++--
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/mmc/core/host.c
-+++ b/drivers/mmc/core/host.c
-@@ -75,7 +75,8 @@ static void mmc_host_classdev_release(st
+--- a/arch/s390/include/asm/ftrace.h
++++ b/arch/s390/include/asm/ftrace.h
+@@ -19,6 +19,7 @@ void ftrace_caller(void);
+ 
+ extern char ftrace_graph_caller_end;
+ extern unsigned long ftrace_plt;
++extern void *ftrace_func;
+ 
+ struct dyn_arch_ftrace { };
+ 
+--- a/arch/s390/kernel/ftrace.c
++++ b/arch/s390/kernel/ftrace.c
+@@ -40,6 +40,7 @@
+  * trampoline (ftrace_plt), which clobbers also r1.
+  */
+ 
++void *ftrace_func __read_mostly = ftrace_stub;
+ unsigned long ftrace_plt;
+ 
+ int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
+@@ -85,6 +86,7 @@ int ftrace_make_call(struct dyn_ftrace *
+ 
+ int ftrace_update_ftrace_func(ftrace_func_t func)
  {
- 	struct mmc_host *host = cls_dev_to_mmc_host(dev);
- 	wakeup_source_unregister(host->ws);
--	ida_simple_remove(&mmc_host_ida, host->index);
-+	if (of_alias_get_id(host->parent->of_node, "mmc") < 0)
-+		ida_simple_remove(&mmc_host_ida, host->index);
- 	kfree(host);
++	ftrace_func = func;
+ 	return 0;
  }
  
-@@ -499,7 +500,7 @@ static int mmc_first_nonreserved_index(v
-  */
- struct mmc_host *mmc_alloc_host(int extra, struct device *dev)
- {
--	int err;
-+	int index;
- 	struct mmc_host *host;
- 	int alias_id, min_idx, max_idx;
- 
-@@ -512,20 +513,19 @@ struct mmc_host *mmc_alloc_host(int extr
- 
- 	alias_id = of_alias_get_id(dev->of_node, "mmc");
- 	if (alias_id >= 0) {
--		min_idx = alias_id;
--		max_idx = alias_id + 1;
-+		index = alias_id;
- 	} else {
- 		min_idx = mmc_first_nonreserved_index();
- 		max_idx = 0;
--	}
- 
--	err = ida_simple_get(&mmc_host_ida, min_idx, max_idx, GFP_KERNEL);
--	if (err < 0) {
--		kfree(host);
--		return NULL;
-+		index = ida_simple_get(&mmc_host_ida, min_idx, max_idx, GFP_KERNEL);
-+		if (index < 0) {
-+			kfree(host);
-+			return NULL;
-+		}
- 	}
- 
--	host->index = err;
-+	host->index = index;
- 
- 	dev_set_name(&host->class_dev, "mmc%d", host->index);
- 	host->ws = wakeup_source_register(NULL, dev_name(&host->class_dev));
+--- a/arch/s390/kernel/mcount.S
++++ b/arch/s390/kernel/mcount.S
+@@ -59,13 +59,13 @@ ENTRY(ftrace_caller)
+ #ifdef CONFIG_HAVE_MARCH_Z196_FEATURES
+ 	aghik	%r2,%r0,-MCOUNT_INSN_SIZE
+ 	lgrl	%r4,function_trace_op
+-	lgrl	%r1,ftrace_trace_function
++	lgrl	%r1,ftrace_func
+ #else
+ 	lgr	%r2,%r0
+ 	aghi	%r2,-MCOUNT_INSN_SIZE
+ 	larl	%r4,function_trace_op
+ 	lg	%r4,0(%r4)
+-	larl	%r1,ftrace_trace_function
++	larl	%r1,ftrace_func
+ 	lg	%r1,0(%r1)
+ #endif
+ 	lgr	%r3,%r14
 
 
