@@ -2,301 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 617613D6843
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6174E3D6844
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhGZUBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 16:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbhGZUBh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 16:01:37 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141A3C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:42:06 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id y9so13589505iox.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9uZIAiuFQsOrPKj3XBPcuKVhqh1+WZxYtWuQk59qNoo=;
-        b=r9VLSS0oCo12RGsE9TcilglcA14P7alljtFVNn+WWu+dkFaWY+AdG7NdC1oNhdo1wl
-         H6uTfMk7w/mfAqhUjU1Noj4AJsek3bM6RSE4jVIqb/BUkJQa40vLfHUNjuMuMIf/26U6
-         QCDCKAsSVqiI5d4shD5MQaDGjMtHjnFNQUK0XWGBbPlQPRKGBP29p5C2IoJWVPygK7YL
-         Hjj2m/ApPVQMgk51uvVejWZjprkgGJUjszH4MBRdm0eheEnX8BgtYXecxirY3gIlUSbL
-         H3lmqIT4Pse/w3hTq2BpJBVkCJQ0PtAPupVAL3n9W92R+G7XaCrRXVFedU5JTSyymz37
-         VGGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9uZIAiuFQsOrPKj3XBPcuKVhqh1+WZxYtWuQk59qNoo=;
-        b=tMkiAJ7U13gQ1lPUit95benCSwVfx79ZSDIIoGveekARb2M/NfIff62lO1gmJeD5cP
-         8WreMdFc1TCVjDf5lZZcOkiRdvfBwkXHaAiviboofr5SMmcFXqHTI9zqQRKMzWIAtD9H
-         nI5pQ1bhCO44vmgdRn3b8pZz1m1Lbnkep75XkFHHtFZqFP1LSnIh6u6yhsmlLtLIYumP
-         CaTZfyHRijEckUDmpjdInF/p793wbtxuTso2dLd40B5lRgOMNzK19YXF7QKcpRHWtHfo
-         pTo+veOB/VIrGKi3WkvaH+GfOcIKZf5YobLIEGyQ4tM/z/AHkRnVJP57eo8x3kuuPptw
-         bRXw==
-X-Gm-Message-State: AOAM532xZCsUa/pFZ87U9+k7Bz8WlWNGmYg5Ij5BL9YUeET/JanS+khy
-        w9MgDIXhP2bUBkyG51/3p1wxQazC+HF8Q6Ib2Q5GKQ==
-X-Google-Smtp-Source: ABdhPJybag/IiotoFeOOVMsjIiDHhQFJ/JMY8FCcuVFu0X7Ekf7fsmvc/ijnbfWHZfGnBYejYDPCrRzDkC6iQXyWWDY=
-X-Received: by 2002:a05:6602:2424:: with SMTP id g4mr16432660iob.189.1627332125416;
- Mon, 26 Jul 2021 13:42:05 -0700 (PDT)
+        id S232788AbhGZUEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 16:04:37 -0400
+Received: from mail-am6eur05on2064.outbound.protection.outlook.com ([40.107.22.64]:7307
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232087AbhGZUEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 16:04:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bILiN3tyd3P7+26TFrIT4cG0xE7zikZf0Ny6CRLeKxurnqoy8FBu/7XyGW8AKM2hS18PRIMArntC3ApVdJYPEDfdzssPgsw4NK71hhjeJuUFs6+HazFTSRJEX4IgVQf9dRqLagRiqvPJPBgjteNyt1lX0LZsJeRc25CBmuvbQ5kxLbxf5I9MP98QF0DUW4dYxdkiA1hYT7eP7JZ9cupC4FIrRWbMn8CxZ+8OaQLgppJ57seF+5h0jhdzMGItI/h4VNCIwQtXhlJa0oEgM3SMe6AAMFRPAoY/22eNSAJJ1zZ6MyhSZb04rOQkcy3sMWq0U7Urn+jzmKhGXOBQr0CrNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qo5g1d9dZV6i3+adYh4WTRNJEn2bc1tSb9ejTpesMPw=;
+ b=RLKsjCseFDJDqxmSN9yv8NY9kZ0931KmNOyG5C2KNZ7D+tEUP1t7KWJKCHuYg3rqE+ZuPZbV6KbL3c97/9TMCYjc/QHTQdIw2aHj0WIFTwNsOBrqEuRiN79IDFV1SQo/33GPV8oWifJB+edWvYWGkjn66Vt5NY6brXMyoXMB4rnoyWoEIgy/Wuk3CjeX+NZ+56OAq+soha8/MSOJfnh53PQ+0gn3n5asSitri/POIUAx/zeQzVAht8ZR95GyXFb5Z0iUl5yhWrVanb9GpmJ5ZsmR+YC9mxrgzKZA5us72gZO9Im1xMz5VpGlozZwQay8zpwzucIZCJ6igPEwJQ+cjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Qo5g1d9dZV6i3+adYh4WTRNJEn2bc1tSb9ejTpesMPw=;
+ b=swR4TlsxXiFl4b0ETH1xRClxkUDFHiBgjcG9zz6/nk8Omy7GVGcL4jQyUEYK/ezqxfNnqpDPfMwbNRUyhiX3wK5XIz4On0rxaWcYT4wCace3g6LzwWwBATVxevJJbeaOaxDocuVhYfERyJaFwRj3+TMaFNunnJKchux0tcU5aGA=
+Received: from AS8PR04MB8946.eurprd04.prod.outlook.com (2603:10a6:20b:42d::18)
+ by AS8PR04MB8980.eurprd04.prod.outlook.com (2603:10a6:20b:42f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Mon, 26 Jul
+ 2021 20:44:58 +0000
+Received: from AS8PR04MB8946.eurprd04.prod.outlook.com
+ ([fe80::4d62:f78d:cea9:1ba6]) by AS8PR04MB8946.eurprd04.prod.outlook.com
+ ([fe80::4d62:f78d:cea9:1ba6%4]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
+ 20:44:58 +0000
+From:   Leo Li <leoyang.li@nxp.com>
+To:     Maxim Kochetkov <fido_max@inbox.ru>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "saravanak@google.com" <saravanak@google.com>,
+        Qiang Zhao <qiang.zhao@nxp.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: RE: [PATCH v3] soc: fsl: qe: convert QE interrupt controller to
+ platform_device
+Thread-Topic: [PATCH v3] soc: fsl: qe: convert QE interrupt controller to
+ platform_device
+Thread-Index: AQHXgd3qhhGq2JPGak+KUVia7LyFBqtVtp/g
+Date:   Mon, 26 Jul 2021 20:44:58 +0000
+Message-ID: <AS8PR04MB894679107E1AE2A899D46FA88FE89@AS8PR04MB8946.eurprd04.prod.outlook.com>
+References: <20210726052217.13558-1-fido_max@inbox.ru>
+In-Reply-To: <20210726052217.13558-1-fido_max@inbox.ru>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: inbox.ru; dkim=none (message not signed)
+ header.d=none;inbox.ru; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 471cc727-7f58-4537-cc2e-08d950763bc2
+x-ms-traffictypediagnostic: AS8PR04MB8980:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AS8PR04MB89806A4B41E9CFBFB5AEE9648FE89@AS8PR04MB8980.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4502;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: BRVzINOxzhj/JHyHVy/38nHz2Bd91qZIa4fbvrqjiij9qfU/+OFKfsCNpcDNSA8t8rQ2tE71y+n8IC+JHpFPaC1H8m8FQyNAiYg6Mkj169ynHx+vLxZYgB9P1TnsMSgz8Ghe/jFo6iMiOM3QiIyaRLM/ARhJimsDoP/06lMN02WEevkUzEMF4t4knTjMKMWh7ZUu+oRt0PmSHhsCTFcx8p4tJx4tYDgAVUNlOelaD5G0jYxnKeYeB3UHgdj5alx0maaOHjQPqjiWTewiDk1x/PnrD4j6QVH1zWRYnQMJCkiRAKGLbulN8VPrHQ1bWGBm83KhjT99iEWZ5EdLBVNwzle9/9aXiU6luqEI4MlUDtZSv29GBjQUIKsmOaHqBhecQJvofQTsTEcHjya7S797m3kG9ow41wbuJEqXTE06W2Z6ER78EnOCapquS0SMxtjbT2eyidGgs6O2QLbLKL8579dg9HCkHa8iXuksrIkGGw8LmBOMLk25vurb3GeZLW//qChdya5kMq+KaEWOJjUml5i2oegu4TNxJx58GHOj6M+W/jyDocti2Olwm2J1xPUIOH5tMjz6vy54KxmMslKw9IP4CzOSoHY80YJ/Z6CSfiRHIQgtaUUAXrMJ7NKWOyIbVSqcGc36pVb8EFp6sLO3N1tlsyHZjyUfR5p5wS2pOnqSjEFN8AM9tYbEGStHzAvHNoyBwfL7cWgfS7wvth7pPYfuXVspgt47YkuQxL7xlu0HVoO0wSEXWaii9ajXFnuhPJmbY2piAJoZQykiwh0O7AESCWlip8ZS1/yef6aa/98=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8946.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(136003)(39850400004)(53546011)(966005)(45080400002)(4326008)(38100700002)(71200400001)(7696005)(9686003)(8936002)(64756008)(6506007)(186003)(2906002)(52536014)(122000001)(55016002)(83380400001)(86362001)(33656002)(316002)(76116006)(478600001)(5660300002)(66946007)(110136005)(8676002)(54906003)(66476007)(66556008)(66446008)(26005)(38070700004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?RaiKqtqt90uND/8xeSWdavcodZe3GV2vaX/AfV875vwQO6Coj1Zk9kka2PDh?=
+ =?us-ascii?Q?xxsjfq2FnWMNy9T2VgAC+ovwCAFNnTCsL2uZFS2Uu8dgttna61qfyjxly1zr?=
+ =?us-ascii?Q?lo5xPrlFlx02gaTGFbuh3+6iNtvIY/w6ceNQweaunF86isXAPVTINR0IZh/N?=
+ =?us-ascii?Q?EPFLHMON+qw5aiTMc1d/Um+eEPWSA0pwO44+FqwyPJW7HAjDp2nDoBfOi1Yy?=
+ =?us-ascii?Q?M7zfu68dNJuqH2SoSsBIWfKWkwdixTpMNp4VTzK7Go9Am9aO5zVG/6Sv3DP/?=
+ =?us-ascii?Q?xX1MdrbJZHEJRxcev1JeWHWZoCUUa7glmN/Et5h8M8aE7ZzWE6WaCMqfEyyY?=
+ =?us-ascii?Q?Hb5xl5dw5Ux8U89aOwyfLfn7mHIGjWhe14/xr/a1kpETm0qhfCvU0AGRtq5x?=
+ =?us-ascii?Q?PGNqUDlmZ0p0AgBsvm7yKQ0viTNkaNsF9S7PtFBo4iPRB9wey7tOP+KGjaDM?=
+ =?us-ascii?Q?zwP87m36/sJIt8P4N1WqQoaC+H4IxZl9VujkAQ9Oj8ZlPCTHm13whfgb/Slz?=
+ =?us-ascii?Q?9ZHVRv7TUzh0+m4dwS8yQx3xqv63qd+teFa7qebApYzGrglCtaCAygmhUCyN?=
+ =?us-ascii?Q?5FCIaEEP0GsQ07D31FNZQ5xJ1RCb5+2fSfqWKXC+eFm2ltQ8YUj0i9mK5EZO?=
+ =?us-ascii?Q?TlXfenVoFoyR84mg0cXTWzqR4l8s64NTwsvUOfzBFvp07LRpaxh2EBu1q6n2?=
+ =?us-ascii?Q?Fh9rW6qB1kX/wc/4iv9bWwSQMAN29frGkwtSMtYeUipkvkDKm/QW/Xc1DSFd?=
+ =?us-ascii?Q?OodnOcGn8pKFk6lzoj0CbuPDjZLSvmeECMeSQAmmHrndUEkgJoegc4Iqo9/N?=
+ =?us-ascii?Q?U3JOJgE51Xukq+2A2wahNM+g+mNGTAwWgGb71NfYjvxqlAEhmfX3tLiReJ7c?=
+ =?us-ascii?Q?Sj/VcV1Zo24tAWTcX86BjkZYv57VuSM02lf+wXXgesyzOzoalnFUUKqhDMdk?=
+ =?us-ascii?Q?DHzyqSqsqMJZvGm5XLYtsHyhCKb/4gRrWCj62Bt143rovxAH/AOoMT9k9j9h?=
+ =?us-ascii?Q?/TrarVh2axvq8qUUJ3VWn8dCUj7fkor/F4C+R6YeDMKOvDViO71BPctOUm5s?=
+ =?us-ascii?Q?B695tEHwfTcp8wBkLE58KbmqfASrhUSBHwdIpDnuqMqmrSHJ41pTsIR8jHGR?=
+ =?us-ascii?Q?l/N0DcHZOZYNqp+5mRatdXCmmAyiSE5UF5Lkyy/k21CUAo2PcK+w+ZHBVnQc?=
+ =?us-ascii?Q?+coPlOwVnI6oM/rtmN6WePfNs+9UqvcP/T0p/GQHOZifzcFzbckkdGd4tlh9?=
+ =?us-ascii?Q?o3aaLwinNaxlXB7GsnVK78QAypdWuqi42s6wbeezx0yf/fPVjlYYHxyTxQhA?=
+ =?us-ascii?Q?iiRP1LVjg4l2C5IcCrCIpRIt?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210726175357.1572951-1-mizhang@google.com> <20210726175357.1572951-4-mizhang@google.com>
-In-Reply-To: <20210726175357.1572951-4-mizhang@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 26 Jul 2021 13:41:54 -0700
-Message-ID: <CANgfPd8iohgpauQEEAFAQjLPXqHQw1Swguc7C0exHcz985igcw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] KVM: x86/mmu: Add detailed page size stats
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jing Zhang <jingzhangos@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8946.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 471cc727-7f58-4537-cc2e-08d950763bc2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2021 20:44:58.6938
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NHt/4l4ZZpw3OR7/OZhNSL1VqJw1bI0i+wLI5fU0PQ9i8Uwf17XpJIVmzKUc0St24YKWYsmlY5az09gdOhziRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8980
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 10:54 AM Mingwei Zhang <mizhang@google.com> wrote:
->
-> Existing KVM code tracks the number of large pages regardless of their
-> sizes. Therefore, when large page of 1GB (or larger) is adopted, the
-> information becomes less useful because lpages counts a mix of 1G and 2M
-> pages.
->
-> So remove the lpages since it is easy for user space to aggregate the info.
-> Instead, provide a comprehensive page stats of all sizes from 4K to 512G.
->
-> Suggested-by: Ben Gardon <bgardon@google.com>
-> Suggested-by: Jing Zhang <jingzhangos@google.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+
+
+> -----Original Message-----
+> From: Maxim Kochetkov <fido_max@inbox.ru>
+> Sent: Monday, July 26, 2021 12:22 AM
+> To: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> saravanak@google.com; Leo Li <leoyang.li@nxp.com>; Qiang Zhao
+> <qiang.zhao@nxp.com>; gregkh@linuxfoundation.org; Maxim Kochetkov
+> <fido_max@inbox.ru>; kernel test robot <lkp@intel.com>; Dan Carpenter
+> <dan.carpenter@oracle.com>
+> Subject: [PATCH v3] soc: fsl: qe: convert QE interrupt controller to
+> platform_device
+>=20
+> Since 5.13 QE's ucc nodes can't get interrupts from devicetree:
+>=20
+> 	ucc@2000 {
+> 		cell-index =3D <1>;
+> 		reg =3D <0x2000 0x200>;
+> 		interrupts =3D <32>;
+> 		interrupt-parent =3D <&qeic>;
+> 	};
+>=20
+> Now fw_devlink expects driver to create and probe a struct device for
+> interrupt controller.
+>=20
+> So lets convert this driver to simple platform_device with probe().
+> Also use platform_get_ and devm_ family function to get/allocate resource=
+s
+> and drop unused .compatible =3D "qeic".
+>=20
+> [1] -
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flore.=
+k
+> ernel.org%2Flkml%2FCAGETcx9PiX%3D%3DmLxB9PO8Myyk6u2vhPVwTMsA
+> 5NkD-
+> ywH5xhusw%40mail.gmail.com&amp;data=3D04%7C01%7Cleoyang.li%40nxp.co
+> m%7C6e64e4b86f2d4a89390808d94ff50bec%7C686ea1d3bc2b4c6fa92cd99c5c
+> 301635%7C0%7C0%7C637628736153046082%7CUnknown%7CTWFpbGZsb3d8
+> eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3
+> D%7C1000&amp;sdata=3DG7HhGFmRLvMyNMULSddWctD3HhtVWMfZAxPXjl8
+> CBTY%3D&amp;reserved=3D0
+> Fixes: e590474768f1 ("driver core: Set fw_devlink=3Don by default")
+> Fixes: ea718c699055 ("Revert "Revert "driver core: Set fw_devlink=3Don by
+> default""")
+> Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  arch/x86/include/asm/kvm_host.h | 10 +++++++++-
->  arch/x86/kvm/mmu.h              |  2 ++
->  arch/x86/kvm/mmu/mmu.c          | 32 +++++++++++++++++++-------------
->  arch/x86/kvm/mmu/tdp_mmu.c      | 15 ++-------------
->  arch/x86/kvm/x86.c              |  7 +++++--
->  5 files changed, 37 insertions(+), 29 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 974cbfb1eefe..2e4b6fd36e62 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1206,9 +1206,17 @@ struct kvm_vm_stat {
->         u64 mmu_recycled;
->         u64 mmu_cache_miss;
->         u64 mmu_unsync;
-> -       u64 lpages;
->         u64 nx_lpage_splits;
->         u64 max_mmu_page_hash_collisions;
-> +       union {
-> +               struct {
-> +                       atomic64_t pages_4k;
-> +                       atomic64_t pages_2m;
-> +                       atomic64_t pages_1g;
-> +                       atomic64_t pages_512g;
-> +               };
-> +               atomic64_t pages[4];
-> +       } page_stats;
->  };
->
->  struct kvm_vcpu_stat {
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 83e6c6965f1e..ad5638815311 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -240,4 +240,6 @@ static inline bool kvm_memslots_have_rmaps(struct kvm *kvm)
->         return smp_load_acquire(&kvm->arch.memslots_have_rmaps);
+> Changes in v3:
+>  - use .compatible =3D "qeic" again (Li Yang <leoyang.li@nxp.com> asks to=
+ keep
+> it)
+>=20
+> Changes in v2:
+>  - use devm_ family functions to allocate mem/resources
+>  - use platform_get_ family functions to get resources/irqs
+>  - drop unused .compatible =3D "qeic"
+>=20
+>  drivers/soc/fsl/qe/qe_ic.c | 75 ++++++++++++++++++++++----------------
+>  1 file changed, 44 insertions(+), 31 deletions(-)
+>=20
+> diff --git a/drivers/soc/fsl/qe/qe_ic.c b/drivers/soc/fsl/qe/qe_ic.c inde=
+x
+> 3f711c1a0996..54cabd2605dd 100644
+> --- a/drivers/soc/fsl/qe/qe_ic.c
+> +++ b/drivers/soc/fsl/qe/qe_ic.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/signal.h>
+>  #include <linux/device.h>
+>  #include <linux/spinlock.h>
+> +#include <linux/platform_device.h>
+>  #include <asm/irq.h>
+>  #include <asm/io.h>
+>  #include <soc/fsl/qe/qe.h>
+> @@ -404,41 +405,40 @@ static void qe_ic_cascade_muxed_mpic(struct
+> irq_desc *desc)
+>  	chip->irq_eoi(&desc->irq_data);
 >  }
->
-> +void kvm_update_page_stats(struct kvm *kvm, int level, int count);
+>=20
+> -static void __init qe_ic_init(struct device_node *node)
+> +static int qe_ic_init(struct platform_device *pdev)
+>  {
+> +	struct device *dev =3D &pdev->dev;
+>  	void (*low_handler)(struct irq_desc *desc);
+>  	void (*high_handler)(struct irq_desc *desc);
+>  	struct qe_ic *qe_ic;
+> -	struct resource res;
+> -	u32 ret;
+> +	struct resource *res;
+> +	struct device_node *node =3D pdev->dev.of_node;
+>=20
+> -	ret =3D of_address_to_resource(node, 0, &res);
+> -	if (ret)
+> -		return;
+> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (res =3D=3D NULL) {
+> +		dev_err(dev, "no memory resource defined\n");
+> +		return -ENODEV;
+> +	}
+>=20
+> -	qe_ic =3D kzalloc(sizeof(*qe_ic), GFP_KERNEL);
+> +	qe_ic =3D devm_kzalloc(dev, sizeof(*qe_ic), GFP_KERNEL);
+>  	if (qe_ic =3D=3D NULL)
+> -		return;
+> +		return -ENOMEM;
+>=20
+> -	qe_ic->irqhost =3D irq_domain_add_linear(node, NR_QE_IC_INTS,
+> -					       &qe_ic_host_ops, qe_ic);
+> -	if (qe_ic->irqhost =3D=3D NULL) {
+> -		kfree(qe_ic);
+> -		return;
+> +	qe_ic->regs =3D devm_ioremap(dev, res->start, resource_size(res));
+> +	if (qe_ic->regs =3D=3D NULL) {
+> +		dev_err(dev, "failed to ioremap() registers\n");
+> +		return -ENODEV;
+>  	}
+>=20
+> -	qe_ic->regs =3D ioremap(res.start, resource_size(&res));
+> -
+>  	qe_ic->hc_irq =3D qe_ic_irq_chip;
+>=20
+> -	qe_ic->virq_high =3D irq_of_parse_and_map(node, 0);
+> -	qe_ic->virq_low =3D irq_of_parse_and_map(node, 1);
+> +	qe_ic->virq_high =3D platform_get_irq(pdev, 0);
+> +	qe_ic->virq_low =3D platform_get_irq(pdev, 1);
+>=20
+> -	if (!qe_ic->virq_low) {
+> -		printk(KERN_ERR "Failed to map QE_IC low IRQ\n");
+> -		kfree(qe_ic);
+> -		return;
+> +	if (qe_ic->virq_low < 0) {
+> +		return -ENODEV;
+>  	}
 > +
->  #endif
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 442cc554ebd6..7e0fc760739b 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -588,16 +588,22 @@ static bool mmu_spte_update(u64 *sptep, u64 new_spte)
->         return flush;
+>  	if (qe_ic->virq_high !=3D qe_ic->virq_low) {
+>  		low_handler =3D qe_ic_cascade_low;
+>  		high_handler =3D qe_ic_cascade_high;
+> @@ -447,6 +447,13 @@ static void __init qe_ic_init(struct device_node
+> *node)
+>  		high_handler =3D NULL;
+>  	}
+>=20
+> +	qe_ic->irqhost =3D irq_domain_add_linear(node, NR_QE_IC_INTS,
+> +					       &qe_ic_host_ops, qe_ic);
+> +	if (qe_ic->irqhost =3D=3D NULL) {
+> +		dev_err(dev, "failed to add irq domain\n");
+> +		return -ENODEV;
+> +	}
+> +
+>  	qe_ic_write(qe_ic->regs, QEIC_CICR, 0);
+>=20
+>  	irq_set_handler_data(qe_ic->virq_low, qe_ic); @@ -456,20 +463,26
+> @@ static void __init qe_ic_init(struct device_node *node)
+>  		irq_set_handler_data(qe_ic->virq_high, qe_ic);
+>  		irq_set_chained_handler(qe_ic->virq_high, high_handler);
+>  	}
+> +	return 0;
 >  }
->
-> +void kvm_update_page_stats(struct kvm *kvm, int level, int count)
+> +static const struct of_device_id qe_ic_ids[] =3D {
+> +	{ .compatible =3D "fsl,qe-ic"},
+> +	{ .compatible =3D "qeic"},
+
+Probably you missed the point from my first response.  The original code is=
+ match by device type "qeic" instead of compatible string "qeic".   So we s=
+hould use { .type =3D "qeic"} here.
+
+> +	{},
+> +};
+>=20
+> -static int __init qe_ic_of_init(void)
+> +static struct platform_driver qe_ic_driver =3D
+>  {
+> -	struct device_node *np;
+> +	.driver	=3D {
+> +		.name		=3D "qe-ic",
+> +		.of_match_table	=3D qe_ic_ids,
+> +	},
+> +	.probe	=3D qe_ic_init,
+> +};
+>=20
+> -	np =3D of_find_compatible_node(NULL, NULL, "fsl,qe-ic");
+> -	if (!np) {
+> -		np =3D of_find_node_by_type(NULL, "qeic");
+> -		if (!np)
+> -			return -ENODEV;
+> -	}
+> -	qe_ic_init(np);
+> -	of_node_put(np);
+> +static int __init qe_ic_of_init(void)
 > +{
-> +       atomic64_add(count, &kvm->stat.page_stats.pages[level - 1]);
-> +}
-> +
->  /*
->   * Rules for using mmu_spte_clear_track_bits:
->   * It sets the sptep from present to nonpresent, and track the
->   * state bits, it is used to clear the last level sptep.
->   * Returns non-zero if the PTE was previously valid.
->   */
-> -static int mmu_spte_clear_track_bits(u64 *sptep)
-> +static int mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
->  {
->         kvm_pfn_t pfn;
->         u64 old_spte = *sptep;
-> +       int level = sptep_to_sp(sptep)->role.level;
->
->         if (!spte_has_volatile_bits(old_spte))
->                 __update_clear_spte_fast(sptep, 0ull);
-> @@ -607,6 +613,9 @@ static int mmu_spte_clear_track_bits(u64 *sptep)
->         if (!is_shadow_present_pte(old_spte))
->                 return 0;
->
-> +       if (is_last_spte(old_spte, level))
-
-You can drop this check since it's part of the contract for calling
-this function.
-
-> +               kvm_update_page_stats(kvm, level, -1);
-> +
->         pfn = spte_to_pfn(old_spte);
->
->         /*
-> @@ -984,9 +993,10 @@ static void __pte_list_remove(u64 *spte, struct kvm_rmap_head *rmap_head)
->         }
+> +	platform_driver_register(&qe_ic_driver);
+>  	return 0;
 >  }
->
-> -static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
-> +static void pte_list_remove(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-> +                           u64 *sptep)
->  {
-> -       mmu_spte_clear_track_bits(sptep);
-> +       mmu_spte_clear_track_bits(kvm, sptep);
->         __pte_list_remove(sptep, rmap_head);
->  }
->
-> @@ -1119,7 +1129,7 @@ static u64 *rmap_get_next(struct rmap_iterator *iter)
->
->  static void drop_spte(struct kvm *kvm, u64 *sptep)
->  {
-> -       if (mmu_spte_clear_track_bits(sptep))
-> +       if (mmu_spte_clear_track_bits(kvm, sptep))
->                 rmap_remove(kvm, sptep);
->  }
->
-> @@ -1129,7 +1139,6 @@ static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
->         if (is_large_pte(*sptep)) {
->                 WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
->                 drop_spte(kvm, sptep);
-> -               --kvm->stat.lpages;
->                 return true;
->         }
->
-> @@ -1386,7 +1395,7 @@ static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->         while ((sptep = rmap_get_first(rmap_head, &iter))) {
->                 rmap_printk("spte %p %llx.\n", sptep, *sptep);
->
-> -               pte_list_remove(rmap_head, sptep);
-> +               pte_list_remove(kvm, rmap_head, sptep);
->                 flush = true;
->         }
->
-> @@ -1421,13 +1430,13 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->                 need_flush = 1;
->
->                 if (pte_write(pte)) {
-> -                       pte_list_remove(rmap_head, sptep);
-> +                       pte_list_remove(kvm, rmap_head, sptep);
->                         goto restart;
->                 } else {
->                         new_spte = kvm_mmu_changed_pte_notifier_make_spte(
->                                         *sptep, new_pfn);
->
-> -                       mmu_spte_clear_track_bits(sptep);
-> +                       mmu_spte_clear_track_bits(kvm, sptep);
->                         mmu_spte_set(sptep, new_spte);
->                 }
->         }
-> @@ -2232,8 +2241,6 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
->         if (is_shadow_present_pte(pte)) {
->                 if (is_last_spte(pte, sp->role.level)) {
->                         drop_spte(kvm, spte);
-> -                       if (is_large_pte(pte))
-> -                               --kvm->stat.lpages;
->                 } else {
->                         child = to_shadow_page(pte & PT64_BASE_ADDR_MASK);
->                         drop_parent_pte(child, spte);
-> @@ -2692,8 +2699,7 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
->         trace_kvm_mmu_set_spte(level, gfn, sptep);
->
->         if (!was_rmapped) {
-> -               if (is_large_pte(*sptep))
-> -                       ++vcpu->kvm->stat.lpages;
-> +               kvm_update_page_stats(vcpu->kvm, level, 1);
->                 rmap_count = rmap_add(vcpu, sptep, gfn);
->                 if (rmap_count > RMAP_RECYCLE_THRESHOLD)
->                         rmap_recycle(vcpu, sptep, gfn);
-> @@ -5669,7 +5675,7 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->                 if (sp->role.direct && !kvm_is_reserved_pfn(pfn) &&
->                     sp->role.level < kvm_mmu_max_mapping_level(kvm, slot, sp->gfn,
->                                                                pfn, PG_LEVEL_NUM)) {
-> -                       pte_list_remove(rmap_head, sptep);
-> +                       pte_list_remove(kvm, rmap_head, sptep);
->
->                         if (kvm_available_flush_tlb_with_range())
->                                 kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index cba2ab5db2a0..eae404c15364 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -413,7 +413,6 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->         bool was_leaf = was_present && is_last_spte(old_spte, level);
->         bool is_leaf = is_present && is_last_spte(new_spte, level);
->         bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
-> -       bool was_large, is_large;
->
->         WARN_ON(level > PT64_ROOT_MAX_LEVEL);
->         WARN_ON(level < PG_LEVEL_4K);
-> @@ -472,18 +471,8 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->                 return;
->         }
->
-> -       /*
-> -        * Update large page stats if a large page is being zapped, created, or
-> -        * is replacing an existing shadow page.
-> -        */
-> -       was_large = was_leaf && is_large_pte(old_spte);
-> -       is_large = is_leaf && is_large_pte(new_spte);
-> -       if (was_large != is_large) {
-> -               if (was_large)
-> -                       atomic64_sub(1, (atomic64_t *)&kvm->stat.lpages);
-> -               else
-> -                       atomic64_add(1, (atomic64_t *)&kvm->stat.lpages);
-> -       }
-> +       if (is_leaf != was_leaf)
-> +               kvm_update_page_stats(kvm, level, is_leaf ? 1 : -1);
->
->         if (was_leaf && is_dirty_spte(old_spte) &&
->             (!is_present || !is_dirty_spte(new_spte) || pfn_changed))
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 8166ad113fb2..3858d36d3c49 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -235,9 +235,12 @@ const struct _kvm_stats_desc kvm_vm_stats_desc[] = {
->         STATS_DESC_COUNTER(VM, mmu_recycled),
->         STATS_DESC_COUNTER(VM, mmu_cache_miss),
->         STATS_DESC_ICOUNTER(VM, mmu_unsync),
-> -       STATS_DESC_ICOUNTER(VM, lpages),
->         STATS_DESC_ICOUNTER(VM, nx_lpage_splits),
-> -       STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions)
-> +       STATS_DESC_PCOUNTER(VM, max_mmu_page_hash_collisions),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_4k),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_2m),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_1g),
-> +       STATS_DESC_ICOUNTER(VM, page_stats.pages_512g)
->  };
->  static_assert(ARRAY_SIZE(kvm_vm_stats_desc) ==
->                 sizeof(struct kvm_vm_stat) / sizeof(u64));
+>  subsys_initcall(qe_ic_of_init);
 > --
-> 2.32.0.432.gabb21c7263-goog
->
+> 2.31.1
+
