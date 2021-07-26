@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86A03D62E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D163D605D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238206AbhGZPks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:40:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38278 "EHLO mail.kernel.org"
+        id S237034AbhGZPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237513AbhGZPXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E9B60240;
-        Mon, 26 Jul 2021 16:03:41 +0000 (UTC)
+        id S236864AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85B3D60FEB;
+        Mon, 26 Jul 2021 15:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315422;
-        bh=BFNhlEZO6+UPnX1sDeZdmiBIyaFaT4PvZeZa4mtd29M=;
+        s=korg; t=1627314829;
+        bh=5+cmeG2IgY/yCrm92xeczh+uJj71mqrquauPWx8TM1I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bbixW6LmuT+ZRbzMxPZ3VzfVh63itoKLU9pU1YomIBPlMTWWWpxeOmWvYGGQoH0oo
-         C2Obp0elFPys6kt9XCbgJ9sDoQeoAw1W+RfxRTYt2y1NlAB5IjvxtEgdh7Zr2ZEYgF
-         C4MREqc1KnGcJ0WxabxqQ7kVzfwktUUKB7OViN94=
+        b=GFD+9c0AAsMdlT0apSEo62tKtZyad2rLKVOkCns0x12l4TKMu9RasqWMP6xEsZja+
+         g9t5W31WA0zyTBA/dVJMFnvIrDXFFmK8bnlrYLqD2XFXK8ypik3R3zqkxHBXZI5MqN
+         jtlSr0GppUnkF3c2L6l+fRF0+xIKU/4MLvCCwNnw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Peilin Ye <peilin.ye@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Peter Hess <peter.hess@ph-home.de>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 090/167] net/sched: act_skbmod: Skip non-Ethernet packets
+Subject: [PATCH 4.19 071/120] spi: mediatek: fix fifo rx mode
 Date:   Mon, 26 Jul 2021 17:38:43 +0200
-Message-Id: <20210726153842.418731889@linuxfoundation.org>
+Message-Id: <20210726153834.668593486@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <peilin.ye@bytedance.com>
+From: Peter Hess <peter.hess@ph-home.de>
 
-[ Upstream commit 727d6a8b7ef3d25080fad228b2c4a1d4da5999c6 ]
+[ Upstream commit 3a70dd2d050331ee4cf5ad9d5c0a32d83ead9a43 ]
 
-Currently tcf_skbmod_act() assumes that packets use Ethernet as their L2
-protocol, which is not always the case.  As an example, for CAN devices:
+In FIFO mode were two problems:
+- RX mode was never handled and
+- in this case the tx_buf pointer was NULL and caused an exception
 
-	$ ip link add dev vcan0 type vcan
-	$ ip link set up vcan0
-	$ tc qdisc add dev vcan0 root handle 1: htb
-	$ tc filter add dev vcan0 parent 1: protocol ip prio 10 \
-		matchall action skbmod swap mac
+fix this by handling RX mode in mtk_spi_fifo_transfer
 
-Doing the above silently corrupts all the packets.  Do not perform skbmod
-actions for non-Ethernet packets.
-
-Fixes: 86da71b57383 ("net_sched: Introduce skbmod action")
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: a568231f4632 ("spi: mediatek: Add spi bus for Mediatek MT8173")
+Signed-off-by: Peter Hess <peter.hess@ph-home.de>
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Link: https://lore.kernel.org/r/20210706121609.680534-1-linux@fw-web.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sched/act_skbmod.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/spi/spi-mt65xx.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
-index 81a1c67335be..8d17a543cc9f 100644
---- a/net/sched/act_skbmod.c
-+++ b/net/sched/act_skbmod.c
-@@ -6,6 +6,7 @@
- */
+diff --git a/drivers/spi/spi-mt65xx.c b/drivers/spi/spi-mt65xx.c
+index da28c52c9da1..e2b171057b3b 100644
+--- a/drivers/spi/spi-mt65xx.c
++++ b/drivers/spi/spi-mt65xx.c
+@@ -392,13 +392,23 @@ static int mtk_spi_fifo_transfer(struct spi_master *master,
+ 	mtk_spi_setup_packet(master);
  
- #include <linux/module.h>
-+#include <linux/if_arp.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/skbuff.h>
-@@ -33,6 +34,13 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 	tcf_lastuse_update(&d->tcf_tm);
- 	bstats_cpu_update(this_cpu_ptr(d->common.cpu_bstats), skb);
- 
-+	action = READ_ONCE(d->tcf_action);
-+	if (unlikely(action == TC_ACT_SHOT))
-+		goto drop;
+ 	cnt = xfer->len / 4;
+-	iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
++	if (xfer->tx_buf)
++		iowrite32_rep(mdata->base + SPI_TX_DATA_REG, xfer->tx_buf, cnt);
 +
-+	if (!skb->dev || skb->dev->type != ARPHRD_ETHER)
-+		return action;
-+
- 	/* XXX: if you are going to edit more fields beyond ethernet header
- 	 * (example when you add IP header replacement or vlan swap)
- 	 * then MAX_EDIT_LEN needs to change appropriately
-@@ -41,10 +49,6 @@ static int tcf_skbmod_act(struct sk_buff *skb, const struct tc_action *a,
- 	if (unlikely(err)) /* best policy is to drop on the floor */
- 		goto drop;
++	if (xfer->rx_buf)
++		ioread32_rep(mdata->base + SPI_RX_DATA_REG, xfer->rx_buf, cnt);
  
--	action = READ_ONCE(d->tcf_action);
--	if (unlikely(action == TC_ACT_SHOT))
--		goto drop;
--
- 	p = rcu_dereference_bh(d->skbmod_p);
- 	flags = p->flags;
- 	if (flags & SKBMOD_F_DMAC)
+ 	remainder = xfer->len % 4;
+ 	if (remainder > 0) {
+ 		reg_val = 0;
+-		memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
+-		writel(reg_val, mdata->base + SPI_TX_DATA_REG);
++		if (xfer->tx_buf) {
++			memcpy(&reg_val, xfer->tx_buf + (cnt * 4), remainder);
++			writel(reg_val, mdata->base + SPI_TX_DATA_REG);
++		}
++		if (xfer->rx_buf) {
++			reg_val = readl(mdata->base + SPI_RX_DATA_REG);
++			memcpy(xfer->rx_buf + (cnt * 4), &reg_val, remainder);
++		}
+ 	}
+ 
+ 	mtk_spi_enable_transfer(master);
 -- 
 2.30.2
 
