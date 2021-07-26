@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA573D6127
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 579B83D6128
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237736AbhGZP3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:29:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56760 "EHLO mail.kernel.org"
+        id S237842AbhGZP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:29:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235438AbhGZPQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4128560FD8;
-        Mon, 26 Jul 2021 15:57:19 +0000 (UTC)
+        id S236333AbhGZPQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2411960F42;
+        Mon, 26 Jul 2021 15:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315039;
-        bh=jnwL9oSy03Knv9wzFjNz98XWr/TQv4RU3bqPVP0kbDo=;
+        s=korg; t=1627315042;
+        bh=/B2xbLMtnaIWiO1buscDhTGJ69/lT0j2/pRh5lQ72xE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jr+AnWZY9jM+ETGDYWxt82ONjNMKwslJdK4yLMEZgfm4zBq8rPnWEqR+QQVEte/V6
-         THGjKxFmjdApG/6OO7MqzTY7uJDDVFQ42yM5mGWjPbYUHwg2NVtSEHm+58E4WUqNzg
-         XT+cM9bDesRbPQUEQyB4XyHAoJ0vKziXIgrNxVlY=
+        b=eiFbFqdZf4xzeJdTUM1t1LU2MCcadB+39eQnX3nGxk6zczKW9RD74LDxXVXGXOS/q
+         9tXvCm3MUNAXpHnBePx/2kKrx932XSqntvapgaq9WKzt0Om+8OAMU8DaePf1soMaUZ
+         xCsGDAj9+OQlPCsgRqXW7U9JH5+GSAlnNMh9uKpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 027/108] perf lzma: Close lzma stream on exit
-Date:   Mon, 26 Jul 2021 17:38:28 +0200
-Message-Id: <20210726153832.571578765@linuxfoundation.org>
+Subject: [PATCH 5.4 028/108] perf probe-file: Delete namelist in del_events() on the error path
+Date:   Mon, 26 Jul 2021 17:38:29 +0200
+Message-Id: <20210726153832.601436778@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 References: <20210726153831.696295003@linuxfoundation.org>
@@ -46,68 +46,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit f8cbb0f926ae1e1fb5f9e51614e5437560ed4039 ]
+[ Upstream commit e0fa7ab42232e742dcb3de9f3c1f6127b5adc019 ]
 
-ASan reports memory leaks when running:
+ASan reports some memory leaks when running:
 
-  # perf test "88: Check open filename arg using perf trace + vfs_getname"
+  # perf test "42: BPF filter"
 
-One of these is caused by the lzma stream never being closed inside
-lzma_decompress_to_file().
+This second leak is caused by a strlist not being dellocated on error
+inside probe_file__del_events.
 
-This patch adds the missing lzma_end().
+This patch adds a goto label before the deallocation and makes the error
+path jump to it.
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: 80a32e5b498a7547 ("perf tools: Add lzma decompression support for kernel module")
+Fixes: e7895e422e4da63d ("perf probe: Split del_perf_probe_events()")
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/aaf50bdce7afe996cfc06e1bbb36e4a2a9b9db93.1626343282.git.rickyman7@gmail.com
+Link: http://lore.kernel.org/lkml/174963c587ae77fa108af794669998e4ae558338.1626343282.git.rickyman7@gmail.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/lzma.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ tools/perf/util/probe-file.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/lzma.c b/tools/perf/util/lzma.c
-index 39062df02629..51424cdc3b68 100644
---- a/tools/perf/util/lzma.c
-+++ b/tools/perf/util/lzma.c
-@@ -69,7 +69,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+index f778f8e7e65a..5558e2adebe4 100644
+--- a/tools/perf/util/probe-file.c
++++ b/tools/perf/util/probe-file.c
+@@ -337,11 +337,11 @@ int probe_file__del_events(int fd, struct strfilter *filter)
  
- 			if (ferror(infile)) {
- 				pr_err("lzma: read error: %s\n", strerror(errno));
--				goto err_fclose;
-+				goto err_lzma_end;
- 			}
+ 	ret = probe_file__get_events(fd, filter, namelist);
+ 	if (ret < 0)
+-		return ret;
++		goto out;
  
- 			if (feof(infile))
-@@ -83,7 +83,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 	ret = probe_file__del_strlist(fd, namelist);
++out:
+ 	strlist__delete(namelist);
+-
+ 	return ret;
+ }
  
- 			if (writen(output_fd, buf_out, write_size) != write_size) {
- 				pr_err("lzma: write error: %s\n", strerror(errno));
--				goto err_fclose;
-+				goto err_lzma_end;
- 			}
- 
- 			strm.next_out  = buf_out;
-@@ -95,11 +95,13 @@ int lzma_decompress_to_file(const char *input, int output_fd)
- 				break;
- 
- 			pr_err("lzma: failed %s\n", lzma_strerror(ret));
--			goto err_fclose;
-+			goto err_lzma_end;
- 		}
- 	}
- 
- 	err = 0;
-+err_lzma_end:
-+	lzma_end(&strm);
- err_fclose:
- 	fclose(infile);
- 	return err;
 -- 
 2.30.2
 
