@@ -2,115 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB543D5971
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24633D5974
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhGZLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:46:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23672 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233713AbhGZLqg (ORCPT
+        id S234040AbhGZLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233713AbhGZLq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:46:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627302425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/pLQHCoDSsXCllDb0GnTFJnUbcQ1cRoUJbtUYUP6ANM=;
-        b=jOXdu0zNi9TkRzrfSpc5Fu5PvDwKrbfn1n2daN5+i+Buipf4z0p2XJGfSC9bJ1oMgpjADk
-        bSR+OF+Ceux5WY+zMe+6ZCkYGXg4QQqe8C2UtgMpyoRZFFoNqgeeqc0ZQ7EaixU9ddZIhH
-        +erorFfLa44IADfg9GeoNnhyN7ZSYe8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-UCqD3D1XOHGfPc9ZotmlTw-1; Mon, 26 Jul 2021 08:27:04 -0400
-X-MC-Unique: UCqD3D1XOHGfPc9ZotmlTw-1
-Received: by mail-ed1-f71.google.com with SMTP id n10-20020a05640206cab02903a4b3e93e15so4660648edy.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 05:27:04 -0700 (PDT)
+        Mon, 26 Jul 2021 07:46:56 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF7DC061757;
+        Mon, 26 Jul 2021 05:27:24 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id c3so8700627ilh.3;
+        Mon, 26 Jul 2021 05:27:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y5AHF2oAD71DeTWUNBFjQquVzfkKr1vrVF/VPD6Sz0E=;
+        b=eqP4qyJnBWxjfTvhxOrzirUmRswssbH2cu7lRtxpZOk91zZQMBtVKbvT89iSg9zxOO
+         UcVZGeeYnJHwkUV30pe/9tzswg3vN+JjFAe1FYW6XQc01NcQvZNP0WKzo3GM2qnd1vWh
+         ErmZpR7UPbEndqQAh9hcVETTS0Zu4pmicsqDFIgqOOr5t8ZPwu6J1LmHhAdObtIWmtx/
+         pfdu1E4y3SwROCDhjWaYaRNzqT+R9xOrFMRgEJHvw7/puQf6pOOClOGEPzteEHSbd1sx
+         peb89XtpmZUfX0PJiFDawf7iFlinbLYeuQadAtzB/WorVHGTrnvBZ71It9HYdq0gfp1x
+         70xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/pLQHCoDSsXCllDb0GnTFJnUbcQ1cRoUJbtUYUP6ANM=;
-        b=eQEdO8oRjIxbldiYBqVk58SLF76V6Cono39phOe77UUbI9olkCTY+W4cSxRirKoFri
-         lfrFVQu4Bs+y7gbb8PWZhNV9/Bl/oMQqeM+8e0sIVd4sNJVZcwYzg3oVsel7ZCZ7jnEY
-         Pg26XoJMTZlkCSqubupwveYauJgvIcQszFbdNEJKLm6LjobVDKh6SIM5UXNJHXXkE10/
-         oLPi5YQCJ15kmOAzqXQGlIWzfypx1L3+a5VgT7/BmjpsZHrLUBrOkrqBOZbZkC2d5O2Z
-         Vnts3FFDLcmDqKlCYmiNrelWFtFaLbcm1TUAQTMjz00F+2af9yxmrY8iIWGGDshfKus1
-         VCpg==
-X-Gm-Message-State: AOAM5300VM9iPzzJXOLhCkT2iIv2qNq4IAUgNgcCd7PVlBGYaEmSVEAg
-        OtVzfqu8vsuGKHsJeZBstR9xCavWQwDZ/5dRa1lD+aDItTsj/q/x/fwyp+pSOGE3t8V2XaUL8kY
-        i8AZ3BdqoNibfjQTMpNYUZcAJl84QK8Kpgq3BDas71b/eqZMD24hzstkDuD4cgIa9qpoaxuDJ49
-        0z
-X-Received: by 2002:a17:906:4158:: with SMTP id l24mr16328187ejk.245.1627302423002;
-        Mon, 26 Jul 2021 05:27:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvjMhQPXalA1SR9kEMp1/APEZND8KBWzgcVBR8Mit7Cbs2RpIvZ6rtl7cJkX/IzptkkpiJ7w==
-X-Received: by 2002:a17:906:4158:: with SMTP id l24mr16328166ejk.245.1627302422762;
-        Mon, 26 Jul 2021 05:27:02 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id c5sm12159692edk.26.2021.07.26.05.27.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 05:27:02 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: Check the right feature bit for
- MSR_KVM_ASYNC_PF_ACK access
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Oliver Upton <oupton@google.com>, linux-kernel@vger.kernel.org
-References: <20210722123018.260035-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a8500354-b204-3e21-f6c9-1e6a80f88851@redhat.com>
-Date:   Mon, 26 Jul 2021 14:27:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y5AHF2oAD71DeTWUNBFjQquVzfkKr1vrVF/VPD6Sz0E=;
+        b=P2HKrqA8mBxbAZ0DO6ZONMFGmRFFqOJKe5vXxiCAgQDRWqDri0Dn3m8YE1XDspWaAp
+         QcNQ87gxl8byekd/cguL3G3dRSV1m2dKV9a5EO2++/vP+YUkUACYK7ev8S5rdjIZSYIe
+         fph396vdtpnkdn9f/L+VScky2opZyOVeCqu7TYM3mWjEPYpLUQX3njJ9NuMghhpbDJju
+         2JjaT3B67XIrmq6rBLOfkYetGbFUwgn840/JPdrTco3YSSUeoqvA27+FDoZ3yN4wdv+i
+         LOdl6zZtGy3JxOVCAXp02TgCGq+GS/wzZtE1T/K7toEKtbVhLCRx4BrBS5AyUyZlHyut
+         zxpw==
+X-Gm-Message-State: AOAM532qt0S2YoXInc6IS7agzzT0Tjk7yJi5b2U9a7E6vytZpYePYFT2
+        YU+5QttzD2r2Lm2Az0CT5lqhW+l74Jf+AWbrpRg=
+X-Google-Smtp-Source: ABdhPJzG5jKWBAyqeJ4cbWptYmY1gOuSr1JLfz5y7rWv/LuJNdeLRATTmfeUMI6/n8WwMUjZLKMzjQVx1y+6Y2OmLNo=
+X-Received: by 2002:a92:d451:: with SMTP id r17mr13257263ilm.109.1627302443653;
+ Mon, 26 Jul 2021 05:27:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210722123018.260035-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
+ <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
+ <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com>
+ <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local> <20210726110611.459173-1-agruenba@redhat.com>
+ <20210726121702.GA528@lst.de>
+In-Reply-To: <20210726121702.GA528@lst.de>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Mon, 26 Jul 2021 14:27:12 +0200
+Message-ID: <CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/07/21 14:30, Vitaly Kuznetsov wrote:
-> MSR_KVM_ASYNC_PF_ACK MSR is part of interrupt based asynchronous page fault
-> interface and not the original (deprecated) KVM_FEATURE_ASYNC_PF. This is
-> stated in Documentation/virt/kvm/msr.rst.
-> 
-> Fixes: 66570e966dd9 ("kvm: x86: only provide PV features if enabled in guest's CPUID")
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->   arch/x86/kvm/x86.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index d715ae9f9108..88ff7a1af198 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -3406,7 +3406,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   			return 1;
->   		break;
->   	case MSR_KVM_ASYNC_PF_ACK:
-> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
->   			return 1;
->   		if (data & 0x1) {
->   			vcpu->arch.apf.pageready_pending = false;
-> @@ -3745,7 +3745,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->   		msr_info->data = vcpu->arch.apf.msr_int_val;
->   		break;
->   	case MSR_KVM_ASYNC_PF_ACK:
-> -		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF))
-> +		if (!guest_pv_has(vcpu, KVM_FEATURE_ASYNC_PF_INT))
->   			return 1;
->   
->   		msr_info->data = 0;
-> 
+Am Mo., 26. Juli 2021 um 14:17 Uhr schrieb Christoph Hellwig <hch@lst.de>:
+>
+> > Subject: iomap: Support tail packing
+>
+> I can't say I like this "tail packing" language here when we have the
+> perfectly fine inline wording.  Same for various comments in the actual
+> code.
+>
+> > +     /* inline and tail-packed data must start page aligned in the file */
+> > +     if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
+> > +             return -EIO;
+> > +     if (WARN_ON_ONCE(size > PAGE_SIZE - offset_in_page(iomap->inline_data)))
+> > +             return -EIO;
+>
+> Why can't we use iomap_inline_data_size_valid here?
 
-Queued, thanks.
+We can now. Gao, can you change that?
 
-Paolo
+> That is how can size be different from iomap->length?
 
+Quoting from my previous reply,
+
+"In the iomap_readpage case (iomap_begin with flags == 0),
+iomap->length will be the amount of data up to the end of the inode.
+In the iomap_file_buffered_write case (iomap_begin with flags ==
+IOMAP_WRITE), iomap->length will be the size of iomap->inline_data.
+(For extending writes, we need to write beyond the current end of
+inode.) So iomap->length isn't all that useful for
+iomap_read_inline_data."
+
+> Shouldn't the offset_in_page also go into iomap_inline_data_size_valid,
+> which should probably be called iomap_inline_data_valid then?
+
+Hmm, not sure what you mean: iomap_inline_data_size_valid does take
+offset_in_page(iomap->inline_data) into account.
+
+> >       if (iomap->type == IOMAP_INLINE) {
+> > +             int ret = iomap_read_inline_data(inode, page, iomap);
+> > +             return ret ?: PAGE_SIZE;
+>
+> The ?: expression without the first leg is really confuing.  Especially
+> if a good old if is much more readable here.
+
+I'm sure Gao can change this.
+
+>                 int ret = iomap_read_inline_data(inode, page, iomap);
+>
+>                 if (ret)
+>                         return ret;
+>                 return PAGE_SIZE;
+>
+> > +             copied = copy_from_iter(iomap_inline_data(iomap, pos), length, iter);
+>
+>
+> > +             copied = copy_to_iter(iomap_inline_data(iomap, pos), length, iter);
+>
+> Pleae avoid the overly long lines.
+
+I thought people were okay with 80 character long lines?
+
+Thanks,
+Andreas
