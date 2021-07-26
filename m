@@ -2,150 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84A63D57DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEC53D57E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 12:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbhGZKQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 06:16:18 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:57330
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231792AbhGZKQP (ORCPT
+        id S232900AbhGZKRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 06:17:12 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33746 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232334AbhGZKRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 06:16:15 -0400
-Received: from [10.172.193.212] (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 858E73F342;
-        Mon, 26 Jul 2021 10:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627297003;
-        bh=E8Bl7iWZmRi4QYo4RVKeJYrZa1hIqawSMitAIqqPS4k=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=FI5rCvpfr6YTlZdQedosfpBaL27ZxWPeTr8BwlAJAXi0KxqXAqp+c6Frkstg6ZiMb
-         8hb+bAccpPc+s5gTJDunt9esZuGXnPNpKjWcNfAxEf5NHXv8nu/ECaOnTcS4wHACkL
-         NrIowWZLkIWjpxY/MmuKm5OtVnlLl0sHoL6O363fgKhMMSY2S/qlNYv3VCoKN1FpoX
-         kbUN9j3n0tPuxlrdVAW7PzUSVbUBButMsLSLyYgchu8ZeFk/VliCFEfKqka85u8XXJ
-         fO+rqPXv1cgUhMEb08naQED90J7qQNd8lDWz4MpQJ5rpRkXPlE7556cdAmHoiIAfiN
-         bPggbCtU57IJQ==
-Subject: Re: [PATCH] security: keys: trusted: Fix memory leaks on allocated
- blob
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210723172121.156687-1-colin.king@canonical.com>
- <20210726085051.GG1931@kadam>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <4f200a4d-75ee-99c8-dc16-3626df7e6ff3@canonical.com>
-Date:   Mon, 26 Jul 2021 11:56:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 26 Jul 2021 06:17:11 -0400
+X-UUID: 28ee40d46c664887908e903d2e78c20b-20210726
+X-UUID: 28ee40d46c664887908e903d2e78c20b-20210726
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <chun-jie.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1134525413; Mon, 26 Jul 2021 18:57:36 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 26 Jul 2021 18:57:35 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 26 Jul 2021 18:57:34 +0800
+From:   Chun-Jie Chen <chun-jie.chen@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [v14 00/21] Mediatek MT8192 clock support
+Date:   Mon, 26 Jul 2021 18:56:58 +0800
+Message-ID: <20210726105719.15793-1-chun-jie.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210726085051.GG1931@kadam>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/07/2021 09:50, Dan Carpenter wrote:
-> On Fri, Jul 23, 2021 at 06:21:21PM +0100, Colin King wrote:
->> @@ -441,6 +449,10 @@ static int tpm2_load_cmd(struct tpm_chip *chip,
->>  		rc = -EPERM;
->>  
->>  	return rc;
->> +
->> +err:
->> +	kfree(blob);
-> 
-> This needs to be:
-> 
-> 	if (blob != payload->blob)
-> 		kfree(blob);
+this patch series is based on 5.14-rc1.
 
-Good spot! Thanks Dan.
+changes since v13:
+- no change (rebased to 5.14)
 
-> 
-> Otherwise it leads to a use after free.
-> 
->> +	return rc;
->>  }
-> 
-> How this is allocated is pretty scary looking!
+changes since v12:
+-  move audsys binding to "mediatek,audsys.txt" (patch 3)
 
-it is kinda mind bending.
+changes since v11:
+- move mmsys binding to "mediatek,mmsys.txt" (patch 2)
+- fix new DT binding error (patch 1)
 
-Colin
+change since v10:
+- refine binding document in patch 1 (drop the 'oneOf')
 
-> 
-> security/keys/trusted-keys/trusted_tpm2.c
->     96  static int tpm2_key_decode(struct trusted_key_payload *payload,
->     97                             struct trusted_key_options *options,
->     98                             u8 **buf)
->     99  {
->    100          int ret;
->    101          struct tpm2_key_context ctx;
->    102          u8 *blob;
->    103  
->    104          memset(&ctx, 0, sizeof(ctx));
->    105  
->    106          ret = asn1_ber_decoder(&tpm2key_decoder, &ctx, payload->blob,
->    107                                 payload->blob_len);
->    108          if (ret < 0)
->    109                  return ret;
-> 
-> Old form?
-> 
->    110  
->    111          if (ctx.priv_len + ctx.pub_len > MAX_BLOB_SIZE)
->    112                  return -EINVAL;
-> 
-> It's really scary to me that if the lengths are too large for kmalloc()
-> then we just use "payload->blob".
-> 
->    113  
->    114          blob = kmalloc(ctx.priv_len + ctx.pub_len + 4, GFP_KERNEL);
-> 
-> blob is allocated here.
-> 
->    115          if (!blob)
->    116                  return -ENOMEM;
->    117  
->    118          *buf = blob;
->    119          options->keyhandle = ctx.parent;
->    120  
->    121          memcpy(blob, ctx.priv, ctx.priv_len);
->    122          blob += ctx.priv_len;
->    123  
->    124          memcpy(blob, ctx.pub, ctx.pub_len);
->    125  
->    126          return 0;
->    127  }
-> 
-> [ snip ]
-> 
->    371          u32 attrs;
->    372  
->    373          rc = tpm2_key_decode(payload, options, &blob);
->    374          if (rc) {
->    375                  /* old form */
->    376                  blob = payload->blob;
->                         ^^^^^^^^^^^^^^^^^^^^
-> 
->    377                  payload->old_format = 1;
->    378          }
->    379  
-> 
-> regards,
-> dan carpenter
-> 
+change since v9:
+- combine similiar dt-binding file for system and functional clock
+- change api of getting regmap if it's not a syscon node (patch 3)
+
+change since v8:
+- fix mm dt-binding file conflict.
+
+reason for sending v8:
+- due to this patch series including dt-binding file, so add
+device tree reviewer to mail list, no change between [1] and v8.
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=454523
+
+reason for resending v7:
+- add review history from series below
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405295
+
+change since v6:
+- update from series below
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405295
+- fix DT bindings fail
+- fix checkpatch warning
+- update mux ops without gate control
+
+change since v5:
+- remove unused clocks by rolling Tinghan's patches[1][2] into series
+[1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=398781
+[2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405143
+- remove dts related patches from series
+
+change since v4:
+- merge some subsystem into same driver
+- add a generic probe function to reduce duplicated code
+
+changes since v3:
+- add critical clocks
+- split large patches into small ones
+
+changes since v2:
+- update and split dt-binding documents by functionalities
+- add error checking in probe() function
+- fix incorrect clock relation and add critical clocks
+- update license identifier and minor fix of coding style
+
+changes since v1:
+- fix asymmetrical control of PLL
+- have en_mask used as divider enable mask on all MediaTek SoC
+
+Chun-Jie Chen (21):
+  dt-bindings: ARM: Mediatek: Add new document bindings of MT8192 clock
+  dt-bindings: ARM: Mediatek: Add mmsys document binding for MT8192
+  dt-bindings: ARM: Mediatek: Add audsys document binding for MT8192
+  clk: mediatek: Add dt-bindings of MT8192 clocks
+  clk: mediatek: Get regmap without syscon compatible check
+  clk: mediatek: Fix asymmetrical PLL enable and disable control
+  clk: mediatek: Add configurable enable control to mtk_pll_data
+  clk: mediatek: Add mtk_clk_simple_probe() to simplify clock providers
+  clk: mediatek: Add MT8192 basic clocks support
+  clk: mediatek: Add MT8192 audio clock support
+  clk: mediatek: Add MT8192 camsys clock support
+  clk: mediatek: Add MT8192 imgsys clock support
+  clk: mediatek: Add MT8192 imp i2c wrapper clock support
+  clk: mediatek: Add MT8192 ipesys clock support
+  clk: mediatek: Add MT8192 mdpsys clock support
+  clk: mediatek: Add MT8192 mfgcfg clock support
+  clk: mediatek: Add MT8192 mmsys clock support
+  clk: mediatek: Add MT8192 msdc clock support
+  clk: mediatek: Add MT8192 scp adsp clock support
+  clk: mediatek: Add MT8192 vdecsys clock support
+  clk: mediatek: Add MT8192 vencsys clock support
+
+ .../bindings/arm/mediatek/mediatek,audsys.txt |    1 +
+ .../bindings/arm/mediatek/mediatek,mmsys.txt  |    1 +
+ .../arm/mediatek/mediatek,mt8192-clock.yaml   |  199 +++
+ .../mediatek/mediatek,mt8192-sys-clock.yaml   |   65 +
+ drivers/clk/mediatek/Kconfig                  |   80 +
+ drivers/clk/mediatek/Makefile                 |   13 +
+ drivers/clk/mediatek/clk-cpumux.c             |    2 +-
+ drivers/clk/mediatek/clk-mt8192-aud.c         |  118 ++
+ drivers/clk/mediatek/clk-mt8192-cam.c         |  107 ++
+ drivers/clk/mediatek/clk-mt8192-img.c         |   70 +
+ .../clk/mediatek/clk-mt8192-imp_iic_wrap.c    |  119 ++
+ drivers/clk/mediatek/clk-mt8192-ipe.c         |   57 +
+ drivers/clk/mediatek/clk-mt8192-mdp.c         |   82 +
+ drivers/clk/mediatek/clk-mt8192-mfg.c         |   50 +
+ drivers/clk/mediatek/clk-mt8192-mm.c          |  108 ++
+ drivers/clk/mediatek/clk-mt8192-msdc.c        |   85 ++
+ drivers/clk/mediatek/clk-mt8192-scp_adsp.c    |   50 +
+ drivers/clk/mediatek/clk-mt8192-vdec.c        |   94 ++
+ drivers/clk/mediatek/clk-mt8192-venc.c        |   53 +
+ drivers/clk/mediatek/clk-mt8192.c             | 1326 +++++++++++++++++
+ drivers/clk/mediatek/clk-mtk.c                |   25 +-
+ drivers/clk/mediatek/clk-mtk.h                |   28 +-
+ drivers/clk/mediatek/clk-mux.c                |   11 +-
+ drivers/clk/mediatek/clk-mux.h                |   18 +-
+ drivers/clk/mediatek/clk-pll.c                |   31 +-
+ drivers/clk/mediatek/reset.c                  |    2 +-
+ include/dt-bindings/clock/mt8192-clk.h        |  585 ++++++++
+ 27 files changed, 3356 insertions(+), 24 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mt8192-sys-clock.yaml
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-aud.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-cam.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-img.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-imp_iic_wrap.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-ipe.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-mdp.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-mfg.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-mm.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-msdc.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-scp_adsp.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-vdec.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-venc.c
+ create mode 100644 drivers/clk/mediatek/clk-mt8192.c
+ create mode 100644 include/dt-bindings/clock/mt8192-clk.h
+
+-- 
+2.18.0
 
