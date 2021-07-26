@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D888A3D63F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85313D642E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239311AbhGZPxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49214 "EHLO mail.kernel.org"
+        id S240279AbhGZPzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233770AbhGZPck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80256604AC;
-        Mon, 26 Jul 2021 16:13:07 +0000 (UTC)
+        id S237459AbhGZPei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:34:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 772B960240;
+        Mon, 26 Jul 2021 16:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315988;
-        bh=gRO08aN6NLVwr78x0am/cMJ/XPtjSjttuudzOiZyBAw=;
+        s=korg; t=1627316105;
+        bh=6BPvIUoAdC+WTyOiM7S32GO6WYWIOb+eZXyLlb41Vwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TKUQRx7pDAa3r9c12bk7o78+WUH82gFalpnl2peolwA4bwhpnfO6uj1RywkbCtm3h
-         b3pVSd4gKwqXh8IDue/yjoMHUAFCh4eCaTBj9AiaIzju8XS42b/tFd2uuP024hAWvh
-         skDWlz2oSnf4TMGaAufXslMRsu4vwASjPUsBgOko=
+        b=vZnUVKzjGCohL+uIHQYyc9xQlMlKRq/70lZ5TM62uWLoahLzRZP7DKLvZ1zvstkuY
+         Cu81gEv0lagIJV7gyL1nUjJyuKicpYQUZ7KjEusgMwQv1WsN0K33uXQhtVteNkN9tB
+         WvOBn1+8oP2L9g4UcCHuwUPyNT+mnaSQbARMVAew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Olivier Langlois <olivier@trillion01.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.13 143/223] ACPI: fix NULL pointer dereference
-Date:   Mon, 26 Jul 2021 17:38:55 +0200
-Message-Id: <20210726153850.912570677@linuxfoundation.org>
+Subject: [PATCH 5.13 144/223] io_uring: Fix race condition when sqp thread goes to sleep
+Date:   Mon, 26 Jul 2021 17:38:56 +0200
+Message-Id: <20210726153850.944924889@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,40 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Olivier Langlois <olivier@trillion01.com>
 
-commit fc68f42aa737dc15e7665a4101d4168aadb8e4c4 upstream.
+commit 997135017716c33f3405e86cca5da9567b40a08e upstream.
 
-Commit 71f642833284 ("ACPI: utils: Fix reference counting in
-for_each_acpi_dev_match()") started doing "acpi_dev_put()" on a pointer
-that was possibly NULL.  That fails miserably, because that helper
-inline function is not set up to handle that case.
+If an asynchronous completion happens before the task is preparing
+itself to wait and set its state to TASK_INTERRUPTIBLE, the completion
+will not wake up the sqp thread.
 
-Just make acpi_dev_put() silently accept a NULL pointer, rather than
-calling down to put_device() with an invalid offset off that NULL
-pointer.
-
-Link: https://lore.kernel.org/lkml/a607c149-6bf6-0fd0-0e31-100378504da2@kernel.dk/
-Reported-and-tested-by: Jens Axboe <axboe@kernel.dk>
-Tested-by: Daniel Scally <djrscally@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/d1419dc32ec6a97b453bee34dc03fa6a02797142.1624473200.git.olivier@trillion01.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/acpi/acpi_bus.h |    3 ++-
+ fs/io_uring.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -711,7 +711,8 @@ static inline struct acpi_device *acpi_d
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -6876,7 +6876,8 @@ static int io_sq_thread(void *data)
+ 		}
  
- static inline void acpi_dev_put(struct acpi_device *adev)
- {
--	put_device(&adev->dev);
-+	if (adev)
-+		put_device(&adev->dev);
- }
- #else	/* CONFIG_ACPI */
+ 		prepare_to_wait(&sqd->wait, &wait, TASK_INTERRUPTIBLE);
+-		if (!test_bit(IO_SQ_THREAD_SHOULD_PARK, &sqd->state)) {
++		if (!test_bit(IO_SQ_THREAD_SHOULD_PARK, &sqd->state) &&
++		    !io_run_task_work()) {
+ 			list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+ 				io_ring_set_wakeup_flag(ctx);
  
 
 
