@@ -2,113 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694613D67E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548A73D67EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhGZTbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:31:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
+        id S232861AbhGZTbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:31:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhGZTbL (ORCPT
+        with ESMTP id S232504AbhGZTbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:31:11 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEC7C061760
+        Mon, 26 Jul 2021 15:31:12 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0067BC061757
         for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:40 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id l18so13397126ioh.11
+Received: by mail-il1-x12a.google.com with SMTP id q18so10139393ile.9
         for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A9jwJu5xi4wkqd+cosT28d+xkLhRgxnSiCg6LQzktSs=;
-        b=LKgln55ijSKVjdSPI0gxwva38SOmK0EEOnSgR5IcEnR+RMnWprvkZpykuWTtlpWehN
-         m2gB3J8TWwOCYR68khUeYJMjCJ7rv1Wc9Ggts83uWJHAmkP8TLqtCx+WoFqnG8qb8x8g
-         viyzUnACK3Xxrsig4PnFiUhgllSkCXjCPDN5XQH7grNl6lzLBFv1kA+MCE/NyOTDmQgL
-         szbmzgX7Mjbz9ibuG5gJYMq8fb3hqqbqZqlZw2BveIRNM2tJZoOOFQlQxLPn8MJAJCGF
-         ip9kaiput6aTO6Gd09Jy4D8pIRtM4dxWVCFtuSCLUD1PVYX6SCANZC47QayZ9dPY0htN
-         5yOg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tgL3Uie/Qodtk8KimI/KjJUNL3yMSDvJaxriDsuLyK0=;
+        b=cQF7DY0oNsgCjN5SXuOfOtTqGXx/ZwRX3G7x0ovIpW16FEMLLNWJRfWv/4qO4IVTBn
+         U0ERKBCaBBN6ddwSJm+U1CqH+eq/IgjAKFH8ji0L9LSisD26l0CfYxEUNeBW7CKdqNxU
+         Ssxd+Jw6wtZcudul6K35cOkw6RAZW6YwNgGDulFHaREEJBqoNshfIUMFPcbfaKhkPT4Q
+         gNB1cQ3HhJABXAkvnKHws3o9PObrgGdcrbRYvVSwACjh5yu0iyhB9p8GdXkGo3ieD2AR
+         TTpBGbEO2B6r/ojJOeZLpoOBikue/d2h/PVzISjSAYXlVfAOj+6uTa7a6s5bF8Uh80/W
+         PRhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=A9jwJu5xi4wkqd+cosT28d+xkLhRgxnSiCg6LQzktSs=;
-        b=TuE8/lY9NyVlB9Pw0lHiGbiT+/I60uClJrGPBhsyL0vQUuvWRfjLMm14i5YEsbOQa1
-         JSFmiCLMU1s5vOyPKmdRP/7LpbPgjdAvcESTIVM5F/g5JziPyxxu1JA0IhiYHbb7vO/h
-         WpT4jHPlmN5o8Ijx5wGJuYZfF8fnQFrOPMwTYL+Mj0RhucOLdn0G+iJ6AhdAtTPadH2q
-         q/Rb7gI9rwqwvobEtmIbO7hcGZtJeeoXR0pS+sqTOi38rhH47hMZtMJLg76h+HBSMiUN
-         ok97IcHQEh7YyL2/WKNt5WCY2gYKruKvfO7UG21fvTXcz0b8as3HDfdnZDTcb1bd+56W
-         IjoQ==
-X-Gm-Message-State: AOAM533JkGnF3f9LIQZOizpCFHh8WpEfS561VNQhfuTRm7MueVKqAXYz
-        ORJkHptkhusHtE5qeMg7RKGRuTqmERjdHw==
-X-Google-Smtp-Source: ABdhPJw1BgCjvrOnf80g7WL2/+i36ERMwpKh07clz3M1BhruqGOrW+uRI71vQ1uhvnLzLWUHcUqmpA==
-X-Received: by 2002:a02:ca58:: with SMTP id i24mr17910189jal.101.1627330299558;
-        Mon, 26 Jul 2021 13:11:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tgL3Uie/Qodtk8KimI/KjJUNL3yMSDvJaxriDsuLyK0=;
+        b=qcQHHg4qXKcK/I+SLkkAjCE7wrkMoIANoxAaawiFN8IuqEe5NhNrfNWRC3uccWq7Z2
+         B0NfNymk40rlXid3OqL81gX2K6BVC7b1ovsLliS4dX/9n+cv2gLp+pFjTnBINsyPWfJK
+         RhSrrKtNW61IS1SNRT0c6cScsWB12uPE+J09D7YtZU5ICn1PPORPr79mkGnzER+yImtL
+         4mrk9al6zx1QX5VnxLlGXwhfWnjvAWxcs407Y8nE+PJ+ldKmtQ9/DLQR6sfd1mQ0h2ZR
+         zlrwkhj7YTxk792dsjLoQ3clAtvTRFLswdFLPD3rn9KJZWswhXPe4G/LXTuEugZtLyLC
+         j0GA==
+X-Gm-Message-State: AOAM533KkW8dLmfN4DBp8ZhDh6F0Sgdttl3Vq8DfuEhB7RKEmfVKUO69
+        is1faoGUf9IXiOOYCs3zvSzUsQ==
+X-Google-Smtp-Source: ABdhPJyUsUg2PRSMaLEEojFEJUGSSLr9dZlv7A5mU7BduZlA6SdIsepLrF8AQH51HQLdEGBUhIFQQw==
+X-Received: by 2002:a05:6e02:5ad:: with SMTP id k13mr14042115ils.284.1627330300432;
+        Mon, 26 Jul 2021 13:11:40 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id z10sm425964iln.8.2021.07.26.13.11.38
+        by smtp.gmail.com with ESMTPSA id z10sm425964iln.8.2021.07.26.13.11.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 13:11:38 -0700 (PDT)
+        Mon, 26 Jul 2021 13:11:40 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 0/5] net: ipa: defer taking uC proxy clock
-Date:   Mon, 26 Jul 2021 15:11:31 -0500
-Message-Id: <20210726201136.502800-1-elder@linaro.org>
+Subject: [PATCH net-next 1/5] net: ipa: kill ipa_modem_setup()
+Date:   Mon, 26 Jul 2021 15:11:32 -0500
+Message-Id: <20210726201136.502800-2-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210726201136.502800-1-elder@linaro.org>
+References: <20210726201136.502800-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series rearranges some of the IPA initialization code.
+The functions ipa_modem_setup() and ipa_modem_teardown() are trivial
+wrappers that call ipa_qmi_setup() and ipa_qmi_teardown().  Just
+call the QMI functions directly, and get rid of the wrappers.
 
-The first patch gets rid of two trivial setup and teardown
-functions, open-coding them in their callers instead.
+Improve the documentation of what setting up QMI does.
 
-The second patch has memory regions get configured before endpoints.
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/ipa_main.c  |  4 ++--
+ drivers/net/ipa/ipa_modem.c | 10 ----------
+ drivers/net/ipa/ipa_modem.h |  4 ----
+ drivers/net/ipa/ipa_qmi.c   |  6 ++----
+ drivers/net/ipa/ipa_qmi.h   | 19 +++++++++++++++++++
+ 5 files changed, 23 insertions(+), 20 deletions(-)
 
-IPA interrupts do not depend on GSI being initialized.  Therefore
-they can be initialized in the config phase rather than waiting for
-setup.  The third patch moves this initialization earlier; memory
-regions must already be defined, so it's done after memory config.
-
-The microcontroller also has no dependency on GSI, though it does
-require IPA interrupts to be configured.  The fourth patch moves
-microcontroller initialization so it too happens during the config
-phase rather than setup.
-
-Finally, we currently take a "proxy clock" for the microcontroller
-during the config phase, dropping it only after we learn the
-microcontroller is initialized.  But microcontroller initialization
-is started by the modem, so there's no point in taking that clock
-reference before we know the modem has booted.  So the last patch
-arranges to wait to take the "proxy clock" for the microcontroller
-until we know the modem is about to boot.
-
-					-Alex
-
-Alex Elder (5):
-  net: ipa: kill ipa_modem_setup()
-  net: ipa: configure memory regions early
-  net: ipa: set up IPA interrupts earlier
-  net: ipa: set up the microcontroller earlier
-  net: ipa: introduce ipa_uc_clock()
-
- drivers/net/ipa/ipa.h           |  2 ++
- drivers/net/ipa/ipa_interrupt.c |  8 ++---
- drivers/net/ipa/ipa_interrupt.h |  8 ++---
- drivers/net/ipa/ipa_main.c      | 56 ++++++++++++++++++---------------
- drivers/net/ipa/ipa_modem.c     | 12 ++-----
- drivers/net/ipa/ipa_modem.h     |  4 ---
- drivers/net/ipa/ipa_qmi.c       |  6 ++--
- drivers/net/ipa/ipa_qmi.h       | 19 +++++++++++
- drivers/net/ipa/ipa_uc.c        | 52 +++++++++++++++++-------------
- drivers/net/ipa/ipa_uc.h        | 22 ++++++++++---
- 10 files changed, 112 insertions(+), 77 deletions(-)
-
+diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
+index 9810c61a03202..91e2ec3a0c133 100644
+--- a/drivers/net/ipa/ipa_main.c
++++ b/drivers/net/ipa/ipa_main.c
+@@ -167,7 +167,7 @@ int ipa_setup(struct ipa *ipa)
+ 	ipa_endpoint_default_route_set(ipa, exception_endpoint->endpoint_id);
+ 
+ 	/* We're all set.  Now prepare for communication with the modem */
+-	ret = ipa_modem_setup(ipa);
++	ret = ipa_qmi_setup(ipa);
+ 	if (ret)
+ 		goto err_default_route_clear;
+ 
+@@ -204,7 +204,7 @@ static void ipa_teardown(struct ipa *ipa)
+ 	struct ipa_endpoint *exception_endpoint;
+ 	struct ipa_endpoint *command_endpoint;
+ 
+-	ipa_modem_teardown(ipa);
++	ipa_qmi_teardown(ipa);
+ 	ipa_endpoint_default_route_clear(ipa);
+ 	exception_endpoint = ipa->name_map[IPA_ENDPOINT_AP_LAN_RX];
+ 	ipa_endpoint_disable_one(exception_endpoint);
+diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
+index af9aedbde717a..5cb60e2ea6042 100644
+--- a/drivers/net/ipa/ipa_modem.c
++++ b/drivers/net/ipa/ipa_modem.c
+@@ -377,13 +377,3 @@ void ipa_modem_deconfig(struct ipa *ipa)
+ 	ipa->notifier = NULL;
+ 	memset(&ipa->nb, 0, sizeof(ipa->nb));
+ }
+-
+-int ipa_modem_setup(struct ipa *ipa)
+-{
+-	return ipa_qmi_setup(ipa);
+-}
+-
+-void ipa_modem_teardown(struct ipa *ipa)
+-{
+-	ipa_qmi_teardown(ipa);
+-}
+diff --git a/drivers/net/ipa/ipa_modem.h b/drivers/net/ipa/ipa_modem.h
+index 2de3e216d1d43..5e6e3d234454a 100644
+--- a/drivers/net/ipa/ipa_modem.h
++++ b/drivers/net/ipa/ipa_modem.h
+@@ -7,7 +7,6 @@
+ #define _IPA_MODEM_H_
+ 
+ struct ipa;
+-struct ipa_endpoint;
+ struct net_device;
+ struct sk_buff;
+ 
+@@ -25,7 +24,4 @@ void ipa_modem_exit(struct ipa *ipa);
+ int ipa_modem_config(struct ipa *ipa);
+ void ipa_modem_deconfig(struct ipa *ipa);
+ 
+-int ipa_modem_setup(struct ipa *ipa);
+-void ipa_modem_teardown(struct ipa *ipa);
+-
+ #endif /* _IPA_MODEM_H_ */
+diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
+index 4661105ce7ab2..90f3aec55b365 100644
+--- a/drivers/net/ipa/ipa_qmi.c
++++ b/drivers/net/ipa/ipa_qmi.c
+@@ -467,10 +467,7 @@ static const struct qmi_ops ipa_client_ops = {
+ 	.new_server	= ipa_client_new_server,
+ };
+ 
+-/* This is called by ipa_setup().  We can be informed via remoteproc that
+- * the modem has shut down, in which case this function will be called
+- * again to prepare for it coming back up again.
+- */
++/* Set up for QMI message exchange */
+ int ipa_qmi_setup(struct ipa *ipa)
+ {
+ 	struct ipa_qmi *ipa_qmi = &ipa->qmi;
+@@ -526,6 +523,7 @@ int ipa_qmi_setup(struct ipa *ipa)
+ 	return ret;
+ }
+ 
++/* Tear down IPA QMI handles */
+ void ipa_qmi_teardown(struct ipa *ipa)
+ {
+ 	cancel_work_sync(&ipa->qmi.init_driver_work);
+diff --git a/drivers/net/ipa/ipa_qmi.h b/drivers/net/ipa/ipa_qmi.h
+index b6f2055d35a68..856ef629ccc8d 100644
+--- a/drivers/net/ipa/ipa_qmi.h
++++ b/drivers/net/ipa/ipa_qmi.h
+@@ -39,7 +39,26 @@ struct ipa_qmi {
+ 	bool indication_sent;
+ };
+ 
++/**
++ * ipa_qmi_setup() - Set up for QMI message exchange
++ * @ipa:		IPA pointer
++ *
++ * This is called at the end of ipa_setup(), to prepare for the exchange
++ * of QMI messages that perform a "handshake" between the AP and modem.
++ * When the modem QMI server announces its presence, an AP request message
++ * supplies operating parameters to be used to the modem, and the modem
++ * acknowledges receipt of those parameters.  The modem will not touch the
++ * IPA hardware until this handshake is complete.
++ *
++ * If the modem crashes (or shuts down) a new handshake begins when the
++ * modem's QMI server is started again.
++ */
+ int ipa_qmi_setup(struct ipa *ipa);
++
++/**
++ * ipa_qmi_teardown() - Tear down IPA QMI handles
++ * @ipa:		IPA pointer
++ */
+ void ipa_qmi_teardown(struct ipa *ipa);
+ 
+ #endif /* !_IPA_QMI_H_ */
 -- 
 2.27.0
 
