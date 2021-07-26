@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7D63D58A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9210B3D58AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbhGZLCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:02:22 -0400
-Received: from smtpbguseast2.qq.com ([54.204.34.130]:53795 "EHLO
-        smtpbguseast2.qq.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233456AbhGZLCV (ORCPT
+        id S233607AbhGZLD2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Jul 2021 07:03:28 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:42927 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233371AbhGZLD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:02:21 -0400
-X-Greylist: delayed 19360 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Jul 2021 07:02:21 EDT
-X-QQ-mid: bizesmtp51t1627299758t4xbo5eq
-Received: from localhost.localdomain (unknown [58.240.82.166])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 26 Jul 2021 19:42:31 +0800 (CST)
-X-QQ-SSF: 01400000008000103000B00B0000000
-X-QQ-FEAT: 5eVkbtW6/SC+6wAnJpFwnj0MoKG1KKSm/+cM6LG7wFKt+5jJNatP/18/vO/9U
-        ZHwWzrwJi35bXTDxgDar70uShKHnIKKNueZMfK9tIm4ixZUwVwLhtw5QmKkuikNfCdef6eW
-        EeSyiFlRdInbCUu3cxQzfEyOa8LaucqdN/zMWTtNralfalMgVMxok7zNSR8RdlzMHc7Wkj5
-        88Rew/+8AXRVjQPep+iwDGBd8ihASqw72dQlgK5DE65dMickncuR9SpAQ02Mlzo1/cEymr6
-        p357Oh2DnhJnsSLBk/rvwFVj8cyNNJdqpkhS4EWpMTs7gLoQe2aW1qps15eGf4xBPvo6TUR
-        ZJkGQt9AcufwqIeJs4=
-X-QQ-GoodBg: 2
-From:   Li Manyi <limanyi@uniontech.com>
-To:     limanyi@uniontech.com
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Subject: [PATCH] scsi: sr: Return correct event when media event code is 3
-Date:   Mon, 26 Jul 2021 19:42:27 +0800
-Message-Id: <20210726114227.3661-1-limanyi@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 26 Jul 2021 07:03:27 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16QBhm463012553, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16QBhm463012553
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Jul 2021 19:43:48 +0800
+Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 19:43:47 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 19:43:46 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
+ RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
+ 15.01.2106.013; Mon, 26 Jul 2021 19:43:46 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: RE: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into r8152_main.c and r8152_fw.c
+Thread-Topic: [PATCH net-next RESEND 2/2] r8152: separate the r8152.c into
+ r8152_main.c and r8152_fw.c
+Thread-Index: AQHXgdL4UhnFIS2opkGLRT1L0R8XUatUWD4AgACR1mD//38YAIAAqNrw//+C5QCAAIjmkA==
+Date:   Mon, 26 Jul 2021 11:43:46 +0000
+Message-ID: <13e5ff767f304e1db6b755c10ae47c92@realtek.com>
+References: <1394712342-15778-368-Taiwan-albertk@realtek.com>
+ <1394712342-15778-371-Taiwan-albertk@realtek.com>
+ <1394712342-15778-373-Taiwan-albertk@realtek.com>
+ <YP5mFKeJsGezjdve@kroah.com> <c6b44f93a5b14fbb98d4c6cb0ed2a77f@realtek.com>
+ <YP50SIgqAEyKWSpA@kroah.com> <47801164b7b3406b895be1542e0ce4a2@realtek.com>
+ <YP6Y+i5VzZOJjoW7@kroah.com>
+In-Reply-To: <YP6Y+i5VzZOJjoW7@kroah.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.177.203]
+x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/7/26_=3F=3F_10:24:00?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybgforeign:qybgforeign2
-X-QQ-Bgrelay: 1
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 11:27:20
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165243 [Jul 26 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/26/2021 11:29:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the description for media event code 0: NoChg
-Media status is unchanged.
+Greg KH <gregkh@linuxfoundation.org>
+> Sent: Monday, July 26, 2021 7:14 PM
+[...]
+> > We support a new chip or feature with a test driver.
+> > The test driver is similar with the upstream driver, except
+> > the method of the firmware. After we confirm that the
+> > test driver work fine, we compare the differences with
+> > the upstream driver and submit patches. And the code
+> > about firmware takes us more time to find out the
+> > differences. Therefore, I wish to move the part of
+> > the firmware out.
+> 
+> Great, then submit the broken up driver as part of a patchset that adds
+> new device support, as that makes more sense when that happens, right?
 
-the description for media event code 1: EjectRequest
-The Drive has received a request from the user (usually through a
-mechanical switch on the Drive) to eject the specified slot or media.
+I got it. I will submit them with the support of new device in the future.
 
-the description for media event code 2: NewMedia
-The specified slot (or the Drive) has received new media, and is
-ready to access it.
-
-the description for media event code 3: MediaRemoval
-The media has been removed from the specified slot, and the
-Drive is unable to access the media without user intervention.
-This applies to media changers only.
-
-fix bug: https://bugzilla.kernel.org/show_bug.cgi?id=213759
-
-Signed-off-by: Li Manyi <limanyi@uniontech.com>
----
- drivers/scsi/sr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 94c254e9012e..a6d3ac0a6cbc 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -221,7 +221,7 @@ static unsigned int sr_get_events(struct scsi_device *sdev)
- 	else if (med->media_event_code == 2)
- 		return DISK_EVENT_MEDIA_CHANGE;
- 	else if (med->media_event_code == 3)
--		return DISK_EVENT_EJECT_REQUEST;
-+		return DISK_EVENT_MEDIA_CHANGE;
- 	return 0;
- }
- 
--- 
-2.20.1
-
+Best Regards,
+Hayes
 
 
