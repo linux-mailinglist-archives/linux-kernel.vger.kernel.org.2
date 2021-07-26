@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23E23D6095
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA513D62DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237491AbhGZPXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53066 "EHLO mail.kernel.org"
+        id S237784AbhGZPkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:40:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237467AbhGZPPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 474E86109D;
-        Mon, 26 Jul 2021 15:55:52 +0000 (UTC)
+        id S237404AbhGZPWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A0C960240;
+        Mon, 26 Jul 2021 16:03:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314952;
-        bh=cPWriWZAO0tQyG/41GfIUBf1wHgeXjbBFrt3cmN50O8=;
+        s=korg; t=1627315396;
+        bh=j3wE9b5BjrC6n/xTO2y74WujNoBcqvyf2zLfTFFuLzQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aUrhmuDUU+QrtuPZX361j4hol60IPNNKooMottlvdJl2FCAXzH3RdoN/SpCHDQyLR
-         Ed/sv+GmLP81Qv/v/+yRzD5+VrTSzwxSXdyeL6KimTi0ITz+QVM4ztMhM9mYNTaP0H
-         LvBPUZ8hkZ9bkbX3Limx64TxeG74gPkjQuJaFpas=
+        b=n2fVLN0AvaQ6Och/aKSnu4gFpVJGG3R/sCPvweiIKlitXUVS+qr26l+z7Vyx3alyt
+         qTHTeOOujA9EkiuPljAtUj3Qnd0tt2rC1+GvXHQgjU0rQ9TULH+AjJjoZ+5P6PCF5U
+         iNQBvtzbcERC1i+2FXP3nqmd0RO4a8WVoL4GtJ/o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 032/108] spi: stm32: fixes pm_runtime calls in probe/remove
-Date:   Mon, 26 Jul 2021 17:38:33 +0200
-Message-Id: <20210726153832.723832249@linuxfoundation.org>
+Subject: [PATCH 5.10 081/167] bnxt_en: Add missing check for BNXT_STATE_ABORT_ERR in bnxt_fw_rset_task()
+Date:   Mon, 26 Jul 2021 17:38:34 +0200
+Message-Id: <20210726153842.134771885@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit 7999d2555c9f879d006ea8469d74db9cdb038af0 ]
+[ Upstream commit 6cd657cb3ee6f4de57e635b126ffbe0e51d00f1a ]
 
-Add pm_runtime calls in probe/probe error path and remove
-in order to be consistent in all places in ordering and
-ensure that pm_runtime is disabled prior to resources used
-by the SPI controller.
+In the BNXT_FW_RESET_STATE_POLL_VF state in bnxt_fw_reset_task() after all
+VFs have unregistered, we need to check for BNXT_STATE_ABORT_ERR after
+we acquire the rtnl_lock.  If the flag is set, we need to abort.
 
-This patch also fixes the 2 following warnings on driver remove:
-WARNING: CPU: 0 PID: 743 at drivers/clk/clk.c:594 clk_core_disable_lock+0x18/0x24
-WARNING: CPU: 0 PID: 743 at drivers/clk/clk.c:476 clk_unprepare+0x24/0x2c
-
-Fixes: 038ac869c9d2 ("spi: stm32: add runtime PM support")
-
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1625646426-5826-2-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 230d1f0de754 ("bnxt_en: Handle firmware reset.")
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 8c308279c535..e9d48e94f5ed 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -1936,6 +1936,7 @@ static int stm32_spi_probe(struct platform_device *pdev)
- 		master->can_dma = stm32_spi_can_dma;
- 
- 	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_get_noresume(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
- 
- 	ret = spi_register_master(master);
-@@ -1974,6 +1975,8 @@ static int stm32_spi_probe(struct platform_device *pdev)
- 
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- err_dma_release:
- 	if (spi->dma_tx)
- 		dma_release_channel(spi->dma_tx);
-@@ -1992,9 +1995,14 @@ static int stm32_spi_remove(struct platform_device *pdev)
- 	struct spi_master *master = platform_get_drvdata(pdev);
- 	struct stm32_spi *spi = spi_master_get_devdata(master);
- 
-+	pm_runtime_get_sync(&pdev->dev);
-+
- 	spi_unregister_master(master);
- 	spi->cfg->disable(spi);
- 
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
- 	if (master->dma_tx)
- 		dma_release_channel(master->dma_tx);
- 	if (master->dma_rx)
-@@ -2002,7 +2010,6 @@ static int stm32_spi_remove(struct platform_device *pdev)
- 
- 	clk_disable_unprepare(spi->clk);
- 
--	pm_runtime_disable(&pdev->dev);
- 
- 	pinctrl_pm_select_sleep_state(&pdev->dev);
- 
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index f003f08de167..dee6bcfe2fe2 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -11480,6 +11480,10 @@ static void bnxt_fw_reset_task(struct work_struct *work)
+ 		}
+ 		bp->fw_reset_timestamp = jiffies;
+ 		rtnl_lock();
++		if (test_bit(BNXT_STATE_ABORT_ERR, &bp->state)) {
++			rtnl_unlock();
++			goto fw_reset_abort;
++		}
+ 		bnxt_fw_reset_close(bp);
+ 		if (bp->fw_cap & BNXT_FW_CAP_ERR_RECOVER_RELOAD) {
+ 			bp->fw_reset_state = BNXT_FW_RESET_STATE_POLL_FW_DOWN;
 -- 
 2.30.2
 
