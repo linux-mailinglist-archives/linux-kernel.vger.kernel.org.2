@@ -2,336 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 118DF3D681E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BC73D6820
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhGZTqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:46:25 -0400
-Received: from mail-co1nam11on2080.outbound.protection.outlook.com ([40.107.220.80]:14561
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229580AbhGZTqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:46:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LN2rZCOI0tsoMOjWnFBgeYqXwssAg5Waz2qwVGfpqBMkrWMXU0rlbqGiOVVlrqnCi/nYbryeAy9bcsQFFNv/9JcxJgM7+mQ2+8ebm+VbTwN9x36qsbMQ4WtTgYfc+I2LlgOl6kpgZIOBoM0CaNhW7zdtCmgXLYoL3q3K0+TA4Ga1CoU6Lt+p1dOZmuc33IfX/RrMT+354AplhtXTc8HFEzyD1jd1iFzmz4+DXA9Wz02PPWRiWRKr9/HwcOOq3cDGIGucB2LH3G+OHpwWizsgA6p09JUt3XwkBuLaGe/JJan6wccqrUkb+UsVpOYIQ6SugmfLQpEnkDketry5Gx26Og==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s2W9+W9X5aeWsvgMNQp9kyFUuoK2KlcxVz3y0mK5GGo=;
- b=aak0rGO+Y0qAIruS3BBlM9iWOmturAnEBBhqjTFMApullp/MIpHp0RDmvDLy80EysETsjOidZHzcLxJHCKYNeY8Zvml7eOxLIab3WjRukVqgIeP3bGWAVqY+D50Uf0//WmZ9nMgItqS3dhqNDsFF5g/ogpsw3E29Cb6oKtbUPC3PI317O5VuxkT5im+8xfrcEOSTYa6KGi+V+PSYIwhG8+IoBngqBnRMHslMn7qTHgypeQlzTPEjCyNS2G1rRlfamf6D0hFmf7WnGxPLANMd7Hy+0zsWo7hGQ3EteWWrIQoHTDmdLSdHvJ82nobfbAHO/Bb0suWV2kDqZwhSJEJfHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
- dkim=pass header.d=labundy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s2W9+W9X5aeWsvgMNQp9kyFUuoK2KlcxVz3y0mK5GGo=;
- b=du3Tll/VRgQvi+kPU7TS2XnLYg1+iy4RVAVEzpCn1o6ioiBF/0EzXkYgKZ7sUNWz1XG0LvdZVQknZbk39IZP6ZZlax6FSYp5XWEJ98pz1G6ClQCTpkG5QBClkMtL6e2Ar9g3zcwozmSXixhM8OdB4bugFqMW41fZGJBZ8FtiPxE=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=labundy.com;
-Received: from SJ0PR08MB6544.namprd08.prod.outlook.com (2603:10b6:a03:2d3::16)
- by BY3PR08MB7108.namprd08.prod.outlook.com (2603:10b6:a03:363::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Mon, 26 Jul
- 2021 20:26:50 +0000
-Received: from SJ0PR08MB6544.namprd08.prod.outlook.com
- ([fe80::4851:4a67:6f76:fdf6]) by SJ0PR08MB6544.namprd08.prod.outlook.com
- ([fe80::4851:4a67:6f76:fdf6%9]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
- 20:26:50 +0000
-Date:   Mon, 26 Jul 2021 15:26:19 -0500
-From:   Jeff LaBundy <jeff@labundy.com>
-To:     kernel test robot <lkp@intel.com>, natechancellor@gmail.com,
-        ndesaulniers@google.com, mpe@ellerman.id.au
-Cc:     clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: drivers/input/misc/iqs626a.c:1645:12: warning: stack frame size
- (2384) exceeds limit (2048) in function 'iqs626_probe'
-Message-ID: <20210726202619.GA1915@nixie72>
-References: <202107261431.ugRM3oKP-lkp@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202107261431.ugRM3oKP-lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: SN6PR04CA0082.namprd04.prod.outlook.com
- (2603:10b6:805:f2::23) To SJ0PR08MB6544.namprd08.prod.outlook.com
- (2603:10b6:a03:2d3::16)
+        id S231925AbhGZTqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:46:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229580AbhGZTq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 15:46:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627331217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fw3k8510EioNmTpAQUibHcKLICTVfvZZc4r6uW301CE=;
+        b=fWt5DfH/yRGoMtZuFI9uoWaxVylzJxvJL6CVdg3w97pAnBS+8fD7e3bHh2/28igghdA2aC
+        w44SOkJXxBODFNNVdkEzweorU0Ig1Tq1w0tBeE7LuNIPffnBntAS+5fi50CmDNrA+nNxhm
+        arhYDKRsMmSCemsPBGsKozADxHCFkRw=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-546-3dVXJ2FMP2aOYpwS6zmkTQ-1; Mon, 26 Jul 2021 16:26:56 -0400
+X-MC-Unique: 3dVXJ2FMP2aOYpwS6zmkTQ-1
+Received: by mail-qv1-f69.google.com with SMTP id o32-20020a0c85a30000b0290328f91ede2bso5632484qva.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:26:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fw3k8510EioNmTpAQUibHcKLICTVfvZZc4r6uW301CE=;
+        b=PAM/HDMgH6LGX+G/h9v+JwbHPos0x4Aeqet5WoApez3fRCLUxhRqMv9zqW1HFcGL8i
+         KH+JSmFGxalj0OLzIWm3uDcjg9qF5A5wSTk3+jSDUjPuXEyr2OhulV6bQ40DsEE62PnP
+         vj2TSzI80xoQEpOamaw6LnCpPOURe7liTKlc02o+zjqstVJJg7QW+aAzlDLnb8jBUEhF
+         Mjo27JEkpEK/zlu49WSYIEz3WrP2iI3M0vQ+htNU9Nll4kW4LETJ5wGA+XHLGVn4rpIk
+         rj6Io1EwDyKjJctz0P4DgC096NwzJIwp/QKJIKTEkOXTY8Ihg0/aPbARI21zBl0C8ZTc
+         Mf6Q==
+X-Gm-Message-State: AOAM532aKZrbQJxGlNw5qgbe9ijHbqUsObb9qiNZ/KDAaspczaL/O5aV
+        uAyEQQ37oTttNdNXCqrpyO1lr1DguIW+eqN6wyeLzoiZVCvP9f0eKz8CEFRSeU8mxEU8mVqVswb
+        xsHJWmn9OgbmC5xjmiFUUnVx1
+X-Received: by 2002:a0c:ee43:: with SMTP id m3mr19728125qvs.34.1627331215242;
+        Mon, 26 Jul 2021 13:26:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyD3CJp5qfja+2uXTxqqxkY9fBFfISZ81Yi9O/f57IsbQrtZnAkoV3cR+A8YpkuW82y6D990Q==
+X-Received: by 2002:a0c:ee43:: with SMTP id m3mr19728118qvs.34.1627331215053;
+        Mon, 26 Jul 2021 13:26:55 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id g11sm444951qtk.91.2021.07.26.13.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 13:26:54 -0700 (PDT)
+From:   trix@redhat.com
+To:     hao.wu@intel.com, mdf@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH] fpga: region: handle compat_id as an uuid
+Date:   Mon, 26 Jul 2021 13:26:50 -0700
+Message-Id: <20210726202650.4074614-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nixie72 (136.49.90.243) by SN6PR04CA0082.namprd04.prod.outlook.com (2603:10b6:805:f2::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.24 via Frontend Transport; Mon, 26 Jul 2021 20:26:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0b97ce14-efa7-4ec0-e56f-08d95073b29e
-X-MS-TrafficTypeDiagnostic: BY3PR08MB7108:
-X-Microsoft-Antispam-PRVS: <BY3PR08MB71084883650A97946337020AD3E89@BY3PR08MB7108.namprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LNY0x7M+1GnxN3D6zb5BMLSD7QrsA/bRwufz0QBPMRmtTgZvkMiHbV6RiplBZJuXp2gn04U6HURuXCnqRogdyKAnomy5ozoS1GhBY/5UbkY00NGn++6dFJ5frwN9T+Vfo0YLsHcOEuBSXHdP3MthT3rdfPDGqT8xOQwjaUXYA90Z76i6bjYrip7PoLyfSUB38LPWM8FPGYqBgsK4FBm392n3vbTvHVkX20UVAZgxXrdFMMY/4KQ2DgTofKsd2/BNXt43v88PFsEfoWb35b47zWJnkWrSilhwC15g4odznKbps2vUhquS6I4j9qB3T2C7kxaBRslIn5SVBwnyYr3O7GBtblym1ljfPZ3j3s0MLhJzxQ7jl7yOMRNiK4X5/ga3orp9u57K1lrDuuJLIdsn7T3dzqjXwhZDPs+9tBAn/EBOE0HpvWN9Que6xSwaRx6LZvmG3licUq2Q6lGE5VPNOeyGXRR0mtFHWacVxIbdfn3F0IUZpyMOAZTDluo1ULQ4zy2nIZKh0LznoBoSFCWR4g80fLmbBNfYte8Q+BzXOouX+AvEV9NLuXgyD8kj43Av7VQGHUqojbyD+EQ8Ac95Hm2R+r3+FBGKx+222YChDWDaBppkwNzCpbIGYd6shVt+X0MSS1ERJIDgSlD1smJYAGVTSgnvvUAO0o8MYbewUs2oBbFnUmCxg5WpAJsimWsEROdvnW+R+LDiQ0IE0D/4/nwUZPH3AzH9B8Giz6cUY4QEnUJY9gGpDZZH5ThUUH4yNBRG3X4s3FosUrEdR6rXISJskmvuxwLdUZJQkpIVvBI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR08MB6544.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(39830400003)(366004)(376002)(136003)(478600001)(2906002)(86362001)(6666004)(26005)(8936002)(52116002)(186003)(33656002)(1076003)(966005)(956004)(55016002)(6496006)(8676002)(9686003)(66556008)(66946007)(9576002)(33716001)(316002)(66476007)(38100700002)(5660300002)(4326008)(38350700002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?z1Z3f1ssxpBs9TWqVaZmEAFVESof2KOYM3VfFmtkDwJ99Jj8RKgfvVHYqyAX?=
- =?us-ascii?Q?2B7M/oyikjLsgXo+8BO9ddW31WsumBoVsG12bROSNgwZrQ9Ca24NYxzppc+R?=
- =?us-ascii?Q?zEYMdQNOFSjmhefWoutLkvifQIOu9cctxvpya9Nn9Khxw6EllXQ1chDMVCTc?=
- =?us-ascii?Q?M2eZNmt2crdcAHKfpVl82ywv+hCUN/5QO8OA8H1ny6GjOzafsAngoYIbwixs?=
- =?us-ascii?Q?ceGFT77eJIsjW3Wm9eL3us/rlTeNaFC9BbIvQmSgmPNOs/guf8i1iSkDmKsd?=
- =?us-ascii?Q?ZBYjXIgekkvapxhM1GXOnwQfTHeGbd+b9tm6AQNkBcx6BjGOOiOenW31SOSW?=
- =?us-ascii?Q?gIBOT7OYsqQW+4wq+BJh6ZNSfv8oBOdtZHHKygWMNWa32coyQFD6GRxm0Mp2?=
- =?us-ascii?Q?ezK/7iQW3DzAvipuEmR9fuC6s1wWC3uwZDjxWuri5uOf2lREjY6PQx7Frlmo?=
- =?us-ascii?Q?ypPmAxIWhjaWYWYw+XZi8EA1n+AwKfrJBsemTarN3NcZY2Lhn1OpgJ6izWMB?=
- =?us-ascii?Q?fbYDe8993mglym8a3dicGKau/Y+5ydEe9n/ck80WWAPGl5ZiOyEWotioMC6R?=
- =?us-ascii?Q?vu2SVEIcPMOfYCD1d2DkvwT+QTTbdsdaXqIp3t0woZiaSy2CAhHBaqXajQMp?=
- =?us-ascii?Q?Q0C2qBU0qOVl8kM2u6WeGMunrQlZQLc55KiOy2luUNXvEZTil4y5baL5a2K+?=
- =?us-ascii?Q?0yM67FBeCnZU+oQfNfdvFycuQhGB2SL5KiL9GkybS2KurcQ8/cBgLf5ea483?=
- =?us-ascii?Q?jDuz3HqiaOp3WF4aw6pZPWI7G/xcYaYJUuWM6fx6WkQRxt3++Npjw9mufX84?=
- =?us-ascii?Q?Bt7I4dIxyIVfYAjGbOg3r5NLELKYPaY5qVEum1xdKZZv+/msOFuY/640JPKi?=
- =?us-ascii?Q?f/pnx08S4KqJfqnraYd+Zz/acAZ5hXEmuOQuVAp893zRAuTk74UBtf01nLZQ?=
- =?us-ascii?Q?C9z0QlfJfQChSAb3f/aZNeI+kc57JlAY4HUrTBNfWsn/7VfcAPs4HtfyW0Ep?=
- =?us-ascii?Q?k26Z8fZdbgeJZw+nLwbY4X8FmzNp5vylexkpM5bug3UJlN177BPPBc3Rd8x/?=
- =?us-ascii?Q?FUoONAT2sCJQLtrII7xHhVF7WK6ymnKS12JI8VPntJgEapIx2wou8X3zd2tO?=
- =?us-ascii?Q?9gjo/yNYaPjJ1WotcJL6Zmx9Rj8PEgCKER1mXJg4g8fKUHWzJvW6rtcPmGHg?=
- =?us-ascii?Q?KnCXmDfBZ+5+QJLq/zemH+R1shjTbqi8N1wtVnbUszT4vsIDF3NawS0mALcE?=
- =?us-ascii?Q?hFh6pCL5DmpeNEF21xQaYo0rd54VjNKUqIrwg3vu0i2DeBTXbGcVuam92udv?=
- =?us-ascii?Q?OX37ehXPbcgKhVaSzl1zIo8f?=
-X-OriginatorOrg: labundy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b97ce14-efa7-4ec0-e56f-08d95073b29e
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR08MB6544.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2021 20:26:49.9905
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IhKLQqoPFt2FvBN4PN1MfSYaFRq4MB0QCw9xVrXl7g7gZcKPj9X/hQteXroaEq9FM0gAK48KhHweflqC1kOCJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR08MB7108
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Nathan, Nick and Michael
+From: Tom Rix <trix@redhat.com>
 
-Hi all,
+An fpga region's compat_id is exported by the sysfs
+as a 128 bit hex string formed by concatenating two
+64 bit values together.
 
-On Mon, Jul 26, 2021 at 02:20:40PM +0800, kernel test robot wrote:
-> Hi Jeff,
-> 
-> FYI, the error/warning still remains.
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   ff1176468d368232b684f75e82563369208bc371
-> commit: f1d2809de97adc422967b6de59f0f6199769eb93 Input: Add support for Azoteq IQS626A
-> date:   4 months ago
-> config: powerpc-randconfig-r011-20210718 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 5d5b08761f944d5b9822d582378333cc4b36a0a7)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install powerpc cross compiling tool for clang build
->         # apt-get install binutils-powerpc-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=f1d2809de97adc422967b6de59f0f6199769eb93
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout f1d2809de97adc422967b6de59f0f6199769eb93
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    __do_insb
->    ^
->    arch/powerpc/include/asm/io.h:556:56: note: expanded from macro '__do_insb'
->    #define __do_insb(p, b, n)      readsb((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/input/misc/iqs626a.c:20:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:45:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:12:1: note: expanded from here
->    __do_insw
->    ^
->    arch/powerpc/include/asm/io.h:557:56: note: expanded from macro '__do_insw'
->    #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/input/misc/iqs626a.c:20:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:47:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:16:1: note: expanded from here
->    __do_insl
->    ^
->    arch/powerpc/include/asm/io.h:558:56: note: expanded from macro '__do_insl'
->    #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
->                                           ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/input/misc/iqs626a.c:20:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:49:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:20:1: note: expanded from here
->    __do_outsb
->    ^
->    arch/powerpc/include/asm/io.h:559:58: note: expanded from macro '__do_outsb'
->    #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/input/misc/iqs626a.c:20:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:51:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:24:1: note: expanded from here
->    __do_outsw
->    ^
->    arch/powerpc/include/asm/io.h:560:58: note: expanded from macro '__do_outsw'
->    #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
->    In file included from drivers/input/misc/iqs626a.c:20:
->    In file included from include/linux/interrupt.h:11:
->    In file included from include/linux/hardirq.h:10:
->    In file included from arch/powerpc/include/asm/hardirq.h:6:
->    In file included from include/linux/irq.h:20:
->    In file included from include/linux/io.h:13:
->    In file included from arch/powerpc/include/asm/io.h:619:
->    arch/powerpc/include/asm/io-defs.h:53:1: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->    DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    arch/powerpc/include/asm/io.h:616:3: note: expanded from macro 'DEF_PCI_AC_NORET'
->                    __do_##name al;                                 \
->                    ^~~~~~~~~~~~~~
->    <scratch space>:28:1: note: expanded from here
->    __do_outsl
->    ^
->    arch/powerpc/include/asm/io.h:561:58: note: expanded from macro '__do_outsl'
->    #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
->                                            ~~~~~~~~~~~~~~~~~~~~~^
-> >> drivers/input/misc/iqs626a.c:1645:12: warning: stack frame size (2384) exceeds limit (2048) in function 'iqs626_probe' [-Wframe-larger-than]
->    static int iqs626_probe(struct i2c_client *client)
->               ^
->    14 warnings generated.
-> 
-> 
-> vim +/iqs626_probe +1645 drivers/input/misc/iqs626a.c
-> 
->   1644	
-> > 1645	static int iqs626_probe(struct i2c_client *client)
->   1646	{
->   1647		struct iqs626_ver_info ver_info;
->   1648		struct iqs626_private *iqs626;
->   1649		int error;
->   1650	
->   1651		iqs626 = devm_kzalloc(&client->dev, sizeof(*iqs626), GFP_KERNEL);
->   1652		if (!iqs626)
->   1653			return -ENOMEM;
->   1654	
->   1655		i2c_set_clientdata(client, iqs626);
->   1656		iqs626->client = client;
->   1657	
->   1658		iqs626->regmap = devm_regmap_init_i2c(client, &iqs626_regmap_config);
->   1659		if (IS_ERR(iqs626->regmap)) {
->   1660			error = PTR_ERR(iqs626->regmap);
->   1661			dev_err(&client->dev, "Failed to initialize register map: %d\n",
->   1662				error);
->   1663			return error;
->   1664		}
->   1665	
->   1666		init_completion(&iqs626->ati_done);
->   1667	
->   1668		error = regmap_raw_read(iqs626->regmap, IQS626_VER_INFO, &ver_info,
->   1669					sizeof(ver_info));
->   1670		if (error)
->   1671			return error;
->   1672	
->   1673		if (ver_info.prod_num != IQS626_VER_INFO_PROD_NUM) {
->   1674			dev_err(&client->dev, "Unrecognized product number: 0x%02X\n",
->   1675				ver_info.prod_num);
->   1676			return -EINVAL;
->   1677		}
->   1678	
->   1679		error = iqs626_parse_prop(iqs626);
->   1680		if (error)
->   1681			return error;
->   1682	
->   1683		error = iqs626_input_init(iqs626);
->   1684		if (error)
->   1685			return error;
->   1686	
->   1687		error = devm_request_threaded_irq(&client->dev, client->irq,
->   1688						  NULL, iqs626_irq, IRQF_ONESHOT,
->   1689						  client->name, iqs626);
->   1690		if (error) {
->   1691			dev_err(&client->dev, "Failed to request IRQ: %d\n", error);
->   1692			return error;
->   1693		}
->   1694	
->   1695		if (!wait_for_completion_timeout(&iqs626->ati_done,
->   1696						 msecs_to_jiffies(2000))) {
->   1697			dev_err(&client->dev, "Failed to complete ATI\n");
->   1698			return -ETIMEDOUT;
->   1699		}
->   1700	
->   1701		/*
->   1702		 * The keypad may include one or more switches and is not registered
->   1703		 * until ATI is complete and the initial switch states are read.
->   1704		 */
->   1705		error = input_register_device(iqs626->keypad);
->   1706		if (error)
->   1707			dev_err(&client->dev, "Failed to register keypad: %d\n", error);
->   1708	
->   1709		return error;
->   1710	}
->   1711	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The only user of compat_id is dfl.  Its user library
+opae converts this value into a uuid.
 
-This function has elicited previous stack frame warnings using clang with
-powerpc, the last being [1]. In each case the warning is preceded by many
-others in arch/powerpc/include/asm/ so I'm curious if the warning here is
-simply fallout from something else.
+ex/
+$ cat /sys/class/fpga_region/region1/compat_id
+f3c9941350814aadbced07eb84a6d0bb
 
-Do you have any insight? The stack size should be well under 2 kB in this
-case. I see some other similar warnings throughout the mailing list which
-are preceded by DEF_PCI_AC_NORET as well. If I have misunderstood or this
-driver is indeed doing something nefarious, please let me know.
+Is reported as
+$ fpgainfo bmc
+...
+Pr Interface Id                  : f3c99413-5081-4aad-bced-07eb84a6d0bb
 
-Kind regards,
-Jeff LaBundy
+Storing a uuid as 2 64 bit values is vendor specific.
+And concatenating them together is vendor specific.
 
-[1] https://lkml.org/lkml/2021/6/6/10
+It is better to store and print out as a vendor neutral uuid.
+
+Change fpga_compat_id from a struct to a union.
+Keep the old 64 bit values for dfl.
+Sysfs output is now
+f3c99413-5081-4aad-bced-07eb84a6d0bb
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ .../ABI/testing/sysfs-class-fpga-region        |  4 ++--
+ drivers/fpga/dfl-fme-mgr.c                     |  8 ++++----
+ drivers/fpga/fpga-region.c                     |  4 +---
+ include/linux/fpga/fpga-mgr.h                  | 18 ++++++++++++------
+ include/linux/fpga/fpga-region.h               |  2 +-
+ 5 files changed, 20 insertions(+), 16 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-class-fpga-region b/Documentation/ABI/testing/sysfs-class-fpga-region
+index bc7ec644acc9a..241359fb74a55 100644
+--- a/Documentation/ABI/testing/sysfs-class-fpga-region
++++ b/Documentation/ABI/testing/sysfs-class-fpga-region
+@@ -5,5 +5,5 @@ Contact:	Wu Hao <hao.wu@intel.com>
+ Description:	FPGA region id for compatibility check, e.g. compatibility
+ 		of the FPGA reconfiguration hardware and image. This value
+ 		is defined or calculated by the layer that is creating the
+-		FPGA region. This interface returns the compat_id value or
+-		just error code -ENOENT in case compat_id is not used.
++		FPGA region. This interface returns a uuid value or just
++		error code -ENOENT in case compat_id is not used.
+diff --git a/drivers/fpga/dfl-fme-mgr.c b/drivers/fpga/dfl-fme-mgr.c
+index d5861d13b3069..012b72712684c 100644
+--- a/drivers/fpga/dfl-fme-mgr.c
++++ b/drivers/fpga/dfl-fme-mgr.c
+@@ -273,16 +273,16 @@ static const struct fpga_manager_ops fme_mgr_ops = {
+ };
+ 
+ static void fme_mgr_get_compat_id(void __iomem *fme_pr,
+-				  struct fpga_compat_id *id)
++				  union fpga_compat_id *id)
+ {
+-	id->id_l = readq(fme_pr + FME_PR_INTFC_ID_L);
+-	id->id_h = readq(fme_pr + FME_PR_INTFC_ID_H);
++	id->id_l = cpu_to_be64(readq(fme_pr + FME_PR_INTFC_ID_L));
++	id->id_h = cpu_to_be64(readq(fme_pr + FME_PR_INTFC_ID_H));
+ }
+ 
+ static int fme_mgr_probe(struct platform_device *pdev)
+ {
+ 	struct dfl_fme_mgr_pdata *pdata = dev_get_platdata(&pdev->dev);
+-	struct fpga_compat_id *compat_id;
++	union fpga_compat_id *compat_id;
+ 	struct device *dev = &pdev->dev;
+ 	struct fme_mgr_priv *priv;
+ 	struct fpga_manager *mgr;
+diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+index a4838715221ff..f1083b5894635 100644
+--- a/drivers/fpga/fpga-region.c
++++ b/drivers/fpga/fpga-region.c
+@@ -166,9 +166,7 @@ static ssize_t compat_id_show(struct device *dev,
+ 	if (!region->compat_id)
+ 		return -ENOENT;
+ 
+-	return sprintf(buf, "%016llx%016llx\n",
+-		       (unsigned long long)region->compat_id->id_h,
+-		       (unsigned long long)region->compat_id->id_l);
++	return sprintf(buf, "%pU\n", &region->compat_id->uuid);
+ }
+ 
+ static DEVICE_ATTR_RO(compat_id);
+diff --git a/include/linux/fpga/fpga-mgr.h b/include/linux/fpga/fpga-mgr.h
+index ec2cd8bfceb00..b12f9994932e1 100644
+--- a/include/linux/fpga/fpga-mgr.h
++++ b/include/linux/fpga/fpga-mgr.h
+@@ -10,6 +10,7 @@
+ 
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
++#include <linux/uuid.h>
+ 
+ struct fpga_manager;
+ struct sg_table;
+@@ -144,14 +145,19 @@ struct fpga_manager_ops {
+ #define FPGA_MGR_STATUS_FIFO_OVERFLOW_ERR	BIT(4)
+ 
+ /**
+- * struct fpga_compat_id - id for compatibility check
+- *
++ * union fpga_compat_id - id for compatibility check
++ * Can be accessed as either:
++ * @uuid: the base uuid_t type
++ * or
+  * @id_h: high 64bit of the compat_id
+  * @id_l: low 64bit of the compat_id
+  */
+-struct fpga_compat_id {
+-	u64 id_h;
+-	u64 id_l;
++union fpga_compat_id {
++	uuid_t uuid;
++	struct {
++		u64 id_h;
++		u64 id_l;
++	};
+ };
+ 
+ /**
+@@ -169,7 +175,7 @@ struct fpga_manager {
+ 	struct device dev;
+ 	struct mutex ref_mutex;
+ 	enum fpga_mgr_states state;
+-	struct fpga_compat_id *compat_id;
++	union fpga_compat_id *compat_id;
+ 	const struct fpga_manager_ops *mops;
+ 	void *priv;
+ };
+diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
+index 27cb706275dba..7cc2ee543efb4 100644
+--- a/include/linux/fpga/fpga-region.h
++++ b/include/linux/fpga/fpga-region.h
+@@ -24,7 +24,7 @@ struct fpga_region {
+ 	struct list_head bridge_list;
+ 	struct fpga_manager *mgr;
+ 	struct fpga_image_info *info;
+-	struct fpga_compat_id *compat_id;
++	union fpga_compat_id *compat_id;
+ 	void *priv;
+ 	int (*get_bridges)(struct fpga_region *region);
+ };
+-- 
+2.26.3
+
