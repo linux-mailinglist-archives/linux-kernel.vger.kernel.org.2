@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27263D63A3
+	by mail.lfdr.de (Postfix) with ESMTP id EC2B93D63A4
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238617AbhGZPtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45968 "EHLO mail.kernel.org"
+        id S239021AbhGZPtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:49:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232455AbhGZPa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:30:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6200660240;
-        Mon, 26 Jul 2021 16:10:54 +0000 (UTC)
+        id S231603AbhGZPa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:30:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB18160FBF;
+        Mon, 26 Jul 2021 16:10:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315854;
-        bh=Y/etZjrOfKTara23n6KghTp50C/5ffWn/6OiEKVnUt0=;
+        s=korg; t=1627315857;
+        bh=pQW89YAYR2HIz9OaHPj/TOK2qBZCX0ew7u1HPvPdIec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HHgQgQI7Od2gYEwKN078CL08N4I7ZKFEVHY9SKz08Rcgc1MhoIVPh5sZY2clcf5yy
-         DWUEUeuCsAToDZp2tbVmz8i5/tHUi13UtNWuDaUco2WhU2mj8xd8W5Li713pJmRbmH
-         LQ8Ss1eeNZyWyNMuMOves1LrgBXrLejZL0g8tD0I=
+        b=BepJq4aXonU83mh/tCUH03d8SvAQ4rOh4lSPB9xvLAhKvYVIwd2mCqXsz/kYd/Lql
+         unL1IYz0D7d5ClMDuih05HOLj5UStkSrDUE3T0wECJnDy+rEngXttFifOHAWmg0qQ1
+         mjFYoCxlkTX6PY2lMecg8iC5chMPCxbABWZfimdI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Nicholas Piggin <npiggin@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 093/223] KVM: PPC: Book3S: Fix CONFIG_TRANSACTIONAL_MEM=n crash
-Date:   Mon, 26 Jul 2021 17:38:05 +0200
-Message-Id: <20210726153849.290514324@linuxfoundation.org>
+Subject: [PATCH 5.13 094/223] KVM: PPC: Fix kvm_arch_vcpu_ioctl vcpu_load leak
+Date:   Mon, 26 Jul 2021 17:38:06 +0200
+Message-Id: <20210726153849.328213130@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -43,40 +43,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit bd31ecf44b8e18ccb1e5f6b50f85de6922a60de3 ]
+[ Upstream commit bc4188a2f56e821ea057aca6bf444e138d06c252 ]
 
-When running CPU_FTR_P9_TM_HV_ASSIST, HFSCR[TM] is set for the guest
-even if the host has CONFIG_TRANSACTIONAL_MEM=n, which causes it to be
-unprepared to handle guest exits while transactional.
+vcpu_put is not called if the user copy fails. This can result in preempt
+notifier corruption and crashes, among other issues.
 
-Normal guests don't have a problem because the HTM capability will not
-be advertised, but a rogue or buggy one could crash the host.
-
-Fixes: 4bb3c7a0208f ("KVM: PPC: Book3S HV: Work around transactional memory bugs in POWER9")
+Fixes: b3cebfe8c1ca ("KVM: PPC: Move vcpu_load/vcpu_put down to each ioctl case in kvm_arch_vcpu_ioctl")
 Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
 Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210716024310.164448-1-npiggin@gmail.com
+Link: https://lore.kernel.org/r/20210716024310.164448-2-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/powerpc/kvm/powerpc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 67cc164c4ac1..395f98158e81 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -2445,8 +2445,10 @@ static int kvmppc_core_vcpu_create_hv(struct kvm_vcpu *vcpu)
- 		HFSCR_DSCR | HFSCR_VECVSX | HFSCR_FP | HFSCR_PREFIX;
- 	if (cpu_has_feature(CPU_FTR_HVMODE)) {
- 		vcpu->arch.hfscr &= mfspr(SPRN_HFSCR);
-+#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 		if (cpu_has_feature(CPU_FTR_P9_TM_HV_ASSIST))
- 			vcpu->arch.hfscr |= HFSCR_TM;
-+#endif
- 	}
- 	if (cpu_has_feature(CPU_FTR_TM_COMP))
- 		vcpu->arch.hfscr |= HFSCR_TM;
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index a2a68a958fa0..6e4f03c02a0a 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -2045,9 +2045,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	{
+ 		struct kvm_enable_cap cap;
+ 		r = -EFAULT;
+-		vcpu_load(vcpu);
+ 		if (copy_from_user(&cap, argp, sizeof(cap)))
+ 			goto out;
++		vcpu_load(vcpu);
+ 		r = kvm_vcpu_ioctl_enable_cap(vcpu, &cap);
+ 		vcpu_put(vcpu);
+ 		break;
+@@ -2071,9 +2071,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
+ 	case KVM_DIRTY_TLB: {
+ 		struct kvm_dirty_tlb dirty;
+ 		r = -EFAULT;
+-		vcpu_load(vcpu);
+ 		if (copy_from_user(&dirty, argp, sizeof(dirty)))
+ 			goto out;
++		vcpu_load(vcpu);
+ 		r = kvm_vcpu_ioctl_dirty_tlb(vcpu, &dirty);
+ 		vcpu_put(vcpu);
+ 		break;
 -- 
 2.30.2
 
