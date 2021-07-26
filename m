@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A553D6350
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE033D6266
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238723AbhGZPqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:46:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43048 "EHLO mail.kernel.org"
+        id S236826AbhGZPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:35:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237811AbhGZP3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A029561054;
-        Mon, 26 Jul 2021 16:08:46 +0000 (UTC)
+        id S237059AbhGZPUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:20:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C74A860230;
+        Mon, 26 Jul 2021 16:01:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315727;
-        bh=94exHNgOFgx3+nFXZIit88/KnP+RZ+AIwgyEEvUIS5g=;
+        s=korg; t=1627315269;
+        bh=N40JcgCPP9hvMeVyaarL3PU5o/XNejtRD/tFbQNUwAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g5UOHFt86sJc95uZ/bxhu9k8W7yxd5FqUg+bo6aocctRqNho2iflFlfV0rC2FdQtw
-         3o+uCY3w9Z7rchwHInmoVYly15hGFRUEvxySxNx1AyFNII2sr8qN62zVUSpuQ/S47o
-         Urngnkt6ZABUJBANhMsiY+df2NqEgAL9A1++PO4I=
+        b=pPJPl9jl1p52/aaSRCadDpduM2PzdxOiMoepUkSyJkbphR8AeE7LN+aUxPG76Mt66
+         tZQWD1/sgeLk2OOy9SznOJ86OKnbS+rHXKZpDnT3Kt8EUOOulZzPfEIHVaV+YIb2PV
+         Cx6+SDYfoxQaDLLH4wXlm9ftcnEm/Tg/kOnkPqto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Like Xu <likexu@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 043/223] KVM: x86/pmu: Clear anythread deprecated bit when 0xa leaf is unsupported on the SVM
-Date:   Mon, 26 Jul 2021 17:37:15 +0200
-Message-Id: <20210726153847.665478110@linuxfoundation.org>
+Subject: [PATCH 5.10 003/167] igc: change default return of igc_read_phy_reg()
+Date:   Mon, 26 Jul 2021 17:37:16 +0200
+Message-Id: <20210726153839.489237324@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-References: <20210726153846.245305071@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Like Xu <like.xu.linux@gmail.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 7234c362ccb3c2228f06f19f93b132de9cfa7ae4 ]
+[ Upstream commit 05682a0a61b6cbecd97a0f37f743b2cbfd516977 ]
 
-The AMD platform does not support the functions Ah CPUID leaf. The returned
-results for this entry should all remain zero just like the native does:
+Static analysis reports this problem
 
-AMD host:
-   0x0000000a 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
-(uncanny) AMD guest:
-   0x0000000a 0x00: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00008000
+igc_main.c:4944:20: warning: The left operand of '&'
+  is a garbage value
+    if (!(phy_data & SR_1000T_REMOTE_RX_STATUS) &&
+          ~~~~~~~~ ^
 
-Fixes: cadbaa039b99 ("perf/x86/intel: Make anythread filter support conditional")
-Signed-off-by: Like Xu <likexu@tencent.com>
-Message-Id: <20210628074354.33848-1-likexu@tencent.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+phy_data is set by the call to igc_read_phy_reg() only if
+there is a read_reg() op, else it is unset and a 0 is
+returned.  Change the return to -EOPNOTSUPP.
+
+Fixes: 208983f099d9 ("igc: Add watchdog")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/cpuid.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igc/igc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index ca7866d63e98..739be5da3bca 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -765,7 +765,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
+index 6dca67d9c25d..a97bf7a5f1d6 100644
+--- a/drivers/net/ethernet/intel/igc/igc.h
++++ b/drivers/net/ethernet/intel/igc/igc.h
+@@ -532,7 +532,7 @@ static inline s32 igc_read_phy_reg(struct igc_hw *hw, u32 offset, u16 *data)
+ 	if (hw->phy.ops.read_reg)
+ 		return hw->phy.ops.read_reg(hw, offset, data);
  
- 		edx.split.num_counters_fixed = min(cap.num_counters_fixed, MAX_FIXED_COUNTERS);
- 		edx.split.bit_width_fixed = cap.bit_width_fixed;
--		edx.split.anythread_deprecated = 1;
-+		if (cap.version)
-+			edx.split.anythread_deprecated = 1;
- 		edx.split.reserved1 = 0;
- 		edx.split.reserved2 = 0;
+-	return 0;
++	return -EOPNOTSUPP;
+ }
  
+ void igc_reinit_locked(struct igc_adapter *);
 -- 
 2.30.2
 
