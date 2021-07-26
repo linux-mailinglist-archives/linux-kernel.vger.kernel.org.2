@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579B83D6128
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A9A3D631D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237842AbhGZP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:29:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56870 "EHLO mail.kernel.org"
+        id S238827AbhGZPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236333AbhGZPQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2411960F42;
-        Mon, 26 Jul 2021 15:57:21 +0000 (UTC)
+        id S237742AbhGZPYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:24:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1748960E09;
+        Mon, 26 Jul 2021 16:04:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315042;
-        bh=/B2xbLMtnaIWiO1buscDhTGJ69/lT0j2/pRh5lQ72xE=;
+        s=korg; t=1627315475;
+        bh=sdNuJv7O5L+91iTn1IBLLXiIsIydlVPkIVs9xmiyi0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eiFbFqdZf4xzeJdTUM1t1LU2MCcadB+39eQnX3nGxk6zczKW9RD74LDxXVXGXOS/q
-         9tXvCm3MUNAXpHnBePx/2kKrx932XSqntvapgaq9WKzt0Om+8OAMU8DaePf1soMaUZ
-         xCsGDAj9+OQlPCsgRqXW7U9JH5+GSAlnNMh9uKpQ=
+        b=xDM9/atf4WIE9xVwKiVKU3nYZYxA64Wa7pQpTtF7v1uYZoyDWMTjBl4eat9EZunKZ
+         UYAZGxXHzJ+nRzHhm6bg9G06BcY0Tqd3TMK1Ggdnx6IuQsBAwcF47HWheM74URAGbt
+         JQCjTJBasLk+qmHQbLeGuPnh680/yxB+4WJoccSA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Dmitry Bogdanov <d.bogdanov@yadro.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 028/108] perf probe-file: Delete namelist in del_events() on the error path
+Subject: [PATCH 5.10 076/167] scsi: target: Fix protect handling in WRITE SAME(32)
 Date:   Mon, 26 Jul 2021 17:38:29 +0200
-Message-Id: <20210726153832.601436778@linuxfoundation.org>
+Message-Id: <20210726153841.954494100@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,52 +40,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Dmitry Bogdanov <d.bogdanov@yadro.com>
 
-[ Upstream commit e0fa7ab42232e742dcb3de9f3c1f6127b5adc019 ]
+[ Upstream commit 6d8e7e7c932162bccd06872362751b0e1d76f5af ]
 
-ASan reports some memory leaks when running:
+WRITE SAME(32) command handling reads WRPROTECT at the wrong offset in 1st
+byte instead of 10th byte.
 
-  # perf test "42: BPF filter"
-
-This second leak is caused by a strlist not being dellocated on error
-inside probe_file__del_events.
-
-This patch adds a goto label before the deallocation and makes the error
-path jump to it.
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: e7895e422e4da63d ("perf probe: Split del_perf_probe_events()")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/174963c587ae77fa108af794669998e4ae558338.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Link: https://lore.kernel.org/r/20210702091655.22818-1-d.bogdanov@yadro.com
+Fixes: afd73f1b60fc ("target: Perform PROTECT sanity checks for WRITE_SAME")
+Signed-off-by: Dmitry Bogdanov <d.bogdanov@yadro.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/probe-file.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/target/target_core_sbc.c | 35 ++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
-diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-index f778f8e7e65a..5558e2adebe4 100644
---- a/tools/perf/util/probe-file.c
-+++ b/tools/perf/util/probe-file.c
-@@ -337,11 +337,11 @@ int probe_file__del_events(int fd, struct strfilter *filter)
+diff --git a/drivers/target/target_core_sbc.c b/drivers/target/target_core_sbc.c
+index 6e8b8d30938f..eaf8551ebc61 100644
+--- a/drivers/target/target_core_sbc.c
++++ b/drivers/target/target_core_sbc.c
+@@ -25,7 +25,7 @@
+ #include "target_core_alua.h"
  
- 	ret = probe_file__get_events(fd, filter, namelist);
- 	if (ret < 0)
--		return ret;
-+		goto out;
+ static sense_reason_t
+-sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char *, u32, bool);
++sbc_check_prot(struct se_device *, struct se_cmd *, unsigned char, u32, bool);
+ static sense_reason_t sbc_execute_unmap(struct se_cmd *cmd);
  
- 	ret = probe_file__del_strlist(fd, namelist);
-+out:
- 	strlist__delete(namelist);
--
- 	return ret;
+ static sense_reason_t
+@@ -279,14 +279,14 @@ static inline unsigned long long transport_lba_64_ext(unsigned char *cdb)
  }
  
+ static sense_reason_t
+-sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *ops)
++sbc_setup_write_same(struct se_cmd *cmd, unsigned char flags, struct sbc_ops *ops)
+ {
+ 	struct se_device *dev = cmd->se_dev;
+ 	sector_t end_lba = dev->transport->get_blocks(dev) + 1;
+ 	unsigned int sectors = sbc_get_write_same_sectors(cmd);
+ 	sense_reason_t ret;
+ 
+-	if ((flags[0] & 0x04) || (flags[0] & 0x02)) {
++	if ((flags & 0x04) || (flags & 0x02)) {
+ 		pr_err("WRITE_SAME PBDATA and LBDATA"
+ 			" bits not supported for Block Discard"
+ 			" Emulation\n");
+@@ -308,7 +308,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
+ 	}
+ 
+ 	/* We always have ANC_SUP == 0 so setting ANCHOR is always an error */
+-	if (flags[0] & 0x10) {
++	if (flags & 0x10) {
+ 		pr_warn("WRITE SAME with ANCHOR not supported\n");
+ 		return TCM_INVALID_CDB_FIELD;
+ 	}
+@@ -316,7 +316,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
+ 	 * Special case for WRITE_SAME w/ UNMAP=1 that ends up getting
+ 	 * translated into block discard requests within backend code.
+ 	 */
+-	if (flags[0] & 0x08) {
++	if (flags & 0x08) {
+ 		if (!ops->execute_unmap)
+ 			return TCM_UNSUPPORTED_SCSI_OPCODE;
+ 
+@@ -331,7 +331,7 @@ sbc_setup_write_same(struct se_cmd *cmd, unsigned char *flags, struct sbc_ops *o
+ 	if (!ops->execute_write_same)
+ 		return TCM_UNSUPPORTED_SCSI_OPCODE;
+ 
+-	ret = sbc_check_prot(dev, cmd, &cmd->t_task_cdb[0], sectors, true);
++	ret = sbc_check_prot(dev, cmd, flags >> 5, sectors, true);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -686,10 +686,9 @@ sbc_set_prot_op_checks(u8 protect, bool fabric_prot, enum target_prot_type prot_
+ }
+ 
+ static sense_reason_t
+-sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
++sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char protect,
+ 	       u32 sectors, bool is_write)
+ {
+-	u8 protect = cdb[1] >> 5;
+ 	int sp_ops = cmd->se_sess->sup_prot_ops;
+ 	int pi_prot_type = dev->dev_attrib.pi_prot_type;
+ 	bool fabric_prot = false;
+@@ -737,7 +736,7 @@ sbc_check_prot(struct se_device *dev, struct se_cmd *cmd, unsigned char *cdb,
+ 		fallthrough;
+ 	default:
+ 		pr_err("Unable to determine pi_prot_type for CDB: 0x%02x "
+-		       "PROTECT: 0x%02x\n", cdb[0], protect);
++		       "PROTECT: 0x%02x\n", cmd->t_task_cdb[0], protect);
+ 		return TCM_INVALID_CDB_FIELD;
+ 	}
+ 
+@@ -812,7 +811,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -826,7 +825,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -840,7 +839,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, false);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, false);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -861,7 +860,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -875,7 +874,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -890,7 +889,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		if (sbc_check_dpofua(dev, cmd, cdb))
+ 			return TCM_INVALID_CDB_FIELD;
+ 
+-		ret = sbc_check_prot(dev, cmd, cdb, sectors, true);
++		ret = sbc_check_prot(dev, cmd, cdb[1] >> 5, sectors, true);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -949,7 +948,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 			size = sbc_get_size(cmd, 1);
+ 			cmd->t_task_lba = get_unaligned_be64(&cdb[12]);
+ 
+-			ret = sbc_setup_write_same(cmd, &cdb[10], ops);
++			ret = sbc_setup_write_same(cmd, cdb[10], ops);
+ 			if (ret)
+ 				return ret;
+ 			break;
+@@ -1048,7 +1047,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		size = sbc_get_size(cmd, 1);
+ 		cmd->t_task_lba = get_unaligned_be64(&cdb[2]);
+ 
+-		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
++		ret = sbc_setup_write_same(cmd, cdb[1], ops);
+ 		if (ret)
+ 			return ret;
+ 		break;
+@@ -1066,7 +1065,7 @@ sbc_parse_cdb(struct se_cmd *cmd, struct sbc_ops *ops)
+ 		 * Follow sbcr26 with WRITE_SAME (10) and check for the existence
+ 		 * of byte 1 bit 3 UNMAP instead of original reserved field
+ 		 */
+-		ret = sbc_setup_write_same(cmd, &cdb[1], ops);
++		ret = sbc_setup_write_same(cmd, cdb[1], ops);
+ 		if (ret)
+ 			return ret;
+ 		break;
 -- 
 2.30.2
 
