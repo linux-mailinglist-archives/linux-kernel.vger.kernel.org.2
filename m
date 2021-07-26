@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C2B3D68E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79973D68E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhGZVGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhGZVGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:06:18 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BFBC061757;
-        Mon, 26 Jul 2021 14:46:45 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so2051211pjd.0;
-        Mon, 26 Jul 2021 14:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WjCY/wbfUK0zm4QOWZ0DfXs/wUDR97ZPxIRjy8ov/A8=;
-        b=cvGQNlqXc9F1r7YAKDQI6gKQ+w7Tm1Ej6DWyxSVtVV7QCgNAknurz1XyI+O85DdhQ+
-         MJ0B1NDkbdjFhHEH7zWz5hF0cwbQvSLN0/ePaEE6MW16fBOA2MzLBYxet2f3qJiE7EnW
-         m+OWDz1TI31PyE6H7nhrBrBAXCYMmjTzarqj7nhPP6xU4SdQvuOnNEfS03iSRiQFIKzR
-         mCfOnn0G5hjF3ZplGswQcxPC11oEpekR6J8FdX3b1POrATCU3vkakA4DYNdEzEU3ULiA
-         SRyYLqldmtNKEnXT4soiRYkC3NC/cHvwC326jLTI9WcKv/U+urb0F+6Z1OFVUF1Hiz2K
-         jmVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=WjCY/wbfUK0zm4QOWZ0DfXs/wUDR97ZPxIRjy8ov/A8=;
-        b=XlNGKq/GSobmstmJbcolWbtNrdfdwNMKIX+iEUuqoxWOwvzmSqie7sY7spT0aWZp/s
-         ihTla+HpzbwiTQNL0L4YZEH00WHgtg+BXfcZB/8EE8/WcVUuJCGZS5/AisfEoVBYuIQl
-         SQ1reUPTpUZdLjaELJvRGOOXazLmZus3GaTAXd/VoBBj153unHN8fsi7gRw02aLYm7iW
-         RPF/BuJxUpy0C7T3cNyYXmnNzjpwRIfGsQrCXSzeqR93HBe/6bsTIx064jV/F4koNQRB
-         8z0dv0D/MMQKTiXLn+fERKAlO/ER8oe4mB4QakPfSAwvG4sWSAvAVApiZIt+iq1JZy/U
-         w+/Q==
-X-Gm-Message-State: AOAM5336qMbME2L2DrKnv+wjKP2h0+l9VRLjInWxfuDVS6dWh6iPd2i/
-        ugtmZLJikTd/jArIdgRditA=
-X-Google-Smtp-Source: ABdhPJw81HPawxf4d1zjmwCFjOgjrImnGU9ms6L2OKXzU4AsvSekTj80/x38kgXCjx2Ezgp8BWwY9A==
-X-Received: by 2002:aa7:8c47:0:b029:340:aa57:f65 with SMTP id e7-20020aa78c470000b0290340aa570f65mr19748761pfd.56.1627336005187;
-        Mon, 26 Jul 2021 14:46:45 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:428])
-        by smtp.gmail.com with ESMTPSA id j13sm823374pgp.29.2021.07.26.14.46.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 14:46:44 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 26 Jul 2021 11:46:39 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
-Message-ID: <YP8tPwkJNMAcjDqk@mtj.duckdns.org>
-References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
- <YPGvIzZUI+QxP1js@mtj.duckdns.org>
- <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
+        id S232876AbhGZVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:07:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229489AbhGZVHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 17:07:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56F9560F91;
+        Mon, 26 Jul 2021 21:47:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627336049;
+        bh=zgyLNyyiYQ6t66updPfgvxGxtDD4JlKzRMJiCuCkQzk=;
+        h=Date:From:To:Subject:From;
+        b=OQGx89jLp1aK0do77RwEIFH03wSOAGTIpxY14FYHigQ0GP0GrirYoIydQCH0fkgMC
+         Guzyd/ne97Bo1OQuHy8w1+KW9YUH27raheOzvMfrHL/0sL+cMMVrLweffaOr5vEJcH
+         5l7MGKjEyiBXwUJTvYzHMQXq+oCxwJFCN+runXC9LmCPOxgbK8kn/Jm9VK73k5WrwF
+         ls/VvRUETTuG2NIsRlv4m9GTLcH7Bi2dRJCceJVAIBSgYfBdFMIGDhKHqVxXIPLw1v
+         zSux1WohWJoyGFRf0zc7U7kJrW3myoTbJxF2Bnbb/sYPR/dOc4wfe2BnJAubAJysjV
+         xcXbB2d2170lg==
+Date:   Mon, 26 Jul 2021 22:47:20 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: Tree for Jul 26
+Message-ID: <20210726214720.GL4670@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="KIbT1ud6duwZIwNL"
 Content-Disposition: inline
-In-Reply-To: <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Tue, Jul 20, 2021 at 12:35:54AM +0800, brookxu wrote:
-> In order to avoid code duplication and IOPS stability problems caused by estimating
-> the equivalent number of IOs, and to avoid potential deadlock problems caused by
-> synchronization through queue_lock. I tried to count the number of splited IOs in
-> the current window through two atomic counters. Add the value of the atomic variable
-> when calculating io_disp[rw], which can also avoid the problem of inaccurate IOPS in
-> large IO scenarios. How do you think of this approach? Thanks for your time.
+--KIbT1ud6duwZIwNL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I guess it's okay but am still not a big fan of adding another hook. This is
-primarily because blk-throtl is sitting too early in the stack - e.g. rq_qos
-is doing the same thing but sits after the split path - and it's a bit nasty
-to add an additional hook for it.
+Hi all,
 
-Do you think it can be an option to relocate the blk-throtl hooks to the
-same spots as rq-qos or, even better, make it use rq-qos?
+Changes since 20210723:
 
-Thanks.
+The drm tree gained a conflict with the qcom tree.
 
--- 
-tejun
+There is a build failure in an arm64 allnoconfig on the finished tree
+due to a drm tree change.
+
+Non-merge commits (relative to Linus' tree): 2938
+ 3037 files changed, 173726 insertions(+), 51477 deletions(-)
+
+----------------------------------------------------------------------------
+
+I have created today's linux-next tree at
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+(patches will be at http://www.kernel.org/pub/linux/kernel/next/ if/when
+I get kup working).  If you are tracking the linux-next tree using git,
+you should not use "git pull" to do so as that will try to merge the new
+linux-next release with the old one.  You should use "git fetch" and
+checkout or reset to the new master.
+
+You can see which trees have been included by looking in the Next/Trees
+file in the source.  There are also quilt-import.log and merge.log
+files in the Next directory.  Between each merge, the tree was built
+with an arm64 defconfig, an allmodconfig for x86_64, a
+multi_v7_defconfig for arm and a native build of tools/perf. After
+the final fixups (if any), I do an x86_64 modules_install followed by
+builds for x86_64 allnoconfig, arm64 allnoconfig, and htmldocs.
+
+Below is a summary of the state of the merge.
+
+I am currently merging 333 trees (counting Linus' and 90 trees of bug
+fix patches pending for the current merge release).
+=20
+Stats about the size of the tree over time can be seen at
+http://neuling.org/linux-next-size.html .
+
+Status of my local build tests will be at
+http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
+advice about cross compilers/configs that work, we are always open to
+add more builds.
+
+Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
+Gortmaker for triage and bug fixes.
+
+--KIbT1ud6duwZIwNL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD/LWgACgkQJNaLcl1U
+h9C7+wf+Now4Ux9uUQ5ZSy5JIxrboZPMvliS7vPADiVFFy4zCMvfKj0nFU+Kzcyc
+ecEqbyOQ65AL5brTVsoRjk+w1uFSKaJLCTjYCEGJPXZ0Ml5zM9uzuL9ZIR0GFkVq
+MblL/PA0G0Fgl6QDe46gZ1l2xZaDZ2CDvPxIBM5Z27TvRsl3gmI39Mt49PW2O+Ik
+YdWxCsVxZBLnzD1Ae025WefubNkr8ALeCOSABzEP+B0LPggL2hr5P9DnNw5Bjz5A
+S0amG0p4suq26JUKpEp3KmNcl9fdWtg9DnvntEhYv7KamQj+DPaIybRsaXugU09b
+t7DvgSXM2ySXrZ8QQCvK0YDSay4QPQ==
+=Libr
+-----END PGP SIGNATURE-----
+
+--KIbT1ud6duwZIwNL--
