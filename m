@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CDE3D5D41
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DBC3D5DF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbhGZPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38730 "EHLO mail.kernel.org"
+        id S236058AbhGZPEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:04:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235236AbhGZPAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:00:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 498D860E08;
-        Mon, 26 Jul 2021 15:40:46 +0000 (UTC)
+        id S235881AbhGZPEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:04:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 563EF60F38;
+        Mon, 26 Jul 2021 15:44:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314046;
-        bh=mp11EiE24wDcNafm9JEypj8lxrQqDu93h6rWFarLp/U=;
+        s=korg; t=1627314270;
+        bh=n6jiL23Q+L1hav3FAKRwnIHYylGOQvbVMf708t4Qc+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0qkx7ieTYfGBfk8PqIuFEx8ExJ+dhXqMdJG9C5kTLj10Wqonu/5e2GKKic0xkdkj8
-         +bdzvJwEInXgvkKqybL9IBk4xeIDYgE/L1UTdKENjHzv+YVoZIeI0SDqVXrj3BqI3Q
-         H5UWVi3s616qnP62PQgqzg/J+UbPp37Idwfm2WU0=
+        b=Ve1eIEhVM8HcS7PyUrCsjG9nlxnn9a3OuLoKICyJR+846UkTlxv5g6f12wBKN87GA
+         CIUIEfmgc+lYX9Wil/rYjGXaZ7DDivbkhVVm875TmbXwFw7rQizdhFF3O7HTKZLLNY
+         gMx5ouoXf9Xh19M0PjdQwmqwUsWUbgodmoEn0ilA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 14/47] net: ti: fix UAF in tlan_remove_one
-Date:   Mon, 26 Jul 2021 17:38:32 +0200
-Message-Id: <20210726153823.430732332@linuxfoundation.org>
+Subject: [PATCH 4.9 19/60] net: qcom/emac: fix UAF in emac_remove
+Date:   Mon, 26 Jul 2021 17:38:33 +0200
+Message-Id: <20210726153825.474663644@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 0336f8ffece62f882ab3012820965a786a983f70 upstream.
+commit ad297cd2db8953e2202970e9504cab247b6c7cb4 upstream.
 
-priv is netdev private data and it cannot be
-used after free_netdev() call. Using priv after free_netdev()
+adpt is netdev private data and it cannot be
+used after free_netdev() call. Using adpt after free_netdev()
 can cause UAF bug. Fix it by moving free_netdev() at the end of the
 function.
 
-Fixes: 1e0a8b13d355 ("tlan: cancel work at remove path")
+Fixes: 54e19bc74f33 ("net: qcom/emac: do not use devm on internal phy pdev")
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ti/tlan.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/qualcomm/emac/emac.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/ti/tlan.c
-+++ b/drivers/net/ethernet/ti/tlan.c
-@@ -313,9 +313,8 @@ static void tlan_remove_one(struct pci_d
- 	pci_release_regions(pdev);
- #endif
+--- a/drivers/net/ethernet/qualcomm/emac/emac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac.c
+@@ -746,12 +746,13 @@ static int emac_remove(struct platform_d
+ 	if (!has_acpi_companion(&pdev->dev))
+ 		put_device(&adpt->phydev->mdio.dev);
+ 	mdiobus_unregister(adpt->mii_bus);
+-	free_netdev(netdev);
  
--	free_netdev(dev);
--
- 	cancel_work_sync(&priv->tlan_tqueue);
-+	free_netdev(dev);
+ 	if (adpt->phy.digital)
+ 		iounmap(adpt->phy.digital);
+ 	iounmap(adpt->phy.base);
+ 
++	free_netdev(netdev);
++
+ 	return 0;
  }
  
- static void tlan_start(struct net_device *dev)
 
 
