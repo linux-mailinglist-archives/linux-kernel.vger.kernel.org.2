@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9983D5F54
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C81C3D5F21
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236745AbhGZPRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:17:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48684 "EHLO mail.kernel.org"
+        id S236437AbhGZPQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:16:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236167AbhGZPIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:08:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DB3E60F92;
-        Mon, 26 Jul 2021 15:48:45 +0000 (UTC)
+        id S236238AbhGZPI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:08:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 416BD60F42;
+        Mon, 26 Jul 2021 15:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314525;
-        bh=SU9q9HvLR8orcW+YTjIQqk7eC8XYn+EfAtUwZeb0GVg=;
+        s=korg; t=1627314531;
+        bh=NDNP5o6VkurE8g070tIyZY4pDH41IlL683LVxbCR0ds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TxJovM8PE3j/uiI6X+xlsXKb4U15cOyTB0X7pVTzMEbZKdOMA0QcwUg2B8gWRe65t
-         5ubiJU1ilBnnAiYaSnAz5h3QC2iVRpv1naYUeQPq21dqome1rte8rh59ZssgEc2OGQ
-         TG+Ol4r667ph7JQuuXFAih5h+E452v45WmcJGjB8=
+        b=Djxdh+pasbrBLopRZZumcIz6VlNtNPvtyFeXQ4LYp/158Ng5UFfOQjKvG89ME6QYd
+         anLLOo5JVO7yvgVQ9OfyB8BrIq+W6rFlN8yawQchHeS7kcyxEvqmg+Bvz2KDxdtPSR
+         DDQ5DazdyRQ3zxmgAEfAJ5RX2AhdPoQi2Jo6/rWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 79/82] iio: accel: bma180: Fix BMA25x bandwidth register values
-Date:   Mon, 26 Jul 2021 17:39:19 +0200
-Message-Id: <20210726153830.745109839@linuxfoundation.org>
+Subject: [PATCH 4.14 81/82] spi: spi-fsl-dspi: Fix a resource leak in an error handling path
+Date:   Mon, 26 Jul 2021 17:39:21 +0200
+Message-Id: <20210726153830.810844491@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
 References: <20210726153828.144714469@linuxfoundation.org>
@@ -43,77 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 8090d67421ddab0ae932abab5a60200598bf0bbb upstream
+commit 680ec0549a055eb464dce6ffb4bfb736ef87236e upstream
 
-According to the BMA253 datasheet [1] and BMA250 datasheet [2] the
-bandwidth value for BMA25x should be set as 01xxx:
+'dspi_request_dma()' should be undone by a 'dspi_release_dma()' call in the
+error handling path of the probe function, as already done in the remove
+function
 
-  "Settings 00xxx result in a bandwidth of 7.81 Hz; [...]
-   It is recommended [...] to use the range from ´01000b´ to ´01111b´
-   only in order to be compatible with future products."
-
-However, at the moment the drivers sets bandwidth values from 0 to 6,
-which is not recommended and always results into 7.81 Hz bandwidth
-according to the datasheet.
-
-Fix this by introducing a bw_offset = 8 = 01000b for BMA25x,
-so the additional bit is always set for BMA25x.
-
-[1]: https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bma253-ds000.pdf
-[2]: https://datasheet.octopart.com/BMA250-Bosch-datasheet-15540103.pdf
-
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
-Fixes: 2017cff24cc0 ("iio:bma180: Add BMA250 chip support")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Link: https://lore.kernel.org/r/20210526094408.34298-2-stephan@gerhold.net
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 90ba37033cb9 ("spi: spi-fsl-dspi: Add DMA support for Vybrid")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Link: https://lore.kernel.org/r/d51caaac747277a1099ba8dea07acd85435b857e.1620587472.git.christophe.jaillet@wanadoo.fr
+Signed-off-by: Mark Brown <broonie@kernel.org>
 [sudip: adjust context]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iio/accel/bma180.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/spi/spi-fsl-dspi.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/iio/accel/bma180.c
-+++ b/drivers/iio/accel/bma180.c
-@@ -50,7 +50,7 @@ struct bma180_part_info {
+--- a/drivers/spi/spi-fsl-dspi.c
++++ b/drivers/spi/spi-fsl-dspi.c
+@@ -1057,11 +1057,13 @@ static int dspi_probe(struct platform_de
+ 	ret = spi_register_master(master);
+ 	if (ret != 0) {
+ 		dev_err(&pdev->dev, "Problem registering DSPI master\n");
+-		goto out_free_irq;
++		goto out_release_dma;
+ 	}
  
- 	u8 int_reset_reg, int_reset_mask;
- 	u8 sleep_reg, sleep_mask;
--	u8 bw_reg, bw_mask;
-+	u8 bw_reg, bw_mask, bw_offset;
- 	u8 scale_reg, scale_mask;
- 	u8 power_reg, power_mask, lowpower_val;
- 	u8 int_enable_reg, int_enable_mask;
-@@ -106,6 +106,7 @@ struct bma180_part_info {
+ 	return ret;
  
- #define BMA250_RANGE_MASK	GENMASK(3, 0) /* Range of accel values */
- #define BMA250_BW_MASK		GENMASK(4, 0) /* Accel bandwidth */
-+#define BMA250_BW_OFFSET	8
- #define BMA250_SUSPEND_MASK	BIT(7) /* chip will sleep */
- #define BMA250_LOWPOWER_MASK	BIT(6)
- #define BMA250_DATA_INTEN_MASK	BIT(4)
-@@ -243,7 +244,8 @@ static int bma180_set_bw(struct bma180_d
- 	for (i = 0; i < data->part_info->num_bw; ++i) {
- 		if (data->part_info->bw_table[i] == val) {
- 			ret = bma180_set_bits(data, data->part_info->bw_reg,
--				data->part_info->bw_mask, i);
-+				data->part_info->bw_mask,
-+				i + data->part_info->bw_offset);
- 			if (ret) {
- 				dev_err(&data->client->dev,
- 					"failed to set bandwidth\n");
-@@ -662,6 +664,7 @@ static const struct bma180_part_info bma
- 		.sleep_mask = BMA250_SUSPEND_MASK,
- 		.bw_reg = BMA250_BW_REG,
- 		.bw_mask = BMA250_BW_MASK,
-+		.bw_offset = BMA250_BW_OFFSET,
- 		.scale_reg = BMA250_RANGE_REG,
- 		.scale_mask = BMA250_RANGE_MASK,
- 		.power_reg = BMA250_POWER_REG,
++out_release_dma:
++	dspi_release_dma(dspi);
+ out_free_irq:
+ 	if (dspi->irq)
+ 		free_irq(dspi->irq, dspi);
 
 
