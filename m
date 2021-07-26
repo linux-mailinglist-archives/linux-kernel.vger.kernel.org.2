@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F5F3D5DD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3CC3D5E69
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235855AbhGZPDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:03:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42440 "EHLO mail.kernel.org"
+        id S236197AbhGZPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:07:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235760AbhGZPDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:03:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35B5660F42;
-        Mon, 26 Jul 2021 15:43:29 +0000 (UTC)
+        id S235874AbhGZPGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:06:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2931860F90;
+        Mon, 26 Jul 2021 15:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314209;
-        bh=r+kH0kUHOaAgiOCG7r6DMHf04YFKWPhQubsBJQGKYFM=;
+        s=korg; t=1627314391;
+        bh=01etFhAmYZffxXscCmBwuB9y8qsuLDc8CaT03ydoB30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ERL2BIEQqX51T034rOXe8zNufyUux+Qi4aDG0ZjwnYpu33DAZBtOJKcqsqFpeQFji
-         FPVjX8VaFz4GJOZC36V9GVmEcNCI1WLe6M2iTet0hoUwwZztkbvKJFvhJF+l/oRxCH
-         6eiU0GNAqUWi+4edzUxEretVFcyQLvTZM3ExBS2M=
+        b=ErA5BVYPof40BN+7p2rgBmJAP98FVOyGKF/IS+iZhh19+DHtUI/OwKxfV/howXaS/
+         nb+BWB8wfBpxDUXYQilAQEt2VG0Viu+wMU8UkdW4rOqYEXeW+wxN2mS2+iVNzACYtB
+         UwJ/+5+shMcomEHwTSo+M56FDBboXrwG1s/LalC8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 17/60] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+Subject: [PATCH 4.14 31/82] net: validate lwtstate->data before returning from skb_tunnel_info()
 Date:   Mon, 26 Jul 2021 17:38:31 +0200
-Message-Id: <20210726153825.414372911@linuxfoundation.org>
+Message-Id: <20210726153829.177868454@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Taehee Yoo <ap420073@gmail.com>
 
-commit 2b452550a203d88112eaf0ba9fc4b750a000b496 upstream.
+commit 67a9c94317402b826fc3db32afc8f39336803d97 upstream.
 
-Make sure that we disable each of the TX and RX queues in the TDMA and
-RDMA control registers. This is a correctness change to be symmetrical
-with the code that enables the TX and RX queues.
+skb_tunnel_info() returns pointer of lwtstate->data as ip_tunnel_info
+type without validation. lwtstate->data can have various types such as
+mpls_iptunnel_encap, etc and these are not compatible.
+So skb_tunnel_info() should validate before returning that pointer.
 
-Tested-by: Maxime Ripard <maxime@cerno.tech>
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Splat looks like:
+BUG: KASAN: slab-out-of-bounds in vxlan_get_route+0x418/0x4b0 [vxlan]
+Read of size 2 at addr ffff888106ec2698 by task ping/811
+
+CPU: 1 PID: 811 Comm: ping Not tainted 5.13.0+ #1195
+Call Trace:
+ dump_stack_lvl+0x56/0x7b
+ print_address_description.constprop.8.cold.13+0x13/0x2ee
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ kasan_report.cold.14+0x83/0xdf
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ vxlan_get_route+0x418/0x4b0 [vxlan]
+ [ ... ]
+ vxlan_xmit_one+0x148b/0x32b0 [vxlan]
+ [ ... ]
+ vxlan_xmit+0x25c5/0x4780 [vxlan]
+ [ ... ]
+ dev_hard_start_xmit+0x1ae/0x6e0
+ __dev_queue_xmit+0x1f39/0x31a0
+ [ ... ]
+ neigh_xmit+0x2f9/0x940
+ mpls_xmit+0x911/0x1600 [mpls_iptunnel]
+ lwtunnel_xmit+0x18f/0x450
+ ip_finish_output2+0x867/0x2040
+ [ ... ]
+
+Fixes: 61adedf3e3f1 ("route: move lwtunnel state to dst_entry")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ include/net/dst_metadata.h |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -2698,15 +2698,21 @@ static void bcmgenet_set_hw_addr(struct
- /* Returns a reusable dma control register value */
- static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
- {
-+	unsigned int i;
- 	u32 reg;
- 	u32 dma_ctrl;
+--- a/include/net/dst_metadata.h
++++ b/include/net/dst_metadata.h
+@@ -44,7 +44,9 @@ static inline struct ip_tunnel_info *skb
+ 		return &md_dst->u.tun_info;
  
- 	/* disable DMA */
- 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->tx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
+ 	dst = skb_dst(skb);
+-	if (dst && dst->lwtstate)
++	if (dst && dst->lwtstate &&
++	    (dst->lwtstate->type == LWTUNNEL_ENCAP_IP ||
++	     dst->lwtstate->type == LWTUNNEL_ENCAP_IP6))
+ 		return lwt_tun_info(dst->lwtstate);
  
-+	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
-+	for (i = 0; i < priv->hw_params->rx_queues; i++)
-+		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
- 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
- 	reg &= ~dma_ctrl;
- 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
+ 	return NULL;
 
 
