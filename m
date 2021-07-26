@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700563D6A6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F2C3D6A72
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234244AbhGZXOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 19:14:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233809AbhGZXOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 19:14:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F31A60F94;
-        Mon, 26 Jul 2021 23:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627343670;
-        bh=iv+ATOSmwiwNnLSQnmZrL8/5KkfaAq/A3X/tsBD9WHo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=XrdBfjd+bjwD4/0PhyJb6mCaEEXRj94JnYjShRENPJ+i3K7BviN0W/BdTMoM7fMZE
-         vv4ow0zW74MUmAF6RfCSJuC/ROSQtXN28ThJopcNl44LakLmlmBz0LVG3ZjTXYYCuI
-         aLxNGi2KA6R3MNmd+7oWSb4TFMXH+FiWyhNJRUcqDJuYuaSTrcfv4uSeXid0qy0Bzt
-         l9IgKTo3L4J9ua3xKCToQ/k9zBRz6wPhAZ+3YMu2ijRWtEu95gMMRw8CVfjp+7+mS2
-         15nZ7NODNRZKIUV8nSZzCscTdaltslCtORrxOJHXdRBabS5ZKKqklTtggUi437eDNV
-         NXNcK1ampO7Cw==
-Date:   Mon, 26 Jul 2021 16:54:29 -0700 (PDT)
-From:   Stefano Stabellini <sstabellini@kernel.org>
-X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
-To:     Harshvardhan Jha <harshvardhan.jha@oracle.com>
-cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        asmadeus@codewreck.org, ericvh@gmail.com, lucho@ionkov.net,
-        davem@davemloft.net, kuba@kernel.org,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [External] : Re: [PATCH] 9p/xen: Fix end of loop tests for
- list_for_each_entry
-In-Reply-To: <d956e0f2-546e-ddfd-86eb-9afb8549b40d@oracle.com>
-Message-ID: <alpine.DEB.2.21.2107261654130.10122@sstabellini-ThinkPad-T480s>
-References: <20210725175103.56731-1-harshvardhan.jha@oracle.com> <YP3NqQ5NGF7phCQh@codewreck.org> <alpine.DEB.2.21.2107261357210.10122@sstabellini-ThinkPad-T480s> <d956e0f2-546e-ddfd-86eb-9afb8549b40d@oracle.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S234048AbhGZXPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 19:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233809AbhGZXPY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 19:15:24 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A21C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:55:51 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id y18so13067805oiv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:55:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=aoD4jTfRbzylcA4bNLcfmr8Z+HRIOIxaPk90sso0ATU=;
+        b=eQQhbr+z1dG29juiKiHPhvhbjUjYibakqGnSF4idMAK1hnTXJ3j2IVeHu37sbE1AIk
+         nD5EMYai5v4xcjYBOPRRpBYhe50X/rIN3mKJ47uQiui9FNJ9cJ9Il+q1PE1UEpMocrOf
+         Jokd9Bk5aK4znpuUCHl2Q09JwDeYHuWxCthT0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=aoD4jTfRbzylcA4bNLcfmr8Z+HRIOIxaPk90sso0ATU=;
+        b=fIIhdE2a1kMr+2ldFXekceA1of5Qcv4g+bhG6Ch6KK0cLLYUGC20oY1vXHKUi+FVst
+         SsBqGf74Z0Rs7vrgB3wohMRyNpy56DPhinVz3QwcUfokO/vf3npytTTj926dJWORQLTQ
+         WBiRben7dEDJ2x0fic6h8X97ClSjwDfssb0ArjqQ9n9vTGX6Z8TAYguAka0U9GSynDn7
+         MzblEuRw8QP+1LXzuxsBKUOXvhbD7uk1Sxkxj+L/YvDDnL8UXtAjd2ympst+eRokVhRO
+         cCIJLGvR4BI4/6wQYTpQPRt0L0nTXnndhUPESYWE3XiMNwhT7Pu3BdqTG5Y9q/ZnxBC9
+         jhJQ==
+X-Gm-Message-State: AOAM531G5JKVhdg1MEjDnLmSpyE9zBsU2njPRcCikjrs2ayBFrj1aD33
+        quNMmRDCKZzGdrGw8FwRZQt4KzSn2Riut3cfG8fmWA==
+X-Google-Smtp-Source: ABdhPJw65cG9TGz3WiBUJWp99aUzz4g/0pjfJNvmUosztg4FLwuh1PpAx+TFNVLnqwkG0FMULV596wJRHK85NE7MZGk=
+X-Received: by 2002:aca:4dc6:: with SMTP id a189mr1129053oib.166.1627343751055;
+ Mon, 26 Jul 2021 16:55:51 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 26 Jul 2021 19:55:50 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210725042436.3967173-3-bjorn.andersson@linaro.org>
+References: <20210725042436.3967173-1-bjorn.andersson@linaro.org> <20210725042436.3967173-3-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 26 Jul 2021 19:55:50 -0400
+Message-ID: <CAE-0n53utmLLoJqqffx_-MoiereWAeBFe9nPjAizKeuKRwedHA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] drm/msm/dp: Modify prototype of encoder based API
+To:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021, Harshvardhan Jha wrote:
-> On 27/07/21 3:00 am, Stefano Stabellini wrote:
-> > On Mon, 26 Jul 2021, asmadeus@codewreck.org wrote:
-> > > Harshvardhan Jha wrote on Sun, Jul 25, 2021 at 11:21:03PM +0530:
-> > > > The list_for_each_entry() iterator, "priv" in this code, can never be
-> > > > NULL so the warning would never be printed.
-> > > 
-> > > hm? priv won't be NULL but priv->client won't be client, so it will
-> > > return -EINVAL alright in practice?
-> > > 
-> > > This does fix an invalid read after the list head, so there's a real
-> > > bug, but the commit message needs fixing.
-> > 
-> > Agreed
-> > 
-> > 
-> > > > Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
-> > > > ---
-> > > >  From static analysis.  Not tested.
-> > > 
-> > > +Stefano in To - I also can't test xen right now :/
-> > > This looks functional to me but if you have a bit of time to spare just
-> > > a mount test can't hurt.
-> > 
-> > Yes, I did test it successfully. Aside from the commit messaged to be
-> > reworded:
-> How's this?
-> ===========================BEGIN========================================
-> 9p/xen: Fix end of loop tests for list_for_each_entry
-> 
-> This patch addresses the following problems:
->  - priv can never be NULL, so this part of the check is useless
->  - if the loop ran through the whole list, priv->client is invalid and
-> it is more appropriate and sufficient to check for the end of
-> list_for_each_entry loop condition.
-> 
-> Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
-
-That's fine
-
-
+Quoting Bjorn Andersson (2021-07-24 21:24:32)
+> Functions in the DisplayPort code that relates to individual instances
+> (encoders) are passed both the struct msm_dp and the struct drm_encoder. But
+> in a situation where multiple DP instances would exist this means that
+> the caller need to resolve which struct msm_dp relates to the struct
+> drm_encoder at hand.
+>
+> The information for doing this lookup is available inside the DP driver,
+> so update the API to take the struct msm_drm_private and the struct
+> drm_encoder and have the DP code figure out which struct msm_dp the
+> operation relates to.
+>
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
-> From static analysis. Not tested.
-> ===========================END==========================================
-> > 
-> > Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-> > Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-> > 
-> > 
-> > > > ---
-> > > >   net/9p/trans_xen.c | 4 ++--
-> > > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/net/9p/trans_xen.c b/net/9p/trans_xen.c
-> > > > index f4fea28e05da..3ec1a51a6944 100644
-> > > > --- a/net/9p/trans_xen.c
-> > > > +++ b/net/9p/trans_xen.c
-> > > > @@ -138,7 +138,7 @@ static bool p9_xen_write_todo(struct
-> > > > xen_9pfs_dataring *ring, RING_IDX size)
-> > > >     static int p9_xen_request(struct p9_client *client, struct p9_req_t
-> > > > *p9_req)
-> > > >   {
-> > > > -	struct xen_9pfs_front_priv *priv = NULL;
-> > > > +	struct xen_9pfs_front_priv *priv;
-> > > >   	RING_IDX cons, prod, masked_cons, masked_prod;
-> > > >   	unsigned long flags;
-> > > >   	u32 size = p9_req->tc.size;
-> > > > @@ -151,7 +151,7 @@ static int p9_xen_request(struct p9_client *client,
-> > > > struct p9_req_t *p9_req)
-> > > >   			break;
-> > > >   	}
-> > > >   	read_unlock(&xen_9pfs_lock);
-> > > > -	if (!priv || priv->client != client)
-> > > > +	if (list_entry_is_head(priv, &xen_9pfs_devs, list))
-> > > >   		return -EINVAL;
-> > > >     	num = p9_req->tc.tag % priv->num_rings;
-> 
+
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
