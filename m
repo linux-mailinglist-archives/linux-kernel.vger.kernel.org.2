@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62533D5EF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C16A3D5D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237616AbhGZPQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47702 "EHLO mail.kernel.org"
+        id S235504AbhGZPBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:01:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235875AbhGZPGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:06:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01A2A60F6E;
-        Mon, 26 Jul 2021 15:47:06 +0000 (UTC)
+        id S235494AbhGZPBL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:01:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7847060F42;
+        Mon, 26 Jul 2021 15:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314426;
-        bh=oqT8g6147bNmrQ10BJOOE17G9rlG9VxBeUB/YPSOY9M=;
+        s=korg; t=1627314100;
+        bh=X+5DlYeW3aA8+QlHKJ2yvZESQK0nDotZP68m1oTL5Hw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pKDepzFpxVyBwwg2Ff2A36p9QNIZITjGYBSJCyicWPs4dTe1ITJ86ibfXbJsIvH7p
-         sCMNXCDmqld/Jl/lm9vSCqlEN/X9+JSxzMzRQu2xRhGDzcW+7ZmzSWw9CxCu80gaD+
-         xH2dezyyuHIXnb0WI0Ir9aOto/gl1LBmOu6CIBgg=
+        b=hp6MiZeXl9oDV4GuJJLX1SExAYQNkceB2xC7ivTKCwR5HWnUz4FqRFsGw0ZHm2tMY
+         nglJLxDYiC8qognipp5EDbcMJWqv/9PGKe7TS7M6SvLVEJKOCwA6QtYA6HzecXl9oW
+         DKk97SsgwbTgmGdmv5cSbx/KUf8Ef+zGKmNQMSBE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Krister Johansen <kjlx@templeofstupid.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 42/82] perf map: Fix dso->nsinfo refcounting
-Date:   Mon, 26 Jul 2021 17:38:42 +0200
-Message-Id: <20210726153829.535061925@linuxfoundation.org>
+Subject: [PATCH 4.4 25/47] net: decnet: Fix sleeping inside in af_decnet
+Date:   Mon, 26 Jul 2021 17:38:43 +0200
+Message-Id: <20210726153823.774770900@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +40,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Yajun Deng <yajun.deng@linux.dev>
 
-[ Upstream commit 2d6b74baa7147251c30a46c4996e8cc224aa2dc5 ]
+[ Upstream commit 5f119ba1d5771bbf46d57cff7417dcd84d3084ba ]
 
-ASan reports a memory leak of nsinfo during the execution of
+The release_sock() is blocking function, it would change the state
+after sleeping. use wait_woken() instead.
 
-  # perf test "31: Lookup mmap thread"
-
-The leak is caused by a refcounted variable being replaced without
-dropping the refcount.
-
-This patch makes sure that the refcnt of nsinfo is decreased whenever a
-refcounted variable is replaced with a new value.
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: bf2e710b3cb8445c ("perf maps: Lookup maps in both intitial mountns and inner mountns.")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Krister Johansen <kjlx@templeofstupid.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com
-[ Split from a larger patch ]
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/map.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/decnet/af_decnet.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-index 9d42a2821ecb..d7c34feef58e 100644
---- a/tools/perf/util/map.c
-+++ b/tools/perf/util/map.c
-@@ -216,6 +216,8 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
- 			if (type != MAP__FUNCTION)
- 				dso__set_loaded(dso, map->type);
- 		}
-+
-+		nsinfo__put(dso->nsinfo);
- 		dso->nsinfo = nsi;
- 		dso__put(dso);
+diff --git a/net/decnet/af_decnet.c b/net/decnet/af_decnet.c
+index 9d8fcdefefc0..ee297964fcd2 100644
+--- a/net/decnet/af_decnet.c
++++ b/net/decnet/af_decnet.c
+@@ -823,7 +823,7 @@ static int dn_auto_bind(struct socket *sock)
+ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ {
+ 	struct dn_scp *scp = DN_SK(sk);
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	int err;
+ 
+ 	if (scp->state != DN_CR)
+@@ -833,11 +833,11 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ 	scp->segsize_loc = dst_metric_advmss(__sk_dst_get(sk));
+ 	dn_send_conn_conf(sk, allocation);
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		if (scp->state == DN_CC)
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 		lock_sock(sk);
+ 		err = 0;
+ 		if (scp->state == DN_RUN)
+@@ -851,9 +851,8 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ 		err = -EAGAIN;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
  	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ 	if (err == 0) {
+ 		sk->sk_socket->state = SS_CONNECTED;
+ 	} else if (scp->state != DN_CC) {
+@@ -865,7 +864,7 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ static int dn_wait_run(struct sock *sk, long *timeo)
+ {
+ 	struct dn_scp *scp = DN_SK(sk);
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	int err = 0;
+ 
+ 	if (scp->state == DN_RUN)
+@@ -874,11 +873,11 @@ static int dn_wait_run(struct sock *sk, long *timeo)
+ 	if (!*timeo)
+ 		return -EALREADY;
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		if (scp->state == DN_CI || scp->state == DN_CC)
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 		lock_sock(sk);
+ 		err = 0;
+ 		if (scp->state == DN_RUN)
+@@ -892,9 +891,8 @@ static int dn_wait_run(struct sock *sk, long *timeo)
+ 		err = -ETIMEDOUT;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ out:
+ 	if (err == 0) {
+ 		sk->sk_socket->state = SS_CONNECTED;
+@@ -1039,16 +1037,16 @@ static void dn_user_copy(struct sk_buff *skb, struct optdata_dn *opt)
+ 
+ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
+ {
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	struct sk_buff *skb = NULL;
+ 	int err = 0;
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		skb = skb_dequeue(&sk->sk_receive_queue);
+ 		if (skb == NULL) {
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 			skb = skb_dequeue(&sk->sk_receive_queue);
+ 		}
+ 		lock_sock(sk);
+@@ -1063,9 +1061,8 @@ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
+ 		err = -EAGAIN;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ 
+ 	return skb == NULL ? ERR_PTR(err) : skb;
+ }
 -- 
 2.30.2
 
