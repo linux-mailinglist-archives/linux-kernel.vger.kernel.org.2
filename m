@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5BE3D6051
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF1C3D62D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237216AbhGZPVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51686 "EHLO mail.kernel.org"
+        id S238483AbhGZPjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236360AbhGZPLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59F776056C;
-        Mon, 26 Jul 2021 15:51:33 +0000 (UTC)
+        id S236941AbhGZPWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F53B60240;
+        Mon, 26 Jul 2021 16:03:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314693;
-        bh=va88ssUqXsASXfCuORxhTvQJYOdmng6FTcfoFTz0ALY=;
+        s=korg; t=1627315387;
+        bh=nu9HSbVDtzUnXxN8axmqDqNWOmNMTz0F8iLHUC/jB3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kAYfeI+k1kBHnNXRnEvCol6jTJUAoU1ZY9vv5q5JbRSl+bHXAa7Cx+cAuXuzWPBnn
-         jdj2v7tdujUfQdc1lHqtQj3v6NZFHvxP0PvMLBA3xr5LpzpiC4/IXc8PgWG9syfbv5
-         4iAB+uVA4dgQk0U1Jj3EoU/QmPgdJsRN77Ta7JSA=
+        b=UXUfVLhcFHd42PNCNXp/xvv9l/gfpi4gsGkUVSBwlySaa4xzwx/rNXkl9yh8yJE1y
+         R3U5gKCSr1QuxNZCMsYqE0404KFr65An3B3Lgy87a6Z48SUuHKN8AEv5Uzm3LOZMJ4
+         PFRob1M03aiizeYDo1xb8XuV3XXuU/eotEvJJw24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 057/120] e1000e: Fix an error handling path in e1000_probe()
-Date:   Mon, 26 Jul 2021 17:38:29 +0200
-Message-Id: <20210726153834.210350335@linuxfoundation.org>
+Subject: [PATCH 5.10 077/167] spi: cadence: Correct initialisation of runtime PM again
+Date:   Mon, 26 Jul 2021 17:38:30 +0200
+Message-Id: <20210726153841.988981253@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 4589075608420bc49fcef6e98279324bf2bb91ae ]
+[ Upstream commit 56912da7a68c8356df6a6740476237441b0b792a ]
 
-If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-call, as already done in the remove function.
+The original implementation of RPM handling in probe() was mostly
+correct, except it failed to call pm_runtime_get_*() to activate the
+hardware. The subsequent fix, 734882a8bf98 ("spi: cadence: Correct
+initialisation of runtime PM"), breaks the implementation further,
+to the point where the system using this hard IP on ZynqMP hangs on
+boot, because it accesses hardware which is gated off.
 
-Fixes: 111b9dc5c981 ("e1000e: add aer support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Undo 734882a8bf98 ("spi: cadence: Correct initialisation of runtime
+PM") and instead add missing pm_runtime_get_noresume() and move the
+RPM disabling all the way to the end of probe(). That makes ZynqMP
+not hang on boot yet again.
+
+Fixes: 734882a8bf98 ("spi: cadence: Correct initialisation of runtime PM")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210716182133.218640-1-marex@denx.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/netdev.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-cadence.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-index 6bbe7afdf30c..398f5951d11c 100644
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -7369,6 +7369,7 @@ err_flashmap:
- err_ioremap:
- 	free_netdev(netdev);
- err_alloc_etherdev:
-+	pci_disable_pcie_error_reporting(pdev);
- 	pci_release_mem_regions(pdev);
- err_pci_reg:
- err_dma:
+diff --git a/drivers/spi/spi-cadence.c b/drivers/spi/spi-cadence.c
+index a3afd1b9ac56..ceb16e70d235 100644
+--- a/drivers/spi/spi-cadence.c
++++ b/drivers/spi/spi-cadence.c
+@@ -517,6 +517,12 @@ static int cdns_spi_probe(struct platform_device *pdev)
+ 		goto clk_dis_apb;
+ 	}
+ 
++	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
++	pm_runtime_get_noresume(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
+ 	ret = of_property_read_u32(pdev->dev.of_node, "num-cs", &num_cs);
+ 	if (ret < 0)
+ 		master->num_chipselect = CDNS_SPI_DEFAULT_NUM_CS;
+@@ -531,11 +537,6 @@ static int cdns_spi_probe(struct platform_device *pdev)
+ 	/* SPI controller initializations */
+ 	cdns_spi_init_hw(xspi);
+ 
+-	pm_runtime_set_active(&pdev->dev);
+-	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_use_autosuspend(&pdev->dev);
+-	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
+-
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq <= 0) {
+ 		ret = -ENXIO;
+@@ -566,6 +567,9 @@ static int cdns_spi_probe(struct platform_device *pdev)
+ 
+ 	master->bits_per_word_mask = SPI_BPW_MASK(8);
+ 
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_put_autosuspend(&pdev->dev);
++
+ 	ret = spi_register_master(master);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "spi_register_master failed\n");
 -- 
 2.30.2
 
