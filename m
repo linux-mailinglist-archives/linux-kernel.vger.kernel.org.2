@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF243D5FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C633D5FE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236601AbhGZPTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:19:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49276 "EHLO mail.kernel.org"
+        id S236793AbhGZPTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:19:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235908AbhGZPHz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:07:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E967360F5C;
-        Mon, 26 Jul 2021 15:48:22 +0000 (UTC)
+        id S235440AbhGZPH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:07:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6868660F5A;
+        Mon, 26 Jul 2021 15:48:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314503;
-        bh=Uv6UO7LLEiKLZKDVxDYywyZRgpFdV+MSx7H1T5AVbS0=;
+        s=korg; t=1627314506;
+        bh=Rksq+sXlVmO+of+fNZfPpa8FD9JZtW8hmWK+PySn/HI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q8CEfIYXZWADSEAGgnT5Cjxvyb68VlC5va4iJT8yyjBbSBXQYJsdnmPaMjoTZiL5c
-         Xb5/0ifh+Gnsa5M7Xt0pSuNef6r3WOygFe5MnWDk67kBPZURGlK+QCkyO7rXgKGsfG
-         ByuBwyP0fAULbDJoKuNf4c4NWR0FruIPj3CvEWgM=
+        b=qaTtCVUcbHIfMh/E1IlWGeL0EqyAKCV3x4QUuFpKV33+xvBNuXexDEWS+CA2HTBR6
+         bHu27YSZDdtAR5yjdkn3D8/Qy8Cuv75eKbm+P5kDbodiYW1ZYEsup9DoM4skTUDYUG
+         l1180rpz/wTXvhS83ntctxCl7jo0N8znDmSlttr0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Haoran Luo <www@aegistudio.net>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.14 72/82] tracing: Fix bug in rb_per_cpu_empty() that might cause deadloop.
-Date:   Mon, 26 Jul 2021 17:39:12 +0200
-Message-Id: <20210726153830.517903948@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: [PATCH 4.14 73/82] media: ngene: Fix out-of-bounds bug in ngene_command_config_free_buf()
+Date:   Mon, 26 Jul 2021 17:39:13 +0200
+Message-Id: <20210726153830.549837410@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
 References: <20210726153828.144714469@linuxfoundation.org>
@@ -41,102 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haoran Luo <www@aegistudio.net>
+From: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-commit 67f0d6d9883c13174669f88adac4f0ee656cc16a upstream.
+commit 8d4abca95ecc82fc8c41912fa0085281f19cc29f upstream.
 
-The "rb_per_cpu_empty()" misinterpret the condition (as not-empty) when
-"head_page" and "commit_page" of "struct ring_buffer_per_cpu" points to
-the same buffer page, whose "buffer_data_page" is empty and "read" field
-is non-zero.
+Fix an 11-year old bug in ngene_command_config_free_buf() while
+addressing the following warnings caught with -Warray-bounds:
 
-An error scenario could be constructed as followed (kernel perspective):
+arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
 
-1. All pages in the buffer has been accessed by reader(s) so that all of
-them will have non-zero "read" field.
+The problem is that the original code is trying to copy 6 bytes of
+data into a one-byte size member _config_ of the wrong structue
+FW_CONFIGURE_BUFFERS, in a single call to memcpy(). This causes a
+legitimate compiler warning because memcpy() overruns the length
+of &com.cmd.ConfigureBuffers.config. It seems that the right
+structure is FW_CONFIGURE_FREE_BUFFERS, instead, because it contains
+6 more members apart from the header _hdr_. Also, the name of
+the function ngene_command_config_free_buf() suggests that the actual
+intention is to ConfigureFreeBuffers, instead of ConfigureBuffers
+(which takes place in the function ngene_command_config_buf(), above).
 
-2. Read and clear all buffer pages so that "rb_num_of_entries()" will
-return 0 rendering there's no more data to read. It is also required
-that the "read_page", "commit_page" and "tail_page" points to the same
-page, while "head_page" is the next page of them.
+Fix this by enclosing those 6 members of struct FW_CONFIGURE_FREE_BUFFERS
+into new struct config, and use &com.cmd.ConfigureFreeBuffers.config as
+the destination address, instead of &com.cmd.ConfigureBuffers.config,
+when calling memcpy().
 
-3. Invoke "ring_buffer_lock_reserve()" with large enough "length"
-so that it shot pass the end of current tail buffer page. Now the
-"head_page", "commit_page" and "tail_page" points to the same page.
+This also helps with the ongoing efforts to globally enable
+-Warray-bounds and get us closer to being able to tighten the
+FORTIFY_SOURCE routines on memcpy().
 
-4. Discard current event with "ring_buffer_discard_commit()", so that
-"head_page", "commit_page" and "tail_page" points to a page whose buffer
-data page is now empty.
-
-When the error scenario has been constructed, "tracing_read_pipe" will
-be trapped inside a deadloop: "trace_empty()" returns 0 since
-"rb_per_cpu_empty()" returns 0 when it hits the CPU containing such
-constructed ring buffer. Then "trace_find_next_entry_inc()" always
-return NULL since "rb_num_of_entries()" reports there's no more entry
-to read. Finally "trace_seq_to_user()" returns "-EBUSY" spanking
-"tracing_read_pipe" back to the start of the "waitagain" loop.
-
-I've also written a proof-of-concept script to construct the scenario
-and trigger the bug automatically, you can use it to trace and validate
-my reasoning above:
-
-  https://github.com/aegistudio/RingBufferDetonator.git
-
-Tests has been carried out on linux kernel 5.14-rc2
-(2734d6c1b1a089fb593ef6a23d4b70903526fe0c), my fixed version
-of kernel (for testing whether my update fixes the bug) and
-some older kernels (for range of affected kernels). Test result is
-also attached to the proof-of-concept repository.
-
-Link: https://lore.kernel.org/linux-trace-devel/YPaNxsIlb2yjSi5Y@aegistudio/
-Link: https://lore.kernel.org/linux-trace-devel/YPgrN85WL9VyrZ55@aegistudio
-
+Link: https://github.com/KSPP/linux/issues/109
+Fixes: dae52d009fc9 ("V4L/DVB: ngene: Initial check-in")
 Cc: stable@vger.kernel.org
-Fixes: bf41a158cacba ("ring-buffer: make reentrant")
-Suggested-by: Linus Torvalds <torvalds@linuxfoundation.org>
-Signed-off-by: Haoran Luo <www@aegistudio.net>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Link: https://lore.kernel.org/linux-hardening/20210420001631.GA45456@embeddedor/
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/ring_buffer.c |   28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ drivers/media/pci/ngene/ngene-core.c |    2 +-
+ drivers/media/pci/ngene/ngene.h      |   14 ++++++++------
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3054,10 +3054,30 @@ static bool rb_per_cpu_empty(struct ring
- 	if (unlikely(!head))
- 		return true;
+--- a/drivers/media/pci/ngene/ngene-core.c
++++ b/drivers/media/pci/ngene/ngene-core.c
+@@ -398,7 +398,7 @@ static int ngene_command_config_free_buf
  
--	return reader->read == rb_page_commit(reader) &&
--		(commit == reader ||
--		 (commit == head &&
--		  head->read == rb_page_commit(commit)));
-+	/* Reader should exhaust content in reader page */
-+	if (reader->read != rb_page_commit(reader))
-+		return false;
-+
-+	/*
-+	 * If writers are committing on the reader page, knowing all
-+	 * committed content has been read, the ring buffer is empty.
-+	 */
-+	if (commit == reader)
-+		return true;
-+
-+	/*
-+	 * If writers are committing on a page other than reader page
-+	 * and head page, there should always be content to read.
-+	 */
-+	if (commit != head)
-+		return false;
-+
-+	/*
-+	 * Writers are committing on the head page, we just need
-+	 * to care about there're committed data, and the reader will
-+	 * swap reader page with head page when it is to read data.
-+	 */
-+	return rb_page_commit(commit) == 0;
- }
+ 	com.cmd.hdr.Opcode = CMD_CONFIGURE_FREE_BUFFER;
+ 	com.cmd.hdr.Length = 6;
+-	memcpy(&com.cmd.ConfigureBuffers.config, config, 6);
++	memcpy(&com.cmd.ConfigureFreeBuffers.config, config, 6);
+ 	com.in_len = 6;
+ 	com.out_len = 0;
  
- /**
+--- a/drivers/media/pci/ngene/ngene.h
++++ b/drivers/media/pci/ngene/ngene.h
+@@ -403,12 +403,14 @@ enum _BUFFER_CONFIGS {
+ 
+ struct FW_CONFIGURE_FREE_BUFFERS {
+ 	struct FW_HEADER hdr;
+-	u8   UVI1_BufferLength;
+-	u8   UVI2_BufferLength;
+-	u8   TVO_BufferLength;
+-	u8   AUD1_BufferLength;
+-	u8   AUD2_BufferLength;
+-	u8   TVA_BufferLength;
++	struct {
++		u8   UVI1_BufferLength;
++		u8   UVI2_BufferLength;
++		u8   TVO_BufferLength;
++		u8   AUD1_BufferLength;
++		u8   AUD2_BufferLength;
++		u8   TVA_BufferLength;
++	} __packed config;
+ } __attribute__ ((__packed__));
+ 
+ struct FW_CONFIGURE_UART {
 
 
