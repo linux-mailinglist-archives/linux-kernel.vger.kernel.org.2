@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C791C3D63DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5C43D63EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239435AbhGZPwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48244 "EHLO mail.kernel.org"
+        id S239204AbhGZPxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233441AbhGZPcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92A7260C40;
-        Mon, 26 Jul 2021 16:12:44 +0000 (UTC)
+        id S233510AbhGZPcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 361A46056B;
+        Mon, 26 Jul 2021 16:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315965;
-        bh=9gIvzkB3UGqRN0BG9Zxjq53srvaJIaXklkW2JvwjXtg=;
+        s=korg; t=1627315970;
+        bh=Lwu2u17oP5W6I352an90ZhfHmTxc4XW2Y6aKNEW9ihY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bw8mOPXG61DFbYD4Aw5HdWMYUtLsE0QJ0C/TDGvQhONau4FluoJ3M8seP590tgOoY
-         3rQnGXzwzcBAfRcUVT9UiznwZ/z1ZWkLaHSCk8mhoHmIb8gPjJnTVR7DMNQebKmnUk
-         ugNraJs+pei8fLK077s3+lDBXk3uMeNZSKu7LfnA=
+        b=FF6diDW6/zUMBi2M6SlC20W6KsDfqy8YCU2PNhXRDE29lWBZr6HWP2NhTYHPrb0sL
+         t9aHkZMdYEAPFQaMXDe8jheZcwNlGw9YzzDr+MpevTYKnIhRDuQlitzvvedep74Gb7
+         xCsfX7zXmIOLSTuayaTkoHnKkSlKnqz72iQ12Rs4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Andreas Schwab <schwab@linux-m68k.org>,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>,
+        Atish Patra <atish.patra@wdc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 135/223] net: dsa: sja1105: make VID 4095 a bridge VLAN too
-Date:   Mon, 26 Jul 2021 17:38:47 +0200
-Message-Id: <20210726153850.663680353@linuxfoundation.org>
+Subject: [PATCH 5.13 136/223] RISC-V: load initrd wherever it fits into memory
+Date:   Mon, 26 Jul 2021 17:38:48 +0200
+Message-Id: <20210726153850.695299467@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -42,101 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Heinrich Schuchardt <xypron.glpk@gmx.de>
 
-[ Upstream commit e40cba9490bab1414d45c2d62defc0ad4f6e4136 ]
+[ Upstream commit c79e89ecaa246c880292ba68cbe08c9c30db77e3 ]
 
-This simple series of commands:
+Requiring that initrd is loaded below RAM start + 256 MiB led to failure
+to boot SUSE Linux with GRUB on QEMU, cf.
+https://lists.gnu.org/archive/html/grub-devel/2021-06/msg00037.html
 
-ip link add br0 type bridge vlan_filtering 1
-ip link set swp0 master br0
+Remove the constraint.
 
-fails on sja1105 with the following error:
-[   33.439103] sja1105 spi0.1: vlan-lookup-table needs to have at least the default untagged VLAN
-[   33.447710] sja1105 spi0.1: Invalid config, cannot upload
-Warning: sja1105: Failed to change VLAN Ethertype.
-
-For context, sja1105 has 3 operating modes:
-- SJA1105_VLAN_UNAWARE: the dsa_8021q_vlans are committed to hardware
-- SJA1105_VLAN_FILTERING_FULL: the bridge_vlans are committed to hardware
-- SJA1105_VLAN_FILTERING_BEST_EFFORT: both the dsa_8021q_vlans and the
-  bridge_vlans are committed to hardware
-
-Swapping out a VLAN list and another in happens in
-sja1105_build_vlan_table(), which performs a delta update procedure.
-That function is called from a few places, notably from
-sja1105_vlan_filtering() which is called from the
-SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING handler.
-
-The above set of 2 commands fails when run on a kernel pre-commit
-8841f6e63f2c ("net: dsa: sja1105: make devlink property
-best_effort_vlan_filtering true by default"). So the priv->vlan_state
-transition that takes place is between VLAN-unaware and full VLAN
-filtering. So the dsa_8021q_vlans are swapped out and the bridge_vlans
-are swapped in.
-
-So why does it fail?
-
-Well, the bridge driver, through nbp_vlan_init(), first sets up the
-SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING attribute, and only then
-proceeds to call nbp_vlan_add for the default_pvid.
-
-So when we swap out the dsa_8021q_vlans and swap in the bridge_vlans in
-the SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING handler, there are no bridge
-VLANs (yet). So we have wiped the VLAN table clean, and the low-level
-static config checker complains of an invalid configuration. We _will_
-add the bridge VLANs using the dynamic config interface, albeit later,
-when nbp_vlan_add() calls us. So it is natural that it fails.
-
-So why did it ever work?
-
-Surprisingly, it looks like I only tested this configuration with 2
-things set up in a particular way:
-- a network manager that brings all ports up
-- a kernel with CONFIG_VLAN_8021Q=y
-
-It is widely known that commit ad1afb003939 ("vlan_dev: VLAN 0 should be
-treated as "no vlan tag" (802.1p packet)") installs VID 0 to every net
-device that comes up. DSA treats these VLANs as bridge VLANs, and
-therefore, in my testing, the list of bridge_vlans was never empty.
-
-However, if CONFIG_VLAN_8021Q is not enabled, or the port is not up when
-it joins a VLAN-aware bridge, the bridge_vlans list will be temporarily
-empty, and the sja1105_static_config_reload() call from
-sja1105_vlan_filtering() will fail.
-
-To fix this, the simplest thing is to keep VID 4095, the one used for
-CPU-injected control packets since commit ed040abca4c1 ("net: dsa:
-sja1105: use 4095 as the private VLAN for untagged traffic"), in the
-list of bridge VLANs too, not just the list of tag_8021q VLANs. This
-ensures that the list of bridge VLANs will never be empty.
-
-Fixes: ec5ae61076d0 ("net: dsa: sja1105: save/restore VLANs using a delta commit method")
-Reported-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+Reviewed-by: Atish Patra <atish.patra@wdc.com>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: d7071743db31 ("RISC-V: Add EFI stub support.")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/sja1105/sja1105_main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/riscv/include/asm/efi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index ebe4d33cda27..6e5dbe9f3892 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -378,6 +378,12 @@ static int sja1105_init_static_vlan(struct sja1105_private *priv)
- 		if (dsa_is_cpu_port(ds, port))
- 			v->pvid = true;
- 		list_add(&v->list, &priv->dsa_8021q_vlans);
-+
-+		v = kmemdup(v, sizeof(*v), GFP_KERNEL);
-+		if (!v)
-+			return -ENOMEM;
-+
-+		list_add(&v->list, &priv->bridge_vlans);
- 	}
+diff --git a/arch/riscv/include/asm/efi.h b/arch/riscv/include/asm/efi.h
+index 6d98cd999680..7b3483ba2e84 100644
+--- a/arch/riscv/include/asm/efi.h
++++ b/arch/riscv/include/asm/efi.h
+@@ -27,10 +27,10 @@ int efi_set_mapping_permissions(struct mm_struct *mm, efi_memory_desc_t *md);
  
- 	((struct sja1105_vlan_lookup_entry *)table->entries)[0] = pvid;
+ #define ARCH_EFI_IRQ_FLAGS_MASK (SR_IE | SR_SPIE)
+ 
+-/* Load initrd at enough distance from DRAM start */
++/* Load initrd anywhere in system RAM */
+ static inline unsigned long efi_get_max_initrd_addr(unsigned long image_addr)
+ {
+-	return image_addr + SZ_256M;
++	return ULONG_MAX;
+ }
+ 
+ #define alloc_screen_info(x...)		(&screen_info)
 -- 
 2.30.2
 
