@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D19843D6527
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1563D653F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236918AbhGZQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
+        id S240166AbhGZQcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:32:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243460AbhGZQ17 (ORCPT
+        with ESMTP id S240061AbhGZQcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:27:59 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FB8C04E19F
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:52:10 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id y18so11650716oiv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:52:10 -0700 (PDT)
+        Mon, 26 Jul 2021 12:32:08 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857D1C0A0D45
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:53:14 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id n19so12833131ioz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:53:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=He3coKcw9GzSTcMc1/bucGcJlXbu6D86uDxA4sIXTEc=;
-        b=Aga2CfgcrsI2ptK5p+3lzsmok8uc/2D1LU+v+37wTg2APCXg80MMRwJXs48eomAKXg
-         klVOfsV70Big9+NM0nsnOzf5xj1dI52bR40zkaH8iJ+Hvs5mErxmzTBdedpqxE2b4q74
-         DYnDykU92rP1GWt+SKYUzRoZo+lMg4Pu+GOJeBVkoB4P83TgOYsqiCjCCskwnDquWQrQ
-         k2uK1woyQCQZ+OdSThqOyqyKdCsin3lf+bdWIqotN70/QgzYOjg0QD5xTcZc6UxJWtvI
-         ZMUfcVHo1KVatBJILvMQNmisMY8kxN+QkibVMp11Fg7ZTW4cAnWw/m0+y1txyiKjHS4a
-         jMtA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v0vC2s6bfOYSpCJxntho7Zz1d3YR0dCQ19xUE9gBrh4=;
+        b=LPi0FFE+NJ4svpmMxmGGeRDyDwRS4SPkAXliPPAIk0TU00KePY6YwfpFdaWxSJ7KoW
+         bNck5ELVHAZU3U7dM4AELK8A8GOA/qmbhG1g3473ZHM57hUAHNY5Sf4fHM+MonMi1O8a
+         ufTo8o3lPlnkwjbRVhqqj9Ii1y1EbakV0n+mAoJcKOVDU2n9/NykTwJ+AIlpu8S13xyq
+         CCaLRxdTIDrLxxj99R2zTFHUm23rQxD+6Riom8o0JeJOCRh0ql4KpCk9og4yyWBmEyjV
+         QHtzYmD/fXkvGr6NH2xip/p9fcFLhOfVAs+PZXv30OCO6EUZ6A/yNWY5C7XpkVKq9sBK
+         7keQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=He3coKcw9GzSTcMc1/bucGcJlXbu6D86uDxA4sIXTEc=;
-        b=EBNV2OPrzEFklxmLn/0zyiJJCBDVWayzlX8dJlLVOfNU1YNL4jPm/ioAGRhRtux+wz
-         BZMfNufcbYKnWnX9Sz9DzKvXvRTBmqieB8oaJ0Rcr19Bu5bx4vRBWH7VMtGDKdIuuzfa
-         HTqi7crsM+PjKDzUlkmxSFuY3VBhmCEUNFJ6iZlMyleNT/STyQgxmkahfosTfS3uaKEV
-         aSx4RoMQ0A2QuPo44G3HHlF3yBnWMCSDOtxxidaRIwqB4aztnLIOM5lzjY0kOPKCHSkp
-         t7RrKkH6gn0jBKDyussir4/15J8UUEiiL2ZpgHCSiaKjAaNIVwbc826Gqo7UV2UeGQIz
-         NpJw==
-X-Gm-Message-State: AOAM530P32FZyiTRHSTBa4BWRoqa82Z0xFxOVg6UTjWIj9fp8fF1mtlH
-        2GDZCXtvbRGs6C4tPts0I219GR+ornuKUS03rq0=
-X-Google-Smtp-Source: ABdhPJyHVd1rwMfCft9myOBIWxxgq/TxveHPsluE/X2xIO39doksbipLA2KpmNOphgmIh7vb1CnvdQ==
-X-Received: by 2002:aca:31d8:: with SMTP id x207mr17423875oix.144.1627318329449;
-        Mon, 26 Jul 2021 09:52:09 -0700 (PDT)
-Received: from [192.168.17.50] ([189.219.72.83])
-        by smtp.gmail.com with ESMTPSA id m2sm82120otr.46.2021.07.26.09.52.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 09:52:08 -0700 (PDT)
-Subject: Re: [PATCH 5.10 000/167] 5.10.54-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210726153839.371771838@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <19e027f2-c751-9bc6-52f4-e0c560c1a909@linaro.org>
-Date:   Mon, 26 Jul 2021 11:52:07 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v0vC2s6bfOYSpCJxntho7Zz1d3YR0dCQ19xUE9gBrh4=;
+        b=kFmwoz4VVZO0OC3a+OhCahZXpvuOZzV9VI/1QWGY6vNHxsrCSUPmDSzT+t9yommXWq
+         khJ0N8QTX3h2th172OoeuiBrWI81oW3UopwbQRbBgR1Xb81CANRGuW41aamCmEsBijhg
+         ak8IquaWGgLCVWwaUA7/4S350m4N/uwbw0k0I1aO+7vue2fRyGGllAWB6hF6/kMeeZtp
+         1Uty81vg8ezM9geqzxjOalumHzp+fXYmCJ8ECw3lszl8DG9K5SGsgmFdAwQsVpbOzwN0
+         JOrwcTGAp4rS/gaBEdI3NJZksNyjuaKq8nu4rebF9SYUqkZoOFjByGYaHaGQER/x4WY7
+         51GA==
+X-Gm-Message-State: AOAM531dF7XR9Ntw+LIIYdZqUWBczN5EIFWhgrwKmJAtCVausdhry00W
+        WEEVuvY57rSF2lKBc7bNZDJ+kTZKojb5hgpIwO765A==
+X-Google-Smtp-Source: ABdhPJwyP3hAQLxBy6C5A0njv6cNJGYxDG5KRrMXNe91XfUQlMlJVTr3fVwFbQmSYjQSyXb3jn36Eiq7noWGxNx+3nQ=
+X-Received: by 2002:a6b:e90b:: with SMTP id u11mr15593423iof.134.1627318393877;
+ Mon, 26 Jul 2021 09:53:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210726163106.1433600-1-pbonzini@redhat.com>
+In-Reply-To: <20210726163106.1433600-1-pbonzini@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 26 Jul 2021 09:53:02 -0700
+Message-ID: <CANgfPd_Hzr77ywspQn3ee1PTWp2fKZ=maiwztJj2uvHNAsWqjw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: enable TDP MMU by default
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        David Matlack <dmatlack@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Mon, Jul 26, 2021 at 9:31 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> With the addition of fast page fault support, the TDP-specific MMU has reached
+> feature parity with the original MMU.  All my testing in the last few months
+> has been done with the TDP MMU; switch the default on 64-bit machines.
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-On 7/26/21 10:37 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.54 release.
-> There are 167 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.54-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Yay! Thank you for your support in getting this merged and enabled
+Paolo, and thanks to David and Sean for helping upstream code and for
+so many reviews!
+I'm sure this will provoke some bug reports, and I'll keep a close eye
+on the mailing list to help address the issues quickly.
+In the meantime,
 
-Build regressions detected across plenty of architectures and configurations:
+Reviewed-by: Ben Gardon <bgardon@google.com>
 
-   /builds/linux/net/core/dev.c:5877:51: error: use of undeclared identifier 'TC_SKB_EXT'
-                           struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
-                                                                          ^
-   /builds/linux/net/core/dev.c:5878:47: error: use of undeclared identifier 'TC_SKB_EXT'
-                           struct tc_skb_ext *p_ext = skb_ext_find(p, TC_SKB_EXT);
-                                                                      ^
-   /builds/linux/net/core/dev.c:5882:19: error: incomplete definition of type 'struct tc_skb_ext'
-                                   diffs |= p_ext->chain ^ skb_ext->chain;
-                                            ~~~~~^
-   /builds/linux/net/core/dev.c:5877:11: note: forward declaration of 'struct tc_skb_ext'
-                           struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
-                                  ^
-   /builds/linux/net/core/dev.c:5882:36: error: incomplete definition of type 'struct tc_skb_ext'
-                                   diffs |= p_ext->chain ^ skb_ext->chain;
-                                                           ~~~~~~~^
-   /builds/linux/net/core/dev.c:5877:11: note: forward declaration of 'struct tc_skb_ext'
-                           struct tc_skb_ext *skb_ext = skb_ext_find(skb, TC_SKB_EXT);
-                                  ^
-   4 errors generated.
-   make[3]: *** [/builds/linux/scripts/Makefile.build:280: net/core/dev.o] Error 1
-   make[3]: Target '__build' not remade because of errors.
-   make[2]: *** [/builds/linux/scripts/Makefile.build:497: net/core] Error 2
-
-As with 5.13, it failed everywhere for the same reason. Fails on defconfig and bunch others, with GCC/Clang, and across many architectures.
-
-Greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index f86158d41af0..43f12f5d12c0 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -10,7 +10,7 @@
+>  #include <asm/cmpxchg.h>
+>  #include <trace/events/kvm.h>
+>
+> -static bool __read_mostly tdp_mmu_enabled = false;
+> +static bool __read_mostly tdp_mmu_enabled = true;
+>  module_param_named(tdp_mmu, tdp_mmu_enabled, bool, 0644);
+>
+>  /* Initializes the TDP MMU for the VM, if enabled. */
+> --
+> 2.27.0
+>
