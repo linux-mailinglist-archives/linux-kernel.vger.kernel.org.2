@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BA43D6420
+	by mail.lfdr.de (Postfix) with ESMTP id 674303D641F
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240056AbhGZPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51220 "EHLO mail.kernel.org"
+        id S240038AbhGZPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234930AbhGZPeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234926AbhGZPeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:34:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8425660F93;
-        Mon, 26 Jul 2021 16:14:16 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 465AF60F9C;
+        Mon, 26 Jul 2021 16:14:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316057;
-        bh=tEuF0ItmfD17ajwzoBUXjU/UjgdHv2A7qWLQfgQM3x8=;
+        s=korg; t=1627316059;
+        bh=euXaBl3Soy6w/GSZsgYYP0G1nCVgFl0J0F0NJ5sHROU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lbrhYTUgat1sZrvJbRo6beiD7GV78ky60Z3o0TwvtwnqHLr2qAsoGIh7lFu5pabf8
-         9QimkFMuUNa7I0EBmD/pXgT06K3FdA0v2THKNbmd4zBpix8sbRYUHOBT+h4s/dmDKo
-         Hn55Q9zUdsv+7U3xMt8umyuTpIjK9tgd9M5aeX7k=
+        b=Fvqs8TSBdOACP/2QFA5R4QY5Hg3lw6g1/KyQcFR9Mlch8JuvPhysbft+l08BZb/NE
+         vM4hiMbrVj/ogEbXvAL7w4Hd47ENNIiwv2R/9rIPcBUyKrRDw8q5oTUp0WxNgJ8IIs
+         8ErZgDVxH9siANC0p40gTWgjr4hqy2MziiIKJSDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Subject: [PATCH 5.13 171/223] usb: dwc2: gadget: Fix GOUTNAK flow for Slave mode.
-Date:   Mon, 26 Jul 2021 17:39:23 +0200
-Message-Id: <20210726153851.795093914@linuxfoundation.org>
+Subject: [PATCH 5.13 172/223] usb: dwc2: gadget: Fix sending zero length packet in DDMA mode.
+Date:   Mon, 26 Jul 2021 17:39:24 +0200
+Message-Id: <20210726153851.826031048@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,68 +41,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 
-commit fecb3a171db425e5068b27231f8efe154bf72637 upstream.
+commit d53dc38857f6dbefabd9eecfcbf67b6eac9a1ef4 upstream.
 
-Because of dwc2_hsotg_ep_stop_xfr() function uses poll
-mode, first need to mask GINTSTS_GOUTNAKEFF interrupt.
-In Slave mode GINTSTS_GOUTNAKEFF interrupt will be
-aserted only after pop OUT NAK status packet from RxFIFO.
+Sending zero length packet in DDMA mode perform by DMA descriptor
+by setting SP (short packet) flag.
 
-In dwc2_hsotg_ep_sethalt() function before setting
-DCTL_SGOUTNAK need to unmask GOUTNAKEFF interrupt.
+For DDMA in function dwc2_hsotg_complete_in() does not need to send
+zlp.
 
-Tested by USBCV CH9 and MSC tests set in Slave, BDMA and DDMA.
-All tests are passed.
+Tested by USBCV MSC tests.
 
-Fixes: a4f827714539a ("usb: dwc2: gadget: Disable enabled HW endpoint in dwc2_hsotg_ep_disable")
-Fixes: 6070636c4918c ("usb: dwc2: Fix Stalling a Non-Isochronous OUT EP")
+Fixes: f71b5e2533de ("usb: dwc2: gadget: fix zero length packet transfers")
 Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Link: https://lore.kernel.org/r/e17fad802bbcaf879e1ed6745030993abb93baf8.1626152924.git.Minas.Harutyunyan@synopsys.com
+Link: https://lore.kernel.org/r/967bad78c55dd2db1c19714eee3d0a17cf99d74a.1626777738.git.Minas.Harutyunyan@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc2/gadget.c |   21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/usb/dwc2/gadget.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 --- a/drivers/usb/dwc2/gadget.c
 +++ b/drivers/usb/dwc2/gadget.c
-@@ -3900,9 +3900,27 @@ static void dwc2_hsotg_ep_stop_xfr(struc
- 					 __func__);
- 		}
- 	} else {
-+		/* Mask GINTSTS_GOUTNAKEFF interrupt */
-+		dwc2_hsotg_disable_gsint(hsotg, GINTSTS_GOUTNAKEFF);
-+
- 		if (!(dwc2_readl(hsotg, GINTSTS) & GINTSTS_GOUTNAKEFF))
- 			dwc2_set_bit(hsotg, DCTL, DCTL_SGOUTNAK);
+@@ -2749,12 +2749,14 @@ static void dwc2_hsotg_complete_in(struc
+ 		return;
+ 	}
  
-+		if (!using_dma(hsotg)) {
-+			/* Wait for GINTSTS_RXFLVL interrupt */
-+			if (dwc2_hsotg_wait_bit_set(hsotg, GINTSTS,
-+						    GINTSTS_RXFLVL, 100)) {
-+				dev_warn(hsotg->dev, "%s: timeout GINTSTS.RXFLVL\n",
-+					 __func__);
-+			} else {
-+				/*
-+				 * Pop GLOBAL OUT NAK status packet from RxFIFO
-+				 * to assert GOUTNAKEFF interrupt
-+				 */
-+				dwc2_readl(hsotg, GRXSTSP);
-+			}
+-	/* Zlp for all endpoints, for ep0 only in DATA IN stage */
++	/* Zlp for all endpoints in non DDMA, for ep0 only in DATA IN stage */
+ 	if (hs_ep->send_zlp) {
+-		dwc2_hsotg_program_zlp(hsotg, hs_ep);
+ 		hs_ep->send_zlp = 0;
+-		/* transfer will be completed on next complete interrupt */
+-		return;
++		if (!using_desc_dma(hsotg)) {
++			dwc2_hsotg_program_zlp(hsotg, hs_ep);
++			/* transfer will be completed on next complete interrupt */
++			return;
 +		}
-+
- 		/* Wait for global nak to take effect */
- 		if (dwc2_hsotg_wait_bit_set(hsotg, GINTSTS,
- 					    GINTSTS_GOUTNAKEFF, 100))
-@@ -4348,6 +4366,9 @@ static int dwc2_hsotg_ep_sethalt(struct
- 		epctl = dwc2_readl(hs, epreg);
+ 	}
  
- 		if (value) {
-+			/* Unmask GOUTNAKEFF interrupt */
-+			dwc2_hsotg_en_gsint(hs, GINTSTS_GOUTNAKEFF);
-+
- 			if (!(dwc2_readl(hs, GINTSTS) & GINTSTS_GOUTNAKEFF))
- 				dwc2_set_bit(hs, DCTL, DCTL_SGOUTNAK);
- 			// STALL bit will be set in GOUTNAKEFF interrupt handler
+ 	if (hs_ep->index == 0 && hsotg->ep0_state == DWC2_EP0_DATA_IN) {
 
 
