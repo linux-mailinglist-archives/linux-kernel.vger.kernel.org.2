@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A083D5A4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0775D3D5A4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhGZMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:47:24 -0400
-Received: from verein.lst.de ([213.95.11.211]:45189 "EHLO verein.lst.de"
+        id S233590AbhGZMrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:47:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232572AbhGZMrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:47:23 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 5A9F867373; Mon, 26 Jul 2021 15:27:49 +0200 (CEST)
-Date:   Mon, 26 Jul 2021 15:27:49 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Message-ID: <20210726132749.GA6535@lst.de>
-References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com> <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com> <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com> <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local> <20210726110611.459173-1-agruenba@redhat.com> <20210726121702.GA528@lst.de> <CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com>
+        id S233194AbhGZMrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:47:52 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E0E060E09;
+        Mon, 26 Jul 2021 13:28:20 +0000 (UTC)
+Date:   Mon, 26 Jul 2021 09:28:18 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
+ for synthetic events
+Message-ID: <20210726092818.7d94027d@oasis.local.home>
+In-Reply-To: <20210725124502.54fa65251b5cd5b76fdf5f19@kernel.org>
+References: <20210722142705.992001628@goodmis.org>
+        <20210722142837.458596338@goodmis.org>
+        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
+        <20210722123234.636d5363@oasis.local.home>
+        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
+        <20210722212438.5933e714@rorschach.local.home>
+        <20210724193145.c63b44aa843e05ed9c0b4fdc@kernel.org>
+        <20210725111830.2f424ae3978443241b6d4a2d@kernel.org>
+        <20210725124502.54fa65251b5cd5b76fdf5f19@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 02:27:12PM +0200, Andreas Grünbacher wrote:
-> > That is how can size be different from iomap->length?
+On Sun, 25 Jul 2021 12:45:02 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> And with this change, hist trigger can correctly detect a string type in
+> the operand in the expression and rejects it.
 > 
-> Quoting from my previous reply,
+> Thank you,
 > 
-> "In the iomap_readpage case (iomap_begin with flags == 0),
-> iomap->length will be the amount of data up to the end of the inode.
-> In the iomap_file_buffered_write case (iomap_begin with flags ==
-> IOMAP_WRITE), iomap->length will be the size of iomap->inline_data.
-> (For extending writes, we need to write beyond the current end of
-> inode.) So iomap->length isn't all that useful for
-> iomap_read_inline_data."
-
-I think we should fix that now that we have the srcmap concept.
-That is or IOMAP_WRITE|IOMAP_ZERO return the inline map as the soure
-map, and return the actual block map we plan to write into as the
-main iomap.
-
+> >From 5280d1efe4415a621cf69a1dc4861ab928b0ff1c Mon Sep 17 00:00:00 2001  
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> Date: Sun, 25 Jul 2021 12:34:00 +0900
+> Subject: [PATCH] tracing: Reject string operand in the histogram expression
 > 
-> > Shouldn't the offset_in_page also go into iomap_inline_data_size_valid,
-> > which should probably be called iomap_inline_data_valid then?
-> 
-> Hmm, not sure what you mean: iomap_inline_data_size_valid does take
-> offset_in_page(iomap->inline_data) into account.
+> Since the string type can not be the target of the addition / subtraction
+> operation, it must be rejected. Without this fix, the string type silently
+> converted to digits.
 
-Indeed, orry for the braino.
+Masami, can you send this as a normal patch. My scripts do not work
+(nor do I plan on having them ever do so) with patches embedded in
+threads or non-patch emails.
 
-> I thought people were okay with 80 character long lines?
+Thanks,
 
-No.
+-- Steve
