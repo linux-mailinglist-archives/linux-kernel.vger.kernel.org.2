@@ -2,141 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFBE3D6341
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2703D635B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239365AbhGZPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhGZP25 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:28:57 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBB4C0613D5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:08:00 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id t21so12047143plr.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BHTk+Z+0QSOpCt1sappkmwhVqvSoFxs0RZxbYZqcDGg=;
-        b=iG9Cnaei0YWF3dL5PXk9Go6U1qBL6VEUhK+y+da767lITj04u3O07EZ7CSEdmLxT6+
-         z+WKSbAjjUAmr0Jf9C7enUdsjh6fO17iGTDgOt2KKuap7hWNAcEsM+RKTFdAskec1kLM
-         hJNEtLjaGHW641moe7Qa5waVLuX+WKfSUuBzA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BHTk+Z+0QSOpCt1sappkmwhVqvSoFxs0RZxbYZqcDGg=;
-        b=KdZ3+YClKxV2zOSotlaOSBZlm5Wmn8/cpSRc0S60OvQiNGGwFPQgffFGtRyDRcWv2a
-         6iYD9540YciWZCrAtSk/AjQ80ZEq1J1aLEgZNKPZAZEtNtBHFl+djafqwMkvNrRvONWK
-         rT4Ijbop7KaLfNZ19jV7lNY82rJGB2W4CDGlbxlkh0obj7LoEET+APZQfVCEOyQcwi69
-         2YPSTyZYtS+I9SwUk5TeT+oXdDmcGao+2kePuwSSOk2A50+POJ6R8E+Dzw2WIzLib4Fw
-         NCNBddKqQSgdyCVQElMjcVe2+kSgEPuQIIQ0osdDsvobKXqlaDB4m1kjFGqPImwADyzp
-         h1YA==
-X-Gm-Message-State: AOAM531Pb2/3+T0Daf0J0SM6qj/G1D9g8w0XVzNkVu58i5rbKosM2mYZ
-        BvS33pBQkUCzhJ7JF+ltVDYovg==
-X-Google-Smtp-Source: ABdhPJwboRD80dRmLYgrVd44lIf45dc8GDVX9YVZCQF81QLG7Tl1Q2ldVi03GG90aHmZI1321dPhiA==
-X-Received: by 2002:a63:1656:: with SMTP id 22mr19008943pgw.163.1627315679965;
-        Mon, 26 Jul 2021 09:07:59 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:f794:2436:8d25:f451])
-        by smtp.gmail.com with UTF8SMTPSA id m1sm484988pfc.36.2021.07.26.09.07.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 09:07:59 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 09:07:58 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajesh Patil <rajpat@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, Roja Rani Yarubandi <rojay@codeaurora.org>
-Subject: Re: [PATCH V4 1/4] arm64: dts: sc7280: Add QSPI node
-Message-ID: <YP7d3gZGnfj9YqSY@google.com>
-References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
- <1627306847-25308-2-git-send-email-rajpat@codeaurora.org>
+        id S238892AbhGZPq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:46:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237801AbhGZP3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C014961052;
+        Mon, 26 Jul 2021 16:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627315721;
+        bh=8pFX6GiB7o4ZaY2PyGFj7PxUvm4+em2B3BbKaRxBDEo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oxlzQwo7djZqqInHq/es2pbG2+FW5srBZVt3L/lFuqN90qiOSGHv0E0YzErxChzrs
+         +Rm1V6MO4hcOl5mQIY8CikTVvc4Ebx/t0aHHfR7a2bZrfMhFmSK79QndZzjmar114m
+         XEGS04+a1YzcvBa9usSBZua4HEqV3loJLMzJ2hcFVrUcIq0XxCkVWJA6GCXOu3kGyR
+         Oa4jrieqhoYYuPQF9TIm2oIbXDcusyGn6T08EF4diIJX1W8iv0uXK+Xcmgs9mpm967
+         rPj16/wbs75YTGT816ADxLaxJCJ+ZxG98Nl4KleMwWECg759whzuVsOH3Ra0Gh4dgq
+         u9gRmmo7ZeWfw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, mauro.chehab@huawei.com
+Subject: Re: [PATCH 0/2] Address some issues at hi6421v600 regulator driver
+Date:   Mon, 26 Jul 2021 17:08:31 +0100
+Message-Id: <162730228789.6183.11432905675628892383.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1627121912.git.mchehab+huawei@kernel.org>
+References: <cover.1627121912.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1627306847-25308-2-git-send-email-rajpat@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 07:10:44PM +0530, Rajesh Patil wrote:
-> From: Roja Rani Yarubandi <rojay@codeaurora.org>
+On Sat, 24 Jul 2021 12:22:40 +0200, Mauro Carvalho Chehab wrote:
+> Patch 1 on this series address a review made by Rob Herring for the dt-bindings.
+> It basically use "ldo" instead of "LDO", in order to match the patch I wrote to
+> dt-bindings:
+> 	https://lore.kernel.org/lkml/b7a775808d9c3a87fbe1c5a6dd71f8f18be7e649.1627116034.git.mchehab+huawei@kernel.org/T/#u
 > 
-> Add QSPI DT node for SC7280 SoC.
+> Patch 2 is just a cleanup patch, changing the namespace for the voltage
+> range arrays. IMO, the new names fit better than the previous ones.
 > 
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
-> ---
-> Changes in V4:
->  - As per Stephen's comment updated spi-max-frequency to 37.5MHz, moved
->    qspi_opp_table from /soc to / (root).
->    
-> Changes in V3:
->  - Broken the huge V2 patch into 3 smaller patches.
->    1. QSPI DT nodes
->    2. QUP wrapper_0 DT nodes
->    3. QUP wrapper_1 DT nodes
->    
-> Changes in V2:
->  - As per Doug's comments removed pinmux/pinconf subnodes.
->  - As per Doug's comments split of SPI, UART nodes has been done.
->  - Moved QSPI node before aps_smmu as per the order.
-> 
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 27 ++++++++++++++
->  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 62 +++++++++++++++++++++++++++++++++
->  2 files changed, 89 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index 73225e3..b0bfd8e 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -269,6 +269,20 @@
->  		};
->  };
->  
-> +&qspi {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
-> +
-> +	flash@0 {
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0>;
-> +		spi-max-frequency = <37500000>;
-> +		spi-tx-bus-width = <2>;
-> +		spi-rx-bus-width = <2>;
-> +	};
-> +};
-> +
->  &qupv3_id_0 {
->  	status = "okay";
->  };
-> @@ -346,6 +360,19 @@
->  
->  /* PINCTRL - additions to nodes defined in sc7280.dtsi */
->  
-> +&qspi_cs0 {
-> +	bias-disable;
-> +};
-> +
-> +&qspi_clk {
-> +	bias-disable;
-> +};
-> +
-> +&qspi_data01 {
-> +	/* High-Z when no transfers; nice to park the lines */
-> +	bias-pull-up;
-> +};
-> +
+> [...]
 
-This configures the SPI flash of the SC7280 IDP board, which is neither
-mentioned in the subject nor the body of the commit message. IMO this
-should be split out into a separate patch.
+Applied to
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/2] regulator: hi6421v600: use lowercase for ldo
+      commit: ccb2a74eec211c368ddbe3eaec4a20292e431095
+[2/2] regulator: hi6421v600: rename voltage range arrays
+      commit: 5e36129f2b4e9629513670fc1df97545ab4bd5a1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
