@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BE03D62FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B177F3D60D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238443AbhGZPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
+        id S238214AbhGZPZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:25:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237552AbhGZPXz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BFF760F5B;
-        Mon, 26 Jul 2021 16:04:22 +0000 (UTC)
+        id S237708AbhGZPQU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 644F160F57;
+        Mon, 26 Jul 2021 15:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315462;
-        bh=ZA+CXvK/os7wFu3ZdUkdH6+y724OSWlmvqIhKcTXMFY=;
+        s=korg; t=1627315008;
+        bh=LDVjFVNKxPvG52HZem17m9EAaJJT38vADrvYMk3+CtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g4yEHjx0KejB7vaPNRaOveIKrIca0q1eF6pge00POXou1SsG5S/1nUYlnBKpN27NI
-         zxxDxYPXRFAL64JYpQWvTOsa2zNLWhJAYr9RPi7z31PfG92Dy+ULAydohMKssRz0bX
-         1UxIW3YSbA8zLk3lJ3y9QGxlWJncYF25OppRgqsc=
+        b=iuhZ+cCpe3kXwvobYMhTeOtbYsFDmQMwc/SzU1TBqxKAodynOSYhJwD/RXKE5/46x
+         zcVxGjn6tfhB0ezOzgyRtcMw85Z2XbFfed4o/sA5i7LTdzGEZ6FieJsLEBR9DN0D8C
+         9KRTfkKp65t8OGW2OyPAhGhxHMXyzIPzciAeuEWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 071/167] KVM: PPC: Fix kvm_arch_vcpu_ioctl vcpu_load leak
-Date:   Mon, 26 Jul 2021 17:38:24 +0200
-Message-Id: <20210726153841.781414902@linuxfoundation.org>
+Subject: [PATCH 5.4 024/108] perf test event_update: Fix memory leak of evlist
+Date:   Mon, 26 Jul 2021 17:38:25 +0200
+Message-Id: <20210726153832.479714266@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit bc4188a2f56e821ea057aca6bf444e138d06c252 ]
+[ Upstream commit fc56f54f6fcd5337634f4545af6459613129b432 ]
 
-vcpu_put is not called if the user copy fails. This can result in preempt
-notifier corruption and crashes, among other issues.
+ASan reports a memory leak when running:
 
-Fixes: b3cebfe8c1ca ("KVM: PPC: Move vcpu_load/vcpu_put down to each ioctl case in kvm_arch_vcpu_ioctl")
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210716024310.164448-2-npiggin@gmail.com
+  # perf test "49: Synthesize attr update"
+
+Caused by evlist not being deleted.
+
+This patch adds the missing evlist__delete and removes the
+perf_cpu_map__put since it's already being deleted by evlist__delete.
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: a6e5281780d1da65 ("perf tools: Add event_update event unit type")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/f7994ad63d248f7645f901132d208fadf9f2b7e4.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/powerpc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/perf/tests/event_update.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 32fa0fa3d4ff..543db9157f3b 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -2041,9 +2041,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	{
- 		struct kvm_enable_cap cap;
- 		r = -EFAULT;
--		vcpu_load(vcpu);
- 		if (copy_from_user(&cap, argp, sizeof(cap)))
- 			goto out;
-+		vcpu_load(vcpu);
- 		r = kvm_vcpu_ioctl_enable_cap(vcpu, &cap);
- 		vcpu_put(vcpu);
- 		break;
-@@ -2067,9 +2067,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	case KVM_DIRTY_TLB: {
- 		struct kvm_dirty_tlb dirty;
- 		r = -EFAULT;
--		vcpu_load(vcpu);
- 		if (copy_from_user(&dirty, argp, sizeof(dirty)))
- 			goto out;
-+		vcpu_load(vcpu);
- 		r = kvm_vcpu_ioctl_dirty_tlb(vcpu, &dirty);
- 		vcpu_put(vcpu);
- 		break;
+diff --git a/tools/perf/tests/event_update.c b/tools/perf/tests/event_update.c
+index c727379cf20e..195b29797acc 100644
+--- a/tools/perf/tests/event_update.c
++++ b/tools/perf/tests/event_update.c
+@@ -119,6 +119,6 @@ int test__event_update(struct test *test __maybe_unused, int subtest __maybe_unu
+ 	TEST_ASSERT_VAL("failed to synthesize attr update cpus",
+ 			!perf_event__synthesize_event_update_cpus(&tmp.tool, evsel, process_event_cpus));
+ 
+-	perf_cpu_map__put(evsel->core.own_cpus);
++	evlist__delete(evlist);
+ 	return 0;
+ }
 -- 
 2.30.2
 
