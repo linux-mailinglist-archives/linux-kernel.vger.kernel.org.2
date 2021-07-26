@@ -2,148 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46E13D6679
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ADA83D667A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhGZR1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233213AbhGZR1J (ORCPT
+        id S233113AbhGZR10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:27:26 -0400
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:45961 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233163AbhGZR1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:27:09 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40016C061798;
-        Mon, 26 Jul 2021 11:07:33 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id k3so9836602ilu.2;
-        Mon, 26 Jul 2021 11:07:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1ExxtPk3m7cD/MyVHcJHisgBq5NdaixHar/yvts63oY=;
-        b=lu6ztsDonsig5sCIETowNoTKgft3OXEsGkWrfkw8He3KqD/0JU/DK9nSpf258sg0Bz
-         i9CfwO0MFWfyclZTqiF/nY+UPtRMwrN26ANS2zqMruPGcvbZGskxaB+8QglMK2oq2+E9
-         d+gHrJ+HZLU7yMxzU9WjOL7oluVtm0ZLGtISL9vMNMWIySFEh9LzdRBDSNoFmKc5qEx/
-         Tq9YpvdpkkpR5WucSZPhHUJog0DGKCcL9OnvqS94uUV0cEaCaUkNOBtC11zkbFVWFVO1
-         s3aeZ7oHB/DX7pFnT9+WCcvGTsySvYYyGQnt4YkvAkLqd8pSSGQ8qgFJXetJNYCsaDIW
-         iLRg==
+        Mon, 26 Jul 2021 13:27:21 -0400
+Received: by mail-pl1-f173.google.com with SMTP id k1so12529662plt.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:07:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1ExxtPk3m7cD/MyVHcJHisgBq5NdaixHar/yvts63oY=;
-        b=nyiQedo3i04eUelhplaVnwX+E7u+prCppBubf4n3VK2nKqiybdY8BhgKGvzE2teRBE
-         8R74wXxk2GI9Di5BpSGo4wLET35pcra6E+UvRb5RzkJgy3uxfOXyfmS8YG0KT/3rf/1y
-         ceMaslPT6Xx3lL9yHx7oIY1djhGM4ADhr0L9pVj+hwy7E/qS47HJHuzbZYcPUrbuqInR
-         Ymnuom6nVK768Od0rtZYt+173kffzWeTlre+INip9dO4vMOTYsNSSO5o8xwbYH5pzghI
-         AKcV8QaGO74hp3ji65Jf5HzeiQ+7ZIC3ko1MNDN/89sOAzDQdHiNBdNftqoVvWvZ6GKX
-         q12Q==
-X-Gm-Message-State: AOAM532nswhd555C/viGp7VWu9vzNEeGWiLlcgFLLxhsfXnV6b9tJYYK
-        FJUdEJbs61mWZRAlhYYHtHg=
-X-Google-Smtp-Source: ABdhPJwjo+fF9BZyZ1BakHMFl5O/MdShV0ZbSl+l/TnHSzCFG+swYnuCtJh3DE0ifq0bZhyUxaJHcg==
-X-Received: by 2002:a92:260f:: with SMTP id n15mr13843918ile.143.1627322852708;
-        Mon, 26 Jul 2021 11:07:32 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id t2sm269781ilq.27.2021.07.26.11.07.31
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YkBNZMV+7n5H8gA9IlZ5jcPyGMcNQaSbW83IfLj3EX0=;
+        b=izwdPlMVHQnFpzUP5dziAN6lmwTWdjSbNSQeI7NlyCBnmamgCh5UzgPS1pfUoKlcrt
+         J5RUlyDrlh5I7FhCQXpfA1Kr4jlKXxh7T8LJ+vz3nXZVyUI59fvg0uYafLkO9cOh84Wf
+         qz1wKvzlq6g1GJ4MEiWlpM86m0KeB9Fpybnv7yxRUAXkh4j8htNhrNmeIKdalOwT3d5C
+         8A9mcDspOaJRG2HaaLgRsJx40+cLrxq8YvZB89TTGsRobTJ0u8KiAWxdkqUrRSkIvHm/
+         rDidaXZZjcsHOyedst8W0Gbhnqg3tqmhH1rQsgq/s8f6Goe0tTY0U0N8yAgdfI3mTNrN
+         IAVQ==
+X-Gm-Message-State: AOAM530H0eTXOJ2yuiQRXtVgwA+X1yqCmgB1YhfzvPZScCgKQ7QBSWq9
+        gWBarQqO+1DoDeMIVSAUOCI=
+X-Google-Smtp-Source: ABdhPJyquPVeuk0fKONglPfRwZGtA5UjaNmEq/isQ+hwhuQ97ZzUfbz9t4tx9l7tplkg9W15sdpUIQ==
+X-Received: by 2002:a05:6a00:aca:b029:392:9c79:3a39 with SMTP id c10-20020a056a000acab02903929c793a39mr10103932pfl.57.1627322868624;
+        Mon, 26 Jul 2021 11:07:48 -0700 (PDT)
+Received: from garbanzo ([191.96.121.228])
+        by smtp.gmail.com with ESMTPSA id c17sm674361pfv.68.2021.07.26.11.07.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 11:07:32 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id E2BD227C0068;
-        Mon, 26 Jul 2021 14:07:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 26 Jul 2021 14:07:30 -0400
-X-ME-Sender: <xms:4vn-YFIjPVrX3C1_ocxwjJBa5NCRtSAeoVxZyiJujjVVcEeeGU3F8Q>
-    <xme:4vn-YBLSUU37kuuJ-iDMn6qQzoW5wzFHR2zjYiEtEYJ2k83VXWbNqTkynKZXjpFoo
-    9QCFQpoUA6jwKKt1Q>
-X-ME-Received: <xmr:4vn-YNv1iqoyaUa3OFLUBcm_wwh3f6DnxU4EzZZoyGnFDtqaKNvGLNt7AiI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeehgdduudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhephedvveetfefgiedutedtfeevvddvleekjeeuffffleeguefhhfejteekieeu
-    ueelnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:4vn-YGbc1Ep22IZL8CsUSBhg_Af3l62yNyF-DbwFcMwCv4PImNwnag>
-    <xmx:4vn-YMY_8fiC7FduD1Et-GTeQVwNDd9RcQ3oVSWT1RYdQ5O6IGjPrw>
-    <xmx:4vn-YKCncr3lz1IAqs31OS6Buzei8GE770tmVaDMvEDQBWi_SEHHHQ>
-    <xmx:4vn-YJQfXwm48OQQq4BKhbqTHblNgvIWQ4YJOWhhchE-RKEJyvnjKCa6vtQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 Jul 2021 14:07:30 -0400 (EDT)
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH v6 8/8] PCI: hv: Turn on the host bridge probing on ARM64
-Date:   Tue, 27 Jul 2021 02:06:57 +0800
-Message-Id: <20210726180657.142727-9-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726180657.142727-1-boqun.feng@gmail.com>
-References: <20210726180657.142727-1-boqun.feng@gmail.com>
+        Mon, 26 Jul 2021 11:07:46 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 11:07:44 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v7 1/2] firmware_loader: use -ETIMEDOUT instead of
+ -EAGAIN in fw_load_sysfs_fallback
+Message-ID: <20210726180744.crfvxbuyz2bjw2o2@garbanzo>
+References: <20210724121134.6364-1-mail@anirudhrb.com>
+ <20210724121134.6364-2-mail@anirudhrb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210724121134.6364-2-mail@anirudhrb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we have everything we need, just provide a proper sysdata type for
-the bus to use on ARM64 and everything else works.
+On Sat, Jul 24, 2021 at 05:41:33PM +0530, Anirudh Rayabharam wrote:
+> The only motivation for using -EAGAIN in commit 0542ad88fbdd81bb
+> ("firmware loader: Fix _request_firmware_load() return val for fw load
+> abort") was to distinguish the error from -ENOMEM, and so there is no
+> real reason in keeping it. -EAGAIN is typically used to tell the
+> userspace to try something again and in this case re-using the sysfs
+> loading interface cannot be retried when a timeout happens, so the
+> return value is also bogus.
+> 
+> -ETIMEDOUT is received when the wait times out and returning that
+> is much more telling of what the reason for the failure was. So, just
+> propagate that instead of returning -EAGAIN.
+> 
+> Suggested-by: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- drivers/pci/controller/pci-hyperv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Acked-by: Luis Chamberlain <mcgrof@kernel.org>
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index e6276aaa4659..62dbe98d1fe1 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -40,6 +40,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/pci-ecam.h>
- #include <linux/delay.h>
- #include <linux/semaphore.h>
- #include <linux/irqdomain.h>
-@@ -448,7 +449,11 @@ enum hv_pcibus_state {
- };
- 
- struct hv_pcibus_device {
-+#ifdef CONFIG_X86
- 	struct pci_sysdata sysdata;
-+#elif defined(CONFIG_ARM64)
-+	struct pci_config_window sysdata;
-+#endif
- 	struct pci_host_bridge *bridge;
- 	struct fwnode_handle *fwnode;
- 	/* Protocol version negotiated with the host */
-@@ -3075,7 +3080,9 @@ static int hv_pci_probe(struct hv_device *hdev,
- 			 dom_req, dom);
- 
- 	hbus->bridge->domain_nr = dom;
-+#ifdef CONFIG_X86
- 	hbus->sysdata.domain = dom;
-+#endif
- 
- 	hbus->hdev = hdev;
- 	INIT_LIST_HEAD(&hbus->children);
--- 
-2.32.0
+Beautiful.
 
+As you see, without any of this documented in a commit log, the change
+would have been very obscure. Now we cleary document a userspace
+changing return value clearly.
+
+Thanks!
+
+  Luis
