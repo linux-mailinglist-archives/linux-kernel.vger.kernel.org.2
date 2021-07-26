@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E6E3D5E16
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36B73D5D4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236125AbhGZPF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44690 "EHLO mail.kernel.org"
+        id S235299AbhGZPAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:00:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236005AbhGZPEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:04:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0ABB60F51;
-        Mon, 26 Jul 2021 15:44:59 +0000 (UTC)
+        id S235283AbhGZPA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:00:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0421E60F58;
+        Mon, 26 Jul 2021 15:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314300;
-        bh=cgEsiZtoGysqQs53Lf/AFtcarkIsyx5116xRrMJP7XQ=;
+        s=korg; t=1627314057;
+        bh=0tWEQcgP/NxYyZbe52ECZGUkTm5tV7hfOy4ey7x4VgU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AS0daWaNVUk5I48KSLOqyBg8tOeaiBtpt0aMBBgvhWM1HLTvqW2SWujzXTX2ridFZ
-         OJHJrrjq41LGiflnJLeB56AyYpT18XSfSZQ2KN7R4R5OgshXqFjxWfyF3sjyDZwVyY
-         TcX+jXnl0/U2pAmYPKqkWXEGl6FVhaytX/bf2gMw=
+        b=ou6Ts111LnbsV1NO/viiuKZWQBx7021fghT+US6G0QHv+nkQmLoNRtuRuP2GVxqb3
+         F6uF+VcNEbWYPy0v4feXop2TP5DXNuMkK340sCG4kVN00GxBF9wEA1Hvcs8HdV839X
+         o8qPgidMLauig3pu4AhyC4lcxHd28f0VGs504ma8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 22/60] tcp: annotate data races around tp->mtu_info
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 18/47] iavf: Fix an error handling path in iavf_probe()
 Date:   Mon, 26 Jul 2021 17:38:36 +0200
-Message-Id: <20210726153825.567943260@linuxfoundation.org>
+Message-Id: <20210726153823.555238037@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 561022acb1ce62e50f7a8258687a21b84282a4cb upstream.
+[ Upstream commit af30cbd2f4d6d66a9b6094e0aa32420bc8b20e08 ]
 
-While tp->mtu_info is read while socket is owned, the write
-sides happen from err handlers (tcp_v[46]_mtu_reduced)
-which only own the socket spinlock.
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call, as already done in the remove function.
 
-Fixes: 563d34d05786 ("tcp: dont drop MTU reduction indications")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 5eae00c57f5e ("i40evf: main driver core")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_ipv4.c |    4 ++--
- net/ipv6/tcp_ipv6.c |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -275,7 +275,7 @@ void tcp_v4_mtu_reduced(struct sock *sk)
- 
- 	if ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))
- 		return;
--	mtu = tcp_sk(sk)->mtu_info;
-+	mtu = READ_ONCE(tcp_sk(sk)->mtu_info);
- 	dst = inet_csk_update_pmtu(sk, mtu);
- 	if (!dst)
- 		return;
-@@ -442,7 +442,7 @@ void tcp_v4_err(struct sk_buff *icmp_skb
- 			if (sk->sk_state == TCP_LISTEN)
- 				goto out;
- 
--			tp->mtu_info = info;
-+			WRITE_ONCE(tp->mtu_info, info);
- 			if (!sock_owned_by_user(sk)) {
- 				tcp_v4_mtu_reduced(sk);
- 			} else {
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -311,7 +311,7 @@ static void tcp_v6_mtu_reduced(struct so
- 	if ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))
- 		return;
- 
--	dst = inet6_csk_update_pmtu(sk, tcp_sk(sk)->mtu_info);
-+	dst = inet6_csk_update_pmtu(sk, READ_ONCE(tcp_sk(sk)->mtu_info));
- 	if (!dst)
- 		return;
- 
-@@ -400,7 +400,7 @@ static void tcp_v6_err(struct sk_buff *s
- 		if (!ip6_sk_accept_pmtu(sk))
- 			goto out;
- 
--		tp->mtu_info = ntohl(info);
-+		WRITE_ONCE(tp->mtu_info, ntohl(info));
- 		if (!sock_owned_by_user(sk))
- 			tcp_v6_mtu_reduced(sk);
- 		else if (!test_and_set_bit(TCP_MTU_REDUCED_DEFERRED,
+diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+index 5f03ab3dfa19..8fdbc24b3cba 100644
+--- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
++++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+@@ -2503,6 +2503,7 @@ static int i40evf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ err_ioremap:
+ 	free_netdev(netdev);
+ err_alloc_etherdev:
++	pci_disable_pcie_error_reporting(pdev);
+ 	pci_release_regions(pdev);
+ err_pci_reg:
+ err_dma:
+-- 
+2.30.2
+
 
 
