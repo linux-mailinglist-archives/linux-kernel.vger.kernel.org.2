@@ -2,133 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B44B3D539A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0622F3D539E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbhGZGbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbhGZGbA (ORCPT
+        id S232001AbhGZGbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:31:45 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:52727 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231902AbhGZGbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:31:00 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F69C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:11:28 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso5624395pjo.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+5p8Aei7IrZs3alqaJKEyL3k4NRbSzzZGcPcbzf/ZKM=;
-        b=nsFEEqxuhHH0w55xR+qWi6/8JTZFD+CjXaMMEmRxPwhw2+t/dxlIOoeHh6BpICM3mq
-         gNT4qD6yRd/mY6jEACPu0YsvzhLNNFAflHc0uWnAC/j7XT9FAhDDBCx7p9j2vtIs0vCd
-         y111+bounbY/WPKSDg7zqY0suEQPOzJntP/Vsa+De7Dkj5L32jI5icyEcWzyEnJAzCq7
-         aA3xdsgUDt0CbErUbVFasdkp2E1dn6c8e9+j7u0uDTyc57FJVgyU+uLeZDcPrd8Ti2RV
-         /XdKYIyowWMIT/h8pOCMmIrI//hpZnh5WqTho6WOgON21kM/nrs6WNASFxgJQAX9f9zF
-         DaYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+5p8Aei7IrZs3alqaJKEyL3k4NRbSzzZGcPcbzf/ZKM=;
-        b=fVckV6gU8X+bt9w7rnmbZvT9hFlBdQPKWCRDCUxWXL5qn2o9jg8V22lZnyL/mZAD0Z
-         bXnhXIb+h80v5NNR5ao3KEfdz/88gKok4E1y/9O9RpALT6iscq8ys7PbtYzrHMq43H3c
-         O2X+SKLVI1gi2h9LYys9SSBCS0kCQ9EoC7i/eEkDjDkLAMDRotEaCS0npzj8kGTgFeBP
-         YxXWI6ycsJYKbf7WdfHVJkJtceiYF9YAG9jbWBWDUiO7OEZ4YjGcKwu16ZAaUDbH3Wf3
-         AzCNDMNEcZgVgDm9tAaEu+2dFswENuIRljoxYo1+6GKK+hkwFYMDw7Pf7cDJ7NVHcHV5
-         ip9w==
-X-Gm-Message-State: AOAM532t/JXIThVXlk8jI2GjBJQZWvyRpl8ShtTea5MjduIfTtYO+xIj
-        xFEeX7pMck/XWDs7MSZQDhhAOQ==
-X-Google-Smtp-Source: ABdhPJz/DGTo2HlVZORTFeTFS3UbYQ8fKSzvDp+CtRgvg+g+iWcVQ+dYYlu8pI/PRW+yWU/1lhgXHg==
-X-Received: by 2002:a17:90a:6482:: with SMTP id h2mr24182383pjj.24.1627283486888;
-        Mon, 26 Jul 2021 00:11:26 -0700 (PDT)
-Received: from x1 ([174.127.163.79])
-        by smtp.gmail.com with ESMTPSA id o134sm43060098pfg.62.2021.07.26.00.11.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 00:11:26 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 00:11:24 -0700
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Michael Walle <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
- driver
-Message-ID: <20210726071124.GA9184@x1>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-3-drew@beagleboard.org>
- <8c59105d32a9936f8806501ecd20e044@walle.cc>
- <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
+        Mon, 26 Jul 2021 02:31:43 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 24C255C00FE;
+        Mon, 26 Jul 2021 03:12:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 26 Jul 2021 03:12:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=FOM45Nbgqhzqji4kt3Q5tWngXrQ
+        9l5jHcneF1DYAQzw=; b=IcNhuMHflISdKzo2bgPOe/huj05/aa+FGpUaWkNife0
+        j5jQFKhTGf0F8A7uUoMiuxHfun2BzrQPVgHPN+mdxhS9GFKe2k1IZBfKFUK3RtxF
+        b+UDMGNMrxYqGzpDL339SMR8hUP3jAybcbmZivOtDIFWqwnc+dULEKN4pGCt7MLO
+        L6h+3aUmf+ByMFgxYFY9OqCLsm2J8hOZYCJ4QYiFwmNovMsQoqSidn74sXIU0WId
+        NBRHtR+znkBRmrvOMnuv7VzgYsefYM/Qs0mOmLFJnoeHUNdDx9FS0bq9cJGhGcwP
+        Y0/QuDx7rcdkuzJaKyDxS2pZiq1VasEBLw7V4r8WCbA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FOM45N
+        bgqhzqji4kt3Q5tWngXrQ9l5jHcneF1DYAQzw=; b=wlUZrY4NL55L65s2Zz4+oK
+        WkAUNO/AOre3Ip+hWRv0iGZ9ZVAaS0uDngkEPPuicRjYziHh60PaeAK2AQxUW8gO
+        VD/5sqHxen90ItU7TY9XoHfrJS4F1KzSZdGhm8CSal4ghKKZbZAfY6QY+b23CDwn
+        awIswNW3JkrHLZGr/WKnlZ3MTdfKDrz5BvYMkgyRPQpuBgfXPGDcWBqueYkjs+OZ
+        EmnfB7xAzJ5O6yB59mfvjQfTOhLSWngvKGKcX5IgXUpHUMC/lJTZbIsp38wHklzx
+        8wp1AsrRyipiCXni1winvMF9t7BYFvUqMj+0Rcfql4fhXqwi+8tugpaOh6dsr4gw
+        ==
+X-ME-Sender: <xms:SmD-YMsm4xMycChClaeceUEMSDG08Q65ZHUmTn9wKMeYbhWhNKx4DA>
+    <xme:SmD-YJcCrKH9yD3qDb9bwtY7CoGGiZDdYWuxb1FZ627AdbGvtWOJp0Q-ar1K2BKwq
+    nqSSVQibkESdzr0Mh0>
+X-ME-Received: <xmr:SmD-YHwcJa31PtAoJfY6m3WJgL0fpWTzUrfREslvuIgN6DLj2HNzJTX7N-r1xRlrbPeNYOcfa69pSDQKt_k10u5GJ7SgUmXoeLhJ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeeggdduuddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:SmD-YPP0lx9Q8WPV3_hDyucRcg3_UobIqr03OI1xIl7iSJ-VLIqj7g>
+    <xmx:SmD-YM9hDcAFJ5r1Mmg8dA2RpEneCFvpn9bg6rjl_2KKJ2s38tYPeA>
+    <xmx:SmD-YHU7Tfkb7mNJRKoHw97fcBE1S9FU8BVTo7V1vS6k4w-OEyUlfQ>
+    <xmx:TGD-YLnD2jl0karjRyCwkgUklnj7JmrPCOIK6CBGHj0IySzGt7D6qw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 26 Jul 2021 03:12:09 -0400 (EDT)
+Date:   Mon, 26 Jul 2021 09:12:08 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] arm64: dts: allwinner: h6: tanix-tx6: Enable eMMC
+Message-ID: <20210726071208.zobi2adk4eqeb3gw@gilmour>
+References: <20210722161220.51181-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fx474fpnmwxuuu2u"
 Content-Disposition: inline
-In-Reply-To: <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
+In-Reply-To: <20210722161220.51181-1-jernej.skrabec@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 11:04:41PM +0200, Linus Walleij wrote:
-> On Thu, Jul 1, 2021 at 8:39 AM Michael Walle <michael@walle.cc> wrote:
-> > Am 2021-07-01 02:20, schrieb Drew Fustini:
-> > > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
-> > > BeagleV Starlight JH7100 board [2].
-> > >
-> > > [1] https://github.com/starfive-tech/beaglev_doc/
-> > > [2] https://github.com/beagleboard/beaglev-starlight
-> > >
-> > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-> > > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
-> > > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> >
-> > Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
-> > drivers/gpio/gpio-sl28cpld.c for an example.
-> 
-> To me it looks just memory-mapped?
-> 
-> Good old gpio-mmio.c (select GPIO_GENERIC) should
-> suffice I think.
-> 
-> Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
-> of GPIO_GENERIC calling bgpio_init() in probe().
 
-Thank you for the suggestion. However, I am not sure that will work for
-this SoC.
+--fx474fpnmwxuuu2u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The GPIO registers are described in section 12 of JH7100 datasheet [1]
-and I don't think they fit the expectation of gpio-mmio.c because there
-is a seperate register for each GPIO line for output data value and
-output enable.
+On Thu, Jul 22, 2021 at 06:12:17PM +0200, Jernej Skrabec wrote:
+> Tanix TX6 box has a 32 GB eMMC module. With changes in this series, I
+> get following figures with hdparm -tT:
+>=20
+> /dev/mmcblk2:
+>  Timing cached reads:   1638 MB in  2.00 seconds =3D 818.44 MB/sec
+>  Timing buffered disk reads: 376 MB in  3.01 seconds =3D 124.74 MB/sec
+>=20
+> First patch fixes regulator node names. Second patch sets proper power
+> supplies to GPIO banks and third adds eMMC support.
+>=20
+> Please take a look.
 
-There are 64 output data config registers which are 4 bytes wide. There
-are 64 output enable config registers which are 4 bytes wide too. Output
-data and output enable registers for a given GPIO pad are contiguous.
-GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
-is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
-effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
-Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
+Applied all three, thanks
 
-However, GPIO input data does use just one bit for each line. GPIODIN_0
-at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
+Maxime
 
-Thus the input could work with gpio-mmio but I am not sure how to
-reconcile the register-per-gpio for the output value and output enable.
+--fx474fpnmwxuuu2u
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Is there way a way to adapt gpio-mmio for this situation?
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Drew
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYP5gSAAKCRDj7w1vZxhR
+xQoIAP9tJ13mJPkGx1jSuFkL5vq/ISxHl8BzdOfBSRzO0rfOQQD+NjzOrxL8IB3e
+NyT78ppbHtBmawjTJRh7aGOc6GeUOw0=
+=lXOd
+-----END PGP SIGNATURE-----
 
-[1] https://github.com/starfive-tech/beaglev_doc
+--fx474fpnmwxuuu2u--
