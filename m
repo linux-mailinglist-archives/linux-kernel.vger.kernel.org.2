@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7B63D62B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D123D600D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbhGZPiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:38:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36112 "EHLO mail.kernel.org"
+        id S236975AbhGZPUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237206AbhGZPVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85BD560F38;
-        Mon, 26 Jul 2021 16:02:15 +0000 (UTC)
+        id S237006AbhGZPKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D34E360F42;
+        Mon, 26 Jul 2021 15:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315336;
-        bh=KnbMYBwwV9rrFTpt2Mu2qWmfSt6/uCCFyRp2NMmL+fA=;
+        s=korg; t=1627314637;
+        bh=xl+wkwaEVSWD8v15aWDMJBZvoCsjfiBgBAqk8j/D00o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1roIakaHEMcMeIgFEri2oKtd+IRaHGP8c+pUvO23TeogKuiSyxYYZ4J+6L+ff+lKg
-         k8dqExHclpR4SH2tCHtMumedbyIoQ1Z4rUi37G5Xg/d4xhRMzOs5fE1XKDMd5qGXC4
-         U0UgMD8k3DBq7wxJzZrkx9+AXKgN5/dSq+zv5e/0=
+        b=qAAel9QtCf7HNpQJrvhiLdmRV3K7+3kRP4A9rE7cZOYqZpWEcJSB02kjt2HrpiDlK
+         dwyuRSXt169MtvxWEdPGlTKbLk5AftzIXpc1Am5nos/+9yTT5Xzg5r4FNVhk1oOExO
+         3AE5WbIpXpbL01a/6302hzYxv+rnHuf1DDozqc5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 056/167] bpf: Fix tail_call_reachable rejection for interpreter when jit failed
-Date:   Mon, 26 Jul 2021 17:38:09 +0200
-Message-Id: <20210726153841.292600549@linuxfoundation.org>
+        stable@vger.kernel.org, David Ahern <dsahern@kernel.org>,
+        Vadim Fedorenko <vfedorenko@novek.ru>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 038/120] net: ipv6: fix return value of ip6_skb_dst_mtu
+Date:   Mon, 26 Jul 2021 17:38:10 +0200
+Message-Id: <20210726153833.617120537@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,121 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Vadim Fedorenko <vfedorenko@novek.ru>
 
-[ Upstream commit 5dd0a6b8582ffbfa88351949d50eccd5b6694ade ]
+commit 40fc3054b45820c28ea3c65e2c86d041dc244a8a upstream.
 
-During testing of f263a81451c1 ("bpf: Track subprog poke descriptors correctly
-and fix use-after-free") under various failure conditions, for example, when
-jit_subprogs() fails and tries to clean up the program to be run under the
-interpreter, we ran into the following freeze:
+Commit 628a5c561890 ("[INET]: Add IP(V6)_PMTUDISC_RPOBE") introduced
+ip6_skb_dst_mtu with return value of signed int which is inconsistent
+with actually returned values. Also 2 users of this function actually
+assign its value to unsigned int variable and only __xfrm6_output
+assigns result of this function to signed variable but actually uses
+as unsigned in further comparisons and calls. Change this function
+to return unsigned int value.
 
-  [...]
-  #127/8 tailcall_bpf2bpf_3:FAIL
-  [...]
-  [   92.041251] BUG: KASAN: slab-out-of-bounds in ___bpf_prog_run+0x1b9d/0x2e20
-  [   92.042408] Read of size 8 at addr ffff88800da67f68 by task test_progs/682
-  [   92.043707]
-  [   92.044030] CPU: 1 PID: 682 Comm: test_progs Tainted: G   O   5.13.0-53301-ge6c08cb33a30-dirty #87
-  [   92.045542] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-  [   92.046785] Call Trace:
-  [   92.047171]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.047773]  ? __bpf_prog_run_args32+0x8b/0xb0
-  [   92.048389]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.049019]  ? ktime_get+0x117/0x130
-  [...] // few hundred [similar] lines more
-  [   92.659025]  ? ktime_get+0x117/0x130
-  [   92.659845]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.660738]  ? __bpf_prog_run_args32+0x8b/0xb0
-  [   92.661528]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.662378]  ? print_usage_bug+0x50/0x50
-  [   92.663221]  ? print_usage_bug+0x50/0x50
-  [   92.664077]  ? bpf_ksym_find+0x9c/0xe0
-  [   92.664887]  ? ktime_get+0x117/0x130
-  [   92.665624]  ? kernel_text_address+0xf5/0x100
-  [   92.666529]  ? __kernel_text_address+0xe/0x30
-  [   92.667725]  ? unwind_get_return_address+0x2f/0x50
-  [   92.668854]  ? ___bpf_prog_run+0x15d4/0x2e20
-  [   92.670185]  ? ktime_get+0x117/0x130
-  [   92.671130]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.672020]  ? __bpf_prog_run_args32+0x8b/0xb0
-  [   92.672860]  ? __bpf_prog_run_args64+0xc0/0xc0
-  [   92.675159]  ? ktime_get+0x117/0x130
-  [   92.677074]  ? lock_is_held_type+0xd5/0x130
-  [   92.678662]  ? ___bpf_prog_run+0x15d4/0x2e20
-  [   92.680046]  ? ktime_get+0x117/0x130
-  [   92.681285]  ? __bpf_prog_run32+0x6b/0x90
-  [   92.682601]  ? __bpf_prog_run64+0x90/0x90
-  [   92.683636]  ? lock_downgrade+0x370/0x370
-  [   92.684647]  ? mark_held_locks+0x44/0x90
-  [   92.685652]  ? ktime_get+0x117/0x130
-  [   92.686752]  ? lockdep_hardirqs_on+0x79/0x100
-  [   92.688004]  ? ktime_get+0x117/0x130
-  [   92.688573]  ? __cant_migrate+0x2b/0x80
-  [   92.689192]  ? bpf_test_run+0x2f4/0x510
-  [   92.689869]  ? bpf_test_timer_continue+0x1c0/0x1c0
-  [   92.690856]  ? rcu_read_lock_bh_held+0x90/0x90
-  [   92.691506]  ? __kasan_slab_alloc+0x61/0x80
-  [   92.692128]  ? eth_type_trans+0x128/0x240
-  [   92.692737]  ? __build_skb+0x46/0x50
-  [   92.693252]  ? bpf_prog_test_run_skb+0x65e/0xc50
-  [   92.693954]  ? bpf_prog_test_run_raw_tp+0x2d0/0x2d0
-  [   92.694639]  ? __fget_light+0xa1/0x100
-  [   92.695162]  ? bpf_prog_inc+0x23/0x30
-  [   92.695685]  ? __sys_bpf+0xb40/0x2c80
-  [   92.696324]  ? bpf_link_get_from_fd+0x90/0x90
-  [   92.697150]  ? mark_held_locks+0x24/0x90
-  [   92.698007]  ? lockdep_hardirqs_on_prepare+0x124/0x220
-  [   92.699045]  ? finish_task_switch+0xe6/0x370
-  [   92.700072]  ? lockdep_hardirqs_on+0x79/0x100
-  [   92.701233]  ? finish_task_switch+0x11d/0x370
-  [   92.702264]  ? __switch_to+0x2c0/0x740
-  [   92.703148]  ? mark_held_locks+0x24/0x90
-  [   92.704155]  ? __x64_sys_bpf+0x45/0x50
-  [   92.705146]  ? do_syscall_64+0x35/0x80
-  [   92.706953]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [...]
-
-Turns out that the program rejection from e411901c0b77 ("bpf: allow for tailcalls
-in BPF subprograms for x64 JIT") is buggy since env->prog->aux->tail_call_reachable
-is never true. Commit ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall
-handling in JIT") added a tracker into check_max_stack_depth() which propagates
-the tail_call_reachable condition throughout the subprograms. This info is then
-assigned to the subprogram's func[i]->aux->tail_call_reachable. However, in the
-case of the rejection check upon JIT failure, env->prog->aux->tail_call_reachable
-is used. func[0]->aux->tail_call_reachable which represents the main program's
-information did not propagate this to the outer env->prog->aux, though. Add this
-propagation into check_max_stack_depth() where it needs to belong so that the
-check can be done reliably.
-
-Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64 JIT")
-Co-developed-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Link: https://lore.kernel.org/bpf/618c34e3163ad1a36b1e82377576a6081e182f25.1626123173.git.daniel@iogearbox.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 628a5c561890 ("[INET]: Add IP(V6)_PMTUDISC_RPOBE")
+Reviewed-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: Vadim Fedorenko <vfedorenko@novek.ru>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/bpf/verifier.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/net/ip6_route.h |    2 +-
+ net/ipv6/xfrm6_output.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1f8bf2b39d50..36bc34fce623 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3356,6 +3356,8 @@ continue_func:
- 	if (tail_call_reachable)
- 		for (j = 0; j < frame; j++)
- 			subprog[ret_prog[j]].tail_call_reachable = true;
-+	if (subprog[0].tail_call_reachable)
-+		env->prog->aux->tail_call_reachable = true;
+--- a/include/net/ip6_route.h
++++ b/include/net/ip6_route.h
+@@ -241,7 +241,7 @@ static inline bool ipv6_anycast_destinat
+ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+ 		 int (*output)(struct net *, struct sock *, struct sk_buff *));
  
- 	/* end of for() loop means the last insn of the 'subprog'
- 	 * was reached. Doesn't matter whether it was JA or EXIT
--- 
-2.30.2
-
+-static inline int ip6_skb_dst_mtu(struct sk_buff *skb)
++static inline unsigned int ip6_skb_dst_mtu(struct sk_buff *skb)
+ {
+ 	int mtu;
+ 
+--- a/net/ipv6/xfrm6_output.c
++++ b/net/ipv6/xfrm6_output.c
+@@ -146,7 +146,7 @@ static int __xfrm6_output(struct net *ne
+ {
+ 	struct dst_entry *dst = skb_dst(skb);
+ 	struct xfrm_state *x = dst->xfrm;
+-	int mtu;
++	unsigned int mtu;
+ 	bool toobig;
+ 
+ #ifdef CONFIG_NETFILTER
 
 
