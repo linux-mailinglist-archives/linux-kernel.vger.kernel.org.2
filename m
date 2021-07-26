@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299653D60C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F2E3D62F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238062AbhGZPYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:24:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
+        id S238379AbhGZPmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:42:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236664AbhGZPMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:12:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C4EA60F6E;
-        Mon, 26 Jul 2021 15:52:30 +0000 (UTC)
+        id S237075AbhGZPXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9162360F5A;
+        Mon, 26 Jul 2021 16:04:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314751;
-        bh=z6qaNNWN5HdcxsDn3HQ3eq6yk6drHkj4Lgdg/r8VONo=;
+        s=korg; t=1627315445;
+        bh=KYOiDckllKXj8mHvVhsWCZDPBlWvtcaE6P/Sx14jxpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hSIGDYYZjeWfyT+YKSrYLxpNqXcQCz1eYCr1XylUSdInvP/xLh7fbaN/kZ3fnp++z
-         hUvz0LOKBfV2yqKjemLA7hQHYvpvzdkYOfXb9AXJFdI62jBrkav1jjRKDAkAjcS0HL
-         JQz0iKxekT3yAPX+C/gD7m1HBsO2/lIciZmcR80E=
+        b=cOZGWc/N2kbxPa1oaVINeP+o+GHRucU8korlMa5Zf6Tf8lEDcfSj1YlhfZqy2PwGG
+         BeaUN6Sf6X3EJWx/rMVeheH3ulwuwN3gfIQudFhGiLLtcGllRb0NKBHZjC3LlN2uu8
+         EiSy4OgqdMzRdkopg+Cp9tHro9AgFa9YSjwaQMJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        syzbot+b774577370208727d12b@syzkaller.appspotmail.com,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 079/120] scsi: iscsi: Fix iface sysfs attr detection
+Subject: [PATCH 5.10 098/167] sctp: update active_key for asoc when old key is being replaced
 Date:   Mon, 26 Jul 2021 17:38:51 +0200
-Message-Id: <20210726153834.926307136@linuxfoundation.org>
+Message-Id: <20210726153842.688484553@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,144 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit e746f3451ec7f91dcc9fd67a631239c715850a34 ]
+[ Upstream commit 58acd10092268831e49de279446c314727101292 ]
 
-A ISCSI_IFACE_PARAM can have the same value as a ISCSI_NET_PARAM so when
-iscsi_iface_attr_is_visible tries to figure out the type by just checking
-the value, we can collide and return the wrong type. When we call into the
-driver we might not match and return that we don't want attr visible in
-sysfs. The patch fixes this by setting the type when we figure out what the
-param is.
+syzbot reported a call trace:
 
-Link: https://lore.kernel.org/r/20210701002559.89533-1-michael.christie@oracle.com
-Fixes: 3e0f65b34cc9 ("[SCSI] iscsi_transport: Additional parameters for network settings")
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+  BUG: KASAN: use-after-free in sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
+  Call Trace:
+   sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
+   sctp_set_owner_w net/sctp/socket.c:131 [inline]
+   sctp_sendmsg_to_asoc+0x152e/0x2180 net/sctp/socket.c:1865
+   sctp_sendmsg+0x103b/0x1d30 net/sctp/socket.c:2027
+   inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
+   sock_sendmsg_nosec net/socket.c:703 [inline]
+   sock_sendmsg+0xcf/0x120 net/socket.c:723
+
+This is an use-after-free issue caused by not updating asoc->shkey after
+it was replaced in the key list asoc->endpoint_shared_keys, and the old
+key was freed.
+
+This patch is to fix by also updating active_key for asoc when old key is
+being replaced with a new one. Note that this issue doesn't exist in
+sctp_auth_del_key_id(), as it's not allowed to delete the active_key
+from the asoc.
+
+Fixes: 1b1e0bc99474 ("sctp: add refcnt support for sh_key")
+Reported-by: syzbot+b774577370208727d12b@syzkaller.appspotmail.com
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c | 90 +++++++++++------------------
- 1 file changed, 34 insertions(+), 56 deletions(-)
+ net/sctp/auth.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 2aaa5a2bd613..20e69052161e 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -427,39 +427,10 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 	struct device *dev = container_of(kobj, struct device, kobj);
- 	struct iscsi_iface *iface = iscsi_dev_to_iface(dev);
- 	struct iscsi_transport *t = iface->transport;
--	int param;
--	int param_type;
-+	int param = -1;
- 
- 	if (attr == &dev_attr_iface_enabled.attr)
- 		param = ISCSI_NET_PARAM_IFACE_ENABLE;
--	else if (attr == &dev_attr_iface_vlan_id.attr)
--		param = ISCSI_NET_PARAM_VLAN_ID;
--	else if (attr == &dev_attr_iface_vlan_priority.attr)
--		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
--	else if (attr == &dev_attr_iface_vlan_enabled.attr)
--		param = ISCSI_NET_PARAM_VLAN_ENABLED;
--	else if (attr == &dev_attr_iface_mtu.attr)
--		param = ISCSI_NET_PARAM_MTU;
--	else if (attr == &dev_attr_iface_port.attr)
--		param = ISCSI_NET_PARAM_PORT;
--	else if (attr == &dev_attr_iface_ipaddress_state.attr)
--		param = ISCSI_NET_PARAM_IPADDR_STATE;
--	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
--		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
--	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
--		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
--	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
--		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
--	else if (attr == &dev_attr_iface_tcp_wsf.attr)
--		param = ISCSI_NET_PARAM_TCP_WSF;
--	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
--		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
--	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
--		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
--	else if (attr == &dev_attr_iface_cache_id.attr)
--		param = ISCSI_NET_PARAM_CACHE_ID;
--	else if (attr == &dev_attr_iface_redirect_en.attr)
--		param = ISCSI_NET_PARAM_REDIRECT_EN;
- 	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
- 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
- 	else if (attr == &dev_attr_iface_header_digest.attr)
-@@ -496,6 +467,38 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 		param = ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN;
- 	else if (attr == &dev_attr_iface_initiator_name.attr)
- 		param = ISCSI_IFACE_PARAM_INITIATOR_NAME;
-+
-+	if (param != -1)
-+		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
-+
-+	if (attr == &dev_attr_iface_vlan_id.attr)
-+		param = ISCSI_NET_PARAM_VLAN_ID;
-+	else if (attr == &dev_attr_iface_vlan_priority.attr)
-+		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
-+	else if (attr == &dev_attr_iface_vlan_enabled.attr)
-+		param = ISCSI_NET_PARAM_VLAN_ENABLED;
-+	else if (attr == &dev_attr_iface_mtu.attr)
-+		param = ISCSI_NET_PARAM_MTU;
-+	else if (attr == &dev_attr_iface_port.attr)
-+		param = ISCSI_NET_PARAM_PORT;
-+	else if (attr == &dev_attr_iface_ipaddress_state.attr)
-+		param = ISCSI_NET_PARAM_IPADDR_STATE;
-+	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
-+		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
-+	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
-+		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
-+	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
-+		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
-+	else if (attr == &dev_attr_iface_tcp_wsf.attr)
-+		param = ISCSI_NET_PARAM_TCP_WSF;
-+	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
-+		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
-+	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
-+		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
-+	else if (attr == &dev_attr_iface_cache_id.attr)
-+		param = ISCSI_NET_PARAM_CACHE_ID;
-+	else if (attr == &dev_attr_iface_redirect_en.attr)
-+		param = ISCSI_NET_PARAM_REDIRECT_EN;
- 	else if (iface->iface_type == ISCSI_IFACE_TYPE_IPV4) {
- 		if (attr == &dev_attr_ipv4_iface_ipaddress.attr)
- 			param = ISCSI_NET_PARAM_IPV4_ADDR;
-@@ -586,32 +589,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 		return 0;
+diff --git a/net/sctp/auth.c b/net/sctp/auth.c
+index 6f8319b828b0..fe74c5f95630 100644
+--- a/net/sctp/auth.c
++++ b/net/sctp/auth.c
+@@ -860,6 +860,8 @@ int sctp_auth_set_key(struct sctp_endpoint *ep,
+ 	if (replace) {
+ 		list_del_init(&shkey->key_list);
+ 		sctp_auth_shkey_release(shkey);
++		if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
++			sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
  	}
+ 	list_add(&cur_key->key_list, sh_keys);
  
--	switch (param) {
--	case ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO:
--	case ISCSI_IFACE_PARAM_HDRDGST_EN:
--	case ISCSI_IFACE_PARAM_DATADGST_EN:
--	case ISCSI_IFACE_PARAM_IMM_DATA_EN:
--	case ISCSI_IFACE_PARAM_INITIAL_R2T_EN:
--	case ISCSI_IFACE_PARAM_DATASEQ_INORDER_EN:
--	case ISCSI_IFACE_PARAM_PDU_INORDER_EN:
--	case ISCSI_IFACE_PARAM_ERL:
--	case ISCSI_IFACE_PARAM_MAX_RECV_DLENGTH:
--	case ISCSI_IFACE_PARAM_FIRST_BURST:
--	case ISCSI_IFACE_PARAM_MAX_R2T:
--	case ISCSI_IFACE_PARAM_MAX_BURST:
--	case ISCSI_IFACE_PARAM_CHAP_AUTH_EN:
--	case ISCSI_IFACE_PARAM_BIDI_CHAP_EN:
--	case ISCSI_IFACE_PARAM_DISCOVERY_AUTH_OPTIONAL:
--	case ISCSI_IFACE_PARAM_DISCOVERY_LOGOUT_EN:
--	case ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN:
--	case ISCSI_IFACE_PARAM_INITIATOR_NAME:
--		param_type = ISCSI_IFACE_PARAM;
--		break;
--	default:
--		param_type = ISCSI_NET_PARAM;
--	}
--
--	return t->attr_is_visible(param_type, param);
-+	return t->attr_is_visible(ISCSI_NET_PARAM, param);
- }
- 
- static struct attribute *iscsi_iface_attrs[] = {
 -- 
 2.30.2
 
