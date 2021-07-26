@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025A53D640A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B9D3D6407
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239663AbhGZPyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49346 "EHLO mail.kernel.org"
+        id S238897AbhGZPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233894AbhGZPcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233904AbhGZPcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:32:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8DD360240;
-        Mon, 26 Jul 2021 16:13:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4385F60C40;
+        Mon, 26 Jul 2021 16:13:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315996;
-        bh=vVvy4hSjIT2YYFx/pQUOBThGuioYUH/O9n9ljY/k+qw=;
+        s=korg; t=1627315998;
+        bh=O/uDQGTfxzNPMnwcyEV2gPyHXtuUgPJo1AwHDEq+VTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JkNeP558CfAGZcqP1dMzHq4tFPclRfqzU/tu+bFAFNgUI/bgGts1S1Pdde6B/98tA
-         j9FQHei8te5GbQMLEMV9xKA59jjtksluJ6B9fDCW0XpRhlDTWl96pSh9qyG+jbmMGb
-         3OTEaK5umvIFC+XR2bhGlHsilpjK/PGR5z8OPr50=
+        b=QA9bPIgCv99lTLGcU2SqFSAoYk02OeT2AtlS6vTIo9CwocEfzO8cXOR15abxeiu3V
+         vGjjT+Aud862Pnzl8a1r3w3nkwNqCMztbJpYMFabZoFHo7XTwWmm/PAt/LVWPybFE7
+         Z+G3MVzPUbGT534pfdbuXXfxYL84CZ+BNQh/7szo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 112/223] ALSA: hda: intel-dsp-cfg: add missing ElkhartLake PCI ID
-Date:   Mon, 26 Jul 2021 17:38:24 +0200
-Message-Id: <20210726153849.938790309@linuxfoundation.org>
+        stable@vger.kernel.org, Chengwen Feng <fengchengwen@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 113/223] net: hns3: fix possible mismatches resp of mailbox
+Date:   Mon, 26 Jul 2021 17:38:25 +0200
+Message-Id: <20210726153849.970126374@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,39 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Chengwen Feng <fengchengwen@huawei.com>
 
-[ Upstream commit 114613f62f42e7cbc1242c4e82076a0153043761 ]
+[ Upstream commit 1b713d14dc3c077ec45e65dab4ea01a8bc41b8c1 ]
 
-We missed the fact that ElkhartLake platforms have two different PCI
-IDs. We only added one so the SOF driver is never selected by the
-autodetection logic for the missing configuration.
+Currently, the mailbox synchronous communication between VF and PF use
+the following fields to maintain communication:
+1. Origin_mbx_msg which was combined by message code and subcode, used
+to match request and response.
+2. Received_resp which means whether received response.
 
-BugLink: https://github.com/thesofproject/linux/issues/2990
-Fixes: cc8f81c7e625 ('ALSA: hda: fix intel DSP config')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210719231746.557325-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+There may possible mismatches of the following situation:
+1. VF sends message A with code=1 subcode=1.
+2. PF was blocked about 500ms when processing the message A.
+3. VF will detect message A timeout because it can't get the response
+within 500ms.
+4. VF sends message B with code=1 subcode=1 which equal message A.
+5. PF processes the first message A and send the response message to
+VF.
+6. VF will identify the response matched the message B because the
+code/subcode is the same. This will lead to mismatch of request and
+response.
+
+To fix the above bug, we use the following scheme:
+1. The message sent from VF was labelled with match_id which was a
+unique 16-bit non-zero value.
+2. The response sent from PF will label with match_id which got from
+the request.
+3. The VF uses the match_id to match request and response message.
+
+As for PF driver, it only needs to copy the match_id from request to
+response.
+
+Fixes: dde1a86e93ca ("net: hns3: Add mailbox support to PF driver")
+Signed-off-by: Chengwen Feng <fengchengwen@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/intel-dsp-config.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h        | 6 ++++--
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c | 1 +
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/hda/intel-dsp-config.c b/sound/hda/intel-dsp-config.c
-index d8be146793ee..c9d0ba353463 100644
---- a/sound/hda/intel-dsp-config.c
-+++ b/sound/hda/intel-dsp-config.c
-@@ -319,6 +319,10 @@ static const struct config_entry config_table[] = {
- 		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
- 		.device = 0x4b55,
- 	},
-+	{
-+		.flags = FLAG_SOF | FLAG_SOF_ONLY_IF_DMIC,
-+		.device = 0x4b58,
-+	},
- #endif
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h b/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
+index a2c17af57fde..d283beec9f66 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hclge_mbx.h
+@@ -135,7 +135,8 @@ struct hclge_mbx_vf_to_pf_cmd {
+ 	u8 mbx_need_resp;
+ 	u8 rsv1[1];
+ 	u8 msg_len;
+-	u8 rsv2[3];
++	u8 rsv2;
++	u16 match_id;
+ 	struct hclge_vf_to_pf_msg msg;
+ };
  
- /* Alder Lake */
+@@ -145,7 +146,8 @@ struct hclge_mbx_pf_to_vf_cmd {
+ 	u8 dest_vfid;
+ 	u8 rsv[3];
+ 	u8 msg_len;
+-	u8 rsv1[3];
++	u8 rsv1;
++	u16 match_id;
+ 	struct hclge_pf_to_vf_msg msg;
+ };
+ 
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+index f1c9f4ada348..38b601031db4 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_mbx.c
+@@ -47,6 +47,7 @@ static int hclge_gen_resp_to_vf(struct hclge_vport *vport,
+ 
+ 	resp_pf_to_vf->dest_vfid = vf_to_pf_req->mbx_src_vfid;
+ 	resp_pf_to_vf->msg_len = vf_to_pf_req->msg_len;
++	resp_pf_to_vf->match_id = vf_to_pf_req->match_id;
+ 
+ 	resp_pf_to_vf->msg.code = HCLGE_MBX_PF_VF_RESP;
+ 	resp_pf_to_vf->msg.vf_mbx_msg_code = vf_to_pf_req->msg.code;
 -- 
 2.30.2
 
