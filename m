@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3779F3D5E2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C8E3D5EFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236063AbhGZPGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45372 "EHLO mail.kernel.org"
+        id S237704AbhGZPQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:16:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235725AbhGZPFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:05:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF3760F5B;
-        Mon, 26 Jul 2021 15:45:27 +0000 (UTC)
+        id S236354AbhGZPIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:08:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06E9560F9B;
+        Mon, 26 Jul 2021 15:48:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314328;
-        bh=9g1soENvLV8l1xZaSZUxicGcQuXbmy3p2Xn1klrf4NE=;
+        s=korg; t=1627314508;
+        bh=auDwRLwTVCHo8yYe7iehfT/XxyLq4c0X3GuENH/smVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o6Av7cJsDHyE8wcxmY0o6wtEZ8ZLGdDlG4yW8xA2xVoKE/w9jJEzHlu3qysNniU8O
-         gaZLRMj3caVBUOQKNUA+kaAeCxPjBTMT3wGpowUYgLW1eynHepJAv5LyPtESvPYqcx
-         cnG4uXXopFc0B0VbfWU0SWcH/R56Xzo5/k7XEhyo=
+        b=1BVJ1RlPw5zim69b/Mdr0pcW4H6I4T50QCSTA+ZMXAPrUp4Rt9fw6hqQF3U7YEulq
+         Wgb873K+BtyctlmqAfIGTJFYL5wCDUYIQdeeXnJuofO4jDtmYGXnrvdekTF+vYfsw/
+         83lDitIyNxO/282KkrbXf+ZZKsIvVu7ua9HeVN8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 60/60] btrfs: compression: dont try to compress if we dont have enough pages
+        stable@vger.kernel.org, Markus Boehme <markubo@amazon.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 74/82] ixgbe: Fix packet corruption due to missing DMA sync
 Date:   Mon, 26 Jul 2021 17:39:14 +0200
-Message-Id: <20210726153826.754545251@linuxfoundation.org>
+Message-Id: <20210726153830.581847662@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Markus Boehme <markubo@amazon.com>
 
-commit f2165627319ffd33a6217275e5690b1ab5c45763 upstream
+commit 09cfae9f13d51700b0fecf591dcd658fc5375428 upstream.
 
-The early check if we should attempt compression does not take into
-account the number of input pages. It can happen that there's only one
-page, eg. a tail page after some ranges of the BTRFS_MAX_UNCOMPRESSED
-have been processed, or an isolated page that won't be converted to an
-inline extent.
+When receiving a packet with multiple fragments, hardware may still
+touch the first fragment until the entire packet has been received. The
+driver therefore keeps the first fragment mapped for DMA until end of
+packet has been asserted, and delays its dma_sync call until then.
 
-The single page would be compressed but a later check would drop it
-again because the result size must be at least one block shorter than
-the input. That can never work with just one page.
+The driver tries to fit multiple receive buffers on one page. When using
+3K receive buffers (e.g. using Jumbo frames and legacy-rx is turned
+off/build_skb is being used) on an architecture with 4K pages, the
+driver allocates an order 1 compound page and uses one page per receive
+buffer. To determine the correct offset for a delayed DMA sync of the
+first fragment of a multi-fragment packet, the driver then cannot just
+use PAGE_MASK on the DMA address but has to construct a mask based on
+the actual size of the backing page.
 
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Using PAGE_MASK in the 3K RX buffer/4K page architecture configuration
+will always sync the first page of a compound page. With the SWIOTLB
+enabled this can lead to corrupted packets (zeroed out first fragment,
+re-used garbage from another packet) and various consequences, such as
+slow/stalling data transfers and connection resets. For example, testing
+on a link with MTU exceeding 3058 bytes on a host with SWIOTLB enabled
+(e.g. "iommu=soft swiotlb=262144,force") TCP transfers quickly fizzle
+out without this patch.
+
+Cc: stable@vger.kernel.org
+Fixes: 0c5661ecc5dd7 ("ixgbe: fix crash in build_skb Rx code path")
+Signed-off-by: Markus Boehme <markubo@amazon.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -484,7 +484,7 @@ again:
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
- 	 */
--	if (inode_need_compress(inode)) {
-+	if (nr_pages > 1 && inode_need_compress(inode)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -1872,7 +1872,8 @@ static void ixgbe_dma_sync_frag(struct i
+ 				struct sk_buff *skb)
+ {
+ 	if (ring_uses_build_skb(rx_ring)) {
+-		unsigned long offset = (unsigned long)(skb->data) & ~PAGE_MASK;
++		unsigned long mask = (unsigned long)ixgbe_rx_pg_size(rx_ring) - 1;
++		unsigned long offset = (unsigned long)(skb->data) & mask;
+ 
+ 		dma_sync_single_range_for_cpu(rx_ring->dev,
+ 					      IXGBE_CB(skb)->dma,
 
 
