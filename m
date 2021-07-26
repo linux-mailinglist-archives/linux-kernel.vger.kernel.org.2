@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A60B3D620C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44B13D632D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhGZPeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60334 "EHLO mail.kernel.org"
+        id S239127AbhGZPo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236616AbhGZPTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04E1360FD7;
-        Mon, 26 Jul 2021 15:59:46 +0000 (UTC)
+        id S237793AbhGZPZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BCD360F5E;
+        Mon, 26 Jul 2021 16:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315187;
-        bh=npH5eqlpatA98/12plTXrBIf/CfD70hux0lUZ+i+ESw=;
+        s=korg; t=1627315583;
+        bh=1NWY3vav1js9Y7AjIX2vb6yfLNkQhJwq9ZZ2rNKPgUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WsvvblNsirSoGpcjUeZEBFSP3S/2f6alv3jCZaFIFNoJ1aMP/pqC9blI9MOGL1APZ
-         kIaSRO3+20erMcuAl+JaSEWofF4p2XxLM+/yqwVBdXwTUYE8LpJRq81yFMphn+IrVs
-         mCBcK/dsJhdnlwzMn39qgDpwPcUauRtR9d7R/CcU=
+        b=xRwPWALbMC+CKWATIaNqx1suuJ6dm6Wnu0A3tDZ5d35IHGAZGIVmwm7KBzS95koQP
+         4Z4JVC7kAWPPw52SSxjMBBPqHg+crQODkoE5f1Lc/0QWeqWK9JlOLfnrCRNbA1J1Sr
+         mxPey7vmZDImlTy98IgGEk+ELcbWDfxEbBNyudZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.4 107/108] perf inject: Close inject.output on exit
+        stable@vger.kernel.org, Charles Baylis <cb-kernel@fishzet.co.uk>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.10 155/167] drm: Return -ENOTTY for non-drm ioctls
 Date:   Mon, 26 Jul 2021 17:39:48 +0200
-Message-Id: <20210726153835.103060624@linuxfoundation.org>
+Message-Id: <20210726153844.612643287@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Charles Baylis <cb-kernel@fishzet.co.uk>
 
-commit 02e6246f5364d5260a6ea6f92ab6f409058b162f upstream.
+commit 3abab27c322e0f2acf981595aa8040c9164dc9fb upstream.
 
-ASan reports a memory leak when running:
+drm: Return -ENOTTY for non-drm ioctls
 
-  # perf test "83: Zstd perf.data compression/decompression"
+Return -ENOTTY from drm_ioctl() when userspace passes in a cmd number
+which doesn't relate to the drm subsystem.
 
-which happens inside 'perf inject'.
+Glibc uses the TCGETS ioctl to implement isatty(), and without this
+change isatty() returns it incorrectly returns true for drm devices.
 
-The bug is caused by inject.output never being closed.
+To test run this command:
+$ if [ -t 0 ]; then echo is a tty; fi < /dev/dri/card0
+which shows "is a tty" without this patch.
 
-This patch adds the missing perf_data__close().
+This may also modify memory which the userspace application is not
+expecting.
 
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: 6ef81c55a2b6584c ("perf session: Return error code for perf_session__new() function on failure")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/c06f682afa964687367cf6e92a64ceb49aec76a5.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Charles Baylis <cb-kernel@fishzet.co.uk>
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/YPG3IBlzaMhfPqCr@stando.fishzet.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/builtin-inject.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_ioctl.c |    3 +++
+ include/drm/drm_ioctl.h     |    1 +
+ 2 files changed, 4 insertions(+)
 
---- a/tools/perf/builtin-inject.c
-+++ b/tools/perf/builtin-inject.c
-@@ -836,8 +836,10 @@ int cmd_inject(int argc, const char **ar
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -827,6 +827,9 @@ long drm_ioctl(struct file *filp,
+ 	if (drm_dev_is_unplugged(dev))
+ 		return -ENODEV;
  
- 	data.path = inject.input_name;
- 	inject.session = perf_session__new(&data, inject.output.is_pipe, &inject.tool);
--	if (IS_ERR(inject.session))
--		return PTR_ERR(inject.session);
-+	if (IS_ERR(inject.session)) {
-+		ret = PTR_ERR(inject.session);
-+		goto out_close_output;
-+	}
++       if (DRM_IOCTL_TYPE(cmd) != DRM_IOCTL_BASE)
++               return -ENOTTY;
++
+ 	is_driver_ioctl = nr >= DRM_COMMAND_BASE && nr < DRM_COMMAND_END;
  
- 	if (zstd_init(&(inject.session->zstd_data), 0) < 0)
- 		pr_warning("Decompression initialization failed.\n");
-@@ -874,5 +876,7 @@ int cmd_inject(int argc, const char **ar
- out_delete:
- 	zstd_fini(&(inject.session->zstd_data));
- 	perf_session__delete(inject.session);
-+out_close_output:
-+	perf_data__close(&inject.output);
- 	return ret;
- }
+ 	if (is_driver_ioctl) {
+--- a/include/drm/drm_ioctl.h
++++ b/include/drm/drm_ioctl.h
+@@ -68,6 +68,7 @@ typedef int drm_ioctl_compat_t(struct fi
+ 			       unsigned long arg);
+ 
+ #define DRM_IOCTL_NR(n)                _IOC_NR(n)
++#define DRM_IOCTL_TYPE(n)              _IOC_TYPE(n)
+ #define DRM_MAJOR       226
+ 
+ /**
 
 
