@@ -2,237 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546C43D59E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305F03D59EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234339AbhGZMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:15:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234310AbhGZMPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:15:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AACE60F5B;
-        Mon, 26 Jul 2021 12:55:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627304136;
-        bh=Y6Q1zU1EE3FHweXtO3FdGSQmfD6kw20XjAb9W1B4cCM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=spFo+fr6iPT7oUnJDGd0OJH+Qh9iFEeYzEFTutY9CN1sJToxu7rJuZUUlHJTYxBs9
-         hwJf80Amq+wsr5OBoLzC3VTTxGJL/sTGHJMx5vBNTYByc6XQzR+BN3GPub8lauf1uw
-         uCWwHl8wD8DyGSPzl7mGsl5ekm11ORcTHxHmHK3TLMJr8ZlHwEZFwLZQc76Zv/ZsFt
-         wEd2MHWPnzf0WTZ5g/PNCZFtKlT4RbvAXo0IZjmv1LqrT3uZDGQuDpTW0lh2EbIDsa
-         S8dyp5FXMMcWdf6q9TgWjvA4RCIbqne53wkttoExw4nt0WIMBw5vwEwEoWgn7iguik
-         8fD3gZ/4Ewznw==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH 6/6] posix-cpu-timers: Recalc next expiration when timer_settime() ends up not queueing
-Date:   Mon, 26 Jul 2021 14:55:13 +0200
-Message-Id: <20210726125513.271824-7-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210726125513.271824-1-frederic@kernel.org>
-References: <20210726125513.271824-1-frederic@kernel.org>
+        id S234356AbhGZMPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234309AbhGZMPR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:15:17 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33C7C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 05:55:45 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id n21so5268519wmq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 05:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fkUG+iAt+zuCxT26kDkl0WV6E/FteQoKv8U8VM3QTBg=;
+        b=j7tPw8qGbY4QpKheFdpqb7ALH2NQGpyAvOIiHaRfa9BpgneUoA/IUIxx6xzGgikntK
+         qgWAjkvvnPunpWZVU2u8z1d9bAHBqQbyPrjn7WVR943PaozM6915IM+Xa/+m5Vc3Z0gA
+         6x0wQGJ29coOSE7e7xBPCB5w8M7K4S/17hUJLRmqFH1hyIux8p8+Z0s39mqbeJ+ZXr4/
+         wt6LIOWFyp/Jpr2bXOVclLqWbolz2QJc1LrXrMhpfIey/NaH+zrVsPR5Ccz4nwkKOk06
+         ZIL2OqjkLUkXng13Gz2LxcA3AAS28LkWRQyahR8W1Bt7eMzPRgPJdApG/SfaiGGlmUda
+         Kqhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fkUG+iAt+zuCxT26kDkl0WV6E/FteQoKv8U8VM3QTBg=;
+        b=JVAgGWIiG6l64PQJFixzJtDmOYlfxhfUT1QS4vPH80nhkZkq+s+C3+Fldv0Xrw/zrf
+         YFvixgyxY0DLsrQE6ScEsUSPmD6M8F5TZOESuVJcs5/rqacR649a+X41c/uF6HZAi154
+         +ACO5VZp1M6/+TPo0R6WTGMqm3813C59JsqWdDUCzPkVTpK5HEPpKi8hNGNud/jXqjCv
+         oqZib/Fe80f7yeHQMXiOcesIiOBPVdoY32w+MGvbhCCi8Bxn8a13CUrFfoIvNORSc4F6
+         53XCHy5CPwaGhXNxhjJHinj+RTCNT1VcTO9LFWTc0NItZO8qVbqZWV55Emr5MjFZuCp6
+         7rQQ==
+X-Gm-Message-State: AOAM530eV1YXxIwei/OirYGkBFlMr+4/yv/KdkGHl1r3Spru/ax/xm49
+        1nZQCybYZn/9pYkhneErSnPn6Q==
+X-Google-Smtp-Source: ABdhPJzRjwbFI8w9H/LdYOboSNiGgyVn8q0LaZ4z28ZHHfB43EnAHJUFpDFkZ6+kBJzf0OGfKuzxUA==
+X-Received: by 2002:a05:600c:4f48:: with SMTP id m8mr9896882wmq.22.1627304144226;
+        Mon, 26 Jul 2021 05:55:44 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:c468:e033:fa2b:3a6])
+        by smtp.gmail.com with ESMTPSA id z11sm42186759wru.65.2021.07.26.05.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 05:55:43 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 13:55:41 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     james.morse@arm.com, alexandru.elisei@arm.com,
+        suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, ardb@kernel.org, qwandor@google.com,
+        tabba@google.com, dbrazdil@google.com, kernel-team@android.com
+Subject: Re: [PATCH v2 15/16] KVM: arm64: Restrict EL2 stage-1 changes in
+ protected mode
+Message-ID: <YP6wzW+6q5minnix@google.com>
+References: <20210726092905.2198501-1-qperret@google.com>
+ <20210726092905.2198501-16-qperret@google.com>
+ <87o8ape2nj.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o8ape2nj.wl-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several scenarios that can result in posix_cpu_timer_set()
-not queueing the timer but still leave the threadroup cputime counter
-running or keep the tick dependency around for a random amount of time.
+On Monday 26 Jul 2021 at 12:27:12 (+0100), Marc Zyngier wrote:
+> On Mon, 26 Jul 2021 10:29:04 +0100,
+> Quentin Perret <qperret@google.com> wrote:
+> > 
+> > The host kernel is currently able to change EL2 stage-1 mappings without
+> > restrictions thanks to the __pkvm_create_mappings() hypercall. But in a
+> > world where the host is no longer part of the TCB, this clearly poses a
+> > problem.
+> > 
+> > To fix this, introduce a new hypercall to allow the host to share a
+> > physical memory page with the hypervisor, and remove the
+> > __pkvm_create_mappings() variant. The new hypercall implements
+> > ownership and permission checks before allowing the sharing operation,
+> > and it annotates the shared page in the hypervisor stage-1 and host
+> > stage-2 page-tables.
+> > 
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  arch/arm64/include/asm/kvm_asm.h              |  2 +-
+> >  arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |  1 +
+> >  arch/arm64/kvm/hyp/nvhe/hyp-main.c            | 11 +--
+> >  arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 90 +++++++++++++++++++
+> >  arch/arm64/kvm/mmu.c                          | 28 +++++-
+> >  5 files changed, 120 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
+> > index 9f0bf2109be7..78db818ae2c9 100644
+> > --- a/arch/arm64/include/asm/kvm_asm.h
+> > +++ b/arch/arm64/include/asm/kvm_asm.h
+> > @@ -59,7 +59,7 @@
+> >  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_save_aprs		13
+> >  #define __KVM_HOST_SMCCC_FUNC___vgic_v3_restore_aprs		14
+> >  #define __KVM_HOST_SMCCC_FUNC___pkvm_init			15
+> > -#define __KVM_HOST_SMCCC_FUNC___pkvm_create_mappings		16
+> > +#define __KVM_HOST_SMCCC_FUNC___pkvm_host_share_hyp		16
+> >  #define __KVM_HOST_SMCCC_FUNC___pkvm_create_private_mapping	17
+> >  #define __KVM_HOST_SMCCC_FUNC___pkvm_cpu_set_vector		18
+> >  #define __KVM_HOST_SMCCC_FUNC___pkvm_prot_finalize		19
+> > diff --git a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > index 8e5725d032b2..1b8e59a9d065 100644
+> > --- a/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > +++ b/arch/arm64/kvm/hyp/include/nvhe/mem_protect.h
+> > @@ -49,6 +49,7 @@ extern struct host_kvm host_kvm;
+> >  
+> >  int __pkvm_prot_finalize(void);
+> >  int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end);
+> > +int __pkvm_host_share_hyp(u64 pfn);
+> >  
+> >  int host_stage2_idmap_locked(u64 start, u64 end, enum kvm_pgtable_prot prot);
+> >  int kvm_host_prepare_stage2(void *pgt_pool_base);
+> > diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> > index 1632f001f4ed..dd155646ec86 100644
+> > --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> > +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+> > @@ -140,14 +140,11 @@ static void handle___pkvm_cpu_set_vector(struct kvm_cpu_context *host_ctxt)
+> >  	cpu_reg(host_ctxt, 1) = pkvm_cpu_set_vector(slot);
+> >  }
+> >  
+> > -static void handle___pkvm_create_mappings(struct kvm_cpu_context *host_ctxt)
+> > +static void handle___pkvm_host_share_hyp(struct kvm_cpu_context *host_ctxt)
+> >  {
+> > -	DECLARE_REG(unsigned long, start, host_ctxt, 1);
+> > -	DECLARE_REG(unsigned long, size, host_ctxt, 2);
+> > -	DECLARE_REG(unsigned long, phys, host_ctxt, 3);
+> > -	DECLARE_REG(enum kvm_pgtable_prot, prot, host_ctxt, 4);
+> > +	DECLARE_REG(u64, pfn, host_ctxt, 1);
+> >  
+> > -	cpu_reg(host_ctxt, 1) = __pkvm_create_mappings(start, size, phys, prot);
+> > +	cpu_reg(host_ctxt, 1) = __pkvm_host_share_hyp(pfn);
+> >  }
+> >  
+> >  static void handle___pkvm_create_private_mapping(struct kvm_cpu_context *host_ctxt)
+> > @@ -193,7 +190,7 @@ static const hcall_t host_hcall[] = {
+> >  	HANDLE_FUNC(__vgic_v3_restore_aprs),
+> >  	HANDLE_FUNC(__pkvm_init),
+> >  	HANDLE_FUNC(__pkvm_cpu_set_vector),
+> > -	HANDLE_FUNC(__pkvm_create_mappings),
+> > +	HANDLE_FUNC(__pkvm_host_share_hyp),
+> >  	HANDLE_FUNC(__pkvm_create_private_mapping),
+> >  	HANDLE_FUNC(__pkvm_prot_finalize),
+> >  	HANDLE_FUNC(__pkvm_mark_hyp),
+> > diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > index 223c541a7051..75273166d2c5 100644
+> > --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> > @@ -315,6 +315,96 @@ static int host_stage2_idmap(u64 addr)
+> >  	return ret;
+> >  }
+> >  
+> > +static inline bool check_prot(enum kvm_pgtable_prot prot,
+> > +			      enum kvm_pgtable_prot required,
+> > +			      enum kvm_pgtable_prot denied)
+> > +{
+> > +	return (prot & (required | denied)) == required;
+> > +}
+> > +
+> > +int __pkvm_host_share_hyp(u64 pfn)
+> > +{
+> > +	phys_addr_t addr = hyp_pfn_to_phys(pfn);
+> > +	enum kvm_pgtable_prot prot, cur;
+> > +	void * virt = __hyp_va(addr);
+> > +	enum pkvm_page_state state;
+> > +	kvm_pte_t pte;
+> > +	u32 level;
+> > +	int ret;
+> > +
+> > +	if (!range_is_memory(addr, addr + PAGE_SIZE))
+> > +		return -EINVAL;
+> > +
+> > +	hyp_spin_lock(&host_kvm.lock);
+> > +	hyp_spin_lock(&pkvm_pgd_lock);
+> > +
+> > +	ret = kvm_pgtable_get_leaf(&host_kvm.pgt, addr, &pte, &level);
+> > +	if (ret)
+> > +		goto unlock;
+> > +	if (!pte)
+> > +		goto map_shared;
+> > +
+> > +	/*
+> > +	 * Check attributes in the host stage-2 PTE. We need the page to be:
+> > +	 *  - mapped RWX as we're sharing memory;
+> > +	 *  - not borrowed, as that implies absence of ownership.
+> > +	 * Otherwise, we can't let it got through
+> > +	 */
+> > +	cur = kvm_pgtable_stage2_pte_prot(pte);
+> > +	prot = pkvm_mkstate(0, PKVM_PAGE_SHARED_BORROWED);
+> > +	if (!check_prot(cur, KVM_PGTABLE_PROT_RWX, prot)) {
+> > +		ret = -EPERM;
+> > +		goto unlock;
+> > +	}
+> > +
+> > +	state = pkvm_getstate(cur);
+> > +	if (state == PKVM_PAGE_OWNED)
+> > +		goto map_shared;
+> > +
+> > +	/*
+> > +	 * Tolerate double-sharing the same page, but this requires
+> > +	 * cross-checking the hypervisor stage-1.
+> > +	 */
+> > +	if (state != PKVM_PAGE_SHARED_OWNED) {
+> > +		ret = -EPERM;
+> > +		goto unlock;
+> > +	}
+> > +
+> > +	ret = kvm_pgtable_get_leaf(&pkvm_pgtable, (u64)virt, &pte, &level);
+> > +	if (ret)
+> > +		goto unlock;
+> > +
+> > +	/*
+> > +	 * If the page has been shared with the hypervisor, it must be
+> > +	 * SHARED_BORROWED already.
+> > +	 */
+> > +	cur = kvm_pgtable_hyp_pte_prot(pte);
+> > +	prot = pkvm_mkstate(PAGE_HYP, PKVM_PAGE_SHARED_BORROWED);
+> > +	if (!check_prot(cur, prot, ~prot))
+> > +		ret = EPERM;
+> > +	goto unlock;
+> > +
+> > +map_shared:
+> > +	/*
+> > +	 * If the page is not yet shared, adjust mappings in both page-tables
+> > +	 * while both locks are held.
+> > +	 */
+> > +	prot = pkvm_mkstate(PAGE_HYP, PKVM_PAGE_SHARED_BORROWED);
+> > +	ret = pkvm_create_mappings_locked(virt, virt + PAGE_SIZE, prot);
+> > +	if (ret)
+> > +		goto unlock;
+> > +
+> > +	prot = pkvm_mkstate(KVM_PGTABLE_PROT_RWX, PKVM_PAGE_SHARED_OWNED);
+> > +	ret = host_stage2_idmap_locked(addr, addr + PAGE_SIZE, prot);
+> > +	BUG_ON(ret);
+> 
+> Why the different treatment here? If we couldn't map the page in EL2
+> Stage-1, surely that's also a big problem, isn't it?
 
-1) If timer_settime() is called with a 0 expiration on a timer that is
-   already disabled, the process wide cputime counter will be started
-   and won't ever get a chance to be stopped by stop_process_timer()
-   since no timer is actually armed to be processed.
+Right, the reasoning was, if the EL2 stage-1 map failed for any reason,
+it will hopefully leave the page-table unmodified, which means there is
+a chance we can bail out without a corrupted state. But if it succeeded
+and the host stage-2 map didn't, we're in trouble since we can't unmap
+anything from the EL2 stage-1 (yet) to clean things up on the error path.
 
-   The following snippet is enough to trigger the issue.
+But yes, failing either of them is sign of a major problem, so I can
+surely simplify and just BUG() on both. Alternatively, mapping the host
+stage-2 first would actually be preferable, since I should be able to
+unmap things from there if I need too ...
 
-	void trigger_process_counter(void)
-	{
-		timer_t id;
-		struct itimerspec val = { };
+> > +
+> > +unlock:
+> > +	hyp_spin_unlock(&pkvm_pgd_lock);
+> > +	hyp_spin_unlock(&host_kvm.lock);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  int __pkvm_mark_hyp(phys_addr_t start, phys_addr_t end)
+> >  {
+> >  	int ret;
+> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> > index 0625bf2353c2..cbab146cda6a 100644
+> > --- a/arch/arm64/kvm/mmu.c
+> > +++ b/arch/arm64/kvm/mmu.c
+> > @@ -259,10 +259,8 @@ static int __create_hyp_mappings(unsigned long start, unsigned long size,
+> >  {
+> >  	int err;
+> >  
+> > -	if (!kvm_host_owns_hyp_mappings()) {
+> > -		return kvm_call_hyp_nvhe(__pkvm_create_mappings,
+> > -					 start, size, phys, prot);
+> > -	}
+> > +	if (WARN_ON(!kvm_host_owns_hyp_mappings()))
+> > +		return -EINVAL;
+> 
+> How comes that this doesn't generate a warning on a GICv2 system when
+> we try and map the CPU interface via create_hyp_io_mappings()?
 
-		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
-		timer_settime(id, TIMER_ABSTIME, &val, NULL);
-		timer_delete(id);
-	}
+Aha, so that's an interesting one. In short, because we have a separate
+hypercall in __create_hyp_private_mapping() to handle mapping things in
+the 'private' range of the hypervisor, so we should be covered.
 
-2) If timer_settime() is called with a 0 expiration on a timer that is
-   already armed, the timer is dequeued but not really disarmed. So the
-   process wide cputime counter and the tick dependency may still remain
-   a while around.
+But note that we should consider this other hypercall privileged, and we
+should allow the host to call it only while the pkvm static key is not
+set. Same thing for a bunch of other calls (__pkvm_init and friends),
+so this is something we should fix/consolidate at some point in the
+future.
 
-   The following code snippet keeps this overhead around for one week after
-   the timer deletion:
+I guess it would make sense conceptually to mark those IO pages shared
+as well, but given that this share operation must never happen when
+we no longer trust the host, and since so far we're under the assumption
+that non-memory pages cannot be shared with e.g. guests, I figured there
+was no real benefit to it _yet_. And it would make
+host_stage2_unmap_dev_all() and friends a bit harder to implement. We
+currently assume that pages in the MMIO range cannot be 'pinned' as per
+the comment above host_stage2_try().
 
-	void trigger_process_counter(void)
-	{
-		timer_t id;
-		struct itimerspec val = { };
+Thanks,
+Quentin
 
-		val.it_value.tv_sec = 604800;
-		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
-		timer_settime(id, 0, &val, NULL);
-		timer_delete(id);
-	}
-
-3) If the timer was initially deactivated, this call to timer_settime()
-   with an early expiration may have started the process wide cputime
-   counter even though the timer hasn't been queued and armed because it
-   has fired early and inline within posix_cpu_timer_set() itself. As a
-   result the process wide cputime counter may never stop until a new
-   timer is ever armed in the future.
-
-   The following code snippet can reproduce this:
-
-	void trigger_process_counter(void)
-	{
-		timer_t id;
-		struct itimerspec val = { };
-
-		signal(SIGALRM, SIG_IGN);
-		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
-		val.it_value.tv_nsec = 1;
-		timer_settime(id, TIMER_ABSTIME, &val, NULL);
-	}
-
-4) If the timer was initially armed with a former expiration value
-   before this call to timer_settime() and the current call sets an
-   early deadline that has already expired, the timer fires inline
-   within posix_cpu_timer_set(). In this case it must have been dequeued
-   before firing inline with its new expiration value, yet it hasn't
-   been disarmed in this case. So the process wide cputime counter and
-   the tick dependency may still be around for a while even after the
-   timer fired.
-
-   The following code snippet can reproduce this:
-
-	void trigger_process_counter(void)
-	{
-		timer_t id;
-		struct itimerspec val = { };
-
-		signal(SIGALRM, SIG_IGN);
-		timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
-		val.it_value.tv_sec = 100;
-		timer_settime(id, TIMER_ABSTIME, &val, NULL);
-		val.it_value.tv_sec = 0;
-		val.it_value.tv_nsec = 1;
-		timer_settime(id, TIMER_ABSTIME, &val, NULL);
-	}
-
-Fix all these issues with triggering the related base next expiration
-recalculation on the next tick. This also implies to re-evaluate the
-need to keep around the process wide cputime counter and the tick
-dependency, in a similar fashion to disarm_timer().
-
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
----
- include/linux/posix-timers.h   |  7 +++++-
- kernel/time/posix-cpu-timers.c | 41 +++++++++++++++++++++++++++++-----
- 2 files changed, 41 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/posix-timers.h b/include/linux/posix-timers.h
-index 4cf1fbe8d1bc..00fef0064355 100644
---- a/include/linux/posix-timers.h
-+++ b/include/linux/posix-timers.h
-@@ -82,9 +82,14 @@ static inline bool cpu_timer_enqueue(struct timerqueue_head *head,
- 	return timerqueue_add(head, &ctmr->node);
- }
- 
-+static inline bool cpu_timer_queued(struct cpu_timer *ctmr)
-+{
-+	return !!ctmr->head;
-+}
-+
- static inline bool cpu_timer_dequeue(struct cpu_timer *ctmr)
- {
--	if (ctmr->head) {
-+	if (cpu_timer_queued(ctmr)) {
- 		timerqueue_del(ctmr->head, &ctmr->node);
- 		ctmr->head = NULL;
- 		return true;
-diff --git a/kernel/time/posix-cpu-timers.c b/kernel/time/posix-cpu-timers.c
-index 0d918117a3e0..ee736861b18f 100644
---- a/kernel/time/posix-cpu-timers.c
-+++ b/kernel/time/posix-cpu-timers.c
-@@ -418,6 +418,20 @@ static struct posix_cputimer_base *timer_base(struct k_itimer *timer,
- 		return tsk->signal->posix_cputimers.bases + clkidx;
- }
- 
-+/*
-+ * Force recalculating the base earliest expiration on the next tick.
-+ * This will also re-evaluate the need to keep around the process wide
-+ * cputime counter and tick dependency and eventually shut these down
-+ * if necessary.
-+ */
-+static void trigger_base_recalc_expires(struct k_itimer *timer,
-+					struct task_struct *tsk)
-+{
-+	struct posix_cputimer_base *base = timer_base(timer, tsk);
-+
-+	base->nextevt = 0;
-+}
-+
- /*
-  * Dequeue the timer and reset the base if it was its earliest expiration.
-  * It makes sure the next tick recalculates the base next expiration so we
-@@ -438,7 +452,7 @@ static void disarm_timer(struct k_itimer *timer, struct task_struct *p)
- 
- 	base = timer_base(timer, p);
- 	if (cpu_timer_getexpires(ctmr) == base->nextevt)
--		base->nextevt = 0;
-+		trigger_base_recalc_expires(timer, p);
- }
- 
- 
-@@ -734,13 +748,28 @@ static int posix_cpu_timer_set(struct k_itimer *timer, int timer_flags,
- 	timer->it_overrun_last = 0;
- 	timer->it_overrun = -1;
- 
--	if (new_expires != 0 && !(val < new_expires)) {
-+	if (val >= new_expires) {
-+		if (new_expires != 0) {
-+			/*
-+			 * The designated time already passed, so we notify
-+			 * immediately, even if the thread never runs to
-+			 * accumulate more time on this clock.
-+			 */
-+			cpu_timer_fire(timer);
-+		}
-+
- 		/*
--		 * The designated time already passed, so we notify
--		 * immediately, even if the thread never runs to
--		 * accumulate more time on this clock.
-+		 * Make sure we don't keep around the process wide cputime
-+		 * counter or the tick dependency if they are not necessary.
- 		 */
--		cpu_timer_fire(timer);
-+		sighand = lock_task_sighand(p, &flags);
-+		if (!sighand)
-+			goto out;
-+
-+		if (!cpu_timer_queued(ctmr))
-+			trigger_base_recalc_expires(timer, p);
-+
-+		unlock_task_sighand(p, &flags);
- 	}
-  out:
- 	rcu_read_unlock();
--- 
-2.25.1
-
+> >  
+> >  	mutex_lock(&kvm_hyp_pgd_mutex);
+> >  	err = kvm_pgtable_hyp_map(hyp_pgtable, start, size, phys, prot);
+> > @@ -282,6 +280,21 @@ static phys_addr_t kvm_kaddr_to_phys(void *kaddr)
+> >  	}
+> >  }
+> >  
+> > +static int pkvm_share_hyp(phys_addr_t start, phys_addr_t end)
+> > +{
+> > +	phys_addr_t addr;
+> > +	int ret;
+> > +
+> > +	for (addr = ALIGN_DOWN(start, PAGE_SIZE); addr < end; addr += PAGE_SIZE) {
+> > +		ret = kvm_call_hyp_nvhe(__pkvm_host_share_hyp,
+> > +					__phys_to_pfn(addr));
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  /**
+> >   * create_hyp_mappings - duplicate a kernel virtual address range in Hyp mode
+> >   * @from:	The virtual kernel start address of the range
+> > @@ -302,6 +315,13 @@ int create_hyp_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
+> >  	if (is_kernel_in_hyp_mode())
+> >  		return 0;
+> >  
+> > +	if (!kvm_host_owns_hyp_mappings()) {
+> > +		if (WARN_ON(prot != PAGE_HYP))
+> > +			return -EPERM;
+> > +		return pkvm_share_hyp(kvm_kaddr_to_phys(from),
+> > +				      kvm_kaddr_to_phys(to));
+> > +	}
+> > +
+> >  	start = start & PAGE_MASK;
+> >  	end = PAGE_ALIGN(end);
+> >  
+> 
+> Thanks,
+> 
+> 	M.
+> 
+> -- 
+> Without deviation from the norm, progress is not possible.
