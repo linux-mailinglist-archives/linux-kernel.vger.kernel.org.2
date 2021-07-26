@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D466D3D5A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F80F3D5A0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233362AbhGZM04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:26:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232240AbhGZM0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:26:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E69460F37;
-        Mon, 26 Jul 2021 13:07:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627304842;
-        bh=G9j9y/zf+hVoRoj9wYD/rhzh4hnVhF96K10Ra/6XWiM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KGKbi5EAnucz1X5d0zWoou6APh+vgPc1QzdXF7Si4l+CW9TJsyprtJiNnoj5R9Ovx
-         31Rd9VLFYHFMY9eIk17Tzq7UVuPwpcWmiVaA+DobMbEOv6+Mk/nmZJ+lVMvCJER/H1
-         HXLiMuSR1U27hka15xJLyiu+9wF/o5v7Eib+Fuqk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-serial@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Jordy Zomer <jordy@pwning.systems>
-Subject: [PATCH] serial: 8250_pci: make setup_port() parameters explicitly unsigned
-Date:   Mon, 26 Jul 2021 15:07:17 +0200
-Message-Id: <20210726130717.2052096-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
+        id S233410AbhGZM1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232792AbhGZM1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:27:13 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C11CC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:07:42 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id b9so10161529wrx.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 06:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eWr2xaZ+/s0B/nDH3uxkXrf081KOB9cbVhCDh1cSAls=;
+        b=to0PFCRlG/g/CAC6UKSyYEmjKXWUDeaHhxaU7AtWzlpZ+oCQ2f0vtFK4ZqA04Q2v6J
+         HOibiiYM7JhuKm0f7vz+7TQOx1+mi1thcLSrAhJWgrmIfwchAs41AwEUGy247PnylcFN
+         T1ed0DEKZ5eIoQMU5cOp6+S32Ddl7aqPbTUg0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eWr2xaZ+/s0B/nDH3uxkXrf081KOB9cbVhCDh1cSAls=;
+        b=tt+uomshMZChygh5tnGPahc4Ek4tIEOOPowpXMG+qpnEktIs8KW/73hQI6PYMWtAir
+         Nvn2JnUyIr07pWkQTzPJCz+2xkHELlHVl2Eou2HX+523w6Yk1sKqeph4x/gwaA2mrCZN
+         zBMUNvIeSCp7SSz71PF5cKPMoBOxOR4bssq2dWJi50lJko+HGOa4Bzo0zbTeryGBFFWw
+         deZFFuCF4NpQjGK+zn5VE86i9XyGJjGY94/ofccR/vq4LvJ6a2ZL0qZZ4SpHK1PzRVYR
+         spAXSiMFKFyRITsF1eIWJoEaf2mwQo2VJBrmbU7uPQrVXsbnEqYr+2O6MZ+/pRRZV0Xs
+         ZqvA==
+X-Gm-Message-State: AOAM5322i0sNg/mcPVblkR4X8caZMVu/FSTo0Gp6hYOepBnJk2qnIoiG
+        7mm4rNoruUCBam7+Mv95EPOC6w==
+X-Google-Smtp-Source: ABdhPJwku8imMHDFJdm8e6/mh6gcHfvL62yh2cT7OhoMCGj1L24ew01O3NdYf984RD/DmaJLKU8D9g==
+X-Received: by 2002:a5d:4d0d:: with SMTP id z13mr126762wrt.34.1627304860786;
+        Mon, 26 Jul 2021 06:07:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:d571])
+        by smtp.gmail.com with ESMTPSA id f15sm13269050wmj.15.2021.07.26.06.07.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 06:07:40 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 14:07:39 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, linux-doc@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the printk tree
+Message-ID: <YP6zm4QGcOCiTLxy@chrisdown.name>
+References: <20210720162423.75f61ce0@canb.auug.org.au>
+ <YPa/D8tSyk7dw1/l@chrisdown.name>
+ <YPbABBSTkN+xNY0w@chrisdown.name>
+ <87o8aqt7qn.fsf@meer.lwn.net>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1034; h=from:subject; bh=G9j9y/zf+hVoRoj9wYD/rhzh4hnVhF96K10Ra/6XWiM=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/Njeqe316US4zs1uv5rGIpM2Zlet+9QZcSdS8f1VCYfe2 L+dcOmJZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAiK1czzA+xL2tf+aT98bJMxwl+x6 b2RnbX2TDMzzg279L1gPrtNXH3lSdo104/GPXiBAA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <87o8aqt7qn.fsf@meer.lwn.net>
+User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bar and offset parameters to setup_port() are used in pointer math,
-and while it would be very difficult to get them to wrap as a negative
-number, just be "safe" and make them unsigned so that static checkers do
-not trip over them unintentionally.
+Jonathan Corbet writes:
+>The problem is that you moved printk(), but left the associated
+>kerneldoc comment tied to _printk(), which isn't what you really want to
+>document.  The fix should look something like the attached.
 
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Reported-by: Jordy Zomer <jordy@pwning.systems>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/tty/serial/8250/8250_pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index 75827b608fdb..fe64f77a9789 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -87,7 +87,7 @@ static void moan_device(const char *str, struct pci_dev *dev)
- 
- static int
- setup_port(struct serial_private *priv, struct uart_8250_port *port,
--	   int bar, int offset, int regshift)
-+	   u8 bar, unsigned int offset, int regshift)
- {
- 	struct pci_dev *dev = priv->dev;
- 
--- 
-2.32.0
-
+Ah, I see. Thank you for your help!
