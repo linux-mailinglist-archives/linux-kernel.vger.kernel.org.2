@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6653C3D61F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88FA23D6329
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbhGZPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:33:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59928 "EHLO mail.kernel.org"
+        id S239055AbhGZPot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236578AbhGZPTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 532076056C;
-        Mon, 26 Jul 2021 15:59:28 +0000 (UTC)
+        id S237803AbhGZPZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 706D260F5A;
+        Mon, 26 Jul 2021 16:06:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315168;
-        bh=wLMu7KGk8CWQSLeDo2XfbK95O2RCPbz5E2x5m/Ka8VM=;
+        s=korg; t=1627315573;
+        bh=Ms46Wuh3lvtd0oUH+Yk/TH1tPXCIs0k2QhqSzkN3W8k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T1SmmiXcBVoVrLY385h0OXhigBlofbot60oNvnDBWto+YjmTRyX6RfHI0q0dc+HY5
-         wlHoU+ZetzTgehzkFzBCcDb7ERxlUqCM7x0vi0HVQ5frGa8YuVi2jeHumRvFUFEjq8
-         7bzEhrPNAs+VZzS3nWbVeJzIF1UjwBYaJeu8cJxg=
+        b=Mu2oJAdGEoWV0ng3Geuuvwav/ov0hy4GEKH3wPv6gDDgfdhBIrkgRF2JdS5iCEvTP
+         8UZ2S0zxNpDtanhVMRMJMvmPFF1s1pfmlVtfVeFnRVY+FgsNnLeDrYwC2sNCp9NUAf
+         SRaVGUyz42s+3twh4cWYhivwzRAofLbhR942FLaU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+b774577370208727d12b@syzkaller.appspotmail.com,
-        Xin Long <lucien.xin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 065/108] sctp: update active_key for asoc when old key is being replaced
-Date:   Mon, 26 Jul 2021 17:39:06 +0200
-Message-Id: <20210726153833.776008432@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Young <consult.awy@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 114/167] ALSA: pcm: Call substream ack() method upon compat mmap commit
+Date:   Mon, 26 Jul 2021 17:39:07 +0200
+Message-Id: <20210726153843.232828350@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Alan Young <consult.awy@gmail.com>
 
-[ Upstream commit 58acd10092268831e49de279446c314727101292 ]
+commit 2e2832562c877e6530b8480982d99a4ff90c6777 upstream.
 
-syzbot reported a call trace:
+If a 32-bit application is being used with a 64-bit kernel and is using
+the mmap mechanism to write data, then the SNDRV_PCM_IOCTL_SYNC_PTR
+ioctl results in calling snd_pcm_ioctl_sync_ptr_compat(). Make this use
+pcm_lib_apply_appl_ptr() so that the substream's ack() method, if
+defined, is called.
 
-  BUG: KASAN: use-after-free in sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
-  Call Trace:
-   sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
-   sctp_set_owner_w net/sctp/socket.c:131 [inline]
-   sctp_sendmsg_to_asoc+0x152e/0x2180 net/sctp/socket.c:1865
-   sctp_sendmsg+0x103b/0x1d30 net/sctp/socket.c:2027
-   inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
-   sock_sendmsg_nosec net/socket.c:703 [inline]
-   sock_sendmsg+0xcf/0x120 net/socket.c:723
+The snd_pcm_sync_ptr() function, used in the 64-bit ioctl case, already
+uses snd_pcm_ioctl_sync_ptr_compat().
 
-This is an use-after-free issue caused by not updating asoc->shkey after
-it was replaced in the key list asoc->endpoint_shared_keys, and the old
-key was freed.
-
-This patch is to fix by also updating active_key for asoc when old key is
-being replaced with a new one. Note that this issue doesn't exist in
-sctp_auth_del_key_id(), as it's not allowed to delete the active_key
-from the asoc.
-
-Fixes: 1b1e0bc99474 ("sctp: add refcnt support for sh_key")
-Reported-by: syzbot+b774577370208727d12b@syzkaller.appspotmail.com
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9027c4639ef1 ("ALSA: pcm: Call ack() whenever appl_ptr is updated")
+Signed-off-by: Alan Young <consult.awy@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/c441f18c-eb2a-3bdd-299a-696ccca2de9c@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sctp/auth.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/core/pcm_native.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/net/sctp/auth.c b/net/sctp/auth.c
-index 1d898ee4018c..7eced1e523a5 100644
---- a/net/sctp/auth.c
-+++ b/net/sctp/auth.c
-@@ -866,6 +866,8 @@ int sctp_auth_set_key(struct sctp_endpoint *ep,
- 	if (replace) {
- 		list_del_init(&shkey->key_list);
- 		sctp_auth_shkey_release(shkey);
-+		if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
-+			sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
- 	}
- 	list_add(&cur_key->key_list, sh_keys);
- 
--- 
-2.30.2
-
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3062,9 +3062,14 @@ static int snd_pcm_ioctl_sync_ptr_compat
+ 		boundary = 0x7fffffff;
+ 	snd_pcm_stream_lock_irq(substream);
+ 	/* FIXME: we should consider the boundary for the sync from app */
+-	if (!(sflags & SNDRV_PCM_SYNC_PTR_APPL))
+-		control->appl_ptr = scontrol.appl_ptr;
+-	else
++	if (!(sflags & SNDRV_PCM_SYNC_PTR_APPL)) {
++		err = pcm_lib_apply_appl_ptr(substream,
++				scontrol.appl_ptr);
++		if (err < 0) {
++			snd_pcm_stream_unlock_irq(substream);
++			return err;
++		}
++	} else
+ 		scontrol.appl_ptr = control->appl_ptr % boundary;
+ 	if (!(sflags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN))
+ 		control->avail_min = scontrol.avail_min;
 
 
