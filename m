@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5883D5E24
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114FB3D5EF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235672AbhGZPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:05:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45076 "EHLO mail.kernel.org"
+        id S237670AbhGZPQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:16:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235982AbhGZPEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:04:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 242BF60F22;
-        Mon, 26 Jul 2021 15:45:12 +0000 (UTC)
+        id S236338AbhGZPHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:07:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3609960F93;
+        Mon, 26 Jul 2021 15:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314313;
-        bh=xrTK4To+yVWIM1mLFC669+ZzTxOX6HaV20IXD9cTHMA=;
+        s=korg; t=1627314495;
+        bh=K7OHnJW4BgHZ9a/0E1MMg3L+1ZMi58x/jKseUHUL4T4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QKnYKtTIkM/araepBv5lFOxtCTgpI8NQTYyFoDDo+cXXbvNB0VhsCxzQ787u1RfOF
-         14sFu0SHqHdKYs/tr3Mtn4eGv1dUFApyveZT1Oo6isff4Jr29WEcS7r8LLu+yEVS6D
-         +JZ4GdBpwJ4fzUvuhecRqTrKJdF7wnVzm8E1bYn8=
+        b=TZHUxDpdhfRdR08f7zGc9/XS1qJ4wjoBi2SleMRIlSiHjKhGO2cGybqbaGL563vXW
+         MGvPPV7ExfnGtW/yEtcz8znvhpcedHbn+olSvWSDAHsRnVRIzii5c+XEw4SBaSR0C/
+         UMzMtrbYe4xUdS5ko+4wHjCvgTRs1yP8coLgenjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Haoran Luo <www@aegistudio.net>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.9 55/60] tracing: Fix bug in rb_per_cpu_empty() that might cause deadloop.
+        stable@vger.kernel.org, Ian Ray <ian.ray@ge.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 69/82] USB: serial: cp210x: fix comments for GE CS1000
 Date:   Mon, 26 Jul 2021 17:39:09 +0200
-Message-Id: <20210726153826.600502814@linuxfoundation.org>
+Message-Id: <20210726153830.408280538@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,102 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Haoran Luo <www@aegistudio.net>
+From: Ian Ray <ian.ray@ge.com>
 
-commit 67f0d6d9883c13174669f88adac4f0ee656cc16a upstream.
+commit e9db418d4b828dd049caaf5ed65dc86f93bb1a0c upstream.
 
-The "rb_per_cpu_empty()" misinterpret the condition (as not-empty) when
-"head_page" and "commit_page" of "struct ring_buffer_per_cpu" points to
-the same buffer page, whose "buffer_data_page" is empty and "read" field
-is non-zero.
+Fix comments for GE CS1000 CP210x USB ID assignments.
 
-An error scenario could be constructed as followed (kernel perspective):
-
-1. All pages in the buffer has been accessed by reader(s) so that all of
-them will have non-zero "read" field.
-
-2. Read and clear all buffer pages so that "rb_num_of_entries()" will
-return 0 rendering there's no more data to read. It is also required
-that the "read_page", "commit_page" and "tail_page" points to the same
-page, while "head_page" is the next page of them.
-
-3. Invoke "ring_buffer_lock_reserve()" with large enough "length"
-so that it shot pass the end of current tail buffer page. Now the
-"head_page", "commit_page" and "tail_page" points to the same page.
-
-4. Discard current event with "ring_buffer_discard_commit()", so that
-"head_page", "commit_page" and "tail_page" points to a page whose buffer
-data page is now empty.
-
-When the error scenario has been constructed, "tracing_read_pipe" will
-be trapped inside a deadloop: "trace_empty()" returns 0 since
-"rb_per_cpu_empty()" returns 0 when it hits the CPU containing such
-constructed ring buffer. Then "trace_find_next_entry_inc()" always
-return NULL since "rb_num_of_entries()" reports there's no more entry
-to read. Finally "trace_seq_to_user()" returns "-EBUSY" spanking
-"tracing_read_pipe" back to the start of the "waitagain" loop.
-
-I've also written a proof-of-concept script to construct the scenario
-and trigger the bug automatically, you can use it to trace and validate
-my reasoning above:
-
-  https://github.com/aegistudio/RingBufferDetonator.git
-
-Tests has been carried out on linux kernel 5.14-rc2
-(2734d6c1b1a089fb593ef6a23d4b70903526fe0c), my fixed version
-of kernel (for testing whether my update fixes the bug) and
-some older kernels (for range of affected kernels). Test result is
-also attached to the proof-of-concept repository.
-
-Link: https://lore.kernel.org/linux-trace-devel/YPaNxsIlb2yjSi5Y@aegistudio/
-Link: https://lore.kernel.org/linux-trace-devel/YPgrN85WL9VyrZ55@aegistudio
-
+Fixes: 42213a0190b5 ("USB: serial: cp210x: add some more GE USB IDs")
+Signed-off-by: Ian Ray <ian.ray@ge.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Cc: stable@vger.kernel.org
-Fixes: bf41a158cacba ("ring-buffer: make reentrant")
-Suggested-by: Linus Torvalds <torvalds@linuxfoundation.org>
-Signed-off-by: Haoran Luo <www@aegistudio.net>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/trace/ring_buffer.c |   28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ drivers/usb/serial/cp210x.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3081,10 +3081,30 @@ static bool rb_per_cpu_empty(struct ring
- 	if (unlikely(!head))
- 		return true;
- 
--	return reader->read == rb_page_commit(reader) &&
--		(commit == reader ||
--		 (commit == head &&
--		  head->read == rb_page_commit(commit)));
-+	/* Reader should exhaust content in reader page */
-+	if (reader->read != rb_page_commit(reader))
-+		return false;
-+
-+	/*
-+	 * If writers are committing on the reader page, knowing all
-+	 * committed content has been read, the ring buffer is empty.
-+	 */
-+	if (commit == reader)
-+		return true;
-+
-+	/*
-+	 * If writers are committing on a page other than reader page
-+	 * and head page, there should always be content to read.
-+	 */
-+	if (commit != head)
-+		return false;
-+
-+	/*
-+	 * Writers are committing on the head page, we just need
-+	 * to care about there're committed data, and the reader will
-+	 * swap reader page with head page when it is to read data.
-+	 */
-+	return rb_page_commit(commit) == 0;
- }
- 
- /**
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -206,8 +206,8 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
+ 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
+ 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
+-	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
+-	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
++	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 M.2 Key E serial interface */
++	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 Display serial interface */
+ 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
+ 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
+ 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
 
 
