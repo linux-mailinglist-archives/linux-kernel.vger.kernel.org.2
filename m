@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953F43D640C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71B503D63DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239697AbhGZPyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49582 "EHLO mail.kernel.org"
+        id S239424AbhGZPwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:52:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233477AbhGZPcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79A8F60F5D;
-        Mon, 26 Jul 2021 16:13:23 +0000 (UTC)
+        id S232799AbhGZPbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:31:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A337860C40;
+        Mon, 26 Jul 2021 16:11:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316004;
-        bh=SxQffA4RCMBq+iFwtYtOSme/ywGd6w1uoHDyzguM2BM=;
+        s=korg; t=1627315913;
+        bh=8qIt4KPylJPoYvm6FArbtv2nqIyv99AxcfqleVfMvsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SJ9PT+q2i2Wn+aRl6aZBITkY5JiiKtKeLyMGgwRxKRCbKM1R6h5+/0kWSY82ZhD1U
-         aIL3tfujb+Bx21LolZRzcLFrrS3c7hCA/n49W1zcXoA63VT3S3ivzg5XjXOJTO/tf/
-         uO1oW/BzCxbp6STksEdlg8KdFiJC19eUAfGL/9kA=
+        b=sjUczv4PLUrVlO6k/slZYNwdrhP3D3B6aBLhMF3HryXvgaFrXfc1Nb563rZUu49gV
+         xyO600yLF81jxe213Kh7lYM6i4PFszre8PB4mEgfREQ/vDYZhdzlI0RW7jab3MA4N7
+         dCNf7GwXhOQaRTQAEJZTLVGblxk0IT4AxoqUtdSc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 115/223] spi: spi-bcm2835: Fix deadlock
-Date:   Mon, 26 Jul 2021 17:38:27 +0200
-Message-Id: <20210726153850.035394678@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 116/223] io_uring: fix memleak in io_init_wq_offload()
+Date:   Mon, 26 Jul 2021 17:38:28 +0200
+Message-Id: <20210726153850.066298322@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -42,84 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandru Tachici <alexandru.tachici@analog.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit c45c1e82bba130db4f19d9dbc1deefcf4ea994ed ]
+[ Upstream commit 362a9e65289284f36403058eea2462d0330c1f24 ]
 
-The bcm2835_spi_transfer_one function can create a deadlock
-if it is called while another thread already has the
-CCF lock.
+I got memory leak report when doing fuzz test:
 
-Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
-Fixes: f8043872e796 ("spi: add driver for BCM2835")
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20210716210245.13240-2-alexandru.tachici@analog.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+BUG: memory leak
+unreferenced object 0xffff888107310a80 (size 96):
+comm "syz-executor.6", pid 4610, jiffies 4295140240 (age 20.135s)
+hex dump (first 32 bytes):
+01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+00 00 00 00 ad 4e ad de ff ff ff ff 00 00 00 00 .....N..........
+backtrace:
+[<000000001974933b>] kmalloc include/linux/slab.h:591 [inline]
+[<000000001974933b>] kzalloc include/linux/slab.h:721 [inline]
+[<000000001974933b>] io_init_wq_offload fs/io_uring.c:7920 [inline]
+[<000000001974933b>] io_uring_alloc_task_context+0x466/0x640 fs/io_uring.c:7955
+[<0000000039d0800d>] __io_uring_add_tctx_node+0x256/0x360 fs/io_uring.c:9016
+[<000000008482e78c>] io_uring_add_tctx_node fs/io_uring.c:9052 [inline]
+[<000000008482e78c>] __do_sys_io_uring_enter fs/io_uring.c:9354 [inline]
+[<000000008482e78c>] __se_sys_io_uring_enter fs/io_uring.c:9301 [inline]
+[<000000008482e78c>] __x64_sys_io_uring_enter+0xabc/0xc20 fs/io_uring.c:9301
+[<00000000b875f18f>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+[<00000000b875f18f>] do_syscall_64+0x3b/0x90 arch/x86/entry/common.c:80
+[<000000006b0a8484>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+CPU0                          CPU1
+io_uring_enter                io_uring_enter
+io_uring_add_tctx_node        io_uring_add_tctx_node
+__io_uring_add_tctx_node      __io_uring_add_tctx_node
+io_uring_alloc_task_context   io_uring_alloc_task_context
+io_init_wq_offload            io_init_wq_offload
+hash = kzalloc                hash = kzalloc
+ctx->hash_map = hash          ctx->hash_map = hash <- one of the hash is leaked
+
+When calling io_uring_enter() in parallel, the 'hash_map' will be leaked,
+add uring_lock to protect 'hash_map'.
+
+Fixes: e941894eae31 ("io-wq: make buffered file write hashed work map per-ctx")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+Link: https://lore.kernel.org/r/20210720083805.3030730-1-yangyingliang@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm2835.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/io_uring.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-index fe40626e45aa..61cbcc7e2121 100644
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -84,6 +84,7 @@ MODULE_PARM_DESC(polling_limit_us,
-  * struct bcm2835_spi - BCM2835 SPI controller
-  * @regs: base address of register map
-  * @clk: core clock, divided to calculate serial clock
-+ * @clk_hz: core clock cached speed
-  * @irq: interrupt, signals TX FIFO empty or RX FIFO ¾ full
-  * @tfr: SPI transfer currently processed
-  * @ctlr: SPI controller reverse lookup
-@@ -124,6 +125,7 @@ MODULE_PARM_DESC(polling_limit_us,
- struct bcm2835_spi {
- 	void __iomem *regs;
- 	struct clk *clk;
-+	unsigned long clk_hz;
- 	int irq;
- 	struct spi_transfer *tfr;
- 	struct spi_controller *ctlr;
-@@ -1082,19 +1084,18 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
- 				    struct spi_transfer *tfr)
- {
- 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
--	unsigned long spi_hz, clk_hz, cdiv;
-+	unsigned long spi_hz, cdiv;
- 	unsigned long hz_per_byte, byte_limit;
- 	u32 cs = bs->prepare_cs[spi->chip_select];
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index eeea6b8c8bee..8843f48ace27 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -7859,15 +7859,19 @@ static struct io_wq *io_init_wq_offload(struct io_ring_ctx *ctx,
+ 	struct io_wq_data data;
+ 	unsigned int concurrency;
  
- 	/* set clock */
- 	spi_hz = tfr->speed_hz;
--	clk_hz = clk_get_rate(bs->clk);
- 
--	if (spi_hz >= clk_hz / 2) {
-+	if (spi_hz >= bs->clk_hz / 2) {
- 		cdiv = 2; /* clk_hz/2 is the fastest we can go */
- 	} else if (spi_hz) {
- 		/* CDIV must be a multiple of two */
--		cdiv = DIV_ROUND_UP(clk_hz, spi_hz);
-+		cdiv = DIV_ROUND_UP(bs->clk_hz, spi_hz);
- 		cdiv += (cdiv % 2);
- 
- 		if (cdiv >= 65536)
-@@ -1102,7 +1103,7 @@ static int bcm2835_spi_transfer_one(struct spi_controller *ctlr,
- 	} else {
- 		cdiv = 0; /* 0 is the slowest we can go */
++	mutex_lock(&ctx->uring_lock);
+ 	hash = ctx->hash_map;
+ 	if (!hash) {
+ 		hash = kzalloc(sizeof(*hash), GFP_KERNEL);
+-		if (!hash)
++		if (!hash) {
++			mutex_unlock(&ctx->uring_lock);
+ 			return ERR_PTR(-ENOMEM);
++		}
+ 		refcount_set(&hash->refs, 1);
+ 		init_waitqueue_head(&hash->wait);
+ 		ctx->hash_map = hash;
  	}
--	tfr->effective_speed_hz = cdiv ? (clk_hz / cdiv) : (clk_hz / 65536);
-+	tfr->effective_speed_hz = cdiv ? (bs->clk_hz / cdiv) : (bs->clk_hz / 65536);
- 	bcm2835_wr(bs, BCM2835_SPI_CLK, cdiv);
++	mutex_unlock(&ctx->uring_lock);
  
- 	/* handle all the 3-wire mode */
-@@ -1320,6 +1321,7 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
- 		return bs->irq ? bs->irq : -ENODEV;
- 
- 	clk_prepare_enable(bs->clk);
-+	bs->clk_hz = clk_get_rate(bs->clk);
- 
- 	err = bcm2835_dma_init(ctlr, &pdev->dev, bs);
- 	if (err)
+ 	data.hash = hash;
+ 	data.task = task;
 -- 
 2.30.2
 
