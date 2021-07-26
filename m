@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C933D6320
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65F63D612E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238882AbhGZPoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39752 "EHLO mail.kernel.org"
+        id S232190AbhGZPaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237869AbhGZPYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D16A60240;
-        Mon, 26 Jul 2021 16:04:47 +0000 (UTC)
+        id S236543AbhGZPRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0AA160F38;
+        Mon, 26 Jul 2021 15:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315488;
-        bh=a4/I185hfQSbkUJOO/kBX0KuBzM0koq0qFt4U4ncbmI=;
+        s=korg; t=1627315064;
+        bh=StVdaq8NiJLj5NQcr12LUB5lPcbPrWwAgzhVmijn5RI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ukei4sP6cGG+n7ydG8wzeuM/X3XO6oc+5o74+cTbdRkCoIk7Uaoc1tGdBKS3EwzmS
-         5cGILgx6201fXffO5ha5gA+hMJ4FiJ/f0tULxWMeO0ABzPgtKRHKHZMQNnykyhzyZ2
-         iwl9snCF35ZC4SauUZNyJ+sUXgH91BgQLdARE3Ko=
+        b=mF/MG0tXkAiu9tqViSqvNmnfQrcYWKIMKMKlRvdOAvHbsPwVcMiEzRVprPDY0gmhE
+         gwLS6DrI8vmdrUpZIdW9lTgjnDumS5mx/Y1EBaUcXjxfLDsxDTeRteI5eranHO8WVP
+         1g9UrtXUFlMUGiPah5Vu+LUZqRZVxu58i7byxcdk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Greg Thelen <gthelen@google.com>
-Subject: [PATCH 5.10 117/167] usb: xhci: avoid renesas_usb_fw.mem when its unusable
+        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>
+Subject: [PATCH 5.4 069/108] [PATCH] Revert "MIPS: add PMD table accounting into MIPSpmd_alloc_one"
 Date:   Mon, 26 Jul 2021 17:39:10 +0200
-Message-Id: <20210726153843.331170795@linuxfoundation.org>
+Message-Id: <20210726153833.905513693@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,45 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Thelen <gthelen@google.com>
+From: Huang Pei <huangpei@loongson.cn>
 
-commit 0665e387318607d8269bfdea60723c627c8bae43 upstream.
+This reverts commit 002d8b395fa1c0679fc3c3e68873de6c1cc300a2 which is
+commit ed914d48b6a1040d1039d371b56273d422c0081e upstream.
 
-Commit a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with
-memory") added renesas_usb_fw.mem firmware reference to xhci-pci.  Thus
-modinfo indicates xhci-pci.ko has "firmware: renesas_usb_fw.mem".  But
-the firmware is only actually used with CONFIG_USB_XHCI_PCI_RENESAS.  An
-unusable firmware reference can trigger safety checkers which look for
-drivers with unmet firmware dependencies.
+Commit b2b29d6d011944 (mm: account PMD tables like PTE tables) is
+introduced between v5.9 and v5.10, so this fix (commit 002d8b395fa1)
+should NOT apply to any pre-5.10 branch.
 
-Avoid referring to renesas_usb_fw.mem in circumstances when it cannot be
-loaded (when CONFIG_USB_XHCI_PCI_RENESAS isn't set).
-
-Fixes: a66d21d7dba8 ("usb: xhci: Add support for Renesas controller with memory")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Thelen <gthelen@google.com>
-Link: https://lore.kernel.org/r/20210702071224.3673568-1-gthelen@google.com
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/xhci-pci.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/mips/include/asm/pgalloc.h |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -631,7 +631,14 @@ static const struct pci_device_id pci_id
- 	{ /* end: all zeroes */ }
- };
- MODULE_DEVICE_TABLE(pci, pci_ids);
-+
-+/*
-+ * Without CONFIG_USB_XHCI_PCI_RENESAS renesas_xhci_check_request_fw() won't
-+ * load firmware, so don't encumber the xhci-pci driver with it.
-+ */
-+#if IS_ENABLED(CONFIG_USB_XHCI_PCI_RENESAS)
- MODULE_FIRMWARE("renesas_usb_fw.mem");
-+#endif
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -62,15 +62,11 @@ do {							\
  
- /* pci driver glue; this is a "new style" PCI driver module */
- static struct pci_driver xhci_pci_driver = {
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd = NULL;
+-	struct page *pg;
++	pmd_t *pmd;
+ 
+-	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
+-	if (pg) {
+-		pgtable_pmd_page_ctor(pg);
+-		pmd = (pmd_t *)page_address(pg);
++	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
++	if (pmd)
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
+-	}
+ 	return pmd;
+ }
+ 
 
 
