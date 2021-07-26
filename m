@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA6D3D6967
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB003D6969
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233607AbhGZVlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:41:07 -0400
-Received: from mail-io1-f49.google.com ([209.85.166.49]:39624 "EHLO
-        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbhGZVlE (ORCPT
+        id S231978AbhGZVlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231502AbhGZVlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:41:04 -0400
-Received: by mail-io1-f49.google.com with SMTP id j21so13798326ioo.6;
-        Mon, 26 Jul 2021 15:21:31 -0700 (PDT)
+        Mon, 26 Jul 2021 17:41:20 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17306C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:21:48 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d1so6153241pll.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 15:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3ODcicexHURy+S/oaAgcJ5/PC6scXaOeWpaZLuQrIGg=;
+        b=IAzkdNqPCe3UCa/Ivef3h6QOhsZcQ4xoUEUHk8FeitquYy68VmMEBlXDZhPoyNW2wC
+         WKPCGzyk2t55n2cRxI7CvdMQCOrxKVTnx2le8z0LIAYPSdKQiqbyMjNijMulDmTM3+Hy
+         aVhddjr1X9gKKoBMcPjGBdkbxYVs3s9ZIlRt2jI5yew+ENV1wzHYblng9navUwxi3w0s
+         MnMXl6vr0Ja+qPp7HxIW7e99dDDWl2FYv8lHi4OK0KwPl8+9ZJAE4o1XMw1B+dG7a0W+
+         bpAK73jUPDg8BqYnadcxMCmztL/T8dMw6BvIkzlDxUQigUtolFwEZHvzzwZqPMdEcrlR
+         hhWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=mv6erYWaZJR9dk5x4Gfa5MHHYyiQEZ5IAKk/24C/zJg=;
-        b=a/OhC2L7N6RlkIWWRFDU6SYn0uTBuN4YQZZLE5OBpIXKbFTF4YPmYqIveJIF13+D9W
-         KilBvOYn9O9tlOXYAV60nm0lQP22MjKZ7ryD5o9smr9m3VUml6zTLwrxMCLdN5kAiBiE
-         HuUiCjmDRAICH6l2zwYcLtyxwXdzwusI/WPOrD2IgoB14CgyIeN0INMH9PcBIO1YZkx3
-         EDSH+/BfpZbulaqZrYc+wfy/CHMpYG0/6BxwFZf1+ERSIFqFJAHoADwljB3efGKq9HUc
-         fDqpwILunKnueoqOqZgKy3gVu8yKGpI5nMxY1r32tZmuqKEsBg4kUglOBzpfAQ/dQLfo
-         XOuw==
-X-Gm-Message-State: AOAM531WQm/eeO3gAtJXnGR30wm8uF8ZRULwEKXO+I3sD4ZebcuFZTEp
-        CLEWI2fyanX2V2d53brmow==
-X-Google-Smtp-Source: ABdhPJwxrp8upfs2mo/1MgMfEJ0vL1b6dEOhoaWvwBBrrcWDiSW1AKf+zKQ3J8zFOVN7ibXIhwvnkw==
-X-Received: by 2002:a02:a797:: with SMTP id e23mr18647088jaj.121.1627338091257;
-        Mon, 26 Jul 2021 15:21:31 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id z18sm545175ilh.55.2021.07.26.15.21.29
+        bh=3ODcicexHURy+S/oaAgcJ5/PC6scXaOeWpaZLuQrIGg=;
+        b=XBZtOz4JNgoJare7pZ0IF/uQQVdsKi9Nz/uhCfqXkw7BkWemRuxi/YzKejStWdho4h
+         OcDR++isUEaB7i59jm0Awd/8h8t4GGY/USivZsNz88CSCfxetFQfc1e/tcF5T88coBYf
+         gWZlxL8ViUFlEGLWVli/JSPtd9sCYihJY91nHgXU6cTgIZdj8P0gAOk8HfkCt7sHnlR6
+         JbsV0cstiGTOAR+ucMW8yoCaU3RE0ndUmTfzOL+wOl+XIXFQ9vKeXdSpXIdrs+zXeCms
+         KyzZXCQvLBqPlyCKGxXollMGlf99/UulT1Zl5PJv0ZwubFsY9/3+vBJwYBmMbw243Pp5
+         wt7Q==
+X-Gm-Message-State: AOAM5319k94h/JVYyMDxxEieLmQc7XUfQfJjo+VEe65OruKWPJGnRUZq
+        8IpMfhlpWpZPNbkiG1+eRKVh0RuF0CjpAQ==
+X-Google-Smtp-Source: ABdhPJyHjwnafAVBd3m1vItXPruoOWhlMHo9hLIAry+D18DIh0irNV1yEz7PtzB5CxwsQZzRhQJwjw==
+X-Received: by 2002:a63:2355:: with SMTP id u21mr2182989pgm.94.1627338107450;
+        Mon, 26 Jul 2021 15:21:47 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id g20sm1051906pfj.69.2021.07.26.15.21.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 15:21:30 -0700 (PDT)
-Received: (nullmailer pid 977034 invoked by uid 1000);
-        Mon, 26 Jul 2021 22:21:29 -0000
-Date:   Mon, 26 Jul 2021 16:21:29 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v7 5/6] media: dt-bindings: mt9p031: Convert bindings to
- yaml
-Message-ID: <20210726222129.GA977000@robh.at.kernel.org>
-References: <20210726073518.2167398-1-s.riedmueller@phytec.de>
- <20210726073518.2167398-6-s.riedmueller@phytec.de>
+        Mon, 26 Jul 2021 15:21:46 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 22:21:43 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH v2 41/46] KVM: VMX: Smush x2APIC MSR bitmap adjustments
+ into single function
+Message-ID: <YP81dzqaD//iNr5L@google.com>
+References: <20210713163324.627647-1-seanjc@google.com>
+ <20210713163324.627647-42-seanjc@google.com>
+ <7ddb5bfb-f274-9867-3efb-0b6ba5224aa2@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726073518.2167398-6-s.riedmueller@phytec.de>
+In-Reply-To: <7ddb5bfb-f274-9867-3efb-0b6ba5224aa2@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 09:35:17 +0200, Stefan Riedmueller wrote:
-> Convert mt9p031 sensor bindings to yaml schema. Also update the
-> MAINTAINERS entry.
+On Mon, Jul 26, 2021, Paolo Bonzini wrote:
+> On 13/07/21 18:33, Sean Christopherson wrote:
+> > +	if (!(mode ^ vmx->x2apic_msr_bitmap_mode))
+> > +		return;
 > 
-> Although input-clock-frequency and pixel-clock-frequency have not been
-> definded as endpoint propierties in the textual bindings, the sensor
-> does parse them from the endpoint. Thus move these properties to the
-> endpoint in the new yaml bindings.
-> 
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-> ---
->  .../bindings/media/i2c/aptina,mt9p031.yaml    | 86 +++++++++++++++++++
->  .../devicetree/bindings/media/i2c/mt9p031.txt | 40 ---------
->  MAINTAINERS                                   |  1 +
->  3 files changed, 87 insertions(+), 40 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/media/i2c/aptina,mt9p031.yaml
->  delete mode 100644 Documentation/devicetree/bindings/media/i2c/mt9p031.txt
-> 
+> Just !=, I guess?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Ha, yeah.  Forgot to do a bit of critical thinking after refactoring.
