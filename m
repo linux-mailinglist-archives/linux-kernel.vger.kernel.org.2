@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F20EE3D6400
+	by mail.lfdr.de (Postfix) with ESMTP id A74C73D63FF
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239623AbhGZPxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48230 "EHLO mail.kernel.org"
+        id S239616AbhGZPxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232631AbhGZPcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232959AbhGZPcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:32:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5F2E60F5D;
-        Mon, 26 Jul 2021 16:12:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5969A60F5E;
+        Mon, 26 Jul 2021 16:12:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315923;
-        bh=8geNSeru6DVfirCvlwIy2l/pC+6PLYeidIwPt3Ld+kk=;
+        s=korg; t=1627315925;
+        bh=fP855E9686zR6CXMsZpON5/Cf6HNpGS9rJ5YroC0iiI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mQNZKR7l4wql6XZf62d16fXKKopBwQmFyt8z+7iTui/YkiPtIP2qSdPIaSwXvAoA9
-         xPBXfQbj8fnkGPaMpVzLQJDGiwY3RhwzB69P3lDrclhwSI8HFSMW1+MXaV/a09y29y
-         Dmx7kRNaJxS3CXC0pk8cZaMQHF5T8qIsJ2O2EMiI=
+        b=wjSCMqaJ7I8zmcGjwtFNo0XeOt+Msh0ASc7xwRUtPZb2JTaHCxTqAy6r9e++uCedl
+         ZI9A/p8DWjHcnMyt05hj54euM6tupfNVZCR9Vs6rr13nf4nZ2941fAc9+i+Me6A5Qz
+         KNgGqKAqUbLoH2AgCSzntQd6T1/Ql5zEJla7vYrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 120/223] i2c: mpc: Poll for MCF
-Date:   Mon, 26 Jul 2021 17:38:32 +0200
-Message-Id: <20210726153850.189158572@linuxfoundation.org>
+        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        David Disseldorp <ddiss@suse.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 121/223] scsi: target: Fix NULL dereference on XCOPY completion
+Date:   Mon, 26 Jul 2021 17:38:33 +0200
+Message-Id: <20210726153850.228528804@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,40 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: David Disseldorp <ddiss@suse.de>
 
-[ Upstream commit 4a8ac5e45cdaa88884b4ce05303e304cbabeb367 ]
+[ Upstream commit a47fa41381a09e5997afd762664db4f5f6657e03 ]
 
-During some transfers the bus can still be busy when an interrupt is
-received. Commit 763778cd7926 ("i2c: mpc: Restore reread of I2C status
-register") attempted to address this by re-reading MPC_I2C_SR once but
-that just made it less likely to happen without actually preventing it.
-Instead of a single re-read, poll with a timeout so that the bus is given
-enough time to settle but a genuine stuck SCL is still noticed.
+CPU affinity control added with commit 39ae3edda325 ("scsi: target: core:
+Make completion affinity configurable") makes target_complete_cmd() queue
+work on a CPU based on se_tpg->se_tpg_wwn->cmd_compl_affinity state.
 
-Fixes: 1538d82f4647 ("i2c: mpc: Interrupt driven transfer")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+LIO's EXTENDED COPY worker is a special case in that read/write cmds are
+dispatched using the global xcopy_pt_tpg, which carries a NULL se_tpg_wwn
+pointer following initialization in target_xcopy_setup_pt().
+
+The NULL xcopy_pt_tpg->se_tpg_wwn pointer is dereferenced on completion of
+any EXTENDED COPY initiated read/write cmds. E.g using the libiscsi
+SCSI.ExtendedCopy.Simple test:
+
+  BUG: kernel NULL pointer dereference, address: 00000000000001a8
+  RIP: 0010:target_complete_cmd+0x9d/0x130 [target_core_mod]
+  Call Trace:
+   fd_execute_rw+0x148/0x42a [target_core_file]
+   ? __dynamic_pr_debug+0xa7/0xe0
+   ? target_check_reservation+0x5b/0x940 [target_core_mod]
+   __target_execute_cmd+0x1e/0x90 [target_core_mod]
+   transport_generic_new_cmd+0x17c/0x330 [target_core_mod]
+   target_xcopy_issue_pt_cmd+0x9/0x60 [target_core_mod]
+   target_xcopy_read_source.isra.7+0x10b/0x1b0 [target_core_mod]
+   ? target_check_fua+0x40/0x40 [target_core_mod]
+   ? transport_complete_task_attr+0x130/0x130 [target_core_mod]
+   target_xcopy_do_work+0x61f/0xc00 [target_core_mod]
+
+This fix makes target_complete_cmd() queue work on se_cmd->cpuid if
+se_tpg_wwn is NULL.
+
+Link: https://lore.kernel.org/r/20210720225522.26291-1-ddiss@suse.de
+Fixes: 39ae3edda325 ("scsi: target: core: Make completion affinity configurable")
+Cc: Lee Duncan <lduncan@suse.com>
+Cc: Mike Christie <michael.christie@oracle.com>
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: David Disseldorp <ddiss@suse.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-mpc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/target/target_core_transport.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 6d5014ebaab5..a6ea1eb1394e 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -635,8 +635,8 @@ static irqreturn_t mpc_i2c_isr(int irq, void *dev_id)
+diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
+index 7e35eddd9eb7..26ceabe34de5 100644
+--- a/drivers/target/target_core_transport.c
++++ b/drivers/target/target_core_transport.c
+@@ -886,7 +886,7 @@ void target_complete_cmd(struct se_cmd *cmd, u8 scsi_status)
+ 	INIT_WORK(&cmd->work, success ? target_complete_ok_work :
+ 		  target_complete_failure_work);
  
- 	status = readb(i2c->base + MPC_I2C_SR);
- 	if (status & CSR_MIF) {
--		/* Read again to allow register to stabilise */
--		status = readb(i2c->base + MPC_I2C_SR);
-+		/* Wait up to 100us for transfer to properly complete */
-+		readb_poll_timeout(i2c->base + MPC_I2C_SR, status, !(status & CSR_MCF), 0, 100);
- 		writeb(0, i2c->base + MPC_I2C_SR);
- 		mpc_i2c_do_intr(i2c, status);
- 		return IRQ_HANDLED;
+-	if (wwn->cmd_compl_affinity == SE_COMPL_AFFINITY_CPUID)
++	if (!wwn || wwn->cmd_compl_affinity == SE_COMPL_AFFINITY_CPUID)
+ 		cpu = cmd->cpuid;
+ 	else
+ 		cpu = wwn->cmd_compl_affinity;
 -- 
 2.30.2
 
