@@ -2,76 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 789293D5542
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42263D557A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232273AbhGZHhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:37:05 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:19119 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231707AbhGZHhE (ORCPT
+        id S233375AbhGZHkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233093AbhGZHkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:37:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Uh-wICr_1627287439;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Uh-wICr_1627287439)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Jul 2021 16:17:21 +0800
-Date:   Mon, 26 Jul 2021 16:17:19 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Andreas =?utf-8?Q?Gr=C3=BCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Message-ID: <YP5vj0c56iMLoDfS@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Andreas =?utf-8?Q?Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>, linux-erofs@lists.ozlabs.org,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
- <20210725221639.426565-1-agruenba@redhat.com>
- <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
- <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
+        Mon, 26 Jul 2021 03:40:11 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2E2C061757;
+        Mon, 26 Jul 2021 01:20:38 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 9-20020a05600c26c9b02901e44e9caa2aso5677204wmv.4;
+        Mon, 26 Jul 2021 01:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G1sESUOwYQF5ojlEDTCdGxRcHpdp4Ued2GOsbRa4r8E=;
+        b=Vy1ELi+UlfPWWVKOn6Enti8XWXun8Jgu4aMxQ/ZoUG0fICnYniH1G+CAcwmZ2sZfPq
+         Lh9/LPSXCSkfBJ8jojmO2Wr74Mp6MSGrle9fXb+JuIG75uuxgXAWrNKvESbZ1jfH83nw
+         FO2OjGxUZU8ICpnusz577lNp9cCh5nyl4kMOL9TglJPRpSdyxQd/ge0SW+mmQKi6k4A1
+         3pKXIWh2uZKOBTR2jIjftN0o+Wyg5lJ1bQR8OYy4B5NyXn+fRgytjCJOvwQNVmeUO7bC
+         NFBX6/ldUEAZ8NZ3R51UkRg+dS3EYc4FZxPxsCrlnsyCGPiSjcu8icj/x4en5RKeZ2Z6
+         nP/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G1sESUOwYQF5ojlEDTCdGxRcHpdp4Ued2GOsbRa4r8E=;
+        b=j8Ou/ngznwWcdaM2ofRgu3A47KFQ7klcvNyIhPkp74aHfLPNx6a90+N3bw/ZQlcGTa
+         uBKsldzmgY1hyjFFupthAU+2mDNEfA+QaC4x2/nslqYyI8RObErIYPYriumkrirxhLPM
+         Y/GpR4B/Lg4fZjsShaciI4Smddagvi3EkON4K3PYqVbDrVYunZWUlbfeS+xU50N3cFCr
+         pcWZWw0gkOzgMIMPT+Prk9rf8sYtr8pLSugb47TOs10gmqtiDNOy7kejtdIAMQqq18cO
+         wLsSOWhuqvgwJCTvvvY6swkyHibEhL7M1E1hZhX2Kq94dNJu7BqxPvrFzmaRFl8la7/0
+         hK/g==
+X-Gm-Message-State: AOAM531E/561oBGZCGRaeHoW0L6cmLu75IPfdggJ+Hmi5+3xUS5ouSfb
+        J4v4Oehl/Xk6eiZCp4H5MRc61i9W7IgHQ9ndPLc=
+X-Google-Smtp-Source: ABdhPJwmFS8dF925El9HP8gniYqsBVNoAbPZxkCZR8v9fe2u3uB/uWVQMxnigTx694dU7UKIRO1grA==
+X-Received: by 2002:a05:600c:2194:: with SMTP id e20mr1539929wme.77.1627287637393;
+        Mon, 26 Jul 2021 01:20:37 -0700 (PDT)
+Received: from monk.home (astrasbourg-157-1-7-84.w90-40.abo.wanadoo.fr. [90.40.218.84])
+        by smtp.gmail.com with ESMTPSA id w13sm4799464wru.72.2021.07.26.01.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 01:20:36 -0700 (PDT)
+From:   Christophe Branchereau <cbranchereau@gmail.com>
+Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
+        contact@artur-rojek.eu, paul@crapouillou.net,
+        Christophe Branchereau <cbranchereau@gmail.com>
+Subject: [PATCH v4 0/5] iio/adc: ingenic: add support for the JZ4760(B) Socs to the ingenic sadc driver
+Date:   Mon, 26 Jul 2021 10:20:28 +0200
+Message-Id: <20210726082033.351533-1-cbranchereau@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 10:08:06AM +0200, Andreas Grünbacher wrote:
-> Am Mo., 26. Juli 2021 um 06:00 Uhr schrieb Gao Xiang
+This is a set of patches to add support to the JZ4760(B) socs found in numerous gaming handhelds and some
+mp3 players to the ingenic-sadc driver.
 
-...
+Changelog for this v4:
 
-> >
-> > iomap_inline_buf() was suggested by Darrick. From my point of view,
-> > I think it's better since it's a part of iomap->inline_data due to
-> > pos involved.
-> 
-> I find iomap_inline_buf a bit more confusing because it's not
-> immediately obvious that "buf" == "data".
-> 
-> I'll send an updated version.
+Fix patch 4/5 that was missing the .compatible string for the jz4760b.
 
-Okay, thank you very much!
+Christophe Branchereau (5):
+  iio/adc: ingenic: rename has_aux2 to has_aux_md
+  dt-bindings: iio/adc: add an INGENIC_ADC_AUX0 entry
+  iio/adc: ingenic: add JZ4760 support to the sadc driver
+  iio/adc: ingenic: add JZ4760B support to the sadc driver
+  dt-bindings: iio/adc: ingenic: add the JZ4760(B) socs to the sadc
+    Documentation
 
-Thanks,
-Gao Xiang
+ .../bindings/iio/adc/ingenic,adc.yaml         |  19 ++++
+ drivers/iio/adc/ingenic-adc.c                 | 102 ++++++++++++++++--
+ include/dt-bindings/iio/adc/ingenic,adc.h     |   1 +
+ 3 files changed, 113 insertions(+), 9 deletions(-)
 
-> 
-> Thanks,
-> Andreas
+-- 
+2.30.2
+
