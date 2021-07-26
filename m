@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757873D6313
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17CA3D619B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238654AbhGZPoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39994 "EHLO mail.kernel.org"
+        id S233546AbhGZPcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:32:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238149AbhGZPZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB16F60240;
-        Mon, 26 Jul 2021 16:05:29 +0000 (UTC)
+        id S236102AbhGZPSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67E8A60FC2;
+        Mon, 26 Jul 2021 15:58:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315530;
-        bh=DwyVYqiMRT2XLPZyNrzr6ANXv+Xakn1sUDBI6YVzpXQ=;
+        s=korg; t=1627315123;
+        bh=/KF3dQWL13Gi/ZNEQMzF/mHt5mJRTOk5WiSPi3CVCpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oao+in1eGt3xuQ7mqBJkyD+Hv16WHfMHBJ8S6RvCWhUX2XxEQY4H59EKmti6BW7Fo
-         xQuqZ/dmmlLkG85YwpZag8awBQqy1bkCPe5ux6vyduKO5ebyu+nQpuaa/7E0rEctL8
-         W8EbSSzVMWmLPgEofHLf5VMl3q2SKAaDm8QN9RXg=
+        b=Dlmg6LSuQpfSMmGYOA2e4wVcZAt+dWRn6WbHI7yteql0ZJ5WSQ5DFkSfkRwzWep8P
+         wz4+3O42KJ+RUCAagHWdg7eu8mQXXMvI6jNPvJCkSs3ThEMhemwK/vUox/oFhPs4sy
+         vjt/JIuPDtaAXAhpJzj8E/3eaJOMZa9PWYjiFnNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moritz Fischer <mdf@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 133/167] firmware/efi: Tell memblock about EFI iomem reservations
+        stable@vger.kernel.org, Ian Ray <ian.ray@ge.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 085/108] USB: serial: cp210x: fix comments for GE CS1000
 Date:   Mon, 26 Jul 2021 17:39:26 +0200
-Message-Id: <20210726153843.859765110@linuxfoundation.org>
+Message-Id: <20210726153834.404842933@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,66 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Ian Ray <ian.ray@ge.com>
 
-commit 2bab693a608bdf614b9fcd44083c5100f34b9f77 upstream.
+commit e9db418d4b828dd049caaf5ed65dc86f93bb1a0c upstream.
 
-kexec_load_file() relies on the memblock infrastructure to avoid
-stamping over regions of memory that are essential to the survival
-of the system.
+Fix comments for GE CS1000 CP210x USB ID assignments.
 
-However, nobody seems to agree how to flag these regions as reserved,
-and (for example) EFI only publishes its reservations in /proc/iomem
-for the benefit of the traditional, userspace based kexec tool.
-
-On arm64 platforms with GICv3, this can result in the payload being
-placed at the location of the LPI tables. Shock, horror!
-
-Let's augment the EFI reservation code with a memblock_reserve() call,
-protecting our dear tables from the secondary kernel invasion.
-
-Reported-by: Moritz Fischer <mdf@kernel.org>
-Tested-by: Moritz Fischer <mdf@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+Fixes: 42213a0190b5 ("USB: serial: cp210x: add some more GE USB IDs")
+Signed-off-by: Ian Ray <ian.ray@ge.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Cc: stable@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/firmware/efi/efi.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/usb/serial/cp210x.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/firmware/efi/efi.c
-+++ b/drivers/firmware/efi/efi.c
-@@ -896,6 +896,7 @@ static int __init efi_memreserve_map_roo
- static int efi_mem_reserve_iomem(phys_addr_t addr, u64 size)
- {
- 	struct resource *res, *parent;
-+	int ret;
- 
- 	res = kzalloc(sizeof(struct resource), GFP_ATOMIC);
- 	if (!res)
-@@ -908,7 +909,17 @@ static int efi_mem_reserve_iomem(phys_ad
- 
- 	/* we expect a conflict with a 'System RAM' region */
- 	parent = request_resource_conflict(&iomem_resource, res);
--	return parent ? request_resource(parent, res) : 0;
-+	ret = parent ? request_resource(parent, res) : 0;
-+
-+	/*
-+	 * Given that efi_mem_reserve_iomem() can be called at any
-+	 * time, only call memblock_reserve() if the architecture
-+	 * keeps the infrastructure around.
-+	 */
-+	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK) && !ret)
-+		memblock_reserve(addr, size);
-+
-+	return ret;
- }
- 
- int __ref efi_mem_reserve_persistent(phys_addr_t addr, u64 size)
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -203,8 +203,8 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x1901, 0x0194) },	/* GE Healthcare Remote Alarm Box */
+ 	{ USB_DEVICE(0x1901, 0x0195) },	/* GE B850/B650/B450 CP2104 DP UART interface */
+ 	{ USB_DEVICE(0x1901, 0x0196) },	/* GE B850 CP2105 DP UART interface */
+-	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 Display serial interface */
+-	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 M.2 Key E serial interface */
++	{ USB_DEVICE(0x1901, 0x0197) }, /* GE CS1000 M.2 Key E serial interface */
++	{ USB_DEVICE(0x1901, 0x0198) }, /* GE CS1000 Display serial interface */
+ 	{ USB_DEVICE(0x199B, 0xBA30) }, /* LORD WSDA-200-USB */
+ 	{ USB_DEVICE(0x19CF, 0x3000) }, /* Parrot NMEA GPS Flight Recorder */
+ 	{ USB_DEVICE(0x1ADB, 0x0001) }, /* Schweitzer Engineering C662 Cable */
 
 
