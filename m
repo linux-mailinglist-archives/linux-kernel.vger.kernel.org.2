@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5026D3D60D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6EF3D6122
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238250AbhGZPZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:25:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55902 "EHLO mail.kernel.org"
+        id S232202AbhGZP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:29:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237778AbhGZPQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEE4A60F02;
-        Mon, 26 Jul 2021 15:56:53 +0000 (UTC)
+        id S236685AbhGZPMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:12:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC75760F42;
+        Mon, 26 Jul 2021 15:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315014;
-        bh=s/WFr6LbuGVWNAD3q7+VmLZH3Ws/5MvNUpJnSNF/M0E=;
+        s=korg; t=1627314756;
+        bh=maLKI/2FAvlrlgPA5ZYTH4/igSjRXwoR9wsBtk6/opo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EcLviIaa3WZfdP4i0q/HXtkLeteijPTP3WVCnKbEEV3FAcfHRRSaX8hyEji9yUaPc
-         KwbVbOBbqBV1a0mlSOUv02BbjQyWeEZ4xBGatlI1wZ9lZJ1XAC0vgTP4hJNTn1e+tz
-         5GFX7KkPR3RhK7Wvzs+K9kpqmrmGeqhP6jwzv6Ok=
+        b=IKP5d2OBIqvOJuIUo2NwQRhHZEg2+Lvf55SO6D/ISyjGom1+2ZgxS4UQIKfOLN+n1
+         JeeWhGbwRX63OdwTTd20FqeUfLif2Je2arxmEVMjUN1wq+g6/YojGTcPwuLnrkcwBa
+         GCPKMjLxd+j5S8c/YXt4o3UfT2x9Rntn2NNoSEOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Somnath Kotur <somnath.kotur@broadcom.com>,
-        Edwin Peer <edwin.peer@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 052/108] bnxt_en: Refresh RoCE capabilities in bnxt_ulp_probe()
+Subject: [PATCH 4.19 081/120] spi: cadence: Correct initialisation of runtime PM again
 Date:   Mon, 26 Jul 2021 17:38:53 +0200
-Message-Id: <20210726153833.354657459@linuxfoundation.org>
+Message-Id: <20210726153834.985887531@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Chan <michael.chan@broadcom.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 2c9f046bc377efd1f5e26e74817d5f96e9506c86 ]
+[ Upstream commit 56912da7a68c8356df6a6740476237441b0b792a ]
 
-The capabilities can change after firmware upgrade/downgrade, so we
-should get the up-to-date RoCE capabilities everytime bnxt_ulp_probe()
-is called.
+The original implementation of RPM handling in probe() was mostly
+correct, except it failed to call pm_runtime_get_*() to activate the
+hardware. The subsequent fix, 734882a8bf98 ("spi: cadence: Correct
+initialisation of runtime PM"), breaks the implementation further,
+to the point where the system using this hard IP on ZynqMP hangs on
+boot, because it accesses hardware which is gated off.
 
-Fixes: 2151fe0830fd ("bnxt_en: Handle RESET_NOTIFY async event from firmware.")
-Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Undo 734882a8bf98 ("spi: cadence: Correct initialisation of runtime
+PM") and instead add missing pm_runtime_get_noresume() and move the
+RPM disabling all the way to the end of probe(). That makes ZynqMP
+not hang on boot yet again.
+
+Fixes: 734882a8bf98 ("spi: cadence: Correct initialisation of runtime PM")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210716182133.218640-1-marex@denx.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/spi/spi-cadence.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-index 85bacaed763e..b0ae180df4e6 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c
-@@ -473,13 +473,14 @@ struct bnxt_en_dev *bnxt_ulp_probe(struct net_device *dev)
- 		if (!edev)
- 			return ERR_PTR(-ENOMEM);
- 		edev->en_ops = &bnxt_en_ops_tbl;
--		if (bp->flags & BNXT_FLAG_ROCEV1_CAP)
--			edev->flags |= BNXT_EN_FLAG_ROCEV1_CAP;
--		if (bp->flags & BNXT_FLAG_ROCEV2_CAP)
--			edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
- 		edev->net = dev;
- 		edev->pdev = bp->pdev;
- 		bp->edev = edev;
+diff --git a/drivers/spi/spi-cadence.c b/drivers/spi/spi-cadence.c
+index f5055ceb7529..91f83683c15a 100644
+--- a/drivers/spi/spi-cadence.c
++++ b/drivers/spi/spi-cadence.c
+@@ -585,6 +585,12 @@ static int cdns_spi_probe(struct platform_device *pdev)
+ 		goto clk_dis_apb;
  	}
-+	edev->flags &= ~BNXT_EN_FLAG_ROCE_CAP;
-+	if (bp->flags & BNXT_FLAG_ROCEV1_CAP)
-+		edev->flags |= BNXT_EN_FLAG_ROCEV1_CAP;
-+	if (bp->flags & BNXT_FLAG_ROCEV2_CAP)
-+		edev->flags |= BNXT_EN_FLAG_ROCEV2_CAP;
- 	return bp->edev;
- }
+ 
++	pm_runtime_use_autosuspend(&pdev->dev);
++	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
++	pm_runtime_get_noresume(&pdev->dev);
++	pm_runtime_set_active(&pdev->dev);
++	pm_runtime_enable(&pdev->dev);
++
+ 	ret = of_property_read_u32(pdev->dev.of_node, "num-cs", &num_cs);
+ 	if (ret < 0)
+ 		master->num_chipselect = CDNS_SPI_DEFAULT_NUM_CS;
+@@ -599,11 +605,6 @@ static int cdns_spi_probe(struct platform_device *pdev)
+ 	/* SPI controller initializations */
+ 	cdns_spi_init_hw(xspi);
+ 
+-	pm_runtime_set_active(&pdev->dev);
+-	pm_runtime_enable(&pdev->dev);
+-	pm_runtime_use_autosuspend(&pdev->dev);
+-	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
+-
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq <= 0) {
+ 		ret = -ENXIO;
+@@ -636,6 +637,9 @@ static int cdns_spi_probe(struct platform_device *pdev)
+ 
+ 	master->bits_per_word_mask = SPI_BPW_MASK(8);
+ 
++	pm_runtime_mark_last_busy(&pdev->dev);
++	pm_runtime_put_autosuspend(&pdev->dev);
++
+ 	ret = spi_register_master(master);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "spi_register_master failed\n");
 -- 
 2.30.2
 
