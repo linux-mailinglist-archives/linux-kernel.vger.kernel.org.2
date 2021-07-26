@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9423D5914
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B593D591A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233933AbhGZLVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:21:34 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:38285 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233604AbhGZLVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:21:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1627300914; x=1658836914;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yerRSQV6BHo5/MlTfGuWZsA6nVXmeK7jDP3qdLSGjvo=;
-  b=Ja8eIGqlJe3LaB26c1elxl0/wnCnOlG9wGik9HlyV94YuHp3Llj2OBGX
-   CGZhBbj27H4El1Z9tDT6/wg5r5iulTa3JdR44nNlb2Yh+9t3NGqA2P5rl
-   uXN9/r6PBB0HVx8w/Gt0vSEIzyIdNfatmsOKSaCx+b9OOJeteqXgspOQw
-   2w/EHSiMSE/eQzePjWRS9zU8WcVfusJgnidRyAXf5bHQUvsnjzpWpSnm7
-   ttpxDIyq1XYgu7ZWpZuJFqPP36t0wTIYMdLcjE6QRjVjsEtJs7BEDPjOp
-   MSIFllIi8BtZhnRpNny7jsngCY7ps6PCTx52Fd0RyZTW2IRzVjoeLbuTh
-   g==;
-X-IronPort-AV: E=Sophos;i="5.84,270,1620684000"; 
-   d="scan'208";a="18639422"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 26 Jul 2021 14:01:53 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Mon, 26 Jul 2021 14:01:53 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Mon, 26 Jul 2021 14:01:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1627300913; x=1658836913;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yerRSQV6BHo5/MlTfGuWZsA6nVXmeK7jDP3qdLSGjvo=;
-  b=hfWBjPaDp0H+uWY8sZBMcgEmt6lXWS+7CPj7dgt5oi2C7scUBwgKAeld
-   Ii+C3QpzdbzMRjxR8h9Haa0o1GGlsR1qFs2ByusxzzHwRWiyQAvmdbgA6
-   3ARiGO0RNk1YBFJWwQLHm36qZSVjtI6/ezJ3jXIFmfDFv7VuazvHfJQA6
-   V+MKX+uyXb6mokmVYlFf3xDalWJntfxhka03OW9i6owWUQwbAgwD4AGmO
-   IoHrqqXViZGbw21r42QsqInPwmFannFAKbx4C5Pvb2Zt+WPPGiDFfTDPt
-   9CjmmP04LDpq1lpRL+MEx8iRj1Itv+i7vj9OVcoTootExfsKv1FU0+v72
-   w==;
-X-IronPort-AV: E=Sophos;i="5.84,270,1620684000"; 
-   d="scan'208";a="18639421"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 26 Jul 2021 14:01:53 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 4F524280070;
-        Mon, 26 Jul 2021 14:01:53 +0200 (CEST)
-Message-ID: <7b54590fddf167744fa2574d8815130608f8e063.camel@ew.tq-group.com>
-Subject: Re: [PATCH] regmap: do not call regmap_debugfs_init() from
- regmap_attach_dev()
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        David Lechner <david@lechnology.com>,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 26 Jul 2021 14:01:51 +0200
-In-Reply-To: <20210726114751.GE4670@sirena.org.uk>
-References: <20210726073627.31589-1-matthias.schiffer@ew.tq-group.com>
-         <20210726114751.GE4670@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S233841AbhGZLXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:23:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38094 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233633AbhGZLXC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:23:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627301010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=46YjFiGSOu3vFvPZA/rXtYR2f/Xj94q6y2DUkIi17h8=;
+        b=glpdzUKXd+uyvhn9T9tQGHNrrsKHlPqRSRXrLFWnyNCj39pjlGuRrZVBN/G4wZbCF9FN7J
+        1BDUB9swA+fG1A8UrftgusAK8R+Gnxl2DAcEHhTRnbBvFSc5Orzw687H+Uv2fzGZeehbQb
+        Sz+o5lGon7GC3JTM+AJMF9gsVNMYrgg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-592-amjCWw31MF2McMCwk0emZg-1; Mon, 26 Jul 2021 08:03:29 -0400
+X-MC-Unique: amjCWw31MF2McMCwk0emZg-1
+Received: by mail-ej1-f72.google.com with SMTP id a19-20020a1709063e93b0290551ea218ea2so2020992ejj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 05:03:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=46YjFiGSOu3vFvPZA/rXtYR2f/Xj94q6y2DUkIi17h8=;
+        b=SN2FDZeQ001CasrI7hF1KtP6FRO5iShWV0pDudemVO7+5nQxBrVNAqJUM5TGAliTnM
+         EFoPy/GXbjs4plXnMTSqxr4F9XVioALZ1UrniJruzJm/McgpxZ1Iau3/Cvjne4N5Rtcg
+         XKI/tVy1O1RNelxNDb++uRdFMYNdd1Jmxh2GiTfJnEpci9RhbATh8M252b0lVEpW/X9b
+         r4Pwzrp9V2Vb9456ZNXloSKl50A6S2rbk0z9c1szFbdTH/pvqsgmP+Z2N1+huVVRG2vE
+         cVP0CMpXtN7cBaIBomh/6VVhfG52IFBZ5sKeW4FmINRCNLnl1MgjO4L1kcjqqyEhKdrH
+         zr4g==
+X-Gm-Message-State: AOAM53330W6v54n/kQmemXLeMyJXie7sMnWIQoWTQpNxXMFZlE0CGUNS
+        IZsA5UuwMwtfTTCAg4hKfGKjRrrK4fq4w52afjbHEmp1ZvBW4yxG+AHfAGXoX/Xz4YIzb2/8n9I
+        fRyPgMpNv5bXZ1eRUPp4cN7s4
+X-Received: by 2002:a17:906:3b47:: with SMTP id h7mr9619110ejf.399.1627301007746;
+        Mon, 26 Jul 2021 05:03:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzFUlWlMBtOeCXgz63WJ0nRRQfYhSLqdqCRtMJX2iTA/Lw19OEJxkslezgUdDRT+k//1SW2pA==
+X-Received: by 2002:a17:906:3b47:: with SMTP id h7mr9619081ejf.399.1627301007481;
+        Mon, 26 Jul 2021 05:03:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id e27sm3803750ejc.41.2021.07.26.05.03.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 05:03:26 -0700 (PDT)
+Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Christian Storm <christian.storm@siemens.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>,
+        stable <stable@vger.kernel.org>
+References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b3b75b72-33d4-ce21-a8f4-77a37156aa9e@redhat.com>
+Date:   Mon, 26 Jul 2021 14:03:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-07-26 at 12:47 +0100, Mark Brown wrote:
-> * PGP Signed by an unknown key
+On 26/07/21 13:46, Jan Kiszka wrote:
+> From: Jan Kiszka <jan.kiszka@siemens.com>
 > 
-> On Mon, Jul 26, 2021 at 09:36:27AM +0200, Matthias Schiffer wrote:
-> > regmap_debugfs_init() should never be called twice for the same regmap,
-> > as it initializes various fields of the regmap struct, including list
-> > heads and mutices. A visible symptom are messages like:
-> > 
-> >     debugfs: Directory 'dummy-iomuxc-gpr@20e4000' with parent 'regmap'
-> >     already present!
-> > 
-> > This happened whenever regmap_attach_dev() was called for an existing
-> > regmap. Remove the call from regmap_attach_dev() and change
-> > __regmap_init() so that regmap_debugfs_init() is called exactly once.
+> Obviously, the test needs to run against the register content, not its
+> address.
 > 
-> The use case for regmap_attach_dev() is that there was no device when
-> the regmap was initially instantiated due to it running very early, we
-> want to attach the device when we figure out what it is which includes
-> setting up the debugfs stuff.  Whatever is managing to call this with
-> the same device as has already been set is clearly not that use case.
+> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+> Reported-by: Mantas Mikulėnas <grawity@gmail.com>
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> ---
+>   drivers/watchdog/iTCO_wdt.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+> index b3f604669e2c..643c6c2d0b72 100644
+> --- a/drivers/watchdog/iTCO_wdt.c
+> +++ b/drivers/watchdog/iTCO_wdt.c
+> @@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
+>   	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+>   	 */
+>   	if (p->smi_res &&
+> -	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+> +	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+>   		tmrval /= 2;
+>   
+>   	/* from the specs: */
 > 
 
-Hi Mark,
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Cc: stable@vger.kernel.org
 
-I'm not talking about a case where regmap_attach_dev() is called when
-there is already a device attached; as far as I can tell such a thing
-does not happen in current kernel code.
+(the latter because cb011044e34c has been picked up by stable kernels 
+already).
 
-Please have a look at the commit in the Fixes: tag. The duplicate
-regmap_debugfs_init() happens even when no device was passed in
-__regmap_init(), so the regmap_attach_dev() is the first time a device
-it attached.
+Paolo
 
