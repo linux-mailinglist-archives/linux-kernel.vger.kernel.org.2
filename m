@@ -2,239 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70A73D5C7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827BE3D5C83
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234960AbhGZORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:17:16 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:55082 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234762AbhGZORP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:17:15 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Uh49OZI_1627311456;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Uh49OZI_1627311456)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 26 Jul 2021 22:57:40 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v8] iomap: make inline data support more flexible
-Date:   Mon, 26 Jul 2021 22:57:34 +0800
-Message-Id: <20210726145734.214295-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
+        id S235069AbhGZORl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:17:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55972 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234762AbhGZORi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 10:17:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88D5360F51;
+        Mon, 26 Jul 2021 14:58:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627311487;
+        bh=0qF0Vz3MazY904U0HR1NZXSQgySYJWbeHNONYEffRY4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qp5vKlIP2r6iVWq4GuDh8CS4jyYF+H4u+Rh3ffwgiBZPqk9x6Pk9PWEIU9zA056Yf
+         w6T/rJ6tWcu1d8Vj2KYLzd2iyqALV2eJlxonboskuZlGI2Y1VovtQbFxBGS5qY7wv3
+         SwMOzJFsBqgiHK1uz5JrZkuBKwxaY8Aet0hM+n6uNWc1uKFXzKsXENCnoFLeQageCT
+         6BAHPGAAFFZFd9hgUjo2mn3Hp6y06UxNIZC+w95aVYHrZjn/WyytRlHqwwXIwjA8Mz
+         DiOjQeKW1LfqeZfJcbvS6Ka2ieiZ9AtjVg3x+jl1qJIek2Za2Zm0P7oC9o3sYe5nGz
+         oGBYLaVkM3TAA==
+Received: by mail-ed1-f45.google.com with SMTP id x14so6153157edr.12;
+        Mon, 26 Jul 2021 07:58:07 -0700 (PDT)
+X-Gm-Message-State: AOAM5328TnTPvmmqbMRN/axvRkoRDPdjxriuh4QdS6etEWla2o3NQGA3
+        hoG9u76c9M1hXwW7eOywCrN/MXUTx4xrPV3tbQ==
+X-Google-Smtp-Source: ABdhPJzTiDkxSgrhPUX6HVFGWQ6NBHJXfNpeHFEettRTT0Af+nT7OyyVs51oAy00niCXbs42B2E1B49veAv8Q89s8ss=
+X-Received: by 2002:aa7:cb19:: with SMTP id s25mr22336914edt.194.1627311486141;
+ Mon, 26 Jul 2021 07:58:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1627273794.git.viresh.kumar@linaro.org> <fced2f2b9dcf3f32f16866d7d104f46171316396.1627273794.git.viresh.kumar@linaro.org>
+In-Reply-To: <fced2f2b9dcf3f32f16866d7d104f46171316396.1627273794.git.viresh.kumar@linaro.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 26 Jul 2021 08:57:54 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+XXhe2g0Rmda1v_Ws4-E_-UE6X5HUsSk-GcAETqQZiCQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+XXhe2g0Rmda1v_Ws4-E_-UE6X5HUsSk-GcAETqQZiCQ@mail.gmail.com>
+Subject: Re: [PATCH V3 1/5] dt-bindings: virtio: Add binding for virtio devices
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing inline data support only works for cases where the entire
-file is stored as inline data.  For larger files, EROFS stores the
-initial blocks separately and then can pack a small tail adjacent to the
-inode.  Generalise inline data to allow for tail packing.  Tails may not
-cross a page boundary in memory.
+On Sun, Jul 25, 2021 at 10:52 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Allow virtio device sub-nodes to be added to the virtio mmio or pci
+> nodes. The compatible property for virtio device must be of format
+> "virtio,<DID>", where DID is virtio device ID in hexadecimal format.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  .../devicetree/bindings/virtio/mmio.yaml      |  2 +-
+>  .../bindings/virtio/virtio-device.yaml        | 47 +++++++++++++++++++
+>  2 files changed, 48 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/virtio/virtio-device.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/virtio/mmio.yaml b/Documentation/devicetree/bindings/virtio/mmio.yaml
+> index d46597028cf1..1b91553f87c6 100644
+> --- a/Documentation/devicetree/bindings/virtio/mmio.yaml
+> +++ b/Documentation/devicetree/bindings/virtio/mmio.yaml
+> @@ -36,7 +36,7 @@ title: virtio memory mapped devices
+>    - reg
+>    - interrupts
+>
+> -additionalProperties: false
+> +additionalProperties: true
 
-We currently have no filesystems that support tail packing and writing,
-so that case is currently disabled (see iomap_write_begin_inline).
+That just allows for any random property. What you want is child nodes only:
 
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Darrick J. Wong <djwong@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-v7: https://lore.kernel.org/r/20210723174131.180813-1-hsiangkao@linux.alibaba.com
-changes since v7:
- - This version is based on Andreas's patch, the main difference
-   is to avoid using "iomap->length" in iomap_read_inline_data().
-   more details see:
-    https://lore.kernel.org/r/CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com
-   The rest are similar (some renaming and return type changes.)
+addtionalProperties:
+  type: object
 
- - with update according to Christoph's comments:
-   https://lore.kernel.org/r/20210726121702.GA528@lst.de/
-   except that "
-    I think we should fix that now that we have the srcmap concept.
-    That is or IOMAP_WRITE|IOMAP_ZERO return the inline map as the
-    soure map, and return the actual block map we plan to write into
-    as the main iomap. "
-   Hopefully it could be addressed with a new gfs2-related patch.
+Or you could reference virtio-device.yaml here.
 
- - it passes gfs2 fstests and no strange on my side.
+>
+>  examples:
+>    - |
+> diff --git a/Documentation/devicetree/bindings/virtio/virtio-device.yaml b/Documentation/devicetree/bindings/virtio/virtio-device.yaml
+> new file mode 100644
+> index 000000000000..15cb6df8c98a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/virtio/virtio-device.yaml
+> @@ -0,0 +1,47 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/virtio/virtio-device.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Virtio device bindings
+> +
+> +maintainers:
+> +  - Viresh Kumar <viresh.kumar@linaro.org>
+> +
+> +description:
+> +  These bindings are applicable to virtio devices irrespective of the bus they
+> +  are bound to, like mmio or pci.
+> +
+> +# We need a select here so we don't match all nodes with 'virtio,mmio'
+> +properties:
+> +  $nodename:
+> +    pattern: '^[a-z0-9]+-virtio(-[a-z0-9]+)?$'
 
-Hopefully I don't miss anything (already many inputs), and everyone
-is happy with this version.
+Node names aren't based on the bus they are on, but their class.
+You'll need to drop this.
 
- fs/iomap/buffered-io.c | 40 ++++++++++++++++++++++++++++------------
- fs/iomap/direct-io.c   | 10 ++++++----
- include/linux/iomap.h  | 18 ++++++++++++++++++
- 3 files changed, 52 insertions(+), 16 deletions(-)
+> +    description: |
+> +      Exactly one node describing the virtio device. The name of the node isn't
+> +      significant but its phandle can be used to by a user of the virtio device.
+> +
+> +  compatible:
+> +    pattern: "^virtio,[0-9a-f]+$"
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..0d9f161ecb7e 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,30 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
--iomap_read_inline_data(struct inode *inode, struct page *page,
-+static int iomap_read_inline_data(struct inode *inode, struct page *page,
- 		struct iomap *iomap)
- {
--	size_t size = i_size_read(inode);
-+	size_t size = i_size_read(inode) - iomap->offset;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return 0;
- 
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline data must start page aligned in the file */
-+	if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(size > PAGE_SIZE -
-+			 offset_in_page(iomap->inline_data)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(page_has_private(page)))
-+		return -EIO;
- 
- 	addr = kmap_atomic(page);
- 	memcpy(addr, iomap->inline_data, size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return 0;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -247,8 +252,10 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	sector_t sector;
- 
- 	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
-+		int ret = iomap_read_inline_data(inode, page, iomap);
-+
-+		if (ret)
-+			return ret;
- 		return PAGE_SIZE;
- 	}
- 
-@@ -589,6 +596,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(srcmap->offset != 0))
-+		return -EIO;
-+	return iomap_read_inline_data(inode, page, srcmap);
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +634,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-@@ -671,11 +687,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
- 	void *addr;
- 
- 	WARN_ON_ONCE(!PageUptodate(page));
--	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	BUG_ON(!iomap_inline_data_valid(iomap));
- 
- 	flush_dcache_page(page);
- 	addr = kmap_atomic(page);
--	memcpy(iomap->inline_data + pos, addr + pos, copied);
-+	memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
- 	kunmap_atomic(addr);
- 
- 	mark_inode_dirty(inode);
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..41ccbfc9dc82 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 		struct iomap_dio *dio, struct iomap *iomap)
- {
- 	struct iov_iter *iter = dio->submit.iter;
-+	void *inline_data = iomap_inline_data(iomap, pos);
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	if (WARN_ON_ONCE(!iomap_inline_data_valid(iomap)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_data(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(inline_data, length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(inline_data, length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e221..b8ec145b2975 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -97,6 +97,24 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+/*
-+ * Returns the inline data pointer for logical offset @pos.
-+ */
-+static inline void *iomap_inline_data(struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data + pos - iomap->offset;
-+}
-+
-+/*
-+ * Check if the mapping's length is within the valid range for inline data.
-+ * This is used to guard against accessing data beyond the page inline_data
-+ * points at.
-+ */
-+static inline bool iomap_inline_data_valid(struct iomap *iomap)
-+{
-+	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
--- 
-2.24.4
+DID is only 4 chars? If so, "^virtio,[0-9a-f]{1,4}$"
 
+> +    description: Virtio device nodes.
+> +      "virtio,DID", where DID is the virtio device id. The textual
+> +      representation of DID shall be in lower case hexadecimal with leading
+> +      zeroes suppressed.
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    virtio@3000 {
+> +        compatible = "virtio,mmio";
+> +        reg = <0x3000 0x100>;
+> +        interrupts = <43>;
+> +
+> +        i2c-virtio {
+> +            compatible = "virtio,22";
+> +        };
+> +    };
+> +...
+> --
+> 2.31.1.272.g89b43f80a514
+>
