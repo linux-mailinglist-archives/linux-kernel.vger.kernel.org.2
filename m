@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF923D604C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9841B3D60CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237205AbhGZPVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
+        id S238084AbhGZPYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236626AbhGZPLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAB5660F92;
-        Mon, 26 Jul 2021 15:52:19 +0000 (UTC)
+        id S236639AbhGZPLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:11:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35FC360F38;
+        Mon, 26 Jul 2021 15:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314740;
-        bh=+KBYrjKByNzhavMEVdFMXXuczM+Zb1GaVB6YfG7W/NQ=;
+        s=korg; t=1627314742;
+        bh=53BQTfdZFQdP56jbgWJq0znHDcAMrcu07M83k8BKfbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KPkCTBiJ+Q0QjDWL+wGmvuQ1vQbnO/Imre1VPOHGJsuD1ao9LqJQtn44ZGnQa9lA+
-         UaTnZPROanRLdtrykIiuEYrIOxMKxAYcBZlkBVPA6lvgdJOt/LKci6joh09kqbOMmP
-         J8GQln7Vq2uNlfJkADmIe2G/NNMQ6D9+AGmJUYRU=
+        b=eCgmDre5g5bWh8q6aKIAycEROWI42CD/K+eHV8f0wToDie2EHmm6vftbtYFqJIXcs
+         rfJmD61pW1xL3K8tgKqil8zdA91ne104LEiaunYeWV2zNKwWGV6Db0YHndOcKKoG/B
+         WmMomV0XzrEtP7YGuJbaCyBV5BSwyrJBunnw4CEo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 075/120] net: fix uninit-value in caif_seqpkt_sendmsg
-Date:   Mon, 26 Jul 2021 17:38:47 +0200
-Message-Id: <20210726153834.789490925@linuxfoundation.org>
+Subject: [PATCH 4.19 076/120] net: decnet: Fix sleeping inside in af_decnet
+Date:   Mon, 26 Jul 2021 17:38:48 +0200
+Message-Id: <20210726153834.825930830@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
 References: <20210726153832.339431936@linuxfoundation.org>
@@ -42,55 +40,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ziyang Xuan <william.xuanziyang@huawei.com>
+From: Yajun Deng <yajun.deng@linux.dev>
 
-[ Upstream commit 991e634360f2622a683b48dfe44fe6d9cb765a09 ]
+[ Upstream commit 5f119ba1d5771bbf46d57cff7417dcd84d3084ba ]
 
-When nr_segs equal to zero in iovec_from_user, the object
-msg->msg_iter.iov is uninit stack memory in caif_seqpkt_sendmsg
-which is defined in ___sys_sendmsg. So we cann't just judge
-msg->msg_iter.iov->base directlly. We can use nr_segs to judge
-msg in caif_seqpkt_sendmsg whether has data buffers.
+The release_sock() is blocking function, it would change the state
+after sleeping. use wait_woken() instead.
 
-=====================================================
-BUG: KMSAN: uninit-value in caif_seqpkt_sendmsg+0x693/0xf60 net/caif/caif_socket.c:542
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1c9/0x220 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
- caif_seqpkt_sendmsg+0x693/0xf60 net/caif/caif_socket.c:542
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2343
- ___sys_sendmsg net/socket.c:2397 [inline]
- __sys_sendmmsg+0x808/0xc90 net/socket.c:2480
- __compat_sys_sendmmsg net/compat.c:656 [inline]
-
-Reported-by: syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?id=1ace85e8fc9b0d5a45c08c2656c3e91762daa9b8
-Fixes: bece7b2398d0 ("caif: Rewritten socket implementation")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/caif/caif_socket.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/decnet/af_decnet.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/net/caif/caif_socket.c b/net/caif/caif_socket.c
-index 4b31f0aaa96d..348b8cb0bc24 100644
---- a/net/caif/caif_socket.c
-+++ b/net/caif/caif_socket.c
-@@ -539,7 +539,8 @@ static int caif_seqpkt_sendmsg(struct socket *sock, struct msghdr *msg,
- 		goto err;
+diff --git a/net/decnet/af_decnet.c b/net/decnet/af_decnet.c
+index 0e6f32defd67..cc7077105969 100644
+--- a/net/decnet/af_decnet.c
++++ b/net/decnet/af_decnet.c
+@@ -823,7 +823,7 @@ static int dn_auto_bind(struct socket *sock)
+ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ {
+ 	struct dn_scp *scp = DN_SK(sk);
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	int err;
  
- 	ret = -EINVAL;
--	if (unlikely(msg->msg_iter.iov->iov_base == NULL))
-+	if (unlikely(msg->msg_iter.nr_segs == 0) ||
-+	    unlikely(msg->msg_iter.iov->iov_base == NULL))
- 		goto err;
- 	noblock = msg->msg_flags & MSG_DONTWAIT;
+ 	if (scp->state != DN_CR)
+@@ -833,11 +833,11 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ 	scp->segsize_loc = dst_metric_advmss(__sk_dst_get(sk));
+ 	dn_send_conn_conf(sk, allocation);
  
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		if (scp->state == DN_CC)
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 		lock_sock(sk);
+ 		err = 0;
+ 		if (scp->state == DN_RUN)
+@@ -851,9 +851,8 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ 		err = -EAGAIN;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ 	if (err == 0) {
+ 		sk->sk_socket->state = SS_CONNECTED;
+ 	} else if (scp->state != DN_CC) {
+@@ -865,7 +864,7 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ static int dn_wait_run(struct sock *sk, long *timeo)
+ {
+ 	struct dn_scp *scp = DN_SK(sk);
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	int err = 0;
+ 
+ 	if (scp->state == DN_RUN)
+@@ -874,11 +873,11 @@ static int dn_wait_run(struct sock *sk, long *timeo)
+ 	if (!*timeo)
+ 		return -EALREADY;
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		if (scp->state == DN_CI || scp->state == DN_CC)
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 		lock_sock(sk);
+ 		err = 0;
+ 		if (scp->state == DN_RUN)
+@@ -892,9 +891,8 @@ static int dn_wait_run(struct sock *sk, long *timeo)
+ 		err = -ETIMEDOUT;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ out:
+ 	if (err == 0) {
+ 		sk->sk_socket->state = SS_CONNECTED;
+@@ -1039,16 +1037,16 @@ static void dn_user_copy(struct sk_buff *skb, struct optdata_dn *opt)
+ 
+ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
+ {
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	struct sk_buff *skb = NULL;
+ 	int err = 0;
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		skb = skb_dequeue(&sk->sk_receive_queue);
+ 		if (skb == NULL) {
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 			skb = skb_dequeue(&sk->sk_receive_queue);
+ 		}
+ 		lock_sock(sk);
+@@ -1063,9 +1061,8 @@ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
+ 		err = -EAGAIN;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ 
+ 	return skb == NULL ? ERR_PTR(err) : skb;
+ }
 -- 
 2.30.2
 
