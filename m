@@ -2,92 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34DC3D5927
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC803D5928
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhGZLZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:25:31 -0400
-Received: from david.siemens.de ([192.35.17.14]:48219 "EHLO david.siemens.de"
+        id S233878AbhGZL0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:26:21 -0400
+Received: from foss.arm.com ([217.140.110.172]:50934 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233738AbhGZLZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:25:30 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by david.siemens.de (8.15.2/8.15.2) with ESMTPS id 16QC5dFX005210
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Jul 2021 14:05:40 +0200
-Received: from [139.22.37.28] ([139.22.37.28])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 16QC5d4G009611;
-        Mon, 26 Jul 2021 14:05:39 +0200
-Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christian Storm <christian.storm@siemens.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>,
-        stable <stable@vger.kernel.org>
-References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
- <b3b75b72-33d4-ce21-a8f4-77a37156aa9e@redhat.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <0e37c448-26cc-7f4a-4f1a-598c595ce07e@siemens.com>
-Date:   Mon, 26 Jul 2021 14:05:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S233738AbhGZL0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:26:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AADC631B;
+        Mon, 26 Jul 2021 05:06:48 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F3BD3F70D;
+        Mon, 26 Jul 2021 05:06:47 -0700 (PDT)
+Subject: Re: [PATCH 00/23] iommu: Refactor DMA domain strictness
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        suravee.suthikulpanit@amd.com, baolu.lu@linux.intel.com,
+        dianders@chromium.org
+References: <cover.1626888444.git.robin.murphy@arm.com>
+ <8e9da41e-4e3a-7098-bece-7f6cba89a2aa@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <519d4a00-a251-3437-6c3e-6ee3e75bf64c@arm.com>
+Date:   Mon, 26 Jul 2021 13:06:41 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <b3b75b72-33d4-ce21-a8f4-77a37156aa9e@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8e9da41e-4e3a-7098-bece-7f6cba89a2aa@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.07.21 14:03, Paolo Bonzini wrote:
-> On 26/07/21 13:46, Jan Kiszka wrote:
->> From: Jan Kiszka <jan.kiszka@siemens.com>
+On 2021-07-26 09:13, John Garry wrote:
+> On 21/07/2021 19:20, Robin Murphy wrote:
+>> Hi all,
 >>
->> Obviously, the test needs to run against the register content, not its
->> address.
->>
->> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on
->> second timeout")
->> Reported-by: Mantas Mikulėnas <grawity@gmail.com>
->> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->> ---
->>   drivers/watchdog/iTCO_wdt.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
->> index b3f604669e2c..643c6c2d0b72 100644
->> --- a/drivers/watchdog/iTCO_wdt.c
->> +++ b/drivers/watchdog/iTCO_wdt.c
->> @@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct
->> watchdog_device *wd_dev, unsigned int t)
->>        * Otherwise, the BIOS generally reboots when the SMI triggers.
->>        */
->>       if (p->smi_res &&
->> -        (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
->> +        (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN |
->> GBL_SMI_EN))
->>           tmrval /= 2;
->>         /* from the specs: */
->>
+>> First off, yes, this conflicts with just about everything else
+>> currently in-flight. Sorry about that. If it stands up to initial review
+>> then I'll start giving some thought to how to fit everything together
+>> (particularly John's cleanup of strictness defaults, which I'd be
+>> inclined to fold into a v2 of this series).
 > 
-> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: stable@vger.kernel.org
-> 
-> (the latter because cb011044e34c has been picked up by stable kernels
-> already).
-> 
+> It seems to me that patch #20 is the only real conflict, and that is 
+> just a different form of mine in that passthrough, strict, and lazy are 
+> under a single choice, as opposed to passthrough being a separate config 
+> (for mine). And on that point, I did assume that we would have a 
+> different sysfs file for strict vs lazy in this series, and not a new 
+> domain type. But I assume that there is a good reason for that.
 
-Thanks. Originally wanted to add stable myself, but I'm still unsure
-whether this is the privilege of the subsystem maintainer or should also
-be done by contributors.
+Yes, as mentioned by patch #18 it helps a surprising number of things 
+fall into place really neatly.
 
-Jan
+> Anyway, I'd really like to see my series just merged now.
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+Sure, I was going to say I can happily rebase on top of your series 
+as-is if Joerg wants to apply it first, and now that's just happened :)
+
+Cheers,
+Robin.
