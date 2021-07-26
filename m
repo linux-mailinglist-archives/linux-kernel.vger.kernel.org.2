@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0703D6093
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD1F3D60B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237480AbhGZPXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:23:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52932 "EHLO mail.kernel.org"
+        id S237635AbhGZPXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:23:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237450AbhGZPPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237452AbhGZPPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:15:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8409610CB;
-        Mon, 26 Jul 2021 15:56:06 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E01B610D1;
+        Mon, 26 Jul 2021 15:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314967;
-        bh=KQBIvWw5YEEKzswPulW/87FGiBPzOznHMPU68F6m9Ds=;
+        s=korg; t=1627314970;
+        bh=EOXMgGQETPjYIG0uLO6/QqfGWPM9mVxdYrIx4iyihIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=woXBJvyMfpsnSG/jixYVdNUIqX5Lz710/elJoHUh3/C2o9kNJNwmUWzo9Et+3RdL4
-         VrQphIGmqIcbWyWM6IE3Xk91P78Ps/IxePcf8LbL5i9LzG2CO6otHlBQuL20Qtx+e0
-         MfjEpPY3HsbyHGUov7pxEnxPzqu0rnxrGD8or7rY=
+        b=RL2SLdL4u4RIr+90Xtzg5RoTcEyPKRzUGY82eo0B2xX70wXKIcc6gYWjqhaCHRiaY
+         mf471PWPdDueyqfJc9FqwYgH/hD8yuq4LYJsKJ4Qq27LPo7Rm1oft+tj7XbF5tR3VC
+         5BAO3EdBwkr9lk0x01BCnR0MawbECIz0RU0UA0g0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/108] liquidio: Fix unintentional sign extension issue on left shift of u16
-Date:   Mon, 26 Jul 2021 17:38:38 +0200
-Message-Id: <20210726153832.884665464@linuxfoundation.org>
+Subject: [PATCH 5.4 038/108] s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
+Date:   Mon, 26 Jul 2021 17:38:39 +0200
+Message-Id: <20210726153832.914131799@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 References: <20210726153831.696295003@linuxfoundation.org>
@@ -42,39 +43,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit e7efc2ce3d0789cd7c21b70ff00cd7838d382639 ]
+[ Upstream commit 91091656252f5d6d8c476e0c92776ce9fae7b445 ]
 
-Shifting the u16 integer oct->pcie_port by CN23XX_PKT_INPUT_CTL_MAC_NUM_POS
-(29) bits will be promoted to a 32 bit signed int and then sign-extended
-to a u64. In the cases where oct->pcie_port where bit 2 is set (e.g. 3..7)
-the shifted value will be sign extended and the top 32 bits of the result
-will be set.
+Currently array jit->seen_reg[r1] is being accessed before the range
+checking of index r1. The range changing on r1 should be performed
+first since it will avoid any potential out-of-range accesses on the
+array seen_reg[] and also it is more optimal to perform checks on r1
+before fetching data from the array. Fix this by swapping the order
+of the checks before the array access.
 
-Fix this by casting the u16 values to a u64 before the 29 bit left shift.
-
-Addresses-Coverity: ("Unintended sign extension")
-
-Fixes: 3451b97cce2d ("liquidio: CN23XX register setup")
+Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Link: https://lore.kernel.org/bpf/20210715125712.24690-1-colin.king@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c | 2 +-
+ arch/s390/net/bpf_jit_comp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-index 4cddd628d41b..9ed3d1ab2ca5 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-@@ -420,7 +420,7 @@ static int cn23xx_pf_setup_global_input_regs(struct octeon_device *oct)
- 	 * bits 32:47 indicate the PVF num.
- 	 */
- 	for (q_no = 0; q_no < ern; q_no++) {
--		reg_val = oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
-+		reg_val = (u64)oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index c8c16b5eed6b..e160f4650f8e 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -114,7 +114,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
+ {
+ 	u32 r1 = reg2hex[b1];
  
- 		/* for VF assigned queues. */
- 		if (q_no < oct->sriov_info.pf_srn) {
+-	if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
++	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
+ 		jit->seen_reg[r1] = 1;
+ }
+ 
 -- 
 2.30.2
 
