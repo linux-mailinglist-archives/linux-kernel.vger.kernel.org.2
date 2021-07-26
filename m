@@ -2,186 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273703D5355
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 08:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3EB3D535A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 08:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbhGZGHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
+        id S231916AbhGZGIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhGZGHr (ORCPT
+        with ESMTP id S229658AbhGZGIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:07:47 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3966C061757;
-        Sun, 25 Jul 2021 23:48:15 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id n12so6167865wrr.2;
-        Sun, 25 Jul 2021 23:48:15 -0700 (PDT)
+        Mon, 26 Jul 2021 02:08:32 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A25C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 23:49:01 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id x11so1812755vke.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 23:49:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HI8l9G1w/LmqJ+8NhRIG+Zn8YfnZKKj5vpdyiBzKi+s=;
-        b=Wezx2tcrng+SV4TczyYEUaFp3bl3kB2dLc1cSxaviOLUlDyjjiHYCzb/SOC+UJC3Qq
-         CYkSHQsvY+8+9F+IQNrnAlSk7SReAXhEmgcDnXfc/guqupHDZMC6erwOzAAfbgHdlxeY
-         ZExeu9E94RwE4aEHV2aNlfDJMi4UyNa0Ek8B1Or96uByblHN7xV0d3Fn/Qa4DKHlcHOB
-         4NUp+GOACNyWOsCy6OYEwh/OdaI/Sa/h0VTyowWpxlAB3OKn8chDxwtSic5jIH88IqLz
-         JQYGvVr22sbI9cR4k88CdANHoFgSePtXCcaZAlfgf1aR2tPBrB7dzMjwI5qz+xfdlXKs
-         P1GQ==
+        d=deviqon.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1AxCO7lyw6ovOiptky8TyGkHjQtCHF4StffodwJbBJY=;
+        b=iEQqyMSnvsZoIfvkVak3bNh6SavBPS+vHHKxpiyCBqqdmOnYh1TgAh9S2o/ddPsXXj
+         MQUFjYYliMLO7sQeW8C2w0cS2LdMm3Calq1St0BWzshFaZ46+66VyubhQGgjArS/YEGb
+         KO4LKxzrf7KaRWMtLgdvCJeaGYTgqz1Rrasz9B4JebTUPxWIaFGlEyYJzBVyylLYuaMv
+         6sww6dnahmJ9VRMBJ09jq9yXI6PRXoBpd7ySeBehiFNIa2PCnZMqPRqZjYZWYTGtbIw8
+         8VD8yMEaweO8LGXKYUwPgcgvcsiCKRffNvDA2kCdoT2ADgGc9vQRBYfgG3iE6xMDRF7W
+         /2XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HI8l9G1w/LmqJ+8NhRIG+Zn8YfnZKKj5vpdyiBzKi+s=;
-        b=PiagmT0WSeqgbDVdVycPuFZ60Ubs8i5zWRAtDk8CT70A9OyHM+hwbT367i+JwkFjQU
-         ii0bO6LSYFdk0QgSmIa/uxHXO4RrwTfKipMNkof04BqCBIaziAe67uMQ7p9Zo/iQNX/o
-         DYxOxVB2Kh3t+H4MqB4p8YTuDOtPTPc6btLdtZfWP1UvkzIgeuf3Qx32mbHShnQ36ILC
-         zyAsGlr5pLhWtkYTOjC1YDFm2DifDBCuI9IiYUqHklnUH+kXb6Sve/W73rzRO4zPtohU
-         dXjnX68/pBPDA4EvaEXzuG9D6Ixblg6oCXCUNROmaXOv8OWX1zWbfj9BkLKNo3cJaS74
-         z8LA==
-X-Gm-Message-State: AOAM530Axn+MEZnlM3mivXi2QnRolPO7vZ7unyrJ/YXkui03qzkuBC/h
-        95EtHipzsoa7m8dWh1+ujs4=
-X-Google-Smtp-Source: ABdhPJzMyWdoXuVXC6olUVGS9xCVUUeG5T8ELSqi28A/n8Ujo3ogFvmxwZpZwlzWLvrIVx7tncogMw==
-X-Received: by 2002:a5d:68cd:: with SMTP id p13mr3445295wrw.163.1627282093137;
-        Sun, 25 Jul 2021 23:48:13 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id m15sm35003070wmc.20.2021.07.25.23.48.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 23:48:12 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 08:48:10 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>,
-        dan.carpenter@oracle.com, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: sun8i-ce: fix memory leak and return value of
- sun8i_ce_hash_run
-Message-ID: <YP5aqtmAXS4xNtv/@Red>
-References: <20210726062801.2078117-1-mudongliangabcd@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1AxCO7lyw6ovOiptky8TyGkHjQtCHF4StffodwJbBJY=;
+        b=pnoZ9m5010JteIAfwJoTQeyp9XOCVW2h9kYdkoZmrQDTs/CNHy4vEBxbNR2Tp6+rca
+         WjiDOKEfb/g9UvL3p1DYrBc4IoH7e1b471vabS3x69GWmkqzeB0Twb+3iWKh5CorCou9
+         kVskAlDyWE6k2eFOCc+OqQS8YeNQ7XjxjkwMS7uivDQ9fr9U8qrdBzHVW7UitZDJablJ
+         QDABVhxaiHTpAvngQngT0LoxBqm4/dOtKWqadw6N1ZIoIGA9Lq0lJEQW8Hr+0+tP4eAe
+         UcujQ7MJDsSQrg4y1DAZ0IpOmAiqJZwuPK32ka11N4QtkkwN3V7SPueu/c/xqtY8jVnV
+         IKqw==
+X-Gm-Message-State: AOAM530Q9X24PZAQDzqax0LSKfmXpNMr4sZCYWAuGCaANBCGccAccYq0
+        LVYvLw+bjVSevuhOE2CF62mgQ/1fIpUUNr4T1c9fbQ==
+X-Google-Smtp-Source: ABdhPJx1chwhnyHJqCk1+5educiUa4SgFd9MmT9lrNa3kVSy/KRJ2rTOoYnjVmC8eyYYVK9cPU6KTUeZutSQNjZ2i7s=
+X-Received: by 2002:a1f:984c:: with SMTP id a73mr6666530vke.20.1627282140339;
+ Sun, 25 Jul 2021 23:49:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210726062801.2078117-1-mudongliangabcd@gmail.com>
+References: <20210720074642.223293-1-aardelean@deviqon.com> <20210724164301.54008712@jic23-huawei>
+In-Reply-To: <20210724164301.54008712@jic23-huawei>
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+Date:   Mon, 26 Jul 2021 09:48:49 +0300
+Message-ID: <CAASAkoasKea5t_nB6JZtaPj4hrzShQh7kjeBwHieCyq4+S=O6g@mail.gmail.com>
+Subject: Re: [PATCH 1/4] iio: pressure: st_pressure: use devm_iio_triggered_buffer_setup()
+ for buffer
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        denis.ciocca@st.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Mon, Jul 26, 2021 at 02:27:50PM +0800, Dongliang Mu a écrit :
-> This patch fixes some memory leak caused by dma_mmap_sg/single
-> in the error handling code. In addition, it fixes the return value
-> when errors related with dma_mmap_sg/single occur.
-> 
-> Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> Fixes: 732b764099f65 ("crypto: sun8i-ce - fix two error path's memory leak")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  .../crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 37 ++++++++++---------
->  1 file changed, 20 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-> index 3c073eb3db03..7c4ed19f5466 100644
-> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
-> @@ -324,11 +324,11 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
->  	struct sun8i_ss_alg_template *algt;
->  	struct sun8i_ss_dev *ss;
->  	struct scatterlist *sg;
-> -	int nr_sgs, err, digestsize;
-> +	int j, i, todo, nr_sgs, tmp_err, digestsize;
-> +	int err = 0;
->  	unsigned int len;
->  	u64 fill, min_fill, byte_count;
->  	void *pad, *result;
-> -	int j, i, todo;
->  	__be64 *bebits;
->  	__le64 *lebits;
->  	dma_addr_t addr_res, addr_pad;
-> @@ -368,14 +368,14 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
->  	if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
->  		dev_err(ss->dev, "Invalid sg number %d\n", nr_sgs);
->  		err = -EINVAL;
-> -		goto theend;
-> +		goto err_result;
->  	}
->  
->  	addr_res = dma_map_single(ss->dev, result, digestsize, DMA_FROM_DEVICE);
->  	if (dma_mapping_error(ss->dev, addr_res)) {
->  		dev_err(ss->dev, "DMA map dest\n");
->  		err = -EINVAL;
-> -		goto theend;
-> +		goto err_unmap_sg;
->  	}
->  
->  	len = areq->nbytes;
-> @@ -390,7 +390,7 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
->  	if (len > 0) {
->  		dev_err(ss->dev, "remaining len %d\n", len);
->  		err = -EINVAL;
-> -		goto theend;
-> +		goto err_addr_res;
->  	}
->  
->  	byte_count = areq->nbytes;
-> @@ -421,27 +421,30 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
->  	}
->  
->  	addr_pad = dma_map_single(ss->dev, pad, j * 4, DMA_TO_DEVICE);
-> -	rctx->t_src[i].addr = addr_pad;
-> -	rctx->t_src[i].len = j;
-> -	rctx->t_dst[i].addr = addr_res;
-> -	rctx->t_dst[i].len = digestsize / 4;
->  	if (dma_mapping_error(ss->dev, addr_pad)) {
->  		dev_err(ss->dev, "DMA error on padding SG\n");
->  		err = -EINVAL;
-> -		goto theend;
-> +		goto err_addr_res;
->  	}
-> +	rctx->t_src[i].addr = addr_pad;
-> +	rctx->t_src[i].len = j;
-> +	rctx->t_dst[i].addr = addr_res;
-> +	rctx->t_dst[i].len = digestsize / 4;
->  
-> -	err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
-> +	tmp_err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
-> +
-> +	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
-> +
-> +	crypto_finalize_hash_request(engine, breq, tmp_err);
->  
->  	dma_unmap_single(ss->dev, addr_pad, j * 4, DMA_TO_DEVICE);
-> +err_addr_res:
-> +	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
-> +err_unmap_sg:
->  	dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
->  		     DMA_TO_DEVICE);
-> -	dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
-> -
-> -	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
-> -theend:
-> +err_result:
->  	kfree(pad);
->  	kfree(result);
-> -	crypto_finalize_hash_request(engine, breq, err);
-> -	return 0;
-> +	return err;
->  }
+On Sat, 24 Jul 2021 at 18:40, Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Tue, 20 Jul 2021 10:46:39 +0300
+> Alexandru Ardelean <aardelean@deviqon.com> wrote:
+>
+> > The st_press_allocate_ring() function calls iio_triggered_buffer_setup() to
+> > allocate a triggered buffer.
+> >
+> > But the same can be done with devm_iio_triggered_buffer_setup() and then
+> > the st_press_common_remove() no longer needs to manually deallocate it.
+> >
+> > We know that the parent of the IIO device is used to manage other instances
+> > of the devm unwind, so it can be used in the st_press_allocate_ring() as
+> > well.
+>
+> This raises an interesting point.  This driver mixes and matches between
+> hanging devm off the parent and off the iio_dev->dev.
 
-Hello
+iio_dev->dev.parent and the devm parent are the same reference but
+coming off from different pointers
 
-This is wrong, you need to always call crypto_finalize_hash_request()
+>
+> That's probably not a good thing to do as it could lead to an odd unwind
+> order.  I'm pretty sure the changes here are fine, but we should take
+> a closer look...
 
-Do you have tested your changes ? Copying results before dma_unmap() is also very wrong, this will lead to random cache fail.
+hmm, let me send a follow-up series
 
-Regards
+>
+> Series applied to the togreg branch of iio.git and pushed out as testing.
+>
+
+thank you :)
+
+> You can do the same thing with the trigger with only slightly more complex
+> patch, but I'd like to discuss whether there are races because of the current
+> dev mix and match before that.
+
+will send follow-up series;
+i was not sure whether to send everything in one go;
+maybe it would have been a good idea; but i thought this one could be
+find on it's own;
+
+>
+> Thanks,
+>
+> Jonathan
+>
+>
+> >
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> > ---
+> >  drivers/iio/pressure/st_pressure.h        | 5 -----
+> >  drivers/iio/pressure/st_pressure_buffer.c | 9 ++-------
+> >  drivers/iio/pressure/st_pressure_core.c   | 6 +-----
+> >  3 files changed, 3 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/drivers/iio/pressure/st_pressure.h b/drivers/iio/pressure/st_pressure.h
+> > index 9417b3bd7513..156e6a72dc5c 100644
+> > --- a/drivers/iio/pressure/st_pressure.h
+> > +++ b/drivers/iio/pressure/st_pressure.h
+> > @@ -43,7 +43,6 @@ static __maybe_unused const struct st_sensors_platform_data default_press_pdata
+> >
+> >  #ifdef CONFIG_IIO_BUFFER
+> >  int st_press_allocate_ring(struct iio_dev *indio_dev);
+> > -void st_press_deallocate_ring(struct iio_dev *indio_dev);
+> >  int st_press_trig_set_state(struct iio_trigger *trig, bool state);
+> >  #define ST_PRESS_TRIGGER_SET_STATE (&st_press_trig_set_state)
+> >  #else /* CONFIG_IIO_BUFFER */
+> > @@ -51,10 +50,6 @@ static inline int st_press_allocate_ring(struct iio_dev *indio_dev)
+> >  {
+> >       return 0;
+> >  }
+> > -
+> > -static inline void st_press_deallocate_ring(struct iio_dev *indio_dev)
+> > -{
+> > -}
+> >  #define ST_PRESS_TRIGGER_SET_STATE NULL
+> >  #endif /* CONFIG_IIO_BUFFER */
+> >
+> > diff --git a/drivers/iio/pressure/st_pressure_buffer.c b/drivers/iio/pressure/st_pressure_buffer.c
+> > index b651e7c31e90..25dbd5476b26 100644
+> > --- a/drivers/iio/pressure/st_pressure_buffer.c
+> > +++ b/drivers/iio/pressure/st_pressure_buffer.c
+> > @@ -41,13 +41,8 @@ static const struct iio_buffer_setup_ops st_press_buffer_setup_ops = {
+> >
+> >  int st_press_allocate_ring(struct iio_dev *indio_dev)
+> >  {
+> > -     return iio_triggered_buffer_setup(indio_dev, NULL,
+> > -             &st_sensors_trigger_handler, &st_press_buffer_setup_ops);
+> > -}
+> > -
+> > -void st_press_deallocate_ring(struct iio_dev *indio_dev)
+> > -{
+> > -     iio_triggered_buffer_cleanup(indio_dev);
+> > +     return devm_iio_triggered_buffer_setup(indio_dev->dev.parent, indio_dev,
+> > +             NULL, &st_sensors_trigger_handler, &st_press_buffer_setup_ops);
+> >  }
+> >
+> >  MODULE_AUTHOR("Denis Ciocca <denis.ciocca@st.com>");
+> > diff --git a/drivers/iio/pressure/st_pressure_core.c b/drivers/iio/pressure/st_pressure_core.c
+> > index 4ff6d40e3670..ab1c17fac807 100644
+> > --- a/drivers/iio/pressure/st_pressure_core.c
+> > +++ b/drivers/iio/pressure/st_pressure_core.c
+> > @@ -718,7 +718,7 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+> >               err = st_sensors_allocate_trigger(indio_dev,
+> >                                                 ST_PRESS_TRIGGER_OPS);
+> >               if (err < 0)
+> > -                     goto st_press_probe_trigger_error;
+> > +                     return err;
+> >       }
+> >
+> >       err = iio_device_register(indio_dev);
+> > @@ -733,8 +733,6 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+> >  st_press_device_register_error:
+> >       if (press_data->irq > 0)
+> >               st_sensors_deallocate_trigger(indio_dev);
+> > -st_press_probe_trigger_error:
+> > -     st_press_deallocate_ring(indio_dev);
+> >       return err;
+> >  }
+> >  EXPORT_SYMBOL(st_press_common_probe);
+> > @@ -746,8 +744,6 @@ void st_press_common_remove(struct iio_dev *indio_dev)
+> >       iio_device_unregister(indio_dev);
+> >       if (press_data->irq > 0)
+> >               st_sensors_deallocate_trigger(indio_dev);
+> > -
+> > -     st_press_deallocate_ring(indio_dev);
+> >  }
+> >  EXPORT_SYMBOL(st_press_common_remove);
+> >
+>
