@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A323D6307
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1083D60BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238554AbhGZPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39882 "EHLO mail.kernel.org"
+        id S237841AbhGZPYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238031AbhGZPYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72EE960240;
-        Mon, 26 Jul 2021 16:05:02 +0000 (UTC)
+        id S237410AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ED1760FF2;
+        Mon, 26 Jul 2021 15:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315503;
-        bh=PhZhRfJRPe3LexCSI2vN0G6CEGAKLiy1QknDRae4hDU=;
+        s=korg; t=1627314842;
+        bh=Br1KLqWzrvX0inWaaXO0xgCjjvZPnhZyhwsWJE9FH+g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gX5DnwYj4CSON4c9p5G6yBnMEx1sLAtAC/7YzzMaXGLZRt4zMqG8Hs01bJ1zWoHss
-         onZp3Cr/OEmbD2Jgq4kU8mLGC/FanVhqnuqvlk2l6hwiqwc09WZXpFX89vTwauJb8d
-         KAbncDDC+CAzJRDitJWwBWxiTcG+kGN5iygvMZ1g=
+        b=M8t9aNdtUdVjlxqvygrCO3zJEH+AybrDgkdhzjxuSrtX+izmHNuQy4tm2CzsDFyKU
+         bjzXUv3LrFUWcRpryEfGNjuyujQU0PjGFw1NBXs7MByxTFnjHZTvDj01+CnoXaXX/f
+         X59KXvFqCVfV91JugPQ42Lh3EWP8E6EDpB3pOQGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Sikorski <belegdol+github@gmail.com>
-Subject: [PATCH 5.10 123/167] USB: usb-storage: Add LaCie Rugged USB3-FW to IGNORE_UAS
+        stable@vger.kernel.org,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Subject: [PATCH 4.19 104/120] usb: dwc2: gadget: Fix sending zero length packet in DDMA mode.
 Date:   Mon, 26 Jul 2021 17:39:16 +0200
-Message-Id: <20210726153843.530624951@linuxfoundation.org>
+Message-Id: <20210726153835.773503902@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,42 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Sikorski <belegdol@gmail.com>
+From: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 
-commit 6abf2fe6b4bf6e5256b80c5817908151d2d33e9f upstream.
+commit d53dc38857f6dbefabd9eecfcbf67b6eac9a1ef4 upstream.
 
-LaCie Rugged USB3-FW appears to be incompatible with UAS. It generates
-errors like:
-[ 1151.582598] sd 14:0:0:0: tag#16 uas_eh_abort_handler 0 uas-tag 1 inflight: IN
-[ 1151.582602] sd 14:0:0:0: tag#16 CDB: Report supported operation codes a3 0c 01 12 00 00 00 00 02 00 00 00
-[ 1151.588594] scsi host14: uas_eh_device_reset_handler start
-[ 1151.710482] usb 2-4: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
-[ 1151.741398] scsi host14: uas_eh_device_reset_handler success
-[ 1181.785534] scsi host14: uas_eh_device_reset_handler start
+Sending zero length packet in DDMA mode perform by DMA descriptor
+by setting SP (short packet) flag.
 
-Signed-off-by: Julian Sikorski <belegdol+github@gmail.com>
+For DDMA in function dwc2_hsotg_complete_in() does not need to send
+zlp.
+
+Tested by USBCV MSC tests.
+
+Fixes: f71b5e2533de ("usb: dwc2: gadget: fix zero length packet transfers")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210720171910.36497-1-belegdol+github@gmail.com
+Signed-off-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Link: https://lore.kernel.org/r/967bad78c55dd2db1c19714eee3d0a17cf99d74a.1626777738.git.Minas.Harutyunyan@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/dwc2/gadget.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -45,6 +45,13 @@ UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x99
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
- 		US_FL_NO_REPORT_OPCODES | US_FL_NO_SAME),
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -2645,12 +2645,14 @@ static void dwc2_hsotg_complete_in(struc
+ 		return;
+ 	}
  
-+/* Reported-by: Julian Sikorski <belegdol@gmail.com> */
-+UNUSUAL_DEV(0x059f, 0x1061, 0x0000, 0x9999,
-+		"LaCie",
-+		"Rugged USB3-FW",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_IGNORE_UAS),
-+
- /*
-  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
-  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
+-	/* Zlp for all endpoints, for ep0 only in DATA IN stage */
++	/* Zlp for all endpoints in non DDMA, for ep0 only in DATA IN stage */
+ 	if (hs_ep->send_zlp) {
+-		dwc2_hsotg_program_zlp(hsotg, hs_ep);
+ 		hs_ep->send_zlp = 0;
+-		/* transfer will be completed on next complete interrupt */
+-		return;
++		if (!using_desc_dma(hsotg)) {
++			dwc2_hsotg_program_zlp(hsotg, hs_ep);
++			/* transfer will be completed on next complete interrupt */
++			return;
++		}
+ 	}
+ 
+ 	if (hs_ep->index == 0 && hsotg->ep0_state == DWC2_EP0_DATA_IN) {
 
 
