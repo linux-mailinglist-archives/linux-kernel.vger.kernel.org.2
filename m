@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11433D61C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77E43D61C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbhGZPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:32:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59174 "EHLO mail.kernel.org"
+        id S233939AbhGZPc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:32:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235613AbhGZPSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:18:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3FFA60F38;
-        Mon, 26 Jul 2021 15:58:56 +0000 (UTC)
+        id S236289AbhGZPSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:18:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD2560F42;
+        Mon, 26 Jul 2021 15:58:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315137;
-        bh=3IzLbQtT/GZor5djkXTPMflKqZZ6jTv9+qK6dFUj/vw=;
+        s=korg; t=1627315141;
+        bh=kugNlAgGGbG/lkQqpp3O7FJ7pQ5oDF63Pg9AgoiH/6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aNjXXaT6Il++zAR3mZmczK0VTvHAHn6srFblv0lHx4XMqb09iQ4iwWujWsjKPOrTV
-         urFXq7ARJCSnR1FxP4Q0qn7Q19YTb+8aCjE4fQY81gbgBz+/YcM7nz5A40aWw5p6C2
-         L2bMn4kEFMJ4QTVYf9UojCHOPSJoccBDnWOuJvJk=
+        b=WotVn/zpsWL48wZcjvlmDCV0DkI4uQtwXShsI3aMK053vokW0AIp03iYZUgCO+8mt
+         pikFO9cUvyhDz6HXkLt3s8J4B6Mgm9/JTpvyXsqXHLjA/VKCjDNYciUDCJKInxtbzm
+         PNWTwfvbxFt8IqC8cbYSXx0D7jQObaFdL9zYG8VY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Haoran Luo <www@aegistudio.net>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 5.4 089/108] tracing/histogram: Rename "cpu" to "common_cpu"
-Date:   Mon, 26 Jul 2021 17:39:30 +0200
-Message-Id: <20210726153834.535756781@linuxfoundation.org>
+Subject: [PATCH 5.4 090/108] tracing: Fix bug in rb_per_cpu_empty() that might cause deadloop.
+Date:   Mon, 26 Jul 2021 17:39:31 +0200
+Message-Id: <20210726153834.567060122@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 References: <20210726153831.696295003@linuxfoundation.org>
@@ -43,152 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Haoran Luo <www@aegistudio.net>
 
-commit 1e3bac71c5053c99d438771fc9fa5082ae5d90aa upstream.
+commit 67f0d6d9883c13174669f88adac4f0ee656cc16a upstream.
 
-Currently the histogram logic allows the user to write "cpu" in as an
-event field, and it will record the CPU that the event happened on.
+The "rb_per_cpu_empty()" misinterpret the condition (as not-empty) when
+"head_page" and "commit_page" of "struct ring_buffer_per_cpu" points to
+the same buffer page, whose "buffer_data_page" is empty and "read" field
+is non-zero.
 
-The problem with this is that there's a lot of events that have "cpu"
-as a real field, and using "cpu" as the CPU it ran on, makes it
-impossible to run histograms on the "cpu" field of events.
+An error scenario could be constructed as followed (kernel perspective):
 
-For example, if I want to have a histogram on the count of the
-workqueue_queue_work event on its cpu field, running:
+1. All pages in the buffer has been accessed by reader(s) so that all of
+them will have non-zero "read" field.
 
- ># echo 'hist:keys=cpu' > events/workqueue/workqueue_queue_work/trigger
+2. Read and clear all buffer pages so that "rb_num_of_entries()" will
+return 0 rendering there's no more data to read. It is also required
+that the "read_page", "commit_page" and "tail_page" points to the same
+page, while "head_page" is the next page of them.
 
-Gives a misleading and wrong result.
+3. Invoke "ring_buffer_lock_reserve()" with large enough "length"
+so that it shot pass the end of current tail buffer page. Now the
+"head_page", "commit_page" and "tail_page" points to the same page.
 
-Change the command to "common_cpu" as no event should have "common_*"
-fields as that's a reserved name for fields used by all events. And
-this makes sense here as common_cpu would be a field used by all events.
+4. Discard current event with "ring_buffer_discard_commit()", so that
+"head_page", "commit_page" and "tail_page" points to a page whose buffer
+data page is now empty.
 
-Now we can even do:
+When the error scenario has been constructed, "tracing_read_pipe" will
+be trapped inside a deadloop: "trace_empty()" returns 0 since
+"rb_per_cpu_empty()" returns 0 when it hits the CPU containing such
+constructed ring buffer. Then "trace_find_next_entry_inc()" always
+return NULL since "rb_num_of_entries()" reports there's no more entry
+to read. Finally "trace_seq_to_user()" returns "-EBUSY" spanking
+"tracing_read_pipe" back to the start of the "waitagain" loop.
 
- ># echo 'hist:keys=common_cpu,cpu if cpu < 100' > events/workqueue/workqueue_queue_work/trigger
- ># cat events/workqueue/workqueue_queue_work/hist
- # event histogram
- #
- # trigger info: hist:keys=common_cpu,cpu:vals=hitcount:sort=hitcount:size=2048 if cpu < 100 [active]
- #
+I've also written a proof-of-concept script to construct the scenario
+and trigger the bug automatically, you can use it to trace and validate
+my reasoning above:
 
- { common_cpu:          0, cpu:          2 } hitcount:          1
- { common_cpu:          0, cpu:          4 } hitcount:          1
- { common_cpu:          7, cpu:          7 } hitcount:          1
- { common_cpu:          0, cpu:          7 } hitcount:          1
- { common_cpu:          0, cpu:          1 } hitcount:          1
- { common_cpu:          0, cpu:          6 } hitcount:          2
- { common_cpu:          0, cpu:          5 } hitcount:          2
- { common_cpu:          1, cpu:          1 } hitcount:          4
- { common_cpu:          6, cpu:          6 } hitcount:          4
- { common_cpu:          5, cpu:          5 } hitcount:         14
- { common_cpu:          4, cpu:          4 } hitcount:         26
- { common_cpu:          0, cpu:          0 } hitcount:         39
- { common_cpu:          2, cpu:          2 } hitcount:        184
+  https://github.com/aegistudio/RingBufferDetonator.git
 
-Now for backward compatibility, I added a trick. If "cpu" is used, and
-the field is not found, it will fall back to "common_cpu" and work as
-it did before. This way, it will still work for old programs that use
-"cpu" to get the actual CPU, but if the event has a "cpu" as a field, it
-will get that event's "cpu" field, which is probably what it wants
-anyway.
+Tests has been carried out on linux kernel 5.14-rc2
+(2734d6c1b1a089fb593ef6a23d4b70903526fe0c), my fixed version
+of kernel (for testing whether my update fixes the bug) and
+some older kernels (for range of affected kernels). Test result is
+also attached to the proof-of-concept repository.
 
-I updated the tracefs/README to include documentation about both the
-common_timestamp and the common_cpu. This way, if that text is present in
-the README, then an application can know that common_cpu is supported over
-just plain "cpu".
+Link: https://lore.kernel.org/linux-trace-devel/YPaNxsIlb2yjSi5Y@aegistudio/
+Link: https://lore.kernel.org/linux-trace-devel/YPgrN85WL9VyrZ55@aegistudio
 
-Link: https://lkml.kernel.org/r/20210721110053.26b4f641@oasis.local.home
-
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: stable@vger.kernel.org
-Fixes: 8b7622bf94a44 ("tracing: Add cpu field for hist triggers")
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+Fixes: bf41a158cacba ("ring-buffer: make reentrant")
+Suggested-by: Linus Torvalds <torvalds@linuxfoundation.org>
+Signed-off-by: Haoran Luo <www@aegistudio.net>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/trace/histogram.rst |    2 +-
- kernel/trace/trace.c              |    4 ++++
- kernel/trace/trace_events_hist.c  |   22 ++++++++++++++++------
- 3 files changed, 21 insertions(+), 7 deletions(-)
+ kernel/trace/ring_buffer.c |   28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
---- a/Documentation/trace/histogram.rst
-+++ b/Documentation/trace/histogram.rst
-@@ -191,7 +191,7 @@ Documentation written by Tom Zanussi
-                                 with the event, in nanoseconds.  May be
- 			        modified by .usecs to have timestamps
- 			        interpreted as microseconds.
--    cpu                    int  the cpu on which the event occurred.
-+    common_cpu             int  the cpu on which the event occurred.
-     ====================== ==== =======================================
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3221,10 +3221,30 @@ static bool rb_per_cpu_empty(struct ring
+ 	if (unlikely(!head))
+ 		return true;
  
- Extended error information
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -4975,6 +4975,10 @@ static const char readme_msg[] =
- 	"\t            [:name=histname1]\n"
- 	"\t            [:<handler>.<action>]\n"
- 	"\t            [if <filter>]\n\n"
-+	"\t    Note, special fields can be used as well:\n"
-+	"\t            common_timestamp - to record current timestamp\n"
-+	"\t            common_cpu - to record the CPU the event happened on\n"
-+	"\n"
- 	"\t    When a matching event is hit, an entry is added to a hash\n"
- 	"\t    table using the key(s) and value(s) named, and the value of a\n"
- 	"\t    sum called 'hitcount' is incremented.  Keys and values\n"
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -2001,7 +2001,7 @@ static const char *hist_field_name(struc
- 		 field->flags & HIST_FIELD_FL_ALIAS)
- 		field_name = hist_field_name(field->operands[0], ++level);
- 	else if (field->flags & HIST_FIELD_FL_CPU)
--		field_name = "cpu";
-+		field_name = "common_cpu";
- 	else if (field->flags & HIST_FIELD_FL_EXPR ||
- 		 field->flags & HIST_FIELD_FL_VAR_REF) {
- 		if (field->system) {
-@@ -2873,14 +2873,24 @@ parse_field(struct hist_trigger_data *hi
- 		hist_data->enable_timestamps = true;
- 		if (*flags & HIST_FIELD_FL_TIMESTAMP_USECS)
- 			hist_data->attrs->ts_in_usecs = true;
--	} else if (strcmp(field_name, "cpu") == 0)
-+	} else if (strcmp(field_name, "common_cpu") == 0)
- 		*flags |= HIST_FIELD_FL_CPU;
- 	else {
- 		field = trace_find_event_field(file->event_call, field_name);
- 		if (!field || !field->size) {
--			hist_err(tr, HIST_ERR_FIELD_NOT_FOUND, errpos(field_name));
--			field = ERR_PTR(-EINVAL);
--			goto out;
-+			/*
-+			 * For backward compatibility, if field_name
-+			 * was "cpu", then we treat this the same as
-+			 * common_cpu.
-+			 */
-+			if (strcmp(field_name, "cpu") == 0) {
-+				*flags |= HIST_FIELD_FL_CPU;
-+			} else {
-+				hist_err(tr, HIST_ERR_FIELD_NOT_FOUND,
-+					 errpos(field_name));
-+				field = ERR_PTR(-EINVAL);
-+				goto out;
-+			}
- 		}
- 	}
-  out:
-@@ -5641,7 +5651,7 @@ static void hist_field_print(struct seq_
- 		seq_printf(m, "%s=", hist_field->var.name);
+-	return reader->read == rb_page_commit(reader) &&
+-		(commit == reader ||
+-		 (commit == head &&
+-		  head->read == rb_page_commit(commit)));
++	/* Reader should exhaust content in reader page */
++	if (reader->read != rb_page_commit(reader))
++		return false;
++
++	/*
++	 * If writers are committing on the reader page, knowing all
++	 * committed content has been read, the ring buffer is empty.
++	 */
++	if (commit == reader)
++		return true;
++
++	/*
++	 * If writers are committing on a page other than reader page
++	 * and head page, there should always be content to read.
++	 */
++	if (commit != head)
++		return false;
++
++	/*
++	 * Writers are committing on the head page, we just need
++	 * to care about there're committed data, and the reader will
++	 * swap reader page with head page when it is to read data.
++	 */
++	return rb_page_commit(commit) == 0;
+ }
  
- 	if (hist_field->flags & HIST_FIELD_FL_CPU)
--		seq_puts(m, "cpu");
-+		seq_puts(m, "common_cpu");
- 	else if (field_name) {
- 		if (hist_field->flags & HIST_FIELD_FL_VAR_REF ||
- 		    hist_field->flags & HIST_FIELD_FL_ALIAS)
+ /**
 
 
