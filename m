@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47B53D62FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA573D6127
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238495AbhGZPnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39596 "EHLO mail.kernel.org"
+        id S237736AbhGZP3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:29:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237723AbhGZPYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3F160EB2;
-        Mon, 26 Jul 2021 16:04:32 +0000 (UTC)
+        id S235438AbhGZPQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4128560FD8;
+        Mon, 26 Jul 2021 15:57:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315473;
-        bh=Gc+JyWpV9rUE3Kv8Chtorv7vvFkouj3TUPuF5h14HK8=;
+        s=korg; t=1627315039;
+        bh=jnwL9oSy03Knv9wzFjNz98XWr/TQv4RU3bqPVP0kbDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VgsJcd6bqDiEDkQWyvpDurk0ApTgcRb9zvSy50/RUdk4YHaVDMIe8YqDYUTHijsgE
-         xih5OZglIPGmqmR9xLpswz8DCxLkcH2hpdG8y4/cVzeKxPDvbH6x5SrVx/gTvP6Zza
-         wbei7oMBg4FkfJy34drm32B7sIsgApTBndLRgSRw=
+        b=Jr+AnWZY9jM+ETGDYWxt82ONjNMKwslJdK4yLMEZgfm4zBq8rPnWEqR+QQVEte/V6
+         THGjKxFmjdApG/6OO7MqzTY7uJDDVFQ42yM5mGWjPbYUHwg2NVtSEHm+58E4WUqNzg
+         XT+cM9bDesRbPQUEQyB4XyHAoJ0vKziXIgrNxVlY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 075/167] scsi: iscsi: Fix iface sysfs attr detection
+Subject: [PATCH 5.4 027/108] perf lzma: Close lzma stream on exit
 Date:   Mon, 26 Jul 2021 17:38:28 +0200
-Message-Id: <20210726153841.912517236@linuxfoundation.org>
+Message-Id: <20210726153832.571578765@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,144 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Christie <michael.christie@oracle.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit e746f3451ec7f91dcc9fd67a631239c715850a34 ]
+[ Upstream commit f8cbb0f926ae1e1fb5f9e51614e5437560ed4039 ]
 
-A ISCSI_IFACE_PARAM can have the same value as a ISCSI_NET_PARAM so when
-iscsi_iface_attr_is_visible tries to figure out the type by just checking
-the value, we can collide and return the wrong type. When we call into the
-driver we might not match and return that we don't want attr visible in
-sysfs. The patch fixes this by setting the type when we figure out what the
-param is.
+ASan reports memory leaks when running:
 
-Link: https://lore.kernel.org/r/20210701002559.89533-1-michael.christie@oracle.com
-Fixes: 3e0f65b34cc9 ("[SCSI] iscsi_transport: Additional parameters for network settings")
-Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+  # perf test "88: Check open filename arg using perf trace + vfs_getname"
+
+One of these is caused by the lzma stream never being closed inside
+lzma_decompress_to_file().
+
+This patch adds the missing lzma_end().
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: 80a32e5b498a7547 ("perf tools: Add lzma decompression support for kernel module")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/aaf50bdce7afe996cfc06e1bbb36e4a2a9b9db93.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_iscsi.c | 90 +++++++++++------------------
- 1 file changed, 34 insertions(+), 56 deletions(-)
+ tools/perf/util/lzma.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 2171dab3e5dc..ac07a9ef3578 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -440,39 +440,10 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 	struct device *dev = container_of(kobj, struct device, kobj);
- 	struct iscsi_iface *iface = iscsi_dev_to_iface(dev);
- 	struct iscsi_transport *t = iface->transport;
--	int param;
--	int param_type;
-+	int param = -1;
+diff --git a/tools/perf/util/lzma.c b/tools/perf/util/lzma.c
+index 39062df02629..51424cdc3b68 100644
+--- a/tools/perf/util/lzma.c
++++ b/tools/perf/util/lzma.c
+@@ -69,7 +69,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
  
- 	if (attr == &dev_attr_iface_enabled.attr)
- 		param = ISCSI_NET_PARAM_IFACE_ENABLE;
--	else if (attr == &dev_attr_iface_vlan_id.attr)
--		param = ISCSI_NET_PARAM_VLAN_ID;
--	else if (attr == &dev_attr_iface_vlan_priority.attr)
--		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
--	else if (attr == &dev_attr_iface_vlan_enabled.attr)
--		param = ISCSI_NET_PARAM_VLAN_ENABLED;
--	else if (attr == &dev_attr_iface_mtu.attr)
--		param = ISCSI_NET_PARAM_MTU;
--	else if (attr == &dev_attr_iface_port.attr)
--		param = ISCSI_NET_PARAM_PORT;
--	else if (attr == &dev_attr_iface_ipaddress_state.attr)
--		param = ISCSI_NET_PARAM_IPADDR_STATE;
--	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
--		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
--	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
--		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
--	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
--		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
--	else if (attr == &dev_attr_iface_tcp_wsf.attr)
--		param = ISCSI_NET_PARAM_TCP_WSF;
--	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
--		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
--	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
--		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
--	else if (attr == &dev_attr_iface_cache_id.attr)
--		param = ISCSI_NET_PARAM_CACHE_ID;
--	else if (attr == &dev_attr_iface_redirect_en.attr)
--		param = ISCSI_NET_PARAM_REDIRECT_EN;
- 	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
- 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
- 	else if (attr == &dev_attr_iface_header_digest.attr)
-@@ -509,6 +480,38 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 		param = ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN;
- 	else if (attr == &dev_attr_iface_initiator_name.attr)
- 		param = ISCSI_IFACE_PARAM_INITIATOR_NAME;
-+
-+	if (param != -1)
-+		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
-+
-+	if (attr == &dev_attr_iface_vlan_id.attr)
-+		param = ISCSI_NET_PARAM_VLAN_ID;
-+	else if (attr == &dev_attr_iface_vlan_priority.attr)
-+		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
-+	else if (attr == &dev_attr_iface_vlan_enabled.attr)
-+		param = ISCSI_NET_PARAM_VLAN_ENABLED;
-+	else if (attr == &dev_attr_iface_mtu.attr)
-+		param = ISCSI_NET_PARAM_MTU;
-+	else if (attr == &dev_attr_iface_port.attr)
-+		param = ISCSI_NET_PARAM_PORT;
-+	else if (attr == &dev_attr_iface_ipaddress_state.attr)
-+		param = ISCSI_NET_PARAM_IPADDR_STATE;
-+	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
-+		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
-+	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
-+		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
-+	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
-+		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
-+	else if (attr == &dev_attr_iface_tcp_wsf.attr)
-+		param = ISCSI_NET_PARAM_TCP_WSF;
-+	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
-+		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
-+	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
-+		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
-+	else if (attr == &dev_attr_iface_cache_id.attr)
-+		param = ISCSI_NET_PARAM_CACHE_ID;
-+	else if (attr == &dev_attr_iface_redirect_en.attr)
-+		param = ISCSI_NET_PARAM_REDIRECT_EN;
- 	else if (iface->iface_type == ISCSI_IFACE_TYPE_IPV4) {
- 		if (attr == &dev_attr_ipv4_iface_ipaddress.attr)
- 			param = ISCSI_NET_PARAM_IPV4_ADDR;
-@@ -599,32 +602,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
- 		return 0;
+ 			if (ferror(infile)) {
+ 				pr_err("lzma: read error: %s\n", strerror(errno));
+-				goto err_fclose;
++				goto err_lzma_end;
+ 			}
+ 
+ 			if (feof(infile))
+@@ -83,7 +83,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 
+ 			if (writen(output_fd, buf_out, write_size) != write_size) {
+ 				pr_err("lzma: write error: %s\n", strerror(errno));
+-				goto err_fclose;
++				goto err_lzma_end;
+ 			}
+ 
+ 			strm.next_out  = buf_out;
+@@ -95,11 +95,13 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 				break;
+ 
+ 			pr_err("lzma: failed %s\n", lzma_strerror(ret));
+-			goto err_fclose;
++			goto err_lzma_end;
+ 		}
  	}
  
--	switch (param) {
--	case ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO:
--	case ISCSI_IFACE_PARAM_HDRDGST_EN:
--	case ISCSI_IFACE_PARAM_DATADGST_EN:
--	case ISCSI_IFACE_PARAM_IMM_DATA_EN:
--	case ISCSI_IFACE_PARAM_INITIAL_R2T_EN:
--	case ISCSI_IFACE_PARAM_DATASEQ_INORDER_EN:
--	case ISCSI_IFACE_PARAM_PDU_INORDER_EN:
--	case ISCSI_IFACE_PARAM_ERL:
--	case ISCSI_IFACE_PARAM_MAX_RECV_DLENGTH:
--	case ISCSI_IFACE_PARAM_FIRST_BURST:
--	case ISCSI_IFACE_PARAM_MAX_R2T:
--	case ISCSI_IFACE_PARAM_MAX_BURST:
--	case ISCSI_IFACE_PARAM_CHAP_AUTH_EN:
--	case ISCSI_IFACE_PARAM_BIDI_CHAP_EN:
--	case ISCSI_IFACE_PARAM_DISCOVERY_AUTH_OPTIONAL:
--	case ISCSI_IFACE_PARAM_DISCOVERY_LOGOUT_EN:
--	case ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN:
--	case ISCSI_IFACE_PARAM_INITIATOR_NAME:
--		param_type = ISCSI_IFACE_PARAM;
--		break;
--	default:
--		param_type = ISCSI_NET_PARAM;
--	}
--
--	return t->attr_is_visible(param_type, param);
-+	return t->attr_is_visible(ISCSI_NET_PARAM, param);
- }
- 
- static struct attribute *iscsi_iface_attrs[] = {
+ 	err = 0;
++err_lzma_end:
++	lzma_end(&strm);
+ err_fclose:
+ 	fclose(infile);
+ 	return err;
 -- 
 2.30.2
 
