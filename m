@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DF73D6413
+	by mail.lfdr.de (Postfix) with ESMTP id 704183D6414
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239824AbhGZPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
+        id S239841AbhGZPy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234179AbhGZPdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:33:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4AA56056B;
-        Mon, 26 Jul 2021 16:13:41 +0000 (UTC)
+        id S233978AbhGZPdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:33:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBFCA60EB2;
+        Mon, 26 Jul 2021 16:13:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316022;
-        bh=mLPeC/7oyqFuYCH1zBolP8G8TfUn+Vdd0r9TE1pDQbw=;
+        s=korg; t=1627316024;
+        bh=JD7GtbckkQ883GLNGJ4pCOHmtJklLbCXoblQ/IaLTlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rxU0UQQN0rUCA5iSHF8CmXMP52qJD/Qe7e7jKvgL1DuSO0OFySa5eu1CGo3kyHEf+
-         5eEvCHWpkXcBpJs3MaAYiv2YvN6Nd/EMBefUiABoOXlUBOvCgf1G1wZUpS5FjYHYyd
-         r9Eel7EqCRgm4BkH+vB/uAJvkCImr5X7IQcIfko4=
+        b=b6+IUQK+hXwysTz12b4ZNMBtGeZd44ZyB7cyMRSXdj4ORtEu/y/Ci1bqJCGTvOEl4
+         vWMPitzX+OMz8DyDST7GItDRDp9NX8Px/PkyrzuRB32e3b7aHomAXU2IwcFYSk9oaB
+         DuTyNqANqo/NdDvZSr5ZUqO2MJQesrqNMGDGBVW8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        David Jeffery <djeffery@redhat.com>
-Subject: [PATCH 5.13 158/223] usb: ehci: Prevent missed ehci interrupts with edge-triggered MSI
-Date:   Mon, 26 Jul 2021 17:39:10 +0200
-Message-Id: <20210726153851.383803196@linuxfoundation.org>
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.13 159/223] KVM: PPC: Book3S: Fix H_RTAS rets buffer overflow
+Date:   Mon, 26 Jul 2021 17:39:11 +0200
+Message-Id: <20210726153851.414785800@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,82 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Jeffery <djeffery@redhat.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 0b60557230adfdeb8164e0b342ac9cd469a75759 upstream.
+commit f62f3c20647ebd5fb6ecb8f0b477b9281c44c10a upstream.
 
-When MSI is used by the ehci-hcd driver, it can cause lost interrupts which
-results in EHCI only continuing to work due to a polling fallback. But the
-reliance of polling drastically reduces performance of any I/O through EHCI.
+The kvmppc_rtas_hcall() sets the host rtas_args.rets pointer based on
+the rtas_args.nargs that was provided by the guest. That guest nargs
+value is not range checked, so the guest can cause the host rets pointer
+to be pointed outside the args array. The individual rtas function
+handlers check the nargs and nrets values to ensure they are correct,
+but if they are not, the handlers store a -3 (0xfffffffd) failure
+indication in rets[0] which corrupts host memory.
 
-Interrupts are lost as the EHCI interrupt handler does not safely handle
-edge-triggered interrupts. It fails to ensure all interrupt status bits are
-cleared, which works with level-triggered interrupts but not the
-edge-triggered interrupts typical from using MSI.
+Fix this by testing up front whether the guest supplied nargs and nret
+would exceed the array size, and fail the hcall directly without storing
+a failure indication to rets[0].
 
-To fix this problem, check if the driver may have raced with the hardware
-setting additional interrupt status bits and clear status until it is in a
-stable state.
+Also expand on a comment about why we kill the guest and try not to
+return errors directly if we have a valid rets[0] pointer.
 
-Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
-Tested-by: Laurence Oberman <loberman@redhat.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: David Jeffery <djeffery@redhat.com>
-Link: https://lore.kernel.org/r/20210715213744.GA44506@redhat
-Cc: stable <stable@vger.kernel.org>
+Fixes: 8e591cb72047 ("KVM: PPC: Book3S: Add infrastructure to implement kernel-side RTAS calls")
+Cc: stable@vger.kernel.org # v3.10+
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/ehci-hcd.c |   18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ arch/powerpc/kvm/book3s_rtas.c |   25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/host/ehci-hcd.c
-+++ b/drivers/usb/host/ehci-hcd.c
-@@ -703,24 +703,28 @@ EXPORT_SYMBOL_GPL(ehci_setup);
- static irqreturn_t ehci_irq (struct usb_hcd *hcd)
- {
- 	struct ehci_hcd		*ehci = hcd_to_ehci (hcd);
--	u32			status, masked_status, pcd_status = 0, cmd;
-+	u32			status, current_status, masked_status, pcd_status = 0;
-+	u32			cmd;
- 	int			bh;
- 
- 	spin_lock(&ehci->lock);
- 
--	status = ehci_readl(ehci, &ehci->regs->status);
-+	status = 0;
-+	current_status = ehci_readl(ehci, &ehci->regs->status);
-+restart:
- 
- 	/* e.g. cardbus physical eject */
--	if (status == ~(u32) 0) {
-+	if (current_status == ~(u32) 0) {
- 		ehci_dbg (ehci, "device removed\n");
- 		goto dead;
- 	}
-+	status |= current_status;
- 
- 	/*
- 	 * We don't use STS_FLR, but some controllers don't like it to
- 	 * remain on, so mask it out along with the other status bits.
+--- a/arch/powerpc/kvm/book3s_rtas.c
++++ b/arch/powerpc/kvm/book3s_rtas.c
+@@ -242,6 +242,17 @@ int kvmppc_rtas_hcall(struct kvm_vcpu *v
+ 	 * value so we can restore it on the way out.
  	 */
--	masked_status = status & (INTR_MASK | STS_FLR);
-+	masked_status = current_status & (INTR_MASK | STS_FLR);
+ 	orig_rets = args.rets;
++	if (be32_to_cpu(args.nargs) >= ARRAY_SIZE(args.args)) {
++		/*
++		 * Don't overflow our args array: ensure there is room for
++		 * at least rets[0] (even if the call specifies 0 nret).
++		 *
++		 * Each handler must then check for the correct nargs and nret
++		 * values, but they may always return failure in rets[0].
++		 */
++		rc = -EINVAL;
++		goto fail;
++	}
+ 	args.rets = &args.args[be32_to_cpu(args.nargs)];
  
- 	/* Shared IRQ? */
- 	if (!masked_status || unlikely(ehci->rh_state == EHCI_RH_HALTED)) {
-@@ -730,6 +734,12 @@ static irqreturn_t ehci_irq (struct usb_
- 
- 	/* clear (just) interrupts */
- 	ehci_writel(ehci, masked_status, &ehci->regs->status);
-+
-+	/* For edge interrupts, don't race with an interrupt bit being raised */
-+	current_status = ehci_readl(ehci, &ehci->regs->status);
-+	if (current_status & INTR_MASK)
-+		goto restart;
-+
- 	cmd = ehci_readl(ehci, &ehci->regs->command);
- 	bh = 0;
- 
+ 	mutex_lock(&vcpu->kvm->arch.rtas_token_lock);
+@@ -269,9 +280,17 @@ int kvmppc_rtas_hcall(struct kvm_vcpu *v
+ fail:
+ 	/*
+ 	 * We only get here if the guest has called RTAS with a bogus
+-	 * args pointer. That means we can't get to the args, and so we
+-	 * can't fail the RTAS call. So fail right out to userspace,
+-	 * which should kill the guest.
++	 * args pointer or nargs/nret values that would overflow the
++	 * array. That means we can't get to the args, and so we can't
++	 * fail the RTAS call. So fail right out to userspace, which
++	 * should kill the guest.
++	 *
++	 * SLOF should actually pass the hcall return value from the
++	 * rtas handler call in r3, so enter_rtas could be modified to
++	 * return a failure indication in r3 and we could return such
++	 * errors to the guest rather than failing to host userspace.
++	 * However old guests that don't test for failure could then
++	 * continue silently after errors, so for now we won't do this.
+ 	 */
+ 	return rc;
+ }
 
 
