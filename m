@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E50B3D66B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2738C3D66BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhGZRq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:46:59 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:41899 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhGZRq6 (ORCPT
+        id S231857AbhGZRuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:50:44 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:12364 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229489AbhGZRuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:46:58 -0400
-Received: by mail-pl1-f172.google.com with SMTP id e14so12748092plh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 11:27:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2D7KWiv7vc0sjsa/iS28Qt6i9VASwIkA6EYIfMK6Jp8=;
-        b=taDX7tG0GhyRl1Ck3qb6v3wCgZGWKRpSOzCef8j/JzNMROo9pTZBcgXb8w6iSo824I
-         JU1m9F6PGXtRJfZDvmQl0uc6uZ6lvD3AJKe+BpIWXENbgLeYzLWSlolutULHTpoWGCcq
-         3Vluzns0/p10fQxvTcQNiMZHwBIvlkqhn0kbcpIKzRM/NEdED/pEkfcR6FVkJoQqS1iX
-         GEjm05XhxO6w73h4kEs43g38HFMMjnCkQKXFiDX0zv7ffSQ7NTlknLgGASiC9CdriUem
-         TpQIT6Y6RFlPGvJBAuQOID+4RzWN5zg/BG8SmidkZwHPyJkJTR/uGy4WCRCLkkVLKA9e
-         YJ2g==
-X-Gm-Message-State: AOAM531/NR2i914B6ngwNKGrwng6QSlOWT0t+bpE3UNXAH5Uux9nQCMs
-        IJbCDk/QF2mmVJyq6D86KoE=
-X-Google-Smtp-Source: ABdhPJw7sQkVNo/Yp4bzEHOSZw31rSENhJEbxwWRniSLga25LfW6biXtRawPxD4oXy5FdQrzDteEcw==
-X-Received: by 2002:a63:4710:: with SMTP id u16mr12197161pga.232.1627324045472;
-        Mon, 26 Jul 2021 11:27:25 -0700 (PDT)
-Received: from garbanzo ([191.96.121.228])
-        by smtp.gmail.com with ESMTPSA id w2sm631415pjf.2.2021.07.26.11.27.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 11:27:24 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 11:27:21 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-Subject: Re: [PATCH v7 2/2] firmware_loader: fix use-after-free in
- firmware_fallback_sysfs
-Message-ID: <20210726182721.3no7ql73ggttdiyx@garbanzo>
-References: <20210724121134.6364-1-mail@anirudhrb.com>
- <20210724121134.6364-3-mail@anirudhrb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210724121134.6364-3-mail@anirudhrb.com>
+        Mon, 26 Jul 2021 13:50:44 -0400
+X-IronPort-AV: E=Sophos;i="5.84,270,1620658800"; 
+   d="scan'208";a="88770555"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 27 Jul 2021 03:31:10 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id F3E8E4009434;
+        Tue, 27 Jul 2021 03:31:07 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v3 0/3] Renesas RZ/G2L ADC driver support
+Date:   Mon, 26 Jul 2021 19:28:47 +0100
+Message-Id: <20210726182850.14328-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 24, 2021 at 05:41:34PM +0530, Anirudh Rayabharam wrote:
-> This use-after-free happens when a fw_priv object has been freed but
-> hasn't been removed from the pending list (pending_fw_head). The next
-> time fw_load_sysfs_fallback tries to insert into the list, it ends up
-> accessing the pending_list member of the previoiusly freed fw_priv.
-> 
-> The root cause here is that all code paths that abort the fw load
-> don't delete it from the pending list. For example:
-> 
-> 	_request_firmware()
-> 	  -> fw_abort_batch_reqs()
-> 	      -> fw_state_aborted()
-> 
-> To fix this, delete the fw_priv from the list in __fw_set_state() if
-> the new state is DONE or ABORTED. This way, all aborts will remove
-> the fw_priv from the list. Accordingly, remove calls to list_del_init
-> that were being made before calling fw_state_(aborted|done).
-> 
-> Also, in fw_load_sysfs_fallback, don't add the fw_priv to the pending
-> list if it is already aborted. Instead, just jump out and return early.
-> 
-> Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-> Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
+Hi All,
 
-Curious, how do you get syzbot to test this, I mean your custom tree?
+This patch series adds ADC support for Renesas RZ/G2L family.
 
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Patches apply on top of v5.14-rc2.
 
-With the changes Shua requested being made:
+Cheers,
+Prabhakar
 
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
+Changes for v3 (as requested by Jonathan):
+* Made use of FIELD_PREP()
+* Renamed _CLEAR to _MASK and inverted inline as required
+* Moved |= pair's on same lines
+* Made use of sysfs_emit() while reading the labels
+* Used for_each_bit_set() in rzg2l_adc_isr()
+* Renamed rzg2l_adc_parse_of() -> rzg2l_adc_parse_properties()
+* Used devm_add_action_or_reset() for asserting the reset signals and
+  disabling pm_runtime and eventually removing remove() callback
+* Added comments in isr handler for channel select interrupt
+* Moved enabling/disabling of pclk during hw init in rzg2l_adc_hw_init()
+* Dropped clock patch 3/4 (https://lore.kernel.org/patchwork/patch/1462152/)
+  from previous series as its queued up in renesas-clk-for-v5.15
 
-  Luis
+Changes for v2:
+* Update binding doc, dropped gpios/renesas-rzg2l,adc-trigger-mode
+  properties included channel property to represent each wired channel.
+* Fixed review comments pointed by Alexandru, implemented pm runtime
+  support, dropped mlock usage
+* Fixed review comments pointed by Jonathan, renamed the macros,
+  simplified the code.
+* Included clock and DT patches
+
+v1: https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+    20210629220328.13366-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+
+Lad Prabhakar (3):
+  dt-bindings: iio: adc: Add binding documentation for Renesas RZ/G2L
+    A/D converter
+  iio: adc: Add driver for Renesas RZ/G2L A/D converter
+  arm64: dts: renesas: r9a07g044: Add ADC node
+
+ .../bindings/iio/adc/renesas,rzg2l-adc.yaml   | 134 ++++
+ MAINTAINERS                                   |   8 +
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |  42 ++
+ drivers/iio/adc/Kconfig                       |  10 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/rzg2l_adc.c                   | 595 ++++++++++++++++++
+ 6 files changed, 790 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/renesas,rzg2l-adc.yaml
+ create mode 100644 drivers/iio/adc/rzg2l_adc.c
+
+-- 
+2.17.1
+
