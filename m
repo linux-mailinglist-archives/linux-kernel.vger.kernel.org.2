@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4383D6339
+	by mail.lfdr.de (Postfix) with ESMTP id E94D13D633A
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239299AbhGZPpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41244 "EHLO mail.kernel.org"
+        id S239307AbhGZPpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231362AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231479AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:28:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9419E60FE3;
-        Mon, 26 Jul 2021 16:06:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36FEC60FED;
+        Mon, 26 Jul 2021 16:06:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315610;
-        bh=J4AhUA7x+vqG2sywfhNOO/+6xAQSl/Bi+CKhBLBFGoY=;
+        s=korg; t=1627315612;
+        bh=tvgkBHaKO495DJzbgg/0GF+Y0NEoKrcuoCZt15cB6zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ubd/LJ+bNkAOlPV0b8cj6uCdvq0E+1xZhG331VvPV2Aiq68d5c/kav2O5b0Nl+bzS
-         wBiJtsdklOJ/zYOd6FyBQJ09x3ME2oINV9BVkySPvsfHzPqLRs8wepQjngZJQ5SyBp
-         Dod4HxVU+fCpsuivcb2P7U3uDt2nbqFDnGEabDOg=
+        b=LhZVpCM9Ie9aB/WcJu4SDR/oZrAHN4xglbPbDWrYSGKu5cTdJrjeCSJDK8v6YDrn1
+         Z1+gJgXu+hgBlmdU4hNzJQvkKIadXpo7gEXQ5vcjPqcMZ0RYbWZyBGe4KmST8a/F01
+         IpXcFhiS9DbygcKDsPL7wOTRLBTplQUL/LFWL0KE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laurence Oberman <loberman@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        David Jeffery <djeffery@redhat.com>
-Subject: [PATCH 5.10 164/167] usb: ehci: Prevent missed ehci interrupts with edge-triggered MSI
-Date:   Mon, 26 Jul 2021 17:39:57 +0200
-Message-Id: <20210726153844.911987832@linuxfoundation.org>
+        stable@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Colin Xu <colin.xu@intel.com>
+Subject: [PATCH 5.10 165/167] drm/i915/gvt: Clear d3_entered on elsp cmd submission.
+Date:   Mon, 26 Jul 2021 17:39:58 +0200
+Message-Id: <20210726153844.945470165@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -41,85 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Jeffery <djeffery@redhat.com>
+From: Colin Xu <colin.xu@intel.com>
 
-commit 0b60557230adfdeb8164e0b342ac9cd469a75759 upstream.
+commit c90b4503ccf42d9d367e843c223df44aa550e82a upstream.
 
-When MSI is used by the ehci-hcd driver, it can cause lost interrupts which
-results in EHCI only continuing to work due to a polling fallback. But the
-reliance of polling drastically reduces performance of any I/O through EHCI.
+d3_entered flag is used to mark for vgpu_reset a previous power
+transition from D3->D0, typically for VM resume from S3, so that gvt
+could skip PPGTT invalidation in current vgpu_reset during resuming.
 
-Interrupts are lost as the EHCI interrupt handler does not safely handle
-edge-triggered interrupts. It fails to ensure all interrupt status bits are
-cleared, which works with level-triggered interrupts but not the
-edge-triggered interrupts typical from using MSI.
+In case S0ix exit, although there is D3->D0, guest driver continue to
+use vgpu as normal, with d3_entered set, until next shutdown/reboot or
+power transition.
 
-To fix this problem, check if the driver may have raced with the hardware
-setting additional interrupt status bits and clear status until it is in a
-stable state.
+If a reboot follows a S0ix exit, device power state transite as:
+D0->D3->D0->D0(reboot), while system power state transites as:
+S0->S0 (reboot). There is no vgpu_reset until D0(reboot), thus
+d3_entered won't be cleared, the vgpu_reset will skip PPGTT invalidation
+however those PPGTT entries are no longer valid. Err appears like:
 
-Fixes: 306c54d0edb6 ("usb: hcd: Try MSI interrupts on PCI devices")
-Tested-by: Laurence Oberman <loberman@redhat.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: David Jeffery <djeffery@redhat.com>
-Link: https://lore.kernel.org/r/20210715213744.GA44506@redhat
-Cc: stable <stable@vger.kernel.org>
+gvt: vgpu 2: vfio_pin_pages failed for gfn 0xxxxx, ret -22
+gvt: vgpu 2: fail: spt xxxx guest entry 0xxxxx type 2
+gvt: vgpu 2: fail: shadow page xxxx guest entry 0xxxxx type 2.
+
+Give gvt a chance to clear d3_entered on elsp cmd submission so that the
+states before & after S0ix enter/exit are consistent.
+
+Fixes: ba25d977571e ("drm/i915/gvt: Do not destroy ppgtt_mm during vGPU D3->D0.")
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Signed-off-by: Colin Xu <colin.xu@intel.com>
+Signed-off-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210707004531.4873-1-colin.xu@intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/ehci-hcd.c |   18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/i915/gvt/handlers.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
---- a/drivers/usb/host/ehci-hcd.c
-+++ b/drivers/usb/host/ehci-hcd.c
-@@ -703,7 +703,8 @@ EXPORT_SYMBOL_GPL(ehci_setup);
- static irqreturn_t ehci_irq (struct usb_hcd *hcd)
- {
- 	struct ehci_hcd		*ehci = hcd_to_ehci (hcd);
--	u32			status, masked_status, pcd_status = 0, cmd;
-+	u32			status, current_status, masked_status, pcd_status = 0;
-+	u32			cmd;
- 	int			bh;
- 	unsigned long		flags;
+--- a/drivers/gpu/drm/i915/gvt/handlers.c
++++ b/drivers/gpu/drm/i915/gvt/handlers.c
+@@ -1728,6 +1728,21 @@ static int elsp_mmio_write(struct intel_
+ 	if (drm_WARN_ON(&i915->drm, !engine))
+ 		return -EINVAL;
  
-@@ -715,19 +716,22 @@ static irqreturn_t ehci_irq (struct usb_
- 	 */
- 	spin_lock_irqsave(&ehci->lock, flags);
- 
--	status = ehci_readl(ehci, &ehci->regs->status);
-+	status = 0;
-+	current_status = ehci_readl(ehci, &ehci->regs->status);
-+restart:
- 
- 	/* e.g. cardbus physical eject */
--	if (status == ~(u32) 0) {
-+	if (current_status == ~(u32) 0) {
- 		ehci_dbg (ehci, "device removed\n");
- 		goto dead;
- 	}
-+	status |= current_status;
- 
- 	/*
- 	 * We don't use STS_FLR, but some controllers don't like it to
- 	 * remain on, so mask it out along with the other status bits.
- 	 */
--	masked_status = status & (INTR_MASK | STS_FLR);
-+	masked_status = current_status & (INTR_MASK | STS_FLR);
- 
- 	/* Shared IRQ? */
- 	if (!masked_status || unlikely(ehci->rh_state == EHCI_RH_HALTED)) {
-@@ -737,6 +741,12 @@ static irqreturn_t ehci_irq (struct usb_
- 
- 	/* clear (just) interrupts */
- 	ehci_writel(ehci, masked_status, &ehci->regs->status);
++	/*
++	 * Due to d3_entered is used to indicate skipping PPGTT invalidation on
++	 * vGPU reset, it's set on D0->D3 on PCI config write, and cleared after
++	 * vGPU reset if in resuming.
++	 * In S0ix exit, the device power state also transite from D3 to D0 as
++	 * S3 resume, but no vGPU reset (triggered by QEMU devic model). After
++	 * S0ix exit, all engines continue to work. However the d3_entered
++	 * remains set which will break next vGPU reset logic (miss the expected
++	 * PPGTT invalidation).
++	 * Engines can only work in D0. Thus the 1st elsp write gives GVT a
++	 * chance to clear d3_entered.
++	 */
++	if (vgpu->d3_entered)
++		vgpu->d3_entered = false;
 +
-+	/* For edge interrupts, don't race with an interrupt bit being raised */
-+	current_status = ehci_readl(ehci, &ehci->regs->status);
-+	if (current_status & INTR_MASK)
-+		goto restart;
-+
- 	cmd = ehci_readl(ehci, &ehci->regs->command);
- 	bh = 0;
+ 	execlist = &vgpu->submission.execlist[engine->id];
  
+ 	execlist->elsp_dwords.data[3 - execlist->elsp_dwords.index] = data;
 
 
