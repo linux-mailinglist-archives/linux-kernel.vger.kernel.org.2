@@ -2,132 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8943D6A62
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E413D6A67
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhGZXLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 19:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
+        id S234169AbhGZXMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 19:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233380AbhGZXL3 (ORCPT
+        with ESMTP id S234039AbhGZXL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 19:11:29 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76636C061757;
-        Mon, 26 Jul 2021 16:51:56 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id l4so13008588wrs.4;
-        Mon, 26 Jul 2021 16:51:56 -0700 (PDT)
+        Mon, 26 Jul 2021 19:11:59 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C750FC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:52:26 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so2661395oos.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:52:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tUIoigUs94bMHsltrSbpLlzLTuAd1wjaaiV0ZjEm+Bw=;
-        b=j58O9/6iZBkX0FFFlPgMkDK17SR61mX0DAyRiuYxpvuZFTHbcm/MTFGcdmaNwJibhb
-         uTBhqmJYjJWGv3MyOqx4xGwogGAmoI+UZVtAMpFcK+OEYendJwBziq0Rns+3kkBW+O8a
-         3fJfm/C9J5jTTrEmg7CJEPy11Aum7gesrmioD5HoVl+4eD4eTMyYZc47HKhJ3Uw+eosu
-         BmEcneHHIdMBgGcBFYCW+ZgCUWOHNPGJYJo0tXoR4hy4Rw1pYz5ckBE+OcWVH3jbNzEg
-         RWvyOS8MC+EsozfKlizD4TvLFlcl49EUSDdLZf2FM4jYQbglxMxoTmu1AA7WHGTuix5c
-         5QLQ==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=dRaHtjS0KrTz4yuMDHKsz+U68MHHTci+vBVq7wMAHKw=;
+        b=AvHO4vlBdmphRLFE1VF1DCJfbyTvm/5I94Unc/gLh+OhuuKt7bnc/QMo5D0l+5vdX9
+         HUBVtcsSCB3rh6Cs96P+4lu5ABM/EN3WeQJZGQg1nTOIArK4SQhBFK4KnHQdjpIboXlf
+         dfDSdYpePU+/obZDzB4Fx2hhqJi48U6l8l04Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tUIoigUs94bMHsltrSbpLlzLTuAd1wjaaiV0ZjEm+Bw=;
-        b=ugagOSk6xMDcDFVsJV776nPuYwvKfOHJtXKYB1u/Vw+mBSn9H9eFFjRlnnKVBFuiUR
-         udA6O2c4udiDhP3vVf0c0X51IaGrz7uL160qpswXHe5j/2Y8ssj30kn4vGqHnu9pW9oc
-         FASSKazAteGB8EDTJJL2B9IQia+fj/50NC9WNUi+jmT02qU6jgxQFB9My2HViqtTaksl
-         R+hQlops8bSuUT9Msks2aZP9Fz3072EqARmlTL1x5iSPGYRNZ6aXBje8Se/28lHVRF+M
-         A0hWEaxkKezzMdSHHlNzWy35pnZPGQleTUYPkOdzZHsZMcplQW2TsjWZw96CKoBbO0RV
-         jIrg==
-X-Gm-Message-State: AOAM531CCpq6TzGQ/dRCJXJbhGQbnbMvGhPCJsy6APmLd9DGMp+AyOE4
-        9FUqaGqPn4udaOt1oFVPOufEAijY9rnGud90f8w=
-X-Google-Smtp-Source: ABdhPJwXAzbNGuHdLOISfs3BtoWByAYqTqS3hd9v8tdZ2marIa37ZhMgm41g7p2rWzPxRDI2ZgF9Ns/85zSqMuv0bRc=
-X-Received: by 2002:a5d:4348:: with SMTP id u8mr18590399wrr.28.1627343515010;
- Mon, 26 Jul 2021 16:51:55 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=dRaHtjS0KrTz4yuMDHKsz+U68MHHTci+vBVq7wMAHKw=;
+        b=iseq2NBDPRzK7V6vLfaEwLGP7TzYPBS3jWQUw9GnGRGSvoNE1+J3fMLF1hbUpFkQ51
+         olH1MadE4NJX9JibAsfXIwQTUDZwdiJp6qceVDWR/mr6ezUFeQP2KXbyeYaikXhGA4Zh
+         m/XEjYg7jX9B55taiNyPCx4bKN168ygB3FwJbWdxIki8wTJxlVxHgTXWGRuj9gyUmCnf
+         IwPvcBfFqNox6/CrDDv4OueD3o6e5JIhsLJP1xhmZ7J0i7gpSGVtJ5YsodKokmUlrgYW
+         johDILU61gI0IdZs4XdJmwVHJn2LnVL1FNx7wNCEB0iR1DbUuV6vNEZonIvwWWKRX7VW
+         OG5g==
+X-Gm-Message-State: AOAM530lkpS/WtWXFIyXEpcoHugJGqlVthJB+tzqiBhYB3pWsyePk1ob
+        63E4Om9T4E8K/Utezi7WbxZKgzk6yJAKgvLeERKKzw==
+X-Google-Smtp-Source: ABdhPJxSyAGaBm1flEDwyQLTJt1JWFzQAyotby+cedJ15X8enDG0o3MaedDkJEWuJ2piJSo1jaW+PEA+CtzX3wp4PZQ=
+X-Received: by 2002:a4a:a6c2:: with SMTP id i2mr12012017oom.92.1627343546057;
+ Mon, 26 Jul 2021 16:52:26 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 26 Jul 2021 19:52:25 -0400
 MIME-Version: 1.0
-References: <20210726233854.2453899-1-robdclark@gmail.com>
-In-Reply-To: <20210726233854.2453899-1-robdclark@gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 26 Jul 2021 16:51:43 -0700
-Message-ID: <CAF6AEGtm4NdQfqo6wGFBM-EBzW9E8twpDuS7GTXf2iHiHZYL1g@mail.gmail.com>
-Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
-To:     dri-devel <dri-devel@lists.freedesktop.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Matthew Brost <matthew.brost@intel.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gustavo Padovan <gustavo@padovan.org>,
-        Jack Zhang <Jack.Zhang1@amd.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Luben Tuikov <luben.tuikov@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Roy Sun <Roy.Sun@amd.com>, Tian Tao <tiantao6@hisilicon.com>
+In-Reply-To: <20210725042436.3967173-6-bjorn.andersson@linaro.org>
+References: <20210725042436.3967173-1-bjorn.andersson@linaro.org> <20210725042436.3967173-6-bjorn.andersson@linaro.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Mon, 26 Jul 2021 19:52:25 -0400
+Message-ID: <CAE-0n53J6dqB7X7LoKd4VYVgA-ujbV1shFWdYZvLZZ+q3Tjpmw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] dt-bindings: msm/dp: Add SC8180x compatibles
+To:     Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 4:34 PM Rob Clark <robdclark@gmail.com> wrote:
+Quoting Bjorn Andersson (2021-07-24 21:24:35)
+> The Qualcomm SC8180x has 2 DP controllers and 1 eDP controller, add
+> compatibles for these to the msm/dp binding.
 >
-> From: Rob Clark <robdclark@chromium.org>
->
-> Based on discussion from a previous series[1] to add a "boost" mechanism
-> when, for example, vblank deadlines are missed.  Instead of a boost
-> callback, this approach adds a way to set a deadline on the fence, by
-> which the waiter would like to see the fence signalled.
->
-> I've not yet had a chance to re-work the drm/msm part of this, but
-> wanted to send this out as an RFC in case I don't have a chance to
-> finish the drm/msm part this week.
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
 
-Fwiw, what I'm thinking for the drm/msm part is a timer set to expire
-a bit (couple ms?) before the deadline, which boosts if the timer
-expires before the fence is signaled.
-
-Assuming this is roughly in line with what other drivers would do,
-possibly there is some room to build this timer into dma-fence itself?
-
-BR,
--R
-
->
-> Original description:
->
-> In some cases, like double-buffered rendering, missing vblanks can
-> trick the GPU into running at a lower frequence, when really we
-> want to be running at a higher frequency to not miss the vblanks
-> in the first place.
->
-> This is partially inspired by a trick i915 does, but implemented
-> via dma-fence for a couple of reasons:
->
-> 1) To continue to be able to use the atomic helpers
-> 2) To support cases where display and gpu are different drivers
->
-> [1] https://patchwork.freedesktop.org/series/90331/
->
-> Rob Clark (4):
->   dma-fence: Add deadline awareness
->   drm/vblank: Add helper to get next vblank time
->   drm/atomic-helper: Set fence deadline for vblank
->   drm/scheduler: Add fence deadline support
->
->  drivers/dma-buf/dma-fence.c             | 39 +++++++++++++++++++++++++
->  drivers/gpu/drm/drm_atomic_helper.c     | 36 +++++++++++++++++++++++
->  drivers/gpu/drm/drm_vblank.c            | 31 ++++++++++++++++++++
->  drivers/gpu/drm/scheduler/sched_fence.c | 10 +++++++
->  drivers/gpu/drm/scheduler/sched_main.c  |  3 ++
->  include/drm/drm_vblank.h                |  1 +
->  include/linux/dma-fence.h               | 17 +++++++++++
->  7 files changed, 137 insertions(+)
->
-> --
-> 2.31.1
->
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
