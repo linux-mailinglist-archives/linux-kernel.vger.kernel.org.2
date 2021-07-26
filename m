@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814A63D5F69
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856F63D5F87
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236917AbhGZPRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:17:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50314 "EHLO mail.kernel.org"
+        id S236391AbhGZPST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:18:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236656AbhGZPJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:09:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A9DD60F02;
-        Mon, 26 Jul 2021 15:50:07 +0000 (UTC)
+        id S236943AbhGZPKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA3B060F42;
+        Mon, 26 Jul 2021 15:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314608;
-        bh=pY6i4zLZpLt/uF1QhDHdCkVMQZLhE7vXZv1JKIDxalY=;
+        s=korg; t=1627314631;
+        bh=ak0X2iN8PqFo1g+nRJ173Suw6iFpP+hKATqviaSsB2k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZy4vsbcXmTfMVEDgE+GVsDRrX1EdfxCGek42hiGt2ULn3hqrRa7PR3jMAKsAq/xW
-         t4hVoZ4CHCoJEaDhMKQ920REeMpIT+0vJXosOPmWHa8YpMm9GqnwgxcbxB6pfrarST
-         wUMxbSDn0E5M77tbz+oBuLEwb5/yvSoae5k0L8o0=
+        b=m46yCGkDz68DZNMrIFOVdhCmJJrCuqc/lSFREy318g+ipZ2nHZEYsU/KlDCepntX5
+         SjBj7fNqboe+2XSBiMHA3pLRo2ceNvEUu7CW9MdnsxfC2Oz8QSElyigSOfxgxNytvE
+         d50xM5eIN5W9XPHAqzKkIU6d6RCygU6u2cojfbVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Matthias Maennich <maennich@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 026/120] arm64: dts: ls208xa: remove bus-num from dspi node
-Date:   Mon, 26 Jul 2021 17:37:58 +0200
-Message-Id: <20210726153833.226163477@linuxfoundation.org>
+Subject: [PATCH 4.19 028/120] kbuild: mkcompile_h: consider timestamp if KBUILD_BUILD_TIMESTAMP is set
+Date:   Mon, 26 Jul 2021 17:38:00 +0200
+Message-Id: <20210726153833.299752006@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
 References: <20210726153832.339431936@linuxfoundation.org>
@@ -40,46 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mian Yousaf Kaukab <ykaukab@suse.de>
+From: Matthias Maennich <maennich@google.com>
 
-[ Upstream commit 8240c972c1798ea013cbb407722295fc826b3584 ]
+[ Upstream commit a979522a1a88556e42a22ce61bccc58e304cb361 ]
 
-On LS2088A-RDB board, if the spi-fsl-dspi driver is built as module
-then its probe fails with the following warning:
+To avoid unnecessary recompilations, mkcompile_h does not regenerate
+compile.h if just the timestamp changed.
+Though, if KBUILD_BUILD_TIMESTAMP is set, an explicit timestamp for the
+build was requested, in which case we should not ignore it.
 
-[   10.471363] couldn't get idr
-[   10.471381] WARNING: CPU: 4 PID: 488 at drivers/spi/spi.c:2689 spi_register_controller+0x73c/0x8d0
-...
-[   10.471651] fsl-dspi 2100000.spi: Problem registering DSPI ctlr
-[   10.471708] fsl-dspi: probe of 2100000.spi failed with error -16
+If a user follows the documentation for reproducible builds [1] and
+defines KBUILD_BUILD_TIMESTAMP as the git commit timestamp, a clean
+build will have the correct timestamp. A subsequent cherry-pick (or
+amend) changes the commit timestamp and if an incremental build is done
+with a different KBUILD_BUILD_TIMESTAMP now, that new value is not taken
+into consideration. But it should for reproducibility.
 
-Reason for the failure is that bus-num property is set for dspi node.
-However, bus-num property is not set for the qspi node. If probe for
-spi-fsl-qspi happens first then id 0 is dynamically allocated to it.
-Call to spi_register_controller() from spi-fsl-dspi driver then fails.
-Since commit 29d2daf2c33c ("spi: spi-fsl-dspi: Make bus-num property
-optional") bus-num property is optional. Remove bus-num property from
-dspi node to fix the issue.
+Hence, whenever KBUILD_BUILD_TIMESTAMP is explicitly set, do not ignore
+UTS_VERSION when making a decision about whether the regenerated version
+of compile.h should be moved into place.
 
-Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+[1] https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
+
+Signed-off-by: Matthias Maennich <maennich@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ scripts/mkcompile_h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index ebe0cd4bf2b7..8c22ce904e65 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -479,7 +479,6 @@
- 			clocks = <&clockgen 4 3>;
- 			clock-names = "dspi";
- 			spi-num-chipselects = <5>;
--			bus-num = <0>;
- 		};
+diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
+index 87f1fc9801d7..662fe19da990 100755
+--- a/scripts/mkcompile_h
++++ b/scripts/mkcompile_h
+@@ -78,15 +78,23 @@ UTS_TRUNCATE="cut -b -$UTS_LEN"
+ # Only replace the real compile.h if the new one is different,
+ # in order to preserve the timestamp and avoid unnecessary
+ # recompilations.
+-# We don't consider the file changed if only the date/time changed.
++# We don't consider the file changed if only the date/time changed,
++# unless KBUILD_BUILD_TIMESTAMP was explicitly set (e.g. for
++# reproducible builds with that value referring to a commit timestamp).
+ # A kernel config change will increase the generation number, thus
+ # causing compile.h to be updated (including date/time) due to the
+ # changed comment in the
+ # first line.
  
- 		esdhc: esdhc@2140000 {
++if [ -z "$KBUILD_BUILD_TIMESTAMP" ]; then
++   IGNORE_PATTERN="UTS_VERSION"
++else
++   IGNORE_PATTERN="NOT_A_PATTERN_TO_BE_MATCHED"
++fi
++
+ if [ -r $TARGET ] && \
+-      grep -v 'UTS_VERSION' $TARGET > .tmpver.1 && \
+-      grep -v 'UTS_VERSION' .tmpcompile > .tmpver.2 && \
++      grep -v $IGNORE_PATTERN $TARGET > .tmpver.1 && \
++      grep -v $IGNORE_PATTERN .tmpcompile > .tmpver.2 && \
+       cmp -s .tmpver.1 .tmpver.2; then
+    rm -f .tmpcompile
+ else
 -- 
 2.30.2
 
