@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA883D5D5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7A63D5EF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235452AbhGZPBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:01:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39784 "EHLO mail.kernel.org"
+        id S237634AbhGZPQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:16:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235409AbhGZPBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1321560F51;
-        Mon, 26 Jul 2021 15:41:27 +0000 (UTC)
+        id S236078AbhGZPHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:07:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88E6A60F94;
+        Mon, 26 Jul 2021 15:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314088;
-        bh=EOn9u7CR6/zKn+iKpJ5wP4mwdhdoEP+PkurRyOi8y00=;
+        s=korg; t=1627314480;
+        bh=lC4C1AP+WqzdL5jA7ViecfA8X6+auc1/xFYADA5MTXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=azMe23TahGLj1stOxIoc7htYw6FdCOGUqLT9bnH7sQve1esleB/VwkgkRrt2sOcWj
-         LTEwXFnz1mnSQV4+j/3dhRb8Yb/AwWfcko8g1VTAFwD/GW5ImNPsz86ENn1YvnGbZT
-         7gLa0Ae1a/Zpkw0iSD71TZfGPODZKEfqPnLJyx5c=
+        b=vsfpRyjTs08saILth2EAI/j+733YekAMVtNrUVsBpOJkiP7yJUFBjX5wQuEqC9wH+
+         EtuEz8YArU4b1Kx3VsllyGzvKEncRVZFhdYa5L97Fhe0pkTrYiID9kGZgErgZMkZ0c
+         NEcFs0PnbgCT2fZrdBfs4/gQRmqR2slLz2CZXdnA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 07/47] scsi: aic7xxx: Fix unintentional sign extension issue on left shift of u8
-Date:   Mon, 26 Jul 2021 17:38:25 +0200
-Message-Id: <20210726153823.213936556@linuxfoundation.org>
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 26/82] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+Date:   Mon, 26 Jul 2021 17:38:26 +0200
+Message-Id: <20210726153829.013060816@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 332a9dd1d86f1e7203fc7f0fd7e82f0b304200fe ]
+commit 2b452550a203d88112eaf0ba9fc4b750a000b496 upstream.
 
-The shifting of the u8 integer returned fom ahc_inb(ahc, port+3) by 24 bits
-to the left will be promoted to a 32 bit signed int and then sign-extended
-to a u64. In the event that the top bit of the u8 is set then all then all
-the upper 32 bits of the u64 end up as also being set because of the
-sign-extension. Fix this by casting the u8 values to a u64 before the 24
-bit left shift.
+Make sure that we disable each of the TX and RX queues in the TDMA and
+RDMA control registers. This is a correctness change to be symmetrical
+with the code that enables the TX and RX queues.
 
-[ This dates back to 2002, I found the offending commit from the git
-history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
-commit f58eb66c0b0a ("Update aic7xxx driver to 6.2.10...") ]
-
-Link: https://lore.kernel.org/r/20210621151727.20667-1-colin.king@canonical.com
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Addresses-Coverity: ("Unintended sign extension")
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Tested-by: Maxime Ripard <maxime@cerno.tech>
+Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/aic7xxx/aic7xxx_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/scsi/aic7xxx/aic7xxx_core.c b/drivers/scsi/aic7xxx/aic7xxx_core.c
-index def3208dd290..9b5832b46dec 100644
---- a/drivers/scsi/aic7xxx/aic7xxx_core.c
-+++ b/drivers/scsi/aic7xxx/aic7xxx_core.c
-@@ -500,7 +500,7 @@ ahc_inq(struct ahc_softc *ahc, u_int port)
- 	return ((ahc_inb(ahc, port))
- 	      | (ahc_inb(ahc, port+1) << 8)
- 	      | (ahc_inb(ahc, port+2) << 16)
--	      | (ahc_inb(ahc, port+3) << 24)
-+	      | (((uint64_t)ahc_inb(ahc, port+3)) << 24)
- 	      | (((uint64_t)ahc_inb(ahc, port+4)) << 32)
- 	      | (((uint64_t)ahc_inb(ahc, port+5)) << 40)
- 	      | (((uint64_t)ahc_inb(ahc, port+6)) << 48)
--- 
-2.30.2
-
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -2789,15 +2789,21 @@ static void bcmgenet_set_hw_addr(struct
+ /* Returns a reusable dma control register value */
+ static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
+ {
++	unsigned int i;
+ 	u32 reg;
+ 	u32 dma_ctrl;
+ 
+ 	/* disable DMA */
+ 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->tx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
+ 
++	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->rx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
 
 
