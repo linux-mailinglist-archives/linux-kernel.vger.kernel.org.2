@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00353D6120
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23843D6145
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232653AbhGZP2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:28:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
+        id S232004AbhGZPaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236833AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D463260FDA;
-        Mon, 26 Jul 2021 15:53:34 +0000 (UTC)
+        id S236468AbhGZPRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E3160F57;
+        Mon, 26 Jul 2021 15:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314815;
-        bh=0B0/m9AQhwYNUWaUVtkh/2N7DpmLSjh5El2w8Mt36ZY=;
+        s=korg; t=1627315072;
+        bh=UUSnv+YBR56PLXtQOE914sFblrvfbpijYigJ4zwetgw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tE7Fys1Qvs++eOeAD1s5Qn/m9Cq5rZmzrwht7K246eJH+NpurgiCN2uIRfLy5t86U
-         Gw5/W+q0+o0DfPAJGpTfLjJV4hI2GmBNLA+Jk/4NRFl8EOJNk3ia+txSXjkYwdJYPZ
-         VYNgySUuX08dsoVMPZYKbhKCz2e9arL35T1TC4KA=
+        b=GTup+f6nQ3893uIojFkfzmiaGKdTU6vbaSAYzfF171YgL7nIrgPkoVA/DZcfj/tGr
+         +iVMvKHQbd7amfY/8vz6QTuZ1WRG4M1SpN9A1+P5ge1lUfU17Xn+JPXaj7DJsO7TEK
+         2gXdi0lvHJu+D0pF+LO01i5jD1g9ke7PNwD+e9ug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH 4.19 100/120] usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.4 071/108] s390/boot: fix use of expolines in the DMA code
 Date:   Mon, 26 Jul 2021 17:39:12 +0200
-Message-Id: <20210726153835.631807809@linuxfoundation.org>
+Message-Id: <20210726153833.963804851@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,51 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Alexander Egorenkov <egorenar@linux.ibm.com>
 
-commit 5719df243e118fb343725e8b2afb1637e1af1373 upstream.
+commit 463f36c76fa4ec015c640ff63ccf52e7527abee0 upstream.
 
-This driver has a potential issue which this driver is possible to
-cause superfluous irqs after usb_pkt_pop() is called. So, after
-the commit 3af32605289e ("usb: renesas_usbhs: fix error return
-code of usbhsf_pkt_handler()") had been applied, we could observe
-the following error happened when we used g_audio.
+The DMA code section of the decompressor must be compiled with expolines
+if Spectre V2 mitigation has been enabled for the decompressed kernel.
+This is required because although the decompressor's image contains
+the DMA code section, it is handed over to the decompressed kernel for use.
 
-    renesas_usbhs e6590000.usb: irq_ready run_error 1 : -22
+Because the DMA code is already slow w/o expolines, use expolines always
+regardless whether the decompressed kernel is using them or not. This
+simplifies the DMA code by dropping the conditional compilation of
+expolines.
 
-To fix the issue, disable the tx or rx interrupt in usb_pkt_pop().
-
-Fixes: 2743e7f90dc0 ("usb: renesas_usbhs: fix the usb_pkt_pop()")
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/20210624122039.596528-1-yoshihiro.shimoda.uh@renesas.com
+Fixes: bf72630130c2 ("s390: use proper expoline sections for .dma code")
+Cc: <stable@vger.kernel.org> # 5.2
+Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/renesas_usbhs/fifo.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/s390/boot/text_dma.S |   19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
---- a/drivers/usb/renesas_usbhs/fifo.c
-+++ b/drivers/usb/renesas_usbhs/fifo.c
-@@ -101,6 +101,8 @@ static struct dma_chan *usbhsf_dma_chan_
- #define usbhsf_dma_map(p)	__usbhsf_dma_map_ctrl(p, 1)
- #define usbhsf_dma_unmap(p)	__usbhsf_dma_map_ctrl(p, 0)
- static int __usbhsf_dma_map_ctrl(struct usbhs_pkt *pkt, int map);
-+static void usbhsf_tx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
-+static void usbhsf_rx_irq_ctrl(struct usbhs_pipe *pipe, int enable);
- struct usbhs_pkt *usbhs_pkt_pop(struct usbhs_pipe *pipe, struct usbhs_pkt *pkt)
- {
- 	struct usbhs_priv *priv = usbhs_pipe_to_priv(pipe);
-@@ -123,6 +125,11 @@ struct usbhs_pkt *usbhs_pkt_pop(struct u
- 		if (chan) {
- 			dmaengine_terminate_all(chan);
- 			usbhsf_dma_unmap(pkt);
-+		} else {
-+			if (usbhs_pipe_is_dir_in(pipe))
-+				usbhsf_rx_irq_ctrl(pipe, 0);
-+			else
-+				usbhsf_tx_irq_ctrl(pipe, 0);
- 		}
+--- a/arch/s390/boot/text_dma.S
++++ b/arch/s390/boot/text_dma.S
+@@ -9,16 +9,6 @@
+ #include <asm/errno.h>
+ #include <asm/sigp.h>
  
- 		usbhs_pipe_clear_without_sequence(pipe, 0, 0);
+-#ifdef CC_USING_EXPOLINE
+-	.pushsection .dma.text.__s390_indirect_jump_r14,"axG"
+-__dma__s390_indirect_jump_r14:
+-	larl	%r1,0f
+-	ex	0,0(%r1)
+-	j	.
+-0:	br	%r14
+-	.popsection
+-#endif
+-
+ 	.section .dma.text,"ax"
+ /*
+  * Simplified version of expoline thunk. The normal thunks can not be used here,
+@@ -27,11 +17,10 @@ __dma__s390_indirect_jump_r14:
+  * affects a few functions that are not performance-relevant.
+  */
+ 	.macro BR_EX_DMA_r14
+-#ifdef CC_USING_EXPOLINE
+-	jg	__dma__s390_indirect_jump_r14
+-#else
+-	br	%r14
+-#endif
++	larl	%r1,0f
++	ex	0,0(%r1)
++	j	.
++0:	br	%r14
+ 	.endm
+ 
+ /*
 
 
