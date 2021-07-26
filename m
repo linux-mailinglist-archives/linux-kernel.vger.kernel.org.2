@@ -2,88 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F833D64E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9EB3D64EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbhGZQRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:17:22 -0400
-Received: from relay.sw.ru ([185.231.240.75]:41084 "EHLO relay.sw.ru"
+        id S235808AbhGZQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:17:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237383AbhGZQNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:13:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=p/l/Qj5INqHXINcKY/nrenLT6M8MZaYS0obzKpoLW2A=; b=a8+z8C6hzM4rexpHmG6
-        4BApTO6gkg2j2EmkhoqjO6W1Ih6f8q0ba4BjL2d5wigrNGI1y8wPDgijzGMZ0zqQa4+9yQHeU+1bM
-        FMk4BtIrgEhv14RPa/EdrJbjZdm1udMqbhzHsqOOHVh0uc8u1DXTEBAw7IbpvzLw/YFM1i40ZI8=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m83rE-005IPH-OE; Mon, 26 Jul 2021 19:53:36 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH] memcg: replace in_interrupt() by !in_task() in active_memcg()
-To:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <CALvZod5-XtaeawPtEgnp9xwouy0KfuDbpykB6Z3b+8YJyCrLVA@mail.gmail.com>
-Message-ID: <ed4448b0-4970-616f-7368-ef9dd3cb628d@virtuozzo.com>
-Date:   Mon, 26 Jul 2021 19:53:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S235387AbhGZQNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:13:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5061D6056B;
+        Mon, 26 Jul 2021 16:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627318461;
+        bh=c/T13wFxt1PizOYI84tKGiFkCFercMC2EuWefcnCHj0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ZzGrSP5l95kC8kxJfpB+jT4pRJB0opluEi6N3FPnKMDQpBbvUgdlQAcxklRRZEZ24
+         7z1VqNJwz4pkVSh4FY3NFY6f5jAmr2sjYryYXMSl3cTLIT8qWorqdURFU3UjNNiTW5
+         Y+RN6dZx+I4pyVJqvP6/YuEKRc0LUc9J4aoZ9GGOkxxzbBYeaxaC6nIjgdlhQeQ4U5
+         57IlVmbBP2V5xc26+h6nPvxGqR5idQBX9MC+EGjybfgwZs9Zko29TheYzFKOiGRjsz
+         ADfkft+t6nROIBlRI6o8v+VjrOoknsLX/FzYsiN5KYTqMfqN4qR7NGYBAEAGDZJMDk
+         xe2zbXE41Hx5g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 1375C5C06D2; Mon, 26 Jul 2021 09:54:21 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 09:54:21 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, corbet@lwn.net, ysato@users.sourceforge.jp,
+        dalias@libc.org, chris@zankel.net, jcmvbkbc@gmail.com,
+        dave@stgolabs.net, tiwai@suse.de, frederic@kernel.org,
+        mchehab+huawei@kernel.org, nfraprado@protonmail.com,
+        wcohen@redhat.com, tglx@linutronix.de, viro@zeniv.linux.org.uk,
+        rric@kernel.org, viresh.kumar@linaro.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH] RCU: Fix undefined Kconfig macros
+Message-ID: <20210726165421.GS4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210725214333.10623-1-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CALvZod5-XtaeawPtEgnp9xwouy0KfuDbpykB6Z3b+8YJyCrLVA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210725214333.10623-1-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_active_memcg() uses in_interrupt() check to select proper storage for
-cgroup: pointer on task struct or per-cpu pointer.
+On Mon, Jul 26, 2021 at 05:43:33AM +0800, Zhouyi Zhou wrote:
+> Hi Paul,
+> 
+> After I invoking scripts/checkkconfigsymbols.py in linux kernel source
+> tree, I find 4 undefined Kconfig macros. I examine them one by one, and
+> fix them following your advice.
+> 
+> 1. TREE_PREEMPT_RCU
+> Referencing files: arch/sh/configs/sdk7786_defconfig
+> 
+> It should now be CONFIG_PREEMPT_RCU. Except that the CONFIG_PREEMPT=y in
+> that same file implies CONFIG_PREEMPT_RCU=y, so I delete the
+> CONFIG_TREE_PREEMPT_RCU=y line.
+> 
+> The reason is as follows.
+> In kernel/rcu/Kconfig, we have
+> config PREEMPT_RCU
+>         bool
+>         default y if PREEMPTION
+> https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt says,
+> "The default value is only assigned to the config symbol if no other value
+>  was set by the user (via the input prompt above)."
+> there is no prompt in config PREEMPT_RCU entry, so we are guaranteed to
+> get CONFIG_PREEMPT_RCU=y when CONFIG_PREEMPT is present.
+> 
+> 2. RCU_CPU_STALL_INFO
+> Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
+> 
+> We now get RCU_CPU_STALL_INFO whether we want it or not, so this
+> line should be deleted.
+> (RCU_CPU_STALL_INFO is removed in 75c27f119b6475d95374bdad872c6938b5c26196)
+> 
+> 3. RCU_NOCB_CPU_ALL
+> Referencing files:
+> Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> 
+> This is an old snapshot of the code. I update this from the real
+> rcu_prepare_for_idle() function in kernel/rcu/tree_plugin.h.
+> I have invoked "make htmldocs" to ensure the result of above updating.
+> 
+> 4. RCU_TORTURE_TESTS
+> Referencing files: kernel/rcu/rcutorture.c
+> 
+> forward-progress checking conflicts with CPU-stall testing, so we should
+> complain when modprobe the rcutorture.ko if that happens.
+> 
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-It isn't fully correct: obsoleted in_interrupt() includes tasks with disabled BH.
-It's better to use '!in_task()' instead.
+Very good, thank you!  I wordsmithed as following and applied for
+the v5.16 merge window.
 
-Link: https://lkml.org/lkml/2021/7/26/487
-Fixes: 37d5985c003d ("mm: kmem: prepare remote memcg charging infra for interrupt contexts")
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- include/linux/sched/mm.h | 2 +-
- mm/memcontrol.c          | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+							Thanx, Paul
 
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index e24b1fe348e3..9dd071f78dba 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -306,7 +306,7 @@ set_active_memcg(struct mem_cgroup *memcg)
- {
- 	struct mem_cgroup *old;
+------------------------------------------------------------------------
+
+commit 32a4be124ed0fe24509544ba165265f33420ee4a
+Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Date:   Mon Jul 26 05:43:33 2021 +0800
+
+    rcu: Fix undefined Kconfig macros
+    
+    Invoking scripts/checkkconfigsymbols.py in the Linux-kernel source tree
+    located the following issues:
+    
+    1. TREE_PREEMPT_RCU
+    Referencing files: arch/sh/configs/sdk7786_defconfig
+    
+    It should now be CONFIG_PREEMPT_RCU. Except that the CONFIG_PREEMPT=y in
+    that same file implies CONFIG_PREEMPT_RCU=y.  Therefore, delete the
+    CONFIG_TREE_PREEMPT_RCU=y line.
+    
+    The reason is as follows:
+    
+    In kernel/rcu/Kconfig, we have
+    config PREEMPT_RCU
+            bool
+            default y if PREEMPTION
+    
+    https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt says,
+    "The default value is only assigned to the config symbol if no other value
+     was set by the user (via the input prompt above)."
+    there is no prompt in config PREEMPT_RCU entry, so we are guaranteed to
+    get CONFIG_PREEMPT_RCU=y when CONFIG_PREEMPT is present.
+    
+    2. RCU_CPU_STALL_INFO
+    Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
+    
+    The old Kconfig option RCU_CPU_STALL_INFO was removed by commit
+    75c27f119b64 ("rcu: Remove CONFIG_RCU_CPU_STALL_INFO"), and the kernel
+    now acts as if this Kconfig option was unconditionally enabled.
+    
+    3. RCU_NOCB_CPU_ALL
+    Referencing files:
+    Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+    
+    This is an old snapshot of the code. I update this from the real
+    rcu_prepare_for_idle() function in kernel/rcu/tree_plugin.h.
+    This change was tested by invoking "make htmldocs".
+    
+    4. RCU_TORTURE_TESTS
+    Referencing files: kernel/rcu/rcutorture.c
+    
+    Forward-progress checking conflicts with CPU-stall testing, so we should
+    complain at "modprobe rcutorture" when both are enabled.
+    
+    Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+index eeb351296df11..7fdf151a8680a 100644
+--- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
++++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+@@ -202,49 +202,44 @@ newly arrived RCU callbacks against future grace periods:
+     1 static void rcu_prepare_for_idle(void)
+     2 {
+     3   bool needwake;
+-    4   struct rcu_data *rdp;
+-    5   struct rcu_dynticks *rdtp = this_cpu_ptr(&rcu_dynticks);
+-    6   struct rcu_node *rnp;
+-    7   struct rcu_state *rsp;
+-    8   int tne;
+-    9
+-   10   if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_ALL) ||
+-   11       rcu_is_nocb_cpu(smp_processor_id()))
+-   12     return;
++    4   struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++    5   struct rcu_node *rnp;
++    6   int tne;
++    7
++    8   lockdep_assert_irqs_disabled();
++    9   if (rcu_rdp_is_offloaded(rdp))
++   10     return;
++   11
++   12   /* Handle nohz enablement switches conservatively. */
+    13   tne = READ_ONCE(tick_nohz_active);
+-   14   if (tne != rdtp->tick_nohz_enabled_snap) {
+-   15     if (rcu_cpu_has_callbacks(NULL))
+-   16       invoke_rcu_core();
+-   17     rdtp->tick_nohz_enabled_snap = tne;
++   14   if (tne != rdp->tick_nohz_enabled_snap) {
++   15     if (!rcu_segcblist_empty(&rdp->cblist))
++   16       invoke_rcu_core(); /* force nohz to see update. */
++   17     rdp->tick_nohz_enabled_snap = tne;
+    18     return;
+-   19   }
++   19	}
+    20   if (!tne)
+    21     return;
+-   22   if (rdtp->all_lazy &&
+-   23       rdtp->nonlazy_posted != rdtp->nonlazy_posted_snap) {
+-   24     rdtp->all_lazy = false;
+-   25     rdtp->nonlazy_posted_snap = rdtp->nonlazy_posted;
+-   26     invoke_rcu_core();
+-   27     return;
+-   28   }
+-   29   if (rdtp->last_accelerate == jiffies)
+-   30     return;
+-   31   rdtp->last_accelerate = jiffies;
+-   32   for_each_rcu_flavor(rsp) {
+-   33     rdp = this_cpu_ptr(rsp->rda);
+-   34     if (rcu_segcblist_pend_cbs(&rdp->cblist))
+-   35       continue;
+-   36     rnp = rdp->mynode;
+-   37     raw_spin_lock_rcu_node(rnp);
+-   38     needwake = rcu_accelerate_cbs(rsp, rnp, rdp);
+-   39     raw_spin_unlock_rcu_node(rnp);
+-   40     if (needwake)
+-   41       rcu_gp_kthread_wake(rsp);
+-   42   }
+-   43 }
++   22
++   23   /*
++   24    * If we have not yet accelerated this jiffy, accelerate all
++   25    * callbacks on this CPU.
++   26   */
++   27   if (rdp->last_accelerate == jiffies)
++   28     return;
++   29   rdp->last_accelerate = jiffies;
++   30   if (rcu_segcblist_pend_cbs(&rdp->cblist)) {
++   31     rnp = rdp->mynode;
++   32     raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
++   33     needwake = rcu_accelerate_cbs(rnp, rdp);
++   34     raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
++   35     if (needwake)
++   36       rcu_gp_kthread_wake();
++   37   }
++   38 }
  
--	if (in_interrupt()) {
-+	if (!in_task()) {
- 		old = this_cpu_read(int_active_memcg);
- 		this_cpu_write(int_active_memcg, memcg);
- 	} else {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ae1f5d0cb581..3ebf792ef2c0 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -905,7 +905,7 @@ EXPORT_SYMBOL(mem_cgroup_from_task);
+ But the only part of ``rcu_prepare_for_idle()`` that really matters for
+-this discussion are lines 37–39. We will therefore abbreviate this
++this discussion are lines 32–34. We will therefore abbreviate this
+ function as follows:
  
- static __always_inline struct mem_cgroup *active_memcg(void)
- {
--	if (in_interrupt())
-+	if (!in_task())
- 		return this_cpu_read(int_active_memcg);
- 	else
- 		return current->active_memcg;
--- 
-2.25.1
-
+ .. kernel-figure:: rcu_node-lock.svg
+diff --git a/arch/sh/configs/sdk7786_defconfig b/arch/sh/configs/sdk7786_defconfig
+index f776a1d0d2776..a8662b6927ec7 100644
+--- a/arch/sh/configs/sdk7786_defconfig
++++ b/arch/sh/configs/sdk7786_defconfig
+@@ -5,7 +5,6 @@ CONFIG_BSD_PROCESS_ACCT=y
+ CONFIG_BSD_PROCESS_ACCT_V3=y
+ CONFIG_AUDIT=y
+ CONFIG_AUDITSYSCALL=y
+-CONFIG_TREE_PREEMPT_RCU=y
+ CONFIG_RCU_TRACE=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+diff --git a/arch/xtensa/configs/nommu_kc705_defconfig b/arch/xtensa/configs/nommu_kc705_defconfig
+index 88b2e222d4bff..fcb620ef37997 100644
+--- a/arch/xtensa/configs/nommu_kc705_defconfig
++++ b/arch/xtensa/configs/nommu_kc705_defconfig
+@@ -119,7 +119,6 @@ CONFIG_DEBUG_SPINLOCK=y
+ CONFIG_DEBUG_MUTEXES=y
+ CONFIG_DEBUG_ATOMIC_SLEEP=y
+ CONFIG_STACKTRACE=y
+-# CONFIG_RCU_CPU_STALL_INFO is not set
+ CONFIG_RCU_TRACE=y
+ # CONFIG_FTRACE is not set
+ # CONFIG_LD_NO_RELAX is not set
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index ab4215266ebee..f640cbd9262c0 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -2449,7 +2449,7 @@ static int __init rcu_torture_fwd_prog_init(void)
+ 	}
+ 	if (stall_cpu > 0) {
+ 		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, conflicts with CPU-stall testing");
+-		if (IS_MODULE(CONFIG_RCU_TORTURE_TESTS))
++		if (IS_MODULE(CONFIG_RCU_TORTURE_TEST))
+ 			return -EINVAL; /* In module, can fail back to user. */
+ 		WARN_ON(1); /* Make sure rcutorture notices conflict. */
+ 		return 0;
