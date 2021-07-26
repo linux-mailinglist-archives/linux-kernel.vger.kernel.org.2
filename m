@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FDA3D58EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 13:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996F03D590A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbhGZLRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233522AbhGZLRK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:17:10 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD73C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 04:57:38 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id p5so5641388wro.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 04:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=htaXzjXr1R1uLPbQq9RhoEI7mGdy3KtmApdzCJwiSm4=;
-        b=AIaOAvAY3zzOmD9Ns/oLKfj4TePr7zULRDR9BtS9wRO5CWowKH3SRjvXkRy583KSyN
-         YYaa1Q+TePjCjPf+H5wcmlWxfTnHrxfohaK2Yo1u8h8b8Q6xB2FfFOuC302Cgi/0Yo9L
-         3VjbJMQK6uY3gJc2kkBqGqXs4c99yEe3Z9+wB5U4LPpMEDQYg68qNAVWB5++/wlkp2Dj
-         KPHZtMyMxS0oMCGmWdCkSIu85mqzfUjGp8jBn1ZrrqCSvU2UHwm5FbITY1cAR55XAL4m
-         MAuW+h0YXkHjhkgc9jbhMzZ8pjQ28lIQDaYUJA7m1SOk6BvFRIvylt+mmXP8R1EheX5P
-         hfZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=htaXzjXr1R1uLPbQq9RhoEI7mGdy3KtmApdzCJwiSm4=;
-        b=KxeIpxqj0fvflfN/2ncebJXquQ1FtmD+NEAMZM3pI77acUOYkBodIKhCttUm+W7bPZ
-         jjOvFU9Thsi2SFjS+UoJuyUphzt+yfa/0OTTVGcCa81RmIEIa15fKVABKeXnPZsf5dC7
-         SIF+q47sXHbztqV9a+KwCOM7dwLTIVJQwVbwjWbI2CpSRDDcINXMuqpMaivDlrjCxcB3
-         /bHb7/LGqPkS21fELJA70aA5fY2YkkxYvgxYUIXy5rwn//n2akytZGNOSAIjj73e7NM0
-         Lkx5P9j6ZZM4pId0el7vTdFong8fvM7tlQQVxJDEXZA6b4e3/BTRvblnlu78gYndtMEl
-         NEEA==
-X-Gm-Message-State: AOAM531SY9/9EBIcWbZoXid4ncml1H30s1RslGkmf+A+u+zm1xXIYMeq
-        5TpsAGbn/xzMTrIC9NUjqgw=
-X-Google-Smtp-Source: ABdhPJwReuIBBbNL5AeIHRrE0lsDQ9CvnyqVVn4IS069WCi7Zzyobx8tPizOdwkAOG9e0fisWwH5vQ==
-X-Received: by 2002:a5d:4d07:: with SMTP id z7mr19971357wrt.244.1627300657551;
-        Mon, 26 Jul 2021 04:57:37 -0700 (PDT)
-Received: from [192.168.1.21] ([195.245.23.224])
-        by smtp.gmail.com with ESMTPSA id j2sm6972487wrd.14.2021.07.26.04.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 04:57:37 -0700 (PDT)
-Message-ID: <b654b4c123013cd6c8987edb2ea0fdcb5d970bd1.camel@gmail.com>
-Subject: Re: [PATCH 8/8] ep93xx: clock: convert in-place to COMMON_CLK
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Mon, 26 Jul 2021 13:57:36 +0200
-In-Reply-To: <20210726115058.23729-9-nikita.shubin@maquefel.me>
-References: <20210726115058.23729-1-nikita.shubin@maquefel.me>
-         <20210726115058.23729-9-nikita.shubin@maquefel.me>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 
+        id S233866AbhGZLTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:19:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233853AbhGZLTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 07:19:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E3960F22;
+        Mon, 26 Jul 2021 12:00:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627300822;
+        bh=3VetRwrPdfVNkTCSyDxeJog1I+BWUCJ5ZzUQXf61mJ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m8ID//VXw+CdwAedoAkA68zA8lm6KJ1lECu7v7yqI9PhAcsmERR+ojwCXy3q5FQAZ
+         FBfEIYhal3hTgxREkDXTGqQ5jOirYwTXyO1/m5KN1YpNymA4SSmyfRAyWcrlrOgtr4
+         tM+8lovRQ16LsHfCsxDOqcq890ITR9c1JstUeHRlWmI1UxTKI160AmbEh03DHkkh9d
+         6ZJNqdgFJ9RQT87CBQYFVb5+28HwaFMI9qTG0D+1D6MjjW2msFbeIVlg72+6aKfha7
+         hsC7dBPB/Dq8G1wT7lIydHfhKSSXR+dDvrcRWrG4BaOid3aOM7ExviMeJl7V1n/yoQ
+         M0gCqHXYk34lA==
+Date:   Mon, 26 Jul 2021 13:00:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        David Lechner <david@lechnology.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regmap: do not call regmap_debugfs_init() from
+ regmap_attach_dev()
+Message-ID: <20210726120013.GF4670@sirena.org.uk>
+References: <20210726073627.31589-1-matthias.schiffer@ew.tq-group.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="H4SyuGOnfnj3aJqJ"
+Content-Disposition: inline
+In-Reply-To: <20210726073627.31589-1-matthias.schiffer@ew.tq-group.com>
+X-Cookie: Vini, vidi, Linux!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nikita!
 
-Thanks for posting the combined series!
+--H4SyuGOnfnj3aJqJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, 2021-07-26 at 14:50 +0300, Nikita Shubin wrote:
-> Converted in-place without moving file to drivers/clk.
-> 
-> tested on ts7250 (EP9302).
-> 
-> Only setting rate and change parent tested for, as they
-> are missing on ts7250:
-> - video
-> - I2S
-> - ADC/KEYPAD
+On Mon, Jul 26, 2021 at 09:36:27AM +0200, Matthias Schiffer wrote:
 
-I've been testing I2S and ADC with your original patch
-(and so had to prepare the fixes in the drivers), therefore...
+> lacking) understanding of the semantics aside, the fact that
+> regmap_attach_dev() is setting fields on the shared regmap without any
+> kind of locking is at least suspicious.
 
-> - PWM
-> 
-> Only video and I2S clock are interesting, as they are
-> GATE + double DIV + MUX, all other are pretty much
-> common but require ep93xx_syscon_swlocked_write to set
-> registers.
-> 
-> Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+BTW there shouldn't be any harm in adding locking, but we're really
+hoping that it shouldn't be required here as the caller ought to be
+doing coordination which means things are single threaded anyway so we
+didn't bother.
 
-Tested-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+--H4SyuGOnfnj3aJqJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> ---
->  arch/arm/Kconfig             |   2 +-
->  arch/arm/mach-ep93xx/clock.c | 975 ++++++++++++++++++++---------------
->  arch/arm/mach-ep93xx/core.c  |   2 +-
->  arch/arm/mach-ep93xx/soc.h   |  42 +-
->  4 files changed, 581 insertions(+), 440 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Alexander Sverdlin.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmD+o8wACgkQJNaLcl1U
+h9DMMgf/Z1lGVAc7mWRioSdQkmo29hm96hCkbR5zWKj0SWGrjebq9patPGV85aw5
+W1B4n6/n0dEqr21nylJ5zFmkQ4NsNPY7Jkk+FQObJkFbrTQIKsbA1zOfc9CYtSO5
+Xp8hUIX59Kh69VEr32Y4uetbUDMSgw/XmPe8tqbRT0RWZHZkX0Lvyfz4orfIgbp4
+WPYhIX/bcDIhtMoR2hkMx+zIsr/z5nLQdXevlTTTyUXxV6VcVz0enxBYctDkYwFG
+kvYVb+FgPBngytvVsIgSjv02OIvk6gQnNbLDUuImGjJZV4bMZy7Pix7cyvSvLwoz
++i8D9LM6r39xx08VLmmP3aKA5ZPX+Q==
+=zz/F
+-----END PGP SIGNATURE-----
 
-
+--H4SyuGOnfnj3aJqJ--
