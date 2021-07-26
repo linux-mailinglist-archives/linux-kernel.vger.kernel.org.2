@@ -2,36 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79623D6459
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E153D63A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239463AbhGZP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:56:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53570 "EHLO mail.kernel.org"
+        id S238948AbhGZPuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:50:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236884AbhGZPfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:35:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC83360F6B;
-        Mon, 26 Jul 2021 16:16:22 +0000 (UTC)
+        id S238212AbhGZP1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:27:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD91660FE5;
+        Mon, 26 Jul 2021 16:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316183;
-        bh=TUxbx0dsEUujwCCzZ3h4JIqB77mC8846Vl+ah7g+S3M=;
+        s=korg; t=1627315607;
+        bh=XL9rPd9Ha3JIKT16CE/PgmV9J6LLFsc9pbQV7+Zuq1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B24FDUTOX/vefxkXVriMKWPTo/uR/gofb9f8wYu9Y8ZW8P9ATI92GPM7Eo/SIxWl2
-         bHrT/r8G0/jKHPZfVLOAZ49RSj7QHW7owjJf08SHvKP8oa5Z+4eCPDzP5XAH4myPRi
-         7/AaB99GExErl7i8PVbBj8wYcM2yaS4BPSGOb8G4=
+        b=IAwJ0fwhzoYuL+PFDLqhcL2+zmE/4y5uRd1UXR6rcX/lSkqnXF4EEpEzdgChP7C59
+         q+WJXIslC6+WoCuIgdICSuzwNGyyG2VYfokyG8Nvc5KqxEswXI98rXvHOQscLrKWuc
+         m21ObbfSeqXhT2/H7P6DyM86pb7EMP/MMbHlpzXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH 5.13 187/223] bus: mhi: pci_generic: Apply no-op for wake using sideband wake boolean
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alistair Delva <adelva@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mitch Phillips <mitchp@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>,
+        William McVicker <willmcvicker@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 146/167] userfaultfd: do not untag user pointers
 Date:   Mon, 26 Jul 2021 17:39:39 +0200
-Message-Id: <20210726153852.311683682@linuxfoundation.org>
+Message-Id: <20210726153844.320757272@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-References: <20210726153846.245305071@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,113 +51,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+From: Peter Collingbourne <pcc@google.com>
 
-commit 56f6f4c4eb2a710ec8878dd9373d3d2b2eb75f5c upstream.
+commit e71e2ace5721a8b921dca18b045069e7bb411277 upstream.
 
-Devices such as SDX24 do not have the provision for inband wake
-doorbell in the form of channel 127 and instead have a sideband
-GPIO for it. Newer devices such as SDX55 or SDX65 support inband
-wake method by default. Ensure the functionality is used based on
-this such that device wake stays held when a client driver uses
-mhi_device_get() API or the equivalent debugfs entry.
+Patch series "userfaultfd: do not untag user pointers", v5.
 
-Link: https://lore.kernel.org/r/1624560809-30610-1-git-send-email-bbhatt@codeaurora.org
-Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake operations")
-Cc: stable@vger.kernel.org #5.12
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20210716075106.49938-2-manivannan.sadhasivam@linaro.org
+If a user program uses userfaultfd on ranges of heap memory, it may end
+up passing a tagged pointer to the kernel in the range.start field of
+the UFFDIO_REGISTER ioctl.  This can happen when using an MTE-capable
+allocator, or on Android if using the Tagged Pointers feature for MTE
+readiness [1].
+
+When a fault subsequently occurs, the tag is stripped from the fault
+address returned to the application in the fault.address field of struct
+uffd_msg.  However, from the application's perspective, the tagged
+address *is* the memory address, so if the application is unaware of
+memory tags, it may get confused by receiving an address that is, from
+its point of view, outside of the bounds of the allocation.  We observed
+this behavior in the kselftest for userfaultfd [2] but other
+applications could have the same problem.
+
+Address this by not untagging pointers passed to the userfaultfd ioctls.
+Instead, let the system call fail.  Also change the kselftest to use
+mmap so that it doesn't encounter this problem.
+
+[1] https://source.android.com/devices/tech/debug/tagged-pointers
+[2] tools/testing/selftests/vm/userfaultfd.c
+
+This patch (of 2):
+
+Do not untag pointers passed to the userfaultfd ioctls.  Instead, let
+the system call fail.  This will provide an early indication of problems
+with tag-unaware userspace code instead of letting the code get confused
+later, and is consistent with how we decided to handle brk/mmap/mremap
+in commit dcde237319e6 ("mm: Avoid creating virtual address aliases in
+brk()/mmap()/mremap()"), as well as being consistent with the existing
+tagged address ABI documentation relating to how ioctl arguments are
+handled.
+
+The code change is a revert of commit 7d0325749a6c ("userfaultfd: untag
+user pointers") plus some fixups to some additional calls to
+validate_range that have appeared since then.
+
+[1] https://source.android.com/devices/tech/debug/tagged-pointers
+[2] tools/testing/selftests/vm/userfaultfd.c
+
+Link: https://lkml.kernel.org/r/20210714195437.118982-1-pcc@google.com
+Link: https://lkml.kernel.org/r/20210714195437.118982-2-pcc@google.com
+Link: https://linux-review.googlesource.com/id/I761aa9f0344454c482b83fcfcce547db0a25501b
+Fixes: 63f0c6037965 ("arm64: Introduce prctl() options to control the tagged user addresses ABI")
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Alistair Delva <adelva@google.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Dave Martin <Dave.Martin@arm.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Lokesh Gidra <lokeshgidra@google.com>
+Cc: Mitch Phillips <mitchp@google.com>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: William McVicker <willmcvicker@google.com>
+Cc: <stable@vger.kernel.org>	[5.4]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/bus/mhi/pci_generic.c |   27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ Documentation/arm64/tagged-address-abi.rst |   26 ++++++++++++++++++--------
+ fs/userfaultfd.c                           |   24 +++++++++++-------------
+ 2 files changed, 29 insertions(+), 21 deletions(-)
 
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -32,6 +32,8 @@
-  * @edl: emergency download mode firmware path (if any)
-  * @bar_num: PCI base address register to use for MHI MMIO register space
-  * @dma_data_width: DMA transfer word size (32 or 64 bits)
-+ * @sideband_wake: Devices using dedicated sideband GPIO for wakeup instead
-+ *		   of inband wake support (such as sdx24)
-  */
- struct mhi_pci_dev_info {
- 	const struct mhi_controller_config *config;
-@@ -40,6 +42,7 @@ struct mhi_pci_dev_info {
- 	const char *edl;
- 	unsigned int bar_num;
- 	unsigned int dma_data_width;
-+	bool sideband_wake;
- };
+--- a/Documentation/arm64/tagged-address-abi.rst
++++ b/Documentation/arm64/tagged-address-abi.rst
+@@ -45,14 +45,24 @@ how the user addresses are used by the k
  
- #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
-@@ -242,7 +245,8 @@ static const struct mhi_pci_dev_info mhi
- 	.edl = "qcom/sdx65m/edl.mbn",
- 	.config = &modem_qcom_v1_mhiv_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
--	.dma_data_width = 32
-+	.dma_data_width = 32,
-+	.sideband_wake = false,
- };
- 
- static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
-@@ -251,7 +255,8 @@ static const struct mhi_pci_dev_info mhi
- 	.edl = "qcom/sdx55m/edl.mbn",
- 	.config = &modem_qcom_v1_mhiv_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
--	.dma_data_width = 32
-+	.dma_data_width = 32,
-+	.sideband_wake = false,
- };
- 
- static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
-@@ -259,7 +264,8 @@ static const struct mhi_pci_dev_info mhi
- 	.edl = "qcom/prog_firehose_sdx24.mbn",
- 	.config = &modem_qcom_v1_mhiv_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
--	.dma_data_width = 32
-+	.dma_data_width = 32,
-+	.sideband_wake = true,
- };
- 
- static const struct mhi_channel_config mhi_quectel_em1xx_channels[] = {
-@@ -301,7 +307,8 @@ static const struct mhi_pci_dev_info mhi
- 	.edl = "qcom/prog_firehose_sdx24.mbn",
- 	.config = &modem_quectel_em1xx_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
--	.dma_data_width = 32
-+	.dma_data_width = 32,
-+	.sideband_wake = true,
- };
- 
- static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
-@@ -339,7 +346,8 @@ static const struct mhi_pci_dev_info mhi
- 	.edl = "qcom/sdx55m/edl.mbn",
- 	.config = &modem_foxconn_sdx55_config,
- 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
--	.dma_data_width = 32
-+	.dma_data_width = 32,
-+	.sideband_wake = false,
- };
- 
- static const struct pci_device_id mhi_pci_id_table[] = {
-@@ -640,9 +648,12 @@ static int mhi_pci_probe(struct pci_dev
- 	mhi_cntrl->status_cb = mhi_pci_status_cb;
- 	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
- 	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
--	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
--	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
--	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
+ 1. User addresses not accessed by the kernel but used for address space
+    management (e.g. ``mprotect()``, ``madvise()``). The use of valid
+-   tagged pointers in this context is allowed with the exception of
+-   ``brk()``, ``mmap()`` and the ``new_address`` argument to
+-   ``mremap()`` as these have the potential to alias with existing
+-   user addresses.
+-
+-   NOTE: This behaviour changed in v5.6 and so some earlier kernels may
+-   incorrectly accept valid tagged pointers for the ``brk()``,
+-   ``mmap()`` and ``mremap()`` system calls.
++   tagged pointers in this context is allowed with these exceptions:
 +
-+	if (info->sideband_wake) {
-+		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-+		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-+		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
-+	}
++   - ``brk()``, ``mmap()`` and the ``new_address`` argument to
++     ``mremap()`` as these have the potential to alias with existing
++      user addresses.
++
++     NOTE: This behaviour changed in v5.6 and so some earlier kernels may
++     incorrectly accept valid tagged pointers for the ``brk()``,
++     ``mmap()`` and ``mremap()`` system calls.
++
++   - The ``range.start``, ``start`` and ``dst`` arguments to the
++     ``UFFDIO_*`` ``ioctl()``s used on a file descriptor obtained from
++     ``userfaultfd()``, as fault addresses subsequently obtained by reading
++     the file descriptor will be untagged, which may otherwise confuse
++     tag-unaware programs.
++
++     NOTE: This behaviour changed in v5.14 and so some earlier kernels may
++     incorrectly accept valid tagged pointers for this system call.
  
- 	err = mhi_pci_claim(mhi_cntrl, info->bar_num, DMA_BIT_MASK(info->dma_data_width));
- 	if (err)
+ 2. User addresses accessed by the kernel (e.g. ``write()``). This ABI
+    relaxation is disabled by default and the application thread needs to
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -1228,23 +1228,21 @@ static __always_inline void wake_userfau
+ }
+ 
+ static __always_inline int validate_range(struct mm_struct *mm,
+-					  __u64 *start, __u64 len)
++					  __u64 start, __u64 len)
+ {
+ 	__u64 task_size = mm->task_size;
+ 
+-	*start = untagged_addr(*start);
+-
+-	if (*start & ~PAGE_MASK)
++	if (start & ~PAGE_MASK)
+ 		return -EINVAL;
+ 	if (len & ~PAGE_MASK)
+ 		return -EINVAL;
+ 	if (!len)
+ 		return -EINVAL;
+-	if (*start < mmap_min_addr)
++	if (start < mmap_min_addr)
+ 		return -EINVAL;
+-	if (*start >= task_size)
++	if (start >= task_size)
+ 		return -EINVAL;
+-	if (len > task_size - *start)
++	if (len > task_size - start)
+ 		return -EINVAL;
+ 	return 0;
+ }
+@@ -1290,7 +1288,7 @@ static int userfaultfd_register(struct u
+ 	if (uffdio_register.mode & UFFDIO_REGISTER_MODE_WP)
+ 		vm_flags |= VM_UFFD_WP;
+ 
+-	ret = validate_range(mm, &uffdio_register.range.start,
++	ret = validate_range(mm, uffdio_register.range.start,
+ 			     uffdio_register.range.len);
+ 	if (ret)
+ 		goto out;
+@@ -1490,7 +1488,7 @@ static int userfaultfd_unregister(struct
+ 	if (copy_from_user(&uffdio_unregister, buf, sizeof(uffdio_unregister)))
+ 		goto out;
+ 
+-	ret = validate_range(mm, &uffdio_unregister.start,
++	ret = validate_range(mm, uffdio_unregister.start,
+ 			     uffdio_unregister.len);
+ 	if (ret)
+ 		goto out;
+@@ -1639,7 +1637,7 @@ static int userfaultfd_wake(struct userf
+ 	if (copy_from_user(&uffdio_wake, buf, sizeof(uffdio_wake)))
+ 		goto out;
+ 
+-	ret = validate_range(ctx->mm, &uffdio_wake.start, uffdio_wake.len);
++	ret = validate_range(ctx->mm, uffdio_wake.start, uffdio_wake.len);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -1679,7 +1677,7 @@ static int userfaultfd_copy(struct userf
+ 			   sizeof(uffdio_copy)-sizeof(__s64)))
+ 		goto out;
+ 
+-	ret = validate_range(ctx->mm, &uffdio_copy.dst, uffdio_copy.len);
++	ret = validate_range(ctx->mm, uffdio_copy.dst, uffdio_copy.len);
+ 	if (ret)
+ 		goto out;
+ 	/*
+@@ -1736,7 +1734,7 @@ static int userfaultfd_zeropage(struct u
+ 			   sizeof(uffdio_zeropage)-sizeof(__s64)))
+ 		goto out;
+ 
+-	ret = validate_range(ctx->mm, &uffdio_zeropage.range.start,
++	ret = validate_range(ctx->mm, uffdio_zeropage.range.start,
+ 			     uffdio_zeropage.range.len);
+ 	if (ret)
+ 		goto out;
+@@ -1786,7 +1784,7 @@ static int userfaultfd_writeprotect(stru
+ 			   sizeof(struct uffdio_writeprotect)))
+ 		return -EFAULT;
+ 
+-	ret = validate_range(ctx->mm, &uffdio_wp.range.start,
++	ret = validate_range(ctx->mm, uffdio_wp.range.start,
+ 			     uffdio_wp.range.len);
+ 	if (ret)
+ 		return ret;
 
 
