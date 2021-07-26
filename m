@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1F43D63B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFEF3D638F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239164AbhGZPuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:50:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40886 "EHLO mail.kernel.org"
+        id S238961AbhGZPsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:48:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237441AbhGZP3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC49A60FC1;
-        Mon, 26 Jul 2021 16:08:03 +0000 (UTC)
+        id S238017AbhGZP3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71CA060240;
+        Mon, 26 Jul 2021 16:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315684;
-        bh=y8gmZqop9BmTiw9GOQqxvDT1B86BHadDU+FgFb9RLPE=;
+        s=korg; t=1627315809;
+        bh=KNFYws57n4zXku7Nd/PLxb09tfrH2i/PZaiswKkAZgU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ygR8LpBli+iDSx9GMPYBdJM6JFNbtEUCbV+GSWFaxEvOprdd2409kd8/+eT5nfcMo
-         4HE6vS5X7RuN1m6yHboH0rgAyKQUyAUscsdsmoxnHwYp2h9oDW3T9u4Re5h5MvjTBP
-         NJzVsXj8vCNP4zP9X9xCYyOiPueqOSEYPpjI31uc=
+        b=PlOl05APnwCSC99iaHX0XOubkMIQcO8BPvPPRBksiY0VANKrh2XcRTPziWqqHOayq
+         NP23Gr/J8iuvY7FWgQHQ657P5vT1D5Ng1vGsg4jlLJcVjLWfH2a8uzPTPmGNIPGAG3
+         JcJ+a8gICWxZ8a5dL6Xm8YymD2zySup/p9Dmvfe4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
+        Martin Krastev <krastevm@vmware.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 025/223] selftests: icmp_redirect: remove from checking for IPv6 route get
-Date:   Mon, 26 Jul 2021 17:36:57 +0200
-Message-Id: <20210726153847.069319084@linuxfoundation.org>
+Subject: [PATCH 5.13 029/223] drm/vmwgfx: Fix a bad merge in otable batch takedown
+Date:   Mon, 26 Jul 2021 17:37:01 +0200
+Message-Id: <20210726153847.203796851@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,36 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Zack Rusin <zackr@vmware.com>
 
-[ Upstream commit 24b671aad4eae423e1abf5b7f08d9a5235458b8d ]
+[ Upstream commit 34bd46bcf3de72cbffcdc42d3fa67e543d1c869b ]
 
-If the kernel doesn't enable option CONFIG_IPV6_SUBTREES, the RTA_SRC
-info will not be exported to userspace in rt6_fill_node(). And ip cmd will
-not print "from ::" to the route output. So remove this check.
+Change
+2ef4fb92363c ("drm/vmwgfx: Make sure bo's are unpinned before putting them back")
+caused a conflict in one of the drm trees and the merge commit
+68a32ba14177 ("Merge tag 'drm-next-2021-04-28' of git://anongit.freedesktop.org/drm/drm")
+accidently re-added code that the original change was removing.
+Fixed by removing the incorrect buffer unpin - it has already been unpinned
+two lines above.
 
-Fixes: ec8105352869 ("selftests: Add redirect tests")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 68a32ba14177 ("Merge tag 'drm-next-2021-04-28' of git://anongit.freedesktop.org/drm/drm")
+Signed-off-by: Zack Rusin <zackr@vmware.com>
+Reviewed-by: Martin Krastev <krastevm@vmware.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210615182336.995192-4-zackr@vmware.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/icmp_redirect.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/vmwgfx/vmwgfx_mob.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/icmp_redirect.sh b/tools/testing/selftests/net/icmp_redirect.sh
-index bf361f30d6ef..bfcabee50155 100755
---- a/tools/testing/selftests/net/icmp_redirect.sh
-+++ b/tools/testing/selftests/net/icmp_redirect.sh
-@@ -311,7 +311,7 @@ check_exception()
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c b/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c
+index 5648664f71bc..f2d625415458 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_mob.c
+@@ -354,7 +354,6 @@ static void vmw_otable_batch_takedown(struct vmw_private *dev_priv,
+ 	ttm_bo_unpin(bo);
+ 	ttm_bo_unreserve(bo);
  
- 	if [ "$with_redirect" = "yes" ]; then
- 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
--		grep -q "${H2_N2_IP6} from :: via ${R2_LLADDR} dev br0.*${mtu}"
-+		grep -q "${H2_N2_IP6} .*via ${R2_LLADDR} dev br0.*${mtu}"
- 	elif [ -n "${mtu}" ]; then
- 		ip -netns h1 -6 ro get ${H1_VRF_ARG} ${H2_N2_IP6} | \
- 		grep -q "${mtu}"
+-	ttm_bo_unpin(batch->otable_bo);
+ 	ttm_bo_put(batch->otable_bo);
+ 	batch->otable_bo = NULL;
+ }
 -- 
 2.30.2
 
