@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E7D3D6308
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B943D6160
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238560AbhGZPnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
+        id S233022AbhGZPa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238067AbhGZPYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD7E60E09;
-        Mon, 26 Jul 2021 16:05:04 +0000 (UTC)
+        id S236830AbhGZPRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 353BF60F42;
+        Mon, 26 Jul 2021 15:58:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315505;
-        bh=Z8xvYOwArq6z6cOpGIaDz6plqC40jynkMy5CihLFma8=;
+        s=korg; t=1627315090;
+        bh=QpC5Ld/zp5CDaOVMzyDbllIAwSbCdnC2DMlrdzNzE0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xNvBFVRz0/oP2H5dhQ5nFkhyB/PvPjMmbdARbyywm77jvfisOtDzL08wFv5aV8R/F
-         7bYDK4WtZKY0kiYY6CEf8BCnAAkDQnlBh0rzu70eeF6d22d1b7oRYW6rNeabPaMP72
-         dtpTv1dU0siCMmaAzoJdoTZm4ZQWgI7Rjil8f7q0=
+        b=Iz2abEeFY3m8Sp6BSyyELgg5DnaWVR8k2NTMs75XW3NKT/mAbqIOhGrGzICq6ENVK
+         B65iWKvVEbiFULbRMeUIAlknJ+erlmS4CyuAYnV2haY5TX07TMjY269WzuEM5kbIjV
+         9dGExXNjdnsX5I7KD0qjFycarZ34J5I7P9dRd11U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Subject: [PATCH 5.10 124/167] usb: max-3421: Prevent corruption of freed memory
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 5.4 076/108] xhci: Fix lost USB 2 remote wake
 Date:   Mon, 26 Jul 2021 17:39:17 +0200
-Message-Id: <20210726153843.564988264@linuxfoundation.org>
+Message-Id: <20210726153834.118781979@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,132 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit b5fdf5c6e6bee35837e160c00ac89327bdad031b upstream.
+commit 72f68bf5c756f5ce1139b31daae2684501383ad5 upstream.
 
-The MAX-3421 USB driver remembers the state of the USB toggles for a
-device/endpoint. To save SPI writes, this was only done when a new
-device/endpoint was being used. Unfortunately, if the old device was
-removed, this would cause writes to freed memory.
+There's a small window where a USB 2 remote wake may be left unhandled
+due to a race between hub thread and xhci port event interrupt handler.
 
-To fix this, a simpler scheme is used. The toggles are read from
-hardware when a URB is completed, and the toggles are always written to
-hardware when any URB transaction is started. This will cause a few more
-SPI transactions, but no causes kernel panics.
+When the resume event is detected in the xhci interrupt handler it kicks
+the hub timer, which should move the port from resume to U0 once resume
+has been signalled for long enough.
 
-Fixes: 2d53139f3162 ("Add support for using a MAX3421E chip as a host driver.")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Link: https://lore.kernel.org/r/20210625031456.8632-1-mark.tomlinson@alliedtelesis.co.nz
+To keep the hub "thread" running we set a bus_state->resuming_ports flag.
+This flag makes sure hub timer function kicks itself.
+
+checking this flag was not properly protected by the spinlock. Flag was
+copied to a local variable before lock was taken. The local variable was
+then checked later with spinlock held.
+
+If interrupt is handled right after copying the flag to the local variable
+we end up stopping the hub thread before it can handle the USB 2 resume.
+
+CPU0					CPU1
+(hub thread)				(xhci event handler)
+
+xhci_hub_status_data()
+status = bus_state->resuming_ports;
+					<Interrupt>
+					handle_port_status()
+					spin_lock()
+					bus_state->resuming_ports = 1
+					set_flag(HCD_FLAG_POLL_RH)
+					spin_unlock()
+spin_lock()
+if (!status)
+  clear_flag(HCD_FLAG_POLL_RH)
+spin_unlock()
+
+Fix this by taking the lock a bit earlier so that it covers
+the resuming_ports flag copy in the hub thread
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210715150651.1996099-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/host/max3421-hcd.c |   44 +++++++++++++----------------------------
- 1 file changed, 14 insertions(+), 30 deletions(-)
+ drivers/usb/host/xhci-hub.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/host/max3421-hcd.c
-+++ b/drivers/usb/host/max3421-hcd.c
-@@ -153,8 +153,6 @@ struct max3421_hcd {
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -1546,11 +1546,12 @@ int xhci_hub_status_data(struct usb_hcd
+ 	 * Inform the usbcore about resume-in-progress by returning
+ 	 * a non-zero value even if there are no status changes.
  	 */
- 	struct urb *curr_urb;
- 	enum scheduling_pass sched_pass;
--	struct usb_device *loaded_dev;	/* dev that's loaded into the chip */
--	int loaded_epnum;		/* epnum whose toggles are loaded */
- 	int urb_done;			/* > 0 -> no errors, < 0: errno */
- 	size_t curr_len;
- 	u8 hien;
-@@ -492,39 +490,17 @@ max3421_set_speed(struct usb_hcd *hcd, s
-  * Caller must NOT hold HCD spinlock.
-  */
- static void
--max3421_set_address(struct usb_hcd *hcd, struct usb_device *dev, int epnum,
--		    int force_toggles)
-+max3421_set_address(struct usb_hcd *hcd, struct usb_device *dev, int epnum)
- {
--	struct max3421_hcd *max3421_hcd = hcd_to_max3421(hcd);
--	int old_epnum, same_ep, rcvtog, sndtog;
--	struct usb_device *old_dev;
-+	int rcvtog, sndtog;
- 	u8 hctl;
- 
--	old_dev = max3421_hcd->loaded_dev;
--	old_epnum = max3421_hcd->loaded_epnum;
--
--	same_ep = (dev == old_dev && epnum == old_epnum);
--	if (same_ep && !force_toggles)
--		return;
--
--	if (old_dev && !same_ep) {
--		/* save the old end-points toggles: */
--		u8 hrsl = spi_rd8(hcd, MAX3421_REG_HRSL);
--
--		rcvtog = (hrsl >> MAX3421_HRSL_RCVTOGRD_BIT) & 1;
--		sndtog = (hrsl >> MAX3421_HRSL_SNDTOGRD_BIT) & 1;
--
--		/* no locking: HCD (i.e., we) own toggles, don't we? */
--		usb_settoggle(old_dev, old_epnum, 0, rcvtog);
--		usb_settoggle(old_dev, old_epnum, 1, sndtog);
--	}
- 	/* setup new endpoint's toggle bits: */
- 	rcvtog = usb_gettoggle(dev, epnum, 0);
- 	sndtog = usb_gettoggle(dev, epnum, 1);
- 	hctl = (BIT(rcvtog + MAX3421_HCTL_RCVTOG0_BIT) |
- 		BIT(sndtog + MAX3421_HCTL_SNDTOG0_BIT));
- 
--	max3421_hcd->loaded_epnum = epnum;
- 	spi_wr8(hcd, MAX3421_REG_HCTL, hctl);
- 
- 	/*
-@@ -532,7 +508,6 @@ max3421_set_address(struct usb_hcd *hcd,
- 	 * address-assignment so it's best to just always load the
- 	 * address whenever the end-point changed/was forced.
- 	 */
--	max3421_hcd->loaded_dev = dev;
- 	spi_wr8(hcd, MAX3421_REG_PERADDR, dev->devnum);
- }
- 
-@@ -667,7 +642,7 @@ max3421_select_and_start_urb(struct usb_
- 	struct max3421_hcd *max3421_hcd = hcd_to_max3421(hcd);
- 	struct urb *urb, *curr_urb = NULL;
- 	struct max3421_ep *max3421_ep;
--	int epnum, force_toggles = 0;
-+	int epnum;
- 	struct usb_host_endpoint *ep;
- 	struct list_head *pos;
- 	unsigned long flags;
-@@ -777,7 +752,6 @@ done:
- 			usb_settoggle(urb->dev, epnum, 0, 1);
- 			usb_settoggle(urb->dev, epnum, 1, 1);
- 			max3421_ep->pkt_state = PKT_STATE_SETUP;
--			force_toggles = 1;
- 		} else
- 			max3421_ep->pkt_state = PKT_STATE_TRANSFER;
- 	}
-@@ -785,7 +759,7 @@ done:
- 	spin_unlock_irqrestore(&max3421_hcd->lock, flags);
- 
- 	max3421_ep->last_active = max3421_hcd->frame_number;
--	max3421_set_address(hcd, urb->dev, epnum, force_toggles);
-+	max3421_set_address(hcd, urb->dev, epnum);
- 	max3421_set_speed(hcd, urb->dev);
- 	max3421_next_transfer(hcd, 0);
- 	return 1;
-@@ -1380,6 +1354,16 @@ max3421_urb_done(struct usb_hcd *hcd)
- 		status = 0;
- 	urb = max3421_hcd->curr_urb;
- 	if (urb) {
-+		/* save the old end-points toggles: */
-+		u8 hrsl = spi_rd8(hcd, MAX3421_REG_HRSL);
-+		int rcvtog = (hrsl >> MAX3421_HRSL_RCVTOGRD_BIT) & 1;
-+		int sndtog = (hrsl >> MAX3421_HRSL_SNDTOGRD_BIT) & 1;
-+		int epnum = usb_endpoint_num(&urb->ep->desc);
++	spin_lock_irqsave(&xhci->lock, flags);
 +
-+		/* no locking: HCD (i.e., we) own toggles, don't we? */
-+		usb_settoggle(urb->dev, epnum, 0, rcvtog);
-+		usb_settoggle(urb->dev, epnum, 1, sndtog);
-+
- 		max3421_hcd->curr_urb = NULL;
- 		spin_lock_irqsave(&max3421_hcd->lock, flags);
- 		usb_hcd_unlink_urb_from_ep(hcd, urb);
+ 	status = bus_state->resuming_ports;
+ 
+ 	mask = PORT_CSC | PORT_PEC | PORT_OCC | PORT_PLC | PORT_WRC | PORT_CEC;
+ 
+-	spin_lock_irqsave(&xhci->lock, flags);
+ 	/* For each port, did anything change?  If so, set that bit in buf. */
+ 	for (i = 0; i < max_ports; i++) {
+ 		temp = readl(ports[i]->addr);
 
 
