@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C756D3D6324
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486F63D62D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238964AbhGZPol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40574 "EHLO mail.kernel.org"
+        id S238384AbhGZPjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236885AbhGZPZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A946660F5B;
-        Mon, 26 Jul 2021 16:05:59 +0000 (UTC)
+        id S237273AbhGZPWW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7002660F9E;
+        Mon, 26 Jul 2021 15:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315560;
-        bh=2y2ViINwvaGBM9RBMV8CAqe3gdoJej9Jud5Trp+2Iks=;
+        s=korg; t=1627314783;
+        bh=WJPswiVWL6sJFtQ+jGV2vIj33WC0X8ofGVMXQ0HRpUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vJa9ckr6Ki/Br1D7fLPCIARIkx/nuJIhdCr6LA50LlcJPyaw02Z9aJP5TwjhqFHJy
-         I2aQBfVKksGObp31vzzONpqvzSPNs4PjXF//pi+OXAJ6tx51xq4aWI5/gS27PdhgsE
-         FN1g83diPUN/wmKnTTHWneb+KvgZPOUOPGPaMx3o=
+        b=wdcdwnLrM0gNxUR+hy9gpNqXiwQvMQLFYKzUrdfz7+jAgOK8febKsY1DLcRFdnBcl
+         FMcRBhhQdJGbMZrkHFXSTN57OrWbOjok/nNwMelXr0anaoysbv8YlKYbIFFQyAa7EN
+         ImvFzwvx+UklwwSa66c4spbm9j3mtIpjf6CBzKx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 109/167] ALSA: usb-audio: Add missing proc text entry for BESPOKEN type
+        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>
+Subject: [PATCH 4.19 090/120] [PATCH] Revert "MIPS: add PMD table accounting into MIPSpmd_alloc_one"
 Date:   Mon, 26 Jul 2021 17:39:02 +0200
-Message-Id: <20210726153843.052761147@linuxfoundation.org>
+Message-Id: <20210726153835.272293632@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Huang Pei <huangpei@loongson.cn>
 
-commit 64752a95b702817602d72f109ceaf5ec0780e283 upstream.
+This reverts commit 68046cc531577b8f0ebe67ccf18b9c70106d7937 which is
+commit ed914d48b6a1040d1039d371b56273d422c0081e upstream.
 
-Recently we've added a new usb_mixer element type, USB_MIXER_BESPOKEN,
-but it wasn't added in the table in snd_usb_mixer_dump_cval().  This
-is no big problem since each bespoken type should have its own dump
-method, but it still isn't disallowed to use the standard one, so we
-should cover it as well.  Along with it, define the table with the
-explicit array initializer for avoiding other pitfalls.
+Commit b2b29d6d011944 (mm: account PMD tables like PTE tables) is
+introduced between v5.9 and v5.10, so this fix (commit 002d8b395fa1)
+should NOT apply to any pre-5.10 branch.
 
-Fixes: 785b6f29a795 ("ALSA: usb-audio: scarlett2: Fix wrong resume call")
-Reported-by: Pavel Machek <pavel@denx.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210714084836.1977-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/mixer.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ arch/mips/include/asm/pgalloc.h |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -3274,7 +3274,15 @@ static void snd_usb_mixer_dump_cval(stru
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -93,15 +93,11 @@ do {							\
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
  {
- 	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
- 	static const char * const val_types[] = {
--		"BOOLEAN", "INV_BOOLEAN", "S8", "U8", "S16", "U16", "S32", "U32",
-+		[USB_MIXER_BOOLEAN] = "BOOLEAN",
-+		[USB_MIXER_INV_BOOLEAN] = "INV_BOOLEAN",
-+		[USB_MIXER_S8] = "S8",
-+		[USB_MIXER_U8] = "U8",
-+		[USB_MIXER_S16] = "S16",
-+		[USB_MIXER_U16] = "U16",
-+		[USB_MIXER_S32] = "S32",
-+		[USB_MIXER_U32] = "U32",
-+		[USB_MIXER_BESPOKEN] = "BESPOKEN",
- 	};
- 	snd_iprintf(buffer, "    Info: id=%i, control=%i, cmask=0x%x, "
- 			    "channels=%i, type=\"%s\"\n", cval->head.id,
+-	pmd_t *pmd = NULL;
+-	struct page *pg;
++	pmd_t *pmd;
+ 
+-	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
+-	if (pg) {
+-		pgtable_pmd_page_ctor(pg);
+-		pmd = (pmd_t *)page_address(pg);
++	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
++	if (pmd)
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
+-	}
+ 	return pmd;
+ }
+ 
 
 
