@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85283D611C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DFEE3D60C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbhGZP2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:28:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55604 "EHLO mail.kernel.org"
+        id S237891AbhGZPYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237533AbhGZPQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE53D6056C;
-        Mon, 26 Jul 2021 15:56:28 +0000 (UTC)
+        id S236865AbhGZPPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7C1C60FEE;
+        Mon, 26 Jul 2021 15:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314989;
-        bh=tiFFVu6cjKJ+hbq+PXJmlBpBZ4swHxEAWrxiHdbUY5s=;
+        s=korg; t=1627314834;
+        bh=kiCwj/eaP/By5s5uuKuSufARKwNtWr/QwUGAT1BSjy4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=we3brTP4DGNtT0HEC+WA1ZFzDYwUtmDCIa1/wnX3OfLlx1mns2NzOXQxq+51PqYGx
-         vG7fTwNh/asEcDSfEhjPTa0BGzAd5pAVkfvSL0djy6IlTggF/A9N70cX94fkAEi2HH
-         4elefsgVxvTC6lgcD9QAQPxtqa/1Ry99Qg6fL9fA=
+        b=DeFZqRmwsccgGmoZ/lhqef2YCPify6eFn6UscTvEoWQDwpMpkCxyfxBqhhCzmLMH9
+         qWiiZGamaQoUmkGwmhlyt4bnI0Lv+UOfOJpabkIUZC6EZTwgmUAN908GmLNgHT9Dg2
+         Rb84+ih54NNmjfWgpjHbhgRMzDVyo9X1DoCSvc8E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/108] KVM: PPC: Book3S: Fix CONFIG_TRANSACTIONAL_MEM=n crash
+Subject: [PATCH 4.19 073/120] s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
 Date:   Mon, 26 Jul 2021 17:38:45 +0200
-Message-Id: <20210726153833.101099140@linuxfoundation.org>
+Message-Id: <20210726153834.728280682@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit bd31ecf44b8e18ccb1e5f6b50f85de6922a60de3 ]
+[ Upstream commit 91091656252f5d6d8c476e0c92776ce9fae7b445 ]
 
-When running CPU_FTR_P9_TM_HV_ASSIST, HFSCR[TM] is set for the guest
-even if the host has CONFIG_TRANSACTIONAL_MEM=n, which causes it to be
-unprepared to handle guest exits while transactional.
+Currently array jit->seen_reg[r1] is being accessed before the range
+checking of index r1. The range changing on r1 should be performed
+first since it will avoid any potential out-of-range accesses on the
+array seen_reg[] and also it is more optimal to perform checks on r1
+before fetching data from the array. Fix this by swapping the order
+of the checks before the array access.
 
-Normal guests don't have a problem because the HTM capability will not
-be advertised, but a rogue or buggy one could crash the host.
-
-Fixes: 4bb3c7a0208f ("KVM: PPC: Book3S HV: Work around transactional memory bugs in POWER9")
-Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210716024310.164448-1-npiggin@gmail.com
+Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Link: https://lore.kernel.org/bpf/20210715125712.24690-1-colin.king@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kvm/book3s_hv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index 9011857c0434..bba358f13471 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -2306,8 +2306,10 @@ static struct kvm_vcpu *kvmppc_core_vcpu_create_hv(struct kvm *kvm,
- 		HFSCR_DSCR | HFSCR_VECVSX | HFSCR_FP;
- 	if (cpu_has_feature(CPU_FTR_HVMODE)) {
- 		vcpu->arch.hfscr &= mfspr(SPRN_HFSCR);
-+#ifdef CONFIG_PPC_TRANSACTIONAL_MEM
- 		if (cpu_has_feature(CPU_FTR_P9_TM_HV_ASSIST))
- 			vcpu->arch.hfscr |= HFSCR_TM;
-+#endif
- 	}
- 	if (cpu_has_feature(CPU_FTR_TM_COMP))
- 		vcpu->arch.hfscr |= HFSCR_TM;
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 2617e426c792..e42354b15e0b 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -113,7 +113,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
+ {
+ 	u32 r1 = reg2hex[b1];
+ 
+-	if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
++	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
+ 		jit->seen_reg[r1] = 1;
+ }
+ 
 -- 
 2.30.2
 
