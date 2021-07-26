@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C700B3D6327
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6653C3D61F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239020AbhGZPop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:44:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41074 "EHLO mail.kernel.org"
+        id S232939AbhGZPdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:33:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236901AbhGZPZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:25:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D107360C40;
-        Mon, 26 Jul 2021 16:06:10 +0000 (UTC)
+        id S236578AbhGZPTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:19:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 532076056C;
+        Mon, 26 Jul 2021 15:59:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315571;
-        bh=l7dlBLsiwaVUL8RS6ZKVGKxoQD3Yiv8YGJggAh7Hqa0=;
+        s=korg; t=1627315168;
+        bh=wLMu7KGk8CWQSLeDo2XfbK95O2RCPbz5E2x5m/Ka8VM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PH/qUEZ2IxjZIoFzK04Q4b3TSY5eECbiTNftCcXg87uqYGfWLj2uPnoLLYr57p/IJ
-         Gs/i7fXJSpW9+kg8rc7HcnsIC0x/GnjTc1BZ0wJ1DqKheHenrR3WbbAmF1gyGU+9eU
-         nhAp8xhGLnMJcDxVjtdcrp10qan2A7Sq2VVvnDu8=
+        b=T1SmmiXcBVoVrLY385h0OXhigBlofbot60oNvnDBWto+YjmTRyX6RfHI0q0dc+HY5
+         wlHoU+ZetzTgehzkFzBCcDb7ERxlUqCM7x0vi0HVQ5frGa8YuVi2jeHumRvFUFEjq8
+         7bzEhrPNAs+VZzS3nWbVeJzIF1UjwBYaJeu8cJxg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damjan Georgievski <gdamjan@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 113/167] ALSA: hdmi: Expose all pins on MSI MS-7C94 board
+        stable@vger.kernel.org,
+        syzbot+b774577370208727d12b@syzkaller.appspotmail.com,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 065/108] sctp: update active_key for asoc when old key is being replaced
 Date:   Mon, 26 Jul 2021 17:39:06 +0200
-Message-Id: <20210726153843.201161944@linuxfoundation.org>
+Message-Id: <20210726153833.776008432@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Xin Long <lucien.xin@gmail.com>
 
-commit 33f735f137c6539e3ceceb515cd1e2a644005b49 upstream.
+[ Upstream commit 58acd10092268831e49de279446c314727101292 ]
 
-The BIOS on MSI Mortar B550m WiFi (MS-7C94) board with AMDGPU seems
-disabling the other pins than HDMI although it has more outputs
-including DP.
+syzbot reported a call trace:
 
-This patch adds the board to the allow list for enabling all pins.
+  BUG: KASAN: use-after-free in sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
+  Call Trace:
+   sctp_auth_shkey_hold+0x22/0xa0 net/sctp/auth.c:112
+   sctp_set_owner_w net/sctp/socket.c:131 [inline]
+   sctp_sendmsg_to_asoc+0x152e/0x2180 net/sctp/socket.c:1865
+   sctp_sendmsg+0x103b/0x1d30 net/sctp/socket.c:2027
+   inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
+   sock_sendmsg_nosec net/socket.c:703 [inline]
+   sock_sendmsg+0xcf/0x120 net/socket.c:723
 
-Reported-by: Damjan Georgievski <gdamjan@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/CAEk1YH4Jd0a8vfZxORVu7qg+Zsc-K+pR187ezNq8QhJBPW4gpw@mail.gmail.com
-Link: https://lore.kernel.org/r/20210716135600.24176-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This is an use-after-free issue caused by not updating asoc->shkey after
+it was replaced in the key list asoc->endpoint_shared_keys, and the old
+key was freed.
+
+This patch is to fix by also updating active_key for asoc when old key is
+being replaced with a new one. Note that this issue doesn't exist in
+sctp_auth_del_key_id(), as it's not allowed to delete the active_key
+from the asoc.
+
+Fixes: 1b1e0bc99474 ("sctp: add refcnt support for sh_key")
+Reported-by: syzbot+b774577370208727d12b@syzkaller.appspotmail.com
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_hdmi.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/sctp/auth.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1939,6 +1939,7 @@ static int hdmi_add_cvt(struct hda_codec
- static const struct snd_pci_quirk force_connect_list[] = {
- 	SND_PCI_QUIRK(0x103c, 0x870f, "HP", 1),
- 	SND_PCI_QUIRK(0x103c, 0x871a, "HP", 1),
-+	SND_PCI_QUIRK(0x1462, 0xec94, "MS-7C94", 1),
- 	{}
- };
+diff --git a/net/sctp/auth.c b/net/sctp/auth.c
+index 1d898ee4018c..7eced1e523a5 100644
+--- a/net/sctp/auth.c
++++ b/net/sctp/auth.c
+@@ -866,6 +866,8 @@ int sctp_auth_set_key(struct sctp_endpoint *ep,
+ 	if (replace) {
+ 		list_del_init(&shkey->key_list);
+ 		sctp_auth_shkey_release(shkey);
++		if (asoc && asoc->active_key_id == auth_key->sca_keynumber)
++			sctp_auth_asoc_init_active_key(asoc, GFP_KERNEL);
+ 	}
+ 	list_add(&cur_key->key_list, sh_keys);
  
+-- 
+2.30.2
+
 
 
