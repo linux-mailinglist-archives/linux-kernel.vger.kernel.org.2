@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008133D69A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A383D69A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 00:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhGZV5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:57:22 -0400
-Received: from mail-il1-f174.google.com ([209.85.166.174]:36686 "EHLO
-        mail-il1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233775AbhGZV5U (ORCPT
+        id S233815AbhGZV7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:59:12 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:42911 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233733AbhGZV7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:57:20 -0400
-Received: by mail-il1-f174.google.com with SMTP id c3so10473061ilh.3;
-        Mon, 26 Jul 2021 15:37:47 -0700 (PDT)
+        Mon, 26 Jul 2021 17:59:11 -0400
+Received: by mail-io1-f51.google.com with SMTP id h1so13804221iol.9;
+        Mon, 26 Jul 2021 15:39:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=jhQiogE/zeQBOwAh8kG8uDNGFLp4MbNyTgySdYg4ow4=;
-        b=TocQWa9ip9/xoSreBpRxxoKomP3QfbnPknY5MelMcBwGvOPTH7zDa6WeDf0xelKt26
-         5cZEAk0LlewQEit8X97JIA8j0cdAFHV1JgrdbagKluGhSsBdCxtss1fIzbK3bHBaDLme
-         uRuL58fEowFWnbpKD0QAoRwdv1v4o3wP62ylREjQbQhHlonFP0VKhvY+kVlQ8XBdeirM
-         x7HbRCF6xaTQ3BIfmGZtzd6MeR9bMeCJhwjeu+h4dVgu1rU8jbKTCWOLiRwUicqsr42A
-         pJ5SvAURqiCs0rlvnFw2geeAWidDFJrH/Q9DCVI0iIlZGdE8KbZ/zbF6uSAfqXDrvOxd
-         GAbw==
-X-Gm-Message-State: AOAM531s8TCeFYOlAdfIlXMv8hTeGSZvauQDM5GAVIZZ8iXUNKLqnRoF
-        ANlqmpAYi/hYCZLfJXPlAXjV2Rkk3Q==
-X-Google-Smtp-Source: ABdhPJyVtrHqYPjIilDfqErTtViORlAkmWMthFR2B1uXTchtbhmi29nCNdMxW6IA+JC7hKaJdxzPUg==
-X-Received: by 2002:a92:c60c:: with SMTP id p12mr14394951ilm.7.1627339067336;
-        Mon, 26 Jul 2021 15:37:47 -0700 (PDT)
+        bh=EVvGxhML1s/c1Z4UmKTuDO1TqOVXR7jHdb7OwqrmdMs=;
+        b=Rjk9E8GHmc1v8rLrO6T1OsOUr1FRkJGbuBXMep2GSNiXDtL+tFkJIc0iKa+ltBdR/Y
+         hbAbFPPMU6/DFsgMkWTDayQaE+XQED98FXeQd2GgCtfUYlUNWXmFx5NyVOu7EZbx2g31
+         xuXW2zwnlh4AEnO1tFhrd+1gJlZfW71CLdKrRGxCP5SuGWbOXZhcHeAmSJH0Qo/v3dVj
+         /DRO1sLlpqLrLsSupyUuQ2pNgN7VcnF5X44fWDxYZ96BssA5Q1Zk2YuLAOeTJs7gTDT1
+         ZTb2wOm5GUMNxf/Xvp5CaSfM4ZZ5OOZrg1Q5kEFq/LWmSFaSYCnOn4HlZNV5rhwAidGb
+         n/Cg==
+X-Gm-Message-State: AOAM532GfR6UyxjqY/yjfPRz3BA8yCnN3CkPxA4d5BbzpPf/5M6dU+qw
+        VyjkCy7O+IUx5Gn0XXrVYQ==
+X-Google-Smtp-Source: ABdhPJz4q8G8J2GYik3YDtbXs1CHxl4Ho/+h7C0nWkNFkdMSaApcGIFyvuC5/VBWTKUHtZLZokCI5Q==
+X-Received: by 2002:a5d:8b85:: with SMTP id p5mr16249627iol.43.1627339178788;
+        Mon, 26 Jul 2021 15:39:38 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id v18sm607434iln.49.2021.07.26.15.37.44
+        by smtp.gmail.com with ESMTPSA id c11sm723456iod.8.2021.07.26.15.39.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 15:37:46 -0700 (PDT)
-Received: (nullmailer pid 1002097 invoked by uid 1000);
-        Mon, 26 Jul 2021 22:37:42 -0000
-Date:   Mon, 26 Jul 2021 16:37:42 -0600
+        Mon, 26 Jul 2021 15:39:38 -0700 (PDT)
+Received: (nullmailer pid 1005107 invoked by uid 1000);
+        Mon, 26 Jul 2021 22:39:34 -0000
+Date:   Mon, 26 Jul 2021 16:39:34 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     rishabhb@codeaurora.org, devicetree@vger.kernel.org,
-        dianders@chromium.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, mathieu.poirier@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        sidgup@codeaurora.org, ohad@wizery.com, swboyd@chromium.org,
-        bjorn.andersson@linaro.org, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, rjw@rjwysocki.net, mka@chromium.org
-Subject: Re: [PATCH v4 01/13] dt-bindings: soc: qcom: aoss: Drop the load
- state power-domain
-Message-ID: <20210726223742.GA1002063@robh.at.kernel.org>
-References: <1626755807-11865-1-git-send-email-sibis@codeaurora.org>
- <1626755807-11865-2-git-send-email-sibis@codeaurora.org>
+To:     Christophe Branchereau <cbranchereau@gmail.com>
+Cc:     devicetree@vger.kernel.org, paul@crapouillou.net,
+        linux-iio@vger.kernel.org, robh+dt@kernel.org, lars@metafoo.de,
+        contact@artur-rojek.eu, jic23@kernel.org, linux@roeck-us.net,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v4 2/5]  dt-bindings: iio/adc: add an INGENIC_ADC_AUX0
+ entry
+Message-ID: <20210726223934.GA1005053@robh.at.kernel.org>
+References: <20210726082033.351533-1-cbranchereau@gmail.com>
+ <20210726082033.351533-3-cbranchereau@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1626755807-11865-2-git-send-email-sibis@codeaurora.org>
+In-Reply-To: <20210726082033.351533-3-cbranchereau@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Jul 2021 10:06:35 +0530, Sibi Sankar wrote:
-> The power-domains exposed by AOSS QMP node are used to notify the Always
-> on Subsystem (AOSS) that a particular co-processor is up/down. These
-> co-processors enter low-power modes independent to that of the application
-> processor and their states are expected to remain unaltered across system
-> suspend/resume cycles. To achieve this behavior let's drop the load
-> power-domain and replace them with generic qmp_send interface instead.
+On Mon, 26 Jul 2021 10:20:30 +0200, Christophe Branchereau wrote:
+> The JZ4760(B) socs have 3 AUX inputs, add an entry to prepare including the one named AUX in the sadc driver.
+> Leaving the rest untouched as it's ABI.
 > 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
+> 
+> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 > ---
-> 
-> v4:
->  * Rebase patch due to the recent aoss-qmp yaml conversion (Dropping Rb).
-> 
->  Documentation/devicetree/bindings/soc/qcom/qcom,aoss-qmp.yaml | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
+>  include/dt-bindings/iio/adc/ingenic,adc.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
