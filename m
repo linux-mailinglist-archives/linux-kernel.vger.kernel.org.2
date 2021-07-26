@@ -2,98 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F8A3D646C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111903D646E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239808AbhGZP6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:58:15 -0400
-Received: from mail.efficios.com ([167.114.26.124]:51300 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238907AbhGZPrx (ORCPT
+        id S239797AbhGZP6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:58:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhGZPsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:47:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B4FBF307BCA;
-        Mon, 26 Jul 2021 12:28:21 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TanED9noy71Y; Mon, 26 Jul 2021 12:28:20 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 72DE7307F1D;
-        Mon, 26 Jul 2021 12:28:20 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 72DE7307F1D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1627316900;
-        bh=eXIl1sJc07bWbXlDszc1Jt9Q7njYaYD3DWYUoFLXtfM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=nXxwf0TBn7n73J0eGt1iSA/bilN6B9GMX8buP6YgXxv1aYlUaITnLzFbKXabfbgGb
-         AWJ/zBUiflonUhYrRYFoSJAF3LDPxwo9LWCu8IE0pvuf1cbp9g//hduj8rec+Rnt9W
-         Xi6SUWtUdoYtyCFuBv0oDqIimjEK1wKjtMwedmc30mkCz6NRNbWrZ8rhrdBgbm2DYr
-         JyCaPX+vvH+yjEcoJ23o2zMzbqv4KzhWbw4HNhsEkkUb5Mt/XpKLOwEq1/6IubR81t
-         RiOXq1tF4fvOWea2kR4VhkqS63S4txdOiFBzbotj7TIQuf8XCjNJVRcWGKGawQSHCi
-         trYU4jojOsdGg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JGv5rfZBMZfS; Mon, 26 Jul 2021 12:28:20 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 661AF307B64;
-        Mon, 26 Jul 2021 12:28:20 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 12:28:20 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-csky@vger.kernel.org
-Message-ID: <2070284546.6496.1627316900287.JavaMail.zimbra@efficios.com>
-In-Reply-To: <CAJF2gTR9_SzAm2kPXyP+xJDVmdvM=XSm7kJn_eNq-wQmhLqTeg@mail.gmail.com>
-References: <20210723161600.19688-1-mathieu.desnoyers@efficios.com> <20210723161600.19688-2-mathieu.desnoyers@efficios.com> <CAJF2gTR9_SzAm2kPXyP+xJDVmdvM=XSm7kJn_eNq-wQmhLqTeg@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] Revert "csky: Add support for restartable
- sequence"
+        Mon, 26 Jul 2021 11:48:41 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3EDDC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:29:08 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id a14so9553032ila.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WtUArQuv8CsBA1Qj+vhrmvBRh3ZVBqE+J2O75XToP5I=;
+        b=NvqEDT0SXLhG9MlJik2c0jDD+EwyH7OZixKlqLjLfStoK2bf0aOpqEAIy9nZqUF35b
+         buTN8/lsYHnYGdGNXUezbKINt6VeVKhVWBMelWnzywkouPmnEIMoHyaJmPhObVP0emiV
+         R/aX9BxpmGG4fyNnBvwA+QhN5bh7DvpQgMBpS95y1EBuuGbgyPgXE1t/JtYjYxL/SEyE
+         Fr8fxya9InbqoH2+z+kbcNh3wwmCD6Vl4HN71n7x9UFBc4B5MG/xbAO8uDhl0HzzpATj
+         bA8/GYo0C9WRjjwp3YnPzGr7oU1ZX9WpXR4e+dHbIhcahHCqzd06nXbkUZqGkBHU4IHq
+         ZF0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WtUArQuv8CsBA1Qj+vhrmvBRh3ZVBqE+J2O75XToP5I=;
+        b=UHGyBsI5DhnVScZOZ4oqNNhu4RaTdRxtK0d/KxUF22x5p+sXeBKUnnx+OTFMpHyVWl
+         YBCYhU6BQnh5dpmuF7ENNB3Gq1ldLdt+DXoDuHNSrAFYEx8iKXmrRMUzV86egnRRcZtw
+         VdIaGI8fbsEgUxjjyM3b5QkF3rMoKiaySqsIIzZJlVWmWUXeK4YVOqMKdB4LBdRkj79T
+         Q3yFbjVR43NFxeUMfWOdUUbjmz2qtCz56/wrEHBsXZchAp5NpB/O7fMSH1sqHV/CLW0z
+         Z6WY1Uvb3Ls3ahMQfoQBu00RGyZlj/tNR6GAx7mEZz6DBTe7owQ88kmGEpeq6FL6WRqx
+         m/aA==
+X-Gm-Message-State: AOAM531oxU3+w4QF45dUBxqIr1gkfUVSjXazhYfLdY2MtcgLdRuVhzxl
+        v8rxTNh+/4QYMr/msZN4DuttS0/zYzLlbvF6DIsZ4Q==
+X-Google-Smtp-Source: ABdhPJyVXHemrBp/Hm3o+cSj71flq4ks2yPOb44QiXQMLAeEO+8swe14Jq9+xuGEyOUh1x79kcH8wKJCx8WnNFX/PMU=
+X-Received: by 2002:a05:6e02:d93:: with SMTP id i19mr13196637ilj.72.1627316948168;
+ Mon, 26 Jul 2021 09:29:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
-Thread-Topic: Revert "csky: Add support for restartable sequence"
-Thread-Index: cGqphh5zwS0KS34HbGuSoLaovrzIqA==
+References: <20210723220248.6554-1-s-anna@ti.com>
+In-Reply-To: <20210723220248.6554-1-s-anna@ti.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Mon, 26 Jul 2021 10:28:56 -0600
+Message-ID: <CANLsYkw=+xJs3V8y89mSnUYo=8cHL_-U8UTC3gt6oO5zmS4jXA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] K3 R5F & DSP IPC-only mode support
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Praneeth Bajjuri <praneeth@ti.com>,
+        Hari Nagalla <hnagalla@ti.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jul 26, 2021, at 12:10 PM, Guo Ren guoren@kernel.org wrote:
+Hi Suman,
 
-> Hi Mathieu,
-> 
-> Sorry for forgetting to CC you in the last patch, and that patch has
-> been merged into master which has the problem of syscall restart.
-> 
-> I still want to keep rseq feature for csky, and implement the
-> RSEQ_SKIP_FASTPATH for self-test, it that okay?
-
-No, the RSEQ_SKIP_FASTPATH is the one special-case of test build which
-skips building rseq critical sections entirely. This leaves out any
-relevant testing of rseq per-se. With what we have in the upstream
-selftests, I expect this test configuration to abort at runtime because
-no slow-path fallbacks are available when the fastpath is disabled.
-
-The asm glue to test rseq user-space really needs to be implemented
-for any useful testing to be done here.
-
-Unless that asm glue is contributed, none of the rseq logic is actually
-tested on that architecture.
-
-Considering the extremely-hard-to-debug nature of races with a broken
-rseq kernel implementation, proper testing coverage is paramount, so I
-still recommend the revert unless the selftests user-space asm glue is
-contributed for C-Sky.
+I have added your patchset to my review list.  Unfortunately due to an
+impressive backlog and upcoming vacation won't be able provide
+feedback for a few weeks.
 
 Thanks,
-
 Mathieu
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+On Fri, 23 Jul 2021 at 16:03, Suman Anna <s-anna@ti.com> wrote:
+>
+> Hi All,
+>
+> The following is a revised version of the series that adds the IPC-only
+> mode support for the TI K3 R5F and DSP (C66x and C71x) remoteprocs
+> covering AM65x, J721E, J7200 and AM64x SoCs. Patches are on top of
+> 5.14-rc1 (the other dependent patches from v1 made it into 5.14-rc1).
+>
+> Please see the v1 cover-letter [1] for the design details of the
+> 'IPC-only' mode functionality.
+>
+> The following are the main changes from v1, please see the individual
+> patches for the exact deltas:
+>  - The first patch in v1 "remoteproc: Introduce rproc_detach_device()
+>    wrapper" is dropped
+>  - Removed the addition of the rproc state flag 'detach_on_shutdown'
+>    and the 'ipc-only' state flag in each of the remoteproc drivers
+>  - IPC-only mode and remoteproc mode are supported by registering only
+>    the appropriate rproc ops.
+>
+> The following is a summary of patches in v2:
+>  - Patch 1 enhances the remoteproc core to restrict stop on early-booted
+>    remoteprocs.
+>  - Patches 2 and 4 refactor the mailbox request code out of start
+>    in the K3 R5F and DSP remoteproc drivers for reuse in the new attach
+>    callbacks.
+>  - Patch 3 adds the IPC-only mode support for R5F.
+>  - Patch 5 adds the IPC-only mode support for both K3 C66x and C71x
+>    DSPs.
+>
+> I have re-verified the different combinations on J721E, J7200 and AM65x
+> SoCs. AM64x currently lacks early-boot support, but the logic is ready
+> for Single-CPU and Split modes that are specific to AM64x SoCs.
+>
+> regards
+> Suman
+>
+> [1] https://patchwork.kernel.org/project/linux-remoteproc/cover/20210522000309.26134-1-s-anna@ti.com/
+>
+> Suman Anna (5):
+>   remoteproc: Add support for detach-only during shutdown
+>   remoteproc: k3-r5: Refactor mbox request code in start
+>   remoteproc: k3-r5: Add support for IPC-only mode for all R5Fs
+>   remoteproc: k3-dsp: Refactor mbox request code in start
+>   remoteproc: k3-dsp: Add support for IPC-only mode for all K3 DSPs
+>
+>  drivers/remoteproc/remoteproc_cdev.c      |   7 +
+>  drivers/remoteproc/remoteproc_core.c      |   5 +-
+>  drivers/remoteproc/remoteproc_sysfs.c     |   6 +
+>  drivers/remoteproc/ti_k3_dsp_remoteproc.c | 197 ++++++++++++----
+>  drivers/remoteproc/ti_k3_r5_remoteproc.c  | 265 +++++++++++++++++++---
+>  5 files changed, 407 insertions(+), 73 deletions(-)
+>
+> --
+> 2.32.0
+>
