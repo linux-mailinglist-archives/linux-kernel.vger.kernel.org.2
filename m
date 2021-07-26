@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4233D6847
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86FB3D684D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232936AbhGZUHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 16:07:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232087AbhGZUHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 16:07:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A567060F57;
-        Mon, 26 Jul 2021 20:47:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627332454;
-        bh=RqG8r0D0ghuPyrjCxi1pKK9MyFYU9qRzhXJW182DPR4=;
-        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
-        b=TY4ayUm5WzThNdYG2K+DlTF2PXo7DhRU3QJHEkI6YWDCD0UUXqMHaPmILaOD9lw2E
-         gJaaVSQH4fkxxSiXf+5ca90pvmmTOkGgp/TLgNByiEczvWiMstt8pPruY6Q28KYCV9
-         aj61BQh2SP4dbiIXfqNyH9qVKye2cVudTSlqioaFsQq64colyjqQc0vQ9vnd6kb0St
-         11zneo/v/PaFxKfbyy31KOgbZKlwT5ZK4jKpgPNUqYiuOK83LkJT2rLC6F7YSVGS/e
-         eHieDy65Xc1HJLY/zyHodbHgZseHwhRABgYVlbYJ6g7LCqhsguJEnPr8TIM54W5WSt
-         jomt8oz9jjADg==
-Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
-To:     Bill Wendling <morbo@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <20210714091747.2814370-1-morbo@google.com>
- <20210726201924.3202278-1-morbo@google.com>
- <20210726201924.3202278-2-morbo@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
-Date:   Mon, 26 Jul 2021 13:47:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S232932AbhGZUMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 16:12:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232087AbhGZUMU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 16:12:20 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49676C061757;
+        Mon, 26 Jul 2021 13:52:48 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id c16so7587362plh.7;
+        Mon, 26 Jul 2021 13:52:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Sc951ASfu1oxq/560DhQUbxoK+Q3x0g+kN6389VJpvk=;
+        b=X543/zH07v/0ssv16vK/oSEYZ8inVOgEM+phljgxuXMEgvNO1ZyZIzng11w9b+WZ7+
+         9KPPSz7594g+D1bgRuJGy0DIxgasGoB1lRvfpVponWTECkwVRqNY/NJhDSduJQu7kZdr
+         238AyfZspdcQq0ufUbJHIGI9qI8n+OzXXCGSpVpqQ6Pz3ulgR3JMjS2WGPxCzrQSUJM0
+         Xxgdpv6x1y1AR7VcrvdnzshGocWLXUurhSvULUXyuyhxbJeQn1ofK1vWdY62RYZ8U8o2
+         hYMtmf5E5TkgSpwKOYWaQrS51Wt9iBvRUJw8mft6XXxb4Nb8bHEDXuKpk7/ZJlSK9vlv
+         pT8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Sc951ASfu1oxq/560DhQUbxoK+Q3x0g+kN6389VJpvk=;
+        b=Nsrj5zhsvb18PNzhuTJXpIh0i1Emb0LJTKDwPePN30LTfSSvgf8+f3Wu6oMkq+pX4g
+         o+yewAhJCH/57wDqNtVOzFyq0PlTAxAL5k+64DDlNzFJ+MWxE/MsZ5awFnio3m5Yx0y/
+         OPZ4ibSGMUR0s9HhmPhGDQ6fHo/qBr0rLS/v9l/9dr8QARePvNdX5a8GR6fmEuJgzkfi
+         U71JJ8wxAQRZwKrWoUTDXR0ZWzFrsAdEwsE6Su+Vm/JlqUHdvgBuck9i2e5zkz5bs5rh
+         RSq0jC+EOeijhUSMw3AKidJifY3xWnFyq0fnZqTxaWM/riNAiBaXQ8qXFfscx5dQX64m
+         c68Q==
+X-Gm-Message-State: AOAM533b+3KHs2HCtOb5jwxRQu7hRE19bZwTzsiN2XxzACsyexi6aoQA
+        kOsoYvrju3WWrORUPiJHsPvNLdM08g8=
+X-Google-Smtp-Source: ABdhPJylABnDgnNYPWC/m9X+LqMZ1ejiMY+mBL6yIdoMLGVHhs+BUujNvC5jOrsEQl6RUXs0cg24wg==
+X-Received: by 2002:a17:902:830b:b029:12a:dd1b:74bf with SMTP id bd11-20020a170902830bb029012add1b74bfmr15886309plb.44.1627332767335;
+        Mon, 26 Jul 2021 13:52:47 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id k1sm750465pga.70.2021.07.26.13.52.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 13:52:46 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/60] 4.9.277-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210726153824.868160836@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <849f5079-9f9e-6413-39da-4cfccddd66bc@gmail.com>
+Date:   Mon, 26 Jul 2021 13:52:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210726201924.3202278-2-morbo@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Greg and Rafael as the maintainer and reviewer of 
-drivers/base/module.c respectively, drop everyone else.
-
-Original post:
-
-https://lore.kernel.org/r/20210726201924.3202278-2-morbo@google.com/
-
-On 7/26/2021 1:19 PM, 'Bill Wendling' via Clang Built Linux wrote:
-> Fix the following build warning:
+On 7/26/21 8:38 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.277 release.
+> There are 60 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->    drivers/base/module.c:36:6: error: variable 'no_warn' set but not used [-Werror,-Wunused-but-set-variable]
->          int no_warn;
+> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> Anything received after that time might be too late.
 > 
-> This variable is used to remove another warning, but causes a warning
-> itself. Mark it as 'unused' to avoid that.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.277-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
 > 
-> Signed-off-by: Bill Wendling <morbo@google.com>
-
-Even though they evaluate to the same thing, it might be worth using 
-"__always_unused" here because it is :)
-
-Regardless:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->   drivers/base/module.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> thanks,
 > 
-> diff --git a/drivers/base/module.c b/drivers/base/module.c
-> index 46ad4d636731..10494336d601 100644
-> --- a/drivers/base/module.c
-> +++ b/drivers/base/module.c
-> @@ -33,7 +33,7 @@ static void module_create_drivers_dir(struct module_kobject *mk)
->   void module_add_driver(struct module *mod, struct device_driver *drv)
->   {
->   	char *driver_name;
-> -	int no_warn;
-> +	int __maybe_unused no_warn;
->   	struct module_kobject *mk = NULL;
->   
->   	if (!drv)
-> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
