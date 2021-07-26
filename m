@@ -2,179 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FC53D5430
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9A53D5434
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhGZGm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:42:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37620 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231707AbhGZGm1 (ORCPT
+        id S232538AbhGZGmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:42:33 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:50634 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232415AbhGZGm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:42:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627284176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MeX8qL0FAIQm9lCQlUw2wK9bVyGC91/TUjMa+ErGo/I=;
-        b=KDVOXin8HVJi/fT+Ef5rajZf3yoNJd4QRVY0t1hchuT4+Yp14FFTOX9GMa8/aLb1fIJuTR
-        y1lgFizx0yKY4PXNqPKTuIf02ppb5C79tJc8JYBcG09N8uLkA8r3HTTqJOmAvTm4NDvEgy
-        MGDU/FGQqWsufTGfnqtlBq6KkmbhRbU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-q-oexxpMNIij5OXTakqU8Q-1; Mon, 26 Jul 2021 03:22:54 -0400
-X-MC-Unique: q-oexxpMNIij5OXTakqU8Q-1
-Received: by mail-wr1-f71.google.com with SMTP id z10-20020adfdf8a0000b02901536d17cd63so1630927wrl.21
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:22:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=MeX8qL0FAIQm9lCQlUw2wK9bVyGC91/TUjMa+ErGo/I=;
-        b=cZ/vnWf80AVPOBfr1664gr4F7ZJeQ5sXn9TBBW26ADWMbW9hJEo+4QtiHIWg37rZg3
-         8OcL9KdyZ2sp2XOfP+qqb6jeryJ5Mmt1syvERT1p6yjvCjx0o7b98mYJKLdYUSfp2aLw
-         dBWGaICzriWDwGVcdoAnPiP3/zD3axQCUAWy+MES/Er+8xDV0HcQWcaLcte0onRf9ho0
-         mjVugxs+tEv1ojUgyrMA2Io5r6DR2ajVlcBXK6+g8DOKU7Cqmy+bsuzaPWSCHLJlLmiU
-         rhdktlEtogYoPJLVgMFX8YHB5wjrpyMchQUpnjOYfeC45naB2Bh05DDumqQmZqxvFwtw
-         Fusw==
-X-Gm-Message-State: AOAM530JbPgRUr2bNm/wp78CiNfyxCNBX29BFfmbGZSRXFQH7/QTLSvQ
-        u+UI9R2IkJKACuIJvpmKhcsqwBTs1aI8ieOxuGY6DBqrIZB1DH7eF+WyzSmLnEF7/selCwENW8B
-        XaUMpaJL/vl9WWrOZZykGY6ivfzvV7u8EKCBIn3Xv
-X-Received: by 2002:a05:6000:227:: with SMTP id l7mr6209246wrz.289.1627284172747;
-        Mon, 26 Jul 2021 00:22:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzMPTPi7uK/DcXtzBz0a+yMSxtuUyKKbFDoQbZm98a8p/STZCbLR5hh1hXULHMPYI9hzTrryt893dSga4drXhc=
-X-Received: by 2002:a05:6000:227:: with SMTP id l7mr6209224wrz.289.1627284172598;
- Mon, 26 Jul 2021 00:22:52 -0700 (PDT)
+        Mon, 26 Jul 2021 02:42:29 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16Q7MkxF6012244, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16Q7MkxF6012244
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Jul 2021 15:22:46 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 15:22:45 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 15:22:45 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
+ RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
+ 15.01.2106.013; Mon, 26 Jul 2021 15:22:45 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Neo Jou <neojou@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: RE: [PATCH RFC v1 2/7] rtw88: Use rtw_iterate_vifs where the iterator reads or writes registers
+Thread-Topic: [PATCH RFC v1 2/7] rtw88: Use rtw_iterate_vifs where the
+ iterator reads or writes registers
+Thread-Index: AQHXe0wjJ2b05+r4fEiABzib9kTzlatJpBFQgAoYEgCAASRtAA==
+Date:   Mon, 26 Jul 2021 07:22:45 +0000
+Message-ID: <a9d39fa7f2974032adf10435927ac056@realtek.com>
+References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
+ <20210717204057.67495-3-martin.blumenstingl@googlemail.com>
+ <2170471a1c144adb882d06e08f3c9d1a@realtek.com>
+ <CAFBinCCqVpqC+CaJqTjhCj6-4rFcttQ-cFjOPwtKFbXbnop3XA@mail.gmail.com>
+In-Reply-To: <CAFBinCCqVpqC+CaJqTjhCj6-4rFcttQ-cFjOPwtKFbXbnop3XA@mail.gmail.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.146]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzcvMjYg5LiK5Y2IIDA2OjAwOjAw?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com>
- <YP4fk75mr/mIotDy@B-P7TQMD6M-0146.local>
-In-Reply-To: <YP4fk75mr/mIotDy@B-P7TQMD6M-0146.local>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Mon, 26 Jul 2021 09:22:41 +0200
-Message-ID: <CAHc6FU7904K4XrUhOoHp8uoBrDN0kyZ+q54anMXrJUBVCNA29A@mail.gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-To:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 07:01:19
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165231 [Jul 26 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/26/2021 07:04:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 4:36 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> On Mon, Jul 26, 2021 at 12:16:39AM +0200, Andreas Gruenbacher wrote:
-> > Here's a fixed and cleaned up version that passes fstests on gfs2.
-> >
-> > I see no reason why the combination of tail packing + writing should
-> > cause any issues, so in my opinion, the check that disables that
-> > combination in iomap_write_begin_inline should still be removed.
->
-> Since there is no such fs for tail-packing write, I just do a wild
-> guess, for example,
->  1) the tail-end block was not inlined, so iomap_write_end() dirtied
->     the whole page (or buffer) for the page writeback;
->  2) then it was truncated into a tail-packing inline block so the last
->     extent(page) became INLINE but dirty instead;
->  3) during the late page writeback for dirty pages,
->     if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
->     would be triggered in iomap_writepage_map() for such dirty page.
->
-> As Matthew pointed out before,
-> https://lore.kernel.org/r/YPrms0fWPwEZGNAL@casper.infradead.org/
-> currently tail-packing inline won't interact with page writeback, but
-> I'm afraid a supported tail-packing write fs needs to reconsider the
-> whole stuff how page, inode writeback works and what the pattern is
-> with the tail-packing.
->
-> >
-> > It turns out that returning the number of bytes copied from
-> > iomap_read_inline_data is a bit irritating: the function is really used
-> > for filling the page, but that's not always the "progress" we're looking
-> > for.  In the iomap_readpage case, we actually need to advance by an
-> > antire page, but in the iomap_file_buffered_write case, we need to
-> > advance by the length parameter of iomap_write_actor or less.  So I've
-> > changed that back.
-> >
-> > I've also renamed iomap_inline_buf to iomap_inline_data and I've turned
-> > iomap_inline_data_size_valid into iomap_within_inline_data, which seems
-> > more useful to me.
-> >
-> > Thanks,
-> > Andreas
-> >
-> > --
-> >
-> > Subject: [PATCH] iomap: Support tail packing
-> >
-> > The existing inline data support only works for cases where the entire
-> > file is stored as inline data.  For larger files, EROFS stores the
-> > initial blocks separately and then can pack a small tail adjacent to the
-> > inode.  Generalise inline data to allow for tail packing.  Tails may not
-> > cross a page boundary in memory.
-> >
-> > We currently have no filesystems that support tail packing and writing,
-> > so that case is currently disabled (see iomap_write_begin_inline).  I'm
-> > not aware of any reason why this code path shouldn't work, however.
-> >
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Darrick J. Wong <djwong@kernel.org>
-> > Cc: Matthew Wilcox <willy@infradead.org>
-> > Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-> > Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
-> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > ---
-> >  fs/iomap/buffered-io.c | 34 +++++++++++++++++++++++-----------
-> >  fs/iomap/direct-io.c   | 11 ++++++-----
-> >  include/linux/iomap.h  | 22 +++++++++++++++++++++-
-> >  3 files changed, 50 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> > index 87ccb3438bec..334bf98fdd4a 100644
-> > --- a/fs/iomap/buffered-io.c
-> > +++ b/fs/iomap/buffered-io.c
-> > @@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
-> >       struct readahead_control *rac;
-> >  };
-> >
-> > -static void
-> > -iomap_read_inline_data(struct inode *inode, struct page *page,
-> > +static int iomap_read_inline_data(struct inode *inode, struct page *page,
-> >               struct iomap *iomap)
-> >  {
-> > -     size_t size = i_size_read(inode);
-> > +     size_t size = i_size_read(inode) - iomap->offset;
->
-> I wonder why you use i_size / iomap->offset here,
-
-This function is supposed to copy the inline or tail data at
-iomap->inline_data into the page passed to it. Logically, the inline
-data starts at iomap->offset and extends until i_size_read(inode).
-Relative to the page, the inline data starts at offset 0 and extends
-until i_size_read(inode) - iomap->offset. It's as simple as that.
-
-> and why you completely ignoring iomap->length field returning by fs.
-
-In the iomap_readpage case (iomap_begin with flags == 0),
-iomap->length will be the amount of data up to the end of the inode.
-In the iomap_file_buffered_write case (iomap_begin with flags ==
-IOMAP_WRITE), iomap->length will be the size of iomap->inline_data.
-(For extending writes, we need to write beyond the current end of
-inode.) So iomap->length isn't all that useful for
-iomap_read_inline_data.
-
-> Using i_size here instead of iomap->length seems coupling to me in the
-> beginning (even currently in practice there is some limitation.)
-
-And what is that?
-
-Thanks,
-Andreas
-
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcnRpbiBCbHVtZW5zdGlu
+Z2wgW21haWx0bzptYXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tXQ0KPiBTZW50OiBN
+b25kYXksIEp1bHkgMjYsIDIwMjEgNTozMSBBTQ0KPiBUbzogUGtzaGloDQo+IENjOiBsaW51eC13
+aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmc7IHRvbnkwNjIwZW1tYUBnbWFpbC5jb207IGt2YWxvQGNv
+ZGVhdXJvcmEub3JnOw0KPiBqb2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0OyBuZXRkZXZAdmdlci5r
+ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBOZW8gSm91OyBKZXJuZWoN
+Cj4gU2tyYWJlYw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFJGQyB2MSAyLzddIHJ0dzg4OiBVc2Ug
+cnR3X2l0ZXJhdGVfdmlmcyB3aGVyZSB0aGUgaXRlcmF0b3IgcmVhZHMgb3Igd3JpdGVzIHJlZ2lz
+dGVycw0KPiANCj4gSGVsbG8gUGluZy1LZSwNCj4gDQo+IE9uIE1vbiwgSnVsIDE5LCAyMDIxIGF0
+IDc6NDcgQU0gUGtzaGloIDxwa3NoaWhAcmVhbHRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4NCj4g
+Pg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IE1hcnRpbiBC
+bHVtZW5zdGluZ2wgW21haWx0bzptYXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tXQ0K
+PiA+ID4gU2VudDogU3VuZGF5LCBKdWx5IDE4LCAyMDIxIDQ6NDEgQU0NCj4gPiA+IFRvOiBsaW51
+eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmcNCj4gPiA+IENjOiB0b255MDYyMGVtbWFAZ21haWwu
+Y29tOyBrdmFsb0Bjb2RlYXVyb3JhLm9yZzsgam9oYW5uZXNAc2lwc29sdXRpb25zLm5ldDsNCj4g
+bmV0ZGV2QHZnZXIua2VybmVsLm9yZzsNCj4gPiA+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmc7IE5lbyBKb3U7IEplcm5laiBTa3JhYmVjOyBNYXJ0aW4gQmx1bWVuc3RpbmdsDQo+ID4gPiBT
+dWJqZWN0OiBbUEFUQ0ggUkZDIHYxIDIvN10gcnR3ODg6IFVzZSBydHdfaXRlcmF0ZV92aWZzIHdo
+ZXJlIHRoZSBpdGVyYXRvciByZWFkcyBvciB3cml0ZXMgcmVnaXN0ZXJzDQo+ID4gPg0KPiA+ID4g
+VXBjb21pbmcgU0RJTyBzdXBwb3J0IG1heSBzbGVlcCBpbiB0aGUgcmVhZC93cml0ZSBoYW5kbGVy
+cy4gU3dpdGNoDQo+ID4gPiBhbGwgdXNlcnMgb2YgcnR3X2l0ZXJhdGVfdmlmc19hdG9taWMoKSB3
+aGljaCBhcmUgZWl0aGVyIHJlYWRpbmcgb3INCj4gPiA+IHdyaXRpbmcgYSByZWdpc3RlciB0byBy
+dHdfaXRlcmF0ZV92aWZzKCkuDQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogTWFydGluIEJs
+dW1lbnN0aW5nbCA8bWFydGluLmJsdW1lbnN0aW5nbEBnb29nbGVtYWlsLmNvbT4NCj4gPiA+IC0t
+LQ0KPiA+ID4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL3JlYWx0ZWsvcnR3ODgvbWFpbi5jIHwgNiAr
+KystLS0NCj4gPiA+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L3BzLmMgICB8
+IDIgKy0NCj4gPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlv
+bnMoLSkNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVh
+bHRlay9ydHc4OC9tYWluLmMNCj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4
+L21haW4uYw0KPiA+ID4gaW5kZXggYzYzNjQ4MzdlODNiLi4yMDcxNjFhOGY1YmQgMTAwNjQ0DQo+
+ID4gPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0dzg4L21haW4uYw0KPiA+
+ID4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydHc4OC9tYWluLmMNCj4gPiA+
+IEBAIC0yMjksOCArMjI5LDggQEAgc3RhdGljIHZvaWQgcnR3X3dhdGNoX2RvZ193b3JrKHN0cnVj
+dCB3b3JrX3N0cnVjdCAqd29yaykNCj4gPiA+ICAgICAgIHJ0d19waHlfZHluYW1pY19tZWNoYW5p
+c20ocnR3ZGV2KTsNCj4gPiA+DQo+ID4gPiAgICAgICBkYXRhLnJ0d2RldiA9IHJ0d2RldjsNCj4g
+PiA+IC0gICAgIC8qIHVzZSBhdG9taWMgdmVyc2lvbiB0byBhdm9pZCB0YWtpbmcgbG9jYWwtPmlm
+bGlzdF9tdHggbXV0ZXggKi8NCj4gPiA+IC0gICAgIHJ0d19pdGVyYXRlX3ZpZnNfYXRvbWljKHJ0
+d2RldiwgcnR3X3ZpZl93YXRjaF9kb2dfaXRlciwgJmRhdGEpOw0KPiA+ID4gKw0KPiA+ID4gKyAg
+ICAgcnR3X2l0ZXJhdGVfdmlmcyhydHdkZXYsIHJ0d192aWZfd2F0Y2hfZG9nX2l0ZXIsICZkYXRh
+KTsNCj4gPg0KPiA+IFlvdSByZXZlcnQgdGhlIGZpeCBvZiBbMV0uDQo+IFRoYW5rcyBmb3IgYnJp
+bmdpbmcgdGhpcyB0byBteSBhdHRlbnRpb24hDQo+IA0KPiA+IEkgdGhpbmsgd2UgY2FuIG1vdmUg
+b3V0IHJ0d19jaGlwX2NmZ19jc2lfcmF0ZSgpIGZyb20gcnR3X2R5bmFtaWNfY3NpX3JhdGUoKSwg
+YW5kDQo+ID4gYWRkL3NldCBhIGZpZWxkIGNmZ19jc2lfcmF0ZSB0byBpdGVyYSBkYXRhLiBUaGVu
+LCB3ZSBkbyBydHdfY2hpcF9jZmdfY3NpX3JhdGUoKQ0KPiA+IG91dHNpZGUgaXRlcmF0ZSBmdW5j
+dGlvbi4gVGhlcmVmb3JlLCB3ZSBjYW4ga2VlcCB0aGUgYXRvbWljIHZlcnNpb24gb2YgaXRlcmF0
+ZV92aWZzLg0KPiBqdXN0IHRvIG1ha2Ugc3VyZSB0aGF0IEkgdW5kZXJzdGFuZCB0aGlzIGNvcnJl
+Y3RseToNCj4gcnR3X2l0ZXJhdGVfdmlmc19hdG9taWMgY2FuIGJlIHRoZSBpdGVyYXRvciBhcyBp
+dCB3YXMgYmVmb3JlDQo+IGluc2lkZSB0aGUgaXRlcmF0b3IgZnVuYyBJIHVzZSBzb21ldGhpbmcg
+bGlrZToNCj4gICAgIGl0ZXJfZGF0YS0+Y2ZnX2NzaV9yYXRlID0gcnR3dmlmLT5iZmVlLnJvbGUg
+PT0gUlRXX0JGRUVfU1UgfHwNCj4gcnR3dmlmLT5iZmVlLnJvbGUgPT0gUlRXX0JGRUVfTVUgfHwg
+aXRlcl9kYXRhLT5jZmdfY3NpX3JhdGU7DQo+ICh0aGUgbGFzdCBpdGVyX2RhdGEtPmNmZ19jc2lf
+cmF0ZSBtYXkgcmVhZCBhIGJpdCBzdHJhbmdlLCBidXQgSSB0aGluaw0KPiBpdCdzIG5lZWRlZCBi
+ZWNhdXNlIHRoZXJlIGNhbiBiZSBtdWx0aXBsZSBpbnRlcmZhY2VzIGFuZCBpZiBhbnkgb2YNCj4g
+dGhlbSBoYXMgY2ZnX2NzaV9yYXRlIHRydWUgdGhlbiB3ZSBuZWVkIHRvIHJlbWVtYmVyIHRoYXQp
+DQo+IHRoZW4gbW92ZSB0aGUgcnR3X2NoaXBfY2ZnX2NzaV9yYXRlIG91dHNpZGUgdGhlIGl0ZXJh
+dG9yIGZ1bmN0aW9uLA0KPiB0YWtpbmcgaXRlcl9kYXRhLT5jZmdfY3NpX3JhdGUgdG8gZGVjaWRl
+IHdoZXRoZXIgaXQgbmVlZHMgdG8gYmUgY2FsbGVkDQo+IA0KDQpZZXMsIHlvdSB1bmRlcnN0YW5k
+IGNvcnJlY3RseS4NCg0KRm9yIHRoZSBzdHJhbmdlIHBhcnQgdGhhdCB5b3UgbWVudGlvbmVkLCBo
+b3cgYWJvdXQgdGhpcz8NCml0ZXJfZGF0YS0+Y2ZnX2NzaV9yYXRlIHw9IHJ0d3ZpZi0+YmZlZS5y
+b2xlID09IFJUV19CRkVFX1NVIHx8DQogICAgICAgICAgICAgICAgICAgICAgICAgICBydHd2aWYt
+PmJmZWUucm9sZSA9PSBSVFdfQkZFRV9NVTsNCg0KLS0NClBpbmctS2UNCg0K
