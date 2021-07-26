@@ -2,136 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC543D6633
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5482C3D6642
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 20:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232215AbhGZRUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 13:20:16 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52324 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbhGZRUP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 13:20:15 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id DB9711FECC;
-        Mon, 26 Jul 2021 18:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627322442; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I039/0NWrDWmFnOCULzI4FU9TwQx70EI3dDkBkl1gm8=;
-        b=v16qsfsdsF7d5oKr5BblI50zphYIfZgLM3ugCnWaOSLGwcUUNxQ1D82i7cQXSnzVGDsfs+
-        ST0rN+d9htcHITWuUYsnNEKRUh9SANaGBJ69dXfseqthBd2bPQSrTviag+mQbWovMtZUOd
-        dPp6ZaYWqmxpD0VtHhEKxEioxXThMTE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627322442;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I039/0NWrDWmFnOCULzI4FU9TwQx70EI3dDkBkl1gm8=;
-        b=Up90HkPAkG8i53n20y1uG/mj6NXg2BN8ZdQnxCGQxWq0Jyv7abeYzJxhOwgVirsl0Zc3g2
-        dP85KRvwsiSlKRBA==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 9C371A3B84;
-        Mon, 26 Jul 2021 18:00:42 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 67F161E3B13; Mon, 26 Jul 2021 20:00:42 +0200 (CEST)
-Date:   Mon, 26 Jul 2021 20:00:42 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
-        <andreas.gruenbacher@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, Andreas Gruenbacher <agruenba@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v3 7/7] gfs2: Fix mmap + page fault deadlocks for direct
- I/O
-Message-ID: <20210726180042.GN20621@quack2.suse.cz>
-References: <20210723205840.299280-1-agruenba@redhat.com>
- <20210723205840.299280-8-agruenba@redhat.com>
- <20210726170250.GL20621@quack2.suse.cz>
- <CAHpGcMLOZhZ7tGrY7rcYWUwx12sY884T=eC-Ckna63PBmF=zwA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHpGcMLOZhZ7tGrY7rcYWUwx12sY884T=eC-Ckna63PBmF=zwA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S232649AbhGZRWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 13:22:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231844AbhGZRWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 13:22:40 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B274160F6E;
+        Mon, 26 Jul 2021 18:03:08 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1m84wU-0018sk-Hl; Mon, 26 Jul 2021 19:03:06 +0100
+Date:   Mon, 26 Jul 2021 19:03:06 +0100
+Message-ID: <87fsw1dkbp.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Bharat Bhushan <bbhushan2@marvell.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "konrad.dybcio@somainline.org" <konrad.dybcio@somainline.org>,
+        "saiprakash.ranjan@codeaurora.org" <saiprakash.ranjan@codeaurora.org>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "marcan@marcan.st" <marcan@marcan.st>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linu Cherian <lcherian@marvell.com>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>
+Subject: Re: [EXT] Re: [PATCH] clocksource: Add Marvell Errata-38627 workaround
+In-Reply-To: <CO6PR18MB4465AAE7916DCFECE9D47EA2E3E89@CO6PR18MB4465.namprd18.prod.outlook.com>
+References: <20210705060843.3150-1-bbhushan2@marvell.com>
+        <20210705090753.GD38629@C02TD0UTHF1T.local>
+        <CO6PR18MB4465687A22FE724E59D4225CE3199@CO6PR18MB4465.namprd18.prod.outlook.com>
+        <20210708114157.GC24650@C02TD0UTHF1T.local>
+        <CO6PR18MB4465C85A872D7CE4138EBF8FE3149@CO6PR18MB4465.namprd18.prod.outlook.com>
+        <20210713161233.GB13027@C02TD0UTHF1T.local>
+        <CO6PR18MB4465AAE7916DCFECE9D47EA2E3E89@CO6PR18MB4465.namprd18.prod.outlook.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: bbhushan2@marvell.com, mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org, daniel.lezcano@linaro.org, konrad.dybcio@somainline.org, saiprakash.ranjan@codeaurora.org, robh@kernel.org, marcan@marcan.st, suzuki.poulose@arm.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, lcherian@marvell.com, sgoutham@marvell.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 26-07-21 19:50:23, Andreas Grünbacher wrote:
-> Jan Kara <jack@suse.cz> schrieb am Mo., 26. Juli 2021, 19:10:
-> 
-> > On Fri 23-07-21 22:58:40, Andreas Gruenbacher wrote:
-> > > Also disable page faults during direct I/O requests and implement the
-> > same kind
-> > > of retry logic as in the buffered I/O case.
-> > >
-> > > Direct I/O requests differ from buffered I/O requests in that they use
-> > > bio_iov_iter_get_pages for grabbing page references and faulting in pages
-> > > instead of triggering real page faults.  Those manual page faults can be
-> > > disabled with the iocb->noio flag.
-> > >
-> > > Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-> > > ---
-> > >  fs/gfs2/file.c | 34 +++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 33 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-> > > index f66ac7f56f6d..7986f3be69d2 100644
-> > > --- a/fs/gfs2/file.c
-> > > +++ b/fs/gfs2/file.c
-> > > @@ -782,21 +782,41 @@ static ssize_t gfs2_file_direct_read(struct kiocb
-> > *iocb, struct iov_iter *to,
-> > >       struct file *file = iocb->ki_filp;
-> > >       struct gfs2_inode *ip = GFS2_I(file->f_mapping->host);
-> > >       size_t count = iov_iter_count(to);
-> > > +     size_t written = 0;
-> > >       ssize_t ret;
-> > >
-> > > +     /*
-> > > +      * In this function, we disable page faults when we're holding the
-> > > +      * inode glock while doing I/O.  If a page fault occurs, we drop
-> > the
-> > > +      * inode glock, fault in the pages manually, and then we retry.
-> > Other
-> > > +      * than in gfs2_file_read_iter, iomap_dio_rw can trigger implicit
-> > as
-> > > +      * well as manual page faults, and we need to disable both kinds
-> > > +      * separately.
-> > > +      */
-> > > +
-> > >       if (!count)
-> > >               return 0; /* skip atime */
-> > >
-> > >       gfs2_holder_init(ip->i_gl, LM_ST_DEFERRED, 0, gh);
-> > > +retry:
-> > >       ret = gfs2_glock_nq(gh);
-> > >       if (ret)
-> > >               goto out_uninit;
-> > >
-> > > +     pagefault_disable();
-> >
-> > Is there any use in pagefault_disable() here? iomap_dio_rw() should not
-> > trigger any page faults anyway, should it?
-> >
-> 
-> It can trigger physical page faults when reading from holes.
+Hi Bharat,
 
-Aha, good point. Maybe even worth a comment at this site? Thanks for
-explanation!
+On Mon, 26 Jul 2021 05:29:53 +0100,
+Bharat Bhushan <bbhushan2@marvell.com> wrote:
+> 
+> Sorry for delayed response
+> 
+> Please see inline
+> 
+> > -----Original Message-----
+> > From: Mark Rutland <mark.rutland@arm.com>
+> > Sent: Tuesday, July 13, 2021 9:43 PM
+> >
+> > 1) A guest can deliberately cause information to be leaked to itself via
+> >    the corrupted GPRs. I haven't seen any rationale for why that is not
+> >    a problem, nor have I seen a suggested workaround.
+> > 
+> > 2) A guest *may* be able to trigger this while the host is running. I
+> >    haven't seen anything that rules this out so far.
+> > 
+> > 3) Even in the absence of virtualization, it would be necessary to
+> >    workaround this for *every* level-triggered interrupt, which includes
+> >    at the timer, PMU, and GIC maintenance interrupts, in addition to any
+> >    other configurable PPIs or SPIs.
+> > 
+> > Without a fix that covers all of those, I don't think the
+> > workaround is viable.
+> 
+> This patch covers workaround for ARM arch timer in non-virtualized
+> cases.
+> 
+> While we are considering different scenarios which can trigger the
+> issue.  After discussing with HW folks internally we have come to a
+> conclusion that there is no single workaround which will fix all the
+> scenarios. The host timer interrupt workaround is different from
+> virtualization and from other interrupt sources.
+> 
+> While we are working on other workarounds, we want to push timer
+> workaround first as currently that's the one customers are
+> encountering right now and want a upstream accepted patch
+> soon. Other workarounds will take time to test and qualify.
+> 
+> Wrt drivers disabling the interrupt, except changing the driver, we
+> don't see any common place where we can add a workaround. Please let
+> me your take on this.
 
-								Honza
+I don't think a workaround limited to the timer is viable. It is quite
+obvious that once you have worked around the most likely cause for a
+crash (timer interrupts), you will need to come up with yet another
+workaround for another interrupt source.
+
+We need a solution that works for all interrupts, or at the very least
+all per-CPU interrupts. For global interrupts, only you can find out
+how they can be mitigated. If that means changing drivers, so be it.
+I understand that this isn't what you want to read, but I'm not
+confident taking this patch with the knowledge that there is still a
+million ways to make it fall over.
+
+Evidently, KVM cannot be enabled on such a system. More importantly, I
+cannot see how we can support users of such a machine either. How to
+analyse a crash report if there is a remote possibility that the CPU
+has decided to ignore a number of instructions?
+
+To sum it up, I'm not prepared to approve such a patch until there is
+a compelling story for all the interrupts that may trigger such
+behaviour.
+
+Thanks,
+
+	M.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Without deviation from the norm, progress is not possible.
