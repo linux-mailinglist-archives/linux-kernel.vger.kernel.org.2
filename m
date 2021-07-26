@@ -2,259 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CF53D67F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E4F3D67F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 22:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhGZTbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 15:31:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232935AbhGZTbR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 15:31:17 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89403C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:44 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id d10so10133705ils.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 13:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GDDMRio70MsWS94GuAHc1YhRqb1pVovQbxMWDHgB+9E=;
-        b=jQ80CojneeeAhv1iHm/DGQgnPPBEYcpjRGJYTRw86tTeGSm0XUbSyEQioJ1Hz3BP4r
-         iJbF+Mevyio3G2rqkAkahbYOs9UCV2CHRYutVc5sJTD5SNsxp2RylmrPdi/2t19wAX6e
-         snpqxYpc8RXTaZyqfvWQzbAtC1me90h7GaZOQ2KWsJ3vGHOWTnbl00w+PZLKQ2X8ElCb
-         Nf5YLXQkl76f+zkLTgN9WhzFVkc+4+3mfp5XKrRIEam8/YHiYbnZWrQH5EUrYU7IDu6u
-         MkDufVf8u5qNelZCDk8KGarKmozzj+ZCO3GcW9anZS643gG9yqtFwA3sNltnVd+65i+X
-         HsVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GDDMRio70MsWS94GuAHc1YhRqb1pVovQbxMWDHgB+9E=;
-        b=Ugw3tvuoV03YJLHVnenCt+aY5ypFXDB1agRMb6XwuKcgL+vZQqztEzakQ+82Rns6lk
-         l6T03uM5OxafdQRio53oW3gzUoisOxsRJ3i1HTnN5ryqE7pGJ9vmhbJKBs8AeJ8f/74J
-         H1LM9XmfV2o+idpyDfLoxmtXW/SGdwrKDO1vj9yMGfdAEjafBWr2uG3x+PIHf4kyBokM
-         pVWBQyeuGjSLTZWU+wpTZ/8/Nf5p8uktuN9S8r14jZ+cE30H5WW1oyZcw0TAh0tpRwOM
-         ZiIGgvXQmtQU+ejqeOQqSbh7LRssAuWRg+2cCsGdYmTCL8c0a4mPyfvk/avEwKhkUWAT
-         ImjA==
-X-Gm-Message-State: AOAM53042i3pV3lIoCKI6OWTqtT7PJTWO40jE9tbeZ2eu+mFIP5DRW0s
-        lkewKNpxXHUzM1Vyf6yA3UIEDQ==
-X-Google-Smtp-Source: ABdhPJzfICrcVZHnfQ4E1mW2w3SWjkCphdNqVsV2Q/x1oNFMtGitDXuOYofjkeGjAcGhSTgeeDfTHw==
-X-Received: by 2002:a05:6e02:12e3:: with SMTP id l3mr9924095iln.6.1627330303948;
-        Mon, 26 Jul 2021 13:11:43 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id z10sm425964iln.8.2021.07.26.13.11.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 13:11:43 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 5/5] net: ipa: introduce ipa_uc_clock()
-Date:   Mon, 26 Jul 2021 15:11:36 -0500
-Message-Id: <20210726201136.502800-6-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210726201136.502800-1-elder@linaro.org>
-References: <20210726201136.502800-1-elder@linaro.org>
+        id S232359AbhGZTgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 15:36:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229646AbhGZTgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 15:36:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE98760F8F;
+        Mon, 26 Jul 2021 20:16:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627330609;
+        bh=Z4hwq6b440OkyWGYI3HMsBLmFm75Y/asw4v0/OVEDyk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sEREw4glvypOLeWWc3l0NhaVgTrSd6R2J0yIzBQWNnscjxyEhYJgBFBvK2p6Ax6H7
+         etXE3FYYDnwHSteOa7Xy1IKLPu4GEMOSt6YL2BgiQFX+jl2U0VwSmgzFI10PuXJAaL
+         l+0p+2y/+qUveODb7rEIstqeC9hQ3Gwi+iBl3xsJq5JkgNAoMQfnONgQ5DK9HGNeQc
+         Vux6h1JZ17eGPx52tD/kN2bVNnIygn7j1nE1W4l+OEKD83h3Si5/vBbuMS7PsybLhV
+         hzMGMetMPudou0k9mz89KwpR8wJjMTUrjglURibH3wIp5rVYCCyvanfPoUj7Lj+F6e
+         1PKtHj7LEAwtg==
+Date:   Mon, 26 Jul 2021 13:16:47 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     shiva.linuxworks@gmail.com, rjw@rjwysocki.net, len.brown@intel.com,
+        linux-pm@vger.kernel.org, axboe@fb.com, hch@lst.de,
+        sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Shivamurthy Shastri <sshivamurthy@micron.com>
+Subject: Re: [PATCH v2 1/2] PM: enable support for imminent power loss
+Message-ID: <20210726201615.GA2025233@dhcp-10-100-145-180.wdc.com>
+References: <20210726132223.1661-1-sshivamurthy@micron.com>
+ <20210726132223.1661-2-sshivamurthy@micron.com>
+ <20210726194146.GA3986@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726194146.GA3986@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first time it's booted, the modem loads and starts the
-IPA-resident microcontroller.  Once the microcontroller has
-completed its initialization, it notifies the AP it's "ready"
-by sending an INIT_COMPLETED response message.
+On Mon, Jul 26, 2021 at 09:41:46PM +0200, Pavel Machek wrote:
+> > If the shutdown is pwerformed when the platform is running on the
+> > limited backup power supply, some of the devices might not have enough
+> > power to perform a clean shutdown.
+> > 
+> > It is necessary to inform the driver about the limited backup power
+> > supply, to allow the driver to decide to perform the minimal required
+> > operation for a fast and clean shutdown.
+> 
+> If you can do shutdown that is fast & clean, why not do it always?
 
-Until it receives that microcontroller message, the AP must ensure
-the IPA core clock remains operational.  Currently, a "proxy" clock
-reference is taken in ipa_uc_config(), dropping it again once the
-message is received.
-
-However there could be a long delay between when ipa_config()
-completes and when modem actually starts.  And because the
-microcontroller gets loaded by the modem, there's no need to
-get the modem "proxy clock" until the first time it starts.
-
-Create a new function ipa_uc_clock() which takes the "proxy" clock
-reference for the microcontroller.  Call it when we get remoteproc
-SSR notification that the modem is about to start.  Keep an
-additional flag to record whether this proxy clock reference needs
-to be dropped at shutdown time, and issue a warning if we get the
-microcontroller message either before the clock reference is taken,
-or after it has already been dropped.
-
-Drop the nearby use of "hh" length modifiers, which are no longer
-encouraged in the kernel.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa.h       |  2 ++
- drivers/net/ipa/ipa_modem.c |  2 ++
- drivers/net/ipa/ipa_uc.c    | 44 +++++++++++++++++++++++--------------
- drivers/net/ipa/ipa_uc.h    | 14 ++++++++++++
- 4 files changed, 45 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa.h b/drivers/net/ipa/ipa.h
-index 744406832a774..71ba996096bb9 100644
---- a/drivers/net/ipa/ipa.h
-+++ b/drivers/net/ipa/ipa.h
-@@ -51,6 +51,7 @@ enum ipa_flag {
-  * @table_addr:		DMA address of filter/route table content
-  * @table_virt:		Virtual address of filter/route table content
-  * @interrupt:		IPA Interrupt information
-+ * @uc_clocked:		true if clock is active by proxy for microcontroller
-  * @uc_loaded:		true after microcontroller has reported it's ready
-  * @reg_addr:		DMA address used for IPA register access
-  * @reg_virt:		Virtual address used for IPA register access
-@@ -95,6 +96,7 @@ struct ipa {
- 	__le64 *table_virt;
- 
- 	struct ipa_interrupt *interrupt;
-+	bool uc_clocked;
- 	bool uc_loaded;
- 
- 	dma_addr_t reg_addr;
-diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
-index 5cb60e2ea6042..c851e2cf12552 100644
---- a/drivers/net/ipa/ipa_modem.c
-+++ b/drivers/net/ipa/ipa_modem.c
-@@ -19,6 +19,7 @@
- #include "ipa_modem.h"
- #include "ipa_smp2p.h"
- #include "ipa_qmi.h"
-+#include "ipa_uc.h"
- 
- #define IPA_NETDEV_NAME		"rmnet_ipa%d"
- #define IPA_NETDEV_TAILROOM	0	/* for padding by mux layer */
-@@ -314,6 +315,7 @@ static int ipa_modem_notify(struct notifier_block *nb, unsigned long action,
- 	switch (action) {
- 	case QCOM_SSR_BEFORE_POWERUP:
- 		dev_info(dev, "received modem starting event\n");
-+		ipa_uc_clock(ipa);
- 		ipa_smp2p_notify_reset(ipa);
- 		break;
- 
-diff --git a/drivers/net/ipa/ipa_uc.c b/drivers/net/ipa/ipa_uc.c
-index 8b5e75711b644..f88ee02457d49 100644
---- a/drivers/net/ipa/ipa_uc.c
-+++ b/drivers/net/ipa/ipa_uc.c
-@@ -131,7 +131,7 @@ static void ipa_uc_event_handler(struct ipa *ipa, enum ipa_irq_id irq_id)
- 	if (shared->event == IPA_UC_EVENT_ERROR)
- 		dev_err(dev, "microcontroller error event\n");
- 	else if (shared->event != IPA_UC_EVENT_LOG_INFO)
--		dev_err(dev, "unsupported microcontroller event %hhu\n",
-+		dev_err(dev, "unsupported microcontroller event %u\n",
- 			shared->event);
- 	/* The LOG_INFO event can be safely ignored */
- }
-@@ -140,23 +140,28 @@ static void ipa_uc_event_handler(struct ipa *ipa, enum ipa_irq_id irq_id)
- static void ipa_uc_response_hdlr(struct ipa *ipa, enum ipa_irq_id irq_id)
- {
- 	struct ipa_uc_mem_area *shared = ipa_uc_shared(ipa);
-+	struct device *dev = &ipa->pdev->dev;
- 
- 	/* An INIT_COMPLETED response message is sent to the AP by the
- 	 * microcontroller when it is operational.  Other than this, the AP
- 	 * should only receive responses from the microcontroller when it has
- 	 * sent it a request message.
- 	 *
--	 * We can drop the clock reference taken in ipa_uc_setup() once we
-+	 * We can drop the clock reference taken in ipa_uc_clock() once we
- 	 * know the microcontroller has finished its initialization.
- 	 */
- 	switch (shared->response) {
- 	case IPA_UC_RESPONSE_INIT_COMPLETED:
--		ipa->uc_loaded = true;
--		ipa_clock_put(ipa);
-+		if (ipa->uc_clocked) {
-+			ipa->uc_loaded = true;
-+			ipa_clock_put(ipa);
-+			ipa->uc_clocked = false;
-+		} else {
-+			dev_warn(dev, "unexpected init_completed response\n");
-+		}
- 		break;
- 	default:
--		dev_warn(&ipa->pdev->dev,
--			 "unsupported microcontroller response %hhu\n",
-+		dev_warn(dev, "unsupported microcontroller response %u\n",
- 			 shared->response);
- 		break;
- 	}
-@@ -165,16 +170,7 @@ static void ipa_uc_response_hdlr(struct ipa *ipa, enum ipa_irq_id irq_id)
- /* Configure the IPA microcontroller subsystem */
- void ipa_uc_config(struct ipa *ipa)
- {
--	/* The microcontroller needs the IPA clock running until it has
--	 * completed its initialization.  It signals this by sending an
--	 * INIT_COMPLETED response message to the AP.  This could occur after
--	 * we have finished doing the rest of the IPA initialization, so we
--	 * need to take an extra "proxy" reference, and hold it until we've
--	 * received that signal.  (This reference is dropped in
--	 * ipa_uc_response_hdlr(), above.)
--	 */
--	ipa_clock_get(ipa);
--
-+	ipa->uc_clocked = false;
- 	ipa->uc_loaded = false;
- 	ipa_interrupt_add(ipa->interrupt, IPA_IRQ_UC_0, ipa_uc_event_handler);
- 	ipa_interrupt_add(ipa->interrupt, IPA_IRQ_UC_1, ipa_uc_response_hdlr);
-@@ -185,10 +181,24 @@ void ipa_uc_deconfig(struct ipa *ipa)
- {
- 	ipa_interrupt_remove(ipa->interrupt, IPA_IRQ_UC_1);
- 	ipa_interrupt_remove(ipa->interrupt, IPA_IRQ_UC_0);
--	if (!ipa->uc_loaded)
-+	if (ipa->uc_clocked)
- 		ipa_clock_put(ipa);
- }
- 
-+/* Take a proxy clock reference for the microcontroller */
-+void ipa_uc_clock(struct ipa *ipa)
-+{
-+	static bool already;
-+
-+	if (already)
-+		return;
-+	already = true;		/* Only do this on first boot */
-+
-+	/* This clock reference dropped in ipa_uc_response_hdlr() above */
-+	ipa_clock_get(ipa);
-+	ipa->uc_clocked = true;
-+}
-+
- /* Send a command to the microcontroller */
- static void send_uc_command(struct ipa *ipa, u32 command, u32 command_param)
- {
-diff --git a/drivers/net/ipa/ipa_uc.h b/drivers/net/ipa/ipa_uc.h
-index cb0a224022f58..14e4e1115aa79 100644
---- a/drivers/net/ipa/ipa_uc.h
-+++ b/drivers/net/ipa/ipa_uc.h
-@@ -20,6 +20,20 @@ void ipa_uc_config(struct ipa *ipa);
-  */
- void ipa_uc_deconfig(struct ipa *ipa);
- 
-+/**
-+ * ipa_uc_clock() - Take a proxy clock reference for the microcontroller
-+ * @ipa:	IPA pointer
-+ *
-+ * The first time the modem boots, it loads firmware for and starts the
-+ * IPA-resident microcontroller.  The microcontroller signals that it
-+ * has completed its initialization by sending an INIT_COMPLETED response
-+ * message to the AP.  The AP must ensure the IPA core clock is operating
-+ * until it receives this message, and to do so we take a "proxy" clock
-+ * reference on its behalf here.  Once we receive the INIT_COMPLETED
-+ * message (in ipa_uc_response_hdlr()) we drop this clock reference.
-+ */
-+void ipa_uc_clock(struct ipa *ipa);
-+
- /**
-  * ipa_uc_panic_notifier()
-  * @ipa:	IPA pointer
--- 
-2.27.0
-
+At least for nvme, I don't think this faster shutdown qualifies as
+"clean". It's just a little better than removing power without telling
+the device. Typical implementations take longer to become ready on their
+next power-on following the abrupt shutdown sequence.
