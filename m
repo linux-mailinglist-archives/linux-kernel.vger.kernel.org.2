@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0E43D63E1
+	by mail.lfdr.de (Postfix) with ESMTP id 40C933D63E0
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239141AbhGZPwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
+        id S239454AbhGZPwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:52:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233126AbhGZPcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:32:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0293A60F9F;
-        Mon, 26 Jul 2021 16:12:36 +0000 (UTC)
+        id S233463AbhGZPcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7108560F9E;
+        Mon, 26 Jul 2021 16:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315957;
-        bh=o+SLf9Ls0HdjLW1mh6856lRkkBgvRFiABTZNTIl3Cco=;
+        s=korg; t=1627315959;
+        bh=3QYSvqeWbBTXGr2oSTU79hdZinU2VNkohiJFYStArjk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xa6Z2y8kVKyMROcc/2rSpr7qWlYGiiGKQWRM4TQ2Z89K11uFPZIhm73xMJT2S4iGx
-         HzmklByUW73c6SG5Ik+tnOStbtDbhq/6/h7A2gbHZ1zv0iV/mQ8OPSzbYb4Pkl6tQW
-         c/rTXTrdTIpeQH81FdzxBIiCL7mzI+0Pq3R/R5/Q=
+        b=qtcOIzYG++VWQtC1rtE7nqIvV8ZRD0pvMoiJWx8tSRtz/4wiH6QeH6mHN5BGtI0QG
+         wCcgukmqzx76lyU4M0UbsYOHbOl3kOPGpUyQ+reH3XnKtTx/URCG3BccaZaLYDlXPe
+         2j6OoYrPONYXjCuTtkJyyNVT/8KLXUm7q4VHy0hM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dany Madden <drt@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Bin Meng <bmeng.cn@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 132/223] ibmvnic: Remove the proper scrq flush
-Date:   Mon, 26 Jul 2021 17:38:44 +0200
-Message-Id: <20210726153850.567283764@linuxfoundation.org>
+Subject: [PATCH 5.13 133/223] riscv: Fix 32-bit RISC-V boot failure
+Date:   Mon, 26 Jul 2021 17:38:45 +0200
+Message-Id: <20210726153850.601220234@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,49 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Bin Meng <bmeng.cn@gmail.com>
 
-[ Upstream commit bb55362bd6976631b662ca712779b6532d8de0a6 ]
+[ Upstream commit d0e4dae74470fb709fc0ab61862c317938f4cc4d ]
 
-Commit 65d6470d139a ("ibmvnic: clean pending indirect buffs during reset")
-intended to remove the call to ibmvnic_tx_scrq_flush() when the
-->resetting flag is true and was tested that way. But during the final
-rebase to net-next, the hunk got applied to a block few lines below
-(which happened to have the same diff context) and the wrong call to
-ibmvnic_tx_scrq_flush() got removed.
+Commit dd2d082b5760 ("riscv: Cleanup setup_bootmem()") adjusted
+the calling sequence in setup_bootmem(), which invalidates the fix
+commit de043da0b9e7 ("RISC-V: Fix usage of memblock_enforce_memory_limit")
+did for 32-bit RISC-V unfortunately.
 
-Fix that by removing the correct ibmvnic_tx_scrq_flush() and restoring
-the one that was incorrectly removed.
+So now 32-bit RISC-V does not boot again when testing booting kernel
+on QEMU 'virt' with '-m 2G', which was exactly what the original
+commit de043da0b9e7 ("RISC-V: Fix usage of memblock_enforce_memory_limit")
+tried to fix.
 
-Fixes: 65d6470d139a ("ibmvnic: clean pending indirect buffs during reset")
-Reported-by: Dany Madden <drt@linux.ibm.com>
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: dd2d082b5760 ("riscv: Cleanup setup_bootmem()")
+Signed-off-by: Bin Meng <bmeng.cn@gmail.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/mm/init.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index efc98903c0b7..5b4a7ef7dffa 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1707,7 +1707,6 @@ static netdev_tx_t ibmvnic_xmit(struct sk_buff *skb, struct net_device *netdev)
- 		tx_send_failed++;
- 		tx_dropped++;
- 		ret = NETDEV_TX_OK;
--		ibmvnic_tx_scrq_flush(adapter, tx_scrq);
- 		goto out;
- 	}
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 4c4c92ce0bb8..9b23b95c50cf 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -123,7 +123,7 @@ void __init setup_bootmem(void)
+ {
+ 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
+ 	phys_addr_t vmlinux_start = __pa_symbol(&_start);
+-	phys_addr_t dram_end = memblock_end_of_DRAM();
++	phys_addr_t dram_end;
+ 	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
  
-@@ -1729,6 +1728,7 @@ static netdev_tx_t ibmvnic_xmit(struct sk_buff *skb, struct net_device *netdev)
- 		dev_kfree_skb_any(skb);
- 		tx_send_failed++;
- 		tx_dropped++;
-+		ibmvnic_tx_scrq_flush(adapter, tx_scrq);
- 		ret = NETDEV_TX_OK;
- 		goto out;
- 	}
+ #ifdef CONFIG_XIP_KERNEL
+@@ -146,6 +146,8 @@ void __init setup_bootmem(void)
+ #endif
+ 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+ 
++	dram_end = memblock_end_of_DRAM();
++
+ 	/*
+ 	 * memblock allocator is not aware of the fact that last 4K bytes of
+ 	 * the addressable memory can not be mapped because of IS_ERR_VALUE
 -- 
 2.30.2
 
