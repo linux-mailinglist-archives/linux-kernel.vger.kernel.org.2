@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCC83D511C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 03:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0295E3D5122
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 03:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhGZA7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 20:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52758 "EHLO
+        id S231336AbhGZBGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 21:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhGZA7u (ORCPT
+        with ESMTP id S230152AbhGZBGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 20:59:50 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDEDC061760
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 18:40:20 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id i10so6647456pla.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 18:40:20 -0700 (PDT)
+        Sun, 25 Jul 2021 21:06:52 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C435C061757
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 18:47:21 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id o44-20020a17090a0a2fb0290176ca3e5a2fso4758022pjo.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Jul 2021 18:47:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RKIKuAaTQlG88etJbUulWv2ZbXxRWG1nGC16MCIPM3w=;
-        b=ms8/Jx8P90hOP/FP0L/OO2bILCSysQRSgk6BGqpUNEiyo29FUL08Zmxb3aiqDWglEL
-         hKTWizKDgEI1HdGyb08vp4/EARp+ppjmp8AZro4tp1sv8U2ztEgFcNL0pbp8bO9KbwHt
-         oX4XW2q4v89JVM+RtkxmP8nmccjwirG2A0nG8=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=kRanx6zdiIZx2L0mh1uE63PGEjHt+/w4xPUFYD+g1HM=;
+        b=gm9vFCkoUvqsjiaf6Cdl5mV1rCQhdWIGmC+G4CmwqhfiPEp0pZNimiTD5+gl5jguuv
+         kIMsRazmzPePVpfByYmnY/Q7VjnZoMire6uZ5B6nN8qNZQ3kHw+jJvmTJ+V7EHWfaLVt
+         ZuxEvtH3VHye0OJLxryYJFZAAAOdlre9VFgBnLnTvB3JL7PslMQKFUpaxmLMMZ4m8qQA
+         eqGLSuBS0EB6sPcSsx7uYBxowoFwu9ppsKJt9FMTeiSU/PYQSjMcXgfLd9DLrw/PYhYH
+         ZaWZUwvlLpxl8ql6JHVCk1vqPFvEQYqAMvLV0Enh+WybIxxRtb+McbNgy79PAMYuGyFt
+         +j8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RKIKuAaTQlG88etJbUulWv2ZbXxRWG1nGC16MCIPM3w=;
-        b=jABziQK8ANixRbcIXoUcC+czfPHPAZeZ/htjy86EBxtKd/mTiVNGK3/ld+qwbmpYtZ
-         8Uhq8sRgGjLyxsqE7mQy0uyQWcet4Fj5kjDzEX4aAmhLe5TDiLeOn+uJmVOVNtPAPE1U
-         V2gaT7HfLwH33l17+BG0OFE6VWcoC/421PFbiXhw0VInVPLl4dG+CZzGv0e5JhOCeoOy
-         Bheh2k6Lke1V2otZsYAX7aylqjSZc1utTg/yKgA7VcpE7KcymI1RmWAJSOf+frue1a4y
-         SSDxc3lrl95iup9AKe1UuAXZSqrzNtbgONJ1K4UyGqh9jnx33r+cDcdV2L+RQ5cpvg/k
-         lf7w==
-X-Gm-Message-State: AOAM5300/DnJoJ6XTzWTeIl1Y/ZH7gXUUMEtVP+OdvOvTWBU2itroIRN
-        agGr0QNS5REta7jlpr05QRzFTA==
-X-Google-Smtp-Source: ABdhPJyVZ7XxDxNbUh3apH7bz124wc1cFBxqH5WbFeR33S8SV+IY9fRu6qvDNB1w6A+5XSDWqVOpdA==
-X-Received: by 2002:a05:6a00:9a3:b029:355:d45b:ad9a with SMTP id u35-20020a056a0009a3b0290355d45bad9amr15829812pfg.73.1627263619760;
-        Sun, 25 Jul 2021 18:40:19 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:967a:60e8:38b7:1227])
-        by smtp.gmail.com with ESMTPSA id v15sm25235523pff.105.2021.07.25.18.40.16
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=kRanx6zdiIZx2L0mh1uE63PGEjHt+/w4xPUFYD+g1HM=;
+        b=suOEdy0pg/B9aQ5VJhvQ4VVsy7vUYpQpMMVxydl2Wu3dEvpNmuof7aF5z5VJQuEE6U
+         8yaj3/dzHJyZpRiAAMmiceQY15oUjw5OQOY3MH4vga+ZJNTBP4kpxfRriv5TeWho95wq
+         DbY1pcM0d/7VdKTXZpVxEqgU5dgpKZSTW7MAObCbPCZJjRji5HLWXHOUwiomB+XCpA5H
+         7YwlEPN6QfZ6Ua+sIEAKzbwibhxYIelRLio3uhCQ3oVJez+HGtGABcK7bAs06vmwdKlv
+         q3Ha/S1LaErhvM0sFZr4ykXMr67+eEPlmXeqnFmrBxxPvmipIh3neuo+uYNJvISpOF9h
+         QZ7A==
+X-Gm-Message-State: AOAM5334CAXOI5oWIF/51EPtpVgoTfWWTisoPv/RvefV3PsVWys6nYgq
+        rS/cWS+Mwyn7ZHvGparg15CPEg==
+X-Google-Smtp-Source: ABdhPJyR0Sm06D4XnVwRwy8FIAvgJ2gpbOZ4EzNVPCIjcx7HA1DkEhjwKPphKlw9sDUo5TdiQV1ZJA==
+X-Received: by 2002:a17:902:ea09:b029:12b:1dc0:ac74 with SMTP id s9-20020a170902ea09b029012b1dc0ac74mr12451495plg.82.1627264040423;
+        Sun, 25 Jul 2021 18:47:20 -0700 (PDT)
+Received: from [2620:15c:17:3:ca7d:5de8:9c9:c7c0] ([2620:15c:17:3:ca7d:5de8:9c9:c7c0])
+        by smtp.gmail.com with ESMTPSA id k20sm11868208pji.3.2021.07.25.18.47.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Jul 2021 18:40:19 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 10:40:14 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>
-Subject: Re: [PATCHv3 7/8] videobuf2: handle V4L2_MEMORY_FLAG_NON_COHERENT
- flag
-Message-ID: <YP4Sfo0PjLokYi3B@google.com>
-References: <20210709092027.1050834-1-senozhatsky@chromium.org>
- <20210709092027.1050834-8-senozhatsky@chromium.org>
- <0c89ef1e-8abb-8749-bbce-c7e5a2e2f304@collabora.com>
+        Sun, 25 Jul 2021 18:47:19 -0700 (PDT)
+Date:   Sun, 25 Jul 2021 18:47:18 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+To:     Charan Teja Reddy <charante@codeaurora.org>
+cc:     akpm@linux-foundation.org, vbabka@suse.cz, nigupta@nvidia.com,
+        khalid.aziz@oracle.com, vinmenon@codeaurora.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH resend] mm: compaction: optimize proactive compaction
+ deferrals
+In-Reply-To: <1626869599-25412-1-git-send-email-charante@codeaurora.org>
+Message-ID: <83f046a3-5afc-fe6d-40dc-d7aee7b7e398@google.com>
+References: <1626869599-25412-1-git-send-email-charante@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c89ef1e-8abb-8749-bbce-c7e5a2e2f304@collabora.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/07/22 19:33), Dafna Hirschfeld wrote:
-[..]
-> >   int vb2_reqbufs(struct vb2_queue *q, struct v4l2_requestbuffers *req)
-> >   {
-> >   	int ret = vb2_verify_memory_type(q, req->memory, req->type);
-> > +	u32 flags = req->flags;
-> >   	fill_buf_caps(q, &req->capabilities);
-> > -	return ret ? ret : vb2_core_reqbufs(q, req->memory, 0, &req->count);
-> > +	validate_memory_flags(q, req->memory, &flags);
-> > +	req->flags = flags;
-> 
-> you can do instead
-> 
-> validate_memory_flags(q, req->memory, &req->flags);
+On Wed, 21 Jul 2021, Charan Teja Reddy wrote:
 
-->flags are u32 for create-bufs and u8 for reqi-bufs. So `*flags = <value>`
-can write to ->reserved[] for req-bufs (if the value is huge enough).
+> Vlastimil Babka figured out that when fragmentation score didn't go down
+> across the proactive compaction i.e. when no progress is made, next wake
+> up for proactive compaction is deferred for 1 <<
+> COMPACT_MAX_DEFER_SHIFT, i.e. 64 times, with each wakeup interval of
+> HPAGE_FRAG_CHECK_INTERVAL_MSEC(=500). In each of this wakeup, it just
+> decrement 'proactive_defer' counter and goes sleep i.e. it is getting
+> woken to just decrement a counter. The same deferral time can also
+> achieved by simply doing the HPAGE_FRAG_CHECK_INTERVAL_MSEC <<
+> COMPACT_MAX_DEFER_SHIFT thus unnecessary wakeup of kcompact thread is
+> avoided thus also removes the need of 'proactive_defer' thread counter.
+> 
+> Link: https://lore.kernel.org/linux-fsdevel/88abfdb6-2c13-b5a6-5b46-742d12d1c910@suse.cz/
+> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+
+With Andrew's comment fixup:
+
+Acked-by: David Rientjes <rientjes@google.com>
+
+Thanks, Charan.
