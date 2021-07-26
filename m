@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0573D50D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 03:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36483D50DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 03:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhGZAf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 20:35:29 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7058 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhGZAf2 (ORCPT
+        id S231404AbhGZAgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 20:36:14 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7979 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhGZAgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 20:35:28 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GY20C0K9hzYgSq;
-        Mon, 26 Jul 2021 09:10:03 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 26 Jul 2021 09:15:54 +0800
-Received: from [10.174.178.91] (10.174.178.91) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 26 Jul 2021 09:15:54 +0800
-Subject: Re: [PATCH 1/3] block, bfq: do not idle if only one cgroup is
- activated
-To:     Paolo Valente <paolo.valente@linaro.org>
-CC:     Jens Axboe <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20210714094529.758808-1-yukuai3@huawei.com>
- <20210714094529.758808-2-yukuai3@huawei.com>
- <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <fd21f7c8-2b13-f638-3114-9d95df9bc082@huawei.com>
-Date:   Mon, 26 Jul 2021 09:15:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 25 Jul 2021 20:36:13 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee560fe0cd2f1f-8179d; Mon, 26 Jul 2021 09:16:02 +0800 (CST)
+X-RM-TRANSID: 2ee560fe0cd2f1f-8179d
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.26.114] (unknown[10.42.68.12])
+        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee160fe0cc2ed1-07f73;
+        Mon, 26 Jul 2021 09:16:02 +0800 (CST)
+X-RM-TRANSID: 2ee160fe0cc2ed1-07f73
+Subject: Re: [PATCH] power: supply: qcom_smbb: Remove superfluous errormessage
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, sre@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+References: <20210720141539.7716-1-tangbin@cmss.chinamobile.com>
+ <YPbxS4KV+Fx01p7G@yoga>
+From:   tangbin <tangbin@cmss.chinamobile.com>
+Message-ID: <f6a40fef-deac-e898-7cac-d9d246c84a24@cmss.chinamobile.com>
+Date:   Mon, 26 Jul 2021 09:16:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <7DF40BD4-8F57-4C2E-88A9-CBC3DA2A891E@linaro.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+In-Reply-To: <YPbxS4KV+Fx01p7G@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/07/24 15:12, Paolo Valente wrote:
-> 
-> 
->> Il giorno 14 lug 2021, alle ore 11:45, Yu Kuai <yukuai3@huawei.com> ha scritto:
+Hi, Bjorn Andersson:
+
+On 2021/7/20 23:52, Bjorn Andersson wrote:
+> On Tue 20 Jul 09:15 CDT 2021, Tang Bin wrote:
+>
+>> In the probe function, when get irq failed, the function
+>> platform_get_irq_byname() logs an error message, so remove
+>> redundant message here.
 >>
->> If only one group is activated, specifically
->> 'bfqd->num_groups_with_pending_reqs == 1', there is no need to guarantee
->> the same share of the throughput of queues in the same group.
+>> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> This says "Zhang certified this patch's origin, then you took the patch
+> and you certified it's origin" - per Documentation/process/submitting-patches.rst
+>
+> But you, Tang, is the author or the patch, so how can Zhang have touched
+> it before you wrote it?
+>
+> Perhaps you worked on it together? In which case you should include a
+> Co-developed-by to indicate this.
+
+I am sorry for the late reply to your email due to some reasons. The 
+correct way to write it should be as follows:
+
+     Co-developed-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+
+     Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+
+     Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+
+>
+>
+> Both commit message and patch looks good though!
+>
+whether should I send v2 for this patch？
+
+Thanks
+
+Tang Bin
+
+>> ---
+>>   drivers/power/supply/qcom_smbb.c | 5 +----
+>>   1 file changed, 1 insertion(+), 4 deletions(-)
 >>
->> Thus change the condition from '> 0' to '> 1' in
->> bfq_asymmetric_scenario().
-> 
-> I see your point, and I agree with your goal.  Yet, your change seems
-> not to suffer from the following problem.
-> 
-> In addition to the groups that are created explicitly, there is the
-> implicit root group.  So, when bfqd->num_groups_with_pending_reqs ==
-> 1, there may be both active processes in the root group and active
-> processes in the only group created explicitly.  In this case, idling
-> is needed to preserve service guarantees.
-> 
-> Probably your idea should be improved by making sure that there is
-> pending I/O only from either the root group or the explicit group.
-> 
-> Thanks,
-> Paolo
-> 
+>> diff --git a/drivers/power/supply/qcom_smbb.c b/drivers/power/supply/qcom_smbb.c
+>> index c890e1cec..84cc9fba0 100644
+>> --- a/drivers/power/supply/qcom_smbb.c
+>> +++ b/drivers/power/supply/qcom_smbb.c
+>> @@ -929,11 +929,8 @@ static int smbb_charger_probe(struct platform_device *pdev)
+>>   		int irq;
+>>   
+>>   		irq = platform_get_irq_byname(pdev, smbb_charger_irqs[i].name);
+>> -		if (irq < 0) {
+>> -			dev_err(&pdev->dev, "failed to get irq '%s'\n",
+>> -				smbb_charger_irqs[i].name);
+>> +		if (irq < 0)
+>>   			return irq;
+>> -		}
+>>   
+>>   		smbb_charger_irqs[i].handler(irq, chg);
+>>   
+>> -- 
+>> 2.20.1.windows.1
+>>
+>>
+>>
 
-Hi,
 
-Thanks for you advice, will do this in the next iteration.
-
-Best regards,
-Kuai
