@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3933D5E6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F132C3D5D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236070AbhGZPHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:07:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46984 "EHLO mail.kernel.org"
+        id S235250AbhGZPAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235962AbhGZPGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:06:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F72A60F6E;
-        Mon, 26 Jul 2021 15:46:36 +0000 (UTC)
+        id S235247AbhGZPAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:00:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 126A360F38;
+        Mon, 26 Jul 2021 15:40:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314397;
-        bh=b6n+PlAf17eiL4aspDzeqfCt/otp91D5d3QthAesodI=;
+        s=korg; t=1627314049;
+        bh=DGfMhS/QxUCb1nUGcjN26KHROobYUPCysiMp5HZkqLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1m9fGcc+B7/7pIzR5Rz5YH7pB/tvUn8LxKPdW+O89/McORgeg65Wfi6subj+2Wimh
-         hF4kYyP0+027Z/xc6yjjPjuSZr7Ia9M/WEPH7PxPFQK1TjqL4kVhBzgrJh7whHYBMh
-         RUSBfYG4FSLvAuE80b2gnLScyDKtTE0FYm1aPfUY=
+        b=AQvBgxrVwsBHAFowLVRBFDWymJvWr9Ygf5ZZmeYvCgx48VYPgHuqNllP/YvjkDvhw
+         N6uR39aemjcD1VEvv8b8077NGb5690iLOVtnhiWgpEbITJZXLnnIgLudQg28G+1hRW
+         DV4RoBgugPG/epLmNAEDCSx0iEcsmNS0tU/kwuL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 33/82] tcp: annotate data races around tp->mtu_info
+Subject: [PATCH 4.4 15/47] net: validate lwtstate->data before returning from skb_tunnel_info()
 Date:   Mon, 26 Jul 2021 17:38:33 +0200
-Message-Id: <20210726153829.240751610@linuxfoundation.org>
+Message-Id: <20210726153823.463007647@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Taehee Yoo <ap420073@gmail.com>
 
-commit 561022acb1ce62e50f7a8258687a21b84282a4cb upstream.
+commit 67a9c94317402b826fc3db32afc8f39336803d97 upstream.
 
-While tp->mtu_info is read while socket is owned, the write
-sides happen from err handlers (tcp_v[46]_mtu_reduced)
-which only own the socket spinlock.
+skb_tunnel_info() returns pointer of lwtstate->data as ip_tunnel_info
+type without validation. lwtstate->data can have various types such as
+mpls_iptunnel_encap, etc and these are not compatible.
+So skb_tunnel_info() should validate before returning that pointer.
 
-Fixes: 563d34d05786 ("tcp: dont drop MTU reduction indications")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+Splat looks like:
+BUG: KASAN: slab-out-of-bounds in vxlan_get_route+0x418/0x4b0 [vxlan]
+Read of size 2 at addr ffff888106ec2698 by task ping/811
+
+CPU: 1 PID: 811 Comm: ping Not tainted 5.13.0+ #1195
+Call Trace:
+ dump_stack_lvl+0x56/0x7b
+ print_address_description.constprop.8.cold.13+0x13/0x2ee
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ kasan_report.cold.14+0x83/0xdf
+ ? vxlan_get_route+0x418/0x4b0 [vxlan]
+ vxlan_get_route+0x418/0x4b0 [vxlan]
+ [ ... ]
+ vxlan_xmit_one+0x148b/0x32b0 [vxlan]
+ [ ... ]
+ vxlan_xmit+0x25c5/0x4780 [vxlan]
+ [ ... ]
+ dev_hard_start_xmit+0x1ae/0x6e0
+ __dev_queue_xmit+0x1f39/0x31a0
+ [ ... ]
+ neigh_xmit+0x2f9/0x940
+ mpls_xmit+0x911/0x1600 [mpls_iptunnel]
+ lwtunnel_xmit+0x18f/0x450
+ ip_finish_output2+0x867/0x2040
+ [ ... ]
+
+Fixes: 61adedf3e3f1 ("route: move lwtunnel state to dst_entry")
+Signed-off-by: Taehee Yoo <ap420073@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/tcp_ipv4.c |    4 ++--
- net/ipv6/tcp_ipv6.c |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ include/net/dst_metadata.h |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -285,7 +285,7 @@ void tcp_v4_mtu_reduced(struct sock *sk)
+--- a/include/net/dst_metadata.h
++++ b/include/net/dst_metadata.h
+@@ -31,7 +31,9 @@ static inline struct ip_tunnel_info *skb
+ 		return &md_dst->u.tun_info;
  
- 	if ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))
- 		return;
--	mtu = tcp_sk(sk)->mtu_info;
-+	mtu = READ_ONCE(tcp_sk(sk)->mtu_info);
- 	dst = inet_csk_update_pmtu(sk, mtu);
- 	if (!dst)
- 		return;
-@@ -453,7 +453,7 @@ void tcp_v4_err(struct sk_buff *icmp_skb
- 			if (sk->sk_state == TCP_LISTEN)
- 				goto out;
+ 	dst = skb_dst(skb);
+-	if (dst && dst->lwtstate)
++	if (dst && dst->lwtstate &&
++	    (dst->lwtstate->type == LWTUNNEL_ENCAP_IP ||
++	     dst->lwtstate->type == LWTUNNEL_ENCAP_IP6))
+ 		return lwt_tun_info(dst->lwtstate);
  
--			tp->mtu_info = info;
-+			WRITE_ONCE(tp->mtu_info, info);
- 			if (!sock_owned_by_user(sk)) {
- 				tcp_v4_mtu_reduced(sk);
- 			} else {
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -323,7 +323,7 @@ static void tcp_v6_mtu_reduced(struct so
- 	if ((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE))
- 		return;
- 
--	dst = inet6_csk_update_pmtu(sk, tcp_sk(sk)->mtu_info);
-+	dst = inet6_csk_update_pmtu(sk, READ_ONCE(tcp_sk(sk)->mtu_info));
- 	if (!dst)
- 		return;
- 
-@@ -412,7 +412,7 @@ static void tcp_v6_err(struct sk_buff *s
- 		if (!ip6_sk_accept_pmtu(sk))
- 			goto out;
- 
--		tp->mtu_info = ntohl(info);
-+		WRITE_ONCE(tp->mtu_info, ntohl(info));
- 		if (!sock_owned_by_user(sk))
- 			tcp_v6_mtu_reduced(sk);
- 		else if (!test_and_set_bit(TCP_MTU_REDUCED_DEFERRED,
+ 	return NULL;
 
 
