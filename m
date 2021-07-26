@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55693D52EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AEE23D52ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhGZFGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 01:06:47 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:42261 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbhGZFGq (ORCPT
+        id S231766AbhGZFHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 01:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhGZFHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 01:06:46 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 9DE8A40003;
-        Mon, 26 Jul 2021 05:47:12 +0000 (UTC)
-Subject: Re: [PATCH 3/3] riscv: Make sure the kernel mapping does not overlap
- with IS_ERR_VALUE
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210629091349.3802690-1-alex@ghiti.fr>
- <20210629091349.3802690-3-alex@ghiti.fr>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <1778a14a-6bb0-7ff8-1b11-32be51c015da@ghiti.fr>
-Date:   Mon, 26 Jul 2021 07:47:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 26 Jul 2021 01:07:34 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84688C061757;
+        Sun, 25 Jul 2021 22:48:03 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id x12so1037160qvo.12;
+        Sun, 25 Jul 2021 22:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IjUSYUWGzcBLQG2iUil833w4Zd3GqFtQlxGn9nyit5k=;
+        b=S9uFWcpxD/QrakM9dEgq7JCJjBUPkX7T1EySjVtZwLGkdUscQN63QmH6Q5zUZf6AuU
+         WkA3XibX9Evq7Z4Bpxx0BTT46+3hFFkeip6slBVPcazG9e+JYhN9tvJ4SYBdO8Kn1B3M
+         6kCm7DmeCzcnnKKJw2DZ0hSmeRieTzVEX6axuqOXizgmfAbVSd5vNFWyP+GJ7PzwSJBh
+         yigd0EK/l1Xu0SNQOpEKDTY8g7d4ESRn9WFX39wihsb6/ASbBmZyWdnXka0RDkZQjE6s
+         T2sQctiULV4+IUSaWs9Oxgb/hJWjGRghDcrOIN0LvEpiT5vxam9C5M2hS7smSqNYvHkY
+         6Ntw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IjUSYUWGzcBLQG2iUil833w4Zd3GqFtQlxGn9nyit5k=;
+        b=PEGUeXnYcgXG96a01QvU8jHxdaTmEBn2o46iSvrUqE7z24ndFF5R13dUaea2Wa8d3b
+         ci3B7Z4oIa3NKLSnMNpTHzzQCVMDU3DffpMe2ci31XFlbp3lWha554LAhOEQ+zfHTt0/
+         Zb7gKg6cd7oZic1NZ00Yjjk08beZxAOc065h7X8bbL+z0vshaslDISOzy2LJgw6a7IKO
+         uzanxMrJ9KNS36KDZiN5MZOMyPEdL8Dk9Fgsx/Pn2NMMcvnj3vqImO4GvZBkz34tXRrB
+         2mqkEkkMFlnLkL6RWd8FTdZgZlicMloYdNV6QjXEK4Tca9wd+3pqX3Eh5/9v3jsPq1eJ
+         w1jQ==
+X-Gm-Message-State: AOAM532rXz3cis65QqTKFfhPf7YyuzUgDiThKPv8Qp8xN3TU0cNvm6m0
+        JB5I0rM7RjEW9df/6Jof6Q==
+X-Google-Smtp-Source: ABdhPJwm7C4CimaVH15ZzSIqWqjk0cJnOJWk7qqez3PMwEi4SZVW9nem4uFkEGvQaoWw65dU5tghmA==
+X-Received: by 2002:ad4:5cad:: with SMTP id q13mr16416000qvh.10.1627278482331;
+        Sun, 25 Jul 2021 22:48:02 -0700 (PDT)
+Received: from localhost.localdomain (74.121.150.105.16clouds.com. [74.121.150.105])
+        by smtp.gmail.com with ESMTPSA id h7sm14799668qtq.79.2021.07.25.22.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Jul 2021 22:48:01 -0700 (PDT)
+From:   Chen Shen <peterchenshen@gmail.com>
+To:     marcelo.leitner@gmail.com
+Cc:     vyasevich@gmail.com, nhorman@tuxdriver.com, davem@davemloft.net,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chen Shen <peterchenshen@gmail.com>
+Subject: [PATCH v2] sctp: delete addr based on sin6_scope_id
+Date:   Mon, 26 Jul 2021 13:47:34 +0800
+Message-Id: <20210726054733.75937-1-peterchenshen@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YP3tOORtoNHZXQdt@horizon.localdomain>
+References: <YP3tOORtoNHZXQdt@horizon.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20210629091349.3802690-3-alex@ghiti.fr>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+sctp_inet6addr_event deletes 'addr' from 'local_addr_list' when setting
+netdev down, but it is possible to delete the incorrect entry (match
+the first one with the same ipaddr, but the different 'ifindex'), if
+there are some netdevs with the same 'local-link' ipaddr added already.
+It should delete the entry depending on 'sin6_addr' and 'sin6_scope_id'
+both. otherwise, the endpoint will call 'sctp_sf_ootb' if it can't find
+the according association when receives 'heartbeat', and finally will
+reply 'abort'.
 
-Le 29/06/2021 à 11:13, Alexandre Ghiti a écrit :
-> The check that is done in setup_bootmem currently only works for 32-bit
-> kernel since the kernel mapping has been moved outside of the linear
-> mapping for 64-bit kernel. So make sure that for 64-bit kernel, the kernel
-> mapping does not overlap with the last 4K of the addressable memory.
-> 
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->   arch/riscv/mm/init.c | 18 ++++++++++++++++--
->   1 file changed, 16 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index a1a0c4afa80f..a90c41bc9485 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -156,7 +156,7 @@ static void __init setup_bootmem(void)
->   {
->   	phys_addr_t vmlinux_end = __pa_symbol(&_end);
->   	phys_addr_t vmlinux_start = __pa_symbol(&_start);
-> -	phys_addr_t max_mapped_addr = __pa(~(ulong)0);
-> +	phys_addr_t __maybe_unused max_mapped_addr;
->   	phys_addr_t dram_end;
->   
->   #ifdef CONFIG_XIP_KERNEL
-> @@ -179,14 +179,20 @@ static void __init setup_bootmem(void)
->   	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
->   
->   	dram_end = memblock_end_of_DRAM();
-> +#ifndef CONFIG_64BIT
->   	/*
->   	 * memblock allocator is not aware of the fact that last 4K bytes of
->   	 * the addressable memory can not be mapped because of IS_ERR_VALUE
->   	 * macro. Make sure that last 4k bytes are not usable by memblock
-> -	 * if end of dram is equal to maximum addressable memory.
-> +	 * if end of dram is equal to maximum addressable memory. For 64-bit
-> +	 * kernel, this problem can't happen here as the end of the virtual
-> +	 * address space is occupied by the kernel mapping then this check must
-> +	 * be done in create_kernel_page_table.
+For example:
+1.when linux startup
+the entries in local_addr_list:
+ifindex:35 addr:fe80::40:43ff:fe80:0 (eths0.201)
+ifindex:36 addr:fe80::40:43ff:fe80:0 (eths0.209)
+ifindex:37 addr:fe80::40:43ff:fe80:0 (eths0.210)
 
-This comment is wrong, I have just sent a patch fixing this:
+the route table:
+local fe80::40:43ff:fe80:0 dev eths0.201
+local fe80::40:43ff:fe80:0 dev eths0.209
+local fe80::40:43ff:fe80:0 dev eths0.210
 
-"riscv: Fix comment regarding kernel mapping overlapping with IS_ERR_VALUE"
+2.after 'ifconfig eths0.209 down'
+the entries in local_addr_list:
+ifindex:36 addr:fe80::40:43ff:fe80:0 (eths0.209)
+ifindex:37 addr:fe80::40:43ff:fe80:0 (eths0.210)
 
->   	 */
-> +	max_mapped_addr = __pa(~(ulong)0);
->   	if (max_mapped_addr == (dram_end - 1))
->   		memblock_set_current_limit(max_mapped_addr - 4096);
-> +#endif
->   
->   	min_low_pfn = PFN_UP(memblock_start_of_DRAM());
->   	max_low_pfn = max_pfn = PFN_DOWN(dram_end);
-> @@ -556,6 +562,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
->   	uintptr_t va, end_va;
->   
->   	end_va = kernel_virt_addr + load_sz;
-> +
+the route table:
+local fe80::40:43ff:fe80:0 dev eths0.201
+local fe80::40:43ff:fe80:0 dev eths0.210
 
-I saw that you removed this useless new line, thanks.
+3.asoc not found for src:[fe80::40:43ff:fe80:0]:37381 dst:[:1]:53335
+::1->fe80::40:43ff:fe80:0 HEARTBEAT
+fe80::40:43ff:fe80:0->::1 ABORT
 
->   	for (va = kernel_virt_addr; va < end_va; va += map_size)
->   		create_pgd_mapping(pgdir, va,
->   				   load_pa + (va - kernel_virt_addr),
-> @@ -602,6 +609,13 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->   	/* Sanity check alignment and size */
->   	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
->   	BUG_ON((load_pa % map_size) != 0);
-> +#ifdef CONFIG_64BIT
-> +	/*
-> +	 * The last 4K bytes of the addressable memory can not be mapped because
-> +	 * of IS_ERR_VALUE macro.
-> +	 */
-> +	BUG_ON((kernel_virt_addr + load_sz) > ADDRESS_SPACE_END - SZ_4K);
-> +#endif
->   
->   	pt_ops.alloc_pte = alloc_pte_early;
->   	pt_ops.get_pte_virt = get_pte_virt_early;
-> 
+Signed-off-by: Chen Shen <peterchenshen@gmail.com>
+---
+ net/sctp/ipv6.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-The merge you have done is correct to me. Sorry about the above 
-mistakes, should have caught those before.
+diff --git a/net/sctp/ipv6.c b/net/sctp/ipv6.c
+index 52c92b8d827f..f5f54229b055 100644
+--- a/net/sctp/ipv6.c
++++ b/net/sctp/ipv6.c
+@@ -99,8 +99,9 @@ static int sctp_inet6addr_event(struct notifier_block *this, unsigned long ev,
+ 		list_for_each_entry_safe(addr, temp,
+ 					&net->sctp.local_addr_list, list) {
+ 			if (addr->a.sa.sa_family == AF_INET6 &&
+-					ipv6_addr_equal(&addr->a.v6.sin6_addr,
+-						&ifa->addr)) {
++			    ipv6_addr_equal(&addr->a.v6.sin6_addr,
++					    &ifa->addr) &&
++			    addr->a.v6.sin6_scope_id == ifa->idev->dev->ifindex) {
+ 				sctp_addr_wq_mgmt(net, addr, SCTP_ADDR_DEL);
+ 				found = 1;
+ 				addr->valid = 0;
+-- 
+2.19.0
 
-Thanks,
-
-Alex
