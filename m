@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72593D611E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22B63D6012
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbhGZP2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54248 "EHLO mail.kernel.org"
+        id S237051AbhGZPUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237419AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1522460F44;
-        Mon, 26 Jul 2021 15:54:55 +0000 (UTC)
+        id S237065AbhGZPKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D820C60F9C;
+        Mon, 26 Jul 2021 15:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314895;
-        bh=b4jyb8tQKBwTQ3tPaTVyQQni4alkBWFwWHERT/spFs4=;
+        s=korg; t=1627314642;
+        bh=LAYIWFN4Dlr4KrybvkxdoCCGnzcDD/G6iK6Ou3ujJrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x89/yefvDfcy5q3XqguWRzfyk11pdZQ/cwE7kxXo53WLAKuhrINFxVtutv8AHbEgW
-         OdKALvrFY6A2WKrQtePc/nDJoR8Tz4ocSmYJOG9QPBQ+I6hNMzqvLj/OShqhmzenAV
-         aQdhexAH7ZDzev0CL8ybArcSXXHHPxLe8l6kYPBo=
+        b=1h7l7QAmMyhgbVCojrgprr791qaL1t1cJRCN/2XoHVm+tdOL1p743QR+welVHbSCN
+         fNUOUwjgnUrFl4+1O3yo7TmkpHcpRZV86O6XMcBmPbPnDtOHoAMRIxays6STpBdUVJ
+         d5jGW+AMf3SFVlQzdEO/9ll/9gClm6Xoa+44HD2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Grzegorz Siwik <grzegorz.siwik@intel.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Slawomir Laba <slawomirx.laba@intel.com>,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        Mateusz Palczewski <mateusz.placzewski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 011/108] igb: Check if num of q_vectors is smaller than max before array access
+        stable@vger.kernel.org, Wolfgang Bumiller <w.bumiller@proxmox.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 040/120] net: bridge: sync fdb to new unicast-filtering ports
 Date:   Mon, 26 Jul 2021 17:38:12 +0200
-Message-Id: <20210726153832.064840350@linuxfoundation.org>
+Message-Id: <20210726153833.681340708@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,58 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+From: Wolfgang Bumiller <w.bumiller@proxmox.com>
 
-[ Upstream commit 6c19d772618fea40d9681f259368f284a330fd90 ]
+commit a019abd8022061b917da767cd1a66ed823724eab upstream.
 
-Ensure that the adapter->q_vector[MAX_Q_VECTORS] array isn't accessed
-beyond its size. It was fixed by using a local variable num_q_vectors
-as a limit for loop index, and ensure that num_q_vectors is not bigger
-than MAX_Q_VECTORS.
+Since commit 2796d0c648c9 ("bridge: Automatically manage
+port promiscuous mode.")
+bridges with `vlan_filtering 1` and only 1 auto-port don't
+set IFF_PROMISC for unicast-filtering-capable ports.
 
-Fixes: 047e0030f1e6 ("igb: add new data structure for handling interrupts and NAPI")
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Reviewed-by: Grzegorz Siwik <grzegorz.siwik@intel.com>
-Reviewed-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Reviewed-by: Slawomir Laba <slawomirx.laba@intel.com>
-Reviewed-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-Reviewed-by: Mateusz Palczewski <mateusz.placzewski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Normally on port changes `br_manage_promisc` is called to
+update the promisc flags and unicast filters if necessary,
+but it cannot distinguish between *new* ports and ones
+losing their promisc flag, and new ports end up not
+receiving the MAC address list.
+
+Fix this by calling `br_fdb_sync_static` in `br_add_if`
+after the port promisc flags are updated and the unicast
+filter was supposed to have been filled.
+
+Fixes: 2796d0c648c9 ("bridge: Automatically manage port promiscuous mode.")
+Signed-off-by: Wolfgang Bumiller <w.bumiller@proxmox.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ net/bridge/br_if.c |   17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index bf8da4869c0f..35b096ab2893 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -940,6 +940,7 @@ static void igb_configure_msix(struct igb_adapter *adapter)
-  **/
- static int igb_request_msix(struct igb_adapter *adapter)
- {
-+	unsigned int num_q_vectors = adapter->num_q_vectors;
- 	struct net_device *netdev = adapter->netdev;
- 	int i, err = 0, vector = 0, free_vector = 0;
+--- a/net/bridge/br_if.c
++++ b/net/bridge/br_if.c
+@@ -564,7 +564,7 @@ int br_add_if(struct net_bridge *br, str
+ 	struct net_bridge_port *p;
+ 	int err = 0;
+ 	unsigned br_hr, dev_hr;
+-	bool changed_addr;
++	bool changed_addr, fdb_synced = false;
  
-@@ -948,7 +949,13 @@ static int igb_request_msix(struct igb_adapter *adapter)
- 	if (err)
- 		goto err_out;
+ 	/* Don't allow bridging non-ethernet like devices, or DSA-enabled
+ 	 * master network devices since the bridge layer rx_handler prevents
+@@ -640,6 +640,19 @@ int br_add_if(struct net_bridge *br, str
+ 	list_add_rcu(&p->list, &br->port_list);
  
--	for (i = 0; i < adapter->num_q_vectors; i++) {
-+	if (num_q_vectors > MAX_Q_VECTORS) {
-+		num_q_vectors = MAX_Q_VECTORS;
-+		dev_warn(&adapter->pdev->dev,
-+			 "The number of queue vectors (%d) is higher than max allowed (%d)\n",
-+			 adapter->num_q_vectors, MAX_Q_VECTORS);
+ 	nbp_update_port_count(br);
++	if (!br_promisc_port(p) && (p->dev->priv_flags & IFF_UNICAST_FLT)) {
++		/* When updating the port count we also update all ports'
++		 * promiscuous mode.
++		 * A port leaving promiscuous mode normally gets the bridge's
++		 * fdb synced to the unicast filter (if supported), however,
++		 * `br_port_clear_promisc` does not distinguish between
++		 * non-promiscuous ports and *new* ports, so we need to
++		 * sync explicitly here.
++		 */
++		fdb_synced = br_fdb_sync_static(br, p) == 0;
++		if (!fdb_synced)
++			netdev_err(dev, "failed to sync bridge static fdb addresses to this port\n");
 +	}
-+	for (i = 0; i < num_q_vectors; i++) {
- 		struct igb_q_vector *q_vector = adapter->q_vector[i];
  
- 		vector++;
--- 
-2.30.2
-
+ 	netdev_update_features(br->dev);
+ 
+@@ -680,6 +693,8 @@ int br_add_if(struct net_bridge *br, str
+ 	return 0;
+ 
+ err7:
++	if (fdb_synced)
++		br_fdb_unsync_static(br, p);
+ 	list_del_rcu(&p->list);
+ 	br_fdb_delete_by_port(br, p, 0, 1);
+ 	nbp_update_port_count(br);
 
 
