@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AD63D5B9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802183D5BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234368AbhGZNto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
+        id S234419AbhGZNtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234252AbhGZNtn (ORCPT
+        with ESMTP id S234389AbhGZNtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:49:43 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A5AC061757;
-        Mon, 26 Jul 2021 07:30:11 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id u15-20020a05600c19cfb02902501bdb23cdso3438222wmq.0;
-        Mon, 26 Jul 2021 07:30:11 -0700 (PDT)
+        Mon, 26 Jul 2021 09:49:45 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376AFC061757;
+        Mon, 26 Jul 2021 07:30:13 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id r2so11386875wrl.1;
+        Mon, 26 Jul 2021 07:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=noVXGPZ9APxh9n8MObrM/pA6rJteI4YtZqA3oqU+ABc=;
-        b=sviGK27y3WYy5MHQHHZseM1l0upHiJlekckrhbnNCp7SP1Rg+yHyLUiaZct7gyCzM3
-         Nwq47153jM68oMr1SsCwP+IkkNYLnohJP5u6c/nvaajhb+KJsAaGzlVs2ZKO6sfg1ybV
-         D9oPqQaTcL8kGT6DQPHkIiqxZKfoTG7yreAtdnb9fnQf3bCZEObWcFhsWljLZWQlXHf0
-         04LArRKYU4/4x5oEIfyRjLfGsWRMYJINtP/K5nTTW5vp8ggnbB33Xvxb64QAJoO8nKC1
-         9JH6jv+YmlYHcJWWxtlzHD2tfhD8KyRp/JI8X8f7YUV+7z5PTxZgh/shXQ34UhGzs3bB
-         ynlQ==
+        bh=NY7Jdh2vcheUL99l0C73MV3p43fEH4XJRH7qeoF2aTI=;
+        b=gCFNSiEC30xuSpN2JSI9gUbQNQsoSRF4SNfG/ZVjSBGbX8UmBngJiL+VV0cZHitV3I
+         mEwPLthVkHQE8UJ1wfORPQ9H9dRNzCUIOLsH/ANi3U8Oo1xAVrno/Yw9rWBxzd8f2ydc
+         xbvmHPP27KEy/NRCP1/qaqBQs+R295/KXI5xG4cBD8kvQ6tdpmbK3c6jXkYRxjvvuuHI
+         u5b3fitOn0P5hwE66INrnBBWkGqsO19JNlJYUGgqeuxYaJR1QPMuVPiMI4OTN0SkB2gT
+         GQ0mZ7vBgw5tEvrfgP5F94yO5JPbkPaiWGS7u5v5BvpImYvpm/p8G6CSw+XMTHNS4vwS
+         jPSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=noVXGPZ9APxh9n8MObrM/pA6rJteI4YtZqA3oqU+ABc=;
-        b=cMsKP0VxzxgM2goFlYN9HfAJf7M0nqXs19yENcy0ulxCDucJi8+HjoH2V2p9ruqJnV
-         6NtCWtXZzGCyOmTltEd/La6Dpo0nmmYjBfVgoSru3sU3TSC/WxaWcuNdTPq64jAc8uGE
-         D8/3da6SiXv/GZ0JW5//8GMGuRugY4zUgsKd0w1SH/2b2rzvd/LcdBpKIh9H5DmPOtNq
-         avLq4RBqhHv3zIiMy3k9piJ45Gwbx3gHWfYZgw28XaecWdbOAXX/53DPHQ+Y3z4/5u9g
-         pnvWOri8dOGYKD3N3XIpe9P1GXru5vyN5XPXyax5N7GL+aTKHxs2bPWFzHbMWSa5QpFY
-         o/oQ==
-X-Gm-Message-State: AOAM532ICkSnntniTyml/OzUkky8UbL96hve91vrC4V77BLs59sctqhl
-        HOPrgutdF3SHHDPxl0dftL0=
-X-Google-Smtp-Source: ABdhPJwr/+OkFAiulCs5w2oNqG/uCQRHJ5IcOfpZ+mXD5AGfqact3KZfVNoMcQhT75AtqY3wn6WMHw==
-X-Received: by 2002:a05:600c:3510:: with SMTP id h16mr17742148wmq.65.1627309810016;
-        Mon, 26 Jul 2021 07:30:10 -0700 (PDT)
+        bh=NY7Jdh2vcheUL99l0C73MV3p43fEH4XJRH7qeoF2aTI=;
+        b=W/n3r24X6Xp5vA3laL5431SSWvQP2ujzL4/xpF8QYOs93oReTYUwLojMDfeUYkBuCV
+         P+mY0+d0SU8HdpK8K/pFNJj5h3wiK0bzbQIZTTq8FufjSFd2mgtUism84RXxSbhTvlS4
+         R/YvdPFx2O04Uchw68QO+h9KhrfFthRv5DWq2dfBRVxQ7c7tHIWmGOlXDm7okLPz7wQR
+         zxuJHgdjo1HHTow34Nh3H36w7RDcImEELNhQbAG3fApS5zsxTAjQEen/PeROG4PB8xyr
+         oRc7MUYo+XjIK8NBhhs8cLAof8fZ6MxeiB9s2qCwsuUO0Ai0VooOXjU3Z99yfVCsdBxE
+         AEDg==
+X-Gm-Message-State: AOAM532pYwcRQS9KwggGNUlbcTAm6C4FV/4dCrP84ftkqpCjlFRIArKc
+        jmFOOc9enNDQ36Ul4NTATqlZSPFrgxsTLg==
+X-Google-Smtp-Source: ABdhPJyWJ/8phK7/a+ThRet54JSgfi6uCitr4oFwrmlf6VZNhusFq4vxr83ufULEWSMeRLEfUOPMrA==
+X-Received: by 2002:adf:f710:: with SMTP id r16mr19660076wrp.124.1627309811808;
+        Mon, 26 Jul 2021 07:30:11 -0700 (PDT)
 Received: from felia.fritz.box ([2001:16b8:2d1a:1100:c32:37a3:94e9:cfea])
-        by smtp.gmail.com with ESMTPSA id o17sm9176609wmp.31.2021.07.26.07.30.08
+        by smtp.gmail.com with ESMTPSA id o17sm9176609wmp.31.2021.07.26.07.30.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 07:30:09 -0700 (PDT)
+        Mon, 26 Jul 2021 07:30:11 -0700 (PDT)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
 Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
@@ -70,9 +70,9 @@ Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
         Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
         kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v3 2/8] MAINTAINERS: rectify entry for HIKEY960 ONBOARD USB GPIO HUB DRIVER
-Date:   Mon, 26 Jul 2021 16:29:37 +0200
-Message-Id: <20210726142943.27008-3-lukas.bulwahn@gmail.com>
+Subject: [PATCH v3 3/8] MAINTAINERS: rectify entry for INTEL KEEM BAY DRM DRIVER
+Date:   Mon, 26 Jul 2021 16:29:38 +0200
+Message-Id: <20210726142943.27008-4-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210726142943.27008-1-lukas.bulwahn@gmail.com>
 References: <20210726142943.27008-1-lukas.bulwahn@gmail.com>
@@ -80,31 +80,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7a6ff4c4cbc3 ("misc: hisi_hikey_usb: Driver to support onboard USB
-gpio hub on Hikey960") refers to the non-existing file
-./Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml, but this
-commit's patch series does not add any related devicetree binding in misc.
+Commit ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
+refers to the non-existing file intel,kmb_display.yaml in
+./Documentation/devicetree/bindings/display/.
 
-So, just drop this file reference in HIKEY960 ONBOARD USB GPIO HUB DRIVER.
+Commit 5a76b1ed73b9 ("dt-bindings: display: Add support for Intel KeemBay
+Display") originating from the same patch series however adds the file
+intel,keembay-display.yaml in that directory instead.
 
-Fixes: 7a6ff4c4cbc3 ("misc: hisi_hikey_usb: Driver to support onboard USB gpio hub on Hikey960")
+So, refer to intel,keembay-display.yaml in the INTEL KEEM BAY DRM DRIVER
+section instead.
+
+Fixes: ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 615c3e41cf92..7a568d83096a 100644
+index 7a568d83096a..bd943be7375c 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -8381,7 +8381,6 @@ M:	John Stultz <john.stultz@linaro.org>
- L:	linux-kernel@vger.kernel.org
+@@ -9417,7 +9417,7 @@ INTEL KEEM BAY DRM DRIVER
+ M:	Anitha Chrisanthus <anitha.chrisanthus@intel.com>
+ M:	Edmund Dea <edmund.j.dea@intel.com>
  S:	Maintained
- F:	drivers/misc/hisi_hikey_usb.c
--F:	Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
+-F:	Documentation/devicetree/bindings/display/intel,kmb_display.yaml
++F:	Documentation/devicetree/bindings/display/intel,keembay-display.yaml
+ F:	drivers/gpu/drm/kmb/
  
- HISILICON PMU DRIVER
- M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
+ INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER
 -- 
 2.17.1
 
