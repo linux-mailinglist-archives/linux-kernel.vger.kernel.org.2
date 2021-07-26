@@ -2,151 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A02A3D59A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0618A3D59A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 14:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbhGZLyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 07:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233742AbhGZLyW (ORCPT
+        id S234053AbhGZL5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 07:57:12 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:12264 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233742AbhGZL5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 07:54:22 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED47C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 05:34:49 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id j2so10846453wrx.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 05:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jkiNXr4VlGX4jk1tmCfMW3KOCcfI9fRgyo5pODgk9Cg=;
-        b=YV+moxv21xffSZngcjywGcDBc0RHjAvLwt4Gg1M2CTkE4RHXMPAkQ9i1bZnm5+kiyq
-         8E51pQzWUvqZ4kunC231U1MeUi/uQdLakPGOVGjluquYZoRKQRt334D8wt7okjFUnIRh
-         MbOFMCujsbRL5JBaP+ml/YVvxgkI3JCJYVcPrHvxFed7SbpinrN1X0rXgU8ZQXu3Kx93
-         6e1sAoY5tU4Z9BaEO7tFIZ6AVNUscd5M1alaeZrrFb7gupsqpFuasduWnhlVkq7rzC3J
-         wyn8AN4L1Oqo/alQOzOwyFDQFqHtSFswqwdYoWkBStnfmK+BUUI39fxHDnXgtC+VJFEY
-         6zsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jkiNXr4VlGX4jk1tmCfMW3KOCcfI9fRgyo5pODgk9Cg=;
-        b=eCYLpbhf0LpWsn/tcwHrfpoVxVCAXeIsGgYIGdcNCdGHfGxWL+7B1Ys+FAV0kqxXFs
-         /N9ShTxdOXXVVFJbFyMmJrJaTc4A4rTwDQ0q2NjDKoXrDTT0JrNg6gUuamuPBbuaT3KL
-         c4jcXG8NcQnAo6GlLnYEKtVKdrrL0PteQorJiBYLBt9p/uA3w5a0ZkZgXHUWtRfPIeUH
-         9PuE57svJ4NPklYrEXe1iIPmNRydKjKaQQq4e+7gzy/4JLQ6lMfcsRsF/FAolPxaRUDZ
-         tWp5Odl/C29nXSM3wG4i0OFzYMpL/OoUO0Epl+TLsDNGeo8Hc/lhjWVVc7rWciCFF7FW
-         yesw==
-X-Gm-Message-State: AOAM5326vlbmMe0EmOWmESGzqpbluFepUOO90n3L7dODPI6gtBzq/U/x
-        G09EVQCwHlykEYlbwOd3pOPbE4x088h9L7eC/+uKGg==
-X-Google-Smtp-Source: ABdhPJwfx8y+zdl0tsH5FUzDhfgm/mIf+WMkCovlWrXD/lgKM6h61pm3Iy+9uPIJUCnfHF/yPZ8bgWtuaa+nAhm2ook=
-X-Received: by 2002:adf:f6cc:: with SMTP id y12mr16153497wrp.178.1627302888459;
- Mon, 26 Jul 2021 05:34:48 -0700 (PDT)
+        Mon, 26 Jul 2021 07:57:11 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GYK6m6n8Vz1CNFr;
+        Mon, 26 Jul 2021 20:31:44 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 20:37:38 +0800
+Received: from ubuntu1804.huawei.com (10.67.174.174) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 26 Jul 2021 20:37:37 +0800
+From:   Li Huafei <lihuafei1@huawei.com>
+To:     <acme@kernel.org>, <james.clark@arm.com>, <jolsa@kernel.org>
+CC:     <peterz@infradead.org>, <mark.rutland@arm.com>, <mingo@redhat.com>,
+        <alexander.shishkin@linux.intel.com>, <namhyung@kernel.org>,
+        <mliska@suse.cz>, <irogers@google.com>, <dzhu@wavecomp.com>,
+        <rickyman7@gmail.com>, <yao.jin@linux.intel.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhangjinhao2@huawei.com>
+Subject: [PATCH v2 1/2] perf env: Normalize aarch64.* and arm64.* to arm64 in normalize_arch()
+Date:   Mon, 26 Jul 2021 20:38:53 +0800
+Message-ID: <20210726123854.13463-1-lihuafei1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210723124611.3828908-1-suzuki.poulose@arm.com> <20210723124611.3828908-8-suzuki.poulose@arm.com>
-In-Reply-To: <20210723124611.3828908-8-suzuki.poulose@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Mon, 26 Jul 2021 13:34:37 +0100
-Message-ID: <CAJ9a7Vi28GuPUx8jvGoYhqBRzWanwhiLJJuLnaZuPj46g3ex2w@mail.gmail.com>
-Subject: Re: [PATCH v2 07/10] coresight: trbe: Do not truncate buffer on IRQ
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        tamas.zsoldos@arm.com, Al Grant <al.grant@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        jinlmao@qti.qualcomm.com, James Clark <james.clark@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.174]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
+On my aarch64 big endian machine, the perf annotate does not work.
 
-On Fri, 23 Jul 2021 at 13:46, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->
-> The TRBE driver marks the AUX buffer as TRUNCATED when we get an IRQ
-> on FILL event. This has rather unwanted side-effect of the event
-> being disabled when there may be more space in the ring buffer.
->
-> So, instead of TRUNCATE we need a different flag to indicate
-> that the trace may have lost a few bytes (i.e from the point of
-> generating the FILL event until the IRQ is consumed). Anyways, the
-> userspace must use the size from RECORD_AUX headers to restrict
-> the "trace" decoding.
->
-> Using PARTIAL flag causes the perf tool to generate the
-> following warning:
->
->   Warning:
->   AUX data had gaps in it XX times out of YY!
->
->   Are you running a KVM guest in the background?
->
-> which is pointlessly scary for a user. The other remaining options
-> are :
->   - COLLISION - Use by SPE to indicate samples collided
->   - Add a new flag - Specifically for CoreSight, doesn't sound
->     so good, if we can re-use something.
->
+ # perf annotate
+  Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (253 samples, percent: local period)
+ --------------------------------------------------------------------------------------------------------------
+  Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (1 samples, percent: local period)
+ ------------------------------------------------------------------------------------------------------------
+  Percent |      Source code & Disassembly of [kernel.kallsyms] for cycles (47 samples, percent: local period)
+ -------------------------------------------------------------------------------------------------------------
+ ...
 
-What is the user visible behaviour when using COLLISION?
-The TRUNCATE warning is at least accurate - even if the KVM thing is
-something of a red herring.
-It is easier to explain a "scary" warning, than try to debug someones
-problems if perf is silent or misleading when using the COLLISION
-flag.
+This is because the arch_find() function uses the normalized architecture
+name provided by normalize_arch(), and my machine's architecture name
+aarch64_be is not normalized to arm64.  Like other architectures such as
+arm and powerpc, we can fuzzy match the architecture names associated with
+aarch64.* and normalize them.
 
-Regards
+It seems that there is also arm64_be architecture name, which we also
+normalize to arm64.
 
-Mike
+Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+---
+Changes in v2:
+ - The error log added in symbol__annotate() is put into a single patch
+ - Remove the "Fixes" tag
+ - According to James' suggestion, "arm64_be" is also normalized to
+   "arm64"
 
+ tools/perf/util/env.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Given that we don't already use the "COLLISION" flag, the above
-> behavior can be notified using this flag for CoreSight.
->
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-trbe.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-> index 503bea0137ae..d50f142e86d1 100644
-> --- a/drivers/hwtracing/coresight/coresight-trbe.c
-> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-> @@ -615,7 +615,7 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->                  * for correct size. Also, mark the buffer truncated.
->                  */
->                 write = get_trbe_limit_pointer();
-> -               perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
-> +               perf_aux_output_flag(handle, PERF_AUX_FLAG_COLLISION);
->         }
->
->         offset = write - base;
-> @@ -708,7 +708,7 @@ static void trbe_handle_overflow(struct perf_output_handle *handle)
->          * collection upon the WRAP event, without stopping the source.
->          */
->         perf_aux_output_flag(handle, PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW |
-> -                                    PERF_AUX_FLAG_TRUNCATED);
-> +                                    PERF_AUX_FLAG_COLLISION);
->         perf_aux_output_end(handle, size);
->         event_data = perf_aux_output_begin(handle, event);
->         if (!event_data) {
-> --
-> 2.24.1
->
-
-
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index cec2e6cad8aa..ab341050be46 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -349,7 +349,7 @@ static const char *normalize_arch(char *arch)
+ 		return "x86";
+ 	if (!strcmp(arch, "sun4u") || !strncmp(arch, "sparc", 5))
+ 		return "sparc";
+-	if (!strcmp(arch, "aarch64") || !strcmp(arch, "arm64"))
++	if (!strncmp(arch, "aarch64", 7) || !strncmp(arch, "arm64", 5))
+ 		return "arm64";
+ 	if (!strncmp(arch, "arm", 3) || !strcmp(arch, "sa110"))
+ 		return "arm";
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+2.17.1
+
