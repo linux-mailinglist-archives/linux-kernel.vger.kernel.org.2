@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C833D6030
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2E03D6033
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237142AbhGZPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52160 "EHLO mail.kernel.org"
+        id S237163AbhGZPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236559AbhGZPLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE4D60F44;
-        Mon, 26 Jul 2021 15:51:52 +0000 (UTC)
+        id S235635AbhGZPL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:11:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E05260F38;
+        Mon, 26 Jul 2021 15:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314713;
-        bh=cX+DrYEYKeDG07eyLoc/AgQZsn9E90LLNcseBmHRgdk=;
+        s=korg; t=1627314716;
+        bh=LRQ0Kgn+IlQSZIrqwT/5P8rwi2Urr5iedCBaH+dXhgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LiO+s9KRZWKqKUgFzGtfqD+NKSk01RPk5h9UykDnE5LP9Jq1Xx2rZBDZTLf/lSGAR
-         evIFoP3c9JDrKfmTmWlRE3A18k0qO6bPxUKp4C8nevlkX/A6t9JoQbdY5bHAf61+NM
-         xA50hkbZl2uy+zDHUaLAE/okf0HHF6LVKQQrLM08=
+        b=HdIRKRs6nY3qlT8ehqBr/WLHGyZP1x5dIfMjPIi+VpUqY//pA+qpbOmYC4wwQ+cyw
+         pwJinBGhe5ZbD7XmirSVR5aqEAQ7E7HHpbpTxYdopoDAy0iUOflxq0JKulv2sMdB87
+         5jsMaKJw3qJ8+gvXtPfyvUF1b0zURVwVx4T5QPhw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -31,9 +31,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 063/120] perf map: Fix dso->nsinfo refcounting
-Date:   Mon, 26 Jul 2021 17:38:35 +0200
-Message-Id: <20210726153834.402956766@linuxfoundation.org>
+Subject: [PATCH 4.19 064/120] perf probe: Fix dso->nsinfo refcounting
+Date:   Mon, 26 Jul 2021 17:38:36 +0200
+Message-Id: <20210726153834.432770199@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
 References: <20210726153832.339431936@linuxfoundation.org>
@@ -47,20 +47,20 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 2d6b74baa7147251c30a46c4996e8cc224aa2dc5 ]
+[ Upstream commit dedeb4be203b382ba7245d13079bc3b0f6d40c65 ]
 
-ASan reports a memory leak of nsinfo during the execution of
+ASan reports a memory leak of nsinfo during the execution of:
 
-  # perf test "31: Lookup mmap thread"
+ # perf test "31: Lookup mmap thread".
 
 The leak is caused by a refcounted variable being replaced without
 dropping the refcount.
 
-This patch makes sure that the refcnt of nsinfo is decreased whenever a
-refcounted variable is replaced with a new value.
+This patch makes sure that the refcnt of nsinfo is decreased whenever
+a refcounted variable is replaced with a new value.
 
 Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: bf2e710b3cb8445c ("perf maps: Lookup maps in both intitial mountns and inner mountns.")
+Fixes: 544abd44c7064c8a ("perf probe: Allow placing uprobes in alternate namespaces.")
 Cc: Ian Rogers <irogers@google.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Krister Johansen <kjlx@templeofstupid.com>
@@ -72,22 +72,25 @@ Link: http://lore.kernel.org/lkml/55223bc8821b34ccb01f92ef1401c02b6a32e61f.16263
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/map.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/util/probe-event.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-index 769d11575a7b..603086692290 100644
---- a/tools/perf/util/map.c
-+++ b/tools/perf/util/map.c
-@@ -209,6 +209,8 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
- 			if (!(prot & PROT_EXEC))
- 				dso__set_loaded(dso);
- 		}
-+
-+		nsinfo__put(dso->nsinfo);
- 		dso->nsinfo = nsi;
- 		dso__put(dso);
- 	}
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 4ac3c89bfac8..633fa5425fd9 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -184,8 +184,10 @@ struct map *get_target_map(const char *target, struct nsinfo *nsi, bool user)
+ 		struct map *map;
+ 
+ 		map = dso__new_map(target);
+-		if (map && map->dso)
++		if (map && map->dso) {
++			nsinfo__put(map->dso->nsinfo);
+ 			map->dso->nsinfo = nsinfo__get(nsi);
++		}
+ 		return map;
+ 	} else {
+ 		return kernel_get_module_map(target);
 -- 
 2.30.2
 
