@@ -2,41 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024323D60BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 999BE3D60A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237868AbhGZPYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:24:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54616 "EHLO mail.kernel.org"
+        id S237576AbhGZPXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:23:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237411AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92B2360FF1;
-        Mon, 26 Jul 2021 15:53:58 +0000 (UTC)
+        id S237451AbhGZPPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35F38610A0;
+        Mon, 26 Jul 2021 15:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314839;
-        bh=HehFALCfaO6LmBqoIvwYYPiOV06SD/sX6ScgeNrY3kg=;
+        s=korg; t=1627314964;
+        bh=YM+jbo0N92GoexJ+brCow/epHyQ/fyHmkeaVPC75GmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lx69LikQnvwRYgu0Iogb26xYOCikF+luiM+50qy0vOhac7JhsYcoMMnz2OY0WvNhZ
-         9dP+CsBQoibCOFalmIT2fmmrlm/+cwzPPwEzI+tT1oNBlnp4G2IERrBDDzcUN4wQVI
-         uobwM3uXn/ua0FBCK55tASuPnxnzdb2tzoiIAdtQ=
+        b=FA39XOe1ilfOT1A5Nn+o/eJooFDxW3h4q9TeYf1n3aU7RtohNiidERAG//Fmq6VxK
+         UffV07qJ3/pOj45KxoNIDNC7FNqdxa870VAh5/hM29c1j5EXbS6wJ2ikWC+rLZq+Eo
+         uOFR6tXEWcJdpR9N9yXHhjGjlntxBR3QL4N8GlDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kan Liang <kan.liang@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 065/120] perf test session_topology: Delete session->evlist
+Subject: [PATCH 5.4 036/108] ASoC: rt5631: Fix regcache sync errors on resume
 Date:   Mon, 26 Jul 2021 17:38:37 +0200
-Message-Id: <20210726153834.463666741@linuxfoundation.org>
+Message-Id: <20210726153832.852966913@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Maxim Schwalm <maxim.schwalm@gmail.com>
 
-[ Upstream commit 233f2dc1c284337286f9a64c0152236779a42f6c ]
+[ Upstream commit c71f78a662611fe2c67f3155da19b0eff0f29762 ]
 
-ASan reports a memory leak related to session->evlist while running:
+The ALC5631 does not like multi-write accesses, avoid them. This fixes:
 
-  # perf test "41: Session topology".
+rt5631 4-001a: Unable to sync registers 0x3a-0x3c. -121
 
-When perf_data is in write mode, session->evlist is owned by the caller,
-which should also take care of deleting it.
+errors on resume from suspend (and all registers after the registers in
+the error not being synced).
 
-This patch adds the missing evlist__delete().
+Inspired by commit 2d30e9494f1e ("ASoC: rt5651: Fix regcache sync errors
+on resume") from Hans de Geode, which fixed the same errors on ALC5651.
 
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: c84974ed9fb67293 ("perf test: Add entry to test cpu topology")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kan Liang <kan.liang@intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Maxim Schwalm <maxim.schwalm@gmail.com>
+Link: https://lore.kernel.org/r/20210712005011.28536-1-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/topology.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5631.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-index 9497d02f69e6..bed53ed82af7 100644
---- a/tools/perf/tests/topology.c
-+++ b/tools/perf/tests/topology.c
-@@ -52,6 +52,7 @@ static int session_write_header(char *path)
- 	TEST_ASSERT_VAL("failed to write header",
- 			!perf_session__write_header(session, session->evlist, data.file.fd, true));
+diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+index f70b9f7e68bb..281957a8fa86 100644
+--- a/sound/soc/codecs/rt5631.c
++++ b/sound/soc/codecs/rt5631.c
+@@ -1691,6 +1691,8 @@ static const struct regmap_config rt5631_regmap_config = {
+ 	.reg_defaults = rt5631_reg,
+ 	.num_reg_defaults = ARRAY_SIZE(rt5631_reg),
+ 	.cache_type = REGCACHE_RBTREE,
++	.use_single_read = true,
++	.use_single_write = true,
+ };
  
-+	evlist__delete(session->evlist);
- 	perf_session__delete(session);
- 
- 	return 0;
+ static int rt5631_i2c_probe(struct i2c_client *i2c,
 -- 
 2.30.2
 
