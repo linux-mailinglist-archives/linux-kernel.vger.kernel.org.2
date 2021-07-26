@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274143D6359
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E0A3D626A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238753AbhGZPqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:46:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41598 "EHLO mail.kernel.org"
+        id S236893AbhGZPf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:35:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237839AbhGZP3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC0E260F94;
-        Mon, 26 Jul 2021 16:08:51 +0000 (UTC)
+        id S237064AbhGZPUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:20:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 675EA6023D;
+        Mon, 26 Jul 2021 16:01:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315732;
-        bh=2v9pGKzvhZa6vei/18H16pUxoJeFxIjVETAkJ7gHoKY=;
+        s=korg; t=1627315272;
+        bh=iL+6iAJrgQrCuNm1HLPykc9u6iVdMwY36qWMWa2zCQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s/S/Uz0BLjbHxElFHxJb+spHIBsc09a66e6kc1AA6MrnJqd4oJ2X8xv82BSjHhtzv
-         rOTBQxDYC0XB0a87XM5h0UbQnnjnR0rYNO7ZUE/Q9hBkY9y8iRSMn5gRqCg82yuN6+
-         9O6l3IwLlcM3xv9pmCkIegSbdqYioUzjOD5Rr4vg=
+        b=RkjYzww/rdBUGIvMJS7+zwKOrh+SS0EX9bwvIczUotjKhf0Gxp6ydD1Ff3hpKOrAb
+         Bc4szK/Lm+cl6VbVKI37iFhxr3PZaJzcqLI4An8DFJTQnf4QMTPGu1Gg9f+VPX066K
+         cdBPVjTIoLbIOGigebe4fQjs/OERK60TiDfq9IKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 045/223] KVM: SVM: Fix sev_pin_memory() error checks in SEV migration utilities
+Subject: [PATCH 5.10 004/167] ixgbe: Fix an error handling path in ixgbe_probe()
 Date:   Mon, 26 Jul 2021 17:37:17 +0200
-Message-Id: <20210726153847.734214853@linuxfoundation.org>
+Message-Id: <20210726153839.520099834@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
-References: <20210726153846.245305071@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,58 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit c7a1b2b678c54ac19320daf525038d0e2e43ca7c ]
+[ Upstream commit dd2aefcd5e37989ae5f90afdae44bbbf3a2990da ]
 
-Use IS_ERR() instead of checking for a NULL pointer when querying for
-sev_pin_memory() failures.  sev_pin_memory() always returns an error code
-cast to a pointer, or a valid pointer; it never returns NULL.
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call, as already done in the remove function.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Steve Rutherford <srutherford@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Ashish Kalra <ashish.kalra@amd.com>
-Fixes: d3d1af85e2c7 ("KVM: SVM: Add KVM_SEND_UPDATE_DATA command")
-Fixes: 15fb7de1a7f5 ("KVM: SVM: Add KVM_SEV_RECEIVE_UPDATE_DATA command")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210506175826.2166383-3-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: 6fabd715e6d8 ("ixgbe: Implement PCIe AER support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/sev.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 3dc3e2897804..02d60d7f903d 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -1271,8 +1271,8 @@ static int sev_send_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	/* Pin guest memory */
- 	guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
- 				    PAGE_SIZE, &n, 0);
--	if (!guest_page)
--		return -EFAULT;
-+	if (IS_ERR(guest_page))
-+		return PTR_ERR(guest_page);
- 
- 	/* allocate memory for header and transport buffer */
- 	ret = -ENOMEM;
-@@ -1463,11 +1463,12 @@ static int sev_receive_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	data.trans_len = params.trans_len;
- 
- 	/* Pin guest memory */
--	ret = -EFAULT;
- 	guest_page = sev_pin_memory(kvm, params.guest_uaddr & PAGE_MASK,
- 				    PAGE_SIZE, &n, 0);
--	if (!guest_page)
-+	if (IS_ERR(guest_page)) {
-+		ret = PTR_ERR(guest_page);
- 		goto e_free_trans;
-+	}
- 
- 	/* The RECEIVE_UPDATE_DATA command requires C-bit to be always set. */
- 	data.guest_address = (page_to_pfn(guest_page[0]) << PAGE_SHIFT) + offset;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 1bfba87f1ff6..5c8f9ba43968 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -11081,6 +11081,7 @@ err_ioremap:
+ 	disable_dev = !test_and_set_bit(__IXGBE_DISABLED, &adapter->state);
+ 	free_netdev(netdev);
+ err_alloc_etherdev:
++	pci_disable_pcie_error_reporting(pdev);
+ 	pci_release_mem_regions(pdev);
+ err_pci_reg:
+ err_dma:
 -- 
 2.30.2
 
