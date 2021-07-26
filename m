@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3380C3D6399
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDC63D639A
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239015AbhGZPsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:48:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45156 "EHLO mail.kernel.org"
+        id S238686AbhGZPs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:48:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238267AbhGZPaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:30:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC3FE60F5A;
-        Mon, 26 Jul 2021 16:10:28 +0000 (UTC)
+        id S231621AbhGZPaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:30:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 493FB60C41;
+        Mon, 26 Jul 2021 16:10:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315829;
-        bh=3AxzArU+XGqQI7riOhm7A7a1F0uSoQzynsHyDxzAd8k=;
+        s=korg; t=1627315831;
+        bh=Sc56Wvur+m4tgvpLaqa2M+Ju5Pax3tCaPpkNx+96MAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HItQWBciz38Hi1sOVCA/wQDBDcsFQQo87vWyckIJzXhVsuhbmSAasz7OymgVYR3dO
-         8GY6EFUg7ZfxlfubLiziSHylSvRKI/73EQJZ88sr9Uk0k+Scy1GijG6o3hBUA//Dgz
-         PmcLMgLoQqgHKUm6DOjn6vory3QNzICZKVMrA+JU=
+        b=ZeDrV4u3Dj/rGO54dI9wTe1nX9ydjiTULt+zs+OKw2RQT2g9dVGxthMAdrOsW48pz
+         +8eje0/WxEH9B2ThFmbHQOYBh3I/r+3GGY0fFj3ajJwwGGATMnXGCzM1S6dKL2rsV6
+         2/lYIKA3ElSpBjgNdyXazKCI94ectrPnoym6BcI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
+        stable@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 084/223] bpf, sockmap, udp: sk_prot needs inuse_idx set for proc stats
-Date:   Mon, 26 Jul 2021 17:37:56 +0200
-Message-Id: <20210726153848.989990472@linuxfoundation.org>
+        Quentin Monnet <quentin@isovalent.com>,
+        Roman Gushchin <guro@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 085/223] bpftool: Check malloc return value in mount_bpffs_for_pin
+Date:   Mon, 26 Jul 2021 17:37:57 +0200
+Message-Id: <20210726153849.021436007@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -42,45 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Sitnicki <jakub@cloudflare.com>
+From: Tobias Klauser <tklauser@distanz.ch>
 
-[ Upstream commit 54ea2f49fd9400dd698c25450be3352b5613b3b4 ]
+[ Upstream commit d444b06e40855219ef38b5e9286db16d435f06dc ]
 
-The proc socket stats use sk_prot->inuse_idx value to record inuse sock
-stats. We currently do not set this correctly from sockmap side. The
-result is reading sock stats '/proc/net/sockstat' gives incorrect values.
-The socket counter is incremented correctly, but because we don't set the
-counter correctly when we replace sk_prot we may omit the decrement.
+Fix and add a missing NULL check for the prior malloc() call.
 
-To get the correct inuse_idx value move the core_initcall that initializes
-the UDP proto handlers to late_initcall. This way it is initialized after
-UDP has the chance to assign the inuse_idx value from the register protocol
-handler.
-
-Fixes: edc6741cc660 ("bpf: Add sockmap hooks for UDP sockets")
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+Fixes: 49a086c201a9 ("bpftool: implement prog load command")
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Link: https://lore.kernel.org/bpf/20210714154750.528206-1-jakub@cloudflare.com
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Link: https://lore.kernel.org/bpf/20210715110609.29364-1-tklauser@distanz.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/udp_bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/bpftool/common.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
-index 954c4591a6fd..725b6df4b2a2 100644
---- a/net/ipv4/udp_bpf.c
-+++ b/net/ipv4/udp_bpf.c
-@@ -101,7 +101,7 @@ static int __init udp_bpf_v4_build_proto(void)
- 	udp_bpf_rebuild_protos(&udp_bpf_prots[UDP_BPF_IPV4], &udp_prot);
- 	return 0;
- }
--core_initcall(udp_bpf_v4_build_proto);
-+late_initcall(udp_bpf_v4_build_proto);
+diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
+index 1828bba19020..dc6daa193557 100644
+--- a/tools/bpf/bpftool/common.c
++++ b/tools/bpf/bpftool/common.c
+@@ -222,6 +222,11 @@ int mount_bpffs_for_pin(const char *name)
+ 	int err = 0;
  
- int udp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
- {
+ 	file = malloc(strlen(name) + 1);
++	if (!file) {
++		p_err("mem alloc failed");
++		return -1;
++	}
++
+ 	strcpy(file, name);
+ 	dir = dirname(file);
+ 
 -- 
 2.30.2
 
