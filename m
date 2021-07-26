@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F853D62C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36E73D6138
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238059AbhGZPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37008 "EHLO mail.kernel.org"
+        id S232391AbhGZPaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237313AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E0660F9D;
-        Mon, 26 Jul 2021 15:52:56 +0000 (UTC)
+        id S236513AbhGZPRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E000760F70;
+        Mon, 26 Jul 2021 15:57:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314777;
-        bh=suIabbxx3PuyjeYF8tOoSSVuGVGX+gwtmk4zGhYo6qU=;
+        s=korg; t=1627315055;
+        bh=nOCnzzOAdsN24bfZsElojP6Q2fJlpF1q7LJRy2tPqRo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J64qr3ownS+BNyjWv8ER8/YRUSbh/3x7eYdMDSSptMJDl6OApQ4dlH+4fFcXn1mvo
-         SwB1diWMFXjM5l9xUikCwdzbSmh5dnE7TUfDVHINJTWUO3F8uW5nlmkap1WY/sjru8
-         COpH5pbxbG/8WdDil4Wrn2ISah6Zntnj4U7MmA0Q=
+        b=UXkMbF2ggDVFoP4Gj9OCBxtsh6pJ3H0niEdmNLDmrAdMaI9rlD2ybAPuuCgGq9G0d
+         hIZqrgeK9EjWcENPyOGFOu1GzAYOiM9V0BOs1Sn0HfiBHzvu5mrnE62OMvt+NsnYk9
+         vhNua8+o02EIwxmJPZ1mKn2fHjJgFi/UaVg50nVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 088/120] drm/panel: raspberrypi-touchscreen: Prevent double-free
-Date:   Mon, 26 Jul 2021 17:39:00 +0200
-Message-Id: <20210726153835.208201401@linuxfoundation.org>
+Subject: [PATCH 5.4 060/108] nvme-pci: dont WARN_ON in nvme_reset_work if ctrl.state is not RESETTING
+Date:   Mon, 26 Jul 2021 17:39:01 +0200
+Message-Id: <20210726153833.616622957@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 7bbcb919e32d776ca8ddce08abb391ab92eef6a9 ]
+[ Upstream commit 7764656b108cd308c39e9a8554353b8f9ca232a3 ]
 
-The mipi_dsi_device allocated by mipi_dsi_device_register_full() is
-already free'd on release.
+Followling process:
+nvme_probe
+  nvme_reset_ctrl
+    nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING)
+    queue_work(nvme_reset_wq, &ctrl->reset_work)
 
-Fixes: 2f733d6194bd ("drm/panel: Add support for the Raspberry Pi 7" Touchscreen.")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210720134525.563936-9-maxime@cerno.tech
+-------------->	nvme_remove
+		  nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DELETING)
+worker_thread
+  process_one_work
+    nvme_reset_work
+    WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)
+
+, which will trigger WARN_ON in nvme_reset_work():
+[  127.534298] WARNING: CPU: 0 PID: 139 at drivers/nvme/host/pci.c:2594
+[  127.536161] CPU: 0 PID: 139 Comm: kworker/u8:7 Not tainted 5.13.0
+[  127.552518] Call Trace:
+[  127.552840]  ? kvm_sched_clock_read+0x25/0x40
+[  127.553936]  ? native_send_call_func_single_ipi+0x1c/0x30
+[  127.555117]  ? send_call_function_single_ipi+0x9b/0x130
+[  127.556263]  ? __smp_call_single_queue+0x48/0x60
+[  127.557278]  ? ttwu_queue_wakelist+0xfa/0x1c0
+[  127.558231]  ? try_to_wake_up+0x265/0x9d0
+[  127.559120]  ? ext4_end_io_rsv_work+0x160/0x290
+[  127.560118]  process_one_work+0x28c/0x640
+[  127.561002]  worker_thread+0x39a/0x700
+[  127.561833]  ? rescuer_thread+0x580/0x580
+[  127.562714]  kthread+0x18c/0x1e0
+[  127.563444]  ? set_kthread_struct+0x70/0x70
+[  127.564347]  ret_from_fork+0x1f/0x30
+
+The preceding problem can be easily reproduced by executing following
+script (based on blktests suite):
+test() {
+  pdev="$(_get_pci_dev_from_blkdev)"
+  sysfs="/sys/bus/pci/devices/${pdev}"
+  for ((i = 0; i < 10; i++)); do
+    echo 1 > "$sysfs/remove"
+    echo 1 > /sys/bus/pci/rescan
+  done
+}
+
+Since the device ctrl could be updated as an non-RESETTING state by
+repeating probe/remove in userspace (which is a normal situation), we
+can replace stack dumping WARN_ON with a warnning message.
+
+Fixes: 82b057caefaff ("nvme-pci: fix multiple ctrl removal schedulin")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/nvme/host/pci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-index aab6a70ece7f..06bd03915973 100644
---- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-+++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
-@@ -454,7 +454,6 @@ static int rpi_touchscreen_remove(struct i2c_client *i2c)
- 	drm_panel_remove(&ts->base);
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index f9dba1a3e655..af516c35afe6 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2590,7 +2590,9 @@ static void nvme_reset_work(struct work_struct *work)
+ 	bool was_suspend = !!(dev->ctrl.ctrl_config & NVME_CC_SHN_NORMAL);
+ 	int result;
  
- 	mipi_dsi_device_unregister(ts->dsi);
--	kfree(ts->dsi);
- 
- 	return 0;
- }
+-	if (WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)) {
++	if (dev->ctrl.state != NVME_CTRL_RESETTING) {
++		dev_warn(dev->ctrl.device, "ctrl state %d is not RESETTING\n",
++			 dev->ctrl.state);
+ 		result = -ENODEV;
+ 		goto out;
+ 	}
 -- 
 2.30.2
 
