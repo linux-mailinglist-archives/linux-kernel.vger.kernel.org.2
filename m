@@ -2,125 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25D03D542E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FC53D5430
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhGZGmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:42:21 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:50623 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbhGZGmU (ORCPT
+        id S232412AbhGZGm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:42:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37620 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231707AbhGZGm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:42:20 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16Q7MVyuC012208, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16Q7MVyuC012208
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 26 Jul 2021 15:22:31 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 26 Jul 2021 15:22:30 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 26 Jul 2021 15:22:30 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
- RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
- 15.01.2106.013; Mon, 26 Jul 2021 15:22:30 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Neo Jou <neojou@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: RE: [PATCH RFC v1 5/7] rtw88: Configure the registers from rtw_bf_assoc() outside the RCU lock
-Thread-Topic: [PATCH RFC v1 5/7] rtw88: Configure the registers from
- rtw_bf_assoc() outside the RCU lock
-Thread-Index: AQHXe0w0JoHHz5CoNkymlQ8rINQ1TKtJyCDggAn1WYCAAOxIAA==
-Date:   Mon, 26 Jul 2021 07:22:30 +0000
-Message-ID: <c60c9877f491411c915c64d1fc7a797a@realtek.com>
-References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
- <20210717204057.67495-6-martin.blumenstingl@googlemail.com>
- <1a299cd8c1be4fba8360780ef6f70f0f@realtek.com>
- <CAFBinCAJNqbpoqSSFYYBJg818KHCKx5nFzsKZdR=D+sTXQj6dg@mail.gmail.com>
-In-Reply-To: <CAFBinCAJNqbpoqSSFYYBJg818KHCKx5nFzsKZdR=D+sTXQj6dg@mail.gmail.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.69.146]
-x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzcvMjYg5LiK5Y2IIDA2OjAwOjAw?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 26 Jul 2021 02:42:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627284176;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MeX8qL0FAIQm9lCQlUw2wK9bVyGC91/TUjMa+ErGo/I=;
+        b=KDVOXin8HVJi/fT+Ef5rajZf3yoNJd4QRVY0t1hchuT4+Yp14FFTOX9GMa8/aLb1fIJuTR
+        y1lgFizx0yKY4PXNqPKTuIf02ppb5C79tJc8JYBcG09N8uLkA8r3HTTqJOmAvTm4NDvEgy
+        MGDU/FGQqWsufTGfnqtlBq6KkmbhRbU=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-q-oexxpMNIij5OXTakqU8Q-1; Mon, 26 Jul 2021 03:22:54 -0400
+X-MC-Unique: q-oexxpMNIij5OXTakqU8Q-1
+Received: by mail-wr1-f71.google.com with SMTP id z10-20020adfdf8a0000b02901536d17cd63so1630927wrl.21
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:22:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=MeX8qL0FAIQm9lCQlUw2wK9bVyGC91/TUjMa+ErGo/I=;
+        b=cZ/vnWf80AVPOBfr1664gr4F7ZJeQ5sXn9TBBW26ADWMbW9hJEo+4QtiHIWg37rZg3
+         8OcL9KdyZ2sp2XOfP+qqb6jeryJ5Mmt1syvERT1p6yjvCjx0o7b98mYJKLdYUSfp2aLw
+         dBWGaICzriWDwGVcdoAnPiP3/zD3axQCUAWy+MES/Er+8xDV0HcQWcaLcte0onRf9ho0
+         mjVugxs+tEv1ojUgyrMA2Io5r6DR2ajVlcBXK6+g8DOKU7Cqmy+bsuzaPWSCHLJlLmiU
+         rhdktlEtogYoPJLVgMFX8YHB5wjrpyMchQUpnjOYfeC45naB2Bh05DDumqQmZqxvFwtw
+         Fusw==
+X-Gm-Message-State: AOAM530JbPgRUr2bNm/wp78CiNfyxCNBX29BFfmbGZSRXFQH7/QTLSvQ
+        u+UI9R2IkJKACuIJvpmKhcsqwBTs1aI8ieOxuGY6DBqrIZB1DH7eF+WyzSmLnEF7/selCwENW8B
+        XaUMpaJL/vl9WWrOZZykGY6ivfzvV7u8EKCBIn3Xv
+X-Received: by 2002:a05:6000:227:: with SMTP id l7mr6209246wrz.289.1627284172747;
+        Mon, 26 Jul 2021 00:22:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzMPTPi7uK/DcXtzBz0a+yMSxtuUyKKbFDoQbZm98a8p/STZCbLR5hh1hXULHMPYI9hzTrryt893dSga4drXhc=
+X-Received: by 2002:a05:6000:227:: with SMTP id l7mr6209224wrz.289.1627284172598;
+ Mon, 26 Jul 2021 00:22:52 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 07:01:19
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165231 [Jul 26 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 07/26/2021 07:04:00
+References: <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
+ <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com>
+ <YP4fk75mr/mIotDy@B-P7TQMD6M-0146.local>
+In-Reply-To: <YP4fk75mr/mIotDy@B-P7TQMD6M-0146.local>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Mon, 26 Jul 2021 09:22:41 +0200
+Message-ID: <CAHc6FU7904K4XrUhOoHp8uoBrDN0kyZ+q54anMXrJUBVCNA29A@mail.gmail.com>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        linux-erofs@lists.ozlabs.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcnRpbiBCbHVtZW5zdGlu
-Z2wgW21haWx0bzptYXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tXQ0KPiBTZW50OiBN
-b25kYXksIEp1bHkgMjYsIDIwMjEgNTozNiBBTQ0KPiBUbzogUGtzaGloDQo+IENjOiBsaW51eC13
-aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmc7IHRvbnkwNjIwZW1tYUBnbWFpbC5jb207IGt2YWxvQGNv
-ZGVhdXJvcmEub3JnOw0KPiBqb2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0OyBuZXRkZXZAdmdlci5r
-ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBOZW8gSm91OyBKZXJuZWoN
-Cj4gU2tyYWJlYw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFJGQyB2MSA1LzddIHJ0dzg4OiBDb25m
-aWd1cmUgdGhlIHJlZ2lzdGVycyBmcm9tIHJ0d19iZl9hc3NvYygpIG91dHNpZGUgdGhlIFJDVSBs
-b2NrDQo+IA0KPiBIaSBQaW5nLUtlLA0KPiANCj4gT24gTW9uLCBKdWwgMTksIDIwMjEgYXQgNzo0
-NyBBTSBQa3NoaWggPHBrc2hpaEByZWFsdGVrLmNvbT4gd3JvdGU6DQo+IFsuLi5dDQo+ID4gVGhl
-IHJjdV9yZWFkX2xvY2soKSBpbiB0aGlzIGZ1bmN0aW9uIGlzIHVzZWQgdG8gYWNjZXNzIGllZWU4
-MDIxMV9maW5kX3N0YSgpIGFuZCBwcm90ZWN0ICdzdGEnLg0KPiA+IEEgc2ltcGxlIHdheSBpcyB0
-byBzaHJpbmsgdGhlIGNyaXRpY2FsIHNlY3Rpb24sIGxpa2U6DQo+ID4NCj4gPiAgICAgICAgIHJj
-dV9yZWFkX2xvY2soKTsNCj4gPg0KPiA+ICAgICAgICAgc3RhID0gaWVlZTgwMjExX2ZpbmRfc3Rh
-KHZpZiwgYnNzaWQpOw0KPiA+ICAgICAgICAgaWYgKCFzdGEpIHsNCj4gPiAgICAgICAgICAgICAg
-ICAgcnR3X3dhcm4ocnR3ZGV2LCAiZmFpbGVkIHRvIGZpbmQgc3RhdGlvbiBlbnRyeSBmb3IgYnNz
-ICVwTVxuIiwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgYnNzaWQpOw0KPiA+ICAgICAg
-ICAgICAgICAgICByY3VfcmVhZF91bmxvY2soKTsNCj4gPiAgICAgICAgIH0NCj4gPg0KPiA+ICAg
-ICAgICAgdmh0X2NhcCA9ICZzdGEtPnZodF9jYXA7DQo+ID4NCj4gPiAgICAgICAgIHJjdV9yZWFk
-X3VubG9jaygpOw0KPiBJIGFncmVlIHRoYXQgcmVkdWNpbmcgdGhlIGFtb3VudCBvZiBjb2RlIHVu
-ZGVyIHRoZSBsb2NrIHdpbGwgaGVscCBteQ0KPiB1c2UtY2FzZSBhcyB3ZWxsDQo+IGluIHlvdXIg
-Y29kZS1leGFtcGxlIEkgYW0gd29uZGVyaW5nIGlmIHdlIHNob3VsZCBjaGFuZ2UNCj4gICBzdHJ1
-Y3QgaWVlZTgwMjExX3N0YV92aHRfY2FwICp2aHRfY2FwOw0KPiAgIHZodF9jYXAgPSAmc3RhLT52
-aHRfY2FwOw0KPiB0bw0KPiAgIHN0cnVjdCBpZWVlODAyMTFfc3RhX3ZodF9jYXAgdmh0X2NhcDsN
-Cj4gICB2aHRfY2FwID0gc3RhLT52aHRfY2FwOw0KPiANCj4gTXkgdGhpbmtpbmcgaXMgdGhhdCBp
-ZWVlODAyMTFfc3RhIG1heSBiZSBmcmVlZCBpbiBwYXJhbGxlbCB0byB0aGlzIGNvZGUgcnVubmlu
-Zy4NCj4gSWYgdGhhdCBjYW5ub3QgaGFwcGVuIHRoZW4geW91ciBjb2RlIHdpbGwgYmUgZmluZS4N
-Cj4gDQo+IFNvIEkgYW0gaG9waW5nIHRoYXQgeW91IGNhbiBhbHNvIHNoYXJlIHlvdXIgdGhvdWdo
-dHMgb24gdGhpcyBvbmUuDQo+IA0KDQpXaGVuIHdlIGVudGVyIHJ0d19iZl9hc3NvYygpLCB0aGUg
-bXV0ZXggcnR3ZGV2LT5tdXRleCBpcyBoZWxkOyBhcyB3ZWxsIGFzDQpydHdfc3RhX2FkZCgpL3J0
-d19zdGFfcmVtb3ZlKCkuIFNvLCBJIHRoaW5rIGl0IGNhbm5vdCBoYXBwZW4gdGhhdCBpZWVlODAy
-MTFfc3RhDQp3YXMgZnJlZWQgaW4gcGFyYWxsZWwuDQoNCi0tDQpQaW5nLUtlDQoNCg==
+On Mon, Jul 26, 2021 at 4:36 AM Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+> On Mon, Jul 26, 2021 at 12:16:39AM +0200, Andreas Gruenbacher wrote:
+> > Here's a fixed and cleaned up version that passes fstests on gfs2.
+> >
+> > I see no reason why the combination of tail packing + writing should
+> > cause any issues, so in my opinion, the check that disables that
+> > combination in iomap_write_begin_inline should still be removed.
+>
+> Since there is no such fs for tail-packing write, I just do a wild
+> guess, for example,
+>  1) the tail-end block was not inlined, so iomap_write_end() dirtied
+>     the whole page (or buffer) for the page writeback;
+>  2) then it was truncated into a tail-packing inline block so the last
+>     extent(page) became INLINE but dirty instead;
+>  3) during the late page writeback for dirty pages,
+>     if (WARN_ON_ONCE(wpc->iomap.type == IOMAP_INLINE))
+>     would be triggered in iomap_writepage_map() for such dirty page.
+>
+> As Matthew pointed out before,
+> https://lore.kernel.org/r/YPrms0fWPwEZGNAL@casper.infradead.org/
+> currently tail-packing inline won't interact with page writeback, but
+> I'm afraid a supported tail-packing write fs needs to reconsider the
+> whole stuff how page, inode writeback works and what the pattern is
+> with the tail-packing.
+>
+> >
+> > It turns out that returning the number of bytes copied from
+> > iomap_read_inline_data is a bit irritating: the function is really used
+> > for filling the page, but that's not always the "progress" we're looking
+> > for.  In the iomap_readpage case, we actually need to advance by an
+> > antire page, but in the iomap_file_buffered_write case, we need to
+> > advance by the length parameter of iomap_write_actor or less.  So I've
+> > changed that back.
+> >
+> > I've also renamed iomap_inline_buf to iomap_inline_data and I've turned
+> > iomap_inline_data_size_valid into iomap_within_inline_data, which seems
+> > more useful to me.
+> >
+> > Thanks,
+> > Andreas
+> >
+> > --
+> >
+> > Subject: [PATCH] iomap: Support tail packing
+> >
+> > The existing inline data support only works for cases where the entire
+> > file is stored as inline data.  For larger files, EROFS stores the
+> > initial blocks separately and then can pack a small tail adjacent to the
+> > inode.  Generalise inline data to allow for tail packing.  Tails may not
+> > cross a page boundary in memory.
+> >
+> > We currently have no filesystems that support tail packing and writing,
+> > so that case is currently disabled (see iomap_write_begin_inline).  I'm
+> > not aware of any reason why this code path shouldn't work, however.
+> >
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Darrick J. Wong <djwong@kernel.org>
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> > Cc: Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+> > Tested-by: Huang Jianan <huangjianan@oppo.com> # erofs
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > ---
+> >  fs/iomap/buffered-io.c | 34 +++++++++++++++++++++++-----------
+> >  fs/iomap/direct-io.c   | 11 ++++++-----
+> >  include/linux/iomap.h  | 22 +++++++++++++++++++++-
+> >  3 files changed, 50 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> > index 87ccb3438bec..334bf98fdd4a 100644
+> > --- a/fs/iomap/buffered-io.c
+> > +++ b/fs/iomap/buffered-io.c
+> > @@ -205,25 +205,29 @@ struct iomap_readpage_ctx {
+> >       struct readahead_control *rac;
+> >  };
+> >
+> > -static void
+> > -iomap_read_inline_data(struct inode *inode, struct page *page,
+> > +static int iomap_read_inline_data(struct inode *inode, struct page *page,
+> >               struct iomap *iomap)
+> >  {
+> > -     size_t size = i_size_read(inode);
+> > +     size_t size = i_size_read(inode) - iomap->offset;
+>
+> I wonder why you use i_size / iomap->offset here,
+
+This function is supposed to copy the inline or tail data at
+iomap->inline_data into the page passed to it. Logically, the inline
+data starts at iomap->offset and extends until i_size_read(inode).
+Relative to the page, the inline data starts at offset 0 and extends
+until i_size_read(inode) - iomap->offset. It's as simple as that.
+
+> and why you completely ignoring iomap->length field returning by fs.
+
+In the iomap_readpage case (iomap_begin with flags == 0),
+iomap->length will be the amount of data up to the end of the inode.
+In the iomap_file_buffered_write case (iomap_begin with flags ==
+IOMAP_WRITE), iomap->length will be the size of iomap->inline_data.
+(For extending writes, we need to write beyond the current end of
+inode.) So iomap->length isn't all that useful for
+iomap_read_inline_data.
+
+> Using i_size here instead of iomap->length seems coupling to me in the
+> beginning (even currently in practice there is some limitation.)
+
+And what is that?
+
+Thanks,
+Andreas
+
