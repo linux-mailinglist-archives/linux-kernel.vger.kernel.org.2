@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761B73D68E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C2B3D68E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbhGZVFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
+        id S232689AbhGZVGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhGZVFo (ORCPT
+        with ESMTP id S229489AbhGZVGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:05:44 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3750EC061757;
-        Mon, 26 Jul 2021 14:46:11 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id k4-20020a17090a5144b02901731c776526so966236pjm.4;
-        Mon, 26 Jul 2021 14:46:11 -0700 (PDT)
+        Mon, 26 Jul 2021 17:06:18 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BFBC061757;
+        Mon, 26 Jul 2021 14:46:45 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so2051211pjd.0;
+        Mon, 26 Jul 2021 14:46:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QgtEAFRQu+sQ8IDAKmaF4skCHu48KSCADIk8RQevi5Q=;
-        b=GL+nD5Mq9JnEvF4bRlZpwJKRrcxN6t/wb5RMdDsJJzi3PN36saiYHdk0KDLjcDcx42
-         8IfuTBccuiAXHfcFCwRocIylIzU8fsrxBEuj44+0Rcs/o/nG3JCIdHULN1bLJSmAjVK7
-         KMC0SpkZCyMTPPonEXvq5zFjud4WkRKLHqo8Y5kXoOo+IOl1VqYz7r3QfUbLc1A0Bd+E
-         P6Kjqw0TOKu7JRt84jrd0F+uPb3MVwpNXTuWKGhmlOybNKfjEZfAmPvVyJ/YPVRHG2fF
-         LAiUiHRtHIryF6ODxnXknWh4L/jWwnb+f9F9Sgbyqkh+wsjuoqt0VRNeX0ueydlvmESG
-         y58w==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WjCY/wbfUK0zm4QOWZ0DfXs/wUDR97ZPxIRjy8ov/A8=;
+        b=cvGQNlqXc9F1r7YAKDQI6gKQ+w7Tm1Ej6DWyxSVtVV7QCgNAknurz1XyI+O85DdhQ+
+         MJ0B1NDkbdjFhHEH7zWz5hF0cwbQvSLN0/ePaEE6MW16fBOA2MzLBYxet2f3qJiE7EnW
+         m+OWDz1TI31PyE6H7nhrBrBAXCYMmjTzarqj7nhPP6xU4SdQvuOnNEfS03iSRiQFIKzR
+         mCfOnn0G5hjF3ZplGswQcxPC11oEpekR6J8FdX3b1POrATCU3vkakA4DYNdEzEU3ULiA
+         SRyYLqldmtNKEnXT4soiRYkC3NC/cHvwC326jLTI9WcKv/U+urb0F+6Z1OFVUF1Hiz2K
+         jmVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QgtEAFRQu+sQ8IDAKmaF4skCHu48KSCADIk8RQevi5Q=;
-        b=KklXD62gPGXP0B8W/JLZQ58hFKYlECF0hgzxvs+yXIo2lhKRACMmK+m1A2NDRuAsGl
-         VL9WGagafr3ImukYxzNiR8O6dRMPQRYMS2V4GZEzuCnhlxIi++Eyd/0de1ws27IPqW7y
-         WeYfTbyCeGL/1RDd8sXRcQCEGAL9QoHpvX4VAI8g6cI0VvgN9r9c36gtWSefqsbC9BO/
-         PtLhyEUIz2fPJ1aXuwPbYpMst2mEv1WOtjFFYEW8CwEPrT2R8Qas6Le4OiEk9YK6yp3K
-         tIHTccrNu8/+sNnKpzNzWeBAekI9k/CkOckLVVlYRKeCQ2lC1z2kcYX90/PyEUxVuRf8
-         CBuA==
-X-Gm-Message-State: AOAM5301iOz6ayj5+gzHmC7MtxdVkPg0bg0LR9baw80Axaj+huOXCiRX
-        Z9qxDWyAj2uqC/8YTuuFwErp4bz+y3oxg5oieno=
-X-Google-Smtp-Source: ABdhPJy23DiaMNR6XxYqmNcvXGF+5IGqShyobbp3qUd9QQ8fzGsxAZL8u1aHxcYCWG194M1q/xqwlraeaULNhym2PvA=
-X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr19133195pjb.228.1627335970764;
- Mon, 26 Jul 2021 14:46:10 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=WjCY/wbfUK0zm4QOWZ0DfXs/wUDR97ZPxIRjy8ov/A8=;
+        b=XlNGKq/GSobmstmJbcolWbtNrdfdwNMKIX+iEUuqoxWOwvzmSqie7sY7spT0aWZp/s
+         ihTla+HpzbwiTQNL0L4YZEH00WHgtg+BXfcZB/8EE8/WcVUuJCGZS5/AisfEoVBYuIQl
+         SQ1reUPTpUZdLjaELJvRGOOXazLmZus3GaTAXd/VoBBj153unHN8fsi7gRw02aLYm7iW
+         RPF/BuJxUpy0C7T3cNyYXmnNzjpwRIfGsQrCXSzeqR93HBe/6bsTIx064jV/F4koNQRB
+         8z0dv0D/MMQKTiXLn+fERKAlO/ER8oe4mB4QakPfSAwvG4sWSAvAVApiZIt+iq1JZy/U
+         w+/Q==
+X-Gm-Message-State: AOAM5336qMbME2L2DrKnv+wjKP2h0+l9VRLjInWxfuDVS6dWh6iPd2i/
+        ugtmZLJikTd/jArIdgRditA=
+X-Google-Smtp-Source: ABdhPJw81HPawxf4d1zjmwCFjOgjrImnGU9ms6L2OKXzU4AsvSekTj80/x38kgXCjx2Ezgp8BWwY9A==
+X-Received: by 2002:aa7:8c47:0:b029:340:aa57:f65 with SMTP id e7-20020aa78c470000b0290340aa570f65mr19748761pfd.56.1627336005187;
+        Mon, 26 Jul 2021 14:46:45 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:428])
+        by smtp.gmail.com with ESMTPSA id j13sm823374pgp.29.2021.07.26.14.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 14:46:44 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 26 Jul 2021 11:46:39 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     brookxu <brookxu.cn@gmail.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
+Message-ID: <YP8tPwkJNMAcjDqk@mtj.duckdns.org>
+References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
+ <YPGvIzZUI+QxP1js@mtj.duckdns.org>
+ <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
 MIME-Version: 1.0
-References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
- <CAHp75VfCydLguFX=MSoAQ_gayra5ovuwLxcY7m_pHiafvB7b5w@mail.gmail.com>
- <c1c15112-b102-570b-1432-568ca219ccf9@siemens.com> <CAHp75VdYUUqVi6rd6C-W+1aTXCPs7ehSLDcRfo4RVe7XU+6c+A@mail.gmail.com>
- <521d14ad-8952-7ef9-3575-b48cefeb8241@roeck-us.net> <84665dcf-f036-f059-61a4-cea5087ace2d@siemens.com>
- <CAHp75VdqS5QUwq=25RGKOiPRfcNzNxG9kNMtP-2-=z4EAnUi8w@mail.gmail.com> <175ca7d9-254b-ca35-359c-a077b284c9fa@siemens.com>
-In-Reply-To: <175ca7d9-254b-ca35-359c-a077b284c9fa@siemens.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 27 Jul 2021 00:45:34 +0300
-Message-ID: <CAHp75VeuP5pC3oT84KP-uVd=q+u0cSg0vzoa3zaWTuS59PZ6aQ@mail.gmail.com>
-Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Storm <christian.storm@siemens.com>,
-        =?UTF-8?Q?Mantas_Mikul=C4=97nas?= <grawity@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 8:10 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
-> On 26.07.21 16:51, Andy Shevchenko wrote:
-> > On Mon, Jul 26, 2021 at 5:05 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
-> >> On 26.07.21 15:59, Guenter Roeck wrote:
-> >>> On 7/26/21 6:40 AM, Andy Shevchenko wrote:
+Hello,
 
-...
+On Tue, Jul 20, 2021 at 12:35:54AM +0800, brookxu wrote:
+> In order to avoid code duplication and IOPS stability problems caused by estimating
+> the equivalent number of IOs, and to avoid potential deadlock problems caused by
+> synchronization through queue_lock. I tried to count the number of splited IOs in
+> the current window through two atomic counters. Add the value of the atomic variable
+> when calculating io_disp[rw], which can also avoid the problem of inaccurate IOPS in
+> large IO scenarios. How do you think of this approach? Thanks for your time.
 
-> >>> I have no idea why there is an additional From:, but both From:
-> >>> tags in the e-mail source are exact matches, and both match the
-> >>> name and e-mail address in Signed-off-by:. I agree with Jan,
-> >>> the SoB is there.
-> >>
-> >> There is one unknown in this equation, and that is the anti-email system
-> >> operated by a our IT and some company in Redmond.
-> >
-> > Hmm... The From: in the body is the result of the `git format-patch` I believe.
-> > So, two (or more?) possibilities here:
-> >  1) your configuration enforces it to always put From: (something new to me);
->
-> Yes, it does, as I explained in my other reply. That's a safety net
-> because you never have full control over what some mail servers do to
-> the first From.
+I guess it's okay but am still not a big fan of adding another hook. This is
+primarily because blk-throtl is sitting too early in the stack - e.g. rq_qos
+is doing the same thing but sits after the split path - and it's a bit nasty
+to add an additional hook for it.
 
-I see now. Thanks for your patience and elaboration, it's all good then!
+Do you think it can be an option to relocate the blk-throtl hooks to the
+same spots as rq-qos or, even better, make it use rq-qos?
 
-> >  2) the submitter and author are not the same (see also:
-> > https://github.com/git/git/commit/a90804752f6ab2b911882d47fafb6c2b78f447c3);
-> >  3) ...anything else...?
-
+Thanks.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+tejun
