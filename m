@@ -2,119 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480883D5C29
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E6E73D5C3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbhGZOMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:12:19 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:36713 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234691AbhGZOME (ORCPT
+        id S234769AbhGZOPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:15:51 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:56716 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234389AbhGZOPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:12:04 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8D84658037C;
-        Mon, 26 Jul 2021 10:52:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 26 Jul 2021 10:52:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=YH7NgoqGItUWkC7R6deH5Zcu+he
-        6CbEh3YXSIrNnpb4=; b=H8MMkapgWYqx7TUdwyCHNxnxVB+sJa/W8mEH2H2VJFa
-        H4FufngYs+O322+lobj0qzRCbnVufStEGheOzrJUuYeTvDQvDGdBephi+K3kkRra
-        xmH8g8TNxKLtjlaFxqRv/e/0Do0as/vLMvGZ+/D/AoPUd+fEmn8uqq6p1/9oJM/G
-        ioOUqLLDQn4PgFyLncmMnOvzsrzztRXQUh+M3zDbAuIz09zLRwelS9ssOuf1zT7E
-        z7RNL822mfraCW4ddYHhkay82Ypn59ejOSgYa421TkIjft2ywFmRVyhpYSU5XWfM
-        xay7jDCmYGgg92ZSh/hca0n44pODk2UbwL6E3/+UzkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=YH7Ngo
-        qGItUWkC7R6deH5Zcu+he6CbEh3YXSIrNnpb4=; b=dO61XLazOwLFEsSUkUI1K0
-        4HSOVQW2gjnzaK2aL9mZV5YI78w6wextAPR7jMvvVAw47a1pR59XbE1Tuzc13Mlf
-        mQ9lObSayuJ1xAwRED8CXgb/yWyGVZ6bTNBcbX/xbuXyt7Kv39ayCAH36+oSEB3y
-        DSgSYT1+xR++aOOWY9GCCFRBMF/g1xCDPEIMgXvwI5f13IV2GNvLdLVBnjjgaCi7
-        rWW/MXVk3bYfkprQF6rwiLoIzuUwqGwrgvWEnNG6BfNWnJ/mauUxV07wTO2vuBu1
-        4CHrcenzZQ7vn119A1J9+pOQEPynTNgjHzt1sbjSu3zQa4gNmP2Wq74kYsvCdioA
-        ==
-X-ME-Sender: <xms:L8z-YGfQVPO3WQdueYzUy0e750a7NFVgtABpF5ORgZ-yqBg1H_24fA>
-    <xme:L8z-YANiQ4dbfQaGZG6ktY-P6boaBsp3Pe5pgq5CeoLaLH6zolhEUKRdHm3kOxGsC
-    g0BkvfWvUtINv-jYYc>
-X-ME-Received: <xmr:L8z-YHjF4w3_lwPc6mVXvMj8nhoBgxyYcyUc1clAzlMcuF0LSofXtkcFBDaeHvgz3RQ7vmcZzc5TM2kHWrkDckWFrbYKRiQoLZbp>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeehgdektdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:L8z-YD9Q6Oz1ZGYO53MOcPnyGJuceH0XLysh0Y4HnTHd_pQcbubldw>
-    <xmx:L8z-YCuJWm8gew6O5VMdb0zv7ybOhpZCIzOH7sneKg6OnfYo8nJTtw>
-    <xmx:L8z-YKGlU_8FelJnDLWw9AG1jbN1qiAxVJ1Jj7Gk-5se5xTfN4cyRA>
-    <xmx:MMz-YML-PRHXMxU7D3h_XcEQ8iNen4uoSqWy0ZDU8TbVhKsotFt3jQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 Jul 2021 10:52:31 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 16:52:30 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ondrej Jirman <megous@megous.com>
-Subject: Re: [PATCH v8 00/11] arm64: sunxi: Initial Allwinner H616 SoC support
-Message-ID: <20210726145230.uevhinsrvo7gtuty@gilmour>
-References: <20210723153838.6785-1-andre.przywara@arm.com>
+        Mon, 26 Jul 2021 10:15:49 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B67251FEAE;
+        Mon, 26 Jul 2021 14:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1627311376; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0VT1qHFuaGi5HevL4JbWscP3F55WTL8vce2y/4Jta6U=;
+        b=MD9RSPdElhtJ88az1WD6rGMLGMTeTWrhi6uAGCrPTe06RXmbjTRL3kXy8gVLotkmwR9RZy
+        M3wSKh++hnARJam92dodOqd+nBZm8Wm4SRT/vrMVlrGoPVHzQNXwd/dyjH6bAgKGfeSzCl
+        jyX2SXNxBgB7cDfgR0wobiv8RCotKJo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1627311376;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0VT1qHFuaGi5HevL4JbWscP3F55WTL8vce2y/4Jta6U=;
+        b=aYGXMyB5Y6AbI/4rx6laRnNlb/ufIPC6JdK3Y59PZwlBFITyTyL1/SEPTkjqx1IDed3l2E
+        +Ttst4UDLo2COoAA==
+Received: from quack2.suse.cz (unknown [10.100.200.198])
+        by relay2.suse.de (Postfix) with ESMTP id A0D11A3B8D;
+        Mon, 26 Jul 2021 14:56:16 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7892E1E3B13; Mon, 26 Jul 2021 16:56:16 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 16:56:16 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] writeback: memcg: simplify cgroup_writeback_by_id
+Message-ID: <20210726145616.GG20621@quack2.suse.cz>
+References: <20210722182627.2267368-1-shakeelb@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="up2ns35lavo3yw5c"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210723153838.6785-1-andre.przywara@arm.com>
+In-Reply-To: <20210722182627.2267368-1-shakeelb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 22-07-21 11:26:27, Shakeel Butt wrote:
+> Currently cgroup_writeback_by_id calls mem_cgroup_wb_stats() to get
+> dirty pages for a memcg. However mem_cgroup_wb_stats() does a lot more
+> than just get the number of dirty pages. Just directly get the number of
+> dirty pages instead of calling mem_cgroup_wb_stats(). Also
+> cgroup_writeback_by_id() is only called for best-effort dirty flushing,
+> so remove the unused 'nr' parameter and no need to explicitly flush
+> memcg stats.
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
---up2ns35lavo3yw5c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Looks good to me. Feel free to add:
 
-Hi,
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-On Fri, Jul 23, 2021 at 04:38:27PM +0100, Andre Przywara wrote:
-> Hi,
->=20
-> another try on the basic Allwinner H616 support, now on top of 5.14-rc1.
->=20
-> This time I dropped the USB support from the basic series, to split off
-> the discussion, and simplify the core SoC support. I will post the USB
-> series soon, to be applied on top.
-> I kept the RTC support in, even though this is still under discussion,
-> because this is important to keep future DT files compatible with this
-> kernel.
+								Honza
 
-Honestly, I don't want to support something we don't guarantee if it's
-at the expense of making something we do guarantee more complicated.
-
-Delaying the clock tree description to sometime in the future will only
-further complicate the probe part of the driver, and there's far too
-many special cases already.
-
-Maxime
-
---up2ns35lavo3yw5c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYP7MLgAKCRDj7w1vZxhR
-xQviAP43ZH6hYvpPTFTh0Ky76XcmPg9oNB230+/EeQWij2EJmAD+Ms7eRM11Jm2A
-xrMLoAPlLR++oEqHzkAKBoz/daz2NgY=
-=OQKY
------END PGP SIGNATURE-----
-
---up2ns35lavo3yw5c--
+> ---
+>  fs/fs-writeback.c          | 20 +++++++++-----------
+>  include/linux/memcontrol.h | 15 +++++++++++++++
+>  include/linux/writeback.h  |  2 +-
+>  mm/memcontrol.c            | 13 +------------
+>  4 files changed, 26 insertions(+), 24 deletions(-)
+> 
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 867984e778c3..35894a2dba75 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -1039,20 +1039,20 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
+>   * cgroup_writeback_by_id - initiate cgroup writeback from bdi and memcg IDs
+>   * @bdi_id: target bdi id
+>   * @memcg_id: target memcg css id
+> - * @nr: number of pages to write, 0 for best-effort dirty flushing
+>   * @reason: reason why some writeback work initiated
+>   * @done: target wb_completion
+>   *
+>   * Initiate flush of the bdi_writeback identified by @bdi_id and @memcg_id
+>   * with the specified parameters.
+>   */
+> -int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
+> +int cgroup_writeback_by_id(u64 bdi_id, int memcg_id,
+>  			   enum wb_reason reason, struct wb_completion *done)
+>  {
+>  	struct backing_dev_info *bdi;
+>  	struct cgroup_subsys_state *memcg_css;
+>  	struct bdi_writeback *wb;
+>  	struct wb_writeback_work *work;
+> +	unsigned long dirty;
+>  	int ret;
+>  
+>  	/* lookup bdi and memcg */
+> @@ -1081,24 +1081,22 @@ int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
+>  	}
+>  
+>  	/*
+> -	 * If @nr is zero, the caller is attempting to write out most of
+> +	 * The caller is attempting to write out most of
+>  	 * the currently dirty pages.  Let's take the current dirty page
+>  	 * count and inflate it by 25% which should be large enough to
+>  	 * flush out most dirty pages while avoiding getting livelocked by
+>  	 * concurrent dirtiers.
+> +	 *
+> +	 * BTW the memcg stats are flushed periodically and this is best-effort
+> +	 * estimation, so some potential error is ok.
+>  	 */
+> -	if (!nr) {
+> -		unsigned long filepages, headroom, dirty, writeback;
+> -
+> -		mem_cgroup_wb_stats(wb, &filepages, &headroom, &dirty,
+> -				      &writeback);
+> -		nr = dirty * 10 / 8;
+> -	}
+> +	dirty = memcg_page_state(mem_cgroup_from_css(memcg_css), NR_FILE_DIRTY);
+> +	dirty = dirty * 10 / 8;
+>  
+>  	/* issue the writeback work */
+>  	work = kzalloc(sizeof(*work), GFP_NOWAIT | __GFP_NOWARN);
+>  	if (work) {
+> -		work->nr_pages = nr;
+> +		work->nr_pages = dirty;
+>  		work->sync_mode = WB_SYNC_NONE;
+>  		work->range_cyclic = 1;
+>  		work->reason = reason;
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index b4c6b613e162..7028d8e4a3d7 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -989,6 +989,16 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+>  	local_irq_restore(flags);
+>  }
+>  
+> +static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+> +{
+> +	long x = READ_ONCE(memcg->vmstats.state[idx]);
+> +#ifdef CONFIG_SMP
+> +	if (x < 0)
+> +		x = 0;
+> +#endif
+> +	return x;
+> +}
+> +
+>  static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+>  					      enum node_stat_item idx)
+>  {
+> @@ -1444,6 +1454,11 @@ static inline void mod_memcg_state(struct mem_cgroup *memcg,
+>  {
+>  }
+>  
+> +static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+> +{
+> +	return 0;
+> +}
+> +
+>  static inline unsigned long lruvec_page_state(struct lruvec *lruvec,
+>  					      enum node_stat_item idx)
+>  {
+> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+> index 1f34ddf284dc..109e0dcd1d21 100644
+> --- a/include/linux/writeback.h
+> +++ b/include/linux/writeback.h
+> @@ -218,7 +218,7 @@ void wbc_attach_and_unlock_inode(struct writeback_control *wbc,
+>  void wbc_detach_inode(struct writeback_control *wbc);
+>  void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+>  			      size_t bytes);
+> -int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pages,
+> +int cgroup_writeback_by_id(u64 bdi_id, int memcg_id,
+>  			   enum wb_reason reason, struct wb_completion *done);
+>  void cgroup_writeback_umount(void);
+>  bool cleanup_offline_cgwb(struct bdi_writeback *wb);
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 35bb5f8f9ea8..6580c2381a3e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -631,17 +631,6 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+>  	cgroup_rstat_updated(memcg->css.cgroup, smp_processor_id());
+>  }
+>  
+> -/* idx can be of type enum memcg_stat_item or node_stat_item. */
+> -static unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+> -{
+> -	long x = READ_ONCE(memcg->vmstats.state[idx]);
+> -#ifdef CONFIG_SMP
+> -	if (x < 0)
+> -		x = 0;
+> -#endif
+> -	return x;
+> -}
+> -
+>  /* idx can be of type enum memcg_stat_item or node_stat_item. */
+>  static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+>  {
+> @@ -4609,7 +4598,7 @@ void mem_cgroup_flush_foreign(struct bdi_writeback *wb)
+>  		    atomic_read(&frn->done.cnt) == 1) {
+>  			frn->at = 0;
+>  			trace_flush_foreign(wb, frn->bdi_id, frn->memcg_id);
+> -			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id, 0,
+> +			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id,
+>  					       WB_REASON_FOREIGN_FLUSH,
+>  					       &frn->done);
+>  		}
+> -- 
+> 2.32.0.432.gabb21c7263-goog
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
