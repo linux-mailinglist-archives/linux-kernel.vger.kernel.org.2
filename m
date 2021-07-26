@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7EE3D62AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2163C3D607D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhGZPhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:37:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35826 "EHLO mail.kernel.org"
+        id S237086AbhGZPWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237193AbhGZPVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B406D60FEE;
-        Mon, 26 Jul 2021 16:02:02 +0000 (UTC)
+        id S237431AbhGZPPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B0A161054;
+        Mon, 26 Jul 2021 15:55:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315323;
-        bh=Go1iKbPM/vtqA/2HqRpjLUeZFIYJ3ls5OtMWS70sE7s=;
+        s=korg; t=1627314928;
+        bh=7HdqZKFsJdgtGYqYqPedvf4Oq9/lP1dzpfDfQ2Ta7Us=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a7M/M/XCJtFXQunUfF/idtpYqKM68ePbNEpMFuwcA+WME3nwqjScHDryLg7vf5CtS
-         tADiRjCExUrDGkQhJfss119Fme63Xa7Vmu+prEoPHhCQjBiKNNDQH3EWIw+4a8hDQ2
-         WBCchSoVZXpHJh48x3yBtU19FxYBBIs4PTgNCW0M=
+        b=BdPUtgJxiEqoN+ZcBlZEvYBilu3w+2NJeO/SIebW6Q4qZ6RTDa7RVvhWF0zw4lE2c
+         Oti9R5z4aU6seu0RL4oD7YdPdRBNQb8x+KmkT9oPDZCqnzBpK507RTBYDKpguxAekR
+         pBxfaG+q/jAhfsnJiCa9C99/S+FmIIFVMljIRLe0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 051/167] regulator: hi6421: Use correct variable type for regmap api val argument
-Date:   Mon, 26 Jul 2021 17:38:04 +0200
-Message-Id: <20210726153841.115444027@linuxfoundation.org>
+Subject: [PATCH 5.4 004/108] ixgbe: Fix an error handling path in ixgbe_probe()
+Date:   Mon, 26 Jul 2021 17:38:05 +0200
+Message-Id: <20210726153831.836762784@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ae60e6a9d24e89a74e2512204ad04de94921bdd2 ]
+[ Upstream commit dd2aefcd5e37989ae5f90afdae44bbbf3a2990da ]
 
-Use unsigned int instead of u32 for regmap_read/regmap_update_bits val
-argument.
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call, as already done in the remove function.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210619124133.4096683-1-axel.lin@ingics.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 6fabd715e6d8 ("ixgbe: Implement PCIe AER support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/hi6421-regulator.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/regulator/hi6421-regulator.c b/drivers/regulator/hi6421-regulator.c
-index dc631c1a46b4..bff8c515dcde 100644
---- a/drivers/regulator/hi6421-regulator.c
-+++ b/drivers/regulator/hi6421-regulator.c
-@@ -386,7 +386,7 @@ static int hi6421_regulator_enable(struct regulator_dev *rdev)
- static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
- {
- 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
--	u32 reg_val;
-+	unsigned int reg_val;
- 
- 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
- 	if (reg_val & info->mode_mask)
-@@ -398,7 +398,7 @@ static unsigned int hi6421_regulator_ldo_get_mode(struct regulator_dev *rdev)
- static unsigned int hi6421_regulator_buck_get_mode(struct regulator_dev *rdev)
- {
- 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
--	u32 reg_val;
-+	unsigned int reg_val;
- 
- 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
- 	if (reg_val & info->mode_mask)
-@@ -411,7 +411,7 @@ static int hi6421_regulator_ldo_set_mode(struct regulator_dev *rdev,
- 						unsigned int mode)
- {
- 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
--	u32 new_mode;
-+	unsigned int new_mode;
- 
- 	switch (mode) {
- 	case REGULATOR_MODE_NORMAL:
-@@ -435,7 +435,7 @@ static int hi6421_regulator_buck_set_mode(struct regulator_dev *rdev,
- 						unsigned int mode)
- {
- 	struct hi6421_regulator_info *info = rdev_get_drvdata(rdev);
--	u32 new_mode;
-+	unsigned int new_mode;
- 
- 	switch (mode) {
- 	case REGULATOR_MODE_NORMAL:
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 1b8e70585c44..71b77ce60b07 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -11207,6 +11207,7 @@ err_ioremap:
+ 	disable_dev = !test_and_set_bit(__IXGBE_DISABLED, &adapter->state);
+ 	free_netdev(netdev);
+ err_alloc_etherdev:
++	pci_disable_pcie_error_reporting(pdev);
+ 	pci_release_mem_regions(pdev);
+ err_pci_reg:
+ err_dma:
 -- 
 2.30.2
 
