@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5469C3D56A0
+	by mail.lfdr.de (Postfix) with ESMTP id A61623D56A1
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233368AbhGZItb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 04:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S233337AbhGZIte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 04:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbhGZItM (ORCPT
+        with ESMTP id S233155AbhGZItP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 04:49:12 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37644C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:41 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id b4-20020a3799040000b02903b899a4309cso8481346qke.14
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:41 -0700 (PDT)
+        Mon, 26 Jul 2021 04:49:15 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64912C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:43 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id p14-20020a05620a22eeb02903b94aaa0909so8450450qki.15
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=tkKuELagekwMv5lJ5KC16O2ECB7SNyEmk6kFSF/fHxM=;
-        b=nk3MJc1TvlrOLzzIkiMf4rqf5hlIGKplrBy0rbLmw27uz1W6VBHL3ebA0vXPU5hqe/
-         QoJ1dpPFJWYNA881TkoFyPstgtGjtstMfCXCBrv86MDx6OrlwzOGtjIAWJB+y8Ts/OF/
-         uzElj+Fi5baAI3+Gd7/gAYFnufyRr/kcef4dno05tPLzPDrZFvZW5Zw4E6oA8mNnAsqz
-         kmK+rxP55y6Q7IRGVH0DsjQTrpuBlDwMkGE8Q0sdJ2BOb5c9+MDQuNfFTrhqhDtnWWJT
-         8Dkhb+jqs5SFv774P+xFvG/36uFaxoBLVLa+7H3VSPMzcE0DjbMAeNFWU0F9g6VrRrc8
-         SSJg==
+        bh=6dY3W9X/AGxD9r1RRTSS9yD4t5RoHsE1QSE3BCqo+aE=;
+        b=Ww9dZYatKjMjIjIW2ylBqljvFXMjm0aQtmZZd32Hr/KhiQqtTftNNfU69HEOr0lDbm
+         zKee/K1VB/L+wtlEDRN5rVkSG/delJAR7PejN/gdK8Jfu8lQAw3AbAugd/GC3GoKPdRM
+         kLKaIWP/+D4QBdboQQ3q/eARC/T+BaNDzFr77y3qvaXSJzgq2aV2CNkWnUuT5eK7E1vI
+         iPbtNmIcBPgzr/nU52DfK1/CvEFwtQ0pEtbAe48HgEUDcRebZvoACysb+/jnYB2DPFmN
+         wGmU9dDogUx6Isrlkg+YCz3jySICBEXb7IY5wYtN7RAnqe7ILDgtZZJ2mLrbRgZcpEVn
+         WuNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=tkKuELagekwMv5lJ5KC16O2ECB7SNyEmk6kFSF/fHxM=;
-        b=AxEgpBw4kUOlXhi0bILQTwoD/mgV6o8ziOkeL1s3KJwChxzclV1mOXo88p7T3UlCpJ
-         2NK7GMZCZEzzbHAqHS4Js6BV44HkagArRYKwJzRPwotDxTy4aEYi06FgHfRpy/2Yp+Pm
-         UHa+UNWJYIQZ2dm/QP320I6+pIICRxbZC6Qui/O+wPwolPhQ3xIGOtXSFcZFqMAENuhA
-         xK4S38J2xvW8RH46rwnM0pcO6abcPgo0QuuLnXwz/Pn5g0Kvk2UocX0zU0CPyE4a7VBf
-         KRyYR4T83v7NqkxJGlI6WMi6v/ZpFnjxbnym/dVWHUKuNGvii6QHIJ0J+kth7rrkiCs6
-         c5RQ==
-X-Gm-Message-State: AOAM533sN7AwpeFS/2XO2tmeR3K/GqFWfaUhGK75tTnUKTySyjAzK1AZ
-        JdJj85EJFY+4L2suzhmZcgp/I1WextuF
-X-Google-Smtp-Source: ABdhPJw/Ly763xE6/tFkoek1tqopFddG61YOXzM273sCNQ1M4TAjeeg9umQGIef8D0FMW2bam9q3NSXPHFid
+        bh=6dY3W9X/AGxD9r1RRTSS9yD4t5RoHsE1QSE3BCqo+aE=;
+        b=FSQrdeezOGkWYxJONf+sj4CJR2JGGgZ9/Kx/hHRC3x2CFHF6uGWzZ88cJ/kckvXSUZ
+         XlXLDu9Iu5+n/dIlR7F6tFdAMHuUVSBorjzUOWNDtJnldbkrXBDiFmc/W6x+n40rMbo0
+         bzwm6HgNFpA15Lscd/LIxEokIC6vzbG55aW80fuzzwRzd54Cuq6TAv+Nm3PjWXiQeghd
+         n1U1rk6XIVKvFJAzEZGgUfPE+KAk8hIbalUt98Gfvo3kDkx2VdaYIEgunCD0nHgARL9n
+         bcOu6+nmOfGujQXRK2smR4ggV9DYXaFsqdUn23pHRBG3+HZfrw0eyqGmtDFCud+Z53+j
+         bW6g==
+X-Gm-Message-State: AOAM5337TenAedX0ZRklS/2exU/xS95K9FA47O9+g8FGJw6C0U+5RUuO
+        oEhNCYJdcP8HjBJ0eR/H1BIBOaNZu166
+X-Google-Smtp-Source: ABdhPJxja1z3cl1S4eHZsbLWfOgzNw9V3DmMjl7MkdDjMfOUrn37i6l0Vcan0CxmYEphVI3A4P6qPR4TuQL7
 X-Received: from luke.lon.corp.google.com ([2a00:79e0:d:210:23a0:2f14:433:e6cb])
- (user=qperret job=sendgmr) by 2002:a05:6214:188c:: with SMTP id
- cx12mr16903787qvb.7.1627291780379; Mon, 26 Jul 2021 02:29:40 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 10:29:02 +0100
+ (user=qperret job=sendgmr) by 2002:a05:6214:e83:: with SMTP id
+ hf3mr17024207qvb.19.1627291782528; Mon, 26 Jul 2021 02:29:42 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 10:29:03 +0100
 In-Reply-To: <20210726092905.2198501-1-qperret@google.com>
-Message-Id: <20210726092905.2198501-14-qperret@google.com>
+Message-Id: <20210726092905.2198501-15-qperret@google.com>
 Mime-Version: 1.0
 References: <20210726092905.2198501-1-qperret@google.com>
 X-Mailer: git-send-email 2.32.0.432.gabb21c7263-goog
-Subject: [PATCH v2 13/16] KVM: arm64: Enable retrieving protections attributes
- of PTEs
+Subject: [PATCH v2 14/16] KVM: arm64: Refactor protected nVHE stage-1 locking
 From:   Quentin Perret <qperret@google.com>
 To:     maz@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com,
         suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
@@ -65,101 +64,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce helper functions in the KVM stage-2 and stage-1 page-table
-manipulation library allowing to retrieve the enum kvm_pgtable_prot of a
-PTE. This will be useful to implement custom walkers outside of
-pgtable.c.
+Refactor the hypervisor stage-1 locking in nVHE protected mode to expose
+a new pkvm_create_mappings_locked() function. This will be used in later
+patches to allow walking and changing the hypervisor stage-1 without
+releasing the lock.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_pgtable.h | 20 +++++++++++++++
- arch/arm64/kvm/hyp/pgtable.c         | 37 ++++++++++++++++++++++++++++
- 2 files changed, 57 insertions(+)
+ arch/arm64/kvm/hyp/include/nvhe/mm.h |  1 +
+ arch/arm64/kvm/hyp/nvhe/mm.c         | 17 +++++++++++++++--
+ 2 files changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-index 0be9f83974ad..f253fb5bcee2 100644
---- a/arch/arm64/include/asm/kvm_pgtable.h
-+++ b/arch/arm64/include/asm/kvm_pgtable.h
-@@ -492,4 +492,24 @@ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
-  */
- int kvm_pgtable_get_leaf(struct kvm_pgtable *pgt, u64 addr,
- 			 kvm_pte_t *ptep, u32 *level);
-+
-+/**
-+ * kvm_pgtable_stage2_pte_prot() - Retrieve the protection attributes of a
-+ *				   stage-2 Page-Table Entry.
-+ * @pte:	Page-table entry
-+ *
-+ * Return: protection attributes of the page-table entry in the enum
-+ *	   kvm_pgtable_prot format.
-+ */
-+enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte);
-+
-+/**
-+ * kvm_pgtable_hyp_pte_prot() - Retrieve the protection attributes of a stage-1
-+ *				Page-Table Entry.
-+ * @pte:	Page-table entry
-+ *
-+ * Return: protection attributes of the page-table entry in the enum
-+ *	   kvm_pgtable_prot format.
-+ */
-+enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
- #endif	/* __ARM64_KVM_PGTABLE_H__ */
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index bd409d524dea..fb80d3019cff 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -376,6 +376,26 @@ static int hyp_set_prot_attr(enum kvm_pgtable_prot prot, kvm_pte_t *ptep)
+diff --git a/arch/arm64/kvm/hyp/include/nvhe/mm.h b/arch/arm64/kvm/hyp/include/nvhe/mm.h
+index 8ec3a5a7744b..c76d7136ed9b 100644
+--- a/arch/arm64/kvm/hyp/include/nvhe/mm.h
++++ b/arch/arm64/kvm/hyp/include/nvhe/mm.h
+@@ -23,6 +23,7 @@ int hyp_map_vectors(void);
+ int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back);
+ int pkvm_cpu_set_vector(enum arm64_hyp_spectre_vector slot);
+ int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot);
++int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot);
+ int __pkvm_create_mappings(unsigned long start, unsigned long size,
+ 			   unsigned long phys, enum kvm_pgtable_prot prot);
+ unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
+diff --git a/arch/arm64/kvm/hyp/nvhe/mm.c b/arch/arm64/kvm/hyp/nvhe/mm.c
+index a8efdf0f9003..256cbe5c0dca 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mm.c
++++ b/arch/arm64/kvm/hyp/nvhe/mm.c
+@@ -67,7 +67,8 @@ unsigned long __pkvm_create_private_mapping(phys_addr_t phys, size_t size,
+ 	return addr;
+ }
+ 
+-int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
++/* Must be called with the pkvm_pgd_lock held */
++int pkvm_create_mappings_locked(void *from, void *to, enum kvm_pgtable_prot prot)
+ {
+ 	unsigned long start = (unsigned long)from;
+ 	unsigned long end = (unsigned long)to;
+@@ -81,7 +82,8 @@ int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
+ 		int err;
+ 
+ 		phys = hyp_virt_to_phys((void *)virt_addr);
+-		err = __pkvm_create_mappings(virt_addr, PAGE_SIZE, phys, prot);
++		err = kvm_pgtable_hyp_map(&pkvm_pgtable, virt_addr, PAGE_SIZE,
++					  phys, prot);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -89,6 +91,17 @@ int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
  	return 0;
  }
  
-+enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte)
++int pkvm_create_mappings(void *from, void *to, enum kvm_pgtable_prot prot)
 +{
-+	enum kvm_pgtable_prot prot = pte & KVM_PTE_LEAF_ATTR_HI_SW;
-+	u32 ap;
++	int ret;
 +
-+	if (!kvm_pte_valid(pte))
-+		return prot;
++	hyp_spin_lock(&pkvm_pgd_lock);
++	ret = pkvm_create_mappings_locked(from, to, prot);
++	hyp_spin_unlock(&pkvm_pgd_lock);
 +
-+	if (!(pte & KVM_PTE_LEAF_ATTR_HI_S1_XN))
-+		prot |= KVM_PGTABLE_PROT_X;
-+
-+	ap = FIELD_GET(KVM_PTE_LEAF_ATTR_LO_S1_AP, pte);
-+	if (ap == KVM_PTE_LEAF_ATTR_LO_S1_AP_RO)
-+		prot |= KVM_PGTABLE_PROT_R;
-+	else if (ap == KVM_PTE_LEAF_ATTR_LO_S1_AP_RW)
-+		prot |= KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W;
-+
-+	return prot;
++	return ret;
 +}
 +
- static bool hyp_pte_needs_update(kvm_pte_t old, kvm_pte_t new)
+ int hyp_back_vmemmap(phys_addr_t phys, unsigned long size, phys_addr_t back)
  {
- 	/*
-@@ -578,6 +598,23 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
- 	return 0;
- }
- 
-+enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte)
-+{
-+	enum kvm_pgtable_prot prot = pte & KVM_PTE_LEAF_ATTR_HI_SW;
-+
-+	if (!kvm_pte_valid(pte))
-+		return prot;
-+
-+	if (pte & KVM_PTE_LEAF_ATTR_LO_S2_S2AP_R)
-+		prot |= KVM_PGTABLE_PROT_R;
-+	if (pte & KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W)
-+		prot |= KVM_PGTABLE_PROT_W;
-+	if (!(pte & KVM_PTE_LEAF_ATTR_HI_S2_XN))
-+		prot |= KVM_PGTABLE_PROT_X;
-+
-+	return prot;
-+}
-+
- static bool stage2_pte_needs_update(kvm_pte_t old, kvm_pte_t new)
- {
- 	if (!kvm_pte_valid(old) || !kvm_pte_valid(new))
+ 	unsigned long start, end;
 -- 
 2.32.0.432.gabb21c7263-goog
 
