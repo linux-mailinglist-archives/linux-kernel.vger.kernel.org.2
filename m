@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C37093D5DA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E25F3D5E3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235373AbhGZPCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:02:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41752 "EHLO mail.kernel.org"
+        id S235877AbhGZPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:06:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235752AbhGZPCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:02:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6A060F38;
-        Mon, 26 Jul 2021 15:42:44 +0000 (UTC)
+        id S235978AbhGZPFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:05:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7286D60F5A;
+        Mon, 26 Jul 2021 15:45:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314165;
-        bh=w2L7uL8oCXYj8tVLxyDYIhZ0PsTA3Cb+TTjU8JzQHE8=;
+        s=korg; t=1627314348;
+        bh=yghxzwnpquG8r/+zG4yhhylJfT3boUKHrz9/lxVR/sE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p4Lpj4XWuN4j2czpAcSZwNZUj2XYLpb73VtfzT3bbnwjp3ZxYvTLPHF01+bQmQ5v4
-         rY2hcfBd4PCXRqDEHNKwxI72H3IrkmQn2YTr2BDelrKFSTPpnZaIpAnpsUZarstw0Q
-         L+mpEaV1jhlldskBrzhwYSfdV7W/j0QFTK0GKS/k=
+        b=AyCNAogl+Fk3DM5sE+tK1gLNeA7gLx1sLBD+XgzKRD0lqzU0bIbmqImrhHfTLmdHm
+         te6U1LANVRXzahM0l+cQlHmukMFGERKhNeebVg18tG3IsXlM2J8Jb+KBkpqgK0Jbp+
+         25igiIo8VQzoZw66YQ6xOsyukXYaCXkMegicF+2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Jonker <jbx6244@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 01/60] ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
+Subject: [PATCH 4.14 15/82] arm64: dts: juno: Update SCPI nodes as per the YAML schema
 Date:   Mon, 26 Jul 2021 17:38:15 +0200
-Message-Id: <20210726153824.914948094@linuxfoundation.org>
+Message-Id: <20210726153828.649443066@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,54 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Jonker <jbx6244@gmail.com>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-[ Upstream commit dfbfb86a43f9a5bbd166d88bca9e07ee4e1bff31 ]
+[ Upstream commit 70010556b158a0fefe43415fb0c58347dcce7da0 ]
 
-A test with the command below aimed at powerpc generates
-notifications in the Rockchip ARM tree.
+The SCPI YAML schema expects standard node names for clocks and
+power domain controllers. Fix those as per the schema for Juno
+platforms.
 
-Fix pinctrl "sleep" nodename by renaming it to "suspend"
-for rk3036-kylin and rk3288
-
-make ARCH=arm dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/powerpc/sleep.yaml
-
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Link: https://lore.kernel.org/r/20210126110221.10815-1-jbx6244@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Link: https://lore.kernel.org/r/20210608145133.2088631-1-sudeep.holla@arm.com
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/rk3036-kylin.dts | 2 +-
- arch/arm/boot/dts/rk3288.dtsi      | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/arm/juno-base.dtsi | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rk3036-kylin.dts b/arch/arm/boot/dts/rk3036-kylin.dts
-index 1df1557a46c3..3080915cfa5f 100644
---- a/arch/arm/boot/dts/rk3036-kylin.dts
-+++ b/arch/arm/boot/dts/rk3036-kylin.dts
-@@ -426,7 +426,7 @@
- 		};
- 	};
+diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
+index 13ee8ffa9bbf..76902ea7288f 100644
+--- a/arch/arm64/boot/dts/arm/juno-base.dtsi
++++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
+@@ -513,13 +513,13 @@
+ 		clocks {
+ 			compatible = "arm,scpi-clocks";
  
--	sleep {
-+	suspend {
- 		global_pwroff: global-pwroff {
- 			rockchip,pins = <2 7 RK_FUNC_1 &pcfg_pull_none>;
- 		};
-diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
-index 30f1384f619b..09e7898ffb6b 100644
---- a/arch/arm/boot/dts/rk3288.dtsi
-+++ b/arch/arm/boot/dts/rk3288.dtsi
-@@ -1278,7 +1278,7 @@
- 			drive-strength = <12>;
- 		};
- 
--		sleep {
-+		suspend {
- 			global_pwroff: global-pwroff {
- 				rockchip,pins = <0 0 RK_FUNC_1 &pcfg_pull_none>;
+-			scpi_dvfs: scpi-dvfs {
++			scpi_dvfs: clocks-0 {
+ 				compatible = "arm,scpi-dvfs-clocks";
+ 				#clock-cells = <1>;
+ 				clock-indices = <0>, <1>, <2>;
+ 				clock-output-names = "atlclk", "aplclk","gpuclk";
  			};
+-			scpi_clk: scpi-clk {
++			scpi_clk: clocks-1 {
+ 				compatible = "arm,scpi-variable-clocks";
+ 				#clock-cells = <1>;
+ 				clock-indices = <3>;
+@@ -527,7 +527,7 @@
+ 			};
+ 		};
+ 
+-		scpi_devpd: scpi-power-domains {
++		scpi_devpd: power-controller {
+ 			compatible = "arm,scpi-power-domains";
+ 			num-domains = <2>;
+ 			#power-domain-cells = <1>;
 -- 
 2.30.2
 
