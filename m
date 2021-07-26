@@ -2,171 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3073A3D5EDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95F43D5F74
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236635AbhGZPLy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Jul 2021 11:11:54 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:44901 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236124AbhGZPHG (ORCPT
+        id S236961AbhGZPR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:17:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41310 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236701AbhGZPJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:07:06 -0400
-Received: by mail-oi1-f178.google.com with SMTP id w6so11348937oiv.11;
-        Mon, 26 Jul 2021 08:47:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1d5cbYYMozpblAP6PNRBcPUfwE0i3V4+yazexCHen30=;
-        b=GtIztl1B+L8lv3rh4c7fScJbjvU+VQP11pSkDY63+eAlYdtFKA4AUllgY9lvnxK6Mx
-         2g+iZpVOMl8yd+aRcZnDKmJJjb2aDLPU8S21b/6mCXRH9PDxtCdldx/6Pxesaf5PUldV
-         5zElmBAdcCEckiYQ4Ax3YznTGuQgAAHyLnQdc2pjWcLJhk9ankyuiOAbGUUuPxbufQrk
-         /HtKU3Rd7/jcRmxKs7xCCW84HKvsgD0OJwhPi07U3oHP4++GTKjSI2YXDYw5E24+svbD
-         qu1NnHypDVq2+KV2/ouuweDY9G/KsSjI7z7SM+jifmux6qG7LKJ2Mz2Tt+70HIwmOHBb
-         9fdg==
-X-Gm-Message-State: AOAM532MO7ZRz6vOl0sxz/yQPZY0/gJtwr31h2tbjq+mEcRt01PvrHkC
-        a0O7aIITTbL/iA/XGp4w4uudYPvOxMhsWGpW960=
-X-Google-Smtp-Source: ABdhPJx0q9YBnz9WLfHdhCVrn/hzRPrULJgYI/JQvdfQmpyoGjjcrki0nozWOZyNW1UvlHssLxm5idt1i650SQcmG3o=
-X-Received: by 2002:aca:d7d5:: with SMTP id o204mr11062448oig.69.1627314450708;
- Mon, 26 Jul 2021 08:47:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210713161906.457857-1-stefanha@redhat.com> <1008dee4-fce1-2462-1520-f5432bc89a07@redhat.com>
- <YPfryV7qZVRbjNgP@stefanha-x1.localdomain> <869a993d-a1b0-1c39-d081-4cdd2b71041f@redhat.com>
- <YP7SEkDEIBOch9U8@stefanha-x1.localdomain>
-In-Reply-To: <YP7SEkDEIBOch9U8@stefanha-x1.localdomain>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 26 Jul 2021 17:47:19 +0200
-Message-ID: <CAJZ5v0h+RrRP-3MtV8dgxmba0rDfqoOw54DsFh0yx3YGUAVRqw@mail.gmail.com>
-Subject: Re: [RFC 0/3] cpuidle: add poll_source API and virtio vq polling
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Ming Lei <ming.lei@redhat.com>,
+        Mon, 26 Jul 2021 11:09:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627314613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XgsuJsqBr9kyZ7zj2ygISOlArfFVIIfczRuQHcGCOnA=;
+        b=EjWvSUIDy58HYJ12Z31AOiKRGW6pAZ0lDxcnpHkpuj8oiWSIkLreH1nBKaDmkyp8vH8gc8
+        ZFxlVSsyC6vG+M+mlmyd5YBMkcbcM4tGd9qOqsE297fcgpswu7WHh+XZxcwQ114bANSGGR
+        I61ZhuC92he4ogzfH5xwXMlfKWk2BdQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-378-YwsBknGRN-mDp0-0o9nRCQ-1; Mon, 26 Jul 2021 11:50:11 -0400
+X-MC-Unique: YwsBknGRN-mDp0-0o9nRCQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5750E92500;
+        Mon, 26 Jul 2021 15:50:07 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-112-199.ams2.redhat.com [10.36.112.199])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B386510190AA;
+        Mon, 26 Jul 2021 15:49:33 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Linux API <linux-api@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
         "Michael S . Tsirkin" <mst@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        virtualization@lists.linux-foundation.org,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        Ram Pai <linuxram@us.ibm.com>, Shuah Khan <shuah@kernel.org>
+Subject: [PATCH v1] mm/madvise: report SIGBUS as -EFAULT for MADV_POPULATE_(READ|WRITE)
+Date:   Mon, 26 Jul 2021 17:49:32 +0200
+Message-Id: <20210726154932.102880-1-david@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 5:17 PM Stefan Hajnoczi <stefanha@redhat.com> wrote:
->
-> On Thu, Jul 22, 2021 at 05:04:57PM +0800, Jason Wang wrote:
-> >
-> > 在 2021/7/21 下午5:41, Stefan Hajnoczi 写道:
-> > > On Wed, Jul 21, 2021 at 11:29:55AM +0800, Jason Wang wrote:
-> > > > 在 2021/7/14 上午12:19, Stefan Hajnoczi 写道:
-> > > > > These patches are not polished yet but I would like request feedback on this
-> > > > > approach and share performance results with you.
-> > > > >
-> > > > > Idle CPUs tentatively enter a busy wait loop before halting when the cpuidle
-> > > > > haltpoll driver is enabled inside a virtual machine. This reduces wakeup
-> > > > > latency for events that occur soon after the vCPU becomes idle.
-> > > > >
-> > > > > This patch series extends the cpuidle busy wait loop with the new poll_source
-> > > > > API so drivers can participate in polling. Such polling-aware drivers disable
-> > > > > their device's irq during the busy wait loop to avoid the cost of interrupts.
-> > > > > This reduces latency further than regular cpuidle haltpoll, which still relies
-> > > > > on irqs.
-> > > > >
-> > > > > Virtio drivers are modified to use the poll_source API so all virtio device
-> > > > > types get this feature. The following virtio-blk fio benchmark results show the
-> > > > > improvement:
-> > > > >
-> > > > >                IOPS (numjobs=4, iodepth=1, 4 virtqueues)
-> > > > >                  before   poll_source      io_poll
-> > > > > 4k randread    167102  186049 (+11%)  186654 (+11%)
-> > > > > 4k randwrite   162204  181214 (+11%)  181850 (+12%)
-> > > > > 4k randrw      159520  177071 (+11%)  177928 (+11%)
-> > > > >
-> > > > > The comparison against io_poll shows that cpuidle poll_source achieves
-> > > > > equivalent performance to the block layer's io_poll feature (which I
-> > > > > implemented in a separate patch series [1]).
-> > > > >
-> > > > > The advantage of poll_source is that applications do not need to explicitly set
-> > > > > the RWF_HIPRI I/O request flag. The poll_source approach is attractive because
-> > > > > few applications actually use RWF_HIPRI and it takes advantage of CPU cycles we
-> > > > > would have spent in cpuidle haltpoll anyway.
-> > > > >
-> > > > > The current series does not improve virtio-net. I haven't investigated deeply,
-> > > > > but it is possible that NAPI and poll_source do not combine. See the final
-> > > > > patch for a starting point on making the two work together.
-> > > > >
-> > > > > I have not tried this on bare metal but it might help there too. The cost of
-> > > > > disabling a device's irq must be less than the savings from avoiding irq
-> > > > > handling for this optimization to make sense.
-> > > > >
-> > > > > [1] https://lore.kernel.org/linux-block/20210520141305.355961-1-stefanha@redhat.com/
-> > > >
-> > > > Hi Stefan:
-> > > >
-> > > > Some questions:
-> > > >
-> > > > 1) What's the advantages of introducing polling at virtio level instead of
-> > > > doing it at each subsystems? Polling in virtio level may only work well if
-> > > > all (or most) of the devices are virtio
-> > > I'm not sure I understand the question. cpuidle haltpoll benefits all
-> > > devices today, except it incurs interrupt latency. The poll_source API
-> > > eliminates the interrupt latency for drivers that can disable device
-> > > interrupts cheaply.
-> > >
-> > > This patch adds poll_source to core virtio code so that all virtio
-> > > drivers get this feature for free. No driver-specific changes are
-> > > needed.
-> > >
-> > > If you mean networking, block layer, etc by "subsystems" then there's
-> > > nothing those subsystems can do to help. Whether poll_source can be used
-> > > depends on the specific driver, not the subsystem. If you consider
-> > > drivers/virtio/ a subsystem, then that's exactly what the patch series
-> > > is doing.
-> >
-> >
-> > I meant, if we choose to use idle poll, we have some several choices:
-> >
-> > 1) bus level (e.g the virtio)
-> > 2) subsystem level (e.g the networking and block)
-> >
-> > I'm not sure which one is better.
->
-> This API is intended to be driver- or bus-level. I don't think
-> subsystems can do very much since they don't know the hardware
-> capabilities (cheap interrupt disabling) and in most cases there's no
-> advantage of plumbing it through subsystems when drivers can call the
-> API directly.
->
-> > > > 2) What's the advantages of using cpuidle instead of using a thread (and
-> > > > leverage the scheduler)?
-> > > In order to combine with the existing cpuidle infrastructure. No new
-> > > polling loop is introduced and no additional CPU cycles are spent on
-> > > polling.
-> > >
-> > > If cpuidle itself is converted to threads then poll_source would
-> > > automatically operate in a thread too, but this patch series doesn't
-> > > change how the core cpuidle code works.
-> >
-> >
-> > So networking subsystem can use NAPI busy polling in the process context
-> > which means it can be leveraged by the scheduler.
-> >
-> > I'm not sure it's a good idea to poll drivers for a specific bus in the
-> > general cpu idle layer.
->
-> Why? Maybe because the cpuidle execution environment is a little special?
+Doing some extended tests and polishing the man page update for
+MADV_POPULATE_(READ|WRITE), I realized that we end up converting also
+SIGBUS (via -EFAULT) to -EINVAL, making it look like yet another
+madvise() user error.
 
-Well, this would be prone to abuse.
+We want to report only problematic mappings and permission problems that
+the user could have know as -EINVAL.
 
-The time spent in that driver callback counts as CPU idle time while
-it really is the driver running and there is not limit on how much
-time the callback can take, while doing costly things in the idle loop
-is generally avoided, because on wakeup the CPU needs to be available
-to the task needing it as soon as possible.  IOW, the callback
-potentially add unbounded latency to the CPU wakeup path.
+Let's not convert -EFAULT arising due to SIGBUS (or SIGSEGV) to
+-EINVAL, but instead indicate -EFAULT to user space. While we could also
+convert it to -ENOMEM, using -EFAULT looks more helpful when user space
+might want to troubleshoot what's going wrong: MADV_POPULATE_(READ|WRITE)
+is not part of an final Linux release and we can still adjust the behavior.
+
+Fixes: 4ca9b3859dac ("mm/madvise: introduce MADV_POPULATE_(READ|WRITE) to prefault page tables")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Jann Horn <jannh@google.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Richard Henderson <rth@twiddle.net>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Cc: Ram Pai <linuxram@us.ibm.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ mm/gup.c     | 7 +++++--
+ mm/madvise.c | 4 +++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/mm/gup.c b/mm/gup.c
+index 42b8b1fa6521..b94717977d17 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1558,9 +1558,12 @@ long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
+ 		gup_flags |= FOLL_WRITE;
+ 
+ 	/*
+-	 * See check_vma_flags(): Will return -EFAULT on incompatible mappings
+-	 * or with insufficient permissions.
++	 * We want to report -EINVAL instead of -EFAULT for any permission
++	 * problems or incompatible mappings.
+ 	 */
++	if (check_vma_flags(vma, gup_flags))
++		return -EINVAL;
++
+ 	return __get_user_pages(mm, start, nr_pages, gup_flags,
+ 				NULL, NULL, locked);
+ }
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 6d3d348b17f4..5c065bc8b5f6 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -862,10 +862,12 @@ static long madvise_populate(struct vm_area_struct *vma,
+ 			switch (pages) {
+ 			case -EINTR:
+ 				return -EINTR;
+-			case -EFAULT: /* Incompatible mappings / permissions. */
++			case -EINVAL: /* Incompatible mappings / permissions. */
+ 				return -EINVAL;
+ 			case -EHWPOISON:
+ 				return -EHWPOISON;
++			case -EFAULT: /* VM_FAULT_SIGBUS or VM_FAULT_SIGSEGV */
++				return -EFAULT;
+ 			default:
+ 				pr_warn_once("%s: unhandled return value: %ld\n",
+ 					     __func__, pages);
+-- 
+2.31.1
+
