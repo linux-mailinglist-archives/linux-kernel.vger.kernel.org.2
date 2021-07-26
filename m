@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39943D6097
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0003D60C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237502AbhGZPXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:23:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54394 "EHLO mail.kernel.org"
+        id S238005AbhGZPYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237461AbhGZPPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43E0F60FA0;
-        Mon, 26 Jul 2021 15:56:12 +0000 (UTC)
+        id S236715AbhGZPPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD7C60FA0;
+        Mon, 26 Jul 2021 15:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314972;
-        bh=ykBmaihdzcKrVAtunhV0Q2SmtFMw9ytREoNZZNF6fMs=;
+        s=korg; t=1627314797;
+        bh=xQJJQ9bJZhr3Gw/TvURQ8HvQku7hLuxr8t+SiBPmV2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NeeCdo4EUtZMrduE7xL3JvnQe3Non06TfOKDh8nQ8e8sZ+68Jbzrf8117gXYeVphj
-         jlPOxjcT3F3bQmUFC7Y9VYlZpM4ik4c2AR9Eb79jHenXlyLOzYdU2Z+FEW1jBaiqXc
-         niL/X6LPotmJrGD9W8rbAHGIDyICOdgRka37x5oI=
+        b=wrAvG5jFZA9QaDQgFpwu2LSHyuvzO2VT5tqJUYFue2Hkp9Gd/KpJiXrlkaXOy6Yh7
+         M2hdWFplph0fRyPnHxeSfRHmdqxKMzo2gmdQtD2LivI2dI2HhDWp6Uj5cYRETNbQmM
+         to28bkv7wiXsi+1tLplB0lDNla0hhtxyUlGtuaRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Cong Wang <cong.wang@bytedance.com>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 039/108] bpf, sockmap, tcp: sk_prot needs inuse_idx set for proc stats
+Subject: [PATCH 4.19 068/120] perf lzma: Close lzma stream on exit
 Date:   Mon, 26 Jul 2021 17:38:40 +0200
-Message-Id: <20210726153832.944650532@linuxfoundation.org>
+Message-Id: <20210726153834.569092820@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Fastabend <john.fastabend@gmail.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 228a4a7ba8e99bb9ef980b62f71e3be33f4aae69 ]
+[ Upstream commit f8cbb0f926ae1e1fb5f9e51614e5437560ed4039 ]
 
-The proc socket stats use sk_prot->inuse_idx value to record inuse sock
-stats. We currently do not set this correctly from sockmap side. The
-result is reading sock stats '/proc/net/sockstat' gives incorrect values.
-The socket counter is incremented correctly, but because we don't set the
-counter correctly when we replace sk_prot we may omit the decrement.
+ASan reports memory leaks when running:
 
-To get the correct inuse_idx value move the core_initcall that initializes
-the TCP proto handlers to late_initcall. This way it is initialized after
-TCP has the chance to assign the inuse_idx value from the register protocol
-handler.
+  # perf test "88: Check open filename arg using perf trace + vfs_getname"
 
-Fixes: 604326b41a6fb ("bpf, sockmap: convert to generic sk_msg interface")
-Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-Link: https://lore.kernel.org/bpf/20210712195546.423990-3-john.fastabend@gmail.com
+One of these is caused by the lzma stream never being closed inside
+lzma_decompress_to_file().
+
+This patch adds the missing lzma_end().
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: 80a32e5b498a7547 ("perf tools: Add lzma decompression support for kernel module")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/aaf50bdce7afe996cfc06e1bbb36e4a2a9b9db93.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/lzma.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 819255ee4e42..6a0c4326d9cf 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -636,7 +636,7 @@ static int __init tcp_bpf_v4_build_proto(void)
- 	tcp_bpf_rebuild_protos(tcp_bpf_prots[TCP_BPF_IPV4], &tcp_prot);
- 	return 0;
- }
--core_initcall(tcp_bpf_v4_build_proto);
-+late_initcall(tcp_bpf_v4_build_proto);
+diff --git a/tools/perf/util/lzma.c b/tools/perf/util/lzma.c
+index b1dd29a9d915..6c844110fc25 100644
+--- a/tools/perf/util/lzma.c
++++ b/tools/perf/util/lzma.c
+@@ -68,7 +68,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
  
- static void tcp_bpf_update_sk_prot(struct sock *sk, struct sk_psock *psock)
- {
+ 			if (ferror(infile)) {
+ 				pr_err("lzma: read error: %s\n", strerror(errno));
+-				goto err_fclose;
++				goto err_lzma_end;
+ 			}
+ 
+ 			if (feof(infile))
+@@ -82,7 +82,7 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 
+ 			if (writen(output_fd, buf_out, write_size) != write_size) {
+ 				pr_err("lzma: write error: %s\n", strerror(errno));
+-				goto err_fclose;
++				goto err_lzma_end;
+ 			}
+ 
+ 			strm.next_out  = buf_out;
+@@ -94,11 +94,13 @@ int lzma_decompress_to_file(const char *input, int output_fd)
+ 				break;
+ 
+ 			pr_err("lzma: failed %s\n", lzma_strerror(ret));
+-			goto err_fclose;
++			goto err_lzma_end;
+ 		}
+ 	}
+ 
+ 	err = 0;
++err_lzma_end:
++	lzma_end(&strm);
+ err_fclose:
+ 	fclose(infile);
+ 	return err;
 -- 
 2.30.2
 
