@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5EF3D621C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B9F3D633F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237098AbhGZPe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60956 "EHLO mail.kernel.org"
+        id S239349AbhGZPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236342AbhGZPTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2778E60F38;
-        Mon, 26 Jul 2021 16:00:07 +0000 (UTC)
+        id S231739AbhGZP2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:28:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B893360FD8;
+        Mon, 26 Jul 2021 16:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315207;
-        bh=DyuSOriBI8G8PrvE6t1AnzJgmXGSn3r853KEj8y3Egs=;
+        s=korg; t=1627315635;
+        bh=So/Opxk55/ZLsA9ubwU2FKPcNTpNpnQXdG1DynM+c0k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gc8qZGVolsIJbyQ0ZukqMwEBXOFPyFu7mz4k10GSRmfbU4rT48VhsVqnQYNWVg+xb
-         fHkcjdfUL7a81CvgvtXVrwRzEMSnL0Mrn1WP5TUKOv0fUu0fmwB9aVkejttZ9vkiJt
-         6BQv/vwqwsDpSpns5zcbdoR3rHHgMzyTFP98gH3Y=
+        b=huTvZyKGI8CV+j7eI010sVZ7gKjhQWrogaVb8Gsx4dIn+4T9Gye/EBXluk4Hb6s/n
+         1CCVyx6s9mIWVB65eSnbEs/XNCB98vV1QhrZZAj4doop/YvtOMkVOxeAwJpuQ51LU4
+         lBNpvIVAnsVLmq9NJhYdt8IMnFJXmT7HO7Kq2zMY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 105/108] btrfs: compression: dont try to compress if we dont have enough pages
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH 5.10 153/167] driver core: Prevent warning when removing a device link from unregistered consumer
 Date:   Mon, 26 Jul 2021 17:39:46 +0200
-Message-Id: <20210726153835.041101251@linuxfoundation.org>
+Message-Id: <20210726153844.545049021@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-commit f2165627319ffd33a6217275e5690b1ab5c45763 upstream
+commit e64daad660a0c9ace3acdc57099fffe5ed83f977 upstream.
 
-The early check if we should attempt compression does not take into
-account the number of input pages. It can happen that there's only one
-page, eg. a tail page after some ranges of the BTRFS_MAX_UNCOMPRESSED
-have been processed, or an isolated page that won't be converted to an
-inline extent.
+sysfs_remove_link() causes a warning if the parent directory does not
+exist. That can happen if the device link consumer has not been registered.
+So do not attempt sysfs_remove_link() in that case.
 
-The single page would be compressed but a later check would drop it
-again because the result size must be at least one block shorter than
-the input. That can never work with just one page.
-
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: 287905e68dd29 ("driver core: Expose device link details in sysfs")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Cc: stable@vger.kernel.org # 5.9+
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+Link: https://lore.kernel.org/r/20210716114408.17320-2-adrian.hunter@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/base/core.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -543,7 +543,7 @@ again:
- 	 * inode has not been flagged as nocompress.  This flag can
- 	 * change at any time if we discover bad compression ratios.
- 	 */
--	if (inode_need_compress(inode, start, end)) {
-+	if (nr_pages > 1 && inode_need_compress(inode, start, end)) {
- 		WARN_ON(pages);
- 		pages = kcalloc(nr_pages, sizeof(struct page *), GFP_NOFS);
- 		if (!pages) {
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -449,8 +449,10 @@ static void devlink_remove_symlinks(stru
+ 		return;
+ 	}
+ 
+-	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+-	sysfs_remove_link(&con->kobj, buf);
++	if (device_is_registered(con)) {
++		snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
++		sysfs_remove_link(&con->kobj, buf);
++	}
+ 	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
+ 	sysfs_remove_link(&sup->kobj, buf);
+ 	kfree(buf);
 
 
