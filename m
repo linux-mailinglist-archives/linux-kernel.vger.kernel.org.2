@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B9E3D5E02
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EC13D5D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235682AbhGZPFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:05:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44182 "EHLO mail.kernel.org"
+        id S235663AbhGZPBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:01:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41114 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235940AbhGZPEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:04:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6174860F22;
-        Mon, 26 Jul 2021 15:44:41 +0000 (UTC)
+        id S235657AbhGZPBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:01:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36BE460F38;
+        Mon, 26 Jul 2021 15:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314281;
-        bh=i0l7Aq9zWfmvb2H0kN6ua05cGBkegGNJe5evXlJ4cYI=;
+        s=korg; t=1627314137;
+        bh=featMGWMQCoXKfBCVveHerhaITxcXAT2LQ7lco8P0B4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oI3EvyiALl4lTLvXNRvmVoyFO9BNf9bkaKDPr4+NYh3YwawlFfxtDmlY7oFsZyjK1
-         szmGnKK3brLOYDUi4QiC/orMWyc4LDt3ukyicsW50HzHagfZHffN8jc7QhlRDbK7iW
-         7T7C9gCfYyKNZnGXqMXwKbKaNHPPGb/wRcnEj6h0=
+        b=o5/FP1CIzy2Cv11cQeaWMPIseDoDXLCbvk/OcFztN3jaqTIWvNZWPHZo9L9B1J2mN
+         5VyAXDLhVhbfUUzaO2fI6CEWWXxEarDpDIJMYd3Fg82aHPfipAzs4ceiDxjxv7TQf9
+         emeE9yumgemcxG0q49yHhEweG6SabUrD9pRHdIBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Sikorski <belegdol+github@gmail.com>
-Subject: [PATCH 4.9 49/60] USB: usb-storage: Add LaCie Rugged USB3-FW to IGNORE_UAS
-Date:   Mon, 26 Jul 2021 17:39:03 +0200
-Message-Id: <20210726153826.411063108@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Meerwald <pmeerw@pmeerw.net>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 46/47] iio: accel: bma180: Fix BMA25x bandwidth register values
+Date:   Mon, 26 Jul 2021 17:39:04 +0200
+Message-Id: <20210726153824.424251081@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
+References: <20210726153822.980271128@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,42 +43,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Sikorski <belegdol@gmail.com>
+From: Stephan Gerhold <stephan@gerhold.net>
 
-commit 6abf2fe6b4bf6e5256b80c5817908151d2d33e9f upstream.
+commit 8090d67421ddab0ae932abab5a60200598bf0bbb upstream
 
-LaCie Rugged USB3-FW appears to be incompatible with UAS. It generates
-errors like:
-[ 1151.582598] sd 14:0:0:0: tag#16 uas_eh_abort_handler 0 uas-tag 1 inflight: IN
-[ 1151.582602] sd 14:0:0:0: tag#16 CDB: Report supported operation codes a3 0c 01 12 00 00 00 00 02 00 00 00
-[ 1151.588594] scsi host14: uas_eh_device_reset_handler start
-[ 1151.710482] usb 2-4: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
-[ 1151.741398] scsi host14: uas_eh_device_reset_handler success
-[ 1181.785534] scsi host14: uas_eh_device_reset_handler start
+According to the BMA253 datasheet [1] and BMA250 datasheet [2] the
+bandwidth value for BMA25x should be set as 01xxx:
 
-Signed-off-by: Julian Sikorski <belegdol+github@gmail.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210720171910.36497-1-belegdol+github@gmail.com
+  "Settings 00xxx result in a bandwidth of 7.81 Hz; [...]
+   It is recommended [...] to use the range from ´01000b´ to ´01111b´
+   only in order to be compatible with future products."
+
+However, at the moment the drivers sets bandwidth values from 0 to 6,
+which is not recommended and always results into 7.81 Hz bandwidth
+according to the datasheet.
+
+Fix this by introducing a bw_offset = 8 = 01000b for BMA25x,
+so the additional bit is always set for BMA25x.
+
+[1]: https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bma253-ds000.pdf
+[2]: https://datasheet.octopart.com/BMA250-Bosch-datasheet-15540103.pdf
+
+Cc: Peter Meerwald <pmeerw@pmeerw.net>
+Fixes: 2017cff24cc0 ("iio:bma180: Add BMA250 chip support")
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Link: https://lore.kernel.org/r/20210526094408.34298-2-stephan@gerhold.net
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/iio/accel/bma180.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -55,6 +55,13 @@ UNUSUAL_DEV(0x059f, 0x105f, 0x0000, 0x99
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
- 		US_FL_NO_REPORT_OPCODES),
+--- a/drivers/iio/accel/bma180.c
++++ b/drivers/iio/accel/bma180.c
+@@ -49,7 +49,7 @@ struct bma180_part_info {
  
-+/* Reported-by: Julian Sikorski <belegdol@gmail.com> */
-+UNUSUAL_DEV(0x059f, 0x1061, 0x0000, 0x9999,
-+		"LaCie",
-+		"Rugged USB3-FW",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_IGNORE_UAS),
-+
- /*
-  * Apricorn USB3 dongle sometimes returns "USBSUSBSUSBS" in response to SCSI
-  * commands in UAS mode.  Observed with the 1.28 firmware; are there others?
+ 	u8 int_reset_reg, int_reset_mask;
+ 	u8 sleep_reg, sleep_mask;
+-	u8 bw_reg, bw_mask;
++	u8 bw_reg, bw_mask, bw_offset;
+ 	u8 scale_reg, scale_mask;
+ 	u8 power_reg, power_mask, lowpower_val;
+ 	u8 int_enable_reg, int_enable_mask;
+@@ -105,6 +105,7 @@ struct bma180_part_info {
+ 
+ #define BMA250_RANGE_MASK	GENMASK(3, 0) /* Range of accel values */
+ #define BMA250_BW_MASK		GENMASK(4, 0) /* Accel bandwidth */
++#define BMA250_BW_OFFSET	8
+ #define BMA250_SUSPEND_MASK	BIT(7) /* chip will sleep */
+ #define BMA250_LOWPOWER_MASK	BIT(6)
+ #define BMA250_DATA_INTEN_MASK	BIT(4)
+@@ -242,7 +243,8 @@ static int bma180_set_bw(struct bma180_d
+ 	for (i = 0; i < data->part_info->num_bw; ++i) {
+ 		if (data->part_info->bw_table[i] == val) {
+ 			ret = bma180_set_bits(data, data->part_info->bw_reg,
+-				data->part_info->bw_mask, i);
++				data->part_info->bw_mask,
++				i + data->part_info->bw_offset);
+ 			if (ret) {
+ 				dev_err(&data->client->dev,
+ 					"failed to set bandwidth\n");
+@@ -660,6 +662,7 @@ static const struct bma180_part_info bma
+ 		.sleep_mask = BMA250_SUSPEND_MASK,
+ 		.bw_reg = BMA250_BW_REG,
+ 		.bw_mask = BMA250_BW_MASK,
++		.bw_offset = BMA250_BW_OFFSET,
+ 		.scale_reg = BMA250_RANGE_REG,
+ 		.scale_mask = BMA250_RANGE_MASK,
+ 		.power_reg = BMA250_POWER_REG,
 
 
