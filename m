@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447293D6081
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14893D60BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236994AbhGZPWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:22:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53272 "EHLO mail.kernel.org"
+        id S237764AbhGZPYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237433AbhGZPPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237429AbhGZPPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:15:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E5C96103C;
-        Mon, 26 Jul 2021 15:55:11 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2DDD6103A;
+        Mon, 26 Jul 2021 15:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314912;
-        bh=sW7SGcGUK+wi0VMcl567g8So86fyoV8sLU5MilePZZ0=;
+        s=korg; t=1627314915;
+        bh=F7gFp9qI89Abc2fahNFodiNrBz2NiAJG9mFSs5TYVco=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tm/LUI73xAPzjur3rSGXlX2ws7teY7LQmhQhkpjjthdF0/Tvzmv8sbJ12h9786NOu
-         Pe/QOuOpirNg5LbAHtW6k9Ncceddgt7+F8hdjF465pAcUHPJIVim8PihVeNWwe4zM8
-         z2ZVbn7dip3+uyXIjB4UC74twGV4AUb8Opi5XdD4=
+        b=zfl9RBV1q54h87KT/N5ZZ2L/l8dJ4Nx6yncmpPt02QQMXwODjHu0x5gcbKIpV8h4v
+         3oXXAUNKs5PNTKb9W+hmsjh6xtP7EjA1PNtZUij8I8YV5eB4bf0OS3AVuxxagkWlWz
+         /lImHxAd+D5krwbx+pjUuhJiRXWd1E0CnX1jjWlQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        Shahjada Abul Husain <shahjada@chelsio.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 017/108] pwm: sprd: Ensure configuring period and duty_cycle isnt wrongly skipped
-Date:   Mon, 26 Jul 2021 17:38:18 +0200
-Message-Id: <20210726153832.248287847@linuxfoundation.org>
+Subject: [PATCH 5.4 018/108] cxgb4: fix IRQ free race during driver unload
+Date:   Mon, 26 Jul 2021 17:38:19 +0200
+Message-Id: <20210726153832.278019341@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 References: <20210726153831.696295003@linuxfoundation.org>
@@ -42,45 +42,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Shahjada Abul Husain <shahjada@chelsio.com>
 
-[ Upstream commit 65e2e6c1c20104ed19060a38f4edbf14e9f9a9a5 ]
+[ Upstream commit 015fe6fd29c4b9ac0f61b8c4455ef88e6018b9cc ]
 
-As the last call to sprd_pwm_apply() might have exited early if
-state->enabled was false, the values for period and duty_cycle stored in
-pwm->state might not have been written to hardware and it must be
-ensured that they are configured before enabling the PWM.
+IRQs are requested during driver's ndo_open() and then later
+freed up in disable_interrupts() during driver unload.
+A race exists where driver can set the CXGB4_FULL_INIT_DONE
+flag in ndo_open() after the disable_interrupts() in driver
+unload path checks it, and hence misses calling free_irq().
 
-Fixes: 8aae4b02e8a6 ("pwm: sprd: Add Spreadtrum PWM support")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fix by unregistering netdevice first and sync with driver's
+ndo_open(). This ensures disable_interrupts() checks the flag
+correctly and frees up the IRQs properly.
+
+Fixes: b37987e8db5f ("cxgb4: Disable interrupts and napi before unregistering netdev")
+Signed-off-by: Shahjada Abul Husain <shahjada@chelsio.com>
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-sprd.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ .../net/ethernet/chelsio/cxgb4/cxgb4_main.c    | 18 ++++++++++--------
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c |  3 +++
+ 2 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pwm/pwm-sprd.c b/drivers/pwm/pwm-sprd.c
-index be2394227423..892d853d48a1 100644
---- a/drivers/pwm/pwm-sprd.c
-+++ b/drivers/pwm/pwm-sprd.c
-@@ -180,13 +180,10 @@ static int sprd_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 			}
- 		}
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+index deb1c1f30107..21414a34a5b5 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
+@@ -2245,6 +2245,9 @@ static void detach_ulds(struct adapter *adap)
+ {
+ 	unsigned int i;
  
--		if (state->period != cstate->period ||
--		    state->duty_cycle != cstate->duty_cycle) {
--			ret = sprd_pwm_config(spc, pwm, state->duty_cycle,
--					      state->period);
--			if (ret)
--				return ret;
++	if (!is_uld(adap))
++		return;
++
+ 	mutex_lock(&uld_mutex);
+ 	list_del(&adap->list_node);
+ 
+@@ -6152,10 +6155,13 @@ static void remove_one(struct pci_dev *pdev)
+ 		 */
+ 		destroy_workqueue(adapter->workq);
+ 
+-		if (is_uld(adapter)) {
+-			detach_ulds(adapter);
+-			t4_uld_clean_up(adapter);
 -		}
-+		ret = sprd_pwm_config(spc, pwm, state->duty_cycle,
-+				      state->period);
-+		if (ret)
-+			return ret;
++		detach_ulds(adapter);
++
++		for_each_port(adapter, i)
++			if (adapter->port[i]->reg_state == NETREG_REGISTERED)
++				unregister_netdev(adapter->port[i]);
++
++		t4_uld_clean_up(adapter);
  
- 		sprd_pwm_write(spc, pwm->hwpwm, SPRD_PWM_ENABLE, 1);
- 	} else if (cstate->enabled) {
+ 		adap_free_hma_mem(adapter);
+ 
+@@ -6163,10 +6169,6 @@ static void remove_one(struct pci_dev *pdev)
+ 
+ 		cxgb4_free_mps_ref_entries(adapter);
+ 
+-		for_each_port(adapter, i)
+-			if (adapter->port[i]->reg_state == NETREG_REGISTERED)
+-				unregister_netdev(adapter->port[i]);
+-
+ 		debugfs_remove_recursive(adapter->debugfs_root);
+ 
+ 		if (!is_t4(adapter->params.chip))
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c
+index 86b528d8364c..971bdd70b6d6 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.c
+@@ -638,6 +638,9 @@ void t4_uld_clean_up(struct adapter *adap)
+ {
+ 	unsigned int i;
+ 
++	if (!is_uld(adap))
++		return;
++
+ 	mutex_lock(&uld_mutex);
+ 	for (i = 0; i < CXGB4_ULD_MAX; i++) {
+ 		if (!adap->uld[i].handle)
 -- 
 2.30.2
 
