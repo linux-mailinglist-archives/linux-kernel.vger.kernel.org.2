@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3224A3D5D7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A7B3D5DFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235624AbhGZPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:01:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40774 "EHLO mail.kernel.org"
+        id S236074AbhGZPE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235606AbhGZPBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:01:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C053860F37;
-        Mon, 26 Jul 2021 15:42:06 +0000 (UTC)
+        id S235909AbhGZPEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:04:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7B4960F42;
+        Mon, 26 Jul 2021 15:44:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314127;
-        bh=JfxhRDXSCZ5rsxg7bPn6nFqZE5y+4xJFrqfVZLUcIn8=;
+        s=korg; t=1627314276;
+        bh=sd2aTMpjI4iU8tDRJ3ZmtttyO479o40MpmPxDiTrEHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tkWVZP6a62eO/xh8TTUeGgjKXqDe0BE2YJ6cTqYVN9r7/ayEzxZeYK8pIziISHSqa
-         sBbNdRHT23/FRxJzn9RzOSQP8n4yOC8ijoB/VfJVbn2uqU0y/Q8ppei7EDohutHt6H
-         wSoa8d0zNfQEDZ99w0vA0nanVxy8vzm0G7Pd3Fdc=
+        b=L70hL7WtZ0y4ZWulkv3vZIpyjB8ny91P/Pe8kS4jbeD7R2S3b4BIfwIlYWAp7Dukb
+         TaFwHhx8x+mlkaVqmO/gpUyOHMn1m/8E06OECGoaN4x1MaXoTll6R5Ad0K+Z9pQ+Qh
+         QXz3VdLTKwQLnBnpzraVd0c2Lgzg2a/KwTABab7w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: [PATCH 4.4 43/47] media: ngene: Fix out-of-bounds bug in ngene_command_config_free_buf()
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.9 47/60] KVM: PPC: Book3S: Fix H_RTAS rets buffer overflow
 Date:   Mon, 26 Jul 2021 17:39:01 +0200
-Message-Id: <20210726153824.330703924@linuxfoundation.org>
+Message-Id: <20210726153826.349089218@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,82 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gustavo A. R. Silva <gustavoars@kernel.org>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-commit 8d4abca95ecc82fc8c41912fa0085281f19cc29f upstream.
+commit f62f3c20647ebd5fb6ecb8f0b477b9281c44c10a upstream.
 
-Fix an 11-year old bug in ngene_command_config_free_buf() while
-addressing the following warnings caught with -Warray-bounds:
+The kvmppc_rtas_hcall() sets the host rtas_args.rets pointer based on
+the rtas_args.nargs that was provided by the guest. That guest nargs
+value is not range checked, so the guest can cause the host rets pointer
+to be pointed outside the args array. The individual rtas function
+handlers check the nargs and nrets values to ensure they are correct,
+but if they are not, the handlers store a -3 (0xfffffffd) failure
+indication in rets[0] which corrupts host memory.
 
-arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
+Fix this by testing up front whether the guest supplied nargs and nret
+would exceed the array size, and fail the hcall directly without storing
+a failure indication to rets[0].
 
-The problem is that the original code is trying to copy 6 bytes of
-data into a one-byte size member _config_ of the wrong structue
-FW_CONFIGURE_BUFFERS, in a single call to memcpy(). This causes a
-legitimate compiler warning because memcpy() overruns the length
-of &com.cmd.ConfigureBuffers.config. It seems that the right
-structure is FW_CONFIGURE_FREE_BUFFERS, instead, because it contains
-6 more members apart from the header _hdr_. Also, the name of
-the function ngene_command_config_free_buf() suggests that the actual
-intention is to ConfigureFreeBuffers, instead of ConfigureBuffers
-(which takes place in the function ngene_command_config_buf(), above).
+Also expand on a comment about why we kill the guest and try not to
+return errors directly if we have a valid rets[0] pointer.
 
-Fix this by enclosing those 6 members of struct FW_CONFIGURE_FREE_BUFFERS
-into new struct config, and use &com.cmd.ConfigureFreeBuffers.config as
-the destination address, instead of &com.cmd.ConfigureBuffers.config,
-when calling memcpy().
-
-This also helps with the ongoing efforts to globally enable
--Warray-bounds and get us closer to being able to tighten the
-FORTIFY_SOURCE routines on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Fixes: dae52d009fc9 ("V4L/DVB: ngene: Initial check-in")
-Cc: stable@vger.kernel.org
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Link: https://lore.kernel.org/linux-hardening/20210420001631.GA45456@embeddedor/
+Fixes: 8e591cb72047 ("KVM: PPC: Book3S: Add infrastructure to implement kernel-side RTAS calls")
+Cc: stable@vger.kernel.org # v3.10+
+Reported-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/pci/ngene/ngene-core.c |    2 +-
- drivers/media/pci/ngene/ngene.h      |   14 ++++++++------
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ arch/powerpc/kvm/book3s_rtas.c |   25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
---- a/drivers/media/pci/ngene/ngene-core.c
-+++ b/drivers/media/pci/ngene/ngene-core.c
-@@ -402,7 +402,7 @@ static int ngene_command_config_free_buf
+--- a/arch/powerpc/kvm/book3s_rtas.c
++++ b/arch/powerpc/kvm/book3s_rtas.c
+@@ -230,6 +230,17 @@ int kvmppc_rtas_hcall(struct kvm_vcpu *v
+ 	 * value so we can restore it on the way out.
+ 	 */
+ 	orig_rets = args.rets;
++	if (be32_to_cpu(args.nargs) >= ARRAY_SIZE(args.args)) {
++		/*
++		 * Don't overflow our args array: ensure there is room for
++		 * at least rets[0] (even if the call specifies 0 nret).
++		 *
++		 * Each handler must then check for the correct nargs and nret
++		 * values, but they may always return failure in rets[0].
++		 */
++		rc = -EINVAL;
++		goto fail;
++	}
+ 	args.rets = &args.args[be32_to_cpu(args.nargs)];
  
- 	com.cmd.hdr.Opcode = CMD_CONFIGURE_FREE_BUFFER;
- 	com.cmd.hdr.Length = 6;
--	memcpy(&com.cmd.ConfigureBuffers.config, config, 6);
-+	memcpy(&com.cmd.ConfigureFreeBuffers.config, config, 6);
- 	com.in_len = 6;
- 	com.out_len = 0;
- 
---- a/drivers/media/pci/ngene/ngene.h
-+++ b/drivers/media/pci/ngene/ngene.h
-@@ -407,12 +407,14 @@ enum _BUFFER_CONFIGS {
- 
- struct FW_CONFIGURE_FREE_BUFFERS {
- 	struct FW_HEADER hdr;
--	u8   UVI1_BufferLength;
--	u8   UVI2_BufferLength;
--	u8   TVO_BufferLength;
--	u8   AUD1_BufferLength;
--	u8   AUD2_BufferLength;
--	u8   TVA_BufferLength;
-+	struct {
-+		u8   UVI1_BufferLength;
-+		u8   UVI2_BufferLength;
-+		u8   TVO_BufferLength;
-+		u8   AUD1_BufferLength;
-+		u8   AUD2_BufferLength;
-+		u8   TVA_BufferLength;
-+	} __packed config;
- } __attribute__ ((__packed__));
- 
- struct FW_CONFIGURE_UART {
+ 	mutex_lock(&vcpu->kvm->arch.rtas_token_lock);
+@@ -257,9 +268,17 @@ int kvmppc_rtas_hcall(struct kvm_vcpu *v
+ fail:
+ 	/*
+ 	 * We only get here if the guest has called RTAS with a bogus
+-	 * args pointer. That means we can't get to the args, and so we
+-	 * can't fail the RTAS call. So fail right out to userspace,
+-	 * which should kill the guest.
++	 * args pointer or nargs/nret values that would overflow the
++	 * array. That means we can't get to the args, and so we can't
++	 * fail the RTAS call. So fail right out to userspace, which
++	 * should kill the guest.
++	 *
++	 * SLOF should actually pass the hcall return value from the
++	 * rtas handler call in r3, so enter_rtas could be modified to
++	 * return a failure indication in r3 and we could return such
++	 * errors to the guest rather than failing to host userspace.
++	 * However old guests that don't test for failure could then
++	 * continue silently after errors, so for now we won't do this.
+ 	 */
+ 	return rc;
+ }
 
 
