@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDDD3D5DF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 358DD3D5DFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236054AbhGZPEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43810 "EHLO mail.kernel.org"
+        id S236007AbhGZPEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:04:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235666AbhGZPEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:04:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 819A360F22;
-        Mon, 26 Jul 2021 15:44:27 +0000 (UTC)
+        id S235887AbhGZPEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:04:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12F1C60F22;
+        Mon, 26 Jul 2021 15:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314268;
-        bh=Pz5znl3oCRXX/Ot8HGsKGVlif7ze/TLXcSlFz9LJoDk=;
+        s=korg; t=1627314273;
+        bh=sxirVD39f+yJa6iZpc/b5gmz//oECnr8est8nIyquKM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sdsmBb38ww9I2w1Mpg0J/dRBn7AZ+aAeZLi0Pw52+OdJYzUGh+evp0bj/sGxvLMDD
-         0KazLB0kZcaabjJrtefY0Wew2ywfVRrNH+jECfFYrSHSEr2vwCsq7D1oOaLzrNJa6j
-         yHe4xCnPuP9rM04dHUzWM31fxkjN2ZRB32qI/nG8=
+        b=KAqXsCPz8uyb+CNsje9TeFGAxvPlaR0rrXwA/HMrTnrFZDrQioFTqNtHQtsP6e7vy
+         VxTUZ8zY5eRWfzN9GeeLruKxy1IsHjzsU3MRSvOg+w9eexN7nlL5XtABhIjlT4ag4S
+         pYxseEemkwtD9zStnzbVOMkmNshN+jUM0NvTKWMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 45/60] ALSA: sb: Fix potential ABBA deadlock in CSP driver
-Date:   Mon, 26 Jul 2021 17:38:59 +0200
-Message-Id: <20210726153826.286117368@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.9 46/60] xhci: Fix lost USB 2 remote wake
+Date:   Mon, 26 Jul 2021 17:39:00 +0200
+Message-Id: <20210726153826.319253071@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
 References: <20210726153824.868160836@linuxfoundation.org>
@@ -39,75 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-commit 1c2b9519159b470ef24b2638f4794e86e2952ab7 upstream.
+commit 72f68bf5c756f5ce1139b31daae2684501383ad5 upstream.
 
-SB16 CSP driver may hit potentially a typical ABBA deadlock in two
-code paths:
+There's a small window where a USB 2 remote wake may be left unhandled
+due to a race between hub thread and xhci port event interrupt handler.
 
- In snd_sb_csp_stop():
-     spin_lock_irqsave(&p->chip->mixer_lock, flags);
-     spin_lock(&p->chip->reg_lock);
+When the resume event is detected in the xhci interrupt handler it kicks
+the hub timer, which should move the port from resume to U0 once resume
+has been signalled for long enough.
 
- In snd_sb_csp_load():
-     spin_lock_irqsave(&p->chip->reg_lock, flags);
-     spin_lock(&p->chip->mixer_lock);
+To keep the hub "thread" running we set a bus_state->resuming_ports flag.
+This flag makes sure hub timer function kicks itself.
 
-Also the similar pattern is seen in snd_sb_csp_start().
+checking this flag was not properly protected by the spinlock. Flag was
+copied to a local variable before lock was taken. The local variable was
+then checked later with spinlock held.
 
-Although the practical impact is very small (those states aren't
-triggered in the same running state and this happens only on a real
-hardware, decades old ISA sound boards -- which must be very difficult
-to find nowadays), it's a real scenario and has to be fixed.
+If interrupt is handled right after copying the flag to the local variable
+we end up stopping the hub thread before it can handle the USB 2 resume.
 
-This patch addresses those deadlocks by splitting the locks in
-snd_sb_csp_start() and snd_sb_csp_stop() for avoiding the nested
-locks.
+CPU0					CPU1
+(hub thread)				(xhci event handler)
 
-Reported-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+xhci_hub_status_data()
+status = bus_state->resuming_ports;
+					<Interrupt>
+					handle_port_status()
+					spin_lock()
+					bus_state->resuming_ports = 1
+					set_flag(HCD_FLAG_POLL_RH)
+					spin_unlock()
+spin_lock()
+if (!status)
+  clear_flag(HCD_FLAG_POLL_RH)
+spin_unlock()
+
+Fix this by taking the lock a bit earlier so that it covers
+the resuming_ports flag copy in the hub thread
+
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com
-Link: https://lore.kernel.org/r/20210716132723.13216-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210715150651.1996099-2-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/isa/sb/sb16_csp.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/host/xhci-hub.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -828,6 +828,7 @@ static int snd_sb_csp_start(struct snd_s
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+--- a/drivers/usb/host/xhci-hub.c
++++ b/drivers/usb/host/xhci-hub.c
+@@ -1292,11 +1292,12 @@ int xhci_hub_status_data(struct usb_hcd
+ 	 * Inform the usbcore about resume-in-progress by returning
+ 	 * a non-zero value even if there are no status changes.
+ 	 */
++	spin_lock_irqsave(&xhci->lock, flags);
++
+ 	status = bus_state->resuming_ports;
  
- 	spin_lock(&p->chip->reg_lock);
- 	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
-@@ -867,6 +868,7 @@ static int snd_sb_csp_start(struct snd_s
- 	spin_unlock(&p->chip->reg_lock);
+ 	mask = PORT_CSC | PORT_PEC | PORT_OCC | PORT_PLC | PORT_WRC | PORT_CEC;
  
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
-@@ -892,6 +894,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
- 
- 	spin_lock(&p->chip->reg_lock);
- 	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
-@@ -906,6 +909,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	spin_unlock(&p->chip->reg_lock);
- 
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+-	spin_lock_irqsave(&xhci->lock, flags);
+ 	/* For each port, did anything change?  If so, set that bit in buf. */
+ 	for (i = 0; i < max_ports; i++) {
+ 		temp = readl(port_array[i]);
 
 
