@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA7C3D62E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1467B3D60A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhGZPkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:40:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38328 "EHLO mail.kernel.org"
+        id S237612AbhGZPXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:23:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237517AbhGZPXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 713F260E09;
-        Mon, 26 Jul 2021 16:03:44 +0000 (UTC)
+        id S237509AbhGZPP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D699C60F38;
+        Mon, 26 Jul 2021 15:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315425;
-        bh=LPP8zhnTPUKBIIVr4a3IoZDiohNV44UUC0vtOWXStPY=;
+        s=korg; t=1627314986;
+        bh=aMoonRA/4ByvyhI0/35s9My9jJiv7jujF6m3ZQ7xz7Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=138fX2wh9/RPCWa+nrqXOzp5o6eofTH91vDaVe9jGF/XqDdZ9jh+osrfJsh9QheSx
-         DFUQ6lh26SBYYtc534D2z99e9p/gWq+MjabtVf4MC28tTRKwZHT0ej/HYVWhNFybR0
-         VmHMc3nUJF/XemEm/rEXQERtZIi5IeVLCjiOmglI=
+        b=E7Dy5ATYtoGmpk2xrAfHt1FGjgifg/SJWbsI67E21AmoshVtDPafK4S6cBTIPbuG9
+         Jv9bavwxWAydbKQwOCDSaOwYhy22OLRWkJafKzLXVFHMR1qjDvkCnuwLEYP/ODDgVK
+         Y8uDoYtBTfEsltr+2zIML1cjUyu3VPQc87Uw6MuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        stable@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 091/167] ipv6: fix another slab-out-of-bounds in fib6_nh_flush_exceptions
+Subject: [PATCH 5.4 043/108] net: decnet: Fix sleeping inside in af_decnet
 Date:   Mon, 26 Jul 2021 17:38:44 +0200
-Message-Id: <20210726153842.454700281@linuxfoundation.org>
+Message-Id: <20210726153833.070963607@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Yajun Deng <yajun.deng@linux.dev>
 
-[ Upstream commit 8fb4792f091e608a0a1d353dfdf07ef55a719db5 ]
+[ Upstream commit 5f119ba1d5771bbf46d57cff7417dcd84d3084ba ]
 
-While running the self-tests on a KASAN enabled kernel, I observed a
-slab-out-of-bounds splat very similar to the one reported in
-commit 821bbf79fe46 ("ipv6: Fix KASAN: slab-out-of-bounds Read in
- fib6_nh_flush_exceptions").
+The release_sock() is blocking function, it would change the state
+after sleeping. use wait_woken() instead.
 
-We additionally need to take care of fib6_metrics initialization
-failure when the caller provides an nh.
-
-The fix is similar, explicitly free the route instead of calling
-fib6_info_release on a half-initialized object.
-
-Fixes: f88d8ea67fbdb ("ipv6: Plumb support for nexthop object in a fib6_info")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/route.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/decnet/af_decnet.c | 27 ++++++++++++---------------
+ 1 file changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index ccff4738313c..62db3c98424b 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -3640,7 +3640,7 @@ static struct fib6_info *ip6_route_info_create(struct fib6_config *cfg,
- 		err = PTR_ERR(rt->fib6_metrics);
- 		/* Do not leave garbage there. */
- 		rt->fib6_metrics = (struct dst_metrics *)&dst_default_metrics;
--		goto out;
-+		goto out_free;
- 	}
+diff --git a/net/decnet/af_decnet.c b/net/decnet/af_decnet.c
+index 3349ea81f901..b9b847dc097c 100644
+--- a/net/decnet/af_decnet.c
++++ b/net/decnet/af_decnet.c
+@@ -815,7 +815,7 @@ static int dn_auto_bind(struct socket *sock)
+ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ {
+ 	struct dn_scp *scp = DN_SK(sk);
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	int err;
  
- 	if (cfg->fc_flags & RTF_ADDRCONF)
+ 	if (scp->state != DN_CR)
+@@ -825,11 +825,11 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ 	scp->segsize_loc = dst_metric_advmss(__sk_dst_get(sk));
+ 	dn_send_conn_conf(sk, allocation);
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		if (scp->state == DN_CC)
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 		lock_sock(sk);
+ 		err = 0;
+ 		if (scp->state == DN_RUN)
+@@ -843,9 +843,8 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ 		err = -EAGAIN;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ 	if (err == 0) {
+ 		sk->sk_socket->state = SS_CONNECTED;
+ 	} else if (scp->state != DN_CC) {
+@@ -857,7 +856,7 @@ static int dn_confirm_accept(struct sock *sk, long *timeo, gfp_t allocation)
+ static int dn_wait_run(struct sock *sk, long *timeo)
+ {
+ 	struct dn_scp *scp = DN_SK(sk);
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	int err = 0;
+ 
+ 	if (scp->state == DN_RUN)
+@@ -866,11 +865,11 @@ static int dn_wait_run(struct sock *sk, long *timeo)
+ 	if (!*timeo)
+ 		return -EALREADY;
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		if (scp->state == DN_CI || scp->state == DN_CC)
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 		lock_sock(sk);
+ 		err = 0;
+ 		if (scp->state == DN_RUN)
+@@ -884,9 +883,8 @@ static int dn_wait_run(struct sock *sk, long *timeo)
+ 		err = -ETIMEDOUT;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ out:
+ 	if (err == 0) {
+ 		sk->sk_socket->state = SS_CONNECTED;
+@@ -1031,16 +1029,16 @@ static void dn_user_copy(struct sk_buff *skb, struct optdata_dn *opt)
+ 
+ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
+ {
+-	DEFINE_WAIT(wait);
++	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	struct sk_buff *skb = NULL;
+ 	int err = 0;
+ 
+-	prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
++	add_wait_queue(sk_sleep(sk), &wait);
+ 	for(;;) {
+ 		release_sock(sk);
+ 		skb = skb_dequeue(&sk->sk_receive_queue);
+ 		if (skb == NULL) {
+-			*timeo = schedule_timeout(*timeo);
++			*timeo = wait_woken(&wait, TASK_INTERRUPTIBLE, *timeo);
+ 			skb = skb_dequeue(&sk->sk_receive_queue);
+ 		}
+ 		lock_sock(sk);
+@@ -1055,9 +1053,8 @@ static struct sk_buff *dn_wait_for_connect(struct sock *sk, long *timeo)
+ 		err = -EAGAIN;
+ 		if (!*timeo)
+ 			break;
+-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+ 	}
+-	finish_wait(sk_sleep(sk), &wait);
++	remove_wait_queue(sk_sleep(sk), &wait);
+ 
+ 	return skb == NULL ? ERR_PTR(err) : skb;
+ }
 -- 
 2.30.2
 
