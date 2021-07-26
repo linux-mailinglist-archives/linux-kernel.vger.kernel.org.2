@@ -2,211 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974BD3D6468
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B97F3D6469
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239773AbhGZP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:58:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:54952 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237333AbhGZPmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:42:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE4D51042;
-        Mon, 26 Jul 2021 09:22:39 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2938A3F66F;
-        Mon, 26 Jul 2021 09:22:38 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 17:22:35 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
-        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Subject: Re: [PATCH v3 3/3] sched: Introduce RLIMIT_UCLAMP
-Message-ID: <20210726162235.5x6prj2jlj2wmdig@e107158-lin.cambridge.arm.com>
-References: <20210623123441.592348-1-qperret@google.com>
- <20210623123441.592348-4-qperret@google.com>
- <20210701105014.ewrg4nt5sn3eg57o@e107158-lin.cambridge.arm.com>
- <YN2vj8OeZI7PBdzU@google.com>
- <20210701175248.qxnoo6cu7ts2dpys@e107158-lin.cambridge.arm.com>
- <YN8GaVjWXJp5IL06@google.com>
- <20210708113602.sjb4krzvs7xjmtt4@e107158-lin.cambridge.arm.com>
- <YPVltxfROeSYuahM@google.com>
+        id S239781AbhGZP6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:58:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33917 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238484AbhGZPnJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:43:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627316617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Nj+h4/4VsJBw8NoOPDhsktaJ3nLgphpInIGG3Nj7Jo=;
+        b=c/BCdBImwKUqJVeSNIvmCFXWn0dlAUdFU+IiG7mECg9bwmh4DyCIinVdaZNUO/76+kJs3j
+        5bZoBkzD/Ax46CA+l8Hl2OIiXqcf1IMXFIwLXP8r2CwHC8VjpgbBBRcNthk/oN4vKYe31X
+        qVMTBQimk11nUSi7IuRr96+TneRvowg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-122-ZQ_Oyt4yMPyiMCgLBheOCA-1; Mon, 26 Jul 2021 12:23:36 -0400
+X-MC-Unique: ZQ_Oyt4yMPyiMCgLBheOCA-1
+Received: by mail-ej1-f69.google.com with SMTP id qf6-20020a1709077f06b029057e66b6665aso1278596ejc.18
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:23:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9Nj+h4/4VsJBw8NoOPDhsktaJ3nLgphpInIGG3Nj7Jo=;
+        b=nDQaaAWzG0lzzDcSYJCN8wSkUu6t4av8rFYMTK/N5Id9Jge/o9haQIM3ZyTiOj9nL+
+         RUwXCq0ldQ2Dy35C5uNT0JWhfB0OaZzfjc+R+4gfq0VTjdxEkHI+YpGeuUlvjgZW7hPu
+         AteR8HIuKB7TJLXQZ2ZRN+IKVf1S9WBIeuUA95JKKIWLchAuYcRqwAlrI+xraFWacbyK
+         UKXH4Qp0yqvhQDr1VWov+RLJ9KH0jYM3n/IbMwHpyKrN4fh2gBU/wPGPs82M5mswoYQR
+         lKqSo/X8BHQiBGLCssP+fUl2bFg8TEAfGUXdHdZVvN2SUr/SLqG0aWMANxzRoHI9mTYb
+         55aw==
+X-Gm-Message-State: AOAM533VJTaUBqcu7nvmILXZ/9wfwMtThsrrgidRBlyt8FpH2IZ5jhdA
+        uhGPg5FMdrKpHMWuYvdk18Z9GloIBUzOtkS2FHLRG3lFcuJtez+7tbDwDofOV3qd8rcmQJnjuKn
+        lTY/wId0Ar+zkJ3275I8W0LYH
+X-Received: by 2002:aa7:c804:: with SMTP id a4mr22440526edt.294.1627316613432;
+        Mon, 26 Jul 2021 09:23:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGHy5wxn/lgfV+65o0go+l6MLROW3yl2BxKDRa0/k6Z/lp5J3xhzAGjqYkm5ziouG1YVEHUg==
+X-Received: by 2002:aa7:c804:: with SMTP id a4mr22440487edt.294.1627316613147;
+        Mon, 26 Jul 2021 09:23:33 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id qo26sm53375ejb.65.2021.07.26.09.23.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 09:23:32 -0700 (PDT)
+Subject: Re: [PATCH] KVM: const-ify all relevant uses of struct
+ kvm_memory_slot
+To:     Hamza Mahfooz <someguy@effective-light.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+References: <20210713023338.57108-1-someguy@effective-light.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <3678a043-9a77-ccee-04f9-6cf4627c450d@redhat.com>
+Date:   Mon, 26 Jul 2021 18:23:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YPVltxfROeSYuahM@google.com>
+In-Reply-To: <20210713023338.57108-1-someguy@effective-light.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Quentin
-
-On 07/19/21 12:44, Quentin Perret wrote:
-> Hi Qais,
+On 13/07/21 04:33, Hamza Mahfooz wrote:
+> As alluded to in commit f36f3f2846b5 ("KVM: add "new" argument to
+> kvm_arch_commit_memory_region"), a bunch of other places where struct
+> kvm_memory_slot is used, needs to be refactored to preserve the
+> "const"ness of struct kvm_memory_slot across-the-board.
 > 
-> On Thursday 08 Jul 2021 at 12:36:02 (+0100), Qais Yousef wrote:
-> > Hi Quentin
-> > 
-> > Apologies about the delayed response.
+> Signed-off-by: Hamza Mahfooz <someguy@effective-light.com>
+
+Queued, thanks.
+
+Paolo
+
+> ---
+>   arch/x86/include/asm/kvm_host.h |  4 +--
+>   arch/x86/kvm/mmu/mmu.c          | 58 ++++++++++++++++++---------------
+>   arch/x86/kvm/mmu/mmu_internal.h |  4 +--
+>   arch/x86/kvm/mmu/tdp_mmu.c      |  7 ++--
+>   arch/x86/kvm/mmu/tdp_mmu.h      |  6 ++--
+>   arch/x86/kvm/x86.c              |  7 ++--
+>   6 files changed, 44 insertions(+), 42 deletions(-)
 > 
-> It's my turn to apologize -- the last few days have been a pretty busy :/
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 974cbfb1eefe..a195e1c32018 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1536,12 +1536,12 @@ void kvm_mmu_uninit_vm(struct kvm *kvm);
+>   void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu);
+>   void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
+>   void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+> -				      struct kvm_memory_slot *memslot,
+> +				      const struct kvm_memory_slot *memslot,
+>   				      int start_level);
+>   void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>   				   const struct kvm_memory_slot *memslot);
+>   void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+> -				   struct kvm_memory_slot *memslot);
+> +				   const struct kvm_memory_slot *memslot);
+>   void kvm_mmu_zap_all(struct kvm *kvm);
+>   void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen);
+>   unsigned long kvm_mmu_calculate_default_mmu_pages(struct kvm *kvm);
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 845d114ae075..39ee8df5cc1f 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -784,7 +784,7 @@ static struct kvm_lpage_info *lpage_info_slot(gfn_t gfn,
+>   	return &slot->arch.lpage_info[level - 2][idx];
+>   }
+>   
+> -static void update_gfn_disallow_lpage_count(struct kvm_memory_slot *slot,
+> +static void update_gfn_disallow_lpage_count(const struct kvm_memory_slot *slot,
+>   					    gfn_t gfn, int count)
+>   {
+>   	struct kvm_lpage_info *linfo;
+> @@ -797,12 +797,12 @@ static void update_gfn_disallow_lpage_count(struct kvm_memory_slot *slot,
+>   	}
+>   }
+>   
+> -void kvm_mmu_gfn_disallow_lpage(struct kvm_memory_slot *slot, gfn_t gfn)
+> +void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn)
+>   {
+>   	update_gfn_disallow_lpage_count(slot, gfn, 1);
+>   }
+>   
+> -void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn)
+> +void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn)
+>   {
+>   	update_gfn_disallow_lpage_count(slot, gfn, -1);
+>   }
+> @@ -989,7 +989,7 @@ static void pte_list_remove(struct kvm_rmap_head *rmap_head, u64 *sptep)
+>   }
+>   
+>   static struct kvm_rmap_head *__gfn_to_rmap(gfn_t gfn, int level,
+> -					   struct kvm_memory_slot *slot)
+> +					   const struct kvm_memory_slot *slot)
+>   {
+>   	unsigned long idx;
+>   
+> @@ -1216,7 +1216,7 @@ static bool spte_wrprot_for_clear_dirty(u64 *sptep)
+>    * Returns true iff any D or W bits were cleared.
+>    */
+>   static bool __rmap_clear_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> -			       struct kvm_memory_slot *slot)
+> +			       const struct kvm_memory_slot *slot)
+>   {
+>   	u64 *sptep;
+>   	struct rmap_iterator iter;
+> @@ -1375,7 +1375,7 @@ static bool rmap_write_protect(struct kvm_vcpu *vcpu, u64 gfn)
+>   }
+>   
+>   static bool kvm_zap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> -			  struct kvm_memory_slot *slot)
+> +			  const struct kvm_memory_slot *slot)
+>   {
+>   	u64 *sptep;
+>   	struct rmap_iterator iter;
+> @@ -1440,7 +1440,7 @@ static bool kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>   
+>   struct slot_rmap_walk_iterator {
+>   	/* input fields. */
+> -	struct kvm_memory_slot *slot;
+> +	const struct kvm_memory_slot *slot;
+>   	gfn_t start_gfn;
+>   	gfn_t end_gfn;
+>   	int start_level;
+> @@ -1467,16 +1467,20 @@ rmap_walk_init_level(struct slot_rmap_walk_iterator *iterator, int level)
+>   
+>   static void
+>   slot_rmap_walk_init(struct slot_rmap_walk_iterator *iterator,
+> -		    struct kvm_memory_slot *slot, int start_level,
+> +		    const struct kvm_memory_slot *slot, int start_level,
+>   		    int end_level, gfn_t start_gfn, gfn_t end_gfn)
+>   {
+> -	iterator->slot = slot;
+> -	iterator->start_level = start_level;
+> -	iterator->end_level = end_level;
+> -	iterator->start_gfn = start_gfn;
+> -	iterator->end_gfn = end_gfn;
+> +	struct slot_rmap_walk_iterator iter = {
+> +		.slot = slot,
+> +		.start_gfn = start_gfn,
+> +		.end_gfn = end_gfn,
+> +		.start_level = start_level,
+> +		.end_level = end_level,
+> +	};
+> +
+> +	rmap_walk_init_level(&iter, iterator->start_level);
+>   
+> -	rmap_walk_init_level(iterator, iterator->start_level);
+> +	memcpy(iterator, &iter, sizeof(struct slot_rmap_walk_iterator));
+>   }
+>   
+>   static bool slot_rmap_walk_okay(struct slot_rmap_walk_iterator *iterator)
+> @@ -5274,12 +5278,13 @@ void kvm_configure_mmu(bool enable_tdp, int tdp_max_root_level,
+>   EXPORT_SYMBOL_GPL(kvm_configure_mmu);
+>   
+>   /* The return value indicates if tlb flush on all vcpus is needed. */
+> -typedef bool (*slot_level_handler) (struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+> -				    struct kvm_memory_slot *slot);
+> +typedef bool (*slot_level_handler) (struct kvm *kvm,
+> +				    struct kvm_rmap_head *rmap_head,
+> +				    const struct kvm_memory_slot *slot);
+>   
+>   /* The caller should hold mmu-lock before calling this function. */
+>   static __always_inline bool
+> -slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
+> +slot_handle_level_range(struct kvm *kvm, const struct kvm_memory_slot *memslot,
+>   			slot_level_handler fn, int start_level, int end_level,
+>   			gfn_t start_gfn, gfn_t end_gfn, bool flush_on_yield,
+>   			bool flush)
+> @@ -5306,7 +5311,7 @@ slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
+>   }
+>   
+>   static __always_inline bool
+> -slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
+> +slot_handle_level(struct kvm *kvm, const struct kvm_memory_slot *memslot,
+>   		  slot_level_handler fn, int start_level, int end_level,
+>   		  bool flush_on_yield)
+>   {
+> @@ -5317,7 +5322,7 @@ slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
+>   }
+>   
+>   static __always_inline bool
+> -slot_handle_leaf(struct kvm *kvm, struct kvm_memory_slot *memslot,
+> +slot_handle_leaf(struct kvm *kvm, const struct kvm_memory_slot *memslot,
+>   		 slot_level_handler fn, bool flush_on_yield)
+>   {
+>   	return slot_handle_level(kvm, memslot, fn, PG_LEVEL_4K,
+> @@ -5576,7 +5581,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+>   				if (start >= end)
+>   					continue;
+>   
+> -				flush = slot_handle_level_range(kvm, memslot,
+> +				flush = slot_handle_level_range(kvm,
+> +						(const struct kvm_memory_slot *) memslot,
+>   						kvm_zap_rmapp, PG_LEVEL_4K,
+>   						KVM_MAX_HUGEPAGE_LEVEL, start,
+>   						end - 1, true, flush);
+> @@ -5604,13 +5610,13 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+>   
+>   static bool slot_rmap_write_protect(struct kvm *kvm,
+>   				    struct kvm_rmap_head *rmap_head,
+> -				    struct kvm_memory_slot *slot)
+> +				    const struct kvm_memory_slot *slot)
+>   {
+>   	return __rmap_write_protect(kvm, rmap_head, false);
+>   }
+>   
+>   void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+> -				      struct kvm_memory_slot *memslot,
+> +				      const struct kvm_memory_slot *memslot,
+>   				      int start_level)
+>   {
+>   	bool flush = false;
+> @@ -5646,7 +5652,7 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+>   
+>   static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
+>   					 struct kvm_rmap_head *rmap_head,
+> -					 struct kvm_memory_slot *slot)
+> +					 const struct kvm_memory_slot *slot)
+>   {
+>   	u64 *sptep;
+>   	struct rmap_iterator iter;
+> @@ -5685,10 +5691,8 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
+>   }
+>   
+>   void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+> -				   const struct kvm_memory_slot *memslot)
+> +				   const struct kvm_memory_slot *slot)
+>   {
+> -	/* FIXME: const-ify all uses of struct kvm_memory_slot.  */
+> -	struct kvm_memory_slot *slot = (struct kvm_memory_slot *)memslot;
+>   	bool flush = false;
+>   
+>   	if (kvm_memslots_have_rmaps(kvm)) {
+> @@ -5724,7 +5728,7 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
+>   }
+>   
+>   void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+> -				   struct kvm_memory_slot *memslot)
+> +				   const struct kvm_memory_slot *memslot)
+>   {
+>   	bool flush = false;
+>   
+> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+> index 35567293c1fd..ee4ad9c99219 100644
+> --- a/arch/x86/kvm/mmu/mmu_internal.h
+> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+> @@ -124,8 +124,8 @@ static inline bool is_nx_huge_page_enabled(void)
+>   
+>   int mmu_try_to_unsync_pages(struct kvm_vcpu *vcpu, gfn_t gfn, bool can_unsync);
+>   
+> -void kvm_mmu_gfn_disallow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
+> -void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
+> +void kvm_mmu_gfn_disallow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
+> +void kvm_mmu_gfn_allow_lpage(const struct kvm_memory_slot *slot, gfn_t gfn);
+>   bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+>   				    struct kvm_memory_slot *slot, u64 gfn,
+>   				    int min_level);
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 0853370bd811..5d8d69d56a81 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -1242,8 +1242,8 @@ static bool wrprot_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>    * only affect leaf SPTEs down to min_level.
+>    * Returns true if an SPTE has been changed and the TLBs need to be flushed.
+>    */
+> -bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
+> -			     int min_level)
+> +bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
+> +			     const struct kvm_memory_slot *slot, int min_level)
+>   {
+>   	struct kvm_mmu_page *root;
+>   	bool spte_set = false;
+> @@ -1313,7 +1313,8 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>    * each SPTE. Returns true if an SPTE has been changed and the TLBs need to
+>    * be flushed.
+>    */
+> -bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
+> +bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
+> +				  const struct kvm_memory_slot *slot)
+>   {
+>   	struct kvm_mmu_page *root;
+>   	bool spte_set = false;
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> index 1cae4485b3bc..49437dbb4804 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> @@ -61,10 +61,10 @@ bool kvm_tdp_mmu_age_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
+>   bool kvm_tdp_mmu_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
+>   bool kvm_tdp_mmu_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
+>   
+> -bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
+> -			     int min_level);
+> +bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm,
+> +			     const struct kvm_memory_slot *slot, int min_level);
+>   bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm,
+> -				  struct kvm_memory_slot *slot);
+> +				  const struct kvm_memory_slot *slot);
+>   void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
+>   				       struct kvm_memory_slot *slot,
+>   				       gfn_t gfn, unsigned long mask,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index c6dc1b445231..970e95110175 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -11473,7 +11473,7 @@ static void kvm_mmu_update_cpu_dirty_logging(struct kvm *kvm, bool enable)
+>   
+>   static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
+>   				     struct kvm_memory_slot *old,
+> -				     struct kvm_memory_slot *new,
+> +				     const struct kvm_memory_slot *new,
+>   				     enum kvm_mr_change change)
+>   {
+>   	bool log_dirty_pages = new->flags & KVM_MEM_LOG_DIRTY_PAGES;
+> @@ -11553,10 +11553,7 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+>   		kvm_mmu_change_mmu_pages(kvm,
+>   				kvm_mmu_calculate_default_mmu_pages(kvm));
+>   
+> -	/*
+> -	 * FIXME: const-ify all uses of struct kvm_memory_slot.
+> -	 */
+> -	kvm_mmu_slot_apply_flags(kvm, old, (struct kvm_memory_slot *) new, change);
+> +	kvm_mmu_slot_apply_flags(kvm, old, new, change);
+>   
+>   	/* Free the arrays associated with the old memslot. */
+>   	if (change == KVM_MR_MOVE)
 > 
-> > After I replied to most of your email I discovered the cause of the confusion,
-> > but left my reply intact. So please read till the end before you reply ;-)
-> > 
-> > On 07/02/21 12:28, Quentin Perret wrote:
-> > > > There are several thoughts actually. A bit hard to articulate at this time of
-> > > > day, but let me try.
-> > > > 
-> > > > /proc/sys/kernel/sched_util_clamp_min/max are system wide limits. RLIMIT_UCLAMP
-> > > > seems to want to mimic it, so it makes sense for both to behave similarly.
-> > > > Preventing task from requesting a boost (raising UCLAMP_MIN) is different from
-> > > > preventing a task going above performance point (raising UCLAMP_MAX).
-> > > 
-> > > I don't really see why -- as you've already explained tasks can just
-> > > busy loop to inflate their util values. So limiting the min clamp of
-> > > task alone will never be an effective mechanism to limit how much
-> > > capacity a task can ask for.
-> > 
-> > It's about what the API means and how ultimately the end user should be use and
-> > benefit from it. I don't think we're on the same page here. Let me try to
-> > explain better (hopefully) :)
-> > 
-> > The system wide controls already split the uclamp min and uclamp max. Each
-> > request delivers a different meaning is what I'm saying. So lumping them under
-> > one control needs at least more explanation of what is the big picture behind
-> > it to warrant contradicting how the system wide limits already behave. And what
-> > this single system knob means from user perspective; outside your specific use
-> > case.
-> > 
-> > For instance, why this scenario is not allowed?
-> > 
-> > 	RLIMIT_UCLAMP_MIN = 200
-> > 	RLIMIT_UCLAMP_MAX = 1024
-> > 
-> > 	This task can boost itself up to 200 then must 'suffer' DVFS/migration
-> > 	delays to reach maximum performance point.
-> 
-> I just don't see how this would help at all. IMO the rlimit stuff is
-> only useful to allow root to limit how much a task can ask for itself,
-> and it doesn't really matter if the task inflates its request via
-> uclamp.min, or by increasing it's uclamp.max and spinning on the CPU.
-> That is, I just can't imagine how having different values for
-> RLIMIT_UCLAMP_MIN and RLIMIT_UCLAMP_MAX would be useful in practice.
 
-The way I see it is that we already have a sysctl that behaves like a limit for
-UCLAMP_MIN and UCLAMP_MAX. The above scenario is something you can do with the
-global sysctl. So you think system wide sysctl should be a single limit too
-then?
-
-> 
-> > Which is basically what you can do with the sysctl_sched_util_clamp_min/max but
-> > they apply globally (and impact the effective uclamp value).
-> > 
-> > It's a valid way to control resource requests. Uclamp doesn't guarantee any
-> > allocations anyway; it's just a hint that hopefully will work most of the time
-> > and will be limited by thermal issues or oversubscribed system type of
-> > problems.
-> > 
-> > A more realistic use case would be
-> > 
-> > 	RLIMIT_UCLAMP_MIN = 0
-> > 	RLIMIT_UCLAMP_MAX = 512
-> >
-> > So a task can't boost itself but allowed to run at half the system performance
-> > point if it becomes busy.
-> 
-> That's not really what this would mean. What the above means is that a
-> task is allowed to override the uclamp max set by root as long as it
-> stays below 512. The actual uclamp.max set by root could be different
-> from 512.
-> 
-> And IMO the only realistic configurations would be either
-> 
->  	RLIMIT_UCLAMP_MIN = 0
->  	RLIMIT_UCLAMP_MAX = 0
-> 
-> which means that tasks can never increase their clamps, root decides
-> their importance, but they're free to opt out.
-> 
-> Or:
-> 
->  	RLIMIT_UCLAMP_MIN = 512
->  	RLIMIT_UCLAMP_MAX = 512
-> 
-> Which means that root allows this task to ask for anything in the 0-512
-> range. The use case I'd see for this is: root sets the uclamp.max of the
-> task to 512 and the rlimit to the same value. With that root is
-> guaranteed that the clamped util of the task will never exceed 512. The
-> task can do whatever it wants in that range (spin on the CPU or boost
-> itself via uclamp min) it doesn't matter: it can't escape the limit.
-> 
-> This is what I feel is the use for the rlimit stuff: it allows root to
-> put restrictions, and to have guarantees about those restrictions
-> being respected. So, I don't see how separate rlimits for uclamp min
-> and max would help really.
-
-Fair enough. I still can't see why system wide can set these limits separately
-but not rlimit though. The rlimit just applies them to a specifc task(s) rather
-than every task on the system. I appreciate the way you envisage it to work,
-but what I can't connect it is why it's fine for system wide uclamp limits but
-not for the per-task rlimits?
-
-> 
-> > Which effectively will prevent short bursty tasks
-> > from achieving high performance points, but allow long running ones to achieve
-> > higher performance points to meet their demand and would be capped at 512.
-> 
-> I doubt anybody could make use of this TBH. I can imaging the framework
-> saying "I don't want this task to ask for more than X of capacity", but I
-> can't really see how it could reason about allowing long running tasks
-> but not short ones, or anything like that...
-
-This for me is an argument against RLIMIT, or the current design of the system
-wide uclamp limits.
-
-Ultimately this interface tries to regulate an application that tries to use
-uclamp to boost/cap some tasks but there's a system wide framework that tries
-to regulate these tasks too. The application can certainly reason about long
-running vs short running tasks. The framework can reason on what is allowed to
-be achieved by this app via uclamp. That's the way I see it at least :)
-
-[...]
-
-> Alright, I feel like this rlimit stuff is going to need a bit more
-> discussion, so I'll re-post patches 01 and and 02 separately as they're
-> really just fixes, and we can continue bike-shedding on this one in the
-> meantime :)
-
-:)
-
-I'm sorry if I'm being painful, but I honestly just think the story lacks
-clarity still. I am working on a uclamp doc and explaining what the current
-interfaces are and how they are related to each others and how they should be
-used and what they mean is hard enough. When I think of where this RLIMIT sits
-in the story; especially it massively resembles how the system wide uclamp
-sysctl behave, my mind keeps tripping over..
-
-The most coherent story IMHO is to always have UCLAMP_MIN and UCLAMP_MAX and
-always make UCLAMP_MIN behave as a protection and UCLAMP_MAX as a limit. Then
-we'd have a very consistent story across all layers of control. It would just
-mean we'd need to change how the system wide UCLAMP_MIN behaves, which could be
-an ABI problem.
-
-If we go down this route, I would see the RLIMIT then directly impacting the
-effective uclamp value of the task rather than cause -EPERM. The same way the
-rest of the layers work. ie: we'll have the following hierarchy to get the
-effective uclamp of a task
-
-	per-task request -> rlimit -> cgroup -> system
-
-Would be good to hear what others have to say.
-
-Cheers
-
---
-Qais Yousef
