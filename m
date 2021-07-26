@@ -2,161 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9833D5A49
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A083D5A4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233671AbhGZMow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 08:44:52 -0400
-Received: from mail-vk1-f180.google.com ([209.85.221.180]:35625 "EHLO
-        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232572AbhGZMou (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 08:44:50 -0400
-Received: by mail-vk1-f180.google.com with SMTP id i26so2013743vkk.2;
-        Mon, 26 Jul 2021 06:25:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iiK1bEfZv0REyFeZQ6eGnheFa6agVqoobWMIj2sCXMM=;
-        b=BUAaXbWyaea+TAdXGje71lH1LmPH5lRnbXWr2uJubVt1CLc+2pbroEzCylgLNEkxHh
-         ZcJzPqfFBKSY1EXnNvcgkRcf5jDPC15tAq9ibx+QDPQx8UrV3PAFM2r9afDVAaNJuNac
-         AYiVCRuf+pE6evMh2S4Rh1scrz830u0IylAYslXt4sGIc8b4Aps+KltoCSjahsK2xxdi
-         Vl1L6o9xyxpCaCFzywAaw9uTa5TnClgKO8g6yaooc19ZtXZzeRiCRMwTp/yRlkQLVRy0
-         wMVOVLHH3ZeCQO7uvUmKB7Vx3u73x6RoZvty09mw6/88l0Hco01Ax3zWb4DfSd16qizq
-         o6hQ==
-X-Gm-Message-State: AOAM531Eb7x2OB78IMBwwQ+GoMSORGUDkJ2rYSnYMDl3MndsUsewkqQA
-        Ebru/gC0upMiVWkXVzPYaKbJHMeEhySWLyFCuHM=
-X-Google-Smtp-Source: ABdhPJwOmNw+NUdyRa6fs6Yd24Srzz7LWuqCJoocbSYcr4aZR7cGIgHsBgXk63yc6Xppks8q98hgWQwqMuuVn+gfchs=
-X-Received: by 2002:ac5:cd9b:: with SMTP id i27mr10079261vka.1.1627305918978;
- Mon, 26 Jul 2021 06:25:18 -0700 (PDT)
+        id S233502AbhGZMrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 08:47:24 -0400
+Received: from verein.lst.de ([213.95.11.211]:45189 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232572AbhGZMrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 08:47:23 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 5A9F867373; Mon, 26 Jul 2021 15:27:49 +0200 (CEST)
+Date:   Mon, 26 Jul 2021 15:27:49 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andreas =?iso-8859-1?Q?Gr=FCnbacher?= 
+        <andreas.gruenbacher@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+Message-ID: <20210726132749.GA6535@lst.de>
+References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com> <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com> <20210723174131.180813-1-hsiangkao@linux.alibaba.com> <20210725221639.426565-1-agruenba@redhat.com> <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local> <20210726110611.459173-1-agruenba@redhat.com> <20210726121702.GA528@lst.de> <CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210721191558.22484-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210721191558.22484-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210721191558.22484-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 26 Jul 2021 15:25:07 +0200
-Message-ID: <CAMuHMdWD+p7w2_KSsM-sYoZfK-7z4BM7yXAOf+5amxkmq4xvPg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] pinctrl: renesas: Add RZ/G2L pin and gpio
- controller driver
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHpGcMJhuSApy4eg9jKe2pYq4d7bY-Lg-Bmo9tOANghQ2Hxo-A@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Mon, Jul 26, 2021 at 02:27:12PM +0200, Andreas Grünbacher wrote:
+> > That is how can size be different from iomap->length?
+> 
+> Quoting from my previous reply,
+> 
+> "In the iomap_readpage case (iomap_begin with flags == 0),
+> iomap->length will be the amount of data up to the end of the inode.
+> In the iomap_file_buffered_write case (iomap_begin with flags ==
+> IOMAP_WRITE), iomap->length will be the size of iomap->inline_data.
+> (For extending writes, we need to write beyond the current end of
+> inode.) So iomap->length isn't all that useful for
+> iomap_read_inline_data."
 
-On Wed, Jul 21, 2021 at 9:16 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add support for pin and gpio controller driver for RZ/G2L SoC.
->
-> Based on a patch in the BSP by Hien Huynh <hien.huynh.px@renesas.com>.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+I think we should fix that now that we have the srcmap concept.
+That is or IOMAP_WRITE|IOMAP_ZERO return the inline map as the soure
+map, and return the actual block map we plan to write into as the
+main iomap.
 
-Thanks for the update!
+> 
+> > Shouldn't the offset_in_page also go into iomap_inline_data_size_valid,
+> > which should probably be called iomap_inline_data_valid then?
+> 
+> Hmm, not sure what you mean: iomap_inline_data_size_valid does take
+> offset_in_page(iomap->inline_data) into account.
 
-> --- /dev/null
-> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+Indeed, orry for the braino.
 
-> +#define RZG2L_MPXED_PIN_FUNCS          (PIN_CFG_IOLH | \
-> +                                        PIN_CFG_SR | \
-> +                                        PIN_CFG_PUPD | \
-> +                                        PIN_CFG_FILONOFF | \
-> +                                        PIN_CFG_FILNUM | \
-> +                                        PIN_CFG_FILCLKSEL)
-> +
-> +#define RZG2L_MPXED_ETH_PIN_FUNCS(x)   ((x) | \
-> +                                        PIN_CFG_FILONOFF | \
-> +                                        PIN_CFG_FILNUM | \
-> +                                        PIN_CFG_FILCLKSEL)
+> I thought people were okay with 80 character long lines?
 
-I thought you were going for MULTI? ;-)
-
-> +
-> +/*
-> + * n indicates number of pins in the port, a is the register index
-> + * and f is pin configuration capabilities supported.
-> + */
-> +#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) << 28) | ((a) << 20) | (f))
-> +#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (((x) >> 28) & 0x7)
-> +#define RZG2L_GPIO_PORT_GET_INDEX(x)   ((((x) & GENMASK(27, 20)) >> 20) & 0x7f)
-
-Actually the "& 0x7f" can be removed, too, if you adjust the mask:
-
-    (((x) & GENMASK(26, 20)) >> 20)
-
-> +#define RZG2L_GPIO_PORT_GET_CFGS(x)    ((x) & GENMASK(19, 0))
-> +
-> +/*
-> + * BIT(31) indicates dedicated pin, p is the register index while
-> + * referencing to SR/IEN/IOLH/FILxx registers, b is the register bits
-> + * (b * 8) and f is the pin configuration capabilities supported.
-> + */
-> +#define RZG2L_SINGLE_PIN               BIT(31)
-> +#define RZG2L_SINGLE_PIN_PACK(p, b, f) (RZG2L_SINGLE_PIN | \
-> +                                        ((p) << 24) | ((b) << 20) | (f))
-> +#define RZG2L_SINGLE_PIN_GET_PORT(x)   (((x) >> 24) & 0x7f)
-> +#define RZG2L_SINGLE_PIN_GET_BIT(x)    ((((x) & GENMASK(23, 20)) >> 20) & 0x7)
-
-Likewise:
-
-    (((x) & GENMASK(22, 20)) >> 20)
-
-> +#define RZG2L_SINGLE_PIN_GET_CFGS(x)   ((x) & GENMASK(19, 0))
-
-> +       struct rzg2l_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-> +       struct function_desc *func;
-> +       unsigned int i, *psel_val;
-> +       struct group_desc *group;
-> +       unsigned long data;
-> +       int *pins;
-> +
-> +       func = pinmux_generic_get_function(pctldev, func_selector);
-> +       if (!func)
-> +               return -EINVAL;
-> +       group = pinctrl_generic_get_group(pctldev, group_selector);
-> +       if (!group)
-> +               return -EINVAL;
-> +
-> +       psel_val = func->data;
-> +       pins = group->pins;
-> +       data = (unsigned long)group->data;
-
-Lkp reports data is unused.
-Which matches with passing NULL as the last parameter of
-pinctrl_generic_add_group().
-
-> +
-> +       for (i = 0; i < group->num_pins; i++) {
-> +               dev_dbg(pctrl->dev, "port:%u pin: %u PSEL:%u\n",
-> +                       RZG2L_PIN_ID_TO_PORT(pins[i]), RZG2L_PIN_ID_TO_PIN(pins[i]),
-> +                       psel_val[i]);
-> +               rzg2l_pinctrl_set_pfc_mode(pctrl, RZG2L_PIN_ID_TO_PORT(pins[i]),
-> +                                          RZG2L_PIN_ID_TO_PIN(pins[i]), psel_val[i]);
-> +       }
-> +
-> +       return 0;
-> +};
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+No.
