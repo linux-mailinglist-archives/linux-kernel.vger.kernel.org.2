@@ -2,82 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4C93D5E74
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AB13D5D0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236349AbhGZPH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:07:56 -0400
-Received: from mga11.intel.com ([192.55.52.93]:44731 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236179AbhGZPGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:06:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="209151258"
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="209151258"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 08:46:05 -0700
-X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
-   d="scan'208";a="455807917"
-Received: from jwconner-mobl1.amr.corp.intel.com (HELO [10.209.169.36]) ([10.209.169.36])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 08:46:03 -0700
-Subject: Re: [PATCH] ASoC: Intel: sof_da7219_mx98360a: fail to initialize
- soundcard
-To:     Brent Lu <brent.lu@intel.com>, alsa-devel@alsa-project.org
-Cc:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Olaru <paul.olaru@oss.nxp.com>,
-        Zou Wei <zou_wei@huawei.com>,
-        Rander Wang <rander.wang@intel.com>
-References: <20210726094525.5748-1-brent.lu@intel.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <c878f42c-5f44-0e54-785b-36988cc2fe22@linux.intel.com>
-Date:   Mon, 26 Jul 2021 09:08:07 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.11.0
+        id S235041AbhGZOvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234546AbhGZOve (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 10:51:34 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61B0C061757;
+        Mon, 26 Jul 2021 08:32:01 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id j2so10239189edp.11;
+        Mon, 26 Jul 2021 08:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mRghCE9uemL2l6phf1pi3lSsvM3GyyFlNkgm44kAP9E=;
+        b=bsj2JvMFZcXilYHqaNJDghFt4dIqQ5yUNZWk14BP7QVHElB8WKAtCoq7yjraGnyOGn
+         xt+zF2xe3CokN5POWc0EOoDlHYmKF2in0V88WqyAlVEen7Apo/t9jpa3V5VDmVN9EgjJ
+         TPCgLXb5DSVV6TK9XaYXPytiM2tJuWsLU7lAGCP7K5NYiSRdmxi2EvWwUm0ktBh8NfTi
+         Pr2TNYl9LpyUIJJ+Tq5o9Pkj/RtQuhbQ+SBGd1rmbjWqmD4sVBArhRBxGdD10cPHSlew
+         GyVFw43Euf9xk7k0oy8nruhzf53RjsmGLR5Wh7Z9dzCe4LjRu6sjWImi01+LcAMShGpl
+         k47A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mRghCE9uemL2l6phf1pi3lSsvM3GyyFlNkgm44kAP9E=;
+        b=OptRrovm/0BESVEa5y60OswvmR+HDC05QjKDGWL8X3a3MFO1GfZQWZOaEI+NT2pcEn
+         cpKR5w9uplEEAt1uyJtfhumWsrJtrRZn4d6lbkC/aZ2MYAjxVJ/9TT/plNzAYp32ZVn4
+         EKgIdMSboCI8s1yPmnseZL6zIznqnyoDQFyTlv68Rfj/Bpc+40rHaC95psx93/X+BbRm
+         ofPKhU6SlinWqBN3WFKhBZHkftbNcJ6LPi/dB7Chq5EO1/jgpEYC2XVc1kqCcmdT1DI/
+         XG4q/pprTr1ExF+Pa7znmQFYIIvvSZTDkcSDMoRhX3LbT948aNh/6Qg996yr4Y/qm3A+
+         PBRw==
+X-Gm-Message-State: AOAM532EAyE3A6xcG7xk+p6bNqtkfRK27ljvwK9lvbDgrN9qFH5Yz8hE
+        gzkD/Ikq6h3tpfhOf8my8VZvGvSC9ucha+Ed2t4=
+X-Google-Smtp-Source: ABdhPJw4Tmlh2i4lNFoU7+yyIAJQqY7Q37WjZG2z/5WEKc50B1VFqxNcpy3j0UjTZgkbwe8h1In6wNsupmYbJpJQtng=
+X-Received: by 2002:a05:6402:270d:: with SMTP id y13mr22349779edd.66.1627313520540;
+ Mon, 26 Jul 2021 08:32:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210726094525.5748-1-brent.lu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210726152533.2281139-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20210726152533.2281139-1-mudongliangabcd@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 26 Jul 2021 23:31:34 +0800
+Message-ID: <CAD-N9QV68AUo9MRXkRBOu950BdfoaWUaNSX9jfxhz5Qkpc4LMQ@mail.gmail.com>
+Subject: Re: [PATCH v4] crypto: sun8i-ss: fix multiple memory leaks in sun8i_ss_hash_run
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Dongliang Mu <mudongliangabcd@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/26/21 4:45 AM, Brent Lu wrote:
-> The default codec for speaker amp's DAI Link is max98373 and will be
-> overwritten in probe function if the board id is sof_da7219_mx98360a.
-> However, the probe function does not do it because the board id is
-> changed in earlier commit.
-> 
-> Fixes: 1cc04d195dc2 ("ASoC: Intel: sof_da7219_max98373: shrink platform_id below 20 characters")
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-
-Nice catch indeed.
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
+On Mon, Jul 26, 2021 at 11:25 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>
+> In sun8i_ss_hash_run, all the dma_mmap_sg/single will cause memory leak
+> due to no corresponding unmap operation if errors happen.
+>
+> Fix this by adding error handling part for all the dma_mmap_sg/single.
+>
+> Fixes: d9b45418a917 ("crypto: sun8i-ss - support hash algorithms")
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 > ---
->  sound/soc/intel/boards/sof_da7219_max98373.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_da7219_max98373.c b/sound/soc/intel/boards/sof_da7219_max98373.c
-> index 896251d742fe..b7b3b0bf994a 100644
-> --- a/sound/soc/intel/boards/sof_da7219_max98373.c
-> +++ b/sound/soc/intel/boards/sof_da7219_max98373.c
-> @@ -404,7 +404,7 @@ static int audio_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  
->  	/* By default dais[0] is configured for max98373 */
-> -	if (!strcmp(pdev->name, "sof_da7219_max98360a")) {
-> +	if (!strcmp(pdev->name, "sof_da7219_mx98360a")) {
->  		dais[0] = (struct snd_soc_dai_link) {
->  			.name = "SSP1-Codec",
->  			.id = 0,
-> 
+> v1->v2: move crypto_finalize_hash_request to the end of function; move
+> the memcpy after the dma_mmap_sg/single functions.
+> v2->v3: remove some unrelated code changes; delete the fix of return value
+> since there is no corresponding handling code
+> v3->v4: change sun8i_ce to sun8i_ss
+
+From v3 to v4, I changed the title and commit message from sun8i_ce to
+sun8i_ss because I suddenly realized that the code change below is for
+sun8i_ss_hash_run, other than sun8i_ce_hash_run.
+
+Furthermore, sun8i_ce is also prone to this issue. I've sent another
+patch to fix it.
+
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+> index 3c073eb3db03..5448705e8ae1 100644
+> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c
+> @@ -368,14 +368,14 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+>         if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
+>                 dev_err(ss->dev, "Invalid sg number %d\n", nr_sgs);
+>                 err = -EINVAL;
+> -               goto theend;
+> +               goto err_result;
+>         }
+>
+>         addr_res = dma_map_single(ss->dev, result, digestsize, DMA_FROM_DEVICE);
+>         if (dma_mapping_error(ss->dev, addr_res)) {
+>                 dev_err(ss->dev, "DMA map dest\n");
+>                 err = -EINVAL;
+> -               goto theend;
+> +               goto err_unmap_sg;
+>         }
+>
+>         len = areq->nbytes;
+> @@ -390,7 +390,7 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+>         if (len > 0) {
+>                 dev_err(ss->dev, "remaining len %d\n", len);
+>                 err = -EINVAL;
+> -               goto theend;
+> +               goto err_addr_res;
+>         }
+>
+>         byte_count = areq->nbytes;
+> @@ -428,18 +428,19 @@ int sun8i_ss_hash_run(struct crypto_engine *engine, void *breq)
+>         if (dma_mapping_error(ss->dev, addr_pad)) {
+>                 dev_err(ss->dev, "DMA error on padding SG\n");
+>                 err = -EINVAL;
+> -               goto theend;
+> +               goto err_addr_res;
+>         }
+>
+>         err = sun8i_ss_run_hash_task(ss, rctx, crypto_tfm_alg_name(areq->base.tfm));
+>
+>         dma_unmap_single(ss->dev, addr_pad, j * 4, DMA_TO_DEVICE);
+> +err_addr_res:
+> +       dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+> +err_unmap_sg:
+>         dma_unmap_sg(ss->dev, areq->src, sg_nents(areq->src),
+>                      DMA_TO_DEVICE);
+> -       dma_unmap_single(ss->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+> -
+>         memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+> -theend:
+> +err_result:
+>         kfree(pad);
+>         kfree(result);
+>         crypto_finalize_hash_request(engine, breq, err);
+> --
+> 2.25.1
+>
