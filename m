@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEE73D62A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2D93D6021
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhGZPhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:37:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35406 "EHLO mail.kernel.org"
+        id S237080AbhGZPU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235945AbhGZPV0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7B3A60E09;
-        Mon, 26 Jul 2021 16:01:54 +0000 (UTC)
+        id S236352AbhGZPLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:11:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D45860F44;
+        Mon, 26 Jul 2021 15:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315315;
-        bh=dwpDajoW10WXI2ovg4AgN7tgkZzFAbCWnXo0opXsZsE=;
+        s=korg; t=1627314691;
+        bh=WbcAoORSEo3xrjNUt8TS+8PA0uazBmuXqcBbv3NVmi8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=djkD60OKJmFqIcRFA6CBV6ymlIEHmxESh4+m5XQeiuBS+Yw9YNG6MRIMYgWR1hXci
-         LrS7jUPjj74PI4D+wCmAutQpPtnWJwlbT5Z1Sl+30bLwREXla7pQtcuVZY3hi0lNZX
-         djZEtSCp2R6S5Aw6ALpOL8P2e2auRdBsNIND4Chs=
+        b=KfD0LVuqpSNDAkPaaeB6d7yq1GeAJJqhLg4ZOlATGcVydoUU/GxGhJ5uns88aMnA/
+         geJselLsiDq6PiohK0pV3yWSetTqNsWG7bnFhLuPbEoBSjrDBQKvgZ4mbqv7pH/Cvo
+         Fs+gmVWLOjBrRmWKdeCibsJsG+ylpxgMgcrffbmc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Clark Wang <xiaoning.wang@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 049/167] spi: imx: add a check for speed_hz before calculating the clock
+Subject: [PATCH 4.19 030/120] scsi: aic7xxx: Fix unintentional sign extension issue on left shift of u8
 Date:   Mon, 26 Jul 2021 17:38:02 +0200
-Message-Id: <20210726153841.044672333@linuxfoundation.org>
+Message-Id: <20210726153833.360530713@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,136 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Clark Wang <xiaoning.wang@nxp.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 4df2f5e1372e9eec8f9e1b4a3025b9be23487d36 ]
+[ Upstream commit 332a9dd1d86f1e7203fc7f0fd7e82f0b304200fe ]
 
-When some drivers use spi to send data, spi_transfer->speed_hz is
-not assigned. If spidev->max_speed_hz is not assigned as well, it
-will cause an error in configuring the clock.
-Add a check for these two values before configuring the clock. An
-error will be returned when they are not assigned.
+The shifting of the u8 integer returned fom ahc_inb(ahc, port+3) by 24 bits
+to the left will be promoted to a 32 bit signed int and then sign-extended
+to a u64. In the event that the top bit of the u8 is set then all then all
+the upper 32 bits of the u64 end up as also being set because of the
+sign-extension. Fix this by casting the u8 values to a u64 before the 24
+bit left shift.
 
-Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
-Link: https://lore.kernel.org/r/20210408103347.244313-2-xiaoning.wang@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+[ This dates back to 2002, I found the offending commit from the git
+history git://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
+commit f58eb66c0b0a ("Update aic7xxx driver to 6.2.10...") ]
+
+Link: https://lore.kernel.org/r/20210621151727.20667-1-colin.king@canonical.com
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Addresses-Coverity: ("Unintended sign extension")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-imx.c | 37 +++++++++++++++++++++----------------
- 1 file changed, 21 insertions(+), 16 deletions(-)
+ drivers/scsi/aic7xxx/aic7xxx_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
-index 831a38920fa9..c8b750d8ac35 100644
---- a/drivers/spi/spi-imx.c
-+++ b/drivers/spi/spi-imx.c
-@@ -66,8 +66,7 @@ struct spi_imx_data;
- struct spi_imx_devtype_data {
- 	void (*intctrl)(struct spi_imx_data *, int);
- 	int (*prepare_message)(struct spi_imx_data *, struct spi_message *);
--	int (*prepare_transfer)(struct spi_imx_data *, struct spi_device *,
--				struct spi_transfer *);
-+	int (*prepare_transfer)(struct spi_imx_data *, struct spi_device *);
- 	void (*trigger)(struct spi_imx_data *);
- 	int (*rx_available)(struct spi_imx_data *);
- 	void (*reset)(struct spi_imx_data *);
-@@ -572,11 +571,10 @@ static int mx51_ecspi_prepare_message(struct spi_imx_data *spi_imx,
- }
- 
- static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
--				       struct spi_device *spi,
--				       struct spi_transfer *t)
-+				       struct spi_device *spi)
- {
- 	u32 ctrl = readl(spi_imx->base + MX51_ECSPI_CTRL);
--	u32 clk = t->speed_hz, delay;
-+	u32 clk, delay;
- 
- 	/* Clear BL field and set the right value */
- 	ctrl &= ~MX51_ECSPI_CTRL_BL_MASK;
-@@ -590,7 +588,7 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
- 	/* set clock speed */
- 	ctrl &= ~(0xf << MX51_ECSPI_CTRL_POSTDIV_OFFSET |
- 		  0xf << MX51_ECSPI_CTRL_PREDIV_OFFSET);
--	ctrl |= mx51_ecspi_clkdiv(spi_imx, t->speed_hz, &clk);
-+	ctrl |= mx51_ecspi_clkdiv(spi_imx, spi_imx->spi_bus_clk, &clk);
- 	spi_imx->spi_bus_clk = clk;
- 
- 	if (spi_imx->usedma)
-@@ -702,13 +700,12 @@ static int mx31_prepare_message(struct spi_imx_data *spi_imx,
- }
- 
- static int mx31_prepare_transfer(struct spi_imx_data *spi_imx,
--				 struct spi_device *spi,
--				 struct spi_transfer *t)
-+				 struct spi_device *spi)
- {
- 	unsigned int reg = MX31_CSPICTRL_ENABLE | MX31_CSPICTRL_MASTER;
- 	unsigned int clk;
- 
--	reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, t->speed_hz, &clk) <<
-+	reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, spi_imx->spi_bus_clk, &clk) <<
- 		MX31_CSPICTRL_DR_SHIFT;
- 	spi_imx->spi_bus_clk = clk;
- 
-@@ -807,14 +804,13 @@ static int mx21_prepare_message(struct spi_imx_data *spi_imx,
- }
- 
- static int mx21_prepare_transfer(struct spi_imx_data *spi_imx,
--				 struct spi_device *spi,
--				 struct spi_transfer *t)
-+				 struct spi_device *spi)
- {
- 	unsigned int reg = MX21_CSPICTRL_ENABLE | MX21_CSPICTRL_MASTER;
- 	unsigned int max = is_imx27_cspi(spi_imx) ? 16 : 18;
- 	unsigned int clk;
- 
--	reg |= spi_imx_clkdiv_1(spi_imx->spi_clk, t->speed_hz, max, &clk)
-+	reg |= spi_imx_clkdiv_1(spi_imx->spi_clk, spi_imx->spi_bus_clk, max, &clk)
- 		<< MX21_CSPICTRL_DR_SHIFT;
- 	spi_imx->spi_bus_clk = clk;
- 
-@@ -883,13 +879,12 @@ static int mx1_prepare_message(struct spi_imx_data *spi_imx,
- }
- 
- static int mx1_prepare_transfer(struct spi_imx_data *spi_imx,
--				struct spi_device *spi,
--				struct spi_transfer *t)
-+				struct spi_device *spi)
- {
- 	unsigned int reg = MX1_CSPICTRL_ENABLE | MX1_CSPICTRL_MASTER;
- 	unsigned int clk;
- 
--	reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, t->speed_hz, &clk) <<
-+	reg |= spi_imx_clkdiv_2(spi_imx->spi_clk, spi_imx->spi_bus_clk, &clk) <<
- 		MX1_CSPICTRL_DR_SHIFT;
- 	spi_imx->spi_bus_clk = clk;
- 
-@@ -1195,6 +1190,16 @@ static int spi_imx_setupxfer(struct spi_device *spi,
- 	if (!t)
- 		return 0;
- 
-+	if (!t->speed_hz) {
-+		if (!spi->max_speed_hz) {
-+			dev_err(&spi->dev, "no speed_hz provided!\n");
-+			return -EINVAL;
-+		}
-+		dev_dbg(&spi->dev, "using spi->max_speed_hz!\n");
-+		spi_imx->spi_bus_clk = spi->max_speed_hz;
-+	} else
-+		spi_imx->spi_bus_clk = t->speed_hz;
-+
- 	spi_imx->bits_per_word = t->bits_per_word;
- 
- 	/*
-@@ -1236,7 +1241,7 @@ static int spi_imx_setupxfer(struct spi_device *spi,
- 		spi_imx->slave_burst = t->len;
- 	}
- 
--	spi_imx->devtype_data->prepare_transfer(spi_imx, spi, t);
-+	spi_imx->devtype_data->prepare_transfer(spi_imx, spi);
- 
- 	return 0;
- }
+diff --git a/drivers/scsi/aic7xxx/aic7xxx_core.c b/drivers/scsi/aic7xxx/aic7xxx_core.c
+index 49e02e874553..fe15746af520 100644
+--- a/drivers/scsi/aic7xxx/aic7xxx_core.c
++++ b/drivers/scsi/aic7xxx/aic7xxx_core.c
+@@ -500,7 +500,7 @@ ahc_inq(struct ahc_softc *ahc, u_int port)
+ 	return ((ahc_inb(ahc, port))
+ 	      | (ahc_inb(ahc, port+1) << 8)
+ 	      | (ahc_inb(ahc, port+2) << 16)
+-	      | (ahc_inb(ahc, port+3) << 24)
++	      | (((uint64_t)ahc_inb(ahc, port+3)) << 24)
+ 	      | (((uint64_t)ahc_inb(ahc, port+4)) << 32)
+ 	      | (((uint64_t)ahc_inb(ahc, port+5)) << 40)
+ 	      | (((uint64_t)ahc_inb(ahc, port+6)) << 48)
 -- 
 2.30.2
 
