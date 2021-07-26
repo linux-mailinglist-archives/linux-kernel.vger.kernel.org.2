@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A2B3D628E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2983D6292
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234277AbhGZPgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34598 "EHLO mail.kernel.org"
+        id S234493AbhGZPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:36:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236137AbhGZPUv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:20:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E94646023D;
-        Mon, 26 Jul 2021 16:01:18 +0000 (UTC)
+        id S235873AbhGZPUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:20:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F6360E09;
+        Mon, 26 Jul 2021 16:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315279;
-        bh=M933bod2+0qhpJt1XLY05BpNJ6QBUTHsVSPtkIyYNn4=;
+        s=korg; t=1627315282;
+        bh=qZ4pNfaefHL0z353aZke3OFXFw04gxqigPkjkJAZXfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i60s6rnaSK/arCyusxFq4YBpNpgSr+t628WYp1nFhnNeJAJJnvQAg1NCgy+jbK6bt
-         kMDOKPus841f/RB0KvJmypKUnJOwkrecWoYrfE5NytLJOczjM/+L2rDvhjEoUb91ls
-         66ivhHYso6vpL3WeA4XYFnveBaO8oVNbV8HeJPk8=
+        b=rGpWqyXsuoh2vuL1yOpM4ijuEbim95oSoZ5IT4kdWti01/Nj3I4wEOQNTOrIu6Iim
+         lYW59Av4RUTmTaRs9WMqUXIkXyy1sIyhdxJfqRtPFpZERUldlR5wY3WAwugGV3OgCx
+         /gZTgvxKvR54jJr0+IhAQkCp2CiDramhECS7yC2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 007/167] fm10k: Fix an error handling path in fm10k_probe()
-Date:   Mon, 26 Jul 2021 17:37:20 +0200
-Message-Id: <20210726153839.612706662@linuxfoundation.org>
+Subject: [PATCH 5.10 008/167] e1000e: Fix an error handling path in e1000_probe()
+Date:   Mon, 26 Jul 2021 17:37:21 +0200
+Message-Id: <20210726153839.644589489@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -43,28 +45,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit e85e14d68f517ef12a5fb8123fff65526b35b6cd ]
+[ Upstream commit 4589075608420bc49fcef6e98279324bf2bb91ae ]
 
 If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
 must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
 call, as already done in the remove function.
 
-Fixes: 19ae1b3fb99c ("fm10k: Add support for PCI power management and error handling")
+Fixes: 111b9dc5c981 ("e1000e: add aer support")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/fm10k/fm10k_pci.c | 1 +
+ drivers/net/ethernet/intel/e1000e/netdev.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_pci.c b/drivers/net/ethernet/intel/fm10k/fm10k_pci.c
-index 9e3103fae723..caedf24c24c1 100644
---- a/drivers/net/ethernet/intel/fm10k/fm10k_pci.c
-+++ b/drivers/net/ethernet/intel/fm10k/fm10k_pci.c
-@@ -2227,6 +2227,7 @@ err_sw_init:
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index b3ad95ac3d85..361b8d0bd78d 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -7657,6 +7657,7 @@ err_flashmap:
  err_ioremap:
  	free_netdev(netdev);
- err_alloc_netdev:
+ err_alloc_etherdev:
 +	pci_disable_pcie_error_reporting(pdev);
  	pci_release_mem_regions(pdev);
  err_pci_reg:
