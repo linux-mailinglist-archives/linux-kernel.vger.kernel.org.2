@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E113D63A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2443D63A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239096AbhGZPuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:50:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46318 "EHLO mail.kernel.org"
+        id S231739AbhGZPuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:50:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232674AbhGZPae (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:30:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 799B86056B;
-        Mon, 26 Jul 2021 16:11:02 +0000 (UTC)
+        id S232702AbhGZPah (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:30:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E815760240;
+        Mon, 26 Jul 2021 16:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315863;
-        bh=2p94NubKZmHIQ9OVh6YvzN6MTXQURl7Oq16jgQa2W4Q=;
+        s=korg; t=1627315865;
+        bh=2tjdCL3aJ6Hw8vCvKplDi9yUOkQlbeIY10x3DZmK5Wo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s81PEqu2Y3f6t6E0Af90hKYuj7GCquuLLnZEa45T6mfw4gtCMt7QQ2BglzW4/UWAU
-         6p5EH1dbDPt9hVa3EFDdT9mVMRdBbNG0fT/uPmoKggwi3HmGvhYBt48ekU42OKA3i6
-         Lv7Of/osOdYHpZdtbiXEmEBU60uACtdWiwjBF7UY=
+        b=BOix8gXUfibcq00sCd25vWLPM/C8/2VmIF8T7unGhLonxbQdROcVfasZ5SsWv3Lko
+         9nglTxrNJhT6khEXHNQboC8S+cKrnU/YGD8vPp3cNznYbC2+ADIffgUvJWNzzACiYT
+         CvD4AwLfpEBF2P7xO/Kcbiwi3kI0fNXP9fYZyyCo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xin Long <lucien.xin@gmail.com>,
+        stable@vger.kernel.org, Nguyen Dinh Phi <phind.uet@gmail.com>,
+        syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 096/223] sctp: trim optlen when its a huge value in sctp_setsockopt
-Date:   Mon, 26 Jul 2021 17:38:08 +0200
-Message-Id: <20210726153849.396302871@linuxfoundation.org>
+Subject: [PATCH 5.13 097/223] netrom: Decrease sock refcount when sock timers expire
+Date:   Mon, 26 Jul 2021 17:38:09 +0200
+Message-Id: <20210726153849.437125690@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,49 +41,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Nguyen Dinh Phi <phind.uet@gmail.com>
 
-[ Upstream commit 2f3fdd8d4805015fa964807e1c7f3d88f31bd389 ]
+[ Upstream commit 517a16b1a88bdb6b530f48d5d153478b2552d9a8 ]
 
-After commit ca84bd058dae ("sctp: copy the optval from user space in
-sctp_setsockopt"), it does memory allocation in sctp_setsockopt with
-the optlen, and it would fail the allocation and return error if the
-optlen from user space is a huge value.
+Commit 63346650c1a9 ("netrom: switch to sock timer API") switched to use
+sock timer API. It replaces mod_timer() by sk_reset_timer(), and
+del_timer() by sk_stop_timer().
 
-This breaks some sockopts, like SCTP_HMAC_IDENT, SCTP_RESET_STREAMS and
-SCTP_AUTH_KEY, as when processing these sockopts before, optlen would
-be trimmed to a biggest value it needs when optlen is a huge value,
-instead of failing the allocation and returning error.
+Function sk_reset_timer() will increase the refcount of sock if it is
+called on an inactive timer, hence, in case the timer expires, we need to
+decrease the refcount ourselves in the handler, otherwise, the sock
+refcount will be unbalanced and the sock will never be freed.
 
-This patch is to fix the allocation failure when it's a huge optlen from
-user space by trimming it to the biggest size sctp sockopt may need when
-necessary, and this biggest size is from sctp_setsockopt_reset_streams()
-for SCTP_RESET_STREAMS, which is bigger than those for SCTP_HMAC_IDENT
-and SCTP_AUTH_KEY.
-
-Fixes: ca84bd058dae ("sctp: copy the optval from user space in sctp_setsockopt")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
+Reported-by: syzbot+10f1194569953b72f1ae@syzkaller.appspotmail.com
+Fixes: 63346650c1a9 ("netrom: switch to sock timer API")
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/sctp/socket.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/netrom/nr_timer.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/net/sctp/socket.c b/net/sctp/socket.c
-index a79d193ff872..dbd074f4d450 100644
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -4521,6 +4521,10 @@ static int sctp_setsockopt(struct sock *sk, int level, int optname,
+diff --git a/net/netrom/nr_timer.c b/net/netrom/nr_timer.c
+index 9115f8a7dd45..a8da88db7893 100644
+--- a/net/netrom/nr_timer.c
++++ b/net/netrom/nr_timer.c
+@@ -121,11 +121,9 @@ static void nr_heartbeat_expiry(struct timer_list *t)
+ 		   is accepted() it isn't 'dead' so doesn't get removed. */
+ 		if (sock_flag(sk, SOCK_DESTROY) ||
+ 		    (sk->sk_state == TCP_LISTEN && sock_flag(sk, SOCK_DEAD))) {
+-			sock_hold(sk);
+ 			bh_unlock_sock(sk);
+ 			nr_destroy_socket(sk);
+-			sock_put(sk);
+-			return;
++			goto out;
+ 		}
+ 		break;
+ 
+@@ -146,6 +144,8 @@ static void nr_heartbeat_expiry(struct timer_list *t)
+ 
+ 	nr_start_heartbeat(sk);
+ 	bh_unlock_sock(sk);
++out:
++	sock_put(sk);
+ }
+ 
+ static void nr_t2timer_expiry(struct timer_list *t)
+@@ -159,6 +159,7 @@ static void nr_t2timer_expiry(struct timer_list *t)
+ 		nr_enquiry_response(sk);
+ 	}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_t4timer_expiry(struct timer_list *t)
+@@ -169,6 +170,7 @@ static void nr_t4timer_expiry(struct timer_list *t)
+ 	bh_lock_sock(sk);
+ 	nr_sk(sk)->condition &= ~NR_COND_PEER_RX_BUSY;
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_idletimer_expiry(struct timer_list *t)
+@@ -197,6 +199,7 @@ static void nr_idletimer_expiry(struct timer_list *t)
+ 		sock_set_flag(sk, SOCK_DEAD);
+ 	}
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
+ 
+ static void nr_t1timer_expiry(struct timer_list *t)
+@@ -209,8 +212,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_1:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_CONNREQ);
+@@ -220,8 +222,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_2:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_write_internal(sk, NR_DISCREQ);
+@@ -231,8 +232,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
+ 	case NR_STATE_3:
+ 		if (nr->n2count == nr->n2) {
+ 			nr_disconnect(sk, ETIMEDOUT);
+-			bh_unlock_sock(sk);
+-			return;
++			goto out;
+ 		} else {
+ 			nr->n2count++;
+ 			nr_requeue_frames(sk);
+@@ -241,5 +241,7 @@ static void nr_t1timer_expiry(struct timer_list *t)
  	}
  
- 	if (optlen > 0) {
-+		/* Trim it to the biggest size sctp sockopt may need if necessary */
-+		optlen = min_t(unsigned int, optlen,
-+			       PAGE_ALIGN(USHRT_MAX +
-+					  sizeof(__u16) * sizeof(struct sctp_reset_streams)));
- 		kopt = memdup_sockptr(optval, optlen);
- 		if (IS_ERR(kopt))
- 			return PTR_ERR(kopt);
+ 	nr_start_t1timer(sk);
++out:
+ 	bh_unlock_sock(sk);
++	sock_put(sk);
+ }
 -- 
 2.30.2
 
