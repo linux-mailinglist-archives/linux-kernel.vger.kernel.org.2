@@ -2,138 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D1D3D5CC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:17:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7533D5CCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:17:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbhGZOge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:36:34 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:44045 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234941AbhGZOgd (ORCPT
+        id S235030AbhGZOhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:37:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21445 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234941AbhGZOhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:36:33 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B268B58036C;
-        Mon, 26 Jul 2021 11:17:01 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 26 Jul 2021 11:17:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=5FIKR14gh2moE93DzqPQOXq535s
-        UfFWvi22VAwD+SLs=; b=sv8qazxxaLdKWfKAGemRIHvpFOtGbjgO2MGap1uolRa
-        prn5pRe4dIS7A8ui1QHi4b7wr8YdlLrivD2HJhHs2SokOfFGQ4iYsXxuqkymi0Vs
-        PIbxrowIAa2vOR/oNlLqaKrr98pZ9QIgv7jHPK1YbIoKao8qD1Ve+bUR/ciR6YkL
-        ut4KSmIEh8v/kX6zkH6/9M38k9CmjWbYD8+GLKxK9SjlQBpXrvKcshjHV2Ku1XyT
-        e5dCnqRUu43Oo67Bw4nciP2/gEAypy030WwL/P3TldPl58bYytrel+GQ4yoK9WIW
-        hCutQXnAX4Wxtwrf3Mv5/ZZz3FHsw/Xasxd82lgptUQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=5FIKR1
-        4gh2moE93DzqPQOXq535sUfFWvi22VAwD+SLs=; b=bb11n19qzrXboWF6QOiJDF
-        +IA3+jn2mbohYKtk4nZ/CvrgC5VivFgVgtMG2TC7PE1H/MV0Zl5vLW/aszjlibCv
-        FJIHg0L1Pw9YcmxliclMOIxjifiJYS5dQNmgkjoIgxEpvmoIJ3VvZ6kORERafTaI
-        ioPiCGBpY2Q/kMRDhHTJshf8/YEsUyPsg6DCFESvj/k/r8W/WHuR6QfJ+Zuhrt1P
-        +mVzVBTh7r2yfCtsn1jIVLC7YL7Ug84rxV1sGffEMknZcGG7p8/ouN/o1AIu3t6I
-        OZ+vR9vi5ceNDwtZinAfHnOqXsUaWy7EGE/YRT0/JHCONE9EwtRqogubpeOu1GGA
-        ==
-X-ME-Sender: <xms:69H-YMiEBe_nHBPe4oN9uJqL-oVJ8ZdDFirdNuqlIeW24SUN_mvMIg>
-    <xme:69H-YFBV-9oSuTcVkT4v15eqUbBP25jS8c-fdhQatBfAdr4hVWirVmyLXxIjjZczK
-    WIo8ne_uNz3cnYL7Iw>
-X-ME-Received: <xmr:69H-YEGLyQg30mCFdqkU3xlypNoqC4T6idTobXKeSYr7vQOHiWKCwtHUlAn4oVptcDa0VOqea4JTqRYc82fa8gZXI6QF4CD0cdUn>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeehgdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:69H-YNQcvNOtBYeXruvHtpkIRLeiy2Zd7zP3RXUK0oekXRPdeYxyAg>
-    <xmx:69H-YJyCstDABDHsnsutUu_6IPzAuOVhrHOmGn7GlRq254u4aEVD4Q>
-    <xmx:69H-YL5gEG4vAvxqj-ZnZc5X2UzBIWkbnFeHuHds0OdtXG-oHRoj8Q>
-    <xmx:7dH-YMrpj4ZwA24C_wwczRAUtjTdSOwfmVcx9rJQWakopzF694z_GQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 Jul 2021 11:16:59 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 17:16:57 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 04/10] drm/bridge: Document the probe issue with MIPI-DSI
- bridges
-Message-ID: <20210726151657.c46qmkdvqfhlg6ox@gilmour>
-References: <20210720134525.563936-1-maxime@cerno.tech>
- <20210720134525.563936-5-maxime@cerno.tech>
- <YPgNbVoNnq3fTMN2@phenom.ffwll.local>
+        Mon, 26 Jul 2021 10:37:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627312663;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FMlQ25hJH+R6pFD/1ahHb0bRBusBkFzxUiCW7bLMoRM=;
+        b=FsXc7g6CCp7fRi/Zugz3/W+yI6mwq3ZP8nRX07GkLz3BvuXAap0UVDKisMrXbu0PnJFIv8
+        h/WHgXBifEipww0BegoLl1N9z2HA1Dr8In0EX+ywCRmuGZLnSLxBTVDkfgxEw8kQciLiLi
+        OM/QabP0QUPcaJw1EneqaETs9LON42A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-119-g6CjAF31OVu8ZPoQLsfTDA-1; Mon, 26 Jul 2021 11:17:42 -0400
+X-MC-Unique: g6CjAF31OVu8ZPoQLsfTDA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94014107ACF5;
+        Mon, 26 Jul 2021 15:17:40 +0000 (UTC)
+Received: from localhost (ovpn-113-151.ams2.redhat.com [10.36.113.151])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 896FC19C59;
+        Mon, 26 Jul 2021 15:17:39 +0000 (UTC)
+Date:   Mon, 26 Jul 2021 16:17:38 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        virtualization@lists.linux-foundation.org,
+        linux-pm@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [RFC 0/3] cpuidle: add poll_source API and virtio vq polling
+Message-ID: <YP7SEkDEIBOch9U8@stefanha-x1.localdomain>
+References: <20210713161906.457857-1-stefanha@redhat.com>
+ <1008dee4-fce1-2462-1520-f5432bc89a07@redhat.com>
+ <YPfryV7qZVRbjNgP@stefanha-x1.localdomain>
+ <869a993d-a1b0-1c39-d081-4cdd2b71041f@redhat.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hsam23b3ijjhsxdu"
+        protocol="application/pgp-signature"; boundary="jE35KopBNKOzFkBR"
 Content-Disposition: inline
-In-Reply-To: <YPgNbVoNnq3fTMN2@phenom.ffwll.local>
+In-Reply-To: <869a993d-a1b0-1c39-d081-4cdd2b71041f@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---hsam23b3ijjhsxdu
-Content-Type: text/plain; charset=us-ascii
+--jE35KopBNKOzFkBR
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Daniel,
-
-On Wed, Jul 21, 2021 at 02:05:01PM +0200, Daniel Vetter wrote:
-> On Tue, Jul 20, 2021 at 03:45:19PM +0200, Maxime Ripard wrote:
-> > Interactions between bridges, panels, MIPI-DSI host and the component
-> > framework are not trivial and can lead to probing issues when
-> > implementing a display driver. Let's document the various cases we need
-> > too consider, and the solution to support all the cases.
+On Thu, Jul 22, 2021 at 05:04:57PM +0800, Jason Wang wrote:
+>=20
+> =E5=9C=A8 2021/7/21 =E4=B8=8B=E5=8D=885:41, Stefan Hajnoczi =E5=86=99=E9=
+=81=93:
+> > On Wed, Jul 21, 2021 at 11:29:55AM +0800, Jason Wang wrote:
+> > > =E5=9C=A8 2021/7/14 =E4=B8=8A=E5=8D=8812:19, Stefan Hajnoczi =E5=86=
+=99=E9=81=93:
+> > > > These patches are not polished yet but I would like request feedbac=
+k on this
+> > > > approach and share performance results with you.
+> > > >=20
+> > > > Idle CPUs tentatively enter a busy wait loop before halting when th=
+e cpuidle
+> > > > haltpoll driver is enabled inside a virtual machine. This reduces w=
+akeup
+> > > > latency for events that occur soon after the vCPU becomes idle.
+> > > >=20
+> > > > This patch series extends the cpuidle busy wait loop with the new p=
+oll_source
+> > > > API so drivers can participate in polling. Such polling-aware drive=
+rs disable
+> > > > their device's irq during the busy wait loop to avoid the cost of i=
+nterrupts.
+> > > > This reduces latency further than regular cpuidle haltpoll, which s=
+till relies
+> > > > on irqs.
+> > > >=20
+> > > > Virtio drivers are modified to use the poll_source API so all virti=
+o device
+> > > > types get this feature. The following virtio-blk fio benchmark resu=
+lts show the
+> > > > improvement:
+> > > >=20
+> > > >                IOPS (numjobs=3D4, iodepth=3D1, 4 virtqueues)
+> > > >                  before   poll_source      io_poll
+> > > > 4k randread    167102  186049 (+11%)  186654 (+11%)
+> > > > 4k randwrite   162204  181214 (+11%)  181850 (+12%)
+> > > > 4k randrw      159520  177071 (+11%)  177928 (+11%)
+> > > >=20
+> > > > The comparison against io_poll shows that cpuidle poll_source achie=
+ves
+> > > > equivalent performance to the block layer's io_poll feature (which I
+> > > > implemented in a separate patch series [1]).
+> > > >=20
+> > > > The advantage of poll_source is that applications do not need to ex=
+plicitly set
+> > > > the RWF_HIPRI I/O request flag. The poll_source approach is attract=
+ive because
+> > > > few applications actually use RWF_HIPRI and it takes advantage of C=
+PU cycles we
+> > > > would have spent in cpuidle haltpoll anyway.
+> > > >=20
+> > > > The current series does not improve virtio-net. I haven't investiga=
+ted deeply,
+> > > > but it is possible that NAPI and poll_source do not combine. See th=
+e final
+> > > > patch for a starting point on making the two work together.
+> > > >=20
+> > > > I have not tried this on bare metal but it might help there too. Th=
+e cost of
+> > > > disabling a device's irq must be less than the savings from avoidin=
+g irq
+> > > > handling for this optimization to make sense.
+> > > >=20
+> > > > [1] https://lore.kernel.org/linux-block/20210520141305.355961-1-ste=
+fanha@redhat.com/
+> > >=20
+> > > Hi Stefan:
+> > >=20
+> > > Some questions:
+> > >=20
+> > > 1) What's the advantages of introducing polling at virtio level inste=
+ad of
+> > > doing it at each subsystems? Polling in virtio level may only work we=
+ll if
+> > > all (or most) of the devices are virtio
+> > I'm not sure I understand the question. cpuidle haltpoll benefits all
+> > devices today, except it incurs interrupt latency. The poll_source API
+> > eliminates the interrupt latency for drivers that can disable device
+> > interrupts cheaply.
 > >=20
-> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > This patch adds poll_source to core virtio code so that all virtio
+> > drivers get this feature for free. No driver-specific changes are
+> > needed.
+> >=20
+> > If you mean networking, block layer, etc by "subsystems" then there's
+> > nothing those subsystems can do to help. Whether poll_source can be used
+> > depends on the specific driver, not the subsystem. If you consider
+> > drivers/virtio/ a subsystem, then that's exactly what the patch series
+> > is doing.
 >=20
-> I still have this dream that eventually we resurrect a patch to add
-> device_link to bridges/panels (ideally automatically), to help with some
-> of the suspend/resume issues around here.
 >=20
-> Will this make things worse?
+> I meant, if we choose to use idle poll, we have some several choices:
 >=20
-> I think it'd be really good to figure that out with some coding, since if
-> we have incompatible solution to handle probe issues vs suspend/resume
-> issues, we're screwed.
+> 1) bus level (e.g the virtio)
+> 2) subsystem level (e.g the networking and block)
 >=20
-> Atm the duct-tape is to carefully move things around between suspend and
-> suspend_early hooks (and resume and resume_late) and hope it all works ...
+> I'm not sure which one is better.
 
-My initial idea to fix this was indeed to use device links. I gave up
-after a while since it doesn't look like there's a way to add a device
-link before either the bridge or encoder probes.
+This API is intended to be driver- or bus-level. I don't think
+subsystems can do very much since they don't know the hardware
+capabilities (cheap interrupt disabling) and in most cases there's no
+advantage of plumbing it through subsystems when drivers can call the
+API directly.
 
-Indeed the OF-Graph representation is device-specific, so it can't be
-generic, and if you need to probe to add that link, well, it's already
-too late for the probe ordering :)
+> > > 2) What's the advantages of using cpuidle instead of using a thread (=
+and
+> > > leverage the scheduler)?
+> > In order to combine with the existing cpuidle infrastructure. No new
+> > polling loop is introduced and no additional CPU cycles are spent on
+> > polling.
+> >=20
+> > If cpuidle itself is converted to threads then poll_source would
+> > automatically operate in a thread too, but this patch series doesn't
+> > change how the core cpuidle code works.
+>=20
+>=20
+> So networking subsystem can use NAPI busy polling in the process context
+> which means it can be leveraged by the scheduler.
+>=20
+> I'm not sure it's a good idea to poll drivers for a specific bus in the
+> general cpu idle layer.
 
-Maxime
+Why? Maybe because the cpuidle execution environment is a little special?
 
---hsam23b3ijjhsxdu
+> Another questions, are those numbers measured by APICV capable machine?
+
+Yes.
+
+> Virtio-net turns on the tx interrupts since 2 years ago. And we don't see
+> too much difference when measured with a APICV host.
+
+My understand is NAPI always takes the first interrupt. Polling only
+happens on subsequent rounds until there's no more work to do.
+
+There seem to be multiple factors that would influence tx performance
+like how full the tx queues are, whether more packets are sent during
+NAPI polling, whether you're benchmarking a physical PCIe NIC or a
+vhost_net software device, etc.
+
+Regarding APICV and software devices, the benchmark results I posted
+show that avoiding the interrupt injection helps even with APICV.
+
+Stefan
+
+--jE35KopBNKOzFkBR
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYP7R6QAKCRDj7w1vZxhR
-xXldAQDXpWLYSTZeJVLCRJiFMIqVRrVtIsCXrhCNBxTWPQk6cAD+Ib0TiICvj6u2
-gPWRpxDk3mTXiwDtQAWsfCfelfv/vgQ=
-=tO9D
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmD+0hIACgkQnKSrs4Gr
+c8hEMwf/UorkfbFzgbz8WztHfFLygTqvvZ+SQp1NtIS713IwgbLzCS1YSae8MgOx
+1DbSdXqGM/iQUzorcrJVzKyc2jNsRAYDTw8bK0sF6XIAptbrDcHRFs/o6NAZw4vB
+h4ohjd1H0UYaDgKZP0sX0ecu/V4gJ2IPteUcGS+L9ZfXw7IVSXFU/6iHAmkmSz6D
+uwwBwvYgFKgmfeg1z0MGNHB2P8akYlGjHJkDX8oXQLVULAGqpCONfu347leIMM50
+X1r9n8BUpJy9ieIKr1ED4uVmTJImbsR7ReXLFjp3U5DLErhWr8OEZL3wEA3q4J1M
+7NAjTB9t4Aecd7549QNpbF16aC+pgQ==
+=U0jQ
 -----END PGP SIGNATURE-----
 
---hsam23b3ijjhsxdu--
+--jE35KopBNKOzFkBR--
+
