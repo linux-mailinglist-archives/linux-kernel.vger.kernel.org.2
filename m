@@ -2,111 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1923D518D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 05:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF56C3D5195
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 05:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhGZCt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Jul 2021 22:49:29 -0400
-Received: from m12-18.163.com ([220.181.12.18]:44582 "EHLO m12-18.163.com"
+        id S231497AbhGZDAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Jul 2021 23:00:24 -0400
+Received: from out0.migadu.com ([94.23.1.103]:22137 "EHLO out0.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhGZCt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Jul 2021 22:49:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=7op6m56/dGB1Lg2P29
-        4qblAAw+jAlLNUp/4RqF0Expo=; b=nrszWcPLo6ajtRzl39293TPa7RfU3QiSJc
-        76aJQsuKCRSmUWyuuoYxJidlJVSgGKx+eUH3J67FJ6gXIQrtmmcGDJIeUAQPhfI2
-        WBFKb0ZGhJmySfQct1Mh0rr3kBDR53LuokD1IUlVgzKtUDZmaw/bthx3HW7N8ssC
-        T4vzQVu1Y=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp14 (Coremail) with SMTP id EsCowAAnIsIHLP5g+6tMwg--.32144S2;
-        Mon, 26 Jul 2021 11:29:14 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     krzysztof.kozlowski@canonical.com, k.opasiak@samsung.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] nfc: s3fwrn5: remove unnecessary label
-Date:   Mon, 26 Jul 2021 11:29:17 +0800
-Message-Id: <20210726032917.30076-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: EsCowAAnIsIHLP5g+6tMwg--.32144S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uw4kuFW8WFWrGrWDXw4ruFg_yoW8CFWrp3
-        WrKayjgFW5KF1rWr1ktwsrua4agr4xGryxG39rta93Zr4Fvr1kJw1qvFyI9rW8GFyrCa13
-        tF47Zw45CF15Wa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bj9N3UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBLB-bsV++Mq0n3QAAsd
+        id S230321AbhGZDAA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Jul 2021 23:00:00 -0400
+Subject: Re: [PATCH V3 5/5] ext4: make fallocate retry when err is ENOSPC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1627270825;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E1m6o7frjqTUOmT2nx81UzVsmLYlKMFTSb1RXceNpcY=;
+        b=Wq/ingbqY2/8co3Wbpac3nVNGJ1WRdLpSi1zMfORxMClqWUMtKhQz5G3ueVKgr/27It7Rw
+        RAyMOgtSXbHMaoOGdMdU4bUHx9aGV+7qUMZ2+cOfhvmB55o6Qua1vjKYXIxlwv4q+nTL43
+        +csALRFXjOliutInIvRJksWBl/Th8Ig=
+To:     Wang Jianchao <jianchao.wan9@gmail.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca
+References: <20210724074124.25731-1-jianchao.wan9@gmail.com>
+ <20210724074124.25731-6-jianchao.wan9@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Message-ID: <0ac551b1-6295-9117-757d-12bee70de588@linux.dev>
+Date:   Mon, 26 Jul 2021 11:40:17 +0800
+MIME-Version: 1.0
+In-Reply-To: <20210724074124.25731-6-jianchao.wan9@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: guoqing.jiang@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+Hi,
 
-Simplify the code by removing unnecessary label and returning directly.
+On 7/24/21 3:41 PM, Wang Jianchao wrote:
+> From: Wang Jianchao <wangjianchao@kuaishou.com>
+>
+> The blocks may be waiting for journal commit to be freed back to
+> mb buddy. Let fallocate wait and retry in that case.
+>
+> Signed-off-by: Wang Jianchao <wangjianchao@kuaishou.com>
+> ---
+>   fs/ext4/extents.c | 6 +++++-
+>   1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 92ad64b89d9b..ad0b874d3448 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4635,7 +4635,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>   	struct inode *inode = file_inode(file);
+>   	loff_t new_size = 0;
+>   	unsigned int max_blocks;
+> -	int ret = 0;
+> +	int ret = 0, retries = 0;
+>   	int flags;
+>   	ext4_lblk_t lblk;
+>   	unsigned int blkbits = inode->i_blkbits;
+> @@ -4656,6 +4656,7 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>   		     FALLOC_FL_INSERT_RANGE))
+>   		return -EOPNOTSUPP;
+>   
+> +retry:
+>   	ext4_fc_start_update(inode);
+>   
+>   	if (mode & FALLOC_FL_PUNCH_HOLE) {
+> @@ -4722,6 +4723,9 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>   	trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
+>   exit:
+>   	ext4_fc_stop_update(inode);
+> +	if (ret == -ENOSPC && ext4_should_retry_alloc(inode->i_sb, &retries))
+> +		goto retry;
+> +
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/s3fwrn5/firmware.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Not sure if it is necessary since ext4_alloc_file_blocks already retries 
+allocate.
 
-diff --git a/drivers/nfc/s3fwrn5/firmware.c b/drivers/nfc/s3fwrn5/firmware.c
-index eb5d7a5b..1421ffd 100644
---- a/drivers/nfc/s3fwrn5/firmware.c
-+++ b/drivers/nfc/s3fwrn5/firmware.c
-@@ -421,10 +421,9 @@ int s3fwrn5_fw_download(struct s3fwrn5_fw_info *fw_info)
- 
- 	tfm = crypto_alloc_shash("sha1", 0, 0);
- 	if (IS_ERR(tfm)) {
--		ret = PTR_ERR(tfm);
- 		dev_err(&fw_info->ndev->nfc_dev->dev,
- 			"Cannot allocate shash (code=%d)\n", ret);
--		goto out;
-+		return PTR_ERR(tfm);
- 	}
- 
- 	ret = crypto_shash_tfm_digest(tfm, fw->image, image_size, hash_data);
-@@ -433,7 +432,7 @@ int s3fwrn5_fw_download(struct s3fwrn5_fw_info *fw_info)
- 	if (ret) {
- 		dev_err(&fw_info->ndev->nfc_dev->dev,
- 			"Cannot compute hash (code=%d)\n", ret);
--		goto out;
-+		return ret;
- 	}
- 
- 	/* Firmware update process */
-@@ -446,7 +445,7 @@ int s3fwrn5_fw_download(struct s3fwrn5_fw_info *fw_info)
- 	if (ret < 0) {
- 		dev_err(&fw_info->ndev->nfc_dev->dev,
- 			"Unable to enter update mode\n");
--		goto out;
-+		return ret;
- 	}
- 
- 	for (off = 0; off < image_size; off += fw_info->sector_size) {
-@@ -455,7 +454,7 @@ int s3fwrn5_fw_download(struct s3fwrn5_fw_info *fw_info)
- 		if (ret < 0) {
- 			dev_err(&fw_info->ndev->nfc_dev->dev,
- 				"Firmware update error (code=%d)\n", ret);
--			goto out;
-+			return ret;
- 		}
- 	}
- 
-@@ -463,13 +462,12 @@ int s3fwrn5_fw_download(struct s3fwrn5_fw_info *fw_info)
- 	if (ret < 0) {
- 		dev_err(&fw_info->ndev->nfc_dev->dev,
- 			"Unable to complete update mode\n");
--		goto out;
-+		return ret;
- 	}
- 
- 	dev_info(&fw_info->ndev->nfc_dev->dev,
- 		"Firmware update: success\n");
- 
--out:
- 	return ret;
- }
- 
--- 
-1.9.1
-
-
+Thanks,
+Guoqing
