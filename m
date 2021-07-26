@@ -2,192 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CE03D65C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0D83D65A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239652AbhGZQsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237987AbhGZQsO (ORCPT
+        id S236752AbhGZQoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:44:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34061 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240536AbhGZQo2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:48:14 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCEFC01B079
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:22:13 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso10623441otb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rJgYrAAFtcjBWZ81nVHlsdXlwxX21/6y1tWdyXf43yY=;
-        b=QuIqSpzgb0vHUIcN2FS3CWw8Pj8HBS/O/RJRt0NraNHThfiVHyjfMdc+mbWg+5YGPY
-         f4Za/DglVuVtA/V9iCRWzrbZ+q3YfZBTmUbkE4uqoAHyPL5051Mws6bLqmh/SrhkepsL
-         PdiFI2yzMHOUiX+lEjlI6UXVW9WdAuT4GeQ/E=
+        Mon, 26 Jul 2021 12:44:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627320296;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2djdVISIe1NLgmBdf251IqcGLIfy8aFTeD+AL2Ofvls=;
+        b=C6U3/k0Kcf898CohbJM5O4zLFCU3PUdFiZIfQGwQUmQlNuYIjTehH/NT+7T5xq8qln8+Wx
+        AuiAa/Oc4qo3RHp3vBzFd+YJuCK+/mqxN2aZGwKsOnp3pxb5avyJDMggUXihHnnruC/YB4
+        BA2vc7IbWZez0Tviq7xVXYlAGabL1Zo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-TNkZKYOsN2-do2vyO0b7jg-1; Mon, 26 Jul 2021 13:24:55 -0400
+X-MC-Unique: TNkZKYOsN2-do2vyO0b7jg-1
+Received: by mail-ed1-f70.google.com with SMTP id c20-20020a0564021014b029039994f9cab9so5053887edu.22
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:24:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=rJgYrAAFtcjBWZ81nVHlsdXlwxX21/6y1tWdyXf43yY=;
-        b=BtVdvDhGWVub+0jjV/uPzIRehhZ9MMytYdOCvGxtblhf8klniNJlxJAUPD11/WZBxC
-         by2Sw2FllGcgJnGZqEyzKKXmYaIFKv3fWWPM0grnLkgj1YN8I2AclPAeGkousUqsDpzc
-         rgCFLRERFtnIiKafGfcNsk2oYjL6iZnXqIRKAUR/3Z/dzDBsgj2J5ZNFAQy1zUkjiLrv
-         O395tO643bXMaL5PC3XpZKbwixjn1+x48jjFQFpSxAd3xpTJemFJ+PRIDb8sP601F7B9
-         GavTilg8QSq6pY8wKGfEW7QVnqYousAnGiPyPBy5A5Xyc2bAlWNRJUw7g/rDRYlpZzZG
-         LZOw==
-X-Gm-Message-State: AOAM531zmaGtRkID5K6/MK9YHQ7WbdbRI2Sk+WD/hnV56V12+1g6AqbP
-        oDXWtUBSgNUFKjPRKhZVIguwVg==
-X-Google-Smtp-Source: ABdhPJwbVpoSNaPiCc+cCdG2ojeVa5dFPoNsJOdXoQoFoj4N8ynAHJCZmIp5ct9xYan/saIwxwpeJQ==
-X-Received: by 2002:a05:6830:15d1:: with SMTP id j17mr12744998otr.292.1627320133142;
-        Mon, 26 Jul 2021 10:22:13 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c21sm91818oiw.16.2021.07.26.10.22.12
+        bh=2djdVISIe1NLgmBdf251IqcGLIfy8aFTeD+AL2Ofvls=;
+        b=DyH91QdxU+fNauJtLIHuFLlp2ScRG9lSFjBClAMk54GfCgbhWMIxSOggB6Hq0epnVO
+         mwoCI1GthD8yd9axV2gPrI70zcE9pD0HZ/zn7BvRvh5ImDkha3icJCWZxfN50fZkyMnU
+         TvP7pZ709pXRyy/nnFWIBPsM+/zeH0wgYdm5AbAZIexonT43SNAZ9AGXxzSGXl1dd75g
+         4VXgDMiHSb7Dsv7OFxxGpppi/rr+bet4W6AJb7iwB2II/5BzNBSpKAttoHvr0dMueTxH
+         lWEKUjntAheFQxn6T2yLJPdQKTICVNggHK0ymdyac1kzKIK8Q7PsylX2TZf44DBUlAuN
+         SNvw==
+X-Gm-Message-State: AOAM533I8LQciLLjeUdhY5k3Kjfdvw/PxJlctw9ByEolMfAMgY4saFCj
+        2ksD6BNwrGVZtp6LeacoADz5S8ky0txmCclM+3JvTfSJC45wkYz7bp2if0Khr226JKkuwih+3Ls
+        /xFNVCbKfMXiPZzv/oaGrS+n3
+X-Received: by 2002:a05:6402:3549:: with SMTP id f9mr22856636edd.387.1627320294103;
+        Mon, 26 Jul 2021 10:24:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzJqnu4J9v9LvtB85/ss5s7uZ0nL7+7zWpcuIdk5J/PvblxuWRpzldFrXeuNX+PXqJ4vgt4GA==
+X-Received: by 2002:a05:6402:3549:: with SMTP id f9mr22856617edd.387.1627320293924;
+        Mon, 26 Jul 2021 10:24:53 -0700 (PDT)
+Received: from [192.168.10.118] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id d22sm94798ejj.47.2021.07.26.10.24.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 10:22:12 -0700 (PDT)
-Subject: Re: [PATCH v7 2/2] firmware_loader: fix use-after-free in
- firmware_fallback_sysfs
-To:     Anirudh Rayabharam <mail@anirudhrb.com>, mcgrof@kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+de271708674e2093097b@syzkaller.appspotmail.com,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210724121134.6364-1-mail@anirudhrb.com>
- <20210724121134.6364-3-mail@anirudhrb.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <2f6f4318-8640-7b22-5492-e74f2af9ba38@linuxfoundation.org>
-Date:   Mon, 26 Jul 2021 11:22:11 -0600
+        Mon, 26 Jul 2021 10:24:53 -0700 (PDT)
+Subject: Re: [PATCH v2 0/8] My AVIC patch queue
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210713142023.106183-1-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e57ac09d-e697-f917-c19d-26fa74b2af7e@redhat.com>
+Date:   Mon, 26 Jul 2021 19:24:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210724121134.6364-3-mail@anirudhrb.com>
+In-Reply-To: <20210713142023.106183-1-mlevitsk@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/24/21 6:11 AM, Anirudh Rayabharam wrote:
-> This use-after-free happens when a fw_priv object has been freed but
-> hasn't been removed from the pending list (pending_fw_head). The next
-> time fw_load_sysfs_fallback tries to insert into the list, it ends up
-> accessing the pending_list member of the previoiusly freed fw_priv.
+On 13/07/21 16:20, Maxim Levitsky wrote:
+> Hi!
 > 
-> The root cause here is that all code paths that abort the fw load
-> don't delete it from the pending list. For example:
+> This is a series of bugfixes to the AVIC dynamic inhibition, which was
+> made while trying to fix bugs as much as possible, in this area and trying
+> to make the AVIC+SYNIC conditional enablement work.
 > 
-> 	_request_firmware()
-> 	  -> fw_abort_batch_reqs()
-> 	      -> fw_state_aborted()
+> * Patches 1-4 address an issue of possible
+>    mismatch between the AVIC inhibit state and AVIC enable state on all vCPUs.
 > 
-> To fix this, delete the fw_priv from the list in __fw_set_state() if
-> the new state is DONE or ABORTED. This way, all aborts will remove
-> the fw_priv from the list. Accordingly, remove calls to list_del_init
-> that were being made before calling fw_state_(aborted|done).
+>    Since AVICs state is changed via a request there is a window during which
+>    the states differ which can lead to various warnings and errors.
 > 
-> Also, in fw_load_sysfs_fallback, don't add the fw_priv to the pending
-> list if it is already aborted. Instead, just jump out and return early.
+>    There was an earlier attempt to fix this by changing the AVIC enable state
+>    on the current vCPU immediately when the AVIC inhibit request is created,
+>    however while this fixes the common case, it actually hides the issue deeper,
+>    because on all other vCPUs but current one, the two states can still
+>    mismatch till the KVM_REQ_APICV_UPDATE is processed on each of them.
 > 
-> Fixes: bcfbd3523f3c ("firmware: fix a double abort case with fw_load_sysfs_fallback")
-> Reported-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> Tested-by: syzbot+de271708674e2093097b@syzkaller.appspotmail.com
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->   drivers/base/firmware_loader/fallback.c | 10 +++++++---
->   drivers/base/firmware_loader/firmware.h |  6 +++++-
->   drivers/base/firmware_loader/main.c     |  2 ++
->   3 files changed, 14 insertions(+), 4 deletions(-)
+>    My take on this is to fix the places where the mismatch causes the
+>    issues instead and then drop the special case of toggling the AVIC right
+>    away in kvm_request_apicv_update.
 > 
-> diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-> index 1a48be0a030e..5d9f372fc9e7 100644
-> --- a/drivers/base/firmware_loader/fallback.c
-> +++ b/drivers/base/firmware_loader/fallback.c
-> @@ -91,10 +91,9 @@ static void __fw_load_abort(struct fw_priv *fw_priv)
->   	 * There is a small window in which user can write to 'loading'
->   	 * between loading done and disappearance of 'loading'
->   	 */
-
-Update the comment to "between loading done/abort"
-
-Rest looks good to me.
-
-> -	if (fw_sysfs_done(fw_priv))
-> +	if (fw_state_is_aborted(fw_priv) || fw_sysfs_done(fw_priv))
->   		return;
->   
-> -	list_del_init(&fw_priv->pending_list);
->   	fw_state_aborted(fw_priv);
->   }
->   
-> @@ -280,7 +279,6 @@ static ssize_t firmware_loading_store(struct device *dev,
->   			 * Same logic as fw_load_abort, only the DONE bit
->   			 * is ignored and we set ABORT only on failure.
->   			 */
-> -			list_del_init(&fw_priv->pending_list);
->   			if (rc) {
->   				fw_state_aborted(fw_priv);
->   				written = rc;
-> @@ -513,6 +511,11 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
->   	}
->   
->   	mutex_lock(&fw_lock);
-> +	if (fw_state_is_aborted(fw_priv)) {
-> +		mutex_unlock(&fw_lock);
-> +		retval = -EINTR;
-> +		goto out;
-> +	}
->   	list_add(&fw_priv->pending_list, &pending_fw_head);
->   	mutex_unlock(&fw_lock);
->   
-> @@ -538,6 +541,7 @@ static int fw_load_sysfs_fallback(struct fw_sysfs *fw_sysfs, long timeout)
->   	} else if (fw_priv->is_paged_buf && !fw_priv->data)
->   		retval = -ENOMEM;
->   
-> +out:
->   	device_del(f_dev);
->   err_put_dev:
->   	put_device(f_dev);
-> diff --git a/drivers/base/firmware_loader/firmware.h b/drivers/base/firmware_loader/firmware.h
-> index 63bd29fdcb9c..36bdb413c998 100644
-> --- a/drivers/base/firmware_loader/firmware.h
-> +++ b/drivers/base/firmware_loader/firmware.h
-> @@ -117,8 +117,12 @@ static inline void __fw_state_set(struct fw_priv *fw_priv,
->   
->   	WRITE_ONCE(fw_st->status, status);
->   
-> -	if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED)
-> +	if (status == FW_STATUS_DONE || status == FW_STATUS_ABORTED) {
-> +#ifdef CONFIG_FW_LOADER_USER_HELPER
-
-Might be helpful to add a comment that this covers all abort/done
-paths
-
-> +		list_del_init(&fw_priv->pending_list);
-> +#endif
->   		complete_all(&fw_st->completion);
-> +	}
->   }
->   
->   static inline void fw_state_aborted(struct fw_priv *fw_priv)
-> diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-> index 4fdb8219cd08..68c549d71230 100644
-> --- a/drivers/base/firmware_loader/main.c
-> +++ b/drivers/base/firmware_loader/main.c
-> @@ -783,8 +783,10 @@ static void fw_abort_batch_reqs(struct firmware *fw)
->   		return;
->   
->   	fw_priv = fw->priv;
-> +	mutex_lock(&fw_lock);
->   	if (!fw_state_is_aborted(fw_priv))
->   		fw_state_aborted(fw_priv);
-> +	mutex_unlock(&fw_lock);
->   }
->   
->   /* called from request_firmware() and request_firmware_work_func() */
+>    V2: I rewrote the commit description for the patch that touches
+>      avic inhibition in nested case.
+> 
+> * Patches 5-6 in this series fix a race condition which can cause
+>    a lost write from a guest to APIC when the APIC write races
+>    the AVIC un-inhibition, and add a warning to catch this problem
+>    if it re-emerges again.
+> 
+>    V2: I re-implemented this with a mutex in V2.
+> 
+> * Patch 7 is an  fix yet another issue I found in AVIC inhibit code:
+>    Currently avic_vcpu_load/avic_vcpu_put are called on userspace entry/exit
+>    from KVM (aka kvm_vcpu_get/kvm_vcpu_put), and these functions update the
+>    "is running" bit in the AVIC physical ID remap table and update the
+>    target vCPU in iommu code.
+> 
+>    However both of these functions don't do anything when AVIC is inhibited
+>    thus the "is running" bit will be kept enabled during exit to userspace.
+>    This shouldn't be a big issue as the caller
+>    doesn't use the AVIC when inhibited but still inconsistent and can trigger
+>    a warning about this in avic_vcpu_load.
+> 
+>    To be on the safe side I think it makes sense to call
+>    avic_vcpu_put/avic_vcpu_load when inhibiting/uninhibiting the AVIC.
+>    This will ensure that the work these functions do is matched.
+> 
+> * Patch 8 is the patch from Vitaly about allowing AVIC with SYNC
+>    as long as the guest doesn’t use the AutoEOI feature. I only slightly
+>    changed it to drop the SRCU lock around call to kvm_request_apicv_update
+>    and also expose the AutoEOI cpuid bit regardless of AVIC enablement.
+> 
+>    Despite the fact that this is the last patch in this series, this patch
+>    doesn't depend on the other fixes.
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> Maxim Levitsky (7):
+>    KVM: SVM: svm_set_vintr don't warn if AVIC is active but is about to
+>      be deactivated
+>    KVM: SVM: tweak warning about enabled AVIC on nested entry
+>    KVM: SVM: use vmcb01 in svm_refresh_apicv_exec_ctrl
+>    KVM: x86: APICv: drop immediate APICv disablement on current vCPU
+>    KVM: x86: APICv: fix race in kvm_request_apicv_update on SVM
+>    KVM: SVM: add warning for mistmatch between AVIC state and AVIC access
+>      page state
+>    KVM: SVM: call avic_vcpu_load/avic_vcpu_put when enabling/disabling
+>      AVIC
+> 
+> Vitaly Kuznetsov (1):
+>    KVM: x86: hyper-v: Deactivate APICv only when AutoEOI feature is in
+>      use
+> 
+>   arch/x86/include/asm/kvm_host.h |  3 ++
+>   arch/x86/kvm/hyperv.c           | 34 ++++++++++++++++----
+>   arch/x86/kvm/svm/avic.c         | 45 ++++++++++++++------------
+>   arch/x86/kvm/svm/nested.c       |  2 +-
+>   arch/x86/kvm/svm/svm.c          | 18 ++++++++---
+>   arch/x86/kvm/x86.c              | 57 ++++++++++++++++++---------------
+>   include/linux/kvm_host.h        |  1 +
+>   virt/kvm/kvm_main.c             |  1 +
+>   8 files changed, 103 insertions(+), 58 deletions(-)
 > 
 
-thanks,
--- Shuah
+Queued patches 1-4, thanks.
+
+Paolo
+
