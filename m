@@ -2,167 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279433D5488
+	by mail.lfdr.de (Postfix) with ESMTP id BC1823D548A
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbhGZHDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:03:20 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:61632 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231836AbhGZHDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:03:18 -0400
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 16Q6t2Mk016562;
-        Mon, 26 Jul 2021 07:43:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=PPS06212021;
- bh=pf2H33qB3ubwgkUdzH/XDF7CDn6xCLDYRPlRzFVgUio=;
- b=jKb7iCe3X0cbdUFIHF7zQKmHF01U31Ao588LdfdmXIAIsWzC3i35yilJh4mGEonHEA1C
- aApWW8ZPXttoPOrz98ehIwFEC/Mgya0ZanPWJ4oeLubz7BC/ld+8KvHsMi4lqY1D7vre
- WwvWKtklfgePmJl6xAjIiOBvRRgLM89e6jeDVLZwZQ9pjOgJxSnaj6mTMzQeEmjEWIo5
- L/wwWkbfjPCxMpkM/DDeHKVZs1k3EjQfQlPjVBm/cqC6RUqi8s5hAOXoRSSDErOG12DS
- zm+UfpndIUZ4frCE/fBhdZEN5BP2QI7qwtcap1sX+jOtlk2wue0aRQGhGo8s7UfDfwwj Eg== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-        by mx0a-0064b401.pphosted.com with ESMTP id 3a1417ghrs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Jul 2021 07:43:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IYEdhkgPkeOB8z50tA6A1+xZZ1xXxxN4Lba6vQhYQB+KPB1WWRB1rCNk59avKlGDYFkt++aB27DKMcUI+RFlghclV0cLzDipBjmkyRKRkcD8eW02Zuw8I20fxG4EvURT1zMRVU2bh3ieCZcbeq052/gD2dVtwVKE8+mOXEVj6YViffkhTmy4tookZci6X/py4n1UlzAfCkZ57DZPiZBcSc4v7m1muoJuY/F4EqcPoQDmr7oAeMhLjYxafpOXr5JMagrIW5Uw2oAknX0VrnoP7bY3ggp26l3k4B8vsWJ6EjjIO9i8h8KHi8hXZ2WsIAq3zhFT4qimy8H3fkENrZGgKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pf2H33qB3ubwgkUdzH/XDF7CDn6xCLDYRPlRzFVgUio=;
- b=RLguIy++2AORqKI4b19Tx9NgGaqX7so+KtcS5dJqMFEz5bGh5Nvzb9igiqOEBHdK1kGBTt1BgVLhjiAtSxStbqsqDf4VCKwi1uHIJlnM9oq1YGveE/1isbbqwlWAQ/HCa+jnb4A59IAGwS4hs0GwIcIjo4w9cW90aJ0vKDPcb76wt0eOk1XEtsyaZcSEkG/7iAnfrEEHXrobqP4mED84Tu9xwp/fFC2b0cBsSAcibWt3Lju/LkFDfuCk1JgXdOStCa63KHpTBCOJDsMgK+e9cJetx7WHVCkRtGNg3fZhTuBU+Cn9gfQDOoILawwkvnK05JbBo77ZryZuMohFdJjJ1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from BL1PR11MB5478.namprd11.prod.outlook.com (2603:10b6:208:31d::12)
- by MN2PR11MB4551.namprd11.prod.outlook.com (2603:10b6:208:269::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Mon, 26 Jul
- 2021 07:43:33 +0000
-Received: from BL1PR11MB5478.namprd11.prod.outlook.com
- ([fe80::a140:b563:8725:5c2b]) by BL1PR11MB5478.namprd11.prod.outlook.com
- ([fe80::a140:b563:8725:5c2b%8]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
- 07:43:33 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Question on (locking: Make spinlock_t and rwlock_t a RCU section on
- RT)
-Thread-Topic: Question on (locking: Make spinlock_t and rwlock_t a RCU section
- on RT)
-Thread-Index: AQHXge6b75FTx3VgvUCwMiDockKWIg==
-Date:   Mon, 26 Jul 2021 07:43:33 +0000
-Message-ID: <BL1PR11MB5478DB9FA9C2BEF56FBFF6AAFFE89@BL1PR11MB5478.namprd11.prod.outlook.com>
-Accept-Language: en-001, zh-CN, en-US
-Content-Language: aa
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none
- header.from=windriver.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0adf7392-b88a-4f01-fde9-08d950091203
-x-ms-traffictypediagnostic: MN2PR11MB4551:
-x-microsoft-antispam-prvs: <MN2PR11MB455197A7C0AC36ECAE450508FFE89@MN2PR11MB4551.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ap778DeDLWdZRuMB+swIGDt8ZAOyZHQ79tRnWbKGmI/YJITLenCi7M4XnjDrENp3q//ysb0w9xPDuxQebqcpMoqc/Z/7m9MZHE4z/+UQziFlPsF39lotjZtG5M4vGRfdVEJ7Coi6dGLlFL+X9r5XhN3oNR5Zzkq01AyOc4Njtovw0HuFGtHBuGPWSumGWvEiX3gI3wsu8vS/KdBUqFFVhzLrArJgfUilM0wTWTAGlksGG95xh1+fOZ1E8L+CGXz+97daCu3U0/RXAeVcInFX1Qtz9rlJfkLwXSI+iP2LZNMDBXzXMF44w9zaAhP2d8cbS0U2fL0FIx30lAV04qtikVHGaF/m/AN0wfQGlh3+l9dugoJpd5t9KNMkdxghvVIdq+x95EIf3EjMsGeb4QdM5aXz/Ax9QHDjAqk7X2NjoivyWdpRjIH+Qv0xmpnYLgVbUbi/8DJ3NFJt/BvJAGk/uesTXcFxu0KOgE2ZXQZrStLF4X9FJiRq8eAB6i4DsfPRvj8hGE772HdjY4W+W1s8lcQFOfRWT9sIW/or3E+cq3Fid8aQaFrf0WoC15vCuZhGgHYfCSGUXr4u2OKcWLnAU0w7UgRHDCtr7xu/ImxXHcgctlYE6oTh9+r15kBdI3ivfG2JrI9y0zZAUrvhsxmWbqG9YKd4H5yfTj9DyGB3vZCyS1YO/ySr5RcEBbUGL7Pwk2zXgmz/KTcU/Ye9+r3m7w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5478.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(366004)(39840400004)(376002)(66446008)(54906003)(66946007)(6916009)(5660300002)(8676002)(2906002)(186003)(4326008)(91956017)(8936002)(9686003)(55016002)(64756008)(66556008)(76116006)(66476007)(478600001)(316002)(38100700002)(52536014)(83380400001)(86362001)(122000001)(7696005)(6506007)(53546011)(71200400001)(26005)(33656002)(38070700004);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ylbzpwZ8tymflL3jsLze0HFW41UP4C94bKerXCY4P8NoFETDF5JOsArqgygc?=
- =?us-ascii?Q?DT6d6ju4MYEWqcJSbtDkRRybxopwpFy5BeJGj8suHch/I/tKaLFjtBg7KNZx?=
- =?us-ascii?Q?rkKw0zasAvVeppZScm94T9CjJk1dqVijSSQ+R1dmFhyu8qV0AjMkmEY1MzW2?=
- =?us-ascii?Q?c7xLbeu6W1LBEl8Oh0kcNZPPQiPzvGVbvYZCT47kSqTuYhUk709FTYR85JH9?=
- =?us-ascii?Q?ECyQswcyZgggRhQzLGyAajB195mCW7UCWDfi4m1pK5n+88rpzKNO43EwBEtp?=
- =?us-ascii?Q?KcByXcZ8njfathk5XEQP/Rjkt3T8LreRlA3u++EpUo0io++vdX/y39KVghEN?=
- =?us-ascii?Q?6tS/QO0mv5aG4DYbqkDvn0VFL23WXu6/mHZ3Tkhfqr9jzzfmniQmgiZkZq0U?=
- =?us-ascii?Q?Ztjz4KTtPJ7vyYoSt4ACY3plrmz/k5Jl/RL1aY6epL7K2rd9Z1QWzfDxiDuR?=
- =?us-ascii?Q?1my3enYw3qypc42JQb/cbsqk3aW1A7KMdFHADW86/uRPeQNHbbLOPi6QcmQl?=
- =?us-ascii?Q?YvlH5RCZg+Zgy4PtOGTW6pyggNOWJ2wauu+oOU2DbI0Pin2r9zJFDbB9Cu2s?=
- =?us-ascii?Q?esSs1WirvK7FeneRwaKP13zvIpc6UgeGPDNLfxZbioNEqJ/nJAjKCeidDHm3?=
- =?us-ascii?Q?/88HKRpw+Z0WmfR3SUt9NZSLX19VEN/iqtDB/wNZPlLl/YLpgYm3NNfDhCHT?=
- =?us-ascii?Q?YeunIU1azxEJf4yvg1KM08jhwNOyyRjVf3r4UzzwX38c6VKsCdrQacr3e3ax?=
- =?us-ascii?Q?DeMLyZt+96oUv9GzHDJcds9f+53fmm5EYpwf1x0MDqJvXLaJjxf9FXGaRCx+?=
- =?us-ascii?Q?DgSNFF+73ApzUV33gIpGRldVT8MH+xIZuNMCYAYsrskVu1UuiYmdA+yKW8QA?=
- =?us-ascii?Q?wSbYKaFm0aB7g4p32eb2go19T3iuL/xA9rwkx0at3GTA7hJefIEC34xPqRO9?=
- =?us-ascii?Q?kiRPxTgLe4VmpHbJ8EerT5KxgtMUw8ZbnT3vafxHxiCKxnbngb9FC2n7bd2A?=
- =?us-ascii?Q?CxaUMPXO8cBfJgBWPQvPI6ioAwNusaF3HA8opJlkn9azs2gQvhEGrpz3LJX/?=
- =?us-ascii?Q?9p07hpeWohAG4b+H1QvinINZY4DUnxD2Xhya2R8fRU0FHjry28yz7TMaJGBX?=
- =?us-ascii?Q?zACTVuQHLdpRiVUyDfMvCltpZxpzrvtgXvpW5QegxZc1p3R/GjAC/NL3k6Rb?=
- =?us-ascii?Q?D/1PuUcxk/Hw7L+Vo8AWZUpv7mG0n4DC1DiB0lpwTnuo9pIdFqv8WgmjtVLI?=
- =?us-ascii?Q?lKOyhfLXoxbKBr8IDClZ0SVe7fOvPvYjI7/2O343saqlnu8mIUXsOpFZ7qcA?=
- =?us-ascii?Q?1TU=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232760AbhGZHDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:03:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60092 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231836AbhGZHDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 03:03:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B2F160C51;
+        Mon, 26 Jul 2021 07:43:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627285430;
+        bh=NHQc2BQbV+EpmfsJG7sWI5huE7s0E6egpdCnikBrACM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eNU1PUe114yOBv0o1RHTLCE8znJx8Uk9ZBT6kFZTYU0a36Vy2xEhw8bNjEs9IHVfv
+         jtyTc1mto+46eT036JLZFXRTMUTvnaG5rbH7bwhtv6y/nBKUI+6doUtSbz6VnG5V2Q
+         98nUMQQeKIIFkZEFKtUOG3UGllOAFVwO1/c5GMEMKLoiUPJrvVnP4EqsmDlFpc/URt
+         P863pG8JKLDUzEvJ5phAjW2D2jqGX8IrcEs9STx2ZXty+XtfTn5a96bqngV9Ooic8P
+         YsI7PoYZBKlYRru/mnpfyk09rrt/JuPPZXgs+9KmuxlGxLiFttcXMRIOshl8JfeBvb
+         srgn7c56rCJFw==
+Date:   Mon, 26 Jul 2021 09:43:44 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Wei Xu <xuwei5@hisilicon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, "xuwei (O)" <xuwei5@huawei.com>
+Subject: Re: [PATCH 1/2] dts: hisilicon: add support for the PMIC found on
+ Hikey 970
+Message-ID: <20210726094344.0a415bd0@coco.lan>
+In-Reply-To: <60FE57B5.2010603@hisilicon.com>
+References: <cover.1627116285.git.mchehab+huawei@kernel.org>
+        <4a3583dd683512c2a4a138e88d4c889e51bf48e8.1627116285.git.mchehab+huawei@kernel.org>
+        <60FE20AC.3050400@hisilicon.com>
+        <20210726081812.54431189@coco.lan>
+        <60FE57B5.2010603@hisilicon.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5478.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0adf7392-b88a-4f01-fde9-08d950091203
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jul 2021 07:43:33.5202
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: l/9LXrz29roj7goWjWQ3ti+VvikKxD7iqBHf1tMYxkwjm4qpBiYX5kdKHJ5aF/YtN7E16HbNbwcnQ0uXOCOHoghbbVbwy/HgolIigGRMab4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4551
-X-Proofpoint-ORIG-GUID: m9xLbozUEuJoBGtrp0_iwCMSOHmdpf-Y
-X-Proofpoint-GUID: m9xLbozUEuJoBGtrp0_iwCMSOHmdpf-Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-07-26_03,2021-07-26_03,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- phishscore=0 adultscore=0 suspectscore=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=544 impostorscore=0 clxscore=1011
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107260045
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,  I have some questions about this patch =0A=
-=0A=
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>=0A=
-Date: Tue, 19 Nov 2019 09:25:04 +0100=0A=
-Subject: [PATCH] locking: Make spinlock_t and rwlock_t a RCU section on RT=
-=0A=
-=0A=
-On !RT a locked spinlock_t and rwlock_t disables preemption which=0A=
-implies a RCU read section. There is code that relies on that behaviour.=0A=
-=0A=
-Add an explicit RCU read section on RT while a sleeping lock (a lock=0A=
-which would disables preemption on !RT) acquired.=0A=
-=0A=
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>=0A=
----=0A=
- kernel/locking/rtmutex.c   |    6 ++++++=0A=
- kernel/locking/rwlock-rt.c |    6 ++++++=0A=
- 2 files changed, 12 insertions(+)=0A=
-=0A=
---- a/kernel/locking/rtmutex.c=0A=
-+++ b/kernel/locking/rtmutex.c=0A=
-@@ -1136,6 +1136,7 @@ void __lockfunc rt_spin_lock(spinlock_t=0A=
- {=0A=
-        spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);=0A=
-        rt_spin_lock_fastlock(&lock->lock, rt_spin_lock_slowlock);=0A=
-+       rcu_read_lock();=0A=
-        migrate_disable();=0A=
-...............................=0A=
-=0A=
-Operation of sleep is not allowed in RCU read critical area,  If  after acq=
-uiring a rt-spinlock , try to acquire another one rt-spinlock,  This may ca=
-use sleep, and trigger RCU warning.  =0A=
-=0A=
-Is there a problem with my analysis or something I missed?=0A=
-=0A=
-Thanks=0A=
-Qiang=
+Em Mon, 26 Jul 2021 14:35:33 +0800
+Wei Xu <xuwei5@hisilicon.com> escreveu:
+
+> Hi Mauro,
+> 
+> On 2021/7/26 14:19, Mauro Carvalho Chehab wrote:
+> > Em Mon, 26 Jul 2021 10:40:44 +0800
+> > Wei Xu <xuwei5@hisilicon.com> escreveu:
+> >   
+> >> Hi Mauro,
+> >>
+> >> On 2021/7/24 16:55, Mauro Carvalho Chehab wrote:  
+> >>> Add a device tree for the HiSilicon 6421v600 SPMI PMIC, used
+> >>> on HiKey970 board.
+> >>>
+> >>> As we now have support for it, change the fixed regulators
+> >>> used by the SD I/O to use the proper LDO supplies.
+> >>>
+> >>> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> >>> ---
+> >>>  .../boot/dts/hisilicon/hi3670-hikey970.dts    | 22 +----
+> >>>  .../boot/dts/hisilicon/hikey970-pmic.dtsi     | 86 +++++++++++++++++++
+> >>>  2 files changed, 89 insertions(+), 19 deletions(-)
+> >>>  create mode 100644 arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> >>>
+> >>> diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> >>> index d8abf442ee7e..7c32f5fd5cc5 100644
+> >>> --- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> >>> +++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
+> >>> @@ -12,6 +12,7 @@
+> >>>  
+> >>>  #include "hi3670.dtsi"
+> >>>  #include "hikey970-pinctrl.dtsi"
+> >>> +#include "hikey970-pmic.dtsi"
+> >>>  
+> >>>  / {
+> >>>  	model = "HiKey970";
+> >>> @@ -39,23 +40,6 @@ memory@0 {
+> >>>  		reg = <0x0 0x0 0x0 0x0>;
+> >>>  	};
+> >>>  
+> >>> -	sd_1v8: regulator-1v8 {
+> >>> -		compatible = "regulator-fixed";
+> >>> -		regulator-name = "fixed-1.8V";
+> >>> -		regulator-min-microvolt = <1800000>;
+> >>> -		regulator-max-microvolt = <1800000>;
+> >>> -		regulator-always-on;
+> >>> -	};
+> >>> -
+> >>> -	sd_3v3: regulator-3v3 {
+> >>> -		compatible = "regulator-fixed";
+> >>> -		regulator-name = "fixed-3.3V";
+> >>> -		regulator-min-microvolt = <3300000>;
+> >>> -		regulator-max-microvolt = <3300000>;
+> >>> -		regulator-boot-on;
+> >>> -		regulator-always-on;
+> >>> -	};
+> >>> -
+> >>>  	wlan_en: wlan-en-1-8v {
+> >>>  		compatible = "regulator-fixed";
+> >>>  		regulator-name = "wlan-en-regulator";
+> >>> @@ -402,8 +386,8 @@ &dwmmc1 {
+> >>>  	pinctrl-0 = <&sd_pmx_func
+> >>>  		     &sd_clk_cfg_func    
+> >>>  		     &sd_cfg_func>;    
+> >>> -	vmmc-supply = <&sd_3v3>;
+> >>> -	vqmmc-supply = <&sd_1v8>;
+> >>> +	vmmc-supply = <&ldo16>;
+> >>> +	vqmmc-supply = <&ldo9>;
+> >>>  	status = "okay";
+> >>>  };
+> >>>  
+> >>> diff --git a/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> >>> new file mode 100644
+> >>> index 000000000000..970047f2dabd
+> >>> --- /dev/null
+> >>> +++ b/arch/arm64/boot/dts/hisilicon/hikey970-pmic.dtsi
+> >>> @@ -0,0 +1,86 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +/*
+> >>> + * dts file for Hi6421v600 SPMI PMIC used at the HiKey970 Development Board
+> >>> + *
+> >>> + * Copyright (C) 2020, Huawei Tech. Co., Ltd.
+> >>> + */
+> >>> +
+> >>> +#include <dt-bindings/spmi/spmi.h>
+> >>> +
+> >>> +/ {
+> >>> +	spmi: spmi@fff24000 {
+> >>> +		compatible = "hisilicon,kirin970-spmi-controller";
+> >>> +		#address-cells = <2>;
+> >>> +		#size-cells = <0>;
+> >>> +		status = "okay";
+> >>> +		reg = <0x0 0xfff24000 0x0 0x1000>;
+> >>> +		hisilicon,spmi-channel = <2>;
+> >>> +
+> >>> +		pmic: pmic@0 {
+> >>> +			compatible = "hisilicon,hi6421-spmi";    
+> >>
+> >> Should this be "hisilicon,hi6421-pmic" which is already in the binding document "mfd/hi6421.txt"?
+> >> Others are OK to me.  
+> > 
+> > No. 
+> > 
+> > hisilicon,hi6421-pmic is used by this driver
+> > 	drivers/mfd/hi6421-pmic-core.c
+> > 
+> > which provides support for the Hi6421 variants that don't use a MIPI
+> > SPMI bus.
+> > 
+> > The "hisilicon,hi6421-spmi" compatible is for the new driver:
+> > 	drivers/mfd/hi6421-spmi-pmic.c
+> > 
+> > And it is defined at:
+> > 	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> > 
+> > Both DT bindings and the driver were promoted from staging on this patch:
+> > 
+> > 	https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-next&id=9bd9e0de1cf5b89c4854be505ac0a418ddcc01bf  
+> 
+> Got it. Thanks for your kind explanation!
+> So I am fine with this patch.
+> Do you need my ack now or later I can merge it once it is out of staging.
+
+Whatever works best for you and Greg.
+
+It should be noticed that the driver should be out of staging for v5.15-rc1
+(as the patch moving it out of staging was already merged at Greg's tree).
+This patch is needed by the PCI driver patchset I'm currently working,
+so the best would be if this patch could also be merged for v5.15-rc1
+(either via HiSilicon tree or via staging tree).
+
+I suspect that having your ack and merging this via staging would work
+best, as this would ensure that both changes will be merged upstream
+at the same time.
+
+But, as I said, it is up to you both ;-)
+
+Thanks,
+Mauro
