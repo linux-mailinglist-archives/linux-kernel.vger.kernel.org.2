@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DF53D6458
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876653D645B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239386AbhGZP4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:56:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54000 "EHLO mail.kernel.org"
+        id S239417AbhGZP5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:57:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237177AbhGZPf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:35:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A34B260F6D;
-        Mon, 26 Jul 2021 16:16:25 +0000 (UTC)
+        id S237707AbhGZPgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:36:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB20F60FC1;
+        Mon, 26 Jul 2021 16:16:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316186;
-        bh=D3nPhclPRlyxy8bnU95lfozbp5eZmaAFuIW+emzNWgI=;
+        s=korg; t=1627316188;
+        bh=NU/UYTw5csGX16z4Y0aEdc2v5/xMTL/7VmbglNmRjFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lTXdg0dtkwDLCszK2HeFD2Pz7C8/CARLUB256SUjlePivzxMK1zmcilQsAOOgAlRu
-         KnpDrCMKdWNtgMuMVUR8VdBRiHpu9b+FpFlJC9GbhPfxFxG/QfncAxCttC/S6bQMvn
-         mKrg81LwYTuSG7q7fZQ+Yyb9t1/AGMZjjmcKpkJ8=
+        b=GzG0+gZ0fjKWYgAwNUlXlgSvg7HUmnAzn9DjwCzC3KEtLAp+IVqpCHRpGdLWx4cW9
+         KMVovhThVsNjGH/KXawiUbZA0RWB4AK5pPTAt3mbt/uRW4FX0eqZC3r4SoS6FqoBK/
+         12c04VSPhpicyYc+/1vKkdSJ15HeL3RK6xCnEP5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hemant Kumar <hemantk@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH 5.13 188/223] bus: mhi: core: Validate channel ID when processing command completions
-Date:   Mon, 26 Jul 2021 17:39:40 +0200
-Message-Id: <20210726153852.343614284@linuxfoundation.org>
+        stable@vger.kernel.org, Hemant kumar <hemantk@codeaurora.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 5.13 189/223] bus: mhi: pci_generic: Fix inbound IPCR channel
+Date:   Mon, 26 Jul 2021 17:39:41 +0200
+Message-Id: <20210726153852.383489674@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,56 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+From: Loic Poulain <loic.poulain@linaro.org>
 
-commit 546362a9ef2ef40b57c6605f14e88ced507f8dd0 upstream.
+commit b8a97f2a65388394f433bf0730293a94f7d49046 upstream.
 
-MHI reads the channel ID from the event ring element sent by the
-device which can be any value between 0 and 255. In order to
-prevent any out of bound accesses, add a check against the maximum
-number of channels supported by the controller and those channels
-not configured yet so as to skip processing of that event ring
-element.
+The qrtr-mhi client driver assumes that inbound buffers are
+automatically allocated and queued by the MHI core, but this
+doesn't happen for mhi pci devices since IPCR inbound channel is
+not flagged with auto_queue, causing unusable IPCR (qrtr)
+feature. Fix that.
 
-Link: https://lore.kernel.org/r/1624558141-11045-1-git-send-email-bbhatt@codeaurora.org
-Fixes: 1d3173a3bae7 ("bus: mhi: core: Add support for processing events from client device")
+Link: https://lore.kernel.org/r/1625736749-24947-1-git-send-email-loic.poulain@linaro.org
+[mani: fixed a spelling mistake in commit description]
+Fixes: 855a70c12021 ("bus: mhi: Add MHI PCI support for WWAN modems")
 Cc: stable@vger.kernel.org #5.10
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Hemant kumar <hemantk@codeaurora.org>
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20210716075106.49938-3-manivannan.sadhasivam@linaro.org
+Link: https://lore.kernel.org/r/20210716075106.49938-4-manivannan.sadhasivam@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/bus/mhi/core/main.c |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/bus/mhi/pci_generic.c |   18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -773,11 +773,18 @@ static void mhi_process_cmd_completion(s
- 	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
+--- a/drivers/bus/mhi/pci_generic.c
++++ b/drivers/bus/mhi/pci_generic.c
+@@ -75,6 +75,22 @@ struct mhi_pci_dev_info {
+ 		.doorbell_mode_switch = false,		\
+ 	}
  
- 	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
--	mhi_chan = &mhi_cntrl->mhi_chan[chan];
--	write_lock_bh(&mhi_chan->lock);
--	mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
--	complete(&mhi_chan->completion);
--	write_unlock_bh(&mhi_chan->lock);
-+
-+	if (chan < mhi_cntrl->max_chan &&
-+	    mhi_cntrl->mhi_chan[chan].configured) {
-+		mhi_chan = &mhi_cntrl->mhi_chan[chan];
-+		write_lock_bh(&mhi_chan->lock);
-+		mhi_chan->ccs = MHI_TRE_GET_EV_CODE(tre);
-+		complete(&mhi_chan->completion);
-+		write_unlock_bh(&mhi_chan->lock);
-+	} else {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Completion packet for invalid channel ID: %d\n", chan);
++#define MHI_CHANNEL_CONFIG_DL_AUTOQUEUE(ch_num, ch_name, el_count, ev_ring) \
++	{						\
++		.num = ch_num,				\
++		.name = ch_name,			\
++		.num_elements = el_count,		\
++		.event_ring = ev_ring,			\
++		.dir = DMA_FROM_DEVICE,			\
++		.ee_mask = BIT(MHI_EE_AMSS),		\
++		.pollcfg = 0,				\
++		.doorbell = MHI_DB_BRST_DISABLE,	\
++		.lpm_notify = false,			\
++		.offload_channel = false,		\
++		.doorbell_mode_switch = false,		\
++		.auto_queue = true,			\
 +	}
- 
- 	mhi_del_ring_element(mhi_cntrl, mhi_ring);
- }
++
+ #define MHI_EVENT_CONFIG_CTRL(ev_ring, el_count) \
+ 	{					\
+ 		.num_elements = el_count,	\
+@@ -213,7 +229,7 @@ static const struct mhi_channel_config m
+ 	MHI_CHANNEL_CONFIG_UL(14, "QMI", 4, 0),
+ 	MHI_CHANNEL_CONFIG_DL(15, "QMI", 4, 0),
+ 	MHI_CHANNEL_CONFIG_UL(20, "IPCR", 8, 0),
+-	MHI_CHANNEL_CONFIG_DL(21, "IPCR", 8, 0),
++	MHI_CHANNEL_CONFIG_DL_AUTOQUEUE(21, "IPCR", 8, 0),
+ 	MHI_CHANNEL_CONFIG_UL_FP(34, "FIREHOSE", 32, 0),
+ 	MHI_CHANNEL_CONFIG_DL_FP(35, "FIREHOSE", 32, 0),
+ 	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0", 128, 2),
 
 
