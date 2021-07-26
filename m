@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D05D3D6370
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5B53D6351
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238579AbhGZPsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:48:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43124 "EHLO mail.kernel.org"
+        id S238697AbhGZPq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:46:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237951AbhGZP3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:29:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 954E160F5B;
-        Mon, 26 Jul 2021 16:10:03 +0000 (UTC)
+        id S237802AbhGZP3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D181861040;
+        Mon, 26 Jul 2021 16:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315804;
-        bh=nIgvJljqeNaSOo2VGdYMe1oZNCDHv06OUJcv2FQdLMY=;
+        s=korg; t=1627315717;
+        bh=fNxw5SKCDkE9+m8dpC5RvRb/DfRXI/Nm5DAV31/ZDoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z9FI6xkBrfm7gAZXbJ/7XyscjsNk4Nxir03mLj11C0GAqA4UykKIVwcQBFNU1kQ+p
-         1Egu7hub1hyZCc8y18HLXJW4Nlage9GqtAAYjwMvHEmWOm6DMaW8y/dkww9NsKyy8t
-         fYcf36zwKpfw7ab0U22NEVgXpQcVgBjD6Loc5zJQ=
+        b=lY/euYW/cUsFPJMp9K4HnlovGgY7WECy93mS9VcvYs5Zt5EvkJCl4uOqLapAn+YUO
+         O9TRbW/unQAzsxat0o9Bdi0GKZPaP2NZiEXjCi7g5qtJxhCkaiGmHJOwJUnBOxfTuw
+         7CSlKWH1y0DZKhywCvjZk4HeqvrMLwwjQAdcaXnI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Matteo Croce <mcroce@microsoft.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 037/223] mptcp: refine mptcp_cleanup_rbuf
-Date:   Mon, 26 Jul 2021 17:37:09 +0200
-Message-Id: <20210726153847.465933776@linuxfoundation.org>
+Subject: [PATCH 5.13 039/223] net: phy: marvell10g: fix differentiation of 88X3310 from 88X3340
+Date:   Mon, 26 Jul 2021 17:37:11 +0200
+Message-Id: <20210726153847.526118470@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,162 +43,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit fde56eea01f96b664eb63033990be0fd2a945da5 ]
+[ Upstream commit a5de4be0aaaa66a2fa98e8a33bdbed3bd0682804 ]
 
-The current cleanup rbuf tries a bit too hard to avoid acquiring
-the subflow socket lock. We may end-up delaying the needed ack,
-or skip acking a blocked subflow.
+It seems that we cannot differentiate 88X3310 from 88X3340 by simply
+looking at bit 3 of revision ID. This only works on revisions A0 and A1.
+On revision B0, this bit is always 1.
 
-Address the above extending the conditions used to trigger the cleanup
-to reflect more closely what TCP does and invoking tcp_cleanup_rbuf()
-on all the active subflows.
+Instead use the 3.d00d register for differentiation, since this register
+contains information about number of ports on the device.
 
-Note that we can't replicate the exact tests implemented in
-tcp_cleanup_rbuf(), as MPTCP lacks some of the required info - e.g.
-ping-pong mode.
-
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Fixes: 9885d016ffa9 ("net: phy: marvell10g: add separate structure for 88X3340")
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Reported-by: Matteo Croce <mcroce@linux.microsoft.com>
+Tested-by: Matteo Croce <mcroce@microsoft.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mptcp/protocol.c | 56 ++++++++++++++++++--------------------------
- net/mptcp/protocol.h |  1 -
- 2 files changed, 23 insertions(+), 34 deletions(-)
+ drivers/net/phy/marvell10g.c | 40 +++++++++++++++++++++++++++++++-----
+ include/linux/marvell_phy.h  |  6 +-----
+ 2 files changed, 36 insertions(+), 10 deletions(-)
 
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 0f36fefcc77e..18f152bdb66f 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -433,49 +433,46 @@ static void mptcp_send_ack(struct mptcp_sock *msk)
- 	}
- }
+diff --git a/drivers/net/phy/marvell10g.c b/drivers/net/phy/marvell10g.c
+index bbbc6ac8fa82..53a433442803 100644
+--- a/drivers/net/phy/marvell10g.c
++++ b/drivers/net/phy/marvell10g.c
+@@ -78,6 +78,11 @@ enum {
+ 	/* Temperature read register (88E2110 only) */
+ 	MV_PCS_TEMP		= 0x8042,
  
--static bool mptcp_subflow_cleanup_rbuf(struct sock *ssk)
-+static void mptcp_subflow_cleanup_rbuf(struct sock *ssk)
- {
- 	bool slow;
--	int ret;
++	/* Number of ports on the device */
++	MV_PCS_PORT_INFO	= 0xd00d,
++	MV_PCS_PORT_INFO_NPORTS_MASK	= 0x0380,
++	MV_PCS_PORT_INFO_NPORTS_SHIFT	= 7,
++
+ 	/* These registers appear at 0x800X and 0xa00X - the 0xa00X control
+ 	 * registers appear to set themselves to the 0x800X when AN is
+ 	 * restarted, but status registers appear readable from either.
+@@ -966,6 +971,30 @@ static const struct mv3310_chip mv2111_type = {
+ #endif
+ };
  
- 	slow = lock_sock_fast(ssk);
--	ret = tcp_can_send_ack(ssk);
--	if (ret)
-+	if (tcp_can_send_ack(ssk))
- 		tcp_cleanup_rbuf(ssk, 1);
- 	unlock_sock_fast(ssk, slow);
--	return ret;
++static int mv3310_get_number_of_ports(struct phy_device *phydev)
++{
++	int ret;
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_PCS_PORT_INFO);
++	if (ret < 0)
++		return ret;
++
++	ret &= MV_PCS_PORT_INFO_NPORTS_MASK;
++	ret >>= MV_PCS_PORT_INFO_NPORTS_SHIFT;
++
++	return ret + 1;
 +}
 +
-+static bool mptcp_subflow_could_cleanup(const struct sock *ssk, bool rx_empty)
++static int mv3310_match_phy_device(struct phy_device *phydev)
 +{
-+	const struct inet_connection_sock *icsk = inet_csk(ssk);
-+	bool ack_pending = READ_ONCE(icsk->icsk_ack.pending);
-+	const struct tcp_sock *tp = tcp_sk(ssk);
++	return mv3310_get_number_of_ports(phydev) == 1;
++}
 +
-+	return (ack_pending & ICSK_ACK_SCHED) &&
-+		((READ_ONCE(tp->rcv_nxt) - READ_ONCE(tp->rcv_wup) >
-+		  READ_ONCE(icsk->icsk_ack.rcv_mss)) ||
-+		 (rx_empty && ack_pending &
-+			      (ICSK_ACK_PUSHED2 | ICSK_ACK_PUSHED)));
- }
- 
- static void mptcp_cleanup_rbuf(struct mptcp_sock *msk)
++static int mv3340_match_phy_device(struct phy_device *phydev)
++{
++	return mv3310_get_number_of_ports(phydev) == 4;
++}
++
+ static int mv211x_match_phy_device(struct phy_device *phydev, bool has_5g)
  {
--	struct sock *ack_hint = READ_ONCE(msk->ack_hint);
- 	int old_space = READ_ONCE(msk->old_wspace);
- 	struct mptcp_subflow_context *subflow;
- 	struct sock *sk = (struct sock *)msk;
--	bool cleanup;
-+	int space =  __mptcp_space(sk);
-+	bool cleanup, rx_empty;
+ 	int val;
+@@ -994,7 +1023,8 @@ static int mv2111_match_phy_device(struct phy_device *phydev)
+ static struct phy_driver mv3310_drivers[] = {
+ 	{
+ 		.phy_id		= MARVELL_PHY_ID_88X3310,
+-		.phy_id_mask	= MARVELL_PHY_ID_88X33X0_MASK,
++		.phy_id_mask	= MARVELL_PHY_ID_MASK,
++		.match_phy_device = mv3310_match_phy_device,
+ 		.name		= "mv88x3310",
+ 		.driver_data	= &mv3310_type,
+ 		.get_features	= mv3310_get_features,
+@@ -1011,8 +1041,9 @@ static struct phy_driver mv3310_drivers[] = {
+ 		.set_loopback	= genphy_c45_loopback,
+ 	},
+ 	{
+-		.phy_id		= MARVELL_PHY_ID_88X3340,
+-		.phy_id_mask	= MARVELL_PHY_ID_88X33X0_MASK,
++		.phy_id		= MARVELL_PHY_ID_88X3310,
++		.phy_id_mask	= MARVELL_PHY_ID_MASK,
++		.match_phy_device = mv3340_match_phy_device,
+ 		.name		= "mv88x3340",
+ 		.driver_data	= &mv3340_type,
+ 		.get_features	= mv3310_get_features,
+@@ -1069,8 +1100,7 @@ static struct phy_driver mv3310_drivers[] = {
+ module_phy_driver(mv3310_drivers);
  
--	/* this is a simple superset of what tcp_cleanup_rbuf() implements
--	 * so that we don't have to acquire the ssk socket lock most of the time
--	 * to do actually nothing
--	 */
--	cleanup = __mptcp_space(sk) - old_space >= max(0, old_space);
--	if (!cleanup)
--		return;
-+	cleanup = (space > 0) && (space >= (old_space << 1));
-+	rx_empty = !atomic_read(&sk->sk_rmem_alloc);
+ static struct mdio_device_id __maybe_unused mv3310_tbl[] = {
+-	{ MARVELL_PHY_ID_88X3310, MARVELL_PHY_ID_88X33X0_MASK },
+-	{ MARVELL_PHY_ID_88X3340, MARVELL_PHY_ID_88X33X0_MASK },
++	{ MARVELL_PHY_ID_88X3310, MARVELL_PHY_ID_MASK },
+ 	{ MARVELL_PHY_ID_88E2110, MARVELL_PHY_ID_MASK },
+ 	{ },
+ };
+diff --git a/include/linux/marvell_phy.h b/include/linux/marvell_phy.h
+index acee44b9db26..0f06c2287b52 100644
+--- a/include/linux/marvell_phy.h
++++ b/include/linux/marvell_phy.h
+@@ -22,14 +22,10 @@
+ #define MARVELL_PHY_ID_88E1545		0x01410ea0
+ #define MARVELL_PHY_ID_88E1548P		0x01410ec0
+ #define MARVELL_PHY_ID_88E3016		0x01410e60
++#define MARVELL_PHY_ID_88X3310		0x002b09a0
+ #define MARVELL_PHY_ID_88E2110		0x002b09b0
+ #define MARVELL_PHY_ID_88X2222		0x01410f10
  
--	/* if the hinted ssk is still active, try to use it */
--	if (likely(ack_hint)) {
--		mptcp_for_each_subflow(msk, subflow) {
--			struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
-+	mptcp_for_each_subflow(msk, subflow) {
-+		struct sock *ssk = mptcp_subflow_tcp_sock(subflow);
- 
--			if (ack_hint == ssk && mptcp_subflow_cleanup_rbuf(ssk))
--				return;
--		}
-+		if (cleanup || mptcp_subflow_could_cleanup(ssk, rx_empty))
-+			mptcp_subflow_cleanup_rbuf(ssk);
- 	}
+-/* PHY IDs and mask for Alaska 10G PHYs */
+-#define MARVELL_PHY_ID_88X33X0_MASK	0xfffffff8
+-#define MARVELL_PHY_ID_88X3310		0x002b09a0
+-#define MARVELL_PHY_ID_88X3340		0x002b09a8
 -
--	/* otherwise pick the first active subflow */
--	mptcp_for_each_subflow(msk, subflow)
--		if (mptcp_subflow_cleanup_rbuf(mptcp_subflow_tcp_sock(subflow)))
--			return;
- }
+ /* Marvel 88E1111 in Finisar SFP module with modified PHY ID */
+ #define MARVELL_PHY_ID_88E1111_FINISAR	0x01ff0cc0
  
- static bool mptcp_check_data_fin(struct sock *sk)
-@@ -620,7 +617,6 @@ static bool __mptcp_move_skbs_from_subflow(struct mptcp_sock *msk,
- 			break;
- 		}
- 	} while (more_data_avail);
--	WRITE_ONCE(msk->ack_hint, ssk);
- 
- 	*bytes += moved;
- 	return done;
-@@ -1955,7 +1951,6 @@ static bool __mptcp_move_skbs(struct mptcp_sock *msk)
- 		__mptcp_update_rmem(sk);
- 		done = __mptcp_move_skbs_from_subflow(msk, ssk, &moved);
- 		mptcp_data_unlock(sk);
--		tcp_cleanup_rbuf(ssk, moved);
- 
- 		if (unlikely(ssk->sk_err))
- 			__mptcp_error_report(sk);
-@@ -1971,7 +1966,6 @@ static bool __mptcp_move_skbs(struct mptcp_sock *msk)
- 		ret |= __mptcp_ofo_queue(msk);
- 		__mptcp_splice_receive_queue(sk);
- 		mptcp_data_unlock(sk);
--		mptcp_cleanup_rbuf(msk);
- 	}
- 	if (ret)
- 		mptcp_check_data_fin((struct sock *)msk);
-@@ -2216,9 +2210,6 @@ static void __mptcp_close_ssk(struct sock *sk, struct sock *ssk,
- 	if (ssk == msk->last_snd)
- 		msk->last_snd = NULL;
- 
--	if (ssk == msk->ack_hint)
--		msk->ack_hint = NULL;
--
- 	if (ssk == msk->first)
- 		msk->first = NULL;
- 
-@@ -2433,7 +2424,6 @@ static int __mptcp_init_sock(struct sock *sk)
- 	msk->tx_pending_data = 0;
- 	msk->size_goal_cache = TCP_BASE_MSS;
- 
--	msk->ack_hint = NULL;
- 	msk->first = NULL;
- 	inet_csk(sk)->icsk_sync_mss = mptcp_sync_mss;
- 
-diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
-index f74258377c05..f842c832f6b0 100644
---- a/net/mptcp/protocol.h
-+++ b/net/mptcp/protocol.h
-@@ -236,7 +236,6 @@ struct mptcp_sock {
- 	bool		rcv_fastclose;
- 	bool		use_64bit_ack; /* Set when we received a 64-bit DSN */
- 	spinlock_t	join_list_lock;
--	struct sock	*ack_hint;
- 	struct work_struct work;
- 	struct sk_buff  *ooo_last_skb;
- 	struct rb_root  out_of_order_queue;
 -- 
 2.30.2
 
