@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9648F3D5C8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05E43D5C58
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234844AbhGZOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S234866AbhGZOQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:16:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234778AbhGZOTy (ORCPT
+        with ESMTP id S234921AbhGZOQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:19:54 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100FAC061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:00:22 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id k13so7157131qth.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 08:00:22 -0700 (PDT)
+        Mon, 26 Jul 2021 10:16:18 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E45C061757;
+        Mon, 26 Jul 2021 07:56:46 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id mz5-20020a17090b3785b0290176ecf64922so4273887pjb.3;
+        Mon, 26 Jul 2021 07:56:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xTTsptuLITxPc+Owajv0QCvUN6VmzjQA4sTb/kLyZME=;
-        b=ZXLe+pV1dgrpJxW8gR0RgPwPUehS8IrE/2Vbou8UHcmjEUrqODo0mbUUtREDLuboHI
-         uRYwy1cK4J2lucpZS2lkrz+Yw3WhqxYpAkUM404nyr8nhUs+xbXAzDBhgicYHjJ02tcT
-         P7TwXco+KKFQYqfCwlG7Pa+rFK8sjhe3zkhUEIpLvEhU1x/8TfOIdLv3UNg30/xApIS9
-         n+idNUq/UTyY5HU1LEGAlJPZWfKdyKAYAIaaFhvqhVJnPZULfAhZMEDr+qzP1/Amj40Q
-         BVflhSLUWnZN5aqLPa75Q9QA+mvqr+1FOMZjDpEEW8gOwUNQA5DRllSRQyw3V6m1xd8f
-         cVfQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GibM4JunErmcwqpQUyn3ExW3S8fVKXUsAqTOBkrdaJc=;
+        b=U7csDx7myT7ZEpfOQWHAX021iKmpEkjKFYRgPfZgvKRBYy8LewJELViR3KSW8aeSq3
+         S/5wnut7LOrYdI+sIC09WfQ/gPdSbi+7Xv2bziM63HyhVuv36dcqSmFEcng/xuGG8Scx
+         6b/PBSEDgRON5lc+pMtOeGcRpamcn+uJ71pQYdZtyiB98EByuDMfnvr1RCfrQQBDe3yH
+         pjtLbqQgjNDWgSgMMNUK+b2Px275M8XnQIZCHPcJXNK3akAhID3lg3R5N2O+GXozPD+P
+         tpnuNpM6Cg5VdGPAadmE2wUEMHFv1wmJVuUXF1VdmUGpyEVeNxtGJkeWJxqB7Qly6RuS
+         +4fA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xTTsptuLITxPc+Owajv0QCvUN6VmzjQA4sTb/kLyZME=;
-        b=Je1MYYEtdiOl6QsMpGG2ZSiJi2EIm12KREGOlP8mK5eUguATgD0gpZp6kpBESDGTeS
-         WawD7GY7jA0ucpU0b+UhrQXvH+zt7A+yFnwr064Qsg/eBNYCM71sUq/jnetqiqN3s2Mp
-         ALtyREi6YwtODEMUP5NZgBRV3sC1jI8xU+PDcPEdKrm1CfKe5NKaTMl8ttwvOKiJooTA
-         wzNGEPJ8RQ8XrMbVphG1R30rfUAtKPW25QDHubKDHvrU4El4yD20hLmXwbpO98CrJ1Nz
-         MXipR4ax208dRE760yiY23O4XrK/BEXb8Wo8CQwCuVKdO88i+dcmTrzmtUaUTFMOvw/N
-         jkCg==
-X-Gm-Message-State: AOAM531+GTL5EEBS8An1nl6cEi7/o7rMjjDU2zPI3ZAyXj61uUnEAYY8
-        XklxcBOq25Kz0ev/a1XPhjVFHA==
-X-Google-Smtp-Source: ABdhPJxUmmX4dY9GgbrCAU62sFsuKrKt/V1WzL+nrW4HxYYqVOvANMZBVBRtyJKBVfb1X3SNBJmi+w==
-X-Received: by 2002:ac8:66ca:: with SMTP id m10mr14787845qtp.171.1627311621182;
-        Mon, 26 Jul 2021 08:00:21 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:e732])
-        by smtp.gmail.com with ESMTPSA id h10sm99931qka.83.2021.07.26.08.00.20
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GibM4JunErmcwqpQUyn3ExW3S8fVKXUsAqTOBkrdaJc=;
+        b=r597tRCfRvQeB6U95RXeURwEFPkG0m05QsWuXMUuvkGVBgA7gAXzTBOAdSccNkMY+B
+         VzNuu6lbORtNATuJXWsgPegEYltPzFz7L5Dc5GEwNpQ5mcdk8y2tAPDURbksUCGgVj4o
+         fRpwtYooe0VLcvUuF8/lhmy40ExBnogjMBONCt7e+v3/U2baS4/a2xJWyWtHNo61z0dr
+         wWaEPwYdsKpfI7jIw56EnEAUOD50Y+erjSBq7KaLzAbIBmUK26JkOgkv9qnI9VHo8rXo
+         vVtq5yEtKpvOsNEh/SoHyFMScHrBM5D7k/KmoRFTS/NLWe7yYDyzibMYl180Nm/9ovVP
+         n8Cw==
+X-Gm-Message-State: AOAM532gyxB8CXfbLDHPmdcRggWG0f1wByUUlsOAWX59fdv6kE5/brYV
+        VnibTYRRop/gmT5KUYPOmoI=
+X-Google-Smtp-Source: ABdhPJwdeAVDE6ImTV58soarxRWvWOKUps/Kw+CEPEV7+viSnP4dluE7gXh3J6JGkb9liNBgRGiCog==
+X-Received: by 2002:a17:90b:4d0b:: with SMTP id mw11mr9162113pjb.122.1627311405833;
+        Mon, 26 Jul 2021 07:56:45 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id w23sm9425588pjn.16.2021.07.26.07.56.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 08:00:20 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] mm: memcontrol: fix blocking rstat function called from atomic cgroup1 thresholding code
-Date:   Mon, 26 Jul 2021 11:00:19 -0400
-Message-Id: <20210726150019.251820-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.32.0
+        Mon, 26 Jul 2021 07:56:44 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 05/12] drm/msm/submit: Simplify out-fence-fd handling
+Date:   Mon, 26 Jul 2021 08:00:19 -0700
+Message-Id: <20210726150038.2187631-6-robdclark@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210726150038.2187631-1-robdclark@gmail.com>
+References: <20210726150038.2187631-1-robdclark@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dan Carpenter reports:
+From: Rob Clark <robdclark@chromium.org>
 
-    The patch 2d146aa3aa84: "mm: memcontrol: switch to rstat" from Apr
-    29, 2021, leads to the following static checker warning:
+No need for this to be split in two parts.
 
-	    kernel/cgroup/rstat.c:200 cgroup_rstat_flush()
-	    warn: sleeping in atomic context
-
-    mm/memcontrol.c
-      3572  static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
-      3573  {
-      3574          unsigned long val;
-      3575
-      3576          if (mem_cgroup_is_root(memcg)) {
-      3577                  cgroup_rstat_flush(memcg->css.cgroup);
-			    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    This is from static analysis and potentially a false positive.  The
-    problem is that mem_cgroup_usage() is called from __mem_cgroup_threshold()
-    which holds an rcu_read_lock().  And the cgroup_rstat_flush() function
-    can sleep.
-
-      3578                  val = memcg_page_state(memcg, NR_FILE_PAGES) +
-      3579                          memcg_page_state(memcg, NR_ANON_MAPPED);
-      3580                  if (swap)
-      3581                          val += memcg_page_state(memcg, MEMCG_SWAP);
-      3582          } else {
-      3583                  if (!swap)
-      3584                          val = page_counter_read(&memcg->memory);
-      3585                  else
-      3586                          val = page_counter_read(&memcg->memsw);
-      3587          }
-      3588          return val;
-      3589  }
-
-__mem_cgroup_threshold() indeed holds the rcu lock. In addition, the
-thresholding code is invoked during stat changes, and those contexts
-have irqs disabled as well. If the lock breaking occurs inside the
-flush function, it will result in a sleep from an atomic context.
-
-Use the irsafe flushing variant in mem_cgroup_usage() to fix this.
-
-Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
-Cc: <stable@vger.kernel.org>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Acked-by: Christian König <christian.koenig@amd.com>
 ---
- mm/memcontrol.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/msm/msm_gem_submit.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ae1f5d0cb581..eb8e87c4833f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3574,7 +3574,8 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
- 	unsigned long val;
+diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+index e789f68d5be1..8abd743adfb0 100644
+--- a/drivers/gpu/drm/msm/msm_gem_submit.c
++++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+@@ -645,7 +645,6 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 	struct msm_file_private *ctx = file->driver_priv;
+ 	struct msm_gem_submit *submit;
+ 	struct msm_gpu *gpu = priv->gpu;
+-	struct sync_file *sync_file = NULL;
+ 	struct msm_gpu_submitqueue *queue;
+ 	struct msm_ringbuffer *ring;
+ 	struct msm_submit_post_dep *post_deps = NULL;
+@@ -824,22 +823,19 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+ 	}
  
- 	if (mem_cgroup_is_root(memcg)) {
--		cgroup_rstat_flush(memcg->css.cgroup);
-+		/* mem_cgroup_threshold() calls here from irqsafe context */
-+		cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
- 		val = memcg_page_state(memcg, NR_FILE_PAGES) +
- 			memcg_page_state(memcg, NR_ANON_MAPPED);
- 		if (swap)
+ 	if (args->flags & MSM_SUBMIT_FENCE_FD_OUT) {
+-		sync_file = sync_file_create(submit->fence);
++		struct sync_file *sync_file = sync_file_create(submit->fence);
+ 		if (!sync_file) {
+ 			ret = -ENOMEM;
+ 			goto out;
+ 		}
++		fd_install(out_fence_fd, sync_file->file);
++		args->fence_fd = out_fence_fd;
+ 	}
+ 
+ 	msm_gpu_submit(gpu, submit);
+ 
+ 	args->fence = submit->fence->seqno;
+ 
+-	if (args->flags & MSM_SUBMIT_FENCE_FD_OUT) {
+-		fd_install(out_fence_fd, sync_file->file);
+-		args->fence_fd = out_fence_fd;
+-	}
+-
+ 	msm_reset_syncobjs(syncobjs_to_reset, args->nr_in_syncobjs);
+ 	msm_process_post_deps(post_deps, args->nr_out_syncobjs,
+ 	                      submit->fence);
 -- 
-2.32.0
+2.31.1
 
