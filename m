@@ -2,126 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBFA3D55A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0104D3D55AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhGZHtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 03:49:50 -0400
-Received: from foss.arm.com ([217.140.110.172]:47504 "EHLO foss.arm.com"
+        id S232783AbhGZHua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 03:50:30 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:62269 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231728AbhGZHts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 03:49:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D75A106F;
-        Mon, 26 Jul 2021 01:30:17 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4AEE3F66F;
-        Mon, 26 Jul 2021 01:30:15 -0700 (PDT)
-Subject: Re: [PATCH 17/23] iommu/vt-d: Prepare for multiple DMA domain types
-To:     Lu Baolu <baolu.lu@linux.intel.com>, joro@8bytes.org,
-        will@kernel.org
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        suravee.suthikulpanit@amd.com, john.garry@huawei.com,
-        dianders@chromium.org
-References: <cover.1626888444.git.robin.murphy@arm.com>
- <11efdfa4ee223d12769d17459fcf789c626d7b82.1626888445.git.robin.murphy@arm.com>
- <7599b48f-169d-283f-782b-e54c667346e8@linux.intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <fdf09426-d329-a212-6c5a-ddc9aadd77ec@arm.com>
-Date:   Mon, 26 Jul 2021 09:30:10 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S231728AbhGZHu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 03:50:29 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4GYCmw5268z4w;
+        Mon, 26 Jul 2021 10:30:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1627288256; bh=UYfafvj7oW9lU+0ORYDLk6ttWEkFxJ3q5XJgf0F0aVU=;
+        h=Date:From:Subject:To:Cc:From;
+        b=Trev/yMf+9El35wMFvypcyf88ShLCs5n34obJZ86pTVQnrwZ5WY75a2MKbe7bT2sX
+         IY8TEYiG5xyVDfs/I0StT/EQpl91WdxlUvYaON+tEj2Ob9EQZjUhrdvJ3upf90ZMEJ
+         lDdx0HL0BAGMcKNM4/HrWhQILGF7grdQ1VMFACC67zKnNi0Z2jMFfrqEXj1dYbPpY6
+         gJ47/ZicoEb/Emotv6c6PfMrcy0Gg/aLhmxqFaSZi6eWFMTujRd/DVPNI1ZW+ovpM6
+         bnyMyCaQQUJ0L+Se+zg1/WWonAcwIZF154ylQvnuzjBuAwQDZDmVaP6cGOSbzKdpea
+         zUl28RkURvJrg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.2 at mail
+Date:   Mon, 26 Jul 2021 10:30:56 +0200
+Message-Id: <aae042425e7a55d7d0f873cdfc3712953fb0df10.1627288191.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH] opp: remove WARN when no valid OPPs remain
 MIME-Version: 1.0
-In-Reply-To: <7599b48f-169d-283f-782b-e54c667346e8@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-24 06:23, Lu Baolu wrote:
-> Hi Robin,
-> 
-> On 2021/7/22 2:20, Robin Murphy wrote:
->> In preparation for the strict vs. non-strict decision for DMA domains to
->> be expressed in the domain type, make sure we expose our flush queue
->> awareness by accepting the new domain type, and test the specific
->> feature flag where we want to identify DMA domains in general. The DMA
->> ops setup can simply be made unconditional, since iommu-dma already
->> knows not to touch identity domains.
->>
->> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 15 ++++++---------
->>   1 file changed, 6 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index e2add5a0caef..77d322272743 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -601,7 +601,7 @@ struct intel_iommu *domain_get_iommu(struct 
->> dmar_domain *domain)
->>       int iommu_id;
->>       /* si_domain and vm domain should not get here. */
->> -    if (WARN_ON(domain->domain.type != IOMMU_DOMAIN_DMA))
->> +    if (WARN_ON(!(domain->domain.type & __IOMMU_DOMAIN_DMA)))
->>           return NULL;
->>       for_each_domain_iommu(iommu_id, domain)
->> @@ -1035,7 +1035,7 @@ static struct dma_pte *pfn_to_dma_pte(struct 
->> dmar_domain *domain,
->>               pteval = ((uint64_t)virt_to_dma_pfn(tmp_page) << 
->> VTD_PAGE_SHIFT) | DMA_PTE_READ | DMA_PTE_WRITE;
->>               if (domain_use_first_level(domain)) {
->>                   pteval |= DMA_FL_PTE_XD | DMA_FL_PTE_US;
->> -                if (domain->domain.type == IOMMU_DOMAIN_DMA)
->> +                if (domain->domain.type & __IOMMU_DOMAIN_DMA_API)
->>                       pteval |= DMA_FL_PTE_ACCESS;
->>               }
->>               if (cmpxchg64(&pte->val, 0ULL, pteval))
->> @@ -2346,7 +2346,7 @@ __domain_mapping(struct dmar_domain *domain, 
->> unsigned long iov_pfn,
->>       if (domain_use_first_level(domain)) {
->>           attr |= DMA_FL_PTE_XD | DMA_FL_PTE_US;
->> -        if (domain->domain.type == IOMMU_DOMAIN_DMA) {
->> +        if (domain->domain.type & __IOMMU_DOMAIN_DMA_API) {
->>               attr |= DMA_FL_PTE_ACCESS;
->>               if (prot & DMA_PTE_WRITE)
->>                   attr |= DMA_FL_PTE_DIRTY;
->> @@ -4528,6 +4528,7 @@ static struct iommu_domain 
->> *intel_iommu_domain_alloc(unsigned type)
->>       switch (type) {
->>       case IOMMU_DOMAIN_DMA:
->> +    case IOMMU_DOMAIN_DMA_FQ:
->>       case IOMMU_DOMAIN_UNMANAGED:
->>           dmar_domain = alloc_domain(0);
->>           if (!dmar_domain) {
->> @@ -5164,12 +5165,8 @@ static void intel_iommu_release_device(struct 
->> device *dev)
->>   static void intel_iommu_probe_finalize(struct device *dev)
->>   {
->> -    struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
->> -
->> -    if (domain && domain->type == IOMMU_DOMAIN_DMA)
->> -        iommu_setup_dma_ops(dev, 0, U64_MAX);
->> -    else
->> -        set_dma_ops(dev, NULL);
->> +    set_dma_ops(dev, NULL);
-> 
-> Is it reasonable to remove above line? The idea is that vendor iommu
-> driver should not override the dma_ops if device doesn't have a DMA
-> domain.
+This WARN can be triggered per-core and the stack trace is not useful.
+Replace it with plain dev_err(). Fix a comment while at it.
 
-As the commit message implies, that's exactly how iommu_setup_dma_ops() 
-has always behaved anyway. There should be no functional change here.
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+ drivers/opp/of.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Robin.
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index c582a9ca397b..01feeba78426 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -985,8 +985,9 @@ static int _of_add_opp_table_v2(struct device *dev, struct opp_table *opp_table)
+ 		}
+ 	}
+ 
+-	/* There should be one of more OPP defined */
+-	if (WARN_ON(!count)) {
++	/* There should be one or more OPPs defined */
++	if (!count) {
++		dev_err(dev, "%s: no supported OPPs", __func__);
+ 		ret = -ENOENT;
+ 		goto remove_static_opp;
+ 	}
+-- 
+2.30.2
 
->> +    iommu_setup_dma_ops(dev, 0, U64_MAX);
->>   }
->>   static void intel_iommu_get_resv_regions(struct device *device,
->>
-> 
-> Best regards,
-> baolu
