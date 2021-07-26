@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CA93D5D96
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AF33D5DE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235750AbhGZPCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
+        id S235924AbhGZPEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235717AbhGZPCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0C7460F37;
-        Mon, 26 Jul 2021 15:42:36 +0000 (UTC)
+        id S235833AbhGZPDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:03:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B32D60F38;
+        Mon, 26 Jul 2021 15:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314157;
-        bh=Pz5znl3oCRXX/Ot8HGsKGVlif7ze/TLXcSlFz9LJoDk=;
+        s=korg; t=1627314243;
+        bh=C7tZVp2J6EKyYKLvd+BPYTtLLJ+W2ga+MUprg1apgpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VOnVkF4He4W+iWmlh4KozEhgnwUIDVwiTs7QOP9L2uoTWq73itZIEbL1CXHVPLfpC
-         u1l7FeAcIPCVdB+qfRTJ2+EvmEBRMVY8BHG/Z9nWfHbfYIJJVlVYR8ieJfdWiHiTap
-         I/jtjo3j78+4HFD0PdkkT4llaMtUn5Rn1eSbdywk=
+        b=ZNTXRGE5ORaOpFnXbj/lJeX2Z02Zim2wHTQX6zEAqTvjrEFoz7X9gC/Z94xRHbVAt
+         a/zrCR+kJVtB4uJkPBR3o9DYULdICazT9ODwguyA7q+OFLeY/PzdHxX5I4+Y7Ty/1q
+         4MZbZ+Ym+NNKQ78sh7e7x+5qbIN/ycbdybuOtZ9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 32/47] ALSA: sb: Fix potential ABBA deadlock in CSP driver
+        stable@vger.kernel.org,
+        syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 36/60] net: fix uninit-value in caif_seqpkt_sendmsg
 Date:   Mon, 26 Jul 2021 17:38:50 +0200
-Message-Id: <20210726153823.997155649@linuxfoundation.org>
+Message-Id: <20210726153826.004093666@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,75 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Ziyang Xuan <william.xuanziyang@huawei.com>
 
-commit 1c2b9519159b470ef24b2638f4794e86e2952ab7 upstream.
+[ Upstream commit 991e634360f2622a683b48dfe44fe6d9cb765a09 ]
 
-SB16 CSP driver may hit potentially a typical ABBA deadlock in two
-code paths:
+When nr_segs equal to zero in iovec_from_user, the object
+msg->msg_iter.iov is uninit stack memory in caif_seqpkt_sendmsg
+which is defined in ___sys_sendmsg. So we cann't just judge
+msg->msg_iter.iov->base directlly. We can use nr_segs to judge
+msg in caif_seqpkt_sendmsg whether has data buffers.
 
- In snd_sb_csp_stop():
-     spin_lock_irqsave(&p->chip->mixer_lock, flags);
-     spin_lock(&p->chip->reg_lock);
+=====================================================
+BUG: KMSAN: uninit-value in caif_seqpkt_sendmsg+0x693/0xf60 net/caif/caif_socket.c:542
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1c9/0x220 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ caif_seqpkt_sendmsg+0x693/0xf60 net/caif/caif_socket.c:542
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0x12b6/0x1350 net/socket.c:2343
+ ___sys_sendmsg net/socket.c:2397 [inline]
+ __sys_sendmmsg+0x808/0xc90 net/socket.c:2480
+ __compat_sys_sendmmsg net/compat.c:656 [inline]
 
- In snd_sb_csp_load():
-     spin_lock_irqsave(&p->chip->reg_lock, flags);
-     spin_lock(&p->chip->mixer_lock);
-
-Also the similar pattern is seen in snd_sb_csp_start().
-
-Although the practical impact is very small (those states aren't
-triggered in the same running state and this happens only on a real
-hardware, decades old ISA sound boards -- which must be very difficult
-to find nowadays), it's a real scenario and has to be fixed.
-
-This patch addresses those deadlocks by splitting the locks in
-snd_sb_csp_start() and snd_sb_csp_stop() for avoiding the nested
-locks.
-
-Reported-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/7b0fcdaf-cd4f-4728-2eae-48c151a92e10@gmail.com
-Link: https://lore.kernel.org/r/20210716132723.13216-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+09a5d591c1f98cf5efcb@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?id=1ace85e8fc9b0d5a45c08c2656c3e91762daa9b8
+Fixes: bece7b2398d0 ("caif: Rewritten socket implementation")
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb16_csp.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/caif/caif_socket.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -828,6 +828,7 @@ static int snd_sb_csp_start(struct snd_s
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+diff --git a/net/caif/caif_socket.c b/net/caif/caif_socket.c
+index 92cbbd2afddb..9367f260afeb 100644
+--- a/net/caif/caif_socket.c
++++ b/net/caif/caif_socket.c
+@@ -539,7 +539,8 @@ static int caif_seqpkt_sendmsg(struct socket *sock, struct msghdr *msg,
+ 		goto err;
  
- 	spin_lock(&p->chip->reg_lock);
- 	set_mode_register(p->chip, 0xc0);	/* c0 = STOP */
-@@ -867,6 +868,7 @@ static int snd_sb_csp_start(struct snd_s
- 	spin_unlock(&p->chip->reg_lock);
+ 	ret = -EINVAL;
+-	if (unlikely(msg->msg_iter.iov->iov_base == NULL))
++	if (unlikely(msg->msg_iter.nr_segs == 0) ||
++	    unlikely(msg->msg_iter.iov->iov_base == NULL))
+ 		goto err;
+ 	noblock = msg->msg_flags & MSG_DONTWAIT;
  
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
-@@ -892,6 +894,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	mixR = snd_sbmixer_read(p->chip, SB_DSP4_PCM_DEV + 1);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL & 0x7);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR & 0x7);
-+	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
- 
- 	spin_lock(&p->chip->reg_lock);
- 	if (p->running & SNDRV_SB_CSP_ST_QSOUND) {
-@@ -906,6 +909,7 @@ static int snd_sb_csp_stop(struct snd_sb
- 	spin_unlock(&p->chip->reg_lock);
- 
- 	/* restore PCM volume */
-+	spin_lock_irqsave(&p->chip->mixer_lock, flags);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV, mixL);
- 	snd_sbmixer_write(p->chip, SB_DSP4_PCM_DEV + 1, mixR);
- 	spin_unlock_irqrestore(&p->chip->mixer_lock, flags);
+-- 
+2.30.2
+
 
 
