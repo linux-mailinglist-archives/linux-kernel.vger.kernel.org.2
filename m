@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39E43D5D55
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FFF3D5DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbhGZPAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39404 "EHLO mail.kernel.org"
+        id S235671AbhGZPD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:03:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235369AbhGZPAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:00:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20BD460F37;
-        Mon, 26 Jul 2021 15:41:12 +0000 (UTC)
+        id S235472AbhGZPDK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:03:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EA6660F38;
+        Mon, 26 Jul 2021 15:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314073;
-        bh=THRPQd07U0/NjkwYI4dY3h1BRoOnzj6doJLmUbsQQj4=;
+        s=korg; t=1627314218;
+        bh=0ABoMPNnqwRHw7bQzoAepFymRrR4zyq09XM1M4Hbops=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QQv3x9q/SJlDyZrHa6VD2UZyftOkkc6CHf7N+jnhSjhTcVCOVLhWJheDXF2j9nUIf
-         UskL1G3MmEWcsvPy0do6hWSRVld5iB5iCpGBmb5XGbpXWGmjJo8Jpepj2uR3rsXlYo
-         xrZp/YbpyGVB56wJzSGK5G3ug5xtJetPu83C+324=
+        b=shW0urfmG+9r0V1JjyuhJBM56MyEDzt16Tu3Mrm9GUIxU2SulLRvNjcGVnT/0q06r
+         s9Kd9zSphSbqnWkT7lM9/nxrsDmJwWs5mVVNyCxdnA2FkuYFhHErvytmUVVfGWxrhN
+         ieJGXvu70LoSb2OP93sAtlM4PAN9Z7CAVFAvdy6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 23/47] s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
-Date:   Mon, 26 Jul 2021 17:38:41 +0200
-Message-Id: <20210726153823.712379708@linuxfoundation.org>
+Subject: [PATCH 4.9 28/60] iavf: Fix an error handling path in iavf_probe()
+Date:   Mon, 26 Jul 2021 17:38:42 +0200
+Message-Id: <20210726153825.754653403@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153822.980271128@linuxfoundation.org>
-References: <20210726153822.980271128@linuxfoundation.org>
+In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
+References: <20210726153824.868160836@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 91091656252f5d6d8c476e0c92776ce9fae7b445 ]
+[ Upstream commit af30cbd2f4d6d66a9b6094e0aa32420bc8b20e08 ]
 
-Currently array jit->seen_reg[r1] is being accessed before the range
-checking of index r1. The range changing on r1 should be performed
-first since it will avoid any potential out-of-range accesses on the
-array seen_reg[] and also it is more optimal to perform checks on r1
-before fetching data from the array. Fix this by swapping the order
-of the checks before the array access.
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call, as already done in the remove function.
 
-Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Link: https://lore.kernel.org/bpf/20210715125712.24690-1-colin.king@canonical.com
+Fixes: 5eae00c57f5e ("i40evf: main driver core")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index bcf409997d6d..c5c3056f4c4a 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -115,7 +115,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
- {
- 	u32 r1 = reg2hex[b1];
- 
--	if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
-+	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
- 		jit->seen_reg[r1] = 1;
- }
- 
+diff --git a/drivers/net/ethernet/intel/i40evf/i40evf_main.c b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+index 14372810fc27..537776a3e5de 100644
+--- a/drivers/net/ethernet/intel/i40evf/i40evf_main.c
++++ b/drivers/net/ethernet/intel/i40evf/i40evf_main.c
+@@ -2641,6 +2641,7 @@ static int i40evf_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ err_ioremap:
+ 	free_netdev(netdev);
+ err_alloc_etherdev:
++	pci_disable_pcie_error_reporting(pdev);
+ 	pci_release_regions(pdev);
+ err_pci_reg:
+ err_dma:
 -- 
 2.30.2
 
