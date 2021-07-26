@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44543D5F59
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814A63D5F69
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236790AbhGZPRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:17:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47822 "EHLO mail.kernel.org"
+        id S236917AbhGZPRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:17:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236588AbhGZPJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:09:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70E0460F42;
-        Mon, 26 Jul 2021 15:50:03 +0000 (UTC)
+        id S236656AbhGZPJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A9DD60F02;
+        Mon, 26 Jul 2021 15:50:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314603;
-        bh=fgOO9IvE53ee96JFxxxiubevLX2KnVyryx7D3lmujdc=;
+        s=korg; t=1627314608;
+        bh=pY6i4zLZpLt/uF1QhDHdCkVMQZLhE7vXZv1JKIDxalY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s2rT/qEAVQ1vfHFxaE2JF65Y58mnbFywX7lfYmQSrDsC6x+/OB2j/nj3shmI7K7W8
-         v++Vgp0w/FX+/tJe0Nbfh79lPtofEuankblbAsV30YDEKFX6q2oR1IA3WHOkxst4JM
-         QgoF0xFQWSgF7ciNn4iLcoOLujGDVZ4jN3PJ+KQ8=
+        b=gZy4vsbcXmTfMVEDgE+GVsDRrX1EdfxCGek42hiGt2ULn3hqrRa7PR3jMAKsAq/xW
+         t4hVoZ4CHCoJEaDhMKQ920REeMpIT+0vJXosOPmWHa8YpMm9GqnwgxcbxB6pfrarST
+         wUMxbSDn0E5M77tbz+oBuLEwb5/yvSoae5k0L8o0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        stable@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 024/120] ARM: dts: stm32: move stmmac axi config in ethernet node on stm32mp15
-Date:   Mon, 26 Jul 2021 17:37:56 +0200
-Message-Id: <20210726153833.164816552@linuxfoundation.org>
+Subject: [PATCH 4.19 026/120] arm64: dts: ls208xa: remove bus-num from dspi node
+Date:   Mon, 26 Jul 2021 17:37:58 +0200
+Message-Id: <20210726153833.226163477@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
 References: <20210726153832.339431936@linuxfoundation.org>
@@ -40,51 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Torgue <alexandre.torgue@foss.st.com>
+From: Mian Yousaf Kaukab <ykaukab@suse.de>
 
-[ Upstream commit fb1406335c067be074eab38206cf9abfdce2fb0b ]
+[ Upstream commit 8240c972c1798ea013cbb407722295fc826b3584 ]
 
-It fixes the following warning seen running "make dtbs_check W=1"
+On LS2088A-RDB board, if the spi-fsl-dspi driver is built as module
+then its probe fails with the following warning:
 
-Warning (simple_bus_reg): /soc/stmmac-axi-config: missing or empty
-reg/ranges property
+[   10.471363] couldn't get idr
+[   10.471381] WARNING: CPU: 4 PID: 488 at drivers/spi/spi.c:2689 spi_register_controller+0x73c/0x8d0
+...
+[   10.471651] fsl-dspi 2100000.spi: Problem registering DSPI ctlr
+[   10.471708] fsl-dspi: probe of 2100000.spi failed with error -16
 
-Signed-off-by: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Reason for the failure is that bus-num property is set for dspi node.
+However, bus-num property is not set for the qspi node. If probe for
+spi-fsl-qspi happens first then id 0 is dynamically allocated to it.
+Call to spi_register_controller() from spi-fsl-dspi driver then fails.
+Since commit 29d2daf2c33c ("spi: spi-fsl-dspi: Make bus-num property
+optional") bus-num property is optional. Remove bus-num property from
+dspi node to fix the issue.
+
+Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/stm32mp157c.dtsi | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stm32mp157c.dtsi b/arch/arm/boot/dts/stm32mp157c.dtsi
-index c50c36baba75..4278a4b22860 100644
---- a/arch/arm/boot/dts/stm32mp157c.dtsi
-+++ b/arch/arm/boot/dts/stm32mp157c.dtsi
-@@ -964,12 +964,6 @@
- 			status = "disabled";
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index ebe0cd4bf2b7..8c22ce904e65 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -479,7 +479,6 @@
+ 			clocks = <&clockgen 4 3>;
+ 			clock-names = "dspi";
+ 			spi-num-chipselects = <5>;
+-			bus-num = <0>;
  		};
  
--		stmmac_axi_config_0: stmmac-axi-config {
--			snps,wr_osr_lmt = <0x7>;
--			snps,rd_osr_lmt = <0x7>;
--			snps,blen = <0 0 0 0 16 8 4>;
--		};
--
- 		ethernet0: ethernet@5800a000 {
- 			compatible = "st,stm32mp1-dwmac", "snps,dwmac-4.20a";
- 			reg = <0x5800a000 0x2000>;
-@@ -992,6 +986,12 @@
- 			snps,axi-config = <&stmmac_axi_config_0>;
- 			snps,tso;
- 			status = "disabled";
-+
-+			stmmac_axi_config_0: stmmac-axi-config {
-+				snps,wr_osr_lmt = <0x7>;
-+				snps,rd_osr_lmt = <0x7>;
-+				snps,blen = <0 0 0 0 16 8 4>;
-+			};
- 		};
- 
- 		usbh_ohci: usbh-ohci@5800c000 {
+ 		esdhc: esdhc@2140000 {
 -- 
 2.30.2
 
