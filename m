@@ -2,36 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113743D603F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61523D62A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237196AbhGZPVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52812 "EHLO mail.kernel.org"
+        id S234764AbhGZPhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:37:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236613AbhGZPLq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:11:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6A4B60F6F;
-        Mon, 26 Jul 2021 15:52:14 +0000 (UTC)
+        id S237178AbhGZPVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:21:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46F2D61037;
+        Mon, 26 Jul 2021 16:01:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314735;
-        bh=A1HJsKKIIFuuOcMwpY8BkBE7yIht++ib0hSmFLvF1V8=;
+        s=korg; t=1627315310;
+        bh=pWl8n2vIRJUpmu1xxlkutJC4RwJu6aIIgdtM3BB5MBw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JO6kTygjBNdaRd6l/v92jnS/bxIfB1twqagro2XNGHsegSwVveYgKi/7tYdj1hZNW
-         hqbzibQMzUptTZ93HlQ3ODsGGWbQWEwTiuqD3RPklFUjAgeHBvl12qq9fcaaIwB8DG
-         OYJRsNQC0RhGmMzUr/TBmBQ4wnCJWS7xycDoGj8s=
+        b=wJqU7eD/HaQvbCDjCIdXNzYX33vHcc9URMPCmYRZNhP9i6uA3tyXA9MjW5A0xl0qV
+         OOCJ4EGPLJ0BwOU/5SQNuiy+QCZua0n+lLvMXM9gKgHQcL8VNvY7sw88InAuLMxXv3
+         eqUHrN5LJe6vjsP3Ek5lXMucCUNEH0feh9X/cs74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, Yang Jihong <yangjihong1@huawei.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 027/120] thermal/core: Correct function name thermal_zone_device_unregister()
-Date:   Mon, 26 Jul 2021 17:37:59 +0200
-Message-Id: <20210726153833.265912998@linuxfoundation.org>
+Subject: [PATCH 5.10 047/167] perf sched: Fix record failure when CONFIG_SCHEDSTATS is not set
+Date:   Mon, 26 Jul 2021 17:38:00 +0200
+Message-Id: <20210726153840.972990128@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +47,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Yang Jihong <yangjihong1@huawei.com>
 
-[ Upstream commit a052b5118f13febac1bd901fe0b7a807b9d6b51c ]
+[ Upstream commit b0f008551f0bf4d5f6db9b5f0e071b02790d6a2e ]
 
-Fix the following make W=1 kernel build warning:
+The tracepoints trace_sched_stat_{wait, sleep, iowait} are not exposed to user
+if CONFIG_SCHEDSTATS is not set, "perf sched record" records the three events.
+As a result, the command fails.
 
-  drivers/thermal/thermal_core.c:1376: warning: expecting prototype for thermal_device_unregister(). Prototype was for thermal_zone_device_unregister() instead
+Before:
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210517051020.3463536-1-yangyingliang@huawei.com
+  #perf sched record sleep 1
+  event syntax error: 'sched:sched_stat_wait'
+                       \___ unknown tracepoint
+
+  Error:  File /sys/kernel/tracing/events/sched/sched_stat_wait not found.
+  Hint:   Perhaps this kernel misses some CONFIG_ setting to enable this feature?.
+
+  Run 'perf list' for a list of valid events
+
+   Usage: perf record [<options>] [<command>]
+      or: perf record [<options>] -- <command> [<options>]
+
+      -e, --event <event>   event selector. use 'perf list' to list available events
+
+Solution:
+  Check whether schedstat tracepoints are exposed. If no, these events are not recorded.
+
+After:
+  # perf sched record sleep 1
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 0.163 MB perf.data (1091 samples) ]
+  # perf sched report
+  run measurement overhead: 4736 nsecs
+  sleep measurement overhead: 9059979 nsecs
+  the run test took 999854 nsecs
+  the sleep test took 8945271 nsecs
+  nr_run_events:        716
+  nr_sleep_events:      785
+  nr_wakeup_events:     0
+  ...
+  ------------------------------------------------------------
+
+Fixes: 2a09b5de235a6 ("sched/fair: do not expose some tracepoints to user if CONFIG_SCHEDSTATS is not set")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Cc: Yafang Shao <laoar.shao@gmail.com>
+Link: http://lore.kernel.org/lkml/20210713112358.194693-1-yangjihong1@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/thermal_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/builtin-sched.c | 33 +++++++++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 7b0ffc1c0ea9..a24296d68f3e 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1303,7 +1303,7 @@ free_tz:
- EXPORT_SYMBOL_GPL(thermal_zone_device_register);
+diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+index 0e16f9d5a947..d3b5f5faf8c1 100644
+--- a/tools/perf/builtin-sched.c
++++ b/tools/perf/builtin-sched.c
+@@ -3337,6 +3337,16 @@ static void setup_sorting(struct perf_sched *sched, const struct option *options
+ 	sort_dimension__add("pid", &sched->cmp_pid);
+ }
  
- /**
-- * thermal_device_unregister - removes the registered thermal zone device
-+ * thermal_zone_device_unregister - removes the registered thermal zone device
-  * @tz: the thermal zone device to remove
-  */
- void thermal_zone_device_unregister(struct thermal_zone_device *tz)
++static bool schedstat_events_exposed(void)
++{
++	/*
++	 * Select "sched:sched_stat_wait" event to check
++	 * whether schedstat tracepoints are exposed.
++	 */
++	return IS_ERR(trace_event__tp_format("sched", "sched_stat_wait")) ?
++		false : true;
++}
++
+ static int __cmd_record(int argc, const char **argv)
+ {
+ 	unsigned int rec_argc, i, j;
+@@ -3348,21 +3358,33 @@ static int __cmd_record(int argc, const char **argv)
+ 		"-m", "1024",
+ 		"-c", "1",
+ 		"-e", "sched:sched_switch",
+-		"-e", "sched:sched_stat_wait",
+-		"-e", "sched:sched_stat_sleep",
+-		"-e", "sched:sched_stat_iowait",
+ 		"-e", "sched:sched_stat_runtime",
+ 		"-e", "sched:sched_process_fork",
+ 		"-e", "sched:sched_wakeup_new",
+ 		"-e", "sched:sched_migrate_task",
+ 	};
++
++	/*
++	 * The tracepoints trace_sched_stat_{wait, sleep, iowait}
++	 * are not exposed to user if CONFIG_SCHEDSTATS is not set,
++	 * to prevent "perf sched record" execution failure, determine
++	 * whether to record schedstat events according to actual situation.
++	 */
++	const char * const schedstat_args[] = {
++		"-e", "sched:sched_stat_wait",
++		"-e", "sched:sched_stat_sleep",
++		"-e", "sched:sched_stat_iowait",
++	};
++	unsigned int schedstat_argc = schedstat_events_exposed() ?
++		ARRAY_SIZE(schedstat_args) : 0;
++
+ 	struct tep_event *waking_event;
+ 
+ 	/*
+ 	 * +2 for either "-e", "sched:sched_wakeup" or
+ 	 * "-e", "sched:sched_waking"
+ 	 */
+-	rec_argc = ARRAY_SIZE(record_args) + 2 + argc - 1;
++	rec_argc = ARRAY_SIZE(record_args) + 2 + schedstat_argc + argc - 1;
+ 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
+ 
+ 	if (rec_argv == NULL)
+@@ -3378,6 +3400,9 @@ static int __cmd_record(int argc, const char **argv)
+ 	else
+ 		rec_argv[i++] = strdup("sched:sched_wakeup");
+ 
++	for (j = 0; j < schedstat_argc; j++)
++		rec_argv[i++] = strdup(schedstat_args[j]);
++
+ 	for (j = 1; j < (unsigned int)argc; j++, i++)
+ 		rec_argv[i] = argv[j];
+ 
 -- 
 2.30.2
 
