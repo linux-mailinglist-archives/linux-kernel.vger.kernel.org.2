@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AE33D5D29
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD433D5FEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235137AbhGZO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234931AbhGZO4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:56:25 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DB5C061757;
-        Mon, 26 Jul 2021 08:36:52 -0700 (PDT)
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1627313810;
-        bh=26Zd+8lA9bOblLF+2LIWJa9JvAIge3toksOP1nJO840=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZOrvd27lc9j0fQb+bgQotDpNA+Pih0+/GL2mxB5KmwA9VVR9pbX/PmZEc/7G51K5T
-         GH7X8jwwvkNytKTJWXI8Y60BCrQ+zmp5ebxpiyAzxbDjGRfYNg1ZBNWJiNRoU0gXTj
-         So1BAdtHogur5Rlio0iR1ryXT06alxgPfWfv3d4U=
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: [PATCH] platform/x86: gigabyte-wmi: add support for B550 Aorus Elite V2
-Date:   Mon, 26 Jul 2021 17:36:30 +0200
-Message-Id: <20210726153630.65213-1-linux@weissschuh.net>
+        id S236837AbhGZPTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236434AbhGZPJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:09:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C1860FD8;
+        Mon, 26 Jul 2021 15:49:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627314559;
+        bh=JDS6+XYpZyV4gia5hJlVuK98t60iyhk01XUk8LujpBI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MZH9x+R68iRLAxpt6ej+gB74eczsfS4U3h4AfkoIK1OsEgZSIATJjpvwvv7ef+Mqc
+         T4gcKbDJExnqdcJjxUlKrXVRx7ERUOR1yhPWSDaUGMYPN3NMD49F8BmgUyz770KMKV
+         6bW8Tc0UdPvPO8gIUKxyeY9K3FmTd58/cRzO7faU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 001/120] ARM: dts: gemini: rename mdio to the right name
+Date:   Mon, 26 Jul 2021 17:37:33 +0200
+Message-Id: <20210726153832.387329018@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -39,28 +42,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reported as working here:
-https://github.com/t-8ch/linux-gigabyte-wmi-driver/issues/1#issuecomment-879398883
+From: Corentin Labbe <clabbe@baylibre.com>
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+[ Upstream commit fc5b59b945b546e27977e99a5ca6fe61179ff0d2 ]
+
+ethernet-phy is not the right name for mdio, fix it.
+
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/gigabyte-wmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/gemini-dlink-dns-313.dts | 2 +-
+ arch/arm/boot/dts/gemini-nas4220b.dts      | 2 +-
+ arch/arm/boot/dts/gemini-rut1xx.dts        | 2 +-
+ arch/arm/boot/dts/gemini-wbd111.dts        | 2 +-
+ arch/arm/boot/dts/gemini-wbd222.dts        | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
-index 5529d7b0abea..fbb224a82e34 100644
---- a/drivers/platform/x86/gigabyte-wmi.c
-+++ b/drivers/platform/x86/gigabyte-wmi.c
-@@ -141,6 +141,7 @@ static u8 gigabyte_wmi_detect_sensor_usability(struct wmi_device *wdev)
+diff --git a/arch/arm/boot/dts/gemini-dlink-dns-313.dts b/arch/arm/boot/dts/gemini-dlink-dns-313.dts
+index 361dccd6c7ee..431c705a7b90 100644
+--- a/arch/arm/boot/dts/gemini-dlink-dns-313.dts
++++ b/arch/arm/boot/dts/gemini-dlink-dns-313.dts
+@@ -140,7 +140,7 @@
+ 		};
+ 	};
  
- static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
- 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE"),
-+	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 AORUS ELITE V2"),
- 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550 GAMING X V2"),
- 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M AORUS PRO-P"),
- 	DMI_EXACT_MATCH_GIGABYTE_BOARD_NAME("B550M DS3H"),
-
-base-commit: ff1176468d368232b684f75e82563369208bc371
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		/* Uses MDC and MDIO */
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+diff --git a/arch/arm/boot/dts/gemini-nas4220b.dts b/arch/arm/boot/dts/gemini-nas4220b.dts
+index 963ea890c87f..1c5f7f9e7be3 100644
+--- a/arch/arm/boot/dts/gemini-nas4220b.dts
++++ b/arch/arm/boot/dts/gemini-nas4220b.dts
+@@ -62,7 +62,7 @@
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+diff --git a/arch/arm/boot/dts/gemini-rut1xx.dts b/arch/arm/boot/dts/gemini-rut1xx.dts
+index eb4f0bf074da..c067c3778f1d 100644
+--- a/arch/arm/boot/dts/gemini-rut1xx.dts
++++ b/arch/arm/boot/dts/gemini-rut1xx.dts
+@@ -56,7 +56,7 @@
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+diff --git a/arch/arm/boot/dts/gemini-wbd111.dts b/arch/arm/boot/dts/gemini-wbd111.dts
+index 29af86cd10f7..52c10ec0dc72 100644
+--- a/arch/arm/boot/dts/gemini-wbd111.dts
++++ b/arch/arm/boot/dts/gemini-wbd111.dts
+@@ -68,7 +68,7 @@
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
+diff --git a/arch/arm/boot/dts/gemini-wbd222.dts b/arch/arm/boot/dts/gemini-wbd222.dts
+index 24e6ae3616f7..73de5cfa01f8 100644
+--- a/arch/arm/boot/dts/gemini-wbd222.dts
++++ b/arch/arm/boot/dts/gemini-wbd222.dts
+@@ -67,7 +67,7 @@
+ 		};
+ 	};
+ 
+-	mdio0: ethernet-phy {
++	mdio0: mdio {
+ 		compatible = "virtual,mdio-gpio";
+ 		gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>, /* MDC */
+ 			<&gpio0 21 GPIO_ACTIVE_HIGH>; /* MDIO */
 -- 
-2.32.0
+2.30.2
+
+
 
