@@ -2,116 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A0D3D64CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615C93D64F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239856AbhGZQGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240780AbhGZQFA (ORCPT
+        id S236037AbhGZQRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:17:33 -0400
+Received: from h2.fbrelay.privateemail.com ([131.153.2.43]:50223 "EHLO
+        h2.fbrelay.privateemail.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240800AbhGZQOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:05:00 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C0EC0617A1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:44:41 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id m13so16566455lfg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 09:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DlqUXAYss0z4CwOkVfGtreR6OseE/eXEXPezp0fcD5Q=;
-        b=v/GwQOc/nfVoJOaP+06LI0uq/yjmmZ5T1xMXwDdNwHDrRxLXrNQwJP1e4uwRyy/xrp
-         IOsfYH+cdtu62lwlEx6yb2NTKwdzZFS458KkFOrWnizERkKOK6i0bQGNnwFSRZz/fWGp
-         IUKWriV5wMB6wC/h+yVzUQwFI1DpjFLSud5NrBDizwqsJstnZB+Xp9j+SsylMZ8dAMa0
-         c5vGk2HKgYounGCCH8vn5pJBitXuNwTgVHaH2TLqdTMi19u/hzVUfmrugGVmb0G267k4
-         qqIiLUiCwPOwDvDOINBK5Mr9CyRbvnH0wmr+ej6s4ON7UwpM6YzmX8c1kKl6VEmKwpnO
-         IOCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DlqUXAYss0z4CwOkVfGtreR6OseE/eXEXPezp0fcD5Q=;
-        b=cBDjrzRr6xaDda9CApehZmWc7wV2GTaILNmmlsFc4jKOr+d0ccPvpZv6fiidQbe802
-         hqowy2iH/K6XItRObVBWXuvR60JvDXo5NAsUoxZJTJahHnV6zPJGnT9ccfewbYLdz/ks
-         T2CZvwdLckFjGClRKOoGA57pwoebSIBpc08I8Pya7K4Cbjcg41AjpzYbE6ffQmL37fhW
-         Zj7LmglzBP7oVQFeM1yQgPSuhIs5uE39wmphf34rWHkJPf076LwtRi3utNhhre2cGllY
-         FffgEm6jQ4gokA4eG/cWl8tzFjb1tbZdQ962M+wKQcOef9H57oRlCV8i2fmlgc99gv+O
-         bRkQ==
-X-Gm-Message-State: AOAM530ijyTQdgodNt92h6oudZNdcb5aFW7pyx+Jotn1dVc+AQx9B5/P
-        uZULTOYyhr9wOC40e+CQaza/qKwOOu9e2/aPwsQhqQ==
-X-Google-Smtp-Source: ABdhPJxzBJ3xGLvlzG0KVYzemKw7irNCJbPzXu7HMAIWodwPYqtCqbkZVo0CNJWicFJd4Rc0zQnPhQrIet41JLV3XB0=
-X-Received: by 2002:a05:6512:3f8:: with SMTP id n24mr6547107lfq.125.1627317879269;
- Mon, 26 Jul 2021 09:44:39 -0700 (PDT)
+        Mon, 26 Jul 2021 12:14:51 -0400
+X-Greylist: delayed 568 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Jul 2021 12:14:49 EDT
+Received: from MTA-12-3.privateemail.com (mta-12-1.privateemail.com [198.54.122.106])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by h1.fbrelay.privateemail.com (Postfix) with ESMTPS id 6028B80890;
+        Mon, 26 Jul 2021 12:45:47 -0400 (EDT)
+Received: from mta-12.privateemail.com (localhost [127.0.0.1])
+        by mta-12.privateemail.com (Postfix) with ESMTP id EAC0D18000B7;
+        Mon, 26 Jul 2021 12:45:44 -0400 (EDT)
+Received: from localhost.localdomain (unknown [10.20.151.242])
+        by mta-12.privateemail.com (Postfix) with ESMTPA id 64C3C18000A1;
+        Mon, 26 Jul 2021 12:45:43 -0400 (EDT)
+From:   Jordy Zomer <jordy@pwning.systems>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: avoid negative wrapping of integers 
+Date:   Mon, 26 Jul 2021 18:45:01 +0200
+Message-Id: <20210726164501.410524-1-jordy@pwning.systems>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210716184719.269033-5-posk@google.com> <2c971806-b8f6-50b9-491f-e1ede4a33579@uwaterloo.ca>
- <CAPNVh5cmhFEWr4bmODkDDFhV=mHLcO0DZJ432GEL=OitzPP80g@mail.gmail.com>
- <c8ea4892-51e5-0dc2-86c6-b705e8a23cde@uwaterloo.ca> <CAFTs51XW0H1UJKv0t2tq+5VLfgPMtZmDcxQVUQ5HkgDe38jHpw@mail.gmail.com>
- <5790661b-869c-68bd-86fa-62f580e84be1@uwaterloo.ca> <CAPNVh5ecidSmKFW2ck0ASw44GUnP20m7baSP1+KXnGfkM8FLLg@mail.gmail.com>
- <e1403574-1151-8399-0ce9-bb80852ec56b@uwaterloo.ca>
-In-Reply-To: <e1403574-1151-8399-0ce9-bb80852ec56b@uwaterloo.ca>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Mon, 26 Jul 2021 09:44:27 -0700
-Message-ID: <CAPNVh5fug5cPu7gPoAR7ZiKzAZ5i8007=Hs9_MG+fCTL3XkLBQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/4 v0.3] sched/umcg: RFC: implement UMCG syscalls
-To:     Thierry Delisle <tdelisle@uwaterloo.ca>
-Cc:     Peter Oskolkov <posk@posk.io>, Andrei Vagin <avagin@google.com>,
-        Ben Segall <bsegall@google.com>, Jann Horn <jannh@google.com>,
-        Jim Newsome <jnewsome@torproject.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-api@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul Turner <pjt@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Buhr <pabuhr@uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 12:06 PM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
->
->  > In my tests reclaimed nodes have their next pointers immediately set
->  > to point to the list head. If the kernel gets a node with its @next
->  > pointing to something else, then yes, things break down (the kernel
->  > kills the process); this has happened occasionally when I had a bug in
->  > the userspace code.
->
-> I believe that approach is fine for production, but for testing it may
-> not detect some bugs. For example, it may not detect the race I detail
-> below.
+Set csize to unsigned int to avoid it from wrapping as a negative number (since format input sends an unsigned integer to this function). This would also result in undefined behavior in the left shift when msg len is checked, potentially resulting in a buffer overflow in the memcpy call.
 
-While I think I have the idle servers list working, I now believe that
-what peterz@ was suggesting is not much slower in the common case
-(many idle workers; few, if any, idle servers) than having a list of
-idle servers exposed to the kernel: I think having a single idle
-server at head, not a list, is enough: when a worker is added to idle
-workers list, a single idle server at head, if present, can be
-"popped" and woken; the userspace can maintain the list of idle
-servers itself; having the kernel wake only one is enough - it will
-pop all idle workers and decide whether any other servers are needed
-to process the newly available work.
+Signed-off-by: Jordy Zomer <jordy@pwning.systems>
+---
+ crypto/ccm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[...]
+diff --git a/crypto/ccm.c b/crypto/ccm.c
+index 6b815ece51c6..e14201edf9db 100644
+--- a/crypto/ccm.c
++++ b/crypto/ccm.c
+@@ -66,7 +66,7 @@ static inline struct crypto_ccm_req_priv_ctx *crypto_ccm_reqctx(
+ 	return (void *)PTR_ALIGN((u8 *)aead_request_ctx(req), align + 1);
+ }
+ 
+-static int set_msg_len(u8 *block, unsigned int msglen, int csize)
++static int set_msg_len(u8 *block, unsigned int msglen, unsigned int csize)
+ {
+ 	__be32 data;
+ 
+-- 
+2.27.0
 
->  > Workers are trickier, as they can be woken by signals and then block
->  > again, but stray signals are so bad here that I'm thinking of actually
->  > not letting sleeping workers wake on signals. Other than signals
->  > waking queued/unqueued idle workers, are there any other potential
->  > races here?
->
-> Timeouts on blocked threads is virtually the same as a signal I think. I
-> can see that both could lead to attempts at waking workers that are not
-> blocked.
-
-I've got preemption working well enough to warrant a new RFC patchset
-(also have timeouts done, but these were easy). I'll clean things up,
-change the idle servers logic to only one idle server exposed to the
-kernel, not a list, add some additional documentation (state
-transitions, userspace code snippets, etc.) and will post v0.4 RFC
-patchset to LKML later this week.
-
-[...]
