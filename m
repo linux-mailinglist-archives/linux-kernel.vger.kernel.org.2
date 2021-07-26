@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1365B3D6153
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0969C3D6077
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhGZPan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57650 "EHLO mail.kernel.org"
+        id S237337AbhGZPW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:22:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236774AbhGZPRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:17:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18D3B6056C;
-        Mon, 26 Jul 2021 15:57:57 +0000 (UTC)
+        id S237397AbhGZPPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54FA660F70;
+        Mon, 26 Jul 2021 15:54:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315078;
-        bh=x+PUCBJxmnk3e05PAnVy5nB5k+m4fLcOSwsQJSGP+7I=;
+        s=korg; t=1627314887;
+        bh=YLNZB377ktFeBYTb72ch6L7rP2Y20JGHcVn7G5uyNms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=if2tV2PhPfInIyUobylaE2AWzHYM3hTm0tGCd1M5FLfspNl7j8ERgaeqfjkmhlTB2
-         1OBMlq/s0g4W8ZhamsueTLE5wYS5JgZNuyCMvh9ZUXKUnfXZG6EZdXZfS9KVKzrYjR
-         tspb8qavSB4n4BTgKfRzd8329dd4xniiTBE5jRgI=
+        b=1KDBy8Ru96bRqzkAqk8ZO1X5r5J1UnPFY/469w8sJYD06sIULuPRxGzMEtguLUGkG
+         QCbRgKD6H6lbB3QvHLc7O4VdvscMjXmYSTo7ztbW6+nvyJLVQSJvjO/Jfp6REk20j7
+         Pk+xtvfBWWmggg8+tSxxSrWQd/rm1tDAi3Qagoks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jakub=20Fi=C5=A1er?= <jakub@ufiseru.cz>,
-        Alexander Tsoy <alexander@tsoy.me>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 073/108] ALSA: usb-audio: Add registration quirk for JBL Quantum headsets
-Date:   Mon, 26 Jul 2021 17:39:14 +0200
-Message-Id: <20210726153834.025169625@linuxfoundation.org>
+        stable@vger.kernel.org, John Keeping <john@metanate.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 103/120] USB: serial: cp210x: add ID for CEL EM3588 USB ZigBee stick
+Date:   Mon, 26 Jul 2021 17:39:15 +0200
+Message-Id: <20210726153835.736241358@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +39,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Tsoy <alexander@tsoy.me>
+From: John Keeping <john@metanate.com>
 
-commit b0084afde27fe8a504377dee65f55bc6aa776937 upstream.
+commit d6a206e60124a9759dd7f6dfb86b0e1d3b1df82e upstream.
 
-These devices has two interfaces, but only the second interface
-contains the capture endpoint, thus quirk is required to delay the
-registration until the second interface appears.
+Add the USB serial device ID for the CEL ZigBee EM3588 radio stick.
 
-Tested-by: Jakub Fišer <jakub@ufiseru.cz>
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210721235605.53741-1-alexander@tsoy.me
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: John Keeping <john@metanate.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/quirks.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/serial/cp210x.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1840,6 +1840,9 @@ static const struct registration_quirk r
- 	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
- 	REG_QUIRK_ENTRY(0x0951, 0x16ed, 2),	/* Kingston HyperX Cloud Alpha S */
- 	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
-+	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
-+	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
-+	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
- 	{ 0 }					/* terminator */
- };
- 
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -156,6 +156,7 @@ static const struct usb_device_id id_tab
+ 	{ USB_DEVICE(0x10C4, 0x89A4) }, /* CESINEL FTBC Flexible Thyristor Bridge Controller */
+ 	{ USB_DEVICE(0x10C4, 0x89FB) }, /* Qivicon ZigBee USB Radio Stick */
+ 	{ USB_DEVICE(0x10C4, 0x8A2A) }, /* HubZ dual ZigBee and Z-Wave dongle */
++	{ USB_DEVICE(0x10C4, 0x8A5B) }, /* CEL EM3588 ZigBee USB Stick */
+ 	{ USB_DEVICE(0x10C4, 0x8A5E) }, /* CEL EM3588 ZigBee USB Stick Long Range */
+ 	{ USB_DEVICE(0x10C4, 0x8B34) }, /* Qivicon ZigBee USB Radio Stick */
+ 	{ USB_DEVICE(0x10C4, 0xEA60) }, /* Silicon Labs factory default */
 
 
