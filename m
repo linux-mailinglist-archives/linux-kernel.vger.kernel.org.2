@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659AC3D62B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C633D6011
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236736AbhGZPiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:38:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36352 "EHLO mail.kernel.org"
+        id S236974AbhGZPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:20:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237235AbhGZPVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:21:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B21FC60240;
-        Mon, 26 Jul 2021 16:02:23 +0000 (UTC)
+        id S237086AbhGZPKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E365C60525;
+        Mon, 26 Jul 2021 15:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315344;
-        bh=KQBIvWw5YEEKzswPulW/87FGiBPzOznHMPU68F6m9Ds=;
+        s=korg; t=1627314644;
+        bh=kChHS3GrECWdIt/goVYb4sYF3rSa23XtbZfCPoLIaq8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZLmeV3UBy4221i2ji2DahWzQAZmDaVmMBBzmBAiRD5W1HbUhFSexTZlI74hlIpWUP
-         SAUaCWTKJRCxgqtFWTkeVIBpbYTHBghQDvY0J/rIZr4vI7K7LQr2Uys5Eqy+rCbOnI
-         57dQ1bgyC2LtTItuqRzUZX+MLc+VVQUTqROp+D2Y=
+        b=IA+O7P7lQW1hljEiNOcfkxvdnRH16dZ78rtyvj9UPs7FU6rRBkzNeSS4ln6EJdKO9
+         d/lhsaMCvmRfyfBqgTTgBafwIYSZ6lJH1V+8zfuS84qjhfso4ITb1OtaWafQDFFyA7
+         aH4OXxFVyybxHR0Q+4xKBCTaDchbUFkUS6ksgqP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 059/167] liquidio: Fix unintentional sign extension issue on left shift of u16
-Date:   Mon, 26 Jul 2021 17:38:12 +0200
-Message-Id: <20210726153841.392261805@linuxfoundation.org>
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 041/120] net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+Date:   Mon, 26 Jul 2021 17:38:13 +0200
+Message-Id: <20210726153833.712675350@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit e7efc2ce3d0789cd7c21b70ff00cd7838d382639 ]
+commit 2b452550a203d88112eaf0ba9fc4b750a000b496 upstream.
 
-Shifting the u16 integer oct->pcie_port by CN23XX_PKT_INPUT_CTL_MAC_NUM_POS
-(29) bits will be promoted to a 32 bit signed int and then sign-extended
-to a u64. In the cases where oct->pcie_port where bit 2 is set (e.g. 3..7)
-the shifted value will be sign extended and the top 32 bits of the result
-will be set.
+Make sure that we disable each of the TX and RX queues in the TDMA and
+RDMA control registers. This is a correctness change to be symmetrical
+with the code that enables the TX and RX queues.
 
-Fix this by casting the u16 values to a u64 before the 29 bit left shift.
-
-Addresses-Coverity: ("Unintended sign extension")
-
-Fixes: 3451b97cce2d ("liquidio: CN23XX register setup")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Tested-by: Maxime Ripard <maxime@cerno.tech>
+Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-index 4cddd628d41b..9ed3d1ab2ca5 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
-@@ -420,7 +420,7 @@ static int cn23xx_pf_setup_global_input_regs(struct octeon_device *oct)
- 	 * bits 32:47 indicate the PVF num.
- 	 */
- 	for (q_no = 0; q_no < ern; q_no++) {
--		reg_val = oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
-+		reg_val = (u64)oct->pcie_port << CN23XX_PKT_INPUT_CTL_MAC_NUM_POS;
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -2790,15 +2790,21 @@ static void bcmgenet_set_hw_addr(struct
+ /* Returns a reusable dma control register value */
+ static u32 bcmgenet_dma_disable(struct bcmgenet_priv *priv)
+ {
++	unsigned int i;
+ 	u32 reg;
+ 	u32 dma_ctrl;
  
- 		/* for VF assigned queues. */
- 		if (q_no < oct->sriov_info.pf_srn) {
--- 
-2.30.2
-
+ 	/* disable DMA */
+ 	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->tx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_tdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_tdma_writel(priv, reg, DMA_CTRL);
+ 
++	dma_ctrl = 1 << (DESC_INDEX + DMA_RING_BUF_EN_SHIFT) | DMA_EN;
++	for (i = 0; i < priv->hw_params->rx_queues; i++)
++		dma_ctrl |= (1 << (i + DMA_RING_BUF_EN_SHIFT));
+ 	reg = bcmgenet_rdma_readl(priv, DMA_CTRL);
+ 	reg &= ~dma_ctrl;
+ 	bcmgenet_rdma_writel(priv, reg, DMA_CTRL);
 
 
