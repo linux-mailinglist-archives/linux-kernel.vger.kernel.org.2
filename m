@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3311E3D5346
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9303D5347
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 08:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhGZF4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 01:56:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:45642 "EHLO foss.arm.com"
+        id S232166AbhGZF44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 01:56:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:45656 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232082AbhGZF4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 01:56:47 -0400
+        id S232170AbhGZF4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 01:56:52 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E805139F;
-        Sun, 25 Jul 2021 23:37:16 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 234C9106F;
+        Sun, 25 Jul 2021 23:37:21 -0700 (PDT)
 Received: from p8cg001049571a15.arm.com (unknown [10.163.66.17])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 033E43F66F;
-        Sun, 25 Jul 2021 23:37:11 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id AF2A73F66F;
+        Sun, 25 Jul 2021 23:37:16 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org
@@ -24,9 +24,9 @@ Cc:     akpm@linux-foundation.org, suzuki.poulose@arm.com,
         mark.rutland@arm.com, will@kernel.org, catalin.marinas@arm.com,
         maz@kernel.org, james.morse@arm.com, steven.price@arm.com,
         Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [RFC V2 06/10] arm64/mm: Add FEAT_LPA2 specific encoding
-Date:   Mon, 26 Jul 2021 12:07:21 +0530
-Message-Id: <1627281445-12445-7-git-send-email-anshuman.khandual@arm.com>
+Subject: [RFC V2 07/10] arm64/mm: Detect and enable FEAT_LPA2
+Date:   Mon, 26 Jul 2021 12:07:22 +0530
+Message-Id: <1627281445-12445-8-git-send-email-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1627281445-12445-1-git-send-email-anshuman.khandual@arm.com>
 References: <1627281445-12445-1-git-send-email-anshuman.khandual@arm.com>
@@ -34,83 +34,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FEAT_LPA2 requires different PTE representation formats for both 4K and 16K
-page size config. This adds FEAT_LPA2 specific new PTE encodings as per ARM
-ARM (0487G.A) which updates [pte|phys]_to_[phys|pte](). The updated helpers
-would be used when FEAT_LPA2 gets enabled via CONFIG_ARM64_PA_BITS_52 on 4K
-and 16K page size. Although TTBR encoding and phys_to_ttbr() helper remains
-the same as FEAT_LPA for FEAT_LPA2 as well. It updates 'phys_to_pte' helper
-to accept a temporary variable and changes impacted call sites.
+Detect FEAT_LPA2 implementation early enough during boot when requested via
+CONFIG_ARM64_PA_BITS_52_LPA2 and remember in a variable arm64_lpa2_enabled.
+This variable could then be used to turn on TCR_EL1.TCR_DS effecting the 52
+bits PA range or fall back to default 48 bits PA range if FEAT_LPA2 feature
+was requested but found not to be implemented.
 
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/arm64/include/asm/assembler.h     | 14 +++++++++++---
- arch/arm64/include/asm/pgtable-hwdef.h |  4 ++++
- arch/arm64/include/asm/pgtable.h       |  4 ++++
- 3 files changed, 19 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/memory.h |  1 +
+ arch/arm64/kernel/head.S        | 15 +++++++++++++++
+ arch/arm64/mm/mmu.c             |  3 +++
+ arch/arm64/mm/proc.S            |  9 +++++++++
+ 4 files changed, 28 insertions(+)
 
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index fedc202..d7ce4cf 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -614,6 +614,10 @@ alternative_endif
- 	 */
- 	orr	\pte, \phys, \phys, lsr #36
- 	and	\pte, \pte, #PTE_ADDR_MASK
-+#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-+	orr	\pte, \phys, \phys, lsr #42
-+	and	\pte, \pte, #PTE_ADDR_MASK | GENMASK(PAGE_SHIFT - 1, 10)
-+	and	\pte, \pte, #~GENMASK(PAGE_SHIFT - 1, 10)
- #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
- 	mov	\pte, \phys
- #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
-@@ -621,9 +625,13 @@ alternative_endif
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index 824a365..d0ca002 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -178,6 +178,7 @@
+ #include <asm/bug.h>
  
- 	.macro	pte_to_phys, phys, pte
- #ifdef CONFIG_ARM64_PA_BITS_52_LPA
--	ubfiz	\phys, \pte, #(48 - 16 - 12), #16
--	bfxil	\phys, \pte, #16, #32
--	lsl	\phys, \phys, #16
-+	ubfiz	\phys, \pte, #(48 - PAGE_SHIFT - 12), #16
-+	bfxil	\phys, \pte, #PAGE_SHIFT, #(48 - PAGE_SHIFT)
-+	lsl	\phys, \phys, #PAGE_SHIFT
-+#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-+	ubfiz	\phys, \pte, #(52 - PAGE_SHIFT - 10), #10
-+	bfxil	\phys, \pte, #PAGE_SHIFT, #(50 - PAGE_SHIFT)
-+	lsl	\phys, \phys, #PAGE_SHIFT
- #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
- 	and	\phys, \pte, #PTE_ADDR_MASK
- #endif /* CONFIG_ARM64_PA_BITS_52_LPA */
-diff --git a/arch/arm64/include/asm/pgtable-hwdef.h b/arch/arm64/include/asm/pgtable-hwdef.h
-index f375bcf..c815a85 100644
---- a/arch/arm64/include/asm/pgtable-hwdef.h
-+++ b/arch/arm64/include/asm/pgtable-hwdef.h
-@@ -159,6 +159,10 @@
- #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
- #define PTE_ADDR_HIGH		(_AT(pteval_t, 0xf) << 12)
- #define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
-+#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-+#define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (50 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
-+#define PTE_ADDR_HIGH		(_AT(pteval_t, 0x3) << 8)
-+#define PTE_ADDR_MASK		(PTE_ADDR_LOW | PTE_ADDR_HIGH)
- #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
- #define PTE_ADDR_LOW		(((_AT(pteval_t, 1) << (48 - PAGE_SHIFT)) - 1) << PAGE_SHIFT)
- #define PTE_ADDR_MASK		PTE_ADDR_LOW
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 3c57fb2..5e7e402 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -70,6 +70,10 @@ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
- #define __pte_to_phys(pte)	\
- 	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 36))
- #define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 36)) & PTE_ADDR_MASK)
-+#elif defined(CONFIG_ARM64_PA_BITS_52_LPA2)
-+#define __pte_to_phys(pte)	\
-+	((pte_val(pte) & PTE_ADDR_LOW) | ((pte_val(pte) & PTE_ADDR_HIGH) << 42))
-+#define __phys_to_pte_val(phys)	(((phys) | ((phys) >> 42)) & PTE_ADDR_MASK)
- #else  /* !CONFIG_ARM64_PA_BITS_52_LPA */
- #define __pte_to_phys(pte)	(pte_val(pte) & PTE_ADDR_MASK)
- #define __phys_to_pte_val(phys)	(phys)
+ extern u64			vabits_actual;
++extern u64			arm64_lpa2_enabled;
+ 
+ extern s64			memstart_addr;
+ /* PHYS_OFFSET - the physical address of the start of memory. */
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index c5c994a..efc6e41 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -94,6 +94,21 @@ SYM_CODE_START(primary_entry)
+ 	adrp	x23, __PHYS_OFFSET
+ 	and	x23, x23, MIN_KIMG_ALIGN - 1	// KASLR offset, defaults to 0
+ 	bl	set_cpu_boot_mode_flag
++
++#ifdef CONFIG_ARM64_PA_BITS_52_LPA2
++	mrs     x10, ID_AA64MMFR0_EL1
++	ubfx    x10, x10, #ID_AA64MMFR0_TGRAN_SHIFT, 4
++	cmp     x10, #ID_AA64MMFR0_TGRAN_LPA2
++	b.lt	1f
++
++	mov	x10, #1
++	adr_l	x11, arm64_lpa2_enabled
++	str	x10, [x11]
++	dmb	sy
++	dc	ivac, x11
++1:
++#endif /* CONFIG_ARM64_PA_BITS_52_LPA2 */
++
+ 	bl	__create_page_tables
+ 	/*
+ 	 * The following calls CPU setup code, see arch/arm64/mm/proc.S for
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 9ff0de1..8f6dcbd 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -48,6 +48,9 @@ u64 idmap_ptrs_per_pgd = PTRS_PER_PGD;
+ u64 __section(".mmuoff.data.write") vabits_actual;
+ EXPORT_SYMBOL(vabits_actual);
+ 
++u64 __section(".mmuoff.data.write") arm64_lpa2_enabled;
++EXPORT_SYMBOL(arm64_lpa2_enabled);
++
+ u64 kimage_voffset __ro_after_init;
+ EXPORT_SYMBOL(kimage_voffset);
+ 
+diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+index 1ae0c2b..672880c 100644
+--- a/arch/arm64/mm/proc.S
++++ b/arch/arm64/mm/proc.S
+@@ -423,6 +423,15 @@ SYM_FUNC_START(__cpu_setup)
+ 			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
+ 			TCR_TBI0 | TCR_A1 | TCR_KASAN_SW_FLAGS
+ 
++#ifdef CONFIG_ARM64_PA_BITS_52_LPA2
++	ldr_l   x10, arm64_lpa2_enabled
++	cmp	x10, #1
++	b.ne	1f
++	mov_q	x10, TCR_DS
++	orr	tcr, tcr, x10
++1:
++#endif /* CONFIG_ARM64_PA_BITS_52_LPA2 */
++
+ #ifdef CONFIG_ARM64_MTE
+ 	/*
+ 	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
 -- 
 2.7.4
 
