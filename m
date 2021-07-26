@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBAB3D6305
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1365B3D6153
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238541AbhGZPnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
+        id S232689AbhGZPan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:30:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237984AbhGZPYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B50CB60240;
-        Mon, 26 Jul 2021 16:04:57 +0000 (UTC)
+        id S236774AbhGZPRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:17:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18D3B6056C;
+        Mon, 26 Jul 2021 15:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315498;
-        bh=mnj6/nMHSkzSa5oVj/k2KRf5LjmK7tEvyMJxrO3dIGA=;
+        s=korg; t=1627315078;
+        bh=x+PUCBJxmnk3e05PAnVy5nB5k+m4fLcOSwsQJSGP+7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jJTRhJP4/Xel/xpnhVcndGK12xwip5o9fXHzRdGyIJ+zlHozQ6YCik/zxkNe8ni8G
-         JbIRGsorR8pOGPuFSfZY+5eX6sL6qbA4AKcLN+CQT1Erq/T+tZuc24U9Am77uO6r6i
-         hfSBte1QkhFiRqU9O2/0bVqnlFwla+DkmcAFp2MY=
+        b=if2tV2PhPfInIyUobylaE2AWzHYM3hTm0tGCd1M5FLfspNl7j8ERgaeqfjkmhlTB2
+         1OBMlq/s0g4W8ZhamsueTLE5wYS5JgZNuyCMvh9ZUXKUnfXZG6EZdXZfS9KVKzrYjR
+         tspb8qavSB4n4BTgKfRzd8329dd4xniiTBE5jRgI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: [PATCH 5.10 121/167] usb: hub: Disable USB 3 device initiated lpm if exit latency is too high
+        =?UTF-8?q?Jakub=20Fi=C5=A1er?= <jakub@ufiseru.cz>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 073/108] ALSA: usb-audio: Add registration quirk for JBL Quantum headsets
 Date:   Mon, 26 Jul 2021 17:39:14 +0200
-Message-Id: <20210726153843.467430768@linuxfoundation.org>
+Message-Id: <20210726153834.025169625@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,119 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
+From: Alexander Tsoy <alexander@tsoy.me>
 
-commit 1b7f56fbc7a1b66967b6114d1b5f5a257c3abae6 upstream.
+commit b0084afde27fe8a504377dee65f55bc6aa776937 upstream.
 
-The device initiated link power management U1/U2 states should not be
-enabled in case the system exit latency plus one bus interval (125us) is
-greater than the shortest service interval of any periodic endpoint.
+These devices has two interfaces, but only the second interface
+contains the capture endpoint, thus quirk is required to delay the
+registration until the second interface appears.
 
-This is the case for both U1 and U2 sytstem exit latencies and link states.
-
-See USB 3.2 section 9.4.9 "Set Feature" for more details
-
-Note, before this patch the host and device initiated U1/U2 lpm states
-were both enabled with lpm. After this patch it's possible to end up with
-only host inititated U1/U2 lpm in case the exit latencies won't allow
-device initiated lpm.
-
-If this case we still want to set the udev->usb3_lpm_ux_enabled flag so
-that sysfs users can see the link may go to U1/U2.
-
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210715150122.1995966-2-mathias.nyman@linux.intel.com
+Tested-by: Jakub Fišer <jakub@ufiseru.cz>
+Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210721235605.53741-1-alexander@tsoy.me
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/hub.c |   68 ++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 56 insertions(+), 12 deletions(-)
+ sound/usb/quirks.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -4041,6 +4041,47 @@ static int usb_set_lpm_timeout(struct us
- }
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1840,6 +1840,9 @@ static const struct registration_quirk r
+ 	REG_QUIRK_ENTRY(0x0951, 0x16d8, 2),	/* Kingston HyperX AMP */
+ 	REG_QUIRK_ENTRY(0x0951, 0x16ed, 2),	/* Kingston HyperX Cloud Alpha S */
+ 	REG_QUIRK_ENTRY(0x0951, 0x16ea, 2),	/* Kingston HyperX Cloud Flight S */
++	REG_QUIRK_ENTRY(0x0ecb, 0x1f46, 2),	/* JBL Quantum 600 */
++	REG_QUIRK_ENTRY(0x0ecb, 0x2039, 2),	/* JBL Quantum 400 */
++	REG_QUIRK_ENTRY(0x0ecb, 0x203e, 2),	/* JBL Quantum 800 */
+ 	{ 0 }					/* terminator */
+ };
  
- /*
-+ * Don't allow device intiated U1/U2 if the system exit latency + one bus
-+ * interval is greater than the minimum service interval of any active
-+ * periodic endpoint. See USB 3.2 section 9.4.9
-+ */
-+static bool usb_device_may_initiate_lpm(struct usb_device *udev,
-+					enum usb3_link_state state)
-+{
-+	unsigned int sel;		/* us */
-+	int i, j;
-+
-+	if (state == USB3_LPM_U1)
-+		sel = DIV_ROUND_UP(udev->u1_params.sel, 1000);
-+	else if (state == USB3_LPM_U2)
-+		sel = DIV_ROUND_UP(udev->u2_params.sel, 1000);
-+	else
-+		return false;
-+
-+	for (i = 0; i < udev->actconfig->desc.bNumInterfaces; i++) {
-+		struct usb_interface *intf;
-+		struct usb_endpoint_descriptor *desc;
-+		unsigned int interval;
-+
-+		intf = udev->actconfig->interface[i];
-+		if (!intf)
-+			continue;
-+
-+		for (j = 0; j < intf->cur_altsetting->desc.bNumEndpoints; j++) {
-+			desc = &intf->cur_altsetting->endpoint[j].desc;
-+
-+			if (usb_endpoint_xfer_int(desc) ||
-+			    usb_endpoint_xfer_isoc(desc)) {
-+				interval = (1 << (desc->bInterval - 1)) * 125;
-+				if (sel + 125 > interval)
-+					return false;
-+			}
-+		}
-+	}
-+	return true;
-+}
-+
-+/*
-  * Enable the hub-initiated U1/U2 idle timeouts, and enable device-initiated
-  * U1/U2 entry.
-  *
-@@ -4112,20 +4153,23 @@ static void usb_enable_link_state(struct
- 	 * U1/U2_ENABLE
- 	 */
- 	if (udev->actconfig &&
--	    usb_set_device_initiated_lpm(udev, state, true) == 0) {
--		if (state == USB3_LPM_U1)
--			udev->usb3_lpm_u1_enabled = 1;
--		else if (state == USB3_LPM_U2)
--			udev->usb3_lpm_u2_enabled = 1;
--	} else {
--		/* Don't request U1/U2 entry if the device
--		 * cannot transition to U1/U2.
--		 */
--		usb_set_lpm_timeout(udev, state, 0);
--		hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
-+	    usb_device_may_initiate_lpm(udev, state)) {
-+		if (usb_set_device_initiated_lpm(udev, state, true)) {
-+			/*
-+			 * Request to enable device initiated U1/U2 failed,
-+			 * better to turn off lpm in this case.
-+			 */
-+			usb_set_lpm_timeout(udev, state, 0);
-+			hcd->driver->disable_usb3_lpm_timeout(hcd, udev, state);
-+			return;
-+		}
- 	}
--}
- 
-+	if (state == USB3_LPM_U1)
-+		udev->usb3_lpm_u1_enabled = 1;
-+	else if (state == USB3_LPM_U2)
-+		udev->usb3_lpm_u2_enabled = 1;
-+}
- /*
-  * Disable the hub-initiated U1/U2 idle timeouts, and disable device-initiated
-  * U1/U2 entry.
 
 
