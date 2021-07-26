@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECC53D63D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080B73D63FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239420AbhGZPwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:52:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47516 "EHLO mail.kernel.org"
+        id S239594AbhGZPxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:53:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232754AbhGZPbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:31:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC765604AC;
-        Mon, 26 Jul 2021 16:11:49 +0000 (UTC)
+        id S233188AbhGZPcL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:32:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FDF960F6B;
+        Mon, 26 Jul 2021 16:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315910;
-        bh=FgK9NZuTa9AKJ+M+a+SkaDwispSR9I/vi0k5rtH8yE4=;
+        s=korg; t=1627315938;
+        bh=W1bGz6A82bEqY/+wCZCf5+pdrKBaUCUwYowAFAan5c4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f+veGjOeEZy5Y8xvHqGlJtKtOPwylkLLDe01SYY0OYLy0vqdoKKkxq7TQOIGidonu
-         d1ZFEnDeSZa0W3X1ccgDM7G6eVXN7TTfPkc2gsAK6XYQh2YJE9PqTju9/2cF01ZS9n
-         9LjcFJ87ePYfAXnpsQvweQ4wXenBCheXCzqSNtaM=
+        b=L+ZVvKkYRyHsgdPRtdhlFtEXBN8qXeL+SLXEuURJ1mDnrJaejohVmenG46csLTbLL
+         Bod653PCGfdNwfVXWql1mcFszvpBMMdBS4JfiuevjAXAkjP/cRotL7pl5CtO+L8CPq
+         z/elegm5KXH2+mEt31/9iRpKE0/JHmW6CzDUZXGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 107/223] bnxt_en: fix error path of FW reset
-Date:   Mon, 26 Jul 2021 17:38:19 +0200
-Message-Id: <20210726153849.779301572@linuxfoundation.org>
+Subject: [PATCH 5.13 108/223] bnxt_en: Validate vlan protocol ID on RX packets
+Date:   Mon, 26 Jul 2021 17:38:20 +0200
+Message-Id: <20210726153849.812349524@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,106 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Somnath Kotur <somnath.kotur@broadcom.com>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit 3958b1da725a477b4a222183d16a14d85445d4b6 ]
+[ Upstream commit 96bdd4b9ea7ef9a12db8fdd0ce90e37dffbd3703 ]
 
-When bnxt_open() fails in the firmware reset path, the driver needs to
-gracefully abort, but it is executing code that should be invoked only
-in the success path.  Define a function to abort FW reset and
-consolidate all error paths to call this new function.
+Only pass supported VLAN protocol IDs for stripped VLAN tags to the
+stack.  The stack will hit WARN() if the protocol ID is unsupported.
 
-Fixes: dab62e7c2de7 ("bnxt_en: Implement faster recovery for firmware fatal error.")
-Signed-off-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Existing firmware sets up the chip to strip 0x8100, 0x88a8, 0x9100.
+Only the 1st two protocols are supported by the kernel.
+
+Fixes: a196e96bb68f ("bnxt_en: clean up VLAN feature bit handling")
+Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 31 +++++++++++++++--------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 21 ++++++++++++++++-----
+ 1 file changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 07efab5bad95..49aca3289c00 100644
+index 49aca3289c00..be36dee65f90 100644
 --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
 +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -11849,10 +11849,21 @@ static bool bnxt_fw_reset_timeout(struct bnxt *bp)
- 			  (bp->fw_reset_max_dsecs * HZ / 10));
- }
+@@ -1640,11 +1640,16 @@ static inline struct sk_buff *bnxt_tpa_end(struct bnxt *bp,
  
-+static void bnxt_fw_reset_abort(struct bnxt *bp, int rc)
-+{
-+	clear_bit(BNXT_STATE_IN_FW_RESET, &bp->state);
-+	if (bp->fw_reset_state != BNXT_FW_RESET_STATE_POLL_VF) {
-+		bnxt_ulp_start(bp, rc);
-+		bnxt_dl_health_status_update(bp, false);
-+	}
-+	bp->fw_reset_state = 0;
-+	dev_close(bp->dev);
-+}
-+
- static void bnxt_fw_reset_task(struct work_struct *work)
- {
- 	struct bnxt *bp = container_of(work, struct bnxt, fw_reset_task.work);
--	int rc;
-+	int rc = 0;
+ 	if ((tpa_info->flags2 & RX_CMP_FLAGS2_META_FORMAT_VLAN) &&
+ 	    (skb->dev->features & BNXT_HW_FEATURE_VLAN_ALL_RX)) {
+-		u16 vlan_proto = tpa_info->metadata >>
+-			RX_CMP_FLAGS2_METADATA_TPID_SFT;
++		__be16 vlan_proto = htons(tpa_info->metadata >>
++					  RX_CMP_FLAGS2_METADATA_TPID_SFT);
+ 		u16 vtag = tpa_info->metadata & RX_CMP_FLAGS2_METADATA_TCI_MASK;
  
- 	if (!test_bit(BNXT_STATE_IN_FW_RESET, &bp->state)) {
- 		netdev_err(bp->dev, "bnxt_fw_reset_task() called when not in fw reset mode!\n");
-@@ -11883,8 +11894,9 @@ static void bnxt_fw_reset_task(struct work_struct *work)
- 		bp->fw_reset_timestamp = jiffies;
- 		rtnl_lock();
- 		if (test_bit(BNXT_STATE_ABORT_ERR, &bp->state)) {
-+			bnxt_fw_reset_abort(bp, rc);
- 			rtnl_unlock();
--			goto fw_reset_abort;
-+			return;
- 		}
- 		bnxt_fw_reset_close(bp);
- 		if (bp->fw_cap & BNXT_FW_CAP_ERR_RECOVER_RELOAD) {
-@@ -11933,6 +11945,7 @@ static void bnxt_fw_reset_task(struct work_struct *work)
- 			if (val == 0xffff) {
- 				if (bnxt_fw_reset_timeout(bp)) {
- 					netdev_err(bp->dev, "Firmware reset aborted, PCI config space invalid\n");
-+					rc = -ETIMEDOUT;
- 					goto fw_reset_abort;
- 				}
- 				bnxt_queue_fw_reset_work(bp, HZ / 1000);
-@@ -11942,6 +11955,7 @@ static void bnxt_fw_reset_task(struct work_struct *work)
- 		clear_bit(BNXT_STATE_FW_FATAL_COND, &bp->state);
- 		if (pci_enable_device(bp->pdev)) {
- 			netdev_err(bp->dev, "Cannot re-enable PCI device\n");
-+			rc = -ENODEV;
- 			goto fw_reset_abort;
- 		}
- 		pci_set_master(bp->pdev);
-@@ -11968,9 +11982,10 @@ static void bnxt_fw_reset_task(struct work_struct *work)
- 		}
- 		rc = bnxt_open(bp->dev);
- 		if (rc) {
--			netdev_err(bp->dev, "bnxt_open_nic() failed\n");
--			clear_bit(BNXT_STATE_IN_FW_RESET, &bp->state);
--			dev_close(bp->dev);
-+			netdev_err(bp->dev, "bnxt_open() failed during FW reset\n");
-+			bnxt_fw_reset_abort(bp, rc);
-+			rtnl_unlock();
-+			return;
- 		}
- 
- 		bp->fw_reset_state = 0;
-@@ -11997,12 +12012,8 @@ fw_reset_abort_status:
- 		netdev_err(bp->dev, "fw_health_status 0x%x\n", sts);
+-		__vlan_hwaccel_put_tag(skb, htons(vlan_proto), vtag);
++		if (eth_type_vlan(vlan_proto)) {
++			__vlan_hwaccel_put_tag(skb, vlan_proto, vtag);
++		} else {
++			dev_kfree_skb(skb);
++			return NULL;
++		}
  	}
- fw_reset_abort:
--	clear_bit(BNXT_STATE_IN_FW_RESET, &bp->state);
--	if (bp->fw_reset_state != BNXT_FW_RESET_STATE_POLL_VF)
--		bnxt_dl_health_status_update(bp, false);
--	bp->fw_reset_state = 0;
- 	rtnl_lock();
--	dev_close(bp->dev);
-+	bnxt_fw_reset_abort(bp, rc);
- 	rtnl_unlock();
- }
  
+ 	skb_checksum_none_assert(skb);
+@@ -1865,9 +1870,15 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ 	    (skb->dev->features & BNXT_HW_FEATURE_VLAN_ALL_RX)) {
+ 		u32 meta_data = le32_to_cpu(rxcmp1->rx_cmp_meta_data);
+ 		u16 vtag = meta_data & RX_CMP_FLAGS2_METADATA_TCI_MASK;
+-		u16 vlan_proto = meta_data >> RX_CMP_FLAGS2_METADATA_TPID_SFT;
++		__be16 vlan_proto = htons(meta_data >>
++					  RX_CMP_FLAGS2_METADATA_TPID_SFT);
+ 
+-		__vlan_hwaccel_put_tag(skb, htons(vlan_proto), vtag);
++		if (eth_type_vlan(vlan_proto)) {
++			__vlan_hwaccel_put_tag(skb, vlan_proto, vtag);
++		} else {
++			dev_kfree_skb(skb);
++			goto next_rx;
++		}
+ 	}
+ 
+ 	skb_checksum_none_assert(skb);
 -- 
 2.30.2
 
