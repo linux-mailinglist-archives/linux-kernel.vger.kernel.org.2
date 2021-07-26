@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F12B3D6309
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F853D62C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238565AbhGZPng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:43:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39914 "EHLO mail.kernel.org"
+        id S238059AbhGZPjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:39:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238087AbhGZPYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:24:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E991560EB2;
-        Mon, 26 Jul 2021 16:05:06 +0000 (UTC)
+        id S237313AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:22:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E0660F9D;
+        Mon, 26 Jul 2021 15:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315507;
-        bh=82s7o6iXBcs3Ib9NLUwa7i+foMa32hbCwUkqbPxE2vM=;
+        s=korg; t=1627314777;
+        bh=suIabbxx3PuyjeYF8tOoSSVuGVGX+gwtmk4zGhYo6qU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aRiNqQITABUzn5cZf82NoYdxjuEUEC3QLGrxIkGzIxcvztW/IztA+bR946N2p2tqJ
-         hw+qGxGwUe/79B8mlW70hJMTk1yAvDwzyS0ifdsQCO+8usWfZrcpbku+Vrm5uHBpM0
-         SHY1/xJwZVAmzJ1Mvb27FQFV6v7BJk9o3AaehR+M=
+        b=J64qr3ownS+BNyjWv8ER8/YRUSbh/3x7eYdMDSSptMJDl6OApQ4dlH+4fFcXn1mvo
+         SwB1diWMFXjM5l9xUikCwdzbSmh5dnE7TUfDVHINJTWUO3F8uW5nlmkap1WY/sjru8
+         COpH5pbxbG/8WdDil4Wrn2ISah6Zntnj4U7MmA0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.10 107/167] s390/ftrace: fix ftrace_update_ftrace_func implementation
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 088/120] drm/panel: raspberrypi-touchscreen: Prevent double-free
 Date:   Mon, 26 Jul 2021 17:39:00 +0200
-Message-Id: <20210726153842.985809339@linuxfoundation.org>
+Message-Id: <20210726153835.208201401@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,129 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Maxime Ripard <maxime@cerno.tech>
 
-commit f8c2602733c953ed7a16e060640b8e96f9d94b9b upstream.
+[ Upstream commit 7bbcb919e32d776ca8ddce08abb391ab92eef6a9 ]
 
-s390 enforces DYNAMIC_FTRACE if FUNCTION_TRACER is selected.
-At the same time implementation of ftrace_caller is not compliant with
-HAVE_DYNAMIC_FTRACE since it doesn't provide implementation of
-ftrace_update_ftrace_func() and calls ftrace_trace_function() directly.
+The mipi_dsi_device allocated by mipi_dsi_device_register_full() is
+already free'd on release.
 
-The subtle difference is that during ftrace code patching ftrace
-replaces function tracer via ftrace_update_ftrace_func() and activates
-it back afterwards. Unexpected direct calls to ftrace_trace_function()
-during ftrace code patching leads to nullptr-dereferences when tracing
-is activated for one of functions which are used during code patching.
-Those function currently are:
-copy_from_kernel_nofault()
-copy_from_kernel_nofault_allowed()
-preempt_count_sub() [with debug_defconfig]
-preempt_count_add() [with debug_defconfig]
-
-Corresponding KASAN report:
- BUG: KASAN: nullptr-dereference in function_trace_call+0x316/0x3b0
- Read of size 4 at addr 0000000000001e08 by task migration/0/15
-
- CPU: 0 PID: 15 Comm: migration/0 Tainted: G B 5.13.0-41423-g08316af3644d
- Hardware name: IBM 3906 M04 704 (LPAR)
- Stopper: multi_cpu_stop+0x0/0x3e0 <- stop_machine_cpuslocked+0x1e4/0x218
- Call Trace:
-  [<0000000001f77caa>] show_stack+0x16a/0x1d0
-  [<0000000001f8de42>] dump_stack+0x15a/0x1b0
-  [<0000000001f81d56>] print_address_description.constprop.0+0x66/0x2e0
-  [<000000000082b0ca>] kasan_report+0x152/0x1c0
-  [<00000000004cfd8e>] function_trace_call+0x316/0x3b0
-  [<0000000001fb7082>] ftrace_caller+0x7a/0x7e
-  [<00000000006bb3e6>] copy_from_kernel_nofault_allowed+0x6/0x10
-  [<00000000006bb42e>] copy_from_kernel_nofault+0x3e/0xd0
-  [<000000000014605c>] ftrace_make_call+0xb4/0x1f8
-  [<000000000047a1b4>] ftrace_replace_code+0x134/0x1d8
-  [<000000000047a6e0>] ftrace_modify_all_code+0x120/0x1d0
-  [<000000000047a7ec>] __ftrace_modify_code+0x5c/0x78
-  [<000000000042395c>] multi_cpu_stop+0x224/0x3e0
-  [<0000000000423212>] cpu_stopper_thread+0x33a/0x5a0
-  [<0000000000243ff2>] smpboot_thread_fn+0x302/0x708
-  [<00000000002329ea>] kthread+0x342/0x408
-  [<00000000001066b2>] __ret_from_fork+0x92/0xf0
-  [<0000000001fb57fa>] ret_from_fork+0xa/0x30
-
- The buggy address belongs to the page:
- page:(____ptrval____) refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1
- flags: 0x1ffff00000001000(reserved|node=0|zone=0|lastcpupid=0x1ffff)
- raw: 1ffff00000001000 0000040000000048 0000040000000048 0000000000000000
- raw: 0000000000000000 0000000000000000 ffffffff00000001 0000000000000000
- page dumped because: kasan: bad access detected
-
- Memory state around the buggy address:
-  0000000000001d00: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
-  0000000000001d80: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
- >0000000000001e00: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
-                       ^
-  0000000000001e80: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
-  0000000000001f00: f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7 f7
- ==================================================================
-
-To fix that introduce ftrace_func callback to be called from
-ftrace_caller and update it in ftrace_update_ftrace_func().
-
-Fixes: 4cc9bed034d1 ("[S390] cleanup ftrace backend functions")
-Cc: stable@vger.kernel.org
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2f733d6194bd ("drm/panel: Add support for the Raspberry Pi 7" Touchscreen.")
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210720134525.563936-9-maxime@cerno.tech
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/include/asm/ftrace.h |    1 +
- arch/s390/kernel/ftrace.c      |    2 ++
- arch/s390/kernel/mcount.S      |    4 ++--
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c | 1 -
+ 1 file changed, 1 deletion(-)
 
---- a/arch/s390/include/asm/ftrace.h
-+++ b/arch/s390/include/asm/ftrace.h
-@@ -27,6 +27,7 @@ void ftrace_caller(void);
+diff --git a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
+index aab6a70ece7f..06bd03915973 100644
+--- a/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
++++ b/drivers/gpu/drm/panel/panel-raspberrypi-touchscreen.c
+@@ -454,7 +454,6 @@ static int rpi_touchscreen_remove(struct i2c_client *i2c)
+ 	drm_panel_remove(&ts->base);
  
- extern char ftrace_graph_caller_end;
- extern unsigned long ftrace_plt;
-+extern void *ftrace_func;
+ 	mipi_dsi_device_unregister(ts->dsi);
+-	kfree(ts->dsi);
  
- struct dyn_arch_ftrace { };
- 
---- a/arch/s390/kernel/ftrace.c
-+++ b/arch/s390/kernel/ftrace.c
-@@ -57,6 +57,7 @@
-  * >	brasl	%r0,ftrace_caller	# offset 0
-  */
- 
-+void *ftrace_func __read_mostly = ftrace_stub;
- unsigned long ftrace_plt;
- 
- static inline void ftrace_generate_orig_insn(struct ftrace_insn *insn)
-@@ -120,6 +121,7 @@ int ftrace_make_call(struct dyn_ftrace *
- 
- int ftrace_update_ftrace_func(ftrace_func_t func)
- {
-+	ftrace_func = func;
  	return 0;
  }
- 
---- a/arch/s390/kernel/mcount.S
-+++ b/arch/s390/kernel/mcount.S
-@@ -67,13 +67,13 @@ ENTRY(ftrace_caller)
- #ifdef CONFIG_HAVE_MARCH_Z196_FEATURES
- 	aghik	%r2,%r0,-MCOUNT_INSN_SIZE
- 	lgrl	%r4,function_trace_op
--	lgrl	%r1,ftrace_trace_function
-+	lgrl	%r1,ftrace_func
- #else
- 	lgr	%r2,%r0
- 	aghi	%r2,-MCOUNT_INSN_SIZE
- 	larl	%r4,function_trace_op
- 	lg	%r4,0(%r4)
--	larl	%r1,ftrace_trace_function
-+	larl	%r1,ftrace_func
- 	lg	%r1,0(%r1)
- #endif
- 	lgr	%r3,%r14
+-- 
+2.30.2
+
 
 
