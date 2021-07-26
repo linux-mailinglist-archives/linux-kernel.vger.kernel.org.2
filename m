@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444033D60CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299653D60C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238196AbhGZPZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:25:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55788 "EHLO mail.kernel.org"
+        id S238062AbhGZPYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:24:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237661AbhGZPQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:16:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C5CD60F02;
-        Mon, 26 Jul 2021 15:56:44 +0000 (UTC)
+        id S236664AbhGZPMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:12:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C4EA60F6E;
+        Mon, 26 Jul 2021 15:52:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315005;
-        bh=uOywpBAuVfjRfxNZcXgH+CoNeQ185n7HwhNdfBCsRyA=;
+        s=korg; t=1627314751;
+        bh=z6qaNNWN5HdcxsDn3HQ3eq6yk6drHkj4Lgdg/r8VONo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ylU2QcbM+owdGdKkSm5/uxrDNVDI/Gfs28SKMIiRPMU1fKt89u4fnoFDfLwKa3T8e
-         nZYgU+uWeqlwjwsO6I1zr9u5/zZr4uZ9gyRsgW/u7BN7sTtyqwDcG/BwG3nGRohnXv
-         BPPUV7dIUK1iaY6XU/DAxTe0d3oR8hlRcpqDv/Qo=
+        b=hSIGDYYZjeWfyT+YKSrYLxpNqXcQCz1eYCr1XylUSdInvP/xLh7fbaN/kZ3fnp++z
+         hUvz0LOKBfV2yqKjemLA7hQHYvpvzdkYOfXb9AXJFdI62jBrkav1jjRKDAkAjcS0HL
+         JQz0iKxekT3yAPX+C/gD7m1HBsO2/lIciZmcR80E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 050/108] spi: cadence: Correct initialisation of runtime PM again
+Subject: [PATCH 4.19 079/120] scsi: iscsi: Fix iface sysfs attr detection
 Date:   Mon, 26 Jul 2021 17:38:51 +0200
-Message-Id: <20210726153833.287505952@linuxfoundation.org>
+Message-Id: <20210726153834.926307136@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,72 +41,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Vasut <marex@denx.de>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit 56912da7a68c8356df6a6740476237441b0b792a ]
+[ Upstream commit e746f3451ec7f91dcc9fd67a631239c715850a34 ]
 
-The original implementation of RPM handling in probe() was mostly
-correct, except it failed to call pm_runtime_get_*() to activate the
-hardware. The subsequent fix, 734882a8bf98 ("spi: cadence: Correct
-initialisation of runtime PM"), breaks the implementation further,
-to the point where the system using this hard IP on ZynqMP hangs on
-boot, because it accesses hardware which is gated off.
+A ISCSI_IFACE_PARAM can have the same value as a ISCSI_NET_PARAM so when
+iscsi_iface_attr_is_visible tries to figure out the type by just checking
+the value, we can collide and return the wrong type. When we call into the
+driver we might not match and return that we don't want attr visible in
+sysfs. The patch fixes this by setting the type when we figure out what the
+param is.
 
-Undo 734882a8bf98 ("spi: cadence: Correct initialisation of runtime
-PM") and instead add missing pm_runtime_get_noresume() and move the
-RPM disabling all the way to the end of probe(). That makes ZynqMP
-not hang on boot yet again.
-
-Fixes: 734882a8bf98 ("spi: cadence: Correct initialisation of runtime PM")
-Signed-off-by: Marek Vasut <marex@denx.de>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>
-Link: https://lore.kernel.org/r/20210716182133.218640-1-marex@denx.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210701002559.89533-1-michael.christie@oracle.com
+Fixes: 3e0f65b34cc9 ("[SCSI] iscsi_transport: Additional parameters for network settings")
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-cadence.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ drivers/scsi/scsi_transport_iscsi.c | 90 +++++++++++------------------
+ 1 file changed, 34 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/spi/spi-cadence.c b/drivers/spi/spi-cadence.c
-index 1d0c335b0bf8..5ac60d06c674 100644
---- a/drivers/spi/spi-cadence.c
-+++ b/drivers/spi/spi-cadence.c
-@@ -517,6 +517,12 @@ static int cdns_spi_probe(struct platform_device *pdev)
- 		goto clk_dis_apb;
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index 2aaa5a2bd613..20e69052161e 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -427,39 +427,10 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 	struct device *dev = container_of(kobj, struct device, kobj);
+ 	struct iscsi_iface *iface = iscsi_dev_to_iface(dev);
+ 	struct iscsi_transport *t = iface->transport;
+-	int param;
+-	int param_type;
++	int param = -1;
+ 
+ 	if (attr == &dev_attr_iface_enabled.attr)
+ 		param = ISCSI_NET_PARAM_IFACE_ENABLE;
+-	else if (attr == &dev_attr_iface_vlan_id.attr)
+-		param = ISCSI_NET_PARAM_VLAN_ID;
+-	else if (attr == &dev_attr_iface_vlan_priority.attr)
+-		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
+-	else if (attr == &dev_attr_iface_vlan_enabled.attr)
+-		param = ISCSI_NET_PARAM_VLAN_ENABLED;
+-	else if (attr == &dev_attr_iface_mtu.attr)
+-		param = ISCSI_NET_PARAM_MTU;
+-	else if (attr == &dev_attr_iface_port.attr)
+-		param = ISCSI_NET_PARAM_PORT;
+-	else if (attr == &dev_attr_iface_ipaddress_state.attr)
+-		param = ISCSI_NET_PARAM_IPADDR_STATE;
+-	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
+-		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
+-	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
+-		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
+-	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
+-		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
+-	else if (attr == &dev_attr_iface_tcp_wsf.attr)
+-		param = ISCSI_NET_PARAM_TCP_WSF;
+-	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
+-		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
+-	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
+-		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
+-	else if (attr == &dev_attr_iface_cache_id.attr)
+-		param = ISCSI_NET_PARAM_CACHE_ID;
+-	else if (attr == &dev_attr_iface_redirect_en.attr)
+-		param = ISCSI_NET_PARAM_REDIRECT_EN;
+ 	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
+ 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
+ 	else if (attr == &dev_attr_iface_header_digest.attr)
+@@ -496,6 +467,38 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 		param = ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN;
+ 	else if (attr == &dev_attr_iface_initiator_name.attr)
+ 		param = ISCSI_IFACE_PARAM_INITIATOR_NAME;
++
++	if (param != -1)
++		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
++
++	if (attr == &dev_attr_iface_vlan_id.attr)
++		param = ISCSI_NET_PARAM_VLAN_ID;
++	else if (attr == &dev_attr_iface_vlan_priority.attr)
++		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
++	else if (attr == &dev_attr_iface_vlan_enabled.attr)
++		param = ISCSI_NET_PARAM_VLAN_ENABLED;
++	else if (attr == &dev_attr_iface_mtu.attr)
++		param = ISCSI_NET_PARAM_MTU;
++	else if (attr == &dev_attr_iface_port.attr)
++		param = ISCSI_NET_PARAM_PORT;
++	else if (attr == &dev_attr_iface_ipaddress_state.attr)
++		param = ISCSI_NET_PARAM_IPADDR_STATE;
++	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
++		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
++	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
++		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
++	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
++		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
++	else if (attr == &dev_attr_iface_tcp_wsf.attr)
++		param = ISCSI_NET_PARAM_TCP_WSF;
++	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
++		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
++	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
++		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
++	else if (attr == &dev_attr_iface_cache_id.attr)
++		param = ISCSI_NET_PARAM_CACHE_ID;
++	else if (attr == &dev_attr_iface_redirect_en.attr)
++		param = ISCSI_NET_PARAM_REDIRECT_EN;
+ 	else if (iface->iface_type == ISCSI_IFACE_TYPE_IPV4) {
+ 		if (attr == &dev_attr_ipv4_iface_ipaddress.attr)
+ 			param = ISCSI_NET_PARAM_IPV4_ADDR;
+@@ -586,32 +589,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 		return 0;
  	}
  
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
-+	pm_runtime_get_noresume(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+
- 	ret = of_property_read_u32(pdev->dev.of_node, "num-cs", &num_cs);
- 	if (ret < 0)
- 		master->num_chipselect = CDNS_SPI_DEFAULT_NUM_CS;
-@@ -531,11 +537,6 @@ static int cdns_spi_probe(struct platform_device *pdev)
- 	/* SPI controller initializations */
- 	cdns_spi_init_hw(xspi);
- 
--	pm_runtime_set_active(&pdev->dev);
--	pm_runtime_enable(&pdev->dev);
--	pm_runtime_use_autosuspend(&pdev->dev);
--	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_AUTOSUSPEND_TIMEOUT);
+-	switch (param) {
+-	case ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO:
+-	case ISCSI_IFACE_PARAM_HDRDGST_EN:
+-	case ISCSI_IFACE_PARAM_DATADGST_EN:
+-	case ISCSI_IFACE_PARAM_IMM_DATA_EN:
+-	case ISCSI_IFACE_PARAM_INITIAL_R2T_EN:
+-	case ISCSI_IFACE_PARAM_DATASEQ_INORDER_EN:
+-	case ISCSI_IFACE_PARAM_PDU_INORDER_EN:
+-	case ISCSI_IFACE_PARAM_ERL:
+-	case ISCSI_IFACE_PARAM_MAX_RECV_DLENGTH:
+-	case ISCSI_IFACE_PARAM_FIRST_BURST:
+-	case ISCSI_IFACE_PARAM_MAX_R2T:
+-	case ISCSI_IFACE_PARAM_MAX_BURST:
+-	case ISCSI_IFACE_PARAM_CHAP_AUTH_EN:
+-	case ISCSI_IFACE_PARAM_BIDI_CHAP_EN:
+-	case ISCSI_IFACE_PARAM_DISCOVERY_AUTH_OPTIONAL:
+-	case ISCSI_IFACE_PARAM_DISCOVERY_LOGOUT_EN:
+-	case ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN:
+-	case ISCSI_IFACE_PARAM_INITIATOR_NAME:
+-		param_type = ISCSI_IFACE_PARAM;
+-		break;
+-	default:
+-		param_type = ISCSI_NET_PARAM;
+-	}
 -
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq <= 0) {
- 		ret = -ENXIO;
-@@ -566,6 +567,9 @@ static int cdns_spi_probe(struct platform_device *pdev)
+-	return t->attr_is_visible(param_type, param);
++	return t->attr_is_visible(ISCSI_NET_PARAM, param);
+ }
  
- 	master->bits_per_word_mask = SPI_BPW_MASK(8);
- 
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
- 	ret = spi_register_master(master);
- 	if (ret) {
- 		dev_err(&pdev->dev, "spi_register_master failed\n");
+ static struct attribute *iscsi_iface_attrs[] = {
 -- 
 2.30.2
 
