@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369D03D641C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73ACB3D641A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239986AbhGZPyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:54:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51332 "EHLO mail.kernel.org"
+        id S239948AbhGZPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235092AbhGZPeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:34:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDECF6056B;
-        Mon, 26 Jul 2021 16:14:26 +0000 (UTC)
+        id S235024AbhGZPeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:34:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E7B960C40;
+        Mon, 26 Jul 2021 16:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316067;
-        bh=MIRtdigQjRd10/NGJnkLyqs1dc1KSlw2sbuL0WPp5i0=;
+        s=korg; t=1627316069;
+        bh=8yugBpXtiHbW0IHUy3U3C4SeJTTZi2HmiKcDjHO1arY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ARFV8N1igqQpLinFQYRpm4e+6QZxjZ+t7ruZGfgJ+cysNgCK1fM/dKltRCtD2KyaQ
-         jqEQkdgR2AWQvqXedEenJbEe8LEZD6kryv+ya0VvcmgefYmjNRCdlMxDooEx3urwxR
-         5qYKm8AnFYnAQ3DfU+h5I1tSwh7W1hhjaC4vP0V0=
+        b=xvSHXEHQoK1MBOp2mTx13JhXWyOxaEVq1/wAa5baWxVgVllP3dq8p0BYZ+foeS8kI
+         uJxk5mzhx9oStTrZwCPMU3jSpPCbA8TNseE6Bf81yB+arWtCmMN5MlgpUgUCwOmt/V
+         +Tm5t2mWny53Gupfqv0wlFb/8mq4RZzTJEpASwHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Amelie Delaunay <amelie.delaunay@foss.st.com>
-Subject: [PATCH 5.13 174/223] usb: typec: stusb160x: register role switch before interrupt registration
-Date:   Mon, 26 Jul 2021 17:39:26 +0200
-Message-Id: <20210726153851.887066028@linuxfoundation.org>
+Subject: [PATCH 5.13 175/223] usb: typec: stusb160x: Dont block probing of consumer of "connector" nodes
+Date:   Mon, 26 Jul 2021 17:39:27 +0200
+Message-Id: <20210726153851.921391987@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -41,61 +41,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Amelie Delaunay <amelie.delaunay@foss.st.com>
 
-commit 86762ad4abcc549deb7a155c8e5e961b9755bcf0 upstream.
+commit 6b63376722d9e1b915a2948e9b30f4ba2712e3f5 upstream.
 
-During interrupt registration, attach state is checked. If attached,
-then the Type-C state is updated with typec_set_xxx functions and role
-switch is set with usb_role_switch_set_role().
+Similar as with tcpm this patch lets fw_devlink know not to wait on the
+fwnode to be populated as a struct device.
 
-If the usb_role_switch parameter is error or null, the function simply
-returns 0.
+Without this patch, USB functionality can be broken on some previously
+supported boards.
 
-So, to update usb_role_switch role if a device is attached before the
-irq is registered, usb_role_switch must be registered before irq
-registration.
-
-Fixes: da0cb6310094 ("usb: typec: add support for STUSB160x Type-C controller family")
+Fixes: 28ec344bb891 ("usb: typec: tcpm: Don't block probing of consumers of "connector" nodes")
 Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Link: https://lore.kernel.org/r/20210716120718.20398-2-amelie.delaunay@foss.st.com
+Link: https://lore.kernel.org/r/20210716120718.20398-3-amelie.delaunay@foss.st.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/stusb160x.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/usb/typec/stusb160x.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 --- a/drivers/usb/typec/stusb160x.c
 +++ b/drivers/usb/typec/stusb160x.c
-@@ -739,10 +739,6 @@ static int stusb160x_probe(struct i2c_cl
- 	typec_set_pwr_opmode(chip->port, chip->pwr_opmode);
+@@ -686,6 +686,15 @@ static int stusb160x_probe(struct i2c_cl
+ 		return -ENODEV;
  
- 	if (client->irq) {
--		ret = stusb160x_irq_init(chip, client->irq);
--		if (ret)
--			goto port_unregister;
--
- 		chip->role_sw = fwnode_usb_role_switch_get(fwnode);
- 		if (IS_ERR(chip->role_sw)) {
- 			ret = PTR_ERR(chip->role_sw);
-@@ -752,6 +748,10 @@ static int stusb160x_probe(struct i2c_cl
- 					ret);
- 			goto port_unregister;
- 		}
+ 	/*
++	 * This fwnode has a "compatible" property, but is never populated as a
++	 * struct device. Instead we simply parse it to read the properties.
++	 * This it breaks fw_devlink=on. To maintain backward compatibility
++	 * with existing DT files, we work around this by deleting any
++	 * fwnode_links to/from this fwnode.
++	 */
++	fw_devlink_purge_absent_suppliers(fwnode);
 +
-+		ret = stusb160x_irq_init(chip, client->irq);
-+		if (ret)
-+			goto role_sw_put;
- 	} else {
- 		/*
- 		 * If Source or Dual power role, need to enable VDD supply
-@@ -775,6 +775,9 @@ static int stusb160x_probe(struct i2c_cl
- 
- 	return 0;
- 
-+role_sw_put:
-+	if (chip->role_sw)
-+		usb_role_switch_put(chip->role_sw);
- port_unregister:
- 	typec_unregister_port(chip->port);
- all_reg_disable:
++	/*
+ 	 * When both VDD and VSYS power supplies are present, the low power
+ 	 * supply VSYS is selected when VSYS voltage is above 3.1 V.
+ 	 * Otherwise VDD is selected.
 
 
