@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16283D62ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801553D60CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238258AbhGZPlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:41:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38594 "EHLO mail.kernel.org"
+        id S238159AbhGZPZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:25:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237571AbhGZPX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:23:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9425E60E09;
-        Mon, 26 Jul 2021 16:03:56 +0000 (UTC)
+        id S237623AbhGZPQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:16:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D12A360F02;
+        Mon, 26 Jul 2021 15:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315437;
-        bh=TpvVav4zzZvT52gwAdJt1Q1NI72Xr13IM/POb5Eyl6Q=;
+        s=korg; t=1627315000;
+        bh=Xag1HwkMrVoP0Ags/VD9IHDGZYJGhFMptc0b9sDFEpY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nMsinvm8/qU93AMAtoqU+QPdZOm+aKWFkhjOV2BtDlarualghMn4ZpNGa7iNmChSj
-         mg1FPyi2drNv5Os3inN7h5jwdjoOpY+7CxEWxvvyByRk2f6QXYbFFrs+0/wPpUohMP
-         x693BL8dGrwby5oW6NQs+dzLs0XzYwG6QbrytlSQ=
+        b=NdQy5wG00mSDAlN3B6Npf9dXqWEJg+7PF9xR5vhS9XUz0Axb+UCyv+o6efYvbkdEX
+         TqEe57V7a6quYjr1oLdVSARWQ1rKIGumo+YBWOOKxdzUqUbilH3ytnyBhKfF/I3GFW
+         49ZGCldUgoRQLIGG6rvokjLsN3a0b4NEebT0uXMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sayanta Pattanayak <sayanta.pattanayak@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Mike Christie <michael.christie@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 096/167] r8169: Avoid duplicate sysfs entry creation error
+Subject: [PATCH 5.4 048/108] scsi: iscsi: Fix iface sysfs attr detection
 Date:   Mon, 26 Jul 2021 17:38:49 +0200
-Message-Id: <20210726153842.622499392@linuxfoundation.org>
+Message-Id: <20210726153833.226712116@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +41,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+From: Mike Christie <michael.christie@oracle.com>
 
-[ Upstream commit e9a72f874d5b95cef0765bafc56005a50f72c5fe ]
+[ Upstream commit e746f3451ec7f91dcc9fd67a631239c715850a34 ]
 
-When registering the MDIO bus for a r8169 device, we use the PCI
-bus/device specifier as a (seemingly) unique device identifier.
-However the very same BDF number can be used on another PCI segment,
-which makes the driver fail probing:
+A ISCSI_IFACE_PARAM can have the same value as a ISCSI_NET_PARAM so when
+iscsi_iface_attr_is_visible tries to figure out the type by just checking
+the value, we can collide and return the wrong type. When we call into the
+driver we might not match and return that we don't want attr visible in
+sysfs. The patch fixes this by setting the type when we figure out what the
+param is.
 
-[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
-[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
-....
-[ 27.684858] libphy: mii_bus r8169-700 failed to register
-[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
-
-Add the segment number to the device name to make it more unique.
-
-This fixes operation on ARM N1SDP boards, with two boards connected
-together to form an SMP system, and all on-board devices showing up
-twice, just on different PCI segments. A similar issue would occur on
-large systems with many PCI slots and multiple RTL8169 NICs.
-
-Fixes: f1e911d5d0dfd ("r8169: add basic phylib support")
-Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
-[Andre: expand commit message, use pci_domain_nr()]
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210701002559.89533-1-michael.christie@oracle.com
+Fixes: 3e0f65b34cc9 ("[SCSI] iscsi_transport: Additional parameters for network settings")
+Signed-off-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi_transport_iscsi.c | 90 +++++++++++------------------
+ 1 file changed, 34 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 9010aabd9782..e690a1b09e98 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -5160,7 +5160,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
- 	new_bus->priv = tp;
- 	new_bus->parent = &pdev->dev;
- 	new_bus->irq[0] = PHY_IGNORE_INTERRUPT;
--	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
-+	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
-+		 pci_domain_nr(pdev->bus), pci_dev_id(pdev));
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index 2f1553d0a10e..77bba91b5714 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -432,39 +432,10 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 	struct device *dev = container_of(kobj, struct device, kobj);
+ 	struct iscsi_iface *iface = iscsi_dev_to_iface(dev);
+ 	struct iscsi_transport *t = iface->transport;
+-	int param;
+-	int param_type;
++	int param = -1;
  
- 	new_bus->read = r8169_mdio_read_reg;
- 	new_bus->write = r8169_mdio_write_reg;
+ 	if (attr == &dev_attr_iface_enabled.attr)
+ 		param = ISCSI_NET_PARAM_IFACE_ENABLE;
+-	else if (attr == &dev_attr_iface_vlan_id.attr)
+-		param = ISCSI_NET_PARAM_VLAN_ID;
+-	else if (attr == &dev_attr_iface_vlan_priority.attr)
+-		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
+-	else if (attr == &dev_attr_iface_vlan_enabled.attr)
+-		param = ISCSI_NET_PARAM_VLAN_ENABLED;
+-	else if (attr == &dev_attr_iface_mtu.attr)
+-		param = ISCSI_NET_PARAM_MTU;
+-	else if (attr == &dev_attr_iface_port.attr)
+-		param = ISCSI_NET_PARAM_PORT;
+-	else if (attr == &dev_attr_iface_ipaddress_state.attr)
+-		param = ISCSI_NET_PARAM_IPADDR_STATE;
+-	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
+-		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
+-	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
+-		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
+-	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
+-		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
+-	else if (attr == &dev_attr_iface_tcp_wsf.attr)
+-		param = ISCSI_NET_PARAM_TCP_WSF;
+-	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
+-		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
+-	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
+-		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
+-	else if (attr == &dev_attr_iface_cache_id.attr)
+-		param = ISCSI_NET_PARAM_CACHE_ID;
+-	else if (attr == &dev_attr_iface_redirect_en.attr)
+-		param = ISCSI_NET_PARAM_REDIRECT_EN;
+ 	else if (attr == &dev_attr_iface_def_taskmgmt_tmo.attr)
+ 		param = ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
+ 	else if (attr == &dev_attr_iface_header_digest.attr)
+@@ -501,6 +472,38 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 		param = ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN;
+ 	else if (attr == &dev_attr_iface_initiator_name.attr)
+ 		param = ISCSI_IFACE_PARAM_INITIATOR_NAME;
++
++	if (param != -1)
++		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
++
++	if (attr == &dev_attr_iface_vlan_id.attr)
++		param = ISCSI_NET_PARAM_VLAN_ID;
++	else if (attr == &dev_attr_iface_vlan_priority.attr)
++		param = ISCSI_NET_PARAM_VLAN_PRIORITY;
++	else if (attr == &dev_attr_iface_vlan_enabled.attr)
++		param = ISCSI_NET_PARAM_VLAN_ENABLED;
++	else if (attr == &dev_attr_iface_mtu.attr)
++		param = ISCSI_NET_PARAM_MTU;
++	else if (attr == &dev_attr_iface_port.attr)
++		param = ISCSI_NET_PARAM_PORT;
++	else if (attr == &dev_attr_iface_ipaddress_state.attr)
++		param = ISCSI_NET_PARAM_IPADDR_STATE;
++	else if (attr == &dev_attr_iface_delayed_ack_en.attr)
++		param = ISCSI_NET_PARAM_DELAYED_ACK_EN;
++	else if (attr == &dev_attr_iface_tcp_nagle_disable.attr)
++		param = ISCSI_NET_PARAM_TCP_NAGLE_DISABLE;
++	else if (attr == &dev_attr_iface_tcp_wsf_disable.attr)
++		param = ISCSI_NET_PARAM_TCP_WSF_DISABLE;
++	else if (attr == &dev_attr_iface_tcp_wsf.attr)
++		param = ISCSI_NET_PARAM_TCP_WSF;
++	else if (attr == &dev_attr_iface_tcp_timer_scale.attr)
++		param = ISCSI_NET_PARAM_TCP_TIMER_SCALE;
++	else if (attr == &dev_attr_iface_tcp_timestamp_en.attr)
++		param = ISCSI_NET_PARAM_TCP_TIMESTAMP_EN;
++	else if (attr == &dev_attr_iface_cache_id.attr)
++		param = ISCSI_NET_PARAM_CACHE_ID;
++	else if (attr == &dev_attr_iface_redirect_en.attr)
++		param = ISCSI_NET_PARAM_REDIRECT_EN;
+ 	else if (iface->iface_type == ISCSI_IFACE_TYPE_IPV4) {
+ 		if (attr == &dev_attr_ipv4_iface_ipaddress.attr)
+ 			param = ISCSI_NET_PARAM_IPV4_ADDR;
+@@ -591,32 +594,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kobject *kobj,
+ 		return 0;
+ 	}
+ 
+-	switch (param) {
+-	case ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO:
+-	case ISCSI_IFACE_PARAM_HDRDGST_EN:
+-	case ISCSI_IFACE_PARAM_DATADGST_EN:
+-	case ISCSI_IFACE_PARAM_IMM_DATA_EN:
+-	case ISCSI_IFACE_PARAM_INITIAL_R2T_EN:
+-	case ISCSI_IFACE_PARAM_DATASEQ_INORDER_EN:
+-	case ISCSI_IFACE_PARAM_PDU_INORDER_EN:
+-	case ISCSI_IFACE_PARAM_ERL:
+-	case ISCSI_IFACE_PARAM_MAX_RECV_DLENGTH:
+-	case ISCSI_IFACE_PARAM_FIRST_BURST:
+-	case ISCSI_IFACE_PARAM_MAX_R2T:
+-	case ISCSI_IFACE_PARAM_MAX_BURST:
+-	case ISCSI_IFACE_PARAM_CHAP_AUTH_EN:
+-	case ISCSI_IFACE_PARAM_BIDI_CHAP_EN:
+-	case ISCSI_IFACE_PARAM_DISCOVERY_AUTH_OPTIONAL:
+-	case ISCSI_IFACE_PARAM_DISCOVERY_LOGOUT_EN:
+-	case ISCSI_IFACE_PARAM_STRICT_LOGIN_COMP_EN:
+-	case ISCSI_IFACE_PARAM_INITIATOR_NAME:
+-		param_type = ISCSI_IFACE_PARAM;
+-		break;
+-	default:
+-		param_type = ISCSI_NET_PARAM;
+-	}
+-
+-	return t->attr_is_visible(param_type, param);
++	return t->attr_is_visible(ISCSI_NET_PARAM, param);
+ }
+ 
+ static struct attribute *iscsi_iface_attrs[] = {
 -- 
 2.30.2
 
