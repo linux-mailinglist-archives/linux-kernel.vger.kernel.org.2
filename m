@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DABC3D6428
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644FF3D6427
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240177AbhGZPzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:55:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51470 "EHLO mail.kernel.org"
+        id S240159AbhGZPzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236333AbhGZPeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:34:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE27860F5A;
-        Mon, 26 Jul 2021 16:14:44 +0000 (UTC)
+        id S236415AbhGZPeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:34:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7198260F5B;
+        Mon, 26 Jul 2021 16:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627316085;
-        bh=coqtVgG0wSPKKNK308MudOo7idkgrWjPnSCtxuFbz0I=;
+        s=korg; t=1627316088;
+        bh=LlJRIH297gQ9s/nqy999hnUVaJwbNMos0tPuVtk3Uas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wW5YIz2drNka3o5GyxSVJ53LO09Te7PY+FW+R3FmDo+IKvX2tZR0okDxQwIptVfeu
-         YTAWu6TCFcj5gjPLorZxgkkqa7jboHRXZ1Dr3M4Iroy8OOvdWrLEbonh2PgHKu+Mv8
-         LjpK65BLm6asJSwWTswUzuO4fNy0Ial4H7A1QzuM=
+        b=YMipkVdSs5YTbcRPzEocjhWRLN6matth3XxIe5pCeq48yOWK72lZMsNmCtwpHknlo
+         +JBaG8VDOzzFqZGvTEj6C58rp70z9IMKgfhMU8mpFnLRA5EljdwV6gvc8w/yNmO/S+
+         3jvz0e7SMAtGkJyc3klBjAmkThClryEi2OreQsOE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
         David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.13 181/223] btrfs: check for missing device in btrfs_trim_fs
-Date:   Mon, 26 Jul 2021 17:39:33 +0200
-Message-Id: <20210726153852.114638618@linuxfoundation.org>
+Subject: [PATCH 5.13 182/223] btrfs: fix unpersisted i_size on fsync after expanding truncate
+Date:   Mon, 26 Jul 2021 17:39:34 +0200
+Message-Id: <20210726153852.146665699@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
 References: <20210726153846.245305071@linuxfoundation.org>
@@ -40,80 +39,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand Jain <anand.jain@oracle.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 16a200f66ede3f9afa2e51d90ade017aaa18d213 upstream.
+commit 9acc8103ab594f72250788cb45a43427f36d685d upstream.
 
-A fstrim on a degraded raid1 can trigger the following null pointer
-dereference:
+If we have an inode that does not have the full sync flag set, was changed
+in the current transaction, then it is logged while logging some other
+inode (like its parent directory for example), its i_size is increased by
+a truncate operation, the log is synced through an fsync of some other
+inode and then finally we explicitly call fsync on our inode, the new
+i_size is not persisted.
 
-  BTRFS info (device loop0): allowing degraded mounts
-  BTRFS info (device loop0): disk space caching is enabled
-  BTRFS info (device loop0): has skinny extents
-  BTRFS warning (device loop0): devid 2 uuid 97ac16f7-e14d-4db1-95bc-3d489b424adb is missing
-  BTRFS warning (device loop0): devid 2 uuid 97ac16f7-e14d-4db1-95bc-3d489b424adb is missing
-  BTRFS info (device loop0): enabling ssd optimizations
-  BUG: kernel NULL pointer dereference, address: 0000000000000620
-  PGD 0 P4D 0
-  Oops: 0000 [#1] SMP NOPTI
-  CPU: 0 PID: 4574 Comm: fstrim Not tainted 5.13.0-rc7+ #31
-  Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
-  RIP: 0010:btrfs_trim_fs+0x199/0x4a0 [btrfs]
-  RSP: 0018:ffff959541797d28 EFLAGS: 00010293
-  RAX: 0000000000000000 RBX: ffff946f84eca508 RCX: a7a67937adff8608
-  RDX: ffff946e8122d000 RSI: 0000000000000000 RDI: ffffffffc02fdbf0
-  RBP: ffff946ea4615000 R08: 0000000000000001 R09: 0000000000000000
-  R10: 0000000000000000 R11: ffff946e8122d960 R12: 0000000000000000
-  R13: ffff959541797db8 R14: ffff946e8122d000 R15: ffff959541797db8
-  FS:  00007f55917a5080(0000) GS:ffff946f9bc00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 0000000000000620 CR3: 000000002d2c8001 CR4: 00000000000706f0
-  Call Trace:
-  btrfs_ioctl_fitrim+0x167/0x260 [btrfs]
-  btrfs_ioctl+0x1c00/0x2fe0 [btrfs]
-  ? selinux_file_ioctl+0x140/0x240
-  ? syscall_trace_enter.constprop.0+0x188/0x240
-  ? __x64_sys_ioctl+0x83/0xb0
-  __x64_sys_ioctl+0x83/0xb0
+The following example shows how to trigger it, with comments explaining
+how and why the issue happens:
 
-Reproducer:
+  $ mkfs.btrfs -f /dev/sdc
+  $ mount /dev/sdc /mnt
 
-  $ mkfs.btrfs -fq -d raid1 -m raid1 /dev/loop0 /dev/loop1
-  $ mount /dev/loop0 /btrfs
-  $ umount /btrfs
-  $ btrfs dev scan --forget
-  $ mount -o degraded /dev/loop0 /btrfs
+  $ touch /mnt/foo
+  $ xfs_io -f -c "pwrite -S 0xab 0 1M" /mnt/bar
 
-  $ fstrim /btrfs
+  $ sync
 
-The reason is we call btrfs_trim_free_extents() for the missing device,
-which uses device->bdev (NULL for missing device) to find if the device
-supports discard.
+  # Fsync bar, this will be a noop since the file has not yet been
+  # modified in the current transaction. The goal here is to clear
+  # BTRFS_INODE_NEEDS_FULL_SYNC from the inode's runtime flags.
+  $ xfs_io -c "fsync" /mnt/bar
 
-Fix is to check if the device is missing before calling
-btrfs_trim_free_extents().
+  # Now rename both files, without changing their parent directory.
+  $ mv /mnt/bar /mnt/bar2
+  $ mv /mnt/foo /mnt/foo2
 
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+  # Increase the size of bar2 with a truncate operation.
+  $ xfs_io -c "truncate 2M" /mnt/bar2
+
+  # Now fsync foo2, this results in logging its parent inode (the root
+  # directory), and logging the parent results in logging the inode of
+  # file bar2 (its inode item and the new name). The inode of file bar2
+  # is logged with an i_size of 0 bytes since it's logged in
+  # LOG_INODE_EXISTS mode, meaning we are only logging its names (and
+  # xattrs if it had any) and the i_size of the inode will not be changed
+  # when the log is replayed.
+  $ xfs_io -c "fsync" /mnt/foo2
+
+  # Now explicitly fsync bar2. This resulted in doing nothing, not
+  # logging the inode with the new i_size of 2M and the hole from file
+  # offset 1M to 2M. Because the inode did not have the flag
+  # BTRFS_INODE_NEEDS_FULL_SYNC set, when it was logged through the
+  # fsync of file foo2, its last_log_commit field was updated,
+  # resulting in this explicit of file bar2 not doing anything.
+  $ xfs_io -c "fsync" /mnt/bar2
+
+  # File bar2 content and size before a power failure.
+  $ od -A d -t x1 /mnt/bar2
+  0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+  *
+  1048576 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  *
+  2097152
+
+  <power failure>
+
+  # Mount the filesystem to replay the log.
+  $ mount /dev/sdc /mnt
+
+  # Read the file again, should have the same content and size as before
+  # the power failure happened, but it doesn't, i_size is still at 1M.
+  $ od -A d -t x1 /mnt/bar2
+  0000000 ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab ab
+  *
+  1048576
+
+This started to happen after commit 209ecbb8585bf6 ("btrfs: remove stale
+comment and logic from btrfs_inode_in_log()"), since btrfs_inode_in_log()
+no longer checks if the inode's list of modified extents is not empty.
+However, checking that list is not the right way to address this case
+and the check was added long time ago in commit 125c4cf9f37c98
+("Btrfs: set inode's logged_trans/last_log_commit after ranged fsync")
+for a different purpose, to address consecutive ranged fsyncs.
+
+The reason that checking for the list emptiness makes this test pass is
+because during an expanding truncate we create an extent map to represent
+a hole from the old i_size to the new i_size, and add that extent map to
+the list of modified extents in the inode. However if we are low on
+available memory and we can not allocate a new extent map, then we don't
+treat it as an error and just set the full sync flag on the inode, so that
+the next fsync does not rely on the list of modified extents - so checking
+for the emptiness of the list to decide if the inode needs to be logged is
+not reliable, and results in not logging the inode if it was not possible
+to allocate the extent map for the hole.
+
+Fix this by ensuring that if we are only logging that an inode exists
+(inode item, names/references and xattrs), we don't update the inode's
+last_log_commit even if it does not have the full sync runtime flag set.
+
+A test case for fstests follows soon.
+
+CC: stable@vger.kernel.org # 5.13+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/extent-tree.c |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/btrfs/tree-log.c |   31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -6034,6 +6034,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *
- 	mutex_lock(&fs_info->fs_devices->device_list_mutex);
- 	devices = &fs_info->fs_devices->devices;
- 	list_for_each_entry(device, devices, dev_list) {
-+		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
-+			continue;
-+
- 		ret = btrfs_trim_free_extents(device, &group_trimmed);
- 		if (ret) {
- 			dev_failed++;
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5515,16 +5515,29 @@ log_extents:
+ 		spin_lock(&inode->lock);
+ 		inode->logged_trans = trans->transid;
+ 		/*
+-		 * Don't update last_log_commit if we logged that an inode exists
+-		 * after it was loaded to memory (full_sync bit set).
+-		 * This is to prevent data loss when we do a write to the inode,
+-		 * then the inode gets evicted after all delalloc was flushed,
+-		 * then we log it exists (due to a rename for example) and then
+-		 * fsync it. This last fsync would do nothing (not logging the
+-		 * extents previously written).
++		 * Don't update last_log_commit if we logged that an inode exists.
++		 * We do this for two reasons:
++		 *
++		 * 1) We might have had buffered writes to this inode that were
++		 *    flushed and had their ordered extents completed in this
++		 *    transaction, but we did not previously log the inode with
++		 *    LOG_INODE_ALL. Later the inode was evicted and after that
++		 *    it was loaded again and this LOG_INODE_EXISTS log operation
++		 *    happened. We must make sure that if an explicit fsync against
++		 *    the inode is performed later, it logs the new extents, an
++		 *    updated inode item, etc, and syncs the log. The same logic
++		 *    applies to direct IO writes instead of buffered writes.
++		 *
++		 * 2) When we log the inode with LOG_INODE_EXISTS, its inode item
++		 *    is logged with an i_size of 0 or whatever value was logged
++		 *    before. If later the i_size of the inode is increased by a
++		 *    truncate operation, the log is synced through an fsync of
++		 *    some other inode and then finally an explicit fsync against
++		 *    this inode is made, we must make sure this fsync logs the
++		 *    inode with the new i_size, the hole between old i_size and
++		 *    the new i_size, and syncs the log.
+ 		 */
+-		if (inode_only != LOG_INODE_EXISTS ||
+-		    !test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags))
++		if (inode_only != LOG_INODE_EXISTS)
+ 			inode->last_log_commit = inode->last_sub_trans;
+ 		spin_unlock(&inode->lock);
+ 	}
 
 
