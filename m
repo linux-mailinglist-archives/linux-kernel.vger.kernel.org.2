@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01EA3D62CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873F73D62F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238191AbhGZPjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:39:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36992 "EHLO mail.kernel.org"
+        id S238395AbhGZPmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237288AbhGZPWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55A7C60F6B;
-        Mon, 26 Jul 2021 15:52:43 +0000 (UTC)
+        id S237683AbhGZPXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7B4960F5A;
+        Mon, 26 Jul 2021 16:04:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314763;
-        bh=luWfWVTOWEoM9ow+4WXzl2Q+7UeNAqDpefQ+22ES61A=;
+        s=korg; t=1627315457;
+        bh=3qaK4EwthAdOfpuaMjCBic6CN6+MFH5YR8Vzj3h6Bn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VJuGwmY5SjjmVP4CtjpiO+uFHD8un8PfsxtScSXQiqfX8bUcnFBR1ZpjvjnHyZFXv
-         fqqRotxp01JtvGUBebJfPCKUD4WKtVVJEbxrm3U3GxWlK485xHvJwX7A9MOiv5u7Dv
-         It+exIT5xSPsnxSenWng0PZUp98IcYiXS5AY+6Gc=
+        b=TXyoeVi2ZI+v1TbtqrAzYOJlUH3fG3GcswrkI5LomeNbKdOL86Cfl4VEt0+JuMJxs
+         1t82Na/FEuc2qhnIgNAPXqwQcFKujHkiZOdB/5+/A0MFsvDWuZlNvDJrH2A6S/Bzb+
+         nu4rVNQJLdFmpYumExg0uGtgZC+afVvLVqqPa0CE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 084/120] nvme-pci: dont WARN_ON in nvme_reset_work if ctrl.state is not RESETTING
+Subject: [PATCH 5.10 103/167] cifs: only write 64kb at a time when fallocating a small region of a file
 Date:   Mon, 26 Jul 2021 17:38:56 +0200
-Message-Id: <20210726153835.077673166@linuxfoundation.org>
+Message-Id: <20210726153842.851690981@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 7764656b108cd308c39e9a8554353b8f9ca232a3 ]
+[ Upstream commit 2485bd7557a7edb4520b4072af464f0a08c8efe0 ]
 
-Followling process:
-nvme_probe
-  nvme_reset_ctrl
-    nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING)
-    queue_work(nvme_reset_wq, &ctrl->reset_work)
+We only allow sending single credit writes through the SMB2_write() synchronous
+api so split this into smaller chunks.
 
--------------->	nvme_remove
-		  nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DELETING)
-worker_thread
-  process_one_work
-    nvme_reset_work
-    WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)
+Fixes: 966a3cb7c7db ("cifs: improve fallocate emulation")
 
-, which will trigger WARN_ON in nvme_reset_work():
-[  127.534298] WARNING: CPU: 0 PID: 139 at drivers/nvme/host/pci.c:2594
-[  127.536161] CPU: 0 PID: 139 Comm: kworker/u8:7 Not tainted 5.13.0
-[  127.552518] Call Trace:
-[  127.552840]  ? kvm_sched_clock_read+0x25/0x40
-[  127.553936]  ? native_send_call_func_single_ipi+0x1c/0x30
-[  127.555117]  ? send_call_function_single_ipi+0x9b/0x130
-[  127.556263]  ? __smp_call_single_queue+0x48/0x60
-[  127.557278]  ? ttwu_queue_wakelist+0xfa/0x1c0
-[  127.558231]  ? try_to_wake_up+0x265/0x9d0
-[  127.559120]  ? ext4_end_io_rsv_work+0x160/0x290
-[  127.560118]  process_one_work+0x28c/0x640
-[  127.561002]  worker_thread+0x39a/0x700
-[  127.561833]  ? rescuer_thread+0x580/0x580
-[  127.562714]  kthread+0x18c/0x1e0
-[  127.563444]  ? set_kthread_struct+0x70/0x70
-[  127.564347]  ret_from_fork+0x1f/0x30
-
-The preceding problem can be easily reproduced by executing following
-script (based on blktests suite):
-test() {
-  pdev="$(_get_pci_dev_from_blkdev)"
-  sysfs="/sys/bus/pci/devices/${pdev}"
-  for ((i = 0; i < 10; i++)); do
-    echo 1 > "$sysfs/remove"
-    echo 1 > /sys/bus/pci/rescan
-  done
-}
-
-Since the device ctrl could be updated as an non-RESETTING state by
-repeating probe/remove in userspace (which is a normal situation), we
-can replace stack dumping WARN_ON with a warnning message.
-
-Fixes: 82b057caefaff ("nvme-pci: fix multiple ctrl removal schedulin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Reported-by: Namjae Jeon <namjae.jeon@samsung.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/cifs/smb2ops.c | 26 +++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 8f1f10fa0dd6..d7cf3202cdd3 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2273,7 +2273,9 @@ static void nvme_reset_work(struct work_struct *work)
- 	int result;
- 	enum nvme_ctrl_state new_state = NVME_CTRL_LIVE;
+diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+index f6ceb79a995d..442bf422aa01 100644
+--- a/fs/cifs/smb2ops.c
++++ b/fs/cifs/smb2ops.c
+@@ -3466,7 +3466,7 @@ static int smb3_simple_fallocate_write_range(unsigned int xid,
+ 					     char *buf)
+ {
+ 	struct cifs_io_parms io_parms = {0};
+-	int nbytes;
++	int rc, nbytes;
+ 	struct kvec iov[2];
  
--	if (WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)) {
-+	if (dev->ctrl.state != NVME_CTRL_RESETTING) {
-+		dev_warn(dev->ctrl.device, "ctrl state %d is not RESETTING\n",
-+			 dev->ctrl.state);
- 		result = -ENODEV;
- 		goto out;
- 	}
+ 	io_parms.netfid = cfile->fid.netfid;
+@@ -3474,13 +3474,25 @@ static int smb3_simple_fallocate_write_range(unsigned int xid,
+ 	io_parms.tcon = tcon;
+ 	io_parms.persistent_fid = cfile->fid.persistent_fid;
+ 	io_parms.volatile_fid = cfile->fid.volatile_fid;
+-	io_parms.offset = off;
+-	io_parms.length = len;
+ 
+-	/* iov[0] is reserved for smb header */
+-	iov[1].iov_base = buf;
+-	iov[1].iov_len = io_parms.length;
+-	return SMB2_write(xid, &io_parms, &nbytes, iov, 1);
++	while (len) {
++		io_parms.offset = off;
++		io_parms.length = len;
++		if (io_parms.length > SMB2_MAX_BUFFER_SIZE)
++			io_parms.length = SMB2_MAX_BUFFER_SIZE;
++		/* iov[0] is reserved for smb header */
++		iov[1].iov_base = buf;
++		iov[1].iov_len = io_parms.length;
++		rc = SMB2_write(xid, &io_parms, &nbytes, iov, 1);
++		if (rc)
++			break;
++		if (nbytes > len)
++			return -EINVAL;
++		buf += nbytes;
++		off += nbytes;
++		len -= nbytes;
++	}
++	return rc;
+ }
+ 
+ static int smb3_simple_fallocate_range(unsigned int xid,
 -- 
 2.30.2
 
