@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6A2F3D56A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E20A3D56AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 11:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbhGZItq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 04:49:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31305 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233196AbhGZItS (ORCPT
+        id S232909AbhGZIvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 04:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232807AbhGZIvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 04:49:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627291787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VpxBo3UczXFpVeP5pHdpdgsu9E4RieUqE2581sjbAzU=;
-        b=Ctv4AXlMEtEs6Iy/manF1QdxNYJ3J26iZ30Db91LT199OuVFekGoB89Wbo0YAm5wl8qBYX
-        JXJVlO18G105FtlGoxQMMaDnNl+DbD7Xm54rEvW3Qxi9t6cGv7hLug8scybik7j7POxrsM
-        0uA6DkXDlb+GqRl8TXkeb3Jw/xwEB0Q=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-ZE9_BJJ_P7C8wBIx5qQlNA-1; Mon, 26 Jul 2021 05:29:46 -0400
-X-MC-Unique: ZE9_BJJ_P7C8wBIx5qQlNA-1
-Received: by mail-ed1-f72.google.com with SMTP id eg50-20020a05640228b2b02903a2e0d2acb7so3227668edb.16
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 02:29:45 -0700 (PDT)
+        Mon, 26 Jul 2021 04:51:50 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23251C061757;
+        Mon, 26 Jul 2021 02:32:18 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id t128so10207270oig.1;
+        Mon, 26 Jul 2021 02:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TvB2lU3cpIiYxB3yUvnpi686GY8PdgzLtSomY5oaEog=;
+        b=cI8CEovvUbYc4RTo/50NJmMV+CsWTMEGKA2jXDrWifgQtrm1C034WUzFAh59x/KWzF
+         XVvMZwU8i6pcw2sEQ2haz8972spAgFHvwQ7ccCLOQq2qKpvt2r7qPwbMbFuWT+t+AMwz
+         ZSgld8ytrnY+GWNJy7HUPPs0h/sgXc3Dl7KJHVAYM0hPWrjTgWPJN82BXXozDEqa4fer
+         kqCo6Xy+5MNLnvcBpihc+31Jo3gF9DY8U9RjX7uVGMETeZpAn/rILAA+L/cNUfkIB3e6
+         NVtU91VCF/a/ORP58S/3IrDKNRGhy+6R09dBM2ophufne8uoZ6UkzV6Du4Stu3QO3AdN
+         Fxcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VpxBo3UczXFpVeP5pHdpdgsu9E4RieUqE2581sjbAzU=;
-        b=hmjMgdR88F/PlEfYQKTzgC6I3j2Ph+wiiXLDS2Hs2o/sC92PHmFdA95OJK+C4xMqWf
-         JbXtJ5aH4RkO5skH5LpWwzBW4NznRivgCJJF7WLEuIL2J+U1P02O64pexFUiJOjV5cct
-         qB1MB2EKijowvH0VD3FB9KeJV6h7lmLXoJj2rTB0h3X50fO6RRnu9kiUoF/QHGUKLRC8
-         AJ8N64UHOkMtvourgI1eStAhiUB2zovyBas+y6iFxrS9LE/xS2uupjoKEXMRhOGor2jB
-         j+ygL77+ihh2/SIsAlHcSY5F2YUm+CJhBgOiEG6MnvS96vUcBKvy4SYQKboX1M0TEdjw
-         UZ9w==
-X-Gm-Message-State: AOAM533fJXd7ZhgNnOmPNToFbzaaZxwTmf8k4HN1sdBOkNklNGTUDNp+
-        xLP21bTsLE2bDrSbbSiYWbCb0TFn0yBdIT2RznN0WYFQPZrKKBmh02L4ofVsCeAysYaxIs/Ir9f
-        5jMR8wn6MckwDvFOEaQiEDhbf
-X-Received: by 2002:a17:906:f84a:: with SMTP id ks10mr15772497ejb.537.1627291785056;
-        Mon, 26 Jul 2021 02:29:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMEmdi8xJQjU6oStMXxQAZgGekDcKyG8uDyL0mkKdYpwEsm87S+Jh2cnw64hwZeitbYlDynQ==
-X-Received: by 2002:a17:906:f84a:: with SMTP id ks10mr15772483ejb.537.1627291784923;
-        Mon, 26 Jul 2021 02:29:44 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id d4sm13887040ejy.86.2021.07.26.02.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 02:29:44 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 11:29:42 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Xie Yongji <xieyongji@bytedance.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, dan.carpenter@oracle.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] vdpa: Add documentation for vdpa_alloc_device() macro
-Message-ID: <20210726092942.cyh4djfevy7vcgjc@steredhat>
-References: <20210715080026.242-1-xieyongji@bytedance.com>
- <20210715080026.242-4-xieyongji@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TvB2lU3cpIiYxB3yUvnpi686GY8PdgzLtSomY5oaEog=;
+        b=F1SplcSKH/BoK7Jtci9/AZ9R2lEC0JzfgLwpT6S+Blv4ORI9LAwX65lgwbMZBJhe+s
+         4X1z++SNhTOJvHJL2kNk7pWC0Z4U1tCy+mYOExWCqSrHmxV8VeFz/RsKzG9KKwF22gYJ
+         xPk6pnAo1U6jX4ueLmvhZLTt26LSKRzosSczHZAdg6CzdSBtesVTDt14kqw2vvqvy1ab
+         Tn8ECMWJomLsUCxkayEpmGXR+0X9QCWnm05BZwVjxKdHbdM7uy3upcP7c0w9egnAFIRq
+         l6jKPjLYp9i2X/03aXEAqDxzLuA0GkXkHgPUAx0Wk2Skyrnrbt4hnL32vqIVpdbd8y7H
+         dOGw==
+X-Gm-Message-State: AOAM530BwUiXAx0hZacsyFBgOSejNRDcp2yWH16haPtMdpY6qkiAKoc7
+        H3GNEl8TX2vXEGdF7Iyr8bfWHyaAg3kDMWsIRTg=
+X-Google-Smtp-Source: ABdhPJxPbsQMG7e++KYhaErKSQEC0RsF92zrY6kaJhfP72TiFAKnUN1wA6vD9nUlwwCYUS14lzoHWQg/3ZmrduoI81Q=
+X-Received: by 2002:aca:c0c3:: with SMTP id q186mr4872462oif.39.1627291937488;
+ Mon, 26 Jul 2021 02:32:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210715080026.242-4-xieyongji@bytedance.com>
+References: <20210726050831.1917982-1-hsinyi@chromium.org>
+In-Reply-To: <20210726050831.1917982-1-hsinyi@chromium.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Mon, 26 Jul 2021 11:32:05 +0200
+Message-ID: <CAFqH_53zJp7ejwXn3qqiVPnoTy6W3WonvvDxsZDCjmaQA57h6A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8183: kukui: Use aliases to mmc nodes
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 04:00:26PM +0800, Xie Yongji wrote:
->The return value of vdpa_alloc_device() macro is not very
->clear, so that most of callers did the wrong check. Let's
->add some comments to better document it.
+Hi Hsin-Yi,
+
+Thank you for the patch.
+
+Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dl., 26 de jul.
+2021 a les 7:08:
 >
->Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
->---
-> include/linux/vdpa.h | 11 +++++++++++
-> 1 file changed, 11 insertions(+)
->
->diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->index 3357ac98878d..8cfe49d201dd 100644
->--- a/include/linux/vdpa.h
->+++ b/include/linux/vdpa.h
->@@ -277,6 +277,17 @@ struct vdpa_device *__vdpa_alloc_device(struct device *parent,
-> 					const struct vdpa_config_ops *config,
-> 					size_t size, const char *name);
->
->+/**
->+ * vdpa_alloc_device - allocate and initilaize a vDPA device
->+ *
->+ * @dev_struct: the type of the parent structure
->+ * @member: the name of struct vdpa_device within the @dev_struct
->+ * @parent: the parent device
->+ * @config: the bus operations that is supported by this device
->+ * @name: name of the vdpa device
->+ *
->+ * Return allocated data structure or ERR_PTR upon error
->+ */
-> #define vdpa_alloc_device(dev_struct, member, parent, config, name)   \
-> 			  container_of(__vdpa_alloc_device( \
-> 				       parent, config, \
->-- 
->2.11.0
+> Use aliases to mmc nodes so the partition name for eMMC and SD card will
+> be consistent across boots.
 >
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+This definitely helps with my "troubles" flashing the kernel to the
+correct place" so
 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Btw, I think that a similar patch should be send for Elm, could you
+take care of it?
+
+Thanks,
+  Enric
+
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index ae549d55a94fc..ed499e17b6570 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -13,6 +13,8 @@
+>  / {
+>         aliases {
+>                 serial0 = &uart0;
+> +                mmc0 = &mmc0;
+> +                mmc1 = &mmc1;
+>         };
+>
+>         chosen {
+> --
+> 2.32.0.432.gabb21c7263-goog
+>
