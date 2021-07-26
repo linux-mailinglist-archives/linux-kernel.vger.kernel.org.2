@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7806C3D5E3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1BD3D5F9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhGZPG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:06:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46038 "EHLO mail.kernel.org"
+        id S236318AbhGZPSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:18:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236118AbhGZPFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:05:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F7460F5C;
-        Mon, 26 Jul 2021 15:45:52 +0000 (UTC)
+        id S237180AbhGZPK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 417A86056C;
+        Mon, 26 Jul 2021 15:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314353;
-        bh=j9h5+omN5Hw1yhJgU//fyND+E6Yj6TdXbCZq/YA4d2I=;
+        s=korg; t=1627314654;
+        bh=MCUk/4xCQ64cGWhnPZRBTtvoj9nAiQcd6m6fQ/aOeZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ew1w6SKAH+2kvgrfw/5EoRAuG/McAphWZbcDJVIFmbzEDNVkwTsub2pXkiyGLr2ri
-         I+KOQSZ+CmC2vICLEK1MgKGUH00pUomKUYpGSCV9kbAi9+gzDIDuTNCoSNrjCpn1VP
-         1B+glZiZOQKXxtiVNqgEJWUKPqfVCvWmZ9TYLuRo=
+        b=jcSpXLHV+FofZzgkMbKim+/VE5MIVWhw6vPA3h0mmN/09WlR3P+ybrW4A1EOEYPG2
+         WUoV1ypzs3OQgOebg0oT6MGXAwrX2ZQB3Nuo7bDJHmH5tbNFl3iyazYO9Scgc741f0
+         p8/jpbFCpQqehCY2bMDh/cJ+SFV/0AE9xaslZJOE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 17/82] thermal/core: Correct function name thermal_zone_device_unregister()
+        stable@vger.kernel.org, Alexander Ovechkin <ovov@yandex-team.ru>,
+        Dmitry Yakunin <zeil@yandex-team.ru>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 045/120] net: send SYNACK packet with accepted fwmark
 Date:   Mon, 26 Jul 2021 17:38:17 +0200
-Message-Id: <20210726153828.720075964@linuxfoundation.org>
+Message-Id: <20210726153833.840336133@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
-References: <20210726153828.144714469@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Alexander Ovechkin <ovov@yandex-team.ru>
 
-[ Upstream commit a052b5118f13febac1bd901fe0b7a807b9d6b51c ]
+commit 43b90bfad34bcb81b8a5bc7dc650800f4be1787e upstream.
 
-Fix the following make W=1 kernel build warning:
+commit e05a90ec9e16 ("net: reflect mark on tcp syn ack packets")
+fixed IPv4 only.
 
-  drivers/thermal/thermal_core.c:1376: warning: expecting prototype for thermal_device_unregister(). Prototype was for thermal_zone_device_unregister() instead
+This part is for the IPv6 side.
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210517051020.3463536-1-yangyingliang@huawei.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: e05a90ec9e16 ("net: reflect mark on tcp syn ack packets")
+Signed-off-by: Alexander Ovechkin <ovov@yandex-team.ru>
+Acked-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/thermal/thermal_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/tcp_ipv6.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index fcefafe7df48..2db83b555e59 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -1304,7 +1304,7 @@ free_tz:
- EXPORT_SYMBOL_GPL(thermal_zone_device_register);
- 
- /**
-- * thermal_device_unregister - removes the registered thermal zone device
-+ * thermal_zone_device_unregister - removes the registered thermal zone device
-  * @tz: the thermal zone device to remove
-  */
- void thermal_zone_device_unregister(struct thermal_zone_device *tz)
--- 
-2.30.2
-
+--- a/net/ipv6/tcp_ipv6.c
++++ b/net/ipv6/tcp_ipv6.c
+@@ -503,7 +503,8 @@ static int tcp_v6_send_synack(const stru
+ 		opt = ireq->ipv6_opt;
+ 		if (!opt)
+ 			opt = rcu_dereference(np->opt);
+-		err = ip6_xmit(sk, skb, fl6, sk->sk_mark, opt, np->tclass);
++		err = ip6_xmit(sk, skb, fl6, skb->mark ? : sk->sk_mark, opt,
++			       np->tclass);
+ 		rcu_read_unlock();
+ 		err = net_xmit_eval(err);
+ 	}
 
 
