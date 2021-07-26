@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36E73D6138
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6463D6321
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhGZPaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:30:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57158 "EHLO mail.kernel.org"
+        id S238900AbhGZPof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:44:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236513AbhGZPRK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:17:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E000760F70;
-        Mon, 26 Jul 2021 15:57:34 +0000 (UTC)
+        id S238179AbhGZPZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:25:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B72ED60F38;
+        Mon, 26 Jul 2021 16:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315055;
-        bh=nOCnzzOAdsN24bfZsElojP6Q2fJlpF1q7LJRy2tPqRo=;
+        s=korg; t=1627315535;
+        bh=UUSnv+YBR56PLXtQOE914sFblrvfbpijYigJ4zwetgw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UXkMbF2ggDVFoP4Gj9OCBxtsh6pJ3H0niEdmNLDmrAdMaI9rlD2ybAPuuCgGq9G0d
-         hIZqrgeK9EjWcENPyOGFOu1GzAYOiM9V0BOs1Sn0HfiBHzvu5mrnE62OMvt+NsnYk9
-         vhNua8+o02EIwxmJPZ1mKn2fHjJgFi/UaVg50nVc=
+        b=oRR8U/W3UskRYjTilFQkhm2+E5cKfTAmwa8Q+ljd1j0oEN+Z9wK8ofjgYqnyIdt+c
+         8nHHoFEWggQpkm3I17tBiH3kSyfFHrCnskuKftKybCwxIHAN9Qq+86qwKvYOciqJAV
+         onayVJx4cuQmPpmM4L7qqe5R5b1rPFtohKjIEKLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 060/108] nvme-pci: dont WARN_ON in nvme_reset_work if ctrl.state is not RESETTING
+        stable@vger.kernel.org,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.10 108/167] s390/boot: fix use of expolines in the DMA code
 Date:   Mon, 26 Jul 2021 17:39:01 +0200
-Message-Id: <20210726153833.616622957@linuxfoundation.org>
+Message-Id: <20210726153843.015826258@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,80 +40,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Alexander Egorenkov <egorenar@linux.ibm.com>
 
-[ Upstream commit 7764656b108cd308c39e9a8554353b8f9ca232a3 ]
+commit 463f36c76fa4ec015c640ff63ccf52e7527abee0 upstream.
 
-Followling process:
-nvme_probe
-  nvme_reset_ctrl
-    nvme_change_ctrl_state(ctrl, NVME_CTRL_RESETTING)
-    queue_work(nvme_reset_wq, &ctrl->reset_work)
+The DMA code section of the decompressor must be compiled with expolines
+if Spectre V2 mitigation has been enabled for the decompressed kernel.
+This is required because although the decompressor's image contains
+the DMA code section, it is handed over to the decompressed kernel for use.
 
--------------->	nvme_remove
-		  nvme_change_ctrl_state(&dev->ctrl, NVME_CTRL_DELETING)
-worker_thread
-  process_one_work
-    nvme_reset_work
-    WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)
+Because the DMA code is already slow w/o expolines, use expolines always
+regardless whether the decompressed kernel is using them or not. This
+simplifies the DMA code by dropping the conditional compilation of
+expolines.
 
-, which will trigger WARN_ON in nvme_reset_work():
-[  127.534298] WARNING: CPU: 0 PID: 139 at drivers/nvme/host/pci.c:2594
-[  127.536161] CPU: 0 PID: 139 Comm: kworker/u8:7 Not tainted 5.13.0
-[  127.552518] Call Trace:
-[  127.552840]  ? kvm_sched_clock_read+0x25/0x40
-[  127.553936]  ? native_send_call_func_single_ipi+0x1c/0x30
-[  127.555117]  ? send_call_function_single_ipi+0x9b/0x130
-[  127.556263]  ? __smp_call_single_queue+0x48/0x60
-[  127.557278]  ? ttwu_queue_wakelist+0xfa/0x1c0
-[  127.558231]  ? try_to_wake_up+0x265/0x9d0
-[  127.559120]  ? ext4_end_io_rsv_work+0x160/0x290
-[  127.560118]  process_one_work+0x28c/0x640
-[  127.561002]  worker_thread+0x39a/0x700
-[  127.561833]  ? rescuer_thread+0x580/0x580
-[  127.562714]  kthread+0x18c/0x1e0
-[  127.563444]  ? set_kthread_struct+0x70/0x70
-[  127.564347]  ret_from_fork+0x1f/0x30
-
-The preceding problem can be easily reproduced by executing following
-script (based on blktests suite):
-test() {
-  pdev="$(_get_pci_dev_from_blkdev)"
-  sysfs="/sys/bus/pci/devices/${pdev}"
-  for ((i = 0; i < 10; i++)); do
-    echo 1 > "$sysfs/remove"
-    echo 1 > /sys/bus/pci/rescan
-  done
-}
-
-Since the device ctrl could be updated as an non-RESETTING state by
-repeating probe/remove in userspace (which is a normal situation), we
-can replace stack dumping WARN_ON with a warnning message.
-
-Fixes: 82b057caefaff ("nvme-pci: fix multiple ctrl removal schedulin")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: bf72630130c2 ("s390: use proper expoline sections for .dma code")
+Cc: <stable@vger.kernel.org> # 5.2
+Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/s390/boot/text_dma.S |   19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index f9dba1a3e655..af516c35afe6 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2590,7 +2590,9 @@ static void nvme_reset_work(struct work_struct *work)
- 	bool was_suspend = !!(dev->ctrl.ctrl_config & NVME_CC_SHN_NORMAL);
- 	int result;
+--- a/arch/s390/boot/text_dma.S
++++ b/arch/s390/boot/text_dma.S
+@@ -9,16 +9,6 @@
+ #include <asm/errno.h>
+ #include <asm/sigp.h>
  
--	if (WARN_ON(dev->ctrl.state != NVME_CTRL_RESETTING)) {
-+	if (dev->ctrl.state != NVME_CTRL_RESETTING) {
-+		dev_warn(dev->ctrl.device, "ctrl state %d is not RESETTING\n",
-+			 dev->ctrl.state);
- 		result = -ENODEV;
- 		goto out;
- 	}
--- 
-2.30.2
-
+-#ifdef CC_USING_EXPOLINE
+-	.pushsection .dma.text.__s390_indirect_jump_r14,"axG"
+-__dma__s390_indirect_jump_r14:
+-	larl	%r1,0f
+-	ex	0,0(%r1)
+-	j	.
+-0:	br	%r14
+-	.popsection
+-#endif
+-
+ 	.section .dma.text,"ax"
+ /*
+  * Simplified version of expoline thunk. The normal thunks can not be used here,
+@@ -27,11 +17,10 @@ __dma__s390_indirect_jump_r14:
+  * affects a few functions that are not performance-relevant.
+  */
+ 	.macro BR_EX_DMA_r14
+-#ifdef CC_USING_EXPOLINE
+-	jg	__dma__s390_indirect_jump_r14
+-#else
+-	br	%r14
+-#endif
++	larl	%r1,0f
++	ex	0,0(%r1)
++	j	.
++0:	br	%r14
+ 	.endm
+ 
+ /*
 
 
