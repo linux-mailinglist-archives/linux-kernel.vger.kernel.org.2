@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59AB3D5DD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B513D5E98
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbhGZPEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:04:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42546 "EHLO mail.kernel.org"
+        id S236798AbhGZPLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235475AbhGZPDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D9960F37;
-        Mon, 26 Jul 2021 15:43:40 +0000 (UTC)
+        id S235762AbhGZPGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:06:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A48C160F8F;
+        Mon, 26 Jul 2021 15:47:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314221;
-        bh=VcW28h03MfAx7eHrtb/fJp8yqt61qSX/uJTWw0zKxcw=;
+        s=korg; t=1627314429;
+        bh=aJcJ10TLmqHJfpQYmWj+uIqqZLuPUFhpimqjLGIrdfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fSWu2zlj8LMJ/O+mrul/fiTSNURd++z8jT/z9WeQl0oj/jDj4xdUs5tusq3zcomPw
-         83njA+jVixu/c72d88WfXj1QuKciPhv8CJcr2jTP2591/gXPXR7LIeqYKDbVUIHtkD
-         +vy+WIAt6U8Wy7C0gHFDLGLUJf5l17JMM3in/TBQ=
+        b=gCxe003JbaVn2cl01mLH9rHP9pNHdpmgcLUdVoLlNXpv2iZPRXx6tKYCCAF7VYddX
+         zHjKTYwvfV/ATkxHIAPkVqcUDZRERMop9Rz68ZIYWLIztDrS0V+eyQY5FD7YIHEaj2
+         +t3wEpQxxGHz0F3oi1lGCDJx69reYViEvZIa+yH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Grzegorz Siwik <grzegorz.siwik@intel.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Slawomir Laba <slawomirx.laba@intel.com>,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        Mateusz Palczewski <mateusz.placzewski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Krister Johansen <kjlx@templeofstupid.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 29/60] igb: Check if num of q_vectors is smaller than max before array access
+Subject: [PATCH 4.14 43/82] perf probe: Fix dso->nsinfo refcounting
 Date:   Mon, 26 Jul 2021 17:38:43 +0200
-Message-Id: <20210726153825.786549897@linuxfoundation.org>
+Message-Id: <20210726153829.564982150@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153824.868160836@linuxfoundation.org>
-References: <20210726153824.868160836@linuxfoundation.org>
+In-Reply-To: <20210726153828.144714469@linuxfoundation.org>
+References: <20210726153828.144714469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,56 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 6c19d772618fea40d9681f259368f284a330fd90 ]
+[ Upstream commit dedeb4be203b382ba7245d13079bc3b0f6d40c65 ]
 
-Ensure that the adapter->q_vector[MAX_Q_VECTORS] array isn't accessed
-beyond its size. It was fixed by using a local variable num_q_vectors
-as a limit for loop index, and ensure that num_q_vectors is not bigger
-than MAX_Q_VECTORS.
+ASan reports a memory leak of nsinfo during the execution of:
 
-Fixes: 047e0030f1e6 ("igb: add new data structure for handling interrupts and NAPI")
-Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Reviewed-by: Grzegorz Siwik <grzegorz.siwik@intel.com>
-Reviewed-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Reviewed-by: Slawomir Laba <slawomirx.laba@intel.com>
-Reviewed-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-Reviewed-by: Mateusz Palczewski <mateusz.placzewski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+ # perf test "31: Lookup mmap thread".
+
+The leak is caused by a refcounted variable being replaced without
+dropping the refcount.
+
+This patch makes sure that the refcnt of nsinfo is decreased whenever
+a refcounted variable is replaced with a new value.
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: 544abd44c7064c8a ("perf probe: Allow placing uprobes in alternate namespaces.")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Krister Johansen <kjlx@templeofstupid.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/55223bc8821b34ccb01f92ef1401c02b6a32e61f.1626343282.git.rickyman7@gmail.com
+[ Split from a larger patch ]
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ tools/perf/util/probe-event.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 38865e9bf934..6bede6774486 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -948,6 +948,7 @@ static void igb_configure_msix(struct igb_adapter *adapter)
-  **/
- static int igb_request_msix(struct igb_adapter *adapter)
- {
-+	unsigned int num_q_vectors = adapter->num_q_vectors;
- 	struct net_device *netdev = adapter->netdev;
- 	int i, err = 0, vector = 0, free_vector = 0;
+diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+index 7c286756c34b..a0597e417ca3 100644
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -197,8 +197,10 @@ struct map *get_target_map(const char *target, struct nsinfo *nsi, bool user)
+ 		struct map *map;
  
-@@ -956,7 +957,13 @@ static int igb_request_msix(struct igb_adapter *adapter)
- 	if (err)
- 		goto err_out;
- 
--	for (i = 0; i < adapter->num_q_vectors; i++) {
-+	if (num_q_vectors > MAX_Q_VECTORS) {
-+		num_q_vectors = MAX_Q_VECTORS;
-+		dev_warn(&adapter->pdev->dev,
-+			 "The number of queue vectors (%d) is higher than max allowed (%d)\n",
-+			 adapter->num_q_vectors, MAX_Q_VECTORS);
-+	}
-+	for (i = 0; i < num_q_vectors; i++) {
- 		struct igb_q_vector *q_vector = adapter->q_vector[i];
- 
- 		vector++;
+ 		map = dso__new_map(target);
+-		if (map && map->dso)
++		if (map && map->dso) {
++			nsinfo__put(map->dso->nsinfo);
+ 			map->dso->nsinfo = nsinfo__get(nsi);
++		}
+ 		return map;
+ 	} else {
+ 		return kernel_get_module_map(target);
 -- 
 2.30.2
 
