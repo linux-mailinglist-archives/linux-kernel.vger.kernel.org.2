@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBC13D6A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC64F3D6A37
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 01:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbhGZWsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 18:48:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50905 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233843AbhGZWsH (ORCPT
+        id S233990AbhGZWt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 18:49:56 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:3350 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233707AbhGZWtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 18:48:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627342114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zGmsTgcyIKG5lma+qo/IbpdoduVKh2eYr03LqB0JH4c=;
-        b=EhXz8GJZQn9Oxw2BBdNcRLXI3Z7Qfo8R/Eb4Cwnnw1SEtx0DG30a/b8PtEhs+j5JvHCTYK
-        TqX3fkhg3nhcmzVYn5Oh7cJ3saWrQriNFcQD0fViGTSUzjh6tfZxH/hqZdcqChYCOPMpyM
-        EykmwM1M73LbAujM6n+3MqtPcLooZew=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-168-8wy8naKYNFOr5IytlBUtMA-1; Mon, 26 Jul 2021 19:28:33 -0400
-X-MC-Unique: 8wy8naKYNFOr5IytlBUtMA-1
-Received: by mail-oo1-f70.google.com with SMTP id r15-20020a4aea8f0000b029025ec20a413eso7356159ooh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 16:28:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=zGmsTgcyIKG5lma+qo/IbpdoduVKh2eYr03LqB0JH4c=;
-        b=R0Hu6gAybJGw06ukQTwjYK2e1oAn9MxSRhIDSsjnij+Cs6lwmVljiadsr97wYAVHgG
-         GYyhYCgIJ+mhg4kY8gTITD0elJvO9Gsrgy/x4m/jSK4huGkYZOHp6t0O5UA+kcnTJ6BM
-         SMgFeIhzp237i/CYCLgxNhmjCkgfKPWeLVq2N3OzD6QZipn/e81wAMFUZTuNPgWdYi/G
-         cwkIyDvvQpOhF50UWRYHsSuou0Rqt7kPHzf2Tc6RwbiR5uMFppgRgddInpEAGqeIXE1s
-         iMzmiUZ22i1lgX7SVlYfYyYmhKpBJvscv4MDEZJef9ovsndWVEbiTGlu9zdBGUbP94sL
-         AqCQ==
-X-Gm-Message-State: AOAM531CU6f/bOOopzlVPk85hUiSxtfFqGUJK9pbRi0CrkDjqlZ8yVBs
-        wep+t+jJIICeMAdPNOHryGyrqxdHC7euszTtFLJpFRX32yGvsV+UFVnGqmppDdTnI5+7bkdIaQ1
-        1MIkxEOV4x7Nk6RfnwJRPrl+3
-X-Received: by 2002:aca:a887:: with SMTP id r129mr1016705oie.128.1627342112662;
-        Mon, 26 Jul 2021 16:28:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy3GADjIuORJLkoHf1pSPqO4kcuqx8II3jB98Pxdt6mv3Z6DUajXj/STasL7XqN3HL0GlGG5A==
-X-Received: by 2002:aca:a887:: with SMTP id r129mr1016693oie.128.1627342112452;
-        Mon, 26 Jul 2021 16:28:32 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id p4sm219061ooa.35.2021.07.26.16.28.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 16:28:32 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 17:28:31 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] vfio/mdev: don't warn if ->request is not set
-Message-ID: <20210726172831.3a7978fd.alex.williamson@redhat.com>
-In-Reply-To: <20210726230906.GD1721383@nvidia.com>
-References: <20210726143524.155779-1-hch@lst.de>
-        <20210726143524.155779-3-hch@lst.de>
-        <87zgu93sxz.fsf@redhat.com>
-        <20210726230906.GD1721383@nvidia.com>
-Organization: Red Hat
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Mon, 26 Jul 2021 18:49:55 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16QNHk5s015555;
+        Mon, 26 Jul 2021 23:29:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=4zAQoXb0cViuQyWT4ENIPKY53APJdMlLm3HEKlcjRCg=;
+ b=XOJ8Q/OqSjPkGJ5GNIc4poe6b0h5dClTj4kn4WllOZAA7tbwRpnBPQAPf3GWtS4zmFSR
+ qgqhOhTXU0PmSg/YUJtUVDuYY9fJWq2jOXQgH5GSf9w6iRZuyN33PaEsfZzIiD8qaV7+
+ YB0tAUQJT73yvUgk8MQhXCy0CGNQdoYOIZQlMXQlAS7ylrwtF0JwG0r2J2/mIgk2nQ9H
+ AyF23jBuxEtbdS/ugKByvJhIJFZFlEakkOOR3HU4vr0GWbEVySZLnAyisnWf1at2vqus
+ OJ3mOmLnYJWTS3I16YGkSzGswt9u9KLq1NII/1V8vc3bipYhALvumWntXBD5zCvhaAMZ NQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=4zAQoXb0cViuQyWT4ENIPKY53APJdMlLm3HEKlcjRCg=;
+ b=PeISs21IzVWIAYR65UeCWAXg6IcjxeUHcWAU7SXKlQKQ3S4x+NSmmqzfqCFEKSrhlMyw
+ IW9q/pU3pUgVRMD22wkSoANLWiwwKfzpvdsJoPq1WTZUA3zpU4u4tHSnU5hxS1Ot7aII
+ QAMagrCpbU5cpCNpB71za4ZOV71ACj4PCpLDomlVYHtd3H8G33reDo2wuhKE076D3brv
+ jROmnGClz0iLc6A9N4j3xf5N+pXgLIYqMGL3UlPq1aGWW5kW6BVXzvlDOmCNYMmjyxLb
+ 9JPg05pF19KuOFjDSG6Q+42qKz8dLGqCiKb9x3EZ7i3piMTgqHCv+nwx2V2EybXtYFPd vg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a2356gc7x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Jul 2021 23:29:05 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16QLafMj135461;
+        Mon, 26 Jul 2021 23:29:04 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 3a234uawpb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Jul 2021 23:29:04 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 16QNT3OW057951;
+        Mon, 26 Jul 2021 23:29:03 GMT
+Received: from manjaro.in.oracle.com (dhcp-10-166-172-209.vpn.oracle.com [10.166.172.209])
+        by userp3020.oracle.com with ESMTP id 3a234uawn2-1;
+        Mon, 26 Jul 2021 23:29:03 +0000
+From:   Harshvardhan Jha <harshvardhan.jha@oracle.com>
+To:     steffen.klassert@secunet.com
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Harshvardhan Jha <harshvardhan.jha@oracle.com>
+Subject: [PATCH] net: xfrm: Fix end of loop tests for list_for_each_entry
+Date:   Tue, 27 Jul 2021 04:58:52 +0530
+Message-Id: <20210726232852.216392-1-harshvardhan.jha@oracle.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: gp-yp8Z9haS0r6HO05wsiRd3API3v573
+X-Proofpoint-GUID: gp-yp8Z9haS0r6HO05wsiRd3API3v573
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 20:09:06 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+The list_for_each_entry() iterator, "pos" in this code, can never be
+NULL so the warning will never be printed.
 
-> On Mon, Jul 26, 2021 at 07:07:04PM +0200, Cornelia Huck wrote:
-> 
-> > But I wonder why nobody else implements this? Lack of surprise removal?  
-> 
-> The only implementation triggers an eventfd that seems to be the same
-> eventfd as the interrupt..
-> 
-> Do you know how this works in userspace? I'm surprised that the
-> interrupt eventfd can trigger an observation that the kernel driver
-> wants to be unplugged?
+Signed-off-by: Harshvardhan Jha <harshvardhan.jha@oracle.com>
+---
+From static analysis.  Not tested.
+---
+ net/xfrm/xfrm_ipcomp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think we're talking about ccw, but I see QEMU registering separate
-eventfds for each of the 3 IRQ indexes and the mdev driver specifically
-triggering the req_trigger...?  Thanks,
-
-Alex
+diff --git a/net/xfrm/xfrm_ipcomp.c b/net/xfrm/xfrm_ipcomp.c
+index 2e8afe078d61..cb40ff0ff28d 100644
+--- a/net/xfrm/xfrm_ipcomp.c
++++ b/net/xfrm/xfrm_ipcomp.c
+@@ -241,7 +241,7 @@ static void ipcomp_free_tfms(struct crypto_comp * __percpu *tfms)
+ 			break;
+ 	}
+ 
+-	WARN_ON(!pos);
++	WARN_ON(list_entry_is_head(pos, &ipcomp_tfms_list, list));
+ 
+ 	if (--pos->users)
+ 		return;
+-- 
+2.32.0
 
