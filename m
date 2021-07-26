@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5077E3D542C
+	by mail.lfdr.de (Postfix) with ESMTP id E25D03D542E
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhGZGlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhGZGlI (ORCPT
+        id S232331AbhGZGmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:42:21 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:50623 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231707AbhGZGmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:41:08 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35CF2C061757;
-        Mon, 26 Jul 2021 00:21:37 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 9BA582224A;
-        Mon, 26 Jul 2021 09:21:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1627284092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=buAfjcLR7fPMvNNPaqEniqQuht6PIhq7VepmuEtbukM=;
-        b=d4AnwWs/wVsXCvpOc1ES4tlK7A2t8P+dVfiyyRz2zkQMmAoJvVPnMeKmKXX0K5yKezneM3
-        h8yG7/e3J+UcfEipB0TI6OUEE9rxPqZFgjCLsuY9bQk0Lx/ZNiBwCoA7pWjZLSUnUFln5/
-        Hsux3av4yhkx7wlzcuYm6uSC0SMWUww=
+        Mon, 26 Jul 2021 02:42:20 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 16Q7MVyuC012208, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 16Q7MVyuC012208
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 26 Jul 2021 15:22:31 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 15:22:30 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 26 Jul 2021 15:22:30 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91]) by
+ RTEXMBS04.realtek.com.tw ([fe80::5bd:6f71:b434:7c91%5]) with mapi id
+ 15.01.2106.013; Mon, 26 Jul 2021 15:22:30 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Neo Jou <neojou@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: RE: [PATCH RFC v1 5/7] rtw88: Configure the registers from rtw_bf_assoc() outside the RCU lock
+Thread-Topic: [PATCH RFC v1 5/7] rtw88: Configure the registers from
+ rtw_bf_assoc() outside the RCU lock
+Thread-Index: AQHXe0w0JoHHz5CoNkymlQ8rINQ1TKtJyCDggAn1WYCAAOxIAA==
+Date:   Mon, 26 Jul 2021 07:22:30 +0000
+Message-ID: <c60c9877f491411c915c64d1fc7a797a@realtek.com>
+References: <20210717204057.67495-1-martin.blumenstingl@googlemail.com>
+ <20210717204057.67495-6-martin.blumenstingl@googlemail.com>
+ <1a299cd8c1be4fba8360780ef6f70f0f@realtek.com>
+ <CAFBinCAJNqbpoqSSFYYBJg818KHCKx5nFzsKZdR=D+sTXQj6dg@mail.gmail.com>
+In-Reply-To: <CAFBinCAJNqbpoqSSFYYBJg818KHCKx5nFzsKZdR=D+sTXQj6dg@mail.gmail.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.146]
+x-kse-serverinfo: RTEXMBS03.realtek.com.tw, 9
+x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
+ rules found
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: =?utf-8?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzcvMjYg5LiK5Y2IIDA2OjAwOjAw?=
+x-kse-bulkmessagesfiltering-scan-result: protection disabled
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Jul 2021 09:21:31 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fu Wei <tekkamanninja@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Huan Feng <huan.feng@starfivetech.com>
-Subject: Re: [RFC PATH 2/2] gpio: starfive-jh7100: Add StarFive JH7100 GPIO
- driver
-In-Reply-To: <20210726071124.GA9184@x1>
-References: <20210701002037.912625-1-drew@beagleboard.org>
- <20210701002037.912625-3-drew@beagleboard.org>
- <8c59105d32a9936f8806501ecd20e044@walle.cc>
- <CACRpkdbhKsuXZiLCh_iajJQWDdQQOZ87QF3xDr5Vc66SoVCnxQ@mail.gmail.com>
- <20210726071124.GA9184@x1>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <dad13b899b69436acc1804b7c3438639@walle.cc>
-X-Sender: michael@walle.cc
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/26/2021 07:01:19
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165231 [Jul 26 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: pkshih@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;realtek.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/26/2021 07:04:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Drew, Hi Linus,
-
-Am 2021-07-26 09:11, schrieb Drew Fustini:
-> On Fri, Jul 23, 2021 at 11:04:41PM +0200, Linus Walleij wrote:
->> On Thu, Jul 1, 2021 at 8:39 AM Michael Walle <michael@walle.cc> wrote:
->> > Am 2021-07-01 02:20, schrieb Drew Fustini:
->> > > Add GPIO driver for the StarFive JH7100 SoC [1] used on the
->> > > BeagleV Starlight JH7100 board [2].
->> > >
->> > > [1] https://github.com/starfive-tech/beaglev_doc/
->> > > [2] https://github.com/beagleboard/beaglev-starlight
->> > >
->> > > Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
->> > > Signed-off-by: Huan Feng <huan.feng@starfivetech.com>
->> > > Signed-off-by: Drew Fustini <drew@beagleboard.org>
->> >
->> > Could this driver use GPIO_REGMAP and REGMAP_IRQ? See
->> > drivers/gpio/gpio-sl28cpld.c for an example.
->> 
->> To me it looks just memory-mapped?
->> 
->> Good old gpio-mmio.c (select GPIO_GENERIC) should
->> suffice I think.
-
-But that doesn't mean gpio-regmap can't be used, no? Or what are
-the advantages of gpio-mmio?
-
->> Drew please look at drivers/gpio/gpio-ftgpio010.c for an example
->> of GPIO_GENERIC calling bgpio_init() in probe().
-> 
-> Thank you for the suggestion. However, I am not sure that will work for
-> this SoC.
-> 
-> The GPIO registers are described in section 12 of JH7100 datasheet [1]
-> and I don't think they fit the expectation of gpio-mmio.c because there
-> is a seperate register for each GPIO line for output data value and
-> output enable.
-> 
-> There are 64 output data config registers which are 4 bytes wide. There
-> are 64 output enable config registers which are 4 bytes wide too. 
-> Output
-> data and output enable registers for a given GPIO pad are contiguous.
-> GPIO0_DOUT_CFG is 0x50 and GPIO0_DOEN_CFG is 0x54 while GPIO1_DOUT_CFG
-> is 0x58 and GPIO1_DOEN_CFG is 0x5C. The stride between GPIO pads is
-> effectively 8, which yields the formula: GPIOn_DOUT_CFG is 0x50+8n.
-> Similarly, GPIO0_DOEN_CFG is 0x54 and thus GPIOn_DOEN_CFG is 0x54+8n.
-> 
-> However, GPIO input data does use just one bit for each line. GPIODIN_0
-> at 0x48 covers GPIO[31:0] and GPIODIN_1 at 0x4c covers GPIO[63:32].
-
-I'd say, that should work with the .reg_mask_xlate of the gpio-regmap.
-
--michael
-
-> Thus the input could work with gpio-mmio but I am not sure how to
-> reconcile the register-per-gpio for the output value and output enable.
-> 
-> Is there way a way to adapt gpio-mmio for this situation?
-> 
-> Thanks,
-> Drew
-> 
-> [1] https://github.com/starfive-tech/beaglev_doc
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcnRpbiBCbHVtZW5zdGlu
+Z2wgW21haWx0bzptYXJ0aW4uYmx1bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tXQ0KPiBTZW50OiBN
+b25kYXksIEp1bHkgMjYsIDIwMjEgNTozNiBBTQ0KPiBUbzogUGtzaGloDQo+IENjOiBsaW51eC13
+aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmc7IHRvbnkwNjIwZW1tYUBnbWFpbC5jb207IGt2YWxvQGNv
+ZGVhdXJvcmEub3JnOw0KPiBqb2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0OyBuZXRkZXZAdmdlci5r
+ZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBOZW8gSm91OyBKZXJuZWoN
+Cj4gU2tyYWJlYw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIFJGQyB2MSA1LzddIHJ0dzg4OiBDb25m
+aWd1cmUgdGhlIHJlZ2lzdGVycyBmcm9tIHJ0d19iZl9hc3NvYygpIG91dHNpZGUgdGhlIFJDVSBs
+b2NrDQo+IA0KPiBIaSBQaW5nLUtlLA0KPiANCj4gT24gTW9uLCBKdWwgMTksIDIwMjEgYXQgNzo0
+NyBBTSBQa3NoaWggPHBrc2hpaEByZWFsdGVrLmNvbT4gd3JvdGU6DQo+IFsuLi5dDQo+ID4gVGhl
+IHJjdV9yZWFkX2xvY2soKSBpbiB0aGlzIGZ1bmN0aW9uIGlzIHVzZWQgdG8gYWNjZXNzIGllZWU4
+MDIxMV9maW5kX3N0YSgpIGFuZCBwcm90ZWN0ICdzdGEnLg0KPiA+IEEgc2ltcGxlIHdheSBpcyB0
+byBzaHJpbmsgdGhlIGNyaXRpY2FsIHNlY3Rpb24sIGxpa2U6DQo+ID4NCj4gPiAgICAgICAgIHJj
+dV9yZWFkX2xvY2soKTsNCj4gPg0KPiA+ICAgICAgICAgc3RhID0gaWVlZTgwMjExX2ZpbmRfc3Rh
+KHZpZiwgYnNzaWQpOw0KPiA+ICAgICAgICAgaWYgKCFzdGEpIHsNCj4gPiAgICAgICAgICAgICAg
+ICAgcnR3X3dhcm4ocnR3ZGV2LCAiZmFpbGVkIHRvIGZpbmQgc3RhdGlvbiBlbnRyeSBmb3IgYnNz
+ICVwTVxuIiwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgYnNzaWQpOw0KPiA+ICAgICAg
+ICAgICAgICAgICByY3VfcmVhZF91bmxvY2soKTsNCj4gPiAgICAgICAgIH0NCj4gPg0KPiA+ICAg
+ICAgICAgdmh0X2NhcCA9ICZzdGEtPnZodF9jYXA7DQo+ID4NCj4gPiAgICAgICAgIHJjdV9yZWFk
+X3VubG9jaygpOw0KPiBJIGFncmVlIHRoYXQgcmVkdWNpbmcgdGhlIGFtb3VudCBvZiBjb2RlIHVu
+ZGVyIHRoZSBsb2NrIHdpbGwgaGVscCBteQ0KPiB1c2UtY2FzZSBhcyB3ZWxsDQo+IGluIHlvdXIg
+Y29kZS1leGFtcGxlIEkgYW0gd29uZGVyaW5nIGlmIHdlIHNob3VsZCBjaGFuZ2UNCj4gICBzdHJ1
+Y3QgaWVlZTgwMjExX3N0YV92aHRfY2FwICp2aHRfY2FwOw0KPiAgIHZodF9jYXAgPSAmc3RhLT52
+aHRfY2FwOw0KPiB0bw0KPiAgIHN0cnVjdCBpZWVlODAyMTFfc3RhX3ZodF9jYXAgdmh0X2NhcDsN
+Cj4gICB2aHRfY2FwID0gc3RhLT52aHRfY2FwOw0KPiANCj4gTXkgdGhpbmtpbmcgaXMgdGhhdCBp
+ZWVlODAyMTFfc3RhIG1heSBiZSBmcmVlZCBpbiBwYXJhbGxlbCB0byB0aGlzIGNvZGUgcnVubmlu
+Zy4NCj4gSWYgdGhhdCBjYW5ub3QgaGFwcGVuIHRoZW4geW91ciBjb2RlIHdpbGwgYmUgZmluZS4N
+Cj4gDQo+IFNvIEkgYW0gaG9waW5nIHRoYXQgeW91IGNhbiBhbHNvIHNoYXJlIHlvdXIgdGhvdWdo
+dHMgb24gdGhpcyBvbmUuDQo+IA0KDQpXaGVuIHdlIGVudGVyIHJ0d19iZl9hc3NvYygpLCB0aGUg
+bXV0ZXggcnR3ZGV2LT5tdXRleCBpcyBoZWxkOyBhcyB3ZWxsIGFzDQpydHdfc3RhX2FkZCgpL3J0
+d19zdGFfcmVtb3ZlKCkuIFNvLCBJIHRoaW5rIGl0IGNhbm5vdCBoYXBwZW4gdGhhdCBpZWVlODAy
+MTFfc3RhDQp3YXMgZnJlZWQgaW4gcGFyYWxsZWwuDQoNCi0tDQpQaW5nLUtlDQoNCg==
