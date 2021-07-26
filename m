@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73573D68D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761B73D68E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 23:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232376AbhGZVCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 17:02:12 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:39666 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhGZVCK (ORCPT
+        id S232101AbhGZVFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 17:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229489AbhGZVFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 17:02:10 -0400
-Received: by mail-io1-f41.google.com with SMTP id j21so13709020ioo.6;
-        Mon, 26 Jul 2021 14:42:38 -0700 (PDT)
+        Mon, 26 Jul 2021 17:05:44 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3750EC061757;
+        Mon, 26 Jul 2021 14:46:11 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id k4-20020a17090a5144b02901731c776526so966236pjm.4;
+        Mon, 26 Jul 2021 14:46:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QgtEAFRQu+sQ8IDAKmaF4skCHu48KSCADIk8RQevi5Q=;
+        b=GL+nD5Mq9JnEvF4bRlZpwJKRrcxN6t/wb5RMdDsJJzi3PN36saiYHdk0KDLjcDcx42
+         8IfuTBccuiAXHfcFCwRocIylIzU8fsrxBEuj44+0Rcs/o/nG3JCIdHULN1bLJSmAjVK7
+         KMC0SpkZCyMTPPonEXvq5zFjud4WkRKLHqo8Y5kXoOo+IOl1VqYz7r3QfUbLc1A0Bd+E
+         P6Kjqw0TOKu7JRt84jrd0F+uPb3MVwpNXTuWKGhmlOybNKfjEZfAmPvVyJ/YPVRHG2fF
+         LAiUiHRtHIryF6ODxnXknWh4L/jWwnb+f9F9Sgbyqkh+wsjuoqt0VRNeX0ueydlvmESG
+         y58w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=zO/qsR+imuZkYrRTqh5CVfo8l4ZQQ/jXXOgdZGFgQdM=;
-        b=RGZLR0lA4TOq+elBqK90otiiMW7AR0prJrLidHHYTR4BaSzYxhsNVQG6olBV3OTuq3
-         Nt6T5P7QcEx+9nCUdmiHs03EyzyNlAhKtaS8uL3ooM5fKrBKUF3mcDDD61EsYKYcP5pu
-         FxWBYeXAKhEhvDp77YxIEJ7RuO5WA+5aHkBe7D2wwmRaE/K/LMqV6zXKeUvPJQOm+DOq
-         bz4C9xdXvIsENub1NPsJq4QghbuZ2JG1oBsC0ahTYFb0ojBnGwLgMv3F4747FikJJpUO
-         dXiylNO+MMzPI5b1oNZ7ocUy/sZjjDK+aCApAvXYZ5HfOxEwy+yub58DV7CJeU5lXbrU
-         f4Eg==
-X-Gm-Message-State: AOAM530QcRl2LZqpUOM2DIdpFlB+wKs2UOaQQDrpvt2TtmZ2M5K0McNZ
-        IfH1fYNEJmp4VHUreBkP2w==
-X-Google-Smtp-Source: ABdhPJy5JQNYCXFdcR9knijPpRZwXYHyhbxKUkq0xGwntpFZN5S6tMl60m6HRhN0UWTt7a5AdCP48Q==
-X-Received: by 2002:a05:6638:1356:: with SMTP id u22mr18602953jad.39.1627335758264;
-        Mon, 26 Jul 2021 14:42:38 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id w1sm455386ilv.59.2021.07.26.14.42.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jul 2021 14:42:37 -0700 (PDT)
-Received: (nullmailer pid 914066 invoked by uid 1000);
-        Mon, 26 Jul 2021 21:42:30 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     linux-iio@vger.kernel.org, lars@metafoo.de,
-        Dragos.Bogdan@analog.com, devicetree@vger.kernel.org,
-        alexandru.ardelean@analog.com, Darius.Berghe@analog.com,
-        jic23@kernel.org, linux-kernel@vger.kernel.org,
-        Michael.Hennerich@analog.com
-In-Reply-To: <20210726184917.301070-2-puranjay12@gmail.com>
-References: <20210726184917.301070-1-puranjay12@gmail.com> <20210726184917.301070-2-puranjay12@gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: accel: Add DT binding doc for ADXL355
-Date:   Mon, 26 Jul 2021 15:42:30 -0600
-Message-Id: <1627335750.973256.914065.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QgtEAFRQu+sQ8IDAKmaF4skCHu48KSCADIk8RQevi5Q=;
+        b=KklXD62gPGXP0B8W/JLZQ58hFKYlECF0hgzxvs+yXIo2lhKRACMmK+m1A2NDRuAsGl
+         VL9WGagafr3ImukYxzNiR8O6dRMPQRYMS2V4GZEzuCnhlxIi++Eyd/0de1ws27IPqW7y
+         WeYfTbyCeGL/1RDd8sXRcQCEGAL9QoHpvX4VAI8g6cI0VvgN9r9c36gtWSefqsbC9BO/
+         PtLhyEUIz2fPJ1aXuwPbYpMst2mEv1WOtjFFYEW8CwEPrT2R8Qas6Le4OiEk9YK6yp3K
+         tIHTccrNu8/+sNnKpzNzWeBAekI9k/CkOckLVVlYRKeCQ2lC1z2kcYX90/PyEUxVuRf8
+         CBuA==
+X-Gm-Message-State: AOAM5301iOz6ayj5+gzHmC7MtxdVkPg0bg0LR9baw80Axaj+huOXCiRX
+        Z9qxDWyAj2uqC/8YTuuFwErp4bz+y3oxg5oieno=
+X-Google-Smtp-Source: ABdhPJy23DiaMNR6XxYqmNcvXGF+5IGqShyobbp3qUd9QQ8fzGsxAZL8u1aHxcYCWG194M1q/xqwlraeaULNhym2PvA=
+X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr19133195pjb.228.1627335970764;
+ Mon, 26 Jul 2021 14:46:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
+ <CAHp75VfCydLguFX=MSoAQ_gayra5ovuwLxcY7m_pHiafvB7b5w@mail.gmail.com>
+ <c1c15112-b102-570b-1432-568ca219ccf9@siemens.com> <CAHp75VdYUUqVi6rd6C-W+1aTXCPs7ehSLDcRfo4RVe7XU+6c+A@mail.gmail.com>
+ <521d14ad-8952-7ef9-3575-b48cefeb8241@roeck-us.net> <84665dcf-f036-f059-61a4-cea5087ace2d@siemens.com>
+ <CAHp75VdqS5QUwq=25RGKOiPRfcNzNxG9kNMtP-2-=z4EAnUi8w@mail.gmail.com> <175ca7d9-254b-ca35-359c-a077b284c9fa@siemens.com>
+In-Reply-To: <175ca7d9-254b-ca35-359c-a077b284c9fa@siemens.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Jul 2021 00:45:34 +0300
+Message-ID: <CAHp75VeuP5pC3oT84KP-uVd=q+u0cSg0vzoa3zaWTuS59PZ6aQ@mail.gmail.com>
+Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
+To:     Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Christian Storm <christian.storm@siemens.com>,
+        =?UTF-8?Q?Mantas_Mikul=C4=97nas?= <grawity@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 00:19:16 +0530, Puranjay Mohan wrote:
-> Add devicetree binding document for ADXL355, a 3-Axis MEMS Accelerometer.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  .../bindings/iio/accel/adi,adxl355.yaml       | 75 +++++++++++++++++++
->  1 file changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-> 
+On Mon, Jul 26, 2021 at 8:10 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> On 26.07.21 16:51, Andy Shevchenko wrote:
+> > On Mon, Jul 26, 2021 at 5:05 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
+> >> On 26.07.21 15:59, Guenter Roeck wrote:
+> >>> On 7/26/21 6:40 AM, Andy Shevchenko wrote:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+...
 
-yamllint warnings/errors:
+> >>> I have no idea why there is an additional From:, but both From:
+> >>> tags in the e-mail source are exact matches, and both match the
+> >>> name and e-mail address in Signed-off-by:. I agree with Jan,
+> >>> the SoB is there.
+> >>
+> >> There is one unknown in this equation, and that is the anti-email system
+> >> operated by a our IT and some company in Redmond.
+> >
+> > Hmm... The From: in the body is the result of the `git format-patch` I believe.
+> > So, two (or more?) possibilities here:
+> >  1) your configuration enforces it to always put From: (something new to me);
+>
+> Yes, it does, as I explained in my other reply. That's a safety net
+> because you never have full control over what some mail servers do to
+> the first From.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl355.example.dt.yaml: accelerometer@1D: interrupts: [[25, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl355.example.dt.yaml: accelerometer@0: interrupts: [[25, 1]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/accel/adi,adxl355.yaml
-\ndoc reference errors (make refcheckdocs):
+I see now. Thanks for your patience and elaboration, it's all good then!
 
-See https://patchwork.ozlabs.org/patch/1510166
+> >  2) the submitter and author are not the same (see also:
+> > https://github.com/git/git/commit/a90804752f6ab2b911882d47fafb6c2b78f447c3);
+> >  3) ...anything else...?
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+-- 
+With Best Regards,
+Andy Shevchenko
