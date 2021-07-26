@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230DE3D6220
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692183D6362
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237524AbhGZPek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:34:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32992 "EHLO mail.kernel.org"
+        id S238783AbhGZPrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:47:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236870AbhGZPTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:19:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B0FD60F70;
-        Mon, 26 Jul 2021 16:00:19 +0000 (UTC)
+        id S237881AbhGZP31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:29:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B411B61059;
+        Mon, 26 Jul 2021 16:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315219;
-        bh=+rllmOBmfP3fgfe80qaAZI8nYnFRAv3nzBzMWVpdNn4=;
+        s=korg; t=1627315754;
+        bh=KWoKE8cIwGWVeU7+pmKBfNjz2fg+bQLy0GtNbNvrt/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=csiQFD+RBYRxH06j7NkJQdONPhrh1025+I5mYfthyKbXNLY6q2sXbdKYWjKDQVTpL
-         N3gTZiBPGWNkeaslsUexZi7CNBSxN68M5Wsvh1hHFfy5u2ilX7NKgYzBidt9JteR1w
-         Q5uK4vP/mX8ZRusU2UeQ+81jWOvJMM07BnmmT8kY=
+        b=g+14zdnZNHjq351mdlWu+0JjglnH3kL9yanBncYuKXOMBGoDoYy6Nz6Lj16qTP3Cg
+         jBh9i27tUPGW5yUOQgYUzrn/xpyhtrPbY8aiKQsM0KBc8KPla4tKyc+NqVsIHwckYP
+         lUGfq11B2381MOgx/opWw/pzhjtZ2lDzrMN2SveI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 011/167] igb: Fix position of assignment to *ring
-Date:   Mon, 26 Jul 2021 17:37:24 +0200
-Message-Id: <20210726153839.750483620@linuxfoundation.org>
+Subject: [PATCH 5.13 053/223] perf test session_topology: Delete session->evlist
+Date:   Mon, 26 Jul 2021 17:37:25 +0200
+Message-Id: <20210726153847.994944689@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153846.245305071@linuxfoundation.org>
+References: <20210726153846.245305071@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,44 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+From: Riccardo Mancini <rickyman7@gmail.com>
 
-[ Upstream commit 382a7c20d9253bcd5715789b8179528d0f3de72c ]
+[ Upstream commit 233f2dc1c284337286f9a64c0152236779a42f6c ]
 
-Assignment to *ring should be done after correctness check of the
-argument queue.
+ASan reports a memory leak related to session->evlist while running:
 
-Fixes: 91db364236c8 ("igb: Refactor igb_configure_cbs()")
-Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
-Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+  # perf test "41: Session topology".
+
+When perf_data is in write mode, session->evlist is owned by the caller,
+which should also take care of deleting it.
+
+This patch adds the missing evlist__delete().
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Fixes: c84974ed9fb67293 ("perf test: Add entry to test cpu topology")
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kan Liang <kan.liang@intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/822f741f06eb25250fb60686cf30a35f447e9e91.1626343282.git.rickyman7@gmail.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/perf/tests/topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index c083e5e4e8e6..e24fb122c03a 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -1685,14 +1685,15 @@ static bool is_any_txtime_enabled(struct igb_adapter *adapter)
-  **/
- static void igb_config_tx_modes(struct igb_adapter *adapter, int queue)
- {
--	struct igb_ring *ring = adapter->tx_ring[queue];
- 	struct net_device *netdev = adapter->netdev;
- 	struct e1000_hw *hw = &adapter->hw;
-+	struct igb_ring *ring;
- 	u32 tqavcc, tqavctrl;
- 	u16 value;
+diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
+index ec4e3b21b831..b5efe675b321 100644
+--- a/tools/perf/tests/topology.c
++++ b/tools/perf/tests/topology.c
+@@ -61,6 +61,7 @@ static int session_write_header(char *path)
+ 	TEST_ASSERT_VAL("failed to write header",
+ 			!perf_session__write_header(session, session->evlist, data.file.fd, true));
  
- 	WARN_ON(hw->mac.type != e1000_i210);
- 	WARN_ON(queue < 0 || queue > 1);
-+	ring = adapter->tx_ring[queue];
++	evlist__delete(session->evlist);
+ 	perf_session__delete(session);
  
- 	/* If any of the Qav features is enabled, configure queues as SR and
- 	 * with HIGH PRIO. If none is, then configure them with LOW PRIO and
+ 	return 0;
 -- 
 2.30.2
 
