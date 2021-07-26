@@ -2,120 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0B03D5CF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A113D5CF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 17:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbhGZOpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 10:45:53 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24660 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234710AbhGZOpv (ORCPT
+        id S234952AbhGZOrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 10:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234546AbhGZOrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 10:45:51 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16QFHfwD021448;
-        Mon, 26 Jul 2021 11:25:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=1sFHS5zJLlrMstVK/2aj2Ztpod8AixmHr4YcumEDeN8=;
- b=BLmHJHHKVeJ7IJsLfOxF1ztyHIpconmdEn6Den5lhv5f7Wd/SedRdfhl8N/HqQRBpzL9
- MOa9TSLrqg0eFmhuN4/UIldU7Rbw2oe9ghBBcsTF7KF/yw565cG33i1cPx8afVByHptr
- R07pPJFwrWAFEIta1m8rcnY3RKOK5wS9ZmCIzt01gT/G2ZPtgkftjUuNb0jeXfrEi24X
- /kOZCVbBT+wYJHH8saytxY7CIPsgSGhvFgH+M0XstdcNSr2YfIzT0w/jfYYVW7IOmG+D
- mqm3Vt2sDbkYX/02hf2EoXReJCwPMoibHNNfZDAY+j0/wNQD+Xz+48fYG4WMm91yxsqw Zg== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3a1y2hsgp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Jul 2021 11:25:39 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16QFNrV8027759;
-        Mon, 26 Jul 2021 15:25:37 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 3a0ag8rrmv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Jul 2021 15:25:37 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16QFMxFQ27984156
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Jul 2021 15:22:59 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1BD1BA405F;
-        Mon, 26 Jul 2021 15:25:34 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D80B2A4062;
-        Mon, 26 Jul 2021 15:25:32 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.33.9])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 26 Jul 2021 15:25:32 +0000 (GMT)
-Date:   Mon, 26 Jul 2021 17:25:23 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Konrad Rzeszutek Wilk <konrad@darnok.org>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, stable@vger.kernel.org,
-        Claire Chang <tientzu@chromium.org>,
-        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 1/1] s390/pv: fix the forcing of the swiotlb
-Message-ID: <20210726172523.0fbdda60.pasic@linux.ibm.com>
-In-Reply-To: <YPtejB62iu+iNrM+@fedora>
-References: <20210723231746.3964989-1-pasic@linux.ibm.com>
-        <YPtejB62iu+iNrM+@fedora>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 26 Jul 2021 10:47:11 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C49C061757;
+        Mon, 26 Jul 2021 08:27:40 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id a4-20020a17090aa504b0290176a0d2b67aso11826774pjq.2;
+        Mon, 26 Jul 2021 08:27:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dCTh5U/iGuKWRcR2nhzuD0tyEm/pZKUN9sg890BPhTU=;
+        b=TdhyHBmbYPMzpz/G0ui1idg6UMmMpm0Cd+SFfazSJcZNMYwttYcWMgvtBShHreHymz
+         NLog1TPOoSJD2q8jR2kcCNWntyPC9fUzHkxRRFWa7istFiSOFKfWVriHGGBBzAanJJes
+         Ixrc6DUH2J6Io8LYo+kop5vFChAgIG3nMq3KHK998MPNo6N4V27iLJpyPTSMsKt7yjaR
+         3EJTO1xGuEggaD5SVIdcW9vBswR3k2bj2dbAEAF2Ww7y7fVYO0cfOj0atAUBL7fktyto
+         7fA6v9f/YU9+DRhMKQR3uW4ipzfJX0u5H2H1NnqMk57Qq8wXHWyHH/O+QUDHh/hT1BMF
+         tiTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dCTh5U/iGuKWRcR2nhzuD0tyEm/pZKUN9sg890BPhTU=;
+        b=NVXKtYn5FxDF1/m0rn0EiahysCLNY/KftIp+hqF/HjUVPrBDTD6Ng3DeUqlpn3NDvg
+         PZQideaj7UqoKh22AhoIA0haR94Kw3Sk71sifDGe4dV0IUSykWoFjdvaP77z8cTGL9yd
+         MC9IL2yiF9hP2kmwpAAIYmqftVvhTmisVX87qf2lfm1mAzba1Ntkf2iq4mIbg1ljZyLq
+         Z2CjU94WoL93PDRrR9RYO2Jm/hB+SeUYUzJVadwVqgIusSHJvySjuzGxJcp9ojAfMYBK
+         z8mhzJRYTCH3PJNUZqbLqJTa1xCNCeDbtyO0lR0fqP2zWMsNeC33Ht8mOAb6eG5eDZpc
+         60AQ==
+X-Gm-Message-State: AOAM5328Jca78fEN/TF/+6x7nMK5j7Z1+irRvjtt9H1goLhtBmZmRsfL
+        Bn4PhUMqvkDOJOa5cJcvK8s=
+X-Google-Smtp-Source: ABdhPJz1vgJ/+fGv+lsImtB0jkdmaRIz+oOMbuajZVC4n/Pvyn866Ie5Zy9FlQKNUd1lplRvpY8l7Q==
+X-Received: by 2002:a63:1e57:: with SMTP id p23mr18603279pgm.41.1627313259385;
+        Mon, 26 Jul 2021 08:27:39 -0700 (PDT)
+Received: from localhost.localdomain ([154.16.166.171])
+        by smtp.gmail.com with ESMTPSA id b3sm335525pfi.179.2021.07.26.08.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 08:27:38 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Eric Biggers <ebiggers@google.com>,
+        Xiang Chen <chenxiang66@hisilicon.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] crypto: sun8i-ce: fix multiple memory leaks in sun8i_ce_hash_run
+Date:   Mon, 26 Jul 2021 23:27:12 +0800
+Message-Id: <20210726152724.2281408-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ldcOjuF41nHbAb-Cj17FjrUVXmxMMXk9
-X-Proofpoint-ORIG-GUID: ldcOjuF41nHbAb-Cj17FjrUVXmxMMXk9
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-26_10:2021-07-26,2021-07-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- mlxscore=0 suspectscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 phishscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107260086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Jul 2021 20:27:56 -0400
-Konrad Rzeszutek Wilk <konrad@darnok.org> wrote:
+In sun8i_ce_hash_run, all the dma_mmap_sg/single will cause memory leak
+due to no corresponding unmap operation if errors happen.
 
-> On Sat, Jul 24, 2021 at 01:17:46AM +0200, Halil Pasic wrote:
-> > Since commit 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for
-> > swiotlb data bouncing") if code sets swiotlb_force it needs to do so
-> > before the swiotlb is initialised. Otherwise
-> > io_tlb_default_mem->force_bounce will not get set to true, and devices
-> > that use (the default) swiotlb will not bounce despite switolb_force
-> > having the value of SWIOTLB_FORCE.
-> > 
-> > Let us restore swiotlb functionality for PV by fulfilling this new
-> > requirement.
-> > 
-> > This change addresses what turned out to be a fragility in
-> > commit 64e1f0c531d1 ("s390/mm: force swiotlb for protected
-> > virtualization"), which ain't exactly broken in its original context,
-> > but could give us some more headache if people backport the broken
-> > change and forget this fix.
-> > 
-> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> > Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> > Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> > Fixes: 903cd0f315fe ("swiotlb: Use is_swiotlb_force_bounce for swiotlb data bouncing")
-> > Fixes: 64e1f0c531d1 ("s390/mm: force swiotlb for protected virtualization")
-> > Cc: stable@vger.kernel.org #5.3+
-> > 
-> > ---  
-> 
-> Picked it up and stuck it in linux-next with the other set of patches (Will's fixes).
+Fix this by adding error handling part for all the dma_mmap_sg/single.
 
-Thanks!
+Fixes: 56f6d5aee88d ("crypto: sun8i-ce - support hash algorithms")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ .../crypto/allwinner/sun8i-ce/sun8i-ce-hash.c | 28 +++++++++----------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+index 88194718a806..d454ad99deee 100644
+--- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
++++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-hash.c
+@@ -286,16 +286,14 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 
+ 	/* the padding could be up to two block. */
+ 	buf = kzalloc(bs * 2, GFP_KERNEL | GFP_DMA);
+-	if (!buf) {
+-		err = -ENOMEM;
+-		goto theend;
+-	}
++	if (!buf)
++		return -ENOMEM;
+ 	bf = (__le32 *)buf;
+ 
+ 	result = kzalloc(digestsize, GFP_KERNEL | GFP_DMA);
+ 	if (!result) {
+-		err = -ENOMEM;
+-		goto theend;
++		kfree(buf);
++		return -ENOMEM;
+ 	}
+ 
+ 	flow = rctx->flow;
+@@ -321,7 +319,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (nr_sgs <= 0 || nr_sgs > MAX_SG) {
+ 		dev_err(ce->dev, "Invalid sg number %d\n", nr_sgs);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_result;
+ 	}
+ 
+ 	len = areq->nbytes;
+@@ -334,7 +332,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (len > 0) {
+ 		dev_err(ce->dev, "remaining len %d\n", len);
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_unmap_sg;
+ 	}
+ 	addr_res = dma_map_single(ce->dev, result, digestsize, DMA_FROM_DEVICE);
+ 	cet->t_dst[0].addr = cpu_to_le32(addr_res);
+@@ -342,7 +340,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (dma_mapping_error(ce->dev, addr_res)) {
+ 		dev_err(ce->dev, "DMA map dest\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_unmap_sg;
+ 	}
+ 
+ 	byte_count = areq->nbytes;
+@@ -392,7 +390,7 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	if (dma_mapping_error(ce->dev, addr_pad)) {
+ 		dev_err(ce->dev, "DMA error on padding SG\n");
+ 		err = -EINVAL;
+-		goto theend;
++		goto err_addr_res;
+ 	}
+ 
+ 	if (ce->variant->hash_t_dlen_in_bits)
+@@ -405,15 +403,15 @@ int sun8i_ce_hash_run(struct crypto_engine *engine, void *breq)
+ 	err = sun8i_ce_run_task(ce, flow, crypto_tfm_alg_name(areq->base.tfm));
+ 
+ 	dma_unmap_single(ce->dev, addr_pad, j * 4, DMA_TO_DEVICE);
++err_addr_res:
++	dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
++err_unmap_sg:
+ 	dma_unmap_sg(ce->dev, areq->src, sg_nents(areq->src),
+ 		     DMA_TO_DEVICE);
+-	dma_unmap_single(ce->dev, addr_res, digestsize, DMA_FROM_DEVICE);
+-
+-
+ 	memcpy(areq->result, result, algt->alg.hash.halg.digestsize);
+-theend:
+-	kfree(buf);
++err_result:
+ 	kfree(result);
++	kfree(buf);
+ 	crypto_finalize_hash_request(engine, breq, err);
+ 	return 0;
+ }
+-- 
+2.25.1
 
