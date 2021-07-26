@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65F63D612E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CD43D605B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbhGZPaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:30:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
+        id S237237AbhGZPV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:21:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236543AbhGZPRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:17:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0AA160F38;
-        Mon, 26 Jul 2021 15:57:43 +0000 (UTC)
+        id S236835AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E62160FD8;
+        Mon, 26 Jul 2021 15:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315064;
-        bh=StVdaq8NiJLj5NQcr12LUB5lPcbPrWwAgzhVmijn5RI=;
+        s=korg; t=1627314812;
+        bh=Z8xvYOwArq6z6cOpGIaDz6plqC40jynkMy5CihLFma8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mF/MG0tXkAiu9tqViSqvNmnfQrcYWKIMKMKlRvdOAvHbsPwVcMiEzRVprPDY0gmhE
-         gwLS6DrI8vmdrUpZIdW9lTgjnDumS5mx/Y1EBaUcXjxfLDsxDTeRteI5eranHO8WVP
-         1g9UrtXUFlMUGiPah5Vu+LUZqRZVxu58i7byxcdk=
+        b=S1twZNj/QWguSzxua25BmHnxQ/cwBRcIs8Y7Y91ev5o0P+jPZXLP0UVJQRo8MZCIL
+         4FPEl0C9jFDiUmZatw155Xwr1q6nFlrO5M97IWQinurwscd94CfypzaEfWOzr4Z8gl
+         aa6G54Hsc4rl6DvZmwF6t3cKSKACDHkMlUFBrzHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huang Pei <huangpei@loongson.cn>
-Subject: [PATCH 5.4 069/108] [PATCH] Revert "MIPS: add PMD table accounting into MIPSpmd_alloc_one"
-Date:   Mon, 26 Jul 2021 17:39:10 +0200
-Message-Id: <20210726153833.905513693@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Subject: [PATCH 4.19 099/120] usb: max-3421: Prevent corruption of freed memory
+Date:   Mon, 26 Jul 2021 17:39:11 +0200
+Message-Id: <20210726153835.593324458@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
+References: <20210726153832.339431936@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,41 +39,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Pei <huangpei@loongson.cn>
+From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
-This reverts commit 002d8b395fa1c0679fc3c3e68873de6c1cc300a2 which is
-commit ed914d48b6a1040d1039d371b56273d422c0081e upstream.
+commit b5fdf5c6e6bee35837e160c00ac89327bdad031b upstream.
 
-Commit b2b29d6d011944 (mm: account PMD tables like PTE tables) is
-introduced between v5.9 and v5.10, so this fix (commit 002d8b395fa1)
-should NOT apply to any pre-5.10 branch.
+The MAX-3421 USB driver remembers the state of the USB toggles for a
+device/endpoint. To save SPI writes, this was only done when a new
+device/endpoint was being used. Unfortunately, if the old device was
+removed, this would cause writes to freed memory.
 
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
+To fix this, a simpler scheme is used. The toggles are read from
+hardware when a URB is completed, and the toggles are always written to
+hardware when any URB transaction is started. This will cause a few more
+SPI transactions, but no causes kernel panics.
+
+Fixes: 2d53139f3162 ("Add support for using a MAX3421E chip as a host driver.")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Link: https://lore.kernel.org/r/20210625031456.8632-1-mark.tomlinson@alliedtelesis.co.nz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/include/asm/pgalloc.h |   10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/usb/host/max3421-hcd.c |   44 +++++++++++++----------------------------
+ 1 file changed, 14 insertions(+), 30 deletions(-)
 
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -62,15 +62,11 @@ do {							\
- 
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+--- a/drivers/usb/host/max3421-hcd.c
++++ b/drivers/usb/host/max3421-hcd.c
+@@ -153,8 +153,6 @@ struct max3421_hcd {
+ 	 */
+ 	struct urb *curr_urb;
+ 	enum scheduling_pass sched_pass;
+-	struct usb_device *loaded_dev;	/* dev that's loaded into the chip */
+-	int loaded_epnum;		/* epnum whose toggles are loaded */
+ 	int urb_done;			/* > 0 -> no errors, < 0: errno */
+ 	size_t curr_len;
+ 	u8 hien;
+@@ -492,39 +490,17 @@ max3421_set_speed(struct usb_hcd *hcd, s
+  * Caller must NOT hold HCD spinlock.
+  */
+ static void
+-max3421_set_address(struct usb_hcd *hcd, struct usb_device *dev, int epnum,
+-		    int force_toggles)
++max3421_set_address(struct usb_hcd *hcd, struct usb_device *dev, int epnum)
  {
--	pmd_t *pmd = NULL;
--	struct page *pg;
-+	pmd_t *pmd;
+-	struct max3421_hcd *max3421_hcd = hcd_to_max3421(hcd);
+-	int old_epnum, same_ep, rcvtog, sndtog;
+-	struct usb_device *old_dev;
++	int rcvtog, sndtog;
+ 	u8 hctl;
  
--	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
--	if (pg) {
--		pgtable_pmd_page_ctor(pg);
--		pmd = (pmd_t *)page_address(pg);
-+	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
-+	if (pmd)
- 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
+-	old_dev = max3421_hcd->loaded_dev;
+-	old_epnum = max3421_hcd->loaded_epnum;
+-
+-	same_ep = (dev == old_dev && epnum == old_epnum);
+-	if (same_ep && !force_toggles)
+-		return;
+-
+-	if (old_dev && !same_ep) {
+-		/* save the old end-points toggles: */
+-		u8 hrsl = spi_rd8(hcd, MAX3421_REG_HRSL);
+-
+-		rcvtog = (hrsl >> MAX3421_HRSL_RCVTOGRD_BIT) & 1;
+-		sndtog = (hrsl >> MAX3421_HRSL_SNDTOGRD_BIT) & 1;
+-
+-		/* no locking: HCD (i.e., we) own toggles, don't we? */
+-		usb_settoggle(old_dev, old_epnum, 0, rcvtog);
+-		usb_settoggle(old_dev, old_epnum, 1, sndtog);
 -	}
- 	return pmd;
+ 	/* setup new endpoint's toggle bits: */
+ 	rcvtog = usb_gettoggle(dev, epnum, 0);
+ 	sndtog = usb_gettoggle(dev, epnum, 1);
+ 	hctl = (BIT(rcvtog + MAX3421_HCTL_RCVTOG0_BIT) |
+ 		BIT(sndtog + MAX3421_HCTL_SNDTOG0_BIT));
+ 
+-	max3421_hcd->loaded_epnum = epnum;
+ 	spi_wr8(hcd, MAX3421_REG_HCTL, hctl);
+ 
+ 	/*
+@@ -532,7 +508,6 @@ max3421_set_address(struct usb_hcd *hcd,
+ 	 * address-assignment so it's best to just always load the
+ 	 * address whenever the end-point changed/was forced.
+ 	 */
+-	max3421_hcd->loaded_dev = dev;
+ 	spi_wr8(hcd, MAX3421_REG_PERADDR, dev->devnum);
  }
  
+@@ -667,7 +642,7 @@ max3421_select_and_start_urb(struct usb_
+ 	struct max3421_hcd *max3421_hcd = hcd_to_max3421(hcd);
+ 	struct urb *urb, *curr_urb = NULL;
+ 	struct max3421_ep *max3421_ep;
+-	int epnum, force_toggles = 0;
++	int epnum;
+ 	struct usb_host_endpoint *ep;
+ 	struct list_head *pos;
+ 	unsigned long flags;
+@@ -777,7 +752,6 @@ done:
+ 			usb_settoggle(urb->dev, epnum, 0, 1);
+ 			usb_settoggle(urb->dev, epnum, 1, 1);
+ 			max3421_ep->pkt_state = PKT_STATE_SETUP;
+-			force_toggles = 1;
+ 		} else
+ 			max3421_ep->pkt_state = PKT_STATE_TRANSFER;
+ 	}
+@@ -785,7 +759,7 @@ done:
+ 	spin_unlock_irqrestore(&max3421_hcd->lock, flags);
+ 
+ 	max3421_ep->last_active = max3421_hcd->frame_number;
+-	max3421_set_address(hcd, urb->dev, epnum, force_toggles);
++	max3421_set_address(hcd, urb->dev, epnum);
+ 	max3421_set_speed(hcd, urb->dev);
+ 	max3421_next_transfer(hcd, 0);
+ 	return 1;
+@@ -1380,6 +1354,16 @@ max3421_urb_done(struct usb_hcd *hcd)
+ 		status = 0;
+ 	urb = max3421_hcd->curr_urb;
+ 	if (urb) {
++		/* save the old end-points toggles: */
++		u8 hrsl = spi_rd8(hcd, MAX3421_REG_HRSL);
++		int rcvtog = (hrsl >> MAX3421_HRSL_RCVTOGRD_BIT) & 1;
++		int sndtog = (hrsl >> MAX3421_HRSL_SNDTOGRD_BIT) & 1;
++		int epnum = usb_endpoint_num(&urb->ep->desc);
++
++		/* no locking: HCD (i.e., we) own toggles, don't we? */
++		usb_settoggle(urb->dev, epnum, 0, rcvtog);
++		usb_settoggle(urb->dev, epnum, 1, sndtog);
++
+ 		max3421_hcd->curr_urb = NULL;
+ 		spin_lock_irqsave(&max3421_hcd->lock, flags);
+ 		usb_hcd_unlink_urb_from_ep(hcd, urb);
 
 
