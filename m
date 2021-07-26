@@ -2,112 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D34C3D5AD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 15:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970A63D5AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 16:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbhGZNTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 09:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S234037AbhGZNT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 09:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233788AbhGZNTF (ORCPT
+        with ESMTP id S230421AbhGZNT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 09:19:05 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4541BC061757;
-        Mon, 26 Jul 2021 06:59:33 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id x3so8836736qkl.6;
-        Mon, 26 Jul 2021 06:59:33 -0700 (PDT)
+        Mon, 26 Jul 2021 09:19:58 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE275C061757;
+        Mon, 26 Jul 2021 07:00:25 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id d17so5056153qvn.13;
+        Mon, 26 Jul 2021 07:00:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y03+5KriITG8EF/FpR++zoxuxNs19fStOVw7o+xDj98=;
-        b=r4FYSK70PpQ9AA58ADc8VqnX4vatSUyyWj9QL3R5Zs9sAQ6tr4AIItUuxnslduVgYp
-         HkF9CN7UOsCAByWzEx3NyxlLBMM7e2yJwi9eWv8/8/+COEZMjBaaFUMqYKYiCZM9nl3B
-         27vX9x6fWMY6mt7aF8W+uPpQOYIYSKc44BPSltZilFnYR7aerBiK8tSezXM/fV9A2aVx
-         pToTSucQwjej16DdEUh48XiTf2gBqPF6OHs9Zk6h0qqezVZ/IvVyHb6JoykNHxYBWr8F
-         C8LRQB0zTCRSLIyI7oz2HmdJvaO7g4ZlbUZCqrl7Ulm+Cq3qRSYAuClhSeANIKyPbAvO
-         wx8w==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=pxMM15ZHXjLx5HEWP2ljfrxj5I8bM98TUGkRptn2eJc=;
+        b=Qf2LmVbSl9kTgbqdlNUVhOdyd+yNxxcP7wfQ/CaAIfH7Hft+4wIvhedth+71WhHBV7
+         Nr+3zTmJdoZtoo1SRN8myq2jQKUr9AhkWa7gmnwaFX9mQkDJo6dTYeyWxgb5GpIqxDvE
+         dDsWjXh9Am3VraObY1ionR1s8Z9p5fjp0qs3yHPfd4zOfsVWNVjg4IKW+YkZ7J9PPTT3
+         5LTx9zXrdS63Xh6QaYDBYMIaRKA726J7fVydrWNuUV290mC08KxV7clB0LA5kMPA79xw
+         Efz15tYH9PECyZy38aL+Dww65BituNb31u0NNE8rOTXXSfNFeQFFAU241s3EIqSaQn4O
+         rCoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y03+5KriITG8EF/FpR++zoxuxNs19fStOVw7o+xDj98=;
-        b=VUV7fFYZLa5fzXeDKmbH7zVSoZ8knEjmh4cMb0r0Jl9n5JSY/M2oN0NzueSto+oqmv
-         Ly+eJ4FMeovA7y/LzSyggR1hKGetGvLqx4OR9QZI2Ci0YJhRDaR+Qrwb/KG1M8L11SAh
-         88O9jElCt9u4984s0ycsRuN9Q/s/3qz9jmuCWzrzgUJwSGcNgpDb6xF5aOscgvRIY9UI
-         g/zBwEMSyMly/xQOgmQzXciDmbh9GpJFmMzMCt+sRMTnlJti40YbNZF/mYcOd90jwz+u
-         qj5C/9T6zenLIg0PcP8wY0zTZ0aLwr3Z94VbpVr+w2bvGcsINQDIF06+mECvjFvWjJf3
-         X3tA==
-X-Gm-Message-State: AOAM533bDh2RVsQHqdU1rmbxfm3uUu41wJ75dVwUUCASrVT6lmePHIIX
-        sF39NvPqtLDkz6WBZKM7EnY=
-X-Google-Smtp-Source: ABdhPJwM3Qxj2V9r0Kfx+X0lc/RhS8xUPCINSJumrAGXSes6J+8s8J6dPLekXpGfSfE4d+N2M7ub4A==
-X-Received: by 2002:a05:620a:1998:: with SMTP id bm24mr17904102qkb.471.1627307972485;
-        Mon, 26 Jul 2021 06:59:32 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s3sm20545qke.85.2021.07.26.06.59.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Jul 2021 06:59:32 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Storm <christian.storm@siemens.com>,
-        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>
-References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
- <CAHp75VfCydLguFX=MSoAQ_gayra5ovuwLxcY7m_pHiafvB7b5w@mail.gmail.com>
- <c1c15112-b102-570b-1432-568ca219ccf9@siemens.com>
- <CAHp75VdYUUqVi6rd6C-W+1aTXCPs7ehSLDcRfo4RVe7XU+6c+A@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <521d14ad-8952-7ef9-3575-b48cefeb8241@roeck-us.net>
-Date:   Mon, 26 Jul 2021 06:59:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75VdYUUqVi6rd6C-W+1aTXCPs7ehSLDcRfo4RVe7XU+6c+A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=pxMM15ZHXjLx5HEWP2ljfrxj5I8bM98TUGkRptn2eJc=;
+        b=OaOkU0l1lhl86TU7H5kRftOUtDETCsbdCxUNrrMV9BMJfOhv8RCDu12eS9itmpHhYY
+         fZQ4gKpZAgmtL2oPm0V9xTCTKng9KeofVgzDvBnILkPeMpzhrCwIxiTMdraLKDInZ2M/
+         WsAKY+vVMGy2M+SPpMjCGR6yQnmbDRh+A4QbqDxyrVgoMLMJvlqYHdxQPVCnYxP4UTY2
+         laufR8ExorcoZLSGkTwnT1iYyi1XXeaKr/qnGkT/MdW6ylSJrw37yYuaeO4jKnupeRWZ
+         TT3jmjQTn74ITc8pPoJpYKSMLVgRauln8l7RRJ8Q+uAFKc/uoSy+MPCN1KtK6q6O9pX7
+         L/iw==
+X-Gm-Message-State: AOAM530hjhZY+GlFsYffpOnggF4qKy3sEYQ4B5QJ4Be5liRPyAkxdOOp
+        N3JprbxP134U2jTH8iLquE0=
+X-Google-Smtp-Source: ABdhPJw48dTY8WUiWkjDerFNPjvQvAUCyTp2uni4QtKPaVhNgOIf6mzr/X9WEZdSFJ7DhnbTekwlcg==
+X-Received: by 2002:a05:6214:27e7:: with SMTP id jt7mr18028066qvb.28.1627308024966;
+        Mon, 26 Jul 2021 07:00:24 -0700 (PDT)
+Received: from [192.168.1.3] ([69.73.219.130])
+        by smtp.gmail.com with ESMTPSA id u3sm48780qtg.16.2021.07.26.07.00.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Jul 2021 07:00:23 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH] thermal: fix thermal_cooling_device_register() prototype
+From:   =?utf-8?Q?Jean-Fran=C3=A7ois_Dagenais?= <jeff.dagenais@gmail.com>
+In-Reply-To: <20210722090717.1116748-1-arnd@kernel.org>
+Date:   Mon, 26 Jul 2021 10:00:18 -0400
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Amit Kucheria <amitk@kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <ABDAFCAB-8DF5-41A7-B1E0-4953A9BF32B3@gmail.com>
+References: <20210722090717.1116748-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 6:40 AM, Andy Shevchenko wrote:
-> On Mon, Jul 26, 2021 at 3:04 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
->>
->> On 26.07.21 14:01, Andy Shevchenko wrote:
->>> On Mon, Jul 26, 2021 at 2:46 PM Jan Kiszka <jan.kiszka@siemens.com> wrote:
->>>>
->>>> From: Jan Kiszka <jan.kiszka@siemens.com>
->>>>
->>>> Obviously, the test needs to run against the register content, not its
->>>> address.
->>>>
->>>> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
->>>> Reported-by: Mantas Mikulėnas <grawity@gmail.com>
->>>
->>>> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->>>
->>> Missed SoB of the submitter (hint: configure your Git to make sure
->>> that submitter and author are the same in terms of name-email).
->>
->> The signed off is there. Not sure what you are referring to.
-> 
-> Nope. It's not. The sign of that is the From: line in the body of the
-> email. It happens when the submitter != author. And SoB of the former
-> one is absent. But what is strange is that reading them here I haven't
-> found the difference. Maybe one is in UTF-8 while the other is not and
-> a unicode character degraded to Latin-1 or so?
-> 
+Good job.
 
-I have no idea why there is an additional From:, but both From:
-tags in the e-mail source are exact matches, and both match the
-name and e-mail address in Signed-off-by:. I agree with Jan,
-the SoB is there.
+> On Jul 22, 2021, at 05:06, Arnd Bergmann <arnd@kernel.org> wrote:
+>=20
+> From: Arnd Bergmann <arnd@arndb.de>
+>=20
+> There are two pairs of declarations for =
+thermal_cooling_device_register()
+> and thermal_of_cooling_device_register(), and only one set was changed
+> in a recent patch, so the other one now causes a compile-time warning:
+>=20
+> drivers/net/wireless/mediatek/mt76/mt7915/init.c: In function =
+'mt7915_thermal_init':
+> drivers/net/wireless/mediatek/mt76/mt7915/init.c:134:48: error: =
+passing argument 1 of 'thermal_cooling_device_register' discards 'const' =
+qualifier from pointer target type [-Werror=3Ddiscarded-qualifiers]
+>  134 |         cdev =3D =
+thermal_cooling_device_register(wiphy_name(wiphy), phy,
+>      |                                                =
+^~~~~~~~~~~~~~~~~
+> In file included from =
+drivers/net/wireless/mediatek/mt76/mt7915/init.c:7:
+> include/linux/thermal.h:407:39: note: expected 'char *' but argument =
+is of type 'const char *'
+>  407 | thermal_cooling_device_register(char *type, void *devdata,
+>      |                                 ~~~~~~^~~~
+>=20
+> Change the dummy helper functions to have the same arguments as the
+> normal version.
+>=20
+> Fixes: f991de53a8ab ("thermal: make device_register's type argument =
+const")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
+> ---
+> include/linux/thermal.h | 5 +++--
+> 1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index d296f3b88fb9..8050d929a5b4 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -404,12 +404,13 @@ static inline void =
+thermal_zone_device_unregister(
+> 	struct thermal_zone_device *tz)
+> { }
+> static inline struct thermal_cooling_device *
+> -thermal_cooling_device_register(char *type, void *devdata,
+> +thermal_cooling_device_register(const char *type, void *devdata,
+> 	const struct thermal_cooling_device_ops *ops)
+> { return ERR_PTR(-ENODEV); }
+> static inline struct thermal_cooling_device *
+> thermal_of_cooling_device_register(struct device_node *np,
+> -	char *type, void *devdata, const struct =
+thermal_cooling_device_ops *ops)
+> +	const char *type, void *devdata,
+> +	const struct thermal_cooling_device_ops *ops)
+> { return ERR_PTR(-ENODEV); }
+> static inline struct thermal_cooling_device *
+> devm_thermal_of_cooling_device_register(struct device *dev,
+> --=20
+> 2.29.2
+>=20
 
-Guenter
