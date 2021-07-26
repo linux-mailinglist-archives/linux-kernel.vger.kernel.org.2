@@ -2,155 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232303D5477
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5603D5478
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 09:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhGZG7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 02:59:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232483AbhGZG7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 02:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A7C1600D1;
-        Mon, 26 Jul 2021 07:39:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627285173;
-        bh=Lz22eR9Qxs3SEwlMtVJ4FCvrYRYfIXyQlcONvkYjjps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pQUu4b11G3OBg8wS1deO28fSp9BLWmkNDHYnS9R0WGyD7rWPfpyFVhsaGIbIr/kM1
-         GTZIRLCdZ84JaO/QVQhkQv6vr2fmK4MvEm8i3XoCPaqHn+ujAFxslOkOOsJIqWCRtj
-         fQ2KsxWPykeHJOLxqC8zFi7OpuW5mg0LPAmPFXKw=
-Date:   Mon, 26 Jul 2021 09:39:26 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <yehezkelshb@gmail.com>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rajat Jain <rajatxjain@gmail.com>
-Subject: Re: [PATCH] thunderbolt: For dev authorization changes, include the
- actual event in udev change notification
-Message-ID: <YP5mrnaI1hyAU5Wp@kroah.com>
-References: <20210723012835.1935471-1-rajatja@google.com>
- <YPpqJ6k5M3skTYdA@kroah.com>
- <CACK8Z6FXLY8p=15JbYp3x3QvTgeWhmrRb_ACyNr+tNe68MOstw@mail.gmail.com>
- <CACK8Z6EdBYWG7nv0ViumA72NK4h2G0cW9d2rn3BbHFTrLqhU-g@mail.gmail.com>
+        id S232767AbhGZG7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 02:59:43 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:33235 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232462AbhGZG7m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 02:59:42 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1M6m5o-1lzgwe1Se6-008K0X for <linux-kernel@vger.kernel.org>; Mon, 26 Jul
+ 2021 09:40:10 +0200
+Received: by mail-wm1-f48.google.com with SMTP id m38-20020a05600c3b26b02902161fccabf1so7510727wms.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 00:40:10 -0700 (PDT)
+X-Gm-Message-State: AOAM531uDZC3zM1gbrG5YaRNM3lEGZRqL0drLvePo5dM0qePIVAmW1F9
+        kfkczh8/j0ZyT+w3V4hln9Wqpm15U8cML0tEPx4=
+X-Google-Smtp-Source: ABdhPJyUu+zpKQgLCzD92xlTKJ+CdL+Qe3BKBoET07REAC9wsTFKxyxXX9p30cgRZ0s2LdofhlqDl1W4NQEu0QxiHko=
+X-Received: by 2002:a7b:ce10:: with SMTP id m16mr6487271wmc.75.1627285210031;
+ Mon, 26 Jul 2021 00:40:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACK8Z6EdBYWG7nv0ViumA72NK4h2G0cW9d2rn3BbHFTrLqhU-g@mail.gmail.com>
+References: <20210725104618.365790-1-geert@linux-m68k.org> <db2de193-a10-598-a21e-3a305b91d191@linux-m68k.org>
+ <CAMuHMdWrg7zUC+iMjXS=RS=Fa7ZVS-0iycjQ2UP6W0pHzdGxKQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdWrg7zUC+iMjXS=RS=Fa7ZVS-0iycjQ2UP6W0pHzdGxKQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 26 Jul 2021 09:39:53 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3N61zpEphfPoPWgAK3iGx2Cqo3HL1jrce=Kz9iuML1Og@mail.gmail.com>
+Message-ID: <CAK8P3a3N61zpEphfPoPWgAK3iGx2Cqo3HL1jrce=Kz9iuML1Og@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Fix asm register constraints for atomic ops
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Finn Thain <fthain@linux-m68k.org>,
+        Greg Ungerer <gerg@uclinux.org>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:AcLtqXJH29gnyR63QTBZV0Mkg5vUCTERKCMJHMftLf9Ih0mkuTw
+ YYJ+MVyW5uMlKpwLNYWE3fOstV2wh5HknRyzJqcsm527TEj7yQT/GyLGbwCJt1NIMyf4VAC
+ 5W0c0vnSD2qMNJzW+lqK1ZJV0irhrZiZZENkxPTr2NTEB7oqA70oFWUE9Tef7GeCtV2ZwXm
+ XAYRAtSq86gQvRrBPOHPQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PfbtwHBE7/c=:q2qHUQh5BO7/2MqZmvIpt3
+ mbCNeYd44VzxP4uhOzTSA51DZV5JHg97TJeF/V71xlQ2x2WfyhX9t/quiolBjZkdAAbxRWDLO
+ e2PA8a2wp/628I64W4ueVXi6pJt0z0kYU0m1mLFdcfxR8xxPGraidbsGpAiOKZz9UyLrkva/r
+ WUBbAkrUZv25w/m1tu4llTViN1qf4OZtOWJ+zlVIKHy+cECd4kATrHpCsownCtoAm0Amg4oso
+ eeseyGc/58/sYnthdFVHPmenXXpdfwHZSUAlHOGZiCxbEpps2a8eKuThmL3zUubZt+Vt3jAyL
+ yJrlfeh/AknUGQSBaPVt3hQsFXyjhJ5BVrlioyeTUM2KYa+mcNJJVkZiUXohRrOgOXVsD0iuI
+ kbP36MOM6Z7sNjcOF3Krl7AiPhE6XKZbbCGQa4abarqLpQ/vBgJ1UyQrS32dQnjDeCe+NMuSc
+ +I4pHkoFyDWYtu4xty2tHQcDQeHHFrK61KP9AjhmUOQxt3olzk8Lj7VPffSjzBxenpr07+Z6U
+ h0jKzoW5m7uGy25SZrHH8DPXd4nyQr5gF22ukzR8ienV2aAauXRSTJKoT9zRSCwS82FvAwJlc
+ Ny/XR5rYF93Io1eA8jBZu4k1wgMCdUasQmiiw2/wB20r0MlG/c7yX3LuoOViJq7frhUY31w4e
+ yrwdZJx+i7VFZmaiOxShVoAHveWHNhoO+70t5yVEEmWXCJbKJ5tRTlxJHLqlWAPI9Qu3UVGKk
+ IK55X0KMSU/f05aRYsFu/ELlx5ynyIuugTE7QsbUxdEDqGkblIP+Q+jihSeAuv4aY1nrC/EPl
+ bs7fo2wd5LN5SDP/Diw8L8T5DKW32z6NmSciALw5hS9vRB/AxKtdxYIwjKzsEL1+qnUorPPAY
+ Zi1uz16jPf7/5fxQjmkThz7OQ2e1Lwr/wknLptJ2jSzWuMlgXcodVcQZcGB1umVAAaTrxmrm7
+ 1jEXNJGmyC7OdG+vKJZFVp+PgqGXH0fxfUCAW4rxe796u5q9/6bk5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 25, 2021 at 11:46:32AM -0700, Rajat Jain wrote:
-> Sorry, Had hit "Reply"" while responding, instead of "Reply All" - so
-> it went only to Greg. Now added back everyone else.
-> 
-> 
-> On Fri, Jul 23, 2021 at 4:43 PM Rajat Jain <rajatja@google.com> wrote:
+On Mon, Jul 26, 2021 at 9:34 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Finn,
+>
+> On Mon, Jul 26, 2021 at 1:45 AM Finn Thain <fthain@linux-m68k.org> wrote:
+> > On Sun, 25 Jul 2021, Geert Uytterhoeven wrote:
+> > > Fixes: d839bae4269aea46 ("locking,arch,m68k: Fold atomic_ops")
+> > > ...
+> > > Technically, the issue was present before, but I doubt adding pre-v3.18
+> > > Fixes tags would make any difference for stable...
 > >
-> > Hello,
-> >
-> >
-> > On Fri, Jul 23, 2021 at 12:05 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Thu, Jul 22, 2021 at 06:28:34PM -0700, Rajat Jain wrote:
-> > > > For security, we would like to monitor and track when the
-> > > > thunderbolt devices are authorized and deauthorized. Currently
-> > > > the userspace gets a udev change notification when there is a
-> > > > change, but the state may have changed (again) by the time we
-> > > > look at the authorized attribute in sysfs. So an authorization
-> > > > event may go unnoticed. Thus make it easier by informing the
-> > > > actual change (authorized/deauthorized) in the udev change
-> > > > notification.
-> > >
-> > > We do have 72 columns to work with... :)
-> >
-> > Sorry, fixed now.
-> >
-> > >
-> > > >
-> > > > Signed-off-by: Rajat Jain <rajatja@google.com>
-> > > > ---
-> > > >  drivers/thunderbolt/switch.c | 8 ++++++--
-> > > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-> > > > index 83b1ef3d5d03..5d3e9dcba44a 100644
-> > > > --- a/drivers/thunderbolt/switch.c
-> > > > +++ b/drivers/thunderbolt/switch.c
-> > > > @@ -1499,6 +1499,7 @@ static ssize_t authorized_show(struct device *dev,
-> > > >  static int disapprove_switch(struct device *dev, void *not_used)
-> > > >  {
-> > > >       struct tb_switch *sw;
-> > > > +     char *envp[] = { "AUTHORIZED=0", NULL };
-> > > >
-> > > >       sw = tb_to_switch(dev);
-> > > >       if (sw && sw->authorized) {
-> > > > @@ -1514,7 +1515,7 @@ static int disapprove_switch(struct device *dev, void *not_used)
-> > > >                       return ret;
-> > > >
-> > > >               sw->authorized = 0;
-> > > > -             kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
-> > > > +             kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
-> > > >       }
-> > > >
-> > > >       return 0;
-> > > > @@ -1523,6 +1524,8 @@ static int disapprove_switch(struct device *dev, void *not_used)
-> > > >  static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
-> > > >  {
-> > > >       int ret = -EINVAL;
-> > > > +     char envp_string[13];
-> > > > +     char *envp[] = { envp_string, NULL };
-> > > >
-> > > >       if (!mutex_trylock(&sw->tb->lock))
-> > > >               return restart_syscall();
-> > > > @@ -1560,7 +1563,8 @@ static int tb_switch_set_authorized(struct tb_switch *sw, unsigned int val)
-> > > >       if (!ret) {
-> > > >               sw->authorized = val;
-> > > >               /* Notify status change to the userspace */
-> > > > -             kobject_uevent(&sw->dev.kobj, KOBJ_CHANGE);
-> > > > +             sprintf(envp_string, "AUTHORIZED=%u", val);
-> > > > +             kobject_uevent_env(&sw->dev.kobj, KOBJ_CHANGE, envp);
-> > >
-> > > So now "val" is a userspace visable value?  Is that documented anywhere
-> > > what it is and what are you going to do to ensure it never changes in
-> > > the future?
-> > >
-> > > Also this new value "field" should be documented somewhere as well,
-> > > otherwise how will any tool know it is there?
-> >
-> > Sorry I should have clarified and elaborated (now done in the new
-> > commit log). The field / value being exposed is that of the existing
-> > sysfs attribute "authorized"
-> > (/sys/bus/thunderbolt/devices/.../authorized), which is already
-> > documented. I made it clearer in the commit log now. I looked at other
-> > uses of kobject_uevent_env() and couldn't find examples of documenting
-> > the Udev environment in Documentation/.
+> > There is a better way to constrain backporting, that is Cc:
+> > stable@vger.kernel.org # 3.12+
+>
+> I don't want to constrain backporting.
 
-Perhaps a comment here showing that this is the same value as that
-specific sysfs attribute as well?
+I would recommend adding the plain
 
-> > > And what userspace tool will be looking for this?
-> >
-> > It will likely be a udev rule which will trigger a script when it see
-> > device authorization change event. Something like this:
-> > SUBSYSTEM=="thunderbolt", ACTION=="change", ENV{AUTHORIZED}=="1",
-> > RUN+="alert.sh"
-> >
-> > However, now that I say it, is it possible to check for such (kernel
-> > supplied) udev event environment key value pair, using
-> > udev_device_get_property_value()? If so, that makes it very easy for
-> > us, and the tool to use it would be Chromeos daemon called
-> > cros_healthd.
+Cc: stable@vger.kernel.org
 
-It's been a long time since I last touched the udev codebase, sorry, try
-it out yourself and see!
+line to the footer to make it unambiguous that you want it backported then,
+plus moving the explanation above the --- line. You can never be too explicit
+with those.
 
-thanks,
-
-greg k-h
+      Arnd
