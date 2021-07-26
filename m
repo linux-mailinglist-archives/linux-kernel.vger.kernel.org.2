@@ -2,122 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616993D52D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7413D52D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 07:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhGZEuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 00:50:08 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:59612 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhGZEuF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 00:50:05 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 96DC98365A;
-        Mon, 26 Jul 2021 17:30:32 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1627277432;
-        bh=exJYd7du+PGHHw+mkZbiwYCJstw++sVoWARZeuq1qmo=;
-        h=From:To:Cc:Subject:Date;
-        b=TxJwODeDcSDlstP+t9HgQR8MsR1AF1ybDoL0ed+nlgRPnPp6KRUzJZo2eir7fMM49
-         6Pea+RHGQYrsERefUJIM0w5E4pZlQkHylop5n6SUJJJw2xm5ugQU2Hi27qB/CI6TYu
-         6Hpx8E83WImh+hO9dJC7QMxpNJCkGld193a3Q12bosB1YAiFe8WvUREwcm6btRKb/0
-         U0yL0sZdHzshkgDpgIAQbhyA7d05J1KG1dLssxdV29UirCt4C99dZE+qcNLK+NXLyC
-         m9zoXRCHe36zFt/s40Ea6kncWd0pyDO45jD36G67rxcxPMeE4ZgAmEPoXQFYbEDIb5
-         jjScBkmOU3/sA==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60fe48780000>; Mon, 26 Jul 2021 17:30:32 +1200
-Received: from richardl-dl.ws.atlnz.lc (richardl-dl.ws.atlnz.lc [10.33.23.13])
-        by pat.atlnz.lc (Postfix) with ESMTP id 70CF113EE4B;
-        Mon, 26 Jul 2021 17:30:32 +1200 (NZST)
-Received: by richardl-dl.ws.atlnz.lc (Postfix, from userid 1481)
-        id 6C1D5320AE4; Mon, 26 Jul 2021 17:30:32 +1200 (NZST)
-From:   Richard Laing <richard.laing@alliedtelesis.co.nz>
-To:     davem@davemloft.net, netdev@vger.kernel.org
-Cc:     loic.poulain@linaro.org, ryazanov.s.a@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Richard Laing <richard.laing@alliedtelesis.co.nz>
-Subject: [PATCH] net: mhi: Improve MBIM packet counting
-Date:   Mon, 26 Jul 2021 17:30:03 +1200
-Message-Id: <20210726053003.29857-1-richard.laing@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.32.0
+        id S231621AbhGZEu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 00:50:59 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64123 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229579AbhGZEu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 00:50:57 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10056"; a="210272248"
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
+   d="scan'208";a="210272248"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2021 22:31:27 -0700
+X-IronPort-AV: E=Sophos;i="5.84,270,1620716400"; 
+   d="scan'208";a="504644556"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.175.15]) ([10.249.175.15])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2021 22:31:23 -0700
+Subject: Re: [RFC PATCH v2 65/69] KVM: X86: Introduce initial_tsc_khz in
+ struct kvm_arch
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "erdemaktas@google.com" <erdemaktas@google.com>,
+        Connor Kuehl <ckuehl@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
+References: <cover.1625186503.git.isaku.yamahata@intel.com>
+ <5f87f0b888555b52041a0fe32280adee0d563e63.1625186503.git.isaku.yamahata@intel.com>
+ <792040b0-4463-d805-d14e-ba264a3f8bbf@redhat.com>
+ <YO3YDXLV7RQzMmXX@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <2705e8a4-6783-cfb7-e24d-0ffcffbefd6a@intel.com>
+Date:   Mon, 26 Jul 2021 13:31:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=dvql9Go4 c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=e_q4qTt1xDgA:10 a=Qj9HRg2PlNJ9qBswoWQA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+In-Reply-To: <YO3YDXLV7RQzMmXX@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Packets are aggregated over the MBIM link and currently the MHI net
-device will count each aggregated packet rather then the actual
-packets themselves.
+On 7/14/2021 2:14 AM, Sean Christopherson wrote:
+> On Tue, Jul 06, 2021, Paolo Bonzini wrote:
+>> On 03/07/21 00:05, isaku.yamahata@intel.com wrote:
+>>> From: Xiaoyao Li <xiaoyao.li@intel.com>
+>>>
+>>> Introduce a per-vm variable initial_tsc_khz to hold the default tsc_khz
+>>> for kvm_arch_vcpu_create().
+>>>
+>>> This field is going to be used by TDX since TSC frequency for TD guest
+>>> is configured at TD VM initialization phase.
+>>>
+>>> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+>>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>>> ---
+>>>    arch/x86/include/asm/kvm_host.h | 1 +
+>>>    arch/x86/kvm/x86.c              | 3 ++-
+>>>    2 files changed, 3 insertions(+), 1 deletion(-)
+>>
+>> So this means disabling TSC frequency scaling on TDX.  
 
-If a protocol handler module is specified, use that to count the
-packets rather than directly in the MHI net device. This is in line
-with the behaviour of the USB net cdc_mbim driver.
+No. It still supports TSC frequency scaling on TDX. Only that we need to 
+configure TSC frequency for TD guest at VM level, not vcpu level.
 
-Signed-off-by: Richard Laing <richard.laing@alliedtelesis.co.nz>
----
- drivers/net/mhi/net.c        | 14 +++++++-------
- drivers/net/mhi/proto_mbim.c |  4 ++++
- 2 files changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/mhi/net.c b/drivers/net/mhi/net.c
-index a5a2aa19bb91..0cc7dcd0ff96 100644
---- a/drivers/net/mhi/net.c
-+++ b/drivers/net/mhi/net.c
-@@ -205,11 +205,6 @@ static void mhi_net_dl_callback(struct mhi_device *m=
-hi_dev,
- 			mhi_netdev->skbagg_head =3D NULL;
- 		}
-=20
--		u64_stats_update_begin(&mhi_netdev->stats.rx_syncp);
--		u64_stats_inc(&mhi_netdev->stats.rx_packets);
--		u64_stats_add(&mhi_netdev->stats.rx_bytes, skb->len);
--		u64_stats_update_end(&mhi_netdev->stats.rx_syncp);
--
- 		switch (skb->data[0] & 0xf0) {
- 		case 0x40:
- 			skb->protocol =3D htons(ETH_P_IP);
-@@ -222,10 +217,15 @@ static void mhi_net_dl_callback(struct mhi_device *=
-mhi_dev,
- 			break;
- 		}
-=20
--		if (proto && proto->rx)
-+		if (proto && proto->rx) {
- 			proto->rx(mhi_netdev, skb);
--		else
-+		} else {
-+			u64_stats_update_begin(&mhi_netdev->stats.rx_syncp);
-+			u64_stats_inc(&mhi_netdev->stats.rx_packets);
-+			u64_stats_add(&mhi_netdev->stats.rx_bytes, skb->len);
-+			u64_stats_update_end(&mhi_netdev->stats.rx_syncp);
- 			netif_rx(skb);
-+		}
- 	}
-=20
- 	/* Refill if RX buffers queue becomes low */
-diff --git a/drivers/net/mhi/proto_mbim.c b/drivers/net/mhi/proto_mbim.c
-index f1cc7f35bb85..761d90b28ee6 100644
---- a/drivers/net/mhi/proto_mbim.c
-+++ b/drivers/net/mhi/proto_mbim.c
-@@ -211,6 +211,10 @@ static void mbim_rx(struct mhi_net_dev *mhi_netdev, =
-struct sk_buff *skb)
- 				continue;
- 			}
-=20
-+			u64_stats_update_begin(&mhi_netdev->stats.rx_syncp);
-+			u64_stats_inc(&mhi_netdev->stats.rx_packets);
-+			u64_stats_add(&mhi_netdev->stats.rx_bytes, skbn->len);
-+			u64_stats_update_end(&mhi_netdev->stats.rx_syncp);
- 			netif_rx(skbn);
- 		}
- next_ndp:
---=20
-2.32.0
+>> Would it make sense
+>> to delay VM creation to a separate ioctl, similar to KVM_ARM_VCPU_FINALIZE
+>> (KVM_VM_FINALIZE)?
+> 
+> There's an equivalent of that in the next mega-patch, the KVM_TDX_INIT_VM sub-ioctl
+> of KVM_MEMORY_ENCRYPT_OP.  The TSC frequency for the guest gets provided at that
+> time.
+> 
 
