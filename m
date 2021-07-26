@@ -2,180 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A6E3D65D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1E303D65D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 19:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234853AbhGZQup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:50:45 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:26286 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233952AbhGZQuo (ORCPT
+        id S235454AbhGZQy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233473AbhGZQyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:50:44 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16QHFvjw020261;
-        Mon, 26 Jul 2021 17:30:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
- b=nlj4dqI0+nxj0VSm3H+C6PuDAD3UbrEzVDA9DUYUROZ5O8VD5DZAN4QDajyqnSyTfyTF
- wqsjzZavEvKyGE+9NU0u9mkIlapVK+FWUGIs6mW9oCf4UhHGZxpjz2g3pU5ShLlfzwV+
- NxvVf7q7AnMkGxZsQ8cKHNoHoDo/CSOo4iOzFH00APPLPdQo5S5ooVk5Xo1Yp1aH69yF
- gMo8YdM06tNMSIK/mVPreAlUlRe7ygVHNtcHx6fnFL+QG3ll73TX1O2NqSfdxf5Ge03J
- voLSKyIcPyRYVIuOwpSwgjRc/L/SNSFjgLwZwKVLGNBa3KbXhZ434iKYlE5yRWRB50/Q Rw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
- b=RE6d+L7zpxC4xizLqp4EWWZ6JA+AMAwT/Hjs+LHFUPXXY8LWcJy+abAZlaqq5uK4Am5q
- xHixtJIfQaY3ir0Cim4fJ0JX+hSOl2HpSIZfN7rDE9RWIyu9pcERGAtrFwHdcDLYvv3u
- +pQzt0zvxd8agfoPk+Z7+ePt08X9qNGsfZV38powSvB7pLTEktYrxs4udVZZ3Z/TaPFk
- 0ndw6y8eNwexW84oZRE9OWzbpLMmqupcFxy4vykXdFqq0iHBHOnb2MGMNAf5GuRvTaXM
- sf42SpxFLf1P525GAosXvP3uQJ7+uR0z/VlMN1GZutZBwt/nhWkrQ7dNi0J/eYog46kQ oA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a1qkqsmqu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Jul 2021 17:30:47 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16QHFS9w176799;
-        Mon, 26 Jul 2021 17:30:46 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2176.outbound.protection.outlook.com [104.47.56.176])
-        by aserp3020.oracle.com with ESMTP id 3a0n2gdkps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Jul 2021 17:30:46 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L/LtSXL0XVysq2WcUVBgbaN0HLDvSjc9C4wqxN8Y8s3Gpl4XS9VhTjYyctTajsj0y4Fpt35bQGhbOtpDV0fmC37sUrnlIdAYY6rVXYCwLCoA5MIdKMHmQjrIOaaRG2hryE48U6k3WHTVT5fuND2WyhZPrOBeOL0VJCyE21Qr8mZSGqARjR6MzPODR9qDoZOxfW+fZxi/fJbq12OILrSHk08JDc8tIH6W9ouh5eHRk5LDGd2Ew4qnjemIVeg3D1HpOeYgjI+qwRTNOImXj7g6wBA9j9SkohHSgbHVIrflRWaUEORbz2nipQympGa+MOpnUdyMJ0DamhdRFq1rtcMYYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
- b=YSaAO753OVo1aEqwgWRbLrLugdh+poRPNTw7NhvNHikaHkILvD7jW1sPN30/xxCx/rseVFluYQeEiqH/Yw5Ah3bS1vt2vd/6L6Y7RpttDBDWyGdX/gmVFirzIefLkGITbHvhYCx7u5zYWIPylZn8N4eSJnMGnDaw+ZdKejAeZiUFN0l7K4At/JDkBQEPwDIK6/qi8Z28KMr2f3RP9islgjAujn1FEpsEFoBDiPARYYQZpiqlef+y5ocEfJl9MsLA0hVVnm85f/Kechn9jB0kjeFvuBYu1qDCKXcTuH4WkS0OrzgMdKws5xK2uBI7EjrPILsuPNxJaDcs7KAvphlXVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 26 Jul 2021 12:54:22 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F6EC061764
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:34:50 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id o17-20020a4a64110000b0290263e1ba7ff9so2412600ooc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 10:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ma2fxOKnXpHEs3U5Kkq5U0lK9WKeBOL0aAljvvdwdUg=;
- b=zhrRWNKBzimkFbx41QahA1tjgtSy9+LFii9JmAjG2oqa36JHWD3X49luhm3SSFVOfeXmlzi9D1EaLT8mr6opDcttXo/Mcf4OAGSP/vj2J6aWdPM/cBwTZY3a00O4mklrNx+6nmkEynw+ckR/28CEYbkPxoG10kTMtbP5+j+mZbo=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by BLAPR10MB5011.namprd10.prod.outlook.com (2603:10b6:208:333::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Mon, 26 Jul
- 2021 17:30:44 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0%7]) with mapi id 15.20.4352.031; Mon, 26 Jul 2021
- 17:30:44 +0000
-Subject: Re: [GIT PULL] dma-mapping fix for Linux 5.14
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <YPz+qQ6dbZVDbMwu@infradead.org>
- <CAHk-=wi2OMmUkZFdQ0=uYmGeC3sv3eYw-p1=d51pJS-XVKaM2A@mail.gmail.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <957943ce-c50e-1560-6f1b-aea0a1c9a114@oracle.com>
-Date:   Mon, 26 Jul 2021 13:30:36 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
-In-Reply-To: <CAHk-=wi2OMmUkZFdQ0=uYmGeC3sv3eYw-p1=d51pJS-XVKaM2A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SJ0PR13CA0036.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::11) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pOyJ8Rc1+7t0YsnzVklU5b9F37l3+jW4OcgT5rziuFU=;
+        b=fAZlxhQdyRp5zRb1mi25f/B4kL5ZXX0mCPnFX4I0238WwihNK21ztCUO6TrexvvPiv
+         2Er0F4JfnIP/P/GHgqmWn6aY2p8ImlWACu77OPYMAWk8CieAem+/B/iCMMuo5ITOPjin
+         wvRJO1ER91VkDbE7rjs4gbOdz1ZJxqor+khnQ+BjxYBHShEokP840+yIEdRXIdbKtKtl
+         70EXAr2LOoomFXw7miMn+qgh4/rJiukxnfFuRkVATGWGGNqXjSAc+mQrZY+DlCAsnPwL
+         7V2bpD0b3uLRIn4Z4QyPaMrKQly0Mdd/oGU7fmaYbyMpLHLaEEFPd+Wx2ORAqfL7vnW/
+         KKGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pOyJ8Rc1+7t0YsnzVklU5b9F37l3+jW4OcgT5rziuFU=;
+        b=jWBCck0pebwnWcpOxlnAL8YzfflIpwptTmuOWlEw2GuRL87CX/kpG+Rh6ZR0piWDqL
+         Em8nxT7hBA6ddVB3Nptqm94nl1FXRvdQkFdw/PUfV0m9i+NfLdN3NBO9MW+9A09NefBf
+         Gq8H5MSWzZlDNy280ojtcWmlE1kZAYnudtTmMOQfil4Pqg70/voyl5wYSEUpALg6tWpj
+         Pqt6mTGUzHhiyD0M838I4R2MoLH5libgo8mnN6JXJOBiL+kvDHY93tFQlBL6WD3/AZL3
+         eS/7hObCOfvmn+LLcF9u+6XPFHprEU654Uymso8psM2KV99IQ+IzltIebqaEO/4YZstS
+         PqTQ==
+X-Gm-Message-State: AOAM531ZNTq0cN0PuqKJegK1IEYtf/z30kjUNEhD46FGCekDz6AQ478U
+        cXZBp/h+ufBVPUpCS+9GrpueVA==
+X-Google-Smtp-Source: ABdhPJzj9GSyzOgaXvC/6u+xBmxl/5r2hXaqVyqoa7pDzveUYNhuECB19AieW7EB2CyiizlnCMCAiw==
+X-Received: by 2002:a4a:b98c:: with SMTP id e12mr11209038oop.67.1627320889238;
+        Mon, 26 Jul 2021 10:34:49 -0700 (PDT)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id s24sm69328ooq.37.2021.07.26.10.34.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 10:34:48 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: display: simple: Add AUO B133HAN05 & B140HAN06
+Date:   Mon, 26 Jul 2021 10:32:59 -0700
+Message-Id: <20210726173300.432039-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.97.124] (160.34.89.124) by SJ0PR13CA0036.namprd13.prod.outlook.com (2603:10b6:a03:2c2::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.14 via Frontend Transport; Mon, 26 Jul 2021 17:30:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dd4825b9-6e2c-4662-9ef6-08d9505b191a
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5011:
-X-Microsoft-Antispam-PRVS: <BLAPR10MB5011BB367E81B1ABA0A777778AE89@BLAPR10MB5011.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fo+vrdDXpBBhEBHZuqjA6kPje4O/bHC8BrD43WoFYwyj2tYFEifDaMhzkYsiCwmEoOI9DFvG3/h/+EBjp52fhyaardGoNETh8k5c1DZxnm9/hQSj1LFJyngwyxUsBedFkcffp9uDff9gYPYcQ2ZLin7ecSMLU6PLYtq22icff/gUWIZ6e3JYBW0Ja28eVTPNRku+nfAMz+pmzEe6fOZ/wjl49uxr4QZO5PSiTUEg93HsOPjViO9MKjKcX7WimyImJ7wPvVOwK98++ZcQS/mlzpeBttfJ1cKDyt/v1cFJnErAvkEP3MMydLBSw5zmw66XCsWPs+QovuSiRszOOcI67V/2hPCwGOMslatap4tMR+ymsDr8ctbWcK5HljLhl7HJAqTPb3Y5yfYCuPUyPYWBUkc3AXD4ne4k7QgbmrmalXUrCtnJ1etvaVKdLiddiIOW3BFiyaF4jC9EsC/fbCj/IyJc68meNTHn+Ztx1XD+0iqrw84TYRsJNI8p/GlI1ZFImLuhHI2wQFLbzDc6/jITwvkTRbZDHNea/OisbCcsNtuCBYgipQYsaO3qIvR8ITz1A2/FOKFbB+ecjzcLLab/5Ff7l0hnT+qAdFJRfzkD3lKPV+TSURWXfHQ/v8GrAsGolHOcIX+TJWaWC+UOVIRUtBq57C9t3l65C/vpg37RrWSpWfMnZaKmWcrbXoMFpNVKbzHsz29M3NhW30VTrNnsf+HPBvUhRNge71NhGbWMELH9fGrao/VKJ3BeQ5DgkvTnqva/WfiTezgo/l0tnbTsPf80c4NmOoc+04HJEzaRakDn6lrKZVefgdhbETFOUQR1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(110136005)(44832011)(4744005)(38100700002)(16576012)(6666004)(6486002)(966005)(8936002)(5660300002)(956004)(53546011)(186003)(66476007)(316002)(2616005)(54906003)(66946007)(66556008)(8676002)(86362001)(26005)(508600001)(31686004)(36756003)(2906002)(31696002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MmhuL0FXdk1wSEE1K0NBUG5Hb3E3d2VtMFN3SjJDeTBsVWZvQXE1ejZmT084?=
- =?utf-8?B?VGhZZmxHRUZpV0gzVytiais1VW5Pa3huTlQrdjlhZ0lxTHZXZytpQWxaRWtV?=
- =?utf-8?B?TzRBekhNdDVBa2tJMVBaVGhRa21VbXNEVmdVY08vOHZSUjRpVjVhL0RCOERj?=
- =?utf-8?B?MGZEYUFSQk9tS2haNUxreUxPTFNrNlJOZFY4NEVXMW8wbExscnN3SHdjUm9m?=
- =?utf-8?B?VkptcU1aNDR3WFVaUDJWc0I3cWY2bWk5WWIyMXl1cUpHTkxIdmo1REFGandv?=
- =?utf-8?B?clYzVEpMc2lvTmdwN2ZYRXA5UXFCcjN4bXRrQ3ZjbmNnbm1PbzZVSXBra1R6?=
- =?utf-8?B?b1ZOOFNQUW1CTWdka3dxMVhiYUgrcnJlcm5GVWs4SldubkZJNlRiSnRibW1a?=
- =?utf-8?B?SXA2L0V6TFZDZEJCVi9mZVBUM1hxQ3VwZ1krMGVwZzlTdzlWR1cyd2ZBeDd2?=
- =?utf-8?B?U0hSZlVHNGMxRlRSWEJSenNKaTl4ZzI3Tk8zWEQvZnkxMVBZaDNxaEo4Qmdo?=
- =?utf-8?B?OHQ1bkRGekRCTkFSR1FsMkIzUG85NFNoTjkreklaM1FYVjc0aUVMS0NhNnVP?=
- =?utf-8?B?SFVrTDMwY1VvNTFwZ2Z1VnBkeW4rRlBWZG1leVJreUdPNWxQQkpmcEQyTEl2?=
- =?utf-8?B?TFk0ejVITFhYZEVaU1BLSEF0UkpwVHVoVVBvbEhtYytLTnN6cVNUUm1OL3B2?=
- =?utf-8?B?cURYMEkybTgrRk9NYm03UUJOc0piUWNSNmJzTmsrUWZGWjNnaFl1d3lUNmo1?=
- =?utf-8?B?bEtLR3c5OWRMWmM2STlrWFlBK0JKbW5CM09HelkxOHZ0QmRmTE1VbFhiSTZF?=
- =?utf-8?B?eE12WXVKbXlQVkNJWUNDY0xjM3N0aEp1aUFBUmpnMVRvK1dOdmpnU3NxMWN2?=
- =?utf-8?B?d0p3Njc3dlExb0sxWDFsRjRiZzczQS9WNnlTb0thbjdnSVIzeHpCZ0RRaHVK?=
- =?utf-8?B?c0VJTFp6RS9WU1c5VlAwbnlWRmU1Um1lNHVpNDR3bURwbGVXcHdwQzFIY1g3?=
- =?utf-8?B?SHNEVkJPSUhPbGNMT1g2NDVibi9mV2pHd21MRmVnWnVoQ2h1anRLSyt2U2Z1?=
- =?utf-8?B?WDRaSFZRN3JiaUNTOW1JUnJVSG1iVythSzV4Q3ZMTEhOYXRKcHN0UzB1MElM?=
- =?utf-8?B?SEJYeXJIdW85YWFQbEhheUk5dlBwODBReTFkNmpzbXRqb0Ntc1pMRFRENUto?=
- =?utf-8?B?anhhbHhETnJPOS9CRFhiY3IrbjQzayt2N2h3bmpKNW9PbE1RblJTaGpCclhi?=
- =?utf-8?B?bGpCVStzcndydWZpeTM5K01OT0Vya2NuMW5XdlF3OW52OTA5SmFmdytSM0J1?=
- =?utf-8?B?QzRUUkxwRjJoQVE5WDRyOVBpQU8zNTVqZWdoWlV5eW9DNzA0cDF3Mnd4K3ZZ?=
- =?utf-8?B?d1RuL1hoTkRsdER1QVIzYVFvSzVQRUZGd2NOcE8xTTc2TzF6WmNSR0x4UTZF?=
- =?utf-8?B?UkkxaDJ4MzNBTjYwUmc4TGhoY25nRlhkWndZN1ZqNWVYZVp4ajRsT29ldmVz?=
- =?utf-8?B?aHE3QlpnWEYxV0xtNzc1ZDM0S2pZUy84SDl3azdQdGRUb3oxM055d0VwaUI2?=
- =?utf-8?B?bUVaSlFJTjgyRmpOMXZoZlM5YUtmTHNmRG5QSzNLdU9GS2JhKzN1cmVIUWVl?=
- =?utf-8?B?UEZFRk12OHZ6OE1ZTTJXZDltRmM3bnNsUGNsQTZ3RldUR3VobVpGWWdwaE5k?=
- =?utf-8?B?VE54VW1IbzIrZjl2T1d6MXZrd1VJNWZ6aVd0MTNyODFNQitqK2ZaaEpVQWF6?=
- =?utf-8?Q?vxLlnxpI7QZRODkRCYdaCmOiBmEYmdhRXynWMNA?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd4825b9-6e2c-4662-9ef6-08d9505b191a
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jul 2021 17:30:44.3843
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xFMnLhCQZriXxcyWR1G+6/Z7feQkigk4xcuVgR9XABuN7TRKRvnqptltXhguteEYv4B9WC7qBKuMXBQDx2OKo7//hF3qPtxB3SyO13zMIUg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5011
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10057 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 bulkscore=0
- malwarescore=0 adultscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107260101
-X-Proofpoint-GUID: tn5FoM9xMTTCjY-fvcxlyaHnee_3D7ws
-X-Proofpoint-ORIG-GUID: tn5FoM9xMTTCjY-fvcxlyaHnee_3D7ws
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add bindings for the two AUO panels B133HAN05 and B140HAN06, both
+1920x1080 panels with 16.7M colors, first being 13.3" and the latter
+14.0".
 
-On 7/25/21 12:50 PM, Linus Torvalds wrote:
-> On Sat, Jul 24, 2021 at 11:03 PM Christoph Hellwig <hch@infradead.org> wrote:
->
->>   - handle vmalloc addresses in dma_common_{mmap,get_sgtable}
->>     (Roman Skakun)
-> I've pulled this, but my reaction is that we've tried to avoid this in
-> the past. Why is Xen using vmalloc'ed addresses and passing those in
-> to the dma mapping routines?
->
-> It *smells* to me like a Xen-swiotlb bug, and it would have been
-> better to try to fix it there. Was that just too painful?
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ .../devicetree/bindings/display/panel/panel-simple.yaml       | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-
-Stefano will probably know better but this appears to have something to do with how Pi (and possibly more ARM systems?) manage DMA memory: https://lore.kernel.org/xen-devel/CADz_WD5Ln7Pe1WAFp73d2Mz9wxspzTE3WgAJusp5S8LX4=83Bw@mail.gmail.com/.
-
-
-
-
--boris
-
-
+diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+index b3797ba2698b..7f624cb1199a 100644
+--- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
++++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
+@@ -46,9 +46,13 @@ properties:
+         # AU Optronics Corporation 11.6" HD (1366x768) color TFT-LCD panel
+       - auo,b116xw03
+         # AU Optronics Corporation 13.3" FHD (1920x1080) color TFT-LCD panel
++      - auo,b133han05
++        # AU Optronics Corporation 13.3" FHD (1920x1080) color TFT-LCD panel
+       - auo,b133htn01
+         # AU Optronics Corporation 13.3" WXGA (1366x768) TFT LCD panel
+       - auo,b133xtn01
++        # AU Optronics Corporation 14.0" FHD (1920x1080) color TFT-LCD panel
++      - auo,b140han06
+         # AU Optronics Corporation 7.0" FHD (800 x 480) TFT LCD panel
+       - auo,g070vvn01
+         # AU Optronics Corporation 10.1" (1280x800) color TFT LCD panel
+-- 
+2.29.2
 
