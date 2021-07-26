@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AB63D62B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B09F3D607E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:11:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237193AbhGZPiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:38:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36460 "EHLO mail.kernel.org"
+        id S237380AbhGZPWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:22:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237259AbhGZPWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:22:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8457060EB2;
-        Mon, 26 Jul 2021 16:02:28 +0000 (UTC)
+        id S237418AbhGZPPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:15:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5BB161039;
+        Mon, 26 Jul 2021 15:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315349;
-        bh=czYXse3oMFtGw0mtmQntsuGW4opeK9xpofAjjkYT92Q=;
+        s=korg; t=1627314898;
+        bh=7yDrel2kxKSR84AmBUbcwptA1ONeO9rasT8y1zlTTkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fricy6w0eST3i1BnajK8qN/4ZbUFv7Z2uZpLWaZKa31VTjlbVxdDYqZXfonoOf7n1
-         GZhEbu40ogolPEWU6F7RvWqhF0DVfPFKkDHq4SwrMy526i4Ukzjzmk2XrzbIqUE8J0
-         h5abzwFUAOwGoNWzi/omVzYuhOhK7wpfhYxaVyUk=
+        b=rRUq7YDpOM9Pw/HvSvk/BExShFugX3cNrBOX1McNqPubPBJ8meOmUsbZLN9Bqiec3
+         RUboNz1AMzSOW4aGJKgKytCCqL5XbrRUA3/WdBJmIALUt4FoaEBPeAlpqfONzJBcNb
+         NL3n6a/BR8PcUu2R1E3ISeP9W2rHZYd6ns28SFZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Jedrzej Jagielski <jedrzej.jagielski@intel.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 060/167] s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
+Subject: [PATCH 5.4 012/108] igb: Fix position of assignment to *ring
 Date:   Mon, 26 Jul 2021 17:38:13 +0200
-Message-Id: <20210726153841.422272414@linuxfoundation.org>
+Message-Id: <20210726153832.095278453@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
-References: <20210726153839.371771838@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+References: <20210726153831.696295003@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
 
-[ Upstream commit 91091656252f5d6d8c476e0c92776ce9fae7b445 ]
+[ Upstream commit 382a7c20d9253bcd5715789b8179528d0f3de72c ]
 
-Currently array jit->seen_reg[r1] is being accessed before the range
-checking of index r1. The range changing on r1 should be performed
-first since it will avoid any potential out-of-range accesses on the
-array seen_reg[] and also it is more optimal to perform checks on r1
-before fetching data from the array. Fix this by swapping the order
-of the checks before the array access.
+Assignment to *ring should be done after correctness check of the
+argument queue.
 
-Fixes: 054623105728 ("s390/bpf: Add s390x eBPF JIT compiler backend")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Link: https://lore.kernel.org/bpf/20210715125712.24690-1-colin.king@canonical.com
+Fixes: 91db364236c8 ("igb: Refactor igb_configure_cbs()")
+Signed-off-by: Jedrzej Jagielski <jedrzej.jagielski@intel.com>
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/net/bpf_jit_comp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/igb/igb_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
-index 0a4182792876..fc44dce59536 100644
---- a/arch/s390/net/bpf_jit_comp.c
-+++ b/arch/s390/net/bpf_jit_comp.c
-@@ -112,7 +112,7 @@ static inline void reg_set_seen(struct bpf_jit *jit, u32 b1)
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 35b096ab2893..158feb0ab273 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -1694,14 +1694,15 @@ static bool is_any_txtime_enabled(struct igb_adapter *adapter)
+  **/
+ static void igb_config_tx_modes(struct igb_adapter *adapter, int queue)
  {
- 	u32 r1 = reg2hex[b1];
+-	struct igb_ring *ring = adapter->tx_ring[queue];
+ 	struct net_device *netdev = adapter->netdev;
+ 	struct e1000_hw *hw = &adapter->hw;
++	struct igb_ring *ring;
+ 	u32 tqavcc, tqavctrl;
+ 	u16 value;
  
--	if (!jit->seen_reg[r1] && r1 >= 6 && r1 <= 15)
-+	if (r1 >= 6 && r1 <= 15 && !jit->seen_reg[r1])
- 		jit->seen_reg[r1] = 1;
- }
+ 	WARN_ON(hw->mac.type != e1000_i210);
+ 	WARN_ON(queue < 0 || queue > 1);
++	ring = adapter->tx_ring[queue];
  
+ 	/* If any of the Qav features is enabled, configure queues as SR and
+ 	 * with HIGH PRIO. If none is, then configure them with LOW PRIO and
 -- 
 2.30.2
 
