@@ -2,283 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9EB3D64EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757F13D64FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235808AbhGZQR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 12:17:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49386 "EHLO mail.kernel.org"
+        id S238575AbhGZQSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 12:18:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235387AbhGZQNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 12:13:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5061D6056B;
-        Mon, 26 Jul 2021 16:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627318461;
-        bh=c/T13wFxt1PizOYI84tKGiFkCFercMC2EuWefcnCHj0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=ZzGrSP5l95kC8kxJfpB+jT4pRJB0opluEi6N3FPnKMDQpBbvUgdlQAcxklRRZEZ24
-         7z1VqNJwz4pkVSh4FY3NFY6f5jAmr2sjYryYXMSl3cTLIT8qWorqdURFU3UjNNiTW5
-         Y+RN6dZx+I4pyVJqvP6/YuEKRc0LUc9J4aoZ9GGOkxxzbBYeaxaC6nIjgdlhQeQ4U5
-         57IlVmbBP2V5xc26+h6nPvxGqR5idQBX9MC+EGjybfgwZs9Zko29TheYzFKOiGRjsz
-         ADfkft+t6nROIBlRI6o8v+VjrOoknsLX/FzYsiN5KYTqMfqN4qR7NGYBAEAGDZJMDk
-         xe2zbXE41Hx5g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 1375C5C06D2; Mon, 26 Jul 2021 09:54:21 -0700 (PDT)
-Date:   Mon, 26 Jul 2021 09:54:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, corbet@lwn.net, ysato@users.sourceforge.jp,
-        dalias@libc.org, chris@zankel.net, jcmvbkbc@gmail.com,
-        dave@stgolabs.net, tiwai@suse.de, frederic@kernel.org,
-        mchehab+huawei@kernel.org, nfraprado@protonmail.com,
-        wcohen@redhat.com, tglx@linutronix.de, viro@zeniv.linux.org.uk,
-        rric@kernel.org, viresh.kumar@linaro.org, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH] RCU: Fix undefined Kconfig macros
-Message-ID: <20210726165421.GS4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210725214333.10623-1-zhouzhouyi@gmail.com>
+        id S241919AbhGZQQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 12:16:47 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8994260F5D;
+        Mon, 26 Jul 2021 16:56:11 +0000 (UTC)
+Date:   Mon, 26 Jul 2021 12:56:04 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] tracepoints: Update static_call before tp_funcs when
+ adding a tracepoint
+Message-ID: <20210726125604.55bb6655@oasis.local.home>
+In-Reply-To: <715282075.6481.1627314401745.JavaMail.zimbra@efficios.com>
+References: <20210722223320.53900ddc@rorschach.local.home>
+        <715282075.6481.1627314401745.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210725214333.10623-1-zhouzhouyi@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 05:43:33AM +0800, Zhouyi Zhou wrote:
-> Hi Paul,
+On Mon, 26 Jul 2021 11:46:41 -0400 (EDT)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
-> After I invoking scripts/checkkconfigsymbols.py in linux kernel source
-> tree, I find 4 undefined Kconfig macros. I examine them one by one, and
-> fix them following your advice.
+> [...]
 > 
-> 1. TREE_PREEMPT_RCU
-> Referencing files: arch/sh/configs/sdk7786_defconfig
+> Looking into the various transitions, I suspect the issue runs much deeper than
+> this.
 > 
-> It should now be CONFIG_PREEMPT_RCU. Except that the CONFIG_PREEMPT=y in
-> that same file implies CONFIG_PREEMPT_RCU=y, so I delete the
-> CONFIG_TREE_PREEMPT_RCU=y line.
+> The sequence of transitions (number of probes) I'm considering is:
 > 
-> The reason is as follows.
-> In kernel/rcu/Kconfig, we have
-> config PREEMPT_RCU
->         bool
->         default y if PREEMPTION
-> https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt says,
-> "The default value is only assigned to the config symbol if no other value
->  was set by the user (via the input prompt above)."
-> there is no prompt in config PREEMPT_RCU entry, so we are guaranteed to
-> get CONFIG_PREEMPT_RCU=y when CONFIG_PREEMPT is present.
+> 0->1
+> 1->2
+> 2->1
+> 1->0
+> 0->1
+> 1->2
 > 
-> 2. RCU_CPU_STALL_INFO
-> Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
+> I come to three conclusions:
 > 
-> We now get RCU_CPU_STALL_INFO whether we want it or not, so this
-> line should be deleted.
-> (RCU_CPU_STALL_INFO is removed in 75c27f119b6475d95374bdad872c6938b5c26196)
+> Where we have:
 > 
-> 3. RCU_NOCB_CPU_ALL
-> Referencing files:
-> Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
+> tracepoint_remove_func()
 > 
-> This is an old snapshot of the code. I update this from the real
-> rcu_prepare_for_idle() function in kernel/rcu/tree_plugin.h.
-> I have invoked "make htmldocs" to ensure the result of above updating.
+>                 tracepoint_update_call(tp, tp_funcs,
+>                                        tp_funcs[0].func != old[0].func);
 > 
-> 4. RCU_TORTURE_TESTS
-> Referencing files: kernel/rcu/rcutorture.c
-> 
-> forward-progress checking conflicts with CPU-stall testing, so we should
-> complain when modprobe the rcutorture.ko if that happens.
-> 
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+> We should be comparing .data rather than .func, because the same callback
+> can be registered twice with different data, and what we care about here
+> is that the data of array element 0 is unchanged to skip rcu sync.
 
-Very good, thank you!  I wordsmithed as following and applied for
-the v5.16 merge window.
+I guess we could do that, as you are right, we are worried about
+passing the wrong data to the wrong function. If the function is the
+same, at least it wont crash the kernel as the function can handle that
+data. But, it could miss the callback that is staying while calling the
+one that is going instead.
 
-							Thanx, Paul
+Unlikely to happen, but in theory it is enough to fix.
 
-------------------------------------------------------------------------
+> 
+> My second conclusion is that it's odd that transition 1->0 leaves the
+> prior function call in place even after it's been removed. When we go
+> back to 0->1, that function call may still be called even though the
+> function is not there anymore. And there is no RCU synchronization on
+> these transitions, so those are all possible scenarios.
 
-commit 32a4be124ed0fe24509544ba165265f33420ee4a
-Author: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Date:   Mon Jul 26 05:43:33 2021 +0800
+How so? When doing this transition we have:
 
-    rcu: Fix undefined Kconfig macros
-    
-    Invoking scripts/checkkconfigsymbols.py in the Linux-kernel source tree
-    located the following issues:
-    
-    1. TREE_PREEMPT_RCU
-    Referencing files: arch/sh/configs/sdk7786_defconfig
-    
-    It should now be CONFIG_PREEMPT_RCU. Except that the CONFIG_PREEMPT=y in
-    that same file implies CONFIG_PREEMPT_RCU=y.  Therefore, delete the
-    CONFIG_TREE_PREEMPT_RCU=y line.
-    
-    The reason is as follows:
-    
-    In kernel/rcu/Kconfig, we have
-    config PREEMPT_RCU
-            bool
-            default y if PREEMPTION
-    
-    https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt says,
-    "The default value is only assigned to the config symbol if no other value
-     was set by the user (via the input prompt above)."
-    there is no prompt in config PREEMPT_RCU entry, so we are guaranteed to
-    get CONFIG_PREEMPT_RCU=y when CONFIG_PREEMPT is present.
-    
-    2. RCU_CPU_STALL_INFO
-    Referencing files: arch/xtensa/configs/nommu_kc705_defconfig
-    
-    The old Kconfig option RCU_CPU_STALL_INFO was removed by commit
-    75c27f119b64 ("rcu: Remove CONFIG_RCU_CPU_STALL_INFO"), and the kernel
-    now acts as if this Kconfig option was unconditionally enabled.
-    
-    3. RCU_NOCB_CPU_ALL
-    Referencing files:
-    Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-    
-    This is an old snapshot of the code. I update this from the real
-    rcu_prepare_for_idle() function in kernel/rcu/tree_plugin.h.
-    This change was tested by invoking "make htmldocs".
-    
-    4. RCU_TORTURE_TESTS
-    Referencing files: kernel/rcu/rcutorture.c
-    
-    Forward-progress checking conflicts with CPU-stall testing, so we should
-    complain at "modprobe rcutorture" when both are enabled.
-    
-    Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+	tracepoint_update_call(tp, tp_funcs, false);
+	rcu_assign_pointer(tp->funcs, tp_funcs);
+	static_key_enable(&tp->key);
 
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-index eeb351296df11..7fdf151a8680a 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -202,49 +202,44 @@ newly arrived RCU callbacks against future grace periods:
-     1 static void rcu_prepare_for_idle(void)
-     2 {
-     3   bool needwake;
--    4   struct rcu_data *rdp;
--    5   struct rcu_dynticks *rdtp = this_cpu_ptr(&rcu_dynticks);
--    6   struct rcu_node *rnp;
--    7   struct rcu_state *rsp;
--    8   int tne;
--    9
--   10   if (IS_ENABLED(CONFIG_RCU_NOCB_CPU_ALL) ||
--   11       rcu_is_nocb_cpu(smp_processor_id()))
--   12     return;
-+    4   struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-+    5   struct rcu_node *rnp;
-+    6   int tne;
-+    7
-+    8   lockdep_assert_irqs_disabled();
-+    9   if (rcu_rdp_is_offloaded(rdp))
-+   10     return;
-+   11
-+   12   /* Handle nohz enablement switches conservatively. */
-    13   tne = READ_ONCE(tick_nohz_active);
--   14   if (tne != rdtp->tick_nohz_enabled_snap) {
--   15     if (rcu_cpu_has_callbacks(NULL))
--   16       invoke_rcu_core();
--   17     rdtp->tick_nohz_enabled_snap = tne;
-+   14   if (tne != rdp->tick_nohz_enabled_snap) {
-+   15     if (!rcu_segcblist_empty(&rdp->cblist))
-+   16       invoke_rcu_core(); /* force nohz to see update. */
-+   17     rdp->tick_nohz_enabled_snap = tne;
-    18     return;
--   19   }
-+   19	}
-    20   if (!tne)
-    21     return;
--   22   if (rdtp->all_lazy &&
--   23       rdtp->nonlazy_posted != rdtp->nonlazy_posted_snap) {
--   24     rdtp->all_lazy = false;
--   25     rdtp->nonlazy_posted_snap = rdtp->nonlazy_posted;
--   26     invoke_rcu_core();
--   27     return;
--   28   }
--   29   if (rdtp->last_accelerate == jiffies)
--   30     return;
--   31   rdtp->last_accelerate = jiffies;
--   32   for_each_rcu_flavor(rsp) {
--   33     rdp = this_cpu_ptr(rsp->rda);
--   34     if (rcu_segcblist_pend_cbs(&rdp->cblist))
--   35       continue;
--   36     rnp = rdp->mynode;
--   37     raw_spin_lock_rcu_node(rnp);
--   38     needwake = rcu_accelerate_cbs(rsp, rnp, rdp);
--   39     raw_spin_unlock_rcu_node(rnp);
--   40     if (needwake)
--   41       rcu_gp_kthread_wake(rsp);
--   42   }
--   43 }
-+   22
-+   23   /*
-+   24    * If we have not yet accelerated this jiffy, accelerate all
-+   25    * callbacks on this CPU.
-+   26   */
-+   27   if (rdp->last_accelerate == jiffies)
-+   28     return;
-+   29   rdp->last_accelerate = jiffies;
-+   30   if (rcu_segcblist_pend_cbs(&rdp->cblist)) {
-+   31     rnp = rdp->mynode;
-+   32     raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
-+   33     needwake = rcu_accelerate_cbs(rnp, rdp);
-+   34     raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
-+   35     if (needwake)
-+   36       rcu_gp_kthread_wake();
-+   37   }
-+   38 }
- 
- But the only part of ``rcu_prepare_for_idle()`` that really matters for
--this discussion are lines 37–39. We will therefore abbreviate this
-+this discussion are lines 32–34. We will therefore abbreviate this
- function as follows:
- 
- .. kernel-figure:: rcu_node-lock.svg
-diff --git a/arch/sh/configs/sdk7786_defconfig b/arch/sh/configs/sdk7786_defconfig
-index f776a1d0d2776..a8662b6927ec7 100644
---- a/arch/sh/configs/sdk7786_defconfig
-+++ b/arch/sh/configs/sdk7786_defconfig
-@@ -5,7 +5,6 @@ CONFIG_BSD_PROCESS_ACCT=y
- CONFIG_BSD_PROCESS_ACCT_V3=y
- CONFIG_AUDIT=y
- CONFIG_AUDITSYSCALL=y
--CONFIG_TREE_PREEMPT_RCU=y
- CONFIG_RCU_TRACE=y
- CONFIG_IKCONFIG=y
- CONFIG_IKCONFIG_PROC=y
-diff --git a/arch/xtensa/configs/nommu_kc705_defconfig b/arch/xtensa/configs/nommu_kc705_defconfig
-index 88b2e222d4bff..fcb620ef37997 100644
---- a/arch/xtensa/configs/nommu_kc705_defconfig
-+++ b/arch/xtensa/configs/nommu_kc705_defconfig
-@@ -119,7 +119,6 @@ CONFIG_DEBUG_SPINLOCK=y
- CONFIG_DEBUG_MUTEXES=y
- CONFIG_DEBUG_ATOMIC_SLEEP=y
- CONFIG_STACKTRACE=y
--# CONFIG_RCU_CPU_STALL_INFO is not set
- CONFIG_RCU_TRACE=y
- # CONFIG_FTRACE is not set
- # CONFIG_LD_NO_RELAX is not set
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index ab4215266ebee..f640cbd9262c0 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -2449,7 +2449,7 @@ static int __init rcu_torture_fwd_prog_init(void)
- 	}
- 	if (stall_cpu > 0) {
- 		VERBOSE_TOROUT_STRING("rcu_torture_fwd_prog_init: Disabled, conflicts with CPU-stall testing");
--		if (IS_MODULE(CONFIG_RCU_TORTURE_TESTS))
-+		if (IS_MODULE(CONFIG_RCU_TORTURE_TEST))
- 			return -EINVAL; /* In module, can fail back to user. */
- 		WARN_ON(1); /* Make sure rcutorture notices conflict. */
- 		return 0;
+Where that tracepoint_update_call() will reinstall the iterator, and
+that's a full memory barrier. It even sends IPIs to all other CPUs to
+make sure all CPUs are synchronized before continuing.
+
+By the time we get to static_key_enable(), there will not be any CPUs
+that see the old function. And the process of updating a static_key
+also does the same kind of synchronization.
+
+> 
+> My third conclusion is that we'd need synchronize RCU whenever tp_funcs[0].data
+> changes for transitions 1->2, 2->1, and 1->2 because the priorities don't guarantee
+> that the first callback stays in the first position, and we also need to rcu sync
+> unconditionally on transition 1->0. We currently only have sync RCU on transition
+> from 2->1 when tp_funcs[0].func changes, which is bogus in many ways.
+
+Going from 1 to 2, there's no issue. We switch to the iterator, which
+is the old method anyway. It looks directly at the array and matches
+the data with the func for each element of that array, and the data
+read initially (before calling the iterator) is ignored.
+
+> 
+> Basically, transitions from the iterator to a specific function should be handled
+> with care (making sure the tp_funcs array is updated and rcu-sync is done), except
+> in the specific case where the prior tp->funcs was NULL, which skips the function
+> call. And unless there is a rcu-sync between the state transitions, we need to consider
+> all prior states as additional original state as well. Therefore, in a 1->0->1
+> transition sequence, it's very much possible that the old function ends up observing
+> the new callback's data unless we add some rcu sync in between.
+
+I disagree with the last part, as I explained above.
+
+But I do agree that comparing data is probably the better check.
+
+-- Steve
+
+> 
+> Thoughts ?
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+
