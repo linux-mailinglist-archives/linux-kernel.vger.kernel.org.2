@@ -2,150 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36F33D6467
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974BD3D6468
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhGZP57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:57:59 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:57273 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237511AbhGZPmA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:42:00 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N9MlI-1l2jt831jY-015EtT; Mon, 26 Jul 2021 18:22:18 +0200
-Received: by mail-wr1-f50.google.com with SMTP id p5so6681919wro.7;
-        Mon, 26 Jul 2021 09:22:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533VQV99cc+dxxLIjJxZGXNngbz3hCJjNiuXNSOrkmHkz5bTC4gJ
-        4DCqCyJ5F6ho0TLxzQQUzh3DNN+3SGrtNWwSFK0=
-X-Google-Smtp-Source: ABdhPJye/ed6/FsM5yNUWTWtPJo/Xm2xrm3gGSltDPBIF+Kg8Q/ZjELHmN1WQSWO+r1dLUQThBaEPvfiDXicJHijpKc=
-X-Received: by 2002:adf:e107:: with SMTP id t7mr20157064wrz.165.1627316538300;
- Mon, 26 Jul 2021 09:22:18 -0700 (PDT)
+        id S239773AbhGZP6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:58:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:54952 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237333AbhGZPmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:42:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE4D51042;
+        Mon, 26 Jul 2021 09:22:39 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2938A3F66F;
+        Mon, 26 Jul 2021 09:22:38 -0700 (PDT)
+Date:   Mon, 26 Jul 2021 17:22:35 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rickyiu@google.com, wvw@google.com,
+        patrick.bellasi@matbug.net, xuewen.yan94@gmail.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Morten Rasmussen <morten.rasmussen@arm.com>
+Subject: Re: [PATCH v3 3/3] sched: Introduce RLIMIT_UCLAMP
+Message-ID: <20210726162235.5x6prj2jlj2wmdig@e107158-lin.cambridge.arm.com>
+References: <20210623123441.592348-1-qperret@google.com>
+ <20210623123441.592348-4-qperret@google.com>
+ <20210701105014.ewrg4nt5sn3eg57o@e107158-lin.cambridge.arm.com>
+ <YN2vj8OeZI7PBdzU@google.com>
+ <20210701175248.qxnoo6cu7ts2dpys@e107158-lin.cambridge.arm.com>
+ <YN8GaVjWXJp5IL06@google.com>
+ <20210708113602.sjb4krzvs7xjmtt4@e107158-lin.cambridge.arm.com>
+ <YPVltxfROeSYuahM@google.com>
 MIME-Version: 1.0
-References: <20210724162429.394792-1-sven@narfation.org> <YPxHYW/HPI/LLMXx@zeniv-ca.linux.org.uk>
- <CAK8P3a2MVQMFFBUzudy+yrcp4Md8mm=NcvX7YzGVz4C8W61sgQ@mail.gmail.com> <3234493.RMHOAZ7QyG@ripper>
-In-Reply-To: <3234493.RMHOAZ7QyG@ripper>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 26 Jul 2021 18:22:02 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a35PNhsMQNU11RCaKm-o3-oG8pOXG836aoubxQMpTyVNQ@mail.gmail.com>
-Message-ID: <CAK8P3a35PNhsMQNU11RCaKm-o3-oG8pOXG836aoubxQMpTyVNQ@mail.gmail.com>
-Subject: Re: [PATCH] asm-generic: avoid sparse {get,put}_unaligned warning
-To:     Sven Eckelmann <sven@narfation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
-        b.a.t.m.a.n@lists.open-mesh.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VvZ46d4HcbQ9Yh9Wr5KJMJAA4QGmLQUzmw70t+kcPBYI7iDts0y
- JcuvTpoimJpWvw1X2jgnk/cJlJnK/oj8KBFj/fEohjsDbmt7BBFPFuK9K0D+3Hs47W4f9Ut
- 1goQ3FsZhIEbYaicnKjucgcLS/Z5yvmluJP6Yz44n+1pylkq151u36+7Wojy4ekcS+6ein2
- N4hg6Maf5n3XQbkC6pqQg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UKpcsJUq4AU=:euwYip+Am0oMSvCjo6DqXU
- Igr9R25Zgk7EqGMu/+p7xf/Q29Ks7ZAthvrJhLt9uQ3Rt76Gt6IPRE/3YbptYeP5+vkaAYkVH
- nhAD6fKFUQ/vuxZZhXw2OHC3y2aQaEgTigXUzoPm5whAtNe57pMwT1BYF6DsPi/+82osTklkM
- oaLIg7fG2U70nv7c3cSWYi2pAKlkEWmGQp0x+/hv9tIkt7hqr0XL8lTgrGbrMJfkXPIhlk6sy
- C3OSMxx2QwohU7hEnTb+mfAXGoXDZ/cjrKplAg5JBf0m/UzAoaKg1QdwDITnNjcPnI9bhS4HY
- KP5i+uE3E0jL0mpFKZD/tT1FvfhMdb3RQ13mbqwU6NRtQ6R5ohotwnN8UWx/o/Zv3yNCU4QV4
- s7CnjkO3b/P3SOCXczn1hV2/fgiXneN3JO1CRgroA+xKkQhQ31HsOcH1viqeS4y6j1jqdLdHy
- 1qJ0Z4Me+a4M97/t+wtRnGkCvMneeuIwABAz9l+/zPbLlyK3GpUdZMvGlL+Y1IuHWds9NpPnP
- oFDfJNdKxL40ew1O0AIV5/RkIgGY4ayjLoCfzL4Hn/Z/fGfhL7nKSgc2zFcwuOvwjBKsBsnk0
- A08lCrlKWGemysbqWTPBSOt+CLFJgUIQXrlqAgHTrrRWTplTPoHKUsfo2xV5HfTMkvYKKTDEO
- Vm+boK7/E5jODDubIqGst1IpgUEiF3NZSjTGEciYo3kE8WV2WFYFzMvmmPeIIrKwvD9PlWAVp
- utyFjS5YSBGYWjYNppy3bdRfhDpNekJu7aF1MKZPyBtTx/Y2d76cnN5DsmAdI8G46cKU2D8f7
- mWiFg3o92haUB+8oaiYYynAk6jqH834cjO3sldD0PmEd3jjM/OV/txfDCv0batLOejDIFZz
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YPVltxfROeSYuahM@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 5:04 PM Sven Eckelmann <sven@narfation.org> wrote:
->
-> On Monday, 26 July 2021 14:57:31 CEST Arnd Bergmann wrote:
-> > >
-> > > > The special attribute force must be used in such statements when the cast
-> > > > is known to be safe to avoid these warnings.
+Hey Quentin
+
+On 07/19/21 12:44, Quentin Perret wrote:
+> Hi Qais,
+> 
+> On Thursday 08 Jul 2021 at 12:36:02 (+0100), Qais Yousef wrote:
+> > Hi Quentin
+> > 
+> > Apologies about the delayed response.
+> 
+> It's my turn to apologize -- the last few days have been a pretty busy :/
+> 
+> > After I replied to most of your email I discovered the cause of the confusion,
+> > but left my reply intact. So please read till the end before you reply ;-)
+> > 
+> > On 07/02/21 12:28, Quentin Perret wrote:
+> > > > There are several thoughts actually. A bit hard to articulate at this time of
+> > > > day, but let me try.
+> > > > 
+> > > > /proc/sys/kernel/sched_util_clamp_min/max are system wide limits. RLIMIT_UCLAMP
+> > > > seems to want to mimic it, so it makes sense for both to behave similarly.
+> > > > Preventing task from requesting a boost (raising UCLAMP_MIN) is different from
+> > > > preventing a task going above performance point (raising UCLAMP_MAX).
+> > > 
+> > > I don't really see why -- as you've already explained tasks can just
+> > > busy loop to inflate their util values. So limiting the min clamp of
+> > > task alone will never be an effective mechanism to limit how much
+> > > capacity a task can ask for.
+> > 
+> > It's about what the API means and how ultimately the end user should be use and
+> > benefit from it. I don't think we're on the same page here. Let me try to
+> > explain better (hopefully) :)
+> > 
+> > The system wide controls already split the uclamp min and uclamp max. Each
+> > request delivers a different meaning is what I'm saying. So lumping them under
+> > one control needs at least more explanation of what is the big picture behind
+> > it to warrant contradicting how the system wide limits already behave. And what
+> > this single system knob means from user perspective; outside your specific use
+> > case.
+> > 
+> > For instance, why this scenario is not allowed?
+> > 
+> > 	RLIMIT_UCLAMP_MIN = 200
+> > 	RLIMIT_UCLAMP_MAX = 1024
+> > 
+> > 	This task can boost itself up to 200 then must 'suffer' DVFS/migration
+> > 	delays to reach maximum performance point.
+> 
+> I just don't see how this would help at all. IMO the rlimit stuff is
+> only useful to allow root to limit how much a task can ask for itself,
+> and it doesn't really matter if the task inflates its request via
+> uclamp.min, or by increasing it's uclamp.max and spinning on the CPU.
+> That is, I just can't imagine how having different values for
+> RLIMIT_UCLAMP_MIN and RLIMIT_UCLAMP_MAX would be useful in practice.
+
+The way I see it is that we already have a sysctl that behaves like a limit for
+UCLAMP_MIN and UCLAMP_MAX. The above scenario is something you can do with the
+global sysctl. So you think system wide sysctl should be a single limit too
+then?
+
+> 
+> > Which is basically what you can do with the sysctl_sched_util_clamp_min/max but
+> > they apply globally (and impact the effective uclamp value).
+> > 
+> > It's a valid way to control resource requests. Uclamp doesn't guarantee any
+> > allocations anyway; it's just a hint that hopefully will work most of the time
+> > and will be limited by thermal issues or oversubscribed system type of
+> > problems.
+> > 
+> > A more realistic use case would be
+> > 
+> > 	RLIMIT_UCLAMP_MIN = 0
+> > 	RLIMIT_UCLAMP_MAX = 512
 > >
-> > I can see why this would warn, but I'm having trouble reproducing the
-> > warning on linux-next.
->
-> I have sparse 0.6.3 on an Debian bullseye amd64 system. Sources are from
-> linux-next next-20210723
->
->     make allnoconfig
->     cat >> .config << "EOF"
->     CONFIG_NET=y
->     CONFIG_INET=y
->     CONFIG_BATMAN_ADV=y
->     CONFIG_BATMAN_ADV_DAT=y
->     EOF
->     make olddefconfig
->     make CHECK="sparse -Wbitwise-pointer" C=1
->
-> I should maybe have made this clearer in the last sentence of the first
-> paragraph: "This is also true for pointers to variables with this type when
-> -Wbitwise-pointer is activated."
+> > So a task can't boost itself but allowed to run at half the system performance
+> > point if it becomes busy.
+> 
+> That's not really what this would mean. What the above means is that a
+> task is allowed to override the uclamp max set by root as long as it
+> stays below 512. The actual uclamp.max set by root could be different
+> from 512.
+> 
+> And IMO the only realistic configurations would be either
+> 
+>  	RLIMIT_UCLAMP_MIN = 0
+>  	RLIMIT_UCLAMP_MAX = 0
+> 
+> which means that tasks can never increase their clamps, root decides
+> their importance, but they're free to opt out.
+> 
+> Or:
+> 
+>  	RLIMIT_UCLAMP_MIN = 512
+>  	RLIMIT_UCLAMP_MAX = 512
+> 
+> Which means that root allows this task to ask for anything in the 0-512
+> range. The use case I'd see for this is: root sets the uclamp.max of the
+> task to 512 and the rlimit to the same value. With that root is
+> guaranteed that the clamped util of the task will never exceed 512. The
+> task can do whatever it wants in that range (spin on the CPU or boost
+> itself via uclamp min) it doesn't matter: it can't escape the limit.
+> 
+> This is what I feel is the use for the rlimit stuff: it allows root to
+> put restrictions, and to have guarantees about those restrictions
+> being respected. So, I don't see how separate rlimits for uclamp min
+> and max would help really.
 
-Ok, got it. I assumed this would be turned on by an 'allmodconfig' build.
+Fair enough. I still can't see why system wide can set these limits separately
+but not rlimit though. The rlimit just applies them to a specifc task(s) rather
+than every task on the system. I appreciate the way you envisage it to work,
+but what I can't connect it is why it's fine for system wide uclamp limits but
+not for the per-task rlimits?
 
-> > If both work equally well, I'd prefer Sven's patch since that only
-> > expands 'type' once, while container_of() expands it three more times
+> 
+> > Which effectively will prevent short bursty tasks
+> > from achieving high performance points, but allow long running ones to achieve
+> > higher performance points to meet their demand and would be capped at 512.
+> 
+> I doubt anybody could make use of this TBH. I can imaging the framework
+> saying "I don't want this task to ask for more than X of capacity", but I
+> can't really see how it could reason about allowing long running tasks
+> but not short ones, or anything like that...
 
-Not sure what I was thinking here, as it's not 'type' that gets expanded
-here but 'ptr'. We could do Al's suggestion to avoid the __force without
-multiple expansions, using
+This for me is an argument against RLIMIT, or the current design of the system
+wide uclamp limits.
 
-diff --git a/include/asm-generic/unaligned.h b/include/asm-generic/unaligned.h
-index 1c4242416c9f..d138dc5fd8e3 100644
---- a/include/asm-generic/unaligned.h
-+++ b/include/asm-generic/unaligned.h
-@@ -10,17 +10,25 @@
- #include <asm/byteorder.h>
+Ultimately this interface tries to regulate an application that tries to use
+uclamp to boost/cap some tasks but there's a system wide framework that tries
+to regulate these tasks too. The application can certainly reason about long
+running vs short running tasks. The framework can reason on what is allowed to
+be achieved by this app via uclamp. That's the way I see it at least :)
 
- #define __get_unaligned_t(type, ptr) ({
-                 \
--       const struct { type x; } __packed *__pptr =
-(typeof(__pptr))(ptr);      \
-+       const struct { type x; } __packed *__pptr =
-         \
-+                               container_of(ptr, typeof(*__pptr), x);
-         \
-        __pptr->x;
-         \
- })
+[...]
 
- #define __put_unaligned_t(type, val, ptr) do {
-         \
--       struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);
-         \
-+       struct { type x; } __packed *__pptr =
-         \
-+                               container_of(ptr, typeof(*__pptr), x);
-         \
-        __pptr->x = (val);
-         \
- } while (0)
+> Alright, I feel like this rlimit stuff is going to need a bit more
+> discussion, so I'll re-post patches 01 and and 02 separately as they're
+> really just fixes, and we can continue bike-shedding on this one in the
+> meantime :)
 
--#define get_unaligned(ptr)     __get_unaligned_t(typeof(*(ptr)), (ptr))
--#define put_unaligned(val, ptr) __put_unaligned_t(typeof(*(ptr)), (val), (ptr))
-+#define get_unaligned(ptr)     ({
-         \
-+       __auto_type _ptr = (ptr);
-         \
-+       __get_unaligned_t(typeof(*(_ptr)), (_ptr));
-         \
-+})
-+#define put_unaligned(val, ptr)        ({
-                 \
-+       __auto_type _ptr = (ptr);
-         \
-+       __put_unaligned_t(typeof(*(_ptr)), (val), (_ptr));
-         \
-+})
+:)
 
- static inline u16 get_unaligned_le16(const void *p)
- {
+I'm sorry if I'm being painful, but I honestly just think the story lacks
+clarity still. I am working on a uclamp doc and explaining what the current
+interfaces are and how they are related to each others and how they should be
+used and what they mean is hard enough. When I think of where this RLIMIT sits
+in the story; especially it massively resembles how the system wide uclamp
+sysctl behave, my mind keeps tripping over..
 
-Not sure if this is any better.
+The most coherent story IMHO is to always have UCLAMP_MIN and UCLAMP_MAX and
+always make UCLAMP_MIN behave as a protection and UCLAMP_MAX as a limit. Then
+we'd have a very consistent story across all layers of control. It would just
+mean we'd need to change how the system wide UCLAMP_MIN behaves, which could be
+an ABI problem.
 
-        Arnd
+If we go down this route, I would see the RLIMIT then directly impacting the
+effective uclamp value of the task rather than cause -EPERM. The same way the
+rest of the layers work. ie: we'll have the following hierarchy to get the
+effective uclamp of a task
+
+	per-task request -> rlimit -> cgroup -> system
+
+Would be good to hear what others have to say.
+
+Cheers
+
+--
+Qais Yousef
