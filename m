@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647B93D55F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9F73D55F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 10:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbhGZIPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 04:15:41 -0400
-Received: from mout.gmx.net ([212.227.15.19]:52713 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhGZIPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231844AbhGZIPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Jul 2021 04:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1627289727;
-        bh=WkWs2yjbuB7rMLWgvsxBc4/Z976NwWWIEDiSOgTN55I=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=E7jOP/dwH1+3UHoNaSbTx2XDQRxAN5F8L7jEpZmRIgESVf9ne0KM7xfW0ObhH8vkT
-         ABXz8dsUiPiO1dwu3MUYUkMNesxVe0Yk5ji3YVzpNZGn/BfZ3uPtXbOes3Ed2hx1cN
-         YAlh6MXWhHfFt0OlfJQAeFIRfElfQswmhjdssuBY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.59] ([92.116.128.43]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MHG8g-1lugpy469A-00DFk8; Mon, 26
- Jul 2021 10:55:27 +0200
-Subject: Re: [PATCH v3 9/9] asm-generic: reverse
- GENERIC_{STRNCPY_FROM,STRNLEN}_USER symbols
-To:     Arnd Bergmann <arnd@kernel.org>, linux-arch@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Brian Cain <bcain@codeaurora.org>,
-        Chris Zankel <chris@zankel.net>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christoph Hellwig <hch@lst.de>, Guo Ren <guoren@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michal Simek <monstr@monstr.eu>,
-        Richard Weinberger <richard@nod.at>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        uclinux-h8-devel@lists.sourceforge.jp
-References: <20210722124814.778059-1-arnd@kernel.org>
- <20210722124814.778059-10-arnd@kernel.org>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <b89d9932-7498-edd2-0369-227ce17bcba6@gmx.de>
-Date:   Mon, 26 Jul 2021 10:55:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232038AbhGZIPg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 04:15:36 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7AF4C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 01:56:04 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id f12so10463643ljn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 01:56:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vfGOANo6TojxjSyUtBk+c/yyOvQBgYLoVpO4rN8lOu8=;
+        b=Wo+D0NDi9dCxo6BkePhL3/dXKXwvkD2kVC2GJFC2gJSO3EZLYYYxJQkokJCoepYYXN
+         zKDrD9uf5JXkZU5sUlphcVcLPYw2DbuALfhCpYCr16P0sLCoBjVnmpJ4+bkbbZsY+6Ae
+         aePG/1QMSSWkKXv1jQoz27Sw0QoS12K/1w8X0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vfGOANo6TojxjSyUtBk+c/yyOvQBgYLoVpO4rN8lOu8=;
+        b=OGLjotpWCeC6E2UqZzESVb/WJbpNJEnCP4nO3piWuzoQjHRyNPYjYKfcS+WWysxa0k
+         nr6DmG6uP8bAGK+/bmAsuJOGSZGPzbFPe49LBicpk5S9DEIkSkUttEiJjgDKEYgPoeRn
+         lEeojiBo7isgUNpIaxZwaUnxzQNpqV/i1xtgIE8GmndppEYiG/ChlxvOE4UlI00yCCHA
+         AvSvk24CmpQZachMn1Ox8VD8w1opyZ17pIvH6mOwlDyR9VI4zHiP7L/JdN4I+BUVP8sM
+         lo9RNEitU5IWwvPjqI2Qn0e+uuL+2Lie765DgtqolxB0NzFJ1dmoCmecfWySIH1/rNJz
+         qDHQ==
+X-Gm-Message-State: AOAM5308+TPIDNNoTzh5uGH/OgtvluZPXe19AiNxTzZq1CMCCQHXArke
+        iIErSz2CcCbi02kwwrb37Ezl/DQzUGg/ge+mXuj1SQ==
+X-Google-Smtp-Source: ABdhPJw67P1wau80aeqooMy907ZYAzpnAEddZ9DMaEPCUCA9XANLeDaDFjZlvhvqn/e4V3NvNlGzJuK3q9X0z2yIpCo=
+X-Received: by 2002:a2e:a417:: with SMTP id p23mr7799929ljn.23.1627289763011;
+ Mon, 26 Jul 2021 01:56:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210722124814.778059-10-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kdIeDnlaRuH2T6rYGVMcZI1y8GGtOS/nCSrzGPNZ3OUQY5MU47B
- 5CBoPs+/Yybus1lp3BFr1TFHG7JdG2o5Hk/+MOXzTPoZvzj/YZ/cz0YWZjRIVcPlnwe88YM
- WDlT2nlwI7uszkXCcyqKqCixlXZhA3YZdT580q2WrQJMaYRDbQNCq2HCRZf0EsBm4LR75i3
- BHhYUoKB70JevsBXEfP+w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t7OOfsjhfdM=:cPmtJv3NWFJm9d/RuoNb+/
- Ou4Bbj6nA8Q23PNuEt+UCFyyraXkWNdlDMwrkBg6/uFHrFY5gewiHslDKOPvwvPZ4QoBcNuDT
- 8bh8p1CqRqBNHsASvkEW+aJWm7j9TC8kTFOu4TqiRXvTqGCDIZxCBbYk3f4lF/KmzuVlpr0Du
- E6C7Nzp0ITty3fkhOUAZ7wUXr3fIAjaxGFOEos4Wax/D/96hS2a6wrxxpOtPW0jHf8YZSnTSW
- +ywaHc1qBSckC2nArgXnml3LmH/tsv8FS8c8fz5NB7haNTuVB2mlV0T1Vj4jUSZlFG40Gwuh+
- Qrs/0c1D57oh8kEVO16Yxgp9ls6PVKeBRbaiSNH6omxp9zKHT1mUSR523x7yUMgOqnIwFCvQm
- Me+mKB5Jup/it+POvsUV+NExWuf1EU1Q6I3aIWzXucxBkrfZ8sNKgj9/ZrGi4s5deIMCkm4jD
- WaWwGwylSRBIWBpcPDH0v0u+AcyK6mHWrvLsuJgLfVQZ5MtFihjQ7IUGh9k2b0pB61aSNX6Ja
- aUKIE1tfVrDqxg6QPCBlKIYbOglFx3Of70KtfGF8Y17PfXUSYPqmIeU6f6rsvThB99NrFTtHg
- UuNp7rNTATgACIDJvcPung6RI/RTVo7xMb5KnslJrTw9tyOlK9c2QiI4u0GzBTGGhI8sB+xEQ
- jccA0NGTg7ONUDj1qS8/RGqjPZqiAucjd60cgrD9OBfKsNeFwDYDDjlfg22beeNTYtcRRGsU/
- cwWoNxvInEN7Q5ES0wOBjYvb7zo04AJRFD5+mjf/YJhtmoSZpHSjHRKmLuE8O3jTocx33DzoS
- l3W3ypaoWe9H/E/AKrwcePngCJNADVH5MLl1qd1trF5lrhH1mRqrIzmYoSrFiehrBph0pN1BH
- etTVyfghR0rL7vavgTnKsreSpMyl3W3flVYYrL1VFrOZOaFlu4o/STXYiDOLTuais8R4uHZ9m
- rx7BDIdUVUu2cfGdCxzn72+/DIL+wTIkX3hYLkdhLbb0ILsnNCRr3C7E2s1DdY1NyblFsxj3/
- LgqPcJqCPQLSSnri/QeHDporOJ+A2BTzG1/uoMuWJameE3z/JlSz+68zDXDri1c2g98Ia8/zM
- mym0OeKhYLafNgyhfcmFszob94nhnmC8BqG
+References: <20210726050831.1917982-1-hsinyi@chromium.org>
+In-Reply-To: <20210726050831.1917982-1-hsinyi@chromium.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 26 Jul 2021 16:55:52 +0800
+Message-ID: <CAGXv+5FmKHft-s9u_G0aEXuK2x5p1+unC-35ksaS_D=52JRkYA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8183: kukui: Use aliases to mmc nodes
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/21 2:48 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Jul 26, 2021 at 1:09 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
 >
-> Most architectures do not need a custom implementation, and in most
-> cases the generic implementation is preferred, so change the polariy
-> on these Kconfig symbols to require architectures to select them when
-> they provide their own version.
+> Use aliases to mmc nodes so the partition name for eMMC and SD card will
+> be consistent across boots.
 >
-> The new name is CONFIG_ARCH_HAS_{STRNCPY_FROM,STRNLEN}_USER.
->
-> The remaining architectures at the moment are: ia64, mips, parisc,
-> s390, um and xtensa. We should probably convert these as well, but
-> I was not sure how far to take this series.
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
-
-Thanks!
-Helge
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
