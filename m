@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66AD3D6337
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405823D633B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239284AbhGZPpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:45:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
+        id S239315AbhGZPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:45:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231620AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231575AbhGZP2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Jul 2021 11:28:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9F6B60F6E;
-        Mon, 26 Jul 2021 16:06:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B3A460FEA;
+        Mon, 26 Jul 2021 16:06:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627315615;
-        bh=LfAaX+L4EcJGNB0FEX17bSKQBs7nzJm/33fATbHoS9I=;
+        s=korg; t=1627315618;
+        bh=LThMCVmjyGnMXIiAlgGSBfTMcQBMbwOiWV4OqVS0TNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=voh77doNgU7hdNKVHb1EZEuSSPdkTvgqdsRxrVZZgnNvA51jCF840dxBOVMAubRfA
-         DvmABsAaXRwvAX83tdb/EamWxKjxRQBpYaPYV7BXijLJOsFE2b0Ao0RDin8744+C/o
-         iCsYVmLw8T6SXijnXx5kAyrhugYP3X7g7As5w1pU=
+        b=QS/FOTn5OkUpXp4HeYqFLL8C2y6Nez/LAMySy4one10YPrWPaaHJzN2KYWqG+B/3r
+         v5yXJ0h6z0FLoZdGm4oPekQmsrehn5mSMKO2G2+VHZYpX+kBDtnR/97zYtNC/a+L3j
+         3WgU5mXBu9j61jhk/O0MkciEVWva7OvKeE/TOGUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 166/167] sfc: ensure correct number of XDP queues
-Date:   Mon, 26 Jul 2021 17:39:59 +0200
-Message-Id: <20210726153844.982495204@linuxfoundation.org>
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Carsten Schmid <carsten_schmid@mentor.com>
+Subject: [PATCH 5.10 167/167] xhci: add xhci_get_virt_ep() helper
+Date:   Mon, 26 Jul 2021 17:40:00 +0200
+Message-Id: <20210726153845.014643770@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
 References: <20210726153839.371771838@linuxfoundation.org>
@@ -41,79 +40,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Íñigo Huguet <ihuguet@redhat.com>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-[ Upstream commit 788bc000d4c2f25232db19ab3a0add0ba4e27671 ]
+[commit b1adc42d440df3233255e313a45ab7e9b2b74096 upstream]
 
-Commit 99ba0ea616aa ("sfc: adjust efx->xdp_tx_queue_count with the real
-number of initialized queues") intended to fix a problem caused by a
-round up when calculating the number of XDP channels and queues.
-However, this was not the real problem. The real problem was that the
-number of XDP TX queues had been reduced to half in
-commit e26ca4b53582 ("sfc: reduce the number of requested xdp ev queues"),
-but the variable xdp_tx_queue_count had remained the same.
+In several event handlers we need to find the right endpoint
+structure from slot_id and ep_index in the event.
 
-Once the correct number of XDP TX queues is created again in the
-previous patch of this series, this also can be reverted since the error
-doesn't actually exist.
+Add a helper for this, check that slot_id and ep_index are valid.
 
-Only in the case that there is a bug in the code we can have different
-values in xdp_queue_number and efx->xdp_tx_queue_count. Because of this,
-and per Edward Cree's suggestion, I add instead a WARN_ON to catch if it
-happens again in the future.
-
-Note that the number of allocated queues can be higher than the number
-of used ones due to the round up, as explained in the existing comment
-in the code. That's why we also have to stop increasing xdp_queue_number
-beyond efx->xdp_tx_queue_count.
-
-Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210129130044.206855-6-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Carsten Schmid <carsten_schmid@mentor.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/sfc/efx_channels.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/usb/host/xhci-ring.c |   58 +++++++++++++++++++++++++++++++++----------
+ drivers/usb/host/xhci.h      |    3 +-
+ 2 files changed, 47 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
-index a4a626e9cd9a..0a8799a208cf 100644
---- a/drivers/net/ethernet/sfc/efx_channels.c
-+++ b/drivers/net/ethernet/sfc/efx_channels.c
-@@ -889,18 +889,20 @@ int efx_set_channels(struct efx_nic *efx)
- 			if (efx_channel_is_xdp_tx(channel)) {
- 				efx_for_each_channel_tx_queue(tx_queue, channel) {
- 					tx_queue->queue = next_queue++;
--					netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is XDP %u, HW %u\n",
--						  channel->channel, tx_queue->label,
--						  xdp_queue_number, tx_queue->queue);
-+
- 					/* We may have a few left-over XDP TX
- 					 * queues owing to xdp_tx_queue_count
- 					 * not dividing evenly by EFX_MAX_TXQ_PER_CHANNEL.
- 					 * We still allocate and probe those
- 					 * TXQs, but never use them.
- 					 */
--					if (xdp_queue_number < efx->xdp_tx_queue_count)
-+					if (xdp_queue_number < efx->xdp_tx_queue_count) {
-+						netif_dbg(efx, drv, efx->net_dev, "Channel %u TXQ %u is XDP %u, HW %u\n",
-+							  channel->channel, tx_queue->label,
-+							  xdp_queue_number, tx_queue->queue);
- 						efx->xdp_tx_queues[xdp_queue_number] = tx_queue;
--					xdp_queue_number++;
-+						xdp_queue_number++;
-+					}
- 				}
- 			} else {
- 				efx_for_each_channel_tx_queue(tx_queue, channel) {
-@@ -912,6 +914,7 @@ int efx_set_channels(struct efx_nic *efx)
- 			}
- 		}
- 	}
-+	WARN_ON(xdp_queue_number != efx->xdp_tx_queue_count);
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -446,6 +446,26 @@ void xhci_ring_doorbell_for_active_rings
+ 	ring_doorbell_for_active_rings(xhci, slot_id, ep_index);
+ }
  
- 	rc = netif_set_real_num_tx_queues(efx->net_dev, efx->n_tx_channels);
- 	if (rc)
--- 
-2.30.2
-
++static struct xhci_virt_ep *xhci_get_virt_ep(struct xhci_hcd *xhci,
++					     unsigned int slot_id,
++					     unsigned int ep_index)
++{
++	if (slot_id == 0 || slot_id >= MAX_HC_SLOTS) {
++		xhci_warn(xhci, "Invalid slot_id %u\n", slot_id);
++		return NULL;
++	}
++	if (ep_index >= EP_CTX_PER_DEV) {
++		xhci_warn(xhci, "Invalid endpoint index %u\n", ep_index);
++		return NULL;
++	}
++	if (!xhci->devs[slot_id]) {
++		xhci_warn(xhci, "No xhci virt device for slot_id %u\n", slot_id);
++		return NULL;
++	}
++
++	return &xhci->devs[slot_id]->eps[ep_index];
++}
++
+ /* Get the right ring for the given slot_id, ep_index and stream_id.
+  * If the endpoint supports streams, boundary check the URB's stream ID.
+  * If the endpoint doesn't support streams, return the singular endpoint ring.
+@@ -456,7 +476,10 @@ struct xhci_ring *xhci_triad_to_transfer
+ {
+ 	struct xhci_virt_ep *ep;
+ 
+-	ep = &xhci->devs[slot_id]->eps[ep_index];
++	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
++	if (!ep)
++		return NULL;
++
+ 	/* Common case: no streams */
+ 	if (!(ep->ep_state & EP_HAS_STREAMS))
+ 		return ep->ring;
+@@ -747,11 +770,14 @@ static void xhci_handle_cmd_stop_ep(stru
+ 	memset(&deq_state, 0, sizeof(deq_state));
+ 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
+ 
++	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
++	if (!ep)
++		return;
++
+ 	vdev = xhci->devs[slot_id];
+ 	ep_ctx = xhci_get_ep_ctx(xhci, vdev->out_ctx, ep_index);
+ 	trace_xhci_handle_cmd_stop_ep(ep_ctx);
+ 
+-	ep = &xhci->devs[slot_id]->eps[ep_index];
+ 	last_unlinked_td = list_last_entry(&ep->cancelled_td_list,
+ 			struct xhci_td, cancelled_td_list);
+ 
+@@ -1076,9 +1102,11 @@ static void xhci_handle_cmd_set_deq(stru
+ 
+ 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
+ 	stream_id = TRB_TO_STREAM_ID(le32_to_cpu(trb->generic.field[2]));
+-	dev = xhci->devs[slot_id];
+-	ep = &dev->eps[ep_index];
++	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
++	if (!ep)
++		return;
+ 
++	dev = xhci->devs[slot_id];
+ 	ep_ring = xhci_stream_id_to_ring(dev, ep_index, stream_id);
+ 	if (!ep_ring) {
+ 		xhci_warn(xhci, "WARN Set TR deq ptr command for freed stream ID %u\n",
+@@ -1151,9 +1179,9 @@ static void xhci_handle_cmd_set_deq(stru
+ 	}
+ 
+ cleanup:
+-	dev->eps[ep_index].ep_state &= ~SET_DEQ_PENDING;
+-	dev->eps[ep_index].queued_deq_seg = NULL;
+-	dev->eps[ep_index].queued_deq_ptr = NULL;
++	ep->ep_state &= ~SET_DEQ_PENDING;
++	ep->queued_deq_seg = NULL;
++	ep->queued_deq_ptr = NULL;
+ 	/* Restart any rings with pending URBs */
+ 	ring_doorbell_for_active_rings(xhci, slot_id, ep_index);
+ }
+@@ -1162,10 +1190,15 @@ static void xhci_handle_cmd_reset_ep(str
+ 		union xhci_trb *trb, u32 cmd_comp_code)
+ {
+ 	struct xhci_virt_device *vdev;
++	struct xhci_virt_ep *ep;
+ 	struct xhci_ep_ctx *ep_ctx;
+ 	unsigned int ep_index;
+ 
+ 	ep_index = TRB_TO_EP_INDEX(le32_to_cpu(trb->generic.field[3]));
++	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
++	if (!ep)
++		return;
++
+ 	vdev = xhci->devs[slot_id];
+ 	ep_ctx = xhci_get_ep_ctx(xhci, vdev->out_ctx, ep_index);
+ 	trace_xhci_handle_cmd_reset_ep(ep_ctx);
+@@ -1195,7 +1228,7 @@ static void xhci_handle_cmd_reset_ep(str
+ 		xhci_ring_cmd_db(xhci);
+ 	} else {
+ 		/* Clear our internal halted state */
+-		xhci->devs[slot_id]->eps[ep_index].ep_state &= ~EP_HALTED;
++		ep->ep_state &= ~EP_HALTED;
+ 	}
+ 
+ 	/* if this was a soft reset, then restart */
+@@ -2364,14 +2397,13 @@ static int handle_tx_event(struct xhci_h
+ 	trb_comp_code = GET_COMP_CODE(le32_to_cpu(event->transfer_len));
+ 	ep_trb_dma = le64_to_cpu(event->buffer);
+ 
+-	xdev = xhci->devs[slot_id];
+-	if (!xdev) {
+-		xhci_err(xhci, "ERROR Transfer event pointed to bad slot %u\n",
+-			 slot_id);
++	ep = xhci_get_virt_ep(xhci, slot_id, ep_index);
++	if (!ep) {
++		xhci_err(xhci, "ERROR Invalid Transfer event\n");
+ 		goto err_out;
+ 	}
+ 
+-	ep = &xdev->eps[ep_index];
++	xdev = xhci->devs[slot_id];
+ 	ep_ring = xhci_dma_to_transfer_ring(ep, ep_trb_dma);
+ 	ep_ctx = xhci_get_ep_ctx(xhci, xdev->out_ctx, ep_index);
+ 
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -993,6 +993,7 @@ struct xhci_interval_bw_table {
+ 	unsigned int		ss_bw_out;
+ };
+ 
++#define EP_CTX_PER_DEV		31
+ 
+ struct xhci_virt_device {
+ 	struct usb_device		*udev;
+@@ -1007,7 +1008,7 @@ struct xhci_virt_device {
+ 	struct xhci_container_ctx       *out_ctx;
+ 	/* Used for addressing devices and configuration changes */
+ 	struct xhci_container_ctx       *in_ctx;
+-	struct xhci_virt_ep		eps[31];
++	struct xhci_virt_ep		eps[EP_CTX_PER_DEV];
+ 	u8				fake_port;
+ 	u8				real_port;
+ 	struct xhci_interval_bw_table	*bw_table;
 
 
