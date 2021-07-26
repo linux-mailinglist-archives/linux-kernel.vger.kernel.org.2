@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279FC3D6059
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1833D62E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Jul 2021 18:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237232AbhGZPVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 11:21:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53092 "EHLO mail.kernel.org"
+        id S238138AbhGZPkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 11:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236811AbhGZPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 11:15:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C946B60FE4;
-        Mon, 26 Jul 2021 15:53:42 +0000 (UTC)
+        id S237484AbhGZPXJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 11:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 578CF60240;
+        Mon, 26 Jul 2021 16:03:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627314823;
-        bh=g7oOJN4Q1fFvPoANn3mk9svrObx7StiK62cZ4DgH4rY=;
+        s=korg; t=1627315417;
+        bh=/8Wx9N5fo692tISUi5J6zaIzXfl5biye7vAxO06POj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uBDk7eqYE81+vDLPXtw/7ENIFd/dOjvYERkGWUQgxU2Ek9ZuyaM15UWoNLr1HMVZX
-         tRrU84FSurAw2HNQiq4ELZoNLSQ8NtrXqrK2/VMF7fRiIkjEcYyZQqAgjTwXTgPy5Y
-         v2TuK9nfpd9H64EVmkQEja2h8iNbj9NRW4tRJ1Nk=
+        b=I2GrVz+hF9Uzv8yGrNT4BA9Q1vS5Vw8BQXpqGla004U47U36Ro8hp69oEYwtMrtZv
+         URA37K/pP0uvaSrhkKXx9agHb0gajnqgUEy+NJHiTg4LBdl6ofQkfXNI4J/dhHdkWJ
+         cZ+pkt5YQHJ1jtrnZWpSQxMl2J1mmQRy71vCiV/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Riccardo Mancini <rickyman7@gmail.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Wang Nan <wangnan0@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org, Jian Shen <shenjian15@huawei.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 069/120] perf test bpf: Free obj_buf
+Subject: [PATCH 5.10 088/167] net: hns3: fix rx VLAN offload state inconsistent issue
 Date:   Mon, 26 Jul 2021 17:38:41 +0200
-Message-Id: <20210726153834.604195656@linuxfoundation.org>
+Message-Id: <20210726153842.358338161@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210726153832.339431936@linuxfoundation.org>
-References: <20210726153832.339431936@linuxfoundation.org>
+In-Reply-To: <20210726153839.371771838@linuxfoundation.org>
+References: <20210726153839.371771838@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,53 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Riccardo Mancini <rickyman7@gmail.com>
+From: Jian Shen <shenjian15@huawei.com>
 
-[ Upstream commit 937654ce497fb6e977a8c52baee5f7d9616302d9 ]
+[ Upstream commit bbfd4506f962e7e6fff8f37f017154a3c3791264 ]
 
-ASan reports some memory leaks when running:
+Currently, VF doesn't enable rx VLAN offload when initializating,
+and PF does it for VFs. If user disable the rx VLAN offload for
+VF with ethtool -K, and reload the VF driver, it may cause the
+rx VLAN offload state being inconsistent between hardware and
+software.
 
-  # perf test "42: BPF filter"
+Fixes it by enabling rx VLAN offload when VF initializing.
 
-The first of these leaks is caused by obj_buf never being deallocated in
-__test__bpf.
-
-This patch adds the missing free.
-
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
-Fixes: ba1fae431e74bb42 ("perf test: Add 'perf test BPF'")
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Wang Nan <wangnan0@huawei.com>
-Link: http://lore.kernel.org/lkml/60f3ca935fe6672e7e866276ce6264c9e26e4c87.1626343282.git.rickyman7@gmail.com
-[ Added missing stdlib.h include ]
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: e2cb1dec9779 ("net: hns3: Add HNS3 VF HCL(Hardware Compatibility Layer) Support")
+Signed-off-by: Jian Shen <shenjian15@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/tests/bpf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-index 79b54f8ddebf..df478f67b6b6 100644
---- a/tools/perf/tests/bpf.c
-+++ b/tools/perf/tests/bpf.c
-@@ -1,5 +1,6 @@
- #include <errno.h>
- #include <stdio.h>
-+#include <stdlib.h>
- #include <sys/epoll.h>
- #include <sys/types.h>
- #include <sys/stat.h>
-@@ -277,6 +278,7 @@ static int __test__bpf(int idx)
- 	}
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index ac6980acb6f0..d3010d5ab366 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -2518,6 +2518,16 @@ static int hclgevf_rss_init_hw(struct hclgevf_dev *hdev)
  
- out:
-+	free(obj_buf);
- 	bpf__clear();
- 	return ret;
+ static int hclgevf_init_vlan_config(struct hclgevf_dev *hdev)
+ {
++	struct hnae3_handle *nic = &hdev->nic;
++	int ret;
++
++	ret = hclgevf_en_hw_strip_rxvtag(nic, true);
++	if (ret) {
++		dev_err(&hdev->pdev->dev,
++			"failed to enable rx vlan offload, ret = %d\n", ret);
++		return ret;
++	}
++
+ 	return hclgevf_set_vlan_filter(&hdev->nic, htons(ETH_P_8021Q), 0,
+ 				       false);
  }
 -- 
 2.30.2
