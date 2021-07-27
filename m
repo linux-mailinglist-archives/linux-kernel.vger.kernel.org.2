@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E633D70DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3DD3D70E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235951AbhG0IIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
+        id S235675AbhG0IJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235847AbhG0IIw (ORCPT
+        with ESMTP id S235859AbhG0II4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:08:52 -0400
+        Tue, 27 Jul 2021 04:08:56 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7104FC061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:08:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555C6C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:08:57 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m8I8v-0006l6-4w; Tue, 27 Jul 2021 10:08:49 +0200
+        id 1m8I8w-0006l7-Td; Tue, 27 Jul 2021 10:08:50 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m8I8u-0005st-IP; Tue, 27 Jul 2021 10:08:48 +0200
+        id 1m8I8u-0005sw-OZ; Tue, 27 Jul 2021 10:08:48 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m8I8u-0004F6-Hd; Tue, 27 Jul 2021 10:08:48 +0200
+        id 1m8I8u-0004FF-NY; Tue, 27 Jul 2021 10:08:48 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Finn Thain <fthain@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Subject: [PATCH 1/5] nubus: Simplify check in remove callback
-Date:   Tue, 27 Jul 2021 10:08:36 +0200
-Message-Id: <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 2/5] nubus: Make struct nubus_driver::remove return void
+Date:   Tue, 27 Jul 2021 10:08:37 +0200
+Message-Id: <20210727080840.3550927-3-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
 References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Patch-Hashes: v=1; h=sha256; i=TjLBJt0QGxFmp7SpMOjzQEIkuFPLuMwSswChhiWQZSU=; m=wXPfirdbvvcSYlx+JCUfR/1GbjenG0HiiYu5sgWWGUA=; p=Y7UBaaGsszQzvtKk/Xj3uSk938y5pFeeoLuZiSQOfmc=; g=c25b7253ee9694e5d77118adf90c05984d48eb27
-X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD/vvEACgkQwfwUeK3K7AkflQf+NeZ PUIr85FBlIyUZiqYPoXkBBVVoe7rIOLiihzEf4bz18isSmVBY9Pj04XC7/oN4Y+uoiiFNbmV7yXWh VWprm4Yp+plvlP6pwNkotQEuPaKmgYFPZuTuKLnubTMtX2h0M8yCtPp4tDLX2xJNQ4RIptD8//YBC KoRGTtUJO0wAHre4LjAYMaqr8mIvtsKZ0sBfPeGp6Rg3eitFIJ3UaOwJIsSqYLM3uE+ywfVCYqtjv tgY440Bk0Qm3FoCBcWbk6Fv9g56AiW5XhfXS7On5BOue18M1xSEwdCrjA0VY7Pr6E2ygrd3HEiejx gM0MdZH9ASXxaxy3cri0OdkEEzy7Yqg==
+X-Patch-Hashes: v=1; h=sha256; i=JbhrniV2vNHdVwpfhOpuz1F2d1zKsTqaep2udV5D+Zk=; m=x7vdvVMVl5wHK8X7+wGP5Ra6XOkCM87tL3t7TNPTKwg=; p=M8x4NLAOxru7JT+Gx9SxrzxvaGHJbzJ2lK5/w5joXMM=; g=204cfdb681a19c4390cf9518bfe9e7d01d0688de
+X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD/vvcACgkQwfwUeK3K7AmgHwf/XLV x9JQnVHroRcWok/CacSA+YekHsCKimEcdiUsdyGeLGVlXSOzdeOWuT1gYG1xhIK7fJo+0Qn4o4PsL huvZUf0dbMWC7xiOh0N81NqP+1bbzfO+A81upPmoyBM7x+FS2Qk3t82mko0vWSJ6+mSIEGLfms9Sq p8aCbw8pakerSHRL1Dm5UFMteSgC1qtmhcLU5l0hPhTFoMWozLu+cpRjQ/FtuyeT83GfPkwRS0emx ODjTxs2FPcpS70Tfn69NucKBYqN5MKyu32ffUPYQf0G0GdmCPJEcRqickNlHeUVs1pvyshjtQ8OAi U0kOupcXhQhncFbDDmifKzU/e5JYapQ==
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: ukl@pengutronix.de
@@ -52,30 +56,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver core only calls a remove callback when the device was
-successfully bound (aka probed) before. So dev->driver is never NULL.
+The nubus core ignores the return value of the remove callback (in
+nubus_device_remove()) and all implementers return 0 anyway.
 
-Apart from that, the compiler might already assume dev->driver being
-non-NULL after to_nubus_driver(dev->driver) was called.
+So make it impossible for future drivers to return an unused error code
+by changing the remove prototype to return void.
 
 Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- drivers/nubus/bus.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/8390/mac8390.c     | 3 +--
+ drivers/net/ethernet/natsemi/macsonic.c | 4 +---
+ include/linux/nubus.h                   | 2 +-
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
-index d9d04f27f89b..17fad660032c 100644
---- a/drivers/nubus/bus.c
-+++ b/drivers/nubus/bus.c
-@@ -33,7 +33,7 @@ static void nubus_device_remove(struct device *dev)
- {
- 	struct nubus_driver *ndrv = to_nubus_driver(dev->driver);
- 
--	if (dev->driver && ndrv->remove)
-+	if (ndrv->remove)
- 		ndrv->remove(to_nubus_board(dev));
+diff --git a/drivers/net/ethernet/8390/mac8390.c b/drivers/net/ethernet/8390/mac8390.c
+index 9aac7119d382..91b04abfd687 100644
+--- a/drivers/net/ethernet/8390/mac8390.c
++++ b/drivers/net/ethernet/8390/mac8390.c
+@@ -428,13 +428,12 @@ static int mac8390_device_probe(struct nubus_board *board)
+ 	return err;
  }
  
+-static int mac8390_device_remove(struct nubus_board *board)
++static void mac8390_device_remove(struct nubus_board *board)
+ {
+ 	struct net_device *dev = nubus_get_drvdata(board);
+ 
+ 	unregister_netdev(dev);
+ 	free_netdev(dev);
+-	return 0;
+ }
+ 
+ static struct nubus_driver mac8390_driver = {
+diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethernet/natsemi/macsonic.c
+index 2289e1fe3741..8709d700e15a 100644
+--- a/drivers/net/ethernet/natsemi/macsonic.c
++++ b/drivers/net/ethernet/natsemi/macsonic.c
+@@ -603,7 +603,7 @@ static int mac_sonic_nubus_probe(struct nubus_board *board)
+ 	return err;
+ }
+ 
+-static int mac_sonic_nubus_remove(struct nubus_board *board)
++static void mac_sonic_nubus_remove(struct nubus_board *board)
+ {
+ 	struct net_device *ndev = nubus_get_drvdata(board);
+ 	struct sonic_local *lp = netdev_priv(ndev);
+@@ -613,8 +613,6 @@ static int mac_sonic_nubus_remove(struct nubus_board *board)
+ 			  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
+ 			  lp->descriptors, lp->descriptors_laddr);
+ 	free_netdev(ndev);
+-
+-	return 0;
+ }
+ 
+ static struct nubus_driver mac_sonic_nubus_driver = {
+diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+index eba50b057f6f..392fc6c53e96 100644
+--- a/include/linux/nubus.h
++++ b/include/linux/nubus.h
+@@ -86,7 +86,7 @@ extern struct list_head nubus_func_rsrcs;
+ struct nubus_driver {
+ 	struct device_driver driver;
+ 	int (*probe)(struct nubus_board *board);
+-	int (*remove)(struct nubus_board *board);
++	void (*remove)(struct nubus_board *board);
+ };
+ 
+ extern struct bus_type nubus_bus_type;
 -- 
 2.30.2
 
