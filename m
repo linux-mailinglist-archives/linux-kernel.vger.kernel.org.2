@@ -2,114 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E5F3D7362
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315303D7364
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:36:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236295AbhG0Kg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:36:26 -0400
-Received: from ni.piap.pl ([195.187.100.5]:39858 "EHLO ni.piap.pl"
+        id S236362AbhG0Kgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236104AbhG0KgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:36:24 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id 537ADC369558;
-        Tue, 27 Jul 2021 12:36:20 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 537ADC369558
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1627382180; bh=xrp6HjZNt5fuhmpqSLgJecqDApFe/ZteKo0bn4DP8tc=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=bsCQIAo9ER90npjCybE3VUTe4pLXOPqObwMTF2c0nnG+dWRahkpPsdvsxVOrCxWbQ
-         9rvb0nLrpbONdQ5A3hs8N4XW/ET4wsVjuZD8GwoT58+mgPLixgYcpXQp24UuaObKUR
-         CUS6wmSntxcJu2pONUggyC91mO/m52Yo3/1NLbvE=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [RFC v3] dt-binding: media: document ON Semi AR0521 sensor
- bindings
-References: <m37dhkdrat.fsf@t19.piap.pl>
-        <YP9ccgd7WNpHuLgG@pendragon.ideasonboard.com>
-Sender: khalasa@piap.pl
-Date:   Tue, 27 Jul 2021 12:36:20 +0200
-In-Reply-To: <YP9ccgd7WNpHuLgG@pendragon.ideasonboard.com> (Laurent Pinchart's
-        message of "Tue, 27 Jul 2021 04:08:02 +0300")
-Message-ID: <m3o8aoavrv.fsf@t19.piap.pl>
+        id S236104AbhG0Kge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B45046152B;
+        Tue, 27 Jul 2021 10:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627382191;
+        bh=XrjTlqopfnfwY0WGIXPa9IUHl0yY09PQcERb+9iKDQE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=G2+bvPMFWliWKEWLySVevvnBMQMM4x272wv1j32YL4P4HkYScvXrxP90916rQb2F+
+         kFk8n0NfBvfase/IAQulpT/8bmuJORPQ8U+0/jikfcQMDUmljygTmUqmgBCebC6PaX
+         wvRxifh8RCdKLrQFSyu9hkkuUhYc9qIrKMos9C/A=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: [PATCH] fs: make d_path-like functions all have unsigned size
+Date:   Tue, 27 Jul 2021 12:36:25 +0200
+Message-Id: <20210727103625.74961-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 165267 [Jul 27 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
-X-KLMS-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4, {Tracking_Text_ENG_RU_Has_Extended_Latin_Letters, eng}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;t19.piap.pl:7.1.1;127.0.0.199:7.1.2;piap.pl:7.1.1
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/07/27 08:44:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/27 08:46:00 #16963359
-X-KLMS-AntiVirus-Status: Clean, skipped
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4567; h=from:subject; bh=XrjTlqopfnfwY0WGIXPa9IUHl0yY09PQcERb+9iKDQE=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/Hy43rbdOV+ecOPd888rURykX41fKZDyzO/1Rp/CwnvX9 NxqrOmJZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAi534xzC9+zZa3+nxtpX/UVR9HW+ ZJ/xpu/2VYMPeM0SmB6bbO3hP8U0ubytaYznr3CAA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+When running static analysis tools to find where signed values could
+potentially wrap the family of d_path() functions turn out to trigger a
+lot of mess.  In evaluating the code, all of these usages seem safe, but
+pointer math is involved so if a negative number is ever somehow passed
+into these functions, memory can be traversed backwards in ways not
+intended.
 
-Laurent Pinchart <laurent.pinchart@ideasonboard.com> writes:
+Resolve all of the abuguity by just making "size" an unsigned value,
+which takes the guesswork out of everything involved.
 
->> +        properties:
->> +          data-lanes:
->> +            anyOf:
->> +              - items:
->> +                  - const: 1
->> +              - items:
->> +                  - const: 1
->> +                  - const: 2
->> +              - items:
->> +                  - const: 1
->> +                  - const: 2
->> +                  - const: 3
->> +                  - const: 4
->
-> As the sensor also supports an HiSPi output, I would add the bus-type
-> property:
->
->           data-lanes:
-> 	    const: 4
+Reported-by: Jordy Zomer <jordy@pwning.systems>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/d_path.c            | 14 +++++++-------
+ include/linux/dcache.h | 12 ++++++------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-Is there any example of this? I'm not sure how should it it look like.
-Something like the following?
+diff --git a/fs/d_path.c b/fs/d_path.c
+index 23a53f7b5c71..7876b741a47e 100644
+--- a/fs/d_path.c
++++ b/fs/d_path.c
+@@ -182,7 +182,7 @@ static int prepend_path(const struct path *path,
+  */
+ char *__d_path(const struct path *path,
+ 	       const struct path *root,
+-	       char *buf, int buflen)
++	       char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 
+@@ -193,7 +193,7 @@ char *__d_path(const struct path *path,
+ }
+ 
+ char *d_absolute_path(const struct path *path,
+-	       char *buf, int buflen)
++	       char *buf, unsigned int buflen)
+ {
+ 	struct path root = {};
+ 	DECLARE_BUFFER(b, buf, buflen);
+@@ -230,7 +230,7 @@ static void get_fs_root_rcu(struct fs_struct *fs, struct path *root)
+  *
+  * "buflen" should be positive.
+  */
+-char *d_path(const struct path *path, char *buf, int buflen)
++char *d_path(const struct path *path, char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 	struct path root;
+@@ -266,7 +266,7 @@ EXPORT_SYMBOL(d_path);
+ /*
+  * Helper function for dentry_operations.d_dname() members
+  */
+-char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
++char *dynamic_dname(struct dentry *dentry, char *buffer, unsigned int buflen,
+ 			const char *fmt, ...)
+ {
+ 	va_list args;
+@@ -284,7 +284,7 @@ char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
+ 	return memcpy(buffer, temp, sz);
+ }
+ 
+-char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
++char *simple_dname(struct dentry *dentry, char *buffer, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buffer, buflen);
+ 	/* these dentries are never renamed, so d_lock is not needed */
+@@ -328,7 +328,7 @@ static char *__dentry_path(const struct dentry *d, struct prepend_buffer *p)
+ 	return extract_string(&b);
+ }
+ 
+-char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
++char *dentry_path_raw(const struct dentry *dentry, char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 
+@@ -337,7 +337,7 @@ char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
+ }
+ EXPORT_SYMBOL(dentry_path_raw);
+ 
+-char *dentry_path(const struct dentry *dentry, char *buf, int buflen)
++char *dentry_path(const struct dentry *dentry, char *buf, unsigned int buflen)
+ {
+ 	DECLARE_BUFFER(b, buf, buflen);
+ 
+diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+index 9e23d33bb6f1..1a9838dc66fe 100644
+--- a/include/linux/dcache.h
++++ b/include/linux/dcache.h
+@@ -296,13 +296,13 @@ static inline unsigned d_count(const struct dentry *dentry)
+  * helper function for dentry_operations.d_dname() members
+  */
+ extern __printf(4, 5)
+-char *dynamic_dname(struct dentry *, char *, int, const char *, ...);
++char *dynamic_dname(struct dentry *, char *, unsigned int, const char *, ...);
+ 
+-extern char *__d_path(const struct path *, const struct path *, char *, int);
+-extern char *d_absolute_path(const struct path *, char *, int);
+-extern char *d_path(const struct path *, char *, int);
+-extern char *dentry_path_raw(const struct dentry *, char *, int);
+-extern char *dentry_path(const struct dentry *, char *, int);
++char *__d_path(const struct path *, const struct path *, char *, unsigned int);
++char *d_absolute_path(const struct path *, char *, unsigned int);
++char *d_path(const struct path *, char *, unsigned int);
++char *dentry_path_raw(const struct dentry *, char *, unsigned int);
++char *dentry_path(const struct dentry *, char *, unsigned int);
+ 
+ /* Allocation counts.. */
+ 
+-- 
+2.32.0
 
-        properties:
-         data-lanes:
-            anyOf:
-              - items:
-                  - const: 1
-              - items:
-                  - const: 1
-                  - const: 2
-              - items:
-                  - const: 1
-                  - const: 2
-                  - const: 3
-                  - const: 4
-          bus-type:
-            data-lanes:
-              const: 4
-
-And... HiSPi would need additional code in the driver. And preferably
-some testing. I think I'd prefer to have DT and the driver staying in
-some sort of sync. Also, I'm uncertain about the syntax and the meaning
-of such, apparently redundant, construct. Nor about its relation to
-HiSPi. An example would be welcome.
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
