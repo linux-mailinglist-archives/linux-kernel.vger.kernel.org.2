@@ -2,83 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBA93D7ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE89D3D7AC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhG0QPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:15:38 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:8635 "EHLO email.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229899AbhG0QPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:15:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=as8+fYIENYmvb8WnOx6zBgQA6+MIUEE7ArsaN
-        gmzVgw=; b=jrHtqJWP6RMRMPCW/q7KofLL2WEZj9qxcPT1MKgf+7ObONVJid2Dd
-        kEZ+z3oTL7YvnubVyTF/ChfB3TZ9KOCeTVbQsLhHRSlCcjEn+jv/h9wo4aCnwPTs
-        pV0BDaG2bWNpRBXcnkfQmYQdIVvROTgkplP4bDFyNOQetXdjsgy2d8=
-Received: from localhost.localdomain (unknown [113.251.14.68])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDH1AMFMQBheZ4JAA--.34457S4;
-        Wed, 28 Jul 2021 00:15:31 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     corbet@lwn.net
-Cc:     panyunwang849@gmail.com, linux-doc-tw@groups.io,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 3/3] MAINTAINERS: add entry for traditional Chinese documentation
-Date:   Wed, 28 Jul 2021 00:15:01 +0800
-Message-Id: <20210727161501.13030-3-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210727161501.13030-1-src.res@email.cn>
-References: <20210727161501.13030-1-src.res@email.cn>
+        id S229630AbhG0QSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:18:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229494AbhG0QSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 12:18:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BDA961B5F;
+        Tue, 27 Jul 2021 16:18:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627402685;
+        bh=IpjnQxpo2H5Oqz+TcYPmeFc383PvQoiuPpIxOqaJwPA=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=OV4Yj0zUfEuaLJI4XG+Nan1nlQo7bKOw+FQNdpkw805XmfPPK0z16xDhda2kWw+EL
+         sW1vuI1jhdA3fYGHvgD/bPrSjLcdsVguNbMP0vVcbKdZbn5uM7f1FN3aPttgkoHx/Q
+         gKx/rBPSCbO0+4uJJIDSpFfMqDCFAte0bW+ak4YLVgjWlPJ4uzz6NSSlwcMLFJgMyU
+         nCzi+kifa73c4DLZT2XyY0a7Rf1rnqklgDLF1rEjvnf0qJQLwrK/mmbreXKaS5wuUw
+         WmdRqQZAj3ZdY495r+Dwqq+dhKRiBbJvinc0lEjcBkfHAqkoaKeVc7emGMeI7CwFAe
+         195ZmGdKT0ymg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 663A65C099F; Tue, 27 Jul 2021 09:18:05 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 09:18:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 3/3] Fix: tracepoint: rcu get state and cond sync for
+ static call updates
+Message-ID: <20210727161805.GY4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210727150613.20886-1-mathieu.desnoyers@efficios.com>
+ <20210727150613.20886-4-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LCKnCgDH1AMFMQBheZ4JAA--.34457S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF15Jw4fWry8Xr15ZF17Awb_yoW3Zrc_Jw
-        4UJayIqr1fGFyIkrs5Za97KrWav393Jr1rZ3Z5t34DXa4DJ398AF1ktwn3Cwn5ur4Uu34D
-        AF9xJrWFqrnxujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbnAYjsxI4VW3JwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
-        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
-        8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E
-        87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzx
-        vE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VCjz48v1sIEY20_Cr1U
-        Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMx
-        AIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
-        67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMI
-        IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
-        14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUjDGY
-        DUUUU
-X-Originating-IP: [113.251.14.68]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727150613.20886-4-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainer information for traditional Chinese documentation.
+On Tue, Jul 27, 2021 at 11:06:13AM -0400, Mathieu Desnoyers wrote:
+> State transitions from 1->0->1 and N->2->1 callbacks require RCU
+> synchronization. Rather than performing the RCU synchronization every
+> time the state change occurs, which is quite slow when many tracepoints
+> are registered in batch, instead keep a snapshot of the RCU state on the
+> most recent transitions which belong to a chain, and conditionally wait
+> for a grace period on the last transition of the chain if one g.p. has
+> not elapsed since the last snapshot.
+> 
+> This applies to both RCU and SRCU.
+> 
+> [ Build tested only. ]
+> 
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Looks plausible from an RCU viewpoint.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 66d047dc6880..de9370bcb226 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18829,6 +18829,14 @@ F:	arch/x86/mm/testmmiotrace.c
- F:	include/linux/mmiotrace.h
- F:	kernel/trace/trace_mmiotrace.c
- 
-+TRADITIONAL CHINESE DOCUMENTATION
-+M:	Hu Haowen <src.res@email.cn>
-+L:	linux-doc-tw@groups.io
-+S:	Maintained
-+W:	https://github.com/srcres258/linux-doc
-+T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
-+F:	Documentation/translations/zh_TW/
-+
- TRIVIAL PATCHES
- M:	Jiri Kosina <trivial@kernel.org>
- S:	Maintained
--- 
-2.25.1
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
+> ---
+>  kernel/tracepoint.c | 89 +++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 77 insertions(+), 12 deletions(-)
+> 
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index a85e7dc8b490..82f37045cd2b 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -28,6 +28,49 @@ extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
+>  DEFINE_SRCU(tracepoint_srcu);
+>  EXPORT_SYMBOL_GPL(tracepoint_srcu);
+>  
+> +enum tp_transition_sync {
+> +	TP_TRANSITION_SYNC_1_0_1,
+> +	TP_TRANSITION_SYNC_N_2_1,
+> +
+> +	_NR_TP_TRANSITION_SYNC,
+> +};
+> +
+> +struct tp_transition_snapshot {
+> +	unsigned long rcu;
+> +	unsigned long srcu;
+> +	bool ongoing;
+> +};
+> +
+> +/* Protected by tracepoints_mutex */
+> +static struct tp_transition_snapshot tp_transition_snapshot[_NR_TP_TRANSITION_SYNC];
+> +
+> +static void tp_rcu_get_state(enum tp_transition_sync sync)
+> +{
+> +	struct tp_transition_snapshot *snapshot = &tp_transition_snapshot[sync];
+> +
+> +	/* Keep the latest get_state snapshot. */
+> +	snapshot->rcu = get_state_synchronize_rcu();
+> +	snapshot->srcu = start_poll_synchronize_srcu(&tracepoint_srcu);
+> +	snapshot->ongoing = true;
+> +}
+> +
+> +static void tp_rcu_clear_ongoing(enum tp_transition_sync sync)
+> +{
+> +	tp_transition_snapshot[sync].ongoing = false;
+> +}
+> +
+> +static void tp_rcu_cond_sync(enum tp_transition_sync sync)
+> +{
+> +	struct tp_transition_snapshot *snapshot = &tp_transition_snapshot[sync];
+> +
+> +	if (!snapshot->ongoing)
+> +		return;
+> +	cond_synchronize_rcu(snapshot->rcu);
+> +	if (!poll_state_synchronize_srcu(&tracepoint_srcu, snapshot->srcu))
+> +		synchronize_srcu(&tracepoint_srcu);
+> +	snapshot->ongoing = false;
+> +}
+> +
+>  /* Set to 1 to enable tracepoint debug output */
+>  static const int tracepoint_debug;
+>  
+> @@ -311,6 +354,11 @@ static int tracepoint_add_func(struct tracepoint *tp,
+>  	 */
+>  	switch (nr_func_state(tp_funcs)) {
+>  	case TP_FUNC_1:		/* 0->1 */
+> +		/*
+> +		 * Make sure new static func never uses old data after a
+> +		 * 1->0->1 transition sequence.
+> +		 */
+> +		tp_rcu_cond_sync(TP_TRANSITION_SYNC_1_0_1);
+>  		/* Set static call to first function */
+>  		tracepoint_update_call(tp, tp_funcs);
+>  		/* Both iterator and static call handle NULL tp->funcs */
+> @@ -326,9 +374,21 @@ static int tracepoint_add_func(struct tracepoint *tp,
+>  		 * static call update/call.
+>  		 */
+>  		rcu_assign_pointer(tp->funcs, tp_funcs);
+> +		/*
+> +		 * Make sure static func never uses incorrect data after a
+> +		 * 1->...->2->1 transition sequence.
+> +		 */
+> +		if (tp_funcs[0].data != old[0].data)
+> +			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
+>  		break;
+>  	case TP_FUNC_N:		/* N->N+1 (N>1) */
+>  		rcu_assign_pointer(tp->funcs, tp_funcs);
+> +		/*
+> +		 * Make sure static func never uses incorrect data after a
+> +		 * N->...->2->1 (N>1) transition sequence.
+> +		 */
+> +		if (tp_funcs[0].data != old[0].data)
+> +			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
+>  		break;
+>  	default:
+>  		WARN_ON_ONCE(1);
+> @@ -372,29 +432,34 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+>  		/* Both iterator and static call handle NULL tp->funcs */
+>  		rcu_assign_pointer(tp->funcs, NULL);
+>  		/*
+> -		 * Make sure new func never uses old data after a 1->0->1
+> -		 * transition sequence.
+> -		 * Considering that transition 0->1 is the common case
+> -		 * and don't have rcu-sync, issue rcu-sync after
+> -		 * transition 1->0 to break that sequence by waiting for
+> -		 * readers to be quiescent.
+> +		 * Make sure new static func never uses old data after a
+> +		 * 1->0->1 transition sequence.
+>  		 */
+> -		tracepoint_synchronize_unregister();
+> +		tp_rcu_get_state(TP_TRANSITION_SYNC_1_0_1);
+>  		break;
+>  	case TP_FUNC_1:		/* 2->1 */
+>  		rcu_assign_pointer(tp->funcs, tp_funcs);
+>  		/*
+> -		 * On 2->1 transition, RCU sync is needed before setting
+> -		 * static call to first callback, because the observer
+> -		 * may have loaded any prior tp->funcs after the last one
+> -		 * associated with an rcu-sync.
+> +		 * Make sure static func never uses incorrect data after a
+> +		 * N->...->2->1 (N>2) transition sequence.
+>  		 */
+> -		tracepoint_synchronize_unregister();
+> +		if (tp_funcs[0].data != old[0].data) {
+> +			tracepoint_synchronize_unregister();
+> +			tp_rcu_clear_ongoing(TP_TRANSITION_SYNC_N_2_1);
+> +		} else {
+> +			tp_rcu_cond_sync(TP_TRANSITION_SYNC_N_2_1);
+> +		}
+>  		/* Set static call to first function */
+>  		tracepoint_update_call(tp, tp_funcs);
+>  		break;
+>  	case TP_FUNC_N:		/* N->N-1 (N>2) */
+>  		rcu_assign_pointer(tp->funcs, tp_funcs);
+> +		/*
+> +		 * Make sure static func never uses incorrect data after a
+> +		 * N->...->2->1 (N>2) transition sequence.
+> +		 */
+> +		if (tp_funcs[0].data != old[0].data)
+> +			tp_rcu_get_state(TP_TRANSITION_SYNC_N_2_1);
+>  		break;
+>  	default:
+>  		WARN_ON_ONCE(1);
+> -- 
+> 2.20.1
+> 
