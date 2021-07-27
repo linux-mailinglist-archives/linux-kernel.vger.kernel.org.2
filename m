@@ -2,70 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E6D3D75AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA803D75AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236628AbhG0NQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236537AbhG0NQn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:16:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECE2C061757;
-        Tue, 27 Jul 2021 06:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RohD1sOJc0BJZG1+fLuPrgMdmyvKVUj/3FEqHqNiCTk=; b=vBWkH1hAGzNDQpul+rPDbUAvIj
-        emVm/EQfiUYyAySpvivlY9KCKEzB4PC51XoKhScLWUBD906+jgYyswY3jLXdiyaGaqQZUe5Fv0l8P
-        5k3W/lyMuHMXK8uQBFpKqmAmi5aNciv7/amscrs9w9b2n7IHDUoc1Rjs0P1XKyhWtYYao1b5TYxzS
-        +BfFC7DBfYo0wK+DfiRCbydm/11Rnq1UmlPxCnoBn8jbmg8B76YGU27bXMEeQLJeysDMulWoGbgKj
-        Q8RAsbBzdxNQiIkxvAO5QbR2DAAtj3efXEjulYblWMHmShrruzo0tA29QG+SWhFENbvcrfINpE4p9
-        42QVVzAQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8Mur-00F1Zg-Va; Tue, 27 Jul 2021 13:14:56 +0000
-Date:   Tue, 27 Jul 2021 14:14:37 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jordy Zomer <jordy@pwning.systems>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH v2] fs: make d_path-like functions all have unsigned size
-Message-ID: <YQAGvTZPex3mxrD/@casper.infradead.org>
-References: <20210727120754.1091861-1-gregkh@linuxfoundation.org>
- <YP/+g/L6+tLWjx/l@smile.fi.intel.com>
- <YQAClXqyLhztLcm4@kroah.com>
+        id S232194AbhG0NRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:17:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232155AbhG0NRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:17:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F85601FD;
+        Tue, 27 Jul 2021 13:17:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627391859;
+        bh=OOCCNXzx21q2l0kDMmSD+oFNhSnD0BpDuNRFYaqiBOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K+g+iNG6pSkq4HWM5+uUlVZe7mk3unP/5rdNkCygIFoFQKYJ/j5Jq59Sj1cucJR7f
+         FWkCExX0dU8cuoteuzWxfBV+FhtpWJ3+ChjHlmZbAqGIgOKIArNkw4SrDuvi7dbN9c
+         YmfwOSKUCDVRUmMLhydGtpt3MNBkUFOUTnn1LVn4=
+Date:   Tue, 27 Jul 2021 15:17:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH v4 0/2] staging: rtl8188eu: Replace a custom function
+ with crc32_le()
+Message-ID: <YQAHcbOeh2ohAmTg@kroah.com>
+References: <20210723192620.10669-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YQAClXqyLhztLcm4@kroah.com>
+In-Reply-To: <20210723192620.10669-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 02:56:53PM +0200, Greg Kroah-Hartman wrote:
-> And my mistake from earlier, size_t is the same as unsigned int, not
-> unsigned long.
+On Fri, Jul 23, 2021 at 09:26:18PM +0200, Fabio M. De Francesco wrote:
+> Use kernel API crc32_le() in place of the custom getcrc32(). Remove no
+> more used functions and variables after the changes made by patch 1/2.
+> 
+> Fabio M. De Francesco (2):
+>   staging: rtl8188eu: Replace a custom function with crc32_le()
+>   staging: rtl8188eu: Remove no more used functions and variables
+> 
+>  drivers/staging/rtl8188eu/core/rtw_security.c | 81 +++++--------------
+>  1 file changed, 19 insertions(+), 62 deletions(-)
 
-No.
-
-include/linux/types.h:typedef __kernel_size_t           size_t;
-
-include/uapi/asm-generic/posix_types.h:
-
-#ifndef __kernel_size_t
-#if __BITS_PER_LONG != 64
-typedef unsigned int    __kernel_size_t;
-#else
-typedef __kernel_ulong_t __kernel_size_t;
-#endif
-#endif
-
-size_t is an unsigned long on 64-bit, unless otherwise defined by the
-arch.
+Much nicer, thanks!
