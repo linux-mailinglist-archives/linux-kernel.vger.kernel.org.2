@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5849A3D7425
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486CF3D7427
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236491AbhG0LQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:16:20 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:49849 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236464AbhG0LQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:16:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1627384580; x=1658920580;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DIHrC52ww/DFXbYGSa4kH26VQ4Zgajs7K4hwctr/DEM=;
-  b=zegWKPFMTpG+ijmr+n46UP39/VlRbJzNFEx9heeTMlsm5Qh5bHUAHLK2
-   ZFEXRbKN9pj7p7i0xeMEhlnsgEoY4GJR3cxIQN+YhmAH5OK+Nl4hNMYBY
-   hH7u7oQsW+yTCjG97IxQB/OxbUWxyg3+bcnS2OzNuHxHCtM3WDuwenoRZ
-   XV0lT9a/cOy+jj4ng+826pxDUbDv9QGMgLmInqPLmbcbf2GUC3/K2ww2O
-   dZjTunA5T1reV5xdmpdePi2LxqnRdpuzSJVnCZ0wrYtkMXe7xBNSbB/p4
-   SLb0qzmLyyRHdH9DAm5ZcDcRNLrY6J4T+538yMK7EnDtUx//s0PSGdAG0
-   w==;
-IronPort-SDR: ifQlh4pBZHI41bhmt8tMXvi0NBnr4VsspB5x0GdhvjKO47O70GfBV1URXo/Dda992r2XhSTQtE
- DjF5hC30TgkR7T9RDzAMSdmq7bQRKGWiGeT3uZxi5LxFmH0rmovoDqkX7yqKAuQOFbYhiLqsro
- 2LYf7qd2CRPgAtjY0V318wtgTbvMEYmyXPuFHitx8JsX1IHoZpeX7dmIHpb0QhQ3H9hM7Dwh6s
- NfHSd1e6hXCWF/pSErKfVkOT4GVyKJ0cyJ4mb4zZYorrYJzrOPdBOKeqj5k7lpy4mEvzEPs7vB
- H6K06Eo2i++hiRKmwVDgLECj
-X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
-   d="scan'208";a="130528394"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jul 2021 04:16:19 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 04:16:19 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 27 Jul 2021 04:16:15 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <andrew@sanpeople.com>,
-        <mhoffman@lightlink.com>, <khali@linux-fr.org>, <wsa@kernel.org>,
-        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 3/3] i2c: at91: add advanced digital filtering support for SAMA5D4
-Date:   Tue, 27 Jul 2021 14:15:54 +0300
-Message-ID: <20210727111554.1338832-4-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727111554.1338832-1-codrin.ciubotariu@microchip.com>
-References: <20210727111554.1338832-1-codrin.ciubotariu@microchip.com>
+        id S236403AbhG0LQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:16:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236212AbhG0LQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:16:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 097D6619E3;
+        Tue, 27 Jul 2021 11:16:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627384604;
+        bh=QvxPwrmw4cTJzKKJ7z8fgzFG9vSR9Cf+RBe2kFE4Mrk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JhjtWUA5BgLxsdZbwnzGkM6OTQkbsJsaVgRG7g9ceshQucvLbFlUs3aYeMeqqZTbI
+         sghp2udtdA8GFvu365VVCAVauhA7az/oZXMQIYKtcN4NAoSQ+1C1FBaeuM3XG6CRMr
+         eEZ2JzQENAioae1WEmj7n6g0SyBZdJF0rF1TNAQOq/boKJdJHurIqo2HD/NOtSjkv/
+         WLGQe3+OHEFZYvhQVHGppt30MIzsnQAbf2jMUrZFWUxGBOs6MV4tJ4T5lQDV9wACyP
+         1Y4RVF5J4L2Hg5qVIjRFvNk9Ca6/I9rkmFTeqNzG+bjhAmsNaJU9yTDSVpsh6b5ODg
+         Z/HTfGc9OIFYw==
+Date:   Tue, 27 Jul 2021 14:16:39 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/4] net: ipa: kill IPA_VALIDATION
+Message-ID: <YP/rFwvIHOvIwMNO@unreal>
+References: <20210726174010.396765-1-elder@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726174010.396765-1-elder@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I2C/TWI IP variant found in SAMA5D4 supports advanced digital filtering,
-even though, at the time of this patch, it is not present in Datasheet.
+On Mon, Jul 26, 2021 at 12:40:06PM -0500, Alex Elder wrote:
+> A few months ago I proposed cleaning up some code that validates
+> certain things conditionally, arguing that doing so once is enough,
+> thus doing so always should not be necessary.
+>   https://lore.kernel.org/netdev/20210320141729.1956732-1-elder@linaro.org/
+> Leon Romanovsky felt strongly that this was a mistake, and in the
+> end I agreed to change my plans.
 
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- drivers/i2c/busses/i2c-at91-core.c | 1 +
- 1 file changed, 1 insertion(+)
+<...>
 
-diff --git a/drivers/i2c/busses/i2c-at91-core.c b/drivers/i2c/busses/i2c-at91-core.c
-index e14edd236108..7b6dc56d8c1c 100644
---- a/drivers/i2c/busses/i2c-at91-core.c
-+++ b/drivers/i2c/busses/i2c-at91-core.c
-@@ -120,6 +120,7 @@ static struct at91_twi_pdata sama5d4_config = {
- 	.clk_offset = 4,
- 	.has_hold_field = true,
- 	.has_dig_filtr = true,
-+	.has_adv_dig_filtr = true,
- };
- 
- static struct at91_twi_pdata sama5d2_config = {
--- 
-2.30.2
+> The second patch fixes a bug that wasn't normally exposed because of
+> the conditional compilation (a reason Leon was right about this).
 
+Thanks Alex,
+
+If you want another anti pattern that is very popular in netdev, the following pattern is
+wrong by definition :):
+if (WARN_ON(...))
+  return ...
+
+The WARN_*() macros are intended catch impossible flows, something that
+shouldn't exist. The idea that printed stack to dmesg and return to the
+caller will fix the situation is a very naive one. That stack already
+says that something very wrong in the system.
+
+If such flow can be valid use "if(...) return ..", if not use plain
+WARN_ON(...).
+
+Thanks
