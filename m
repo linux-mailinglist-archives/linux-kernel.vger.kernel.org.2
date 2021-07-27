@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D18213D7A64
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B293D7A65
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhG0QBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhG0QBa (ORCPT
+        id S231805AbhG0QBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:01:44 -0400
+Received: from dd38112.kasserver.com ([85.13.154.158]:41750 "EHLO
+        dd38112.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhG0QBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:01:30 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC35C061757;
-        Tue, 27 Jul 2021 09:01:29 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id h14so7851407wrx.10;
-        Tue, 27 Jul 2021 09:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hrC5tmc1v6QkccLnJLsA4J9k4QrgpqBBH1KIhvLwpfE=;
-        b=q4a8QR/DXtOSNAFyNNeMNf6ewk7CkNm2WtIkWL4v1MwhQs486EV3z19O94PO3AW1dx
-         +tKNM9HB2ZdbEZ8iM5PQI5w8YmN8ybt1LN3YeI/MvM4ULNqRTvbtPJ7GqF55+LSXcyQ/
-         sPWKn00VtbaLSa6kSFfzgO11yjdpl94clszRSJwm7s7TuiPqZyUzI1b/Z7hlIt/IlVdv
-         a9gsMDXhqRlGEC3HxbS7CYtSKcU42dbGeg0RyW8aAk46m6Jkuzrt85Wug9+RptvZMmDR
-         kkzl3yWuHJM1dqfExju/j1NFFb1Dmk5MAJZwwu8kn6TaSgZMSpRL33aTj51jdeT2umS1
-         xbJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hrC5tmc1v6QkccLnJLsA4J9k4QrgpqBBH1KIhvLwpfE=;
-        b=Yh9wWLl7W0ZYgZGDumarkor2jQa0vr7EPRMF2YQCxRlSAKUfaSURsQL+n3wxWe64TB
-         2qSw9EsmyPXXsi+y2lsODHKcJXJZ1ss4BTW2v/PvJ0AOvjOJ9yMsbCOQOxc42vZfP4dt
-         gZ3mjpLvWRzpa93Qzso+y5gTCL7Ev+mGucjumFyG0Fievg2zsGP7oCYlR4267pApeKPe
-         miL/tYyZBagq02l3GOLpsd1KFFh/1K7hQ/Y62hzEoZk5VX0Lwn4rMtfHRJGVDvwHByf/
-         VvY7hLoKt4nrNFighWbtXqzmZQo6Ajl7M/ppq1LCsDOZvsvUd90+l8d1adGkoNiigzH/
-         0+9Q==
-X-Gm-Message-State: AOAM533wwdrAMhwyqPlRkk7heOy4jXlVlcM/mC//d2mPXumtwqzybfa2
-        8nwf8sbM7moTyRN8U4GDJn8=
-X-Google-Smtp-Source: ABdhPJxlvC+VVHCJ4uHqmNiUPzXFmfR9lbm6P1sC7mwyoCCoPGDQFB6kuidT8YiIrVhkzoekmySXMw==
-X-Received: by 2002:adf:efc4:: with SMTP id i4mr17230430wrp.53.1627401687998;
-        Tue, 27 Jul 2021 09:01:27 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id z3sm3228724wmf.6.2021.07.27.09.01.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 09:01:27 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 17:01:25 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 000/119] 4.19.199-rc3 review
-Message-ID: <YQAt1f1+Qg8mDg2y@debian>
-References: <20210727112108.341674321@linuxfoundation.org>
+        Tue, 27 Jul 2021 12:01:41 -0400
+Received: from DESKTOP-E8BN1B0.localdomain (089144219199.atnat0028.highway.a1.net [89.144.219.199])
+        by dd38112.kasserver.com (Postfix) with ESMTPSA id 412C01F00A4F;
+        Tue, 27 Jul 2021 18:01:39 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 18:01:36 +0200
+From:   Filip Schauer <filip@mg6.at>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers core: Fix oops when driver probe fails
+Message-ID: <20210727160136.GA8122@DESKTOP-E8BN1B0.localdomain>
+References: <20210727112311.GA7645@DESKTOP-E8BN1B0.localdomain>
+ <YP/8jqfW4+HHUL+X@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727112108.341674321@linuxfoundation.org>
+In-Reply-To: <YP/8jqfW4+HHUL+X@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Tue, Jul 27, 2021 at 01:21:48PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.199 release.
-> There are 119 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Tue, Jul 27, 2021 at 02:31:10PM +0200, Greg KH wrote:
+> On Tue, Jul 27, 2021 at 01:23:11PM +0200, Filip Schauer wrote:
+> > dma_range_map is freed to early, which might cause an oops when
+> > a driver probe fails.
+> >  Call trace:
+> >   is_free_buddy_page+0xe4/0x1d4
+> >   __free_pages+0x2c/0x88
+> >   dma_free_contiguous+0x64/0x80
+> >   dma_direct_free+0x38/0xb4
+> >   dma_free_attrs+0x88/0xa0
+> >   dmam_release+0x28/0x34
+> >   release_nodes+0x78/0x8c
+> >   devres_release_all+0xa8/0x110
+> >   really_probe+0x118/0x2d0
+> >   __driver_probe_device+0xc8/0xe0
+> >   driver_probe_device+0x54/0xec
+> >   __driver_attach+0xe0/0xf0
+> >   bus_for_each_dev+0x7c/0xc8
+> >   driver_attach+0x30/0x3c
+> >   bus_add_driver+0x17c/0x1c4
+> >   driver_register+0xc0/0xf8
+> >   __platform_driver_register+0x34/0x40
+> >   ...
+> > 
+> > This issue is introduced by commit d0243bbd5dd3 ("drivers core:
+> > Free dma_range_map when driver probe failed"). It frees
+> > dma_range_map before the call to devres_release_all, which is too
+> > early. The solution is to free dma_range_map only after
+> > devres_release_all.
+> > 
+> > Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe failed")
+> > Signed-off-by: Filip Schauer <filip@mg6.at>
+> > ---
+> >  drivers/base/dd.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Responses should be made by Thu, 29 Jul 2021 11:20:50 +0000.
-> Anything received after that time might be too late.
+> Oh, nice catch!  This is a v2, right?  Next time please be explicit :)
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Build test:
-mips (gcc version 11.1.1 20210723): 63 configs -> no failure
-arm (gcc version 11.1.1 20210723): 116 configs -> no new failure
-arm64 (gcc version 11.1.1 20210723): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+Thank you for adding the patch.
+And my bad, this is indeed a PATCH v2.
+I didn't know about the patch revisioning convention.
+I'll be more explicit next time.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+Thanks,
 
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+Filip Schauer
