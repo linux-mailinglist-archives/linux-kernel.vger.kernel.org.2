@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE853D7A00
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EDD3D7A0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232511AbhG0Pkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:40:36 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:16574 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhG0Pkf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:40:35 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 16RFdQxD020251;
-        Wed, 28 Jul 2021 00:39:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 16RFdQxD020251
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627400367;
-        bh=3zPhroot46RHejpnFDk8fLbgEyTZ7afbXGsRLNI8Ohk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BRgdn7+9lc9pcKUYJl2vRPStgOkd5C73s28FmSUcJ4VPzrti52wI0nHAflZhN6bia
-         8Y7fPgV06rKYJgAIgWgR+fHNGhCK+zJ21NIjtQZCh42Lte2w/+kYYk22FgRMS7WPQR
-         M/iVl8gM/Huh3nj2mleoB80TUXACvdVjJKIjursLa2HCg/ZNeVL5QgGwQdEwdcUCZT
-         Y6WJ87rHXJa5/f1eE5Egh5lj1sEieDROFgHQXY+gLWnXtFuKhka//Azf2BQAIhJsxD
-         jrvQjeSjsBnAoFm2ytEyEM8fJy3hK6TRFMl7tZ8E0+DXMNYekeb+zhHPaFSOb+xy/n
-         2OzKdj2FJhmJw==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] scripts: make some scripts executable
-Date:   Wed, 28 Jul 2021 00:39:24 +0900
-Message-Id: <20210727153924.79473-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S232549AbhG0PoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:44:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhG0PoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 11:44:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8269761B5F;
+        Tue, 27 Jul 2021 15:44:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627400653;
+        bh=SyRlNQA0ZEXJJkLYmMvc251S8UFPcO3XgOuG7qQOfow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fn4gr2faYUHWCYqF6AQ/+ImWjX/zNl1Nptzte5I/GH7CxAS06+hVlUHP4WMl544ck
+         J7h2BAygRwT/JRFHpJxQwfXtxIkj/MUehzk2Yi9MtXX5qqVYcPtWnNTOBqkVKxs5fC
+         2udTiFRtMa8vhuo8iA+lgR2pzf6kBYlsQuULTyI0=
+Date:   Tue, 27 Jul 2021 17:44:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH v2 02/12] diglim: Basic definitions
+Message-ID: <YQApyqP7J/8GpItS@kroah.com>
+References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
+ <20210726163700.2092768-3-roberto.sassu@huawei.com>
+ <YQAblc+UuMq68jxu@kroah.com>
+ <e87ba6f452254067a5eb6d58937d65d1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e87ba6f452254067a5eb6d58937d65d1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the x bit to some scripts to make them directly executable.
+On Tue, Jul 27, 2021 at 03:35:16PM +0000, Roberto Sassu wrote:
+> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
+> > Sent: Tuesday, July 27, 2021 4:44 PM
+> > On Mon, Jul 26, 2021 at 06:36:50PM +0200, Roberto Sassu wrote:
+> > > --- /dev/null
+> > > +++ b/include/uapi/linux/diglim.h
+> > > @@ -0,0 +1,51 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> > > +/*
+> > > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
+> > > + *
+> > > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
+> > > + *
+> > > + * DIGLIM definitions exported to user space, useful for generating digest
+> > > + * lists.
+> > > + */
+> > > +
+> > > +#ifndef _UAPI__LINUX_DIGLIM_H
+> > > +#define _UAPI__LINUX_DIGLIM_H
+> > > +
+> > > +#include <linux/types.h>
+> > > +#include <linux/hash_info.h>
+> > > +
+> > > +enum compact_types { COMPACT_KEY, COMPACT_PARSER,
+> > COMPACT_FILE,
+> > > +		     COMPACT_METADATA, COMPACT_DIGEST_LIST,
+> > COMPACT__LAST };
+> > > +
+> > > +enum compact_modifiers { COMPACT_MOD_IMMUTABLE,
+> > COMPACT_MOD__LAST };
+> > > +
+> > > +enum compact_actions { COMPACT_ACTION_IMA_MEASURED,
+> > > +		       COMPACT_ACTION_IMA_APPRAISED,
+> > > +		       COMPACT_ACTION_IMA_APPRAISED_DIGSIG,
+> > > +		       COMPACT_ACTION__LAST };
+> > > +
+> > > +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL, DIGEST_LIST_OP__LAST };
+> > > +
+> > > +/**
+> > > + * struct compact_list_hdr - header of the following concatenated digests
+> > > + * @version: version of the digest list
+> > > + * @_reserved: field reserved for future use
+> > > + * @type: type of digest list among enum compact_types
+> > > + * @modifiers: additional attributes among (1 << enum compact_modifiers)
+> > 
+> > I do not understand this description, what does it mean?
+> 
+> Hi Greg
+> 
+> yes, it is not very clear.
+> 
+> @modifiers is a bitmask where each bit corresponds to a different
+> attribute. enum compact_modifiers defines which bit position is
+> assigned to each attribute.
 
-Especially, scripts/checkdeclares.pl is not hooked by anyone.
-It should be executable since it is tedious to type
-'perl scripts/checkdeclares.pl'.
+Watch out with endian issues and bitmasks...  Anyway, please document
+this.
 
-The original patch [1] set the x bit properly, but it was lost when
-it was merged as commit 21917bded72c ("scripts: a new script for
-checking duplicate struct declaration").
+> 
+> > > + * @algo: digest algorithm
+> > 
+> > Is this also a #define or an enum?  Where is the list of them?
+> 
+> @algo is an enum defined in include/uapi/linux/hash_info.h.
 
-[1] https://lore.kernel.org/lkml/20210401110943.1010796-1-wanjiabing@vivo.com/
+Please say that.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> > > + * @count: number of digests
+> > > + * @datalen: length of concatenated digests
+> > 
+> > Where does this count and length come into play as nothing else is in
+> > this structure?
+> 
+> Each digest list must begin with this structure. From it, the parser knows
+> how much data it should expect afterwards. After the data, there could be
+> another or more blocks of this structure and following data.
 
- scripts/checkdeclares.pl               | 0
- scripts/gcc-plugins/gen-random-seed.sh | 0
- scripts/syscallnr.sh                   | 0
- scripts/xen-hypercalls.sh              | 0
- 4 files changed, 0 insertions(+), 0 deletions(-)
- mode change 100644 => 100755 scripts/checkdeclares.pl
- mode change 100644 => 100755 scripts/gcc-plugins/gen-random-seed.sh
- mode change 100644 => 100755 scripts/syscallnr.sh
- mode change 100644 => 100755 scripts/xen-hypercalls.sh
+Ah, that was not obvious at all :)
 
-diff --git a/scripts/checkdeclares.pl b/scripts/checkdeclares.pl
-old mode 100644
-new mode 100755
-diff --git a/scripts/gcc-plugins/gen-random-seed.sh b/scripts/gcc-plugins/gen-random-seed.sh
-old mode 100644
-new mode 100755
-diff --git a/scripts/syscallnr.sh b/scripts/syscallnr.sh
-old mode 100644
-new mode 100755
-diff --git a/scripts/xen-hypercalls.sh b/scripts/xen-hypercalls.sh
-old mode 100644
-new mode 100755
--- 
-2.27.0
+Why do you not have a __u8 data[]; type field as the last one here for
+that memory so you can access it easier?
 
+thanks,
+
+greg k-h
