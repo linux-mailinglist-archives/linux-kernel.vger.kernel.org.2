@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05F33D7121
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0FA3D7114
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235974AbhG0IXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:23:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:44772 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235977AbhG0IXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:23:42 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3F79E2214E;
-        Tue, 27 Jul 2021 08:23:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627374207;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e+oMesGkL6U9Ftyv/jPBGc6U/qcAAuGWRvwKofiTqRs=;
-        b=e1hWaq8M94FhtLPK9Yqzq1PmLtaUX2abt/VSAxms46a1Pq3v6sVupz65havPR+0IzHP5AS
-        F7tcOwNgnVgju3j4baV6stuE6rl+AzBSayg7KC5m+nAFWz/cMbEjTATEufQMtNIvLXK5mK
-        IaXHCke87RgJPN5a8cFjLcr67b3753k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627374207;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e+oMesGkL6U9Ftyv/jPBGc6U/qcAAuGWRvwKofiTqRs=;
-        b=qVvIMDHZE+bbYi9dFvFuxqru7GxUXPmzo4/6Prqj7P5jDqi36kt6f2u2Z5Nw4jjwVUPc/e
-        NyyP4uLl9QZjetBw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 26BFAA3B81;
-        Tue, 27 Jul 2021 08:23:27 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EA8FEDA8CC; Tue, 27 Jul 2021 10:20:42 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 10:20:42 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Message-ID: <20210727082042.GI5047@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Jianan <huangjianan@oppo.com>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
- <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
- <20210725221639.426565-1-agruenba@redhat.com>
- <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
- <20210726110611.459173-1-agruenba@redhat.com>
- <20210726121702.GA528@lst.de>
+        id S235915AbhG0IVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:21:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55220 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235629AbhG0IVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 04:21:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE487610A7;
+        Tue, 27 Jul 2021 08:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627374084;
+        bh=Jo2YoktZXTB3TdSFh8pxyFvdMsYz7fo2gCON1BnBrLA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PoFu9gDS127p5vKfHa2MG0BMMMBEPMeBsbXA2qR+KuCRtUP1Jv/Xyew2fdHMKqZSS
+         J4OAI15N03/dXlyvKWiZO5/pXfjqnnWwQdCJnXiF8JMgJA9dKTP0LRfORTNkvT7uYG
+         HKVGogk9WLpSEtZzaE+9ulGZb2a8f2hi6N67t3TCGsqAaiVoh8UUzkzJC6p1lDC+oY
+         2Bqni8EHcR4cyZzScm56MrF4G62XlKmf5rhNbXGAqSsJHYj9XECNLT7vMMicruGYjy
+         xQ8qvHmtBt4LFBET7uKdJPaDjRq6OTrk+klm1Vx+aRQxpM6YLGGX2Nj1smnAH/2eDs
+         0L+t2ETTOAZpQ==
+Received: by mail-wr1-f50.google.com with SMTP id h14so6166045wrx.10;
+        Tue, 27 Jul 2021 01:21:24 -0700 (PDT)
+X-Gm-Message-State: AOAM530VZC5TbNckLL2a45ZwlVf605nfZN5q1HAYWIDEbqE2pkgPffae
+        IxOAb5mdt3qen3H5W/ZzT5GSr8F52GwsaHG8uwg=
+X-Google-Smtp-Source: ABdhPJxT+Hm4V40nfAGAupZHhEYk9xletb+W0gHabQacQlQUBljdCdtnazoSDFlFmTXrKryEgsU+QpKGK2oy+ZOoJFg=
+X-Received: by 2002:adf:f7c5:: with SMTP id a5mr4588576wrq.99.1627374083332;
+ Tue, 27 Jul 2021 01:21:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726121702.GA528@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20210708232522.3118208-1-ndesaulniers@google.com>
+ <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
+ <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
+ <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
+ <CAK7LNATLy2F-2zkHm4ENSufBT_o5p=9jc5k1K-xOV8cQf7kKDw@mail.gmail.com>
+ <87r1fkizxl.fsf@disp2133> <CAMuHMdVzNFqAdxK+QTp7ub7LyhDL_3GbVMoAah_s3nGuJ5JN_Q@mail.gmail.com>
+ <CAK8P3a2kb2Zzgd1wvi4m2fJeHWA9aONXUriEVfnsOfYTquJ3eA@mail.gmail.com> <CAMuHMdWDDM5pugT8KkP7cRQ4jOGJ43aUO1mic16Bsiv5eN7+Tg@mail.gmail.com>
+In-Reply-To: <CAMuHMdWDDM5pugT8KkP7cRQ4jOGJ43aUO1mic16Bsiv5eN7+Tg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Jul 2021 10:21:07 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1G4pFR+R2=DiMALLpCn=24=KDfBBeycf_THLk_GoPnbQ@mail.gmail.com>
+Message-ID: <CAK8P3a1G4pFR+R2=DiMALLpCn=24=KDfBBeycf_THLk_GoPnbQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
+ LLVM=1 LLVM_IAS=1
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 02:17:02PM +0200, Christoph Hellwig wrote:
-> > Subject: iomap: Support tail packing
-> 
-> I can't say I like this "tail packing" language here when we have the
-> perfectly fine inline wording.  Same for various comments in the actual
-> code.
+On Tue, Jul 27, 2021 at 9:55 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Tue, Jul 27, 2021 at 9:49 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > make -skj30 kernel/ mm/ init/
+> >
+> > works with the normal Makefile, but fails spectacularly with my nested
+> > GNUmakefile because it starts multiple sub-processes that each try to
+> > build the same preparation files (I did not try your version).
+>
+> Seems to work fine with mine...
+>
 
-Yes please, don't call it tail-packing when it's an inline extent, we'll
-use that for btrfs eventually and conflating the two terms has been
-cofusing users. Except reiserfs, no linux filesystem does tail-packing.
+Ok, nevermind. I tried your version and it works for me too. The next
+time I get annoyed by this, I'll figure out what I did wrong then;-)
+
+       Arnd
