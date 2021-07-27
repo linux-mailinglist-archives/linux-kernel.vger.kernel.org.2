@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6117A3D705B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C143D705D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235746AbhG0H05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:26:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36498 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235504AbhG0H04 (ORCPT
+        id S235797AbhG0H1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:27:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235504AbhG0H1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:26:56 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 145C322103;
-        Tue, 27 Jul 2021 07:26:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1627370816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BIRDRD9L4czToF86gzK0EPiIaFDmmYi9JHkmXI3ngzQ=;
-        b=nJqvAQvqUxZZ5iCL8QYWjWGPVyDkMYBjRJVMYG19s7WhBLGIG4Kg9PRrCjcMUHPW5yFHCM
-        2mF/l/4bgDhpI+TWQPFm3lrdvLLUZBwX8OZdqxGQ4wX+eJqBw55B2LjMIA1DCAGo4Lvkm4
-        +SJtF34yqgIyDeVCvZyZaFocQovqWtE=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8A49BA3B81;
-        Tue, 27 Jul 2021 07:26:54 +0000 (UTC)
-Date:   Tue, 27 Jul 2021 09:26:54 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Yue Hu <huyue2@yulong.com>, linuxppc-dev@lists.ozlabs.org,
-        kexec@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
-        Ingo Molnar <mingo@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Xiongwei Song <sxwjean@gmail.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH printk v4 0/6] printk: remove safe buffers
-Message-ID: <YP+1PqaKTfZXHjmU@alley>
-References: <20210715193359.25946-1-john.ogness@linutronix.de>
+        Tue, 27 Jul 2021 03:27:52 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D730C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:27:51 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id a192-20020a1c7fc90000b0290253b32e8796so818119wmd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/JSQ9iAjUmvupL+O78RhX2jsG+c9d9EoH88rPq/rjwY=;
+        b=MTjJPnQ7jIjwmGh+kHSHpRA0mgzWSELrY4nPdNz+uA5HruEGW8kfcRv/3tqN+rdGNC
+         sGvKEPM6IyFrAxtdKlAgG7ixar/tGfpxS1G9OzIdrC3CH9lQFfeZ/svmv1G1XbV43byu
+         WIlCpo7A/IPHpJBXcvER+tYTS7OCf457s+97mnkWsVwHwfWDFuC3QF5bEOrejSUM4vA1
+         l/dp7bn+s+M+8Gz01JLbxJkr56GAcPY+jEJ5Ej6xSOEt6KTlKWGA8GAOM38ki15hcZLr
+         vC4zGWiv7N2TlxvbijWysir7ybaVSOgtycLYep0uGrak6FsuNTF6pQLprwFVpZ4HZ/4Z
+         257Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/JSQ9iAjUmvupL+O78RhX2jsG+c9d9EoH88rPq/rjwY=;
+        b=bjUG1/FgvJ/zjg/6AZf2Wndih2FcqtepCY4wi70D5ijV75eo/6Nt+KzktZDQIukGfU
+         mYDzOTzC1hOWxSivnmG7Imbi0rHxUyj5/gR8Ey8iaOF0MOY0Zlghd9OAgEOyDvNGlzto
+         SaWRchy3DdFxyeaRs2/wLySUcn+zKQ8A/Td2oFtcrfouOixyaLmcdJwhBRLnWO5buxpr
+         ayV+1mw39gdMXfB6EcFrEtjuyDp2zVHlGROh0+ZrT7bnKl+4eYROVYTHVgm+nIYn0psF
+         uPnF6wssEWuX2NXBwbse/5WKSyuwwukeFl4vsPtwmdJdsYIovf4TEEs2fF9WETj6ZKqf
+         u7og==
+X-Gm-Message-State: AOAM533QySGGA1W1O07y2n1cxfPD002ealU384k5ukVE5QGuzwMH8rPU
+        VkSVsP7jljZaLFHMA2endyY=
+X-Google-Smtp-Source: ABdhPJzFxtTUEQw7/j6HB8bB8Flr+dY/G9bAiwtewrF9JoJG2lL6JpgpSO/eK2cZ5dgIna33W+hR7g==
+X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr11067316wmq.175.1627370870229;
+        Tue, 27 Jul 2021 00:27:50 -0700 (PDT)
+Received: from [192.168.178.40] (ipbcc187b7.dynamic.kabel-deutschland.de. [188.193.135.183])
+        by smtp.gmail.com with ESMTPSA id t16sm1736564wmj.16.2021.07.27.00.27.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 00:27:49 -0700 (PDT)
+Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Yanko Kaneti <yaneti@declera.com>,
+        Brendan Higgins <brendanhiggins@google.com>
+References: <20210723212353.896343-1-bvanassche@acm.org>
+ <20210723212353.896343-3-bvanassche@acm.org>
+ <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
+ <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
+ <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
+ <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
+ <c9cb1f3b-0b3b-c571-4a51-e647f3c1e90a@gmail.com>
+ <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
+From:   Bodo Stroesser <bostroesser@gmail.com>
+Message-ID: <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
+Date:   Tue, 27 Jul 2021 09:27:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715193359.25946-1-john.ogness@linutronix.de>
+In-Reply-To: <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-07-15 21:39:53, John Ogness wrote:
-> Hi,
+On 27.07.21 05:17, Bart Van Assche wrote:
+> On 7/26/21 5:54 PM, Bodo Stroesser wrote:
+>> The new behavior can also cause trouble with existing store handlers.
+>> Example:
+>> The tcmu attribute files cmd_time_out and qfull_time_out just take a
+>> string containing the decimal formatted number of seconds of the
+>> timeout. Each number up to now had to be transferred in a single write.
+>> Assume the old value is 30 and we want to change to 19. If userspace
+>> writes byte by byte, you end up calling
+>> store(item, "1\0", 1) and then
+>> store(item, "19\9", 2).
+>> If these quick changes do not cause trouble in tcmu's scsi cmd handling,
+>> then think what happens, if userspace is interrupted between the two
+>> writes. Allowing to split the writes cause a loss of "atomicity".
 > 
-> Here is v4 of a series to remove the safe buffers. v3 can be
-> found here [0]. The safe buffers are no longer needed because
-> messages can be stored directly into the log buffer from any
-> context.
+>  From Documentation/filesystems/configfs.rst, for normal attributes:
+> "Configfs expects write(2) to store the entire buffer at once." In other
+> words, the behavior for partial writes is undocumented. My changes
+> preserve the behavior if a buffer is written in its entirety. I do not
+> agree that my changes can cause trouble for existing store handlers.
 > 
-> However, the safe buffers also provided a form of recursion
-> protection. For that reason, explicit recursion protection is
-> implemented for this series.
-> 
-> The safe buffers also implicitly provided serialization
-> between multiple CPUs executing in NMI context. This was
-> particularly necessary for the nmi_backtrace() output. This
-> serializiation is now preserved by using the printk cpulock.
-> 
-> With the removal of the safe buffers, there is no need for
-> extra NMI enter/exit tracking. So this is also removed
-> (which includes removing the config option CONFIG_PRINTK_NMI).
-> 
-> And finally, there are a few places in the kernel that need to
-> specify code blocks where all printk calls are to be deferred
-> printing. Previously the NMI tracking API was being (mis)used
-> for this purpose. This series introduces an official and
-> explicit interface for such cases. (Note that all deferred
-> printing will be removed anyway, once printing kthreads are
-> introduced.)
-> 
-> John Ogness (6):
->   lib/nmi_backtrace: explicitly serialize banner and regs
->   printk: track/limit recursion
->   printk: remove safe buffers
->   printk: remove NMI tracking
->   printk: convert @syslog_lock to mutex
->   printk: syslog: close window between wait and read
 
-The entire patchset has been committed into printk/linux.git,
-branch rework/printk_safe-removal.
+I agree. I was not precise.
 
-Note that I have updated the 4th patch as discussed, see
-https://lore.kernel.org/r/20210721120026.y3dqno24ahw4sazy@pathway.suse.cz
-https://lore.kernel.org/r/20210721130852.zrjnti6b3fwjgdzj@pathway.suse.cz
+What I meant is, that changing the source code in such a way, that
+writing a buffer in multiple writes works in general, could cause
+trouble in case userspace uses this.
 
-Best Regards,
-Petr
+But for special syscall sequences your changes still change the result
+on existing configfs files. Example:
+
+1) userspace program opens qfull_time_out
+2) userspace program writes "90", count=2 to set timeout to 90 sec
+3) userspace again wants to change timeout, so it writes "55", count=2
+
+Before the changes we end up with timeout being 55 seconds. After the
+change - due to data gathering - we finally have timeout 9055 seconds.
+
+BR,
+Bodo
