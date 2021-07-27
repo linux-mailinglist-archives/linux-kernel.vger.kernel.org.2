@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D503D74C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4343A3D74C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236509AbhG0MIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:08:45 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:7880 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbhG0MIp (ORCPT
+        id S236520AbhG0MKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:10:12 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:59568 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231868AbhG0MKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:08:45 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GYwTQ3j1dz80PK;
-        Tue, 27 Jul 2021 20:04:58 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 20:08:42 +0800
-Received: from [10.174.179.2] (10.174.179.2) by dggema773-chm.china.huawei.com
- (10.1.198.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 27
- Jul 2021 20:08:41 +0800
-Subject: Re: [PATCH v2] scsi: Fix the issue that the disk capacity set to zero
-To:     John Garry <john.garry@huawei.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <bvanassche@acm.org>, <yanaijie@huawei.com>,
-        <linfeilong@huawei.com>, <wubo40@huawei.com>
-References: <20210727034455.1494960-1-lijinlin3@huawei.com>
- <21370ef0-88c0-e0b7-6099-4e3ee7af502f@huawei.com>
-From:   lijinlin <lijinlin3@huawei.com>
-Message-ID: <b507879a-8bfe-ed3e-dba6-328d349d2f1f@huawei.com>
-Date:   Tue, 27 Jul 2021 20:08:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 27 Jul 2021 08:10:11 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BD1AF1C0B76; Tue, 27 Jul 2021 14:10:09 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 14:10:09 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Evan Green <evgreen@chromium.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Enable suspend-only swap spaces
+Message-ID: <20210727121009.GC32265@duo.ucw.cz>
+References: <20210709105012.v2.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+ <YOvpVRSMJe8NQuS2@dhcp22.suse.cz>
+ <CAE=gft7Qd3NSnoFYaXv=FkP0=Je85mNOKojuW5rhg6HkS=usLA@mail.gmail.com>
+ <YO55FCfsjalGicMo@dhcp22.suse.cz>
+ <CAE=gft5L062V_xE+Nj5UqNrjK9ET6PPtekJpnurzPGobWjpeUQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <21370ef0-88c0-e0b7-6099-4e3ee7af502f@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.2]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema773-chm.china.huawei.com (10.1.198.217)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="IpbVkmxF4tDyP/Kb"
+Content-Disposition: inline
+In-Reply-To: <CAE=gft5L062V_xE+Nj5UqNrjK9ET6PPtekJpnurzPGobWjpeUQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/7/27 16:48, John Garry wrote:
-> On 27/07/2021 04:44, lijinlin3@huawei.com wrote:
->> From: lijinlin <lijinlin3@huawei.com>
->>
->> After add physical volumes to a volume group through vgextend, kernel
->> will rescan partitions, which will read the capacity of the device.
->> If the device status is set to offline through sysfs at this time,
->> read capacity command will return a result which the host byte is
->> DID_NO_CONNECT, the capacity of the device will be set to zero in
->> read_capacity_error(). However, the capacity of the device can't be
->> reread after reset the device status to running, is still zero.
->>
->> Fix this issue by rescan device when the device state changes to
->> SDEV_RUNNING.
->>
->> Signed-off-by: lijinlin <lijinlin3@huawei.com>
->> Signed-off-by: Wu Bo <wubo40@huawei.com>
->> ---
->>   drivers/scsi/scsi_sysfs.c | 9 ++++++---
->>   1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
->> index 32489d25158f..ae9bfc658203 100644
->> --- a/drivers/scsi/scsi_sysfs.c
->> +++ b/drivers/scsi/scsi_sysfs.c
->> @@ -807,11 +807,14 @@ store_state_field(struct device *dev, struct device_attribute *attr,
->>       mutex_lock(&sdev->state_mutex);
->>       ret = scsi_device_set_state(sdev, state);
->>       /*
->> -     * If the device state changes to SDEV_RUNNING, we need to run
->> -     * the queue to avoid I/O hang.
->> +     * If the device state changes to SDEV_RUNNING, we need to
->> +     * rescan the device to revalidate it, and run the queue to
->> +     * avoid I/O hang.
->>        */
->> -    if (ret == 0 && state == SDEV_RUNNING)
->> +    if (ret == 0 && state == SDEV_RUNNING) {
->> +        scsi_rescan_device(dev);
->>           blk_mq_run_hw_queues(sdev->request_queue, true);
-> 
-> I am wondering does any of this need to be done with the device state mutex held?
-> 
-> Thanks,
-> John
 
-To ensure that the rescan is invoked only in the running state.
+--IpbVkmxF4tDyP/Kb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+Hi!
 
-> 
->> +    }
->>       mutex_unlock(&sdev->state_mutex);
->>         return ret == 0 ? count : -EINVAL;
->>
-> 
-> .
+> > > If I have
+> > > different security designs for swap space and hibernate, then even a
+> > > chance of some swap leaking into this region is a problem.
+> >
+> > Could you expand some more about the this part please?
+>=20
+> Offline attacks (ie manipulating storage from underneath the machine)
+> are a major concern when enabling both swap and hibernate. But the
+> approach of adding integrity to mitigate offline attacks may differ
+> between swap and hibernate in the interest of performance. Swap for
+> instance essentially needs a per-page dictionary of hashes for
+> integrity, since pages can be added and removed arbitrarily. Hibernate
+> however just needs a single hash across the entire image to provide
+> integrity. If you have swap leaking onto a region where you don't have
+> integrity enabled (because say you handled integrity at the image
+> level for hibernate, and at the block layer for swap), your swap
+> integrity story is compromised.
+
+If you want to encrypt/sign the hibernation, you likely should use
+uswsusp, and that means you can store hibernation image where (and
+how) you want it, without modifying kernel.
+
+See kernel/power/user.c .
+
+> I don't think this digs the design hole deeper. Yes, the ship on this
+> design has long ago sailed. But if we ever did try to dig ourselves
+> out of the swap/hibernate hole by providing new APIs to handle them
+> separately, this flag would serve as a good cutover to divert out of
+> the swap code and into the new shiny hibernate-only code. The APIs are
+> never going to be totally disentangled, so a clean cutover opportunity
+> is the best one can hope for.
+
+Is uswsusp the place that should provide clean cutover?
+
+Anyway, I acked the patch before, but it looks like it was
+mistake. I withdraw the ack.
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--IpbVkmxF4tDyP/Kb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYP/3oQAKCRAw5/Bqldv6
+8uTJAKCXT792Z09f+xBOfKt2W3D1q0/7swCfTgTOXUu8wbDT/wEminQRGN7O1vk=
+=h3cE
+-----END PGP SIGNATURE-----
+
+--IpbVkmxF4tDyP/Kb--
