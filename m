@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B293D7A65
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211103D7A71
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhG0QBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:01:44 -0400
-Received: from dd38112.kasserver.com ([85.13.154.158]:41750 "EHLO
-        dd38112.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhG0QBl (ORCPT
+        id S230488AbhG0QDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:03:36 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2040 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230130AbhG0QDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:01:41 -0400
-Received: from DESKTOP-E8BN1B0.localdomain (089144219199.atnat0028.highway.a1.net [89.144.219.199])
-        by dd38112.kasserver.com (Postfix) with ESMTPSA id 412C01F00A4F;
-        Tue, 27 Jul 2021 18:01:39 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 18:01:36 +0200
-From:   Filip Schauer <filip@mg6.at>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers core: Fix oops when driver probe fails
-Message-ID: <20210727160136.GA8122@DESKTOP-E8BN1B0.localdomain>
-References: <20210727112311.GA7645@DESKTOP-E8BN1B0.localdomain>
- <YP/8jqfW4+HHUL+X@kroah.com>
+        Tue, 27 Jul 2021 12:03:32 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RFpo5S001144;
+        Tue, 27 Jul 2021 12:03:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=HDvKu8WaTUsEecYqW26lv3BDYg3y0cz/yQMfDphWoYA=;
+ b=EVvUmCteqcDp5qGhIW19hs88Jz2qZWJlJBBrvPi2ljIwaqySnQXxy7DboHgLFGOVDUtF
+ xrFU8O2W1QAD4PdUpaD4zRI3Lnkjsog71j7jUeo6l3/y2rHxeJIEVSjplefFsuyf/KVy
+ xlJjEA6ZPskeo4D4o/AIbV9VRkm9Mc5pJQjIWCEh8dBo2HsnsliQQG49V/KlHUhLjqII
+ 8brzDUdW0W7257QkbLwDDJSKmOsUOY1+ij4hsQs9EiZCuEilVVjh+7pLcgE3HGZ+sqis
+ oBmSYDFaHpTs9ufWcmAQrxL5r1a1TLLe7sM722Ll9zxfkxB0FHtqlgk2D5S/J7wcqxRF 8A== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a2n5n0au1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 12:03:23 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16RG24rF014388;
+        Tue, 27 Jul 2021 16:03:22 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma03wdc.us.ibm.com with ESMTP id 3a235mj9k1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 16:03:22 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16RG3Lg239190886
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jul 2021 16:03:21 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D1C9BE056;
+        Tue, 27 Jul 2021 16:03:21 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 05274BE063;
+        Tue, 27 Jul 2021 16:03:20 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.211.139.59])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Jul 2021 16:03:20 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peda@axentia.se, robh+dt@kernel.org,
+        Eddie James <eajames@linux.ibm.com>
+Subject: [PATCH v2 0/2] i2c: mux: pca954x: Support multiple devices on a single reset line
+Date:   Tue, 27 Jul 2021 11:03:13 -0500
+Message-Id: <20210727160315.15575-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YP/8jqfW4+HHUL+X@kroah.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: b-1ZKOAM0QSmdRfTC6xd-jpr7O-atpsd
+X-Proofpoint-ORIG-GUID: b-1ZKOAM0QSmdRfTC6xd-jpr7O-atpsd
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-27_10:2021-07-27,2021-07-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ phishscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0 mlxscore=0
+ clxscore=1015 malwarescore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107270093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 02:31:10PM +0200, Greg KH wrote:
-> On Tue, Jul 27, 2021 at 01:23:11PM +0200, Filip Schauer wrote:
-> > dma_range_map is freed to early, which might cause an oops when
-> > a driver probe fails.
-> >  Call trace:
-> >   is_free_buddy_page+0xe4/0x1d4
-> >   __free_pages+0x2c/0x88
-> >   dma_free_contiguous+0x64/0x80
-> >   dma_direct_free+0x38/0xb4
-> >   dma_free_attrs+0x88/0xa0
-> >   dmam_release+0x28/0x34
-> >   release_nodes+0x78/0x8c
-> >   devres_release_all+0xa8/0x110
-> >   really_probe+0x118/0x2d0
-> >   __driver_probe_device+0xc8/0xe0
-> >   driver_probe_device+0x54/0xec
-> >   __driver_attach+0xe0/0xf0
-> >   bus_for_each_dev+0x7c/0xc8
-> >   driver_attach+0x30/0x3c
-> >   bus_add_driver+0x17c/0x1c4
-> >   driver_register+0xc0/0xf8
-> >   __platform_driver_register+0x34/0x40
-> >   ...
-> > 
-> > This issue is introduced by commit d0243bbd5dd3 ("drivers core:
-> > Free dma_range_map when driver probe failed"). It frees
-> > dma_range_map before the call to devres_release_all, which is too
-> > early. The solution is to free dma_range_map only after
-> > devres_release_all.
-> > 
-> > Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe failed")
-> > Signed-off-by: Filip Schauer <filip@mg6.at>
-> > ---
-> >  drivers/base/dd.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> Oh, nice catch!  This is a v2, right?  Next time please be explicit :)
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Some systems connect several PCA954x devices to a single reset GPIO. For
+these devices to get out of reset and probe successfully, each device must
+defer the probe until the GPIO has been hogged. Accomplish this by
+attempting to grab a new "reset-shared-hogged" devicetree property, but
+expect it to fail with EPROBE_DEFER or EBUSY.
 
-Thank you for adding the patch.
-And my bad, this is indeed a PATCH v2.
-I didn't know about the patch revisioning convention.
-I'll be more explicit next time.
+Changes since v1:
+ - Rework the patch to use a new devicetree property that we don't expect to
+   successfully obtain
 
-Thanks,
+Eddie James (2):
+  dt-bindings: i2c: i2c-mux-pca954x: Define the reset-shared-hogged gpio
+  i2c: mux: pca954x: Support multiple devices on a single reset line
 
-Filip Schauer
+ .../bindings/i2c/i2c-mux-pca954x.yaml         |  5 ++
+ drivers/i2c/muxes/i2c-mux-pca954x.c           | 46 +++++++++++++++----
+ 2 files changed, 42 insertions(+), 9 deletions(-)
+
+-- 
+2.27.0
+
