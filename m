@@ -2,188 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAB23D7BD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3796A3D7BE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231844AbhG0RIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:08:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbhG0RIO (ORCPT
+        id S229809AbhG0RMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:12:23 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36776 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhG0RMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:08:14 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8A5C0613C1;
-        Tue, 27 Jul 2021 10:08:14 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id b6so135172pji.4;
-        Tue, 27 Jul 2021 10:08:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BVHgu7P3jLeGAr6c6jiQnBbjUeZUVb7sIei9a5S3h4I=;
-        b=WlJF/vK63/XIsVPFZZbU8flmm44UA1jL314rnLW262EpDVoPB9cTQj6Z4RfXNNLhDh
-         UfKVkUV/CYv+zSH/zFfA27/zxJu3yw5NSqyUZXoe5QMLRuA0ZHe18NHtxElNv0DnxPNO
-         N2vPh0m0Br9AyEGzjZdMs6oZU6Dq5zPdnK2iONG0uy/89OmDWbzQUv11xpjddkqIa67C
-         C07pXdBgccE246MVnZJGqbLi6t7lpMZWTg9bwBl3Et58UqCrPbv67UILbNN/iMxPfmDX
-         IkhqJgV/qkoOPElbFvC/qJLQm2FLSpyZK8TQ0fKmrV6j1gDm37k9e3G4i3ekQCHIvTYS
-         rM7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BVHgu7P3jLeGAr6c6jiQnBbjUeZUVb7sIei9a5S3h4I=;
-        b=Wqh99LH6tyXwapperrFLREdnepVxkPV8Al7wMQGFK0g2XOFBB9KndsViQZajOwuiCR
-         wGLiPAXuc9u9RcKpdYImvs/8WGv2/0KlXOAcBy4JRHNeWSKYAdQu4exGXbihcNQTl9YT
-         LNkJXaNdjE4uVAOmvNHwJkvi1xLOUAtLDRB80WGSuOR9CtYMpv/pKntfcJgGZ7Qkb9EO
-         y98X/PZyfWhqaot4/rAFwP1Z8XZp/5pyIh8H3CwrKKOBk1qx+Xd37WKBxzc5Sax3lTkl
-         pniub+GyzopbowbKeKxFNBkukhUQIQ2DTWfOWwxop8xgKwNkPtn310Zj0XYzZVmOM5TI
-         6w0A==
-X-Gm-Message-State: AOAM531s8IBa6XMcziSaGUwVHByODJ9hG4ZK66flQ4C2KBBA0Ik3PiR+
-        fPwyiHFgY8vRuG2Qs5o2RLQ=
-X-Google-Smtp-Source: ABdhPJwgh/neo2jmD1LpwIXqSJvOglGqEJmFMXn3xH8aasrwoX8uvjwSl79+t+wVSv7dm/Tr37MTng==
-X-Received: by 2002:a17:90b:203:: with SMTP id fy3mr1447375pjb.115.1627405693767;
-        Tue, 27 Jul 2021 10:08:13 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id bj15sm3483420pjb.6.2021.07.27.10.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 10:08:12 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 13/13] drm/msm/gem: Mark active before pinning
-Date:   Tue, 27 Jul 2021 10:11:29 -0700
-Message-Id: <20210727171143.2549475-14-robdclark@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210727171143.2549475-1-robdclark@gmail.com>
-References: <20210727171143.2549475-1-robdclark@gmail.com>
+        Tue, 27 Jul 2021 13:12:22 -0400
+Received: from [192.168.1.87] (unknown [223.178.63.20])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 568A720B36E0;
+        Tue, 27 Jul 2021 10:12:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 568A720B36E0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1627405941;
+        bh=SA1uytTohfPS09vx4QO/TWTuenLvg33aFqdSrqEIIWs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=HFePqSvJZ9P2MN0jt3Rlcy7DBfZ98Nn/hZm95j8sO6h/iWvgNZY8vGlAi505sg9RK
+         QoHvllIEl6SGhtY7L5J3akAfJuNxdb5Bt7Qux/GojR/pt0QnqZdr8D23+Iw6RN0h/X
+         ofscgWfjNgiJqFYPKB3ui5BIEbPm+NW27IngAE9o=
+Subject: Re: [PATCH v3] hyperv: root partition faults writing to VP ASSIST MSR
+ PAGE
+To:     Sunil Muthuswamy <sunilmut@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "viremana@linux.microsoft.com" <viremana@linux.microsoft.com>,
+        "nunodasneves@linux.microsoft.com" <nunodasneves@linux.microsoft.com>
+References: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
+ <MW4PR21MB20021A51BE9960E10C08FE6FC0E99@MW4PR21MB2002.namprd21.prod.outlook.com>
+From:   Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Message-ID: <1a14d92d-c666-72ba-6c2d-e4385e36a056@linux.microsoft.com>
+Date:   Tue, 27 Jul 2021 22:42:15 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <MW4PR21MB20021A51BE9960E10C08FE6FC0E99@MW4PR21MB2002.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On 27-07-2021 22:15, Sunil Muthuswamy wrote:
+> From: Praveen Kumar <kumarpraveen@linux.microsoft.com> Sent: Tuesday, July 27, 2021 3:41 AM
+>>
+>> For Root partition the VP assist pages are pre-determined by the
+>> hypervisor. The Root kernel is not allowed to change them to
+>> different locations. And thus, we are getting below stack as in
+>> current implementation Root is trying to perform write to specific
+>> MSR.
+>>
+>> [ 2.778197] unchecked MSR access error: WRMSR to 0x40000073 (tried to
+>> write 0x0000000145ac5001) at rIP: 0xffffffff810c1084
+>> (native_write_msr+0x4/0x30)
+>> [ 2.784867] Call Trace:
+>> [ 2.791507] hv_cpu_init+0xf1/0x1c0
+>> [ 2.798144] ? hyperv_report_panic+0xd0/0xd0
+>> [ 2.804806] cpuhp_invoke_callback+0x11a/0x440
+>> [ 2.811465] ? hv_resume+0x90/0x90
+>> [ 2.818137] cpuhp_issue_call+0x126/0x130
+>> [ 2.824782] __cpuhp_setup_state_cpuslocked+0x102/0x2b0
+>> [ 2.831427] ? hyperv_report_panic+0xd0/0xd0
+>> [ 2.838075] ? hyperv_report_panic+0xd0/0xd0
+>> [ 2.844723] ? hv_resume+0x90/0x90
+>> [ 2.851375] __cpuhp_setup_state+0x3d/0x90
+>> [ 2.858030] hyperv_init+0x14e/0x410
+>> [ 2.864689] ? enable_IR_x2apic+0x190/0x1a0
+>> [ 2.871349] apic_intr_mode_init+0x8b/0x100
+>> [ 2.878017] x86_late_time_init+0x20/0x30
+>> [ 2.884675] start_kernel+0x459/0x4fb
+>> [ 2.891329] secondary_startup_64_no_verify+0xb0/0xbb
+>>
+>> Since, the hypervisor already provides the VP assist page for root
+>> partition, we need to memremap the memory from hypervisor for root
+>> kernel to use. The mapping is done in hv_cpu_init during bringup and
+>> is unmaped in hv_cpu_die during teardown.
+>>
+>> Signed-off-by: Praveen Kumar <kumarpraveen@linux.microsoft.com>
+>> ---
+>>  arch/x86/hyperv/hv_init.c          | 61 +++++++++++++++++++++---------
+>>  arch/x86/include/asm/hyperv-tlfs.h |  9 +++++
+>>  2 files changed, 53 insertions(+), 17 deletions(-)
+>>
+>> changelog:
+>> v1: initial patch
+>> v2: commit message changes, removal of HV_MSR_APIC_ACCESS_AVAILABLE
+>>     check and addition of null check before reading the VP assist MSR
+>>     for root partition
+>> v3: added new data structure to handle VP ASSIST MSR page and done
+>>     handling in hv_cpu_init and hv_cpu_die
+>>
+>> ---
+>> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+>> index 6f247e7e07eb..b859e42b4943 100644
+>> --- a/arch/x86/hyperv/hv_init.c
+>> +++ b/arch/x86/hyperv/hv_init.c
+>> @@ -44,6 +44,7 @@ EXPORT_SYMBOL_GPL(hv_vp_assist_page);
+>>
+>>  static int hv_cpu_init(unsigned int cpu)
+>>  {
+>> +	union hv_vp_assist_msr_contents msr;
+>>  	struct hv_vp_assist_page **hvp = &hv_vp_assist_page[smp_processor_id()];
+>>  	int ret;
+>>
+>> @@ -54,27 +55,41 @@ static int hv_cpu_init(unsigned int cpu)
+>>  	if (!hv_vp_assist_page)
+>>  		return 0;
+> 
+> Not related to this code, but I am not sure about the usefulness of this NULL check as
+> we have already accessed this pointer above. If it was NULL, things would already
+> blow up.
+> 
+What I understood, hvp will point to "hv_vp_assist_page stack address + smp_processor_id()"
+So, we are good, and this NULL check is required, as in when we de-reference the location, later in the code, it may fault.
+Please do correct me if my understanding is wrong here. Thanks.
 
-Mark all the bos in the submit as active, before pinning, to prevent
-evicting a buffer in the same submit to make room for a buffer earlier
-in the table.
+>>
+>> -	/*
+>> -	 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's Section
+>> -	 * 5.2.1 "GPA Overlay Pages"). Here it must be zeroed out to make sure
+>> -	 * we always write the EOI MSR in hv_apic_eoi_write() *after* the
+>> -	 * EOI optimization is disabled in hv_cpu_die(), otherwise a CPU may
+>> -	 * not be stopped in the case of CPU offlining and the VM will hang.
+>> -	 */
+>> -	if (!*hvp) {
+>> -		*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
+>> +	if (hv_root_partition) {
+>> +		/*
+>> +		 * For Root partition we get the hypervisor provided VP ASSIST
+>> +		 * PAGE, instead of allocating a new page.
+>> +		 */
+>> +		rdmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
+>> +
+>> +		/* remapping to root partition address space */
+> 
+> Better to leave out comments that are obvious from the code.
+> 
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gem.c        |  2 --
- drivers/gpu/drm/msm/msm_gem_submit.c | 28 ++++++++++++++++++++--------
- 2 files changed, 20 insertions(+), 10 deletions(-)
+Sure will remove the comment here. Thanks.
 
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index af199ef53d2f..15b1804fa64e 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -131,7 +131,6 @@ static struct page **get_pages(struct drm_gem_object *obj)
- 		if (msm_obj->flags & (MSM_BO_WC|MSM_BO_UNCACHED))
- 			sync_for_device(msm_obj);
- 
--		GEM_WARN_ON(msm_obj->active_count);
- 		update_inactive(msm_obj);
- 	}
- 
-@@ -815,7 +814,6 @@ void msm_gem_active_get(struct drm_gem_object *obj, struct msm_gpu *gpu)
- 	GEM_WARN_ON(!msm_gem_is_locked(obj));
- 	GEM_WARN_ON(msm_obj->madv != MSM_MADV_WILLNEED);
- 	GEM_WARN_ON(msm_obj->dontneed);
--	GEM_WARN_ON(!msm_obj->sgt);
- 
- 	if (msm_obj->active_count++ == 0) {
- 		mutex_lock(&priv->mm_lock);
-diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
-index c2ecec5b11c4..fc25a85eb1ca 100644
---- a/drivers/gpu/drm/msm/msm_gem_submit.c
-+++ b/drivers/gpu/drm/msm/msm_gem_submit.c
-@@ -24,7 +24,8 @@
- /* make sure these don't conflict w/ MSM_SUBMIT_BO_x */
- #define BO_VALID    0x8000   /* is current addr in cmdstream correct/valid? */
- #define BO_LOCKED   0x4000   /* obj lock is held */
--#define BO_PINNED   0x2000   /* obj is pinned and on active list */
-+#define BO_ACTIVE   0x2000   /* active refcnt is held */
-+#define BO_PINNED   0x1000   /* obj is pinned and on active list */
- 
- static struct msm_gem_submit *submit_create(struct drm_device *dev,
- 		struct msm_gpu *gpu,
-@@ -239,10 +240,11 @@ static void submit_cleanup_bo(struct msm_gem_submit *submit, int i,
- 	struct drm_gem_object *obj = &submit->bos[i].obj->base;
- 	unsigned flags = submit->bos[i].flags & cleanup_flags;
- 
--	if (flags & BO_PINNED) {
-+	if (flags & BO_PINNED)
- 		msm_gem_unpin_iova_locked(obj, submit->aspace);
-+
-+	if (flags & BO_ACTIVE)
- 		msm_gem_active_put(obj);
--	}
- 
- 	if (flags & BO_LOCKED)
- 		dma_resv_unlock(obj->resv);
-@@ -252,7 +254,7 @@ static void submit_cleanup_bo(struct msm_gem_submit *submit, int i,
- 
- static void submit_unlock_unpin_bo(struct msm_gem_submit *submit, int i)
- {
--	submit_cleanup_bo(submit, i, BO_PINNED | BO_LOCKED);
-+	submit_cleanup_bo(submit, i, BO_PINNED | BO_ACTIVE | BO_LOCKED);
- 
- 	if (!(submit->bos[i].flags & BO_VALID))
- 		submit->bos[i].iova = 0;
-@@ -356,6 +358,18 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
- 
- 	submit->valid = true;
- 
-+	/*
-+	 * Increment active_count first, so if under memory pressure, we
-+	 * don't inadvertently evict a bo needed by the submit in order
-+	 * to pin an earlier bo in the same submit.
-+	 */
-+	for (i = 0; i < submit->nr_bos; i++) {
-+		struct drm_gem_object *obj = &submit->bos[i].obj->base;
-+
-+		msm_gem_active_get(obj, submit->gpu);
-+		submit->bos[i].flags |= BO_ACTIVE;
-+	}
-+
- 	for (i = 0; i < submit->nr_bos; i++) {
- 		struct drm_gem_object *obj = &submit->bos[i].obj->base;
- 		uint64_t iova;
-@@ -367,8 +381,6 @@ static int submit_pin_objects(struct msm_gem_submit *submit)
- 		if (ret)
- 			break;
- 
--		msm_gem_active_get(obj, submit->gpu);
--
- 		submit->bos[i].flags |= BO_PINNED;
- 
- 		if (iova == submit->bos[i].iova) {
-@@ -502,7 +514,7 @@ static void submit_cleanup(struct msm_gem_submit *submit, bool error)
- 	unsigned i;
- 
- 	if (error)
--		cleanup_flags |= BO_PINNED;
-+		cleanup_flags |= BO_PINNED | BO_ACTIVE;
- 
- 	for (i = 0; i < submit->nr_bos; i++) {
- 		struct msm_gem_object *msm_obj = submit->bos[i].obj;
-@@ -520,7 +532,7 @@ void msm_submit_retire(struct msm_gem_submit *submit)
- 		struct drm_gem_object *obj = &submit->bos[i].obj->base;
- 
- 		msm_gem_lock(obj);
--		submit_cleanup_bo(submit, i, BO_PINNED);
-+		submit_cleanup_bo(submit, i, BO_PINNED | BO_ACTIVE);
- 		msm_gem_unlock(obj);
- 		drm_gem_object_put(obj);
- 	}
--- 
-2.31.1
+>> +		if (!*hvp)
+>> +			*hvp = memremap(msr.guest_physical_address <<
+>> +					HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT,
+>> +					PAGE_SIZE, MEMREMAP_WB);
+>> +	} else {
+>> +		/*
+>> +		 * The VP ASSIST PAGE is an "overlay" page (see Hyper-V TLFS's
+>> +		 * Section 5.2.1 "GPA Overlay Pages"). Here it must be zeroed
+>> +		 * out to make sure we always write the EOI MSR in
+>> +		 * hv_apic_eoi_write() *after* theEOI optimization is disabled
+>> +		 * in hv_cpu_die(), otherwise a CPU may not be stopped in the
+>> +		 * case of CPU offlining and the VM will hang.
+>> +		 */
+>> +		if (!*hvp)
+>> +			*hvp = __vmalloc(PAGE_SIZE, GFP_KERNEL | __GFP_ZERO);
+>> +
+>>  	}
+>>
+>> -	if (*hvp) {
+>> -		u64 val;
+>> +	WARN_ON(!(*hvp));
+>>
+>> -		val = vmalloc_to_pfn(*hvp);
+>> -		val = (val << HV_X64_MSR_VP_ASSIST_PAGE_ADDRESS_SHIFT) |
+>> -			HV_X64_MSR_VP_ASSIST_PAGE_ENABLE;
+>> +	if (*hvp) {
+>> +		if (!hv_root_partition)
+>> +			msr.guest_physical_address = vmalloc_to_pfn(*hvp);
+> 
+> It's better to move this above in the else section where we are 'vmalloc' the page.
+> If you just check for the NULL for the page above and return if NULL, that should
+> clean up the code as well.
+> 
+>>
+
+Ok, I was trying to make code cleaner, but I would have done better.
+
+>> -		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, val);
+>> +		msr.enable = 1;
+> 
+> We should also set the reserved bits to 0.
+> 
+>> +		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, msr.as_uint64);
+>>  	}
+>> -
+>>  	return 0;
+>>  }
+>>
+>> @@ -170,9 +185,21 @@ static int hv_cpu_die(unsigned int cpu)
+>>
+>>  	hv_common_cpu_die(cpu);
+>>
+>> -	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
+>> +	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
+>>  		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
+> 
+> Its better to read the MSR, set the enable bit to 0 and write it back.
+> 
+
+Ok. probably this is the same code, which is being done in hv_cpu_init just with enable bit set to 0.
+Let me try of a API / macro which can be used.
+
+>>
+>> +		if (hv_root_partition) {
+>> +			/*
+>> +			 * For Root partition the VP ASSIST page is mapped to
+>> +			 * hypervisor provided page, and thus, we unmap the
+>> +			 * page here and nullify it, so that in future we have
+>> +			 * correct page address mapped in hv_cpu_init
+>> +			 */
+>> +			memunmap(hv_vp_assist_page[cpu]);
+>> +			hv_vp_assist_page[cpu] = NULL;
+>> +		}
+> 
+> For the guest case, where are we freeing the page?
+> 
+
+Yes, this I have observed,and looks like we don't want to allocate the page every-time, instead reuse the same.
+If someone in the list can please provide some information or history behind this, it would give some insights. But for now,
+I am leaving it as it is.
+
+>> +	}
+>> +
+>>  	if (hv_reenlightenment_cb == NULL)
+>>  		return 0;
+>>
+>> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+>> index f1366ce609e3..2e4e87046aa7 100644
+>> --- a/arch/x86/include/asm/hyperv-tlfs.h
+>> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+>> @@ -288,6 +288,15 @@ union hv_x64_msr_hypercall_contents {
+>>  	} __packed;
+>>  };
+>>
+>> +union hv_vp_assist_msr_contents {
+>> +	u64 as_uint64;
+>> +	struct {
+>> +		u64 enable:1;
+>> +		u64 reserved:11;
+>> +		u64 guest_physical_address:52;
+> 
+> 
+> This field contains the page frame number and not the physical address. It is also
+> better to drop the phrase 'guest' from the name as this applies to root as well.
+> 
+
+Ack.
+
+> - Sunil
+
+
+Regards,
+
+~Praveen.
+> 
 
