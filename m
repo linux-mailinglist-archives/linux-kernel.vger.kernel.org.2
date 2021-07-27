@@ -2,113 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05B43D732C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B31C3D732F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236288AbhG0KZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:25:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:37220 "EHLO foss.arm.com"
+        id S236246AbhG0K12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:27:28 -0400
+Received: from mga05.intel.com ([192.55.52.43]:39424 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236186AbhG0KZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:25:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0245E1FB;
-        Tue, 27 Jul 2021 03:25:58 -0700 (PDT)
-Received: from [10.57.36.146] (unknown [10.57.36.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 513083F73D;
-        Tue, 27 Jul 2021 03:25:56 -0700 (PDT)
-Subject: Re: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to
- system pm callbacks
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        srimuc <srimuc@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <955a3034-f7e7-f8f9-4abd-b65efbfbb404@arm.com>
-Date:   Tue, 27 Jul 2021 11:25:50 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S236103AbhG0K11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:27:27 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="297989353"
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
+   d="scan'208";a="297989353"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 03:27:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
+   d="scan'208";a="498751056"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 27 Jul 2021 03:27:25 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m8KJ2-0006hj-Mt; Tue, 27 Jul 2021 10:27:24 +0000
+Date:   Tue, 27 Jul 2021 18:27:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:for-next/clang-fallthrough] BUILD SUCCESS WITH
+ WARNING 6a8c3492420661bf905f0f1f4cddde0ec8bde6d8
+Message-ID: <60ffdf82.NaJT3DbDsHUcOEjD%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-27 10:33, Sai Prakash Ranjan wrote:
-> Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
-> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
-> such cases, we would need to drop the XO clock vote in unprepare call and
-> this unprepare callback for XO is in RPMh (Resource Power Manager-Hardened)
-> clock driver which controls RPMh managed clock resources for new QTI SoCs
-> and is a blocking call.
-> 
-> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
-> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
-> operations like map and unmap can be in atomic context and are in fast
-> path, add this prepare and unprepare call to drop the XO vote only for
-> system pm callbacks since it is not a fast path and we expect the system
-> to enter deep sleep states with system pm as opposed to runtime pm.
-> 
-> This is a similar sequence of clock requests (prepare,enable and
-> disable,unprepare) in arm-smmu probe and remove.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git for-next/clang-fallthrough
+branch HEAD: 6a8c3492420661bf905f0f1f4cddde0ec8bde6d8  Revert "Revert "Makefile: Enable -Wimplicit-fallthrough for Clang""
 
-Nope. We call arm_smmu_rpm_get(), which may resume the device, from 
-atomic contexts. clk_prepare() may sleep. This doesn't work.
+Warning reports:
 
-Robin.
+https://lore.kernel.org/lkml/202107271024.8DXlxJao-lkp@intel.com
 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->   drivers/iommu/arm/arm-smmu/arm-smmu.c | 20 ++++++++++++++++++--
->   1 file changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> index d3c6f54110a5..9561ba4c5d39 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-> @@ -2277,6 +2277,13 @@ static int __maybe_unused arm_smmu_runtime_suspend(struct device *dev)
->   
->   static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
->   {
-> +	int ret;
-> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
-> +
-> +	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
-> +	if (ret)
-> +		return ret;
-> +
->   	if (pm_runtime_suspended(dev))
->   		return 0;
->   
-> @@ -2285,10 +2292,19 @@ static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
->   
->   static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
->   {
-> +	int ret = 0;
-> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
-> +
->   	if (pm_runtime_suspended(dev))
-> -		return 0;
-> +		goto clk_unprepare;
->   
-> -	return arm_smmu_runtime_suspend(dev);
-> +	ret = arm_smmu_runtime_suspend(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +clk_unprepare:
-> +	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
-> +	return ret;
->   }
->   
->   static const struct dev_pm_ops arm_smmu_pm_ops = {
-> 
+Warning in current branch:
+
+arch/mips/kernel/idle.c:206:3: warning: fallthrough annotation in unreachable code [-Wimplicit-fallthrough]
+
+Warning ids grouped by kconfigs:
+
+clang_recent_errors
+`-- mips-randconfig-r036-20210726
+    `-- arch-mips-kernel-idle.c:warning:fallthrough-annotation-in-unreachable-code
+
+elapsed time: 731m
+
+configs tested: 105
+configs skipped: 3
+
+gcc tested configs:
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc8313_rdb_defconfig
+powerpc                          g5_defconfig
+mips                           rs90_defconfig
+riscv                    nommu_virt_defconfig
+m68k                        mvme147_defconfig
+sh                     magicpanelr2_defconfig
+powerpc                 linkstation_defconfig
+sparc                               defconfig
+sh                          r7785rp_defconfig
+ia64                          tiger_defconfig
+arm                           spitz_defconfig
+ia64                             alldefconfig
+mips                           gcw0_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                     tqm8555_defconfig
+mips                       rbtx49xx_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                 mpc8315_rdb_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210726
+i386                 randconfig-a003-20210726
+i386                 randconfig-a004-20210726
+i386                 randconfig-a002-20210726
+i386                 randconfig-a001-20210726
+i386                 randconfig-a006-20210726
+i386                 randconfig-a005-20210727
+i386                 randconfig-a003-20210727
+i386                 randconfig-a004-20210727
+i386                 randconfig-a002-20210727
+i386                 randconfig-a001-20210727
+i386                 randconfig-a006-20210727
+x86_64               randconfig-a011-20210727
+x86_64               randconfig-a016-20210727
+x86_64               randconfig-a013-20210727
+x86_64               randconfig-a014-20210727
+x86_64               randconfig-a012-20210727
+x86_64               randconfig-a015-20210727
+i386                 randconfig-a016-20210727
+i386                 randconfig-a013-20210727
+i386                 randconfig-a012-20210727
+i386                 randconfig-a011-20210727
+i386                 randconfig-a014-20210727
+i386                 randconfig-a015-20210727
+x86_64               randconfig-a003-20210726
+x86_64               randconfig-a006-20210726
+x86_64               randconfig-a001-20210726
+x86_64               randconfig-a005-20210726
+x86_64               randconfig-a004-20210726
+x86_64               randconfig-a002-20210726
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210726
+x86_64               randconfig-a011-20210726
+x86_64               randconfig-a016-20210726
+x86_64               randconfig-a013-20210726
+x86_64               randconfig-a014-20210726
+x86_64               randconfig-a012-20210726
+x86_64               randconfig-a015-20210726
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
