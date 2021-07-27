@@ -2,86 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736473D6FC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D07AB3D6FD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhG0Gzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
+        id S235331AbhG0G75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234349AbhG0Gzr (ORCPT
+        with ESMTP id S234349AbhG0G74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:55:47 -0400
+        Tue, 27 Jul 2021 02:59:56 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C6B8C061757;
-        Mon, 26 Jul 2021 23:55:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC1DC061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:59:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7KMq2+jcB6YY9vgnn3lHstykTQ5w8Jynl0Css7fXju4=; b=QxWtqTcavr9FiRdPY3+Gz0qwpL
-        19U78vOHJqIO3qKHxF5FnMeAVEKBc9iW/O2/KP3miLRpnN5ED0ICroruKyuwBXjlX6sh8eDW7EsMW
-        dXRrI750D4Y2pVTrfwUdZ1HAKE5wrEvyBp0BA6idpVnHfuEXsu4Pgxe0VomMaH6N9aZSiVKsxG8by
-        YXX048XDoqy/WLkomvELM+1ZdBOWf6WmGwxczgGXV7a/l9t78k/iqWgKJUo0eze1zmkh5XhgY8jze
-        6GAXhI0ZQHOJU2P31LzY3BJ5gvtyq97uFPeeKI/18PnpdJa+tAuobR+UnForVehWEO6OvaHjlv+eR
-        fN49w6CA==;
+        bh=rLX6zfIbPohDQgOEqSdMhpF/nS3w/rQF0kd2nfv5ba8=; b=B3PzSadfVZnTZx+2tm0HbiIcfN
+        FeXiyRnrP+46cHNbOX/SBqGwic7ZBnAEUwtCFLUecKTTcMRwMnd3PjM9Th5ZCfDK4PnWEE7+MyHQm
+        ISrsOSZRTgW3+v/wIPJlQjlLEzCrVEdfeD5A3sodfRWRLAlEOqiytB7OzrCMS3rTtkPavaxDlEKt1
+        Mk1v4mLsKBJ7YpdgteTnVFr00BiLAvP5LNbuO+uKWZedQYa15oHrq+2f1kDYcidtXenTYz04pmTZD
+        pcyk2J6ZGgvjp3lNsu2Vy4vcDEx/hXTiWuWZ2WPpVccUol/MvH52RPB7njnL/WG//RUM4Ejc8JnvL
+        zoA+3lew==;
 Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8GzA-00ElSs-BE; Tue, 27 Jul 2021 06:54:50 +0000
-Date:   Tue, 27 Jul 2021 07:54:40 +0100
+        id 1m8H2v-00EldT-KK; Tue, 27 Jul 2021 06:58:46 +0000
+Date:   Tue, 27 Jul 2021 07:58:33 +0100
 From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Halil Pasic <pasic@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com, david@redhat.com,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH 2/2] s390/vfio-ap: replace open coded locks for
- VFIO_GROUP_NOTIFY_SET_KVM notification
-Message-ID: <YP+tsMvpr7afAXl8@infradead.org>
-References: <20210719193503.793910-1-akrowiak@linux.ibm.com>
- <20210719193503.793910-3-akrowiak@linux.ibm.com>
- <20210721164550.5402fe1c.pasic@linux.ibm.com>
- <c3b80f79-6795-61ce-2dd1-f4cc7110e417@linux.ibm.com>
- <20210723162625.59cead27.pasic@linux.ibm.com>
- <5380652f-e68f-bbd0-10c0-c7d541065843@linux.ibm.com>
- <20210726223628.4d7759bf.pasic@linux.ibm.com>
- <20210726220317.GA1721383@nvidia.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Christoph Hellwig <hch@lst.de>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: Re: [ext3:generic_block_fiemap_removal 3/4] file.c:undefined
+ reference to `iomap_fiemap'
+Message-ID: <YP+umZ1/XX969ioH@infradead.org>
+References: <202107271057.xwwoSXFy-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726220317.GA1721383@nvidia.com>
+In-Reply-To: <202107271057.xwwoSXFy-lkp@intel.com>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 07:03:17PM -0300, Jason Gunthorpe wrote:
-> On Mon, Jul 26, 2021 at 10:36:28PM +0200, Halil Pasic wrote:
-> 
-> > You may end up with open and close running interleaved. What I'
-> > trying to say is, to my best knowledge, normally there is no
-> > you have to close it before you open it again rule for files.
-> 
-> This is an existing bug in this driver, I've fixed in the reflck series.
-> 
-> open_device/close_device will not run concurrently, or out of order,
-> afer it is fixed.
+Oops, hpfs now needs to select FS_IOMAP:
 
-Btw, while I've got all your attention, I've been struggling a bit with
-how that SET_KVM notifier is supposed to work.
-
-The i915 gvt code simplify assumes the notification registration hits
-the case of KVM already being active, and gets away with that as at
-least qemu ensures that the KVM_DEV_VFIO_GROUP_ADD has been called before
-the device FDs are opened.  Is that something we could generalize and
-never allow to actually notify for SET_KVM with non-null data beeing
-called at runtime and avoid the locking entirely?
-
-Similarly the removal case is a little weird: with Jason's work to only
-call a release function on the last reference drop which solves a lot
-of concurrency issues nicely  this still creates a nasty corner case
-with a sideband release under weird locking rules.   What prevents the
-vfio core from simply holding a refefeence to the struct kvm as long as
-the device is open to close that hole?
+diff --git a/fs/hpfs/Kconfig b/fs/hpfs/Kconfig
+index 2b36dc6f0a10..ec975f466877 100644
+--- a/fs/hpfs/Kconfig
++++ b/fs/hpfs/Kconfig
+@@ -2,6 +2,7 @@
+ config HPFS_FS
+ 	tristate "OS/2 HPFS file system support"
+ 	depends on BLOCK
++	select FS_IOMAP
+ 	help
+ 	  OS/2 is IBM's operating system for PC's, the same as Warp, and HPFS
+ 	  is the file system used for organizing files on OS/2 hard disk
