@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6803D743B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D873D743F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236475AbhG0LXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:23:17 -0400
-Received: from dd38112.kasserver.com ([85.13.154.158]:56852 "EHLO
-        dd38112.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236395AbhG0LXP (ORCPT
+        id S236488AbhG0LXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:23:46 -0400
+Received: from relmlor1.renesas.com ([210.160.252.171]:33438 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236284AbhG0LXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:23:15 -0400
-Received: from DESKTOP-E8BN1B0.localdomain (089144219199.atnat0028.highway.a1.net [89.144.219.199])
-        by dd38112.kasserver.com (Postfix) with ESMTPSA id 5F6281F01285;
-        Tue, 27 Jul 2021 13:23:14 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 13:23:11 +0200
-From:   Filip Schauer <filip@mg6.at>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers core: Fix oops when driver probe fails
-Message-ID: <20210727112311.GA7645@DESKTOP-E8BN1B0.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Tue, 27 Jul 2021 07:23:44 -0400
+X-IronPort-AV: E=Sophos;i="5.84,273,1620658800"; 
+   d="scan'208";a="88912051"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 27 Jul 2021 20:23:43 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 4D1A740104C7;
+        Tue, 27 Jul 2021 20:23:41 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v4 0/4] pin and gpio controller driver for Renesas RZ/G2L
+Date:   Tue, 27 Jul 2021 12:23:24 +0100
+Message-Id: <20210727112328.18809-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_range_map is freed to early, which might cause an oops when
-a driver probe fails.
- Call trace:
-  is_free_buddy_page+0xe4/0x1d4
-  __free_pages+0x2c/0x88
-  dma_free_contiguous+0x64/0x80
-  dma_direct_free+0x38/0xb4
-  dma_free_attrs+0x88/0xa0
-  dmam_release+0x28/0x34
-  release_nodes+0x78/0x8c
-  devres_release_all+0xa8/0x110
-  really_probe+0x118/0x2d0
-  __driver_probe_device+0xc8/0xe0
-  driver_probe_device+0x54/0xec
-  __driver_attach+0xe0/0xf0
-  bus_for_each_dev+0x7c/0xc8
-  driver_attach+0x30/0x3c
-  bus_add_driver+0x17c/0x1c4
-  driver_register+0xc0/0xf8
-  __platform_driver_register+0x34/0x40
-  ...
+Hi All,
 
-This issue is introduced by commit d0243bbd5dd3 ("drivers core:
-Free dma_range_map when driver probe failed"). It frees
-dma_range_map before the call to devres_release_all, which is too
-early. The solution is to free dma_range_map only after
-devres_release_all.
+This patch series adds pin and gpio controller driver for Renesas RZ/G2L
+SoC. RZ/G2L has a simple pin and GPIO controller combined similar to RZ/A2.
 
-Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe failed")
-Signed-off-by: Filip Schauer <filip@mg6.at>
----
- drivers/base/dd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This patch series applies on top of Linux 5.14-rc2
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index daeb9b5763ae..437cd61343b2 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -653,8 +653,6 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 	else if (drv->remove)
- 		drv->remove(dev);
- probe_failed:
--	kfree(dev->dma_range_map);
--	dev->dma_range_map = NULL;
- 	if (dev->bus)
- 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
- 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
-@@ -662,6 +660,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 	device_links_no_driver(dev);
- 	devres_release_all(dev);
- 	arch_teardown_dma_ops(dev);
-+	kfree(dev->dma_range_map);
-+	dev->dma_range_map = NULL;
- 	driver_sysfs_remove(dev);
- 	dev->driver = NULL;
- 	dev_set_drvdata(dev, NULL);
+Cheers,
+Prabhakar
+
+Changes for v4:
+* Dropped explicit masking and used GENMASK() instead
+* Used GENMASK() for the macros to be consistent
+* Dropped unused var in rzg2l_pinctrl_set_mux()
+* Added a devres action to disable clk on failure
+
+Changes for v3:
+* Dropped clock patch from the series (its queued up already in
+  renesas-clk-for-v5.15)
+* Included ACK form Geert for binding patch
+* Fixed review comments pointed by Geert
+* Fixed s/property/properties for patch 4/4 pointed by Sergei
+
+Changes for v2:
+* Added support for per pin pinmux support
+* Added support for pins to set configs
+* Dropped pfc-r9a07g044.c/h
+* Fixed review comments pointed by Geert
+* Included clock/reset changes
+* Included DTS/I changes
+
+v1: https://patchwork.kernel.org/project/linux-renesas-soc/cover/
+    20210616132641.29087-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+
+Lad Prabhakar (4):
+  dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add DT bindings for
+    RZ/G2L pinctrl
+  pinctrl: renesas: Add RZ/G2L pin and gpio controller driver
+  arm64: dts: renesas: r9a07g044: Add pinctrl node
+  arm64: dts: renesas: rzg2l-smarc: Add scif0 pins
+
+ .../pinctrl/renesas,rzg2l-pinctrl.yaml        |  155 +++
+ arch/arm64/boot/dts/renesas/r9a07g044.dtsi    |   13 +
+ arch/arm64/boot/dts/renesas/rzg2l-smarc.dtsi  |   10 +
+ drivers/pinctrl/renesas/Kconfig               |   11 +
+ drivers/pinctrl/renesas/Makefile              |    1 +
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       | 1175 +++++++++++++++++
+ include/dt-bindings/pinctrl/rzg2l-pinctrl.h   |   23 +
+ 7 files changed, 1388 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/renesas/pinctrl-rzg2l.c
+ create mode 100644 include/dt-bindings/pinctrl/rzg2l-pinctrl.h
+
+
+base-commit: 2734d6c1b1a089fb593ef6a23d4b70903526fe0c
 -- 
-2.25.1
+2.17.1
 
