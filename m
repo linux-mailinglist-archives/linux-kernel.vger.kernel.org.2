@@ -2,105 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC563D6FB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC083D6FB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbhG0Gv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235577AbhG0Gvx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:51:53 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F450C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 23:51:54 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1m8GwS-0006AV-A7; Tue, 27 Jul 2021 08:51:52 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1m8GwR-0007uw-BZ; Tue, 27 Jul 2021 08:51:51 +0200
-Date:   Tue, 27 Jul 2021 08:51:51 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Dan Murphy <dmurphy@ti.com>, kernel@pengutronix.de,
-        David Jander <david@protonic.nl>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net-next v1 1/1] net: phy: dp83td510: Add basic support
- for the DP83TD510 Ethernet PHY
-Message-ID: <20210727065151.l6qm36onaljol4sq@pengutronix.de>
-References: <20210723104218.25361-1-o.rempel@pengutronix.de>
- <YPrCiIz7baU26kLU@lunn.ch>
- <20210723170848.lh3l62l7spcyphly@pengutronix.de>
- <YPsGddTXtk/Hinmp@lunn.ch>
- <20210726121851.u3flif2opshwgz5e@pengutronix.de>
- <YP63NBaurhQ2Itse@lunn.ch>
+        id S235297AbhG0GwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:52:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235471AbhG0GwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 02:52:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8C9E610A7;
+        Tue, 27 Jul 2021 06:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627368731;
+        bh=1shv90NXbVnI0EhBrF+Di0h2ODnyb3HL6k1slRT7B2Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TAMBdQGIXiYimN4KiU03WNk34Xj4T9BdDaCUEhyE2ZlNDHEGap0JfqhKdBHOQ+zvh
+         7kVFBc7vt0vsY6C4FjqLLDD0LS8Sz2FijpzcuPXT0R98PdKPbZ7O00B98+wect0AAR
+         JPSAsIBKr90OMnXjpwFFSkgzibrkIOG7+wKCWDuzSKZr2tyUUHDtyPYYvDmkidkD60
+         hqRQ2hD7BToNeF9ZmbH58RJDGIXYBzJjCtjcHxlugH4fuLRs8/AUbYgSX9SIINL2OW
+         mr1D35eNJBSNSwfeKYXqt+0ldOgnJgfgnpM7YousGlDIgQan9nqlzk6vUFx8ygYBip
+         3qBs4nNd6FS2Q==
+Date:   Tue, 27 Jul 2021 08:52:05 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v7 06/10] dt-bindings: phy: Add bindings for HiKey 970
+ PCIe PHY
+Message-ID: <20210727085205.5aafb5c9@coco.lan>
+In-Reply-To: <20210727015020.403bbf73@coco.lan>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org>
+        <946f2426bc542638240980931eae924c57f2ba27.1626855713.git.mchehab+huawei@kernel.org>
+        <20210723225059.GA2727093@robh.at.kernel.org>
+        <20210724021244.780297ee@coco.lan>
+        <CAL_JsqLA7Z908SQKkZpyEcCvpkWsW3pa42eajpxCSkbUy4rv9g@mail.gmail.com>
+        <20210727015020.403bbf73@coco.lan>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YP63NBaurhQ2Itse@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 16:24:39 up 236 days,  4:31, 14 users,  load average: 0.03, 0.05,
- 0.04
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 03:23:00PM +0200, Andrew Lunn wrote:
-> > With current driver ethtool with show this information:
-> > Settings for eth1:
-> > 	Supported ports: [ TP	 MII ]
-> > 	Supported link modes:   Not reported
+Em Tue, 27 Jul 2021 01:50:20 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+
+> Em Mon, 26 Jul 2021 15:37:28 -0600
+> Rob Herring <robh@kernel.org> escreveu:
 > 
-> Interesting. The default function for getting the PHYs abilities is
-> doing better than i expected. I was guessing you would see 10BaseT
-> here.
-> 
-> Given that, what you have is O.K. for the moment. 
-> 
-> > > I suspect you are talking about the PoE aspects. That is outside the
-> > > scope for phylib. PoE in general is not really supported in the Linux
-> > > kernel, and probably needs a subsystem of its own.
+
+> > > > > +  reset-gpios:
+> > > > > +    description: PCI PERST reset GPIOs
+> > > > > +    maxItems: 4
+> > > > > +
+> > > > > +  clkreq-gpios:
+> > > > > +    description: Clock request GPIOs
+> > > > > +    maxItems: 3    
+> > > >
+> > > > Again, this will not work.    
+> > >
+> > > Just to be sure: you're talking about the PERST# gpios (e. g. reset-gpios)
+> > > here, right?    
 > > 
-> > No, no. I'm talking about data signals configuration (2.4Vpp/1Vpp), which
-> > depends on application and cable length. 1Vpp should not be used with
-> > cable over 200 meter
-> 
-> Should not be used, or is not expected to work very well?
+> > Both that and CLKREQ.
 
-ack, it will not work very well :)
+The original DT from the downstream version (found at Linaro's tree)
+has:
 
-> > and 2.4Vpp should not be used on safety critical applications. 
-> 
-> Please work with the other T1L driver writer to propose a suitable way
-> to configure this. We want all T1L drivers to use the same
-> configuration method, DT properties etc.
+	pcie@f4000000 {
+		compatible = "hisilicon,hikey970";
+...
+		switch,reset-gpios = <&gpio7 0 0 >;
+		eth,reset-gpios = <&gpio25 2 0 >;
+		m_2,reset-gpios = <&gpio3 1 0 >;
+		mini1,reset-gpios = <&gpio27 4 0 >;
 
-ack.
+		eth,clkreq-gpios = <&gpio20 6 0 >;
+		m_2,clkreq-gpios = <&gpio27 3 0 >;
+		mini1,clkreq-gpios = <&gpio17 0 0 >;
+	};
 
-After getting 802.3cg-2019 i give NACK to my patch. At least part
-of all needed functionality can be implemented as common code.
+So, if we're willing to have a single reset-gpios for the PCIe
+interface, in order to follow the current pci-bus.yaml schema,
+this would probably be:
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+	reset-gpios = <&gpio7 0 0 >;
+
+which maps to the PEX8606 PCIe bridge chip.
+
+With that, DT still need to point a per-slot clkreq and
+reset-gpio.
+
+One alternative would be to map it as either 3 PCI or PHY
+child nodes. E. g. something like this:
+
+	pcie@f4000000 {
+		compatible = "hisilicon,kirin970-pcie";
+...
+		reset-gpios = <&gpio7 0 0 >;
+
+		slot {
+			eth {
+				reset-gpios = <&gpio25 2 0>;
+				clkreq-gpios = <&gpio20 6 0>;
+			};
+			m2 {
+				reset-gpios = <&gpio3 1 0>;
+				clkreq-gpios = <&gpio27 3 0>;
+			};
+			mini1 {
+				reset-gpios = <&gpio27 4 0>;
+				clkreq-gpios = <&gpio17 0 0>;
+			};
+		};
+	};
+
+
+Placing the child nodes ("slot"?) at the pci bus properties makes more
+sense to me, but placing them at the PHY node has the advantage of 
+only affecting Kirin 970.
+
+In either case, if each child would need a different power supply,
+it won't be hard to add a "slot-supply" property later on. 
+
+Would something like that be acceptable for you?
+
+> > > If you have a better idea, I'm all ears.    
+> > 
+> > There's already a spec for populating PCI devices in DT. It's existed
+> > for over 20 years with OpenFirmware[1]. It's not widely used on FDT
+> > systems because most cases to date are just a single device attached
+> > and they don't have extra things needing to be described in DT. There
+> > are a few, but not many examples in the tree of PCI devices with DT
+> > nodes. That's the only way to generically describe the topology you
+> > have.  
+> >
+> > [1] https://www.devicetree.org/open-firmware/home.html#OFDbussupps  
+
+I was unable to find anything useful there at the two PCI documents.
+
+This one:
+	https://www.devicetree.org/open-firmware/bindings/pci/pci-express.txt
+
+has just one property that might be useful:
+
+	physical-slot#
+
+The main one:
+	https://www.devicetree.org/open-firmware/bindings/pci/pci2_1.pdf
+
+mentions a few child properties, but it doesn't show how those were
+supposed to be mapped, and none of the properties mentioned there
+specify clocks, gpios, or reset pins.
+
+Thanks,
+Mauro
