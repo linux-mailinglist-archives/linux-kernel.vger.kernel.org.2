@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CAE3D7F38
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86833D7F41
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhG0U0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbhG0U0H (ORCPT
+        id S232366AbhG0U0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:26:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47803 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232340AbhG0U0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:26:07 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C36C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:26:07 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id a26so23812160lfr.11
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5W7I5NJ7607nekgTVXMsjnvhBYEaNIc7ZnBD14nK1Lw=;
-        b=SGmBbFjeBkkvg5TnrRW6wDpFH1NZFsjj8NeVunkx64lh+U9JXSYPNskR7ozV0UkJEJ
-         zBkDxxdXq8bKevyGTMDR9q1g71RKl/lQjTPgnbPUIYWM4jMQVRggD6l7pJBWGfEAsUAf
-         3xZI07lQmMXYSGk0PzGduvG7h5rGYaMFS2LXhIFUO3U4xQOLH4Y9dXb48ZCxiObAxxxJ
-         CbO2ELTV6ZtUc0gkzVDRdYACFOpF2yjIXvG22ko/tFt/xDkhAWh8uqJW59JPlYdZlBZ6
-         0KiO+dFjPFwHlfpo0/W1UpYFdGkksBsrQleck17dEYzoYLZxgeGW65qqOcakT1bLQpSH
-         ixOw==
+        Tue, 27 Jul 2021 16:26:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627417595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=14yyXo490T12NnJQD+zcubFFrNkcCdNPIIlyx7xSn8U=;
+        b=FCeyBepd1lOeuzAS3lfmeLiw6vUCHYpymxLQIJRGKoGdZRC+P/wdFTMWyQFSQLZL4QuBos
+        bIxtlX+CsfaKDdDWm0qalDSV2VEb8h6ojYEdwmmx0gzRRIX4W0N1FtB9pktukfZt1LKzbL
+        beCL4sCBxo7yF+6jLgG1MV26bS6MFPg=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-SnanzUOQPH6nbLQCpwMPoQ-1; Tue, 27 Jul 2021 16:26:34 -0400
+X-MC-Unique: SnanzUOQPH6nbLQCpwMPoQ-1
+Received: by mail-qk1-f198.google.com with SMTP id h5-20020a05620a0525b02903b861bec838so25326qkh.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:26:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5W7I5NJ7607nekgTVXMsjnvhBYEaNIc7ZnBD14nK1Lw=;
-        b=T1RcacOh97xppiBkGSvr0Vss1BTM2/O8zqvlAyc0KafJp27w5ahKep4oq/4wQAtYlO
-         b4jI1HQfw3yd9XSVQ/vCjMeR3gxIdNCx/R5mgs/J7FMQfz4C/RkaBj6gvgJO0kDuNDij
-         hlnRMGA/NX5bBL11plNsonEUt6fxEYCpPRoLDeAV1lHG480KOC+Q8L8nNB09FRuc7nln
-         dHpMblp5dMqDZyPygtyRhmZJvJCnSuVx4rVVK6Lfu/SjqNJx1tztz21AOyQPH6SOgN7P
-         5xLtmJtjTXIrMIPWVkOGT1Vrf/f2Y4TI9fbUtdd3V2LaBMmI7RjJCkISz/B9qebaAHKq
-         M0Dg==
-X-Gm-Message-State: AOAM533k1J3fUuGr5hdsfiELKmxvkg+9OwCXPOTHypOTVMD80BV4PvBG
-        Cwg8pM7o3ACF6TQYIgjQI5+u1fXNLTB2WEPngylwDA==
-X-Google-Smtp-Source: ABdhPJwqrozlM71o/YWycrk4nFXhaQSolQceA5mTAAHS5NoeqVcyVBzNsPdOTSbtGWnIJUkr9LvsHBgHBJBrEUh0hWM=
-X-Received: by 2002:a05:6512:3e0c:: with SMTP id i12mr17532275lfv.122.1627417565216;
- Tue, 27 Jul 2021 13:26:05 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=14yyXo490T12NnJQD+zcubFFrNkcCdNPIIlyx7xSn8U=;
+        b=J9jqGhRTFl9AqSjpgVyQ2T2Te2CgsWqkMFFwNyV0bfQ6JsAuWoQBVWoYztFxyKBxEv
+         lS3oQMo7s3dRx5zln65g6P6sqaRL/PmHbDW8HtAJK6YZhFckBF9KYHT1nTAiWjVZL6Is
+         wTVPahmOk0paOmCRaDs4ubmGGpXqIQX4r3Gi2ZaFAE4emOv46/ELv1NZtAjjwk7MouMO
+         vlv4Ej5MT0o6cK8Zc74AHq3t1nJ7IpqySSlWCEYH+dm6b+pLeVSPNZQdjJlDLx18iSm0
+         HhiKXbX8u3kNcyhZSsfk5t7mZMaJbxZtw6pi/fF/qm5DVpWqrbo/85Jj0EGuRPWaAtnU
+         ljcQ==
+X-Gm-Message-State: AOAM531+u+WgyGhSfSoGHIhgjaChXOTrviys3P9b6GuPajU8NDxvqZyg
+        kjqo/Q16+nFx0ZG9gcw6UtCuTyW0+J6PBjbgIYBE4k8D3fI8tLRK/Nu1Mb1qM0+dFAiRAU6ksPS
+        Ap+8pUrizp1YKRBMDgt3RZTKh
+X-Received: by 2002:a05:620a:22ad:: with SMTP id p13mr11842332qkh.378.1627417593659;
+        Tue, 27 Jul 2021 13:26:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwz0X7Wdw9Hoe/zftts1a4c+yW5GwWyHLqUOZDdF2Y/H8a1gqvebbvx75yzB1cm4Lc+fjTLBg==
+X-Received: by 2002:a05:620a:22ad:: with SMTP id p13mr11842310qkh.378.1627417593498;
+        Tue, 27 Jul 2021 13:26:33 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id b132sm2226831qkg.122.2021.07.27.13.26.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 13:26:32 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 4/9] cgroup/cpuset: Enable event notification when
+ partition become invalid
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210720141834.10624-1-longman@redhat.com>
+ <20210720141834.10624-5-longman@redhat.com>
+ <YP9BxKXfhaoTE+LO@slm.duckdns.org>
+Message-ID: <8bed1ac2-f5f4-6d17-d539-4cd274b0f39e@redhat.com>
+Date:   Tue, 27 Jul 2021 16:26:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210718130748.230758-1-paul@crapouillou.net> <CAKwvOdkVEa-CxbVschn5Tnh7-Ynvzcz+zChhP3LL3Q745wE7_A@mail.gmail.com>
- <7YIIWQ.1TU3IBLL4KNC2@crapouillou.net> <20210721161719.GA9805@alpha.franken.de>
-In-Reply-To: <20210721161719.GA9805@alpha.franken.de>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Jul 2021 13:25:54 -0700
-Message-ID: <CAKwvOdmAxEUdSM-6g+pGHLdtzm1sRDoiPqMP_hWNLM9E4Kp7Dg@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Avoid macro redefinitions
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Cercueil <paul@crapouillou.net>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        list@opendingux.net, Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YP9BxKXfhaoTE+LO@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 9:17 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On 7/26/21 7:14 PM, Tejun Heo wrote:
+> On Tue, Jul 20, 2021 at 10:18:29AM -0400, Waiman Long wrote:
+>> +static inline void notify_partition_change(struct cpuset *cs,
+>> +					   int old_prs, int new_prs)
+>> +{
+>> +	if ((old_prs == new_prs) ||
+>> +	   ((old_prs != PRS_ERROR) && (new_prs != PRS_ERROR)))
+>> +		return;
+>> +	cgroup_file_notify(&cs->partition_file);
+> I'd generate an event on any state changes. The user have to read the file
+> to find out what happened anyway.
 >
-> On Mon, Jul 19, 2021 at 11:10:55PM +0100, Paul Cercueil wrote:
-> > > >   #ifndef TOOLCHAIN_SUPPORTS_VIRT
-> > >
-> > > Same question for GAS version support for virt?
-> > > Documentation/process/changes.rst
-> > > says GNU binutils 2.23+ is required for building the kernel.
-> > > If we still need to support, have you tested this change on such an
-> > > older version of GNU binutils?
-> >
-> > I have no idea about virt support - I hope Thomas can answer this.
->
-> virt support was added in 2.24 and xpa in 2.25. So we still need the
-> TOOLCHAIN defines for it.
+> Thanks.
 
-Ah, ok then. Thanks for finding that.  Perhaps Paul you can note that
-in the v2 that removes the commented out line, then we should be good
-to go?
--- 
-Thanks,
-~Nick Desaulniers
+ From my own testing with "inotify_add_watch(fd, file, IN_MODIFY)", 
+poll() will return with a event whenever a user write to 
+cpuset.cpus.partition control file. I haven't really look into the sysfs 
+code yet, but I believe event generation will be automatic in this case. 
+So I don't think I need to explicitly add a cgroup_file_notify() when 
+users modify the control file directly. Other indirect modification may 
+cause the partition value to change to/from PRS_ERROR and I should have 
+captured all those changes in this patchset. I will update the patch to 
+note this point to make it more clear.
+
+Cheers,
+Longman
+
+
