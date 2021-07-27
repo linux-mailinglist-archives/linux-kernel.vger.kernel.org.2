@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D693D80F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3AB3D80FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbhG0VKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:10:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25056 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235298AbhG0VJX (ORCPT
+        id S232923AbhG0VKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:10:45 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:36444 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233360AbhG0VKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:09:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627420162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=epqNANSa//JBOqbfDJlxqgrU5mQ/ZOYCzCBkRvtlhEQ=;
-        b=fIFANsUTEron8+Eu12pb+XtY1X1cQRtVXZxvnoxhhuTsHERCtEOHtPYnMlr2Rw5Wtzy25h
-        AnkA+hZxPGTkVlHmQ0noppsiiYAp3Rc5Nzgs0rBB8Ye7RLalK9pt9hSE8ouppCHkl1bgbN
-        rvjLu4AFmywN79j/J62ssK5Vdn7uE8w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-IR3A2OY7PgWndQt2uHqkyQ-1; Tue, 27 Jul 2021 17:09:18 -0400
-X-MC-Unique: IR3A2OY7PgWndQt2uHqkyQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D52C8010F4;
-        Tue, 27 Jul 2021 21:09:17 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 27AE460C9F;
-        Tue, 27 Jul 2021 21:09:17 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com, stable@vger.kernel.org,
-        Stas Sergeev <stsp2@yandex.ru>
-Subject: [PATCH v3] KVM: x86: accept userspace interrupt only if no event is injected
-Date:   Tue, 27 Jul 2021 17:09:16 -0400
-Message-Id: <20210727210916.1652841-1-pbonzini@redhat.com>
+        Tue, 27 Jul 2021 17:10:37 -0400
+Received: from netfilter.org (bl11-146-165.dsl.telepac.pt [85.244.146.165])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 381C2605D7;
+        Tue, 27 Jul 2021 23:10:05 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 23:10:29 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Alex Forster <aforster@cloudflare.com>
+Cc:     Kyle Bowman <kbowman@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH] netfilter: xt_NFLOG: allow 128 character log prefixes
+Message-ID: <20210727211029.GA17432@salvia>
+References: <20210727190001.914-1-kbowman@cloudflare.com>
+ <20210727195459.GA15181@salvia>
+ <CAKxSbF0tjY7EV=OOyfND8CxSmusfghvURQYnBxMz=DoNtGrfSg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKxSbF0tjY7EV=OOyfND8CxSmusfghvURQYnBxMz=DoNtGrfSg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once an exception has been injected, any side effects related to
-the exception (such as setting CR2 or DR6) have been taked place.
-Therefore, once KVM sets the VM-entry interruption information
-field or the AMD EVENTINJ field, the next VM-entry must deliver that
-exception.
+On Tue, Jul 27, 2021 at 03:06:05PM -0500, Alex Forster wrote:
+> (And again, this time as plain-text...)
+> 
+> > Why do you need to make the two consistent? iptables NFLOG prefix
+> > length is a subset of nftables log action, this is sufficient for the
+> > iptables-nft layer. I might be missing the use-case on your side,
+> > could you please elaborate?
+> 
+> We use the nflog prefix space to attach various bits of metadata to
+> iptables and nftables rules that are dynamically generated and
+> installed on our edge. 63 printable chars is a bit too tight to fit
+> everything that we need, so we're running this patch internally and
+> are looking to upstream it.
 
-Pending interrupts are processed after injected exceptions, so
-in theory it would not be a problem to use KVM_INTERRUPT when
-an injected exception is present.  However, DOSEMU is using
-run->ready_for_interrupt_injection to detect interrupt windows
-and then using KVM_SET_SREGS/KVM_SET_REGS to inject the
-interrupt manually.  For this to work, the interrupt window
-must be delayed after the completion of the previous event
-injection.
-
-Cc: stable@vger.kernel.org
-Reported-by: Stas Sergeev <stsp2@yandex.ru>
-Tested-by: Stas Sergeev <stsp2@yandex.ru>
-Fixes: 71cc849b7093 ("KVM: x86: Fix split-irqchip vs interrupt injection window request")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 4116567f3d44..e5d5c5ed7dd4 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4358,8 +4358,17 @@ static int kvm_cpu_accept_dm_intr(struct kvm_vcpu *vcpu)
- 
- static int kvm_vcpu_ready_for_interrupt_injection(struct kvm_vcpu *vcpu)
- {
--	return kvm_arch_interrupt_allowed(vcpu) &&
--		kvm_cpu_accept_dm_intr(vcpu);
-+	/*
-+	 * Do not cause an interrupt window exit if an exception
-+	 * is pending or an event needs reinjection; userspace
-+	 * might want to inject the interrupt manually using KVM_SET_REGS
-+	 * or KVM_SET_SREGS.  For that to work, we must be at an
-+	 * instruction boundary and with no events half-injected.
-+	 */
-+	return (kvm_arch_interrupt_allowed(vcpu) &&
-+		kvm_cpu_accept_dm_intr(vcpu) &&
-+		!kvm_event_needs_reinjection(vcpu) &&
-+		!vcpu->arch.exception.pending);
- }
- 
- static int kvm_vcpu_ioctl_interrupt(struct kvm_vcpu *vcpu,
--- 
-2.27.0
-
+It should be possible to update iptables-nft to use nft_log from
+userspace (instead of xt_LOG) which removes this limitation, there is
+no need for a kernel upgrade.
