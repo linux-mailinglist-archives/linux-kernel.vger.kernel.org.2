@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E75E3D810F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4E93D8112
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhG0VOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:14:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232596AbhG0VOe (ORCPT
+        id S232066AbhG0VQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231135AbhG0VQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:14:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627420473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HTTYyPAE0g/if8d0gvKRc9AYw/duV58RDsVIEQdGHsg=;
-        b=KPlOEjLkZCu9R8GQDltUqtMqrSvIjfncGoiSmyM0UrTR/VoHPZDuW7rvOHbG0KCPoik4ir
-        2xCzyCD3o99+4Ke0LB2/qYUE08rSBT5AcrmnAH5XSWewmlaxu4gDjgXYuCQeFT9couvHQ6
-        kUmpuCmCf6gIcUbpMEZspMyU8pvUOiM=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-aVQPc03pPeScy81fMBhgXQ-1; Tue, 27 Jul 2021 17:14:31 -0400
-X-MC-Unique: aVQPc03pPeScy81fMBhgXQ-1
-Received: by mail-qv1-f72.google.com with SMTP id hf7-20020a0562140e87b02902dc988b8675so539378qvb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 14:14:29 -0700 (PDT)
+        Tue, 27 Jul 2021 17:16:39 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D6EC061760;
+        Tue, 27 Jul 2021 14:16:37 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id h27so10611047qtu.9;
+        Tue, 27 Jul 2021 14:16:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Zei6F6+BbgKDPk/JT5TPStQmPkRCi2WEQwwoBdhRoIY=;
+        b=solrd46rzkgzUZMr6uvDwyWIlp4cDe57cqaw9HivmA5r/T6sxH/Qz8iwM3KuA1IWcu
+         NrS2JtbmSJwbWfN7H+hfxIq7Aiqc5W2w/tD48fbMdtk2Ecei4CQTVB5dmIeCv7E8ASEk
+         7J2hWl6tuBwIjKsQFYJiNum2Q4+RN9W3mQYmgNRxlUKfBTm4IwcUtrhVIn3ThOiyRp1g
+         H8DPVWCeOSkT1YX0RNMs9bNiha/N995LI/GSN4QYcJdQuoD+9baFuZ5odVN0eRsYb6I/
+         3S8biW6jIpuJPKAVFnNrgfS7yt6MMqywdC5Om1cZWBAOjCV8u4KIGVySVD963Ax4gDX1
+         KVqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HTTYyPAE0g/if8d0gvKRc9AYw/duV58RDsVIEQdGHsg=;
-        b=E4sE3YifoYHec/3qTZAEc5rrJFe8ab+sx7vSV9Xv0xjpxmgpDhviSSdzh/BSEai5FX
-         Jg2w+L4DUgCo8O9Pi6a3ZhQbtN9d+DTN6ZTERK/2mq3TssB5WwFjQNUj0kHe8Zm2zO3G
-         K7ljDNuEfE7TUfTA7ycJSYsKAqqdr41KDAofYuOG8/d5g21YId59hZCiAedC3RIdV7XS
-         gaWdfrtzXw1Zjq+fpz2A7yc5CnlBKwCavxh1Np7g1GraYPVmqDz3TFAiEMaaOnFXgE3E
-         lxX84zIGysV5x0cv2iMNknmbhCLJDEwdPdu8Mh+GuwWG704Jvm7oTJOX8Apa3iC1axhn
-         +LKg==
-X-Gm-Message-State: AOAM530SFKIkO2noqU7FPwbMVXQqIYbCG/at/wUo5vU82kkxJkrrQ4Ja
-        ch6NjjAu0lvT41BqjA9KdETm9x/nwYhoaPW3TP5fXY972vpOOpMdUDcQTFjohZqJJLzeAhCEpK7
-        PNgalpkqOhj259lP3nzv2PptI
-X-Received: by 2002:ae9:f30e:: with SMTP id p14mr4710200qkg.412.1627420469420;
-        Tue, 27 Jul 2021 14:14:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz21PRLExOooxNoN1eIO3l2I/Tqj7X6DVLfqcyC+i2GacI9azNipKAbtqXgsR/XOpGArUqZBQ==
-X-Received: by 2002:ae9:f30e:: with SMTP id p14mr4710180qkg.412.1627420469234;
-        Tue, 27 Jul 2021 14:14:29 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id p22sm1908465qtq.64.2021.07.27.14.14.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 14:14:28 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 0/9] cgroup/cpuset: Add new cpuset partition type &
- empty effecitve cpus
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20210720141834.10624-1-longman@redhat.com>
- <YP9ChFvrGrDMGzbe@slm.duckdns.org>
-Message-ID: <b2f49b2e-d5a4-1504-bd0c-0bd82943d855@redhat.com>
-Date:   Tue, 27 Jul 2021 17:14:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Zei6F6+BbgKDPk/JT5TPStQmPkRCi2WEQwwoBdhRoIY=;
+        b=JYq8OuFDdcNEzivb1zTOzYyvi9Nr1uh3oaWhk9sds6RuW0mj0PJGKT5Anc8ltGdH+P
+         Yi9ru6Lj9GdZu1H+cq4oQc1CsDzOXB6MyRj8F4ZZAB8qWEEdnQELHZA6Eo++0sE5XjVP
+         p25krbaC0XgQzEEROEgt4YulQ0aLSGrJTmAgEWFkpP4+OsxpC5JYZbAYlgelLGU5Yf5p
+         aKFGu6xfo9TXI2niEZ5IqU1PFvepk/yC7eIEFsSXwR6RxpjLApBey3eYOuGpMTdb2mH4
+         DctMrT5FQeVhJkFg8I3RNmmqRxJ7R8my568AC/brrKOKe/yMOdj0TPqgBoMydWpmSdIp
+         ffWw==
+X-Gm-Message-State: AOAM533Ex9HPlptznNIlWFQksFhEjQ+l4VZ+9bwtq8U9Nhnkvmzgz3jZ
+        yMMR+0r7MPIwyGCrJb70VdgrnO65bTQytIOSqEE=
+X-Google-Smtp-Source: ABdhPJz7eMTUfDZGZR8ARw+sscj4utcJttleb4w7Knuq362uAZGy2HzIqMJqIOrLcZYkNzHnckOpwxYHoaKXGHEODos=
+X-Received: by 2002:ac8:6708:: with SMTP id e8mr20622179qtp.166.1627420597040;
+ Tue, 27 Jul 2021 14:16:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YP9ChFvrGrDMGzbe@slm.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CAOuPNLjzyG_2wGDYmwgeoQuuQ7cykJ11THf8jMrOFXZ7vXheJQ@mail.gmail.com>
+ <YPGojf7hX//Wn5su@kroah.com> <568938486.33366.1626452816917.JavaMail.zimbra@nod.at>
+ <CAOuPNLj1YC7gjuhyvunqnB_4JveGRyHcL9hcqKFSNKmfxVSWRA@mail.gmail.com>
+ <1458549943.44607.1626686894648.JavaMail.zimbra@nod.at> <CAOuPNLh_KY4NaVWSEV2JPp8fx0iy8E1MU8GHT-w7-hMXrvSaeA@mail.gmail.com>
+ <1556211076.48404.1626763215205.JavaMail.zimbra@nod.at> <CAOuPNLhti3tocN-_D7Q0QaAx5acHpb3AQyWaUKgQPNW3XWu58g@mail.gmail.com>
+ <2132615832.4458.1626900868118.JavaMail.zimbra@nod.at> <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
+In-Reply-To: <CAOuPNLhCMT7QTF+QadJyGDFNshH9VjEAzWStRpe8itw7HXve=A@mail.gmail.com>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Tue, 27 Jul 2021 23:16:25 +0200
+Message-ID: <CAFLxGvywv29u6DJZrJxnJJmUDSQ4xpbT0u5LNKY1uGKyQom+WA@mail.gmail.com>
+Subject: Re: MTD: How to get actual image size from MTD partition
+To:     Pintu Agarwal <pintu.ping@gmail.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        Greg KH <greg@kroah.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        Sean Nyekjaer <sean@geanix.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 7:17 PM, Tejun Heo wrote:
-> Hello,
+On Thu, Jul 22, 2021 at 1:11 PM Pintu Agarwal <pintu.ping@gmail.com> wrote:
 >
-> On Tue, Jul 20, 2021 at 10:18:25AM -0400, Waiman Long wrote:
->> v3:
->>   - Add two new patches (patches 2 & 3) to fix bugs found during the
->>     testing process.
->>   - Add a new patch to enable inotify event notification when partition
->>     become invalid.
->>   - Add a test to test event notification when partition become invalid.
-> I applied parts of the series. I think there was a bit of miscommunication.
-> I meant that we should use the invalid state as the only way to indicate
-> errors as long as the error state is something which can be reached through
-> hot unplug or other uncontrollable changes, and require users to monitor the
-> state transitions for confirmation and error handling.
+> On Thu, 22 Jul 2021 at 02:24, Richard Weinberger <richard@nod.at> wrote:
+> >
+> > ----- Urspr=C3=BCngliche Mail -----
+> > >> But let me advertise ubiblock a second time.
+> > > Sorry, I could not understand about the ubiblock request. Is it
+> > > possible to elaborate little more ?
+> > > We are already using squashfs on top of our UBI volumes (including
+> > > rootfs mounting).
+> > > This is the kernel command line we pass:
+> > > rootfstype=3Dsquashfs root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
+> > > And CONFIG_MTD_UBI_BLOCK=3Dy is already enabled in our kernel.
+> > > Do we need to do something different for ubiblock ?
+> >
+> > From that command line I understand that you are *not* using squashfs o=
+n top of UBI.
+> > You use mtdblock. ubiblock is a mechanism to turn an UBI volume into a =
+read-only
+> > block device.
+> > See: http://www.linux-mtd.infradead.org/doc/ubi.html#L_ubiblock
+> >
+> Okay, you mean to say, we should use this ?
+> ubi.mtd=3D5 ubi.block=3D0,0 root=3D/dev/ubiblock0_0
+> Instead of this:
+> root=3D/dev/mtdblock44 ubi.mtd=3D40,0,30
 
-Yes, that is the point of adding the event notification patch.
+Yes. But it is not only about a different command line. It is a
+different concept.
+You use a emulated block device on top of UBI, and not directly on top
+of an MTD part.
 
-In the current code, direct write to cpuset.cpus.partition are strictly 
-controlled and invalid transitions are rejected. However, changes to 
-cpuset.cpus that do not break the cpu exclusivity rule or cpu hot plug 
-may cause a partition to changed to invalid. What is currently done in 
-this patchset is to add extra guards to reject those cpuset.cpus change 
-that cause the partition to become invalid since changes that break cpu 
-exclusivity rule will be rejected anyway. I can leave out those extra 
-guards and allow those invalid cpuset.cpus change to go forward and 
-change the partition to invalid instead if this is what you want.
+> Sorry, I could not get this part. How static volume can give image len ?
+> You mean there is some interface available in kernel to get actual image =
+len ?
 
-However, if we have a complicated partition setup with multiple child 
-partitions. Invalid cpuset.cpus change in a parent partition will cause 
-all the child partitions to become invalid too. That is the scenario 
-that I don't want to happen inadvertently. Alternatively, we can 
-restrict those invalid changes if a child partition exist and let it 
-pass through and make it invalid if it is a standalone partition.
+use the ubinfo tool. Static volumes know exactly how much they are filled.
 
-Please let me know which approach do you want me to take.
+> > > Also, how can we get the checksum of the entire UBI volume content
+> > > (ignoring the erased/empty/bad block content) ?
+> >
+> > Just read from the volume. /dev/ubiX_Y.
+> >
+> I think this also will give the entire volume size, but we still don't kn=
+ow how
+> many pages have real data ?
 
-Cheers,
-Longman
+"ubiinfo /dev/ubiX_Y" will tell you if the volume is of type static.
 
+> For example:
+> Suppose, my raw partition/volume is of size 10MB
+> But my actual data inside it is of size ~3MB (may be split across?)
+> Then, how can we get the actual size of the data content ?
 
+See above.
 
+> You mean to say: /dev/ubiX_Y should contain only data blocks ?
+
+Yes. An UBI volume contains only "user data".
+
+--=20
+Thanks,
+//richard
