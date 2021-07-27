@@ -2,91 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2963D825B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289273D8260
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhG0WRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 18:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbhG0WRC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:17:02 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C93CC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 15:17:01 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id q17-20020a17090a2e11b02901757deaf2c8so1472129pjd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 15:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P1d9rZ1oYibIdHcSFP8OH769BC+V4C1W5//f6yOaEyc=;
-        b=LS83kkwUb+IGU887vVihaCeocobOMswJ2zbDSo6QbCumBxka3rMnfNk+UDoOV8j0Fz
-         rDizPV7rSAr8ulto+OqWlJAfPYqDS9RojyXNAl+SLClg1PnZPRf4naI7UTLphMmoH8XL
-         0hNNzCgG8/144+auWDESC0+3ZidmvcWYpVIRnOUa8uw9lsZ4U1VFY8zWURolgT7gLQfG
-         Dfby7F6+/rtTQxjFn6LsqsX7pohOvUEmLY6R5snTwFdZsrVCTiPoN6GL0v1G0E2KVw+s
-         zbFZZmo8CQwCKf0eIQgmmpV58+A+TIKMUlLJb7BiqjY8WGJypNUfgG4TK3H3lmTEaU6p
-         Q/VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P1d9rZ1oYibIdHcSFP8OH769BC+V4C1W5//f6yOaEyc=;
-        b=lhTaaNn7jfzC/6I8GqhEDwaZP4TfBxFK7LqOLpWsy/NXGHpkPxspdTmuRP+YeHAt7b
-         /dioAgvQjyI/Z3LHFodJqDt0hfwUNZjBjjXER1yuqi65g+y/q825xCw3t3QxmVqI+vG1
-         hO1dDs9geiqvVX8x1U1x0Zt5FZjNWrsQzRBGE/2q52Qbo8AIewzH694thATgflkhOskl
-         Nik6snS11CAB1s4T6k9dKHLc4+3f0E5cmvJgqNiAUVex1yWbVcBMVX7PXleVSTCx/TOp
-         nW8bOaM3E2kdvIEH8/RDuof7BpCzLRmo/XSaCoQQ4d3LKw/pqx4CZCr8yNPbOoIlwN9L
-         lZPg==
-X-Gm-Message-State: AOAM531ZKfRLG5fLfAd++ox24ZLZmL7KqHnKE2fHp/3SSJusaZjlZiZo
-        cFyZU3bTe14Kv+7BM+dB/aU=
-X-Google-Smtp-Source: ABdhPJxWFhl0R6uivd9of6xzOQF30aYFleE1PTX+ZKeuyZQxGt0wy/4WWKx3OrVQGfKlyRcpzUwOJw==
-X-Received: by 2002:a65:4286:: with SMTP id j6mr26146974pgp.10.1627424220879;
-        Tue, 27 Jul 2021 15:17:00 -0700 (PDT)
-Received: from mail.google.com ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id y139sm4752532pfb.107.2021.07.27.15.16.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 15:17:00 -0700 (PDT)
-Date:   Wed, 28 Jul 2021 06:16:56 +0800
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: stacktrace: fix dump_backtrace/walk_stackframe
- with NULL task
-Message-ID: <20210727221656.wq3ponbzhvftfxc5@mail.google.com>
-References: <20210627092659.46193-1-changbin.du@gmail.com>
- <20210628134404.4c470112@xhacker.debian>
+        id S232573AbhG0WR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 18:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232223AbhG0WR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 18:17:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A879B60F46;
+        Tue, 27 Jul 2021 22:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627424276;
+        bh=NTx2AmyGC2otSjSs47CuSipTZNW0kKqQ1vQxftaHk4A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Q/7sSe4oHU/CTPp80Dk3jddqbKeLpeVtJTMwJbDHTa5/VKBhx/nZkQHEbnyTobEc1
+         q2WzaXZhV5V2zjYqkP3U7/VXHaxmzm2/A1G0XkrfsxaVoSM/UwxO+yl7nVJF00sqGk
+         d7AD5UzHRa1NjI84Hxoz+s+efE47CeQgKrZgiph2mNdwJC7m3pwY0KcKdxRyftWz+1
+         F63gNsi7C/7FbTmapOVHpRS0LWCTWtUe0EH3Crgn6TlVtRtS438i2w2ahGL9/Qq8cd
+         mguUY59Nehy7ydcOZ205/5jbvzpVfSGzQ+Do9F1ImBnjdZ5cMqu1QH+qflSUWEVI6f
+         cQ05kefvWSwJQ==
+Received: by mail-ed1-f41.google.com with SMTP id n2so453928eda.10;
+        Tue, 27 Jul 2021 15:17:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532LiwSvmkKHi2WW759FIYJyrFHIrA8CpwbEZgKHkQoMYpWpltxw
+        6iuVtFszqCrg6WOvi274QRBt9FVpi5XAmBX4kQ==
+X-Google-Smtp-Source: ABdhPJyNP8M8aAQKXxx5tCub5TYW/KAfNDMcwrn6O2Dj7lhqKvX7EyCiM+Atq5P85EUfEBlNdMu/b2yTd8MfL06uTNo=
+X-Received: by 2002:aa7:cb19:: with SMTP id s25mr30783265edt.194.1627424275171;
+ Tue, 27 Jul 2021 15:17:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628134404.4c470112@xhacker.debian>
+References: <cover.1626855713.git.mchehab+huawei@kernel.org>
+ <946f2426bc542638240980931eae924c57f2ba27.1626855713.git.mchehab+huawei@kernel.org>
+ <20210723225059.GA2727093@robh.at.kernel.org> <20210724021244.780297ee@coco.lan>
+ <CAL_JsqLA7Z908SQKkZpyEcCvpkWsW3pa42eajpxCSkbUy4rv9g@mail.gmail.com>
+ <20210727015020.403bbf73@coco.lan> <20210727085205.5aafb5c9@coco.lan>
+In-Reply-To: <20210727085205.5aafb5c9@coco.lan>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 27 Jul 2021 16:17:43 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+5raGQAK5T4SoC=Jfzsbov-y4u-rdJ3DJt+ryYOK8q2w@mail.gmail.com>
+Message-ID: <CAL_Jsq+5raGQAK5T4SoC=Jfzsbov-y4u-rdJ3DJt+ryYOK8q2w@mail.gmail.com>
+Subject: Re: [PATCH v7 06/10] dt-bindings: phy: Add bindings for HiKey 970
+ PCIe PHY
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linuxarm <linuxarm@huawei.com>, mauro.chehab@huawei.com,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 01:44:04PM +0800, Jisheng Zhang wrote:
-> On Sun, 27 Jun 2021 17:26:59 +0800
-> Changbin Du <changbin.du@gmail.com> wrote:
-> 
-> 
-> > 
-> > 
-> > Some places try to show backtrace with NULL task, and expect the task is
-> > 'current'. For example, dump_stack()->show_stack(NULL,...). So the
-> > stacktrace code should take care of this case.
-> 
-> I fixed this issue one week ago:
-> 
-> http://lists.infradead.org/pipermail/linux-riscv/2021-June/007258.html
+On Tue, Jul 27, 2021 at 12:52 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Em Tue, 27 Jul 2021 01:50:20 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+>
+> > Em Mon, 26 Jul 2021 15:37:28 -0600
+> > Rob Herring <robh@kernel.org> escreveu:
+> >
+>
+> > > > > > +  reset-gpios:
+> > > > > > +    description: PCI PERST reset GPIOs
+> > > > > > +    maxItems: 4
+> > > > > > +
+> > > > > > +  clkreq-gpios:
+> > > > > > +    description: Clock request GPIOs
+> > > > > > +    maxItems: 3
+> > > > >
+> > > > > Again, this will not work.
+> > > >
+> > > > Just to be sure: you're talking about the PERST# gpios (e. g. reset-gpios)
+> > > > here, right?
+> > >
+> > > Both that and CLKREQ.
+>
+> The original DT from the downstream version (found at Linaro's tree)
+> has:
+>
+>         pcie@f4000000 {
+>                 compatible = "hisilicon,hikey970";
+> ...
+>                 switch,reset-gpios = <&gpio7 0 0 >;
+>                 eth,reset-gpios = <&gpio25 2 0 >;
+>                 m_2,reset-gpios = <&gpio3 1 0 >;
+>                 mini1,reset-gpios = <&gpio27 4 0 >;
+>
+>                 eth,clkreq-gpios = <&gpio20 6 0 >;
+>                 m_2,clkreq-gpios = <&gpio27 3 0 >;
+>                 mini1,clkreq-gpios = <&gpio17 0 0 >;
+>         };
+>
+> So, if we're willing to have a single reset-gpios for the PCIe
+> interface, in order to follow the current pci-bus.yaml schema,
+> this would probably be:
+>
+>         reset-gpios = <&gpio7 0 0 >;
+>
+> which maps to the PEX8606 PCIe bridge chip.
+>
+> With that, DT still need to point a per-slot clkreq and
+> reset-gpio.
+>
+> One alternative would be to map it as either 3 PCI or PHY
+> child nodes. E. g. something like this:
+>
+>         pcie@f4000000 {
+>                 compatible = "hisilicon,kirin970-pcie";
+> ...
+>                 reset-gpios = <&gpio7 0 0 >;
+>
+>                 slot {
+>                         eth {
+>                                 reset-gpios = <&gpio25 2 0>;
+>                                 clkreq-gpios = <&gpio20 6 0>;
+>                         };
+>                         m2 {
+>                                 reset-gpios = <&gpio3 1 0>;
+>                                 clkreq-gpios = <&gpio27 3 0>;
+>                         };
+>                         mini1 {
+>                                 reset-gpios = <&gpio27 4 0>;
+>                                 clkreq-gpios = <&gpio17 0 0>;
+>                         };
+>                 };
+>         };
+>
+>
+> Placing the child nodes ("slot"?) at the pci bus properties makes more
+> sense to me, but placing them at the PHY node has the advantage of
+> only affecting Kirin 970.
+>
+> In either case, if each child would need a different power supply,
+> it won't be hard to add a "slot-supply" property later on.
+>
+> Would something like that be acceptable for you?
 
-I still see this issue on mainline. Is your fix merged? Thanks!
+On the right track, but there's already a definition for what child
+devices look like in pci2_1.pdf. I think you want something like this:
 
+pcie@f4000000 { // RP: Bus 0, Device 0
+    compatible = "hisilicon,kirin970-pcie";
+    ...
+    reset-gpios = <&gpio7 0 0>;  // PERST to switch
 
--- 
-Cheers,
-Changbin Du
+    pcie@0 { // PCIe switch: Bus 1, Device 0
+        reg = <0 0 0 0 0>;
+        compatible = "pciclass,0604";
+        device_type = "pci";
+
+        pcie@1 { // NC (Can omit this node)
+            reg = <0x80 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+        };
+
+        pcie@4 { // M.2
+            reg = <0x200 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+            reset-gpios = <&gpio7 1 0>; // PERST to M.2 slot
+       };
+
+        pcie@5 { // Mini
+            reg = <0x280 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+            reset-gpios = <&gpio7 2 0>; // PERST to Mini slot
+        };
+
+        pcie@7 { // Ethernet
+            reg = <0x380 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+            reset-gpios = <&gpio7 3 0>; // PERST to Ethernet
+
+            ethernet@0 {
+                reg = <0 0 0 0 0>;
+                local-mac-address = [ 00 01 02 03 04 05 06 ];
+            };
+        };
+
+        pcie@9 { // NC
+            reg = <0x480 0 0 0 0>;
+            compatible = "pciclass,0604";
+            device_type = "pci";
+       };
+};
+
+This is based on what you previously sent:
+00:00.0 PCI bridge: Huawei Technologies Co., Ltd. Device 3670 (rev 01)
+01:00.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI
+Express Gen 2 (5.0 GT/s) Switch (rev ba)
+02:01.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI
+Express Gen 2 (5.0 GT/s) Switch (rev ba)
+02:04.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI
+Express Gen 2 (5.0 GT/s) Switch (rev ba)
+02:05.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI
+Express Gen 2 (5.0 GT/s) Switch (rev ba)
+02:07.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI
+Express Gen 2 (5.0 GT/s) Switch (rev ba)
+02:09.0 PCI bridge: PLX Technology, Inc. PEX 8606 6 Lane, 6 Port PCI
+Express Gen 2 (5.0 GT/s) Switch (rev ba)
+06:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
+
+A few notes:
+I left out #size-cells, #address-cells, and ranges for brevity.
+
+I'm not completely sure I've got the bridges mapped to the right
+functions on Hikey970. That's my best guess looking at the schematics.
+You should be able to confirm which bridge is the parent bridge for
+ethernet at least.
+
+The compatible strings aren't strictly needed. Linux doesn't look at them.
+
+There's a pretty complete example in:
+arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+
+The simplest Linux implementation to handle the above is just walk the
+child nodes and get all the 'reset-gpios' properties. That's not the
+implementation I think we should have though. We should handle the
+GPIO as each bridge is probed and children scanned.
+
+Rob
