@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C53563D76DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C643D76DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbhG0Net (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35390 "EHLO
+        id S236615AbhG0NfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236559AbhG0Ner (ORCPT
+        with ESMTP id S232186AbhG0NfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:34:47 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001F8C061757;
-        Tue, 27 Jul 2021 06:34:45 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id b1-20020a17090a8001b029017700de3903so3037710pjn.1;
-        Tue, 27 Jul 2021 06:34:45 -0700 (PDT)
+        Tue, 27 Jul 2021 09:35:02 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7DEC061757;
+        Tue, 27 Jul 2021 06:35:01 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so4867243pjh.3;
+        Tue, 27 Jul 2021 06:35:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5l6yxtUqEjm6HUyKl5DpC9WS7AqBuWTzIemrut1dbQ8=;
-        b=h2vI83TEFPxb2KxjJ01mNlZvApRw8xlPLshjWY9kMBty6UW/ZIylfPzTt+CRzobYSO
-         602Tae3rud3fVSPYLfqCPfuiUL3r3+XL0zZwy47mKVP1XV9bh7faqmMWkkls1ORfMG25
-         wpK04fAsCoBbX58l7e68+LzR2/pglteeXdorTzJxOkCHsaW0Zz5kzUMiP42illeYXm0D
-         j8qt0I56k/WEOJXDrY4kS+Nh1YYVF5YsSbg0E2JfgKc2n8l5uNrl5xhIWCuyqgvpuSlm
-         Ii8pY3w4mXDNtZWYjKfXtTqNVhPDLmo/ShCUvbLJvtIPXXi2d4lIFt+c5dTWujpjdaeQ
-         7WMg==
+        bh=SM1qeuF+L0BGO1YAmr+KZvllo2SOKG+lPJEnNUNNYAc=;
+        b=TbKb8piGrIG5ydptI8v65Ya4i8SJZdvGdOqc1GQYcevkHkfS4N28VzMA8R9SM1A1a+
+         ch/yxaogHN+fgO7uR2qfX2VwyHlZsQRTRQeET/08XJWYahbekAZR47n/JSkXAjtvIqOn
+         ZDSL6gsT4HNHmWAqfO8DB45LMH0TxGjki0arPkkVQeLUSGBQVCHAclN4s5ACkPhdf02B
+         je3ZcxA5tR1ld9t7GkWib1Zj0TDgycR5MjcCXH7bbjH6bMZ9Crdar8RTnodWJTQ8MnxV
+         lN0pirmq7NcydqRfA92z9UOFUaBXH5h7kSgTGZH1OWc/4CmikCIRBA50YGbAfjxmJ8zb
+         JaFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5l6yxtUqEjm6HUyKl5DpC9WS7AqBuWTzIemrut1dbQ8=;
-        b=a115rF7lMAus5INhvCUIOdA4UDoHNFKETC9r3kM9KgCZexaZZufZssvyRp0TuNbx9M
-         5nR/z3ES2CxstaKfmbz745UXsPJQkT7sV84AEz6VsLp1NPlBz/wJkYUPN/5PTGASsq2l
-         Ap2FXgYb/btpHyiBYbnp1pLwPB4V61GT/Y+6SYEY7/wsR7iNZmTSd6EAPBTdkGdhsqTT
-         XUX9fSkYD6nfB4rgy7v4IhBStpnTEGABouc5m2ZAHimKgsZfdA3XTqEeVICg40iyVdnh
-         nxay+sJXjzY9I0ZSFRQLL96VcxzFcoqt0ObGzAlF12fMlUVGwi3Fewp5L5o2kCez3gXK
-         Qx9A==
-X-Gm-Message-State: AOAM530R4fIEqr2ZI3TCKQFGa+S3FBFOkkJqklwoT44dMEwnID/ONiS+
-        9ydtSXhi8ey1eJPb8QSxsXY=
-X-Google-Smtp-Source: ABdhPJxC90pK8EtkssVHaul17JGJVw0HvFlB/6V9yefuoKHHS7hpaLCAEMgt/hfPWOpqTFdrBP8Smw==
-X-Received: by 2002:a63:df14:: with SMTP id u20mr23430466pgg.348.1627392885527;
-        Tue, 27 Jul 2021 06:34:45 -0700 (PDT)
+        bh=SM1qeuF+L0BGO1YAmr+KZvllo2SOKG+lPJEnNUNNYAc=;
+        b=XlTmW2z2Z7kSO2ZeufxZdKjwSqlwss6V9T94YfEOkcOfyeGtqjR3B2wfhKHTAncdeF
+         WZqDV9443RlIm9iWhgqeOZMmSLqBpcuy8KRmEO+w0BzQXP+m6CQd4y0szeFPTlkGTlxU
+         +I3otGPZJSceGQkQnQZ5SSf0R3dDwI6UX1rPIvL8nCnR0jOE7MILs/n8sO1SqLmQhHUR
+         f9DZpHw8zFIiDCnfJzN3i5cUfjnw24Ww5CCzCxqRtXvsrF7GmFRQTc6VSwQEiA/Gt5Do
+         6kk02boqaho8cTz7b7WVZvMN8S/NOIIseAXuWUganCDJohJL66Sh///1S/EItXmHX/6D
+         AEgQ==
+X-Gm-Message-State: AOAM533cHwXFV1In0uiiFzh8DK2PG811O5EWhNt9ueYIQL6lwx0TxSQO
+        VDTdqIuxz4GaFolWpClZE5E=
+X-Google-Smtp-Source: ABdhPJwPYckpcicHZU4lAuNI8dXd92Kf2vcK7oi1UwdQLB9+te1BS62AXOQhvjI6uskDWfm4Kw9gLA==
+X-Received: by 2002:a17:90a:fa1:: with SMTP id 30mr4323244pjz.42.1627392900378;
+        Tue, 27 Jul 2021 06:35:00 -0700 (PDT)
 Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id w145sm3932415pfc.39.2021.07.27.06.34.44
+        by smtp.gmail.com with ESMTPSA id l8sm3066859pjc.17.2021.07.27.06.34.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 06:34:44 -0700 (PDT)
+        Tue, 27 Jul 2021 06:34:59 -0700 (PDT)
 From:   Punit Agrawal <punitagrawal@gmail.com>
 To:     mhiramat@kernel.org, naveen.n.rao@linux.ibm.com,
         anil.s.keshavamurthy@intel.com, davem@davemloft.net
 Cc:     Punit Agrawal <punitagrawal@gmail.com>,
         linux-kernel@vger.kernel.org, guoren@kernel.org,
         linux-csky@vger.kernel.org
-Subject: [PATCH v2 1/5] kprobes: Do not use local variable when creating debugfs file
-Date:   Tue, 27 Jul 2021 22:34:22 +0900
-Message-Id: <20210727133426.2919710-2-punitagrawal@gmail.com>
+Subject: [PATCH v2 2/5] kprobes: Use helper to parse boolean input from userspace
+Date:   Tue, 27 Jul 2021 22:34:23 +0900
+Message-Id: <20210727133426.2919710-3-punitagrawal@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210727133426.2919710-1-punitagrawal@gmail.com>
 References: <20210727133426.2919710-1-punitagrawal@gmail.com>
@@ -66,49 +66,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debugfs_create_file() takes a pointer argument that can be used during
-file operation callbacks (accessible via i_private in the inode
-structure). An obvious requirement is for the pointer to refer to
-valid memory when used.
+The "enabled" file provides a debugfs interface to arm / disarm
+kprobes in the kernel. In order to parse the buffer containing the
+values written from userspace, the callback manually parses the user
+input to convert it to a boolean value.
 
-When creating the debugfs file to dynamically enable / disable
-kprobes, a pointer to local variable is passed to
-debugfs_create_file(); which will go out of scope when the init
-function returns. The reason this hasn't triggered random memory
-corruption is because the pointer is not accessed during the debugfs
-file callbacks.
+As taking a string value from userspace and converting it to boolean
+is a common operation, a helper kstrtobool_from_user() is already
+available in the kernel. Update the callback to use the common helper
+to parse the write buffer from userspace.
 
-Since the enabled state is managed by the kprobes_all_disabled global
-variable, the local variable is not needed. Fix the incorrect (and
-unnecessary) usage of local variable during debugfs_file_create() by
-passing NULL instead.
-
-Fixes: bf8f6e5b3e51 ("Kprobes: The ON/OFF knob thru debugfs")
 Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- kernel/kprobes.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/kprobes.c | 28 ++++++----------------------
+ 1 file changed, 6 insertions(+), 22 deletions(-)
 
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 790a573bbe00..1cf8bca1ea86 100644
+index 1cf8bca1ea86..26fc9904c3b1 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -2809,13 +2809,12 @@ static const struct file_operations fops_kp = {
- static int __init debugfs_kprobe_init(void)
+@@ -2770,30 +2770,14 @@ static ssize_t read_enabled_file_bool(struct file *file,
+ static ssize_t write_enabled_file_bool(struct file *file,
+ 	       const char __user *user_buf, size_t count, loff_t *ppos)
  {
- 	struct dentry *dir;
--	unsigned int value = 1;
+-	char buf[32];
+-	size_t buf_size;
+-	int ret = 0;
+-
+-	buf_size = min(count, (sizeof(buf)-1));
+-	if (copy_from_user(buf, user_buf, buf_size))
+-		return -EFAULT;
++	bool enable;
++	int ret;
  
- 	dir = debugfs_create_dir("kprobes", NULL);
+-	buf[buf_size] = '\0';
+-	switch (buf[0]) {
+-	case 'y':
+-	case 'Y':
+-	case '1':
+-		ret = arm_all_kprobes();
+-		break;
+-	case 'n':
+-	case 'N':
+-	case '0':
+-		ret = disarm_all_kprobes();
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
++	ret = kstrtobool_from_user(user_buf, count, &enable);
++	if (ret)
++		return ret;
  
- 	debugfs_create_file("list", 0400, dir, NULL, &kprobes_fops);
++	ret = enable ? arm_all_kprobes() : disarm_all_kprobes();
+ 	if (ret)
+ 		return ret;
  
--	debugfs_create_file("enabled", 0600, dir, &value, &fops_kp);
-+	debugfs_create_file("enabled", 0600, dir, NULL, &fops_kp);
- 
- 	debugfs_create_file("blacklist", 0400, dir, NULL,
- 			    &kprobe_blacklist_fops);
 -- 
 2.30.2
 
