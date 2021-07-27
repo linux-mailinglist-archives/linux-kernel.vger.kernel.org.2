@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A8C3D7DA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96953D7DA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhG0S2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhG0S2l (ORCPT
+        id S231818AbhG0S3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:29:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32295 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229797AbhG0S3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:28:41 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8A7C061757;
-        Tue, 27 Jul 2021 11:28:40 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id b6so631995pji.4;
-        Tue, 27 Jul 2021 11:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PDWrLM4kYIpPnETyo+7zlukVWrfhj7u2LKf/MzayyZA=;
-        b=U/iq1mW9odIk7JeL08N94dNyXX3Q2+1alqPn70NqKz/IgSwxep7BBRFlnqTcWJG6B8
-         P6BvpOh4gPpco0DshqSDjvv5L4wenm9bV+EvLhfKoQVPaNhlJKrzJCJ2PSkFBzuCAvHy
-         JS5w+KL/1TqqenKH8O9sFS/6faAYH2XWs6dEV9idy2bKLgnjsH0G24/Gllmv857ngwqv
-         K36fmzzp5hUMzvZqeXIPuGMWT7IdEA4CjHdhm8Kn01J1lA+4zwono6LYGK8+vKe8HZdM
-         izZpekLmeJ2X0Q308BZZL6rvREGOS1cfsvPouEE7/WChMX9YF8YMFS8hkXK6s/HZuEaU
-         W87A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PDWrLM4kYIpPnETyo+7zlukVWrfhj7u2LKf/MzayyZA=;
-        b=noKRrxkiSBKnfOrFJvI7UvJKlOiBvUMdk5emVglklVsMNRKBHgQS2c7JoV77jh9Q3k
-         kJZura7dMnYSjR18TbrpqYztEzELfjbfT4VIAMc5ex/fMEGGkDGab/BNe+s66ngZpYOW
-         VEtQ2qU+Rxq0yNJhqiuqETafnP5Qx6xLcJON3qEWdy3ldiiVZ0pOqByGRQNoImtwWoYa
-         dD91JvVbm799PG0+HS5+q0pcVrOt5Ju72iqkJkinDfKdYbhgcHjjs687q6E3+85oHlup
-         /fw5e/jkenyfKIK/C2R6xCJaRRsZtg4Zx/6ty3AsvefZ5aecot23ktMvItJ3rgLzZhEL
-         zZsQ==
-X-Gm-Message-State: AOAM533df3Jy6NB1gFZWOHTzNuB1bHPYTgI2Yn/1rDOB5YbmVPcyomTP
-        gZ7xlRZUtO4FSe/DkHdUvKRlz+M857A=
-X-Google-Smtp-Source: ABdhPJxO21MCQmMBjX39MAyK4BJTwASKWQXRUQ4VS36AfIC4jGJXWN9Uco/oes5ki4njAwXa1vsE4A==
-X-Received: by 2002:a17:902:ab98:b029:12b:acc0:e18c with SMTP id f24-20020a170902ab98b029012bacc0e18cmr19678244plr.10.1627410520086;
-        Tue, 27 Jul 2021 11:28:40 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id g2sm3568478pjt.51.2021.07.27.11.28.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 11:28:39 -0700 (PDT)
-Subject: Re: [PATCH 5.13 000/224] 5.13.6-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210726165238.919699741@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b73395fb-6bef-664d-28a3-a46ba93f59b1@gmail.com>
-Date:   Tue, 27 Jul 2021 11:28:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 27 Jul 2021 14:29:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627410583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6sBKpIHNRZeimmd/He7f5ljIel5Vq9B+zrMnU0hHa2g=;
+        b=Ms+otwzjdJqv70rjGgQvIsKUwWmhFcMM1qBLuiogx9aLMxPZoeDuic4HithFWRFdeL51Ms
+        dcD8Y3GcFaJugjmBhcljjwgqjQzkRWxKKH9rb3CGDhLHp0bZ5WRjNJRKZjF0QU11xbdFRR
+        3w+qTVgXbIrmY11/AJ7TKzBK37Ayf98=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-qAq-TvmDOOeU7tGrk7_3kw-1; Tue, 27 Jul 2021 14:29:41 -0400
+X-MC-Unique: qAq-TvmDOOeU7tGrk7_3kw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96D7194EE1;
+        Tue, 27 Jul 2021 18:29:40 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.19.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 836F860862;
+        Tue, 27 Jul 2021 18:29:33 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 14B85224201; Tue, 27 Jul 2021 14:29:33 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 14:29:33 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, virtio-fs@redhat.com,
+        v9fs-developer@lists.sourceforge.net, stefanha@redhat.com,
+        miklos@szeredi.hu
+Subject: Re: [PATCH v3 0/3] support booting of arbitrary non-blockdevice file
+ systems
+Message-ID: <YQBQje2SBNw9hqO0@redhat.com>
+References: <20210714202321.59729-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210726165238.919699741@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210714202321.59729-1-vgoyal@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 10:06 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.6 release.
-> There are 224 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, Jul 14, 2021 at 04:23:18PM -0400, Vivek Goyal wrote:
+> Hi,
 > 
-> Responses should be made by Wed, 28 Jul 2021 16:52:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.6-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> This is V3 of patches. Christoph had posted V2 here.
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+Hi,
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Ping?
+
+Vivek
+
+> 
+> https://lore.kernel.org/linux-fsdevel/20210621062657.3641879-1-hch@lst.de/
+> 
+> There was a small issue in last patch series that list_bdev_fs_names()
+> did not put an extra '\0' at the end as current callers were expecting.
+> 
+> To fix this, I have modified list_bdev_fs_names() and split_fs_names()
+> to return number of null terminated strings they have parsed. And
+> modified callers to use that to loop through strings (instead of
+> relying on an extra null at the end).
+> 
+> Christoph was finding it hard to find time so I took his patches, 
+> added my changes in patch3 and reposting the patch series.
+> 
+> I have tested it with 9p, virtiofs and ext4 filesystems as rootfs
+> and it works for me.
+> 
+> Thanks
+> Vivek
+> 
+> Christoph Hellwig (3):
+>   init: split get_fs_names
+>   init: allow mounting arbitrary non-blockdevice filesystems as root
+>   fs: simplify get_filesystem_list / get_all_fs_names
+> 
+>  fs/filesystems.c   | 27 ++++++++------
+>  include/linux/fs.h |  2 +-
+>  init/do_mounts.c   | 90 +++++++++++++++++++++++++++++++++-------------
+>  3 files changed, 83 insertions(+), 36 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
+
