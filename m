@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35403D8374
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 712FB3D83A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232640AbhG0Wzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 18:55:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50594 "EHLO mail.kernel.org"
+        id S233167AbhG0XDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 19:03:23 -0400
+Received: from cmyk.emenem.pl ([217.79.154.63]:33168 "EHLO smtp.emenem.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232198AbhG0Wzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:55:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BD560EB2;
-        Tue, 27 Jul 2021 22:55:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627426545;
-        bh=QkTDByEnE4LCuSQi2L0xJuuRRUXksrvye21QecmaUbQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cHyNZCz2Fr0ND9uYXCCu9ZJk+p+lRu21AaOLRe8kiQelLLnYQTP2/FFtyIrlzVQWU
-         0Eg7D51e4nOPJy5F9aiTffmrub5rVvQFYRKLcPGN+CVzdl32Jbd5iMTA8cLJVJPeKF
-         K+ybH4lXFpbYLpHbnyiy+Gzs+JAdQwU8WBc2J1Bi2SgjJ29/AhrnmeU4QPXgh2dKIZ
-         QWQaygEjIe10V8op5KWyW08Q+Yc9o04goqQQQI68YshMMPdU9fsOgIt5hSIvxEqiaa
-         vMAnJrhTbdbSPIm4i0WSean/1R26kH2FRP4746QzwbsZTTuy+4QS4Da0n/nFAowfEo
-         WpD6PAhzspxyg==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH] tracing: Reject string operand in the histogram expression
-Date:   Wed, 28 Jul 2021 07:55:43 +0900
-Message-Id: <162742654278.290973.1523000673366456634.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S232685AbhG0XDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 19:03:22 -0400
+X-Greylist: delayed 377 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 19:03:19 EDT
+X-Virus-Scanned: amavisd-new at emenem.pl
+Received: from [192.168.1.10] (50-78-106-33-static.hfc.comcastbusiness.net [50.78.106.33])
+        (authenticated bits=0)
+        by cmyk.emenem.pl (8.16.1/8.16.1) with ESMTPSA id 16RMuSMS006783
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 28 Jul 2021 00:56:29 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ans.pl; s=20190507;
+        t=1627426592; bh=ZBl1EkmpJRnBApNqpV+aWeMsB6XSxkyxy7jfXLK4pYc=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=eX0V4/RcxKtEoLy9uZ1jY/edar+UndYPkrA1KqlIbag1F2qJfpoTAiBK/0nZoI3dy
+         sRBLwXSNwSmzbbZoI2uFRskpxW/cerIwW24Qq3Tj/5IwWINWAjS4nbrR8lHj5xwEwv
+         eieXHrlz2gAqzpxAN2FCdYvkHY+u+OyhuoJOvCqI=
+Subject: Re: Commit d5fd456c88aba4fcf77d35fe38024a8d5c814686 - "loopdev: use
+ LOOP_CONFIG ioctl" broke loop on x86-64 w/ 32 bit userspace
+From:   =?UTF-8?Q?Krzysztof_Ol=c4=99dzki?= <ole@ans.pl>
+To:     Sinan Kaya <sinan.kaya@microsoft.com>, Karel Zak <kzak@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     util-linux@vger.kernel.org, linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <a797f527-4599-e986-a326-4bb141487f2c@ans.pl>
+ <e7f64d43-2a26-e386-b208-5c35d6a56ed4@ans.pl>
+Message-ID: <7de1bd0b-b8ea-daf0-b677-f92db1c1cdff@ans.pl>
+Date:   Tue, 27 Jul 2021 15:56:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <e7f64d43-2a26-e386-b208-5c35d6a56ed4@ans.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the string type can not be the target of the addition / subtraction
-operation, it must be rejected. Without this fix, the string type silently
-converted to digits.
+On 2021-07-27 at 15:39, Krzysztof Olędzki wrote:
+> On 2021-07-27 at 14:53, Krzysztof Olędzki wrote:
+>> Hi,
+>>
+>> I have a number of (older) systems that are still based on 32 bit
+>> userspace but are running a relatively modern 64 bit kernel -
+>> 5.4-stable, where BTW - LOOP_CONFIGURE is not yet available.
+>>
+>> I noticed that starting with util-linux-2.37 it is no longer possible to
+>> mount images using loop:
+>>
+>> # mount /usr/install/iso/systemrescue-8.04-amd64.iso /mnt/cdrom
+>> mount: /mnt/cdrom: failed to setup loop device for
+>> /usr/install/iso/systemrescue-8.04-amd64.iso.
+>>
+>> Reverting d5fd456c88aba4fcf77d35fe38024a8d5c814686 fixes the problem:
+>>
+>> /tmp/util-linux-2.37# ./mount
+>> /usr/install/iso/systemrescue-8.04-amd64.iso /mnt/cdrom
+>> mount: /mnt/cdrom: WARNING: source write-protected, mounted read-only.
+>>
+>> I have not tested if 32 bit kernel + 32 bit userspace is also affected,
+>> but 64 bit kernel + 64 bit userspace works.
+> 
+> Some debugging data:
+> 
+> 30399: loopdev:      CXT: [0xff8d0f98]: using loop-control
+> 30399: loopdev:      CXT: [0xff8d0f98]: loop0 name assigned
+> 30399: loopdev:      CXT: [0xff8d0f98]: find_unused by loop-control [rc=0]
+> 30399: libmount:     LOOP: [0x57cbbcb0]: trying to use /dev/loop0
+> 30399: loopdev:      CXT: [0xff8d0f98]: set backing file=/usr/install/iso/systemrescue-8.04-amd64.iso
+> 30399: loopdev:      CXT: [0xff8d0f98]: set flags=4
+> 30399: loopdev:    SETUP: [0xff8d0f98]: device setup requested
+> 30399: loopdev:    SETUP: [0xff8d0f98]: backing file open: OK
+> 30399: loopdev:      CXT: [0xff8d0f98]: open /dev/loop0 [rw]: Success
+> 30399: loopdev:    SETUP: [0xff8d0f98]: device open: OK
+> 30399: loopdev:    SETUP: [0xff8d0f98]: LOOP_CONFIGURE failed: Inappropriate ioctl for device
+> 30399: loopdev:    SETUP: [0xff8d0f98]: failed [rc=-25]
+> 30399: libmount:     LOOP: [0x57cbbcb0]: failed to setup device
+> 30399: loopdev:      CXT: [0xff8d0f98]: de-initialize
+> 30399: loopdev:      CXT: [0xff8d0f98]: closing old open fd
+> 30399: loopdev:     ITER: [0xff8d1168]: de-initialize
+> 30399: libmount:      CXT: [0x57cbbcb0]: mount: preparing failed
+> 30399: libmount:      CXT: [0x57cbbcb0]: excode: rc=32 message="failed to setup loop device for /usr/install/iso/systemrescue-8.04-amd64.iso"
+> mount: /mnt/cdrom: failed to setup loop device for /usr/install/iso/systemrescue-8.04-amd64.iso.
+> 30399: libmount:      CXT: [0x57cbbcb0]: <---- reset [status=0] ---->
+> 
+> Seems like the code expects EINVAL (-22) but gets ENOTTY (-25), confirmed with strace:
+> ioctl(4, LOOP_CONFIGURE, {fd=3, block_size=0, info={lo_offset=0, lo_number=0, lo_flags=LO_FLAGS_AUTOCLEAR, lo_file_name="/usr/install/iso/systemrescue-8.04-amd64.iso", ...}}) = -1 ENOTTY (Inappropriate ioctl for device)
+> 
+> Indeed, changing the code from:
+>     if (errno != EINVAL)
+> to:
+>     if (errno != EINVAL && errno != ENOTTY)
+> allows it to work.
+> 
+> Not that with 64-bit userspace, kernel returns EINVAL:
+> 
+> ioctl(4, LOOP_CONFIGURE, {fd=3, block_size=0, info={lo_offset=0, lo_number=0, lo_flags=LO_FLAGS_AUTOCLEAR, lo_file_name="/usr/src/PACKAGES/systemrescue-8.04-amd64.iso", ...}}) = -1 EINVAL (Invalid argument)
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/trace/trace_events_hist.c |   20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
+... which is because lo_compat_ioctl returns -ENOIOCTLCMD for 
+unsupported cmds, while lo_ioctl returns -EINVAL via lo_simple_ioctl.
 
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 76e3100a4840..3eea60e2da48 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -65,7 +65,8 @@
- 	C(INVALID_SORT_MODIFIER,"Invalid sort modifier"),		\
- 	C(EMPTY_SORT_FIELD,	"Empty sort field"),			\
- 	C(TOO_MANY_SORT_FIELDS,	"Too many sort fields (Max = 2)"),	\
--	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),
-+	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),	\
-+	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"),
- 
- #undef C
- #define C(a, b)		HIST_ERR_##a
-@@ -2183,6 +2184,13 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
- 		ret = PTR_ERR(operand1);
- 		goto free;
- 	}
-+	if (operand1->flags & HIST_FIELD_FL_STRING) {
-+		/* String type can not be the operand of unary operator. */
-+		hist_err(file->tr, HIST_ERR_INVALID_STR_OPERAND, errpos(str));
-+		destroy_hist_field(operand1, 0);
-+		ret = -EINVAL;
-+		goto free;
-+	}
- 
- 	expr->flags |= operand1->flags &
- 		(HIST_FIELD_FL_TIMESTAMP | HIST_FIELD_FL_TIMESTAMP_USECS);
-@@ -2284,6 +2292,11 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
- 		operand1 = NULL;
- 		goto free;
- 	}
-+	if (operand1->flags & HIST_FIELD_FL_STRING) {
-+		hist_err(file->tr, HIST_ERR_INVALID_STR_OPERAND, errpos(operand1_str));
-+		ret = -EINVAL;
-+		goto free;
-+	}
- 
- 	/* rest of string could be another expression e.g. b+c in a+b+c */
- 	operand_flags = 0;
-@@ -2293,6 +2306,11 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
- 		operand2 = NULL;
- 		goto free;
- 	}
-+	if (operand2->flags & HIST_FIELD_FL_STRING) {
-+		hist_err(file->tr, HIST_ERR_INVALID_STR_OPERAND, errpos(str));
-+		ret = -EINVAL;
-+		goto free;
-+	}
- 
- 	ret = check_expr_operands(file->tr, operand1, operand2);
- 	if (ret)
+And vfs_ioctl returns -ENOTTY for -ENOIOCTLCMD.
+
+Now the question is if this inconsistency is intended? :)
+
+Krzysztof
 
