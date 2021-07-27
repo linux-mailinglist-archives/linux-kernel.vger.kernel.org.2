@@ -2,80 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0825E3D7D05
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D993D7D0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhG0SCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:02:13 -0400
-Received: from mga17.intel.com ([192.55.52.151]:50466 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229915AbhG0SCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:02:11 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="192779273"
-X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
-   d="scan'208";a="192779273"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 11:02:09 -0700
-X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
-   d="scan'208";a="437414256"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.213.177.99]) ([10.213.177.99])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 11:02:09 -0700
-Subject: Re: linux-next: manual merge of the dmaengine tree with the
- driver-core tree
-To:     Vinod Koul <vkoul@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Greg KH <greg@kroah.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210723155354.082a62d8@canb.auug.org.au>
- <20210723091641.zse42sotjt2pqiif@pengutronix.de> <YQAN2o+msGGpYWLG@matsya>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <f79920e9-52d5-82e2-e8aa-5e5e3096ac79@intel.com>
-Date:   Tue, 27 Jul 2021 11:02:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S230208AbhG0SDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhG0SDh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:03:37 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E024C061757;
+        Tue, 27 Jul 2021 11:03:36 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id a19so10203408qtx.1;
+        Tue, 27 Jul 2021 11:03:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B2hXLgO5AiXq5tjtPT4kBIU2th5HivdhwGkknuw779s=;
+        b=I0SUcvgOXwQajMByH+g7geTBkfr92U2vQ7Cg7Gjp6EPFgTh7ve2hKRcBjVBbJMzawg
+         tWojuRHDyNCOmVSlK/7ykl0P4nj5RY5IYwCsy5sKAtKZBcW5+sh9tnYQlY4cYBdE5tJB
+         5lRAMVVFTyGkdJvGO95fwGQquUc7lhjQiL4xozoKq5ebTiT7WafRSgSfeTLSXe8fm3Q0
+         Ep31l+toQBzqSNEvUvdv+E5g6ZylCQO9TjX2fNl8MX898yTBqjy+d+jGNhpvy8nvrtxx
+         ZxSqEqMvL9ZHnUZbntngaB1Qs1RyG+kG5+9qkaVwqQTWNLay9SOmIV7lFmsgkhcgb65/
+         kEKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=B2hXLgO5AiXq5tjtPT4kBIU2th5HivdhwGkknuw779s=;
+        b=h8z0905ebhXTg11Cdjt66Vn5E9RCke5/u+uCv7ujmx2bNsidTX1ZCbgCPnX0o8SLul
+         /dd2PibrYDJ31MUYIZ5KXD2g5OgEYEvJpsQx741vFbUWhJ7MqpcOw627KK51iogm/iMT
+         o0uiUZHzsQk9DEfGf8t0lpHzQ8XRrVFgbXV5dXiHI03c7sKi8kybZ1qLo1fUgh9hD5Kb
+         rV1hg7w0GX9rZ3tb3uKqNlO5cWg44t5rIroPBDFj0xGbQci/SQs1Zwuw0Ci7W7FDsypK
+         k6Y1Yr++cUl9gPqPJAEkt1x+kPaDjPkYCQhuIJ0PoLLahmVt4r+NH8lZYV0x4IEVib20
+         UclA==
+X-Gm-Message-State: AOAM530m7GnLa5w2KvnjotLFdU3hQ5nXivVGt2DrC06zKWYcqtyVAKrE
+        pKM1u0euMKutm88ljJcccnQ=
+X-Google-Smtp-Source: ABdhPJwMwRKCwYHs1glCMQMkEmBB5O+2I84tLgPeZefkG7VWpmOdikNSYARQtdsYZEgBvh4ST79TVA==
+X-Received: by 2002:ac8:6e9c:: with SMTP id c28mr7308361qtv.84.1627409015545;
+        Tue, 27 Jul 2021 11:03:35 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n13sm1582905qtx.92.2021.07.27.11.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 11:03:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 27 Jul 2021 11:03:33 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/168] 5.10.54-rc2 review
+Message-ID: <20210727180333.GF1721083@roeck-us.net>
+References: <20210726165240.137482144@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <YQAN2o+msGGpYWLG@matsya>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726165240.137482144@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jul 27, 2021 at 07:06:01AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.54 release.
+> There are 168 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Jul 2021 16:52:14 +0000.
+> Anything received after that time might be too late.
+> 
 
-On 7/27/2021 6:44 AM, Vinod Koul wrote:
-> On 23-07-21, 11:16, Uwe Kleine-König wrote:
->> Hello,
->>
->> On Fri, Jul 23, 2021 at 03:53:54PM +1000, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Today's linux-next merge of the dmaengine tree got a conflict in:
->>>
->>>    drivers/dma/idxd/sysfs.c
->>>
->>> between commit:
->>>
->>>    fc7a6209d571 ("bus: Make remove callback return void")
->>>
->>> from the driver-core tree and commit:
->>>
->>>    d9e5481fca74 ("dmaengine: dsa: move dsa_bus_type out of idxd driver to standalone")
->>>
->>> from the dmaengine tree.
->> Greg provided a tag for this case at
->>
->> 	git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/bus_remove_return_void-5.15
->>
->> . Vinod might want to rebase on top of this or merge it into his tree
->> with Stephen's conflict resolution.
-> Thanks I have merged the tag and resolved conflict as above.
->
-> Dave pls test
+Build results:
+	total: 159 pass: 159 fail: 0
+Qemu test results:
+	total: 464 pass: 464 fail: 0
 
-Tested. Looks good. Thx.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-
->
+Guenter
