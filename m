@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249533D7A3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACBE3D7A42
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236755AbhG0Pyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:54:50 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53848 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhG0Pyt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:54:49 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id A26C51F40AF7
-To:     "kernelci@groups.io" <kernelci@groups.io>
-Cc:     kernelci-members <kernelci-members@groups.io>,
-        automated-testing@lists.yoctoproject.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernelci-tsc@groups.io" <kernelci-tsc@groups.io>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Subject: KernelCI working group: Web Dashboard
-Message-ID: <f3874e7d-ccfe-4a2d-d054-9b7bf9e8b44d@collabora.com>
-Date:   Tue, 27 Jul 2021 16:54:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S237112AbhG0Pzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:55:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229537AbhG0Pza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 11:55:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15C9561B7B;
+        Tue, 27 Jul 2021 15:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627401330;
+        bh=o7uBBDueqmfKFRgrSD0hRrTWj9k3+Z2/9NrSr7B+xIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oytkAef+RhMgCe2MZ9L8cAtlDoPyIY5nY/UtjVI0r1b05zNEUIcNhAG/MK2iwtRvS
+         L839QhnO83TjXx2sYwsT1wP5PKGsLkvMvrzfHhzh5kqSjMdlPBoLQjNwZ8LZxhExr4
+         rQDbTiGQyVWyGbRwd9DedTMFhrn6bSxWlSL/YpH9nrxtmaXmYwlf0dOWuv1foAz2VI
+         u1UR3GslArb9WKd5cMG2afUVt/lkVPyGYCcx6cgsxY3xYMIcOYmxIe9g1pPKKRHY1F
+         tJe8ylSzC8pff9A1W+2dKDDPLWT5/YNJ9Pi8/OCGZ6t47kdSXhex8j2SdEz5WgWDLI
+         NexLydZy7BKUA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id F30D4403F2; Tue, 27 Jul 2021 12:55:26 -0300 (-03)
+Date:   Tue, 27 Jul 2021 12:55:26 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     Li Huafei <lihuafei1@huawei.com>, jolsa@kernel.org,
+        peterz@infradead.org, mark.rutland@arm.com, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        mliska@suse.cz, irogers@google.com, dzhu@wavecomp.com,
+        rickyman7@gmail.com, yao.jin@linux.intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangjinhao2@huawei.com
+Subject: Re: [PATCH 2/2] perf annotate: Add error log in symbol__annotate()
+Message-ID: <YQAsbprd0sl7gya4@kernel.org>
+References: <20210726123854.13463-1-lihuafei1@huawei.com>
+ <20210726123854.13463-2-lihuafei1@huawei.com>
+ <7106d95c-2a97-cd8b-b361-7f498a1b0a5f@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7106d95c-2a97-cd8b-b361-7f498a1b0a5f@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Last year's KernelCI Community Survey[1] showed the importance of
-having a good web dashboard.  About 70% of respondents would use
-one if it provided the information they needed efficiently.
-While other things are arguably even more important, such as
-testing patches from mailing lists, replying to stable reviews
-and sending email reports directly to contributors in a "natural"
-workflow, the web dashboard has been a sticking point for a
-while.
+Em Mon, Jul 26, 2021 at 04:19:26PM +0100, James Clark escreveu:
+> 
+> 
+> On 26/07/2021 13:38, Li Huafei wrote:
+> > When users use the perf annotate feature on unsupported machines, error
+> > logs should be printed for user feedback.
+> > 
+> > Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+> > ---
+> >  tools/perf/util/annotate.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> > index aa04a3655236..cb280de3369f 100644
+> > --- a/tools/perf/util/annotate.c
+> > +++ b/tools/perf/util/annotate.c
+> > @@ -2192,8 +2192,10 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
+> >  		return errno;
+> >  
+> >  	args.arch = arch = arch__find(arch_name);
+> > -	if (arch == NULL)
+> > +	if (arch == NULL) {
+> > +		pr_err("%s: unsupported arch %s\n", __func__, arch_name);
+> >  		return ENOTSUP;
+> > +	}
+> >  
+> >  	if (parch)
+> >  		*parch = arch;
+> > 
+> 
+> This one is missing the v2 in the summary so it doesn't work with tools like b4,
+> but I applied it manually and it works.
+> 
+> Reviewed-by: James Clark <james.clark@arm.com>
 
-There have been several attempts at solving this problem, using
-Elastic Stack and Grafana among other things, but there isn't a
-single framework able to directly provide an off-the-shelf
-solution to the community's needs.  In fact, the first issue is
-the lack of understanding of these needs: who wants to use the
-web dashboard, and how?  Then, how does one translate those needs
-into a user interface?  Doing this requires skills that engineers
-who regularly contribute to KernelCI typically don't have.  As
-such, a dedicated working group is being created in order to fill
-this gap.
+Thanks, applied.
 
-The aim is to coordinate efforts and try to follow best practices
-to make steady progress and avoid repeating the same mistakes.
-Most likely, we will need some help from proper web developers
-who aren't part of the usual KernelCI community.  This may be
-facilitated by the KernelCI LF project budget if approved by the
-governing board.
-
-In order to get started, we would need to have maybe 3 to 5
-people available to focus on this.  It doesn't necessarily mean a
-lot of hours spent but actions to be carried out on a daily or
-weekly basis.  So far we have Gustavo Padovan as our new KernelCI
-Project Manager and a few people have expressed interest but we
-still need formal confirmation.
-
-
-Here's a GitHub project dedicated to the new web dashboard:
-
-  https://github.com/orgs/kernelci/projects/4
-
-I've created a couple of issues to get started about user
-stories, and some initial milestones as a basic skeleton:
-
-  https://github.com/kernelci/kernelci-project/milestones
-
-
-This is ultimately a community-driven effort to address the needs
-of the kernel community.  Please share any thoughts you may have
-on this, whether you want to add some user stories, share some
-expertise, be officially in the working group or take part in
-this effort in any other way.
-
-Best wishes,
-Guillaume
-
-[1] https://foundation.kernelci.org/blog/2020/07/09/kernelci-community-survey-report/
+- Arnaldo
