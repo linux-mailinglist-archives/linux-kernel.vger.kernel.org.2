@@ -2,112 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF483D7059
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6117A3D705B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235866AbhG0HY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235558AbhG0HY5 (ORCPT
+        id S235746AbhG0H05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:26:57 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36498 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235504AbhG0H04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:24:57 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C9DAC061757;
-        Tue, 27 Jul 2021 00:24:57 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id r23so11538892lji.3;
-        Tue, 27 Jul 2021 00:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=806cL16Fyf0R0k5TtItiv7yjEE5s8rfxhJRcoiiIZI8=;
-        b=IlLAneyGPnlS2hQN1TxR9M7nnWMmWAD1IoNw4jgl31gbP7Gl190ID+c/vecid0UgVP
-         rHuV3s+pQbmbdofWpD0qZIuRom+AAe+awhfC+K3B3VW1jB8gMqWNetalT7HHDphLFSvQ
-         vIS9uVGw1quoLziome9XnRNyemE0hh5rOW9MjS4/sdmNr+tkeGsPKnev0k/Lw5G8izg+
-         +XeM49Q+bfViNvVissj0Hc5lmsUP/6hrKt8peDfVsCVTsDaUBBlZw1z+nsT2KjiExem9
-         KIKhqmX+v9Us//v6HnxqfgyraGbxeHA4LP5iKeXuBfJPW8Ka8whi9dpsTv/0/+iw2z7j
-         6epA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=806cL16Fyf0R0k5TtItiv7yjEE5s8rfxhJRcoiiIZI8=;
-        b=rYbyEyb9V5NvVUvQK7Es3pzKsJhCMspPaSxX5cTI0gaM/2v3eoU5AzSLAcRz2IwMby
-         QOk/2ldeaxddNX1JgQK1afPx2I3FVQtdBsgtkAGsFsUeQaoJhzaFmmyygPOv3Mz2E1PP
-         inYxXeMSOJIeKls7aJcnYLkqmNMYYifktZXFbP1WfLiwWWNtpvzJWo5ndG8N7GSyPPbi
-         cu2oUHJZ1QZU6yzlY5UqEs6hbaAAAdw3ngAK5q0j4vG5bGmcCi/nRNft8K/yrJWoSeKo
-         lyJLGx6zEWxr8g/5GPtfdpaWyG9zol3ZqSHrOuTxPZb/fw955ygf1vAOaEemBIE0XeVu
-         aQ5g==
-X-Gm-Message-State: AOAM532UBcHMl78AFhMTgg90Oq0GeYZzCcGXH/AoPiMJWlc5lmeqdgdu
-        9uSRBT/jBHs0JdjYsEgFVxjAdaSN4WEdupG7u90=
-X-Google-Smtp-Source: ABdhPJz4WJIBAWirCiA0eXtKDaYKDtSOS2yB31Q6aqWl9Xz4r7OCQJKBWBs1xFcyQImVOBYnnwsWdGlPFN0dMI7PEW4=
-X-Received: by 2002:a2e:901a:: with SMTP id h26mr14390354ljg.218.1627370695895;
- Tue, 27 Jul 2021 00:24:55 -0700 (PDT)
+        Tue, 27 Jul 2021 03:26:56 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 145C322103;
+        Tue, 27 Jul 2021 07:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1627370816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BIRDRD9L4czToF86gzK0EPiIaFDmmYi9JHkmXI3ngzQ=;
+        b=nJqvAQvqUxZZ5iCL8QYWjWGPVyDkMYBjRJVMYG19s7WhBLGIG4Kg9PRrCjcMUHPW5yFHCM
+        2mF/l/4bgDhpI+TWQPFm3lrdvLLUZBwX8OZdqxGQ4wX+eJqBw55B2LjMIA1DCAGo4Lvkm4
+        +SJtF34yqgIyDeVCvZyZaFocQovqWtE=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 8A49BA3B81;
+        Tue, 27 Jul 2021 07:26:54 +0000 (UTC)
+Date:   Tue, 27 Jul 2021 09:26:54 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        =?iso-8859-1?Q?C=E9dric?= Le Goater <clg@kaod.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Yue Hu <huyue2@yulong.com>, linuxppc-dev@lists.ozlabs.org,
+        kexec@lists.infradead.org, Russell King <linux@armlinux.org.uk>,
+        Ingo Molnar <mingo@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Xiongwei Song <sxwjean@gmail.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH printk v4 0/6] printk: remove safe buffers
+Message-ID: <YP+1PqaKTfZXHjmU@alley>
+References: <20210715193359.25946-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-References: <20210709084351.2087311-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210709084351.2087311-1-mudongliangabcd@gmail.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Tue, 27 Jul 2021 17:24:44 +1000
-Message-ID: <CAGRGNgUNnf=62xnFE4zUiVJ+n6NyGjFUmdR2JChbRkhsDSy0Yw@mail.gmail.com>
-Subject: Re: [PATCH] ath9k: hif_usb: fix memory leak in ath9k_hif_usb_firmware_cb
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Brooke Basile <brookebasile@gmail.com>,
-        syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210715193359.25946-1-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dongliang,
+On Thu 2021-07-15 21:39:53, John Ogness wrote:
+> Hi,
+> 
+> Here is v4 of a series to remove the safe buffers. v3 can be
+> found here [0]. The safe buffers are no longer needed because
+> messages can be stored directly into the log buffer from any
+> context.
+> 
+> However, the safe buffers also provided a form of recursion
+> protection. For that reason, explicit recursion protection is
+> implemented for this series.
+> 
+> The safe buffers also implicitly provided serialization
+> between multiple CPUs executing in NMI context. This was
+> particularly necessary for the nmi_backtrace() output. This
+> serializiation is now preserved by using the printk cpulock.
+> 
+> With the removal of the safe buffers, there is no need for
+> extra NMI enter/exit tracking. So this is also removed
+> (which includes removing the config option CONFIG_PRINTK_NMI).
+> 
+> And finally, there are a few places in the kernel that need to
+> specify code blocks where all printk calls are to be deferred
+> printing. Previously the NMI tracking API was being (mis)used
+> for this purpose. This series introduces an official and
+> explicit interface for such cases. (Note that all deferred
+> printing will be removed anyway, once printing kthreads are
+> introduced.)
+> 
+> John Ogness (6):
+>   lib/nmi_backtrace: explicitly serialize banner and regs
+>   printk: track/limit recursion
+>   printk: remove safe buffers
+>   printk: remove NMI tracking
+>   printk: convert @syslog_lock to mutex
+>   printk: syslog: close window between wait and read
 
-(Drive-by review, I know almost nothing about the code in question)
+The entire patchset has been committed into printk/linux.git,
+branch rework/printk_safe-removal.
 
-On Fri, Jul 9, 2021 at 6:47 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> The commit 03fb92a432ea ("ath9k: hif_usb: fix race condition between
-> usb_get_urb() and usb_kill_anchored_urbs()") adds three usb_get_urb
-> in ath9k_hif_usb_dealloc_tx_urbs and usb_free_urb.
->
-> Fix this bug by adding corresponding usb_free_urb in
-> ath9k_hif_usb_dealloc_tx_urbs other and hif_usb_stop.
->
-> Reported-by: syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com
-> Fixes: 03fb92a432ea ("ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath9k/hif_usb.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
-> index 860da13bfb6a..bda91ff3289b 100644
-> --- a/drivers/net/wireless/ath/ath9k/hif_usb.c
-> +++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
-> @@ -457,6 +457,7 @@ static void hif_usb_stop(void *hif_handle)
->                 usb_kill_urb(tx_buf->urb);
->                 list_del(&tx_buf->list);
->                 usb_free_urb(tx_buf->urb);
-> +               usb_free_urb(tx_buf->urb);
+Note that I have updated the 4th patch as discussed, see
+https://lore.kernel.org/r/20210721120026.y3dqno24ahw4sazy@pathway.suse.cz
+https://lore.kernel.org/r/20210721130852.zrjnti6b3fwjgdzj@pathway.suse.cz
 
-Ok, so if I'm reading this correctly, before the first usb_free_urb()
-call, we have two references to the urb at tx_buf->urb.
-
-Why?
-
-Isn't the better fix here to detangle why there's more than one
-reference to it and resolve it that way? This looks like a hack to fix
-something much more fundamentally broken.
-
-Thanks,
-
--- 
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+Best Regards,
+Petr
