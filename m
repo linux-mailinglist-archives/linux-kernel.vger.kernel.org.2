@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78133D764D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE413D764E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237021AbhG0N0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:26:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237381AbhG0NZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:25:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D12D761A07;
-        Tue, 27 Jul 2021 13:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627392303;
-        bh=F5FO0KwrjkIdpxIRGWjqMSMQQWb+eHq3L3DMaWH6RQA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u9q5p5jH2mYJrV8HkMu2/aUtXlP3FXBATy73XY6OdDb3OxuwwLVfTkwz882JyDAQS
-         64+TfrckXAJ8gK6cvMKQT2aygMD5TCe94r0F7G7oPxQOnpEYdiWjYYId5I23tf+vpr
-         E7f8hbHdl8LCfkXDtsJDtU0hSRFqjBcsok1GkgHU=
-Date:   Tue, 27 Jul 2021 15:25:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Ojaswin Mujoo <ojaswin98@gmail.com>
-Cc:     nsaenz@kernel.org, stefan.wahren@i2se.com,
-        dan.carpenter@oracle.com, phil@raspberrypi.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/5] staging: vchiq: Make creation of vchiq cdev
- optional
-Message-ID: <YQAJLao8H1Hl5VVf@kroah.com>
-References: <cover.1626882325.git.ojaswin98@gmail.com>
- <846c424dd4aae14d1cc28c8f30877a06e2b7dd10.1626882325.git.ojaswin98@gmail.com>
+        id S236696AbhG0N0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237025AbhG0NZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:25:59 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE2DC0613CF
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:25:46 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id i10so12657375pla.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:25:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sj4gJifOrkoU7DlVhCp3UPFxcARtLuS9gmjuHOue86Y=;
+        b=HAS/GrGXG8YGN51qv56OFvXHWpZ5qSPcXAR8IBDBZDCKCVuNzhA5r/E/HDm6phKrNf
+         uXG/tGwPAp70UueB76jpYhWu5grbQFG1p7MXwp4cRSvoAAdvwKQSQyvZjCzZ0pewkM+6
+         7D5t+CggV0rrbN5UlCk1RMdIj6LIxSvOyZ+pCsIuqwFLvDS35DfqJzbBDD6ook9maEKR
+         th8XTWo3pa4vpLrYE6wSLpTszkN0cL16ESwhSthFn8nAqftvOqMQnmy+LXmpSmCyTe8G
+         DaK9OypY38rNo+9ioV0we98b9HIHUhlhmmhI/gVtIFV1USaLm0ZYrKaF0PewlDMMAw3R
+         yFhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sj4gJifOrkoU7DlVhCp3UPFxcARtLuS9gmjuHOue86Y=;
+        b=QuYTHrrO2lLaWwLH48OvLUK9KDUOpXOoToRkq4kwB5Tl4WaGnji1EfL8Os3rztOSYn
+         Mpnn3uSSzICgQLc+tnhnxEu1GUfpea0QNU/EfCSJ/E9fwPu0SuwmpOPl+uk2RbbDe4Ow
+         tb6iVCqFAdg9V8u59JISaKN93TJDvryTZeMoV1hMMcbc+8CY8IlJyt+eAiVn4k7xfzyl
+         auJe/cPVXT2q94VXqCqeGD2XIEa1cendBzzq7fr8yaXmJHKtPoGrqpQm3p7FQsMd4WIp
+         nGFXUX67MGB5IrKBAGJM7OfAQCsdUW4OZU0w7NMIojgAQpl8HvUmbZCmLyvVEwV9Ha6N
+         rPlg==
+X-Gm-Message-State: AOAM533P0V+TPUKX8twi3gD6AVgGiXLiUvroTWyIgDXVLHyDZlVdcPd8
+        gK4eWmaFYe8tfZ3IDslTjzRNzklDL27uHG84oT1/kQ==
+X-Google-Smtp-Source: ABdhPJxL31vUFNVWIYkybbAcA7zXMuTQU1STyLSzbL123qPq4ghFjZHP2LBaD+BBmR1Qie1oflrkXeMv9QhUWIHPAJc=
+X-Received: by 2002:a65:6181:: with SMTP id c1mr204980pgv.208.1627392345677;
+ Tue, 27 Jul 2021 06:25:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <846c424dd4aae14d1cc28c8f30877a06e2b7dd10.1626882325.git.ojaswin98@gmail.com>
+References: <20210724001055.1613840-1-phil@philpotter.co.uk> <YQAE1q9ZWRPHqfK5@kroah.com>
+In-Reply-To: <YQAE1q9ZWRPHqfK5@kroah.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Tue, 27 Jul 2021 14:25:34 +0100
+Message-ID: <CAA=Fs0nwOBUoCSbwzaE7TTQab_BZcCy2SL1RJby+Hmo=URw_Pg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] staging: rtl8188eu: replace driver with better version
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 09:50:52PM +0530, Ojaswin Mujoo wrote:
-> Before this commit, vchiq cdev (/dev/vchiq) was always created during
-> platform initialization. Introduce a new Kconfig option
-> CONFIG_VCHIQ_CDEV which determines if the cdev will be created or not.
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
-> ---
->  drivers/staging/vc04_services/Kconfig                  | 10 ++++++++++
->  drivers/staging/vc04_services/Makefile                 |  5 ++++-
->  .../vc04_services/interface/vchiq_arm/vchiq_arm.h      |  9 +++++++++
->  3 files changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
-> index 4b886293f198..63caa6818d37 100644
-> --- a/drivers/staging/vc04_services/Kconfig
-> +++ b/drivers/staging/vc04_services/Kconfig
-> @@ -19,6 +19,16 @@ config BCM2835_VCHIQ
->  		Defaults to Y when the Broadcom Videocore services
->  		are included in the build, N otherwise.
->  
-> +if BCM2835_VCHIQ
-> +
-> +config VCHIQ_CDEV
-> +	bool "VCHIQ Character Driver"
-> +	help
-> +		Enable the creation of VCHIQ character driver to help
-> +		communicate with the Videocore platform.
+On Tue, 27 Jul 2021 at 14:06, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, Jul 24, 2021 at 01:10:48AM +0100, Phillip Potter wrote:
+> > I had to break this patchset up a bit to get around the file size limits
+> > on the mailing list, and also I removed the hostapd stuff which is
+> > userspace related and therefore not required.
+> >
+> > The driver currently in staging is older and less functional than the
+> > version on Larry Finger's GitHub account, based upon v4.1.4_6773.20130222.
+> > This series of patches therefore:
+> >
+> > (1) Removes the current driver from staging.
+> > (2) Imports the GitHub version mentioned above in its place.
+>
+> Let's do (2) first before worrying about (1), given that we can't get a
+> version of (2) that actually builds yet :)
+>
+> thanks,
+>
+> greg k-h
 
-I'll take this, but this really should say more about what this really
-is for.  Who needs this?  Why will I know if I want a character driver
-interface?  What tools talk to this?
+Dear Greg,
 
-Or conversely, why would I want to turn this off?
+I'm confused - v3 patchset builds fine for me after applying in
+sequence from 1 to 7?
 
-Can you send a follow-on patch that makes this more descriptive?
-
-thanks,
-
-greg k-h
+Regards,
+Phil
