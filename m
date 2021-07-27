@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFE23D7A18
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92BD3D7A1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237046AbhG0Pqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:46:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhG0Pqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:46:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BFDE61B52;
-        Tue, 27 Jul 2021 15:46:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627400810;
-        bh=50kCSW88KwosMSn+xIFUmr3VyLJESxOV9HJKXQ5R7Ck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZqLg+RABAri82sy12Y+k21teuxMPWJbwu/gGLQqh70u5HzCBXNeVNbODBb37VwG7W
-         s3BMExVHzrD9b1MGcRVv8W6Wzvp9BHoGO2JnogfnqdQh5/Qah/1zsQQVNNM/SxU1iV
-         TgFAV9Y4sunPRa1lnY/Uj7rxeu2+cqIwcQ803g2c=
-Date:   Tue, 27 Jul 2021 17:46:47 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-staging@lists.linux.dev, Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: Re: [PATCH v3 0/7] staging: rtl8188eu: replace driver with better
- version
-Message-ID: <YQAqZ4g10DIlQMPM@kroah.com>
-References: <20210724001055.1613840-1-phil@philpotter.co.uk>
- <YQAE1q9ZWRPHqfK5@kroah.com>
- <CAA=Fs0nwOBUoCSbwzaE7TTQab_BZcCy2SL1RJby+Hmo=URw_Pg@mail.gmail.com>
- <YQAOdEz9GfhpCeBZ@kroah.com>
- <c42ded8d-8027-eee3-c1c5-54e0736a1758@lwfinger.net>
- <YQAYER8JxrXG0f+G@kroah.com>
- <CAA=Fs0nBBe34Wqqj2pKHc0BGWTNgCsA28rMeFKSXBw_Sr80-bQ@mail.gmail.com>
+        id S237123AbhG0PrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:47:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52240 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237069AbhG0PrF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 11:47:05 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1627400824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H51/ZMeUA6zob6PAMZW3rybS6Qc5B+5JqVVSJ4UAVf0=;
+        b=bJ5MjfbMALMw7FCxm5YowjNggn76UJj28M4xw6Qo0rDyxK7BzaEAsn2pAEIW/UiF5E69K4
+        MSvmwiaHkAn0NFOyZWfNnkrkuH06jp4hUq8eeI6W5pyj/GKOJpRcILQQHVSYdCO9CxduaH
+        SdCjpSQZA7dNgZNwbaZI8vmugr8h5xjtOGOs8sqH5GnSzvwkdQmXg1CBwHsCuFmaId98R6
+        jjx2jhfKqd4Wycm4l+NxdIQEApMz/eQB9Lg75bpBud+a+DWqid6zh2zh1FUuHRXN5qAMdA
+        u/yNb7lp8XAwR9IT5pxmP2g4v2vkBceO0IWErztzuTaBfKPM923gq1Aiq+1A2w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1627400824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H51/ZMeUA6zob6PAMZW3rybS6Qc5B+5JqVVSJ4UAVf0=;
+        b=/S3LjABpVWj4DP84AjSomx06YKOk/MUBldyezeByvu0w+xxFk7gaF+YVUTGoxekMqc4xkk
+        R+L7EKZx1RSWnvCQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH] lib/nmi_backtrace: Serialize even messages about idle CPUs
+In-Reply-To: <20210727080939.27193-1-pmladek@suse.com>
+References: <20210727080939.27193-1-pmladek@suse.com>
+Date:   Tue, 27 Jul 2021 17:53:04 +0206
+Message-ID: <87r1fjiwsn.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA=Fs0nBBe34Wqqj2pKHc0BGWTNgCsA28rMeFKSXBw_Sr80-bQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 03:34:55PM +0100, Phillip Potter wrote:
-> On Tue, 27 Jul 2021 at 15:28, Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Jul 27, 2021 at 09:13:09AM -0500, Larry Finger wrote:
-> > > On 7/27/21 8:47 AM, Greg KH wrote:
-> > > > On Tue, Jul 27, 2021 at 02:25:34PM +0100, Phillip Potter wrote:
-> > > > > On Tue, 27 Jul 2021 at 14:06, Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > > >
-> > > > > > On Sat, Jul 24, 2021 at 01:10:48AM +0100, Phillip Potter wrote:
-> > > > > > > I had to break this patchset up a bit to get around the file size limits
-> > > > > > > on the mailing list, and also I removed the hostapd stuff which is
-> > > > > > > userspace related and therefore not required.
-> > > > > > >
-> > > > > > > The driver currently in staging is older and less functional than the
-> > > > > > > version on Larry Finger's GitHub account, based upon v4.1.4_6773.20130222.
-> > > > > > > This series of patches therefore:
-> > > > > > >
-> > > > > > > (1) Removes the current driver from staging.
-> > > > > > > (2) Imports the GitHub version mentioned above in its place.
-> > > > > >
-> > > > > > Let's do (2) first before worrying about (1), given that we can't get a
-> > > > > > version of (2) that actually builds yet :)
-> > > > > >
-> > > > > > thanks,
-> > > > > >
-> > > > > > greg k-h
-> > > > >
-> > > > > Dear Greg,
-> > > > >
-> > > > > I'm confused - v3 patchset builds fine for me after applying in
-> > > > > sequence from 1 to 7?
-> > > >
-> > > > Why does kbuild report problems?
-> > > >
-> > > > Anyway, please let's just add the new driver in a new directory, get it
-> > > > building, and then we can remove the old one.  That way patches will
-> > > > continue to work and there's no confusion when backporting patches as
-> > > > the code bases are different.
-> > >
-> > > I get no kbuild problems in the staging-next branch. I have no idea why the
-> > > test robot is reporting errors.
-> > >
-> > > Keeping the old rtl8188eu directory and builds will result in 3 drivers
-> > > competing for the hardware including rtl8xxxu, rtl8188eu, and r8188eu.
-> >
-> > I will only "keep" it around for a day at most.  I will delete the old
-> > driver, I just do not want the "new" driver in the same directory as the
-> > existing one to make it easier to handle changes over time.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> OK I'll do another patch set tonight after work without the removal
-> patch at the start and with the new driver integrated into kbuild
-> alongside old one - the directory name is different already, but they
-> share the same module .ko name - will leave this as-is if the old
-> driver is scheduled for deletion soon though. Many thanks.
+On 2021-07-27, Petr Mladek <pmladek@suse.com> wrote:
+> The commit 55d6af1d66885059ffc2a ("lib/nmi_backtrace: explicitly serialize
+> banner and regs") serialized backtraces from more CPUs using the re-entrant
+> printk_printk_cpu lock. It was a preparation step for removing the obsolete
+> nmi_safe buffers.
+>
+> The single-line messages about idle CPUs were not serialized against other
+> CPUs and might appear in the middle of backtrace from another CPU,
+> for example:
+>
+> [56394.590068] NMI backtrace for cpu 2
+> [56394.590069] CPU: 2 PID: 444 Comm: systemd-journal Not tainted 5.14.0-rc1-default+ #268
+> [56394.590071] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba527-rebuilt.opensuse.org 04/01/2014
+> [56394.590072] RIP: 0010:lock_is_held_type+0x0/0x120
+> [56394.590071] NMI backtrace for cpu 0 skipped: idling at native_safe_halt+0xb/0x10
+> [56394.590076] Code: a2 38 ff 0f 0b 8b 44 24 04 eb bd 48 8d ...
+> [56394.590077] RSP: 0018:ffffab02c07c7e68 EFLAGS: 00000246
+> [56394.590079] RAX: 0000000000000000 RBX: ffff9a7bc0ec8a40 RCX: ffffffffaab8eb40
+>
+> It might cause confusion what CPU the following lines belongs to and
+> whether the backtraces are really serialized.
 
-Ah, I missed the different directory name, sorry about that.
+I originally implemented this, but later decided against it because it
+causes idle CPUs to begin busy-waiting in NMI context in order to log a
+single line saying they are idle. If the user is aware that there is
+only 1 line for the idle message, then the user knows that it isn't
+causing a problem for reading the stack trace.
 
-A new series would be good, we can focus on the build issues easier
-without having to worry about the existing nightmare^Wdriver.
+When triggering many such dumps on systems with many CPUs where this
+patch is applied, it seemed like I was making the whole system work
+awfully hard for something that should be trivial.
 
-thanks,
+Considering that dump_stack() and show_regs() should be fast and we are
+only dumping to the lockless buffer, it is probably OK to be doing all
+the busy-waiting. Once atomic consoles are introduced, it will have
+quite an impact here, but atomic consoles are mostly only active on
+system crash, so I think that would be OK as well.
 
-greg k-h
+Feel free to add:
+
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
