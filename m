@@ -2,158 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315303D7364
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416C03D737C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbhG0Kgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:36:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50378 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236104AbhG0Kge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:36:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B45046152B;
-        Tue, 27 Jul 2021 10:36:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627382191;
-        bh=XrjTlqopfnfwY0WGIXPa9IUHl0yY09PQcERb+9iKDQE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=G2+bvPMFWliWKEWLySVevvnBMQMM4x272wv1j32YL4P4HkYScvXrxP90916rQb2F+
-         kFk8n0NfBvfase/IAQulpT/8bmuJORPQ8U+0/jikfcQMDUmljygTmUqmgBCebC6PaX
-         wvRxifh8RCdKLrQFSyu9hkkuUhYc9qIrKMos9C/A=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        id S236376AbhG0KmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:42:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32759 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236316AbhG0KmK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:42:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627382530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=IT+EQvVl8yyI284zyT3EdvtpKPDR0WHPaXQUKhGJWQ0=;
+        b=I3Zh8sathbnXwA2fr/G2rCoDhdYou/OsgQ3ID+0bqTcGdWTkUPCHQgZq2nGa31ZJ1tRr6T
+        0qxD7fHFopa2Q6sP4FgVMDHr2eqkyhM6Em03gIIqPCw65a/Spi80bHyv3eMFplXQm712J7
+        BEv2I81bmWRYKOgWJjb4+Bxmye8iW/E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-XKLOz5qlMkir3K7nAfjHvg-1; Tue, 27 Jul 2021 06:42:07 -0400
+X-MC-Unique: XKLOz5qlMkir3K7nAfjHvg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD651190D341;
+        Tue, 27 Jul 2021 10:42:05 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EB56F5C1CF;
+        Tue, 27 Jul 2021 10:41:57 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 9AA174172EDE; Tue, 27 Jul 2021 07:41:49 -0300 (-03)
+Message-ID: <20210727103803.464432924@fuller.cnet>
+User-Agent: quilt/0.66
+Date:   Tue, 27 Jul 2021 07:38:03 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH] fs: make d_path-like functions all have unsigned size
-Date:   Tue, 27 Jul 2021 12:36:25 +0200
-Message-Id: <20210727103625.74961-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4567; h=from:subject; bh=XrjTlqopfnfwY0WGIXPa9IUHl0yY09PQcERb+9iKDQE=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/Hy43rbdOV+ecOPd888rURykX41fKZDyzO/1Rp/CwnvX9 NxqrOmJZGASZGGTFFFm+bOM5ur/ikKKXoe1pmDmsTCBDGLg4BWAi534xzC9+zZa3+nxtpX/UVR9HW+ ZJ/xpu/2VYMPeM0SmB6bbO3hP8U0ubytaYznr3CAA=
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
+        Alex Belits <abelits@marvell.com>, Peter Xu <peterx@redhat.com>
+Subject: [patch 0/4] prctl task isolation interface and vmstat sync
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running static analysis tools to find where signed values could
-potentially wrap the family of d_path() functions turn out to trigger a
-lot of mess.  In evaluating the code, all of these usages seem safe, but
-pointer math is involved so if a negative number is ever somehow passed
-into these functions, memory can be traversed backwards in ways not
-intended.
+The logic to disable vmstat worker thread, when entering
+nohz full, does not cover all scenarios. For example, it is possible
+for the following to happen:
 
-Resolve all of the abuguity by just making "size" an unsigned value,
-which takes the guesswork out of everything involved.
+1) enter nohz_full, which calls refresh_cpu_vm_stats, syncing the stats.
+2) app runs mlock, which increases counters for mlock'ed pages.
+3) start -RT loop
 
-Reported-by: Jordy Zomer <jordy@pwning.systems>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/d_path.c            | 14 +++++++-------
- include/linux/dcache.h | 12 ++++++------
- 2 files changed, 13 insertions(+), 13 deletions(-)
+Since refresh_cpu_vm_stats from nohz_full logic can happen _before_
+the mlock, vmstat shepherd can restart vmstat worker thread on
+the CPU in question.
 
-diff --git a/fs/d_path.c b/fs/d_path.c
-index 23a53f7b5c71..7876b741a47e 100644
---- a/fs/d_path.c
-+++ b/fs/d_path.c
-@@ -182,7 +182,7 @@ static int prepend_path(const struct path *path,
-  */
- char *__d_path(const struct path *path,
- 	       const struct path *root,
--	       char *buf, int buflen)
-+	       char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 
-@@ -193,7 +193,7 @@ char *__d_path(const struct path *path,
- }
- 
- char *d_absolute_path(const struct path *path,
--	       char *buf, int buflen)
-+	       char *buf, unsigned int buflen)
- {
- 	struct path root = {};
- 	DECLARE_BUFFER(b, buf, buflen);
-@@ -230,7 +230,7 @@ static void get_fs_root_rcu(struct fs_struct *fs, struct path *root)
-  *
-  * "buflen" should be positive.
-  */
--char *d_path(const struct path *path, char *buf, int buflen)
-+char *d_path(const struct path *path, char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 	struct path root;
-@@ -266,7 +266,7 @@ EXPORT_SYMBOL(d_path);
- /*
-  * Helper function for dentry_operations.d_dname() members
-  */
--char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
-+char *dynamic_dname(struct dentry *dentry, char *buffer, unsigned int buflen,
- 			const char *fmt, ...)
- {
- 	va_list args;
-@@ -284,7 +284,7 @@ char *dynamic_dname(struct dentry *dentry, char *buffer, int buflen,
- 	return memcpy(buffer, temp, sz);
- }
- 
--char *simple_dname(struct dentry *dentry, char *buffer, int buflen)
-+char *simple_dname(struct dentry *dentry, char *buffer, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buffer, buflen);
- 	/* these dentries are never renamed, so d_lock is not needed */
-@@ -328,7 +328,7 @@ static char *__dentry_path(const struct dentry *d, struct prepend_buffer *p)
- 	return extract_string(&b);
- }
- 
--char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
-+char *dentry_path_raw(const struct dentry *dentry, char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 
-@@ -337,7 +337,7 @@ char *dentry_path_raw(const struct dentry *dentry, char *buf, int buflen)
- }
- EXPORT_SYMBOL(dentry_path_raw);
- 
--char *dentry_path(const struct dentry *dentry, char *buf, int buflen)
-+char *dentry_path(const struct dentry *dentry, char *buf, unsigned int buflen)
- {
- 	DECLARE_BUFFER(b, buf, buflen);
- 
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 9e23d33bb6f1..1a9838dc66fe 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -296,13 +296,13 @@ static inline unsigned d_count(const struct dentry *dentry)
-  * helper function for dentry_operations.d_dname() members
-  */
- extern __printf(4, 5)
--char *dynamic_dname(struct dentry *, char *, int, const char *, ...);
-+char *dynamic_dname(struct dentry *, char *, unsigned int, const char *, ...);
- 
--extern char *__d_path(const struct path *, const struct path *, char *, int);
--extern char *d_absolute_path(const struct path *, char *, int);
--extern char *d_path(const struct path *, char *, int);
--extern char *dentry_path_raw(const struct dentry *, char *, int);
--extern char *dentry_path(const struct dentry *, char *, int);
-+char *__d_path(const struct path *, const struct path *, char *, unsigned int);
-+char *d_absolute_path(const struct path *, char *, unsigned int);
-+char *d_path(const struct path *, char *, unsigned int);
-+char *dentry_path_raw(const struct dentry *, char *, unsigned int);
-+char *dentry_path(const struct dentry *, char *, unsigned int);
- 
- /* Allocation counts.. */
- 
--- 
-2.32.0
+To fix this, add task isolation prctl interface to quiesce
+deferred actions when returning to userspace.
+
+=============================
+Task isolation prctl interface
+=============================
+
+Set thread isolation mode and parameters, which allows
+informing the kernel that application is
+executing latency sensitive code (where interruptions
+are undesired).
+
+Its composed of 4 prctl commands (passed as arg1 to
+prctl):
+
+PR_ISOL_SET:   set isolation parameters for the task
+
+PR_ISOL_GET:   get isolation parameters for the task
+
+PR_ISOL_ENTER: indicate that task should be considered
+               isolated from this point on
+
+PR_ISOL_EXIT: indicate that task should not be considered
+              isolated from this point on
+
+The isolation parameters and mode are not inherited by
+children created by fork(2) and clone(2). The setting is
+preserved across execve(2).
+
+The meaning of isolated is specified as follows, when setting arg2 to
+PR_ISOL_SET or PR_ISOL_GET, with the following arguments passed as arg3.
+
+Isolation mode (PR_ISOL_MODE):
+------------------------------
+
+- PR_ISOL_MODE_NONE (arg4): no per-task isolation (default mode).
+  PR_ISOL_EXIT sets mode to PR_ISOL_MODE_NONE.
+
+- PR_ISOL_MODE_NORMAL (arg4): applications can perform system calls normally,
+  and in case of interruption events, the notifications can be collected
+  by BPF programs.
+  In this mode, if system calls are performed, deferred actions initiated
+  by the system call will be executed before return to userspace.
+
+Other modes, which for example send signals upon interruptions events,
+can be implemented.
+
+Example
+=======
+
+The ``samples/task_isolation/`` directory contains a sample
+application.
+
 
