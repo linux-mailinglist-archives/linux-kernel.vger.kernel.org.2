@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2303D746C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E033D7470
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236521AbhG0Lfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231781AbhG0Lfu (ORCPT
+        id S236347AbhG0Lj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:39:58 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:45902 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236114AbhG0Lj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:35:50 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AE7C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:35:49 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id q15so20142848ybu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qco/AyihnJ5LF9OqcB7SLvxoAFgJ7udwLUJdc+kCzpo=;
-        b=OHQfAWwqSfJLysT2xL6FU2eutfu/bnXiRKUERsAljy4Uv81/MzxAEMW9OyxJokU5wr
-         W2dOvsHDPxN4CtC9uJV40eSOkvfgSWYxDoKsiPQ49Zi4GQDMqGwGJCzCm6xsJ0fAgq+d
-         H9iZvpX9NIbgNCGHa84OAKLaw7MLegBpB7/zaN6sOJN/vAGoT9ORbdQT6WNIF5SX43uJ
-         RmiSzf6JcPfkJQ46jZScHB5/m8Ue/cQvj4jquIP9RYh8xGds6LeiTd/V7hbBW9xouC5y
-         UITiIkzTBJ2wvgrAlPBi8+WUjghsteaOwPmsJErUiU5BFRjQ20bhzxZTyVY+iGlkxJcQ
-         EEvg==
+        Tue, 27 Jul 2021 07:39:56 -0400
+Received: by mail-vs1-f51.google.com with SMTP id f28so6913129vsh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:39:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qco/AyihnJ5LF9OqcB7SLvxoAFgJ7udwLUJdc+kCzpo=;
-        b=FQeBw9HAVT2U5JXDS25SX/3qYWEMox4xGQh89zwdcZn7QxbL0pWVu8uwV70AzdDS46
-         DunZJ+al7Aui05KHYV3pbx3X0RrNWMSZDgDoui2/0bNppDme1llH2v1/ZPvvxEBFmLrg
-         POV4/jsqYIpBp9p2LXgNojr36UcDDEIl5kWwbjGQcDi+pXfgF9ufb6OU7GILpZVq6vJD
-         YVd9/1HYiu2kk4HJqY9WOIl7r+du+p/cF7bsDeeMmHcXDFnshTAx+iBbRZ0WHUA5p75b
-         7delZsP+hRBverx+rAdLoT1e8+W+U3zZreyDH6ULoBzS3e544KPc2pyrgXN+2ygvUg9x
-         VhAw==
-X-Gm-Message-State: AOAM532XWOIs3sZn2G6dvCW5Ga+KK+I7wWKL/Nh9KHNMOiXSgJzAjarp
-        4Xf16kIfEkOxSJrmwNeUZJzTqZWuCnsjpecmABvgnA==
-X-Google-Smtp-Source: ABdhPJzfxtZ4mgMNBH40Q61Gql8DSCEAQWyHWZwB7JYUQpLZ3NY96M/waaOpz6NzjZRVOJBGFxHptQ/RrHpFlVuVv4E=
-X-Received: by 2002:a25:3750:: with SMTP id e77mr13079030yba.469.1627385748609;
- Tue, 27 Jul 2021 04:35:48 -0700 (PDT)
+        bh=TMORGYq9zYL0BbSC5siHJfgjQsNzYI00xMgJvguvEqQ=;
+        b=fpu34FrDjD/NCNn3kjYsLcdxhgeAl9P5Knhp7qBPPe33cUJsiRPPj5RUJgRG19NHy7
+         qg53Pt41MO/KoUJG5MylHd/6et4EI0dK9Z6Hg08DbJl+NOMYOB668IXI+0paUCaHu1ll
+         YKiW3yBJgUr95S4ad2WFwiZTIxhcc5ziwIMMFl6zDguSAZbDnfSgeEkaeYSBxp0/cTBY
+         181hliPlClEcW3i9eG1RtDi8bOgxCk/wrj3CZ+JwL5+AfRsVjNnKchGJUDHmqBsZuY5g
+         La2s+7LVHvBTmXpcCTbbDOHeir30pjctgCNcn3PJ+ktJiSsw6TGTMr+SCjOc6+jLPzKM
+         7kgg==
+X-Gm-Message-State: AOAM533EzMRQ9mBoSgMJ5pub6ScDMPH9El/0WmSUN7/YDDyBe9hiv3yI
+        /uYCRgFxhSTUd+vja0Vzdi0/BQrtFSSVHWAN6SY=
+X-Google-Smtp-Source: ABdhPJz8EAHSpA5ssumFMd2SO7/p1K8PP/rO1gNlbgefMt9MamIF0aFU6Rje/V/LzHfe6Y7dv4vFKrYpt9b1YlS0RHg=
+X-Received: by 2002:a05:6102:2828:: with SMTP id ba8mr15890283vsb.18.1627385996758;
+ Tue, 27 Jul 2021 04:39:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210708070429.31871-1-sergio.paracuellos@gmail.com> <CAMhs-H9fbHMxxSaqMj=nyACAN6aDB-bYK1nF1dRh8a1krTdaZg@mail.gmail.com>
-In-Reply-To: <CAMhs-H9fbHMxxSaqMj=nyACAN6aDB-bYK1nF1dRh8a1krTdaZg@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 27 Jul 2021 13:35:38 +0200
-Message-ID: <CAMpxmJUQmdfesygysBHB=bx7tYqMyry9tSw6E4dOnatTNKcAug@mail.gmail.com>
-Subject: Re: [PATCH 0/3] gpiolib: convert 'devprop_gpiochip_set_names' to
- support multiple gpiochip per device
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+References: <20210727093015.1225107-1-javierm@redhat.com> <CAMuHMdXXoHLO=jsjb+xtW7GDQsvu8Zuz=JmbaEXT49w5o4SJ9A@mail.gmail.com>
+ <f9df82c9-1e1a-d657-d712-312f5f17cab0@redhat.com> <CAMuHMdVh4XgXeaLXXTmPxMuWM4C1mTDnhSmDmff6T37PwNxupg@mail.gmail.com>
+ <e3f0f7a0-2130-18be-48a4-af1918017eca@redhat.com>
+In-Reply-To: <e3f0f7a0-2130-18be-48a4-af1918017eca@redhat.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 27 Jul 2021 13:39:45 +0200
+Message-ID: <CAMuHMdX+hsXeoY8jNdDvyiw2HxhwcQw60LJddsaOGZBcHT=a=A@mail.gmail.com>
+Subject: Re: [PATCH v2] drivers/firmware: fix SYSFB depends to prevent build failures
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        NeilBrown <neil@brown.name>,
-        Nicholas Mc Guire <hofrat@osadl.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 8:02 AM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> On Thu, Jul 8, 2021 at 9:04 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > There are some unfortunate cases where the DT representation
-> > of the device and the Linux internal representation differs.
-> > Such drivers for devices are forced to implement a custom function
-> > to avoid the core code 'devprop_gpiochip_set_names' to be executed
-> > since in any other case every gpiochip inside will got repeated
-> > names through its internal gpiochip banks. To avoid this antipattern
-> > this changes are introduced trying to adapt core 'devprop_gpiochip_set_names'
-> > to get a correct behaviour for every single situation.
-> >
-> > This series introduces a new 'offset' field in the gpiochip structure
-> > that can be used for those unfortunate drivers that must define multiple
-> > gpiochips per device.
-> >
-> > Drivers affected by this situation are also updated. These are
-> > 'gpio-mt7621' and 'gpio-brcmstb'.
-> >
-> > Motivation for this series available at [0].
-> >
-> > Thanks in advance for your feedback.
-> >
-> > Best regards,
-> >     Sergio Paracuellos
-> >
-> > [0]: https://lkml.org/lkml/2021/6/26/198
-> >
-> > Sergio Paracuellos (3):
-> >   gpiolib: convert 'devprop_gpiochip_set_names' to support multiple
-> >     gpiochip baks per device
-> >   gpio: mt7621: support gpio-line-names property
-> >   gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
-> >
-> >  drivers/gpio/gpio-brcmstb.c | 45 +------------------------------------
-> >  drivers/gpio/gpio-mt7621.c  |  1 +
-> >  drivers/gpio/gpiolib.c      | 34 +++++++++++++++++++++++-----
-> >  include/linux/gpio/driver.h |  4 ++++
-> >  4 files changed, 34 insertions(+), 50 deletions(-)
->
-> Hi!
->
-> Linus, Bartosz, any comments on this series?
->
+Hi Javier,
 
-Looks good, but I was thinking you were going to address Gregory's
-points first and resend a v2?
+On Tue, Jul 27, 2021 at 1:32 PM Javier Martinez Canillas
+<javierm@redhat.com> wrote:
+> On 7/27/21 1:17 PM, Geert Uytterhoeven wrote:
+> >> Not enabling this, would mean that a platform device to match a driver
+> >> supporting the EFI GOP framebuffer (e.g: simple{drm,fb} or efifb) will
+> >> not be registered. Which will lead to not having an early framebuffer.
+> >
+> > Do all (embedded) EFI systems have a frame buffer?
+>
+> That's a good question. I don't know if all EFI firmwares are expected
+> to provide a GOP or not. But even the u-boot EFI stub provides one, if
+> video output is supported by u-boot on that system.
+>
+> > Perhaps SYSFB should be selected by SYSFB_SIMPLEFB, FB_VESA,
+> > and FB_EFI?
+>
+> It's another option, yes. I just thought that the use of select was not
+> encouraged and using depends was less fragile / error prone.
 
-Bartosz
+Select is very useful for config symbols that are invisible to the user (i.e.
+cannot be enabled/disabled manually).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
