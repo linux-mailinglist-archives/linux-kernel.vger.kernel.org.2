@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A573D7E9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7973D7EA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhG0Tqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
+        id S232333AbhG0Tqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhG0Tqf (ORCPT
+        with ESMTP id S230476AbhG0Tqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:46:35 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF037C061765
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:46:33 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id r18so126108iot.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:46:33 -0700 (PDT)
+        Tue, 27 Jul 2021 15:46:36 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E229C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:46:34 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id n19so195927ioz.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:46:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2G5lQvEnI5L7BAUDwmuhfg8oZzrhcwdOUc0mzF2aRsc=;
-        b=Mp7tC8vOl5C2a2JYxESAytRd5Qb1AzB9ZFF+kS2kCRs+HYCJr3feYT/2YfjZzGi5GB
-         TKbfT4o3YNzt8k8I0cqukBSAo5X6gF5yANonz3all/ow1ejcGzsHmXMlctma9kf6Zmr/
-         rczoiOvhnM/oD6JW4G91cSSwgtNjrQqkNtB2A4u3rtZhKmbUFIgfJx7cxYhW15pkU3He
-         zROXvWjDpAQ37+29PBD7uziK4shBu11cgPlljL5sgOKUys2OqQdpTiGZUL/0Cq0+tNtr
-         jP3JxQiVdep4aTZ8aqYEU+iJnENvLFatpK/Np4fQpj+ZVEViT0BqapbKiGv0xg34svVw
-         74pQ==
+        bh=JpKATF26Oehqbj9lTGQY7PBo/hOLLmivLGfbP+CflK4=;
+        b=QmVNUSY3LsuSyY6FD99L5WcKmSWbBwUxw6irXRHPTSYqTUUxh8K2ntp8JTi4EQV8vO
+         fVxRMGX9WI5xhMjAcXW1QuPEJJFyHgjAGD8rTI4MgG2mbj/ZFW59IPZ1gtA0t6b62JrA
+         9jQZO2ByxKZR+hmLY+I3cTDUWxExHVKIhw8kpN2xD8z5QGko0GwwPANN3yVZvb44U7/T
+         zzJHl2U9mPlYcsoAgzVjgyREm2f0IsYPdQfVXCsmeBmwt9qNuif5la5Stxog9cl9/TEL
+         DH3i8/XMy7j2KB1Yhb7+zXK0CihxPNubhAf5Z1c5XbKF/bBLFCAlSMwT74jJwafW2RWY
+         8YOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2G5lQvEnI5L7BAUDwmuhfg8oZzrhcwdOUc0mzF2aRsc=;
-        b=RjrS/wWJOEofgpoRp3t+SsX3EZqEfL/nTdaMhbuj5KB+b9PldrvlXyE3fBLJ+UKIL8
-         /cz6EvMKQarNhiffFbcBcXx+vyxjUItLZPUZc/y5rKrslBwv+ycPgJbbyMOrRMNubgDz
-         UWsDbVtsyDvg1Y1Eh7tyQsdx0MD8uetQ/Y+4qkD7yA0WB5Nf68EQbSAGz8DkSpoVZ3+6
-         RihCCfay+P7g8ctBp+TzfyEcvCQk1+gj8ihwqwlLjzYx165KWnHQhz/2E+e+SV84EnsE
-         B9K8ezl/QKPERmZUlLzTz482kLDnJS4xWwtd7zIbsDKGqrB+TtyZ8rnZD7+Ae8HzncA9
-         e3DQ==
-X-Gm-Message-State: AOAM531Spx9EGryBkWo7XxDX1UBRimqBTi912bjRi99wlk/TIsgm3K5J
-        LUrOCTt+zCsyJY/KlyinrcH2Bw==
-X-Google-Smtp-Source: ABdhPJxW7trJGBuq9D/FTOdvwU9uganS4E7JRZEnslTh0xbN1qbZJ1p+phGPrZjZ5dHKPTTi7bcf6Q==
-X-Received: by 2002:a6b:ec0d:: with SMTP id c13mr20756506ioh.108.1627415193209;
-        Tue, 27 Jul 2021 12:46:33 -0700 (PDT)
+        bh=JpKATF26Oehqbj9lTGQY7PBo/hOLLmivLGfbP+CflK4=;
+        b=kPurXzgvcw+5BJ9NFJzUbF4CbxytnSi2eb0VvYbSmV9OjLgyHICylUg1OwgnvbE2eI
+         XsUrp+HrpizXBZwjNzbzjllUla4AhYIXt35Wn7gCz/b0qIA70I7HvFfa7c6xgQl4271C
+         ULGV4U00K1rwXId10MLN4Wwo+LN+FPsAApT6MzHAjeddlpSsnruk8ZAsDLnlPbeK3d0R
+         fv8TEXJf7w23upP0kkdlmE0uBc52Gh+RRbGIbMj4zDyFabqqhnSXH8F9ufI8b33wmiTI
+         C8dCAx/l3Z70Gh8bhK3+i/n+zMBooomapDZkN8vDT+cRYUqv67uTy6fqS9hIA4inZ6bH
+         DzBA==
+X-Gm-Message-State: AOAM532VOv49k4t5Kp/pp2qsVAIA0CEl01lTEJmttsCR7j4W+i6VtOOK
+        ZSor8Wy7OiYeD3x0RkKf745ZRQ==
+X-Google-Smtp-Source: ABdhPJxwAxCI+R4uinIwfBMoUieAzOdLhtyzjmXynDCd6tMUVseKsR7S/wjGTOrxvRhDRqw/uJTaWA==
+X-Received: by 2002:a02:90cb:: with SMTP id c11mr23365375jag.53.1627415194152;
+        Tue, 27 Jul 2021 12:46:34 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id c1sm2443014ils.21.2021.07.27.12.46.32
+        by smtp.gmail.com with ESMTPSA id c1sm2443014ils.21.2021.07.27.12.46.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 12:46:32 -0700 (PDT)
+        Tue, 27 Jul 2021 12:46:33 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/4] net: ipa: make IPA interrupt handler threaded only
-Date:   Tue, 27 Jul 2021 14:46:26 -0500
-Message-Id: <20210727194629.841131-2-elder@linaro.org>
+Subject: [PATCH net-next 2/4] net: ipa: clear disabled IPA interrupt conditions
+Date:   Tue, 27 Jul 2021 14:46:27 -0500
+Message-Id: <20210727194629.841131-3-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210727194629.841131-1-elder@linaro.org>
 References: <20210727194629.841131-1-elder@linaro.org>
@@ -65,82 +65,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the IPA interrupt handler runs, the IPA core clock must already
-be operational, and the interconnect providing access by the AP to
-IPA config space must be enabled too.
-
-Currently we ensure this by taking a top-level "stay awake" IPA
-clock reference, but that will soon go away.  In preparation for
-that, move all handling for the IPA IRQ into the thread function.
+We ignore any IPA interrupt that has no handler.  If any interrupt
+conditions without a handler exist when an IPA interrupt occurs,
+clear those conditions.  Add a debug message to report which ones
+are being cleared.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_interrupt.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+ drivers/net/ipa/ipa_interrupt.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_interrupt.c b/drivers/net/ipa/ipa_interrupt.c
-index 9fd158dd90473..7dee4ebaf5a95 100644
+index 7dee4ebaf5a95..c12d0c33557cd 100644
 --- a/drivers/net/ipa/ipa_interrupt.c
 +++ b/drivers/net/ipa/ipa_interrupt.c
-@@ -100,32 +100,22 @@ static void ipa_interrupt_process_all(struct ipa_interrupt *interrupt)
- 	}
- }
- 
--/* Threaded part of the IPA IRQ handler */
-+/* IPA IRQ handler is threaded */
- static irqreturn_t ipa_isr_thread(int irq, void *dev_id)
--{
--	struct ipa_interrupt *interrupt = dev_id;
--
--	ipa_clock_get(interrupt->ipa);
--
--	ipa_interrupt_process_all(interrupt);
--
--	ipa_clock_put(interrupt->ipa);
--
--	return IRQ_HANDLED;
--}
--
--/* Hard part (i.e., "real" IRQ handler) of the IRQ handler */
--static irqreturn_t ipa_isr(int irq, void *dev_id)
+@@ -79,6 +79,7 @@ static void ipa_interrupt_process_all(struct ipa_interrupt *interrupt)
  {
- 	struct ipa_interrupt *interrupt = dev_id;
  	struct ipa *ipa = interrupt->ipa;
+ 	u32 enabled = interrupt->enabled;
++	u32 pending;
  	u32 offset;
  	u32 mask;
  
-+	ipa_clock_get(ipa);
-+
+@@ -87,8 +88,8 @@ static void ipa_interrupt_process_all(struct ipa_interrupt *interrupt)
+ 	 * only the enabled ones.
+ 	 */
  	offset = ipa_reg_irq_stts_offset(ipa->version);
- 	mask = ioread32(ipa->reg_virt + offset);
--	if (mask & interrupt->enabled)
--		return IRQ_WAKE_THREAD;
-+	if (mask & interrupt->enabled) {
-+		ipa_interrupt_process_all(interrupt);
-+		goto out_clock_put;
+-	mask = ioread32(ipa->reg_virt + offset);
+-	while ((mask &= enabled)) {
++	pending = ioread32(ipa->reg_virt + offset);
++	while ((mask = pending & enabled)) {
+ 		do {
+ 			u32 irq_id = __ffs(mask);
+ 
+@@ -96,7 +97,17 @@ static void ipa_interrupt_process_all(struct ipa_interrupt *interrupt)
+ 
+ 			ipa_interrupt_process(interrupt, irq_id);
+ 		} while (mask);
+-		mask = ioread32(ipa->reg_virt + offset);
++		pending = ioread32(ipa->reg_virt + offset);
 +	}
- 
- 	/* Nothing in the mask was supposed to cause an interrupt */
- 	offset = ipa_reg_irq_clr_offset(ipa->version);
-@@ -134,6 +124,9 @@ static irqreturn_t ipa_isr(int irq, void *dev_id)
- 	dev_err(&ipa->pdev->dev, "%s: unexpected interrupt, mask 0x%08x\n",
- 		__func__, mask);
- 
-+out_clock_put:
-+	ipa_clock_put(ipa);
 +
- 	return IRQ_HANDLED;
++	/* If any disabled interrupts are pending, clear them */
++	if (pending) {
++		struct device *dev = &ipa->pdev->dev;
++
++		dev_dbg(dev, "clearing disabled IPA interrupts 0x%08x\n",
++			pending);
++		offset = ipa_reg_irq_clr_offset(ipa->version);
++		iowrite32(pending, ipa->reg_virt + offset);
+ 	}
  }
  
-@@ -260,7 +253,7 @@ struct ipa_interrupt *ipa_interrupt_config(struct ipa *ipa)
- 	offset = ipa_reg_irq_en_offset(ipa->version);
- 	iowrite32(0, ipa->reg_virt + offset);
- 
--	ret = request_threaded_irq(irq, ipa_isr, ipa_isr_thread, IRQF_ONESHOT,
-+	ret = request_threaded_irq(irq, NULL, ipa_isr_thread, IRQF_ONESHOT,
- 				   "ipa", interrupt);
- 	if (ret) {
- 		dev_err(dev, "error %d requesting \"ipa\" IRQ\n", ret);
 -- 
 2.27.0
 
