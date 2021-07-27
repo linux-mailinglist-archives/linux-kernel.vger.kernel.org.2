@@ -2,132 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DCB3D7519
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FE93D751F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhG0Meq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbhG0Meo (ORCPT
+        id S236545AbhG0MfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:35:23 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:56324 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232013AbhG0MfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:34:44 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C559AC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 05:34:43 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id y9so15770605iox.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 05:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Tx9WvkWlXQvIsbgtedpwBAlQFYtHs5upNNRDEpjIglQ=;
-        b=vO5XZU9BXnHptTBM+WggVXH2CaX0yV5LKBqx88pts1JAm04TVUlSPL5LyfY9UWGvyQ
-         eM5Hd9bznmo2b9FGabQmJA84kYQ8E8y8juU6PVKXYjc6KeJNeJcIRZCZKXhzictTjwsz
-         GhQxybF/4wZCgNvwn028rw42lIoR20IfP/o1h5qYnBbj7KG8WZFsm/mPE8WROnyQXCYu
-         k2Su1QiyfSJs4uj7cIN6H7fHDm+kRjrD+LQwr4ruk0GJ+F75AiXMLz1PAUzctB7k2VGl
-         +XR7TT06Sb7zxP4v8Hxz2THiHUCJpsiMDbTt/ByEzMQzN4cilLYSGrIbB9ehYTOmKFLS
-         6RRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Tx9WvkWlXQvIsbgtedpwBAlQFYtHs5upNNRDEpjIglQ=;
-        b=fhcc25X0e4sD4oaRU1rl6bzsvgHYl3GMJZUy/CEmhjaehlnIRh5aqNhMUH073rWI9D
-         YloXdzAxn6J+H2AdicAl7AbBMUXo0GEF5rlF79VQke4DKK/ApjgXzZ1ntalfAwHMCMls
-         sbgBAxwk4fXYulXwzc8hXy5Rtc80f9of2oo9LnG9H41rVHGC22fm9qFQswi2FL1GF7ag
-         JcK2aZU50gCn8tzVM7gG12PZlKR+CDeEWi79QPogX/v8Zu34rRiLIh7Keh3ajpkn8jUL
-         ogmPLVMyPUGaI9g1JAemIRJRZmKxKdFIwpgCa4fAAum5QAUNiTj8gK12/3xA7j+tqpnH
-         0VUA==
-X-Gm-Message-State: AOAM532GXMXZldZUy26Jvqo1p6DXvU7gID2dDQjUXPsnQ8kKqxMZwOI3
-        EXugEPbTVVpy3konuMYgxCZjUIiY/uLGhw==
-X-Google-Smtp-Source: ABdhPJyhYcnf1iI72d0MzaCwlF0xDi4eWkQRYB2e0zDRTTkBeNa/R02wqQIJbwGPLox7L09kzjTdLw==
-X-Received: by 2002:a6b:794b:: with SMTP id j11mr18708688iop.129.1627389282964;
-        Tue, 27 Jul 2021 05:34:42 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id c1sm1769461ils.21.2021.07.27.05.34.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 05:34:42 -0700 (PDT)
-Subject: Re: [PATCH net-next 0/4] net: ipa: kill IPA_VALIDATION
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210726174010.396765-1-elder@linaro.org>
- <YP/rFwvIHOvIwMNO@unreal>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <5b97f7b1-f65f-617e-61b4-2fdc5f08bc3e@linaro.org>
-Date:   Tue, 27 Jul 2021 07:34:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 27 Jul 2021 08:35:22 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 97F70760CD;
+        Tue, 27 Jul 2021 15:35:19 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1627389319;
+        bh=2Jbg49wm1nKQfWcvmiv4u6oMYFbkwARwVe5gsiANj7o=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=t6uOT/RWSsIBaPT/2Thhyz0E1R1WrBnwkWPceE/rJetuJGDeEYrIIqR2kglWqMdfA
+         eM7kOQdBbT19/sDD0c5aehNUlWPS1gE2NP/8SsmJ0GsaPDPVDz3ABP9ma3f5xXSpZv
+         TfRyLBbwoZg+oZJL7wVfRK6ZrDnuoKGjlpFmT9J603KyrGSEqnkQB2htdXk+4XWqsG
+         ZtjFJgQ1mKoe3gyKInjXZBRxFd6+KZ3WtdW/zkg8cN1mcky3F4uaGUmKUC/kQoJ+US
+         NX21bSpzyNegvvY9AI39yjt7n9ApqGYHBTjeOX3+lfwxJM+4TAs+3Hi4jI//JBBU3k
+         1CnUY0W1Pjv8g==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id D864C760A0;
+        Tue, 27 Jul 2021 15:35:18 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 27
+ Jul 2021 15:35:07 +0300
+Subject: Re: [MASSMAIL KLMS] Re: [MASSMAIL KLMS] Re: [RFC PATCH v1 0/7]
+ virtio/vsock: introduce MSG_EOR flag for SEQPACKET
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210726163137.2589102-1-arseny.krasnov@kaspersky.com>
+ <20210727075948.yl4w3foqa6rp4obg@steredhat>
+ <2df68589-96b9-abd4-ad1c-e25918b908a9@kaspersky.com>
+ <20210727095803.s26subp3pgclqzvi@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <2f2d580f-75b4-91c8-cbd5-ad15d7a7ec21@kaspersky.com>
+Date:   Tue, 27 Jul 2021 15:35:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YP/rFwvIHOvIwMNO@unreal>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210727095803.s26subp3pgclqzvi@steredhat>
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 07/27/2021 11:50:20
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165274 [Jul 27 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 07/27/2021 11:55:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 27.07.2021 11:26:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/07/27 10:45:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/27 11:28:00 #16963359
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 6:16 AM, Leon Romanovsky wrote:
-> On Mon, Jul 26, 2021 at 12:40:06PM -0500, Alex Elder wrote:
->> A few months ago I proposed cleaning up some code that validates
->> certain things conditionally, arguing that doing so once is enough,
->> thus doing so always should not be necessary.
->>   https://lore.kernel.org/netdev/20210320141729.1956732-1-elder@linaro.org/
->> Leon Romanovsky felt strongly that this was a mistake, and in the
->> end I agreed to change my plans.
-> 
-> <...>
-> 
->> The second patch fixes a bug that wasn't normally exposed because of
->> the conditional compilation (a reason Leon was right about this).
-> 
-> Thanks Alex,
-> 
-> If you want another anti pattern that is very popular in netdev, the following pattern is
-> wrong by definition :):
-> if (WARN_ON(...))
->   return ...
 
-I understand this reasoning.
-
-I had it return an error if the WARN_ON() condition was true in cases
-where the function returned a value and callers already handled errors.
-I looked back at the patch and here is one of those cases:
-
-gsi_channel_trans_alloc()
-- If too many TREs are requested we do not want to allocate them
-  from the pool, or it will cause further breakage.  By returning
-  early, no transaction will be filled or committed, and an error
-  message will (often) be reported, which will indicate the source
-  of the error.  If any error occurs during initialization, we fail
-  that whole process and everything should be cleaned up.  So in
-  this case at least, returning if this ever occurred is better
-  than allowing control to continue into the function.
-
-In any case I take your point.  I will now add to my task list
-a review of these spots.  I'd like to be sure an error message
-*is* reported at an appropriate level up the chain of callers so
-I can always identify the culprit in the a WARN_ON() fires (even
-though it should never
- happen).  And in each case I'll evaluate
-whether returning is better than not.
-
-Thanks.
-
-					-Alex
-
-> The WARN_*() macros are intended catch impossible flows, something that
-> shouldn't exist. The idea that printed stack to dmesg and return to the
-> caller will fix the situation is a very naive one. That stack already
-> says that something very wrong in the system.
-> 
-> If such flow can be valid use "if(...) return ..", if not use plain
-> WARN_ON(...).
-> 
-> Thanks
-> 
-
+On 27.07.2021 12:58, Stefano Garzarella wrote:
+> Caution: This is an external email. Be cautious while opening links or attachments.
+>
+>
+>
+> On Tue, Jul 27, 2021 at 12:34:36PM +0300, Arseny Krasnov wrote:
+>> On 27.07.2021 10:59, Stefano Garzarella wrote:
+>>> Caution: This is an external email. Be cautious while opening links or attachments.
+>>>
+>>>
+>>>
+>>> On Mon, Jul 26, 2021 at 07:31:33PM +0300, Arseny Krasnov wrote:
+>>>>       This patchset implements support of MSG_EOR bit for SEQPACKET
+>>>> AF_VSOCK sockets over virtio transport.
+>>>>       Idea is to distinguish concepts of 'messages' and 'records'.
+>>>> Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
+>>>> etc. It has fixed maximum length, and it bounds are visible using
+>>>> return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
+>>>> Current implementation based on message definition above.
+>>>>       Record has unlimited length, it consists of multiple message,
+>>>> and bounds of record are visible via MSG_EOR flag returned from
+>>>> 'recvmsg()' call. Sender passes MSG_EOR to sending system call and
+>>>> receiver will see MSG_EOR when corresponding message will be processed.
+>>>>       To support MSG_EOR new bit was added along with existing
+>>>> 'VIRTIO_VSOCK_SEQ_EOR': 'VIRTIO_VSOCK_SEQ_EOM'(end-of-message) - now it
+>>>> works in the same way as 'VIRTIO_VSOCK_SEQ_EOR'. But 'VIRTIO_VSOCK_SEQ_EOR'
+>>>> is used to mark 'MSG_EOR' bit passed from userspace.
+>>> At this point it's probably better to rename the old flag, so we stay
+>>> compatible.
+>>>
+>>> What happens if one of the two peers does not support MSG_EOR handling,
+>>> while the other does?
+>>>
+>>> I'll do a closer review in the next few days.
+>> Thank You, also i think MSG_EOR support must be described in spec
+> Yep, sure!
+>
+> What do you think about the concerns above?
+I think you are right, i'll rename EOR -> EOM, and EOR will be added by patch
+>
+> Stefano
+>
+>
