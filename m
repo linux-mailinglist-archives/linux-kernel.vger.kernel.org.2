@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1440D3D7B15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7833D7B12
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhG0Qfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:35:34 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:48091 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhG0Qfb (ORCPT
+        id S230235AbhG0Qf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:35:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58543 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230097AbhG0Qf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:35:31 -0400
-Received: from localhost ([31.220.117.216]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MPGJh-1mY30S3Gg9-00PaQk; Tue, 27 Jul 2021 18:34:45 +0200
-Date:   Tue, 27 Jul 2021 18:34:45 +0200
-From:   Andreas Klinger <ak@it-klinger.de>
-To:     devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jiri Kosina <trivial@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Slawomir Stepien <sst@poczta.fm>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>
-Subject: [PATCH 1/2] dt-bindings: iio: chemical: Add trivial DT binding for
- sgp40
-Message-ID: <20210727163443.GA3457@arbad>
+        Tue, 27 Jul 2021 12:35:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627403728;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=90tCfQVeRTH8MaC1o4KYlvgxHv2WwxCXpgUHehd5MrI=;
+        b=e9PtRDJgqgSgi1Zv12JFPCzmPXrZkBI+3BR/cCxN8BaZxSv28rGYlaTbE5xht0R63yw3RI
+        HWevbwAg6sdRukS6/C2S/jChEgVKbtmTSLmQidUKItoZPw5QHjcAUED0K1IYVcS+5iFI/e
+        HoZnx40BU4nvlmceuAN7Lz6tfqLu8G8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-PbhXqnTjOW6wEiU_ZuHt2w-1; Tue, 27 Jul 2021 12:35:27 -0400
+X-MC-Unique: PbhXqnTjOW6wEiU_ZuHt2w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9AB4802B9F;
+        Tue, 27 Jul 2021 16:35:24 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.46])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 986A260862;
+        Tue, 27 Jul 2021 16:35:16 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Cai Huoqing <caihuoqing@baidu.com>, alex.williamson@redhat.com,
+        jgg@ziepe.ca, eric.auger@redhat.com, kevin.tian@intel.com,
+        giovanni.cabiddu@intel.com, mgurtovoy@nvidia.com, jannh@google.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Cai Huoqing <caihuoqing@baidu.com>
+Subject: Re: [PATCH] vfio: Add "#ifdef CONFIG_MMU" for vma operations
+In-Reply-To: <20210727034000.547-1-caihuoqing@baidu.com>
+Organization: Red Hat GmbH
+References: <20210727034000.547-1-caihuoqing@baidu.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Tue, 27 Jul 2021 18:35:14 +0200
+Message-ID: <877dhb4svx.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:3Q37JsJczvB5k6tcKshryG835v3At5NIgLiOSLuF1XKThUHou4K
- P9kCAmu+VCqIudbKQkbwnziHw3oZoinuhkc7iqNznVljpTSRtugfJxd/VP7W8fl1sDdG+Q8
- AxLyKu0mJT7VDtqOYYyg3EJyZZbrcQZr7wxPwsGQdtJn4IbgVa8XFbDbqVbDjpGitlphuje
- yty+9D+XOIrtDd9GHQuBw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HVXkFdyzUnU=:zSjFTqGdVS206Lf6gIyj2E
- Ip4tmI1pokTjJZRapZGji4eF+4rt9iO+xQEYmlpfm4AnzfUcGkV1UIoyEah8kb1ZTy9WCrYzk
- gKz7+YHg5foSbq9X5jbQbAduu28tNkcWUb54r4PPzmXNeMY7az0r9Uti+SLCwObdfpbfp+onU
- oM4ff4MlPJayQiGcRzgPhGYBDjpq45mY91h6HUk5rRF03m1oCCY2+bOw10rWyQckSDm7Mz4mM
- Qdln8u/RY8v0YVObIsJdvFAJqEjuyELjOZpNVkdiDnK3duQFhYxtjs9Mq36gE6JvcAAPmLrem
- KCA0+N6R0Uw4Gm9ocG3m44yWNBGTAEjO2+taKlra3uK3Q+nbnvkw58POZllJki4tsrixBoizf
- sQm1vY8q+ktbqEa2eqPHEwaJQb15EjGWtcvsn/VVZ+HtAizmzV4nj9fvG0k011uzcZMYV+svW
- YtESlVGVFhstSWTiGETFbbyXBgztzk4BhYHFC4G8Af0ckzIVY9yx+RJ5LgiyQLKWoDc1eLb0x
- C19RGDoIKqMxagiBdok5SEPznEmSF1PwNF5xKk/B9cdRcKGyhGPyjVUwCMnHrGVs64T3J3adi
- lOad0JR9oRo87BAnIopvkb/7pj2O+1LurQ54QuwAQcj7sGUdbH5lPlyIztGRIXth76K9Y1g94
- 84xHTEJX4qSLCfXoFyfIcyBhmB1D4V6koPG79G1jM+h+Pyyl+Gl6khy/lPUTr8FgWYEFzb6zI
- OSz0F6dJeGu8njrXhliFPevEPlbyQyBl9MpJsTk1gDIz0jMigVE5aAWYU5GeijSNNQE4d9DXm
- RroXlSLfYz+TCW9tYgpQGJdf248CsKauoyp642RxOgdvhfKJe0eBS2+roQ44D7O6sQl6lY4
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree binding for Sensirion sgp40 gas sensor to trivial
-devices.
+On Tue, Jul 27 2021, Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+> Add "#ifdef CONFIG_MMU",
+> because vma mmap and vm_operations_struct depend on MMU
 
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 919a4bf03a5a..be313b6b4f81 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -269,6 +269,8 @@ properties:
-           - sensirion,sgpc3
-             # Sensirion multi-pixel gas sensor with I2C interface
-           - sensirion,sgp30
-+            # Sensirion gas sensor with I2C interface
-+          - sensirion,sgp40
-             # Sensortek 3 axis accelerometer
-           - sensortek,stk8312
-             # Sensortek 3 axis accelerometer
--- 
-2.20.1
+vfio_pci already depends on MMU -- what problems are you trying to fix?
+
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/vfio/pci/vfio_pci.c | 4 ++++
+>  drivers/vfio/vfio.c         | 8 ++++++++
+>  2 files changed, 12 insertions(+)
+
