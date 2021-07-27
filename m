@@ -2,172 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9DC3D7E7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF033D7E7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhG0TYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbhG0TYj (ORCPT
+        id S231980AbhG0TYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:24:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46281 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231947AbhG0TYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:24:39 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F410C061757;
-        Tue, 27 Jul 2021 12:24:38 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id l11so362633iln.4;
-        Tue, 27 Jul 2021 12:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Kwv/dzUFIVlUEF2u5j3qMikddidTR3I0tTI9oPy2vyY=;
-        b=fHRBYJ9AcLwM4Plh8pN5stLPQ1MG0OW9GcNSIVod4HdgQbGGP4g529FssVeGTF5TBH
-         upYZNU/YyFQl30E6rfPQJUULQrBPrh89GbftSQk7BoEfvvY5nGNX/04+AROqcuCa5vW3
-         Fgf5SnxF6rKwHNdLvift796/q10rW2EgKv68zLUDkpHX3RhJyJqNU/g5qfT0tIZK5lJo
-         CGQavnKG3/w1eTk6t3H5AbrxMin4ZDQaIQ6esd6CzE1m/DFjrGe+XzzzkqEnyEYmJiWl
-         KDfc6IyTih45J4/cbpJGqimgC7bk/OndavyAcriOazKyQRqhRTVs19WiKoyuuqvNitfl
-         cg7w==
+        Tue, 27 Jul 2021 15:24:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627413882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hl/cGiqEzAVU0rHKnG8g1nyuMD2yVgSkAScv15/clJ8=;
+        b=iV7QCClHKxj989ssfRDHBHDjqMR0D4az6uCznMGSqp4G2YUK9C2q7hsw0edKEpiYs2/+8l
+        9Zr5k2eqzdqdAc4iOFMJykJccj/jxJ2UGcRePgkPTqHDAqWTxIOU74/cjg70mPQOitvWYV
+        voXkYI9fh/H9soysHAPVzg8v36r78jI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-471-1bJ_0O0_OFutZ2YGCPbkXg-1; Tue, 27 Jul 2021 15:24:41 -0400
+X-MC-Unique: 1bJ_0O0_OFutZ2YGCPbkXg-1
+Received: by mail-ed1-f70.google.com with SMTP id p2-20020a50c9420000b02903a12bbba1ebso7081493edh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:24:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Kwv/dzUFIVlUEF2u5j3qMikddidTR3I0tTI9oPy2vyY=;
-        b=PjquuW27jCLTDeBb5GkGDetvfaHSBo6HMk6MVgl1pYXwSdBYYdA3gywhdtpnaInZOY
-         ClH5ui7W8AuEO7ugdDAYV7P+nizFTiNV3mkHvJUsc9EHBSGCk4reVU8Ksy2AuQq416A3
-         fe2z+q52ODh4wiaoTG2Mh89wJjYMBUAF3htuCtD8njShFBpYFBS1fk+h1346mJIH1wvz
-         nnzpf6JU2BfbyDGgYVYvfbMYRlYJ9jxamN2JGueblXoUMlVF43ttR03ciahI9pxLMHu7
-         TRHkUpIXeLSGo9zSq5VKrgVFt9muMZknHg9EoYEZGItQDRefeWLb6Uo+cvVwm2wwZzD8
-         pA/A==
-X-Gm-Message-State: AOAM531gBf7m0MsXZj0rmKjtLt9hyVOWO3A2ZKUiwZGJqMteMF2VRFRL
-        9PlCjtWnb68x65UAljFJwi/3PtPvYsa96GnK3CnZG8UcAbUnTg==
-X-Google-Smtp-Source: ABdhPJzNP5+BJprJhAGSh8qRImZlVz4hSQqRcTyoJK/7y+CFLOMm5fyooz9nV0o8zqbDumDEPB4IQIJseO9nnW4FtPI=
-X-Received: by 2002:a92:c989:: with SMTP id y9mr17987249iln.183.1627413878093;
- Tue, 27 Jul 2021 12:24:38 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hl/cGiqEzAVU0rHKnG8g1nyuMD2yVgSkAScv15/clJ8=;
+        b=moPJaTKRDc7OsOl1+yCcd4T4CoHwJGcl4b+4e55zVI5lrVpvgdvuPIEj0DcA/UrHNv
+         7FIteRQdEs33iwF6TmDpK+a+9BaxUG+/WMDKLsql9DbHAsl340z82trPTuOZdC+q9IpB
+         NySu+b1IjY+0ZJ5dtDT7eG5NtGoD3q+XVw43D5xMk9TnroMAPIxFmxItPSTPSuy9lV8t
+         y2GJfq0HL/bZkDmllHLlIvnrr24SDRmo8tE+NOUFmjp3657Otb4Xab2MwQRgSk0wLq0Q
+         wo+2Dnb9agcZIB9bC3fJGWuzZNVSz84sdnfpMqfu9Onp7pXIHdkTETy5dShmcYTMDrMq
+         +TOQ==
+X-Gm-Message-State: AOAM531dkwqm0e9Iezr6qqEn4ZJsXilwI/25rb7ziH4bRDhXJdwB8hBF
+        iUo2JSWul0AqA6Jd/StLJwyxbS2nktjrad+qvfEPapSbePMuBIpi/+SJ+0k1z6TYM+vr/Ie1pjC
+        0rqhIzqfLzMhTI4naNrzY6setv2N/Te0M8uIZ4pTW8elsDnuIQSQ5z/2siZmVA+wKB4YqXZd1nz
+        7+
+X-Received: by 2002:a05:6402:28a4:: with SMTP id eg36mr9380447edb.84.1627413880127;
+        Tue, 27 Jul 2021 12:24:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyD01JP8SbHHK2+TtyUSp9PH9gcDvS1+ptAFI+fEqr3JDz3+Z/mXkz1Rd1PX8vv5wVguoboYg==
+X-Received: by 2002:a05:6402:28a4:: with SMTP id eg36mr9380435edb.84.1627413879995;
+        Tue, 27 Jul 2021 12:24:39 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id de19sm1635481edb.6.2021.07.27.12.24.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 12:24:39 -0700 (PDT)
+Subject: Re: [PATCH] mfd: axp20x: Add supplied-from property to
+ axp288_fuel_gauge cell
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>, C++ / GCC <cpp@gcc.lt>,
+        linux-kernel@vger.kernel.org
+References: <20210717162528.272797-1-hdegoede@redhat.com>
+ <YPVYc/mFKX14s1Yr@google.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a9fbf785-0dab-2e55-5983-ea279f8dc3a2@redhat.com>
+Date:   Tue, 27 Jul 2021 21:24:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210726192311.uffqnanxw3ac5wwi@ivybridge> <YP8Vxt0xuV1m5EPS@linux.ibm.com>
- <CAEdQ38F2ddbM0WBjut6MH-0TpencKmx9Wu4++gLtfQ5HGRwxFQ@mail.gmail.com> <YP+rI9Fh4wl/O6/8@linux.ibm.com>
-In-Reply-To: <YP+rI9Fh4wl/O6/8@linux.ibm.com>
-From:   Matt Turner <mattst88@gmail.com>
-Date:   Tue, 27 Jul 2021 12:24:26 -0700
-Message-ID: <CAEdQ38G+ZfXmc01iZTc+q4dYpRqQJUz0KNFCPwTQ25AYqJVbMA@mail.gmail.com>
-Subject: Re: Regression bisected to fa3354e4ea39 (mm: free_area_init: use
- maximal zone PFNs rather than zone sizes)
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Michael Cree <mcree@orcon.net.nz>, linux-mm@kvack.org,
-        linux-alpha <linux-alpha@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YPVYc/mFKX14s1Yr@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 11:43 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
->
-> On Mon, Jul 26, 2021 at 02:23:20PM -0700, Matt Turner wrote:
-> > On Mon, Jul 26, 2021 at 1:06 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> > >
-> > > Hi Matt,
-> > >
-> > > On Mon, Jul 26, 2021 at 12:27:50PM -0700, Matt Turner wrote:
-> > > > Reply-To:
-> > > >
-> > > > Hi Mike!
-> > > >
-> > > > Since commit fa3354e4ea39 (mm: free_area_init: use maximal zone PFNs rather
-> > > > than zone sizes), I get the following BUG on Alpha (an AlphaServer ES47 Marvel)
-> > > > and loading userspace leads to a segfault:
-> > > >
-> > > > (I didn't notice this for a long time because of other unrelated regressions,
-> > > > the pandemic, changing jobs, ...)
-> > >
-> > > I suspect there will be more surprises down the road :)
-> > >
-> > > > BUG: Bad page state in process swapper  pfn:2ffc53
-> > > > page:fffffc000ecf14c0 refcount:0 mapcount:1 mapping:0000000000000000 index:0x0
-> > > > flags: 0x0()
-> > > > raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> > > > raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> > > > page dumped because: nonzero mapcount  Modules linked in:
-> > > > CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-03841-gfa3354e4ea39-dirty #26
-> > > >        fffffc0001b5bd68 fffffc0001b5be80 fffffc00011cd148 fffffc000ecf14c0
-> > > >        fffffc00019803df fffffc0001b5be80 fffffc00011ce340 fffffc000ecf14c0
-> > > >        0000000000000000 fffffc0001b5be80 fffffc0001b482c0 fffffc00027d6618
-> > > >        fffffc00027da7d0 00000000002ff97a 0000000000000000 fffffc0001b5be80
-> > > >        fffffc00011d1abc fffffc000ecf14c0 fffffc0002d00000 fffffc0001b5be80
-> > > >        fffffc0001b2350c 0000000000300000 fffffc0001b48298 fffffc0001b482c0
-> > > > Trace:
-> > > > [<fffffc00011cd148>] bad_page+0x168/0x1b0
-> > > > [<fffffc00011ce340>] free_pcp_prepare+0x1e0/0x290
-> > > > [<fffffc00011d1abc>] free_unref_page+0x2c/0xa0
-> > > > [<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-> > > > [<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-> > > > [<fffffc000101001c>] _stext+0x1c/0x20
-> > > >
-> > > > I haven't tried reproducing this on other machines or QEMU, but I'd be glad to
-> > > > if that helps.
-> > >
-> > > If it's reproducible on QEMU I can debug it locally.
-> > >
-> > > > Any ideas?
-> > >
-> > > It seems like memory map is not properly initialized. Can you enable
-> > > CONFIG_DEBUG_MEMORY_INIT and add mminit_debug=4 to the command line. The
-> > > interesting part of the log would be before "Memory: xK/yK available ..."
-> > > line.
-> > >
-> > > Hopefully it'll give some clues.
-> >
-> > Sure thing. Please find attached.
->
-> > aboot: loading uncompressed vmlinuz-5.7.0-03841-gfa3354e4ea39-dirty...
-> > aboot: loading compressed vmlinuz-5.7.0-03841-gfa3354e4ea39-dirty...
-> > aboot: PHDR 0 vaddr 0xfffffc0001010000 offset 0xc0 size 0x17c5ae0
-> > aboot: bss at 0xfffffc00027d5ae0, size 0xe4ea0
-> > aboot: zero-filling 937632 bytes at 0xfffffc00027d5ae0
-> > aboot: loading initrd (5965252 bytes/5825 blocks) at 0xfffffc05ff2cc000
-> > aboot: starting kernel vmlinuz-5.7.0-03841-gfa3354e4ea39-dirty with arguments ro panic=5 domdadm root=/dev/md1 console=srm  mminit_debug=4
-> > Linux version 5.7.0-03841-gfa3354e4ea39-dirty (mattst88@ivybridge) (gcc version 11.1.0 (Gentoo 11.1.0-r2 p3), GNU ld (Gentoo 2.36.1 p3) 2.36.1) #26 SMP Sun Jul 25 18:20:06 PDT 2021
-> > printk: bootconsole [srm0] enabled
-> > Booting on Marvel variation Marvel/EV7 using machine vector MARVEL/EV7 from SRM
-> > Major Options: SMP EV67 VERBOSE_MCHECK DEBUG_SPINLOCK MAGIC_SYSRQ
-> > Command line: ro panic=5 domdadm root=/dev/md1 console=srm  mminit_debug=4
-> > memcluster 0, usage 1, start        0, end     1984
-> > memcluster 1, usage 0, start     1984, end  1048576
-> > memcluster 2, usage 1, start  2097152, end  2097224
-> > memcluster 3, usage 0, start  2097224, end  3145728
-> > Initial ramdisk at: 0x(____ptrval____) (5965252 bytes)
-> > Found an IO7 at PID 0
-> > Initializing IO7 at PID 0
-> > FIXME: disabling master aborts
-> > FIXME: disabling master aborts
-> > FIXME: disabling master aborts
-> > FIXME: disabling master aborts
-> > SMP: 2 CPUs probed -- cpu_present_mask = 3
-> > Zone ranges:
-> >   DMA      [mem 0x0000000000f80000-0x00000fffffffdfff]
-> >   Normal   empty
-> > Movable zone start for each node
-> > Early memory node ranges
-> >   node   0: [mem 0x0000000000f80000-0x00000001ffffffff]
-> >   node   0: [mem 0x0000000400090000-0x00000005ffffffff]
->
-> I think that the issue is that memory marked as used in memcluster is never
-> added to memblock and it skews node/zone sizing calculations.
+Hi Lee,
 
-Thanks, this patch fixes it. With the patch applied, I see
+On 7/19/21 12:48 PM, Lee Jones wrote:
+> On Sat, 17 Jul 2021, Hans de Goede wrote:
+> 
+>> The power-supply framework has the notion of one power-supply device
+>> being supplied by another. A typical example of this is a charger
+>> charging a battery.
+>>
+>> A tablet getting plugged in to charge (or plugged out) only results in
+>> events seen by the axp288_charger device / MFD cell. Which means that
+>> a change udev-event only gets send for the charger power-supply class
+>> device, not for the battery (the axp288_fuel_gauge device).
+>>
+>> The axp288_fuel_gauge does have an external_power_change'd callback
+>> which will generate a change udev-event when called. But before this
+>> commit this never got called because the power-supply core only calls
+>> this when a power-supply class device's supplier changes and the
+>> supplier link from axp288_charger to axp288_fuel_gauge was missing.
+>>
+>> Add a "supplied-from" property to axp288_fuel_gauge cell, pointing
+>> to the "axp288_charger" power-supply class device, so that the
+>> axp288_fuel_gauge's external_power_change'd callback gets called on
+>> axp288_charger state changes.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+>>  drivers/mfd/axp20x.c | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+>>
+>> diff --git a/drivers/mfd/axp20x.c b/drivers/mfd/axp20x.c
+>> index d0ac019850d1..8161a5dc68e8 100644
+>> --- a/drivers/mfd/axp20x.c
+>> +++ b/drivers/mfd/axp20x.c
+>> @@ -700,6 +700,18 @@ static const struct resource axp288_charger_resources[] = {
+>>  	DEFINE_RES_IRQ(AXP288_IRQ_CBTO),
+>>  };
+>>  
+>> +static const char * const axp288_fuel_gauge_suppliers[] = { "axp288_charger" };
+>> +
+>> +static const struct property_entry axp288_fuel_gauge_properties[] = {
+>> +	PROPERTY_ENTRY_STRING_ARRAY("supplied-from", axp288_fuel_gauge_suppliers),
+>> +	{ }
+>> +};
+>> +
+>> +static const struct software_node axp288_fuel_gauge_sw_node = {
+>> +	.name = "axp288_fuel_gauge",
+>> +	.properties = axp288_fuel_gauge_properties,
+>> +};
+>> +
+>>  static const struct mfd_cell axp288_cells[] = {
+>>  	{
+>>  		.name		= "axp288_adc",
+>> @@ -717,6 +729,7 @@ static const struct mfd_cell axp288_cells[] = {
+>>  		.name		= "axp288_fuel_gauge",
+>>  		.num_resources	= ARRAY_SIZE(axp288_fuel_gauge_resources),
+>>  		.resources	= axp288_fuel_gauge_resources,
+>> +		.swnode		= &axp288_fuel_gauge_sw_node,
+>>  	}, {
+>>  		.name		= "axp221-pek",
+>>  		.num_resources	= ARRAY_SIZE(axp288_power_button_resources),
+> 
+> That's a lot of code to pass a string.
+> 
+> Is this really the most efficient method?
 
-Zone ranges:
-  DMA      [mem 0x0000000000000000-0x00000fffffffdfff]
-  Normal   empty
-Movable zone start for each node
-Early memory node ranges
-  node   0: [mem 0x0000000000000000-0x00000001ffffffff]
-  node   0: [mem 0x0000000400000000-0x00000005ffffffff]
-Initmem setup node 0 [mem 0x0000000000000000-0x00000005ffffffff]
+Currently there is no other method to provide information about the supplier
+consumer relation for non device-tree platforms (in device-tree platforms
+this info is present inside the device-tree), so yes this is the most
+efficient method available.
 
-If you want to send me this patch with your S-o-b I'll take it through
-my alpha git tree.
+Regards,
 
-Thanks Mike!
-Matt
+Hans
+
