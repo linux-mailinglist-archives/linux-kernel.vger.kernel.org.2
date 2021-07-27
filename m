@@ -2,305 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA96C3D7DE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 465733D7DE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhG0Smj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:42:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhG0Smi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:42:38 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667C7C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 11:42:37 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id h11so17119723ljo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 11:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+7UEfD2Imkl3ZnkOmnry5ON4ruHu09FP4tYeWeop6j8=;
-        b=Dw1xy/B95cB2tQ8nfE4IH8NuStpyecxxK3HsLcmBe5tJe37IsnKZtXreBvEpEIhIFc
-         NPwjIj2Q2rzg+iqbTrT1xv4aJZ/rJN1N6tMfA+MUjrFaBwIVYW2MtgDQ44cvIScabO9F
-         R0y3s3cIcrxOOOsgQ/3jeRbo1cLqmh+cy736gV+SytYpwepWwqiJvPQVLh0d/QwOcDWr
-         tuqLJsI22MlyNc7wnpfDMwJtqbhdXG+bSa88GwIJZQ9a495/ylpicRxlms7Gacg0hvnP
-         nGXU3gBlapyO44/mQYuYk97qm+qoWDywGdzwwGthJTCZ7v3sUVXkTeeN0d9GsSN8woSq
-         Bj2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+7UEfD2Imkl3ZnkOmnry5ON4ruHu09FP4tYeWeop6j8=;
-        b=SVjClfgGFqyfgY1HhtDo4CKrO0vhIjflQot7CySjSWkaA+hesmXh4iEqSB5katuf5D
-         LzKnanzYjck0Ov1lOBr/DMjycy4O9ahGccXDZxHG1NHWblwqGsX+onB+rL3ccy3Dr6fh
-         jv2FSrw1NFxzIcYsQYdQDQKqlbg4N3K8RAcYuF5Qlm3IOPTvvzdA7bw8MG/D7OggcHZG
-         HbDCAnpWdGfw4w2npGGWlhYTY3nbDMCyhqSrp/1jpiyhxex6b9EAgwSW2DgZ0ZuJR8aO
-         pUt8qn24sCJMMNXDq9jUMmi892DllDt2bwjLiErFwLxJ6g8ZsRUDSCqqmfEWa5iUH5Vw
-         KtUg==
-X-Gm-Message-State: AOAM5327fRIRYpuE6+OdB5JHOtLCVMJ5FT237/RQhCVLJ1r+Eot+yNK6
-        jLFNqFbLKnzfB59ENv95vXj5PqBp6LpuoQ==
-X-Google-Smtp-Source: ABdhPJw4h0sF7m8BSZ4MlkG9L54CcA+FgAX+Io3OlMQJ4N0NrYEy9Vu2yYSi0jwBIhxMPRXFaamJ0g==
-X-Received: by 2002:a2e:85d8:: with SMTP id h24mr16831635ljj.365.1627411355491;
-        Tue, 27 Jul 2021 11:42:35 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id m23sm28970lfc.116.2021.07.27.11.42.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 11:42:35 -0700 (PDT)
-Subject: Re: [PATCH 2/5] drm/msm/dp: Modify prototype of encoder based API
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210725042436.3967173-1-bjorn.andersson@linaro.org>
- <20210725042436.3967173-3-bjorn.andersson@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <97ac00f8-eb25-9142-3bdc-904aad269b6e@linaro.org>
-Date:   Tue, 27 Jul 2021 21:42:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S230288AbhG0SpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:45:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229453AbhG0SpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:45:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2B3B60F9E;
+        Tue, 27 Jul 2021 18:44:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627411500;
+        bh=v57DgBNvmeqirO4JsBMcPzDZ5h2ihzb/QkuymdY559Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=luPjGCY16ahdowVwdbkAR5x4M7Ggpmr/adW5bCBeoda1BQ802QASAcxG+3oGuAtTg
+         yDXM0DKXhHwE7IgJqqbNU26DCBWUmNF18o6zDVrRDIL04Xdyoz4CRf1L8QBdIUbiln
+         XQI0JE2XFBHJDjZYmgCT1pfr1XkaNkHyF0n6kEEs=
+Date:   Tue, 27 Jul 2021 20:44:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Bill Wendling <morbo@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
+Message-ID: <YQBUKrCWpM3uDp/Q@kroah.com>
+References: <20210714091747.2814370-1-morbo@google.com>
+ <20210726201924.3202278-1-morbo@google.com>
+ <20210726201924.3202278-2-morbo@google.com>
+ <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
+ <YP+ZOx8BETgufxBS@kroah.com>
+ <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
+ <YP+ql3QFYnefR/Cf@kroah.com>
+ <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
+ <YQBJfAuMJhvd2TcJ@kroah.com>
+ <CAKwvOdkbgr5uPBUC815nrJ_-fHQD2KEYmZ0E8qZRBLL9uQ2WFw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210725042436.3967173-3-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkbgr5uPBUC815nrJ_-fHQD2KEYmZ0E8qZRBLL9uQ2WFw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2021 07:24, Bjorn Andersson wrote:
-> Functions in the DisplayPort code that relates to individual instances
-> (encoders) are passed both the struct msm_dp and the struct drm_encoder. But
-> in a situation where multiple DP instances would exist this means that
-> the caller need to resolve which struct msm_dp relates to the struct
-> drm_encoder at hand.
+On Tue, Jul 27, 2021 at 11:31:38AM -0700, Nick Desaulniers wrote:
+> On Tue, Jul 27, 2021 at 10:59 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Jul 27, 2021 at 10:39:49AM -0700, Nick Desaulniers wrote:
+> > > If there are
+> > > cases where it's ok to not check the return value, consider not using
+> > > warn_unused_result on function declarations.
+> >
+> > Ok, so what do you do when you have a function like this where 99.9% of
+> > the users need to check this?  Do I really need to write a wrapper
+> > function just for it so that I can use it "safely" in the core code
+> > instead?
+> >
+> > Something like:
+> >
+> > void do_safe_thing_and_ignore_the_world(...)
+> > {
+> >         __unused int error;
+> >
+> >         error = do_thing(...);
+> > }
+> >
+> > Or something else to get the compiler to be quiet about error being set
+> > and never used?  There HAS to be that option somewhere anyway as we need
+> > it for other parts of the kernel where we do:
+> >         write_bus(device, &value);
+> >         value = read_bus(device);
+> > and then we ignore value as it is not needed, but yet we still HAVE to
+> > call read_bus() here, yet read_bus() is set as warn_unused_result()
+> > because, well, it is a read function :)
 > 
-> The information for doing this lookup is available inside the DP driver,
-> so update the API to take the struct msm_drm_private and the struct
-> drm_encoder and have the DP code figure out which struct msm_dp the
-> operation relates to.
-
-Initially I thought to propose moving encoder->dp lookup into dpu code 
-by adding msm_dp_display_get_encoder() function. However as I was 
-writing that, I remembered that at some point I had to refactor my own 
-patchset in the way to get rid of calling msm_FOO_get_encoder().
-
-I'd propose simpler solution. In dpu_encoder_setup() you have the DP 
-index and the encoder. So you can store valid msm_dp pointer in the 
-dpu_encoder_virt and remove all the lookups. Then you can replace all 
-priv->dp with bare dpu_enc->dp accesses. Will this work for you?
-
+> Such wrappers are trivial with __attribute__((alias(""))):
+> https://godbolt.org/z/j5afPbGcM
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 17 +++++----
->   drivers/gpu/drm/msm/dp/dp_display.c         | 38 +++++++++++++++++----
->   drivers/gpu/drm/msm/msm_drv.h               | 31 +++++++++--------
->   3 files changed, 56 insertions(+), 30 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index 1c04b7cce43e..0d64ef0819af 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -1002,8 +1002,8 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
->   
->   	trace_dpu_enc_mode_set(DRMID(drm_enc));
->   
-> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp)
-> -		msm_dp_display_mode_set(priv->dp, drm_enc, mode, adj_mode);
-> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS)
-> +		msm_dp_display_mode_set(priv, drm_enc, mode, adj_mode);
->   
->   	list_for_each_entry(conn_iter, connector_list, head)
->   		if (conn_iter->encoder == drm_enc)
-> @@ -1184,9 +1184,8 @@ static void dpu_encoder_virt_enable(struct drm_encoder *drm_enc)
->   
->   	_dpu_encoder_virt_enable_helper(drm_enc);
->   
-> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
-> -		ret = msm_dp_display_enable(priv->dp,
-> -						drm_enc);
-> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
-> +		ret = msm_dp_display_enable(priv, drm_enc);
->   		if (ret) {
->   			DPU_ERROR_ENC(dpu_enc, "dp display enable failed: %d\n",
->   				ret);
-> @@ -1226,8 +1225,8 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
->   	/* wait for idle */
->   	dpu_encoder_wait_for_event(drm_enc, MSM_ENC_TX_COMPLETE);
->   
-> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
-> -		if (msm_dp_display_pre_disable(priv->dp, drm_enc))
-> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
-> +		if (msm_dp_display_pre_disable(priv, drm_enc))
->   			DPU_ERROR_ENC(dpu_enc, "dp display push idle failed\n");
->   	}
->   
-> @@ -1255,8 +1254,8 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
->   
->   	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
->   
-> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
-> -		if (msm_dp_display_disable(priv->dp, drm_enc))
-> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
-> +		if (msm_dp_display_disable(priv, drm_enc))
->   			DPU_ERROR_ENC(dpu_enc, "dp display disable failed\n");
->   	}
->   
-> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-> index 8696b36d30e4..59ffd6c8f41f 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> @@ -1432,12 +1432,25 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
->   	return 0;
->   }
->   
-> -int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
-> +static struct msm_dp *msm_dp_from_drm_encoder(struct msm_drm_private *priv,
-> +					      struct drm_encoder *encoder)
-> +{
-> +	if (priv->dp && priv->dp->encoder == encoder)
-> +		return priv->dp;
-> +
-> +	return NULL;
-> +}
-> +
-> +int msm_dp_display_enable(struct msm_drm_private *priv, struct drm_encoder *encoder)
->   {
->   	int rc = 0;
->   	struct dp_display_private *dp_display;
-> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
->   	u32 state;
->   
-> +	if (!dp)
-> +		return -EINVAL;
-> +
->   	dp_display = container_of(dp, struct dp_display_private, dp_display);
->   	if (!dp_display->dp_mode.drm_mode.clock) {
->   		DRM_ERROR("invalid params\n");
-> @@ -1489,9 +1502,13 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
->   	return rc;
->   }
->   
-> -int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
-> +int msm_dp_display_pre_disable(struct msm_drm_private *priv, struct drm_encoder *encoder)
->   {
->   	struct dp_display_private *dp_display;
-> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
-> +
-> +	if (!dp)
-> +		return 0;
->   
->   	dp_display = container_of(dp, struct dp_display_private, dp_display);
->   
-> @@ -1500,11 +1517,15 @@ int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
->   	return 0;
->   }
->   
-> -int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
-> +int msm_dp_display_disable(struct msm_drm_private *priv, struct drm_encoder *encoder)
->   {
->   	int rc = 0;
->   	u32 state;
->   	struct dp_display_private *dp_display;
-> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
-> +
-> +	if (!dp)
-> +		return 0;
->   
->   	dp_display = container_of(dp, struct dp_display_private, dp_display);
->   
-> @@ -1531,11 +1552,16 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
->   	return rc;
->   }
->   
-> -void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
-> -				struct drm_display_mode *mode,
-> -				struct drm_display_mode *adjusted_mode)
-> +void msm_dp_display_mode_set(struct msm_drm_private *priv,
-> +			     struct drm_encoder *encoder,
-> +			     struct drm_display_mode *mode,
-> +			     struct drm_display_mode *adjusted_mode)
->   {
->   	struct dp_display_private *dp_display;
-> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
-> +
-> +	if (!dp)
-> +		return;
->   
->   	dp_display = container_of(dp, struct dp_display_private, dp_display);
->   
-> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
-> index 9bfd37855969..e9232032b266 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.h
-> +++ b/drivers/gpu/drm/msm/msm_drv.h
-> @@ -388,12 +388,13 @@ int __init msm_dp_register(void);
->   void __exit msm_dp_unregister(void);
->   int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
->   			 struct drm_encoder *encoder);
-> -int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder);
-> -int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder);
-> -int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder);
-> -void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
-> -				struct drm_display_mode *mode,
-> -				struct drm_display_mode *adjusted_mode);
-> +int msm_dp_display_enable(struct msm_drm_private *priv, struct drm_encoder *encoder);
-> +int msm_dp_display_disable(struct msm_drm_private *priv, struct drm_encoder *encoder);
-> +int msm_dp_display_pre_disable(struct msm_drm_private *priv, struct drm_encoder *encoder);
-> +void msm_dp_display_mode_set(struct msm_drm_private *priv,
-> +			     struct drm_encoder *encoder,
-> +			     struct drm_display_mode *mode,
-> +			     struct drm_display_mode *adjusted_mode);
->   void msm_dp_irq_postinstall(struct msm_dp *dp_display);
->   void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp *dp_display);
->   
-> @@ -413,25 +414,25 @@ static inline int msm_dp_modeset_init(struct msm_dp *dp_display,
->   {
->   	return -EINVAL;
->   }
-> -static inline int msm_dp_display_enable(struct msm_dp *dp,
-> +static inline int msm_dp_display_enable(struct msm_drm_private *priv,
->   					struct drm_encoder *encoder)
->   {
->   	return -EINVAL;
->   }
-> -static inline int msm_dp_display_disable(struct msm_dp *dp,
-> -					struct drm_encoder *encoder)
-> +static inline int msm_dp_display_disable(struct msm_drm_private *priv,
-> +					 struct drm_encoder *encoder)
->   {
->   	return -EINVAL;
->   }
-> -static inline int msm_dp_display_pre_disable(struct msm_dp *dp,
-> -					struct drm_encoder *encoder)
-> +static inline int msm_dp_display_pre_disable(struct msm_drm_private *priv,
-> +					     struct drm_encoder *encoder)
->   {
->   	return -EINVAL;
->   }
-> -static inline void msm_dp_display_mode_set(struct msm_dp *dp,
-> -				struct drm_encoder *encoder,
-> -				struct drm_display_mode *mode,
-> -				struct drm_display_mode *adjusted_mode)
-> +static inline void msm_dp_display_mode_set(struct msm_drm_private *priv,
-> +					   struct drm_encoder *encoder,
-> +					   struct drm_display_mode *mode,
-> +					   struct drm_display_mode *adjusted_mode)
->   {
->   }
->   
-> 
+> At least then it's very obvious if someone adds more call sites to
+> such an alias. Then that calls for closer inspection in code review
+> that yes, this is one of those 0.01% of cases.  Since they occur 0.01%
+> of the time, I don't expect such aliases to occur too frequently.
 
+That is just, well, horrible.  Seriously horrible.  Wow.
 
--- 
-With best wishes
-Dmitry
+And that is the "documented" way to do this?  That feels like an abuse
+of the already-horrible-why-do-they-do-that-for-variables use of the
+alias attribute.
+
+How badly are compiler people going to complain to me about this if
+it's in this file?
+
+I can take a patch for that, but I feel the comments involved will make
+people, including myself when I have to look a the code again in 5
+years, even more confused...
+
+ick, I feel dirty...
+
+greg k-h
