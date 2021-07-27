@@ -2,84 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA753D7E40
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8253D7E44
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhG0TEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhG0TEd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:04:33 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB7E8C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:04:31 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id g13so23440345lfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=57qgj1c6LCtY+XqJGr03UfT/+n6dkMmVsE0B06Lumzw=;
-        b=uuT/okmd4zjIpxDDKkIo5gwpx+QtKyHJ0E93R3t5hro9Z87Vm4vz5rNCAD//WAeMPV
-         zOEicokwcFP1XJzeU0QnQB5S8BBb04pEiud4bpWXTt/nvK2A5j6ZBhMZf5kZyxa0QJ8J
-         Qe11/8Lt+wGkL20lOcaHSWvcsQ/6ShSlkSMdczrYuYnNAvPVjjz8GxsBShYUets5Oq48
-         G4vSYSb3yEiZa0PfCxyfc0UbKGC5tjeLzrk26FtR6WkNg630ZMyrgnA6vO2Aha+ECMa/
-         InceSka+YBQDZP8g3EyZtT3KB8/D/V20jMaSy60mHEm/RxAYKDfIOA6a6NUEh9uNuzUS
-         YjtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=57qgj1c6LCtY+XqJGr03UfT/+n6dkMmVsE0B06Lumzw=;
-        b=jArJmyj4BImxp1wDflnGbbsYyiQaKwNLrvFie97cNwIIZiD6H3kHaFwS+tUUPlHin2
-         h5/89cmwNfMJ8N158cu2dgcVbf7K5FWa30IQi77ur1/yXi8vncM0AEpXOvp9h4x6cskE
-         Ts2sYaJOLU0Mn6BTPcEcKpO1JVKUF9NlMoZiEuZXUz0mD5fHaQjRp0DICxiQhSBJUCLC
-         fn1Wnuvgk/mwFLhNA2d1tCIrz7Qh0zDIxecsQPHKWcabh3nHf6qrduyv2PnTLgSNvM95
-         kRZbJB58hO0VW3iXavf4dTUSjyvHqfXSPf2THh5u8+9ETvQU2Eqh6mgDzEtoH7ZUnU1s
-         /T1A==
-X-Gm-Message-State: AOAM533S4nH2lM2tomBg2a23bqjITeZuDPLnYHXg+ZJVsZeSPG9dNJP0
-        qpPJ6Fz2dVt64N10uuk0ccxgcBvu41pZbdJ5tq+g0A==
-X-Google-Smtp-Source: ABdhPJxLr8+coUojLcpoNK8iBCbQyiX5qGUJUc6ABlCOlILu34Y6PX4HXl0Qji3LqTu4Wjm0wAA98vz5rrkNeYeNO+w=
-X-Received: by 2002:ac2:59db:: with SMTP id x27mr17500966lfn.547.1627412669994;
- Tue, 27 Jul 2021 12:04:29 -0700 (PDT)
+        id S231781AbhG0TF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:05:59 -0400
+Received: from mail-dm6nam08on2041.outbound.protection.outlook.com ([40.107.102.41]:17697
+        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229453AbhG0TF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 15:05:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aQ7tbSd0zCj82S+hGtTmiWxr0ldpZmrAnnxA4Lu2rzGOfLs19/ZRa5CoLfpmKaMENI1gFQldsrNyJOfBCmbL/DACsd+3GA0FL3gaX0YzuEW3oip4vfpt8Elm5B5Cjx1Tev3hD7AkE6/nHxiMZf0uO8cqmlkAihjJOwoHffhdlwEFMzU1P9ou8TpSjvdQkTtHZRlsrbe0WKNskpOkka1nROHxDYtw5+IRs/gPir2lGmKHczCiH69f0pJLzQ4J+4AMqsXWVx5gxtYdYRhyVWKjBQpwkx7SQ+/oxwoSGkuHmbKa1H9TjxWPgd3wrr/2ZABeWV2OEzmck6WbOVe5sOUeZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wgiJMlzn1fclC6Uammm1tCIODUAu/sujQRZrkzOglyc=;
+ b=IyFkbpDcjKticP2Fk+yOgtjmsE0WHz1PjX1DMWhCoazQ3pexadrDT0CMMtJTpxPaJl8Dmr7zZO4X7f9OY6GdcsC2t/fAT88rOHkT56o8YIkJyq04AHIayWMU97F0jHDo1y2R3hOstOEWvbQrQN+f/vuAkvENkb6x2B6t5wpkOpKO5xncKMJZz2bgS92+X9krgBndyyB1ooThS5fPL0284xHNrbNaLz5Non2sCzqlNnYQd02BAb3mXUygErNEtiCCwz2PTueqJmEKE6D9VtD8IbNEUqXcEgZQP6DQqwGmLTR8XrNeHvi6VzHKkX+729CQ9jLDMyd5hAOqpI3gTH43xA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wgiJMlzn1fclC6Uammm1tCIODUAu/sujQRZrkzOglyc=;
+ b=MOczAiB4X0u2Yk+d9ljsM5piSg55PScEue+Fui6MBVSvvMPosdy8/g84Fcy+D7FJ4zrMSndq75YnaQjlja/4J5HPy6lR176Wvz0BZ9D18hvyUx7nj3VnqfHqHF0jJew4pA9WAHjmWJpFtfnQpOvdU+/IC4a2aTqhIBIBfPbmmojCklXhh6IqOd6E1YDqhMxTzxgldyAbh24b0tQnvTipR95eD1S6KaBq05x5fZy5DAlMgHEeDh5d39EduC40Ug9SvDyBHGA8xTugI7VsjUcKtn609CaxZ/Ojvk8vQ+Al628bBSSB9rWkTHYmKcoNmP2Wimr8csczlemoh+NiZy5f8w==
+Received: from BN9P221CA0015.NAMP221.PROD.OUTLOOK.COM (2603:10b6:408:10a::20)
+ by MWHPR1201MB2527.namprd12.prod.outlook.com (2603:10b6:300:df::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.25; Tue, 27 Jul
+ 2021 19:05:56 +0000
+Received: from BN8NAM11FT004.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:10a:cafe::e2) by BN9P221CA0015.outlook.office365.com
+ (2603:10b6:408:10a::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend
+ Transport; Tue, 27 Jul 2021 19:05:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT004.mail.protection.outlook.com (10.13.176.164) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4352.24 via Frontend Transport; Tue, 27 Jul 2021 19:05:56 +0000
+Received: from [10.26.49.10] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Jul
+ 2021 19:05:53 +0000
+Subject: Re: [PATCH] arm64: tegra194: Fix Tegra194 PCIe EP compatible string
+To:     Vidya Sagar <vidyas@nvidia.com>, <robh+dt@kernel.org>,
+        <thierry.reding@gmail.com>
+CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
+        <mmaddireddy@nvidia.com>, <sagar.tv@gmail.com>
+References: <20210727185055.11010-1-vidyas@nvidia.com>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <23d08fdf-35e1-5af4-8992-17bc2f0ce7ef@nvidia.com>
+Date:   Tue, 27 Jul 2021 20:05:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
- <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
- <YP+ZOx8BETgufxBS@kroah.com> <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
- <YP+ql3QFYnefR/Cf@kroah.com> <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
- <0fcf5740-2e0f-4da7-be58-77822df54f81@kernel.org>
-In-Reply-To: <0fcf5740-2e0f-4da7-be58-77822df54f81@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Jul 2021 12:04:18 -0700
-Message-ID: <CAKwvOdmMpLcYEKSyTavUmK-CxuR6H55ogwLQzRA1q12RuUYNNg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Bill Wendling <morbo@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210727185055.11010-1-vidyas@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ba57bbdd-13b0-41bb-3b07-08d951319020
+X-MS-TrafficTypeDiagnostic: MWHPR1201MB2527:
+X-Microsoft-Antispam-PRVS: <MWHPR1201MB2527C0BF791800B38D9F9EDED9E99@MWHPR1201MB2527.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uEs5crk2DwaCPBkwQK7JAyY5CVG0p2xEmhiFDqirZd9GZCR28qGuWnN70puMT5F+lIf9Ib41QVcRU4sLCojfmxaPVn9XRz5Poh9uwh4rZfPMgWqsSBhcITuwj6YWY3/4GF5OiFeimuHHP/l9mk9nMKfGw6elEQe+uDQbM+SNKh/GuD5geY0iu9pNSM1sONo0j9KdOBKK7wceKLTPhvMw4u+uBsgQcrImqKWrpodVJCVw/KYQGGTzwkBTQWl6ISihSQ9AHY/M4TXu34te1owEp7nPISOTJasgSeeLN2OmBCSuRrzvgXuRaTMhc+Lul9LPLk4JeCz9g4f8tmMp9KI1SZH8OPWWdvJeVBJpUw4w13RBfcJcevvYfmJbl0s68nnCAL5Cw7ZNg2Lp5zE8IGm6Os6YjJVsyII7KTRyUEMlMfuiNgy8r778JLMLJa03CZWFcBRd5iV3GQuohl/4az+IdST3BZTWwLEHUn0kKDTLot0NhG4Fpg5RdEmwFvAsy9anXIB3Rt62oHBDiVCZlhNqCrjCboJKC2VVr82lk/AM9mcY2gy/EdUeRgequDGNqamKjUju1FvMaioYo+4UI0g1At52HBIdgmD6b4BNGqb1AJdVHZpidJCoThZ4ZKcIaNiNLTFHqNyRKgf9GmqecYW+v+6s1YdShMY5A2BVWP6f94rMCutLfuMHhP5PTGoXMXjsTzPGvnwZ0YlMEnCipFOQ63dBwc09dVO7oP0fAoZ1ui0=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(36840700001)(46966006)(2616005)(8936002)(426003)(36906005)(36860700001)(186003)(31696002)(53546011)(31686004)(36756003)(4326008)(5660300002)(478600001)(82310400003)(2906002)(356005)(82740400003)(16576012)(86362001)(83380400001)(336012)(47076005)(316002)(110136005)(16526019)(7636003)(26005)(70206006)(54906003)(70586007)(8676002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2021 19:05:56.1365
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ba57bbdd-13b0-41bb-3b07-08d951319020
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT004.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB2527
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:32 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> On 7/27/2021 10:39 AM, 'Nick Desaulniers' via Clang Built Linux wrote:
-> > Isn't -Wunused-but-set-variable enabled only for W=1 builds?
->
-> Maybe Bill's tree does not have commit 885480b08469 ("Makefile: Move
-> -Wno-unused-but-set-variable out of GCC only block"), which disables the
-> warning for clang just like GCC for regular builds?
 
-Looks like 885480b08469, which landed in v5.13-rc1, so that's a
-possibility.  Should that be sent to stable@ so that we don't observe
-these warnings for non-W=1 builds of stable branches with newer
-versions of clang?
+On 27/07/2021 19:50, Vidya Sagar wrote:
+> The initialization sequence performed by the generic platform driver
+> pcie-designware-plat.c for a DWC based implementation doesn't work for
+> Tegra194. Tegra194 has a different initialization sequence requirement
+> which can only be satisfied by the Tegra194 specific platform driver
+> pcie-tegra194.c. So, remove the generic compatible string "snps,dw-pcie-ep"
+> from Tegra194's endpoint controller nodes.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+>  arch/arm64/boot/dts/nvidia/tegra194.dtsi | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
+> index 076d5efc4c3d..2f58f3e4746b 100644
+> --- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
+> +++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
+> @@ -2098,7 +2098,7 @@
+>  	};
+>  
+>  	pcie_ep@14160000 {
+> -		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
+> +		compatible = "nvidia,tegra194-pcie-ep";
+>  		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX4A>;
+>  		reg = <0x00 0x14160000 0x0 0x00020000>, /* appl registers (128K)      */
+>  		      <0x00 0x36040000 0x0 0x00040000>, /* iATU_DMA reg space (256K)  */
+> @@ -2130,7 +2130,7 @@
+>  	};
+>  
+>  	pcie_ep@14180000 {
+> -		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
+> +		compatible = "nvidia,tegra194-pcie-ep";
+>  		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX8B>;
+>  		reg = <0x00 0x14180000 0x0 0x00020000>, /* appl registers (128K)      */
+>  		      <0x00 0x38040000 0x0 0x00040000>, /* iATU_DMA reg space (256K)  */
+> @@ -2162,7 +2162,7 @@
+>  	};
+>  
+>  	pcie_ep@141a0000 {
+> -		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
+> +		compatible = "nvidia,tegra194-pcie-ep";
+>  		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX8A>;
+>  		reg = <0x00 0x141a0000 0x0 0x00020000>, /* appl registers (128K)      */
+>  		      <0x00 0x3a040000 0x0 0x00040000>, /* iATU_DMA reg space (256K)  */
+> 
+
+
+Thanks! We should also push a patch to remove this compatible string
+from the example in
+Documentation/devicetree/bindings/pci/nvidia,tegra194-pcie.txt. For this
+one ...
+
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+
+Cheers!
+Jon
+
 -- 
-Thanks,
-~Nick Desaulniers
+nvpublic
