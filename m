@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E653D81A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1BD3D81A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:21:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235237AbhG0VUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37736 "EHLO mail.kernel.org"
+        id S234039AbhG0VUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:20:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235006AbhG0VT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:19:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 164DA60FED;
-        Tue, 27 Jul 2021 21:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1627420713;
-        bh=vrsuZUHarGNvf9RdkDQpMyk5mA0/4F4hlnHq6SdM+Yw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qoIRcerJm+iTqJT9RloyT7tYKD6oJtvJujrDY8t/CzTccbun57NT0AcoKigxcEjGx
-         Md+6GcyQ1Vlwhsv1TZQuW0bkvZ5yVMEo8ZTuJJPYgm31Aa6/RrtCAA2v3CNr6nMyYf
-         k8B81r2ZMW3WQgfd61GdIQuR4X6iJlorspY+PtRE=
-Date:   Tue, 27 Jul 2021 14:18:32 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Evan Green <evgreen@chromium.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        linux-api@vger.kernel.org, Alex Shi <alexs@kernel.org>,
-        Alistair Popple <apopple@nvidia.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
-Subject: Re: [PATCH v4] mm: Enable suspend-only swap spaces
-Message-Id: <20210727141832.86695e7181eb10c6e8fd0191@linux-foundation.org>
-In-Reply-To: <CAE=gft7567-2Lq7raJKrOpQ8UAvXTFWwPci=_GCRPET3nS=9SA@mail.gmail.com>
-References: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
-        <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com>
-        <6ff28cfe-1107-347b-0327-ad36e256141b@redhat.com>
-        <CAE=gft7567-2Lq7raJKrOpQ8UAvXTFWwPci=_GCRPET3nS=9SA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S234113AbhG0VT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 17:19:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C5BA60FA0;
+        Tue, 27 Jul 2021 21:18:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627420740;
+        bh=WmBPx1Yv944WSgHzak0rUdbiFwHmXA9AEErppz095mw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Yhxrd8TFAkXrlR9r4ZRtp1p0sOIsB3ZuHtZ7oYU4pXZvEaqyymH79DJSjO7iRK0si
+         GSkXTTyUofgJqP034jp+1ZTvpxMOzmU1ZGhjE0qTg4I6idDUP9ThURBnvBclsuNBhC
+         u1tZ6C5YrfZBbxqk5ahpRO+VLSzVj3IEDOAgpOob/SggphKjlTaaTST/9JYGw9qJid
+         8957SpfZCeNiETD/zLB4cNWxzBDrGN9HQH+PNdMkwgJzIdpYFU/NFrV7mI6t8oFQsi
+         iwRWwF/foCBjtefKMixR8I7lM2u4IUX+zsUkg8iCrC0hdyyEJdWn/XDDKg0i/Pt6xD
+         FkiBVpBB37WQw==
+Subject: Re: [PATCH 31/64] fortify: Explicitly disable Clang support
+To:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-32-keescook@chromium.org>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <da989ffc-da64-33a2-581e-6920eb7ebd2d@kernel.org>
+Date:   Tue, 27 Jul 2021 14:18:58 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20210727205855.411487-32-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 09:31:33 -0700 Evan Green <evgreen@chromium.org> wrote:
-
-> > Pavel just mentioned uswsusp, and I wonder if it would be a possible
-> > alternative to this patch.
+On 7/27/2021 1:58 PM, Kees Cook wrote:
+> Clang has never correctly compiled the FORTIFY_SOURCE defenses due to
+> a couple bugs:
 > 
-> I think you're right that it would be possible to isolate the
-> hibernate image with uswsusp if you avoid using the SNAPSHOT_*SWAP*
-> ioctls. But I'd expect performance to suffer noticeably, since now
-> every page is making a round trip out to usermode and back. I'd still
-> very much use the HIBERNATE_ONLY flag if it were accepted, I think
-> there's value to it.
+> 	Eliding inlines with matching __builtin_* names
+> 	https://bugs.llvm.org/show_bug.cgi?id=50322
+> 
+> 	Incorrect __builtin_constant_p() of some globals
+> 	https://bugs.llvm.org/show_bug.cgi?id=41459
+> 
+> In the process of making improvements to the FORTIFY_SOURCE defenses, the
+> first (silent) bug (coincidentally) becomes worked around, but exposes
+> the latter which breaks the build. As such, Clang must not be used with
+> CONFIG_FORTIFY_SOURCE until at least latter bug is fixed (in Clang 13),
+> and the fortify routines have been rearranged.
+> 
+> Update the Kconfig to reflect the reality of the current situation.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>   security/Kconfig | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 0ced7fd33e4d..8f0e675e70a4 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -191,6 +191,9 @@ config HARDENED_USERCOPY_PAGESPAN
+>   config FORTIFY_SOURCE
+>   	bool "Harden common str/mem functions against buffer overflows"
+>   	depends on ARCH_HAS_FORTIFY_SOURCE
+> +	# https://bugs.llvm.org/show_bug.cgi?id=50322
+> +	# https://bugs.llvm.org/show_bug.cgi?id=41459
+> +	depends on !CONFIG_CC_IS_CLANG
 
-The uswsusp option makes your patch a performance optimization rather
-than a feature-add.  And we do like to see quantitative testing results
-when considering a performance optimization.  Especially when the
-performance optimization is a bit icky, putting special-case testing
-all over the place, maintenance cost, additional testing effort, etc.
+Should be !CC_IS_CLANG, Kconfig is hard :)
 
-I do think that diligence demands that we quantify the difference.  Is
-this a thing you can help with?
+>   	help
+>   	  Detect overflows of buffers in common string and memory functions
+>   	  where the compiler can determine and validate the buffer sizes.
+> 
+
+Cheers,
+Nathan
