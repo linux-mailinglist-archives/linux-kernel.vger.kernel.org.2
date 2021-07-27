@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCAE63D7A81
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3F63D7A84
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231200AbhG0QGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhG0QGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:06:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68FD36136F;
-        Tue, 27 Jul 2021 16:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627401959;
-        bh=S1AKqxcA5360tHItfkLLmUA9E329i9RckXGBuTcQ57k=;
-        h=Date:From:To:Subject:From;
-        b=Q0b5j/awc/l7o9kgVFG8jHFJp/IhTnQp+7473LbnFsWkU3JNiAvuwPn27a3PVTRdR
-         EEjNt+Tf5rVvFBEsQbBM6aV5kNFMf0DchV8lm9kvU0CJnPjmGA9sL2F7SrCDB4IhOs
-         bhDk6F0yNp5Br9krveJNjw52W11vxxtysmJ4eIpQ+MZXmaPd/4elElhV3A0zdlKNXY
-         3NPPt5YzsvvNvKl1OCXD0Y0YWF0fhjpzPYoe1FaVA72G0RRrJWnKp3Loo4074WYqU6
-         +md427appiOnsqH7APjzQ7k59vsiHGGmJyZahynYJla8XJugRRUTL9rHZkMrBOWLeX
-         EEhj/7zTOncLQ==
-Date:   Tue, 27 Jul 2021 17:05:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Jul 27
-Message-ID: <20210727160550.GX4670@sirena.org.uk>
+        id S231534AbhG0QGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhG0QGF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 12:06:05 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04F9C061757;
+        Tue, 27 Jul 2021 09:06:04 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso2223002wms.1;
+        Tue, 27 Jul 2021 09:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1IkDpFp10W4bEOQyy5DShzCeVcBVqiCv7erpcg3wPO8=;
+        b=cmydKoiSFF9IJMqZr0KjAF/oOlRWHuhd45pwVGt/WbVv8kzIDY2Kid2WqV6ThHwpY3
+         0BDFtZn6NOF/kgmGiV7H8X+PNhTD6Zt65PW/bL5KFEOdLjEy1Ojpfr4incIDz6QcWtfB
+         O/3fUqbNhPrjpAHEST9RRVw7jYHCtNKSeY84yqfqtvIlB/uplaTDo5IE0XaxVz5VEpry
+         2SaUrKoTXiQyAiqvLASfl8HdmTwHgLKgvtRL4QS7Ks33AAWNup+1tM+Q1yY0tK/LrZsv
+         BX3XDVQBYzouT2esufR2i0bgHyHGN1u6N+IsLKJ421BZ0vwnYzIfFGQtecY2+FUEDxL7
+         KF2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1IkDpFp10W4bEOQyy5DShzCeVcBVqiCv7erpcg3wPO8=;
+        b=kMwxMHccY3bWAIPLAnXfSgZNNZ/YYMIzDVIsc9VbfGCv1mjEPIyWiJpm3cG3GoV8/v
+         aluKlRsePH6Dr15uhGOoRVUQ7Fdqq3Zzkx+FscuME97DtPgln9wHoA+Ep+MmYMq3/AKp
+         GkuPfzNe9gUUi0Zgm72wiqL6PIwB+IIXBeNHpXaUFivcW/UWNsBp1V6DquluG+OpClef
+         BiwjKYiRpwN6Sb4cKJ1DleFOdp4PzmHriwZrCCT8T8EdhEN2psDEvkVJcXkw3zRQZ2P/
+         eRGb3Vg18hTXRcJZivmz3FubYnl9ivtgvdVeNDUF82qn7fqcVEl/I2rcokelOzKhT3ID
+         ReOw==
+X-Gm-Message-State: AOAM531OIQRlflkvLA57rQxrlPZ1qe0ryboJdzRyoJOKk9ScZQ3AG3mU
+        ufTsqQX0e8uEsrfwM7sO/bA=
+X-Google-Smtp-Source: ABdhPJwOhxTdU5cvv5Pz+8/8q7oSG2bu6fF4J4n2TsSdqG3lD9ayFXdVeOUikokQZlnPYkSHtAlX3Q==
+X-Received: by 2002:a1c:a7d2:: with SMTP id q201mr5005431wme.61.1627401963550;
+        Tue, 27 Jul 2021 09:06:03 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id d9sm3747063wrx.76.2021.07.27.09.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 09:06:03 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 17:06:01 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/108] 5.4.136-rc1 review
+Message-ID: <YQAu6ebKn/I1YFGZ@debian>
+References: <20210726153831.696295003@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Zll6mx50Q8J7qlLQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Cookie: Vini, vidi, Linux!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
---Zll6mx50Q8J7qlLQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, Jul 26, 2021 at 05:38:01PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.136 release.
+> There are 108 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> Anything received after that time might be too late.
 
-Hi all,
+Build test:
+mips (gcc version 11.1.1 20210723): 65 configs -> no failure
+arm (gcc version 11.1.1 20210723): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210723): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-Changes since 20210726:
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
-The drm-next tree gained a conflict with the drm-misc-fixes tree.
 
-Non-merge commits (relative to Linus' tree): 3590
- 3210 files changed, 179997 insertions(+), 56016 deletions(-)
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-----------------------------------------------------------------------------
-
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches will be at http://www.kernel.org/pub/linux/kernel/next/ if/when
-I get kup working).  If you are tracking the linux-next tree using git,
-you should not use "git pull" to do so as that will try to merge the new
-linux-next release with the old one.  You should use "git fetch" and
-checkout or reset to the new master.
-
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There are also quilt-import.log and merge.log
-files in the Next directory.  Between each merge, the tree was built
-with an arm64 defconfig, an allmodconfig for x86_64, a
-multi_v7_defconfig for arm and a native build of tools/perf. After
-the final fixups (if any), I do an x86_64 modules_install followed by
-builds for x86_64 allnoconfig, arm64 allnoconfig, and htmldocs.
-
-Below is a summary of the state of the merge.
-
-I am currently merging 333 trees (counting Linus' and 90 trees of bug
-fix patches pending for the current merge release).
-
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to
-add more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
-
---Zll6mx50Q8J7qlLQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEALt0ACgkQJNaLcl1U
-h9DWmAf/T487Hcth/L8bctIWaaEn0SO4U+27K8h71nmAZjQ6ObCjsKoytubR98mt
-LqmgiMwc+I9Oe0xSt0oQXSBUgwFhwx3FqroCgCWNDgtgdj38nhtKgIz7mz35Q5wQ
-DUkJu5IFuqfQ0DYLqBVDvbfcf/RxvOsIEhT8np/fkb8ie9MswAohxn/t4FXKF8u7
-TMbc1l80I613LWcGCqFIsOQmkJA3TxMLzPI0X/5MgIFO26EaES+E0yuwNENPnsQ9
-A9fUti8CVPnJV+GTjIyARZubOzmB/VvR1dfZF4J5HJs9iTBvPXiZNVEikFzcQly9
-ma1ObW09O2Y8iORRZ1Lq1eII6XNYbw==
-=p9ZF
------END PGP SIGNATURE-----
-
---Zll6mx50Q8J7qlLQ--
+--
+Regards
+Sudip
