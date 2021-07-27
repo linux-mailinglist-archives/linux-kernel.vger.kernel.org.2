@@ -2,143 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33CE3D6B64
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 03:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3083D6B6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 03:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234347AbhG0AVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 20:21:20 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35339 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229524AbhG0AVT (ORCPT
+        id S232296AbhG0A1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 20:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhG0A1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 20:21:19 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4564B580441;
-        Mon, 26 Jul 2021 21:01:47 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 26 Jul 2021 21:01:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=4GoP2lpEbphZOrM/qJqbnIpCwuz
-        xJrI8rOm0CYBK67E=; b=K7+fIREOIDAFh6ouMeGqj4o4UBPlX88yq9vU1atI112
-        kvpsGuxqSzMOjzJxihs+SdKGc1tyzc9adbOUkbmK88ZudgdfwNHpEkfr59ibhOKk
-        /nFDpGpplnQlTvC6r6U/3iCdiYYdyt5mOLXQ3X+WAzFzJ5t8yJxGC03uikSVl/xn
-        lUG1vWA99D6vj0AFxIG2QEbep0cBljPVuAH1moI60xNJwqefd4bR3rS6F06qf5yc
-        0WFbFNX3AT0NWyorr5cGHR2yQzn1F0xMYFS3T4x/H7IhzdR+WwgV5AQAiEWnEVaG
-        KfOD8cdoPtmPs55C35Qrc7Yu7gQrEVdT3IJtF5mbkmA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4GoP2l
-        pEbphZOrM/qJqbnIpCwuzxJrI8rOm0CYBK67E=; b=qJwNQmDsYMZetuodgigFCU
-        DvrvTuxQ8xE3gzsT+C7iUxomQ4Qoh9SiXYY7RPEyWopwpdK2BL51aZeO4DCvy6Qd
-        0yffH5Vu4WlxgxJeJciaDds/mdyozdf/EFvVXoDtdjTLGpFwU5P0hJJWoZ3jxUa+
-        b90YhIz3irTxBBU3Uf6YO/lIbIUP3jOssjEUrgHIti/Lt/VCLyUj8+zs+TNyFiME
-        XQYX51ZDyPjk7Gt29xpSulhW99pZw4WJvX9rQywAbjr11JS6JwD8Mz3+od29skK7
-        +fpcJFmqUFTOflQuJOSzxRXHU02itQObCxSP1/Zht7AVHQgeAsSfpLSKzruSY/HA
-        ==
-X-ME-Sender: <xms:-Vr_YN7qWdjm7YnBCSYzIeDLYmOwgFwi-W8nVswXVbgeS1KPnGjJwg>
-    <xme:-Vr_YK6Q6je5ZOTBjOxLy8iVictcUhv62jCRAKF4Dyd5fpP4InNXezZ32zZOJiwhW
-    TiyIItqtHJBqPJC1w>
-X-ME-Received: <xmr:-Vr_YEdGpMion0z5UjQ4-QKhezMQIY1C7M0dpvSBbV-ttBpTgqwzEFKil28-Kf4SjQslAdjqZc9LfkUyXrjObOzexPgMsLALtRx7mQQmQOChDMEOvpE95_p4tfLN>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeeigdeffecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
-    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
-    htvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeffhfeu
-    ffdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hnughrvghssegrnhgrrhgriigvlhdruggv
-X-ME-Proxy: <xmx:-Vr_YGIibaU9T5GLpMI6wyGFBKBj2CJ0OBGm7X2aBrxqjIE_CEWiJw>
-    <xmx:-Vr_YBJ092ZR3hqHatCsys030PLu61FEScoEhgWeS5v4yLiMrpwFIA>
-    <xmx:-Vr_YPwzI0cknTDfE_VXYGPYh1o9oAfG5-_ppa3d8G1AnAscFyTAZg>
-    <xmx:-1r_YKWfd0yw1ulinw349uq0XrckpcH1wSk--ydWa5ndfXoZdhsL5w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 Jul 2021 21:01:45 -0400 (EDT)
-Date:   Mon, 26 Jul 2021 18:01:44 -0700
-From:   Andres Freund <andres@anarazel.de>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Michael Larabel <Michael@michaellarabel.com>
-Subject: Re: Folios give an 80% performance win
-Message-ID: <20210727010144.na67murecket5h4b@alap3.anarazel.de>
-References: <20210715033704.692967-1-willy@infradead.org>
- <YPxNkRYMuWmuRnA5@casper.infradead.org>
- <1e48f7edcb6d9a67e8b78823660939007e14bae1.camel@HansenPartnership.com>
- <YPxYdhEirWL0XExY@casper.infradead.org>
- <b12f95c9f817f05e91ecd1aec81316afa1da1e42.camel@HansenPartnership.com>
- <17a9d8bf-cd52-4e6c-9b3e-2fbc1e4592d9@www.fastmail.com>
- <YPxjbopzwFYJw9hV@casper.infradead.org>
- <4c634d08-c658-44cf-ac92-92097eeb8532@www.fastmail.com>
- <20210724214413.fqsbjxhhodfzchs6@alap3.anarazel.de>
- <YP7EX7w035AWASlg@mit.edu>
+        Mon, 26 Jul 2021 20:27:42 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC46C061757;
+        Mon, 26 Jul 2021 18:08:10 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5EFD8EE;
+        Tue, 27 Jul 2021 03:08:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1627348087;
+        bh=5Lly4Cu2+2FiLgIA04EEEdGsFnMktcIC4M6zAWMrIU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rF7yoPygIYI/BWdroD9vJ9M2KuTa+lQxAX2umF9VFY7m+V1JRJHi/ggAbqWHumx6d
+         f6/VkT2quoeS7LsRgRB06sRYTWpM9ItybC8fYaeztBSX/gvm7ouvPySPwAqLKiB6GK
+         aN28/KJQ/KmHl4PxRy/f1oy9DRggw3Ewr6298Drc=
+Date:   Tue, 27 Jul 2021 04:08:02 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sakari Ailus <sakari.ailus@iki.fi>
+Subject: Re: [RFC v3] dt-binding: media: document ON Semi AR0521 sensor
+ bindings
+Message-ID: <YP9ccgd7WNpHuLgG@pendragon.ideasonboard.com>
+References: <m37dhkdrat.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YP7EX7w035AWASlg@mit.edu>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m37dhkdrat.fsf@t19.piap.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Krzysztof,
 
-On 2021-07-26 10:19:11 -0400, Theodore Ts'o wrote:
-> On Sat, Jul 24, 2021 at 02:44:13PM -0700, Andres Freund wrote:
-> > The phoronix test uses postgres with only one relevant setting adjusted
-> > (increasing the max connection count). That will end up using a buffer pool of
-> > 128MB, no huge pages, and importantly is configured to aim for not more than
-> > 1GB for postgres' journal, which will lead to constant checkpointing. The test
-> > also only runs for 15 seconds, which likely isn't even enough to "warm up"
-> > (the creation of the data set here will take longer than the run).
-> > 
-> > Given that the dataset phoronix is using is about ~16GB of data (excluding
-> > WAL), and uses 256 concurrent clients running full tilt, using that limited
-> > postgres settings doesn't end up measuring something particularly interesting
-> > in my opinion.
+(CC'ing Sakari Ailus)
 
-> I tend to use the phoronix test suite for my performance runs when
-> testing ext4 changes simply because it's convenient.  Can you suggest
-> a better set configuration settings that I should perhaps use that
-> might give more "real world" numbers that you would find more
-> significant?
+Thank you for the patch.
 
-It depends a bit on what you want to test, obviously...
+On Wed, Jul 21, 2021 at 10:06:34AM +0200, Krzysztof Hałasa wrote:
+> This file documents DT bindings for the AR0521 camera sensor driver.
+> 
+> Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
+> ---
+> Changes from v2:
+> - changed "xclk" to "extclk"
+> - power regulator names etc.
+> - video output port properties
+> - cosmetics
+> - UTF-8 experiments :-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+> new file mode 100644
+> index 000000000000..785bae61bb5e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+> @@ -0,0 +1,108 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/onnn,ar0521.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ON Semiconductor AR0521 MIPI CSI-2 sensor
+> +
+> +maintainers:
+> +  - Krzysztof Hałasa <khalasa@piap.pl>
+> +
+> +description: |-
+> +  The AR0521 is a raw CMOS image sensor with MIPI CSI-2 and
+> +  I2C-compatible control interface.
+> +
+> +properties:
+> +  compatible:
+> +    const: onnn,ar0521
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: extclk
+> +
+> +  vaa-supply:
+> +    description:
+> +      Definition of the regulator used as analog (2.7 V) voltage supply.
+> +
+> +  vdd-supply:
+> +    description:
+> +      Definition of the regulator used as digital core (1.2 V) voltage supply.
+> +
+> +  vdd_io-supply:
+> +    description:
+> +      Definition of the regulator used as digital I/O (1.8 V) voltage supply.
+> +
+> +  reset-gpios:
+> +    description: reset GPIO, usually active low
+> +    maxItems: 1
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description: |
+> +      Video output port.
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: /schemas/media/video-interfaces.yaml#
+> +
+> +        properties:
+> +          data-lanes:
+> +            anyOf:
+> +              - items:
+> +                  - const: 1
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +              - items:
+> +                  - const: 1
+> +                  - const: 2
+> +                  - const: 3
+> +                  - const: 4
 
-At the very least you should 'max_wal_size = 32GB' or such (it'll only
-use that much if enough WAL is generated within checkpoint timeout,
-which defaults to 5min).
+As the sensor also supports an HiSPi output, I would add the bus-type
+property:
 
-And unfortunately you're not going to get meaningful performance results
-for a read/write test within 10s, you need to run at least ~11min (so
-two checkpoints happen).
+          data-lanes:
+	    const: 4
 
-With the default shared_buffers setting of 128MB you are going to
-simulate a much-larger-than-postgres's-memory workload, albeit one where
-the page cache *is* big enough on most current machines, unless you
-limit the size of the page cache considerably. Doing so can be useful to
-approximate a workload that would take much longer to initialize due to
-the size.
+Sakari, what do you think ? This way we won't have to rely on an
+implicit default when (and if) the kernel gets support for HiSPi.
 
-I suggest *not* disabling autovacuum as currently done for performance
-testing - it's not something many real-world setups can afford to do, so
-benchmarking FS performance with it disabled doesn't seem like a good
-idea.
+With or without this change, and with Rob's comments addressed,
 
-FWIW, depending on what kind of thing you want to test, it'd not be hard
-to come up with a test that less time to initialize. E.g. an insert-only
-workload without an initial dataset or such.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-As long as you *do* initialize 16GB of data, I think it'd make sense to
-measure the time that takes. There's definitely been filesystem level
-performance changes of that, and it's often going to be more IO intensive.
+Thank you for not giving up :-)
 
-Greetings,
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - vaa-supply
+> +  - vdd-supply
+> +  - vdd_io-supply
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/clock/imx6qdl-clock.h>
+> +
+> +    i2c {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            ar0521: camera-sensor@36 {
+> +                    compatible = "onnn,ar0521";
+> +                    reg = <0x36>;
+> +                    pinctrl-names = "default";
+> +                    pinctrl-0 = <&pinctrl_mipi_camera>;
+> +                    clocks = <&clks IMX6QDL_CLK_CKO>;
+> +                    clock-names = "extclk";
+> +                    reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
+> +                    vaa-supply = <&reg_2p7v>;
+> +                    vdd-supply = <&reg_1p2v>;
+> +                    vdd_io-supply = <&reg_1p8v>;
+> +
+> +                    port {
+> +                           mipi_camera_to_mipi_csi2: endpoint {
+> +                                    remote-endpoint = <&mipi_csi2_in>;
+> +                                    data-lanes = <1 2 3 4>;
+> +                            };
+> +                    };
+> +            };
+> +    };
+> 
 
-Andres Freund
+-- 
+Regards,
+
+Laurent Pinchart
