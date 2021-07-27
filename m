@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10E13D7EF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF793D7F03
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhG0URD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:17:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230425AbhG0URB (ORCPT
+        id S232043AbhG0UUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhG0UUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:17:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627417020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ByUPLbiVuvdvoapeEFXQAcFKJj/8lLrwBdwnV9vgH+s=;
-        b=iIPYqXhCxCQ/tI2aYQFlODE1F3UluJwhMLsCtJIL6dxTpUc6duCZErA/0NMrf/FQ9v6VYQ
-        kVXxAUsNLVyGRANNgGGwZuA/kcpiszOqAO1LQ4eAMpIY3IBJLke102HomkElsJgcSwK3U4
-        9oeGI14kIdPEi0z3L79v7iom4+LBXQw=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-iF47fWH6Oy2iUPfTVhnXug-1; Tue, 27 Jul 2021 16:16:59 -0400
-X-MC-Unique: iF47fWH6Oy2iUPfTVhnXug-1
-Received: by mail-qt1-f198.google.com with SMTP id f9-20020a05622a1a09b02902615523e725so6931161qtb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:16:59 -0700 (PDT)
+        Tue, 27 Jul 2021 16:20:19 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29008C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:20:19 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id d17so23973840lfv.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pu/Dc0wbZEEdBX0n+gymF7OvWfXDUCeDoTyuI35f9nc=;
+        b=FOFa/sNjWhym9g8D5DSS89BwZuBiqUD+SSrqL7sVUVC38ErQozC1yUlsOxaRti3W6S
+         52HkAvK2KdjLeuOIPS0jYFaCYhCGPguKkErKLPC222pg2A+/Shx/g6xk4Qr8Jn/0tY87
+         CMCpEQMG4CiFKqHDQRbaEDOumAZCbtUv6cl5ONykldV00D8ia4duiru2eGYQrv0mbMjy
+         k8xJ8Gh5kd1jdWB2ap0Bq7FmLLG5qOf2BlKNetEmwS/QGXtTk3h/IZcNxt3jjkil6mqM
+         l5RxuPFDwB9dZuwYZe9YmsZj0yRYSzEYTBoahqTkdO5lv3xMXJ7ybvz7ZTNrAhgLXKKW
+         KUfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ByUPLbiVuvdvoapeEFXQAcFKJj/8lLrwBdwnV9vgH+s=;
-        b=e2rX834VLIE+/ezGQ5Ywot0D6ipQjAY7slUu3wk3VSTeOu6mbFDtL4vp5xr45IlCKm
-         BcIxiMUxVtSyZTjjJT8EJpQ+ZBv4NtPZHVu0Y3sRU/ygQ7QDIW6LoOKlSwSg80Ca0jpL
-         bSKhyihu1KEfpJ5lqnMfvuieAfy4s1YojLk8r8wEBZmp+axIzps5+Vk9wUwUjSFBr7EL
-         qLATGm/7xzWRdauMpyUGpzsEiIjDH4o68T87MxcyiDFJye4XpMmK9AZsIEvzX+G3Lc46
-         yudFnoPH2vhoDAppf+onWgrrq0ma3TflhrFHY5TGppqVk8E64bjamV/UX5kV22+aZlvx
-         idDQ==
-X-Gm-Message-State: AOAM53360L9iV/zc5r14fke3fIXxNThhLOOylbHvdUrh0mxysGOLKYGe
-        b1yNJat/glWl06fa4NRfptBnSP6OR+vIWGwiikNBmfqPya2o7fknaxqjGF6naPIqAmDdHydL8tn
-        hOeCa1rFoZn7q7uTFDYmADGXA
-X-Received: by 2002:a05:620a:318e:: with SMTP id bi14mr21424389qkb.176.1627417018992;
-        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzkKaLGiPqMLIncbtDqJyUsjY34972lfs0JJ1TJHQSJbPBkHyyv8W+CXGcrtPiJOkaTxPBjIQ==
-X-Received: by 2002:a05:620a:318e:: with SMTP id bi14mr21424373qkb.176.1627417018811;
-        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id g10sm1910136qtp.67.2021.07.27.13.16.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 2/9] cgroup/cpuset: Fix a partition bug with hotplug
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20210720141834.10624-1-longman@redhat.com>
- <20210720141834.10624-3-longman@redhat.com>
- <YP8+ajTnvrha+0O6@mtj.duckdns.org>
-Message-ID: <2173a00b-504a-1932-877d-d26775e4775c@redhat.com>
-Date:   Tue, 27 Jul 2021 16:16:56 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pu/Dc0wbZEEdBX0n+gymF7OvWfXDUCeDoTyuI35f9nc=;
+        b=Ij8fTYQigi2D5VOzwMNNayP7qXRnfbsVeW1GKo8+YMOFAwr9kjplyoiHt/9WTav+Ke
+         UQEq97c78FUu8rk2KbXspSFpPLxmlcsd1TXRWXoah5zYPv5R7D6ih/DUaDZd32BJxvRB
+         mJAyVeZqfMG+8isrj6xm4ljNV37F3wTS6DrUJaxA/HD5t7/f1sjjjAV9osWesG24XnN8
+         MBnML3OJmshGIWFHJIjBBf375ZgTUxOLOPDtc7GfLKHIOgI0yYQKXb5V40cqjzbdiYgg
+         8Uf/9V0xgtLDMLDMFQ79CAMSBarqvTZpa3Qv37Ota6AIbcUjEjZA0LBgHjGoyznK81iO
+         CnMQ==
+X-Gm-Message-State: AOAM530M50P0ZVm1yi11BZKSARRnM+Vsh0VbQ8G7URYMNQ0Am7Z+Fl5E
+        t/9AcZgna+DjfqCmoHF4Z9svag==
+X-Google-Smtp-Source: ABdhPJykKCBAnljgl6eXjGqYqbLHliukLxoc381p7oH+9gphJk5y+ErWEJAaVK0G+SYW7j65jmFswg==
+X-Received: by 2002:ac2:50c3:: with SMTP id h3mr18255303lfm.126.1627417217436;
+        Tue, 27 Jul 2021 13:20:17 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id i11sm376502lfe.215.2021.07.27.13.20.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 13:20:17 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 0/6] clk: qcom: use power-domain for sm8250's clock controllers
+Date:   Tue, 27 Jul 2021 23:19:56 +0300
+Message-Id: <20210727202004.712665-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YP8+ajTnvrha+0O6@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 6:59 PM, Tejun Heo wrote:
-> On Tue, Jul 20, 2021 at 10:18:27AM -0400, Waiman Long wrote:
->> In cpuset_hotplug_workfn(), the detection of whether the cpu list
->> has been changed is done by comparing the effective cpus of the top
->> cpuset with the cpu_active_mask. However, in the rare case that just
->> all the CPUs in the subparts_cpus are offlined, the detection fails
->> and the partition states are not updated correctly. Fix it by forcing
->> the cpus_updated flag to true in this particular case.
->>
->> Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition")
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> Applied to cgroup/for-5.15 w/ a minor update to the comment (I dropped
-> "just" before "all". It read weird to me.)
->
-> Thanks.
->
-Thanks for fixing the wording.
+On SM8250 both the display and video clock controllers are powered up by
+the MMCX power domain. Handle this by linking clock controllers to the
+proper power domain, and using runtime power management to enable and
+disable the MMCX power domain.
 
-Cheers,
-Longman
+Dependencies:
+- https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.andersson@linaro.org/
+  (pending)
+
+Changes since v5:
+ - Dropped devm_pm_runtime_enable callback to remove extra dependency
+
+Changes since v4:
+ - Dropped pm_runtime handling from drivers/clk/qcom/common.c Moved the
+   code into dispcc-sm8250.c and videocc-sm8250.c
+
+Changes since v3:
+ - Wrap gdsc_enable/gdsc_disable into pm_runtime_get/put calls rather
+   than calling pm_runtime_get in gdsc_enabled and _put in gdsc_disable
+ - Squash gdsc patches together to remove possible dependencies between
+   two patches.
+
+Changes since v2:
+ - Move pm_runtime calls from generic genpd code to the gdsc code for
+   now (as suggested by Ulf & Bjorn)
+
+Changes since v1:
+ - Rebase on top of Bjorn's patches, removing the need for setting
+   performance state directly.
+ - Move runtime PM calls from GDSC code to generic genpd code.
+ - Always call pm_runtime_enable in the Qualcomm generic clock
+   controller code.
+ - Register GDSC power domains as subdomains of the domain powering the
+   clock controller if there is one.
+
+----------------------------------------------------------------
+Dmitry Baryshkov (8):
+      dt-bindings: clock: qcom,dispcc-sm8x50: add mmcx power domain
+      dt-bindings: clock: qcom,videocc: add mmcx power domain
+      clk: qcom: dispcc-sm8250: use runtime PM for the clock controller
+      clk: qcom: videocc-sm8250: use runtime PM for the clock controller
+      clk: qcom: gdsc: enable optional power domain support
+      arm64: dts: qcom: sm8250: remove mmcx regulator
+      clk: qcom: dispcc-sm8250: stop using mmcx regulator
+      clk: qcom: videocc-sm8250: stop using mmcx regulator
+
+ .../bindings/clock/qcom,dispcc-sm8x50.yaml         |  7 +++
+ .../devicetree/bindings/clock/qcom,videocc.yaml    |  7 +++
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               | 11 +---
+ drivers/clk/qcom/dispcc-sm8250.c                   | 28 ++++++++--
+ drivers/clk/qcom/gdsc.c                            | 59 ++++++++++++++++++++--
+ drivers/clk/qcom/gdsc.h                            |  2 +
+ drivers/clk/qcom/videocc-sm8250.c                  | 31 +++++++++---
+ 7 files changed, 124 insertions(+), 21 deletions(-)
+
 
