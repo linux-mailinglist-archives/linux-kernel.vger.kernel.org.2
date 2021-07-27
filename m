@@ -2,104 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31E43D6D10
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6823D6D13
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhG0EAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 00:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234422AbhG0D7f (ORCPT
+        id S231932AbhG0EAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 00:00:49 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36618 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229671AbhG0EAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 23:59:35 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D4CC061765
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:59:30 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id gn26so13818953ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 20:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AVui1UrxB4V8dHHXolPBA5GyUaemtg+mai81JQmlO8A=;
-        b=mpWQogQ6uzZiOOqbCDOlWnrj6itgtLZPyyafciiV9BuzntQtzy2+2/73XydjXtE8Lv
-         PTDTiAYDTxNeLMxim1PZ0TxYw0d/SLBQg62tfMIhSnYJ1XNrZRioo430CZEWYA2PLtZU
-         aYYds5u937cgqWbX0DanpWyQtBmKijcWFfHHOYcqnnAoN2mBQT7roTJCyJ+f7hd3644U
-         Bn8YAEyNGZombXN7uNrwXW7Q2fkz7TpzIW04bkny+2CUfSkYFqQvTSw1sAfZA0DgqEJ9
-         mAwDVmmrYSpb4vW3WXVoVsXdHN+8UMXfTfkx+T77bjkiy6swq8UHw0X70zti8H1YRNu/
-         GiGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AVui1UrxB4V8dHHXolPBA5GyUaemtg+mai81JQmlO8A=;
-        b=leYKdgd2BYOs+sQ9vZWPZWYji+BxX5yYuLeA6hdbTY+aJ/dxdYcqWnP+bdEg0smlnH
-         G+w7YtpSy5cBHd4GXN/IfxMxCUZGV6yVTGrtsdXJQBOkU/KR3WWf/W/tT4e08ENPpUP8
-         /qork+HZH2w/xTL/b029jbTGKOBi4TCLkZ+cHuwB61BUspUYTGnftKoCj85U18JTui5Y
-         zOIEhyBSHKJ+qolCIVrRtFsqw4+KWAa+YOB1RKFNAjwn53dCydpWLFf3q6UYsA6oihv6
-         ETJWTERsKXNH/c1WtUreg3xo60TfGACJ5f+04K8ARns7FBh4A1ukqazqqmrodtmaiMX2
-         kdBg==
-X-Gm-Message-State: AOAM533pKhfuJYmB7QwW1vUptMMdZb9pfBMvuWk+XpS0pFsHtBzDxLrg
-        YqmLPgbqeZteQwdhPdjk2dYslkNgaVTozcTeKjUuqQ==
-X-Google-Smtp-Source: ABdhPJy56FgzVmzBETgdq0EBwyAKfKlmaKjf2Ymi89TdlTsZm3qLTjhXcxK3lEXfbMHEvaDdQq18dgJGxa1ZZ5LXJPY=
-X-Received: by 2002:a17:906:4b46:: with SMTP id j6mr20191529ejv.247.1627358369266;
- Mon, 26 Jul 2021 20:59:29 -0700 (PDT)
+        Tue, 27 Jul 2021 00:00:45 -0400
+X-UUID: 2868be320d224ebcaaf0616153f5ab04-20210727
+X-UUID: 2868be320d224ebcaaf0616153f5ab04-20210727
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <kuan-ying.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 532556123; Tue, 27 Jul 2021 12:00:42 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 27 Jul 2021 12:00:40 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 27 Jul 2021 12:00:40 +0800
+From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+To:     Nicholas Tang <nicholas.tang@mediatek.com>,
+        Andrew Yang <andrew.yang@mediatek.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
+Subject: [PATCH 0/2] kasan, mm: reset tag when access metadata
+Date:   Tue, 27 Jul 2021 12:00:19 +0800
+Message-ID: <20210727040021.21371-1-Kuan-Ying.Lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210726153828.144714469@linuxfoundation.org> <20210726193404.GA2686017@roeck-us.net>
-In-Reply-To: <20210726193404.GA2686017@roeck-us.net>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 27 Jul 2021 09:29:18 +0530
-Message-ID: <CA+G9fYvRc=hugyiNZVEMxx8_Cm5J+MWTLsYdSqjehJX_nsNkNA@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/82] 4.14.241-rc1 review
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 at 01:04, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Mon, Jul 26, 2021 at 05:38:00PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.14.241 release. =
- There
-> > are 82 patches in this series, all will be posted as a response to this=
- one.
-> > If anyone has any issues with these being applied, please let me know.
-> >
-> > Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.  Anything
-> > received after that time might be too late.
-> >
->
-> perf fails to build:
+With hardware tag-based kasan enabled, we reset the tag
+when we access metadata to avoid from false alarm.
 
-Results from Linaro=E2=80=99s test farm.
-These build warnings / errors were noticed on arm64, arm, x86_64, and i386
-while building perf on 4.14, 4.9 and 4.4.
+Kuan-Ying Lee (2):
+  kasan, mm: reset tag when access metadata
+  kasan, mm: reset tag for hex dump address
 
->
-> tests/topology.c: In function =E2=80=98session_write_header=E2=80=99:
-> tests/topology.c:53:2: error: implicit declaration of function =E2=80=98e=
-vlist__delete=E2=80=99; did you mean =E2=80=98perf_evlist__delete=E2=80=99?
-> tests/topology.c:53:2: error: nested extern declaration of =E2=80=98evlis=
-t__delete=E2=80=99
->
-> Guenter
+ mm/kmemleak.c | 6 +++---
+ mm/slub.c     | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-ref:
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-4.14/=
-DISTRO=3Dlkft,MACHINE=3Dintel-corei7-64,label=3Ddocker-buster-lkft/1184/con=
-sole
+-- 
+2.18.0
 
---
-Linaro LKFT
-https://lkft.linaro.org
