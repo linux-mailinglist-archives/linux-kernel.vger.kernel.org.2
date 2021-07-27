@@ -2,88 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3E73D821F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747BE3D8225
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbhG0Vv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:51:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhG0Vv6 (ORCPT
+        id S232757AbhG0Vwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:52:49 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:36800 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232460AbhG0Vws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:51:58 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0348C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 14:51:56 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id d18so26980lfb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 14:51:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LklRqbXMTEN/3IOARnfGCTnT/yEZVFwCJFDMkmvyYVo=;
-        b=AbNu22X3Nmx8X2h+2ik7T5v6bU+CsbYIGQapGfDjCY/3r1jS9dwjHMGAsireZtJIzA
-         W6vzg/MECVRzb0M3CzcIvMUeqvE7OFHKjzUu9Vc8EciMK4M22Lalr1SoxpUWAdaS0jas
-         trp6Y9wm5/8rQ99XmOCezferLz9rqJpSR4qHfjYjK/VTc3I7BOoBPi0fzC9EwTD/nYHV
-         8dAu/luh9QT3BGhD0+VcybrhasaOcPPohqRydoP5y/Vo5wWXp7PD1EhvztG+D5sonifC
-         yAelkaCCnK3W8KrUX9cPBHBrruaxk+BOade7OJ7ssi7N40oIgkFN4GjiGFhdx1Vp7uI1
-         EVLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LklRqbXMTEN/3IOARnfGCTnT/yEZVFwCJFDMkmvyYVo=;
-        b=h0aeczAIVnaOJlGhQGhvcaCjbn9apcNSDsZBE8gc7CQnhv1GS33XD1WZ45NyZHdgMf
-         NNTmOkjr362sTBPJUO7zZ9rHm905lRISTtW/3V2GpTNSqLdmtWPvDAgaCBWfA/rfV1Wt
-         GUuKX6rTIesDrBKTwCl08M1o1bzXROeyvZyGGtwUbpbEgtLFFtKgKfZ4FfZ28as2uQfZ
-         nwx8ITtF6pXQ7IjDxBkR0efAyy/iGt1xAv3r8E2knQqZZoyATgZqTZND8yNbRCZS+VkV
-         eSgpBMCRLKOT28PpRSplLoKBrzt+JEg8U6zBvhtL22/yU0gS4LjPNINIZx8OqYArzyjG
-         igXA==
-X-Gm-Message-State: AOAM533VtLossuOyVqsCHYjBd4tAz8lfSZdye2zB8u16tP+3BuiGLlw+
-        tY9b/M5sXh9qDG7sokFaQ4uyHT1VNCGofsNZjk/ugg==
-X-Google-Smtp-Source: ABdhPJyiTzH35Mq19nPcHN5BCC0dltSH+g1FJkcA9lyijpawno1XuHgUeOU54nM7g+YaoRlnu+709wB8lfa9Tl7tdvs=
-X-Received: by 2002:a19:771c:: with SMTP id s28mr17640254lfc.358.1627422714605;
- Tue, 27 Jul 2021 14:51:54 -0700 (PDT)
+        Tue, 27 Jul 2021 17:52:48 -0400
+Received: from netfilter.org (bl11-146-165.dsl.telepac.pt [85.244.146.165])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 213D4642B2;
+        Tue, 27 Jul 2021 23:52:16 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 23:52:40 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Alex Forster <aforster@cloudflare.com>
+Cc:     Kyle Bowman <kbowman@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH] netfilter: xt_NFLOG: allow 128 character log prefixes
+Message-ID: <20210727215240.GA25043@salvia>
+References: <20210727190001.914-1-kbowman@cloudflare.com>
+ <20210727195459.GA15181@salvia>
+ <CAKxSbF0tjY7EV=OOyfND8CxSmusfghvURQYnBxMz=DoNtGrfSg@mail.gmail.com>
+ <20210727211029.GA17432@salvia>
+ <CAKxSbF1bMzTc8sTQLFZpeY5XsymL+njKaTJOCb93RT6aj2NPVw@mail.gmail.com>
+ <20210727212730.GA20772@salvia>
+ <CAKxSbF3ZLjFo2TaWATCA8L-xQOEppUOhveybgtQrma=SjVoCeg@mail.gmail.com>
 MIME-Version: 1.0
-References: <6f21a0e0-bd36-b6be-1ffa-0dc86c06c470@virtuozzo.com>
- <cover.1627362057.git.vvs@virtuozzo.com> <5525bcbf-533e-da27-79b7-158686c64e13@virtuozzo.com>
-In-Reply-To: <5525bcbf-533e-da27-79b7-158686c64e13@virtuozzo.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 27 Jul 2021 14:51:43 -0700
-Message-ID: <CALvZod5tfepT51EgUVX_Xq=2UykpGehNE5K3+K12OCwymi=-vQ@mail.gmail.com>
-Subject: Re: [PATCH v7 05/10] memcg: enable accounting for new namesapces and
- struct nsproxy
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKxSbF3ZLjFo2TaWATCA8L-xQOEppUOhveybgtQrma=SjVoCeg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 10:33 PM Vasily Averin <vvs@virtuozzo.com> wrote:
->
-> Container admin can create new namespaces and force kernel to allocate
-> up to several pages of memory for the namespaces and its associated
-> structures.
-> Net and uts namespaces have enabled accounting for such allocations.
-> It makes sense to account for rest ones to restrict the host's memory
-> consumption from inside the memcg-limited container.
->
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> Acked-by: Serge Hallyn <serge@hallyn.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+On Tue, Jul 27, 2021 at 04:44:42PM -0500, Alex Forster wrote:
+> > I'm not refering to nftables, I'm refering to iptables-nft.
+> 
+> Possibly I'm misunderstanding. Here's a realistic-ish example of a
+> rule we might install:
+> 
+>     iptables -A INPUT -d 11.22.33.44/32 -m bpf --bytecode "43,0 0 0
+> 0,48 0 0 0,...sic..." -m statistic --mode random --probability 0.0001
+> -j NFLOG --nflog-prefix "drop 10000 c37904a83b344404
+> e4ec6050966d4d2f9952745de09d1308"
+> 
+> Is there a way to install such a rule with an nflog prefix that is >63 chars?
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Yes, you can update iptables-nft to use nft_log instead of xt_LOG,
+that requires no kernel upgrades and it will work with older kernels.
