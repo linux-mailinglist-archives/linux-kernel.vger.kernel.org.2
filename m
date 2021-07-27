@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325703D6C2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A663D6C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234691AbhG0CQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:16:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:16002 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234440AbhG0CQ4 (ORCPT
+        id S234592AbhG0CRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234438AbhG0CRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:16:56 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYhFb3Y0xzZst3;
-        Tue, 27 Jul 2021 10:53:55 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 10:57:22 +0800
-Received: from [10.174.179.215] (10.174.179.215) by
- dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 27 Jul 2021 10:57:21 +0800
-Subject: Re: [PATCH -next] scsi: ufs: fix build warning without CONFIG_PM
-To:     Bart Van Assche <bvanassche@acm.org>, <alim.akhtar@samsung.com>,
-        <avri.altman@wdc.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210611130601.34336-1-yuehaibing@huawei.com>
- <99c99d97-5849-cf40-709b-aebe53b80ce3@acm.org>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <cf956e7d-27b2-43c9-5c65-9d9e62919f40@huawei.com>
-Date:   Tue, 27 Jul 2021 10:57:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 26 Jul 2021 22:17:10 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23E0C061757
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 19:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ufowFuNuNaJGOwhEapir9LnGgTlR2Oi9Tx8Pe0vf55g=; b=BOSwQuuPUdyAZFAVenkYytT3Iq
+        lQOLCO36GFpL3jwsGKfcRH5hSYrA4E+r7VNJVLpNYuXLsvycqYDgu9IEHjcXWOuTmJUDj+zBYuj+Q
+        cfa1zAO5G1HURxS+WlHkDY/JQ3/CIRZB3uT1UT6z/jILe2Efi6twrKQl2B/dcyUTpfCpS8RIrqiYO
+        WfwLhmEHKGreRS+zxAcVTm5qU60gv/1pgnNO17lvGzAyeZtFGBkIrugmrmSXL9TOPd9CR7GIh+Ch5
+        MdLFQ5k55DQLFfZ8s2OnIuaphZOh8RKEY0ZRimSX3lr3kfV//WOZATlVNb6IE36/yGumzU1ZD8A9w
+        p2uB+MDQ==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8DHm-00CuPT-Cz; Tue, 27 Jul 2021 02:57:38 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] scripts: checkversion: modernize linux/version.h search strings
+Date:   Mon, 26 Jul 2021 19:57:37 -0700
+Message-Id: <20210727025737.30553-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <99c99d97-5849-cf40-709b-aebe53b80ce3@acm.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Update scripts/checkversion.pl to recognize the current contents
+of <linux/version.h> and both of its current locations.
 
+Also update my email address.
 
-On 2021/7/27 1:59, Bart Van Assche wrote:
-> On 6/11/21 6:06 AM, YueHaibing wrote:
->> drivers/scsi/ufs/ufshcd.c:9770:12: warning: ‘ufshcd_rpmb_resume’ defined but not used [-Wunused-function]
->>   static int ufshcd_rpmb_resume(struct device *dev)
->>              ^~~~~~~~~~~~~~~~~~
->> drivers/scsi/ufs/ufshcd.c:9037:12: warning: ‘ufshcd_wl_runtime_resume’ defined but not used [-Wunused-function]
->>   static int ufshcd_wl_runtime_resume(struct device *dev)
->>              ^~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/scsi/ufs/ufshcd.c:9017:12: warning: ‘ufshcd_wl_runtime_suspend’ defined but not used [-Wunused-function]
->>   static int ufshcd_wl_runtime_suspend(struct device *dev)
->>              ^~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Move it into #ifdef block to fix this.
->>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>   drivers/scsi/ufs/ufshcd.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index b87ff68aa9aa..0c54589e186a 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -8926,6 +8926,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->>       return ret;
->>   }
->>   +#ifdef CONFIG_PM_SLEEP
->>   static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->>   {
->>       int ret;
->> @@ -9053,7 +9054,6 @@ static int ufshcd_wl_runtime_resume(struct device *dev)
->>       return ret;
->>   }
->>   -#ifdef CONFIG_PM_SLEEP
->>   static int ufshcd_wl_suspend(struct device *dev)
->>   {
->>       struct scsi_device *sdev = to_scsi_device(dev);
->> @@ -9766,6 +9766,7 @@ static inline int ufshcd_clear_rpmb_uac(struct ufs_hba *hba)
->>       return ret;
->>   }
->>   +#ifdef CONFIG_PM_SLEEP
->>   static int ufshcd_rpmb_resume(struct device *dev)
->>   {
->>       struct ufs_hba *hba = wlun_dev_to_hba(dev);
->> @@ -9774,6 +9775,7 @@ static int ufshcd_rpmb_resume(struct device *dev)
->>           ufshcd_clear_rpmb_uac(hba);
->>       return 0;
->>   }
->> +#endif
->>     static const struct dev_pm_ops ufs_rpmb_pm_ops = {
->>       SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_resume, NULL)
-> 
-> Hi YueHaibing,
-> 
-> Can you take a look at https://lore.kernel.org/linux-scsi/20210722033439.26550-1-bvanassche@acm.org/T/#m6e7a02fc79634b5b77cfb77849253ac41d021389? I let the kernel robot verify that patch before I posted it on the linux-scsi mailing list.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ scripts/checkversion.pl |   18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-__ufshcd_wl_resume() is needed while CONFIG_PM is enabled, and my patch v2 has been Applied. See:
-
-https://lore.kernel.org/r/20210617031326.36908-1-yuehaibing@huawei.com
-
-I will let Hulk Robot test your patch serials, and report if any.
-
-> 
-> Thanks,
-> 
-> Bart.
-> .
+--- linux-next-20210723.orig/scripts/checkversion.pl
++++ linux-next-20210723/scripts/checkversion.pl
+@@ -1,10 +1,10 @@
+ #! /usr/bin/env perl
+ # SPDX-License-Identifier: GPL-2.0
+ #
+-# checkversion find uses of LINUX_VERSION_CODE or KERNEL_VERSION
+-# without including <linux/version.h>, or cases of
+-# including <linux/version.h> that don't need it.
+-# Copyright (C) 2003, Randy Dunlap <rdunlap@xenotime.net>
++# checkversion finds uses of all macros in <linux/version.h>
++# where the source files do not #include <linux/version.h>; or cases
++# of including <linux/version.h> where it is not needed.
++# Copyright (C) 2003, Randy Dunlap <rdunlap@infradead.org>
+ 
+ use strict;
+ 
+@@ -13,7 +13,8 @@ $| = 1;
+ my $debugging;
+ 
+ foreach my $file (@ARGV) {
+-    next if $file =~ "include/linux/version\.h";
++    next if $file =~ "include/generated/uapi/linux/version\.h";
++    next if $file =~ "usr/include/linux/version\.h";
+     # Open this file.
+     open( my $f, '<', $file )
+       or die "Can't open $file: $!\n";
+@@ -41,8 +42,11 @@ foreach my $file (@ARGV) {
+ 	    $iLinuxVersion      = $. if m/^\s*#\s*include\s*<linux\/version\.h>/o;
+ 	}
+ 
+-	# Look for uses: LINUX_VERSION_CODE, KERNEL_VERSION, UTS_RELEASE
+-	if (($_ =~ /LINUX_VERSION_CODE/) || ($_ =~ /\WKERNEL_VERSION/)) {
++	# Look for uses: LINUX_VERSION_CODE, KERNEL_VERSION,
++	# LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL, LINUX_VERSION_SUBLEVEL
++	if (($_ =~ /LINUX_VERSION_CODE/) || ($_ =~ /\WKERNEL_VERSION/) ||
++	    ($_ =~ /LINUX_VERSION_MAJOR/) || ($_ =~ /LINUX_VERSION_PATCHLEVEL/) ||
++	    ($_ =~ /LINUX_VERSION_SUBLEVEL/)) {
+ 	    $fUseVersion = 1;
+             last if $iLinuxVersion;
+         }
