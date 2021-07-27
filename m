@@ -2,128 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723C43D7C85
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B253D7C8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhG0Rqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:46:52 -0400
-Received: from mga06.intel.com ([134.134.136.31]:1323 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhG0Rqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:46:50 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="273575855"
-X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
-   d="scan'208";a="273575855"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 10:46:49 -0700
-X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
-   d="scan'208";a="475118404"
-Received: from jwalenza-mobl1.amr.corp.intel.com (HELO [10.209.110.245]) ([10.209.110.245])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 10:46:48 -0700
-Subject: Re: [RFC PATCH v1 0/2] Introduce XSAVE/XRSTOR self-test
-To:     Pengfei Xu <pengfei.xu@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     Heng Su <heng.su@intel.com>, Yu Yu-cheng <yu-cheng.yu@intel.com>,
-        Yu Fenghua <fenghua.yu@intel.com>,
-        Luck Tony <tony.luck@intel.com>,
-        Mehta Sohil <sohil.mehta@intel.com>,
-        Chen Yu C <yu.c.chen@intel.com>
-References: <cover.1627355565.git.pengfei.xu@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <af8e6de6-c428-d3f9-9abf-f8bd5cc95838@intel.com>
-Date:   Tue, 27 Jul 2021 10:46:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230030AbhG0Rsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhG0Rsj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 13:48:39 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CE4C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:48:38 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so14362061oti.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hirHjnieMlx0uLSMjf9Bez4E7tmDYC0RWntJ9sY1Y4U=;
+        b=DkiBe+CvNLt7y+5WnZWaoVX+BUITXOV+CQ36UKsztAvM1GKqvJpGLOjvLWMKoiz/nn
+         /p3QJBPV8mSmSgduJCPadwChAIDxrA70vHEtqoOf0z/eC3eXnQy8EEI38C1VZgGw8r1c
+         96AXn0NpYpp5eO13Z2CMyVIvxf2JbrSM/Zh8w50bqAygCKIxVvA0gNys9QzGI8AeJoOb
+         BJFEgGMxqpZRXlb377ZzyEevaWo0BzooJYilT2qQnsz/QFyWLrRGWlvA5Oymph0PkahV
+         8macs/6FMoWQfHGU+Xo6kdgQPF5sRqkP8oJ6a4+lkJF8efkSgN2MhKV9r2GVXzSiEhwj
+         peRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hirHjnieMlx0uLSMjf9Bez4E7tmDYC0RWntJ9sY1Y4U=;
+        b=tDzKfyx/4mzUvK3g2Ace4iM9sto5nj+xsdnQWXZO5qU98pyAunjv3t06FgKbyxotVJ
+         liA2C8Tn9+Cw284iGisgk7wiqB9ltbQZEytQBmXjoAqSnLBTJFE3WCz7b8f0WE0/d08f
+         Y5u8C+rLpaOWxYAT2cbaBbXWoyFfkTRsxQ2GOfSUaY/jQCslGM/3efBCv/p6kqS47bPX
+         oPSCnP2r1Tb336y9iw29tBTP90ksv+3ZecrxqlPbsDb/c/RANcrc65+fvKx4SyNIdp8l
+         bziArUvaW1faGBgroAXxRW0EjTSVZLB2/H00ID9rvqGadns9RBNMDib0KCkSQLlyvsER
+         fWJA==
+X-Gm-Message-State: AOAM532qGPQPAZESYas1snp1O43YEJuRzJZKY0k1FXDdNE/V8iRBQ86m
+        XP3vFzTYJvzuNGJOlQNXllv5wGhujiafR24HIUOcJg==
+X-Google-Smtp-Source: ABdhPJwVBE2V0DHG9jgGk0UMUwFyNZpcHTcrWnDWATpaskugd/LxnivlTpZvR+JQcDXwBp0NecAwJJnLuIt9/OKYH8k=
+X-Received: by 2002:a05:6830:242f:: with SMTP id k15mr16795416ots.72.1627408117842;
+ Tue, 27 Jul 2021 10:48:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1627355565.git.pengfei.xu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210713142023.106183-1-mlevitsk@redhat.com> <20210713142023.106183-9-mlevitsk@redhat.com>
+ <c51d3f0b46bb3f73d82d66fae92425be76b84a68.camel@redhat.com>
+ <YPXJQxLaJuoF6aXl@google.com> <64ed28249c1895a59c9f2e2aa2e4c09a381f69e5.camel@redhat.com>
+ <YPnBxHwMJkTSBHfC@google.com> <714b56eb83e94aca19e35a8c258e6f28edc0a60d.camel@redhat.com>
+In-Reply-To: <714b56eb83e94aca19e35a8c258e6f28edc0a60d.camel@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 27 Jul 2021 10:48:26 -0700
+Message-ID: <CANgfPd_o5==utejx6iG9xfWrbKtsvGWNbB4yrmuA-NVj_r_a9A@mail.gmail.com>
+Subject: Re: [PATCH v2 8/8] KVM: x86: hyper-v: Deactivate APICv only when
+ AutoEOI feature is in use
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>, kvm <kvm@vger.kernel.org>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 8:34 PM, Pengfei Xu wrote:
-> The XSAVE feature set supports the saving and restoring of state components
-> such as FPU, which is used for process context switching.
+On Tue, Jul 27, 2021 at 6:06 AM Maxim Levitsky <mlevitsk@redhat.com> wrote:
+>
+> On Thu, 2021-07-22 at 19:06 +0000, Sean Christopherson wrote:
+> > +Ben
+> >
+> > On Thu, Jul 22, 2021, Maxim Levitsky wrote:
+> > > On Mon, 2021-07-19 at 18:49 +0000, Sean Christopherson wrote:
+> > > > On Sun, Jul 18, 2021, Maxim Levitsky wrote:
+> > > > > I am more inclined to fix this by just tracking if we hold the srcu
+> > > > > lock on each VCPU manually, just as we track the srcu index anyway,
+> > > > > and then kvm_request_apicv_update can use this to drop the srcu
+> > > > > lock when needed.
+> > > >
+> > > > The entire approach of dynamically adding/removing the memslot seems doomed to
+> > > > failure, and is likely responsible for the performance issues with AVIC, e.g. a
+> > > > single vCPU temporarily inhibiting AVIC will zap all SPTEs _twice_; on disable
+> > > > and again on re-enable.
+> > > >
+> > > > Rather than pile on more gunk, what about special casing the APIC access page
+> > > > memslot in try_async_pf()?  E.g. zap the GFN in avic_update_access_page() when
+> > > > disabling (and bounce through kvm_{inc,dec}_notifier_count()), and have the page
+> > > > fault path skip directly to MMIO emulation without caching the MMIO info.  It'd
+> > > > also give us a good excuse to rename try_async_pf() :-)
+> > > >
+> > > > If lack of MMIO caching is a performance problem, an alternative solution would
+> > > > be to allow caching but add a helper to zap the MMIO SPTE and request all vCPUs to
+> > > > clear their cache.
+> > > >
+> > > > It's all a bit gross, especially hijacking the mmu_notifier path, but IMO it'd be
+> > > > less awful than the current memslot+SRCU mess.
+> > >
+> > > Hi!
+> > >
+> > > I am testing your approach and it actually works very well! I can't seem to break it.
+> > >
+> > > Could you explain why do I need to do something with kvm_{inc,dec}_notifier_count()) ?
+> >
+> > Glad you asked, there's one more change needed.  kvm_zap_gfn_range() currently
+> > takes mmu_lock for read, but it needs to take mmu_lock for write for this case
+> > (more way below).
+> >
+> > The existing users, update_mtrr() and kvm_post_set_cr0(), are a bit sketchy.  The
+> > whole thing is a grey area because KVM is trying to ensure it honors the guest's
+> > UC memtype for non-coherent DMA, but the inputs (CR0 and MTRRs) are per-vCPU,
+> > i.e. for it to work correctly, the guest has to ensure all running vCPUs do the
+> > same transition.  So in practice there's likely no observable bug, but it also
+> > means that taking mmu_lock for read is likely pointless, because for things to
+> > work the guest has to serialize all running vCPUs.
+> >
+> > Ben, any objection to taking mmu_lock for write in kvm_zap_gfn_range()?  It would
+> > effectively revert commit 6103bc074048 ("KVM: x86/mmu: Allow zap gfn range to
+> > operate under the mmu read lock"); see attached patch.  And we could even bump
+> > the notifier count in that helper, e.g. on top of the attached:
+> >
+> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > index b607e8763aa2..7174058e982b 100644
+> > --- a/arch/x86/kvm/mmu/mmu.c
+> > +++ b/arch/x86/kvm/mmu/mmu.c
+> > @@ -5568,6 +5568,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+> >
+> >         write_lock(&kvm->mmu_lock);
+> >
+> > +       kvm_inc_notifier_count(kvm, gfn_start, gfn_end);
+> > +
+> >         if (kvm_memslots_have_rmaps(kvm)) {
+> >                 for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+> >                         slots = __kvm_memslots(kvm, i);
+> > @@ -5598,6 +5600,8 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+> >         if (flush)
+> >                 kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
+> >
+> > +       kvm_dec_notifier_count(kvm, gfn_start, gfn_end);
+> > +
+> >         write_unlock(&kvm->mmu_lock);
+> >  }
+> >
+>
+> I understand what you mean now. I thought that I need to change to code of the
+> kvm_inc_notifier_count/kvm_dec_notifier_count.
+>
+>
+>
+>
+> >
+> >
+> >
+> > Back to Maxim's original question...
+> >
+> > Elevating mmu_notifier_count and bumping mmu_notifier_seq will will handle the case
+> > where APICv is being disabled while a different vCPU is concurrently faulting in a
+> > new mapping for the APIC page.  E.g. it handles this race:
+> >
+> >  vCPU0                                 vCPU1
+> >                                        apic_access_memslot_enabled = true;
+> >                                      #NPF on APIC
+> >                                      apic_access_memslot_enabled==true, proceed with #NPF
+> >  apic_access_memslot_enabled = false
+> >  kvm_zap_gfn_range(APIC);
+> >                                        __direct_map(APIC)
+> >
+> >  mov [APIC], 0 <-- succeeds, but KVM wants to intercept to emulate
+>
+> I understand this now. I guess this can't happen with original memslot disable
+> which I guess has the needed locking and flushing to avoid this.
+> (I didnt' study the code in depth thought)
+>
+> >
+> >
+> >
+> > The elevated mmu_notifier_count and/or changed mmu_notifier_seq will cause vCPU1
+> > to bail and resume the guest without fixing the #NPF.  After acquiring mmu_lock,
+> > vCPU1 will see the elevated mmu_notifier_count (if kvm_zap_gfn_range() is about
+> > to be called, or just finised) and/or a modified mmu_notifier_seq (after the
+> > count was decremented).
+> >
+> > This is why kvm_zap_gfn_range() needs to take mmu_lock for write.  If it's allowed
+> > to run in parallel with the page fault handler, there's no guarantee that the
+> > correct apic_access_memslot_enabled will be observed.
+>
+> I understand now.
+>
+> So, Paolo, Ben Gardon, what do you think. Do you think this approach is feasable?
+> Do you agree to revert the usage of the read lock?
+>
+> I will post a new series using this approach very soon, since I already have
+> msot of the code done.
+>
+> Best regards,
+>         Maxim Levitsky
 
-This sentence is really awkward.  It reads at first as saying that the
-FPU is used for context switching.  Can you rephrase.
+From reading through this thread, it seems like switching from read
+lock to write lock is only necessary for a small range of GFNs, (i.e.
+the APIC access page) is that correct?
+My initial reaction was that switching kvm_zap_gfn_range back to the
+write lock would be terrible for performance, but given its only two
+callers, I think it would actually be fine.
+If you do that though, you should pass shared=false to
+kvm_tdp_mmu_zap_gfn_range in that function, so that it knows it's
+operating with exclusive access to the MMU lock.
 
-> In order to ensure that XSAVE works correctly, add XSAVE basic test for
-> XSAVE architecture functionality.
-
-This sentence needs to be start on the same line as the previous one,
-*or* be in a new paragraph.  Please rewrap it.
-
-> This patch set tests XSAVE/XRSTOR instructions on x86 platforms and verify if
-> the XSAVE/XRSTOR works correctly during signal handling.
-
-This reads to me like you are going to test the XSAVE/XRSTOR
-instructions *in* a signal handler, instead of testing the XSAVE/XRSTOR
-instructions that the kernel uses at signal entry/exit.
-
-Also, the kernel does *NOT* *USE* XSAVE/XRSTOR in many cases to
-save/restore signal state.  The changelog could be read as implying that
-it does.
-
-> Cases such as signal handling, process creation, other xstate(except FPU)
-> tests for XSAVE check, etc. will be added to the Linux kernel self-test.
-> If appropriate, it is even planned to add the [1] mentioned XSAVE issues
-> reproduce and some XSAVE anomaly tests to the kernel self-test.
-
-This is not clear whether it is talking about *this* series int he
-future tense (will be added) or whether it is talking about future *work*.
-
-Maybe something like this:
-
-	This series introduces only the most basic XSAVE tests.  In the
-	future, the intention is to continue expanding the scope of
-	these selftests to include more kernel XSAVE-related
-	functionality and XSAVE-managed features like AMX and shadow
-	stacks.
+>
+> >
+> >       if (is_tdp_mmu_fault)
+> >               read_lock(&vcpu->kvm->mmu_lock);
+> >       else
+> >               write_lock(&vcpu->kvm->mmu_lock);
+> >
+> >       if (!is_noslot_pfn(pfn) && mmu_notifier_retry_hva(vcpu->kvm, mmu_seq, hva)) <--- look here!
+> >               goto out_unlock;
+> >
+> >       if (is_tdp_mmu_fault)
+> >               r = kvm_tdp_mmu_map(vcpu, gpa, error_code, map_writable, max_level,
+> >                                   pfn, prefault);
+> >       else
+> >               r = __direct_map(vcpu, gpa, error_code, map_writable, max_level, pfn,
+> >                                prefault, is_tdp);
+>
+>
