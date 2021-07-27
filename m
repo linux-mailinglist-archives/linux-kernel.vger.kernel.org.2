@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD123D7947
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9D43D794C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhG0PEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:04:41 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:43692 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231552AbhG0PEk (ORCPT
+        id S236931AbhG0PFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231552AbhG0PFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:04:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UhAAkxc_1627398276;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UhAAkxc_1627398276)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 27 Jul 2021 23:04:38 +0800
-Date:   Tue, 27 Jul 2021 23:04:36 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>
-Cc:     dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Huang Jianan <huangjianan@oppo.com>,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-Subject: Re: [PATCH v7] iomap: make inline data support more flexible
-Message-ID: <YQAghPSTWdTGYAm5@B-P7TQMD6M-0146.local>
-Mail-Followup-To: Matthew Wilcox <willy@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>, dsterba@suse.cz,
-        Christoph Hellwig <hch@lst.de>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Huang Jianan <huangjianan@oppo.com>, linux-erofs@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
-References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
- <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
- <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
- <20210725221639.426565-1-agruenba@redhat.com>
- <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
- <20210726110611.459173-1-agruenba@redhat.com>
- <20210726121702.GA528@lst.de>
- <20210727082042.GI5047@twin.jikos.cz>
- <YQALsvt0UWGW+iMw@casper.infradead.org>
+        Tue, 27 Jul 2021 11:05:38 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63885C061757;
+        Tue, 27 Jul 2021 08:05:37 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id m1so18203641pjv.2;
+        Tue, 27 Jul 2021 08:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rkWTp0+7c81MOA3cEyNsoB0z/jGDOju/zoUBM++4ewo=;
+        b=B1WylBIqQyGM0yCazlGYVj3ZY2My7XNU4aLSP9KvLLaTphFpj6aZtg2y1ADZi8gov1
+         CTcyD7F5Dgg03AnsuT39QRYIbMVgwjQQg3ChX+u0Reid5z/ki4mfCplce6SqWDCJYBhy
+         kvwPJb99idzmIRksk2LHtKSwcrRVfc+iUsRa24KGyu2cF2Y6rauByM1LWGExtIT8a0Nt
+         9qf4KN/c+MiAtfhXqFQM6K8qnq1ZzISX0GtZ/3InS6SALyoNztysDN7QMUWJSNPZaAIw
+         PrE8hPY3lrcTnzI/GHmvx4l7M45MtsfTe6L2QoJwUwiihyCo1/SNZcfLSuf0IbDfxTqB
+         8u0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rkWTp0+7c81MOA3cEyNsoB0z/jGDOju/zoUBM++4ewo=;
+        b=Mhafo0XYDbk6E97HInzvcWUJkfC87NKDQ9mdllbuLO1E5Xa4Qn5Knpj4AE17GNJph7
+         Fx+HnCgVvF3e1kg/2DeQMWiDCGG6BmAYL1pQbAHWvOJDORkm0iPwyobAeq/wFYEAM7mT
+         slHCgBrYUizw0j9AjSKtAydmSd9XtZCNypDDFoVm/1xAvQ3fVjpjtT1XZjN4Yd/y/K1j
+         il6kpJPPJDvezVzO514jL9orseIcXnpzo2Dw/hy0KZd449rdBHklFcNK8VEFJlm2tDUi
+         uaEdDv5AsUl9fI7iUU0nq0Zm3uFDWU2wvEJ378FXFK+QvXD99GdIc7JfePSeqytSuK+T
+         g9KA==
+X-Gm-Message-State: AOAM531NQ7ipHdDwE8SvvxRp98oo+Rd4efew8iZCKInMFVfFasXpw1Bn
+        SdAbYmQ2D7p9sd8j2Qoy/HFBd826nhBiUy/rmNw=
+X-Google-Smtp-Source: ABdhPJzV8WVK79CHXE8mMIGYsmCqL8fOvP+g311Y7pLwfAcecyNnzEGpOzZ+D2IikHH5xAwRYrMsPRz5HsSGf5UnPkk=
+X-Received: by 2002:a17:90b:3647:: with SMTP id nh7mr22839838pjb.228.1627398336914;
+ Tue, 27 Jul 2021 08:05:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YQALsvt0UWGW+iMw@casper.infradead.org>
+References: <20210727144816.8697-1-sergio.paracuellos@gmail.com> <20210727144816.8697-2-sergio.paracuellos@gmail.com>
+In-Reply-To: <20210727144816.8697-2-sergio.paracuellos@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Jul 2021 18:04:57 +0300
+Message-ID: <CAHp75VdxrBbnkBDfhb3q7KM3CkAzyAq86gqjLFD5aaKNzVJCHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] gpiolib: convert 'devprop_gpiochip_set_names' to
+ support multiple gpiochip banks per device
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        gregory.0xf0@gmail.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        NeilBrown <neil@brown.name>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 02:35:46PM +0100, Matthew Wilcox wrote:
-> On Tue, Jul 27, 2021 at 10:20:42AM +0200, David Sterba wrote:
-> > On Mon, Jul 26, 2021 at 02:17:02PM +0200, Christoph Hellwig wrote:
-> > > > Subject: iomap: Support tail packing
-> > > 
-> > > I can't say I like this "tail packing" language here when we have the
-> > > perfectly fine inline wording.  Same for various comments in the actual
-> > > code.
-> > 
-> > Yes please, don't call it tail-packing when it's an inline extent, we'll
-> > use that for btrfs eventually and conflating the two terms has been
-> > cofusing users. Except reiserfs, no linux filesystem does tail-packing.
-> 
-> Hmm ... I see what reiserfs does as packing tails of multiple files into
-> one block.  What gfs2 (and ext4) do is inline data.  Erofs packs the
-> tail of a single file into the same block as the inode.  If I understand
+On Tue, Jul 27, 2021 at 5:48 PM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> The default gpiolib-of implementation does not work with the multiple
+> gpiochip banks per device structure used for example by the gpio-mt7621
+> and gpio-brcmstb drivers. To fix these kind of situations driver code
+> is forced to fill the names to avoid the gpiolib code to set names
+> repeated along the banks. Instead of continue with that antipattern
+> fix the gpiolib core function to get expected behaviour for every
+> single situation adding a field 'offset' in the gpiochip structure.
+> Doing in this way, we can assume this offset will be zero for normal
+> driver code where only one gpiochip bank per device is used but
+> can be set explicitly in those drivers that really need more than
+> one gpiochip.
 
-Plus each erofs block can have multiple inodes (thus multi-tail blocks) 
-oo as long as the meta block itself can fit.
+...
 
-No matter what it's called, it's a kind of inline data (I think inline
-means that data mixes with metadata according to [1]). I was called it
-tail-block inline initially... whatever.
+> +               dev_warn(&gdev->dev, "gpio-line-names too short (length %d) "
+> +                        "cannot map names for the gpiochip at offset %u\n",
 
-Hopefully, Darrick could update the v8 title if some concern here.
+Reflow this that string literal will be on one line (it's fine to be
+over even 100).
 
-[1] https://www.kernel.org/doc/Documentation/filesystems/fiemap.txt
+> +                        count, chip->offset);
 
-Thanks,
-Gao Xiang
-
-> what btrfs does correctly, it stores data in the btree.  But (like
-> gfs2/ext4), it's only for the entire-file-is-small case, not for
-> its-just-ten-bytes-into-the-last-block case.
-> 
-> So what would you call what erofs is doing if not tail-packing?
-> Wikipedia calls it https://en.wikipedia.org/wiki/Block_suballocation
-> which doesn't quite fit.  We need a phrase which means "this isn't
-> just for small files but for small tails of large files".
+--
+With Best Regards,
+Andy Shevchenko
