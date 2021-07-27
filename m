@@ -2,198 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C003D83A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369F33D83A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232824AbhG0XE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 19:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233074AbhG0XEx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 19:04:53 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FC5EC061757;
-        Tue, 27 Jul 2021 16:04:52 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id m1so2293882pjv.2;
-        Tue, 27 Jul 2021 16:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=+zPcJpoAXidsAZrfmunhWmzWmAmlPVvmu9gYFGmOupg=;
-        b=coS26sfi4q47AesZECMQbJnXpLJ7/LBavvccUdZakqOPGCA1I6W1t7XMnnOtrm0Et9
-         odHOTcXdUEyDQlPinWYi7S/H+tr1CI1xhbvqBmgWuGwjOD4DY+UcFZFqcfIEtc/jy8Pr
-         32sYeLMHHs8xNDiGlI0k05xmJss0esdtcOj1Jc505JLSG9sRoM8FjuueGMBC9EI6Oi+a
-         uM+WsGI30f65296dIL2R9f+K8Pz4E58lT2azagUvpqK8SWYitxu9grLqRJUk6FQMEOck
-         kMLNy43EAHxMBsNnfou5gXygu4N7XcdF3Nw6t82Y196CL8FS3rnftPgUS5LFYky/H6z9
-         3xTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=+zPcJpoAXidsAZrfmunhWmzWmAmlPVvmu9gYFGmOupg=;
-        b=juOT3qhteyDCynhEsSeYadTYsoaHv711b0qzR09zPQvHafnRBlSu4sAfwbMWZpneUQ
-         dQM3xJtIz95fB7AzXHKfee0OxzKiwB3g71SgtogYSI6MclEautujIUuvLyUSNaTnnHk3
-         2KzP6RAnjRjEkNLSqR1yOEgNa9FqGaEm2WWDtcZlEec3lFv00nMIaMtWzqGWZFa4nY3B
-         znKtoeu9rphwTdETUpE5113e6T8rN+RWqYPQeRmxYs9wqNNUur/fvnckd851lXzuSIf/
-         coFsTiAb52EMkjRonicEC3gjUqViEG7KZ9l2HpNEuU2+z6HTmWlzgJO1ieF+OFjPk40y
-         UkNw==
-X-Gm-Message-State: AOAM530lFEQxKe12V2f3NQ5TCq387pQ+NPx4kAor8XyfYk8HHw6bCb7n
-        QLvhAIc3SYOZHwIRRvFZxVlnNYrI64k=
-X-Google-Smtp-Source: ABdhPJwwbDG/wG2ihmsvvWP3UH8uFmJ3J9EaInjSv0ju6+uYUVfdAXr4+1yOEbOYpaMe7P58ViIyrw==
-X-Received: by 2002:aa7:848e:0:b029:333:4742:edb3 with SMTP id u14-20020aa7848e0000b02903334742edb3mr25152947pfn.12.1627427091522;
-        Tue, 27 Jul 2021 16:04:51 -0700 (PDT)
-Received: from localhost (udp264798uds.hawaiiantel.net. [72.253.242.87])
-        by smtp.gmail.com with ESMTPSA id e12sm3931655pjh.33.2021.07.27.16.04.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 16:04:50 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 27 Jul 2021 13:04:49 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     cgroups@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Rik van Riel <riel@surriel.com>
-Subject: [PATCH cgroup/for-5.14-fixes] cgroup: rstat: fix A-A deadlock on
- 32bit around u64_stats_sync
-Message-ID: <YQCREXMBq1EPoQWu@slm.duckdns.org>
+        id S232903AbhG0XIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 19:08:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232198AbhG0XIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 19:08:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF79F60EB2;
+        Tue, 27 Jul 2021 23:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627427297;
+        bh=fGzQ1yxz3VodJVrSOBzAcSVWcjc+avK52D1CDLlbVEA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XGjLo5NK3LAP03NixFWTa/BVZ0L+YJ8vcQXLdfXsz/VIGe2B0qk684NU5Q0AQJmSW
+         JBUY/FQtGmx/2CsyIf21zVm0fhs8xBAw18Duo0myWqc+xGnINpjwsOLuhkVH6XdpsC
+         k8lz89BOs5lR+0fmScyn4rAWRcTwQFWHgqknjVwfOOyjwVCZYcxUPuSjuBNDvADPbs
+         uC5fh5f2eSmLo+VYMMn6Z6/N/CMgPIZxO27xBNBkIxUECfDdLV3Jj+K/zf+Vdt8B9m
+         8r7LA5Ek1jascxDILuJhUFvxttj2E+fdT+0NZbcX4cN7J84d/IGnGR9/qLZsDeVTbj
+         0a0HV9Vzw/dAA==
+Date:   Wed, 28 Jul 2021 01:08:14 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rt-users@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH 2/3] rcu/nocb: Check for migratability rather than pure
+ preemptability
+Message-ID: <20210727230814.GC283787@lothringen>
+References: <20210721115118.729943-1-valentin.schneider@arm.com>
+ <20210721115118.729943-3-valentin.schneider@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210721115118.729943-3-valentin.schneider@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-0fa294fb1985 ("cgroup: Replace cgroup_rstat_mutex with a spinlock") added
-cgroup_rstat_flush_irqsafe() allowing flushing to happen from the irq
-context. However, rstat paths use u64_stats_sync to synchronize access to
-64bit stat counters on 32bit machines. u64_stats_sync is implemented using
-seq_lock and trying to read from an irq context can lead to A-A deadlock if
-the irq happens to interrupt the stat update.
+On Wed, Jul 21, 2021 at 12:51:17PM +0100, Valentin Schneider wrote:
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/rcu/tree_plugin.h | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index ad0156b86937..6c3c4100da83 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -70,8 +70,7 @@ static bool rcu_rdp_is_offloaded(struct rcu_data *rdp)
+>  		!(lockdep_is_held(&rcu_state.barrier_mutex) ||
+>  		  (IS_ENABLED(CONFIG_HOTPLUG_CPU) && lockdep_is_cpus_held()) ||
+>  		  rcu_lockdep_is_held_nocb(rdp) ||
+> -		  (rdp == this_cpu_ptr(&rcu_data) &&
+> -		   !(IS_ENABLED(CONFIG_PREEMPT_COUNT) && preemptible())) ||
+> +		  (rdp == this_cpu_ptr(&rcu_data) && is_pcpu_safe()) ||
 
-Fix it by using the irqsafe variants - u64_stats_update_begin_irqsave() and
-u64_stats_update_end_irqrestore() - in the update paths. Note that none of
-this matters on 64bit machines. All these are just for 32bit SMP setups.
+I fear that won't work. We really need any caller of rcu_rdp_is_offloaded()
+on the local rdp to have preemption disabled and not just migration disabled,
+because we must protect against concurrent offloaded state changes.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Rik van Riel <riel@surriel.com>
----
- block/blk-cgroup.c    |   14 ++++++++------
- kernel/cgroup/rstat.c |   19 +++++++++++--------
- 2 files changed, 19 insertions(+), 14 deletions(-)
+The offloaded state is changed by a workqueue that executes on the target rdp.
 
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -790,6 +790,7 @@ static void blkcg_rstat_flush(struct cgr
- 		struct blkcg_gq *parent = blkg->parent;
- 		struct blkg_iostat_set *bisc = per_cpu_ptr(blkg->iostat_cpu, cpu);
- 		struct blkg_iostat cur, delta;
-+		unsigned long flags;
- 		unsigned int seq;
- 
- 		/* fetch the current per-cpu values */
-@@ -799,21 +800,21 @@ static void blkcg_rstat_flush(struct cgr
- 		} while (u64_stats_fetch_retry(&bisc->sync, seq));
- 
- 		/* propagate percpu delta to global */
--		u64_stats_update_begin(&blkg->iostat.sync);
-+		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
- 		blkg_iostat_set(&delta, &cur);
- 		blkg_iostat_sub(&delta, &bisc->last);
- 		blkg_iostat_add(&blkg->iostat.cur, &delta);
- 		blkg_iostat_add(&bisc->last, &delta);
--		u64_stats_update_end(&blkg->iostat.sync);
-+		u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
- 
- 		/* propagate global delta to parent (unless that's root) */
- 		if (parent && parent->parent) {
--			u64_stats_update_begin(&parent->iostat.sync);
-+			flags = u64_stats_update_begin_irqsave(&parent->iostat.sync);
- 			blkg_iostat_set(&delta, &blkg->iostat.cur);
- 			blkg_iostat_sub(&delta, &blkg->iostat.last);
- 			blkg_iostat_add(&parent->iostat.cur, &delta);
- 			blkg_iostat_add(&blkg->iostat.last, &delta);
--			u64_stats_update_end(&parent->iostat.sync);
-+			u64_stats_update_end_irqrestore(&parent->iostat.sync, flags);
- 		}
- 	}
- 
-@@ -848,6 +849,7 @@ static void blkcg_fill_root_iostats(void
- 		memset(&tmp, 0, sizeof(tmp));
- 		for_each_possible_cpu(cpu) {
- 			struct disk_stats *cpu_dkstats;
-+			unsigned long flags;
- 
- 			cpu_dkstats = per_cpu_ptr(bdev->bd_stats, cpu);
- 			tmp.ios[BLKG_IOSTAT_READ] +=
-@@ -864,9 +866,9 @@ static void blkcg_fill_root_iostats(void
- 			tmp.bytes[BLKG_IOSTAT_DISCARD] +=
- 				cpu_dkstats->sectors[STAT_DISCARD] << 9;
- 
--			u64_stats_update_begin(&blkg->iostat.sync);
-+			flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
- 			blkg_iostat_set(&blkg->iostat.cur, &tmp);
--			u64_stats_update_end(&blkg->iostat.sync);
-+			u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
- 		}
- 	}
- }
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -347,19 +347,20 @@ static void cgroup_base_stat_flush(struc
- }
- 
- static struct cgroup_rstat_cpu *
--cgroup_base_stat_cputime_account_begin(struct cgroup *cgrp)
-+cgroup_base_stat_cputime_account_begin(struct cgroup *cgrp, unsigned long *flags)
- {
- 	struct cgroup_rstat_cpu *rstatc;
- 
- 	rstatc = get_cpu_ptr(cgrp->rstat_cpu);
--	u64_stats_update_begin(&rstatc->bsync);
-+	*flags = u64_stats_update_begin_irqsave(&rstatc->bsync);
- 	return rstatc;
- }
- 
- static void cgroup_base_stat_cputime_account_end(struct cgroup *cgrp,
--						 struct cgroup_rstat_cpu *rstatc)
-+						 struct cgroup_rstat_cpu *rstatc,
-+						 unsigned long flags)
- {
--	u64_stats_update_end(&rstatc->bsync);
-+	u64_stats_update_end_irqrestore(&rstatc->bsync, flags);
- 	cgroup_rstat_updated(cgrp, smp_processor_id());
- 	put_cpu_ptr(rstatc);
- }
-@@ -367,18 +368,20 @@ static void cgroup_base_stat_cputime_acc
- void __cgroup_account_cputime(struct cgroup *cgrp, u64 delta_exec)
- {
- 	struct cgroup_rstat_cpu *rstatc;
-+	unsigned long flags;
- 
--	rstatc = cgroup_base_stat_cputime_account_begin(cgrp);
-+	rstatc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
- 	rstatc->bstat.cputime.sum_exec_runtime += delta_exec;
--	cgroup_base_stat_cputime_account_end(cgrp, rstatc);
-+	cgroup_base_stat_cputime_account_end(cgrp, rstatc, flags);
- }
- 
- void __cgroup_account_cputime_field(struct cgroup *cgrp,
- 				    enum cpu_usage_stat index, u64 delta_exec)
- {
- 	struct cgroup_rstat_cpu *rstatc;
-+	unsigned long flags;
- 
--	rstatc = cgroup_base_stat_cputime_account_begin(cgrp);
-+	rstatc = cgroup_base_stat_cputime_account_begin(cgrp, &flags);
- 
- 	switch (index) {
- 	case CPUTIME_USER:
-@@ -394,7 +397,7 @@ void __cgroup_account_cputime_field(stru
- 		break;
- 	}
- 
--	cgroup_base_stat_cputime_account_end(cgrp, rstatc);
-+	cgroup_base_stat_cputime_account_end(cgrp, rstatc, flags);
- }
- 
- /*
+Here is a practical example where it matters:
+
+           CPU 0
+           -----
+           // =======> task rcuc running
+           rcu_core {
+	       rcu_nocb_lock_irqsave(rdp, flags) {
+                   if (!rcu_segcblist_is_offloaded(rdp->cblist)) {
+		       // is not offloaded right now, so it's going
+                       // to just disable IRQs. Oh no wait:
+           // preemption
+           // ========> workqueue running
+           rcu_nocb_rdp_offload();
+           // ========> task rcuc resume
+	               local_irq_disable();
+                   }
+               }
+	       ....
+       	       rcu_nocb_unlock_irqrestore(rdp, flags) {
+                   if (rcu_segcblist_is_offloaded(rdp->cblist)) {
+                       // is offloaded right now so:
+                       raw_spin_unlock_irqrestore(rdp, flags);
+
+And that will explode because that's an impaired unlock on nocb_lock.
