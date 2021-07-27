@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60483D71D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC143D71BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbhG0JU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
+        id S236059AbhG0JMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbhG0JU6 (ORCPT
+        with ESMTP id S235979AbhG0JMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:20:58 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF10DC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:20:58 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id b128so7088652wmb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:20:58 -0700 (PDT)
+        Tue, 27 Jul 2021 05:12:09 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97ECFC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:12:06 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id t21so14915726plr.13
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:12:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Yvx7FUb+PO9K9tu4D9agXVqaQ0PZBo5xaT5yPpMKIms=;
-        b=SIunivkJ3uBUWFL+MmqRwoRt2Ec13tI5ReuRrYPHU6v1ozJHB0RqmiXR2kJtHg7UkK
-         kQHeIhOqy40affcu0iFYZjipx4Rj7mvXor6+msSm/jLTCD0shhRncWpbA8dQZkMdDKxG
-         CY2f7wiJ4ZZW/66YmNtctsKo4S5yBfyNtbbac=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9rluK+pOhIb8FILDrgZN4MclSo9wi1R9TyuuYegFS3c=;
+        b=O8RNZOylgIfFd5MJB6bCTVdF9M+YC3fNptlBHMCtVio314rf3eWtCfGWIGhQV5q4tw
+         wPuKCyTFlHtgAoX9G/xJlIjgDaq8SyuKQ/OfClRzWJZe6FYm0drviLCKPGBOx7WD5jHM
+         IcblQ3zfH9PfEUKyzdnpf3wSqpKS7M8dKN+zWYhOujSLbKwjB4zjuShC3cEOF+l24NUf
+         bUm4S8vnqIZ4FNtZOs569hu77icxuZRMfa8kL6SGsPa6joINB9gDvv0tIkJLKpDwfX1t
+         kQrJ8XwDr627CliLCTFbVa+4wozAmCt9kyCApFh+aV/3XgedL7tlQjJ3KlqQbuzbxFOP
+         f62g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Yvx7FUb+PO9K9tu4D9agXVqaQ0PZBo5xaT5yPpMKIms=;
-        b=ih0wWU2iLWHUmmvo7NAKfae4wPXmDeX7GKrWOM4ywBB4H5ZD3zdptiUB0zE1fgnxTh
-         BNyGinjrdjzUyIacigz7mt66Xs4vzTNFFsPYwS3asm4r1xJwrsQyfprk+G7KprQ93PyS
-         II5TJXnfSOth5PhJsS+3r8FtnHftZoz6plIKIiqPU6pnuwEWD+Sj56CBzDgGo8OgUWkj
-         zZlsmr6p1sE3kVYvTnvevFX4bhTHZBPNWXg1/WrqM9vdpYQklmJvWbWyqQL9JCUeLSJS
-         53L49rXN1H8G/BYResVloz14VQpJ+WWqrW+LYDAhFGy2MJWm0E0UIaJ8sxkMwy2KI/nV
-         +5UQ==
-X-Gm-Message-State: AOAM532zQ2uVmgIhehgE5TNSm0SVtrC11u7XVpFxX+dLbMv5JTG4QZvx
-        FD3+Yw9X/V0Cm/vv35z5N4b4Yw==
-X-Google-Smtp-Source: ABdhPJysqoczxFjCBoJFO3VIH1BODqUjcyDz8tshadU8bwCX8Ub+Bjigbsxk+srbu2FSB8xv5JCr8A==
-X-Received: by 2002:a05:600c:1c0d:: with SMTP id j13mr21332335wms.34.1627377657192;
-        Tue, 27 Jul 2021 02:20:57 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q19sm2002588wmq.38.2021.07.27.02.20.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 02:20:56 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 11:20:54 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 04/10] drm/bridge: Document the probe issue with MIPI-DSI
- bridges
-Message-ID: <YP/P9rJrZyk6zjsT@phenom.ffwll.local>
-Mail-Followup-To: Maxime Ripard <maxime@cerno.tech>,
-        Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20210720134525.563936-1-maxime@cerno.tech>
- <20210720134525.563936-5-maxime@cerno.tech>
- <YPgNbVoNnq3fTMN2@phenom.ffwll.local>
- <20210726151657.c46qmkdvqfhlg6ox@gilmour>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9rluK+pOhIb8FILDrgZN4MclSo9wi1R9TyuuYegFS3c=;
+        b=SzodwisyLqtf9Se5dH+zRl0fz48w78KrMs3JqQvXygd97o6AN5/Fp9Zwi2/s45ZJGq
+         5AvAzKVlQQiVno36LGuE3OFn6sVhx6jFpvDCMjY104iaMwBj7h6MZjrsLv4Yqt119WWa
+         zXTcKTsP2YSQqXZ7Z8dXceK08hMsuWtzuBhECN9QCHXzwjhZDFF2+iW8cNp1EkiNWySp
+         It3eAroS+fWBIbWGCHGFGjR27RV1Cz5esSdgoYUt1ITE/P5kOThM6KKzkKxIzf32G/ke
+         WWbWruCPKRTXMZczidArZA7DAghMzex40fkPZ0lW9vSW9Elj2bJSScEcxBeSiLAGnzx3
+         ZYyQ==
+X-Gm-Message-State: AOAM530Prt2qTm7papRZwBf8lMqhzzR3CBzOAdiOLc0jwMB5UQcwKpAc
+        R86/4u3/DxDLgM9Mqtb8/qHy+KolSGNseyrF1c+mDg==
+X-Google-Smtp-Source: ABdhPJw2EKqlRylpPbp9OkXdj7y3BeX7ygqlaMweZ8bIg/J3FA1oS1bRlPVBYElNVJbV8Iv4ya+imTT0SW6KULLALUQ=
+X-Received: by 2002:a62:d447:0:b029:291:19f7:ddcd with SMTP id
+ u7-20020a62d4470000b029029119f7ddcdmr22329027pfl.54.1627377125991; Tue, 27
+ Jul 2021 02:12:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210726151657.c46qmkdvqfhlg6ox@gilmour>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+References: <20210714211805.22350-1-richard.laing@alliedtelesis.co.nz>
+ <CAMZdPi-1E5pieVwt_XFF-+PML-cX05nM=PdD0pApD_ym5k_uMQ@mail.gmail.com> <5165a859-1b00-e50e-985e-25044cf0e9ec@alliedtelesis.co.nz>
+In-Reply-To: <5165a859-1b00-e50e-985e-25044cf0e9ec@alliedtelesis.co.nz>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Tue, 27 Jul 2021 11:21:52 +0200
+Message-ID: <CAMZdPi8MZp5Vx_ZnjjQWptms9vj6bEMoV83pcv4wmgxbZz0wjQ@mail.gmail.com>
+Subject: Re: [PATCH] bus: mhi: pci-generic: configurable network interface MRU
+To:     Richard Laing <Richard.Laing@alliedtelesis.co.nz>
+Cc:     David Miller <davem@davemloft.net>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 05:16:57PM +0200, Maxime Ripard wrote:
-> Hi Daniel,
-> 
-> On Wed, Jul 21, 2021 at 02:05:01PM +0200, Daniel Vetter wrote:
-> > On Tue, Jul 20, 2021 at 03:45:19PM +0200, Maxime Ripard wrote:
-> > > Interactions between bridges, panels, MIPI-DSI host and the component
-> > > framework are not trivial and can lead to probing issues when
-> > > implementing a display driver. Let's document the various cases we need
-> > > too consider, and the solution to support all the cases.
-> > > 
-> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > 
-> > I still have this dream that eventually we resurrect a patch to add
-> > device_link to bridges/panels (ideally automatically), to help with some
-> > of the suspend/resume issues around here.
-> > 
-> > Will this make things worse?
-> > 
-> > I think it'd be really good to figure that out with some coding, since if
-> > we have incompatible solution to handle probe issues vs suspend/resume
-> > issues, we're screwed.
-> > 
-> > Atm the duct-tape is to carefully move things around between suspend and
-> > suspend_early hooks (and resume and resume_late) and hope it all works ...
-> 
-> My initial idea to fix this was indeed to use device links. I gave up
-> after a while since it doesn't look like there's a way to add a device
-> link before either the bridge or encoder probes.
-> 
-> Indeed the OF-Graph representation is device-specific, so it can't be
-> generic, and if you need to probe to add that link, well, it's already
-> too late for the probe ordering :)
+On Mon, 19 Jul 2021 at 23:44, Richard Laing
+<Richard.Laing@alliedtelesis.co.nz> wrote:
+>
+> Hi Loic,
+>
+> On 7/19/21 10:11 PM, Loic Poulain wrote:
+> > For my interest do you have some numbers here highlighting improvement?
+> These are some of the numbers we found from initial testing using an
+> external packet generator:
+>
+> packet size    packets sent  throughput (%pps)
+> 64             1000000        6.21%
+> 128            1000000        7.42%
+> 256            1000000        10.79%
+> 512            1000000        16.40%
+> 1024           1000000        34.34%
+> 1262           1000000        43.82%
+> 1263           1000000        22.45%    <--
+> 1280           1000000        23.15%
+> 1500           1000000        46.32%
+> 1518           1000000        46.84%
+>
+> You can see the sudden drop of almost 50% between 1262 and 1263 byte
+> packets. This is what caused us to investigate further. Following the
+> change to 32KB buffers the drop in throughput is no longer seen.
+>
+> packet size    packets sent  throughput (%pps)
+> 64             1000000       4.41%
+> 128            1000000       7.70%
+> 256            1000000       14.26%
+> 512            1000000       27.06%
+> 1024           1000000       49.39%
+> 1280           1000000       58.82%
+> 1428           1000000       62.63%
+>
+> In all cases we were testing with the modem itself in internal loopback
+> mode.
+>
+> We have noted that our modem defaults to 32KB buffers (and a maximum of
+> 32 packets per buffer) and also that these values can be changed. We are
+> considering adding the ability to tune the buffer size, perhaps adding a
+> sysfs entry or netlink message to change the buffer size instead of the
+> hard coded value. Any comments would be appreciated.
 
-But don't we still need the device_link for suspend/resume and module
-reload? All very annoying indeed anyway.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks for the info, that's interesting.
+
+Note that the default MRU you define is not MHI controller specific
+but MHI channel specific (IP/MBIM channel), so it should not be a
+property of the MHI controller. AFAIK, The MHI specification already
+defines MRU for the transfered buffers which is 65535. I would
+recommend to move this prop to the channel config.
+
+Regards,
+Loic
+
+>
+> Regards,
+> Richard
+>
+>
+>
