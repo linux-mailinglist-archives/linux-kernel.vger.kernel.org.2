@@ -2,142 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7B23D7E02
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12AFA3D7E03
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhG0SvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:51:08 -0400
-Received: from mail-dm6nam08on2079.outbound.protection.outlook.com ([40.107.102.79]:38145
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229453AbhG0SvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:51:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V37FthowVRHiKYZDwWQi+6vX8m3mSFOjTtKrLm0lrZCxDrZA0LiDy1KBeBE+hYz+QR5dERX8THZMfPkt2b8SFL782Ozg372BeouYUpS9FG0WOueeuv4BmRNcTJWx4kjyVQGhK1RGJH+8qr2ypmgCgsncmnX0jjN8QfN2SdSdMWnesLF9lnbg4JM458ZPZ2QTYeM+arnK6etB6DrbgqqNvCNeTm1yaq1waIeQ+iZfXZ3vHwIE8vVR/o8dFdSD/7QGhWxyl+hBiSbSZPVhmGkrR/xJei9tkOXdIWcMy6/qcr6QqbqNH2an4qQcvnCLKd1KF8QL3SbWD9Ca65Zcuicx4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K7MeGd5xyh16dc2hTy/h3i4p0oVzZ5f8mx4h7eu5EC4=;
- b=iTkETQwVQhSI1565yPH41ql3Lruov2IKNsewni5FW9vbG0A7VGloGCO18pD5PAyzB0KoWuzIgFkWrvZ4S80u0kg+0aZgwV6BPlKQ7SGGDzU3oW0Tvk2M9+28SVMJbORZQx6jFfmj3A6SSWN+ybwRypmenmt8Vp8bFUkplan3NOtlDZCefseDXSSSXOIHO6bHkn+PZv1r/j0tP3T6D5fSo11Srgm9DjJ8Uy0QJ0F2V6YhGfaD1SELXDXEw7XVWkzMXKuiec6bgGQ0XXr9bCpeawVrh/fw9wzx0/Bn6D53tvktHWSxUOOyCseju/6OYL2DMr8/HwbZPLjj3vhI/BLkUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=K7MeGd5xyh16dc2hTy/h3i4p0oVzZ5f8mx4h7eu5EC4=;
- b=RwijN3B5rnsXUgOTacUyJ7Dh0Bs0g6tG+W+SHbBpsdqz2POaUR43OG4Ya7Zw01Iq4TS8gMAQZlXhzcn/cB252iClzeqmKTu5qasC3w2E2tAEPa2EbW0vE9ijv9st70tuAeImJlqxqgnQypSvvKEVEWZoiRcmRMRhb0OI/zYW/IKGykDFpvka8tG8iNrZiEyDjfXP2Ti9YXKA87aMRBh0IoH0fIAZKqYWqLhKexwqZP0lYSq9/+VVYAI0m4Uf7BX80UtjGaZh3bB5kq+fMhA3WOE8TyKE3CWcVsptwYr6VUgfWX3IfBoSMh6N8N8sWJ1AF7+GJoOvtWrd1Al52gCP+Q==
-Received: from MWHPR08CA0037.namprd08.prod.outlook.com (2603:10b6:300:c0::11)
- by BL0PR12MB2498.namprd12.prod.outlook.com (2603:10b6:207:40::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.29; Tue, 27 Jul
- 2021 18:51:04 +0000
-Received: from CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:c0:cafe::3a) by MWHPR08CA0037.outlook.office365.com
- (2603:10b6:300:c0::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17 via Frontend
- Transport; Tue, 27 Jul 2021 18:51:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT024.mail.protection.outlook.com (10.13.174.162) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4352.24 via Frontend Transport; Tue, 27 Jul 2021 18:51:04 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Jul
- 2021 11:51:02 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 27 Jul
- 2021 18:51:02 +0000
-Received: from vidyas-desktop.nvidia.com (172.20.187.6) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 27 Jul 2021 18:50:59 +0000
-From:   Vidya Sagar <vidyas@nvidia.com>
-To:     <robh+dt@kernel.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>
-CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>, <sagar.tv@gmail.com>
-Subject: [PATCH] arm64: tegra194: Fix Tegra194 PCIe EP compatible string
-Date:   Wed, 28 Jul 2021 00:20:55 +0530
-Message-ID: <20210727185055.11010-1-vidyas@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-X-NVConfidentiality: public
+        id S230214AbhG0Svc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:51:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229453AbhG0Svb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:51:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627411890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZXvxEfiOuEcK4kkcEfzYdMbGqWYAa1VJ44J5+cysLMY=;
+        b=W1h4FToaI5lfGS7U1j/kVUUlGkuhCIHMJjJWEk28BD7aEwqZ8RsxK6x7rkQbs0PEHdGXBP
+        BHTjqcXvQBcGBstqo6DmSPyjtm2QxAzAzn/ZdqVTG9lxU9G8R9UTYcaUk4nzgkVDndb4LV
+        8zztCUBrIRXtz14xA9nIk9QM7OrxfvI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-566-tkw_vtdyNLKyvBF11nXpnA-1; Tue, 27 Jul 2021 14:51:29 -0400
+X-MC-Unique: tkw_vtdyNLKyvBF11nXpnA-1
+Received: by mail-ed1-f70.google.com with SMTP id n24-20020aa7c7980000b02903bb4e1d45aaso5363882eds.15
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 11:51:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZXvxEfiOuEcK4kkcEfzYdMbGqWYAa1VJ44J5+cysLMY=;
+        b=RxheoajzRyqNka/HJNDvSiNHif65iQCLFvLeqFC7iNBO32Q4SQQA/BInT/HmIlKCHp
+         h8vYtpUQqjiq2LKWfArUssGcNtjKUobYMB/pfur9R+/84ULtGDgEzFcrRnXhpaO2x4Xj
+         s2I8Yf4ylJNQvyBB/AMxEOBOj7Tr0mknDjeGX3F1Tm0rJrwxgk3l5M+qRJrvY+INypBt
+         QNSA4HQ9HWFYcXqkClLZhD4WS8Avyf/D5ihqRpYm34cm9z8uCMasX9dAgmiISDmLBvAu
+         lu6dGaegwb5ncDfsUPOK24CtQk8ElO3CdJSYIt48caKhPCUfSCTJ1BeNRhED8YmzAW9s
+         iKzg==
+X-Gm-Message-State: AOAM533PbUJxOCFM0DAlOzgGnuJjCQjOXYd77OgvT36mMzefMNrXUw8k
+        kbh90uEQYKxWPR6xnGXI5zK1YQ1Aj95vWHuIays5wfAEH2XuaGo9CbzPd2JcLvsKiT48+KmAScp
+        USm9IgoThwrHaHY48zhGXlA2+
+X-Received: by 2002:a17:906:1cd5:: with SMTP id i21mr23045054ejh.478.1627411888154;
+        Tue, 27 Jul 2021 11:51:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzrk624GQKYRMpqA97Vdd8DklXkZv+JcJB91YbBrHkNbOCJGWvnyPIpkfnsSKV8Lv8r6OqfEA==
+X-Received: by 2002:a17:906:1cd5:: with SMTP id i21mr23045041ejh.478.1627411887939;
+        Tue, 27 Jul 2021 11:51:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id j5sm1573908edv.10.2021.07.27.11.51.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 11:51:27 -0700 (PDT)
+Subject: Re: lib/x86_64/handlers.S:20: Error: unrecognized instruction `call
+ route_exception'
+To:     Sean Christopherson <seanjc@google.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     Aaron Lewis <aaronlewis@google.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Alexander Graf <graf@amazon.com>
+References: <202107270520.DIJjv4ia-lkp@intel.com>
+ <YQAvVGwJqUak1E0l@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <65701bf2-e980-6cf7-8263-5eed7ba338ac@redhat.com>
+Date:   Tue, 27 Jul 2021 20:51:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5f4ec606-22c7-4209-936a-08d9512f7c75
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2498:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB24989999E603A63E8CFDBEAFB8E99@BL0PR12MB2498.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CrQ3w/fRzffG9PLj09SwrpWD5CHwHp/3R3Y6L2b45nfgTdr3zXgLMadOhml77+cRnZ2EwzyfhAwHtZUqwB3wWuIdNaGJzStQs712IidCj22JF4MOFpCwRf9rJMkO+Brj2JPJAdsqNzWL3yGrzkpkTc4vWRcC/FIJqY9oBgicbUGnUjdQPwrJ4VyGZoe3ShBrnYbk4PsvxZCqzQdAlnQs+g3N7Asu3moZqunB0hMqGTvhzDfrN6Yp5cDh84BtDGFFdiXMaMY4WdoSAweviNVY1qDphMzV1UJPlfMyIIUubkVcmX0UyRc0erG6AwKZoK2pFZoQWuvNHvCPctISLzAfe9Kwbd9efJB6sQSeub/1uMJmgZ7Hg2cjFMlroNHEm6O6KER0KFw5ASIbRwbmeMibZKU+UcHCBY+j/qIQFKmpf84pNZpuWLr1D6KjFNYIWZ8hlmOQe30RM04CovOVf+vsC1FXj0dkaj4A0P+eKOgz3aIDjlVLqxwgNFwYkZ2/VZFxCJUg3WnavrQ3CsiXl/pagBNvugX7GrLgD3Do7gSnWYwfT8iCP0q/IwcfhuZTAZbPVgzaFN5xdhmD5cAFLAjV/DPNtjxjxyjN0bu/cbVQB432u2xKdLyMt+fNraaHuYjdc0qTFrQRf5dNaHYc6zlgQuyW72dSaV0YwEsPpdkU+vx9iddN7CP2wu+LMJi8mQkUhBA+VuvM8alZSsXmtb81ew==
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8936002)(110136005)(70586007)(426003)(4326008)(83380400001)(26005)(186003)(356005)(5660300002)(508600001)(2906002)(86362001)(336012)(54906003)(8676002)(36756003)(1076003)(7696005)(36860700001)(316002)(6636002)(6666004)(2616005)(47076005)(70206006)(7636003)(82310400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jul 2021 18:51:04.1649
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f4ec606-22c7-4209-936a-08d9512f7c75
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT024.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2498
+In-Reply-To: <YQAvVGwJqUak1E0l@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The initialization sequence performed by the generic platform driver
-pcie-designware-plat.c for a DWC based implementation doesn't work for
-Tegra194. Tegra194 has a different initialization sequence requirement
-which can only be satisfied by the Tegra194 specific platform driver
-pcie-tegra194.c. So, remove the generic compatible string "snps,dw-pcie-ep"
-from Tegra194's endpoint controller nodes.
+On 27/07/21 18:07, Sean Christopherson wrote:
+> On Tue, Jul 27, 2021, kernel test robot wrote:
+>> Hi Aaron,
+>>
+>> First bad commit (maybe != root cause):
+>>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   ff1176468d368232b684f75e82563369208bc371
+>> commit: 29faeb9632012d6c3fa4aa33c3d589b9ff18b206 selftests: kvm: Add exception handling to selftests
+>> date:   9 months ago
+>> config: openrisc-randconfig-s031-20210726 (attached as .config)
+>> compiler: or1k-linux-gcc (GCC) 10.3.0
+>> reproduce:
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # apt-get install sparse
+>>          # sparse version: v0.6.3-341-g8af24329-dirty
+>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=29faeb9632012d6c3fa4aa33c3d589b9ff18b206
+>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>          git fetch --no-tags linus master
+>>          git checkout 29faeb9632012d6c3fa4aa33c3d589b9ff18b206
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-10.3.0 make.cross C=1
+>>          CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=openrisc
+>>          SHELL=/bin/bash -C tools/testing/selftests install
+> 
+> KVM's selftests don't play nice with cross-compiles for unsupported architectures.
+> arm64 and s390 have expilict x86_64 -> {arm64,s390} support from commit 66d69e081b52
+> ("selftests: fix kvm relocatable native/cross builds and installs"), but for
+> anything else the Makefile assumes an x86_64 target.
+> 
+> Realistically, only test bots are going to run afoul of our laziness.  Do we care
+> enough to fix this up properly?
 
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra194.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Seems easy enough, I will give it a shot.
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-index 076d5efc4c3d..2f58f3e4746b 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-@@ -2098,7 +2098,7 @@
- 	};
- 
- 	pcie_ep@14160000 {
--		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
-+		compatible = "nvidia,tegra194-pcie-ep";
- 		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX4A>;
- 		reg = <0x00 0x14160000 0x0 0x00020000>, /* appl registers (128K)      */
- 		      <0x00 0x36040000 0x0 0x00040000>, /* iATU_DMA reg space (256K)  */
-@@ -2130,7 +2130,7 @@
- 	};
- 
- 	pcie_ep@14180000 {
--		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
-+		compatible = "nvidia,tegra194-pcie-ep";
- 		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX8B>;
- 		reg = <0x00 0x14180000 0x0 0x00020000>, /* appl registers (128K)      */
- 		      <0x00 0x38040000 0x0 0x00040000>, /* iATU_DMA reg space (256K)  */
-@@ -2162,7 +2162,7 @@
- 	};
- 
- 	pcie_ep@141a0000 {
--		compatible = "nvidia,tegra194-pcie-ep", "snps,dw-pcie-ep";
-+		compatible = "nvidia,tegra194-pcie-ep";
- 		power-domains = <&bpmp TEGRA194_POWER_DOMAIN_PCIEX8A>;
- 		reg = <0x00 0x141a0000 0x0 0x00020000>, /* appl registers (128K)      */
- 		      <0x00 0x3a040000 0x0 0x00040000>, /* iATU_DMA reg space (256K)  */
--- 
-2.17.1
+Paolo
 
