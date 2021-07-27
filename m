@@ -2,200 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3083D6B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 03:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB21B3D6B7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 03:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhG0A1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 20:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhG0A1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 20:27:42 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC46C061757;
-        Mon, 26 Jul 2021 18:08:10 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5EFD8EE;
-        Tue, 27 Jul 2021 03:08:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1627348087;
-        bh=5Lly4Cu2+2FiLgIA04EEEdGsFnMktcIC4M6zAWMrIU0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rF7yoPygIYI/BWdroD9vJ9M2KuTa+lQxAX2umF9VFY7m+V1JRJHi/ggAbqWHumx6d
-         f6/VkT2quoeS7LsRgRB06sRYTWpM9ItybC8fYaeztBSX/gvm7ouvPySPwAqLKiB6GK
-         aN28/KJQ/KmHl4PxRy/f1oy9DRggw3Ewr6298Drc=
-Date:   Tue, 27 Jul 2021 04:08:02 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     devicetree@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sakari Ailus <sakari.ailus@iki.fi>
-Subject: Re: [RFC v3] dt-binding: media: document ON Semi AR0521 sensor
- bindings
-Message-ID: <YP9ccgd7WNpHuLgG@pendragon.ideasonboard.com>
-References: <m37dhkdrat.fsf@t19.piap.pl>
+        id S231534AbhG0Aiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 20:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229528AbhG0Aim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 20:38:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEFF060F8F;
+        Tue, 27 Jul 2021 01:19:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627348750;
+        bh=cedZER80Bx35E0iQ5JejSSTvmqmwrBLUwul03A9Vwa4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=bQlPLFSIkWmy8EwC43+w8blVmLAKYe5z6v+MYsQh+1U/ikJOW9fYSViNsvdHwVfZI
+         lMs+Mzr87kmy1XZmO8EAjbxB0TVAFHRzuXNayd/BomjA16RUdgPQaNfyt4pokdcx0Y
+         MYJTEYoTlXXPmqt0/L72R9XXz2W3AJsWnFirwbkC2GhO4pZHZS+Ymx+TP9W34c8hr3
+         Wp6+/KdCRRXKwPURLWlu8heXd307HWpCreNo34ANaUi/xrNaSSTBdm45k76jDYM9r/
+         xid1c8vfT1BzJ5kMfxU+QAFuM5DaDSueJrocpd1hDvkL3dEgHKd3p/kFO4YtyXBpzF
+         nLAwk6ddWR+LQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m37dhkdrat.fsf@t19.piap.pl>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <3bee1689-5e1d-e65f-e66c-95d4521ea9f4@microchip.com>
+References: <20210719080317.1045832-1-claudiu.beznea@microchip.com> <20210719080317.1045832-3-claudiu.beznea@microchip.com> <3bee1689-5e1d-e65f-e66c-95d4521ea9f4@microchip.com>
+Subject: Re: [PATCH 2/2] clk: at91: add register definition for sama7g5's master clock
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     eugen.hristev@microchip.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        sfr@canb.auug.org.au
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        alexandre.belloni@bootlin.com, linux@armlinux.org.uk,
+        ludovic.desroches@microchip.com, mturquette@baylibre.com
+Date:   Mon, 26 Jul 2021 18:19:09 -0700
+Message-ID: <162734874941.2368309.7238828348099448826@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Quoting Nicolas Ferre (2021-07-19 05:46:00)
+> On 19/07/2021 at 10:03, Claudiu Beznea wrote:
+> > Add register definitions for SAMA7G5's master clock. These would be
+> > also used by architecture specific power saving code.
+> >=20
+> > Fixes: 6cb0e54412a3 ("ARM: at91: pm: add support for MCK1..4 save/resto=
+re for ulp modes")
+> > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+>=20
+> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+>=20
+> > ---
+> >=20
+> > Hi Stephen,
+> >=20
+> > This is a part from patch at [1]. I keep it at minimum (only definition=
+s)
+> > for faster acceptance as the build is broken on arm multi_v7_defconfig
+> > without it).
+> > In next version of patch at [1] I will update it accordingly.
+>=20
+> Stephen,
+>=20
+> Before hearing from you I inserted this patch in our at91-soc branch=20
+> that is part of linux-next. With this at least the build don't break=20
+> anymore.
 
-(CC'ing Sakari Ailus)
+I don't think I need the patches? I'll try to remember this patch if I
+apply some patch that needs this in the future and probably just
+duplicate the commit to make things simpler.
 
-Thank you for the patch.
+>=20
+> Tell me if you want to have an immutable branch that we could share with =
 
-On Wed, Jul 21, 2021 at 10:06:34AM +0200, Krzysztof Hałasa wrote:
-> This file documents DT bindings for the AR0521 camera sensor driver.
-> 
-> Signed-off-by: Krzysztof Hałasa <khalasa@piap.pl>
-> ---
-> Changes from v2:
-> - changed "xclk" to "extclk"
-> - power regulator names etc.
-> - video output port properties
-> - cosmetics
-> - UTF-8 experiments :-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
-> new file mode 100644
-> index 000000000000..785bae61bb5e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
-> @@ -0,0 +1,108 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/onnn,ar0521.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ON Semiconductor AR0521 MIPI CSI-2 sensor
-> +
-> +maintainers:
-> +  - Krzysztof Hałasa <khalasa@piap.pl>
-> +
-> +description: |-
-> +  The AR0521 is a raw CMOS image sensor with MIPI CSI-2 and
-> +  I2C-compatible control interface.
-> +
-> +properties:
-> +  compatible:
-> +    const: onnn,ar0521
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: extclk
-> +
-> +  vaa-supply:
-> +    description:
-> +      Definition of the regulator used as analog (2.7 V) voltage supply.
-> +
-> +  vdd-supply:
-> +    description:
-> +      Definition of the regulator used as digital core (1.2 V) voltage supply.
-> +
-> +  vdd_io-supply:
-> +    description:
-> +      Definition of the regulator used as digital I/O (1.8 V) voltage supply.
-> +
-> +  reset-gpios:
-> +    description: reset GPIO, usually active low
-> +    maxItems: 1
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
-> +    description: |
-> +      Video output port.
-> +
-> +    properties:
-> +      endpoint:
-> +        $ref: /schemas/media/video-interfaces.yaml#
-> +
-> +        properties:
-> +          data-lanes:
-> +            anyOf:
-> +              - items:
-> +                  - const: 1
-> +              - items:
-> +                  - const: 1
-> +                  - const: 2
-> +              - items:
-> +                  - const: 1
-> +                  - const: 2
-> +                  - const: 3
-> +                  - const: 4
-
-As the sensor also supports an HiSPi output, I would add the bus-type
-property:
-
-          data-lanes:
-	    const: 4
-
-Sakari, what do you think ? This way we won't have to rely on an
-implicit default when (and if) the kernel gets support for HiSPi.
-
-With or without this change, and with Rob's comments addressed,
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-Thank you for not giving up :-)
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - vaa-supply
-> +  - vdd-supply
-> +  - vdd_io-supply
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/clock/imx6qdl-clock.h>
-> +
-> +    i2c {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            ar0521: camera-sensor@36 {
-> +                    compatible = "onnn,ar0521";
-> +                    reg = <0x36>;
-> +                    pinctrl-names = "default";
-> +                    pinctrl-0 = <&pinctrl_mipi_camera>;
-> +                    clocks = <&clks IMX6QDL_CLK_CKO>;
-> +                    clock-names = "extclk";
-> +                    reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
-> +                    vaa-supply = <&reg_2p7v>;
-> +                    vdd-supply = <&reg_1p2v>;
-> +                    vdd_io-supply = <&reg_1p8v>;
-> +
-> +                    port {
-> +                           mipi_camera_to_mipi_csi2: endpoint {
-> +                                    remote-endpoint = <&mipi_csi2_in>;
-> +                                    data-lanes = <1 2 3 4>;
-> +                            };
-> +                    };
-> +            };
-> +    };
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
+> it on top of 5.14-rc1 or if it's fine if we add the same patch in both=20
+> of our trees.
+>
