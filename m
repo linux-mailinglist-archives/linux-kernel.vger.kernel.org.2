@@ -2,78 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 934D63D729A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ABF3D729E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236192AbhG0KHo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 27 Jul 2021 06:07:44 -0400
-Received: from mail-vk1-f170.google.com ([209.85.221.170]:43951 "EHLO
-        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236046AbhG0KHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:07:42 -0400
-Received: by mail-vk1-f170.google.com with SMTP id f4so2647705vkb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 03:07:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FCUItsUrNsIOTE4P27lKrABY3CasfpkaGPUBOlpzuIA=;
-        b=l5cbLd0rlEV7fZYYmBg0uGIZpN3otccZX7MlUkd0ToiAwyDqmBzd2FxbNP4NYbuRdz
-         2gz3BLIMIAHnXLq1cdMGfvoSwNRH3goDqob5RGVu+1Tg1YQePb6ufIlVamBOH6ToqTU6
-         cY6cXgx9qatgH0E89b8jCzp27jRqIBBN04BSfPBWpVwpjLReT5hqlAcGXb8ADFqAdcbs
-         BFJes9JTX2d9UV+AlyeuWfoEXqq2/FveB0mVIWgU7SYgnPTBqJe6/1SZJ8+6UoY27JTC
-         WY54hpgD6IhJCdDdyylJKAjP47+iDI0ILoeYEy71HfJ/xHh0g8HXz5O4qvv6M/Dir0M/
-         CSmg==
-X-Gm-Message-State: AOAM531W/Oc88GMfuEn839+Lu5W4SM38ay/jobTUNCZqBbZ/MqGcbx/Q
-        uSPD5ruaNDF6TD/IwrixMutSwCiKmRowMdT3MoznlCE5xXM=
-X-Google-Smtp-Source: ABdhPJyJZ2K2v5gkPcV5lyHX5OJ6ojes2JgkZC6Nxg8yjXVY0y3Yn43EJt4tI1HaIXLl75DtR+ZLBeyBHpoziXGZOkM=
-X-Received: by 2002:ac5:c956:: with SMTP id s22mr13658214vkm.2.1627380461341;
- Tue, 27 Jul 2021 03:07:41 -0700 (PDT)
+        id S236152AbhG0KKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:10:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236046AbhG0KJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:09:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A07261505;
+        Tue, 27 Jul 2021 10:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627380598;
+        bh=+zy1KVbWis0NChMBKfluyJz7JK9D515lhSdSK/ke/+I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t7n3yPt8S7MVD8eFNaGBVI96IMsiSIydToBVixNIxf65wZC0fy7w16/GjaJvGntXu
+         uDvbYyStDycBSmR+ddAUsBuq4fD6TxoCcpUyT4iU4jKeO0OTpcKukAERHGiG+e36j4
+         gqdQ2gy/o0O/L2kuA+d3Pz8yzT5csOmy1SnnogaUrtNnEAIp2WHArE2m29O1wNuD+Z
+         wiitDNYmft04QIDypFSqKpxJWpkb7Ej5c1o2n6aYU7kNRSNc/IxXGGh2rVljAU0pYq
+         NEpW0k5mkGzb3AmSvOKEvbHXSU8wxq9xsxnpn3gChHLHocv4btJ25CsOjVD30JKbAb
+         HYErpTG86YZbA==
+Received: by mail-oi1-f173.google.com with SMTP id y18so14528072oiv.3;
+        Tue, 27 Jul 2021 03:09:58 -0700 (PDT)
+X-Gm-Message-State: AOAM532NILfFf+1/Nj2w0A/SNnWtv2MiWciI4bl7CxbKl4w84ZhyW1pd
+        HRskwqQyeneW02TImkPpwruNO+vlIRxuE+/eBuI=
+X-Google-Smtp-Source: ABdhPJwyeqgdIKWCEcfUojgd3pxJQ/D9wO6LrHAsmq74Nbo0adkNQ2j8ZbLRrKhsmnT1v2pNHvv0ohObBqY4IB07/KY=
+X-Received: by 2002:aca:5a04:: with SMTP id o4mr14216558oib.33.1627380597962;
+ Tue, 27 Jul 2021 03:09:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
- <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de> <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
-In-Reply-To: <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 27 Jul 2021 12:07:30 +0200
-Message-ID: <CAMuHMdX=K4S3Yd_ybd5C3e40XefMf5kHs1tWs1+VKTgiWEWEDg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>
+References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
+ <CAMj1kXEyjBxu_7mV2DNU=Maqx6JqTTWp3ZuHkJz3js0qRsJSHw@mail.gmail.com> <20210727100645.GA7108@lpieralisi>
+In-Reply-To: <20210727100645.GA7108@lpieralisi>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 27 Jul 2021 12:09:47 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHwPXX9MxuF_cw1bq9v+qzH-M4-_ssES8WQq-YP3APthg@mail.gmail.com>
+Message-ID: <CAMj1kXHwPXX9MxuF_cw1bq9v+qzH-M4-_ssES8WQq-YP3APthg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: Add memory semantics to acpi_os_map_memory()
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Veronika kabatova <vkabatov@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
-
-On Tue, Jul 27, 2021 at 11:50 AM Finn Thain <fthain@linux-m68k.org> wrote:
-> On Tue, 27 Jul 2021, Uwe Kleine-König wrote:
-> > Apart from that, the compiler might already assume dev->driver being
-> > non-NULL after to_nubus_driver(dev->driver) was called.
+On Tue, 27 Jul 2021 at 12:06, Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
 >
-> I don't understand how a compiler can make that assumption. But then, I
-> don't know why compilers do a lot of the things they do...
+> On Mon, Jul 26, 2021 at 05:55:33PM +0200, Ard Biesheuvel wrote:
+> > On Mon, 26 Jul 2021 at 12:00, Lorenzo Pieralisi
+> > <lorenzo.pieralisi@arm.com> wrote:
+> > >
+> > > The memory attributes attached to memory regions depend on architecture
+> > > specific mappings.
+> > >
+> > > For some memory regions, the attributes specified by firmware (eg
+> > > uncached) are not sufficient to determine how a memory region should be
+> > > mapped by an OS (for instance a region that is define as uncached in
+> > > firmware can be mapped as Normal or Device memory on arm64) and
+> > > therefore the OS must be given control on how to map the region to match
+> > > the expected mapping behaviour (eg if a mapping is requested with memory
+> > > semantics, it must allow unaligned accesses).
+> > >
+> > > Rework acpi_os_map_memory() and acpi_os_ioremap() back-end to split
+> > > them into two separate code paths:
+> > >
+> > > acpi_os_memmap() -> memory semantics
+> > > acpi_os_ioremap() -> MMIO semantics
+> > >
+> > > The split allows the architectural implementation back-ends to detect
+> > > the default memory attributes required by the mapping in question
+> > > (ie the mapping API defines the semantics memory vs MMIO) and map the
+> > > memory accordingly.
+> > >
+> > > Link: https://lore.kernel.org/linux-arm-kernel/31ffe8fc-f5ee-2858-26c5-0fd8bdd68702@arm.com
+> > > Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Will Deacon <will@kernel.org>
+> > > Cc: Hanjun Guo <guohanjun@huawei.com>
+> > > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> >
+> > For the patch in general
+> >
+> > Acked-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> Thanks !
+>
+> [...]
+>
+> > > -void __iomem __ref
+> > > -*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> > > +static void __iomem __ref
+> > > +*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
+> > >  {
+> > >         struct acpi_ioremap *map;
+> > >         void __iomem *virt;
+> > > @@ -353,7 +356,7 @@ void __iomem __ref
+> > >
+> > >         pg_off = round_down(phys, PAGE_SIZE);
+> > >         pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
+> > > -       virt = acpi_map(phys, size);
+> > > +       virt = acpi_map(phys, size, memory);
+> > >         if (!virt) {
+> > >                 mutex_unlock(&acpi_ioremap_lock);
+> > >                 kfree(map);
+> > > @@ -372,11 +375,17 @@ void __iomem __ref
+> > >         mutex_unlock(&acpi_ioremap_lock);
+> > >         return map->virt + (phys - map->phys);
+> > >  }
+> > > +
+> > > +void __iomem __ref
+> > > +*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> >
+> > I am aware that this just duplicated the prototype above, but I think
+> > this should be
+> >
+> > void __iomem *__ref
+> >
+> > given that the __ref comes after the * in the prototype below.
+>
+> Yes I just moved/duplicated the prototype above but I believe this is
+> consistent with include/acpi/acpi_io.h unless I have not understood
+> what you meant ?
+>
+> It is probably worth changing it in both places to
+>
+> void __iomem *__ref
+>
+> ?
+>
+> I can do that with an additional patch.
+>
 
-It is one of those recent optimizations people have been complaining
-about.  Once you have dereferenced a pointer, compilers may remove
-all further NULL-checks, assuming they can't happen, as the code
-would have crashed anyway before due to the dereference.
-Good luck running on bare metal with RAM at zero ;-)
+Yes, as long as they are all mutually consistent. The __ref is not
+part of the type at all, so it should not be between the void and the
+*, even if the compiler appears to allow it.
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> >
+> > > +{
+> > > +       return __acpi_os_map_iomem(phys, size, false);
+> > > +}
+> > >  EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+> > >
+> > >  void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+> > >  {
+> > > -       return (void *)acpi_os_map_iomem(phys, size);
+> > > +       return (void *)__acpi_os_map_iomem(phys, size, true);
+> >
+> > I think this should be (__force void *) to shut up sparse address
+> > space warnings.
+>
+> Yes I can add that attribute in an additional patch and rebase this one
+> on top of it.
+>
+> Thanks,
+> Lorenzo
+>
+> >
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+> > >
+> > > diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+> > > index 027faa8883aa..a0212e67d6f4 100644
+> > > --- a/include/acpi/acpi_io.h
+> > > +++ b/include/acpi/acpi_io.h
+> > > @@ -14,6 +14,14 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
+> > >  }
+> > >  #endif
+> > >
+> > > +#ifndef acpi_os_memmap
+> > > +static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
+> > > +                                           acpi_size size)
+> > > +{
+> > > +       return ioremap_cache(phys, size);
+> > > +}
+> > > +#endif
+> > > +
+> > >  extern bool acpi_permanent_mmap;
+> > >
+> > >  void __iomem __ref
+> > > --
+> > > 2.31.0
+> > >
