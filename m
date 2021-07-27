@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F333D840A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E033D8410
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhG0Xa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 19:30:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232745AbhG0Xa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 19:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4CF760FE7;
-        Tue, 27 Jul 2021 23:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627428627;
-        bh=C+hq6qoVwouKkZahhd4EeTOs3dFZy6RWX6t25IskRfY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=oUoxzdzwJhoALmsycWC7djvElgH91p+1NvuikzzLGHIXdpUbX/yvT2dN9PornItps
-         JCPKr0FLkyXoze6OFR9wLxOaME35C8ckoNvcRRMu+ESi3NVSzF6W5RyeDznuhPtVU5
-         MbhdHy12fYJL7ln+lKENMAwrg4y5BqTC9rkHB24km/NK5zMM5kO5d4wEq3payvTuVA
-         WLoyIeKA3J93HOL23gqTxO1XGz3pKlup2gQi5oL8zeJMutiDoq5B8iqC5rgSdaCX2r
-         AaFXifFyIH3plcaXIJQimN6K3M99SLT4/q9gWWyUvANyQgJJoSebIIGmz/SeqMYCQZ
-         h0ZAS3QLGVcbw==
-Date:   Tue, 27 Jul 2021 18:30:25 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v10 6/8] PCI: Setup ACPI fwnode early and at the same
- time with OF
-Message-ID: <20210727233025.GA756574@bjorn-Precision-5520>
+        id S233761AbhG0XbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 19:31:09 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:35355 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232745AbhG0XbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 19:31:08 -0400
+Received: by mail-pl1-f177.google.com with SMTP id f13so440557plj.2;
+        Tue, 27 Jul 2021 16:31:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cfNumURh2GjYDfPowtmTPayG3eiC6vg99u71kmeqTyM=;
+        b=P4HQ5+Qmq+0csMAsEg9nhirA44nQPKj6isxmK94eq8Gdqr/TXHQADqlWvUzrCr0eHG
+         5mC/8fdAp1zsISBAQmzzkYoKjXQAp2GE+CaXd+HOc4C0lktHXgdg8Dc+lnOhNxGzCnPN
+         Eg0TAB05T+5Y18lYA8ofHhhbm2GpQIGbewxLzcoa/l8mVrU2cDE1FgH2YKDzZHPwJVIw
+         IlNeLO+omVC2/s6HtnGZSDrqd7rPF6zVC9Eq1ZfVBEN8LCsKsmWFzQG5198eNHMRl/lT
+         Ufde+Y27nYfDbp+jzayTCfNynJVzQCvUU+P7fJKRvk4yYToqgrz3EX+0A3tT6k5Ij04z
+         tSfg==
+X-Gm-Message-State: AOAM533ynIv4XmZhecCMMNBF+578d5x4pIjL/AHWHJdA4EGdFp3qPau0
+        /8+dbVrhNdLjVLfGXB0KV5M=
+X-Google-Smtp-Source: ABdhPJxjlXDVaN8+tg1bxudbyKmetnxeWdVqGkL064ebMKIBrwhnuUBgPMqLVVo86W/q+KmaVUhOyQ==
+X-Received: by 2002:a17:902:8493:b029:12c:552f:1fb1 with SMTP id c19-20020a1709028493b029012c552f1fb1mr2088759plo.26.1627428666440;
+        Tue, 27 Jul 2021 16:31:06 -0700 (PDT)
+Received: from ?IPv6:2620:0:1000:2004:f8ef:f6a:11cc:887d? ([2620:0:1000:2004:f8ef:f6a:11cc:887d])
+        by smtp.gmail.com with ESMTPSA id j12sm4695249pfj.208.2021.07.27.16.31.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 16:31:05 -0700 (PDT)
+Subject: Re: [PATCH 33/64] lib: Introduce CONFIG_TEST_MEMCPY
+To:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithpac@amazon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210727205855.411487-1-keescook@chromium.org>
+ <20210727205855.411487-34-keescook@chromium.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <9827144a-dacf-61dc-d554-6c69434708de@acm.org>
+Date:   Tue, 27 Jul 2021 16:31:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210709123813.8700-7-ameynarkhede03@gmail.com>
+In-Reply-To: <20210727205855.411487-34-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 09, 2021 at 06:08:11PM +0530, Amey Narkhede wrote:
-> From: Shanker Donthineni <sdonthineni@nvidia.com>
-> 
-> The pci_dev objects are created through two mechanisms 1) during PCI
-> bus scan and 2) from I/O Virtualization. The fwnode in pci_dev object
-> is being set at different places depends on the type of firmware used,
-> device creation mechanism, and acpi_pci_bridge_d3() WAR.
-
-WAR?
-
-> The software features which have a dependency on ACPI fwnode properties
-> and need to be handled before device_add() will not work. One use case,
-> the software has to check the existence of _RST method to support ACPI
-> based reset method.
-> 
-> This patch does the two changes in order to provide fwnode consistently.
->  - Set ACPI and OF fwnodes from pci_setup_device().
->  - Remove pci_set_acpi_fwnode() in acpi_pci_bridge_d3().
-> 
-> After this patch, ACPI/OF firmware properties are visible at the same
-> time during the early stage of pci_dev setup. And also call sites should
-> be able to use firmware agnostic functions device_property_xxx() for the
-> early PCI quirks in the future.
-> 
-> Signed-off-by: Shanker Donthineni <sdonthineni@nvidia.com>
-> ---
->  drivers/pci/pci-acpi.c | 1 -
->  drivers/pci/probe.c    | 7 ++++---
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index eaddbf701..dae021322 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -952,7 +952,6 @@ static bool acpi_pci_bridge_d3(struct pci_dev *dev)
->  		return false;
->  
->  	/* Assume D3 support if the bridge is power-manageable by ACPI. */
-> -	pci_set_acpi_fwnode(dev);
->  	adev = ACPI_COMPANION(&dev->dev);
->  
->  	if (adev && acpi_device_power_manageable(adev))
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index c272e23db..c911d6a5c 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1790,6 +1790,9 @@ int pci_setup_device(struct pci_dev *dev)
->  	dev->error_state = pci_channel_io_normal;
->  	set_pcie_port_type(dev);
->  
-> +	pci_set_of_node(dev);
-> +	pci_set_acpi_fwnode(dev);
+On 7/27/21 1:58 PM, Kees Cook wrote:
+> +static int __init test_memcpy_init(void)
+> +{
+> +	int err = 0;
 > +
->  	pci_dev_assign_slot(dev);
->  
->  	/*
-> @@ -1925,6 +1928,7 @@ int pci_setup_device(struct pci_dev *dev)
->  	default:				    /* unknown header */
->  		pci_err(dev, "unknown header type %02x, ignoring device\n",
->  			dev->hdr_type);
-> +		pci_release_of_node(dev);
->  		return -EIO;
->  
->  	bad:
-> @@ -2352,10 +2356,7 @@ static struct pci_dev *pci_scan_device(struct pci_bus *bus, int devfn)
->  	dev->vendor = l & 0xffff;
->  	dev->device = (l >> 16) & 0xffff;
->  
-> -	pci_set_of_node(dev);
-> -
->  	if (pci_setup_device(dev)) {
-> -		pci_release_of_node(dev);
->  		pci_bus_put(dev->bus);
->  		kfree(dev);
->  		return NULL;
-> -- 
-> 2.32.0
-> 
+> +	err |= test_memcpy();
+> +	err |= test_memmove();
+> +	err |= test_memset();
+> +
+> +	if (err) {
+> +		pr_warn("FAIL!\n");
+> +		err = -EINVAL;
+> +	} else {
+> +		pr_info("all tests passed\n");
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +static void __exit test_memcpy_exit(void)
+> +{ }
+> +
+> +module_init(test_memcpy_init);
+> +module_exit(test_memcpy_exit);
+> +MODULE_LICENSE("GPL");
+
+Has it been considered to implement this test using the Kunit framework?
+
+Thanks,
+
+Bart.
+
+
