@@ -2,151 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CFF3D7E32
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F333D7E38
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231818AbhG0TAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
+        id S230329AbhG0TCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhG0TAe (ORCPT
+        with ESMTP id S229940AbhG0TCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:00:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AF13C061757;
-        Tue, 27 Jul 2021 12:00:34 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 19:00:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1627412430;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hjXqd+8WALUAXb/KLRjFz68ozAL0V3ApCcpw58bV/6g=;
-        b=Hz8E+Ga31/sFe2JSkrtSreMwKexs4S/nTKA7Nucg4JJ06r6GCYb+UDMcOUSmMLKAEpGx1+
-        AkU5jzCGgKySUeSZKtFqpZGzxqTYQ9X6VYf/dV2MX54wJ+63UmE/X+qtGIJ6D3Ugn+goJF
-        wzOo8wBEFS+2xp013AX3mMYAmLr1UTYeDSMpjWgVNMo+MlKVfoxnYdAIzYvje8MQJ/2vij
-        bPXRp0sLcnCIMQem8HCnFspOHDQFZa3LNZsImehVWGzwNBzc/XhC0BNAFgRnDNnT6q2nUJ
-        728v1WuzYLO7AzxIUrAdLO9HCQ5ikJBRAaXceSKRlAcz6uFOwa0kDAXDYQPQcA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1627412430;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hjXqd+8WALUAXb/KLRjFz68ozAL0V3ApCcpw58bV/6g=;
-        b=3CmNbDmHkGsB7y2g+mUzdW9PW30EEJS5hQRBZe3Ibp2hMEGNfeHLk/zvf2FtWByS3hY8CP
-        rgedoZQdquKmdjAg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] timers: Move clearing of base::timer_running
- under base:: Lock
-Cc:     syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com,
-        syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        stable@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
-References: <87lfea7gw8.fsf@nanos.tec.linutronix.de>
+        Tue, 27 Jul 2021 15:02:46 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50839C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:02:46 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id d18so23461643lfb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:02:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mcEEZ5DizsTOmmJZcJXignnsvoK6Y8UwOPAH4fOFfVg=;
+        b=sT2KLROvmdqyeSq9gUZfrZCkCpV5fvuyuDEMnHA+mUEUuejXjAqRzHEGOVaCI1aw03
+         eFpNXHxArfRRafTyP2hIJZPSmwDRGMNEEn2ZSVG9hr4tnquVejhdlJbC1FZLUTUQ15Ya
+         L7ru17gyCuwrB4/Ea2y5AUHuKQjwzXQd+btL3565nPgXkgzNrdh8j3hCJ+yDJf1GT3UR
+         jqnvWsvxCmjt4Wh3AqcrcVd7cTyvN5Iy2+2lXKtp6/VcLWfZjv2tT/Czcxli/LjgkqD6
+         SGNqUOk0DZshaqOCij4NitxMgVzupNvONqE5CB8HVzix0WGfhZ2ZTGAT8nm6mR8es39d
+         udoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mcEEZ5DizsTOmmJZcJXignnsvoK6Y8UwOPAH4fOFfVg=;
+        b=Kj5VmVby+IwbZUxzTuF5nGnKbskZFkMsFAHE+3B9tRX/Y5aVomWRdwS21zusilZM47
+         GpGSa1lIgSJTB/zTZ3/pHWq8jGqa88pC2zmoKrN8DElaqrSFMiMwH9j31vHAAk8xxyHB
+         CEkKcGvFBcxA0uxhMo1M6972t8wkWpBlv/3rR9tJEz8GeRKeKPfr/h6vVkvMDbTNr1Hh
+         czGYNFEOV6qpydXFGZ+1JtSesTdadcKCUiQXvKPO9Sv3BQ2J1CrJrJgetxIVG6gsx0do
+         lc4UW8QU1rhVSc81cAyOA/qUce1/3nQn1fnH23JWGqDnon3cht0hnrC5iUxyEzYh5sx9
+         rIgg==
+X-Gm-Message-State: AOAM532myEKKcqTfHUdcFbUqAIIfm93rtQs7F5sVol2TDHGLgsEwrp40
+        SsVarSZbbiasHeYiqpU17uSPowVpewu0AR35SwN9jA==
+X-Google-Smtp-Source: ABdhPJylkMZhUDt4uIXbOcMOosSEb8mJDEQSz6R2BYshHysKDy9vxF19Ecc+0ox+UQdDAnmpMCnqIWF5aKwFChPvdbQ=
+X-Received: by 2002:a05:6512:3296:: with SMTP id p22mr17292681lfe.543.1627412564309;
+ Tue, 27 Jul 2021 12:02:44 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162741242945.395.1178547166318427399.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
+ <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
+ <YP+ZOx8BETgufxBS@kroah.com> <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
+ <YP+ql3QFYnefR/Cf@kroah.com> <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
+ <YQBJfAuMJhvd2TcJ@kroah.com> <CAKwvOdkbgr5uPBUC815nrJ_-fHQD2KEYmZ0E8qZRBLL9uQ2WFw@mail.gmail.com>
+ <YQBUKrCWpM3uDp/Q@kroah.com>
+In-Reply-To: <YQBUKrCWpM3uDp/Q@kroah.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 27 Jul 2021 12:02:33 -0700
+Message-ID: <CAKwvOdkmwAYCyWYoSntLhJkMTN7UU=09hROABDU8eN193n8-qg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bill Wendling <morbo@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/urgent branch of tip:
+On Tue, Jul 27, 2021 at 11:45 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Jul 27, 2021 at 11:31:38AM -0700, Nick Desaulniers wrote:
+> > On Tue, Jul 27, 2021 at 10:59 AM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > >
+> > > On Tue, Jul 27, 2021 at 10:39:49AM -0700, Nick Desaulniers wrote:
+> > > > If there are
+> > > > cases where it's ok to not check the return value, consider not using
+> > > > warn_unused_result on function declarations.
+> > >
+> > > Ok, so what do you do when you have a function like this where 99.9% of
+> > > the users need to check this?  Do I really need to write a wrapper
+> > > function just for it so that I can use it "safely" in the core code
+> > > instead?
+> > >
+> > > Something like:
+> > >
+> > > void do_safe_thing_and_ignore_the_world(...)
+> > > {
+> > >         __unused int error;
+> > >
+> > >         error = do_thing(...);
+> > > }
+> > >
+> > > Or something else to get the compiler to be quiet about error being set
+> > > and never used?  There HAS to be that option somewhere anyway as we need
+> > > it for other parts of the kernel where we do:
+> > >         write_bus(device, &value);
+> > >         value = read_bus(device);
+> > > and then we ignore value as it is not needed, but yet we still HAVE to
+> > > call read_bus() here, yet read_bus() is set as warn_unused_result()
+> > > because, well, it is a read function :)
+> >
+> > Such wrappers are trivial with __attribute__((alias(""))):
+> > https://godbolt.org/z/j5afPbGcM
+> >
+> > At least then it's very obvious if someone adds more call sites to
+> > such an alias. Then that calls for closer inspection in code review
+> > that yes, this is one of those 0.01% of cases.  Since they occur 0.01%
+> > of the time, I don't expect such aliases to occur too frequently.
+>
+> That is just, well, horrible.  Seriously horrible.  Wow.
 
-Commit-ID:     bb7262b295472eb6858b5c49893954794027cd84
-Gitweb:        https://git.kernel.org/tip/bb7262b295472eb6858b5c49893954794027cd84
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 06 Dec 2020 22:40:07 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 27 Jul 2021 20:57:44 +02:00
+Yeah, well, that's how I feel about warn_unused_result_except_I_didn't_mean_it.
 
-timers: Move clearing of base::timer_running under base:: Lock
+> And that is the "documented" way to do this?  That feels like an abuse
+> of the already-horrible-why-do-they-do-that-for-variables use of the
+> alias attribute.
 
-syzbot reported KCSAN data races vs. timer_base::timer_running being set to
-NULL without holding base::lock in expire_timers().
+You could also use #pragma's to disable the warning locally, with a
+good comment about why it's ok to ignore the return code.
 
-This looks innocent and most reads are clearly not problematic, but
-Frederic identified an issue which is:
+> How badly are compiler people going to complain to me about this if
+> it's in this file?
+> I can take a patch for that, but I feel the comments involved will make
+> people, including myself when I have to look a the code again in 5
+> years, even more confused...
+>
+> ick, I feel dirty...
+>
+> greg k-h
 
- int data = 0;
-
- void timer_func(struct timer_list *t)
- {
-    data = 1;
- }
-
- CPU 0                                            CPU 1
- ------------------------------                   --------------------------
- base = lock_timer_base(timer, &flags);           raw_spin_unlock(&base->lock);
- if (base->running_timer != timer)                call_timer_fn(timer, fn, baseclk);
-   ret = detach_if_pending(timer, base, true);    base->running_timer = NULL;
- raw_spin_unlock_irqrestore(&base->lock, flags);  raw_spin_lock(&base->lock);
-
- x = data;
-
-If the timer has previously executed on CPU 1 and then CPU 0 can observe
-base->running_timer == NULL and returns, assuming the timer has completed,
-but it's not guaranteed on all architectures. The comment for
-del_timer_sync() makes that guarantee. Moving the assignment under
-base->lock prevents this.
-
-For non-RT kernel it's performance wise completely irrelevant whether the
-store happens before or after taking the lock. For an RT kernel moving the
-store under the lock requires an extra unlock/lock pair in the case that
-there is a waiter for the timer, but that's not the end of the world.
-
-Reported-by: syzbot+aa7c2385d46c5eba0b89@syzkaller.appspotmail.com
-Reported-by: syzbot+abea4558531bae1ba9fe@syzkaller.appspotmail.com
-Fixes: 030dcdd197d7 ("timers: Prepare support for PREEMPT_RT")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/87lfea7gw8.fsf@nanos.tec.linutronix.de
-Cc: stable@vger.kernel.org
----
- kernel/time/timer.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 9eb11c2..e3d2c23 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -1265,8 +1265,10 @@ static inline void timer_base_unlock_expiry(struct timer_base *base)
- static void timer_sync_wait_running(struct timer_base *base)
- {
- 	if (atomic_read(&base->timer_waiters)) {
-+		raw_spin_unlock_irq(&base->lock);
- 		spin_unlock(&base->expiry_lock);
- 		spin_lock(&base->expiry_lock);
-+		raw_spin_lock_irq(&base->lock);
- 	}
- }
- 
-@@ -1457,14 +1459,14 @@ static void expire_timers(struct timer_base *base, struct hlist_head *head)
- 		if (timer->flags & TIMER_IRQSAFE) {
- 			raw_spin_unlock(&base->lock);
- 			call_timer_fn(timer, fn, baseclk);
--			base->running_timer = NULL;
- 			raw_spin_lock(&base->lock);
-+			base->running_timer = NULL;
- 		} else {
- 			raw_spin_unlock_irq(&base->lock);
- 			call_timer_fn(timer, fn, baseclk);
-+			raw_spin_lock_irq(&base->lock);
- 			base->running_timer = NULL;
- 			timer_sync_wait_running(base);
--			raw_spin_lock_irq(&base->lock);
- 		}
- 	}
- }
+-- 
+Thanks,
+~Nick Desaulniers
