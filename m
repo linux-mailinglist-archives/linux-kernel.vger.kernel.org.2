@@ -2,114 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 304993D7391
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0F83D7395
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236395AbhG0KpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:45:01 -0400
-Received: from mail.netline.ch ([148.251.143.180]:34028 "EHLO
-        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236337AbhG0Ko7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:44:59 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by netline-mail3.netline.ch (Postfix) with ESMTP id E485D20201B;
-        Tue, 27 Jul 2021 12:44:57 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
-Received: from netline-mail3.netline.ch ([127.0.0.1])
-        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id p2PTXK-_M2ZX; Tue, 27 Jul 2021 12:44:57 +0200 (CEST)
-Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
-        by netline-mail3.netline.ch (Postfix) with ESMTPA id 11A9F20201A;
-        Tue, 27 Jul 2021 12:44:57 +0200 (CEST)
-Received: from localhost ([::1])
-        by thor with esmtp (Exim 4.94.2)
-        (envelope-from <michel@daenzer.net>)
-        id 1m8KZz-000lIP-GV; Tue, 27 Jul 2021 12:44:55 +0200
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Matthew Brost <matthew.brost@intel.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20210726233854.2453899-1-robdclark@gmail.com>
- <20210726233854.2453899-4-robdclark@gmail.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
-Subject: Re: [RFC 3/4] drm/atomic-helper: Set fence deadline for vblank
-Message-ID: <db6cdec8-d44c-a09c-3fbd-60fb55c66efb@daenzer.net>
-Date:   Tue, 27 Jul 2021 12:44:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210726233854.2453899-4-robdclark@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+        id S236406AbhG0Kpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:45:41 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:26933 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236320AbhG0Kpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:45:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1627382738; x=1658918738;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=IBaHE26ecbFT2WR+ipD7OHCSKKDIkgeOggpQrOqRaGE=;
+  b=PGawoS700keFUrQyMIBFKPVRg7dYOU+UHccdYNfq8PjKH5w6kmAmU7iy
+   0/2VMX7g+ZJ91kKeW+VUUYMJnLNIOxU/+yV1XcrMMmRd37BO+FIJqGzj7
+   R/NHG9if5g7dz6IQqU964GDjhnDJ4IOqek0DZpUfaE0flfEJOnRvRTBq/
+   S2hcldwB+XcWIfCIIYu6d4BhG7dPBxwD8CLSzbWdrAwiP40CkfSK8V75s
+   ZJn17b4FvyaJlwqx//kI/+lFIDFTapiXVdM0LQN3WNOnfPvtFgh2xpjg9
+   Hs5Mf09xtHOXo/mc0f5OHlVvQenW85tl0xsuBgjVLkcjgsXqmgsXXOtiv
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.84,273,1620684000"; 
+   d="scan'208";a="18662240"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 27 Jul 2021 12:45:37 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Tue, 27 Jul 2021 12:45:37 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Tue, 27 Jul 2021 12:45:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1627382737; x=1658918737;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=IBaHE26ecbFT2WR+ipD7OHCSKKDIkgeOggpQrOqRaGE=;
+  b=Ksng7V4lnewvS/L51Pywe8mO2/qneJgNf60gcDmpqUHokSyLIXHJVNpV
+   RosnSnzwYPl2F2T4e27qgpa/wAf9aH51fstFvv2wk7IF0I5YvI8xQShhK
+   yFggNOm0vDXwrxvcY8vYgDIDkaDRDPEtfTlxG3eKUM9Rrx+q2ztCOmTGG
+   wMk/Zp10RlHyWQfELUxxzQxYxX1miHUug7dQI5OgHKBb+WLcAa4VrjOQc
+   391diUQP0Z3rS95neFxh9MyIyjxDgEkvfE3YP8rtlUdl5/XlFp0DmJiMi
+   wSPyS8Jb7vYN9GFbwxDIu/jsyOSZ0Qsg5orao7qjc4QEDxWzjunTN1N1C
+   g==;
+X-IronPort-AV: E=Sophos;i="5.84,273,1620684000"; 
+   d="scan'208";a="18662239"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 27 Jul 2021 12:45:37 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 16580280070;
+        Tue, 27 Jul 2021 12:45:37 +0200 (CEST)
+Message-ID: <42380415413178b18e940ae80298c22c51275b95.camel@ew.tq-group.com>
+Subject: Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync flags of mt25ql02g
+ and mt25qu02g with other mt25q
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Tue, 27 Jul 2021 12:45:34 +0200
+In-Reply-To: <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+         <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-07-27 1:38 a.m., Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Tue, 2021-07-27 at 09:09 +0200, Michael Walle wrote:
+> Am 2021-07-23 13:27, schrieb Matthias Schiffer:
+> > All mt25q variants have the same features.
+> > 
+> > Unlike the smaller variants, no n25q with 2G exists, so we don't need 
+> > to
+> > match on the extended ID to distinguish n25q and mt25q series for these
+> > models.
 > 
-> For an atomic commit updating a single CRTC (ie. a pageflip) calculate
-> the next vblank time, and inform the fence(s) of that deadline.
+> But why shouldn't we? What if there will be another flash with
+> the same first three id bytes?
+
+That makes sense, I'll update my patch accordingly.
+
+It looked to me like the current ID list only checks the extended ID
+when necessary to distinguish two known flash models.
+
+
 > 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/drm_atomic_helper.c | 36 +++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
+> > Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+> > ---
+> >  drivers/mtd/spi-nor/micron-st.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/micron-st.c 
+> > b/drivers/mtd/spi-nor/micron-st.c
+> > index c224e59820a1..d5baa8762c8d 100644
+> > --- a/drivers/mtd/spi-nor/micron-st.c
+> > +++ b/drivers/mtd/spi-nor/micron-st.c
+> > @@ -181,11 +181,11 @@ static const struct flash_info st_parts[] = {
+> >  			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+> >  			      NO_CHIP_ERASE) },
+> >  	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+> > -			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+> > -			      NO_CHIP_ERASE) },
 > 
-> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-> index bc3487964fb5..f81b20775b15 100644
-> --- a/drivers/gpu/drm/drm_atomic_helper.c
-> +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> @@ -1406,6 +1406,40 @@ void drm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
->  }
->  EXPORT_SYMBOL(drm_atomic_helper_commit_modeset_enables);
->  
-> +/*
-> + * For atomic updates which touch just a single CRTC, calculate the time of the
-> + * next vblank, and inform all the fences of the of the deadline.
-> + */
-> +static void set_fence_deadline(struct drm_device *dev,
-> +			       struct drm_atomic_state *state)
-> +{
-> +	struct drm_crtc *crtc, *wait_crtc = NULL;
-> +	struct drm_crtc_state *new_crtc_state;
-> +	struct drm_plane *plane;
-> +	struct drm_plane_state *new_plane_state;
-> +	ktime_t vbltime;
-> +	int i;
-> +
-> +	for_each_new_crtc_in_state (state, crtc, new_crtc_state, i) {
-> +		if (!wait_crtc)
-> +			return;
+> This bothers me. I'm not sure how this will work. I see that
+> chip erase is command 0xc7, but both the new and the old flash
+> just supports 0xc3 (DIE ERASE). Did you test these changes?
 
-Either this return or the next one below would always be taken, I doubt this was intended.
+Thanks for catching this. I overlooked that the 1G and 2G variants
+don't support the same erase commands as the smaller versions after
+all... It is possible that I only tested this with partitioned MTD, so
+I didn't hit the whole-chip erase case.
+
+Which command should I use to test the chip erase? Will a `flash_erase
+/dev/mtdX 0 0` trigger the correct operation?
 
 
-> +		wait_crtc = crtc;
-> +	}
-> +
-> +	/* If no CRTCs updated, then nothing to do: */
-> +	if (!wait_crtc)
-> +		return;
-> +
-> +	if (drm_crtc_next_vblank_time(wait_crtc, &vbltime))
-> +		return;
-> +
-> +	for_each_new_plane_in_state (state, plane, new_plane_state, i) {
-> +		if (!new_plane_state->fence)
-> +			continue;
-> +		dma_fence_set_deadline(new_plane_state->fence, vbltime);
-> +	}
-
-vblank timestamps correspond to the end of vertical blank, the deadline should be the start of vertical blank though.
 
 
--- 
-Earthling Michel Dänzer               |               https://redhat.com
-Libre software enthusiast             |             Mesa and X developer
+> 
+> > +			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> > +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> >  	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096,
+> >  			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+> > -			      SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+> > +			      SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> > 
+> >  	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+> >  	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
+> 
+> -michael
+
