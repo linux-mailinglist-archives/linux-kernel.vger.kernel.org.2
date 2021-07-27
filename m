@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBA93D6C1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1533E3D6C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234658AbhG0CMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:12:30 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7061 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234624AbhG0CM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:12:29 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYh5c5NPJzYcmn;
-        Tue, 27 Jul 2021 10:47:00 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 10:52:55 +0800
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 27 Jul 2021 10:52:54 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <zajec5@gmail.com>, <kvalo@codeaurora.org>, <hauke@hauke-m.de>,
-        <linville@tuxdriver.com>, <wanghaibin.wang@huawei.com>,
-        Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH 2/2] bcma: Drop the unused parameter of bcma_scan_read32()
-Date:   Tue, 27 Jul 2021 10:52:32 +0800
-Message-ID: <20210727025232.663-3-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
-In-Reply-To: <20210727025232.663-1-yuzenghui@huawei.com>
-References: <20210727025232.663-1-yuzenghui@huawei.com>
+        id S234561AbhG0COj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:14:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230163AbhG0COi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E5D460FEE;
+        Tue, 27 Jul 2021 02:55:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627354506;
+        bh=N66m5BqH6fBSNOyaUyEyoRc1HO/1ORZUE+4M0QQOz9k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rDPj7DNiwMzaTMTCmJQI3c2bPDlRiJGtsz5P5RMkA+7ONiJQLE7n32QIYjCCPD7vW
+         tqZGA4s9//e7YWBI+SSJf8L9cVU8/Sjv+RcOXvqpy/KuAdgCSe8fZm8ZorPhcb7DYV
+         aINh1jmJOUt+IyGoUIFvAySOSZ1+DYqh0EJrCG/DeFny8Jp4BSR1lCP3AuwbTsLQWl
+         NS/AwnAjevQySPglrvNkPUwt9X18EmoxJpAcwkeJUxbTAhqT9a0eJBiD76xiAZK/3z
+         eNWkcEK4o0mHUSMMx3prujAuzw7vt49zZ3alo17NiQJO7ESaNyi8vC5RstX/mw2iuS
+         ZAu8HNqifKDXw==
+Date:   Tue, 27 Jul 2021 05:55:04 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Andreas Rammhold <andreas@rammhold.de>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KEYS: trusted: Fix trusted key backends when building as
+ module
+Message-ID: <20210727025504.w4afe4m6e2k57cve@kernel.org>
+References: <20210716081722.4130161-1-andreas@rammhold.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210716081722.4130161-1-andreas@rammhold.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As it had never been used since the initial commit 8369ae33b705 ("bcma: add
-Broadcom specific AMBA bus driver").
+On Fri, Jul 16, 2021 at 10:17:22AM +0200, Andreas Rammhold wrote:
+> Before this commit the kernel could end up with no trusted key sources
+> even thought both of the currently supported backends (tpm & tee) were
 
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
- drivers/bcma/scan.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Nit: "TPM and TEE" instead of "tpm & tee"
 
-diff --git a/drivers/bcma/scan.c b/drivers/bcma/scan.c
-index d49e7c0de2b6..26d12a7e6ca0 100644
---- a/drivers/bcma/scan.c
-+++ b/drivers/bcma/scan.c
-@@ -141,8 +141,7 @@ static const char *bcma_device_name(const struct bcma_device_id *id)
- 	return "UNKNOWN";
- }
- 
--static u32 bcma_scan_read32(struct bcma_bus *bus, u8 current_coreidx,
--		       u16 offset)
-+static u32 bcma_scan_read32(struct bcma_bus *bus, u16 offset)
- {
- 	return readl(bus->mmio + offset);
- }
-@@ -443,7 +442,7 @@ void bcma_detect_chip(struct bcma_bus *bus)
- 
- 	bcma_scan_switch_core(bus, BCMA_ADDR_BASE);
- 
--	tmp = bcma_scan_read32(bus, 0, BCMA_CC_ID);
-+	tmp = bcma_scan_read32(bus, BCMA_CC_ID);
- 	chipinfo->id = (tmp & BCMA_CC_ID_ID) >> BCMA_CC_ID_ID_SHIFT;
- 	chipinfo->rev = (tmp & BCMA_CC_ID_REV) >> BCMA_CC_ID_REV_SHIFT;
- 	chipinfo->pkg = (tmp & BCMA_CC_ID_PKG) >> BCMA_CC_ID_PKG_SHIFT;
-@@ -465,7 +464,7 @@ int bcma_bus_scan(struct bcma_bus *bus)
- 	if (bus->nr_cores)
- 		return 0;
- 
--	erombase = bcma_scan_read32(bus, 0, BCMA_CC_EROM);
-+	erombase = bcma_scan_read32(bus, BCMA_CC_EROM);
- 	if (bus->hosttype == BCMA_HOSTTYPE_SOC) {
- 		eromptr = ioremap(erombase, BCMA_CORE_SIZE);
- 		if (!eromptr)
--- 
-2.19.1
+> compoiled as modules. This manifested in the trusted key type not being
+> registered at all.
 
+Do you have a commit ID for the failing commit?
+
+> When checking if a CONFIG_… preprocessor variable is defined we only
+> test for the builtin (=y) case and not the module (=m) case. By using
+> the IS_ENABLE(…) macro we to test for both cases.
+
+Nit: IS_ENABLED() (without dots inside, missing 'D').
+
+> 
+> Signed-off-by: Andreas Rammhold <andreas@rammhold.de>
+> ---
+>  security/keys/trusted-keys/trusted_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
+> index d5c891d8d353..fd640614b168 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -27,10 +27,10 @@ module_param_named(source, trusted_key_source, charp, 0);
+>  MODULE_PARM_DESC(source, "Select trusted keys source (tpm or tee)");
+>  
+>  static const struct trusted_key_source trusted_key_sources[] = {
+> -#if defined(CONFIG_TCG_TPM)
+> +#if IS_ENABLED(CONFIG_TCG_TPM)
+>  	{ "tpm", &trusted_key_tpm_ops },
+>  #endif
+> -#if defined(CONFIG_TEE)
+> +#if IS_ENABLED(CONFIG_TEE)
+>  	{ "tee", &trusted_key_tee_ops },
+>  #endif
+>  };
+> -- 
+> 2.32.0
+> 
+> 
+
+/Jarkko
