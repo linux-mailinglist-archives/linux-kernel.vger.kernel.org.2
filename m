@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B793D7F24
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10E13D7EF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbhG0UVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:21:18 -0400
-Received: from gate.crashing.org ([63.228.1.57]:52631 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232344AbhG0UUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:20:40 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 16RKDTXL032385;
-        Tue, 27 Jul 2021 15:13:29 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 16RKDS4x032383;
-        Tue, 27 Jul 2021 15:13:28 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Tue, 27 Jul 2021 15:13:28 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Bill Wendling <morbo@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
-Message-ID: <20210727201328.GY1583@gate.crashing.org>
-References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com> <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org> <YP+ZOx8BETgufxBS@kroah.com> <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com> <YP+ql3QFYnefR/Cf@kroah.com> <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com> <YQBJfAuMJhvd2TcJ@kroah.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQBJfAuMJhvd2TcJ@kroah.com>
-User-Agent: Mutt/1.4.2.3i
+        id S231414AbhG0URD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:17:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27775 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230425AbhG0URB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 16:17:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627417020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ByUPLbiVuvdvoapeEFXQAcFKJj/8lLrwBdwnV9vgH+s=;
+        b=iIPYqXhCxCQ/tI2aYQFlODE1F3UluJwhMLsCtJIL6dxTpUc6duCZErA/0NMrf/FQ9v6VYQ
+        kVXxAUsNLVyGRANNgGGwZuA/kcpiszOqAO1LQ4eAMpIY3IBJLke102HomkElsJgcSwK3U4
+        9oeGI14kIdPEi0z3L79v7iom4+LBXQw=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-iF47fWH6Oy2iUPfTVhnXug-1; Tue, 27 Jul 2021 16:16:59 -0400
+X-MC-Unique: iF47fWH6Oy2iUPfTVhnXug-1
+Received: by mail-qt1-f198.google.com with SMTP id f9-20020a05622a1a09b02902615523e725so6931161qtb.21
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:16:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ByUPLbiVuvdvoapeEFXQAcFKJj/8lLrwBdwnV9vgH+s=;
+        b=e2rX834VLIE+/ezGQ5Ywot0D6ipQjAY7slUu3wk3VSTeOu6mbFDtL4vp5xr45IlCKm
+         BcIxiMUxVtSyZTjjJT8EJpQ+ZBv4NtPZHVu0Y3sRU/ygQ7QDIW6LoOKlSwSg80Ca0jpL
+         bSKhyihu1KEfpJ5lqnMfvuieAfy4s1YojLk8r8wEBZmp+axIzps5+Vk9wUwUjSFBr7EL
+         qLATGm/7xzWRdauMpyUGpzsEiIjDH4o68T87MxcyiDFJye4XpMmK9AZsIEvzX+G3Lc46
+         yudFnoPH2vhoDAppf+onWgrrq0ma3TflhrFHY5TGppqVk8E64bjamV/UX5kV22+aZlvx
+         idDQ==
+X-Gm-Message-State: AOAM53360L9iV/zc5r14fke3fIXxNThhLOOylbHvdUrh0mxysGOLKYGe
+        b1yNJat/glWl06fa4NRfptBnSP6OR+vIWGwiikNBmfqPya2o7fknaxqjGF6naPIqAmDdHydL8tn
+        hOeCa1rFoZn7q7uTFDYmADGXA
+X-Received: by 2002:a05:620a:318e:: with SMTP id bi14mr21424389qkb.176.1627417018992;
+        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkKaLGiPqMLIncbtDqJyUsjY34972lfs0JJ1TJHQSJbPBkHyyv8W+CXGcrtPiJOkaTxPBjIQ==
+X-Received: by 2002:a05:620a:318e:: with SMTP id bi14mr21424373qkb.176.1627417018811;
+        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id g10sm1910136qtp.67.2021.07.27.13.16.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 13:16:58 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 2/9] cgroup/cpuset: Fix a partition bug with hotplug
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210720141834.10624-1-longman@redhat.com>
+ <20210720141834.10624-3-longman@redhat.com>
+ <YP8+ajTnvrha+0O6@mtj.duckdns.org>
+Message-ID: <2173a00b-504a-1932-877d-d26775e4775c@redhat.com>
+Date:   Tue, 27 Jul 2021 16:16:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <YP8+ajTnvrha+0O6@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 07:59:24PM +0200, Greg Kroah-Hartman wrote:
-> On Tue, Jul 27, 2021 at 10:39:49AM -0700, Nick Desaulniers wrote:
-> > I think warn_unused_result should only really be used for functions
-> > where the return value should be used 100% of the time.
-> 
-> I too want a shiny new pony.
-> 
-> But here in the real world, sometimes you have functions that for 99% of
-> the users, you do want them to check the return value, but when you use
-> them in core code or startup code, you "know" you are safe to ignore the
-> return value.
-> 
-> That is the case here.  We have other fun examples of where people have
-> tried to add error handling to code that runs at boot that have actually
-> introduced security errors and they justify it with "but you have to
-> check error values!"
-> 
-> > If there are
-> > cases where it's ok to not check the return value, consider not using
-> > warn_unused_result on function declarations.
-> 
-> Ok, so what do you do when you have a function like this where 99.9% of
-> the users need to check this?  Do I really need to write a wrapper
-> function just for it so that I can use it "safely" in the core code
-> instead?
-> 
-> Something like:
-> 
-> void do_safe_thing_and_ignore_the_world(...)
-> {
-> 	__unused int error;
-> 
-> 	error = do_thing(...);
-> }
-> 
-> Or something else to get the compiler to be quiet about error being set
-> and never used?
+On 7/26/21 6:59 PM, Tejun Heo wrote:
+> On Tue, Jul 20, 2021 at 10:18:27AM -0400, Waiman Long wrote:
+>> In cpuset_hotplug_workfn(), the detection of whether the cpu list
+>> has been changed is done by comparing the effective cpus of the top
+>> cpuset with the cpu_active_mask. However, in the rare case that just
+>> all the CPUs in the subparts_cpus are offlined, the detection fails
+>> and the partition states are not updated correctly. Fix it by forcing
+>> the cpus_updated flag to true in this particular case.
+>>
+>> Fixes: 4b842da276a8 ("cpuset: Make CPU hotplug work with partition")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Applied to cgroup/for-5.15 w/ a minor update to the comment (I dropped
+> "just" before "all". It read weird to me.)
+>
+> Thanks.
+>
+Thanks for fixing the wording.
 
-The simplest is to write
-	if (do_thing()) {
-		/* Nothing here, we can safely ignore the return value
-		 * here, because of X and Y and I don't know, I have no
-		 * idea actually why we can in this example.  Hopefully
-		 * in real code people do have a good reason :-)
-		 */
-	}
+Cheers,
+Longman
 
-which should work in *any* compiler, doesn't need any extension, is
-quite elegant, and encourages documenting why we ignore the return
-value here.
-
-
-Segher
