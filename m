@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8020A3D73FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77353D740E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236420AbhG0LD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:03:56 -0400
-Received: from ni.piap.pl ([195.187.100.5]:44220 "EHLO ni.piap.pl"
+        id S236301AbhG0LLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236274AbhG0LDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:03:54 -0400
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        by ni.piap.pl (Postfix) with ESMTPSA id 5DD79C3F2A52;
-        Tue, 27 Jul 2021 13:03:53 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 5DD79C3F2A52
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1627383833; bh=Amq+jkF0BngY9L7QHpS8oR7xrYrTBUXFufJ73FZ21XY=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=jgJ1z/1MZIwzc4MYIOzf+Yq98QPAhzIFppHNqgiOTI1vMeWXq+gIUNQmnnhYicNNi
-         JmPtNJdqDddSQ/ttykbHmN19ab3Xkrrzu8d6/EI6mKHe4UgqOZYRtqQ1goFL0rao3D
-         P5st0lEF4LP0Y8zSZgs8w45F1Bue7IzoOxYCqsBI=
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        devicetree@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC v3] dt-binding: media: document ON Semi AR0521 sensor
- bindings
-References: <m37dhkdrat.fsf@t19.piap.pl>
-        <YP9ccgd7WNpHuLgG@pendragon.ideasonboard.com>
-        <m3o8aoavrv.fsf@t19.piap.pl>
-        <20210727105830.GH3@valkosipuli.retiisi.eu>
-Sender: khalasa@piap.pl
-Date:   Tue, 27 Jul 2021 13:03:53 +0200
-In-Reply-To: <20210727105830.GH3@valkosipuli.retiisi.eu> (Sakari Ailus's
-        message of "Tue, 27 Jul 2021 13:58:30 +0300")
-Message-ID: <m3fsw0auhy.fsf@t19.piap.pl>
+        id S235837AbhG0LLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:11:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A074619E3;
+        Tue, 27 Jul 2021 11:11:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627384302;
+        bh=nLjsVAhgwlSBCitmpN1IJ3bBHD3/LEZ6ErBjEHj2UQw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s6xDQ0oL5EWAtn4dknetElPbNaqnWbE3OLRM2RXVr9HiiKkdRlyBQpxVKs+V/GWiV
+         N6niSIpgS8PVUhJ6KfNEVFVAOYhP+JqcLWBZqJ22EVxqalfP4/KV4vEtTYauVVSqd2
+         wStzCadeDRfnG2mPzAcrpZK2pE26PjIfeV+IFKqI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     willy@infradead.org, akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        David Howells <dhowells@redhat.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH] mm: change fault_in_pages_* to have an unsigned size parameter
+Date:   Tue, 27 Jul 2021 13:11:36 +0200
+Message-Id: <20210727111136.457638-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 165268 [Jul 27 2021]
-X-KLMS-AntiSpam-Version: 5.9.20.0
-X-KLMS-AntiSpam-Envelope-From: khalasa@piap.pl
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=pass header.d=piap.pl
-X-KLMS-AntiSpam-Info: LuaCore: 449 449 5db59deca4a4f5e6ea34a93b13bc730e229092f4, {Tracking_Text_ENG_RU_Has_Extended_Latin_Letters, eng}, {Tracking_marketers, three}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;piap.pl:7.1.1;t19.piap.pl:7.1.1
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2021/07/27 08:44:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/07/27 08:46:00 #16963359
-X-KLMS-AntiVirus-Status: Clean, skipped
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1776; h=from:subject; bh=nLjsVAhgwlSBCitmpN1IJ3bBHD3/LEZ6ErBjEHj2UQw=; b=owGbwMvMwCRo6H6F97bub03G02pJDAn/Xz7Tj+Sbt3ZNnPGjct+/N4tP1DwsT+49WXmcbZ/qOpc1 p/YIdcSyMAgyMciKKbJ82cZzdH/FIUUvQ9vTMHNYmUCGMHBxCsBEovgYFjR875v86eZhj9IbxmsvH1 R0brk4r41hfoSvQIv9lsf7V2WcMrOYcK3xls23EwA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+fault_in_pages_writeable() and fault_in_pages_readable() treat the size
+parameter as unsigned, doing pointer math with the value, so make this
+explicit and set it to be a size_t type which all callers currently
+treat it as anyway.
 
-Sakari Ailus <sakari.ailus@iki.fi> writes:
+This solves the issue where static checkers get nervous seeing pointer
+arithmetic happening with a signed value.
 
-> I think Laurent meant:
->
-> 	    bus-type:
-> 	      const: 4
->
-> This way the bindings can be later amended with HiSPi support without
-> relying on defaults. Albeit the other busses in practice almost never end
-> up being used even if supported, apart from the standard BT.601, BT.656 a=
-nd
-> CSI-2.
->
-> Either way is fine IMO.
+Reported-by: Jordy Zomer <jordy@pwning.systems>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Howells <dhowells@redhat.com>
+Cc: William Kucharski <william.kucharski@oracle.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/pagemap.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Ok, so I'll leave it as is (apart from Rob's additions/changes).
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index ed02aa522263..5dcf446f42e5 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -736,7 +736,7 @@ extern void add_page_wait_queue(struct page *page, wait_queue_entry_t *waiter);
+ /*
+  * Fault everything in given userspace address range in.
+  */
+-static inline int fault_in_pages_writeable(char __user *uaddr, int size)
++static inline int fault_in_pages_writeable(char __user *uaddr, size_t size)
+ {
+ 	char __user *end = uaddr + size - 1;
+ 
+@@ -763,7 +763,7 @@ static inline int fault_in_pages_writeable(char __user *uaddr, int size)
+ 	return 0;
+ }
+ 
+-static inline int fault_in_pages_readable(const char __user *uaddr, int size)
++static inline int fault_in_pages_readable(const char __user *uaddr, size_t size)
+ {
+ 	volatile char c;
+ 	const char __user *end = uaddr + size - 1;
+-- 
+2.32.0
 
-> No need to add support for the driver.
-
-Ok.
-
-Thanks.
---=20
-Krzysztof "Chris" Ha=C5=82asa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
