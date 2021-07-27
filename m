@@ -2,92 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10B93D6E2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 07:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA54E3D6E31
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 07:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235539AbhG0Fe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 01:34:59 -0400
-Received: from relay.sw.ru ([185.231.240.75]:40398 "EHLO relay.sw.ru"
+        id S235476AbhG0Ff4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 01:35:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235396AbhG0FeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 01:34:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=QOm/SWMV/Asmk/Sj3wEkt1IsJkdhz+j421ZJ6yW2Ajw=; b=vhl1qmBiYUKwAvV9lqD
-        QMCbVBT3bPeLgAL4tCas91WdXWvkx8RMGHbZGanOuOoWB/DMRrRYbWwE21/q7zDJWrSM7vkgzXmSg
-        wLCaGgc1EwknLaQ4Aj+gMMQusELjTBdTXq1iOedLAbvyJt9TxSEm6VtWckDYHy7CqsJEh70TSBo=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1m8FjT-005LZi-RM; Tue, 27 Jul 2021 08:34:23 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH v7 10/10] memcg: enable accounting for ldt_struct objects
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-References: <6f21a0e0-bd36-b6be-1ffa-0dc86c06c470@virtuozzo.com>
- <cover.1627362057.git.vvs@virtuozzo.com>
-Message-ID: <38010594-50fe-c06d-7cb0-d1f77ca422f3@virtuozzo.com>
-Date:   Tue, 27 Jul 2021 08:34:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234997AbhG0Ffa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 01:35:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 553D0610E5;
+        Tue, 27 Jul 2021 05:35:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627364130;
+        bh=QZn3Y/5lDoT1CB5x1bzBxI7iva5uev1ci/Z3NrJyvcQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ccFT+eHKP9bc15BaEMLa0POjMZRlzJJ/bNL6ZlM0iKkYA2E8+J4RecniBbiKJMcJt
+         yO6L9yEahBpHTQyKj3ulr5lRfoWTq528otNILO+BEik6p5573scCcYY5hsxQFPtkiv
+         EKEJighbKoKHmGImych7iaIwt8bDWRy17Hv1rsf8=
+Date:   Tue, 27 Jul 2021 07:35:28 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?dGNzX2tlcm5lbCjohb7orq/kupHlhoXmoLjlvIDlj5HogIUp?= 
+        <tcs_kernel@tencent.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>,
+        "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
+        "yepeilin.cs@gmail.com" <yepeilin.cs@gmail.com>,
+        "penguin-kernel@I-love.SAKURA.ne.jp" 
+        <penguin-kernel@i-love.sakura.ne.jp>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "george.kennedy@oracle.com" <george.kennedy@oracle.com>,
+        "ducheng2@gmail.com" <ducheng2@gmail.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [Internet]Re: [PATCH] fbcon: Out-Of-Bounds write in
+ sys_imageblit, add range check
+Message-ID: <YP+bINav7znIU6xF@kroah.com>
+References: <D5DF8A1C-5FA2-426B-AAB4-3199AEA0A02E@tencent.com>
+ <YP68cQ4WVVusCv0N@ravnborg.org>
+ <28F2D8E8-B519-40F6-B6CD-98A0FAD67CD7@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1627362057.git.vvs@virtuozzo.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <28F2D8E8-B519-40F6-B6CD-98A0FAD67CD7@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Each task can request own LDT and force the kernel to allocate up to
-64Kb memory per-mm.
+On Tue, Jul 27, 2021 at 01:53:13AM +0000, tcs_kernel(腾讯云内核开发者) wrote:
+> yres and vyres can be controlled by user mode paramaters, and cause p->vrows to become a negative value. While this value be passed to real_y function, the ypos will be out of screen range.
+> This is an out-of-bounds write bug.
+> I think updatescrollmode is the right place to validate values supplied by a user ioctl, because only here makes --operation,and 0 is a legal value before that.
 
-There are legitimate workloads with hundreds of processes and there
-can be hundreds of workloads running on large machines.
-The unaccounted memory can cause isolation issues between the workloads
-particularly on highly utilized machines.
+Please wrap your changelog text.
 
-It makes sense to account for this objects to restrict the host's memory
-consumption from inside the memcg-limited container.
+> 
+> Signed-off-by: Tencent Cloud System tcs_kernel@tencent.com
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/ldt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+That is not the name of a person :(
 
-diff --git a/arch/x86/kernel/ldt.c b/arch/x86/kernel/ldt.c
-index aa15132..525876e 100644
---- a/arch/x86/kernel/ldt.c
-+++ b/arch/x86/kernel/ldt.c
-@@ -154,7 +154,7 @@ static struct ldt_struct *alloc_ldt_struct(unsigned int num_entries)
- 	if (num_entries > LDT_ENTRIES)
- 		return NULL;
- 
--	new_ldt = kmalloc(sizeof(struct ldt_struct), GFP_KERNEL);
-+	new_ldt = kmalloc(sizeof(struct ldt_struct), GFP_KERNEL_ACCOUNT);
- 	if (!new_ldt)
- 		return NULL;
- 
-@@ -168,9 +168,9 @@ static struct ldt_struct *alloc_ldt_struct(unsigned int num_entries)
- 	 * than PAGE_SIZE.
- 	 */
- 	if (alloc_size > PAGE_SIZE)
--		new_ldt->entries = vzalloc(alloc_size);
-+		new_ldt->entries = __vmalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
- 	else
--		new_ldt->entries = (void *)get_zeroed_page(GFP_KERNEL);
-+		new_ldt->entries = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
- 
- 	if (!new_ldt->entries) {
- 		kfree(new_ldt);
--- 
-1.8.3.1
+And the format isn't correct, so there's nothing we can do with this
+patch, and the patch itself is corrupted and could not be applied :(
 
+Also, what about checking these values earlier?  How can the value be 0
+earlier and be acceptable?  Putting bounds on the user-provided values
+would be much easier, right?
+
+thanks,
+
+greg k-h
