@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7ACE3D734B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112A73D734F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236298AbhG0Kc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:32:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhG0Kc4 (ORCPT
+        id S236340AbhG0KdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:33:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3500 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231745AbhG0KdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:32:56 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B566C061757;
-        Tue, 27 Jul 2021 03:32:57 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id da26so14702584edb.1;
-        Tue, 27 Jul 2021 03:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jnFmiiCARwRXURV87SUoI4OAHXmTW3lr0hJaEC8D8Qo=;
-        b=t5/8OCiV65LjtymFAaIrJfaSLZnhAwBIp4orIX/0Z1v2iy1a6amOxkKFI69uy0S14q
-         VzeM8IvLh4y36jG3aVxfAZs0TMweAVVWwlFoLTPJPmIkwmD3FBxA03ABTrmZUU1gM1fR
-         fZ1Viz0+VHQT6fnAzY6kr2TTNtJ3FoWLklbrOd3X5kSn49K/+E3EgRLkwos/ewcrJhA+
-         KQkiS+2K+2ALVEnQe+9ARSCiIAbjCKtg41e6Wjz1AKmDvAy/ZhssNgyfC2HSpxX5OdeY
-         gNoOyPnc8tm9+4qU59BAE2P8vp0JjeVpjLEMIYbhJZ6XYS5Cn8jghBtzA5TArnoUCGRQ
-         DlpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=jnFmiiCARwRXURV87SUoI4OAHXmTW3lr0hJaEC8D8Qo=;
-        b=lOBfW6S/QVd/2Eecv2zKZ6xDMYBXzmgGpivMzg5of/TWGYbCkP0BMaBUup4wN+5HJ2
-         TciZBr35PFQor1S3FAPkIE4QzoQ4aEzQgw2pSNgcB2TIBSaDWNgbM5FH5WpUth/T9XGr
-         dQVpgD1BVVEk2IzeZebnMBgTF+GupzI9HCpbEO6JreMoUacx2blA65Int0uC6lZU6iHf
-         nT9rIBBvwpH/YcowYGKyMKjEFb3JMmRLoNbHQUXh4eYRNHdjHSMIXXptdxatMfqkPXYl
-         A1pkQO9iw/29yS9CD/5rWylqlUiWCDBNTQyXbdpS7AsYfYo8YUkZ9zjdvXo/wFeB3rua
-         Ucwg==
-X-Gm-Message-State: AOAM532VqHz45NiFAaGaUdC7yhyCtrMHhcDGYzxmN2YhmLE8AfAQYVrG
-        5+4yigTGhXJDiSz2LLL8sRv114VbC6s=
-X-Google-Smtp-Source: ABdhPJwVzbWCsmg6tp3vU13MkpOZeZpi6hJPrU/wtF3E5a4blQzAdpGohkBz9ys4/iB3AFYxRb59+A==
-X-Received: by 2002:a05:6402:3489:: with SMTP id v9mr27339068edc.124.1627381975605;
-        Tue, 27 Jul 2021 03:32:55 -0700 (PDT)
-Received: from avogadro.. (93-33-132-114.ip44.fastwebnet.it. [93.33.132.114])
-        by smtp.gmail.com with ESMTPSA id la23sm742030ejc.63.2021.07.27.03.32.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 03:32:54 -0700 (PDT)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     maz@kernel.org, kvmarm@lists.cs.columbia.edu
-Subject: [PATCH] KVM: ARM: count remote TLB flushes
-Date:   Tue, 27 Jul 2021 12:32:51 +0200
-Message-Id: <20210727103251.16561-1-pbonzini@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 27 Jul 2021 06:33:17 -0400
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GYt9z3sY4z6L9mJ;
+        Tue, 27 Jul 2021 18:21:27 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 12:33:16 +0200
+Received: from [10.47.80.220] (10.47.80.220) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 27 Jul
+ 2021 11:33:15 +0100
+Subject: Re: [PATCH] perf pmu: Fix alias matching
+To:     "Jin, Yao" <yao.jin@linux.intel.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>, <kjain@linux.ibm.com>,
+        <alexander.shishkin@linux.intel.com>, <irogers@google.com>
+CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1626793819-79090-1-git-send-email-john.garry@huawei.com>
+ <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <df5e5893-08ba-1fb5-b92a-921b32ed3b2f@huawei.com>
+Date:   Tue, 27 Jul 2021 11:32:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.220]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM/ARM has an architecture-specific implementation of
-kvm_flush_remote_tlbs; however, unlike the generic one,
-it does not count the flushes in kvm->stat.remote_tlb_flush,
-so that it inexorably remained stuck to zero.
+On 21/07/2021 04:07, Jin, Yao wrote:
+>>
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/arm64/kvm/mmu.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Arnaldo,
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index c10207fed2f3..6cf16b43bfcc 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -81,6 +81,7 @@ static bool memslot_is_logging(struct kvm_memory_slot *memslot)
- void kvm_flush_remote_tlbs(struct kvm *kvm)
- {
- 	kvm_call_hyp(__kvm_tlb_flush_vmid, &kvm->arch.mmu);
-+	++kvm->stat.generic.remote_tlb_flush;
- }
- 
- static bool kvm_is_device_pfn(unsigned long pfn)
--- 
-2.31.1
+Can you kindly consider picking up this patch?
+
+Thanks
+
+>> Fixes: c47a5599eda3 ("perf tools: Fix pattern matching for same 
+>> substring in different PMU type")
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>> ---
+>> @Jin Yao, please test for your scenarios
+>>
+> 
+> For x86, the form uncore_pmu_{digits} or the uncore_pmu itself are 
+> supported. We don't have more complex case such as the name in the form 
+> aaa_bbbX_cccY. So my test didn't cover that complex form.
+> 
+> For my test, your patch works, thanks! :)
+
+Can we take this as a tested-by?
+
 
