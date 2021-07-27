@@ -2,74 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B953D71B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2F03D71C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236027AbhG0JHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:07:30 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:53246 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235923AbhG0JH2 (ORCPT
+        id S236080AbhG0JOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:14:14 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:50991 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235940AbhG0JON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:07:28 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id EA62C22122;
-        Tue, 27 Jul 2021 09:07:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627376847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4kqsL/kMeCIBqvFqX/xS0XG6JPdBYVK0X4R2ZoBBdtg=;
-        b=HCl2FvwqebD17IhenE+bTNGLM60EYhXC946mn9mDUT+fUoOfJzJ4KJrhG4FS8JqXfW+4f+
-        POCb77KlHUooGJ7gMmk0dh91LMRdsklrqGozFPy6dW8O1MXSX6H443zdFVKucZYF8nkoDA
-        Oc1KoqHMWbG4xVVYfXszrdXPBshABAs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627376847;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4kqsL/kMeCIBqvFqX/xS0XG6JPdBYVK0X4R2ZoBBdtg=;
-        b=Lbz981pZmgRdLr2/Ht2oeGPLZaIjcUUj4OmrQQreXgkNv80mh6PbahkY4DwhnhhBbBN7XS
-        A7q3MPhTfsusf6BA==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id D684AA3B84;
-        Tue, 27 Jul 2021 09:07:27 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EED141E0BFA; Tue, 27 Jul 2021 11:07:27 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 11:07:27 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [ext3:generic_block_fiemap_removal 3/4] file.c:undefined
- reference to `iomap_fiemap'
-Message-ID: <20210727090727.GB29619@quack2.suse.cz>
-References: <202107271057.xwwoSXFy-lkp@intel.com>
- <YP+umZ1/XX969ioH@infradead.org>
- <20210727085551.GA29619@quack2.suse.cz>
- <20210727085742.GA21354@lst.de>
+        Tue, 27 Jul 2021 05:14:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1627377254; x=1658913254;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=pmL2u0pxNrKXvS4hIf8AmQFxND+OwrHLSSu25nKLwqg=;
+  b=OONNfSjLJrDdQRE1Y5EBWvqoX9RD58YHBsd5QsMq1B8wLDqOFe1FoeSo
+   IHeMnYjpVceVNc/kjVUO3y6zw3d6F4kM4M1WqJoc4UPiyXnmq6IpjVXWj
+   l9BVUFgs8QAQruR2seu2ohxu54aBqfjsw6YKknR2iToesaIDCCSBBH+ub
+   VGEDX2wkVBmdmPXL646iWWvlVoSR2PG2+UpMVhnJ2xflqormOsDAoAlVE
+   FTC6BBkRRd119q4dJEhJGoSkTTCKT1DhIe4y19jAeEdSATwD0D5D5Rsl6
+   RyXkO7KlHI+87Vb8ZT6+Jb/4EKVnIeBBLvC5PnqCu282YJvl6ZJ/vpGZ8
+   g==;
+IronPort-SDR: PVaNFV0JX0JMoala1VarmJMZl3qTf6twL1DRW++N41Qy7zyJU0Cal6plT/L1srcNvr3uAXzJGf
+ ff/DFjyKg+gzfhyc39PXELDwJGxcCKgiXIck0J3tg6HUzY6MieBWD6etdBw7VNVNGd5uVzy6A1
+ bu8iMkCqc/doWcau9kKAvEnAUBKjyMSSDumf90JmXHPsO3c2dbZ7uqxvN056cDr++/kBzJPici
+ 37F73iOGK2FKYR3+FmeB6Np/OUm3ga8K5YAtotjwyLCGtyBLbev0It0FhDuV0C8TSKmKx65wjM
+ Hk4d8r0gjpayaPV5jA7t+HVP
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; 
+   d="scan'208";a="63715936"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jul 2021 02:14:13 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 02:14:12 -0700
+Received: from ness.home (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 27 Jul 2021 02:14:11 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: [PATCH] ARM: dts: at91: sama5d4_xplained: change the key code of the gpio key
+Date:   Tue, 27 Jul 2021 11:13:51 +0200
+Message-ID: <20210727091351.44475-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727085742.GA21354@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 27-07-21 10:57:42, Christoph Hellwig wrote:
-> On Tue, Jul 27, 2021 at 10:55:51AM +0200, Jan Kara wrote:
-> > On Tue 27-07-21 07:58:33, Christoph Hellwig wrote:
-> > > Oops, hpfs now needs to select FS_IOMAP:
-> > 
-> > And I assume ext2 as well, right? So far ext2 needed iomap only for DAX
-> > which selects FS_IOMAP itself. But now ext2 needs iomap also without DAX...
-> 
-> Indeed.
+From: Ludovic Desroches <ludovic.desroches@microchip.com>
 
-I've ammended the two commits and pushed the result out.
-								Honza
+Having a button code and not a key code causes issues with libinput.
+udev won't set ID_INPUT_KEY. If it is forced, then it causes a bug
+within libinput.
+
+Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+---
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+index 541779af049f..d241c24f0d83 100644
+--- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+@@ -7,6 +7,7 @@
+  */
+ /dts-v1/;
+ #include "sama5d4.dtsi"
++#include <dt-bindings/input/input.h>
+ 
+ / {
+ 	model = "Atmel SAMA5D4 Xplained";
+@@ -250,7 +251,7 @@ gpio_keys {
+ 		pb_user1 {
+ 			label = "pb_user1";
+ 			gpios = <&pioE 8 GPIO_ACTIVE_HIGH>;
+-			linux,code = <0x100>;
++			linux,code = <KEY_PROG1>;
+ 			wakeup-source;
+ 		};
+ 	};
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.32.0
+
