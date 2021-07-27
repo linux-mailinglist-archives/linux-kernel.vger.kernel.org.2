@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF303D78BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1660F3D78C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236954AbhG0OoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 10:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232419AbhG0OoE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 10:44:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0797761AFF;
-        Tue, 27 Jul 2021 14:44:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627397044;
-        bh=DCZF5vBtRxSN3Atl2JhvAAXniNqQ9yKfWqAuw901/g0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hXmkITMiD+G++yOdjW8wvcqV7BEWConYzRL7641nwDZEuw3AsVgfogwi2oLfraOAi
-         eCpITE1ME7ar+yxsaWsDT6BqcgMhr6goj4e2jzTyDjsoANtCbVbCB4+F0IRmnW8QfI
-         2yKPtVByc5VwdN+++Fo4CdqnT/LTpEWaUXVHLYVJV5ii0yMRKy+wgT7lAdPr85tC7G
-         ZR5MoP9Aed3Xt1rtxWSxJmeM0XSfNdVH7kFEhdGOtTp/3EYfgS6P2vCRjUDzsFI0aS
-         geDl2wujqFTNaN/23At38LkTBaLLw3kO99hI/FLsyAjtZvITSpbH1TwOPdNu7vhKEq
-         qd7n6CC9zW7YQ==
-Received: by mail-ed1-f54.google.com with SMTP id u12so15696008eds.2;
-        Tue, 27 Jul 2021 07:44:03 -0700 (PDT)
-X-Gm-Message-State: AOAM5304AhnuUB1i7sTjf3Xha6V4SCP6D+FAVWT4zHvmdMFNd16zOISy
-        d39dH/ldQa76KU8sLALeOveOckwqMeHVG1ulsg==
-X-Google-Smtp-Source: ABdhPJx8n4J+Z7UVlfNp/CVCcr9EQN4eY3722ljng8pzZMprzmkjsfd/Smzx7DvX5NOBodU83zHEZApOaOyOxc/Uv34=
-X-Received: by 2002:aa7:df12:: with SMTP id c18mr28268276edy.62.1627397042636;
- Tue, 27 Jul 2021 07:44:02 -0700 (PDT)
+        id S236856AbhG0Opn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 10:45:43 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:53325 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232598AbhG0Opg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:45:36 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id D43DC3200929;
+        Tue, 27 Jul 2021 10:45:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 27 Jul 2021 10:45:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=FDmSTqAMIa3P+05AxQYP2U13ooj
+        E7DCXQvBJQxWVRbg=; b=Dmh+XiF2XG2bOwhV8fls5IdOMpumt1o+7ZckRYlENCz
+        v/BlA1JSagd8CKOhZKzFswkbZXxwo6HNmCBQsOuOW9jXhaCngvEKhPyG43aeyX0+
+        Yr+eGC/pylBLA2sUr1emJL5Ifj0UjqK40kO+ZezspTI0HOyFl7sYGADfYWEtvtOi
+        qjaNHCRaNL2o9F71U7NPlWRaGx0kgPU2F7XMMXCb6ug4wrhfOYIvH/tbBlNEDkXO
+        vjL/ijDpogBkrTzO4UTt0l06Uoy0hKJfEijvul7LZAi5X9oeqXb8myFUw1LVKiqq
+        sQUWGbd0QlT7rx/oK9pVGfhcrO1K5OGCwmxQO1ebjug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=FDmSTq
+        AMIa3P+05AxQYP2U13oojE7DCXQvBJQxWVRbg=; b=uuqjxPd5oP5zjdBVHUXDoL
+        UUMShYnH/Rqy4N06KI/YDn3o89sCcCXNm0+RoocoqpD52L64IeIHTto053eLLuDC
+        RNeiDgGTCXCWuhRUg3Pxdq3anPCz+1BuQhNL/MOZ+hK/oA0tkpley2yHk7R/uHbU
+        Su0v6GzUX4L4HgOHn+PNw/9tK2py84Osqv+PlqbgpwSjSnv25epahULvHY2QQH4p
+        3NGoGyl5L28+6h7HKidjp7AB3rMfLtPEMu7jVoo8N9zISrPuoNadu4XG3XnRPO2/
+        O72bcXqwnAyLYQRGkuepDbfuAwWDf/ZNQzPa6IzTXK9x/uXeCf/OPz1Qpg/IMDuw
+        ==
+X-ME-Sender: <xms:CxwAYZX4HxMI0o_TUmlZh_BwQ_qQRzq9CdaJyuqKom5OT_bal6ZNtg>
+    <xme:CxwAYZnRRIUCRBqfscFhinmAN0j_zD1eac3RyoH8LetEzofL_hCa9wExFsjG-Qdij
+    a_X9IXGNo4Z5w>
+X-ME-Received: <xmr:CxwAYVYMCXGSIrROb_-DF3ykZHG0dIuSJovOS9OKZYd688YPqoz15M_uTVNUuRxwXgMSQM6EriCP5mJwGSQXWQkp6TmRQTkX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuheejgf
+    ffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrd
+    gtohhm
+X-ME-Proxy: <xmx:CxwAYcXwGnpuUfXAQm6BGNzt-YzyleCg8gp11eITTr53RvCiOUEL8A>
+    <xmx:CxwAYTlGqTnVHDqGyKsxT92gYzqb1d0Z3asqsshRr8OR80NQ5tsxuw>
+    <xmx:CxwAYZe4nE2yO7eICR3y3Oqw-kcRcreKBiOCy5XJxKMZ7ylBl5jm4g>
+    <xmx:DBwAYV62C9R3rnIhAWHH7zRBLY10zCZuRXpld_9N5gJu0yeOxoLrvQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Jul 2021 10:45:31 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 16:45:27 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linyu Yuan <linyyuan@codeaurora.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: Re: linux-next: manual merge of the usb tree with the usb.current
+ tree
+Message-ID: <YQAcB5uImRXg4gs8@kroah.com>
+References: <20210722141228.57a92e94@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210721191558.22484-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210721191558.22484-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210721191558.22484-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 27 Jul 2021 08:43:51 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKLGf5VGwt9fbs4nYuxkq12sfTnuvmENTLshz45jPE+GA@mail.gmail.com>
-Message-ID: <CAL_JsqKLGf5VGwt9fbs4nYuxkq12sfTnuvmENTLshz45jPE+GA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] dt-bindings: pinctrl: renesas,rzg2l-pinctrl: Add
- DT bindings for RZ/G2L pinctrl
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:MEDIA DRIVERS FOR RENESAS - FCP" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210722141228.57a92e94@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 1:16 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Add device tree binding documentation and header file for Renesas
-> RZ/G2L pinctrl.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  .../pinctrl/renesas,rzg2l-pinctrl.yaml        | 155 ++++++++++++++++++
->  include/dt-bindings/pinctrl/rzg2l-pinctrl.h   |  23 +++
->  2 files changed, 178 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
->  create mode 100644 include/dt-bindings/pinctrl/rzg2l-pinctrl.h
+On Thu, Jul 22, 2021 at 02:12:28PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the usb tree got a conflict in:
+> 
+>   drivers/usb/dwc3/gadget.c
+> 
+> between commit:
+> 
+>   40edb52298df ("usb: dwc3: avoid NULL access of usb_gadget_driver")
+> 
+> from the usb.current tree and commit:
+> 
+>   9f607a309fbe ("usb: dwc3: Resize TX FIFOs to meet EP bursting requirements")
+> 
+> from the usb tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This should now be resolved in my trees.
+
+thanks,
+
+greg k-h
