@@ -2,56 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBDB3D70E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E633D70DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235897AbhG0IKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
+        id S235951AbhG0IIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235629AbhG0IKc (ORCPT
+        with ESMTP id S235847AbhG0IIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:10:32 -0400
+        Tue, 27 Jul 2021 04:08:52 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F544C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:10:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7104FC061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:08:52 -0700 (PDT)
 Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m8I92-0006l5-74; Tue, 27 Jul 2021 10:08:56 +0200
+        id 1m8I8v-0006l6-4w; Tue, 27 Jul 2021 10:08:49 +0200
 Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
         by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m8I8u-0005sq-D8; Tue, 27 Jul 2021 10:08:48 +0200
+        id 1m8I8u-0005st-IP; Tue, 27 Jul 2021 10:08:48 +0200
 Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
         (envelope-from <ukl@pengutronix.de>)
-        id 1m8I8u-0004Ek-Be; Tue, 27 Jul 2021 10:08:48 +0200
+        id 1m8I8u-0004F6-Hd; Tue, 27 Jul 2021 10:08:48 +0200
 From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
         <u.kleine-koenig@pengutronix.de>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
         Finn Thain <fthain@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        netdev@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        =?UTF-8?q?Samuel=20Iglesias=20Gons=C3=A1lvez?= 
-        <siglesias@igalia.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        linux-sh@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 0/5] Some cleanups after making bus_type::remove return void
-Date:   Tue, 27 Jul 2021 10:08:35 +0200
-Message-Id: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 1/5] nubus: Simplify check in remove callback
+Date:   Tue, 27 Jul 2021 10:08:36 +0200
+Message-Id: <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
+References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+X-Patch-Hashes: v=1; h=sha256; i=TjLBJt0QGxFmp7SpMOjzQEIkuFPLuMwSswChhiWQZSU=; m=wXPfirdbvvcSYlx+JCUfR/1GbjenG0HiiYu5sgWWGUA=; p=Y7UBaaGsszQzvtKk/Xj3uSk938y5pFeeoLuZiSQOfmc=; g=c25b7253ee9694e5d77118adf90c05984d48eb27
+X-Patch-Sig: m=pgp; i=u.kleine-koenig@pengutronix.de; s=0x0D2511F322BFAB1C1580266BE2DCDD9132669BD6; b=iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD/vvEACgkQwfwUeK3K7AkflQf+NeZ PUIr85FBlIyUZiqYPoXkBBVVoe7rIOLiihzEf4bz18isSmVBY9Pj04XC7/oN4Y+uoiiFNbmV7yXWh VWprm4Yp+plvlP6pwNkotQEuPaKmgYFPZuTuKLnubTMtX2h0M8yCtPp4tDLX2xJNQ4RIptD8//YBC KoRGTtUJO0wAHre4LjAYMaqr8mIvtsKZ0sBfPeGp6Rg3eitFIJ3UaOwJIsSqYLM3uE+ywfVCYqtjv tgY440Bk0Qm3FoCBcWbk6Fv9g56AiW5XhfXS7On5BOue18M1xSEwdCrjA0VY7Pr6E2ygrd3HEiejx gM0MdZH9ASXxaxy3cri0OdkEEzy7Yqg==
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
 X-SA-Exim-Mail-From: ukl@pengutronix.de
@@ -61,49 +52,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The driver core only calls a remove callback when the device was
+successfully bound (aka probed) before. So dev->driver is never NULL.
 
-while working on the patch set that made bus_type::remove return void I
-noticed a few things that could be improved. This series addresses
-these. Apart from a simple conflict between the two zorro patches there
-are no interdependencies between these patches. I created them on top of
-Greg's bus_remove_return_void-5.15 tag[1]. There might be further
-(probably simple) conflicts if they are applied based on an earlier
-commit.
+Apart from that, the compiler might already assume dev->driver being
+non-NULL after to_nubus_driver(dev->driver) was called.
 
-So it should be easily possible to let these patches go in through their
-usual maintainer trees. So please if you're a maintainer state if you
-prefer to take the patches yourself or if you prefer that Greg takes
-them together.
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/nubus/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards
-Uwe
-
-[1] available at
-
-	git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/bus_remove_return_void-5.15
-
-    see https://lore.kernel.org/lkml/YPkwQwf0dUKnGA7L@kroah.com
-
-Uwe Kleine-König (5):
-  nubus: Simplify check in remove callback
-  nubus: Make struct nubus_driver::remove return void
-  sh: superhyway: Simplify check in remove callback
-  zorro: Simplify remove callback
-  zorro: Drop useless (and hardly used) .driver member in struct
-    zorro_dev
-
- drivers/net/ethernet/8390/mac8390.c     |  3 +--
- drivers/net/ethernet/natsemi/macsonic.c |  4 +---
- drivers/nubus/bus.c                     |  2 +-
- drivers/sh/superhyway/superhyway.c      |  2 +-
- drivers/zorro/zorro-driver.c            | 13 ++++---------
- include/linux/nubus.h                   |  2 +-
- include/linux/zorro.h                   |  1 -
- 7 files changed, 9 insertions(+), 18 deletions(-)
-
-
-base-commit: fc7a6209d5710618eb4f72a77cd81b8d694ecf89
+diff --git a/drivers/nubus/bus.c b/drivers/nubus/bus.c
+index d9d04f27f89b..17fad660032c 100644
+--- a/drivers/nubus/bus.c
++++ b/drivers/nubus/bus.c
+@@ -33,7 +33,7 @@ static void nubus_device_remove(struct device *dev)
+ {
+ 	struct nubus_driver *ndrv = to_nubus_driver(dev->driver);
+ 
+-	if (dev->driver && ndrv->remove)
++	if (ndrv->remove)
+ 		ndrv->remove(to_nubus_board(dev));
+ }
+ 
 -- 
 2.30.2
 
