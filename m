@@ -2,79 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E03F3D7ED0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9B13D7ED2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhG0UG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S231947AbhG0UGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbhG0UGY (ORCPT
+        with ESMTP id S230469AbhG0UGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:06:24 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0DFC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:06:22 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id e5so15535517pld.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:06:22 -0700 (PDT)
+        Tue, 27 Jul 2021 16:06:41 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873E3C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:06:40 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so818539pjh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:06:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qD/PBt3CNf26h7b3FD4L2B5zkfWzkBxO/uqzlPboJk4=;
-        b=RtKqi/DcgLMxnMaj3mmxGPKAlnxq8ASoHJIzENVvIf3qFiGfkOTG3XdpIhr6YpXXDj
-         NIq54XP3HiGYLgLnhQCb5WsbrWd2m9bnyWVyvbsDVfIVyeGddeJXCgxZXd5HVQ/6cFFQ
-         oLWOXdmGT91LEzQMFj1574ESYTGDz9iCP7LxU=
+        d=telus.net; s=google;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=PwWl2aSuu6+Di4TaYJklMnkd+oXVKsyMZMTbKM+A+u8=;
+        b=GjjTQEx7cmQ4zLT2IsEMp1dHExxHTJJPdNifLGuzeHOyl85uK+W94wFykfmba9pGcz
+         0HTKN8p3jjW0tpWPvalpO9Key8qoO6tvnO5OTsjj8leLwAns+o4cT1wdKg8+vwvCaBvN
+         usKbb5AzUN4ROfXv/zsx7tqgYkLiBq7BuWrPnedWeiPM1RU8qadLPpgIPPF3bJ8Q8p95
+         03iPFN5yl2EPY1etCgOZ/cR2Pcrb+smAA4CV5aYuUYtGqfIM8Q7rd11Qy5QmimU9LPQ3
+         mZSqPQkGw8ietikJcSxYZL0LUUER6tPhF0lOUAuJofuQnJLpXM00K1r6Mpi96piZEDeV
+         ixwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qD/PBt3CNf26h7b3FD4L2B5zkfWzkBxO/uqzlPboJk4=;
-        b=aE9iWd54lLh2W4IHzUGpMnmis2dCdoQCxQsi/oewPaFn5xr3k103TmoWHCvqDMqwmn
-         /RhAGlv5Pc9vR1ydIa3MCJsSItMSS9dFlgP7Yo6LQD86mKblN9LuSuFqlCZFWoeShjdP
-         WEFoN3l/T9PYv1WUiVEvU1uT5RnYW27cBqNQ6nWkD++8BCnqCdp6A0SoACmhxoih0my/
-         zBQtsKCR4XDwTgGHIcfgARfw4sJlUCB4mTYCjgzP6luaf+T8Q249fiIWTb1ztQGzhfog
-         4r6KAQnb+qjtLozlEkvA8FYHo0110tyVANIo/aYkGc1UXgb1fdSeJMEMjCCN4k5T3FQR
-         74OA==
-X-Gm-Message-State: AOAM532HvzZPpE4W0PaXhkYUT9YaO8tlzuHj3I9guLzYeMdWGEKVHNV6
-        5kD0ayWqAtB3oFDJrmqMdwqN8zmOOXGNiqkTeThJgg==
-X-Google-Smtp-Source: ABdhPJwHwSVtXYZElTiWWA6Bv52JZubsCu2gGXGiKvvmMRBeVFTzoiIWcaSwvUKA3i3Aa/uGinn2/U6KKAmEYcASojQ=
-X-Received: by 2002:a17:902:7885:b029:12c:437a:95eb with SMTP id
- q5-20020a1709027885b029012c437a95ebmr4647830pll.80.1627416381609; Tue, 27 Jul
- 2021 13:06:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=PwWl2aSuu6+Di4TaYJklMnkd+oXVKsyMZMTbKM+A+u8=;
+        b=F1dWQaQajWjA0HdyxaN655H3ad8Ulkli56gCcUH421ZF1MvV5+1xUb40N9lQA+UZxH
+         0EOmTwZnyXIFcL5udAaaMNobDhe53k6G6v54CL/v18aXxhIdOU45/1wj7h5JdfUC5fGZ
+         7OxcDMZ7yQTlQWNh4c5UxrJdM5klxP6KshcWdIT5rx+awcZzvk0eYnz26wnJA0uXgzRD
+         Ejf+iV1Da9RcnXdMQA14D60szJArX3Ma/fHVtVZ5mBrRXAGp8mpIgfev998MxnV3BpG5
+         fTi2dJcJl+oSvPqmFkJqVy4gYyqIH5Ne9Pwn1cpy5fgUFl9TgfxOhNfc8otgiEJZrqpO
+         rHlg==
+X-Gm-Message-State: AOAM533E9sZ9d1aim1N3lRLVuYv1jSi/o/XEPQ0s2nbAC586v8o+dR1f
+        WOAkVP5wWsEz267EwSisKtVTiQ==
+X-Google-Smtp-Source: ABdhPJz1eke9REWf5ey8sjMLPlapYCBiZ5nkq2cf+SnoX82CZjudaQlB11GZQciL7Ozt9/omc5RjTA==
+X-Received: by 2002:a17:902:b487:b029:12c:4051:a8de with SMTP id y7-20020a170902b487b029012c4051a8demr5298018plr.76.1627416400041;
+        Tue, 27 Jul 2021 13:06:40 -0700 (PDT)
+Received: from DougS18 ([173.180.45.4])
+        by smtp.gmail.com with ESMTPSA id y30sm4205738pfa.220.2021.07.27.13.06.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Jul 2021 13:06:39 -0700 (PDT)
+From:   "Doug Smythies" <dsmythies@telus.net>
+To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>
+Cc:     "'LKML'" <linux-kernel@vger.kernel.org>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>,
+        "Doug Smythies" <dsmythies@telus.net>
+References: <1867445.PYKUYFuaPT@kreacher>
+In-Reply-To: <1867445.PYKUYFuaPT@kreacher>
+Subject: RE: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
+Date:   Tue, 27 Jul 2021 13:06:39 -0700
+Message-ID: <000801d78322$e9b94980$bd2bdc80$@telus.net>
 MIME-Version: 1.0
-References: <20210727190001.914-1-kbowman@cloudflare.com> <20210727195459.GA15181@salvia>
-In-Reply-To: <20210727195459.GA15181@salvia>
-From:   Alex Forster <aforster@cloudflare.com>
-Date:   Tue, 27 Jul 2021 15:06:05 -0500
-Message-ID: <CAKxSbF0tjY7EV=OOyfND8CxSmusfghvURQYnBxMz=DoNtGrfSg@mail.gmail.com>
-Subject: Re: [PATCH] netfilter: xt_NFLOG: allow 128 character log prefixes
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Kyle Bowman <kbowman@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        linux-kernel@vger.kernel.org,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJWv5LtWSG8O5a4tG6eLIHdXBOua6pYw/kg
+Content-Language: en-ca
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(And again, this time as plain-text...)
+Hi Rafael,
 
-> Why do you need to make the two consistent? iptables NFLOG prefix
-> length is a subset of nftables log action, this is sufficient for the
-> iptables-nft layer. I might be missing the use-case on your side,
-> could you please elaborate?
+Further to my reply of 2021.07.04  on this, I have
+continued to work with and test this patch set.
 
-We use the nflog prefix space to attach various bits of metadata to
-iptables and nftables rules that are dynamically generated and
-installed on our edge. 63 printable chars is a bit too tight to fit
-everything that we need, so we're running this patch internally and
-are looking to upstream it.
+On 2021.06.02 11:14 Rafael J. Wysocki wrote:
 
-Alex Forster
+>This series of patches addresses some theoretical shortcoming in the
+> TEO (Timer Events Oriented) cpuidle governor by reworking its idle
+> state selection logic to some extent.
+>
+> Patches [1-2/5] are introductory cleanups and the substantial changes =
+are
+> made in patches [3-4/5] (please refer to the changelogs of these two
+> patches for details).  The last patch only deals with documentation.
+>
+> Even though this work is mostly based on theoretical considerations, =
+it
+> shows a measurable reduction of the number of cases in which the =
+shallowest
+> idle state is selected while it would be more beneficial to select a =
+deeper
+> one or the deepest idle state is selected while it would be more =
+beneficial to
+> select a shallower one, which should be a noticeable improvement.
+
+I am concentrating in the idle state 0 and 1 area.
+When I disable idle state 0, the expectation is its
+usage will fall to idle state 1. It doesn't.
+
+Conditions:
+CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
+HWP: disabled
+CPU frequency scaling driver: intel_pstate, active
+CPU frequency scaling governor: performance.
+Idle configuration: As a COMETLAKE processor, with 4 idle states.
+Sample time for below: 1 minute.
+Workflow: Cross core named pipe token passing, 12 threads.
+
+Kernel 5.14-rc3: idle: teo governor
+
+All idle states enabled: PASS
+Processor: 97 watts
+Idle state 0 entries: 811151
+Idle state 1 entries: 140300776
+Idle state 2 entries: 889
+Idle state 3 entries: 8
+
+Idle state 0 disabled: FAIL <<<<<
+Processor: 96 watts
+Idle state 0 entries: 0
+Idle state 1 entries: 65599283
+Idle state 2 entries: 364399
+Idle state 3 entries: 65112651
+
+Kernel 5.14-rc3: idle: menu governor
+
+All idle states enabled: PASS
+Processor: 102 watts
+Idle state 0 entries: 169320747
+Idle state 1 entries: 1860110
+Idle state 2 entries: 14
+Idle state 3 entries: 54
+
+Idle state 0 disabled: PASS
+Processor: 96.7 watts
+Idle state 0 entries: 0
+Idle state 1 entries: 141936790
+Idle state 2 entries: 0
+Idle state 3 entries: 6
+
+Prior to this patch set:
+Kernel 5.13: idle: teo governor
+
+All idle states enabled: PASS
+Processor: 97 watts
+Idle state 0 entries: 446735
+Idle state 1 entries: 140903027
+Idle state 2 entries: 0
+Idle state 3 entries: 0
+
+Idle state 0 disabled: PASS
+Processor: 96 watts
+Idle state 0 entries: 0
+Idle state 1 entries: 139308125
+Idle state 2 entries: 0
+Idle state 3 entries: 0
+
+I haven't tried to isolate the issue in the code, yet.
+Nor have I explored to determine if there might
+be other potential idle state disabled issues.
+
+... Doug
+
+
