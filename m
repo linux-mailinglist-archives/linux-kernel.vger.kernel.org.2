@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C643D76DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA743D76E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236615AbhG0NfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
+        id S236699AbhG0NfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232186AbhG0NfC (ORCPT
+        with ESMTP id S232339AbhG0NfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:35:02 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7DEC061757;
-        Tue, 27 Jul 2021 06:35:01 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so4867243pjh.3;
-        Tue, 27 Jul 2021 06:35:01 -0700 (PDT)
+        Tue, 27 Jul 2021 09:35:07 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A827CC061757;
+        Tue, 27 Jul 2021 06:35:07 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id m10-20020a17090a34cab0290176b52c60ddso4856052pjf.4;
+        Tue, 27 Jul 2021 06:35:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SM1qeuF+L0BGO1YAmr+KZvllo2SOKG+lPJEnNUNNYAc=;
-        b=TbKb8piGrIG5ydptI8v65Ya4i8SJZdvGdOqc1GQYcevkHkfS4N28VzMA8R9SM1A1a+
-         ch/yxaogHN+fgO7uR2qfX2VwyHlZsQRTRQeET/08XJWYahbekAZR47n/JSkXAjtvIqOn
-         ZDSL6gsT4HNHmWAqfO8DB45LMH0TxGjki0arPkkVQeLUSGBQVCHAclN4s5ACkPhdf02B
-         je3ZcxA5tR1ld9t7GkWib1Zj0TDgycR5MjcCXH7bbjH6bMZ9Crdar8RTnodWJTQ8MnxV
-         lN0pirmq7NcydqRfA92z9UOFUaBXH5h7kSgTGZH1OWc/4CmikCIRBA50YGbAfjxmJ8zb
-         JaFw==
+        bh=0R2BGk4LuAr7Y5IYCIfbtJOd6IDApUbFvKOOvdTW5a0=;
+        b=k4NE1gNy0AX0JFNlvxzzETC4ubAnlL/Phy1hg7q3T/Qm74DO+8ngdZHgkEbCslhYSp
+         fj6Ok+pwqWVv6vIoisLiZWpFAIDVVlAAplknaVDoTWXSYJOfie+8qUq1HMfEfQqaN1QT
+         FBq/dpHKCSjrYDBD+aNjOA5ZzvylRjyzI9GbcxjxBUL9tW8yRtO7rI2VRzxEjLEUg+ef
+         6F4+fehj/v0eSlVUIxbGz+633nlYJnlyGISoI7k2463ZF0BoCXxBOTXCo4C2XtzzDlur
+         +NIDWl4TTkCvfBzoc8R/U2YaRCWWgzwhjMFD5oGq0YcmK88axnRDd9Rfd6OcRpntpgzG
+         CbyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SM1qeuF+L0BGO1YAmr+KZvllo2SOKG+lPJEnNUNNYAc=;
-        b=XlTmW2z2Z7kSO2ZeufxZdKjwSqlwss6V9T94YfEOkcOfyeGtqjR3B2wfhKHTAncdeF
-         WZqDV9443RlIm9iWhgqeOZMmSLqBpcuy8KRmEO+w0BzQXP+m6CQd4y0szeFPTlkGTlxU
-         +I3otGPZJSceGQkQnQZ5SSf0R3dDwI6UX1rPIvL8nCnR0jOE7MILs/n8sO1SqLmQhHUR
-         f9DZpHw8zFIiDCnfJzN3i5cUfjnw24Ww5CCzCxqRtXvsrF7GmFRQTc6VSwQEiA/Gt5Do
-         6kk02boqaho8cTz7b7WVZvMN8S/NOIIseAXuWUganCDJohJL66Sh///1S/EItXmHX/6D
-         AEgQ==
-X-Gm-Message-State: AOAM533cHwXFV1In0uiiFzh8DK2PG811O5EWhNt9ueYIQL6lwx0TxSQO
-        VDTdqIuxz4GaFolWpClZE5E=
-X-Google-Smtp-Source: ABdhPJwPYckpcicHZU4lAuNI8dXd92Kf2vcK7oi1UwdQLB9+te1BS62AXOQhvjI6uskDWfm4Kw9gLA==
-X-Received: by 2002:a17:90a:fa1:: with SMTP id 30mr4323244pjz.42.1627392900378;
-        Tue, 27 Jul 2021 06:35:00 -0700 (PDT)
+        bh=0R2BGk4LuAr7Y5IYCIfbtJOd6IDApUbFvKOOvdTW5a0=;
+        b=QuLCeQ5g8ckz2TEZ2O+6KFTc5ZQ8CL6/R1i+OEoR+zzamY+rhrrZ7CPj2SeCrvynRg
+         euPT+sXn8DCRSET1m4p/RGImCXzq+8I5SSrt+PSwONHM8wrqDnSLs7bK5M9PllWPa/1L
+         1GqnyUH4rbbWA+mudTio552EqH+I9REvxovBpGdVUuLppUvEE/snChEZkJloglwoMvrC
+         4ijTcGzbyW1zUq9MteVADePK8DD6DOLgmPRvvFVC1KG70dLpalUDaPkjFvdqLgx4/hgp
+         yQjiGlIR/g10fsXJQXC9W1xd6/GeYDLn5pJffKbcl3+xSFDXB494i/BzvsDLC8APveHv
+         9LWw==
+X-Gm-Message-State: AOAM532n/tUwxj1cMJ0rm3RBKYC917MtCLsNyCUvu6uHf6Bg6Y8KIIOn
+        oFeHIgrtYCT0zGj70gBBOiQ=
+X-Google-Smtp-Source: ABdhPJwlPMWV2peaxkN7yvxiBmC7mG5yivjwLT61AfrGjV3YaxQ7mVoaZq4yWC35Vahb5EBA3q+l6g==
+X-Received: by 2002:a17:90b:2513:: with SMTP id ns19mr4214024pjb.63.1627392907194;
+        Tue, 27 Jul 2021 06:35:07 -0700 (PDT)
 Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id l8sm3066859pjc.17.2021.07.27.06.34.59
+        by smtp.gmail.com with ESMTPSA id 20sm4012933pfi.170.2021.07.27.06.35.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 06:34:59 -0700 (PDT)
+        Tue, 27 Jul 2021 06:35:06 -0700 (PDT)
 From:   Punit Agrawal <punitagrawal@gmail.com>
 To:     mhiramat@kernel.org, naveen.n.rao@linux.ibm.com,
         anil.s.keshavamurthy@intel.com, davem@davemloft.net
 Cc:     Punit Agrawal <punitagrawal@gmail.com>,
         linux-kernel@vger.kernel.org, guoren@kernel.org,
         linux-csky@vger.kernel.org
-Subject: [PATCH v2 2/5] kprobes: Use helper to parse boolean input from userspace
-Date:   Tue, 27 Jul 2021 22:34:23 +0900
-Message-Id: <20210727133426.2919710-3-punitagrawal@gmail.com>
+Subject: [PATCH v2 3/5] kprobe: Simplify prepare_kprobe() by dropping redundant version
+Date:   Tue, 27 Jul 2021 22:34:24 +0900
+Message-Id: <20210727133426.2919710-4-punitagrawal@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210727133426.2919710-1-punitagrawal@gmail.com>
 References: <20210727133426.2919710-1-punitagrawal@gmail.com>
@@ -66,63 +66,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "enabled" file provides a debugfs interface to arm / disarm
-kprobes in the kernel. In order to parse the buffer containing the
-values written from userspace, the callback manually parses the user
-input to convert it to a boolean value.
+The function prepare_kprobe() is called during kprobe registration and
+is responsible for ensuring any architecture related preparation for
+the kprobe is done before returning.
 
-As taking a string value from userspace and converting it to boolean
-is a common operation, a helper kstrtobool_from_user() is already
-available in the kernel. Update the callback to use the common helper
-to parse the write buffer from userspace.
+One of two versions of prepare_kprobe() is chosen depending on the
+availability of KPROBE_ON_FTRACE in the kernel configuration.
+
+Simplify the code by dropping the version when KPROBE_ON_FTRACE is not
+selected - instead relying on kprobe_ftrace() to return false when
+KPROBE_ON_FTRACE is not set.
+
+No functional change.
 
 Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
 Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- kernel/kprobes.c | 28 ++++++----------------------
- 1 file changed, 6 insertions(+), 22 deletions(-)
+ include/linux/kprobes.h |  5 +++++
+ kernel/kprobes.c        | 23 +++++++++--------------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index e4f3bfe08757..0b75549b2815 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -354,6 +354,11 @@ static inline void wait_for_kprobe_optimizer(void) { }
+ extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 				  struct ftrace_ops *ops, struct ftrace_regs *fregs);
+ extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
++#else
++static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
++{
++	return -EINVAL;
++}
+ #endif
+ 
+ int arch_check_ftrace_location(struct kprobe *p);
 diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 1cf8bca1ea86..26fc9904c3b1 100644
+index 26fc9904c3b1..cfa9d3c263eb 100644
 --- a/kernel/kprobes.c
 +++ b/kernel/kprobes.c
-@@ -2770,30 +2770,14 @@ static ssize_t read_enabled_file_bool(struct file *file,
- static ssize_t write_enabled_file_bool(struct file *file,
- 	       const char __user *user_buf, size_t count, loff_t *ppos)
- {
--	char buf[32];
--	size_t buf_size;
--	int ret = 0;
+@@ -1033,15 +1033,6 @@ static struct ftrace_ops kprobe_ipmodify_ops __read_mostly = {
+ static int kprobe_ipmodify_enabled;
+ static int kprobe_ftrace_enabled;
+ 
+-/* Must ensure p->addr is really on ftrace */
+-static int prepare_kprobe(struct kprobe *p)
+-{
+-	if (!kprobe_ftrace(p))
+-		return arch_prepare_kprobe(p);
 -
--	buf_size = min(count, (sizeof(buf)-1));
--	if (copy_from_user(buf, user_buf, buf_size))
--		return -EFAULT;
-+	bool enable;
-+	int ret;
+-	return arch_prepare_kprobe_ftrace(p);
+-}
+-
+ /* Caller must lock kprobe_mutex */
+ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+ 			       int *cnt)
+@@ -1113,11 +1104,6 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
+ 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
+ }
+ #else	/* !CONFIG_KPROBES_ON_FTRACE */
+-static inline int prepare_kprobe(struct kprobe *p)
+-{
+-	return arch_prepare_kprobe(p);
+-}
+-
+ static inline int arm_kprobe_ftrace(struct kprobe *p)
+ {
+ 	return -ENODEV;
+@@ -1129,6 +1115,15 @@ static inline int disarm_kprobe_ftrace(struct kprobe *p)
+ }
+ #endif
  
--	buf[buf_size] = '\0';
--	switch (buf[0]) {
--	case 'y':
--	case 'Y':
--	case '1':
--		ret = arm_all_kprobes();
--		break;
--	case 'n':
--	case 'N':
--	case '0':
--		ret = disarm_all_kprobes();
--		break;
--	default:
--		return -EINVAL;
--	}
-+	ret = kstrtobool_from_user(user_buf, count, &enable);
-+	if (ret)
-+		return ret;
- 
-+	ret = enable ? arm_all_kprobes() : disarm_all_kprobes();
- 	if (ret)
- 		return ret;
- 
++static int prepare_kprobe(struct kprobe *p)
++{
++	/* Must ensure p->addr is really on ftrace */
++	if (kprobe_ftrace(p))
++		return arch_prepare_kprobe_ftrace(p);
++
++	return arch_prepare_kprobe(p);
++}
++
+ /* Arm a kprobe with text_mutex */
+ static int arm_kprobe(struct kprobe *kp)
+ {
 -- 
 2.30.2
 
