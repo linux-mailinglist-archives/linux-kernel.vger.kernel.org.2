@@ -2,142 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824CA3D7389
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304993D7391
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236218AbhG0Kog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:44:36 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34109 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236186AbhG0Koa (ORCPT
+        id S236395AbhG0KpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:45:01 -0400
+Received: from mail.netline.ch ([148.251.143.180]:34028 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236337AbhG0Ko7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:44:30 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 155F3580ACA;
-        Tue, 27 Jul 2021 06:44:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 27 Jul 2021 06:44:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        hzwP7HziDq3+lShGm+nfs91KpNl05pJCwIUruh9Ju94=; b=pWgsuCA7q3GmjXTE
-        FDvgePMxG6kyzXKuN+2QNxiqRQwcA+9aEK+ZNYltcBaKS76VT46ARnMl9VHAO9Ll
-        F5Ynu687blGcolvBxiCfWeZ2WhIgcYXEhyL841wPrxg+jlo29GkD//srH4HoxM9U
-        8MIEuySboa5mCMksbFCEa/U+g98Fp4xbY7pPpSpl4qK7YO/8+Ffjb9oExIiGdCzg
-        48KKFZifSvzrrwzEeZRfEqLH4Tq4BPJoqHpVHaAfLuKPnvZX7qRBLpZBKrmUizrS
-        Up8bAmRqybLfIkQAW+mdDe9O/Z2zbg234M30kBKZyuFy+gGYPEssZyeJZQEYfuaJ
-        RprK6A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=hzwP7HziDq3+lShGm+nfs91KpNl05pJCwIUruh9Ju
-        94=; b=KKl3fOo2us0gNYxEpts5gM3+aXz8Y7LShysbJuNQIoTuTKgC05Yu+8nFK
-        PrptjfyxleFjpR2o/4HJFTEUndQpWVIgBS/4fdIzhTYOH3AOUZNrzIq8VMER1pKN
-        koVXShuqjcPwieOnkKE2vhv5+MfgXVP2V4VGTgOU3uNFTbugsISeTzadbpFCroYo
-        BsbT+QMcY38hLoB8xtjbKSGJmxeCQusA73tYWV7DVrQm/G58r+l20Lv1PeERgUGy
-        gjdet35hew3YR9FgpKs/vKk7CWN8MZN84RJ/R0iFMdW9R53xidGk3R4Q5K/gThne
-        aOYNlT2kQzDNnaAITKbxj2OIleKWw==
-X-ME-Sender: <xms:i-P_YH1IG-2kbvfdHrW6CQZ6L_QyrZvjK_DSb_QFOadVFCzyKPmHHw>
-    <xme:i-P_YGFH8PhzPS9u1PGabCK4gE4LLgzWpTf02lF6aJ_DcrS5Ry1_vZ6mhtU3-UJIJ
-    r3pP04cDvdq>
-X-ME-Received: <xmr:i-P_YH7iO8FyTbe7bqIXO6RBdsXw7lx7w1iBEBjR-qNIiW6I3fTBgH5bHMCt9VSMLq1lBfOt4W2s6IhqlwiES8TJoCxvajA079bD7avtNDfEgnyawlhThcVvc6EphQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgddviecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
-    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
-    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnhesth
-    hhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:i-P_YM0PCGnoqBoSt-OFaz7Jb4DKEhZt0YsvfwWR2mSYyK7gpjfG2A>
-    <xmx:i-P_YKGs4IkMQkOs0zRRMXYlS_V_pw8cm5j2birwO5tLnO_5uSc0YA>
-    <xmx:i-P_YN_CFNPjSBhWeG8vE1is8gIuBYU8P5TRo8fq3v6MHre-PRm0Xw>
-    <xmx:juP_YF9Lbe0rwNFtXOg7D5qPaiSIVveImQNuYwKbLWAq0fZY1bhmOQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jul 2021 06:44:22 -0400 (EDT)
-Message-ID: <2d4b407cad4270952a85951455cb722a4c435c69.camel@themaw.net>
-Subject: Re: [PATCH v8 0/5] kernfs: proposed locking and concurrency
- improvement
-From:   Ian Kent <raven@themaw.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
-        Fox Chen <foxhlchen@gmail.com>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Carlos Maiolino <cmaiolino@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Tue, 27 Jul 2021 18:44:18 +0800
-In-Reply-To: <YP/ZwYrtx+h/a/Ez@kroah.com>
-References: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
-         <YP/ZwYrtx+h/a/Ez@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Tue, 27 Jul 2021 06:44:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id E485D20201B;
+        Tue, 27 Jul 2021 12:44:57 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id p2PTXK-_M2ZX; Tue, 27 Jul 2021 12:44:57 +0200 (CEST)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPA id 11A9F20201A;
+        Tue, 27 Jul 2021 12:44:57 +0200 (CEST)
+Received: from localhost ([::1])
+        by thor with esmtp (Exim 4.94.2)
+        (envelope-from <michel@daenzer.net>)
+        id 1m8KZz-000lIP-GV; Tue, 27 Jul 2021 12:44:55 +0200
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+ <20210726233854.2453899-4-robdclark@gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [RFC 3/4] drm/atomic-helper: Set fence deadline for vblank
+Message-ID: <db6cdec8-d44c-a09c-3fbd-60fb55c66efb@daenzer.net>
+Date:   Tue, 27 Jul 2021 12:44:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210726233854.2453899-4-robdclark@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-07-27 at 12:02 +0200, Greg Kroah-Hartman wrote:
-> On Fri, Jul 16, 2021 at 05:28:13PM +0800, Ian Kent wrote:
-> > There have been a few instances of contention on the kernfs_mutex
-> > during
-> > path walks, a case on very large IBM systems seen by myself, a
-> > report by
-> > Brice Goglin and followed up by Fox Chen, and I've since seen a
-> > couple
-> > of other reports by CoreOS users.
-> > 
-> > The common thread is a large number of kernfs path walks leading to
-> > slowness of path walks due to kernfs_mutex contention.
-> > 
-> > The problem being that changes to the VFS over some time have
-> > increased
-> > it's concurrency capabilities to an extent that kernfs's use of a
-> > mutex
-> > is no longer appropriate. There's also an issue of walks for non-
-> > existent
-> > paths causing contention if there are quite a few of them which is
-> > a less
-> > common problem.
-> > 
-> > This patch series is relatively straight forward.
-> > 
-> > All it does is add the ability to take advantage of VFS negative
-> > dentry
-> > caching to avoid needless dentry alloc/free cycles for lookups of
-> > paths
-> > that don't exit and change the kernfs_mutex to a read/write
-> > semaphore.
-> > 
-> > The patch that tried to stay in VFS rcu-walk mode during path walks
-> > has
-> > been dropped for two reasons. First, it doesn't actually give very
-> > much
-> > improvement and, second, if there's a place where mistakes could go
-> > unnoticed it would be in that path. This makes the patch series
-> > simpler
-> > to review and reduces the likelihood of problems going unnoticed
-> > and
-> > popping up later.
-> > 
-> > Changes since v7:
-> > - remove extra tab in helper kernfs_dir_changed.
-> > - fix thinko adding an unnecessary kernfs_inc_rev() in
-> > kernfs_rename_ns().
+On 2021-07-27 1:38 a.m., Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
 > 
-> Thanks for sticking with this, I've applied this to my testing branch
-> and let's see how 0-day does with it :)
+> For an atomic commit updating a single CRTC (ie. a pageflip) calculate
+> the next vblank time, and inform the fence(s) of that deadline.
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/drm_atomic_helper.c | 36 +++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index bc3487964fb5..f81b20775b15 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -1406,6 +1406,40 @@ void drm_atomic_helper_commit_modeset_enables(struct drm_device *dev,
+>  }
+>  EXPORT_SYMBOL(drm_atomic_helper_commit_modeset_enables);
+>  
+> +/*
+> + * For atomic updates which touch just a single CRTC, calculate the time of the
+> + * next vblank, and inform all the fences of the of the deadline.
+> + */
+> +static void set_fence_deadline(struct drm_device *dev,
+> +			       struct drm_atomic_state *state)
+> +{
+> +	struct drm_crtc *crtc, *wait_crtc = NULL;
+> +	struct drm_crtc_state *new_crtc_state;
+> +	struct drm_plane *plane;
+> +	struct drm_plane_state *new_plane_state;
+> +	ktime_t vbltime;
+> +	int i;
+> +
+> +	for_each_new_crtc_in_state (state, crtc, new_crtc_state, i) {
+> +		if (!wait_crtc)
+> +			return;
 
-That's great news Greg, and thanks for putting up with me too, ;)
-
-Ian
+Either this return or the next one below would always be taken, I doubt this was intended.
 
 
+> +		wait_crtc = crtc;
+> +	}
+> +
+> +	/* If no CRTCs updated, then nothing to do: */
+> +	if (!wait_crtc)
+> +		return;
+> +
+> +	if (drm_crtc_next_vblank_time(wait_crtc, &vbltime))
+> +		return;
+> +
+> +	for_each_new_plane_in_state (state, plane, new_plane_state, i) {
+> +		if (!new_plane_state->fence)
+> +			continue;
+> +		dma_fence_set_deadline(new_plane_state->fence, vbltime);
+> +	}
+
+vblank timestamps correspond to the end of vertical blank, the deadline should be the start of vertical blank though.
+
+
+-- 
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
