@@ -2,142 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942CB3D7918
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC3D3D7917
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 16:52:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236982AbhG0Owt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 10:52:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31728 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231552AbhG0Owr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 10:52:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627397566;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DgA9Rlrfe0K8o4iMU6xJAyIFk1u1w+nH9RZj3KDTT7A=;
-        b=INS+HUEh5YYF+bN4Tl9SEKDXMDldcgW4qQK+7gWs3BkbiHGTXEjeN8nPbIy8wUWKJQt+Vd
-        sApTN8eCG39ac0mq775HCnSwxC23S4E4KueRWylFxLZ3Up4pSSM87jhruTWvq5lD985WI9
-        j5JqD2dAOFVRG3NWjtsy0yvAR4QDI9M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-180-RP2nsDh-Mh-3aK7mhO7frA-1; Tue, 27 Jul 2021 10:52:45 -0400
-X-MC-Unique: RP2nsDh-Mh-3aK7mhO7frA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2166100CAB1;
-        Tue, 27 Jul 2021 14:52:41 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7317A797C3;
-        Tue, 27 Jul 2021 14:52:30 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id B1E0E4172EDE; Tue, 27 Jul 2021 11:52:09 -0300 (-03)
-Date:   Tue, 27 Jul 2021 11:52:09 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     nsaenzju@redhat.com, linux-kernel@vger.kernel.org,
-        Nitesh Lal <nilal@redhat.com>,
-        Christoph Lameter <cl@linux.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@marvell.com>,
-        Peter Xu <peterx@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [patch 1/4] add basic task isolation prctl interface
-Message-ID: <20210727145209.GA518735@fuller.cnet>
-References: <20210727103803.464432924@fuller.cnet>
- <20210727104119.551607458@fuller.cnet>
- <7b2d6bf91d30c007e19a7d2cbddcb2460e72d163.camel@redhat.com>
- <20210727110050.GA502360@fuller.cnet>
- <a020a45ddea10956938f59bd235b88fe873d0e98.camel@redhat.com>
- <20210727130930.GB283787@lothringen>
+        id S236873AbhG0OwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 10:52:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:59315 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231552AbhG0OwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:52:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="298036502"
+X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
+   d="scan'208";a="298036502"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 07:52:23 -0700
+X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
+   d="scan'208";a="464306989"
+Received: from jwalenza-mobl1.amr.corp.intel.com (HELO [10.209.110.245]) ([10.209.110.245])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 07:52:23 -0700
+Subject: Re: sparc64-linux-gcc: error: unrecognized command-line option
+ '-mxsave'
+To:     kernel test robot <lkp@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <202107271153.7QWf3g6F-lkp@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <efd7ab16-ed45-0ab0-a123-4e8e45c100d0@intel.com>
+Date:   Tue, 27 Jul 2021 07:52:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727130930.GB283787@lothringen>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <202107271153.7QWf3g6F-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 03:09:30PM +0200, Frederic Weisbecker wrote:
-> On Tue, Jul 27, 2021 at 02:38:15PM +0200, nsaenzju@redhat.com wrote:
-> > Hi Marcelo,
-> > 
-> > On Tue, 2021-07-27 at 08:00 -0300, Marcelo Tosatti wrote:
-> > OK, sorry if I'm being thick, but what is the benefit of having a distincnt
-> > PR_ISOL_MODE instead expressing everything as PR_ISOL_FEATURES.
-> > 
-> >   PR_ISOL_MODE_NONE == Empty PR_ISOL_FEATURES bitmap
-> > 
-> >   PR_ISOL_MODE_NORMAL == Bitmap of commonly used PR_ISOL_FEATURES
-> >   			      (we could introduce a define)
-> > 
-> >   PR_ISOL_MODE_NORMAL+PR_ISOL_VSYSCALLS == Custom bitmap
-> > 
-> > Other than that, my rationale is that if you extend PR_ISOL_MODE_NORMAL's
-> > behaviour as new features are merged, wouldn't you be potentially breaking
-> > userspace (i.e. older applications might not like the new default)?
-> 
-> I agree with Nicolas, and that was Thomas request too.
-> Let's leave policy implementation to userspace and take
-> only the individual isolation features to the kernel.
-> 
-> CPU/Task isolation is a relatively young feature and many users don't
-> communicate much about their needs. We don't know exactly how finegrained
-> the ABI will need to be so let's not make too many high level assumptions.
-> 
-> It's easy for userspace to set all isolation bits by itself.
-> 
-> Besides, those bits will be implemented one by one over time, this
-> means that a prctl() bit saying "isolate everything" will have a different
-> behaviour as those features get integrated. And we really want well defined
-> behaviours.
-> 
-> Thanks.
-> 
-> 
+On 7/26/21 8:11 PM, kernel test robot wrote:
+>>> sparc64-linux-gcc: error: unrecognized command-line option '-mxsave'
 
-OK, how about this:
+Is there something else funky going on here?  All of the "-mxsave" flags
+that I can find are under checks for x86 builds, like:
 
-...
+	ifeq ($(CAN_BUILD_I386),1)
+	$(BINARIES_32): CFLAGS += -m32 -mxsave
+	..
 
-The meaning of isolated is specified as follows:
-
-Isolation features
-==================
-
-- prctl(PR_ISOL_GET, ISOL_SUP_FEATURES, 0, 0, 0) returns the supported
-features as a return value.
-
-- prctl(PR_ISOL_SET, ISOL_FEATURES, bitmask, 0, 0) enables the features in
-the bitmask.
-
-- prctl(PR_ISOL_GET, ISOL_FEATURES, 0, 0, 0) returns the currently
-enabled features.
-
-The supported features are:
-
-ISOL_F_QUIESCE_ON_URET: quiesce deferred actions on return to userspace.
-----------------------
-
-Quiescing of different actions can be performed on return to userspace.
-
-- prctl(PR_ISOL_GET, PR_ISOL_SUP_QUIESCE_CFG, 0, 0, 0) returns
-the supported actions to be quiesced.
-
-- prctl(PR_ISOL_SET, PR_ISOL_QUIESCE_CFG, quiesce_bitmask, 0, 0) returns
-the currently supported actions to be quiesced.
-
-- prctl(PR_ISOL_GET, PR_ISOL_QUIESCE_CFG, 0, 0, 0) returns
-the currently enabled actions to be quiesced.
-
-#define ISOL_F_QUIESCE_VMSTAT_SYNC      (1<<0)
-#define ISOL_F_QUIESCE_NOHZ_FULL        (1<<1)
-#define ISOL_F_QUIESCE_DEFER_TLB_FLUSH  (1<<2)
-...
-
+I'm confused how we could have a sparc64 compiler (and only a sparc64
+compiler) that would end up with "-mxsave" in CFLAGS.
