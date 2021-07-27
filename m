@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547F33D74F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9613D74F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236538AbhG0MU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:20:59 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:63008 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231956AbhG0MU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:20:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627388458; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=k497hUNnWYgJi8CkGD/uCFog89DShQgUcSehYrCMmnY=; b=LIWXzlRuQZR0WmJ7NC3VF+SSqBpbMjLD9qDFtcOEieYYEE4jAiIBCdU098VKr2dVaeDD3JyL
- fYtAI9jH5ZUZT8ttsQh30oKP2cwZNz0p6P9ye80q9TvaB2mPVCfkMUC8mb9jUfq9J2qIvXYY
- efiREixG9WDjP/tjGvZGnldKnUs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60fffa0d1dd16c878889fb59 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Jul 2021 12:20:29
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3DBA7C43217; Tue, 27 Jul 2021 12:20:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.50.41.208] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C59E9C433F1;
-        Tue, 27 Jul 2021 12:20:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C59E9C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH 2/3] nvmem: qfprom: sc7280: Handle the additional
- power-domains vote
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Ravi Kumar Bokka (Temp)" <rbokka@codeaurora.org>
-References: <1626931716-10591-1-git-send-email-rnayak@codeaurora.org>
- <1626931716-10591-3-git-send-email-rnayak@codeaurora.org>
- <CAD=FV=VHP9GbyueqrM1pJ-ZjgndYWj9Q6883pDHnZmK2mMYN2Q@mail.gmail.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <8a50aa2c-4468-078c-36f5-74dde6dda16e@codeaurora.org>
-Date:   Tue, 27 Jul 2021 17:50:22 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S236546AbhG0MVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:21:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231956AbhG0MVc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:21:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627388491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LN9VGkVetG/NwFHIx+rWl4d+U3ZCuABiM4oRqn8aEJM=;
+        b=J20JhjZX5LvALQSZzPZgmxrJFn9+hHNgFOcJlzqvwGN29tlpwbzuiE3KMYZ7sQi9Nfi52S
+        gWRnWstJaOnUthE5X5Yo71CYBwdCfcLa+xtyUHe0qnCKxsOh5H9R1BZtJUXm/4naBsRJ0a
+        6UkUROnqV7p43lXcoKGPNQ1DoEu0Gng=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-pa9KM71GMFO_r_Hqkhd4PQ-1; Tue, 27 Jul 2021 08:21:30 -0400
+X-MC-Unique: pa9KM71GMFO_r_Hqkhd4PQ-1
+Received: by mail-wm1-f71.google.com with SMTP id o26-20020a05600c511ab0290252d0248251so1296867wms.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 05:21:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=LN9VGkVetG/NwFHIx+rWl4d+U3ZCuABiM4oRqn8aEJM=;
+        b=qmb/7ziCiBjvpnCmNV2WJG7WBfiJCiGUmiYg7lMbSHq7EVFv7TyI23sOouXTZQ6BV4
+         aL2sLjGALHjoCY8qbqIUpYPl232pjJ4Gv/jtw/24/8PO092Rafza85aqEvJ0qavtRNxW
+         UliRXK46MW7uGEBtxXidpts/yapwCK0ebLYyC3krZdChqKzI0Rh6cJdR1bnmIzKUrtDJ
+         OS/C+bazxK8keNWfY0nYnlZSyPs/uWKxKH28SKa/PPlOO95rYdBsJp5LTnVSu50oH1CO
+         aT42IhWBUjp6g7eWU2wfAui9/5QtHeGFY3i9NzaPsnLDT5y8Y0KKp3Pawq7GJLyxLl5j
+         ZSfw==
+X-Gm-Message-State: AOAM533m2bF0mijkQT4VKWI3z8qPKFMtnenNvaJebVbick9ClQGTAWP4
+        G0pDLiwrC1VXP7KEmUA6YJ9iEC5CikfqFn4KeRTlItewFid8RjvEe0ImHTbCf6tgJCQLckRr17h
+        Evc39YYd7w7ban8wQp14S7X49
+X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr3860756wmq.1.1627388489322;
+        Tue, 27 Jul 2021 05:21:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQnNIw4yzhbK/hXIiowJKU9c6Yhf3WFk7FQBEZQiomOdMaGA+TgOqmsNh4ypiuVnQyMVEu/g==
+X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr3860731wmq.1.1627388489098;
+        Tue, 27 Jul 2021 05:21:29 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23c36.dip0.t-ipconnect.de. [79.242.60.54])
+        by smtp.gmail.com with ESMTPSA id k9sm3199009wrc.6.2021.07.27.05.21.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 05:21:28 -0700 (PDT)
+Subject: Re: [PATCH v4] mm: Enable suspend-only swap spaces
+From:   David Hildenbrand <david@redhat.com>
+To:     Evan Green <evgreen@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-api@vger.kernel.org, Alex Shi <alexs@kernel.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210726171106.v4.1.I09866d90c6de14f21223a03e9e6a31f8a02ecbaf@changeid>
+ <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com>
+Organization: Red Hat
+Message-ID: <6ff28cfe-1107-347b-0327-ad36e256141b@redhat.com>
+Date:   Tue, 27 Jul 2021 14:21:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=VHP9GbyueqrM1pJ-ZjgndYWj9Q6883pDHnZmK2mMYN2Q@mail.gmail.com>
+In-Reply-To: <d6668437-5c3b-2dff-bb95-4e3132d13711@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,96 +83,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 7/23/2021 10:13 PM, Doug Anderson wrote:
-> Hi,
+On 27.07.21 11:48, David Hildenbrand wrote:
+> On 27.07.21 02:12, Evan Green wrote:
+>> Add a new SWAP_FLAG_HIBERNATE_ONLY that adds a swap region but refuses
+>> to allow generic swapping to it. This region can still be wired up for
+>> use in suspend-to-disk activities, but will never have regular pages
+>> swapped to it. This flag will be passed in by utilities like swapon(8),
+>> usage would probably look something like: swapon -o hibernate /dev/sda2.
+>>
+>> Currently it's not possible to enable hibernation without also enabling
+>> generic swap for a given area. One semi-workaround for this is to delay
+>> the call to swapon() until just before attempting to hibernate, and then
+>> call swapoff() just after hibernate completes. This is somewhat kludgy,
+>> and also doesn't really work to keep swap out of the hibernate region.
+>> When hibernate begins, it starts by allocating a large chunk of memory
+>> for itself. This often ends up forcing a lot of data out into swap. By
+>> this time the hibernate region is eligible for generic swap, so swap
+>> ends up leaking into the hibernate region even with the workaround.
+>>
+>> There are a few reasons why usermode might want to be able to
+>> exclusively steer swap and hibernate. One reason relates to SSD wearing.
+>> Hibernate's endurance and speed requirements are different from swap.
+>> It may for instance be advantageous to keep hibernate in primary
+>> storage, but put swap in an SLC namespace. These namespaces are faster
+>> and have better endurance, but cost 3-4x in terms of capacity.
+>> Exclusively steering hibernate and swap enables system designers to
+>> accurately partition their storage without either wearing out their
+>> primary storage, or overprovisioning their fast swap area.
+>>
+>> Another reason to allow exclusive steering has to do with security.
+>> The requirements for designing systems with resilience against
+>> offline attacks are different between swap and hibernate. Swap
+>> effectively requires a dictionary of hashes, as pages can be added and
+>> removed arbitrarily, whereas hibernate only needs a single hash for the
+>> entire image. If you've set up block-level integrity for swap and
+>> image-level integrity for hibernate, then allowing swap blocks to
+>> possibly leak out to the hibernate region is problematic, since it
+>> creates swap pages not protected by any integrity.
+>>
+>> Swap regions with SWAP_FLAG_HIBERNATE_ONLY set will not appear in
+>> /proc/meminfo under SwapTotal and SwapFree, since they are not usable as
+>> general swap. These regions do still appear in /proc/swaps.
 > 
-> On Wed, Jul 21, 2021 at 10:29 PM Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>
->> On sc7280, to reliably blow fuses, we need an additional vote
->> on max performance state of 'MX' power-domain.
->> Add support for power-domain performance state voting in the
->> driver.
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
->> ---
->>   drivers/nvmem/qfprom.c | 22 ++++++++++++++++++++++
->>   1 file changed, 22 insertions(+)
->>
->> diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
->> index 81fbad5..4d0a576 100644
->> --- a/drivers/nvmem/qfprom.c
->> +++ b/drivers/nvmem/qfprom.c
->> @@ -12,6 +12,8 @@
->>   #include <linux/mod_devicetable.h>
->>   #include <linux/nvmem-provider.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/pm_domain.h>
->> +#include <linux/pm_runtime.h>
->>   #include <linux/property.h>
->>   #include <linux/regulator/consumer.h>
->>
->> @@ -149,6 +151,11 @@ static void qfprom_disable_fuse_blowing(const struct qfprom_priv *priv,
->>          if (ret)
->>                  dev_warn(priv->dev, "Failed to set 0 voltage (ignoring)\n");
->>
->> +       if (priv->dev->pm_domain) {
->> +               dev_pm_genpd_set_performance_state(priv->dev, 0);
->> +               pm_runtime_put(priv->dev);
->> +       }
->> +
->>          ret = regulator_disable(priv->vcc);
->>          if (ret)
->>                  dev_warn(priv->dev, "Failed to disable regulator (ignoring)\n");
->> @@ -212,6 +219,16 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
->>                  goto err_clk_rate_set;
->>          }
->>
->> +       if (priv->dev->pm_domain) {
->> +               ret = pm_runtime_get_sync(priv->dev);
->> +               if (ret < 0) {
->> +                       pm_runtime_put_noidle(priv->dev);
->> +                       dev_err(priv->dev, "Failed to enable power-domain\n");
->> +                       goto err_reg_enable;
->> +               }
->> +               dev_pm_genpd_set_performance_state(priv->dev, INT_MAX);
->> +       }
->> +
->>          old->timer_val = readl(priv->qfpconf + QFPROM_BLOW_TIMER_OFFSET);
->>          old->accel_val = readl(priv->qfpconf + QFPROM_ACCEL_OFFSET);
->>          writel(priv->soc_data->qfprom_blow_timer_value,
->> @@ -221,6 +238,8 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
->>
->>          return 0;
->>
->> +err_reg_enable:
->> +       regulator_disable(priv->vcc);
->>   err_clk_rate_set:
->>          clk_set_rate(priv->secclk, old->clk_rate);
->>   err_clk_prepared:
->> @@ -420,6 +439,9 @@ static int qfprom_probe(struct platform_device *pdev)
->>                          econfig.reg_write = qfprom_reg_write;
->>          }
->>
->> +       if (dev->pm_domain)
->> +               pm_runtime_enable(dev);
->> +
+> Right, and they also don't account towards the memory overcommit
+> calculations.
 > 
-> Where is the matching pm_runtime_disable()? Should be one in
-> .remove(), or use devm_add_action_or_reset() to wrap a call to it.
-
-Ah, right, i need to handle that.
-
+> Thanks for extending the patch description!
 > 
-> Also: do you really need to test for dev->pm_domain in your patch?
-> Seems like it should always be fine to call pm_runtime_enable() and
-> then always fine to call the get/put. ...and presumably always fine to
-> even set the performance state?
+> [...]
+> 
+>> +	if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY) {
+>> +		if (IS_ENABLED(CONFIG_HIBERNATION)) {
+>> +			if (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)
+>> +				return -EINVAL;
+>> +
+>> +		} else {
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+> 
+> We could do short
+> 
+> if ((swap_flags & SWAP_FLAG_HIBERNATE_ONLY) &&
+>        (!IS_ENABLED(CONFIG_HIBERNATION) ||
+>         (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS)))
+> 	return -EINVAL;
+> 
+> or
+> 
+> if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY))
+> 	if (!IS_ENABLED(CONFIG_HIBERNATION) ||
+>               (swap_flags & ~SWAP_HIBERNATE_ONLY_VALID_FLAGS))
+> 		return -EINVAL;
+> 
+>> +
+>>    	if (!capable(CAP_SYS_ADMIN))
+>>    		return -EPERM;
+>>    
+>> @@ -3335,16 +3366,20 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>    	if (swap_flags & SWAP_FLAG_PREFER)
+>>    		prio =
+>>    		  (swap_flags & SWAP_FLAG_PRIO_MASK) >> SWAP_FLAG_PRIO_SHIFT;
+>> +
+>> +	if (swap_flags & SWAP_FLAG_HIBERNATE_ONLY)
+>> +		p->flags |= SWP_HIBERNATE_ONLY;
+>>    	enable_swap_info(p, prio, swap_map, cluster_info, frontswap_map);
+>>    
+>> -	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s\n",
+>> +	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s%s%s\n",
+>>    		p->pages<<(PAGE_SHIFT-10), name->name, p->prio,
+>>    		nr_extents, (unsigned long long)span<<(PAGE_SHIFT-10),
+>>    		(p->flags & SWP_SOLIDSTATE) ? "SS" : "",
+>>    		(p->flags & SWP_DISCARDABLE) ? "D" : "",
+>>    		(p->flags & SWP_AREA_DISCARD) ? "s" : "",
+>>    		(p->flags & SWP_PAGE_DISCARD) ? "c" : "",
+>> -		(frontswap_map) ? "FS" : "");
+>> +		(frontswap_map) ? "FS" : "",
+>> +		(p->flags & SWP_HIBERNATE_ONLY) ? "H" : "");
+>>    
+>>    	mutex_unlock(&swapon_mutex);
+>>    	atomic_inc(&proc_poll_event);
+>>
+> 
+> Looks like the cleanest alternative to me, as long as we don't want to
+> invent new interfaces.
+> 
+> Acked-by: David Hildenbrand <david@redhat.com>
+> 
 
-Sure, i'll give it a try and see if that works or ends up throwing me
-any warns, i'll repost with that or update if that does not work for
-some reason. thanks for the review.
+Pavel just mentioned uswsusp, and I wonder if it would be a possible 
+alternative to this patch.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Thanks,
+
+David / dhildenb
+
