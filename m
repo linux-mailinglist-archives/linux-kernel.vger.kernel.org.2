@@ -2,69 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D059D3D6C4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0413D6C52
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234786AbhG0CZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:25:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234726AbhG0CZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:25:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7785460FED;
-        Tue, 27 Jul 2021 03:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627355160;
-        bh=QtxTWh/n8Biop96HKPZsq5PVSMW3Hbl5Tg3HH+a4+4Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LpZhvKa5lhQNpDms8e1wK8b1K9zDLAsW54cyOuhmWLvw8yv2mTIbKglf+h7n6w0oh
-         4hdU1NM+X85DVtipQipwGwtUNWOucpc0wj7kZqxIs9KSVOuknVRlm+avmVCqaosKvI
-         EoECXGHKeZW5TYuE32wZbh105FIduEPplPDotaT8BTZprfZNIpvuRmrMBSfswoU94z
-         eHZkEUhLfwZmG75LsHttpZVd+tjkxOu+k/JW7/mqLbatEBe9E194luuXgR6oIAZveV
-         ixT+AgHizxF+WRE8X1JIdnzWQDInxodqJ2m5m/kEkFCmuSgoHGAwFULhI4JNxT8Ria
-         8755UjQW+aqQA==
-Date:   Tue, 27 Jul 2021 06:05:57 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] security: keys: trusted: Fix memory leaks on allocated
- blob
-Message-ID: <20210727030557.q7jxepbxh5radvlw@kernel.org>
-References: <20210723172121.156687-1-colin.king@canonical.com>
+        id S234801AbhG0CZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234677AbhG0CZ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:25:58 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AA9C061757;
+        Mon, 26 Jul 2021 20:06:25 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id b6so15769049pji.4;
+        Mon, 26 Jul 2021 20:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ChIcbIgLJX/+eQRpKvWif40abxApwvOjyIFA0z+RMsM=;
+        b=MU3drwGpgkx0vfwBNTNFP3MytUOGuJQ3j50dvYOId0AswZfumYMStyl+z6WjZn8xss
+         wI9eMWl1JEQ+vqomHrTtUT/LVF3rDed6w82f5LQfMDYZSoekPsqtQzVGOYDovAlJE/TC
+         VmCmyIum9y/x/IVwYRAdiqmJLu3EsPtXbTxre38qt9Ba5523aYlhBBqBbuqnNS9dl9WU
+         0qAJP+FHqHlfzwOWW5nLyuWaDTso5jq165pKxv+ahBbkeq34+qjQdiCu8UtMRhU80vmt
+         IsXYvdC6U0ZF0PIu/yOZitNgkmXGyW1foxBDYZ2E01JWlM+Hf4G/MzKs0AKlOj/msRsB
+         gpEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ChIcbIgLJX/+eQRpKvWif40abxApwvOjyIFA0z+RMsM=;
+        b=Qghna7UGMn0X971c7g5ZmH6XMNw1e+V6kw9fpz9G3NwbpOx/usIHfdYSokVSMz1K+s
+         JWp/VnViXPQUNiqVGGTTsEaW7rkdoC86buFQK1PBuIOlBzj//b5VG9YNCJqmhnqdY7Cs
+         MTmMVlR28siLW5dqFiJEEAA948P7W53WL8c5g13P2nkvWdRqrMgMxfvEkHWldL6afgfP
+         tPJQEWlHPzm5/LQta2Bc3VD/ZzbwXYmcBHVY0yo9JcvDPzB8fTEyPne30/t5HNf8SsA1
+         NoE6CWpFBkbHOzrPCXpAGOaV6ciuVKAJVZRzryVU982x4yI/vxaHFdJiJnYJKRplHI2+
+         qdIQ==
+X-Gm-Message-State: AOAM5307D3tFIueSZqiPAcPpSO4Ik53tkyBQVpTDmERDckuQE9ANWQrF
+        U84obVqBDLXiz+dDAh3ziQhRBhtpY8K+iw==
+X-Google-Smtp-Source: ABdhPJwG7wwIxzZ6bDxr27zwilvp6TmOlIGZfFSYIAhf6kFR471Ry7M3LO0iXAqErBPXXMCu8Ra0Kg==
+X-Received: by 2002:a63:455e:: with SMTP id u30mr8136269pgk.401.1627355184784;
+        Mon, 26 Jul 2021 20:06:24 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.116])
+        by smtp.gmail.com with ESMTPSA id p3sm913781pjt.0.2021.07.26.20.06.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Jul 2021 20:06:24 -0700 (PDT)
+Subject: Re: [PATCH] blk-throtl: optimize IOPS throttle for large IO scenarios
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1626416569-30907-1-git-send-email-brookxu.cn@gmail.com>
+ <YPGvIzZUI+QxP1js@mtj.duckdns.org>
+ <957ab14d-c4bc-32f0-3f7d-af98832ab955@gmail.com>
+ <YP8tPwkJNMAcjDqk@mtj.duckdns.org>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <34a6f4b5-9055-e519-5693-068f8dcb169c@gmail.com>
+Date:   Tue, 27 Jul 2021 11:06:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210723172121.156687-1-colin.king@canonical.com>
+In-Reply-To: <YP8tPwkJNMAcjDqk@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 23, 2021 at 06:21:21PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+
+
+Tejun Heo wrote on 2021/7/27 5:46:
+> Hello,
 > 
-> There are several error return paths that don't kfree the allocated
-> blob, leading to memory leaks. Ensure blob is initialized to null as
-> some of the error return paths in function tpm2_key_decode do not
-> change blob. Add an error return path to kfree blob and use this on
-> the current leaky returns.
+> On Tue, Jul 20, 2021 at 12:35:54AM +0800, brookxu wrote:
+>> In order to avoid code duplication and IOPS stability problems caused by estimating
+>> the equivalent number of IOs, and to avoid potential deadlock problems caused by
+>> synchronization through queue_lock. I tried to count the number of splited IOs in
+>> the current window through two atomic counters. Add the value of the atomic variable
+>> when calculating io_disp[rw], which can also avoid the problem of inaccurate IOPS in
+>> large IO scenarios. How do you think of this approach? Thanks for your time.
 > 
-> Addresses-Coverity: ("Resource leak")
-> Fixes: f2219745250f ("security: keys: trusted: use ASN.1 TPM2 key format for the blobs")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
- 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> I guess it's okay but am still not a big fan of adding another hook. This is
+> primarily because blk-throtl is sitting too early in the stack - e.g. rq_qos
+> is doing the same thing but sits after the split path - and it's a bit nasty
+> to add an additional hook for it.
+> 
+> Do you think it can be an option to relocate the blk-throtl hooks to the
+> same spots as rq-qos or, even better, make it use rq-qos?
 
-Probably makes sense (for me) to add also
+Make blk-throttle use rq-qos may be more elegant. But I found that there may be at least
+one problem that is difficult to solve. blk-throttle supports separate throttle for read
+and write IOs, which means that we cannot suspend tasks during throttle, but rq-qos
+throttle IOs by suspending tasks.
 
-Cc: stable@vger.kernel.org
+We may be able to relocate the blk-throttle hooks to the rq-qos hooks. Since we may not
+be able to replace the throttle hook, in this case, if we register a rq-qos to the system,
+part of the blk-throttle hooks is in rq-qos and part hooks not, which feels a bit confusing.
+In addition, we may need to implement more hooks, such as IO merge hook.
 
-?
+Thanks for you time.
 
-/Jarkko
+> Thanks.
+> 
