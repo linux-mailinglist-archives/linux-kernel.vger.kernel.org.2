@@ -2,113 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7A73D7F67
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610483D7F6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhG0Umh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:42:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230425AbhG0Umg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:42:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6DC060FA0;
-        Tue, 27 Jul 2021 20:42:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627418555;
-        bh=d4JjFlDfF7N2eBt3m9sdZRk+eRhA4ZhBMt2Pq1TZ0cw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZKlOgZHSGjAmEnyaCwMuVKafYPWKeXil2Iiwo9tfWrDpXPrP+nIx5u3FkbHHx9hE7
-         f/+uSzSaAFLY8z0zPS4rMNMGD3DTUb7OLkYFi3ipPjtLYS72UjSrIEZWHsniKmxxZK
-         Le59cWQyoKcdNBRC2NnQPaYKcr4Sl5SxpzzeT6TBVgHinsKuWcX4k1BjDbOE4supyn
-         HiZ19DR0bU/awUHcX41Rjheo1w+obLAaQrJ8Rjja+UBSy51OODPf7/DV6wZKbPG4vd
-         wTF3Um9UkJV8uDOE8zSUVipLRKY8TGL5cXoV09GMyL2Tz2E7xssC3kDmiC7uClw3Me
-         O9bSVwy2lubCA==
-Received: by mail-wm1-f48.google.com with SMTP id m38-20020a05600c3b26b02902161fccabf1so2791363wms.2;
-        Tue, 27 Jul 2021 13:42:35 -0700 (PDT)
-X-Gm-Message-State: AOAM532e/tUB7+Yevh5XKbWHbmLJ44fqx2jx8R5yJ6m8/z1ANBb4cKI8
-        EgRq50X0XEK5e2xk7awNte+MLSMqp1CiNR3aWK8=
-X-Google-Smtp-Source: ABdhPJzIeHa1hycZO5ufjXaaYbpY3YdQw4oHXjfZp2KwEfMcEIfJ5hSLrfTaLF7iY7hnR3dqnN2Y1Sv0AKkyrN9dOFM=
-X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr6005968wmk.84.1627418543998;
- Tue, 27 Jul 2021 13:42:23 -0700 (PDT)
+        id S231937AbhG0UqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:46:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38039 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231133AbhG0UqW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 16:46:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627418782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jLNxJhgGZlPkzEzVhm7oQCluwCd8GOHL0Cl+fYd1lV8=;
+        b=LGk5E7MPwbVBazHUM2ei9I5m9jOeQXqrU4Yen7lMaf1oZmzIxiPGP8xKQ2zVtiAiX9Jabu
+        RLdDUnpz/f7X3k1tF6jew2EH0cAP5F8Z2zWEaaQw8U3TNPRmMB0b2R00afI66XSzvEVP/j
+        RwRNTGO7SqyxccitD9ZTKJ7vTpnZgdM=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-JvPdJu3wOICMsJ3KSVQfjQ-1; Tue, 27 Jul 2021 16:46:20 -0400
+X-MC-Unique: JvPdJu3wOICMsJ3KSVQfjQ-1
+Received: by mail-qt1-f197.google.com with SMTP id m22-20020a05622a1196b029026549e62339so7108359qtk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:46:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=jLNxJhgGZlPkzEzVhm7oQCluwCd8GOHL0Cl+fYd1lV8=;
+        b=syv8etDN+Ye4q+tVh0wXhnq4UNb1+HWCz2bPMBPrcHfCql9X6eM+LX7uqVciOwsw0t
+         DpeqeyEqGaDD4CYy+8c5v5yRTRSrXtL6N5jQZ7iAWU6jHoGDjPMec7rBB+UtMiTxZfuM
+         +15aGGSnm50QH0yhmIf9stFnVfbpx3xTigqgPrFTwaEwIN2cB2ahxnQaTMcPMNQe6Eh7
+         gBm/WruUGYLJXUP9AsC5hX1C2EtOvPJGTrbYkvuzvnZbUEB3PND7xMBlkfrYuvFnLxR7
+         ZUKUfrJShImvdoHTbxcQr36FTbc6DI8AOZYR1hwrKr2uSD2fVoFmn484c6m2sSdsAt6x
+         KV8Q==
+X-Gm-Message-State: AOAM533qCuXUdbBGoJpfyfQwgzD989aBnOT1BQMZ34uf0tKuaGZaD2U8
+        6Ceof1P5tIEhiYR1BAVpPWHizR4hSQGdLPkcJW8HyxAu+wLL0K3+6QHnpFaVbNlE1EDfcX5BEPx
+        uA7MDgjmgDsdwMNbgsOD6lWe5
+X-Received: by 2002:a37:a1cf:: with SMTP id k198mr24571202qke.259.1627418780526;
+        Tue, 27 Jul 2021 13:46:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/2D4LFG2Y61uUgaJl1dx4vpK2+Wr8Pjq7SBty/+7+uZlr/4GzZWfAY4xFHyT9FitHLWBR7g==
+X-Received: by 2002:a37:a1cf:: with SMTP id k198mr24571184qke.259.1627418780345;
+        Tue, 27 Jul 2021 13:46:20 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id v4sm2171761qkf.52.2021.07.27.13.46.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 13:46:19 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 4/9] cgroup/cpuset: Enable event notification when
+ partition become invalid
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20210720141834.10624-1-longman@redhat.com>
+ <20210720141834.10624-5-longman@redhat.com>
+ <YP9BxKXfhaoTE+LO@slm.duckdns.org>
+ <8bed1ac2-f5f4-6d17-d539-4cd274b0f39e@redhat.com>
+Message-ID: <5d1b7995-87f8-afde-5845-c97ff88bf431@redhat.com>
+Date:   Tue, 27 Jul 2021 16:46:18 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210727144859.4150043-1-arnd@kernel.org> <YQAfa6iObAwwIpzb@infradead.org>
- <20210727131017.f151a81fc69db8f45f81a2b3@linux-foundation.org>
-In-Reply-To: <20210727131017.f151a81fc69db8f45f81a2b3@linux-foundation.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 27 Jul 2021 22:42:07 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2S4Oct4+a8u=ottrW1b+iRf-tRSJb0DvaLNR3CZARmTQ@mail.gmail.com>
-Message-ID: <CAK8P3a2S4Oct4+a8u=ottrW1b+iRf-tRSJb0DvaLNR3CZARmTQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] compat: remove compat_alloc_user_space
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8bed1ac2-f5f4-6d17-d539-4cd274b0f39e@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 10:11 PM Andrew Morton
-<akpm@linux-foundation.org> wrote:
+On 7/27/21 4:26 PM, Waiman Long wrote:
+> On 7/26/21 7:14 PM, Tejun Heo wrote:
+>> On Tue, Jul 20, 2021 at 10:18:29AM -0400, Waiman Long wrote:
+>>> +static inline void notify_partition_change(struct cpuset *cs,
+>>> +                       int old_prs, int new_prs)
+>>> +{
+>>> +    if ((old_prs == new_prs) ||
+>>> +       ((old_prs != PRS_ERROR) && (new_prs != PRS_ERROR)))
+>>> +        return;
+>>> +    cgroup_file_notify(&cs->partition_file);
+>> I'd generate an event on any state changes. The user have to read the 
+>> file
+>> to find out what happened anyway.
+>>
+>> Thanks.
 >
-> On Tue, 27 Jul 2021 15:59:55 +0100 Christoph Hellwig <hch@infradead.org> wrote:
->
-> > On Tue, Jul 27, 2021 at 04:48:53PM +0200, Arnd Bergmann wrote:
-> > > Since these patches are now all that remains, it would be nice to
-> > > merge it all through Andrew's Linux-mm tree, which is already based
-> > > on top of linux-next.
-> >
-> > Is it?
->
-> the -mm tree is structured as
->
-> <90% of stuff>
-> linux-next.patch
-> <the other 10% of stuff>
->
-> So things like Arnd's series which have a dependency on linux-next
-> material get added to the "other 10%" and are merged behind the
-> linux-next material and all is good.
->
-> If possible I'll queue things ahead of linux-next.patch.  Those few
-> things which have dependencies on linux-next material get sent to Linus
-> after the required linux-next material is merged into mainline.
+> From my own testing with "inotify_add_watch(fd, file, IN_MODIFY)", 
+> poll() will return with a event whenever a user write to 
+> cpuset.cpus.partition control file. I haven't really look into the 
+> sysfs code yet, but I believe event generation will be automatic in 
+> this case. So I don't think I need to explicitly add a 
+> cgroup_file_notify() when users modify the control file directly. 
+> Other indirect modification may cause the partition value to change 
+> to/from PRS_ERROR and I should have captured all those changes in this 
+> patchset. I will update the patch to note this point to make it more 
+> clear. 
 
-The first five patches in my series should apply cleanly on mainline
-kernels and make sense by themselves, the last patch is the one that
-depends on this series as well as another series in the netdev tree,
-so that has to go behind linux-next.
+After thinking about it a bit more it, it is probably not a problem to 
+call cgroup_file_notify() for every change as this is not in a 
+performance critical path anyway. I will do some more testing to find 
+out if doing cgroup_file_notify() for regular file write will cause an 
+extra duplicated event to be sent out, I will probably stay with the 
+current patch. Otherwise, I can change it to always call 
+cgroup_file_notify().
 
-I suppose I could also merge the first five through my asm-generic tree
-and send you the last one if you prefer, but then again two of the patches
-are actually memory management stuff.
+Cheers,
+Longman
 
-         Arnd
