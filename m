@@ -2,120 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368AE3D750B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EA63D7514
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 14:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236535AbhG0M1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 08:27:14 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:30936 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236121AbhG0M1M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 08:27:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627388833; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=Q6hAM6vysUdsneiXBqcVC/h93AYOHGPjOJpOhDCKNt0=; b=nMsQ/6ihLxKxGPIBkFcWEiMOKF+NtrLDxdHt6kL6m+NTiMqeiiB5aUZV2HJMQMBgJETEvUuw
- stELmEz9UuWXryUJy1fGx4aFSS6pbaua6d8yfy6zs2h7DAPHmR0vLauoM7CBeRKCITqd+35o
- hFzpvwi2PEdD/SAwl5dpMsEzz1E=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60fffb6e1dd16c87888e8e94 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Jul 2021 12:26:22
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 34AC4C433F1; Tue, 27 Jul 2021 12:26:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ECF58C433F1;
-        Tue, 27 Jul 2021 12:26:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ECF58C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Julian Calaby <julian.calaby@gmail.com>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        QCA ath9k Development <ath9k-devel@qca.qualcomm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Brooke Basile <brookebasile@gmail.com>,
-        syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ath9k: hif_usb: fix memory leak in ath9k_hif_usb_firmware_cb
-References: <20210709084351.2087311-1-mudongliangabcd@gmail.com>
-        <CAGRGNgUNnf=62xnFE4zUiVJ+n6NyGjFUmdR2JChbRkhsDSy0Yw@mail.gmail.com>
-Date:   Tue, 27 Jul 2021 15:26:14 +0300
-In-Reply-To: <CAGRGNgUNnf=62xnFE4zUiVJ+n6NyGjFUmdR2JChbRkhsDSy0Yw@mail.gmail.com>
-        (Julian Calaby's message of "Tue, 27 Jul 2021 17:24:44 +1000")
-Message-ID: <877dhcgcyh.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S236320AbhG0Mbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 08:31:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232013AbhG0MbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 08:31:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCCFB61989;
+        Tue, 27 Jul 2021 12:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627389073;
+        bh=y58pUwdVQz/ZqFSprbKApGIjx53BBO+DN/1lqAEsvtU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CzldbQU97C1vKxSLIa1feDwa+Y+EQE0S2TIuC+hW+d80QuF0NcOx0Wc/OtEQcAnOa
+         Mz3JoWg2V6uUxZQWMnKDMeULaWtlUC3qxJVKH5qRvi8JIUS+GZVqdF0E81sG3ehTt7
+         BagQEiIbObnqITbKC9ScBOpFQs1ST8w6tVpFgQTU=
+Date:   Tue, 27 Jul 2021 14:31:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Filip Schauer <filip@mg6.at>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers core: Fix oops when driver probe fails
+Message-ID: <YP/8jqfW4+HHUL+X@kroah.com>
+References: <20210727112311.GA7645@DESKTOP-E8BN1B0.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727112311.GA7645@DESKTOP-E8BN1B0.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Julian Calaby <julian.calaby@gmail.com> writes:
+On Tue, Jul 27, 2021 at 01:23:11PM +0200, Filip Schauer wrote:
+> dma_range_map is freed to early, which might cause an oops when
+> a driver probe fails.
+>  Call trace:
+>   is_free_buddy_page+0xe4/0x1d4
+>   __free_pages+0x2c/0x88
+>   dma_free_contiguous+0x64/0x80
+>   dma_direct_free+0x38/0xb4
+>   dma_free_attrs+0x88/0xa0
+>   dmam_release+0x28/0x34
+>   release_nodes+0x78/0x8c
+>   devres_release_all+0xa8/0x110
+>   really_probe+0x118/0x2d0
+>   __driver_probe_device+0xc8/0xe0
+>   driver_probe_device+0x54/0xec
+>   __driver_attach+0xe0/0xf0
+>   bus_for_each_dev+0x7c/0xc8
+>   driver_attach+0x30/0x3c
+>   bus_add_driver+0x17c/0x1c4
+>   driver_register+0xc0/0xf8
+>   __platform_driver_register+0x34/0x40
+>   ...
+> 
+> This issue is introduced by commit d0243bbd5dd3 ("drivers core:
+> Free dma_range_map when driver probe failed"). It frees
+> dma_range_map before the call to devres_release_all, which is too
+> early. The solution is to free dma_range_map only after
+> devres_release_all.
+> 
+> Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe failed")
+> Signed-off-by: Filip Schauer <filip@mg6.at>
+> ---
+>  drivers/base/dd.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Hi Dongliang,
->
-> (Drive-by review, I know almost nothing about the code in question)
->
-> On Fri, Jul 9, 2021 at 6:47 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>
->> The commit 03fb92a432ea ("ath9k: hif_usb: fix race condition between
->> usb_get_urb() and usb_kill_anchored_urbs()") adds three usb_get_urb
->> in ath9k_hif_usb_dealloc_tx_urbs and usb_free_urb.
->>
->> Fix this bug by adding corresponding usb_free_urb in
->> ath9k_hif_usb_dealloc_tx_urbs other and hif_usb_stop.
->>
->> Reported-by: syzbot+6692c72009680f7c4eb2@syzkaller.appspotmail.com
->> Fixes: 03fb92a432ea ("ath9k: hif_usb: fix race condition between usb_get_urb() and usb_kill_anchored_urbs()")
->> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
->> ---
->>  drivers/net/wireless/ath/ath9k/hif_usb.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
->> index 860da13bfb6a..bda91ff3289b 100644
->> --- a/drivers/net/wireless/ath/ath9k/hif_usb.c
->> +++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
->> @@ -457,6 +457,7 @@ static void hif_usb_stop(void *hif_handle)
->>                 usb_kill_urb(tx_buf->urb);
->>                 list_del(&tx_buf->list);
->>                 usb_free_urb(tx_buf->urb);
->> +               usb_free_urb(tx_buf->urb);
->
-> Ok, so if I'm reading this correctly, before the first usb_free_urb()
-> call, we have two references to the urb at tx_buf->urb.
->
-> Why?
->
-> Isn't the better fix here to detangle why there's more than one
-> reference to it and resolve it that way? This looks like a hack to fix
-> something much more fundamentally broken.
+Oh, nice catch!  This is a v2, right?  Next time please be explicit :)
 
-Yeah, this looks very suspicious.
+thanks,
 
-One more thing: also the patch should be tested with real hardware. I'm
-worried that people are just trying to fix a syzbot warning and not
-really considering how it works in real life. That's why I'm extra
-careful with syzbot patches for wireless drivers.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+greg k-h
