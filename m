@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB233D795C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 057C93D7936
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbhG0PIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbhG0PID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:08:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB76C061757;
-        Tue, 27 Jul 2021 08:08:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wVt0blQj5cMNKK3RgGAsWldsmx4Nl3QUZ8dtyk7ITIw=; b=ZBdwDYuic7LwFr25GXHm7eDLta
-        83Fh/NTGn8WFh+rf+r8oSPxdv/zHWOdR+URvLjid7yh0XEkw6LcHg5G0vemJJgT24meRxB8QAZO4X
-        05eZDwqoEkZN+9SKIK61Q0Ak+2miPYCwN3X87QCboCnyBQVCg6pNmnz7Odu114s2wM+N2SrU8GXqf
-        SWnomiaZeXM4Elw2F5p08FKGCvXVnE2mDoByrj5wFEKlalaoT7OUFCkLXW3eM+gT3cL7/F0tq9faq
-        B13XbrPu1WdAAKAlaABUE0rPrOi/I4snCG0mAJhB6kKA4SRWaA6wCH3a9yxKaqU+IUkciUfsYQOnT
-        VRbSOgSQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8OYl-00F7jB-UP; Tue, 27 Jul 2021 15:00:05 +0000
-Date:   Tue, 27 Jul 2021 15:59:55 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Feng Tang <feng.tang@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v5 0/6] compat: remove compat_alloc_user_space
-Message-ID: <YQAfa6iObAwwIpzb@infradead.org>
-References: <20210727144859.4150043-1-arnd@kernel.org>
+        id S232656AbhG0PBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:01:15 -0400
+Received: from mga12.intel.com ([192.55.52.136]:20693 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231552AbhG0PBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 11:01:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="192055823"
+X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
+   d="scan'208";a="192055823"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 08:01:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,274,1620716400"; 
+   d="scan'208";a="662768002"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Jul 2021 08:01:11 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 366DFDE; Tue, 27 Jul 2021 18:01:39 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH v1 1/1] lib/test_scanf: Handle n_bits == 0 in random tests
+Date:   Tue, 27 Jul 2021 18:01:32 +0300
+Message-Id: <20210727150132.28920-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210727144859.4150043-1-arnd@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:48:53PM +0200, Arnd Bergmann wrote:
-> Since these patches are now all that remains, it would be nice to
-> merge it all through Andrew's Linux-mm tree, which is already based
-> on top of linux-next.
+UBSAN reported (via LKP)
 
-Is it?
+[   11.021349][    T1] UBSAN: shift-out-of-bounds in lib/test_scanf.c:275:51
+[   11.022782][    T1] shift exponent 32 is too large for 32-bit type 'unsigned int'
+
+When n_bits == 0, the shift is out of range. Switch code to use GENMASK
+to handle this case.
+
+Fixes: 50f530e176ea ("lib: test_scanf: Add tests for sscanf number conversion")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ lib/test_scanf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/test_scanf.c b/lib/test_scanf.c
+index 84fe09eaf55e..abae88848972 100644
+--- a/lib/test_scanf.c
++++ b/lib/test_scanf.c
+@@ -271,7 +271,7 @@ static u32 __init next_test_random(u32 max_bits)
+ {
+ 	u32 n_bits = hweight32(prandom_u32_state(&rnd_state)) % (max_bits + 1);
+ 
+-	return prandom_u32_state(&rnd_state) & (UINT_MAX >> (32 - n_bits));
++	return prandom_u32_state(&rnd_state) & GENMASK(n_bits, 0);
+ }
+ 
+ static unsigned long long __init next_test_random_ull(void)
+@@ -280,7 +280,7 @@ static unsigned long long __init next_test_random_ull(void)
+ 	u32 n_bits = (hweight32(rand1) * 3) % 64;
+ 	u64 val = (u64)prandom_u32_state(&rnd_state) * rand1;
+ 
+-	return val & (ULLONG_MAX >> (64 - n_bits));
++	return val & GENMASK_ULL(n_bits, 0);
+ }
+ 
+ #define random_for_type(T)				\
+-- 
+2.30.2
+
