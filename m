@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052983D7265
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F31D3D7267
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbhG0Jyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235993AbhG0Jyu (ORCPT
+        id S236136AbhG0J4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:56:22 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:51049 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235950AbhG0J4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:54:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19B5C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:54:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xHaIGZcgG1l1kYUR2GlnOuG/Etl6l+xUZifRAQb39Gw=; b=UsBXcQCQt/4qmULQixZYqdaiMK
-        Vz5tVXBIJXmZR3A6sMkznpYugzmqj+STI5HmCCNZ3AHgqalLaT4BoGF6g5xXooERbo6fMlqqHTKv8
-        +zZ/NLY/WB9B3IwJKwFpXJ4JnPjcn+UtkJicIYgwFWzj+ZaGYfUUmpXJXVzm0xoFsGQbTRTULSl6V
-        UY44pgpPhLaESAD5FZ2HDyOQB4hV/sdfSEK6PHHeHHX7uhcyaz11y9BM8gu+kN5Ta8zjsQBcBek5M
-        dCXB8cUcyuzbW6/Hc+a5xGUvHraXltDeYIacVIksIjrMeTMahAAEWJ06gYOseUauYCxNraknK+H1k
-        86tmBUGw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8JnM-003PQA-8u; Tue, 27 Jul 2021 09:54:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CCDDA300233;
-        Tue, 27 Jul 2021 11:54:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BA9CB202492DB; Tue, 27 Jul 2021 11:54:38 +0200 (CEST)
-Date:   Tue, 27 Jul 2021 11:54:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joelaf@google.com>
-Cc:     "Rajendran, Jaishankar" <jaishankar.rajendran@intel.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Mallikarjun Chegaraddi, Raju" 
-        <raju.mallikarjun.chegaraddi@intel.com>
-Subject: Re: Core Scheduling - Concurrent VMs
-Message-ID: <YP/X3nSGBfkZ1/c3@hirez.programming.kicks-ass.net>
-References: <PH0PR11MB51748333769D9002912FF63C84E89@PH0PR11MB5174.namprd11.prod.outlook.com>
- <CAJWu+oq98Yh4kknze7u6SOYZNw6hR5aFkj61aXbTV3JPq=7RNg@mail.gmail.com>
+        Tue, 27 Jul 2021 05:56:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1627379781; x=1658915781;
+  h=subject:from:to:cc:references:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=3k/EdUisHbJoZXLXTXFdtAGmALCzKPlZkW1MaTQW3bY=;
+  b=IXfu2KamoTzOKAAfm4BFAhQ63LXPWcwGOlmXT+FzCHjZyiFlaqxlm1Ri
+   3tDdDr/OdWa6LLrST9wbR60h2rkxII5DYbt197KGMdu4ODwML3D5gYYIx
+   /iFFbQa6ASge0RxoWOGWoyS5f862kjdzX0069+OJ92PaDyAYlNsBaxS9H
+   Bq8hlfyaTziSD678ZK93EAqRjl91j9+LX+IdZuDHreu2PM5RvjreseX6a
+   bw0ZfwMjObp1upoACOoEeFLFerXxtGXKWNBDVyDO3xKIP3/tdfqUdr1Ec
+   VHKCdZW41OqREedqLLEyll8MEeEVSGCKACqNQeySCQSwrCsKBk9QN/kUe
+   Q==;
+IronPort-SDR: IqLd0if36UfnB+A9exjhZ9ET3Bwjmh53nPqcKEvI71l4T+UVEMYv1M/aC63YUdP1xpZumk/4+X
+ NW9qejvSUijvj6/lw9LrNWrg8ylmO7gu/8UJY5gKQxmbIHaPBBrzP0Tnfzk1/cL9/I98FJOpBf
+ JqhUp31NHzIxvYyJgYj8iZfudwdC9Yj1i8ScKom5h71EerjonPovm8j6VoxbElHLIqUW1fYUke
+ cmuMDGKp2xrAXUj5bPo9OL/nZZV3vhm5Kap682q026NasGkfCu8SBq+oCKUzHkfx8yXrYSnXw+
+ 8AnKrzwLHVyhUyPwUNqUjpVZ
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
+   d="scan'208";a="123590372"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 27 Jul 2021 02:56:21 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 02:56:20 -0700
+Received: from [10.171.246.86] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
+ Transport; Tue, 27 Jul 2021 02:56:19 -0700
+Subject: Re: [PATCH] ARM: dts: at91: sama5d4_xplained: change the key code of
+ the gpio key
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+References: <20210727091351.44475-1-nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <030d92ba-920a-4b8e-b48a-d722e8fbca90@microchip.com>
+Date:   Tue, 27 Jul 2021 11:56:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJWu+oq98Yh4kknze7u6SOYZNw6hR5aFkj61aXbTV3JPq=7RNg@mail.gmail.com>
+In-Reply-To: <20210727091351.44475-1-nicolas.ferre@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 11:57:21AM -0400, Joel Fernandes wrote:
-> Hi,
-> +Dario Faggioli and +Vineeth Pillai as well.
+On 27/07/2021 at 11:13, nicolas.ferre@microchip.com wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
 > 
-> On Mon, Jul 26, 2021 at 1:41 AM Rajendran, Jaishankar
-> <jaishankar.rajendran@intel.com> wrote:
-> >
-> > Refer to the below experiments performed using Core Scheduling for Concurrent VMs and we found the benchmark scores executed in different VMs are
-> > degrading after enablement of Core Scheduling. Both the host and guest are enabled with Core Scheduler
+> From: Ludovic Desroches <ludovic.desroches@microchip.com>
 > 
-> Why are you running core scheduling within the guest? Only the host
-> needs it and you tag vCPU threads in the host. Within the guest you
-> don't need it (and it probably doesn't make sense unless you pin the
-> vCPU threads to individual physical hardware threads).
+> Having a button code and not a key code causes issues with libinput.
+> udev won't set ID_INPUT_KEY. If it is forced, then it causes a bug
+> within libinput.
+> 
+> Signed-off-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Correct, in-guest core-scheduling only works if there's an in-guest
-topology, which requires pinning vcpu threads and sacrificing a chicken
-on the altar of qemu to get the right incantation such that the guest
-actually receives the right topology.
+For the record: added to at91-dt for 5.15.
 
-Nested core scheduling hurts my head.
+Regards,
+   Nicolas
 
-> I don't think these commands can really tell you that core scheduler
-> is working or not. They are too coarse grained. You would need to look
-> at it through ftrace scheduling events. Core scheduling will still
-> allow differently tagged threads to use a core, it is just that it
-> wont allow it simultaneously.
+> ---
+>   arch/arm/boot/dts/at91-sama5d4_xplained.dts | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+> index 541779af049f..d241c24f0d83 100644
+> --- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+> +++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+> @@ -7,6 +7,7 @@
+>    */
+>   /dts-v1/;
+>   #include "sama5d4.dtsi"
+> +#include <dt-bindings/input/input.h>
+> 
+>   / {
+>          model = "Atmel SAMA5D4 Xplained";
+> @@ -250,7 +251,7 @@ gpio_keys {
+>                  pb_user1 {
+>                          label = "pb_user1";
+>                          gpios = <&pioE 8 GPIO_ACTIVE_HIGH>;
+> -                       linux,code = <0x100>;
+> +                       linux,code = <KEY_PROG1>;
+>                          wakeup-source;
+>                  };
+>          };
+> --
+> 2.32.0
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
 
-Right, you need tracing to verify it actually works, no real alternative
-there.
+
+-- 
+Nicolas Ferre
