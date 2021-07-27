@@ -2,162 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 940363D7DDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EE03D7DD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhG0SkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:40:02 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55300 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229716AbhG0SkA (ORCPT
+        id S230262AbhG0Si5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhG0Siz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:40:00 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RIZYit159213;
-        Tue, 27 Jul 2021 14:38:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=d/4BumVgvtK9RROG6z6FdhebdQ556A1xMyoo6DS29A4=;
- b=qqRRky/Cn5ZAYNzCDbLY75T2dY8OMMmza3EjtMUJDrhtbK99HbLpEyNO85p/tMReOjiA
- JvjAJ0171Pn6gJu5IKQsdbMEK48JbBAiBV4V5J4m9KQ9v091n8FS+AQ8OM4IkxWllFCe
- eROK+fPGXUREt2/TfA4ni0Om93DJqlJE0GQQZk3S1zQRtCU+lt/4K3Qu+6w4/B54JmrW
- +DUqDS8eP/83foES8MsF69TR5Yhr/KYSoYSItPHV6iBN8aWERKV3fsDf8rgZlxRQoQz6
- aqU6se/OCi3jmtZ7ThHrsoc7ujZ9cX/DFwdaK0xWaqwipzZvcWEPgVlBLwgVm2D89WZb 5Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2qgfg98w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 14:38:41 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16RIZc3Y159614;
-        Tue, 27 Jul 2021 14:38:40 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2qgfg95h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 14:38:39 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16RIcbXt000976;
-        Tue, 27 Jul 2021 18:38:37 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3a235m0ke5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 18:38:37 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16RIcX3P22282602
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Jul 2021 18:38:34 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D88A54C044;
-        Tue, 27 Jul 2021 18:38:33 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A84184C040;
-        Tue, 27 Jul 2021 18:38:32 +0000 (GMT)
-Received: from osiris (unknown [9.145.19.157])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 27 Jul 2021 18:38:32 +0000 (GMT)
-Date:   Tue, 27 Jul 2021 20:38:31 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v5 4/6] mm: simplify compat numa syscalls
-Message-ID: <YQBSpxZR4P/Phpf1@osiris>
-References: <20210727144859.4150043-1-arnd@kernel.org>
- <20210727144859.4150043-5-arnd@kernel.org>
- <YQBB9yteAwtG2xyp@osiris>
- <CAK8P3a3itgCyc4jDBodTOcwG+XXsDYspZqQVBmy88cGXevY5Yw@mail.gmail.com>
+        Tue, 27 Jul 2021 14:38:55 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CB5C061757;
+        Tue, 27 Jul 2021 11:38:53 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id u12so16652105eds.2;
+        Tue, 27 Jul 2021 11:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9ueGDlrIDyyhxrV4NQq28M57e2BsW0VmTFATXW8SVcY=;
+        b=SFxwE+tLmGGaaPvmxvhX9z5KDUoKQRtDV4qSQxtuI7fzII+4jnBizPioauqQH9ek/6
+         +XL/ys4mN8O4yJibD1q+fpTQiXooZtXkKGhSJu1lfzQVfDBqBS/H1ZmhL8OLiAKSlP49
+         peX5nNKO/VtOSyNp+S5putGDvLHzbrSTD+N7Of9/j0GaEHgsq5vXlDoOWp1ZdvRgB/GA
+         0MJQtBHG+P0XlrQlMrH5OUL/Ref9bbNZbASmfNfsZsj6CGNt77JDiA7W6KmWMCaHjzP+
+         B92gpTeQjXvRLxnaPR+FRgD/l+ks/kVS5+dlJLa2ZftTzB2puU+5Tc9bhI24zu3dZYWt
+         Vhwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9ueGDlrIDyyhxrV4NQq28M57e2BsW0VmTFATXW8SVcY=;
+        b=dwKuwCijFe+E8CbjHDV8C8mcTH8cqgI/eIa6VqgWPNV28C0Ky9Sxl2YLrf9qQBykcn
+         We86NmYvhRyzIRfvlcYZuGmySIobZJsq0bVAyKyitDnZXEZpo4mIvYDsZv1GqsEALWih
+         IG4pvMsH2WmdQ0wOjhgcDZGkfTZQAf28mq0jCQwBCR0SvhRnrMQnGFSWjo2e8zBSRGTu
+         nHZbGerCYyhEgsZ1jUS51hQIoYQIxsjM0zfVGFEQBmgmvt7048tYOBTYooyU0TK1/jwI
+         RJbd6l6CaAvq4at7CMUMmJMIGJxxx8xpXTsLXM5pL3ztGjESe/xC49ffycbiRztvRkIw
+         /XIg==
+X-Gm-Message-State: AOAM531yd+PsINwCzKF3a6weP0eHRJFajjQ6UOUD4yGfMEGnmJs1SU25
+        3iKQUzDlD2xECRyGeRXyU3Fxciqd6Jge+scyXBU=
+X-Google-Smtp-Source: ABdhPJwB8FRWS2J5s3syc6/M+EMNaReP0OaIRZlBGLVThpmeTSMNEz5G45mKFfDPXEoD2mggktSf1ht0pmg3nj+wicA=
+X-Received: by 2002:aa7:d703:: with SMTP id t3mr29303497edq.50.1627411132094;
+ Tue, 27 Jul 2021 11:38:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3itgCyc4jDBodTOcwG+XXsDYspZqQVBmy88cGXevY5Yw@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Kwccqqwc5VX735JqhRPAybSOZZQrYCVP
-X-Proofpoint-ORIG-GUID: YtLX8HDtFqe7pp2VkhD_wrYR0Q9OXJxP
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_13:2021-07-27,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 suspectscore=0
- clxscore=1015 adultscore=0 malwarescore=0 mlxscore=0 phishscore=0
- priorityscore=1501 mlxlogscore=955 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2107140000 definitions=main-2107270109
+References: <1626752145-27266-1-git-send-email-linyunsheng@huawei.com>
+ <1626752145-27266-3-git-send-email-linyunsheng@huawei.com>
+ <CAKgT0Uf=WbpngDPQ1V0X+XSJbZ91=cuaz8r_J96=BrXg01PJFA@mail.gmail.com>
+ <92e68f4e-49a4-568c-a281-2865b54a146e@huawei.com> <CAKgT0UfwiBowGN+ctqoFZ6qaQAUp-0uGJeukk4OHOEOOfbrEWw@mail.gmail.com>
+ <fffae41f-b0a3-3c43-491f-096d31ba94ca@huawei.com> <CAKgT0UcBgo0Ex=x514qGeLvppJr-0vqx9ZngAFDTwugjtKUrOA@mail.gmail.com>
+ <41283c5f-2f58-7fa7-e8fe-a91207a57353@huawei.com> <CAKgT0Ud+PRzz7mgX1dru1=i3TDiaGOoyhg7vp6cz+3NzVFZf+A@mail.gmail.com>
+ <20210724130709.GA1461@ip-172-31-30-86.us-east-2.compute.internal>
+ <CAKgT0UckhFhvmsjNhBM6tX_EUn12NCn--puJkwVUGitk9yZedw@mail.gmail.com> <75213c28-d586-3dfe-c2a7-738af9dd9864@huawei.com>
+In-Reply-To: <75213c28-d586-3dfe-c2a7-738af9dd9864@huawei.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Tue, 27 Jul 2021 11:38:40 -0700
+Message-ID: <CAKgT0UcvPaP8AqjiF9eSXSWgnJqGVCNccW-brYeqmkZucpgb8A@mail.gmail.com>
+Subject: Re: [PATCH rfc v6 2/4] page_pool: add interface to manipulate frag
+ count in page pool
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Yunsheng Lin <yunshenglin0825@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Marcin Wojtas <mw@semihalf.com>, linuxarm@openeuler.org,
+        yisen.zhuang@huawei.com, Salil Mehta <salil.mehta@huawei.com>,
+        thomas.petazzoni@bootlin.com, hawk@kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, fenghua.yu@intel.com,
+        guro@fb.com, Peter Xu <peterx@redhat.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Willem de Bruijn <willemb@google.com>, wenxu@ucloud.cn,
+        Cong Wang <cong.wang@bytedance.com>,
+        Kevin Hao <haokexin@gmail.com>, nogikh@google.com,
+        Marco Elver <elver@google.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>, songliubraving@fb.com,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 07:40:05PM +0200, Arnd Bergmann wrote:
-> On Tue, Jul 27, 2021 at 7:27 PM Heiko Carstens <hca@linux.ibm.com> wrote:
-> > > +static int get_bitmap(unsigned long *mask, const unsigned long __user *nmask,
-> > > +                   unsigned long maxnode)
-> > > +{
-> > > +     unsigned long nlongs = BITS_TO_LONGS(maxnode);
-> > > +     int ret;
-> > > +
-> > > +     if (in_compat_syscall())
-> > > +             ret = compat_get_bitmap(mask,
-> > > +                                     (const compat_ulong_t __user *)nmask,
-> > > +                                     maxnode);
+On Tue, Jul 27, 2021 at 12:54 AM Yunsheng Lin <linyunsheng@huawei.com> wrot=
+e:
+>
+> On 2021/7/26 0:49, Alexander Duyck wrote:
+> > On Sat, Jul 24, 2021 at 6:07 AM Yunsheng Lin <yunshenglin0825@gmail.com=
+> wrote:
+> >>
+> >> On Fri, Jul 23, 2021 at 09:08:00AM -0700, Alexander Duyck wrote:
+> >>> On Fri, Jul 23, 2021 at 4:12 AM Yunsheng Lin <linyunsheng@huawei.com>=
+ wrote:
+> >>>>
+> >>>> On 2021/7/22 23:18, Alexander Duyck wrote:
+> >>>>>>>
+
+<snip>
+
+> >>>
+> >>> Rather than trying to reuse the devices page pool it might make more
+> >>> sense to see if you couldn't have TCP just use some sort of circular
+> >>> buffer of memory that is directly mapped for the device that it is
+> >>> going to be transmitting to. Essentially what you would be doing is
+> >>> creating a pre-mapped page and would need to communicate that the
+> >>> memory is already mapped for the device you want to send it to so tha=
+t
+> >>> it could skip that step.
+> >>
+> >> IIUC sk_page_frag_refill() is already doing a similar reusing as the
+> >> rx reusing implemented in most driver except for the not pre-mapping
+> >> part.
+> >>
+> >> And it seems that even if we pre-map the page and communicate that the
+> >> memory is already mapped to the driver, it is likely that we will not
+> >> be able to reuse the page when the circular buffer is not big enough
+> >> or tx completion/tcp ack is not happening quickly enough, which might
+> >> means unmapping/deallocating old circular buffer and allocating/mappin=
+g
+> >> new circular buffer.
+> >>
+> >> Using page pool we might be able to alleviate the above problem as it
+> >> does for rx?
 > >
-> > compat_ptr() conversion for e.g. nmask is missing with the next patch
-> > which removes the compat system calls.
-> > Is that intended or am I missing something?
-> 
-> I don't think it's needed here, since the pointer comes from the system
-> call argument, which has the compat_ptr() conversion applied in
-> arch/s390/include/asm/syscall_wrapper.h, not from a compat_uptr_t
-> that gets passed indirectly. The compat_get_bitmap() conversion
-> is only needed for byte order adjustment, not for converting pointers.
-> 
-> It's also possible that I'm the one who's missing something.
+> > I would say that instead of looking at going straight for the page
+> > pool it might make more sense to look at seeing if we can coalesce the
+> > DMA mapping of the pages first at the socket layer rather than trying
+> > to introduce the overhead for the page pool. In the case of sockets we
+> > already have the destructors that are called when the memory is freed,
+> > so instead of making sockets use page pool it might make more sense to
+> > extend the socket buffer allocation/freeing to incorporate bulk
+> > mapping and unmapping of pages to optimize the socket Tx path in the
+> > 32K page case.
+>
+> I was able to enable tx recycling prototyping based on page pool to
+> run some performance test, the performance improvement is about +20%
+> =EF=BC=8830Gbit -> 38Gbit=EF=BC=89 for single thread iperf tcp flow when =
+IOMMU is in
+> strict mode. And CPU usage descreases about 10% for four threads iperf
+> tcp flow for line speed of 100Gbit when IOMMU is in strict mode.
 
-What I was trying to say: this patch on its own is ok. However with
-the next patch you remove the compat system calls and map the regular
-system calls instead.
+That isn't surprising given that for most devices the IOMMU will be
+called per frag which can add a fair bit of overhead.
 
-That is:
+> Looking at the prototyping code, I am agreed that it is a bit controversi=
+al
+> to use the page pool for tx as the page pool is assuming NAPI polling
+> protection for allocation side.
+>
+> So I will take a deeper look about your suggestion above to see how to
+> implement it.
+>
+> Also, I am assuming the "destructors" means tcp_wfree() for TCP, right?
+> It seems tcp_wfree() is mainly used to do memory accounting and free
+> "struct sock" if necessary.
 
--COMPAT_SYSCALL_DEFINE6(mbind, compat_ulong_t, start, compat_ulong_t, len,
--		       compat_ulong_t, mode, compat_ulong_t __user *, nmask,
--		       compat_ulong_t, maxnode, compat_ulong_t, flags)
--{
--	return kernel_mbind(start, len, mode, (unsigned long __user *)nmask,
--			    maxnode, flags);
--}
+Yes, that is what I was thinking. If we had some way to add something
+like an argument or way to push the information about where the skbs
+are being freed back to the socket the socket could then be looking at
+pre-mapping the pages for the device if we assume a 1:1 mapping from
+the socket to the device.
 
-and this:
+> I am not so familiar with socket layer to understand how the "destructors=
+"
+> will be helpful here, any detailed idea how to use "destructors" here?
 
--268  common	mbind			sys_mbind			compat_sys_mbind
--269  common	get_mempolicy		sys_get_mempolicy		compat_sys_get_mempolicy
--270  common	set_mempolicy		sys_set_mempolicy		compat_sys_set_mempolicy
-+268  common	mbind			sys_mbind			sys_mbind
-+269  common	get_mempolicy		sys_get_mempolicy		sys_get_mempolicy
-+270  common	set_mempolicy		sys_set_mempolicy		sys_set_mempolicy
-
-would remove compat_ptr() conversion from nmask above if I'm not mistaken.
+The basic idea is the destructors are called when the skb is orphaned
+or freed. So it might be a good spot to put in any logic to free pages
+from your special pool. The only thing you would need to sort out is
+making certain to bump reference counts appropriately if the skb is
+cloned and the destructor is copied.
