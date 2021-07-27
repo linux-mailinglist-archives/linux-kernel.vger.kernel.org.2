@@ -2,80 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB973D6AE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E043D6AEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 02:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhGZXdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 19:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
+        id S234226AbhGZXgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 19:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234617AbhGZXdi (ORCPT
+        with ESMTP id S234038AbhGZXgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 19:33:38 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831BBC0613C1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:14:06 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id c7-20020a9d27870000b02904d360fbc71bso11698791otb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:14:06 -0700 (PDT)
+        Mon, 26 Jul 2021 19:36:15 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE501C061764
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:16:42 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 48-20020a9d0bb30000b02904cd671b911bso11819383oth.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 17:16:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=XxnsPvoYRBPAgRZmEnXc9qSyoDT9N9isv4C7b/Cbdhc=;
-        b=aiEyG+Z1erdqfHn1g0iRzhw1Z5rqqqCTw3ky2Xz268rVI1pRqvQF1oEcCyFvKqPCGG
-         l4wSTVtHyRkqj564VFZE0F8V7X7Hfo13jmetWW6Fym0BPTSfxOGrLvx95UMqMhMVnYIv
-         qMpO7pKp4nlxIgUuzEoPFWXvaa+0diu1/MyT0=
+        bh=tscrZBQstzzRaUL+UaPR6i4OEaBy+HrQhXGyWhtHbpY=;
+        b=I0bCa3Idkeu+p5K2AETrjGGnbJVU0B3Kdkogh8ZnX/Pg35bJ5u63zp1PpsZR4PUA71
+         pJvXM4Jz0xpHXLWmGg5smlJmSgXTQ1IRM4qgno2YoYyOBJ3LpB2LlPz6s+v/qRrjOvKD
+         hKDJtkmccFTnmNWnT0gIloYTbnGn5VN8AvSdQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=XxnsPvoYRBPAgRZmEnXc9qSyoDT9N9isv4C7b/Cbdhc=;
-        b=O93ojEr/cXedldNe36EaaqpD5bPPvVzPA8FwYAxa4X72fq9WfIu73/es3epa9tD3Zn
-         37VTtqOztG/laVzbLdhXxFech9G3AZwWXaGJ5BaCMnFL1vJysoBMaj+2+Py4X5CQUqMf
-         Z34b46cSjI6GuoAXcl9zd8wt+lpUleGMbCN6Uqd8dhp9Pz7VEuS98CS82DxVPcM8J0nG
-         Z8EfN57HX8xdQeuAUJQ7rxXwg2FLz2pOb94SJkeg7Jjki7AX39CfCRnG4Xbjg3JvpwRB
-         9XN8Vk3QlcdvAvSGWh6ycySbH1RpjrMt1n6ziAqc4X/w2Yq0F6t+txvkLzQJrk9oDeGH
-         5izQ==
-X-Gm-Message-State: AOAM533VXLMLWY8s0cEBHE5+NOIoVuivf62H7CvEGb4I65wLmXsq/rh4
-        WpxVt+QSLTAhjaQ+6vdYNxKqq6bN9n4UYS+4q8eePg==
-X-Google-Smtp-Source: ABdhPJwDZlKXIYSwsqPZZiWOuhSDBSyF+mwnygwGZvir1Lyq0RiZsScqWR71HK9UC6CrhmfA8hEMZ3ILJsdSznkRSYA=
-X-Received: by 2002:a05:6830:44a7:: with SMTP id r39mr6036694otv.25.1627344845954;
- Mon, 26 Jul 2021 17:14:05 -0700 (PDT)
+        bh=tscrZBQstzzRaUL+UaPR6i4OEaBy+HrQhXGyWhtHbpY=;
+        b=ovElY/DpQxjRMVuvnOa4KQFUykmcigJ0TJwrh0nJcoXPyuHgAis2RP6mu+Ktonk0Is
+         GIADR7f31hZ3K6aZe3GZv5mAj08iwMru+tB6A7tOQkfGalnx03vpF4lGQBGATXrvDM2B
+         mASxn2ckLJN1mvgTQA8H1zV2ruM1ZyJDufk4U7cgnRV1eJmF+WVTNG6FzlvnNH88alZq
+         xQBKLxaTxV+hPFUhPxHueprJ33nI3Ctor03jxvNhuLeZ9gAOAAoyYB/MuZwjrTkBL2Ot
+         CDz0tH0FSGV/FVMqDpi33lyJi0GriYgomz+ETpyMSrblLr4mYO7Y7StH8xjAYNVD+TFG
+         xeqA==
+X-Gm-Message-State: AOAM5338kNWc2Ei02FmwIw8tWcpWomYQVdUVtx0wQnqD43wko8vVhm3e
+        uBSLBmgDjy4kkBiUmsRPgBd4ZZyX7IAhkw6VmiJ/HQ==
+X-Google-Smtp-Source: ABdhPJz9DOthLfEXyaAywpN2zjLbyg7yP79QdEbJyK44iOYpg3YyBnI1HZX1Oyg1Cv6KyXuESXsA/iFNxu6OmeFGo9c=
+X-Received: by 2002:a9d:650e:: with SMTP id i14mr13685660otl.233.1627345002305;
+ Mon, 26 Jul 2021 17:16:42 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Jul 2021 20:14:05 -0400
+ HTTPREST; Mon, 26 Jul 2021 20:16:41 -0400
 MIME-Version: 1.0
-In-Reply-To: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
-References: <1627306847-25308-1-git-send-email-rajpat@codeaurora.org>
+In-Reply-To: <1627147740-11590-1-git-send-email-akhilpo@codeaurora.org>
+References: <1627147740-11590-1-git-send-email-akhilpo@codeaurora.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Mon, 26 Jul 2021 20:14:05 -0400
-Message-ID: <CAE-0n507C35pUxqciP6jagFiL=5hiGckx8VYTwhynUZQcV1HLg@mail.gmail.com>
-Subject: Re: [PATCH V4 0/4] Add QSPI and QUPv3 DT nodes for SC7280 SoC
-To:     Andy Gross <agross@kernel.org>,
+Date:   Mon, 26 Jul 2021 20:16:41 -0400
+Message-ID: <CAE-0n52mEy1GReYwcVrffT2KOy4EHMHH-RyCJ_mmxhaeXwGdYA@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add gpu support
+To:     Akhil P Oommen <akhilpo@codeaurora.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajesh Patil <rajpat@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajesh Patil (2021-07-26 06:40:43)
-> Roja Rani Yarubandi (4):
->   arm64: dts: sc7280: Add QSPI node
->   arm64: dts: sc7280: Add QUPv3 wrapper_0 nodes
->   arm64: dts: sc7280: Update QUPv3 Debug UART DT node
->   arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
+Quoting Akhil P Oommen (2021-07-24 10:29:00)
+> Add the necessary dt nodes for gpu support in sc7280.
+>
+> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> ---
+> This patch has dependency on the GPUCC bindings patch here:
+> https://patchwork.kernel.org/project/linux-arm-msm/patch/1619519590-3019-4-git-send-email-tdas@codeaurora.org/
 
-Please include a changelog in the cover letter and Cc me on the
-subsequent rounds of this series. Thanks.
+To avoid the dependency the plain numbers can be used.
 
 >
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts |  133 +-
->  arch/arm64/boot/dts/qcom/sc7280.dtsi    | 3169 +++++++++++++++++++++++--------
->  2 files changed, 2482 insertions(+), 820 deletions(-)
+> Changes in v2:
+> - formatting update and removed a duplicate header (Stephan)
 >
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 116 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 116 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 029723a..524a5e0 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -585,6 +586,121 @@
+>                         #clock-cells = <1>;
+>                 };
+>
+> +               gpu@3d00000 {
+> +                       compatible = "qcom,adreno-635.0", "qcom,adreno";
+> +                       #stream-id-cells = <16>;
+> +                       reg = <0 0x03d00000 0 0x40000>,
+> +                             <0 0x03d9e000 0 0x1000>,
+> +                             <0 0x03d61000 0 0x800>;
+> +                       reg-names = "kgsl_3d0_reg_memory",
+> +                                   "cx_mem",
+> +                                   "cx_dbgc";
+> +                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
+> +                       iommus = <&adreno_smmu 0 0x401>;
+> +                       operating-points-v2 = <&gpu_opp_table>;
+> +                       qcom,gmu = <&gmu>;
+> +                       interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
+> +                       interconnect-names = "gfx-mem";
+> +
+> +                       gpu_opp_table: opp-table {
+> +                               compatible = "operating-points-v2";
+> +
+> +                               opp-550000000 {
+> +                                       opp-hz = /bits/ 64 <550000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
+> +                                       opp-peak-kBps = <6832000>;
+> +                               };
+> +
+> +                               opp-450000000 {
+> +                                       opp-hz = /bits/ 64 <450000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+> +                                       opp-peak-kBps = <4068000>;
+> +                               };
+> +
+> +                               opp-315000000 {
+> +                                       opp-hz = /bits/ 64 <315000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +                                       opp-peak-kBps = <1804000>;
+> +                               };
+> +                       };
+> +               };
+> +
+> +               gmu: gmu@3d69000 {
+> +                       compatible="qcom,adreno-gmu-635.0", "qcom,adreno-gmu";
+> +                       reg = <0 0x03d6a000 0 0x34000>,
+> +                               <0 0x3de0000 0 0x10000>,
+> +                               <0 0x0b290000 0 0x10000>;
+> +                       reg-names = "gmu", "rscc", "gmu_pdc";
+> +                       interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "hfi", "gmu";
+> +                       clocks = <&gpucc GPU_CC_CX_GMU_CLK>,
+> +                                       <&gpucc GPU_CC_CXO_CLK>,
+> +                                       <&gcc GCC_DDRSS_GPU_AXI_CLK>,
+> +                                       <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
+> +                                       <&gpucc GPU_CC_AHB_CLK>,
+> +                                       <&gpucc GPU_CC_HUB_CX_INT_CLK>,
+> +                                       <&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>;
+> +                       clock-names = "gmu",
+> +                                     "cxo",
+> +                                     "axi",
+> +                                     "memnoc",
+> +                                     "ahb",
+> +                                     "hub",
+> +                                     "smmu_vote";
+> +                       power-domains = <&gpucc GPU_CC_CX_GDSC>,
+> +                                       <&gpucc GPU_CC_GX_GDSC>;
+> +                       power-domain-names = "cx",
+> +                                            "gx";
+> +                       iommus = <&adreno_smmu 5 0x400>;
+> +                       operating-points-v2 = <&gmu_opp_table>;
+> +
+> +                       gmu_opp_table: opp-table {
+> +                               compatible = "operating-points-v2";
+> +
+> +                               opp-200000000 {
+> +                                       opp-hz = /bits/ 64 <200000000>;
+> +                                       opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
+> +                               };
+> +                       };
+> +               };
+> +
+> +               adreno_smmu: iommu@3da0000 {
+> +                       compatible = "qcom,sc7280-smmu-500", "qcom,adreno-smmu", "arm,mmu-500";
+> +                       reg = <0 0x03da0000 0 0x20000>;
+> +                       #iommu-cells = <2>;
+> +                       #global-interrupts = <2>;
+> +                       interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 675 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
+> +                                       <GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +                       clocks = <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
+> +                                       <&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
+> +                                       <&gpucc GPU_CC_AHB_CLK>,
+> +                                       <&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>,
+> +                                       <&gpucc GPU_CC_CX_GMU_CLK>,
+> +                                       <&gpucc GPU_CC_HUB_CX_INT_CLK>,
+> +                                       <&gpucc GPU_CC_HUB_AON_CLK>;
+> +                       clock-names = "gcc_gpu_memnoc_gfx_clk",
+> +                                       "gcc_gpu_snoc_dvm_gfx_clk",
+> +                                       "gpu_cc_ahb_clk",
+> +                                       "gpu_cc_hlos1_vote_gpu_smmu_clk",
+> +                                       "gpu_cc_cx_gmu_clk",
+> +                                       "gpu_cc_hub_cx_int_clk",
+> +                                       "gpu_cc_hub_aon_clk";
+> +
+> +                       power-domains = <&gpucc GPU_CC_CX_GDSC>;
+> +               };
+> +
+>                 lpass_ag_noc: interconnect@3c40000 {
+
+This node is 3c40000 and the one above is 3da0000. 3c comes before 3d.
+Please order nodes properly.
+
+>                         reg = <0 0x03c40000 0 0xf080>;
+>                         compatible = "qcom,sc7280-lpass-ag-noc";
