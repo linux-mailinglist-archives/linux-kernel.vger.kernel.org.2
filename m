@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A343D75A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD07B3D75A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236558AbhG0NMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:12:34 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:34864 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232123AbhG0NMd (ORCPT
+        id S236572AbhG0NOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236284AbhG0NOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:12:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Uh9kV2H_1627391539;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Uh9kV2H_1627391539)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 27 Jul 2021 21:12:31 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     amit@kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        osandov@fb.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH] virtio-console: avoid DMA from vmalloc area
-Date:   Tue, 27 Jul 2021 21:12:17 +0800
-Message-Id: <20210727131217.15092-1-xianting.tian@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 27 Jul 2021 09:14:37 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ECFC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:14:36 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id jg2so17117607ejc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:14:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=OUSEcPH49z5ZSSMaUNbugnBHXWVQZm5ILKs2zzXvzG0=;
+        b=BK/cAWSRQtts351KL5+in9yJ3QvKjgQ0C4QEij9upYvFU544IUpBxlR7sZqoIf9ENZ
+         SB/ezH1W2i1gKZR4FFVRkjY5ejyCdLsqjEKd5mvHymmTHq2jiz08dhUEzbEqewLLAKEb
+         nMLNGK3t8dPUlylrAeFJzBLXRkREIVV4eZn0SOGWl7IsxUR85fvu+V9mEL2aTsNfv24W
+         gVQI56MvWXAVSi8TcR7x9OCMbyQWQ/lsG0jZ5VuvP/Y5R5x4eXnOJkx4E0yqXV35GJls
+         T2fA6uEGSCMoUeVI6XJlFlM7B/n97kKrgYJ9zvUWMmhTegK8o+uG3p1/qO0JR7LrDrt2
+         I3aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=OUSEcPH49z5ZSSMaUNbugnBHXWVQZm5ILKs2zzXvzG0=;
+        b=Nw2Dlmvs6bgTPjyK/FTp+LY+8NY+qbhBFOrTOo6kKdkqz+mq8+dK9wJosqDHWmSX6t
+         zWekT6BDsWgt4FUQEXeTkKfKz3gIRR4jCns8cvEGwPMdIkV/yg570sukaaD0D1IYh7Y/
+         imXPuB3JUJsiDpHw6FUWmUxDW9bAzn39bJKwvwQ8ljYyaGYtgto1irXBZ47eaxyVR0+F
+         D0wBty8wwZTOhzmBMBY/8Njpf3f8uOyEF/ZAQgULhfHsk+ivWFwUZeH5Wbwcu/GI30d3
+         UiAMWKiyAgHnxCgvf99PLIjPuWXN3qX9QewvWXoEN45gNi2f5hybwt+iXYfpHt2BXzqN
+         sqGw==
+X-Gm-Message-State: AOAM533g1riVNEamRjZCsyDdf2q232u5R42MRpF6rPYL6Zb4nqpCb12Z
+        Za33l3mYMQFeNnVivjXHuimCMSyqUQR36aVSwu0=
+X-Google-Smtp-Source: ABdhPJyb+M30Eq0WEEd5/+l5htCbq696oy8l3Qe26ncCiQ+BH1o0VP15PuCdNR37+3q96W7kF+koH+RzqaR6X/WKYwU=
+X-Received: by 2002:a17:906:11ca:: with SMTP id o10mr11561194eja.21.1627391675075;
+ Tue, 27 Jul 2021 06:14:35 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a54:3c87:0:0:0:0:0 with HTTP; Tue, 27 Jul 2021 06:14:34
+ -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   mr michel <m223442d@gmail.com>
+Date:   Tue, 27 Jul 2021 13:14:34 +0000
+Message-ID: <CAFvfuBHRi+KniYcWwd85ovjp1xkBVNHpi7XqF8m_YGHQr8qPGw@mail.gmail.com>
+Subject: Please respond urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is to optimize the commit c4baad5029:
-	virtio-console: avoid DMA from stack
+Hello,
 
-Commit c4baad5029(virtio-console: avoid DMA from stack) directly uses
-kmemdup() to alloc new buffer from kmalloc area and do memcpy no matter
-the buf is in kmalloc area or not.
+With due respect to your person, I make this contact with you as I
+believe that you can be of great assistance to me. I need your
+assistance in transferring the sum of $11.3million to your account.
+The money has been here in our Bank lying dormant for years without
+anybody coming for the claim. I want to release the money to you as
+the relative to our deceased customer (the account owner) who died in
+a plane crash with his family since October 2005.
 
-This patch is to optimize the commit c4baad5029, use is_vmalloc_addr()
-to judge the buf to avoid unnecessary memory alloc and copy.
+The Banking law and guideline here stipulates that if such money
+remains unclaimed after 16 years, the money will be transferred into
+the bank treasury as an unclaimed fund. that is the reason why i want
+to release the money to you for our mutual benefit.
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
----
- drivers/char/virtio_console.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 7eaf303a7..106247903 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -1119,6 +1119,7 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- 	struct scatterlist sg[1];
- 	void *data;
- 	int ret;
-+	bool vmalloc_addr = false;
- 
- 	if (unlikely(early_put_chars))
- 		return early_put_chars(vtermno, buf, count);
-@@ -1127,13 +1128,18 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- 	if (!port)
- 		return -EPIPE;
- 
--	data = kmemdup(buf, count, GFP_ATOMIC);
--	if (!data)
--		return -ENOMEM;
-+	if (is_vmalloc_addr(buf)) {
-+		data = kmemdup(buf, count, GFP_ATOMIC);
-+		if (!data)
-+			return -ENOMEM;
-+		vmalloc_addr = true;
-+	} else
-+		data = (void *)buf;
- 
- 	sg_init_one(sg, data, count);
- 	ret = __send_to_port(port, sg, 1, count, data, false);
--	kfree(data);
-+	if (vmalloc_addr)
-+		kfree(data);
- 	return ret;
- }
- 
--- 
-2.17.1
-
+Best Regards,
+Michel Duku.
