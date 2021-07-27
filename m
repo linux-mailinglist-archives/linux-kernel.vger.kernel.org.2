@@ -2,229 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D266C3D6C3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A643D6C3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbhG0CTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:19:49 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:23162 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234410AbhG0CTr (ORCPT
+        id S234679AbhG0CU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:20:29 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2890 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234410AbhG0CU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:19:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Uh6wb0w_1627354798;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Uh6wb0w_1627354798)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 27 Jul 2021 11:00:02 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH v9] iomap: Support file tail packing
-Date:   Tue, 27 Jul 2021 10:59:56 +0800
-Message-Id: <20210727025956.80684-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.4
+        Mon, 26 Jul 2021 22:20:27 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16R2tlY4002435;
+        Mon, 26 Jul 2021 23:00:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oI27GRcxHJWr9lqkg06esei3b3YBwK++/04PQ2lt97c=;
+ b=Hoz6mM9+dGgUL36mYXTbRWvllJ7C4lF6DtfLyOqWcTTXXZW1D5iEDPSpp+5Pb+XiV6LH
+ G4iHVX7j992KVMaYUFtEgdAiBNWpIMQg5DQHZBCOyjsVuTDSDUqvcGD001uYq/kp34ps
+ vOwQ1LKoWvcwvbebO0wsqPfgTmna0yXsl5QpU8aBraiB6dX/FxhUR0PwIu9FDeh4xBM9
+ XA2I7dtk9TOKZwse3hB/lmFRq/jk6x29D+OMRm3NjFbsL3PCIKvcOj+LMP/1UnHQDnve
+ f8tnirNQS187iE8EQLwDZpotJiEdebtIjzEVre7epapmATju39gPJvlBnyI6KWAbwLNM QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a29sug4t5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Jul 2021 23:00:54 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16R2u1dI002764;
+        Mon, 26 Jul 2021 23:00:54 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3a29sug4sn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Jul 2021 23:00:54 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16R2se5M005523;
+        Tue, 27 Jul 2021 03:00:53 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma04dal.us.ibm.com with ESMTP id 3a235m402m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 27 Jul 2021 03:00:53 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16R30q4A34865508
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Jul 2021 03:00:52 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0D42B12406E;
+        Tue, 27 Jul 2021 03:00:52 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DABCC124064;
+        Tue, 27 Jul 2021 03:00:51 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue, 27 Jul 2021 03:00:51 +0000 (GMT)
+Subject: Re: [PATCH] tpm: ibmvtpm: Avoid error message when process gets
+ signal while waiting
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nayna Jain <nayna@linux.ibm.com>,
+        George Wilson <gcwilson@linux.ibm.com>,
+        Nageswara R Sastry <rnsastry@linux.ibm.com>
+References: <20210712162505.205943-1-stefanb@linux.vnet.ibm.com>
+ <20210727024225.swqy5ypcytsngpd6@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <ad4011fb-fc1f-4019-9856-7d171db3255c@linux.ibm.com>
+Date:   Mon, 26 Jul 2021 23:00:51 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210727024225.swqy5ypcytsngpd6@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: VJbV6m6T0GeKRpUPKwe0Zecz4zTjEfdT
+X-Proofpoint-GUID: PYlAmXy-Ag_0xi3ZfDfGKXecBOUH1eui
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-26_14:2021-07-26,2021-07-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 impostorscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2107140000 definitions=main-2107270012
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing inline data support only works for cases where the entire
-file is stored as inline data.  For larger files, EROFS stores the
-initial blocks separately and then can pack a small tail adjacent to the
-inode.  Generalise inline data to allow for tail packing.  Tails may not
-cross a page boundary in memory.
 
-We currently have no filesystems that support tail packing and writing,
-so that case is currently disabled (see iomap_write_begin_inline).
+On 7/26/21 10:42 PM, Jarkko Sakkinen wrote:
+> On Mon, Jul 12, 2021 at 12:25:05PM -0400, Stefan Berger wrote:
+>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>
+>> When rngd is run as root then lots of these types of message will appear
+>> in the kernel log if the TPM has been configure to provide random bytes:
+>>
+>> [ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
+>>
+>> The issue is caused by the following call that is interrupted while
+>> waiting for the TPM's response.
+>>
+>> sig = wait_event_interruptible(ibmvtpm->wq,
+>>                                 !ibmvtpm->tpm_processing_cmd);
+>>
+>> The solution is to use wait_event() instead.
+> Why?
 
-Cc: Darrick J. Wong <djwong@kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-v8: https://lore.kernel.org/r/20210726145734.214295-1-hsiangkao@linux.alibaba.com
-changes since v8:
- - update the subject to 'iomap: Support file tail packing' as there
-   are clearly a number of ways to make the inline data support more
-   flexible (Matthew);
+So it becomes uninterruptible and these error messages go away.
 
- - add one extra safety check (Darrick):
-	if (WARN_ON_ONCE(size > iomap->length))
-		return -EIO;
+     Stefan
 
- fs/iomap/buffered-io.c | 42 ++++++++++++++++++++++++++++++------------
- fs/iomap/direct-io.c   | 10 ++++++----
- include/linux/iomap.h  | 18 ++++++++++++++++++
- 3 files changed, 54 insertions(+), 16 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 87ccb3438bec..f429b9d87dbe 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -205,25 +205,32 @@ struct iomap_readpage_ctx {
- 	struct readahead_control *rac;
- };
- 
--static void
--iomap_read_inline_data(struct inode *inode, struct page *page,
-+static int iomap_read_inline_data(struct inode *inode, struct page *page,
- 		struct iomap *iomap)
- {
--	size_t size = i_size_read(inode);
-+	size_t size = i_size_read(inode) - iomap->offset;
- 	void *addr;
- 
- 	if (PageUptodate(page))
--		return;
-+		return 0;
- 
--	BUG_ON(page_has_private(page));
--	BUG_ON(page->index);
--	BUG_ON(size > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	/* inline data must start page aligned in the file */
-+	if (WARN_ON_ONCE(offset_in_page(iomap->offset)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(size > PAGE_SIZE -
-+			 offset_in_page(iomap->inline_data)))
-+		return -EIO;
-+	if (WARN_ON_ONCE(size > iomap->length))
-+		return -EIO;
-+	if (WARN_ON_ONCE(page_has_private(page)))
-+		return -EIO;
- 
- 	addr = kmap_atomic(page);
- 	memcpy(addr, iomap->inline_data, size);
- 	memset(addr + size, 0, PAGE_SIZE - size);
- 	kunmap_atomic(addr);
- 	SetPageUptodate(page);
-+	return 0;
- }
- 
- static inline bool iomap_block_needs_zeroing(struct inode *inode,
-@@ -247,8 +254,10 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 	sector_t sector;
- 
- 	if (iomap->type == IOMAP_INLINE) {
--		WARN_ON_ONCE(pos);
--		iomap_read_inline_data(inode, page, iomap);
-+		int ret = iomap_read_inline_data(inode, page, iomap);
-+
-+		if (ret)
-+			return ret;
- 		return PAGE_SIZE;
- 	}
- 
-@@ -589,6 +598,15 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 	return 0;
- }
- 
-+static int iomap_write_begin_inline(struct inode *inode,
-+		struct page *page, struct iomap *srcmap)
-+{
-+	/* needs more work for the tailpacking case, disable for now */
-+	if (WARN_ON_ONCE(srcmap->offset != 0))
-+		return -EIO;
-+	return iomap_read_inline_data(inode, page, srcmap);
-+}
-+
- static int
- iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 		struct page **pagep, struct iomap *iomap, struct iomap *srcmap)
-@@ -618,7 +636,7 @@ iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, unsigned flags,
- 	}
- 
- 	if (srcmap->type == IOMAP_INLINE)
--		iomap_read_inline_data(inode, page, srcmap);
-+		status = iomap_write_begin_inline(inode, page, srcmap);
- 	else if (iomap->flags & IOMAP_F_BUFFER_HEAD)
- 		status = __block_write_begin_int(page, pos, len, NULL, srcmap);
- 	else
-@@ -671,11 +689,11 @@ static size_t iomap_write_end_inline(struct inode *inode, struct page *page,
- 	void *addr;
- 
- 	WARN_ON_ONCE(!PageUptodate(page));
--	BUG_ON(pos + copied > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	BUG_ON(!iomap_inline_data_valid(iomap));
- 
- 	flush_dcache_page(page);
- 	addr = kmap_atomic(page);
--	memcpy(iomap->inline_data + pos, addr + pos, copied);
-+	memcpy(iomap_inline_data(iomap, pos), addr + pos, copied);
- 	kunmap_atomic(addr);
- 
- 	mark_inode_dirty(inode);
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 9398b8c31323..41ccbfc9dc82 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -378,23 +378,25 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
- 		struct iomap_dio *dio, struct iomap *iomap)
- {
- 	struct iov_iter *iter = dio->submit.iter;
-+	void *inline_data = iomap_inline_data(iomap, pos);
- 	size_t copied;
- 
--	BUG_ON(pos + length > PAGE_SIZE - offset_in_page(iomap->inline_data));
-+	if (WARN_ON_ONCE(!iomap_inline_data_valid(iomap)))
-+		return -EIO;
- 
- 	if (dio->flags & IOMAP_DIO_WRITE) {
- 		loff_t size = inode->i_size;
- 
- 		if (pos > size)
--			memset(iomap->inline_data + size, 0, pos - size);
--		copied = copy_from_iter(iomap->inline_data + pos, length, iter);
-+			memset(iomap_inline_data(iomap, size), 0, pos - size);
-+		copied = copy_from_iter(inline_data, length, iter);
- 		if (copied) {
- 			if (pos + copied > size)
- 				i_size_write(inode, pos + copied);
- 			mark_inode_dirty(inode);
- 		}
- 	} else {
--		copied = copy_to_iter(iomap->inline_data + pos, length, iter);
-+		copied = copy_to_iter(inline_data, length, iter);
- 	}
- 	dio->size += copied;
- 	return copied;
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index 479c1da3e221..b8ec145b2975 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -97,6 +97,24 @@ iomap_sector(struct iomap *iomap, loff_t pos)
- 	return (iomap->addr + pos - iomap->offset) >> SECTOR_SHIFT;
- }
- 
-+/*
-+ * Returns the inline data pointer for logical offset @pos.
-+ */
-+static inline void *iomap_inline_data(struct iomap *iomap, loff_t pos)
-+{
-+	return iomap->inline_data + pos - iomap->offset;
-+}
-+
-+/*
-+ * Check if the mapping's length is within the valid range for inline data.
-+ * This is used to guard against accessing data beyond the page inline_data
-+ * points at.
-+ */
-+static inline bool iomap_inline_data_valid(struct iomap *iomap)
-+{
-+	return iomap->length <= PAGE_SIZE - offset_in_page(iomap->inline_data);
-+}
-+
- /*
-  * When a filesystem sets page_ops in an iomap mapping it returns, page_prepare
-  * and page_done will be called for each page written to.  This only applies to
--- 
-2.24.4
-
+>
+> /Jarkko
