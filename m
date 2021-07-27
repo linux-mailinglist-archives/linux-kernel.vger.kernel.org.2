@@ -2,181 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BD93D6FFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9F33D6FFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235659AbhG0HHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:07:47 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:34574 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235298AbhG0HHq (ORCPT
+        id S235542AbhG0HIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235205AbhG0HIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:07:46 -0400
-Received: by mail-vs1-f45.google.com with SMTP id y18so6641614vsc.1;
-        Tue, 27 Jul 2021 00:07:47 -0700 (PDT)
+        Tue, 27 Jul 2021 03:08:49 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2F4C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:08:50 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id hp25so20344247ejc.11
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:08:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=61u8UCMEnO7wATC11PhF1oS3yaK+Qc9yAnlIV6nisfQ=;
+        b=uhzcnEfMnvchsYv1lvr6vaCBwt5MT4FmuD6X8rCB/sDMGPXEktXQsXPWDdQwM9G9RN
+         aqscBCaOQsDB+1xi4HVtHilV/9CHue4wMwF3eP31P1onBN1sEMbF00hC5YLyOTPxXoT7
+         Y17eBp45b36h8sw60hlqmO8vJf9aMUdYg9pY/QIPla4PvFWdvFzTQR0ZCVaR842+oh/w
+         Q4F4l+deST5RhkiMQs5SsvMCOiZofYrvDZXtcScpn6Yjo2hSLJ1Uy3Mw1ApJLpjrXQtH
+         xuOatnhrWj6PaGnZNdqGq5TfAIiXRUNddQ+qJTC2lrt5Z7I+Uu2MWGT2K9nJFw8L/dsE
+         I4Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OWWpSAtCNA4RpYoScDMo7iZfNSeN3Kj8E95aS29aW0c=;
-        b=V976LsZYohJ4nHeda6z6+o/+suyeUu85TMu/Apv2qkGMcnyH6v3Costu+TfnwX5tEa
-         t5qDGOC1YzahSbFTZUYI45cFveoQ5OuZwufcXzXJ8x7GKLT2GGhUtTbO609iOZIpt5In
-         9Mauo4OPC65cvQQrQSzfHbvCE01P8iyC6oyapGplXsorsRYH8a3/RoccREdvDQ6BNJyy
-         8pisd6q3kcDO46MTOefO361eXyck7249V163Te4q95nJORsc1W4ODaPsjGTCjyVOSyIt
-         ev1VEycGLDkxetLETOM3Sefi/hh3S4y0Pv3aKq/O8JAJ9OGbcJHTLevAZuDkOoECL+Qx
-         7bAw==
-X-Gm-Message-State: AOAM532CO5QMR4IIfd/N1SBlryBKBB3a3GxYEO14oIpxePj4JBpvnHtY
-        nh1EPxc3PyNm3y33J0BAFbw/rIfII3PG/qiSVXk=
-X-Google-Smtp-Source: ABdhPJw0ZvB7KfTIPyQMU7lOmZQ2F3W1oomxQeOtTJVZJNeTgSOlBZmBscSZNKbCFLNzatcaBK5s6wMWU7v4+lVTipU=
-X-Received: by 2002:a67:7789:: with SMTP id s131mr12340280vsc.40.1627369666722;
- Tue, 27 Jul 2021 00:07:46 -0700 (PDT)
+        bh=61u8UCMEnO7wATC11PhF1oS3yaK+Qc9yAnlIV6nisfQ=;
+        b=lSpOub2hIuYmcPSQcjggtyQxuiABqlswrjafjgtslecoJCPNUVpwGYMKBvO954XoNW
+         Qm0bRUzCcgp/bZezWLn3XkKNfnL1l1GRa/PrvNcMSF+rnzKMK6lP9C6J2eCXfKuT7ov7
+         wi3B8dbDMstUvMJZflzO1NsvIwFRKYms/virAUYgSrDjhnUg0EWiBLBsN+eoQCz0GbEv
+         Bcsh9n0oo/bZqi6sV6P1lXcngK8sz32SjGhzxXdzbBPk8U9GAtYMGVNOtpF3B58D5+Sd
+         9nW3PT5p/LqK/mkw52xLygCX0J8z3eGxTpuQECH/QqcAblFbcGyn6uFf1hyXcRjK2YQJ
+         2r8Q==
+X-Gm-Message-State: AOAM531BD45oaPotG/y4nxDLmVgbO55pXg9eMaKSf07zpBTnQ6SYOXHh
+        Qnz5JX6MzKCYGkvMz50lDiU8b8/7geK6+CdzMgHc
+X-Google-Smtp-Source: ABdhPJy7WeEGDsRY0V+xDJi1MYzzpE8SF52Wu7BnkNytoY54DA0FfoacLn9W9jAfPuj3Dk97hq0ALKu9h3xwR5DmaDk=
+X-Received: by 2002:a17:906:404:: with SMTP id d4mr20426224eja.449.1627369728555;
+ Tue, 27 Jul 2021 00:08:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210708232522.3118208-1-ndesaulniers@google.com>
- <20210708232522.3118208-3-ndesaulniers@google.com> <CAK7LNARye5Opc0AdXpn+DHB7hTaphoRSCUWxJgXu+sjuNjWUCg@mail.gmail.com>
- <CAHk-=wgGxu4_hgzdYpFuKd95SfnkJbPTWAQ9-fMgmMN1Oxs2xQ@mail.gmail.com>
- <CAK8P3a3=JBQow-Ws6tt81k93aw+OCV5C2CtSWxASkv=iQZPGUw@mail.gmail.com>
- <CAK7LNATLy2F-2zkHm4ENSufBT_o5p=9jc5k1K-xOV8cQf7kKDw@mail.gmail.com> <87r1fkizxl.fsf@disp2133>
-In-Reply-To: <87r1fkizxl.fsf@disp2133>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 27 Jul 2021 09:07:35 +0200
-Message-ID: <CAMuHMdVzNFqAdxK+QTp7ub7LyhDL_3GbVMoAah_s3nGuJ5JN_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Makefile: infer CROSS_COMPILE from SRCARCH for
- LLVM=1 LLVM_IAS=1
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
+ <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
+ <YP+ZOx8BETgufxBS@kroah.com> <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
+ <YP+ql3QFYnefR/Cf@kroah.com>
+In-Reply-To: <YP+ql3QFYnefR/Cf@kroah.com>
+From:   Bill Wendling <morbo@google.com>
+Date:   Tue, 27 Jul 2021 00:08:37 -0700
+Message-ID: <CAGG=3QVc_OZoKi2J8tqRoBKcPekgAMMi=6Uphg1hNGNDK1qJUA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         clang-built-linux <clang-built-linux@googlegroups.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000e7813405c815864b"
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000e7813405c815864b
-Content-Type: text/plain; charset="UTF-8"
+On Mon, Jul 26, 2021 at 11:41 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Mon, Jul 26, 2021 at 11:15:52PM -0700, Bill Wendling wrote:
+> > On Mon, Jul 26, 2021 at 10:27 PM Greg Kroah-Hartman
+> > <gregkh@linuxfoundation.org> wrote:
+> > > On Mon, Jul 26, 2021 at 01:47:33PM -0700, Nathan Chancellor wrote:
+> > > > + Greg and Rafael as the maintainer and reviewer of drivers/base/module.c
+> > > > respectively, drop everyone else.
+> > >
+> > > Odd no one cc:ed us originally, I guess they didn't want the patch ever
+> > > merged?  :(
+> > >
+I don't believe I saw you or Rafael listed in the
+"script/get_maintainers" output. I tried to copy everyone who showed
+up.
 
-Hi Eric,
-
-On Mon, Jul 26, 2021 at 10:27 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
-> Masahiro Yamada <masahiroy@kernel.org> writes:
-> > On Wed, Jul 21, 2021 at 4:58 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >> On Tue, Jul 20, 2021 at 7:43 PM Linus Torvalds
-> >> <torvalds@linux-foundation.org> wrote:
-> >> > On Tue, Jul 20, 2021 at 1:05 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >> >
-> >> > We do most of the other heavy lifting in this area in Kconfig anyway,
-> >> > why not add that compiler choice?
-> >> >
-> >> > Obviously it would be gated by the tests to see which compilers are
-> >> > _installed_ (and that they are valid versions), so that it doesn't ask
-> >> > stupid things ("do you want gcc or clang" when only one of them is
-> >> > installed and/or viable).
-> >>
-> >> I don't see a good way of making Kconfig options both select the
-> >> compiler and defining variables based on the compiler, since that
-> >> would mean teaching Kconfig about re-evaluating all compiler
-> >> dependent settings whenever the first option changes.
-> >>
-> >> I do have another idea that I think would work though.
-> >>
-> >> > Hmm? So then any "LLVM=1" thing would be about the "make config"
-> >> > stage, not the actual build stage.
-> >> >
-> >> > (It has annoyed me for years that if you want to cross-compile, you
-> >> > first have to do "make ARCH=xyz config" and then remember to do "make
-> >> > ARCH=xyz" for the build too, but I cross-compile so seldom that I've
-> >> > never really cared).
-> >>
-> >> The best thing that I have come up with is a pre-configure step, where
-> >> an object tree gets seeded with a makefile fragment that gets included
-> >> for any 'make' invocation. This would set 'ARCH=', 'CROSS_COMPILE',
-> >> 'CC=' and possibly any other option that gets passed to 'make' as
-> >> a variable and has to exist before calling 'make *config'.
-> >
-> >
-> > There is no need to add a hook to include such makefile fragment(s).
-> >
-> > Quite opposite, you can put your Makefile (in a different filename)
-> > that includes the top Makefile.
-> >
-> >
-> > I think this is what people are already doing:
-> >
-> >
-> > GNU Make looks for 'GNUmakefile', 'makefile', and 'Makefile'
-> > in this order.
-> >
-> >
-> > So, you can put 'GNUmakefile' with your favorite setups.
-> >
-> >
-> > $ cat GNUmakefile
-> > ARCH=arm64
-> > CROSS_COMPILE=aarch64-linux-gnu-
-> > CC=clang
-> > include Makefile
+> > > >
+> > > > Original post:
+> > > >
+> > > > https://lore.kernel.org/r/20210726201924.3202278-2-morbo@google.com/
+> > > >
+> > > > On 7/26/2021 1:19 PM, 'Bill Wendling' via Clang Built Linux wrote:
+> > > > > Fix the following build warning:
+> > > > >
+> > > > >    drivers/base/module.c:36:6: error: variable 'no_warn' set but not used [-Werror,-Wunused-but-set-variable]
+> > > > >          int no_warn;
+> > >
+> > > That's not going to be a good warning to ever have the kernel use due to
+> > > how lots of hardware works (i.e. we need to do a read after a write but
+> > > we can throw the read away as it does not matter).
+> > >
+> > >
+> > > > >
+> > > > > This variable is used to remove another warning, but causes a warning
+> > > > > itself. Mark it as 'unused' to avoid that.
+> > > > >
+> > > > > Signed-off-by: Bill Wendling <morbo@google.com>
+> > > >
+> > > > Even though they evaluate to the same thing, it might be worth using
+> > > > "__always_unused" here because it is :)
+> > >
+> > > But it is not unused, the value is written into it.
+> > >
+> > I believe that only matters if the variable is marked "volatile".
 >
-> Very weird.
+> "volatile" means nothing anymore, never use it or even think about it
+> again please :)
 >
-> I just tested this and it does not work.
-> I did this:
+Never use what? ;-)
+
+> > Otherwise, the variable itself is never used. A "variable that's
+> > written to but not read from," in fact, is the whole reason for the
+> > warning.
 >
-> $ cat GNUmakefile
-> ARCH = alpha
-> CROSS_COMPILE = $(arch-prefix alpha)
-> include Makefile
+> But that is ok!  Sometimes you need to do this with hardware (like all
+> PCI devices).  This is a legitimate code flow for many hardware types
+> and if a C compiler thinks that this is not ok, then it is broken.
 >
-> In one of my build directories and the main makefile simply does not see
-> the value of ARCH or CROSS_COMPILE I set.  I have confirmed that my
-> GNUmakefile is being read, because everything breaks if I remove the
-> include line.
+Well, no. A C compiler cares about the C language. A variable that's
+assigned to but not otherwise used isn't useful in the language. Like
+most warnings, the compiler warns because these situations have led to
+errors in the past (e.g. maybe someone assigned to the wrong variable
+because they mistyped the name or something). So this is a perfectly
+valid warning for a C compiler to emit. This especially holds true
+when the function being called is marked as requiring the return value
+to be checked, as is the case with the functions whose values are
+assigned 'no_warn'.
+
+> So be VERY careful when changing drivers based on this warning.  Because
+> of this, I do not think you can enable it over the whole kernel without
+> causing major problems in some areas.
 >
-> Does anyone have any ideas?
+> But that is independent of this specific issue you are trying to patch
+> here, I say this to warn you of a number of stupid places where people
+> have tried to "optimize away" reads based on this compiler warning in
+> drivers, and we have had to add them back because it broke
+> functionality.
 >
-> Something so we don't have to specify all of these variables on the make
-> command line would be nice.
+I definitely agree that we shouldn't blindly remove code just because
+the return value assigned to a variable isn't used. That's not what
+this patch is doing.
 
-Just including the main Makefile does not work.
-That's why I went with the more convoluted solution in
-https://lore.kernel.org/linux-kbuild/CAMuHMdXJBqrpzaSNDJgic14ESiHV6cCcb_5E-st6iniXdmm9_g@mail.gmail.com/
+> > > So this isn't ok, sometimes we want to write to variables but never care
+> > > about the value, that does not mean the compiler should complain about
+> > > it.
+> > >
+> > Typically, if you don't care about the return value, you simply don't
+> > assign it to a variable (cf. printf). However, the functions that
+> > assign to "no_warn" have the "warn_unused_result" attribute. The fact
+> > that the variable is named "no_warn" seems to indicate that it's meant
+> > to remain unused, even if it probably should be checked.
+>
+> These functions have warn_unused_result set on them because for 99% of
+> the time, I want the value to be checked.  But as you can see in this
+> use, as per the comments in the code, we do not care about the result
+> for a very good reason.  So we just assign it to a variable to make the
+> compiler quiet.
+>
+Right. And because you[1] had to hack around that warning, it led to
+another warning. This is typical with hacks.
 
-Please try the attached, which combines everything above in a single
-file, and which works for me. Note that "$(arch-prefix alpha)" didn't
-work for me (it resolved to "gcc"?), so I used "alpha-linux-gnu-"
-instead.
+[1] Okay, maybe not *you* explicitly, but "you" in the general sense
+of "the person who wrote this code."
 
-Good luck!
+> > Would you rather the warning be turned off on some level?
+>
+> Which warning?
+>
+The one this patch is for.
 
-Gr{oetje,eeting}s,
+> The code here, as-is, is correct.  We already have 1 compiler warning
+> work around in place, do you want to add another one?  How many can we
+> stack on top of each other?
+>
+This one change should suffice.
 
-                        Geert
+> And again, why did you not cc: the maintainers of this code for this
+> change?  That's not good...
+>
+I guess the maintainers didn't show up in the scripts/get_maintainers
+list when I ran it. I CC'ed everyone that did show up. There's a long
+list of emails in the "To" section. I don't know what else to say...
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
-
---000000000000e7813405c815864b
-Content-Type: application/octet-stream; name=GNUmakefile
-Content-Disposition: attachment; filename=GNUmakefile
-Content-Transfer-Encoding: base64
-Content-ID: <f_krlpouog0>
-X-Attachment-Id: f_krlpouog0
-
-TUFLRUFSR1MgPSBBUkNIPWFscGhhIENST1NTX0NPTVBJTEU9YWxwaGEtbGludXgtZ251LQoKTUFL
-RUZMQUdTICs9IC0tbm8tcHJpbnQtZGlyZWN0b3J5CgouUEhPTlk6IGFsbCAkKE1BS0VDTURHT0FM
-UykKCmFsbAk6PSAkKGZpbHRlci1vdXQgYWxsIE1ha2VmaWxlLCQoTUFLRUNNREdPQUxTKSkKCmFs
-bDoKCUAkKE1BS0UpICQoTUFLRUFSR1MpICQoYWxsKSAtZiBNYWtlZmlsZQoKTWFrZWZpbGU6OwoK
-JChhbGwpOiBhbGwKCUA6CgolLzogYWxsCglAOgo=
---000000000000e7813405c815864b--
+-bw
