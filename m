@@ -2,85 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF38A3D6C2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325703D6C2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234648AbhG0CQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:16:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234440AbhG0CQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:16:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2290760FEE;
-        Tue, 27 Jul 2021 02:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627354636;
-        bh=iQ9FkdbtV/zROAlVG/8PBSjOtj+aTz+AaFmkHdysXtg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HpyMORbiiNmOKjWizE4f0nrPg8XLbuRguHi7r2Yk5/ja5TNBPSSgPkbqK71qEZOM4
-         aNO08v+UoN6JncvrYwPKxxAGtFuCwXHECUZQE7T6aHzDQMea9VkfyPcE3DY1lsbJ6N
-         J3a+s5FJrfBW1WyrU7T2aPgif3LxpjpXhcaSO6ajPluBGQ9MouJh7febqXdLFJnFJ6
-         8Js9QWy6f0lvhLw7hUI+g/bj2zxzvXELzHRX7VVw7lZ5Iao7oDuxfIllGIG5w7n/4n
-         9OFWBhTDivtL+8yv9QBCWonQQTS+6EaBJAXj9JM2mJcXhETM2Q/sDC/vqz3YCI0Tj1
-         IWNETP86Bw6Jw==
-Date:   Tue, 27 Jul 2021 05:57:14 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Andreas Rammhold <andreas@rammhold.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH] KEYS: trusted: Fix trusted key backends when building as
- module
-Message-ID: <20210727025714.3zll7spsmo3opont@kernel.org>
-References: <20210716081722.4130161-1-andreas@rammhold.de>
- <0a684d56-66d0-184e-4853-9faafa2d243d@pengutronix.de>
+        id S234691AbhG0CQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:16:57 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16002 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234440AbhG0CQ4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:16:56 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYhFb3Y0xzZst3;
+        Tue, 27 Jul 2021 10:53:55 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 10:57:22 +0800
+Received: from [10.174.179.215] (10.174.179.215) by
+ dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 10:57:21 +0800
+Subject: Re: [PATCH -next] scsi: ufs: fix build warning without CONFIG_PM
+To:     Bart Van Assche <bvanassche@acm.org>, <alim.akhtar@samsung.com>,
+        <avri.altman@wdc.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210611130601.34336-1-yuehaibing@huawei.com>
+ <99c99d97-5849-cf40-709b-aebe53b80ce3@acm.org>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <cf956e7d-27b2-43c9-5c65-9d9e62919f40@huawei.com>
+Date:   Tue, 27 Jul 2021 10:57:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <99c99d97-5849-cf40-709b-aebe53b80ce3@acm.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0a684d56-66d0-184e-4853-9faafa2d243d@pengutronix.de>
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 09:10:01AM +0200, Ahmad Fatoum wrote:
-> Hello Andreas,
-> 
-> On 16.07.21 10:17, Andreas Rammhold wrote:
-> > Before this commit the kernel could end up with no trusted key sources
-> > even thought both of the currently supported backends (tpm & tee) were
-> > compoiled as modules. This manifested in the trusted key type not being
-> > registered at all.
-> 
-> I assume (TPM) trusted key module use worked before the TEE rework? If so,
-> 
-> an appropriate Fixes: Tag would then be in order.
-> 
-> > When checking if a CONFIG_… preprocessor variable is defined we only
-> > test for the builtin (=y) case and not the module (=m) case. By using
-> > the IS_ENABLE(…) macro we to test for both cases.
-> 
-> It looks to me like you could now provoke a link error if TEE is a module
-> and built-in trusted key core tries to link against trusted_key_tee_ops.
-> 
-> One solution for that IS_REACHABLE(). Another is to address the root cause,
-> which is the inflexible trusted keys Kconfig description:
-> 
-> - Trusted keys despite TEE support can still only be built when TCG_TPM is enabled
-> - There is no support to have TEE or TPM enabled without using those for
->   enabled trusted keys as well
-> - As you noticed, module build of the backend has issues
-> 
-> I addressed these three issues in a patch[1], a month ago, but have yet to
-> receive feedback.
 
-Which of the patches is the bug fix?
 
-/Jarkko
+On 2021/7/27 1:59, Bart Van Assche wrote:
+> On 6/11/21 6:06 AM, YueHaibing wrote:
+>> drivers/scsi/ufs/ufshcd.c:9770:12: warning: ‘ufshcd_rpmb_resume’ defined but not used [-Wunused-function]
+>>   static int ufshcd_rpmb_resume(struct device *dev)
+>>              ^~~~~~~~~~~~~~~~~~
+>> drivers/scsi/ufs/ufshcd.c:9037:12: warning: ‘ufshcd_wl_runtime_resume’ defined but not used [-Wunused-function]
+>>   static int ufshcd_wl_runtime_resume(struct device *dev)
+>>              ^~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/scsi/ufs/ufshcd.c:9017:12: warning: ‘ufshcd_wl_runtime_suspend’ defined but not used [-Wunused-function]
+>>   static int ufshcd_wl_runtime_suspend(struct device *dev)
+>>              ^~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> Move it into #ifdef block to fix this.
+>>
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>   drivers/scsi/ufs/ufshcd.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index b87ff68aa9aa..0c54589e186a 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -8926,6 +8926,7 @@ static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>>       return ret;
+>>   }
+>>   +#ifdef CONFIG_PM_SLEEP
+>>   static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>>   {
+>>       int ret;
+>> @@ -9053,7 +9054,6 @@ static int ufshcd_wl_runtime_resume(struct device *dev)
+>>       return ret;
+>>   }
+>>   -#ifdef CONFIG_PM_SLEEP
+>>   static int ufshcd_wl_suspend(struct device *dev)
+>>   {
+>>       struct scsi_device *sdev = to_scsi_device(dev);
+>> @@ -9766,6 +9766,7 @@ static inline int ufshcd_clear_rpmb_uac(struct ufs_hba *hba)
+>>       return ret;
+>>   }
+>>   +#ifdef CONFIG_PM_SLEEP
+>>   static int ufshcd_rpmb_resume(struct device *dev)
+>>   {
+>>       struct ufs_hba *hba = wlun_dev_to_hba(dev);
+>> @@ -9774,6 +9775,7 @@ static int ufshcd_rpmb_resume(struct device *dev)
+>>           ufshcd_clear_rpmb_uac(hba);
+>>       return 0;
+>>   }
+>> +#endif
+>>     static const struct dev_pm_ops ufs_rpmb_pm_ops = {
+>>       SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_resume, NULL)
+> 
+> Hi YueHaibing,
+> 
+> Can you take a look at https://lore.kernel.org/linux-scsi/20210722033439.26550-1-bvanassche@acm.org/T/#m6e7a02fc79634b5b77cfb77849253ac41d021389? I let the kernel robot verify that patch before I posted it on the linux-scsi mailing list.
+
+__ufshcd_wl_resume() is needed while CONFIG_PM is enabled, and my patch v2 has been Applied. See:
+
+https://lore.kernel.org/r/20210617031326.36908-1-yuehaibing@huawei.com
+
+I will let Hulk Robot test your patch serials, and report if any.
+
+> 
+> Thanks,
+> 
+> Bart.
+> .
