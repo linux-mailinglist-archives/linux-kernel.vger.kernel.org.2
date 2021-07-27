@@ -2,92 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECD73D7C66
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 642CA3D7C6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhG0RnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
+        id S231362AbhG0Rnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhG0RnJ (ORCPT
+        with ESMTP id S231361AbhG0Rnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:43:09 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E1ABC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:43:08 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id r26so23062558lfp.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:43:08 -0700 (PDT)
+        Tue, 27 Jul 2021 13:43:53 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEAEC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:43:53 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id t128so261597oig.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 10:43:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nmLHKY9I4CGQfN2ZPpRZEfbaLo1/Jmuu/tBLcFgmWqI=;
-        b=O6olwX22wZaWUsVLlewr8wmScUxvy+vMZCDjpljm3H5qjVu7264PITXktbAyTXtOUS
-         hr1cmfIFSwNa48+OhbXxWeuZHYXXPiHCdmBO1lRkKCbv+wQBUNIQfqvermJqW8i/bGaC
-         Bc46IgoaLMJCEmXoRkZA4l3ChMgHrA+lhE6fFjBCRbbrQRfpZQzRHzsxd5yUHI4AxbdW
-         txnqjXIht88WFCDniP3x8Bo05Et6GYugu6w+bbZPzJ++Uwpnm539a94yssyV1hAwNmU5
-         VzaE9upKJ4z+Qclyok5OkoPMDoryGIvTOykJxEfFmtSamJrZz6rXNqEwf4hAQq+XGLBF
-         rybg==
+        d=kali.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=r4QUHu4frIdHijvzTmPRFAGSy3R7tZiWw1IQcm22Anc=;
+        b=UMnNJV3G+NYhLLNbxE9PaEg/eL5MyESXCP2BC+EwC7YNfafABXfSQbVyKbgThddrPf
+         6NDDAsh/KdxobbVf1b3einnCMzyWjSr5djb5JSO9dzZsFr1oEByvNwWTKmrPvPHccyNG
+         dk+tp5An4sLTyN6+XkmQFOsLX3P+MmSS/fTS/r96B20qKm3DuuJk3Fz6VRvhahVEMjvL
+         u2eTLggdkveT8dvZq8ytAJKEsrKCaogzuuRDaK9YnQa3n3QGxcsyZNkr0Sk5JGwGzkzE
+         /vJ801AxYYCbfNfPkvEzRxX/1acXXjS/S99s3z3MH2RdYTgenG7UpUS7XCzYa83GITIK
+         T0Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nmLHKY9I4CGQfN2ZPpRZEfbaLo1/Jmuu/tBLcFgmWqI=;
-        b=QNWqG5o5kGnKtEWbRBHjlGDn2i/n00QL+WbuuLA+VIELUQOR7qe3npBzHKpzPreuX0
-         /KWmxlQ0+GRSvowQylfjvGhelpDkXcg4WQok8azrncIIfdAm6i7X6KmeV+j4PgDqR55t
-         tKE9dQb7jv9MNOzQ+gR6IhTJ3rSQ+aps0b5pPO8N11jXD2IRWkP7fp+Z2glICGlqSAGb
-         0mBuEC2Ux8remo4sORjXKN4q33s/FPNX6CFfgepBvlwxKyZfsx5wE+Q/vPNZ4464O223
-         +cdXsMyOGOqBwRHB46fA9ztcXPEVJVRYScqZ3EksA0Qb8EwiToaoxxxW8gzyomPaukkm
-         D/eA==
-X-Gm-Message-State: AOAM532c32T3hwDkNK4MnYUYDFwsrezv+jAH+y/c/ny8yJLVXMr/dGqP
-        ivgiFWw5yS8hq7JOqmh0G3sOvLq7Sjkw03GB2I4zSw==
-X-Google-Smtp-Source: ABdhPJz8tOIr+r2spv1zjUK0FuqSqK7MIcG28J63mumEoj3kFNmK7+bLge2xGlcf7x7rYa8NRAsMO8vLjpvDZCffFqU=
-X-Received: by 2002:a05:6512:3e0c:: with SMTP id i12mr17116556lfv.122.1627407786575;
- Tue, 27 Jul 2021 10:43:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=r4QUHu4frIdHijvzTmPRFAGSy3R7tZiWw1IQcm22Anc=;
+        b=J8B6AWUZ0IgCWvyzPzfaPE1xv8+yST7dVvxgzHSQ18Pf0x8JALPS0AxXaQwnHJsFBw
+         I0L78Ieew/drq3GTYQLyblA4CzrDydd4yiWTC/UExKBkGv+kPaxRrD2R7XN+5ROX7WKu
+         oOAMBaaM29zA4uwH9i/KOJZT7Vo6lbhSxdAWS5LH5nKC7xLep/qzATKFB58UPNU2Iw7z
+         xdV5ZO1MNLMeWA4sIk6WOCroDOsi1UqjTvCIBHMs5QkJE7XBHvK3g4aPOnm2I9RZ6lCk
+         ME7qM2ZVXAU/HU9lgBEWJWRJYVfwxAZUwaH4TAxkyRFd4rdRzIwCld9Bs8c1/8ND7EE6
+         yKxw==
+X-Gm-Message-State: AOAM533INJ9BcFo0ZBUwCu3X+5NCwHR+RoMKOSgENBHbC/zLEPJOnFDv
+        qnRRXO+9FuuXo65TnQlow+WQrg==
+X-Google-Smtp-Source: ABdhPJzlJJJxB3rHg+lqAM2nOyBdKpN2vY1CxhcgGGstQXNBb0+yec80VRFGc9CQedbE3ObLC7ytkg==
+X-Received: by 2002:aca:31d8:: with SMTP id x207mr3738097oix.144.1627407832573;
+        Tue, 27 Jul 2021 10:43:52 -0700 (PDT)
+Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
+        by smtp.gmail.com with ESMTPSA id n21sm599926ooj.22.2021.07.27.10.43.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 10:43:51 -0700 (PDT)
+Subject: Re: [Patch v3 0/6] Introduce LMh driver for Qualcomm SoCs
+To:     Thara Gopinath <thara.gopinath@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, robh+dt@kernel.org
+Cc:     tdas@codeaurora.org, mka@chromium.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210708120656.663851-1-thara.gopinath@linaro.org>
+ <c630a7a0-d1d0-d04c-8abf-2490c0932661@kali.org>
+ <adfe4d6d-7433-23f2-bc57-d6fba2d8725b@linaro.org>
+From:   Steev Klimaszewski <steev@kali.org>
+Message-ID: <ff6fc8d4-38e9-86ea-f689-609668c53196@kali.org>
+Date:   Tue, 27 Jul 2021 12:43:49 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <20210714091747.2814370-1-morbo@google.com> <20210726201924.3202278-1-morbo@google.com>
- <20210726201924.3202278-2-morbo@google.com> <c965006c-88e1-3265-eb9c-76dc0bbcb733@kernel.org>
- <YP+ZOx8BETgufxBS@kroah.com> <CAGG=3QX68umw5Ws9_HuGkqoTNT=Q1+QB7YpSaqw3R_kPsbxwsg@mail.gmail.com>
- <YP+ql3QFYnefR/Cf@kroah.com> <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
-In-Reply-To: <CAKwvOdm62a7mrLZb_eciUO-HZj7m3cjgfvtQ=EqRy9Nh0rZOPg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 27 Jul 2021 10:42:55 -0700
-Message-ID: <CAKwvOd=6fcUhDf5WXXZ8xnM-Nt91OyXafD1=kDCMXt_wwix9OA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] base: mark 'no_warn' as unused
-To:     Bill Wendling <morbo@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <adfe4d6d-7433-23f2-bc57-d6fba2d8725b@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 10:39 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Mon, Jul 26, 2021 at 11:41 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Mon, Jul 26, 2021 at 11:15:52PM -0700, Bill Wendling wrote:
-> > > On Mon, Jul 26, 2021 at 10:27 PM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > > On Mon, Jul 26, 2021 at 01:47:33PM -0700, Nathan Chancellor wrote:
-> > > > > + Greg and Rafael as the maintainer and reviewer of drivers/base/module.c
-> > > > > respectively, drop everyone else.
-> > > >
-> > > > Odd no one cc:ed us originally, I guess they didn't want the patch ever
-> > > > merged?  :(
 
-Oh, I just noticed this patch was part of a series.  Perhaps you ran
-get_maintainer.pl on one patch of the series, and used that list for
-all patches in the series?  Since these patches are orthogonal (ie.
-they don't depend on any order relative to one another; they can go in
-separately via different trees and their maintainers) consider not
-using a series.  That should save you from having to write a TPS
-Report^W^Wcover letter.
--- 
-Thanks,
-~Nick Desaulniers
+On 7/27/21 10:29 AM, Thara Gopinath wrote:
+>
+>
+> On 7/21/21 11:14 PM, Steev Klimaszewski wrote:
+>> Hi Thara!
+>>
+>> On 7/8/21 7:06 AM, Thara Gopinath wrote:
+>>> Limits Management Hardware(LMh) is a hardware infrastructure on some
+>>> Qualcomm SoCs that can enforce temperature and current limits as
+>>> programmed
+>>> by software for certain IPs like CPU. On many newer SoCs LMh is
+>>> configured
+>>> by firmware/TZ and no programming is needed from the kernel side.
+>>> But on
+>>> certain SoCs like sdm845 the firmware does not do a complete
+>>> programming of
+>>> the h/w block. On such SoCs kernel software has to explicitly set up
+>>> the
+>>> temperature limits and turn on various monitoring and enforcing
+>>> algorithms
+>>> on the hardware.
+>>>
+>>> Introduce support for enabling and programming various limit
+>>> settings and
+>>> monitoring capabilities of Limits Management Hardware(LMh)
+>>> associated with
+>>> cpu clusters. Also introduce support in cpufreq hardware driver to
+>>> monitor
+>>> the interrupt associated with cpu frequency throttling so that this
+>>> information can be conveyed to the schdeuler via thermal pressure
+>>> interface.
+>>>
+>>> With this patch series following cpu performance improvement(30-70%) is
+>>> observed on sdm845. The reasoning here is that without LMh being
+>>> programmed
+>>> properly from the kernel, the default settings were enabling thermal
+>>> mitigation for CPUs at too low a temperature (around 70-75 degree
+>>> C).  This
+>>> in turn meant that many a time CPUs were never actually allowed to
+>>> hit the
+>>> maximum possible/required frequencies.
+>>>
+>>> UnixBench whets and dhry (./Run whets dhry)
+>>> System Benchmarks Index Score
+>>>
+>>>                  Without LMh Support             With LMh Support
+>>> 1 copy test     1353.7                          1773.2
+>>>
+>>> 8 copy tests    4473.6                          7402.3
+>>>
+>>> Sysbench cpu
+>>> sysbench cpu --threads=8 --time=60 --cpu-max-prime=100000 run
+>>>
+>>>                  Without LMh Support             With LMh Support
+>>> Events per
+>>> second                  355                             614
+>>>
+>>> Avg Latency(ms)         21.84                           13.02
+>>>
+>>> v2->v3:
+>>>     - Included patch adding dt binding documentation for LMh nodes.
+>>>     - Rebased to v5.13
+>>>
+>>> Thara Gopinath (6):
+>>>    firmware: qcom_scm: Introduce SCM calls to access LMh
+>>>    thermal: qcom: Add support for LMh driver
+>>>    cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
+>>>    arm64: boot: dts: qcom: sdm45: Add support for LMh node
+>>>    arm64: boot: dts: qcom: sdm845: Remove cpufreq cooling devices
+>>> for CPU
+>>>      thermal zones
+>>>    dt-bindings: thermal: Add dt binding for QCOM LMh
+>>>
+>>>   .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++
+>>>   arch/arm64/boot/dts/qcom/sdm845.dtsi          | 162 ++----------
+>>>   drivers/cpufreq/qcom-cpufreq-hw.c             | 118 +++++++++
+>>>   drivers/firmware/qcom_scm.c                   |  58 +++++
+>>>   drivers/firmware/qcom_scm.h                   |   4 +
+>>>   drivers/thermal/qcom/Kconfig                  |  10 +
+>>>   drivers/thermal/qcom/Makefile                 |   1 +
+>>>   drivers/thermal/qcom/lmh.c                    | 239
+>>> ++++++++++++++++++
+>>>   include/linux/qcom_scm.h                      |  14 +
+>>>   9 files changed, 570 insertions(+), 136 deletions(-)
+>>>   create mode 100644
+>>> Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+>>>   create mode 100644 drivers/thermal/qcom/lmh.c
+>>>
+>> I've been using these patches on a 5.13 kernel
+>> (https://github.com/steev/linux/tree/linux-5.13.y - while trying to
+>> track down a different issue, while playing a video on youtube, as well
+>> as compressing a 9.2GB file with xz, I got the following
+>
+> Hi Steev,
+>
+> Thanks for testing this. I was unable to reproduce this. I have posted
+> v4 moving the interrupt handling in qcom-cpufreq-hw to threaded
+> interrupt handler and hopefully this should fix the issue. It will be
+> great if you can test and let me know.
+>
+Hi Thara,
+
+I've been testing v4 for a little bit here, and so far I can't seem to
+get it to reproduce anymore.  I will keep trying but fingers crossed
+that that did the trick.
+
+For setup, I'm using https://github.com/steev/linux/tree/linux-5.13.y
+with the "distro_defconfig" configuration here on my c630s.  I'm also
+running https://github.com/steev/scheduler as a systemd service.  So far
+I've been able to sleep/suspend without issue while running "make
+-j$(nproc) deb-pkg" in those kernel sources as well as `xz
+--memlimit-compress=50 -T 4 imagefile.img" on a 9.2GB file at the same
+time.  One system is running the Budgie desktop on top of Xorg, and the
+other is running Gnome 3.38 on top of Wayland.
+
+-- steev
+
