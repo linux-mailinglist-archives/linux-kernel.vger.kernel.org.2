@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A613D7462
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7036A3D746A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbhG0Lcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:32:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60943 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231781AbhG0Lce (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:32:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627385554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BaUI7/MGdUeu9aK6r/10GV5Uw/sttnvzMU+KPJUYtJ4=;
-        b=IeLsWQ71nujWHdwLWStdGoic4AcBqVmxe7iXXIYmGL6Cy2d7wdmmFpV3/EVeAoj4YQe5cK
-        pe8/Hka8HTbIJISJMuax6FcxQKz2sJiUhm9/c6hucq9GGIN6AAYUK4G8pJutg5aWGmSV0J
-        qCoTbkhkx4gCo1+lkiuQ55rqY6AaGuQ=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-136-QNTFJodkPi2JetmD8jM5cQ-1; Tue, 27 Jul 2021 07:32:33 -0400
-X-MC-Unique: QNTFJodkPi2JetmD8jM5cQ-1
-Received: by mail-wm1-f70.google.com with SMTP id j204-20020a1c23d50000b029024e75a15714so1263436wmj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:32:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BaUI7/MGdUeu9aK6r/10GV5Uw/sttnvzMU+KPJUYtJ4=;
-        b=GwPXRHwKL3mE/oga9jNQVjvmdLUoEkAeDxAARqmE2TmLeu0BvQ71E+Iiegip8Z8KeD
-         IQF3OGXB9hoF37Z1GJjF6jXt1H+5vrf2sP13Hkp+jpRfgFVUKwbhHkjFsc8Q8sUUjUdV
-         /NdQzk1+3bmQbU1rGi5GODejcU6Dt+wAbu4wOGmkhT2i5MwRNkItsnb3kT1SaDljhiIu
-         9Mmoy3a2RFlZO8yw0GFMeEZOvZGeuRitQmuXivgIa6BiCzw6khVcSa1uIlrxv0ZDG7Ws
-         LPZj3EHCQeFy4VxwvsFOKtYsGMLMYR6Xgh8Ah7Q3r+HEMwruuWJI6Jjeae6KWRgvKK7j
-         clCw==
-X-Gm-Message-State: AOAM533RNwMptApeanBefSpk11Rh4onGO8c1VS/vUJds7nfINbFUM3FL
-        4bJsZzpBXlXB0SurGzrxNukaDbjZfPtxSl1OG9ELvQYC+i6dP6YmDqijl39PE0MNgcIJv+wVGDC
-        ijxSCBs+xKREo7+H2hywcOFWQ
-X-Received: by 2002:a05:600c:354a:: with SMTP id i10mr3625986wmq.171.1627385551913;
-        Tue, 27 Jul 2021 04:32:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxhE4cnozKr8xVw/EzcVfHMxN7aC5PXugco7yEF7nBIklqrOTaYs+t5SrVxBZFKP7Pap/DUZQ==
-X-Received: by 2002:a05:600c:354a:: with SMTP id i10mr3625962wmq.171.1627385551713;
-        Tue, 27 Jul 2021 04:32:31 -0700 (PDT)
-Received: from [192.168.1.101] ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id t16sm2455697wmj.16.2021.07.27.04.32.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 04:32:30 -0700 (PDT)
-Subject: Re: [PATCH v2] drivers/firmware: fix SYSFB depends to prevent build
- failures
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20210727093015.1225107-1-javierm@redhat.com>
- <CAMuHMdXXoHLO=jsjb+xtW7GDQsvu8Zuz=JmbaEXT49w5o4SJ9A@mail.gmail.com>
- <f9df82c9-1e1a-d657-d712-312f5f17cab0@redhat.com>
- <CAMuHMdVh4XgXeaLXXTmPxMuWM4C1mTDnhSmDmff6T37PwNxupg@mail.gmail.com>
-From:   Javier Martinez Canillas <javierm@redhat.com>
-Message-ID: <e3f0f7a0-2130-18be-48a4-af1918017eca@redhat.com>
-Date:   Tue, 27 Jul 2021 13:32:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S236511AbhG0Lfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:35:38 -0400
+Received: from mga14.intel.com ([192.55.52.115]:48450 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231781AbhG0Lff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 07:35:35 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="212145008"
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
+   d="scan'208";a="212145008"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 04:35:19 -0700
+X-IronPort-AV: E=Sophos;i="5.84,273,1620716400"; 
+   d="scan'208";a="498453641"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 04:35:17 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1m8LMc-0016dX-Fd; Tue, 27 Jul 2021 14:35:10 +0300
+Date:   Tue, 27 Jul 2021 14:35:10 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v1 1/1] media: ipu3-cio2: Drop reference on error path in
+ cio2_bridge_connect_sensor()
+Message-ID: <YP/vbsXlsT8DOOy3@smile.fi.intel.com>
+References: <20210726084055.54887-1-andriy.shevchenko@linux.intel.com>
+ <20210726114433.GB3@paasikivi.fi.intel.com>
+ <CAHp75VfodVoyDkO4iEGcHw0TWm2g-QbjwXqoCpCr_fj_BXT9jw@mail.gmail.com>
+ <20210726120335.GE3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdVh4XgXeaLXXTmPxMuWM4C1mTDnhSmDmff6T37PwNxupg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726120335.GE3@paasikivi.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/27/21 1:17 PM, Geert Uytterhoeven wrote:
-
-[snip]
-
->> Not enabling this, would mean that a platform device to match a driver
->> supporting the EFI GOP framebuffer (e.g: simple{drm,fb} or efifb) will
->> not be registered. Which will lead to not having an early framebuffer.
+On Mon, Jul 26, 2021 at 03:03:35PM +0300, Sakari Ailus wrote:
+> On Mon, Jul 26, 2021 at 02:55:51PM +0300, Andy Shevchenko wrote:
+> > On Mon, Jul 26, 2021 at 2:47 PM Sakari Ailus
+> > <sakari.ailus@linux.intel.com> wrote:
+> > > On Mon, Jul 26, 2021 at 11:40:55AM +0300, Andy Shevchenko wrote:
+> > 
+> > ...
+> > 
+> > > >  err_free_swnodes:
+> > > >       software_node_unregister_nodes(sensor->swnodes);
+> > > >  err_put_adev:
+> > > > -     acpi_dev_put(sensor->adev);
+> > > > +     acpi_dev_put(adev);
+> > >
+> > > adev is assigned to sensor->adev before goto so the two have the same
+> > > value. I have no problem with the patch though.
+> > 
+> > Are we reading the same version? Or am I missing something?
 > 
-> Do all (embedded) EFI systems have a frame buffer?
->
+> Ah. I noticed the adev assignment was removed (and added later) by the
+> other patch. Yeah, agreed; this one's needed.
 
-That's a good question. I don't know if all EFI firmwares are expected
-to provide a GOP or not. But even the u-boot EFI stub provides one, if
-video output is supported by u-boot on that system.
- 
-> Perhaps SYSFB should be selected by SYSFB_SIMPLEFB, FB_VESA,
-> and FB_EFI?
-> 
+Thanks! Can we have your tag?
 
-It's another option, yes. I just thought that the use of select was not
-encouraged and using depends was less fragile / error prone.
-
->> The logic used to be in drivers/firmware/efi/efi-init.c, that's built
->> in if CONFIG_EFI is enabled. We just consolidated both X86 and EFI:
->>
->> https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8633ef82f101
-> 
-> Thanks, I'm aware of that commit, as I was just about to reply to it,
-> when I saw the patch is this thread ;-)
->
-
-Ok :)
- 
-Best regards,
 -- 
-Javier Martinez Canillas
-Linux Engineering
-Red Hat
+With Best Regards,
+Andy Shevchenko
+
 
