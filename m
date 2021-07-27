@@ -2,97 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A663D6C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6AE3D6C31
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234592AbhG0CRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234438AbhG0CRK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:17:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23E0C061757
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 19:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=ufowFuNuNaJGOwhEapir9LnGgTlR2Oi9Tx8Pe0vf55g=; b=BOSwQuuPUdyAZFAVenkYytT3Iq
-        lQOLCO36GFpL3jwsGKfcRH5hSYrA4E+r7VNJVLpNYuXLsvycqYDgu9IEHjcXWOuTmJUDj+zBYuj+Q
-        cfa1zAO5G1HURxS+WlHkDY/JQ3/CIRZB3uT1UT6z/jILe2Efi6twrKQl2B/dcyUTpfCpS8RIrqiYO
-        WfwLhmEHKGreRS+zxAcVTm5qU60gv/1pgnNO17lvGzAyeZtFGBkIrugmrmSXL9TOPd9CR7GIh+Ch5
-        MdLFQ5k55DQLFfZ8s2OnIuaphZOh8RKEY0ZRimSX3lr3kfV//WOZATlVNb6IE36/yGumzU1ZD8A9w
-        p2uB+MDQ==;
-Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8DHm-00CuPT-Cz; Tue, 27 Jul 2021 02:57:38 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] scripts: checkversion: modernize linux/version.h search strings
-Date:   Mon, 26 Jul 2021 19:57:37 -0700
-Message-Id: <20210727025737.30553-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S234614AbhG0CSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42156 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234410AbhG0CSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:18:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D78B460FEE;
+        Tue, 27 Jul 2021 02:58:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627354711;
+        bh=D7jyy3lazrgfTZyaTB4BgIHxwFeOv1IymHhq8hiVd6U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cRj5czzYT0B8Rs3pS9KNkyps8ctAbVF3UVgWE8niEpqntkQ4ysSl8FRLhb9ojA7Cm
+         5+/bBBJvaHVT2BSK09wGeRlIAyxUN/OD4ZhDVJaRD2crpaAwZ5YgNv7wVJMTwU82Pn
+         bqhESmUmolDB376+8gbPP3Irj1HpSq9bnzqaXjyLziwGboE5sGzzUqHNKbX1dKO29c
+         hxRWbY/28dMrsVUt91JlWanaQx0rt/779c1ByLzUWBJGeGDKmXgpVm9b5HKtsa2KoA
+         riSZilBHxPwpYcSenitshPZl36PBt1dSJoK78KzLsgJJiAaNFT1b6HhXSdsNh3sCDl
+         yjiiOqqPEgPCw==
+Date:   Tue, 27 Jul 2021 05:58:28 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Borys Movchan <borysmn@axis.com>
+Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        kernel@axis.com, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tpm: Add Upgrade/Reduced mode support for TPM2 modules
+Message-ID: <20210727025828.giynspbcz7zdmosa@kernel.org>
+References: <20210719133717.18797-1-borysmn@axis.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210719133717.18797-1-borysmn@axis.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update scripts/checkversion.pl to recognize the current contents
-of <linux/version.h> and both of its current locations.
+On Mon, Jul 19, 2021 at 03:37:17PM +0200, Borys Movchan wrote:
+> On some systems, especially embedded, TPM might start in
+> Upgrade/Reduced mode due to the previous failure of a firmware
+> upgrade process. Allow the TPM driver to handle such situations
+> properly. Enables a possibility for userspace application to
+> finalize TPM upgrade or recovery if required.
 
-Also update my email address.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- scripts/checkversion.pl |   18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Please add short explanation what you mean by upgrade/reduced mode.
 
---- linux-next-20210723.orig/scripts/checkversion.pl
-+++ linux-next-20210723/scripts/checkversion.pl
-@@ -1,10 +1,10 @@
- #! /usr/bin/env perl
- # SPDX-License-Identifier: GPL-2.0
- #
--# checkversion find uses of LINUX_VERSION_CODE or KERNEL_VERSION
--# without including <linux/version.h>, or cases of
--# including <linux/version.h> that don't need it.
--# Copyright (C) 2003, Randy Dunlap <rdunlap@xenotime.net>
-+# checkversion finds uses of all macros in <linux/version.h>
-+# where the source files do not #include <linux/version.h>; or cases
-+# of including <linux/version.h> where it is not needed.
-+# Copyright (C) 2003, Randy Dunlap <rdunlap@infradead.org>
- 
- use strict;
- 
-@@ -13,7 +13,8 @@ $| = 1;
- my $debugging;
- 
- foreach my $file (@ARGV) {
--    next if $file =~ "include/linux/version\.h";
-+    next if $file =~ "include/generated/uapi/linux/version\.h";
-+    next if $file =~ "usr/include/linux/version\.h";
-     # Open this file.
-     open( my $f, '<', $file )
-       or die "Can't open $file: $!\n";
-@@ -41,8 +42,11 @@ foreach my $file (@ARGV) {
- 	    $iLinuxVersion      = $. if m/^\s*#\s*include\s*<linux\/version\.h>/o;
- 	}
- 
--	# Look for uses: LINUX_VERSION_CODE, KERNEL_VERSION, UTS_RELEASE
--	if (($_ =~ /LINUX_VERSION_CODE/) || ($_ =~ /\WKERNEL_VERSION/)) {
-+	# Look for uses: LINUX_VERSION_CODE, KERNEL_VERSION,
-+	# LINUX_VERSION_MAJOR, LINUX_VERSION_PATCHLEVEL, LINUX_VERSION_SUBLEVEL
-+	if (($_ =~ /LINUX_VERSION_CODE/) || ($_ =~ /\WKERNEL_VERSION/) ||
-+	    ($_ =~ /LINUX_VERSION_MAJOR/) || ($_ =~ /LINUX_VERSION_PATCHLEVEL/) ||
-+	    ($_ =~ /LINUX_VERSION_SUBLEVEL/)) {
- 	    $fUseVersion = 1;
-             last if $iLinuxVersion;
-         }
+Maybe for clarity speak about upgrade mode.
+
+> 
+> Signed-off-by: Borys Movchan <borysmn@axis.com>
+> ---
+>  drivers/char/tpm/tpm-chip.c | 23 +++++++++++++++--------
+>  drivers/char/tpm/tpm2-cmd.c | 12 ++++++++++--
+>  include/linux/tpm.h         |  1 +
+>  3 files changed, 26 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
+> index ddaeceb7e109..ff2367c447fb 100644
+> --- a/drivers/char/tpm/tpm-chip.c
+> +++ b/drivers/char/tpm/tpm-chip.c
+> @@ -574,20 +574,25 @@ static int tpm_get_pcr_allocation(struct tpm_chip *chip)
+>  int tpm_chip_register(struct tpm_chip *chip)
+>  {
+>  	int rc;
+> +	bool limited_mode = false;
+>  
+>  	rc = tpm_chip_start(chip);
+>  	if (rc)
+>  		return rc;
+>  	rc = tpm_auto_startup(chip);
+> -	if (rc) {
+> +	if (rc == -EIO) {
+> +		limited_mode = true;
+> +	} else if (rc) {
+>  		tpm_chip_stop(chip);
+>  		return rc;
+>  	}
+>  
+> -	rc = tpm_get_pcr_allocation(chip);
+> -	tpm_chip_stop(chip);
+> -	if (rc)
+> -		return rc;
+> +	if (!limited_mode) {
+> +		rc = tpm_get_pcr_allocation(chip);
+> +		tpm_chip_stop(chip);
+> +		if (rc)
+> +			return rc;
+> +	}
+>  
+>  	tpm_sysfs_add_device(chip);
+>  
+> @@ -595,9 +600,11 @@ int tpm_chip_register(struct tpm_chip *chip)
+>  
+>  	tpm_add_ppi(chip);
+>  
+> -	rc = tpm_add_hwrng(chip);
+> -	if (rc)
+> -		goto out_ppi;
+> +	if (!limited_mode) {
+> +		rc = tpm_add_hwrng(chip);
+> +		if (rc)
+> +			goto out_ppi;
+> +	}
+>  
+>  	rc = tpm_add_char_device(chip);
+>  	if (rc)
+> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+> index a25815a6f625..7468353ed67d 100644
+> --- a/drivers/char/tpm/tpm2-cmd.c
+> +++ b/drivers/char/tpm/tpm2-cmd.c
+> @@ -718,7 +718,8 @@ static int tpm2_startup(struct tpm_chip *chip)
+>   *                     sequence
+>   * @chip: TPM chip to use
+>   *
+> - * Returns 0 on success, < 0 in case of fatal error.
+> + * Returns 0 on success, -ENODEV in case of fatal error,
+> + *	    -EIO in case of Reduced/Upgrade mode
+>   */
+>  int tpm2_auto_startup(struct tpm_chip *chip)
+>  {
+> @@ -729,7 +730,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+>  		goto out;
+>  
+>  	rc = tpm2_do_selftest(chip);
+> -	if (rc && rc != TPM2_RC_INITIALIZE)
+> +	if (rc == TPM2_RC_UPGRADE) {
+> +		rc = -EIO;
+> +		goto out;
+> +	} else if (rc && rc != TPM2_RC_INITIALIZE)
+>  		goto out;
+>  
+>  	if (rc == TPM2_RC_INITIALIZE) {
+> @@ -743,6 +747,10 @@ int tpm2_auto_startup(struct tpm_chip *chip)
+>  	}
+>  
+>  	rc = tpm2_get_cc_attrs_tbl(chip);
+> +	if (rc) { /* Succeeded until here, but failed -> reduced mode */
+> +		rc = -EIO;
+> +		goto out;
+> +	}
+>  
+>  out:
+>  	if (rc > 0)
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index aa11fe323c56..e873c42907f0 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -207,6 +207,7 @@ enum tpm2_return_codes {
+>  	TPM2_RC_INITIALIZE	= 0x0100, /* RC_VER1 */
+>  	TPM2_RC_FAILURE		= 0x0101,
+>  	TPM2_RC_DISABLED	= 0x0120,
+> +	TPM2_RC_UPGRADE		= 0x012D,
+>  	TPM2_RC_COMMAND_CODE    = 0x0143,
+>  	TPM2_RC_TESTING		= 0x090A, /* RC_WARN */
+>  	TPM2_RC_REFERENCE_H0	= 0x0910,
+> -- 
+> 2.20.1
+> 
+> 
+
+/Jarkko
