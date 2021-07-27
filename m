@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2126B3D76E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5313D76E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236639AbhG0NfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236711AbhG0NfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:35:16 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CAFC061760;
-        Tue, 27 Jul 2021 06:35:16 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id i10so12689304pla.3;
-        Tue, 27 Jul 2021 06:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9TP6CxDY7H/n3wctXVLoN8fg4wjE6OdPNG/Gq2ojCMo=;
-        b=W8H82ET2uXZcrxq9/n3Eqe4eJzDzFOXU9cSfpVlrZMXp8EzxaooiEEP6JfXx0fO8F7
-         QkW1y2pkYHCSWMYvxTKTMTafCNCVIHMyvpIIy818bGQS9E1rbr98vmN4KnlxhpUHD3dA
-         dUpAVBptm36DquWQXzkh15wfYcLhy7glkvfDifuTYPzQ0jy0tKc2ApRNpC380QtcyQn/
-         PjNvS7qBMIztQO8L5BvYE61fCmSxGOLVaIMHfL9fe0J2d3G383NF26Hr1MU9DGdj6MPm
-         fZpxY053OQg6BCvKL0fiYssXtB3aI+/fu1k26tKOr463CZs/j5NV4nijDZeeNY3WmuKJ
-         dBvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9TP6CxDY7H/n3wctXVLoN8fg4wjE6OdPNG/Gq2ojCMo=;
-        b=mlM/znAMHpmIu0CPPFRRc4vITATxrnfnjZ3B4iLm/evvqZGr/SX8i3/YK4d+WDL6yh
-         hslQxs4B4FHtvPUsfM8GyiSmZz2pfammXFvoylsyYdGbrVUUiviEcDCo6JYFCIdNG2Yz
-         SsWBHN8H4IG7psxrMweo6vaCxzO1EP46sSQe7fhaNt/M01pUvOLdDErzXTL+r3ODFfAE
-         CazXaNWOnQ18+Oz2vpsrvPK8F19wozxgOPvyNYPzTUmtg+dOie27cWM9R0ULw8S9qLYD
-         CjMF7Uv3+Yc5DXmqwbN72LHOtZZlNgs5x76A8xJ1sCk2yPrgLefDcngiDKeugxRObl5O
-         d+bA==
-X-Gm-Message-State: AOAM532bRlit+VmxMPUoYE7zfdwsnfsWtPSKN/pi96Rkm+hCIrsOl3Xe
-        yF9SzjL67TQjwdVrcUIuIdk=
-X-Google-Smtp-Source: ABdhPJyKeAMoFZRNNiTINae6lBywxqlT0Pg93U1AU98I9H4QbRIFANiE0tH7dEiGvuRssOqPyQ4eWg==
-X-Received: by 2002:a65:5603:: with SMTP id l3mr23828057pgs.190.1627392916325;
-        Tue, 27 Jul 2021 06:35:16 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id c23sm3856991pfo.174.2021.07.27.06.35.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 06:35:15 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     mhiramat@kernel.org, naveen.n.rao@linux.ibm.com,
-        anil.s.keshavamurthy@intel.com, davem@davemloft.net
-Cc:     Punit Agrawal <punitagrawal@gmail.com>,
-        linux-kernel@vger.kernel.org, guoren@kernel.org,
-        linux-csky@vger.kernel.org
-Subject: [PATCH v2 5/5] kprobes: Make arch_check_ftrace_location static
-Date:   Tue, 27 Jul 2021 22:34:26 +0900
-Message-Id: <20210727133426.2919710-6-punitagrawal@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727133426.2919710-1-punitagrawal@gmail.com>
-References: <20210727133426.2919710-1-punitagrawal@gmail.com>
+        id S236723AbhG0Nfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:35:46 -0400
+Received: from smtpbg128.qq.com ([106.55.201.39]:45000 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232186AbhG0Nfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:35:44 -0400
+X-QQ-mid: bizesmtp52t1627392894tlx3fh6g
+Received: from ficus.lan (unknown [171.223.99.141])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Tue, 27 Jul 2021 21:34:52 +0800 (CST)
+X-QQ-SSF: 01000000002000B0C000B00A0000000
+X-QQ-FEAT: ptz89vG4AG809G2yUsmLkWimg0PzEcjML+fqpthYefsvk60AEjNt/EvUQwwQJ
+        K6tp89nvsLrVkYwtj/uFpGbXqGV+8oy41XMhJRoJDjFItbfrKREcDR1aq5ldW9oNsCsw7Vs
+        LD9lYEHihJ3rpJcf6TvSG0nSsNUzb0k/06vjDrEGne2W96YtF9AAWdrfuwF5GbIzsDMBzq7
+        OkbtjX2RLhmT00bup8YgCu6nUw4gLvdYb2/m8Ln8mdrlo30ZUmMMzpJ+kd9Dwv8hEfljYjM
+        uuaGXxC+GgFIbEZF1+unFduEYQya0LVs63uIJfsPJSaS5GP4TqCxFgOLJUD9hw5mAvOf3pZ
+        mEngyejXjrejZhH3V8qD4wfol03zQ==
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     linusw@kernel.org
+Cc:     kaloz@openwrt.org, khalasa@piap.pl, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] ARM: PCI: use __func__ in debug messages
+Date:   Tue, 27 Jul 2021 21:34:50 +0800
+Message-Id: <20210727133450.173749-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch_check_ftrace_location() was introduced as a weak function in
-commit f7f242ff004499 ("kprobes: introduce weak
-arch_check_ftrace_location() helper function") to allow architectures
-to handle kprobes call site on their own.
+Perhaps, the '"%s...", __func__' is more convenient to show current
+function in a debug message.
 
-Recently, the only architecture (csky) to implement
-arch_check_ftrace_location() was migrated to using the common
-version.
-
-As a result, further cleanup the code to drop the weak attribute and
-rename the function to remove the architecture specific
-implementation.
-
-Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 ---
- include/linux/kprobes.h | 2 --
- kernel/kprobes.c        | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ arch/arm/mach-ixp4xx/common-pci.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 0b75549b2815..8a9412bb0d5e 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -361,8 +361,6 @@ static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
- }
- #endif
- 
--int arch_check_ftrace_location(struct kprobe *p);
--
- /* Get the kprobe at this addr (if any) - called with preemption disabled */
- struct kprobe *get_kprobe(void *addr);
- 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index cfa9d3c263eb..30199bfcc74a 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1524,7 +1524,7 @@ static inline int warn_kprobe_rereg(struct kprobe *p)
- 	return ret;
+diff --git a/arch/arm/mach-ixp4xx/common-pci.c b/arch/arm/mach-ixp4xx/common-pci.c
+index 893c19c254e3..deb80fe05c03 100644
+--- a/arch/arm/mach-ixp4xx/common-pci.c
++++ b/arch/arm/mach-ixp4xx/common-pci.c
+@@ -203,18 +203,18 @@ static u32 local_byte_lane_enable_bits(u32 n, int size)
+ static int local_read_config(int where, int size, u32 *value)
+ { 
+ 	u32 n, data;
+-	pr_debug("local_read_config from %d size %d\n", where, size);
++	pr_debug("%s from %d size %d\n", __func__, where, size);
+ 	n = where % 4;
+ 	crp_read(where & ~3, &data);
+ 	*value = (data >> (8*n)) & bytemask[size];
+-	pr_debug("local_read_config read %#x\n", *value);
++	pr_debug("%s read %#x\n", __func__, *value);
+ 	return PCIBIOS_SUCCESSFUL;
  }
  
--int __weak arch_check_ftrace_location(struct kprobe *p)
-+static int check_ftrace_location(struct kprobe *p)
+ static int local_write_config(int where, int size, u32 value)
  {
- 	unsigned long ftrace_addr;
+ 	u32 n, byte_enables, data;
+-	pr_debug("local_write_config %#x to %d size %d\n", value, where, size);
++	pr_debug("%s %#x to %d size %d\n", __func__, value, where, size);
+ 	n = where % 4;
+ 	byte_enables = local_byte_lane_enable_bits(n, size);
+ 	if (byte_enables == 0xffffffff)
+@@ -293,8 +293,8 @@ static int abort_handler(unsigned long addr, unsigned int fsr, struct pt_regs *r
  
-@@ -1547,7 +1547,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
- {
- 	int ret;
+ 	isr = *PCI_ISR;
+ 	local_read_config(PCI_STATUS, 2, &status);
+-	pr_debug("PCI: abort_handler addr = %#lx, isr = %#x, "
+-		"status = %#x\n", addr, isr, status);
++	pr_debug("PCI: %s addr = %#lx, isr = %#x, status = %#x\n",
++			__func__, addr, isr, status);
  
--	ret = arch_check_ftrace_location(p);
-+	ret = check_ftrace_location(p);
- 	if (ret)
- 		return ret;
- 	jump_label_lock();
+ 	/* make sure the Master Abort bit is reset */    
+ 	*PCI_ISR = PCI_ISR_PFE;
 -- 
-2.30.2
+2.32.0
 
