@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BA23D6EFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:15:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0F93D6EFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235789AbhG0GPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:15:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46758 "EHLO
+        id S235838AbhG0GPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:15:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24882 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235799AbhG0GOz (ORCPT
+        by vger.kernel.org with ESMTP id S235770AbhG0GPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:14:55 -0400
+        Tue, 27 Jul 2021 02:15:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627366495;
+        s=mimecast20190719; t=1627366501;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=w57AtsGV+VWVX+2p99w37D6abcXCDtVokuSHgy/pQSE=;
-        b=C64mqNlZwyRoRUld8ke27C1+/TPbk3iIXHASAWuQanlDO3T3UxsDjxv/jyEeyDZYbsD0Tc
-        mJPt/8aaU205mFZ+oRupZDVLw2xJYazxFTu69QGN6HQfmF5+0UrZV9IFagUfuFLLGNEl1C
-        m/epS6rqu4/rDlIochrzWnXMg+gaoSY=
+        bh=0RHL/Ntti27fnEKXp/RSCDk01A20WAVdHDsksy3fkVY=;
+        b=E+bUI1DB0GzS1X/VPgy/4SKB2eWakZHwJV7q5a9moKswj/KGK/tjFquCeHXWq8eLz3JAh3
+        aamfRBStcaMEurEFena5Bi4THEWlT1v4niTOqgz/gOCaic8VETZTYhNpCXMuheeyjVxCol
+        ZQSJ2xFDpp0kZUN1+y0T29+40RmT4CQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-137-LyWJzTQpNYeVQKnMzkGU3g-1; Tue, 27 Jul 2021 02:14:52 -0400
-X-MC-Unique: LyWJzTQpNYeVQKnMzkGU3g-1
+ us-mta-413-xc_h2i3pPBGzU9q6ip15IA-1; Tue, 27 Jul 2021 02:14:59 -0400
+X-MC-Unique: xc_h2i3pPBGzU9q6ip15IA-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D3E88799F3;
-        Tue, 27 Jul 2021 06:14:50 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA2BD760C1;
+        Tue, 27 Jul 2021 06:14:57 +0000 (UTC)
 Received: from gshan.redhat.com (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8BC549C8C3;
-        Tue, 27 Jul 2021 06:14:46 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F07EE9C8C3;
+        Tue, 27 Jul 2021 06:14:50 +0000 (UTC)
 From:   Gavin Shan <gshan@redhat.com>
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
@@ -41,9 +41,9 @@ Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
         christophe.leroy@csgroup.eu, cai@lca.pw, catalin.marinas@arm.com,
         will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
         shan.gavin@gmail.com
-Subject: [PATCH v4 06/12] mm/debug_vm_pgtable: Use struct pgtable_debug_args in migration and thp tests
-Date:   Tue, 27 Jul 2021 14:13:55 +0800
-Message-Id: <20210727061401.592616-7-gshan@redhat.com>
+Subject: [PATCH v4 07/12] mm/debug_vm_pgtable: Use struct pgtable_debug_args in PTE modifying tests
+Date:   Tue, 27 Jul 2021 14:13:56 +0800
+Message-Id: <20210727061401.592616-8-gshan@redhat.com>
 In-Reply-To: <20210727061401.592616-1-gshan@redhat.com>
 References: <20210727061401.592616-1-gshan@redhat.com>
 MIME-Version: 1.0
@@ -54,114 +54,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This uses struct pgtable_debug_args in the migration and thp test
-functions. It's notable that the pre-allocated page is used in
-swap_migration_tests() as set_pte_at() is used there.
+This uses struct pgtable_debug_args in PTE modifying tests. The allocated
+page is used as set_pte_at() is used there. The tests are skipped if
+the allocated page doesn't exist. Besides, the unused variable @ptep
+and @pte_aligned in debug_vm_pgtable() are dropped.
 
 Signed-off-by: Gavin Shan <gshan@redhat.com>
 ---
- mm/debug_vm_pgtable.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ mm/debug_vm_pgtable.c | 64 +++++++++++++++++++++----------------------
+ 1 file changed, 31 insertions(+), 33 deletions(-)
 
 diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index bc153cad9045..9136195efde3 100644
+index 9136195efde3..b5b22e666954 100644
 --- a/mm/debug_vm_pgtable.c
 +++ b/mm/debug_vm_pgtable.c
-@@ -845,7 +845,7 @@ static void __init pmd_swap_tests(struct pgtable_debug_args *args)
- static void __init pmd_swap_tests(struct pgtable_debug_args *args) { }
- #endif /* CONFIG_ARCH_ENABLE_THP_MIGRATION */
- 
--static void __init swap_migration_tests(void)
-+static void __init swap_migration_tests(struct pgtable_debug_args *args)
- {
- 	struct page *page;
- 	swp_entry_t swp;
-@@ -861,9 +861,10 @@ static void __init swap_migration_tests(void)
- 	 * problematic. Lets allocate a dedicated page explicitly for this
- 	 * purpose that will be freed subsequently.
- 	 */
--	page = alloc_page(GFP_KERNEL);
-+	page = (args->pte_pfn != ULONG_MAX) ?
-+	       pfn_to_page(args->pte_pfn) : NULL;
- 	if (!page) {
--		pr_err("page allocation failed\n");
-+		pr_err("no page available\n");
- 		return;
- 	}
- 
-@@ -884,7 +885,6 @@ static void __init swap_migration_tests(void)
- 	WARN_ON(!is_migration_entry(swp));
- 	WARN_ON(is_writable_migration_entry(swp));
- 	__ClearPageLocked(page);
--	__free_page(page);
+@@ -117,10 +117,7 @@ static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
+ 	WARN_ON(!pte_dirty(pte_wrprotect(pte_mkdirty(pte))));
  }
  
- #ifdef CONFIG_HUGETLB_PAGE
-@@ -916,7 +916,7 @@ static void __init hugetlb_basic_tests(struct pgtable_debug_args *args) { }
- #endif /* CONFIG_HUGETLB_PAGE */
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--static void __init pmd_thp_tests(unsigned long pfn, pgprot_t prot)
-+static void __init pmd_thp_tests(struct pgtable_debug_args *args)
+-static void __init pte_advanced_tests(struct mm_struct *mm,
+-				      struct vm_area_struct *vma, pte_t *ptep,
+-				      unsigned long pfn, unsigned long vaddr,
+-				      pgprot_t prot)
++static void __init pte_advanced_tests(struct pgtable_debug_args *args)
  {
- 	pmd_t pmd;
+ 	pte_t pte;
  
-@@ -935,7 +935,7 @@ static void __init pmd_thp_tests(unsigned long pfn, pgprot_t prot)
- 	 * needs to return true. pmd_present() should be true whenever
- 	 * pmd_trans_huge() returns true.
+@@ -129,35 +126,37 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
+ 	 * This requires set_pte_at to be not used to update an
+ 	 * existing pte entry. Clear pte before we do set_pte_at
  	 */
--	pmd = pfn_pmd(pfn, prot);
-+	pmd = pfn_pmd(args->fixed_pmd_pfn, args->page_prot);
- 	WARN_ON(!pmd_trans_huge(pmd_mkhuge(pmd)));
++	if (args->pte_pfn == ULONG_MAX)
++		return;
  
- #ifndef __HAVE_ARCH_PMDP_INVALIDATE
-@@ -945,7 +945,7 @@ static void __init pmd_thp_tests(unsigned long pfn, pgprot_t prot)
+ 	pr_debug("Validating PTE advanced\n");
+-	pte = pfn_pte(pfn, prot);
+-	set_pte_at(mm, vaddr, ptep, pte);
+-	ptep_set_wrprotect(mm, vaddr, ptep);
+-	pte = ptep_get(ptep);
++	pte = pfn_pte(args->pte_pfn, args->page_prot);
++	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
++	ptep_set_wrprotect(args->mm, args->vaddr, args->ptep);
++	pte = ptep_get(args->ptep);
+ 	WARN_ON(pte_write(pte));
+-	ptep_get_and_clear(mm, vaddr, ptep);
+-	pte = ptep_get(ptep);
++	ptep_get_and_clear(args->mm, args->vaddr, args->ptep);
++	pte = ptep_get(args->ptep);
+ 	WARN_ON(!pte_none(pte));
+ 
+-	pte = pfn_pte(pfn, prot);
++	pte = pfn_pte(args->pte_pfn, args->page_prot);
+ 	pte = pte_wrprotect(pte);
+ 	pte = pte_mkclean(pte);
+-	set_pte_at(mm, vaddr, ptep, pte);
++	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+ 	pte = pte_mkwrite(pte);
+ 	pte = pte_mkdirty(pte);
+-	ptep_set_access_flags(vma, vaddr, ptep, pte, 1);
+-	pte = ptep_get(ptep);
++	ptep_set_access_flags(args->vma, args->vaddr, args->ptep, pte, 1);
++	pte = ptep_get(args->ptep);
+ 	WARN_ON(!(pte_write(pte) && pte_dirty(pte)));
+-	ptep_get_and_clear_full(mm, vaddr, ptep, 1);
+-	pte = ptep_get(ptep);
++	ptep_get_and_clear_full(args->mm, args->vaddr, args->ptep, 1);
++	pte = ptep_get(args->ptep);
+ 	WARN_ON(!pte_none(pte));
+ 
+-	pte = pfn_pte(pfn, prot);
++	pte = pfn_pte(args->pte_pfn, args->page_prot);
+ 	pte = pte_mkyoung(pte);
+-	set_pte_at(mm, vaddr, ptep, pte);
+-	ptep_test_and_clear_young(vma, vaddr, ptep);
+-	pte = ptep_get(ptep);
++	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
++	ptep_test_and_clear_young(args->vma, args->vaddr, args->ptep);
++	pte = ptep_get(args->ptep);
+ 	WARN_ON(pte_young(pte));
  }
  
- #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
--static void __init pud_thp_tests(unsigned long pfn, pgprot_t prot)
-+static void __init pud_thp_tests(struct pgtable_debug_args *args)
- {
- 	pud_t pud;
- 
-@@ -953,7 +953,7 @@ static void __init pud_thp_tests(unsigned long pfn, pgprot_t prot)
- 		return;
- 
- 	pr_debug("Validating PUD based THP\n");
--	pud = pfn_pud(pfn, prot);
-+	pud = pfn_pud(args->fixed_pud_pfn, args->page_prot);
- 	WARN_ON(!pud_trans_huge(pud_mkhuge(pud)));
- 
- 	/*
-@@ -965,11 +965,11 @@ static void __init pud_thp_tests(unsigned long pfn, pgprot_t prot)
- 	 */
+@@ -618,20 +617,21 @@ static void __init pgd_populate_tests(struct mm_struct *mm, pgd_t *pgdp,
  }
- #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
--static void __init pud_thp_tests(unsigned long pfn, pgprot_t prot) { }
-+static void __init pud_thp_tests(struct pgtable_debug_args *args) { }
- #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
- #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
--static void __init pmd_thp_tests(unsigned long pfn, pgprot_t prot) { }
--static void __init pud_thp_tests(unsigned long pfn, pgprot_t prot) { }
-+static void __init pmd_thp_tests(struct pgtable_debug_args *args) { }
-+static void __init pud_thp_tests(struct pgtable_debug_args *args) { }
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+ #endif /* PAGETABLE_P4D_FOLDED */
  
- static unsigned long __init get_random_vaddr(void)
-@@ -1345,10 +1345,10 @@ static int __init debug_vm_pgtable(void)
- 	pte_swap_tests(&args);
- 	pmd_swap_tests(&args);
+-static void __init pte_clear_tests(struct mm_struct *mm, pte_t *ptep,
+-				   unsigned long pfn, unsigned long vaddr,
+-				   pgprot_t prot)
++static void __init pte_clear_tests(struct pgtable_debug_args *args)
+ {
+-	pte_t pte = pfn_pte(pfn, prot);
++	pte_t pte = pfn_pte(args->pte_pfn, args->page_prot);
++
++	if (args->pte_pfn == ULONG_MAX)
++		return;
  
--	swap_migration_tests();
-+	swap_migration_tests(&args);
+ 	pr_debug("Validating PTE clear\n");
+ #ifndef CONFIG_RISCV
+ 	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
+ #endif
+-	set_pte_at(mm, vaddr, ptep, pte);
++	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
+ 	barrier();
+-	pte_clear(mm, vaddr, ptep);
+-	pte = ptep_get(ptep);
++	pte_clear(args->mm, args->vaddr, args->ptep);
++	pte = ptep_get(args->ptep);
+ 	WARN_ON(!pte_none(pte));
+ }
  
--	pmd_thp_tests(pmd_aligned, prot);
--	pud_thp_tests(pud_aligned, prot);
-+	pmd_thp_tests(&args);
-+	pud_thp_tests(&args);
+@@ -1237,7 +1237,7 @@ static int __init debug_vm_pgtable(void)
+ 	pgtable_t saved_ptep;
+ 	pgprot_t prot;
+ 	phys_addr_t paddr;
+-	unsigned long vaddr, pte_aligned, pmd_aligned;
++	unsigned long vaddr, pmd_aligned;
+ 	unsigned long pud_aligned;
+ 	spinlock_t *ptl = NULL;
+ 	int idx, ret;
+@@ -1272,10 +1272,8 @@ static int __init debug_vm_pgtable(void)
+ 	 */
+ 	paddr = __pa_symbol(&start_kernel);
  
- 	hugetlb_basic_tests(&args);
+-	pte_aligned = (paddr & PAGE_MASK) >> PAGE_SHIFT;
+ 	pmd_aligned = (paddr & PMD_MASK) >> PAGE_SHIFT;
+ 	pud_aligned = (paddr & PUD_MASK) >> PAGE_SHIFT;
+-	WARN_ON(!pfn_valid(pte_aligned));
  
+ 	pgdp = pgd_offset(mm, vaddr);
+ 	p4dp = p4d_alloc(mm, pgdp, vaddr);
+@@ -1357,9 +1355,9 @@ static int __init debug_vm_pgtable(void)
+ 	 * proper page table lock.
+ 	 */
+ 
+-	ptep = pte_offset_map_lock(mm, pmdp, vaddr, &ptl);
+-	pte_clear_tests(mm, ptep, pte_aligned, vaddr, prot);
+-	pte_advanced_tests(mm, vma, ptep, pte_aligned, vaddr, prot);
++	ptep = pte_offset_map_lock(args.mm, args.pmdp, args.vaddr, &ptl);
++	pte_clear_tests(&args);
++	pte_advanced_tests(&args);
+ 	pte_unmap_unlock(ptep, ptl);
+ 
+ 	ptl = pmd_lock(mm, pmdp);
 -- 
 2.23.0
 
