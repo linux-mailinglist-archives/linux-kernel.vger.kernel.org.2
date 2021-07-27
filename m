@@ -2,75 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693C13D6DF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 07:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276D23D6DF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 07:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbhG0FVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 01:21:21 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:60256 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234781AbhG0FVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 01:21:20 -0400
-Received: from BJHW-MAIL-EX04.internal.baidu.com (unknown [10.127.64.14])
-        by Forcepoint Email with ESMTPS id AF928336D4F1AA5F229C;
-        Tue, 27 Jul 2021 13:21:14 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-MAIL-EX04.internal.baidu.com (10.127.64.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 27 Jul 2021 13:21:14 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 27 Jul 2021 13:21:14 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <emma@anholt.net>, <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        "Cai Huoqing" <caihuoqing@baidu.com>
-Subject: [PATCH] drm/pl111: Remove unused including <linux/version.h>
-Date:   Tue, 27 Jul 2021 13:21:07 +0800
-Message-ID: <20210727052107.659-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S235236AbhG0FYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 01:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235068AbhG0FX6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 01:23:58 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B97C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 22:23:58 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id n10so14590765plf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 22:23:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m4PnQ7w4ZXIbpbMOd9mPAvOkoi0Otfkeze5HMzWqDSM=;
+        b=o00HtKxdOf6pgzaZcv7v0RCIAoZcftZntng7XdmVuSjqtZ2b8wjG0kSMM7lu+GX68P
+         2rGAKWvz/uQTh7cL6jW438A+V9TeI9mbi7wXXpHEaCUsQO3V1v4i0tPJOb0ngMv0Bs+3
+         M9LJQEIBANelTQ65JuIiInXty805GkKN7ycj23u1RGZ6a/GCtZlF8xOOaDiuOcC7b8mI
+         iengHNowfdX5rLoqaQAOYI41O5sesvJCvfaY/KTyhE0bpWP0nsq021X7Jjh657Cqg/eO
+         0GRu4vqdaCm4aOorJ9S1mFCYSrxF5VM0sNpLMnvGF5x3CVa7NcLr3JdNlz1zonTq6BAo
+         paYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=m4PnQ7w4ZXIbpbMOd9mPAvOkoi0Otfkeze5HMzWqDSM=;
+        b=WTQYkOQIBZKwfZiq3p73AL2yfBXQJdHD5yRQ88aJfuNnBVU2B1FlSzvWpImWseIBo6
+         K6EeCMWGpXa+LeZZK0pnBal+W2bu72wjl3kXkeA8FsxcmNNZFPPopQeAQVFohKtg8IaS
+         PClvMi5tHA/T2l4hWS6SAltdt0O/puf0Ef6hvXLqVai/upgkQTxQRiV64LMjsQCuD8/c
+         J1xu7ac5JOAMznMSDKcsOLe80rc6SjWzXUFqXqJtiFHN263fJo7sctUf/B8LaVMb40rP
+         oj03p9Wf+gIENivgp4/ue/inZ5bc324CTKcsaZ4GGbAejGcsn8Xrwtq8oKRcPjOErb7x
+         WxrQ==
+X-Gm-Message-State: AOAM533zdD8Vw2vFA2/nS/jLx4+1ugf+unDfajId3Yt9mf436vQYYjGb
+        F1/73LCs1KA+Of0AIxVyVGd3kA==
+X-Google-Smtp-Source: ABdhPJy/IRVuyZuRXHBDpEnTOVpnPmvmUefMG1xV1ZaD3TQ9HJ4t8TjZaCD2LotwfkdOo+epC0N74Q==
+X-Received: by 2002:a17:90b:1d84:: with SMTP id pf4mr20491531pjb.166.1627363437795;
+        Mon, 26 Jul 2021 22:23:57 -0700 (PDT)
+Received: from localhost ([122.172.201.85])
+        by smtp.gmail.com with ESMTPSA id f18sm1903790pfe.25.2021.07.26.22.23.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Jul 2021 22:23:57 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Jie Deng <jie.deng@intel.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Arnd Bergmann <arnd@arndb.de>, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH V4 0/5] virtio: Add virtio-device bindings
+Date:   Tue, 27 Jul 2021 10:53:47 +0530
+Message-Id: <cover.1627362340.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex27.internal.baidu.com (172.31.51.21) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove including <linux/version.h> that don't need it.
+Hi,
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/gpu/drm/pl111/pl111_display.c | 1 -
- drivers/gpu/drm/pl111/pl111_drv.c     | 1 -
- 2 files changed, 2 deletions(-)
+Currently the DT only provides support for following node types for virtio-mmio
+nodes:
 
-diff --git a/drivers/gpu/drm/pl111/pl111_display.c b/drivers/gpu/drm/pl111/pl111_display.c
-index b5a8859739a2..443e3b932322 100644
---- a/drivers/gpu/drm/pl111/pl111_display.c
-+++ b/drivers/gpu/drm/pl111/pl111_display.c
-@@ -11,7 +11,6 @@
- 
- #include <linux/clk.h>
- #include <linux/delay.h>
--#include <linux/version.h>
- #include <linux/dma-buf.h>
- #include <linux/of_graph.h>
- 
-diff --git a/drivers/gpu/drm/pl111/pl111_drv.c b/drivers/gpu/drm/pl111/pl111_drv.c
-index fa0a737e9dea..520301b405f1 100644
---- a/drivers/gpu/drm/pl111/pl111_drv.c
-+++ b/drivers/gpu/drm/pl111/pl111_drv.c
-@@ -44,7 +44,6 @@
- #include <linux/of_reserved_mem.h>
- #include <linux/shmem_fs.h>
- #include <linux/slab.h>
--#include <linux/version.h>
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
+        virtio_mmio@a000000 {
+                dma-coherent;
+                interrupts = <0x00 0x10 0x01>;
+                reg = <0x00 0xa000000 0x00 0x200>;
+                compatible = "virtio,mmio";
+        };
+
+Here, each virtio-mmio corresponds to a virtio-device. But there is no way for
+other users in the DT to show their dependency on virtio devices.
+
+This patchset provides that support.
+
+The first patch adds virtio-device bindings to allow for device sub-nodes to be
+present and the second patch updates the virtio core to update the of_node.
+
+Other patches add bindings for i2c and gpio devices.
+
+Tested on x86 with qemu for arm64.
+
+V3->V4:
+- The binding is named "virtio,deviceXXXXXXXX" now.
+- The virtio binding doesn't restrict the node names anymore.
+- The i2c/gpio nodes are named i2c and gpio now.
+- Dropped including gpio.yaml.
+- Updated code to match the new binding name.
+- Use "type: object" in additional-property.
+
+V2/2.1->V3:
+- Added review-tags from Arnd and Wolfram.
+- Only the 5th patch changed otherwise:
+  - Use of_device_is_compatible() instead of keeping a list of devices.
+  - Use snprintf (with BUG_ON on return value) to create the compatible string,
+    whose length is fixed using "virtio,XXXXXXXX".
+  - Use dev_of_node().
+
+V1->V2:
+- The changes (both binding and code) are made at virtio level, instead of
+  virtio-mmio. This allows the same to be used by all device types, irrespective
+  of the transport mechanism.
+
+- Dropped the reg property and used compatible in the form "virtio,<DID>".
+
+- Dropped dt-bindings/virtio/virtio_ids.h.
+
+- Add a patch to sync virtio-ids from spec, required for the last patch.
+
+--
+Viresh
+
+Viresh Kumar (5):
+  dt-bindings: virtio: Add binding for virtio devices
+  dt-bindings: i2c: Add bindings for i2c-virtio
+  dt-bindings: gpio: Add bindings for gpio-virtio
+  uapi: virtio_ids: Sync ids with specification
+  virtio: Bind virtio device to device-tree node
+
+ .../devicetree/bindings/gpio/gpio-virtio.yaml | 59 +++++++++++++++++++
+ .../devicetree/bindings/i2c/i2c-virtio.yaml   | 51 ++++++++++++++++
+ .../devicetree/bindings/virtio/mmio.yaml      |  3 +-
+ .../bindings/virtio/virtio-device.yaml        | 41 +++++++++++++
+ drivers/virtio/virtio.c                       | 57 +++++++++++++++++-
+ include/uapi/linux/virtio_ids.h               | 12 ++++
+ 6 files changed, 219 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-virtio.yaml
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-virtio.yaml
+ create mode 100644 Documentation/devicetree/bindings/virtio/virtio-device.yaml
+
 -- 
-2.25.1
+2.31.1.272.g89b43f80a514
 
