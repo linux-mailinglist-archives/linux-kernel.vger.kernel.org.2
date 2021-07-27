@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB813D742A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B103D7430
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236414AbhG0LRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:17:33 -0400
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:35581 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236212AbhG0LRb (ORCPT
+        id S236411AbhG0LVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:21:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236341AbhG0LVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:17:31 -0400
-Received: by mail-vs1-f44.google.com with SMTP id p13so6912679vsg.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:17:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L6KUNJv2uoXrIO9Z94cPI6QCbRXnZyOGViaOY2yoHjk=;
-        b=mAWlOa+Zl9akLbOaF18EijYQjEi8dMThsv26ABPeIDXQSX8qXlBxnWFF4sJMj1ib/q
-         2zreO3Q+iqS47memtGjDbYbCJsgLIuX56B16OXhZlDBK+9JD2944ts7DnXpWmZOPccfe
-         07Ub1+3kB1gq8xxOxoOoW/sZMpAI5lak8Jk8ZBi990Z5ilb0XukLQTz8bvqCvUD0/SOm
-         JrcrojbnQBuRKvpEyiCDNjgqD2FFYnU5y9CVAKa2y9IrB46cvrhdAnU6UzGSo3FRfx4v
-         EK4fxYnDZAwqTy3ya9SYnwZZeVuXO18gVp5lbub76pz8u1Rgu0JW6quSaNtE8TGU5+fN
-         OGgA==
-X-Gm-Message-State: AOAM5334Hzh3LvoOJz1mifEwL/rUja+P06dqyZcj14A8OuJE5zsrC9ao
-        LeOsW7r5NSAt58BlUbd5aLgojv45mgJQWigmtXc=
-X-Google-Smtp-Source: ABdhPJzdJc/SjKstfuXj+nsFalKzdo9cYKN9WJguuDhjSXSUMFsd/595b57U+p6vypuiCz2+dHf3+igq1LjTvgJflcc=
-X-Received: by 2002:a05:6102:2828:: with SMTP id ba8mr15836833vsb.18.1627384650666;
- Tue, 27 Jul 2021 04:17:30 -0700 (PDT)
+        Tue, 27 Jul 2021 07:21:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E417C061757;
+        Tue, 27 Jul 2021 04:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=c5R0G52grx4aFyC0dPp6RQvOsFtN62rnw8wlCJTtrUU=; b=Zj6t9eYu/863mVZ/elIlLxpwnX
+        I8GVXorpzFl1OMWcWouiw6OrvyC04EmyOzriJRA9n++lqto/wgG+YAzSoL9++fxQOeHQosDiXVv9E
+        YugytScbeH5DAyU1kPZBlopwuQiLx1Y63E7/8/u73q+fjAZ0q0wDtrAhFPnOrn3AdAQSgNsRNSjdW
+        qwDGEV0ztdnuk+e5U8I9QJpp/UlfCcsXWH65yHmLzTPcPfpE1m6YCNOXOYwSpjj54sNB4WcQAMNkm
+        HTOOh0XjudeB8dxmXQIwqtgBO/FQ3Hqshbm89IKP2TQ/yEtoKHmPqAT3qggeZoZPIE0l4zBTDt2l1
+        rkVpskrQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8L7r-00ExB2-G3; Tue, 27 Jul 2021 11:20:09 +0000
+Date:   Tue, 27 Jul 2021 12:19:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jordy Zomer <jordy@pwning.systems>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH] fs: make d_path-like functions all have unsigned size
+Message-ID: <YP/r29mss1BqctYT@casper.infradead.org>
+References: <20210727103625.74961-1-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210727093015.1225107-1-javierm@redhat.com> <CAMuHMdXXoHLO=jsjb+xtW7GDQsvu8Zuz=JmbaEXT49w5o4SJ9A@mail.gmail.com>
- <f9df82c9-1e1a-d657-d712-312f5f17cab0@redhat.com>
-In-Reply-To: <f9df82c9-1e1a-d657-d712-312f5f17cab0@redhat.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 27 Jul 2021 13:17:19 +0200
-Message-ID: <CAMuHMdVh4XgXeaLXXTmPxMuWM4C1mTDnhSmDmff6T37PwNxupg@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers/firmware: fix SYSFB depends to prevent build failures
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727103625.74961-1-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Javier,
+On Tue, Jul 27, 2021 at 12:36:25PM +0200, Greg Kroah-Hartman wrote:
+> When running static analysis tools to find where signed values could
+> potentially wrap the family of d_path() functions turn out to trigger a
+> lot of mess.  In evaluating the code, all of these usages seem safe, but
+> pointer math is involved so if a negative number is ever somehow passed
+> into these functions, memory can be traversed backwards in ways not
+> intended.
 
-On Tue, Jul 27, 2021 at 12:22 PM Javier Martinez Canillas
-<javierm@redhat.com> wrote:
-> On 7/27/21 12:03 PM, Geert Uytterhoeven wrote:
-> >> --- a/drivers/firmware/Kconfig
-> >> +++ b/drivers/firmware/Kconfig
-> >> @@ -254,7 +254,7 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
-> >>  config SYSFB
-> >>         bool
-> >>         default y
-> >> -       depends on X86 || ARM || ARM64 || RISCV || COMPILE_TEST
-> >> +       depends on X86 || EFI
-> >
-> > Thanks, much better.
-> > Still, now this worm is crawling out of the X86 can, I'm wondering
-> > why this option is so important that it has to default to y?
-> > It is not just a dependency for SYSFB_SIMPLEFB, but also causes the
-> > inclusion of drivers/firmware/sysfb.c.
-> >
->
-> It defaults to yes because drivers/firmware/sysfb.c contains the logic
-> to register a "simple-framebuffer" device (or "efi-framebuffer" if the
-> CONFIG_SYSFB_SIMPLEFB Kconfig symbol is not enabled).
->
-> Not enabling this, would mean that a platform device to match a driver
-> supporting the EFI GOP framebuffer (e.g: simple{drm,fb} or efifb) will
-> not be registered. Which will lead to not having an early framebuffer.
+> diff --git a/fs/d_path.c b/fs/d_path.c
+> index 23a53f7b5c71..7876b741a47e 100644
+> --- a/fs/d_path.c
+> +++ b/fs/d_path.c
+> @@ -182,7 +182,7 @@ static int prepend_path(const struct path *path,
+>   */
+>  char *__d_path(const struct path *path,
+>  	       const struct path *root,
+> -	       char *buf, int buflen)
+> +	       char *buf, unsigned int buflen)
+>  {
+>  	DECLARE_BUFFER(b, buf, buflen);
 
-Do all (embedded) EFI systems have a frame buffer?
+I have questions about the quality of the analysis tool you're using.
 
-Perhaps SYSFB should be selected by SYSFB_SIMPLEFB, FB_VESA,
-and FB_EFI?
+struct prepend_buffer {
+        char *buf;
+        int len;
+};
+#define DECLARE_BUFFER(__name, __buf, __len) \
+        struct prepend_buffer __name = {.buf = __buf + __len, .len = __len}
 
-> The logic used to be in drivers/firmware/efi/efi-init.c, that's built
-> in if CONFIG_EFI is enabled. We just consolidated both X86 and EFI:
->
-> https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8633ef82f101
+Why is it not flagging the assignment of an unsigned int buflen to
+a signed int len?
 
-Thanks, I'm aware of that commit, as I was just about to reply to it,
-when I saw the patch is this thread ;-)
+> +char *__d_path(const struct path *, const struct path *, char *, unsigned int);
+> +char *d_absolute_path(const struct path *, char *, unsigned int);
+> +char *d_path(const struct path *, char *, unsigned int);
+> +char *dentry_path_raw(const struct dentry *, char *, unsigned int);
+> +char *dentry_path(const struct dentry *, char *, unsigned int);
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+While you're touching these declarations, please name the 'unsigned int'
+parameter.  I don't care about the others; they are obvious, but an
+unsigned int might be flags, a length, or a small grey walrus.
