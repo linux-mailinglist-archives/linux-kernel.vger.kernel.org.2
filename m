@@ -2,119 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C143D705D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7F83D706D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235797AbhG0H1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235504AbhG0H1w (ORCPT
+        id S235826AbhG0HcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:32:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25148 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235849AbhG0HcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:27:52 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D730C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:27:51 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id a192-20020a1c7fc90000b0290253b32e8796so818119wmd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/JSQ9iAjUmvupL+O78RhX2jsG+c9d9EoH88rPq/rjwY=;
-        b=MTjJPnQ7jIjwmGh+kHSHpRA0mgzWSELrY4nPdNz+uA5HruEGW8kfcRv/3tqN+rdGNC
-         sGvKEPM6IyFrAxtdKlAgG7ixar/tGfpxS1G9OzIdrC3CH9lQFfeZ/svmv1G1XbV43byu
-         WIlCpo7A/IPHpJBXcvER+tYTS7OCf457s+97mnkWsVwHwfWDFuC3QF5bEOrejSUM4vA1
-         l/dp7bn+s+M+8Gz01JLbxJkr56GAcPY+jEJ5Ej6xSOEt6KTlKWGA8GAOM38ki15hcZLr
-         vC4zGWiv7N2TlxvbijWysir7ybaVSOgtycLYep0uGrak6FsuNTF6pQLprwFVpZ4HZ/4Z
-         257Q==
+        Tue, 27 Jul 2021 03:32:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1627371128;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E+fq4VUrC9eOaZUekVp5PLymB8SgegwfeNnhobhj/4M=;
+        b=SQTuUvbuIrhmU4UJFi/3DIDlvJyi215C9Z/QHJB8imHafV13dVaPEmKB4ZdOwVSMnb+8Ce
+        0OoeTBlbSFcS2P4D9DH3qUrVjf7ap5ct8YGfxrepodEOrkPyYXoPFN6F2p2daPPhdbCu4C
+        TIbnEmuiTgBqvCIBzyC1qOl7mOuY2H8=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-530-xROUB3tjPS64T0ddde1xXw-1; Tue, 27 Jul 2021 03:32:06 -0400
+X-MC-Unique: xROUB3tjPS64T0ddde1xXw-1
+Received: by mail-oo1-f71.google.com with SMTP id y11-20020a4ade0b0000b0290264198007e0so8004328oot.14
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:32:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/JSQ9iAjUmvupL+O78RhX2jsG+c9d9EoH88rPq/rjwY=;
-        b=bjUG1/FgvJ/zjg/6AZf2Wndih2FcqtepCY4wi70D5ijV75eo/6Nt+KzktZDQIukGfU
-         mYDzOTzC1hOWxSivnmG7Imbi0rHxUyj5/gR8Ey8iaOF0MOY0Zlghd9OAgEOyDvNGlzto
-         SaWRchy3DdFxyeaRs2/wLySUcn+zKQ8A/Td2oFtcrfouOixyaLmcdJwhBRLnWO5buxpr
-         ayV+1mw39gdMXfB6EcFrEtjuyDp2zVHlGROh0+ZrT7bnKl+4eYROVYTHVgm+nIYn0psF
-         uPnF6wssEWuX2NXBwbse/5WKSyuwwukeFl4vsPtwmdJdsYIovf4TEEs2fF9WETj6ZKqf
-         u7og==
-X-Gm-Message-State: AOAM533QySGGA1W1O07y2n1cxfPD002ealU384k5ukVE5QGuzwMH8rPU
-        VkSVsP7jljZaLFHMA2endyY=
-X-Google-Smtp-Source: ABdhPJzFxtTUEQw7/j6HB8bB8Flr+dY/G9bAiwtewrF9JoJG2lL6JpgpSO/eK2cZ5dgIna33W+hR7g==
-X-Received: by 2002:a05:600c:19cb:: with SMTP id u11mr11067316wmq.175.1627370870229;
-        Tue, 27 Jul 2021 00:27:50 -0700 (PDT)
-Received: from [192.168.178.40] (ipbcc187b7.dynamic.kabel-deutschland.de. [188.193.135.183])
-        by smtp.gmail.com with ESMTPSA id t16sm1736564wmj.16.2021.07.27.00.27.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 00:27:49 -0700 (PDT)
-Subject: Re: [PATCH 2/4] configfs: Fix writing at a non-zero offset
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Joel Becker <jlbec@evilplan.org>, linux-kernel@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Yanko Kaneti <yaneti@declera.com>,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20210723212353.896343-1-bvanassche@acm.org>
- <20210723212353.896343-3-bvanassche@acm.org>
- <7bee65ce-f5f1-a525-c72d-221b5d23cf3e@gmail.com>
- <d12f24b6-7066-f9bb-1b88-6cc23c9c45c1@acm.org>
- <4055ca70-7669-d00d-7c08-86fe75a3d377@gmail.com>
- <618b2bdc-282b-0a1d-1fc5-020cf80d7a7e@acm.org>
- <c9cb1f3b-0b3b-c571-4a51-e647f3c1e90a@gmail.com>
- <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <fec30933-46b1-1085-1af1-1fd0d2265981@gmail.com>
-Date:   Tue, 27 Jul 2021 09:27:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E+fq4VUrC9eOaZUekVp5PLymB8SgegwfeNnhobhj/4M=;
+        b=hWNnig424lbK1PMk19gcJTBMCLsBgnrrT4VgAW89iJzDTRdzXclMPg3bhS5RzTTWGZ
+         NGjvHuQvDzgnynF0pqxuFhzufet3L3moNaWcqUpmj4OzAhatZVp1Ge4FK4bSCnYG5y96
+         Yg6H9qhE6hZuGmrUItdCd2wysjZjZFavASIbcgwEFiuzrV3J9zHhCK3Uflxxl7KtNiBa
+         SPzPJm+H000ihpVbRpRTm7YNIXOJX09WR0QZizgeOCuVud9Tmg43WL21OAcObrqTSvhK
+         2mq+f9Df2Tl/uWIm7vbWPT6RcP5ZG0S7nlqoFXRUJ+3H9qEO6wbkQ7GYITg9XgHB1Wm0
+         ygPg==
+X-Gm-Message-State: AOAM530tHdwXA7b7O/6ufCcZ7j8VYVwfnjzE8ugH7+sJ0fcyOMKhY0yQ
+        EausXN2rkkH/r7Eqak2fbMjRbGFcTeD/hqDFMiExBvbaXECBZphQzHKGv2ri7qPLb6arl9zXLCP
+        a0bLB6JJYT4Zw4hGaA1lOtXluFaB9/4O9KFpcPyme
+X-Received: by 2002:a9d:4682:: with SMTP id z2mr14530592ote.189.1627371126229;
+        Tue, 27 Jul 2021 00:32:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyRrvwHsXf3kLWn0b7OVEoZo6THN2riHtQNX3753e0JDr3nxDmvZx0bViPol9uf0U0gGn1csIbXniuDEofZPlk=
+X-Received: by 2002:a9d:4682:: with SMTP id z2mr14530586ote.189.1627371126014;
+ Tue, 27 Jul 2021 00:32:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ab190c50-8c87-b215-1432-056c81bcd656@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <87sg04p315.fsf@oc8242746057.ibm.com> <edb79b68-6dd0-ced5-17a0-fda7516d3529@rasmusvillemoes.dk>
+In-Reply-To: <edb79b68-6dd0-ced5-17a0-fda7516d3529@rasmusvillemoes.dk>
+From:   Bruno Goncalves <bgoncalv@redhat.com>
+Date:   Tue, 27 Jul 2021 09:31:54 +0200
+Message-ID: <CA+QYu4pDGHj--z6yUrkhFs7oW-LUrY23i+-vKJwLPWaCO=z4vA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] init/initramfs.c: do unpacking asynchronously
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Alexander Egorenkov <egorenar@linux.ibm.com>,
+        akpm@linux-foundation.org, bp@alien8.de, corbet@lwn.net,
+        gregkh@linuxfoundation.org, jeyu@kernel.org,
+        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        ndesaulniers@google.com, torvalds@linux-foundation.org,
+        Dave Young <dyoung@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.07.21 05:17, Bart Van Assche wrote:
-> On 7/26/21 5:54 PM, Bodo Stroesser wrote:
->> The new behavior can also cause trouble with existing store handlers.
->> Example:
->> The tcmu attribute files cmd_time_out and qfull_time_out just take a
->> string containing the decimal formatted number of seconds of the
->> timeout. Each number up to now had to be transferred in a single write.
->> Assume the old value is 30 and we want to change to 19. If userspace
->> writes byte by byte, you end up calling
->> store(item, "1\0", 1) and then
->> store(item, "19\9", 2).
->> If these quick changes do not cause trouble in tcmu's scsi cmd handling,
->> then think what happens, if userspace is interrupted between the two
->> writes. Allowing to split the writes cause a loss of "atomicity".
-> 
->  From Documentation/filesystems/configfs.rst, for normal attributes:
-> "Configfs expects write(2) to store the entire buffer at once." In other
-> words, the behavior for partial writes is undocumented. My changes
-> preserve the behavior if a buffer is written in its entirety. I do not
-> agree that my changes can cause trouble for existing store handlers.
-> 
+On Mon, Jul 26, 2021 at 1:46 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+>
+> On 24/07/2021 09.46, Alexander Egorenkov wrote:
+> > Hello,
+> >
+> > since e7cb072eb988 ("init/initramfs.c: do unpacking asynchronously"), we
+> > started seeing the following problem on s390 arch regularly:
+> >
+> > [    5.039734] wait_for_initramfs() called before rootfs_initcalls
+>
+> While that message was added as part of the same patch, it's a red
+> herring: It merely means that something ends up calling usermodehelper
+> (perhaps a request_module) before the init sequence has come around to
+> rootfs_initcalls. At that point, the rootfs is (with or without my async
+> patch) entirely empty, so those usermodehelper calls have always failed
+> with -ENOENT.
+>
+> If you have CONFIG_UEVENT_HELPER=y and CONFIG_UEVENT_HELPER_PATH set to
+> a non-empty string, you can try setting the latter to the empty string.
+> But the message won't go away if it's really a request_module() and not
+> a uevent notification.
+>
+> > [    6.599433] rootfs image is not initramfs (broken padding); looks like an initrd
+> > [    6.669373] Freeing initrd memory: 24828K
+> >
+> > It is very hard to reproduce, i haven't managed to do it yet and working
+> > on it, but it occurs regularly, nearly every day once but only on a particular
+> > test machine with our nightly s390 CI test runs.
+>
+> So this looks somewhat similar to a ppc64 report
+>
+> https://lore.kernel.org/lkml/CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com/T/#u
+>
+> that ended up not being caused by e7cb072eb988, since it could also be
+> reproduced with that patch reverted. I don't know if Bruno found the
+> root cause, adding him to cc. Also cc += Dave Young who had some input
+> in that thread.
 
-I agree. I was not precise.
+Unfortunately, we haven't been able to find the root cause, but since
+June 23rd we haven't hit this panic...
 
-What I meant is, that changing the source code in such a way, that
-writing a buffer in multiple writes works in general, could cause
-trouble in case userspace uses this.
+Btw, this panic we were hitting only when testing kernels from "scsi"
+and "block" trees.
 
-But for special syscall sequences your changes still change the result
-on existing configfs files. Example:
+Bruno
+>
+> > Although the initramfs corruption is hard to reproduce,
+> > the message 'wait_for_initramfs() called before rootfs_initcalls'
+> > appears regularly on each boot at least since 2021-06-24 which we just
+> > noticed a couple of days ago.
+> >
+> > Appending 'initramfs_async=0' to the kernel command-line doesn't seem to
+> > help with the 'wait_for_initramfs' message and i can still see it.
+>
+> Yes, that's expected. I should probably send a patch to move
+> usermodehelper_enable() from do_basic_setup() to populate_rootfs(), as
+> it really doesn't make sense to have usermodehelper enabled before
+> there's any content in the file system. But as I said, the warning is
+> harmless and merely indicates there's a bunch of futile work being done
+> to call a (at that point in time) non-existing usermode program.
+>
+> > [    0.890962] wait_for_initramfs() called before rootfs_initcalls
+> ...
+> > [    1.636419] Trying to unpack rootfs image as initramfs...
+> > [    1.676907] Freeing initrd memory: 26056K
+>
+> It would be interesting if you could boot with initramfs_async=0 enough
+> times to see if you can reproduce the problem; and/or do the same with
+> e7cb072eb988 reverted.
+>
+> Thanks,
+> Rasmus
+>
 
-1) userspace program opens qfull_time_out
-2) userspace program writes "90", count=2 to set timeout to 90 sec
-3) userspace again wants to change timeout, so it writes "55", count=2
-
-Before the changes we end up with timeout being 55 seconds. After the
-change - due to data gathering - we finally have timeout 9055 seconds.
-
-BR,
-Bodo
