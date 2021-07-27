@@ -2,165 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E2C3D775D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769783D7742
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237213AbhG0Nrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:47:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237237AbhG0Nq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:46:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61C7F61AA5;
-        Tue, 27 Jul 2021 13:46:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627393615;
-        bh=F50Mhn/T+bUW+5xbXrNJuotyTutuRwySzq4bKfAHonw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n6y835zbgZUnkMEQ+vDaFjTAgosLuMc6w7HkAq0W+GPw+8IyFWfmXLxh+Fcp6eZDN
-         S6iOgBzFBitnUEqyN0EpRrcD7CtXB0RtUrOV4eFDEuKrOqtvInpr4QmPk5aGBjXpvv
-         y9f+4Hb7EkidReNrc6+Bu0Uh8c5yEalKNEYkDMS4cuupfBUiAKeGSV/sBs3l/x2UPx
-         K7jYtuHfZEqY1fGhECx5w1+7Jn7ZysoP6xV2L1y9f96ctN26L7N/hILoLTFn9xGnIw
-         GdSG9jhWwb2GQtF834IiU4BFe1CnCemgumJvFGnzQxFrOOaQO9Vt2zBJ59CXDDdg8r
-         Nv7/qz2gkF8nQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>
-Subject: [PATCH net-next v3 31/31] net: bonding: move ioctl handling to private ndo operation
-Date:   Tue, 27 Jul 2021 15:45:17 +0200
-Message-Id: <20210727134517.1384504-32-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210727134517.1384504-1-arnd@kernel.org>
-References: <20210727134517.1384504-1-arnd@kernel.org>
+        id S237307AbhG0NrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:47:02 -0400
+Received: from mail.efficios.com ([167.114.26.124]:36740 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236782AbhG0NqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:46:21 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8585933F472;
+        Tue, 27 Jul 2021 09:46:20 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id SocnfGjM-Ps8; Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 776FC33F7C1;
+        Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 776FC33F7C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1627393579;
+        bh=QekCrnP9rYFc2wAyaOh6WSKOcQvIPetOoyVWnd/Y2Q4=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=hlee9Wbze4iM5XafRrYQIDuHeEIEG7SziGm1PKHeoPdNw5sJSX1i03ULd/U0aipq/
+         LtAy+mvT/YaOSejzhxLm/WhNYlJsheT2//2tPY7PvoxOevGUOwtThgNPP6yp6HmALE
+         rLbezCpSfpViQpbbu92Je014KBokrprDIPBONqqzz5tXhpPqhBQ1Lsf4r5bqXUwH1E
+         kYLXojlTv/W3qioiavU+A106jAfJqth+0gDScJ2nA0EGi4Wk8qTlWJBwTzmzkE02J9
+         Fcn1IHGOUSMa63E5qqNkapn6abVm93MfpKbszsP1NADr+h2j43gz/uvSsr6VpyPEO4
+         L8VhACkhqRYGA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kfudg1aQlenU; Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 6425C33F7B1;
+        Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 09:46:19 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     rostedt <rostedt@goodmis.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-trace-devel <linux-trace-devel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stefan Metzmacher <metze@samba.org>,
+        io-uring <io-uring@vger.kernel.org>, paulmck <paulmck@kernel.org>
+Message-ID: <1899212311.7583.1627393579305.JavaMail.zimbra@efficios.com>
+In-Reply-To: <YP/xjnGx+CRYr5RR@hirez.programming.kicks-ass.net>
+References: <20210722223320.53900ddc@rorschach.local.home> <715282075.6481.1627314401745.JavaMail.zimbra@efficios.com> <20210726125604.55bb6655@oasis.local.home> <682927571.6760.1627321158652.JavaMail.zimbra@efficios.com> <20210726144903.7736b9ad@oasis.local.home> <YP/xjnGx+CRYr5RR@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH] tracepoints: Update static_call before tp_funcs when
+ adding a tracepoint
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4059 (ZimbraWebClient - FF90 (Linux)/8.8.15_GA_4059)
+Thread-Topic: tracepoints: Update static_call before tp_funcs when adding a tracepoint
+Thread-Index: KLxfoKgSNLUnAf2BhIiig6gz8CNLlQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+----- On Jul 27, 2021, at 7:44 AM, Peter Zijlstra peterz@infradead.org wrote:
 
-All other user triggered operations are gone from ndo_ioctl, so move
-the SIOCBOND family into a custom operation as well.
+> On Mon, Jul 26, 2021 at 02:49:03PM -0400, Steven Rostedt wrote:
+>> OK. I see the issue you are saying. And this came from my assumption
+>> that the tracepoint code did a synchronization when unregistering the
+>> last callback. But of course it wont because that would make a lot of
+>> back to back synchronizations of a large number of tracepoints being
+>> unregistered at once.
+>> 
+>> And doing it for all 0->1 or 1->0 or even a 1->0->1 can be costly.
+>> 
+>> One way to handle this is when going from 1->0, set off a worker that
+>> will do the synchronization asynchronously, and if a 0->1 comes in,
+>> have that block until the synchronization is complete. This should
+>> work, and not have too much of an overhead.
+>> 
+>> If one 1->0 starts the synchronization, and one or more 1->0
+>> transitions happen, it will be recorded where the worker will do
+>> another synchronization, to make sure all 1->0 have went through a full
+>> synchronization before a 0->1 can happen.
+>> 
+>> If a 0->1 comes in while a synchronization is happening, it will note
+>> the current "number" for the synchronizations (if another one is
+>> queued, it will wait for one more), before it can begin. As locks will
+>> be held while waiting for synchronizations to finish, we don't need to
+>> worry about another 1->0 coming in while a 0->1 is waiting.
+> 
+> Wouldn't get_state_synchronize_rcu() and cond_synchronize_rcu() get you
+> what you need?
 
-The .ndo_ioctl() helper is no longer called by the dev_ioctl.c code now,
-but there are still a few definitions in obsolete wireless drivers as well
-as the appletalk and ieee802154 layers to call SIOCSIFADDR/SIOCGIFADDR
-helpers from inside the kernel.
+Indeed, snapshotting the state and conditionally waiting for a grace period
+if none happened since the snapshot appears to be the intent here. Using
+get_state+cond_sync should allow us to do this without any additional worker
+thread.
 
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-Cc: Veaceslav Falico <vfalico@gmail.com>
-Cc: Andy Gospodarek <andy@greyhouse.net>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- Documentation/networking/netdevices.rst | 11 +++++++++++
- drivers/net/bonding/bond_main.c         |  2 +-
- include/linux/netdevice.h               | 13 ++++++++++---
- net/core/dev_ioctl.c                    |  8 ++++----
- 4 files changed, 26 insertions(+), 8 deletions(-)
+Thanks,
 
-diff --git a/Documentation/networking/netdevices.rst b/Documentation/networking/netdevices.rst
-index 3c42b0b0be93..9e4cccb90b87 100644
---- a/Documentation/networking/netdevices.rst
-+++ b/Documentation/networking/netdevices.rst
-@@ -222,6 +222,17 @@ ndo_do_ioctl:
- 	Synchronization: rtnl_lock() semaphore.
- 	Context: process
- 
-+        This is only called by network subsystems internally,
-+        not by user space calling ioctl as it was in before
-+        linux-5.14.
-+
-+ndo_siocbond:
-+        Synchronization: rtnl_lock() semaphore.
-+        Context: process
-+
-+        Used by the bonding driver for the SIOCBOND family of
-+        ioctl commands.
-+
- ndo_siocwandev:
- 	Synchronization: rtnl_lock() semaphore.
- 	Context: process
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 23769e937c28..bec8ceaff98f 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -4988,7 +4988,7 @@ static const struct net_device_ops bond_netdev_ops = {
- 	.ndo_select_queue	= bond_select_queue,
- 	.ndo_get_stats64	= bond_get_stats,
- 	.ndo_eth_ioctl		= bond_eth_ioctl,
--	.ndo_do_ioctl		= bond_do_ioctl,
-+	.ndo_siocbond		= bond_do_ioctl,
- 	.ndo_siocdevprivate	= bond_siocdevprivate,
- 	.ndo_change_rx_flags	= bond_change_rx_flags,
- 	.ndo_set_rx_mode	= bond_set_rx_mode,
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index cc11382f76a3..226bbee06730 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1086,9 +1086,14 @@ struct netdev_net_notifier {
-  *	Test if Media Access Control address is valid for the device.
-  *
-  * int (*ndo_do_ioctl)(struct net_device *dev, struct ifreq *ifr, int cmd);
-- *	Called when a user requests an ioctl which can't be handled by
-- *	the generic interface code. If not defined ioctls return
-- *	not supported error code.
-+ *	Old-style ioctl entry point. This is used internally by the
-+ *	appletalk and ieee802154 subsystems but is no longer called by
-+ *	the device ioctl handler.
-+ *
-+ * int (*ndo_siocbond)(struct net_device *dev, struct ifreq *ifr, int cmd);
-+ *	Used by the bonding driver for its device specific ioctls:
-+ *	SIOCBONDENSLAVE, SIOCBONDRELEASE, SIOCBONDSETHWADDR, SIOCBONDCHANGEACTIVE,
-+ *	SIOCBONDSLAVEINFOQUERY, and SIOCBONDINFOQUERY
-  *
-  * * int (*ndo_eth_ioctl)(struct net_device *dev, struct ifreq *ifr, int cmd);
-  *	Called for ethernet specific ioctls: SIOCGMIIPHY, SIOCGMIIREG,
-@@ -1367,6 +1372,8 @@ struct net_device_ops {
- 					        struct ifreq *ifr, int cmd);
- 	int			(*ndo_eth_ioctl)(struct net_device *dev,
- 						 struct ifreq *ifr, int cmd);
-+	int			(*ndo_siocbond)(struct net_device *dev,
-+						struct ifreq *ifr, int cmd);
- 	int			(*ndo_siocwandev)(struct net_device *dev,
- 						  struct if_settings *ifs);
- 	int			(*ndo_siocdevprivate)(struct net_device *dev,
-diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
-index 3166f196b296..4035bce06bf8 100644
---- a/net/core/dev_ioctl.c
-+++ b/net/core/dev_ioctl.c
-@@ -260,14 +260,14 @@ static int dev_eth_ioctl(struct net_device *dev,
- 	return err;
- }
- 
--static int dev_do_ioctl(struct net_device *dev,
-+static int dev_siocbond(struct net_device *dev,
- 			struct ifreq *ifr, unsigned int cmd)
- {
- 	const struct net_device_ops *ops = dev->netdev_ops;
- 
--	if (ops->ndo_do_ioctl) {
-+	if (ops->ndo_siocbond) {
- 		if (netif_device_present(dev))
--			return ops->ndo_do_ioctl(dev, ifr, cmd);
-+			return ops->ndo_siocbond(dev, ifr, cmd);
- 		else
- 			return -ENODEV;
- 	}
-@@ -407,7 +407,7 @@ static int dev_ifsioc(struct net *net, struct ifreq *ifr, void __user *data,
- 		    cmd == SIOCBONDSLAVEINFOQUERY ||
- 		    cmd == SIOCBONDINFOQUERY ||
- 		    cmd == SIOCBONDCHANGEACTIVE) {
--			err = dev_do_ioctl(dev, ifr, cmd);
-+			err = dev_siocbond(dev, ifr, cmd);
- 		} else
- 			err = -EINVAL;
- 
+Mathieu
+
 -- 
-2.29.2
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
