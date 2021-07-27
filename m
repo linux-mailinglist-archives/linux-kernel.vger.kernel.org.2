@@ -2,75 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112A73D734F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB823D734E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236340AbhG0KdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:33:24 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3500 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbhG0KdR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:33:17 -0400
-Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GYt9z3sY4z6L9mJ;
-        Tue, 27 Jul 2021 18:21:27 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 12:33:16 +0200
-Received: from [10.47.80.220] (10.47.80.220) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 27 Jul
- 2021 11:33:15 +0100
-Subject: Re: [PATCH] perf pmu: Fix alias matching
-To:     "Jin, Yao" <yao.jin@linux.intel.com>, <peterz@infradead.org>,
-        <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <kjain@linux.ibm.com>,
-        <alexander.shishkin@linux.intel.com>, <irogers@google.com>
-CC:     <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1626793819-79090-1-git-send-email-john.garry@huawei.com>
- <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <df5e5893-08ba-1fb5-b92a-921b32ed3b2f@huawei.com>
-Date:   Tue, 27 Jul 2021 11:32:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S236275AbhG0KdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:33:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:37352 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231745AbhG0KdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:33:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 079541FB;
+        Tue, 27 Jul 2021 03:33:08 -0700 (PDT)
+Received: from [10.57.36.146] (unknown [10.57.36.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50E263F70D;
+        Tue, 27 Jul 2021 03:33:06 -0700 (PDT)
+Subject: Re: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to
+ system pm callbacks
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        srimuc <srimuc@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
+ <955a3034-f7e7-f8f9-4abd-b65efbfbb404@arm.com>
+Message-ID: <c23a16d8-e39c-253f-5631-cffa94a1d532@arm.com>
+Date:   Tue, 27 Jul 2021 11:33:04 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-In-Reply-To: <0b57fa9b-fba4-8143-bef6-b7c4f2987635@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.80.220]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <955a3034-f7e7-f8f9-4abd-b65efbfbb404@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2021 04:07, Jin, Yao wrote:
+On 2021-07-27 11:25, Robin Murphy wrote:
+> On 2021-07-27 10:33, Sai Prakash Ranjan wrote:
+>> Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
+>> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
+>> such cases, we would need to drop the XO clock vote in unprepare call and
+>> this unprepare callback for XO is in RPMh (Resource Power 
+>> Manager-Hardened)
+>> clock driver which controls RPMh managed clock resources for new QTI SoCs
+>> and is a blocking call.
 >>
+>> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
+>> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
+>> operations like map and unmap can be in atomic context and are in fast
+>> path, add this prepare and unprepare call to drop the XO vote only for
+>> system pm callbacks since it is not a fast path and we expect the system
+>> to enter deep sleep states with system pm as opposed to runtime pm.
+>>
+>> This is a similar sequence of clock requests (prepare,enable and
+>> disable,unprepare) in arm-smmu probe and remove.
+> 
+> Nope. We call arm_smmu_rpm_get(), which may resume the device, from 
+> atomic contexts. clk_prepare() may sleep. This doesn't work.
 
-Hi Arnaldo,
+Urgh, or maybe I skimmed the commit message too lightly *and* managed to 
+totally misread the patch, sorry :(
 
-Can you kindly consider picking up this patch?
+I'll wake up some more and try again later...
 
-Thanks
+Robin.
 
->> Fixes: c47a5599eda3 ("perf tools: Fix pattern matching for same 
->> substring in different PMU type")
->> Signed-off-by: John Garry <john.garry@huawei.com>
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
 >> ---
->> @Jin Yao, please test for your scenarios
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 20 ++++++++++++++++++--
+>>   1 file changed, 18 insertions(+), 2 deletions(-)
 >>
-> 
-> For x86, the form uncore_pmu_{digits} or the uncore_pmu itself are 
-> supported. We don't have more complex case such as the name in the form 
-> aaa_bbbX_cccY. So my test didn't cover that complex form.
-> 
-> For my test, your patch works, thanks! :)
-
-Can we take this as a tested-by?
-
-
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index d3c6f54110a5..9561ba4c5d39 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -2277,6 +2277,13 @@ static int __maybe_unused 
+>> arm_smmu_runtime_suspend(struct device *dev)
+>>   static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
+>>   {
+>> +    int ret;
+>> +    struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+>> +
+>> +    ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>>       if (pm_runtime_suspended(dev))
+>>           return 0;
+>> @@ -2285,10 +2292,19 @@ static int __maybe_unused 
+>> arm_smmu_pm_resume(struct device *dev)
+>>   static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
+>>   {
+>> +    int ret = 0;
+>> +    struct arm_smmu_device *smmu = dev_get_drvdata(dev);
+>> +
+>>       if (pm_runtime_suspended(dev))
+>> -        return 0;
+>> +        goto clk_unprepare;
+>> -    return arm_smmu_runtime_suspend(dev);
+>> +    ret = arm_smmu_runtime_suspend(dev);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +clk_unprepare:
+>> +    clk_bulk_unprepare(smmu->num_clks, smmu->clks);
+>> +    return ret;
+>>   }
+>>   static const struct dev_pm_ops arm_smmu_pm_ops = {
+>>
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
