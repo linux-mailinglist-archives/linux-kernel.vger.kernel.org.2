@@ -2,53 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743273D798C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE533D7992
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237099AbhG0PRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:17:38 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:57594 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbhG0PRg (ORCPT
+        id S232710AbhG0PTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:19:34 -0400
+Received: from mail.netline.ch ([148.251.143.180]:38575 "EHLO
+        netline-mail3.netline.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232600AbhG0PTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:17:36 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1m8OpR-004OC3-9R; Tue, 27 Jul 2021 15:17:09 +0000
-Date:   Tue, 27 Jul 2021 15:17:09 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jordy Zomer <jordy@pwning.systems>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH] fs: make d_path-like functions all have unsigned size
-Message-ID: <YQAjdSPCwrnoc+YO@zeniv-ca.linux.org.uk>
-References: <20210727103625.74961-1-gregkh@linuxfoundation.org>
- <YQAdK0z5jFdw6cLz@zeniv-ca.linux.org.uk>
- <YQAhQ2dYWCmnFMwM@casper.infradead.org>
+        Tue, 27 Jul 2021 11:19:33 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by netline-mail3.netline.ch (Postfix) with ESMTP id 6C5C220201D;
+        Tue, 27 Jul 2021 17:19:31 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at netline-mail3.netline.ch
+Received: from netline-mail3.netline.ch ([127.0.0.1])
+        by localhost (netline-mail3.netline.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id BF3nS1YJscyH; Tue, 27 Jul 2021 17:19:31 +0200 (CEST)
+Received: from thor (24.99.2.85.dynamic.wline.res.cust.swisscom.ch [85.2.99.24])
+        by netline-mail3.netline.ch (Postfix) with ESMTPA id 4135A20201A;
+        Tue, 27 Jul 2021 17:19:30 +0200 (CEST)
+Received: from localhost ([::1])
+        by thor with esmtp (Exim 4.94.2)
+        (envelope-from <michel@daenzer.net>)
+        id 1m8Orh-000qpp-E5; Tue, 27 Jul 2021 17:19:29 +0200
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Matthew Brost <matthew.brost@intel.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jack Zhang <Jack.Zhang1@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Luben Tuikov <luben.tuikov@amd.com>, Roy Sun <Roy.Sun@amd.com>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+References: <20210726233854.2453899-1-robdclark@gmail.com>
+ <28ca4167-4a65-0ccc-36be-5fb017f6f49d@daenzer.net>
+ <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel@daenzer.net>
+Subject: Re: [RFC 0/4] dma-fence: Deadline awareness
+Message-ID: <99984703-c3ca-6aae-5888-5997d7046112@daenzer.net>
+Date:   Tue, 27 Jul 2021 17:19:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQAhQ2dYWCmnFMwM@casper.infradead.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CAF6AEGuhQ2=DSDaGGVwBz5O+FoZEjpgoVJOcFecpd--a9yDY1w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:07:47PM +0100, Matthew Wilcox wrote:
-
-> umm ... what if someone passes in -ENOMEM as buflen?  Not saying we
-> have such a path right now, but I could imagine it happening.
+On 2021-07-27 5:12 p.m., Rob Clark wrote:
+> On Tue, Jul 27, 2021 at 7:50 AM Michel Dänzer <michel@daenzer.net> wrote:
+>>
+>> On 2021-07-27 1:38 a.m., Rob Clark wrote:
+>>> From: Rob Clark <robdclark@chromium.org>
+>>>
+>>> Based on discussion from a previous series[1] to add a "boost" mechanism
+>>> when, for example, vblank deadlines are missed.  Instead of a boost
+>>> callback, this approach adds a way to set a deadline on the fence, by
+>>> which the waiter would like to see the fence signalled.
+>>>
+>>> I've not yet had a chance to re-work the drm/msm part of this, but
+>>> wanted to send this out as an RFC in case I don't have a chance to
+>>> finish the drm/msm part this week.
+>>>
+>>> Original description:
+>>>
+>>> In some cases, like double-buffered rendering, missing vblanks can
+>>> trick the GPU into running at a lower frequence, when really we
+>>> want to be running at a higher frequency to not miss the vblanks
+>>> in the first place.
+>>>
+>>> This is partially inspired by a trick i915 does, but implemented
+>>> via dma-fence for a couple of reasons:
+>>>
+>>> 1) To continue to be able to use the atomic helpers
+>>> 2) To support cases where display and gpu are different drivers
+>>>
+>>> [1] https://patchwork.freedesktop.org/series/90331/
+>>
+>> Unfortunately, none of these approaches will have the full intended effect once Wayland compositors start waiting for client buffers to become idle before using them for an output frame (to prevent output frames from getting delayed by client work). See https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1880 (shameless plug :) for a proof of concept of this for mutter. The boost will only affect the compositor's own GPU work, not the client work (which means no effect at all for fullscreen apps where the compositor can scan out the client buffers directly).
+>>
 > 
-> 	if (unlikely(buflen < 0))
-> 		return ERR_PTR(buflen);
-> 	if (unlikely(buflen > 0x8000)) {
-> 		buf += buflen - 0x8000;
-> 		buflen = 0x8000;
-> 	}
+> I guess you mean "no effect at all *except* for fullscreen..."?
 
-Not really.  You don't want ERR_PTR() of random negative numbers to start
-flying around...
+I meant what I wrote: The compositor will wait for the next buffer to become idle, so there's no boost from this mechanism for the client drawing to that buffer. And since the compositor does no drawing of its own in this case, there's no boost from that either.
+
+
+> I'd perhaps recommend that wayland compositors, in cases where only a
+> single layer is changing, not try to be clever and just push the
+> update down to the kernel.
+
+Even just for the fullscreen direct scanout case, that would require some kind of atomic KMS API extension to allow queuing multiple page flips for the same CRTC.
+
+For other cases, this would also require a mechanism to cancel a pending atomic commit, for when another surface update comes in before the compositor's deadline, which affects the previously single updating surface as well.
+
+
+-- 
+Earthling Michel Dänzer               |               https://redhat.com
+Libre software enthusiast             |             Mesa and X developer
