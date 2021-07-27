@@ -2,148 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581DF3D7AAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 046E43D7AB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 18:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229494AbhG0QNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 12:13:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhG0QNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 12:13:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D253461B5F;
-        Tue, 27 Jul 2021 16:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627402410;
-        bh=cSvv7h1KI4rEs+b/XRGdLLHF0kCjqbmt0F4Q4/KmUFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xv8/cedoNSRYzYwwcD6vrJcRh3eIMNt6B53Peuj8Gwi0QgaQ6tAEW78TP+cnpeHcY
-         0yVj5udDCtA9i9ywyVsTIw4JkuljUGSwzmxkwlDZ23Mmi+l0coIWNE93O7FOVkOK+k
-         fIj/uoRdVYi40WTN0E1zZgzvAQA+Kk9KkhDMwqiI=
-Date:   Tue, 27 Jul 2021 18:13:28 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC][PATCH v2 02/12] diglim: Basic definitions
-Message-ID: <YQAwqGOEkmDzZ9MJ@kroah.com>
-References: <20210726163700.2092768-1-roberto.sassu@huawei.com>
- <20210726163700.2092768-3-roberto.sassu@huawei.com>
- <YQAblc+UuMq68jxu@kroah.com>
- <e87ba6f452254067a5eb6d58937d65d1@huawei.com>
- <YQApyqP7J/8GpItS@kroah.com>
- <4746947088404edaa31594fb095a6e46@huawei.com>
+        id S229687AbhG0QOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 12:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229532AbhG0QOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 12:14:23 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64880C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:14:23 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
+        by laurent.telenet-ops.be with bizsmtp
+        id aGEM2500X1fSPfK01GEMf1; Tue, 27 Jul 2021 18:14:21 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8Pin-001S9J-AB; Tue, 27 Jul 2021 18:14:21 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8Pim-00FrHS-Ri; Tue, 27 Jul 2021 18:14:20 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] MAINTAINERS: Add DT Bindings for Auxiliary Display Drivers
+Date:   Tue, 27 Jul 2021 18:14:17 +0200
+Message-Id: <21077068bf45bc0f21fe946fc352d46a698b4942.1627402410.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4746947088404edaa31594fb095a6e46@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 04:09:37PM +0000, Roberto Sassu wrote:
-> > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > Sent: Tuesday, July 27, 2021 5:44 PM
-> > On Tue, Jul 27, 2021 at 03:35:16PM +0000, Roberto Sassu wrote:
-> > > > From: Greg KH [mailto:gregkh@linuxfoundation.org]
-> > > > Sent: Tuesday, July 27, 2021 4:44 PM
-> > > > On Mon, Jul 26, 2021 at 06:36:50PM +0200, Roberto Sassu wrote:
-> > > > > --- /dev/null
-> > > > > +++ b/include/uapi/linux/diglim.h
-> > > > > @@ -0,0 +1,51 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > > +/*
-> > > > > + * Copyright (C) 2017-2021 Huawei Technologies Duesseldorf GmbH
-> > > > > + *
-> > > > > + * Author: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > + *
-> > > > > + * DIGLIM definitions exported to user space, useful for generating
-> > digest
-> > > > > + * lists.
-> > > > > + */
-> > > > > +
-> > > > > +#ifndef _UAPI__LINUX_DIGLIM_H
-> > > > > +#define _UAPI__LINUX_DIGLIM_H
-> > > > > +
-> > > > > +#include <linux/types.h>
-> > > > > +#include <linux/hash_info.h>
-> > > > > +
-> > > > > +enum compact_types { COMPACT_KEY, COMPACT_PARSER,
-> > > > COMPACT_FILE,
-> > > > > +		     COMPACT_METADATA, COMPACT_DIGEST_LIST,
-> > > > COMPACT__LAST };
-> > > > > +
-> > > > > +enum compact_modifiers { COMPACT_MOD_IMMUTABLE,
-> > > > COMPACT_MOD__LAST };
-> > > > > +
-> > > > > +enum compact_actions { COMPACT_ACTION_IMA_MEASURED,
-> > > > > +		       COMPACT_ACTION_IMA_APPRAISED,
-> > > > > +		       COMPACT_ACTION_IMA_APPRAISED_DIGSIG,
-> > > > > +		       COMPACT_ACTION__LAST };
-> > > > > +
-> > > > > +enum ops { DIGEST_LIST_ADD, DIGEST_LIST_DEL,
-> > DIGEST_LIST_OP__LAST };
-> > > > > +
-> > > > > +/**
-> > > > > + * struct compact_list_hdr - header of the following concatenated
-> > digests
-> > > > > + * @version: version of the digest list
-> > > > > + * @_reserved: field reserved for future use
-> > > > > + * @type: type of digest list among enum compact_types
-> > > > > + * @modifiers: additional attributes among (1 << enum
-> > compact_modifiers)
-> > > >
-> > > > I do not understand this description, what does it mean?
-> > >
-> > > Hi Greg
-> > >
-> > > yes, it is not very clear.
-> > >
-> > > @modifiers is a bitmask where each bit corresponds to a different
-> > > attribute. enum compact_modifiers defines which bit position is
-> > > assigned to each attribute.
-> > 
-> > Watch out with endian issues and bitmasks...  Anyway, please document
-> > this.
-> > 
-> > >
-> > > > > + * @algo: digest algorithm
-> > > >
-> > > > Is this also a #define or an enum?  Where is the list of them?
-> > >
-> > > @algo is an enum defined in include/uapi/linux/hash_info.h.
-> > 
-> > Please say that.
-> > 
-> > > > > + * @count: number of digests
-> > > > > + * @datalen: length of concatenated digests
-> > > >
-> > > > Where does this count and length come into play as nothing else is in
-> > > > this structure?
-> > >
-> > > Each digest list must begin with this structure. From it, the parser knows
-> > > how much data it should expect afterwards. After the data, there could be
-> > > another or more blocks of this structure and following data.
-> > 
-> > Ah, that was not obvious at all :)
-> > 
-> > Why do you not have a __u8 data[]; type field as the last one here for
-> > that memory so you can access it easier?
-> 
-> After the digest list is parsed, I'm accessing the digest with the offset from
-> the beginning of the digest list. If the offset was relative to the header, it could
-> have been useful. I could add the new field, but I'm afraid of the incompatibility
-> with existing tools that we have.
+The "AUXILIARY DISPLAY DRIVERS" section lacks the related DT bindings.
+Add them.
 
-What tools?  This isn't a feature in the kernel yet, so we have no
-legacy to support, right?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks,
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7fb20d4dfd4a7e60..9baee2fdf76486a4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3094,6 +3094,7 @@ F:	lib/*audit.c
+ AUXILIARY DISPLAY DRIVERS
+ M:	Miguel Ojeda <ojeda@kernel.org>
+ S:	Maintained
++F:	Documentation/devicetree/bindings/auxdisplay/
+ F:	drivers/auxdisplay/
+ F:	include/linux/cfag12864b.h
+ 
+-- 
+2.25.1
 
-greg k-h
