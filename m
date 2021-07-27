@@ -2,96 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CF03D724C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084A93D7250
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236098AbhG0Jou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235993AbhG0Jot (ORCPT
+        id S236108AbhG0Jrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:47:37 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:41227 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236074AbhG0Jrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:44:49 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD1FC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:44:48 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id l18so6745610wrv.5
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=rAnUOD60UWbYI3PmAoUnnbt/WY/WxPSncO2uhBInP20=;
-        b=MZRiCufJhh1N8KhiaHW7Ht8Drxsx3tA7EqoSepn7KkLv3lojr6apA6NnX71IxeQs/t
-         fEBd26GgwxktQvSriNHO+pMeDh6LCfL3dD5DRDGmA5+bWXf4So/pDBaf5IRU7YktvC6v
-         CbrkiCk5ijUKscAQx8R7+JZ5SFeSGp+BIDleC6rGoEBkgdPZr7UpR8HSuXx6qWMrHj0f
-         wqVOwP+agpfB/QvYyYaX+K/OxCGo3ONan4hD3omyaGaaeYvBf0VtYNJEP3XbEM/9b7HX
-         AGLZj20wbfVhZrQ7JIKQ0aqsfiVTFPv2J074brlpqjBPVQiH7KNM9IP48vLgL3oC2AUP
-         cVGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=rAnUOD60UWbYI3PmAoUnnbt/WY/WxPSncO2uhBInP20=;
-        b=SES9Bf78PFLzGQ+EsCVJ34QMMFioeosEoQQbHtb3jpcvn3iLKKSIan1jB5S25jObK/
-         B00vjnOSGCLI0W34HSew3TFWB8Mr0glO/xyJ6spYH6aWDWXHc5WgwyadTNJoptljuRz/
-         hMpOSnmxTm54jb5VUKrxANgEhiU+0wBIG6KS2Iz2mKmQmeVGtysC3PM7GWHYA6FAjHoO
-         jZIvC/RK5ejA1TOF6HfIrlEsMPRZrzibDduDIOd6aqy5VybVE36U1ehmTZLyPJjMgqU5
-         g8rxpfsJDHKDbLZvl0tRSYKTCvD634yZs9TVCe3opqePb4VWjcdFDaSFEZmbKo48t57+
-         mFkg==
-X-Gm-Message-State: AOAM533YVo8g/+F0HJvCjvlODUcsXW8AEGkoQWzFs9VzOC+ZHXTFH8wP
-        +Ipcm4N1FpUbhYmCfI+6IdxprTuLZzx8AviHK15oBQ==
-X-Google-Smtp-Source: ABdhPJzN/C3ZrHODi2ae41yCoLA4ZB/o8q27bAUtuZ6+kLPyH58svkgLARZmGnt1TiD6cue7cS3f1Q==
-X-Received: by 2002:adf:c3c4:: with SMTP id d4mr13704607wrg.27.1627379087138;
-        Tue, 27 Jul 2021 02:44:47 -0700 (PDT)
-Received: from localhost.localdomain ([2001:b07:2e5:a482:16dd:a9ff:fe7e:d57f])
-        by smtp.gmail.com with ESMTPSA id z11sm2610328wru.65.2021.07.27.02.44.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 02:44:46 -0700 (PDT)
-From:   Andrea Merello <andrea.merello@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andrea Merello <andrea.merello@gmail.com>,
-        Andrea Merello <andrea.merello@iit.it>
-Subject: [PATCH v1 1/1] bitmap.h: add const modifier to bitmap_next_[set/clear]_region() argument
-Date:   Tue, 27 Jul 2021 11:44:41 +0200
-Message-Id: <20210727094441.9815-1-andrea.merello@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 27 Jul 2021 05:47:32 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 5B661320079B;
+        Tue, 27 Jul 2021 05:47:30 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 27 Jul 2021 05:47:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-id:content-type:date:from
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm3; bh=gY4UTeqi38qVevjiESPFwl2OdxktiSNqxtqK3cUHOio=; b=jg4CBx/S
+        v3Z6dyIz7AY3SOHbLxOViTe+aFIbPs9XVnS8SgmAHpv92YZU1jpz7wzIZkImvpvT
+        Cus/z9nBY2RzPBKRwUOnUCpC2MkkI+IO31VDZ40N0CESjtMBwfFO5CAnSPHWqiK/
+        LtS6jWVWtQ8rRF0/E01El5jfT9Jc04jMi/7Sg6tDsWoOsv6uDhCzpUMpGs1x4enO
+        Fbr+cf3z2BZj6sArbsDzciN0szSqS3Ld+AvpORmoMDcjtW1uTonpr5T2Iznuq1BC
+        7eKRoF21ddpqzDZmVEmXRhYU7Kq81p6l/bH6BQkKYz5YuR2DW4AE0EwbITPfI2Dw
+        BumtkbbMp2PeXQ==
+X-ME-Sender: <xms:MNb_YEv1qWq8CNlMBF5EtMQplVHMoRZUMQU92xZNNKgCSnCCkZnKpQ>
+    <xme:MNb_YBfv2I9cU5CEW_D0bCRM776zOKeqjVNdswzxC9fSLnvicc-MnUXGCBc02zDFr
+    AycMvh-NZZsEWVtwuo>
+X-ME-Received: <xmr:MNb_YPzOwHjyZnCV0zxhis-RG7T-Shc-SPFAvqD4DySw54CbOo3pMmpSDvdg-Se3l4Fl0eh_kDfGEYIIrNfHyh1IcKYQd2zscGU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvufgjkfhfgggtsehmtderredttdejnecuhfhrohhmpefhihhnnhcuvfhh
+    rghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeefffejiefgheevheefvefhteeggfeijeeiveeihfffffdugfefkeelfffhgfeh
+    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfth
+    hhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:MNb_YHP1QUG41yPCkYUfVoLQVFsz6bN8RoJsjwNIw5zAEhxNlPR-9w>
+    <xmx:MNb_YE-Y4kfXMQPoBiE4uA6I6txfq72C_O-I8-b0vMJ1XxKGh772BQ>
+    <xmx:MNb_YPVvDJyjMAqWFSJbmWQHTW66qRB7GDy2j0dJVFLZyDRKd_ioDw>
+    <xmx:Mtb_YBNtyCAMcv8ITE2dzfuHa73O3JOgAzsgXYQxZe3x71Pa5qzuOw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Jul 2021 05:47:26 -0400 (EDT)
+Date:   Tue, 27 Jul 2021 19:47:30 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        netdev@vger.kernel.org, linux-m68k@lists.linux-m68k.org
+Subject: Re: [PATCH 2/5] nubus: Make struct nubus_driver::remove return
+ void
+In-Reply-To: <20210727080840.3550927-3-u.kleine-koenig@pengutronix.de>
+Message-ID: <59bc4bf-7e8e-24be-5a7a-d165e6b73c32@linux-m68k.org>
+References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de> <20210727080840.3550927-3-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; BOUNDARY="-1463811774-1321263043-1627379041=:27"
+Content-ID: <5c95884-21f4-a5b0-c5ad-12dc7ae6ffc8@nippy.intranet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those two functions don't modify the bitmap, so their bitmap argument
-should be const. This patch add this.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Andrea Merello <andrea.merello@iit.it>
----
- include/linux/bitmap.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+---1463811774-1321263043-1627379041=:27
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <4427256-e4b9-b8ee-c183-114bc2c5c61e@nippy.intranet>
 
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index a36cfcec4e77..ea4a8f1a2545 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -458,7 +458,7 @@ static inline void bitmap_replace(unsigned long *dst,
- 		__bitmap_replace(dst, old, new, mask, nbits);
- }
- 
--static inline void bitmap_next_clear_region(unsigned long *bitmap,
-+static inline void bitmap_next_clear_region(const unsigned long *bitmap,
- 					    unsigned int *rs, unsigned int *re,
- 					    unsigned int end)
- {
-@@ -466,7 +466,7 @@ static inline void bitmap_next_clear_region(unsigned long *bitmap,
- 	*re = find_next_bit(bitmap, end, *rs + 1);
- }
- 
--static inline void bitmap_next_set_region(unsigned long *bitmap,
-+static inline void bitmap_next_set_region(const unsigned long *bitmap,
- 					  unsigned int *rs, unsigned int *re,
- 					  unsigned int end)
- {
--- 
-2.17.1
+On Tue, 27 Jul 2021, Uwe Kleine-K=C3=B6nig wrote:
 
+> The nubus core ignores the return value of the remove callback (in
+> nubus_device_remove()) and all implementers return 0 anyway.
+>=20
+> So make it impossible for future drivers to return an unused error code
+> by changing the remove prototype to return void.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+
+Acked-by: Finn Thain <fthain@linux-m68k.org>
+
+> ---
+>  drivers/net/ethernet/8390/mac8390.c     | 3 +--
+>  drivers/net/ethernet/natsemi/macsonic.c | 4 +---
+>  include/linux/nubus.h                   | 2 +-
+>  3 files changed, 3 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/8390/mac8390.c b/drivers/net/ethernet/8=
+390/mac8390.c
+> index 9aac7119d382..91b04abfd687 100644
+> --- a/drivers/net/ethernet/8390/mac8390.c
+> +++ b/drivers/net/ethernet/8390/mac8390.c
+> @@ -428,13 +428,12 @@ static int mac8390_device_probe(struct nubus_board =
+*board)
+>  =09return err;
+>  }
+> =20
+> -static int mac8390_device_remove(struct nubus_board *board)
+> +static void mac8390_device_remove(struct nubus_board *board)
+>  {
+>  =09struct net_device *dev =3D nubus_get_drvdata(board);
+> =20
+>  =09unregister_netdev(dev);
+>  =09free_netdev(dev);
+> -=09return 0;
+>  }
+> =20
+>  static struct nubus_driver mac8390_driver =3D {
+> diff --git a/drivers/net/ethernet/natsemi/macsonic.c b/drivers/net/ethern=
+et/natsemi/macsonic.c
+> index 2289e1fe3741..8709d700e15a 100644
+> --- a/drivers/net/ethernet/natsemi/macsonic.c
+> +++ b/drivers/net/ethernet/natsemi/macsonic.c
+> @@ -603,7 +603,7 @@ static int mac_sonic_nubus_probe(struct nubus_board *=
+board)
+>  =09return err;
+>  }
+> =20
+> -static int mac_sonic_nubus_remove(struct nubus_board *board)
+> +static void mac_sonic_nubus_remove(struct nubus_board *board)
+>  {
+>  =09struct net_device *ndev =3D nubus_get_drvdata(board);
+>  =09struct sonic_local *lp =3D netdev_priv(ndev);
+> @@ -613,8 +613,6 @@ static int mac_sonic_nubus_remove(struct nubus_board =
+*board)
+>  =09=09=09  SIZEOF_SONIC_DESC * SONIC_BUS_SCALE(lp->dma_bitmode),
+>  =09=09=09  lp->descriptors, lp->descriptors_laddr);
+>  =09free_netdev(ndev);
+> -
+> -=09return 0;
+>  }
+> =20
+>  static struct nubus_driver mac_sonic_nubus_driver =3D {
+> diff --git a/include/linux/nubus.h b/include/linux/nubus.h
+> index eba50b057f6f..392fc6c53e96 100644
+> --- a/include/linux/nubus.h
+> +++ b/include/linux/nubus.h
+> @@ -86,7 +86,7 @@ extern struct list_head nubus_func_rsrcs;
+>  struct nubus_driver {
+>  =09struct device_driver driver;
+>  =09int (*probe)(struct nubus_board *board);
+> -=09int (*remove)(struct nubus_board *board);
+> +=09void (*remove)(struct nubus_board *board);
+>  };
+> =20
+>  extern struct bus_type nubus_bus_type;
+>=20
+---1463811774-1321263043-1627379041=:27--
