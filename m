@@ -2,84 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE50D3D7380
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824CA3D7389
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbhG0KnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:43:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39121 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236241AbhG0KnP (ORCPT
+        id S236218AbhG0Kog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:44:36 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:34109 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236186AbhG0Koa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:43:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627382595;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LK/Cw9dtZ2TMRxaIdRMYKSYbv2+yKBDFm/qg6Jb2IIs=;
-        b=W4uYqbIMMQM5OzS5gKle1RFbHbujjuxladaMmdFqFUHEvKnJWaWdGbiqG1bwwj2luJa0mS
-        4uTe1eLh2jtcaiWrM3gALD9bwS9IhcBRftlIlFu3uuTYPpdwbQD58MQWrIQwjW6n/58XsD
-        3TPaoxFtMXsuy12PPQ1lv8/2FcBAsn8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-juWnEyWsPUWdMamXg_wqJA-1; Tue, 27 Jul 2021 06:43:14 -0400
-X-MC-Unique: juWnEyWsPUWdMamXg_wqJA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 921A0107ACF5;
-        Tue, 27 Jul 2021 10:43:12 +0000 (UTC)
-Received: from T590 (ovpn-12-42.pek2.redhat.com [10.72.12.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0762C10023B0;
-        Tue, 27 Jul 2021 10:43:05 +0000 (UTC)
-Date:   Tue, 27 Jul 2021 18:43:04 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, osandov@fb.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-mq-sched: Fix blk_mq_sched_alloc_tags() error
- handling
-Message-ID: <YP/jOJZTFM2llXyC@T590>
-References: <1627378373-148090-1-git-send-email-john.garry@huawei.com>
- <YP/atlyuacbHF/sp@T590>
- <e0c47dfe-4774-358d-6e1d-22fa98865d57@huawei.com>
+        Tue, 27 Jul 2021 06:44:30 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 155F3580ACA;
+        Tue, 27 Jul 2021 06:44:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 27 Jul 2021 06:44:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
+        message-id:subject:from:to:cc:date:in-reply-to:references
+        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
+        hzwP7HziDq3+lShGm+nfs91KpNl05pJCwIUruh9Ju94=; b=pWgsuCA7q3GmjXTE
+        FDvgePMxG6kyzXKuN+2QNxiqRQwcA+9aEK+ZNYltcBaKS76VT46ARnMl9VHAO9Ll
+        F5Ynu687blGcolvBxiCfWeZ2WhIgcYXEhyL841wPrxg+jlo29GkD//srH4HoxM9U
+        8MIEuySboa5mCMksbFCEa/U+g98Fp4xbY7pPpSpl4qK7YO/8+Ffjb9oExIiGdCzg
+        48KKFZifSvzrrwzEeZRfEqLH4Tq4BPJoqHpVHaAfLuKPnvZX7qRBLpZBKrmUizrS
+        Up8bAmRqybLfIkQAW+mdDe9O/Z2zbg234M30kBKZyuFy+gGYPEssZyeJZQEYfuaJ
+        RprK6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=hzwP7HziDq3+lShGm+nfs91KpNl05pJCwIUruh9Ju
+        94=; b=KKl3fOo2us0gNYxEpts5gM3+aXz8Y7LShysbJuNQIoTuTKgC05Yu+8nFK
+        PrptjfyxleFjpR2o/4HJFTEUndQpWVIgBS/4fdIzhTYOH3AOUZNrzIq8VMER1pKN
+        koVXShuqjcPwieOnkKE2vhv5+MfgXVP2V4VGTgOU3uNFTbugsISeTzadbpFCroYo
+        BsbT+QMcY38hLoB8xtjbKSGJmxeCQusA73tYWV7DVrQm/G58r+l20Lv1PeERgUGy
+        gjdet35hew3YR9FgpKs/vKk7CWN8MZN84RJ/R0iFMdW9R53xidGk3R4Q5K/gThne
+        aOYNlT2kQzDNnaAITKbxj2OIleKWw==
+X-ME-Sender: <xms:i-P_YH1IG-2kbvfdHrW6CQZ6L_QyrZvjK_DSb_QFOadVFCzyKPmHHw>
+    <xme:i-P_YGFH8PhzPS9u1PGabCK4gE4LLgzWpTf02lF6aJ_DcrS5Ry1_vZ6mhtU3-UJIJ
+    r3pP04cDvdq>
+X-ME-Received: <xmr:i-P_YH7iO8FyTbe7bqIXO6RBdsXw7lx7w1iBEBjR-qNIiW6I3fTBgH5bHMCt9VSMLq1lBfOt4W2s6IhqlwiES8TJoCxvajA079bD7avtNDfEgnyawlhThcVvc6EphQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeejgddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkuffhvfffjghftggfggfgsehtjeertddtreejnecuhfhrohhmpefkrghnucfm
+    vghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnhepfe
+    efteetvdeguddvveefveeftedtffduudehueeihfeuvefgveehffeludeggfejnecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnhesth
+    hhvghmrgifrdhnvght
+X-ME-Proxy: <xmx:i-P_YM0PCGnoqBoSt-OFaz7Jb4DKEhZt0YsvfwWR2mSYyK7gpjfG2A>
+    <xmx:i-P_YKGs4IkMQkOs0zRRMXYlS_V_pw8cm5j2birwO5tLnO_5uSc0YA>
+    <xmx:i-P_YN_CFNPjSBhWeG8vE1is8gIuBYU8P5TRo8fq3v6MHre-PRm0Xw>
+    <xmx:juP_YF9Lbe0rwNFtXOg7D5qPaiSIVveImQNuYwKbLWAq0fZY1bhmOQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Jul 2021 06:44:22 -0400 (EDT)
+Message-ID: <2d4b407cad4270952a85951455cb722a4c435c69.camel@themaw.net>
+Subject: Re: [PATCH v8 0/5] kernfs: proposed locking and concurrency
+ improvement
+From:   Ian Kent <raven@themaw.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Eric Sandeen <sandeen@sandeen.net>,
+        Fox Chen <foxhlchen@gmail.com>,
+        Brice Goglin <brice.goglin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Carlos Maiolino <cmaiolino@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Tue, 27 Jul 2021 18:44:18 +0800
+In-Reply-To: <YP/ZwYrtx+h/a/Ez@kroah.com>
+References: <162642752894.63632.5596341704463755308.stgit@web.messagingengine.com>
+         <YP/ZwYrtx+h/a/Ez@kroah.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0c47dfe-4774-358d-6e1d-22fa98865d57@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:30:00AM +0100, John Garry wrote:
-> On 27/07/2021 11:06, Ming Lei wrote:
-> > On Tue, Jul 27, 2021 at 05:32:53PM +0800, John Garry wrote:
-> > > If the blk_mq_sched_alloc_tags() -> blk_mq_alloc_rqs() call fails, then we
-> > > call blk_mq_sched_free_tags() -> blk_mq_free_rqs().
-> > > 
-> > > It is incorrect to do so, as any rqs would have already been freed in the
-> > > blk_mq_alloc_rqs() call.
-> > > 
-> > > Fix by calling blk_mq_free_rq_map() only directly.
-> > > 
-> > > Fixes: 6917ff0b5bd41 ("blk-mq-sched: refactor scheduler initialization")
-> > > Signed-off-by: John Garry <john.garry@huawei.com>
+On Tue, 2021-07-27 at 12:02 +0200, Greg Kroah-Hartman wrote:
+> On Fri, Jul 16, 2021 at 05:28:13PM +0800, Ian Kent wrote:
+> > There have been a few instances of contention on the kernfs_mutex
+> > during
+> > path walks, a case on very large IBM systems seen by myself, a
+> > report by
+> > Brice Goglin and followed up by Fox Chen, and I've since seen a
+> > couple
+> > of other reports by CoreOS users.
 > > 
-> > Not sure it is one fix, because blk_mq_free_rqs() does nothing when
-> > ->static_rqs[] isn't filled, so 'Fixes' tag isn't needed, IMO.
+> > The common thread is a large number of kernfs path walks leading to
+> > slowness of path walks due to kernfs_mutex contention.
+> > 
+> > The problem being that changes to the VFS over some time have
+> > increased
+> > it's concurrency capabilities to an extent that kernfs's use of a
+> > mutex
+> > is no longer appropriate. There's also an issue of walks for non-
+> > existent
+> > paths causing contention if there are quite a few of them which is
+> > a less
+> > common problem.
+> > 
+> > This patch series is relatively straight forward.
+> > 
+> > All it does is add the ability to take advantage of VFS negative
+> > dentry
+> > caching to avoid needless dentry alloc/free cycles for lookups of
+> > paths
+> > that don't exit and change the kernfs_mutex to a read/write
+> > semaphore.
+> > 
+> > The patch that tried to stay in VFS rcu-walk mode during path walks
+> > has
+> > been dropped for two reasons. First, it doesn't actually give very
+> > much
+> > improvement and, second, if there's a place where mistakes could go
+> > unnoticed it would be in that path. This makes the patch series
+> > simpler
+> > to review and reduces the likelihood of problems going unnoticed
+> > and
+> > popping up later.
+> > 
+> > Changes since v7:
+> > - remove extra tab in helper kernfs_dir_changed.
+> > - fix thinko adding an unnecessary kernfs_inc_rev() in
+> > kernfs_rename_ns().
 > 
-> I actually experimented by returning an error from blk_mq_sched_alloc_tags()
-> -> blk_mq_alloc_rqs() at the function entry point, and it crashes:
-> 
-> [8.118419]
-> ==================================================================
-> [8.125677] BUG: KASAN: null-ptr-deref in blk_mq_free_rqs+0x170/0x380
+> Thanks for sticking with this, I've applied this to my testing branch
+> and let's see how 0-day does with it :)
 
-OK, looks it is caused by un-initialized &tags->page_list, then it is fine
-to mark it as fixes.
+That's great news Greg, and thanks for putting up with me too, ;)
 
--- 
-Ming
+Ian
+
 
