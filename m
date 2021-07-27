@@ -2,117 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C693D7356
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934C73D735A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:35:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbhG0Kfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:35:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:33228 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236104AbhG0Kfg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:35:36 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1627382136; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=jcDIGTlNdb13VAIbuMs/ke9zWyHAfziW4NuYUouZlG8=;
- b=IGX25s6sVzIMEULPimzOfpVYPUUk0SmxEmkhg0FaRYHVaJhmJG3u2ns08UPIlmOHwHZZli3j
- b+3lF4W86vVfEL7cajz0pyHlyCuaW6HzHvWRnHs5QqBgoVL4ueukCm6HcMVCaDjCpzIlJ0hE
- +hHn4wbbSEaMpW8tn1S6H1SulHI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60ffe162290ea35ee6f2a440 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Jul 2021 10:35:14
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E84AC4323A; Tue, 27 Jul 2021 10:35:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A5083C433D3;
-        Tue, 27 Jul 2021 10:35:12 +0000 (UTC)
+        id S236345AbhG0Kfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:35:39 -0400
+Received: from muru.com ([72.249.23.125]:55896 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236104AbhG0Kfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:35:38 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 1506B80F0;
+        Tue, 27 Jul 2021 10:35:54 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-serial@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: serial: 8250: Update for standard overrun-throttle property
+Date:   Tue, 27 Jul 2021 13:35:32 +0300
+Message-Id: <20210727103533.51547-1-tony@atomide.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 27 Jul 2021 16:05:12 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        srimuc <srimuc@codeaurora.org>, linux-arm-msm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to
- system pm callbacks
-In-Reply-To: <c23a16d8-e39c-253f-5631-cffa94a1d532@arm.com>
-References: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
- <955a3034-f7e7-f8f9-4abd-b65efbfbb404@arm.com>
- <c23a16d8-e39c-253f-5631-cffa94a1d532@arm.com>
-Message-ID: <ee409973019e7412d221001955045cea@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+In some cases we want to specify overrun-throttle like other 8250 drivers
+are doing.
 
-On 2021-07-27 16:03, Robin Murphy wrote:
-> On 2021-07-27 11:25, Robin Murphy wrote:
->> On 2021-07-27 10:33, Sai Prakash Ranjan wrote:
->>> Some clocks for SMMU can have parent as XO such as 
->>> gpu_cc_hub_cx_int_clk
->>> of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states 
->>> in
->>> such cases, we would need to drop the XO clock vote in unprepare call 
->>> and
->>> this unprepare callback for XO is in RPMh (Resource Power 
->>> Manager-Hardened)
->>> clock driver which controls RPMh managed clock resources for new QTI 
->>> SoCs
->>> and is a blocking call.
->>> 
->>> Given we cannot have a sleeping calls such as clk_bulk_prepare() and
->>> clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
->>> operations like map and unmap can be in atomic context and are in 
->>> fast
->>> path, add this prepare and unprepare call to drop the XO vote only 
->>> for
->>> system pm callbacks since it is not a fast path and we expect the 
->>> system
->>> to enter deep sleep states with system pm as opposed to runtime pm.
->>> 
->>> This is a similar sequence of clock requests (prepare,enable and
->>> disable,unprepare) in arm-smmu probe and remove.
->> 
->> Nope. We call arm_smmu_rpm_get(), which may resume the device, from 
->> atomic contexts. clk_prepare() may sleep. This doesn't work.
-> 
-> Urgh, or maybe I skimmed the commit message too lightly *and* managed
-> to totally misread the patch, sorry :(
-> 
-> I'll wake up some more and try again later...
-> 
+Cc: devicetree@vger.kernel.org
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Vignesh Raghavendra <vigneshr@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ Documentation/devicetree/bindings/serial/8250_omap.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-No worries, we took our time looking through that many times before 
-posting this :)
-
-Thanks,
-Sai
-
+diff --git a/Documentation/devicetree/bindings/serial/8250_omap.yaml b/Documentation/devicetree/bindings/serial/8250_omap.yaml
+--- a/Documentation/devicetree/bindings/serial/8250_omap.yaml
++++ b/Documentation/devicetree/bindings/serial/8250_omap.yaml
+@@ -79,6 +79,7 @@ properties:
+   power-domains: true
+   clock-frequency: true
+   current-speed: true
++  overrun-throttle-ms: true
+ 
+ required:
+   - compatible
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.32.0
