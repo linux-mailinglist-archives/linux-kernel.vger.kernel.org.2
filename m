@@ -2,236 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343E23D717D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2468C3D7185
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236001AbhG0Itn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:49:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235923AbhG0Itm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:49:42 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9F9C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:49:42 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id ga41so20731031ejc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=N+3DXi642GqDpFpnUX/m+M4EKuorPVrRr3DgsMu4Ntg=;
-        b=zO4GMwJRTkMW2jglCDdbxfnzAB/CrPx0IoFjJMiB24fWa+9U2ROM9Ci98K/bzSTGbH
-         UUCtkJxF6DQ+SQoI70a8MCIlqDu23T2lB0FmmeCnAnSu4+IqmWrDvz+4ejxdqxYs7F5x
-         hVFOqRApPGg0qZnWfw7/ak8TDRXDsQapP3vWtkRpLmRe5DKmOhIlnjlBIcgr0WMEhjiE
-         +y3xtWd1Z5KMY9J3oZT97xPATmRqfapypw1MKerXlnNuRh0OewDetEz1zlB6ppQpDzHQ
-         t5GGm++LPSyk5198qzqMTVOmk+RFilobjB0uw890RzhmB1MgNKhBC3O/UJ/ZsGZIp4jM
-         E7tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=N+3DXi642GqDpFpnUX/m+M4EKuorPVrRr3DgsMu4Ntg=;
-        b=qxzS6LTEWx24fnfohrheSkPK00WFPFzN/NjMCVYu6m4FV2jKzLrzMc2Hb7eJcvFUkR
-         rDSIQ0BECPd1ak8NCFsgKnwxOJx3FJGDUvu01UNfRS4K0F1SCZZAO+iV0zi5wBFOyeEF
-         Aa+ivnSxWEv8x6gLUHbzHTUMYoAnacGUQQGIQ4ksCOyUPKgbgzpWY+c7yWvR9Po3NPEn
-         tJG127Gx2HcLMRrce9nOKedtkfd1ZTkZAu++GB3iUM3FCdeIlFNZESPL/Jkg7FUK/xYr
-         EbCt36rWsGEsmaKnjRez1PV3FnHOFskNwghQFkVWH/iOEFIYgRbFUsZU6Qa9zl2B4qGb
-         pGyg==
-X-Gm-Message-State: AOAM533aAIGB1QpVPPOY/qYyshZgYnCLobutUN2UN2KYWH5s6uQCPW2t
-        tFfvKq4lLRP3235SC/lXCxH+k30geP41IGVcd7inMw==
-X-Google-Smtp-Source: ABdhPJwssx92s9INRUabScriKMwv9Gz0vKkIANQpCkrFdkyEovXwJeMv8zkNy5vhIbHii8huFIA/k8fwTToewlVxODI=
-X-Received: by 2002:a17:906:4b46:: with SMTP id j6mr21051156ejv.247.1627375780645;
- Tue, 27 Jul 2021 01:49:40 -0700 (PDT)
+        id S235897AbhG0Ity (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:49:54 -0400
+Received: from muru.com ([72.249.23.125]:55666 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236037AbhG0Itv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 04:49:51 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 013C880F0;
+        Tue, 27 Jul 2021 08:50:08 +0000 (UTC)
+Date:   Tue, 27 Jul 2021 11:49:49 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc:     bcousson@baylibre.com, robh+dt@kernel.org,
+        linux-omap@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hns@goldelico.com
+Subject: Re: [PATCH 0/3] ARM: dts / ti-sysc: Enable McASP on OMAP4
+Message-ID: <YP/IrcaHwEoxD8iV@atomide.com>
+References: <20210717120925.24505-1-peter.ujfalusi@gmail.com>
 MIME-Version: 1.0
-References: <20210726153831.696295003@linuxfoundation.org>
-In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 27 Jul 2021 14:19:29 +0530
-Message-ID: <CA+G9fYt6eZR_3uFmG+LoqAV6wFc7TZiShdXGwordRiN9XT6ufQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 000/108] 5.4.136-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210717120925.24505-1-peter.ujfalusi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 at 21:25, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.136 release.
-> There are 108 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.136-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+* Peter Ujfalusi <peter.ujfalusi@gmail.com> [210717 15:07]:
+> Hi,
+> 
+> This series is the dts / ti-sysc part of the McASP DIT and OMAP4 support:
+> https://lore.kernel.org/alsa-devel/20210705194249.2385-1-peter.ujfalusi@gmail.com/
+> 
+> The ASoC part has been picked up and it is in linux-next.
+> 
+> I have followed the advice from Tony and added a quirk via ti-sysc to disable the
+> non working SIDLE mode for McASP.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks applying all three.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Regards,
 
-## Build
-* kernel: 5.4.136-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 77cfe86f32232bb4b8fd35352d6db630e5ef4985
-* git describe: v5.4.135-109-g77cfe86f3223
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-35-109-g77cfe86f3223
-
-## No regressions (compared to v5.4.134-72-gdcc7e2dee7e9)
-
-## No fixes (compared to v5.4.134-72-gdcc7e2dee7e9)
-
-## Test result summary
- total: 77330, pass: 62228, fail: 1011, skip: 12507, xfail: 1584,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Tony
