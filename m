@@ -2,95 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743A03D7292
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C253D7294
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbhG0KGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:06:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41638 "EHLO mail.kernel.org"
+        id S236160AbhG0KGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:06:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:36910 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236069AbhG0KGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:06:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE4BB61406;
-        Tue, 27 Jul 2021 10:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627380399;
-        bh=TYq2xP0tZs2/5voU8QnKjbi73hhy9xhuqGHqxUE1wcg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PA4uxFMjUnu46PGnDXpt/fz+1DHgEp2UtnE85WcLrY5JxYFt5LJUEOxVuMTrpbfdz
-         Tgm+RTdiqpT6kfmlr7ux1HX2n1aDP1XH4tB0sNYet4GU2bcUyj5pbAyup7kIKkLvfc
-         oKfHiemeUFPr4UaVaKEW+RvrEEX3clAU1VZdkux3zaOsuPFwc6T4i3GpN0lCk3hz71
-         nidbqCd0YGfjI+AXAogNBPDjTsukEU/BE28ih4lVlRv8cz8eNLEiXMIRgdaXgnfbrN
-         v5tIysEfDp6TPMaXsFRYgh139tx7GOlxk2irzt2hfaWOQSO7SAhPaMrLNI/93g6C9S
-         AL8sjWGgdZEJg==
-Date:   Tue, 27 Jul 2021 12:06:32 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: remove section HISILICON STAGING DRIVERS
- FOR HIKEY 960/970
-Message-ID: <20210727120632.2f963b4c@coco.lan>
-In-Reply-To: <20210727093154.553-1-lukas.bulwahn@gmail.com>
-References: <20210727093154.553-1-lukas.bulwahn@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S236105AbhG0KGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:06:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F15D81FB;
+        Tue, 27 Jul 2021 03:06:52 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 586893F73D;
+        Tue, 27 Jul 2021 03:06:51 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 11:06:45 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Veronika kabatova <vkabatov@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH] ACPI: Add memory semantics to acpi_os_map_memory()
+Message-ID: <20210727100645.GA7108@lpieralisi>
+References: <20210726100026.12538-1-lorenzo.pieralisi@arm.com>
+ <CAMj1kXEyjBxu_7mV2DNU=Maqx6JqTTWp3ZuHkJz3js0qRsJSHw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXEyjBxu_7mV2DNU=Maqx6JqTTWp3ZuHkJz3js0qRsJSHw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 27 Jul 2021 11:31:54 +0200
-Lukas Bulwahn <lukas.bulwahn@gmail.com> escreveu:
+On Mon, Jul 26, 2021 at 05:55:33PM +0200, Ard Biesheuvel wrote:
+> On Mon, 26 Jul 2021 at 12:00, Lorenzo Pieralisi
+> <lorenzo.pieralisi@arm.com> wrote:
+> >
+> > The memory attributes attached to memory regions depend on architecture
+> > specific mappings.
+> >
+> > For some memory regions, the attributes specified by firmware (eg
+> > uncached) are not sufficient to determine how a memory region should be
+> > mapped by an OS (for instance a region that is define as uncached in
+> > firmware can be mapped as Normal or Device memory on arm64) and
+> > therefore the OS must be given control on how to map the region to match
+> > the expected mapping behaviour (eg if a mapping is requested with memory
+> > semantics, it must allow unaligned accesses).
+> >
+> > Rework acpi_os_map_memory() and acpi_os_ioremap() back-end to split
+> > them into two separate code paths:
+> >
+> > acpi_os_memmap() -> memory semantics
+> > acpi_os_ioremap() -> MMIO semantics
+> >
+> > The split allows the architectural implementation back-ends to detect
+> > the default memory attributes required by the mapping in question
+> > (ie the mapping API defines the semantics memory vs MMIO) and map the
+> > memory accordingly.
+> >
+> > Link: https://lore.kernel.org/linux-arm-kernel/31ffe8fc-f5ee-2858-26c5-0fd8bdd68702@arm.com
+> > Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Hanjun Guo <guohanjun@huawei.com>
+> > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> 
+> For the patch in general
+> 
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-> Commit 9bd9e0de1cf5 ("mfd: hi6421-spmi-pmic: move driver from staging")
-> moves the last driver out of ./drivers/staging/hikey9xx/ and removes that
-> directory, but missed to adjust the HISILICON STAGING DRIVERS FOR HIKEY
-> 960/970 section in MAINTAINERS.
-> 
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
-> 
->   warning: no file matches    F:    drivers/staging/hikey9xx/
-> 
-> As the directory ./drivers/staging/hikey9xx/ is gone, remove the section
-> HISILICON STAGING DRIVERS FOR HIKEY 960/970 in MAINTAINERS as well.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20210726
-> 
-> Mauro, please ack.
-> 
-> Greg, please pick this patch into your staging-next tree.
+Thanks !
 
-Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+[...]
 
+> > -void __iomem __ref
+> > -*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> > +static void __iomem __ref
+> > +*__acpi_os_map_iomem(acpi_physical_address phys, acpi_size size, bool memory)
+> >  {
+> >         struct acpi_ioremap *map;
+> >         void __iomem *virt;
+> > @@ -353,7 +356,7 @@ void __iomem __ref
+> >
+> >         pg_off = round_down(phys, PAGE_SIZE);
+> >         pg_sz = round_up(phys + size, PAGE_SIZE) - pg_off;
+> > -       virt = acpi_map(phys, size);
+> > +       virt = acpi_map(phys, size, memory);
+> >         if (!virt) {
+> >                 mutex_unlock(&acpi_ioremap_lock);
+> >                 kfree(map);
+> > @@ -372,11 +375,17 @@ void __iomem __ref
+> >         mutex_unlock(&acpi_ioremap_lock);
+> >         return map->virt + (phys - map->phys);
+> >  }
+> > +
+> > +void __iomem __ref
+> > +*acpi_os_map_iomem(acpi_physical_address phys, acpi_size size)
+> 
+> I am aware that this just duplicated the prototype above, but I think
+> this should be
+> 
+> void __iomem *__ref
+> 
+> given that the __ref comes after the * in the prototype below.
+
+Yes I just moved/duplicated the prototype above but I believe this is
+consistent with include/acpi/acpi_io.h unless I have not understood
+what you meant ?
+
+It is probably worth changing it in both places to
+
+void __iomem *__ref
+
+?
+
+I can do that with an additional patch.
 
 > 
->  MAINTAINERS | 5 -----
->  1 file changed, 5 deletions(-)
+> > +{
+> > +       return __acpi_os_map_iomem(phys, size, false);
+> > +}
+> >  EXPORT_SYMBOL_GPL(acpi_os_map_iomem);
+> >
+> >  void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
+> >  {
+> > -       return (void *)acpi_os_map_iomem(phys, size);
+> > +       return (void *)__acpi_os_map_iomem(phys, size, true);
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0f548b498eb0..2eb730101689 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8453,11 +8453,6 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
->  F:	drivers/mfd/hi6421-spmi-pmic.c
->  
-> -HISILICON STAGING DRIVERS FOR HIKEY 960/970
-> -M:	Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> -S:	Maintained
-> -F:	drivers/staging/hikey9xx/
-> -
->  HISILICON TRUE RANDOM NUMBER GENERATOR V2 SUPPORT
->  M:	Zaibo Xu <xuzaibo@huawei.com>
->  S:	Maintained
+> I think this should be (__force void *) to shut up sparse address
+> space warnings.
 
-
+Yes I can add that attribute in an additional patch and rebase this one
+on top of it.
 
 Thanks,
-Mauro
+Lorenzo
+
+> 
+> >  }
+> >  EXPORT_SYMBOL_GPL(acpi_os_map_memory);
+> >
+> > diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+> > index 027faa8883aa..a0212e67d6f4 100644
+> > --- a/include/acpi/acpi_io.h
+> > +++ b/include/acpi/acpi_io.h
+> > @@ -14,6 +14,14 @@ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
+> >  }
+> >  #endif
+> >
+> > +#ifndef acpi_os_memmap
+> > +static inline void __iomem *acpi_os_memmap(acpi_physical_address phys,
+> > +                                           acpi_size size)
+> > +{
+> > +       return ioremap_cache(phys, size);
+> > +}
+> > +#endif
+> > +
+> >  extern bool acpi_permanent_mmap;
+> >
+> >  void __iomem __ref
+> > --
+> > 2.31.0
+> >
