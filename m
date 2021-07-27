@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC9D3D7C8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392DE3D7C98
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 19:51:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhG0RuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 13:50:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbhG0Rt7 (ORCPT
+        id S229915AbhG0Rvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 13:51:37 -0400
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:34305 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhG0Rvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 13:49:59 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB36C061757;
-        Tue, 27 Jul 2021 10:49:58 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id t21so16503787plr.13;
-        Tue, 27 Jul 2021 10:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/90bD0CMSvquUz1/IZXhJDqyvPntbvBjimJMpEbNOaw=;
-        b=GlTDNt5aNhmra8mJW5QnAHdANHHkLYUymxn8z54gn6b8nYnnI0Si90QyxitElQy7Y6
-         +z9uaJtNARJ4FMWZ+occbbdny8N3m0cOW4tDCQ9124mB7eNxHoVVmZFGCk8GYyY1B9hc
-         OppVwsE9RLVYN1Tc1uV9EEwOFo6+6ZvOVB5SvZJrwB4Ou2hyLVFyg9YAh+KC6/gSgtYY
-         RxjBqYZrdz+KCfm1gCcc/6Zu2bVcmW7sqcNkLfuwTQzVkkocVJHPdFTlTktqKfCTOjZ3
-         gPXyR6SUh66tNAPNf06O1rcQpTeNRV88pUyuK0M8Zs1rPQbDSTPnn68qQDTIFdBDgEGp
-         LlUQ==
+        Tue, 27 Jul 2021 13:51:36 -0400
+Received: by mail-wm1-f49.google.com with SMTP id l4-20020a05600c1d04b02902506f89ad2dso2389220wms.1;
+        Tue, 27 Jul 2021 10:51:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/90bD0CMSvquUz1/IZXhJDqyvPntbvBjimJMpEbNOaw=;
-        b=Wizp0X023GFFD+r+7tSn/44Z8h3lvg0D+ImRAvoXL8nTOZofuVzUUQrY8+2IBI2OWC
-         J8yRTwU/5iAhBHz1vcp0HaKql9oaZJp4kd0BIIhQmkCNwwEwOTTFBdwugAukQERjPy5+
-         CTMyA15DPgii2YAuNoLOoHZjBVU1D6YqE6u9FGvAx8WkeisA8jcCRPeFwD6u138jTOyd
-         Sh4rThNeohyAagCNg6vx6nwk+kufAXmTbg0yWWzkVdHOGt2CaENNsIJElBYrQQmZst3D
-         0o/9AWBbHpD5qx2OBbABnJUJEdZTI1j8lXVaGWwuEZfPMBi9vT64p2BpJlImFjNYu9Zc
-         xm5g==
-X-Gm-Message-State: AOAM531zyWS1B96NqLpj7DFM4nHbbt9tLyZh/A8AGfo6FScBNYvF1FPj
-        aK9hu87ASHbd+iZZ4uSYCd7yGED+k3Q=
-X-Google-Smtp-Source: ABdhPJyUbOVoiRz9nAEXYv4mhtYwmlzIYfHabpSDHpn/W1tlxmcGU5e6J06hv+ykkClOfUhIGIRdww==
-X-Received: by 2002:a17:902:ed95:b029:ee:aa46:547a with SMTP id e21-20020a170902ed95b02900eeaa46547amr19712443plj.27.1627408197386;
-        Tue, 27 Jul 2021 10:49:57 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id p3sm4674708pgi.20.2021.07.27.10.49.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Jul 2021 10:49:56 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/59] 4.9.277-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210727061343.233942938@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <d74b066c-883a-85e2-2cd1-762a010bea8a@gmail.com>
-Date:   Tue, 27 Jul 2021 10:49:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LwYScmPim6tE/MDgrbNvahN0e/2bkCVHKdvM2oDO2hU=;
+        b=MtrhHyH1EXKfrApBmzExmtJ81J/XnuL7XiVCbcmvQKkxG+hXLKeZCmEfNXGbpWjY62
+         rX13lbYIsJ/+Vp4+lD3YnCoytkiz5++QgdO+fDn6ZGS1+kIuDLeXuiNl/IKOyg9N95uf
+         SVFif8+8w+kXY8FGi+ldJGBX/CFY38eq6OxTKW+1PkVtzYqhLO5WD+qx+VMcMLC4wiif
+         AH9neasCeL8+g+0ajfeGUCBXy5aAgSJeREzCcpD3EWxxdevIgqSwRMVBP0dSP4FQn7oH
+         fYJWzZn5H/nH92iR/BIOKOCREACoR7ect04U+4QEKzLd4XWDXYhkT++jEwMxLnIyB0c7
+         3aDQ==
+X-Gm-Message-State: AOAM531zNZGoisjifNMTs2SH0cvfMU2nLGYTxVgKFB3dppdtTMB3ZUGo
+        Bdxv3EC3fS5ttfEZIFz7YP4=
+X-Google-Smtp-Source: ABdhPJy+SrPjL/YKIxWhTGnciEmNbBdAW4RbjazaOxiclSAaBLaCvL9GcuSp5o4NuE7F0px1tOP/ug==
+X-Received: by 2002:a05:600c:4308:: with SMTP id p8mr5485552wme.45.1627408294068;
+        Tue, 27 Jul 2021 10:51:34 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id q22sm3675211wmc.16.2021.07.27.10.51.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 10:51:33 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 17:51:31 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Praveen Kumar <kumarpraveen@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        viremana@linux.microsoft.com, sunilmut@microsoft.com,
+        nunodasneves@linux.microsoft.com
+Subject: Re: [PATCH v3] hyperv: root partition faults writing to VP ASSIST
+ MSR PAGE
+Message-ID: <20210727175131.364fxm667marijdk@liuwe-devbox-debian-v2>
+References: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210727061343.233942938@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727104044.28078-1-kumarpraveen@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/21 11:14 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.277 release.
-> There are 59 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 29 Jul 2021 06:13:32 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.277-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Tue, Jul 27, 2021 at 04:10:44PM +0530, Praveen Kumar wrote:
+[...]
+>  
+> @@ -170,9 +185,21 @@ static int hv_cpu_die(unsigned int cpu)
+>  
+>  	hv_common_cpu_die(cpu);
+>  
+> -	if (hv_vp_assist_page && hv_vp_assist_page[cpu])
+> +	if (hv_vp_assist_page && hv_vp_assist_page[cpu]) {
+>  		wrmsrl(HV_X64_MSR_VP_ASSIST_PAGE, 0);
+>  
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+The content of the MSR should be preserved; otherwise you hit the same
+fault for root kernel.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Wei.
