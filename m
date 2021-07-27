@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE943D7D5F
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3313D7D5C
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhG0S0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:26:46 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:43702 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhG0S0p (ORCPT
+        id S229914AbhG0S0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:26:41 -0400
+Received: from mail-il1-f182.google.com ([209.85.166.182]:44756 "EHLO
+        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229453AbhG0S0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:26:45 -0400
-Received: by mail-io1-f48.google.com with SMTP id 185so17074060iou.10;
-        Tue, 27 Jul 2021 11:26:44 -0700 (PDT)
+        Tue, 27 Jul 2021 14:26:40 -0400
+Received: by mail-il1-f182.google.com with SMTP id o7so162911ilh.11;
+        Tue, 27 Jul 2021 11:26:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=Snb7zzXm5yWtNjnULb0kW5b9lE7iA5FbVYfHIKqzxsw=;
-        b=VJ/yqrJYQvSRgGLdj7o9yJz12OZn89+DNiNRw4QLC8jR8EX8ZWl1c6PR8ibQmNpW//
-         S9ffPlK7wGloDCsns2KsG+etEE2Vj2e+m3vvkobFkDQEc2Pgus18sPUOvI9Iaj+bwuSM
-         +hUMfFwZOBXg/kpmzLmQoihUyar07nwKxpqw7yn6k87cIW5BjIi7PYhHowb2Kqtd7M22
-         K2KamGJiaFs6NRpYJTHEl5YZaWAdwQaOuVSewXckp8VUyXNDLaliN5uueBdN/tjEciP0
-         99R4v2eNJO68/t9g1oRmEUo3l96lNA7L6QxuQVOOtuUao1H4aGoleNngFplUplk+YYyB
-         Zq5A==
-X-Gm-Message-State: AOAM530werW3IW00WPLnHr1suszEXSPJAhDOCw71VMYWeqjgct16oiI3
-        zR82L9o5FngLELawEWZGhQ==
-X-Google-Smtp-Source: ABdhPJydLoroS1MPOE0r8YMTbwZhoygvk6C14R/FG87IJjqNCquTF05RQiCyoCtwuz4P8BnWRM5/Qw==
-X-Received: by 2002:a05:6602:59d:: with SMTP id v29mr20162821iox.132.1627410403994;
-        Tue, 27 Jul 2021 11:26:43 -0700 (PDT)
+        bh=3DEZXygmMlbze51t61j0f6IluPe9JhL1JPPs4o0+k/c=;
+        b=JUhzvjk4VfvedQWDbz86cKmdII61TH7wO6Qy/WMmvd6haqYLlzhpeaXbLiCika6MhH
+         WdvvalGiFp7Y7gKKMygJ9qTasdtPmYCzna66aBvOL3ZmjDGJ9ssgtTgnx3l8Wtm8NyWN
+         k+5wVcvWj/6FXK0Cu9UWoq1hVUogeOwNzhAkXQE84MBUJTvTiaNdcGAyCbKzvcYxbexj
+         hesIJ+7kce+rpCnk7i1q2UzeDbk8diPMeB0VDirQBUr0QqFTMs3ybGzlpKq5c0jG7p/E
+         5+X7eeLwJ3YFww0cCcoadiMLegVEouDFX1tafgnZlPkOOKL+ePY5T6+28ko8/uDMkpNc
+         fOGw==
+X-Gm-Message-State: AOAM533/iVgLDzhrHbhgUQ9Fs+MOJUEkdpdotMGnIF3NJg4o4fj4Ly46
+        cVNraidb5M3UbwiAA0XD6A==
+X-Google-Smtp-Source: ABdhPJwfRr8AvkY38MhYpDZWVP8j2iQzXoN0b+J+lJpwI2+Gqkmx9sagb5uvIKdLN+TXbdBGUM5t2Q==
+X-Received: by 2002:a92:7d08:: with SMTP id y8mr17500252ilc.111.1627410399986;
+        Tue, 27 Jul 2021 11:26:39 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p21sm2713572iog.37.2021.07.27.11.26.41
+        by smtp.gmail.com with ESMTPSA id i11sm2301722ilb.15.2021.07.27.11.26.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 11:26:43 -0700 (PDT)
-Received: (nullmailer pid 3210654 invoked by uid 1000);
+        Tue, 27 Jul 2021 11:26:39 -0700 (PDT)
+Received: (nullmailer pid 3210651 invoked by uid 1000);
         Tue, 27 Jul 2021 18:26:35 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
-        Andy Teng <andy.teng@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+To:     Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        linux-media@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        Irui Wang <irui.wang@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
         devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Sean Wang <sean.wang@kernel.org>
-In-Reply-To: <20210727110232.2503763-3-hsinyi@chromium.org>
-References: <20210727110232.2503763-1-hsinyi@chromium.org> <20210727110232.2503763-3-hsinyi@chromium.org>
-Subject: Re: [PATCH 3/3] dt-bindings: mediatek: convert pinctrl to yaml
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, srv_heupstream@mediatek.com
+In-Reply-To: <20210727101051.24418-14-yunfei.dong@mediatek.com>
+References: <20210727101051.24418-1-yunfei.dong@mediatek.com> <20210727101051.24418-14-yunfei.dong@mediatek.com>
+Subject: Re: [PATCH v3, 13/15] dt-bindings: media: mtk-vcodec: Adds decoder dt-bindings for mt8192
 Date:   Tue, 27 Jul 2021 12:26:35 -0600
-Message-Id: <1627410395.874547.3210653.nullmailer@robh.at.kernel.org>
+Message-Id: <1627410395.860934.3210650.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Jul 2021 19:02:32 +0800, Hsin-Yi Wang wrote:
-> Convert mt65xx, mt6796, mt7622, mt8183 bindings to yaml.
+On Tue, 27 Jul 2021 18:10:49 +0800, Yunfei Dong wrote:
+> Adds decoder dt-bindings for mt8192.
 > 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 > ---
->  .../pinctrl/mediatek,mt65xx-pinctrl.yaml      | 202 +++++++
->  .../pinctrl/mediatek,mt6797-pinctrl.yaml      | 175 ++++++
->  .../pinctrl/mediatek,mt7622-pinctrl.yaml      | 537 ++++++++++++++++++
->  .../pinctrl/mediatek,mt8183-pinctrl.yaml      | 230 ++++++++
->  .../bindings/pinctrl/pinctrl-mt65xx.txt       | 156 -----
->  .../bindings/pinctrl/pinctrl-mt6797.txt       |  83 ---
->  .../bindings/pinctrl/pinctrl-mt7622.txt       | 490 ----------------
->  .../bindings/pinctrl/pinctrl-mt8183.txt       | 132 -----
->  8 files changed, 1144 insertions(+), 861 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt65xx-pinctrl.yaml
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt6797-pinctrl.yaml
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt7622-pinctrl.yaml
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.yaml
->  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
->  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt6797.txt
->  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
->  delete mode 100644 Documentation/devicetree/bindings/pinctrl/pinctrl-mt8183.txt
+> v3: Fix yaml check fail.
+> ---
+>  .../media/mediatek,vcodec-comp-decoder.yaml   | 154 ++++++++++++++++++
+>  1 file changed, 154 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -85,20 +81,111 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.example.dts:21:18: fatal error: dt-bindings/pinctrl/mt8183-pinfunc.h: No such file or directory
-   21 |         #include <dt-bindings/pinctrl/mt8183-pinfunc.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.example.dt.yaml] Error 1
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 19, column 5
+found duplicate key "items" with value "[]" (original value: "[]")
+  in "<unicode string>", line 21, column 5
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+Duplicate keys will become an error in future releases, and are errors
+by default when using the new API.
+
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/media/mediatek,vcodec-comp-decoder.example.dts] Error 1
 make[1]: *** Waiting for unfinished jobs....
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
+    ret = check_doc(f)
+  File "/usr/local/bin/dt-doc-validate", line 25, in check_doc
+    testtree = dtschema.load(filename, line_number=line_number)
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 623, in load
+    return yaml.load(f.read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 19, column 5
+found duplicate key "items" with value "[]" (original value: "[]")
+  in "<unicode string>", line 21, column 5
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+Duplicate keys will become an error in future releases, and are errors
+by default when using the new API.
+
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/processed-schema-examples.json'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-mk-schema", line 38, in <module>
+    schemas = dtschema.process_schemas(args.schemas, core_schema=(not args.useronly))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 585, in process_schemas
+    sch = process_schema(os.path.abspath(filename))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 558, in process_schema
+    schema = load_schema(filename)
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 125, in load_schema
+    return do_load(os.path.join(schema_basedir, schema))
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 111, in do_load
+    return yaml.load(f.read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 19, column 5
+found duplicate key "items" with value "[]" (original value: "[]")
+  in "<unicode string>", line 21, column 5
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+Duplicate keys will become an error in future releases, and are errors
+by default when using the new API.
+
+make[1]: *** [Documentation/devicetree/bindings/Makefile:62: Documentation/devicetree/bindings/processed-schema-examples.json] Error 1
 make: *** [Makefile:1418: dt_binding_check] Error 2
 \ndoc reference errors (make refcheckdocs):
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
-Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
-MAINTAINERS: Documentation/devicetree/bindings/pinctrl/pinctrl-mt65xx.txt
-MAINTAINERS: Documentation/devicetree/bindings/pinctrl/pinctrl-mt7622.txt
 
-See https://patchwork.ozlabs.org/patch/1510444
+See https://patchwork.ozlabs.org/patch/1510417
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
