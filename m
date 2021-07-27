@@ -2,136 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9EA3D6B62
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 03:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33CE3D6B64
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 03:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbhG0AUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 20:20:22 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:52056 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhG0AUV (ORCPT
+        id S234347AbhG0AVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 20:21:20 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35339 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229524AbhG0AVT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 20:20:21 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7B0B7EE;
-        Tue, 27 Jul 2021 03:00:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1627347647;
-        bh=h6ed/QhzBLfd0GPoqqSOV/hXs491XnYeRSbJ5MoZhok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XmvdmbvKT4T0Gl2GLgXHoQjqYzORw4Uo7rvmWDfK/PuFVaIquNHJXNRxSiKXAaK33
-         QQA82sQ0J6AzYYbW4UtBiEhZlOsIX9q9P93SbuLQuXKyJEqkUecvdQL2mHp4N+DMqR
-         CTDj9Za/Wy99D6HUhG0YOBAkpaLfwrrgLNzDEeVQ=
-Date:   Tue, 27 Jul 2021 04:00:42 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     shawnguo@kernel.org, devicetree@vger.kernel.org,
-        festevam@gmail.com, kernel@pengutronix.de, kernel@puri.sm,
-        krzk@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        m.felsch@pengutronix.de, mchehab@kernel.org,
-        phone-devel@vger.kernel.org, robh@kernel.org, slongerbeam@gmail.com
-Subject: Re: [PATCH v9 0/3] media: imx: add support for imx8mq MIPI RX
-Message-ID: <YP9aujiWH2Q/ghHK@pendragon.ideasonboard.com>
-References: <20210726082117.2423597-1-martin.kepplinger@puri.sm>
+        Mon, 26 Jul 2021 20:21:19 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4564B580441;
+        Mon, 26 Jul 2021 21:01:47 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 26 Jul 2021 21:01:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=4GoP2lpEbphZOrM/qJqbnIpCwuz
+        xJrI8rOm0CYBK67E=; b=K7+fIREOIDAFh6ouMeGqj4o4UBPlX88yq9vU1atI112
+        kvpsGuxqSzMOjzJxihs+SdKGc1tyzc9adbOUkbmK88ZudgdfwNHpEkfr59ibhOKk
+        /nFDpGpplnQlTvC6r6U/3iCdiYYdyt5mOLXQ3X+WAzFzJ5t8yJxGC03uikSVl/xn
+        lUG1vWA99D6vj0AFxIG2QEbep0cBljPVuAH1moI60xNJwqefd4bR3rS6F06qf5yc
+        0WFbFNX3AT0NWyorr5cGHR2yQzn1F0xMYFS3T4x/H7IhzdR+WwgV5AQAiEWnEVaG
+        KfOD8cdoPtmPs55C35Qrc7Yu7gQrEVdT3IJtF5mbkmA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=4GoP2l
+        pEbphZOrM/qJqbnIpCwuzxJrI8rOm0CYBK67E=; b=qJwNQmDsYMZetuodgigFCU
+        DvrvTuxQ8xE3gzsT+C7iUxomQ4Qoh9SiXYY7RPEyWopwpdK2BL51aZeO4DCvy6Qd
+        0yffH5Vu4WlxgxJeJciaDds/mdyozdf/EFvVXoDtdjTLGpFwU5P0hJJWoZ3jxUa+
+        b90YhIz3irTxBBU3Uf6YO/lIbIUP3jOssjEUrgHIti/Lt/VCLyUj8+zs+TNyFiME
+        XQYX51ZDyPjk7Gt29xpSulhW99pZw4WJvX9rQywAbjr11JS6JwD8Mz3+od29skK7
+        +fpcJFmqUFTOflQuJOSzxRXHU02itQObCxSP1/Zht7AVHQgeAsSfpLSKzruSY/HA
+        ==
+X-ME-Sender: <xms:-Vr_YN7qWdjm7YnBCSYzIeDLYmOwgFwi-W8nVswXVbgeS1KPnGjJwg>
+    <xme:-Vr_YK6Q6je5ZOTBjOxLy8iVictcUhv62jCRAKF4Dyd5fpP4InNXezZ32zZOJiwhW
+    TiyIItqtHJBqPJC1w>
+X-ME-Received: <xmr:-Vr_YEdGpMion0z5UjQ4-QKhezMQIY1C7M0dpvSBbV-ttBpTgqwzEFKil28-Kf4SjQslAdjqZc9LfkUyXrjObOzexPgMsLALtRx7mQQmQOChDMEOvpE95_p4tfLN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrgeeigdeffecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
+    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecuggftrfgrth
+    htvghrnhepudekhfekleeugeevteehleffffejgeelueduleeffeeutdelffeujeffhfeu
+    ffdunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hnughrvghssegrnhgrrhgriigvlhdruggv
+X-ME-Proxy: <xmx:-Vr_YGIibaU9T5GLpMI6wyGFBKBj2CJ0OBGm7X2aBrxqjIE_CEWiJw>
+    <xmx:-Vr_YBJ092ZR3hqHatCsys030PLu61FEScoEhgWeS5v4yLiMrpwFIA>
+    <xmx:-Vr_YPwzI0cknTDfE_VXYGPYh1o9oAfG5-_ppa3d8G1AnAscFyTAZg>
+    <xmx:-1r_YKWfd0yw1ulinw349uq0XrckpcH1wSk--ydWa5ndfXoZdhsL5w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 26 Jul 2021 21:01:45 -0400 (EDT)
+Date:   Mon, 26 Jul 2021 18:01:44 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Michael Larabel <Michael@michaellarabel.com>
+Subject: Re: Folios give an 80% performance win
+Message-ID: <20210727010144.na67murecket5h4b@alap3.anarazel.de>
+References: <20210715033704.692967-1-willy@infradead.org>
+ <YPxNkRYMuWmuRnA5@casper.infradead.org>
+ <1e48f7edcb6d9a67e8b78823660939007e14bae1.camel@HansenPartnership.com>
+ <YPxYdhEirWL0XExY@casper.infradead.org>
+ <b12f95c9f817f05e91ecd1aec81316afa1da1e42.camel@HansenPartnership.com>
+ <17a9d8bf-cd52-4e6c-9b3e-2fbc1e4592d9@www.fastmail.com>
+ <YPxjbopzwFYJw9hV@casper.infradead.org>
+ <4c634d08-c658-44cf-ac92-92097eeb8532@www.fastmail.com>
+ <20210724214413.fqsbjxhhodfzchs6@alap3.anarazel.de>
+ <YP7EX7w035AWASlg@mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210726082117.2423597-1-martin.kepplinger@puri.sm>
+In-Reply-To: <YP7EX7w035AWASlg@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+Hi,
 
-On Mon, Jul 26, 2021 at 10:21:14AM +0200, Martin Kepplinger wrote:
-> hi,
-> 
-> This patch series adds a driver for the i.MX8MQ CSI MIPI receiver / controller.
-> 
-> It includes the driver, the dt-bindings and the DT addition to the SoC dtsi.
-> I test it using libcamera. Thanks to Laurent who helped a lot. I'm happy for
-> any feedback,
+On 2021-07-26 10:19:11 -0400, Theodore Ts'o wrote:
+> On Sat, Jul 24, 2021 at 02:44:13PM -0700, Andres Freund wrote:
+> > The phoronix test uses postgres with only one relevant setting adjusted
+> > (increasing the max connection count). That will end up using a buffer pool of
+> > 128MB, no huge pages, and importantly is configured to aim for not more than
+> > 1GB for postgres' journal, which will lead to constant checkpointing. The test
+> > also only runs for 15 seconds, which likely isn't even enough to "warm up"
+> > (the creation of the data set here will take longer than the run).
+> > 
+> > Given that the dataset phoronix is using is about ~16GB of data (excluding
+> > WAL), and uses 256 concurrent clients running full tilt, using that limited
+> > postgres settings doesn't end up measuring something particularly interesting
+> > in my opinion.
 
-No more feedback from me :-) I'll take patches 1/3 and 2/3 in my tree
-and send a pull request.
+> I tend to use the phoronix test suite for my performance runs when
+> testing ext4 changes simply because it's convenient.  Can you suggest
+> a better set configuration settings that I should perhaps use that
+> might give more "real world" numbers that you would find more
+> significant?
 
-Shawn, could you please review 3/3 ?
+It depends a bit on what you want to test, obviously...
 
-> revision history
-> ----------------
-> v9: (thank you Laurent)
-> * improve getting the esc clock rate for hs_settle
-> 
-> v8: (thank you Laurent)
-> * calculate hs_settle for any clk rate and mode
-> * add reviewed-by tag
-> https://lore.kernel.org/linux-media/20210723101217.1954805-1-martin.kepplinger@puri.sm/T/
-> 
-> v7: (thank you Laurent and Rob)
-> * fix the binding example (include the reset driver)
-> * use pm_runtime_resume_and_get()
-> * fix some logic in init_cfg()
-> * add some useful code comments and fix minor bits found by Laurent in v6
-> https://lore.kernel.org/linux-media/20210716102244.581182-1-martin.kepplinger@puri.sm/T/#t
-> 
-> v6: (thank you Laurent and Rob)
-> * add reviewed-by tag to binding
-> * statically allocate clk_bulk_data
-> * fix how the hs_settle value is applied
-> * remove s_power calls
-> * remove the link_setup() callback implementation and make the link immutable
-> * more cleanups according to Laurents' review from v5
-> https://lore.kernel.org/linux-media/20210714111931.324485-1-martin.kepplinger@puri.sm/
-> 
-> v5: (thank you Laurent)
-> * fix reset usage by using the already supported reset controller driver
-> * remove clko2 (totally unrelated clock / had been included by accident)
-> * rename pxl clock to ui
-> https://lore.kernel.org/linux-media/20210618095753.114557-1-martin.kepplinger@puri.sm/
-> 
-> v4: (thank you Rob and Marco)
-> * create fsl,mipi-phy-gpr custom dt property instead of confusing "phy"
-> * add imx8mq-specific compatibile to imx8mq.dtsi for future use
-> https://lore.kernel.org/linux-media/20210614121522.2944593-1-martin.kepplinger@puri.sm/
-> 
-> v3: (thank you, Rob and Laurent)
-> among minor other things according to v2 review, changes include:
-> * better describe the clocks
-> * rename DT property "phy-reset" to "reset" and "phy-gpr" to "phy"
-> https://lore.kernel.org/linux-media/20210608104128.1616028-1-martin.kepplinger@puri.sm/T/#t
-> 
-> v2: (thank you, Dan and Guido)
-> among fixes according to v1 reviews, changes include:
-> * remove status property from dt-bindings example
-> * define a few bits in order to have less magic values
-> * use "imx8mq_mipi_csi_" as local function prefix
-> * read DT properties only during probe()
-> * remove dead code (log_status)
-> * add imx8mq_mipi_csi_release_icc()
-> * fix imx8mq_mipi_csi_init_icc()
-> https://lore.kernel.org/linux-media/20210531112326.90094-1-martin.kepplinger@puri.sm/
-> 
-> v1:
-> https://lore.kernel.org/linux-media/20210527075407.3180744-1-martin.kepplinger@puri.sm/T/#t
-> 
-> 
-> Martin Kepplinger (3):
->   dt-bindings: media: document the nxp,imx8mq-mipi-csi2 receiver phy and
->     controller
->   media: imx: add a driver for i.MX8MQ mipi csi rx phy and controller
->   arm64: dts: imx8mq: add mipi csi phy and csi bridge descriptions
-> 
->  .../bindings/media/nxp,imx8mq-mipi-csi2.yaml  | 174 ++++
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi     | 104 ++
->  drivers/staging/media/imx/Makefile            |   1 +
->  drivers/staging/media/imx/imx8mq-mipi-csi2.c  | 976 ++++++++++++++++++
->  4 files changed, 1255 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/nxp,imx8mq-mipi-csi2.yaml
->  create mode 100644 drivers/staging/media/imx/imx8mq-mipi-csi2.c
+At the very least you should 'max_wal_size = 32GB' or such (it'll only
+use that much if enough WAL is generated within checkpoint timeout,
+which defaults to 5min).
 
--- 
-Regards,
+And unfortunately you're not going to get meaningful performance results
+for a read/write test within 10s, you need to run at least ~11min (so
+two checkpoints happen).
 
-Laurent Pinchart
+With the default shared_buffers setting of 128MB you are going to
+simulate a much-larger-than-postgres's-memory workload, albeit one where
+the page cache *is* big enough on most current machines, unless you
+limit the size of the page cache considerably. Doing so can be useful to
+approximate a workload that would take much longer to initialize due to
+the size.
+
+I suggest *not* disabling autovacuum as currently done for performance
+testing - it's not something many real-world setups can afford to do, so
+benchmarking FS performance with it disabled doesn't seem like a good
+idea.
+
+FWIW, depending on what kind of thing you want to test, it'd not be hard
+to come up with a test that less time to initialize. E.g. an insert-only
+workload without an initial dataset or such.
+
+As long as you *do* initialize 16GB of data, I think it'd make sense to
+measure the time that takes. There's definitely been filesystem level
+performance changes of that, and it's often going to be more IO intensive.
+
+Greetings,
+
+Andres Freund
