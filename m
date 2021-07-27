@@ -2,244 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104983D7DCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA96C3D7DE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 20:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhG0Six (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 14:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhG0Six (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 14:38:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B61C60F9E;
-        Tue, 27 Jul 2021 18:38:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627411132;
-        bh=7P1dk2Zya5Hxz/KwAAaJC49En7ygIfIysjTZnKxCPvA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h2ju/8bpR2Yw9THzOV5z3GFnwbg17C1REx2LCLzeeG5RBGFHUn/owLfUTeXNqIg/o
-         Z70mgBSwI7MQ/NrLm/LoVqbaqg4zEDgatBR387cBgwKe7jz06+KvjkEceUXf733uxW
-         PhLlZe3eYtuvN/ZB9UN8WvHeb1pBlwOX8T/vtI+w=
-Date:   Tue, 27 Jul 2021 20:38:50 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andriin@fb.com" <andriin@fb.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "atenart@kernel.org" <atenart@kernel.org>,
-        "alobakin@pm.me" <alobakin@pm.me>,
-        "weiwan@google.com" <weiwan@google.com>,
-        "ap420073@gmail.com" <ap420073@gmail.com>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "ngupta@vflare.org" <ngupta@vflare.org>,
-        "sergey.senozhatsky.work@gmail.com" 
-        <sergey.senozhatsky.work@gmail.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "mbenes@suse.com" <mbenes@suse.com>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jikos@kernel.org" <jikos@kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Douglas Gilbert <dgilbert@interlog.com>,
-        Hannes Reinecke <hare@suse.de>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kernel/module: add documentation for try_module_get()
-Message-ID: <YQBSutZfhqfTzKQa@kroah.com>
-References: <20210722221905.1718213-1-mcgrof@kernel.org>
- <dbf27fa2f8864e1d91f7015249b1a5f1@AcuMS.aculab.com>
- <YQBCvKgH481C7o1c@bombadil.infradead.org>
- <YQBGemOIF4sp/ges@kroah.com>
- <YQBN2/K4Ne5orgzS@bombadil.infradead.org>
+        id S229994AbhG0Smj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 14:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229729AbhG0Smi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 14:42:38 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667C7C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 11:42:37 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id h11so17119723ljo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 11:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+7UEfD2Imkl3ZnkOmnry5ON4ruHu09FP4tYeWeop6j8=;
+        b=Dw1xy/B95cB2tQ8nfE4IH8NuStpyecxxK3HsLcmBe5tJe37IsnKZtXreBvEpEIhIFc
+         NPwjIj2Q2rzg+iqbTrT1xv4aJZ/rJN1N6tMfA+MUjrFaBwIVYW2MtgDQ44cvIScabO9F
+         R0y3s3cIcrxOOOsgQ/3jeRbo1cLqmh+cy736gV+SytYpwepWwqiJvPQVLh0d/QwOcDWr
+         tuqLJsI22MlyNc7wnpfDMwJtqbhdXG+bSa88GwIJZQ9a495/ylpicRxlms7Gacg0hvnP
+         nGXU3gBlapyO44/mQYuYk97qm+qoWDywGdzwwGthJTCZ7v3sUVXkTeeN0d9GsSN8woSq
+         Bj2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+7UEfD2Imkl3ZnkOmnry5ON4ruHu09FP4tYeWeop6j8=;
+        b=SVjClfgGFqyfgY1HhtDo4CKrO0vhIjflQot7CySjSWkaA+hesmXh4iEqSB5katuf5D
+         LzKnanzYjck0Ov1lOBr/DMjycy4O9ahGccXDZxHG1NHWblwqGsX+onB+rL3ccy3Dr6fh
+         jv2FSrw1NFxzIcYsQYdQDQKqlbg4N3K8RAcYuF5Qlm3IOPTvvzdA7bw8MG/D7OggcHZG
+         HbDCAnpWdGfw4w2npGGWlhYTY3nbDMCyhqSrp/1jpiyhxex6b9EAgwSW2DgZ0ZuJR8aO
+         pUt8qn24sCJMMNXDq9jUMmi892DllDt2bwjLiErFwLxJ6g8ZsRUDSCqqmfEWa5iUH5Vw
+         KtUg==
+X-Gm-Message-State: AOAM5327fRIRYpuE6+OdB5JHOtLCVMJ5FT237/RQhCVLJ1r+Eot+yNK6
+        jLFNqFbLKnzfB59ENv95vXj5PqBp6LpuoQ==
+X-Google-Smtp-Source: ABdhPJw4h0sF7m8BSZ4MlkG9L54CcA+FgAX+Io3OlMQJ4N0NrYEy9Vu2yYSi0jwBIhxMPRXFaamJ0g==
+X-Received: by 2002:a2e:85d8:: with SMTP id h24mr16831635ljj.365.1627411355491;
+        Tue, 27 Jul 2021 11:42:35 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id m23sm28970lfc.116.2021.07.27.11.42.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jul 2021 11:42:35 -0700 (PDT)
+Subject: Re: [PATCH 2/5] drm/msm/dp: Modify prototype of encoder based API
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210725042436.3967173-1-bjorn.andersson@linaro.org>
+ <20210725042436.3967173-3-bjorn.andersson@linaro.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <97ac00f8-eb25-9142-3bdc-904aad269b6e@linaro.org>
+Date:   Tue, 27 Jul 2021 21:42:34 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQBN2/K4Ne5orgzS@bombadil.infradead.org>
+In-Reply-To: <20210725042436.3967173-3-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:18:03AM -0700, Luis Chamberlain wrote:
-> On Tue, Jul 27, 2021 at 07:46:34PM +0200, gregkh@linuxfoundation.org wrote:
-> > On Tue, Jul 27, 2021 at 10:30:36AM -0700, Luis Chamberlain wrote:
-> > > On Sat, Jul 24, 2021 at 12:15:10PM +0000, David Laight wrote:
-> > > > From: Luis Chamberlain
-> > > > > Sent: 22 July 2021 23:19
-> > > > > 
-> > > > > There is quite a bit of tribal knowledge around proper use of
-> > > > > try_module_get() and that it must be used only in a context which
-> > > > > can ensure the module won't be gone during the operation. Document
-> > > > > this little bit of tribal knowledge.
-> > > > > 
-> > > > ...
-> > > > 
-> > > > Some typos.
-> > > > 
-> > > > > +/**
-> > > > > + * try_module_get - yields to module removal and bumps reference count otherwise
-> > > > > + * @module: the module we should check for
-> > > > > + *
-> > > > > + * This can be used to check if userspace has requested to remove a module,
-> > > >                                                            a module be removed
-> > > > > + * and if so let the caller give up. Otherwise it takes a reference count to
-> > > > > + * ensure a request from userspace to remove the module cannot happen.
-> > > > > + *
-> > > > > + * Care must be taken to ensure the module cannot be removed during
-> > > > > + * try_module_get(). This can be done by having another entity other than the
-> > > > > + * module itself increment the module reference count, or through some other
-> > > > > + * means which gaurantees the module could not be removed during an operation.
-> > > >                   guarantees
-> > > > > + * An example of this later case is using this call in a sysfs file which the
-> > > > > + * module created. The sysfs store / read file operation is ensured to exist
-> > > >                                                             ^^^^^^^^^^^^^^^^^^^
-> > > > Not sure what that is supposed to mean.
-> > > 
-> > > I'll clarify further. How about:
-> > > 
-> > > The sysfs store / read file operations are gauranteed to exist using
-> > > kernfs's active reference (see kernfs_active()).
-> > 
-> > But that has nothing to do with module reference counts.  kernfs knows
-> > nothing about modules.
+On 25/07/2021 07:24, Bjorn Andersson wrote:
+> Functions in the DisplayPort code that relates to individual instances
+> (encoders) are passed both the struct msm_dp and the struct drm_encoder. But
+> in a situation where multiple DP instances would exist this means that
+> the caller need to resolve which struct msm_dp relates to the struct
+> drm_encoder at hand.
 > 
-> Yes but we are talking about sysfs files which the module creates. So
-> but inference again, an active reference protects a module.
+> The information for doing this lookup is available inside the DP driver,
+> so update the API to take the struct msm_drm_private and the struct
+> drm_encoder and have the DP code figure out which struct msm_dp the
+> operation relates to.
 
-What active reference?  sysfs creation/removal/rename/whatever right now
-has nothing to do with module reference counts as they are totally
-disconnected.  kernfs has nothing to do with module reference counts
-either.  So I do not know what you are inferring here.
+Initially I thought to propose moving encoder->dp lookup into dpu code 
+by adding msm_dp_display_get_encoder() function. However as I was 
+writing that, I remembered that at some point I had to refactor my own 
+patchset in the way to get rid of calling msm_FOO_get_encoder().
 
-> > > > So there is a potentially horrid race:
-> > > > The module unload is going to do:
-> > > > 	driver_data->module_ref = 0;
-> > > > and elsewhere there'll be:
-> > > > 	ref = driver_data->module_ref;
-> > > > 	if (!ref || !try_module_get(ref))
-> > > > 		return -error;
-> > > > 
-> > > > You have to have try_module_get() to allow the module unload
-> > > > function to sleep.
-> > > > But the above code still needs a driver lock to ensure the
-> > > > unload code doesn't race with the try_module_get() and the
-> > > > 'ref' be invalidated before try_module_get() looks at it.
-> > > > (eg if an interrupt defers processing.)
-> > > > 
-> > > > So there can be no 'yielding'.
-> > > 
-> > > Oh but there is. Consider access to a random sysfs file 'add_new_device'
-> > > which takes as input a name, for driver foo, and so foo's
-> > > add_new_foobar_device(name="bar") is called. Unless sysfs file
-> > > "yields" by using try_module_get() before trying to add a new
-> > > foo device called "bar", it will essentially be racing with the
-> > > exit routine of module foo, and depending on how locking is implemented
-> > > (most drivers get it wrong), this easily leads to crashes.
-> > > 
-> > > In fact, this documentation patch was motivated by my own solution to a
-> > > possible deadlock when sysfs is used. Using the same example above, if
-> > > the same sysfs file uses *any* lock, which is *also* used on the exit
-> > > routine, you can easily trigger a deadlock. This can happen for example
-> > > by the lock being obtained by the removal routine, then the sysfs file
-> > > gets called, waits for the lock to complete, then the module's exit
-> > > routine starts cleaning up and removing sysfs files, but we won't be
-> > > able to remove the sysfs file (due to kernefs active reference) until
-> > > the sysfs file complets, but it cannot complete because the lock is
-> > > already held.
-> > > 
-> > > Yes, this is a generic problem. Yes I have proof [0]. Yes, a generic
-> > > solution has been proposed [1], and because Greg is not convinced and I
-> > > need to move on with life, I am suggesting a temporary driver specific
-> > > solution (to which Greg is still NACK'ing, without even proposing any
-> > > alternatives) [2].
-> > > 
-> > > [0] https://lkml.kernel.org/r/20210703004632.621662-5-mcgrof@kernel.org
-> > > [1] https://lkml.kernel.org/r/20210401235925.GR4332@42.do-not-panic.com 
-> > > [2] https://lkml.kernel.org/r/20210723174919.ka3tzyre432uilf7@garbanzo
-> > 
-> > My problem with your proposed solution is that it is still racy, you can
-> > not increment your own module reference count from 0 -> 1 and expect it
-> > to work properly.  You need external code to do that somewhere.
+I'd propose simpler solution. In dpu_encoder_setup() you have the DP 
+index and the encoder. So you can store valid msm_dp pointer in the 
+dpu_encoder_virt and remove all the lookups. Then you can replace all 
+priv->dp with bare dpu_enc->dp accesses. Will this work for you?
+
 > 
-> You are not providing *any* proof for this.
-
-I did provide proof of that.  Here it is again.
-
-Consider these lines of code:
-
- 1	int foo(int baz)
- 2	{
- 3		int retval
- 4
- 5		if (!try_module_get(THIS_MODULE))
- 6			return -ERROR;
- 7		retval = do_something(baz)
- 8		put_module(THIS_MODULE);
- 9		return retval;
-10	}
-
-Going into the call to foo(), there is no reference held on THIS_MODULE.
-
-Right before line 5 is called (or really, right before the jump to
-try_module_get(), yet still within foo() (i.e. lines 2-4 where you have
-fun stack frames set up, and ftrace hooks, and other nifty things),
-userspace asks for the module to be unloaded, and the module is removed
-from the system and the memory for this code is overwritten with all
-0x00.
-
-Then, we try to call into try_module_get(), but yet, that call
-instruction is gone and boom.
-
-Or better yet, after put_module() is called, the module is unloaded
-_before_ the return happens.  Then we try to make the return jump back,
-but that instruction was overwritten with all 0x00.  Or different code
-because a new module was loaded then.
-
-Yes, your window is smaller, but it is still there, and still can be
-triggered.  That is why in the 2.5 days we removed almost all instances
-of this pattern.  There are still some floating around in the kernel,
-but odds are they are broken because NO ONE TESTS UNLOADING MODULES
-UNDER STRESS.
-
-Except your crazy customer :)
-
-> And even so, I believe I have clarified as best as possible how a
-> kernfs active reference implicitly protects the module when we are
-> talking about sysfs files.
-
-I do not see any link anywhere between kernfs and modules, what am I
-missing?  Pointers to lines of code would be appreciated.
-
-> > Now trying to tie sysfs files to the modules that own them would be
-> > nice, but as we have seen, that way lies way too many kernel changes,
-> > right?
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 17 +++++----
+>   drivers/gpu/drm/msm/dp/dp_display.c         | 38 +++++++++++++++++----
+>   drivers/gpu/drm/msm/msm_drv.h               | 31 +++++++++--------
+>   3 files changed, 56 insertions(+), 30 deletions(-)
 > 
-> It's not a one-liner fix. Yes.
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 1c04b7cce43e..0d64ef0819af 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -1002,8 +1002,8 @@ static void dpu_encoder_virt_mode_set(struct drm_encoder *drm_enc,
+>   
+>   	trace_dpu_enc_mode_set(DRMID(drm_enc));
+>   
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp)
+> -		msm_dp_display_mode_set(priv->dp, drm_enc, mode, adj_mode);
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS)
+> +		msm_dp_display_mode_set(priv, drm_enc, mode, adj_mode);
+>   
+>   	list_for_each_entry(conn_iter, connector_list, head)
+>   		if (conn_iter->encoder == drm_enc)
+> @@ -1184,9 +1184,8 @@ static void dpu_encoder_virt_enable(struct drm_encoder *drm_enc)
+>   
+>   	_dpu_encoder_virt_enable_helper(drm_enc);
+>   
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
+> -		ret = msm_dp_display_enable(priv->dp,
+> -						drm_enc);
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+> +		ret = msm_dp_display_enable(priv, drm_enc);
+>   		if (ret) {
+>   			DPU_ERROR_ENC(dpu_enc, "dp display enable failed: %d\n",
+>   				ret);
+> @@ -1226,8 +1225,8 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+>   	/* wait for idle */
+>   	dpu_encoder_wait_for_event(drm_enc, MSM_ENC_TX_COMPLETE);
+>   
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
+> -		if (msm_dp_display_pre_disable(priv->dp, drm_enc))
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+> +		if (msm_dp_display_pre_disable(priv, drm_enc))
+>   			DPU_ERROR_ENC(dpu_enc, "dp display push idle failed\n");
+>   	}
+>   
+> @@ -1255,8 +1254,8 @@ static void dpu_encoder_virt_disable(struct drm_encoder *drm_enc)
+>   
+>   	DPU_DEBUG_ENC(dpu_enc, "encoder disabled\n");
+>   
+> -	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS && priv->dp) {
+> -		if (msm_dp_display_disable(priv->dp, drm_enc))
+> +	if (drm_enc->encoder_type == DRM_MODE_ENCODER_TMDS) {
+> +		if (msm_dp_display_disable(priv, drm_enc))
+>   			DPU_ERROR_ENC(dpu_enc, "dp display disable failed\n");
+>   	}
+>   
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index 8696b36d30e4..59ffd6c8f41f 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1432,12 +1432,25 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+>   	return 0;
+>   }
+>   
+> -int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+> +static struct msm_dp *msm_dp_from_drm_encoder(struct msm_drm_private *priv,
+> +					      struct drm_encoder *encoder)
+> +{
+> +	if (priv->dp && priv->dp->encoder == encoder)
+> +		return priv->dp;
+> +
+> +	return NULL;
+> +}
+> +
+> +int msm_dp_display_enable(struct msm_drm_private *priv, struct drm_encoder *encoder)
+>   {
+>   	int rc = 0;
+>   	struct dp_display_private *dp_display;
+> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
+>   	u32 state;
+>   
+> +	if (!dp)
+> +		return -EINVAL;
+> +
+>   	dp_display = container_of(dp, struct dp_display_private, dp_display);
+>   	if (!dp_display->dp_mode.drm_mode.clock) {
+>   		DRM_ERROR("invalid params\n");
+> @@ -1489,9 +1502,13 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+>   	return rc;
+>   }
+>   
+> -int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+> +int msm_dp_display_pre_disable(struct msm_drm_private *priv, struct drm_encoder *encoder)
+>   {
+>   	struct dp_display_private *dp_display;
+> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
+> +
+> +	if (!dp)
+> +		return 0;
+>   
+>   	dp_display = container_of(dp, struct dp_display_private, dp_display);
+>   
+> @@ -1500,11 +1517,15 @@ int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+>   	return 0;
+>   }
+>   
+> -int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+> +int msm_dp_display_disable(struct msm_drm_private *priv, struct drm_encoder *encoder)
+>   {
+>   	int rc = 0;
+>   	u32 state;
+>   	struct dp_display_private *dp_display;
+> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
+> +
+> +	if (!dp)
+> +		return 0;
+>   
+>   	dp_display = container_of(dp, struct dp_display_private, dp_display);
+>   
+> @@ -1531,11 +1552,16 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+>   	return rc;
+>   }
+>   
+> -void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+> -				struct drm_display_mode *mode,
+> -				struct drm_display_mode *adjusted_mode)
+> +void msm_dp_display_mode_set(struct msm_drm_private *priv,
+> +			     struct drm_encoder *encoder,
+> +			     struct drm_display_mode *mode,
+> +			     struct drm_display_mode *adjusted_mode)
+>   {
+>   	struct dp_display_private *dp_display;
+> +	struct msm_dp *dp = msm_dp_from_drm_encoder(priv, encoder);
+> +
+> +	if (!dp)
+> +		return;
+>   
+>   	dp_display = container_of(dp, struct dp_display_private, dp_display);
+>   
+> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
+> index 9bfd37855969..e9232032b266 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.h
+> +++ b/drivers/gpu/drm/msm/msm_drv.h
+> @@ -388,12 +388,13 @@ int __init msm_dp_register(void);
+>   void __exit msm_dp_unregister(void);
+>   int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+>   			 struct drm_encoder *encoder);
+> -int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder);
+> -int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+> -int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder);
+> -void msm_dp_display_mode_set(struct msm_dp *dp, struct drm_encoder *encoder,
+> -				struct drm_display_mode *mode,
+> -				struct drm_display_mode *adjusted_mode);
+> +int msm_dp_display_enable(struct msm_drm_private *priv, struct drm_encoder *encoder);
+> +int msm_dp_display_disable(struct msm_drm_private *priv, struct drm_encoder *encoder);
+> +int msm_dp_display_pre_disable(struct msm_drm_private *priv, struct drm_encoder *encoder);
+> +void msm_dp_display_mode_set(struct msm_drm_private *priv,
+> +			     struct drm_encoder *encoder,
+> +			     struct drm_display_mode *mode,
+> +			     struct drm_display_mode *adjusted_mode);
+>   void msm_dp_irq_postinstall(struct msm_dp *dp_display);
+>   void msm_dp_snapshot(struct msm_disp_state *disp_state, struct msm_dp *dp_display);
+>   
+> @@ -413,25 +414,25 @@ static inline int msm_dp_modeset_init(struct msm_dp *dp_display,
+>   {
+>   	return -EINVAL;
+>   }
+> -static inline int msm_dp_display_enable(struct msm_dp *dp,
+> +static inline int msm_dp_display_enable(struct msm_drm_private *priv,
+>   					struct drm_encoder *encoder)
+>   {
+>   	return -EINVAL;
+>   }
+> -static inline int msm_dp_display_disable(struct msm_dp *dp,
+> -					struct drm_encoder *encoder)
+> +static inline int msm_dp_display_disable(struct msm_drm_private *priv,
+> +					 struct drm_encoder *encoder)
+>   {
+>   	return -EINVAL;
+>   }
+> -static inline int msm_dp_display_pre_disable(struct msm_dp *dp,
+> -					struct drm_encoder *encoder)
+> +static inline int msm_dp_display_pre_disable(struct msm_drm_private *priv,
+> +					     struct drm_encoder *encoder)
+>   {
+>   	return -EINVAL;
+>   }
+> -static inline void msm_dp_display_mode_set(struct msm_dp *dp,
+> -				struct drm_encoder *encoder,
+> -				struct drm_display_mode *mode,
+> -				struct drm_display_mode *adjusted_mode)
+> +static inline void msm_dp_display_mode_set(struct msm_drm_private *priv,
+> +					   struct drm_encoder *encoder,
+> +					   struct drm_display_mode *mode,
+> +					   struct drm_display_mode *adjusted_mode)
+>   {
+>   }
+>   
 > 
-> > Hm, maybe.  Did we think about this from the kobj_attribute level?  If
-> > we use the "wrapper" logic there and the use of the macros we already
-> > have for attributes, we might be able to get the module pointer directly
-> > "for free".
-> >
-> > Did we try that?
-> 
-> That was my hope. I tried that first. Last year in November I determined
-> kernfs is kobject stupid. But more importantly *neither* are struct device
-> specific, so neither of them have semantics for modules or even devices.
 
-But what about at the kobject level?
 
-I will try to look at that this week, can't promise anything...
-
-greg k-h
+-- 
+With best wishes
+Dmitry
