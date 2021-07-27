@@ -2,65 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4773D6C0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8D73D6C1C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 04:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234605AbhG0CCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:02:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233727AbhG0CCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:02:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B0D60FEB;
-        Tue, 27 Jul 2021 02:42:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627353748;
-        bh=h722ui9p7cZx2trWIxgwS3kbBtiKtNTRWxfhr5joFv4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TmL4MuHTUBp8sGwxo68Fr0J9weoE8oOSBxduyBxdu9OgWEx8e8OqdcJGVpSPf52Wb
-         1FkGEYVHWGHlakQulJSQNUmutG6wr+mPInUO+6B4ddeuSVQwfutvjzR8x7AxW66eJD
-         l5lFUYFQXgC7ccdmNG1hbbJu7MQ448c8uCrP4eC7gRYiF3wGR8neXscCe2Nfm/7hKA
-         MXr2GAJb/oc+56jxVJeGiAlfRqSmnx00LRDUA0F6108qudfTNdF66srWDd9zJ9yNZ3
-         VF3IrQv7lI0/ZWasYfLkJkk8sqMim1hViMBTD/uVz5ygVfPjQry/ItOAOCGXtIOYCS
-         7wWDNV0mkhWOw==
-Date:   Tue, 27 Jul 2021 05:42:25 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        George Wilson <gcwilson@linux.ibm.com>,
-        Nageswara R Sastry <rnsastry@linux.ibm.com>
-Subject: Re: [PATCH] tpm: ibmvtpm: Avoid error message when process gets
- signal while waiting
-Message-ID: <20210727024225.swqy5ypcytsngpd6@kernel.org>
-References: <20210712162505.205943-1-stefanb@linux.vnet.ibm.com>
+        id S234621AbhG0CMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:12:25 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:12408 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhG0CMY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:12:24 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GYh8M0WXqzcgjf;
+        Tue, 27 Jul 2021 10:49:23 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 10:52:50 +0800
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 27 Jul 2021 10:52:49 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <zajec5@gmail.com>, <kvalo@codeaurora.org>, <hauke@hauke-m.de>,
+        <linville@tuxdriver.com>, <wanghaibin.wang@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>
+Subject: two small bcma patches
+Date:   Tue, 27 Jul 2021 10:52:30 +0800
+Message-ID: <20210727025232.663-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712162505.205943-1-stefanb@linux.vnet.ibm.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 12:25:05PM -0400, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> When rngd is run as root then lots of these types of message will appear
-> in the kernel log if the TPM has been configure to provide random bytes:
-> 
-> [ 7406.275163] tpm tpm0: tpm_transmit: tpm_recv: error -4
-> 
-> The issue is caused by the following call that is interrupted while
-> waiting for the TPM's response.
-> 
-> sig = wait_event_interruptible(ibmvtpm->wq,
->                                !ibmvtpm->tpm_processing_cmd);
-> 
-> The solution is to use wait_event() instead.
+Hi all,
 
-Why?
+two small bcma patches -- one to fix memory leakage for internally-handled
+cores, and the other one to remove the never used parameter.
 
-/Jarkko
+-- 
+2.19.1
+
