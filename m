@@ -2,125 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4193E3D73DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B673D73E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236246AbhG0K5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:57:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236169AbhG0K5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:57:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83488615E5;
-        Tue, 27 Jul 2021 10:57:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627383471;
-        bh=ASNLmJOpTtp3ybxyMVC2r+LzfoJ5BL/kbqtmTIjL7ow=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fioNlQHhZyFKSGxY9UKhzm6Tb3tevvPiPBSAAMuJDPdknVyr4L8TuPeFE8zzN2Srx
-         XuLb5qR/bEmfjUX0fXcuvY3cuxfm4JKfCGd+O7v91AFuGW8eXwGiOpSFjCqKOjeQSO
-         U066wW0R3/29FdxISXXoa48iW0e7zOjR05rkk9K8=
-Date:   Tue, 27 Jul 2021 12:57:49 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Filip Schauer <filip@mg6.at>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers core: Fix oops when driver probe fails
-Message-ID: <YP/mrfsyUrR576FO@kroah.com>
-References: <20210727104035.A03301F01285@dd38112.kasserver.com>
+        id S236347AbhG0K7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236169AbhG0K7S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:59:18 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7734CC061757;
+        Tue, 27 Jul 2021 03:59:17 -0700 (PDT)
+Received: from hillosipuli.retiisi.eu (89-27-100-251.bb.dnainternet.fi [89.27.100.251])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id C00531B00238;
+        Tue, 27 Jul 2021 13:59:13 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1627383553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FnxEodskcXSYQ/A+/Q1PIrn4pOXRcxd+x5S5f3m29O0=;
+        b=dlvdvfyM5HBf224ix/CqeA2GGbTkZzdYYMto0uK8tS1r6F33cZHs9bC9PH15tfvSM3nHqw
+        IMPfDnUxSI+aJJUB14G/2BTtz6YmDuJJNtV6deJXB/EZ9oBQe/sqpiy9yrcSOpPCtCcrgg
+        FA6cp/q2onlExWlMwL9EBSIXidcV+Scp5iRTflbmJrm91itr1NV2B3k5//giZZdPs3SJv4
+        j/0RWWAJKDoF2LFTpVElQ00N5KjUXZOwxxLQgmdj9qcRQtNwHvIKc7gZn419tKepyhwbsQ
+        notvNt+uwq8FC/gTK4sK5PVVAnOLnyhiJsrXLQdMk4C2ZAsIWwRpI/CmcB3M8A==
+Received: from valkosipuli.localdomain (valkosipuli.localdomain [IPv6:fd35:1bc8:1a6:d3d5::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 29910634C87;
+        Tue, 27 Jul 2021 13:58:04 +0300 (EEST)
+Received: from localhost ([127.0.0.1] helo=valkosipuli.retiisi.eu)
+        by valkosipuli.localdomain with esmtp (Exim 4.92)
+        (envelope-from <sakari.ailus@iki.fi>)
+        id 1m8Kn8-0001I3-Ef; Tue, 27 Jul 2021 13:58:30 +0300
+Date:   Tue, 27 Jul 2021 13:58:30 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v3] dt-binding: media: document ON Semi AR0521 sensor
+ bindings
+Message-ID: <20210727105830.GH3@valkosipuli.retiisi.eu>
+References: <m37dhkdrat.fsf@t19.piap.pl>
+ <YP9ccgd7WNpHuLgG@pendragon.ideasonboard.com>
+ <m3o8aoavrv.fsf@t19.piap.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210727104035.A03301F01285@dd38112.kasserver.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m3o8aoavrv.fsf@t19.piap.pl>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1627383553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FnxEodskcXSYQ/A+/Q1PIrn4pOXRcxd+x5S5f3m29O0=;
+        b=u2lYg9uFnZypc/EKVxG7GzzKr3bdWW512fhapacOQRi58CRAJRb8PLKtLqyEnyh5lhULvI
+        eXcaGfcQHmLCWQIJZAel+oKkYJkIU5S8ALfcX6tIC8IANZukOcZwkNcj5YvPHhCN/YzwQP
+        VEAVvCdKBgxCzMVJHB9Og5feF8Dph3oUKS94N3m9hDrx45UpGt47OEeZ/S/6G2gXnq21rx
+        HmbGGpbeqJZjJ5nWnOqR8n+kC32a5KPHgaWlsruWOYrQtqDG3IWCSHQhm3g32+gIOQDsSC
+        aHlZ0HjO6GS5rJmpka0gQ5t+WcQHJBaaZawKolkhTCCm4I49jyQUbDRr0B6XFA==
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1627383553; a=rsa-sha256;
+        cv=none;
+        b=jaRzm/fLepTiV1ksVrLPYto69e+WIoiA7JgznMInoWBwf6QXLPSRyMRjwMke3SiSenDOMi
+        0CgjuMEMQE4KfZMbdRC6+mmtSk8QriJCvOL8HSyuhi0FfGlygUoPRKL5JEyaynBG3vzqWW
+        a0VgIofuELydwKQmF5ao0W+IulOUnX3SDXX1twDEIa2OALuI6kcP4/lYYu6gT+2MV01mlX
+        xb1c9SUkWmzJm+ZnLd3KHNL6LmKhPB9/CVGAPVg3EinDGJMoest39ZfulaQUsrwV+Br5Mn
+        rhYYCo0M/a1t9Fa1OB1fz3/OaMnmKZfXCXQKW4XGs6OQl9SZFsvBDkoRBYxYBA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 12:40:35PM +0200, Filip Schauer wrote:
-> dma_range_map is freed to early, which might cause an oops when
-> a driver probe fails.
->  Call trace:
->   is_free_buddy_page+0xe4/0x1d4
->   __free_pages+0x2c/0x88
->   dma_free_contiguous+0x64/0x80
->   dma_direct_free+0x38/0xb4
->   dma_free_attrs+0x88/0xa0
->   dmam_release+0x28/0x34
->   release_nodes+0x78/0x8c
->   devres_release_all+0xa8/0x110
->   really_probe+0x118/0x2d0
->   __driver_probe_device+0xc8/0xe0
->   driver_probe_device+0x54/0xec
->   __driver_attach+0xe0/0xf0
->   bus_for_each_dev+0x7c/0xc8
->   driver_attach+0x30/0x3c
->   bus_add_driver+0x17c/0x1c4
->   driver_register+0xc0/0xf8
->   __platform_driver_register+0x34/0x40
->   ...
+Hi Krzysztof,
+
+On Tue, Jul 27, 2021 at 12:36:20PM +0200, Krzysztof Hałasa wrote:
+> Hi Laurent,
 > 
-> This issue is introduced by commit d0243bbd5dd3 ("drivers core:
-> Free dma_range_map when driver probe failed"). It frees
-> dma_range_map before the call to devres_release_all, which is too
-> early. The solution is to free dma_range_map only after
-> devres_release_all.
+> Laurent Pinchart <laurent.pinchart@ideasonboard.com> writes:
 > 
-> Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe
-> failed")
-> Signed-off-by: Filip Schauer <filip@mg6.at>
-> ---
->  drivers/base/dd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> >> +        properties:
+> >> +          data-lanes:
+> >> +            anyOf:
+> >> +              - items:
+> >> +                  - const: 1
+> >> +              - items:
+> >> +                  - const: 1
+> >> +                  - const: 2
+> >> +              - items:
+> >> +                  - const: 1
+> >> +                  - const: 2
+> >> +                  - const: 3
+> >> +                  - const: 4
+> >
+> > As the sensor also supports an HiSPi output, I would add the bus-type
+> > property:
+> >
+> >           data-lanes:
+> > 	    const: 4
 > 
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index daeb9b5763ae..437cd61343b2 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -653,8 +653,6 @@ static int really_probe(struct device *dev, struct
-> device_driver *drv)
->  	else if (drv->remove)
->  		drv->remove(dev);
->  probe_failed:
-> - kfree(dev->dma_range_map);
-> - dev->dma_range_map = NULL;
->  	if (dev->bus)
->  		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
->  					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
-> @@ -662,6 +660,8 @@ static int really_probe(struct device *dev, struct
-> device_driver *drv)
->  	device_links_no_driver(dev);
->  	devres_release_all(dev);
->  	arch_teardown_dma_ops(dev);
-> + kfree(dev->dma_range_map);
-> + dev->dma_range_map = NULL;
->  	driver_sysfs_remove(dev);
->  	dev->driver = NULL;
->  	dev_set_drvdata(dev, NULL);
-> -- 
-> 2.25.1
+> Is there any example of this? I'm not sure how should it it look like.
+> Something like the following?
 > 
+>         properties:
+>          data-lanes:
+>             anyOf:
+>               - items:
+>                   - const: 1
+>               - items:
+>                   - const: 1
+>                   - const: 2
+>               - items:
+>                   - const: 1
+>                   - const: 2
+>                   - const: 3
+>                   - const: 4
+>           bus-type:
+>             data-lanes:
+>               const: 4
 
-Hi,
+I think Laurent meant:
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+	    bus-type:
+	      const: 4
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+This way the bindings can be later amended with HiSPi support without
+relying on defaults. Albeit the other busses in practice almost never end
+up being used even if supported, apart from the standard BT.601, BT.656 and
+CSI-2.
 
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
+Either way is fine IMO.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+> 
+> And... HiSPi would need additional code in the driver. And preferably
+> some testing. I think I'd prefer to have DT and the driver staying in
+> some sort of sync. Also, I'm uncertain about the syntax and the meaning
+> of such, apparently redundant, construct. Nor about its relation to
+> HiSPi. An example would be welcome.
 
-thanks,
+No need to add support for the driver.
 
-greg k-h's patch email bot
+-- 
+Sakari Ailus
