@@ -2,173 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C276C3D722F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B171C3D723A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236087AbhG0JmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236046AbhG0JmW (ORCPT
+        id S236021AbhG0Jne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:43:34 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:59605 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235955AbhG0Jnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:42:22 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0D7C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:42:21 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id y12so6463424edo.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:42:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8fwQRqMvjgAY6jqV3zlS3GTvqGBBIFqRUeOfjbqNkn4=;
-        b=Vgfr+F5s6Bc5u+uBdMFEhmPySf4LlqpmA8B3AA57fdSa5RwUSGJbIA6tW/1gVcaXOU
-         Vo7X6tgClf+huAZ2z6IUZubQy5E7JzTpiWc2YEhbw46JuKlohm1vKn3zNdJG5ZAW8UAd
-         UsIMO676lnPLuTnVA+C6Na7p2LQ0GHrw5luy8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8fwQRqMvjgAY6jqV3zlS3GTvqGBBIFqRUeOfjbqNkn4=;
-        b=iEb3bJ3kpEud+7oMr3uC0QEs+5yOdxa7WZwic/DX4NBCeDihvVKxy/gz+XckcMqlyO
-         q0NrH0X6Tpc6dBUMvLhA+GTnSlPokIQbW26Aon7eiLxML4r9YAfMw0sb9fSqPkNVqO6V
-         7AZrD0aPxGpjQsb0FqrY5tmdeIkh2TmhJvOnn0ynY0r8WhiD8cLZ6xsybtLpRNOn9sNe
-         x2C+EouK0ctOQjh+ZuEmm4isCbsP5CrZ8Tu70XDbuBJOUMbTYnDt/IA8AvZtt5SZWjl9
-         y2pT7kbGtN9T/uI53XHdmhbk0G8EPGJ+Rk3BeAY3Ui+zURfQpcIN6oHVe6SzCf0asWtZ
-         /Uwg==
-X-Gm-Message-State: AOAM5323gWLTtdBMZ8bPtEfVNwm/LrUuqXNBH5EP4fHpWI47lHZY0KBw
-        PIoOKPPiX6dUQQRjdFz32loeD8u2gHo8jd+KcOdygA==
-X-Google-Smtp-Source: ABdhPJyeCw9Vo5e9UrsFOswe3Y1tnwFbw3IAOf1WcRCfMxjGuFl09sckUW6CTR3uJUSW6D+U6LZrWYW/ZJWeDClExRU=
-X-Received: by 2002:a05:6402:430b:: with SMTP id m11mr7510996edc.55.1627378940202;
- Tue, 27 Jul 2021 02:42:20 -0700 (PDT)
+        Tue, 27 Jul 2021 05:43:32 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210727094331euoutp012724c9afac717adc6c0864989c265867~VnJazSxHM1629516295euoutp01h
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 09:43:31 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210727094331euoutp012724c9afac717adc6c0864989c265867~VnJazSxHM1629516295euoutp01h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1627379011;
+        bh=Dtrq29VY/2TjbyC6nggbrf8kmghWjyjBq/HFm/fAsZU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=CweXAzvqFEA5zovzBCDtvLo4JQ2O5w78hYTYhRPAEblz6p0kNrmuvLqmDdObcQaWy
+         jUjAP07cnCuCZHfKMCawlI/KUDy2FM1ovlkB09ROqfQimWckT5fDkyoQhdufcyZOoO
+         UFOzGXf+nw/kS1rc822Fwy+VxB6cfImMNg5kvuZs=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210727094330eucas1p2d29edc0ec1d5014cff1103f65d32f1c3~VnJaK-MH73249832498eucas1p2v;
+        Tue, 27 Jul 2021 09:43:30 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 5E.60.56448.245DFF06; Tue, 27
+        Jul 2021 10:43:30 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210727094330eucas1p11f9927c305e4cf4a2d5eda067c7a5a46~VnJZsoP0x1958219582eucas1p1U;
+        Tue, 27 Jul 2021 09:43:30 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210727094330eusmtrp23169e0afbff45cb974e3631b3f755c37~VnJZrbCiV2985629856eusmtrp2_;
+        Tue, 27 Jul 2021 09:43:30 +0000 (GMT)
+X-AuditID: cbfec7f5-d53ff7000002dc80-2b-60ffd542be15
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 26.05.20981.245DFF06; Tue, 27
+        Jul 2021 10:43:30 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210727094329eusmtip2730d4842120e33c3a321a7a52e78ea06~VnJZZReg22043020430eusmtip2x;
+        Tue, 27 Jul 2021 09:43:29 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH net-next v15 0/3] AX88796C SPI Ethernet Adapter
+Date:   Tue, 27 Jul 2021 11:43:22 +0200
+Message-Id: <20210727094325.9189-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210720134525.563936-1-maxime@cerno.tech> <20210720134525.563936-5-maxime@cerno.tech>
-In-Reply-To: <20210720134525.563936-5-maxime@cerno.tech>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Tue, 27 Jul 2021 15:12:09 +0530
-Message-ID: <CAMty3ZD5rpYHtW-Rs4i=XvBmiVEaeWNu1j=QE3mFJTjSPJTpxQ@mail.gmail.com>
-Subject: Re: [PATCH 04/10] drm/bridge: Document the probe issue with MIPI-DSI bridges
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Organization: Samsung R&D Institute Poland
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIKsWRmVeSWpSXmKPExsWy7djP87pOV/8nGFz/pm5x/u4hZouNM9az
+        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2px89AKRotNj6+xWlzeNYfN
+        Ysb5fUwWh6buZbRYe+Quu8WxBWIWrXuPsDsIely+dpHZY8vKm0weO2fdZffYtKqTzWPzknqP
+        nTs+M3n0bVnF6PF5k1wARxSXTUpqTmZZapG+XQJXxpcf+5gKbhpVbFue28B4Ur2LkZNDQsBE
+        4uKDh6xdjFwcQgIrGCVebJnMBuF8YZRYsb4XyvnMKNG1cC4zTMuBLZ+gWpYzSvxdOY8RwnnO
+        KPHk9gV2kCo2AUeJ/qUnwKpEBO4xS6xvfwBWxSywj1Fi570pYLOEBewlPl44DdbBIqAq0fv+
+        BRuIzStgJTHr7k82iH3yEu3Lt0PFBSVOznzCAmLzC2hJrGm6DmYzA9U0b53NDLJAQmAxp8Si
+        d6vYIZpdJA48uc4IYQtLvDq+BSouI/F/53ymLkYOILteYvIkM4jeHkaJbXN+sEDUWEvcOfeL
+        DaSGWUBTYv0ufYiwo8Th+dOYIVr5JG68FYQ4gU9i0rbpUGFeiY42IYhqFYl1/XugBkpJ9L5a
+        AXWMh8SxzvfsExgVZyF5bBaSZ2Yh7F3AyLyKUTy1tDg3PbXYOC+1XK84Mbe4NC9dLzk/dxMj
+        MNWd/nf86w7GFa8+6h1iZOJgPMQowcGsJMLrsOJ3ghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHe
+        XVvXxAsJpCeWpGanphakFsFkmTg4pRqY6v0mSC+yOPnflqVa0/2dg33CIo/1f74lvvt5LHfn
+        Hp+UTad3vdJdaDFdIv7KQi2Z6OT6K8+u/2ANfGh+Pdvup0WKusdSk4tLl5ZYacWbP+K9V9kw
+        5S973AubNdX1p8+tN485k8M5U4Cv+2ncqWjJtC8mTb8tj7LrKtV+nPgnrovzecvhlsd8vXp3
+        pH46ychpaUdJKPbqbL18780XBb+0DSJ3s/jb+IW6XpzYaxhjO2HO7CNHvjA4sB7KfHlvB7+N
+        oqe2QYhe/2rrTqlGliOFU8R1eQ6fmfnca9bVDxziL8Lbf1Q83lr91tcl8Fe6XuPNynzX0+sP
+        N0XvifLa8G05Q0mcwErts3H/c82nyoQosRRnJBpqMRcVJwIAzQYlP+QDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJIsWRmVeSWpSXmKPExsVy+t/xe7pOV/8nGPw+zGJx/u4hZouNM9az
+        Wsw538JiMf/IOVaLRe9nsFpce3uH1aL/8Wtmi/PnN7BbXNjWx2px89AKRotNj6+xWlzeNYfN
+        Ysb5fUwWh6buZbRYe+Quu8WxBWIWrXuPsDsIely+dpHZY8vKm0weO2fdZffYtKqTzWPzknqP
+        nTs+M3n0bVnF6PF5k1wAR5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJpZ6hsXmslZGpkr6d
+        TUpqTmZZapG+XYJexpcf+5gKbhpVbFue28B4Ur2LkZNDQsBE4sCWT6xdjFwcQgJLGSUOnP/G
+        0sXIAZSQklg5Nx2iRljiz7UuNoiap4wS33dPZwVJsAk4SvQvPQHWLCLwhlmi6d5bdhCHWWAf
+        o8T+o4vZQaqEBewlPl44DWazCKhK9L5/wQZi8wpYScy6+5MNYoW8RPvy7VBxQYmTM5+AXcEs
+        oC6xfp4QSJhfQEtiTdN1FhCbGai8eets5gmMArOQdMxC6JiFpGoBI/MqRpHU0uLc9NxiI73i
+        xNzi0rx0veT83E2MwDjdduznlh2MK1991DvEyMTBeIhRgoNZSYTXYcXvBCHelMTKqtSi/Pii
+        0pzU4kOMpkAfTGSWEk3OByaKvJJ4QzMDU0MTM0sDU0szYyVxXpMja+KFBNITS1KzU1MLUotg
+        +pg4OKUamBImL/Dcsr9h7e+M9V73ErPDNA6Hq54885azVrn26iRnLZ1b8mynXiitWO9wesrc
+        DTq/5vy9y9v+9i+fjb06a8zeUFv5U2eF3rDx+agrL5qke93i3Zv44lvxUYoCDOnLNztLbtK5
+        VNAbt3iG2h5ppz3v7nvuvfjbcpfD0k1Fb6zNvHV3v2C++qX7UMbh313Nczmq85XU/571yawJ
+        5P6cpNDpq/7jnO0T+UUFZz6eOHSWZ+Le909L0va989qSErhK3Y7x2et+Ru7/38/4ylyvLfnU
+        cL/Rw1yId0+NRjJP8oep03f3dGVMq63gClmipTXtxgafYzevzhNMCMkz6Hk0QXZOuOVepccC
+        Bj0ep2aUlyqxFGckGmoxFxUnAgB6ZYXHXAMAAA==
+X-CMS-MailID: 20210727094330eucas1p11f9927c305e4cf4a2d5eda067c7a5a46
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210727094330eucas1p11f9927c305e4cf4a2d5eda067c7a5a46
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210727094330eucas1p11f9927c305e4cf4a2d5eda067c7a5a46
+References: <CGME20210727094330eucas1p11f9927c305e4cf4a2d5eda067c7a5a46@eucas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 7:15 PM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Interactions between bridges, panels, MIPI-DSI host and the component
-> framework are not trivial and can lead to probing issues when
-> implementing a display driver. Let's document the various cases we need
-> too consider, and the solution to support all the cases.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
->  Documentation/gpu/drm-kms-helpers.rst |  6 +++
->  drivers/gpu/drm/drm_bridge.c          | 60 +++++++++++++++++++++++++++
->  2 files changed, 66 insertions(+)
->
-> diff --git a/Documentation/gpu/drm-kms-helpers.rst b/Documentation/gpu/drm-kms-helpers.rst
-> index 10f8df7aecc0..ec2f65b31930 100644
-> --- a/Documentation/gpu/drm-kms-helpers.rst
-> +++ b/Documentation/gpu/drm-kms-helpers.rst
-> @@ -157,6 +157,12 @@ Display Driver Integration
->  .. kernel-doc:: drivers/gpu/drm/drm_bridge.c
->     :doc: display driver integration
->
-> +Special Care with MIPI-DSI bridges
-> +----------------------------------
-> +
-> +.. kernel-doc:: drivers/gpu/drm/drm_bridge.c
-> +   :doc: special care dsi
-> +
->  Bridge Operations
->  -----------------
->
-> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> index c9a950bfdfe5..81f8dac12367 100644
-> --- a/drivers/gpu/drm/drm_bridge.c
-> +++ b/drivers/gpu/drm/drm_bridge.c
-> @@ -95,6 +95,66 @@
->   * documentation of bridge operations for more details).
->   */
->
-> +/**
-> + * DOC: special care dsi
-> + *
-> + * The interaction between the bridges and other frameworks involved in
-> + * the probing of the display driver and the bridge driver can be
-> + * challenging. Indeed, there's multiple cases that needs to be
-> + * considered:
-> + *
-> + * - The display driver doesn't use the component framework and isn't a
-> + *   MIPI-DSI host. In this case, the bridge driver will probe at some
-> + *   point and the display driver should try to probe again by returning
-> + *   EPROBE_DEFER as long as the bridge driver hasn't probed.
-> + *
-> + * - The display driver doesn't use the component framework, but is a
-> + *   MIPI-DSI host. The bridge device uses the MIPI-DCS commands to be
-> + *   controlled. In this case, the bridge device is a child of the
-> + *   display device and when it will probe it's assured that the display
-> + *   device (and MIPI-DSI host) is present. The display driver will be
-> + *   assured that the bridge driver is connected between the
-> + *   &mipi_dsi_host_ops.attach and &mipi_dsi_host_ops.detach operations.
-> + *   Therefore, it must run mipi_dsi_host_register() in its probe
-> + *   function, and then run drm_bridge_attach() in its
-> + *   &mipi_dsi_host_ops.attach hook.
-> + *
-> + * - The display driver uses the component framework and is a MIPI-DSI
-> + *   host. The bridge device uses the MIPI-DCS commands to be
-> + *   controlled. This is the same situation than above, and can run
-> + *   mipi_dsi_host_register() in either its probe or bind hooks.
-> + *
-> + * - The display driver uses the component framework and is a MIPI-DSI
-> + *   host. The bridge device uses a separate bus (such as I2C) to be
-> + *   controlled. In this case, there's no correlation between the probe
-> + *   of the bridge and display drivers, so care must be taken to avoid
-> + *   an endless EPROBE_DEFER loop, with each driver waiting for the
-> + *   other to probe.
-> + *
-> + * The ideal pattern to cover the last item (and all the others in the
-> + * display driver case) is to split the operations like this:
-> + *
-> + * - In the display driver must run mipi_dsi_host_register() and
-> + *   component_add in its probe hook. It will make sure that the
-> + *   MIPI-DSI host sticks around, and that the driver's bind can be
-> + *   called.
-> + *
-> + * - In its probe hook, the bridge driver must not try to find its
-> + *   MIPI-DSI host or register as a MIPI-DSI device. As far as the
-> + *   framework is concerned, it must only call drm_bridge_add().
-> + *
-> + * - In its bind hook, the display driver must try to find the bridge
-> + *   and return -EPROBE_DEFER if it doesn't find it. If it's there, it
-> + *   must call drm_bridge_attach(). The MIPI-DSI host is now functional.
+This is a driver for AX88796C Ethernet Adapter connected in SPI mode as
+found on ARTIK5 evaluation board. The driver has been ported from a
+v3.10.9 vendor kernel for ARTIK5 board.
 
-There is an another problem occur for this scenario in the case of kms
-hotplug driver, sun6i_mipi_dsi.c. When host attach wait till drm
-device pointer found and drm device pointer would found only when bind
-done, and bind would complete only when &drm_bridge_funcs.attach hooks
-are complete. But, If DSI driver is fully bridge driven then this
-attach in bind will trigger panel_bridge hook attach and at this point
-we cannot get panel_bridge at all which indeed second attach would
-would failed.
+Changes in v15:
+  - rebased onto net-next 5.14-rc2 (268ca4129d8d)
+  - added explicit cast of le16_to_cpus() argument to u16*
+    (reported by: kernel test robot <lkp@intel.com>)
+  - removed invalid and superfluous call to u64_stats_init()
+    (reported by: Jakub Kicinski <kuba@kernel.org>)
+  
+Changes in v14:
+  - rebased onto net-next 5.14-rc1 (0d6835ffe50c)
 
-This is one of the reason I'm trying to use drm_bridge_attach host
-attach itself instead of component bind, not yet succeeded.
+Changes in v13:
+  - rebased onto net-next (ebbf5fcb94a7)
+  - minor fix: use u64_stats_update_{begin_irqsave,end_irqrestore}
+  - minor fix: initialize the syncp lock
 
-Thanks,
-Jagan.
+Changes in v12:
+  - rebased to net-next-5.13
+  - added missing spaces after commas
+  - corrected indentation
+
+Changes in v11:
+  - changed stat counters to 64-bit
+  - replaced WARN_ON(!mutex_is_locked()) with lockdep_assert_held()
+  - replaced ax88796c_free_skb_queue() with __skb_queue_purge()
+  - added cancel_work_sync() for ax_work
+  - removed unused fields of struct skb_data
+  - replaced MAX() with max() from minmax.h
+  - rebased to net-next (resend)
+
+Changes in v10:
+  - removed unused variable
+ 
+Changes in v9:
+  - used pskb_extend_head()
+  - used ethtool private flags instead of tunables to switch SPI
+    compression
+  - changed
+    - alloc_skb() to netdev_alloc(skb)
+    - __pskb_trim() to pskb_trim()
+  - removed:
+    - chages to skb->truesize
+    - unnecessary casting to short
+    - return f() in a void function
+    - IRQF_SHARED flags
+    - unnecessary memset(0) of kzalloc()ed buffer
+    - unused endiannes detection
+    - unnecessary __packed attribute for some structures
+  - added:
+    - temporary variable in AX_WRITE/READ sequences
+    - missin mutex_unlock() in error paths
+  - axspi_read_reg() returns a constant value in case of an error
+  
+Changes in v8:
+  - fixed the entry in MAINTAINERS
+  - removed unnecessary netif_err()
+  - changed netif_rx() to netif_rx_ni() for code running in a process
+    context
+  - added explicit type casting for ~BIT()
+
+Changes in v7:
+  - removed duplicate code
+  - moved a constant buffer definition away from a header file
+
+Changes in v6:
+  - fixed typos in Kconfig
+  - checked argument value in ax88796c_set_tunable
+  - updated tags in commit messages
+
+Changes in v5:
+  - coding style (local variable declarations)
+  - added spi0 node in the DT binding example and removed
+    interrupt-parent
+  - removed comp module parameter
+  - added CONFIG_SPI_AX88796C_COMPRESSION option to set the initial
+    state of SPI compression
+  - introduced new ethtool tunable "spi-compression" to controll SPI
+    transfer compression
+  - removed unused fields in struct ax88796c_device
+  - switched from using buffers allocated on stack for SPI transfers
+    to DMA safe ones embedded in struct ax_spi and allocated with
+    kmalloc()
+
+Changes in v4:
+  - fixed compilation problems in asix,ax88796c.yaml and in
+  ax88796c_main.c introduced in v3
+
+Changes in v3:
+  - modify vendor-prefixes.yaml in a separate patch
+  - fix several problems in the dt binding
+    - removed unnecessary descriptions and properties
+    - changed the order of entries
+    - fixed problems with missing defines in the example
+  - change (1 << N) to BIT(N), left a few (0 << N)
+  - replace ax88796c_get_link(), ax88796c_get_link_ksettings(),
+    ax88796c_set_link_ksettings(), ax88796c_nway_reset(),
+    ax88796c_set_mac_address() with appropriate kernel functions.
+  - disable PHY auto-polling in MAC and use PHYLIB to track the state
+    of PHY and configure MAC
+  - propagate return values instead of returning constants in several
+    places
+  - add WARN_ON() for unlocked mutex
+  - remove local work queue and use the system_wq
+  - replace phy_connect_direct() with phy_connect() and move
+    devm_register_netdev() to the end of ax88796c_probe()
+    (Unlike phy_connect_direct() phy_connect() does not crash if the
+    network device isn't registered yet.)
+  - remove error messages on ENOMEM
+  - move free_irq() to the end of ax88796c_close() to avoid race
+    condition
+  - implement flow-control
+
+Changes in v2:
+  - use phylib
+  - added DT bindings
+  - moved #includes to *.c files
+  - used mutex instead of a semaphore for locking
+  - renamed some constants
+  - added error propagation for several functions
+  - used ethtool for dumping registers
+  - added control over checksum offloading
+  - remove vendor specific PM
+  - removed macaddr module parameter and added support for reading a MAC
+    address from platform data (e.g. DT)
+  - removed dependency on SPI from NET_VENDOR_ASIX
+  - added an entry in the MAINTAINERS file
+  - simplified logging with appropriate netif_* and netdev_* helpers
+  - lots of style fixes
+
+Łukasz Stelmach (3):
+  dt-bindings: vendor-prefixes: Add asix prefix
+  dt-bindings: net: Add bindings for AX88796C SPI Ethernet Adapter
+  net: ax88796c: ASIX AX88796C SPI Ethernet Adapter Driver
+
+ .../bindings/net/asix,ax88796c.yaml           |   73 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    6 +
+ drivers/net/ethernet/Kconfig                  |    1 +
+ drivers/net/ethernet/Makefile                 |    1 +
+ drivers/net/ethernet/asix/Kconfig             |   35 +
+ drivers/net/ethernet/asix/Makefile            |    6 +
+ drivers/net/ethernet/asix/ax88796c_ioctl.c    |  239 ++++
+ drivers/net/ethernet/asix/ax88796c_ioctl.h    |   26 +
+ drivers/net/ethernet/asix/ax88796c_main.c     | 1148 +++++++++++++++++
+ drivers/net/ethernet/asix/ax88796c_main.h     |  568 ++++++++
+ drivers/net/ethernet/asix/ax88796c_spi.c      |  115 ++
+ drivers/net/ethernet/asix/ax88796c_spi.h      |   69 +
+ 13 files changed, 2289 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
+ create mode 100644 drivers/net/ethernet/asix/Kconfig
+ create mode 100644 drivers/net/ethernet/asix/Makefile
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_ioctl.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_main.h
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.c
+ create mode 100644 drivers/net/ethernet/asix/ax88796c_spi.h
+
+-- 
+2.26.2
+
