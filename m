@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799453D768F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EE73D76E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhG0NaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232268AbhG0N2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:28:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 884A361A60;
-        Tue, 27 Jul 2021 13:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1627392502;
-        bh=INvQri55joG33IWmMLux0huoNxZaF8kK3K11aKpnvPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZVhx53+sl8wU1q7ufcmKEDrQcp4iUdQJhYtBZDvrfkAHU5wBE7RyQ2gns+7kpSV62
-         sO+bfd/z3hcY7TdX7ndQpbsSV8/ohlHxdHpKOf6Mc85UbTimr0NJxOMpWXYbCG4Dr9
-         ra+mNuvPz56KgDDl6jKb89HejxXG5MCm+ErgSOpQ=
-Date:   Tue, 27 Jul 2021 15:28:20 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.13 06/21] USB: core: Fix incorrect pipe
- calculation in do_proc_control()
-Message-ID: <YQAJ9LzK8S7tJqwR@kroah.com>
-References: <20210727131908.834086-1-sashal@kernel.org>
- <20210727131908.834086-6-sashal@kernel.org>
+        id S236701AbhG0Nfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232186AbhG0Nfj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:35:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F92C061757;
+        Tue, 27 Jul 2021 06:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FfyHKXilEVpvQwZNUQeVcTBtETi4MM5qnXqsygqJ5GM=; b=clx/HWdtuYepQP+w777uZzHziW
+        hJ0u9tgrLOXfZAeH9tArRyAk8l2dGOF70RZ9q0ewZI13VNqKP+1AiS7SYWLkB3ckl7g2eS6GNzERU
+        frWGN/FlQQhkAxnX/J11GQ1cTDFE8KZdZ4q9/f7Mw8Vp0GaVQ1Yrytu+DDRQxj0Y6u58E/vOSeJyy
+        WZg/JqJEkd7GDsijv8jIlzp4luPxFiu9haUZu4Y6uY4zcEND2L2UEhnpS6d1XTS3ZV1HbyB9W/3HY
+        dH4PdLqYtLaGi56pJA3mtqQUcz2RC/P5O61vGpO9NYfgpn9/Qfj/52z5xtp0e3BB1HkyxA00Yy2xl
+        p1++rhAg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8N9X-00F2SB-AH; Tue, 27 Jul 2021 13:31:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E40A300233;
+        Tue, 27 Jul 2021 15:29:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E9F982C85C9EB; Tue, 27 Jul 2021 15:29:44 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 15:29:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>, bristot@redhat.com,
+        bsegall@google.com, dietmar.eggemann@arm.com, joshdon@google.com,
+        juri.lelli@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux@rasmusvillemoes.dk, mgorman@suse.de, mingo@kernel.org,
+        rostedt@goodmis.org, valentin.schneider@arm.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH 1/1] sched/fair: improve yield_to vs fairness
+Message-ID: <YQAKSO759lvZurgw@hirez.programming.kicks-ass.net>
+References: <YIlXQ43b6+7sUl+f@hirez.programming.kicks-ass.net>
+ <20210707123402.13999-1-borntraeger@de.ibm.com>
+ <20210707123402.13999-2-borntraeger@de.ibm.com>
+ <20210723093523.GX3809@techsingularity.net>
+ <ddb81bc9-1429-c392-adac-736e23977c84@de.ibm.com>
+ <20210723162137.GY3809@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210727131908.834086-6-sashal@kernel.org>
+In-Reply-To: <20210723162137.GY3809@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 09:18:53AM -0400, Sasha Levin wrote:
-> From: Alan Stern <stern@rowland.harvard.edu>
-> 
-> [ Upstream commit b0863f1927323110e3d0d69f6adb6a91018a9a3c ]
-> 
-> When the user submits a control URB via usbfs, the user supplies the
-> bRequestType value and the kernel uses it to compute the pipe value.
-> However, do_proc_control() performs this computation incorrectly in
-> the case where the bRequestType direction bit is set to USB_DIR_IN and
-> the URB's transfer length is 0: The pipe's direction is also set to IN
-> but it should be OUT, which is the direction the actual transfer will
-> use regardless of bRequestType.
-> 
-> Commit 5cc59c418fde ("USB: core: WARN if pipe direction != setup
-> packet direction") added a check to compare the direction bit in the
-> pipe value to a control URB's actual direction and to WARN if they are
-> different.  This can be triggered by the incorrect computation
-> mentioned above, as found by syzbot.
-> 
-> This patch fixes the computation, thus avoiding the WARNing.
-> 
-> Reported-and-tested-by: syzbot+72af3105289dcb4c055b@syzkaller.appspotmail.com
-> Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-> Link: https://lore.kernel.org/r/20210712185436.GB326369@rowland.harvard.edu
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/usb/core/devio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
-> index 2218941d35a3..73b60f013b20 100644
-> --- a/drivers/usb/core/devio.c
-> +++ b/drivers/usb/core/devio.c
-> @@ -1133,7 +1133,7 @@ static int do_proc_control(struct usb_dev_state *ps,
->  		"wIndex=%04x wLength=%04x\n",
->  		ctrl->bRequestType, ctrl->bRequest, ctrl->wValue,
->  		ctrl->wIndex, ctrl->wLength);
-> -	if (ctrl->bRequestType & 0x80) {
-> +	if ((ctrl->bRequestType & USB_DIR_IN) && ctrl->wLength) {
->  		pipe = usb_rcvctrlpipe(dev, 0);
->  		snoop_urb(dev, NULL, pipe, ctrl->wLength, tmo, SUBMIT, NULL, 0);
->  
-> -- 
-> 2.30.2
-> 
+On Fri, Jul 23, 2021 at 05:21:37PM +0100, Mel Gorman wrote:
 
-This is not needed in any kernel that does not also have 5cc59c418fde
-("USB: core: WARN if pipe direction != setup packet direction"), which
-showed up in 5.14-rc1, so please drop this from all of the AUTOSEL
-trees.
+> I'm still not a fan because vruntime gets distorted. From the docs
+> 
+>    Small detail: on "ideal" hardware, at any time all tasks would have the same
+>    p->se.vruntime value --- i.e., tasks would execute simultaneously and no task
+>    would ever get "out of balance" from the "ideal" share of CPU time
+> 
+> If yield_to impacts this "ideal share" then it could have other
+> consequences.
 
-thanks,
+Note that we already violate this ideal both subtly and explicitly.
 
-greg k-h
+For an example of the latter consider pretty much the entirety of
+place_entity() with GENTLE_FAIR_SLEEPERS being the most egregious
+example.
+
+That said; adding to vruntime will only penalize the task itself, while
+subtracting from vruntime will penalize everyone else. And in that sense
+addition to vruntime is a safe option.
+
+I've not fully considered the case at hand; just wanted to give some
+context.
