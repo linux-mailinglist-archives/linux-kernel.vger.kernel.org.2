@@ -2,107 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898893D747A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5762D3D7480
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 13:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236463AbhG0LmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 07:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        id S236497AbhG0Lmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 07:42:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236108AbhG0LmX (ORCPT
+        with ESMTP id S236087AbhG0Lms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 07:42:23 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A10DC061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 04:42:24 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m8LTZ-0008Fl-7Y; Tue, 27 Jul 2021 13:42:21 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m8LTY-0006DO-EJ; Tue, 27 Jul 2021 13:42:20 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1m8LTY-0004no-DN; Tue, 27 Jul 2021 13:42:20 +0200
-Date:   Tue, 27 Jul 2021 13:42:20 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Finn Thain <fthain@linux-m68k.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH 1/5] nubus: Simplify check in remove callback
-Message-ID: <20210727114220.7drjl6xvvlwetaod@pengutronix.de>
-References: <20210727080840.3550927-1-u.kleine-koenig@pengutronix.de>
- <20210727080840.3550927-2-u.kleine-koenig@pengutronix.de>
- <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
+        Tue, 27 Jul 2021 07:42:48 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B6FC061757;
+        Tue, 27 Jul 2021 04:42:49 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id t2so2053809vsa.11;
+        Tue, 27 Jul 2021 04:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UiUni7xpgdHXOrRF9iI6gE5NM8YW5XZI7ELH7hIFenQ=;
+        b=rPk38B4E0MlngFb2QcusabjaKZm3DrDAnb2U4dQOosK+NFOFLvSiE7JYJhpvHvXnU0
+         VQMMQI7csNAapjcTDX3wKZNySetChjeqe0J1/epzGcdzzZAunRHYUBgW8w8K3Oo83z6/
+         cIr/N0VnhktydzOADXBv/OHM9QCPrgi1iZGO/iEGBBoT0Hgo/WUFE3e7euNhoRE7CDTL
+         Ngik3ALAWWTrxMhawvWGEMFkdBWX1twI37kidJz3WBbZP2gtcGse8HGRoJpwzILcO75B
+         SzF/tAg9L3xd3jaEIaist4sXCAOEQ3nKpSRwj9CNMo70Zsyua1bWZSxCCiSZ1pabXsll
+         NuKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UiUni7xpgdHXOrRF9iI6gE5NM8YW5XZI7ELH7hIFenQ=;
+        b=eHTnR7mb81L8s806x70yoM47IvUGuNiY6FgjnmUnKkJDcqurh7wyjmMsO9OSekshJQ
+         hAIjl0yE6Apr5fWEomHo7gHj+5dEMXS1SncABZlIc5c1J338w4Bqe7wY+0mqnQT6axq/
+         hIPjl/YUj+NQxwYEpCZn7DYqgu2wtkHjkI0dV0sV2z/lMFo2qzoTW6KwIVo1TPRld6kQ
+         Pl6/n3VxB2Kz45ny/pRpkVWsWPsO0sRkHwssvCP3Sn0EJbuU4X1Eo6TCyHA/1sLRpYLU
+         SCuCXrv79LMOO5BPg8GkrID0XzZBSfxqHSiiPQBoG+k01QCyqAGyb6/+ZjVXxX1aGzIR
+         /P0Q==
+X-Gm-Message-State: AOAM531tOXQuh+WUVLsRGvDuWwXuIzykRavecJsvN4VUl002jjMBGX9K
+        LWbKROutZo2CtmK4/fp04Mx0ZIcZweK7/BtsnYo=
+X-Google-Smtp-Source: ABdhPJyNgs/F9FHTUEWc26uUxWMzgGSk+ObR/OGEDvqMxIrnyGIrZvNISzCZUkdwvU7c3zv1WNeGtai0fwBINDZjszw=
+X-Received: by 2002:a05:6102:3231:: with SMTP id x17mr12616993vsf.30.1627386168351;
+ Tue, 27 Jul 2021 04:42:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3qa463uuge64uyhr"
-Content-Disposition: inline
-In-Reply-To: <d74ccd1-116d-9450-5ee4-8d5074998872@linux-m68k.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210708070429.31871-1-sergio.paracuellos@gmail.com>
+ <20210708070429.31871-2-sergio.paracuellos@gmail.com> <20210719075723.GA8818@kessel>
+ <CAMhs-H8QeRcY+EiCrN2Rw1A1-xDdpuDqr-knoQEAcQiTXvdBDw@mail.gmail.com> <CADtm3G50HbOe_0RpWYYOVZSZfSdkF7Z0TXzEfAM0AQUqVgvpNQ@mail.gmail.com>
+In-Reply-To: <CADtm3G50HbOe_0RpWYYOVZSZfSdkF7Z0TXzEfAM0AQUqVgvpNQ@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 27 Jul 2021 13:42:37 +0200
+Message-ID: <CAMhs-H8gVWQpC_vV=TCU6J_VdDaT0dMUgKPN7RTtt92T+4OZqg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] gpiolib: convert 'devprop_gpiochip_set_names' to
+ support multiple gpiochip baks per device
+To:     Gregory Fong <gregory.0xf0@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        John Thomson <git@johnthomson.fastmail.com.au>,
+        NeilBrown <neil@brown.name>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Gregory,
 
---3qa463uuge64uyhr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, Jul 27, 2021 at 9:39 AM Gregory Fong <gregory.0xf0@gmail.com> wrote:
+>
+> On Mon, Jul 19, 2021 at 1:31 AM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> > On Mon, Jul 19, 2021 at 9:57 AM Gregory Fong <gregory.0xf0@gmail.com> wrote:
+> > > On Thu, Jul 08, 2021 at 09:04:27AM +0200, Sergio Paracuellos wrote:
+> > [snip]
+> > > > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> > > > index 27c07108496d..f3f45b804542 100644
+> > > > --- a/drivers/gpio/gpiolib.c
+> > > > +++ b/drivers/gpio/gpiolib.c
+> > > > @@ -382,11 +382,16 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+> > > >       if (count < 0)
+> > > >               return 0;
+> > > >
+> > > > -     if (count > gdev->ngpio) {
+> > > > -             dev_warn(&gdev->dev, "gpio-line-names is length %d but should be at most length %d",
+> > > > -                      count, gdev->ngpio);
+> > > > -             count = gdev->ngpio;
+> > > > -     }
+> > > > +     /*
+> > > > +      * When offset is set in the driver side we assume the driver internally
+> > > > +      * is using more than one gpiochip per the same device. We have to stop
+> > > > +      * setting friendly names if the specified ones with 'gpio-line-names'
+> > > > +      * are less than the offset in the device itself. This means all the
+> > > > +      * lines are not present for every single pin within all the internal
+> > > > +      * gpiochips.
+> > > > +      */
+> > > > +     if (count <= chip->offset)
+> > > > +             return 0;
+> > >
+> > > This case needs a descriptive warning message.  Silent failure to assign
+> > > names here will leave someone confused about what they're doing wrong.
+> >
+> > Ok, I will add something like "All line names are not defined for bank
+> > X.". Or any other suggestion would be also ok :).
+>
+> I'd like this to name the gpio-line-names property like the other
+> warning does.  Not sure there's a good way to generically determine
+> what the bank number is, since some driver might not populate at
+> regular offsets.
+>
+> We do have the count and offset available, so maybe something like
+> "gpio-line-names too short (length <count>), cannot map names for the
+> gpiochip at offset <offset>"?
 
-On Tue, Jul 27, 2021 at 07:50:39PM +1000, Finn Thain wrote:
-> On Tue, 27 Jul 2021, Uwe Kleine-K=F6nig wrote:
->=20
-> > The driver core only calls a remove callback when the device was
-> > successfully bound (aka probed) before. So dev->driver is never NULL.
->=20
-> Are you sure dev->driver is non-NULL for the lifetime of the device?
-> A quick glance at device_reprobe() makes me wonder about that.
+Ok, sounds ok to me to have this warning in this way, thanks.
+>
+> >
+> > >
+> > > >
+> > > >       names = kcalloc(count, sizeof(*names), GFP_KERNEL);
+> > > >       if (!names)
+> > > > @@ -400,8 +405,25 @@ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+> > > >               return ret;
+> > > >       }
+> > > >
+> > > > +     /*
+> > > > +      * When more that one gpiochip per device is used, 'count' can
+> > > > +      * contain at most number gpiochips x chip->ngpio. We have to
+> > > > +      * correctly distribute all defined lines taking into account
+> > > > +      * chip->offset as starting point from where we will assign
+> > > > +      * the names to pins from the 'names' array. Since property
+> > > > +      * 'gpio-line-names' cannot contains gaps, we have to be sure
+> > > > +      * we only assign those pins that really exists since chip->ngpio
+> > > > +      * can be different of the chip->offset.
+> > > > +      */
+> > > > +     count = (count > chip->offset) ? count - chip->offset : count;
+> > > > +     if (count > chip->ngpio) {
+> > >
+> > > In the multiple gpiochip case, if there are 3+ gpiochips this seems like
+> > > it will yield an invalid warning. For example, if there are 3 gpiochips
+> > > (banks 0, 1, and 2), and all gpios are given names in gpio-line-names,
+> > > isn't this condition going to always evaluate to true for bank 1,
+> > > resulting in an invalid warning?  In that case I would think setting
+> > > count to chip->ngpio is the *expected* behavior.
+> > >
+> > > Since that's a "normal" behavior in the multiple gpiochip case, I'm not
+> > > sure there's a simple way to detect an over-long gpio-line-names here
+> > > in this function anymore.
+> >
+> > Yes, in case of multiple chips with all lines names defined this
+> > warning will be displayed but I wanted to maintain the warning for
+> > normal cases and I was not able to find an easy way of distinc that
+> > cases with those having multiple gpiochips internally. So I ended up
+> > in "ok, will be displayed for those special cases and interpreted as
+> > we are just assigning names within an offset along the gpiochips in
+> > the device.". Any other suggestion of course is always welcome :)
+>
+> There are millions of parts with this gpio hardware in the wild; I'd
+> much prefer we didn't issue a warning for every chip using it.
+>
+> If there is a good way to detect the multiple gpiochip case, then that
+> could be used to determine whether to issue the warning.  Otherwise,
+> it seems like it would be better to remove the warning altogether.
 
-Not for the lifetime of the device, but as long as a driver is bound to
-the device. device_reprobe() calls device_driver_detach() after which
-the driver is considered unbound and dev->driver is assigned NULL. (via
-device_driver_detach -> device_release_driver_internal ->
-__device_release_driver)
+I think since this might be kind of "normal scenery" now, and there is
+not an easy way to distinguish between normal and special cases (it
+is?) warning can be safely removed.
 
-> > Apart from that, the compiler might already assume dev->driver being
-> > non-NULL after to_nubus_driver(dev->driver) was called.
->=20
-> I don't understand how a compiler can make that assumption. But then, I=
-=20
-> don't know why compilers do a lot of the things they do...
+>
+> Best regards,
+> Gregory
 
-Ah, you're right, there is no dereference in container_of, so I might
-also be wrong here. I will send a v2 without this last sentence in the
-commit log.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---3qa463uuge64uyhr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmD/8RkACgkQwfwUeK3K
-7Aly9gf/X/9+HHgTAce8RPe1LYj8/3GYbuadCfJ0vOWrFRpxQOdRflGtxFeRhvIl
-4+BchXWByjjnMCH6jkZVgyMdSZQRmHTA266AWnOu4xW+ujr+qX+hlcyFD4p6PI/c
-xFM1HnW8EZESlb/8vbXSNLMMI6e9QbMVXVgNEgyiXNmXhCAW9lL1c8lqop8XS8rB
-d2xvZ35+qVAryL83AjAI74nIOtx99/vrdWZqEMjPQJQS/owTV8hG0UFzKZkjf9bt
-1fiI0u+n3RIHM+rkOLABH9v1lfQZvqQJJHv+jtO06yzHXRuoUS6TEchO3xPyQjot
-uy+j3AhFCJQ8sAyp6f7/tDfROgtB8A==
-=lQGM
------END PGP SIGNATURE-----
-
---3qa463uuge64uyhr--
+Best regards,
+    Sergio Paracuellos
