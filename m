@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5C43D8373
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D35403D8374
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbhG0WyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 18:54:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50114 "EHLO mail.kernel.org"
+        id S232640AbhG0Wzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 18:55:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232506AbhG0WyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 18:54:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8722860F90;
-        Tue, 27 Jul 2021 22:54:22 +0000 (UTC)
+        id S232198AbhG0Wzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 18:55:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BD560EB2;
+        Tue, 27 Jul 2021 22:55:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627426463;
-        bh=FixOnT4n62zd3WCjhcEaUVTcSt68zeKvAj/CsPDOdVM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OwdHcMIazcEPhAYOvmWgnXsgfYMBgos7AHUkMY6nw0KqAHLlpa4CGCBpfupOrN2Vz
-         6e2eWbC6F8qY5nZR9LoDqlQCIXphIXBStWY1o/YQjErUqA/lhHUwtvDrvblayfIvsd
-         DHDjF7VyhWW/7RQXVZHOWwUGjDF+y+hwQyXZPi4oNE7N8TMAwLnlwq3TETPZPOsG1H
-         IVOukfOkGtJ51IxtHDhH3Xa3NxQJMyjntjvFwwZ7Xa+ZpcDDoHJtvcE9XsjLymiwW2
-         oNct7Oyhg4dU1JbcXwBfEWknLATXjMRIJtvsQ10hi1yUfxpCfAhrlcbQRZWJS7uJWb
-         t07DxwttTgLrw==
-Date:   Wed, 28 Jul 2021 07:54:21 +0900
+        s=k20201202; t=1627426545;
+        bh=QkTDByEnE4LCuSQi2L0xJuuRRUXksrvye21QecmaUbQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cHyNZCz2Fr0ND9uYXCCu9ZJk+p+lRu21AaOLRe8kiQelLLnYQTP2/FFtyIrlzVQWU
+         0Eg7D51e4nOPJy5F9aiTffmrub5rVvQFYRKLcPGN+CVzdl32Jbd5iMTA8cLJVJPeKF
+         K+ybH4lXFpbYLpHbnyiy+Gzs+JAdQwU8WBc2J1Bi2SgjJ29/AhrnmeU4QPXgh2dKIZ
+         QWQaygEjIe10V8op5KWyW08Q+Yc9o04goqQQQI68YshMMPdU9fsOgIt5hSIvxEqiaa
+         vMAnJrhTbdbSPIm4i0WSean/1R26kH2FRP4746QzwbsZTTuy+4QS4Da0n/nFAowfEo
+         WpD6PAhzspxyg==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Tom Zanussi <zanussi@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH v2 2/2] tracing: Allow execnames to be passed as args
- for synthetic events
-Message-Id: <20210728075421.7274872181a6b92ce5bfa037@kernel.org>
-In-Reply-To: <20210726092818.7d94027d@oasis.local.home>
-References: <20210722142705.992001628@goodmis.org>
-        <20210722142837.458596338@goodmis.org>
-        <20210723011935.efb25bc4a23ebd567243ed0f@kernel.org>
-        <20210722123234.636d5363@oasis.local.home>
-        <20210723101133.3378369c618c53f2e71d3e4c@kernel.org>
-        <20210722212438.5933e714@rorschach.local.home>
-        <20210724193145.c63b44aa843e05ed9c0b4fdc@kernel.org>
-        <20210725111830.2f424ae3978443241b6d4a2d@kernel.org>
-        <20210725124502.54fa65251b5cd5b76fdf5f19@kernel.org>
-        <20210726092818.7d94027d@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] tracing: Reject string operand in the histogram expression
+Date:   Wed, 28 Jul 2021 07:55:43 +0900
+Message-Id: <162742654278.290973.1523000673366456634.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Jul 2021 09:28:18 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Since the string type can not be the target of the addition / subtraction
+operation, it must be rejected. Without this fix, the string type silently
+converted to digits.
 
-> On Sun, 25 Jul 2021 12:45:02 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > And with this change, hist trigger can correctly detect a string type in
-> > the operand in the expression and rejects it.
-> > 
-> > Thank you,
-> > 
-> > >From 5280d1efe4415a621cf69a1dc4861ab928b0ff1c Mon Sep 17 00:00:00 2001  
-> > From: Masami Hiramatsu <mhiramat@kernel.org>
-> > Date: Sun, 25 Jul 2021 12:34:00 +0900
-> > Subject: [PATCH] tracing: Reject string operand in the histogram expression
-> > 
-> > Since the string type can not be the target of the addition / subtraction
-> > operation, it must be rejected. Without this fix, the string type silently
-> > converted to digits.
-> 
-> Masami, can you send this as a normal patch. My scripts do not work
-> (nor do I plan on having them ever do so) with patches embedded in
-> threads or non-patch emails.
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+---
+ kernel/trace/trace_events_hist.c |   20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-OK, let me resend it.
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index 76e3100a4840..3eea60e2da48 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -65,7 +65,8 @@
+ 	C(INVALID_SORT_MODIFIER,"Invalid sort modifier"),		\
+ 	C(EMPTY_SORT_FIELD,	"Empty sort field"),			\
+ 	C(TOO_MANY_SORT_FIELDS,	"Too many sort fields (Max = 2)"),	\
+-	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),
++	C(INVALID_SORT_FIELD,	"Sort field must be a key or a val"),	\
++	C(INVALID_STR_OPERAND,	"String type can not be an operand in expression"),
+ 
+ #undef C
+ #define C(a, b)		HIST_ERR_##a
+@@ -2183,6 +2184,13 @@ static struct hist_field *parse_unary(struct hist_trigger_data *hist_data,
+ 		ret = PTR_ERR(operand1);
+ 		goto free;
+ 	}
++	if (operand1->flags & HIST_FIELD_FL_STRING) {
++		/* String type can not be the operand of unary operator. */
++		hist_err(file->tr, HIST_ERR_INVALID_STR_OPERAND, errpos(str));
++		destroy_hist_field(operand1, 0);
++		ret = -EINVAL;
++		goto free;
++	}
+ 
+ 	expr->flags |= operand1->flags &
+ 		(HIST_FIELD_FL_TIMESTAMP | HIST_FIELD_FL_TIMESTAMP_USECS);
+@@ -2284,6 +2292,11 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 		operand1 = NULL;
+ 		goto free;
+ 	}
++	if (operand1->flags & HIST_FIELD_FL_STRING) {
++		hist_err(file->tr, HIST_ERR_INVALID_STR_OPERAND, errpos(operand1_str));
++		ret = -EINVAL;
++		goto free;
++	}
+ 
+ 	/* rest of string could be another expression e.g. b+c in a+b+c */
+ 	operand_flags = 0;
+@@ -2293,6 +2306,11 @@ static struct hist_field *parse_expr(struct hist_trigger_data *hist_data,
+ 		operand2 = NULL;
+ 		goto free;
+ 	}
++	if (operand2->flags & HIST_FIELD_FL_STRING) {
++		hist_err(file->tr, HIST_ERR_INVALID_STR_OPERAND, errpos(str));
++		ret = -EINVAL;
++		goto free;
++	}
+ 
+ 	ret = check_expr_operands(file->tr, operand1, operand2);
+ 	if (ret)
 
-Thanks,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
