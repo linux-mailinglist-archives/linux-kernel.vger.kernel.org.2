@@ -2,269 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5E63D6F04
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B743D6EEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 08:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhG0GPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 02:15:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26682 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235867AbhG0GP1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 02:15:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1627366528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=//e0ERJu+bgqa9Pn7rPOIm8mUclcqfWjSdesgkJ2mrg=;
-        b=FI77mlSszILyKGXACH22Oq0NjSoL3K1tbZZMjK8bt1Fh/vJKuVpXWPu+yyEx2aHuSDjmH7
-        tUqqG2KgmFevT2jUwyHgU0EeYXbsRxGco5Z9RZvyddPbIujJHBPOl4BfEMo1vqvGtJEZMd
-        Rd5wPoTftS6O7dVtJkQhqTS+wlRjDdE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-WBEPdo1BNdKeofiXqUYXrg-1; Tue, 27 Jul 2021 02:15:24 -0400
-X-MC-Unique: WBEPdo1BNdKeofiXqUYXrg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5A56804020;
-        Tue, 27 Jul 2021 06:15:21 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-195.bne.redhat.com [10.64.54.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 868439C8CF;
-        Tue, 27 Jul 2021 06:15:16 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, anshuman.khandual@arm.com,
-        gerald.schaefer@linux.ibm.com, aneesh.kumar@linux.ibm.com,
-        christophe.leroy@csgroup.eu, cai@lca.pw, catalin.marinas@arm.com,
-        will@kernel.org, akpm@linux-foundation.org, chuhu@redhat.com,
-        shan.gavin@gmail.com
-Subject: [PATCH v4 12/12] mm/debug_vm_pgtable: Fix corrupted page flag
-Date:   Tue, 27 Jul 2021 14:14:01 +0800
-Message-Id: <20210727061401.592616-13-gshan@redhat.com>
-In-Reply-To: <20210727061401.592616-1-gshan@redhat.com>
-References: <20210727061401.592616-1-gshan@redhat.com>
+        id S235621AbhG0GOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 02:14:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235307AbhG0GOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 02:14:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B65E561103;
+        Tue, 27 Jul 2021 06:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627366444;
+        bh=iNqtLznXVwwObTtgQz0UoezbmT8E0fA3BQB8QNewQr8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0pT239fP1S/3F/yJGL1vpH8+R8LbTJTbqgHa8UTqygMcSE56sqJnSrcMZZI6Ny2O+
+         NTT/QHxMiYCzii25Rl3mFadNVHPXeanYVJJHiSLGlSCPUoSa26z1GEIoQCkh4boztr
+         EIDsMkESY1Ux30qfzomEL5YO1xCcoYVT9UL1FQIY=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.9 00/59] 4.9.277-rc2 review
+Date:   Tue, 27 Jul 2021 08:14:02 +0200
+Message-Id: <20210727061343.233942938@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.277-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.9.277-rc2
+X-KernelTest-Deadline: 2021-07-29T06:13+00:00
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In page table entry modifying tests, set_xxx_at() are used to populate
-the page table entries. On ARM64, PG_arch_1 (PG_dcache_clean) flag is
-set to the target page flag if execution permission is given. The logic
-exits since commit 4f04d8f00545 ("arm64: MMU definitions"). The page
-flag is kept when the page is free'd to buddy's free area list. However,
-it will trigger page checking failure when it's pulled from the buddy's
-free area list, as the following warning messages indicate.
+This is the start of the stable review cycle for the 4.9.277 release.
+There are 59 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-   BUG: Bad page state in process memhog  pfn:08000
-   page:0000000015c0a628 refcount:0 mapcount:0 \
-        mapping:0000000000000000 index:0x1 pfn:0x8000
-   flags: 0x7ffff8000000800(arch_1|node=0|zone=0|lastcpupid=0xfffff)
-   raw: 07ffff8000000800 dead000000000100 dead000000000122 0000000000000000
-   raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-   page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
+Responses should be made by Thu, 29 Jul 2021 06:13:32 +0000.
+Anything received after that time might be too late.
 
-This fixes the issue by clearing PG_arch_1 through flush_dcache_page()
-after set_xxx_at() is called. For architectures other than ARM64, the
-unexpected overhead of cache flushing is acceptable.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.277-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+and the diffstat can be found below.
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
----
- mm/debug_vm_pgtable.c | 55 +++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 51 insertions(+), 4 deletions(-)
+thanks,
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index 162ff6329f7b..d2c2d23e542e 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -29,6 +29,8 @@
- #include <linux/start_kernel.h>
- #include <linux/sched/mm.h>
- #include <linux/io.h>
-+
-+#include <asm/cacheflush.h>
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
- 
-@@ -119,19 +121,28 @@ static void __init pte_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- static void __init pte_advanced_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	pte_t pte;
- 
- 	/*
- 	 * Architectures optimize set_pte_at by avoiding TLB flush.
- 	 * This requires set_pte_at to be not used to update an
- 	 * existing pte entry. Clear pte before we do set_pte_at
-+	 *
-+	 * flush_dcache_page() is called after set_pte_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
- 	 */
--	if (args->pte_pfn == ULONG_MAX)
-+	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
-+	if (!page)
- 		return;
- 
- 	pr_debug("Validating PTE advanced\n");
- 	pte = pfn_pte(args->pte_pfn, args->page_prot);
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_set_wrprotect(args->mm, args->vaddr, args->ptep);
- 	pte = ptep_get(args->ptep);
- 	WARN_ON(pte_write(pte));
-@@ -143,6 +154,7 @@ static void __init pte_advanced_tests(struct pgtable_debug_args *args)
- 	pte = pte_wrprotect(pte);
- 	pte = pte_mkclean(pte);
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	pte = pte_mkwrite(pte);
- 	pte = pte_mkdirty(pte);
- 	ptep_set_access_flags(args->vma, args->vaddr, args->ptep, pte, 1);
-@@ -155,6 +167,7 @@ static void __init pte_advanced_tests(struct pgtable_debug_args *args)
- 	pte = pfn_pte(args->pte_pfn, args->page_prot);
- 	pte = pte_mkyoung(pte);
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	ptep_test_and_clear_young(args->vma, args->vaddr, args->ptep);
- 	pte = ptep_get(args->ptep);
- 	WARN_ON(pte_young(pte));
-@@ -213,15 +226,24 @@ static void __init pmd_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	pmd_t pmd;
- 	unsigned long vaddr = args->vaddr;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
--	if (args->pmd_pfn == ULONG_MAX)
-+	page = (args->pmd_pfn != ULONG_MAX) ? pfn_to_page(args->pmd_pfn) : NULL;
-+	if (!page)
- 		return;
- 
-+	/*
-+	 * flush_dcache_page() is called after set_pmd_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
-+	 */
- 	pr_debug("Validating PMD advanced\n");
- 	/* Align the address wrt HPAGE_PMD_SIZE */
- 	vaddr &= HPAGE_PMD_MASK;
-@@ -230,6 +252,7 @@ static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- 
- 	pmd = pfn_pmd(args->pmd_pfn, args->page_prot);
- 	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_set_wrprotect(args->mm, vaddr, args->pmdp);
- 	pmd = READ_ONCE(*args->pmdp);
- 	WARN_ON(pmd_write(pmd));
-@@ -241,6 +264,7 @@ static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- 	pmd = pmd_wrprotect(pmd);
- 	pmd = pmd_mkclean(pmd);
- 	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmd = pmd_mkwrite(pmd);
- 	pmd = pmd_mkdirty(pmd);
- 	pmdp_set_access_flags(args->vma, vaddr, args->pmdp, pmd, 1);
-@@ -253,6 +277,7 @@ static void __init pmd_advanced_tests(struct pgtable_debug_args *args)
- 	pmd = pmd_mkhuge(pfn_pmd(args->pmd_pfn, args->page_prot));
- 	pmd = pmd_mkyoung(pmd);
- 	set_pmd_at(args->mm, vaddr, args->pmdp, pmd);
-+	flush_dcache_page(page);
- 	pmdp_test_and_clear_young(args->vma, vaddr, args->pmdp);
- 	pmd = READ_ONCE(*args->pmdp);
- 	WARN_ON(pmd_young(pmd));
-@@ -339,21 +364,31 @@ static void __init pud_basic_tests(struct pgtable_debug_args *args, int idx)
- 
- static void __init pud_advanced_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	unsigned long vaddr = args->vaddr;
- 	pud_t pud;
- 
- 	if (!has_transparent_hugepage())
- 		return;
- 
--	if (args->pud_pfn == ULONG_MAX)
-+	page = (args->pud_pfn != ULONG_MAX) ? pfn_to_page(args->pud_pfn) : NULL;
-+	if (!page)
- 		return;
- 
-+	/*
-+	 * flush_dcache_page() is called after set_pud_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
-+	 */
- 	pr_debug("Validating PUD advanced\n");
- 	/* Align the address wrt HPAGE_PUD_SIZE */
- 	vaddr &= HPAGE_PUD_MASK;
- 
- 	pud = pfn_pud(args->pud_pfn, args->page_prot);
- 	set_pud_at(args->mm, vaddr, args->pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_set_wrprotect(args->mm, vaddr, args->pudp);
- 	pud = READ_ONCE(*args->pudp);
- 	WARN_ON(pud_write(pud));
-@@ -367,6 +402,7 @@ static void __init pud_advanced_tests(struct pgtable_debug_args *args)
- 	pud = pud_wrprotect(pud);
- 	pud = pud_mkclean(pud);
- 	set_pud_at(args->mm, vaddr, args->pudp, pud);
-+	flush_dcache_page(page);
- 	pud = pud_mkwrite(pud);
- 	pud = pud_mkdirty(pud);
- 	pudp_set_access_flags(args->vma, vaddr, args->pudp, pud, 1);
-@@ -382,6 +418,7 @@ static void __init pud_advanced_tests(struct pgtable_debug_args *args)
- 	pud = pfn_pud(args->pud_pfn, args->page_prot);
- 	pud = pud_mkyoung(pud);
- 	set_pud_at(args->mm, vaddr, args->pudp, pud);
-+	flush_dcache_page(page);
- 	pudp_test_and_clear_young(args->vma, vaddr, args->pudp);
- 	pud = READ_ONCE(*args->pudp);
- 	WARN_ON(pud_young(pud));
-@@ -594,16 +631,26 @@ static void __init pgd_populate_tests(struct pgtable_debug_args *args) { }
- 
- static void __init pte_clear_tests(struct pgtable_debug_args *args)
- {
-+	struct page *page;
- 	pte_t pte = pfn_pte(args->pte_pfn, args->page_prot);
- 
--	if (args->pte_pfn == ULONG_MAX)
-+	page = (args->pte_pfn != ULONG_MAX) ? pfn_to_page(args->pte_pfn) : NULL;
-+	if (!page)
- 		return;
- 
-+	/*
-+	 * flush_dcache_page() is called after set_pte_at() to clear
-+	 * PG_arch_1 for the page on ARM64. The page flag isn't cleared
-+	 * when it's released and page allocation check will fail when
-+	 * the page is allocated again. For architectures other than ARM64,
-+	 * the unexpected overhead of cache flushing is acceptable.
-+	 */
- 	pr_debug("Validating PTE clear\n");
- #ifndef CONFIG_RISCV
- 	pte = __pte(pte_val(pte) | RANDOM_ORVALUE);
- #endif
- 	set_pte_at(args->mm, args->vaddr, args->ptep, pte);
-+	flush_dcache_page(page);
- 	barrier();
- 	pte_clear(args->mm, args->vaddr, args->ptep);
- 	pte = ptep_get(args->ptep);
--- 
-2.23.0
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.9.277-rc2
+
+David Sterba <dsterba@suse.com>
+    btrfs: compression: don't try to compress if we don't have enough pages
+
+Stephan Gerhold <stephan@gerhold.net>
+    iio: accel: bma180: Fix BMA25x bandwidth register values
+
+Linus Walleij <linus.walleij@linaro.org>
+    iio: accel: bma180: Use explicit member assignment
+
+Doug Berger <opendmb@gmail.com>
+    net: bcmgenet: ensure EXT_ENERGY_DET_MASK is clear
+
+Gustavo A. R. Silva <gustavoars@kernel.org>
+    media: ngene: Fix out-of-bounds bug in ngene_command_config_free_buf()
+
+Haoran Luo <www@aegistudio.net>
+    tracing: Fix bug in rb_per_cpu_empty() that might cause deadloop.
+
+John Keeping <john@metanate.com>
+    USB: serial: cp210x: add ID for CEL EM3588 USB ZigBee stick
+
+Ian Ray <ian.ray@ge.com>
+    USB: serial: cp210x: fix comments for GE CS1000
+
+Marco De Marco <marco.demarco@posteo.net>
+    USB: serial: option: add support for u-blox LARA-R6 family
+
+Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+    usb: renesas_usbhs: Fix superfluous irqs happen after usb_pkt_pop()
+
+Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+    usb: max-3421: Prevent corruption of freed memory
+
+Julian Sikorski <belegdol@gmail.com>
+    USB: usb-storage: Add LaCie Rugged USB3-FW to IGNORE_UAS
+
+Mathias Nyman <mathias.nyman@linux.intel.com>
+    usb: hub: Disable USB 3 device initiated lpm if exit latency is too high
+
+Nicholas Piggin <npiggin@gmail.com>
+    KVM: PPC: Book3S: Fix H_RTAS rets buffer overflow
+
+Mathias Nyman <mathias.nyman@linux.intel.com>
+    xhci: Fix lost USB 2 remote wake
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: sb: Fix potential ABBA deadlock in CSP driver
+
+Vasily Gorbik <gor@linux.ibm.com>
+    s390/ftrace: fix ftrace_update_ftrace_func implementation
+
+Huang Pei <huangpei@loongson.cn>
+    Revert "MIPS: add PMD table accounting into MIPS'pmd_alloc_one"
+
+Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+    proc: Avoid mixing integer types in mem_rw()
+
+Vincent Palatin <vpalatin@chromium.org>
+    Revert "USB: quirks: ignore remote wake-up on Fibocom L850-GL LTE modem"
+
+Dmitry Bogdanov <d.bogdanov@yadro.com>
+    scsi: target: Fix protect handling in WRITE SAME(32)
+
+Mike Christie <michael.christie@oracle.com>
+    scsi: iscsi: Fix iface sysfs attr detection
+
+Nguyen Dinh Phi <phind.uet@gmail.com>
+    netrom: Decrease sock refcount when sock timers expire
+
+Yajun Deng <yajun.deng@linux.dev>
+    net: decnet: Fix sleeping inside in af_decnet
+
+Ziyang Xuan <william.xuanziyang@huawei.com>
+    net: fix uninit-value in caif_seqpkt_sendmsg
+
+Colin Ian King <colin.king@canonical.com>
+    s390/bpf: Perform r1 range checking before accessing jit->seen_reg[r1]
+
+Peter Hess <peter.hess@ph-home.de>
+    spi: mediatek: fix fifo rx mode
+
+Riccardo Mancini <rickyman7@gmail.com>
+    perf probe-file: Delete namelist in del_events() on the error path
+
+Riccardo Mancini <rickyman7@gmail.com>
+    perf test bpf: Free obj_buf
+
+Riccardo Mancini <rickyman7@gmail.com>
+    perf lzma: Close lzma stream on exit
+
+Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+    igb: Check if num of q_vectors is smaller than max before array access
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    iavf: Fix an error handling path in 'iavf_probe()'
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    e1000e: Fix an error handling path in 'e1000_probe()'
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    fm10k: Fix an error handling path in 'fm10k_probe()'
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    igb: Fix an error handling path in 'igb_probe()'
+
+Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+    ixgbe: Fix an error handling path in 'ixgbe_probe()'
+
+Eric Dumazet <edumazet@google.com>
+    ipv6: tcp: drop silly ICMPv6 packet too big messages
+
+Eric Dumazet <edumazet@google.com>
+    tcp: annotate data races around tp->mtu_info
+
+Taehee Yoo <ap420073@gmail.com>
+    net: validate lwtstate->data before returning from skb_tunnel_info()
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: ti: fix UAF in tlan_remove_one
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: qcom/emac: fix UAF in emac_remove
+
+Pavel Skripkin <paskripkin@gmail.com>
+    net: moxa: fix UAF in moxart_mac_probe
+
+Florian Fainelli <f.fainelli@gmail.com>
+    net: bcmgenet: Ensure all TX/RX queues DMAs are disabled
+
+Wolfgang Bumiller <w.bumiller@proxmox.com>
+    net: bridge: sync fdb to new unicast-filtering ports
+
+Vadim Fedorenko <vfedorenko@novek.ru>
+    net: ipv6: fix return value of ip6_skb_dst_mtu
+
+Odin Ugedal <odin@uged.al>
+    sched/fair: Fix CFS bandwidth hrtimer expiry type
+
+Colin Ian King <colin.king@canonical.com>
+    scsi: aic7xxx: Fix unintentional sign extension issue on left shift of u8
+
+Krzysztof Kozlowski <krzk@kernel.org>
+    rtc: max77686: Do not enforce (incorrect) interrupt trigger type
+
+Matthias Maennich <maennich@google.com>
+    kbuild: mkcompile_h: consider timestamp if KBUILD_BUILD_TIMESTAMP is set
+
+Yang Yingliang <yangyingliang@huawei.com>
+    thermal/core: Correct function name thermal_zone_device_unregister()
+
+Sudeep Holla <sudeep.holla@arm.com>
+    arm64: dts: juno: Update SCPI nodes as per the YAML schema
+
+Alexandre Torgue <alexandre.torgue@foss.st.com>
+    ARM: dts: stm32: fix RCC node name on stm32f429 MCU
+
+Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+    ARM: imx: pm-imx5: Fix references to imx5_cpu_suspend_info
+
+Primoz Fiser <primoz.fiser@norik.com>
+    ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
+
+Rafał Miłecki <rafal@milecki.pl>
+    ARM: dts: BCM63xx: Fix NAND nodes names
+
+Rafał Miłecki <rafal@milecki.pl>
+    ARM: brcmstb: dts: fix NAND nodes names
+
+Philipp Zabel <p.zabel@pengutronix.de>
+    reset: ti-syscon: fix to_ti_syscon_reset_data macro
+
+Elaine Zhang <zhangqing@rock-chips.com>
+    ARM: dts: rockchip: Fix power-controller node names for rk3288
+
+Johan Jonker <jbx6244@gmail.com>
+    ARM: dts: rockchip: fix pinctrl sleep nodename for rk3036-kylin and rk3288
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +-
+ arch/arm/boot/dts/bcm63138.dtsi                    |  2 +-
+ arch/arm/boot/dts/bcm7445-bcm97445svmb.dts         |  4 +-
+ arch/arm/boot/dts/bcm7445.dtsi                     |  2 +-
+ arch/arm/boot/dts/bcm963138dvt.dts                 |  4 +-
+ arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi       |  5 +-
+ arch/arm/boot/dts/rk3036-kylin.dts                 |  2 +-
+ arch/arm/boot/dts/rk3288.dtsi                      | 10 +--
+ arch/arm/boot/dts/stm32f429.dtsi                   |  2 +-
+ arch/arm/mach-imx/suspend-imx53.S                  |  4 +-
+ arch/arm64/boot/dts/arm/juno-base.dtsi             |  6 +-
+ arch/mips/include/asm/pgalloc.h                    | 10 +--
+ arch/powerpc/kvm/book3s_rtas.c                     | 25 +++++-
+ arch/s390/include/asm/ftrace.h                     |  1 +
+ arch/s390/kernel/ftrace.c                          |  2 +
+ arch/s390/kernel/mcount.S                          |  4 +-
+ arch/s390/net/bpf_jit_comp.c                       |  2 +-
+ drivers/iio/accel/bma180.c                         | 75 +++++++++++-------
+ drivers/media/pci/ngene/ngene-core.c               |  2 +-
+ drivers/media/pci/ngene/ngene.h                    | 14 ++--
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c     | 21 ++---
+ drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c |  6 --
+ drivers/net/ethernet/intel/e1000e/netdev.c         |  1 +
+ drivers/net/ethernet/intel/fm10k/fm10k_pci.c       |  1 +
+ drivers/net/ethernet/intel/i40evf/i40evf_main.c    |  1 +
+ drivers/net/ethernet/intel/igb/igb_main.c          | 10 ++-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |  1 +
+ drivers/net/ethernet/moxa/moxart_ether.c           |  4 +-
+ drivers/net/ethernet/qualcomm/emac/emac.c          |  3 +-
+ drivers/net/ethernet/ti/tlan.c                     |  3 +-
+ drivers/reset/reset-ti-syscon.c                    |  4 +-
+ drivers/rtc/rtc-max77686.c                         |  4 +-
+ drivers/scsi/aic7xxx/aic7xxx_core.c                |  2 +-
+ drivers/scsi/scsi_transport_iscsi.c                | 90 ++++++++--------------
+ drivers/spi/spi-mt65xx.c                           | 16 +++-
+ drivers/target/target_core_sbc.c                   | 35 ++++-----
+ drivers/thermal/thermal_core.c                     |  2 +-
+ drivers/usb/core/hub.c                             | 68 +++++++++++++---
+ drivers/usb/core/quirks.c                          |  4 -
+ drivers/usb/host/max3421-hcd.c                     | 44 ++++-------
+ drivers/usb/host/xhci-hub.c                        |  3 +-
+ drivers/usb/renesas_usbhs/fifo.c                   |  7 ++
+ drivers/usb/serial/cp210x.c                        |  5 +-
+ drivers/usb/serial/option.c                        |  3 +
+ drivers/usb/storage/unusual_uas.h                  |  7 ++
+ fs/btrfs/inode.c                                   |  2 +-
+ fs/proc/base.c                                     |  2 +-
+ include/net/dst_metadata.h                         |  4 +-
+ include/net/ip6_route.h                            |  2 +-
+ kernel/sched/fair.c                                |  4 +-
+ kernel/trace/ring_buffer.c                         | 28 ++++++-
+ net/bridge/br_if.c                                 | 17 +++-
+ net/caif/caif_socket.c                             |  3 +-
+ net/decnet/af_decnet.c                             | 27 +++----
+ net/ipv4/tcp_ipv4.c                                |  4 +-
+ net/ipv4/tcp_output.c                              |  1 +
+ net/ipv6/tcp_ipv6.c                                | 19 ++++-
+ net/ipv6/xfrm6_output.c                            |  2 +-
+ net/netrom/nr_timer.c                              | 20 ++---
+ scripts/mkcompile_h                                | 14 +++-
+ sound/isa/sb/sb16_csp.c                            |  4 +
+ tools/perf/tests/bpf.c                             |  2 +
+ tools/perf/util/lzma.c                             |  8 +-
+ tools/perf/util/probe-file.c                       |  4 +-
+ 64 files changed, 416 insertions(+), 276 deletions(-)
+
 
