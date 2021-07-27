@@ -2,75 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67E93D7E2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE26C3D7E35
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 21:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhG0TAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 15:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        id S231958AbhG0TAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 15:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbhG0TAB (ORCPT
+        with ESMTP id S230182AbhG0TAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 15:00:01 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60BBC061757;
-        Tue, 27 Jul 2021 11:59:59 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id n6so17214072ljp.9;
-        Tue, 27 Jul 2021 11:59:59 -0700 (PDT)
+        Tue, 27 Jul 2021 15:00:44 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4817C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:00:43 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id q6so510143oiw.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 12:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0JOQya395nUYReFmGXxQsyJfx889KYaEoPMsqJGvNiM=;
-        b=R6Awyj9jgKE4B87h7+QTMCEixH9xN3ChUqkE+EeBpQ52r9Q/ZvSMBjdEiPLOOa/Yio
-         xjMiZcTB5yGPSBJJyNLWVFUCtYQRObOFWt/UCZrbttGZ90JxSAPNYbTSP777J6rsY91s
-         aJKG7dTV6sAC5GSpVSElPaJUc4tmRnu6nF8ivp+t9auAkm0zsA1KQcGZzC8Su0KKlYZK
-         TFS+GmVLlIFwyh2fRXjSKiu5/2xB5q2n16ToTOfMO2elACdBeQqJf2hnX9ccBor9CRSL
-         9OFaZXlQQqOfyWA+Rup+6rvvuImdbUiaRCteVSB1lax4dMDQkjMkZ2VdYISKPLm4dOI/
-         qr8w==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fYGKLH2SgAMa80yTiG4bFU3GsKrGRgA34J7Dev7x+rU=;
+        b=xL62K6dOLLMIwoHIp2G0bPmyrqI+lDkDfv3po0DiDXcxRBxfSuUC8lDq6X9VsJeCF9
+         QuEXb76Vr2ZG0D3mdtxDF2Eyt+egoqaB4mxP3DsFen5lP+TZ5MGkULtTM4QBa8Kdb3zE
+         AcFdjBpFb/ZhWl49yo9eUXp4O/evaiqSx3jCI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0JOQya395nUYReFmGXxQsyJfx889KYaEoPMsqJGvNiM=;
-        b=n9CzDJsqyIrsJHFHpgdcaz1s9xIjKUhmAY9153ApKjbvj2VEDbM24afxjtV07Ea7w7
-         J4Ju8JrYC0lWhz39Fd042BUPEV7G0LJSsWOhwCOpvSZkHFswdA+w85sdMp8FfX/A3rHV
-         DiAi5RULDNXE3DFeiJAG2dx/blr4bRRaa4HjnbHskfnsxojKIdxhCu+oXEDHR0p1nN8M
-         VJ4jH4WQMWmGpviy7sXuQ6Y8yQOaJYs+Gd/PqMaMDW3Q/e31Zdprboc50a/BL+X2ym1N
-         /IGpZsi8vlPJl2CuMIbGyNgKKKRHBPjxGd0yTGfr8LTqsIElopAyXfBAdWVJltB1scUK
-         qkag==
-X-Gm-Message-State: AOAM531+ZmWZjLPWCxHvSyI4pahN2tzPL75Wm1JkN5L5O7scG28q4qtE
-        uMrpJKFtQEWX7sVd7+pkz54=
-X-Google-Smtp-Source: ABdhPJwJ5pQ6iVeRtmb2MxJgYfngOMKCgYJufbfXnFzlNh8quYCuuCbJEhPAt1ipIGvjPE6xyEiSHA==
-X-Received: by 2002:a2e:b614:: with SMTP id r20mr13936192ljn.211.1627412398379;
-        Tue, 27 Jul 2021 11:59:58 -0700 (PDT)
-Received: from reki (broadband-95-84-198-152.ip.moscow.rt.ru. [95.84.198.152])
-        by smtp.gmail.com with ESMTPSA id l17sm363771lfc.96.2021.07.27.11.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 11:59:58 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 21:59:56 +0300
-From:   Maxim Devaev <mdevaev@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     balbi@kernel.org, sandeen@redhat.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: gadget: f_hid: added GET_IDLE and SET_IDLE
- handlers
-Message-ID: <20210727215956.23c46546@reki>
-In-Reply-To: <YQBUa+YrPc8e07Yv@kroah.com>
-References: <20210727183140.42330-1-mdevaev@gmail.com>
-        <YQBUa+YrPc8e07Yv@kroah.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fYGKLH2SgAMa80yTiG4bFU3GsKrGRgA34J7Dev7x+rU=;
+        b=s2hM3Q0sU+/CduHLCH4LB4/sE43PcqSLf3DL6hg4BjsvHdmaFk5ygUMuNA0koL8NYe
+         rai57Vs5hpqfeXNy+2Vd0tDYHtaKSVNJfWAtSViO7dxidJ5dm+pBuTv0dPBfB+YT/TLT
+         vCN7m0R2rF53rBdjXQS78y+XQDsN5K3w3uxWsyswAUEVXqZFSZX+G9jfbX1vEaOKFRzm
+         YWg/eNSzoFl+k8VIVKr34qwd6rRnHCVrUbzRsCioGq35d4AjYN2KaMIfT6VJyHYs9sCo
+         z0HlNDDzyRjWaLeO7esDopR2aIOyrTmV1v127uimV+LdzhhIJUiKSSpNzbUcI9UbPvOC
+         b3AA==
+X-Gm-Message-State: AOAM533MJygTo2pKfR+lkAOaCKKMiyxMXUgVLzreDcrEW6lhSujW7caJ
+        JYVH7kMV1pq/aRhX9wW4h2zitg==
+X-Google-Smtp-Source: ABdhPJxqdOOz+tMCEb/1DbeyMqlSCbF3DyI1dSE0BciIltK+55JRRLTNF7EIpB2R64w+UZNzw9tVeA==
+X-Received: by 2002:aca:accf:: with SMTP id v198mr15948296oie.14.1627412441833;
+        Tue, 27 Jul 2021 12:00:41 -0700 (PDT)
+Received: from localhost.localdomain (65-36-81-87.static.grandenetworks.net. [65.36.81.87])
+        by smtp.gmail.com with ESMTPSA id i10sm248897ood.48.2021.07.27.12.00.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Jul 2021 12:00:41 -0700 (PDT)
+From:   Kyle Bowman <kbowman@cloudflare.com>
+Cc:     kernel-team@cloudflare.com, Alex Forster <aforster@cloudflare.com>,
+        Kyle Bowman <kbowman@cloudflare.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH] netfilter: xt_NFLOG: allow 128 character log prefixes
+Date:   Tue, 27 Jul 2021 14:00:00 -0500
+Message-Id: <20210727190001.914-1-kbowman@cloudflare.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Greg KH <gregkh@linuxfoundation.org> wrote:
-> As I already took your first patch, and I can not drop it as it is a
-> public tree, can you just send me the fixup patch?  That would be
-> simpler than me reverting the original and then applying a "fixed"
-> version, right?
+From: Alex Forster <aforster@cloudflare.com>
 
-Sure. Sent a fix as ("usb: gadget: f_hid: idle uses the highest byte for duration").
+nftables defines NF_LOG_PREFIXLEN as 128 characters, while iptables
+limits the NFLOG prefix to 64 characters. In order to eventually make
+the two consistent, introduce a v1 target revision of xt_NFLOG that
+allows userspace to provide a 128 character NFLOG prefix.
+
+Signed-off-by: Alex Forster <aforster@cloudflare.com>
+Signed-off-by: Kyle Bowman <kbowman@cloudflare.com>
+---
+ include/uapi/linux/netfilter/xt_NFLOG.h | 11 ++++
+ net/netfilter/xt_NFLOG.c                | 73 +++++++++++++++++++++----
+ 2 files changed, 73 insertions(+), 11 deletions(-)
+
+diff --git a/include/uapi/linux/netfilter/xt_NFLOG.h b/include/uapi/linux/netfilter/xt_NFLOG.h
+index 517809771909..3f1119a2e522 100644
+--- a/include/uapi/linux/netfilter/xt_NFLOG.h
++++ b/include/uapi/linux/netfilter/xt_NFLOG.h
+@@ -3,6 +3,7 @@
+ #define _XT_NFLOG_TARGET
+
+ #include <linux/types.h>
++#include <linux/netfilter/nf_log.h>
+
+ #define XT_NFLOG_DEFAULT_GROUP		0x1
+ #define XT_NFLOG_DEFAULT_THRESHOLD	0
+@@ -22,4 +23,14 @@ struct xt_nflog_info {
+ 	char		prefix[64];
+ };
+
++struct xt_nflog_info_v1 {
++	/* 'len' will be used iff you set XT_NFLOG_F_COPY_LEN in flags */
++	__u32	len;
++	__u16	group;
++	__u16	threshold;
++	__u16	flags;
++	__u16	pad;
++	char	prefix[NF_LOG_PREFIXLEN];
++};
++
+ #endif /* _XT_NFLOG_TARGET */
+diff --git a/net/netfilter/xt_NFLOG.c b/net/netfilter/xt_NFLOG.c
+index fb5793208059..82279a6be0ff 100644
+--- a/net/netfilter/xt_NFLOG.c
++++ b/net/netfilter/xt_NFLOG.c
+@@ -39,6 +39,28 @@ nflog_tg(struct sk_buff *skb, const struct xt_action_param *par)
+ 	return XT_CONTINUE;
+ }
+
++static unsigned int
++nflog_tg_v1(struct sk_buff *skb, const struct xt_action_param *par)
++{
++	const struct xt_nflog_info_v1 *info = par->targinfo;
++	struct net *net = xt_net(par);
++	struct nf_loginfo li;
++
++	li.type		     = NF_LOG_TYPE_ULOG;
++	li.u.ulog.copy_len   = info->len;
++	li.u.ulog.group	     = info->group;
++	li.u.ulog.qthreshold = info->threshold;
++	li.u.ulog.flags	     = 0;
++
++	if (info->flags & XT_NFLOG_F_COPY_LEN)
++		li.u.ulog.flags |= NF_LOG_F_COPY_LEN;
++
++	nf_log_packet(net, xt_family(par), xt_hooknum(par), skb, xt_in(par),
++		      xt_out(par), &li, "%s", info->prefix);
++
++	return XT_CONTINUE;
++}
++
+ static int nflog_tg_check(const struct xt_tgchk_param *par)
+ {
+ 	const struct xt_nflog_info *info = par->targinfo;
+@@ -51,30 +73,59 @@ static int nflog_tg_check(const struct xt_tgchk_param *par)
+ 	return nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
+ }
+
++static int nflog_tg_check_v1(const struct xt_tgchk_param *par)
++{
++	const struct xt_nflog_info_v1 *info = par->targinfo;
++
++	if (info->flags & ~XT_NFLOG_MASK)
++		return -EINVAL;
++	if (info->prefix[sizeof(info->prefix) - 1] != '\0')
++		return -EINVAL;
++
++	return nf_logger_find_get(par->family, NF_LOG_TYPE_ULOG);
++}
++
+ static void nflog_tg_destroy(const struct xt_tgdtor_param *par)
+ {
+ 	nf_logger_put(par->family, NF_LOG_TYPE_ULOG);
+ }
+
+-static struct xt_target nflog_tg_reg __read_mostly = {
+-	.name       = "NFLOG",
+-	.revision   = 0,
+-	.family     = NFPROTO_UNSPEC,
+-	.checkentry = nflog_tg_check,
+-	.destroy    = nflog_tg_destroy,
+-	.target     = nflog_tg,
+-	.targetsize = sizeof(struct xt_nflog_info),
+-	.me         = THIS_MODULE,
++static void nflog_tg_destroy_v1(const struct xt_tgdtor_param *par)
++{
++	nf_logger_put(par->family, NF_LOG_TYPE_ULOG);
++}
++
++static struct xt_target nflog_tg_reg[] __read_mostly = {
++	{
++		.name       = "NFLOG",
++		.revision   = 0,
++		.family     = NFPROTO_UNSPEC,
++		.checkentry = nflog_tg_check,
++		.destroy    = nflog_tg_destroy,
++		.target     = nflog_tg,
++		.targetsize = sizeof(struct xt_nflog_info),
++		.me         = THIS_MODULE,
++	},
++	{
++		.name       = "NFLOG",
++		.revision   = 1,
++		.family     = NFPROTO_UNSPEC,
++		.checkentry = nflog_tg_check_v1,
++		.destroy    = nflog_tg_destroy_v1,
++		.target     = nflog_tg_v1,
++		.targetsize = sizeof(struct xt_nflog_info_v1),
++		.me         = THIS_MODULE,
++	}
+ };
+
+ static int __init nflog_tg_init(void)
+ {
+-	return xt_register_target(&nflog_tg_reg);
++	return xt_register_targets(nflog_tg_reg, ARRAY_SIZE(nflog_tg_reg));
+ }
+
+ static void __exit nflog_tg_exit(void)
+ {
+-	xt_unregister_target(&nflog_tg_reg);
++	xt_unregister_targets(nflog_tg_reg, ARRAY_SIZE(nflog_tg_reg));
+ }
+
+ module_init(nflog_tg_init);
+--
+2.32.0
