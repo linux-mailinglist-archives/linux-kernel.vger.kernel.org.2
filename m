@@ -2,94 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCDB73D7966
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F117B3D7986
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236860AbhG0PJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
+        id S237011AbhG0PPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbhG0PJF (ORCPT
+        with ESMTP id S232633AbhG0PP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:09:05 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F76AC061757;
-        Tue, 27 Jul 2021 08:09:04 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id q68so7278179vsb.9;
-        Tue, 27 Jul 2021 08:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LODqsW/1ngmYUbMgNby00su93F62N06Tj3ly3YeQuu8=;
-        b=uo8EQXgRWZ9JsCmhbvecIDs7UFt6gf45CbCLSX89gZvV05cpmDYxsq4q7djWl6V+zv
-         RkgcAww9e48cgedaDiYGy02wM6kOUabDZzKSOrB31bbE+qFVKW5wTMGAYjBn1mf5DpWr
-         2oQ21yT7d62nU5z5J6s16lUG3MHh+DNe4tyltIBZ1VdrRNHemFSaB+zLGofVcnPaLM5R
-         O96ZpxwwUhKy31BZ8EmmKLYFXdPQb5c/A4b74K3NjhEGlRPs3TCA3AcUyjze3WRIx7FO
-         1xItwyCGYoHFcV4xBDB2Kk7/N7dVwwbx65UvTuZtUUwy3hHr7ooX3uHVbjcGJ4VvB4e8
-         333Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LODqsW/1ngmYUbMgNby00su93F62N06Tj3ly3YeQuu8=;
-        b=fXD508Rjg6xy7S4butY5P5TUg6JxGBwqIXzID1SFQ42YvO8FPQ2zxUcmt71Rw2fdAD
-         an1169E7pM2dBR0rU2jSwMp2U2g1xNFm2YiKZheOdC5Rz0XVYq6rlpvRd0eZyclKImnP
-         KCwJZDkFFujDKRPuJhlyHj9DFzWLzngIYX2vgKkTAvfq+CcnDV8/Okxk6RQ5QYkBGzEw
-         Hyxx1FtYz3Yhh1NF4GoP7dIpfLF0dWTaZjAGsfCEVVYBERRdLeyEMIqz+E+W1yLcgVZQ
-         U+AGT8xOL7Th5Rq2YxLJVpksSSRgZ5H3kGg8kEydUvBgNOz4xdt0FVym43wy9f9wFp9g
-         fxIQ==
-X-Gm-Message-State: AOAM530kVhtSKfYC8AjNZdXdcFQ45GVHbqVGNClH0p4MmAoNLvUX+XOW
-        AV4FiI581zZPpnktxdfBNrAEfTjAPi0O92nQ20c=
-X-Google-Smtp-Source: ABdhPJxoQ+xAJ8pctlldjhc+igE6bcD64Yold6eElIL6035jZ3l7JenxM765onZHshhoQQPNf/7SwtAONt5EOwCGMKY=
-X-Received: by 2002:a67:e94c:: with SMTP id p12mr16820940vso.28.1627398541870;
- Tue, 27 Jul 2021 08:09:01 -0700 (PDT)
+        Tue, 27 Jul 2021 11:15:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A97FC061757;
+        Tue, 27 Jul 2021 08:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4JdE/aW6odLJdtfdNjxa/S0U0ePQHRA8MXvplpff6bM=; b=dBVptD61D5ANUSUouTM0t/zwCr
+        hQb89/AeDjkTjJ62t5BB3e6J9KJ5f1cTMzIrf1ugfiCbudRMBVEOgweNq2oME/ThYwLnwq95hjCwP
+        cfLhsa5xuolDjO3WxLHM7i8cVYScLHXI72C21lVChwvGg0dbnLkLk0aOkiXHG9H8xaeTXqK6iju+6
+        37pNYEiAG/RJUsfl05zRYM3mjjLrPEYwrnD1VAVA5AL2hCrdaXxNARoR7CRRNcItBSDq+juzm/WHD
+        mKOtTTAUmKuJGVMSpV0woMW7rbZo+g3TZvDNpRhhupubuqvfyAbaxq+gdWiEHwin800v0Aob1T4VL
+        mxOSBJfA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8OiU-00F89m-Un; Tue, 27 Jul 2021 15:10:39 +0000
+Date:   Tue, 27 Jul 2021 16:09:58 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Feng Tang <feng.tang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v5 6/6] arch: remove compat_alloc_user_space
+Message-ID: <YQAhxgdPHt8xndEM@infradead.org>
+References: <20210727144859.4150043-1-arnd@kernel.org>
+ <20210727144859.4150043-7-arnd@kernel.org>
 MIME-Version: 1.0
-References: <20210727144816.8697-1-sergio.paracuellos@gmail.com>
- <20210727144816.8697-4-sergio.paracuellos@gmail.com> <CAHp75Ve9eYNbs=uBsVvFdkpU1vLXB8Fy4NpFbaWV1g59vfrenw@mail.gmail.com>
-In-Reply-To: <CAHp75Ve9eYNbs=uBsVvFdkpU1vLXB8Fy4NpFbaWV1g59vfrenw@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 27 Jul 2021 17:08:50 +0200
-Message-ID: <CAMhs-H_Lubu2dLeSX=Q+0FAwnZ-qB6a88r=p0EfWGcE9noMpLg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Gregory Fong <gregory.0xf0@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        John Thomson <git@johnthomson.fastmail.com.au>,
-        NeilBrown <neil@brown.name>,
-        Nicholas Mc Guire <hofrat@osadl.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727144859.4150043-7-arnd@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 5:07 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Tue, Jul 27, 2021 at 5:48 PM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > Gpiolib core code has been updated to support setting
-> > friendly names through properly 'gpio-line-names'.
-> > Instead of redefine behaviour here to skip the core
-> > to be executed, just properly assign the desired offset
-> > per bank to get in the core the expected behaviour.
->
-> Since it will be a v3, reflow commit messages to occupy a little bit
-> more available space (per line). Something ~72-75 characters per line
-> is good balance.
+finally!
 
-Sure.
+Looks good,
 
-Thanks,
-    Sergio Paracuellos
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+Reviewed-by: Christoph Hellwig <hch@lst.de>
