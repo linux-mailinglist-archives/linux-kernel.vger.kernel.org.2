@@ -2,126 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B543D8211
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0403D8216
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 23:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbhG0Vr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 17:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232088AbhG0Vr0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 17:47:26 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D876C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 14:47:25 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id e5so136565pld.6
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 14:47:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RmWu5L4XF1JSf6SMuIfCAjF4w7lZ2j3Pm51HCxVaooA=;
-        b=kT5nbH7QT643iQGqVSJxPNGwwBlfdxw5cCyQX6gaBzOcqz4ajIPGMOczsYHolmn62d
-         eW8ICZNFrJ1d3HiFUcApnGkXgvWlWnUUGLsdAOvKSLOBSwaj/BB+s0Fa9Bal55XOCrIt
-         E/hihwg5GtX2PF8wCIvqM4CT8+GGunjYl5M0k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RmWu5L4XF1JSf6SMuIfCAjF4w7lZ2j3Pm51HCxVaooA=;
-        b=Y74ziXynnlf2VZwVei06oxmggdUKjMOXJJmmxWHR6StrzBQwSJOYXHmECd0TFpSVea
-         pkJxcYQgxLECIFGRRRJPaUQ+lXII+drBOqVtKourmAJYkaWN7jFvlITEXevDsBk9Lfrc
-         /5knWXKrTFN73o7YZO/JRjvNIGdiFU1KRItnmfpAAZECHecrOZA3Za4PHk8/nr3HfoQT
-         n7vnCwjDTwJ4UyOgy4wbV+QLInhulwA6HBRY6caNcNLBizOlx1L3dDO1rzjaopwnVIO+
-         zxSzb0aS+NIwqzhBh83CDGXYBPqznu29wFAg5ff8OAvCvjMHRvK/6cBjVOpWvsmZyxH7
-         0XVA==
-X-Gm-Message-State: AOAM533Ikt12SuwTtrw2SxWWZAXM6ZlOoSfQySOHTyTdWj83wut3HvCr
-        GfSrIq+buXK49CzYX8wSOdj38Q==
-X-Google-Smtp-Source: ABdhPJwYpkbqYJB6T9w906hSU82h1v3vr+z3zO2Lp7j72zPJyvd83IHc+CMakx8xlv5Jq50O8i9yVw==
-X-Received: by 2002:a17:902:a513:b029:11a:9be6:f1b9 with SMTP id s19-20020a170902a513b029011a9be6f1b9mr20025348plq.55.1627422444596;
-        Tue, 27 Jul 2021 14:47:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t37sm4805774pfg.14.2021.07.27.14.47.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 14:47:23 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 14:47:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     linux-hardening@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithpac@amazon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 31/64] fortify: Explicitly disable Clang support
-Message-ID: <202107271434.039A9777@keescook>
-References: <20210727205855.411487-1-keescook@chromium.org>
- <20210727205855.411487-32-keescook@chromium.org>
- <da989ffc-da64-33a2-581e-6920eb7ebd2d@kernel.org>
+        id S232597AbhG0Vrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 17:47:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232088AbhG0Vrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 17:47:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B8DF60F6E;
+        Tue, 27 Jul 2021 21:47:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627422466;
+        bh=+G2o0Ezf0G8Bq5pn4ktC8VGGLIE2gi8F2wA5efApP6w=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=awWSZs71slX74asv0vhlq5y5ZgtaPRhoXyHjYLM9VQqDNMhblxvynq8idb6Z+Lm9q
+         1cn7Q4pavpnGI8hIWMqqmqxzXLbqcNE/a+SN5ge+tGML+gdr5yvEzw0O4MAA2bksAg
+         WoNGSdWVshOcpvJ01YdwbgpIFiSrkyR9iFq48E/hnL4H2ORrak82J4+9zA9atTINMn
+         LtPMv5yuSk0Kx6Vd5y4s1z9jRa3dsiZ2f3OJy6PdkIWm5q8DbTuZjRd6vJaYV6U7N2
+         i5JGS5LQboww1JZUUaGoQCTZzIsutXiezPLs3n53x7Z465G2fD0D20Iswfr4ManwdC
+         nhhxTGE0e0NRQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <da989ffc-da64-33a2-581e-6920eb7ebd2d@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210629102624.194378-2-martin.botka@somainline.org>
+References: <20210629102624.194378-1-martin.botka@somainline.org> <20210629102624.194378-2-martin.botka@somainline.org>
+Subject: Re: [RESEND PATCH v2 1/3] rpmcc: Add sm6125 compatible
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        paul.bouchara@somainline.org,
+        Martin Botka <martin.botka@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Martin Botka <martin.botka@somainline.org>, martin.botka1@gmail.com
+Date:   Tue, 27 Jul 2021 14:47:44 -0700
+Message-ID: <162742246483.2368309.10033568257822595295@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 02:18:58PM -0700, Nathan Chancellor wrote:
-> On 7/27/2021 1:58 PM, Kees Cook wrote:
-> > Clang has never correctly compiled the FORTIFY_SOURCE defenses due to
-> > a couple bugs:
-> > 
-> > 	Eliding inlines with matching __builtin_* names
-> > 	https://bugs.llvm.org/show_bug.cgi?id=50322
-> > 
-> > 	Incorrect __builtin_constant_p() of some globals
-> > 	https://bugs.llvm.org/show_bug.cgi?id=41459
-> > 
-> > In the process of making improvements to the FORTIFY_SOURCE defenses, the
-> > first (silent) bug (coincidentally) becomes worked around, but exposes
-> > the latter which breaks the build. As such, Clang must not be used with
-> > CONFIG_FORTIFY_SOURCE until at least latter bug is fixed (in Clang 13),
-> > and the fortify routines have been rearranged.
-> > 
-> > Update the Kconfig to reflect the reality of the current situation.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >   security/Kconfig | 3 +++
-> >   1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/security/Kconfig b/security/Kconfig
-> > index 0ced7fd33e4d..8f0e675e70a4 100644
-> > --- a/security/Kconfig
-> > +++ b/security/Kconfig
-> > @@ -191,6 +191,9 @@ config HARDENED_USERCOPY_PAGESPAN
-> >   config FORTIFY_SOURCE
-> >   	bool "Harden common str/mem functions against buffer overflows"
-> >   	depends on ARCH_HAS_FORTIFY_SOURCE
-> > +	# https://bugs.llvm.org/show_bug.cgi?id=50322
-> > +	# https://bugs.llvm.org/show_bug.cgi?id=41459
-> > +	depends on !CONFIG_CC_IS_CLANG
-> 
-> Should be !CC_IS_CLANG, Kconfig is hard :)
+Quoting Martin Botka (2021-06-29 03:26:21)
+> Add a compatible for SM6125 and assing correct data
+>=20
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> ---
 
-/me shakes fist at sky
+This patch needs to be combined with the one that introduces
+rpm_clk_sm6125.
 
-Thank you! Fixed locally. :)
-
--Kees
-
-> 
-> >   	help
-> >   	  Detect overflows of buffers in common string and memory functions
-> >   	  where the compiler can determine and validate the buffer sizes.
-> > 
-> 
-> Cheers,
-> Nathan
-
--- 
-Kees Cook
+> diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rp=
+m.c
+> index 0e1dfa89489e..8200c26b968c 100644
+> --- a/drivers/clk/qcom/clk-smd-rpm.c
+> +++ b/drivers/clk/qcom/clk-smd-rpm.c
+> @@ -1070,6 +1070,7 @@ static const struct of_device_id rpm_smd_clk_match_=
+table[] =3D {
+>         { .compatible =3D "qcom,rpmcc-msm8998", .data =3D &rpm_clk_msm899=
+8 },
+>         { .compatible =3D "qcom,rpmcc-qcs404",  .data =3D &rpm_clk_qcs404=
+  },
+>         { .compatible =3D "qcom,rpmcc-sdm660",  .data =3D &rpm_clk_sdm660=
+  },
+> +       { .compatible =3D "qcom,rpmcc-sm6125",  .data =3D &rpm_clk_sm6125=
+  },
