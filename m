@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB6A3D7220
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6843D7214
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236104AbhG0Jhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:37:39 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3498 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235970AbhG0Jhi (ORCPT
+        id S236079AbhG0Je2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:34:28 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:41804 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235978AbhG0JeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:37:38 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4GYrxm1wx6z6L9ks;
-        Tue, 27 Jul 2021 17:25:48 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 11:37:37 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 10:37:35 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <osandov@fb.com>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ming.lei@redhat.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH] blk-mq-sched: Fix blk_mq_sched_alloc_tags() error handling
-Date:   Tue, 27 Jul 2021 17:32:53 +0800
-Message-ID: <1627378373-148090-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Tue, 27 Jul 2021 05:34:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627378466; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=kagWZe+ixHB1PpOFUHGC8RpKnQRK2ITDmPTtxKqpozo=; b=DfI0LPD6Ioxg5nPx88LqOBEe4rbMyLMLSW9VJPX0/Dy/LU8Ah3enjoCIBsDJrCtFJexZg811
+ zl4QKEM551fvGWlM2MdJgDoj6U2jZFm1z7ChS2VOkeGI/283g8thdViNHzV4R6AFqh5K0VpQ
+ MKh8eNvvicOBoCOS4HZR8DoK+io=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60ffd3101dd16c8788229f3e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Jul 2021 09:34:08
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6A7ADC4323A; Tue, 27 Jul 2021 09:34:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25EE7C433D3;
+        Tue, 27 Jul 2021 09:34:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 25EE7C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        srimuc <srimuc@codeaurora.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH] iommu/arm-smmu: Add clk_bulk_{prepare/unprepare} to system pm callbacks
+Date:   Tue, 27 Jul 2021 15:03:22 +0530
+Message-Id: <20210727093322.13202-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the blk_mq_sched_alloc_tags() -> blk_mq_alloc_rqs() call fails, then we
-call blk_mq_sched_free_tags() -> blk_mq_free_rqs().
+Some clocks for SMMU can have parent as XO such as gpu_cc_hub_cx_int_clk
+of GPU SMMU in QTI SC7280 SoC and in order to enter deep sleep states in
+such cases, we would need to drop the XO clock vote in unprepare call and
+this unprepare callback for XO is in RPMh (Resource Power Manager-Hardened)
+clock driver which controls RPMh managed clock resources for new QTI SoCs
+and is a blocking call.
 
-It is incorrect to do so, as any rqs would have already been freed in the
-blk_mq_alloc_rqs() call.
+Given we cannot have a sleeping calls such as clk_bulk_prepare() and
+clk_bulk_unprepare() in arm-smmu runtime pm callbacks since the iommu
+operations like map and unmap can be in atomic context and are in fast
+path, add this prepare and unprepare call to drop the XO vote only for
+system pm callbacks since it is not a fast path and we expect the system
+to enter deep sleep states with system pm as opposed to runtime pm.
 
-Fix by calling blk_mq_free_rq_map() only directly.
+This is a similar sequence of clock requests (prepare,enable and
+disable,unprepare) in arm-smmu probe and remove.
 
-Fixes: 6917ff0b5bd41 ("blk-mq-sched: refactor scheduler initialization")
-Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Co-developed-by: Rajendra Nayak <rnayak@codeaurora.org>
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index c838d81ac058..0f006cabfd91 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -515,17 +515,6 @@ void blk_mq_sched_insert_requests(struct blk_mq_hw_ctx *hctx,
- 	percpu_ref_put(&q->q_usage_counter);
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+index d3c6f54110a5..9561ba4c5d39 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+@@ -2277,6 +2277,13 @@ static int __maybe_unused arm_smmu_runtime_suspend(struct device *dev)
+ 
+ static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
+ {
++	int ret;
++	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
++
++	ret = clk_bulk_prepare(smmu->num_clks, smmu->clks);
++	if (ret)
++		return ret;
++
+ 	if (pm_runtime_suspended(dev))
+ 		return 0;
+ 
+@@ -2285,10 +2292,19 @@ static int __maybe_unused arm_smmu_pm_resume(struct device *dev)
+ 
+ static int __maybe_unused arm_smmu_pm_suspend(struct device *dev)
+ {
++	int ret = 0;
++	struct arm_smmu_device *smmu = dev_get_drvdata(dev);
++
+ 	if (pm_runtime_suspended(dev))
+-		return 0;
++		goto clk_unprepare;
+ 
+-	return arm_smmu_runtime_suspend(dev);
++	ret = arm_smmu_runtime_suspend(dev);
++	if (ret)
++		return ret;
++
++clk_unprepare:
++	clk_bulk_unprepare(smmu->num_clks, smmu->clks);
++	return ret;
  }
  
--static void blk_mq_sched_free_tags(struct blk_mq_tag_set *set,
--				   struct blk_mq_hw_ctx *hctx,
--				   unsigned int hctx_idx)
--{
--	if (hctx->sched_tags) {
--		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx);
--		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
--		hctx->sched_tags = NULL;
--	}
--}
--
- static int blk_mq_sched_alloc_tags(struct request_queue *q,
- 				   struct blk_mq_hw_ctx *hctx,
- 				   unsigned int hctx_idx)
-@@ -539,8 +528,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
- 		return -ENOMEM;
- 
- 	ret = blk_mq_alloc_rqs(set, hctx->sched_tags, hctx_idx, q->nr_requests);
--	if (ret)
--		blk_mq_sched_free_tags(set, hctx, hctx_idx);
-+	if (ret) {
-+		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
-+		hctx->sched_tags = NULL;
-+	}
- 
- 	return ret;
- }
+ static const struct dev_pm_ops arm_smmu_pm_ops = {
 -- 
-2.26.2
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
