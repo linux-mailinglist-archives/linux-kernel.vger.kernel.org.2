@@ -2,821 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1CC3D7182
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343E23D717D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 10:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235923AbhG0Itr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 04:49:47 -0400
-Received: from mx0a-00268f01.pphosted.com ([148.163.148.236]:43934 "EHLO
-        mx0a-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236011AbhG0Itp (ORCPT
+        id S236001AbhG0Itn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 04:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235923AbhG0Itm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 04:49:45 -0400
-Received: from pps.filterd (m0165118.ppops.net [127.0.0.1])
-        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16R8msco003843;
-        Tue, 27 Jul 2021 08:49:05 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
-        by mx0a-00268f01.pphosted.com with ESMTP id 3a236m1x5g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 08:49:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OAWinKmnOMy0zrz/+2h0x8yPaM+witIimarcRI0qK1NuTJo4I2ZCLLPThSgiFtzDkx0doly79KTlFf3MV9nMZK5MRoB7+9CM2+l9Fk4w3U3IZ/rdwhcrS7k8OCQ2JBarkJbnSPan5JQAbV/A8WvktV4THpd5vpCcI9H9o0qLQxvF7O3bXtlX6WFvbk67WF0Zo0oxuve0GbA54UHRjTtvpKv9aBSAULF5fJRxKhUJkUwg3h1yFDlpA25/kL0fCCtALySSZtiD9U1BnWR+78/YLghXMTASPY8CoQF3cuF4jDe9tk3ihdn4NxJG1w+SKCXANzqOGDQD6MbHg4LRIAq41Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SIeekmVmkH348BhDDh6Kfp4FY9cuKoIki7VwUO7hGJc=;
- b=IQJyidUEZJ7Wc5mBqLpCLpSAJGc3hwX5KjhjTGtlSHk4JV6C+/L6FrOu/+wh3Y+adhGJb7weAqGNwnL2pN7BzXfUursjgR7CULKKK1sNLV6GoUAb3Ad/cY7zFaMFNK1q7b98tDIXXsBklJnblgajwac0E2En3BeuMnWCIkwavCsqwwXTapArM8QAf79eAuScjkWRXxFfbFKZy1I/3ldh7/Cai2IY+R3eFWHA07NbHBTItiHUZR0z+HAWgyXOobRThDDaoubxAtuEQUHHcXXg5h4BXeiNpP/DHSpZxOVS+cnkhX/OCt0GvJ+Fyt/dK0mHoIBjO4Yxg1OBA0CvP6vY7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
+        Tue, 27 Jul 2021 04:49:42 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F9F9C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:49:42 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id ga41so20731031ejc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 01:49:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SIeekmVmkH348BhDDh6Kfp4FY9cuKoIki7VwUO7hGJc=;
- b=fajAAeWQtxXWO4nbT30s2/7kpAqmG7Zi5GLhAjKKhUp/PqqTbFdT8zsUI8tLmvNteG4uJ9aEmYIi6h12zt2NLkIYTLI034zktExCQFCMtgHJGwTfqQjy9XRtYkuWgtRRibaJ7eZBnfIbIqlJrGxlr042Eco/IJTPpcZ9rQfXJ9s=
-Received: from CH0PR04MB8002.namprd04.prod.outlook.com (2603:10b6:610:f8::16)
- by CH0PR04MB8131.namprd04.prod.outlook.com (2603:10b6:610:fc::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 27 Jul
- 2021 08:49:02 +0000
-Received: from CH0PR04MB8002.namprd04.prod.outlook.com
- ([fe80::d4d9:64f0:a6bf:9968]) by CH0PR04MB8002.namprd04.prod.outlook.com
- ([fe80::d4d9:64f0:a6bf:9968%8]) with mapi id 15.20.4352.031; Tue, 27 Jul 2021
- 08:49:01 +0000
-From:   Zev Weiss <zweiss@equinix.com>
-To:     Iwona Winiarska <iwona.winiarska@intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yazen Ghannam <yazen.ghannam@amd.com>
-Subject: Re: [PATCH 07/14] peci: Add peci-aspeed controller driver
-Thread-Topic: [PATCH 07/14] peci: Add peci-aspeed controller driver
-Thread-Index: AQHXgsQ/2U+11kOJzUGhN2GLpjgplA==
-Date:   Tue, 27 Jul 2021 08:49:01 +0000
-Message-ID: <20210727084901.GQ8018@packtop>
-References: <20210712220447.957418-1-iwona.winiarska@intel.com>
- <20210712220447.957418-8-iwona.winiarska@intel.com>
-In-Reply-To: <20210712220447.957418-8-iwona.winiarska@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=equinix.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 63f5aeb2-0be1-49ae-328c-08d950db61dd
-x-ms-traffictypediagnostic: CH0PR04MB8131:
-x-microsoft-antispam-prvs: <CH0PR04MB8131FE0371CE452F6CACA6F1C3E99@CH0PR04MB8131.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kEqcpmqZYX3gxEsoee/QLp0QyW6yU3C5NoJzg+3ATY2UcjuNnuYE0OcahCmZcD8kdnJ6giofF5xYBbu53gO0DZX2yUkKtXxlaF3T7kLKz0crGpJLXpL9FJqMbh7IqOwL+EkDIMcMgnXPPSYDuHPD5zrA9Z6v/cWUC3qPtO7Dc7q1YAPEjInmjlYGiSpy4BtDtpPzcDWMxN0Hy7DPHjv+nGcBB0PtG5ZX3LrtNlyihT4sHtsIYi/Y+d6EyXoAz7uaM9LjNVMNRlgNe9m+9DRZI/ktEpu6pt4kfD9KGp/hNjwH1dkyHLuhUVMgeMJ0/uFQfKenA7kVU6f1sTd/7a3NFhXBzihO23Oc7sRhfirKpVoCyXAmGZdvbstCGAX25im8koZnQBzgMWrKpJtoe3osfne5bLOexlKRPsQNZABydQAxcSN3Jlwa2d0/J0xPTxvuZw6dL5GOBDusAnU+RDQc4ga0RVJjSutLcYW52BsyiBMq6c2E12iyzD/hJJ4KgVTJOZvZCbSG5upfbj4dj4m7puwUZiFJwXKtk6nCS+Yy6m6hqh1NIqSsVMaqQZfzwV2r7KirwQvHvtQzKnoD3GYbCywfmzkagA20utGIjPvhSo8GZPGPt08die7O/vvMQ2kt11FBHopGZSwhnOJ1m+oP7Wn+Q+I2qk6HxMp+Moji9p3vjee4NWJ32dOGTlnmNn7EQWvGVCFX1sheW5pqO6QwMnfWWHodHwe/DDf2jx+5UhM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR04MB8002.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(376002)(366004)(346002)(39860400002)(396003)(136003)(7416002)(122000001)(478600001)(66476007)(38100700002)(2906002)(6486002)(30864003)(186003)(9686003)(71200400001)(6512007)(1076003)(26005)(19627235002)(8936002)(8676002)(83380400001)(6506007)(5660300002)(54906003)(6916009)(33656002)(86362001)(316002)(33716001)(64756008)(66556008)(66946007)(91956017)(66446008)(4326008)(76116006)(87944003)(38070700004)(579004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4BO7me0KFX002Ah1U69QX+RMNgrJije1Lhbtb1bjqTc/VQUSxZABPUu9BFiV?=
- =?us-ascii?Q?iD5FXuu3/DFliiRmDudC+FH0OFmMd1ODcXjWKkuPlr8CmI5zJYlwHVEvBqHr?=
- =?us-ascii?Q?cL+rBwNm9F3AmJYndTIRl15L21EcxlSpwMwNH9HYD3Bk27tP0zU1BK/Ct4oH?=
- =?us-ascii?Q?+tckB7yfaeUGNg63VDEg0ohBLaceCGUH3/Fj/UHvXSkM1TOl+PE/+X7dY56O?=
- =?us-ascii?Q?sRefhF7EjBcGvJfON9c9tiJXVcswLK8OHGlYuNdg/uvNviK+zEKvrbJyo9Um?=
- =?us-ascii?Q?Wlegng2O424JuoYk6va51jWpi7aJvTGAhfN0KXUb2uTdB+o1dPuxc9jNx2Qi?=
- =?us-ascii?Q?Eg7y50ClzT765zvYIxRmP8ryw8U7KYN6GYOfqQwhMopwX3ARphkuhi2AwpG8?=
- =?us-ascii?Q?wbN/jn+HxhnYOoH0YOw6oulkTFmIoQbrr5SqGgArO3325PrgffqOy0YA2YyU?=
- =?us-ascii?Q?IDf303jAKSI9tUVKX9ONeNCXKTwc5fVrlbqGWMZenO8lLJqnMOGnjMYVccGl?=
- =?us-ascii?Q?hlUtbVsBtSECbhSm46p8wxviR9pUJHnXzwLW37H6chE8Uyx81LHW8HQ7RlQc?=
- =?us-ascii?Q?90JxN9S0CBPC9rredOu5pRSnz4+C/zoSDoLym2CmGrSaPGD8vq3F5Hw8aBZg?=
- =?us-ascii?Q?dZVECwuMsLOkTLFw+2DVIrtDr4dE7/L0fzjH7C5YfwarVCEbJnyjUf6sM5Bp?=
- =?us-ascii?Q?Kg6+uMZVVRgBHtS7e7CgYgBG1h2FJlxyNfIt0L4JLyaiIsBjou2jC17tFJXZ?=
- =?us-ascii?Q?gRX5Fq/iJsryXvppnPMjrUlH/8i8fMRZYeUx6e3rx3cWDlM2e2P/LJiPe5w/?=
- =?us-ascii?Q?+8/55t2Asxi0fLqPbwE7H8K2vJkMQAFExKdLSOV59EC7e6wsLRGKbTuVvDcl?=
- =?us-ascii?Q?6DwELbdCe4dAdtIHtpiPhguTQWAYd/zxTAGhz8QsDGm0cf3qedUb3wvozejU?=
- =?us-ascii?Q?SbtPuElIoJbA6fzIkNTEZn+GFNYFhdWag3tFmMpUIYYp58YA4KvTlsEb3YUh?=
- =?us-ascii?Q?Qvy5lrvKvA4RszSVuiScLCpAgEoryjRrawYesle9SU0X4BKcgDc2J7ug+i2M?=
- =?us-ascii?Q?HOot/oD/oLDXbl3EosxKMtIPsQAh0TZuyQnAUNwXaOaqGfCtqCkh6gx9GLow?=
- =?us-ascii?Q?GtbiowewvdoqDilUqTPezonc8z8yX6WiMnkOzfFwWWI/0tsMreEUxqPxDbNS?=
- =?us-ascii?Q?UQlWBu4bbyXysomTPPAZa36dV31Yk/78kDYYesAnnOk+gswrKhkgmfEK1PoO?=
- =?us-ascii?Q?WRuuOQlZ29Fs0tcZR34bgNps1XklE1qfyQwl9NOu62CAsRpzhbRcfx1u+83w?=
- =?us-ascii?Q?2lv+6HFPxLYN8MpufYyAz/2X?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8F04666415CBFC43A8559B6DB1011E30@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=N+3DXi642GqDpFpnUX/m+M4EKuorPVrRr3DgsMu4Ntg=;
+        b=zO4GMwJRTkMW2jglCDdbxfnzAB/CrPx0IoFjJMiB24fWa+9U2ROM9Ci98K/bzSTGbH
+         UUCtkJxF6DQ+SQoI70a8MCIlqDu23T2lB0FmmeCnAnSu4+IqmWrDvz+4ejxdqxYs7F5x
+         hVFOqRApPGg0qZnWfw7/ak8TDRXDsQapP3vWtkRpLmRe5DKmOhIlnjlBIcgr0WMEhjiE
+         +y3xtWd1Z5KMY9J3oZT97xPATmRqfapypw1MKerXlnNuRh0OewDetEz1zlB6ppQpDzHQ
+         t5GGm++LPSyk5198qzqMTVOmk+RFilobjB0uw890RzhmB1MgNKhBC3O/UJ/ZsGZIp4jM
+         E7tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N+3DXi642GqDpFpnUX/m+M4EKuorPVrRr3DgsMu4Ntg=;
+        b=qxzS6LTEWx24fnfohrheSkPK00WFPFzN/NjMCVYu6m4FV2jKzLrzMc2Hb7eJcvFUkR
+         rDSIQ0BECPd1ak8NCFsgKnwxOJx3FJGDUvu01UNfRS4K0F1SCZZAO+iV0zi5wBFOyeEF
+         Aa+ivnSxWEv8x6gLUHbzHTUMYoAnacGUQQGIQ4ksCOyUPKgbgzpWY+c7yWvR9Po3NPEn
+         tJG127Gx2HcLMRrce9nOKedtkfd1ZTkZAu++GB3iUM3FCdeIlFNZESPL/Jkg7FUK/xYr
+         EbCt36rWsGEsmaKnjRez1PV3FnHOFskNwghQFkVWH/iOEFIYgRbFUsZU6Qa9zl2B4qGb
+         pGyg==
+X-Gm-Message-State: AOAM533aAIGB1QpVPPOY/qYyshZgYnCLobutUN2UN2KYWH5s6uQCPW2t
+        tFfvKq4lLRP3235SC/lXCxH+k30geP41IGVcd7inMw==
+X-Google-Smtp-Source: ABdhPJwssx92s9INRUabScriKMwv9Gz0vKkIANQpCkrFdkyEovXwJeMv8zkNy5vhIbHii8huFIA/k8fwTToewlVxODI=
+X-Received: by 2002:a17:906:4b46:: with SMTP id j6mr21051156ejv.247.1627375780645;
+ Tue, 27 Jul 2021 01:49:40 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: equinix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR04MB8002.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63f5aeb2-0be1-49ae-328c-08d950db61dd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jul 2021 08:49:01.8188
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MdUwRAtSfZAwGQnoS0olmJGKJWn0FdTAdszd5ybim5e3TNjhFbql3qU3WmXq+YB87ebLLu8oa3OZqWBcJ0RztQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR04MB8131
-X-Proofpoint-ORIG-GUID: m4U15aQFdElmqq4RsdSiXX7fKhlssCuV
-X-Proofpoint-GUID: m4U15aQFdElmqq4RsdSiXX7fKhlssCuV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_06:2021-07-27,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 mlxscore=0 clxscore=1015 phishscore=0 priorityscore=1501
- spamscore=0 mlxlogscore=999 malwarescore=0 lowpriorityscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107270050
+References: <20210726153831.696295003@linuxfoundation.org>
+In-Reply-To: <20210726153831.696295003@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 27 Jul 2021 14:19:29 +0530
+Message-ID: <CA+G9fYt6eZR_3uFmG+LoqAV6wFc7TZiShdXGwordRiN9XT6ufQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/108] 5.4.136-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 05:04:40PM CDT, Iwona Winiarska wrote:
->From: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+On Mon, 26 Jul 2021 at 21:25, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
->ASPEED AST24xx/AST25xx/AST26xx SoCs supports the PECI electrical
->interface (a.k.a PECI wire).
+> This is the start of the stable review cycle for the 5.4.136 release.
+> There are 108 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
->Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->Co-developed-by: Iwona Winiarska <iwona.winiarska@intel.com>
->Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
->Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->---
-> MAINTAINERS                           |   9 +
-> drivers/peci/Kconfig                  |   6 +
-> drivers/peci/Makefile                 |   3 +
-> drivers/peci/controller/Kconfig       |  12 +
-> drivers/peci/controller/Makefile      |   3 +
-> drivers/peci/controller/peci-aspeed.c | 501 ++++++++++++++++++++++++++
-> 6 files changed, 534 insertions(+)
-> create mode 100644 drivers/peci/controller/Kconfig
-> create mode 100644 drivers/peci/controller/Makefile
-> create mode 100644 drivers/peci/controller/peci-aspeed.c
+> Responses should be made by Wed, 28 Jul 2021 15:38:12 +0000.
+> Anything received after that time might be too late.
 >
->diff --git a/MAINTAINERS b/MAINTAINERS
->index 47411e2b6336..4ba874afa2fa 100644
->--- a/MAINTAINERS
->+++ b/MAINTAINERS
->@@ -2865,6 +2865,15 @@ S:	Maintained
-> F:	Documentation/hwmon/asc7621.rst
-> F:	drivers/hwmon/asc7621.c
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.136-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
 >
->+ASPEED PECI CONTROLLER
->+M:	Iwona Winiarska <iwona.winiarska@intel.com>
->+M:	Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
->+L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
->+L:	openbmc@lists.ozlabs.org (moderated for non-subscribers)
->+S:	Supported
->+F:	Documentation/devicetree/bindings/peci/peci-aspeed.yaml
->+F:	drivers/peci/controller/peci-aspeed.c
->+
-> ASPEED PINCTRL DRIVERS
-> M:	Andrew Jeffery <andrew@aj.id.au>
-> L:	linux-aspeed@lists.ozlabs.org (moderated for non-subscribers)
->diff --git a/drivers/peci/Kconfig b/drivers/peci/Kconfig
->index 601cc3c3c852..0d0ee8009713 100644
->--- a/drivers/peci/Kconfig
->+++ b/drivers/peci/Kconfig
->@@ -12,3 +12,9 @@ menuconfig PECI
+> thanks,
 >
-> 	  This support is also available as a module. If so, the module
-> 	  will be called peci.
->+
->+if PECI
->+
->+source "drivers/peci/controller/Kconfig"
->+
->+endif # PECI
->diff --git a/drivers/peci/Makefile b/drivers/peci/Makefile
->index 2bb2f51bcda7..621a993e306a 100644
->--- a/drivers/peci/Makefile
->+++ b/drivers/peci/Makefile
->@@ -3,3 +3,6 @@
-> # Core functionality
-> peci-y :=3D core.o sysfs.o
-> obj-$(CONFIG_PECI) +=3D peci.o
->+
->+# Hardware specific bus drivers
->+obj-y +=3D controller/
->diff --git a/drivers/peci/controller/Kconfig b/drivers/peci/controller/Kco=
-nfig
->new file mode 100644
->index 000000000000..8ddbe494677f
->--- /dev/null
->+++ b/drivers/peci/controller/Kconfig
->@@ -0,0 +1,12 @@
->+# SPDX-License-Identifier: GPL-2.0-only
->+
->+config PECI_ASPEED
->+	tristate "ASPEED PECI support"
->+	depends on ARCH_ASPEED || COMPILE_TEST
->+	depends on OF
->+	depends on HAS_IOMEM
->+	help
->+	  Enable this driver if you want to support ASPEED PECI controller.
->+
->+	  This driver can be also build as a module. If so, the module
->+	  will be called peci-aspeed.
->diff --git a/drivers/peci/controller/Makefile b/drivers/peci/controller/Ma=
-kefile
->new file mode 100644
->index 000000000000..022c28ef1bf0
->--- /dev/null
->+++ b/drivers/peci/controller/Makefile
->@@ -0,0 +1,3 @@
->+# SPDX-License-Identifier: GPL-2.0-only
->+
->+obj-$(CONFIG_PECI_ASPEED)	+=3D peci-aspeed.o
->diff --git a/drivers/peci/controller/peci-aspeed.c b/drivers/peci/controll=
-er/peci-aspeed.c
->new file mode 100644
->index 000000000000..888b46383ea4
->--- /dev/null
->+++ b/drivers/peci/controller/peci-aspeed.c
->@@ -0,0 +1,501 @@
->+// SPDX-License-Identifier: GPL-2.0-only
->+// Copyright (C) 2012-2017 ASPEED Technology Inc.
->+// Copyright (c) 2018-2021 Intel Corporation
->+
->+#include <linux/bitfield.h>
->+#include <linux/clk.h>
->+#include <linux/delay.h>
->+#include <linux/interrupt.h>
->+#include <linux/io.h>
->+#include <linux/iopoll.h>
->+#include <linux/jiffies.h>
->+#include <linux/module.h>
->+#include <linux/of.h>
->+#include <linux/peci.h>
->+#include <linux/platform_device.h>
->+#include <linux/reset.h>
->+
->+#include <asm/unaligned.h>
->+
->+/* ASPEED PECI Registers */
->+/* Control Register */
->+#define ASPEED_PECI_CTRL			0x00
->+#define   ASPEED_PECI_CTRL_SAMPLING_MASK	GENMASK(19, 16)
->+#define   ASPEED_PECI_CTRL_READ_MODE_MASK	GENMASK(13, 12)
->+#define   ASPEED_PECI_CTRL_READ_MODE_COUNT	BIT(12)
->+#define   ASPEED_PECI_CTRL_READ_MODE_DBG	BIT(13)
+> greg k-h
 
-Nitpick: might be nice to keep things in a consistent descending order
-here (13 then 12).
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
->+#define   ASPEED_PECI_CTRL_CLK_SOURCE_MASK	BIT(11)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-_MASK suffix seems out of place on this one.
+## Build
+* kernel: 5.4.136-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: 77cfe86f32232bb4b8fd35352d6db630e5ef4985
+* git describe: v5.4.135-109-g77cfe86f3223
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+35-109-g77cfe86f3223
 
->+#define   ASPEED_PECI_CTRL_CLK_DIV_MASK		GENMASK(10, 8)
->+#define   ASPEED_PECI_CTRL_INVERT_OUT		BIT(7)
->+#define   ASPEED_PECI_CTRL_INVERT_IN		BIT(6)
->+#define   ASPEED_PECI_CTRL_BUS_CONTENT_EN	BIT(5)
+## No regressions (compared to v5.4.134-72-gdcc7e2dee7e9)
 
-It *is* already kind of a long macro name, but abbreviating "contention"
-to "content" seems a bit confusing; I'd suggest keeping the extra three
-characters (or maybe drop the _EN suffix if you want to avoid making it
-even longer).
+## No fixes (compared to v5.4.134-72-gdcc7e2dee7e9)
 
->+#define   ASPEED_PECI_CTRL_PECI_EN		BIT(4)
->+#define   ASPEED_PECI_CTRL_PECI_CLK_EN		BIT(0)
->+
->+/* Timing Negotiation Register */
->+#define ASPEED_PECI_TIMING_NEGOTIATION		0x04
->+#define   ASPEED_PECI_TIMING_MESSAGE_MASK	GENMASK(15, 8)
->+#define   ASPEED_PECI_TIMING_ADDRESS_MASK	GENMASK(7, 0)
->+
->+/* Command Register */
->+#define ASPEED_PECI_CMD				0x08
->+#define   ASPEED_PECI_CMD_PIN_MON		BIT(31)
->+#define   ASPEED_PECI_CMD_STS_MASK		GENMASK(27, 24)
->+#define     ASPEED_PECI_CMD_STS_ADDR_T_NEGO	0x3
->+#define   ASPEED_PECI_CMD_IDLE_MASK		\
->+	  (ASPEED_PECI_CMD_STS_MASK | ASPEED_PECI_CMD_PIN_MON)
->+#define   ASPEED_PECI_CMD_FIRE			BIT(0)
->+
->+/* Read/Write Length Register */
->+#define ASPEED_PECI_RW_LENGTH			0x0c
->+#define   ASPEED_PECI_AW_FCS_EN			BIT(31)
->+#define   ASPEED_PECI_READ_LEN_MASK		GENMASK(23, 16)
->+#define   ASPEED_PECI_WRITE_LEN_MASK		GENMASK(15, 8)
->+#define   ASPEED_PECI_TAGET_ADDR_MASK		GENMASK(7, 0)
+## Test result summary
+ total: 77330, pass: 62228, fail: 1011, skip: 12507, xfail: 1584,
 
-s/TAGET/TARGET/
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
 
->+
->+/* Expected FCS Data Register */
->+#define ASPEED_PECI_EXP_FCS			0x10
->+#define   ASPEED_PECI_EXP_READ_FCS_MASK		GENMASK(23, 16)
->+#define   ASPEED_PECI_EXP_AW_FCS_AUTO_MASK	GENMASK(15, 8)
->+#define   ASPEED_PECI_EXP_WRITE_FCS_MASK	GENMASK(7, 0)
->+
->+/* Captured FCS Data Register */
->+#define ASPEED_PECI_CAP_FCS			0x14
->+#define   ASPEED_PECI_CAP_READ_FCS_MASK		GENMASK(23, 16)
->+#define   ASPEED_PECI_CAP_WRITE_FCS_MASK	GENMASK(7, 0)
->+
->+/* Interrupt Register */
->+#define ASPEED_PECI_INT_CTRL			0x18
->+#define   ASPEED_PECI_TIMING_NEGO_SEL_MASK	GENMASK(31, 30)
->+#define     ASPEED_PECI_1ST_BIT_OF_ADDR_NEGO	0
->+#define     ASPEED_PECI_2ND_BIT_OF_ADDR_NEGO	1
->+#define     ASPEED_PECI_MESSAGE_NEGO		2
->+#define   ASPEED_PECI_INT_MASK			GENMASK(4, 0)
->+#define   ASPEED_PECI_INT_BUS_TIMEOUT		BIT(4)
->+#define   ASPEED_PECI_INT_BUS_CONNECT		BIT(3)
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
-s/CONNECT/CONTENTION/
-
->+#define   ASPEED_PECI_INT_W_FCS_BAD		BIT(2)
->+#define   ASPEED_PECI_INT_W_FCS_ABORT		BIT(1)
->+#define   ASPEED_PECI_INT_CMD_DONE		BIT(0)
->+
->+/* Interrupt Status Register */
->+#define ASPEED_PECI_INT_STS			0x1c
->+#define   ASPEED_PECI_INT_TIMING_RESULT_MASK	GENMASK(29, 16)
->+	  /* bits[4..0]: Same bit fields in the 'Interrupt Register' */
->+
->+/* Rx/Tx Data Buffer Registers */
->+#define ASPEED_PECI_W_DATA0			0x20
->+#define ASPEED_PECI_W_DATA1			0x24
->+#define ASPEED_PECI_W_DATA2			0x28
->+#define ASPEED_PECI_W_DATA3			0x2c
->+#define ASPEED_PECI_R_DATA0			0x30
->+#define ASPEED_PECI_R_DATA1			0x34
->+#define ASPEED_PECI_R_DATA2			0x38
->+#define ASPEED_PECI_R_DATA3			0x3c
->+#define ASPEED_PECI_W_DATA4			0x40
->+#define ASPEED_PECI_W_DATA5			0x44
->+#define ASPEED_PECI_W_DATA6			0x48
->+#define ASPEED_PECI_W_DATA7			0x4c
->+#define ASPEED_PECI_R_DATA4			0x50
->+#define ASPEED_PECI_R_DATA5			0x54
->+#define ASPEED_PECI_R_DATA6			0x58
->+#define ASPEED_PECI_R_DATA7			0x5c
->+#define   ASPEED_PECI_DATA_BUF_SIZE_MAX		32
->+
->+/* Timing Negotiation */
->+#define ASPEED_PECI_RD_SAMPLING_POINT_DEFAULT	8
->+#define ASPEED_PECI_RD_SAMPLING_POINT_MAX	(BIT(4) - 1)
->+#define ASPEED_PECI_CLK_DIV_DEFAULT		0
->+#define ASPEED_PECI_CLK_DIV_MAX			(BIT(3) - 1)
->+#define ASPEED_PECI_MSG_TIMING_DEFAULT		1
->+#define ASPEED_PECI_MSG_TIMING_MAX		(BIT(8) - 1)
->+#define ASPEED_PECI_ADDR_TIMING_DEFAULT		1
->+#define ASPEED_PECI_ADDR_TIMING_MAX		(BIT(8) - 1)
->+
->+/* Timeout */
->+#define ASPEED_PECI_IDLE_CHECK_TIMEOUT_US	(50 * USEC_PER_MSEC)
->+#define ASPEED_PECI_IDLE_CHECK_INTERVAL_US	(10 * USEC_PER_MSEC)
->+#define ASPEED_PECI_CMD_TIMEOUT_MS_DEFAULT	(1000)
->+#define ASPEED_PECI_CMD_TIMEOUT_MS_MAX		(1000)
->+
->+struct aspeed_peci {
->+	struct peci_controller controller;
->+	struct device *dev;
->+	void __iomem *base;
->+	struct clk *clk;
->+	struct reset_control *rst;
->+	int irq;
->+	spinlock_t lock; /* to sync completion status handling */
->+	struct completion xfer_complete;
->+	u32 status;
->+	u32 cmd_timeout_ms;
->+	u32 msg_timing;
->+	u32 addr_timing;
->+	u32 rd_sampling_point;
->+	u32 clk_div;
->+};
->+
->+static inline struct aspeed_peci *to_aspeed_peci(struct peci_controller *=
-a)
->+{
->+	return container_of(a, struct aspeed_peci, controller);
->+}
->+
->+static void aspeed_peci_init_regs(struct aspeed_peci *priv)
->+{
->+	u32 val;
->+
->+	val =3D FIELD_PREP(ASPEED_PECI_CTRL_CLK_DIV_MASK, ASPEED_PECI_CLK_DIV_DE=
-FAULT);
->+	val |=3D ASPEED_PECI_CTRL_PECI_CLK_EN;
->+	writel(val, priv->base + ASPEED_PECI_CTRL);
->+	/*
->+	 * Timing negotiation period setting.
->+	 * The unit of the programmed value is 4 times of PECI clock period.
->+	 */
->+	val =3D FIELD_PREP(ASPEED_PECI_TIMING_MESSAGE_MASK, priv->msg_timing);
->+	val |=3D FIELD_PREP(ASPEED_PECI_TIMING_ADDRESS_MASK, priv->addr_timing);
->+	writel(val, priv->base + ASPEED_PECI_TIMING_NEGOTIATION);
->+
->+	/* Clear interrupts */
->+	val =3D readl(priv->base + ASPEED_PECI_INT_STS) | ASPEED_PECI_INT_MASK;
-
-This should be & instead of |, I'm guessing?
-
->+	writel(val, priv->base + ASPEED_PECI_INT_STS);
->+
->+	/* Set timing negotiation mode and enable interrupts */
->+	val =3D FIELD_PREP(ASPEED_PECI_TIMING_NEGO_SEL_MASK, ASPEED_PECI_1ST_BIT=
-_OF_ADDR_NEGO);
->+	val |=3D ASPEED_PECI_INT_MASK;
->+	writel(val, priv->base + ASPEED_PECI_INT_CTRL);
->+
->+	val =3D FIELD_PREP(ASPEED_PECI_CTRL_SAMPLING_MASK, priv->rd_sampling_poi=
-nt);
->+	val |=3D FIELD_PREP(ASPEED_PECI_CTRL_CLK_DIV_MASK, priv->clk_div);
->+	val |=3D ASPEED_PECI_CTRL_PECI_EN;
->+	val |=3D ASPEED_PECI_CTRL_PECI_CLK_EN;
->+	writel(val, priv->base + ASPEED_PECI_CTRL);
->+}
->+
->+static inline int aspeed_peci_check_idle(struct aspeed_peci *priv)
->+{
->+	u32 cmd_sts =3D readl(priv->base + ASPEED_PECI_CMD);
->+
->+	if (FIELD_GET(ASPEED_PECI_CMD_STS_MASK, cmd_sts) =3D=3D ASPEED_PECI_CMD_=
-STS_ADDR_T_NEGO)
->+		aspeed_peci_init_regs(priv);
->+
->+	return readl_poll_timeout(priv->base + ASPEED_PECI_CMD,
->+				  cmd_sts,
->+				  !(cmd_sts & ASPEED_PECI_CMD_IDLE_MASK),
->+				  ASPEED_PECI_IDLE_CHECK_INTERVAL_US,
->+				  ASPEED_PECI_IDLE_CHECK_TIMEOUT_US);
->+}
->+
->+static int aspeed_peci_xfer(struct peci_controller *controller,
->+			    u8 addr, struct peci_request *req)
->+{
->+	struct aspeed_peci *priv =3D to_aspeed_peci(controller);
->+	unsigned long flags, timeout =3D msecs_to_jiffies(priv->cmd_timeout_ms);
->+	u32 peci_head;
->+	int ret;
->+
->+	if (req->tx.len > ASPEED_PECI_DATA_BUF_SIZE_MAX ||
->+	    req->rx.len > ASPEED_PECI_DATA_BUF_SIZE_MAX)
->+		return -EINVAL;
->+
->+	/* Check command sts and bus idle state */
->+	ret =3D aspeed_peci_check_idle(priv);
->+	if (ret)
->+		return ret; /* -ETIMEDOUT */
->+
->+	spin_lock_irqsave(&priv->lock, flags);
->+	reinit_completion(&priv->xfer_complete);
->+
->+	peci_head =3D FIELD_PREP(ASPEED_PECI_TAGET_ADDR_MASK, addr) |
->+		    FIELD_PREP(ASPEED_PECI_WRITE_LEN_MASK, req->tx.len) |
->+		    FIELD_PREP(ASPEED_PECI_READ_LEN_MASK, req->rx.len);
->+
->+	writel(peci_head, priv->base + ASPEED_PECI_RW_LENGTH);
->+
->+	memcpy_toio(priv->base + ASPEED_PECI_W_DATA0, req->tx.buf,
->+		    req->tx.len > 16 ? 16 : req->tx.len);
-
-min(req->tx.len, 16) for the third argument there might be a bit
-clearer.
-
->+	if (req->tx.len > 16)
->+		memcpy_toio(priv->base + ASPEED_PECI_W_DATA4, req->tx.buf + 16,
->+			    req->tx.len - 16);
->+
->+	dev_dbg(priv->dev, "HEAD : 0x%08x\n", peci_head);
->+	print_hex_dump_bytes("TX : ", DUMP_PREFIX_NONE, req->tx.buf, req->tx.len=
-);
->+
->+	priv->status =3D 0;
->+	writel(ASPEED_PECI_CMD_FIRE, priv->base + ASPEED_PECI_CMD);
->+	spin_unlock_irqrestore(&priv->lock, flags);
->+
->+	ret =3D wait_for_completion_interruptible_timeout(&priv->xfer_complete, =
-timeout);
->+	if (ret < 0)
->+		return ret;
->+
->+	if (ret =3D=3D 0) {
->+		dev_dbg(priv->dev, "Timeout waiting for a response!\n");
->+		return -ETIMEDOUT;
->+	}
->+
->+	spin_lock_irqsave(&priv->lock, flags);
->+
->+	writel(0, priv->base + ASPEED_PECI_CMD);
->+
->+	if (priv->status !=3D ASPEED_PECI_INT_CMD_DONE) {
->+		spin_unlock_irqrestore(&priv->lock, flags);
->+		dev_dbg(priv->dev, "No valid response!\n");
->+		return -EIO;
->+	}
->+
->+	spin_unlock_irqrestore(&priv->lock, flags);
->+
->+	memcpy_fromio(req->rx.buf, priv->base + ASPEED_PECI_R_DATA0,
->+		      req->rx.len > 16 ? 16 : req->rx.len);
-
-Likewise, min(req->rx.len, 16) here.
-
->+	if (req->rx.len > 16)
->+		memcpy_fromio(req->rx.buf + 16, priv->base + ASPEED_PECI_R_DATA4,
->+			      req->rx.len - 16);
->+
->+	print_hex_dump_bytes("RX : ", DUMP_PREFIX_NONE, req->rx.buf, req->rx.len=
-);
->+
->+	return 0;
->+}
->+
->+static irqreturn_t aspeed_peci_irq_handler(int irq, void *arg)
->+{
->+	struct aspeed_peci *priv =3D arg;
->+	u32 status;
->+
->+	spin_lock(&priv->lock);
->+	status =3D readl(priv->base + ASPEED_PECI_INT_STS);
->+	writel(status, priv->base + ASPEED_PECI_INT_STS);
->+	priv->status |=3D (status & ASPEED_PECI_INT_MASK);
->+
->+	/*
->+	 * In most cases, interrupt bits will be set one by one but also note
->+	 * that multiple interrupt bits could be set at the same time.
->+	 */
->+	if (status & ASPEED_PECI_INT_BUS_TIMEOUT)
->+		dev_dbg_ratelimited(priv->dev, "ASPEED_PECI_INT_BUS_TIMEOUT\n");
->+
->+	if (status & ASPEED_PECI_INT_BUS_CONNECT)
->+		dev_dbg_ratelimited(priv->dev, "ASPEED_PECI_INT_BUS_CONNECT\n");
-
-s/CONNECT/CONTENTION/ here too (in the message string).
-
->+
->+	if (status & ASPEED_PECI_INT_W_FCS_BAD)
->+		dev_dbg_ratelimited(priv->dev, "ASPEED_PECI_INT_W_FCS_BAD\n");
->+
->+	if (status & ASPEED_PECI_INT_W_FCS_ABORT)
->+		dev_dbg_ratelimited(priv->dev, "ASPEED_PECI_INT_W_FCS_ABORT\n");
-
-Bus contention can of course arise legitimately, and I suppose an
-offline host CPU might result in a timeout, so dbg seems fine for those
-(though as Dan suggests, making some counters available seems like a
-good idea, especially for contention).  Are the FCS error cases
-significant enough to warrant something less likely to go unnoticed
-though?  (e.g. dev_warn_ratelimited() or something?)
-
->+
->+	/*
->+	 * All commands should be ended up with a ASPEED_PECI_INT_CMD_DONE bit
->+	 * set even in an error case.
->+	 */
->+	if (status & ASPEED_PECI_INT_CMD_DONE)
->+		complete(&priv->xfer_complete);
->+
->+	spin_unlock(&priv->lock);
->+
->+	return IRQ_HANDLED;
->+}
->+
->+static void __sanitize_clock_divider(struct aspeed_peci *priv)
->+{
->+	u32 clk_div;
->+	int ret;
->+
->+	ret =3D device_property_read_u32(priv->dev, "clock-divider", &clk_div);
->+	if (ret) {
->+		clk_div =3D ASPEED_PECI_CLK_DIV_DEFAULT;
->+	} else if (clk_div > ASPEED_PECI_CLK_DIV_MAX) {
->+		dev_warn(priv->dev, "Invalid clock-divider: %u, Using default: %u\n",
->+			 clk_div, ASPEED_PECI_CLK_DIV_DEFAULT);
->+
->+		clk_div =3D ASPEED_PECI_CLK_DIV_DEFAULT;
->+	}
->+
->+	priv->clk_div =3D clk_div;
->+}
->+
-
-The naming of these __sanitize_*() functions is a bit inconsistent with
-the rest of the driver -- though given how similar they all look, could
-they instead be refactored into a single helper function taking
-property-name, default-value, and max-value parameters?
-
->+static void __sanitize_msg_timing(struct aspeed_peci *priv)
->+{
->+	u32 msg_timing;
->+	int ret;
->+
->+	ret =3D device_property_read_u32(priv->dev, "msg-timing", &msg_timing);
->+	if (ret) {
->+		msg_timing =3D ASPEED_PECI_MSG_TIMING_DEFAULT;
->+	} else if (msg_timing > ASPEED_PECI_MSG_TIMING_MAX) {
->+		dev_warn(priv->dev, "Invalid msg-timing : %u, Use default : %u\n",
->+			 msg_timing, ASPEED_PECI_MSG_TIMING_DEFAULT);
->+
->+		msg_timing =3D ASPEED_PECI_MSG_TIMING_DEFAULT;
->+	}
->+
->+	priv->msg_timing =3D msg_timing;
->+}
->+
->+static void __sanitize_addr_timing(struct aspeed_peci *priv)
->+{
->+	u32 addr_timing;
->+	int ret;
->+
->+	ret =3D device_property_read_u32(priv->dev, "addr-timing", &addr_timing)=
-;
->+	if (ret) {
->+		addr_timing =3D ASPEED_PECI_ADDR_TIMING_DEFAULT;
->+	} else if (addr_timing > ASPEED_PECI_ADDR_TIMING_MAX) {
->+		dev_warn(priv->dev, "Invalid addr-timing : %u, Use default : %u\n",
->+			 addr_timing, ASPEED_PECI_ADDR_TIMING_DEFAULT);
->+
->+		addr_timing =3D ASPEED_PECI_ADDR_TIMING_DEFAULT;
->+	}
->+
->+	priv->addr_timing =3D addr_timing;
->+}
->+
->+static void __sanitize_rd_sampling_point(struct aspeed_peci *priv)
->+{
->+	u32 rd_sampling_point;
->+	int ret;
->+
->+	ret =3D device_property_read_u32(priv->dev, "rd-sampling-point", &rd_sam=
-pling_point);
->+	if (ret) {
->+		rd_sampling_point =3D ASPEED_PECI_RD_SAMPLING_POINT_DEFAULT;
->+	} else if (rd_sampling_point > ASPEED_PECI_RD_SAMPLING_POINT_MAX) {
->+		dev_warn(priv->dev, "Invalid rd-sampling-point: %u, Use default : %u\n"=
-,
->+			 rd_sampling_point, ASPEED_PECI_RD_SAMPLING_POINT_DEFAULT);
->+
->+		rd_sampling_point =3D ASPEED_PECI_RD_SAMPLING_POINT_DEFAULT;
->+	}
->+
->+	priv->rd_sampling_point =3D rd_sampling_point;
->+}
->+
->+static void __sanitize_cmd_timeout(struct aspeed_peci *priv)
->+{
->+	u32 timeout;
->+	int ret;
->+
->+	ret =3D device_property_read_u32(priv->dev, "cmd-timeout-ms", &timeout);
->+	if (ret) {
->+		timeout =3D ASPEED_PECI_CMD_TIMEOUT_MS_DEFAULT;
->+	} else if (timeout > ASPEED_PECI_CMD_TIMEOUT_MS_MAX || timeout =3D=3D 0)=
- {
->+		dev_warn(priv->dev, "Invalid cmd-timeout-ms: %u, Use default: %u\n",
->+			 timeout, ASPEED_PECI_CMD_TIMEOUT_MS_DEFAULT);
->+
->+		timeout =3D ASPEED_PECI_CMD_TIMEOUT_MS_DEFAULT;
->+	}
->+
->+	priv->cmd_timeout_ms =3D timeout;
->+}
->+
->+static void aspeed_peci_device_property_sanitize(struct aspeed_peci *priv=
-)
->+{
->+	__sanitize_clock_divider(priv);
->+	__sanitize_msg_timing(priv);
->+	__sanitize_addr_timing(priv);
->+	__sanitize_rd_sampling_point(priv);
->+	__sanitize_cmd_timeout(priv);
->+}
->+
->+static void aspeed_peci_disable_clk(void *data)
->+{
->+	clk_disable_unprepare(data);
->+}
->+
->+static int aspeed_peci_init_ctrl(struct aspeed_peci *priv)
->+{
->+	int ret;
->+
->+	priv->clk =3D devm_clk_get(priv->dev, NULL);
->+	if (IS_ERR(priv->clk))
->+		return dev_err_probe(priv->dev, PTR_ERR(priv->clk), "Failed to get clk =
-source\n");
->+
->+	ret =3D clk_prepare_enable(priv->clk);
->+	if (ret) {
->+		dev_err(priv->dev, "Failed to enable clock\n");
->+		return ret;
->+	}
->+
->+	ret =3D devm_add_action_or_reset(priv->dev, aspeed_peci_disable_clk, pri=
-v->clk);
->+	if (ret)
->+		return ret;
->+
->+	aspeed_peci_device_property_sanitize(priv);
->+
->+	aspeed_peci_init_regs(priv);
->+
->+	return 0;
->+}
->+
->+static int aspeed_peci_probe(struct platform_device *pdev)
->+{
->+	struct aspeed_peci *priv;
->+	int ret;
->+
->+	priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
->+	if (!priv)
->+		return -ENOMEM;
->+
->+	priv->dev =3D &pdev->dev;
->+	dev_set_drvdata(priv->dev, priv);
->+
->+	priv->base =3D devm_platform_ioremap_resource(pdev, 0);
->+	if (IS_ERR(priv->base))
->+		return PTR_ERR(priv->base);
->+
->+	priv->irq =3D platform_get_irq(pdev, 0);
->+	if (!priv->irq)
->+		return priv->irq;
->+
->+	ret =3D devm_request_irq(&pdev->dev, priv->irq, aspeed_peci_irq_handler,
->+			       0, "peci-aspeed-irq", priv);
-
-Might as well drop the "-irq" suffix here?  (Seems a bit redundant, and
-a quick glance through /proc/interrupts on the systems I have at hand
-doesn't show anything else following that convention.)
-
->+	if (ret)
->+		return ret;
->+
->+	init_completion(&priv->xfer_complete);
->+	spin_lock_init(&priv->lock);
->+
->+	priv->controller.xfer =3D aspeed_peci_xfer;
->+
->+	priv->rst =3D devm_reset_control_get(&pdev->dev, NULL);
->+	if (IS_ERR(priv->rst)) {
->+		dev_err(&pdev->dev, "Missing or invalid reset controller entry\n");
->+		return PTR_ERR(priv->rst);
->+	}
->+	reset_control_deassert(priv->rst);
->+
->+	ret =3D aspeed_peci_init_ctrl(priv);
->+	if (ret)
->+		return ret;
->+
->+	return peci_controller_add(&priv->controller, priv->dev);
->+}
->+
->+static int aspeed_peci_remove(struct platform_device *pdev)
->+{
->+	struct aspeed_peci *priv =3D dev_get_drvdata(&pdev->dev);
->+
->+	peci_controller_remove(&priv->controller);
->+	reset_control_assert(priv->rst);
->+
->+	return 0;
->+}
->+
->+static const struct of_device_id aspeed_peci_of_table[] =3D {
->+	{ .compatible =3D "aspeed,ast2400-peci", },
->+	{ .compatible =3D "aspeed,ast2500-peci", },
->+	{ .compatible =3D "aspeed,ast2600-peci", },
->+	{ }
->+};
->+MODULE_DEVICE_TABLE(of, aspeed_peci_of_table);
->+
->+static struct platform_driver aspeed_peci_driver =3D {
->+	.probe  =3D aspeed_peci_probe,
->+	.remove =3D aspeed_peci_remove,
->+	.driver =3D {
->+		.name           =3D "peci-aspeed",
->+		.of_match_table =3D aspeed_peci_of_table,
->+	},
->+};
->+module_platform_driver(aspeed_peci_driver);
->+
->+MODULE_AUTHOR("Ryan Chen <ryan_chen@aspeedtech.com>");
->+MODULE_AUTHOR("Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>");
->+MODULE_DESCRIPTION("ASPEED PECI driver");
->+MODULE_LICENSE("GPL");
->+MODULE_IMPORT_NS(PECI);
->--=20
->2.31.1
->=
+--
+Linaro LKFT
+https://lkft.linaro.org
