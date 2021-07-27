@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0683D6DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EB13D6DB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235093AbhG0ErB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 00:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56144 "EHLO
+        id S235142AbhG0ErY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 00:47:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235038AbhG0ErA (ORCPT
+        with ESMTP id S235038AbhG0ErY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 00:47:00 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D2C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:46:59 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ds11-20020a17090b08cbb0290172f971883bso2407167pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:46:59 -0700 (PDT)
+        Tue, 27 Jul 2021 00:47:24 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D345EC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:47:23 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id i10so11290550pla.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ti5+nTjIMGmJGpw/z6LqKbHFp/KaMX3fxXfNJ8H49/4=;
-        b=diXZU81t4iyvnv/18XGbkyNKsHyeTT9MhBeINHDsCaFjhj3nWJ+Rjt3mLI+jjXblu/
-         MsWhavsHPf+L3BrTp4KG1nB9DENFuRXtgIl7F+eti+sB7higo79QsJAGV3StfU/AOJwI
-         1LQjVuXldV3S5ZFqCm+iiqPFuli0bfz7aGmUc=
+        bh=KZrbt9yR8hbrQ8uYyC/1sSAYUKzr6dRf2IBuVuefs44=;
+        b=M9rmhyJs0OAWFelfhkQwSWB48PlkyYfaxXouNKWkCTVZK5xj1A5A07a2FTc+WX50vx
+         X9FWYB5LhBrtwtqOkD3mwjzsfFTNcUAiTalq8AU305lAgHdmskc6dPLVGWnAkhwxIhya
+         qTtn3xB6e/XzKGTGhf5NqtsbbnhSwHgbTd71k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ti5+nTjIMGmJGpw/z6LqKbHFp/KaMX3fxXfNJ8H49/4=;
-        b=bcfT1J/Jz+x3F5ECkmcLeiB3L0zSJJ+OS7M9m7MoUaPgu6iCSmgvqfIsoONdZPYGcR
-         K3AeWJviAa1cATrYZs/5KNDf9p+fvArRSzW9ukrvy6mRircXEGX4A86gGUeYaj0m5+HR
-         sJvNkEQFiLAXr+LwhDjaCAN3heaeW3SbDNcICgdzP0f+7rO6/JI7rrPOA0djISfd57jS
-         CXqAr12XpOGkP6a572BJ15H5EIjbt7ENPy8wjKKaB7UlswqY4fb7RWP6q+2kW50zm8aV
-         kTpStm75pqOamEPeIdGFeIJfYecKqxE2GDXNfPWOtSiFgeNqe+/l20+e5u/aD5PbvVYN
-         HG2A==
-X-Gm-Message-State: AOAM532RytnwHuz6XDJ97k8ncsXsZ6He5yikqY7oftopJiaAkTLVjgVv
-        Gto6RGcbYx9VvmYXKQ+9od9cRTUoTtpIjymIB9WA6g==
-X-Google-Smtp-Source: ABdhPJzNMWhPWVTRIcWwCN3GmAc9IllPsC7xBOZ11CfMOfTT+kPcwdmug6nzk8s57FDGJfS0aOZkGmjiKvm8+NzOl8s=
-X-Received: by 2002:a63:3601:: with SMTP id d1mr21382265pga.299.1627361219535;
- Mon, 26 Jul 2021 21:46:59 -0700 (PDT)
+        bh=KZrbt9yR8hbrQ8uYyC/1sSAYUKzr6dRf2IBuVuefs44=;
+        b=XPqY356nzwskR4JQiEaPo3cAKFQsJqDqRcB0ytol8+v3IZHXGyiztcWrnr8XAl9qch
+         HRIJ+cBoGIWo3qASTX2ocL4DisR7FloyPC0AqU8H6CaXnsF+SY54uRuGSerksXXjD3aT
+         B7Bkma3qe2kL4C7Ehe1vDvJ2PMEfr/5CiM5ngndysitwNpvo0hLLsajCeWlFLSC1vYJ3
+         gog6gsVGDAU6s2ulJTzfdLz8o44IHA2VryDqqWkIYziIX43Z4UmEtLfHazeevgjaGmhT
+         9ahYYgZnjc98YMkRCh+EdfTbhb8QjARGmtiPnbr0DLiask5fnupbCN6INgqnF5utuJqK
+         swgQ==
+X-Gm-Message-State: AOAM532rGEYZqfYRdcGwsoxnupj7VjFMFYRYMgWplDptXPa0iJ3O3Cx7
+        qfq3ddonfA39JT6NLxb9jhlcas7zXIXoLN4N5J5+5A==
+X-Google-Smtp-Source: ABdhPJyMrzz2w0ZyuzNoS3umV6X1k23qvdWBuG/YbXZPQ68RCfZGsiO8UslIzHyStg5/1car2IaVGcpVboN/TDltUzc=
+X-Received: by 2002:a17:90a:8403:: with SMTP id j3mr2318141pjn.112.1627361243434;
+ Mon, 26 Jul 2021 21:47:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210726105719.15793-1-chun-jie.chen@mediatek.com> <20210726105719.15793-20-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210726105719.15793-20-chun-jie.chen@mediatek.com>
+References: <20210726105719.15793-1-chun-jie.chen@mediatek.com> <20210726105719.15793-21-chun-jie.chen@mediatek.com>
+In-Reply-To: <20210726105719.15793-21-chun-jie.chen@mediatek.com>
 From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Tue, 27 Jul 2021 12:46:48 +0800
-Message-ID: <CAATdQgD5EpUv-R7J8keHodbkBOeuQGxWQO-9HXsCFxDu4_916w@mail.gmail.com>
-Subject: Re: [v14 19/21] clk: mediatek: Add MT8192 scp adsp clock support
+Date:   Tue, 27 Jul 2021 12:47:12 +0800
+Message-ID: <CAATdQgCzVffmJ=CQ0JqFQPjreySQNUsfNamjP05m8Jq+e5g=gQ@mail.gmail.com>
+Subject: Re: [v14 20/21] clk: mediatek: Add MT8192 vdecsys clock support
 To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
 Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -68,10 +68,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 7:12 PM Chun-Jie Chen
+On Mon, Jul 26, 2021 at 7:11 PM Chun-Jie Chen
 <chun-jie.chen@mediatek.com> wrote:
 >
-> Add MT8192 scp adsp clock provider
+> Add MT8192 vdecsys and vdecsys soc clock providers
 >
 > Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 > Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
