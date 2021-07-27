@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3456A3D6FF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EA83D6FF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 09:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhG0HHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 03:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59888 "EHLO
+        id S235800AbhG0HGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 03:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235827AbhG0HHF (ORCPT
+        with ESMTP id S235230AbhG0HGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 03:07:05 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB62C061757
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:07:05 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so3597674pjh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:07:05 -0700 (PDT)
+        Tue, 27 Jul 2021 03:06:45 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E22D2C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:06:45 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so2775259pja.5
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 00:06:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gRjmuFZcr1eSBhne8H1SLkdS9f3pbpxDfvMvPpPvFP0=;
-        b=QVKjfGbnR32GQUbYrb6/qb02GRpzHi9VNov+FPkEVRqZbbTln2gnlOjt/KDtwrgpmY
-         gIidgwAaLE031GY6D8OFlM0j6U2Tf2sgXS0Piy4FXlomGU9Ya80l1TYPpDFrPtXkTI/W
-         85YIrUuynRlJLHxRXZBjbUjpN46eZ5i4rWaZYCn9C7SzdAYsHC5MAvE6rkmwODO4dFzZ
-         ue5LVdvewkWM4k/MoHyDebVQYTAhgS/raO1/5MgHNVMJQiniyIhGaHqmUPkwFtA6hY5F
-         gHxeVmKuafAmtwW7BcV0yJgnMD+49AeuMOmI0tJ9Iud9pkJXF5OP368UOMpW8N8eD3KZ
-         2wrA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hZLPLply0xdbrRyNzREagpGRYzn73ptz2SbhQcpOnT0=;
+        b=Em/DMtr9N6aKr4ztKcWR9cqXJqEzUjC25EIQpuWJ8xyBYDAxolGaw+VFhxw3v14mv+
+         H98fIEAAuMWQjz5vGPW8QOI2MYDC6VJXx56obj120jIOWE8Klx/2bnAgr9qju5qtma5A
+         r98JFS+Kcbr76qSKClK24eJvmciMuWaee81Vk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gRjmuFZcr1eSBhne8H1SLkdS9f3pbpxDfvMvPpPvFP0=;
-        b=ZrdJOds/E9UP6hETL6GhjD/Wb2nDQzB7Om3A1/y/tOSgQ5VGJMMSK5jRkxDaB47r4A
-         QLZ1+ohuPHmeKnseAGUzFQzpPZivp9keJ91DjJQtR/SYGdBPB8/DG5yNPNHNJByY/7Mw
-         cYriN93MTqRWO61PVxYzhEwtA3EbUYGT8jGILyRAYKvHUixJxiv2ybeVvqYd0LkhbNi6
-         S2G2jEOF+b2xfZE6gDhQCJ+fKl2ErS799zxaXjThYiUgqzEI7YeBp2bhSK7Sr/IzekQn
-         N+en/onCcp7rYeNbawm3oXJ3kTMhzUK6ZgYbGLofL7eqOJ9YNuGJ+oEyknUAVvM7P57l
-         CoPw==
-X-Gm-Message-State: AOAM5302LitgQVBjGC48DrdBeQIQ/NrFWjV/GGch1MMV+VbfC7E8T2HG
-        G8M3/C2gJNPuIBxyS5V6d+5z5SKc3px7HoRzXfmVqA==
-X-Google-Smtp-Source: ABdhPJy8do4w5yZuxEKWkVW2eIwgAICsoVJlX2vijoDLzxx/qmuCAGdDgTq3YZ45HD/oPkf72lUMiVSB1BGuPgiLwdw=
-X-Received: by 2002:a17:90a:4894:: with SMTP id b20mr1818416pjh.13.1627369624969;
- Tue, 27 Jul 2021 00:07:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hZLPLply0xdbrRyNzREagpGRYzn73ptz2SbhQcpOnT0=;
+        b=daW8XN8xvKsDuwj2mhZztSMaFBuo8Kif5OtB+INJYjPPXrQCrLVLCwHVfNmhTb09cp
+         lZU02EK0Ys1mG4jJWIw/0JKzGW66u+pX7qBdNuPSjsDtA0LlIfPSuCh7Tplx7RwuWReH
+         HmDkxLHvu16MWUl1sAtWnvPtLrrArYEy8ZrGj0I4BicIdXKMWXdJbaJ6gBXJY3x9KtxT
+         oX5NyyOOfqhBtsqu4x6wpaPVsTHnf0DYkVdjhxHqYyNGTuC1Fb6OXD6LBvhqzEMMzNGX
+         rK/ISSJFa+lUUD3BcOePX5h5RsPgc/jNUMUbzlRcZHGjsNOQ1iYU+0CBtEMkwm6LRa9t
+         E01g==
+X-Gm-Message-State: AOAM5329SV4Rd+ijKCd0Sna9KCnAG3IzraiY2X3ZK7zMscQtfIbfkq+w
+        sl+y6DWT4J04wB93FDtFsfCErw==
+X-Google-Smtp-Source: ABdhPJyfma6fzkAfjK2NQZPekjB3bJI6jTkv/QxofyljWR05wyn7JE6TyD/iVL+IixW2PYvyMUUgdg==
+X-Received: by 2002:a17:90a:e647:: with SMTP id ep7mr2888129pjb.145.1627369605558;
+        Tue, 27 Jul 2021 00:06:45 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:ba3e:509b:495:ec84])
+        by smtp.gmail.com with ESMTPSA id y15sm2437897pfn.63.2021.07.27.00.06.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 00:06:45 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 16:06:39 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>
+Subject: Re: [PATCHv3 8/8] videobuf2: handle non-contiguous DMA allocations
+Message-ID: <YP+wf+G8V4AoXSBq@google.com>
+References: <20210709092027.1050834-1-senozhatsky@chromium.org>
+ <20210709092027.1050834-9-senozhatsky@chromium.org>
+ <3c80786a-7422-3736-7261-8605260eb99f@collabora.com>
 MIME-Version: 1.0
-References: <20210714091800.42645-1-songmuchun@bytedance.com>
- <20210714091800.42645-3-songmuchun@bytedance.com> <fea1d845-209a-e2d5-6fcc-dbf17c949861@oracle.com>
-In-Reply-To: <fea1d845-209a-e2d5-6fcc-dbf17c949861@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 27 Jul 2021 15:06:28 +0800
-Message-ID: <CAMZfGtUaSsfjf4HSCsHMHFNxVaGrTXjVqE5iExM8JkMJPx169g@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mm: introduce save_page_flags to cooperate with show_page_flags
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c80786a-7422-3736-7261-8605260eb99f@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 7:18 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 7/14/21 2:17 AM, Muchun Song wrote:
-> > Introduce save_page_flags to return the page flags which can cooperate
-> > with show_page_flags. If we want to hihe some page flags from users, it
-> > will be useful to alter save_page_flags directly. This is a preparation
-> > for the next patch to hide some page flags from users.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/trace/events/mmflags.h  | 3 +++
-> >  include/trace/events/page_ref.h | 8 ++++----
-> >  2 files changed, 7 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
-> > index 390270e00a1d..69cb84b1257e 100644
-> > --- a/include/trace/events/mmflags.h
-> > +++ b/include/trace/events/mmflags.h
-> > @@ -121,6 +121,9 @@ IF_HAVE_PG_IDLE(PG_idle,          "idle"          )               \
-> >  IF_HAVE_PG_ARCH_2(PG_arch_2,         "arch_2"        )               \
-> >  IF_HAVE_PG_SKIP_KASAN_POISON(PG_skip_kasan_poison, "skip_kasan_poison")
-> >
-> > +#define save_page_flags(page)                                                \
-> > +     (((page)->flags & ~PAGEFLAGS_MASK))
+On (21/07/22 19:26), Dafna Hirschfeld wrote:
+> >   /*********************************************/
+> > @@ -139,17 +175,63 @@ static void vb2_dc_put(void *buf_priv)
+> >   		sg_free_table(buf->sgt_base);
+> >   		kfree(buf->sgt_base);
+> >   	}
+> > -	dma_free_attrs(buf->dev, buf->size, buf->cookie, buf->dma_addr,
+> > -		       buf->attrs);
 > > +
->
-> Looking ahead to the next patch, this is changed to hide the PG_head
-> flag for 'fake' head pages.
->
-> IIRC, all vmemmap pages except the first will be mapped read only.  So,
-> all vmemmap pages with 'fake' head pages will be read only.
->
-> It seems that all the modified trace events below are associated with
-> updates to page structs.  Therefore, it seems these events will never
-> experience a 'fake' head page.  Am I missing something?
+> > +	if (buf->coherent_mem) {
+> > +		dma_free_attrs(buf->dev, buf->size, buf->cookie,
+> > +			       buf->dma_addr, buf->attrs);
+> > +	} else {
+> > +		if (buf->vaddr)
+> > +			dma_vunmap_noncontiguous(buf->dev, buf->vaddr);
+> > +		dma_free_noncontiguous(buf->dev, buf->size,
+> > +				       buf->dma_sgt, buf->dma_addr);
+> 
+> The last argument for dma_free_noncontiguous should be dma_dir.
+> Also, the 'cookie' cb returns buf->dma_addr which is not initialized for
+> the noncontiguous api. So it is not clear how drivers should use the new api.
 
-Totally right. I didn't realize this point before. We cannot see a fake page
-struct in page refcount tracing. So this patch is definitely pointless. I'll
-drop it in the next version. Thanks Mike.
-
-
->
-> --
-> Mike Kravetz
+Done. Thank you Dafna.
