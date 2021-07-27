@@ -2,82 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD713D7372
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5313D739D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 12:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236227AbhG0KjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 06:39:10 -0400
-Received: from muru.com ([72.249.23.125]:55926 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236104AbhG0KjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 06:39:06 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 3600D80F0;
-        Tue, 27 Jul 2021 10:39:24 +0000 (UTC)
-Date:   Tue, 27 Jul 2021 13:39:05 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
-Message-ID: <YP/iSZpJ5AIJV70Z@atomide.com>
-References: <20210511151955.28071-1-vigneshr@ti.com>
- <YJ008MjjewRUTn9Z@kroah.com>
- <YLCCJzkkB4N7LTQS@atomide.com>
- <e5b35370-bf2d-7295-e2fd-9aee5bbc3296@ti.com>
- <0ad948ac-f669-3d6d-5eca-4ca48d47d6a3@siemens.com>
- <56c5d73f-741c-2643-1c79-6dc13ebb05c7@ti.com>
- <YOylnHudkwcHHEeZ@surfacebook.localdomain>
- <0ae7e313-1ed7-f1be-e8a7-edd1286277a5@ti.com>
- <CAHp75Vcxtk0f2KRSL8gh2mz-AYE7Kav6co8N8XMbsvtyLohG5w@mail.gmail.com>
+        id S236352AbhG0KtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 06:49:14 -0400
+Received: from dd38112.kasserver.com ([85.13.154.158]:54154 "EHLO
+        dd38112.kasserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236169AbhG0KtM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 06:49:12 -0400
+X-Greylist: delayed 516 seconds by postgrey-1.27 at vger.kernel.org; Tue, 27 Jul 2021 06:49:12 EDT
+Received: from dd38112.kasserver.com (dd0806.kasserver.com [85.13.161.252])
+        by dd38112.kasserver.com (Postfix) with ESMTPSA id A03301F01285;
+        Tue, 27 Jul 2021 12:40:35 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vcxtk0f2KRSL8gh2mz-AYE7Kav6co8N8XMbsvtyLohG5w@mail.gmail.com>
+Content-Type: multipart/mixed;
+ boundary="=_41a65840431285888d34d7f3c360d11e"
+X-SenderIP: 89.144.219.199
+User-Agent: ALL-INKL Webmail 2.11
+Subject: [PATCH] drivers core: Fix oops when driver probe fails
+From:   "Filip Schauer" <filip@mg6.at>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Message-Id: <20210727104035.A03301F01285@dd38112.kasserver.com>
+Date:   Tue, 27 Jul 2021 12:40:35 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Shevchenko <andy.shevchenko@gmail.com> [210713 09:14]:
-> On Tue, Jul 13, 2021 at 11:54 AM Vignesh Raghavendra <vigneshr@ti.com> wrote:
-> > On 7/13/21 1:57 AM, andy@surfacebook.localdomain wrote:
-> > > Tue, Jun 22, 2021 at 11:53:38AM +0530, Vignesh Raghavendra kirjoitti:
-> 
-> ...
-> 
-> > > https://lore.kernel.org/linux-serial/20170206233000.3021-1-dianders@chromium.org/
-> >
-> > I am not sure if reading UART_LSR is a good idea in the above patch.
-> > Some flags in LSR register are cleared on read (at least that's the case
-> > for UARTs on TI SoCs) and thus can result in loss of error/FIFO status
-> > information.
-> >
-> > > https://lore.kernel.org/linux-serial/1440015124-28393-1-git-send-email-california.l.sullivan@intel.com/
-> >
-> > Looks like this never made it.
-> 
-> Forgot to react to the above. Yes, they never made it because I
-> believe due to the exact reason you mentioned above. Also California
-> set up different experiments IIRC and it shows that the problem didn;t
-> fully disappear with his approach. But maybe yours will work better
-> (at least it's not the first time I have seen it on different hardware
-> according to people's contributions).
 
-Not sure if this is the same issue with noisy lines, but see also the
-following in case it's related:
+This is a multi-part message in MIME format  --  Dies ist eine mehrteilige Nachricht im MIME-Format
+--=_41a65840431285888d34d7f3c360d11e
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1
 
-[PATCH 2/2] serial: 8250_omap: Handle optional overrun-throttle-ms property
+dma_range_map is freed to early, which might cause an oops when
+a driver probe fails.
+ Call trace:
+  is_free_buddy_page+0xe4/0x1d4
+  __free_pages+0x2c/0x88
+  dma_free_contiguous+0x64/0x80
+  dma_direct_free+0x38/0xb4
+  dma_free_attrs+0x88/0xa0
+  dmam_release+0x28/0x34
+  release_nodes+0x78/0x8c
+  devres_release_all+0xa8/0x110
+  really_probe+0x118/0x2d0
+  __driver_probe_device+0xc8/0xe0
+  driver_probe_device+0x54/0xec
+  __driver_attach+0xe0/0xf0
+  bus_for_each_dev+0x7c/0xc8
+  driver_attach+0x30/0x3c
+  bus_add_driver+0x17c/0x1c4
+  driver_register+0xc0/0xf8
+  __platform_driver_register+0x34/0x40
+  ...
 
-Also available at [0] below.
+This issue is introduced by commit d0243bbd5dd3 ("drivers core:
+Free dma_range_map when driver probe failed"). It frees
+dma_range_map before the call to devres_release_all, which is too
+early. The solution is to free dma_range_map only after
+devres_release_all.
 
-Regards,
+Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe
+failed")
+Signed-off-by: Filip Schauer <filip@mg6.at>
+---
+ drivers/base/dd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Tony
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index daeb9b5763ae..437cd61343b2 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -653,8 +653,6 @@ static int really_probe(struct device *dev, struct
+device_driver *drv)
+ 	else if (drv->remove)
+ 		drv->remove(dev);
+ probe_failed:
+- kfree(dev->dma_range_map);
+- dev->dma_range_map = NULL;
+ 	if (dev->bus)
+ 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
+ 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
+@@ -662,6 +660,8 @@ static int really_probe(struct device *dev, struct
+device_driver *drv)
+ 	device_links_no_driver(dev);
+ 	devres_release_all(dev);
+ 	arch_teardown_dma_ops(dev);
++ kfree(dev->dma_range_map);
++ dev->dma_range_map = NULL;
+ 	driver_sysfs_remove(dev);
+ 	dev->driver = NULL;
+ 	dev_set_drvdata(dev, NULL);
+-- 
+2.25.1
 
-[0] https://lore.kernel.org/linux-omap/20210727103533.51547-1-tony@atomide.com/T/#m5f9da26c32503f2937d3d5977310ca337fa0cb5a
+
+--=_41a65840431285888d34d7f3c360d11e
+Content-Transfer-Encoding: 7bit
+Content-Type: text/x-diff; charset=us-ascii;
+ name=unknown
+Content-Disposition: attachment;
+ filename=unknown
+
+dma_range_map is freed to early, which might cause an oops when
+a driver probe fails.
+ Call trace:
+  is_free_buddy_page+0xe4/0x1d4
+  __free_pages+0x2c/0x88
+  dma_free_contiguous+0x64/0x80
+  dma_direct_free+0x38/0xb4
+  dma_free_attrs+0x88/0xa0
+  dmam_release+0x28/0x34
+  release_nodes+0x78/0x8c
+  devres_release_all+0xa8/0x110
+  really_probe+0x118/0x2d0
+  __driver_probe_device+0xc8/0xe0
+  driver_probe_device+0x54/0xec
+  __driver_attach+0xe0/0xf0
+  bus_for_each_dev+0x7c/0xc8
+  driver_attach+0x30/0x3c
+  bus_add_driver+0x17c/0x1c4
+  driver_register+0xc0/0xf8
+  __platform_driver_register+0x34/0x40
+  ...
+
+This issue is introduced by commit d0243bbd5dd3 ("drivers core:
+Free dma_range_map when driver probe failed"). It frees
+dma_range_map before the call to devres_release_all, which is too
+early. The solution is to free dma_range_map only after
+devres_release_all.
+
+Fixes: d0243bbd5dd3 ("drivers core: Free dma_range_map when driver probe failed")
+Signed-off-by: Filip Schauer <filip@mg6.at>
+---
+ drivers/base/dd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+index daeb9b5763ae..437cd61343b2 100644
+--- a/drivers/base/dd.c
++++ b/drivers/base/dd.c
+@@ -653,8 +653,6 @@ static int really_probe(struct device *dev, struct device_driver *drv)
+ 	else if (drv->remove)
+ 		drv->remove(dev);
+ probe_failed:
+-	kfree(dev->dma_range_map);
+-	dev->dma_range_map = NULL;
+ 	if (dev->bus)
+ 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
+ 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
+@@ -662,6 +660,8 @@ static int really_probe(struct device *dev, struct device_driver *drv)
+ 	device_links_no_driver(dev);
+ 	devres_release_all(dev);
+ 	arch_teardown_dma_ops(dev);
++	kfree(dev->dma_range_map);
++	dev->dma_range_map = NULL;
+ 	driver_sysfs_remove(dev);
+ 	dev->driver = NULL;
+ 	dev_set_drvdata(dev, NULL);
+-- 
+2.25.1
+
+
+--=_41a65840431285888d34d7f3c360d11e--
