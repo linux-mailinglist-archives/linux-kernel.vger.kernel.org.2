@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5313D76E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1473D76ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236723AbhG0Nfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:35:46 -0400
-Received: from smtpbg128.qq.com ([106.55.201.39]:45000 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232186AbhG0Nfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:35:44 -0400
-X-QQ-mid: bizesmtp52t1627392894tlx3fh6g
-Received: from ficus.lan (unknown [171.223.99.141])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Tue, 27 Jul 2021 21:34:52 +0800 (CST)
-X-QQ-SSF: 01000000002000B0C000B00A0000000
-X-QQ-FEAT: ptz89vG4AG809G2yUsmLkWimg0PzEcjML+fqpthYefsvk60AEjNt/EvUQwwQJ
-        K6tp89nvsLrVkYwtj/uFpGbXqGV+8oy41XMhJRoJDjFItbfrKREcDR1aq5ldW9oNsCsw7Vs
-        LD9lYEHihJ3rpJcf6TvSG0nSsNUzb0k/06vjDrEGne2W96YtF9AAWdrfuwF5GbIzsDMBzq7
-        OkbtjX2RLhmT00bup8YgCu6nUw4gLvdYb2/m8Ln8mdrlo30ZUmMMzpJ+kd9Dwv8hEfljYjM
-        uuaGXxC+GgFIbEZF1+unFduEYQya0LVs63uIJfsPJSaS5GP4TqCxFgOLJUD9hw5mAvOf3pZ
-        mEngyejXjrejZhH3V8qD4wfol03zQ==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     linusw@kernel.org
-Cc:     kaloz@openwrt.org, khalasa@piap.pl, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ARM: PCI: use __func__ in debug messages
-Date:   Tue, 27 Jul 2021 21:34:50 +0800
-Message-Id: <20210727133450.173749-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.32.0
+        id S236635AbhG0Ni0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236509AbhG0NiY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:38:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B04C061757;
+        Tue, 27 Jul 2021 06:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EpSbFrEHGAQA1xr1naEuF16MkP61b5G7e9AV8x/Ex4E=; b=o3L8a9jEH3Ul9rQPCR8ay1CcPx
+        wIvSa1TgAQ50cmZBTGLgdFt+6KKz9MeISZt2oLyJAD+VrxC8sVZkQDWVTFzAm7Iwxmpok/1Mp4p6l
+        P3Nl2s2YEtHdeeEepN52ujuAy8ErrEuQsmZ0DzDilBtZpMXt8pbSZ387BLsESn7wQtqgtyy131Fgr
+        V9tKJps9bOSaCDF4lQ4fPtAksGfWW7/qHx9sl878omOclcnrAte+06XMAscDe8xg0q4Zv3OxvS6QB
+        8i4Bw2KjwG4FkaEEwKm3MCpXkLEBkiiptKY01o0p92Uxi/IvCJJVRpyiIPCzrVvjXAgtyPhGczHr3
+        KaXHSOCg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8NFL-00F2s7-Bz; Tue, 27 Jul 2021 13:36:29 +0000
+Date:   Tue, 27 Jul 2021 14:35:46 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andreas Gruenbacher <andreas.gruenbacher@gmail.com>
+Subject: Re: [PATCH v7] iomap: make inline data support more flexible
+Message-ID: <YQALsvt0UWGW+iMw@casper.infradead.org>
+References: <CAHpGcMKZP8b3TbRv3D-pcrE_iDU5TKUFHst9emuQmRPntFSArA@mail.gmail.com>
+ <CAHpGcMJBhWcwteLDSBU3hgwq1tk_+LqogM1ZM=Fv8U0VtY5hMg@mail.gmail.com>
+ <20210723174131.180813-1-hsiangkao@linux.alibaba.com>
+ <20210725221639.426565-1-agruenba@redhat.com>
+ <YP4zUvnBCAb86Mny@B-P7TQMD6M-0146.local>
+ <20210726110611.459173-1-agruenba@redhat.com>
+ <20210726121702.GA528@lst.de>
+ <20210727082042.GI5047@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210727082042.GI5047@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Perhaps, the '"%s...", __func__' is more convenient to show current
-function in a debug message.
+On Tue, Jul 27, 2021 at 10:20:42AM +0200, David Sterba wrote:
+> On Mon, Jul 26, 2021 at 02:17:02PM +0200, Christoph Hellwig wrote:
+> > > Subject: iomap: Support tail packing
+> > 
+> > I can't say I like this "tail packing" language here when we have the
+> > perfectly fine inline wording.  Same for various comments in the actual
+> > code.
+> 
+> Yes please, don't call it tail-packing when it's an inline extent, we'll
+> use that for btrfs eventually and conflating the two terms has been
+> cofusing users. Except reiserfs, no linux filesystem does tail-packing.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/arm/mach-ixp4xx/common-pci.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Hmm ... I see what reiserfs does as packing tails of multiple files into
+one block.  What gfs2 (and ext4) do is inline data.  Erofs packs the
+tail of a single file into the same block as the inode.  If I understand
+what btrfs does correctly, it stores data in the btree.  But (like
+gfs2/ext4), it's only for the entire-file-is-small case, not for
+its-just-ten-bytes-into-the-last-block case.
 
-diff --git a/arch/arm/mach-ixp4xx/common-pci.c b/arch/arm/mach-ixp4xx/common-pci.c
-index 893c19c254e3..deb80fe05c03 100644
---- a/arch/arm/mach-ixp4xx/common-pci.c
-+++ b/arch/arm/mach-ixp4xx/common-pci.c
-@@ -203,18 +203,18 @@ static u32 local_byte_lane_enable_bits(u32 n, int size)
- static int local_read_config(int where, int size, u32 *value)
- { 
- 	u32 n, data;
--	pr_debug("local_read_config from %d size %d\n", where, size);
-+	pr_debug("%s from %d size %d\n", __func__, where, size);
- 	n = where % 4;
- 	crp_read(where & ~3, &data);
- 	*value = (data >> (8*n)) & bytemask[size];
--	pr_debug("local_read_config read %#x\n", *value);
-+	pr_debug("%s read %#x\n", __func__, *value);
- 	return PCIBIOS_SUCCESSFUL;
- }
- 
- static int local_write_config(int where, int size, u32 value)
- {
- 	u32 n, byte_enables, data;
--	pr_debug("local_write_config %#x to %d size %d\n", value, where, size);
-+	pr_debug("%s %#x to %d size %d\n", __func__, value, where, size);
- 	n = where % 4;
- 	byte_enables = local_byte_lane_enable_bits(n, size);
- 	if (byte_enables == 0xffffffff)
-@@ -293,8 +293,8 @@ static int abort_handler(unsigned long addr, unsigned int fsr, struct pt_regs *r
- 
- 	isr = *PCI_ISR;
- 	local_read_config(PCI_STATUS, 2, &status);
--	pr_debug("PCI: abort_handler addr = %#lx, isr = %#x, "
--		"status = %#x\n", addr, isr, status);
-+	pr_debug("PCI: %s addr = %#lx, isr = %#x, status = %#x\n",
-+			__func__, addr, isr, status);
- 
- 	/* make sure the Master Abort bit is reset */    
- 	*PCI_ISR = PCI_ISR_PFE;
--- 
-2.32.0
-
+So what would you call what erofs is doing if not tail-packing?
+Wikipedia calls it https://en.wikipedia.org/wiki/Block_suballocation
+which doesn't quite fit.  We need a phrase which means "this isn't
+just for small files but for small tails of large files".
