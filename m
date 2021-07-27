@@ -2,331 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F19B3D83A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 01:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FD73D837D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Jul 2021 00:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbhG0XEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 19:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbhG0XES (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 19:04:18 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B89C061757;
-        Tue, 27 Jul 2021 16:04:18 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d1so372380pll.1;
-        Tue, 27 Jul 2021 16:04:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q3ZJt+Wpnzbxyfl1rdsalqa7Ct7UoX9NXUeeObi4Y4g=;
-        b=c6YCWWROhD0FeAZm0Dic2NUHxwvyOkwaMUYE8oS2cYbXoVCGiRdur5HTKseH4TjHtJ
-         A67kz1aTSUyVeHoLnShSXy6z1LOqaar9Q/RnwzvOPvOpWULU64ta1SixyADQFQ9kATLk
-         XsDb90i9cEEHLC+zNVqNoj1khucGmEo3AwI70td5Eg5uoX6xvVikbIH3vauOz031Dm30
-         S/14ODQCKaJzhKjPZ5ehlGy6kVw2kokYVVJZ9za1uftXdv2Yyt0e0NK1nGZElSV+HItS
-         2GAQtfWpNf7UCOaq1/pUx1j9HtYCm5PlXRZ0sOqTlp5n/xtz7UO2UrYnwjFQ4Dlebk3T
-         pFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q3ZJt+Wpnzbxyfl1rdsalqa7Ct7UoX9NXUeeObi4Y4g=;
-        b=sqx2vnCokRSbouV8nDae9ygsVfgOZ/u/3pEgi6usfriYzspocsyKkTbsfoSGI2uMwo
-         NE5rvno5Jc/zeRIT1N/tIDxejDrC2NCki7McVSpXbSIeXcXnYG+POUinhtcQH1BP78m7
-         mQ1vmlajAbn0QJqOOHg+7O3cIVfjWaMfS0fRIfKUJuAv2Uck4oIkHZGRQ9P1oR8TZ4kT
-         /Wjis2hEJwS+SwMR3wt5shErdJFSuFylqbUajzGNUhZRgPadgMAtlODgQlgmSa6YGPtu
-         F6IYxqIjeXX0B/7Jo2vFBH3uWcltmy3j00WOePSvVz67qJxl/xuuJ2reu0x9uJA1QqDS
-         gVoQ==
-X-Gm-Message-State: AOAM5300KqLqfOvqjvxTVljjCkbo1GZmXbrk5olhrSpExVva3czTTInC
-        fB/KlJyD/7+y29PZDi6Y9Ts=
-X-Google-Smtp-Source: ABdhPJyJlP0MjkBgCPy6VGqrPj+M2BMq0J0HLZtHoJGS++DTXr8bHlp9kOIKbYtR3Vjfu2200WDtIg==
-X-Received: by 2002:a63:510d:: with SMTP id f13mr22412790pgb.308.1627427057634;
-        Tue, 27 Jul 2021 16:04:17 -0700 (PDT)
-Received: from localhost.localdomain ([189.6.25.18])
-        by smtp.gmail.com with ESMTPSA id d22sm4112594pfq.177.2021.07.27.16.04.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 16:04:16 -0700 (PDT)
-From:   =?UTF-8?q?Jos=C3=A9=20Aquiles=20Guedes=20de=20Rezende?= 
-        <jjoseaquiless@gmail.com>
-To:     Jiri Pirko <jiri@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brendanhiggins@google.com, dlatypov@google.com,
-        davidgow@google.com, linux-kselftest@vger.kernel.org,
-        ~lkcamp/patches@lists.sr.ht,
-        =?UTF-8?q?Jos=C3=A9=20Aquiles=20Guedes=20de=20Rezende?= 
-        <jjoseaquiless@gmail.com>,
-        Matheus Henrique de Souza Silva 
-        <matheushenriquedesouzasilva@protonmail.com>
-Subject: [PATCH] lib: use of kunit in test_parman.c
-Date:   Tue, 27 Jul 2021 19:58:48 -0300
-Message-Id: <20210727225847.22185-1-jjoseaquiless@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S232821AbhG0W7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 18:59:11 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15912 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231730AbhG0W7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 18:59:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10058"; a="212265949"
+X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
+   d="scan'208";a="212265949"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 15:59:09 -0700
+X-IronPort-AV: E=Sophos;i="5.84,275,1620716400"; 
+   d="scan'208";a="634559542"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.69.186])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jul 2021 15:59:08 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        richard.gong@intel.com, Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v13 0/4] Intel MAX10 BMC Secure Update Driver
+Date:   Tue, 27 Jul 2021 15:58:55 -0700
+Message-Id: <20210727225859.153572-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the parman test module to use the KUnit test framework.
-This makes thetest clearer by leveraging KUnit's assertion macros
-and test case definitions,as well as helps standardize on a testing framework.
+The Intel MAX10 BMC Secure Update driver instantiates the FPGA
+Security Manager class driver and provides the callback functions
+required to support secure updates on Intel n3000 PAC devices.
+This driver is implemented as a sub-driver of the Intel MAX10 BMC
+mfd driver. Future instances of the MAX10 BMC will support other
+devices as well (e.g. d5005) and this same MAX10 BMC Secure
+Update driver will receive modifications to support that device.
 
-Co-developed-by: Matheus Henrique de Souza Silva <matheushenriquedesouzasilva@protonmail.com>
-Signed-off-by: Matheus Henrique de Souza Silva <matheushenriquedesouzasilva@protonmail.com>
-Signed-off-by: José Aquiles Guedes de Rezende <jjoseaquiless@gmail.com>
----
- lib/test_parman.c | 145 +++++++++++++++++++---------------------------
- 1 file changed, 60 insertions(+), 85 deletions(-)
+This driver interacts with the HW secure update engine of the
+BMC in order to transfer new FPGA and BMC images to FLASH so
+that they will be automatically loaded when the FPGA card reboots.
+Security is enforced by hardware and firmware. The MAX10 BMC
+Secure Update driver interacts with the firmware to initiate
+an update, pass in the necessary data, and collect status on
+the update.
 
-diff --git a/lib/test_parman.c b/lib/test_parman.c
-index 35e32243693c..bd5010f0a412 100644
---- a/lib/test_parman.c
-+++ b/lib/test_parman.c
-@@ -41,6 +41,8 @@
- #include <linux/err.h>
- #include <linux/random.h>
- #include <linux/parman.h>
-+#include <linux/sched.h>
-+#include <kunit/test.h>
- 
- #define TEST_PARMAN_PRIO_SHIFT 7 /* defines number of prios for testing */
- #define TEST_PARMAN_PRIO_COUNT BIT(TEST_PARMAN_PRIO_SHIFT)
-@@ -91,12 +93,14 @@ struct test_parman {
- 
- static int test_parman_resize(void *priv, unsigned long new_count)
- {
-+	struct kunit *test = current->kunit_test;
- 	struct test_parman *test_parman = priv;
- 	struct test_parman_item **prio_array;
- 	unsigned long old_count;
- 
- 	prio_array = krealloc(test_parman->prio_array,
- 			      ITEM_PTRS_SIZE(new_count), GFP_KERNEL);
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, prio_array);
- 	if (new_count == 0)
- 		return 0;
- 	if (!prio_array)
-@@ -214,42 +218,39 @@ static void test_parman_items_fini(struct test_parman *test_parman)
- 	}
- }
- 
--static struct test_parman *test_parman_create(const struct parman_ops *ops)
-+static int test_parman_create(struct kunit *test)
- {
- 	struct test_parman *test_parman;
- 	int err;
- 
--	test_parman = kzalloc(sizeof(*test_parman), GFP_KERNEL);
--	if (!test_parman)
--		return ERR_PTR(-ENOMEM);
-+	test_parman = kunit_kzalloc(test, sizeof(*test_parman), GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, test_parman);
-+
- 	err = test_parman_resize(test_parman, TEST_PARMAN_BASE_COUNT);
--	if (err)
--		goto err_resize;
--	test_parman->parman = parman_create(ops, test_parman);
--	if (!test_parman->parman) {
--		err = -ENOMEM;
--		goto err_parman_create;
--	}
-+	KUNIT_ASSERT_EQ(test, err, 0);
-+
-+	test_parman->parman = parman_create(&test_parman_lsort_ops, test_parman);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, test_parman->parman);
-+
- 	test_parman_rnd_init(test_parman);
- 	test_parman_prios_init(test_parman);
- 	test_parman_items_init(test_parman);
- 	test_parman->run_budget = TEST_PARMAN_RUN_BUDGET;
--	return test_parman;
--
--err_parman_create:
--	test_parman_resize(test_parman, 0);
--err_resize:
--	kfree(test_parman);
--	return ERR_PTR(err);
-+	test->priv = test_parman;
-+	return 0;
- }
- 
--static void test_parman_destroy(struct test_parman *test_parman)
-+static void test_parman_destroy(struct kunit *test)
- {
-+	struct test_parman *test_parman = test->priv;
-+
-+	if (!test_parman)
-+		return;
- 	test_parman_items_fini(test_parman);
- 	test_parman_prios_fini(test_parman);
- 	parman_destroy(test_parman->parman);
- 	test_parman_resize(test_parman, 0);
--	kfree(test_parman);
-+	kunit_kfree(test, test_parman);
- }
- 
- static bool test_parman_run_check_budgets(struct test_parman *test_parman)
-@@ -265,8 +266,9 @@ static bool test_parman_run_check_budgets(struct test_parman *test_parman)
- 	return true;
- }
- 
--static int test_parman_run(struct test_parman *test_parman)
-+static void test_parman_run(struct kunit *test)
- {
-+	struct test_parman *test_parman = test->priv;
- 	unsigned int i = test_parman_rnd_get(test_parman);
- 	int err;
- 
-@@ -281,8 +283,8 @@ static int test_parman_run(struct test_parman *test_parman)
- 			err = parman_item_add(test_parman->parman,
- 					      &item->prio->parman_prio,
- 					      &item->parman_item);
--			if (err)
--				return err;
-+			KUNIT_ASSERT_EQ(test, err, 0);
-+
- 			test_parman->prio_array[item->parman_item.index] = item;
- 			test_parman->used_items++;
- 		} else {
-@@ -294,22 +296,19 @@ static int test_parman_run(struct test_parman *test_parman)
- 		}
- 		item->used = !item->used;
- 	}
--	return 0;
- }
- 
--static int test_parman_check_array(struct test_parman *test_parman,
--				   bool gaps_allowed)
-+static void test_parman_check_array(struct kunit *test, bool gaps_allowed)
- {
- 	unsigned int last_unused_items = 0;
- 	unsigned long last_priority = 0;
- 	unsigned int used_items = 0;
- 	int i;
-+	struct test_parman *test_parman = test->priv;
- 
--	if (test_parman->prio_array_limit < TEST_PARMAN_BASE_COUNT) {
--		pr_err("Array limit is lower than the base count (%lu < %lu)\n",
--		       test_parman->prio_array_limit, TEST_PARMAN_BASE_COUNT);
--		return -EINVAL;
--	}
-+	KUNIT_ASSERT_GE_MSG(test, test_parman->prio_array_limit, TEST_PARMAN_BASE_COUNT,
-+		"Array limit is lower than the base count (%lu < %lu)\n",
-+		test_parman->prio_array_limit, TEST_PARMAN_BASE_COUNT);
- 
- 	for (i = 0; i < test_parman->prio_array_limit; i++) {
- 		struct test_parman_item *item = test_parman->prio_array[i];
-@@ -318,77 +317,53 @@ static int test_parman_check_array(struct test_parman *test_parman,
- 			last_unused_items++;
- 			continue;
- 		}
--		if (last_unused_items && !gaps_allowed) {
--			pr_err("Gap found in array even though they are forbidden\n");
--			return -EINVAL;
--		}
-+
-+		KUNIT_ASSERT_FALSE_MSG(test, last_unused_items && !gaps_allowed,
-+			"Gap found in array even though they are forbidden\n");
- 
- 		last_unused_items = 0;
- 		used_items++;
- 
--		if (item->prio->priority < last_priority) {
--			pr_err("Item belongs under higher priority then the last one (current: %lu, previous: %lu)\n",
--			       item->prio->priority, last_priority);
--			return -EINVAL;
--		}
--		last_priority = item->prio->priority;
-+		KUNIT_ASSERT_GE_MSG(test, item->prio->priority, last_priority,
-+			"Item belongs under higher priority then the last one (current: %lu, previous: %lu)\n",
-+			item->prio->priority, last_priority);
- 
--		if (item->parman_item.index != i) {
--			pr_err("Item has different index in compare to where it actually is (%lu != %d)\n",
--			       item->parman_item.index, i);
--			return -EINVAL;
--		}
--	}
-+		last_priority = item->prio->priority;
- 
--	if (used_items != test_parman->used_items) {
--		pr_err("Number of used items in array does not match (%u != %u)\n",
--		       used_items, test_parman->used_items);
--		return -EINVAL;
--	}
-+		KUNIT_ASSERT_EQ_MSG(test, item->parman_item.index, (unsigned long)i,
-+			"Item has different index in compare to where it actually is (%lu != %d)\n",
-+			item->parman_item.index, i);
- 
--	if (last_unused_items >= TEST_PARMAN_RESIZE_STEP_COUNT) {
--		pr_err("Number of unused item at the end of array is bigger than resize step (%u >= %lu)\n",
--		       last_unused_items, TEST_PARMAN_RESIZE_STEP_COUNT);
--		return -EINVAL;
- 	}
- 
--	pr_info("Priority array check successful\n");
-+	KUNIT_ASSERT_EQ_MSG(test, used_items, test_parman->used_items,
-+		"Number of used items in array does not match (%u != %u)\n",
-+		used_items, test_parman->used_items);
- 
--	return 0;
-+	KUNIT_ASSERT_LT_MSG(test, (unsigned long)last_unused_items, TEST_PARMAN_RESIZE_STEP_COUNT,
-+		"Number of unused item at the end of array is bigger than resize step (%u >= %lu)\n",
-+		last_unused_items, TEST_PARMAN_RESIZE_STEP_COUNT);
- }
- 
--static int test_parman_lsort(void)
-+static void test_parman_lsort(struct kunit *test)
- {
--	struct test_parman *test_parman;
--	int err;
--
--	test_parman = test_parman_create(&test_parman_lsort_ops);
--	if (IS_ERR(test_parman))
--		return PTR_ERR(test_parman);
--
--	err = test_parman_run(test_parman);
--	if (err)
--		goto out;
--
--	err = test_parman_check_array(test_parman, false);
--	if (err)
--		goto out;
--out:
--	test_parman_destroy(test_parman);
--	return err;
-+	test_parman_run(test);
-+	test_parman_check_array(test, false);
- }
- 
--static int __init test_parman_init(void)
--{
--	return test_parman_lsort();
--}
-+static struct kunit_case parman_test_case[] = {
-+	KUNIT_CASE(test_parman_lsort),
-+	{}
-+};
- 
--static void __exit test_parman_exit(void)
--{
--}
-+static struct kunit_suite parman_test_suite = {
-+	.name = "parman",
-+	.init = test_parman_create,
-+	.exit = test_parman_destroy,
-+	.test_cases = parman_test_case,
-+};
- 
--module_init(test_parman_init);
--module_exit(test_parman_exit);
-+kunit_test_suite(parman_test_suite);
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_AUTHOR("Jiri Pirko <jiri@mellanox.com>");
+This driver provides sysfs files for displaying the flash count,
+the root entry hashes (REH), and the code-signing-key (CSK)
+cancellation vectors.
+
+These patches are dependent on other patches that are under
+review. If you want to apply and compile these patches on
+linux-next, please apply these patches first:
+
+(6 patches) https://marc.info/?l=linux-fpga&m=162742505425902&w=2
+
+Changelog v12 -> v13:
+  - Updated copyright to 2021
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Call updated fpga_sec_mgr_register() and fpga_sec_mgr_unregister()
+    functions instead of devm_fpga_sec_mgr_create() and
+    devm_fpga_sec_mgr_register().
+
+Changelog v11 -> v12:
+  - Updated Date and KernelVersion fields in ABI documentation
+  - Removed size parameter from the write_blk() op. m10bmc_sec_write_blk()
+    no longer has a size parameter, and the block size is determined
+    in this (the lower-level) driver.
+
+Changelog v10 -> v11:
+  - Added Reviewed-by tag to patch #1
+
+Changelog v9 -> v10:
+  - Changed the path expressions in the sysfs documentation to
+    replace the n3000 reference with something more generic to
+    accomodate other devices that use the same driver.
+
+Changelog v8 -> v9:
+  - Rebased to 5.12-rc2 next
+  - Updated Date and KernelVersion in ABI documentation
+
+Changelog v7 -> v8:
+  - Spit out patch "mfd: intel-m10-bmc: support for MAX10 BMC Secure
+    Updates" and submitted it separately:
+    https://marc.info/?l=linux-kernel&m=161126987101096&w=2
+
+Changelog v6 -> v7:
+  - Rebased patches for 5.11-rc2
+  - Updated Date and KernelVersion in ABI documentation
+
+Changelog v5 -> v6:
+  - Added WARN_ON() prior to several calls to regmap_bulk_read()
+    to assert that the (SIZE / stride) calculations did not result
+    in remainders.
+  - Changed the (size / stride) calculation in regmap_bulk_write()
+    call to ensure that we don't write one less than intended.
+  - Changed flash_count_show() parameter list to achieve
+    reverse-christmas tree format.
+  - Removed unnecessary call to rsu_check_complete() in
+    m10bmc_sec_poll_complete() and changed while loop to
+    do/while loop.
+  - Initialized auth_result and doorbell to HW_ERRINFO_POISON
+    in m10bmc_sec_hw_errinfo() and removed unnecessary if statements.
+
+Changelog v4 -> v5:
+  - Renamed sysfs node user_flash_count to flash_count and updated
+    the sysfs documentation accordingly to more accurately descirbe
+    the purpose of the count.
+
+Changelog v3 -> v4:
+  - Moved sysfs files for displaying the flash count, the root
+    entry hashes (REH), and the code-signing-key (CSK) cancellation
+    vectors from the FPGA Security Manager class driver to this
+    driver (as they are not generic enough for the class driver).
+  - Added a new ABI documentation file with informtaion about the
+    new sysfs entries: sysfs-driver-intel-m10-bmc-secure
+  - Updated the MAINTAINERS file to add the new ABI documentation
+    file: sysfs-driver-intel-m10-bmc-secure
+  - Removed unnecessary ret variable from m10bmc_secure_probe()
+  - Incorporated new devm_fpga_sec_mgr_register() function into
+    m10bmc_secure_probe() and removed the m10bmc_secure_remove()
+    function.
+
+Changelog v2 -> v3:
+  - Changed "MAX10 BMC Security Engine driver" to "MAX10 BMC Secure
+    Update driver"
+  - Changed from "Intel FPGA Security Manager" to FPGA Security Manager"
+  - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+    underlying functions are now called directly.
+  - Changed "_root_entry_hash" to "_reh", with a comment explaining
+    what reh is.
+  - Renamed get_csk_vector() to m10bmc_csk_vector()
+  - Changed calling functions of functions that return "enum fpga_sec_err"
+    to check for (ret != FPGA_SEC_ERR_NONE) instead of (ret)
+
+Changelog v1 -> v2:
+  - These patches were previously submitted as part of a larger V1
+    patch set under the title "Intel FPGA Security Manager Class Driver".
+  - Grouped all changes to include/linux/mfd/intel-m10-bmc.h into a
+    single patch: "mfd: intel-m10-bmc: support for MAX10 BMC Security
+    Engine".
+  - Removed ifpga_sec_mgr_init() and ifpga_sec_mgr_uinit() functions.
+  - Adapted to changes in the Intel FPGA Security Manager by splitting
+    the single call to ifpga_sec_mgr_register() into two function
+    calls: devm_ifpga_sec_mgr_create() and ifpga_sec_mgr_register().
+  - Replaced small function-creation macros for explicit function
+    declarations.
+  - Bug fix for the get_csk_vector() function to properly apply the
+    stride variable in calls to m10bmc_raw_bulk_read().
+  - Added m10bmc_ prefix to functions in m10bmc_iops structure
+  - Implemented HW_ERRINFO_POISON for m10bmc_sec_hw_errinfo() to
+    ensure that corresponding bits are set to 1 if we are unable
+    to read the doorbell or auth_result registers.
+  - Added comments and additional code cleanup per V1 review.
+
+Russ Weight (4):
+  fpga: m10bmc-sec: create max10 bmc secure update driver
+  fpga: m10bmc-sec: expose max10 flash update count
+  fpga: m10bmc-sec: expose max10 canceled keys in sysfs
+  fpga: m10bmc-sec: add max10 secure update functions
+
+ .../testing/sysfs-driver-intel-m10-bmc-secure |  61 ++
+ MAINTAINERS                                   |   2 +
+ drivers/fpga/Kconfig                          |  11 +
+ drivers/fpga/Makefile                         |   3 +
+ drivers/fpga/intel-m10-bmc-secure.c           | 538 ++++++++++++++++++
+ 5 files changed, 615 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-secure
+ create mode 100644 drivers/fpga/intel-m10-bmc-secure.c
+
 -- 
-2.32.0
+2.25.1
 
