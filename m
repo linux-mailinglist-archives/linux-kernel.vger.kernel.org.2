@@ -2,207 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95CA3D7F5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7A73D7F67
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbhG0UlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:41:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4848 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231424AbhG0UlT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:41:19 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16RKXTPA171906;
-        Tue, 27 Jul 2021 16:41:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=GXrqMLJnfay41Qa+AEwE55svFy1XguVHqDhNlpP+SmY=;
- b=hB+/zUXeprcYwbn6nKjhIwwbuz3kv4QY69lNUMnB2OPWbtKODl6V2tW7u12lcV56s0/9
- Bj+qYrmvrNlPc2puSZqY340ul56S8x4iBctf9wylkYs29a/WOIcFWAUpGMOkGbf8/SfN
- 5GXh96CCilH9y5AtjGjtiIzoQhd/eCtnqoInsP2tiTR3ir+yz+1EZA+bvHxgMV07aE3S
- +6PBjnR1jRxZ5Kc0WuzXj03Hcskwi8GQnJr7HMagPA/J71VF9RjtPEf+oUzhSURVsBA4
- 6pJffJVZgggdz4XnhRV3iszXx2F80nXiu1PePvJgG3VVEgWsA5eIAKeWbqkPztMazBCk +Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2rjahm0j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 16:41:13 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 16RKXXnQ172213;
-        Tue, 27 Jul 2021 16:41:13 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3a2rjahkyj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 16:41:13 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 16RKeZ62006116;
-        Tue, 27 Jul 2021 20:41:11 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3a235kge2c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 27 Jul 2021 20:41:11 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 16RKf8tS14025072
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Jul 2021 20:41:08 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 664DF4C05A;
-        Tue, 27 Jul 2021 20:41:08 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B7F104C040;
-        Tue, 27 Jul 2021 20:41:07 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.86.232])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue, 27 Jul 2021 20:41:07 +0000 (GMT)
-Date:   Tue, 27 Jul 2021 23:41:05 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Matt Turner <mattst88@gmail.com>
-Cc:     Michael Cree <mcree@orcon.net.nz>, linux-mm@kvack.org,
-        linux-alpha <linux-alpha@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Regression bisected to fa3354e4ea39 (mm: free_area_init: use
- maximal zone PFNs rather than zone sizes)
-Message-ID: <YQBvYUupT/jgDMqI@linux.ibm.com>
-References: <20210726192311.uffqnanxw3ac5wwi@ivybridge>
- <YP8Vxt0xuV1m5EPS@linux.ibm.com>
- <CAEdQ38F2ddbM0WBjut6MH-0TpencKmx9Wu4++gLtfQ5HGRwxFQ@mail.gmail.com>
- <YP+rI9Fh4wl/O6/8@linux.ibm.com>
- <CAEdQ38G+ZfXmc01iZTc+q4dYpRqQJUz0KNFCPwTQ25AYqJVbMA@mail.gmail.com>
+        id S231531AbhG0Umh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:42:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230425AbhG0Umg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 16:42:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6DC060FA0;
+        Tue, 27 Jul 2021 20:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627418555;
+        bh=d4JjFlDfF7N2eBt3m9sdZRk+eRhA4ZhBMt2Pq1TZ0cw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZKlOgZHSGjAmEnyaCwMuVKafYPWKeXil2Iiwo9tfWrDpXPrP+nIx5u3FkbHHx9hE7
+         f/+uSzSaAFLY8z0zPS4rMNMGD3DTUb7OLkYFi3ipPjtLYS72UjSrIEZWHsniKmxxZK
+         Le59cWQyoKcdNBRC2NnQPaYKcr4Sl5SxpzzeT6TBVgHinsKuWcX4k1BjDbOE4supyn
+         HiZ19DR0bU/awUHcX41Rjheo1w+obLAaQrJ8Rjja+UBSy51OODPf7/DV6wZKbPG4vd
+         wTF3Um9UkJV8uDOE8zSUVipLRKY8TGL5cXoV09GMyL2Tz2E7xssC3kDmiC7uClw3Me
+         O9bSVwy2lubCA==
+Received: by mail-wm1-f48.google.com with SMTP id m38-20020a05600c3b26b02902161fccabf1so2791363wms.2;
+        Tue, 27 Jul 2021 13:42:35 -0700 (PDT)
+X-Gm-Message-State: AOAM532e/tUB7+Yevh5XKbWHbmLJ44fqx2jx8R5yJ6m8/z1ANBb4cKI8
+        EgRq50X0XEK5e2xk7awNte+MLSMqp1CiNR3aWK8=
+X-Google-Smtp-Source: ABdhPJzIeHa1hycZO5ufjXaaYbpY3YdQw4oHXjfZp2KwEfMcEIfJ5hSLrfTaLF7iY7hnR3dqnN2Y1Sv0AKkyrN9dOFM=
+X-Received: by 2002:a7b:c2fa:: with SMTP id e26mr6005968wmk.84.1627418543998;
+ Tue, 27 Jul 2021 13:42:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEdQ38G+ZfXmc01iZTc+q4dYpRqQJUz0KNFCPwTQ25AYqJVbMA@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: S8r08Wo9u9aCfzX1EHvYSMLnmWVwisHg
-X-Proofpoint-ORIG-GUID: lNX4TlWTPq5LmsgcIPyx2wZqsYcT-S58
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-27_13:2021-07-27,2021-07-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- malwarescore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 bulkscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107270119
+References: <20210727144859.4150043-1-arnd@kernel.org> <YQAfa6iObAwwIpzb@infradead.org>
+ <20210727131017.f151a81fc69db8f45f81a2b3@linux-foundation.org>
+In-Reply-To: <20210727131017.f151a81fc69db8f45f81a2b3@linux-foundation.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 27 Jul 2021 22:42:07 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2S4Oct4+a8u=ottrW1b+iRf-tRSJb0DvaLNR3CZARmTQ@mail.gmail.com>
+Message-ID: <CAK8P3a2S4Oct4+a8u=ottrW1b+iRf-tRSJb0DvaLNR3CZARmTQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] compat: remove compat_alloc_user_space
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 12:24:26PM -0700, Matt Turner wrote:
-> On Mon, Jul 26, 2021 at 11:43 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+On Tue, Jul 27, 2021 at 10:11 PM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Tue, 27 Jul 2021 15:59:55 +0100 Christoph Hellwig <hch@infradead.org> wrote:
+>
+> > On Tue, Jul 27, 2021 at 04:48:53PM +0200, Arnd Bergmann wrote:
+> > > Since these patches are now all that remains, it would be nice to
+> > > merge it all through Andrew's Linux-mm tree, which is already based
+> > > on top of linux-next.
 > >
-> > On Mon, Jul 26, 2021 at 02:23:20PM -0700, Matt Turner wrote:
-> > > On Mon, Jul 26, 2021 at 1:06 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
-> > > >
-> > > > Hi Matt,
-> > > >
-> > > > On Mon, Jul 26, 2021 at 12:27:50PM -0700, Matt Turner wrote:
-> > > > > Reply-To:
-> > > > >
-> > > > > Hi Mike!
-> > > > >
-> > > > > Since commit fa3354e4ea39 (mm: free_area_init: use maximal zone PFNs rather
-> > > > > than zone sizes), I get the following BUG on Alpha (an AlphaServer ES47 Marvel)
-> > > > > and loading userspace leads to a segfault:
-> > > > >
-> > > > > (I didn't notice this for a long time because of other unrelated regressions,
-> > > > > the pandemic, changing jobs, ...)
-> > > >
-> > > > I suspect there will be more surprises down the road :)
-> > > >
-> > > > > BUG: Bad page state in process swapper  pfn:2ffc53
-> > > > > page:fffffc000ecf14c0 refcount:0 mapcount:1 mapping:0000000000000000 index:0x0
-> > > > > flags: 0x0()
-> > > > > raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> > > > > raw: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> > > > > page dumped because: nonzero mapcount  Modules linked in:
-> > > > > CPU: 0 PID: 0 Comm: swapper Not tainted 5.7.0-03841-gfa3354e4ea39-dirty #26
-> > > > >        fffffc0001b5bd68 fffffc0001b5be80 fffffc00011cd148 fffffc000ecf14c0
-> > > > >        fffffc00019803df fffffc0001b5be80 fffffc00011ce340 fffffc000ecf14c0
-> > > > >        0000000000000000 fffffc0001b5be80 fffffc0001b482c0 fffffc00027d6618
-> > > > >        fffffc00027da7d0 00000000002ff97a 0000000000000000 fffffc0001b5be80
-> > > > >        fffffc00011d1abc fffffc000ecf14c0 fffffc0002d00000 fffffc0001b5be80
-> > > > >        fffffc0001b2350c 0000000000300000 fffffc0001b48298 fffffc0001b482c0
-> > > > > Trace:
-> > > > > [<fffffc00011cd148>] bad_page+0x168/0x1b0
-> > > > > [<fffffc00011ce340>] free_pcp_prepare+0x1e0/0x290
-> > > > > [<fffffc00011d1abc>] free_unref_page+0x2c/0xa0
-> > > > > [<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-> > > > > [<fffffc00014ee5f0>] cmp_ex_sort+0x0/0x30
-> > > > > [<fffffc000101001c>] _stext+0x1c/0x20
-> > > > >
-> > > > > I haven't tried reproducing this on other machines or QEMU, but I'd be glad to
-> > > > > if that helps.
-> > > >
-> > > > If it's reproducible on QEMU I can debug it locally.
-> > > >
-> > > > > Any ideas?
-> > > >
-> > > > It seems like memory map is not properly initialized. Can you enable
-> > > > CONFIG_DEBUG_MEMORY_INIT and add mminit_debug=4 to the command line. The
-> > > > interesting part of the log would be before "Memory: xK/yK available ..."
-> > > > line.
-> > > >
-> > > > Hopefully it'll give some clues.
-> > >
-> > > Sure thing. Please find attached.
-> >
-> > > aboot: loading uncompressed vmlinuz-5.7.0-03841-gfa3354e4ea39-dirty...
-> > > aboot: loading compressed vmlinuz-5.7.0-03841-gfa3354e4ea39-dirty...
-> > > aboot: PHDR 0 vaddr 0xfffffc0001010000 offset 0xc0 size 0x17c5ae0
-> > > aboot: bss at 0xfffffc00027d5ae0, size 0xe4ea0
-> > > aboot: zero-filling 937632 bytes at 0xfffffc00027d5ae0
-> > > aboot: loading initrd (5965252 bytes/5825 blocks) at 0xfffffc05ff2cc000
-> > > aboot: starting kernel vmlinuz-5.7.0-03841-gfa3354e4ea39-dirty with arguments ro panic=5 domdadm root=/dev/md1 console=srm  mminit_debug=4
-> > > Linux version 5.7.0-03841-gfa3354e4ea39-dirty (mattst88@ivybridge) (gcc version 11.1.0 (Gentoo 11.1.0-r2 p3), GNU ld (Gentoo 2.36.1 p3) 2.36.1) #26 SMP Sun Jul 25 18:20:06 PDT 2021
-> > > printk: bootconsole [srm0] enabled
-> > > Booting on Marvel variation Marvel/EV7 using machine vector MARVEL/EV7 from SRM
-> > > Major Options: SMP EV67 VERBOSE_MCHECK DEBUG_SPINLOCK MAGIC_SYSRQ
-> > > Command line: ro panic=5 domdadm root=/dev/md1 console=srm  mminit_debug=4
-> > > memcluster 0, usage 1, start        0, end     1984
-> > > memcluster 1, usage 0, start     1984, end  1048576
-> > > memcluster 2, usage 1, start  2097152, end  2097224
-> > > memcluster 3, usage 0, start  2097224, end  3145728
-> > > Initial ramdisk at: 0x(____ptrval____) (5965252 bytes)
-> > > Found an IO7 at PID 0
-> > > Initializing IO7 at PID 0
-> > > FIXME: disabling master aborts
-> > > FIXME: disabling master aborts
-> > > FIXME: disabling master aborts
-> > > FIXME: disabling master aborts
-> > > SMP: 2 CPUs probed -- cpu_present_mask = 3
-> > > Zone ranges:
-> > >   DMA      [mem 0x0000000000f80000-0x00000fffffffdfff]
-> > >   Normal   empty
-> > > Movable zone start for each node
-> > > Early memory node ranges
-> > >   node   0: [mem 0x0000000000f80000-0x00000001ffffffff]
-> > >   node   0: [mem 0x0000000400090000-0x00000005ffffffff]
-> >
-> > I think that the issue is that memory marked as used in memcluster is never
-> > added to memblock and it skews node/zone sizing calculations.
-> 
-> Thanks, this patch fixes it. With the patch applied, I see
-> 
-> Zone ranges:
->   DMA      [mem 0x0000000000000000-0x00000fffffffdfff]
->   Normal   empty
-> Movable zone start for each node
-> Early memory node ranges
->   node   0: [mem 0x0000000000000000-0x00000001ffffffff]
->   node   0: [mem 0x0000000400000000-0x00000005ffffffff]
-> Initmem setup node 0 [mem 0x0000000000000000-0x00000005ffffffff]
-> 
-> If you want to send me this patch with your S-o-b I'll take it through
-> my alpha git tree.
+> > Is it?
+>
+> the -mm tree is structured as
+>
+> <90% of stuff>
+> linux-next.patch
+> <the other 10% of stuff>
+>
+> So things like Arnd's series which have a dependency on linux-next
+> material get added to the "other 10%" and are merged behind the
+> linux-next material and all is good.
+>
+> If possible I'll queue things ahead of linux-next.patch.  Those few
+> things which have dependencies on linux-next material get sent to Linus
+> after the required linux-next material is merged into mainline.
 
-The patch is on its way :)
+The first five patches in my series should apply cleanly on mainline
+kernels and make sense by themselves, the last patch is the one that
+depends on this series as well as another series in the netdev tree,
+so that has to go behind linux-next.
 
-Now I'm really curios how commit e7793e53901b ("arc: update comment about
-HIGHMEM implementation") will work out.
+I suppose I could also merge the first five through my asm-generic tree
+and send you the last one if you prefer, but then again two of the patches
+are actually memory management stuff.
 
- 
-> Thanks Mike!
-> Matt
-
--- 
-Sincerely yours,
-Mike.
+         Arnd
