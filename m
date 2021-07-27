@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575AD3D76C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AB43D75F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 15:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbhG0NbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 09:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236677AbhG0NTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 09:19:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AE7061A88;
-        Tue, 27 Jul 2021 13:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627391963;
-        bh=xq9vaZuEISXwGZ9amMGFnKhviWUhwICbRCBqRFA/CAw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=El7F25WMiH3mAolJxRq23HeBldmoDmASlEYl3SQiP/SR7cxCpGLx2zgtd+FrCSp+r
-         HG8bV78lwhs03Gc9iaACo5EgFZkN0j2KynEjWcbDKQsGuFWWnNrTxhhbq24HF4EnOt
-         /mdqAMQw++S6veLCZskHqF9Zl6VqIwKngXG7k7znkrqTFFetsZQTxsUuZYuS9CBUQX
-         ljb0VWn2QFcSCfxBJUkqwgXrwz9P+4HGhXwCN2PPk6UIhP7Y0N6PPLUo72CoZoLTgo
-         lDh+r3vfelccxMuU115/uUKbV6zaJA8MDm2KR8DrRpLYlu2r5/+OsyOnPj5HLI7eLg
-         p4qfk8nP/n3kQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Oder Chiou <oder_chiou@realtek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.13 10/21] ASoC: rt5682: Fix the issue of garbled recording after powerd_dbus_suspend
-Date:   Tue, 27 Jul 2021 09:18:57 -0400
-Message-Id: <20210727131908.834086-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210727131908.834086-1-sashal@kernel.org>
-References: <20210727131908.834086-1-sashal@kernel.org>
+        id S236787AbhG0NUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 09:20:10 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:40589 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236830AbhG0NTQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 09:19:16 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M7sQ6-1mDKnR0XZK-0053Bl for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021
+ 15:19:15 +0200
+Received: by mail-wr1-f41.google.com with SMTP id p5so10082339wro.7
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 06:19:14 -0700 (PDT)
+X-Gm-Message-State: AOAM531Z7EUiU0TQGQrUecmcrok0DzxM7tXDXNV80oFr5d3eERQhnPgQ
+        HpOO1l87V06FuHAYHtxuAgWNvRjvZzKxwyl/NBE=
+X-Google-Smtp-Source: ABdhPJxSjFEFKBXvzBbAwzE3BP7gX5Ofvzrlecx6hytkypeX0c/MmtPXgXi1JiY9YwFd9jpsqplnmEB57dA6G5o6dNA=
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr1019269wrr.105.1627391954517;
+ Tue, 27 Jul 2021 06:19:14 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20210727131217.15092-1-xianting.tian@linux.alibaba.com>
+In-Reply-To: <20210727131217.15092-1-xianting.tian@linux.alibaba.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 27 Jul 2021 15:18:58 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a15ykABd61Rad5iaZtGN=-+Guk0CNyCMK3XD7TgubG7hg@mail.gmail.com>
+Message-ID: <CAK8P3a15ykABd61Rad5iaZtGN=-+Guk0CNyCMK3XD7TgubG7hg@mail.gmail.com>
+Subject: Re: [PATCH] virtio-console: avoid DMA from vmalloc area
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Omar Sandoval <osandov@fb.com>,
+        "open list:DRM DRIVER FOR QEMU'S CIRRUS DEVICE" 
+        <virtualization@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:fW0HIAarY8/5pkrHgnmFSbRh9fVNfWVz1vyisShk6N7fed82h/q
+ Im8l3vkODkjQtBWnlDMciN9yrCS4GMzgcFwaReeJ7qLW/fegMlKRAbM5bMvCWAfl1G6wP1w
+ Ft3j4/2QorisUqkQguN04LiVsHNySqlHyw72KfirFMDyTkvdorOq0NuSaR6sWPY/ERZYJKA
+ IItknZalX+zPdSdsLJAIA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hwKtD4Sl7YQ=:vhH3v1s4IBOGF9jeoo+jot
+ WbIOmJGPxzdq43wlTJpJRUF/YhXdTSLZA70vUXmP2exzOGCqSOImxmqV3c0dAUpvPpDJqp+Ar
+ jHT8Yiq2NoGWxgbRG42+Xm0VzCFXHwcxBBc1/cnmbTr3LszJfLVgG0NgDw4FV630StuJaAZek
+ WrFYUco6Cpcec8dD44PSNr8SDVfuBV5K5r9gMZ+S+TJ8dwod+qMzWm+XKYvExn0cgNb+jeLAW
+ XdRylw1NXs0oEMyRxca9E2SwX7+Cpl0eZ0A7t4KA5tjp0+mOy8a7BwTmLEYqzz0hlRN8gMDx4
+ N9RLMIJLTzl3RHeRaGjSfmMtTzcWVP8KOdDTHkvdsaIqxPYfwhdO8iqEwgpUQVjlPWp9lzwF/
+ a6i//GEax+qdpbx4oxZLkQe8JW/pszuI6/1ipTfMpj14FFCgzQLJMXmdQr7Qz599N+bcQ0qds
+ 84nr/b6ytMgKcmzbMwthq0m2fNKYfZoSzCPLL2r+JKGudO7M1Gxt2D+WJVGC+AXVSp/Bescac
+ 6ijL2MblxbBaQQLWmk1ZauXx3bpHaqyJe88IbNC6TwPRVu0XAIvL84/JQUVoztYVTvb9Vqq8w
+ yT4b4fLhG3BrFnpdMSRuzXf4NFJYsQK9kYBTu/wuvTwZ5ty+ZjgLRyyPHU0MwQPa+pCOvJ0kk
+ cNwzIz0oY1MkIRRjtncxejh93BE/EH5TVcLtRvapR91umGpuIqTRMsZ/ceP/GlpWfljvJA5gE
+ xr5lmvI+WUwzVnlcIByHL2U5Bewf805oSh0ls5zt35XUZcz5Jpho4Qc9A4m0d0RRP6R5CIJUk
+ KdGchLFoJUtpqrAXquVBNta/VT5HnNswZyoigbxDg8XrBbKfXSJOK3lee9oQSuMf6104OuscS
+ n/urvYCtwkylkkz4xiVpJ391XGkiNtRWPeHQ8rou8WLFzOZoGAwoaM7/RH4D3hR7hpvBj3Zdw
+ LWylqg9sx2+haJWVDfYhDxqu7+0R7HvTAKCx9ViBVZQQ5NMZs+zU2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oder Chiou <oder_chiou@realtek.com>
+On Tue, Jul 27, 2021 at 3:13 PM Xianting Tian
+<xianting.tian@linux.alibaba.com> wrote:
+> @@ -1127,13 +1128,18 @@ static int put_chars(u32 vtermno, const char *buf, int count)
+>         if (!port)
+>                 return -EPIPE;
+>
+> -       data = kmemdup(buf, count, GFP_ATOMIC);
+> -       if (!data)
+> -               return -ENOMEM;
+> +       if (is_vmalloc_addr(buf)) {
+> +               data = kmemdup(buf, count, GFP_ATOMIC);
 
-[ Upstream commit 6a503e1c455316fd0bfd8188c0a62cce7c5525ca ]
+What about buffers in .data? If those are in a loadable module, I guess you have
+the same problem as with vmalloc() and vmap().
 
-While using the DMIC recording, the garbled data will be captured by the
-DMIC. It is caused by the critical power of PLL closed in the jack detect
-function.
+is_vmalloc_or_module_addr() would take care of both, not sure if there are
+other examples that don't work. In theory it could be ioremap(), kmap_atomic()
+or fixmap as well, but those seem less likely to matter here.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Link: https://lore.kernel.org/r/20210716085853.20170-1-oder_chiou@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/codecs/rt5682.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index e4c91571abae..abcd6f483788 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -973,10 +973,14 @@ int rt5682_headset_detect(struct snd_soc_component *component, int jack_insert)
- 		rt5682_enable_push_button_irq(component, false);
- 		snd_soc_component_update_bits(component, RT5682_CBJ_CTRL_1,
- 			RT5682_TRIG_JD_MASK, RT5682_TRIG_JD_LOW);
--		if (!snd_soc_dapm_get_pin_status(dapm, "MICBIAS"))
-+		if (!snd_soc_dapm_get_pin_status(dapm, "MICBIAS") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL1") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL2B"))
- 			snd_soc_component_update_bits(component,
- 				RT5682_PWR_ANLG_1, RT5682_PWR_MB, 0);
--		if (!snd_soc_dapm_get_pin_status(dapm, "Vref2"))
-+		if (!snd_soc_dapm_get_pin_status(dapm, "Vref2") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL1") &&
-+			!snd_soc_dapm_get_pin_status(dapm, "PLL2B"))
- 			snd_soc_component_update_bits(component,
- 				RT5682_PWR_ANLG_1, RT5682_PWR_VREF2, 0);
- 		snd_soc_component_update_bits(component, RT5682_PWR_ANLG_3,
--- 
-2.30.2
-
+        Arnd
