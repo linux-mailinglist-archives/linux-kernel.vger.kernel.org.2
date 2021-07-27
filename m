@@ -2,313 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7EC3D79B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F3D3D79B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbhG0P0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:26:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232768AbhG0PY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:24:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A262D61A02;
-        Tue, 27 Jul 2021 15:24:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627399480;
-        bh=xIb7xfOSeA4ZFyzjTOdH/P4yHhcst88fiooBioely24=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gyxw6pVdmQVgoCGxqL1rLTOUtNDEw/fXiq8IEPhrJk4ThaqTCsUVRuNokfz80Cedh
-         adzDF6nKQluo1LahDO7R33DnCA5D2HreOqUfdYqqy0Aa3Alk2ioEMRqa895Yl0F7il
-         LVUbiXvrMQdarSjSyVcTAHHIhZtE38Z+8hg/8Viqde4Bb1EJr43w4g2dFN+s2nrWDq
-         TDmPf7HatvtneW6lfe9kni2jXcsoQLZA9Yh/QuX5bSzvOR3+pBn9KHVSt/MKMlJ+U4
-         CjC3vOBpkUffbttaTjxHIJfhb74whWhidjKUnGIXDgNAMxE/pPB2USjj1tWOiy84DL
-         WndSxPzINvGyA==
-From:   Alexey Gladkov <legion@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
-        syzbot+59dd63761094a80ad06d@syzkaller.appspotmail.com,
-        syzbot+6cd79f45bb8fa1c9eeae@syzkaller.appspotmail.com,
-        syzbot+b6e65bd125a05f803d6b@syzkaller.appspotmail.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Hillf Danton <hdanton@sina.com>
-Subject: [PATCH v1] ucounts: Fix race condition between alloc_ucounts and put_ucounts
-Date:   Tue, 27 Jul 2021 17:24:18 +0200
-Message-Id: <7b2ace1759b281cdd2d66101d6b305deef722efb.1627397820.git.legion@kernel.org>
-X-Mailer: git-send-email 2.29.3
-In-Reply-To: <000000000000efe97f05c74bb995@google.com>
-References: <000000000000efe97f05c74bb995@google.com>
+        id S232643AbhG0P1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236939AbhG0PZn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 11:25:43 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633A9C061760
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:25:14 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id 190so12657851qkk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 08:25:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZZK1Rd7NI6DtGUw1dux730psOSqbcpXN58j1qSdbMgw=;
+        b=LyivXD0axHeLtbIXnUVgA+/WCdkotHzXVnEE4eZ/UmyvGPpdTR6C89BexzAd0cJFKW
+         nP0hzyiASsVa9xQb4tTfTQ8iyzdqHS5fsiFUYQOYGc2x+5lpNWTy2j/XAN65Nkzh4uYd
+         vI5kjNalDupkycWtjP8Gt+urgAGi7CJZfqMLzx84E66gxtBPGo35KuYKSYoTF/K2bnea
+         KFLkScwOgFyz7jS2AWGqVgiqQMV0AzXdS7/5WxmP21KlTgTQQZtkAVtdT1PpxEuISgxk
+         1zY/LWtWV/KXKD1J3qdGU6zdP9o/AgZN4OKX6K2MVEcYDnqBqhMrEI8QS3OEvOGeLdeo
+         udUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZZK1Rd7NI6DtGUw1dux730psOSqbcpXN58j1qSdbMgw=;
+        b=VbH/iYAT6Asc878zLWRrbHO+MTp7D2M9Isg42AxUpYEZkMUw9Rv0lHj3doAQVBhU9a
+         fF9EZt1pMSd7X8EVOnE9h6AFgbd1lqqad6yWgWrxWzGz57OyJrsXSEHJomucUOimaIBU
+         7S4O9ap/SuLcqa2DyKPhMhBGVLQEyr2o+CFO9oCM2DCAD3li94p5NpZr4DWVDC6Ms+gw
+         ek8BjJAz0SEM6ccz0nFnu3HtTYA7J7xgxSmAYj7e7ckZW3EfipmAm0n7cFreLIGFALlZ
+         eXRxqy+aqdWSVhbQ54e5Y2CIMRu6ikh5N2joevxftQrt89rNa2hRnstwgPyaVvirgwIJ
+         2hiQ==
+X-Gm-Message-State: AOAM5332DsDvUAcUKkV1FsKXtgF3lVQbrSGjAtsFL2sBS8XXb+AJzoHP
+        jPL7KN4wNa0xopsaI2VM6nSS2g==
+X-Google-Smtp-Source: ABdhPJw0MS12bAyHiKyVFbaWv2yJeAcpz8la/FAT+4Xeykk3cUg8jC/lY+rhfv8wuWTna2zI2mzPJA==
+X-Received: by 2002:a37:313:: with SMTP id 19mr22335450qkd.295.1627399513547;
+        Tue, 27 Jul 2021 08:25:13 -0700 (PDT)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id q4sm1539663qtr.20.2021.07.27.08.25.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 08:25:13 -0700 (PDT)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, rui.zhang@intel.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        rjw@rjwysocki.net, robh+dt@kernel.org
+Cc:     steev@kali.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [Patch v4 0/6] Introduce LMh driver for Qualcomm SoCs
+Date:   Tue, 27 Jul 2021 11:25:06 -0400
+Message-Id: <20210727152512.1098329-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The race happens because put_ucounts() doesn't use spinlock and
-get_ucounts is not under spinlock:
+Limits Management Hardware(LMh) is a hardware infrastructure on some
+Qualcomm SoCs that can enforce temperature and current limits as programmed
+by software for certain IPs like CPU. On many newer SoCs LMh is configured
+by firmware/TZ and no programming is needed from the kernel side. But on
+certain SoCs like sdm845 the firmware does not do a complete programming of
+the h/w block. On such SoCs kernel software has to explicitly set up the
+temperature limits and turn on various monitoring and enforcing algorithms
+on the hardware.
 
-CPU0                    CPU1
-----                    ----
-alloc_ucounts()         put_ucounts()
+Introduce support for enabling and programming various limit settings and
+monitoring capabilities of Limits Management Hardware(LMh) associated with
+cpu clusters. Also introduce support in cpufreq hardware driver to monitor
+the interrupt associated with cpu frequency throttling so that this
+information can be conveyed to the schdeuler via thermal pressure
+interface.
 
-spin_lock_irq(&ucounts_lock);
-ucounts = find_ucounts(ns, uid, hashent);
+With this patch series following cpu performance improvement(30-70%) is
+observed on sdm845. The reasoning here is that without LMh being programmed
+properly from the kernel, the default settings were enabling thermal
+mitigation for CPUs at too low a temperature (around 70-75 degree C).  This
+in turn meant that many a time CPUs were never actually allowed to hit the
+maximum possible/required frequencies.
 
-                        atomic_dec_and_test(&ucounts->count))
+UnixBench whets and dhry (./Run whets dhry)
+System Benchmarks Index Score
 
-spin_unlock_irq(&ucounts_lock);
+                Without LMh Support             With LMh Support
+1 copy test     1353.7                          1773.2
 
-                        spin_lock_irqsave(&ucounts_lock, flags);
-                        hlist_del_init(&ucounts->node);
-                        spin_unlock_irqrestore(&ucounts_lock, flags);
-                        kfree(ucounts);
+8 copy tests    4473.6                          7402.3
 
-ucounts = get_ucounts(ucounts);
+Sysbench cpu
+sysbench cpu --threads=8 --time=60 --cpu-max-prime=100000 run
 
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
-BUG: KASAN: use-after-free in atomic_add_negative include/asm-generic/atomic-instrumented.h:556 [inline]
-BUG: KASAN: use-after-free in get_ucounts kernel/ucount.c:152 [inline]
-BUG: KASAN: use-after-free in get_ucounts kernel/ucount.c:150 [inline]
-BUG: KASAN: use-after-free in alloc_ucounts+0x19b/0x5b0 kernel/ucount.c:188
-Write of size 4 at addr ffff88802821e41c by task syz-executor.4/16785
+                Without LMh Support             With LMh Support
+Events per
+second                  355                             614
 
-CPU: 1 PID: 16785 Comm: syz-executor.4 Not tainted 5.14.0-rc1-next-20210712-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
- check_region_inline mm/kasan/generic.c:183 [inline]
- kasan_check_range+0x13d/0x180 mm/kasan/generic.c:189
- instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
- atomic_add_negative include/asm-generic/atomic-instrumented.h:556 [inline]
- get_ucounts kernel/ucount.c:152 [inline]
- get_ucounts kernel/ucount.c:150 [inline]
- alloc_ucounts+0x19b/0x5b0 kernel/ucount.c:188
- set_cred_ucounts+0x171/0x3a0 kernel/cred.c:684
- __sys_setuid+0x285/0x400 kernel/sys.c:623
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665d9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fde54097188 EFLAGS: 00000246 ORIG_RAX: 0000000000000069
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665d9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000000000ff
-RBP: 00000000004bfcb9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffc8655740f R14: 00007fde54097300 R15: 0000000000022000
+Avg Latency(ms)         21.84                           13.02
 
-Allocated by task 16784:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0x9b/0xd0 mm/kasan/common.c:522
- kmalloc include/linux/slab.h:591 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- alloc_ucounts+0x23d/0x5b0 kernel/ucount.c:169
- set_cred_ucounts+0x171/0x3a0 kernel/cred.c:684
- __sys_setuid+0x285/0x400 kernel/sys.c:623
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+v3->v4:
+	- Rebased to v5.14-rc2.
 
-Freed by task 16785:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:229 [inline]
- slab_free_hook mm/slub.c:1650 [inline]
- slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1675
- slab_free mm/slub.c:3235 [inline]
- kfree+0xeb/0x650 mm/slub.c:4295
- put_ucounts kernel/ucount.c:200 [inline]
- put_ucounts+0x117/0x150 kernel/ucount.c:192
- put_cred_rcu+0x27a/0x520 kernel/cred.c:124
- rcu_do_batch kernel/rcu/tree.c:2550 [inline]
- rcu_core+0x7ab/0x1380 kernel/rcu/tree.c:2785
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+v2->v3:
+        - Included patch adding dt binding documentation for LMh nodes.
+        - Rebased to v5.13
 
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
- insert_work+0x48/0x370 kernel/workqueue.c:1332
- __queue_work+0x5c1/0xed0 kernel/workqueue.c:1498
- queue_work_on+0xee/0x110 kernel/workqueue.c:1525
- queue_work include/linux/workqueue.h:507 [inline]
- call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:435
- kobject_uevent_env+0xf8f/0x1650 lib/kobject_uevent.c:618
- netdev_queue_add_kobject net/core/net-sysfs.c:1621 [inline]
- netdev_queue_update_kobjects+0x374/0x450 net/core/net-sysfs.c:1655
- register_queue_kobjects net/core/net-sysfs.c:1716 [inline]
- netdev_register_kobject+0x35a/0x430 net/core/net-sysfs.c:1959
- register_netdevice+0xd33/0x1500 net/core/dev.c:10331
- nsim_init_netdevsim drivers/net/netdevsim/netdev.c:317 [inline]
- nsim_create+0x381/0x4d0 drivers/net/netdevsim/netdev.c:364
- __nsim_dev_port_add+0x32e/0x830 drivers/net/netdevsim/dev.c:1295
- nsim_dev_port_add_all+0x53/0x150 drivers/net/netdevsim/dev.c:1355
- nsim_dev_probe+0xcb5/0x1190 drivers/net/netdevsim/dev.c:1496
- call_driver_probe drivers/base/dd.c:517 [inline]
- really_probe+0x23c/0xcd0 drivers/base/dd.c:595
- __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:747
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:777
- __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:894
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
- __device_attach+0x228/0x4a0 drivers/base/dd.c:965
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
- device_add+0xc2f/0x2180 drivers/base/core.c:3356
- nsim_bus_dev_new drivers/net/netdevsim/bus.c:431 [inline]
- new_device_store+0x436/0x710 drivers/net/netdevsim/bus.c:298
- bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
- sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
- kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
- call_write_iter include/linux/fs.h:2152 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x75a/0xa40 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+Thara Gopinath (6):
+  firmware: qcom_scm: Introduce SCM calls to access LMh
+  thermal: qcom: Add support for LMh driver
+  cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support
+  arm64: dts: qcom: sdm45: Add support for LMh node
+  arm64: dts: qcom: sdm845: Remove cpufreq cooling devices for CPU
+    thermal zones
+  dt-bindings: thermal: Add dt binding for QCOM LMh
 
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:348
- insert_work+0x48/0x370 kernel/workqueue.c:1332
- __queue_work+0x5c1/0xed0 kernel/workqueue.c:1498
- queue_work_on+0xee/0x110 kernel/workqueue.c:1525
- queue_work include/linux/workqueue.h:507 [inline]
- call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:435
- kobject_uevent_env+0xf8f/0x1650 lib/kobject_uevent.c:618
- kobject_synth_uevent+0x701/0x850 lib/kobject_uevent.c:208
- uevent_store+0x20/0x50 drivers/base/core.c:2371
- dev_attr_store+0x50/0x80 drivers/base/core.c:2072
- sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
- kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
- call_write_iter include/linux/fs.h:2152 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x75a/0xa40 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+ .../devicetree/bindings/thermal/qcom-lmh.yaml | 100 ++++++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          | 162 ++----------
+ drivers/cpufreq/qcom-cpufreq-hw.c             | 142 +++++++++++
+ drivers/firmware/qcom_scm.c                   |  58 +++++
+ drivers/firmware/qcom_scm.h                   |   4 +
+ drivers/thermal/qcom/Kconfig                  |  10 +
+ drivers/thermal/qcom/Makefile                 |   1 +
+ drivers/thermal/qcom/lmh.c                    | 232 ++++++++++++++++++
+ include/linux/qcom_scm.h                      |  14 ++
+ 9 files changed, 587 insertions(+), 136 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/thermal/qcom-lmh.yaml
+ create mode 100644 drivers/thermal/qcom/lmh.c
 
-The buggy address belongs to the object at ffff88802821e400
- which belongs to the cache kmalloc-192 of size 192
-The buggy address is located 28 bytes inside of
- 192-byte region [ffff88802821e400, ffff88802821e4c0)
-The buggy address belongs to the page:
-page:ffffea0000a08780 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2821e
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888010841a00
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, ts 12874702440, free_ts 12637793385
- prep_new_page mm/page_alloc.c:2433 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4166
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5374
- alloc_page_interleave+0x1e/0x200 mm/mempolicy.c:2119
- alloc_pages+0x238/0x2a0 mm/mempolicy.c:2242
- alloc_slab_page mm/slub.c:1713 [inline]
- allocate_slab+0x32b/0x4c0 mm/slub.c:1853
- new_slab mm/slub.c:1916 [inline]
- new_slab_objects mm/slub.c:2662 [inline]
- ___slab_alloc+0x4ba/0x820 mm/slub.c:2825
- __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2865
- slab_alloc_node mm/slub.c:2947 [inline]
- slab_alloc mm/slub.c:2989 [inline]
- __kmalloc+0x312/0x330 mm/slub.c:4133
- kmalloc include/linux/slab.h:596 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- __register_sysctl_table+0x112/0x1090 fs/proc/proc_sysctl.c:1318
- rds_tcp_init_net+0x1db/0x4f0 net/rds/tcp.c:551
- ops_init+0xaf/0x470 net/core/net_namespace.c:140
- __register_pernet_operations net/core/net_namespace.c:1137 [inline]
- register_pernet_operations+0x35a/0x850 net/core/net_namespace.c:1214
- register_pernet_device+0x26/0x70 net/core/net_namespace.c:1301
- rds_tcp_init+0x77/0xe0 net/rds/tcp.c:717
- do_one_initcall+0x103/0x650 init/main.c:1285
- do_initcall_level init/main.c:1360 [inline]
- do_initcalls init/main.c:1376 [inline]
- do_basic_setup init/main.c:1396 [inline]
- kernel_init_freeable+0x6b8/0x741 init/main.c:1598
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1343 [inline]
- free_pcp_prepare+0x312/0x7d0 mm/page_alloc.c:1394
- free_unref_page_prepare mm/page_alloc.c:3329 [inline]
- free_unref_page+0x19/0x690 mm/page_alloc.c:3408
- __vunmap+0x783/0xb70 mm/vmalloc.c:2587
- free_work+0x58/0x70 mm/vmalloc.c:82
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Memory state around the buggy address:
- ffff88802821e300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88802821e380: 00 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc
->ffff88802821e400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                            ^
- ffff88802821e480: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff88802821e500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-Reported-by: syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com
-Reported-by: syzbot+59dd63761094a80ad06d@syzkaller.appspotmail.com
-Reported-by: syzbot+6cd79f45bb8fa1c9eeae@syzkaller.appspotmail.com
-Reported-by: syzbot+b6e65bd125a05f803d6b@syzkaller.appspotmail.com
-Fixes: b6c336528926 ("Use atomic_t for ucounts reference counting")
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
----
- kernel/ucount.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index 87799e2379bd..77be3bbe3cc4 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -160,6 +160,7 @@ struct ucounts *alloc_ucounts(struct user_namespace *ns, kuid_t uid)
- {
- 	struct hlist_head *hashent = ucounts_hashentry(ns, uid);
- 	struct ucounts *ucounts, *new;
-+	long overflow;
- 
- 	spin_lock_irq(&ucounts_lock);
- 	ucounts = find_ucounts(ns, uid, hashent);
-@@ -184,8 +185,12 @@ struct ucounts *alloc_ucounts(struct user_namespace *ns, kuid_t uid)
- 			return new;
- 		}
- 	}
-+	overflow = atomic_add_negative(1, &ucounts->count);
- 	spin_unlock_irq(&ucounts_lock);
--	ucounts = get_ucounts(ucounts);
-+	if (overflow) {
-+		put_ucounts(ucounts);
-+		return NULL;
-+	}
- 	return ucounts;
- }
- 
-@@ -193,8 +198,7 @@ void put_ucounts(struct ucounts *ucounts)
- {
- 	unsigned long flags;
- 
--	if (atomic_dec_and_test(&ucounts->count)) {
--		spin_lock_irqsave(&ucounts_lock, flags);
-+	if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock, flags)) {
- 		hlist_del_init(&ucounts->node);
- 		spin_unlock_irqrestore(&ucounts_lock, flags);
- 		kfree(ucounts);
 -- 
-2.29.3
+2.25.1
 
