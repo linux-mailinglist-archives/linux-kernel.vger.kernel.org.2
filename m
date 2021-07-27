@@ -2,217 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9225F3D71C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60483D71D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235978AbhG0JPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:15:39 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51866 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235940AbhG0JPi (ORCPT
+        id S235996AbhG0JU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235897AbhG0JU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:15:38 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 862FC200E5;
-        Tue, 27 Jul 2021 09:15:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1627377337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xb68m5dHAKR0PH/2cvLJWdoZvjz2UPvyTRQe435BQg8=;
-        b=osSoRLMgc+ypLi2F6EFUg8jgbpY/EBCs8Dmo9MNWFt3N6JudyWlJSZOHMROOE5ZGluEZgQ
-        6WrVbrbypShi0GNKFI641Zq5J3OF0+KvEaGnej4/GYCRGTS8FFG3WBLTOmq9U9b/YpqkpT
-        YBLA1WF5SMUxJJnGakeWp+VHvlxGNaU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1627377337;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xb68m5dHAKR0PH/2cvLJWdoZvjz2UPvyTRQe435BQg8=;
-        b=3qauaXYm1eYovoaT0uz5z18OcXJEejFwdzcyciDgwb+oG2g8TElHP8q1xoAUBuzdEBVCR5
-        viqcvs6dEeqLBUDg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 58BBA133DE;
-        Tue, 27 Jul 2021 09:15:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id cViwFLnO/2CJLQAAGKfGzw
-        (envelope-from <tzimmermann@suse.de>); Tue, 27 Jul 2021 09:15:37 +0000
-Subject: Re: [PATCH] efi: sysfb_efi: fix build when EFI is not set
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Mark Brown <broonie@kernel.org>, linux-next@vger.kernel.org
-References: <20210727050447.7339-1-rdunlap@infradead.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <aefba212-1e08-9994-6d6e-6db292bf9db6@suse.de>
-Date:   Tue, 27 Jul 2021 11:15:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Tue, 27 Jul 2021 05:20:58 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF10DC061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:20:58 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id b128so7088652wmb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yvx7FUb+PO9K9tu4D9agXVqaQ0PZBo5xaT5yPpMKIms=;
+        b=SIunivkJ3uBUWFL+MmqRwoRt2Ec13tI5ReuRrYPHU6v1ozJHB0RqmiXR2kJtHg7UkK
+         kQHeIhOqy40affcu0iFYZjipx4Rj7mvXor6+msSm/jLTCD0shhRncWpbA8dQZkMdDKxG
+         CY2f7wiJ4ZZW/66YmNtctsKo4S5yBfyNtbbac=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=Yvx7FUb+PO9K9tu4D9agXVqaQ0PZBo5xaT5yPpMKIms=;
+        b=ih0wWU2iLWHUmmvo7NAKfae4wPXmDeX7GKrWOM4ywBB4H5ZD3zdptiUB0zE1fgnxTh
+         BNyGinjrdjzUyIacigz7mt66Xs4vzTNFFsPYwS3asm4r1xJwrsQyfprk+G7KprQ93PyS
+         II5TJXnfSOth5PhJsS+3r8FtnHftZoz6plIKIiqPU6pnuwEWD+Sj56CBzDgGo8OgUWkj
+         zZlsmr6p1sE3kVYvTnvevFX4bhTHZBPNWXg1/WrqM9vdpYQklmJvWbWyqQL9JCUeLSJS
+         53L49rXN1H8G/BYResVloz14VQpJ+WWqrW+LYDAhFGy2MJWm0E0UIaJ8sxkMwy2KI/nV
+         +5UQ==
+X-Gm-Message-State: AOAM532zQ2uVmgIhehgE5TNSm0SVtrC11u7XVpFxX+dLbMv5JTG4QZvx
+        FD3+Yw9X/V0Cm/vv35z5N4b4Yw==
+X-Google-Smtp-Source: ABdhPJysqoczxFjCBoJFO3VIH1BODqUjcyDz8tshadU8bwCX8Ub+Bjigbsxk+srbu2FSB8xv5JCr8A==
+X-Received: by 2002:a05:600c:1c0d:: with SMTP id j13mr21332335wms.34.1627377657192;
+        Tue, 27 Jul 2021 02:20:57 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q19sm2002588wmq.38.2021.07.27.02.20.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jul 2021 02:20:56 -0700 (PDT)
+Date:   Tue, 27 Jul 2021 11:20:54 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 04/10] drm/bridge: Document the probe issue with MIPI-DSI
+ bridges
+Message-ID: <YP/P9rJrZyk6zjsT@phenom.ffwll.local>
+Mail-Followup-To: Maxime Ripard <maxime@cerno.tech>,
+        Robert Foss <robert.foss@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>, Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20210720134525.563936-1-maxime@cerno.tech>
+ <20210720134525.563936-5-maxime@cerno.tech>
+ <YPgNbVoNnq3fTMN2@phenom.ffwll.local>
+ <20210726151657.c46qmkdvqfhlg6ox@gilmour>
 MIME-Version: 1.0
-In-Reply-To: <20210727050447.7339-1-rdunlap@infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210726151657.c46qmkdvqfhlg6ox@gilmour>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh
-Content-Type: multipart/mixed; boundary="NXt3eb7tog0K2DhmRA1oDM5VMlY2jRIyP";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
- dri-devel@lists.freedesktop.org,
- Javier Martinez Canillas <javierm@redhat.com>,
- Mark Brown <broonie@kernel.org>, linux-next@vger.kernel.org
-Message-ID: <aefba212-1e08-9994-6d6e-6db292bf9db6@suse.de>
-Subject: Re: [PATCH] efi: sysfb_efi: fix build when EFI is not set
-References: <20210727050447.7339-1-rdunlap@infradead.org>
-In-Reply-To: <20210727050447.7339-1-rdunlap@infradead.org>
+On Mon, Jul 26, 2021 at 05:16:57PM +0200, Maxime Ripard wrote:
+> Hi Daniel,
+> 
+> On Wed, Jul 21, 2021 at 02:05:01PM +0200, Daniel Vetter wrote:
+> > On Tue, Jul 20, 2021 at 03:45:19PM +0200, Maxime Ripard wrote:
+> > > Interactions between bridges, panels, MIPI-DSI host and the component
+> > > framework are not trivial and can lead to probing issues when
+> > > implementing a display driver. Let's document the various cases we need
+> > > too consider, and the solution to support all the cases.
+> > > 
+> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > 
+> > I still have this dream that eventually we resurrect a patch to add
+> > device_link to bridges/panels (ideally automatically), to help with some
+> > of the suspend/resume issues around here.
+> > 
+> > Will this make things worse?
+> > 
+> > I think it'd be really good to figure that out with some coding, since if
+> > we have incompatible solution to handle probe issues vs suspend/resume
+> > issues, we're screwed.
+> > 
+> > Atm the duct-tape is to carefully move things around between suspend and
+> > suspend_early hooks (and resume and resume_late) and hope it all works ...
+> 
+> My initial idea to fix this was indeed to use device links. I gave up
+> after a while since it doesn't look like there's a way to add a device
+> link before either the bridge or encoder probes.
+> 
+> Indeed the OF-Graph representation is device-specific, so it can't be
+> generic, and if you need to probe to add that link, well, it's already
+> too late for the probe ordering :)
 
---NXt3eb7tog0K2DhmRA1oDM5VMlY2jRIyP
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 27.07.21 um 07:04 schrieb Randy Dunlap:
-> When # CONFIG_EFI is not set, there are 2 definitions of
-> sysfb_apply_efi_quirks(). The stub from sysfb.h should be used
-> and the __init function from sysfb_efi.c should not be used.
->=20
-> ../drivers/firmware/efi/sysfb_efi.c:337:13: error: redefinition of =E2=80=
-=98sysfb_apply_efi_quirks=E2=80=99
->   __init void sysfb_apply_efi_quirks(struct platform_device *pd)
->               ^~~~~~~~~~~~~~~~~~~~~~
-> In file included from ../drivers/firmware/efi/sysfb_efi.c:26:0:
-> ../include/linux/sysfb.h:65:20: note: previous definition of =E2=80=98s=
-ysfb_apply_efi_quirks=E2=80=99 was here
->   static inline void sysfb_apply_efi_quirks(struct platform_device *pd)=
-
->                      ^~~~~~~~~~~~~~~~~~~~~~
->=20
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: linux-efi@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Javier Martinez Canillas <javierm@redhat.com>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-next@vger.kernel.org
-
-Thanks for the patch. It should have a fixes line
-
- > dim fixes 8633ef82f101c040427b57d4df7b706261420b94
-
-Fixes: 8633ef82f101 ("drivers/firmware: consolidate EFI framebuffer=20
-setup for all arches")
-
-
-=2E.. and maybe a few more of the CCs below
-
-Cc: Javier Martinez Canillas <javierm@redhat.com>
-
-Cc: Borislav Petkov <bp@suse.de>
-
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-
-Cc: Ard Biesheuvel <ardb@kernel.org>
-
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-
-Cc: Albert Ou <aou@eecs.berkeley.edu>
-
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-Cc: Linus Walleij <linus.walleij@linaro.org>
-
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-Cc: John Stultz <john.stultz@linaro.org>
-
-Cc: Colin Ian King <colin.king@canonical.com>
-
-Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
-
-Cc: Sudeep Holla <sudeep.holla@arm.com>
-
-Cc: Maxime Ripard <maxime@cerno.tech>
-
-Cc: linux-efi@vger.kernel.org
-
-Cc: linux-riscv@lists.infradead.org
-
-
-Best regards
-Thomas
-
-> ---
->   drivers/firmware/efi/sysfb_efi.c |    2 ++
->   1 file changed, 2 insertions(+)
->=20
-> --- linext-20210726.orig/drivers/firmware/efi/sysfb_efi.c
-> +++ linext-20210726/drivers/firmware/efi/sysfb_efi.c
-> @@ -332,6 +332,7 @@ static const struct fwnode_operations ef
->   	.add_links =3D efifb_add_links,
->   };
->  =20
-> +#ifdef CONFIG_EFI
->   static struct fwnode_handle efifb_fwnode;
->  =20
->   __init void sysfb_apply_efi_quirks(struct platform_device *pd)
-> @@ -354,3 +355,4 @@ __init void sysfb_apply_efi_quirks(struc
->   		pd->dev.fwnode =3D &efifb_fwnode;
->   	}
->   }
-> +#endif
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---NXt3eb7tog0K2DhmRA1oDM5VMlY2jRIyP--
-
---0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmD/zrgFAwAAAAAACgkQlh/E3EQov+B2
-og/7BYM2si7NL1hDIJB8rYBrta2i9u1ew55fC5EuI7RnQkmsUI+xLddnSu0vYg13xoXXP2TodApl
-VAUPHtbkYdKPlqlYMXScUi9t6iCfraElh41EIapWG3r0PRDgkdLtMmLzHatEChFiEJp32ydFzdPm
-xzFwTctOObTNdjqpRwDYDIH1CNdQYpnyzF29F83Cshe8JjIrt9uRf61jp6gKMKYY1YaHpxXkVb/t
-QCyiL1cgP2obQyrTuTogUd5tMCljyYliKCHqI+l7pz1zPLv1c7JyrMQtg0m+0aNHfaUsPYVamnRb
-EaJdBBd17Axh7B3XInD6GFYx4oIq5CX42hiLAm+Ov8qbvsNF2cF0j+94KtXUqpUaIgI3y15+FbMw
-dQb8RefgWQJDj0Dhgl1ULmjYh/mImRkJuRtYpoZNbFvrcxCJK4Y5Sl+KA7puj7TEJ4a4ls/s4nXH
-UOQl8PYzzR93P0C1m72jqCoNnLR6p5kwxDZPIt9MzGc20EZ8vi3lrYASvtxFKEn/GS02cY8Xhx0w
-r5walgfbLu4jpD+PP83sxF6jUsaRyVECG8ld9/MboEty51Chj9UcPp7xHLIICfv4yAMIw5ZWeVYC
-hGyrw4v42Z7QL/QIzHOjIibughA/avWJ6f2H17lpRfpP4fx76bXLB8iV9uHBSXJRN8bQKD/sNRVx
-jrU=
-=Jqd2
------END PGP SIGNATURE-----
-
---0RCxopRs9DF6c7HQAMBrIYe4QeHSjEThh--
+But don't we still need the device_link for suspend/resume and module
+reload? All very annoying indeed anyway.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
