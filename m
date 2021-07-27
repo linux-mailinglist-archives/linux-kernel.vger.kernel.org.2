@@ -2,153 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3753D799A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6476C3D79B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 17:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236755AbhG0PU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 11:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60264 "EHLO
+        id S232511AbhG0PZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 11:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236901AbhG0PUd (ORCPT
+        with ESMTP id S232656AbhG0PXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 11:20:33 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219B9C061764;
-        Tue, 27 Jul 2021 08:20:33 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id k4so7817214wms.3;
-        Tue, 27 Jul 2021 08:20:33 -0700 (PDT)
+        Tue, 27 Jul 2021 11:23:54 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3B4C061757;
+        Tue, 27 Jul 2021 08:23:40 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id m13so22300834lfg.13;
+        Tue, 27 Jul 2021 08:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=A97sJEVHqRr1cAiROr2GcKYuYpM2uXOvkYVkdzP+alE=;
-        b=VpOIOtiIbqj8QEZDSZ2iuEe1kRowCX7PH/pmrU+EAxYHJRX9YNyaPRcfLhvBSVzybL
-         sJw21Pd99DpQjh9LcrCpAuhk3BmrA94nbKSHX8chSa+BsEBnhcGBdJwviOW6Gt8kpkUZ
-         GahMria5iyNigyH79NEPOuvPQc3rIZROQ3B4o/8y/kXskH7PxkDiVDAHk9DR3yW+m/Nl
-         LmyP/KOI/k6B55iCC1QSDNUM3TzcvmFe4ZD2RU99SWRv5fFmdR3Dap7cxmiIhyV+QaFi
-         9AaGf/x5OzY2W2Ltb65P9hUHj9i+V6N39N+2ZR2YUXtdBH/G0t4CmOmL6c0wCK4hRHyY
-         97bQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pv8Xg1UA/7fyTc8laa/BULTDLowBOTs+1yEN3epTYrc=;
+        b=k1rZzZE6xcYi05EXrs4BUpn5+NWrXsCgMXx9Jh7jyRxpfmdG5gGSegc1GAgHUmueGk
+         zbjWmhL9vCPf6rULaA9f7eOS08DUjzTIEPuDBJdi8HHqV5MW9B3K4AtcpNnYm2C2eVmO
+         +bebb5Fq/OBgJ/fbng6BdbbK2JSJkxVJD1pM3ZvukhltkIyHYkG1NJfAI6yJl8pTVnLB
+         x82qUN1w6r0H0qYqjWpgypsVhaRnNAFG8W5wDI2B5U6yBh8k0UzJr7J2LgzJaAhPPJyV
+         UX/qJgsbFfd4Xx8vFylNt+BPqkkbKYTbi/tPVwNfvooaMcgIK+UvAr1PXGw01DtsuLRG
+         +VCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=A97sJEVHqRr1cAiROr2GcKYuYpM2uXOvkYVkdzP+alE=;
-        b=ghyV4yuNQWCF+lEWCZQVRMc7e3BvanGp9+1bOTfhLpziti4M71PbqsYmATOSJevqDR
-         VmaWHqliSfiYAKxyJo/+UbtJf4r7utv9ztECrbaut8AYDADwJUq7C8uclozGvSud6LHt
-         pVFTBAq/lPvK2Wx0L6xRpDgw6uy+jjD1Mwe177Hb9XGVcFrU5K4YOIBqMHIYWy8Rp2Kl
-         CBTRYNCXHBRU0PI2dLJmiOh2SSycX9z4JQ+8LfyBu7BgAmQDhiyQGyQIEyW9k4wp4Jmc
-         kWbSgxfRY7Ouu+hqZLTg90NuU2OX/ImnUpVLqEoZ9wuVYk8hYi4x0GbVdDo96Zixl1d2
-         TZ4A==
-X-Gm-Message-State: AOAM533dw2ZqVJJ2elxAI8FeTSm2vPWJrFb5yYL7joX7a7bbwQCc1ISZ
-        npvqJF0hFhPSSR/lS/SMyP/OCufv/Uzdpsz0
-X-Google-Smtp-Source: ABdhPJyhRyZ1EZ3YKM8HxTwp3POX7+E0ZO9ReE5j9PAoCL6apZ1uXjjcYL1OGvn6T0bm6KNwXuHbhA==
-X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr22930583wmk.51.1627399231434;
-        Tue, 27 Jul 2021 08:20:31 -0700 (PDT)
-Received: from localhost.localdomain (189.red-83-51-242.dynamicip.rima-tde.net. [83.51.242.189])
-        by smtp.gmail.com with ESMTPSA id w185sm3372393wmb.11.2021.07.27.08.20.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Jul 2021 08:20:31 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-gpio@vger.kernel.org
-Cc:     linus.walleij@linaro.org, gregory.0xf0@gmail.com,
-        bgolaszewski@baylibre.com, f.fainelli@gmail.com,
-        matthias.bgg@gmail.com, opensource@vdorst.com,
-        andy.shevchenko@gmail.com, git@johnthomson.fastmail.com.au,
-        neil@brown.name, hofrat@osadl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
-Date:   Tue, 27 Jul 2021 17:20:26 +0200
-Message-Id: <20210727152026.31019-4-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210727152026.31019-1-sergio.paracuellos@gmail.com>
-References: <20210727152026.31019-1-sergio.paracuellos@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pv8Xg1UA/7fyTc8laa/BULTDLowBOTs+1yEN3epTYrc=;
+        b=hUJN9UfqfndyRLSKlziW3sxzTw9ivTinNLsZv3LxKfwFW3qyYVJCfXKvdiTqYNTy6f
+         bWDmGkKnlotgDZ1pgfXcQOD1WM53SMUU/c5w0Nxpulja0lE5XxcrpiD9AOKhO5ZmZLlX
+         rmP4omMsfNrErmfW1X0oV3AdO2Q4RrjqPwa3vlW1xK4OD3Nt8Ey0lEaK9UsaQK3dLs64
+         kcTUzxPpQcKrPynxs4+UlgZskIwFqGo7X8h2u6qdQlLV2CAsuMTQlmNoIaPqjsOwXrNs
+         WPrViIylePNZ3nx1Ar5zIOyabxj52MNO9mVcCRefPUhDqZ+HlkNs54qOsQn62IXgbrRY
+         b0Dg==
+X-Gm-Message-State: AOAM530asROaACSE+821ErpJp0ZEL2oFcgzp/X2SSnFVLWB1SynFv5D+
+        B9zKjcHGbISRdwq/Uy5DWb8oAJrPFyp35ZcmJQo=
+X-Google-Smtp-Source: ABdhPJyVDbvQ7qncQhs4SVaYYBTv9KMgYQvTwvyKtxlDr16izB9z9m67AoqweJ0AbPriRysFKNAlhLR4SIpnStFfwX4=
+X-Received: by 2002:a05:6512:70a:: with SMTP id b10mr16786306lfs.166.1627399418758;
+ Tue, 27 Jul 2021 08:23:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210727025956.80684-1-hsiangkao@linux.alibaba.com> <20210727151051.GH8572@magnolia>
+In-Reply-To: <20210727151051.GH8572@magnolia>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Tue, 27 Jul 2021 17:23:25 +0200
+Message-ID: <CAHpGcMJ2znSzZOEVZmFNDy-Yh+0HbkgRKs_jhGpRRwHUW3VxXg@mail.gmail.com>
+Subject: Re:
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gpiolib core code has been updated to support setting friendly names
-through properly 'gpio-line-names'. Instead of redefine behaviour here
-to skip the core to be executed, just properly assign the desired offset
-per bank to get in the core the expected behaviour.
+Am Di., 27. Juli 2021 um 17:11 Uhr schrieb Darrick J. Wong <djwong@kernel.org>:
+> I'll change the subject to:
+>
+> iomap: support reading inline data from non-zero pos
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Gregory Fong <gregory.0xf0@gmail.com>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/gpio/gpio-brcmstb.c | 45 +------------------------------------
- 1 file changed, 1 insertion(+), 44 deletions(-)
+That surely works for me.
 
-diff --git a/drivers/gpio/gpio-brcmstb.c b/drivers/gpio/gpio-brcmstb.c
-index fcfc1a1f1a5c..a7275159052e 100644
---- a/drivers/gpio/gpio-brcmstb.c
-+++ b/drivers/gpio/gpio-brcmstb.c
-@@ -603,49 +603,6 @@ static const struct dev_pm_ops brcmstb_gpio_pm_ops = {
- 	.resume_noirq = brcmstb_gpio_resume,
- };
- 
--static void brcmstb_gpio_set_names(struct device *dev,
--				   struct brcmstb_gpio_bank *bank)
--{
--	struct device_node *np = dev->of_node;
--	const char **names;
--	int nstrings, base;
--	unsigned int i;
--
--	base = bank->id * MAX_GPIO_PER_BANK;
--
--	nstrings = of_property_count_strings(np, "gpio-line-names");
--	if (nstrings <= base)
--		/* Line names not present */
--		return;
--
--	names = devm_kcalloc(dev, MAX_GPIO_PER_BANK, sizeof(*names),
--			     GFP_KERNEL);
--	if (!names)
--		return;
--
--	/*
--	 * Make sure to not index beyond the end of the number of descriptors
--	 * of the GPIO device.
--	 */
--	for (i = 0; i < bank->width; i++) {
--		const char *name;
--		int ret;
--
--		ret = of_property_read_string_index(np, "gpio-line-names",
--						    base + i, &name);
--		if (ret) {
--			if (ret != -ENODATA)
--				dev_err(dev, "unable to name line %d: %d\n",
--					base + i, ret);
--			break;
--		}
--		if (*name)
--			names[i] = name;
--	}
--
--	bank->gc.names = names;
--}
--
- static int brcmstb_gpio_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -759,6 +716,7 @@ static int brcmstb_gpio_probe(struct platform_device *pdev)
- 		gc->of_xlate = brcmstb_gpio_of_xlate;
- 		/* not all ngpio lines are valid, will use bank width later */
- 		gc->ngpio = MAX_GPIO_PER_BANK;
-+		gc->offset = bank->id * MAX_GPIO_PER_BANK;
- 		if (priv->parent_irq > 0)
- 			gc->to_irq = brcmstb_gpio_to_irq;
- 
-@@ -769,7 +727,6 @@ static int brcmstb_gpio_probe(struct platform_device *pdev)
- 		need_wakeup_event |= !!__brcmstb_gpio_get_active_irqs(bank);
- 		gc->write_reg(reg_base + GIO_MASK(bank->id), 0);
- 
--		brcmstb_gpio_set_names(dev, bank);
- 		err = gpiochip_add_data(gc, bank);
- 		if (err) {
- 			dev_err(dev, "Could not add gpiochip for bank %d\n",
--- 
-2.25.1
-
+Thanks,
+Andreas
