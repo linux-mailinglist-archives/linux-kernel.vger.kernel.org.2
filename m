@@ -2,194 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E195B3D7264
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 052983D7265
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 11:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236103AbhG0JyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 05:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
+        id S236110AbhG0Jyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 05:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235961AbhG0JyS (ORCPT
+        with ESMTP id S235993AbhG0Jyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 05:54:18 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0380C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:54:17 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id u15-20020a05600c19cfb02902501bdb23cdso1451210wmq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=beCJH86xLgh+PWnNDTz2W15pZAK6+7n66A1y132I0nI=;
-        b=f7AFRSWhC09PBHv+qyLOMMDLZJ13+hH2by60JWMPPbV4z75ecfV1M6W1xDNrqmryQ1
-         LjwmGYl9ZsrNuM5gb+ejAkOGbLCjv7NL2n4A7ecfBHkMu0P7unNSSQWnZUU3gL+7OKMP
-         aNdN3zGa/6KNJYnA5+0uBll9QAHvb9wviXzcE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=beCJH86xLgh+PWnNDTz2W15pZAK6+7n66A1y132I0nI=;
-        b=GFPxmgHYRqiN0J95FxZkb1Nemmp2kRTxcMCsKi0AcXBCqoCC2+2qBciY6Bn0ReO46o
-         I4oYgbhyJvI2I+5tUMYjpGEU8LC1QM0BHZ07GwpQXG0xT39QwT01BDOzlpe8pDqDaUr3
-         psH8SZdqTXFQ8Ida5SL+k+4fQ9pgNWFr1Y+8MoB7U4eSe6cg3ttK+IEWvl/mjALzk9l1
-         S1l10ZKEnoBCcQ4+Oq20fDBr97EFBcyYDMPn1IRC0H3CrLMMKpFBzsj2brymXxfhzVn2
-         W0ZWt0WSCWQjQ3/Pv760+ZOf7rGiNc886tAL/iQfe8RtWNz72XnzaqtyEz5yTXeAFnmh
-         cZSw==
-X-Gm-Message-State: AOAM5319XsCVkaOn7HMFRzYctg7UZCHG5W5hp1BFRCegGoYhXa5Nx9hH
-        c5oigsWY1Jl7N3H36iBopjMweQ==
-X-Google-Smtp-Source: ABdhPJzEnmDDN+fwKw7zeJfkVh9bazThBixQhbCRCRYnNIf9WLciebF4U1y3nRTy0MnKsR1OZ/a2kA==
-X-Received: by 2002:a7b:ce8b:: with SMTP id q11mr20626894wmj.80.1627379656560;
-        Tue, 27 Jul 2021 02:54:16 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id r18sm2664196wrt.96.2021.07.27.02.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Jul 2021 02:54:16 -0700 (PDT)
-Date:   Tue, 27 Jul 2021 11:54:14 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-next@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH] efi: sysfb_efi: fix build when EFI is not set
-Message-ID: <YP/XxqHz83qBU4Sv@phenom.ffwll.local>
-Mail-Followup-To: Thomas Zimmermann <tzimmermann@suse.de>,
-        Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-next@vger.kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>
-References: <20210727050447.7339-1-rdunlap@infradead.org>
- <aefba212-1e08-9994-6d6e-6db292bf9db6@suse.de>
+        Tue, 27 Jul 2021 05:54:50 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19B5C061757
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 02:54:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xHaIGZcgG1l1kYUR2GlnOuG/Etl6l+xUZifRAQb39Gw=; b=UsBXcQCQt/4qmULQixZYqdaiMK
+        Vz5tVXBIJXmZR3A6sMkznpYugzmqj+STI5HmCCNZ3AHgqalLaT4BoGF6g5xXooERbo6fMlqqHTKv8
+        +zZ/NLY/WB9B3IwJKwFpXJ4JnPjcn+UtkJicIYgwFWzj+ZaGYfUUmpXJXVzm0xoFsGQbTRTULSl6V
+        UY44pgpPhLaESAD5FZ2HDyOQB4hV/sdfSEK6PHHeHHX7uhcyaz11y9BM8gu+kN5Ta8zjsQBcBek5M
+        dCXB8cUcyuzbW6/Hc+a5xGUvHraXltDeYIacVIksIjrMeTMahAAEWJ06gYOseUauYCxNraknK+H1k
+        86tmBUGw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m8JnM-003PQA-8u; Tue, 27 Jul 2021 09:54:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CCDDA300233;
+        Tue, 27 Jul 2021 11:54:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA9CB202492DB; Tue, 27 Jul 2021 11:54:38 +0200 (CEST)
+Date:   Tue, 27 Jul 2021 11:54:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joel Fernandes <joelaf@google.com>
+Cc:     "Rajendran, Jaishankar" <jaishankar.rajendran@intel.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Mallikarjun Chegaraddi, Raju" 
+        <raju.mallikarjun.chegaraddi@intel.com>
+Subject: Re: Core Scheduling - Concurrent VMs
+Message-ID: <YP/X3nSGBfkZ1/c3@hirez.programming.kicks-ass.net>
+References: <PH0PR11MB51748333769D9002912FF63C84E89@PH0PR11MB5174.namprd11.prod.outlook.com>
+ <CAJWu+oq98Yh4kknze7u6SOYZNw6hR5aFkj61aXbTV3JPq=7RNg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aefba212-1e08-9994-6d6e-6db292bf9db6@suse.de>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <CAJWu+oq98Yh4kknze7u6SOYZNw6hR5aFkj61aXbTV3JPq=7RNg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 11:15:36AM +0200, Thomas Zimmermann wrote:
-> Hi
+On Mon, Jul 26, 2021 at 11:57:21AM -0400, Joel Fernandes wrote:
+> Hi,
+> +Dario Faggioli and +Vineeth Pillai as well.
 > 
-> Am 27.07.21 um 07:04 schrieb Randy Dunlap:
-> > When # CONFIG_EFI is not set, there are 2 definitions of
-> > sysfb_apply_efi_quirks(). The stub from sysfb.h should be used
-> > and the __init function from sysfb_efi.c should not be used.
-> > 
-> > ../drivers/firmware/efi/sysfb_efi.c:337:13: error: redefinition of ‘sysfb_apply_efi_quirks’
-> >   __init void sysfb_apply_efi_quirks(struct platform_device *pd)
-> >               ^~~~~~~~~~~~~~~~~~~~~~
-> > In file included from ../drivers/firmware/efi/sysfb_efi.c:26:0:
-> > ../include/linux/sysfb.h:65:20: note: previous definition of ‘sysfb_apply_efi_quirks’ was here
-> >   static inline void sysfb_apply_efi_quirks(struct platform_device *pd)
-> >                      ^~~~~~~~~~~~~~~~~~~~~~
-> > 
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > Cc: linux-efi@vger.kernel.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: Javier Martinez Canillas <javierm@redhat.com>
-> > Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: linux-next@vger.kernel.org
+> On Mon, Jul 26, 2021 at 1:41 AM Rajendran, Jaishankar
+> <jaishankar.rajendran@intel.com> wrote:
+> >
+> > Refer to the below experiments performed using Core Scheduling for Concurrent VMs and we found the benchmark scores executed in different VMs are
+> > degrading after enablement of Core Scheduling. Both the host and guest are enabled with Core Scheduler
 > 
-> Thanks for the patch. It should have a fixes line
-> 
-> > dim fixes 8633ef82f101c040427b57d4df7b706261420b94
-> 
-> Fixes: 8633ef82f101 ("drivers/firmware: consolidate EFI framebuffer setup
-> for all arches")
+> Why are you running core scheduling within the guest? Only the host
+> needs it and you tag vCPU threads in the host. Within the guest you
+> don't need it (and it probably doesn't make sense unless you pin the
+> vCPU threads to individual physical hardware threads).
 
-Added this and pushed to drm-next (because atm drm-next isn't in
-linux-next because of this).
+Correct, in-guest core-scheduling only works if there's an in-guest
+topology, which requires pinning vcpu threads and sacrificing a chicken
+on the altar of qemu to get the right incantation such that the guest
+actually receives the right topology.
 
-drm-next also has -rc3 backmerge for the nouveau fix, so I think a good
-time to backmerge the entire pile into drm-misc-next?
--Daniel
+Nested core scheduling hurts my head.
 
-> 
-> 
-> ... and maybe a few more of the CCs below
-> 
-> Cc: Javier Martinez Canillas <javierm@redhat.com>
-> 
-> Cc: Borislav Petkov <bp@suse.de>
-> 
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> 
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> 
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> 
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> 
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> 
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> 
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> 
-> Cc: John Stultz <john.stultz@linaro.org>
-> 
-> Cc: Colin Ian King <colin.king@canonical.com>
-> 
-> Cc: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> 
-> Cc: Sudeep Holla <sudeep.holla@arm.com>
-> 
-> Cc: Maxime Ripard <maxime@cerno.tech>
-> 
-> Cc: linux-efi@vger.kernel.org
-> 
-> Cc: linux-riscv@lists.infradead.org
-> 
-> 
-> Best regards
-> Thomas
-> 
-> > ---
-> >   drivers/firmware/efi/sysfb_efi.c |    2 ++
-> >   1 file changed, 2 insertions(+)
-> > 
-> > --- linext-20210726.orig/drivers/firmware/efi/sysfb_efi.c
-> > +++ linext-20210726/drivers/firmware/efi/sysfb_efi.c
-> > @@ -332,6 +332,7 @@ static const struct fwnode_operations ef
-> >   	.add_links = efifb_add_links,
-> >   };
-> > +#ifdef CONFIG_EFI
-> >   static struct fwnode_handle efifb_fwnode;
-> >   __init void sysfb_apply_efi_quirks(struct platform_device *pd)
-> > @@ -354,3 +355,4 @@ __init void sysfb_apply_efi_quirks(struc
-> >   		pd->dev.fwnode = &efifb_fwnode;
-> >   	}
-> >   }
-> > +#endif
-> > 
-> 
-> -- 
-> Thomas Zimmermann
-> Graphics Driver Developer
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5, 90409 Nürnberg, Germany
-> (HRB 36809, AG Nürnberg)
-> Geschäftsführer: Felix Imendörffer
-> 
+> I don't think these commands can really tell you that core scheduler
+> is working or not. They are too coarse grained. You would need to look
+> at it through ftrace scheduling events. Core scheduling will still
+> allow differently tagged threads to use a core, it is just that it
+> wont allow it simultaneously.
 
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Right, you need tracing to verify it actually works, no real alternative
+there.
