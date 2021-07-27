@@ -2,124 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9B13D6CEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E613D6CDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 05:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235103AbhG0C6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Jul 2021 22:58:25 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:21134 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235023AbhG0C6Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Jul 2021 22:58:24 -0400
-X-Greylist: delayed 317 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Jul 2021 22:58:23 EDT
-DKIM-Signature: a=rsa-sha256;
-        b=ABBMxIWpIg9L/+HOKYm9N1K3nPL1ofAhoRb4Dm66I2pA+wli25VBZg/N0i6mDzrm9zPMT73QTa8Zq3dbUZO59+M9fg+NiqGeg4rKGcRl35JF41+7dWgONWXkly4teBrxqr6qWEvTVzKjC86vKOlDKoE+UDUONjzKgovIecZpwaw=;
-        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
-        bh=fgFn2CfqfI5yLqGF+VB3uiM6py0rkY8NZLedV5hh+AU=;
-        h=date:mime-version:subject:message-id:from;
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 722B7E0121;
-        Tue, 27 Jul 2021 11:33:30 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] mm: folio: use copy_highpage() instead of folio_migrate_copy() when copy once
-Date:   Tue, 27 Jul 2021 11:32:54 +0800
-Message-Id: <1627356775-28742-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZCBgUCR5ZQVlLVUtZV1
-        kWDxoPAgseWUFZKDYvK1lXWShZQUhPN1dZLVlBSVdZDwkaFQgSH1lBWRpPSUpWSx8dTR5NHkNNTE
-        9PVRMBExYaEhckFA4PWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NU06SBw6Ez9NDEwtFEk9LU0c
-        NDYaCzxVSlVKTUlMSE5NQ0pKS0lDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFITkxMNwY+
-X-HM-Tid: 0a7ae6064d672c17kusn722b7e0121
+        id S235041AbhG0Cy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Jul 2021 22:54:56 -0400
+Received: from mga18.intel.com ([134.134.136.126]:58530 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234422AbhG0Cyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Jul 2021 22:54:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10057"; a="199586971"
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; 
+   d="scan'208";a="199586971"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jul 2021 20:35:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,272,1620716400"; 
+   d="scan'208";a="505307685"
+Received: from fedora29.sh.intel.com ([10.239.182.87])
+  by FMSMGA003.fm.intel.com with ESMTP; 26 Jul 2021 20:35:20 -0700
+From:   Pengfei Xu <pengfei.xu@intel.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Pengfei Xu <pengfei.xu@intel.com>, Heng Su <heng.su@intel.com>,
+        Yu Yu-cheng <yu-cheng.yu@intel.com>,
+        Yu Fenghua <fenghua.yu@intel.com>,
+        Hansen Dave <dave.hansen@intel.com>,
+        Luck Tony <tony.luck@intel.com>,
+        Mehta Sohil <sohil.mehta@intel.com>,
+        Chen Yu C <yu.c.chen@intel.com>
+Subject: [RFC PATCH v1 0/2] Introduce XSAVE/XRSTOR self-test
+Date:   Tue, 27 Jul 2021 11:34:42 +0800
+Message-Id: <cover.1627355565.git.pengfei.xu@intel.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-folio_migrate_copy() will call cond_resched(), even if it only needs to be
-copied once, restore the previous implementation before there is a better
-solution: use copy_highpage() when copy once.
+The XSAVE feature set supports the saving and restoring of state components
+such as FPU, which is used for process context switching.
+In order to ensure that XSAVE works correctly, add XSAVE basic test for
+XSAVE architecture functionality.
 
-Call Trace:
-__dump_stack lib/dump_stack.c:88 [inline]
-dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
-___might_sleep.cold+0x1f3/0x239 kernel/sched/core.c:9182
-folio_copy+0x10c/0x1a0 mm/util.c:761
-folio_migrate_copy+0x19/0x30 mm/migrate.c:619
-__buffer_migrate_page+0x820/0xa80 mm/migrate.c:757
-move_to_new_page+0x339/0xf00 mm/migrate.c:904
-__unmap_and_move mm/migrate.c:1069 [inline]
-unmap_and_move mm/migrate.c:1210 [inline]
-migrate_pages+0x2867/0x3890 mm/migrate.c:1487
-compact_zone+0x1abb/0x3860 mm/compaction.c:2393
-kcompactd_do_work+0x2c9/0x730 mm/compaction.c:2808
-kcompactd+0x262/0xd10 mm/compaction.c:2903
-kthread+0x3e5/0x4d0 kernel/kthread.c:319
- 
-Reported-by: syzbot+bb4c69145b4a52b40b27@syzkaller.appspotmail.com
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- mm/folio-compat.c |  6 ------
- mm/migrate.c      | 15 +++++++++++----
- 2 files changed, 11 insertions(+), 10 deletions(-)
+This patch set tests XSAVE/XRSTOR instructions on x86 platforms and verify if
+the XSAVE/XRSTOR works correctly during signal handling.
 
-diff --git a/mm/folio-compat.c b/mm/folio-compat.c
-index 5b6ae1d..13ec6aa
---- a/mm/folio-compat.c
-+++ b/mm/folio-compat.c
-@@ -64,12 +64,6 @@ void migrate_page_states(struct page *newpage, struct page *page)
- 	folio_migrate_flags(page_folio(newpage), page_folio(page));
- }
- EXPORT_SYMBOL(migrate_page_states);
--
--void migrate_page_copy(struct page *newpage, struct page *page)
--{
--	folio_migrate_copy(page_folio(newpage), page_folio(page));
--}
--EXPORT_SYMBOL(migrate_page_copy);
- #endif
- 
- bool set_page_writeback(struct page *page)
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 7d06515..8fb796b
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -614,12 +614,19 @@ void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
- }
- EXPORT_SYMBOL(folio_migrate_flags);
- 
--void folio_migrate_copy(struct folio *newfolio, struct folio *folio)
-+void migrate_page_copy(struct page *newpage, struct page *page)
- {
--	folio_copy(newfolio, folio);
-+	struct folio *newfolio = page_folio(newpage);
-+	struct folio *folio = page_folio(page);
-+
-+	if (PageHuge(page) || PageTransHuge(page))
-+		folio_copy(newfolio, folio);
-+	else
-+		copy_highpage(newpage, page);
-+
- 	folio_migrate_flags(newfolio, folio);
- }
--EXPORT_SYMBOL(folio_migrate_copy);
-+EXPORT_SYMBOL(migrate_page_copy);
- 
- /************************************************************
-  *                    Migration functions
-@@ -647,7 +654,7 @@ int migrate_page(struct address_space *mapping,
- 		return rc;
- 
- 	if (mode != MIGRATE_SYNC_NO_COPY)
--		folio_migrate_copy(newfolio, folio);
-+		migrate_page_copy(newpage, page);
- 	else
- 		folio_migrate_flags(newfolio, folio);
- 	return MIGRATEPAGE_SUCCESS;
+Cases such as signal handling, process creation, other xstate(except FPU)
+tests for XSAVE check, etc. will be added to the Linux kernel self-test.
+If appropriate, it is even planned to add the [1] mentioned XSAVE issues
+reproduce and some XSAVE anomaly tests to the kernel self-test.
+
+[1]: https://lore.kernel.org/lkml/0000000000004c453905c30f8334@google.com/
+
+Pengfei Xu (2):
+  selftests/xsave: test basic XSAVE architecture functionality
+  selftests/xsave: add xsave test during signal handling
+
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/xsave/.gitignore      |   3 +
+ tools/testing/selftests/xsave/Makefile        |   6 +
+ tools/testing/selftests/xsave/xsave_common.h  | 246 ++++++++++++++++++
+ .../selftests/xsave/xsave_instruction.c       |  83 ++++++
+ .../selftests/xsave/xsave_signal_handle.c     | 184 +++++++++++++
+ 6 files changed, 523 insertions(+)
+ create mode 100644 tools/testing/selftests/xsave/.gitignore
+ create mode 100644 tools/testing/selftests/xsave/Makefile
+ create mode 100644 tools/testing/selftests/xsave/xsave_common.h
+ create mode 100644 tools/testing/selftests/xsave/xsave_instruction.c
+ create mode 100644 tools/testing/selftests/xsave/xsave_signal_handle.c
+
 -- 
-2.7.4
+2.20.1
 
