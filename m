@@ -2,167 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9B13D7ED2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 974913D7EDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 22:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhG0UGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 16:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230469AbhG0UGl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 16:06:41 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873E3C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:06:40 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id e2-20020a17090a4a02b029016f3020d867so818539pjh.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Jul 2021 13:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:thread-index
-         :content-language;
-        bh=PwWl2aSuu6+Di4TaYJklMnkd+oXVKsyMZMTbKM+A+u8=;
-        b=GjjTQEx7cmQ4zLT2IsEMp1dHExxHTJJPdNifLGuzeHOyl85uK+W94wFykfmba9pGcz
-         0HTKN8p3jjW0tpWPvalpO9Key8qoO6tvnO5OTsjj8leLwAns+o4cT1wdKg8+vwvCaBvN
-         usKbb5AzUN4ROfXv/zsx7tqgYkLiBq7BuWrPnedWeiPM1RU8qadLPpgIPPF3bJ8Q8p95
-         03iPFN5yl2EPY1etCgOZ/cR2Pcrb+smAA4CV5aYuUYtGqfIM8Q7rd11Qy5QmimU9LPQ3
-         mZSqPQkGw8ietikJcSxYZL0LUUER6tPhF0lOUAuJofuQnJLpXM00K1r6Mpi96piZEDeV
-         ixwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:thread-index
-         :content-language;
-        bh=PwWl2aSuu6+Di4TaYJklMnkd+oXVKsyMZMTbKM+A+u8=;
-        b=F1dWQaQajWjA0HdyxaN655H3ad8Ulkli56gCcUH421ZF1MvV5+1xUb40N9lQA+UZxH
-         0EOmTwZnyXIFcL5udAaaMNobDhe53k6G6v54CL/v18aXxhIdOU45/1wj7h5JdfUC5fGZ
-         7OxcDMZ7yQTlQWNh4c5UxrJdM5klxP6KshcWdIT5rx+awcZzvk0eYnz26wnJA0uXgzRD
-         Ejf+iV1Da9RcnXdMQA14D60szJArX3Ma/fHVtVZ5mBrRXAGp8mpIgfev998MxnV3BpG5
-         fTi2dJcJl+oSvPqmFkJqVy4gYyqIH5Ne9Pwn1cpy5fgUFl9TgfxOhNfc8otgiEJZrqpO
-         rHlg==
-X-Gm-Message-State: AOAM533E9sZ9d1aim1N3lRLVuYv1jSi/o/XEPQ0s2nbAC586v8o+dR1f
-        WOAkVP5wWsEz267EwSisKtVTiQ==
-X-Google-Smtp-Source: ABdhPJz1eke9REWf5ey8sjMLPlapYCBiZ5nkq2cf+SnoX82CZjudaQlB11GZQciL7Ozt9/omc5RjTA==
-X-Received: by 2002:a17:902:b487:b029:12c:4051:a8de with SMTP id y7-20020a170902b487b029012c4051a8demr5298018plr.76.1627416400041;
-        Tue, 27 Jul 2021 13:06:40 -0700 (PDT)
-Received: from DougS18 ([173.180.45.4])
-        by smtp.gmail.com with ESMTPSA id y30sm4205738pfa.220.2021.07.27.13.06.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Jul 2021 13:06:39 -0700 (PDT)
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>
-Cc:     "'LKML'" <linux-kernel@vger.kernel.org>,
-        "'Linux PM'" <linux-pm@vger.kernel.org>,
-        "Doug Smythies" <dsmythies@telus.net>
-References: <1867445.PYKUYFuaPT@kreacher>
-In-Reply-To: <1867445.PYKUYFuaPT@kreacher>
-Subject: RE: [PATCH v1 0/5] cpuidle: teo: Rework the idle state selection logic
-Date:   Tue, 27 Jul 2021 13:06:39 -0700
-Message-ID: <000801d78322$e9b94980$bd2bdc80$@telus.net>
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQJWv5LtWSG8O5a4tG6eLIHdXBOua6pYw/kg
-Content-Language: en-ca
+        id S231213AbhG0UKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 16:10:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229681AbhG0UKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 16:10:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C853660F9B;
+        Tue, 27 Jul 2021 20:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1627416620;
+        bh=Y+22u+tRLyeCEMBb6In1ZjF6k/Q7kC+hWd73eqYEGas=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BVqWR6/vu3R3J5zfoKCep8iyJZp5vpOXQXMjCpyBKF5+fjjmsM3GAAh9luGKAyX8w
+         TnUSkae4d6enUtqjUMLK5elkiFVHeOBBlB/WvoSt+pulwa5YBeWjHLswiQ/pay/Rwt
+         WFBpnLlfubVGd5wruQc9aelH0q3iYdqHJRaI6Jng=
+Date:   Tue, 27 Jul 2021 13:10:17 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Feng Tang <feng.tang@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v5 0/6] compat: remove compat_alloc_user_space
+Message-Id: <20210727131017.f151a81fc69db8f45f81a2b3@linux-foundation.org>
+In-Reply-To: <YQAfa6iObAwwIpzb@infradead.org>
+References: <20210727144859.4150043-1-arnd@kernel.org>
+        <YQAfa6iObAwwIpzb@infradead.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On Tue, 27 Jul 2021 15:59:55 +0100 Christoph Hellwig <hch@infradead.org> wrote:
 
-Further to my reply of 2021.07.04  on this, I have
-continued to work with and test this patch set.
+> On Tue, Jul 27, 2021 at 04:48:53PM +0200, Arnd Bergmann wrote:
+> > Since these patches are now all that remains, it would be nice to
+> > merge it all through Andrew's Linux-mm tree, which is already based
+> > on top of linux-next.
+> 
+> Is it?
 
-On 2021.06.02 11:14 Rafael J. Wysocki wrote:
+the -mm tree is structured as
 
->This series of patches addresses some theoretical shortcoming in the
-> TEO (Timer Events Oriented) cpuidle governor by reworking its idle
-> state selection logic to some extent.
->
-> Patches [1-2/5] are introductory cleanups and the substantial changes =
-are
-> made in patches [3-4/5] (please refer to the changelogs of these two
-> patches for details).  The last patch only deals with documentation.
->
-> Even though this work is mostly based on theoretical considerations, =
-it
-> shows a measurable reduction of the number of cases in which the =
-shallowest
-> idle state is selected while it would be more beneficial to select a =
-deeper
-> one or the deepest idle state is selected while it would be more =
-beneficial to
-> select a shallower one, which should be a noticeable improvement.
+<90% of stuff>
+linux-next.patch
+<the other 10% of stuff>
 
-I am concentrating in the idle state 0 and 1 area.
-When I disable idle state 0, the expectation is its
-usage will fall to idle state 1. It doesn't.
+So things like Arnd's series which have a dependency on linux-next
+material get added to the "other 10%" and are merged behind the
+linux-next material and all is good.
 
-Conditions:
-CPU: Intel(R) Core(TM) i5-10600K CPU @ 4.10GHz
-HWP: disabled
-CPU frequency scaling driver: intel_pstate, active
-CPU frequency scaling governor: performance.
-Idle configuration: As a COMETLAKE processor, with 4 idle states.
-Sample time for below: 1 minute.
-Workflow: Cross core named pipe token passing, 12 threads.
-
-Kernel 5.14-rc3: idle: teo governor
-
-All idle states enabled: PASS
-Processor: 97 watts
-Idle state 0 entries: 811151
-Idle state 1 entries: 140300776
-Idle state 2 entries: 889
-Idle state 3 entries: 8
-
-Idle state 0 disabled: FAIL <<<<<
-Processor: 96 watts
-Idle state 0 entries: 0
-Idle state 1 entries: 65599283
-Idle state 2 entries: 364399
-Idle state 3 entries: 65112651
-
-Kernel 5.14-rc3: idle: menu governor
-
-All idle states enabled: PASS
-Processor: 102 watts
-Idle state 0 entries: 169320747
-Idle state 1 entries: 1860110
-Idle state 2 entries: 14
-Idle state 3 entries: 54
-
-Idle state 0 disabled: PASS
-Processor: 96.7 watts
-Idle state 0 entries: 0
-Idle state 1 entries: 141936790
-Idle state 2 entries: 0
-Idle state 3 entries: 6
-
-Prior to this patch set:
-Kernel 5.13: idle: teo governor
-
-All idle states enabled: PASS
-Processor: 97 watts
-Idle state 0 entries: 446735
-Idle state 1 entries: 140903027
-Idle state 2 entries: 0
-Idle state 3 entries: 0
-
-Idle state 0 disabled: PASS
-Processor: 96 watts
-Idle state 0 entries: 0
-Idle state 1 entries: 139308125
-Idle state 2 entries: 0
-Idle state 3 entries: 0
-
-I haven't tried to isolate the issue in the code, yet.
-Nor have I explored to determine if there might
-be other potential idle state disabled issues.
-
-... Doug
-
-
+If possible I'll queue things ahead of linux-next.patch.  Those few
+things which have dependencies on linux-next material get sent to Linus
+after the required linux-next material is merged into mainline.
