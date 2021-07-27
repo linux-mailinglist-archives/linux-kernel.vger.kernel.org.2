@@ -2,80 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 305BA3D6D98
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AB543D6D99
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Jul 2021 06:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235131AbhG0En0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 27 Jul 2021 00:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbhG0EnY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 27 Jul 2021 00:43:24 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D9CC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:43:25 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id u9-20020a17090a1f09b029017554809f35so2340995pja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Jul 2021 21:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8OgNNI/ZkkFCiDWQYC06fGQinvIGcARtCC3HkxPSNzA=;
-        b=Q5D2/AyVMa1IWbGsysocOoq8QjOGrae5n6e9Q199iOQUX9WzJoez34mv9P/teNkYEt
-         klKGHnai2cbH8VssVKLVQ+IhLy040E1J7bVziAzCleY+Getjb1NHun5CHSeiMYDlqzXe
-         6Y8FaVfsMd70FaCepmZ0ibonK1bObtcY8uP+w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8OgNNI/ZkkFCiDWQYC06fGQinvIGcARtCC3HkxPSNzA=;
-        b=Dg1CqwThHrABcEjV9HotQrnfyfAWGq0I2T1ILwLbRweYCTQhelIVGNDCO0wQfT+qLe
-         QJXr6uXmAP2mVm4DCXN0k3TKr/2+dPq0Jkxnj7rAV5Y3TqFdVCwdD93ZAB2sqrsT8c4a
-         qSX4pSbPoiZPE2zJWMq21CHKxEX0Pczh8pPPNh+L0hJ3gTwz12AeQb+T1CUBEvgnE2i1
-         nmuqzeeCO+SqSclVsE86JDTqyfmXTZJ5ls5aqKtUBHBXFB426W8E8X6p/XwudBooI8Oo
-         8Tx/dpEYO0N/adlE/WZqBS2cnNm25JB6L48UhfOB6DIGui12WbEGIOR09dUfkYXwbvtr
-         0gsQ==
-X-Gm-Message-State: AOAM530tVV91KceI/LwOhCs53gbRQS58UDW1gXeMlTNSjIn42ciRLTds
-        6gD5AcDbO6KTCfadHE+FKsJ2pd2aDxx02VaXc5VumQ==
-X-Google-Smtp-Source: ABdhPJxoc5CSpPY3vQh7WBrophJ46+dx+Oemf64p8gEZ/MeteoctC+j1XOB9bhr65cib2vxfEoicD6FmTXf3GIPsuds=
-X-Received: by 2002:a17:90a:8403:: with SMTP id j3mr2306339pjn.112.1627361005167;
- Mon, 26 Jul 2021 21:43:25 -0700 (PDT)
+        id S234990AbhG0Enr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 27 Jul 2021 00:43:47 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55162 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234745AbhG0Eno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 27 Jul 2021 00:43:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1627361025; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=l0LBbkn2wIgdM60dnKzVULyBKqRCDMcLHAj1YaazBvI=; b=ppYO1RhkUkdQ3YyWSa5cnWsV3ASh4ZMetEHUME1fEByfv4sglJytdCVtNKdp+EYfLF/XJ7Se
+ 3GamzMxI+XQuyAur50rioP3DAQ0slWx3c0orwJYe+cyBwpdLJNishw4qf5/8dyMY/1Uv0O0C
+ KLft1dAvFPlAQSAPrFyJFTV55D4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60ff8ef4e81205dd0a845e21 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 27 Jul 2021 04:43:32
+ GMT
+Sender: vjitta=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8D958C43144; Tue, 27 Jul 2021 04:43:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.3 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.102] (unknown [14.192.2.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vjitta)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6CA9DC4323A;
+        Tue, 27 Jul 2021 04:43:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6CA9DC4323A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
+Subject: Re: [PATCH] mm: slub: Fix slub_debug disablement for list of slabs
+To:     Vlastimil Babka <vbabka@suse.cz>, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        vinmenon@codeaurora.org
+References: <1626176750-13099-1-git-send-email-vjitta@codeaurora.org>
+ <bf2a8571-325c-6d94-0d5a-f6df71ae0c4f@suse.cz>
+From:   Vijayanand Jitta <vjitta@codeaurora.org>
+Message-ID: <e0442add-dcf0-57d7-2298-3459136673af@codeaurora.org>
+Date:   Tue, 27 Jul 2021 10:13:16 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <20210726105719.15793-1-chun-jie.chen@mediatek.com> <20210726105719.15793-15-chun-jie.chen@mediatek.com>
-In-Reply-To: <20210726105719.15793-15-chun-jie.chen@mediatek.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Tue, 27 Jul 2021 12:43:14 +0800
-Message-ID: <CAATdQgBkdst+fVnQhoYzJgO8meaef+YCjcPgEMTLbECTxRC6tQ@mail.gmail.com>
-Subject: Re: [v14 14/21] clk: mediatek: Add MT8192 ipesys clock support
-To:     Chun-Jie Chen <chun-jie.chen@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-clk@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bf2a8571-325c-6d94-0d5a-f6df71ae0c4f@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 26, 2021 at 7:02 PM Chun-Jie Chen
-<chun-jie.chen@mediatek.com> wrote:
->
-> Add MT8192 ipesys clock provider
->
-> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> Signed-off-by: Chun-Jie Chen <chun-jie.chen@mediatek.com>
 
-Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
 
-(snip)
+On 7/27/2021 4:02 AM, Vlastimil Babka wrote:
+> On 7/13/21 1:45 PM, vjitta@codeaurora.org wrote:
+>> From: Vijayanand Jitta <vjitta@codeaurora.org>
+>>
+>> Consider the scenario where CONFIG_SLUB_DEBUG_ON is set
+>> and we would want to disable slub_debug for few slabs.
+>> Using boot parameter with slub_debug=-,slab_name syntax
+>> doesn't work as expected i.e; only disabling debugging for
+>> the specified list of slabs, instead it disables debugging
+>> for all slabs. Fix this.
+>>
+>> Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
+> 
+> Would the following work too, and perhaps be easier to follow?
+
+Right, the below change would also work and its easier to follow as you
+said. We can go with this.
+
+Reviewed-by: Vijayanand Jitta <vjitta@codeaurora.org>
+
+Thanks,
+Vijay
+
+> ----8<----
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 090fa14628f9..024f49706386 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1400,12 +1400,13 @@ parse_slub_debug_flags(char *str, slab_flags_t *flags, char **slabs, bool init)
+>  static int __init setup_slub_debug(char *str)
+>  {
+>  	slab_flags_t flags;
+> +	slab_flags_t global_flags;
+>  	char *saved_str;
+>  	char *slab_list;
+>  	bool global_slub_debug_changed = false;
+>  	bool slab_list_specified = false;
+>  
+> -	slub_debug = DEBUG_DEFAULT_FLAGS;
+> +	global_flags = DEBUG_DEFAULT_FLAGS;
+>  	if (*str++ != '=' || !*str)
+>  		/*
+>  		 * No options specified. Switch on full debugging.
+> @@ -1417,7 +1418,7 @@ static int __init setup_slub_debug(char *str)
+>  		str = parse_slub_debug_flags(str, &flags, &slab_list, true);
+>  
+>  		if (!slab_list) {
+> -			slub_debug = flags;
+> +			global_flags = flags;
+>  			global_slub_debug_changed = true;
+>  		} else {
+>  			slab_list_specified = true;
+> @@ -1426,16 +1427,18 @@ static int __init setup_slub_debug(char *str)
+>  
+>  	/*
+>  	 * For backwards compatibility, a single list of flags with list of
+> -	 * slabs means debugging is only enabled for those slabs, so the global
+> -	 * slub_debug should be 0. We can extended that to multiple lists as
+> +	 * slabs means debugging is only changed for those slabs, so the global
+> +	 * slub_debug should be unchanged (0 or DEBUG_DEFAULT_FLAGS, depending
+> +	 * on CONFIG_SLUB_DEBUG_ON). We can extended that to multiple lists as
+>  	 * long as there is no option specifying flags without a slab list.
+>  	 */
+>  	if (slab_list_specified) {
+>  		if (!global_slub_debug_changed)
+> -			slub_debug = 0;
+> +			global_flags = slub_debug;
+>  		slub_debug_string = saved_str;
+>  	}
+>  out:
+> +	slub_debug = global_flags;
+>  	if (slub_debug != 0 || slub_debug_string)
+>  		static_branch_enable(&slub_debug_enabled);
+>  	else
+> 
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of Code Aurora Forum, hosted by The Linux Foundation
